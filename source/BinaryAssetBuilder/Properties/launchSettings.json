@@ -2,7 +2,7 @@
   "profiles": {
     "BinaryAssetBuilder": {
       "commandName": "Project",
-      "commandLineArgs": "GDIIonCannonControl.xml -csc:false -ls -mr"
+      "commandLineArgs": "Release\\Mods\\Data\\Static_Mod.xml -csc:false -ls -mr"
     }
   }
 }

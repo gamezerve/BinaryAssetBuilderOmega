@@ -10,7 +10,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <OutputPath>..\..\Release</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>TRACE;WIN32</DefineConstants>
+	  <!-- <DefineConstants>TRACE;WIN32</DefineConstants> -->
+	  <DefineConstants>$(DefineConstants);KANESWRATH</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">

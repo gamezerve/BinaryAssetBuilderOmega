@@ -353,6 +353,89 @@ namespace BinaryAssetBuilder.Core.SageXml
         }
         private static readonly Tracer _tracer = Tracer.GetTracer(nameof(DocumentProcessor), "Provides XML processing functionality");
 
+
+        private static readonly HashSet<string> _manifestAssets = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private static bool _manifestLoaded;
+
+        private static void LoadManifestIfNeeded()
+        {
+            if (_manifestLoaded)
+            {
+                return;
+            }
+
+            string manifestPath = @"D:\OneDrive\Documents\GitHub\BinaryAssetBuilderOmega2\KW Files\Manifest\static_common_2.manifest";
+
+            if (File.Exists(manifestPath))
+            {
+                byte[] data = File.ReadAllBytes(manifestPath);
+                string text = Encoding.UTF8.GetString(data);
+
+                char[] separators =
+                {
+                    '\0',
+                    '\r',
+                    '\n',
+                    '\t',
+                    ' ',
+                    ':',
+                    ',',
+                    ';',
+                    '=',
+                    '"',
+                    '\'',
+                    '(',
+                    ')',
+                    '[',
+                    ']',
+                    '{',
+                    '}'
+                };
+
+                foreach (string token in text.Split(separators, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    string trimmed = token.Trim();
+
+                    if (trimmed.Length < 3)
+                    {
+                        continue;
+                    }
+
+                    _manifestAssets.Add(trimmed);
+                }
+
+                _tracer.TraceInfo("Loaded manifest asset list from '{0}' with {1} entries.", manifestPath, _manifestAssets.Count);
+            }
+            else
+            {
+                _tracer.TraceWarning("Manifest file not found: {0}", manifestPath);
+            }
+
+            _manifestLoaded = true;
+
+
+            if (_manifestAssets.Contains("NoArmor"))
+            {
+                _tracer.TraceInfo("Manifest contains NoArmor");
+            }
+
+            if (_manifestAssets.Contains("RiflemenIcon"))
+            {
+                _tracer.TraceInfo("Manifest contains RiflemenIcon");
+            }
+
+        }
+
+        private static bool ManifestContainsAsset(string typeName, string instanceName)
+        {
+            LoadManifestIfNeeded();
+
+            return _manifestAssets.Contains(typeName + ":" + instanceName)
+                || _manifestAssets.Contains(instanceName)
+                || _manifestAssets.Contains(typeName + ":" + instanceName.ToLowerInvariant())
+                || _manifestAssets.Contains(instanceName.ToLowerInvariant());
+        }
+
         private LastState _last;
         private CurrentState _current;
 
@@ -1144,15 +1227,29 @@ namespace BinaryAssetBuilder.Core.SageXml
                     }
                     else
                     {
-                        if (Settings.Current.ErrorLevel > 0)
+                        if (ManifestContainsAsset(referencedInstance.TypeName, referencedInstance.InstanceName))
                         {
-                            throw new BinaryAssetBuilderException(ErrorCode.UnknownReference, "Unknown referenced asset: {0}", referencedInstance);
+                            _tracer.TraceInfo(
+                                "Manifest resolved asset '{0}:{1}' referenced from '{2}' in 'file://{3}'",
+                                referencedInstance.TypeName,
+                                referencedInstance.InstanceName,
+                                instance.Handle.Name,
+                                instance.Document.SourcePath);
+
+                            instance.ValidatedReferencedInstances.Add(referencedInstance);
                         }
-                        if (DocumentProcessor.MissingReferences.TryAdd(referencedInstance))
+                        else
                         {
-                            _tracer.TraceWarning("Unknown asset '{0}' referenced from '{1}' in 'file://{2}'", referencedInstance.Name, instance.Handle.Name, instance.Document.SourcePath);
+                            if (Settings.Current.ErrorLevel > 0)
+                            {
+                                throw new BinaryAssetBuilderException(ErrorCode.UnknownReference, "Unknown referenced asset: {0}", referencedInstance);
+                            }
+                            if (DocumentProcessor.MissingReferences.TryAdd(referencedInstance))
+                            {
+                                _tracer.TraceWarning("Unknown asset '{0}' referenced from '{1}' in 'file://{2}'", referencedInstance.Name, instance.Handle.Name, instance.Document.SourcePath);
+                            }
+                            instance.ValidatedReferencedInstances.Add(referencedInstance);
                         }
-                        instance.ValidatedReferencedInstances.Add(referencedInstance);
                     }
                 }
                 foreach (InstanceHandle referencedInstance in instance.WeakReferencedInstances)
@@ -1756,3 +1853,4 @@ namespace BinaryAssetBuilder.Core.SageXml
         }
     }
 }
+
