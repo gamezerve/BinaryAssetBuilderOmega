@@ -377,3 +377,4 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/Working RA3 Compiler for Reference/builtmods/worldbuilder.bin

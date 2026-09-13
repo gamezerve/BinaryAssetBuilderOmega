@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+
+	<Tags/>
+	<Includes/>
+
+	<!-- LogicCommands go here-->
+	<LogicCommand
+        Type="SPECIAL_POWER"
+        id="Command_ToggleAlliedGunshipAircraft">
+		<SpecialPower>SpecialPower_ToggleAlliedGunshipAircraft</SpecialPower>
+		<AISpecialPowerInfo
+			Heuristic="TOGGLE"
+			Manager="MICRO_MANAGER">
+		</AISpecialPowerInfo>
+	</LogicCommand>
+
+	<LogicCommand
+		Type="UNIT_BUILD"
+		id="Command_ConstructAlliedGunshipAircraft">
+		<Object>AlliedGunshipAircraft</Object>
+	</LogicCommand>
+	
+	<!-- LogicCommandSets go here -->
+
+	<LogicCommandSet
+		id="AlliedGunshipAircraftCommandSet">
+		<Cmd>Command_AttackMove</Cmd>
+		<Cmd>Command_ToggleAlliedGunshipAircraft</Cmd>
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="AlliedAirfieldCommandSet">
+		<Cmd>Command_ConstructAlliedAntiGroundAircraft</Cmd>
+		<Cmd>Command_ConstructAlliedFighterAircraft</Cmd>
+		<Cmd>Command_ConstructAlliedSupportAircraft</Cmd>
+		<Cmd>Command_ConstructAlliedBomberAircraft</Cmd>
+		<Cmd>Command_AlliedRecallAllAircraft</Cmd>
+
+		<!-- Expansion Pack 1 units -->
+		<Cmd>Command_ConstructAlliedGunshipAircraft</Cmd>
+	</LogicCommandSet>
+
+	<!-- Button state data -->
+	<ButtonSingleStateData
+		id="ButtonStateAbilityToggleAlliedGunship">
+		<State
+			Image="AUA_Harbinger_Chaingun"
+			Title="NAME:ToggleAlliedGunship"
+			Description="DESC:ToggleAlliedGunship" />
+	</ButtonSingleStateData>
+
+	<ButtonSingleStateData
+		id="ButtonStateAbilityToggleAlliedGunshipAutoCannon">
+		<State
+			Image="AUA_Harbinger_Cannon"
+			Title="NAME:ToggleAlliedGunshipAutoCannon"
+			Description="DESC:ToggleAlliedGunshipAutoCannon" />
+	</ButtonSingleStateData>
+
+	<!-- Unit ability button templates -->
+	<UnitAbilityButtonTemplate
+		id="MouseButtonToggleAlliedGunship"
+		LogicCommand="Command_ToggleAlliedGunshipAircraft">
+		<Data>
+			<ToggleSpecialPower>
+				<StateData>ButtonStateAbilityToggleAlliedGunship</StateData>
+				<StateData>ButtonStateAbilityToggleAlliedGunshipAutoCannon</StateData>
+			</ToggleSpecialPower>
+		</Data>
+	</UnitAbilityButtonTemplate>
+</AssetDeclaration>

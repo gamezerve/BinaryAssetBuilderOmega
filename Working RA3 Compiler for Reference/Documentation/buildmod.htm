@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="style.css" />
+		<style type="text/css">
+		</style>
+	</head>
+<body>
+	<h3>Building a Mod</h3>
+<h4>Basic Explanation</h4>
+<p>The final step in completing a mod is to build the data for the game.  Before you can use a mod, you will need to build the data.  Your
+	tool for doing this is the Red Alert 3 Mod BuildStudio, located in your Mod SDK install directory as EALAModStudio.exe.  Red Alert 3 Mod BuildStudio is an application that will gather all of the proper files, run the Binary Asset Builder,
+	and create the .big file of your mod, and install it in the proper location.  
+</p>
+<p>
+When you first open Red Alert 3 Mod BuildStudio you will be confronted with a screen something like below:
+</p>
+<img src="images/modBuildStudio.png" alt="Red Alert 3 Mod BuildStudio" />
+<p>
+To build a mod, you can select the mod name from the dropdown in the upper left as shown:
+</p>
+<img src="images/modBuildSelect.png" alt="Selecting a mod to build" />
+<p>To build your mod, you will want to make sure the following options are selected:
+<ul>
+<li>Build Data</li>
+<li>Build Low LOD</li>
+<li>Copy STR File</li>
+<li>Make Big File</li>
+<li>Copy Big File</li>
+<li>Create SKUDEF</li>
+</ul>
+This is shown below:
+</p>
+<img src="images/modBuildReady.png" alt="Selecting a mod to build" />
+<p>With those options selected, you can simply hit Build Mod, and the UI will handle building the mod.  
+If an error occurs, you can find it in the Build output text box to the right, or use the Error Log on the Error Log tab.  Double clicking an
+entry in the error log will take you to the line in the build output.
+</p>
+<h4>SKUDef File</h4>
+<p>The Red Alert 3 Mod BuildStudio tool automates the SKUDef file generation.  The instructions below are for anyone who chooses not to use the tool.
+<p>The SKUDef file tells the game how to launch the mod which you have built.  To set up the SKUDef file, navigate to your My Documents folder, choose the
+	Red Alert 3 Folder, then the mods folder, and then the folder of the mod you just built.  Create a new file, and name it as follows:
+	<span class="code">YourMod_1.0.skudef</span>
+Inside the Skudef file, you will put the following text:</p>
+<p class="code">mod-game 1.9<br />
+add-big YourMod.big</p>
+<p>This tells the game to launch the patch 1.09 version of the game, and to add the data from Your Mod into the game.</p>
+<h4>Launching the Mod</h4>
+<p>There are two ways to launch the game.  The easiest is to use the Mod Launcher which was included in Patch 1.09.  Start the Red Alert 3
+Control Center, and select the Game Browser Button.  Navigate to the Mods Tab, select your mod, and hit Launch Game. </p>
+<p class="important">Advanced Method</p>
+<p>The second option, which is useful for creating a shortcut, is to use a command line option.  To do so, create a shortcut to RA3.exe, and add the following
+	into the target:
+</p>
+<p class="code">-modConfig &quot;C:\Documents and Settings\Username\My Documents\Red Alert 3\mods\YourMod\YourMod_1.0.skudef&quot;</p>
+	The modConfig command line option takes the full path to the skudef file for your mod.
+</p>
+</body>
+</html>

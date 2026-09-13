@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="style.css" />
+		<style type="text/css">
+		</style>
+	</head>
+<body>
+	<h3>Audio Assets</h3>
+	<h4>Audio Asset Types</h4>
+<p>There are a variety of types of audio assets that you will likely use within your mod.  A non-exhaustive set of them include music, voices, and sound effects such as weapon
+firing and detonation sounds.  These require different types of audio files, and are added to your mod differently.  Each one will be explained separately in this document.</p>
+<h4>Directory Structure</h4>
+<p>Audio assets use the AUDIO: include, which points to the Audio folder in the root of your SDK install directory.  You should place new audio files that you want to add
+into the game in that directory.
+</p>
+<h4>Music</h4>
+<p>Music files should be MP3 files.  The game has the ability to directly load MP3 files, which you will use to add new audio tracks.  There are several parts to the creation of new
+	music tracks.
+</p>
+<p>The first step in adding a new Music (or any MP3 track, see audio\ModkitMP3Examples\ModkitMP3Examples.xml for other possible uses of MP3 files) is to import the file that you would like to use.
+	This is accomplished using a AudioFileMP3Passthrough tag.  This imports the actual MP3 file into the game, and allows you to create MP3MusicTracks or other MP3 file usages.  An
+	example of the AudioFileMP3Passthrough is below (it is taken from the SampleMod, located in audio\ModkitMP3Examples\ModkitMP3Examples.xml):
+</p>
+<p class="code">
+	&lt;AudioFileMP3Passthrough id=&quot;MP3ExampleFile_Music&quot; File=&quot;MP3Example_Music.mp3&quot; /&gt;
+</p>
+<p>Note that this does not create an actual MP3 Track for use, it simply creates an ID for the file which you can then reference.  The next step in adding your new track to the game is creating the
+	MP3MusicTrack.  An example is provided below for reference.  There are also other MP3 track usages that can be found in in audio\ModkitMP3Examples\ModkitMP3Examples.xml.
+</p>
+<p class="code">
+	&lt;MP3MusicTrack id=&quot;ModkitMP3Example_Music&quot;<br />
+		Volume=&quot;100&quot;<br />
+		ReverbEffectLevel =&quot;0&quot;<br />
+		DryLevel = &quot;100&quot;<br />
+		SubmixSlider =&quot;MUSIC&quot;<br />
+		Control = &quot;ALLOW_KILL_MID_FILE&quot;<br />
+		Priority = &quot;CRITICAL&quot;&gt;<br />
+		&lt;VolumeSliderMultiplier Slider=&quot;NONE&quot; Multiplier=&quot;1.0&quot; /&gt;<br />
+		&lt;Filename&gt;MP3ExampleFile_Music&lt;/Filename&gt;<br />
+	&lt;/MP3MusicTrack&gt;<br />
+</p>
+<p>The key takeaway is to note that you have to declare a use for the file, as well as declaring the file itself.  You will note a very similar structure in all of the types of audio assets.
+</p>
+<h4>Other Audio Assets</h4>
+<p>In addition to MP3 assets, the SDK allows you to use WAV files, which are used for other audio effects, such as units firing.  A fair amount of base objects for the XML must be included in your
+	mod to use them.  Please see SoundEffects.xml in the SampleMod, which creates a variety of base objects to define properties for various types of sound effects.  Since MP3 based effects were covered 
+	earlier, WAV based effects will be covered here instead.
+</p>
+<p>Below is an entry for importing a WAV file into the SDK for use in an audio entry.  You need to follow the same two step approach
+	as the MP3 file example, first importing the file, then referencing it.  The reference entry will be explained further below.  For further references,
+	see Audio\AudioAssets.xml in the Mod SDK install directory.
+</p>
+<p class="code">
+	&lt;AudioFile id=&quot;AUGunsh_movByLoopa&quot; File=&quot;AUDIO:sounds\augunsh_movbyloopa.wav&quot; GUIPreset=&quot;Default&quot; /&gt;		
+</p>
+<p>This creates an audio asset with the ID AUGunsh_movByLoopa, from the file augunsh_movbyloopa.wav, located in the audio\sounds directory of
+	the SDK installation directory.  Now that the file is imported, the next step is referencing it, and creating an Audio Event to use.
+	An example audio event is below:
+</p>
+<p class="code">
+	&lt;AudioEvent<br />
+	id=&quot;ALL_Gunship_MoveByLoop&quot;<br />
+	inheritFrom=&quot;AudioEvent:BaseSoundEffect&quot;<br />
+	Volume=&quot;40&quot;<br />
+	VolumeShift=&quot;-10&quot;<br />
+	Limit=&quot;3&quot;<br />
+	Control=&quot;LOOP FADE_ON_KILL&quot;<br />
+	Priority=&quot;LOW&quot;<br />
+	Type=&quot;WORLD SHROUDED EVERYONE&quot;<br />
+	SubmixSlider=&quot;SOUNDFX&quot;&gt;<br />
+		&lt;PitchShift Low=&quot;-10&quot; High=&quot;10&quot; /&gt;<br />
+		&lt;Delay Low=&quot;40&quot; High=&quot;80&quot; /&gt;<br />
+		&lt;Sound&gt;AUGunsh_movByLoopa&lt;/Sound&gt;<br />
+		&lt;Sound&gt;AUGunsh_movByLoopb&lt;/Sound&gt;<br />
+		&lt;Sound&gt;AUGunsh_movByLoopc&lt;/Sound&gt;<br />
+		&lt;Sound&gt;AUGunsh_movByLoopd&lt;/Sound&gt;<br />
+		&lt;Sound&gt;AUGunsh_movByLoope&lt;/Sound&gt;<br />
+	&lt;/AudioEvent&gt;
+	</p>
+	<p>There are a few things to note.  Different types of Audio Events use different volume settings, which are best found by exploring the existing
+		audio effects in the sagexml\sounds\SoundEffects.xml folder in your SDK installation directory.  Another note is that you may have more than one
+		&lt;Sound&gt;&lt;/Sound&gt; set in a particular Audio Event (there is no maximum number of times this tag set may occur).  The meaning of this
+		is that one of the sounds from the list will be randomly selected when that event is played.  This allows you to have multiple unit responses
+		which will play randomly, rather than a single repeated sound.
+	</p>
+</body>
+</html>

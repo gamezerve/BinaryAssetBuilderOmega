@@ -1,0 +1,32 @@
+body {
+font-family: Arial;
+padding-top: 20px;
+}
+
+h3 {
+text-align: center;
+}
+.code {
+font-family: Consolas, Verdana;
+}
+
+a {
+text-decoration: none;
+font-weight: bold;
+}
+
+a:link {
+color: rgb(246, 0, 0);
+}
+
+a:visited {
+color: rgb(119, 0, 0);
+}
+a:hover {
+text-decoration: underline;
+}
+
+.important {
+color: #ff0000;
+font-weight: bold;
+}

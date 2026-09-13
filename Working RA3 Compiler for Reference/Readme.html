@@ -1,0 +1,110 @@
+<html>
+<head>
+<title>Command &amp; Conquer&trade; Red Alert 3&trade; Mod SDK Documentation</title>
+<style type="text/css">
+p 
+{
+align: left;
+}
+h2
+{
+align: center;
+}
+h4
+{
+align: left;
+}
+a {
+color: rgb(246, 0, 0);
+}
+h2 {
+color: rgb(246, 0, 0);
+}
+.important {
+color: rgb(246, 0, 0);
+}
+</style>
+</head>
+<body>
+    <h2 align="center">
+        Command &amp; Conquer&trade; Red Alert 3&trade;</h2>
+    <h2 align="center">
+        MOD SDK</h2>
+    <p>
+        The Installer for the MOD SDK currently includes these pieces:</p>
+    <ul>
+        <li>3DS Max plugins</li>
+        <li>W3XViewer</li>
+        <li>EALAModStudio</li>
+        <li>Sample MOD</li>
+        <li>Support documentation</li>
+    </ul>
+    <h4>
+        3DS Max plugin</h4>
+    <p>
+        There are 2 sets of 3DS Max plugins included in this package. One requires that
+        you have 3DS Max 9 and the other, 3DS Max 7 with service pack 1 or 3DS Max 8 installed.</p>
+        <p>
+        Note that 3DS Max 9 was used for the development of Red Alert 3, and is therefore the most likely
+        to function correctly.  The 3DS Max 7 plugin was not used by the development team, but should still
+        be fully functional.
+        </p>
+    <p>
+        To install, copy the contents of "3dsmax7_plugin" found in your MOD SDK folder into
+        their respective folders in the "3dsmax7" install directory. Similarly, copy the
+        contents of &quot;3dsmax9_plugin&quot; into the respective folders for 3dsmax9.</p>
+    <p>
+        This will copy the actual plugin, several useful MaxScripts and shaders that can
+        be used in Max to configure materials. See the 3DSMax section in the <a href="Documentation/Index.htm">
+            documentation</a> for more info.</p>
+    <h4>
+        W3XViewer</h4>
+    <p>
+        The W3XViewer can be launched from anywhere, and does not need to be copied. If
+        you have all your art files (W3X files and textures) in one directory W3XView can
+        find them all together; however, the game file structure layout is different:</p>
+    <ul>
+        <li>
+            <div>
+                W3X files, by default, need to be in a directory "Art\XX\" where XX is the first
+                two letters of the file name. That directory needs to be below your installed MOD
+                SDK directory. So a full path might be "C:\RA3 Mod SDK\Art\AB\AB_Conyard01.w3x&quot;</div>
+            <li>
+                <div>
+                    Further Details on how art works can be found in the section detailing how the Sample
+                    Mod was created in the <a href="Documentation/Index.htm">documentation</a>.</div>
+            </li>
+    </ul>
+    <p>
+        Typically our artists create W3X files and textures for one unit or&nbsp;structure
+        in a single directory, and then copy over the final files into the W3X and texture
+        directories that the game needs.</p>
+    <h4>
+        EALAModStudio</h4>
+    <p>
+        EALAModStudio is the replacement for the Buildmod.bat functionality from the C&C 3 Mod SDK.
+        It is used to compile your mod into a form the game can read, and deploy it to the proper directory.
+        In addition, EALAModStudio has the capability for users to add functionality to the mod compilation process.
+        See the EALAModStudio documentation in the main SDK <a href="Documentation/Index.htm">documentation</a>.
+    </p>
+    <h3>
+        Further documentation</h3>
+    <p>
+        Additional&nbsp;<a href="Documentation/Index.htm">documentation</a> in HTML format
+        can be found in the Documentation directory. This includes documents about the various
+        parts of the 3DS Max plug-in, the W3XViewer and further art creation rules (eg. how
+        to set up house coloring). There is also the sections detailing how the Sample MOD
+        was created.
+    </p>
+    <p>
+        <span class="important">IMPORTANT</span>
+            <br>
+        <ul>
+            <li>The WorldBuilder Mod SDK version needs to be downloaded to work with the MOD SDK.</li>
+        </ul>
+        </p>
+    <p>
+        MOD to your hearts content,<br>
+        EAMastermind and the EALA Command &amp; Conquer Team</p>
+		</body>
+</html>

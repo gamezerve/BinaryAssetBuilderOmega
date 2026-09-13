@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Tags />
+	<Includes>
+		<Include type="instance" source="BaseSoundEffect.xml" />
+	</Includes>
+	
+	<!-- SAMPLE MUSIC -->
+	<MP3MusicTrack id="ModkitMP3Example_Music"
+		Volume="100"
+		ReverbEffectLevel ="0"
+		DryLevel = "100"
+		SubmixSlider ="MUSIC"
+		Control = "ALLOW_KILL_MID_FILE"
+		Priority = "CRITICAL">
+		<VolumeSliderMultiplier Slider="NONE" Multiplier="1.0" />
+		<Filename>MP3ExampleFile_Music</Filename>
+	</MP3MusicTrack>
+
+	<!-- SAMPLE AMBIENT -->
+	<MP3AmbientStream id="ModkitMP3Example_Ambient"
+		Volume="100"
+		SubmixSlider ="AMBIENT"
+		Control = "ALLOW_KILL_MID_FILE"
+		Priority = "CRITICAL">
+		<VolumeSliderMultiplier Slider="NONE" Multiplier="1.0" />
+		<Filename>MP3ExampleFile_Ambient</Filename>
+	</MP3AmbientStream>
+
+	<!-- SAMPLE DIALOGUE -->
+	<MP3DialogEvent id="ModkitMP3Example_Dialogue"
+		Volume = "90"
+		MinVolume = "70"
+		Limit = "1"
+		Type = "UI PLAYER VOICE"
+		Priority="CRITICAL"
+		SubmixSlider = "VOICE"
+		Control="FADE_ON_KILL" >
+		<VolumeSliderMultiplier Slider="VOICE" Multiplier="0.4" />
+		<VolumeSliderMultiplier Slider="SOUNDFX" Multiplier="0.7" />
+		<VolumeSliderMultiplier Slider="MUSIC" Multiplier="0.7" />
+		<VolumeSliderMultiplier Slider="AMBIENT" Multiplier="0.7" />
+		<Filename>MP3ExampleFile_Dialogue</Filename>
+	</MP3DialogEvent>
+
+	<MP3DialogEvent id="ModkitMP3Example_Dialogue_RAM"
+		Volume = "90"
+		MinVolume = "70"
+		Limit = "1"
+		Type = "UI PLAYER VOICE"
+		Priority="CRITICAL"
+		SubmixSlider = "VOICE"
+		Control="FADE_ON_KILL" >
+		<VolumeSliderMultiplier Slider="VOICE" Multiplier="0.4" />
+		<VolumeSliderMultiplier Slider="SOUNDFX" Multiplier="0.7" />
+		<VolumeSliderMultiplier Slider="MUSIC" Multiplier="0.7" />
+		<VolumeSliderMultiplier Slider="AMBIENT" Multiplier="0.7" />
+		<Filename>MP3ExampleFile_Dialogue_RAM</Filename>
+	</MP3DialogEvent>
+
+	<AudioFileMP3Passthrough id="MP3ExampleFile_Music" File="MP3Example_Music.mp3" />
+	<AudioFileMP3Passthrough id="MP3ExampleFile_Ambient" File="MP3Example_Ambient.mp3" />
+	<AudioFileMP3Passthrough id="MP3ExampleFile_Dialogue" File="MP3Example_Dialogue.mp3" />
+	<AudioFileMP3Passthrough id="MP3ExampleFile_Dialogue_RAM" File="MP3Example_Dialogue.mp3" IsStreamed="false" />
+
+
+</AssetDeclaration>

@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Tags></Tags>
+	<Includes>
+		<!--
+			mod.xml is the central include for mod setup data.		
+		-->
+		<!-- These includes need to be in all mod.xml files -->
+		<Include type="reference" source="DATA:static.xml" />
+		<Include type="reference" source="DATA:global.xml" />    
+		<Include type="reference" source="DATA:audio.xml" />
+		
+		<!-- Editing the barracks -->
+		<Include type="all" source="DATA:SampleMod/Data/AlliedBarracks.xml"/>
+		
+		<!-- Including the Harbinger Gunship from Uprising -->
+		<Include type="all" source="DATA:SampleMod/Data/AlliedGunshipAircraft_Collapse.xml"/>
+		<Include type="all" source="DATA:SampleMod/Data/AlliedGunshipAircraft_Dying.xml"/>
+		<Include type="all" source="DATA:SampleMod/Data/AlliedGunshipAircraftWeaponProjectile.xml"/>
+		<Include type="all" source="DATA:SampleMod/Data/AlliedGunshipAircraft.xml"/>
+		<Include type="all" source="DATA:SampleMod/Data/AlliedGunshipFireLight.xml"/>
+		<Include type="all" source="DATA:SampleMod/Data/FXAlliedGunshipProtonSW.xml"/>
+		<Include type="all" source="DATA:SampleMod/Data/FXAlliedGunshipProton01.xml"/>
+		<Include type="all" source="DATA:SampleMod/Data/FXAlliedGunshipProton02.xml"/>
+		<Include type="all" source="DATA:SampleMod/Data/FXAlliedGunshipProton03.xml"/>
+		<Include type="all" source="DATA:SampleMod/Data/FXAlliedGunshipProton04.xml"/>
+		<Include type="all" source="DATA:SampleMod/Data/FXAlliedGunshipProton05.xml"/>
+		<Include type="all" source="DATA:SampleMod/Data/FXAlliedGunshipProton06.xml"/>
+		<Include type="all" source="DATA:SampleMod/Data/FXAlliedGunshipProtonCore.xml"/>
+		<Include type="all" source="DATA:SampleMod/Data/FXAlliedGunshipProtonDist.xml"/>
+		<Include type="all" source="DATA:SampleMod/Data/FXAlliedGunshipProtonFlash.xml"/>
+		
+		<!-- New sample portrait -->
+		<Include type="all" source="ART:Images/SampleUpdatedPackedImages.xml" />
+		
+		<!-- New sample weapon.xml -->
+		<Include type="all" source="DATA:SampleMod/Data/Weapon.xml"/>
+		
+		<!-- New logic commands and logic command sets-->
+		<Include type="all" source="DATA:SampleMod/Data/CommandData.xml"/>
+
+		<!-- New MP3 Audio -->
+		<Include type="all" source="AUDIO:ModkitMP3Examples/ModkitMP3Examples.xml" />
+
+		<!-- Sounds for the Harbinger -->
+		<Include type="all" source="DATA:SampleMod/Data/SoundEffects.xml" />
+		<Include type="all" source="AUDIO:AudioAssets.xml" />
+
+	</Includes>
+
+</AssetDeclaration>
+

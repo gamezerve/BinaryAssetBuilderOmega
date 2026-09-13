@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+		<meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1">
+		<meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
+		<link rel="stylesheet" type="text/css" href="../style.css" />
+		<style type="text/css">
+			a {
+				font-weight: normal;
+			}
+		</style>
+	</head>
+	<body>
+		<h3>
+			Compiling Maps
+		</h3><p>
+			Maps are compiled with the "BuildMap.bat." 
+			This is a completely rewritten batch program to do more things automatically an minimize user actions like copying files manually etc.<br>
+			The usage of the batch file with the available parameters is explained below.
+		</p><p>
+			<b>Usage</b><br>
+			You can either just double-click the file and enter mapname and parameters manually or you can pass it through the commandline using this way:<br>
+			BuildMap.bat [MapName [/cbc] [/csc] [/cbm] [/ma] [/nf]]
+		</p><p>
+			<b>Parameters</b><br>
+			/cbc: Clear build cache<br>
+			/csc: Clear session cache<br>
+			/cbm: Clear built map<br>
+			/ma: Merge assets<br>
+			/nf: Do not fix assets
+		</p><p>
+			<b>MapName</b><br>
+			The mapname is the folder name of your map in "%appdata%\Red Alert 3\Maps". The "map.xml" in this folder is the file that is being compiled. 
+			If you want to add custom assets or modifications, include it to the "overrides.xml".
+		</p><p>
+			<b>Clear Build Cache</b><br>
+			The build cache stores all compiled art and audio assets. 
+			If you compile your map the first time the assets are copied to that cache. 
+			If you now remove e.g. a model from your map and want to add it back later, it doesn't need to be compiled again. 
+			It is copied from that cache which greatly reduces the duration of the whole compiling process.<br>
+			Use this parameter if you want to clear the build cache.
+		</p><p>
+			<b>Clear Session Cache</b><br>
+			The session cache stores all compiled assets of your previously compiled map. 
+			If you now remove e.g. a model or any other asset from your map, it will be removed from that cache, too. 
+			If you just change an asset, it will be compiled and updated in the cache and if nothing changed, the asset won't be compiled which saves time, too.<br>
+			Use this parameter if you want to clear the session cache.
+		</p><p>
+			<b>Clear Built Map</b><br>
+			All compiled and copied files go to "BuiltMods\Mods\Maps\[MapName]". The complete content (besides *.asset) will be copied back to 
+			"%appdata%\Red Alert 3\Maps\[MapName]".<br>
+			Use this parameter to delete all files from this folder.
+		</p><p>
+			<b>Merge Assets</b><br>
+			Asset files that have been extracted with the C&C Asset Extractor can be reused in your map 
+			without decompiling them. Asset and cdata files go to "%appdata%\Red Alert 3\Maps\[MapName]\Assets".<br>
+			Use this parameter to merge these assets into the map stream.
+		</p><p>
+			<b>Do Not Fix Assets</b><br>
+			If you use assets in your map that refer to data of the World Builder stream (e.g. civilian structures), 
+			the models of these assets might become invisible ingame. This is being fixed when compiling the map.<br>
+			Use this parameter to not fix these assets.
+		</p>
+	</body>
+</html>

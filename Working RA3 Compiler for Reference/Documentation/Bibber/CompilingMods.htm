@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+		<meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1">
+		<meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
+		<link rel="stylesheet" type="text/css" href="../style.css" />
+		<style type="text/css">
+			a {
+				font-weight: normal;
+			}
+		</style>
+	</head>
+	<body>
+		<h3>
+			Compiling Mods
+		</h3><p>
+			Mods are compiled using the Mod Studio with a list of options which I will explain in short.
+		</p><p>
+			<b>Clear Build Cache</b><br>
+			The build cache stores all compiled art and audio assets. 
+			If you compile your mod the first time the assets are copied to that cache. 
+			If you now remove e.g. a model from your mod and want to add it back later, it doesn't need to be compiled again. 
+			It is copied from that cache which greatly reduces the duration of the whole compiling process.<br>
+			Tick this option if you want to clear the build cache.
+		</p><p>
+			<b>Clear Session Cache</b><br>
+			The session cache stores all compiled assets of your previously compiled mod. 
+			If you now remove e.g. a model or any other asset from your mod, it will be removed from that cache, too. 
+			If you just change an asset, it will be compiled and updated in the cache and if nothing changed, the asset won't be compiled which saves time, too.<br>
+			Tick this option if you want to clear the session cache.
+		</p><p>
+			<b>Clear Built Mod</b><br>
+			All compiled files go to "BuiltMods\Mods\[ModName]". The complete content (besides *.asset) will be added to the mod's BIG file.<br>
+			Tick this option to delete all files from this folder.
+		</p><p>
+			<b>Build AptUI</b><br>
+			AptUI streams contain all the user interfaces. All files matching "Mods\[ModName]\Data\AptUI\*.xml" will be compiled.<br>
+			Tick this option to compile the AptUI streams.
+		</p><p>
+			<b>Build Global Data</b><br>
+			Global data is a bunch of assets that need to be loaded before all other stuff like models and textures. 
+			For example, changes made to MPGameRules (starting cash etc.) only take effect when built as global data. 
+			That means you have to create an xml file "Mods\[ModName]\Data\AdditionalMaps\MapMetaData_*.xml" 
+			e.g. "Mods\[ModName]\Data\AdditionalMaps\MapMetaData_Mod.xml" which includes the assets.<br>
+			Note: The naming has nothing to do with maps, it's merely a trick to get the data loaded as global.<br>
+			Tick this option to compile the global data streams.
+		</p><p>
+			<b>Build Static Data</b><br>
+			Static data is all the stuff like models, textures, GameObject assets etc. 
+			The main file is "Mods\[ModName]\Data\Mod.xml" where all other assets have to be included, but do not include the xml files
+			of your global data here!<br>
+			Tick this option to compile the static data stream.
+		</p><p>
+			<b>Merge Assets</b><br>
+			Asset files that have been extracted with the C&C Asset Extractor can be reused in your mod 
+			without decompiling them. Asset and cdata files go to "Mods\[ModName]\Assets\[StreamName]". 
+			For example, assets in "Mods\[ModName]\Assets\Mod" will be merged into the static stream of the mod.<br>
+			Tick this options to merge these assets into the streams of the mod.
+		</p><p>
+			<b>Fix Assets</b><br>
+			If you use assets in your mod that refer to data of the World Builder stream (e.g. civilian structures), 
+			the models of these assets might become invisible ingame.<br>
+			Tick this option to fix these assets.
+		</p><p>
+			<b>Create BIG Files</b><br>
+			The BIG file is kind of a container that stores all files of your mod.
+			There can be 2 BIG files, "[ModName]_[ModVersion]_Streams.big" for all your compiled streams and "[ModName]_[ModVersion]_Misc.big" 
+			that holds all files of "Mods\[ModName]\Misc" which have nothing to do with the compiling process
+			and just need to be added as they are.<br>
+			Tick this option if you want the BIG files to be created automatically in "Documents\Red Alert 3\Mods\[ModName]".
+		</p><p>
+			<b>Create Skudef File</b><br>
+			The Skudef file is a configuration file that holds the information what BIG files are loaded by the game. 
+			This file is necessary for the mod to be recognized by the Game Browser.<br>
+			Tick this option if you want the Skudef file to be created automatically in "Documents\Red Alert 3\Mods\[ModName]".
+		</p><p>
+			<b>Mod Version</b><br>
+			Here you can set the version of your mod. The BIG and Skudef files' naming depends on it
+			so the game can determine name and version of the mod.
+		</p>
+	</body>
+</html>
