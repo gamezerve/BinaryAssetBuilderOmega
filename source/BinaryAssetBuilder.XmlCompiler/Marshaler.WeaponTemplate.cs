@@ -583,13 +583,34 @@ public static partial class Marshaler
         }
     }
 
+    public static unsafe void Marshal(Node node, WeaponAiHintInfo* objT, Tracker state)
+    {
+        if (node is null)
+        {
+            return;
+        }
+        Marshal(node.GetAttributeValue(nameof(WeaponAiHintInfo.MaxSpeedOfTarget), null), &objT->MaxSpeedOfTarget, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponAiHintInfo.UseAsWarheadForDamageCalculations), null), &objT->UseAsWarheadForDamageCalculations, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponAiHintInfo.IsAntiGarrisonWeapon), "false"), &objT->IsAntiGarrisonWeapon, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponAiHintInfo.UseLongLockOnTimeCode), "false"), &objT->UseLongLockOnTimeCode, state);
+    }
+
+    public static unsafe void Marshal(Node node, WeaponAiHintInfo** objT, Tracker state)
+    {
+        if (node is null)
+        {
+            return;
+        }
+        using Tracker.Context context = state.Push((void**)objT, (uint)sizeof(WeaponAiHintInfo), 1u);
+        Marshal(node, *objT, state);
+    }
+
     public static unsafe void Marshal(Node node, WeaponTemplate* objT, Tracker state)
     {
         if (node is null)
         {
             return;
         }
-        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.Name), null), &objT->Name, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.AttackRange), "0"), &objT->AttackRange, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.MinimumAttackRange), "0"), &objT->MinimumAttackRange, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.RangeBonusMinHeight), "0"), &objT->RangeBonusMinHeight, state);
@@ -600,19 +621,19 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.AimDirection), "0d"), &objT->AimDirection, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ScatterRadius), "0"), &objT->ScatterRadius, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ScatterLength), "0"), &objT->ScatterLength, state);
-        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ScatterTargetScalar), "0"), &objT->ScatterTargetScalar, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ScatterIndependently), "false"), &objT->ScatterIndependently, state);
-        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.DisableScatterForTargetsOnWall), "false"), &objT->DisableScatterForTargetsOnWall, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ScatterAlways), "false"), &objT->ScatterAlways, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.WeaponSpeed), "99999"), &objT->WeaponSpeed, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.MinWeaponSpeed), "99999"), &objT->MinWeaponSpeed, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.MaxWeaponSpeed), "99999"), &objT->MaxWeaponSpeed, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ScaleWeaponSpeed), "false"), &objT->ScaleWeaponSpeed, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.IgnoresContactPoints), "false"), &objT->IgnoresContactPoints, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ScaleAttackRangeByAmmoRemaining), "false"), &objT->ScaleAttackRangeByAmmoRemaining, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.CanBeDodged), "false"), &objT->CanBeDodged, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.IdleAfterFiringDelaySeconds), "-1s"), &objT->IdleAfterFiringDelaySeconds, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.HoldAfterFiringDelaySeconds), "0s"), &objT->HoldAfterFiringDelaySeconds, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.HoldDuringReload), "false"), &objT->HoldDuringReload, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.CanFireWhileMoving), "false"), &objT->CanFireWhileMoving, state);
-        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.CanFireWhileCharging), "false"), &objT->CanFireWhileCharging, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.WeaponRecoil), "0d"), &objT->WeaponRecoil, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.MinTargetPitch), "-180d"), &objT->MinTargetPitch, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.MaxTargetPitch), "180d"), &objT->MaxTargetPitch, state);
@@ -620,11 +641,9 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.FireSound), null), &objT->FireSound, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.FireSoundPerClip), null), &objT->FireSoundPerClip, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.FiringLoopSound), null), &objT->FiringLoopSound, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ImpactLoopSound), null), &objT->ImpactLoopSound, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.RetargetedWhileLoopingSound), null), &objT->RetargetedWhileLoopingSound, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.FiringLoopSoundContinuesDuringReload), "true"), &objT->FiringLoopSoundContinuesDuringReload, state);
-#if KANESWRATH
-        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.FiringLoopSoundPlaysOnlyForAttackPosition), "false"), &objT->FiringLoopSoundPlaysOnlyForAttackPosition, state);
-        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.FiringAndAimingLoopSound), null), &objT->FiringAndAimingLoopSound, state);
-#endif
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.FireFX), null), &objT->FireFX, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.FireVeteranFX), null), &objT->FireVeteranFX, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.FireFlankFX), null), &objT->FireFlankFX, state);
@@ -640,6 +659,7 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ForbiddenFiringObjectStatus), null), &objT->ForbiddenFiringObjectStatus, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.CheckStatusFlagsInRangeChecks), "true"), &objT->CheckStatusFlagsInRangeChecks, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ProjectileSelf), "false"), &objT->ProjectileSelf, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ProjectileSelfUsesPathfinder), "true"), &objT->ProjectileSelfUsesPathfinder, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.MeleeWeapon), "false"), &objT->MeleeWeapon, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ChaseWeapon), "false"), &objT->ChaseWeapon, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.LeechRangeWeapon), "false"), &objT->LeechRangeWeapon, state);
@@ -650,11 +670,9 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.PlayFXWhenStealthed), "false"), &objT->PlayFXWhenStealthed, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ContinueAttackRange), "0"), &objT->ContinueAttackRange, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.SuspendFXDelaySeconds), "0s"), &objT->SuspendFXDelaySeconds, state);
-        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.IgnoreLinearFirstTarget), "false"), &objT->IgnoreLinearFirstTarget, state);
-        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ForceDisplayPercentReady), "false"), &objT->ForceDisplayPercentReady, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.IsAimingWeapon), "false"), &objT->IsAimingWeapon, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.NoVictimNeeded), "false"), &objT->NoVictimNeeded, state);
-        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.RotatingTurret), "false"), &objT->RotatingTurret, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.PassengerProportionalAttack), "false"), &objT->PassengerProportionalAttack, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.HitPercentage), "100%"), &objT->HitPercentage, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.HitPassengerPercentage), "100%"), &objT->HitPassengerPercentage, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.HealthProportionalResolution), "0"), &objT->HealthProportionalResolution, state);
@@ -679,25 +697,32 @@ public static partial class Marshaler
                                        $"{nameof(WeaponAffectsType.ALLIES)} {nameof(WeaponAffectsType.ENEMIES)} {nameof(WeaponAffectsType.NEUTRALS)}"),
                 &objT->RadiusDamageAffects,
                 state);
-        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.FXTrigger), null), &objT->FXTrigger, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.FXTrigger), nameof(FXTriggerType.NONE)), &objT->FXTrigger, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ProjectileCollidesWith), nameof(WeaponCollideType.STRUCTURES)), &objT->ProjectileCollidesWith, state);
-        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.AntiMask), nameof(WpnAntiT.ANTI_GROUND)), &objT->AntiMask, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.RequiredAntiMask), $"{nameof(WpnAntiT.ANTI_GROUND)} {nameof(WpnAntiT.ANTI_WATER)} {nameof(WpnAntiT.ANTI_STRUCTURE)}"), &objT->RequiredAntiMask, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ForbiddenAntiMask), ""), &objT->ForbiddenAntiMask, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.StopFiringOnCanBeInvisible), "false"), &objT->StopFiringOnCanBeInvisible, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ProjectileStreamName), null), &objT->ProjectileStreamName, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ContactWeapon), "false"), &objT->ContactWeapon, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.UseCenterForRangeCheck), "false"), &objT->UseCenterForRangeCheck, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.VirtualDamage), nameof(VirtualDamageType.NONE)), &objT->VirtualDamage, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.PreAttackWeapon), null), &objT->PreAttackWeapon, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.RevealShroudOnFire), "false"), &objT->RevealShroudOnFire, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.ShouldPlayTargetDeadEvaEvent), "true"), &objT->ShouldPlayTargetDeadEvaEvent, state);
+        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.UpdateBarrelModelConditions), "false"), &objT->UpdateBarrelModelConditions, state);
         Marshal(node.GetChildNode(nameof(WeaponTemplate.OverrideVoiceAttackSound), null), &objT->OverrideVoiceAttackSound, state);
         Marshal(node.GetChildNode(nameof(WeaponTemplate.OverrideVoiceEnterStateAttackSound), null), &objT->OverrideVoiceEnterStateAttackSound, state);
         Marshal(node.GetChildNode(nameof(WeaponTemplate.PreAttackDelay), null), &objT->PreAttackDelay, state);
         Marshal(node.GetChildNode(nameof(WeaponTemplate.FiringDuration), null), &objT->FiringDuration, state);
         Marshal(node.GetChildNode(nameof(WeaponTemplate.CoolDownDelayBetweenShots), null), &objT->CoolDownDelayBetweenShots, state);
         Marshal(node.GetChildNode(nameof(WeaponTemplate.ClipReloadTime), null), &objT->ClipReloadTime, state);
-        Marshal(node.GetChildNode(nameof(WeaponTemplate.ScatterTarget), null), &objT->ScatterTarget, state);
-        Marshal(node.GetChildNode(nameof(WeaponTemplate.LinearTarget), null), &objT->LinearTarget, state);
+        Marshal(node.GetChildNode(nameof(WeaponTemplate.WeaponAiHintInfo), null), &objT->WeaponAiHintInfo, state);
         Marshal(node.GetChildNode(nameof(WeaponTemplate.Nuggets), null), &objT->Nuggets, state);
         Marshal(node.GetChildNode(nameof(WeaponTemplate.SurpriseAttackObjectFilter), null), &objT->SurpriseAttackObjectFilter, state);
         Marshal(node.GetChildNode(nameof(WeaponTemplate.CombinedAttackObjectFilter), null), &objT->CombinedAttackObjectFilter, state);
         Marshal(node.GetChildNode(nameof(WeaponTemplate.HitStoredObjectFilter), null), &objT->HitStoredObjectFilter, state);
         Marshal(node.GetChildNodes(nameof(WeaponTemplate.ScatterRadiusVsType)), &objT->ScatterRadiusVsType, state);
+        Marshal(node.GetChildNodes(nameof(WeaponTemplate.IncompatibleAttributeModifier)), &objT->IncompatibleAttributeModifier, state);
         Marshal(node, (BaseInheritableAsset*)objT, state);
     }
 }

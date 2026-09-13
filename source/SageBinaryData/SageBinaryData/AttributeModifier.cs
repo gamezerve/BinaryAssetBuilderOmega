@@ -1,7 +1,5 @@
-﻿using Relo;
+using Relo;
 using System.Runtime.InteropServices;
-using AnsiString = Relo.String<sbyte>;
-
 namespace SageBinaryData;
 
 public enum AttributeModifierCategoryType
@@ -20,7 +18,8 @@ public enum AttributeModifierCategoryType
     INNATE_DAMAGEMULT,
     INNATE_VISION,
     INNATE_AUTOHEAL,
-    INNATE_HEALTH
+    INNATE_HEALTH,
+    SHRINK
 }
 
 public enum AttributeType
@@ -39,6 +38,7 @@ public enum AttributeType
     SPELL_DAMAGE,
     RECHARGE_TIME,
     PRODUCTION,
+    PRODUCTION_COST,
     HEALTH,
     HEALTH_MULT,
     VISION,
@@ -54,7 +54,13 @@ public enum AttributeType
     CRUSHED_DECELERATE,
     INVULNERABLE,
     SUPPRESSABILITY,
-    RESIST_EMP
+    RESIST_EMP,
+    POWER_BOOST,
+    AREA_OF_EFFECT,
+    COLLISION_GEOMETRY_SIZE_MULT,
+    BROADCAST_RANGE,
+    SPECIAL_ABILTY_RANGE,
+    RADIATION_ARMOR
 }
 
 [StructLayout(LayoutKind.Sequential)]
@@ -77,22 +83,28 @@ public struct AttributeModifierListType
 [StructLayout(LayoutKind.Sequential)]
 public struct AttributeModifier
 {
-    public BaseAssetType Base;
+    public BaseInheritableAsset Base;
     public AttributeModifierCategoryType Category;
     /// <summary>
     /// Duration of zero is infinite.
     /// </summary>
     public Time Duration;
-#if KANESWRATH
-    public int MetaDuration;
-#endif
     public AssetReference<FXList> StartFX;
     public AssetReference<FXList> EndFX;
-    public AnsiString ModelConditionsSet;
-    public AnsiString ModelConditionsClear;
-    public ObjectStatusBitFlags ObjectStatusToSet;
+    public unsafe ModelConditionBitFlags* ModelConditionsSet;
+    public unsafe ModelConditionBitFlags* ModelConditionsClear;
+    public unsafe ObjectStatusBitFlags* ObjectStatusToSet;
     public uint StackingLimit;
+    public ArmorSetType ArmorSetType;
+    public AssetReference<ShaderOverride> Shader;
     public List<AttributeModifierListType> Modifier;
-    public SageBool ReplaceInCategroyIfLongest;
+    public SageBool ReplaceInCategoryIfLongest;
     public SageBool IgnoreIfAnticategoryActive;
+}
+
+// AttributeModifier only stores an asset-reference pointer to this runtime type.
+[StructLayout(LayoutKind.Sequential)]
+public struct ShaderOverride
+{
+    private byte _opaque;
 }

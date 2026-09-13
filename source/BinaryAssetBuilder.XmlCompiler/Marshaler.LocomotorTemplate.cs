@@ -1,8 +1,40 @@
 ﻿using Relo;
 using SageBinaryData;
+using System;
 
 public static partial class Marshaler
 {
+    private static unsafe void Marshal(Value value, JetLocomotorDataOptionFlags* objT, Tracker state)
+    {
+        if (value is null) return;
+        foreach (string token in value.GetText().Split(WhiteSpaces, StringSplitOptions.RemoveEmptyEntries))
+        {
+            if (!Enum.TryParse(token, false, out JetLocomotorDataOption option))
+            {
+                throw new FormatException($"Unknown JetLocomotorData option '{token}'.");
+            }
+            objT->Value[0] |= 1u << (int)option;
+        }
+        state.InplaceEndianToPlatform(&objT->Value[0]);
+    }
+
+    public static unsafe void Marshal(Node node, JetLocomotorData* objT, Tracker state)
+    {
+        if (node is null) return;
+        Marshal(node.GetAttributeValue(nameof(JetLocomotorData.Options), null), &objT->Options, state);
+        Marshal(node.GetAttributeValue(nameof(JetLocomotorData.AttackPathStartRunDistance), null), &objT->AttackPathStartRunDistance, state);
+        Marshal(node.GetAttributeValue(nameof(JetLocomotorData.AttackPathClimbDistance), null), &objT->AttackPathClimbDistance, state);
+        Marshal(node.GetAttributeValue(nameof(JetLocomotorData.AttackPathDiveDistanceStart), null), &objT->AttackPathDiveDistanceStart, state);
+        Marshal(node.GetAttributeValue(nameof(JetLocomotorData.AttackPathDiveDistanceEnd), null), &objT->AttackPathDiveDistanceEnd, state);
+    }
+
+    public static unsafe void Marshal(Node node, JetLocomotorData** objT, Tracker state)
+    {
+        if (node is null) return;
+        using Tracker.Context context = state.Push((void**)objT, (uint)sizeof(JetLocomotorData), 1u);
+        Marshal(node, *objT, state);
+    }
+
     public static unsafe void Marshal(Node node, LocomotorTemplate* objT, Tracker state)
     {
         if (node is null)
@@ -26,15 +58,20 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.Lift), "0.0"), &objT->Lift, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.LiftDamaged), "-1.0"), &objT->LiftDamaged, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.BrakingSeconds), "1.0s"), &objT->BrakingSeconds, state);
-        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.MinTurnSpeed), "1.0s"), &objT->MinTurnSpeed, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.MinTurnSpeed), "1.0"), &objT->MinTurnSpeed, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.PreferredHeight), "0.0"), &objT->PreferredHeight, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.PreferredAttackHeight), "0.0"), &objT->PreferredAttackHeight, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.PreferredHeightDamping), "1.0"), &objT->PreferredHeightDamping, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.PreferredHeightPitchingEpsilon), "10.0"), &objT->PreferredHeightPitchingEpsilon, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.CirclingRadius), "0.0"), &objT->CirclingRadius, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.CirclingSpeed), "100%"), &objT->CirclingSpeed, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.BehaviorZ), nameof(LocoZ.NO_MOTIVE_FORCE)), &objT->BehaviorZ, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.Appearance), nameof(Appearance.FOUR_WHEELS)), &objT->Appearance, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.FormationPriority), nameof(LocoF.MELEE_1)), &objT->FormationPriority, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.ActiveModelConditions), null), &objT->ActiveModelConditions, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.ActiveObjectStatus), null), &objT->ActiveObjectStatus, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.EnteringModelConditions), null), &objT->EnteringModelConditions, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.EnteringModelConditionsTime), null), &objT->EnteringModelConditionsTime, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.AccDecTrigger), "0.5"), &objT->AccDecTrigger, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.WalkDistance), "0.0"), &objT->WalkDistance, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.MaxTurnWithoutReform), "360d"), &objT->MaxTurnWithoutReform, state);
@@ -56,6 +93,7 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.TurnPivotOffset), "0.0"), &objT->TurnPivotOffset, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.AirborneTargetingHeight), "99999"), &objT->AirborneTargetingHeight, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.CloseEnoughDist), "1.0"), &objT->CloseEnoughDist, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.ReverseMoveSpeed), "75%"), &objT->ReverseMoveSpeed, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.IsCloseEnoughDist3D), "false"), &objT->IsCloseEnoughDist3D, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.LocomotorWorksWhenDead), "false"), &objT->LocomotorWorksWhenDead, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.AllowMotiveForceWhileAirborne), "false"), &objT->AllowMotiveForceWhileAirborne, state);
@@ -68,13 +106,12 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.MaximumWheelExtension), "0.0"), &objT->MaximumWheelExtension, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.MaximumWheelCompression), "0.0"), &objT->MaximumWheelCompression, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.WheelTurnAngle), "0.0d"), &objT->WheelTurnAngle, state);
-        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.IsCrewPowered), "false"), &objT->IsCrewPowered, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.UseTerrainSmoothing), "false"), &objT->UseTerrainSmoothing, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.WanderWidthFactor), "0.0"), &objT->WanderWidthFactor, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.WanderLengthFactor), "1.0"), &objT->WanderLengthFactor, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.WanderAboutPointRadius), "0.0"), &objT->WanderAboutPointRadius, state);
-        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.BurningDeathRadius), "0.0"), &objT->BurningDeathRadius, state);
-        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.BurningDeathIsCavalry), "false"), &objT->BurningDeathIsCavalry, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.BurniningDeathRadius), "0.0"), &objT->BurniningDeathRadius, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.BurniningDeathIsCavalry), "false"), &objT->BurniningDeathIsCavalry, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.ChargeMaxSpeed), "0%"), &objT->ChargeMaxSpeed, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.ChargeAvailable), "false"), &objT->ChargeAvailable, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.ChargeIgnoresCondition), "false"), &objT->ChargeIgnoresCondition, state);
@@ -105,15 +142,22 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.TakeOffAndLandingSpeed), "0.0"), &objT->TakeOffAndLandingSpeed, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.TakeOffAndLandingSlowDownDelta), "25.0"), &objT->TakeOffAndLandingSlowDownDelta, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.TakeOffAndLandingSlowDownTime), "2s"), &objT->TakeOffAndLandingSlowDownTime, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.EasingTakeOffAndLanding), "false"), &objT->EasingTakeOffAndLanding, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.EasingPercentage), "0%"), &objT->EasingPercentage, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.AttackPathTrailDistance), "0"), &objT->AttackPathTrailDistance, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.AttackPathTrailDistanceMinScale), "1.0"), &objT->AttackPathTrailDistanceMinScale, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.AttackPathTrailDistanceMaxScale), "1.0"), &objT->AttackPathTrailDistanceMaxScale, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.AbsoluteMinHeightWorldSpace), "-1000.0"), &objT->AbsoluteMinHeightWorldSpace, state);
-#if KANESWRATH
-        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.WiggleAmplitude), "0.0"), &objT->WiggleAmplitude, state);
-        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.WiggleFrequency), "0.0"), &objT->WiggleFrequency, state);
-        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.WiggleOffset), "0.0"), &objT->WiggleOffset, state);
-#endif
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.SpeedBasedHeightOffset), "0.0"), &objT->SpeedBasedHeightOffset, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.ResubmergeDelay), "3.0s"), &objT->ResubmergeDelay, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.WaterToAirTransitionFX), null), &objT->WaterToAirTransitionFX, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.WaterSurfaceHeightOffset), "0.0"), &objT->WaterSurfaceHeightOffset, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.ForbiddenObjectStatus), null), &objT->ForbiddenObjectStatus, state);
+        Marshal(node.GetChildNode(nameof(LocomotorTemplate.BounceKickTerrainMap), null), &objT->BounceKickTerrainMap, state);
+        Marshal(node.GetChildNode(nameof(LocomotorTemplate.JetLocomotorData), null), &objT->JetLocomotorData, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.DontNegateDeceleratePitchFactor), "false"), &objT->DontNegateDeceleratePitchFactor, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.CanReverseMove), "false"), &objT->CanReverseMove, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.IgnoreLowSpeedAngleMultiplier), "false"), &objT->IgnoreLowSpeedAngleMultiplier, state);
         Marshal(node, (BaseInheritableAsset*)objT, state);
     }
 }

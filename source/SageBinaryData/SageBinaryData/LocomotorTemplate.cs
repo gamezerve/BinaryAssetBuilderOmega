@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 
 namespace SageBinaryData;
 
@@ -9,15 +9,10 @@ public enum Appearance
     HOVER,
     HOVER_TANK,
     WINGS,
-    FOUR_LEGS_HUGE,
     HORDE,
     HUGE_TWO_LEGS,
     TREADS,
     SHIP,
-#if KANESWRATH
-    MECHAPEDE,
-    MECHAPEDE_HORDE,
-#endif
     OTHER
 }
 
@@ -32,13 +27,65 @@ public enum Surface
     IMPASSABLE,
     DEEP_WATER,
     WALL_RAILING,
-    CRUSHABLE_OBSTACLE
+    CRUSHABLE_OBSTACLE,
+    CRUSHABLE_WALL
+}
+
+public enum JetLocomotorDataOption
+{
+    NO_CIRCLE_WHILE_USING_SPECIALPOWER
+}
+
+public enum TerrainClassType
+{
+    UNSPECIFIED,
+    Misc,
+    Dirt,
+    Cliff,
+    Grass,
+    Rock,
+    Road,
+    Mud,
+    Sand,
+    Shrub,
+    Snow
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct JetLocomotorDataOptionFlags
+{
+    public const int Count = 1;
+    public unsafe fixed uint Value[1];
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct JetLocomotorData
+{
+    public JetLocomotorDataOptionFlags Options;
+    public float AttackPathStartRunDistance;
+    public float AttackPathClimbDistance;
+    public float AttackPathDiveDistanceStart;
+    public float AttackPathDiveDistanceEnd;
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct BounceKickTerrainMapping
+{
+    public BaseInheritableAsset Base;
+    public Relo.List<BounceKickTerrainData> Mapping;
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct BounceKickTerrainData
+{
+    public TerrainClassType TerrainClass;
+    public Percentage BounceMultiplier;
 }
 
 [StructLayout(LayoutKind.Sequential)]
 public struct LocomotorSurfaceBitFlags
 {
-    public const int Count = 10;
+    public const int Count = 11;
     public const int BitsInSpan = 32;
     public const int NumSpans = (Count + (BitsInSpan - 1)) / BitsInSpan;
 
@@ -57,7 +104,9 @@ public enum LocoZ
     RELATIVE_TO_GROUND_AND_BUILDINGS,
     SMOOTH_RELATIVE_TO_HIGHEST_LAYER,
     FLOATING_Z,
-    SCALING_WALLS
+    SCALING_WALLS,
+    DO_NOT_MODIFY_HEIGHT,
+    SEA_LEVEL_SMOOTH_Z
 }
 
 public enum LocoF
@@ -104,11 +153,16 @@ public struct LocomotorTemplate
     public float PreferredHeight;
     public float PreferredAttackHeight;
     public float PreferredHeightDamping;
+    public float PreferredHeightPitchingEpsilon;
     public float CirclingRadius;
     public Percentage CirclingSpeed;
     public LocoZ BehaviorZ;
     public Appearance Appearance;
     public LocoF FormationPriority;
+    public unsafe ModelConditionBitFlags* ActiveModelConditions;
+    public unsafe ObjectStatusBitFlags* ActiveObjectStatus;
+    public unsafe ModelConditionBitFlags* EnteringModelConditions;
+    public Time EnteringModelConditionsTime;
     public float AccDecTrigger;
     public float WalkDistance;
     public Angle MaxTurnWithoutReform;
@@ -130,13 +184,14 @@ public struct LocomotorTemplate
     public float TurnPivotOffset;
     public int AirborneTargetingHeight;
     public float CloseEnoughDist;
+    public Percentage ReverseMoveSpeed;
     public float MaximumWheelExtension;
     public float MaximumWheelCompression;
     public Angle WheelTurnAngle;
     public float WanderWidthFactor;
     public float WanderLengthFactor;
     public float WanderAboutPointRadius;
-    public float BurningDeathRadius;
+    public float BurniningDeathRadius;
     public Percentage ChargeMaxSpeed;
     public float RudderCorrectionDegree;
     public float RudderCorrectionRate;
@@ -157,28 +212,32 @@ public struct LocomotorTemplate
     public float TakeOffAndLandingSpeed;
     public float TakeOffAndLandingSlowDownDelta;
     public Time TakeOffAndLandingSlowDownTime;
+    public Percentage EasingPercentage;
     public float AttackPathTrailDistance;
     public float AttackPathTrailDistanceMinScale;
     public float AttackPathTrailDistanceMaxScale;
     public float AbsoluteMinHeightWorldSpace;
-#if KANESWRATH
-    public float WiggleAmplitude;
-    public float WiggleFrequency;
-    public float WiggleOffset;
-#endif
+    public float SpeedBasedHeightOffset;
+    public Time ResubmergeDelay;
+    public Relo.AssetReference<FXList> WaterToAirTransitionFX;
+    public float WaterSurfaceHeightOffset;
+    public unsafe ObjectStatusBitFlags* ForbiddenObjectStatus;
+    public Relo.AssetReference<BounceKickTerrainMapping> BounceKickTerrainMap;
+    public unsafe JetLocomotorData* JetLocomotorData;
     public SageBool MakeTransformNonDirty;
     public SageBool IsCloseEnoughDist3D;
+    public SageBool DontNegateDeceleratePitchFactor;
     public SageBool LocomotorWorksWhenDead;
     public SageBool AllowMotiveForceWhileAirborne;
     public SageBool Apply2DFrictionWhenAirborne;
     public SageBool DownhillOnly;
     public SageBool StickToGround;
     public SageBool CanMoveBackward;
+    public SageBool CanReverseMove;
     public SageBool UpdateWaterWadingConditions;
     public SageBool HasSuspension;
-    public SageBool IsCrewPowered;
     public SageBool UseTerrainSmoothing;
-    public SageBool BurningDeathIsCavalry;
+    public SageBool BurniningDeathIsCavalry;
     public SageBool ChargeAvailable;
     public SageBool ChargeIgnoresCondition;
     public SageBool EnableHighSpeedTurnFlags;
@@ -189,4 +248,6 @@ public struct LocomotorTemplate
     public SageBool ClampOrientationToPathTangent;
     public SageBool ReorientIfTurnTooSharp;
     public SageBool BrakeBeforeReorienting;
+    public SageBool EasingTakeOffAndLanding;
+    public SageBool IgnoreLowSpeedAngleMultiplier;
 }

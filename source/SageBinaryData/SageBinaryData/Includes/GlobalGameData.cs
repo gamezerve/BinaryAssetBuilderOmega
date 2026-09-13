@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 
 namespace SageBinaryData;
 
@@ -153,13 +153,15 @@ public enum DisabledType
     FREEFALL,
     TEMPORARILY_BUSY,
     SCRIPT_DISABLED,
-    SCRIPT_UNDERPOWERED
+    SCRIPT_UNDERPOWERED,
+    INFILTRATED,
+    FROZEN
 }
 
 [StructLayout(LayoutKind.Sequential)]
 public struct DisabledBitFlags
 {
-    public const int Count = 11;
+    public const int Count = 13;
     public const int BitsInSpan = 32;
     public const int NumSpans = (Count + (BitsInSpan - 1)) / BitsInSpan;
 

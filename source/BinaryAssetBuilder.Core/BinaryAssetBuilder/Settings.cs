@@ -23,6 +23,7 @@ namespace BinaryAssetBuilder
         private string _defaultAudioPaths;
         private string _defaultDataPaths;
         private string _monitorPaths;
+        private string _externalManifests;
         private bool _usePrecompiled;
         private bool _versionFiles;
         private bool _resident;
@@ -65,6 +66,8 @@ namespace BinaryAssetBuilder
         [OptionalCommandLineOption("audio"), Description("Default search paths for AUDIO: path alias")] public string DefaultAudioPaths { get => _defaultAudioPaths; set => _defaultAudioPaths = value; }
         [OptionalCommandLineOption("data"), Description("Default search paths for DATA: path alias")] public string DefaultDataPaths { get => _defaultDataPaths; set => _defaultDataPaths = value; }
         [OptionalCommandLineOption("mp"), Description("Additional paths which should be monitored for changes in persistent mode")] public string MonitorPaths { get => _monitorPaths; set => _monitorPaths = value; }
+        [OptionalCommandLineOption("em"), Description("Semicolon-separated external manifests used to resolve precompiled asset references")] public string ExternalManifests { get => _externalManifests; set => _externalManifests = value; }
+        public string[] ProcessedExternalManifests { get; set; }
         public string Postfix { get; set; }
         public string StreamPostfix { get; set; }
         public bool BigEndian { get; set; }
@@ -93,6 +96,7 @@ namespace BinaryAssetBuilder
             Marshaler.Marshal(node.GetAttributeValue(nameof(DefaultAudioPaths), null), ref _defaultAudioPaths);
             Marshaler.Marshal(node.GetAttributeValue(nameof(DefaultDataPaths), null), ref _defaultDataPaths);
             Marshaler.Marshal(node.GetAttributeValue(nameof(MonitorPaths), null), ref _monitorPaths);
+            Marshaler.Marshal(node.GetAttributeValue(nameof(ExternalManifests), null), ref _externalManifests);
             Marshaler.Marshal(node.GetAttributeValue(nameof(UsePrecompiled), null), ref _usePrecompiled);
             Marshaler.Marshal(node.GetAttributeValue(nameof(VersionFiles), null), ref _versionFiles);
             Marshaler.Marshal(node.GetAttributeValue(nameof(Resident), null), ref _resident);
@@ -139,6 +143,7 @@ namespace BinaryAssetBuilder
             writer.WriteAttributeString(nameof(DefaultAudioPaths), _defaultAudioPaths);
             writer.WriteAttributeString(nameof(DefaultDataPaths), _defaultDataPaths);
             writer.WriteAttributeString(nameof(MonitorPaths), _monitorPaths);
+            writer.WriteAttributeString(nameof(ExternalManifests), _externalManifests);
             writer.WriteAttributeString(nameof(UsePrecompiled), _usePrecompiled.ToString());
             writer.WriteAttributeString(nameof(VersionFiles), _versionFiles.ToString());
             writer.WriteAttributeString(nameof(Resident), _resident.ToString());

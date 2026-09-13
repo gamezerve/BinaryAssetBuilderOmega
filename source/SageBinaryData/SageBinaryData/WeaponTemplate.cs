@@ -1,4 +1,4 @@
-﻿using Relo;
+using Relo;
 using System.Runtime.InteropServices;
 using AnsiString = Relo.String<sbyte>;
 
@@ -35,15 +35,24 @@ public enum PartitionManagerDistTestType
 public enum WeaponFlagsType
 {
     NONE,
-    EMPTY_CLIP_ON_ACTIVATE,
+    SYNC_AMMO_ON_ACTIVATE,
     ORTHOGONAL_SCATTER,
-    LENGTH_SCATTER
+    LENGTH_SCATTER,
+    ATTACK_NEEDS_LINE_OF_SIGHT,
+    RELOAD_WHEN_ATTACK_STOPS,
+    IGNORE_TARGET_AS_OBSTACLE,
+    NOT_ATTRACTED_BY_MAGNETS,
+    CRUSH_VEHICLE,
+    FORCE_EMPTY_ENTIRE_CLIP,
+    IGNORE_WALL_RELATIONSHIP,
+    IGNORE_ENCLOSURE_CHECK,
+    FORCE_KILL_GARRISONED_UNITS
 }
 
 [StructLayout(LayoutKind.Sequential)]
 public struct WeaponFlagsBitFlags
 {
-    public const int Count = 4;
+    public const int Count = 13;
     public const int BitsInSpan = 32;
     public const int NumSpans = (Count + (BitsInSpan - 1)) / BitsInSpan;
 
@@ -130,22 +139,26 @@ public struct WeaponAffectsBitFlags
 
 public enum WpnAntiT
 {
-    ANTI_AIRBORNE_VEHICLE,
     ANTI_GROUND,
+    ANTI_WATER,
+    ANTI_SUBMERGED,
+    ANTI_STRUCTURE,
     ANTI_PROJECTILE,
     ANTI_SMALL_MISSILE,
-    ANTI_MINE,
+    ANTI_AIRBORNE_VEHICLE,
     ANTI_AIRBORNE_INFANTRY,
     ANTI_BALLISTIC_MISSILE,
+    ANTI_MINE,
     ANTI_PARACHUTE,
-    ANTI_STRUCTURE,
-    ANTI_AIRBORNE_MONSTER
+    ANTI_LIFTED_GROUND_UNIT,
+    ANTI_INFANTRY,
+    ANTI_VEHICLE
 }
 
 [StructLayout(LayoutKind.Sequential)]
 public struct WeaponAntiBitFlags
 {
-    public const int Count = 10;
+    public const int Count = 14;
     public const int BitsInSpan = 32;
     public const int NumSpans = (Count + (BitsInSpan - 1)) / BitsInSpan;
 
@@ -165,7 +178,27 @@ public enum ParalyzeEffectType
 {
     EMP,
     USER_PARALYZE,
+    UNMANNED,
+    HELD,
+    FROZEN,
+    TEMPORARILY_BUSY,
     NONE
+}
+
+public enum VirtualDamageType
+{
+    NONE,
+    SOLO,
+    SHARE
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct WeaponAiHintInfo
+{
+    public unsafe float* MaxSpeedOfTarget;
+    public AssetReference<WeaponTemplate> UseAsWarheadForDamageCalculations;
+    public SageBool IsAntiGarrisonWeapon;
+    public SageBool UseLongLockOnTimeCode;
 }
 
 public enum InfoWarEffect
@@ -552,7 +585,6 @@ public struct CrushTiberiumNuggetType
 public struct WeaponTemplate
 {
     public BaseInheritableAsset Base;
-    public AnsiString Name;
     public float AttackRange;
     public float MinimumAttackRange;
     public float RangeBonusMinHeight;
@@ -563,7 +595,6 @@ public struct WeaponTemplate
     public Angle AimDirection;
     public float ScatterRadius;
     public float ScatterLength;
-    public float ScatterTargetScalar;
     public float WeaponSpeed;
     public float MinWeaponSpeed;
     public float MaxWeaponSpeed;
@@ -585,12 +616,8 @@ public struct WeaponTemplate
     /// Played in loop entire time weapon is firing
     /// </summary>
     public unsafe AssetReference<BaseAudioEventInfo, AudioEventInfo>* FiringLoopSound;
-#if KANESWRATH
-    /// <summary>
-    /// Keeps playing even when unit must stop and turn to reacquire target. DOESN'T WORK FOR FORCE-ATTACK GROUND.
-    /// </summary>
-    public unsafe AssetReference<BaseAudioEventInfo, AudioEventInfo>* FiringAndAimingLoopSound;
-#endif
+    public unsafe AssetReference<BaseAudioEventInfo, AudioEventInfo>* ImpactLoopSound;
+    public unsafe AssetReference<BaseAudioEventInfo, AudioEventInfo>* RetargetedWhileLoopingSound;
     public AssetReference<FXList> FireFX;
     public AssetReference<FXList> FireVeteranFX;
     public AssetReference<FXList> FireFlankFX;
@@ -601,8 +628,8 @@ public struct WeaponTemplate
     public Time ContinuousFireCoastSeconds;
     public Time AutoReloadWhenIdleSeconds;
     public int ShotsPerBarrel;
-    public ObjectStatusBitFlags RequiredFiringObjectStatus;
-    public ObjectStatusBitFlags ForbiddenFiringObjectStatus;
+    public unsafe ObjectStatusBitFlags* RequiredFiringObjectStatus;
+    public unsafe ObjectStatusBitFlags* ForbiddenFiringObjectStatus;
     public float ContinueAttackRange;
     public Time SuspendFXDelaySeconds;
     public Percentage HitPercentage;
@@ -623,40 +650,39 @@ public struct WeaponTemplate
     /// </summary>
     public AssetReference<BaseAudioEventInfo, AudioEventInfo> ClipReloadedSound;
     public WeaponAffectsBitFlags RadiusDamageAffects;
-    public AnsiString FXTrigger;
+    public FXTriggerType FXTrigger;
     public WeaponCollideBitFlags ProjectileCollidesWith;
-    public WeaponAntiBitFlags AntiMask;
+    public WeaponAntiBitFlags RequiredAntiMask;
+    public WeaponAntiBitFlags ForbiddenAntiMask;
     public TypedAssetId<BaseAssetType> ProjectileStreamName; // should be TypedAssetId<GameObject> but .net thinks it might be a circular reference
+    public VirtualDamageType VirtualDamage;
+    public AssetReference<WeaponTemplate> PreAttackWeapon;
     public unsafe SoundOrEvaEvent* OverrideVoiceAttackSound;
     public unsafe SoundOrEvaEvent* OverrideVoiceEnterStateAttackSound;
     public unsafe RangeDuration* PreAttackDelay;
     public unsafe RangeDuration* FiringDuration;
     public unsafe RangeDuration* CoolDownDelayBetweenShots;
     public unsafe RangeDuration* ClipReloadTime;
-    public unsafe Coord2D* ScatterTarget;
-    public unsafe LinearTargetType* LinearTarget;
+    public unsafe WeaponAiHintInfo* WeaponAiHintInfo;
     public PolymorphicList<WeaponEffectNugget> Nuggets;
     public unsafe ObjectFilter* SurpriseAttackObjectFilter;
     public unsafe ObjectFilter* CombinedAttackObjectFilter;
     public unsafe ObjectFilter* HitStoredObjectFilter;
     public List<ScatterRadiusType> ScatterRadiusVsType;
+    public List<AssetReference<AttributeModifier>> IncompatibleAttributeModifier;
     public SageBool ScatterIndependently;
-    public SageBool DisableScatterForTargetsOnWall;
+    public SageBool ScatterAlways;
     public SageBool ScaleWeaponSpeed;
+    public SageBool IgnoresContactPoints;
+    public SageBool ScaleAttackRangeByAmmoRemaining;
     public SageBool CanBeDodged;
     public SageBool HoldDuringReload;
     public SageBool CanFireWhileMoving;
-    public SageBool CanFireWhileCharging;
     public SageBool FiringLoopSoundContinuesDuringReload;
-#if KANESWRATH
-    /// <summary>
-    /// Hack to deal with force-attack ground for FiringAndAimingLoopSound weapons
-    /// </summary>
-    public SageBool FiringLoopSoundPlaysOnlyForAttackPosition;
-#endif
     public SageBool DamageDealtAtSelfPosition;
     public SageBool CheckStatusFlagsInRangeChecks;
     public SageBool ProjectileSelf;
+    public SageBool ProjectileSelfUsesPathfinder;
     public SageBool MeleeWeapon;
     public SageBool ChaseWeapon;
     public SageBool LeechRangeWeapon;
@@ -665,11 +691,8 @@ public struct WeaponTemplate
     public SageBool ShowsAmmoPips;
     public SageBool AllowAttackGarrisonedBldgs;
     public SageBool PlayFXWhenStealthed;
-    public SageBool IgnoreLinearFirstTarget;
-    public SageBool ForceDisplayPercentReady;
     public SageBool IsAimingWeapon;
     public SageBool NoVictimNeeded;
-    public SageBool RotatingTurret;
     public SageBool PassengerProportionalAttack;
     public SageBool FinishAttackOnceStarted;
     public SageBool CannotTargetCastleVictims;
@@ -682,4 +705,8 @@ public struct WeaponTemplate
     public SageBool UseInnateAttributes;
     public SageBool StopFiringOnCanBeInvisible;
     public SageBool ContactWeapon;
+    public SageBool UseCenterForRangeCheck;
+    public SageBool RevealShroudOnFire;
+    public SageBool ShouldPlayTargetDeadEvaEvent;
+    public SageBool UpdateBarrelModelConditions;
 }

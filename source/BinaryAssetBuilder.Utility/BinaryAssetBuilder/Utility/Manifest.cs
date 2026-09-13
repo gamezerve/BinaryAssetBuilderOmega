@@ -74,6 +74,7 @@ namespace BinaryAssetBuilder.Utility
         {
             Assets = null;
             FileName = null;
+            _pHeader = null;
             if ((IntPtr)_pBuffer == IntPtr.Zero)
             {
                 return;
@@ -110,9 +111,10 @@ namespace BinaryAssetBuilder.Utility
             {
                 return false;
             }
+            uint length;
             using (Stream stream = File.OpenRead(FileName))
             {
-                uint length = (uint)stream.Length;
+                length = (uint)stream.Length;
                 _pBuffer = (sbyte*)Marshal.AllocHGlobal((int)length);
                 byte[] buffer = new byte[length];
                 stream.Read(buffer, 0, buffer.Length);
@@ -123,9 +125,33 @@ namespace BinaryAssetBuilder.Utility
             }
             string basePath = Path.Combine(Path.GetDirectoryName(FileName), Path.GetFileNameWithoutExtension(FileName));
             LoadStringHashes(basePath);
-            sbyte* pBuffer = _pBuffer;
-            _pHeader = (AssetStream.ManifestHeader*)_pBuffer;
-            sbyte* assetEntries = pBuffer + 48;
+            byte* rawBuffer = (byte*)_pBuffer;
+            int containerPrefixSize = 0;
+#if VERSION7
+            if (length >= 52
+                && rawBuffer[0] == 0 && rawBuffer[1] == 0
+                && rawBuffer[2] == 0 && rawBuffer[3] == 0)
+            {
+                containerPrefixSize = 4;
+            }
+#endif
+            byte* serializedHeader = rawBuffer + containerPrefixSize;
+#if VERSION7
+            ushort leadingVersion = serializedHeader[2] == 0
+                ? (ushort)(serializedHeader[0] | (serializedHeader[1] << 8))
+                : (ushort)((serializedHeader[0] << 8) | serializedHeader[1]);
+            if (leadingVersion == 7 && serializedHeader[2] <= 1 && serializedHeader[3] <= 1)
+            {
+                byte versionLow = serializedHeader[0];
+                byte versionHigh = serializedHeader[1];
+                serializedHeader[0] = serializedHeader[2];
+                serializedHeader[1] = serializedHeader[3];
+                serializedHeader[2] = versionLow;
+                serializedHeader[3] = versionHigh;
+            }
+#endif
+            _pHeader = (AssetStream.ManifestHeader*)serializedHeader;
+            sbyte* assetEntries = (sbyte*)serializedHeader + 48;
             if (_pHeader->IsBigEndian)
             {
                 _pHeader->Version = Endian.BigEndian(_pHeader->Version);
@@ -145,6 +171,8 @@ namespace BinaryAssetBuilder.Utility
             if (_pHeader->Version != 5)
 #elif VERSION6
             if (_pHeader->Version != 6)
+#elif VERSION7
+            if (_pHeader->Version != 7)
 #endif
             {
                 throw new ArgumentException("Can't read manifest. Unsupported file version");

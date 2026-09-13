@@ -20,6 +20,24 @@ namespace BinaryAssetBuilder
             return paths;
         }
 
+        private static string[] ProcessManifestPaths(string combinedPaths, string dataRoot)
+        {
+            if (string.IsNullOrWhiteSpace(combinedPaths))
+            {
+                return Array.Empty<string>();
+            }
+
+            string[] paths = combinedPaths.Split(';', StringSplitOptions.RemoveEmptyEntries);
+            for (int index = 0; index < paths.Length; ++index)
+            {
+                string path = paths[index].Trim();
+                paths[index] = Path.GetFullPath(Path.IsPathRooted(path)
+                    ? path
+                    : Path.Combine(dataRoot, path));
+            }
+            return paths;
+        }
+
         private static void SetConfiguration(Settings settings, string configName)
         {
             string artPaths = null;
@@ -75,6 +93,7 @@ namespace BinaryAssetBuilder
             {
                 settings.ProcessedMonitorPaths = ProcessPaths(settings.MonitorPaths);
             }
+            settings.ProcessedExternalManifests = ProcessManifestPaths(settings.ExternalManifests, settings.DataRoot);
         }
 
         public static Settings GetSettingsForConfiguration(string configName)

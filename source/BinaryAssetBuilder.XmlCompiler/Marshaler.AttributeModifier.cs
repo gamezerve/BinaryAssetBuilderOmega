@@ -22,10 +22,7 @@ public static partial class Marshaler
         }
         Marshal(node.GetAttributeValue(nameof(AttributeModifier.Category), null), &objT->Category, state);
         Marshal(node.GetAttributeValue(nameof(AttributeModifier.Duration), "0s"), &objT->Duration, state);
-#if KANESWRATH
-        Marshal(node.GetAttributeValue(nameof(AttributeModifier.MetaDuration), "0"), &objT->MetaDuration, state);
-#endif
-        Marshal(node.GetAttributeValue(nameof(AttributeModifier.ReplaceInCategroyIfLongest), "false"), &objT->ReplaceInCategroyIfLongest, state);
+        Marshal(node.GetAttributeValue(nameof(AttributeModifier.ReplaceInCategoryIfLongest), "false"), &objT->ReplaceInCategoryIfLongest, state);
         Marshal(node.GetAttributeValue(nameof(AttributeModifier.IgnoreIfAnticategoryActive), "false"), &objT->IgnoreIfAnticategoryActive, state);
         Marshal(node.GetAttributeValue(nameof(AttributeModifier.StartFX), null), &objT->StartFX, state);
         Marshal(node.GetAttributeValue(nameof(AttributeModifier.EndFX), null), &objT->EndFX, state);
@@ -33,7 +30,9 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(AttributeModifier.ModelConditionsClear), ""), &objT->ModelConditionsClear, state);
         Marshal(node.GetAttributeValue(nameof(AttributeModifier.ObjectStatusToSet), null), &objT->ObjectStatusToSet, state);
         Marshal(node.GetAttributeValue(nameof(AttributeModifier.StackingLimit), "1"), &objT->StackingLimit, state);
+        Marshal(node.GetAttributeValue(nameof(AttributeModifier.ArmorSetType), null), &objT->ArmorSetType, state);
+        Marshal(node.GetAttributeValue(nameof(AttributeModifier.Shader), null), &objT->Shader, state);
         Marshal(node.GetChildNodes(nameof(AttributeModifier.Modifier)), &objT->Modifier, state);
-        Marshal(node, (BaseAssetType*)objT, state);
+        Marshal(node, (BaseInheritableAsset*)objT, state);
     }
 }

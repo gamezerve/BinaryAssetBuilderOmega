@@ -1,10 +1,11 @@
-﻿using Relo;
+using Relo;
 using System.Runtime.InteropServices;
 
 namespace SageBinaryData;
 
 public enum ArmorSetType
 {
+    INVALID,
     VETERAN,
     ELITE,
     HERO,
@@ -16,10 +17,10 @@ public enum ArmorSetType
     PLAYER_UPGRADE_3,
     UNBESIEGEABLE,
     AS_TOWER,
-    UNUSED_01,
-    UNUSED_02,
-    UNUSED_03,
-    UNUSED_04,
+    AIRBORNE,
+    SECONDARY_DAMAGE,
+    SHRINK_EFFECT,
+    IN_SPIDER_HOLE,
     UNUSED_05,
     UNUSED_06,
     UNUSED_07,
@@ -32,7 +33,7 @@ public enum ArmorSetType
 [StructLayout(LayoutKind.Sequential)]
 public struct ArmorSetBitFlags
 {
-    public const int Count = 0x00000016;
+    public const int Count = 23;
     public const int BitsInSpan = 32;
     public const int NumSpans = (Count + (BitsInSpan - 1)) / BitsInSpan;
 

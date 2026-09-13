@@ -1,0 +1,153 @@
+# RA3 Uprising (EP1) migration status
+
+This branch starts the migration with a read-only compatibility gate. It does
+not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
+
+## Established facts
+
+- Red Alert 3 manifests use version 6 and `AllTypesHash=0x54EEE764`.
+- Uprising manifests use version 7 and `AllTypesHash=0x5454A8E9`.
+- Version 7 changes the first four header bytes from
+  `IsBigEndian, IsLinked, Version` to `Version, IsBigEndian, IsLinked`.
+- The sampled Uprising BIG entries may be raw or RefPack-compressed.
+- Uprising preserves the 48-byte version 6/7 asset-entry layout, including the
+  tokenized word, but its changed schemas produce different per-type hashes.
+- Referenced-manifest markers retain `1=normal` and `2=patch` semantics in the
+  examined fixtures.
+- A structural comparison of the official schema trees finds 22 added and 75
+  changed XSD files. Therefore replacing only the source XML is insufficient.
+
+Validated fixture fingerprints:
+
+| Fixture | Version | Assets | RefPack | Result |
+|---|---:|---:|---:|---|
+| RA3 `worldbuilder.manifest` | 6 | 15,931 | no | pass |
+| Uprising `WBData.big::data/worldbuilder.manifest` | 7 | 17,339 | no | pass |
+| Uprising `StaticStream.big::data/static.manifest` | 7 | 13,872 | yes | pass |
+| Uprising `GlobalStream.big::data/global.manifest` | 7 | 11,357 | yes | pass |
+
+## Implemented compatibility gate
+
+`BinaryAssetBuilder.ManifestInspector` can:
+
+- identify TW, Kane's Wrath, RA3 and Uprising manifest fingerprints;
+- read standalone manifests and selected entries from BIG4/BIGF archives;
+- decompress bounded RefPack manifest payloads without loading large BIN
+  streams;
+- parse v5, v6 and v7 headers, asset entries, references and name tables;
+- verify offsets, counts, duplicate IDs and instance-stream totals;
+- compare type IDs and type hashes between two manifests;
+- compare XSD trees structurally while ignoring formatting and annotations.
+
+The official Uprising schemas are staged under `schemas/ra3ep1/xsd`. The full
+528 MB XML source tree remains external and read-only; it should be supplied to
+build scripts as an explicit source root instead of being duplicated here.
+
+The first concrete game-data layout port covers `ArmorTemplate` and
+`AttributeModifier`. Metadata-only disassembly of EA's RA3 compiler established
+the original 60-byte `AttributeModifier` offsets. Uprising removes
+`RemoveWhenDisabledByTypes`, producing the implemented 56-byte EP1 layout, and
+adds `ArmorSetType`, `Shader`, `SHRINK` and seven attribute modifiers. The EP1
+XSDs establish bit capacities of 463 model conditions (464 enum values minus
+the non-bit `INVALID=-1` sentinel), 230 object statuses, 13
+disabled types and 23 armor-set types. `layout-self-test` locks these sizes and
+offsets against regression. `Sync-Ra3Ep1Enums.ps1` regenerates the complete
+ModelCondition, ObjectStatus, Disabled, ArmorSet and AttributeModifier enum
+ordering directly from the checked-in EP1 XSDs; its `-Check` mode is part of the
+compatibility smoke test.
+
+`compiler-self-test` now exercises the actual XML marshaller with EP1-only
+values (`SHRINK`, `SPECIAL_POWER_SELECTED_PENDING`, `BRIDGE_DEAD`,
+`SHRINK_EFFECT`, and `RADIATION_ARMOR`). It produces and verifies a relocatable
+216-byte instance chunk, a 20-byte `.relo` chunk and a 16-byte `.imp` chunk.
+This proves the migrated compiler core, but deliberately does not
+bypass the incomplete-plugin manifest gate.
+
+The next registered type audit exposed and corrected a larger inherited problem:
+`LocomotorTemplate` in the KW-derived source was 348 bytes, while EA's
+RA3 compiler metadata declares a 396-byte structure. The RA3 marshaller also
+contains fields absent from this source, including `SpeedBasedHeightOffset`,
+`ResubmergeDelay`, `WaterToAirTransitionFX`, `WaterSurfaceHeightOffset`,
+`ForbiddenObjectStatus`, `BounceKickTerrainMap`, and `JetLocomotorData`.
+The structure and marshaller have now been rebuilt to the official RA3 offsets,
+then extended with Uprising's `IgnoreLowSpeedAngleMultiplier` at offset 393.
+The final EP1 structure remains 396 bytes because the new boolean occupies RA3
+tail padding. A second compiler PoC validates Uprising-only surface, height-mode,
+jet-option and low-speed-angle values (`416 bin / 8 relo / 0 imp`).
+
+`WeaponTemplate` is the third audited root type. EA's RA3 tokenizer declares a
+328-byte structure; the inherited KW-oriented source was 392 bytes and could
+not be repaired by merely adding the five EP1 attributes. It contained a
+non-native `Name`, embedded object-status masks instead of pointers, one
+combined anti-mask instead of required/forbidden masks, and omitted
+`VirtualDamage`, `PreAttackWeapon`, `WeaponAiHintInfo`, and the incompatible
+modifier list. The rebuilt structure matches all recovered RA3 offsets, then
+inserts Uprising's two loop-sound references and three booleans for a 340-byte
+EP1 layout. The compiler PoC verifies the Uprising-only `ScatterAlways`,
+`ProjectileSelfUsesPathfinder`, `UpdateBarrelModelConditions`, expanded weapon
+flags/anti-mask enums and `VirtualDamage` (`340 bin / 0 relo / 0 imp`).
+
+The independently supplied clean RA3 baseline at
+`D:\OneDrive\CNC Files\CnC_Modding_Support-main (Official XML, Schema, Script, Shader, Maps)\Red Alert 3\Schemas (RA3)`
+contains 821 XSD files and is structurally identical to `schemas/ra3/xsd`.
+Known MP3-enabling SDK changes should remain an explicit SDK-extension layer;
+they must not be counted as RA3-to-Uprising engine/schema differences.
+
+`asset-bytes` performs bounded random-access reads from very large raw BIN files
+or uncompressed BIG entries. It was used against the local 1.2 GB RA3
+`worldbuilder.bin` and Uprising's 1.4 GB `WBData.big` without making a complete
+binary dump. The shared sample `AttributeModifier_MechaKingSquishKillDelay` is
+an 88-byte tokenized instance chunk in both games while its type hash changes
+from `0xF901FE9B` to `0x74425C11`; tokenization means this observation does not
+replace the native-layout checks above.
+
+## Compiler work still required
+
+The Uprising branch now builds its Utility, Core and AudioCompiler projects with
+`VERSION7`. The writer emits the 4-byte EP1 prefix, reordered v7 header and
+48-byte tokenized asset entries. Its output round-trips through both the new
+inspector and the production Utility reader. The production reader also passes
+against `worldbuilder`, `static` and `global` manifests extracted from the real
+game archives, including RefPack inputs.
+
+Remaining work:
+
+1. Port the 22 new schema types and every binary-layout-affecting change among
+   the 75 changed schemas into `SageBinaryData` and the processor registry.
+2. Generate the Uprising type table and require the final
+   `AllTypesHash=0x5454A8E9`; a schema-valid XML build is not sufficient.
+3. Validate `.bin`, `.relo` and `.imp` chunks asset-by-asset against a known
+   Uprising fixture. Manifest compatibility alone cannot prove binary layout.
+4. Add target-aware SDK build scripts and settings for schema root, XML source
+   root, output root, registry discovery and WorldBuilder data packaging.
+
+The machine-specific KW dependency fallback has been removed. External
+precompiled dependencies are now configured with the `ExternalManifests`
+settings attribute or `/em` command-line option. Relative paths resolve from
+`DataRoot`; multiple paths are separated with semicolons. The resolver parses
+v7 manifests and matches exact `(TypeId, InstanceId)` pairs rather than scanning
+arbitrary binary bytes for strings.
+
+Example:
+
+```xml
+<Settings ExternalManifests="Base/global.manifest;Base/static.manifest" />
+```
+
+Production output also has a fail-closed gate: a `VERSION7` build refuses to
+commit a manifest unless the active compiler plugin reports
+`AllTypesHash=0x5454A8E9`. The current XML plugin still reports the KW hash, so
+it cannot accidentally publish a v7 wrapper around KW binary layouts while the
+EP1 type port is incomplete.
+
+## Acceptance gates for the first PoC
+
+- Compile one Uprising-only asset type from a minimal XML fixture.
+- Emit manifest version 7 with the Uprising all-types hash.
+- Produce `.manifest/.bin/.relo/.imp` files that pass the inspector.
+- Load the stream in Uprising without an asset/type-hash rejection.
+- Rebuild the same input twice and prove byte-for-byte deterministic output.
+- Test a reference to an asset in `global.manifest` and one patch reference.
+
+Until these gates pass, RA3 XML/assets -> Uprising XML/assets replacement must
+be treated as source/schema staging, not as a completed SDK conversion.

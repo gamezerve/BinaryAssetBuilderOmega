@@ -354,86 +354,48 @@ namespace BinaryAssetBuilder.Core.SageXml
         private static readonly Tracer _tracer = Tracer.GetTracer(nameof(DocumentProcessor), "Provides XML processing functionality");
 
 
-        private static readonly HashSet<string> _manifestAssets = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        private static bool _manifestLoaded;
+        private static readonly HashSet<ulong> _externalManifestAssets = new HashSet<ulong>();
+        private static readonly object _externalManifestLock = new object();
+        private static string _externalManifestCacheKey;
 
         private static void LoadManifestIfNeeded()
         {
-            if (_manifestLoaded)
+            string[] manifestPaths = Settings.Current.ProcessedExternalManifests ?? Array.Empty<string>();
+            string cacheKey = string.Join(";", manifestPaths);
+            lock (_externalManifestLock)
             {
-                return;
-            }
-
-            string manifestPath = @"D:\OneDrive\Documents\GitHub\BinaryAssetBuilderOmega2\KW Files\Manifest\static_common_2.manifest";
-
-            if (File.Exists(manifestPath))
-            {
-                byte[] data = File.ReadAllBytes(manifestPath);
-                string text = Encoding.UTF8.GetString(data);
-
-                char[] separators =
+                if (string.Equals(cacheKey, _externalManifestCacheKey, StringComparison.Ordinal))
                 {
-                    '\0',
-                    '\r',
-                    '\n',
-                    '\t',
-                    ' ',
-                    ':',
-                    ',',
-                    ';',
-                    '=',
-                    '"',
-                    '\'',
-                    '(',
-                    ')',
-                    '[',
-                    ']',
-                    '{',
-                    '}'
-                };
+                    return;
+                }
 
-                foreach (string token in text.Split(separators, StringSplitOptions.RemoveEmptyEntries))
+                _externalManifestAssets.Clear();
+                foreach (string manifestPath in manifestPaths)
                 {
-                    string trimmed = token.Trim();
-
-                    if (trimmed.Length < 3)
+                    using Manifest manifest = new Manifest();
+                    if (!manifest.Load(manifestPath, false))
                     {
+                        _tracer.TraceWarning("External manifest not found: {0}", manifestPath);
                         continue;
                     }
 
-                    _manifestAssets.Add(trimmed);
+                    foreach (Asset asset in manifest.Assets)
+                    {
+                        _externalManifestAssets.Add(((ulong)asset.TypeId << 32) | asset.InstanceId);
+                    }
+                    _tracer.TraceInfo(
+                        "Loaded {0} assets from external manifest '{1}'.",
+                        manifest.AssetCount,
+                        manifestPath);
                 }
-
-                _tracer.TraceInfo("Loaded manifest asset list from '{0}' with {1} entries.", manifestPath, _manifestAssets.Count);
+                _externalManifestCacheKey = cacheKey;
             }
-            else
-            {
-                _tracer.TraceWarning("Manifest file not found: {0}", manifestPath);
-            }
-
-            _manifestLoaded = true;
-
-
-            if (_manifestAssets.Contains("NoArmor"))
-            {
-                _tracer.TraceInfo("Manifest contains NoArmor");
-            }
-
-            if (_manifestAssets.Contains("RiflemenIcon"))
-            {
-                _tracer.TraceInfo("Manifest contains RiflemenIcon");
-            }
-
         }
 
-        private static bool ManifestContainsAsset(string typeName, string instanceName)
+        private static bool ManifestContainsAsset(uint typeId, uint instanceId)
         {
             LoadManifestIfNeeded();
-
-            return _manifestAssets.Contains(typeName + ":" + instanceName)
-                || _manifestAssets.Contains(instanceName)
-                || _manifestAssets.Contains(typeName + ":" + instanceName.ToLowerInvariant())
-                || _manifestAssets.Contains(instanceName.ToLowerInvariant());
+            return _externalManifestAssets.Contains(((ulong)typeId << 32) | instanceId);
         }
 
         private LastState _last;
@@ -1227,7 +1189,7 @@ namespace BinaryAssetBuilder.Core.SageXml
                     }
                     else
                     {
-                        if (ManifestContainsAsset(referencedInstance.TypeName, referencedInstance.InstanceName))
+                        if (ManifestContainsAsset(referencedInstance.TypeId, referencedInstance.InstanceId))
                         {
                             _tracer.TraceInfo(
                                 "Manifest resolved asset '{0}:{1}' referenced from '{2}' in 'file://{3}'",

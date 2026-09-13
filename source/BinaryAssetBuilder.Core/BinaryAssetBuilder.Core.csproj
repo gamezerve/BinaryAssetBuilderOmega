@@ -11,13 +11,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <OutputPath>..\..\Release</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>TRACE;WIN32;VERSION5</DefineConstants>
+    <DefineConstants>TRACE;WIN32;VERSION7</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <OutputPath>..\..\Debug</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>TRACE;WIN32;VERSION5</DefineConstants>
+    <DefineConstants>TRACE;WIN32;VERSION7</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

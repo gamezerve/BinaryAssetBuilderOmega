@@ -228,6 +228,18 @@ namespace BinaryAssetBuilder.Core
         public void CommitManifest(AssetDeclarationDocument document)
         {
             uint allTypesHash = DocumentProcessor.Plugins.DefaultPlugin.AllTypesHash;
+#if VERSION7
+            const uint uprisingAllTypesHash = 0x5454A8E9u;
+            if (allTypesHash != uprisingAllTypesHash)
+            {
+                throw new BinaryAssetBuilderException(
+                    ErrorCode.InternalError,
+                    "Refusing to emit an Uprising v7 manifest: plugin AllTypesHash is 0x{0:X8}, expected 0x{1:X8}. " +
+                    "Port the RA3 EP1 type layouts and registry before enabling production output.",
+                    allTypesHash,
+                    uprisingAllTypesHash);
+            }
+#endif
             if (_header != null)
             {
                 if (_header.IsLinked == Settings.Current.LinkedStreams

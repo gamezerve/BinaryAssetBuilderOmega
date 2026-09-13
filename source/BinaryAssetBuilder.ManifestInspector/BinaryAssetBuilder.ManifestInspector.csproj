@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Platforms>x86</Platforms>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BinaryAssetBuilder.Utility\BinaryAssetBuilder.Utility.csproj" />
+    <ProjectReference Include="..\SageBinaryData\SageBinaryData.csproj" />
+    <ProjectReference Include="..\BinaryAssetBuilder.XmlCompiler\BinaryAssetBuilder.XmlCompiler.csproj" />
+  </ItemGroup>
+
+</Project>
