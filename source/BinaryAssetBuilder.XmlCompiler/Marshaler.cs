@@ -2,6 +2,7 @@
 using Relo;
 using SageBinaryData;
 using System;
+using System.Globalization;
 using AnsiString = Relo.String<sbyte>;
 using SMarshal = System.Runtime.InteropServices.Marshal;
 using WideString = Relo.String<char>;
@@ -102,15 +103,15 @@ public static partial class Marshaler
         uint result;
         if (text.Length == 10 && text[0] == '0' && text[1] == 'x')
         {
-            result = uint.Parse(text.Substring(2), System.Globalization.NumberStyles.HexNumber);
+            result = uint.Parse(text.Substring(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
         }
         else if (text.Contains('.')) // This is a fix because some default to 0.0 in the schema
         {
-            result = (uint)float.Parse(text);
+            result = (uint)float.Parse(text, CultureInfo.InvariantCulture);
         }
         else
         {
-            result = uint.Parse(text);
+            result = uint.Parse(text, CultureInfo.InvariantCulture);
         }
         state.InplaceEndianToPlatform(&result);
         *objT = result;
@@ -134,11 +135,11 @@ public static partial class Marshaler
         int result;
         if (text.Length == 10 && text[0] == '0' && text[1] == 'x')
         {
-            result = int.Parse(text.Substring(2), System.Globalization.NumberStyles.HexNumber);
+            result = int.Parse(text.Substring(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
         }
         else
         {
-            result = int.Parse(text);
+            result = int.Parse(text, CultureInfo.InvariantCulture);
         }
         state.InplaceEndianToPlatform((uint*)&result);
         *objT = result;
@@ -210,7 +211,7 @@ public static partial class Marshaler
 
     private static unsafe void Marshal(string text, float* objT, Tracker state)
     {
-        float result = float.Parse(text);
+        float result = float.Parse(text, CultureInfo.InvariantCulture);
         state.InplaceEndianToPlatform((uint*)&result);
         *objT = result;
     }
@@ -259,7 +260,7 @@ public static partial class Marshaler
         {
             text = text.Substring(0, index);
         }
-        float result = float.Parse(text);
+        float result = float.Parse(text, CultureInfo.InvariantCulture);
         result *= 0.01f;
         state.InplaceEndianToPlatform((uint*)&result);
         objT->Value = result;
@@ -341,7 +342,7 @@ public static partial class Marshaler
         {
             text = text.Substring(0, index);
         }
-        float result = float.Parse(text);
+        float result = float.Parse(text, CultureInfo.InvariantCulture);
         result *= multiplier;
         state.InplaceEndianToPlatform((uint*)&result);
         objT->Value = result;
@@ -396,7 +397,7 @@ public static partial class Marshaler
         {
             text = text.Substring(0, index);
         }
-        float result = float.Parse(text);
+        float result = float.Parse(text, CultureInfo.InvariantCulture);
         result *= multiplier;
         state.InplaceEndianToPlatform((uint*)&result);
         objT->Value = result;
@@ -432,7 +433,7 @@ public static partial class Marshaler
 
     private static unsafe void Marshal(string text, Duration* objT, Tracker state)
     {
-        uint result = uint.Parse(text);
+        uint result = uint.Parse(text, CultureInfo.InvariantCulture);
         result = (uint)Math.Ceiling(result * LOGICFRAMES_PER_MSEC_REAL);
         state.InplaceEndianToPlatform(&result);
         objT->Value = result;
@@ -449,7 +450,7 @@ public static partial class Marshaler
 
     private static unsafe void Marshal(string text, Velocity* objT, Tracker state)
     {
-        float result = float.Parse(text);
+        float result = float.Parse(text, CultureInfo.InvariantCulture);
         result *= SECONDS_PER_LOGICFRAME_REAL;
         state.InplaceEndianToPlatform((uint*)&result);
         objT->Value = result;

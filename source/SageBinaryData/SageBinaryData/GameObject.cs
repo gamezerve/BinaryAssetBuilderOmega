@@ -1,4 +1,4 @@
-﻿using Relo;
+using Relo;
 using System.Runtime.InteropServices;
 using AnsiString = Relo.String<sbyte>;
 
@@ -20,7 +20,8 @@ namespace SageBinaryData
         INVALID,
         MAIN_STRUCTURE,
         OTHER_STRUCTURE,
-        TIBERIUM_FIELD
+        TIBERIUM_FIELD,
+        BLOCKED
     }
 
     public enum BuildableStatus
@@ -41,8 +42,8 @@ namespace SageBinaryData
     [StructLayout(LayoutKind.Sequential)]
     public struct BuildPlacementTypeBitFlags
     {
-        public const int Count = 0x00000004;
-        public const int BitsInSpan = 32;
+    public const int Count = 5;
+    public const int BitsInSpan = 32;
         public const int NumSpans = (Count + (BitsInSpan - 1)) / BitsInSpan;
 
         public unsafe fixed uint Value[NumSpans];
@@ -52,9 +53,13 @@ namespace SageBinaryData
     public struct ProjectedBuildabilityInfo
     {
         public float Radius;
+        public unsafe float* RadiusY;
         public BuildPlacementTypeBitFlags BuildPlacementTypes;
         public ObjectStatusBitFlags StatusToReject;
         public ModelConditionBitFlags ModelConditionsToReject;
+        public float AllowedBuildabilityHeightVariation;
+        public unsafe ObjectFilter* AllowedObjectFilter;
+        public SageBool PrimaryBuidability;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -82,6 +87,19 @@ namespace SageBinaryData
         public uint Resistance;
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MoneyTransaction
+    {
+        public uint Account;
+        public uint Amount;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct ObjectResourceInfo
+    {
+        public List<MoneyTransaction> BuildCost;
+    }
+
     public enum SkirmishAIBaseLocation
     {
         FRONT,
@@ -89,8 +107,8 @@ namespace SageBinaryData
         BACK,
         SPREAD,
         CENTER,
-        TIBERIUM,
-        HOMEBASE
+        DEFENSE,
+        NEAR_RESOURCE_NODE
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -164,15 +182,38 @@ namespace SageBinaryData
         public Percentage MinCrushVelocityPercent;
         public Percentage CrushDecelerationPercent;
         public AssetReference<WeaponTemplate> CrushWeapon;
-        public AssetReference<WeaponTemplate> CrushRevengeWeapon;
+        public List<CrusherLevelModelConditionInfo> ExtraCrushLevels;
+        public List<CrushKillDelayForObjectFilter> ExtraCrushKillDelays;
+        public Time DefaultCrushKillDelay;
         public sbyte CrusherLevel;
         public sbyte CrushableLevel;
-        public sbyte MountedCrusherLevel;
-        public sbyte MountedCrushableLevel;
         public SageBool CrushEqualLevelProps;
         public SageBool UseCrushAttack;
         public SageBool CrushOnlyWhileCharging;
         public SageBool CrushAllies;
+        public SageBool CrushAircraftWhileStationary;
+        public SageBool UseDirectionCheck;
+        public SageBool ShouldSquishOnCollide;
+        public SageBool DecelerateForAllCollides;
+        public SageBool CannotCrushTarget;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct CrusherLevelModelConditionInfo
+    {
+        public unsafe ModelConditionBitFlags* ModelConditionMatch;
+        public unsafe ObjectFilter* ObjectFilter;
+        public sbyte CrusherLevel;
+        public sbyte CrushableLevel;
+        public SageBool CrushEqualLevelProps;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct CrushKillDelayForObjectFilter
+    {
+        public Time CrushKillDelay;
+        public Percentage CrushDecelerationPercent;
+        public unsafe ObjectFilter* ObjectFilter;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -181,65 +222,64 @@ namespace SageBinaryData
         public BaseInheritableAsset Base;
         public KindOfBitFlags KindOf;
         public List<AnsiString> Browser;
-        public AnsiString ReviveText;
-        public AnsiString RecruitText;
         public AnsiString Description;
+        public AnsiString DescriptionTransformed;
         public AnsiString TypeDescription;
-        public AnsiString Hotkey;
+        public AnsiString TypeDescriptionTransformed;
         public RadarPriorityType RadarPriority;
-        public BuildCompletionType BuildCompletion;
         public float FenceWidth;
         public float FenceXOffset;
         public float RemoveTerrainRadius;
         public float EmotionRange;
         public Angle PlacementViewAngle;
-        public Time BuildFadeInOnCreateTimeSeconds;
+        public Time JustBuiltTime;
         public float FactoryExitWidth;
         public float FactoryExtraBibWidth;
-        public AnsiString Side;
+        public TypedAssetId<BaseAssetType> Side;
         public AnsiString EditorName;
         public EditorSortingType EditorSorting;
         public int BountyValue;
         public float BuildTime;
-        public float BuildFadeInOnCreateTime;
         public int EnergyProduction;
         public int EnergyBonus;
         public TypedAssetId<LogicCommandSet> CommandSet;
-        public AnsiString SelectPortrait;
-        public AnsiString ButtonImage;
+        public TypedAssetId<PackedTextureImage> SelectPortrait;
+        public TypedAssetId<PackedTextureImage> SelectPortraitTransformed;
+        public TypedAssetId<PackedTextureImage> ButtonImage;
+        public TypedAssetId<PackedTextureImage> ButtonImageTransformed;
         public int VoicePriority;
         public float MinZIncreaseForVoiceMoveToHigherGround;
         public AssetReference<CrowdResponse> CrowdResponse;
         public uint CampnessValue;
         public float CampnessValueRadius;
         public float Scale;
-        public float HealthBoxScale;
         public float HealthBoxHeightOffset;
-        public Duration OcclusionDelay;
-        public float LiveCameraPitch;
+        public float LiveCameraFXPitch;
         public int FormationWidth;
         public int FormationDepth;
         public float InstanceScaleFuzziness;
-        public float ThreatRadius;
+        public float StructureRubbleHeight;
         public int RamPower;
         public float RamZMult;
         public float ShockwaveResistance;
         public int CommandPoints;
         public int CommandPointBonus;
         public uint VoiceAttackChargeTimeout;
+        public Time VoiceMoveLandToWaterTimeout;
+        public Time VoiceMoveWaterToLandTimeout;
+        public Time VoiceSelectUnderFireTimeout;
+        public Time VoiceSelectUnderFireDamageTime;
         public float MaxDistanceForEngaged;
         public uint EngagedStateTimeout;
         public float ThreatLevel;
         public uint SlopeLimitIndex;
         public float PathfindDiameter;
         public int SupplyOverride;
-        public int DisplayMeleeDamage;
-        public int DisplayRangedDamage;
-        public int HeroSortOrder;
         public AnsiString ExperienceScalarTable;
         public float FiringArc;
-        public float CamouflageDetectionMultiplier;
+        public int CamouflageDetectorLevel;
         public int SelectionPriority;
+        public int PathPriority;
         public ProductionQueueType ProductionQueueType;
         public BuildPlacementType BuildPlacementTypeFlag;
         public KindOfBitFlags BuildOnRequiredObjectKindOf;
@@ -248,49 +288,53 @@ namespace SageBinaryData
         public Time HasFiredRecentlyTime;
         public AssetReference<UnitTypeIcon> UnitTypeIcon;
         public Time ReinvisibilityDelay;
+        public float InvisibilityOpacityMin;
+        public float InvisibilityOpacityMax;
+        public TypedAssetId<BaseAssetType> HealthBar; // HealthBarTemplate weak reference; target type is not ported yet.
+        public int SubGroupPriority;
+        public float EvaEventSecondDamageFarFromFirstScanRange;
+        public Duration EvaEventSecondDamageFarFromFirstTimeoutMS;
+        public AssetReference<BaseAssetType> UnitIntro; // UnitIntro reference; target type is not ported yet.
         public unsafe AnsiString* DisplayName;
+        public unsafe AnsiString* DisplayNameTransformed;
         public unsafe GameDependencyType* GameDependency;
+        public unsafe ObjectResourceInfo* ObjectResourceInfo;
         public List<ArmorTemplateSet> ArmorSet;
-        public List<WeaponTemplateSet> WeaponSet;
         public List<LocomotorSet> LocomotorSet;
         public unsafe BuildableStatus* Buildable;
         public unsafe ThingClassType* ThingClass;
-        public unsafe DeadCollideSizeType* DeadCollideSize;
         public unsafe List<AnsiString>* BuildFadeInOnCreateList;
         public unsafe List<AnsiString>* BuildVariations;
-        public unsafe List<TypedAssetId<BaseAssetType>> EquivalentTo; // should be TypedAssetId<GameObject> but .net thinks it might be a circular reference
+        public List<TypedAssetId<BaseAssetType>> EquivalentTo; // should be TypedAssetId<GameObject> but .net thinks it might be a circular reference
         public unsafe Color* DisplayColor;
         public unsafe Flammability* Flammability;
         public unsafe SkirmishAIInformation* SkirmishAIInformation;
         public unsafe PolymorphicList<DrawModuleData>* Draws;
         public unsafe PolymorphicList<BehaviorModuleData>* Behaviors;
         public unsafe UpdateModuleData* AI;
+        public unsafe PerUnitFX* UnitSpecificFX;
         public unsafe BodyModuleData* Body;
         public unsafe PolymorphicList<ClientUpdateModuleData>* ClientUpdates;
         public unsafe PolymorphicList<ClientBehaviorModuleData>* ClientBehaviors;
-        public unsafe PerUnitFX* UnitSpecificFX;
         public unsafe Geometry* Geometry;
         public unsafe ReplaceModule* ReplaceModule;
         public unsafe InheritableModule* InheritableModule;
         public unsafe AutoResolveArmor* AutoResolveArmor;
         public unsafe AutoResolveWeapon* AutoResolveWeapon;
-        public unsafe List<AnsiString>* WorldMapArmoryUpgradesAllowed;
         public unsafe FormationPreviewDecal* FormationPreviewDecal;
         public unsafe FormationPreviewDecal* FormationPreviewItemDecal;
         public unsafe Coord3D* LiveCameraOffset;
         public unsafe AudioArrayVoice* AudioArrayVoice;
         public unsafe AudioArraySound* AudioArraySound;
-        public unsafe GameObjectEvaEvents* EvaEvents;
+        public unsafe GameObjectEvaEvents* EvaEventArray;
         public List<AnsiString> UpgradeCameo;
         public unsafe ShadowInfo* ShadowInfo;
         public unsafe AutoResolveInfo* AutoResolveInfo;
         public unsafe VisionInfo* VisionInfo;
         public unsafe CrusherInfo* CrusherInfo;
-        public unsafe ProjectedBuildabilityInfo* ProjectedBuildabilityInfo;
-        public unsafe List<TypedAssetId<UpgradeTemplate>> DisplayUpgrade;
-        public ushort BuildCost;
+        public List<ProjectedBuildabilityInfo> ProjectedBuildabilityInfo;
+        public List<TypedAssetId<UpgradeTemplate>> DisplayUpgrade;
         public ushort RefundValue;
-        public ushort ThreatValue;
         public ushort MaxSimultaneousOfType;
         public byte TransportSlotCount;
         public SageBool IsTrainable;
@@ -298,13 +342,10 @@ namespace SageBinaryData
         public SageBool IsPrerequisite;
         public SageBool IsGrabbable;
         public SageBool IsHarvestable;
-        public byte StructureRubbleHeight;
         public SageBool ForceLuaRegistration;
-        public SageBool ShowHealthInSelectionDecal;
         public SageBool KeepSelectableWhenDead;
         public SageBool IsAutoBuilt;
         public SageBool CanPathThroughGates;
-        public SageBool ShouldClearShotsOnIdle;
         public SageBool BuildInProximityToSamePlayerStucture;
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace SageBinaryData
+namespace SageBinaryData
 {
     public enum UnitCategory
     {

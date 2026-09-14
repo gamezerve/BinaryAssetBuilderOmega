@@ -8,6 +8,12 @@ $ErrorActionPreference = 'Stop'
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 
 $targets = @(
+    @{ Source = 'source\SageBinaryData\SageBinaryData\Includes\KindOf.cs'; Schema = 'Includes\KindOf.xsd'; Type = 'KindOfType'; TargetType = 'KindOf'; CountConstant = 'KindOfBitFlags' },
+    @{ Source = 'source\SageBinaryData\SageBinaryData\Includes\UnitCategory.cs'; Schema = 'Includes\UnitCategory.xsd'; Type = 'UnitCategory'; InvalidIsMinusOne = $true },
+    @{ Source = 'source\SageBinaryData\SageBinaryData\Includes\WeaponCategory.cs'; Schema = 'Includes\WeaponCategory.xsd'; Type = 'WeaponCategory'; InvalidIsMinusOne = $true },
+    @{ Source = 'source\SageBinaryData\SageBinaryData\GameObject.cs'; Schema = 'AssetTypeGameObject.xsd'; Type = 'BuildPlacementType'; CountConstant = 'BuildPlacementTypeBitFlags' },
+    @{ Source = 'source\SageBinaryData\SageBinaryData\GameObject.cs'; Schema = 'AssetTypeGameObject.xsd'; Type = 'BuildableStatus' },
+    @{ Source = 'source\SageBinaryData\SageBinaryData\GameObject.cs'; Schema = 'AssetTypeGameObject.xsd'; Type = 'SkirmishAIBaseLocation' },
     @{ Source = 'source\SageBinaryData\SageBinaryData\Includes\ModelState.cs'; Schema = 'Includes\ModelState.xsd'; Type = 'ModelConditionFlagType'; InvalidIsMinusOne = $true },
     @{ Source = 'source\SageBinaryData\SageBinaryData\Includes\ObjectStatus.cs'; Schema = 'Includes\ObjectStatus.xsd'; Type = 'ObjectStatusType' },
     @{ Source = 'source\SageBinaryData\SageBinaryData\Includes\GlobalGameData.cs'; Schema = 'Includes\GlobalGameData.xsd'; Type = 'DisabledType' },
@@ -49,24 +55,34 @@ foreach ($target in $targets) {
         }
     }
 
+    $targetType = if ($target.TargetType) { $target.TargetType } else { $target.Type }
+    $sourcePath = Join-Path $repositoryRoot $target.Source
+    $source = [IO.File]::ReadAllText($sourcePath)
+    $pattern = "(?ms)^(?<indent>[ `t]*)public enum $([Regex]::Escape($targetType))\s*\r?\n\k<indent>\{.*?^\k<indent>\}"
+    $match = [Regex]::Match($source, $pattern)
+    if (-not $match.Success) {
+        throw "Enum $targetType was not found in $sourcePath"
+    }
+    $indent = $match.Groups['indent'].Value
     $members = for ($index = 0; $index -lt $values.Count; $index++) {
         $suffix = if ($index -eq $values.Count - 1) { '' } else { ',' }
         $assignment = if ($index -eq 0 -and $target.InvalidIsMinusOne) { ' = -1' } else { '' }
-        "    $($values[$index])$assignment$suffix"
+        "$indent    $($values[$index])$assignment$suffix"
     }
-    $replacement = "public enum $($target.Type)`r`n{`r`n$($members -join "`r`n")`r`n}"
-
-    $sourcePath = Join-Path $repositoryRoot $target.Source
-    $source = [IO.File]::ReadAllText($sourcePath)
-    $pattern = "(?s)public enum $([Regex]::Escape($target.Type))\s*\{.*?\r?\n\}"
+    $replacement = "${indent}public enum $targetType`r`n$indent{`r`n$($members -join "`r`n")`r`n$indent}"
     $updated = [Regex]::Replace($source, $pattern, $replacement, 1)
+    if ($target.CountConstant) {
+        $countPattern = "(?s)(public struct $([Regex]::Escape($target.CountConstant))\s*\{).*?(public const int BitsInSpan)"
+        $countReplacement = "`${1}`r`n    public const int Count = $($values.Count);`r`n    `${2}"
+        $updated = [Regex]::Replace($updated, $countPattern, $countReplacement, 1)
+    }
     if ($updated -eq $source) {
-        Write-Output "$($target.Type): verified ($($values.Count) values)"
+        Write-Output "${targetType}: verified ($($values.Count) values)"
         continue
     }
     if ($Check) {
-        throw "$($target.Type) does not match $schemaPath. Run scripts\Sync-Ra3Ep1Enums.ps1."
+        throw "${targetType} does not match $schemaPath. Run scripts\Sync-Ra3Ep1Enums.ps1."
     }
     [IO.File]::WriteAllText($sourcePath, $updated, [Text.UTF8Encoding]::new($false))
-    Write-Output "$($target.Type): $($values.Count) values"
+    Write-Output "${targetType}: $($values.Count) values"
 }

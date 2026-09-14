@@ -1,4 +1,4 @@
-﻿namespace SageBinaryData
+namespace SageBinaryData
 {
     public enum WeaponCategory
     {
@@ -7,6 +7,7 @@
         BLAST,
         CANNON,
         MISSILE,
-        LIGHTNING
+        LIGHTNING,
+        RADIATION
     }
 }

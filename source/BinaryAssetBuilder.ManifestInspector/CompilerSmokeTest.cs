@@ -12,6 +12,7 @@ internal static class CompilerSmokeTest
         TestAttributeModifier();
         TestLocomotorTemplate();
         TestWeaponTemplate();
+        TestGameObject();
         Console.WriteLine("Uprising compiler self-test: OK");
     }
 
@@ -143,6 +144,55 @@ internal static class CompilerSmokeTest
         Expect(chunk.ImportsBuffer.Length == 0, "WeaponTemplate imports bytes", 0, chunk.ImportsBuffer.Length);
         Console.WriteLine(
             $"  WeaponTemplate bin={chunk.InstanceBuffer.Length}, " +
+            $"relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    private static unsafe void TestGameObject()
+    {
+        const string xml = """
+            <GameObject xmlns="uri:ea.com:eala:asset"
+                CamouflageDetectorLevel="3" PathPriority="7"
+                InvisibilityOpacityMin="0.25" InvisibilityOpacityMax="0.75"
+                BuildInProximityToSamePlayerStucture="false">
+              <CrusherInfo CrushAircraftWhileStationary="true"
+                  DefaultCrushKillDelay="0.75s" CannotCrushTarget="true" />
+              <ProjectedBuildabilityInfo Radius="12"
+                  AllowedBuildabilityHeightVariation="75" PrimaryBuidability="false" />
+            </GameObject>
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:GameObject", namespaces)!, namespaces);
+
+        GameObject* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(GameObject), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 768, "GameObject instance bytes", 768, instance.Length);
+        Expect(ReadUInt32(instance, 296) == 3, "CamouflageDetectorLevel", 3, ReadUInt32(instance, 296));
+        Expect(ReadUInt32(instance, 304) == 7, "PathPriority", 7, ReadUInt32(instance, 304));
+        Expect(ReadUInt32(instance, 376) == 0x3E800000, "InvisibilityOpacityMin", 0x3E800000, ReadUInt32(instance, 376));
+        Expect(ReadUInt32(instance, 380) == 0x3F400000, "InvisibilityOpacityMax", 0x3F400000, ReadUInt32(instance, 380));
+        Expect(instance[589] == 1, "IsTrainable default", 1, instance[589]);
+        Expect(instance[597] == 1, "CanPathThroughGates default", 1, instance[597]);
+        Expect(instance[598] == 0, "BuildInProximityToSamePlayerStucture", 0, instance[598]);
+        Expect(ReadUInt32(instance, 564) == 600, "CrusherInfo relocation", 600, ReadUInt32(instance, 564));
+        Expect(ReadUInt32(instance, 568) == 1, "ProjectedBuildabilityInfo count", 1, ReadUInt32(instance, 568));
+        Expect(ReadUInt32(instance, 572) == 652, "ProjectedBuildabilityInfo relocation", 652, ReadUInt32(instance, 572));
+        Expect(instance[646] == 1, "CrushAircraftWhileStationary", 1, instance[646]);
+        Expect(instance[650] == 1, "CannotCrushTarget", 1, instance[650]);
+        Expect(ReadUInt32(instance, 652) == 0x41400000, "ProjectedBuildabilityInfo.Radius", 0x41400000, ReadUInt32(instance, 652));
+        Expect(ReadUInt32(instance, 756) == 0x42960000, "AllowedBuildabilityHeightVariation", 0x42960000, ReadUInt32(instance, 756));
+        Expect(instance[764] == 0, "PrimaryBuidability", 0, instance[764]);
+        Expect(chunk.RelocationBuffer.Length == 12, "GameObject relocation bytes", 12, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 0, "GameObject imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine(
+            $"  GameObject bin={chunk.InstanceBuffer.Length}, " +
             $"relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 

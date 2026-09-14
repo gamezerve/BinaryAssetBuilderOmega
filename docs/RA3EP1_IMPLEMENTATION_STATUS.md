@@ -87,6 +87,34 @@ EP1 layout. The compiler PoC verifies the Uprising-only `ScatterAlways`,
 `ProjectileSelfUsesPathfinder`, `UpdateBarrelModelConditions`, expanded weapon
 flags/anti-mask enums and `VirtualDamage` (`340 bin / 0 relo / 0 imp`).
 
+`GameObject` is the fourth audited root type. Metadata from EA's RA3 compiler
+establishes the original 592-byte layout and exposes several fields that were
+missing, misplaced, or KW-specific in the inherited source. The rebuilt model
+restores the transformed description/image fields, voice-transition timeouts,
+path priority, invisibility opacity, health-bar and subgroup data, resource
+costs, EVA fields, `UnitSpecificFX`, and the native list/pointer ordering. It
+also removes the inherited root `WeaponSet`, dead-collision, display-damage,
+build-cost/threat and selection-decal fields that are not present in the RA3 or
+EP1 root schema.
+
+EP1's `KindOfType` has exactly 291 values and therefore needs ten 32-bit spans.
+Because `GameObject` embeds two `KindOfBitFlags` values, each grows from 36 to
+40 bytes and the EP1 root becomes 600 bytes. The enum synchronizer now owns the
+complete `KindOf`, `UnitCategory`, `WeaponCategory`, `BuildPlacementType`,
+`BuildableStatus`, and `SkirmishAIBaseLocation` order and bit counts. This also
+adds the EP1-only `RADIATION` weapon category and `BLOCKED` build-placement
+value.
+
+The nested EP1 `CrusherInfo` and `ProjectedBuildabilityInfo` changes have been
+ported from the official XSD delta. Their provisional native layouts are
+locked as 52 and 116 bytes respectively; these sizes combine recovered RA3
+metadata with EP1 bit-count and member-order changes and still require direct
+EP1 binary/disassembly confirmation. The compiler PoC now emits a 768-byte
+`GameObject` graph with the expected nested pointers/list and a 12-byte
+relocation stream. Numeric parsing is invariant-culture throughout the core
+marshaller, preventing decimal values such as `0.25` from becoming `25` on a
+Turkish-locale host.
+
 The independently supplied clean RA3 baseline at
 `D:\OneDrive\CNC Files\CnC_Modding_Support-main (Official XML, Schema, Script, Shader, Maps)\Red Alert 3\Schemas (RA3)`
 contains 821 XSD files and is structurally identical to `schemas/ra3/xsd`.

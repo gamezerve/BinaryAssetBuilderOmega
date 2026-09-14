@@ -140,7 +140,7 @@ internal static class Program
         }
         catch (Exception exception)
         {
-            Console.Error.WriteLine($"ERROR: {exception.Message}");
+            Console.Error.WriteLine($"ERROR: {exception}");
             return 1;
         }
     }

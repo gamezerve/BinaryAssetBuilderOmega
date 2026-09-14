@@ -55,6 +55,40 @@ internal static class UprisingLayoutSmokeTest
         Expect(SageBinaryData.WeaponFlagsBitFlags.Count == 13, "WeaponFlagsBitFlags.Count", 13, SageBinaryData.WeaponFlagsBitFlags.Count);
         Expect(SageBinaryData.WeaponAntiBitFlags.Count == 14, "WeaponAntiBitFlags.Count", 14, SageBinaryData.WeaponAntiBitFlags.Count);
 
+        ExpectSize<SageBinaryData.MoneyTransaction>(8);
+        ExpectSize<SageBinaryData.ObjectResourceInfo>(8);
+        Expect(SageBinaryData.KindOfBitFlags.Count == 291, "KindOfBitFlags.Count", 291, SageBinaryData.KindOfBitFlags.Count);
+        Expect(SageBinaryData.BuildPlacementTypeBitFlags.Count == 5, "BuildPlacementTypeBitFlags.Count", 5, SageBinaryData.BuildPlacementTypeBitFlags.Count);
+        ExpectSize<SageBinaryData.GameObject>(600);
+        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.KindOf), 4);
+        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.Description), 52);
+        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.RadarPriority), 84);
+        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.Side), 120);
+        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.SelectPortrait), 156);
+        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.VoiceMoveLandToWaterTimeout), 244);
+        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.ExperienceScalarTable), 284);
+        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.BuildOnRequiredObjectKindOf), 316);
+        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.InvisibilityOpacityMin), 376);
+        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.UnitIntro), 400);
+        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.ObjectResourceInfo), 416);
+        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.UnitSpecificFX), 484);
+        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.UpgradeCameo), 544);
+        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.DisplayUpgrade), 576);
+        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.RefundValue), 584);
+        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.BuildInProximityToSamePlayerStucture), 598);
+        ExpectSize<SageBinaryData.CrusherLevelModelConditionInfo>(12);
+        ExpectOffset<SageBinaryData.CrusherLevelModelConditionInfo>(nameof(SageBinaryData.CrusherLevelModelConditionInfo.ObjectFilter), 4);
+        ExpectSize<SageBinaryData.CrushKillDelayForObjectFilter>(12);
+        ExpectSize<SageBinaryData.CrusherInfo>(52);
+        ExpectOffset<SageBinaryData.CrusherInfo>(nameof(SageBinaryData.CrusherInfo.ExtraCrushLevels), 20);
+        ExpectOffset<SageBinaryData.CrusherInfo>(nameof(SageBinaryData.CrusherInfo.ExtraCrushKillDelays), 28);
+        ExpectOffset<SageBinaryData.CrusherInfo>(nameof(SageBinaryData.CrusherInfo.DefaultCrushKillDelay), 36);
+        ExpectOffset<SageBinaryData.CrusherInfo>(nameof(SageBinaryData.CrusherInfo.CannotCrushTarget), 50);
+        ExpectSize<SageBinaryData.ProjectedBuildabilityInfo>(116);
+        ExpectOffset<SageBinaryData.ProjectedBuildabilityInfo>(nameof(SageBinaryData.ProjectedBuildabilityInfo.ModelConditionsToReject), 44);
+        ExpectOffset<SageBinaryData.ProjectedBuildabilityInfo>(nameof(SageBinaryData.ProjectedBuildabilityInfo.AllowedObjectFilter), 108);
+        ExpectOffset<SageBinaryData.ProjectedBuildabilityInfo>(nameof(SageBinaryData.ProjectedBuildabilityInfo.PrimaryBuidability), 112);
+
         Console.WriteLine("Uprising layout self-test: OK");
     }
 
