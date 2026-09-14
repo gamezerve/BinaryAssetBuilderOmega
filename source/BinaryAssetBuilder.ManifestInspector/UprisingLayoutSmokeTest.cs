@@ -88,6 +88,19 @@ internal static class UprisingLayoutSmokeTest
         ExpectOffset<SageBinaryData.ProjectedBuildabilityInfo>(nameof(SageBinaryData.ProjectedBuildabilityInfo.ModelConditionsToReject), 44);
         ExpectOffset<SageBinaryData.ProjectedBuildabilityInfo>(nameof(SageBinaryData.ProjectedBuildabilityInfo.AllowedObjectFilter), 108);
         ExpectOffset<SageBinaryData.ProjectedBuildabilityInfo>(nameof(SageBinaryData.ProjectedBuildabilityInfo.PrimaryBuidability), 112);
+        ExpectSize<SageBinaryData.SlavedUpdateModuleData>(112);
+        ExpectSize<SageBinaryData.SpawnedSlaveUpdateModuleData>(112);
+        ExpectOffset<SageBinaryData.SpawnedSlaveUpdateModuleData>(nameof(SageBinaryData.SpawnedSlaveUpdateModuleData.Base), 0);
+        ExpectSize<SageBinaryData.GenericUnpackUpdateModuleData>(20);
+        ExpectOffset<SageBinaryData.GenericUnpackUpdateModuleData>(nameof(SageBinaryData.GenericUnpackUpdateModuleData.UnpackTime), 8);
+        ExpectOffset<SageBinaryData.GenericUnpackUpdateModuleData>(nameof(SageBinaryData.GenericUnpackUpdateModuleData.UnpackCompleteSound), 12);
+        ExpectOffset<SageBinaryData.GenericUnpackUpdateModuleData>(nameof(SageBinaryData.GenericUnpackUpdateModuleData.OffsetHeightAboveWater), 16);
+        ExpectSize<SageBinaryData.UnitUnpackUpdateModuleData>(20);
+        ExpectSize<SageBinaryData.StoreObjectsSpecialPowerModuleData>(256);
+        ExpectSize<SageBinaryData.AddObjectsToLiftUpdateSpecialPowerModuleData>(260);
+        ExpectOffset<SageBinaryData.AddObjectsToLiftUpdateSpecialPowerModuleData>(nameof(SageBinaryData.AddObjectsToLiftUpdateSpecialPowerModuleData.LiftObjectLinkID), 256);
+        ExpectSize<SageBinaryData.AddObjectsToLureUpdateSpecialPowerModuleData>(260);
+        ExpectOffset<SageBinaryData.AddObjectsToLureUpdateSpecialPowerModuleData>(nameof(SageBinaryData.AddObjectsToLureUpdateSpecialPowerModuleData.LureObjectLinkID), 256);
 
         Console.WriteLine("Uprising layout self-test: OK");
     }

@@ -35,10 +35,21 @@ internal static class AssetStreamProbe
 
         if (matches == 0)
         {
+            string[] suggestions = assetName is null
+                ? Array.Empty<string>()
+                : manifest.Assets
+                    .Where(asset => asset.TypeName.Equals(typeName, StringComparison.OrdinalIgnoreCase)
+                        && asset.Name.Contains(assetName, StringComparison.OrdinalIgnoreCase))
+                    .Select(asset => asset.Name)
+                    .Take(10)
+                    .ToArray();
+            string suffix = suggestions.Length == 0
+                ? string.Empty
+                : $" Similar names: {string.Join(", ", suggestions)}.";
             throw new InvalidDataException(
                 assetName is null
                     ? $"Manifest contains no assets of type '{typeName}'."
-                    : $"Manifest contains no asset '{assetName}' of type '{typeName}'.");
+                    : $"Manifest contains no asset '{assetName}' of type '{typeName}'.{suffix}");
         }
     }
 

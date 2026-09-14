@@ -12,6 +12,9 @@ internal static class CompilerSmokeTest
         TestAttributeModifier();
         TestLocomotorTemplate();
         TestWeaponTemplate();
+        TestSpawnedSlaveUpdate();
+        TestUnitUnpackUpdate();
+        TestAddObjectsToLiftUpdate();
         TestGameObject();
         Console.WriteLine("Uprising compiler self-test: OK");
     }
@@ -194,6 +197,88 @@ internal static class CompilerSmokeTest
         Console.WriteLine(
             $"  GameObject bin={chunk.InstanceBuffer.Length}, " +
             $"relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    private static unsafe void TestSpawnedSlaveUpdate()
+    {
+        const string xml = """
+            <SpawnedSlaveUpdate xmlns="uri:ea.com:eala:asset"
+                LeashRange="300" AttackRange="250"
+                DieOnMastersDeath="true"
+                UseSlaverAsControlForEvaObjectSightedEvents="false" />
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:SpawnedSlaveUpdate", namespaces)!, namespaces);
+
+        SpawnedSlaveUpdateModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(SpawnedSlaveUpdateModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 112, "SpawnedSlaveUpdate instance bytes", 112, instance.Length);
+        Expect(ReadUInt32(instance, 8) == 300, "SpawnedSlaveUpdate.LeashRange", 300, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 20) == 250, "SpawnedSlaveUpdate.AttackRange", 250, ReadUInt32(instance, 20));
+        Expect(instance[109] == 1, "SpawnedSlaveUpdate.DieOnMastersDeath", 1, instance[109]);
+        Expect(chunk.RelocationBuffer.Length == 0, "SpawnedSlaveUpdate relocation bytes", 0, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 0, "SpawnedSlaveUpdate imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  SpawnedSlaveUpdate bin={chunk.InstanceBuffer.Length}, relo=0, imp=0");
+    }
+
+    private static unsafe void TestUnitUnpackUpdate()
+    {
+        const string xml = """
+            <UnitUnpackUpdate xmlns="uri:ea.com:eala:asset"
+                UnpackTime="20s" OffsetHeightAboveWater="5.0" />
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:UnitUnpackUpdate", namespaces)!, namespaces);
+
+        UnitUnpackUpdateModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(UnitUnpackUpdateModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 20, "UnitUnpackUpdate instance bytes", 20, instance.Length);
+        Expect(ReadUInt32(instance, 8) == 0x41A00000, "UnitUnpackUpdate.UnpackTime", 0x41A00000, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 16) == 0x40A00000, "UnitUnpackUpdate.OffsetHeightAboveWater", 0x40A00000, ReadUInt32(instance, 16));
+        Expect(chunk.RelocationBuffer.Length == 0, "UnitUnpackUpdate relocation bytes", 0, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 0, "UnitUnpackUpdate imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  UnitUnpackUpdate bin={chunk.InstanceBuffer.Length}, relo=0, imp=0");
+    }
+
+    private static unsafe void TestAddObjectsToLiftUpdate()
+    {
+        const string xml = """
+            <AddObjectsToLiftUpdateSpecialPower xmlns="uri:ea.com:eala:asset"
+                Radius="15" LiftObjectLinkID="101" />
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:AddObjectsToLiftUpdateSpecialPower", namespaces)!, namespaces);
+
+        AddObjectsToLiftUpdateSpecialPowerModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(AddObjectsToLiftUpdateSpecialPowerModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 260, "AddObjectsToLiftUpdate instance bytes", 260, instance.Length);
+        Expect(ReadUInt32(instance, 252) == 0x41700000, "AddObjectsToLiftUpdate.Radius", 0x41700000, ReadUInt32(instance, 252));
+        Expect(ReadUInt32(instance, 256) == 101, "AddObjectsToLiftUpdate.LiftObjectLinkID", 101, ReadUInt32(instance, 256));
+        Console.WriteLine($"  AddObjectsToLiftUpdate bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static uint ReadUInt32(ReadOnlySpan<byte> bytes, int offset) =>

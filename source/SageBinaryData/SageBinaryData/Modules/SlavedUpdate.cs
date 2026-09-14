@@ -37,3 +37,9 @@ public struct SlavedUpdateModuleData
     public SageBool MarkUnselectable;
     public SageBool UseSlaverAsControlForEvaObjectSightedEvents;
 }
+
+[StructLayout(LayoutKind.Sequential)]
+public struct SpawnedSlaveUpdateModuleData
+{
+    public SlavedUpdateModuleData Base;
+}

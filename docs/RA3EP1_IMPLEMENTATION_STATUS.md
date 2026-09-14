@@ -115,6 +115,17 @@ relocation stream. Numeric parsing is invariant-culture throughout the core
 marshaller, preventing decimal values such as `0.25` from becoming `25` on a
 Turkish-locale host.
 
+The first low-risk EP1-only behavior-module group is also wired into the
+`BehaviorModuleData` polymorphic dispatch table. `SpawnedSlaveUpdate` is a
+fieldless specialization of the existing 112-byte `SlavedUpdate` layout;
+`GenericUnpackUpdate` and its fieldless `UnitUnpackUpdate` specialization use a
+20-byte layout; and the Lift/Lure special-power modules append one 32-bit link
+ID to the existing 256-byte `StoreObjectsSpecialPower` base. Compiler tests use
+values taken from the official Desolator, Giga Fortress, and Yuriko XML and
+verify the resulting 112-, 20-, and 260-byte chunks. These ports establish the
+registration/marshalling pattern for new EP1 module types; modules with novel
+nested data still require stronger native-layout evidence before being added.
+
 The independently supplied clean RA3 baseline at
 `D:\OneDrive\CNC Files\CnC_Modding_Support-main (Official XML, Schema, Script, Shader, Maps)\Red Alert 3\Schemas (RA3)`
 contains 821 XSD files and is structurally identical to `schemas/ra3/xsd`.

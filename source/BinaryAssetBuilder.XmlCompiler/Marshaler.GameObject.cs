@@ -32,6 +32,15 @@ public static partial class Marshaler
             case 0xC8E1225Fu:
                 MarshalPolymorphicType<SlavedUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
+            case 0x004CA983u:
+                MarshalPolymorphicType<SpawnedSlaveUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                break;
+            case 0xD9B247DFu:
+                MarshalPolymorphicType<AddObjectsToLiftUpdateSpecialPowerModuleData, BehaviorModuleData>(node, objT, state);
+                break;
+            case 0xA7DEFFCCu:
+                MarshalPolymorphicType<AddObjectsToLureUpdateSpecialPowerModuleData, BehaviorModuleData>(node, objT, state);
+                break;
             case 0x0BBF2A39u:
                 MarshalPolymorphicType<BezierProjectileBehaviorModuleData, BehaviorModuleData>(node, objT, state);
                 break;
@@ -625,6 +634,12 @@ public static partial class Marshaler
                 break;
             case 0x977F8391u:
                 MarshalPolymorphicType<StructureUnpackUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                break;
+            case 0x6083010Au:
+                MarshalPolymorphicType<GenericUnpackUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                break;
+            case 0x7F7F2A1Au:
+                MarshalPolymorphicType<UnitUnpackUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x384E25E7u:
                 MarshalPolymorphicType<BannerCarrierUpgradeModuleData, BehaviorModuleData>(node, objT, state);

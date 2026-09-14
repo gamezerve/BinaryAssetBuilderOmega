@@ -39,4 +39,13 @@ public static partial class Marshaler
         Marshal(node.GetChildNode(nameof(SlavedUpdateModuleData.GuardPosOffset), null), &objT->GuardPosOffset, state);
         Marshal(node, (UpdateModuleData*)objT, state);
     }
+
+    public static unsafe void Marshal(Node node, SpawnedSlaveUpdateModuleData* objT, Tracker state)
+    {
+        if (node is null)
+        {
+            return;
+        }
+        Marshal(node, (SlavedUpdateModuleData*)objT, state);
+    }
 }
