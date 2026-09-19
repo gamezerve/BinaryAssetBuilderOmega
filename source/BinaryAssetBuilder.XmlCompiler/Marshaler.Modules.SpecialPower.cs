@@ -12,8 +12,6 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.SpecialPowerTemplate), null), &objT->SpecialPowerTemplate, state);
         Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.UpdateModuleStartsAttack), "false"), &objT->UpdateModuleStartsAttack, state);
         Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.StartsPaused), "false"), &objT->StartsPaused, state);
-        Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.ReEnableAntiCategory), "false"), &objT->ReEnableAntiCategory, state);
-        Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.AntiCategory), null), &objT->AntiCategory, state);
         Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.AntiFX), null), &objT->AntiFX, state);
         Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.AttributeModifier), null), &objT->AttributeModifier, state);
         Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.AttributeModifierRange), "0.0"), &objT->AttributeModifierRange, state);
@@ -22,8 +20,6 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.AttributeModifierWeatherBased), "false"), &objT->AttributeModifierWeatherBased, state);
         Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.WeatherDuration), "0"), &objT->WeatherDuration, state);
         Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.RequirementsFilterMPSkirmish), null), &objT->RequirementsFilterMPSkirmish, state);
-        Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.TargetEnemy), "false"), &objT->TargetEnemy, state);
-        Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.TargetAllSides), "false"), &objT->TargetAllSides, state);
         Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.InitiateFX), null), &objT->InitiateFX, state);
         Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.TriggerFX), null), &objT->TriggerFX, state);
         Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.SetModelCondition), null), &objT->SetModelCondition, state);
@@ -42,6 +38,11 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.UseDistanceFromCommandCenter), "false"), &objT->UseDistanceFromCommandCenter, state);
         Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.MaxDistanceFromCommandCenter), "0"), &objT->MaxDistanceFromCommandCenter, state);
         Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.ChildModuleHandlesFX), "false"), &objT->ChildModuleHandlesFX, state);
+        Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.LeechRechargePercentPlayerTechTrigger), null), &objT->LeechRechargePercentPlayerTechTrigger, state);
+        Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.LeechRechargePercentFromSpecialPower), null), &objT->LeechRechargePercentFromSpecialPower, state);
+        Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.DisabledTypesToIgnore), "HELD"), &objT->DisabledTypesToIgnore, state);
+        Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.CanAffectObjectFilter), "GenericSpecialPowerObjectFilter"), &objT->CanAffectObjectFilter, state);
+        Marshal(node.GetAttributeValue(nameof(SpecialPowerModuleData.ObjectFilterDistType), "CENTER_2D"), &objT->ObjectFilterDistType, state);
         Marshal(node.GetChildNode(nameof(SpecialPowerModuleData.AttributeModifierAffects), null), &objT->AttributeModifierAffects, state);
         Marshal(node.GetChildNode(nameof(SpecialPowerModuleData.RequirementsFilterMP), null), &objT->RequirementsFilterMP, state);
         Marshal(node.GetChildNode(nameof(SpecialPowerModuleData.RequirementsFilterStrategic), null), &objT->RequirementsFilterStrategic, state);

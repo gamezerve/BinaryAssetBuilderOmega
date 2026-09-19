@@ -22,15 +22,15 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(Vector2.Y), null), &objT->Y, state);
     }
 
-    private static unsafe void Marshal(Node node, Vector3* objT, Tracker state)
+    public static unsafe void Marshal(Node node, Vector3* objT, Tracker state)
     {
         if (node is null)
         {
             return;
         }
-        Marshal(node.GetAttributeValue(nameof(Vector3.X), null), &objT->X, state);
-        Marshal(node.GetAttributeValue(nameof(Vector3.Y), null), &objT->Y, state);
-        Marshal(node.GetAttributeValue(nameof(Vector3.Z), null), &objT->Z, state);
+        Marshal(node.GetAttributeValue("x", "0.0"), &objT->X, state);
+        Marshal(node.GetAttributeValue("y", "0.0"), &objT->Y, state);
+        Marshal(node.GetAttributeValue("z", "0.0"), &objT->Z, state);
     }
 
     private static unsafe void Marshal(Node node, Vector4* objT, Tracker state)

@@ -15,6 +15,8 @@ internal static class CompilerSmokeTest
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
+        TestLureObjectsUpdate();
+        TestFlingStoredObjectsSpecialPower();
         TestAudioDynamicsCollide();
         TestDamageDynamicsCollide();
         TestReactionFXOnDamage();
@@ -280,10 +282,91 @@ internal static class CompilerSmokeTest
         Chunk chunk = new();
         tracker.MakeRelocatable(chunk);
         ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
-        Expect(instance.Length == 260, "AddObjectsToLiftUpdate instance bytes", 260, instance.Length);
-        Expect(ReadUInt32(instance, 252) == 0x41700000, "AddObjectsToLiftUpdate.Radius", 0x41700000, ReadUInt32(instance, 252));
-        Expect(ReadUInt32(instance, 256) == 101, "AddObjectsToLiftUpdate.LiftObjectLinkID", 101, ReadUInt32(instance, 256));
+        Expect(instance.Length == 496, "AddObjectsToLiftUpdate instance bytes", 496, instance.Length);
+        Expect(ReadUInt32(instance, 476) == 0x41700000, "AddObjectsToLiftUpdate.Radius", 0x41700000, ReadUInt32(instance, 476));
+        Expect(ReadUInt32(instance, 492) == 101, "AddObjectsToLiftUpdate.LiftObjectLinkID", 101, ReadUInt32(instance, 492));
         Console.WriteLine($"  AddObjectsToLiftUpdate bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    private static unsafe void TestLureObjectsUpdate()
+    {
+        const string xml = """
+            <LureObjectsUpdate xmlns="uri:ea.com:eala:asset"
+                LureObjectLinkID="101" GuardAttackRange="175"
+                GuardStatus="UNSELECTABLE"
+                DisabledTypesToProcess="FROZEN">
+              <GuardOffset x="60" y="0" z="0" />
+              <GuardOffset x="45" y="-45" z="0" />
+            </LureObjectsUpdate>
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:LureObjectsUpdate", namespaces)!, namespaces);
+
+        LureObjectsUpdateModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(LureObjectsUpdateModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 96, "LureObjectsUpdate instance bytes", 96, instance.Length);
+        Expect(ReadUInt32(instance, 8) == 101, "LureObjectsUpdate.LureObjectLinkID", 101, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 12) == 0x49742400, "LureObjectsUpdate.GuardRadiusMaxSqr", 0x49742400, ReadUInt32(instance, 12));
+        Expect(ReadUInt32(instance, 16) == 0x432F0000, "LureObjectsUpdate.GuardAttackRange", 0x432F0000, ReadUInt32(instance, 16));
+        Expect(ReadUInt32(instance, 52) == 10, "LureObjectsUpdate.UpdateRate", 10, ReadUInt32(instance, 52));
+        Expect(ReadUInt32(instance, 60) == 0x1000, "LureObjectsUpdate.DisabledTypesToProcess", 0x1000, ReadUInt32(instance, 60));
+        Expect(ReadUInt32(instance, 64) == 2, "LureObjectsUpdate.GuardOffset count", 2, ReadUInt32(instance, 64));
+        Expect(ReadUInt32(instance, 68) == 72, "LureObjectsUpdate.GuardOffset relocation", 72, ReadUInt32(instance, 68));
+        Expect(ReadUInt32(instance, 72) == 0x42700000, "LureObjectsUpdate.GuardOffset[0].X", 0x42700000, ReadUInt32(instance, 72));
+        Expect(ReadUInt32(instance, 88) == 0xC2340000, "LureObjectsUpdate.GuardOffset[1].Y", unchecked((int)0xC2340000), ReadUInt32(instance, 88));
+        Expect(chunk.RelocationBuffer.Length == 8, "LureObjectsUpdate relocation bytes", 8, chunk.RelocationBuffer.Length);
+        Console.WriteLine($"  LureObjectsUpdate bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    private static unsafe void TestFlingStoredObjectsSpecialPower()
+    {
+        const string xml = """
+            <FlingStoredObjectsSpecialPower xmlns="uri:ea.com:eala:asset"
+                SpecialPowerTemplate="SpecialPowerTemplate\123"
+                CanAffectObjectFilter="ObjectFilterAsset\456"
+                DisabledTypesToIgnore="FROZEN" ObjectFilterDistType="CIRCLE"
+                AvailableAtStart="true" StoreObjectsLinkID="101" LiftObjectLinkID="102"
+                MaximumVelocity="800" MinimumVelocity="700">
+              <ObjectMap />
+              <ObjectMap />
+            </FlingStoredObjectsSpecialPower>
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:FlingStoredObjectsSpecialPower", namespaces)!, namespaces);
+
+        FlingStoredObjectsSpecialPowerModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(FlingStoredObjectsSpecialPowerModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 516, "FlingStoredObjectsSpecialPower instance bytes", 516, instance.Length);
+        Expect(ReadUInt32(instance, 8) == 123, "Fling SpecialPowerTemplate import", 123, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 84) == 0x1000, "Fling DisabledTypesToIgnore", 0x1000, ReadUInt32(instance, 84));
+        Expect(ReadUInt32(instance, 88) == 456, "Fling CanAffectObjectFilter import", 456, ReadUInt32(instance, 88));
+        Expect(ReadUInt32(instance, 92) == 1, "Fling ObjectFilterDistType=CIRCLE", 1, ReadUInt32(instance, 92));
+        Expect(instance[469] == 1, "Fling AvailableAtStart", 1, instance[469]);
+        Expect(ReadUInt32(instance, 476) == 101, "Fling StoreObjectsLinkID", 101, ReadUInt32(instance, 476));
+        Expect(ReadUInt32(instance, 480) == 102, "Fling LiftObjectLinkID", 102, ReadUInt32(instance, 480));
+        Expect(ReadUInt32(instance, 484) == 0x44480000, "Fling MaximumVelocity", 0x44480000, ReadUInt32(instance, 484));
+        Expect(ReadUInt32(instance, 488) == 0x442F0000, "Fling MinimumVelocity", 0x442F0000, ReadUInt32(instance, 488));
+        Expect(ReadUInt32(instance, 492) == 2, "Fling ObjectMap count", 2, ReadUInt32(instance, 492));
+        Expect(ReadUInt32(instance, 496) == 500, "Fling ObjectMap relocation", 500, ReadUInt32(instance, 496));
+        Expect(chunk.RelocationBuffer.Length == 8, "Fling relocation bytes", 8, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 12, "Fling imports bytes", 12, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  FlingStoredObjectsSpecialPower bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static unsafe void TestAudioDynamicsCollide()

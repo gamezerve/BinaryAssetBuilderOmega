@@ -3,9 +3,9 @@
 This branch starts the migration with a read-only compatibility gate. It does
 not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
-## Progress snapshot (2026-09-19)
+## Progress snapshot (2026-09-20)
 
-The current conservative engineering estimate is **34% complete / 66%
+The current conservative engineering estimate is **36% complete / 64%
 remaining**. This is an effort estimate, not the percentage of C# files in the
 tree. A pre-existing Kane's Wrath marshaller only counts as complete after its
 RA3/EP1 layout, type hash and emitted streams have been checked.
@@ -14,17 +14,17 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 |---|---:|---:|---:|
 | Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
 | Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
-| Native layouts, processors, dispatch and final type table | 45% | 20% | 9.0% |
+| Native layouts, processors, dispatch and final type table | 45% | 24% | 10.8% |
 | Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
 | Built-mod validation inside Uprising | 10% | 0% | 0.0% |
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 731 (52.6%) and typed marshallers for 707
-(50.9%). These broad numbers are inventory coverage only. Of the 48 complex
-types that exist only in EP1, 16 (33.3%) now have both a model and marshaller;
-32 remain absent. The smaller audited set carries substantially more weight
-than raw file presence in the 34% estimate above.
+The source tree contains models for 734 (52.8%) and typed marshallers for 710
+(51.1%). These broad numbers are inventory coverage only. Of the 48 complex
+types that exist only in EP1, 19 (39.6%) now have both a model and marshaller;
+29 remain absent. The smaller audited set carries substantially more weight
+than raw file presence in the 36% estimate above.
 
 ## Established facts
 
@@ -153,14 +153,38 @@ Turkish-locale host.
 
 The first low-risk EP1-only behavior-module group is also wired into the
 `BehaviorModuleData` polymorphic dispatch table. `SpawnedSlaveUpdate` is a
-fieldless specialization of the existing 112-byte `SlavedUpdate` layout;
-`GenericUnpackUpdate` and its fieldless `UnitUnpackUpdate` specialization use a
-20-byte layout; and the Lift/Lure special-power modules append one 32-bit link
-ID to the existing 256-byte `StoreObjectsSpecialPower` base. Compiler tests use
-values taken from the official Desolator, Giga Fortress, and Yuriko XML and
-verify the resulting 112-, 20-, and 260-byte chunks. These ports establish the
-registration/marshalling pattern for new EP1 module types; modules with novel
-nested data still require stronger native-layout evidence before being added.
+fieldless specialization of the existing 112-byte `SlavedUpdate` layout, and
+`GenericUnpackUpdate` plus its fieldless `UnitUnpackUpdate` specialization use
+a 20-byte layout. The initial Lift/Lure implementation exposed an inherited KW
+error and has now been replaced with the native RA3/EP1 hierarchy described
+below.
+
+The Yuriko lure/fling chain is recovered from
+`GameObject:JapanYurikoTech1`. EA's RA3 Tokenizer metadata establishes a
+452-byte RA3 `SpecialPowerModuleData`; EP1's three 120-byte `ObjectFilter`
+values expand this to 476 bytes. The corrected model removes the KW-only
+`AntiCategory`, `ReEnableAntiCategory`, `TargetEnemy`, and `TargetAllSides`
+members and restores the schema-defined leech references, disabled mask,
+object-filter reference, and distance-test enum. The official five-value
+`PartitionManagerDistTestType` ordering is also restored.
+
+`StoreObjectsSpecialPower` now correctly derives from `SpecialPowerModuleData`
+instead of the unrelated 252-byte `SpecialAbilityUpdateModuleData`, and
+restores `TeleportLinkID`, `OCL`, and `TargetMarkerObjectRef`. Its EP1 size is
+492 bytes; `AddObjectsToLiftUpdateSpecialPower` and
+`AddObjectsToLureUpdateSpecialPower` are 496 bytes, matching the 496-byte stride
+of the real Yuriko instances.
+
+The EP1-only `LureObjectsUpdate` is a 72-byte root followed by 12-byte
+`Vector3` entries. Real Rank 1/2/3 payloads contain the XML's link IDs, guard
+range/status, update rate, marker reference, disabled mask, and 3/5/7 guard
+offset lists. `FlingStoredObjectsSpecialPower` is a 500-byte root followed by
+8-byte source/target object-map pairs; the 45-entry real fixture has an
+860-byte stride and places its `101` link IDs and `800/800` velocities at the
+predicted offsets. Standalone fixtures emit `96 bin / 8 relo / 0 imp` for a
+two-offset lure and `516 bin / 8 relo / 12 imp` for a two-map fling. The list
+test also fixed the existing `Vector3` marshaller's visibility and lowercase
+`x/y/z` attribute handling.
 
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of

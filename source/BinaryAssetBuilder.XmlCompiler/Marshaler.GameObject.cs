@@ -41,6 +41,12 @@ public static partial class Marshaler
             case 0xA7DEFFCCu:
                 MarshalPolymorphicType<AddObjectsToLureUpdateSpecialPowerModuleData, BehaviorModuleData>(node, objT, state);
                 break;
+            case 0xB65AB72Au:
+                MarshalPolymorphicType<LureObjectsUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                break;
+            case 0x12D1FAD9u:
+                MarshalPolymorphicType<FlingStoredObjectsSpecialPowerModuleData, BehaviorModuleData>(node, objT, state);
+                break;
             case 0x0BBF2A39u:
                 MarshalPolymorphicType<BezierProjectileBehaviorModuleData, BehaviorModuleData>(node, objT, state);
                 break;

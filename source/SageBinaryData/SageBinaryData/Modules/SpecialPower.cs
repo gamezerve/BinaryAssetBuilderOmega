@@ -9,7 +9,6 @@ public struct SpecialPowerModuleData
 {
     public BehaviorModuleData Base;
     public AssetReference<SpecialPowerTemplate> SpecialPowerTemplate;
-    public AttributeModifierCategoryBitFlags AntiCategory;
     public AssetReference<FXList> AntiFX;
     public AssetReference<AttributeModifier> AttributeModifier;
     public float AttributeModifierRange;
@@ -25,17 +24,19 @@ public struct SpecialPowerModuleData
     public TypedAssetId<SpecialPowerTemplate> OnTriggerRechargeSpecialPower;
     public uint BurnDecayModifier;
     public float MaxDistanceFromCommandCenter;
+    public AssetReference<BaseAssetType> LeechRechargePercentPlayerTechTrigger;
+    public AssetReference<SpecialPowerTemplate> LeechRechargePercentFromSpecialPower;
+    public DisabledBitFlags DisabledTypesToIgnore;
+    public AssetReference<ObjectFilterAsset> CanAffectObjectFilter;
+    public PartitionManagerDistTestType ObjectFilterDistType;
     public ObjectFilter AttributeModifierAffects;
     public ObjectFilter RequirementsFilterMP;
     public ObjectFilter RequirementsFilterStrategic;
     public unsafe SoundOrEvaEvent* InitiateSound;
     public SageBool UpdateModuleStartsAttack;
     public SageBool StartsPaused;
-    public SageBool ReEnableAntiCategory;
     public SageBool AttributeModifierAffectsSelf;
     public SageBool AttributeModifierWeatherBased;
-    public SageBool TargetEnemy;
-    public SageBool TargetAllSides;
     public SageBool DisableDuringAnimDuration;
     public SageBool IdleWhenStartingPower;
     public SageBool AffectGood;

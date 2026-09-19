@@ -27,9 +27,11 @@ public struct LinearTargetType
 
 public enum PartitionManagerDistTestType
 {
+    CENTER_2D,
+    CIRCLE,
+    CENTER_3D,
     SPHERE,
-    EXTENTS_3D,
-    CIRCLE
+    EXTENTS_3D
 }
 
 public enum WeaponFlagsType
