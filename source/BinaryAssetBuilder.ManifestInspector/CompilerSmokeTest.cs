@@ -15,6 +15,7 @@ internal static class CompilerSmokeTest
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
+        TestAudioDynamicsCollide();
         TestGameObject();
         Console.WriteLine("Uprising compiler self-test: OK");
     }
@@ -279,6 +280,41 @@ internal static class CompilerSmokeTest
         Expect(ReadUInt32(instance, 252) == 0x41700000, "AddObjectsToLiftUpdate.Radius", 0x41700000, ReadUInt32(instance, 252));
         Expect(ReadUInt32(instance, 256) == 101, "AddObjectsToLiftUpdate.LiftObjectLinkID", 101, ReadUInt32(instance, 256));
         Console.WriteLine($"  AddObjectsToLiftUpdate bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    private static unsafe void TestAudioDynamicsCollide()
+    {
+        const string xml = """
+            <AudioDynamicsCollide xmlns="uri:ea.com:eala:asset"
+                MinimumImpactVelocity="5.0">
+              <MagnitudeSoundSelector>
+                <Entry MinimumMagnitude="1.0" Sound="" />
+                <Entry MinimumMagnitude="4.0" Sound="" />
+              </MagnitudeSoundSelector>
+            </AudioDynamicsCollide>
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:AudioDynamicsCollide", namespaces)!, namespaces);
+
+        AudioDynamicsCollideModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(AudioDynamicsCollideModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 36, "AudioDynamicsCollide instance bytes", 36, instance.Length);
+        Expect(ReadUInt32(instance, 8) == 0x40A00000, "AudioDynamicsCollide.MinimumImpactVelocity", 0x40A00000, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 12) == 2, "AudioDynamicsCollide.Entry count", 2, ReadUInt32(instance, 12));
+        Expect(ReadUInt32(instance, 16) == 20, "AudioDynamicsCollide.Entry relocation", 20, ReadUInt32(instance, 16));
+        Expect(ReadUInt32(instance, 20) == 0x3F800000, "AudioDynamicsCollide.Entry[0].MinimumMagnitude", 0x3F800000, ReadUInt32(instance, 20));
+        Expect(ReadUInt32(instance, 28) == 0x40800000, "AudioDynamicsCollide.Entry[1].MinimumMagnitude", 0x40800000, ReadUInt32(instance, 28));
+        Expect(chunk.RelocationBuffer.Length == 8, "AudioDynamicsCollide relocation bytes", 8, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 0, "AudioDynamicsCollide imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  AudioDynamicsCollide bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static uint ReadUInt32(ReadOnlySpan<byte> bytes, int offset) =>

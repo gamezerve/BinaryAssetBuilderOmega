@@ -35,7 +35,8 @@ internal static class Program
                 }
                 AssetStreamProbe.Print(
                     args[1], args[2], args[3], GetOption(args, "--entry"),
-                    GetOption(args, "--bin-entry"), GetOption(args, "--asset"));
+                    GetOption(args, "--bin-entry"), GetOption(args, "--asset"),
+                    ParseUInt32Option(args, "--find-u32"));
                 return 0;
             }
 
@@ -287,6 +288,24 @@ internal static class Program
         return null;
     }
 
+    private static uint? ParseUInt32Option(IReadOnlyList<string> args, string name)
+    {
+        string? value = GetOption(args, name);
+        if (value is null)
+        {
+            return null;
+        }
+
+        string digits = value.StartsWith("0x", StringComparison.OrdinalIgnoreCase) ? value[2..] : value;
+        if (!uint.TryParse(digits, System.Globalization.NumberStyles.HexNumber,
+                System.Globalization.CultureInfo.InvariantCulture, out uint result))
+        {
+            throw new ArgumentException($"Invalid hexadecimal 32-bit value '{value}' for {name}.");
+        }
+
+        return result;
+    }
+
     private static void PrintDocument(string source, ManifestDocument document)
     {
         var header = document.Header;
@@ -352,7 +371,7 @@ internal static class Program
         Console.WriteLine("  current-layout <SageBinaryData-type-name>");
         Console.WriteLine("  layout-self-test");
         Console.WriteLine("  compiler-self-test");
-        Console.WriteLine("  asset-bytes <manifest-or-big> <bin-or-big> <type-name> [--entry <manifest-entry>] [--bin-entry <bin-entry>] [--asset <full-name>]");
+        Console.WriteLine("  asset-bytes <manifest-or-big> <bin-or-big> <type-name> [--entry <manifest-entry>] [--bin-entry <bin-entry>] [--asset <full-name>] [--find-u32 <hex>]");
     }
 
     private sealed record TypeFingerprint(uint TypeId, uint TypeHash, uint? Tokenized);

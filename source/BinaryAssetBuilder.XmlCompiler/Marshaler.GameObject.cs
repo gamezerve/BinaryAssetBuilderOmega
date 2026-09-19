@@ -56,6 +56,9 @@ public static partial class Marshaler
             case 0x70E5C103u:
                 MarshalPolymorphicType<CollideModuleData, BehaviorModuleData>(node, objT, state);
                 break;
+            case 0xD6C03AC2u:
+                MarshalPolymorphicType<AudioDynamicsCollideModuleData, BehaviorModuleData>(node, objT, state);
+                break;
             case 0x7EB7F219u:
                 MarshalPolymorphicType<CommandSetUpgradeModuleData, BehaviorModuleData>(node, objT, state);
                 break;

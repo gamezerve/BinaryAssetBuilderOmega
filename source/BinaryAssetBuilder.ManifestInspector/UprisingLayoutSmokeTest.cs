@@ -101,6 +101,13 @@ internal static class UprisingLayoutSmokeTest
         ExpectOffset<SageBinaryData.AddObjectsToLiftUpdateSpecialPowerModuleData>(nameof(SageBinaryData.AddObjectsToLiftUpdateSpecialPowerModuleData.LiftObjectLinkID), 256);
         ExpectSize<SageBinaryData.AddObjectsToLureUpdateSpecialPowerModuleData>(260);
         ExpectOffset<SageBinaryData.AddObjectsToLureUpdateSpecialPowerModuleData>(nameof(SageBinaryData.AddObjectsToLureUpdateSpecialPowerModuleData.LureObjectLinkID), 256);
+        ExpectSize<SageBinaryData.DynamicsCollideModuleData>(8);
+        ExpectSize<SageBinaryData.MagnitudeSoundSelectorEntry>(8);
+        ExpectOffset<SageBinaryData.MagnitudeSoundSelectorEntry>(nameof(SageBinaryData.MagnitudeSoundSelectorEntry.Sound), 4);
+        ExpectSize<SageBinaryData.MagnitudeSoundSelectorTable>(8);
+        ExpectSize<SageBinaryData.AudioDynamicsCollideModuleData>(20);
+        ExpectOffset<SageBinaryData.AudioDynamicsCollideModuleData>(nameof(SageBinaryData.AudioDynamicsCollideModuleData.MinimumImpactVelocity), 8);
+        ExpectOffset<SageBinaryData.AudioDynamicsCollideModuleData>(nameof(SageBinaryData.AudioDynamicsCollideModuleData.MagnitudeSoundSelector), 12);
 
         Console.WriteLine("Uprising layout self-test: OK");
     }

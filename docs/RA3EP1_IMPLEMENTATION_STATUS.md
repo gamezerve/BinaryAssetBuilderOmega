@@ -3,6 +3,29 @@
 This branch starts the migration with a read-only compatibility gate. It does
 not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
+## Progress snapshot (2026-09-19)
+
+The current conservative engineering estimate is **30% complete / 70%
+remaining**. This is an effort estimate, not the percentage of C# files in the
+tree. A pre-existing Kane's Wrath marshaller only counts as complete after its
+RA3/EP1 layout, type hash and emitted streams have been checked.
+
+| Workstream | Share of total effort | Complete | Weighted contribution |
+|---|---:|---:|---:|
+| Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
+| Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
+| Native layouts, processors, dispatch and final type table | 45% | 12% | 5.4% |
+| Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
+| Built-mod validation inside Uprising | 10% | 0% | 0.0% |
+
+The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
+At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
+The source tree contains models for 724 (52.1%) and typed marshallers for 700
+(50.4%). These broad numbers are inventory coverage only. Of the 48 complex
+types that exist only in EP1, 10 (20.8%) now have both a model and marshaller;
+38 remain absent. The smaller audited set carries substantially more weight
+than raw file presence in the 30% estimate above.
+
 ## Established facts
 
 - Red Alert 3 manifests use version 6 and `AllTypesHash=0x54EEE764`.
@@ -125,6 +148,18 @@ values taken from the official Desolator, Giga Fortress, and Yuriko XML and
 verify the resulting 112-, 20-, and 260-byte chunks. These ports establish the
 registration/marshalling pattern for new EP1 module types; modules with novel
 nested data still require stronger native-layout evidence before being added.
+
+`AudioDynamicsCollide` is the first nested EP1-only module recovered directly
+from a real tokenized Uprising `GameObject` chunk. A bounded scan of
+`GameObject:ClientFlingableExplodingBarrel` found type ID `0xD6C03AC2` at the
+module data offset. The following bytes encode the module ID, the XML's `5.0`
+minimum impact velocity, a four-entry merged selector list, and four 8-byte
+`MinimumMagnitude`/audio-reference entries. The recovered native layout is a
+20-byte root (`BehaviorModuleData`, float, list) plus 8 bytes per selector
+entry. A minimal two-entry compiler fixture therefore emits `36 bin / 8 relo /
+0 imp`, matching the recovered field ordering and sizes. `asset-bytes` now
+supports `--find-u32 <hex>` so this analysis remains a bounded random-access
+operation rather than a dump of the 1.4 GB archive.
 
 The independently supplied clean RA3 baseline at
 `D:\OneDrive\CNC Files\CnC_Modding_Support-main (Official XML, Schema, Script, Shader, Maps)\Red Alert 3\Schemas (RA3)`

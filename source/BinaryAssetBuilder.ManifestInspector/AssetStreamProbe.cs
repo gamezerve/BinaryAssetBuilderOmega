@@ -8,7 +8,8 @@ internal static class AssetStreamProbe
         string typeName,
         string? manifestEntryName,
         string? binEntryName,
-        string? assetName)
+        string? assetName,
+        uint? findUInt32)
     {
         ManifestDocument manifest = ReadManifest(manifestPath, manifestEntryName);
         long instanceOffset = 0;
@@ -27,6 +28,10 @@ internal static class AssetStreamProbe
                 if (displayed != bytes.Length)
                 {
                     Console.WriteLine($"(showing first {displayed:N0} of {bytes.Length:N0} bytes)");
+                }
+                if (findUInt32.HasValue)
+                {
+                    PrintUInt32Matches(bytes, findUInt32.Value);
                 }
                 matches++;
             }
@@ -50,6 +55,37 @@ internal static class AssetStreamProbe
                 assetName is null
                     ? $"Manifest contains no assets of type '{typeName}'."
                     : $"Manifest contains no asset '{assetName}' of type '{typeName}'.{suffix}");
+        }
+    }
+
+    private static void PrintUInt32Matches(byte[] bytes, uint value)
+    {
+        const int maximumMatches = 64;
+        int matches = 0;
+        for (int offset = 0; offset <= bytes.Length - sizeof(uint); offset++)
+        {
+            uint candidate = System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(offset));
+            if (candidate != value)
+            {
+                continue;
+            }
+
+            int windowStart = Math.Max(0, offset - 16);
+            int windowLength = Math.Min(bytes.Length - windowStart, 96);
+            Console.WriteLine(
+                $"  u32 0x{value:X8} at +0x{offset:X} ({offset:N0}): " +
+                Convert.ToHexString(bytes.AsSpan(windowStart, windowLength)));
+            matches++;
+            if (matches == maximumMatches)
+            {
+                Console.WriteLine($"  (stopped after {maximumMatches} matches)");
+                break;
+            }
+        }
+
+        if (matches == 0)
+        {
+            Console.WriteLine($"  u32 0x{value:X8}: no little-endian matches in this asset chunk");
         }
     }
 
