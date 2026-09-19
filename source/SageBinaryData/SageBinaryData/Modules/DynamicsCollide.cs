@@ -29,3 +29,11 @@ public struct AudioDynamicsCollideModuleData
     public float MinimumImpactVelocity;
     public MagnitudeSoundSelectorTable MagnitudeSoundSelector;
 }
+
+[StructLayout(LayoutKind.Sequential)]
+public struct DamageDynamicsCollideModuleData
+{
+    public DynamicsCollideModuleData Base;
+    public float MaxMagnitude;
+    public List<DamageNuggetType> DamageNugget;
+}

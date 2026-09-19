@@ -53,9 +53,7 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(WeaponEffectNugget.PartitionFilterTestType), nameof(PartitionManagerDistTestType.EXTENTS_3D)), &objT->PartitionFilterTestType, state);
         Marshal(node.GetAttributeValue(nameof(WeaponEffectNugget.ForbiddenTargetObjectStatus), null), &objT->ForbiddenTargetObjectStatus, state);
         Marshal(node.GetAttributeValue(nameof(WeaponEffectNugget.ForbiddenTargetModelCondition), null), &objT->ForbiddenTargetModelCondition, state);
-#if KANESWRATH
-        Marshal(node.GetAttributeValue(nameof(WeaponEffectNugget.RequiredObjectStatus), null), &objT->RequiredObjectStatus, state);
-#endif
+        Marshal(node.GetAttributeValue(nameof(WeaponEffectNugget.Radius), "0.0"), &objT->Radius, state);
         Marshal(node.GetChildNode(nameof(WeaponEffectNugget.SpecialObjectFilter), null), &objT->SpecialObjectFilter, state);
         Marshal(node.GetChildNodes(nameof(WeaponEffectNugget.RequiredUpgrade)), &objT->RequiredUpgrade, state);
         Marshal(node.GetChildNodes(nameof(WeaponEffectNugget.ForbiddenUpgrade)), &objT->ForbiddenUpgrade, state);
@@ -126,7 +124,6 @@ public static partial class Marshaler
         }
         Marshal(node.GetAttributeValue(nameof(DamageNuggetType.Damage), "0"), &objT->Damage, state);
         Marshal(node.GetAttributeValue(nameof(DamageNuggetType.DamageTaperOff), "-1.0"), &objT->DamageTaperOff, state);
-        Marshal(node.GetAttributeValue(nameof(DamageNuggetType.Radius), "0.0"), &objT->Radius, state);
         Marshal(node.GetAttributeValue(nameof(DamageNuggetType.MinRadius), "0.0"), &objT->MinRadius, state);
         Marshal(node.GetAttributeValue(nameof(DamageNuggetType.DamageArc), "360d"), &objT->DamageArc, state);
         Marshal(node.GetAttributeValue(nameof(DamageNuggetType.DamageArcInverted), "false"), &objT->DamageArcInverted, state);
@@ -143,11 +140,19 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(DamageNuggetType.OnlyKillOwnerWhenTriggered), "false"), &objT->OnlyKillOwnerWhenTriggered, state);
         Marshal(node.GetAttributeValue(nameof(DamageNuggetType.DrainLifeMultiplier), "1"), &objT->DrainLifeMultiplier, state);
         Marshal(node.GetAttributeValue(nameof(DamageNuggetType.DrainLife), "false"), &objT->DrainLife, state);
-        Marshal(node.GetAttributeValue(nameof(DamageNuggetType.CylinderAOE), "false"), &objT->CylinderAOE, state);
         Marshal(node.GetAttributeValue(nameof(DamageNuggetType.DamageSpeed), "0"), &objT->DamageSpeed, state);
         Marshal(node.GetAttributeValue(nameof(DamageNuggetType.UnderAttackOverrideEvaEvent), null), &objT->UnderAttackOverrideEvaEvent, state);
         Marshal(node.GetAttributeValue(nameof(DamageNuggetType.VictimShroudRevealer), null), &objT->VictimShroudRevealer, state);
         Marshal(node.GetChildNodes(nameof(DamageNuggetType.DamageScalarDetails)), &objT->DamageScalarDetails, state);
+        Marshal(node.GetAttributeValue(nameof(DamageNuggetType.NotifyOwnerOnVictimDeath), "false"), &objT->NotifyOwnerOnVictimDeath, state);
+        Marshal(node.GetAttributeValue(nameof(DamageNuggetType.NotifyObserversOnPreDamageEffectPosition), "false"), &objT->NotifyObserversOnPreDamageEffectPosition, state);
+        Marshal(node.GetAttributeValue(nameof(DamageNuggetType.ForceFXPositionToVictim), "false"), &objT->ForceFXPositionToVictim, state);
+        Marshal(node.GetAttributeValue(nameof(DamageNuggetType.RadiusAffectsBridges), "false"), &objT->RadiusAffectsBridges, state);
+        Marshal(node.GetAttributeValue(
+            nameof(DamageNuggetType.InvalidTargetStatus),
+            "INSIDE_GARRISON UNATTACKABLE UNDER_IRON_CURTAIN"),
+            &objT->InvalidTargetStatus,
+            state);
         Marshal(node, (WeaponEffectNugget*)objT, state);
     }
 

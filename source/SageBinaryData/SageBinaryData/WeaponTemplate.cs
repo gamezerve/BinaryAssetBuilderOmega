@@ -233,11 +233,9 @@ public struct WeaponEffectNugget : IPolymorphic
 {
     public uint TypeId;
     public PartitionManagerDistTestType PartitionFilterTestType;
-    public ObjectStatusBitFlags ForbiddenTargetObjectStatus;
-    public ModelConditionBitFlags ForbiddenTargetModelCondition;
-#if KANESWRATH
-    public ObjectStatusBitFlags RequiredObjectStatus;
-#endif
+    public unsafe ObjectStatusBitFlags* ForbiddenTargetObjectStatus;
+    public unsafe ModelConditionBitFlags* ForbiddenTargetModelCondition;
+    public float Radius;
     public unsafe ObjectFilter* SpecialObjectFilter;
     public List<TypedAssetId<UpgradeTemplate>> RequiredUpgrade;
     public List<TypedAssetId<UpgradeTemplate>> ForbiddenUpgrade;
@@ -301,7 +299,6 @@ public struct DamageNuggetType
     public WeaponEffectNugget Base;
     public float Damage;
     public float DamageTaperOff;
-    public float Radius;
     public float MinRadius;
     public Angle DamageArc;
     public float DamageMaxHeight;
@@ -318,11 +315,15 @@ public struct DamageNuggetType
     public unsafe AnsiString* UnderAttackOverrideEvaEvent;
     public AssetReference<GameObject> VictimShroudRevealer;
     public List<ScalarInfo> DamageScalarDetails;
+    public ObjectStatusBitFlags InvalidTargetStatus;
     public SageBool DamageArcInverted;
     public SageBool AcceptDamageAdd;
     public SageBool OnlyKillOwnerWhenTriggered;
     public SageBool DrainLife;
-    public SageBool CylinderAOE;
+    public SageBool NotifyOwnerOnVictimDeath;
+    public SageBool NotifyObserversOnPreDamageEffectPosition;
+    public SageBool ForceFXPositionToVictim;
+    public SageBool RadiusAffectsBridges;
 }
 
 #if KANESWRATH

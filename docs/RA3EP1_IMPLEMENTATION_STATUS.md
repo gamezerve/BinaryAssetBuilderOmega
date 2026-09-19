@@ -5,7 +5,7 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Progress snapshot (2026-09-19)
 
-The current conservative engineering estimate is **30% complete / 70%
+The current conservative engineering estimate is **31% complete / 69%
 remaining**. This is an effort estimate, not the percentage of C# files in the
 tree. A pre-existing Kane's Wrath marshaller only counts as complete after its
 RA3/EP1 layout, type hash and emitted streams have been checked.
@@ -14,17 +14,17 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 |---|---:|---:|---:|
 | Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
 | Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
-| Native layouts, processors, dispatch and final type table | 45% | 12% | 5.4% |
+| Native layouts, processors, dispatch and final type table | 45% | 14% | 6.3% |
 | Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
 | Built-mod validation inside Uprising | 10% | 0% | 0.0% |
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 724 (52.1%) and typed marshallers for 700
+The source tree contains models for 725 (52.2%) and typed marshallers for 701
 (50.4%). These broad numbers are inventory coverage only. Of the 48 complex
-types that exist only in EP1, 10 (20.8%) now have both a model and marshaller;
-38 remain absent. The smaller audited set carries substantially more weight
-than raw file presence in the 30% estimate above.
+types that exist only in EP1, 11 (22.9%) now have both a model and marshaller;
+37 remain absent. The smaller audited set carries substantially more weight
+than raw file presence in the 31% estimate above.
 
 ## Established facts
 
@@ -160,6 +160,18 @@ entry. A minimal two-entry compiler fixture therefore emits `36 bin / 8 relo /
 0 imp`, matching the recovered field ordering and sizes. `asset-bytes` now
 supports `--find-u32 <hex>` so this analysis remains a bounded random-access
 operation rather than a dump of the 1.4 GB archive.
+
+The adjacent `DamageDynamicsCollide` recovery also corrected a major inherited
+KW layout error shared by weapon nuggets. EA's official RA3 Tokenizer metadata
+declares `WeaponEffectNugget=40` and `DamageNuggetType=152`; the previous source
+used 152 and 240 bytes respectively. The base now uses optional pointers for
+the two large status/model-condition masks, restores its `Radius`, and removes
+the KW-only required-status mask. EP1 expands `ObjectStatusBitFlags` from seven
+to eight spans, so its embedded `InvalidTargetStatus` grows the damage nugget
+to 156 bytes. In the real Uprising fixture the 20-byte collision-module root
+and two merged 156-byte nuggets occupy exactly the bytes up to the following
+audio module. The compiler fixture emits one nugget as `176 bin / 8 relo / 0
+imp` and checks the EP1 tail-boolean offsets.
 
 The independently supplied clean RA3 baseline at
 `D:\OneDrive\CNC Files\CnC_Modding_Support-main (Official XML, Schema, Script, Shader, Maps)\Red Alert 3\Schemas (RA3)`

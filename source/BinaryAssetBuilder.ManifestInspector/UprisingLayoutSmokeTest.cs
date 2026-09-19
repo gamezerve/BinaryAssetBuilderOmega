@@ -108,6 +108,18 @@ internal static class UprisingLayoutSmokeTest
         ExpectSize<SageBinaryData.AudioDynamicsCollideModuleData>(20);
         ExpectOffset<SageBinaryData.AudioDynamicsCollideModuleData>(nameof(SageBinaryData.AudioDynamicsCollideModuleData.MinimumImpactVelocity), 8);
         ExpectOffset<SageBinaryData.AudioDynamicsCollideModuleData>(nameof(SageBinaryData.AudioDynamicsCollideModuleData.MagnitudeSoundSelector), 12);
+        ExpectSize<SageBinaryData.WeaponEffectNugget>(40);
+        ExpectOffset<SageBinaryData.WeaponEffectNugget>(nameof(SageBinaryData.WeaponEffectNugget.Radius), 16);
+        ExpectOffset<SageBinaryData.WeaponEffectNugget>(nameof(SageBinaryData.WeaponEffectNugget.SpecialObjectFilter), 20);
+        ExpectOffset<SageBinaryData.WeaponEffectNugget>(nameof(SageBinaryData.WeaponEffectNugget.RequiredUpgrade), 24);
+        ExpectSize<SageBinaryData.DamageNuggetType>(156);
+        ExpectOffset<SageBinaryData.DamageNuggetType>(nameof(SageBinaryData.DamageNuggetType.Damage), 40);
+        ExpectOffset<SageBinaryData.DamageNuggetType>(nameof(SageBinaryData.DamageNuggetType.InvalidTargetStatus), 116);
+        ExpectOffset<SageBinaryData.DamageNuggetType>(nameof(SageBinaryData.DamageNuggetType.DamageArcInverted), 148);
+        ExpectOffset<SageBinaryData.DamageNuggetType>(nameof(SageBinaryData.DamageNuggetType.RadiusAffectsBridges), 155);
+        ExpectSize<SageBinaryData.DamageDynamicsCollideModuleData>(20);
+        ExpectOffset<SageBinaryData.DamageDynamicsCollideModuleData>(nameof(SageBinaryData.DamageDynamicsCollideModuleData.MaxMagnitude), 8);
+        ExpectOffset<SageBinaryData.DamageDynamicsCollideModuleData>(nameof(SageBinaryData.DamageDynamicsCollideModuleData.DamageNugget), 12);
 
         Console.WriteLine("Uprising layout self-test: OK");
     }

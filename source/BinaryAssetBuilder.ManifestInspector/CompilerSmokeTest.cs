@@ -16,6 +16,7 @@ internal static class CompilerSmokeTest
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
         TestAudioDynamicsCollide();
+        TestDamageDynamicsCollide();
         TestGameObject();
         Console.WriteLine("Uprising compiler self-test: OK");
     }
@@ -315,6 +316,38 @@ internal static class CompilerSmokeTest
         Expect(chunk.RelocationBuffer.Length == 8, "AudioDynamicsCollide relocation bytes", 8, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 0, "AudioDynamicsCollide imports bytes", 0, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  AudioDynamicsCollide bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    private static unsafe void TestDamageDynamicsCollide()
+    {
+        const string xml = """
+            <DamageDynamicsCollide xmlns="uri:ea.com:eala:asset">
+              <DamageNugget Radius="0" OnlyKillOwnerWhenTriggered="true"
+                  DelayTimeSeconds="0s" DamageType="UNRESISTABLE"
+                  DamageFXType="JAPAN_CANNON" DeathType="SUICIDED" />
+            </DamageDynamicsCollide>
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:DamageDynamicsCollide", namespaces)!, namespaces);
+
+        DamageDynamicsCollideModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(DamageDynamicsCollideModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 176, "DamageDynamicsCollide instance bytes", 176, instance.Length);
+        Expect(ReadUInt32(instance, 8) == 0x41200000, "DamageDynamicsCollide.MaxMagnitude", 0x41200000, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 12) == 1, "DamageDynamicsCollide.DamageNugget count", 1, ReadUInt32(instance, 12));
+        Expect(ReadUInt32(instance, 16) == 20, "DamageDynamicsCollide.DamageNugget relocation", 20, ReadUInt32(instance, 16));
+        Expect(ReadUInt32(instance, 36) == 0, "DamageNugget.Radius", 0, ReadUInt32(instance, 36));
+        Expect(instance[170] == 1, "DamageNugget.OnlyKillOwnerWhenTriggered", 1, instance[170]);
+        Expect(chunk.ImportsBuffer.Length == 0, "DamageDynamicsCollide imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  DamageDynamicsCollide bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static uint ReadUInt32(ReadOnlySpan<byte> bytes, int offset) =>
