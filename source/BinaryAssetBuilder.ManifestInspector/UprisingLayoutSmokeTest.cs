@@ -61,6 +61,10 @@ internal static class UprisingLayoutSmokeTest
         Expect(SageBinaryData.KindOfBitFlags.Count == 291, "KindOfBitFlags.Count", 291, SageBinaryData.KindOfBitFlags.Count);
         Expect(SageBinaryData.BuildPlacementTypeBitFlags.Count == 5, "BuildPlacementTypeBitFlags.Count", 5, SageBinaryData.BuildPlacementTypeBitFlags.Count);
         ExpectSize<SageBinaryData.GameObject>(600);
+        ExpectSize<SageBinaryData.ObjectFilter>(120);
+        ExpectOffset<SageBinaryData.ObjectFilter>(nameof(SageBinaryData.ObjectFilter.StatusBitFlags), 96);
+        ExpectOffset<SageBinaryData.ObjectFilter>(nameof(SageBinaryData.ObjectFilter.StatusBitFlagsExclude), 100);
+        ExpectOffset<SageBinaryData.ObjectFilter>(nameof(SageBinaryData.ObjectFilter.IncludeThing), 104);
         ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.KindOf), 4);
         ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.Description), 52);
         ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.RadarPriority), 84);
@@ -131,6 +135,17 @@ internal static class UprisingLayoutSmokeTest
         ExpectSize<SageBinaryData.ReactionFXOnDamageModuleData>(24);
         ExpectOffset<SageBinaryData.ReactionFXOnDamageModuleData>(nameof(SageBinaryData.ReactionFXOnDamageModuleData.DamageReactionFXTrigger), 8);
         ExpectOffset<SageBinaryData.ReactionFXOnDamageModuleData>(nameof(SageBinaryData.ReactionFXOnDamageModuleData.HealingReactionFXTrigger), 16);
+        ExpectSize<SageBinaryData.SphereModuleUpdateModuleData>(176);
+        ExpectOffset<SageBinaryData.SphereModuleUpdateModuleData>(nameof(SageBinaryData.SphereModuleUpdateModuleData.RadiusMax), 8);
+        ExpectOffset<SageBinaryData.SphereModuleUpdateModuleData>(nameof(SageBinaryData.SphereModuleUpdateModuleData.SphereBoneName), 32);
+        ExpectOffset<SageBinaryData.SphereModuleUpdateModuleData>(nameof(SageBinaryData.SphereModuleUpdateModuleData.ObjectFilter), 48);
+        ExpectOffset<SageBinaryData.SphereModuleUpdateModuleData>(nameof(SageBinaryData.SphereModuleUpdateModuleData.IgnoreInsideToInsideCheck), 168);
+        ExpectOffset<SageBinaryData.SphereModuleUpdateModuleData>(nameof(SageBinaryData.SphereModuleUpdateModuleData.InitiallyActive), 172);
+        ExpectOffset<SageBinaryData.SphereModuleUpdateModuleData>(nameof(SageBinaryData.SphereModuleUpdateModuleData.DrawDebugCircle), 173);
+        ExpectSize<SageBinaryData.DamageSphereUpdateModuleData>(372);
+        ExpectOffset<SageBinaryData.DamageSphereUpdateModuleData>(nameof(SageBinaryData.DamageSphereUpdateModuleData.UnpackTime), 176);
+        ExpectOffset<SageBinaryData.DamageSphereUpdateModuleData>(nameof(SageBinaryData.DamageSphereUpdateModuleData.UnpackModelConditions), 188);
+        ExpectOffset<SageBinaryData.DamageSphereUpdateModuleData>(nameof(SageBinaryData.DamageSphereUpdateModuleData.ObjectStatus), 340);
 
         Console.WriteLine("Uprising layout self-test: OK");
     }

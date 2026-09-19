@@ -15,12 +15,8 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(ObjectFilter.Alignment), "NONE"), &objT->Alignment, state);
         Marshal(node.GetAttributeValue(nameof(ObjectFilter.Include), null), &objT->Include, state);
         Marshal(node.GetAttributeValue(nameof(ObjectFilter.Exclude), null), &objT->Exclude, state);
-#if KANESWRATH
         Marshal(node.GetAttributeValue(nameof(ObjectFilter.StatusBitFlags), null), &objT->StatusBitFlags, state);
-        Marshal(node.GetAttributeValue(nameof(ObjectFilter.RejectStatusBitFlags), null), &objT->RejectStatusBitFlags, state);
-        Marshal(node.GetAttributeValue(nameof(ObjectFilter.AcceptModelCondition), null), &objT->AcceptModelCondition, state);
-        Marshal(node.GetAttributeValue(nameof(ObjectFilter.RejectModelCondition), null), &objT->RejectModelCondition, state);
-#endif
+        Marshal(node.GetAttributeValue(nameof(ObjectFilter.StatusBitFlagsExclude), null), &objT->StatusBitFlagsExclude, state);
         Marshal(node.GetChildNodes(nameof(ObjectFilter.IncludeThing)), &objT->IncludeThing, state);
         Marshal(node.GetChildNodes(nameof(ObjectFilter.ExcludeThing)), &objT->ExcludeThing, state);
     }

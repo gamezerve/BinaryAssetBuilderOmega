@@ -47,26 +47,15 @@ public struct ObjectFilter
     public ObjectFilterAlignment Alignment;
     public KindOfBitFlags Include;
     public KindOfBitFlags Exclude;
-#if KANESWRATH
-    public ObjectStatusBitFlags StatusBitFlags;
-    public ObjectStatusBitFlags RejectStatusBitFlags;
-    public ModelConditionBitFlags AcceptModelCondition;
-    public ModelConditionBitFlags RejectModelCondition;
-#endif
+    public unsafe ObjectStatusBitFlags* StatusBitFlags;
+    public unsafe ObjectStatusBitFlags* StatusBitFlagsExclude;
     public List<TypedAssetId<BaseAssetType>> IncludeThing; // should be TypedAssetId<GameObject> but .net thinks it might be a circular reference
     public List<TypedAssetId<BaseAssetType>> ExcludeThing; // should be TypedAssetId<GameObject> but .net thinks it might be a circular reference
 
-#if KANESWRATH
     public unsafe bool TestObjectStatus([In] Object* @object)
     {
         throw new System.NotImplementedException();
     }
-
-    public unsafe bool TestModelCondition([In] Object* @object)
-    {
-        throw new System.NotImplementedException();
-    }
-#endif
 
     public unsafe bool TestObject([In] Object* @object, [In] Player* playerOwningFilter = null)
     {
@@ -88,15 +77,8 @@ public struct ObjectFilter
         throw new System.NotImplementedException();
     }
 
-#if KANESWRATH
     public bool NoValidBitFlags()
     {
         throw new System.NotImplementedException();
     }
-
-    public bool NoValidModelConditionFlags()
-    {
-        throw new System.NotImplementedException();
-    }
-#endif
 }

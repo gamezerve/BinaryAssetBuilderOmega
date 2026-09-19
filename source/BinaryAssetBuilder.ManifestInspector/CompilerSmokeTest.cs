@@ -18,6 +18,7 @@ internal static class CompilerSmokeTest
         TestAudioDynamicsCollide();
         TestDamageDynamicsCollide();
         TestReactionFXOnDamage();
+        TestDamageSphereUpdate();
         TestGameObject();
         Console.WriteLine("Uprising compiler self-test: OK");
     }
@@ -393,6 +394,49 @@ internal static class CompilerSmokeTest
         Expect(chunk.RelocationBuffer.Length == 32, "ReactionFXOnDamage relocation bytes", 32, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 0, "ReactionFXOnDamage standalone imports bytes", 0, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  ReactionFXOnDamage bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    private static unsafe void TestDamageSphereUpdate()
+    {
+        const string xml = """
+            <DamageSphereUpdate xmlns="uri:ea.com:eala:asset"
+                UnpackTime="1.35s" Weapon="AlliedFutureTankNeutronWeapon_IncrementalWeapon"
+                RadiusMin="25" RadiusMax="180" ExpansionPerSecond="125"
+                SphereBoneName="SHIELDLARGE" SphereSizeMultiplier="16.0"
+                UnpackModelConditions="USER_4" ModelConditions="USER_5"
+                UnpackObjectStatus="WEAPON_UPGRADED_01" ObjectStatus="WEAPON_UPGRADED_02">
+              <ObjectFilter Rule="ALL"
+                  Exclude="BRIDGE BRIDGE_SEGMENT BRIDGE_ENDCAP BRIDGE_GATEHOUSE" />
+            </DamageSphereUpdate>
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:DamageSphereUpdate", namespaces)!, namespaces);
+
+        DamageSphereUpdateModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(DamageSphereUpdateModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 384, "DamageSphereUpdate instance bytes", 384, instance.Length);
+        Expect(ReadUInt32(instance, 8) == 0x43340000, "DamageSphereUpdate RadiusMax", 0x43340000, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 12) == 0x41C80000, "DamageSphereUpdate RadiusMin", 0x41C80000, ReadUInt32(instance, 12));
+        Expect(ReadUInt32(instance, 24) == 0x3F800000, "DamageSphereUpdate ScanFrequency", 0x3F800000, ReadUInt32(instance, 24));
+        Expect(ReadUInt32(instance, 28) == 0x41200000, "DamageSphereUpdate Duration", 0x41200000, ReadUInt32(instance, 28));
+        Expect(ReadUInt32(instance, 32) == 11, "DamageSphereUpdate sphere bone length", 11, ReadUInt32(instance, 32));
+        Expect(ReadUInt32(instance, 36) == 372, "DamageSphereUpdate sphere bone relocation", 372, ReadUInt32(instance, 36));
+        Expect(ReadUInt32(instance, 40) == 0x41800000, "DamageSphereUpdate SphereSizeMultiplier", 0x41800000, ReadUInt32(instance, 40));
+        Expect(ReadUInt32(instance, 52) == 1, "DamageSphereUpdate ObjectFilter.Rule", 1, ReadUInt32(instance, 52));
+        Expect(instance[172] == 0, "DamageSphereUpdate InitiallyActive", 0, instance[172]);
+        Expect(instance[173] == 1, "DamageSphereUpdate DrawDebugCircle", 1, instance[173]);
+        Expect(ReadUInt32(instance, 176) == 0x3FACCCCD, "DamageSphereUpdate UnpackTime", 0x3FACCCCD, ReadUInt32(instance, 176));
+        Expect(ReadUInt32(instance, 184) == 0x42FA0000, "DamageSphereUpdate ExpansionPerSecond", 0x42FA0000, ReadUInt32(instance, 184));
+        Expect(chunk.ImportsBuffer.Length == 0, "DamageSphereUpdate standalone imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  DamageSphereUpdate bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static uint ReadUInt32(ReadOnlySpan<byte> bytes, int offset) =>

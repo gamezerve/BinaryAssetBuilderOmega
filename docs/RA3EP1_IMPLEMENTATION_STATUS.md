@@ -5,7 +5,7 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Progress snapshot (2026-09-19)
 
-The current conservative engineering estimate is **32% complete / 68%
+The current conservative engineering estimate is **33% complete / 67%
 remaining**. This is an effort estimate, not the percentage of C# files in the
 tree. A pre-existing Kane's Wrath marshaller only counts as complete after its
 RA3/EP1 layout, type hash and emitted streams have been checked.
@@ -14,17 +14,17 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 |---|---:|---:|---:|
 | Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
 | Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
-| Native layouts, processors, dispatch and final type table | 45% | 16% | 7.2% |
+| Native layouts, processors, dispatch and final type table | 45% | 18% | 8.1% |
 | Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
 | Built-mod validation inside Uprising | 10% | 0% | 0.0% |
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 727 (52.3%) and typed marshallers for 703
-(50.6%). These broad numbers are inventory coverage only. Of the 48 complex
-types that exist only in EP1, 13 (27.1%) now have both a model and marshaller;
-35 remain absent. The smaller audited set carries substantially more weight
-than raw file presence in the 32% estimate above.
+The source tree contains models for 729 (52.4%) and typed marshallers for 705
+(50.7%). These broad numbers are inventory coverage only. Of the 48 complex
+types that exist only in EP1, 15 (31.3%) now have both a model and marshaller;
+33 remain absent. The smaller audited set carries substantially more weight
+than raw file presence in the 33% estimate above.
 
 ## Established facts
 
@@ -197,6 +197,24 @@ followed by the reset-timer boolean at offset 20. The module root is 24 bytes
 the source-filter/sound references and reset flag. A standalone compiler
 fixture emits the expected 92-byte graph and 32-byte relocation stream. The
 polymorphic dispatch table now registers the recovered type ID.
+
+`DamageSphereUpdate` and its `SphereModuleUpdate` base are recovered from
+`GameObject:AlliedFutureTankNeutronScramblerNode`. The type ID is
+`0x878CEA1F`; the binary contains the XML's radius `180/25`, scan/duration
+`1/10`, sphere scale `16`, unpack time `1.35`, expansion `125`, object-filter
+bits, four model/status masks, and `SHIELDLARGE` payload at the predicted
+locations. This establishes a 176-byte sphere base and 372-byte damage module;
+the string payload makes the standalone compiler fixture `384 bin / 8 relo / 0
+imp`.
+
+This recovery also corrected the shared KW-derived `ObjectFilter`. The old
+model was 296 bytes and embedded KW status/model-condition masks. EA's official
+RA3 compiler declares 112 bytes and both clean RA3/EP1 XSDs define two optional
+status-mask attributes. The native representation uses pointers for those
+masks and has no KW model-condition fields. EP1's wider pair of `KindOf` masks
+makes the corrected EP1 structure 120 bytes, exactly matching the sphere
+fixture. Because this type is widely embedded, the full compatibility suite is
+required after the correction and passes.
 
 The independently supplied clean RA3 baseline at
 `D:\OneDrive\CNC Files\CnC_Modding_Support-main (Official XML, Schema, Script, Shader, Maps)\Red Alert 3\Schemas (RA3)`
