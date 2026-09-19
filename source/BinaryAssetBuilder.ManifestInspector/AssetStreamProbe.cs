@@ -9,7 +9,9 @@ internal static class AssetStreamProbe
         string? manifestEntryName,
         string? binEntryName,
         string? assetName,
-        uint? findUInt32)
+        uint? findUInt32,
+        int? rangeOffset,
+        int? rangeCount)
     {
         ManifestDocument manifest = ReadManifest(manifestPath, manifestEntryName);
         long instanceOffset = 0;
@@ -33,6 +35,10 @@ internal static class AssetStreamProbe
                 {
                     PrintUInt32Matches(bytes, findUInt32.Value);
                 }
+                if (rangeOffset.HasValue || rangeCount.HasValue)
+                {
+                    PrintRange(bytes, rangeOffset ?? 0, rangeCount ?? 256);
+                }
                 matches++;
             }
             instanceOffset = checked(instanceOffset + asset.InstanceDataSize);
@@ -55,6 +61,29 @@ internal static class AssetStreamProbe
                 assetName is null
                     ? $"Manifest contains no assets of type '{typeName}'."
                     : $"Manifest contains no asset '{assetName}' of type '{typeName}'.{suffix}");
+        }
+    }
+
+    private static void PrintRange(byte[] bytes, int offset, int count)
+    {
+        const int maximumRangeLength = 16 * 1024;
+        if (offset < 0 || offset > bytes.Length)
+        {
+            throw new ArgumentOutOfRangeException(nameof(offset),
+                $"Asset range offset 0x{offset:X} is outside the {bytes.Length:N0}-byte asset chunk.");
+        }
+        if (count < 0 || count > maximumRangeLength)
+        {
+            throw new ArgumentOutOfRangeException(nameof(count),
+                $"Asset range count must be between 0 and {maximumRangeLength:N0} bytes.");
+        }
+
+        int displayed = Math.Min(count, bytes.Length - offset);
+        Console.WriteLine($"  range +0x{offset:X} ({offset:N0}), {displayed:N0} byte(s):");
+        Console.WriteLine(Convert.ToHexString(bytes.AsSpan(offset, displayed)));
+        if (displayed != count)
+        {
+            Console.WriteLine($"  (range ended at the end of the asset chunk; requested {count:N0} bytes)");
         }
     }
 

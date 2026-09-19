@@ -17,6 +17,7 @@ internal static class CompilerSmokeTest
         TestAddObjectsToLiftUpdate();
         TestAudioDynamicsCollide();
         TestDamageDynamicsCollide();
+        TestReactionFXOnDamage();
         TestGameObject();
         Console.WriteLine("Uprising compiler self-test: OK");
     }
@@ -348,6 +349,50 @@ internal static class CompilerSmokeTest
         Expect(instance[170] == 1, "DamageNugget.OnlyKillOwnerWhenTriggered", 1, instance[170]);
         Expect(chunk.ImportsBuffer.Length == 0, "DamageDynamicsCollide imports bytes", 0, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  DamageDynamicsCollide bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    private static unsafe void TestReactionFXOnDamage()
+    {
+        const string xml = """
+            <ReactionFXOnDamage xmlns="uri:ea.com:eala:asset">
+              <DamageReactionFXTrigger PercentDamagedThreshold="99.99"
+                  TimeBetweenTriggers="5.0s" />
+              <HealingReactionFXTrigger TimeBetweenTriggers="2.0s"
+                  ResetTimerWhenTimerBlocks="true"
+                  SourceFilter="AOF_YurikoHealStations"
+                  SoundToPlay="NEU_HealthStation_Heal" />
+            </ReactionFXOnDamage>
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:ReactionFXOnDamage", namespaces)!, namespaces);
+
+        ReactionFXOnDamageModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(ReactionFXOnDamageModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 92, "ReactionFXOnDamage instance bytes", 92, instance.Length);
+        Expect(ReadUInt32(instance, 8) == 1, "ReactionFXOnDamage damage count", 1, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 12) == 24, "ReactionFXOnDamage damage list relocation", 24, ReadUInt32(instance, 12));
+        Expect(ReadUInt32(instance, 16) == 1, "ReactionFXOnDamage healing count", 1, ReadUInt32(instance, 16));
+        Expect(ReadUInt32(instance, 20) == 56, "ReactionFXOnDamage healing list relocation", 56, ReadUInt32(instance, 20));
+        Expect(ReadUInt32(instance, 24) == 48, "ReactionFXOnDamage damage threshold relocation", 48, ReadUInt32(instance, 24));
+        Expect(ReadUInt32(instance, 28) == 52, "ReactionFXOnDamage damage timer relocation", 52, ReadUInt32(instance, 28));
+        Expect(ReadUInt32(instance, 36) == 0, "ReactionFXOnDamage omitted damage voice", 0, ReadUInt32(instance, 36));
+        Expect(ReadUInt32(instance, 48) == 0x42C7FAE1, "ReactionFXOnDamage damage threshold", 0x42C7FAE1, ReadUInt32(instance, 48));
+        Expect(ReadUInt32(instance, 52) == 0x40A00000, "ReactionFXOnDamage damage timer", 0x40A00000, ReadUInt32(instance, 52));
+        Expect(ReadUInt32(instance, 60) == 80, "ReactionFXOnDamage healing timer relocation", 80, ReadUInt32(instance, 60));
+        Expect(ReadUInt32(instance, 64) == 84, "ReactionFXOnDamage healing filter relocation", 84, ReadUInt32(instance, 64));
+        Expect(ReadUInt32(instance, 72) == 88, "ReactionFXOnDamage healing sound relocation", 88, ReadUInt32(instance, 72));
+        Expect(instance[76] == 1, "ReactionFXOnDamage reset timer", 1, instance[76]);
+        Expect(chunk.RelocationBuffer.Length == 32, "ReactionFXOnDamage relocation bytes", 32, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 0, "ReactionFXOnDamage standalone imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  ReactionFXOnDamage bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static uint ReadUInt32(ReadOnlySpan<byte> bytes, int offset) =>

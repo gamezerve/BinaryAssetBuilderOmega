@@ -5,7 +5,7 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Progress snapshot (2026-09-19)
 
-The current conservative engineering estimate is **31% complete / 69%
+The current conservative engineering estimate is **32% complete / 68%
 remaining**. This is an effort estimate, not the percentage of C# files in the
 tree. A pre-existing Kane's Wrath marshaller only counts as complete after its
 RA3/EP1 layout, type hash and emitted streams have been checked.
@@ -14,17 +14,17 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 |---|---:|---:|---:|
 | Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
 | Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
-| Native layouts, processors, dispatch and final type table | 45% | 14% | 6.3% |
+| Native layouts, processors, dispatch and final type table | 45% | 16% | 7.2% |
 | Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
 | Built-mod validation inside Uprising | 10% | 0% | 0.0% |
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 725 (52.2%) and typed marshallers for 701
-(50.4%). These broad numbers are inventory coverage only. Of the 48 complex
-types that exist only in EP1, 11 (22.9%) now have both a model and marshaller;
-37 remain absent. The smaller audited set carries substantially more weight
-than raw file presence in the 31% estimate above.
+The source tree contains models for 727 (52.3%) and typed marshallers for 703
+(50.6%). These broad numbers are inventory coverage only. Of the 48 complex
+types that exist only in EP1, 13 (27.1%) now have both a model and marshaller;
+35 remain absent. The smaller audited set carries substantially more weight
+than raw file presence in the 32% estimate above.
 
 ## Established facts
 
@@ -48,6 +48,19 @@ Validated fixture fingerprints:
 | Uprising `WBData.big::data/worldbuilder.manifest` | 7 | 17,339 | no | pass |
 | Uprising `StaticStream.big::data/static.manifest` | 7 | 13,872 | yes | pass |
 | Uprising `GlobalStream.big::data/global.manifest` | 7 | 11,357 | yes | pass |
+
+`D:\TEMP\Red Alert 3 Uprising Source Data` supplies unpacked raw stream sets
+for `worldbuilder`, `static`, `static_l`, `static_m`, `global`, `locale`, and
+`audio`, including their `.manifest/.bin/.relo/.imp` companions. The raw
+`worldbuilder.bin` is 1,394,571,528 bytes. SHA-256 confirms that its
+`static.manifest` and `static.bin` are byte-identical to the independently
+recovered SDK build, so these are trustworthy cross-check fixtures rather than
+two independent builds. The other raw streams remove the previous RefPack
+random-access limitation and expand the asset-level validation surface. The
+`static_l` and `static_m` manifests are LOD overlays referencing `static` as a
+patch base: their header total describes the merged logical stream while their
+BIN contains only local replacement chunks. Manifest validation now recognizes
+this distinction and keeps strict chunk-total equality for standalone streams.
 
 ## Implemented compatibility gate
 
@@ -173,6 +186,18 @@ and two merged 156-byte nuggets occupy exactly the bytes up to the following
 audio module. The compiler fixture emits one nugget as `176 bin / 8 relo / 0
 imp` and checks the EP1 tail-boolean offsets.
 
+`ReactionFXOnDamage` is the next EP1-only module recovered from the raw static
+stream. `GameObject:JapanYurikoTech1` contains type ID `0x8C3B49E2`, followed
+by list counts 5 and 2 exactly matching the official XML's damage and healing
+triggers. Pointer targets and scalar payloads prove a 24-byte trigger layout:
+five optional pointers (threshold, timer, source filter, voice hash, sound)
+followed by the reset-timer boolean at offset 20. The module root is 24 bytes
+(`DamageModuleData` plus two lists). The real payload contains the expected
+`99.99/5`, `75/3`, `50/3`, `40/10`, `33/5`, and healing `2` values, including
+the source-filter/sound references and reset flag. A standalone compiler
+fixture emits the expected 92-byte graph and 32-byte relocation stream. The
+polymorphic dispatch table now registers the recovered type ID.
+
 The independently supplied clean RA3 baseline at
 `D:\OneDrive\CNC Files\CnC_Modding_Support-main (Official XML, Schema, Script, Shader, Maps)\Red Alert 3\Schemas (RA3)`
 contains 821 XSD files and is structurally identical to `schemas/ra3/xsd`.
@@ -186,6 +211,9 @@ binary dump. The shared sample `AttributeModifier_MechaKingSquishKillDelay` is
 an 88-byte tokenized instance chunk in both games while its type hash changes
 from `0xF901FE9B` to `0x74425C11`; tokenization means this observation does not
 replace the native-layout checks above.
+The command also accepts bounded `--offset` and `--count` ranges (maximum 16
+KiB), allowing pointer payloads inside one selected asset to be decoded without
+ever dumping an entire multi-gigabyte stream.
 
 ## Compiler work still required
 

@@ -6,6 +6,7 @@ internal static class UprisingLayoutSmokeTest
 {
     public static void Run()
     {
+        TestPatchManifestTotals();
         ExpectSize<SageBinaryData.ArmorTemplate>(32);
         ExpectSize<SageBinaryData.ArmorSetBitFlags>(4);
         Expect(SageBinaryData.ArmorSetBitFlags.Count == 23, "ArmorSetBitFlags.Count", 23, SageBinaryData.ArmorSetBitFlags.Count);
@@ -120,8 +121,39 @@ internal static class UprisingLayoutSmokeTest
         ExpectSize<SageBinaryData.DamageDynamicsCollideModuleData>(20);
         ExpectOffset<SageBinaryData.DamageDynamicsCollideModuleData>(nameof(SageBinaryData.DamageDynamicsCollideModuleData.MaxMagnitude), 8);
         ExpectOffset<SageBinaryData.DamageDynamicsCollideModuleData>(nameof(SageBinaryData.DamageDynamicsCollideModuleData.DamageNugget), 12);
+        ExpectSize<SageBinaryData.ReactionFXTriggerData>(24);
+        ExpectOffset<SageBinaryData.ReactionFXTriggerData>(nameof(SageBinaryData.ReactionFXTriggerData.PercentDamagedThreshold), 0);
+        ExpectOffset<SageBinaryData.ReactionFXTriggerData>(nameof(SageBinaryData.ReactionFXTriggerData.TimeBetweenTriggers), 4);
+        ExpectOffset<SageBinaryData.ReactionFXTriggerData>(nameof(SageBinaryData.ReactionFXTriggerData.SourceFilter), 8);
+        ExpectOffset<SageBinaryData.ReactionFXTriggerData>(nameof(SageBinaryData.ReactionFXTriggerData.NameOfVoiceToPlay), 12);
+        ExpectOffset<SageBinaryData.ReactionFXTriggerData>(nameof(SageBinaryData.ReactionFXTriggerData.SoundToPlay), 16);
+        ExpectOffset<SageBinaryData.ReactionFXTriggerData>(nameof(SageBinaryData.ReactionFXTriggerData.ResetTimerWhenTimerBlocks), 20);
+        ExpectSize<SageBinaryData.ReactionFXOnDamageModuleData>(24);
+        ExpectOffset<SageBinaryData.ReactionFXOnDamageModuleData>(nameof(SageBinaryData.ReactionFXOnDamageModuleData.DamageReactionFXTrigger), 8);
+        ExpectOffset<SageBinaryData.ReactionFXOnDamageModuleData>(nameof(SageBinaryData.ReactionFXOnDamageModuleData.HealingReactionFXTrigger), 16);
 
         Console.WriteLine("Uprising layout self-test: OK");
+    }
+
+    private static void TestPatchManifestTotals()
+    {
+        ManifestHeader header = new(
+            7, false, true, 0, 0x5454A8E9, 1, 16, 0, 0, 0, 0, 0, 0, 0, 4);
+        ManifestAsset asset = new(
+            1, 2, 3, 4, 0, 0, 0, 0, 8, 0, 0, 1,
+            "Test:Patch", "Test.xml", Array.Empty<AssetId>());
+        ManifestDocument patch = new(
+            header, [asset], [new ReferencedManifest("base.manifest", true)], null, 0, false);
+        if (patch.Validate().Count != 0)
+        {
+            throw new InvalidDataException("Patch manifests must allow logical instance totals larger than local chunks.");
+        }
+
+        ManifestDocument standalone = patch with { ReferencedManifests = Array.Empty<ReferencedManifest>() };
+        if (standalone.Validate().Count != 1)
+        {
+            throw new InvalidDataException("Standalone manifests must still validate the instance chunk total.");
+        }
     }
 
     private static void ExpectSize<T>(int expected) where T : struct =>

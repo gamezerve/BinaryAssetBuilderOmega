@@ -89,7 +89,11 @@ internal sealed record ManifestDocument(
         }
 
         var instanceTotal = Assets.Aggregate(0L, (total, asset) => total + asset.InstanceDataSize);
-        if (instanceTotal != Header.TotalInstanceDataSize)
+        // LOD manifests such as static_l/static_m are overlays on a referenced
+        // base manifest. Their header describes the merged logical stream,
+        // while their BIN contains only locally replaced chunks.
+        if (!ReferencedManifests.Any(reference => reference.IsPatch)
+            && instanceTotal != Header.TotalInstanceDataSize)
         {
             errors.Add(
                 $"Instance chunk total {instanceTotal} differs from header total {Header.TotalInstanceDataSize}.");
