@@ -19,6 +19,7 @@ internal static class CompilerSmokeTest
         TestDamageDynamicsCollide();
         TestReactionFXOnDamage();
         TestDamageSphereUpdate();
+        TestYurikoShieldSphereUpdate();
         TestGameObject();
         Console.WriteLine("Uprising compiler self-test: OK");
     }
@@ -437,6 +438,51 @@ internal static class CompilerSmokeTest
         Expect(ReadUInt32(instance, 184) == 0x42FA0000, "DamageSphereUpdate ExpansionPerSecond", 0x42FA0000, ReadUInt32(instance, 184));
         Expect(chunk.ImportsBuffer.Length == 0, "DamageSphereUpdate standalone imports bytes", 0, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  DamageSphereUpdate bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    private static unsafe void TestYurikoShieldSphereUpdate()
+    {
+        const string xml = """
+            <YurikoShieldSphereUpdate xmlns="uri:ea.com:eala:asset"
+                InitiallyActive="true" RadiusMin="24" RadiusMax="24"
+                ScanFrequency="0.25s" Duration="10s" MaxDamage="9999999999"
+                DamageTypesNotToAbsorb="HEALING RADIATION"
+                ObjectStatus="GENERIC_TOGGLE_STATE IGNORING_STEALTH"
+                ModelCondition="USER_4" SphereBoneName="SHIELDSMALL"
+                MajorShieldHitFX="FX_YurikoShieldHitSmallMajor"
+                MinorShieldHitFX="FX_YurikoShieldHitSmallMinor"
+                MinorShieldDamageTypes="GUN CANNON LASER UNDEFINED MAGIC PIERCE">
+              <ObjectFilter Rule="ANY" Relationship="ALLIES"
+                  Include="INFANTRY VEHICLE STRUCTURE" />
+              <IgnoreInsideToInsideCheck Rule="ALL" />
+            </YurikoShieldSphereUpdate>
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:YurikoShieldSphereUpdate", namespaces)!, namespaces);
+
+        YurikoShieldSphereUpdateModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(YurikoShieldSphereUpdateModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 460, "YurikoShieldSphereUpdate instance bytes", 460, instance.Length);
+        Expect(ReadUInt32(instance, 8) == 0x41C00000, "YurikoShieldSphereUpdate RadiusMax", 0x41C00000, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 16) == 0x20, "YurikoShieldSphereUpdate DamageTypesNotToAbsorb[0]", 0x20, ReadUInt32(instance, 16));
+        Expect(ReadUInt32(instance, 20) == 0x20, "YurikoShieldSphereUpdate DamageTypesNotToAbsorb[1]", 0x20, ReadUInt32(instance, 20));
+        Expect(ReadUInt32(instance, 24) == 0x3E800000, "YurikoShieldSphereUpdate ScanFrequency", 0x3E800000, ReadUInt32(instance, 24));
+        Expect(ReadUInt32(instance, 32) == 11, "YurikoShieldSphereUpdate sphere bone length", 11, ReadUInt32(instance, 32));
+        Expect(ReadUInt32(instance, 36) == 328, "YurikoShieldSphereUpdate sphere bone relocation", 328, ReadUInt32(instance, 36));
+        Expect(ReadUInt32(instance, 168) == 340, "YurikoShieldSphereUpdate ignore-filter relocation", 340, ReadUInt32(instance, 168));
+        Expect(instance[172] == 1, "YurikoShieldSphereUpdate InitiallyActive", 1, instance[172]);
+        Expect(ReadUInt32(instance, 176) == 0x501502F9, "YurikoShieldSphereUpdate MaxDamage", 0x501502F9, ReadUInt32(instance, 176));
+        Expect(ReadUInt32(instance, 320) == 0x00626008, "YurikoShieldSphereUpdate minor damage flags", 0x00626008, ReadUInt32(instance, 320));
+        Expect(chunk.ImportsBuffer.Length == 0, "YurikoShieldSphereUpdate standalone imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  YurikoShieldSphereUpdate bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static uint ReadUInt32(ReadOnlySpan<byte> bytes, int offset) =>

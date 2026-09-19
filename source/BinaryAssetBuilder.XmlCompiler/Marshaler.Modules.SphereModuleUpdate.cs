@@ -3,6 +3,30 @@ using SageBinaryData;
 
 public static partial class Marshaler
 {
+    public static unsafe void Marshal(string text, ShieldSphereUpdateOptionFlag* objT, Tracker state)
+    {
+        foreach (string rawToken in text.Split(WhiteSpaces, System.StringSplitOptions.RemoveEmptyEntries))
+        {
+            bool include = rawToken[0] != '-';
+            string token = rawToken[0] is '+' or '-' ? rawToken[1..] : rawToken;
+            if (!System.Enum.TryParse(token, false, out ShieldSphereUpdateOption value))
+            {
+                continue;
+            }
+            uint bit = 1u << (int)value;
+            objT->Value[0] = include ? objT->Value[0] | bit : objT->Value[0] & ~bit;
+        }
+        state.InplaceEndianToPlatform(&objT->Value[0]);
+    }
+
+    public static unsafe void Marshal(Value value, ShieldSphereUpdateOptionFlag* objT, Tracker state)
+    {
+        if (value is not null)
+        {
+            Marshal(value.GetText(), objT, state);
+        }
+    }
+
     public static unsafe void Marshal(Node node, SphereModuleUpdateModuleData* objT, Tracker state)
     {
         if (node is null)
@@ -38,5 +62,32 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(DamageSphereUpdateModuleData.ModelConditions), ""), &objT->ModelConditions, state);
         Marshal(node.GetAttributeValue(nameof(DamageSphereUpdateModuleData.ObjectStatus), ""), &objT->ObjectStatus, state);
         Marshal(node, (SphereModuleUpdateModuleData*)objT, state);
+    }
+
+    public static unsafe void Marshal(Node node, ShieldSphereUpdateModuleData* objT, Tracker state)
+    {
+        if (node is null)
+        {
+            return;
+        }
+        Marshal(node.GetAttributeValue(nameof(ShieldSphereUpdateModuleData.MaxDamage), "0"), &objT->MaxDamage, state);
+        Marshal(node.GetAttributeValue(nameof(ShieldSphereUpdateModuleData.ObjectStatus), ""), &objT->ObjectStatus, state);
+        Marshal(node.GetAttributeValue(nameof(ShieldSphereUpdateModuleData.ModelCondition), ""), &objT->ModelCondition, state);
+        Marshal(node.GetAttributeValue(nameof(ShieldSphereUpdateModuleData.AttributeModifierName), null), &objT->AttributeModifierName, state);
+        Marshal(node.GetAttributeValue(nameof(ShieldSphereUpdateModuleData.ShieldedObjectStatus), ""), &objT->ShieldedObjectStatus, state);
+        Marshal(node.GetAttributeValue(nameof(ShieldSphereUpdateModuleData.Options), null), &objT->Options, state);
+        Marshal(node, (SphereModuleUpdateModuleData*)objT, state);
+    }
+
+    public static unsafe void Marshal(Node node, YurikoShieldSphereUpdateModuleData* objT, Tracker state)
+    {
+        if (node is null)
+        {
+            return;
+        }
+        Marshal(node.GetAttributeValue(nameof(YurikoShieldSphereUpdateModuleData.MajorShieldHitFX), null), &objT->MajorShieldHitFX, state);
+        Marshal(node.GetAttributeValue(nameof(YurikoShieldSphereUpdateModuleData.MinorShieldHitFX), null), &objT->MinorShieldHitFX, state);
+        Marshal(node.GetAttributeValue(nameof(YurikoShieldSphereUpdateModuleData.MinorShieldDamageTypes), null), &objT->MinorShieldDamageTypes, state);
+        Marshal(node, (ShieldSphereUpdateModuleData*)objT, state);
     }
 }

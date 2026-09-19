@@ -24,6 +24,7 @@ internal static class UprisingLayoutSmokeTest
 
         Expect(SageBinaryData.ModelConditionBitFlags.Count == 463, "ModelConditionBitFlags.Count", 463, SageBinaryData.ModelConditionBitFlags.Count);
         Expect(SageBinaryData.ObjectStatusBitFlags.Count == 230, "ObjectStatusBitFlags.Count", 230, SageBinaryData.ObjectStatusBitFlags.Count);
+        Expect(SageBinaryData.DamageBitFlags.Count == 39, "DamageBitFlags.Count", 39, SageBinaryData.DamageBitFlags.Count);
         Expect(SageBinaryData.DisabledBitFlags.Count == 13, "DisabledBitFlags.Count", 13, SageBinaryData.DisabledBitFlags.Count);
         Expect((int)SageBinaryData.ArmorSetType.INVALID == 0, "ArmorSetType.INVALID", 0, (int)SageBinaryData.ArmorSetType.INVALID);
         Expect((int)SageBinaryData.ArmorSetType.SHIELDBODY_ENABLED == 22, "ArmorSetType.SHIELDBODY_ENABLED", 22, (int)SageBinaryData.ArmorSetType.SHIELDBODY_ENABLED);
@@ -146,6 +147,17 @@ internal static class UprisingLayoutSmokeTest
         ExpectOffset<SageBinaryData.DamageSphereUpdateModuleData>(nameof(SageBinaryData.DamageSphereUpdateModuleData.UnpackTime), 176);
         ExpectOffset<SageBinaryData.DamageSphereUpdateModuleData>(nameof(SageBinaryData.DamageSphereUpdateModuleData.UnpackModelConditions), 188);
         ExpectOffset<SageBinaryData.DamageSphereUpdateModuleData>(nameof(SageBinaryData.DamageSphereUpdateModuleData.ObjectStatus), 340);
+        ExpectSize<SageBinaryData.ShieldSphereUpdateOptionFlag>(4);
+        ExpectSize<SageBinaryData.ShieldSphereUpdateModuleData>(312);
+        ExpectOffset<SageBinaryData.ShieldSphereUpdateModuleData>(nameof(SageBinaryData.ShieldSphereUpdateModuleData.MaxDamage), 176);
+        ExpectOffset<SageBinaryData.ShieldSphereUpdateModuleData>(nameof(SageBinaryData.ShieldSphereUpdateModuleData.ObjectStatus), 180);
+        ExpectOffset<SageBinaryData.ShieldSphereUpdateModuleData>(nameof(SageBinaryData.ShieldSphereUpdateModuleData.ModelCondition), 212);
+        ExpectOffset<SageBinaryData.ShieldSphereUpdateModuleData>(nameof(SageBinaryData.ShieldSphereUpdateModuleData.AttributeModifierName), 272);
+        ExpectOffset<SageBinaryData.ShieldSphereUpdateModuleData>(nameof(SageBinaryData.ShieldSphereUpdateModuleData.ShieldedObjectStatus), 276);
+        ExpectOffset<SageBinaryData.ShieldSphereUpdateModuleData>(nameof(SageBinaryData.ShieldSphereUpdateModuleData.Options), 308);
+        ExpectSize<SageBinaryData.YurikoShieldSphereUpdateModuleData>(328);
+        ExpectOffset<SageBinaryData.YurikoShieldSphereUpdateModuleData>(nameof(SageBinaryData.YurikoShieldSphereUpdateModuleData.MajorShieldHitFX), 312);
+        ExpectOffset<SageBinaryData.YurikoShieldSphereUpdateModuleData>(nameof(SageBinaryData.YurikoShieldSphereUpdateModuleData.MinorShieldDamageTypes), 320);
 
         Console.WriteLine("Uprising layout self-test: OK");
     }

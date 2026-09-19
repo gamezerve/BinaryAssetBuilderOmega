@@ -34,3 +34,39 @@ public struct DamageSphereUpdateModuleData
     public ModelConditionBitFlags ModelConditions;
     public ObjectStatusBitFlags ObjectStatus;
 }
+
+public enum ShieldSphereUpdateOption
+{
+    ALLOW_ALLIES_PROJECTTILE_GOTHROUGH
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct ShieldSphereUpdateOptionFlag
+{
+    public const int Count = 1;
+    public const int BitsInSpan = 32;
+    public const int NumSpans = 1;
+
+    public unsafe fixed uint Value[NumSpans];
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct ShieldSphereUpdateModuleData
+{
+    public SphereModuleUpdateModuleData Base;
+    public float MaxDamage;
+    public ObjectStatusBitFlags ObjectStatus;
+    public ModelConditionBitFlags ModelCondition;
+    public AssetReference<AttributeModifier> AttributeModifierName;
+    public ObjectStatusBitFlags ShieldedObjectStatus;
+    public ShieldSphereUpdateOptionFlag Options;
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct YurikoShieldSphereUpdateModuleData
+{
+    public ShieldSphereUpdateModuleData Base;
+    public AssetReference<FXList> MajorShieldHitFX;
+    public AssetReference<FXList> MinorShieldHitFX;
+    public DamageBitFlags MinorShieldDamageTypes;
+}

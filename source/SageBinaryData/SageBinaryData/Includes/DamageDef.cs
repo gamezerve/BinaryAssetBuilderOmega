@@ -6,8 +6,6 @@ public enum DamageType
     CRUSH,
     SLASH,
     PIERCE,
-    SIEGE,
-    STRUCTURAL,
     FLAME,
     HEALING,
     UNRESISTABLE,
@@ -18,10 +16,6 @@ public enum DamageType
     REFLECTED,
     PASSENGER,
     MAGIC,
-    CHOP,
-    HERO,
-    SPECIALIST,
-    FLY_INTO,
     UNDEFINED,
     LOGICAL_FIRE,
     POISON,
@@ -36,9 +30,15 @@ public enum DamageType
     MINE,
     TIBERIUM,
     STORM_SHIELD,
-#if KANESWRATH
-    METAGAME_POPULATION,
-    METAGAME_UNREST,
-    METAGAME_TIBERIUM
-#endif
+    MELEE,
+    AUTO_CANNON,
+    IMPACT,
+    EXPLOSIVE,
+    CONCUSSIVE,
+    FLAK,
+    PRISM,
+    TESLA,
+    KI,
+    RADIATION,
+    NEUTRON
 }

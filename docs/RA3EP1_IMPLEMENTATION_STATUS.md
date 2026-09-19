@@ -5,7 +5,7 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Progress snapshot (2026-09-19)
 
-The current conservative engineering estimate is **33% complete / 67%
+The current conservative engineering estimate is **34% complete / 66%
 remaining**. This is an effort estimate, not the percentage of C# files in the
 tree. A pre-existing Kane's Wrath marshaller only counts as complete after its
 RA3/EP1 layout, type hash and emitted streams have been checked.
@@ -14,17 +14,17 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 |---|---:|---:|---:|
 | Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
 | Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
-| Native layouts, processors, dispatch and final type table | 45% | 18% | 8.1% |
+| Native layouts, processors, dispatch and final type table | 45% | 20% | 9.0% |
 | Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
 | Built-mod validation inside Uprising | 10% | 0% | 0.0% |
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 729 (52.4%) and typed marshallers for 705
-(50.7%). These broad numbers are inventory coverage only. Of the 48 complex
-types that exist only in EP1, 15 (31.3%) now have both a model and marshaller;
-33 remain absent. The smaller audited set carries substantially more weight
-than raw file presence in the 33% estimate above.
+The source tree contains models for 731 (52.6%) and typed marshallers for 707
+(50.9%). These broad numbers are inventory coverage only. Of the 48 complex
+types that exist only in EP1, 16 (33.3%) now have both a model and marshaller;
+32 remain absent. The smaller audited set carries substantially more weight
+than raw file presence in the 34% estimate above.
 
 ## Established facts
 
@@ -215,6 +215,21 @@ masks and has no KW model-condition fields. EP1's wider pair of `KindOf` masks
 makes the corrected EP1 structure 120 bytes, exactly matching the sphere
 fixture. Because this type is widely embedded, the full compatibility suite is
 required after the correction and passes.
+
+The shield branch is now extended through `ShieldSphereUpdate` and the EP1-only
+`YurikoShieldSphereUpdate`. `GameObject:YurikoShieldProp` proves type ID
+`0x95D855B6`, a 312-byte shield base and a 328-byte Yuriko root. Its real
+payload contains the expected `24/24` radii, `0.25/10` timing, `1e10` maximum
+damage, status/model bits, two FX references, and minor-damage mask
+`0x00626008`. The compiler fixture reproduces a `460 bin / 12 relo / 0 imp`
+graph including `SHIELDSMALL` and the 120-byte nested ignore filter.
+
+The same fixture exposed the inherited KW `DamageType` ordering. It has been
+replaced with the official 39-value EP1 order (`MELEE` through `NEUTRON`,
+including `RADIATION`), while preserving the two-span native mask. `SageBinaryData`
+and `BinaryAssetBuilder.XmlCompiler` now explicitly compile with `VERSION7`,
+matching Utility, Core and AudioCompiler. The inspector's new `hash` command
+prints FastHash type IDs used for bounded module discovery.
 
 The independently supplied clean RA3 baseline at
 `D:\OneDrive\CNC Files\CnC_Modding_Support-main (Official XML, Schema, Script, Shader, Maps)\Red Alert 3\Schemas (RA3)`

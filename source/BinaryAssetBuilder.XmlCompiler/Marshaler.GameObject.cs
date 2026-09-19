@@ -68,6 +68,12 @@ public static partial class Marshaler
             case 0x878CEA1Fu:
                 MarshalPolymorphicType<DamageSphereUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
+            case 0x6C11B6F7u:
+                MarshalPolymorphicType<ShieldSphereUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                break;
+            case 0x95D855B6u:
+                MarshalPolymorphicType<YurikoShieldSphereUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                break;
             case 0x7EB7F219u:
                 MarshalPolymorphicType<CommandSetUpgradeModuleData, BehaviorModuleData>(node, objT, state);
                 break;

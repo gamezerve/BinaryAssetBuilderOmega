@@ -288,7 +288,9 @@ public struct DeathBitFlags
 [StructLayout(LayoutKind.Sequential)]
 public struct DamageBitFlags
 {
-#if TIBERIUMWARS
+#if VERSION7
+    public const int Count = 39;
+#elif TIBERIUMWARS
     public const int Count = 34;
 #elif KANESWRATH
     public const int Count = 37;

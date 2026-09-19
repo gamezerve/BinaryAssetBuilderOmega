@@ -13,13 +13,21 @@ internal static class Program
     {
         try
         {
-            if ((args.Length < 2 && args.FirstOrDefault() is not ("layout-self-test" or "compiler-self-test")) || args.FirstOrDefault() is not ("inspect" or "verify" or "compare" or "schema-diff" or "writer-self-test" or "utility-verify" or "assembly-fields" or "assembly-methods" or "assembly-il" or "current-layout" or "layout-self-test" or "compiler-self-test" or "asset-bytes"))
+            if ((args.Length < 2 && args.FirstOrDefault() is not ("layout-self-test" or "compiler-self-test")) || args.FirstOrDefault() is not ("inspect" or "verify" or "compare" or "schema-diff" or "writer-self-test" or "utility-verify" or "assembly-fields" or "assembly-methods" or "assembly-il" or "current-layout" or "layout-self-test" or "compiler-self-test" or "asset-bytes" or "hash"))
             {
                 PrintUsage();
                 return 2;
             }
 
             var command = args[0];
+            if (command == "hash")
+            {
+                foreach (string value in args.Skip(1))
+                {
+                    Console.WriteLine($"0x{BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(value):X8} {value}");
+                }
+                return 0;
+            }
             if (command == "compiler-self-test")
             {
                 CompilerSmokeTest.Run();
@@ -394,6 +402,7 @@ internal static class Program
         Console.WriteLine("  layout-self-test");
         Console.WriteLine("  compiler-self-test");
         Console.WriteLine("  asset-bytes <manifest-or-big> <bin-or-big> <type-name> [--entry <manifest-entry>] [--bin-entry <bin-entry>] [--asset <full-name>] [--find-u32 <hex>] [--offset <decimal-or-hex>] [--count <decimal-or-hex>]");
+        Console.WriteLine("  hash <text> [additional-text ...]");
     }
 
     private sealed record TypeFingerprint(uint TypeId, uint TypeHash, uint? Tokenized);
