@@ -31,13 +31,19 @@ public enum SpecialAbilityUpdateOptionsType
     SHOW_PREPARATION_PROGRESS,
     DESTROY_OCL_REGISTERED_OBJECTS_ON_EXIT,
     UPDATE_REQUIRES_LINE_OF_SIGHT,
-    CHECK_PREVENT_CONDITIONS
+    CHECK_PREVENT_CONDITIONS,
+    RECONSTITUTE_STORED_COMMAND,
+    DO_NOT_DO_AI_SPECIAL_POWER,
+    BUSY_DURING_UNPACK,
+    BUSY_DURING_PACK,
+    FAIL_WITH_INVALID_APPROACH,
+    MINIMUM_UNPACK_TIME_AFTER_SPECIAL_POWER_SELECTION
 }
 
 [StructLayout(LayoutKind.Sequential)]
 public struct SpecialAbilityUpdateOptionsTypeBitFlags
 {
-    public const int Count = 26;
+    public const int Count = 32;
     public const int BitsInSpan = 32;
     public const int NumSpans = (Count + (BitsInSpan - 1)) / BitsInSpan;
 
@@ -65,7 +71,6 @@ public struct ConditionsBitFlags
 public struct SpecialAbilityUpdateModuleData
 {
     public UpdateModuleData Base;
-    public Percentage GrabPassengerHealGain;
     public AssetReference<SpecialPowerTemplate> SpecialPowerTemplate;
     public float StartAbilityRange;
     public float AbilityAbortRange;
@@ -107,8 +112,9 @@ public struct SpecialAbilityUpdateModuleData
     public uint RequireAndSpendTiberiumOnCaster;
     public DisabledBitFlags DisabledTypesToProcess;
     public DisabledBitFlags DisabledTypesToContinueSoundsFor;
+    public ModelConditionFlagType ActiveModelCondition;
+    public Time MinimumUnpackTimeAfterSpecialPowerInitiation;
     public unsafe AnimAndDuration* CustomAnimAndDuration;
-    public unsafe AnimAndDuration* GrabPassengerAnimAndDuration;
     public SageBool StartRechargeOnExit;
     public SageBool GoIdleInStartPreparation;
     public SageBool FaceTarget;

@@ -5,7 +5,7 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Progress snapshot (2026-09-20)
 
-The current conservative engineering estimate is **37% complete / 63%
+The current conservative engineering estimate is **38% complete / 62%
 remaining**. This is an effort estimate, not the percentage of C# files in the
 tree. A pre-existing Kane's Wrath marshaller only counts as complete after its
 RA3/EP1 layout, type hash and emitted streams have been checked.
@@ -14,17 +14,17 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 |---|---:|---:|---:|
 | Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
 | Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
-| Native layouts, processors, dispatch and final type table | 45% | 26% | 11.7% |
+| Native layouts, processors, dispatch and final type table | 45% | 28% | 12.6% |
 | Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
 | Built-mod validation inside Uprising | 10% | 0% | 0.0% |
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 737 (53.0%) and typed marshallers for 713
-(51.3%). These broad numbers are inventory coverage only. Of the 48 complex
-types that exist only in EP1, 21 (43.8%) now have both a model and marshaller;
-27 remain absent. The smaller audited set carries substantially more weight
-than raw file presence in the 37% estimate above.
+The source tree contains models for 739 (53.2%) and typed marshallers for 715
+(51.4%). These broad numbers are inventory coverage only. Of the 48 complex
+types that exist only in EP1, 22 (45.8%) now have both a model and marshaller;
+26 remain absent. The smaller audited set carries substantially more weight
+than raw file presence in the 38% estimate above.
 
 ## Established facts
 
@@ -203,6 +203,29 @@ with `--relo` and `--imp`. When a bounded range is requested, only source
 offsets in that range are printed. Hex ranges are rendered with absolute asset
 offsets, which made the EP1 block alignment and pointer fields independently
 checkable without dumping the 357 MB static BIN.
+
+The Soviet Heavy Walker fixture adds the EP1-only
+`ProjectileReplaceSelfSpecialAbility` branch and exposes another KW carry-over
+that could not be fixed by copying XML. EA's RA3 Tokenizer declares a 240-byte
+`SpecialAbilityUpdateModuleData`; the inherited source happened to be 252
+bytes, but only because it contained the KW-only `GrabPassengerHealGain` and
+`GrabPassengerAnimAndDuration` members while omitting RA3's
+`ActiveModelCondition`. The corrected EP1 layout is also 252 bytes for a
+different reason: its two object-status masks grow by four bytes each and EP1
+adds `MinimumUnpackTimeAfterSpecialPowerInitiation`.
+
+The official RA3 offsets and the Uprising payload agree from
+`SpecialPowerTemplate=8` through the trailing booleans at 248-250. The EP1
+options enum now includes all 32 flags, including
+`MINIMUM_UNPACK_TIME_AFTER_SPECIAL_POWER_SELECTION`. The corrected 252-byte
+base extends to a 272-byte `ReplaceSelfSpecialAbility` and a 280-byte
+`ProjectileReplaceSelfSpecialAbility`; the latter adds a direct weapon
+reference and an optional OCL reference. The real payload contains the XML's
+`200` range, `3s` pack time, `0x44180000` option mask, paired
+`IGNORE_AI_COMMAND` masks, `0x1D8` replace mask, `225` clear distance and
+single replacement-template list at the recovered offsets. A standalone
+fixture emits `284 bin / 8 relo / 16 imp` when the optional OCL is present and
+the replacement list is omitted.
 
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of

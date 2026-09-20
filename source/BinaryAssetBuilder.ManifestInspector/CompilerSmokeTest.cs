@@ -18,6 +18,7 @@ internal static class CompilerSmokeTest
         TestLureObjectsUpdate();
         TestFlingStoredObjectsSpecialPower();
         TestLiftObjectUpdate();
+        TestProjectileReplaceSelfSpecialAbility();
         TestAudioDynamicsCollide();
         TestDamageDynamicsCollide();
         TestReactionFXOnDamage();
@@ -418,6 +419,57 @@ internal static class CompilerSmokeTest
         Expect(chunk.RelocationBuffer.Length == 12, "LiftObjectUpdate relocation bytes", 12, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 8, "LiftObjectUpdate imports bytes", 8, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  LiftObjectUpdate bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    private static unsafe void TestProjectileReplaceSelfSpecialAbility()
+    {
+        const string xml = """
+            <ProjectileReplaceSelfSpecialAbility xmlns="uri:ea.com:eala:asset"
+                SpecialPowerTemplate="SpecialPowerTemplate\68"
+                StartAbilityRange="200" PackTime="3s"
+                Options="RECONSTITUTE_STORED_COMMAND IGNORE_FACING_CHECK USE_OBJECT_GEOMETRY_FOR_WITHIN_RANGE_CHECK FAIL_WITH_INVALID_APPROACH"
+                SetObjectStatusOnTrigger="IGNORE_AI_COMMAND"
+                ClearObjectStatusOnExit="IGNORE_AI_COMMAND"
+                MinimumUnpackTimeAfterSpecialPowerInitiation="1.25s"
+                ClearTriggerDistance="225"
+                ReplaceOptions="CHECK_BUILD_ASSISTANT DISABLE_DURING_REPLACE CLEAR_LOCATION REPLACE_OVER_ENEMIES TRANSFER_EXPERIENCE"
+                LaunchingWeapon="WeaponTemplate\69"
+                OtherObjectCreationList="ObjectCreationList\71" />
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:ProjectileReplaceSelfSpecialAbility", namespaces)!, namespaces);
+
+        ProjectileReplaceSelfSpecialAbilityModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(ProjectileReplaceSelfSpecialAbilityModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 284, "ProjectileReplaceSelf instance bytes", 284, instance.Length);
+        Expect(ReadUInt32(instance, 8) == 68, "ProjectileReplaceSelf SpecialPowerTemplate import", 68, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 12) == 0x43480000, "ProjectileReplaceSelf StartAbilityRange", 0x43480000, ReadUInt32(instance, 12));
+        Expect(ReadUInt32(instance, 32) == 0x40400000, "ProjectileReplaceSelf PackTime", 0x40400000, ReadUInt32(instance, 32));
+        Expect(ReadUInt32(instance, 44) == 0x44180000, "ProjectileReplaceSelf Options", 0x44180000, ReadUInt32(instance, 44));
+        Expect(ReadUInt32(instance, 148) == 0x2000, "ProjectileReplaceSelf set status", 0x2000, ReadUInt32(instance, 148));
+        Expect(ReadUInt32(instance, 180) == 0x2000, "ProjectileReplaceSelf clear status", 0x2000, ReadUInt32(instance, 180));
+        Expect(ReadUInt32(instance, 228) == 0x8, "ProjectileReplaceSelf DisabledTypesToProcess", 0x8, ReadUInt32(instance, 228));
+        Expect(ReadUInt32(instance, 240) == 0x3FA00000, "ProjectileReplaceSelf minimum unpack time", 0x3FA00000, ReadUInt32(instance, 240));
+        Expect(instance[249] == 1, "ProjectileReplaceSelf GoIdleInStartPreparation", 1, instance[249]);
+        Expect(instance[250] == 1, "ProjectileReplaceSelf FaceTarget", 1, instance[250]);
+        Expect(ReadUInt32(instance, 256) == 0x1D8, "ProjectileReplaceSelf ReplaceOptions", 0x1D8, ReadUInt32(instance, 256));
+        Expect(ReadUInt32(instance, 260) == 0x43610000, "ProjectileReplaceSelf ClearTriggerDistance", 0x43610000, ReadUInt32(instance, 260));
+        Expect(ReadUInt32(instance, 264) == 0, "ProjectileReplaceSelf replacement count", 0, ReadUInt32(instance, 264));
+        Expect(ReadUInt32(instance, 268) == 0, "ProjectileReplaceSelf omitted replacement pointer", 0, ReadUInt32(instance, 268));
+        Expect(ReadUInt32(instance, 272) == 69, "ProjectileReplaceSelf LaunchingWeapon import", 69, ReadUInt32(instance, 272));
+        Expect(ReadUInt32(instance, 276) == 280, "ProjectileReplaceSelf OCL relocation", 280, ReadUInt32(instance, 276));
+        Expect(ReadUInt32(instance, 280) == 71, "ProjectileReplaceSelf OCL import", 71, ReadUInt32(instance, 280));
+        Expect(chunk.RelocationBuffer.Length == 8, "ProjectileReplaceSelf relocation bytes", 8, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 16, "ProjectileReplaceSelf imports bytes", 16, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  ProjectileReplaceSelf bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static unsafe void TestAudioDynamicsCollide()

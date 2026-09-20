@@ -9,7 +9,6 @@ public static partial class Marshaler
         {
             return;
         }
-        Marshal(node.GetAttributeValue(nameof(SpecialAbilityUpdateModuleData.GrabPassengerHealGain), null), &objT->GrabPassengerHealGain, state);
         Marshal(node.GetAttributeValue(nameof(SpecialAbilityUpdateModuleData.SpecialPowerTemplate), null), &objT->SpecialPowerTemplate, state);
         Marshal(node.GetAttributeValue(nameof(SpecialAbilityUpdateModuleData.StartAbilityRange), "10000000.0"), &objT->StartAbilityRange, state);
         Marshal(node.GetAttributeValue(nameof(SpecialAbilityUpdateModuleData.AbilityAbortRange), "10000000.0"), &objT->AbilityAbortRange, state);
@@ -53,9 +52,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(SpecialAbilityUpdateModuleData.GoIdleInStartPreparation), "true"), &objT->GoIdleInStartPreparation, state);
         Marshal(node.GetAttributeValue(nameof(SpecialAbilityUpdateModuleData.FaceTarget), "true"), &objT->FaceTarget, state);
         Marshal(node.GetAttributeValue(nameof(SpecialAbilityUpdateModuleData.DisabledTypesToProcess), nameof(DisabledType.HELD)), &objT->DisabledTypesToProcess, state);
-        Marshal(node.GetAttributeValue(nameof(SpecialAbilityUpdateModuleData.DisabledTypesToContinueSoundsFor), nameof(DisabledType.HELD)), &objT->DisabledTypesToContinueSoundsFor, state);
+        Marshal(node.GetAttributeValue(nameof(SpecialAbilityUpdateModuleData.DisabledTypesToContinueSoundsFor), null), &objT->DisabledTypesToContinueSoundsFor, state);
+        Marshal(node.GetAttributeValue(nameof(SpecialAbilityUpdateModuleData.ActiveModelCondition), null), &objT->ActiveModelCondition, state);
+        Marshal(node.GetAttributeValue(nameof(SpecialAbilityUpdateModuleData.MinimumUnpackTimeAfterSpecialPowerInitiation), "0s"), &objT->MinimumUnpackTimeAfterSpecialPowerInitiation, state);
         Marshal(node.GetChildNode(nameof(SpecialAbilityUpdateModuleData.CustomAnimAndDuration), null), &objT->CustomAnimAndDuration, state);
-        Marshal(node.GetChildNode(nameof(SpecialAbilityUpdateModuleData.GrabPassengerAnimAndDuration), null), &objT->GrabPassengerAnimAndDuration, state);
         Marshal(node, (UpdateModuleData*)objT, state);
     }
 }
