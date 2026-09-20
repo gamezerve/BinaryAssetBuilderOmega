@@ -120,6 +120,15 @@ internal static class UprisingLayoutSmokeTest
         ExpectSize<SageBinaryData.FlingStoredObjectsSpecialPowerModuleData>(500);
         ExpectOffset<SageBinaryData.FlingStoredObjectsSpecialPowerModuleData>(nameof(SageBinaryData.FlingStoredObjectsSpecialPowerModuleData.StoreObjectsLinkID), 476);
         ExpectOffset<SageBinaryData.FlingStoredObjectsSpecialPowerModuleData>(nameof(SageBinaryData.FlingStoredObjectsSpecialPowerModuleData.ObjectMap), 492);
+        ExpectSize<SageBinaryData.LiftedUnitModelStateMap>(64);
+        ExpectOffset<SageBinaryData.LiftedUnitModelStateMap>(nameof(SageBinaryData.LiftedUnitModelStateMap.ObjectFilter), 60);
+        ExpectSize<SageBinaryData.LiftedObjectModelStateMapList>(8);
+        ExpectSize<SageBinaryData.LiftObjectUpdateModuleData>(76);
+        ExpectOffset<SageBinaryData.LiftObjectUpdateModuleData>(nameof(SageBinaryData.LiftObjectUpdateModuleData.LiftObjectLinkID), 8);
+        ExpectOffset<SageBinaryData.LiftObjectUpdateModuleData>(nameof(SageBinaryData.LiftObjectUpdateModuleData.RotationSpeed), 40);
+        ExpectOffset<SageBinaryData.LiftObjectUpdateModuleData>(nameof(SageBinaryData.LiftObjectUpdateModuleData.DisabledTypesToProcess), 60);
+        ExpectOffset<SageBinaryData.LiftObjectUpdateModuleData>(nameof(SageBinaryData.LiftObjectUpdateModuleData.ModelStateObjectFilters), 64);
+        ExpectOffset<SageBinaryData.LiftObjectUpdateModuleData>(nameof(SageBinaryData.LiftObjectUpdateModuleData.CrusherModifiesVelocity), 72);
         ExpectSize<SageBinaryData.DynamicsCollideModuleData>(8);
         ExpectSize<SageBinaryData.MagnitudeSoundSelectorEntry>(8);
         ExpectOffset<SageBinaryData.MagnitudeSoundSelectorEntry>(nameof(SageBinaryData.MagnitudeSoundSelectorEntry.Sound), 4);

@@ -5,7 +5,7 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Progress snapshot (2026-09-20)
 
-The current conservative engineering estimate is **36% complete / 64%
+The current conservative engineering estimate is **37% complete / 63%
 remaining**. This is an effort estimate, not the percentage of C# files in the
 tree. A pre-existing Kane's Wrath marshaller only counts as complete after its
 RA3/EP1 layout, type hash and emitted streams have been checked.
@@ -14,17 +14,17 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 |---|---:|---:|---:|
 | Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
 | Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
-| Native layouts, processors, dispatch and final type table | 45% | 24% | 10.8% |
+| Native layouts, processors, dispatch and final type table | 45% | 26% | 11.7% |
 | Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
 | Built-mod validation inside Uprising | 10% | 0% | 0.0% |
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 734 (52.8%) and typed marshallers for 710
-(51.1%). These broad numbers are inventory coverage only. Of the 48 complex
-types that exist only in EP1, 19 (39.6%) now have both a model and marshaller;
-29 remain absent. The smaller audited set carries substantially more weight
-than raw file presence in the 36% estimate above.
+The source tree contains models for 737 (53.0%) and typed marshallers for 713
+(51.3%). These broad numbers are inventory coverage only. Of the 48 complex
+types that exist only in EP1, 21 (43.8%) now have both a model and marshaller;
+27 remain absent. The smaller audited set carries substantially more weight
+than raw file presence in the 37% estimate above.
 
 ## Established facts
 
@@ -185,6 +185,24 @@ predicted offsets. Standalone fixtures emit `96 bin / 8 relo / 0 imp` for a
 two-offset lure and `516 bin / 8 relo / 12 imp` for a two-map fling. The list
 test also fixed the existing `Vector3` marshaller's visibility and lowercase
 `x/y/z` attribute handling.
+
+The connected `LiftObjectUpdate` branch is now implemented as well. EA's RA3
+Tokenizer fixes the old base at 40 bytes; the EP1 attributes and nested model
+state list produce a 76-byte root. Bounded inspection of both Yuriko lift
+instances confirms offsets for the link ID, lift/elevation/time values,
+rotation, shader, shake values, disabled mask, model-state list, and the
+trailing `CrusherModifiesVelocity` boolean. Each
+`LiftedUnitModelStateMap` is 64 bytes: a 60-byte model-condition mask plus an
+optional `ObjectFilter` pointer. The five-entry Psychic Crush fixture contains
+the expected `REACT_1` through `REACT_5` masks and five filter pointers at a
+64-byte stride. A standalone nested-filter compiler test emits
+`260 bin / 12 relo / 8 imp`.
+
+`asset-bytes` can now read the selected asset's exact `.relo` and `.imp` slices
+with `--relo` and `--imp`. When a bounded range is requested, only source
+offsets in that range are printed. Hex ranges are rendered with absolute asset
+offsets, which made the EP1 block alignment and pointer fields independently
+checkable without dumping the 357 MB static BIN.
 
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of

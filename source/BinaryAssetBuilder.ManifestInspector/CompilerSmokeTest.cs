@@ -17,6 +17,7 @@ internal static class CompilerSmokeTest
         TestAddObjectsToLiftUpdate();
         TestLureObjectsUpdate();
         TestFlingStoredObjectsSpecialPower();
+        TestLiftObjectUpdate();
         TestAudioDynamicsCollide();
         TestDamageDynamicsCollide();
         TestReactionFXOnDamage();
@@ -367,6 +368,56 @@ internal static class CompilerSmokeTest
         Expect(chunk.RelocationBuffer.Length == 8, "Fling relocation bytes", 8, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 12, "Fling imports bytes", 12, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  FlingStoredObjectsSpecialPower bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    private static unsafe void TestLiftObjectUpdate()
+    {
+        const string xml = """
+            <LiftObjectUpdate xmlns="uri:ea.com:eala:asset"
+                LiftObjectLinkID="101" CrusherModifiesVelocity="true"
+                LiftVelocity="4" MaxElevationFromGround="90"
+                TimeIncrement="20s" MaxTimeLifted="20s"
+                RotationSpeed="0.1" Shader="ShaderOverride\123"
+                ShakeIntensity="0.002" ShakeRadius="-1" ShakeFade="1"
+                DisabledTypesToProcess="FROZEN">
+              <ModelStateObjectFilters>
+                <LiftedUnitModelState ModelState="REACT_5">
+                  <ObjectFilter Rule="ANY" Include="INFANTRY" />
+                </LiftedUnitModelState>
+              </ModelStateObjectFilters>
+            </LiftObjectUpdate>
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:LiftObjectUpdate", namespaces)!, namespaces);
+
+        LiftObjectUpdateModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(LiftObjectUpdateModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 260, "LiftObjectUpdate instance bytes", 260, instance.Length);
+        Expect(ReadUInt32(instance, 8) == 101, "LiftObjectUpdate.LiftObjectLinkID", 101, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 12) == 0x40800000, "LiftObjectUpdate.LiftVelocity", 0x40800000, ReadUInt32(instance, 12));
+        Expect(ReadUInt32(instance, 16) == 0x42B40000, "LiftObjectUpdate.MaxElevationFromGround", 0x42B40000, ReadUInt32(instance, 16));
+        Expect(ReadUInt32(instance, 40) == 0x3DCCCCCD, "LiftObjectUpdate.RotationSpeed", 0x3DCCCCCD, ReadUInt32(instance, 40));
+        Expect(ReadUInt32(instance, 44) == 123, "LiftObjectUpdate.Shader import", 123, ReadUInt32(instance, 44));
+        Expect(ReadUInt32(instance, 48) == 0x3B03126F, "LiftObjectUpdate.ShakeIntensity", 0x3B03126F, ReadUInt32(instance, 48));
+        Expect(ReadUInt32(instance, 52) == 0xBF800000, "LiftObjectUpdate.ShakeRadius", unchecked((int)0xBF800000), ReadUInt32(instance, 52));
+        Expect(ReadUInt32(instance, 60) == 0x1000, "LiftObjectUpdate.DisabledTypesToProcess", 0x1000, ReadUInt32(instance, 60));
+        Expect(ReadUInt32(instance, 64) == 1, "LiftObjectUpdate model-state count", 1, ReadUInt32(instance, 64));
+        Expect(ReadUInt32(instance, 68) == 76, "LiftObjectUpdate model-state relocation", 76, ReadUInt32(instance, 68));
+        Expect(instance[72] == 1, "LiftObjectUpdate.CrusherModifiesVelocity", 1, instance[72]);
+        Expect(ReadUInt32(instance, 108) == 0x10000, "LiftObjectUpdate ModelState=REACT_5", 0x10000, ReadUInt32(instance, 108));
+        Expect(ReadUInt32(instance, 136) == 140, "LiftObjectUpdate ObjectFilter relocation", 140, ReadUInt32(instance, 136));
+        Expect(ReadUInt32(instance, 144) == 2, "LiftObjectUpdate ObjectFilter.Rule=ANY", 2, ReadUInt32(instance, 144));
+        Expect(chunk.RelocationBuffer.Length == 12, "LiftObjectUpdate relocation bytes", 12, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 8, "LiftObjectUpdate imports bytes", 8, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  LiftObjectUpdate bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static unsafe void TestAudioDynamicsCollide()

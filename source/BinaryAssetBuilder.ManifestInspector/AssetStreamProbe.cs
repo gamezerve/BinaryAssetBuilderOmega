@@ -11,10 +11,16 @@ internal static class AssetStreamProbe
         string? assetName,
         uint? findUInt32,
         int? rangeOffset,
-        int? rangeCount)
+        int? rangeCount,
+        string? relocationPath,
+        string? relocationEntryName,
+        string? importsPath,
+        string? importsEntryName)
     {
         ManifestDocument manifest = ReadManifest(manifestPath, manifestEntryName);
         long instanceOffset = 0;
+        long relocationOffset = 0;
+        long importsOffset = 0;
         int matches = 0;
         foreach (ManifestAsset asset in manifest.Assets)
         {
@@ -39,9 +45,22 @@ internal static class AssetStreamProbe
                 {
                     PrintRange(bytes, rangeOffset ?? 0, rangeCount ?? 256);
                 }
+                if (relocationPath is not null)
+                {
+                    byte[] relocations = ReadRange(
+                        relocationPath, relocationEntryName, relocationOffset, asset.RelocationDataSize);
+                    PrintAuxiliaryOffsets("relo", relocations, rangeOffset, rangeCount);
+                }
+                if (importsPath is not null)
+                {
+                    byte[] imports = ReadRange(importsPath, importsEntryName, importsOffset, asset.ImportsDataSize);
+                    PrintAuxiliaryOffsets("imp", imports, rangeOffset, rangeCount);
+                }
                 matches++;
             }
             instanceOffset = checked(instanceOffset + asset.InstanceDataSize);
+            relocationOffset = checked(relocationOffset + asset.RelocationDataSize);
+            importsOffset = checked(importsOffset + asset.ImportsDataSize);
         }
 
         if (matches == 0)
@@ -64,6 +83,36 @@ internal static class AssetStreamProbe
         }
     }
 
+    private static void PrintAuxiliaryOffsets(string label, byte[] bytes, int? rangeOffset, int? rangeCount)
+    {
+        if ((bytes.Length & 3) != 0)
+        {
+            throw new InvalidDataException($"{label} chunk size {bytes.Length} is not divisible by four.");
+        }
+
+        int start = rangeOffset ?? 0;
+        long end = rangeOffset.HasValue || rangeCount.HasValue
+            ? (long)start + (rangeCount ?? 256)
+            : long.MaxValue;
+        uint[] offsets = new uint[bytes.Length / sizeof(uint)];
+        for (int index = 0; index < offsets.Length; index++)
+        {
+            offsets[index] = System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(
+                bytes.AsSpan(index * sizeof(uint), sizeof(uint)));
+        }
+
+        uint[] selected = offsets
+            .Where(offset => offset != uint.MaxValue && offset >= start && offset < end)
+            .Take(128)
+            .ToArray();
+        Console.WriteLine(
+            $"  {label} bytes={bytes.Length:N0} entries={offsets.Count(offset => offset != uint.MaxValue):N0}" +
+            (rangeOffset.HasValue || rangeCount.HasValue ? $" selected=[0x{start:X},0x{end:X})" : string.Empty));
+        Console.WriteLine(selected.Length == 0
+            ? "    (no source offsets in selected range)"
+            : $"    {string.Join(", ", selected.Select(offset => $"0x{offset:X}"))}");
+    }
+
     private static void PrintRange(byte[] bytes, int offset, int count)
     {
         const int maximumRangeLength = 16 * 1024;
@@ -80,7 +129,12 @@ internal static class AssetStreamProbe
 
         int displayed = Math.Min(count, bytes.Length - offset);
         Console.WriteLine($"  range +0x{offset:X} ({offset:N0}), {displayed:N0} byte(s):");
-        Console.WriteLine(Convert.ToHexString(bytes.AsSpan(offset, displayed)));
+        for (int rowOffset = 0; rowOffset < displayed; rowOffset += 16)
+        {
+            int rowLength = Math.Min(16, displayed - rowOffset);
+            Console.WriteLine(
+                $"    +0x{offset + rowOffset:X8}  {Convert.ToHexString(bytes.AsSpan(offset + rowOffset, rowLength))}");
+        }
         if (displayed != count)
         {
             Console.WriteLine($"  (range ended at the end of the asset chunk; requested {count:N0} bytes)");

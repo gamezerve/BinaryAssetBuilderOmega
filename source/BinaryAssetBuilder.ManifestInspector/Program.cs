@@ -45,7 +45,9 @@ internal static class Program
                     args[1], args[2], args[3], GetOption(args, "--entry"),
                     GetOption(args, "--bin-entry"), GetOption(args, "--asset"),
                     ParseUInt32Option(args, "--find-u32"),
-                    ParseInt32Option(args, "--offset"), ParseInt32Option(args, "--count"));
+                    ParseInt32Option(args, "--offset"), ParseInt32Option(args, "--count"),
+                    GetOption(args, "--relo"), GetOption(args, "--relo-entry"),
+                    GetOption(args, "--imp"), GetOption(args, "--imp-entry"));
                 return 0;
             }
 
@@ -401,7 +403,7 @@ internal static class Program
         Console.WriteLine("  current-layout <SageBinaryData-type-name>");
         Console.WriteLine("  layout-self-test");
         Console.WriteLine("  compiler-self-test");
-        Console.WriteLine("  asset-bytes <manifest-or-big> <bin-or-big> <type-name> [--entry <manifest-entry>] [--bin-entry <bin-entry>] [--asset <full-name>] [--find-u32 <hex>] [--offset <decimal-or-hex>] [--count <decimal-or-hex>]");
+        Console.WriteLine("  asset-bytes <manifest-or-big> <bin-or-big> <type-name> [--entry <manifest-entry>] [--bin-entry <bin-entry>] [--asset <full-name>] [--find-u32 <hex>] [--offset <decimal-or-hex>] [--count <decimal-or-hex>] [--relo <relo-or-big>] [--relo-entry <BIG entry>] [--imp <imp-or-big>] [--imp-entry <BIG entry>]");
         Console.WriteLine("  hash <text> [additional-text ...]");
     }
 
