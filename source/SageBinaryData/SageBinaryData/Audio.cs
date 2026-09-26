@@ -191,6 +191,13 @@ namespace SageBinaryData
         public List<AudioFileRefWithWeight> Decay;
     }
 
+    // Reborn: Preserve AudioEvent's native layout for EP1's non-transient per-map override root.
+    [StructLayout(LayoutKind.Sequential)]
+    public struct AudioEventOverridable
+    {
+        public AudioEvent Base;
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct MusicTrack
     {
@@ -234,5 +241,12 @@ namespace SageBinaryData
         public BaseAudioEventInfo Base;
         public MultisoundControlFlags Control;
         public List<MultisoundSubsoundRef> Subsound;
+    }
+
+    // Reborn: Preserve Multisound's native layout for EP1's non-transient per-map override root.
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MultisoundOverridable
+    {
+        public Multisound Base;
     }
 }

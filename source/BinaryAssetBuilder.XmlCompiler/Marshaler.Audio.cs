@@ -102,6 +102,14 @@ public static partial class Marshaler
         Marshal(node, (BaseSingleSound*)objT, state);
     }
 
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Compile EP1's non-transient AudioEvent root through its unchanged inherited ABI. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node, AudioEventOverridable* objT, Tracker state)
+    {
+        Marshal(node, (AudioEvent*)objT, state);
+    }
+
     public static unsafe void Marshal(Node node, MusicTrack* objT, Tracker state)
     {
         Marshal(node.GetChildNode(nameof(MusicTrack.Filename), null), &objT->Filename, state);
@@ -129,5 +137,13 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(Multisound.Control), ""), &objT->Control, state);
         Marshal(node.GetChildNodes(nameof(Multisound.Subsound)), &objT->Subsound, state);
         Marshal(node, (BaseAudioEventInfo*)objT, state);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Compile EP1's non-transient Multisound root through its unchanged inherited ABI. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node, MultisoundOverridable* objT, Tracker state)
+    {
+        Marshal(node, (Multisound*)objT, state);
     }
 }

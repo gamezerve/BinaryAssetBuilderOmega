@@ -20,10 +20,10 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 745 (53.6%) and typed marshallers for 721
-(51.9%). These broad numbers are inventory coverage only. Of the 48 complex
-types that exist only in EP1, 27 (56.2%) now have both a model and marshaller;
-21 remain absent. The smaller audited set carries substantially more weight
+The source tree contains models for 747 (53.7%) and typed marshallers for 723
+(52.0%). These broad numbers are inventory coverage only. Of the 48 complex
+types that exist only in EP1, 29 (60.4%) now have both a model and marshaller;
+19 remain absent. The smaller audited set carries substantially more weight
 than raw file presence in the 40% estimate above.
 
 ## Established facts
@@ -268,6 +268,13 @@ two-entry fixture emits `24 bin / 8 relo / 16 imp`. The smoke-test harness now
 initializes the `POID` hash bin so typed asset IDs exercise the same lowercase
 hash path as a normal builder session.
 
+EP1's `AudioEventOverridable` and `MultisoundOverridable` are non-transient
+per-map override roots with no fields beyond their `AudioEvent` and
+`Multisound` bases. They are now explicit ABI-preserving wrappers rather than
+being mistaken for new audio layouts. Compiler fixtures exercise their real
+child-list paths and emit `128 bin / 8 relo / 8 imp` and `24 bin / 8 relo / 8
+imp`, respectively.
+
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of
 `GameObject:ClientFlingableExplodingBarrel` found type ID `0xD6C03AC2` at the
@@ -367,7 +374,7 @@ game archives, including RefPack inputs.
 
 Remaining work:
 
-1. Port the remaining 21 EP1-only complex types and every
+1. Port the remaining 19 EP1-only complex types and every
    binary-layout-affecting change among the 75 changed schemas into
    `SageBinaryData` and the processor registry.
 2. Generate the Uprising type table and require the final

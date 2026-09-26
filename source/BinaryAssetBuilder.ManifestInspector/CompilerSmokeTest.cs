@@ -25,6 +25,7 @@ internal static class CompilerSmokeTest
         TestYurikoHotKeys();
         TestDynamicsSettings();
         TestMainMenuPersonality();
+        TestOverridableAudio();
         TestAudioDynamicsCollide();
         TestDamageDynamicsCollide();
         TestReactionFXOnDamage();
@@ -697,6 +698,64 @@ internal static class CompilerSmokeTest
         Expect(groupChunk.RelocationBuffer.Length == 8, "MainMenuPersonalityGroup relocation bytes", 8, groupChunk.RelocationBuffer.Length);
         Expect(groupChunk.ImportsBuffer.Length == 16, "MainMenuPersonalityGroup imports bytes", 16, groupChunk.ImportsBuffer.Length);
         Console.WriteLine($"  MainMenuPersonality template={templateChunk.InstanceBuffer.Length}/{templateChunk.RelocationBuffer.Length}/{templateChunk.ImportsBuffer.Length}, group={groupChunk.InstanceBuffer.Length}/{groupChunk.RelocationBuffer.Length}/{groupChunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Verify EP1's overridable audio roots retain their base layouts and list/import streams. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestOverridableAudio()
+    {
+        const string audioXml = """
+            <AudioEventOverridable xmlns="uri:ea.com:eala:asset">
+              <Sound Weight="750">AudioFile\23</Sound>
+            </AudioEventOverridable>
+            """;
+        XmlDocument audioDocument = new();
+        audioDocument.LoadXml(audioXml);
+        XmlNamespaceManager audioNamespaces = new(audioDocument.NameTable);
+        audioNamespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node audioNode = new(audioDocument.CreateNavigator()!.SelectSingleNode("/ea:AudioEventOverridable", audioNamespaces)!, audioNamespaces);
+
+        AudioEventOverridable* audioRoot;
+        using Tracker audioTracker = new((void**)&audioRoot, (uint)sizeof(AudioEventOverridable), false);
+        Marshaler.Marshal(audioNode, audioRoot, audioTracker);
+        Chunk audioChunk = new();
+        audioTracker.MakeRelocatable(audioChunk);
+        ReadOnlySpan<byte> audioInstance = audioChunk.InstanceBuffer;
+        Expect(audioInstance.Length == 128, "AudioEventOverridable instance bytes", 128, audioInstance.Length);
+        Expect(ReadUInt32(audioInstance, 104) == 1, "AudioEventOverridable sound count", 1, ReadUInt32(audioInstance, 104));
+        Expect(ReadUInt32(audioInstance, 108) == 120, "AudioEventOverridable sound relocation", 120, ReadUInt32(audioInstance, 108));
+        Expect(ReadUInt32(audioInstance, 120) == 23, "AudioEventOverridable sound import", 23, ReadUInt32(audioInstance, 120));
+        Expect(ReadUInt32(audioInstance, 124) == 750, "AudioEventOverridable sound weight", 750, ReadUInt32(audioInstance, 124));
+        Expect(audioChunk.RelocationBuffer.Length == 8, "AudioEventOverridable relocation bytes", 8, audioChunk.RelocationBuffer.Length);
+        Expect(audioChunk.ImportsBuffer.Length == 8, "AudioEventOverridable imports bytes", 8, audioChunk.ImportsBuffer.Length);
+
+        const string multisoundXml = """
+            <MultisoundOverridable xmlns="uri:ea.com:eala:asset" Control="PLAY_ONE">
+              <Subsound Weight="500">AudioEvent\31</Subsound>
+            </MultisoundOverridable>
+            """;
+        XmlDocument multisoundDocument = new();
+        multisoundDocument.LoadXml(multisoundXml);
+        XmlNamespaceManager multisoundNamespaces = new(multisoundDocument.NameTable);
+        multisoundNamespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node multisoundNode = new(multisoundDocument.CreateNavigator()!.SelectSingleNode("/ea:MultisoundOverridable", multisoundNamespaces)!, multisoundNamespaces);
+
+        MultisoundOverridable* multisoundRoot;
+        using Tracker multisoundTracker = new((void**)&multisoundRoot, (uint)sizeof(MultisoundOverridable), false);
+        Marshaler.Marshal(multisoundNode, multisoundRoot, multisoundTracker);
+        Chunk multisoundChunk = new();
+        multisoundTracker.MakeRelocatable(multisoundChunk);
+        ReadOnlySpan<byte> multisoundInstance = multisoundChunk.InstanceBuffer;
+        Expect(multisoundInstance.Length == 24, "MultisoundOverridable instance bytes", 24, multisoundInstance.Length);
+        Expect(ReadUInt32(multisoundInstance, 4) == 2, "MultisoundOverridable control", 2, ReadUInt32(multisoundInstance, 4));
+        Expect(ReadUInt32(multisoundInstance, 8) == 1, "MultisoundOverridable subsound count", 1, ReadUInt32(multisoundInstance, 8));
+        Expect(ReadUInt32(multisoundInstance, 12) == 16, "MultisoundOverridable subsound relocation", 16, ReadUInt32(multisoundInstance, 12));
+        Expect(ReadUInt32(multisoundInstance, 16) == 31, "MultisoundOverridable subsound import", 31, ReadUInt32(multisoundInstance, 16));
+        Expect(ReadUInt32(multisoundInstance, 20) == 500, "MultisoundOverridable subsound weight", 500, ReadUInt32(multisoundInstance, 20));
+        Expect(multisoundChunk.RelocationBuffer.Length == 8, "MultisoundOverridable relocation bytes", 8, multisoundChunk.RelocationBuffer.Length);
+        Expect(multisoundChunk.ImportsBuffer.Length == 8, "MultisoundOverridable imports bytes", 8, multisoundChunk.ImportsBuffer.Length);
+        Console.WriteLine($"  OverridableAudio event={audioChunk.InstanceBuffer.Length}/{audioChunk.RelocationBuffer.Length}/{audioChunk.ImportsBuffer.Length}, multisound={multisoundChunk.InstanceBuffer.Length}/{multisoundChunk.RelocationBuffer.Length}/{multisoundChunk.ImportsBuffer.Length}");
     }
 
     private static unsafe void TestAudioDynamicsCollide()

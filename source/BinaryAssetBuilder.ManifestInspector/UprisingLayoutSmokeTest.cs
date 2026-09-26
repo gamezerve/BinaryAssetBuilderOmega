@@ -169,6 +169,11 @@ internal static class UprisingLayoutSmokeTest
         ExpectSize<SageBinaryData.MainMenuPersonalityGroup>(16);
         ExpectOffset<SageBinaryData.MainMenuPersonalityGroup>(nameof(SageBinaryData.MainMenuPersonalityGroup.DefaultPersonality), 4);
         ExpectOffset<SageBinaryData.MainMenuPersonalityGroup>(nameof(SageBinaryData.MainMenuPersonalityGroup.MainMenuPersonality), 8);
+        // Reborn: EP1's overridable audio roots are ABI-identical wrappers around their transient bases.
+        ExpectSize<SageBinaryData.AudioEventOverridable>(120);
+        ExpectOffset<SageBinaryData.AudioEventOverridable>(nameof(SageBinaryData.AudioEventOverridable.Base), 0);
+        ExpectSize<SageBinaryData.MultisoundOverridable>(16);
+        ExpectOffset<SageBinaryData.MultisoundOverridable>(nameof(SageBinaryData.MultisoundOverridable.Base), 0);
         ExpectSize<SageBinaryData.DynamicsCollideModuleData>(8);
         ExpectSize<SageBinaryData.MagnitudeSoundSelectorEntry>(8);
         ExpectOffset<SageBinaryData.MagnitudeSoundSelectorEntry>(nameof(SageBinaryData.MagnitudeSoundSelectorEntry.Sound), 4);
