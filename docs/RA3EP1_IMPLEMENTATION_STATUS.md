@@ -3,9 +3,9 @@
 This branch starts the migration with a read-only compatibility gate. It does
 not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
-## Progress snapshot (2026-09-20)
+## Progress snapshot (2026-09-26)
 
-The current conservative engineering estimate is **38% complete / 62%
+The current conservative engineering estimate is **39% complete / 61%
 remaining**. This is an effort estimate, not the percentage of C# files in the
 tree. A pre-existing Kane's Wrath marshaller only counts as complete after its
 RA3/EP1 layout, type hash and emitted streams have been checked.
@@ -14,16 +14,16 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 |---|---:|---:|---:|
 | Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
 | Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
-| Native layouts, processors, dispatch and final type table | 45% | 28% | 12.6% |
+| Native layouts, processors, dispatch and final type table | 45% | 31% | 14.0% |
 | Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
 | Built-mod validation inside Uprising | 10% | 0% | 0.0% |
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 739 (53.2%) and typed marshallers for 715
-(51.4%). These broad numbers are inventory coverage only. Of the 48 complex
-types that exist only in EP1, 22 (45.8%) now have both a model and marshaller;
-26 remain absent. The smaller audited set carries substantially more weight
+The source tree contains models for 741 (53.3%) and typed marshallers for 717
+(51.6%). These broad numbers are inventory coverage only. Of the 48 complex
+types that exist only in EP1, 23 (47.9%) now have both a model and marshaller;
+25 remain absent. The smaller audited set carries substantially more weight
 than raw file presence in the 38% estimate above.
 
 ## Established facts
@@ -32,6 +32,9 @@ than raw file presence in the 38% estimate above.
 - Uprising manifests use version 7 and `AllTypesHash=0x5454A8E9`.
 - Version 7 changes the first four header bytes from
   `IsBigEndian, IsLinked, Version` to `Version, IsBigEndian, IsLinked`.
+- Linked RA3 v6 BIN/RELO/IMP streams begin with a 4-byte checksum. Official
+  Uprising v7 streams prepend type-specific `0xBABB0000`, `0xBABE0000`, and
+  `0xBAB10000` markers respectively, producing an 8-byte prefix before data.
 - The sampled Uprising BIG entries may be raw or RefPack-compressed.
 - Uprising preserves the 48-byte version 6/7 asset-entry layout, including the
   tokenized word, but its changed schemas produce different per-type hashes.
@@ -227,6 +230,23 @@ single replacement-template list at the recovered offsets. A standalone
 fixture emits `284 bin / 8 relo / 16 imp` when the optional OCL is present and
 the replacement list is omitted.
 
+`ProjectilePath` demonstrates a schema replacement that preserves the root
+ABI while changing list stride. RA3 stores a `List<Vector4>` at offset 8 of a
+16-byte root. EP1 stores `List<ProjectilePathNode>` at that same offset; each
+new node is three inline `Vector4` values (`InVec`, `Point`, `OutVec`) and is
+therefore 48 bytes. The official five-node `ProjectilePath_Foo` is exactly 256
+bytes (`16 + 5*48`), with its relocation source at `0x0C` and list target at
+`0x10`. The compiler smoke test reproduces all 256 bytes of structure and the
+`8 relo / 0 imp` stream shape. This also corrected the shared `Vector4`
+marshaller to read the schema's lowercase `x/y/z/w` attributes and to default
+omitted components to zero.
+
+The apparent 256/264-byte fixture mismatch was an inspector offset bug, not an
+EA layout anomaly. `asset-bytes` previously skipped no linked-stream prefix,
+so every RA3 v6 read was four bytes early and every Uprising v7 read was eight
+bytes early. It now derives the physical prefix from the parsed manifest and
+reports correct asset and auxiliary-stream offsets for both formats.
+
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of
 `GameObject:ClientFlingableExplodingBarrel` found type ID `0xD6C03AC2` at the
@@ -317,15 +337,18 @@ ever dumping an entire multi-gigabyte stream.
 
 The Uprising branch now builds its Utility, Core and AudioCompiler projects with
 `VERSION7`. The writer emits the 4-byte EP1 prefix, reordered v7 header and
-48-byte tokenized asset entries. Its output round-trips through both the new
+48-byte tokenized asset entries. The linked-stream writer now also emits and
+validates the official EP1 BIN/RELO/IMP marker-plus-checksum headers instead of
+the RA3 checksum-only form. Its output round-trips through both the new
 inspector and the production Utility reader. The production reader also passes
 against `worldbuilder`, `static` and `global` manifests extracted from the real
 game archives, including RefPack inputs.
 
 Remaining work:
 
-1. Port the 22 new schema types and every binary-layout-affecting change among
-   the 75 changed schemas into `SageBinaryData` and the processor registry.
+1. Port the remaining 25 EP1-only complex types and every
+   binary-layout-affecting change among the 75 changed schemas into
+   `SageBinaryData` and the processor registry.
 2. Generate the Uprising type table and require the final
    `AllTypesHash=0x5454A8E9`; a schema-valid XML build is not sufficient.
 3. Validate `.bin`, `.relo` and `.imp` chunks asset-by-asset against a known

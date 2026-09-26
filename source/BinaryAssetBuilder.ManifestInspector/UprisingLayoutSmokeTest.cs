@@ -148,6 +148,13 @@ internal static class UprisingLayoutSmokeTest
         ExpectSize<SageBinaryData.ProjectileReplaceSelfSpecialAbilityModuleData>(280);
         ExpectOffset<SageBinaryData.ProjectileReplaceSelfSpecialAbilityModuleData>(nameof(SageBinaryData.ProjectileReplaceSelfSpecialAbilityModuleData.LaunchingWeapon), 272);
         ExpectOffset<SageBinaryData.ProjectileReplaceSelfSpecialAbilityModuleData>(nameof(SageBinaryData.ProjectileReplaceSelfSpecialAbilityModuleData.OtherObjectCreationList), 276);
+        // Reborn: Pin the Uprising ProjectilePath replacement-list ABI recovered from static.bin.
+        ExpectSize<SageBinaryData.ProjectilePathNode>(48);
+        ExpectOffset<SageBinaryData.ProjectilePathNode>(nameof(SageBinaryData.ProjectilePathNode.Point), 16);
+        ExpectOffset<SageBinaryData.ProjectilePathNode>(nameof(SageBinaryData.ProjectilePathNode.OutVec), 32);
+        ExpectSize<SageBinaryData.ProjectilePath>(16);
+        ExpectOffset<SageBinaryData.ProjectilePath>(nameof(SageBinaryData.ProjectilePath.ComponentScale), 4);
+        ExpectOffset<SageBinaryData.ProjectilePath>(nameof(SageBinaryData.ProjectilePath.Node), 8);
         ExpectSize<SageBinaryData.DynamicsCollideModuleData>(8);
         ExpectSize<SageBinaryData.MagnitudeSoundSelectorEntry>(8);
         ExpectOffset<SageBinaryData.MagnitudeSoundSelectorEntry>(nameof(SageBinaryData.MagnitudeSoundSelectorEntry.Sound), 4);

@@ -18,12 +18,17 @@ internal static class AssetStreamProbe
         string? importsEntryName)
     {
         ManifestDocument manifest = ReadManifest(manifestPath, manifestEntryName);
-        long instanceOffset = 0;
-        long relocationOffset = 0;
-        long importsOffset = 0;
+        // Reborn: Linked streams start with the manifest container prefix followed by the stream checksum.
+        long streamPrefixSize = manifest.Header.IsLinked
+            ? manifest.Header.ContainerPrefixSize + sizeof(uint)
+            : 0;
+        long instanceOffset = streamPrefixSize;
+        long relocationOffset = streamPrefixSize;
+        long importsOffset = streamPrefixSize;
         int matches = 0;
-        foreach (ManifestAsset asset in manifest.Assets)
+        for (int assetIndex = 0; assetIndex < manifest.Assets.Count; assetIndex++)
         {
+            ManifestAsset asset = manifest.Assets[assetIndex];
             if (asset.TypeName.Equals(typeName, StringComparison.OrdinalIgnoreCase)
                 && (assetName is null || asset.Name.Equals(assetName, StringComparison.OrdinalIgnoreCase)))
             {
@@ -31,6 +36,19 @@ internal static class AssetStreamProbe
                 Console.WriteLine(
                     $"{asset.Name} TypeId=0x{asset.TypeId:X8} InstanceId=0x{asset.InstanceId:X8} " +
                     $"TypeHash=0x{asset.TypeHash:X8} Offset={instanceOffset:N0} Size={asset.InstanceDataSize:N0}");
+                // Reborn: Expose adjacent manifest entries so suspicious payload sizes can be checked against stream boundaries.
+                if (assetIndex > 0)
+                {
+                    ManifestAsset previous = manifest.Assets[assetIndex - 1];
+                    Console.WriteLine(
+                        $"  previous={previous.Name} size={previous.InstanceDataSize:N0} ends-at={instanceOffset:N0}");
+                }
+                if (assetIndex + 1 < manifest.Assets.Count)
+                {
+                    ManifestAsset next = manifest.Assets[assetIndex + 1];
+                    Console.WriteLine(
+                        $"  next={next.Name} size={next.InstanceDataSize:N0} starts-at={instanceOffset + asset.InstanceDataSize:N0}");
+                }
                 int displayed = Math.Min(bytes.Length, 256);
                 Console.WriteLine(Convert.ToHexString(bytes.AsSpan(0, displayed)));
                 if (displayed != bytes.Length)

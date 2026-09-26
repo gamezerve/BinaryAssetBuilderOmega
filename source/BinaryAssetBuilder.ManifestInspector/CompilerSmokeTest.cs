@@ -19,6 +19,7 @@ internal static class CompilerSmokeTest
         TestFlingStoredObjectsSpecialPower();
         TestLiftObjectUpdate();
         TestProjectileReplaceSelfSpecialAbility();
+        TestProjectilePath();
         TestAudioDynamicsCollide();
         TestDamageDynamicsCollide();
         TestReactionFXOnDamage();
@@ -470,6 +471,72 @@ internal static class CompilerSmokeTest
         Expect(chunk.RelocationBuffer.Length == 8, "ProjectileReplaceSelf relocation bytes", 8, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 16, "ProjectileReplaceSelf imports bytes", 16, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  ProjectileReplaceSelf bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Validate the EP1 ProjectilePath node ABI against EA's five-node ProjectilePath_Foo fixture. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestProjectilePath()
+    {
+        const string xml = """
+            <ProjectilePath xmlns="uri:ea.com:eala:asset">
+              <Node>
+                <InVec x="26.0649" y="-2.84037" z="6.802" />
+                <Point x="29.0575" y="-4.72524" z="15.1092" />
+                <OutVec x="32.0502" y="-6.61011" z="23.4164" />
+              </Node>
+              <Node>
+                <InVec x="28.7771" y="-11.9631" z="40.4948" />
+                <Point x="18.1657" y="-11.3092" z="49.0047" />
+                <OutVec x="7.55436" y="-10.6554" z="57.5145" />
+              </Node>
+              <Node>
+                <InVec x="-13.9382" y="-4.19995" z="65.2511" />
+                <Point x="-34.6108" y="-0.802208" z="66.1682" />
+                <OutVec x="-55.2834" y="2.59553" z="67.0853" />
+              </Node>
+              <Node>
+                <InVec x="-79.2485" y="8.94352" z="62.1112" />
+                <Point x="-105.87" y="9.07722" z="54.5073" />
+                <OutVec x="-132.491" y="9.21093" z="46.9035" />
+              </Node>
+              <Node>
+                <InVec x="-161.981" y="6.18518" z="35.5827" />
+                <Point x="-194.34" y="0.0" z="20.5451" />
+                <OutVec x="-227.34" y="-6.18518" z="5.5451" />
+              </Node>
+            </ProjectilePath>
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:ProjectilePath", namespaces)!, namespaces);
+
+        ProjectilePath* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(ProjectilePath), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        if (!tracker.MakeRelocatable(chunk))
+        {
+            throw new InvalidDataException("Tracker failed to produce a relocatable ProjectilePath chunk.");
+        }
+
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 256, "ProjectilePath instance bytes", 256, instance.Length);
+        Expect(ReadUInt32(instance, 4) == 0, "ProjectilePath omitted ComponentScale", 0, ReadUInt32(instance, 4));
+        Expect(ReadUInt32(instance, 8) == 5, "ProjectilePath node count", 5, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 12) == 16, "ProjectilePath node relocation", 16, ReadUInt32(instance, 12));
+        Expect(ReadUInt32(instance, 16) == 0x41D084EA, "ProjectilePath first InVec.x", 0x41D084EA, ReadUInt32(instance, 16));
+        Expect(ReadUInt32(instance, 28) == 0, "ProjectilePath default InVec.w", 0, ReadUInt32(instance, 28));
+        // Reborn: The final node's OutVec occupies the last 16 bytes of the 256-byte EA fixture.
+        Expect(ReadUInt32(instance, 240) == 0xC363570A, "ProjectilePath final OutVec.x", unchecked((int)0xC363570A), ReadUInt32(instance, 240));
+        Expect(ReadUInt32(instance, 244) == 0xC0C5ECFF, "ProjectilePath final OutVec.y", unchecked((int)0xC0C5ECFF), ReadUInt32(instance, 244));
+        Expect(ReadUInt32(instance, 248) == 0x40B17176, "ProjectilePath final OutVec.z", 0x40B17176, ReadUInt32(instance, 248));
+        Expect(chunk.RelocationBuffer.Length == 8, "ProjectilePath relocation bytes", 8, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 0, "ProjectilePath imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  ProjectilePath bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static unsafe void TestAudioDynamicsCollide()

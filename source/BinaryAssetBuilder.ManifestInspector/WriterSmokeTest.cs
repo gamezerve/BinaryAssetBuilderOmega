@@ -1,4 +1,6 @@
 using System.Text;
+using System.Reflection;
+using BinaryAssetBuilder.Core;
 using BinaryAssetBuilder.Utility;
 
 namespace BinaryAssetBuilder.ManifestInspector;
@@ -86,7 +88,50 @@ internal static class WriterSmokeTest
                 $"EP1 writer round trip failed: {string.Join("; ", errors.DefaultIfEmpty("header/entry mismatch"))}");
         }
 
+        TestLinkedStreamHeaders();
+
         Console.WriteLine($"Writer round trip OK: {Path.GetFullPath(outputPath)}");
         Console.WriteLine($"  Bytes={bytes.Length} Header={parsed.Header.ContainerPrefixSize + 48} Entry=48 Version={parsed.Header.Version}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Lock the EP1 BIN/RELO/IMP marker and checksum bytes used by OutputManager.LinkStream. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestLinkedStreamHeaders()
+    {
+        MethodInfo write = typeof(OutputManager).GetMethod(
+            "WriteLinkedStreamHeader", BindingFlags.NonPublic | BindingFlags.Static)
+            ?? throw new MissingMethodException(nameof(OutputManager), "WriteLinkedStreamHeader");
+        MethodInfo matches = typeof(OutputManager).GetMethod(
+            "LinkedStreamHeaderMatches", BindingFlags.NonPublic | BindingFlags.Static)
+            ?? throw new MissingMethodException(nameof(OutputManager), "LinkedStreamHeaderMatches");
+        const uint checksum = 0x12345678u;
+        foreach (uint magic in new[] { 0xBABB0000u, 0xBABE0000u, 0xBAB10000u })
+        {
+            using MemoryStream linkedStream = new MemoryStream();
+            using BinaryWriter writer = new BinaryWriter(linkedStream, Encoding.UTF8, true);
+            write.Invoke(null, new object[] { writer, checksum, magic });
+            writer.Flush();
+            byte[] header = linkedStream.ToArray();
+            if (header.Length != 8
+                || BitConverter.ToUInt32(header, 0) != magic
+                || BitConverter.ToUInt32(header, 4) != checksum)
+            {
+                throw new InvalidDataException($"EP1 linked-stream header 0x{magic:X8} was not emitted correctly.");
+            }
+
+            linkedStream.Position = 0;
+            if (matches.Invoke(null, new object[] { linkedStream, checksum, magic }) is not true)
+            {
+                throw new InvalidDataException($"EP1 linked-stream header 0x{magic:X8} was not recognized.");
+            }
+        }
+
+        // Reborn: A legacy checksum-only stream must be rebuilt instead of being mistaken for current EP1 output.
+        using MemoryStream legacyStream = new MemoryStream(BitConverter.GetBytes(checksum));
+        if (matches.Invoke(null, new object[] { legacyStream, checksum, 0xBABB0000u }) is not false)
+        {
+            throw new InvalidDataException("A legacy checksum-only stream passed the EP1 linked-stream header gate.");
+        }
     }
 }

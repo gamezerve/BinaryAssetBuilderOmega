@@ -33,16 +33,32 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("z", "0.0"), &objT->Z, state);
     }
 
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Read schema-defined lowercase Vector4 components and default omitted coordinates to zero. */
+    //-------------------------------------------------------------------------------------------------
     private static unsafe void Marshal(Node node, Vector4* objT, Tracker state)
     {
         if (node is null)
         {
             return;
         }
-        Marshal(node.GetAttributeValue(nameof(Vector4.X), null), &objT->X, state);
-        Marshal(node.GetAttributeValue(nameof(Vector4.Y), null), &objT->Y, state);
-        Marshal(node.GetAttributeValue(nameof(Vector4.Z), null), &objT->Z, state);
-        Marshal(node.GetAttributeValue(nameof(Vector4.W), null), &objT->W, state);
+        Marshal(node.GetAttributeValue("x", "0.0"), &objT->X, state);
+        Marshal(node.GetAttributeValue("y", "0.0"), &objT->Y, state);
+        Marshal(node.GetAttributeValue("z", "0.0"), &objT->Z, state);
+        Marshal(node.GetAttributeValue("w", "0.0"), &objT->W, state);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Allocate optional Vector4 child elements such as ProjectilePath.ComponentScale. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void Marshal(Node node, Vector4** objT, Tracker state)
+    {
+        if (node is null)
+        {
+            return;
+        }
+        using Tracker.Context context = state.Push((void**)objT, (uint)sizeof(Vector4), 1u);
+        Marshal(node, *objT, state);
     }
 
     private static unsafe void Marshal(Node node, Quaternion* objT, Tracker state)

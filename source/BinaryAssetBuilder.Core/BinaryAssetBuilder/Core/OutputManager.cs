@@ -11,6 +11,10 @@ namespace BinaryAssetBuilder.Core
     public sealed class OutputManager : IDisposable
     {
         private const int _linkedBufferSize = 0x10000;
+        // Reborn: Uprising v7 identifies each linked auxiliary stream before its shared checksum.
+        private const uint _version7BinMagic = 0xBABB0000u;
+        private const uint _version7ReloMagic = 0xBABE0000u;
+        private const uint _version7ImpMagic = 0xBAB10000u;
 
         private static readonly Tracer _tracer = Tracer.GetTracer(nameof(OutputManager), "Provides manifest serialization functionality");
         private static readonly InstanceHandle _breakHandle = new InstanceHandle(0x21E727DAu, 0xAE184C44u);
@@ -380,10 +384,8 @@ namespace BinaryAssetBuilder.Core
             bool dirty = true;
             using (Stream fileStream = new FileStream(outputDirectory + ".bin", FileMode.OpenOrCreate, FileAccess.Read))
             {
-                if (fileStream.Length >= 4L)
-                {
-                    dirty = new BinaryReader(fileStream).ReadUInt32() != checksum;
-                }
+                // Reborn: Validate both the EP1 BIN marker and checksum before reusing a linked stream.
+                dirty = !LinkedStreamHeaderMatches(fileStream, checksum, _version7BinMagic);
             }
             if (dirty)
             {
@@ -392,7 +394,8 @@ namespace BinaryAssetBuilder.Core
                     _tracer.Message("{0} Linking binary data", document.SourcePathFromRoot);
                     AssetHeader assetHeader = new AssetHeader();
                     binStream.SetLength(0L);
-                    new BinaryWriter(binStream).Write(checksum);
+                    // Reborn: Emit the Uprising BIN marker before the checksum and concatenated instance chunks.
+                    WriteLinkedStreamHeader(new BinaryWriter(binStream), checksum, _version7BinMagic);
                     foreach (InstanceDeclaration outputInstance in document.OutputInstances)
                     {
                         BinaryAsset asset = Assets[outputInstance.Handle.FileBase];
@@ -416,10 +419,8 @@ namespace BinaryAssetBuilder.Core
             dirty = true;
             using (Stream fileStream = new FileStream(outputDirectory + ".relo", FileMode.OpenOrCreate, FileAccess.Read))
             {
-                if (fileStream.Length >= 4L)
-                {
-                    dirty = new BinaryReader(fileStream).ReadUInt32() != checksum;
-                }
+                // Reborn: Validate both the EP1 RELO marker and checksum before reusing relocation data.
+                dirty = !LinkedStreamHeaderMatches(fileStream, checksum, _version7ReloMagic);
             }
             if (dirty)
             {
@@ -428,7 +429,8 @@ namespace BinaryAssetBuilder.Core
                     _tracer.Message("{0} Linking relocation data", document.SourcePathFromRoot);
                     reloFStream.SetLength(0L);
                     BinaryWriter writer = new BinaryWriter(reloFStream);
-                    writer.Write(checksum);
+                    // Reborn: Emit the Uprising RELO marker before its checksum and relocation chunks.
+                    WriteLinkedStreamHeader(writer, checksum, _version7ReloMagic);
                     writer.Write(reloStream.GetBuffer(), 0, (int)reloStream.Length);
                     reloFStream.Flush();
                 }
@@ -441,10 +443,8 @@ namespace BinaryAssetBuilder.Core
             dirty = true;
             using (Stream fileStream = new FileStream(outputDirectory + ".imp", FileMode.OpenOrCreate, FileAccess.Read))
             {
-                if (fileStream.Length >= 4L)
-                {
-                    dirty = new BinaryReader(fileStream).ReadUInt32() != checksum;
-                }
+                // Reborn: Validate both the EP1 IMP marker and checksum before reusing import data.
+                dirty = !LinkedStreamHeaderMatches(fileStream, checksum, _version7ImpMagic);
             }
             if (dirty)
             {
@@ -453,7 +453,8 @@ namespace BinaryAssetBuilder.Core
                     _tracer.Message("{0} Linking import data", document.SourcePathFromRoot);
                     impFStream.SetLength(0L);
                     BinaryWriter writer = new BinaryWriter(impFStream);
-                    writer.Write(checksum);
+                    // Reborn: Emit the Uprising IMP marker before its checksum and import chunks.
+                    WriteLinkedStreamHeader(writer, checksum, _version7ImpMagic);
                     writer.Write(impStream.GetBuffer(), 0, (int)impStream.Length);
                     impFStream.Flush();
                 }
@@ -463,6 +464,34 @@ namespace BinaryAssetBuilder.Core
             {
                 _tracer.Message("{0} Linked import data up to date", document.SourcePathFromRoot);
             }
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: Check the target-specific linked-stream prefix without accepting a stale RA3-style file. */
+        //-------------------------------------------------------------------------------------------------
+        private static bool LinkedStreamHeaderMatches(Stream stream, uint checksum, uint version7Magic)
+        {
+#if VERSION7
+            if (stream.Length < 8L)
+            {
+                return false;
+            }
+            BinaryReader reader = new BinaryReader(stream);
+            return reader.ReadUInt32() == version7Magic && reader.ReadUInt32() == checksum;
+#else
+            return stream.Length >= 4L && new BinaryReader(stream).ReadUInt32() == checksum;
+#endif
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: Write the EP1 stream-kind marker while retaining the legacy checksum-only build path. */
+        //-------------------------------------------------------------------------------------------------
+        private static void WriteLinkedStreamHeader(BinaryWriter writer, uint checksum, uint version7Magic)
+        {
+#if VERSION7
+            writer.Write(version7Magic);
+#endif
+            writer.Write(checksum);
         }
 
         public void CleanOutput()
