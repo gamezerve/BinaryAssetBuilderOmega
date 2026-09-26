@@ -159,6 +159,16 @@ internal static class UprisingLayoutSmokeTest
         ExpectSize<SageBinaryData.YurikoHotKeys>(12);
         ExpectOffset<SageBinaryData.YurikoHotKeys>(nameof(SageBinaryData.YurikoHotKeys.Map), 4);
         ExpectSize<SageBinaryData.HotKeyDef>(12);
+        // Reborn: Pin the EP1 physics-capacity and shell-personality roots recovered from global/static streams.
+        ExpectSize<SageBinaryData.DynamicsSettings>(24);
+        ExpectOffset<SageBinaryData.DynamicsSettings>(nameof(SageBinaryData.DynamicsSettings.MaximumObjects), 4);
+        ExpectOffset<SageBinaryData.DynamicsSettings>(nameof(SageBinaryData.DynamicsSettings.CreateGlobalIsland), 20);
+        ExpectSize<SageBinaryData.MainMenuPersonalityTemplate>(16);
+        ExpectOffset<SageBinaryData.MainMenuPersonalityTemplate>(nameof(SageBinaryData.MainMenuPersonalityTemplate.MainMenuPersonalityImage), 4);
+        ExpectOffset<SageBinaryData.MainMenuPersonalityTemplate>(nameof(SageBinaryData.MainMenuPersonalityTemplate.MainMenuPersonalityMusic), 8);
+        ExpectSize<SageBinaryData.MainMenuPersonalityGroup>(16);
+        ExpectOffset<SageBinaryData.MainMenuPersonalityGroup>(nameof(SageBinaryData.MainMenuPersonalityGroup.DefaultPersonality), 4);
+        ExpectOffset<SageBinaryData.MainMenuPersonalityGroup>(nameof(SageBinaryData.MainMenuPersonalityGroup.MainMenuPersonality), 8);
         ExpectSize<SageBinaryData.DynamicsCollideModuleData>(8);
         ExpectSize<SageBinaryData.MagnitudeSoundSelectorEntry>(8);
         ExpectOffset<SageBinaryData.MagnitudeSoundSelectorEntry>(nameof(SageBinaryData.MagnitudeSoundSelectorEntry.Sound), 4);

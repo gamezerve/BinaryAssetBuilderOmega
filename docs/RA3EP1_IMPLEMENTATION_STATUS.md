@@ -5,7 +5,7 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Progress snapshot (2026-09-26)
 
-The current conservative engineering estimate is **39% complete / 61%
+The current conservative engineering estimate is **40% complete / 60%
 remaining**. This is an effort estimate, not the percentage of C# files in the
 tree. A pre-existing Kane's Wrath marshaller only counts as complete after its
 RA3/EP1 layout, type hash and emitted streams have been checked.
@@ -14,17 +14,17 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 |---|---:|---:|---:|
 | Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
 | Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
-| Native layouts, processors, dispatch and final type table | 45% | 31% | 14.0% |
+| Native layouts, processors, dispatch and final type table | 45% | 33% | 14.9% |
 | Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
 | Built-mod validation inside Uprising | 10% | 0% | 0.0% |
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 742 (53.4%) and typed marshallers for 718
-(51.7%). These broad numbers are inventory coverage only. Of the 48 complex
-types that exist only in EP1, 24 (50.0%) now have both a model and marshaller;
-24 remain absent. The smaller audited set carries substantially more weight
-than raw file presence in the 38% estimate above.
+The source tree contains models for 745 (53.6%) and typed marshallers for 721
+(51.9%). These broad numbers are inventory coverage only. Of the 48 complex
+types that exist only in EP1, 27 (56.2%) now have both a model and marshaller;
+21 remain absent. The smaller audited set carries substantially more weight
+than raw file presence in the 40% estimate above.
 
 ## Established facts
 
@@ -253,6 +253,21 @@ fixture is 264 bytes, exactly `12 + 21*12`, with a relocation source at `0x08`
 and 42 imports for the slot/key pairs. A two-entry compiler fixture emits `36
 bin / 8 relo / 20 imp` and verifies the `CTRL` and `SHIFT` modifier masks.
 
+`DynamicsSettings` is now backed by the official EP1 schema and the real
+`Settings_Dynamics` global-stream fixture. Its 24-byte root is an inheritable
+base plus four 32-bit capacity fields and the trailing `CreateGlobalIsland`
+boolean. The compiler fixture reproduces the real `1024/2048/1024/256/false`
+defaults and emits no relocation or import stream entries.
+
+The two EP1-only main-menu personality roots are also implemented. The real
+Cryo Trooper template proves a 16-byte root with a typed on-demand image ID at
+offset `0x04` and an ANSI music string at `0x08`; its compiler fixture emits
+`36 bin / 8 relo / 0 imp`. `MainMenuPersonalityGroup` places the default
+personality import at `0x04` and its personality-reference list at `0x08`; a
+two-entry fixture emits `24 bin / 8 relo / 16 imp`. The smoke-test harness now
+initializes the `POID` hash bin so typed asset IDs exercise the same lowercase
+hash path as a normal builder session.
+
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of
 `GameObject:ClientFlingableExplodingBarrel` found type ID `0xD6C03AC2` at the
@@ -352,7 +367,7 @@ game archives, including RefPack inputs.
 
 Remaining work:
 
-1. Port the remaining 24 EP1-only complex types and every
+1. Port the remaining 21 EP1-only complex types and every
    binary-layout-affecting change among the 75 changed schemas into
    `SageBinaryData` and the processor registry.
 2. Generate the Uprising type table and require the final

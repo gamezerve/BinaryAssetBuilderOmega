@@ -1,5 +1,6 @@
 using System.Buffers.Binary;
 using System.Xml;
+using BinaryAssetBuilder.Core.Hashing;
 using Relo;
 using SageBinaryData;
 
@@ -9,6 +10,7 @@ internal static class CompilerSmokeTest
 {
     public static unsafe void Run()
     {
+        InitializeHashProvider();
         TestAttributeModifier();
         TestLocomotorTemplate();
         TestWeaponTemplate();
@@ -21,6 +23,8 @@ internal static class CompilerSmokeTest
         TestProjectileReplaceSelfSpecialAbility();
         TestProjectilePath();
         TestYurikoHotKeys();
+        TestDynamicsSettings();
+        TestMainMenuPersonality();
         TestAudioDynamicsCollide();
         TestDamageDynamicsCollide();
         TestReactionFXOnDamage();
@@ -28,6 +32,26 @@ internal static class CompilerSmokeTest
         TestYurikoShieldSphereUpdate();
         TestGameObject();
         Console.WriteLine("Uprising compiler self-test: OK");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Seed the POID hash bin used by typed asset IDs in standalone compiler smoke tests. */
+    //-------------------------------------------------------------------------------------------------
+    private static void InitializeHashProvider()
+    {
+        Settings.Current = new Settings
+        {
+            StringHashBinDescriptors =
+            [
+                new StringHashBinDescriptor
+                {
+                    SchemaTypeName = "ObjectPersistenceID",
+                    BinName = "POID",
+                    IsCaseSensitive = false
+                }
+            ]
+        };
+        HashProvider.InitializeStringHashes(Path.GetTempPath());
     }
 
     private static unsafe void TestAttributeModifier()
@@ -581,6 +605,98 @@ internal static class CompilerSmokeTest
         // Reborn: Four import-source offsets plus the stream terminator occupy 20 bytes.
         Expect(chunk.ImportsBuffer.Length == 20, "YurikoHotKeys imports bytes", 20, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  YurikoHotKeys bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Reproduce the EP1 Settings_Dynamics payload and all schema defaults. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestDynamicsSettings()
+    {
+        const string xml = """
+            <DynamicsSettings xmlns="uri:ea.com:eala:asset" MaximumContacts="2048" />
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:DynamicsSettings", namespaces)!, namespaces);
+
+        DynamicsSettings* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(DynamicsSettings), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 24, "DynamicsSettings instance bytes", 24, instance.Length);
+        Expect(ReadUInt32(instance, 4) == 1024, "DynamicsSettings.MaximumObjects", 1024, ReadUInt32(instance, 4));
+        Expect(ReadUInt32(instance, 8) == 2048, "DynamicsSettings.MaximumContacts", 2048, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 12) == 1024, "DynamicsSettings.MaximumContactPairs", 1024, ReadUInt32(instance, 12));
+        Expect(ReadUInt32(instance, 16) == 256, "DynamicsSettings.MaximumJoints", 256, ReadUInt32(instance, 16));
+        Expect(instance[20] == 0, "DynamicsSettings.CreateGlobalIsland", 0, instance[20]);
+        Expect(chunk.RelocationBuffer.Length == 0, "DynamicsSettings relocation bytes", 0, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 0, "DynamicsSettings imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  DynamicsSettings bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Validate both EP1 main-menu personality roots against their real static-stream layouts. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestMainMenuPersonality()
+    {
+        const string templateXml = """
+            <MainMenuPersonalityTemplate xmlns="uri:ea.com:eala:asset">
+              <MainMenuPersonalityImage>mainMenuPersonality_CryoTrooper</MainMenuPersonalityImage>
+              <MainMenuPersonalityMusic>MenuTrackEP1_Cryo</MainMenuPersonalityMusic>
+            </MainMenuPersonalityTemplate>
+            """;
+        XmlDocument templateDocument = new();
+        templateDocument.LoadXml(templateXml);
+        XmlNamespaceManager templateNamespaces = new(templateDocument.NameTable);
+        templateNamespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node templateNode = new(templateDocument.CreateNavigator()!.SelectSingleNode("/ea:MainMenuPersonalityTemplate", templateNamespaces)!, templateNamespaces);
+
+        MainMenuPersonalityTemplate* templateRoot;
+        using Tracker templateTracker = new((void**)&templateRoot, (uint)sizeof(MainMenuPersonalityTemplate), false);
+        Marshaler.Marshal(templateNode, templateRoot, templateTracker);
+        Chunk templateChunk = new();
+        templateTracker.MakeRelocatable(templateChunk);
+        ReadOnlySpan<byte> templateInstance = templateChunk.InstanceBuffer;
+        Expect(templateInstance.Length == 36, "MainMenuPersonalityTemplate instance bytes", 36, templateInstance.Length);
+        Expect(ReadUInt32(templateInstance, 4) == 0xBDF87A1B, "MainMenuPersonalityTemplate image hash", unchecked((int)0xBDF87A1B), ReadUInt32(templateInstance, 4));
+        Expect(ReadUInt32(templateInstance, 8) == 17, "MainMenuPersonalityTemplate music length", 17, ReadUInt32(templateInstance, 8));
+        Expect(ReadUInt32(templateInstance, 12) == 16, "MainMenuPersonalityTemplate music relocation", 16, ReadUInt32(templateInstance, 12));
+        Expect(ReadUInt32(templateInstance, 16) == 0x756E654D, "MainMenuPersonalityTemplate music bytes", 0x756E654D, ReadUInt32(templateInstance, 16));
+        Expect(templateChunk.RelocationBuffer.Length == 8, "MainMenuPersonalityTemplate relocation bytes", 8, templateChunk.RelocationBuffer.Length);
+        Expect(templateChunk.ImportsBuffer.Length == 0, "MainMenuPersonalityTemplate imports bytes", 0, templateChunk.ImportsBuffer.Length);
+
+        const string groupXml = """
+            <MainMenuPersonalityGroup xmlns="uri:ea.com:eala:asset" DefaultPersonality="MainMenuPersonalityTemplate\11">
+              <MainMenuPersonality>MainMenuPersonalityTemplate\12</MainMenuPersonality>
+              <MainMenuPersonality>MainMenuPersonalityTemplate\13</MainMenuPersonality>
+            </MainMenuPersonalityGroup>
+            """;
+        XmlDocument groupDocument = new();
+        groupDocument.LoadXml(groupXml);
+        XmlNamespaceManager groupNamespaces = new(groupDocument.NameTable);
+        groupNamespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node groupNode = new(groupDocument.CreateNavigator()!.SelectSingleNode("/ea:MainMenuPersonalityGroup", groupNamespaces)!, groupNamespaces);
+
+        MainMenuPersonalityGroup* groupRoot;
+        using Tracker groupTracker = new((void**)&groupRoot, (uint)sizeof(MainMenuPersonalityGroup), false);
+        Marshaler.Marshal(groupNode, groupRoot, groupTracker);
+        Chunk groupChunk = new();
+        groupTracker.MakeRelocatable(groupChunk);
+        ReadOnlySpan<byte> groupInstance = groupChunk.InstanceBuffer;
+        Expect(groupInstance.Length == 24, "MainMenuPersonalityGroup instance bytes", 24, groupInstance.Length);
+        Expect(ReadUInt32(groupInstance, 4) == 11, "MainMenuPersonalityGroup default import", 11, ReadUInt32(groupInstance, 4));
+        Expect(ReadUInt32(groupInstance, 8) == 2, "MainMenuPersonalityGroup entry count", 2, ReadUInt32(groupInstance, 8));
+        Expect(ReadUInt32(groupInstance, 12) == 16, "MainMenuPersonalityGroup entry relocation", 16, ReadUInt32(groupInstance, 12));
+        Expect(ReadUInt32(groupInstance, 16) == 12, "MainMenuPersonalityGroup first import", 12, ReadUInt32(groupInstance, 16));
+        Expect(ReadUInt32(groupInstance, 20) == 13, "MainMenuPersonalityGroup second import", 13, ReadUInt32(groupInstance, 20));
+        Expect(groupChunk.RelocationBuffer.Length == 8, "MainMenuPersonalityGroup relocation bytes", 8, groupChunk.RelocationBuffer.Length);
+        Expect(groupChunk.ImportsBuffer.Length == 16, "MainMenuPersonalityGroup imports bytes", 16, groupChunk.ImportsBuffer.Length);
+        Console.WriteLine($"  MainMenuPersonality template={templateChunk.InstanceBuffer.Length}/{templateChunk.RelocationBuffer.Length}/{templateChunk.ImportsBuffer.Length}, group={groupChunk.InstanceBuffer.Length}/{groupChunk.RelocationBuffer.Length}/{groupChunk.ImportsBuffer.Length}");
     }
 
     private static unsafe void TestAudioDynamicsCollide()
