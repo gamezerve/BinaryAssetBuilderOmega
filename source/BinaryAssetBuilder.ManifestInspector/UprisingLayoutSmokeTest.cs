@@ -155,6 +155,10 @@ internal static class UprisingLayoutSmokeTest
         ExpectSize<SageBinaryData.ProjectilePath>(16);
         ExpectOffset<SageBinaryData.ProjectilePath>(nameof(SageBinaryData.ProjectilePath.ComponentScale), 4);
         ExpectOffset<SageBinaryData.ProjectilePath>(nameof(SageBinaryData.ProjectilePath.Node), 8);
+        // Reborn: Pin the EP1 Yuriko hot-key root and shared 12-byte entry layout recovered from global.bin.
+        ExpectSize<SageBinaryData.YurikoHotKeys>(12);
+        ExpectOffset<SageBinaryData.YurikoHotKeys>(nameof(SageBinaryData.YurikoHotKeys.Map), 4);
+        ExpectSize<SageBinaryData.HotKeyDef>(12);
         ExpectSize<SageBinaryData.DynamicsCollideModuleData>(8);
         ExpectSize<SageBinaryData.MagnitudeSoundSelectorEntry>(8);
         ExpectOffset<SageBinaryData.MagnitudeSoundSelectorEntry>(nameof(SageBinaryData.MagnitudeSoundSelectorEntry.Sound), 4);

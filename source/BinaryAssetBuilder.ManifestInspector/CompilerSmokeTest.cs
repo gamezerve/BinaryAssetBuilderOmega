@@ -20,6 +20,7 @@ internal static class CompilerSmokeTest
         TestLiftObjectUpdate();
         TestProjectileReplaceSelfSpecialAbility();
         TestProjectilePath();
+        TestYurikoHotKeys();
         TestAudioDynamicsCollide();
         TestDamageDynamicsCollide();
         TestReactionFXOnDamage();
@@ -537,6 +538,49 @@ internal static class CompilerSmokeTest
         Expect(chunk.RelocationBuffer.Length == 8, "ProjectilePath relocation bytes", 8, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 0, "ProjectilePath imports bytes", 0, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  ProjectilePath bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Validate the EP1 YurikoHotKeys root, list stride, references, and modifier flags. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestYurikoHotKeys()
+    {
+        const string xml = """
+            <YurikoHotKeys xmlns="uri:ea.com:eala:asset">
+              <Map>
+                <HotKey Slot="HotKeySlot\1" Key="MappableKey\2" Modifiers="CTRL" />
+                <HotKey Slot="HotKeySlot\3" Key="MappableKey\4" Modifiers="SHIFT" />
+              </Map>
+            </YurikoHotKeys>
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:YurikoHotKeys", namespaces)!, namespaces);
+
+        YurikoHotKeys* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(YurikoHotKeys), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        if (!tracker.MakeRelocatable(chunk))
+        {
+            throw new InvalidDataException("Tracker failed to produce a relocatable YurikoHotKeys chunk.");
+        }
+
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 36, "YurikoHotKeys instance bytes", 36, instance.Length);
+        Expect(ReadUInt32(instance, 4) == 2, "YurikoHotKeys entry count", 2, ReadUInt32(instance, 4));
+        Expect(ReadUInt32(instance, 8) == 12, "YurikoHotKeys entry relocation", 12, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 12) == 1, "YurikoHotKeys first slot import", 1, ReadUInt32(instance, 12));
+        Expect(ReadUInt32(instance, 16) == 2, "YurikoHotKeys first key import", 2, ReadUInt32(instance, 16));
+        Expect(ReadUInt32(instance, 20) == 1, "YurikoHotKeys CTRL modifier", 1, ReadUInt32(instance, 20));
+        Expect(ReadUInt32(instance, 32) == 4, "YurikoHotKeys SHIFT modifier", 4, ReadUInt32(instance, 32));
+        Expect(chunk.RelocationBuffer.Length == 8, "YurikoHotKeys relocation bytes", 8, chunk.RelocationBuffer.Length);
+        // Reborn: Four import-source offsets plus the stream terminator occupy 20 bytes.
+        Expect(chunk.ImportsBuffer.Length == 20, "YurikoHotKeys imports bytes", 20, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  YurikoHotKeys bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static unsafe void TestAudioDynamicsCollide()

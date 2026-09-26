@@ -20,10 +20,10 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 741 (53.3%) and typed marshallers for 717
-(51.6%). These broad numbers are inventory coverage only. Of the 48 complex
-types that exist only in EP1, 23 (47.9%) now have both a model and marshaller;
-25 remain absent. The smaller audited set carries substantially more weight
+The source tree contains models for 742 (53.4%) and typed marshallers for 718
+(51.7%). These broad numbers are inventory coverage only. Of the 48 complex
+types that exist only in EP1, 24 (50.0%) now have both a model and marshaller;
+24 remain absent. The smaller audited set carries substantially more weight
 than raw file presence in the 38% estimate above.
 
 ## Established facts
@@ -247,6 +247,12 @@ so every RA3 v6 read was four bytes early and every Uprising v7 read was eight
 bytes early. It now derives the physical prefix from the parsed manifest and
 reports correct asset and auxiliary-stream offsets for both formats.
 
+The EP1-only `YurikoHotKeys` root reuses the existing `HotKeyMap` ABI: a
+4-byte inheritable base followed by an 8-byte list. Its real global-stream
+fixture is 264 bytes, exactly `12 + 21*12`, with a relocation source at `0x08`
+and 42 imports for the slot/key pairs. A two-entry compiler fixture emits `36
+bin / 8 relo / 20 imp` and verifies the `CTRL` and `SHIFT` modifier masks.
+
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of
 `GameObject:ClientFlingableExplodingBarrel` found type ID `0xD6C03AC2` at the
@@ -346,7 +352,7 @@ game archives, including RefPack inputs.
 
 Remaining work:
 
-1. Port the remaining 25 EP1-only complex types and every
+1. Port the remaining 24 EP1-only complex types and every
    binary-layout-affecting change among the 75 changed schemas into
    `SageBinaryData` and the processor registry.
 2. Generate the Uprising type table and require the final
