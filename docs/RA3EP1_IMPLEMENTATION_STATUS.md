@@ -5,7 +5,7 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Progress snapshot (2026-09-27)
 
-The current conservative engineering estimate is **44% complete / 56%
+The current conservative engineering estimate is **46% complete / 54%
 remaining**. This is an effort estimate, not the percentage of C# files in the
 tree. A pre-existing Kane's Wrath marshaller only counts as complete after its
 RA3/EP1 layout, type hash and emitted streams have been checked.
@@ -14,18 +14,18 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 |---|---:|---:|---:|
 | Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
 | Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
-| Native layouts, processors, dispatch and final type table | 45% | 43% | 19.4% |
+| Native layouts, processors, dispatch and final type table | 45% | 47% | 21.2% |
 | Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
 | Built-mod validation inside Uprising | 10% | 0% | 0.0% |
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 767 (55.2%) and typed marshallers for 743
-(53.5%). These broad numbers are inventory coverage only. All 48 complex types
+The source tree contains models for 778 (56.0%) and typed marshallers for 754
+(54.2%). These broad numbers are inventory coverage only. All 48 complex types
 that exist only in EP1 now have both a model and marshaller. This closes the
 EP1-only inventory, but it does not close changed shared types or missing parent
 pipelines; those retain substantially more weight than raw file presence in the
-44% estimate above.
+46% estimate above.
 
 ## Established facts
 
@@ -331,9 +331,21 @@ The five EP1 dynamics-joint types are recovered from the ten-joint
 the limit block, 56 for a complete joint and 8 for the joint-set list root. The
 limit position pointer is last in native memory, after both enum and five float
 fields. A fixture exercising both optional positions emits `104 bin / 24 relo /
-0 imp`. The containing shared `W3DDynamicsDrawModuleData` hierarchy is still
-absent from this Kane's Wrath-derived source tree, so full GameObject integration
-remains separate work even though the EP1-only nested-type inventory is closed.
+0 imp`.
+
+The joint work exposed a 60-byte Kane's Wrath carry-over in the shared
+`W3DScriptedModelDrawModuleData`: the source model was 276 bytes, while EA's
+official RA3 Tokenizer declares 216. Four obsolete mesh strings, three texture
+members, one sort integer and five unsupported booleans account for the exact
+difference and have been removed. EA's RA3 Tokenizer also declares the old
+`W3DDynamicsDrawModuleData` as 252 bytes. The real EP1 ragdoll root ends at 256
+bytes, and its last four-byte addition is the new joint-set pointer; direct
+bytes prove native child order `BoneVolumes`, `Lifetime`, then appended
+`Joints`, followed by `InitiallyActive` at offset 252. The shared volume/shape
+hierarchy, EP1 parent marshaller and draw-module dispatch are now implemented.
+A combined BoneVolume/Sphere/Lifetime/Joint fixture emits `484 bin / 48 relo /
+0 imp`, so the EP1-only nested types are now connected to the GameObject draw
+pipeline rather than merely existing as isolated records.
 
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of
@@ -435,8 +447,8 @@ game archives, including RefPack inputs.
 Remaining work:
 
 1. Port every remaining binary-layout-affecting change among the 75 changed
-   schemas into `SageBinaryData` and the processor registry, including the
-   missing shared `W3DDynamicsDrawModuleData` parent pipeline.
+   schemas into `SageBinaryData` and the processor registry, auditing shared
+   RA3 types for additional Kane's Wrath carry-overs like ScriptedModelDraw.
 2. Generate the Uprising type table and require the final
    `AllTypesHash=0x5454A8E9`; a schema-valid XML build is not sufficient.
 3. Validate `.bin`, `.relo` and `.imp` chunks asset-by-asset against a known

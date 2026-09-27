@@ -97,13 +97,8 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.UseFiringArcRotation), "false"), &objT->UseFiringArcRotation, state);
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.Selectable), "true"), &objT->Selectable, state);
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.RandomTextureFixedRandomIndex), "false"), &objT->RandomTextureFixedRandomIndex, state);
-        Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.ParticlesAttachedToAnimatedBones), "false"), &objT->ParticlesAttachedToAnimatedBones, state);
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.TrackMarksLeftBone), null), &objT->TrackMarksLeftBone, state);
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.TrackMarksRightBone), null), &objT->TrackMarksRightBone, state);
-        Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.RampMesh1), null), &objT->RampMesh1, state);
-        Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.RampMesh2), null), &objT->RampMesh2, state);
-        Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.WallBoundsMesh), null), &objT->WallBoundsMesh, state);
-        Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.RaisedWallMesh), null), &objT->RaisedWallMesh, state);
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.ParticleBonesCheckDrawable), "false"), &objT->ParticleBonesCheckDrawable, state);
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.ShadowForceDisable), "false"), &objT->ShadowForceDisable, state);
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.HighDetailLODThreshold), "0.0"), &objT->HighDetailLODThreshold, state);
@@ -111,27 +106,20 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.SwitchModelLODMode), "false"), &objT->SwitchModelLODMode, state);
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.StaticModelLODMode), "false"), &objT->StaticModelLODMode, state);
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.ShowShadowWhileContained), "false"), &objT->ShowShadowWhileContained, state);
-        Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.UseStandardModelNames), "false"), &objT->UseStandardModelNames, state);
-        Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.UseDefaultAnimation), "false"), &objT->UseDefaultAnimation, state);
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.WadingParticleSys), null), &objT->WadingParticleSys, state);
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.AlphaCameraFadeOuterRadius), "0.0"), &objT->AlphaCameraFadeOuterRadius, state);
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.AlphaCameraFadeInnerRadius), "0.0"), &objT->AlphaCameraFadeInnerRadius, state);
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.AlphaCameraAtInnerRadius), "100"), &objT->AlphaCameraAtInnerRadius, state);
-        Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.StaticSortLevelWhileFading), "-1"), &objT->StaticSortLevelWhileFading, state);
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.BirthFadeTime), "0"), &objT->BirthFadeTime, state);
-        Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.BirthFadeAdditive), "false"), &objT->BirthFadeAdditive, state);
-        Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.ZWriteDisableOverride), "false"), &objT->ZWriteDisableOverride, state);
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.MultiPlayerOnly), "false"), &objT->MultiPlayerOnly, state);
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.AffectedByStealth), "true"), &objT->AffectedByStealth, state);
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.InvertStealthOpacity), null), &objT->InvertStealthOpacity, state);
         Marshal(node.GetAttributeValue(nameof(W3DScriptedModelDrawModuleData.HighDetailOnly), null), &objT->HighDetailOnly, state);
         Marshal(node.GetChildNodes(nameof(W3DScriptedModelDrawModuleData.ModelConditionState)), &objT->ModelConditionState, state);
         Marshal(node.GetChildNodes(nameof(W3DScriptedModelDrawModuleData.AnimationState)), &objT->AnimationState, state);
-        Marshal(node.GetChildNodes(nameof(W3DScriptedModelDrawModuleData.TimeOfDayTexture)), &objT->TimeOfDayTexture, state);
-        Marshal(node.GetChildNodes(nameof(W3DScriptedModelDrawModuleData.RandomTexture)), &objT->RandomTexture, state);
-        Marshal(node.GetChildNode(nameof(W3DScriptedModelDrawModuleData.BurntTexture), null), &objT->BurntTexture, state);
         Marshal(node.GetChildNodes(nameof(W3DScriptedModelDrawModuleData.AttachModel)), &objT->AttachModel, state);
         Marshal(node.GetChildNodes(nameof(W3DScriptedModelDrawModuleData.EmbedPortal)), &objT->EmbedPortal, state);
+        // Reborn: The remaining fields now mirror the official shared RA3/EP1 schema and 216-byte ABI.
         Marshal(node, (DrawModuleData*)objT, state);
     }
 }

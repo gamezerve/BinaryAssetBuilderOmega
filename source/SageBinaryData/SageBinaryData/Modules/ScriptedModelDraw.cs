@@ -55,6 +55,7 @@ namespace SageBinaryData
         public SageBool SimilarRestart;
     }
 
+    // Reborn: Match the official 216-byte RA3/EP1 Tokenizer layout without Kane's Wrath-only fields.
     [StructLayout(LayoutKind.Sequential)]
     public struct W3DScriptedModelDrawModuleData
     {
@@ -72,23 +73,15 @@ namespace SageBinaryData
         public ModelConditionBitFlags DependencySharedModelFlags;
         public AnsiString TrackMarksLeftBone;
         public AnsiString TrackMarksRightBone;
-        public AnsiString RampMesh1;
-        public AnsiString RampMesh2;
-        public AnsiString WallBoundsMesh;
-        public AnsiString RaisedWallMesh;
         public float HighDetailLODThreshold;
         public float LowDetailLODThreshold;
         public AssetReference<FXParticleSystemTemplate> WadingParticleSys;
         public float AlphaCameraFadeOuterRadius;
         public float AlphaCameraFadeInnerRadius;
         public Percentage AlphaCameraAtInnerRadius;
-        public int StaticSortLevelWhileFading;
         public int BirthFadeTime;
         public List<ModelConditionState> ModelConditionState;
         public List<AnimationState> AnimationState;
-        public List<ScriptedModelDrawTexture> TimeOfDayTexture;
-        public List<ScriptedModelDrawTexture> RandomTexture;
-        public unsafe ScriptedModelDrawTexture* BurntTexture;
         public List<ScriptedModelDrawAttachModel> AttachModel;
         public List<ScriptedModelDrawEmbedPortal> EmbedPortal;
         public SageBool OkToChangeModelColor;
@@ -100,16 +93,11 @@ namespace SageBinaryData
         public SageBool UseFiringArcRotation;
         public SageBool Selectable;
         public SageBool RandomTextureFixedRandomIndex;
-        public SageBool ParticlesAttachedToAnimatedBones;
         public SageBool ParticleBonesCheckDrawable;
         public SageBool ShadowForceDisable;
         public SageBool SwitchModelLODMode;
         public SageBool StaticModelLODMode;
         public SageBool ShowShadowWhileContained;
-        public SageBool UseStandardModelNames;
-        public SageBool UseDefaultAnimation;
-        public SageBool BirthFadeAdditive;
-        public SageBool ZWriteDisableOverride;
         public SageBool MultiPlayerOnly;
         public SageBool AffectedByStealth;
         public SageBool InvertStealthOpacity;

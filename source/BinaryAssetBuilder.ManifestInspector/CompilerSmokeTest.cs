@@ -33,6 +33,7 @@ internal static class CompilerSmokeTest
         TestUprisingMusicConditions();
         TestMapNameHeuristic();
         TestDynamicsJointSet();
+        TestDynamicsDraw();
         TestAudioDynamicsCollide();
         TestDamageDynamicsCollide();
         TestReactionFXOnDamage();
@@ -1080,6 +1081,57 @@ internal static class CompilerSmokeTest
         Expect(chunk.RelocationBuffer.Length == 24, "dynamics joint-set relocation bytes", 24, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 0, "dynamics joint-set imports bytes", 0, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  DynamicsJointSet bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Exercise the corrected RA3 base and complete 256-byte EP1 dynamics draw pipeline. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestDynamicsDraw()
+    {
+        const string xml = """
+            <DynamicsDraw xmlns="uri:ea.com:eala:asset" id="ModuleTag_Draw"
+                Collision="NONINTERCOLLIDING" Explodiness="8" FlingPerturbation="15">
+              <BoneVolumes>
+                <BoneVolume BoneName="B" Mass="10" ContactTag="DEBRIS">
+                  <Sphere Radius="1">
+                    <Translation x="1" y="2" z="3" />
+                    <Rotation x="0" y="0" z="0" w="1" />
+                  </Sphere>
+                </BoneVolume>
+              </BoneVolumes>
+              <Joints>
+                <Joint>
+                  <Frame><Child BoneName="B_Child" /><Parent BoneName="B_Parent" /></Frame>
+                  <Limits SwingType="SWING_CONE" />
+                </Joint>
+              </Joints>
+              <Lifetime Delay="8s" FadeTime="8s" />
+            </DynamicsDraw>
+            """;
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:DynamicsDraw", namespaces)!, namespaces);
+
+        W3DDynamicsDrawModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(W3DDynamicsDrawModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 484, "dynamics draw instance bytes", 484, instance.Length);
+        Expect(ReadUInt32(instance, 216) == 0, "dynamics draw collision", 0, ReadUInt32(instance, 216));
+        Expect(ReadUInt32(instance, 224) == 2, "dynamics draw priority", 2, ReadUInt32(instance, 224));
+        Expect(ReadUInt32(instance, 232) == 0x41000000, "dynamics draw explodiness", 0x41000000, ReadUInt32(instance, 232));
+        Expect(ReadUInt32(instance, 236) == 0x41700000, "dynamics draw fling perturbation", 0x41700000, ReadUInt32(instance, 236));
+        Expect(ReadUInt32(instance, 240) != 0, "dynamics draw bone volumes pointer", 1, ReadUInt32(instance, 240) == 0 ? 0 : 1);
+        Expect(ReadUInt32(instance, 244) != 0, "dynamics draw lifetime pointer", 1, ReadUInt32(instance, 244) == 0 ? 0 : 1);
+        Expect(ReadUInt32(instance, 248) != 0, "dynamics draw joints pointer", 1, ReadUInt32(instance, 248) == 0 ? 0 : 1);
+        Expect(instance[252] == 1, "dynamics draw initially-active default", 1, instance[252]);
+        Expect(chunk.RelocationBuffer.Length == 48, "dynamics draw relocation bytes", 48, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 0, "dynamics draw imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  DynamicsDraw bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static unsafe void TestAudioDynamicsCollide()

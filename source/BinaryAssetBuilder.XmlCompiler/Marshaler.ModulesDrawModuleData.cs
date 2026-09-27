@@ -13,6 +13,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: Dispatch Uprising dynamics draw modules through the verified 256-byte root.
+            case 0x9BE6ADBBu:
+                MarshalPolymorphicType<W3DDynamicsDrawModuleData, DrawModuleData>(node, objT, state);
+                break;
             case 0x42D7103Du:
                 MarshalPolymorphicType<W3DSpotlightDrawModuleData, DrawModuleData>(node, objT, state);
                 break;

@@ -232,6 +232,27 @@ internal static class UprisingLayoutSmokeTest
         ExpectSize<SageBinaryData.DynamicsJointType>(56);
         ExpectOffset<SageBinaryData.DynamicsJointType>(nameof(SageBinaryData.DynamicsJointType.Limits), 24);
         ExpectSize<SageBinaryData.DynamicsJointSetType>(8);
+        // Reborn: Prevent the shared scripted-model base from regressing to its 276-byte Kane's Wrath layout.
+        ExpectSize<SageBinaryData.W3DScriptedModelDrawModuleData>(216);
+        ExpectOffset<SageBinaryData.W3DScriptedModelDrawModuleData>(nameof(SageBinaryData.W3DScriptedModelDrawModuleData.ModelConditionState), 164);
+        ExpectOffset<SageBinaryData.W3DScriptedModelDrawModuleData>(nameof(SageBinaryData.W3DScriptedModelDrawModuleData.OkToChangeModelColor), 196);
+        // Reborn: Pin official shared dynamics sizes and the EP1 +4-byte joint-pointer extension.
+        ExpectSize<SageBinaryData.DynamicsShapeType>(8);
+        ExpectSize<SageBinaryData.DynamicsSphereShapeType>(12);
+        ExpectSize<SageBinaryData.DynamicsCapsuleShapeType>(16);
+        ExpectSize<SageBinaryData.DynamicsBoxShapeType>(24);
+        ExpectSize<SageBinaryData.DynamicsCylinderShapeType>(20);
+        ExpectSize<SageBinaryData.DynamicsTriangleShapeType>(48);
+        ExpectSize<SageBinaryData.DynamicsVolumeType>(76);
+        ExpectOffset<SageBinaryData.DynamicsVolumeType>(nameof(SageBinaryData.DynamicsVolumeType.Sphere), 36);
+        ExpectSize<SageBinaryData.DynamicsBoneVolumeType>(84);
+        ExpectSize<SageBinaryData.DynamicsBoneVolumeSetType>(8);
+        ExpectSize<SageBinaryData.DynamicsLifetime>(8);
+        ExpectSize<SageBinaryData.W3DDynamicsDrawModuleData>(256);
+        ExpectOffset<SageBinaryData.W3DDynamicsDrawModuleData>(nameof(SageBinaryData.W3DDynamicsDrawModuleData.BoneVolumes), 240);
+        ExpectOffset<SageBinaryData.W3DDynamicsDrawModuleData>(nameof(SageBinaryData.W3DDynamicsDrawModuleData.Lifetime), 244);
+        ExpectOffset<SageBinaryData.W3DDynamicsDrawModuleData>(nameof(SageBinaryData.W3DDynamicsDrawModuleData.Joints), 248);
+        ExpectOffset<SageBinaryData.W3DDynamicsDrawModuleData>(nameof(SageBinaryData.W3DDynamicsDrawModuleData.InitiallyActive), 252);
         ExpectSize<SageBinaryData.DynamicsCollideModuleData>(8);
         ExpectSize<SageBinaryData.MagnitudeSoundSelectorEntry>(8);
         ExpectOffset<SageBinaryData.MagnitudeSoundSelectorEntry>(nameof(SageBinaryData.MagnitudeSoundSelectorEntry.Sound), 4);
