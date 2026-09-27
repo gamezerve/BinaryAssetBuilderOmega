@@ -14,16 +14,16 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 |---|---:|---:|---:|
 | Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
 | Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
-| Native layouts, processors, dispatch and final type table | 45% | 35% | 15.8% |
+| Native layouts, processors, dispatch and final type table | 45% | 36% | 16.2% |
 | Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
 | Built-mod validation inside Uprising | 10% | 0% | 0.0% |
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 750 (54.0%) and typed marshallers for 726
-(52.2%). These broad numbers are inventory coverage only. Of the 48 complex
-types that exist only in EP1, 32 (66.7%) now have both a model and marshaller;
-16 remain absent. The smaller audited set carries substantially more weight
+The source tree contains models for 753 (54.2%) and typed marshallers for 729
+(52.4%). These broad numbers are inventory coverage only. Of the 48 complex
+types that exist only in EP1, 35 (72.9%) now have both a model and marshaller;
+13 remain absent. The smaller audited set carries substantially more weight
 than raw file presence in the 41% estimate above.
 
 ## Established facts
@@ -286,6 +286,13 @@ inherited `GDI/NOD/Alien` `FactionType` with the official EP1 sequence
 `RANDOM/Allies/Soviet/Japan/Yuriko/Neutral` and added it to the generated-enum
 compatibility gate.
 
+The adjacent EP1 scenario UI assets are now represented as well. The official
+`UIScenarioMapPreview` XML compiles to a 12-byte root plus 8 bytes per faction
+entry; its three Allies/Soviet/Japan entries emit `36 bin / 8 relo / 16 imp`
+and independently verify the corrected faction ordinals. The fieldless
+`UIComponentScenario` retains the 8-byte `UIBaseComponent` ABI and emits
+`8 bin / 0 relo / 0 imp` with the official priority value 598.
+
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of
 `GameObject:ClientFlingableExplodingBarrel` found type ID `0xD6C03AC2` at the
@@ -385,7 +392,7 @@ game archives, including RefPack inputs.
 
 Remaining work:
 
-1. Port the remaining 16 EP1-only complex types and every
+1. Port the remaining 13 EP1-only complex types and every
    binary-layout-affecting change among the 75 changed schemas into
    `SageBinaryData` and the processor registry.
 2. Generate the Uprising type table and require the final

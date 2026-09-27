@@ -27,6 +27,7 @@ internal static class CompilerSmokeTest
         TestMainMenuPersonality();
         TestOverridableAudio();
         TestMovieArchive();
+        TestScenarioUi();
         TestAudioDynamicsCollide();
         TestDamageDynamicsCollide();
         TestReactionFXOnDamage();
@@ -799,6 +800,64 @@ internal static class CompilerSmokeTest
         Expect(chunk.RelocationBuffer.Length == 64, "UIComponentMovieArchive relocation bytes", 64, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 16, "UIComponentMovieArchive imports bytes", 16, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  MovieArchive bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Reproduce the official EP1 scenario preview and fieldless scenario component XML. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestScenarioUi()
+    {
+        const string previewXml = """
+            <UIScenarioMapPreview xmlns="uri:ea.com:eala:asset">
+              <FactionSettings Faction="Allies" PlayerImage="PackedTextureImage\21" />
+              <FactionSettings Faction="Soviet" PlayerImage="PackedTextureImage\22" />
+              <FactionSettings Faction="Japan" PlayerImage="PackedTextureImage\23" />
+            </UIScenarioMapPreview>
+            """;
+        XmlDocument previewDocument = new();
+        previewDocument.LoadXml(previewXml);
+        XmlNamespaceManager previewNamespaces = new(previewDocument.NameTable);
+        previewNamespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node previewNode = new(previewDocument.CreateNavigator()!.SelectSingleNode("/ea:UIScenarioMapPreview", previewNamespaces)!, previewNamespaces);
+
+        UIScenarioMapPreview* previewRoot;
+        using Tracker previewTracker = new((void**)&previewRoot, (uint)sizeof(UIScenarioMapPreview), false);
+        Marshaler.Marshal(previewNode, previewRoot, previewTracker);
+        Chunk previewChunk = new();
+        previewTracker.MakeRelocatable(previewChunk);
+        ReadOnlySpan<byte> previewInstance = previewChunk.InstanceBuffer;
+        Expect(previewInstance.Length == 36, "UIScenarioMapPreview instance bytes", 36, previewInstance.Length);
+        Expect(ReadUInt32(previewInstance, 4) == 3, "UIScenarioMapPreview faction count", 3, ReadUInt32(previewInstance, 4));
+        Expect(ReadUInt32(previewInstance, 8) == 12, "UIScenarioMapPreview faction relocation", 12, ReadUInt32(previewInstance, 8));
+        Expect(ReadUInt32(previewInstance, 12) == 0, "UIScenarioMapPreview Allies value", 0, ReadUInt32(previewInstance, 12));
+        Expect(ReadUInt32(previewInstance, 16) == 21, "UIScenarioMapPreview Allies image", 21, ReadUInt32(previewInstance, 16));
+        Expect(ReadUInt32(previewInstance, 20) == 1, "UIScenarioMapPreview Soviet value", 1, ReadUInt32(previewInstance, 20));
+        Expect(ReadUInt32(previewInstance, 24) == 22, "UIScenarioMapPreview Soviet image", 22, ReadUInt32(previewInstance, 24));
+        Expect(ReadUInt32(previewInstance, 28) == 2, "UIScenarioMapPreview Japan value", 2, ReadUInt32(previewInstance, 28));
+        Expect(ReadUInt32(previewInstance, 32) == 23, "UIScenarioMapPreview Japan image", 23, ReadUInt32(previewInstance, 32));
+        Expect(previewChunk.RelocationBuffer.Length == 8, "UIScenarioMapPreview relocation bytes", 8, previewChunk.RelocationBuffer.Length);
+        Expect(previewChunk.ImportsBuffer.Length == 16, "UIScenarioMapPreview imports bytes", 16, previewChunk.ImportsBuffer.Length);
+
+        const string componentXml = """
+            <UIComponentScenario xmlns="uri:ea.com:eala:asset" Priority="598" />
+            """;
+        XmlDocument componentDocument = new();
+        componentDocument.LoadXml(componentXml);
+        XmlNamespaceManager componentNamespaces = new(componentDocument.NameTable);
+        componentNamespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node componentNode = new(componentDocument.CreateNavigator()!.SelectSingleNode("/ea:UIComponentScenario", componentNamespaces)!, componentNamespaces);
+
+        UIComponentScenario* componentRoot;
+        using Tracker componentTracker = new((void**)&componentRoot, (uint)sizeof(UIComponentScenario), false);
+        Marshaler.Marshal(componentNode, componentRoot, componentTracker);
+        Chunk componentChunk = new();
+        componentTracker.MakeRelocatable(componentChunk);
+        ReadOnlySpan<byte> componentInstance = componentChunk.InstanceBuffer;
+        Expect(componentInstance.Length == 8, "UIComponentScenario instance bytes", 8, componentInstance.Length);
+        Expect(ReadUInt32(componentInstance, 4) == 598, "UIComponentScenario priority", 598, ReadUInt32(componentInstance, 4));
+        Expect(componentChunk.RelocationBuffer.Length == 0, "UIComponentScenario relocation bytes", 0, componentChunk.RelocationBuffer.Length);
+        Expect(componentChunk.ImportsBuffer.Length == 0, "UIComponentScenario imports bytes", 0, componentChunk.ImportsBuffer.Length);
+        Console.WriteLine($"  ScenarioUI preview={previewChunk.InstanceBuffer.Length}/{previewChunk.RelocationBuffer.Length}/{previewChunk.ImportsBuffer.Length}, component={componentChunk.InstanceBuffer.Length}/{componentChunk.RelocationBuffer.Length}/{componentChunk.ImportsBuffer.Length}");
     }
 
     private static unsafe void TestAudioDynamicsCollide()

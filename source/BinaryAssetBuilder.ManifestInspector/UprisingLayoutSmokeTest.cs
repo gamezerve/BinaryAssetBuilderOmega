@@ -187,6 +187,13 @@ internal static class UprisingLayoutSmokeTest
         ExpectOffset<SageBinaryData.UIComponentMovieArchive>(nameof(SageBinaryData.UIComponentMovieArchive.GeneralMovie), 8);
         ExpectOffset<SageBinaryData.UIComponentMovieArchive>(nameof(SageBinaryData.UIComponentMovieArchive.ScenarioMovie), 16);
         ExpectOffset<SageBinaryData.UIComponentMovieArchive>(nameof(SageBinaryData.UIComponentMovieArchive.CampaignMovie), 24);
+        // Reborn: Pin the EP1 scenario-preview records and fieldless scenario component.
+        ExpectSize<SageBinaryData.UIScenarioMapPreviewFactionSettings>(8);
+        ExpectOffset<SageBinaryData.UIScenarioMapPreviewFactionSettings>(nameof(SageBinaryData.UIScenarioMapPreviewFactionSettings.PlayerImage), 4);
+        ExpectSize<SageBinaryData.UIScenarioMapPreview>(12);
+        ExpectOffset<SageBinaryData.UIScenarioMapPreview>(nameof(SageBinaryData.UIScenarioMapPreview.FactionSettings), 4);
+        ExpectSize<SageBinaryData.UIComponentScenario>(8);
+        ExpectOffset<SageBinaryData.UIComponentScenario>(nameof(SageBinaryData.UIComponentScenario.Base), 0);
         ExpectSize<SageBinaryData.DynamicsCollideModuleData>(8);
         ExpectSize<SageBinaryData.MagnitudeSoundSelectorEntry>(8);
         ExpectOffset<SageBinaryData.MagnitudeSoundSelectorEntry>(nameof(SageBinaryData.MagnitudeSoundSelectorEntry.Sound), 4);
