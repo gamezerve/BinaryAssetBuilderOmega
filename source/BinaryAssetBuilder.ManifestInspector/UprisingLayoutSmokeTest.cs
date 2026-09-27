@@ -218,6 +218,20 @@ internal static class UprisingLayoutSmokeTest
         ExpectOffset<SageBinaryData.MusicScriptConditionNugget_ObjectTypesInProximity>(nameof(SageBinaryData.MusicScriptConditionNugget_ObjectTypesInProximity.TypeAFilter), 8);
         ExpectOffset<SageBinaryData.MusicScriptConditionNugget_ObjectTypesInProximity>(nameof(SageBinaryData.MusicScriptConditionNugget_ObjectTypesInProximity.TypeBFilter), 16);
         ExpectOffset<SageBinaryData.MusicScriptConditionNugget_ObjectTypesInProximity>(nameof(SageBinaryData.MusicScriptConditionNugget_ObjectTypesInProximity.Distance), 24);
+        // Reborn: Pin the EP1 map-name heuristic to the 16-byte polymorphic record seen in global.bin.
+        ExpectSize<SageBinaryData.AIStateMapNameHeuristic>(16);
+        ExpectOffset<SageBinaryData.AIStateMapNameHeuristic>(nameof(SageBinaryData.AIStateMapNameHeuristic.Name), 4);
+        ExpectOffset<SageBinaryData.AIStateMapNameHeuristic>(nameof(SageBinaryData.AIStateMapNameHeuristic.PassIfTrue), 12);
+        // Reborn: Pin the complete EP1 joint hierarchy to the real ragdoll record strides.
+        ExpectSize<SageBinaryData.DynamicsJointLinkType>(12);
+        ExpectOffset<SageBinaryData.DynamicsJointLinkType>(nameof(SageBinaryData.DynamicsJointLinkType.Position), 8);
+        ExpectSize<SageBinaryData.DynamicsJointFrameType>(24);
+        ExpectOffset<SageBinaryData.DynamicsJointFrameType>(nameof(SageBinaryData.DynamicsJointFrameType.Parent), 12);
+        ExpectSize<SageBinaryData.DynamicsJointLimitsType>(32);
+        ExpectOffset<SageBinaryData.DynamicsJointLimitsType>(nameof(SageBinaryData.DynamicsJointLimitsType.Position), 28);
+        ExpectSize<SageBinaryData.DynamicsJointType>(56);
+        ExpectOffset<SageBinaryData.DynamicsJointType>(nameof(SageBinaryData.DynamicsJointType.Limits), 24);
+        ExpectSize<SageBinaryData.DynamicsJointSetType>(8);
         ExpectSize<SageBinaryData.DynamicsCollideModuleData>(8);
         ExpectSize<SageBinaryData.MagnitudeSoundSelectorEntry>(8);
         ExpectOffset<SageBinaryData.MagnitudeSoundSelectorEntry>(nameof(SageBinaryData.MagnitudeSoundSelectorEntry.Sound), 4);

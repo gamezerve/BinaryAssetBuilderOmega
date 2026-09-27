@@ -5,7 +5,7 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Progress snapshot (2026-09-27)
 
-The current conservative engineering estimate is **43% complete / 57%
+The current conservative engineering estimate is **44% complete / 56%
 remaining**. This is an effort estimate, not the percentage of C# files in the
 tree. A pre-existing Kane's Wrath marshaller only counts as complete after its
 RA3/EP1 layout, type hash and emitted streams have been checked.
@@ -14,17 +14,18 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 |---|---:|---:|---:|
 | Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
 | Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
-| Native layouts, processors, dispatch and final type table | 45% | 40% | 18.0% |
+| Native layouts, processors, dispatch and final type table | 45% | 43% | 19.4% |
 | Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
 | Built-mod validation inside Uprising | 10% | 0% | 0.0% |
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 761 (54.7%) and typed marshallers for 737
-(53.0%). These broad numbers are inventory coverage only. Of the 48 complex
-types that exist only in EP1, 42 (87.5%) now have both a model and marshaller;
-6 remain absent. The smaller audited set carries substantially more weight
-than raw file presence in the 43% estimate above.
+The source tree contains models for 767 (55.2%) and typed marshallers for 743
+(53.5%). These broad numbers are inventory coverage only. All 48 complex types
+that exist only in EP1 now have both a model and marshaller. This closes the
+EP1-only inventory, but it does not close changed shared types or missing parent
+pipelines; those retain substantially more weight than raw file presence in the
+44% estimate above.
 
 ## Established facts
 
@@ -317,6 +318,23 @@ record whose two `ObjectFilterAsset` imports occupy offsets 8 and 16, followed
 by their counts and distance; its fixture reproduces the native scalar bytes
 and emits `28 bin / 0 relo / 12 imp`.
 
+The EP1-only `AIStateMapNameHeuristic` is recovered from three embedded records
+inside `AIPersonalityDefinition:2SovietShockSpecialist`. Its type ID is
+`0xDAFA6EB8`; the native 16-byte record stores the type ID, map-name string and
+then `PassIfTrue`, despite the XSD listing the flag first. The polymorphic
+dispatcher now recognizes that ID and the first official map-name fixture emits
+`76 bin / 8 relo / 0 imp`.
+
+The five EP1 dynamics-joint types are recovered from the ten-joint
+`GameObject:SovietMortarcycleGuy_Collapse` ragdoll fixture. Native strides are
+12 bytes for `DynamicsJointLinkType`, 24 for its child-then-parent frame, 32 for
+the limit block, 56 for a complete joint and 8 for the joint-set list root. The
+limit position pointer is last in native memory, after both enum and five float
+fields. A fixture exercising both optional positions emits `104 bin / 24 relo /
+0 imp`. The containing shared `W3DDynamicsDrawModuleData` hierarchy is still
+absent from this Kane's Wrath-derived source tree, so full GameObject integration
+remains separate work even though the EP1-only nested-type inventory is closed.
+
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of
 `GameObject:ClientFlingableExplodingBarrel` found type ID `0xD6C03AC2` at the
@@ -416,9 +434,9 @@ game archives, including RefPack inputs.
 
 Remaining work:
 
-1. Port the remaining 6 EP1-only complex types and every
-   binary-layout-affecting change among the 75 changed schemas into
-   `SageBinaryData` and the processor registry.
+1. Port every remaining binary-layout-affecting change among the 75 changed
+   schemas into `SageBinaryData` and the processor registry, including the
+   missing shared `W3DDynamicsDrawModuleData` parent pipeline.
 2. Generate the Uprising type table and require the final
    `AllTypesHash=0x5454A8E9`; a schema-valid XML build is not sufficient.
 3. Validate `.bin`, `.relo` and `.imp` chunks asset-by-asset against a known

@@ -53,6 +53,20 @@ public static partial class Marshaler
         Marshal(node, (AIStateHeuristic*)objT, state);
     }
 
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Compile EP1's map-name heuristic in the field order recovered from global.bin. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node, AIStateMapNameHeuristic* objT, Tracker state)
+    {
+        if (node is null)
+        {
+            return;
+        }
+        Marshal(node.GetAttributeValue(nameof(AIStateMapNameHeuristic.Name), null), &objT->Name, state);
+        Marshal(node.GetAttributeValue(nameof(AIStateMapNameHeuristic.PassIfTrue), "true"), &objT->PassIfTrue, state);
+        Marshal(node, (AIStateHeuristic*)objT, state);
+    }
+
     public static unsafe void Marshal(Node node, AIStateHarvesterCapHeuristic* objT, Tracker state)
     {
         if (node is null)
@@ -444,6 +458,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: Dispatch the Uprising-only map-name heuristic by its verified type ID.
+            case 0xDAFA6EB8u:
+                MarshalPolymorphicType<AIStateMapNameHeuristic, AIStateHeuristic>(node, objT, state);
+                break;
             case 0x0742367Au:
                 MarshalPolymorphicType<AIStateLinearCombinationHeuristic, AIStateHeuristic>(node, objT, state);
                 break;

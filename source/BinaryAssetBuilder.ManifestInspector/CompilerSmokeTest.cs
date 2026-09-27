@@ -31,6 +31,8 @@ internal static class CompilerSmokeTest
         TestScenarioManager();
         TestRedAlertButton();
         TestUprisingMusicConditions();
+        TestMapNameHeuristic();
+        TestDynamicsJointSet();
         TestAudioDynamicsCollide();
         TestDamageDynamicsCollide();
         TestReactionFXOnDamage();
@@ -1002,6 +1004,82 @@ internal static class CompilerSmokeTest
         Expect(proximityChunk.RelocationBuffer.Length == 0, "proximity music condition relocation bytes", 0, proximityChunk.RelocationBuffer.Length);
         Expect(proximityChunk.ImportsBuffer.Length == 12, "proximity music condition imports bytes", 12, proximityChunk.ImportsBuffer.Length);
         Console.WriteLine($"  MusicConditions redAlert={buttonChunk.InstanceBuffer.Length}/{buttonChunk.RelocationBuffer.Length}/{buttonChunk.ImportsBuffer.Length}, proximity={proximityChunk.InstanceBuffer.Length}/{proximityChunk.RelocationBuffer.Length}/{proximityChunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Reproduce the first EP1 map-name heuristic embedded in 2SovietShockSpecialist. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestMapNameHeuristic()
+    {
+        const string mapName = @"data\maps\official\MAP_MP_2_Feasel5\MAP_MP_2_Feasel5.map";
+        const string xml = """
+            <MapNameHeuristic xmlns="uri:ea.com:eala:asset"
+                Name="data\maps\official\MAP_MP_2_Feasel5\MAP_MP_2_Feasel5.map" />
+            """;
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:MapNameHeuristic", namespaces)!, namespaces);
+
+        AIStateMapNameHeuristic* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(AIStateMapNameHeuristic), false);
+        root->Base.TypeId = 0xDAFA6EB8u;
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 76, "map-name heuristic instance bytes", 76, instance.Length);
+        Expect(ReadUInt32(instance, 0) == 0xDAFA6EB8, "map-name heuristic type ID", unchecked((int)0xDAFA6EB8u), ReadUInt32(instance, 0));
+        Expect(ReadUInt32(instance, 4) == mapName.Length, "map-name heuristic string length", mapName.Length, checked((int)ReadUInt32(instance, 4)));
+        Expect(instance[12] == 1, "map-name heuristic default pass flag", 1, instance[12]);
+        Expect(chunk.RelocationBuffer.Length == 8, "map-name heuristic relocation bytes", 8, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 0, "map-name heuristic imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  MapNameHeuristic bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Exercise every EP1 joint subtype and its optional Vector3 allocations. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestDynamicsJointSet()
+    {
+        const string xml = """
+            <Joints xmlns="uri:ea.com:eala:asset">
+              <Joint>
+                <Frame>
+                  <Child BoneName="B_Spine"><Position x="1" y="2" z="3" /></Child>
+                  <Parent BoneName="B_Hips" />
+                </Frame>
+                <Limits SwingType="SWING_CONE" SwingDisplacementLimit="0.1" SwingAngleLimit="0.5"
+                    TwistType="TWIST_ARC" TwistDisplacementLimit="0.2" TwistAngleLimit="0.3" InertiaOverride="0.4">
+                  <Position x="4" y="5" z="6" />
+                </Limits>
+              </Joint>
+            </Joints>
+            """;
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:Joints", namespaces)!, namespaces);
+
+        DynamicsJointSetType* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(DynamicsJointSetType), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 104, "dynamics joint-set instance bytes", 104, instance.Length);
+        Expect(ReadUInt32(instance, 0) == 1, "dynamics joint count", 1, ReadUInt32(instance, 0));
+        uint jointOffset = ReadUInt32(instance, 4);
+        Expect(ReadUInt32(instance, checked((int)jointOffset)) == 7, "dynamics child bone length", 7, ReadUInt32(instance, checked((int)jointOffset)));
+        Expect(ReadUInt32(instance, checked((int)jointOffset + 12)) == 6, "dynamics parent bone length", 6, ReadUInt32(instance, checked((int)jointOffset + 12)));
+        Expect(ReadUInt32(instance, checked((int)jointOffset + 24)) == 1, "dynamics swing type", 1, ReadUInt32(instance, checked((int)jointOffset + 24)));
+        Expect(ReadUInt32(instance, checked((int)jointOffset + 36)) == 1, "dynamics twist type", 1, ReadUInt32(instance, checked((int)jointOffset + 36)));
+        Expect(ReadUInt32(instance, checked((int)jointOffset + 48)) == 0x3ECCCCCD, "dynamics inertia override", 0x3ECCCCCD, ReadUInt32(instance, checked((int)jointOffset + 48)));
+        Expect(chunk.RelocationBuffer.Length == 24, "dynamics joint-set relocation bytes", 24, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 0, "dynamics joint-set imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  DynamicsJointSet bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static unsafe void TestAudioDynamicsCollide()

@@ -78,6 +78,15 @@ namespace SageBinaryData
         public SageBool Complete;
     }
 
+    // Reborn: Match EP1's 16-byte map-name heuristic in the native name-then-flag order.
+    [StructLayout(LayoutKind.Sequential)]
+    public struct AIStateMapNameHeuristic
+    {
+        public AIStateHeuristic Base;
+        public AnsiString Name;
+        public SageBool PassIfTrue;
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct AIStateHarvesterCapHeuristic
     {
