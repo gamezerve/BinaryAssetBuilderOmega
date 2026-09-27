@@ -28,6 +28,7 @@ internal static class CompilerSmokeTest
         TestOverridableAudio();
         TestMovieArchive();
         TestScenarioUi();
+        TestScenarioManager();
         TestAudioDynamicsCollide();
         TestDamageDynamicsCollide();
         TestReactionFXOnDamage();
@@ -858,6 +859,64 @@ internal static class CompilerSmokeTest
         Expect(componentChunk.RelocationBuffer.Length == 0, "UIComponentScenario relocation bytes", 0, componentChunk.RelocationBuffer.Length);
         Expect(componentChunk.ImportsBuffer.Length == 0, "UIComponentScenario imports bytes", 0, componentChunk.ImportsBuffer.Length);
         Console.WriteLine($"  ScenarioUI preview={previewChunk.InstanceBuffer.Length}/{previewChunk.RelocationBuffer.Length}/{previewChunk.ImportsBuffer.Length}, component={componentChunk.InstanceBuffer.Length}/{componentChunk.RelocationBuffer.Length}/{componentChunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Validate the EP1 scenario-manager hierarchy against the recovered native root sizes. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestScenarioManager()
+    {
+        const string xml = """
+            <ScenarioManagerData xmlns="uri:ea.com:eala:asset" IntroMovie="I" CriticalPathCompletionMovie="C" FullCompletionMovie="F">
+              <ScenarioTemplate id="Scenario_Test" UiName="U" Title="T" ShortTitle="S" Description="D" MapName="M"
+                  IsStartingScenario="true" IsCriticalPath="true" UseRandomCrates="true"
+                  PlayerStartPosition="1" PlayerTeam="2" PlayerColor="ColorBlue" ParTime="5s"
+                  ParTimeScoreBonus="100" DifficultyScoreBonus="200" MaxEfficiencyScoreMultiplier="4"
+                  UnitUnlock="TestUnit">
+                <Enemy Faction="PlayerTemplate\11" Personality="AIPersonalityDefinition\12"
+                    Portrait="PackedTextureImage\13" Difficulty="HARD" Team="3" StartPosition="4" Color="ColorRed" />
+                <ScenarioUnlock>Scenario_Next</ScenarioUnlock>
+              </ScenarioTemplate>
+              <UnlockableUnit Faction="PlayerTemplate\14" Name="UnlockedUnit" />
+            </ScenarioManagerData>
+            """;
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:ScenarioManagerData", namespaces)!, namespaces);
+
+        ScenarioManagerData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(ScenarioManagerData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 216, "ScenarioManagerData instance bytes", 216, instance.Length);
+        Expect(ReadUInt32(instance, 4) == 1, "ScenarioManagerData intro length", 1, ReadUInt32(instance, 4));
+        Expect(ReadUInt32(instance, 28) == 50000, "ScenarioManagerData max deposit", 50000, ReadUInt32(instance, 28));
+        Expect(ReadUInt32(instance, 32) == 1, "ScenarioManagerData scenario count", 1, ReadUInt32(instance, 32));
+        Expect(ReadUInt32(instance, 40) == 1, "ScenarioManagerData unlockable count", 1, ReadUInt32(instance, 40));
+        uint scenarioOffset = ReadUInt32(instance, 36);
+        uint unlockableOffset = ReadUInt32(instance, 44);
+        Expect(ReadUInt32(instance, checked((int)scenarioOffset + 44)) == 1, "ScenarioTemplate player start", 1, ReadUInt32(instance, checked((int)scenarioOffset + 44)));
+        Expect(ReadUInt32(instance, checked((int)scenarioOffset + 48)) == 2, "ScenarioTemplate player team", 2, ReadUInt32(instance, checked((int)scenarioOffset + 48)));
+        Expect(ReadUInt32(instance, checked((int)scenarioOffset + 56)) == 0x40A00000, "ScenarioTemplate par time", 0x40A00000, ReadUInt32(instance, checked((int)scenarioOffset + 56)));
+        Expect(ReadUInt32(instance, checked((int)scenarioOffset + 60)) == 100, "ScenarioTemplate par bonus", 100, ReadUInt32(instance, checked((int)scenarioOffset + 60)));
+        Expect(ReadUInt32(instance, checked((int)scenarioOffset + 64)) == 200, "ScenarioTemplate difficulty bonus", 200, ReadUInt32(instance, checked((int)scenarioOffset + 64)));
+        Expect(ReadUInt32(instance, checked((int)scenarioOffset + 68)) == 0x40800000, "ScenarioTemplate efficiency multiplier", 0x40800000, ReadUInt32(instance, checked((int)scenarioOffset + 68)));
+        Expect(instance[checked((int)scenarioOffset + 92)] == 1, "ScenarioTemplate starting flag", 1, instance[checked((int)scenarioOffset + 92)]);
+        Expect(instance[checked((int)scenarioOffset + 93)] == 1, "ScenarioTemplate critical flag", 1, instance[checked((int)scenarioOffset + 93)]);
+        Expect(instance[checked((int)scenarioOffset + 94)] == 1, "ScenarioTemplate crates flag", 1, instance[checked((int)scenarioOffset + 94)]);
+        uint enemyOffset = ReadUInt32(instance, checked((int)scenarioOffset + 80));
+        Expect(ReadUInt32(instance, checked((int)enemyOffset)) == 11, "ScenarioEnemy faction import", 11, ReadUInt32(instance, checked((int)enemyOffset)));
+        Expect(ReadUInt32(instance, checked((int)enemyOffset + 4)) == 12, "ScenarioEnemy personality import", 12, ReadUInt32(instance, checked((int)enemyOffset + 4)));
+        Expect(ReadUInt32(instance, checked((int)enemyOffset + 8)) == 13, "ScenarioEnemy portrait import", 13, ReadUInt32(instance, checked((int)enemyOffset + 8)));
+        Expect(ReadUInt32(instance, checked((int)enemyOffset + 12)) == 2, "ScenarioEnemy difficulty", 2, ReadUInt32(instance, checked((int)enemyOffset + 12)));
+        Expect(ReadUInt32(instance, checked((int)unlockableOffset)) == 14, "UnlockableUnit faction import", 14, ReadUInt32(instance, checked((int)unlockableOffset)));
+        Expect(chunk.RelocationBuffer.Length == 52, "ScenarioManagerData relocation bytes", 52, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 20, "ScenarioManagerData imports bytes", 20, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  ScenarioManager bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static unsafe void TestAudioDynamicsCollide()

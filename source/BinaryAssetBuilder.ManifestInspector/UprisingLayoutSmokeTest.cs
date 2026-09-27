@@ -194,6 +194,19 @@ internal static class UprisingLayoutSmokeTest
         ExpectOffset<SageBinaryData.UIScenarioMapPreview>(nameof(SageBinaryData.UIScenarioMapPreview.FactionSettings), 4);
         ExpectSize<SageBinaryData.UIComponentScenario>(8);
         ExpectOffset<SageBinaryData.UIComponentScenario>(nameof(SageBinaryData.UIComponentScenario.Base), 0);
+        // Reborn: Pin the EP1 scenario-manager records recovered from the 15,856-byte static fixture.
+        ExpectSize<SageBinaryData.ScenarioEnemy>(28);
+        ExpectOffset<SageBinaryData.ScenarioEnemy>(nameof(SageBinaryData.ScenarioEnemy.Color), 24);
+        ExpectSize<SageBinaryData.ScenarioTemplate>(96);
+        ExpectOffset<SageBinaryData.ScenarioTemplate>(nameof(SageBinaryData.ScenarioTemplate.MapName), 36);
+        ExpectOffset<SageBinaryData.ScenarioTemplate>(nameof(SageBinaryData.ScenarioTemplate.Enemy), 76);
+        ExpectOffset<SageBinaryData.ScenarioTemplate>(nameof(SageBinaryData.ScenarioTemplate.ScenarioUnlock), 84);
+        ExpectOffset<SageBinaryData.ScenarioTemplate>(nameof(SageBinaryData.ScenarioTemplate.IsStartingScenario), 92);
+        ExpectSize<SageBinaryData.UnlockableUnit>(8);
+        ExpectSize<SageBinaryData.ScenarioManagerData>(48);
+        ExpectOffset<SageBinaryData.ScenarioManagerData>(nameof(SageBinaryData.ScenarioManagerData.MaxRedAlertDeposit), 28);
+        ExpectOffset<SageBinaryData.ScenarioManagerData>(nameof(SageBinaryData.ScenarioManagerData.ScenarioTemplate), 32);
+        ExpectOffset<SageBinaryData.ScenarioManagerData>(nameof(SageBinaryData.ScenarioManagerData.UnlockableUnit), 40);
         ExpectSize<SageBinaryData.DynamicsCollideModuleData>(8);
         ExpectSize<SageBinaryData.MagnitudeSoundSelectorEntry>(8);
         ExpectOffset<SageBinaryData.MagnitudeSoundSelectorEntry>(nameof(SageBinaryData.MagnitudeSoundSelectorEntry.Sound), 4);
