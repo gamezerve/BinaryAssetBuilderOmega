@@ -3,9 +3,9 @@
 This branch starts the migration with a read-only compatibility gate. It does
 not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
-## Progress snapshot (2026-09-26)
+## Progress snapshot (2026-09-27)
 
-The current conservative engineering estimate is **40% complete / 60%
+The current conservative engineering estimate is **41% complete / 59%
 remaining**. This is an effort estimate, not the percentage of C# files in the
 tree. A pre-existing Kane's Wrath marshaller only counts as complete after its
 RA3/EP1 layout, type hash and emitted streams have been checked.
@@ -14,17 +14,17 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 |---|---:|---:|---:|
 | Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
 | Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
-| Native layouts, processors, dispatch and final type table | 45% | 33% | 14.9% |
+| Native layouts, processors, dispatch and final type table | 45% | 35% | 15.8% |
 | Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
 | Built-mod validation inside Uprising | 10% | 0% | 0.0% |
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 747 (53.7%) and typed marshallers for 723
-(52.0%). These broad numbers are inventory coverage only. Of the 48 complex
-types that exist only in EP1, 29 (60.4%) now have both a model and marshaller;
-19 remain absent. The smaller audited set carries substantially more weight
-than raw file presence in the 40% estimate above.
+The source tree contains models for 750 (54.0%) and typed marshallers for 726
+(52.2%). These broad numbers are inventory coverage only. Of the 48 complex
+types that exist only in EP1, 32 (66.7%) now have both a model and marshaller;
+16 remain absent. The smaller audited set carries substantially more weight
+than raw file presence in the 41% estimate above.
 
 ## Established facts
 
@@ -91,7 +91,7 @@ XSDs establish bit capacities of 463 model conditions (464 enum values minus
 the non-bit `INVALID=-1` sentinel), 230 object statuses, 13
 disabled types and 23 armor-set types. `layout-self-test` locks these sizes and
 offsets against regression. `Sync-Ra3Ep1Enums.ps1` regenerates the complete
-ModelCondition, ObjectStatus, Disabled, ArmorSet and AttributeModifier enum
+ModelCondition, ObjectStatus, Disabled, ArmorSet, Faction and AttributeModifier enum
 ordering directly from the checked-in EP1 XSDs; its `-Check` mode is part of the
 compatibility smoke test.
 
@@ -275,6 +275,17 @@ being mistaken for new audio layouts. Compiler fixtures exercise their real
 child-list paths and emit `128 bin / 8 relo / 8 imp` and `24 bin / 8 relo / 8
 imp`, respectively.
 
+The EP1 movie-archive schema exposed a direct Kane's Wrath carry-over:
+`UIComponentMovieArchive` still contained the obsolete `MissionSpec` string.
+The corrected 32-byte root now holds the official General, Scenario and
+Campaign movie lists. Their 36/40/44-byte entry layouts preserve four ANSI
+strings and an on-demand preview import, with the derived entries adding the
+scenario unlock enum or faction/progress pair. A fixture containing one entry
+of each kind emits `236 bin / 64 relo / 16 imp`. This work also replaced the
+inherited `GDI/NOD/Alien` `FactionType` with the official EP1 sequence
+`RANDOM/Allies/Soviet/Japan/Yuriko/Neutral` and added it to the generated-enum
+compatibility gate.
+
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of
 `GameObject:ClientFlingableExplodingBarrel` found type ID `0xD6C03AC2` at the
@@ -374,7 +385,7 @@ game archives, including RefPack inputs.
 
 Remaining work:
 
-1. Port the remaining 19 EP1-only complex types and every
+1. Port the remaining 16 EP1-only complex types and every
    binary-layout-affecting change among the 75 changed schemas into
    `SageBinaryData` and the processor registry.
 2. Generate the Uprising type table and require the final

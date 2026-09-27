@@ -26,6 +26,7 @@ internal static class CompilerSmokeTest
         TestDynamicsSettings();
         TestMainMenuPersonality();
         TestOverridableAudio();
+        TestMovieArchive();
         TestAudioDynamicsCollide();
         TestDamageDynamicsCollide();
         TestReactionFXOnDamage();
@@ -756,6 +757,48 @@ internal static class CompilerSmokeTest
         Expect(multisoundChunk.RelocationBuffer.Length == 8, "MultisoundOverridable relocation bytes", 8, multisoundChunk.RelocationBuffer.Length);
         Expect(multisoundChunk.ImportsBuffer.Length == 8, "MultisoundOverridable imports bytes", 8, multisoundChunk.ImportsBuffer.Length);
         Console.WriteLine($"  OverridableAudio event={audioChunk.InstanceBuffer.Length}/{audioChunk.RelocationBuffer.Length}/{audioChunk.ImportsBuffer.Length}, multisound={multisoundChunk.InstanceBuffer.Length}/{multisoundChunk.RelocationBuffer.Length}/{multisoundChunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Exercise every EP1 movie-archive subtype through the corrected three-list root. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestMovieArchive()
+    {
+        const string xml = """
+            <UIComponentMovieArchive xmlns="uri:ea.com:eala:asset" Priority="500">
+              <GeneralMovie Movie="GEN" PreviewImage="OnDemandTextureImage\11" DisplayName="NAME" Description="DESC" Icon="ICON" />
+              <ScenarioMovie Movie="SCN" PreviewImage="OnDemandTextureImage\12" DisplayName="NAME" Description="DESC" Icon="ICON" UnlockRequirement="CriticalPath" />
+              <CampaignMovie Movie="CMP" PreviewImage="OnDemandTextureImage\13" DisplayName="NAME" Description="DESC" Icon="ICON" Faction="Yuriko" ProgressLock="3" />
+            </UIComponentMovieArchive>
+            """;
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:UIComponentMovieArchive", namespaces)!, namespaces);
+
+        UIComponentMovieArchive* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(UIComponentMovieArchive), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(ReadUInt32(instance, 4) == 500, "UIComponentMovieArchive priority", 500, ReadUInt32(instance, 4));
+        Expect(ReadUInt32(instance, 8) == 1, "UIComponentMovieArchive general count", 1, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 16) == 1, "UIComponentMovieArchive scenario count", 1, ReadUInt32(instance, 16));
+        Expect(ReadUInt32(instance, 24) == 1, "UIComponentMovieArchive campaign count", 1, ReadUInt32(instance, 24));
+        uint generalOffset = ReadUInt32(instance, 12);
+        uint scenarioOffset = ReadUInt32(instance, 20);
+        uint campaignOffset = ReadUInt32(instance, 28);
+        Expect(ReadUInt32(instance, checked((int)generalOffset + 8)) == 11, "GeneralArchiveMovie preview import", 11, ReadUInt32(instance, checked((int)generalOffset + 8)));
+        Expect(ReadUInt32(instance, checked((int)scenarioOffset + 8)) == 12, "ScenarioArchiveMovie preview import", 12, ReadUInt32(instance, checked((int)scenarioOffset + 8)));
+        Expect(ReadUInt32(instance, checked((int)scenarioOffset + 36)) == 1, "ScenarioArchiveMovie unlock", 1, ReadUInt32(instance, checked((int)scenarioOffset + 36)));
+        Expect(ReadUInt32(instance, checked((int)campaignOffset + 8)) == 13, "CampaignArchiveMovie preview import", 13, ReadUInt32(instance, checked((int)campaignOffset + 8)));
+        Expect(ReadUInt32(instance, checked((int)campaignOffset + 36)) == 3, "CampaignArchiveMovie faction", 3, ReadUInt32(instance, checked((int)campaignOffset + 36)));
+        Expect(ReadUInt32(instance, checked((int)campaignOffset + 40)) == 3, "CampaignArchiveMovie progress lock", 3, ReadUInt32(instance, checked((int)campaignOffset + 40)));
+        Expect(chunk.RelocationBuffer.Length == 64, "UIComponentMovieArchive relocation bytes", 64, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 16, "UIComponentMovieArchive imports bytes", 16, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  MovieArchive bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static unsafe void TestAudioDynamicsCollide()

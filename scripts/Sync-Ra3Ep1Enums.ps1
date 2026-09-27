@@ -10,6 +10,8 @@ $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $targets = @(
     @{ Source = 'source\SageBinaryData\SageBinaryData\Includes\KindOf.cs'; Schema = 'Includes\KindOf.xsd'; Type = 'KindOfType'; TargetType = 'KindOf'; CountConstant = 'KindOfBitFlags' },
     @{ Source = 'source\SageBinaryData\SageBinaryData\Includes\UnitCategory.cs'; Schema = 'Includes\UnitCategory.xsd'; Type = 'UnitCategory'; InvalidIsMinusOne = $true },
+    # Reborn: Keep the shared RA3/EP1 faction ordering from reverting to the Kane's Wrath factions.
+    @{ Source = 'source\SageBinaryData\SageBinaryData\Includes\FactionType.cs'; Schema = 'Includes\FactionType.xsd'; Type = 'FactionType'; InvalidIsMinusOne = $true },
     @{ Source = 'source\SageBinaryData\SageBinaryData\Includes\WeaponCategory.cs'; Schema = 'Includes\WeaponCategory.xsd'; Type = 'WeaponCategory'; InvalidIsMinusOne = $true },
     @{ Source = 'source\SageBinaryData\SageBinaryData\GameObject.cs'; Schema = 'AssetTypeGameObject.xsd'; Type = 'BuildPlacementType'; CountConstant = 'BuildPlacementTypeBitFlags' },
     @{ Source = 'source\SageBinaryData\SageBinaryData\GameObject.cs'; Schema = 'AssetTypeGameObject.xsd'; Type = 'BuildableStatus' },

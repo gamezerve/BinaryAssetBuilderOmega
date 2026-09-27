@@ -174,6 +174,19 @@ internal static class UprisingLayoutSmokeTest
         ExpectOffset<SageBinaryData.AudioEventOverridable>(nameof(SageBinaryData.AudioEventOverridable.Base), 0);
         ExpectSize<SageBinaryData.MultisoundOverridable>(16);
         ExpectOffset<SageBinaryData.MultisoundOverridable>(nameof(SageBinaryData.MultisoundOverridable.Base), 0);
+        // Reborn: Pin the EP1 movie-archive hierarchy and the three-list component root.
+        ExpectSize<SageBinaryData.GeneralArchiveMovie>(36);
+        ExpectOffset<SageBinaryData.GeneralArchiveMovie>(nameof(SageBinaryData.GeneralArchiveMovie.PreviewImage), 8);
+        ExpectOffset<SageBinaryData.GeneralArchiveMovie>(nameof(SageBinaryData.GeneralArchiveMovie.Icon), 28);
+        ExpectSize<SageBinaryData.ScenarioArchiveMovie>(40);
+        ExpectOffset<SageBinaryData.ScenarioArchiveMovie>(nameof(SageBinaryData.ScenarioArchiveMovie.UnlockRequirement), 36);
+        ExpectSize<SageBinaryData.CampaignArchiveMovie>(44);
+        ExpectOffset<SageBinaryData.CampaignArchiveMovie>(nameof(SageBinaryData.CampaignArchiveMovie.Faction), 36);
+        ExpectOffset<SageBinaryData.CampaignArchiveMovie>(nameof(SageBinaryData.CampaignArchiveMovie.ProgressLock), 40);
+        ExpectSize<SageBinaryData.UIComponentMovieArchive>(32);
+        ExpectOffset<SageBinaryData.UIComponentMovieArchive>(nameof(SageBinaryData.UIComponentMovieArchive.GeneralMovie), 8);
+        ExpectOffset<SageBinaryData.UIComponentMovieArchive>(nameof(SageBinaryData.UIComponentMovieArchive.ScenarioMovie), 16);
+        ExpectOffset<SageBinaryData.UIComponentMovieArchive>(nameof(SageBinaryData.UIComponentMovieArchive.CampaignMovie), 24);
         ExpectSize<SageBinaryData.DynamicsCollideModuleData>(8);
         ExpectSize<SageBinaryData.MagnitudeSoundSelectorEntry>(8);
         ExpectOffset<SageBinaryData.MagnitudeSoundSelectorEntry>(nameof(SageBinaryData.MagnitudeSoundSelectorEntry.Sound), 4);
