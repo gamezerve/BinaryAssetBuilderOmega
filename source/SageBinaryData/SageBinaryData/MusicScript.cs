@@ -71,6 +71,18 @@ namespace SageBinaryData
         public unsafe ObjectFilter* Filter;
     }
 
+    // Reborn: Match EP1's 28-byte two-filter proximity condition recovered from global.bin.
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MusicScriptConditionNugget_ObjectTypesInProximity
+    {
+        public MusicScriptConditionExpensiveNuggetBase Base;
+        public AssetReference<ObjectFilterAsset> TypeAFilter;
+        public int TypeACount;
+        public AssetReference<ObjectFilterAsset> TypeBFilter;
+        public int TypeBCount;
+        public float Distance;
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct MusicScriptConditionNugget_EvaEventPlayedRecently
     {
@@ -119,6 +131,14 @@ namespace SageBinaryData
     {
         public MusicScriptConditionNuggetBase Base;
         public List<AssetReference<MusicScriptConditionNuggetBase>> Condition;
+    }
+
+    // Reborn: Match EP1's 8-byte Red Alert activation condition and duration field.
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MusicScriptConditionNugget_LocalPlayerHitRedAlertButton
+    {
+        public MusicScriptConditionNuggetBase Base;
+        public Time DurationToReturnTrueAfterButtonHit;
     }
 
     [StructLayout(LayoutKind.Sequential)]

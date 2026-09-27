@@ -207,6 +207,17 @@ internal static class UprisingLayoutSmokeTest
         ExpectOffset<SageBinaryData.ScenarioManagerData>(nameof(SageBinaryData.ScenarioManagerData.MaxRedAlertDeposit), 28);
         ExpectOffset<SageBinaryData.ScenarioManagerData>(nameof(SageBinaryData.ScenarioManagerData.ScenarioTemplate), 32);
         ExpectOffset<SageBinaryData.ScenarioManagerData>(nameof(SageBinaryData.ScenarioManagerData.UnlockableUnit), 40);
+        // Reborn: Pin the fieldless EP1 Red Alert button to the 36-byte base observed in static.bin.
+        ExpectSize<SageBinaryData.UIMouseSimpleFixedButton>(36);
+        ExpectOffset<SageBinaryData.UIMouseSimpleFixedButton>(nameof(SageBinaryData.UIMouseSimpleFixedButton.MouseOverHelp), 4);
+        ExpectSize<SageBinaryData.UIMouseTacticalRedAlertButton>(36);
+        // Reborn: Pin both EP1-only music conditions to their real global.bin root sizes.
+        ExpectSize<SageBinaryData.MusicScriptConditionNugget_LocalPlayerHitRedAlertButton>(8);
+        ExpectOffset<SageBinaryData.MusicScriptConditionNugget_LocalPlayerHitRedAlertButton>(nameof(SageBinaryData.MusicScriptConditionNugget_LocalPlayerHitRedAlertButton.DurationToReturnTrueAfterButtonHit), 4);
+        ExpectSize<SageBinaryData.MusicScriptConditionNugget_ObjectTypesInProximity>(28);
+        ExpectOffset<SageBinaryData.MusicScriptConditionNugget_ObjectTypesInProximity>(nameof(SageBinaryData.MusicScriptConditionNugget_ObjectTypesInProximity.TypeAFilter), 8);
+        ExpectOffset<SageBinaryData.MusicScriptConditionNugget_ObjectTypesInProximity>(nameof(SageBinaryData.MusicScriptConditionNugget_ObjectTypesInProximity.TypeBFilter), 16);
+        ExpectOffset<SageBinaryData.MusicScriptConditionNugget_ObjectTypesInProximity>(nameof(SageBinaryData.MusicScriptConditionNugget_ObjectTypesInProximity.Distance), 24);
         ExpectSize<SageBinaryData.DynamicsCollideModuleData>(8);
         ExpectSize<SageBinaryData.MagnitudeSoundSelectorEntry>(8);
         ExpectOffset<SageBinaryData.MagnitudeSoundSelectorEntry>(nameof(SageBinaryData.MagnitudeSoundSelectorEntry.Sound), 4);

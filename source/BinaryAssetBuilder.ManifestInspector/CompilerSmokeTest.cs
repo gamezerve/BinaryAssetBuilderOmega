@@ -29,6 +29,8 @@ internal static class CompilerSmokeTest
         TestMovieArchive();
         TestScenarioUi();
         TestScenarioManager();
+        TestRedAlertButton();
+        TestUprisingMusicConditions();
         TestAudioDynamicsCollide();
         TestDamageDynamicsCollide();
         TestReactionFXOnDamage();
@@ -917,6 +919,89 @@ internal static class CompilerSmokeTest
         Expect(chunk.RelocationBuffer.Length == 52, "ScenarioManagerData relocation bytes", 52, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 20, "ScenarioManagerData imports bytes", 20, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  ScenarioManager bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Reproduce the real EP1 Red Alert button's 36-byte root and two localized strings. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestRedAlertButton()
+    {
+        const string xml = """
+            <UIMouseTacticalRedAlertButton xmlns="uri:ea.com:eala:asset" id="UIMouseTacticalRedAlertButton">
+              <MouseOverHelp Title="NAME:RedAlertButton" Description="DESC:RedAlertButton" />
+            </UIMouseTacticalRedAlertButton>
+            """;
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:UIMouseTacticalRedAlertButton", namespaces)!, namespaces);
+
+        UIMouseTacticalRedAlertButton* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(UIMouseTacticalRedAlertButton), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 76, "RedAlertButton instance bytes", 76, instance.Length);
+        Expect(ReadUInt32(instance, 4) == 19, "RedAlertButton title length", 19, ReadUInt32(instance, 4));
+        Expect(ReadUInt32(instance, 12) == 19, "RedAlertButton description length", 19, ReadUInt32(instance, 12));
+        Expect(chunk.RelocationBuffer.Length == 12, "RedAlertButton relocation bytes", 12, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 0, "RedAlertButton imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  RedAlertButton bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Reproduce both EP1-only music conditions from their real global-stream values. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestUprisingMusicConditions()
+    {
+        const string buttonXml = """
+            <MusicScriptConditionNugget_LocalPlayerHitRedAlertButton xmlns="uri:ea.com:eala:asset"
+                id="PlayerActiavtedRedAlert" DurationToReturnTrueAfterButtonHit="5.0s" />
+            """;
+        XmlDocument buttonDocument = new();
+        buttonDocument.LoadXml(buttonXml);
+        XmlNamespaceManager buttonNamespaces = new(buttonDocument.NameTable);
+        buttonNamespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node buttonNode = new(buttonDocument.CreateNavigator()!.SelectSingleNode("/ea:MusicScriptConditionNugget_LocalPlayerHitRedAlertButton", buttonNamespaces)!, buttonNamespaces);
+        MusicScriptConditionNugget_LocalPlayerHitRedAlertButton* buttonRoot;
+        using Tracker buttonTracker = new((void**)&buttonRoot, (uint)sizeof(MusicScriptConditionNugget_LocalPlayerHitRedAlertButton), false);
+        Marshaler.Marshal(buttonNode, buttonRoot, buttonTracker);
+        Chunk buttonChunk = new();
+        buttonTracker.MakeRelocatable(buttonChunk);
+        Expect(buttonChunk.InstanceBuffer.Length == 8, "Red Alert music condition instance bytes", 8, buttonChunk.InstanceBuffer.Length);
+        Expect(ReadUInt32(buttonChunk.InstanceBuffer, 4) == 0x40A00000, "Red Alert music condition duration", 0x40A00000, ReadUInt32(buttonChunk.InstanceBuffer, 4));
+        Expect(buttonChunk.RelocationBuffer.Length == 0, "Red Alert music condition relocation bytes", 0, buttonChunk.RelocationBuffer.Length);
+        Expect(buttonChunk.ImportsBuffer.Length == 0, "Red Alert music condition imports bytes", 0, buttonChunk.ImportsBuffer.Length);
+
+        const string proximityXml = """
+            <MusicScriptConditionNugget_ObjectTypesInProximity xmlns="uri:ea.com:eala:asset"
+                id="SomeEnemyUnits_NearExpedition1" TypeAFilter="ObjectFilterAsset\1" TypeACount="1"
+                TypeBFilter="ObjectFilterAsset\2" TypeBCount="3" Distance="300.0"
+                TimeBetweenConditionChecks="0.6s" />
+            """;
+        XmlDocument proximityDocument = new();
+        proximityDocument.LoadXml(proximityXml);
+        XmlNamespaceManager proximityNamespaces = new(proximityDocument.NameTable);
+        proximityNamespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node proximityNode = new(proximityDocument.CreateNavigator()!.SelectSingleNode("/ea:MusicScriptConditionNugget_ObjectTypesInProximity", proximityNamespaces)!, proximityNamespaces);
+        MusicScriptConditionNugget_ObjectTypesInProximity* proximityRoot;
+        using Tracker proximityTracker = new((void**)&proximityRoot, (uint)sizeof(MusicScriptConditionNugget_ObjectTypesInProximity), false);
+        Marshaler.Marshal(proximityNode, proximityRoot, proximityTracker);
+        Chunk proximityChunk = new();
+        proximityTracker.MakeRelocatable(proximityChunk);
+        ReadOnlySpan<byte> instance = proximityChunk.InstanceBuffer;
+        Expect(instance.Length == 28, "proximity music condition instance bytes", 28, instance.Length);
+        Expect(ReadUInt32(instance, 4) == 0x3F19999A, "proximity check interval", 0x3F19999A, ReadUInt32(instance, 4));
+        Expect(ReadUInt32(instance, 8) == 1, "proximity type A import", 1, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 12) == 1, "proximity type A count", 1, ReadUInt32(instance, 12));
+        Expect(ReadUInt32(instance, 16) == 2, "proximity type B import", 2, ReadUInt32(instance, 16));
+        Expect(ReadUInt32(instance, 20) == 3, "proximity type B count", 3, ReadUInt32(instance, 20));
+        Expect(ReadUInt32(instance, 24) == 0x43960000, "proximity distance", 0x43960000, ReadUInt32(instance, 24));
+        Expect(proximityChunk.RelocationBuffer.Length == 0, "proximity music condition relocation bytes", 0, proximityChunk.RelocationBuffer.Length);
+        Expect(proximityChunk.ImportsBuffer.Length == 12, "proximity music condition imports bytes", 12, proximityChunk.ImportsBuffer.Length);
+        Console.WriteLine($"  MusicConditions redAlert={buttonChunk.InstanceBuffer.Length}/{buttonChunk.RelocationBuffer.Length}/{buttonChunk.ImportsBuffer.Length}, proximity={proximityChunk.InstanceBuffer.Length}/{proximityChunk.RelocationBuffer.Length}/{proximityChunk.ImportsBuffer.Length}");
     }
 
     private static unsafe void TestAudioDynamicsCollide()

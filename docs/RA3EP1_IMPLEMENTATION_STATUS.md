@@ -5,7 +5,7 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Progress snapshot (2026-09-27)
 
-The current conservative engineering estimate is **42% complete / 58%
+The current conservative engineering estimate is **43% complete / 57%
 remaining**. This is an effort estimate, not the percentage of C# files in the
 tree. A pre-existing Kane's Wrath marshaller only counts as complete after its
 RA3/EP1 layout, type hash and emitted streams have been checked.
@@ -14,17 +14,17 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 |---|---:|---:|---:|
 | Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
 | Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
-| Native layouts, processors, dispatch and final type table | 45% | 38% | 17.1% |
+| Native layouts, processors, dispatch and final type table | 45% | 40% | 18.0% |
 | Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
 | Built-mod validation inside Uprising | 10% | 0% | 0.0% |
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 757 (54.5%) and typed marshallers for 733
-(52.7%). These broad numbers are inventory coverage only. Of the 48 complex
-types that exist only in EP1, 39 (81.2%) now have both a model and marshaller;
-9 remain absent. The smaller audited set carries substantially more weight
-than raw file presence in the 42% estimate above.
+The source tree contains models for 761 (54.7%) and typed marshallers for 737
+(53.0%). These broad numbers are inventory coverage only. Of the 48 complex
+types that exist only in EP1, 42 (87.5%) now have both a model and marshaller;
+6 remain absent. The smaller audited set carries substantially more weight
+than raw file presence in the 43% estimate above.
 
 ## Established facts
 
@@ -303,6 +303,20 @@ the final unlockable list exactly reaches the asset boundary. A minimal XML
 fixture exercises strings, imports, weak typed IDs, both lists and the three
 packed scenario flags, emitting `216 bin / 52 relo / 20 imp`.
 
+EP1's tactical Red Alert button is a fieldless wrapper over the previously
+missing shared `UIMouseSimpleFixedButton`. The real static-stream chunk proves
+a 36-byte root containing `BaseAssetType` plus the embedded 32-byte mouse-over
+help, followed by its two localized strings. The official XML fixture emits
+the observed `76 bin / 12 relo / 0 imp`; the relocation sources are exactly
+the title and description pointers at root offsets 8 and 16.
+
+The two EP1-only music conditions are also recovered from real global-stream
+assets. `LocalPlayerHitRedAlertButton` is an 8-byte base-plus-duration record
+and emits `8 bin / 0 relo / 0 imp`. `ObjectTypesInProximity` is a 28-byte
+record whose two `ObjectFilterAsset` imports occupy offsets 8 and 16, followed
+by their counts and distance; its fixture reproduces the native scalar bytes
+and emits `28 bin / 0 relo / 12 imp`.
+
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of
 `GameObject:ClientFlingableExplodingBarrel` found type ID `0xD6C03AC2` at the
@@ -402,7 +416,7 @@ game archives, including RefPack inputs.
 
 Remaining work:
 
-1. Port the remaining 9 EP1-only complex types and every
+1. Port the remaining 6 EP1-only complex types and every
    binary-layout-affecting change among the 75 changed schemas into
    `SageBinaryData` and the processor registry.
 2. Generate the Uprising type table and require the final

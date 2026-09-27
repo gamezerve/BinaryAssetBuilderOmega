@@ -97,6 +97,23 @@ public static partial class Marshaler
         Marshal(node, (MusicScriptConditionExpensiveNuggetBase*)objT, state);
     }
 
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Compile EP1's two-filter proximity condition in its verified native field order. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node, MusicScriptConditionNugget_ObjectTypesInProximity* objT, Tracker state)
+    {
+        if (node is null)
+        {
+            return;
+        }
+        Marshal(node.GetAttributeValue(nameof(MusicScriptConditionNugget_ObjectTypesInProximity.TypeAFilter), null), &objT->TypeAFilter, state);
+        Marshal(node.GetAttributeValue(nameof(MusicScriptConditionNugget_ObjectTypesInProximity.TypeACount), "1"), &objT->TypeACount, state);
+        Marshal(node.GetAttributeValue(nameof(MusicScriptConditionNugget_ObjectTypesInProximity.TypeBFilter), null), &objT->TypeBFilter, state);
+        Marshal(node.GetAttributeValue(nameof(MusicScriptConditionNugget_ObjectTypesInProximity.TypeBCount), "1"), &objT->TypeBCount, state);
+        Marshal(node.GetAttributeValue(nameof(MusicScriptConditionNugget_ObjectTypesInProximity.Distance), null), &objT->Distance, state);
+        Marshal(node, (MusicScriptConditionExpensiveNuggetBase*)objT, state);
+    }
+
     public static unsafe void Marshal(Node node, MusicScriptConditionNugget_EvaEventPlayedRecently* objT, Tracker state)
     {
         if (node is null)
@@ -162,6 +179,19 @@ public static partial class Marshaler
             return;
         }
         Marshal(node.GetChildNodes(nameof(MusicScriptConditionNugget_And.Condition)), &objT->Condition, state);
+        Marshal(node, (MusicScriptConditionNuggetBase*)objT, state);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Compile the EP1 Red Alert activation condition with its required duration. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node, MusicScriptConditionNugget_LocalPlayerHitRedAlertButton* objT, Tracker state)
+    {
+        if (node is null)
+        {
+            return;
+        }
+        Marshal(node.GetAttributeValue(nameof(MusicScriptConditionNugget_LocalPlayerHitRedAlertButton.DurationToReturnTrueAfterButtonHit), null), &objT->DurationToReturnTrueAfterButtonHit, state);
         Marshal(node, (MusicScriptConditionNuggetBase*)objT, state);
     }
 
