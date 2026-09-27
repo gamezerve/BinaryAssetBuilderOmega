@@ -13,7 +13,7 @@ internal static class Program
     {
         try
         {
-            if ((args.Length < 2 && args.FirstOrDefault() is not ("layout-self-test" or "compiler-self-test")) || args.FirstOrDefault() is not ("inspect" or "verify" or "compare" or "schema-diff" or "writer-self-test" or "utility-verify" or "assembly-fields" or "assembly-methods" or "assembly-il" or "current-layout" or "layout-self-test" or "compiler-self-test" or "asset-bytes" or "hash"))
+            if ((args.Length < 2 && args.FirstOrDefault() is not ("layout-self-test" or "compiler-self-test")) || args.FirstOrDefault() is not ("inspect" or "verify" or "compare" or "schema-diff" or "writer-self-test" or "utility-verify" or "assembly-fields" or "assembly-methods" or "assembly-il" or "assembly-size-diff" or "current-layout" or "layout-self-test" or "compiler-self-test" or "asset-bytes" or "hash"))
             {
                 PrintUsage();
                 return 2;
@@ -71,6 +71,13 @@ internal static class Program
             if (command == "current-layout")
             {
                 CurrentLayoutProbe.Print(args[1]);
+                return 0;
+            }
+
+            // Reborn: expose official-to-current ABI drift as a repeatable migration audit.
+            if (command == "assembly-size-diff")
+            {
+                AssemblySizeDiffProbe.Print(args[1], GetOption(args, "--top"));
                 return 0;
             }
 
@@ -400,6 +407,7 @@ internal static class Program
         Console.WriteLine("  assembly-fields <managed-assembly> <type-name>");
         Console.WriteLine("  assembly-methods <managed-assembly> <type-name> [method-filter]");
         Console.WriteLine("  assembly-il <managed-assembly> <method-token>");
+        Console.WriteLine("  assembly-size-diff <reference-tokenizer-assembly> [--top <count>]");
         Console.WriteLine("  current-layout <SageBinaryData-type-name>");
         Console.WriteLine("  layout-self-test");
         Console.WriteLine("  compiler-self-test");

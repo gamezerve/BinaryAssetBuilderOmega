@@ -15,6 +15,8 @@ dotnet run --project source/BinaryAssetBuilder.ManifestInspector -p:Platform=x86
 dotnet run --project source/BinaryAssetBuilder.ManifestInspector -p:Platform=x86 -- schema-diff schemas/ra3/xsd schemas/ra3ep1/xsd
 dotnet run --project source/BinaryAssetBuilder.ManifestInspector -p:Platform=x86 -- writer-self-test artifacts/ep1-smoke.manifest
 dotnet run --project source/BinaryAssetBuilder.ManifestInspector -p:Platform=x86 -- utility-verify "D:\Games\RA3 Uprising\Data\WBData.big" --entry "data\worldbuilder.manifest"
+# Reborn: compare the in-tree native layouts with EA's official RA3 declarations without loading the DLL.
+dotnet run --project source/BinaryAssetBuilder.ManifestInspector -p:Platform=x86 -- assembly-size-diff "D:\RA3 Mod SDK\tools\BinaryAssetBuilder.Tokenizer.dll" --top 50
 ```
 
 Known target fingerprints:

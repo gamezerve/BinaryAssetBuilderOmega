@@ -5,6 +5,65 @@ public static partial class Marshaler
 {
     // Hold BitFlags<uint, Type> Marshalers here as C# has no support of values as generic arguments. Hopefully they come in the future, so this is just copy/paste.
 
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: marshal official RA3 AnimationState flag lists into their native bit span. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(string text, AnimationStateBitFlags* objT, Tracker state)
+    {
+        string[] tokens = text.Split(WhiteSpaces, System.StringSplitOptions.RemoveEmptyEntries);
+        if (tokens.Length == 0)
+        {
+            return;
+        }
+        for (int idy = 0; idy < tokens.Length; ++idy)
+        {
+            string token = tokens[idy];
+            bool includeToken = token[0] != '-';
+            if (string.Equals(token, "ALL", System.StringComparison.Ordinal))
+            {
+                for (int idx = 0; idx < AnimationStateBitFlags.NumSpans; ++idx)
+                {
+                    objT->Value[idx] = uint.MaxValue;
+                }
+                continue;
+            }
+            AnimationStateFlag value = (AnimationStateFlag)(-1);
+            Marshal(token.TrimStart('+', '-'), &value, state);
+            if (value != (AnimationStateFlag)(-1))
+            {
+                uint uintValue = (uint)value;
+                if (uintValue < AnimationStateBitFlags.Count)
+                {
+                    uint mask = 1u << (int)(uintValue % AnimationStateBitFlags.BitsInSpan);
+                    if (includeToken)
+                    {
+                        objT->Value[uintValue / AnimationStateBitFlags.BitsInSpan] |= mask;
+                    }
+                    else
+                    {
+                        objT->Value[uintValue / AnimationStateBitFlags.BitsInSpan] &= ~mask;
+                    }
+                }
+            }
+        }
+        for (int idx = 0; idx < AnimationStateBitFlags.NumSpans; ++idx)
+        {
+            state.InplaceEndianToPlatform(&objT->Value[idx]);
+        }
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: accept schema values for RA3 AnimationState flag fields. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Value value, AnimationStateBitFlags* objT, Tracker state)
+    {
+        if (value is null)
+        {
+            return;
+        }
+        Marshal(value.GetText(), objT, state);
+    }
+
     public static unsafe void Marshal(string text, AIDifficultyBitFlags* objT, Tracker state)
     {
         string[] tokens = text.Split(WhiteSpaces, System.StringSplitOptions.RemoveEmptyEntries);

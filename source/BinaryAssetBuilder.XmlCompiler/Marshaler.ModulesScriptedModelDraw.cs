@@ -40,13 +40,12 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(Animation.AnimationMustCompleteBlend), "false"), &objT->AnimationMustCompleteBlend, state);
         Marshal(node.GetAttributeValue(nameof(Animation.AnimationSpeedFactorMin), "1.0"), &objT->AnimationSpeedFactorMin, state);
         Marshal(node.GetAttributeValue(nameof(Animation.AnimationSpeedFactorMax), "1.0"), &objT->AnimationSpeedFactorMax, state);
+        // Reborn: compile the RA3 absolute-time field omitted by the inherited KW layout.
+        Marshal(node.GetAttributeValue(nameof(Animation.AnimationAbsoluteTime), "0.0s"), &objT->AnimationAbsoluteTime, state);
         Marshal(node.GetAttributeValue(nameof(Animation.UseWeaponTiming), "false"), &objT->UseWeaponTiming, state);
         Marshal(node.GetAttributeValue(nameof(Animation.WeaponTimingOrdering), null), &objT->WeaponTimingOrdering, state);
         Marshal(node.GetAttributeValue(nameof(Animation.WeaponTimingSlotID), "1"), &objT->WeaponTimingSlotID, state);
         Marshal(node.GetAttributeValue(nameof(Animation.AnimationPriority), "1"), &objT->AnimationPriority, state);
-        Marshal(node.GetAttributeValue(nameof(Animation.FadeBeginFrame), "-1.0"), &objT->FadeBeginFrame, state);
-        Marshal(node.GetAttributeValue(nameof(Animation.FadeEndFrame), "-1.0"), &objT->FadeEndFrame, state);
-        Marshal(node.GetAttributeValue(nameof(Animation.FadingIn), "false"), &objT->FadingIn, state);
     }
     public static unsafe void Marshal(Node node, AnimationState* objT, Tracker state)
     {

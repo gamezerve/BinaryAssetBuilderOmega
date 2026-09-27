@@ -162,6 +162,19 @@ public static partial class Marshaler
         Marshal(node.GetChildNode(nameof(FXShaderMaterial.Constants), null), &objT->Constants, state);
     }
 
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: allocate optional RA3 FX shader material children in relocation data. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node, FXShaderMaterial** objT, Tracker state)
+    {
+        if (node is null)
+        {
+            return;
+        }
+        using Tracker.Context context = state.Push((void**)objT, (uint)sizeof(FXShaderMaterial), 1u);
+        Marshal(node, *objT, state);
+    }
+
     private static unsafe void MarshalRenderObjectReference(Node node, AssetReference<BaseAssetType>* objT, Tracker state)
     {
         if (node is null)

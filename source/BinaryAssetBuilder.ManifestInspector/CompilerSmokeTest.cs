@@ -34,6 +34,7 @@ internal static class CompilerSmokeTest
         TestMapNameHeuristic();
         TestDynamicsJointSet();
         TestDynamicsDraw();
+        TestScriptedModelRecords();
         TestAudioDynamicsCollide();
         TestDamageDynamicsCollide();
         TestReactionFXOnDamage();
@@ -1132,6 +1133,44 @@ internal static class CompilerSmokeTest
         Expect(chunk.RelocationBuffer.Length == 48, "dynamics draw relocation bytes", 48, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 0, "dynamics draw imports bytes", 0, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  DynamicsDraw bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: exercise the corrected RA3 animation bit sets, enums and particle record in one graph. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestScriptedModelRecords()
+    {
+        const string xml = """
+            <AnimationState xmlns="uri:ea.com:eala:asset" ParseCondStateType="PARSE_NORMAL"
+                ConditionsYes="SPECIAL_POWER_SELECTED_PENDING"
+                Flags="RANDOMSTART IGNORE_MOVEMENT_SPEED">
+              <Animation AnimationMode="LOOP" AnimationAbsoluteTime="2s" />
+              <ParticleSysBone FXTrigger="NONE" FXAction="SPAWN" />
+            </AnimationState>
+            """;
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:AnimationState", namespaces)!, namespaces);
+
+        AnimationState* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(AnimationState), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 236, "scripted-model records instance bytes", 236, instance.Length);
+        Expect(ReadUInt32(instance, 88) == 0x802, "animation-state flags", 0x802, ReadUInt32(instance, 88));
+        Expect(ReadUInt32(instance, 100) == 1, "animation-state animation count", 1, ReadUInt32(instance, 100));
+        Expect(ReadUInt32(instance, 104) == 140, "animation-state animation relocation", 140, ReadUInt32(instance, 104));
+        Expect(ReadUInt32(instance, 128) == 1, "animation-state particle count", 1, ReadUInt32(instance, 128));
+        Expect(ReadUInt32(instance, 132) == 200, "animation-state particle relocation", 200, ReadUInt32(instance, 132));
+        Expect(ReadUInt32(instance, 152) == 1, "animation mode LOOP", 1, ReadUInt32(instance, 152));
+        Expect(ReadUInt32(instance, 220) == 3, "particle action SPAWN", 3, ReadUInt32(instance, 220));
+        Expect(chunk.RelocationBuffer.Length == 12, "scripted-model records relocation bytes", 12, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 0, "scripted-model records imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  ScriptedModelRecords bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static unsafe void TestAudioDynamicsCollide()

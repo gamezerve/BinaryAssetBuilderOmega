@@ -147,7 +147,8 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(ParticleSysBone.FXParticleSystemTemplate), null), &objT->FXParticleSystemTemplate, state);
         Marshal(node.GetAttributeValue(nameof(ParticleSysBone.FollowBone), "false"), &objT->FollowBone, state);
         Marshal(node.GetAttributeValue(nameof(ParticleSysBone.FXTrigger), null), &objT->FXTrigger, state);
-        Marshal(node.GetAttributeValue(nameof(ParticleSysBone.Persist), null), &objT->Persist, state);
+        // Reborn: marshal the official RA3 particle action enum in place of the KW Persist field.
+        Marshal(node.GetAttributeValue(nameof(ParticleSysBone.FXAction), nameof(FXActionType.NONE)), &objT->FXAction, state);
         Marshal(node.GetAttributeValue(nameof(ParticleSysBone.PersistID), "0"), &objT->PersistID, state);
         Marshal(node.GetAttributeValue(nameof(ParticleSysBone.OnlyIfOnWater), "false"), &objT->OnlyIfOnWater, state);
         Marshal(node.GetAttributeValue(nameof(ParticleSysBone.OnlyIfOnLand), "false"), &objT->OnlyIfOnLand, state);
@@ -185,13 +186,14 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(ModelConditionState.Name), null), &objT->Name, state);
         Marshal(node.GetAttributeValue(nameof(ModelConditionState.ConditionsYes), null), &objT->ConditionsYes, state);
         Marshal(node.GetAttributeValue(nameof(ModelConditionState.Skeleton), null), &objT->Skeleton, state);
-        Marshal(node.GetAttributeValue(nameof(ModelConditionState.ModelAnimationPrefix), null), &objT->ModelAnimationPrefix, state);
         Marshal(node.GetAttributeValue(nameof(ModelConditionState.PortraitImage), null), &objT->PortraitImage, state);
         Marshal(node.GetAttributeValue(nameof(ModelConditionState.ButtonImage), null), &objT->ButtonImage, state);
         Marshal(node.GetAttributeValue(nameof(ModelConditionState.OverrideTooltip), null), &objT->OverrideTooltip, state);
         Marshal(node.GetAttributeValue(nameof(ModelConditionState.RetainSubObjects), "false"), &objT->RetainSubObjects, state);
         Marshal(node.GetAttributeValue(nameof(ModelConditionState.id), null), &objT->id, state);
         Marshal(node.GetChildNodes(nameof(ModelConditionState.Model)), &objT->Model, state);
+        // Reborn: include the official RA3 material and sub-object reference children.
+        Marshal(node.GetChildNode(nameof(ModelConditionState.Material), null), &objT->Material, state);
         Marshal(node.GetChildNodes(nameof(ModelConditionState.Texture)), &objT->Texture, state);
         Marshal(node.GetChildNodes(nameof(ModelConditionState.WeaponFireFXBone)), &objT->WeaponFireFXBone, state);
         Marshal(node.GetChildNodes(nameof(ModelConditionState.WeaponRecoilBone)), &objT->WeaponRecoilBone, state);
@@ -201,6 +203,7 @@ public static partial class Marshaler
         Marshal(node.GetChildNodes(nameof(ModelConditionState.FXEvent)), &objT->FXEvent, state);
         Marshal(node.GetChildNode(nameof(ModelConditionState.ShadowInfo), null), &objT->ShadowInfo, state);
         Marshal(node.GetChildNodes(nameof(ModelConditionState.Turret)), &objT->Turret, state);
+        Marshal(node.GetChildNodes(nameof(ModelConditionState.SubObject)), &objT->SubObject, state);
     }
 
     public static unsafe void Marshal(Node node, AttachModelStruct* objT, Tracker state)

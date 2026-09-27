@@ -5,7 +5,7 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Progress snapshot (2026-09-27)
 
-The current conservative engineering estimate is **46% complete / 54%
+The current conservative engineering estimate is **47% complete / 53%
 remaining**. This is an effort estimate, not the percentage of C# files in the
 tree. A pre-existing Kane's Wrath marshaller only counts as complete after its
 RA3/EP1 layout, type hash and emitted streams have been checked.
@@ -14,7 +14,7 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 |---|---:|---:|---:|
 | Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
 | Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
-| Native layouts, processors, dispatch and final type table | 45% | 47% | 21.2% |
+| Native layouts, processors, dispatch and final type table | 45% | 49% | 22.1% |
 | Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
 | Built-mod validation inside Uprising | 10% | 0% | 0.0% |
 
@@ -25,7 +25,7 @@ The source tree contains models for 778 (56.0%) and typed marshallers for 754
 that exist only in EP1 now have both a model and marshaller. This closes the
 EP1-only inventory, but it does not close changed shared types or missing parent
 pipelines; those retain substantially more weight than raw file presence in the
-46% estimate above.
+47% estimate above.
 
 ## Established facts
 
@@ -346,6 +346,23 @@ hierarchy, EP1 parent marshaller and draw-module dispatch are now implemented.
 A combined BoneVolume/Sphere/Lifetime/Joint fixture emits `484 bin / 48 relo /
 0 imp`, so the EP1-only nested types are now connected to the GameObject draw
 pipeline rather than merely existing as isolated records.
+
+The repeatable `assembly-size-diff` audit now reads EA's RA3 Tokenizer metadata
+without loading the mixed-mode DLL and compares it with `Marshal.SizeOf` for the
+in-tree models. The first baseline found 570 declared RA3 layouts, 378 matching
+type names, 195 exact sizes and 183 size mismatches. It immediately exposed four
+more nested scripted-model KW carry-overs. `ModelConditionState` used strings
+for a 60-byte condition mask, retained `ModelAnimationPrefix`, and lacked the
+RA3 material pointer and sub-object list; it is now the official 196 bytes.
+`AnimationState` now uses the same condition mask and a 4-byte flag span, giving
+the official 140 bytes. `Animation` replaces the KW string/fade bookkeeping
+with the RA3 animation-mode enum and absolute time (60 bytes), while
+`ParticleSysBone` now uses the RA3 trigger/action enums and POID hash (36
+bytes). The audit therefore advances to 199 exact matches and 179 mismatches.
+A combined animation/particle compiler fixture emits `236 bin / 12 relo / 0
+imp`. Real Uprising GameObject chunks contain the expected scripted-model type
+ID `0x4ECF2A4B` at their module pointer targets, independently confirming this
+is an active production path rather than dead schema surface.
 
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of

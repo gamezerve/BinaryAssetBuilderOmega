@@ -236,6 +236,16 @@ internal static class UprisingLayoutSmokeTest
         ExpectSize<SageBinaryData.W3DScriptedModelDrawModuleData>(216);
         ExpectOffset<SageBinaryData.W3DScriptedModelDrawModuleData>(nameof(SageBinaryData.W3DScriptedModelDrawModuleData.ModelConditionState), 164);
         ExpectOffset<SageBinaryData.W3DScriptedModelDrawModuleData>(nameof(SageBinaryData.W3DScriptedModelDrawModuleData.OkToChangeModelColor), 196);
+        // Reborn: Pin the RA3 nested scripted-model records that replaced KW strings and fade fields.
+        ExpectSize<SageBinaryData.ModelConditionState>(196);
+        ExpectOffset<SageBinaryData.ModelConditionState>(nameof(SageBinaryData.ModelConditionState.Material), 112);
+        ExpectOffset<SageBinaryData.ModelConditionState>(nameof(SageBinaryData.ModelConditionState.SubObject), 184);
+        ExpectSize<SageBinaryData.AnimationState>(140);
+        ExpectOffset<SageBinaryData.AnimationState>(nameof(SageBinaryData.AnimationState.Flags), 88);
+        ExpectSize<SageBinaryData.Animation>(60);
+        ExpectOffset<SageBinaryData.Animation>(nameof(SageBinaryData.Animation.AnimationAbsoluteTime), 40);
+        ExpectSize<SageBinaryData.ParticleSysBone>(36);
+        ExpectOffset<SageBinaryData.ParticleSysBone>(nameof(SageBinaryData.ParticleSysBone.FXAction), 20);
         // Reborn: Pin official shared dynamics sizes and the EP1 +4-byte joint-pointer extension.
         ExpectSize<SageBinaryData.DynamicsShapeType>(8);
         ExpectSize<SageBinaryData.DynamicsSphereShapeType>(12);

@@ -100,13 +100,14 @@ public struct ParticleSysBone
 {
     public AnsiString BoneName;
     public AssetReference<FXParticleSystemTemplate> FXParticleSystemTemplate;
-    public AnsiString FXTrigger;
-    public AnsiString Persist;
+    public SageBool FollowBone;
+    public FXTriggerType FXTrigger;
+    // Reborn: RA3 stores the particle action as an enum, not Kane's Wrath's Persist string.
+    public FXActionType FXAction;
     public int PersistID;
 #pragma warning disable IDE1006 // Naming Styles
-    public AnsiString id;
+    public StringHash id;
 #pragma warning restore IDE1006 // Naming Styles
-    public SageBool FollowBone;
     public SageBool OnlyIfOnWater;
     public SageBool OnlyIfOnLand;
 }
@@ -131,9 +132,9 @@ public struct ModelConditionState
 {
     public ParseCondStateType ParseCondStateType;
     public AnsiString Name;
-    public AnsiString ConditionsYes;
+    // Reborn: RA3 expands model conditions to the native 60-byte bit set.
+    public ModelConditionBitFlags ConditionsYes;
     public AnsiString Skeleton;
-    public AnsiString ModelAnimationPrefix;
     public AssetReference<PackedTextureImage> PortraitImage;
     public AssetReference<PackedTextureImage> ButtonImage;
     public AnsiString OverrideTooltip;
@@ -141,6 +142,7 @@ public struct ModelConditionState
     public AnsiString id;
 #pragma warning restore IDE1006 // Naming Styles
     public List<ScriptedModelDrawModel> Model;
+    public unsafe FXShaderMaterial* Material;
     public List<ReplaceTexture> Texture;
     public List<BoneAttachPoint> WeaponFireFXBone;
     public List<BoneAttachPoint> WeaponRecoilBone;
@@ -150,6 +152,7 @@ public struct ModelConditionState
     public List<FXEvent> FXEvent;
     public unsafe ShadowInfo* ShadowInfo;
     public List<ModelConditionStateTurret> Turret;
+    public List<StringHash> SubObject;
     public SageBool RetainSubObjects;
 }
 
