@@ -169,7 +169,8 @@ namespace BinaryAssetBuilder.Core
                 {
                     return;
                 }
-                _current.Handle = new InstanceHandle(value.Name,
+                // Reborn: namespace prefixes are XML syntax, not part of the game asset type identity.
+                _current.Handle = new InstanceHandle(value.LocalName,
                                                      (value.Attributes["id"] ?? throw new BinaryAssetBuilderException(ErrorCode.NoIdAttributeForAsset,
                                                                                                                       "Node of type {0} in 'file://{1}' has no id attribute",
                                                                                                                       value.Name,
@@ -177,7 +178,7 @@ namespace BinaryAssetBuilder.Core
                 XmlAttribute attribute = value.Attributes["inheritFrom"];
                 if (attribute is not null && attribute.Value != string.Empty)
                 {
-                    _current.InheritFromHandle = attribute.Value.Contains(':') ? new InstanceHandle(attribute.Value) : new InstanceHandle(value.Name, attribute.Value);
+                    _current.InheritFromHandle = attribute.Value.Contains(':') ? new InstanceHandle(attribute.Value) : new InstanceHandle(value.LocalName, attribute.Value);
                 }
                 value.Attributes.Remove(attribute);
             }

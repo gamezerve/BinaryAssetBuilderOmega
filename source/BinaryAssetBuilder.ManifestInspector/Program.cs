@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: exercise the opt-in EP1 profile through the actual descriptor and compiler entry point.
+            if (args.Length == 1 && args[0] == "ep1-armor-profile-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                Ep1ArmorProfileSmokeTest.Run();
+                return 0;
+            }
             // Reborn: isolate experimental armor token/writer validation from production registry activation.
             if (args.FirstOrDefault() == "armor-token-self-test" && args.Length is 2 or 3)
             {
@@ -448,6 +455,8 @@ internal static class Program
         Console.WriteLine("  type-audit <ep1-manifest ...> [--json]");
         // Reborn: optional game metadata triggers a single bounded golden-asset comparison.
         Console.WriteLine("  armor-token-self-test <output-directory> [ep1-static-or-worldbuilder-manifest]");
+        // Reborn: profile verification performs no production manifest emission.
+        Console.WriteLine("  ep1-armor-profile-self-test");
     }
 
     private sealed record TypeFingerprint(uint TypeId, uint TypeHash, uint? Tokenized);

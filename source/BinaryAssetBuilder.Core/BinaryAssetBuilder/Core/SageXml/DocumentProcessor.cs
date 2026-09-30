@@ -42,11 +42,11 @@ namespace BinaryAssetBuilder.Core.SageXml
             public string Configuration;
         }
 
-        // Reborn: invalidate caches predating explicit external runtime links and target-aware manifest lookup.
+        // Reborn: invalidate caches predating namespace-independent asset identities and experimental processor cache policy.
 #if VERSION5
-        public const uint Version = 14u;
+        public const uint Version = 16u;
 #else
-        public const uint Version = 15u;
+        public const uint Version = 17u;
 #endif
 
         private static readonly Tracer _tracer = Tracer.GetTracer(nameof(DocumentProcessor), "Provides XML processing functionality");

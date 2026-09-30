@@ -52,6 +52,8 @@ namespace BinaryAssetBuilder.Core
                              string baseStreamRelativePath,
                              string[] baseStreamSearchPaths)
         {
+            // Reborn: production profile eligibility must be checked before the constructor moves/removes old output files.
+            documentProcessor?.Plugins.ValidateProductionOutput();
             DocumentProcessor = documentProcessor;
             OutputDirectory = outputDirectory;
             IntermediateOutputDirectory = intermediateOutputDirectory;
@@ -283,6 +285,8 @@ namespace BinaryAssetBuilder.Core
 
         public void CommitManifest(AssetDeclarationDocument document)
         {
+            // Reborn: evaluate experimental profile policy before aggregate hashes, old-file moves or output writes.
+            DocumentProcessor.Plugins.ValidateProductionOutput();
             uint allTypesHash = DocumentProcessor.Plugins.DefaultPlugin.AllTypesHash;
 #if VERSION7
             const uint uprisingAllTypesHash = 0x5454A8E9u;

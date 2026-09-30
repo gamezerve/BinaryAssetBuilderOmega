@@ -45,6 +45,8 @@ internal static class CompilerSmokeTest
         TestTypeRegistryAudit();
         // Reborn: verify native-to-tokenized armor conversion and isolated EP1 stream serialization.
         TestArmorTokenPipeline();
+        // Reborn: validate the isolated EP1 processor profile, its metadata and fail-closed registry policies.
+        TestEp1ArmorProfile();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1891,6 +1893,14 @@ internal static class CompilerSmokeTest
     private static void TestArmorTokenPipeline()
     {
         ArmorTokenSmokeTest.Run(Path.Combine(Path.GetTempPath(), "Reborn-Ep1ArmorToken-" + Guid.NewGuid().ToString("N")));
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: exercise the real plugin path without allowing experimental profiles to commit production streams. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestEp1ArmorProfile()
+    {
+        Ep1ArmorProfileSmokeTest.Run();
     }
 
     //-------------------------------------------------------------------------------------------------

@@ -111,6 +111,21 @@ namespace BinaryAssetBuilder.Core
             return result;
         }
 
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: reject experimental default or explicitly mapped processors before manifest reuse or disk writes. */
+        //-------------------------------------------------------------------------------------------------
+        public void ValidateProductionOutput()
+        {
+            HashSet<IAssetBuilderPlugin> checkedPlugins = new HashSet<IAssetBuilderPlugin> { DefaultPlugin };
+            foreach (IAssetBuilderPlugin plugin in AllPlugins) checkedPlugins.Add(plugin);
+            foreach (IAssetBuilderPlugin plugin in checkedPlugins)
+            {
+                if (plugin is IAssetBuilderOutputPolicy policy && !policy.CanWriteProductionOutput)
+                    throw new BinaryAssetBuilderException(ErrorCode.InternalError,
+                        "Profile '{0}' is experimental and cannot write production streams. A matching AllTypesHash is not a readiness certificate.", policy.ProfileName);
+            }
+        }
+
         public ExtendedTypeInformation GetExtendedTypeInformation(uint typeId)
         {
             if (!_typeInfoMap.TryGetValue(typeId, out ExtendedTypeInformation result))
@@ -122,6 +137,8 @@ namespace BinaryAssetBuilder.Core
                 }
                 _buildCacheMap.TryGetValue(typeId, out bool defaultUseBuildCache);
                 result.UseBuildCache = defaultUseBuildCache;
+                // Reborn: settings cannot opt an experimental processor back into unvalidated binary cache reuse.
+                if (plugin is IAssetBuilderOutputPolicy policy && !policy.CanUseBuildCache) result.UseBuildCache = false;
                 _typeInfoMap.Add(typeId, result);
             }
             return result;

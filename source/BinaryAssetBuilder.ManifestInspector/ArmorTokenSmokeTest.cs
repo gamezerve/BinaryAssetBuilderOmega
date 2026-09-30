@@ -75,7 +75,7 @@ internal static class ArmorTokenSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: preserve the official Percentage restriction and armor/damage declarations in a minimal schema graph. */
     //-------------------------------------------------------------------------------------------------
-    private static XmlSchemaSet LoadSchemas(string fixtureDirectory)
+    internal static XmlSchemaSet LoadSchemas(string fixtureDirectory)
     {
         string basePath = Path.GetFullPath(Path.Combine(fixtureDirectory, "../../schemas/ra3ep1/xsd/Includes/Base.xsd"));
         using XmlReader reader = XmlReader.Create(basePath, new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit });
@@ -92,7 +92,7 @@ internal static class ArmorTokenSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: feed schema-inserted defaults to the production marshaller before experimental tokenization. */
     //-------------------------------------------------------------------------------------------------
-    private static unsafe Chunk Compile(XmlSchemaSet schemas, string xml)
+    internal static unsafe Chunk Compile(XmlSchemaSet schemas, string xml)
     {
         XmlDocument document = new() { Schemas = schemas, XmlResolver = null };
         document.LoadXml(xml);

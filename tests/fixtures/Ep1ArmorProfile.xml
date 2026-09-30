@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: opt-in diagnostic profile only; deliberately not a ready-to-build SDK configuration. -->
+<Settings xmlns="uri:ea.com:eala:asset" BuildCache="false">
+  <Plugin AssetTypes="#all" IsEnabled="true" UseBuildCache="false"
+    QualifiedName="BinaryAssetBuilder.XmlCompiler.Ra3Ep1ArmorPlugin, BinaryAssetBuilder.XmlCompiler" />
+</Settings>

@@ -103,6 +103,11 @@ golden payload bytes are compared separately.
 
 ## Boundaries and remaining gates
 
+Follow-up: an [opt-in experimental armor profile](RA3EP1_ARMOR_PROFILE.md) now
+connects this helper to the actual plugin entry point, with a separate explicit
+production/cache restriction. The complete registry and runtime gates below
+are still open; the main test runner now invokes 50 groups.
+
 This is a diagnostic PoC, **not a playable mod**. Its checksum is an arbitrary
 fixed test marker and InstanceHash is zero; it does not establish production
 cache/checksum policy. `OutputManager.CommitManifest` is not bypassed or called
