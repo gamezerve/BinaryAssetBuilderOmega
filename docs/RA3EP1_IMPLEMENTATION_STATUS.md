@@ -20,8 +20,8 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 783 (56.3%) and typed marshallers for 759
-(54.6%). These broad numbers are inventory coverage only. All 48 complex types
+The source tree contains models for 784 (56.4%) and typed marshallers for 760
+(54.7%). These broad numbers are inventory coverage only. All 48 complex types
 that exist only in EP1 now have both a model and marshaller. This closes the
 EP1-only inventory, but it does not close changed shared types or missing parent
 pipelines; those retain substantially more weight than raw file presence in the
@@ -33,12 +33,12 @@ snapshot was held while several shared-layout fixes accumulated. This snapshot
 reassesses the native-layout workstream from 53% to 55% after the containment
 audit and attach base recovery, giving roughly 50% overall. End-to-end game
 validation is still at zero. Observable counters are reported separately:
-the compiler self-test currently invokes 43 test groups (some have multiple
+the compiler self-test currently invokes 45 test groups (some have multiple
 fixtures), and the structural coverage script reports the inventory above.
 Neither counter proves runtime compatibility or replaces final type-table gates.
 The coverage script now emits `CompilerTestGroupsDeclared`, counting registered
-groups without executing them. This block adds four complex models/marshallers
-and two test groups relative to its starting snapshot (779/755 and 41 groups).
+groups without executing them. This block adds one complex model/marshaller
+and two test groups relative to its starting snapshot (783/759 and 43 groups).
 
 ## Established facts
 
@@ -679,6 +679,79 @@ commit a manifest unless the active compiler plugin reports
 `AllTypesHash=0x5454A8E9`. The current XML plugin still reports the KW hash, so
 it cannot accidentally publish a v7 wrapper around KW binary layouts while the
 EP1 type port is incomplete.
+
+## Infiltrator and laser-family recovery (2026-09-30)
+
+Official RA3 `BinaryAssetBuilder.Tokenizer.dll` marshaler IL supplies the
+native order: Infiltrator `0x060000E6`, LaserState `0x060001ED`, Sweeping
+`0x060001EF`, Converging `0x060001F1`. Optional infiltrator reference allocation
+is corroborated by `0x0600078C`. These are structural baselines, not a direct
+observation of Uprising's runtime layout. EP1 offsets apply the checked-in
+official Uprising schema additions and previously recovered mask widths.
+
+| Record | Official RA3 size | EP1 model size | Important changes |
+|---|---:|---:|---|
+| InfiltratorContain | 128 | 136 | Two inline status masks grow from 28 to 32 bytes |
+| LaserState | 44 | 48 | Restore string/lists/pointers; append RequiresWeapon |
+| SweepingLaserState | 64 | 76 | Expanded base plus Angle and one word of sweep options |
+| ConvergingLaserState | 136 | 140 | Expanded base; preserve the 60-byte inline model-condition mask |
+
+`source/SageBinaryData/SageBinaryData/Modules/InfiltratorContain.cs` now has
+BlockedDuration at 8, CanEnterFilter at 44, Effect at 84, weak ObjectRef at 88,
+optional UnitFilter/StructureFilter pointers at 92/96, ObjectStatusToSet at 100
+and ImmediatelyEnabled at 132. The filters point to four-byte asset references,
+not to full ObjectFilter records. Effect values follow the schema with
+INVALID=-1, RADAR_FREEZE=0 and KILL=8. The corresponding
+`Marshaler.Modules.InfiltratorContain.cs::Marshal` restores schema defaults,
+voice hashes, EVA/FX imports and the weak-ID path.
+
+`Modules/LaserStateModule.cs` stores OriginBoneName at 12, end/start list
+descriptors at 20/28, optional vector/validation pointers at 36/40 and
+RequiresWeapon at 44. `Modules/SweepingLaserState.cs` adds Angle at 52 and
+SweepingLaserOptions at 72. `Modules/ConvergingLaserState.cs` was missing and
+is restored with ModelConditions at 76 and Lifetime at 136. Their typed
+marshallers follow the same hierarchy; `Marshaler.GameObject.cs` now dispatches
+ConvergingLaserState using `0x5F7498F9`. Sweep flag parsing supports explicit
+addition/removal and ALL. The enum synchronization script validates both new
+enum mappings (33 total).
+
+The added `CompilerSmokeTest.TestInfiltratorContain` checks seven import slots,
+two optional reference pointers, KILL ordering, voice hash, weak object ID and
+default NO_REFUND.
+The infiltrator fixture forces tr-TR during marshalling and restores the prior
+culture afterward. It exposed `Marshaler.cs::Marshal<T>(string, TypedAssetId<T>*,
+Tracker)` using culture-sensitive ToLower, inconsistent with the hash provider's
+invariant normalization. This now uses ToLowerInvariant, so uppercase-I names
+keep the same weak ID on Turkish and non-Turkish hosts.
+
+`TestLaserStateFamily` checks bone-string relocation,
+particle-list imports, the vector pointer, EP1 validation allocation and
+sweeping/converging polymorphic dispatch. `UprisingLayoutSmokeTest.Run` locks
+root sizes and selected tail offsets. All new code carries Reborn comments.
+
+### Named-default reference limitation
+
+`Marshaler.AssetReference.cs::Marshal<T>(string, AssetReference<T>*, Tracker)`
+only registers a strong reference when its input contains `Type\numeric-id`.
+Plain asset names are silently ignored at this raw marshalling layer. Therefore
+the infiltrator fixture explicitly supplies normalized filter/EVA/FX tokens;
+it must not be cited as proof that named defaults such as
+InfiltrationCanEnterObjectFilter or EnemyBuildingInfiltrated resolve correctly.
+Do not replace these names with guessed hashes: reference indices, weak IDs and
+asset/type hashes have different roles. A remaining acceptance test must run
+schema default insertion, dependency discovery/reference normalization and
+marshalling together, then verify imports against actual global/static assets.
+Standalone EVA support also remains unported. Final type-table gating and
+in-game validation remain open; the rounded effort estimate stays at 50%.
+
+Verification: the full Release/x86 dependency rebuild passed with one warning
+and zero errors; the final test-runner rebuild passed with no warnings/errors.
+Layout tests and all 45 compiler groups pass, as do 33 enum mappings.
+Infiltrator emits `144/12/32`, populated LaserState `136/24/12`, Sweeping
+dispatch `80/8/0`, and Converging dispatch `144/8/0` (`bin/relo/imp`). Derived
+fixtures include the four-byte outer dispatch pointer. An additional sweeping
+fixture verifies 90-degree-to-radian conversion, ALL minus three options and
+RequiresWeapon=false. No game-runtime claim is made from these fixtures.
 
 ## Acceptance gates for the first PoC
 

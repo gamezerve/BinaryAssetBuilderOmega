@@ -34,6 +34,9 @@ internal static class CompilerSmokeTest
         TestProductionQueueHordeContain();
         // Reborn: check restored attach defaults, EP1 flags and optional mask pointers.
         TestAttachUpdate();
+        // Reborn: guard infiltrator imports and the restored laser-family records.
+        TestInfiltratorContain();
+        TestLaserStateFamily();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -65,7 +68,7 @@ internal static class CompilerSmokeTest
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: Seed the POID hash bin used by typed asset IDs in standalone compiler smoke tests. */
+    /** Reborn: seed weak-ID and voice StringHash bins used by standalone compiler smoke tests. */
     //-------------------------------------------------------------------------------------------------
     private static void InitializeHashProvider()
     {
@@ -78,6 +81,13 @@ internal static class CompilerSmokeTest
                     SchemaTypeName = "ObjectPersistenceID",
                     BinName = "POID",
                     IsCaseSensitive = false
+                },
+                // Reborn: voice-event StringHash marshalling records case-sensitive hashes in this bin.
+                new StringHashBinDescriptor
+                {
+                    SchemaTypeName = "StringHash",
+                    BinName = "STRINGHASH",
+                    IsCaseSensitive = true
                 }
             ]
         };
@@ -1834,6 +1844,136 @@ internal static class CompilerSmokeTest
         Expect(chunk.RelocationBuffer.Length == 20 && chunk.ImportsBuffer.Length == 12, "Horde relocation and imports", 20, chunk.RelocationBuffer.Length);
         Expect(ReadUInt32(chunk.ImportsBuffer, 0) == 372 && ReadUInt32(chunk.ImportsBuffer, 4) == 588, "Horde import slots", 588, ReadUInt32(chunk.ImportsBuffer, 4));
         Console.WriteLine($"  HordeContain bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: check recovered infiltrator offsets using already-normalized strong references. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestInfiltratorContain()
+    {
+        XmlDocument document = new();
+        document.LoadXml("""
+            <InfiltratorContain xmlns="uri:ea.com:eala:asset"
+              CanEnterFilter="ObjectFilterAsset\123" ReplaceWith="ObjectCreationList\234"
+              EvaEventForInfiltratingPlayer="EvaEvent\345" EvaEventForInfiltratedPlayer="EvaEvent\456"
+              FXForInfiltrate="FXList\567" UnitFilter="ObjectFilterAsset\678"
+              StructureFilter="ObjectFilterAsset\789" Effect="KILL"
+              ObjectRef="TestInfiltrator" ImmediatelyEnabled="true" />
+            """);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:InfiltratorContain", namespaces)!, namespaces);
+        InfiltratorContainModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(InfiltratorContainModuleData), false);
+        // Reborn: reproduce the uppercase-I weak-ID regression regardless of the host's current language.
+        System.Globalization.CultureInfo previousCulture = System.Globalization.CultureInfo.CurrentCulture;
+        try
+        {
+            System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfo("tr-TR");
+            Marshaler.Marshal(node, root, tracker);
+        }
+        finally
+        {
+            System.Globalization.CultureInfo.CurrentCulture = previousCulture;
+        }
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> bytes = chunk.InstanceBuffer;
+        Expect(bytes.Length == 144, "Infiltrator bytes", 144, bytes.Length);
+        Expect(ReadUInt32(bytes, 8) == 0x40000000, "Infiltrator blocked duration", 0x40000000, ReadUInt32(bytes, 8));
+        Expect(ReadUInt32(bytes, 44) == 123 && ReadUInt32(bytes, 48) == 234, "Infiltrator inline references", 234, ReadUInt32(bytes, 48));
+        Expect(ReadUInt32(bytes, 52) == FastHash.GetHashCode("VoiceInfiltrate"), "Infiltrator voice hash", unchecked((int)FastHash.GetHashCode("VoiceInfiltrate")), ReadUInt32(bytes, 52));
+        Expect(ReadUInt32(bytes, 60) == 345 && ReadUInt32(bytes, 64) == 456 && ReadUInt32(bytes, 68) == 567, "Infiltrator EVA and FX references", 567, ReadUInt32(bytes, 68));
+        Expect(ReadUInt32(bytes, 84) == 8, "Infiltrator effect ordering", 8, ReadUInt32(bytes, 84));
+        Expect(ReadUInt32(bytes, 88) == FastHash.GetHashCode("testinfiltrator"), "Infiltrator weak ID", unchecked((int)FastHash.GetHashCode("testinfiltrator")), ReadUInt32(bytes, 88));
+        Expect(ReadUInt32(bytes, 92) == 136 && ReadUInt32(bytes, 96) == 140, "Infiltrator optional reference pointers", 140, ReadUInt32(bytes, 96));
+        Expect(ReadUInt32(bytes, 136) == 678 && ReadUInt32(bytes, 140) == 789 && bytes[132] == 1, "Infiltrator pointed references and enable", 789, ReadUInt32(bytes, 140));
+        int noRefund = (int)ObjectStatusType.NO_REFUND;
+        Expect((ReadUInt32(bytes, 100 + noRefund / 32 * 4) & (1u << (noRefund % 32))) != 0, "Infiltrator default NO_REFUND", 1, 1);
+        Expect(chunk.RelocationBuffer.Length == 12 && chunk.ImportsBuffer.Length == 32, "Infiltrator tables", 32, chunk.ImportsBuffer.Length);
+        uint[] imports = [44, 48, 60, 64, 68, 136, 140];
+        for (int index = 0; index < imports.Length; index++)
+        {
+            Expect(ReadUInt32(chunk.ImportsBuffer, index * 4) == imports[index], "Infiltrator import slot", (int)imports[index], ReadUInt32(chunk.ImportsBuffer, index * 4));
+        }
+        Console.WriteLine($"  InfiltratorContain={chunk.InstanceBuffer.Length}/{chunk.RelocationBuffer.Length}/{chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: validate particle-list imports, optional laser allocations and derived-module dispatch. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestLaserStateFamily()
+    {
+        XmlDocument document = new();
+        document.LoadXml("""
+            <LaserState xmlns="uri:ea.com:eala:asset" LaserId="7" OriginBoneName="A">
+              <LaserEndParticleSystem>FXParticleSystemTemplate\123</LaserEndParticleSystem>
+              <LaserStartParticleSystem>FXParticleSystemTemplate\456</LaserStartParticleSystem>
+              <EndOffset x="1" y="2" z="3" />
+              <ObjectStatusValidation />
+            </LaserState>
+            """);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:LaserState", namespaces)!, namespaces);
+        LaserStateModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(LaserStateModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> bytes = chunk.InstanceBuffer;
+        Expect(bytes.Length == 136, "Laser populated bytes", 136, bytes.Length);
+        Expect(ReadUInt32(bytes, 8) == 7 && ReadUInt32(bytes, 16) == 48 && bytes[48] == (byte)'A', "Laser ID and bone", 48, ReadUInt32(bytes, 16));
+        Expect(ReadUInt32(bytes, 20) == 1 && ReadUInt32(bytes, 24) == 52 && ReadUInt32(bytes, 52) == 123, "Laser end list", 123, ReadUInt32(bytes, 52));
+        Expect(ReadUInt32(bytes, 28) == 1 && ReadUInt32(bytes, 32) == 56 && ReadUInt32(bytes, 56) == 456, "Laser start list", 456, ReadUInt32(bytes, 56));
+        Expect(ReadUInt32(bytes, 36) == 60 && ReadUInt32(bytes, 40) == 72 && bytes[44] == 1, "Laser optional pointers and weapon default", 72, ReadUInt32(bytes, 40));
+        Expect(ReadUInt32(bytes, 60) == 0x3F800000 && ReadUInt32(bytes, 68) == 0x40400000, "Laser vector", 0x40400000, ReadUInt32(bytes, 68));
+        Expect(chunk.RelocationBuffer.Length == 24 && chunk.ImportsBuffer.Length == 12, "Laser populated tables", 24, chunk.RelocationBuffer.Length);
+        Console.WriteLine($"  LaserState={chunk.InstanceBuffer.Length}/{chunk.RelocationBuffer.Length}/{chunk.ImportsBuffer.Length}");
+
+        string[] fixtures =
+        [
+            """<SweepingLaserState xmlns="uri:ea.com:eala:asset" TypeId="0x3C934753" />""",
+            """<ConvergingLaserState xmlns="uri:ea.com:eala:asset" TypeId="0x5F7498F9" />""",
+            // Reborn: cover EP1 option removal, angle conversion and an explicit false weapon requirement.
+            """<SweepingLaserState xmlns="uri:ea.com:eala:asset" TypeId="0x3C934753" RequiresWeapon="false" Angle="90d" SweepingLaserOptions="ALL -SWEEP_HORIZONTAL -SWEEP_VERTICAL -MOVE_BACK_AND_FORTH" />"""
+        ];
+        for (int index = 0; index < fixtures.Length; index++)
+        {
+            XmlDocument derivedDocument = new();
+            derivedDocument.LoadXml(fixtures[index]);
+            XmlNamespaceManager derivedNamespaces = new(derivedDocument.NameTable);
+            derivedNamespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+            Node derivedNode = new(derivedDocument.CreateNavigator()!.SelectSingleNode("/*", derivedNamespaces)!, derivedNamespaces);
+            BehaviorModuleData** slot;
+            using Tracker derivedTracker = new((void**)&slot, (uint)sizeof(BehaviorModuleData*), false);
+            Marshaler.Marshal(derivedNode, slot, derivedTracker);
+            Chunk derivedChunk = new();
+            derivedTracker.MakeRelocatable(derivedChunk);
+            int expected = index == 1 ? 144 : 80;
+            Expect(derivedChunk.InstanceBuffer.Length == expected, "Laser derived bytes", expected, derivedChunk.InstanceBuffer.Length);
+            int expectedWeapon = index == 2 ? 0 : 1;
+            Expect(derivedChunk.InstanceBuffer[48] == expectedWeapon, "Laser derived weapon requirement", expectedWeapon, derivedChunk.InstanceBuffer[48]);
+            int radiusOffset = index == 1 ? 60 : 52;
+            Expect(ReadUInt32(derivedChunk.InstanceBuffer, radiusOffset) == 0x41200000, "Laser radius default", 0x41200000, ReadUInt32(derivedChunk.InstanceBuffer, radiusOffset));
+            if (index != 1)
+            {
+                uint expectedOptions = index == 2 ? 8u : 5u;
+                Expect(ReadUInt32(derivedChunk.InstanceBuffer, 76) == expectedOptions, "Sweeping options", (int)expectedOptions, ReadUInt32(derivedChunk.InstanceBuffer, 76));
+                if (index == 2)
+                {
+                    float angle = BitConverter.UInt32BitsToSingle(ReadUInt32(derivedChunk.InstanceBuffer, 56));
+                    Expect(Math.Abs(angle - MathF.PI / 2f) < 0.000001f, "Sweeping angle radians", 1, 1);
+                }
+            }
+            else
+            {
+                Expect(ReadUInt32(derivedChunk.InstanceBuffer, 140) == 0x3F800000, "Converging lifetime default", 0x3F800000, ReadUInt32(derivedChunk.InstanceBuffer, 140));
+            }
+            Expect(derivedChunk.RelocationBuffer.Length == 8 && derivedChunk.ImportsBuffer.Length == 0, "Laser derived tables", 8, derivedChunk.RelocationBuffer.Length);
+            Console.WriteLine($"  Laser derived{index}={derivedChunk.InstanceBuffer.Length}/{derivedChunk.RelocationBuffer.Length}/{derivedChunk.ImportsBuffer.Length}");
+        }
     }
 
     //-------------------------------------------------------------------------------------------------

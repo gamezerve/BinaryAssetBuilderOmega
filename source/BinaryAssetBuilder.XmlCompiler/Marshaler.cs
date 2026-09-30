@@ -900,7 +900,8 @@ public static partial class Marshaler
     private static unsafe void Marshal<T>(string text, TypedAssetId<T>* objT, Tracker state) where T : unmanaged
     {
         HashProvider.RecordHash("POID", text);
-        uint id = FastHash.GetHashCode(text.ToLower());
+        // Reborn: weak IDs must match invariant asset-name hashing, including Turkish uppercase I.
+        uint id = FastHash.GetHashCode(text.ToLowerInvariant());
         state.InplaceEndianToPlatform(&id);
         objT->InstanceId = id;
     }

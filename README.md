@@ -14,13 +14,13 @@ The containment audit and attach-base recovery accumulated enough work to
 reassess the native-layout workstream from 53% to 55%; the overall estimate
 moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
-Measured inventory: **783/1,390** EP1 complex types have models and
-**759/1,390** have typed marshallers. The compiler test runner invokes
-**43 test groups** (some contain several fixtures). These counters can grow
+Measured inventory: **784/1,390** EP1 complex types have models and
+**760/1,390** have typed marshallers. The compiler test runner invokes
+**45 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. In this work block, models and
-marshallers increased by four each, and registered test groups by two.
+marshallers increased by one each, and registered test groups by two.
 
 | Workstream | Status |
 |---|---|
@@ -48,6 +48,9 @@ marshallers increased by four each, and registered test groups by two.
 - Restored ProductionQueueHordeContain's model, marshallers and dispatch.
 - Recovered AttachUpdate's masks, imports, optional pointers and EP1 flags/bone-name extension.
 - Restored LeechTargetingAttachUpdate and MoneyGainAttachUpdate model/marshaller/dispatch support.
+- Restored InfiltratorContain's missing masks, effects, weak ID, EVA/FX imports and optional filter-reference pointers.
+- Recovered LaserState's string, particle lists and pointer fields; added EP1 RequiresWeapon and SweepingLaser angle/options.
+- Restored the missing ConvergingLaserState model, marshaller and behavior dispatch.
 
 Latest verification: Release/x86 build, `layout-self-test` and
 `compiler-self-test` passed. The two-passenger OpenContain fixture produces
@@ -66,9 +69,23 @@ ProductionQueueHordeContain's dispatch fixture passes with `156/16/0`,
 checking two eight-byte template records and an optional filter pointer.
 AttachUpdate checks cover an empty root and a populated EP1 bone-name/mask/import
 fixture; its standalone EVA asset dependency remains unported.
-The full Release/x86 rebuild and all 43 compiler test groups pass. AttachUpdate
+The preceding Release/x86 rebuild and its 43 compiler test groups passed. AttachUpdate
 fixtures produce `368/0/0` and `576/32/16`; Leech dispatch produces `372/8/0`
-and MoneyGain dispatch `448/12/0`. The enum check verifies 31 schema mappings.
+and MoneyGain dispatch `448/12/0`. The enum check now verifies 33 schema mappings.
+
+Named asset defaults remain an explicit pipeline validation gap: the raw
+marshaller accepts normalized `Type\numeric-id` tokens and otherwise leaves a
+reference unregistered. Infiltrator tests therefore supply resolved tokens;
+they do not establish that default EVA/FX/filter names are resolved end to end.
+
+Current verification: the full Release/x86 rebuild, layout tests, all 45
+compiler test groups and 33 enum mappings pass. Infiltrator emits `144/12/32`,
+populated LaserState `136/24/12`, Sweeping dispatch `80/8/0` and Converging
+dispatch `144/8/0` bytes of `bin/relo/imp`. The sweeping fixture also checks
+EP1 angle conversion, option removal and RequiresWeapon=false. A Turkish-culture
+regression caught and fixed culture-sensitive weak-ID hashing: uppercase-I
+asset names now use invariant normalization. These tests still do not prove
+in-game loading. Overall effort remains approximately 50% complete.
 
 ### Next steps and acceptance gates
 

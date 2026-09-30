@@ -7,6 +7,16 @@ internal static class UprisingLayoutSmokeTest
     public static void Run()
     {
         TestPatchManifestTotals();
+        // Reborn: lock infiltrator mask growth and the recovered EP1 laser inheritance chain.
+        ExpectSize<SageBinaryData.InfiltratorContainModuleData>(136);
+        ExpectOffset<SageBinaryData.InfiltratorContainModuleData>(nameof(SageBinaryData.InfiltratorContainModuleData.UnitFilter), 92);
+        ExpectOffset<SageBinaryData.InfiltratorContainModuleData>(nameof(SageBinaryData.InfiltratorContainModuleData.ImmediatelyEnabled), 132);
+        ExpectSize<SageBinaryData.LaserStateModuleData>(48);
+        ExpectOffset<SageBinaryData.LaserStateModuleData>(nameof(SageBinaryData.LaserStateModuleData.RequiresWeapon), 44);
+        ExpectSize<SageBinaryData.SweepingLaserStateModuleData>(76);
+        ExpectOffset<SageBinaryData.SweepingLaserStateModuleData>(nameof(SageBinaryData.SweepingLaserStateModuleData.SweepingLaserOptions), 72);
+        ExpectSize<SageBinaryData.ConvergingLaserStateModuleData>(140);
+        ExpectOffset<SageBinaryData.ConvergingLaserStateModuleData>(nameof(SageBinaryData.ConvergingLaserStateModuleData.Lifetime), 136);
         // Reborn: lock recovered RA3 containment offsets after EP1's two inline status-mask expansions.
         ExpectSize<SageBinaryData.OpenContainModuleData>(156);
         // Reborn: six expanded inline statuses and EP1's bone-name string extend the official attach root.

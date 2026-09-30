@@ -8,6 +8,9 @@ $ErrorActionPreference = 'Stop'
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 
 $targets = @(
+    # Reborn: keep infiltrator effects and EP1 sweep-option bit positions aligned with their schemas.
+    @{ Source = 'source\SageBinaryData\SageBinaryData\Modules\InfiltratorContain.cs'; Schema = 'Modules\InfiltratorEffectType.xsd'; Type = 'InfiltratorEffectType'; InvalidIsMinusOne = $true },
+    @{ Source = 'source\SageBinaryData\SageBinaryData\Modules\SweepingLaserState.cs'; Schema = 'Modules\SweepingLaserStateModule.xsd'; Type = 'SweepingLaserOptionsType'; CountConstant = 'SweepingLaserOptionsBitFlags' },
     # Reborn: validate money-gain attach's single action value against the EP1 schema.
     @{ Source = 'source\SageBinaryData\SageBinaryData\Modules\MoneyGainAttachUpdate.cs'; Schema = 'Modules\MoneyGainAttachUpdate.xsd'; Type = 'MoneyGainAttachActionFlag' },
     # Reborn: prevent attach flags from reverting to the incompatible KW NONE-plus-four ordering.

@@ -550,6 +550,10 @@ public static partial class Marshaler
             case 0x3C934753u:
                 MarshalPolymorphicType<SweepingLaserStateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
+            // Reborn: restore official converging-laser dispatch rather than dropping its native allocation.
+            case 0x5F7498F9u:
+                MarshalPolymorphicType<ConvergingLaserStateModuleData, BehaviorModuleData>(node, objT, state);
+                break;
             case 0xFEF85F95u:
                 MarshalPolymorphicType<StreamStateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
