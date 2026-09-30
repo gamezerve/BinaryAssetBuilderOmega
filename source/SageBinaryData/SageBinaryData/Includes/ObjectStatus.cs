@@ -246,6 +246,7 @@ public struct ObjectStatusBitFlags
     public unsafe fixed uint Value[NumSpans];
 }
 
+// Reborn: preserve the official RA3/Uprising Death.xsd order used by native bit positions.
 public enum DeathType
 {
     NONE,
@@ -259,26 +260,36 @@ public enum DeathType
     SUICIDED,
     LASERED,
     DETONATED,
+    ELECTROCUTED,
+    STABBED,
     SPLATTED,
     POISONED_BETA,
+    KNOCKBACK,
+    SUPERNATURAL,
+    FADED,
+    SLAUGHTERED,
+    CATALYST,
+    SHATTERED,
+    INTERNAL_DESTRUCTION,
+    IRRADIATED,
+    MAULED,
+    BITTEN,
+    PRODUCTION_CANCELLED,
+    EXTRA_1,
     EXTRA_2,
     EXTRA_3,
     EXTRA_4,
     EXTRA_5,
     EXTRA_6,
     EXTRA_7,
-    EXTRA_8,
-    KNOCKBACK,
-    SUPERNATURAL,
-    FADED,
-    SLAUGHTERED,
-    CATALYST
+    ALL
 }
 
 [StructLayout(LayoutKind.Sequential)]
+// Reborn: RA3 and Uprising define 34 death values, requiring two 32-bit spans.
 public struct DeathBitFlags
 {
-    public const int Count = 25;
+    public const int Count = 34;
     public const int BitsInSpan = 32;
     public const int NumSpans = (Count + (BitsInSpan - 1)) / BitsInSpan;
 

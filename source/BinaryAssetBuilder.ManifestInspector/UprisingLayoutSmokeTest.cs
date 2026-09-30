@@ -24,6 +24,20 @@ internal static class UprisingLayoutSmokeTest
 
         Expect(SageBinaryData.ModelConditionBitFlags.Count == 463, "ModelConditionBitFlags.Count", 463, SageBinaryData.ModelConditionBitFlags.Count);
         Expect(SageBinaryData.ObjectStatusBitFlags.Count == 230, "ObjectStatusBitFlags.Count", 230, SageBinaryData.ObjectStatusBitFlags.Count);
+        // Reborn: lock the RA3 DieMux pointer ABI that Uprising extends with a wider pointed-to mask.
+        ExpectSize<SageBinaryData.DieMuxDataType>(44);
+        ExpectOffset<SageBinaryData.DieMuxDataType>(nameof(SageBinaryData.DieMuxDataType.ExemptStatus), 8);
+        ExpectOffset<SageBinaryData.DieMuxDataType>(nameof(SageBinaryData.DieMuxDataType.RequiredStatus), 12);
+        ExpectOffset<SageBinaryData.DieMuxDataType>(nameof(SageBinaryData.DieMuxDataType.DamageAmountRequired), 16);
+        ExpectOffset<SageBinaryData.DieMuxDataType>(nameof(SageBinaryData.DieMuxDataType.DeathTypesForbidden), 36);
+        ExpectSize<SageBinaryData.DieModuleData>(52);
+        // Reborn: lock the dependency pointer table recovered from the official RA3 marshaler IL.
+        ExpectSize<SageBinaryData.GameDependencyType>(40);
+        ExpectOffset<SageBinaryData.GameDependencyType>(nameof(SageBinaryData.GameDependencyType.RequiredModelConditionsAny), 0);
+        ExpectOffset<SageBinaryData.GameDependencyType>(nameof(SageBinaryData.GameDependencyType.ForbiddenModelConditions), 4);
+        ExpectOffset<SageBinaryData.GameDependencyType>(nameof(SageBinaryData.GameDependencyType.RequiredObjectStatusAny), 8);
+        ExpectOffset<SageBinaryData.GameDependencyType>(nameof(SageBinaryData.GameDependencyType.RequiredObject), 12);
+        ExpectOffset<SageBinaryData.GameDependencyType>(nameof(SageBinaryData.GameDependencyType.ObjectFilter), 36);
         Expect(SageBinaryData.DamageBitFlags.Count == 39, "DamageBitFlags.Count", 39, SageBinaryData.DamageBitFlags.Count);
         Expect(SageBinaryData.DisabledBitFlags.Count == 13, "DisabledBitFlags.Count", 13, SageBinaryData.DisabledBitFlags.Count);
         Expect((int)SageBinaryData.ArmorSetType.INVALID == 0, "ArmorSetType.INVALID", 0, (int)SageBinaryData.ArmorSetType.INVALID);

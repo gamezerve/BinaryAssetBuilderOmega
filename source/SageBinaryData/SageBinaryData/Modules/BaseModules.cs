@@ -246,11 +246,12 @@ public struct InvisibilityNuggetType
 }
 
 [StructLayout(LayoutKind.Sequential)]
-public struct DieMuxDataType
+public unsafe struct DieMuxDataType
 {
     public List<AnsiString> VeterancyLevels;
-    public ObjectStatusBitFlags ExemptStatus;
-    public ObjectStatusBitFlags RequiredStatus;
+    // Reborn: RA3 stores the variable-width object-status masks behind relocated pointers.
+    public ObjectStatusBitFlags* ExemptStatus;
+    public ObjectStatusBitFlags* RequiredStatus;
     public float DamageAmountRequired;
     public Angle MinKillerAngle;
     public Angle MaxKillerAngle;

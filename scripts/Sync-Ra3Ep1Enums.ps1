@@ -18,6 +18,8 @@ $targets = @(
     @{ Source = 'source\SageBinaryData\SageBinaryData\GameObject.cs'; Schema = 'AssetTypeGameObject.xsd'; Type = 'SkirmishAIBaseLocation' },
     @{ Source = 'source\SageBinaryData\SageBinaryData\Includes\ModelState.cs'; Schema = 'Includes\ModelState.xsd'; Type = 'ModelConditionFlagType'; InvalidIsMinusOne = $true },
     @{ Source = 'source\SageBinaryData\SageBinaryData\Includes\ObjectStatus.cs'; Schema = 'Includes\ObjectStatus.xsd'; Type = 'ObjectStatusType' },
+    # Reborn: Keep death bit positions and span count synchronized with the shared RA3/EP1 schema.
+    @{ Source = 'source\SageBinaryData\SageBinaryData\Includes\ObjectStatus.cs'; Schema = 'Includes\Death.xsd'; Type = 'DeathType'; CountConstant = 'DeathBitFlags' },
     @{ Source = 'source\SageBinaryData\SageBinaryData\Includes\GlobalGameData.cs'; Schema = 'Includes\GlobalGameData.xsd'; Type = 'DisabledType' },
     @{ Source = 'source\SageBinaryData\SageBinaryData\ArmorTemplate.cs'; Schema = 'AssetTypeArmorTemplate.xsd'; Type = 'ArmorSetType' },
     @{ Source = 'source\SageBinaryData\SageBinaryData\AttributeModifier.cs'; Schema = 'AssetTypeAttributeModifier.xsd'; Type = 'AttributeModifierCategoryType' },

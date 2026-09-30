@@ -5,7 +5,7 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Progress snapshot (2026-09-27)
 
-The current conservative engineering estimate is **47% complete / 53%
+The current conservative engineering estimate is **48% complete / 52%
 remaining**. This is an effort estimate, not the percentage of C# files in the
 tree. A pre-existing Kane's Wrath marshaller only counts as complete after its
 RA3/EP1 layout, type hash and emitted streams have been checked.
@@ -14,7 +14,7 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 |---|---:|---:|---:|
 | Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
 | Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
-| Native layouts, processors, dispatch and final type table | 45% | 49% | 22.1% |
+| Native layouts, processors, dispatch and final type table | 45% | 51% | 23.0% |
 | Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
 | Built-mod validation inside Uprising | 10% | 0% | 0.0% |
 
@@ -25,7 +25,7 @@ The source tree contains models for 778 (56.0%) and typed marshallers for 754
 that exist only in EP1 now have both a model and marshaller. This closes the
 EP1-only inventory, but it does not close changed shared types or missing parent
 pipelines; those retain substantially more weight than raw file presence in the
-47% estimate above.
+48% estimate above.
 
 ## Established facts
 
@@ -363,6 +363,19 @@ A combined animation/particle compiler fixture emits `236 bin / 12 relo / 0
 imp`. Real Uprising GameObject chunks contain the expected scripted-model type
 ID `0x4ECF2A4B` at their module pointer targets, independently confirming this
 is an active production path rather than dead schema surface.
+
+The next ABI pass recovered two additional pointer-based layouts directly from
+EA's RA3 XmlCompiler IL and checked their enum surfaces against both official
+RA3 and Uprising XSDs. `DieMuxDataType` stores its two object-status masks as
+relocated pointers, and its `DeathBitFlags` spans the official 34-value death
+enum rather than the inherited 25-value Kane's Wrath ordering. This restores
+the 44-byte `DieMuxDataType` and 52-byte `DieModuleData`, correcting eleven
+base/derived layout mismatches at once. `GameDependencyType` likewise stores
+its two model-condition masks and object-status mask behind pointers at offsets
+0, 4 and 8; its recovered native size is 40 bytes. Dedicated compiler fixtures
+now prove the pointed-to EP1 masks and relocation streams (`108/12/0` for
+DieMux and `192/16/0` for GameDependency). The repeatable audit now reports 211
+exact matches and 167 mismatches among the 378 shared type names.
 
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of

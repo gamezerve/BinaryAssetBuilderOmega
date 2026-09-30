@@ -12,6 +12,8 @@ internal static class CompilerSmokeTest
     {
         InitializeHashProvider();
         TestAttributeModifier();
+        TestDieMuxData();
+        TestGameDependency();
         TestLocomotorTemplate();
         TestWeaponTemplate();
         TestSpawnedSlaveUpdate();
@@ -117,6 +119,75 @@ internal static class CompilerSmokeTest
         Console.WriteLine(
             $"  AttributeModifier bin={chunk.InstanceBuffer.Length}, " +
             $"relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Verify DieMux emits relocated Uprising object-status masks behind the RA3 pointer ABI. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestDieMuxData()
+    {
+        const string xml = """
+            <DieMuxData xmlns="uri:ea.com:eala:asset"
+                ExemptStatus="DESTROYED" RequiredStatus="CAN_ATTACK"
+                DamageAmountRequired="25" MinKillerAngle="10d" MaxKillerAngle="20d"
+                DeathTypes="NORMAL" DeathTypesForbidden="CRUSHED" />
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:DieMuxData", namespaces)!, namespaces);
+
+        DieMuxDataType* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(DieMuxDataType), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 108, "DieMuxData instance bytes", 108, instance.Length);
+        Expect(ReadUInt32(instance, 8) == 44, "DieMuxData ExemptStatus relocation", 44, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 12) == 76, "DieMuxData RequiredStatus relocation", 76, ReadUInt32(instance, 12));
+        Expect(ReadUInt32(instance, 16) == 0x41C80000, "DieMuxData DamageAmountRequired", 0x41C80000, ReadUInt32(instance, 16));
+        Expect(ReadUInt32(instance, 44) == 1, "DieMuxData ExemptStatus=DESTROYED", 1, ReadUInt32(instance, 44));
+        Expect(ReadUInt32(instance, 76) == 2, "DieMuxData RequiredStatus=CAN_ATTACK", 2, ReadUInt32(instance, 76));
+        Expect(chunk.RelocationBuffer.Length == 12, "DieMuxData relocation bytes", 12, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 0, "DieMuxData imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  DieMuxData bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Verify GameDependency emits its three variable-width masks through RA3 relocation slots. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestGameDependency()
+    {
+        const string xml = """
+            <GameDependency xmlns="uri:ea.com:eala:asset"
+                RequiredModelConditionsAny="USER_1"
+                ForbiddenModelConditions="USER_2"
+                RequiredObjectStatusAny="CAN_ATTACK" />
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:GameDependency", namespaces)!, namespaces);
+
+        GameDependencyType* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(GameDependencyType), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 192, "GameDependency instance bytes", 192, instance.Length);
+        Expect(ReadUInt32(instance, 0) == 40, "GameDependency required-model relocation", 40, ReadUInt32(instance, 0));
+        Expect(ReadUInt32(instance, 4) == 100, "GameDependency forbidden-model relocation", 100, ReadUInt32(instance, 4));
+        Expect(ReadUInt32(instance, 8) == 160, "GameDependency object-status relocation", 160, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 160) == 2, "GameDependency RequiredObjectStatusAny=CAN_ATTACK", 2, ReadUInt32(instance, 160));
+        Expect(chunk.RelocationBuffer.Length == 16, "GameDependency relocation bytes", 16, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 0, "GameDependency imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  GameDependency bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static unsafe void TestLocomotorTemplate()
