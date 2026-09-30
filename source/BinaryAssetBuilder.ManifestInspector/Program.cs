@@ -13,6 +13,12 @@ internal static class Program
     {
         try
         {
+            // Reborn: isolate experimental armor token/writer validation from production registry activation.
+            if (args.FirstOrDefault() == "armor-token-self-test" && args.Length is 2 or 3)
+            {
+                ArmorTokenSmokeTest.Run(args[1], args.Length == 3 ? args[2] : null);
+                return 0;
+            }
             // Reborn: handle the metadata-only type audit independently of the older command whitelist.
             if (args.FirstOrDefault() == "type-audit" && args.Length >= 2)
             {
@@ -440,6 +446,8 @@ internal static class Program
         Console.WriteLine("  hash <text> [additional-text ...]");
         // Reborn: inspect only manifest metadata; BIN payloads and compiler output remain untouched.
         Console.WriteLine("  type-audit <ep1-manifest ...> [--json]");
+        // Reborn: optional game metadata triggers a single bounded golden-asset comparison.
+        Console.WriteLine("  armor-token-self-test <output-directory> [ep1-static-or-worldbuilder-manifest]");
     }
 
     private sealed record TypeFingerprint(uint TypeId, uint TypeHash, uint? Tokenized);

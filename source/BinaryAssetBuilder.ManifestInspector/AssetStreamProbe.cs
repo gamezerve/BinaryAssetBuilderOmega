@@ -202,7 +202,10 @@ internal static class AssetStreamProbe
         return ManifestReader.Read(archive.ReadEntry(entry));
     }
 
-    private static byte[] ReadRange(string path, string? entryName, long offset, int count)
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: share bounded random-access reads with focused golden-asset tests without loading entire streams. */
+    //-------------------------------------------------------------------------------------------------
+    internal static byte[] ReadRange(string path, string? entryName, long offset, int count)
     {
         if (!path.EndsWith(".big", StringComparison.OrdinalIgnoreCase))
         {

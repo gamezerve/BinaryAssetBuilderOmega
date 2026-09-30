@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: controlled XML reconstructed from the A01_CoastalGunArmor native values, not claimed as original EA source XML. -->
+<ArmorTemplate xmlns="uri:ea.com:eala:asset" id="Ep1ArmorTokenProbe">
+  <Armor Damage="GUN" Percent="5" />
+  <Armor Damage="MELEE" Percent="5" />
+  <Armor Damage="CONCUSSIVE" Percent="5" />
+  <Armor Damage="AUTO_CANNON" Percent="5" />
+  <Armor Damage="ROCKET" Percent="10" />
+  <Armor Damage="FLAK" Percent="10" />
+  <Armor Damage="CANNON" Percent="10" />
+  <Armor Damage="PRISM" Percent="10" />
+  <Armor Damage="TESLA" Percent="10" />
+  <Armor Damage="EXPLOSIVE" Percent="10" />
+  <Armor Damage="IMPACT" Percent="10" />
+</ArmorTemplate>

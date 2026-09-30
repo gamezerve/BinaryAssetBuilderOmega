@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: focused harness includes official EP1 armor/damage declarations; the unrelated base is a minimal stub. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset"
+  targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeArmorTemplate.xsd" />
+  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/DamageDef.xsd" />
+  <xs:complexType name="BaseInheritableAsset"><xs:attribute name="id" type="xs:string" use="required" /></xs:complexType>
+  <!-- Reborn: Percentage is inserted from the official EP1 Includes/Base.xsd by the harness, not redefined here. -->
+  <xs:element name="ArmorTemplate" type="ArmorTemplate" />
+</xs:schema>

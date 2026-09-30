@@ -43,6 +43,8 @@ internal static class CompilerSmokeTest
         TestExternalManifestLinks();
         // Reborn: keep conflicting or wrong-game metadata from masquerading as compiler readiness.
         TestTypeRegistryAudit();
+        // Reborn: verify native-to-tokenized armor conversion and isolated EP1 stream serialization.
+        TestArmorTokenPipeline();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1881,6 +1883,14 @@ internal static class CompilerSmokeTest
             if (!rejected) throw new InvalidOperationException("Wrong-game type audit input was accepted.");
         }
         Console.WriteLine("PASS EP1 type registry audit evidence and target guards");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: compiler regression tests include armor tokens without enabling the production EP1 registry. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestArmorTokenPipeline()
+    {
+        ArmorTokenSmokeTest.Run(Path.Combine(Path.GetTempPath(), "Reborn-Ep1ArmorToken-" + Guid.NewGuid().ToString("N")));
     }
 
     //-------------------------------------------------------------------------------------------------

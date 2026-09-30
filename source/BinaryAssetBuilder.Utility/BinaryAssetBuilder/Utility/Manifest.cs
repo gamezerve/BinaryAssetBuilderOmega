@@ -26,7 +26,8 @@ namespace BinaryAssetBuilder.Utility
         public unsafe uint AllTypesHash => (IntPtr)_pHeader != IntPtr.Zero ? _pHeader->AllTypesHash : 0u;
         public unsafe uint AssetCount => (IntPtr)_pHeader != IntPtr.Zero ? _pHeader->AssetCount : 0u;
         public unsafe uint TotalInstanceDataSize => (IntPtr)_pHeader != IntPtr.Zero ? _pHeader->TotalInstanceDataSize : 0u;
-        public unsafe uint MaxInstanceChunkSize => (IntPtr)_pHeader != IntPtr.Zero ? _pHeader->MaxImportsChunkSize : 0u;
+        // Reborn: instance chunk capacity must come from the BIN field, not the unrelated imports maximum.
+        public unsafe uint MaxInstanceChunkSize => (IntPtr)_pHeader != IntPtr.Zero ? _pHeader->MaxInstanceChunkSize : 0u;
         public unsafe uint MaxRelocationChunkSize => (IntPtr)_pHeader != IntPtr.Zero ? _pHeader->MaxRelocationChunkSize : 0u;
         public unsafe uint MaxImportsChunkSize => (IntPtr)_pHeader != IntPtr.Zero ? _pHeader->MaxImportsChunkSize : 0u;
         public unsafe int ExternalReferenceBufferSize => (IntPtr)_pHeader != IntPtr.Zero ? (int)_pHeader->AssetReferenceBufferSize : 0;
