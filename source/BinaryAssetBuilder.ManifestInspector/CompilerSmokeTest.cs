@@ -20,6 +20,8 @@ internal static class CompilerSmokeTest
         TestLocomotorTemplate();
         TestWeaponTemplate();
         TestTintObjectsNugget();
+        // Reborn: exercise the shared containment header and relocated passenger stride.
+        TestOpenContain();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1578,6 +1580,51 @@ internal static class CompilerSmokeTest
         Expect(chunk.RelocationBuffer.Length == 0, "TintObjectsNugget relocation bytes", 0, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 0, "TintObjectsNugget imports bytes", 0, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  TintObjectsNugget bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Verify containment defaults, inline masks and consecutive EP1 passenger records. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestOpenContain()
+    {
+        const string xml = """
+            <OpenContain xmlns="uri:ea.com:eala:asset" ContainMax="6" PassDisabilityToRiders="true" ObjectStatusOfContained="CAN_ATTACK">
+              <PassengerData MaxPassengers="2" SlingUnderBone="true"><Filter Rule="ALL" /></PassengerData>
+              <PassengerData><Filter Rule="ALL" /></PassengerData>
+            </OpenContain>
+            """;
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:OpenContain", namespaces)!, namespaces);
+        OpenContainModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(OpenContainModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 428, "OpenContain instance bytes", 428, instance.Length);
+        Expect(ReadUInt32(instance, 8) == 6, "OpenContain capacity", 6, ReadUInt32(instance, 8));
+        uint disabled = (1u << (int)DisabledType.UNDERPOWERED) | (1u << (int)DisabledType.EMP);
+        Expect(ReadUInt32(instance, 36) == disabled, "OpenContain disabled defaults", (int)disabled, ReadUInt32(instance, 36));
+        Expect(ReadUInt32(instance, 40) == 2, "OpenContain passenger status", 2, ReadUInt32(instance, 40));
+        int occupied = (int)ObjectStatusType.CONTAINER_OCCUPIED;
+        uint occupiedBit = 1u << (occupied % 32);
+        Expect(ReadUInt32(instance, 72 + 4 * (occupied / 32)) == occupiedBit, "OpenContain occupancy default", (int)occupiedBit, ReadUInt32(instance, 72 + 4 * (occupied / 32)));
+        Expect(ReadUInt32(instance, 104) == 100, "OpenContain modifier time", 100, ReadUInt32(instance, 104));
+        Expect(ReadUInt32(instance, 120) == 2, "OpenContain passenger count", 2, ReadUInt32(instance, 120));
+        Expect(ReadUInt32(instance, 124) == 156, "OpenContain passenger relocation", 156, ReadUInt32(instance, 124));
+        Expect(instance[149] == 1 && instance[155] == 1, "OpenContain rider and enabled flags", 1, instance[149]);
+        Expect(ReadUInt32(instance, 164) == 2, "Passenger capacity", 2, ReadUInt32(instance, 164));
+        Expect(instance[288] == 1 && instance[424] == 0, "Passenger sling flags and stride", 1, instance[288]);
+        Expect(ReadUInt32(instance, 300) == 0, "Passenger default capacity", 0, ReadUInt32(instance, 300));
+        // Reborn: the one list pointer is followed by the relocation table's terminating sentinel.
+        Expect(chunk.RelocationBuffer.Length == 8, "OpenContain relocation bytes", 8, chunk.RelocationBuffer.Length);
+        Expect(ReadUInt32(chunk.RelocationBuffer, 0) == 124, "OpenContain relocation slot", 124, ReadUInt32(chunk.RelocationBuffer, 0));
+        Expect(ReadUInt32(chunk.RelocationBuffer, 4) == uint.MaxValue, "OpenContain relocation sentinel", -1, ReadUInt32(chunk.RelocationBuffer, 4));
+        Expect(chunk.ImportsBuffer.Length == 0, "OpenContain imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  OpenContain bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static uint ReadUInt32(ReadOnlySpan<byte> bytes, int offset) =>

@@ -401,6 +401,20 @@ these offsets and the emitted scalar values (`72/0/0`). The shared-type size
 audit advances to 214 exact matches and 164 mismatches; these totals include
 intentional EP1 size deltas and do not measure runtime compatibility.
 
+`OpenContainModuleData` has now been recovered from official RA3 Tokenizer
+marshaler IL (`0x0600013E`) and cross-checked against the EP1 XSD. The KW-only
+model-condition mask, manual pickup filter and upgrade fields no longer occupy
+the shared containment header. Restored fields include the inline disabled
+mask at 36, both inline object-status masks (40 and 72 in EP1), and the rider
+disability flag at 149. The EP1 root is 156 bytes versus RA3's 148: each of
+the two status masks grows by four bytes. `PassengerDataType` (official
+marshaler `0x0600013C`) uses `MaxPassengers` at 8 instead of KW string flags,
+an inline filter at 12 and `SlingUnderBone` at 132; its EP1 stride is 136
+versus RA3's 128. A two-passenger fixture checks capacity, defaults, status
+bits, relocation and consecutive-record stride. These are native marshaling
+checks, not proof of a matching tokenized Uprising runtime asset. Inherited
+Transport/Horde/Garrison modules still require their own layout audits.
+
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of
 `GameObject:ClientFlingableExplodingBarrel` found type ID `0xD6C03AC2` at the

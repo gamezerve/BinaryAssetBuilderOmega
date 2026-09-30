@@ -7,6 +7,15 @@ internal static class UprisingLayoutSmokeTest
     public static void Run()
     {
         TestPatchManifestTotals();
+        // Reborn: lock recovered RA3 containment offsets after EP1's two inline status-mask expansions.
+        ExpectSize<SageBinaryData.OpenContainModuleData>(156);
+        ExpectOffset<SageBinaryData.OpenContainModuleData>(nameof(SageBinaryData.OpenContainModuleData.IgnoreDisabledBitsForRiders), 36);
+        ExpectOffset<SageBinaryData.OpenContainModuleData>(nameof(SageBinaryData.OpenContainModuleData.ObjectStatusWhileContaining), 72);
+        ExpectOffset<SageBinaryData.OpenContainModuleData>(nameof(SageBinaryData.OpenContainModuleData.PassengerData), 120);
+        ExpectOffset<SageBinaryData.OpenContainModuleData>(nameof(SageBinaryData.OpenContainModuleData.PassDisabilityToRiders), 149);
+        ExpectSize<SageBinaryData.PassengerDataType>(136);
+        ExpectOffset<SageBinaryData.PassengerDataType>(nameof(SageBinaryData.PassengerDataType.Filter), 12);
+        ExpectOffset<SageBinaryData.PassengerDataType>(nameof(SageBinaryData.PassengerDataType.SlingUnderBone), 132);
         ExpectSize<SageBinaryData.ArmorTemplate>(32);
         ExpectSize<SageBinaryData.ArmorSetBitFlags>(4);
         Expect(SageBinaryData.ArmorSetBitFlags.Count == 23, "ArmorSetBitFlags.Count", 23, SageBinaryData.ArmorSetBitFlags.Count);

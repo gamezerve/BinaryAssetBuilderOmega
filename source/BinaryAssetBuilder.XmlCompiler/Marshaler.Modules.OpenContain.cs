@@ -10,8 +10,10 @@ public static partial class Marshaler
             return;
         }
         Marshal(node.GetAttributeValue(nameof(PassengerDataType.BonePrefix), null), &objT->BonePrefix, state);
-        Marshal(node.GetAttributeValue(nameof(PassengerDataType.Flags), null), &objT->Flags, state);
+        // Reborn: apply the RA3/EP1 passenger capacity and sling defaults.
+        Marshal(node.GetAttributeValue(nameof(PassengerDataType.MaxPassengers), "0"), &objT->MaxPassengers, state);
         Marshal(node.GetChildNode(nameof(PassengerDataType.Filter), null), &objT->Filter, state);
+        Marshal(node.GetAttributeValue(nameof(PassengerDataType.SlingUnderBone), "false"), &objT->SlingUnderBone, state);
     }
 
     public static unsafe void Marshal(Node node, MemberTemplateStatusData* objT, Tracker state)
@@ -62,6 +64,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(OpenContainModuleData.AllowAlliesInside), "true"), &objT->AllowAlliesInside, state);
         Marshal(node.GetAttributeValue(nameof(OpenContainModuleData.AllowEnemiesInside), "true"), &objT->AllowEnemiesInside, state);
         Marshal(node.GetAttributeValue(nameof(OpenContainModuleData.AllowNeutralInside), "true"), &objT->AllowNeutralInside, state);
+        // Reborn: restore rider disability and container occupancy attributes omitted by the KW port.
+        Marshal(node.GetAttributeValue(nameof(OpenContainModuleData.PassDisabilityToRiders), "false"), &objT->PassDisabilityToRiders, state);
+        Marshal(node.GetAttributeValue(nameof(OpenContainModuleData.IgnoreDisabledBitsForRiders), "UNDERPOWERED EMP"), &objT->IgnoreDisabledBitsForRiders, state);
+        Marshal(node.GetAttributeValue(nameof(OpenContainModuleData.ObjectStatusWhileContaining), "CONTAINER_OCCUPIED"), &objT->ObjectStatusWhileContaining, state);
         Marshal(node.GetAttributeValue(nameof(OpenContainModuleData.ShowPips), "true"), &objT->ShowPips, state);
         Marshal(node.GetAttributeValue(nameof(OpenContainModuleData.CollidePickup), "true"), &objT->CollidePickup, state);
         Marshal(node.GetAttributeValue(nameof(OpenContainModuleData.EjectPassengersOnDeath), "true"), &objT->EjectPassengersOnDeath, state);
@@ -71,19 +77,11 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(OpenContainModuleData.ObjectStatusOfContained), null), &objT->ObjectStatusOfContained, state);
         Marshal(node.GetAttributeValue(nameof(OpenContainModuleData.ModifierRequiredTime), "100"), &objT->ModifierRequiredTime, state);
         Marshal(node.GetAttributeValue(nameof(OpenContainModuleData.KillIfEmptyTime), "0s"), &objT->KillIfEmptyTime, state);
-#if KANESWRATH
-        Marshal(node.GetAttributeValue(nameof(OpenContainModuleData.ModelConditionsWhenNotEmpty), ""), &objT->ModelConditionsWhenNotEmpty, state);
-#endif
         Marshal(node.GetChildNode(nameof(OpenContainModuleData.PassengerFilter), null), &objT->PassengerFilter, state);
-        Marshal(node.GetChildNode(nameof(OpenContainModuleData.ManualPickUpFilter), null), &objT->ManualPickUpFilter, state);
         Marshal(node.GetChildNode(nameof(OpenContainModuleData.DieMuxData), null), &objT->DieMuxData, state);
         Marshal(node.GetChildNodes(nameof(OpenContainModuleData.PassengerData)), &objT->PassengerData, state);
         Marshal(node.GetChildNodes(nameof(OpenContainModuleData.ModifierToGiveOnExit)), &objT->ModifierToGiveOnExit, state);
         Marshal(node.GetChildNodes(nameof(OpenContainModuleData.MemberTemplateStatusInfo)), &objT->MemberTemplateStatusInfo, state);
-#if KANESWRATH
-        Marshal(node.GetChildNodes(nameof(OpenContainModuleData.UpgradeContainerOnContain)), &objT->UpgradeContainerOnContain, state);
-        Marshal(node.GetChildNode(nameof(OpenContainModuleData.OpenContainUpgradeOverride), null), &objT->OpenContainUpgradeOverride, state);
-#endif
         Marshal(node, (UpdateModuleData*)objT, state);
     }
 }
