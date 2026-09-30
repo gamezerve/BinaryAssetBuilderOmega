@@ -47,6 +47,8 @@ internal static class CompilerSmokeTest
         TestArmorTokenPipeline();
         // Reborn: validate the isolated EP1 processor profile, its metadata and fail-closed registry policies.
         TestEp1ArmorProfile();
+        // Reborn: validate real document stages and disabled session/precompiled reuse for experimental profiles.
+        TestEp1ArmorDocument();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1901,6 +1903,14 @@ internal static class CompilerSmokeTest
     private static void TestEp1ArmorProfile()
     {
         Ep1ArmorProfileSmokeTest.Run();
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: document regression fixtures stay isolated from game files and production SDK output. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestEp1ArmorDocument()
+    {
+        Ep1ArmorDocumentSmokeTest.Run(Path.Combine(Path.GetTempPath(), "Reborn-Ep1ArmorDocument-" + Guid.NewGuid().ToString("N")));
     }
 
     //-------------------------------------------------------------------------------------------------

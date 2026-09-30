@@ -16,7 +16,7 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **784/1,390** EP1 complex types have models and
 **760/1,390** have typed marshallers. The compiler test runner invokes
-**50 test groups** (some contain several fixtures). These counters can grow
+**51 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. In this work block, model and
@@ -33,6 +33,8 @@ marshaller counts are unchanged; registered test groups increased by one.
 
 ### Recently completed
 
+- Exercised the real document loader/schema/default/hash stages with the EP1 armor profile; matched populated output to the golden-tested tokenizer.
+- Closed production early-return paths and disabled experimental session/precompiled document reuse; verified stale cached declarations cannot replace source XML. See [document pipeline proof](docs/RA3EP1_ARMOR_DOCUMENT_PIPELINE.md).
 - Added an opt-in Win32 EP1 armor plugin with exact tokenized compiler-entry output, isolated registrations and explicit production/cache restrictions. See [experimental profile](docs/RA3EP1_ARMOR_PROFILE.md).
 - Recovered ArmorTemplate's missing tokenization step: exact `744/8/0` byte match with static EP1 armor and `128/0/0` with a WorldBuilder armor fixture.
 - Added a schema-to-native-to-tokenized one-asset diagnostic writer; the production type registry/output gate remains unchanged. See [armor PoC](docs/RA3EP1_ARMOR_TOKEN_POC.md).

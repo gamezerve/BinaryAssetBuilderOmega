@@ -33,12 +33,12 @@ snapshot was held while several shared-layout fixes accumulated. This snapshot
 reassesses the native-layout workstream from 53% to 55% after the containment
 audit and attach base recovery, giving roughly 50% overall. End-to-end game
 validation is still at zero. Observable counters are reported separately:
-the compiler self-test currently invokes 50 test groups (some have multiple
+the compiler self-test currently invokes 51 test groups (some have multiple
 fixtures), and the structural coverage script reports the inventory above.
 Neither counter proves runtime compatibility or replaces final type-table gates.
 The coverage script now emits `CompilerTestGroupsDeclared`, counting registered
 groups without executing them. This block adds one test group and leaves model/
-marshaller counts unchanged relative to its starting snapshot (784/760 and 49 groups).
+marshaller counts unchanged relative to its starting snapshot (784/760 and 50 groups).
 
 The new [root asset type audit](RA3EP1_TYPE_TABLE_AUDIT.md) separates broad
 complex-type inventory from plugin registration. Four real EP1 streams contain
@@ -59,9 +59,19 @@ the validated processor through PluginDescriptor, PluginRegistry and
 ProcessInstance. Its known EP1 aggregate hash does not authorize production:
 OutputManager rejects the profile before constructor file operations and again
 at CommitManifest. Cache reuse is disabled even if descriptor settings request
-it. Namespace prefixes no longer change asset TypeIds; document-processor
-cache versions are now 16 (v5) / 17 (other targets). The legacy default compiler
+it. Namespace prefixes no longer change asset TypeIds; the initial profile block
+bumped document-processor cache versions to 16/17. The legacy default compiler
 remains KW-based and the complete EP1 registry/game-load gates remain open.
+
+The [focused document pipeline proof](RA3EP1_ARMOR_DOCUMENT_PIPELINE.md) now
+uses the actual DocumentProcessor/SessionCache/SchemaSet path with official
+EP1 primitive/reference/asset-base/armor schemas. It validates both empty and
+populated documents before compiler entry; core-generated TypeIds are accepted
+only when they match the validated schema type. Production eligibility is
+checked before all document fast paths, and experimental session/precompiled
+reuse is separately denied. DocumentProcessor versions are now 18/19.
+This is not a production stream build: packaging/loading and checksum/cache
+equivalence remain open. The rounded overall estimate remains 50%.
 
 ## Established facts
 

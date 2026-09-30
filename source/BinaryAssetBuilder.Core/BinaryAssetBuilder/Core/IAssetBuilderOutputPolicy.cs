@@ -7,4 +7,6 @@ public interface IAssetBuilderOutputPolicy
     bool CanWriteProductionOutput { get; }
     // Reborn: experimental processor cache eligibility must not be overridden by a settings descriptor.
     bool CanUseBuildCache { get; }
+    // Reborn: session/precompiled document reuse is a separate eligibility decision from network asset caching.
+    bool CanReuseCompiledDocuments { get; }
 }

@@ -42,11 +42,11 @@ namespace BinaryAssetBuilder.Core.SageXml
             public string Configuration;
         }
 
-        // Reborn: invalidate caches predating namespace-independent asset identities and experimental processor cache policy.
+        // Reborn: invalidate caches predating explicit experimental session/precompiled reuse policy.
 #if VERSION5
-        public const uint Version = 16u;
+        public const uint Version = 18u;
 #else
-        public const uint Version = 17u;
+        public const uint Version = 19u;
 #endif
 
         private static readonly Tracer _tracer = Tracer.GetTracer(nameof(DocumentProcessor), "Provides XML processing functionality");
@@ -141,7 +141,8 @@ namespace BinaryAssetBuilder.Core.SageXml
             }
             Cache.TryGetFile(sourcePath, configuration, Settings.Current.TargetPlatform, out FileHashItem fileItem);
             Cache.TryGetDocument(sourcePath, configuration, Settings.Current.TargetPlatform, true, out AssetDeclarationDocument result);
-            if (result.Processing)
+            // Reborn: fresh experimental documents still need stack-based inclusion-cycle detection.
+            if (result.Processing || _documentStack.Exists(path => path.Equals(sourcePath, StringComparison.OrdinalIgnoreCase)))
             {
                 StringBuilder sb = new StringBuilder("Illegal circular document inclusion detected. Inclusion chain as follows:");
                 foreach (string item in _documentStack)
@@ -151,7 +152,9 @@ namespace BinaryAssetBuilder.Core.SageXml
                 sb.AppendFormat(CultureInfo.InvariantCulture, "\n    {0}", sourcePath);
                 throw new BinaryAssetBuilderException(ErrorCode.CircularDependency, sb.ToString());
             }
-            result.Open(this, fileItem, logicalPath, configuration);
+            // Reborn: do not carry stale includes/defines/instances forward through an in-place experimental reload.
+            if (Plugins.CanReuseCompiledDocuments) result.Open(this, fileItem, logicalPath, configuration);
+            else result = new AssetDeclarationDocument(this, fileItem, logicalPath, configuration);
             if (result.State != DocumentState.Complete)
             {
                 ++_filesProcessedCount;
@@ -381,6 +384,8 @@ namespace BinaryAssetBuilder.Core.SageXml
 
         private bool LoadPrecompiledReference(AssetDeclarationDocument parent, string sourcePathFromRoot, string[] baseStreamSearchPaths)
         {
+            // Reborn: do not import compiled document state through a precompiled fast path for an experimental profile.
+            if (!Plugins.CanReuseCompiledDocuments) return false;
             string str = ShPath.Canonicalize(Path.Combine(Settings.Current.OutputDirectory, sourcePathFromRoot));
             if (!File.Exists(str))
             {
@@ -434,6 +439,8 @@ namespace BinaryAssetBuilder.Core.SageXml
 
         public AssetDeclarationDocument ProcessDocumentInternal(string logicalPath, string sourcePath, OutputManager outputManager, ProcessOptions options)
         {
+            // Reborn: block production before cache access, stream hints and Complete-document early returns.
+            if (options.GenerateOutput) Plugins.ValidateProductionOutput();
             DateTime now = DateTime.Now;
             AssetDeclarationDocument result = OpenDocument(sourcePath, logicalPath, options.GenerateOutput, options.Configuration);
             if (options.GenerateOutput)
@@ -488,7 +495,8 @@ namespace BinaryAssetBuilder.Core.SageXml
             _documentStack.Add(sourcePath);
             result.Processing = true;
             _totalPrepareSourceTime += DateTime.Now - now;
-            ProcessIncludedDocuments(result, outputManager, options, options.UsePrecompiled);
+            // Reborn: disable precompiled inclusion reuse without mutating caller-owned process options.
+            ProcessIncludedDocuments(result, outputManager, options, options.UsePrecompiled && Plugins.CanReuseCompiledDocuments);
             if (result.State != DocumentState.Complete)
             {
                 ProcessDocumentContents(result, outputManager, options, options.GenerateOutput);

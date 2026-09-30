@@ -1,6 +1,8 @@
 using System;
+using System.Globalization;
 using System.Xml;
 using BinaryAssetBuilder.Core;
+using BinaryAssetBuilder.Core.Hashing;
 using Relo;
 using SageBinaryData;
 
@@ -13,6 +15,7 @@ public sealed class Ra3Ep1ArmorPlugin : IAssetBuilderPlugin, IAssetBuilderOutput
     public string ProfileName => "RA3EP1-Armor-Experimental-v1";
     public bool CanWriteProductionOutput => false;
     public bool CanUseBuildCache => false;
+    public bool CanReuseCompiledDocuments => false;
     public uint AllTypesHash => 0x5454A8E9u;
     public uint VersionNumber => 1;
 
@@ -92,6 +95,11 @@ public sealed class Ra3Ep1ArmorPlugin : IAssetBuilderPlugin, IAssetBuilderOutput
         foreach (XmlAttribute attribute in element.Attributes)
         {
             if (attribute.NamespaceURI == "http://www.w3.org/2000/xmlns/") continue;
+            // Reborn: the core injects TypeId after validation; accept only the exact validated schema type identity.
+            if (attribute.NamespaceURI.Length == 0 && attribute.LocalName == "TypeId"
+                && element.SchemaInfo?.SchemaType?.Name is string schemaType
+                && uint.TryParse(attribute.Value, NumberStyles.None, CultureInfo.InvariantCulture, out uint injectedType)
+                && injectedType == FastHash.GetHashCode(schemaType)) continue;
             if (attribute.NamespaceURI.Length != 0 || Array.IndexOf(allowed, attribute.LocalName) < 0
                 || (attribute.LocalName != "id" && attribute.Value.TrimStart().StartsWith("=", StringComparison.Ordinal)))
                 throw new NotSupportedException($"EP1 armor profile does not support attribute '{attribute.Name}' or its unevaluated formula.");

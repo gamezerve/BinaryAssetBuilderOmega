@@ -60,7 +60,8 @@ internal static class Ep1ArmorProfileSmokeTest
         PluginDescriptor mapped = new() { IsEnabled = true, AssetTypes = "ArmorTemplate", UseBuildCache = true,
             QualifiedName = settings.Plugins.Single().QualifiedName };
         PluginRegistry mappedRegistry = new(new[] { mapped }, TargetPlatform.Win32);
-        Require(!mappedRegistry.GetExtendedTypeInformation(0x3A6C5E8Eu).UseBuildCache, "Settings bypassed experimental cache policy.");
+        Require(!mappedRegistry.GetExtendedTypeInformation(0x3A6C5E8Eu).UseBuildCache && !mappedRegistry.CanReuseCompiledDocuments,
+            "Explicit type mapping bypassed experimental binary/document cache policy.");
         ExpectProductionBlocked(() => mappedRegistry.ValidateProductionOutput());
 
         Ra3Ep1ArmorPlugin isolated = new();

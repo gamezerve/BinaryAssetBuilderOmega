@@ -47,7 +47,7 @@ Run after a Release/x86 inspector build:
 & .\source\BinaryAssetBuilder.ManifestInspector\bin\x86\Release\net8.0\BinaryAssetBuilder.ManifestInspector.exe ep1-armor-profile-self-test
 ```
 
-The compiler self-test now invokes 50 groups, including this profile proof.
+The compiler self-test now invokes 51 groups, including this profile proof and the document-stage follow-up.
 The separate armor-token-self-test still compares bounded real-game samples
 and writes clearly labeled diagnostic fixtures.
 
@@ -88,6 +88,12 @@ cached declarations predating identity normalization and the new profile
 policy. Existing session-cache regression checks reject the previous revision.
 
 ## Remaining work
+
+The [focused document pipeline follow-up](RA3EP1_ARMOR_DOCUMENT_PIPELINE.md)
+now covers source loading/validation/hash stages and separately denies
+experimental session/precompiled reuse. Current DocumentProcessor versions
+are 18/19; the 16/17 bump described above belongs to the earlier profile block.
+This does not complete production stream writing or general legacy reuse rules.
 
 1. Run a complete AssetDeclaration/schema/document pipeline with the explicit
    target profile, including reference stream configuration and unsupported

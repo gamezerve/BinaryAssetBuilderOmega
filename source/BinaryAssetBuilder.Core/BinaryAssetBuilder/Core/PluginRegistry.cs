@@ -126,6 +126,20 @@ namespace BinaryAssetBuilder.Core
             }
         }
 
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: session and precompiled fast paths require approval from default and explicitly mapped processors. */
+        //-------------------------------------------------------------------------------------------------
+        public bool CanReuseCompiledDocuments
+        {
+            get
+            {
+                if (DefaultPlugin is IAssetBuilderOutputPolicy policy && !policy.CanReuseCompiledDocuments) return false;
+                foreach (IAssetBuilderPlugin plugin in AllPlugins)
+                    if (plugin is IAssetBuilderOutputPolicy mapped && !mapped.CanReuseCompiledDocuments) return false;
+                return true;
+            }
+        }
+
         public ExtendedTypeInformation GetExtendedTypeInformation(uint typeId)
         {
             if (!_typeInfoMap.TryGetValue(typeId, out ExtendedTypeInformation result))

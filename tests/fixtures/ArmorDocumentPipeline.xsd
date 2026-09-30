@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: focused document harness uses official EP1 primitive, asset-base, damage and armor definitions without base stubs. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset"
+ targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Base.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Base/AssetBase.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Ref.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/DamageDef.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeArmorTemplate.xsd" />
+ <xs:element name="ArmorTemplate" type="ArmorTemplate" />
+ <!-- Reborn: the top-level container is a focused harness choice, not a complete SDK root declaration. -->
+ <xs:element name="AssetDeclaration"><xs:complexType><xs:sequence>
+   <xs:element ref="ArmorTemplate" minOccurs="0" maxOccurs="unbounded" />
+ </xs:sequence></xs:complexType></xs:element>
+</xs:schema>
