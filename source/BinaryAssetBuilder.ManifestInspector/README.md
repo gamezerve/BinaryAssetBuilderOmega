@@ -20,6 +20,9 @@ dotnet run --project source/BinaryAssetBuilder.ManifestInspector -p:Platform=x86
 
 # Reborn: validate official infiltrator defaults through production reference normalization and real EP1 manifests.
 dotnet run --project source/BinaryAssetBuilder.ManifestInspector -p:Platform=x86 -- reference-self-test tests/fixtures/ReferencePipeline.xsd "D:\TEMP\Red Alert 3 Uprising Source Data\Global Data\data\global.manifest" "D:\TEMP\Red Alert 3 Uprising Source Data\Static Data\data\static.manifest"
+
+# Reborn: test external/patch metadata and production identity lookup without reading game BIN data.
+dotnet run --project source/BinaryAssetBuilder.ManifestInspector -p:Platform=x86 -- external-link-self-test artifacts/ep1-external-links "D:\TEMP\Red Alert 3 Uprising Source Data\Global Data\data\global.manifest" "D:\TEMP\Red Alert 3 Uprising Source Data\Static Data\data\static.manifest"
 ```
 
 Known target fingerprints:

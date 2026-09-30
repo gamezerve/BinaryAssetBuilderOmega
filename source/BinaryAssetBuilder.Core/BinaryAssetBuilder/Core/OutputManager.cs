@@ -40,7 +40,8 @@ namespace BinaryAssetBuilder.Core
         public string OutputDirectory { get; }
         public string TargetPlatformCacheRoot { get; }
         public SortedDictionary<string, AssetHeader> BasePatchStreamAssets { get; private set; }
-        public Manifest BasePatchStreamManifest { get; }
+        // Reborn: retain the loaded base metadata for stable sorting and inherited-entry positions.
+        public Manifest BasePatchStreamManifest { get; private set; }
         public string BasePatchStream { get; private set; }
 
         public OutputManager(DocumentProcessor documentProcessor,
@@ -109,6 +110,43 @@ namespace BinaryAssetBuilder.Core
             ProcessBasePatchStream(basePatchStream, baseStreamRelativePath, baseStreamSearchPaths);
         }
 
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: serialize explicit game-visible external stream paths without inferring them from local files. */
+        //-------------------------------------------------------------------------------------------------
+        private static void AddExternalManifestReferences(ReferencedFileBuffer buffer, string[] physicalPaths, string runtimePaths)
+        {
+            physicalPaths ??= Array.Empty<string>();
+            string[] names = string.IsNullOrWhiteSpace(runtimePaths) ? Array.Empty<string>() : runtimePaths.Split(';');
+            if (names.Length != physicalPaths.Length)
+            {
+                throw new BinaryAssetBuilderException(ErrorCode.InvalidArgument,
+                    "ExternalManifestReferences must supply one relative runtime path for each ExternalManifests entry ({0} names, {1} files).",
+                    names.Length, physicalPaths.Length);
+            }
+            for (int index = 0; index < names.Length; index++)
+            {
+                string name = names[index].Trim().Replace('/', '\\');
+                if (string.IsNullOrWhiteSpace(name) || Path.IsPathRooted(name) || name.IndexOf(':') >= 0 || name.IndexOf('\0') >= 0
+                    || !name.EndsWith(".manifest", StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new BinaryAssetBuilderException(ErrorCode.InvalidArgument, "Invalid relative external runtime manifest path: '{0}'.", name);
+                }
+                foreach (string part in name.Split('\\'))
+                {
+                    if (part.Length == 0 || part == "." || part == "..")
+                    {
+                        throw new BinaryAssetBuilderException(ErrorCode.InvalidArgument, "External runtime manifest paths cannot contain empty or traversal segments: '{0}'.", name);
+                    }
+                }
+                names[index] = name.ToLowerInvariant();
+            }
+            // Reborn: validate the complete mapping before mutating the serialized reference buffer.
+            foreach (string name in names)
+            {
+                buffer.AddReference(name, false);
+            }
+        }
+
         private static void AppendAsset(Stream source, Stream destination, int length)
         {
             int bytesRead;
@@ -161,15 +199,29 @@ namespace BinaryAssetBuilder.Core
             }
             try
             {
-                manifest.Load(patchStreamPath, patchSearchPaths.ToArray());
+                // Reborn: patch base loading is required, not a best-effort diagnostic.
+                if (!manifest.Load(patchStreamPath, patchSearchPaths.ToArray(), false))
+                {
+                    throw new BinaryAssetBuilderException(ErrorCode.FileNotFound, "Unable to load patch base: {0}", patchStreamPath);
+                }
+#if VERSION7
+                // Reborn: do not construct an EP1 patch against a RA3/KW base stream.
+                if (manifest.Version != 7 || manifest.AllTypesHash != 0x5454A8E9u)
+                {
+                    throw new BinaryAssetBuilderException(ErrorCode.ReferencingError, "Patch base is not Uprising v7 / AllTypesHash 0x5454A8E9: {0}", patchStreamPath);
+                }
+#endif
             }
-            catch
+            catch (Exception exception)
             {
-                _tracer.TraceError("Could not load {0}.", basePatchStream);
-                return;
+                // Reborn: release failed metadata and propagate failure instead of emitting an unbased patch.
+                manifest.Dispose();
+                throw new BinaryAssetBuilderException(exception, ErrorCode.ReferencingError, "Could not load patch base {0}.", basePatchStream);
             }
+            // Reborn: this property was never assigned, disabling stable sorting and base-position checks.
+            BasePatchStreamManifest = manifest;
             BasePatchStream = basePatchStream;
-            _basePatchStreamRelativePath = baseStreamRelativePath;
+            _basePatchStreamRelativePath = baseStreamRelativePath ?? string.Empty;
             BasePatchStreamAssets = new SortedDictionary<string, AssetHeader>();
             foreach (Asset asset in manifest.Assets)
             {
@@ -244,12 +296,17 @@ namespace BinaryAssetBuilder.Core
                     uprisingAllTypesHash);
             }
 #endif
+            // Reborn: validate runtime mapping even when an old manifest otherwise looks reusable.
+            ReferencedFileBuffer externalRuntimeReferences = new();
+            AddExternalManifestReferences(externalRuntimeReferences, Settings.Current.ProcessedExternalManifests, Settings.Current.ExternalManifestReferences);
             if (_header != null)
             {
+                // Reborn: a matching asset checksum cannot prove that external/include/patch stream paths are unchanged.
                 if (_header.IsLinked == Settings.Current.LinkedStreams
                  && _header.Version == ManifestHeader.LatestVersion
                  && _header.StreamChecksum == document.OutputChecksum
-                 && _header.AllTypesHash == allTypesHash)
+                 && _header.AllTypesHash == allTypesHash
+                 && _header.ReferenceManifestNameBufferSize == 0 && externalRuntimeReferences.Length == 0)
                 {
                     File.Move(_oldManifestFile, _manifestFile);
                     _tracer.TraceInfo("Old manifest is up to date.");
@@ -346,6 +403,8 @@ namespace BinaryAssetBuilder.Core
                     referencedManifestBuffer.AddReference(str, false);
                 }
             }
+            // Reborn: external lookup success also needs explicit runtime stream references in the output manifest.
+            AddExternalManifestReferences(referencedManifestBuffer, Settings.Current.ProcessedExternalManifests, Settings.Current.ExternalManifestReferences);
             byte[] buffer = stream.GetBuffer();
             using Stream fileStream = new FileStream(_manifestFile, FileMode.Create, FileAccess.Write, FileShare.None);
             new ManifestHeader
@@ -609,8 +668,11 @@ namespace BinaryAssetBuilder.Core
 
         public void Dispose()
         {
-            _header.Dispose();
+            // Reborn: handle aborted metadata-only builds and release the owned patch base as well.
+            _header?.Dispose();
             _header = null;
+            BasePatchStreamManifest?.Dispose();
+            BasePatchStreamManifest = null;
         }
     }
 }

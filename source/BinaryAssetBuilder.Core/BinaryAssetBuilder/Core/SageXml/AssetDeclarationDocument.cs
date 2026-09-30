@@ -358,44 +358,76 @@ namespace BinaryAssetBuilder.Core.SageXml
         private static readonly object _externalManifestLock = new object();
         private static string _externalManifestCacheKey;
 
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: refresh external asset identities on file changes and publish only a fully validated index. */
+        //-------------------------------------------------------------------------------------------------
         private static void LoadManifestIfNeeded()
         {
             string[] manifestPaths = Settings.Current.ProcessedExternalManifests ?? Array.Empty<string>();
-            string cacheKey = string.Join(";", manifestPaths);
             lock (_externalManifestLock)
             {
+                // Reborn: a path-only cache can retain deleted assets after a rebuild at the same filename.
+                StringBuilder key = new();
+                key.Append(Settings.Current.ErrorLevel).Append('|');
+                foreach (string manifestPath in manifestPaths)
+                {
+                    FileInfo file = new(manifestPath);
+                    key.Append(file.FullName).Append('|').Append(file.Exists ? file.Length : -1)
+                        .Append('|').Append(file.Exists ? file.LastWriteTimeUtc.Ticks : -1).Append(';');
+                }
+                string cacheKey = key.ToString();
                 if (string.Equals(cacheKey, _externalManifestCacheKey, StringComparison.Ordinal))
                 {
                     return;
                 }
 
-                _externalManifestAssets.Clear();
+                HashSet<ulong> validatedAssets = new();
                 foreach (string manifestPath in manifestPaths)
                 {
                     using Manifest manifest = new Manifest();
                     if (!manifest.Load(manifestPath, false))
                     {
+                        // Reborn: strict builds must not claim that a missing base stream resolved dependencies.
+                        if (Settings.Current.ErrorLevel > 0)
+                        {
+                            throw new BinaryAssetBuilderException(ErrorCode.FileNotFound, "External manifest not found: {0}", manifestPath);
+                        }
                         _tracer.TraceWarning("External manifest not found: {0}", manifestPath);
                         continue;
                     }
+#if VERSION7
+                    // Reborn: reject RA3/KW dependency identities before they contaminate an EP1 reference table.
+                    if (manifest.Version != 7 || manifest.AllTypesHash != 0x5454A8E9u)
+                    {
+                        throw new BinaryAssetBuilderException(ErrorCode.ReferencingError,
+                            "External manifest '{0}' is not Uprising v7 / AllTypesHash 0x5454A8E9 (version {1}, hash 0x{2:X8}).",
+                            manifestPath, manifest.Version, manifest.AllTypesHash);
+                    }
+#endif
 
                     foreach (Asset asset in manifest.Assets)
                     {
-                        _externalManifestAssets.Add(((ulong)asset.TypeId << 32) | asset.InstanceId);
+                        validatedAssets.Add(((ulong)asset.TypeId << 32) | asset.InstanceId);
                     }
                     _tracer.TraceInfo(
                         "Loaded {0} assets from external manifest '{1}'.",
                         manifest.AssetCount,
                         manifestPath);
                 }
+                _externalManifestAssets.Clear();
+                _externalManifestAssets.UnionWith(validatedAssets);
                 _externalManifestCacheKey = cacheKey;
             }
         }
 
         private static bool ManifestContainsAsset(uint typeId, uint instanceId)
         {
-            LoadManifestIfNeeded();
-            return _externalManifestAssets.Contains(((ulong)typeId << 32) | instanceId);
+            // Reborn: keep readers synchronized with refreshes of the shared external identity set.
+            lock (_externalManifestLock)
+            {
+                LoadManifestIfNeeded();
+                return _externalManifestAssets.Contains(((ulong)typeId << 32) | instanceId);
+            }
         }
 
         private LastState _last;

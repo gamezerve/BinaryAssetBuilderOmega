@@ -14,13 +14,20 @@ internal static class Program
         try
         {
             // Reborn: expose focused schema-to-import validation with optional real EP1 manifests.
-            if ((args.Length < 2 && args.FirstOrDefault() is not ("layout-self-test" or "compiler-self-test")) || args.FirstOrDefault() is not ("inspect" or "verify" or "compare" or "schema-diff" or "writer-self-test" or "utility-verify" or "assembly-fields" or "assembly-methods" or "assembly-il" or "assembly-size-diff" or "current-layout" or "layout-self-test" or "compiler-self-test" or "reference-self-test" or "asset-bytes" or "hash"))
+            if ((args.Length < 2 && args.FirstOrDefault() is not ("layout-self-test" or "compiler-self-test")) || args.FirstOrDefault() is not ("inspect" or "verify" or "compare" or "schema-diff" or "writer-self-test" or "utility-verify" or "assembly-fields" or "assembly-methods" or "assembly-il" or "assembly-size-diff" or "current-layout" or "layout-self-test" or "compiler-self-test" or "reference-self-test" or "external-link-self-test" or "asset-bytes" or "hash"))
             {
                 PrintUsage();
                 return 2;
             }
 
             var command = args[0];
+            // Reborn: generate small link metadata fixtures and optionally validate the actual external EP1 lookup.
+            if (command == "external-link-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                ExternalLinkSmokeTest.Run(args[1], args.Skip(2).ToArray());
+                return 0;
+            }
             // Reborn: reuse the production schema reference stage and optionally check its targets in game manifests.
             if (command == "reference-self-test")
             {
@@ -421,6 +428,8 @@ internal static class Program
         Console.WriteLine("  compiler-self-test");
         // Reborn: manifest arguments validate dependency identities without reading their BIN payloads.
         Console.WriteLine("  reference-self-test <schema-fixture> [ep1-manifest ...]");
+        // Reborn: external-link checks create only tiny test manifests in the specified artifact directory.
+        Console.WriteLine("  external-link-self-test <output-directory> [ep1-manifest ...]");
         Console.WriteLine("  asset-bytes <manifest-or-big> <bin-or-big> <type-name> [--entry <manifest-entry>] [--bin-entry <bin-entry>] [--asset <full-name>] [--find-u32 <hex>] [--offset <decimal-or-hex>] [--count <decimal-or-hex>] [--relo <relo-or-big>] [--relo-entry <BIG entry>] [--imp <imp-or-big>] [--imp-entry <BIG entry>]");
         Console.WriteLine("  hash <text> [additional-text ...]");
     }

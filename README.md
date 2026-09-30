@@ -16,7 +16,7 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **784/1,390** EP1 complex types have models and
 **760/1,390** have typed marshallers. The compiler test runner invokes
-**46 test groups** (some contain several fixtures). These counters can grow
+**47 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. In this work block, model and
@@ -53,6 +53,8 @@ marshaller counts are unchanged; registered test groups increased by one.
 - Restored the missing ConvergingLaserState model, marshaller and behavior dispatch.
 - Verified schema-inserted infiltrator defaults through dependency-index normalization and native imports against real EP1 manifests.
 - Fixed inherited refType lookup and typed weak-reference normalization; invalidated old session caches.
+- Added explicit external lookup/runtime stream mapping and preserved separate normal/patch entries.
+- Fixed patch-base retention and asset lookup; reject wrong-target bases and refresh changed external manifests.
 
 Latest verification: Release/x86 build, `layout-self-test` and
 `compiler-self-test` passed. The two-passenger OpenContain fixture produces
@@ -92,7 +94,7 @@ regression caught and fixed culture-sensitive weak-ID hashing: uppercase-I
 asset names now use invariant normalization. These tests still do not prove
 in-game loading. Overall effort remains approximately 50% complete.
 
-Current verification: full Release/x86 dependency rebuild, final inspector
+Previous reference-block verification: full Release/x86 dependency rebuild, final inspector
 rebuild, layout tests, all 46 compiler groups and 33 enum mappings pass.
 The schema-default infiltrator fixture produces `136/0/20`, including a real
 import at dependency index zero. Repeated runs produce identical native chunks
@@ -100,6 +102,29 @@ and dependency identities; a previous-revision session cache is rejected.
 Inherited reference types, attribute overrides, invalid explicit types and
 typed/trimmed weak names are regression-tested. The four default targets exist
 in the local Uprising global/static manifests, checked without opening BIN data.
+
+Current verification: Release/x86 full dependency rebuild, final test-runner
+rebuild, all 47 compiler groups, layout checks, writer round trip and 33 enum
+mappings pass. External-link tests cover runtime path serialization, settings
+round trip, normal/patch roles, retained base metadata, same-path manifest
+refresh, wrong-target rejection and production lookup against real EP1 manifests.
+No game BIN was opened or modified; generated fixtures contain only metadata.
+
+External builds now require an explicit runtime-name mapping in addition to
+local manifest files; otherwise production emission fails rather than silently
+omitting the stream references. Physical paths are lookup inputs, not game paths.
+
+```xml
+<!-- Reborn: pair local lookup files with relative names visible to the game's stream loader. -->
+<Settings ExternalManifests="Base/global.manifest;Base/static.manifest"
+          ExternalManifestReferences="global.manifest;static.manifest" />
+```
+
+`/emr` supplies the same mapping on the command line. Names are paired in order,
+must be relative `.manifest` paths, and cannot contain traversal or empty
+segments. Reference-bearing manifests are regenerated even when asset checksums
+match, preventing stale runtime names. The final EP1 type-table safety gate
+remains enabled; this is not yet a validated SDK/game-load build.
 
 ### Next steps and acceptance gates
 

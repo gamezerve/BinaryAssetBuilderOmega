@@ -72,6 +72,9 @@ namespace BinaryAssetBuilder.Utility
 
         private unsafe void Free()
         {
+            // Reborn: patch-owned metadata buffers must be released together with their parent manifest.
+            PatchManifest?.Dispose();
+            PatchManifest = null;
             Assets = null;
             FileName = null;
             _pHeader = null;
@@ -297,7 +300,14 @@ namespace BinaryAssetBuilder.Utility
             }
             if (patchManifest is not null)
             {
-                SortedDictionary<AssetHandle, Asset> patchAssets = new SortedDictionary<AssetHandle, Asset>();
+                // Reborn: a patch cannot inherit asset metadata from a different game/type-table target.
+                if (patchManifest.Version != Version || patchManifest.AllTypesHash != AllTypesHash)
+                {
+                    patchManifest.Dispose();
+                    throw new InvalidDataException("Patch and base manifests must use the same version and AllTypesHash.");
+                }
+                // Reborn: AssetHandle has value equality but no ordering; SortedDictionary crashes on lookup.
+                Dictionary<AssetHandle, Asset> patchAssets = new Dictionary<AssetHandle, Asset>();
                 foreach (Asset asset in patchManifest.Assets)
                 {
                     patchAssets.Add(new AssetHandle(asset.TypeId, asset.InstanceId), asset);

@@ -42,11 +42,11 @@ namespace BinaryAssetBuilder.Core.SageXml
             public string Configuration;
         }
 
-        // Reborn: reject session caches normalized with old refType inheritance and typed weak-name semantics.
+        // Reborn: invalidate caches predating explicit external runtime links and target-aware manifest lookup.
 #if VERSION5
-        public const uint Version = 12u;
+        public const uint Version = 14u;
 #else
-        public const uint Version = 13u;
+        public const uint Version = 15u;
 #endif
 
         private static readonly Tracer _tracer = Tracer.GetTracer(nameof(DocumentProcessor), "Provides XML processing functionality");

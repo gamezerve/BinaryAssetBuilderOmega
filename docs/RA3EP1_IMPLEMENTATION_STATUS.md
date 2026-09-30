@@ -33,12 +33,12 @@ snapshot was held while several shared-layout fixes accumulated. This snapshot
 reassesses the native-layout workstream from 53% to 55% after the containment
 audit and attach base recovery, giving roughly 50% overall. End-to-end game
 validation is still at zero. Observable counters are reported separately:
-the compiler self-test currently invokes 46 test groups (some have multiple
+the compiler self-test currently invokes 47 test groups (some have multiple
 fixtures), and the structural coverage script reports the inventory above.
 Neither counter proves runtime compatibility or replaces final type-table gates.
 The coverage script now emits `CompilerTestGroupsDeclared`, counting registered
 groups without executing them. This block adds one test group and leaves model/
-marshaller counts unchanged relative to its starting snapshot (784/760 and 45 groups).
+marshaller counts unchanged relative to its starting snapshot (784/760 and 46 groups).
 
 ## Established facts
 
@@ -671,7 +671,9 @@ arbitrary binary bytes for strings.
 Example:
 
 ```xml
-<Settings ExternalManifests="Base/global.manifest;Base/static.manifest" />
+<!-- Reborn: local lookup paths and game-visible stream paths are distinct. -->
+<Settings ExternalManifests="Base/global.manifest;Base/static.manifest"
+          ExternalManifestReferences="global.manifest;static.manifest" />
 ```
 
 Production output also has a fail-closed gate: a `VERSION7` build refuses to
@@ -815,6 +817,76 @@ test-runner rebuild. Inventory stays 784 models/760 marshallers. The rounded
 effort estimate remains approximately 50%. This test does not establish full
 DocumentProcessor/plugin/output-manager execution, external/patch linking,
 final type-table correctness or an in-game mod load; those remain open gates.
+
+## External stream references and patch metadata (2026-09-30)
+
+The external-manifest fallback previously accepted asset identities without
+adding the corresponding game-visible stream references to the emitted manifest.
+Local filesystem paths cannot determine runtime stream paths safely. Settings
+now separates `ExternalManifests` (`/em`, lookup files) from
+`ExternalManifestReferences` (`/emr`, relative runtime names paired in order).
+`Settings.ReadXml/WriteXml` preserves both fields. Absolute names, mismatched
+counts, non-manifest extensions, NUL characters and empty/traversal path
+segments are rejected. Names normalize to lowercase backslash paths.
+
+`OutputManager.AddExternalManifestReferences` validates the complete mapping
+before changing a ReferencedFileBuffer. `CommitManifest` preflights it before
+old-output reuse and serializes the references alongside include/patch entries.
+Configured external files now need explicit runtime names for production output.
+The old-manifest fast path is disabled when either the old manifest has stream
+references or the new external mapping has entries: equal asset checksums alone
+cannot establish equal dependency paths. This conservatively regenerates
+reference-bearing manifest metadata; it does not automatically rebuild game BINs.
+The existing `AllTypesHash=0x5454A8E9` compiler-plugin gate is unchanged.
+
+Additional concrete defects corrected:
+
+- `ReferencedFileBuffer.AddReference` keyed entries only by string.GetHashCode,
+  losing colliding names and treating normal/patch roles as identical. It now
+  uses the full `(name, isPatch)` key and rejects blank/NUL-containing names.
+  Exact duplicate entries still deduplicate; different roles retain markers 1/2.
+- `Utility.Manifest.Load` used SortedDictionary with AssetHandle, which has no
+  ordering interface. Even base asset lookup could throw IComparable errors.
+  Value-keyed Dictionary now performs this lookup. A patch and base must have
+  equal manifest versions and AllTypesHash before inheriting metadata. The owned
+  PatchManifest is released when its parent is disposed/reloaded.
+- `OutputManager.ProcessBasePatchStream` loaded a local Manifest but never set
+  BasePatchStreamManifest, disabling base-position/stable-sort logic. It now
+  retains and owns that metadata, rejects non-EP1 bases in VERSION7 and propagates
+  load failures instead of continuing without a base. Dispose handles an absent
+  output header and releases the retained base.
+- `AssetDeclarationDocument.LoadManifestIfNeeded` cached only filenames. It now
+  includes path, file length, UTC last-write ticks and error policy in the key.
+  Same-path file replacement refreshes identities; a missing file fails in
+  strict mode and wrong-version/hash manifests fail in VERSION7. A reload
+  publishes a fully validated identity set atomically, and reads share its lock.
+  This is metadata-based invalidation, not a cryptographic content comparison;
+  replacement preserving both size and timestamp is not detected.
+
+DocumentProcessor cache revisions are now 14/15 (VERSION5/other); VERSION7
+uses revision 15, separate from game manifest format 7. The prior cache rejection
+test continues to pass. No user cache or game asset files were deleted.
+
+`ExternalLinkSmokeTest` calls production writer and lookup seams, exercises the
+actual OutputManager patch-base constructor path and creates tiny utility-writer
+metadata fixtures. Coverage includes runtime mapping/role round trips through
+the independent reader, zero-size patch inheritance, retained base position,
+wrong-target patch rejection, same-file identity refresh, missing/wrong-target
+external streams, recovery after failed reload and settings XML round trip.
+With real global/static manifests supplied, production ManifestContainsAsset
+finds all four previously verified infiltrator default dependencies. Game BINs
+are never read. `external-link-self-test <artifact-directory> [ep1-manifest ...]`
+reproduces these checks; artifacts stay in the selected directory, while the
+compiler runner uses a uniquely named temporary fixture directory.
+
+Verification: full Release/x86 dependency rebuild (one warning, zero errors),
+final test-runner rebuild (zero warnings/errors), layout tests, all 47 compiler
+groups, writer round trip and all 33 enum mappings pass. Structural inventory
+remains 784 models/760 marshallers; estimated overall effort remains about 50%.
+These are metadata/link-path tests, not proof of stable sorting on a complete
+mod, inherited BIN/RELO/IMP copying or a successful game load. Full plugin/type
+registry migration, real asset-stream patch validation, derived-type resolution
+through external-only assets and WorldBuilder packaging remain open.
 
 ## Acceptance gates for the first PoC
 

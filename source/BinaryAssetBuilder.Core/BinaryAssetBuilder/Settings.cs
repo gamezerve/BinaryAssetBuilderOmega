@@ -24,6 +24,8 @@ namespace BinaryAssetBuilder
         private string _defaultDataPaths;
         private string _monitorPaths;
         private string _externalManifests;
+        // Reborn: separate local lookup files from their game-visible stream paths.
+        private string _externalManifestReferences;
         private bool _usePrecompiled;
         private bool _versionFiles;
         private bool _resident;
@@ -68,6 +70,8 @@ namespace BinaryAssetBuilder
         [OptionalCommandLineOption("mp"), Description("Additional paths which should be monitored for changes in persistent mode")] public string MonitorPaths { get => _monitorPaths; set => _monitorPaths = value; }
         [OptionalCommandLineOption("em"), Description("Semicolon-separated external manifests used to resolve precompiled asset references")] public string ExternalManifests { get => _externalManifests; set => _externalManifests = value; }
         public string[] ProcessedExternalManifests { get; set; }
+        // Reborn: map each configured external manifest to a relative runtime manifest name, in the same order.
+        [OptionalCommandLineOption("emr"), Description("Semicolon-separated runtime manifest paths paired with ExternalManifests")] public string ExternalManifestReferences { get => _externalManifestReferences; set => _externalManifestReferences = value; }
         public string Postfix { get; set; }
         public string StreamPostfix { get; set; }
         public bool BigEndian { get; set; }
@@ -97,6 +101,8 @@ namespace BinaryAssetBuilder
             Marshaler.Marshal(node.GetAttributeValue(nameof(DefaultDataPaths), null), ref _defaultDataPaths);
             Marshaler.Marshal(node.GetAttributeValue(nameof(MonitorPaths), null), ref _monitorPaths);
             Marshaler.Marshal(node.GetAttributeValue(nameof(ExternalManifests), null), ref _externalManifests);
+            // Reborn: retain explicit runtime names rather than leaking local absolute paths into game output.
+            Marshaler.Marshal(node.GetAttributeValue(nameof(ExternalManifestReferences), null), ref _externalManifestReferences);
             Marshaler.Marshal(node.GetAttributeValue(nameof(UsePrecompiled), null), ref _usePrecompiled);
             Marshaler.Marshal(node.GetAttributeValue(nameof(VersionFiles), null), ref _versionFiles);
             Marshaler.Marshal(node.GetAttributeValue(nameof(Resident), null), ref _resident);
@@ -144,6 +150,8 @@ namespace BinaryAssetBuilder
             writer.WriteAttributeString(nameof(DefaultDataPaths), _defaultDataPaths);
             writer.WriteAttributeString(nameof(MonitorPaths), _monitorPaths);
             writer.WriteAttributeString(nameof(ExternalManifests), _externalManifests);
+            // Reborn: preserve external lookup/runtime mapping in serialized settings.
+            writer.WriteAttributeString(nameof(ExternalManifestReferences), _externalManifestReferences);
             writer.WriteAttributeString(nameof(UsePrecompiled), _usePrecompiled.ToString());
             writer.WriteAttributeString(nameof(VersionFiles), _versionFiles.ToString());
             writer.WriteAttributeString(nameof(Resident), _resident.ToString());

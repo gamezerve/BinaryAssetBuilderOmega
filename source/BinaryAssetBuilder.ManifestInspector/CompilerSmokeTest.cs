@@ -39,6 +39,8 @@ internal static class CompilerSmokeTest
         TestLaserStateFamily();
         // Reborn: validate schema-inserted defaults through the production reference normalizer.
         TestReferencePipeline();
+        // Reborn: guard external runtime paths, patch roles and stale manifest identity caches.
+        TestExternalManifestLinks();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1855,6 +1857,14 @@ internal static class CompilerSmokeTest
     private static void TestReferencePipeline()
     {
         ReferencePipelineSmokeTest.Run(ReferencePipelineSmokeTest.FindFixture());
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: validate external linking with isolated tiny metadata fixtures, never game BIN streams. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestExternalManifestLinks()
+    {
+        ExternalLinkSmokeTest.Run(Path.Combine(Path.GetTempPath(), "Reborn-Ep1ExternalLink-" + Guid.NewGuid().ToString("N")));
     }
 
     //-------------------------------------------------------------------------------------------------
