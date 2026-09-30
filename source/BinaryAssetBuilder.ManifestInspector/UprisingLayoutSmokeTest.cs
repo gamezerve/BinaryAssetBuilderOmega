@@ -72,6 +72,10 @@ internal static class UprisingLayoutSmokeTest
         Expect(SageBinaryData.LocomotorSurfaceBitFlags.Count == 11, "LocomotorSurfaceBitFlags.Count", 11, SageBinaryData.LocomotorSurfaceBitFlags.Count);
 
         ExpectSize<SageBinaryData.WeaponAiHintInfo>(12);
+        // Reborn: enforce official tint offsets recovered from RA3 Tokenizer marshaler IL.
+        ExpectSize<SageBinaryData.TintObjectsNuggetType>(72);
+        ExpectOffset<SageBinaryData.TintObjectsNuggetType>(nameof(SageBinaryData.TintObjectsNuggetType.PreColorTime), 40);
+        ExpectOffset<SageBinaryData.TintObjectsNuggetType>(nameof(SageBinaryData.TintObjectsNuggetType.Color), 60);
         ExpectOffset<SageBinaryData.WeaponAiHintInfo>(nameof(SageBinaryData.WeaponAiHintInfo.UseAsWarheadForDamageCalculations), 4);
         ExpectOffset<SageBinaryData.WeaponAiHintInfo>(nameof(SageBinaryData.WeaponAiHintInfo.IsAntiGarrisonWeapon), 8);
         ExpectSize<SageBinaryData.WeaponTemplate>(340);

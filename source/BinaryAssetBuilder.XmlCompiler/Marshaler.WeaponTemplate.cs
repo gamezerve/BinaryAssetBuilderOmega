@@ -231,7 +231,8 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(TintObjectsNuggetType.Frequency), "1.0"), &objT->Frequency, state);
         Marshal(node.GetAttributeValue(nameof(TintObjectsNuggetType.Amplitude), "1.0"), &objT->Amplitude, state);
         Marshal(node.GetChildNode(nameof(TintObjectsNuggetType.Color), null), &objT->Color, state);
-        Marshal(node, (DamageNuggetType*)objT, state);
+        // Reborn: preserve the official 40-byte effect header before tint fields at offset 40.
+        Marshal(node, (WeaponEffectNugget*)objT, state);
     }
 
     public static unsafe void Marshal(Node node, DamageFieldNuggetType* objT, Tracker state)

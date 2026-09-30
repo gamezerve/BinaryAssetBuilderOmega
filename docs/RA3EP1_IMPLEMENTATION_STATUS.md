@@ -392,6 +392,15 @@ special-power base contains three expanded object filters. Compiler fixtures
 emit `148/0/8` and `616/8/8`, respectively. These intentional EP1 deltas remain
 visible in the RA3 size audit rather than being falsely forced to RA3 sizes.
 
+`TintObjectsNuggetType` exposed a different inherited KW error: its base was
+`DamageNuggetType`, although both the EP1 XSD and EA's RA3 Tokenizer marshaler
+use `WeaponEffectNugget`. Restoring the 40-byte effect header reduces the native
+root from 188 to the official 72 bytes. IL confirms `PreColorTime` at 40,
+`Frequency` at 52 and the by-value RGB color at 60. A compiler fixture checks
+these offsets and the emitted scalar values (`72/0/0`). The shared-type size
+audit advances to 214 exact matches and 164 mismatches; these totals include
+intentional EP1 size deltas and do not measure runtime compatibility.
+
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of
 `GameObject:ClientFlingableExplodingBarrel` found type ID `0xD6C03AC2` at the

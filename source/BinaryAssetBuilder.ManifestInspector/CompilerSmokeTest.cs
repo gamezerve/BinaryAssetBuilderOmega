@@ -19,6 +19,7 @@ internal static class CompilerSmokeTest
         TestInvisibilitySpecialPower();
         TestLocomotorTemplate();
         TestWeaponTemplate();
+        TestTintObjectsNugget();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1546,6 +1547,37 @@ internal static class CompilerSmokeTest
         Expect(ReadUInt32(instance, 320) == 0x00626008, "YurikoShieldSphereUpdate minor damage flags", 0x00626008, ReadUInt32(instance, 320));
         Expect(chunk.ImportsBuffer.Length == 0, "YurikoShieldSphereUpdate standalone imports bytes", 0, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  YurikoShieldSphereUpdate bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Verify tint defaults and by-value color follow the native effect header without damage fields. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestTintObjectsNugget()
+    {
+        const string xml = """
+            <TintObjectsNugget xmlns="uri:ea.com:eala:asset" Frequency="4" Amplitude="0.5">
+              <Color R="1" G="0.5" B="0.25" />
+            </TintObjectsNugget>
+            """;
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:TintObjectsNugget", namespaces)!, namespaces);
+        TintObjectsNuggetType* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(TintObjectsNuggetType), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 72, "TintObjectsNugget instance bytes", 72, instance.Length);
+        Expect(ReadUInt32(instance, 40) == 0x40000000, "TintObjectsNugget default pre-time", 0x40000000, ReadUInt32(instance, 40));
+        Expect(ReadUInt32(instance, 52) == 0x40800000, "TintObjectsNugget frequency", 0x40800000, ReadUInt32(instance, 52));
+        Expect(ReadUInt32(instance, 60) == 0x3F800000, "TintObjectsNugget red", 0x3F800000, ReadUInt32(instance, 60));
+        Expect(ReadUInt32(instance, 68) == 0x3E800000, "TintObjectsNugget blue", 0x3E800000, ReadUInt32(instance, 68));
+        Expect(chunk.RelocationBuffer.Length == 0, "TintObjectsNugget relocation bytes", 0, chunk.RelocationBuffer.Length);
+        Expect(chunk.ImportsBuffer.Length == 0, "TintObjectsNugget imports bytes", 0, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  TintObjectsNugget bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static uint ReadUInt32(ReadOnlySpan<byte> bytes, int offset) =>

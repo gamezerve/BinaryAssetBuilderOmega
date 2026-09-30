@@ -388,7 +388,8 @@ public struct FireOnObjectsNuggetType
 [StructLayout(LayoutKind.Sequential)]
 public struct TintObjectsNuggetType
 {
-    public DamageNuggetType Base;
+    // Reborn: official RA3/Uprising tint effects inherit the effect header without a damage payload.
+    public WeaponEffectNugget Base;
     public Time PreColorTime;
     public Time PostColorTime;
     public Time SustainedColorTime;
