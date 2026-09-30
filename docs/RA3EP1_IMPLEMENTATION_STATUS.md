@@ -20,8 +20,8 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 778 (56.0%) and typed marshallers for 754
-(54.2%). These broad numbers are inventory coverage only. All 48 complex types
+The source tree contains models for 779 (56.0%) and typed marshallers for 755
+(54.3%). These broad numbers are inventory coverage only. All 48 complex types
 that exist only in EP1 now have both a model and marshaller. This closes the
 EP1-only inventory, but it does not close changed shared types or missing parent
 pipelines; those retain substantially more weight than raw file presence in the
@@ -430,6 +430,24 @@ RA3's 160. Compiler fixtures exercise inherited defaults, a relocated weak
 InitialPayload record (`364/8/0` for HordeTransport), and a garrison roster
 without relocation (`168/0/0`). Other Horde/Garrison derivatives remain
 unaudited; passing these fixtures does not establish in-game compatibility.
+
+The next derivative audit confirms `HordeGarrisonContainModuleData` against
+official RA3 marshaler IL `0x06000145`: RA3 uses ExitDelay=160 and vector
+pointers=164/168/172, each allocating 12 bytes. The corrected EP1 base shifts
+these to 168 and 172/176/180 (root size 184); no additional field correction
+was needed. A three-vector fixture emits `220/16/0`, exercising relocation
+targets and scalar values while leaving the optional inline roster absent.
+`ContestableGarrisonContainModuleData` was missing entirely from the source.
+Official IL `0x060001CD` and the EP1 XSD establish two inline status masks
+followed by EjectSpeed, with empty required-status, UNDER_IRON_CURTAIN forbidden
+status and 1.0 speed defaults. Its EP1 root is 236 bytes versus RA3's 220:
+the inherited base adds eight and the two masks add eight more. The restored
+model/marshaller is registered under name hash `0x8C50F0D7`. A behavior-module
+dispatch fixture emits `240/8/0`, including a four-byte outer pointer slot,
+and checks the emitted type hash, required bits, forbidden default and speed.
+This proves native dispatch/marshalling only; the final EP1 type hash and
+runtime tokenized output are still outstanding. HordeContain, Heal/Tunnel/
+Slaughter and other containment derivatives remain separate audit work.
 
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of

@@ -18,6 +18,14 @@ internal static class UprisingLayoutSmokeTest
         ExpectSize<SageBinaryData.HordeTransportContainModuleData>(356);
         ExpectOffset<SageBinaryData.HordeTransportContainModuleData>(nameof(SageBinaryData.HordeTransportContainModuleData.FlyOffMapOnEmpty), 352);
         ExpectSize<SageBinaryData.GarrisonContainModuleData>(168);
+        // Reborn: lock garrison derivative offsets recovered from official RA3 marshaler IL.
+        ExpectSize<SageBinaryData.HordeGarrisonContainModuleData>(184);
+        ExpectOffset<SageBinaryData.HordeGarrisonContainModuleData>(nameof(SageBinaryData.HordeGarrisonContainModuleData.ExitDelay), 168);
+        ExpectOffset<SageBinaryData.HordeGarrisonContainModuleData>(nameof(SageBinaryData.HordeGarrisonContainModuleData.ExitOffset), 180);
+        ExpectSize<SageBinaryData.ContestableGarrisonContainModuleData>(236);
+        ExpectOffset<SageBinaryData.ContestableGarrisonContainModuleData>(nameof(SageBinaryData.ContestableGarrisonContainModuleData.RequiredClearingObjectStatus), 168);
+        ExpectOffset<SageBinaryData.ContestableGarrisonContainModuleData>(nameof(SageBinaryData.ContestableGarrisonContainModuleData.ForbiddenContainerObjectStatus), 200);
+        ExpectOffset<SageBinaryData.ContestableGarrisonContainModuleData>(nameof(SageBinaryData.ContestableGarrisonContainModuleData.EjectSpeed), 232);
         ExpectOffset<SageBinaryData.GarrisonContainModuleData>(nameof(SageBinaryData.GarrisonContainModuleData.InitialRoster), 156);
         ExpectOffset<SageBinaryData.GarrisonContainModuleData>(nameof(SageBinaryData.GarrisonContainModuleData.MobileGarrison), 164);
         ExpectOffset<SageBinaryData.OpenContainModuleData>(nameof(SageBinaryData.OpenContainModuleData.IgnoreDisabledBitsForRiders), 36);

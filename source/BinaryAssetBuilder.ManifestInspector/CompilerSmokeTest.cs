@@ -24,6 +24,8 @@ internal static class CompilerSmokeTest
         TestOpenContain();
         // Reborn: guard transport inheritance and the by-value garrison roster.
         TestContainDerivatives();
+        // Reborn: check optional vector relocation and the newly restored contestable dispatch.
+        TestGarrisonDerivatives();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1679,6 +1681,56 @@ internal static class CompilerSmokeTest
         Expect(bytes[164] == 1 && bytes[166] == 0, "Garrison flags and capture default", 1, bytes[164]);
         Expect(garrisonChunk.RelocationBuffer.Length == 0 && garrisonChunk.ImportsBuffer.Length == 0, "Garrison no roster relocation or imports", 0, garrisonChunk.RelocationBuffer.Length);
         Console.WriteLine($"  Contain derivatives hordeTransport={transportChunk.InstanceBuffer.Length}/8/0, garrison={garrisonChunk.InstanceBuffer.Length}/0/0");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Verify garrison derivative vectors, optional defaults and polymorphic dispatch. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestGarrisonDerivatives()
+    {
+        XmlDocument document = new();
+        document.LoadXml("""
+            <HordeGarrisonContain xmlns="uri:ea.com:eala:asset" ExitDelay="7">
+              <EntryOffset x="1" y="2" z="3" />
+              <EntryPosition x="4" y="5" z="6" />
+              <ExitOffset x="7" y="8" z="9" />
+            </HordeGarrisonContain>
+            """);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:HordeGarrisonContain", namespaces)!, namespaces);
+        HordeGarrisonContainModuleData* horde;
+        using Tracker hordeTracker = new((void**)&horde, (uint)sizeof(HordeGarrisonContainModuleData), false);
+        Marshaler.Marshal(node, horde, hordeTracker);
+        Chunk hordeChunk = new();
+        hordeTracker.MakeRelocatable(hordeChunk);
+        ReadOnlySpan<byte> bytes = hordeChunk.InstanceBuffer;
+        Expect(bytes.Length == 220, "HordeGarrison instance bytes", 220, bytes.Length);
+        Expect(ReadUInt32(bytes, 168) == 7, "HordeGarrison raw exit delay", 7, ReadUInt32(bytes, 168));
+        Expect(ReadUInt32(bytes, 172) == 184 && ReadUInt32(bytes, 176) == 196 && ReadUInt32(bytes, 180) == 208, "HordeGarrison vector pointers", 208, ReadUInt32(bytes, 180));
+        Expect(ReadUInt32(bytes, 184) == 0x3F800000 && ReadUInt32(bytes, 216) == 0x41100000, "HordeGarrison vector values", 0x41100000, ReadUInt32(bytes, 216));
+        Expect(hordeChunk.RelocationBuffer.Length == 16 && hordeChunk.ImportsBuffer.Length == 0, "HordeGarrison relocation bytes", 16, hordeChunk.RelocationBuffer.Length);
+
+        document.LoadXml("""
+            <ContestableGarrisonContain xmlns="uri:ea.com:eala:asset" TypeId="0x8C50F0D7" RequiredClearingObjectStatus="CAN_ATTACK" />
+            """);
+        node = new Node(document.CreateNavigator()!.SelectSingleNode("/ea:ContestableGarrisonContain", namespaces)!, namespaces);
+        BehaviorModuleData** slot;
+        using Tracker contestTracker = new((void**)&slot, (uint)sizeof(BehaviorModuleData*), false);
+        Marshaler.Marshal(node, slot, contestTracker);
+        Chunk contestChunk = new();
+        contestTracker.MakeRelocatable(contestChunk);
+        bytes = contestChunk.InstanceBuffer;
+        Expect(bytes.Length == 240, "ContestableGarrison dispatch instance", 240, bytes.Length);
+        Expect(ReadUInt32(bytes, 0) == 4, "ContestableGarrison root pointer", 4, ReadUInt32(bytes, 0));
+        Expect(ReadUInt32(bytes, 4) == 0x8C50F0D7, "ContestableGarrison type hash", unchecked((int)0x8C50F0D7), ReadUInt32(bytes, 4));
+        Expect(ReadUInt32(bytes, 172) == 2, "ContestableGarrison required status", 2, ReadUInt32(bytes, 172));
+        int iron = (int)ObjectStatusType.UNDER_IRON_CURTAIN;
+        uint ironBit = 1u << (iron % 32);
+        Expect(ReadUInt32(bytes, 204 + 4 * (iron / 32)) == ironBit, "ContestableGarrison forbidden default", unchecked((int)ironBit), ReadUInt32(bytes, 204 + 4 * (iron / 32)));
+        Expect(ReadUInt32(bytes, 236) == 0x3F800000, "ContestableGarrison eject default", 0x3F800000, ReadUInt32(bytes, 236));
+        Expect(contestChunk.RelocationBuffer.Length == 8 && contestChunk.ImportsBuffer.Length == 0, "ContestableGarrison dispatch relocation", 8, contestChunk.RelocationBuffer.Length);
+        Console.WriteLine($"  Garrison derivatives horde={hordeChunk.InstanceBuffer.Length}/16/0, contestableDispatch={contestChunk.InstanceBuffer.Length}/8/0");
     }
 
     private static uint ReadUInt32(ReadOnlySpan<byte> bytes, int offset) =>

@@ -459,6 +459,10 @@ public static partial class Marshaler
             case 0xBAE3BC7Du:
                 MarshalPolymorphicType<GarrisonContainModuleData, BehaviorModuleData>(node, objT, state);
                 break;
+            // Reborn: register the missing RA3/EP1 contestable garrison type by its native name hash.
+            case 0x8C50F0D7u:
+                MarshalPolymorphicType<ContestableGarrisonContainModuleData, BehaviorModuleData>(node, objT, state);
+                break;
             case 0xC2EBB54Du:
                 MarshalPolymorphicType<ExperienceLevelCreateModuleData, BehaviorModuleData>(node, objT, state);
                 break;

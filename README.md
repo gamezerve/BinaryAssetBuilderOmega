@@ -1,58 +1,61 @@
 # BinaryAssetBuilder
-Kane's Wrath kökenli .NET BinaryAssetBuilder'ın RA3 Uprising (EP1) uyarlaması.
+A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
-## Uprising çalışma durumu — 30 Eylül 2026
+## Uprising progress — September 30, 2026
 
-Aktif dal: `feature/ra3ep1-manifest-inspector`. Bu henüz kullanılabilir bir
-Uprising Mod SDK sürümü değildir. XML/XSD dosyalarını değiştirmek tek başına
-yeterli değil; native yerleşimler, type hash'leri, bağımlılıklar ve oyun içi
-yükleme de doğrulanmalıdır.
+Active branch: `feature/ra3ep1-manifest-inspector`. This is not yet a usable
+Uprising Mod SDK release. Replacing XML/XSD files alone is insufficient:
+native layouts, type hashes, dependencies and in-game loading must also pass validation.
 
-Kabaca **%49 tamamlandı / %51 kaldı**. Bu bir mühendislik eforu tahminidir;
-dosya sayısına veya çalışan oyun moduna ait bir başarı oranı değildir.
+Approximately **49% complete / 51% remaining**. This is an engineering-effort
+estimate, not a file-coverage metric or a measure of working game mods.
 
-| Alan | Durum |
+| Workstream | Status |
 |---|---|
-| Manifest v7, BIG/RefPack okuma ve stream başlıkları | Uygulandı; gerçek oyun girdileri ve yapısal testlerle kontrol edildi |
-| EP1 şema envanteri ve enum geçişi | Envanter çıkarıldı; EP1'e özgü 48 complex type için model/marshaller mevcut |
-| Ortak RA3/KW native yerleşimler ve processors | Devam ediyor; modelin bulunması uyumluluğun doğrulandığı anlamına gelmez |
-| Nihai EP1 type tablosu / AllTypesHash | Tamamlanmadı; yanlış hash ile üretim çıktısı güvenlik kontrolüyle engelleniyor |
-| SDK betikleri ve WorldBuilder paketleme | Kısmi; uçtan uca doğrulanmadı |
-| Uprising içinde mod yükleme | Henüz doğrulanmadı |
+| Manifest v7, BIG/RefPack readers and stream headers | Implemented; checked with real game inputs and structural tests |
+| EP1 schema inventory and enum migration | Inventoried; all 48 EP1-only complex types have models/marshallers |
+| Shared RA3/KW native layouts and processors | In progress; model presence does not establish compatibility |
+| Final EP1 type table / AllTypesHash | Incomplete; a safety gate blocks production output with the wrong hash |
+| SDK scripts and WorldBuilder packaging | Partial; not validated end to end |
+| Loading a mod in Uprising | Not yet validated |
 
-### Son tamamlanan işler
+### Recently completed
 
-- ScriptedModel, dependency/death mask, invisibility ve tint yerleşim düzeltmeleri.
-- OpenContain tabanı ve PassengerData kayıtları: eksik RA3 alanları geri
-  getirildi, KW'ye özgü alanlar çıkarıldı, EP1 mask genişlemeleri korundu.
-- TransportContain'deki KW slot/grab/weapon-set alanları çıkarıldı.
-  GarrisonContain'in InitialRoster kaydı pointer yerine inline olarak düzeltildi.
-- Layout ve compiler testlerine taşıma/garnizon kayıtları için regresyon kontrolleri eklendi.
+- Corrected ScriptedModel, dependency/death masks, invisibility and tint layouts.
+- Restored missing RA3 fields in OpenContain and PassengerData, removed
+  KW-only fields and preserved EP1 mask expansions.
+- Removed KW slot/grab/weapon-set fields from TransportContain and corrected
+  GarrisonContain's InitialRoster from a pointer to an inline record.
+- Added transport/garrison regression checks to the layout and compiler tests.
+- Audited HordeGarrison's vector pointers and restored the missing
+  ContestableGarrisonContain model, marshaller and behavior-module dispatch.
 
-Son doğrulama: Release/x86 derlemesi, `layout-self-test` ve
-`compiler-self-test` geçti. İki yolculu OpenContain örneği `428/8/0`,
-HordeTransport örneği `364/8/0`, Garrison örneği `168/0/0` bayt
-`bin/relo/imp` üretti. Bunlar native marshalling testleridir; oyun içinde
-başarıyla yüklenen bir modun kanıtı değildir.
+Latest verification: Release/x86 build, `layout-self-test` and
+`compiler-self-test` passed. The two-passenger OpenContain fixture produces
+`428/8/0`, HordeTransport `364/8/0`, and Garrison `168/0/0` bytes of
+`bin/relo/imp`. The new HordeGarrison fixture produces `220/16/0`; the
+ContestableGarrison dispatch fixture produces `240/8/0` (including its
+four-byte outer pointer slot). These are native-marshalling tests, not proof
+that a mod loads in-game.
 
-### Sıradaki işler ve kabul koşulları
+### Next steps and acceptance gates
 
-1. Kalan Horde/Garrison türevleri ve diğer ortak modüllerin native yerleşimlerini denetlemek.
-2. EP1 type tablosunu tamamlayıp `AllTypesHash=0x5454A8E9` değerini doğrulamak.
-3. Gerçek Uprising asset örnekleriyle tokenized çıktıyı karşılaştırmak.
-4. SDK kaynak/şema/bağımlılık yollarını ve WorldBuilder paketlemeyi tamamlamak.
-5. Minimal modu Uprising'de yüklemek; tekrarlı build'lerin aynı çıktıyı ürettiğini doğrulamak.
+1. Audit remaining containment derivatives and other shared native layouts.
+2. Complete the EP1 type table and verify `AllTypesHash=0x5454A8E9`.
+3. Compare tokenized output with real Uprising asset fixtures.
+4. Complete SDK source/schema/dependency paths and WorldBuilder packaging.
+5. Load a minimal mod in Uprising and verify byte-identical repeat builds.
 
-Ayrıntılı bulgular, dosya/sınıf bilgileri ve sınırlamalar:
+Detailed findings, file/class references and limitations:
 [EP1 implementation status](docs/RA3EP1_IMPLEMENTATION_STATUS.md).
-İlerleme sırasında bu özet ve ayrıntılı rapor birlikte güncellenir.
-Değişiklikler yalnızca `gamezerve/BinaryAssetBuilderOmega` reposundaki çalışma
-dalına yayımlanır; Qibbi upstream'e gönderim veya PR yapılmaz.
+This summary and the detailed report are updated together as work progresses.
+Changes are published only to the working branch in
+`gamezerve/BinaryAssetBuilderOmega`; no pushes or PRs go to the Qibbi upstream.
 
-## Eski KW asset listesi (tarihsel referans)
+## Legacy KW asset list (historical reference)
 
-Aşağıdaki liste ve type ID'leri önceki KW uygulamasından kalmadır; Uprising
-uyumluluk listesi veya doğrulanmış EP1 type tablosu olarak kullanılmamalıdır.
+The following list and type IDs come from the earlier KW implementation.
+They are not a Uprising compatibility checklist or a verified EP1 type table.
 
 ### Implemented Asset Types
 * [ ] TestGameObject
