@@ -51,6 +51,8 @@ internal static class CompilerSmokeTest
         TestEp1ArmorDocument();
         // Reborn: prevent auxiliary stream loss when repairing partially valid linked output generations.
         TestLinkedStreamRepair();
+        // Reborn: distinguish identity checksum compatibility and tokenized patch matching from byte-integrity validation.
+        TestChecksumAudit();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1921,6 +1923,14 @@ internal static class CompilerSmokeTest
     private static void TestLinkedStreamRepair()
     {
         LinkedStreamSmokeTest.Run(Path.Combine(Path.GetTempPath(), "Reborn-Ep1LinkedStreams-" + Guid.NewGuid().ToString("N")));
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: retain official checksum/candidate behavior while preventing overclaims about cache or payload integrity. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestChecksumAudit()
+    {
+        ChecksumAudit.Run();
     }
 
     //-------------------------------------------------------------------------------------------------

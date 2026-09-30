@@ -1799,9 +1799,19 @@ namespace BinaryAssetBuilder.Core.SageXml
             {
                 _current.OutputInstances.Sort(new DependencyComparer());
             }
-            MemoryStream stream = new MemoryStream();
-            BinaryWriter writer = new BinaryWriter(stream);
-            foreach (InstanceDeclaration outputInstance in _current.OutputInstances)
+            // Reborn: preserve the official RA3 identity-checksum contract, including default MemoryStream capacity padding.
+            _current.OutputChecksum = ComputeOutputChecksum(_current.OutputInstances);
+            _current.OutputInstanceSet = null;
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: isolate the official identity checksum for regression tests without changing its padding, order or field selection. */
+        //-------------------------------------------------------------------------------------------------
+        internal static uint ComputeOutputChecksum(IEnumerable<InstanceDeclaration> outputInstances)
+        {
+            using MemoryStream stream = new MemoryStream();
+            using BinaryWriter writer = new BinaryWriter(stream);
+            foreach (InstanceDeclaration outputInstance in outputInstances)
             {
                 writer.Write(outputInstance.Handle.TypeId);
                 writer.Write(outputInstance.Handle.TypeHash);
@@ -1809,8 +1819,8 @@ namespace BinaryAssetBuilder.Core.SageXml
                 writer.Write(outputInstance.Handle.InstanceHash);
                 writer.Write(outputInstance.ReferencedInstances.Count);
             }
-            _current.OutputChecksum = stream.Length <= 0L ? 0u : FastHash.GetHashCode(stream.GetBuffer());
-            _current.OutputInstanceSet = null;
+            // Reborn: GetBuffer is intentional compatibility behavior verified in official Core.dll IL_01D6, not a payload digest.
+            return stream.Length <= 0L ? 0u : FastHash.GetHashCode(stream.GetBuffer());
         }
 
         public void CacheFromDocument(AssetDeclarationDocument other)

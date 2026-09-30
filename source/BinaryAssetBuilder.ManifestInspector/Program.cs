@@ -13,6 +13,19 @@ internal static class Program
     {
         try
         {
+            // Reborn: audit identity checksum candidates using only valid EP1 manifest metadata.
+            if (args.Length >= 2 && args[0] == "checksum-audit")
+            {
+                ChecksumAudit.Print(args.Skip(1).ToArray());
+                return 0;
+            }
+            // Reborn: lock official checksum padding and patch equivalence without changing compatibility behavior.
+            if (args.Length == 1 && args[0] == "checksum-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                ChecksumAudit.Run();
+                return 0;
+            }
             // Reborn: validate real intermediate commits and coordinated linking with tiny synthetic diagnostic assets.
             if (args.Length == 2 && args[0] == "linked-stream-self-test")
             {
@@ -453,6 +466,9 @@ internal static class Program
         Console.WriteLine("  writer-self-test <output-manifest>");
         // Reborn: this command writes only isolated synthetic asset/link regression fixtures.
         Console.WriteLine("  linked-stream-self-test <output-directory>");
+        // Reborn: checksum auditing reads manifest metadata only and does not certify payload integrity.
+        Console.WriteLine("  checksum-audit <ep1-manifest ...>");
+        Console.WriteLine("  checksum-self-test");
         Console.WriteLine("  utility-verify <manifest-or-big> [--entry <BIG entry>]");
         Console.WriteLine("  assembly-fields <managed-assembly> <type-name>");
         Console.WriteLine("  assembly-methods <managed-assembly> <type-name> [method-filter]");
