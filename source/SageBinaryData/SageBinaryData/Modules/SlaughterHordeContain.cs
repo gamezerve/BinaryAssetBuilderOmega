@@ -6,7 +6,9 @@ namespace SageBinaryData;
 public struct SlaughterHordeContainModuleData
 {
     public HordeGarrisonContainModuleData Base;
-    public float CashBackPercent;
+    // Reborn: RA3 stores a normalized percentage and an FX reference before the inline filter.
+    public Percentage CashBackPercent;
     public ObjectStatusBitFlags CanAlwaysEnterStatus;
+    public Relo.AssetReference<FXList> SlaughterFX;
     public ObjectFilter CanAlwaysEnterObjectFilter;
 }

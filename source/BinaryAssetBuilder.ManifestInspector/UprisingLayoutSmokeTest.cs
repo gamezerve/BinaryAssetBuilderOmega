@@ -20,6 +20,14 @@ internal static class UprisingLayoutSmokeTest
         ExpectSize<SageBinaryData.GarrisonContainModuleData>(168);
         // Reborn: lock garrison derivative offsets recovered from official RA3 marshaler IL.
         ExpectSize<SageBinaryData.HordeGarrisonContainModuleData>(184);
+        // Reborn: lock Heal/Tunnel/Slaughter native tails after the corrected EP1 garrison base.
+        ExpectSize<SageBinaryData.HealContainModuleData>(188);
+        ExpectOffset<SageBinaryData.HealContainModuleData>(nameof(SageBinaryData.HealContainModuleData.TimeForFullHeal), 184);
+        ExpectSize<SageBinaryData.TunnelContainModuleData>(192);
+        ExpectOffset<SageBinaryData.TunnelContainModuleData>(nameof(SageBinaryData.TunnelContainModuleData.DeleteRemoved), 188);
+        ExpectSize<SageBinaryData.SlaughterHordeContainModuleData>(344);
+        ExpectOffset<SageBinaryData.SlaughterHordeContainModuleData>(nameof(SageBinaryData.SlaughterHordeContainModuleData.SlaughterFX), 220);
+        ExpectOffset<SageBinaryData.SlaughterHordeContainModuleData>(nameof(SageBinaryData.SlaughterHordeContainModuleData.CanAlwaysEnterObjectFilter), 224);
         ExpectOffset<SageBinaryData.HordeGarrisonContainModuleData>(nameof(SageBinaryData.HordeGarrisonContainModuleData.ExitDelay), 168);
         ExpectOffset<SageBinaryData.HordeGarrisonContainModuleData>(nameof(SageBinaryData.HordeGarrisonContainModuleData.ExitOffset), 180);
         ExpectSize<SageBinaryData.ContestableGarrisonContainModuleData>(236);

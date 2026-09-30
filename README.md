@@ -29,6 +29,8 @@ estimate, not a file-coverage metric or a measure of working game mods.
 - Added transport/garrison regression checks to the layout and compiler tests.
 - Audited HordeGarrison's vector pointers and restored the missing
   ContestableGarrisonContain model, marshaller and behavior-module dispatch.
+- Audited Heal/Tunnel containment tails; restored SlaughterHordeContain's
+  missing FX reference and normalized percentage conversion for cash refunds.
 
 Latest verification: Release/x86 build, `layout-self-test` and
 `compiler-self-test` passed. The two-passenger OpenContain fixture produces
@@ -37,6 +39,10 @@ Latest verification: Release/x86 build, `layout-self-test` and
 ContestableGarrison dispatch fixture produces `240/8/0` (including its
 four-byte outer pointer slot). These are native-marshalling tests, not proof
 that a mod loads in-game.
+
+The latest containment leaf tests also pass: Slaughter `344/0/8`, Heal
+`188/0/0`, and Tunnel `192/0/0`. Slaughter verifies that a refund value of
+`25` is stored as `0.25` and that its FX reference creates an import entry.
 
 ### Next steps and acceptance gates
 

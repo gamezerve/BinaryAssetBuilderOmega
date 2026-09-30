@@ -26,6 +26,8 @@ internal static class CompilerSmokeTest
         TestContainDerivatives();
         // Reborn: check optional vector relocation and the newly restored contestable dispatch.
         TestGarrisonDerivatives();
+        // Reborn: cover normalized slaughter refunds, FX imports and the Heal/Tunnel tails.
+        TestContainLeafModules();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1731,6 +1733,62 @@ internal static class CompilerSmokeTest
         Expect(ReadUInt32(bytes, 236) == 0x3F800000, "ContestableGarrison eject default", 0x3F800000, ReadUInt32(bytes, 236));
         Expect(contestChunk.RelocationBuffer.Length == 8 && contestChunk.ImportsBuffer.Length == 0, "ContestableGarrison dispatch relocation", 8, contestChunk.RelocationBuffer.Length);
         Console.WriteLine($"  Garrison derivatives horde={hordeChunk.InstanceBuffer.Length}/16/0, contestableDispatch={contestChunk.InstanceBuffer.Length}/8/0");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Verify audited containment leaf fields without mistaking weak IDs for imports. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestContainLeafModules()
+    {
+        XmlDocument document = new();
+        document.LoadXml("""
+            <SlaughterHordeContain xmlns="uri:ea.com:eala:asset" CashBackPercent="25" CanAlwaysEnterStatus="CAN_ATTACK" SlaughterFX="FXList\123">
+              <CanAlwaysEnterObjectFilter Rule="ALL" />
+            </SlaughterHordeContain>
+            """);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:SlaughterHordeContain", namespaces)!, namespaces);
+        SlaughterHordeContainModuleData* slaughter;
+        using Tracker slaughterTracker = new((void**)&slaughter, (uint)sizeof(SlaughterHordeContainModuleData), false);
+        Marshaler.Marshal(node, slaughter, slaughterTracker);
+        Chunk slaughterChunk = new();
+        slaughterTracker.MakeRelocatable(slaughterChunk);
+        ReadOnlySpan<byte> bytes = slaughterChunk.InstanceBuffer;
+        Expect(bytes.Length == 344, "Slaughter instance bytes", 344, bytes.Length);
+        Expect(ReadUInt32(bytes, 184) == 0x3E800000, "Slaughter refund 25 percent", 0x3E800000, ReadUInt32(bytes, 184));
+        Expect(ReadUInt32(bytes, 188) == 2, "Slaughter allowed status", 2, ReadUInt32(bytes, 188));
+        Expect(ReadUInt32(bytes, 220) == 123, "Slaughter FX token", 123, ReadUInt32(bytes, 220));
+        Expect(ReadUInt32(bytes, 228) == 1, "Slaughter filter rule", 1, ReadUInt32(bytes, 228));
+        Expect(slaughterChunk.RelocationBuffer.Length == 0 && slaughterChunk.ImportsBuffer.Length == 8, "Slaughter FX import bytes", 8, slaughterChunk.ImportsBuffer.Length);
+        Expect(ReadUInt32(slaughterChunk.ImportsBuffer, 0) == 220, "Slaughter FX import slot", 220, ReadUInt32(slaughterChunk.ImportsBuffer, 0));
+
+        document.LoadXml("""
+            <HealContain xmlns="uri:ea.com:eala:asset" TimeForFullHeal="2s" />
+            """);
+        node = new Node(document.CreateNavigator()!.SelectSingleNode("/ea:HealContain", namespaces)!, namespaces);
+        HealContainModuleData* heal;
+        using Tracker healTracker = new((void**)&heal, (uint)sizeof(HealContainModuleData), false);
+        Marshaler.Marshal(node, heal, healTracker);
+        Chunk healChunk = new();
+        healTracker.MakeRelocatable(healChunk);
+        Expect(healChunk.InstanceBuffer.Length == 188 && ReadUInt32(healChunk.InstanceBuffer, 184) == 0x40000000, "Heal duration", 0x40000000, ReadUInt32(healChunk.InstanceBuffer, 184));
+        Expect(healChunk.RelocationBuffer.Length == 0 && healChunk.ImportsBuffer.Length == 0, "Heal no external records", 0, healChunk.RelocationBuffer.Length);
+
+        document.LoadXml("""
+            <TunnelContain xmlns="uri:ea.com:eala:asset" TunnelMasterObject="TestTunnelMaster" />
+            """);
+        node = new Node(document.CreateNavigator()!.SelectSingleNode("/ea:TunnelContain", namespaces)!, namespaces);
+        TunnelContainModuleData* tunnel;
+        using Tracker tunnelTracker = new((void**)&tunnel, (uint)sizeof(TunnelContainModuleData), false);
+        Marshaler.Marshal(node, tunnel, tunnelTracker);
+        Chunk tunnelChunk = new();
+        tunnelTracker.MakeRelocatable(tunnelChunk);
+        uint masterId = FastHash.GetHashCode("testtunnelmaster");
+        Expect(tunnelChunk.InstanceBuffer.Length == 192 && ReadUInt32(tunnelChunk.InstanceBuffer, 184) == masterId, "Tunnel weak master ID", unchecked((int)masterId), ReadUInt32(tunnelChunk.InstanceBuffer, 184));
+        Expect(tunnelChunk.InstanceBuffer[188] == 0, "Tunnel delete default", 0, tunnelChunk.InstanceBuffer[188]);
+        Expect(tunnelChunk.RelocationBuffer.Length == 0 && tunnelChunk.ImportsBuffer.Length == 0, "Tunnel weak reference has no import", 0, tunnelChunk.ImportsBuffer.Length);
+        Console.WriteLine($"  Contain leaf modules slaughter={slaughterChunk.InstanceBuffer.Length}/0/8, heal={healChunk.InstanceBuffer.Length}/0/0, tunnel={tunnelChunk.InstanceBuffer.Length}/0/0");
     }
 
     private static uint ReadUInt32(ReadOnlySpan<byte> bytes, int offset) =>

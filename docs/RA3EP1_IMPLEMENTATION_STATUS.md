@@ -446,8 +446,28 @@ model/marshaller is registered under name hash `0x8C50F0D7`. A behavior-module
 dispatch fixture emits `240/8/0`, including a four-byte outer pointer slot,
 and checks the emitted type hash, required bits, forbidden default and speed.
 This proves native dispatch/marshalling only; the final EP1 type hash and
-runtime tokenized output are still outstanding. HordeContain, Heal/Tunnel/
-Slaughter and other containment derivatives remain separate audit work.
+runtime tokenized output are still outstanding. HordeContain and other
+containment derivatives remain separate audit work.
+
+The Heal/Tunnel/Slaughter audit uses official RA3 marshaler IL `0x06000147`,
+`0x06000203` and `0x06000204`, respectively. Heal stores TimeForFullHeal
+at RA3 offset 176 / EP1 offset 184 (EP1 root 188); Tunnel stores a weak
+master ID at the same offset and DeleteRemoved at 180 / 188 (EP1 root 192).
+Their own field types and marshaling already matched; regression gates now
+cover them on top of the corrected garrison base.
+Slaughter's source omitted the SlaughterFX reference entirely and marshaled
+CashBackPercent as an unscaled float. Official IL multiplies the percentage
+by 0.01 and places SlaughterFX at 208 before the inline filter at 212.
+The corrected EP1 offsets are percentage=184, status=188, FX=220 and
+filter=224, with a 344-byte root versus RA3's 324: eight bytes from the
+inherited base, four from its status mask and eight from its object filter.
+The model now uses Percentage to apply the existing normalized conversion
+and AssetReference<FXList> to produce the missing FX import.
+Release/x86 build and the complete layout/compiler self-tests pass. The new
+fixtures emit Slaughter `344/0/8`, Heal `188/0/0` and Tunnel `192/0/0`.
+They check the 25-to-0.25 percentage conversion, the FX import slot at 220,
+two-second heal time, weak master-name hashing and DeleteRemoved=false.
+No in-game loading claim is made by these native-marshalling checks.
 
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of
