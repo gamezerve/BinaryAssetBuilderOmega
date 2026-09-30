@@ -22,6 +22,8 @@ internal static class CompilerSmokeTest
         TestTintObjectsNugget();
         // Reborn: exercise the shared containment header and relocated passenger stride.
         TestOpenContain();
+        // Reborn: guard transport inheritance and the by-value garrison roster.
+        TestContainDerivatives();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1625,6 +1627,58 @@ internal static class CompilerSmokeTest
         Expect(ReadUInt32(chunk.RelocationBuffer, 4) == uint.MaxValue, "OpenContain relocation sentinel", -1, ReadUInt32(chunk.RelocationBuffer, 4));
         Expect(chunk.ImportsBuffer.Length == 0, "OpenContain imports bytes", 0, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  OpenContain bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Verify inherited transport defaults, payload relocation and garrison's inline roster. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestContainDerivatives()
+    {
+        XmlDocument document = new();
+        document.LoadXml("""
+            <HordeTransportContain xmlns="uri:ea.com:eala:asset" FlyOffMapOnEmpty="true" EnterFadeTime="2" ExtendedExitContainerChecks="true">
+              <InitialPayload Name="TestPassenger" Count="3" />
+            </HordeTransportContain>
+            """);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:HordeTransportContain", namespaces)!, namespaces);
+        HordeTransportContainModuleData* transport;
+        using Tracker transportTracker = new((void**)&transport, (uint)sizeof(HordeTransportContainModuleData), false);
+        Marshaler.Marshal(node, transport, transportTracker);
+        Chunk transportChunk = new();
+        transportTracker.MakeRelocatable(transportChunk);
+        ReadOnlySpan<byte> bytes = transportChunk.InstanceBuffer;
+        Expect(bytes.Length == 364, "HordeTransport instance bytes", 364, bytes.Length);
+        Expect(ReadUInt32(bytes, 304) == 0x40000000, "Transport enter fade", 0x40000000, ReadUInt32(bytes, 304));
+        Expect(ReadUInt32(bytes, 312) == 0x3F333333, "Transport snappyness default", 0x3F333333, ReadUInt32(bytes, 312));
+        Expect(ReadUInt32(bytes, 316) == 1 && ReadUInt32(bytes, 320) == 356, "Transport payload list", 356, ReadUInt32(bytes, 320));
+        // Reborn: weak GameObject IDs hash the case-insensitive name; they are not strong reference tokens.
+        uint passengerId = FastHash.GetHashCode("testpassenger");
+        Expect(ReadUInt32(bytes, 356) == passengerId && ReadUInt32(bytes, 360) == 3, "Transport payload record", unchecked((int)passengerId), ReadUInt32(bytes, 356));
+        Expect(bytes[340] == 1 && bytes[343] == 1 && bytes[348] == 1 && bytes[352] == 1, "Transport inherited defaults and horde flag", 1, bytes[352]);
+        Expect(transportChunk.RelocationBuffer.Length == 8 && ReadUInt32(transportChunk.RelocationBuffer, 0) == 320, "Transport payload relocation", 320, ReadUInt32(transportChunk.RelocationBuffer, 0));
+        Expect(transportChunk.ImportsBuffer.Length == 0, "Transport weak payload imports", 0, transportChunk.ImportsBuffer.Length);
+
+        document.LoadXml("""
+            <GarrisonContain xmlns="uri:ea.com:eala:asset" MobileGarrison="true">
+              <InitialRoster TemplateId="TestGarrisonUnit" Count="4" />
+            </GarrisonContain>
+            """);
+        node = new Node(document.CreateNavigator()!.SelectSingleNode("/ea:GarrisonContain", namespaces)!, namespaces);
+        GarrisonContainModuleData* garrison;
+        using Tracker garrisonTracker = new((void**)&garrison, (uint)sizeof(GarrisonContainModuleData), false);
+        Marshaler.Marshal(node, garrison, garrisonTracker);
+        Chunk garrisonChunk = new();
+        garrisonTracker.MakeRelocatable(garrisonChunk);
+        bytes = garrisonChunk.InstanceBuffer;
+        Expect(bytes.Length == 168, "Garrison instance bytes", 168, bytes.Length);
+        // Reborn: the inline roster also stores a weak hashed ID without an import entry.
+        uint rosterId = FastHash.GetHashCode("testgarrisonunit");
+        Expect(ReadUInt32(bytes, 156) == rosterId && ReadUInt32(bytes, 160) == 4, "Garrison inline roster", unchecked((int)rosterId), ReadUInt32(bytes, 156));
+        Expect(bytes[164] == 1 && bytes[166] == 0, "Garrison flags and capture default", 1, bytes[164]);
+        Expect(garrisonChunk.RelocationBuffer.Length == 0 && garrisonChunk.ImportsBuffer.Length == 0, "Garrison no roster relocation or imports", 0, garrisonChunk.RelocationBuffer.Length);
+        Console.WriteLine($"  Contain derivatives hordeTransport={transportChunk.InstanceBuffer.Length}/8/0, garrison={garrisonChunk.InstanceBuffer.Length}/0/0");
     }
 
     private static uint ReadUInt32(ReadOnlySpan<byte> bytes, int offset) =>

@@ -32,17 +32,13 @@ public struct TransportContainUpgradeOverrideData
 public struct TransportContainModuleData
 {
     public OpenContainModuleData Base;
-    public uint Slots;
+    // Reborn: RA3/EP1 starts transport data directly with ExitBone, without KW slots or grab fields.
     public AnsiString ExitBone;
-    public Velocity ExitPitchRate;
     public float HealthRegenPercentPerSec;
     public Duration ExitDelay;
-    public KindOfBitFlags TypeOneForWeaponSet;
-    public KindOfBitFlags TypeTwoForWeaponSet;
     public KindOfBitFlags TypeOneForWeaponState;
     public KindOfBitFlags TypeTwoForWeaponState;
     public KindOfBitFlags TypeThreeForWeaponState;
-    public AssetReference<WeaponTemplate> GrabWeapon;
     public ModelConditionFlagType ConditionForEntry;
     public Duration ThrowOutPassengersDelay;
     public AssetReference<WeaponTemplate> ThrowOutPassengersLandingWarhead;
@@ -53,15 +49,10 @@ public struct TransportContainModuleData
     public unsafe Coord3D* ThrowOutPassengersVelocity;
     public List<UpgradeCreation> UpgradeCreationTrigger;
     public unsafe ObjectFilter* FadeFilter;
-#if KANESWRATH
-    public unsafe TransportContainUpgradeOverrideData* TransportContainUpgradeOverride;
-#endif
     public SageBool ScatterNearbyOnExit;
     public SageBool OrientLikeContainerOnExit;
     public SageBool DestroyRidersWhoAreNotFreeToExit;
     public SageBool ForceOrientationContainer;
-    public SageBool CanGrabStructure;
-    public SageBool FireGrabWeaponOnVictim;
     public SageBool ShouldThrowOutPassengers;
     public SageBool FadePassengerOnEnter;
     public SageBool FadePassengerOnExit;

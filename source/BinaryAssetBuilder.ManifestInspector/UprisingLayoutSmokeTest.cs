@@ -9,6 +9,17 @@ internal static class UprisingLayoutSmokeTest
         TestPatchManifestTotals();
         // Reborn: lock recovered RA3 containment offsets after EP1's two inline status-mask expansions.
         ExpectSize<SageBinaryData.OpenContainModuleData>(156);
+        // Reborn: transport contains three widened KindOf masks; garrison keeps its eight-byte roster inline.
+        ExpectSize<SageBinaryData.TransportContainModuleData>(352);
+        ExpectOffset<SageBinaryData.TransportContainModuleData>(nameof(SageBinaryData.TransportContainModuleData.ExitBone), 156);
+        ExpectOffset<SageBinaryData.TransportContainModuleData>(nameof(SageBinaryData.TransportContainModuleData.ConditionForEntry), 292);
+        ExpectOffset<SageBinaryData.TransportContainModuleData>(nameof(SageBinaryData.TransportContainModuleData.InitialPayload), 316);
+        ExpectOffset<SageBinaryData.TransportContainModuleData>(nameof(SageBinaryData.TransportContainModuleData.ScatterNearbyOnExit), 340);
+        ExpectSize<SageBinaryData.HordeTransportContainModuleData>(356);
+        ExpectOffset<SageBinaryData.HordeTransportContainModuleData>(nameof(SageBinaryData.HordeTransportContainModuleData.FlyOffMapOnEmpty), 352);
+        ExpectSize<SageBinaryData.GarrisonContainModuleData>(168);
+        ExpectOffset<SageBinaryData.GarrisonContainModuleData>(nameof(SageBinaryData.GarrisonContainModuleData.InitialRoster), 156);
+        ExpectOffset<SageBinaryData.GarrisonContainModuleData>(nameof(SageBinaryData.GarrisonContainModuleData.MobileGarrison), 164);
         ExpectOffset<SageBinaryData.OpenContainModuleData>(nameof(SageBinaryData.OpenContainModuleData.IgnoreDisabledBitsForRiders), 36);
         ExpectOffset<SageBinaryData.OpenContainModuleData>(nameof(SageBinaryData.OpenContainModuleData.ObjectStatusWhileContaining), 72);
         ExpectOffset<SageBinaryData.OpenContainModuleData>(nameof(SageBinaryData.OpenContainModuleData.PassengerData), 120);

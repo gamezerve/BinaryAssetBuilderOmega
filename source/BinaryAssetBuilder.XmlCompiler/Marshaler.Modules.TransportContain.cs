@@ -52,23 +52,17 @@ public static partial class Marshaler
         {
             return;
         }
-        Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.Slots), "0"), &objT->Slots, state);
+        // Reborn: marshal only the transport attributes present in the RA3/EP1 native layout.
         Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.ScatterNearbyOnExit), "true"), &objT->ScatterNearbyOnExit, state);
         Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.OrientLikeContainerOnExit), "false"), &objT->OrientLikeContainerOnExit, state);
         Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.DestroyRidersWhoAreNotFreeToExit), "false"), &objT->DestroyRidersWhoAreNotFreeToExit, state);
         Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.ExitBone), null), &objT->ExitBone, state);
-        Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.ExitPitchRate), "0"), &objT->ExitPitchRate, state);
         Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.HealthRegenPercentPerSec), "0"), &objT->HealthRegenPercentPerSec, state);
         Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.ExitDelay), "0"), &objT->ExitDelay, state);
-        Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.TypeOneForWeaponSet), null), &objT->TypeOneForWeaponSet, state);
-        Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.TypeTwoForWeaponSet), null), &objT->TypeTwoForWeaponSet, state);
         Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.TypeOneForWeaponState), null), &objT->TypeOneForWeaponState, state);
         Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.TypeTwoForWeaponState), null), &objT->TypeTwoForWeaponState, state);
         Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.TypeThreeForWeaponState), null), &objT->TypeThreeForWeaponState, state);
         Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.ForceOrientationContainer), "true"), &objT->ForceOrientationContainer, state);
-        Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.CanGrabStructure), "false"), &objT->CanGrabStructure, state);
-        Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.GrabWeapon), null), &objT->GrabWeapon, state);
-        Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.FireGrabWeaponOnVictim), "true"), &objT->FireGrabWeaponOnVictim, state);
         Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.ConditionForEntry), null), &objT->ConditionForEntry, state);
         Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.ShouldThrowOutPassengers), "false"), &objT->ShouldThrowOutPassengers, state);
         Marshal(node.GetAttributeValue(nameof(TransportContainModuleData.ThrowOutPassengersDelay), "0"), &objT->ThrowOutPassengersDelay, state);
@@ -84,7 +78,6 @@ public static partial class Marshaler
         Marshal(node.GetChildNode(nameof(TransportContainModuleData.ThrowOutPassengersVelocity), null), &objT->ThrowOutPassengersVelocity, state);
         Marshal(node.GetChildNodes(nameof(TransportContainModuleData.UpgradeCreationTrigger)), &objT->UpgradeCreationTrigger, state);
         Marshal(node.GetChildNode(nameof(TransportContainModuleData.FadeFilter), null), &objT->FadeFilter, state);
-        Marshal(node.GetChildNode(nameof(TransportContainModuleData.TransportContainUpgradeOverride), null), &objT->TransportContainUpgradeOverride, state);
         Marshal(node, (OpenContainModuleData*)objT, state);
     }
 }

@@ -1,5 +1,58 @@
 # BinaryAssetBuilder
-BinaryAssetBuilder implementation for Kane's Wrath in .Net
+Kane's Wrath kökenli .NET BinaryAssetBuilder'ın RA3 Uprising (EP1) uyarlaması.
+
+## Uprising çalışma durumu — 30 Eylül 2026
+
+Aktif dal: `feature/ra3ep1-manifest-inspector`. Bu henüz kullanılabilir bir
+Uprising Mod SDK sürümü değildir. XML/XSD dosyalarını değiştirmek tek başına
+yeterli değil; native yerleşimler, type hash'leri, bağımlılıklar ve oyun içi
+yükleme de doğrulanmalıdır.
+
+Kabaca **%49 tamamlandı / %51 kaldı**. Bu bir mühendislik eforu tahminidir;
+dosya sayısına veya çalışan oyun moduna ait bir başarı oranı değildir.
+
+| Alan | Durum |
+|---|---|
+| Manifest v7, BIG/RefPack okuma ve stream başlıkları | Uygulandı; gerçek oyun girdileri ve yapısal testlerle kontrol edildi |
+| EP1 şema envanteri ve enum geçişi | Envanter çıkarıldı; EP1'e özgü 48 complex type için model/marshaller mevcut |
+| Ortak RA3/KW native yerleşimler ve processors | Devam ediyor; modelin bulunması uyumluluğun doğrulandığı anlamına gelmez |
+| Nihai EP1 type tablosu / AllTypesHash | Tamamlanmadı; yanlış hash ile üretim çıktısı güvenlik kontrolüyle engelleniyor |
+| SDK betikleri ve WorldBuilder paketleme | Kısmi; uçtan uca doğrulanmadı |
+| Uprising içinde mod yükleme | Henüz doğrulanmadı |
+
+### Son tamamlanan işler
+
+- ScriptedModel, dependency/death mask, invisibility ve tint yerleşim düzeltmeleri.
+- OpenContain tabanı ve PassengerData kayıtları: eksik RA3 alanları geri
+  getirildi, KW'ye özgü alanlar çıkarıldı, EP1 mask genişlemeleri korundu.
+- TransportContain'deki KW slot/grab/weapon-set alanları çıkarıldı.
+  GarrisonContain'in InitialRoster kaydı pointer yerine inline olarak düzeltildi.
+- Layout ve compiler testlerine taşıma/garnizon kayıtları için regresyon kontrolleri eklendi.
+
+Son doğrulama: Release/x86 derlemesi, `layout-self-test` ve
+`compiler-self-test` geçti. İki yolculu OpenContain örneği `428/8/0`,
+HordeTransport örneği `364/8/0`, Garrison örneği `168/0/0` bayt
+`bin/relo/imp` üretti. Bunlar native marshalling testleridir; oyun içinde
+başarıyla yüklenen bir modun kanıtı değildir.
+
+### Sıradaki işler ve kabul koşulları
+
+1. Kalan Horde/Garrison türevleri ve diğer ortak modüllerin native yerleşimlerini denetlemek.
+2. EP1 type tablosunu tamamlayıp `AllTypesHash=0x5454A8E9` değerini doğrulamak.
+3. Gerçek Uprising asset örnekleriyle tokenized çıktıyı karşılaştırmak.
+4. SDK kaynak/şema/bağımlılık yollarını ve WorldBuilder paketlemeyi tamamlamak.
+5. Minimal modu Uprising'de yüklemek; tekrarlı build'lerin aynı çıktıyı ürettiğini doğrulamak.
+
+Ayrıntılı bulgular, dosya/sınıf bilgileri ve sınırlamalar:
+[EP1 implementation status](docs/RA3EP1_IMPLEMENTATION_STATUS.md).
+İlerleme sırasında bu özet ve ayrıntılı rapor birlikte güncellenir.
+Değişiklikler yalnızca `gamezerve/BinaryAssetBuilderOmega` reposundaki çalışma
+dalına yayımlanır; Qibbi upstream'e gönderim veya PR yapılmaz.
+
+## Eski KW asset listesi (tarihsel referans)
+
+Aşağıdaki liste ve type ID'leri önceki KW uygulamasından kalmadır; Uprising
+uyumluluk listesi veya doğrulanmış EP1 type tablosu olarak kullanılmamalıdır.
 
 ### Implemented Asset Types
 * [ ] TestGameObject

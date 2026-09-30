@@ -13,7 +13,8 @@ public struct InitialRoster
 public struct GarrisonContainModuleData
 {
     public OpenContainModuleData Base;
-    public unsafe InitialRoster* InitialRoster;
+    // Reborn: the optional roster is inline in RA3/EP1, not a relocated KW pointer.
+    public InitialRoster InitialRoster;
     public SageBool MobileGarrison;
     public SageBool ImmuneToClearBuildingAttacks;
     public SageBool ResetInitialTeamOnCapture;

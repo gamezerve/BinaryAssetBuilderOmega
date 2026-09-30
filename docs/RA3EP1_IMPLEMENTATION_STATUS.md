@@ -3,7 +3,7 @@
 This branch starts the migration with a read-only compatibility gate. It does
 not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
-## Progress snapshot (2026-09-27)
+## Progress snapshot (2026-09-30)
 
 The current conservative engineering estimate is **49% complete / 51%
 remaining**. This is an effort estimate, not the percentage of C# files in the
@@ -413,7 +413,23 @@ an inline filter at 12 and `SlingUnderBone` at 132; its EP1 stride is 136
 versus RA3's 128. A two-passenger fixture checks capacity, defaults, status
 bits, relocation and consecutive-record stride. These are native marshaling
 checks, not proof of a matching tokenized Uprising runtime asset. Inherited
-Transport/Horde/Garrison modules still require their own layout audits.
+Transport/Horde/Garrison modules require their own layout audits, described below.
+
+`TransportContainModuleData` was audited against official marshaler IL
+`0x0600018C`. KW's Slots, ExitPitchRate, two weapon-set masks, grab fields
+and upgrade-override pointer are absent from both the RA3 marshaler and EP1
+XSD and have been removed from the root. EP1's root is 352 bytes versus RA3's
+332: the OpenContain base adds eight bytes and three inline KindOf masks
+each add four. EP1 offsets include ExitBone=156, ConditionForEntry=292,
+InitialPayload=316 and the boolean tail=340. HordeTransport's existing
+FlyOffMapOnEmpty flag follows the padded base at 352 (root size 356).
+`GarrisonContainModuleData` has a by-value eight-byte InitialRoster at 156,
+not a pointer; this matches `xas:byValue` and official IL `0x06000143`, which
+writes the RA3 roster at 148 and flags at 156. Its EP1 root is 168 versus
+RA3's 160. Compiler fixtures exercise inherited defaults, a relocated weak
+InitialPayload record (`364/8/0` for HordeTransport), and a garrison roster
+without relocation (`168/0/0`). Other Horde/Garrison derivatives remain
+unaudited; passing these fixtures does not establish in-game compatibility.
 
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of
