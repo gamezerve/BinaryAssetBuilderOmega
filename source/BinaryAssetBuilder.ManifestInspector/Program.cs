@@ -13,6 +13,12 @@ internal static class Program
     {
         try
         {
+            // Reborn: handle the metadata-only type audit independently of the older command whitelist.
+            if (args.FirstOrDefault() == "type-audit" && args.Length >= 2)
+            {
+                TypeRegistryAudit.Print(args.Skip(1).Where(value => value != "--json").ToArray(), args.Contains("--json"));
+                return 0;
+            }
             // Reborn: expose focused schema-to-import validation with optional real EP1 manifests.
             if ((args.Length < 2 && args.FirstOrDefault() is not ("layout-self-test" or "compiler-self-test")) || args.FirstOrDefault() is not ("inspect" or "verify" or "compare" or "schema-diff" or "writer-self-test" or "utility-verify" or "assembly-fields" or "assembly-methods" or "assembly-il" or "assembly-size-diff" or "current-layout" or "layout-self-test" or "compiler-self-test" or "reference-self-test" or "external-link-self-test" or "asset-bytes" or "hash"))
             {
@@ -432,6 +438,8 @@ internal static class Program
         Console.WriteLine("  external-link-self-test <output-directory> [ep1-manifest ...]");
         Console.WriteLine("  asset-bytes <manifest-or-big> <bin-or-big> <type-name> [--entry <manifest-entry>] [--bin-entry <bin-entry>] [--asset <full-name>] [--find-u32 <hex>] [--offset <decimal-or-hex>] [--count <decimal-or-hex>] [--relo <relo-or-big>] [--relo-entry <BIG entry>] [--imp <imp-or-big>] [--imp-entry <BIG entry>]");
         Console.WriteLine("  hash <text> [additional-text ...]");
+        // Reborn: inspect only manifest metadata; BIN payloads and compiler output remain untouched.
+        Console.WriteLine("  type-audit <ep1-manifest ...> [--json]");
     }
 
     private sealed record TypeFingerprint(uint TypeId, uint TypeHash, uint? Tokenized);

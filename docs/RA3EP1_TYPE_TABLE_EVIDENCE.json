@@ -1,0 +1,4881 @@
+{
+  "Target": "RA3 Uprising EP1",
+  "ExpectedAllTypesHash": "0x5454A8E9",
+  "CompilerAllTypesHash": "0x12B3E763",
+  "ProductionGatePassed": false,
+  "Limitations": "Observed streams are not a complete type table. Matching hashes/models/marshallers do not prove native layout, processor or runtime compatibility.",
+  "ManifestCount": 4,
+  "ObservedTypeCount": 254,
+  "RegisteredTypeCount": 6,
+  "Inputs": [
+    {
+      "Path": "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest",
+      "Sha256": "08A415789062B1707EDBA3C456884B94791097505431E17A03D10EE34DF050FD",
+      "AssetCount": 11357
+    },
+    {
+      "Path": "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest",
+      "Sha256": "74FACD9056EEE20942BB274A924BEFFB03D7ADBB71B9609E804A39619B2C6081",
+      "AssetCount": 13872
+    },
+    {
+      "Path": "D:\\TEMP\\Red Alert 3 Uprising Source Data\\WorldBuilder\\data\\worldbuilder.manifest",
+      "Sha256": "09B3DB8EF50A3E184F9CF4B84A60C6E0B4045B893815AC38137C2195034B8854",
+      "AssetCount": 17339
+    },
+    {
+      "Path": "D:\\TEMP\\Red Alert 3 Uprising Source Data\\EnglishAudio\\data\\audio.manifest",
+      "Sha256": "0CF62FBECC89F15746E523042A6F0422869D98FE41EB742C3104324A81D9A2E4",
+      "AssetCount": 12951
+    }
+  ],
+  "StatusCounts": {
+    "unregistered": 249,
+    "type-hash-mismatch": 5
+  },
+  "Types": [
+    {
+      "TypeName": "AIBudgetStateDefinition",
+      "TypeId": "0xAC78CE63",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "AIBudgetStateDefinition",
+          "TypeHash": "0xC4384827",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 13,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "AIBuildStateDefinition",
+      "TypeId": "0x620C480B",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "AIBuildStateDefinition",
+          "TypeHash": "0x835BC3A7",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 142,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "AIData",
+      "TypeId": "0xE4266B40",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "AIData",
+          "TypeHash": "0x4123A1AA",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "AIMicroManagerData",
+      "TypeId": "0x9077F377",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "AIMicroManagerData",
+          "TypeHash": "0x5960CDD4",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 125,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "AIPersonalityDefinition",
+      "TypeId": "0xD6D4F18E",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "AIPersonalityDefinition",
+          "TypeHash": "0xC6B1A12F",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 303,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "AIStrategicStateDefinition",
+      "TypeId": "0x242FF6D4",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "AIStrategicStateDefinition",
+          "TypeHash": "0xC04C76A1",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 898,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "AIStrategicStateName",
+      "TypeId": "0x77D6BE90",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "AIStrategicStateName",
+          "TypeHash": "0x048CE7A4",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 882,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "AITargetingHeuristic",
+      "TypeId": "0x373E10FA",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "AITargetingHeuristic",
+          "TypeHash": "0x0EEA25F7",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 522,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "AmbientStream",
+      "TypeId": "0xEA2C2798",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "AmbientStream",
+          "TypeHash": "0x6D1624FB",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 11,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "AnimationSoundSettings",
+      "TypeId": "0x4D9B7C79",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "AnimationSoundSettings",
+          "TypeHash": "0xBCF803D4",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "ArmorTemplate",
+      "TypeId": "0x3A6C5E8E",
+      "Status": "type-hash-mismatch",
+      "Fingerprints": [
+        {
+          "TypeName": "ArmorTemplate",
+          "TypeHash": "0xA0E237D8",
+          "Tokenized": 1
+        }
+      ],
+      "CompilerTypeHash": "0x6D59C409",
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 176,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest",
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\WorldBuilder\\data\\worldbuilder.manifest"
+      ]
+    },
+    {
+      "TypeName": "ArmyDefinition",
+      "TypeId": "0xD5D580F6",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "ArmyDefinition",
+          "TypeHash": "0x0CB47A77",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 3,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "AttributeModifier",
+      "TypeId": "0xC5E07887",
+      "Status": "type-hash-mismatch",
+      "Fingerprints": [
+        {
+          "TypeName": "AttributeModifier",
+          "TypeHash": "0x74425C11",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": "0x8C925761",
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 144,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest",
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\WorldBuilder\\data\\worldbuilder.manifest"
+      ]
+    },
+    {
+      "TypeName": "AudioEvent",
+      "TypeId": "0x844D7B9F",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "AudioEvent",
+          "TypeHash": "0x560C2E45",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 4824,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest",
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "AudioEventLimitGroup",
+      "TypeId": "0xE8D44EF5",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "AudioEventLimitGroup",
+          "TypeHash": "0x95314DEA",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 2,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "AudioEventOverridable",
+      "TypeId": "0x10845383",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "AudioEventOverridable",
+          "TypeHash": "0x8A267F59",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 54,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "AudioFile",
+      "TypeId": "0x166B084D",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "AudioFile",
+          "TypeHash": "0x53C81E47",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": false,
+      "AssetCount": 12951,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\EnglishAudio\\data\\audio.manifest"
+      ]
+    },
+    {
+      "TypeName": "AudioLOD",
+      "TypeId": "0x11D8BAC7",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "AudioLOD",
+          "TypeHash": "0x014CBB53",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 2,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "AudioSettings",
+      "TypeId": "0x5608EE71",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "AudioSettings",
+          "TypeHash": "0xD86ED334",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "AutoParticleSystemSettings",
+      "TypeId": "0xC36CC13E",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "AutoParticleSystemSettings",
+          "TypeHash": "0x4A581767",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "BasicMouseCursors",
+      "TypeId": "0x246F4433",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "BasicMouseCursors",
+          "TypeHash": "0x5A796288",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "BounceKickTerrainMapping",
+      "TypeId": "0x8D32382D",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "BounceKickTerrainMapping",
+          "TypeHash": "0x7DC1F449",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "BreezeInfo",
+      "TypeId": "0x60F120B8",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "BreezeInfo",
+          "TypeHash": "0x3516A119",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "BuildSystemSettings",
+      "TypeId": "0xECE7DB5E",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "BuildSystemSettings",
+          "TypeHash": "0xF8069076",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "ButtonSingleStateData",
+      "TypeId": "0xB5AD65F8",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "ButtonSingleStateData",
+          "TypeHash": "0xE15D5B18",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 265,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "CameraSettings",
+      "TypeId": "0xE862FF86",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "CameraSettings",
+          "TypeHash": "0xFDCC69DE",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "CampaignEnumerator",
+      "TypeId": "0x2B9FE633",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "CampaignEnumerator",
+          "TypeHash": "0x0714C282",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "CampaignTemplate",
+      "TypeId": "0x585E034E",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "CampaignTemplate",
+          "TypeHash": "0x03AE1A10",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 4,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "ConnectionLineManager",
+      "TypeId": "0x064B2184",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "ConnectionLineManager",
+          "TypeHash": "0x6B72136F",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "Credits",
+      "TypeId": "0xED226AE9",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "Credits",
+          "TypeHash": "0x10D657EE",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "DamageFX",
+      "TypeId": "0xAD3568F5",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "DamageFX",
+          "TypeHash": "0xC1AFAE9A",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 9,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "DamageFXSettings",
+      "TypeId": "0x04878391",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "DamageFXSettings",
+          "TypeHash": "0x7A57612C",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "DebugHotKeys",
+      "TypeId": "0xC8438DFD",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "DebugHotKeys",
+          "TypeHash": "0x045A4CEC",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "DefaultHotKeys",
+      "TypeId": "0xDEFCA2F6",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "DefaultHotKeys",
+          "TypeHash": "0x49495ABD",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "DialogEvent",
+      "TypeId": "0xD414D1C3",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "DialogEvent",
+          "TypeHash": "0xD21E8BF8",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 2,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "DrawGroupInfo",
+      "TypeId": "0xADADEA42",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "DrawGroupInfo",
+          "TypeHash": "0x466BD19E",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "DynamicGameLOD",
+      "TypeId": "0xACEF31A4",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "DynamicGameLOD",
+          "TypeHash": "0x692B85B7",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 5,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "DynamicsContactTagMapping",
+      "TypeId": "0x3E3CE4BA",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "DynamicsContactTagMapping",
+          "TypeHash": "0x358AB09D",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "DynamicsSettings",
+      "TypeId": "0x13364A0B",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "DynamicsSettings",
+          "TypeHash": "0x9C2B0961",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "EmotionTemplate",
+      "TypeId": "0xA9152D94",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "EmotionTemplate",
+          "TypeHash": "0x3869C1A5",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 2,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "EngagingContent",
+      "TypeId": "0xB6472112",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "EngagingContent",
+          "TypeHash": "0x2B3B15E0",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 35,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "EngagingContentGroup",
+      "TypeId": "0x00AC224E",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "EngagingContentGroup",
+          "TypeHash": "0x59E0AC87",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 14,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "EngagingContentSequence",
+      "TypeId": "0xE279D385",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "EngagingContentSequence",
+          "TypeHash": "0x0D81F33D",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 14,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "Environment",
+      "TypeId": "0x2893E309",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "Environment",
+          "TypeHash": "0x4C11A8FE",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "EvaEvent",
+      "TypeId": "0x1553B19E",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "EvaEvent",
+          "TypeHash": "0x70A64BEA",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 314,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "EvaSettings",
+      "TypeId": "0x8CC42BF2",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "EvaSettings",
+          "TypeHash": "0xAFAD556C",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "ExperienceLevelTemplate",
+      "TypeId": "0x6FBC4A9F",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "ExperienceLevelTemplate",
+          "TypeHash": "0xDF9E06B0",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 302,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "FXList",
+      "TypeId": "0x86682E78",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "FXList",
+          "TypeHash": "0x17B3B82D",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 660,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest",
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\WorldBuilder\\data\\worldbuilder.manifest"
+      ]
+    },
+    {
+      "TypeName": "FXParticleSystemTemplate",
+      "TypeId": "0x28E7FD7F",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "FXParticleSystemTemplate",
+          "TypeHash": "0x575C23BA",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1662,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "FontDefaultSetting",
+      "TypeId": "0x51B9CD64",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "FontDefaultSetting",
+          "TypeHash": "0x0BC966D0",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 3,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "FontDirectory",
+      "TypeId": "0xD4BABAC7",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "FontDirectory",
+          "TypeHash": "0xD7993143",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "FontTranslation",
+      "TypeId": "0x4E9436E2",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "FontTranslation",
+          "TypeHash": "0x6C315185",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 5,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "ForceFeedbackEvent",
+      "TypeId": "0x1C48076F",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "ForceFeedbackEvent",
+          "TypeHash": "0xE1FE71E8",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 14,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "FormationAssistant",
+      "TypeId": "0x7504005C",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "FormationAssistant",
+          "TypeHash": "0x162572CC",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "FormationAssistantTemplate",
+      "TypeId": "0xAD9779B6",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "FormationAssistantTemplate",
+          "TypeHash": "0x09539ECB",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 10,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "FormationAssistantUnitDefinition",
+      "TypeId": "0x31F4DCE2",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "FormationAssistantUnitDefinition",
+          "TypeHash": "0x5CD9BEA2",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 5,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "FormationSelectionTemplate",
+      "TypeId": "0xC92313E0",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "FormationSelectionTemplate",
+          "TypeHash": "0x05318E41",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 10,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "GameLODPreset",
+      "TypeId": "0x151D037C",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "GameLODPreset",
+          "TypeHash": "0xD948D68D",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 4,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "GameObject",
+      "TypeId": "0x942FFF2D",
+      "Status": "type-hash-mismatch",
+      "Fingerprints": [
+        {
+          "TypeName": "GameObject",
+          "TypeHash": "0xCEB9FE36",
+          "Tokenized": 1
+        }
+      ],
+      "CompilerTypeHash": "0x50612DE9",
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 4138,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest",
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\WorldBuilder\\data\\worldbuilder.manifest"
+      ]
+    },
+    {
+      "TypeName": "GeneralHotKeySlots",
+      "TypeId": "0x18DD9C43",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "GeneralHotKeySlots",
+          "TypeHash": "0x2710C7A0",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "GiftManagerSettings",
+      "TypeId": "0x3E7426AC",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "GiftManagerSettings",
+          "TypeHash": "0x24B27FD8",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "GraphicsHardware",
+      "TypeId": "0xA9A98B43",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "GraphicsHardware",
+          "TypeHash": "0x42AA52A8",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "HeaderTemplate",
+      "TypeId": "0x48A3EEC6",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "HeaderTemplate",
+          "TypeHash": "0x401FF46B",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 13,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "HealthBarSettings",
+      "TypeId": "0xE99CB24B",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "HealthBarSettings",
+          "TypeHash": "0x9B9194FA",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "HealthBarTemplate",
+      "TypeId": "0x59DA7B59",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "HealthBarTemplate",
+          "TypeHash": "0xAA4F0D82",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 6,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "HotKeySlot",
+      "TypeId": "0xA6E6BBA7",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "HotKeySlot",
+          "TypeHash": "0x93E23672",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 325,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "ImageSequence",
+      "TypeId": "0x21BA45A7",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "ImageSequence",
+          "TypeHash": "0xA1FBBAF4",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 5,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "IntelDB",
+      "TypeId": "0x1F9865CE",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "IntelDB",
+          "TypeHash": "0x2CC41189",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "InvisibilityManagerSettings",
+      "TypeId": "0x0F2AEC14",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "InvisibilityManagerSettings",
+          "TypeHash": "0xCB4D6A58",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "InvisibilityTemplate",
+      "TypeId": "0x554FC288",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "InvisibilityTemplate",
+          "TypeHash": "0xCCD315FF",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 4,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "JoypadCommandBarButtonTemplate",
+      "TypeId": "0x6B9474EB",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "JoypadCommandBarButtonTemplate",
+          "TypeHash": "0xC2F14892",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 198,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "JoypadCommandBarTemplate",
+      "TypeId": "0x732477A0",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "JoypadCommandBarTemplate",
+          "TypeHash": "0x74C471D9",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 10,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "Language",
+      "TypeId": "0xADCA75CA",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "Language",
+          "TypeHash": "0xBFFF81D6",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "LargeGroupAudioMap",
+      "TypeId": "0x1FD451BF",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "LargeGroupAudioMap",
+          "TypeHash": "0x28AD421D",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 2,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "LightingSettings",
+      "TypeId": "0xBCEDA263",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "LightingSettings",
+          "TypeHash": "0x24BCD59D",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "LocalBuildListMonitor",
+      "TypeId": "0x12CFE3EF",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "LocalBuildListMonitor",
+          "TypeHash": "0x062B9401",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "LocomotorTemplate",
+      "TypeId": "0xECC2A1D3",
+      "Status": "type-hash-mismatch",
+      "Fingerprints": [
+        {
+          "TypeName": "LocomotorTemplate",
+          "TypeHash": "0x2A95936A",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": "0xDC4EEAC2",
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 140,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest",
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\WorldBuilder\\data\\worldbuilder.manifest"
+      ]
+    },
+    {
+      "TypeName": "LogicCommand",
+      "TypeId": "0x7D464170",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "LogicCommand",
+          "TypeHash": "0x751AB28F",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 339,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "LogicCommandSet",
+      "TypeId": "0xEC066D65",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "LogicCommandSet",
+          "TypeHash": "0x8AE8B68C",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 166,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "MainMenuPersonalityGroup",
+      "TypeId": "0x1F5EDCC8",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MainMenuPersonalityGroup",
+          "TypeHash": "0xAC30CC23",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "MainMenuPersonalityTemplate",
+      "TypeId": "0x8F43193A",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MainMenuPersonalityTemplate",
+          "TypeHash": "0xB8069AB7",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 6,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "MappableKey",
+      "TypeId": "0x5080A5D8",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MappableKey",
+          "TypeHash": "0x84B6AEC1",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 92,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "MeshInstanceTemplate",
+      "TypeId": "0x309E61A1",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MeshInstanceTemplate",
+          "TypeHash": "0x75382ABD",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "MiscAudio",
+      "TypeId": "0x7B6AE7D5",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MiscAudio",
+          "TypeHash": "0x28FADC88",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "MiscEvaEvents",
+      "TypeId": "0x6BBCE2EC",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MiscEvaEvents",
+          "TypeHash": "0xB521A78F",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "MissionHotSpotSettings",
+      "TypeId": "0xBD468ACC",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MissionHotSpotSettings",
+          "TypeHash": "0xFED76CC8",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "MissionTemplate",
+      "TypeId": "0xCF4AED23",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MissionTemplate",
+          "TypeHash": "0x214C65C3",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 13,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "ModelSettings",
+      "TypeId": "0x7559AD25",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "ModelSettings",
+          "TypeHash": "0x9536391F",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "Mouse",
+      "TypeId": "0x9687F57B",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "Mouse",
+          "TypeHash": "0x4A535D4B",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "MouseCursor",
+      "TypeId": "0xE1920287",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MouseCursor",
+          "TypeHash": "0x13ED4B89",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 50,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "MpGameRules",
+      "TypeId": "0x2C358B80",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MpGameRules",
+          "TypeHash": "0x34D91648",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "MultiplayerColor",
+      "TypeId": "0x8E28081D",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MultiplayerColor",
+          "TypeHash": "0x131C20A0",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 8,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "MultiplayerSettings",
+      "TypeId": "0x0B63AEF0",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MultiplayerSettings",
+          "TypeHash": "0x9C2B6E7E",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "Multisound",
+      "TypeId": "0xA3A7AF37",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "Multisound",
+          "TypeHash": "0xF79C5A89",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 528,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "MusicPalette",
+      "TypeId": "0x8F7DC19B",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MusicPalette",
+          "TypeHash": "0xD96FC160",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\WorldBuilder\\data\\worldbuilder.manifest"
+      ]
+    },
+    {
+      "TypeName": "MusicScriptConditionNugget_And",
+      "TypeId": "0x5016F8C3",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MusicScriptConditionNugget_And",
+          "TypeHash": "0x1FBAD33F",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 84,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "MusicScriptConditionNugget_EngagementCount",
+      "TypeId": "0xCF359C6A",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MusicScriptConditionNugget_EngagementCount",
+          "TypeHash": "0xB5CBC912",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 22,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "MusicScriptConditionNugget_HitBySuperWeapon",
+      "TypeId": "0x6167B6A9",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MusicScriptConditionNugget_HitBySuperWeapon",
+          "TypeHash": "0x243CC246",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 3,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "MusicScriptConditionNugget_LocalPlayerHitRedAlertButton",
+      "TypeId": "0x9E4D0625",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MusicScriptConditionNugget_LocalPlayerHitRedAlertButton",
+          "TypeHash": "0xFD517A3D",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "MusicScriptConditionNugget_LocalPlayerKillRatio",
+      "TypeId": "0xA80607E3",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MusicScriptConditionNugget_LocalPlayerKillRatio",
+          "TypeHash": "0xC5676FED",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 4,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "MusicScriptConditionNugget_Not",
+      "TypeId": "0xEED6A240",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MusicScriptConditionNugget_Not",
+          "TypeHash": "0x33055A8E",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 13,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "MusicScriptConditionNugget_ObjectTypesInProximity",
+      "TypeId": "0x4C574B2C",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MusicScriptConditionNugget_ObjectTypesInProximity",
+          "TypeHash": "0x24354307",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 4,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "MusicScriptConditionNugget_Or",
+      "TypeId": "0x88011B0E",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MusicScriptConditionNugget_Or",
+          "TypeHash": "0xF2E2E91D",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 2,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "MusicScriptConditionNugget_PathMusicStateCurrentlyActive",
+      "TypeId": "0xDE279056",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MusicScriptConditionNugget_PathMusicStateCurrentlyActive",
+          "TypeHash": "0xC9D7C134",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 8,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "MusicScriptConditionNugget_PathMusicStateLastActive",
+      "TypeId": "0xAD983E7E",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MusicScriptConditionNugget_PathMusicStateLastActive",
+          "TypeHash": "0x8C0AB66F",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 60,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "MusicScriptConditionNugget_ScoredKillCount",
+      "TypeId": "0xD7D07964",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MusicScriptConditionNugget_ScoredKillCount",
+          "TypeHash": "0xC2BE8D14",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 3,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "MusicTrack",
+      "TypeId": "0x7046D9F8",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "MusicTrack",
+          "TypeHash": "0x07C50662",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 3,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "NetworkSettings",
+      "TypeId": "0xFEA876AD",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "NetworkSettings",
+          "TypeHash": "0x7D077C96",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "ObjectCreationList",
+      "TypeId": "0xE86E4D61",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "ObjectCreationList",
+          "TypeHash": "0x1477F2E1",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 870,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest",
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest",
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\WorldBuilder\\data\\worldbuilder.manifest"
+      ]
+    },
+    {
+      "TypeName": "ObjectFilterAsset",
+      "TypeId": "0x44A5973D",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "ObjectFilterAsset",
+          "TypeHash": "0xDF72B4BA",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 44,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest",
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "OnDemandTexture",
+      "TypeId": "0x9312B9AC",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "OnDemandTexture",
+          "TypeHash": "0xF8488EDE",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": false,
+      "AssetCount": 99,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "OnDemandTextureImage",
+      "TypeId": "0xFE0E84BB",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "OnDemandTextureImage",
+          "TypeHash": "0x13DB2FBC",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 99,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "OnlineChatColors",
+      "TypeId": "0x502EED32",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "OnlineChatColors",
+          "TypeHash": "0x522E06C9",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "OrdersManagerSettings",
+      "TypeId": "0xB29F0574",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "OrdersManagerSettings",
+          "TypeHash": "0x80FCF268",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "PackedTextureImage",
+      "TypeId": "0x56626220",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "PackedTextureImage",
+          "TypeHash": "0xF8FCAD30",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 923,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "PathMusicEvent",
+      "TypeId": "0x9A651D89",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "PathMusicEvent",
+          "TypeHash": "0x599CDAF2",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 197,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "PathMusicEventSet",
+      "TypeId": "0xC70CAD55",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "PathMusicEventSet",
+          "TypeHash": "0x62094424",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 2,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "PathMusicGameDynamicState",
+      "TypeId": "0x05CE3E75",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "PathMusicGameDynamicState",
+          "TypeHash": "0xE2E24DA7",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 54,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "PathMusicGameDynamicStateSet",
+      "TypeId": "0x147335B2",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "PathMusicGameDynamicStateSet",
+          "TypeHash": "0x511D9D37",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 24,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "PathMusicGameDynamicTransition",
+      "TypeId": "0x8BACD634",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "PathMusicGameDynamicTransition",
+          "TypeHash": "0x82F0728E",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 88,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "PathMusicMap",
+      "TypeId": "0x95FE3C05",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "PathMusicMap",
+          "TypeHash": "0xBA1B4CCB",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "PathMusicTrack",
+      "TypeId": "0xA70BC1D6",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "PathMusicTrack",
+          "TypeHash": "0x9F12CF33",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 2,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "PathfindSettings",
+      "TypeId": "0x39DB25F8",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "PathfindSettings",
+          "TypeHash": "0x9CBCF9F1",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "PlayerPowerButtonTemplate",
+      "TypeId": "0xF10F77EE",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "PlayerPowerButtonTemplate",
+          "TypeHash": "0xA6409DD2",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 50,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "PlayerTech",
+      "TypeId": "0x7F0818D9",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "PlayerTech",
+          "TypeHash": "0x40F854D1",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 81,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "PlayerTechRank",
+      "TypeId": "0x6B7227C2",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "PlayerTechRank",
+          "TypeHash": "0x12271BCE",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 16,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "PlayerTechStoreTemplate",
+      "TypeId": "0x484D7CF8",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "PlayerTechStoreTemplate",
+          "TypeHash": "0x71A8F2C8",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 4,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "PlayerTechUpgradeBinding",
+      "TypeId": "0x7F96D96D",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "PlayerTechUpgradeBinding",
+          "TypeHash": "0xC4025520",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 4,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "PlayerTemplate",
+      "TypeId": "0xF231D60D",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "PlayerTemplate",
+          "TypeHash": "0x54A6D024",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 10,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "ProjectilePath",
+      "TypeId": "0x65EFB153",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "ProjectilePath",
+          "TypeHash": "0x8DAABAD0",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "PurchasePlayerTechButtonTemplate",
+      "TypeId": "0x5D65A2E0",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "PurchasePlayerTechButtonTemplate",
+          "TypeHash": "0xB2C19D3C",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 61,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "RadiusCursor",
+      "TypeId": "0x2078A161",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "RadiusCursor",
+          "TypeHash": "0xA0AF5530",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 35,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "RedAlertTemplate",
+      "TypeId": "0xF6D753D1",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "RedAlertTemplate",
+          "TypeHash": "0x49F4D026",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "RegisteredObjectSet",
+      "TypeId": "0x3090CD40",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "RegisteredObjectSet",
+          "TypeHash": "0x16B5ECC2",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 53,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "ResourceSettings",
+      "TypeId": "0xC376BC30",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "ResourceSettings",
+          "TypeHash": "0x5CFBBD27",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "Road",
+      "TypeId": "0xD19D90C6",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "Road",
+          "TypeHash": "0x2BFD2964",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 136,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\WorldBuilder\\data\\worldbuilder.manifest"
+      ]
+    },
+    {
+      "TypeName": "ScenarioManagerData",
+      "TypeId": "0xBDB09BDD",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "ScenarioManagerData",
+          "TypeHash": "0x19F42E4A",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "ScorchMarkSettings",
+      "TypeId": "0x8E14B8C3",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "ScorchMarkSettings",
+          "TypeHash": "0x698D0DFA",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "ShaderOverride",
+      "TypeId": "0xBCC23F6C",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "ShaderOverride",
+          "TypeHash": "0x3D5B1D16",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": false,
+      "AssetCount": 9,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "ShadowMap",
+      "TypeId": "0xF7CE0BBD",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "ShadowMap",
+          "TypeHash": "0x35DFB9F9",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "SkirmishOpeningMove",
+      "TypeId": "0xECBE73E8",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "SkirmishOpeningMove",
+          "TypeHash": "0x6FF5D680",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 116,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "SkirmishSettings",
+      "TypeId": "0x17F749CF",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "SkirmishSettings",
+          "TypeHash": "0xE35DB55B",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "SpecialPowerTemplate",
+      "TypeId": "0x81D85EFA",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "SpecialPowerTemplate",
+          "TypeHash": "0xC0E5F6D0",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 175,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "StanceTemplate",
+      "TypeId": "0x9684C743",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "StanceTemplate",
+          "TypeHash": "0x4829F362",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 4,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "StaticGameLOD",
+      "TypeId": "0x1FB298D1",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "StaticGameLOD",
+          "TypeHash": "0x4A93FC61",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 6,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "TargetingCombatChainCompare",
+      "TypeId": "0x0559C032",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "TargetingCombatChainCompare",
+          "TypeHash": "0xB6138C0D",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "TargetingCompareList",
+      "TypeId": "0xBE06A9E5",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "TargetingCompareList",
+          "TypeHash": "0x4D83D996",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 4,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "TargetingDistanceCompare",
+      "TypeId": "0x8CA5A7D7",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "TargetingDistanceCompare",
+          "TypeHash": "0xC00C41F3",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "TargetingInTurretArcCompare",
+      "TypeId": "0x77AC3B08",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "TargetingInTurretArcCompare",
+          "TypeHash": "0x5C986FB1",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "TerrainAssetCollection",
+      "TypeId": "0x22B4748B",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "TerrainAssetCollection",
+          "TypeHash": "0x143CC65F",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "TerrainParticleMapping",
+      "TypeId": "0x5796C4B7",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "TerrainParticleMapping",
+          "TypeHash": "0x943B4A82",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 4,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "TerrainVisualSettings",
+      "TypeId": "0x4696A138",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "TerrainVisualSettings",
+          "TypeHash": "0x4FAD3C13",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "Texture",
+      "TypeId": "0x21E727DA",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "Texture",
+          "TypeHash": "0x9F5FF8DA",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": false,
+      "AssetCount": 3959,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest",
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\WorldBuilder\\data\\worldbuilder.manifest"
+      ]
+    },
+    {
+      "TypeName": "TutorialMapData",
+      "TypeId": "0xCB2E04E9",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "TutorialMapData",
+          "TypeHash": "0x9585118A",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "UICommandButton",
+      "TypeId": "0x08080BC0",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UICommandButton",
+          "TypeHash": "0x89D7EA91",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIConfigList",
+      "TypeId": "0xB71D7323",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIConfigList",
+          "TypeHash": "0x388842A4",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UICoopTinting",
+      "TypeId": "0xFCF3509A",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UICoopTinting",
+          "TypeHash": "0x054F5ACE",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIDecalCloud",
+      "TypeId": "0x967ED1DC",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIDecalCloud",
+          "TypeHash": "0x1363FA2B",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIDecalDestinationMarker",
+      "TypeId": "0x5B53BD84",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIDecalDestinationMarker",
+          "TypeHash": "0x4434F977",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIDecalGrid",
+      "TypeId": "0x9AEFFBAF",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIDecalGrid",
+          "TypeHash": "0x003E27FF",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIFloatingTextDisplay",
+      "TypeId": "0x5CFAC0D8",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIFloatingTextDisplay",
+          "TypeHash": "0x8700DB82",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIJoypadCommandBarButtonBuild",
+      "TypeId": "0xCC13A3DA",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIJoypadCommandBarButtonBuild",
+          "TypeHash": "0x491C58E4",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIJoypadCommandBarControlGroups",
+      "TypeId": "0xD9456C84",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIJoypadCommandBarControlGroups",
+          "TypeHash": "0xE5994135",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIJoypadCommandBarCoopCommunicator",
+      "TypeId": "0x629A93BB",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIJoypadCommandBarCoopCommunicator",
+          "TypeHash": "0xA903F1E2",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIJoypadCommandBarHomogenousGroup",
+      "TypeId": "0x5C34A41C",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIJoypadCommandBarHomogenousGroup",
+          "TypeHash": "0x84A0BF03",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIJoypadCommandBarMixedGroup",
+      "TypeId": "0x4C1D000E",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIJoypadCommandBarMixedGroup",
+          "TypeHash": "0xED6B4DFA",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIJoypadCommandBarPlayerPowers",
+      "TypeId": "0xA37B9988",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIJoypadCommandBarPlayerPowers",
+          "TypeHash": "0x687A641F",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIJoypadCommandBarSingleUnit",
+      "TypeId": "0xE88B2522",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIJoypadCommandBarSingleUnit",
+          "TypeHash": "0x6B910C6B",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIJoypadCommandBarStances",
+      "TypeId": "0x70868814",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIJoypadCommandBarStances",
+          "TypeHash": "0x444E408D",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIJoypadCommandBarTopMenu",
+      "TypeId": "0x81583E8B",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIJoypadCommandBarTopMenu",
+          "TypeHash": "0x157D0484",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMessageDisplay",
+      "TypeId": "0x652AF19D",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMessageDisplay",
+          "TypeHash": "0xD6D6EFAA",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseDragSelectionFeedback",
+      "TypeId": "0x246D0C65",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseDragSelectionFeedback",
+          "TypeHash": "0x20C10A91",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseHUDElementHotKeyGate",
+      "TypeId": "0xA336BCC2",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseHUDElementHotKeyGate",
+          "TypeHash": "0xCD311E8E",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalAttackMoveButton",
+      "TypeId": "0x1A66FEFC",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalAttackMoveButton",
+          "TypeHash": "0x56563ED8",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalBuildQueueTab",
+      "TypeId": "0x75B6EC99",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalBuildQueueTab",
+          "TypeHash": "0x107AD864",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalBuildQueueTypeTab",
+      "TypeId": "0xF40E5021",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalBuildQueueTypeTab",
+          "TypeHash": "0xFD80A557",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCoOpAIButtonsAssaultButton",
+      "TypeId": "0xB873251C",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCoOpAIButtonsAssaultButton",
+          "TypeHash": "0xE640A7F2",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCoOpAIButtonsHelpButton",
+      "TypeId": "0x0634D9CC",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCoOpAIButtonsHelpButton",
+          "TypeHash": "0xBC5A9F70",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCoOpAIButtonsHoldObjectButton",
+      "TypeId": "0x2E0AD8B0",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCoOpAIButtonsHoldObjectButton",
+          "TypeHash": "0x3432F9F7",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCoOpAIButtonsHoldPositionButton",
+      "TypeId": "0xADB2367F",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCoOpAIButtonsHoldPositionButton",
+          "TypeHash": "0x7390FFC7",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCoOpAIButtonsNormalButton",
+      "TypeId": "0x51C6B6A8",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCoOpAIButtonsNormalButton",
+          "TypeHash": "0x11F96319",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCommandAttack",
+      "TypeId": "0xD3863433",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCommandAttack",
+          "TypeHash": "0x02BD5240",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCommandAttackMove",
+      "TypeId": "0xD522E6ED",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCommandAttackMove",
+          "TypeHash": "0xD2657960",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCommandCommunicateWithAllies",
+      "TypeId": "0x06BCB058",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCommandCommunicateWithAllies",
+          "TypeHash": "0x62BEE2E7",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCommandDock",
+      "TypeId": "0xED0A75AC",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCommandDock",
+          "TypeHash": "0xACDD2F29",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCommandEnter",
+      "TypeId": "0xB63667C0",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCommandEnter",
+          "TypeHash": "0x43646C6A",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCommandForceAttack",
+      "TypeId": "0x7BA13C8D",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCommandForceAttack",
+          "TypeHash": "0xD04699E4",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCommandForceMove",
+      "TypeId": "0xA0C9EC41",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCommandForceMove",
+          "TypeHash": "0x07BF94D3",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCommandGetCrate",
+      "TypeId": "0x7B3F8F48",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCommandGetCrate",
+          "TypeHash": "0x8E7A0FA6",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCommandMineOre",
+      "TypeId": "0xB0415646",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCommandMineOre",
+          "TypeHash": "0xB3DDA9E2",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCommandMove",
+      "TypeId": "0x4994C173",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCommandMove",
+          "TypeHash": "0xC0F904A1",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCommandPlaceAIBeacon",
+      "TypeId": "0xE3159616",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCommandPlaceAIBeacon",
+          "TypeHash": "0x24622FB8",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCommandPlaceRallyPoint",
+      "TypeId": "0x57E00896",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCommandPlaceRallyPoint",
+          "TypeHash": "0x417E47CC",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCommandReverseMove",
+      "TypeId": "0xF00548C6",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCommandReverseMove",
+          "TypeHash": "0xE7D4DD88",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCommandSelect",
+      "TypeId": "0x4F8B8410",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCommandSelect",
+          "TypeHash": "0xDBE5398F",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCommandSell",
+      "TypeId": "0x4A753C69",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCommandSell",
+          "TypeHash": "0x4C34A74C",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCommandSetRallyPoint",
+      "TypeId": "0xF92B2739",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCommandSetRallyPoint",
+          "TypeHash": "0xCE71E899",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalCommandToggleSelfRepair",
+      "TypeId": "0x749B5209",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalCommandToggleSelfRepair",
+          "TypeHash": "0x295A4872",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalDeactivateMissionHotSpotsButton",
+      "TypeId": "0x7A0F9658",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalDeactivateMissionHotSpotsButton",
+          "TypeHash": "0xEAA83CD0",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalExitContainerButton",
+      "TypeId": "0x3C70F027",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalExitContainerButton",
+          "TypeHash": "0xB0F771E4",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalFastForwardButton",
+      "TypeId": "0xFC44C1C3",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalFastForwardButton",
+          "TypeHash": "0xBA95A6F2",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalForceAttackButton",
+      "TypeId": "0xDFE29605",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalForceAttackButton",
+          "TypeHash": "0x089A2D65",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalForceAttackMoveButton",
+      "TypeId": "0x296A6335",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalForceAttackMoveButton",
+          "TypeHash": "0xF9DD687D",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalForceMoveButton",
+      "TypeId": "0xDD834D41",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalForceMoveButton",
+          "TypeHash": "0x99E2501F",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalGroupSelection",
+      "TypeId": "0x0E626554",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalGroupSelection",
+          "TypeHash": "0x4B91C129",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalLookAt",
+      "TypeId": "0x6B00C87D",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalLookAt",
+          "TypeHash": "0x63E9948B",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalMainCommandBarHotKeys",
+      "TypeId": "0x9A7A151D",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalMainCommandBarHotKeys",
+          "TypeHash": "0x73E311A9",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalMiscHotKeys",
+      "TypeId": "0x780C2500",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalMiscHotKeys",
+          "TypeHash": "0xD346B6AF",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalOpenAdvancedCommandsButton",
+      "TypeId": "0xA76A7A93",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalOpenAdvancedCommandsButton",
+          "TypeHash": "0x8D934671",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalPauseButton",
+      "TypeId": "0xCBD960EC",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalPauseButton",
+          "TypeHash": "0x3C06FAC3",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalPlanningModeButton",
+      "TypeId": "0x87C8CD72",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalPlanningModeButton",
+          "TypeHash": "0xEE0DA44F",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalPlayerPowerHotKeys",
+      "TypeId": "0x88230CCD",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalPlayerPowerHotKeys",
+          "TypeHash": "0x8AA6BAD8",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalPlayerTechStoreButton",
+      "TypeId": "0x43E16D66",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalPlayerTechStoreButton",
+          "TypeHash": "0x090A0AC3",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalQuickChatDisplay",
+      "TypeId": "0xAC5E9172",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalQuickChatDisplay",
+          "TypeHash": "0x81F357B9",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalRadarTelestrator",
+      "TypeId": "0xC8AA398E",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalRadarTelestrator",
+          "TypeHash": "0xAB665329",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalRedAlertButton",
+      "TypeId": "0x025F8452",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalRedAlertButton",
+          "TypeHash": "0x12C3CE32",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalReverseMoveButton",
+      "TypeId": "0xB20D9681",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalReverseMoveButton",
+          "TypeHash": "0x6F0D7455",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalSelectionDetailsButtonHotKeys",
+      "TypeId": "0x4D44696A",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalSelectionDetailsButtonHotKeys",
+          "TypeHash": "0x46C4AFE8",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalSelectionRefinementTab",
+      "TypeId": "0x9D131288",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalSelectionRefinementTab",
+          "TypeHash": "0xF15481F9",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalSellModeButton",
+      "TypeId": "0xF4834051",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalSellModeButton",
+          "TypeHash": "0xB2D81257",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalSetStanceButton",
+      "TypeId": "0xAB4CFCD4",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalSetStanceButton",
+          "TypeHash": "0xF2B7A980",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalStopButton",
+      "TypeId": "0xF6C9D597",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalStopButton",
+          "TypeHash": "0xE76FF3AB",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalTelestrator",
+      "TypeId": "0x728B3825",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalTelestrator",
+          "TypeHash": "0x36A0014E",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalThreatMeter",
+      "TypeId": "0xF70043B6",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalThreatMeter",
+          "TypeHash": "0x1C30F868",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalToggleRepairModeButton",
+      "TypeId": "0x14A0B8E1",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalToggleRepairModeButton",
+          "TypeHash": "0x875245F7",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalUnitIntroButton",
+      "TypeId": "0x4C1F24EE",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalUnitIntroButton",
+          "TypeHash": "0xF0B72BA3",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseTacticalWaypointModeButton",
+      "TypeId": "0xB05D5241",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseTacticalWaypointModeButton",
+          "TypeHash": "0xAD5F905F",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIMouseVoiceChat",
+      "TypeId": "0xDF496AB2",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIMouseVoiceChat",
+          "TypeHash": "0xB3EECC17",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIQuickChatMessage",
+      "TypeId": "0xF4491BA9",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIQuickChatMessage",
+          "TypeHash": "0x2C498C12",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 228,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIRadarObjectsLayer",
+      "TypeId": "0xF0C74A4A",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIRadarObjectsLayer",
+          "TypeHash": "0x5F4AA6C5",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIScenarioMapPreview",
+      "TypeId": "0xC3ACC6B6",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIScenarioMapPreview",
+          "TypeHash": "0x8CD9F2DC",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UISubtitleDisplay",
+      "TypeId": "0x09DF0972",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UISubtitleDisplay",
+          "TypeHash": "0x434C6A31",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UITimerDisplay",
+      "TypeId": "0x38AFAA14",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UITimerDisplay",
+          "TypeHash": "0x7C1AF1F2",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UIWorldBuilderDecalGrid",
+      "TypeId": "0x49D519AF",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UIWorldBuilderDecalGrid",
+          "TypeHash": "0x5793F574",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UnitAISettings",
+      "TypeId": "0xB0B8A920",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UnitAISettings",
+          "TypeHash": "0x2D4A40A3",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "UnitAbilityButtonTemplate",
+      "TypeId": "0xD1AEB526",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UnitAbilityButtonTemplate",
+          "TypeHash": "0xB0874C15",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 125,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UnitIntro",
+      "TypeId": "0x6F78B1A4",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UnitIntro",
+          "TypeHash": "0x570806D2",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 76,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UnitOverlayIconSettings",
+      "TypeId": "0x9053D603",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UnitOverlayIconSettings",
+          "TypeHash": "0x81FF61CD",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UnitTypeIcon",
+      "TypeId": "0xD76B50C7",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UnitTypeIcon",
+          "TypeHash": "0xF9E68B56",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 17,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "UpgradeTemplate",
+      "TypeId": "0xE1AFE75B",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "UpgradeTemplate",
+          "TypeHash": "0x5D55CE2C",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 105,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest",
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "Video",
+      "TypeId": "0x230236F6",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "Video",
+          "TypeHash": "0x8433EFA6",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 436,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "VideoEventList",
+      "TypeId": "0x564A9693",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "VideoEventList",
+          "TypeHash": "0x96DA1C03",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 437,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "W3DAnimation",
+      "TypeId": "0x2448AE30",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "W3DAnimation",
+          "TypeHash": "0x55455FE8",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": false,
+      "AssetCount": 2188,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest",
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\WorldBuilder\\data\\worldbuilder.manifest"
+      ]
+    },
+    {
+      "TypeName": "W3DCollisionBox",
+      "TypeId": "0xE3181C04",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "W3DCollisionBox",
+          "TypeHash": "0x6E26F699",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 2310,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest",
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\WorldBuilder\\data\\worldbuilder.manifest"
+      ]
+    },
+    {
+      "TypeName": "W3DContainer",
+      "TypeId": "0xF0F08712",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "W3DContainer",
+          "TypeHash": "0x619DA33F",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 2502,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest",
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\WorldBuilder\\data\\worldbuilder.manifest"
+      ]
+    },
+    {
+      "TypeName": "W3DDeviceSettings",
+      "TypeId": "0x57900170",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "W3DDeviceSettings",
+          "TypeHash": "0x6ED8F3FF",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "W3DHierarchy",
+      "TypeId": "0x61D7EA40",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "W3DHierarchy",
+          "TypeHash": "0xED94DE61",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 2470,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest",
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\WorldBuilder\\data\\worldbuilder.manifest"
+      ]
+    },
+    {
+      "TypeName": "W3DMesh",
+      "TypeId": "0xC2B1A262",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "W3DMesh",
+          "TypeHash": "0xCD8A089C",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": false,
+      "AssetCount": 6269,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest",
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\WorldBuilder\\data\\worldbuilder.manifest"
+      ]
+    },
+    {
+      "TypeName": "WaterSetting",
+      "TypeId": "0xA2A3374C",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "WaterSetting",
+          "TypeHash": "0x1BFAD724",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 4,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "WaterTextureList",
+      "TypeId": "0xB28CCA45",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "WaterTextureList",
+          "TypeHash": "0x7194A098",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": false,
+      "HasTypedMarshaller": false,
+      "AssetCount": 6,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\WorldBuilder\\data\\worldbuilder.manifest"
+      ]
+    },
+    {
+      "TypeName": "WaterTransparency",
+      "TypeId": "0x582FDC2A",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "WaterTransparency",
+          "TypeHash": "0x1F5909EB",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    },
+    {
+      "TypeName": "WeaponTemplate",
+      "TypeId": "0x94D4D96E",
+      "Status": "type-hash-mismatch",
+      "Fingerprints": [
+        {
+          "TypeName": "WeaponTemplate",
+          "TypeHash": "0x27E8D984",
+          "Tokenized": 1
+        }
+      ],
+      "CompilerTypeHash": "0x90AEAB74",
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 432,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest",
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\WorldBuilder\\data\\worldbuilder.manifest"
+      ]
+    },
+    {
+      "TypeName": "Weather",
+      "TypeId": "0x90D951AD",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "Weather",
+          "TypeHash": "0xE23EB9D9",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Static Data\\data\\static.manifest"
+      ]
+    },
+    {
+      "TypeName": "YurikoHotKeys",
+      "TypeId": "0xCC220E9E",
+      "Status": "unregistered",
+      "Fingerprints": [
+        {
+          "TypeName": "YurikoHotKeys",
+          "TypeHash": "0xCF96257E",
+          "Tokenized": 0
+        }
+      ],
+      "CompilerTypeHash": null,
+      "HasModel": true,
+      "HasTypedMarshaller": true,
+      "AssetCount": 1,
+      "Sources": [
+        "D:\\TEMP\\Red Alert 3 Uprising Source Data\\Global Data\\data\\global.manifest"
+      ]
+    }
+  ]
+}

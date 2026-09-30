@@ -41,6 +41,8 @@ internal static class CompilerSmokeTest
         TestReferencePipeline();
         // Reborn: guard external runtime paths, patch roles and stale manifest identity caches.
         TestExternalManifestLinks();
+        // Reborn: keep conflicting or wrong-game metadata from masquerading as compiler readiness.
+        TestTypeRegistryAudit();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1857,6 +1859,28 @@ internal static class CompilerSmokeTest
     private static void TestReferencePipeline()
     {
         ReferencePipelineSmokeTest.Run(ReferencePipelineSmokeTest.FindFixture());
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: regression-check evidence precedence and the EP1-only audit target boundary. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestTypeRegistryAudit()
+    {
+        if (TypeRegistryAudit.Classify(2, true, true, true) != "conflicting-evidence"
+            || TypeRegistryAudit.Classify(1, false, true, true) != "identity-mismatch"
+            || TypeRegistryAudit.Classify(1, true, false, true) != "unregistered"
+            || TypeRegistryAudit.Classify(1, true, true, false) != "type-hash-mismatch"
+            || TypeRegistryAudit.Classify(1, true, true, true) != "hash-match-only")
+            throw new InvalidOperationException("Type registry audit classification regression.");
+        TypeRegistryAudit.ValidateTarget(7, 0x5454A8E9u);
+        foreach (var target in new[] { (Version: (ushort)6, Hash: 0x5454A8E9u), (Version: (ushort)7, Hash: 0x12B3E763u) })
+        {
+            bool rejected = false;
+            try { TypeRegistryAudit.ValidateTarget(target.Version, target.Hash); }
+            catch (InvalidDataException) { rejected = true; }
+            if (!rejected) throw new InvalidOperationException("Wrong-game type audit input was accepted.");
+        }
+        Console.WriteLine("PASS EP1 type registry audit evidence and target guards");
     }
 
     //-------------------------------------------------------------------------------------------------

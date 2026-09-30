@@ -1,7 +1,7 @@
 # BinaryAssetBuilder
 A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
-## Uprising progress — September 30, 2026
+## Uprising progress — October 1, 2026
 
 Active branch: `feature/ra3ep1-manifest-inspector`. This is not yet a usable
 Uprising Mod SDK release. Replacing XML/XSD files alone is insufficient:
@@ -16,7 +16,7 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **784/1,390** EP1 complex types have models and
 **760/1,390** have typed marshallers. The compiler test runner invokes
-**47 test groups** (some contain several fixtures). These counters can grow
+**48 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. In this work block, model and
@@ -33,6 +33,8 @@ marshaller counts are unchanged; registered test groups increased by one.
 
 ### Recently completed
 
+- Added a metadata-only EP1 type-registry audit with source SHA-256 fingerprints and conflict/target guards.
+- Audited global/static/WorldBuilder/EnglishAudio: 254 observed root asset types, 249 unregistered and five with wrong KW type hashes. See [type-table audit](docs/RA3EP1_TYPE_TABLE_AUDIT.md).
 - Corrected ScriptedModel, dependency/death masks, invisibility and tint layouts.
 - Restored missing RA3 fields in OpenContain and PassengerData, removed
   KW-only fields and preserved EP1 mask expansions.

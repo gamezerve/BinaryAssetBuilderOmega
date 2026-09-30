@@ -3,7 +3,7 @@
 This branch starts the migration with a read-only compatibility gate. It does
 not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
-## Progress snapshot (2026-09-30)
+## Progress snapshot (2026-10-01)
 
 The current conservative engineering estimate is **50% complete / 50%
 remaining**. This is an effort estimate, not the percentage of C# files in the
@@ -33,12 +33,19 @@ snapshot was held while several shared-layout fixes accumulated. This snapshot
 reassesses the native-layout workstream from 53% to 55% after the containment
 audit and attach base recovery, giving roughly 50% overall. End-to-end game
 validation is still at zero. Observable counters are reported separately:
-the compiler self-test currently invokes 47 test groups (some have multiple
+the compiler self-test currently invokes 48 test groups (some have multiple
 fixtures), and the structural coverage script reports the inventory above.
 Neither counter proves runtime compatibility or replaces final type-table gates.
 The coverage script now emits `CompilerTestGroupsDeclared`, counting registered
 groups without executing them. This block adds one test group and leaves model/
-marshaller counts unchanged relative to its starting snapshot (784/760 and 46 groups).
+marshaller counts unchanged relative to its starting snapshot (784/760 and 47 groups).
+
+The new [root asset type audit](RA3EP1_TYPE_TABLE_AUDIT.md) separates broad
+complex-type inventory from plugin registration. Four real EP1 streams contain
+254 distinct root asset types: 249 are unregistered and all five observed
+registered types have KW/EP1 hash mismatches. Only 90 of those 254 have models
+and 83 have direct typed marshallers. Production output remains gated; no hashes
+were changed to make an unverified build appear compatible.
 
 ## Established facts
 
