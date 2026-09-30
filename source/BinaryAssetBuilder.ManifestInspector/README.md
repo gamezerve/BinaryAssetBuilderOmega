@@ -17,6 +17,9 @@ dotnet run --project source/BinaryAssetBuilder.ManifestInspector -p:Platform=x86
 dotnet run --project source/BinaryAssetBuilder.ManifestInspector -p:Platform=x86 -- utility-verify "D:\Games\RA3 Uprising\Data\WBData.big" --entry "data\worldbuilder.manifest"
 # Reborn: compare the in-tree native layouts with EA's official RA3 declarations without loading the DLL.
 dotnet run --project source/BinaryAssetBuilder.ManifestInspector -p:Platform=x86 -- assembly-size-diff "D:\RA3 Mod SDK\tools\BinaryAssetBuilder.Tokenizer.dll" --top 50
+
+# Reborn: validate official infiltrator defaults through production reference normalization and real EP1 manifests.
+dotnet run --project source/BinaryAssetBuilder.ManifestInspector -p:Platform=x86 -- reference-self-test tests/fixtures/ReferencePipeline.xsd "D:\TEMP\Red Alert 3 Uprising Source Data\Global Data\data\global.manifest" "D:\TEMP\Red Alert 3 Uprising Source Data\Static Data\data\static.manifest"
 ```
 
 Known target fingerprints:

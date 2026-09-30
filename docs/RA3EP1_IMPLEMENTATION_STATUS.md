@@ -33,12 +33,12 @@ snapshot was held while several shared-layout fixes accumulated. This snapshot
 reassesses the native-layout workstream from 53% to 55% after the containment
 audit and attach base recovery, giving roughly 50% overall. End-to-end game
 validation is still at zero. Observable counters are reported separately:
-the compiler self-test currently invokes 45 test groups (some have multiple
+the compiler self-test currently invokes 46 test groups (some have multiple
 fixtures), and the structural coverage script reports the inventory above.
 Neither counter proves runtime compatibility or replaces final type-table gates.
 The coverage script now emits `CompilerTestGroupsDeclared`, counting registered
-groups without executing them. This block adds one complex model/marshaller
-and two test groups relative to its starting snapshot (783/759 and 43 groups).
+groups without executing them. This block adds one test group and leaves model/
+marshaller counts unchanged relative to its starting snapshot (784/760 and 45 groups).
 
 ## Established facts
 
@@ -738,7 +738,7 @@ the infiltrator fixture explicitly supplies normalized filter/EVA/FX tokens;
 it must not be cited as proof that named defaults such as
 InfiltrationCanEnterObjectFilter or EnemyBuildingInfiltrated resolve correctly.
 Do not replace these names with guessed hashes: reference indices, weak IDs and
-asset/type hashes have different roles. A remaining acceptance test must run
+asset/type hashes have different roles. At that snapshot a remaining acceptance test needed to run
 schema default insertion, dependency discovery/reference normalization and
 marshalling together, then verify imports against actual global/static assets.
 Standalone EVA support also remains unported. Final type-table gating and
@@ -752,6 +752,69 @@ dispatch `80/8/0`, and Converging dispatch `144/8/0` (`bin/relo/imp`). Derived
 fixtures include the four-byte outer dispatch pointer. An additional sweeping
 fixture verifies 90-degree-to-radian conversion, ALL minus three options and
 RequiresWeapon=false. No game-runtime claim is made from these fixtures.
+
+## Schema-to-import reference pipeline validation (2026-09-30)
+
+The preceding named-default uncertainty is now closed for the four infiltrator
+defaults by a focused integration test. `AssetDeclarationDocument.Validate`
+calls `XmlDocument.Validate`, inserting schema-default attributes;
+`ValidateInstances` then sends typed references to `HandleAssetReferenceType`.
+Strong references append an InstanceHandle and rewrite their text to
+`name\dependency-index`. `Marshaler.AssetReference.Marshal<T>` registers that
+index at the native reference slot; it is not a type/instance hash. Index zero
+is valid and must still produce an import entry.
+
+The same normalization method is now static with an explicit SchemaSet input,
+allowing the inspector to test production code through a narrow reflection
+seam. The production caller passes its normal DocumentProcessor schema set.
+Two defects were corrected:
+
+- refType is inherited from the nearest annotated base across restrictions and
+  multi-level extensions, after checking element/attribute overrides. Missing
+  annotations still fail with ReferencingError.
+- Weak references retain typed dependency handles but their native text is
+  normalized to InstanceName. `GameObject:TestInfiltrator` must not hash the
+  type prefix or whitespace. No strong import is added for this weak ID.
+
+`DocumentProcessor.Version` changed from 10/11 to 12/13 (VERSION5/other),
+invalidating previously normalized session caches through the existing
+`SessionCache.CheckFiles` version gate. A test injects an old-version state and
+verifies its rejection. No cache files are deleted. VERSION7 uses revision 13;
+this is a processing/cache revision, not the game's manifest-format version.
+
+`tests/fixtures/ReferencePipeline.xsd` includes the actual EP1 Ref.xsd,
+ObjectStatus.xsd, InfiltratorContain.xsd and its effect enum. It uses documented
+primitive/base/target stubs and reproduces the ObjectFilterAssetRef declaration
+from AssetTypeObjectFilter.xsd; it is not the entire game schema or an EVA/FX
+asset compiler. `ReferencePipelineSmokeTest.Normalize` validates the DOM and
+invokes the production reference normalizer; `CheckDefaultChunk` then marshals
+the infiltrator layout. Covered cases include inherited aliases, attribute
+overrides, strong element references, derived explicit types, wrong types,
+missing refType, blank optional references, replacement of an old numeric
+suffix, typed weak names and import sentinel/index zero. Two fresh runs have
+byte-identical bin/relo/imp and ordered dependency IDs.
+
+Four default dependencies were checked by exact type/instance IDs against
+real local EP1 manifests (version 7, AllTypesHash=0x5454A8E9):
+
+| Default dependency | Type ID | Instance ID |
+|---|---|---|
+| ObjectFilterAsset:InfiltrationCanEnterObjectFilter | 44A5973D | D605BE96 |
+| EvaEvent:EnemyBuildingInfiltrated | 1553B19E | E1F7D870 |
+| EvaEvent:OurBuildingInfiltrated | 1553B19E | D0F0E06D |
+| FXList:FX_Building_Infiltrated_Generic | 86682E78 | 13B4C3EA |
+
+Inputs: `D:\TEMP\Red Alert 3 Uprising Source Data\Global Data\data\global.manifest`
+and `D:\TEMP\Red Alert 3 Uprising Source Data\Static Data\data\static.manifest`.
+Only these small manifests were read; no BIN stream was loaded or modified.
+`reference-self-test <schema-fixture> [ep1-manifest ...]` reproduces the check.
+The default fixture emits `136/0/20`; four import slots select dependency
+handles, including slot 44 with index zero. All 46 compiler groups, layout
+checks and 33 enum mappings pass after the full dependency rebuild and final
+test-runner rebuild. Inventory stays 784 models/760 marshallers. The rounded
+effort estimate remains approximately 50%. This test does not establish full
+DocumentProcessor/plugin/output-manager execution, external/patch linking,
+final type-table correctness or an in-game mod load; those remain open gates.
 
 ## Acceptance gates for the first PoC
 

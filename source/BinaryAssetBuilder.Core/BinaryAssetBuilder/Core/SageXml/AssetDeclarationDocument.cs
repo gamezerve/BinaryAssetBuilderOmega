@@ -937,7 +937,10 @@ namespace BinaryAssetBuilder.Core.SageXml
             }
         }
 
-        private void HandleAssetReferenceType(XPathNavigator navigator, ref InstanceDeclaration instance, BinaryWriter refTypeIds, bool isAssetReference)
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: normalize schema references and preserve typed weak IDs without their textual type prefix. */
+        //-------------------------------------------------------------------------------------------------
+        private static void HandleAssetReferenceType(XPathNavigator navigator, ref InstanceDeclaration instance, BinaryWriter refTypeIds, bool isAssetReference, SchemaSet schemaSet)
         {
             string instanceName = navigator.Value.Trim().Split('\\')[0];
             if (string.IsNullOrEmpty(instanceName))
@@ -956,10 +959,16 @@ namespace BinaryAssetBuilder.Core.SageXml
             }
             if (typeName is null && navigator.SchemaInfo.SchemaType is not null)
             {
-                typeName = GetRefTypeName(navigator.SchemaInfo.SchemaType.UnhandledAttributes);
-                if (typeName is null && navigator.SchemaInfo.SchemaType.DerivedBy == XmlSchemaDerivationMethod.Extension)
+                // Reborn: restrictions and multi-level extensions inherit refType from the nearest annotated base.
+                for (XmlSchemaType type = navigator.SchemaInfo.SchemaType; type is not null && typeName is null;)
                 {
-                    typeName = GetRefTypeName(navigator.SchemaInfo.SchemaType.BaseXmlSchemaType.UnhandledAttributes);
+                    typeName = GetRefTypeName(type.UnhandledAttributes);
+                    XmlSchemaType next = type.BaseXmlSchemaType;
+                    if (ReferenceEquals(next, type))
+                    {
+                        break;
+                    }
+                    type = next;
                 }
             }
             if (typeName is null)
@@ -976,8 +985,8 @@ namespace BinaryAssetBuilder.Core.SageXml
             }
             else if (isAssetReference)
             {
-                XmlSchemaType instanceType = _current.DocumentProcessor.SchemaSet.GetXmlType(other.TypeName);
-                XmlSchemaType referenceType = _current.DocumentProcessor.SchemaSet.GetXmlType(typeName);
+                XmlSchemaType instanceType = schemaSet.GetXmlType(other.TypeName);
+                XmlSchemaType referenceType = schemaSet.GetXmlType(typeName);
                 if (referenceType is null)
                 {
                     throw new BinaryAssetBuilderException(ErrorCode.ReferencingError,
@@ -1007,6 +1016,8 @@ namespace BinaryAssetBuilder.Core.SageXml
             else
             {
                 instance.WeakReferencedInstances.Add(other);
+                // Reborn: TypedAssetId hashes the instance name, not the optional Type: prefix or whitespace.
+                navigator.SetValue(other.InstanceName);
             }
         }
 
@@ -1030,7 +1041,7 @@ namespace BinaryAssetBuilder.Core.SageXml
             bool isAssetReference = !isWeakReference && XmlSchemaType.IsDerivedFrom(navigator.SchemaInfo.SchemaType, _current.DocumentProcessor.SchemaSet.XmlAssetReferenceType, XmlSchemaDerivationMethod.None);
             if (isWeakReference || isAssetReference)
             {
-                HandleAssetReferenceType(navigator, ref instance, refTypeIds, isAssetReference);
+                HandleAssetReferenceType(navigator, ref instance, refTypeIds, isAssetReference, _current.DocumentProcessor.SchemaSet);
             }
             else if (XmlSchemaType.IsDerivedFrom(navigator.SchemaInfo.SchemaType, _current.DocumentProcessor.SchemaSet.XmlFileReferenceType, XmlSchemaDerivationMethod.None))
             {

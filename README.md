@@ -16,11 +16,11 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **784/1,390** EP1 complex types have models and
 **760/1,390** have typed marshallers. The compiler test runner invokes
-**45 test groups** (some contain several fixtures). These counters can grow
+**46 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
-registered groups but does not execute them. In this work block, models and
-marshallers increased by one each, and registered test groups by two.
+registered groups but does not execute them. In this work block, model and
+marshaller counts are unchanged; registered test groups increased by one.
 
 | Workstream | Status |
 |---|---|
@@ -51,6 +51,8 @@ marshallers increased by one each, and registered test groups by two.
 - Restored InfiltratorContain's missing masks, effects, weak ID, EVA/FX imports and optional filter-reference pointers.
 - Recovered LaserState's string, particle lists and pointer fields; added EP1 RequiresWeapon and SweepingLaser angle/options.
 - Restored the missing ConvergingLaserState model, marshaller and behavior dispatch.
+- Verified schema-inserted infiltrator defaults through dependency-index normalization and native imports against real EP1 manifests.
+- Fixed inherited refType lookup and typed weak-reference normalization; invalidated old session caches.
 
 Latest verification: Release/x86 build, `layout-self-test` and
 `compiler-self-test` passed. The two-passenger OpenContain fixture produces
@@ -73,12 +75,15 @@ The preceding Release/x86 rebuild and its 43 compiler test groups passed. Attach
 fixtures produce `368/0/0` and `576/32/16`; Leech dispatch produces `372/8/0`
 and MoneyGain dispatch `448/12/0`. The enum check now verifies 33 schema mappings.
 
-Named asset defaults remain an explicit pipeline validation gap: the raw
-marshaller accepts normalized `Type\numeric-id` tokens and otherwise leaves a
-reference unregistered. Infiltrator tests therefore supply resolved tokens;
-they do not establish that default EVA/FX/filter names are resolved end to end.
+The focused reference-pipeline test now validates infiltrator's four named
+defaults: official schema default insertion, production normalization into
+`name\dependency-index`, native imports and matching type/instance IDs in real
+EP1 global/static manifests. The suffix is a dependency-table index, not an
+asset hash or arbitrary numeric asset ID. Raw-marshalling fixtures alone do
+not exercise this pipeline. The focused harness stubs unrelated asset layouts;
+it does not claim a complete SDK build or game load.
 
-Current verification: the full Release/x86 rebuild, layout tests, all 45
+Previous layout-block verification: the full Release/x86 rebuild, layout tests, all 45
 compiler test groups and 33 enum mappings pass. Infiltrator emits `144/12/32`,
 populated LaserState `136/24/12`, Sweeping dispatch `80/8/0` and Converging
 dispatch `144/8/0` bytes of `bin/relo/imp`. The sweeping fixture also checks
@@ -86,6 +91,15 @@ EP1 angle conversion, option removal and RequiresWeapon=false. A Turkish-culture
 regression caught and fixed culture-sensitive weak-ID hashing: uppercase-I
 asset names now use invariant normalization. These tests still do not prove
 in-game loading. Overall effort remains approximately 50% complete.
+
+Current verification: full Release/x86 dependency rebuild, final inspector
+rebuild, layout tests, all 46 compiler groups and 33 enum mappings pass.
+The schema-default infiltrator fixture produces `136/0/20`, including a real
+import at dependency index zero. Repeated runs produce identical native chunks
+and dependency identities; a previous-revision session cache is rejected.
+Inherited reference types, attribute overrides, invalid explicit types and
+typed/trimmed weak names are regression-tested. The four default targets exist
+in the local Uprising global/static manifests, checked without opening BIN data.
 
 ### Next steps and acceptance gates
 

@@ -37,6 +37,8 @@ internal static class CompilerSmokeTest
         // Reborn: guard infiltrator imports and the restored laser-family records.
         TestInfiltratorContain();
         TestLaserStateFamily();
+        // Reborn: validate schema-inserted defaults through the production reference normalizer.
+        TestReferencePipeline();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -70,7 +72,7 @@ internal static class CompilerSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: seed weak-ID and voice StringHash bins used by standalone compiler smoke tests. */
     //-------------------------------------------------------------------------------------------------
-    private static void InitializeHashProvider()
+    internal static void InitializeHashProvider()
     {
         Settings.Current = new Settings
         {
@@ -1846,6 +1848,14 @@ internal static class CompilerSmokeTest
         Console.WriteLine($"  HordeContain bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify actual schema defaults and dependency indices before native marshalling. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestReferencePipeline()
+    {
+        ReferencePipelineSmokeTest.Run(ReferencePipelineSmokeTest.FindFixture());
+    }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: check recovered infiltrator offsets using already-normalized strong references. */

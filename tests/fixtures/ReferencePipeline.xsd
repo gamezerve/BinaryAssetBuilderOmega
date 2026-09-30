@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: focused pipeline harness uses official EP1 reference/status/infiltrator schemas; unrelated assets are type stubs only. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset"
+  xmlns:xas="uri:ea.com:eala:asset:schema" targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Ref.xsd" />
+  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/ObjectStatus.xsd" />
+  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Modules/InfiltratorContain.xsd" />
+  <xs:simpleType name="AssetReference"><xs:restriction base="xs:string" /></xs:simpleType>
+  <xs:simpleType name="WeakReference"><xs:restriction base="xs:string" /></xs:simpleType>
+  <xs:simpleType name="FileReference"><xs:restriction base="xs:string" /></xs:simpleType>
+  <!-- Reborn: match AssetTypeObjectFilter.xsd's reference declaration without importing its unrelated full layout. -->
+  <xs:simpleType name="ObjectFilterAssetRef" xas:isRef="true" xas:refType="ObjectFilterAsset"><xs:restriction base="AssetReference" /></xs:simpleType>
+  <xs:simpleType name="StringHash"><xs:restriction base="xs:string" /></xs:simpleType>
+  <xs:simpleType name="ObjectPersistenceID"><xs:restriction base="xs:string" /></xs:simpleType>
+  <xs:simpleType name="SageBool"><xs:restriction base="xs:boolean" /></xs:simpleType>
+  <xs:simpleType name="SageReal"><xs:restriction base="xs:float" /></xs:simpleType>
+  <xs:simpleType name="Time"><xs:restriction base="xs:string" /></xs:simpleType>
+  <xs:complexType name="BaseAssetType"><xs:attribute name="id" type="xs:string" /></xs:complexType>
+  <xs:complexType name="BaseInheritableAsset"><xs:complexContent><xs:extension base="BaseAssetType" /></xs:complexContent></xs:complexType>
+  <xs:complexType name="ContainModuleData"><xs:attribute name="id" type="xs:string" /></xs:complexType>
+  <!-- Reborn: these target types validate inheritance only; they are not asset-layout fixtures. -->
+  <xs:complexType name="FXList"><xs:complexContent><xs:extension base="BaseAssetType" /></xs:complexContent></xs:complexType>
+  <xs:complexType name="DerivedFXList"><xs:complexContent><xs:extension base="FXList" /></xs:complexContent></xs:complexType>
+  <xs:complexType name="EvaEvent"><xs:complexContent><xs:extension base="BaseAssetType" /></xs:complexContent></xs:complexType>
+  <xs:complexType name="ObjectFilterAsset"><xs:complexContent><xs:extension base="BaseAssetType" /></xs:complexContent></xs:complexType>
+  <xs:complexType name="GameObject"><xs:complexContent><xs:extension base="BaseAssetType" /></xs:complexContent></xs:complexType>
+  <xs:complexType name="ObjectCreationList"><xs:complexContent><xs:extension base="BaseAssetType" /></xs:complexContent></xs:complexType>
+  <xs:element name="InfiltratorContain" type="InfiltratorContainModuleData" />
+  <!-- Reborn: two unannotated restrictions reproduce the inherited-reference-type bug. -->
+  <xs:simpleType name="AliasFXRef"><xs:restriction base="FXListRef" /></xs:simpleType>
+  <xs:simpleType name="NestedAliasFXRef"><xs:restriction base="AliasFXRef" /></xs:simpleType>
+  <xs:simpleType name="MissingTargetRef"><xs:restriction base="AssetReference" /></xs:simpleType>
+  <xs:complexType name="ReferenceProbeType">
+    <xs:sequence><xs:element name="Child" type="NestedAliasFXRef" minOccurs="0" /></xs:sequence>
+    <xs:attribute name="id" type="xs:string" />
+    <xs:attribute name="Alias" type="NestedAliasFXRef" />
+    <xs:attribute name="Override" type="NestedAliasFXRef" xas:refType="ObjectFilterAsset" />
+    <xs:attribute name="Missing" type="MissingTargetRef" />
+  </xs:complexType>
+  <xs:element name="ReferenceProbe" type="ReferenceProbeType" />
+</xs:schema>

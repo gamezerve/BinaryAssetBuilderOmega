@@ -13,13 +13,21 @@ internal static class Program
     {
         try
         {
-            if ((args.Length < 2 && args.FirstOrDefault() is not ("layout-self-test" or "compiler-self-test")) || args.FirstOrDefault() is not ("inspect" or "verify" or "compare" or "schema-diff" or "writer-self-test" or "utility-verify" or "assembly-fields" or "assembly-methods" or "assembly-il" or "assembly-size-diff" or "current-layout" or "layout-self-test" or "compiler-self-test" or "asset-bytes" or "hash"))
+            // Reborn: expose focused schema-to-import validation with optional real EP1 manifests.
+            if ((args.Length < 2 && args.FirstOrDefault() is not ("layout-self-test" or "compiler-self-test")) || args.FirstOrDefault() is not ("inspect" or "verify" or "compare" or "schema-diff" or "writer-self-test" or "utility-verify" or "assembly-fields" or "assembly-methods" or "assembly-il" or "assembly-size-diff" or "current-layout" or "layout-self-test" or "compiler-self-test" or "reference-self-test" or "asset-bytes" or "hash"))
             {
                 PrintUsage();
                 return 2;
             }
 
             var command = args[0];
+            // Reborn: reuse the production schema reference stage and optionally check its targets in game manifests.
+            if (command == "reference-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                ReferencePipelineSmokeTest.Run(args[1], args.Skip(2).ToArray());
+                return 0;
+            }
             if (command == "hash")
             {
                 foreach (string value in args.Skip(1))
@@ -411,6 +419,8 @@ internal static class Program
         Console.WriteLine("  current-layout <SageBinaryData-type-name>");
         Console.WriteLine("  layout-self-test");
         Console.WriteLine("  compiler-self-test");
+        // Reborn: manifest arguments validate dependency identities without reading their BIN payloads.
+        Console.WriteLine("  reference-self-test <schema-fixture> [ep1-manifest ...]");
         Console.WriteLine("  asset-bytes <manifest-or-big> <bin-or-big> <type-name> [--entry <manifest-entry>] [--bin-entry <bin-entry>] [--asset <full-name>] [--find-u32 <hex>] [--offset <decimal-or-hex>] [--count <decimal-or-hex>] [--relo <relo-or-big>] [--relo-entry <BIG entry>] [--imp <imp-or-big>] [--imp-entry <BIG entry>]");
         Console.WriteLine("  hash <text> [additional-text ...]");
     }
