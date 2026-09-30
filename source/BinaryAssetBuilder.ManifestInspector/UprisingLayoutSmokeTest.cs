@@ -9,6 +9,22 @@ internal static class UprisingLayoutSmokeTest
         TestPatchManifestTotals();
         // Reborn: lock recovered RA3 containment offsets after EP1's two inline status-mask expansions.
         ExpectSize<SageBinaryData.OpenContainModuleData>(156);
+        // Reborn: six expanded inline statuses and EP1's bone-name string extend the official attach root.
+        ExpectSize<SageBinaryData.AttachUpdateModuleData>(368);
+        // Reborn: the leech wrapper adds no fields to the EP1 attach base.
+        ExpectSize<SageBinaryData.LeechTargetingAttachUpdateModuleData>(368);
+        // Reborn: money gain adds a twelve-byte tail and keeps validation as a separate allocation.
+        ExpectSize<SageBinaryData.MoneyGainAttachUpdateModuleData>(380);
+        ExpectOffset<SageBinaryData.MoneyGainAttachUpdateModuleData>(nameof(SageBinaryData.MoneyGainAttachUpdateModuleData.MoneyGainObjectStatusValidation), 376);
+        ExpectSize<SageBinaryData.ObjectStatusValidationDataType>(64);
+        ExpectOffset<SageBinaryData.AttachUpdateModuleData>(nameof(SageBinaryData.AttachUpdateModuleData.ParentStatusToCopy), 228);
+        ExpectOffset<SageBinaryData.AttachUpdateModuleData>(nameof(SageBinaryData.AttachUpdateModuleData.Flags), 284);
+        ExpectOffset<SageBinaryData.AttachUpdateModuleData>(nameof(SageBinaryData.AttachUpdateModuleData.AttachBoneName), 360);
+        Expect(SageBinaryData.AttachUpdateFlagsBitFlags.Count == 28, "Attach flag count", 28, SageBinaryData.AttachUpdateFlagsBitFlags.Count);
+        // Reborn: production queue records keep the official RA3 pointer ABI with EP1 pointed-to filters.
+        ExpectSize<SageBinaryData.ProductionQueueHordeContainModuleData>(16);
+        ExpectSize<SageBinaryData.ProductionQueueHordeContainModuleDataTemplateContainer>(8);
+        ExpectOffset<SageBinaryData.ProductionQueueHordeContainModuleData>(nameof(SageBinaryData.ProductionQueueHordeContainModuleData.TemplateContainer), 8);
         // Reborn: lock the official horde layout with EP1 mask expansion and sixteen-byte rank stride.
         ExpectSize<SageBinaryData.HordeContainModuleData>(524);
         ExpectSize<SageBinaryData.RankInfoType>(16);

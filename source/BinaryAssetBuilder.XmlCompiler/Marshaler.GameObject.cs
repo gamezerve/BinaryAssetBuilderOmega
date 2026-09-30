@@ -463,6 +463,18 @@ public static partial class Marshaler
             case 0x8C50F0D7u:
                 MarshalPolymorphicType<ContestableGarrisonContainModuleData, BehaviorModuleData>(node, objT, state);
                 break;
+            // Reborn: restore production queue containment dispatch using its native type-name hash.
+            case 0xFE135CA0u:
+                MarshalPolymorphicType<ProductionQueueHordeContainModuleData, BehaviorModuleData>(node, objT, state);
+                break;
+            // Reborn: retain the distinct leech type hash despite its identical native attach-base fields.
+            case 0xCA6038A6u:
+                MarshalPolymorphicType<LeechTargetingAttachUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                break;
+            // Reborn: dispatch money-gain attach through its independent RA3/EP1 native type hash.
+            case 0xB1A54585u:
+                MarshalPolymorphicType<MoneyGainAttachUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                break;
             case 0xC2EBB54Du:
                 MarshalPolymorphicType<ExperienceLevelCreateModuleData, BehaviorModuleData>(node, objT, state);
                 break;

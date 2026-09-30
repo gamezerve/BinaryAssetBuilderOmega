@@ -955,6 +955,32 @@ public static partial class Marshaler
         }
     }
 
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Allocate optional damage masks at the native attach-update pointer slot. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Value value, DamageBitFlags** objT, Tracker state)
+    {
+        if (value is null)
+        {
+            return;
+        }
+        using Tracker.Context context = state.Push((void**)objT, (uint)sizeof(DamageBitFlags), 1u);
+        Marshal(value, *objT, state);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Allocate optional death masks at the native attach-update pointer slot. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Value value, DeathBitFlags** objT, Tracker state)
+    {
+        if (value is null)
+        {
+            return;
+        }
+        using Tracker.Context context = state.Push((void**)objT, (uint)sizeof(DeathBitFlags), 1u);
+        Marshal(value, *objT, state);
+    }
+
     public static unsafe void Marshal(Value value, DeathBitFlags* objT, Tracker state)
     {
         if (value is null)

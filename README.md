@@ -7,8 +7,20 @@ Active branch: `feature/ra3ep1-manifest-inspector`. This is not yet a usable
 Uprising Mod SDK release. Replacing XML/XSD files alone is insufficient:
 native layouts, type hashes, dependencies and in-game loading must also pass validation.
 
-Approximately **49% complete / 51% remaining**. This is an engineering-effort
+Approximately **50% complete / 50% remaining**. This is an engineering-effort
 estimate, not a file-coverage metric or a measure of working game mods.
+It is rounded from weighted workstreams and is not increased per commit.
+The containment audit and attach-base recovery accumulated enough work to
+reassess the native-layout workstream from 53% to 55%; the overall estimate
+moves from about 49% to 50%. Major type-table and in-game gates remain open.
+
+Measured inventory: **783/1,390** EP1 complex types have models and
+**759/1,390** have typed marshallers. The compiler test runner invokes
+**43 test groups** (some contain several fixtures). These counters can grow
+without making a usable SDK; they measure coverage, not game compatibility.
+The coverage script also reports `CompilerTestGroupsDeclared`; it counts
+registered groups but does not execute them. In this work block, models and
+marshallers increased by four each, and registered test groups by two.
 
 | Workstream | Status |
 |---|---|
@@ -33,6 +45,9 @@ estimate, not a file-coverage metric or a measure of working game mods.
   missing FX reference and normalized percentage conversion for cash refunds.
 - Corrected HordeContain's EVA asset reference, removed KW-only root fields,
   and restored the 16-byte RankInfo stride for nested position lists.
+- Restored ProductionQueueHordeContain's model, marshallers and dispatch.
+- Recovered AttachUpdate's masks, imports, optional pointers and EP1 flags/bone-name extension.
+- Restored LeechTargetingAttachUpdate and MoneyGainAttachUpdate model/marshaller/dispatch support.
 
 Latest verification: Release/x86 build, `layout-self-test` and
 `compiler-self-test` passed. The two-passenger OpenContain fixture produces
@@ -47,8 +62,13 @@ The latest containment leaf tests also pass: Slaughter `344/0/8`, Heal
 `25` is stored as `0.25` and that its FX reference creates an import entry.
 HordeContain's two-rank fixture passes with `592/20/12`, checking nested
 positions, weak unit IDs, leader defaults and EVA/modifier import slots.
-The independent ProductionQueueHordeContain module is still missing and is
-the next containment implementation target.
+ProductionQueueHordeContain's dispatch fixture passes with `156/16/0`,
+checking two eight-byte template records and an optional filter pointer.
+AttachUpdate checks cover an empty root and a populated EP1 bone-name/mask/import
+fixture; its standalone EVA asset dependency remains unported.
+The full Release/x86 rebuild and all 43 compiler test groups pass. AttachUpdate
+fixtures produce `368/0/0` and `576/32/16`; Leech dispatch produces `372/8/0`
+and MoneyGain dispatch `448/12/0`. The enum check verifies 31 schema mappings.
 
 ### Next steps and acceptance gates
 

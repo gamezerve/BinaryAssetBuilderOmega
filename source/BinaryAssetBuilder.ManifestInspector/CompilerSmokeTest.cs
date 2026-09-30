@@ -30,6 +30,10 @@ internal static class CompilerSmokeTest
         TestContainLeafModules();
         // Reborn: verify the corrected horde header, consecutive ranks and EVA/modifier imports.
         TestHordeContain();
+        // Reborn: cover production queue dispatch, weak IDs and optional filters across consecutive records.
+        TestProductionQueueHordeContain();
+        // Reborn: check restored attach defaults, EP1 flags and optional mask pointers.
+        TestAttachUpdate();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1830,6 +1834,129 @@ internal static class CompilerSmokeTest
         Expect(chunk.RelocationBuffer.Length == 20 && chunk.ImportsBuffer.Length == 12, "Horde relocation and imports", 20, chunk.RelocationBuffer.Length);
         Expect(ReadUInt32(chunk.ImportsBuffer, 0) == 372 && ReadUInt32(chunk.ImportsBuffer, 4) == 588, "Horde import slots", 588, ReadUInt32(chunk.ImportsBuffer, 4));
         Console.WriteLine($"  HordeContain bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Verify production queue native dispatch and eight-byte template records with optional filters. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestProductionQueueHordeContain()
+    {
+        XmlDocument document = new();
+        document.LoadXml("""
+            <ProductionQueueHordeContain xmlns="uri:ea.com:eala:asset" TypeId="0xFE135CA0">
+              <TemplateContainer Template="TestQueueOne"><ObjectFilter Rule="ALL" /></TemplateContainer>
+              <TemplateContainer Template="TestQueueTwo" />
+            </ProductionQueueHordeContain>
+            """);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:ProductionQueueHordeContain", namespaces)!, namespaces);
+        BehaviorModuleData** slot;
+        using Tracker tracker = new((void**)&slot, (uint)sizeof(BehaviorModuleData*), false);
+        Marshaler.Marshal(node, slot, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> bytes = chunk.InstanceBuffer;
+        Expect(bytes.Length == 156, "ProductionQueue dispatch bytes", 156, bytes.Length);
+        Expect(ReadUInt32(bytes, 0) == 4 && ReadUInt32(bytes, 4) == 0xFE135CA0, "ProductionQueue dispatch type", unchecked((int)0xFE135CA0), ReadUInt32(bytes, 4));
+        Expect(ReadUInt32(bytes, 12) == 2 && ReadUInt32(bytes, 16) == 20, "ProductionQueue template list", 20, ReadUInt32(bytes, 16));
+        uint firstId = FastHash.GetHashCode("testqueueone");
+        uint secondId = FastHash.GetHashCode("testqueuetwo");
+        Expect(ReadUInt32(bytes, 20) == firstId && ReadUInt32(bytes, 28) == secondId, "ProductionQueue weak IDs and stride", unchecked((int)secondId), ReadUInt32(bytes, 28));
+        Expect(ReadUInt32(bytes, 24) == 36 && ReadUInt32(bytes, 32) == 0, "ProductionQueue optional filter pointers", 36, ReadUInt32(bytes, 24));
+        Expect(ReadUInt32(bytes, 40) == 1, "ProductionQueue filter rule", 1, ReadUInt32(bytes, 40));
+        Expect(chunk.RelocationBuffer.Length == 16 && chunk.ImportsBuffer.Length == 0, "ProductionQueue relocation and weak imports", 16, chunk.RelocationBuffer.Length);
+        Expect(ReadUInt32(chunk.RelocationBuffer, 0) == 0 && ReadUInt32(chunk.RelocationBuffer, 4) == 16 && ReadUInt32(chunk.RelocationBuffer, 8) == 24, "ProductionQueue relocation slots", 24, ReadUInt32(chunk.RelocationBuffer, 8));
+        Console.WriteLine($"  ProductionQueueHordeContain dispatch={chunk.InstanceBuffer.Length}/{chunk.RelocationBuffer.Length}/{chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Verify attach defaults and populated pointer/import records recovered from official RA3 IL. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestAttachUpdate()
+    {
+        string[] fixtures =
+        [
+            """<AttachUpdate xmlns="uri:ea.com:eala:asset" />""",
+            """
+            <AttachUpdate xmlns="uri:ea.com:eala:asset" ParentStatusToCopy="CAN_ATTACK" ParentStatusToPrefer="CAN_ATTACK"
+                ParentOwnerAttachmentEvaEvent="EvaEvent\123" DetachFXList="FXList\456" Flags="USE_BONE_POSITION" AttachBoneName="A"
+                DamageTypesToNotLeech="EXPLOSION" DeathTypesToNotLeech="NORMAL">
+              <ObjectFilter Rule="ALL" />
+              <ModifierToLeechFromParent>AttributeModifier\789</ModifierToLeechFromParent>
+            </AttachUpdate>
+            """
+        ];
+        for (int index = 0; index < fixtures.Length; index++)
+        {
+            XmlDocument document = new();
+            document.LoadXml(fixtures[index]);
+            XmlNamespaceManager namespaces = new(document.NameTable);
+            namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+            Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:AttachUpdate", namespaces)!, namespaces);
+            AttachUpdateModuleData* root;
+            using Tracker tracker = new((void**)&root, (uint)sizeof(AttachUpdateModuleData), false);
+            Marshaler.Marshal(node, root, tracker);
+            Chunk chunk = new();
+            tracker.MakeRelocatable(chunk);
+            ReadOnlySpan<byte> bytes = chunk.InstanceBuffer;
+            int expectedSize = index == 0 ? 368 : 576;
+            Expect(bytes.Length == expectedSize, "Attach instance bytes", expectedSize, bytes.Length);
+            uint expectedFlags = index == 0 ? 0x70u : 0x08000000u;
+            Expect(ReadUInt32(bytes, 284) == expectedFlags, "Attach schema flag ordering", (int)expectedFlags, ReadUInt32(bytes, 284));
+            Expect(ReadUInt32(bytes, 240) == 0x447A0000, "Attach default range", 0x447A0000, ReadUInt32(bytes, 240));
+            Expect(ReadUInt32(bytes, 288) == (uint)DeathType.ALL && ReadUInt32(bytes, 344) == (uint)DeathType.NORMAL, "Attach death defaults", (int)DeathType.NORMAL, ReadUInt32(bytes, 344));
+            if (index == 0)
+            {
+                Expect(chunk.RelocationBuffer.Length == 0 && chunk.ImportsBuffer.Length == 0, "Attach absent optional records", 0, chunk.RelocationBuffer.Length);
+            }
+            else
+            {
+                Expect(ReadUInt32(bytes, 228) == 368 && ReadUInt32(bytes, 232) == 400, "Attach status pointers", 400, ReadUInt32(bytes, 232));
+                Expect(ReadUInt32(bytes, 368) == 2 && ReadUInt32(bytes, 400) == 2, "Attach pointed statuses", 2, ReadUInt32(bytes, 400));
+                Expect(ReadUInt32(bytes, 336) == 432 && ReadUInt32(bytes, 340) == 440, "Attach leech mask pointers", 440, ReadUInt32(bytes, 340));
+                Expect(ReadUInt32(bytes, 348) == 448 && ReadUInt32(bytes, 356) == 568, "Attach filter and modifier pointers", 568, ReadUInt32(bytes, 356));
+                Expect(ReadUInt32(bytes, 244) == 123 && ReadUInt32(bytes, 260) == 456 && ReadUInt32(bytes, 568) == 789, "Attach imported tokens", 789, ReadUInt32(bytes, 568));
+                // Reborn: exercise EP1's added bone string as well as its high-order USE_BONE_POSITION flag.
+                Expect(ReadUInt32(bytes, 364) == 572 && bytes[572] == (byte)'A', "Attach EP1 bone string", 572, ReadUInt32(bytes, 364));
+                Expect(chunk.RelocationBuffer.Length == 32 && chunk.ImportsBuffer.Length == 16, "Attach pointer and import tables", 32, chunk.RelocationBuffer.Length);
+            }
+            Console.WriteLine($"  AttachUpdate fixture{index}={chunk.InstanceBuffer.Length}/{chunk.RelocationBuffer.Length}/{chunk.ImportsBuffer.Length}");
+        }
+        // Reborn: exercise the distinct leech dispatch hash with inherited defaults and no optional payloads.
+        XmlDocument leechDocument = new();
+        leechDocument.LoadXml("""<LeechTargetingAttachUpdate xmlns="uri:ea.com:eala:asset" TypeId="0xCA6038A6" />""");
+        XmlNamespaceManager leechNamespaces = new(leechDocument.NameTable);
+        leechNamespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node leechNode = new(leechDocument.CreateNavigator()!.SelectSingleNode("/ea:LeechTargetingAttachUpdate", leechNamespaces)!, leechNamespaces);
+        BehaviorModuleData** slot;
+        using Tracker leechTracker = new((void**)&slot, (uint)sizeof(BehaviorModuleData*), false);
+        Marshaler.Marshal(leechNode, slot, leechTracker);
+        Chunk leechChunk = new();
+        leechTracker.MakeRelocatable(leechChunk);
+        Expect(leechChunk.InstanceBuffer.Length == 372, "Leech dispatch instance bytes", 372, leechChunk.InstanceBuffer.Length);
+        Expect(ReadUInt32(leechChunk.InstanceBuffer, 4) == 0xCA6038A6, "Leech dispatch type hash", unchecked((int)0xCA6038A6), ReadUInt32(leechChunk.InstanceBuffer, 4));
+        Expect(ReadUInt32(leechChunk.InstanceBuffer, 288) == 0x70, "Leech inherited flags", 0x70, ReadUInt32(leechChunk.InstanceBuffer, 288));
+        Expect(leechChunk.RelocationBuffer.Length == 8 && leechChunk.ImportsBuffer.Length == 0, "Leech dispatch pointer only", 8, leechChunk.RelocationBuffer.Length);
+        Console.WriteLine($"  LeechTargetingAttachUpdate dispatch={leechChunk.InstanceBuffer.Length}/8/0");
+        // Reborn: verify MoneyGain's separate validation block and default 100% purchase-price fraction.
+        leechDocument.LoadXml("""
+            <MoneyGainAttachUpdate xmlns="uri:ea.com:eala:asset" TypeId="0xB1A54585" ActionType="ON_DETACH_PARENT_DEAD">
+              <MoneyGainObjectStatusValidation RequiredStatus="CAN_ATTACK" />
+            </MoneyGainAttachUpdate>
+            """);
+        Node moneyNode = new(leechDocument.CreateNavigator()!.SelectSingleNode("/ea:MoneyGainAttachUpdate", leechNamespaces)!, leechNamespaces);
+        BehaviorModuleData** moneySlot;
+        using Tracker moneyTracker = new((void**)&moneySlot, (uint)sizeof(BehaviorModuleData*), false);
+        Marshaler.Marshal(moneyNode, moneySlot, moneyTracker);
+        Chunk moneyChunk = new();
+        moneyTracker.MakeRelocatable(moneyChunk);
+        Expect(moneyChunk.InstanceBuffer.Length == 448, "MoneyGain dispatch bytes", 448, moneyChunk.InstanceBuffer.Length);
+        Expect(ReadUInt32(moneyChunk.InstanceBuffer, 4) == 0xB1A54585, "MoneyGain type hash", unchecked((int)0xB1A54585), ReadUInt32(moneyChunk.InstanceBuffer, 4));
+        Expect(ReadUInt32(moneyChunk.InstanceBuffer, 376) == 0x3F800000, "MoneyGain default price fraction", 0x3F800000, ReadUInt32(moneyChunk.InstanceBuffer, 376));
+        Expect(ReadUInt32(moneyChunk.InstanceBuffer, 380) == 384 && ReadUInt32(moneyChunk.InstanceBuffer, 416) == 2, "MoneyGain validation pointer and required status", 384, ReadUInt32(moneyChunk.InstanceBuffer, 380));
+        Expect(moneyChunk.RelocationBuffer.Length == 12 && moneyChunk.ImportsBuffer.Length == 0, "MoneyGain relocation bytes", 12, moneyChunk.RelocationBuffer.Length);
+        Console.WriteLine($"  MoneyGainAttachUpdate dispatch={moneyChunk.InstanceBuffer.Length}/12/0");
     }
 
     private static uint ReadUInt32(ReadOnlySpan<byte> bytes, int offset) =>

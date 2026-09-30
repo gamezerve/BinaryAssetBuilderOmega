@@ -5,7 +5,7 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Progress snapshot (2026-09-30)
 
-The current conservative engineering estimate is **49% complete / 51%
+The current conservative engineering estimate is **50% complete / 50%
 remaining**. This is an effort estimate, not the percentage of C# files in the
 tree. A pre-existing Kane's Wrath marshaller only counts as complete after its
 RA3/EP1 layout, type hash and emitted streams have been checked.
@@ -14,18 +14,31 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 |---|---:|---:|---:|
 | Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
 | Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
-| Native layouts, processors, dispatch and final type table | 45% | 53% | 23.9% |
+| Native layouts, processors, dispatch and final type table | 45% | 55% | 24.8% |
 | Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
 | Built-mod validation inside Uprising | 10% | 0% | 0.0% |
 
 The reproducible structural counter is `scripts/Get-Ra3Ep1PortCoverage.ps1`.
 At this snapshot the 843 EP1 XSD files declare 1,390 unique complex types.
-The source tree contains models for 779 (56.0%) and typed marshallers for 755
-(54.3%). These broad numbers are inventory coverage only. All 48 complex types
+The source tree contains models for 783 (56.3%) and typed marshallers for 759
+(54.6%). These broad numbers are inventory coverage only. All 48 complex types
 that exist only in EP1 now have both a model and marshaller. This closes the
 EP1-only inventory, but it does not close changed shared types or missing parent
 pipelines; those retain substantially more weight than raw file presence in the
-49% estimate above.
+50% estimate above.
+
+The effort estimate is rounded from weighted, manually assessed workstreams;
+it is not a measurement and need not rise with each commit. The previous 49%
+snapshot was held while several shared-layout fixes accumulated. This snapshot
+reassesses the native-layout workstream from 53% to 55% after the containment
+audit and attach base recovery, giving roughly 50% overall. End-to-end game
+validation is still at zero. Observable counters are reported separately:
+the compiler self-test currently invokes 43 test groups (some have multiple
+fixtures), and the structural coverage script reports the inventory above.
+Neither counter proves runtime compatibility or replaces final type-table gates.
+The coverage script now emits `CompilerTestGroupsDeclared`, counting registered
+groups without executing them. This block adds four complex models/marshallers
+and two test groups relative to its starting snapshot (779/755 and 41 groups).
 
 ## Established facts
 
@@ -490,7 +503,54 @@ Release/x86 build and all current layout/compiler self-tests pass. The horde
 fixture emits `592/20/12`, with EVA import at 372, modifier import at 588,
 rank records at 524/540 and position records at 556/572. ProductionQueueHordeContain
 is a separate BehaviorModuleData-derived type, not a HordeContain subclass;
-its model/marshaller is currently missing and remains the next audit target.
+its model/marshaller was missing at that audit and is restored below.
+
+ProductionQueueHordeContain is now modeled as an eight-byte BehaviorModuleData
+header plus an eight-byte TemplateContainer list (16-byte root). Official
+RA3 tokenizer IL `0x06000922` reads the list at native offset 8; container
+tokenizer IL `0x06000921` reads the weak Template ID at 0 and an optional
+ObjectFilter pointer at 4. Each native container therefore occupies eight
+bytes, with EP1's 120-byte filter stored separately. The restored marshallers
+and behavior dispatch use name hash `0xFE135CA0`. A two-container dispatch
+fixture, one with a filter and one without, produces `156/16/0`; the weak
+template IDs deliberately produce no import entries. These observations
+recover native layout, not the complete tokenized writer or final type hash.
+
+AttachUpdate recovery uses official RA3 marshaler IL `0x0600022D` and the
+EP1 XSD. It restores six inline object-status masks, the inline model-condition
+mask, two optional status pointers, six EVA asset references, DetachFXList,
+death/bounce/leech fields and the modifier list. KW's eight standalone bools
+are replaced by the schema's flag word; its leading NONE enum value was
+incorrect and shifted every flag. EP1 has 28 flags (RA3 has 27), with the new
+USE_BONE_POSITION at bit 27. The enum synchronization gate now covers it.
+Optional damage/death masks also required missing pointer-marshalling overloads.
+The EP1 native root is 368 versus RA3's 336: six status masks add 24 bytes,
+and EP1's AttachBoneName adds an eight-byte string descriptor. Copy/prefer
+status pointers are at 228/232, flags at 284, damage/death pointers at
+336/340, filter at 348, modifier list at 352 and bone string at 360.
+EVA references still use BaseAssetType as a layout placeholder; standalone
+EvaEvent compilation and the final type table remain unimplemented.
+
+The missing LeechTargetingAttachUpdate wrapper is restored with the unchanged
+368-byte EP1 attach base and a distinct dispatch hash `0xCA6038A6`.
+Official RA3 polymorphic allocator IL `0x060004B0` allocates 336 bytes,
+confirming the schema's empty extension over the RA3 attach base.
+MoneyGainAttachUpdate is recovered from official marshaler IL `0x0600022F`:
+RA3 ActionType=336, PurchasePricePercent=340 and validation pointer=344,
+allocating a separate 56-byte ObjectStatusValidation block. EP1 offsets become
+368/372/376, with a 380-byte root and a separate 64-byte validation block.
+The restored model uses Percentage, preserving the default 100%-to-1.0
+conversion, and dispatch hash `0xB1A54585`. Both status-validation masks
+remain inline within the pointed-to block. Its single action enum and the
+28 attach flags are now covered by the enum synchronization script.
+Full Release/x86 rebuild, layout tests, all 43 compiler test groups and all
+31 enum synchronization mappings pass. Attach default/populated fixtures emit
+`368/0/0` and `576/32/16`; the latter also checks the added bone string at
+native offset 360 and its relocation payload. Leech dispatch emits `372/8/0`,
+and MoneyGain dispatch emits `448/12/0`, checking a distinct type hash,
+default 1.0 purchase-price fraction and the separate validation status block.
+These tests do not emit a verified tokenized game mod; runtime/type-table
+acceptance remains required before claiming SDK compatibility.
 
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of

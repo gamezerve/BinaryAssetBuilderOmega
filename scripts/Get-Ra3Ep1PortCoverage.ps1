@@ -68,7 +68,14 @@ $ep1OnlyDetails = @($ep1Only | ForEach-Object {
     }
 })
 
+# Reborn: expose declared compiler test groups separately from structural coverage; this does not execute tests.
+$compilerTestSource = [IO.File]::ReadAllText((Join-Path $repositoryRoot 'source\BinaryAssetBuilder.ManifestInspector\CompilerSmokeTest.cs'))
+$compilerRunBody = [Regex]::Match($compilerTestSource, '(?s)public static unsafe void Run\(\).*?Console.WriteLine').Value
+if (-not $compilerRunBody) { throw 'Compiler self-test Run entry point was not found.' }
+$compilerTestGroupCount = [Regex]::Matches($compilerRunBody, 'Test\w+\(\);').Count
+
 $summary = [ordered]@{
+    CompilerTestGroupsDeclared = $compilerTestGroupCount
     Ep1XsdFiles = @(Get-ChildItem -LiteralPath $Ep1SchemaRoot -Recurse -Filter '*.xsd').Count
     Ep1ComplexTypes = $ep1Complex.Count
     Ep1SimpleTypes = $ep1Simple.Count

@@ -8,6 +8,10 @@ $ErrorActionPreference = 'Stop'
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 
 $targets = @(
+    # Reborn: validate money-gain attach's single action value against the EP1 schema.
+    @{ Source = 'source\SageBinaryData\SageBinaryData\Modules\MoneyGainAttachUpdate.cs'; Schema = 'Modules\MoneyGainAttachUpdate.xsd'; Type = 'MoneyGainAttachActionFlag' },
+    # Reborn: prevent attach flags from reverting to the incompatible KW NONE-plus-four ordering.
+    @{ Source = 'source\SageBinaryData\SageBinaryData\Modules\AttachUpdate.cs'; Schema = 'Modules\AttachUpdate.xsd'; Type = 'AttachUpdateFlagsType'; CountConstant = 'AttachUpdateFlagsBitFlags' },
     @{ Source = 'source\SageBinaryData\SageBinaryData\Includes\KindOf.cs'; Schema = 'Includes\KindOf.xsd'; Type = 'KindOfType'; TargetType = 'KindOf'; CountConstant = 'KindOfBitFlags' },
     @{ Source = 'source\SageBinaryData\SageBinaryData\Includes\UnitCategory.cs'; Schema = 'Includes\UnitCategory.xsd'; Type = 'UnitCategory'; InvalidIsMinusOne = $true },
     # Reborn: Keep the shared RA3/EP1 faction ordering from reverting to the Kane's Wrath factions.
