@@ -31,6 +31,8 @@ estimate, not a file-coverage metric or a measure of working game mods.
   ContestableGarrisonContain model, marshaller and behavior-module dispatch.
 - Audited Heal/Tunnel containment tails; restored SlaughterHordeContain's
   missing FX reference and normalized percentage conversion for cash refunds.
+- Corrected HordeContain's EVA asset reference, removed KW-only root fields,
+  and restored the 16-byte RankInfo stride for nested position lists.
 
 Latest verification: Release/x86 build, `layout-self-test` and
 `compiler-self-test` passed. The two-passenger OpenContain fixture produces
@@ -43,6 +45,10 @@ that a mod loads in-game.
 The latest containment leaf tests also pass: Slaughter `344/0/8`, Heal
 `188/0/0`, and Tunnel `192/0/0`. Slaughter verifies that a refund value of
 `25` is stored as `0.25` and that its FX reference creates an import entry.
+HordeContain's two-rank fixture passes with `592/20/12`, checking nested
+positions, weak unit IDs, leader defaults and EVA/modifier import slots.
+The independent ProductionQueueHordeContain module is still missing and is
+the next containment implementation target.
 
 ### Next steps and acceptance gates
 

@@ -469,6 +469,29 @@ They check the 25-to-0.25 percentage conversion, the FX import slot at 220,
 two-second heal time, weak master-name hashing and DeleteRemoved=false.
 No in-game loading claim is made by these native-marshalling checks.
 
+`HordeContainModuleData` is recovered from official RA3 marshaler IL
+`0x06000194`, with its rank records checked against `0x06000192` and the
+EP1 XSD. The KW melee pointer, OnDeathBehavior list, WiggleBehavior pointer
+and three extra banner/follow flags are absent from the RA3/EP1 root and have
+been removed. EvaEventLastMemberDeath is an asset reference, not an eight-byte
+string. It now occupies four bytes and participates in the import table;
+`AssetReference<BaseAssetType>` preserves that ABI while the standalone EvaEvent
+model/type-table implementation remains outstanding. RankInfoType ends at its
+Position list and has a 16-byte stride, not the previous 24-byte stride with
+two KW-only weapon-condition pointers.
+The EP1 horde root is 524 bytes versus RA3's 500: 20 bytes from the transport
+base and four from ForbiddenCoverStatus. Key EP1 offsets are Formation=352,
+EvaEventLastMemberDeath=372, ForbiddenCoverStatus=424, RankInfo=460 and
+UseSlowHordeMovement=520. A two-rank fixture checks nested position lists,
+weak unit hashes, leader defaults, and EVA/attribute-modifier imports.
+The obsolete KW-only auxiliary models/marshallers are retained outside the
+RA3/EP1 root; their existence does not imply active schema support.
+Release/x86 build and all current layout/compiler self-tests pass. The horde
+fixture emits `592/20/12`, with EVA import at 372, modifier import at 588,
+rank records at 524/540 and position records at 556/572. ProductionQueueHordeContain
+is a separate BehaviorModuleData-derived type, not a HordeContain subclass;
+its model/marshaller is currently missing and remains the next audit target.
+
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of
 `GameObject:ClientFlingableExplodingBarrel` found type ID `0xD6C03AC2` at the

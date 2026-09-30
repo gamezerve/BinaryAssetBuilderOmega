@@ -28,6 +28,8 @@ internal static class CompilerSmokeTest
         TestGarrisonDerivatives();
         // Reborn: cover normalized slaughter refunds, FX imports and the Heal/Tunnel tails.
         TestContainLeafModules();
+        // Reborn: verify the corrected horde header, consecutive ranks and EVA/modifier imports.
+        TestHordeContain();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1789,6 +1791,45 @@ internal static class CompilerSmokeTest
         Expect(tunnelChunk.InstanceBuffer[188] == 0, "Tunnel delete default", 0, tunnelChunk.InstanceBuffer[188]);
         Expect(tunnelChunk.RelocationBuffer.Length == 0 && tunnelChunk.ImportsBuffer.Length == 0, "Tunnel weak reference has no import", 0, tunnelChunk.ImportsBuffer.Length);
         Console.WriteLine($"  Contain leaf modules slaughter={slaughterChunk.InstanceBuffer.Length}/0/8, heal={healChunk.InstanceBuffer.Length}/0/0, tunnel={tunnelChunk.InstanceBuffer.Length}/0/0");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Verify horde defaults, sixteen-byte rank stride and nested position relocations. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestHordeContain()
+    {
+        XmlDocument document = new();
+        document.LoadXml("""
+            <HordeContain xmlns="uri:ea.com:eala:asset" EvaEventLastMemberDeath="EvaEvent\123" ForbiddenCoverStatus="CAN_ATTACK">
+              <RankInfo RankID="1" UnitType="TestRankOne"><Position X="2" /></RankInfo>
+              <RankInfo RankID="2" UnitType="TestRankTwo"><Position Y="3" /></RankInfo>
+              <AttributeModifier>AttributeModifier\456</AttributeModifier>
+            </HordeContain>
+            """);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:HordeContain", namespaces)!, namespaces);
+        HordeContainModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(HordeContainModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> bytes = chunk.InstanceBuffer;
+        Expect(bytes.Length == 592, "Horde instance bytes", 592, bytes.Length);
+        Expect(ReadUInt32(bytes, 364) == 0x42700000, "Horde default leash", 0x42700000, ReadUInt32(bytes, 364));
+        Expect(ReadUInt32(bytes, 372) == 123, "Horde EVA token", 123, ReadUInt32(bytes, 372));
+        Expect(ReadUInt32(bytes, 424) == 2 && bytes[520] == 1 && bytes[521] == 0, "Horde status and defaults", 2, ReadUInt32(bytes, 424));
+        Expect(ReadUInt32(bytes, 460) == 2 && ReadUInt32(bytes, 464) == 524, "Horde rank list", 524, ReadUInt32(bytes, 464));
+        Expect(ReadUInt32(bytes, 524) == 1 && ReadUInt32(bytes, 540) == 2, "Horde rank stride", 2, ReadUInt32(bytes, 540));
+        uint unitId = FastHash.GetHashCode("testranktwo");
+        Expect(ReadUInt32(bytes, 544) == unitId, "Horde rank weak ID", unchecked((int)unitId), ReadUInt32(bytes, 544));
+        Expect(ReadUInt32(bytes, 536) == 556 && ReadUInt32(bytes, 552) == 572, "Horde nested positions", 572, ReadUInt32(bytes, 552));
+        Expect(ReadUInt32(bytes, 556) == 0x40000000 && ReadUInt32(bytes, 576) == 0x40400000, "Horde position values", 0x40400000, ReadUInt32(bytes, 576));
+        Expect(ReadUInt32(bytes, 564) == uint.MaxValue && ReadUInt32(bytes, 580) == uint.MaxValue, "Horde default leader rank", -1, ReadUInt32(bytes, 580));
+        Expect(ReadUInt32(bytes, 516) == 588 && ReadUInt32(bytes, 588) == 456, "Horde modifier reference", 456, ReadUInt32(bytes, 588));
+        Expect(chunk.RelocationBuffer.Length == 20 && chunk.ImportsBuffer.Length == 12, "Horde relocation and imports", 20, chunk.RelocationBuffer.Length);
+        Expect(ReadUInt32(chunk.ImportsBuffer, 0) == 372 && ReadUInt32(chunk.ImportsBuffer, 4) == 588, "Horde import slots", 588, ReadUInt32(chunk.ImportsBuffer, 4));
+        Console.WriteLine($"  HordeContain bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static uint ReadUInt32(ReadOnlySpan<byte> bytes, int offset) =>

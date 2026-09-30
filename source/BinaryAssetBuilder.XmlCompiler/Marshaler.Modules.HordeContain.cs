@@ -43,8 +43,6 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(RankInfoType.RankID), "0"), &objT->RankID, state);
         Marshal(node.GetAttributeValue(nameof(RankInfoType.UnitType), null), &objT->UnitType, state);
         Marshal(node.GetChildNodes(nameof(RankInfoType.Position)), &objT->Position, state);
-        Marshal(node.GetChildNode(nameof(RankInfoType.WeaponConditionSet), null), &objT->WeaponConditionSet, state);
-        Marshal(node.GetChildNode(nameof(RankInfoType.WeaponConditionClear), null), &objT->WeaponConditionClear, state);
     }
 
     public static unsafe void Marshal(Node node, BannerCarrierPosType* objT, Tracker state)
@@ -119,12 +117,7 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(HordeContainModuleData.SpawnBannerCarrierImmediately), "false"), &objT->SpawnBannerCarrierImmediately, state);
         Marshal(node.GetAttributeValue(nameof(HordeContainModuleData.BannerCarrierByUpgradeOnly), "false"), &objT->BannerCarrierByUpgradeOnly, state);
         Marshal(node.GetAttributeValue(nameof(HordeContainModuleData.ForbiddenCoverStatus), null), &objT->ForbiddenCoverStatus, state);
-#if KANESWRATH
-        Marshal(node.GetAttributeValue(nameof(HordeContainModuleData.DestroyHordeOnBannerDeath), "false"), &objT->DestroyHordeOnBannerDeath, state);
-        Marshal(node.GetAttributeValue(nameof(HordeContainModuleData.ExitBannerCarrierWithHorde), "false"), &objT->ExitBannerCarrierWithHorde, state);
-        Marshal(node.GetAttributeValue(nameof(HordeContainModuleData.FollowTheLeader), "false"), &objT->FollowTheLeader, state);
-#endif
-        Marshal(node.GetChildNode(nameof(HordeContainModuleData.MeleeBehavior), null), &objT->MeleeBehavior, state);
+        // Reborn: serialize only the children present in the official RA3 and EP1 horde schemas.
         Marshal(node.GetChildNode(nameof(HordeContainModuleData.RandomOffset), null), &objT->RandomOffset, state);
         Marshal(node.GetChildNodes(nameof(HordeContainModuleData.RankInfo)), &objT->RankInfo, state);
         Marshal(node.GetChildNodes(nameof(HordeContainModuleData.RankThatStopsAdvance)), &objT->RankThatStopsAdvance, state);
@@ -134,10 +127,6 @@ public static partial class Marshaler
         Marshal(node.GetChildNodes(nameof(HordeContainModuleData.BannerCarriersAllowed)), &objT->BannerCarriersAllowed, state);
         Marshal(node.GetChildNodes(nameof(HordeContainModuleData.LeadersAllowed)), &objT->LeadersAllowed, state);
         Marshal(node.GetChildNodes(nameof(HordeContainModuleData.AttributeModifier)), &objT->AttributeModifier, state);
-#if KANESWRATH
-        Marshal(node.GetChildNodes(nameof(HordeContainModuleData.OnDeathBehavior)), &objT->OnDeathBehavior, state);
-        Marshal(node.GetChildNode(nameof(HordeContainModuleData.WiggleBehavior), null), &objT->WiggleBehavior, state);
-#endif
         Marshal(node, (TransportContainModuleData*)objT, state);
     }
 }

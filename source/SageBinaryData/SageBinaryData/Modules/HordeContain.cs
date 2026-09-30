@@ -35,8 +35,7 @@ public struct RankInfoType
     public int RankID;
     public TypedAssetId<GameObject> UnitType;
     public List<PositionAndLeaderType> Position;
-    public unsafe WeaponSetBitFlags* WeaponConditionSet;
-    public unsafe WeaponSetBitFlags* WeaponConditionClear;
+    // Reborn: RA3/EP1 rank records end with the position list; no KW weapon-condition pointers.
 }
 
 [StructLayout(LayoutKind.Sequential)]
@@ -76,7 +75,8 @@ public struct HordeContainModuleData
     public LocomotorSetType ForcedLocomotorSet;
     public float MeleeAttackLeashDistance;
     public float GeometryFrontAngleRadians;
-    public AnsiString EvaEventLastMemberDeath;
+    // Reborn: EVA notification is a four-byte asset import; its standalone model remains unported.
+    public AssetReference<BaseAssetType> EvaEventLastMemberDeath;
     public float FrontAngle;
     public float FlankedDelaySeconds;
     public float FlankedDurationSeconds;
@@ -90,7 +90,6 @@ public struct HordeContainModuleData
     public float VisionOverrideRear;
     public float VisionOverrideSide;
     public ObjectStatusBitFlags ForbiddenCoverStatus;
-    public unsafe HordeMeleeBehaviorData* MeleeBehavior;
     public unsafe Coord2D* RandomOffset;
     public List<RankInfoType> RankInfo;
     public List<int> RankThatStopsAdvance;
@@ -100,16 +99,8 @@ public struct HordeContainModuleData
     public List<TypedAssetId<GameObject>> BannerCarriersAllowed;
     public List<TypedAssetId<GameObject>> LeadersAllowed;
     public List<AssetReference<AttributeModifier>> AttributeModifier;
-#if KANESWRATH
-    public List<OnDeathBehaviorType> OnDeathBehavior;
-    public unsafe WiggleBehaviorType* WiggleBehavior;
-#endif
+    // Reborn: RA3/EP1 has no KW melee, on-death, wiggle or extra banner behavior fields.
     public SageBool UseSlowHordeMovement;
     public SageBool SpawnBannerCarrierImmediately;
     public SageBool BannerCarrierByUpgradeOnly;
-#if KANESWRATH
-    public SageBool DestroyHordeOnBannerDeath;
-    public SageBool ExitBannerCarrierWithHorde;
-    public SageBool FollowTheLeader;
-#endif
 }

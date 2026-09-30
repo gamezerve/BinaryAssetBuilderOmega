@@ -9,6 +9,13 @@ internal static class UprisingLayoutSmokeTest
         TestPatchManifestTotals();
         // Reborn: lock recovered RA3 containment offsets after EP1's two inline status-mask expansions.
         ExpectSize<SageBinaryData.OpenContainModuleData>(156);
+        // Reborn: lock the official horde layout with EP1 mask expansion and sixteen-byte rank stride.
+        ExpectSize<SageBinaryData.HordeContainModuleData>(524);
+        ExpectSize<SageBinaryData.RankInfoType>(16);
+        ExpectOffset<SageBinaryData.HordeContainModuleData>(nameof(SageBinaryData.HordeContainModuleData.EvaEventLastMemberDeath), 372);
+        ExpectOffset<SageBinaryData.HordeContainModuleData>(nameof(SageBinaryData.HordeContainModuleData.ForbiddenCoverStatus), 424);
+        ExpectOffset<SageBinaryData.HordeContainModuleData>(nameof(SageBinaryData.HordeContainModuleData.RankInfo), 460);
+        ExpectOffset<SageBinaryData.HordeContainModuleData>(nameof(SageBinaryData.HordeContainModuleData.UseSlowHordeMovement), 520);
         // Reborn: transport contains three widened KindOf masks; garrison keeps its eight-byte roster inline.
         ExpectSize<SageBinaryData.TransportContainModuleData>(352);
         ExpectOffset<SageBinaryData.TransportContainModuleData>(nameof(SageBinaryData.TransportContainModuleData.ExitBone), 156);
