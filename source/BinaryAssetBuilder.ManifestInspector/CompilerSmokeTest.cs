@@ -14,6 +14,9 @@ internal static class CompilerSmokeTest
         TestAttributeModifier();
         TestDieMuxData();
         TestGameDependency();
+        TestSlowDeath();
+        TestInvisibilityUpdate();
+        TestInvisibilitySpecialPower();
         TestLocomotorTemplate();
         TestWeaponTemplate();
         TestSpawnedSlaveUpdate();
@@ -188,6 +191,108 @@ internal static class CompilerSmokeTest
         Expect(chunk.RelocationBuffer.Length == 16, "GameDependency relocation bytes", 16, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 0, "GameDependency imports bytes", 0, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  GameDependency bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Verify SlowDeath writes all optional condition masks through their native RA3 pointers. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestSlowDeath()
+    {
+        const string xml = """
+            <SlowDeath xmlns="uri:ea.com:eala:asset"
+                SinkRate="1" DeathFlags="USER_1" DeathTypes="USER_2"
+                DeathObjectStatusBits="CAN_ATTACK" Fade="true" FadeTime="2s" />
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:SlowDeath", namespaces)!, namespaces);
+
+        SlowDeathBehaviorModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(SlowDeathBehaviorModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 268, "SlowDeath instance bytes", 268, instance.Length);
+        Expect(ReadUInt32(instance, 56) == 116, "SlowDeath DeathFlags relocation", 116, ReadUInt32(instance, 56));
+        Expect(ReadUInt32(instance, 68) == 176, "SlowDeath DeathTypes relocation", 176, ReadUInt32(instance, 68));
+        Expect(ReadUInt32(instance, 72) == 236, "SlowDeath DeathObjectStatusBits relocation", 236, ReadUInt32(instance, 72));
+        Expect(ReadUInt32(instance, 60) == 0x40000000, "SlowDeath FadeTime", 0x40000000, ReadUInt32(instance, 60));
+        Expect(instance[113] == 1, "SlowDeath Fade", 1, instance[113]);
+        Expect(ReadUInt32(instance, 236) == 2, "SlowDeath status=CAN_ATTACK", 2, ReadUInt32(instance, 236));
+        Console.WriteLine($"  SlowDeath bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Verify template-based Uprising invisibility update data and its inline EP1 object filter. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestInvisibilityUpdate()
+    {
+        const string xml = """
+            <InvisibilityUpdate xmlns="uri:ea.com:eala:asset"
+                InvisibilityTemplate="InvisibilityTemplate\321"
+                UpdatePeriod="2s" RequiredNearbyObjectRange="50">
+              <RequiresNearbyObjectFilter Rule="ALL" Include="INFANTRY" />
+            </InvisibilityUpdate>
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:InvisibilityUpdate", namespaces)!, namespaces);
+
+        InvisibilityUpdateModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(InvisibilityUpdateModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 148, "InvisibilityUpdate instance bytes", 148, instance.Length);
+        Expect(ReadUInt32(instance, 8) == 321, "InvisibilityUpdate template import", 321, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 12) == 0x40000000, "InvisibilityUpdate period", 0x40000000, ReadUInt32(instance, 12));
+        Expect(ReadUInt32(instance, 16) == 0x42480000, "InvisibilityUpdate nearby range", 0x42480000, ReadUInt32(instance, 16));
+        Expect(ReadUInt32(instance, 32) == 1, "InvisibilityUpdate filter rule", 1, ReadUInt32(instance, 32));
+        Expect(chunk.ImportsBuffer.Length == 8, "InvisibilityUpdate imports bytes", 8, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  InvisibilityUpdate bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: Verify Uprising invisibility special power field order and optional filter relocation. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void TestInvisibilitySpecialPower()
+    {
+        const string xml = """
+            <InvisibilitySpecialPower xmlns="uri:ea.com:eala:asset"
+                InvisibilityTemplate="InvisibilityTemplate\654"
+                BroadcastRadius="75" Duration="3s" Permanent="true">
+              <ObjectFilter Rule="ANY" Include="VEHICLE" />
+            </InvisibilitySpecialPower>
+            """;
+
+        XmlDocument document = new();
+        document.LoadXml(xml);
+        XmlNamespaceManager namespaces = new(document.NameTable);
+        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
+        Node node = new(document.CreateNavigator()!.SelectSingleNode("/ea:InvisibilitySpecialPower", namespaces)!, namespaces);
+
+        InvisibilitySpecialPowerModuleData* root;
+        using Tracker tracker = new((void**)&root, (uint)sizeof(InvisibilitySpecialPowerModuleData), false);
+        Marshaler.Marshal(node, root, tracker);
+        Chunk chunk = new();
+        tracker.MakeRelocatable(chunk);
+        ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
+        Expect(instance.Length == 616, "InvisibilitySpecialPower instance bytes", 616, instance.Length);
+        Expect(ReadUInt32(instance, 476) == 654, "InvisibilitySpecialPower template import", 654, ReadUInt32(instance, 476));
+        Expect(ReadUInt32(instance, 480) == 0x42960000, "InvisibilitySpecialPower radius", 0x42960000, ReadUInt32(instance, 480));
+        Expect(ReadUInt32(instance, 484) == 0x40400000, "InvisibilitySpecialPower duration", 0x40400000, ReadUInt32(instance, 484));
+        Expect(ReadUInt32(instance, 488) == 496, "InvisibilitySpecialPower filter relocation", 496, ReadUInt32(instance, 488));
+        Expect(instance[492] == 1, "InvisibilitySpecialPower permanent", 1, instance[492]);
+        Expect(chunk.ImportsBuffer.Length == 8, "InvisibilitySpecialPower imports bytes", 8, chunk.ImportsBuffer.Length);
+        Console.WriteLine($"  InvisibilitySpecialPower bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     private static unsafe void TestLocomotorTemplate()

@@ -5,7 +5,7 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Progress snapshot (2026-09-27)
 
-The current conservative engineering estimate is **48% complete / 52%
+The current conservative engineering estimate is **49% complete / 51%
 remaining**. This is an effort estimate, not the percentage of C# files in the
 tree. A pre-existing Kane's Wrath marshaller only counts as complete after its
 RA3/EP1 layout, type hash and emitted streams have been checked.
@@ -14,7 +14,7 @@ RA3/EP1 layout, type hash and emitted streams have been checked.
 |---|---:|---:|---:|
 | Manifest/BIG/RefPack readers, v7 writer and safety gates | 15% | 80% | 12.0% |
 | Official RA3-to-EP1 schema inventory and generated enums | 15% | 65% | 9.8% |
-| Native layouts, processors, dispatch and final type table | 45% | 51% | 23.0% |
+| Native layouts, processors, dispatch and final type table | 45% | 53% | 23.9% |
 | Target-aware SDK scripts, dependencies and WorldBuilder packaging | 15% | 20% | 3.0% |
 | Built-mod validation inside Uprising | 10% | 0% | 0.0% |
 
@@ -25,7 +25,7 @@ The source tree contains models for 778 (56.0%) and typed marshallers for 754
 that exist only in EP1 now have both a model and marshaller. This closes the
 EP1-only inventory, but it does not close changed shared types or missing parent
 pipelines; those retain substantially more weight than raw file presence in the
-48% estimate above.
+49% estimate above.
 
 ## Established facts
 
@@ -376,6 +376,21 @@ its two model-condition masks and object-status mask behind pointers at offsets
 now prove the pointed-to EP1 masks and relocation streams (`108/12/0` for
 DieMux and `192/16/0` for GameDependency). The repeatable audit now reports 211
 exact matches and 167 mismatches among the 378 shared type names.
+
+The same IL-driven pass removed two more large Kane's Wrath payloads. All three
+optional `SlowDeathBehaviorModuleData` condition/status masks are native
+relocation pointers; restoring their offsets reduces the root from 256 to the
+official 116 bytes and also fixes `ClearanceTestingSlowDeathBehaviorModuleData`.
+Its fixture emits `268/16/0`, including the three pointed-to EP1 masks.
+`InvisibilityUpdateModuleData` no longer embeds the KW invisibility nugget: RA3
+and Uprising both reference an `InvisibilityTemplate` and use an inline object
+filter. The EP1 root is 148 bytes rather than RA3's 140 because EP1's expanded
+KindOf mask grows `ObjectFilter` by eight bytes. `InvisibilitySpecialPower`
+likewise uses the template reference, a relocated optional filter, `Duration`,
+and `Permanent`; its EP1 size is 496 versus RA3's 472 because its inherited
+special-power base contains three expanded object filters. Compiler fixtures
+emit `148/0/8` and `616/8/8`, respectively. These intentional EP1 deltas remain
+visible in the RA3 size audit rather than being falsely forced to RA3 sizes.
 
 `AudioDynamicsCollide` is the first nested EP1-only module recovered directly
 from a real tokenized Uprising `GameObject` chunk. A bounded scan of

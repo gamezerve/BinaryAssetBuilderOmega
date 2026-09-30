@@ -47,7 +47,7 @@ public struct SlowDeathSoundType
 }
 
 [StructLayout(LayoutKind.Sequential)]
-public struct SlowDeathBehaviorModuleData
+public unsafe struct SlowDeathBehaviorModuleData
 {
     public UpdateModuleData Base;
     public Velocity SinkRate;
@@ -62,16 +62,17 @@ public struct SlowDeathBehaviorModuleData
     public float FlingForceVariance;
     public Angle FlingPitch;
     public Angle FlingPitchVariance;
-    public ModelConditionBitFlags DeathFlags;
+    // Reborn: RA3 stores the three optional death masks behind relocation pointers.
+    public ModelConditionBitFlags* DeathFlags;
     public Time FadeTime;
     public Time FadeDelay;
-    public ModelConditionBitFlags DeathTypes;
-    public ObjectStatusBitFlags DeathObjectStatusBits;
+    public ModelConditionBitFlags* DeathTypes;
+    public ObjectStatusBitFlags* DeathObjectStatusBits;
     public List<SlowDeathFXListType> FX;
     public List<SlowDeathOCLType> OCL;
     public List<SlowDeathWeaponType> Weapon;
     public List<SlowDeathSoundType> Sound;
-    public unsafe DieMuxDataType* DieMuxData;
+    public DieMuxDataType* DieMuxData;
     public SageBool ShadowWhenDead;
     public SageBool Fade;
 }

@@ -21,21 +21,14 @@ public struct InvisibilityUpdateOptionsBitFlags
 }
 
 [StructLayout(LayoutKind.Sequential)]
-public struct InvisibilityUpdateModuleData
+public unsafe struct InvisibilityUpdateModuleData
 {
     public UpdateModuleData Base;
-    public InvisibilityUpdateOptionsBitFlags Options;
+    // Reborn: RA3/Uprising reference a shared invisibility template instead of embedding the KW nugget.
+    public AssetReference<BaseAssetType> InvisibilityTemplate;
     public Time UpdatePeriod;
-    public float BroadcastRange;
-    public Percentage OpacityMin;
-    public Percentage OpacityMax;
-    public unsafe StringHash* NamedVoiceNameToUseAsVoiceMoveToStealthyArea;
-    public unsafe StringHash* NamedVoiceNameToUseAsVoiceEnterStateMoveToStealthyArea;
-    public InvisibilityNuggetType InvisibilityNugget;
-    public unsafe ObjectFilter* BroadcastObjectFilter;
-#if TIBERIUMWARS
-    public unsafe TypedAssetId<UpgradeTemplate>* RequiresUpgrade;
-#elif KANESWRATH
-    public List<TypedAssetId<UpgradeTemplate>> RequiresUpgrade;
-#endif
+    public float RequiredNearbyObjectRange;
+    public StringHash* NamedVoiceNameToUseAsVoiceMoveToStealthyArea;
+    public StringHash* NamedVoiceNameToUseAsVoiceEnterStateMoveToStealthyArea;
+    public ObjectFilter RequiresNearbyObjectFilter;
 }

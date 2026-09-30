@@ -38,6 +38,23 @@ internal static class UprisingLayoutSmokeTest
         ExpectOffset<SageBinaryData.GameDependencyType>(nameof(SageBinaryData.GameDependencyType.RequiredObjectStatusAny), 8);
         ExpectOffset<SageBinaryData.GameDependencyType>(nameof(SageBinaryData.GameDependencyType.RequiredObject), 12);
         ExpectOffset<SageBinaryData.GameDependencyType>(nameof(SageBinaryData.GameDependencyType.ObjectFilter), 36);
+        // Reborn: lock the SlowDeath pointer offsets recovered from EA's official RA3 marshaler IL.
+        ExpectSize<SageBinaryData.SlowDeathBehaviorModuleData>(116);
+        ExpectOffset<SageBinaryData.SlowDeathBehaviorModuleData>(nameof(SageBinaryData.SlowDeathBehaviorModuleData.DeathFlags), 56);
+        ExpectOffset<SageBinaryData.SlowDeathBehaviorModuleData>(nameof(SageBinaryData.SlowDeathBehaviorModuleData.FadeTime), 60);
+        ExpectOffset<SageBinaryData.SlowDeathBehaviorModuleData>(nameof(SageBinaryData.SlowDeathBehaviorModuleData.DeathTypes), 68);
+        ExpectOffset<SageBinaryData.SlowDeathBehaviorModuleData>(nameof(SageBinaryData.SlowDeathBehaviorModuleData.DeathObjectStatusBits), 72);
+        ExpectOffset<SageBinaryData.SlowDeathBehaviorModuleData>(nameof(SageBinaryData.SlowDeathBehaviorModuleData.DieMuxData), 108);
+        ExpectOffset<SageBinaryData.SlowDeathBehaviorModuleData>(nameof(SageBinaryData.SlowDeathBehaviorModuleData.ShadowWhenDead), 112);
+        // Reborn: account for EP1's eight-byte ObjectFilter growth on top of official RA3 invisibility layouts.
+        ExpectSize<SageBinaryData.InvisibilityUpdateModuleData>(148);
+        ExpectOffset<SageBinaryData.InvisibilityUpdateModuleData>(nameof(SageBinaryData.InvisibilityUpdateModuleData.InvisibilityTemplate), 8);
+        ExpectOffset<SageBinaryData.InvisibilityUpdateModuleData>(nameof(SageBinaryData.InvisibilityUpdateModuleData.RequiredNearbyObjectRange), 16);
+        ExpectOffset<SageBinaryData.InvisibilityUpdateModuleData>(nameof(SageBinaryData.InvisibilityUpdateModuleData.RequiresNearbyObjectFilter), 28);
+        ExpectSize<SageBinaryData.InvisibilitySpecialPowerModuleData>(496);
+        ExpectOffset<SageBinaryData.InvisibilitySpecialPowerModuleData>(nameof(SageBinaryData.InvisibilitySpecialPowerModuleData.InvisibilityTemplate), 476);
+        ExpectOffset<SageBinaryData.InvisibilitySpecialPowerModuleData>(nameof(SageBinaryData.InvisibilitySpecialPowerModuleData.ObjectFilter), 488);
+        ExpectOffset<SageBinaryData.InvisibilitySpecialPowerModuleData>(nameof(SageBinaryData.InvisibilitySpecialPowerModuleData.Permanent), 492);
         Expect(SageBinaryData.DamageBitFlags.Count == 39, "DamageBitFlags.Count", 39, SageBinaryData.DamageBitFlags.Count);
         Expect(SageBinaryData.DisabledBitFlags.Count == 13, "DisabledBitFlags.Count", 13, SageBinaryData.DisabledBitFlags.Count);
         Expect((int)SageBinaryData.ArmorSetType.INVALID == 0, "ArmorSetType.INVALID", 0, (int)SageBinaryData.ArmorSetType.INVALID);

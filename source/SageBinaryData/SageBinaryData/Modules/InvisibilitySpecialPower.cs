@@ -3,11 +3,13 @@
 namespace SageBinaryData;
 
 [StructLayout(LayoutKind.Sequential)]
-public struct InvisibilitySpecialPowerModuleData
+public unsafe struct InvisibilitySpecialPowerModuleData
 {
     public SpecialPowerModuleData Base;
+    // Reborn: RA3/Uprising use the shared template asset and an optional relocated object filter.
+    public Relo.AssetReference<BaseAssetType> InvisibilityTemplate;
     public float BroadcastRadius;
-    public Duration DurationFrames;
-    public unsafe InvisibilityNuggetType* InvisibilityNugget;
-    public ObjectFilter ObjectFilter;
+    public Time Duration;
+    public ObjectFilter* ObjectFilter;
+    public SageBool Permanent;
 }
