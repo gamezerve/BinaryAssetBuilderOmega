@@ -16,7 +16,7 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **784/1,390** EP1 complex types have models and
 **760/1,390** have typed marshallers. The compiler test runner invokes
-**51 test groups** (some contain several fixtures). These counters can grow
+**52 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. In this work block, model and
@@ -33,6 +33,8 @@ marshaller counts are unchanged; registered test groups increased by one.
 
 ### Recently completed
 
+- Fixed coordinated BIN/RELO/IMP repair: a valid BIN can no longer cause a missing/broken auxiliary stream to be rebuilt with an empty payload. Reuse checks now include exact expected lengths and direct asset/link/version writes honor experimental profile restrictions. See [linker regression proof](docs/RA3EP1_LINKED_STREAM_REPAIR.md).
+- Tested real intermediate asset commits, two-asset concatenation, patch-base payload exclusion and 15 independent linked-file repair cases using isolated synthetic fixtures; production EP1 compilation remains blocked.
 - Exercised the real document loader/schema/default/hash stages with the EP1 armor profile; matched populated output to the golden-tested tokenizer.
 - Closed production early-return paths and disabled experimental session/precompiled document reuse; verified stale cached declarations cannot replace source XML. See [document pipeline proof](docs/RA3EP1_ARMOR_DOCUMENT_PIPELINE.md).
 - Added an opt-in Win32 EP1 armor plugin with exact tokenized compiler-entry output, isolated registrations and explicit production/cache restrictions. See [experimental profile](docs/RA3EP1_ARMOR_PROFILE.md).

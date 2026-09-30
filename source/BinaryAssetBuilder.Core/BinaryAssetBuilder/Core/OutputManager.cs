@@ -272,6 +272,8 @@ namespace BinaryAssetBuilder.Core
 
         public void CreateVersionFile(AssetDeclarationDocument document, string streamPostfix)
         {
+            // Reborn: direct version-file calls must honor the same experimental output policy as manifest writes.
+            DocumentProcessor.Plugins.ValidateProductionOutput();
             using StreamWriter writer = File.CreateText(_versionFile);
             if (!string.IsNullOrEmpty(streamPostfix))
             {
@@ -435,6 +437,8 @@ namespace BinaryAssetBuilder.Core
 
         public void LinkStream(AssetDeclarationDocument document)
         {
+            // Reborn: block direct linker calls before document access or any output-file operations.
+            DocumentProcessor.Plugins.ValidateProductionOutput();
             string linkPath = OutputDirectory + ".temp";
             string outputDirectory = OutputDirectory;
             uint checksum = document.OutputChecksum;
@@ -444,12 +448,25 @@ namespace BinaryAssetBuilder.Core
             }
             using MemoryStream reloStream = new MemoryStream();
             using MemoryStream impStream = new MemoryStream();
-            bool dirty = true;
-            using (Stream fileStream = new FileStream(outputDirectory + ".bin", FileMode.OpenOrCreate, FileAccess.Read))
+            // Reborn: treat BIN/RELO/IMP as one generation; auxiliary buffers are populated only during BIN linking.
+#if VERSION7
+            long binLength = 8L, reloLength = 8L, impLength = 8L;
+#else
+            long binLength = 4L, reloLength = 4L, impLength = 4L;
+#endif
+            foreach (InstanceDeclaration outputInstance in document.OutputInstances)
             {
-                // Reborn: Validate both the EP1 BIN marker and checksum before reusing a linked stream.
-                dirty = !LinkedStreamHeaderMatches(fileStream, checksum, _version7BinMagic);
+                BinaryAsset asset = Assets[outputInstance.Handle.FileBase];
+                if (asset.GetLocation(AssetLocation.BasePatchStream, AssetLocationOption.None) != AssetLocation.BasePatchStream)
+                {
+                    binLength = checked(binLength + asset.InstanceFileSize);
+                    reloLength = checked(reloLength + asset.RelocationFileSize);
+                    impLength = checked(impLength + asset.ImportsFileSize);
+                }
             }
+            bool dirty = !LinkedStreamFileMatches(outputDirectory + ".bin", checksum, _version7BinMagic, binLength)
+                || !LinkedStreamFileMatches(outputDirectory + ".relo", checksum, _version7ReloMagic, reloLength)
+                || !LinkedStreamFileMatches(outputDirectory + ".imp", checksum, _version7ImpMagic, impLength);
             if (dirty)
             {
                 using (Stream binStream = new FileStream(linkPath + ".bin", FileMode.OpenOrCreate, FileAccess.Write))
@@ -479,12 +496,6 @@ namespace BinaryAssetBuilder.Core
             {
                 _tracer.Message("{0} Linked binary data up to date", document.SourcePathFromRoot);
             }
-            dirty = true;
-            using (Stream fileStream = new FileStream(outputDirectory + ".relo", FileMode.OpenOrCreate, FileAccess.Read))
-            {
-                // Reborn: Validate both the EP1 RELO marker and checksum before reusing relocation data.
-                dirty = !LinkedStreamHeaderMatches(fileStream, checksum, _version7ReloMagic);
-            }
             if (dirty)
             {
                 using (Stream reloFStream = new FileStream(linkPath + ".relo", FileMode.OpenOrCreate, FileAccess.Write))
@@ -502,12 +513,6 @@ namespace BinaryAssetBuilder.Core
             else
             {
                 _tracer.Message("{0} Linked relocation data up to date", document.SourcePathFromRoot);
-            }
-            dirty = true;
-            using (Stream fileStream = new FileStream(outputDirectory + ".imp", FileMode.OpenOrCreate, FileAccess.Read))
-            {
-                // Reborn: Validate both the EP1 IMP marker and checksum before reusing import data.
-                dirty = !LinkedStreamHeaderMatches(fileStream, checksum, _version7ImpMagic);
             }
             if (dirty)
             {
@@ -527,6 +532,16 @@ namespace BinaryAssetBuilder.Core
             {
                 _tracer.Message("{0} Linked import data up to date", document.SourcePathFromRoot);
             }
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: inspect existing linked files without creating missing outputs, rejecting truncation and stale headers. */
+        //-------------------------------------------------------------------------------------------------
+        private static bool LinkedStreamFileMatches(string path, uint checksum, uint version7Magic, long expectedLength)
+        {
+            if (!File.Exists(path)) return false;
+            using Stream stream = File.OpenRead(path);
+            return stream.Length == expectedLength && LinkedStreamHeaderMatches(stream, checksum, version7Magic);
         }
 
         //-------------------------------------------------------------------------------------------------

@@ -49,6 +49,8 @@ internal static class CompilerSmokeTest
         TestEp1ArmorProfile();
         // Reborn: validate real document stages and disabled session/precompiled reuse for experimental profiles.
         TestEp1ArmorDocument();
+        // Reborn: prevent auxiliary stream loss when repairing partially valid linked output generations.
+        TestLinkedStreamRepair();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1911,6 +1913,14 @@ internal static class CompilerSmokeTest
     private static void TestEp1ArmorDocument()
     {
         Ep1ArmorDocumentSmokeTest.Run(Path.Combine(Path.GetTempPath(), "Reborn-Ep1ArmorDocument-" + Guid.NewGuid().ToString("N")));
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify intermediate commits, coordinated linking and policy guards without enabling an EP1 compiler profile. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestLinkedStreamRepair()
+    {
+        LinkedStreamSmokeTest.Run(Path.Combine(Path.GetTempPath(), "Reborn-Ep1LinkedStreams-" + Guid.NewGuid().ToString("N")));
     }
 
     //-------------------------------------------------------------------------------------------------

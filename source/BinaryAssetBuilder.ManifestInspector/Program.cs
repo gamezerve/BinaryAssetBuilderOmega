@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: validate real intermediate commits and coordinated linking with tiny synthetic diagnostic assets.
+            if (args.Length == 2 && args[0] == "linked-stream-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                LinkedStreamSmokeTest.Run(args[1]);
+                return 0;
+            }
             // Reborn: exercise focused full-document stages and experimental cache guards without production output.
             if (args.Length == 2 && args[0] == "ep1-armor-document-self-test")
             {
@@ -444,6 +451,8 @@ internal static class Program
         Console.WriteLine("  compare <left> <right> [--left-entry <entry>] [--right-entry <entry>] [--json]");
         Console.WriteLine("  schema-diff <left-xsd-directory> <right-xsd-directory> [--json]");
         Console.WriteLine("  writer-self-test <output-manifest>");
+        // Reborn: this command writes only isolated synthetic asset/link regression fixtures.
+        Console.WriteLine("  linked-stream-self-test <output-directory>");
         Console.WriteLine("  utility-verify <manifest-or-big> [--entry <BIG entry>]");
         Console.WriteLine("  assembly-fields <managed-assembly> <type-name>");
         Console.WriteLine("  assembly-methods <managed-assembly> <type-name> [method-filter]");
