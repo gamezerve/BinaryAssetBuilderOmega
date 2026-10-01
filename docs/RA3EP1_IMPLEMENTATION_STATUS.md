@@ -33,12 +33,19 @@ snapshot was held while several shared-layout fixes accumulated. This snapshot
 reassesses the native-layout workstream from 53% to 55% after the containment
 audit and attach base recovery, giving roughly 50% overall. End-to-end game
 validation is still at zero. Observable counters are reported separately:
-the compiler self-test currently invokes 59 test groups (some have multiple
+the compiler self-test currently invokes 60 test groups (some have multiple
 fixtures), and the structural coverage script reports the inventory above.
 Neither counter proves runtime compatibility or replaces final type-table gates.
 The coverage script now emits `CompilerTestGroupsDeclared`, counting registered
 groups without executing them. This block adds one test group and leaves model/
-marshaller counts unchanged relative to its starting snapshot (784/760 and 58 groups).
+marshaller counts unchanged relative to its starting snapshot (784/760 and 59 groups).
+
+The [experimental modifier profile](RA3EP1_ATTRIBUTE_MODIFIER_PROFILE.md) binds
+that second root through explicit descriptor/registry and real document stages.
+Its TypeId/TypeHash are observed EP1 values, Tokenized=false, and all production,
+binary-cache and compiled-document reuse policies are false. Eight native-entry
+outputs match; imports/inheritance remain unsupported. Detached schema revalidation
+handles core TypeId injection and rejects post-validation invalid mutations.
 
 The second focused root proof, [AttributeModifier native output](RA3EP1_ATTRIBUTE_MODIFIER_NATIVE.md),
 matches seven static assets and one campaign-local WorldBuilder asset exactly.

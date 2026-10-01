@@ -65,6 +65,8 @@ internal static class CompilerSmokeTest
         TestDocumentReuse();
         // Reborn: establish the second EP1 root processor proof without changing the production type registry.
         TestAttributeModifierNative();
+        // Reborn: bind the validated native subset to explicit experimental compiler/document policy.
+        TestEp1ModifierProfile();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1991,6 +1993,14 @@ internal static class CompilerSmokeTest
     private static void TestAttributeModifierNative()
     {
         AttributeModifierNativeSmokeTest.Run(Array.Empty<string>());
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: exercise the explicit modifier profile and full document path without promoting production eligibility. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestEp1ModifierProfile()
+    {
+        Ep1AttributeModifierProfileSmokeTest.Run();
     }
 
     //-------------------------------------------------------------------------------------------------

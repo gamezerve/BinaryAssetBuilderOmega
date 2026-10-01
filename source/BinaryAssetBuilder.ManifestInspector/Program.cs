@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: route native EP1 modifiers through the isolated descriptor/registry/document profile.
+            if (args.Length == 1 && args[0] == "ep1-modifier-profile-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                Ep1AttributeModifierProfileSmokeTest.Run();
+                return 0;
+            }
             // Reborn: validate official EP1 modifier ABI and optionally compare named bounded real-game slices.
             if (args.FirstOrDefault() == "attribute-modifier-self-test")
             {
@@ -523,6 +530,8 @@ internal static class Program
         Console.WriteLine("  document-reuse-self-test");
         // Reborn: optional manifests add bounded golden comparisons without production registration.
         Console.WriteLine("  attribute-modifier-self-test [ep1-manifest ...]");
+        // Reborn: keep experimental processor/document proof separate from production output.
+        Console.WriteLine("  ep1-modifier-profile-self-test");
         Console.WriteLine("  utility-verify <manifest-or-big> [--entry <BIG entry>]");
         Console.WriteLine("  assembly-fields <managed-assembly> <type-name>");
         Console.WriteLine("  assembly-methods <managed-assembly> <type-name> [method-filter]");

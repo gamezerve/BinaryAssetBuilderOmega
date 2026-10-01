@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: explicit opt-in diagnostics, never a production-ready SDK or a stock stream replacement. -->
+<Settings xmlns="uri:ea.com:eala:asset" BuildCache="false">
+ <Plugin AssetTypes="#all" IsEnabled="true" UseBuildCache="false"
+  QualifiedName="BinaryAssetBuilder.XmlCompiler.Ra3Ep1AttributeModifierPlugin, BinaryAssetBuilder.XmlCompiler" />
+</Settings>

@@ -103,5 +103,7 @@ layout checks and 33 enum mappings pass.
 - No experimental modifier plugin is activated by this block. Next: expose only
   the validated no-dependency subset in an isolated, fail-closed EP1 profile and
   compare its compiler entry against these native fixtures.
+  Follow-up: [the explicit modifier profile](RA3EP1_ATTRIBUTE_MODIFIER_PROFILE.md)
+  now provides that opt-in path, retaining production/cache denials.
 - Complete root registration/aggregate type compatibility, specialized processors,
   SDK/WorldBuilder packaging and in-game load remain required for a usable SDK.
