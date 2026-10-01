@@ -102,10 +102,3 @@ public struct AttributeModifier
     public SageBool ReplaceInCategoryIfLongest;
     public SageBool IgnoreIfAnticategoryActive;
 }
-
-// AttributeModifier only stores an asset-reference pointer to this runtime type.
-[StructLayout(LayoutKind.Sequential)]
-public struct ShaderOverride
-{
-    private byte _opaque;
-}

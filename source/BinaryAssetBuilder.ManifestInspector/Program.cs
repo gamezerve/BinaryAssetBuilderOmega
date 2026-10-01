@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: expose recovered shader native/document proof and optional bounded stock comparisons.
+            if (args.FirstOrDefault() == "shader-override-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                ShaderOverrideNativeSmokeTest.Run(args.Skip(1).ToArray());
+                return 0;
+            }
             // Reborn: exercise only the isolated filter compiler/document profile, never production output.
             if (args.Length == 1 && args[0] == "ep1-object-filter-profile-self-test")
             {
@@ -556,6 +563,8 @@ internal static class Program
         Console.WriteLine("  object-filter-self-test [ep1-static-manifest ...]");
         // Reborn: this profile command keeps production/cache and unproven filter combinations disabled.
         Console.WriteLine("  ep1-object-filter-profile-self-test");
+        // Reborn: shader proof requires selected stock roots, never full BIN dumps or production activation.
+        Console.WriteLine("  shader-override-self-test [ep1-static-manifest ...]");
         // Reborn: watcher fixtures own only temporary files and use deterministic callback injection.
         Console.WriteLine("  watcher-cache-self-test");
         // Reborn: atomic batch fixtures test event conservation without writing game/compiler output.
