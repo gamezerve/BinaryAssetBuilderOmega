@@ -63,6 +63,8 @@ internal static class CompilerSmokeTest
         TestMonitorBatch();
         // Reborn: exercise retained and serialized document reload decisions after actual source/dependency mutations.
         TestDocumentReuse();
+        // Reborn: establish the second EP1 root processor proof without changing the production type registry.
+        TestAttributeModifierNative();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1981,6 +1983,14 @@ internal static class CompilerSmokeTest
     private static void TestDocumentReuse()
     {
         DocumentReuseSmokeTest.Run();
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: validate official schema defaults, mask/list ABI and deterministic native modifier output. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestAttributeModifierNative()
+    {
+        AttributeModifierNativeSmokeTest.Run(Array.Empty<string>());
     }
 
     //-------------------------------------------------------------------------------------------------

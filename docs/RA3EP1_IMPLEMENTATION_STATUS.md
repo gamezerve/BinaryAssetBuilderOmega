@@ -33,12 +33,19 @@ snapshot was held while several shared-layout fixes accumulated. This snapshot
 reassesses the native-layout workstream from 53% to 55% after the containment
 audit and attach base recovery, giving roughly 50% overall. End-to-end game
 validation is still at zero. Observable counters are reported separately:
-the compiler self-test currently invokes 58 test groups (some have multiple
+the compiler self-test currently invokes 59 test groups (some have multiple
 fixtures), and the structural coverage script reports the inventory above.
 Neither counter proves runtime compatibility or replaces final type-table gates.
 The coverage script now emits `CompilerTestGroupsDeclared`, counting registered
 groups without executing them. This block adds one test group and leaves model/
-marshaller counts unchanged relative to its starting snapshot (784/760 and 57 groups).
+marshaller counts unchanged relative to its starting snapshot (784/760 and 58 groups).
+
+The second focused root proof, [AttributeModifier native output](RA3EP1_ATTRIBUTE_MODIFIER_NATIVE.md),
+matches seven static assets and one campaign-local WorldBuilder asset exactly.
+Unlike ArmorTemplate, this root has Tokenized=0. Missing optional model masks
+now stay null instead of adding 120 bytes; the legacy XmlCompiler revision advances
+to 2 for cache isolation while keeping KW registry/hash values unchanged.
+This validates a bounded native subset, not the complete EP1 type table.
 
 The [retained document lifecycle proof](RA3EP1_DOCUMENT_REUSE.md) exercises real
 Open/ReInitialize/Load decisions, MakeComplete/MakeCacheable, and plain/compressed
@@ -680,9 +687,10 @@ they must not be counted as RA3-to-Uprising engine/schema differences.
 or uncompressed BIG entries. It was used against the local 1.2 GB RA3
 `worldbuilder.bin` and Uprising's 1.4 GB `WBData.big` without making a complete
 binary dump. The shared sample `AttributeModifier_MechaKingSquishKillDelay` is
-an 88-byte tokenized instance chunk in both games while its type hash changes
-from `0xF901FE9B` to `0x74425C11`; tokenization means this observation does not
-replace the native-layout checks above.
+an 88-byte instance chunk in both games while its type hash changes
+from `0xF901FE9B` to `0x74425C11`. The earlier description of that sample as
+tokenized was incorrect: the later exact native proof verifies the EP1 manifest
+entry has Tokenized=0 and matches its 88/8/0 native chunks.
 The command also accepts bounded `--offset` and `--count` ranges (maximum 16
 KiB), allowing pointer payloads inside one selected asset to be decoded without
 ever dumping an entire multi-gigabyte stream.

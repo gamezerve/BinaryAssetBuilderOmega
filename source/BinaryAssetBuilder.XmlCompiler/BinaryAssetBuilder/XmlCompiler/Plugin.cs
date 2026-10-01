@@ -18,7 +18,8 @@ public class Plugin : IAssetBuilderPlugin
     private static readonly Tracer _tracer = Tracer.GetTracer(nameof(XmlCompiler), "Marshals XML data into binary data structures.");
     // private static readonly int _win32 = 0;
     private static readonly int _xbox360 = 2;
-    private static readonly int _xmlCompilerVersion = 1;
+    // Reborn: invalidate intermediate identities compiled before optional AttributeModifier masks preserved null pointers.
+    private static readonly int _xmlCompilerVersion = 2;
     private static readonly IDictionary<uint, MethodInfo> _handleMethods = new SortedDictionary<uint, MethodInfo>();
     private static readonly IDictionary<uint, Delegate> _marshalMethods = new SortedDictionary<uint, Delegate>();
     private static readonly IDictionary<uint, ExtendedTypeInformation> _extendedTypeInformations = new SortedDictionary<uint, ExtendedTypeInformation>();
@@ -32,7 +33,8 @@ public class Plugin : IAssetBuilderPlugin
 #else
 #error No game set in configuration.
 #endif
-    public uint VersionNumber => 1;
+    // Reborn: session compiler revision and per-type ProcessingHash must advance together after native output changes.
+    public uint VersionNumber => (uint)_xmlCompilerVersion;
 
     private static void SetTypeHash(ExtendedTypeInformation typeInformation, uint num, uint tw, uint kw)
     {

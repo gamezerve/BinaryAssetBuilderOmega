@@ -26,8 +26,9 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(AttributeModifier.IgnoreIfAnticategoryActive), "false"), &objT->IgnoreIfAnticategoryActive, state);
         Marshal(node.GetAttributeValue(nameof(AttributeModifier.StartFX), null), &objT->StartFX, state);
         Marshal(node.GetAttributeValue(nameof(AttributeModifier.EndFX), null), &objT->EndFX, state);
-        Marshal(node.GetAttributeValue(nameof(AttributeModifier.ModelConditionsSet), ""), &objT->ModelConditionsSet, state);
-        Marshal(node.GetAttributeValue(nameof(AttributeModifier.ModelConditionsClear), ""), &objT->ModelConditionsClear, state);
+        // Reborn: absent optional masks remain null; fabricating empty values allocates 120 bytes absent from real EP1 native roots.
+        Marshal(node.GetAttributeValue(nameof(AttributeModifier.ModelConditionsSet), null), &objT->ModelConditionsSet, state);
+        Marshal(node.GetAttributeValue(nameof(AttributeModifier.ModelConditionsClear), null), &objT->ModelConditionsClear, state);
         Marshal(node.GetAttributeValue(nameof(AttributeModifier.ObjectStatusToSet), null), &objT->ObjectStatusToSet, state);
         Marshal(node.GetAttributeValue(nameof(AttributeModifier.StackingLimit), "1"), &objT->StackingLimit, state);
         Marshal(node.GetAttributeValue(nameof(AttributeModifier.ArmorSetType), null), &objT->ArmorSetType, state);

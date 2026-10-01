@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: validate official EP1 modifier ABI and optionally compare named bounded real-game slices.
+            if (args.FirstOrDefault() == "attribute-modifier-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                AttributeModifierNativeSmokeTest.Run(args.Skip(1).ToArray());
+                return 0;
+            }
             // Reborn: test real retained and serialized document reuse without authorizing diagnostic compiler output.
             if (args.Length == 1 && args[0] == "document-reuse-self-test")
             {
@@ -514,6 +521,8 @@ internal static class Program
         Console.WriteLine("  monitor-batch-self-test");
         // Reborn: expose retained and disk-loaded document lifecycle proof separately from fresh-session hashing.
         Console.WriteLine("  document-reuse-self-test");
+        // Reborn: optional manifests add bounded golden comparisons without production registration.
+        Console.WriteLine("  attribute-modifier-self-test [ep1-manifest ...]");
         Console.WriteLine("  utility-verify <manifest-or-big> [--entry <BIG entry>]");
         Console.WriteLine("  assembly-fields <managed-assembly> <type-name>");
         Console.WriteLine("  assembly-methods <managed-assembly> <type-name> [method-filter]");

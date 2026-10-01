@@ -82,6 +82,9 @@ claim to validate the entire table.
 The first focused ArmorTemplate processor proof is now complete; see
 [armor native/tokenized PoC](RA3EP1_ARMOR_TOKEN_POC.md) for exact static and
 WorldBuilder byte matches. Production profile activation remains outstanding.
+The second [AttributeModifier native proof](RA3EP1_ATTRIBUTE_MODIFIER_NATIVE.md)
+now matches eight small EP1 assets exactly and fixes missing-mask allocation.
+Its production registration and reference-bearing processor cases remain open.
 
 1. Start a minimal PoC with ArmorTemplate or AttributeModifier. Compare the
    official RA3 native layout and production EP1 schema against the current
