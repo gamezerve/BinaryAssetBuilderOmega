@@ -45,7 +45,9 @@ and fixes a real strict-validation bypass in AddOutputInstance. The first missin
 target throws, but a second preparation previously trusted the incomplete list.
 Each attempt now rechecks current targets/files and errors clear partial metadata
 and the visited marker. Removing/restoring external mappings and repeated missing
-file failures are tested through the actual dependency stage. This is still a
+file failures are tested through the actual dependency stage. Local chain/cycle
+closure, recursive failure/recovery, and weak self/tentative/external location
+policy are also tested with injected metadata edges. This is still a
 metadata seam, not a production experimental build or game-loading result.
 
 The [native import encoding proof](RA3EP1_ATTRIBUTE_MODIFIER_IMPORTS.md) adds four

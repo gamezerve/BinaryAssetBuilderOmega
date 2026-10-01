@@ -66,8 +66,10 @@ internal static class DependencyResolutionSmokeTest
             instance.ReferencedFiles.Clear();
             Prepare(document, instance);
             Require(instance.ValidatedReferencedInstances!.Count == 3, "Missing-file recovery lost ordered external dependencies.");
+            // Reborn: verify that per-attempt revalidation retains recursive visit guards and refreshes local dependency closures.
+            CheckLocalGraphs(processor, directory);
             Require(!Directory.EnumerateFiles(directory, "*.bin").Any(), "Dependency metadata test emitted native streams.");
-            Console.WriteLine("Dependency resolution self-test: OK (real AddOutputInstance, repeated missing-target failure, ordered external resolution, mapping removal/restoration, no native writes)");
+            Console.WriteLine("Dependency resolution self-test: OK (real AddOutputInstance, repeated failures, external refresh, local chain/cycle/removal/recursive recovery, weak-self behavior; no native writes)");
         }
         finally { Settings.Current = saved; }
     }
@@ -86,6 +88,75 @@ internal static class DependencyResolutionSmokeTest
     }
 
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: inject metadata-only graph edges to test recursion/closure semantics separately from schema/native asset compatibility. */
+    //-------------------------------------------------------------------------------------------------
+    private static void CheckLocalGraphs(DocumentProcessor processor, string directory)
+    {
+        string source = Path.Combine(directory, "local.xml");
+        File.WriteAllText(source, """
+            <AssetDeclaration xmlns="uri:ea.com:eala:asset">
+              <AttributeModifier id="RebornGraphA" /><AttributeModifier id="RebornGraphB" /><AttributeModifier id="RebornGraphC" />
+            </AssetDeclaration>
+            """);
+        AssetDeclarationDocument document = processor.ProcessDocumentInternal(source, source, null!,
+            new DocumentProcessor.ProcessOptions { GenerateOutput = false, UsePrecompiled = false });
+        InstanceDeclaration a = document.SelfInstances.Single(value => value.Handle.InstanceName == "RebornGraphA");
+        InstanceDeclaration b = document.SelfInstances.Single(value => value.Handle.InstanceName == "RebornGraphB");
+        InstanceDeclaration c = document.SelfInstances.Single(value => value.Handle.InstanceName == "RebornGraphC");
+        foreach (InstanceDeclaration node in new[] { a, b, c }) node.Handle.TypeHash = 0x74425C11u;
+        a.ReferencedInstances.Add(b.Handle);
+        b.ReferencedInstances.Add(c.Handle);
+        Prepare(document, a);
+        Require(a.ValidatedReferencedInstances!.Single() == b.Handle && b.ValidatedReferencedInstances!.Single() == c.Handle
+            && a.AllDependentInstances!.Count == 2 && b.AllDependentInstances!.Count == 1 && Visited(document).Count == 3,
+            "Local chain lost direct order, transitive closure or visited nodes.");
+        c.ReferencedInstances.Add(a.Handle);
+        Prepare(document, a);
+        Require(Visited(document).Count == 3 && new[] { a, b, c }.All(node => node.ValidatedReferencedInstances!.Count == 1),
+            "Local cycle did not terminate with one direct reference per node.");
+        // Reborn: cycle closure can include self as in the existing algorithm; removing the cycle must rebuild without stale self membership.
+        c.ReferencedInstances.Clear();
+        Prepare(document, a);
+        Require(a.AllDependentInstances!.Count == 2 && !a.AllDependentInstances.Any(handle => handle.Name == a.Handle.Name),
+            "Removed cycle retained a stale transitive self dependency.");
+        c.ReferencedInstances.Add(new InstanceHandle("AttributeModifier", "RebornMissingLocalNode"));
+        ExpectMissing(document, a);
+        ExpectMissing(document, a);
+        Require(Visited(document).Count == 0 && new[] { a, b, c }.All(node => node.ValidatedReferencedInstances == null && node.AllDependentInstances == null),
+            "Recursive failure retained ancestor/child partial success or visited markers.");
+        c.ReferencedInstances.Clear();
+        Prepare(document, a);
+        Require(Visited(document).Count == 3 && a.AllDependentInstances!.Count == 2, "Recursive failure could not recover after target restoration.");
+        a.ReferencedInstances.Clear();
+        a.WeakReferencedInstances.Add(b.Handle);
+        Prepare(document, a);
+        Require(Visited(document).Count == 1 && a.ValidatedReferencedInstances!.Count == 0 && a.AllDependentInstances!.Count == 0,
+            "Weak self-document reference incorrectly forced target compilation.");
+        // Reborn: test location policy with metadata sets, independently of inclusion parsing or native compilation.
+        Require(document.SelfInstances.Remove(b.Handle), "Could not move graph target to a tentative metadata set.");
+        document.TentativeInstances.Add(b);
+        Prepare(document, a);
+        Require(Visited(document).Count == 3 && a.ValidatedReferencedInstances!.Single() == b.Handle && b.ValidatedReferencedInstances!.Single() == c.Handle,
+            "Weak tentative target did not include its strong local dependency.");
+        a.WeakReferencedInstances.Clear();
+        Require(document.TentativeInstances.Remove(b.Handle), "Could not remove tentative graph target.");
+        document.ReferenceInstances.Add(b);
+        a.ReferencedInstances.Add(b.Handle);
+        Prepare(document, a);
+        Require(Visited(document).Count == 1 && a.ValidatedReferencedInstances!.Single() == b.Handle && a.AllDependentInstances!.Count == 0,
+            "External declaration target incorrectly queued compilation or local closure.");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: inspect only the per-attempt metadata set; never call the output manager or native writer. */
+    //-------------------------------------------------------------------------------------------------
+    private static SortedDictionary<InstanceHandle, InstanceDeclaration> Visited(AssetDeclarationDocument document)
+    {
+        object state = typeof(AssetDeclarationDocument).GetField("_current", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(document)!;
+        return (SortedDictionary<InstanceHandle, InstanceDeclaration>)state.GetType().GetField("OutputInstanceSet")!.GetValue(state)!;
+    }
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: retries must retain strict UnknownReference errors rather than trusting incomplete prior dependency validation. */
     //-------------------------------------------------------------------------------------------------
     private static void ExpectMissing(AssetDeclarationDocument document, InstanceDeclaration instance, ErrorCode expected = ErrorCode.UnknownReference)
@@ -93,9 +164,7 @@ internal static class DependencyResolutionSmokeTest
         try { Prepare(document, instance); }
         catch (BinaryAssetBuilderException error) when (error.ErrorCode == expected)
         {
-            object state = typeof(AssetDeclarationDocument).GetField("_current", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(document)!;
-            var visited = (SortedDictionary<InstanceHandle, InstanceDeclaration>)state.GetType().GetField("OutputInstanceSet")!.GetValue(state)!;
-            Require(!visited.ContainsKey(instance.Handle) && instance.ValidatedReferencedInstances == null && instance.AllDependentInstances == null,
+            Require(!Visited(document).ContainsKey(instance.Handle) && instance.ValidatedReferencedInstances == null && instance.AllDependentInstances == null,
                 "Failed attempt retained a visited marker or partial dependency state.");
             return;
         }

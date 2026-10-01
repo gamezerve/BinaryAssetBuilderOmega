@@ -56,11 +56,32 @@ and layout checks pass. Models/marshallers remain 784/760 of 1,390; the approxim
 overall effort estimate remains 50%. The real EP1 import goldens are a separate
 proof, not replaced by these synthetic metadata fixtures.
 
+## Local graph follow-up
+
+The same test group now injects metadata-only edges among three normalized local
+declarations, without pretending those arbitrary modifier-to-modifier edges are
+valid native schema references. A chain preserves direct reference order and its
+two-node transitive closure. A cycle terminates through the per-attempt visited
+set; removing that cycle rebuilds the closure without stale self membership.
+The existing cycle closure can include self; this test does not establish runtime
+support for circular native assets.
+
+A missing target at the deepest node fails twice, clears all three ancestor/child
+lists and visited markers, then recovers when the edge is removed. Weak references
+to self-document targets do not force output inclusion; moving the same target
+into the tentative set causes inclusion of it and its strong local child. A target
+in the reference/external declaration set is recorded but not queued for local
+compilation. These fixtures test location policy directly, not include-file parsing.
+
+The inspector rebuild, focused command and all 62 compiler groups pass. No additional
+native processor or production authorization was introduced by this follow-up.
+
 ## Remaining gates
 
 This closes the retry/mapping stage, not the complete production output lifecycle.
-Local dependency graphs, recursive/cyclic references, derived-type ambiguity,
-weak tentative inclusion, inheritance and full compiled asset/link/cache behavior
-need broader combined coverage. Experimental profiles remain blocked from all
+Derived-type ambiguity, include-file parsing, inheritance and full compiled
+asset/link/cache behavior still need broader combined coverage. Metadata cycle
+termination and weak tentative inclusion alone do not prove runtime compatibility.
+Experimental profiles remain blocked from all
 production writes and compiled/cache reuse. SDK/WorldBuilder packaging and actual
 Uprising mod loading remain unvalidated.
