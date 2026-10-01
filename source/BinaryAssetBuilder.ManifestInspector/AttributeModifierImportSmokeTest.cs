@@ -5,11 +5,12 @@ using BinaryAssetBuilder;
 using BinaryAssetBuilder.Core;
 using BinaryAssetBuilder.Core.SageXml;
 using BinaryAssetBuilder.Core.Session;
+using BinaryAssetBuilder.XmlCompiler;
 using Relo;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: prove actual core reference normalization and one-biased final import encoding against real EP1 modifier slices, without changing experimental eligibility.
+// Reborn: prove core normalization and explicitly gated import compilation against real EP1 modifier slices, without production eligibility.
 internal static class AttributeModifierImportSmokeTest
 {
     //-------------------------------------------------------------------------------------------------
@@ -63,7 +64,7 @@ internal static class AttributeModifierImportSmokeTest
                 "Optional shader pointer or mixed Shader/FX dependency indices differ.");
             foreach (string manifest in manifests) Compare(first, manifest);
             Require(!Directory.EnumerateFiles(root, "*.manifest").Any(), "Import diagnostic emitted production output.");
-            Console.WriteLine("Modifier import self-test: OK (full core normalization, zero-based XML/one-biased BIN, Shader pointer, four deterministic native roots, no production profile activation)");
+            Console.WriteLine("Modifier import self-test: OK (full core normalization, explicit import compiler entry, identity/index tamper rejection, four deterministic native roots; default/production/cache gates unchanged)");
         }
         finally { Settings.Current = saved; }
     }
@@ -81,6 +82,20 @@ internal static class AttributeModifierImportSmokeTest
         AssetDeclarationDocument document = processor.ProcessDocumentInternal(source, source, null!,
             new DocumentProcessor.ProcessOptions { GenerateOutput = false, UsePrecompiled = false });
         Dictionary<string, (Chunk, AssetId[])> result = new(StringComparer.Ordinal);
+        // Reborn: only direct diagnostic construction admits imports; descriptor-created profiles keep v1 restrictions.
+        Ra3Ep1AttributeModifierPlugin imported = new(true), restricted = new();
+        imported.Initialize(TargetPlatform.Win32);
+        restricted.Initialize(TargetPlatform.Win32);
+        Require(imported.VersionNumber == 2 && imported.ProfileName == "RA3EP1-AttributeModifier-Imports-Experimental-v2"
+            && !imported.CanWriteProductionOutput && !imported.CanUseBuildCache && !imported.CanReuseCompiledDocuments
+            && imported.GetExtendedTypeInformation(0xC5E07887u).ProcessingHash == (0x74425C11u ^ 0x45503112u),
+            "Import opt-in relaxed policies or reused the no-import processing domain.");
+        PluginRegistry importRegistry = new(Array.Empty<PluginDescriptor>(), TargetPlatform.Win32) { DefaultPlugin = imported };
+        Require(!importRegistry.CanReuseCompiledDocuments && !importRegistry.GetExtendedTypeInformation(0xC5E07887u).UseBuildCache,
+            "Direct import profile bypassed registry cache policy.");
+        // Reborn: even explicit diagnostic activation must fail production policy before any output manager or dependency lookup runs.
+        try { importRegistry.ValidateProductionOutput(); throw new InvalidDataException("Import profile bypassed production gate."); }
+        catch (BinaryAssetBuilderException error) when (error.Message.Contains(imported.ProfileName, StringComparison.Ordinal)) { }
         foreach (InstanceDeclaration instance in document.SelfInstances)
         {
             Require(instance.Handle.TypeHash == 0 && instance.WeakReferencedInstances.Count == 0, "Diagnostic root unexpectedly became registered.");
@@ -88,10 +103,68 @@ internal static class AttributeModifierImportSmokeTest
             copy.LoadXml(instance.XmlNode.OuterXml);
             copy.DocumentElement!.RemoveAttribute("TypeId");
             foreach (XmlElement child in copy.DocumentElement.ChildNodes.OfType<XmlElement>()) child.RemoveAttribute("TypeId");
-            Chunk chunk = AttributeModifierNativeSmokeTest.Compile(schemas, copy.DocumentElement.OuterXml);
+            Chunk expected = AttributeModifierNativeSmokeTest.Compile(schemas, copy.DocumentElement.OuterXml);
+            AssetBuffer actual = imported.ProcessInstance(instance);
+            Require(actual.InstanceData.SequenceEqual(expected.InstanceBuffer) && actual.RelocationData.SequenceEqual(expected.RelocationBuffer)
+                && actual.ImportsData.SequenceEqual(expected.ImportsBuffer), "Import profile compiler entry differs from native marshalling.");
+            Chunk chunk = new() { InstanceBuffer = actual.InstanceData, RelocationBuffer = actual.RelocationData, ImportsBuffer = actual.ImportsData };
+            ExpectRejected(() => restricted.ProcessInstance(instance));
+            if (instance.Handle.InstanceName == "AttributeModifier_IronCurtain") CheckTamperedImports(imported, instance);
             result.Add(instance.Handle.Name, (chunk, instance.ReferencedInstances.Select(handle => new AssetId(handle.TypeId, handle.InstanceId)).ToArray()));
         }
         return result;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: reject raw, malformed, out-of-range, duplicate, stale and wrong-type imports before native allocation; restore each mutation. */
+    //-------------------------------------------------------------------------------------------------
+    private static void CheckTamperedImports(Ra3Ep1AttributeModifierPlugin plugin, InstanceDeclaration instance)
+    {
+        XmlElement root = (XmlElement)instance.XmlNode;
+        string original = root.GetAttribute("StartFX");
+        foreach (string invalid in new[] { "FX_IronCurtainHit", "FX_IronCurtainHit\\-1", "FX_IronCurtainHit\\+1",
+            "FX_IronCurtainHit\\4294967295", "FX_IronCurtainHit\\3", "FX_IronCurtainHit\\1\\1",
+            "FX_WrongName\\1", "ShaderOverride:FX_IronCurtainHit\\1", "FX_IronCurtainHit\\0", "", "=Unresolved",
+            "FXList::FX_IronCurtainHit\\1", ":FX_IronCurtainHit\\1", "FXList:\\1", " FX_IronCurtainHit\\1" })
+        {
+            root.SetAttribute("StartFX", invalid);
+            try { ExpectRejected(() => plugin.ProcessInstance(instance)); }
+            finally { root.SetAttribute("StartFX", original); }
+        }
+        InstanceHandle saved = instance.ReferencedInstances[1];
+        foreach (InstanceHandle invalid in new[] { new InstanceHandle("FXList", "WrongIdentity"), new InstanceHandle("ShaderOverride", "FX_IronCurtainHit") })
+        {
+            instance.ReferencedInstances[1] = invalid;
+            try { ExpectRejected(() => plugin.ProcessInstance(instance)); }
+            finally { instance.ReferencedInstances[1] = saved; }
+        }
+        // Reborn: the table may not contain orphan slots even when every remaining XML suffix is parseable.
+        instance.ReferencedInstances.Add(new InstanceHandle("FXList", "ExtraDependency"));
+        try { ExpectRejected(() => plugin.ProcessInstance(instance)); }
+        finally { instance.ReferencedInstances.RemoveAt(instance.ReferencedInstances.Count - 1); }
+        root.RemoveAttribute("StartFX");
+        try { ExpectRejected(() => plugin.ProcessInstance(instance)); }
+        finally { root.SetAttribute("StartFX", original); }
+        instance.WeakReferencedInstances.Add(new InstanceHandle("GameObject", "UnexpectedWeak"));
+        try { ExpectRejected(() => plugin.ProcessInstance(instance)); }
+        finally { instance.WeakReferencedInstances.Clear(); }
+        instance.ReferencedFiles.Add("UnexpectedFile");
+        try { ExpectRejected(() => plugin.ProcessInstance(instance)); }
+        finally { instance.ReferencedFiles.Clear(); }
+        ExpectRejected(() => plugin.ReInitialize(TargetPlatform.Xbox360));
+        ExpectRejected(() => plugin.ProcessInstance(instance));
+        plugin.ReInitialize(TargetPlatform.Win32);
+        Require(plugin.ProcessInstance(instance).ImportsData.Length == 16, "Restored import profile did not reproduce three slots.");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: malformed reference metadata must fail explicitly, not through an incidental parser or null exception. */
+    //-------------------------------------------------------------------------------------------------
+    private static void ExpectRejected(Action action)
+    {
+        try { action(); }
+        catch (Exception error) when (error is NotSupportedException or InvalidOperationException) { return; }
+        throw new InvalidDataException("Import profile accepted unsupported or inconsistent dependency metadata.");
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -102,6 +175,8 @@ internal static class AttributeModifierImportSmokeTest
         ManifestDocument manifest = ManifestReader.Read(File.ReadAllBytes(path));
         TypeRegistryAudit.ValidateTarget(manifest.Header.Version, manifest.Header.AllTypesHash);
         Require(manifest.Header.IsLinked && manifest.Validate().Count == 0, "Invalid linked EP1 manifest.");
+        // Reborn: prove production metadata lookup finds the exact normalized targets without requiring FX/Shader compilation or BIN writes.
+        CheckExternalTargets(expected.Values.SelectMany(value => value.Dependencies).Distinct().ToArray(), manifest, path);
         foreach (var stream in new[] { (Extension: ".bin", Magic: 0xBABB0000u), (Extension: ".relo", Magic: 0xBABE0000u), (Extension: ".imp", Magic: 0xBAB10000u) })
         {
             byte[] header = AssetStreamProbe.ReadRange(Path.ChangeExtension(path, stream.Extension), null, 0, 8);
@@ -129,6 +204,31 @@ internal static class AttributeModifierImportSmokeTest
             bin = checked(bin + asset.InstanceDataSize); relo = checked(relo + asset.RelocationDataSize); imp = checked(imp + asset.ImportsDataSize);
         }
         Require(matches == expected.Count, "Supplied manifest lacks one or more supported modifier import goldens.");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: resolve all modifier targets through the real external-manifest index and reject missing targets/stale identities after removing the mapping. */
+    //-------------------------------------------------------------------------------------------------
+    private static void CheckExternalTargets(AssetId[] dependencies, ManifestDocument manifest, string path)
+    {
+        string[]? previous = Settings.Current.ProcessedExternalManifests;
+        int previousLevel = Settings.Current.ErrorLevel;
+        try
+        {
+            Settings.Current.ProcessedExternalManifests = new[] { Path.GetFullPath(path) };
+            Settings.Current.ErrorLevel = 1;
+            InstanceHandle[] targets = dependencies.Select(id => new InstanceHandle(manifest.Assets.Single(asset =>
+                asset.TypeId == id.TypeId && asset.InstanceId == id.InstanceId).Name)).ToArray();
+            Require(targets.All(ExternalLinkSmokeTest.Contains), "Production external lookup missed a normalized FX/Shader target.");
+            Require(!ExternalLinkSmokeTest.Contains(new InstanceHandle("FXList", "Reborn_Missing_Modifier_Import_Target")),
+                "Missing external modifier target resolved unexpectedly.");
+            Settings.Current.ProcessedExternalManifests = Array.Empty<string>();
+            Require(targets.All(target => !ExternalLinkSmokeTest.Contains(target)), "Removed external mapping retained stale target identities.");
+            Settings.Current.ProcessedExternalManifests = new[] { Path.GetFullPath(path) };
+            Require(targets.All(ExternalLinkSmokeTest.Contains), "Restored external mapping failed to reload modifier identities.");
+            Console.WriteLine($"  Production external metadata lookup: {targets.Length} modifier FX/Shader targets; missing/unmapped targets rejected");
+        }
+        finally { Settings.Current.ProcessedExternalManifests = previous; Settings.Current.ErrorLevel = previousLevel; }
     }
 
     //-------------------------------------------------------------------------------------------------

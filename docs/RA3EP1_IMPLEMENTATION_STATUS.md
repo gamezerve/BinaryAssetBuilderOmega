@@ -47,7 +47,13 @@ The shared Tracker previously omitted this final bias. AttributeModifier.Shader
 is an optional relocated pointer to a four-byte imported record, not an inline
 reference. Legacy XmlCompiler revision is now 3; DocumentProcessor revisions are
 19/20 (VERSION5/other), invalidating all plugin intermediate identities. Production
-EP1 registration remains closed; the modifier profile still rejects dependencies.
+EP1 registration remains closed; the default modifier profile still rejects dependencies.
+Direct diagnostic construction can select an import-aware v2 processing domain,
+which verifies each suffix against the current ordered dependency table. Four
+compiler-entry outputs match stock chunks, malformed/stale metadata is rejected,
+and production external metadata lookup resolves all seven distinct FX/Shader
+targets. Removing the external mapping clears those identities; restoring it
+reloads them. This proves a lookup seam, not full production dependency resolution.
 Full Release/x86 builder/inspector builds, compiler/layout tests and 33 enum mappings
 pass. This is native compatibility evidence, not an in-game mod-loading result.
 

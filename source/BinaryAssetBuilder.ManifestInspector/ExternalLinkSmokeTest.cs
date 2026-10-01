@@ -146,7 +146,7 @@ internal static class ExternalLinkSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: exercise the real manifest identity index, including same-file replacement and EP1 target rejection. */
     //-------------------------------------------------------------------------------------------------
-    private static bool Contains(InstanceHandle target)
+    internal static bool Contains(InstanceHandle target)
     {
         MethodInfo method = typeof(AssetDeclarationDocument).GetMethod("ManifestContainsAsset", BindingFlags.NonPublic | BindingFlags.Static)!;
         return (bool)Invoke(method, target.TypeId, target.InstanceId)!;

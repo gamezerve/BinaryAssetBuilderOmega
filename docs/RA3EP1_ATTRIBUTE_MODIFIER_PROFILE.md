@@ -23,6 +23,11 @@ unannotated/unvalidated XML, inheritance, imports, file/weak dependencies, custo
 data, unsupported attributes, non-leaf Modifier records and unresolved formulas.
 StartFX, EndFX and Shader remain explicitly unsupported even if empty.
 
+This describes the descriptor-created v1 default. A later direct diagnostic
+constructor opt-in enables checked normalized imports in an isolated v2 processing
+domain; it does not change the settings fixture or any production/cache policy.
+See [import profile follow-up](RA3EP1_ATTRIBUTE_MODIFIER_IMPORTS.md#explicit-import-profile-follow-up).
+
 No settings flag can override the policy. Default and explicit type mappings are
 tested, including a descriptor requesting UseBuildCache=true. OutputManager
 construction and production document requests reject before output/cache access.
@@ -70,8 +75,9 @@ diagnostic profile, not a working Uprising Mod SDK or in-game mod.
 
 ## Next gates
 
-Prove StartFX/EndFX/Shader through real core normalization, dependency identities
-and bounded game golden slices before allowing references in this profile.
+StartFX/EndFX/Shader now have bounded golden and explicit import-entry proofs,
+but remain disabled in the default descriptor profile. Full target resolution and
+safe SDK activation still need end-to-end validation.
 Inheritance and arbitrary modifier combinations need separate proofs. Native
 compiled-cache reuse, complete type registration, SDK/WorldBuilder packaging and
 game loading remain unvalidated. Do not overwrite stock streams to test this.

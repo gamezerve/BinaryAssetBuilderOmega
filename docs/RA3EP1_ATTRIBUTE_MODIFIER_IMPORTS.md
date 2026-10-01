@@ -5,8 +5,9 @@
 Four source-derived AttributeModifier roots match stock Uprising static data
 byte-for-byte in BIN, RELO and IMP, including dependency order and identities.
 This closes a shared final-import serialization bug missed by synthetic fixtures.
-It does not activate production EP1 output or expand the experimental modifier
-profile's no-dependency eligibility. No game file was written.
+It does not activate production EP1 output or expand the default modifier
+profile's no-dependency eligibility. No game file was written. The explicit
+diagnostic import-entry follow-up is documented below.
 
 | Stock asset (AttributeModifier) | BIN/RELO/IMP bytes | Dependencies |
 |---|---|---:|
@@ -87,8 +88,45 @@ Full builder and inspector builds, all 61 compiler groups, layout checks and
 33 schema enum mappings pass. Existing raw fixtures now expect the corrected
 final values; their XML suffixes, weak IDs and pointer offsets remain unchanged.
 
-Next: admit only proven reference kinds into an isolated diagnostic profile,
-validate normalized index-to-identity consistency before compilation, and exercise
-external target lookup without registering unported FXList/Shader processors.
+The follow-up below admits proven reference kinds into an isolated diagnostic
+entry and checks external target lookup without registering unported FX/Shader processors.
 Production target-table completion, inheritance, custom-data processors,
 SDK/WorldBuilder packaging and actual Uprising mod loading remain open.
+
+## Explicit import profile follow-up
+
+`Ra3Ep1AttributeModifierPlugin(true)` opts in through direct diagnostic construction.
+The parameterless constructor used by PluginDescriptor still selects the original
+no-import v1 behavior. Import mode has ProfileName
+`RA3EP1-AttributeModifier-Imports-Experimental-v2`, VersionNumber=2 and local
+ProcessingHash `0x74425C11 ^ 0x45503112`. Win32-only initialization, detached type
+metadata and all three false production/cache/document-reuse policies are retained.
+Registry production validation rejects this mode explicitly as well.
+
+`CheckNormalizedImports` requires at most three strong slots, each consumed exactly
+once by StartFX, EndFX or Shader. Suffixes must be unsigned bounded decimal indices;
+names and exact FXList/ShaderOverride types must match that position's InstanceHandle.
+It does not reinterpret an index as an asset hash or normalize raw names itself.
+Weak/file dependencies, inheritance, custom data and unsupported controls remain
+rejected. After detached schema validation, generated IMP length must match the
+checked dependency count. The source declaration is not rewritten by the plugin.
+
+The harness compares all three buffers from this actual plugin entry with the
+native golden-tested marshaller, then compares to stock stream slices. Negative
+tests cover raw/empty/formula values, signed/overflowing/out-of-range/duplicate
+suffixes, multiple separators, invalid name prefixes, wrong names/types, stale
+table entries, orphan dependencies and weak/file injections. Failed platform
+initialization revokes readiness; Win32 reinitialization reproduces the output.
+
+With a real static manifest argument, `CheckExternalTargets` calls the same
+`AssetDeclarationDocument.ManifestContainsAsset` seam used by production reference
+lookup. All seven distinct modifier FX/Shader targets resolve; a missing FX does
+not. Removing the external mapping clears the indexed identities and restoring
+it reloads all targets. This needs manifest metadata only, not target BIN data or
+FX/Shader processor registrations. The diagnostic restores caller settings.
+
+Full Release/x86 builder/inspector builds and all 61 compiler groups pass after
+this follow-up. Test group/model/marshaller counts and the approximate 50% overall
+effort estimate are unchanged. This proves normalization, compiler entry and an
+external lookup seam separately; it does not yet prove a complete production
+document's ResolveReference/build/link lifecycle or in-game loading.
