@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: fixed diagnostic stream proof writes only its own temporary fixtures, never production SDK output.
+            if (args.Length == 1 && args[0] == "modifier-shader-stream-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                ModifierShaderStreamSmokeTest.Run();
+                return 0;
+            }
             // Reborn: run actual include integration with mixed local/external dependency identities.
             if (args.Length == 1 && args[0] == "included-modifier-shader-self-test")
             {
@@ -592,6 +599,8 @@ internal static class Program
         Console.WriteLine("  modifier-shader-graph-self-test");
         // Reborn: include proof does not activate the production linker or external FX processors.
         Console.WriteLine("  included-modifier-shader-self-test");
+        // Reborn: the multi-family serializer command is fixture-only and retains production restrictions.
+        Console.WriteLine("  modifier-shader-stream-self-test");
         // Reborn: watcher fixtures own only temporary files and use deterministic callback injection.
         Console.WriteLine("  watcher-cache-self-test");
         // Reborn: atomic batch fixtures test event conservation without writing game/compiler output.

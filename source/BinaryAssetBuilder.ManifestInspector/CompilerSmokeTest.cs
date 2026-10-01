@@ -83,6 +83,8 @@ internal static class CompilerSmokeTest
         TestModifierShaderGraph();
         // Reborn: test nested Include locations and mixed native selector identities without external target compilation.
         TestIncludedModifierShader();
+        // Reborn: write and read only a bounded diagnostic stream from resolved native compiler entries.
+        TestModifierShaderStream();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -2063,6 +2065,11 @@ internal static class CompilerSmokeTest
     /** Reborn: exercise real include parsing, nested reload and external metadata refresh under closed production policies. */
     //-------------------------------------------------------------------------------------------------
     private static void TestIncludedModifierShader() => IncludedModifierShaderSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify mixed-family stream serialization separately from the blocked production linker and game runtime. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestModifierShaderStream() => ModifierShaderStreamSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate external linking with isolated tiny metadata fixtures, never game BIN streams. */

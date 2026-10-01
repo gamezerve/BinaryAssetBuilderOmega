@@ -204,9 +204,10 @@ namespace BinaryAssetBuilder.Utility
             }
             ReferencedManifests = referencedManifests.ToArray();
             sbyte* sourceFileNameBuffer = assetNameBuffer + _pHeader->AssetNameBufferSize;
-            int linkedInstanceOffset = 4;
-            int linkedRelocationOffset = 4;
-            int linkedImportsOffset = 4;
+            // Reborn: prefixed EP1 linked streams have magic plus checksum (eight bytes); unprefixed/legacy manifests retain four-byte offsets.
+            int linkedInstanceOffset = containerPrefixSize + sizeof(uint);
+            int linkedRelocationOffset = linkedInstanceOffset;
+            int linkedImportsOffset = linkedInstanceOffset;
             int index = 0;
             while (index < AssetCount)
             {

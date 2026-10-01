@@ -101,8 +101,9 @@ Overall effort remains approximately 50%; no in-game compatibility is claimed.
 
 ## Next gate
 
-Build a narrowly scoped multi-family diagnostic stream writer/reader round trip
-from these resolved declarations and ordered identities. Preserve the full
-production registry gate. Actual reference-Include stream compilation, complete
+The later [two-family diagnostic stream proof](RA3EP1_MODIFIER_SHADER_STREAM.md)
+now writes and reads a fixed resolved graph while preserving the full production
+registry gate. A validated bounded diagnostic build entry and production lifecycle
+remain open. Actual reference-Include stream compilation, complete
 EP1 type identity, FX custom processing, inheritance/expressions, native cache
 reuse, SDK/WorldBuilder packaging and game loading remain open.
