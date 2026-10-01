@@ -13,7 +13,14 @@ internal static class Program
     {
         try
         {
-            // Reborn: write only a fixed owned modifier/FX stream proof, never admit FX to the public diagnostic build command.
+            // Reborn: exercise narrow FX command admission and optional real-stock comparisons without production output.
+            if (args.FirstOrDefault() == "diagnostic-fx-build-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                DiagnosticFXBuildSmokeTest.Run(args.Skip(1).ToArray());
+                return 0;
+            }
+            // Reborn: fixed owned modifier/FX proof remains separate from general command admission tests.
             if (args.Length == 1 && args[0] == "modifier-fx-stream-self-test")
             {
                 CompilerSmokeTest.InitializeHashProvider();
@@ -48,6 +55,7 @@ internal static class Program
                 BoundedDiagnosticBuildSmokeTest.Run();
                 DiagnosticIncludeBuildSmokeTest.Run();
                 DiagnosticFilterBuildSmokeTest.Run();
+                DiagnosticFXBuildSmokeTest.Run();
                 return 0;
             }
             // Reborn: bounded diagnostic Include build publishes only a new verified directory and never enables production/cache policies.
@@ -650,6 +658,8 @@ internal static class Program
         Console.WriteLine("  diagnostic-build <source.xml> <new-output-directory> [physical.manifest=runtime.manifest ...]");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.
         Console.WriteLine("  diagnostic-build-self-test");
+        // Reborn: optional stock mappings prove actual command FX slices and concrete audio identities without rebuilding audio payloads.
+        Console.WriteLine("  diagnostic-fx-build-self-test [ep1-global-manifest ep1-static-manifest ep1-audio-manifest]");
         // Reborn: watcher fixtures own only temporary files and use deterministic callback injection.
         Console.WriteLine("  watcher-cache-self-test");
         // Reborn: atomic batch fixtures test event conservation without writing game/compiler output.

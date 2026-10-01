@@ -5,7 +5,8 @@
 `Ra3Ep1FXListPlugin` now exposes a checked `ProcessInstance` entry for the
 stock-proven empty/sound subset. It is activated only by an explicit experimental
 descriptor/registry; no legacy KW or production EP1 type table is changed.
-`diagnostic-build` still admits only its previous three families and excludes FX.
+The subsequent [bounded command integration](RA3EP1_DIAGNOSTIC_FX_BUILD.md)
+now admits this narrow FX subset as a fourth explicit experimental family.
 This profile is not a usable SDK release or a playable mod build.
 
 | Metadata | Value |
@@ -92,8 +93,9 @@ marshallers; adding an isolated processor does not increase those model counters
 
 The subsequent [fixed modifier/FX/audio stream proof](RA3EP1_MODIFIER_FX_STREAM.md)
 now verifies concrete dependency tables, final one-biased selectors, runtime
-mapping, native offsets, deterministic bytes and failure preservation. Next extend
-bounded diagnostic command admission and its full input/publication tests. Full audio/particle processing, final EP1
+mapping, native offsets, deterministic bytes and failure preservation.
+[Bounded command admission and publication tests](RA3EP1_DIAGNOSTIC_FX_BUILD.md)
+also now pass. Full audio/particle processing, final EP1
 registration, SDK/WorldBuilder packaging and actual Uprising loading remain open.
 Overall engineering estimate remains approximately 50% complete / 50% remaining.
 

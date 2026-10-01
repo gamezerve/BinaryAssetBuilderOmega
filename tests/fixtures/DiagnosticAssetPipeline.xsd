@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Reborn: combine three proven experimental root families without expanding the full production EP1 registry. -->
+<!-- Reborn: combine four proven experimental root families without expanding the full production EP1 registry. -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset"
  targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Base.xsd" />
@@ -14,6 +14,19 @@
  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeAttributeModifier.xsd" />
  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeShaderOverride.xsd" />
  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeObjectFilter.xsd" />
+ <!-- Reborn: official FX/audio closure supplies concrete inheritance without admitting audio roots or payload compilers. -->
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/GlobalGameData.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/View.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeFXList.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeAudio.xsd" />
+ <!-- Reborn: extracted official module enums remain drift-checked without importing unrelated W3D/invisibility trees. -->
+ <xs:simpleType name="FXTriggerType"><xs:restriction base="xs:string">
+  <xs:enumeration value="NONE" /><xs:enumeration value="CATAPULT_ROCK" /><xs:enumeration value="TREBUCHET_ROCK" />
+ </xs:restriction></xs:simpleType>
+ <xs:simpleType name="FXActionType"><xs:restriction base="xs:string">
+  <xs:enumeration value="NONE" /><xs:enumeration value="HOLD" /><xs:enumeration value="KILL" /><xs:enumeration value="SPAWN" />
+ </xs:restriction></xs:simpleType>
+ <xs:element name="FXList" type="FXList" />
  <xs:element name="AttributeModifier" type="AttributeModifier" />
  <xs:element name="ShaderOverride" type="ShaderOverride" />
  <xs:element name="ObjectFilterAsset" type="ObjectFilterAsset" />
@@ -23,7 +36,7 @@
    <xs:element name="Include" type="Include" minOccurs="0" maxOccurs="unbounded" />
   </xs:sequence></xs:complexType></xs:element>
   <xs:choice minOccurs="0" maxOccurs="unbounded">
-   <xs:element ref="AttributeModifier" /><xs:element ref="ShaderOverride" /><xs:element ref="ObjectFilterAsset" />
+   <xs:element ref="AttributeModifier" /><xs:element ref="ShaderOverride" /><xs:element ref="ObjectFilterAsset" /><xs:element ref="FXList" />
   </xs:choice>
  </xs:sequence></xs:complexType></xs:element>
 </xs:schema>

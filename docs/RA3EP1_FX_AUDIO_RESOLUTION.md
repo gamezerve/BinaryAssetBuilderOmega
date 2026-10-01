@@ -79,9 +79,10 @@ remains 785/1,390 models and 762/1,390 typed marshallers.
 The subsequent [isolated FX compiler profile](RA3EP1_FX_PROFILE.md) now
 revalidates current declarations, concrete dependency identities, selector
 bounds/order and injected type IDs, rejecting unproven nuggets and options.
-FXList remains excluded from the production registry and `diagnostic-build`.
+FXList remains excluded from the production registry; the narrow profile is now
+admitted by [diagnostic-build](RA3EP1_DIAGNOSTIC_FX_BUILD.md).
 The [fixed modifier/FX stream round trip](RA3EP1_MODIFIER_FX_STREAM.md) now
-passes; bounded command admission and publication tests are next.
+passes, as do the bounded command admission and publication tests linked above.
 
 Audio payload compilation/packaging, other FX nugget layouts, final EP1 type
 table/aggregate identity, SDK/WorldBuilder integration and actual Uprising mod

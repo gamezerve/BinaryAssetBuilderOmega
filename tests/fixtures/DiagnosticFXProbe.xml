@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: demonstrate four-family diagnostic Includes using stock-proven FX sounds and explicit external audio metadata, not a playable mod. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+ <Includes>
+  <Include type="all" source="DiagnosticFilterChildren.xml" />
+  <Include type="instance" source="FXListProbe.xml" />
+ </Includes>
+ <AttributeModifier id="RebornFXModifier" StartFX="FX_DebrisHitGround"
+  EndFX="FX_ALL_AntiGroundAircraft_VoiceDie" Shader="RebornFilterShader" />
+</AssetDeclaration>

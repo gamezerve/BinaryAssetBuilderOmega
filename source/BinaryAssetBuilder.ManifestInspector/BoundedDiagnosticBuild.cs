@@ -10,7 +10,7 @@ using BinaryAssetBuilder.XmlCompiler;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: admit three proven native families in bounded Include graphs without enabling production output.
+// Reborn: admit four proven native families in bounded Include graphs without enabling production output.
 internal static class BoundedDiagnosticBuild
 {
     private static readonly string[] OutputNames = { "diagnostic.manifest", "diagnostic.bin", "diagnostic.relo", "diagnostic.imp", "DIAGNOSTIC_ONLY.txt" };
@@ -80,12 +80,14 @@ internal static class BoundedDiagnosticBuild
             PluginRegistry plugins = new(Array.Empty<PluginDescriptor>(), TargetPlatform.Win32);
             plugins.AddPlugin(0xC5E07887u, modifiers); plugins.AddPlugin(0xBCC23F6Cu, shaders);
             plugins.AddPlugin(0x44A5973Du, filters);
+            // Reborn: use only the isolated empty/two-Sound FX profile with prepared concrete external audio identities.
+            Ra3Ep1FXListPlugin fx = new(); fx.Initialize(TargetPlatform.Win32); plugins.AddPlugin(0x86682E78u, fx);
             SessionCache cache = new(); cache.InitializeCache(new List<string>());
             DocumentProcessor processor = new(Settings.Current, plugins, new VerifierPluginRegistry(Array.Empty<PluginDescriptor>(), TargetPlatform.Win32))
                 { Cache = cache, SchemaSet = new SchemaSet(false) };
             AssetDeclarationDocument document = processor.ProcessDocumentInternal(snapshotPath, snapshotPath, null!,
                 new DocumentProcessor.ProcessOptions { GenerateOutput = false, UsePrecompiled = false });
-            // Reborn: literal shaders and weak-only filters precede modifier consumers; every admitted family has an explicit rank.
+            // Reborn: shaders, weak filters and FX precede modifier consumers; admitted FX audio targets are external-only.
             // Reborn: seed self/all assets, then retain real resolution's local closure; unused instance-Include roots are not forced into output.
             Dictionary<InstanceHandle, InstanceDeclaration> selected = new();
             foreach (InstanceDeclaration seed in document.Instances)
@@ -94,7 +96,7 @@ internal static class BoundedDiagnosticBuild
                 foreach (var visited in DependencyResolutionSmokeTest.Visited(document)) selected[visited.Key] = visited.Value;
             }
             InstanceDeclaration[] ordered = selected.Values.OrderBy(instance => instance.Handle.TypeId switch
-                { 0xBCC23F6Cu => 0, 0x44A5973Du => 1, 0xC5E07887u => 2, _ => throw new InvalidDataException("Unadmitted diagnostic asset type.") })
+                { 0xBCC23F6Cu => 0, 0x44A5973Du => 1, 0x86682E78u => 2, 0xC5E07887u => 3, _ => throw new InvalidDataException("Unadmitted diagnostic asset type.") })
                 .ThenBy(instance => instance.Handle.Name, StringComparer.Ordinal).ToArray();
             if (ordered.Length == 0 || ordered.Length > 32) throw new InvalidDataException("Diagnostic input must contain 1–32 admitted roots.");
             foreach (InstanceHandle dependency in ordered.SelectMany(instance => instance.ValidatedReferencedInstances!))
@@ -171,6 +173,7 @@ internal static class BoundedDiagnosticBuild
         result.Add("DIAGNOSTIC_ONLY.txt", Encoding.UTF8.GetBytes("Bounded native Include diagnostic only. NOT a playable Uprising mod.\n"
             + "Production/cache gates remain closed; no OutputManager commit/link, packaging or game-load proof.\n"
             + "External mappings serialize runtime names but do not copy or validate native dependency streams.\n"
+            + "FX supports empty roots or at most two checked Sound nuggets; concrete audio metadata does not prove native audio payload compatibility.\n"
             + "Filter GameObject weak IDs do not prove target presence and do not become strong imports.\n"));
         return result;
     }

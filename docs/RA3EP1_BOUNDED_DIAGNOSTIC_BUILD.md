@@ -45,21 +45,27 @@ Include emits one shader and one weak filter before the parent modifier.
 Linked BIN/RELO/IMP sizes are 240/36/16. See
 [filter integration and weak-ID limits](RA3EP1_DIAGNOSTIC_FILTER_BUILD.md).
 
+A four-family FX example now uses DiagnosticFXProbe.xml with explicit external
+audio mappings. It emits five entries and 572/72/44 linked BIN/RELO/IMP bytes.
+See [FX integration, real CLI usage and audio limits](RA3EP1_DIAGNOSTIC_FX_BUILD.md).
+
 ## Admission and deliberate limits
 
 - One entry EA AssetDeclaration and at most sixteen reachable XML files, each
   at most 1 MiB / 1,048,576 characters; aggregate parsed XML is at most two MiB
   of characters. At most 32 Include edges and eight edges of nesting are admitted.
-- 1–32 AttributeModifier/ShaderOverride/ObjectFilterAsset roots across the entire graph; root IDs are 1–128 ASCII letters,
+- 1–32 AttributeModifier/ShaderOverride/ObjectFilterAsset/FXList roots across the entire graph; root IDs are 1–128 ASCII letters,
   digits, underscore, dash or dot characters. Immediate Modifier/Rule records
   are admitted only under their matching root type. ObjectFilterAsset admits
   an immediate Filter and its direct IncludeThing weak leaves; wider filter
-  eligibility remains closed by the existing native profile.
+  eligibility remains closed by the existing native profile. FXList admits only
+  a direct NuggetList with zero to two direct Sound leaves; other nuggets/nesting reject.
 - Only `all` and `instance` Includes are admitted, preserving their real core
   selection semantics. Includes-only wrapper documents are allowed; at least
   one native asset must ultimately be selected. Reference Includes, cycles,
   duplicate identities across distinct files and other asset/control elements,
-  DTDs, inheritance, overrides, definitions and unresolved expressions reject.
+  DTDs, inheritance, overrides, definitions, authored TypeIds and unresolved expressions reject.
+  Sound Value must be an authored literal reference, never a pre-normalized backslash selector.
 - Include sources must be relative .xml paths beneath the entry directory,
   resolved relative to each including file. Absolute paths, traversal/dot/empty
   segments, macros, reserved syntax, trailing dots/spaces and reparse files or
@@ -72,6 +78,9 @@ Linked BIN/RELO/IMP sizes are 240/36/16. See
   individual kind masks and at most fifteen IncludeThing leaves. Weak names
   use the official unqualified-name syntax; colon/type prefixes are rejected
   by the official schema. Weak target presence is not checked or implied.
+  FX accepts only the isolated stock-proven empty/two-Sound subset: INVALID weather,
+  false/default booleans and at most one FLYING source mask per Sound. Concrete
+  external audio targets are AudioEvent or Multisound; other descendants/options remain closed.
 - At most eight unique physical/runtime external mappings; each manifest is at
   most 16 MiB, structurally valid, linked EP1 v7/aggregate and not patch-based.
   Runtime paths use the existing core validator: relative .manifest names with
@@ -79,8 +88,9 @@ Linked BIN/RELO/IMP sizes are 240/36/16. See
   before uniqueness checks.
 - A nonlocal strong dependency must occur in exactly one mapped manifest. Local
   declarations take precedence. External ShaderOverride must match the proven
-  native type hash/tokenization; FXList evidence is identity metadata only, not
-  native FX processor or payload compatibility.
+  native type hash/tokenization. Externally referenced FX/audio remains identity
+  metadata only, not native dependency payload compatibility. Locally compiled
+  FX is limited to its isolated byte-proven profile; no audio roots/payload compiler is enabled.
 - Compiled BIN+RELO+IMP payload total must stay at or below 1 MiB.
 - Output must be a new child of an existing non-reparse parent chain. Existing
   output files/directories and reparse ancestors are rejected.
@@ -102,11 +112,11 @@ names identify the actual asset's snapshot document rather than attributing ever
 asset to its parent; original absolute paths are not embedded in output. A fresh
 command reads fresh sources, while an already approved snapshot retains its data.
 
-The real document pipeline uses three explicitly mapped experimental plugins with
+The real document pipeline uses four explicitly mapped experimental plugins with
 GenerateOutput=false and cache/precompiled reuse disabled. The existing private
 dependency seam resolves ordered identities. Self/all roots seed the real local
 resolution closure; unused instance/tentative roots are not emitted. Selected local shaders are emitted before
-weak filters and then modifiers; ordinal name order within each family makes this bounded acyclic graph deterministic;
+weak filters, then FX and modifiers; ordinal name order within each family makes this bounded acyclic graph deterministic;
 this is not the production stable sorter or a general dependency graph builder.
 Native compiler entries and the existing identity checksum helper provide data
 and identity stamps. Checksum is not a payload digest.

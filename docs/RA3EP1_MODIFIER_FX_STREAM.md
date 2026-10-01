@@ -92,12 +92,10 @@ mappings pass. Model/marshaller inventory remains 785/1,390 and 762/1,390.
 
 ## Next gate and remaining work
 
-FXList remains excluded from `diagnostic-build` and the production registry.
-Next extend bounded command preflight, snapshot grammar, official schema closure,
-explicit registration and dependency-first rank to admit only this narrow FX
-profile. Test combined shader/filter/modifier/FX Include graphs, explicit runtime
-mapping, duplicate/ambiguous audio targets, frozen snapshots, output publication
-and failure preservation through the public service.
+The subsequent [bounded FX command integration](RA3EP1_DIAGNOSTIC_FX_BUILD.md)
+now passes, including preflight/snapshots, schema closure, explicit experimental
+registration, four-family Includes, audio mapping/ambiguity, deterministic output
+and guarded publication. FXList remains excluded from the production registry.
 
 Full audio/particle processing, complete EP1 registration, SDK/WorldBuilder packaging
 and in-game Uprising loading remain open. Overall engineering effort remains

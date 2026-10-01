@@ -1,5 +1,9 @@
 # ObjectFilter integration into diagnostic builds
 
+Follow-up: [narrow FX integration](RA3EP1_DIAGNOSTIC_FX_BUILD.md) adds a fourth
+experimental family to the command. The original three-family filter proof
+below retains its scope and native bytes.
+
 ## Outcome
 
 `diagnostic-build` now admits the stock-proven ObjectFilterAsset subset alongside

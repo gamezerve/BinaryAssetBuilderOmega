@@ -16,24 +16,22 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**76 test groups** (some contain several fixtures). These counters can grow
+**77 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
-registered groups but does not execute them. The fixed modifier/FX/audio stream
-proof adds one group without changing model/marshaller counts; all 76 groups were executed.
+registered groups but does not execute them. The bounded FX command integration
+adds one group without changing model/marshaller counts; all 77 groups were executed.
 
-Latest milestone: [fixed modifier/FX/audio stream round trip](docs/RA3EP1_MODIFIER_FX_STREAM.md).
-An actual Include graph compiles two local FX assets and their modifier consumer,
-with three concretely resolved external audio targets. Its 388/36/32 native bytes
-round-trip through the shared diagnostic serializer and independent manifest/utility
-readers, preserving source attribution, runtime paths and one-biased selectors.
-Twenty-four corruption cases are rejected even when byte-snapshot expectations are
-changed to match corrupt files. The shared verifier now independently checks stream
-headers, exact lengths and manifest/entry sizes. Existing-output and target-loss/recovery
-checks pass. FXList is still excluded from `diagnostic-build` and production registration;
-bounded command admission is next. This is not yet a playable mod. The preceding
-[isolated FX compiler](docs/RA3EP1_FX_PROFILE.md) and
-[core audio resolution](docs/RA3EP1_FX_AUDIO_RESOLUTION.md) proofs remain in place.
+Latest milestone: [FX support in bounded diagnostic builds](docs/RA3EP1_DIAGNOSTIC_FX_BUILD.md).
+`diagnostic-build` now accepts the isolated empty/two-Sound FX subset, alongside
+shader/filter/modifier Include graphs. Real Uprising manifests resolve the concrete
+audio targets; all three command-produced FX slices and reference tuples match stock.
+Duplicate/ambiguous/wrong/missing targets, edited/frozen sources, unsupported options,
+injected TypeIds/selectors and publication failures are tested. The checked-in
+`DiagnosticFXProbe.xml` runs through the actual CLI and produces five entries with
+572/72/44 linked BIN/RELO/IMP bytes. External audio is metadata-only, not rebuilt or
+validated as a native payload. Production SDK output and in-game loading remain
+unverified; this is not yet a playable mod. See the English usage/report for limits.
 
 | Workstream | Status |
 |---|---|
@@ -46,7 +44,9 @@ bounded command admission is next. This is not yet a playable mod. The preceding
 
 ### Recently completed
 
-- Recovered FXList's 28-byte root and FXNugget's 44-byte base. Fixed four optional condition masks that were incorrectly inline (268-byte base); they now use pointers and allocate EP1 masks only when present. Empty, single-sound and two-mask source literals match real EP1 streams exactly (28/0/0, 80/12/8, 252/24/12). Added synthetic four-mask/empty-mask/default checks and advanced the legacy compiler revision to 4 to invalidate old intermediates. FX processors remain unregistered: schema BaseAudioEventInfo references still need proven derived AudioEvent/Multisound resolution before a runnable diagnostic profile. See [native FX evidence and remaining processor gate](docs/RA3EP1_FX_NATIVE.md).
+- Admitted the narrow FX profile to `diagnostic-build`, preserving frozen inputs, explicit concrete audio mapping and exclusive verified publication. Four-family Include tests and a real CLI example pass; authored TypeIds and Sound selector suffixes now reject before silent core rewriting. See [FX command integration and usage](docs/RA3EP1_DIAGNOSTIC_FX_BUILD.md).
+
+- Recovered FXList's 28-byte root and FXNugget's 44-byte base. Fixed four optional condition masks that were incorrectly inline (268-byte base); they now use pointers and allocate EP1 masks only when present. Empty, single-sound and two-mask source literals match real EP1 streams exactly (28/0/0, 80/12/8, 252/24/12). Added synthetic four-mask/empty-mask/default checks and advanced the legacy compiler revision to 4. Concrete AudioEvent/Multisound resolution, the isolated profile and bounded command now have separate follow-up proofs; full production FX registration remains closed. See [native FX evidence](docs/RA3EP1_FX_NATIVE.md).
 - Added the stock-proven ObjectFilterAsset profile to `diagnostic-build` using a separate three-family declaration schema. Eleven emitted filter slices match the existing native goldens, which were also rechecked against the real EP1 static streams. Mixed included shader/filter/modifier entries preserve source identity, strong shader imports and inline weak GameObject IDs; unused tentative filters stay excluded. Expanded controls and official-invalid weak name syntax reject without publishing. The command's GameObject weak IDs do not establish target availability or in-game behavior. See [diagnostic filter integration](docs/RA3EP1_DIAGNOSTIC_FILTER_BUILD.md).
 - Extended `diagnostic-build` to bounded nested `all`/`instance` Include graphs. Approved XML is frozen into deterministic flat snapshots; the real resolution closure excludes unused tentative roots and includes required local targets. Manifest entries retain their actual sanitized source identity. Native selection, frozen/edited sources, mixed external FX metadata, cycles/loss/recovery and path/graph limits are tested. A checked-in Include example builds through the actual command. Reference Includes and production SDK output remain disabled. See [bounded diagnostic command and usage](docs/RA3EP1_BOUNDED_DIAGNOSTIC_BUILD.md).
 - Added `diagnostic-build` for bounded modifier/shader XML and explicit external manifest/runtime mappings. It freezes approved inputs, rejects unsupported controls/targets, compiles isolated profiles, verifies staged output through both readers and publishes only a new directory. Existing/raced destinations survive; late corruption rejects without publishing. See [bounded diagnostic command and usage](docs/RA3EP1_BOUNDED_DIAGNOSTIC_BUILD.md).

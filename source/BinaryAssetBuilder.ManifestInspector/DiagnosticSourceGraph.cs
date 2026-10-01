@@ -69,7 +69,11 @@ internal sealed class DiagnosticSourceGraph
             // Reborn: matching direct leaves and the official Include container are the only permitted non-root shapes.
             bool valid = element == root || (element.LocalName switch
             {
-                "AttributeModifier" or "ShaderOverride" or "ObjectFilterAsset" or "Includes" => element.ParentNode == root,
+                "AttributeModifier" or "ShaderOverride" or "ObjectFilterAsset" or "FXList" or "Includes" => element.ParentNode == root,
+                // Reborn: admit only the checked sound-only FX shape; filters, particles and other nuggets remain outside command preflight.
+                "NuggetList" => element.ParentNode is XmlElement fx && fx.LocalName == "FXList" && fx.ParentNode == root,
+                "Sound" => element.ParentNode is XmlElement nuggets && nuggets.LocalName == "NuggetList"
+                    && nuggets.ParentNode is XmlElement fxOwner && fxOwner.LocalName == "FXList" && fxOwner.ParentNode == root,
                 "Modifier" => element.ParentNode is XmlElement modifier && modifier.LocalName == "AttributeModifier" && modifier.ParentNode == root,
                 "Rule" => element.ParentNode is XmlElement shader && shader.LocalName == "ShaderOverride" && shader.ParentNode == root,
                 "Filter" => element.ParentNode is XmlElement filterAsset && filterAsset.LocalName == "ObjectFilterAsset" && filterAsset.ParentNode == root,
@@ -80,10 +84,12 @@ internal sealed class DiagnosticSourceGraph
             });
             if (!valid) throw new InvalidDataException("Unsupported diagnostic XML structure.");
             foreach (XmlAttribute attribute in element.Attributes)
-                if (attribute.NamespaceURI != "http://www.w3.org/2000/xmlns/" && (attribute.LocalName is "inheritFrom" or "override"
+                // Reborn: authored input must not supply compiler-injected TypeIds or pre-normalized Sound selector suffixes that the core could silently rewrite.
+                if (attribute.NamespaceURI != "http://www.w3.org/2000/xmlns/" && (attribute.LocalName is "inheritFrom" or "override" or "TypeId"
+                    || element.LocalName == "Sound" && attribute.LocalName == "Value" && attribute.Value.Contains('\\')
                     || attribute.Value.TrimStart().StartsWith("=", StringComparison.Ordinal)))
-                    throw new InvalidDataException("Inheritance, overrides and unresolved expressions are not admitted.");
-            if (element.ParentNode == root && element.LocalName is "AttributeModifier" or "ShaderOverride" or "ObjectFilterAsset")
+                    throw new InvalidDataException("Inheritance, overrides, unresolved expressions, authored TypeIds and normalized Sound selectors are not admitted.");
+            if (element.ParentNode == root && element.LocalName is "AttributeModifier" or "ShaderOverride" or "ObjectFilterAsset" or "FXList")
             {
                 string id = element.GetAttribute("id");
                 if (id.Length is < 1 or > 128 || id.Any(c => !char.IsAsciiLetterOrDigit(c) && c != '_' && c != '-' && c != '.'))

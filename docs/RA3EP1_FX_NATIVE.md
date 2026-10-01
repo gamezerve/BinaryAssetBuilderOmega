@@ -79,7 +79,8 @@ selects concrete AudioEvent/Multisound identities against actual Uprising manife
 preserving normalized selectors and rejecting missing/ambiguous metadata.
 That audio proof alone does not enable a validated FX ProcessInstance entry.
 A subsequent [isolated FX profile](RA3EP1_FX_PROFILE.md) now provides this entry,
-while production registration and diagnostic command admission remain closed.
+and [bounded diagnostic command admission](RA3EP1_DIAGNOSTIC_FX_BUILD.md) now
+passes. Production registration remains closed.
 
 ## Original native-only proof boundary
 
@@ -96,10 +97,10 @@ references can be substituted for stock strong dependency identities.
 
 Thus the native-only proof does not register FXList. Derived audio lookup and
 the isolated profile now have separate proofs linked above. FXList remains
-excluded from the production registry and diagnostic-build. A separate
+excluded from the production registry. A separate
 [fixed modifier/FX stream proof](RA3EP1_MODIFIER_FX_STREAM.md) now passes;
-bounded command admission and publication tests are next. Native byte similarity
-alone is insufficient to admit FXList to the diagnostic command.
+bounded command admission and publication tests also now pass. Native byte
+similarity alone was not used to admit FXList to the diagnostic command.
 ParticleSystem and other nugget variants, optional filters, inheritance/custom
 processing, FX cache reuse, complete EP1 aggregate/type table, SDK/WorldBuilder
 packaging and actual game loading still need separate validation.

@@ -98,6 +98,8 @@ internal static class CompilerSmokeTest
         TestFXProfile();
         // Reborn: prove mixed local FX/external audio stream readback before broadening diagnostic command admission.
         TestModifierFXStream();
+        // Reborn: verify narrow FX support through the public bounded build service with all publication guards intact.
+        TestDiagnosticFXBuild();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -2118,6 +2120,11 @@ internal static class CompilerSmokeTest
     /** Reborn: exercise actual modifier/FX compiler graph serialization and independent native identity readback. */
     //-------------------------------------------------------------------------------------------------
     private static void TestModifierFXStream() => ModifierFXStreamSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: prove four-family Include/native/dependency/publication behavior through the actual diagnostic command service. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestDiagnosticFXBuild() => DiagnosticFXBuildSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate external linking with isolated tiny metadata fixtures, never game BIN streams. */
