@@ -57,6 +57,8 @@ internal static class CompilerSmokeTest
         TestCopyRecovery();
         // Reborn: file-reference changes must invalidate source identities while runtime ID dependencies remain distinct.
         TestDependencyHashes();
+        // Reborn: reported content changes cannot hide behind unchanged timestamps or prior resident metadata snapshots.
+        TestWatcherCache();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1951,6 +1953,14 @@ internal static class CompilerSmokeTest
     private static void TestDependencyHashes()
     {
         DependencyHashSmokeTest.Run();
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: exercise resident cache snapshots, forced content refresh and synchronized watcher callbacks. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestWatcherCache()
+    {
+        WatcherCacheSmokeTest.Run();
     }
 
     //-------------------------------------------------------------------------------------------------

@@ -112,10 +112,25 @@ namespace BinaryAssetBuilder.Core
 
         public void Reset()
         {
+            // Reborn: retain the metadata-only reset contract unless a watcher explicitly reports content changes.
+            Reset(false);
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: invalidate a reported change even when its timestamp and size match the previous successful content hash. */
+        //-------------------------------------------------------------------------------------------------
+        public void Reset(bool forceRehash)
+        {
             _state = FileState.AllInvalid;
             _currentDate = DateTime.MaxValue;
             // Reborn: reset the current signature while retaining the last successful cache signature.
             _currentLength = -1L;
+            // Reborn: invalidate persisted signature fields so an unconsumed forced refresh survives serialization.
+            if (forceRehash)
+            {
+                _lastDate = DateTime.MinValue;
+                _lastLength = -1L;
+            }
         }
 
         public void ReadXml(Node node)

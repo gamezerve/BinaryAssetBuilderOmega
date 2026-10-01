@@ -117,11 +117,11 @@ namespace BinaryAssetBuilder.Core.Session
         }
 
 #if VERSION5
-        // Reborn: file signatures now include length; rebuild sessions produced by timestamp-only hashing.
-        public const uint CacheVersion = 17u;
+        // Reborn: invalidate resident sessions predating watcher-forced hashes and fresh per-build metadata sampling.
+        public const uint CacheVersion = 18u;
 #else
-        // Reborn: file signatures now include length; rebuild sessions produced by timestamp-only hashing.
-        public const uint CacheVersion = 19u;
+        // Reborn: invalidate resident sessions predating watcher-forced hashes and fresh per-build metadata sampling.
+        public const uint CacheVersion = 20u;
 #endif
 
         private static readonly Tracer _tracer = Tracer.GetTracer(nameof(SessionCache), "Provides caching functionality");
@@ -148,9 +148,14 @@ namespace BinaryAssetBuilder.Core.Session
             return str;
         }
 
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: refresh resident metadata snapshots and force hashes for watcher-reported paths without rejecting unrelated unchanged files. */
+        //-------------------------------------------------------------------------------------------------
         private void CheckFiles(List<string> knownChangedFiles)
         {
-            bool hasChangedFiles = knownChangedFiles.Count == 0;
+            // Reborn: normalize watcher casing/separators and apply one notification to every cached configuration of a file.
+            HashSet<string> changedPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (string path in knownChangedFiles ?? new List<string>()) changedPaths.Add(Path.GetFullPath(path));
             if (_last is null)
             {
                 return;
@@ -168,7 +173,6 @@ namespace BinaryAssetBuilder.Core.Session
             else
             {
                 _tracer.TraceInfo("Checking {0} files for updates.", _last.Files.Length);
-                int num = 0;
                 foreach (FileItem file in _last.Files)
                 {
                     if (file.Document is not null)
@@ -177,8 +181,16 @@ namespace BinaryAssetBuilder.Core.Session
                     }
                     if (file.HashItem is not null)
                     {
-                        if (file.HashItem.IsDirty)
+                        // Reborn: check freshly sampled metadata, not the memoized signature from the prior resident build.
+                        bool notified = changedPaths.Contains(Path.GetFullPath(file.HashItem.Path));
+                        file.HashItem.Reset(notified);
+                        bool dirty = file.HashItem.IsDirty;
+                        if (dirty)
                         {
+                            // Reborn: a nonempty watcher list is inconsistent only when an actually dirty cached file was omitted.
+                            if (changedPaths.Count > 0 && !notified)
+                                throw new BinaryAssetBuilderException(ErrorCode.PathMonitor,
+                                    "Change went undetected by Path Monitor. File: {0}", file.HashItem.Path);
                             if (_dirtyStreams is not null)
                             {
                                 if (file.Document is null || file.Document.StreamHints.Count == 0)
@@ -198,12 +210,6 @@ namespace BinaryAssetBuilder.Core.Session
                                 }
                             }
                         }
-                        file.HashItem.Reset();
-                    }
-                    ++num;
-                    if (!hasChangedFiles && !knownChangedFiles.Contains(file.HashItem.Path))
-                    {
-                        throw new BinaryAssetBuilderException(ErrorCode.PathMonitor, "Change went undetected by Path Monitor. File: {0}", file.HashItem.Path);
                     }
                 }
             }

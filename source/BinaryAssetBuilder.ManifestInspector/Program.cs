@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: verify watcher-driven hash invalidation and resident stream hints without native compiler output.
+            if (args.Length == 1 && args[0] == "watcher-cache-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                WatcherCacheSmokeTest.Run();
+                return 0;
+            }
             // Reborn: validate file-signature invalidation and document dependency hashes without production output.
             if (args.Length == 1 && args[0] == "dependency-hash-self-test")
             {
@@ -487,6 +494,8 @@ internal static class Program
         Console.WriteLine("  copy-recovery-self-test");
         // Reborn: dependency fixtures compare source identities, not approved native compiler output.
         Console.WriteLine("  dependency-hash-self-test");
+        // Reborn: watcher fixtures own only temporary files and use deterministic callback injection.
+        Console.WriteLine("  watcher-cache-self-test");
         Console.WriteLine("  utility-verify <manifest-or-big> [--entry <BIG entry>]");
         Console.WriteLine("  assembly-fields <managed-assembly> <type-name>");
         Console.WriteLine("  assembly-methods <managed-assembly> <type-name> [method-filter]");

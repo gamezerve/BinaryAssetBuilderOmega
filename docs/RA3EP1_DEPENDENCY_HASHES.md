@@ -25,7 +25,9 @@ content changes the parent hash. No production profile was enabled or fabricated
   `ReadXml` accepts old records but marks their unknown length for one fresh hash.
 - `source/BinaryAssetBuilder.Core/BinaryAssetBuilder/Core/Session/SessionCache.cs`:
   session format versions increase from 16/18 to 17/19 (`VERSION5`/other). The
-  active EP1 Release/x86 build uses **19** and rejects version-18 sessions.
+  initial checkpoint used **19** and rejected version-18 sessions. The later
+  [watcher/cache block](RA3EP1_WATCHER_CACHE.md) advances the active EP1 version
+  to **20** and forces watcher-reported same-signature edits to rehash.
   The VERSION5 branch is updated but not separately runtime-tested here.
 - `source/BinaryAssetBuilder.Core/BinaryAssetBuilder/Core/SageXml/AssetDeclarationDocument.cs`:
   `HandleFileReferenceType` reports `ErrorCode.FileNotFound` when no file hash item
@@ -93,9 +95,9 @@ behavior is exercised separately with explicit `Reset` cycles.
 
 ## Remaining limits
 
-- An edit preserving **both size and timestamp** can still evade signature-based
-  invalidation. Content is not rehashed unconditionally. File-watcher notifications
-  and a possible forced-rehash policy remain to be investigated.
+- An edit preserving **both size and timestamp** can still evade metadata-only
+  invalidation if it is not reported. The later watcher/cache block now forces
+  reported changes to rehash, but content is not rehashed unconditionally.
 - Hash items remain memoized within one build until reset. Mid-build source mutation
   is not a supported reproducibility guarantee or tested race scenario.
 - This does not prove cached inheritance/defines, all inclusion modes, every plugin's
