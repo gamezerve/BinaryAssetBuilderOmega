@@ -16,7 +16,7 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **784/1,390** EP1 complex types have models and
 **760/1,390** have typed marshallers. The compiler test runner invokes
-**53 test groups** (some contain several fixtures). These counters can grow
+**54 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. In this work block, model and
@@ -33,6 +33,7 @@ marshaller counts are unchanged; registered test groups increased by one.
 
 ### Recently completed
 
+- Made local/cache asset copies preserve existing output on rejection or failure: validate/stage before replacement, restore the previous asset if custom-data publication fails, and retain recovery backups if rollback is blocked. Fixed small final copy chunks and signed/overflowing chunk-length checks; 22 copy scenarios plus blocked-recovery tests pass. See [copy recovery proof](docs/RA3EP1_COPY_RECOVERY.md).
 - Reconstructed the stored identity checksum exactly from global/static/WorldBuilder/EnglishAudio EP1 manifest metadata. All four match the official capacity-padded algorithm; all four reject the logical-length-only alternative. Preserved that compatibility contract and tested patch equivalence separately from strict intermediate/cache copies. See [checksum and cache audit](docs/RA3EP1_CHECKSUM_CACHE_AUDIT.md).
 - Fixed coordinated BIN/RELO/IMP repair: a valid BIN can no longer cause a missing/broken auxiliary stream to be rebuilt with an empty payload. Reuse checks now include exact expected lengths and direct asset/link/version writes honor experimental profile restrictions. See [linker regression proof](docs/RA3EP1_LINKED_STREAM_REPAIR.md).
 - Tested real intermediate asset commits, two-asset concatenation, patch-base payload exclusion and 15 independent linked-file repair cases using isolated synthetic fixtures; production EP1 compilation remains blocked.

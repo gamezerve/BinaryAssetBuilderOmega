@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: exercise failed-copy preservation and asset/custom-data rollback in isolated synthetic directories.
+            if (args.Length == 1 && args[0] == "copy-recovery-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                CopyRecoverySmokeTest.Run();
+                return 0;
+            }
             // Reborn: audit identity checksum candidates using only valid EP1 manifest metadata.
             if (args.Length >= 2 && args[0] == "checksum-audit")
             {
@@ -469,6 +476,8 @@ internal static class Program
         // Reborn: checksum auditing reads manifest metadata only and does not certify payload integrity.
         Console.WriteLine("  checksum-audit <ep1-manifest ...>");
         Console.WriteLine("  checksum-self-test");
+        // Reborn: file-lock and rollback fixtures never operate on real build caches or game files.
+        Console.WriteLine("  copy-recovery-self-test");
         Console.WriteLine("  utility-verify <manifest-or-big> [--entry <BIG entry>]");
         Console.WriteLine("  assembly-fields <managed-assembly> <type-name>");
         Console.WriteLine("  assembly-methods <managed-assembly> <type-name> [method-filter]");

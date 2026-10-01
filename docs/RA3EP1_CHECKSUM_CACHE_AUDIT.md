@@ -120,11 +120,12 @@ change reaches it. A same-length corrupted linked payload with its header intact
 still passes the current link reuse check. Do not use this checksum as a payload
 digest or an authentication/security boundary.
 
-`BinaryAsset.CopyAsset()` currently deletes an existing destination in its catch
-path and may leave the `.tmp` candidate behind. The new rejection fixtures own
-fresh paths, so they do not test preservation of a previous valid destination.
-Safer failed-copy handling is the next implementation target; no real cache or
-game file was exposed to that path during this audit.
+At this audit's initial checkpoint, `BinaryAsset.CopyAsset()` deleted an existing
+destination in its catch path and could leave its `.tmp` candidate behind. The
+original rejection fixtures owned fresh paths and did not prove preservation of
+previous valid output. This has since been corrected and tested with existing
+destinations, custom-data failures and rollback locks; see [copy recovery proof](RA3EP1_COPY_RECOVERY.md).
+No real cache or game file was exposed to the failure fixtures.
 
 Further work: verify upstream InstanceHash/dependency invalidation, patch checksum
 reconstruction, copy-failure recovery and target-specific cache namespace policy.

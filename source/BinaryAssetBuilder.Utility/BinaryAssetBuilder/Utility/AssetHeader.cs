@@ -21,9 +21,13 @@
             Data->ImportsDataSize = Endian.BigEndian(Data->ImportsDataSize);
         }
 
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: reject negative chunks and avoid 32-bit overflow when validating intermediate asset lengths. */
+        //-------------------------------------------------------------------------------------------------
         public unsafe bool IsValidFileLength(long fileLength)
         {
-            return Data->InstanceDataSize + 32 + Data->RelocationDataSize + Data->ImportsDataSize == fileLength;
+            return Data->InstanceDataSize >= 0 && Data->RelocationDataSize >= 0 && Data->ImportsDataSize >= 0
+                && 32L + Data->InstanceDataSize + Data->RelocationDataSize + Data->ImportsDataSize == fileLength;
         }
     }
 }

@@ -53,6 +53,8 @@ internal static class CompilerSmokeTest
         TestLinkedStreamRepair();
         // Reborn: distinguish identity checksum compatibility and tokenized patch matching from byte-integrity validation.
         TestChecksumAudit();
+        // Reborn: failed local/cache candidates must not delete previously valid intermediate output.
+        TestCopyRecovery();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1931,6 +1933,14 @@ internal static class CompilerSmokeTest
     private static void TestChecksumAudit()
     {
         ChecksumAudit.Run();
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: retain existing asset/custom-data bytes when validation, staging or replacement fails. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestCopyRecovery()
+    {
+        CopyRecoverySmokeTest.Run();
     }
 
     //-------------------------------------------------------------------------------------------------

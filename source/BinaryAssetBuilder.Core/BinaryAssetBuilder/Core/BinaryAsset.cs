@@ -253,75 +253,137 @@ namespace BinaryAssetBuilder.Core
             }
         }
 
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: validate and stage candidate files before publication, preserving existing destinations on rejected or failed copies. */
+        //-------------------------------------------------------------------------------------------------
         private bool CopyAsset(string sourceAssetPath, string sourceCustomDataPath)
         {
             string assetOutputPath = Path.Combine(AssetOutputDirectory, AssetFileName);
-            string tmpOutputPath = assetOutputPath + ".tmp";
             string cdataOutputPath = Path.Combine(CustomDataOutputDirectory, _customDataFileName);
-            _assetHeader = null;
-            try
+            // Reborn: unique same-directory staging/backup names avoid overwriting another attempt's recovery files.
+            string attempt = ".copy-" + Guid.NewGuid().ToString("N");
+            string tmpOutputPath = assetOutputPath + attempt + ".tmp";
+            string tmpCdataPath = cdataOutputPath + attempt + ".tmp";
+            string assetBackupPath = assetOutputPath + attempt + ".backup";
+            string cdataBackupPath = cdataOutputPath + attempt + ".backup";
+            bool assetPublished = false, cdataPublished = false, completed = false;
+            AssetHeader candidateHeader = null;
+            lock (_copyBuffer)
             {
-                if (!Directory.Exists(AssetOutputDirectory))
-                {
-                    Directory.CreateDirectory(AssetOutputDirectory);
-                }
-                lock (_copyBuffer)
+                try
                 {
                     using Stream sourceAssetStream = File.OpenRead(sourceAssetPath);
+                    // Reborn: parse a complete header and validate signed chunk sizes/total length before touching old output.
+                    if (sourceAssetStream.Length < 32L) throw new InvalidDataException("Incomplete asset header.");
+                    candidateHeader = new AssetHeader();
+                    // Reborn: the generic wrapper permits partial header reads; this copy seam requires all 32 bytes explicitly.
+                    sourceAssetStream.ReadExactly(_copyBuffer, 0, 32);
+                    candidateHeader.LoadFromBuffer(_copyBuffer, Settings.Current.BigEndian);
+                    if (!candidateHeader.IsValidFileLength(sourceAssetStream.Length)
+                        || candidateHeader.InstanceId != Instance.Handle.InstanceId
+                        || candidateHeader.TypeId != Instance.Handle.TypeId
+                        || candidateHeader.InstanceHash != Instance.Handle.InstanceHash
+                        || candidateHeader.TypeHash != Instance.Handle.TypeHash)
+                        throw new InvalidDataException("Asset candidate identity or length differs.");
+                    Directory.CreateDirectory(AssetOutputDirectory);
+                    sourceAssetStream.Position = 0;
                     using (Stream destAssetStream = File.Open(tmpOutputPath, FileMode.Create, FileAccess.Write))
                     {
-                        int bytesRead;
-                        for (long length = sourceAssetStream.Length; length > 0L; length -= bytesRead)
+                        long remaining = sourceAssetStream.Length;
+                        while (remaining > 0L)
                         {
-                            bytesRead = sourceAssetStream.Read(_copyBuffer, 0, _copyBuffer.Length);
-                            if (bytesRead < 16)
-                            {
-                                throw new BinaryAssetBuilderException(ErrorCode.InternalError, string.Empty);
-                            }
-                            if (_assetHeader is null)
-                            {
-                                _assetHeader = new AssetHeader();
-                                _assetHeader.LoadFromBuffer(_copyBuffer, Settings.Current.BigEndian);
-                                if (_assetHeader.InstanceId != Instance.Handle.InstanceId
-                                 || _assetHeader.TypeId != Instance.Handle.TypeId
-                                 || _assetHeader.InstanceHash != Instance.Handle.InstanceHash
-                                 || _assetHeader.TypeHash != Instance.Handle.TypeHash)
-                                {
-                                    throw new BinaryAssetBuilderException(ErrorCode.InternalError, string.Empty);
-                                }
-                            }
+                            // Reborn: short reads and one-to-fifteen-byte final chunks are legal; only premature EOF rejects.
+                            int bytesRead = sourceAssetStream.Read(_copyBuffer, 0, (int)Math.Min(remaining, _copyBuffer.Length));
+                            if (bytesRead == 0) throw new EndOfStreamException("Incomplete asset payload.");
                             destAssetStream.Write(_copyBuffer, 0, bytesRead);
+                            remaining -= bytesRead;
                         }
                         destAssetStream.Flush();
                     }
-                    if (File.Exists(assetOutputPath))
+                    if (Instance.HasCustomData)
                     {
-                        File.Delete(assetOutputPath);
-                    }
-                    File.Move(tmpOutputPath, assetOutputPath);
-                }
-                if (Instance.HasCustomData)
-                {
-                    if (!Directory.Exists(CustomDataOutputDirectory))
-                    {
+                        // Reborn: missing/locked custom data must fail during staging, before either final destination changes.
                         Directory.CreateDirectory(CustomDataOutputDirectory);
+                        File.Copy(sourceCustomDataPath, tmpCdataPath, false);
                     }
-                    File.Copy(sourceCustomDataPath, cdataOutputPath, true);
+                    PublishCopiedFile(tmpOutputPath, assetOutputPath, assetBackupPath);
+                    assetPublished = true;
+                    if (Instance.HasCustomData)
+                    {
+                        PublishCopiedFile(tmpCdataPath, cdataOutputPath, cdataBackupPath);
+                        cdataPublished = true;
+                    }
+                    _assetHeader = candidateHeader;
+                    candidateHeader = null;
+                    _outputAvailability = Availability.Invalid;
+                    completed = true;
+                    return true;
+                }
+                catch (Exception exception)
+                {
+                    // Reborn: roll back only destinations this attempt published; never delete pre-existing files on validation failure.
+                    RestoreCopiedFile(cdataOutputPath, cdataBackupPath, cdataPublished);
+                    RestoreCopiedFile(assetOutputPath, assetBackupPath, assetPublished);
+                    // Reborn: after any publication attempt, re-read disk metadata rather than trusting a pre-rollback header snapshot.
+                    if (assetPublished)
+                    {
+                        _assetHeader = null;
+                        _outputAvailability = Availability.Invalid;
+                    }
+                    _tracer.TraceInfo("Asset copy rejected for {0}: {1}", Instance, exception.Message);
+                    return false;
+                }
+                finally
+                {
+                    candidateHeader?.Dispose();
+                    RemoveCopyTemporary(tmpOutputPath);
+                    RemoveCopyTemporary(tmpCdataPath);
+                    if (completed)
+                    {
+                        RemoveCopyTemporary(assetBackupPath);
+                        RemoveCopyTemporary(cdataBackupPath);
+                    }
                 }
             }
-            catch
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: atomically replace one existing file with a recoverable backup, or publish a new file without deleting a destination. */
+        //-------------------------------------------------------------------------------------------------
+        private static void PublishCopiedFile(string stagedPath, string destinationPath, string backupPath)
+        {
+            if (File.Exists(destinationPath)) File.Replace(stagedPath, destinationPath, backupPath);
+            else File.Move(stagedPath, destinationPath);
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: restore a successfully published file after a later pair failure; preserve backups if recovery itself is blocked. */
+        //-------------------------------------------------------------------------------------------------
+        private static void RestoreCopiedFile(string destinationPath, string backupPath, bool published)
+        {
+            if (!published) return;
+            try
             {
-                if (File.Exists(assetOutputPath))
+                if (File.Exists(backupPath))
                 {
-                    File.Delete(assetOutputPath);
+                    if (File.Exists(destinationPath)) File.Replace(backupPath, destinationPath, null);
+                    else File.Move(backupPath, destinationPath);
                 }
-                if (File.Exists(cdataOutputPath))
-                {
-                    File.Delete(cdataOutputPath);
-                }
-                return false;
+                else File.Delete(destinationPath);
             }
-            return true;
+            catch (Exception exception)
+            {
+                _tracer.TraceError("Asset copy recovery failed for {0}; preserve backup {1}: {2}", destinationPath, backupPath, exception.Message);
+            }
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: clean only this attempt's staging files; cleanup failures must not erase output or mask a successful publication. */
+        //-------------------------------------------------------------------------------------------------
+        private static void RemoveCopyTemporary(string path)
+        {
+            try { if (File.Exists(path)) File.Delete(path); }
+            catch (Exception exception) { _tracer.TraceError("Unable to clean asset copy temporary {0}: {1}", path, exception.Message); }
         }
 
         private void CommitFromLocal()
