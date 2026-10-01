@@ -55,6 +55,8 @@ internal static class CompilerSmokeTest
         TestChecksumAudit();
         // Reborn: failed local/cache candidates must not delete previously valid intermediate output.
         TestCopyRecovery();
+        // Reborn: file-reference changes must invalidate source identities while runtime ID dependencies remain distinct.
+        TestDependencyHashes();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1941,6 +1943,14 @@ internal static class CompilerSmokeTest
     private static void TestCopyRecovery()
     {
         CopyRecoverySmokeTest.Run();
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: prove file-signature invalidation and focused full-document dependency identity handling. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestDependencyHashes()
+    {
+        DependencyHashSmokeTest.Run();
     }
 
     //-------------------------------------------------------------------------------------------------

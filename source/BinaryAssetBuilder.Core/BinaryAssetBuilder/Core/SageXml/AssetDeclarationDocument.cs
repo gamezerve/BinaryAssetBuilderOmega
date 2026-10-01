@@ -1056,7 +1056,9 @@ namespace BinaryAssetBuilder.Core.SageXml
         private void HandleFileReferenceType(XPathNavigator navigator, ref InstanceDeclaration instance)
         {
             string path = navigator.Value.Trim().ToLowerInvariant();
-            TryGetFileHashItem(path, out FileHashItem hashItem);
+            // Reborn: missing file dependencies must report a file-reference error, not dereference absent hash metadata.
+            if (!TryGetFileHashItem(path, out FileHashItem hashItem))
+                throw new BinaryAssetBuilderException(ErrorCode.FileNotFound, "Referenced file not found: {0} in {1}", path, instance);
             string referencePath = hashItem.Path.ToLowerInvariant();
             _current.DependentFiles.Add(path);
             navigator.SetValue(referencePath);

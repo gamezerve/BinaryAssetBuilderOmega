@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: validate file-signature invalidation and document dependency hashes without production output.
+            if (args.Length == 1 && args[0] == "dependency-hash-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                DependencyHashSmokeTest.Run();
+                return 0;
+            }
             // Reborn: exercise failed-copy preservation and asset/custom-data rollback in isolated synthetic directories.
             if (args.Length == 1 && args[0] == "copy-recovery-self-test")
             {
@@ -478,6 +485,8 @@ internal static class Program
         Console.WriteLine("  checksum-self-test");
         // Reborn: file-lock and rollback fixtures never operate on real build caches or game files.
         Console.WriteLine("  copy-recovery-self-test");
+        // Reborn: dependency fixtures compare source identities, not approved native compiler output.
+        Console.WriteLine("  dependency-hash-self-test");
         Console.WriteLine("  utility-verify <manifest-or-big> [--entry <BIG entry>]");
         Console.WriteLine("  assembly-fields <managed-assembly> <type-name>");
         Console.WriteLine("  assembly-methods <managed-assembly> <type-name> [method-filter]");

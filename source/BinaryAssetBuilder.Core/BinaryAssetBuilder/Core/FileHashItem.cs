@@ -21,6 +21,9 @@ namespace BinaryAssetBuilder.Core
         private uint _hash;
         private DateTime _lastDate = DateTime.MinValue;
         private DateTime _currentDate = DateTime.MaxValue;
+        // Reborn: timestamp-preserving size changes must invalidate cached source/dependency hashes.
+        private long _lastLength = -1L;
+        private long _currentLength = -1L;
         private bool _exists;
 
         public string Path => _path;
@@ -47,10 +50,12 @@ namespace BinaryAssetBuilder.Core
                     if (Exists)
                     {
                         _currentDate = File.GetLastWriteTime(_path);
+                        // Reborn: sample length alongside the timestamp once per build/reset, not on every hash lookup.
+                        _currentLength = new FileInfo(_path).Length;
                     }
                     _state = FileState.DateValid;
                 }
-                return _lastDate != _currentDate;
+                return !Exists || _lastDate != _currentDate || _lastLength != _currentLength;
             }
         }
         public uint Hash
@@ -68,6 +73,9 @@ namespace BinaryAssetBuilder.Core
                         else
                         {
                             _hash = 0u;
+                            // Reborn: deletion must invalidate the previous successful signature so restoring an old timestamp rehashes.
+                            _lastDate = DateTime.MinValue;
+                            _lastLength = -1L;
                         }
                     }
                     _state |= FileState.HashValid;
@@ -98,12 +106,16 @@ namespace BinaryAssetBuilder.Core
             }
             _hash = hash;
             _lastDate = _currentDate;
+            // Reborn: persist the sampled source length with the successful hash.
+            _lastLength = _currentLength;
         }
 
         public void Reset()
         {
             _state = FileState.AllInvalid;
             _currentDate = DateTime.MaxValue;
+            // Reborn: reset the current signature while retaining the last successful cache signature.
+            _currentLength = -1L;
         }
 
         public void ReadXml(Node node)
@@ -123,11 +135,15 @@ namespace BinaryAssetBuilder.Core
                 _targetPlatform = TargetPlatform.Win32;
             }
             _currentDate = DateTime.MaxValue;
+            // Reborn: old serialized records lack length and deliberately force one fresh content hash.
+            _lastLength = values.Length > 5 ? Convert.ToInt64(values[5], CultureInfo.InvariantCulture) : -1L;
+            _currentLength = -1L;
         }
 
         public void WriteXml(XmlWriter writer)
         {
-            writer.WriteAttributeString("d", $"{_path};{_hash};{_lastDate.ToBinary()};{_buildConfiguration};{_targetPlatform}");
+            // Reborn: append file length without changing legacy identity/configuration fields.
+            writer.WriteAttributeString("d", $"{_path};{_hash};{_lastDate.ToBinary()};{_buildConfiguration};{_targetPlatform};{_lastLength}");
         }
     }
 }

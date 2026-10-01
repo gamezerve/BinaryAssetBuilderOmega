@@ -117,9 +117,11 @@ namespace BinaryAssetBuilder.Core.Session
         }
 
 #if VERSION5
-        public const uint CacheVersion = 16u;
+        // Reborn: file signatures now include length; rebuild sessions produced by timestamp-only hashing.
+        public const uint CacheVersion = 17u;
 #else
-        public const uint CacheVersion = 18u;
+        // Reborn: file signatures now include length; rebuild sessions produced by timestamp-only hashing.
+        public const uint CacheVersion = 19u;
 #endif
 
         private static readonly Tracer _tracer = Tracer.GetTracer(nameof(SessionCache), "Provides caching functionality");
