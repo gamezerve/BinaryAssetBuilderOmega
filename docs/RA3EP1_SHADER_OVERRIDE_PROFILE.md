@@ -100,10 +100,11 @@ fingerprints and the PsychicCrush discrepancy are recorded in the native proof.
 
 ## Next work
 
-Combine modifier and shader diagnostics in one document graph: normalize a local
-modifier-to-shader reference, resolve its ordered dependency identity, compile
-both entries and verify the reference selects the intended shader. Preserve all
-production gates; do not turn this into an unrestricted SDK configuration.
+The later [modifier/shader graph proof](RA3EP1_MODIFIER_SHADER_GRAPH.md) combines
+both diagnostics in one real document and verifies local target identity through
+normalization, resolution and native import selection. Production gates remain
+closed. Next, test Includes and mixed local/external stream boundaries before a
+narrow multi-family diagnostic writer; this is not an unrestricted SDK configuration.
 Remaining stock shader variants, FXShaderMaterial custom-data compilation,
 inheritance/expressions, complete EP1 type registration, cached native reuse,
 SDK/WorldBuilder packaging and actual game loading still need separate proof.

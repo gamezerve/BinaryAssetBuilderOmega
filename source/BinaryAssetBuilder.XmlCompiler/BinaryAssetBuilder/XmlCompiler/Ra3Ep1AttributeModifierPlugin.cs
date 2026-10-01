@@ -80,6 +80,9 @@ public sealed class Ra3Ep1AttributeModifierPlugin : IAssetBuilderPlugin, IAssetB
             : new[] { "id", "Category", "Duration", "ReplaceInCategoryIfLongest", "IgnoreIfAnticategoryActive",
                 "ModelConditionsSet", "ModelConditionsClear", "ObjectStatusToSet", "StackingLimit", "ArmorSetType" };
         CheckAttributes(root, allowed);
+        // Reborn: a post-validation XML id edit must never compile under a stale declaration identity, even when all import slots still match.
+        if (InstanceHandle.GetInstanceId(root.GetAttribute("id")) != instance.Handle.InstanceId)
+            throw new NotSupportedException("Modifier XML id does not match its declaration identity.");
         // Reborn: never trust a parseable numeric suffix without checking its ordered dependency identity.
         if (_allowNormalizedImports) CheckNormalizedImports(root, instance);
         foreach (XmlNode child in root.ChildNodes)

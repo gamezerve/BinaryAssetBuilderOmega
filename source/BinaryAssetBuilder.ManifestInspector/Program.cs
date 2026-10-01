@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: expose real modifier/shader graph proof without a production output manager.
+            if (args.Length == 1 && args[0] == "modifier-shader-graph-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                ModifierShaderGraphSmokeTest.Run();
+                return 0;
+            }
             // Reborn: validate isolated shader compiler eligibility without activating production output.
             if (args.Length == 1 && args[0] == "ep1-shader-profile-self-test")
             {
@@ -574,6 +581,8 @@ internal static class Program
         Console.WriteLine("  shader-override-self-test [ep1-static-manifest ...]");
         // Reborn: shader profile proof retains all output/cache restrictions.
         Console.WriteLine("  ep1-shader-profile-self-test");
+        // Reborn: graph proof keeps dependency and native compilation stages separate from production/linker output.
+        Console.WriteLine("  modifier-shader-graph-self-test");
         // Reborn: watcher fixtures own only temporary files and use deterministic callback injection.
         Console.WriteLine("  watcher-cache-self-test");
         // Reborn: atomic batch fixtures test event conservation without writing game/compiler output.

@@ -77,7 +77,7 @@ internal static class DependencyResolutionSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: initialize the same per-attempt output set as PrepareOutputInstances and invoke only its dependency stage. */
     //-------------------------------------------------------------------------------------------------
-    private static void Prepare(AssetDeclarationDocument document, InstanceDeclaration instance)
+    internal static void Prepare(AssetDeclarationDocument document, InstanceDeclaration instance)
     {
         object state = typeof(AssetDeclarationDocument).GetField("_current", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(document)!;
         state.GetType().GetField("OutputInstanceSet")!.SetValue(state, new SortedDictionary<InstanceHandle, InstanceDeclaration>());
@@ -150,7 +150,7 @@ internal static class DependencyResolutionSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: inspect only the per-attempt metadata set; never call the output manager or native writer. */
     //-------------------------------------------------------------------------------------------------
-    private static SortedDictionary<InstanceHandle, InstanceDeclaration> Visited(AssetDeclarationDocument document)
+    internal static SortedDictionary<InstanceHandle, InstanceDeclaration> Visited(AssetDeclarationDocument document)
     {
         object state = typeof(AssetDeclarationDocument).GetField("_current", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(document)!;
         return (SortedDictionary<InstanceHandle, InstanceDeclaration>)state.GetType().GetField("OutputInstanceSet")!.GetValue(state)!;

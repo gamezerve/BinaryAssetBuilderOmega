@@ -58,6 +58,10 @@ internal static class Ep1AttributeModifierProfileSmokeTest
         InstanceDeclaration formula = Declare("""<AttributeModifier xmlns="uri:ea.com:eala:asset" id="Formula" />""", schemas);
         formula.XmlNode.Attributes!["Duration"]!.Value = "=Unresolved";
         ExpectRejected(() => registry.DefaultPlugin.ProcessInstance(formula));
+        // Reborn: no-import mode must also reject a valid XML id edited after declaration identity was computed.
+        InstanceDeclaration staleIdentity = Declare("""<AttributeModifier xmlns="uri:ea.com:eala:asset" id="OriginalIdentity" />""", schemas);
+        ((XmlElement)staleIdentity.XmlNode).SetAttribute("id", "ChangedIdentity");
+        ExpectRejected(() => registry.DefaultPlugin.ProcessInstance(staleIdentity));
         // Reborn: stale schema annotations cannot authorize an invalid value inserted after validation.
         InstanceDeclaration invalidated = Declare("""<AttributeModifier xmlns="uri:ea.com:eala:asset" id="Invalidated" />""", schemas);
         invalidated.XmlNode.Attributes!["StackingLimit"]!.Value = "not-an-integer";

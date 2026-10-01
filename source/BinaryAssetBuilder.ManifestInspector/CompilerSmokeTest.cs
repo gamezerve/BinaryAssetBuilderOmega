@@ -79,6 +79,8 @@ internal static class CompilerSmokeTest
         TestShaderOverrideNative();
         // Reborn: exercise isolated shader descriptor/document entry and fail closed on stale controls or identity.
         TestShaderOverrideProfile();
+        // Reborn: prove modifier imports select registered local shader targets through the real document dependency stage.
+        TestModifierShaderGraph();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -2049,6 +2051,11 @@ internal static class CompilerSmokeTest
     /** Reborn: verify the bounded shader profile independently of production registration or stock game-data availability. */
     //-------------------------------------------------------------------------------------------------
     private static void TestShaderOverrideProfile() => Ep1ShaderOverrideProfileSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: connect bounded EP1 compiler families without enabling output/cache reuse or invoking the production linker. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestModifierShaderGraph() => ModifierShaderGraphSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate external linking with isolated tiny metadata fixtures, never game BIN streams. */
