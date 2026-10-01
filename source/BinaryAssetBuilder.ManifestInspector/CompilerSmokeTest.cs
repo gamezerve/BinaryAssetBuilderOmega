@@ -85,6 +85,8 @@ internal static class CompilerSmokeTest
         TestIncludedModifierShader();
         // Reborn: write and read only a bounded diagnostic stream from resolved native compiler entries.
         TestModifierShaderStream();
+        // Reborn: verify bounded command admission/publication independently of the fixed stream fixture.
+        TestBoundedDiagnosticBuild();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -2070,6 +2072,11 @@ internal static class CompilerSmokeTest
     /** Reborn: verify mixed-family stream serialization separately from the blocked production linker and game runtime. */
     //-------------------------------------------------------------------------------------------------
     private static void TestModifierShaderStream() => ModifierShaderStreamSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: prove approved snapshots, output preservation and fail-closed publication for the limited diagnostic build entry. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestBoundedDiagnosticBuild() => BoundedDiagnosticBuildSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate external linking with isolated tiny metadata fixtures, never game BIN streams. */

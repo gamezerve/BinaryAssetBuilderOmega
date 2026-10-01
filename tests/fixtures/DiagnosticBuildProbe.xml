@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: standalone two-root input for the bounded diagnostic command; not a packaged or playable Uprising mod. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+ <AttributeModifier id="RebornDiagnosticModifier" Shader="RebornDiagnosticShader" />
+ <ShaderOverride id="RebornDiagnosticShader">
+  <Rule ReplaceShaderName="Null.fx" ReplaceTechniqueName="Default" />
+ </ShaderOverride>
+</AssetDeclaration>

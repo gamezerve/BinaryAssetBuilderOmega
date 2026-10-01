@@ -13,6 +13,21 @@ internal static class Program
     {
         try
         {
+            // Reborn: exercise bounded input/publication guards without accepting production SDK builds.
+            if (args.Length == 1 && args[0] == "diagnostic-build-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                BoundedDiagnosticBuildSmokeTest.Run();
+                return 0;
+            }
+            // Reborn: bounded standalone diagnostic build publishes only a new verified directory and never enables production/cache policies.
+            if (args.FirstOrDefault() == "diagnostic-build")
+            {
+                if (args.Length < 3) throw new ArgumentException("diagnostic-build <source.xml> <new-output-directory> [physical.manifest=runtime.manifest ...]");
+                CompilerSmokeTest.InitializeHashProvider();
+                Console.WriteLine("Diagnostic build verified (NOT a playable mod): " + BoundedDiagnosticBuild.Build(args[1], args[2], args.Skip(3).ToArray()));
+                return 0;
+            }
             // Reborn: fixed diagnostic stream proof writes only its own temporary fixtures, never production SDK output.
             if (args.Length == 1 && args[0] == "modifier-shader-stream-self-test")
             {
@@ -601,6 +616,10 @@ internal static class Program
         Console.WriteLine("  included-modifier-shader-self-test");
         // Reborn: the multi-family serializer command is fixture-only and retains production restrictions.
         Console.WriteLine("  modifier-shader-stream-self-test");
+        // Reborn: admitted standalone roots and explicit runtime mappings are bounded diagnostic inputs, not a full SDK build.
+        Console.WriteLine("  diagnostic-build <source.xml> <new-output-directory> [physical.manifest=runtime.manifest ...]");
+        // Reborn: command self-tests own only fresh temporary inputs and outputs.
+        Console.WriteLine("  diagnostic-build-self-test");
         // Reborn: watcher fixtures own only temporary files and use deterministic callback injection.
         Console.WriteLine("  watcher-cache-self-test");
         // Reborn: atomic batch fixtures test event conservation without writing game/compiler output.

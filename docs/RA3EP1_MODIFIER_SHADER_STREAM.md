@@ -106,9 +106,9 @@ this writer test; the separate stock native proofs remain distinct evidence.
 
 ## Next gate
 
-Replace fixture-only serialization with a deliberately bounded diagnostic build
-entry that validates its admitted root universe, dependency targets and runtime
-mapping before publication, with no partial output on rejection. Before any
+The later [bounded standalone diagnostic command](RA3EP1_BOUNDED_DIAGNOSTIC_BUILD.md)
+now validates admitted roots/targets/runtime mappings and stages readback before
+new-directory publication. Includes remain excluded from that v1 entry. Before any
 production release, complete target registry/AllTypesHash, production graph sorting
 and link lifecycle, FX custom processing, inheritance/cache policy, SDK and
 WorldBuilder packaging and actual Uprising runtime loading still require proof.
