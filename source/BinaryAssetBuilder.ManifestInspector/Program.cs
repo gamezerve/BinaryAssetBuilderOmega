@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: exercise the isolated FX compiler without production stream publication.
+            if (args.FirstOrDefault() == "ep1-fx-profile-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                Ep1FXListProfileSmokeTest.Run(args.Skip(1).ToArray());
+                return 0;
+            }
             // Reborn: concrete external audio proof never enables FX/audio processors or production output.
             if (args.FirstOrDefault() == "fx-audio-resolution-self-test")
             {

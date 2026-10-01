@@ -76,12 +76,11 @@ at 28/0/0, 80/12/8 and 252/24/12 BIN/RELO/IMP bytes. The stock concrete audio
 metadata pass also succeeds after the final document-version bump. Inventory
 remains 785/1,390 models and 762/1,390 typed marshallers.
 
-FXList remains unregistered and excluded from `diagnostic-build`. This is a
-dependency-resolution milestone, not a runnable FX/audio SDK build. Next add
-a narrowly admitted isolated FX processor: revalidate current declarations,
-concrete dependency identities, selector bounds/order and injected type IDs;
-reject unproven nugget variants and options. Then prove mixed-family diagnostic
-stream round trips before extending command admission.
+The subsequent [isolated FX compiler profile](RA3EP1_FX_PROFILE.md) now
+revalidates current declarations, concrete dependency identities, selector
+bounds/order and injected type IDs, rejecting unproven nuggets and options.
+FXList remains excluded from the production registry and `diagnostic-build`.
+Mixed-family diagnostic stream round trips are next, before command admission.
 
 Audio payload compilation/packaging, other FX nugget layouts, final EP1 type
 table/aggregate identity, SDK/WorldBuilder integration and actual Uprising mod

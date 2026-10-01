@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: explicit diagnostic FX profile, never a full EP1 SDK or production compiler configuration. -->
+<Settings xmlns="uri:ea.com:eala:asset" BuildCache="false">
+ <Plugin AssetTypes="#all" IsEnabled="true" UseBuildCache="false"
+  QualifiedName="BinaryAssetBuilder.XmlCompiler.Ra3Ep1FXListPlugin, BinaryAssetBuilder.XmlCompiler" />
+</Settings>

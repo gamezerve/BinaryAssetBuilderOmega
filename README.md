@@ -16,20 +16,21 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**74 test groups** (some contain several fixtures). These counters can grow
+**75 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
-registered groups but does not execute them. The concrete external FX/audio
-resolution proof adds one group without changing model/marshaller counts;
-all 74 groups were executed.
+registered groups but does not execute them. The isolated FX compiler profile
+adds one group without changing model/marshaller counts; all 75 groups were executed.
 
-Latest milestone: [concrete external FX/audio resolution](docs/RA3EP1_FX_AUDIO_RESOLUTION.md).
-The core now resolves official `BaseAudioEventInfo` references to unique schema-derived
-external identities. Real Uprising manifest checks select `AudioEvent` and `Multisound`
-in the correct order without changing native import selectors. Missing, wrong-type,
-ambiguous, removed and refreshed targets are regression-tested; old document/intermediate
-cache identities are invalidated. FXList is still unregistered and excluded from
-`diagnostic-build`; the isolated FX processor is the next gate. This is not yet a playable mod.
+Latest milestone: [isolated FXList compiler profile](docs/RA3EP1_FX_PROFILE.md).
+An explicit experimental descriptor now compiles empty roots and at most two Sound
+nuggets with checked concrete `AudioEvent`/`Multisound` dependencies. Actual plugin
+output and ordered dependency identities match three real Uprising FX assets exactly.
+Current-value/identity/selector rejection, new typed audio names, fresh source reload
+and platform/output/cache guards are tested. FXList remains excluded from the production
+registry and `diagnostic-build`; mixed-family diagnostic stream round trips are next.
+This is not yet a playable mod. The preceding
+[core external audio resolution proof](docs/RA3EP1_FX_AUDIO_RESOLUTION.md) remains in place.
 
 | Workstream | Status |
 |---|---|

@@ -8,7 +8,7 @@ using SageBinaryData;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: recover native FX optional-mask layout before any experimental FX processor or production registration is opened.
+// Reborn: prove native FX optional-mask layout independently of experimental processors or production registration.
 internal static class FXListNativeSmokeTest
 {
     //-------------------------------------------------------------------------------------------------
@@ -81,9 +81,9 @@ internal static class FXListNativeSmokeTest
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: compare exact BIN/RELO/IMP and ordered audio names while recording stock-derived audio types as a separate unresolved processor gate. */
+    /** Reborn: compare selected exact native slices and ordered audio name hashes; compiler-profile callers also verify concrete dependency tuples separately. */
     //-------------------------------------------------------------------------------------------------
-    private static void Compare(Dictionary<string, (Chunk Data, uint[] Names)> expected, string path)
+    internal static void Compare(Dictionary<string, (Chunk Data, uint[] Names)> expected, string path)
     {
         ManifestDocument manifest = ManifestReader.Read(File.ReadAllBytes(path));
         TypeRegistryAudit.ValidateTarget(manifest.Header.Version, manifest.Header.AllTypesHash);
