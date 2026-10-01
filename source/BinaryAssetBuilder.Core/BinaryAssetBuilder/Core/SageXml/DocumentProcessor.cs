@@ -265,6 +265,8 @@ namespace BinaryAssetBuilder.Core.SageXml
                 {
                     inputFileFound = Cache.TryGetDocument(inclusionItem.PhysicalPath, configuration, Settings.Current.TargetPlatform, false, out currentDocument);
                 }
+                // Reborn: resident Exists snapshots cannot authorize a vanished include source; successful explicit/precompiled stream paths stay separate.
+                if (streamReference is null) inputFileFound = inputFileFound && File.Exists(inclusionItem.PhysicalPath);
                 if (!inputFileFound)
                 {
                     if (Settings.Current.ErrorLevel > 0)
@@ -374,11 +376,9 @@ namespace BinaryAssetBuilder.Core.SageXml
                 {
                     outputManager.CreateVersionFile(document, Settings.Current.CustomPostfix);
                 }
-                _currentStreamStack.Pop();
                 _tracer.Message("{0} Stream complete", document.SourcePathFromRoot);
                 _totalPrepareOutputTime += DateTime.Now - now;
             }
-            _documentStack.RemoveAt(_documentStack.Count - 1);
             document.MakeComplete();
             document.MakeCacheable();
             Cache.SaveDocumentToCache(document.SourcePath, configuration, Settings.Current.TargetPlatform, document);
@@ -445,68 +445,81 @@ namespace BinaryAssetBuilder.Core.SageXml
             if (options.GenerateOutput) Plugins.ValidateProductionOutput();
             DateTime now = DateTime.Now;
             AssetDeclarationDocument result = OpenDocument(sourcePath, logicalPath, options.GenerateOutput, options.Configuration);
-            if (options.GenerateOutput)
+            // Reborn: each recursive document call owns only its stack entries; failures must not poison subsequent retries as false cycles.
+            int documentDepth = _documentStack.Count;
+            int diagnosticDepth = _currentDocumentStack.Count;
+            int streamDepth = _currentStreamStack.Count;
+            try
             {
-                if ((Settings.Current.StreamHints
-                    && Cache.DirtyStreams is not null
-                    && !Cache.DirtyStreams.Contains(sourcePath)
-                    && LoadPrecompiledReference(result, GetExpectedOutputManifest(result.SourcePath), options.BaseStreamSearchPaths))
-                    || result.State == DocumentState.Complete)
+                if (options.GenerateOutput)
                 {
-                    return result;
-                }
-                if (!Settings.Current.SingleFile && string.IsNullOrEmpty(result.SourcePathFromRoot))
-                {
-                    throw new BinaryAssetBuilderException(ErrorCode.IllegalPath, "{0} is a stream (.manifest) but does not have {1} as its root!", sourcePath, Settings.Current.DataRoot);
-                }
-                string str = ShPath.Canonicalize(Path.Combine(Settings.Current.IntermediateOutputDirectory, result.SourcePathFromRoot));
-                string outputDirectory = ShPath.Canonicalize(Path.Combine(Settings.Current.OutputDirectory, result.SourcePathFromRoot))
-                                           + Settings.Current.StreamPostfix + Settings.Current.CustomPostfix;
-                string intermediateOutputDirectory = str + Settings.Current.StreamPostfix + Settings.Current.CustomPostfix;
-                outputManager = new OutputManager(this,
-                                                  result.LastOutputAssets,
-                                                  outputDirectory,
-                                                  intermediateOutputDirectory,
-                                                  options.BasePatchStream,
-                                                  options.RelativeBasePath,
-                                                  options.BaseStreamSearchPaths);
-                _currentStreamStack.Push(sourcePath);
-            }
-            string fileName = Path.GetFileName(sourcePath);
-            _currentDocumentStack.Push($"{fileName}:");
-            if (result.State == DocumentState.Complete && result.IsLoaded && result.XmlDocument is null)
-            {
-                foreach (InstanceDeclaration instance in result.Instances)
-                {
-                    if (outputManager.GetBinaryAsset(instance, false).GetLocation(AssetLocation.All, AssetLocationOption.None) == AssetLocation.None)
+                    if ((Settings.Current.StreamHints
+                        && Cache.DirtyStreams is not null
+                        && !Cache.DirtyStreams.Contains(sourcePath)
+                        && LoadPrecompiledReference(result, GetExpectedOutputManifest(result.SourcePath), options.BaseStreamSearchPaths))
+                        || result.State == DocumentState.Complete)
                     {
-                        _tracer.TraceInfo("Reloading 'file://{0}' for new stream", result.SourcePath);
-                        result.State = DocumentState.Shallow;
-                        break;
+                        return result;
+                    }
+                    if (!Settings.Current.SingleFile && string.IsNullOrEmpty(result.SourcePathFromRoot))
+                    {
+                        throw new BinaryAssetBuilderException(ErrorCode.IllegalPath, "{0} is a stream (.manifest) but does not have {1} as its root!", sourcePath, Settings.Current.DataRoot);
+                    }
+                    string str = ShPath.Canonicalize(Path.Combine(Settings.Current.IntermediateOutputDirectory, result.SourcePathFromRoot));
+                    string outputDirectory = ShPath.Canonicalize(Path.Combine(Settings.Current.OutputDirectory, result.SourcePathFromRoot))
+                                               + Settings.Current.StreamPostfix + Settings.Current.CustomPostfix;
+                    string intermediateOutputDirectory = str + Settings.Current.StreamPostfix + Settings.Current.CustomPostfix;
+                    outputManager = new OutputManager(this,
+                                                      result.LastOutputAssets,
+                                                      outputDirectory,
+                                                      intermediateOutputDirectory,
+                                                      options.BasePatchStream,
+                                                      options.RelativeBasePath,
+                                                      options.BaseStreamSearchPaths);
+                    _currentStreamStack.Push(sourcePath);
+                }
+                string fileName = Path.GetFileName(sourcePath);
+                _currentDocumentStack.Push($"{fileName}:");
+                if (result.State == DocumentState.Complete && result.IsLoaded && result.XmlDocument is null)
+                {
+                    foreach (InstanceDeclaration instance in result.Instances)
+                    {
+                        if (outputManager.GetBinaryAsset(instance, false).GetLocation(AssetLocation.All, AssetLocationOption.None) == AssetLocation.None)
+                        {
+                            _tracer.TraceInfo("Reloading 'file://{0}' for new stream", result.SourcePath);
+                            result.State = DocumentState.Shallow;
+                            break;
+                        }
                     }
                 }
+                if (result.State == DocumentState.Shallow)
+                {
+                    result.ReInitialize(outputManager);
+                }
+                if (!result.IsLoaded)
+                {
+                    result.ReloadIfRequired(_requiredInheritFromSources);
+                }
+                _documentStack.Add(sourcePath);
+                result.Processing = true;
+                _totalPrepareSourceTime += DateTime.Now - now;
+                // Reborn: disable precompiled inclusion reuse without mutating caller-owned process options.
+                ProcessIncludedDocuments(result, outputManager, options, options.UsePrecompiled && Plugins.CanReuseCompiledDocuments);
+                if (result.State != DocumentState.Complete)
+                {
+                    ProcessDocumentContents(result, outputManager, options, options.GenerateOutput);
+                }
+                _maxTotalMemory = Math.Max(_maxTotalMemory, GC.GetTotalMemory(false));
+                return result;
             }
-            if (result.State == DocumentState.Shallow)
+            finally
             {
-                result.ReInitialize(outputManager);
+                // Reborn: unwind on success, early return, nested failure or real cycle rejection without discarding the caller's active ancestors.
+                result.Processing = false;
+                while (_documentStack.Count > documentDepth) _documentStack.RemoveAt(_documentStack.Count - 1);
+                while (_currentDocumentStack.Count > diagnosticDepth) _currentDocumentStack.Pop();
+                while (_currentStreamStack.Count > streamDepth) _currentStreamStack.Pop();
             }
-            if (!result.IsLoaded)
-            {
-                result.ReloadIfRequired(_requiredInheritFromSources);
-            }
-            _documentStack.Add(sourcePath);
-            result.Processing = true;
-            _totalPrepareSourceTime += DateTime.Now - now;
-            // Reborn: disable precompiled inclusion reuse without mutating caller-owned process options.
-            ProcessIncludedDocuments(result, outputManager, options, options.UsePrecompiled && Plugins.CanReuseCompiledDocuments);
-            if (result.State != DocumentState.Complete)
-            {
-                ProcessDocumentContents(result, outputManager, options, options.GenerateOutput);
-            }
-            result.Processing = false;
-            _currentDocumentStack.Pop();
-            _maxTotalMemory = Math.Max(_maxTotalMemory, GC.GetTotalMemory(false));
-            return result;
         }
 
         public void ProcessProjectDocument(string projectPath, bool generateOutput)

@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: run actual include integration with mixed local/external dependency identities.
+            if (args.Length == 1 && args[0] == "included-modifier-shader-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                IncludedModifierShaderSmokeTest.Run();
+                return 0;
+            }
             // Reborn: expose real modifier/shader graph proof without a production output manager.
             if (args.Length == 1 && args[0] == "modifier-shader-graph-self-test")
             {
@@ -583,6 +590,8 @@ internal static class Program
         Console.WriteLine("  ep1-shader-profile-self-test");
         // Reborn: graph proof keeps dependency and native compilation stages separate from production/linker output.
         Console.WriteLine("  modifier-shader-graph-self-test");
+        // Reborn: include proof does not activate the production linker or external FX processors.
+        Console.WriteLine("  included-modifier-shader-self-test");
         // Reborn: watcher fixtures own only temporary files and use deterministic callback injection.
         Console.WriteLine("  watcher-cache-self-test");
         // Reborn: atomic batch fixtures test event conservation without writing game/compiler output.

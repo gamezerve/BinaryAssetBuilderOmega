@@ -81,6 +81,8 @@ internal static class CompilerSmokeTest
         TestShaderOverrideProfile();
         // Reborn: prove modifier imports select registered local shader targets through the real document dependency stage.
         TestModifierShaderGraph();
+        // Reborn: test nested Include locations and mixed native selector identities without external target compilation.
+        TestIncludedModifierShader();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -2056,6 +2058,11 @@ internal static class CompilerSmokeTest
     /** Reborn: connect bounded EP1 compiler families without enabling output/cache reuse or invoking the production linker. */
     //-------------------------------------------------------------------------------------------------
     private static void TestModifierShaderGraph() => ModifierShaderGraphSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: exercise real include parsing, nested reload and external metadata refresh under closed production policies. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestIncludedModifierShader() => IncludedModifierShaderSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate external linking with isolated tiny metadata fixtures, never game BIN streams. */

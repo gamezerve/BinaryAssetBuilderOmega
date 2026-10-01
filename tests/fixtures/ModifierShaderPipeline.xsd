@@ -13,7 +13,12 @@
  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeShaderOverride.xsd" />
  <xs:element name="AttributeModifier" type="AttributeModifier" />
  <xs:element name="ShaderOverride" type="ShaderOverride" />
- <xs:element name="AssetDeclaration"><xs:complexType><xs:choice minOccurs="0" maxOccurs="unbounded">
+ <xs:element name="AssetDeclaration"><xs:complexType><xs:sequence>
+  <!-- Reborn: exercise actual Include parsing with the official Include type while keeping the root universe bounded. -->
+  <xs:element name="Includes" minOccurs="0"><xs:complexType><xs:sequence>
+   <xs:element name="Include" type="Include" minOccurs="0" maxOccurs="unbounded" />
+  </xs:sequence></xs:complexType></xs:element>
+ <xs:choice minOccurs="0" maxOccurs="unbounded">
   <xs:element ref="AttributeModifier" /><xs:element ref="ShaderOverride" />
- </xs:choice></xs:complexType></xs:element>
+ </xs:choice></xs:sequence></xs:complexType></xs:element>
 </xs:schema>

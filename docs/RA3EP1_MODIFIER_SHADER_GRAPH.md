@@ -103,8 +103,10 @@ does not close the much larger type-table, packaging or runtime gates.
 
 ## Next work
 
-Extend to document Includes/referenced stream boundaries and mixed local/external
-targets, then prove a narrowly scoped multi-family diagnostic writer while keeping
-the full production registry blocked. FXList/FXShaderMaterial custom processing,
+The later [nested Include/mixed-target proof](RA3EP1_INCLUDED_MODIFIER_SHADER.md)
+now covers real instance/all Includes and external FX metadata, with failure/retry
+fixes. Reference-Include production compilation remains blocked. Next prove a
+narrowly scoped multi-family diagnostic writer while keeping the full production
+registry blocked. FXList/FXShaderMaterial custom processing,
 complete EP1 type identity, inheritance/expressions, native cache reuse,
 SDK/WorldBuilder packaging and game runtime loading remain open.
