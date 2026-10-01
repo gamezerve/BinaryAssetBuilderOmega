@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: compile only the referenced tentative shader from an approved child snapshot. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+ <Includes><Include type="instance" source="DiagnosticIncludeShaders.xml" /></Includes>
+ <AttributeModifier id="RebornIncludedConsumer" Shader="RebornIncludedShader" />
+</AssetDeclaration>

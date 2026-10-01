@@ -106,9 +106,9 @@ this writer test; the separate stock native proofs remain distinct evidence.
 
 ## Next gate
 
-The later [bounded standalone diagnostic command](RA3EP1_BOUNDED_DIAGNOSTIC_BUILD.md)
+The later [bounded diagnostic command](RA3EP1_BOUNDED_DIAGNOSTIC_BUILD.md)
 now validates admitted roots/targets/runtime mappings and stages readback before
-new-directory publication. Includes remain excluded from that v1 entry. Before any
+new-directory publication. Nested all/instance Includes now use approved source snapshots; reference Includes remain excluded. Before any
 production release, complete target registry/AllTypesHash, production graph sorting
 and link lifecycle, FX custom processing, inheritance/cache policy, SDK and
 WorldBuilder packaging and actual Uprising runtime loading still require proof.

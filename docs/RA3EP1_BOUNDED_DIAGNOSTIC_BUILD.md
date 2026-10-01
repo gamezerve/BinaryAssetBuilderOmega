@@ -1,4 +1,4 @@
-# Bounded standalone diagnostic build command
+# Bounded diagnostic build command and Include graphs
 
 ## Outcome and usage
 
@@ -23,20 +23,41 @@ ShaderOverride and one modifier referring to it; no external manifest is needed.
 Its BIN payload is 100 bytes (40 shader + 60 modifier), with linked BIN/RELO/IMP
 file sizes 108/28/16. DIAGNOSTIC_ONLY.txt accompanies all four generated files.
 
+A checked-in Include example uses the same command:
+
+```powershell
+# Reborn: the instance Include emits the referenced child shader, not its unused sibling.
+.\source\BinaryAssetBuilder.ManifestInspector\bin\x86\Release\net8.0\BinaryAssetBuilder.ManifestInspector.exe diagnostic-build tests/fixtures/DiagnosticIncludeProbe.xml Release/MyIncludePoC
+```
+
+DiagnosticIncludeShaders.xml supplies two shaders. Only RebornIncludedShader is
+selected by the parent's modifier, yielding two output entries and the same
+108/28/16 linked stream sizes. The child entry's source is `input-0001.xml` and
+the parent's is `source.xml`; original absolute source paths are not embedded.
+
 Optional external arguments are explicit pairs, for example
 `"D:\GameData\static.manifest=base\static.manifest"`. The left side is a physical
 lookup file; the right side is a relative game-visible runtime name. These names
 are serialized only: no external BIN data is compiled, copied or packaged.
 
-## Admission and deliberate v1 limits
+## Admission and deliberate limits
 
-- One standalone EA AssetDeclaration XML, at most 1 MiB / 1,048,576 characters.
-- 1–32 AttributeModifier/ShaderOverride roots; root IDs are 1–128 ASCII letters,
+- One entry EA AssetDeclaration and at most sixteen reachable XML files, each
+  at most 1 MiB / 1,048,576 characters; aggregate parsed XML is at most two MiB
+  of characters. At most 32 Include edges and eight edges of nesting are admitted.
+- 1–32 AttributeModifier/ShaderOverride roots across the entire graph; root IDs are 1–128 ASCII letters,
   digits, underscore, dash or dot characters. Immediate Modifier/Rule records
   are admitted only under their matching root type.
-- DTDs, Includes, other asset/control elements, inheritance, overrides, definitions
-  and unresolved expressions are rejected. Include behavior is separately tested
-  by the integration harness but is not opened to this public diagnostic v1 entry.
+- Only `all` and `instance` Includes are admitted, preserving their real core
+  selection semantics. Includes-only wrapper documents are allowed; at least
+  one native asset must ultimately be selected. Reference Includes, cycles,
+  duplicate identities across distinct files and other asset/control elements,
+  DTDs, inheritance, overrides, definitions and unresolved expressions reject.
+- Include sources must be relative .xml paths beneath the entry directory,
+  resolved relative to each including file. Absolute paths, traversal/dot/empty
+  segments, macros, reserved syntax, trailing dots/spaces and reparse files or
+  ancestor directories reject. This deliberately excludes `../` even when a
+  particular resolved path would remain inside the entry tree.
 - Native eligibility remains that of the existing isolated Win32 profiles:
   shader rules are bounded to sixteen, literal material basenames and Default
   techniques; modifiers use only the explicitly proven controls/import kinds.
@@ -62,12 +83,18 @@ game loading remain incomplete.
 The command freezes the preflighted XML and parsed external manifests into owned
 temporary input snapshots. Core loading/resolution uses those snapshots, not
 original files reopened after checks. Original user XML/game manifests are not
-modified. Manifest source names are the sanitized snapshot name `source.xml`;
-original absolute paths are not embedded in output.
+modified. The graph is traversed in Include declaration order. The entry snapshot
+is `source.xml`, subsequent unique files are `input-0001.xml`, `input-0002.xml`,
+etc. Include source attributes are rewritten to those flat names, with their
+all/instance types unchanged. Repeated edges share one snapshot. Manifest source
+names identify the actual asset's snapshot document rather than attributing every
+asset to its parent; original absolute paths are not embedded in output. A fresh
+command reads fresh sources, while an already approved snapshot retains its data.
 
 The real document pipeline uses both explicitly mapped experimental plugins with
 GenerateOutput=false and cache/precompiled reuse disabled. The existing private
-dependency seam resolves ordered identities. All local shaders are emitted before
+dependency seam resolves ordered identities. Self/all roots seed the real local
+resolution closure; unused instance/tentative roots are not emitted. Selected local shaders are emitted before
 modifiers, then ordinal name order makes this bounded acyclic graph deterministic;
 this is not the production stable sorter or a general dependency graph builder.
 Native compiler entries and the existing identity checksum helper provide data
@@ -96,7 +123,7 @@ command's isolated serializer is diagnostic-only, not a production gate override
 
 BoundedDiagnosticBuildSmokeTest checks local and mixed external inputs, deterministic
 snapshot output, native selectors and normalized runtime mapping. Unsupported
-roots/Includes/controls, malformed priority/duration, unresolved targets, DTD,
+roots/controls, malformed priority/duration, unresolved targets, DTD,
 non-ASCII IDs, excess roots, unsafe/duplicate mappings and wrong-target manifests
 reject without the requested output appearing. Original XML and caller settings
 remain unchanged. Existing outputs retain their marker files.
@@ -106,22 +133,37 @@ and cleanup. A publication race creates the requested folder after preflight;
 its owner marker survives and no diagnostic manifest is written there. No known
 staging directories remain in these tests.
 
-Both Release/x86 builds, all 70 compiler groups, layout checks and 33 enum mappings
+DiagnosticIncludeBuildSmokeTest additionally proves nested instance/all selection,
+actual included shader native values and manifest source attribution, deterministic
+repeat builds, approved snapshots surviving later edits, fresh edit reload,
+mixed external FX metadata, removed leaf/cycle repeated failures and restoration,
+Includes-only wrappers, nested physical directories and repeated shared edges.
+Confinement, reference controls, duplicate identities and graph root/file/depth/edge
+limits reject before publication. These are diagnostic checks, not production
+cache, packaging or game loading proof.
+
+Both Release/x86 builds, all 71 compiler groups, layout checks and 33 enum mappings
 pass. The actual command was also run on DiagnosticBuildProbe.xml, producing
 `Release/DiagnosticBuildPoC-20261001/diagnostic.manifest` locally; generated data is
 ignored by Git. Inventory remains 785/1,390 models and 762/1,390 typed marshallers.
+The actual command also built DiagnosticIncludeProbe.xml to
+`Release/DiagnosticIncludePoC-20261001/diagnostic.manifest` (Git-ignored).
 Overall effort remains approximately 50%; this command is not a playable mod.
 
 ## Files and next gate
 
-- BoundedDiagnosticBuild.cs: Build, ValidateSource, Serialize, Verify and owned
+- BoundedDiagnosticBuild.cs: Build, Serialize, Verify and owned
   publication/cleanup guards.
 - BoundedDiagnosticBuildSmokeTest.cs: admission, mapping, publication and late
   failure/race tests.
 - tests/fixtures/DiagnosticBuildProbe.xml: standalone two-root example.
+- DiagnosticSourceGraph.cs: confined graph admission and approved snapshot rewrite.
+- DiagnosticIncludeBuildSmokeTest.cs: Include source, closure and rejection tests.
+- tests/fixtures/DiagnosticIncludeProbe.xml and DiagnosticIncludeShaders.xml:
+  tentative selection example.
 - Program: diagnostic-build and diagnostic-build-self-test command dispatch.
 
-Next extend the diagnostic entry to bounded Include graphs with approved source
-snapshots and reliable source identity attribution. Production stream lifecycle,
+Next prove another bounded native asset family through this diagnostic entry
+and its dependency/source readback. Production stream lifecycle,
 FX custom processing, complete EP1 type identity, cache/inheritance, SDK and
 WorldBuilder packaging and Uprising runtime loading still require separate proof.

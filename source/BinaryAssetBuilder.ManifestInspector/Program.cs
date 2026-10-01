@@ -13,14 +13,15 @@ internal static class Program
     {
         try
         {
-            // Reborn: exercise bounded input/publication guards without accepting production SDK builds.
+            // Reborn: exercise bounded input/publication and Include guards without accepting production SDK builds.
             if (args.Length == 1 && args[0] == "diagnostic-build-self-test")
             {
                 CompilerSmokeTest.InitializeHashProvider();
                 BoundedDiagnosticBuildSmokeTest.Run();
+                DiagnosticIncludeBuildSmokeTest.Run();
                 return 0;
             }
-            // Reborn: bounded standalone diagnostic build publishes only a new verified directory and never enables production/cache policies.
+            // Reborn: bounded diagnostic Include build publishes only a new verified directory and never enables production/cache policies.
             if (args.FirstOrDefault() == "diagnostic-build")
             {
                 if (args.Length < 3) throw new ArgumentException("diagnostic-build <source.xml> <new-output-directory> [physical.manifest=runtime.manifest ...]");
@@ -616,7 +617,7 @@ internal static class Program
         Console.WriteLine("  included-modifier-shader-self-test");
         // Reborn: the multi-family serializer command is fixture-only and retains production restrictions.
         Console.WriteLine("  modifier-shader-stream-self-test");
-        // Reborn: admitted standalone roots and explicit runtime mappings are bounded diagnostic inputs, not a full SDK build.
+        // Reborn: admitted Include graphs and explicit runtime mappings are bounded diagnostic inputs, not a full SDK build.
         Console.WriteLine("  diagnostic-build <source.xml> <new-output-directory> [physical.manifest=runtime.manifest ...]");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.
         Console.WriteLine("  diagnostic-build-self-test");

@@ -1,7 +1,6 @@
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Text;
-using System.Xml;
 using BinaryAssetBuilder.Core;
 using BinaryAssetBuilder.Core.SageXml;
 using BinaryAssetBuilder.Core.Session;
@@ -10,7 +9,7 @@ using BinaryAssetBuilder.XmlCompiler;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: admit only standalone bounded modifier/shader XML and publish a verified diagnostic directory without enabling production output.
+// Reborn: admit bounded modifier/shader Include graphs and publish a verified diagnostic directory without enabling production output.
 internal static class BoundedDiagnosticBuild
 {
     private static readonly string[] OutputNames = { "diagnostic.manifest", "diagnostic.bin", "diagnostic.relo", "diagnostic.imp", "DIAGNOSTIC_ONLY.txt" };
@@ -25,7 +24,7 @@ internal static class BoundedDiagnosticBuild
         if (!Directory.Exists(parent) || Directory.Exists(outputDirectory) || File.Exists(outputDirectory) || Path.GetFileName(outputDirectory).Length == 0)
             throw new InvalidDataException("Output must be a new directory beneath an existing parent; existing output is never replaced.");
         RejectReparseAncestors(parent);
-        string sourceSnapshot = ValidateSource(sourcePath);
+        DiagnosticSourceGraph sourceSnapshots = DiagnosticSourceGraph.Read(sourcePath);
         if (externalPairs.Length > 8) throw new InvalidDataException("At most eight external mappings are admitted.");
         string[] files = new string[externalPairs.Length], runtimeNames = new string[externalPairs.Length];
         List<ManifestDocument> externalMetadata = new();
@@ -61,8 +60,8 @@ internal static class BoundedDiagnosticBuild
             // Reborn: compile the approved XML/manifest snapshots, not files that could change between preflight and core lookup.
             inputDirectory = Path.Combine(Path.GetTempPath(), "Reborn-DiagnosticInput-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(inputDirectory);
-            string snapshotPath = Path.Combine(inputDirectory, "source.xml"); inputNames.Add("source.xml");
-            File.WriteAllText(snapshotPath, sourceSnapshot);
+            string snapshotPath = Path.Combine(inputDirectory, "source.xml");
+            sourceSnapshots.Write(inputDirectory, inputNames);
             string[] snapshotManifests = new string[externalSnapshots.Count];
             for (int index = 0; index < externalSnapshots.Count; index++)
             {
@@ -83,10 +82,16 @@ internal static class BoundedDiagnosticBuild
             AssetDeclarationDocument document = processor.ProcessDocumentInternal(snapshotPath, snapshotPath, null!,
                 new DocumentProcessor.ProcessOptions { GenerateOutput = false, UsePrecompiled = false });
             // Reborn: shaders have no graph edges; deterministic type/name ordering puts every local shader before its modifier consumers.
-            InstanceDeclaration[] ordered = document.SelfInstances.OrderBy(instance => instance.Handle.TypeId == 0xBCC23F6Cu ? 0 : 1)
+            // Reborn: seed self/all assets, then retain real resolution's local closure; unused instance-Include roots are not forced into output.
+            Dictionary<InstanceHandle, InstanceDeclaration> selected = new();
+            foreach (InstanceDeclaration seed in document.Instances)
+            {
+                DependencyResolutionSmokeTest.Prepare(document, seed);
+                foreach (var visited in DependencyResolutionSmokeTest.Visited(document)) selected[visited.Key] = visited.Value;
+            }
+            InstanceDeclaration[] ordered = selected.Values.OrderBy(instance => instance.Handle.TypeId == 0xBCC23F6Cu ? 0 : 1)
                 .ThenBy(instance => instance.Handle.Name, StringComparer.Ordinal).ToArray();
             if (ordered.Length == 0 || ordered.Length > 32) throw new InvalidDataException("Diagnostic input must contain 1–32 admitted roots.");
-            foreach (InstanceDeclaration instance in ordered) DependencyResolutionSmokeTest.Prepare(document, instance);
             foreach (InstanceHandle dependency in ordered.SelectMany(instance => instance.ValidatedReferencedInstances!))
             {
                 if (ordered.Any(instance => instance.Handle.TypeId == dependency.TypeId && instance.Handle.InstanceId == dependency.InstanceId)) continue;
@@ -100,7 +105,7 @@ internal static class BoundedDiagnosticBuild
             if (chunks.Sum(chunk => (long)chunk.InstanceData.Length + chunk.RelocationData.Length + chunk.ImportsData.Length) > 1024 * 1024)
                 throw new InvalidDataException("Compiled diagnostic exceeds its 1 MiB native payload limit.");
             uint checksum = (uint)Invoke(typeof(AssetDeclarationDocument).GetMethod("ComputeOutputChecksum", BindingFlags.NonPublic | BindingFlags.Static)!, (object)ordered)!;
-            Dictionary<string, byte[]> payloads = Serialize(ordered, chunks, checksum, runtime, "source.xml");
+            Dictionary<string, byte[]> payloads = Serialize(ordered, chunks, checksum, runtime);
             staging = Path.Combine(parent, ".reborn-diagnostic-" + Guid.NewGuid().ToString("N"));
             // Reborn: both publication paths are resolved children of the explicitly selected parent; never move or overwrite an existing directory.
             if (Path.GetDirectoryName(staging) != parent || Path.GetDirectoryName(outputDirectory) != parent)
@@ -124,48 +129,17 @@ internal static class BoundedDiagnosticBuild
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: preflight one bounded XML snapshot with no DTD, Includes, inheritance, definitions, expressions or unsupported root universe. */
-    //-------------------------------------------------------------------------------------------------
-    private static string ValidateSource(string path)
-    {
-        if (!File.Exists(path) || new FileInfo(path).Length > 1024 * 1024) throw new InvalidDataException("XML input is absent or exceeds 1 MiB.");
-        using XmlReader reader = XmlReader.Create(path, new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = 1024 * 1024 });
-        XmlDocument xml = new() { XmlResolver = null }; xml.Load(reader);
-        XmlElement root = xml.DocumentElement!;
-        if (root.LocalName != "AssetDeclaration" || root.NamespaceURI != "uri:ea.com:eala:asset") throw new InvalidDataException("An EA AssetDeclaration is required.");
-        foreach (XmlElement element in root.SelectNodes("descendant-or-self::*")!)
-        {
-            if (element.NamespaceURI != root.NamespaceURI || (element != root && element.LocalName is not "AttributeModifier" and not "ShaderOverride" and not "Modifier" and not "Rule"))
-                throw new InvalidDataException("Diagnostic v1 accepts standalone modifier/shader XML only; Includes and other control elements are not admitted.");
-            // Reborn: permit only root assets and their immediate leaf records, never nested asset/control trees.
-            if (element != root && (element.LocalName is "AttributeModifier" or "ShaderOverride" ? element.ParentNode != root
-                : element.ParentNode is not XmlElement owner || owner.ParentNode != root
-                    || owner.LocalName != (element.LocalName == "Rule" ? "ShaderOverride" : "AttributeModifier")))
-                throw new InvalidDataException("Diagnostic leaf records must be direct children of their admitted root.");
-            foreach (XmlAttribute attribute in element.Attributes)
-                if (attribute.NamespaceURI != "http://www.w3.org/2000/xmlns/" && (attribute.LocalName is "inheritFrom" or "override" || attribute.Value.TrimStart().StartsWith("=", StringComparison.Ordinal)))
-                    throw new InvalidDataException("Inheritance, overrides and unresolved expressions are not admitted.");
-        }
-        if (root.ChildNodes.OfType<XmlElement>().Count() is < 1 or > 32) throw new InvalidDataException("Diagnostic source must contain 1–32 roots.");
-        foreach (XmlElement asset in root.ChildNodes.OfType<XmlElement>())
-        {
-            string id = asset.GetAttribute("id");
-            if (id.Length is < 1 or > 128 || id.Any(character => !char.IsAsciiLetterOrDigit(character) && character != '_' && character != '-' && character != '.'))
-                throw new InvalidDataException("Diagnostic root ids must be 1–128 ASCII letters/digits/underscore/dash/dot characters.");
-        }
-        return root.OuterXml;
-    }
-
-    //-------------------------------------------------------------------------------------------------
     /** Reborn: serialize admitted root entries, ordered references and native streams into owned memory before staging publication. */
     //-------------------------------------------------------------------------------------------------
-    private static Dictionary<string, byte[]> Serialize(InstanceDeclaration[] ordered, AssetBuffer[] chunks, uint checksum, ReferencedFileBuffer runtime, string sourceName)
+    private static Dictionary<string, byte[]> Serialize(InstanceDeclaration[] ordered, AssetBuffer[] chunks, uint checksum, ReferencedFileBuffer runtime)
     {
         using MemoryStream names = new(), sources = new(), references = new(), entries = new();
         using BinaryWriter refWriter = new(references, Encoding.UTF8, true);
         for (int index = 0; index < ordered.Length; index++)
         {
             var instance = ordered[index]; var chunk = chunks[index];
+            // Reborn: each manifest entry retains its actual approved snapshot document identity, not the parent source name.
+            string sourceName = Path.GetFileName(instance.Document.SourcePath);
             using AssetEntry entry = new() { TypeId = instance.Handle.TypeId, TypeHash = instance.Handle.TypeHash, InstanceId = instance.Handle.InstanceId,
                 InstanceHash = instance.Handle.InstanceHash, Tokenized = false, NameOffset = (int)names.Length, SourceFileNameOffset = (int)sources.Length,
                 AssetReferenceOffset = (int)references.Length, AssetReferenceCount = instance.ValidatedReferencedInstances!.Count,
@@ -189,7 +163,7 @@ internal static class BoundedDiagnosticBuild
             Invoke(typeof(OutputManager).GetMethod("WriteLinkedStreamHeader", BindingFlags.NonPublic | BindingFlags.Static)!, writer, checksum, stream.Magic);
             foreach (byte[] part in stream.Parts) writer.Write(part); writer.Flush(); result.Add(stream.Name, data.ToArray());
         }
-        result.Add("DIAGNOSTIC_ONLY.txt", Encoding.UTF8.GetBytes("Bounded standalone modifier/shader diagnostic only. NOT a playable Uprising mod.\n"
+        result.Add("DIAGNOSTIC_ONLY.txt", Encoding.UTF8.GetBytes("Bounded modifier/shader Include diagnostic only. NOT a playable Uprising mod.\n"
             + "Production/cache gates remain closed; no OutputManager commit/link, packaging or game-load proof.\n"
             + "External mappings serialize runtime names but do not copy or validate native dependency streams.\n"));
         return result;
@@ -215,6 +189,7 @@ internal static class BoundedDiagnosticBuild
             var asset = parsed.Assets[index]; var instance = ordered[index]; var chunk = chunks[index]; var other = utility.Assets[index];
             if (asset.TypeId != instance.Handle.TypeId || asset.InstanceId != instance.Handle.InstanceId || asset.TypeHash != instance.Handle.TypeHash
                 || asset.InstanceHash != instance.Handle.InstanceHash || asset.Name != instance.Handle.Name || asset.Tokenized != 0
+                || asset.SourceFile != Path.GetFileName(instance.Document.SourcePath)
                 || !asset.References.SequenceEqual(instance.ValidatedReferencedInstances!.Select(handle => new AssetId(handle.TypeId, handle.InstanceId)))
                 || other.QualifiedName != asset.Name || other.TypeHash != asset.TypeHash || other.InstanceHash != asset.InstanceHash
                 || !other.ExternalReferences.Select(handle => new AssetId(handle.TypeId, handle.InstanceId)).SequenceEqual(asset.References)

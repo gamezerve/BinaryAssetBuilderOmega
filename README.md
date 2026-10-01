@@ -16,11 +16,11 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**70 test groups** (some contain several fixtures). These counters can grow
+**71 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
-registered groups but does not execute them. The bounded diagnostic command proof
-adds one test group without changing model/marshaller counts; all 70 groups were executed.
+registered groups but does not execute them. The bounded diagnostic Include proof
+adds one test group without changing model/marshaller counts; all 71 groups were executed.
 
 | Workstream | Status |
 |---|---|
@@ -33,7 +33,8 @@ adds one test group without changing model/marshaller counts; all 70 groups were
 
 ### Recently completed
 
-- Added `diagnostic-build` for bounded standalone modifier/shader XML and explicit external manifest/runtime mappings. It freezes approved inputs, rejects unsupported controls/targets, compiles isolated profiles, verifies staged output through both readers and publishes only a new directory. Existing/raced destinations survive; late corruption rejects without publishing. A checked-in two-root example now builds from the real command. Includes and production SDK output remain disabled in this v1 entry. See [bounded diagnostic command and usage](docs/RA3EP1_BOUNDED_DIAGNOSTIC_BUILD.md).
+- Extended `diagnostic-build` to bounded nested `all`/`instance` Include graphs. Approved XML is frozen into deterministic flat snapshots; the real resolution closure excludes unused tentative roots and includes required local targets. Manifest entries retain their actual sanitized source identity. Native selection, frozen/edited sources, mixed external FX metadata, cycles/loss/recovery and path/graph limits are tested. A checked-in Include example builds through the actual command. Reference Includes and production SDK output remain disabled. See [bounded diagnostic command and usage](docs/RA3EP1_BOUNDED_DIAGNOSTIC_BUILD.md).
+- Added `diagnostic-build` for bounded modifier/shader XML and explicit external manifest/runtime mappings. It freezes approved inputs, rejects unsupported controls/targets, compiles isolated profiles, verifies staged output through both readers and publishes only a new directory. Existing/raced destinations survive; late corruption rejects without publishing. See [bounded diagnostic command and usage](docs/RA3EP1_BOUNDED_DIAGNOSTIC_BUILD.md).
 - Added a fixed two-family diagnostic stream round trip from actual resolved document/compiler entries. Manifest identities, ordered local/external references and all native slices agree through both readers; repeated output is deterministic and four corruptions reject. This exposed and fixed Utility.Manifest's four-byte linked offset for prefixed EP1 streams (now eight); prefixless v7 behavior and v6 rejection remain unchanged. No production commit/link, packaged FX stream or game loading is enabled. See [diagnostic stream proof](docs/RA3EP1_MODIFIER_SHADER_STREAM.md).
 - Proved nested instance/all Includes with a local shader and external FX metadata in the same modifier: final native selectors match both resolved identities without compiling FX. Leaf edits, external mapping/manifest replacement and loss/recovery pass. Fixed two real core bugs: cached existence accepted a deleted Include source, and failed document calls left stale processing stacks that caused false circular-dependency errors on retry. True cycles and schema errors still reject repeatedly, including ordinary resident document reuse. Reference Include production builds remain blocked. See [Include/mixed-target proof](docs/RA3EP1_INCLUDED_MODIFIER_SHADER.md).
 - Connected modifier and shader profiles in a real mixed document: forward references normalize and resolve to local shader identities, and final pointer/RELO/IMP selectors choose those exact targets. Removed targets fail repeatedly; restoration, source retargeting and poisoned-declaration reload recover correctly. This exposed and fixed stale XML id acceptance in both modifier modes. No production/linker output is enabled. See [modifier/shader graph proof](docs/RA3EP1_MODIFIER_SHADER_GRAPH.md).

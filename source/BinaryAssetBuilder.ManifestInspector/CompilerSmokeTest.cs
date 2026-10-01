@@ -87,6 +87,7 @@ internal static class CompilerSmokeTest
         TestModifierShaderStream();
         // Reborn: verify bounded command admission/publication independently of the fixed stream fixture.
         TestBoundedDiagnosticBuild();
+        TestDiagnosticIncludeBuild();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -2077,6 +2078,11 @@ internal static class CompilerSmokeTest
     /** Reborn: prove approved snapshots, output preservation and fail-closed publication for the limited diagnostic build entry. */
     //-------------------------------------------------------------------------------------------------
     private static void TestBoundedDiagnosticBuild() => BoundedDiagnosticBuildSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: prove bounded Include admission and native source attribution through the diagnostic command's real service. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestDiagnosticIncludeBuild() => DiagnosticIncludeBuildSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate external linking with isolated tiny metadata fixtures, never game BIN streams. */

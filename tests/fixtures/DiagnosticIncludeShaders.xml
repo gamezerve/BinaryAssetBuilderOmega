@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: the unused shader proves that an instance Include does not force every child asset into diagnostic output. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+ <ShaderOverride id="RebornIncludedShader" Priority="50"><Rule ReplaceShaderName="Null.fx" ReplaceTechniqueName="Default" /></ShaderOverride>
+ <ShaderOverride id="RebornUnusedShader"><Rule ReplaceShaderName="Null.fx" ReplaceTechniqueName="Default" /></ShaderOverride>
+</AssetDeclaration>
