@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: concrete external audio proof never enables FX/audio processors or production output.
+            if (args.FirstOrDefault() == "fx-audio-resolution-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                FXAudioResolutionSmokeTest.Run(args.Skip(1).ToArray());
+                return 0;
+            }
             // Reborn: native FX proof reads selected stock slices and never enables production processors.
             if (args.FirstOrDefault() == "fx-native-self-test")
             {

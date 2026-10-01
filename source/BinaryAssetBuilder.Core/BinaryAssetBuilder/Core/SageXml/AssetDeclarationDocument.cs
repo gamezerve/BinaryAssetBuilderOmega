@@ -430,6 +430,46 @@ namespace BinaryAssetBuilder.Core.SageXml
             }
         }
 
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: resolve external schema-derived identities atomically, preserving exact-type precedence and rejecting ambiguous concrete targets. */
+        //-------------------------------------------------------------------------------------------------
+        private InstanceHandle ResolveManifestReference(InstanceDeclaration parent, InstanceHandle reference)
+        {
+            lock (_externalManifestLock)
+            {
+                LoadManifestIfNeeded();
+                if (_externalManifestAssets.Contains(((ulong)reference.TypeId << 32) | reference.InstanceId))
+                {
+                    return reference;
+                }
+                StringCollection derivedTypes = _current.DocumentProcessor.SchemaSet.GetDerivedTypes(reference.TypeName);
+                InstanceHandle match = null;
+                HashSet<ulong> candidates = new HashSet<ulong>();
+                StringBuilder names = new StringBuilder();
+                if (derivedTypes is not null)
+                {
+                    foreach (string typeName in derivedTypes)
+                    {
+                        InstanceHandle candidate = new InstanceHandle(typeName, reference.InstanceName);
+                        ulong identity = ((ulong)candidate.TypeId << 32) | candidate.InstanceId;
+                        if (_externalManifestAssets.Contains(identity) && candidates.Add(identity))
+                        {
+                            if (names.Length > 0) names.Append(", ");
+                            names.AppendFormat(CultureInfo.InvariantCulture, "'{0}'", candidate.Name);
+                            match = candidate;
+                        }
+                    }
+                }
+                if (candidates.Count > 1)
+                {
+                    throw new BinaryAssetBuilderException(ErrorCode.ReferencingError,
+                        "External reference to instance '{0}' from '{1}' in 'file://{2}' is ambiguous. Possible matches: {3}.",
+                        reference.Name, parent.Handle.Name, parent.Document.SourcePath, names);
+                }
+                return match;
+            }
+        }
+
         private LastState _last;
         private CurrentState _current;
 
@@ -1227,16 +1267,18 @@ namespace BinaryAssetBuilder.Core.SageXml
                     }
                     else
                     {
-                        if (ManifestContainsAsset(referencedInstance.TypeId, referencedInstance.InstanceId))
+                        // Reborn: preserve selector order while recording the resolved concrete dependency identity.
+                        InstanceHandle manifestReference = ResolveManifestReference(instance, referencedInstance);
+                        if (manifestReference is not null)
                         {
                             _tracer.TraceInfo(
                                 "Manifest resolved asset '{0}:{1}' referenced from '{2}' in 'file://{3}'",
-                                referencedInstance.TypeName,
-                                referencedInstance.InstanceName,
+                                manifestReference.TypeName,
+                                manifestReference.InstanceName,
                                 instance.Handle.Name,
                                 instance.Document.SourcePath);
 
-                            instance.ValidatedReferencedInstances.Add(referencedInstance);
+                            instance.ValidatedReferencedInstances.Add(manifestReference);
                         }
                         else
                         {

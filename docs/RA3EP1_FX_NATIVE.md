@@ -71,7 +71,15 @@ from official Modules/BaseModules.xsd to avoid unrelated W3D/invisibility module
 trees. The test compares their values and order against the official file.
 There are no invented native asset-layout stubs in this fixture.
 
-## Deliberate remaining gate
+## Derived audio gate follow-up
+
+The native-only proof below retains its original scope. A separate
+[core external audio resolution proof](RA3EP1_FX_AUDIO_RESOLUTION.md) now
+selects concrete AudioEvent/Multisound identities against actual Uprising manifests,
+preserving normalized selectors and rejecting missing/ambiguous metadata.
+It does not enable a validated FX ProcessInstance entry or diagnostic command admission.
+
+## Original native-only proof boundary
 
 The proof processes real schema/default/reference stages with no FX plugin, then
 marshals the normalized declarations directly. It does not call a validated FX
@@ -84,10 +92,11 @@ selectors, and records those observed concrete types. It does **not** claim that
 the core's derived-type resolution has selected them or that raw base-type
 references can be substituted for stock strong dependency identities.
 
-Thus FXList remains unregistered and excluded from diagnostic-build. Next add a
-bounded isolated profile plus real derived audio lookup tests, with repeated
-missing/ambiguous target failure and recovery. Opening the command before this
-proof would permit native-looking data with incorrect dependency metadata.
+Thus FXList remains unregistered and excluded from diagnostic-build. Derived
+audio lookup now has its separate proof linked above, including repeated
+missing/ambiguous target failure and recovery. Next add a bounded isolated
+profile and stream round-trip proof; native byte similarity alone is insufficient
+to admit FXList to the diagnostic command.
 ParticleSystem and other nugget variants, optional filters, inheritance/custom
 processing, FX cache reuse, complete EP1 aggregate/type table, SDK/WorldBuilder
 packaging and actual game loading still need separate validation.

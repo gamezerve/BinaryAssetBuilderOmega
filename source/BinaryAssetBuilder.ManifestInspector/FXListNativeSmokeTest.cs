@@ -69,7 +69,7 @@ internal static class FXListNativeSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: marshal the real core-normalized FX declaration only; this is native evidence, not ProcessInstance readiness or derived audio resolution. */
     //-------------------------------------------------------------------------------------------------
-    private static unsafe Chunk Compile(InstanceDeclaration instance)
+    internal static unsafe Chunk Compile(InstanceDeclaration instance)
     {
         FXList* root;
         using Tracker tracker = new((void**)&root, (uint)sizeof(FXList), false);

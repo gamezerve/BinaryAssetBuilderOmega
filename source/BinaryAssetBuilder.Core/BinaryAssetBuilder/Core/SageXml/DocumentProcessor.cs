@@ -42,13 +42,11 @@ namespace BinaryAssetBuilder.Core.SageXml
             public string Configuration;
         }
 
-        // Reborn: invalidate caches predating explicit experimental session/precompiled reuse policy.
+        // Reborn: invalidate document/intermediate identities predating concrete external schema-derived dependency resolution.
 #if VERSION5
-        // Reborn: invalidate all plugin/document identities compiled before final imports used EA's one-biased runtime encoding.
-        public const uint Version = 19u;
-#else
-        // Reborn: global tracker encoding affects every processor, so all old document/intermediate identities must be rebuilt.
         public const uint Version = 20u;
+#else
+        public const uint Version = 21u;
 #endif
 
         private static readonly Tracer _tracer = Tracer.GetTracer(nameof(DocumentProcessor), "Provides XML processing functionality");

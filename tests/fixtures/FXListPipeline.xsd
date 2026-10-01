@@ -12,6 +12,8 @@
  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/GlobalGameData.xsd" />
  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/View.xsd" />
  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeFXList.xsd" />
+ <!-- Reborn: official audio inheritance enables concrete lookup without registering an audio compiler. -->
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeAudio.xsd" />
  <!-- Reborn: exact two enum declarations from official Modules/BaseModules.xsd avoid importing unrelated W3D/invisibility module trees. -->
  <xs:simpleType name="FXTriggerType"><xs:restriction base="xs:string">
   <xs:enumeration value="NONE" /><xs:enumeration value="CATAPULT_ROCK" /><xs:enumeration value="TREBUCHET_ROCK" />

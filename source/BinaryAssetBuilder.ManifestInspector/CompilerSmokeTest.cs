@@ -92,6 +92,8 @@ internal static class CompilerSmokeTest
         TestDiagnosticFilterBuild();
         // Reborn: recover native FX root/polymorphic base before opening a runnable processor profile.
         TestFXListNative();
+        // Reborn: prove schema-derived concrete audio metadata separately from native FX layout.
+        TestFXAudioResolution();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -2097,6 +2099,11 @@ internal static class CompilerSmokeTest
     /** Reborn: verify optional FX base masks and source-normalized native chunks with production registration disabled. */
     //-------------------------------------------------------------------------------------------------
     private static void TestFXListNative() => FXListNativeSmokeTest.Run(Array.Empty<string>());
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify actual external derived resolution without registering a runnable FX/audio processor. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestFXAudioResolution() => FXAudioResolutionSmokeTest.Run(Array.Empty<string>());
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate external linking with isolated tiny metadata fixtures, never game BIN streams. */
