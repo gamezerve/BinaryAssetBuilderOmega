@@ -33,12 +33,20 @@ snapshot was held while several shared-layout fixes accumulated. This snapshot
 reassesses the native-layout workstream from 53% to 55% after the containment
 audit and attach base recovery, giving roughly 50% overall. End-to-end game
 validation is still at zero. Observable counters are reported separately:
-the compiler self-test currently invokes 57 test groups (some have multiple
+the compiler self-test currently invokes 58 test groups (some have multiple
 fixtures), and the structural coverage script reports the inventory above.
 Neither counter proves runtime compatibility or replaces final type-table gates.
 The coverage script now emits `CompilerTestGroupsDeclared`, counting registered
 groups without executing them. This block adds one test group and leaves model/
-marshaller counts unchanged relative to its starting snapshot (784/760 and 56 groups).
+marshaller counts unchanged relative to its starting snapshot (784/760 and 57 groups).
+
+The [retained document lifecycle proof](RA3EP1_DOCUMENT_REUSE.md) exercises real
+Open/ReInitialize/Load decisions, MakeComplete/MakeCacheable, and plain/compressed
+SaveCache/LoadCache. Quiet documents reuse metadata without loading source XML;
+reported source/dependency changes and dependency size edits trigger actual reload
+and new identities. A null stream-hint crash in CheckFiles was fixed. The fixture
+root remains unregistered, so this does not establish native compiled-byte reuse
+or permit experimental EP1 production output. Overall effort remains 50%.
 
 The [atomic monitor/cache handoff](RA3EP1_MONITOR_BATCH_HANDOFF.md) closes the
 snapshot/reset event-loss window in the main builder. Batch paths and trust are

@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: test real retained and serialized document reuse without authorizing diagnostic compiler output.
+            if (args.Length == 1 && args[0] == "document-reuse-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                DocumentReuseSmokeTest.Run();
+                return 0;
+            }
             // Reborn: exercise the atomic monitor/cache handoff used by the builder, including initialization failure recovery.
             if (args.Length == 1 && args[0] == "monitor-batch-self-test")
             {
@@ -505,6 +512,8 @@ internal static class Program
         Console.WriteLine("  watcher-cache-self-test");
         // Reborn: atomic batch fixtures test event conservation without writing game/compiler output.
         Console.WriteLine("  monitor-batch-self-test");
+        // Reborn: expose retained and disk-loaded document lifecycle proof separately from fresh-session hashing.
+        Console.WriteLine("  document-reuse-self-test");
         Console.WriteLine("  utility-verify <manifest-or-big> [--entry <BIG entry>]");
         Console.WriteLine("  assembly-fields <managed-assembly> <type-name>");
         Console.WriteLine("  assembly-methods <managed-assembly> <type-name> [method-filter]");

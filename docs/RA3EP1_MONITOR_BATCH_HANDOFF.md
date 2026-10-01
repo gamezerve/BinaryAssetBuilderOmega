@@ -89,3 +89,8 @@ and temporary synthetic files; no game BIN or WorldBuilder BIN is read/modified.
 
 Next: test compiled-document reuse end to end with changed source and dependent
 file signatures, without bypassing the experimental production/cache restrictions.
+
+Follow-up: [document reuse proof](RA3EP1_DOCUMENT_REUSE.md) now covers retained
+and serialized document metadata through actual reload decisions and fixes a
+null stream-hint crash. Native compiled-byte reuse and complete production EP1
+processors remain separate, unproven gates.

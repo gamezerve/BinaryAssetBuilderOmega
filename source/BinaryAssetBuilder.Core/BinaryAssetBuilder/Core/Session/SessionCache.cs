@@ -193,14 +193,16 @@ namespace BinaryAssetBuilder.Core.Session
                                     "Change went undetected by Path Monitor. File: {0}", file.HashItem.Path);
                             if (_dirtyStreams is not null)
                             {
-                                if (file.Document is null || file.Document.StreamHints.Count == 0)
+                                // Reborn: real cached documents serialize empty stream hints as null; treat them as a full rebuild, not a crash.
+                                List<string> streamHints = file.Document?.StreamHints;
+                                if (streamHints is null || streamHints.Count == 0)
                                 {
                                     _tracer.TraceInfo("Building all streams because {0} has no stream hints.", file.HashItem.Path);
                                     _dirtyStreams = null;
                                 }
                                 else
                                 {
-                                    foreach (string streamHint in file.Document.StreamHints)
+                                    foreach (string streamHint in streamHints)
                                     {
                                         if (!_dirtyStreams.Contains(streamHint))
                                         {

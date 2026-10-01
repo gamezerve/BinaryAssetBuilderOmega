@@ -61,6 +61,8 @@ internal static class CompilerSmokeTest
         TestWatcherCache();
         // Reborn: cache initialization cannot erase new callbacks or discard a failed notification handoff.
         TestMonitorBatch();
+        // Reborn: exercise retained and serialized document reload decisions after actual source/dependency mutations.
+        TestDocumentReuse();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1971,6 +1973,14 @@ internal static class CompilerSmokeTest
     private static void TestMonitorBatch()
     {
         MonitorBatchSmokeTest.Run();
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: guard cached document reuse and source/dependency reload through retained and serialized sessions. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestDocumentReuse()
+    {
+        DocumentReuseSmokeTest.Run();
     }
 
     //-------------------------------------------------------------------------------------------------
