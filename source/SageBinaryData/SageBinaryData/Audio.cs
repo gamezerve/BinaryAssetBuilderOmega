@@ -191,7 +191,7 @@ namespace SageBinaryData
         public List<AudioFileRefWithWeight> Decay;
     }
 
-    // Reborn: Preserve AudioEvent's native layout for EP1's non-transient per-map override root.
+    // Reborn: inherit the current synthetic AudioEvent layout; stock EP1 base/child ABI mismatches remain unported.
     [StructLayout(LayoutKind.Sequential)]
     public struct AudioEventOverridable
     {
@@ -243,7 +243,7 @@ namespace SageBinaryData
         public List<MultisoundSubsoundRef> Subsound;
     }
 
-    // Reborn: Preserve Multisound's native layout for EP1's non-transient per-map override root.
+    // Reborn: inherit the current synthetic Multisound layout; stock EP1 child ABI remains unported.
     [StructLayout(LayoutKind.Sequential)]
     public struct MultisoundOverridable
     {

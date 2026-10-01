@@ -188,7 +188,8 @@ internal static class ExternalLinkSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: generate a tiny v7 metadata fixture; no production type-table gate or game-load claim is bypassed. */
     //-------------------------------------------------------------------------------------------------
-    internal static void WriteFixture(string path, InstanceHandle handle, ReferencedFileBuffer references, uint allTypesHash = 0x5454A8E9u)
+    internal static void WriteFixture(string path, InstanceHandle handle, ReferencedFileBuffer references, uint allTypesHash = 0x5454A8E9u,
+        uint typeHash = 0x11223344u, bool tokenized = true)
     {
         byte[] name = Encoding.ASCII.GetBytes(handle.Name + '\0');
         byte[] source = Encoding.ASCII.GetBytes("Tests/ExternalLink.xml\0");
@@ -201,8 +202,9 @@ internal static class ExternalLinkSmokeTest
         }) { header.SaveToStream(bytes, false); }
         using (AssetEntry entry = new()
         {
-            TypeId = handle.TypeId, InstanceId = handle.InstanceId, TypeHash = 0x11223344u,
-            InstanceHash = 0x55667788u, Tokenized = true
+            // Reborn: allow callers to model stock fingerprints without changing the legacy fixture defaults.
+            TypeId = handle.TypeId, InstanceId = handle.InstanceId, TypeHash = typeHash,
+            InstanceHash = 0x55667788u, Tokenized = tokenized
         }) { entry.SaveToStream(bytes, false); }
         references.SaveToStream(bytes);
         bytes.Write(name);

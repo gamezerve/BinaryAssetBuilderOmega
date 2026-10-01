@@ -24,7 +24,9 @@ internal static class DiagnosticFXBuildSmokeTest
         string[] manifests = audio.Select((handle, index) =>
         {
             string path = Path.Combine(directory, "audio-" + index + ".manifest");
-            ExternalLinkSmokeTest.WriteFixture(path, handle, new ReferencedFileBuffer()); return path;
+            // Reborn: synthetic identity fixtures now carry observed stock fingerprints, not arbitrary audio ABI claims.
+            ExternalLinkSmokeTest.WriteFixture(path, handle, new ReferencedFileBuffer(),
+                typeHash: handle.TypeId == 0x844D7B9Fu ? 0x560C2E45u : 0xF79C5A89u, tokenized: false); return path;
         }).ToArray();
         string[] mappings = manifests.Select((path, index) => path + "=data/audio-" + index + ".manifest").ToArray();
         File.Copy(Path.Combine(fixtures, "FXListProbe.xml"), source);
@@ -64,16 +66,44 @@ internal static class DiagnosticFXBuildSmokeTest
         EqualFiles(mixedOutput, frozenOutput); Reject(source, directory, mappings, saved); Reject(source, directory, mappings, saved);
         File.WriteAllText(leaf, originals[2]);
         // Reborn: duplicate exact identities across runtime streams remain forbidden even when the core identity index deduplicates them.
-        string duplicate = Path.Combine(directory, "duplicate.manifest"); ExternalLinkSmokeTest.WriteFixture(duplicate, audio[1], new ReferencedFileBuffer());
+        string duplicate = Path.Combine(directory, "duplicate.manifest");
+        ExternalLinkSmokeTest.WriteFixture(duplicate, audio[1], new ReferencedFileBuffer(), typeHash: 0x560C2E45u, tokenized: false);
         Reject(source, directory, mappings.Append(duplicate + "=data/duplicate.manifest").ToArray(), saved);
         string ambiguous = Path.Combine(directory, "ambiguous.manifest");
-        ExternalLinkSmokeTest.WriteFixture(ambiguous, new InstanceHandle("Multisound", audio[1].InstanceName), new ReferencedFileBuffer());
+        ExternalLinkSmokeTest.WriteFixture(ambiguous, new InstanceHandle("Multisound", audio[1].InstanceName), new ReferencedFileBuffer(),
+            typeHash: 0xF79C5A89u, tokenized: false);
         Exception ambiguity = Reject(source, directory, mappings.Append(ambiguous + "=data/ambiguous.manifest").ToArray(), saved);
         Require(ambiguity is BinaryAssetBuilderException error && error.ErrorCode == ErrorCode.ReferencingError, "Ambiguous audio did not report a strict referencing error.");
         string wrong = Path.Combine(directory, "wrong.manifest"); ExternalLinkSmokeTest.WriteFixture(wrong, new InstanceHandle("FXList", audio[2].InstanceName), new ReferencedFileBuffer());
         Reject(source, directory, mappings.Take(2).Append(wrong + "=data/wrong.manifest").ToArray(), saved);
         Reject(source, directory, mappings.Take(2).ToArray(), saved); Reject(source, directory, mappings.Take(2).ToArray(), saved);
         string recovered = BoundedDiagnosticBuild.Build(source, Path.Combine(directory, "recovered"), mappings); EqualFiles(mixedOutput, recovered);
+        // Reborn: reject wrong hashes and tokenization for both concrete audio families, then prove deterministic recovery and unused-record scope.
+        foreach (int index in new[] { 1, 2 })
+        {
+            byte[] approved = File.ReadAllBytes(manifests[index]);
+            uint expectedHash = index == 1 ? 0x560C2E45u : 0xF79C5A89u;
+            try
+            {
+                foreach (bool badToken in new[] { false, true })
+                {
+                    ExternalLinkSmokeTest.WriteFixture(manifests[index], audio[index], new ReferencedFileBuffer(),
+                        typeHash: badToken ? expectedHash : expectedHash ^ 1u, tokenized: badToken);
+                    Exception failure = Reject(source, directory, mappings, saved);
+                    Require(failure is InvalidDataException && failure.Message.Contains("External audio fingerprint", StringComparison.Ordinal),
+                        "Wrong audio fingerprint did not reject at the selected dependency guard.");
+                }
+            }
+            finally { File.WriteAllBytes(manifests[index], approved); }
+            string restored = BoundedDiagnosticBuild.Build(source, Path.Combine(directory, "fingerprint-restored-" + index), mappings);
+            EqualFiles(mixedOutput, restored);
+        }
+        string unused = Path.Combine(directory, "unused-audio.manifest");
+        ExternalLinkSmokeTest.WriteFixture(unused, new InstanceHandle("AudioEvent", "UnusedWrongFingerprint"), new ReferencedFileBuffer());
+        string unusedOutput = BoundedDiagnosticBuild.Build(source, Path.Combine(directory, "unused-fingerprint"),
+            mappings.Append(unused + "=data/unused-audio.manifest").ToArray());
+        Require(ManifestReader.Read(File.ReadAllBytes(unusedOutput)).Assets.Count == 5,
+            "An unselected external audio record incorrectly blocked the bounded build.");
         // Reborn: explicitly authored concrete audio types must compile through command preflight, while a wrong sibling type must not widen during resolution.
         foreach (InstanceHandle target in new[] { audio[0], audio[2] })
         {

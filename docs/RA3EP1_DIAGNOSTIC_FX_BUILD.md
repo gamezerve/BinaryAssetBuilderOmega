@@ -24,6 +24,9 @@ Each nonlocal strong identity must occur in exactly one explicitly mapped manife
 Duplicate identical audio identities across mappings reject, even though the core
 lookup deduplicates candidate identities; sibling AudioEvent/Multisound ambiguity
 fails with ReferencingError. Missing/unrelated target types also reject.
+Selected AudioEvent/Multisound targets additionally require stock TypeHash
+560C2E45/F79C5A89 respectively and Tokenized=0. Wrong hashes/flags reject;
+restoration recovers identical streams. Unselected records are not gated.
 
 Authored input now rejects compiler-injected TypeId attributes for all families
 and pre-normalized Sound Value suffixes containing a backslash. A regression test
@@ -82,8 +85,8 @@ modifier source.xml. Absolute source paths are not embedded.
   command-produced slices and complete concrete reference tuples with actual
   Uprising static FX assets; all three match exactly.
 
-Synthetic audio manifests prove identity selection only; their placeholder hashes
-do not establish native audio compatibility. The optional real comparison reads
+Synthetic audio manifests carry observed stock hashes/flags and prove metadata
+admission only; they do not establish native audio compatibility. The optional real comparison reads
 manifest metadata and selected FX slices, never full binaries or audio payloads.
 
 ```text
@@ -100,12 +103,13 @@ The command self-test aggregate includes this new FX integration group.
 ## Remaining work
 
 This closes bounded FX command admission, not a production SDK/game-load gate.
-External audio native fingerprints/payload formats, additional FX nuggets and
+External audio payload formats/layouts, additional FX nuggets and
 other processors, complete EP1 type registration/aggregate identity, SDK scripts,
 WorldBuilder integration and actual Uprising loading remain separate workstreams.
 Overall effort estimate remains approximately 50% complete / 50% remaining.
 Checked family counts are not an estimate of working game-mod compatibility.
 
 Related: [isolated FX compiler](RA3EP1_FX_PROFILE.md),
+[audio fingerprints and ABI gaps](RA3EP1_AUDIO_FINGERPRINTS.md),
 [fixed mixed stream proof](RA3EP1_MODIFIER_FX_STREAM.md),
 [general diagnostic limits](RA3EP1_BOUNDED_DIAGNOSTIC_BUILD.md).

@@ -22,7 +22,14 @@ The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. The bounded FX command integration
 adds one group without changing model/marshaller counts; all 77 groups were executed.
 
-Latest milestone: [FX support in bounded diagnostic builds](docs/RA3EP1_DIAGNOSTIC_FX_BUILD.md).
+Latest milestone: [external audio fingerprints and native gaps](docs/RA3EP1_AUDIO_FINGERPRINTS.md).
+Selected external AudioEvent/Multisound dependencies now require stock EP1 hashes
+and non-tokenized metadata. Wrong fingerprints reject; restored inputs recover
+identical output. Bounded native reads confirm old sound layouts cannot be reused:
+AudioEvent root 120 vs 152 bytes, audio-file references 8 vs 12, and Multisound
+children 8 vs 28. Audio compilation remains closed pending offset/default goldens.
+
+[FX support in bounded diagnostic builds](docs/RA3EP1_DIAGNOSTIC_FX_BUILD.md):
 `diagnostic-build` now accepts the isolated empty/two-Sound FX subset, alongside
 shader/filter/modifier Include graphs. Real Uprising manifests resolve the concrete
 audio targets; all three command-produced FX slices and reference tuples match stock.

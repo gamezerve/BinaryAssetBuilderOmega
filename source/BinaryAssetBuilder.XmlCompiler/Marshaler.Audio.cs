@@ -103,7 +103,7 @@ public static partial class Marshaler
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: Compile EP1's non-transient AudioEvent root through its unchanged inherited ABI. */
+    /** Reborn: marshal the synthetic overridable root through the current base; this is not stock EP1 audio ABI validation. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node, AudioEventOverridable* objT, Tracker state)
     {
@@ -140,7 +140,7 @@ public static partial class Marshaler
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: Compile EP1's non-transient Multisound root through its unchanged inherited ABI. */
+    /** Reborn: marshal the synthetic overridable root through the current base; stock EP1 subsound stride remains unported. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node, MultisoundOverridable* objT, Tracker state)
     {
