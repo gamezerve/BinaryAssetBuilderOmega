@@ -83,15 +83,15 @@ namespace BinaryAssetBuilder
                     _cache.LoadCache(sessionCachePath);
                     _cacheSerializationTime = DateTime.Now - now;
                 }
-                if (Settings.Current.Resident && _monitor.IsResultTrustable)
+                // Reborn: drain/acknowledge one monitor batch; later events stay pending and failed initialization restores the batch.
+                if (_monitor is not null)
                 {
-                    _cache.InitializeCache(_monitor.GetChangedFiles());
+                    _monitor.InitializeCache(_cache, Settings.Current.Resident);
                 }
                 else
                 {
                     _cache.InitializeCache(new System.Collections.Generic.List<string>());
                 }
-                _monitor.Reset();
                 if (_pluginRegistry.AssetBuilderPluginsVersion != _cache.AssetCompilersVersion)
                 {
                     Settings.Current.StreamHints = false;

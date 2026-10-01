@@ -28,6 +28,8 @@ content changes the parent hash. No production profile was enabled or fabricated
   initial checkpoint used **19** and rejected version-18 sessions. The later
   [watcher/cache block](RA3EP1_WATCHER_CACHE.md) advances the active EP1 version
   to **20** and forces watcher-reported same-signature edits to rehash.
+  The [atomic monitor handoff](RA3EP1_MONITOR_BATCH_HANDOFF.md) subsequently
+  advances the active version to **21** to reject potentially stale sessions.
   The VERSION5 branch is updated but not separately runtime-tested here.
 - `source/BinaryAssetBuilder.Core/BinaryAssetBuilder/Core/SageXml/AssetDeclarationDocument.cs`:
   `HandleFileReferenceType` reports `ErrorCode.FileNotFound` when no file hash item

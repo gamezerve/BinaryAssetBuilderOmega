@@ -18,11 +18,34 @@ namespace BinaryAssetBuilder.Core.IO
         private readonly object _eventLock = new object();
         private int _numEvents;
         private bool _unrecoverableErrorOccured;
+        // Reborn: restored uncertain batches must remain uncertain until successfully handed off.
+        private bool _pendingUntrusted;
+
+        // Reborn: an opaque batch owns its detached paths and captures trust at the same instant as the queue drain.
+        public sealed class ChangeBatch
+        {
+            internal readonly PathMonitor Owner;
+            internal int State;
+            public IReadOnlyList<string> Paths { get; }
+            public int EventCount { get; }
+            public bool IsTrustable { get; }
+
+            //-------------------------------------------------------------------------------------------------
+            /** Reborn: immutable batch contents cannot be altered by cache initialization or later watcher callbacks. */
+            //-------------------------------------------------------------------------------------------------
+            internal ChangeBatch(PathMonitor owner, List<string> paths, int eventCount, bool trustable)
+            {
+                Owner = owner;
+                Paths = paths.AsReadOnly();
+                EventCount = eventCount;
+                IsTrustable = trustable;
+            }
+        }
 
         public bool IsResultTrustable
         {
             // Reborn: read trust state consistently with callback counters and reset operations.
-            get { lock (_eventLock) return !_unrecoverableErrorOccured && _numEvents < EventLimit; }
+            get { lock (_eventLock) return !_unrecoverableErrorOccured && !_pendingUntrusted && _numEvents < EventLimit; }
         }
 
         public PathMonitor(string[] pathsToMonitor)
@@ -52,7 +75,8 @@ namespace BinaryAssetBuilder.Core.IO
             // Reborn: serialize callback updates so resident snapshots cannot race mutable event collections.
             lock (_eventLock)
             {
-                ++_numEvents;
+                // Reborn: saturating counters cannot wrap an overflowing event queue back into a trusted state.
+                if (_numEvents < int.MaxValue) ++_numEvents;
                 _changedFiles.Add(args.FullPath);
             }
         }
@@ -62,7 +86,8 @@ namespace BinaryAssetBuilder.Core.IO
             // Reborn: renames invalidate both the disappearing source and the new destination identity.
             lock (_eventLock)
             {
-                ++_numEvents;
+                // Reborn: saturating counters retain overflow distrust even in a long-running resident monitor.
+                if (_numEvents < int.MaxValue) ++_numEvents;
                 _changedFiles.Add(args.OldFullPath);
                 _changedFiles.Add(args.FullPath);
             }
@@ -89,11 +114,98 @@ namespace BinaryAssetBuilder.Core.IO
             {
                 _numEvents = 0;
                 _changedFiles.Clear();
+                // Reborn: explicit legacy reset discards the pending batch but cannot repair a permanent watcher error.
+                _pendingUntrusted = false;
             }
         }
 
         public List<string> GetChangedFiles()
         {
+            // Reborn: retain the legacy non-consuming snapshot API for compatibility; build handoff uses DrainChanges instead.
+            WaitForNotifications();
+            lock (_eventLock) return new List<string>(_changedFiles);
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: collect current notifications and trust atomically, leaving subsequent events queued for the next build. */
+        //-------------------------------------------------------------------------------------------------
+        public ChangeBatch DrainChanges(bool waitForNotifications = true)
+        {
+            bool flushSucceeded = !waitForNotifications || WaitForNotifications();
+            lock (_eventLock)
+            {
+                ChangeBatch batch = new ChangeBatch(this, new List<string>(_changedFiles), _numEvents,
+                    flushSucceeded && !_unrecoverableErrorOccured && !_pendingUntrusted && _numEvents < EventLimit);
+                _changedFiles.Clear();
+                _numEvents = 0;
+                _pendingUntrusted = false;
+                return batch;
+            }
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: acknowledge one consumed batch without clearing events that arrived during cache initialization. */
+        //-------------------------------------------------------------------------------------------------
+        public void CompleteBatch(ChangeBatch batch)
+        {
+            lock (_eventLock)
+            {
+                ValidateActiveBatch(batch);
+                batch.State = 1;
+            }
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: merge a failed handoff back into pending events without losing later callbacks or trust provenance. */
+        //-------------------------------------------------------------------------------------------------
+        public void RestoreBatch(ChangeBatch batch)
+        {
+            lock (_eventLock)
+            {
+                ValidateActiveBatch(batch);
+                foreach (string path in batch.Paths) _changedFiles.Add(path);
+                _numEvents = (int)Math.Min(int.MaxValue, (long)_numEvents + batch.EventCount);
+                _pendingUntrusted |= !batch.IsTrustable;
+                batch.State = 2;
+            }
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: reject foreign or already acknowledged/restored batches before changing the pending event queue. */
+        //-------------------------------------------------------------------------------------------------
+        private void ValidateActiveBatch(ChangeBatch batch)
+        {
+            if (batch == null || !ReferenceEquals(batch.Owner, this)) throw new ArgumentException("Change batch belongs to another monitor.", nameof(batch));
+            if (batch.State != 0) throw new InvalidOperationException("Change batch was already completed or restored.");
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: bind the cache handoff to one batch, restoring consumed notifications if initialization fails. */
+        //-------------------------------------------------------------------------------------------------
+        public void InitializeCache(ISessionCache cache, bool useNotifications)
+        {
+            if (cache == null) throw new ArgumentNullException(nameof(cache));
+            ChangeBatch batch = DrainChanges(useNotifications);
+            try
+            {
+                // Reborn: incomplete batches still force their positive reports; only completeness-dependent omission checks are disabled.
+                cache.InitializeCache(useNotifications ? new List<string>(batch.Paths) : new List<string>(),
+                    useNotifications && batch.IsTrustable);
+                CompleteBatch(batch);
+            }
+            catch
+            {
+                RestoreBatch(batch);
+                throw;
+            }
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: wait before the atomic snapshot and return flush uncertainty together with collected notifications. */
+        //-------------------------------------------------------------------------------------------------
+        private bool WaitForNotifications()
+        {
+            bool flushSucceeded = true;
             try
             {
                 Flush();
@@ -103,10 +215,11 @@ namespace BinaryAssetBuilder.Core.IO
                 // Reborn: accurately report retained positive notifications rather than claiming the watcher was disabled.
                 _tracer.TraceWarning("Unable to flush a monitored disk volume; collected change notifications will be retained.\n" + ex.Message);
                 // Reborn: inability to flush a volume must not discard positive change notifications already collected.
+                flushSucceeded = false;
             }
             Thread.Sleep(100);
-            // Reborn: expose a stable snapshot instead of enumerating concurrently changing callback data.
-            lock (_eventLock) return new List<string>(_changedFiles);
+            // Reborn: native flush failures make the drained batch untrusted even when event count is below the limit.
+            return flushSucceeded;
         }
     }
 }

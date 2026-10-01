@@ -13,6 +13,9 @@ namespace BinaryAssetBuilder.Core
 
         void InitializeCache(List<string> knownChangedFiles);
 
+        // Reborn: retain positive reports from incomplete watcher batches without asserting that omitted paths were unchanged.
+        void InitializeCache(List<string> knownChangedFiles, bool notificationsComplete);
+
         void SaveCache(bool compressed);
 
         bool TryGetFile(string path, string configuration, TargetPlatform platform, out FileHashItem hashItem);

@@ -117,11 +117,11 @@ namespace BinaryAssetBuilder.Core.Session
         }
 
 #if VERSION5
-        // Reborn: invalidate resident sessions predating watcher-forced hashes and fresh per-build metadata sampling.
-        public const uint CacheVersion = 18u;
+        // Reborn: rebuild sessions that may have missed notifications under the old snapshot/reset handoff.
+        public const uint CacheVersion = 19u;
 #else
-        // Reborn: invalidate resident sessions predating watcher-forced hashes and fresh per-build metadata sampling.
-        public const uint CacheVersion = 20u;
+        // Reborn: rebuild sessions that may have missed notifications under the old snapshot/reset handoff.
+        public const uint CacheVersion = 21u;
 #endif
 
         private static readonly Tracer _tracer = Tracer.GetTracer(nameof(SessionCache), "Provides caching functionality");
@@ -151,7 +151,7 @@ namespace BinaryAssetBuilder.Core.Session
         //-------------------------------------------------------------------------------------------------
         /** Reborn: refresh resident metadata snapshots and force hashes for watcher-reported paths without rejecting unrelated unchanged files. */
         //-------------------------------------------------------------------------------------------------
-        private void CheckFiles(List<string> knownChangedFiles)
+        private void CheckFiles(List<string> knownChangedFiles, bool notificationsComplete)
         {
             // Reborn: normalize watcher casing/separators and apply one notification to every cached configuration of a file.
             HashSet<string> changedPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -188,7 +188,7 @@ namespace BinaryAssetBuilder.Core.Session
                         if (dirty)
                         {
                             // Reborn: a nonempty watcher list is inconsistent only when an actually dirty cached file was omitted.
-                            if (changedPaths.Count > 0 && !notified)
+                            if (notificationsComplete && changedPaths.Count > 0 && !notified)
                                 throw new BinaryAssetBuilderException(ErrorCode.PathMonitor,
                                     "Change went undetected by Path Monitor. File: {0}", file.HashItem.Path);
                             if (_dirtyStreams is not null)
@@ -311,9 +311,18 @@ namespace BinaryAssetBuilder.Core.Session
 
         public virtual void InitializeCache(List<string> knownChangedFiles)
         {
+            // Reborn: retain legacy complete-list checks for nonempty direct callers.
+            InitializeCache(knownChangedFiles, knownChangedFiles != null && knownChangedFiles.Count > 0);
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: force all reported paths while allowing metadata fallback for incomplete/overflowed notification batches. */
+        //-------------------------------------------------------------------------------------------------
+        public virtual void InitializeCache(List<string> knownChangedFiles, bool notificationsComplete)
+        {
             _current = new CurrentState();
             _dirtyStreams = new List<string>();
-            CheckFiles(knownChangedFiles);
+            CheckFiles(knownChangedFiles, notificationsComplete);
             if (_last is not null)
             {
                 _tracer.TraceInfo("Cached session data available.");

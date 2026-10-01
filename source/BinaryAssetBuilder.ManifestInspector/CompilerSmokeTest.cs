@@ -59,6 +59,8 @@ internal static class CompilerSmokeTest
         TestDependencyHashes();
         // Reborn: reported content changes cannot hide behind unchanged timestamps or prior resident metadata snapshots.
         TestWatcherCache();
+        // Reborn: cache initialization cannot erase new callbacks or discard a failed notification handoff.
+        TestMonitorBatch();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -1961,6 +1963,14 @@ internal static class CompilerSmokeTest
     private static void TestWatcherCache()
     {
         WatcherCacheSmokeTest.Run();
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify immutable notification generations and the production builder handoff helper. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestMonitorBatch()
+    {
+        MonitorBatchSmokeTest.Run();
     }
 
     //-------------------------------------------------------------------------------------------------

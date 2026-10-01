@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: exercise the atomic monitor/cache handoff used by the builder, including initialization failure recovery.
+            if (args.Length == 1 && args[0] == "monitor-batch-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                MonitorBatchSmokeTest.Run();
+                return 0;
+            }
             // Reborn: verify watcher-driven hash invalidation and resident stream hints without native compiler output.
             if (args.Length == 1 && args[0] == "watcher-cache-self-test")
             {
@@ -496,6 +503,8 @@ internal static class Program
         Console.WriteLine("  dependency-hash-self-test");
         // Reborn: watcher fixtures own only temporary files and use deterministic callback injection.
         Console.WriteLine("  watcher-cache-self-test");
+        // Reborn: atomic batch fixtures test event conservation without writing game/compiler output.
+        Console.WriteLine("  monitor-batch-self-test");
         Console.WriteLine("  utility-verify <manifest-or-big> [--entry <BIG entry>]");
         Console.WriteLine("  assembly-fields <managed-assembly> <type-name>");
         Console.WriteLine("  assembly-methods <managed-assembly> <type-name> [method-filter]");

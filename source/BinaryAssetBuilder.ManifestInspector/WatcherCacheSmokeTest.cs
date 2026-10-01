@@ -63,14 +63,14 @@ internal static class WatcherCacheSmokeTest
         Require(pending.IsDirty && pending.Hash == first.Hash, "Pending forced rehash did not survive serialization.");
         TestStreamHints(root, stamp);
         TestMonitor(root);
-        Require(SessionCache.CacheVersion == 20u, "Active EP1 watcher-session version differs.");
+        Require(SessionCache.CacheVersion == 21u, "Active EP1 watcher-session version differs.");
         // Reborn: prove the immediately previous version is dropped before its old resident records are reused.
         Checkpoint(cache);
         FieldInfo lastField = typeof(SessionCache).GetField("_last", BindingFlags.NonPublic | BindingFlags.Instance)!;
         object oldSession = lastField.GetValue(cache)!;
-        oldSession.GetType().GetProperty("Version")!.SetValue(oldSession, 19u);
+        oldSession.GetType().GetProperty("Version")!.SetValue(oldSession, 20u);
         cache.InitializeCache(new List<string>());
-        Require(lastField.GetValue(cache) == null, "Version-19 session survived watcher-policy invalidation.");
+        Require(lastField.GetValue(cache) == null, "Version-20 session survived watcher-policy invalidation.");
         Console.WriteLine("Watcher/cache self-test: OK (same-signature edits, resident refresh, two configurations, quiet files, omitted changes, forced serialization, stream hints, rename/create callbacks, nested config, concurrency/trust)");
     }
 

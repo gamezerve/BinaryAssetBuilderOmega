@@ -42,7 +42,9 @@ existing parameterless reset remains metadata-only. Invalidating persisted
 signature fields also preserves an unconsumed refresh across XML serialization.
 
 Session versions advance from 17/19 to **18/20** (`VERSION5`/other). The active
-EP1 Release/x86 test uses 20 and verifies a retained version-19 session is rejected.
+EP1 Release/x86 test initially used 20 and rejected a retained version-19 session.
+The later [atomic batch handoff](RA3EP1_MONITOR_BATCH_HANDOFF.md) advances the
+active version to 21 and tests rejection of version 20.
 The VERSION5 branch is updated but not separately runtime-tested. Serialized
 field layout is unchanged from the preceding length-signature block; the version
 bump invalidates sessions produced under the previous resident-refresh policy.
@@ -109,16 +111,15 @@ or the large WorldBuilder BIN were read or modified.
 - A watcher overflow/error or unavailable/untrusted watcher still routes through
   the builder's existing metadata fallback; absence of events is not proof that
   content was unchanged.
-- GetChangedFiles and the builder's later Reset are separate lifecycle operations.
-  Notifications arriving between snapshot and reset can still be lost. An atomic
-  drain/generation handoff is a separate follow-up, not claimed by the callback lock.
-- A watcher can cross its event limit after the caller's trust check. End-to-end
-  trust handoff and volume-flush fallback remain separate integration work.
+- The subsequent [atomic batch handoff](RA3EP1_MONITOR_BATCH_HANDOFF.md) resolves
+  the builder's separate snapshot/reset and precheck-trust windows. Legacy
+  GetChangedFiles/Reset remain available, but the builder no longer combines them.
+  OS notification completeness and native volume-flush behavior remain unproven.
 - Stream-hint tests use focused reflected cached metadata; they do not compile
   or reload a real EP1 mod. Native plugin behavior and dependency declarations
   remain unproven by these source hash tests.
 - No mid-build mutation reproducibility guarantee, transactional session recovery,
   full compiled-document invalidation proof or game-load validation is added.
 
-Next: audit snapshot/reset lifecycle and compiled document reuse against these
+Next: audit compiled document reuse against these
 fresh signatures, keeping experimental production and cache gates in place.

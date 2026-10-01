@@ -33,12 +33,20 @@ snapshot was held while several shared-layout fixes accumulated. This snapshot
 reassesses the native-layout workstream from 53% to 55% after the containment
 audit and attach base recovery, giving roughly 50% overall. End-to-end game
 validation is still at zero. Observable counters are reported separately:
-the compiler self-test currently invokes 51 test groups (some have multiple
+the compiler self-test currently invokes 57 test groups (some have multiple
 fixtures), and the structural coverage script reports the inventory above.
 Neither counter proves runtime compatibility or replaces final type-table gates.
 The coverage script now emits `CompilerTestGroupsDeclared`, counting registered
 groups without executing them. This block adds one test group and leaves model/
-marshaller counts unchanged relative to its starting snapshot (784/760 and 50 groups).
+marshaller counts unchanged relative to its starting snapshot (784/760 and 56 groups).
+
+The [atomic monitor/cache handoff](RA3EP1_MONITOR_BATCH_HANDOFF.md) closes the
+snapshot/reset event-loss window in the main builder. Batch paths and trust are
+captured together; successful initialization acknowledges only that batch, while
+failure restores it alongside later events. Partial positive reports still force
+content hashes. Active session versions are now 19/21 (`VERSION5`/other), with
+version-20 rejection tested in Release/x86. This is cache reliability work, not
+new asset compatibility or game-load proof; the overall estimate remains 50%.
 
 The new [root asset type audit](RA3EP1_TYPE_TABLE_AUDIT.md) separates broad
 complex-type inventory from plugin registration. Four real EP1 streams contain

@@ -16,7 +16,7 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **784/1,390** EP1 complex types have models and
 **760/1,390** have typed marshallers. The compiler test runner invokes
-**56 test groups** (some contain several fixtures). These counters can grow
+**57 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. In this work block, model and
@@ -33,6 +33,7 @@ marshaller counts are unchanged; registered test groups increased by one.
 
 ### Recently completed
 
+- Made monitor/cache handoff atomic: late events remain queued for the next build, failed initialization restores the consumed batch, and trust is captured with its paths. Incomplete reports still force hashes for known changes without falsely claiming completeness. Tested 500 concurrent events, overflow, replay/ownership guards and builder integration. See [atomic batch proof](docs/RA3EP1_MONITOR_BATCH_HANDOFF.md).
 - Made watcher-reported edits force content hashing even with unchanged size/timestamp. Fixed resident metadata sampling and false monitor errors on unrelated unchanged files; added case-insensitive path matching, per-configuration invalidation and stream-hint tests. Watcher callbacks now retain both rename paths, include created/nested files and synchronize snapshots. See [watcher/cache proof](docs/RA3EP1_WATCHER_CACHE.md).
 - Fixed timestamp-only file hash reuse: size changes now invalidate source/dependency hashes, deletion/restoration no longer leaves a zero/stale hash, and old sessions are invalidated. Tested full document strong/weak ID changes separately from file-content dependencies; missing file references now report FileNotFound. See [dependency hash proof](docs/RA3EP1_DEPENDENCY_HASHES.md).
 - Made local/cache asset copies preserve existing output on rejection or failure: validate/stage before replacement, restore the previous asset if custom-data publication fails, and retain recovery backups if rollback is blocked. Fixed small final copy chunks and signed/overflowing chunk-length checks; 22 copy scenarios plus blocked-recovery tests pass. See [copy recovery proof](docs/RA3EP1_COPY_RECOVERY.md).
