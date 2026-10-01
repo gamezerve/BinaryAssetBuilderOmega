@@ -95,8 +95,9 @@ remains 784 models and 760 typed marshallers of 1,390; overall effort stays abou
 
 ## Remaining gates
 
-Add only a bounded, explicitly experimental compiler profile after checking
-normalized weak metadata consistency and schema/type identity. Inheritance,
+The later [bounded experimental profile](RA3EP1_OBJECT_FILTER_PROFILE.md) checks
+normalized weak metadata and schema/type identity while retaining all output/cache
+restrictions. Inheritance,
 arbitrary rule/mask combinations, ID-based filter references, source expressions,
 complete target registration, cached native reuse and runtime loading remain open.
 The managed TestObject/TestTemplate runtime-method placeholders are not invoked by

@@ -33,12 +33,20 @@ snapshot was held while several shared-layout fixes accumulated. This snapshot
 reassesses the native-layout workstream from 53% to 55% after the containment
 audit and attach base recovery, giving roughly 50% overall. End-to-end game
 validation is still at zero. Observable counters are reported separately:
-the compiler self-test currently invokes 63 test groups (some have multiple
+the compiler self-test currently invokes 64 test groups (some have multiple
 fixtures), and the structural coverage script reports the inventory above.
 Neither counter proves runtime compatibility or replaces final type-table gates.
 The coverage script now emits `CompilerTestGroupsDeclared`, counting registered
 groups without executing them. This block adds one test group and leaves model/
-marshaller counts unchanged relative to its starting snapshot (784/760 and 62 groups).
+marshaller counts unchanged relative to its starting snapshot (784/760 and 63 groups).
+
+The [experimental ObjectFilter profile](RA3EP1_OBJECT_FILTER_PROFILE.md) binds
+that third family through actual descriptors and fresh document processing. Eleven
+compiler entries match the native proof; root identity, nested TypeIds and ordered
+weak GameObject metadata are checked. Only the proven NONE/default-alignment,
+empty/ENEMIES relationship and single-kind/weak-include subset is eligible.
+All production/cache/document-reuse policies remain false; mapped settings cannot
+override them. This is a narrow diagnostic activation, not production readiness.
 
 The [ObjectFilter native proof](RA3EP1_OBJECT_FILTER_NATIVE.md) matches eleven
 source-derived infiltration filters to real stock chunks. The 124-byte inline

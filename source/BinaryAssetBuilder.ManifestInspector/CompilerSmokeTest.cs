@@ -73,6 +73,8 @@ internal static class CompilerSmokeTest
         TestDependencyResolution();
         // Reborn: validate the inline ObjectFilter root and ordered weak lists before any EP1 registration.
         TestObjectFilterNative();
+        // Reborn: verify isolated ObjectFilter compiler entry and checked weak metadata without relaxing production policy.
+        TestObjectFilterProfile();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -2028,6 +2030,11 @@ internal static class CompilerSmokeTest
     /** Reborn: add source/default/native filter coverage without requiring local game files in the regression suite. */
     //-------------------------------------------------------------------------------------------------
     private static void TestObjectFilterNative() => ObjectFilterNativeSmokeTest.Run(Array.Empty<string>());
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: exercise the bounded ObjectFilter descriptor/document profile and its fail-closed eligibility checks. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestObjectFilterProfile() => Ep1ObjectFilterProfileSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate external linking with isolated tiny metadata fixtures, never game BIN streams. */
