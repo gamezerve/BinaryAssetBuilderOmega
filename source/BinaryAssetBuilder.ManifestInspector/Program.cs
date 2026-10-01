@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: verify normalized modifier references against one-biased native imports and optional real EP1 goldens.
+            if (args.FirstOrDefault() == "modifier-import-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                AttributeModifierImportSmokeTest.Run(args.Skip(1).ToArray());
+                return 0;
+            }
             // Reborn: route native EP1 modifiers through the isolated descriptor/registry/document profile.
             if (args.Length == 1 && args[0] == "ep1-modifier-profile-self-test")
             {
@@ -532,6 +539,8 @@ internal static class Program
         Console.WriteLine("  attribute-modifier-self-test [ep1-manifest ...]");
         // Reborn: keep experimental processor/document proof separate from production output.
         Console.WriteLine("  ep1-modifier-profile-self-test");
+        // Reborn: keep imported native golden proof distinct from the no-dependency experimental profile.
+        Console.WriteLine("  modifier-import-self-test [ep1-static-manifest ...]");
         Console.WriteLine("  utility-verify <manifest-or-big> [--entry <BIG entry>]");
         Console.WriteLine("  assembly-fields <managed-assembly> <type-name>");
         Console.WriteLine("  assembly-methods <managed-assembly> <type-name> [method-filter]");

@@ -36,6 +36,14 @@ internal static class AssetStreamProbe
                 Console.WriteLine(
                     $"{asset.Name} TypeId=0x{asset.TypeId:X8} InstanceId=0x{asset.InstanceId:X8} " +
                     $"TypeHash=0x{asset.TypeHash:X8} Offset={instanceOffset:N0} Size={asset.InstanceDataSize:N0}");
+                // Reborn: expose bounded manifest dependency indices so native import words can be traced to their actual asset identities.
+                for (int referenceIndex = 0; referenceIndex < Math.Min(asset.References.Count, 16); referenceIndex++)
+                {
+                    AssetId reference = asset.References[referenceIndex];
+                    string referenceName = manifest.Assets.FirstOrDefault(candidate => candidate.TypeId == reference.TypeId
+                        && candidate.InstanceId == reference.InstanceId)?.Name ?? "<external/not named in this manifest>";
+                    Console.WriteLine($"  dependency[{referenceIndex}]={reference.TypeId:X8}:{reference.InstanceId:X8} {referenceName}");
+                }
                 // Reborn: Expose adjacent manifest entries so suspicious payload sizes can be checked against stream boundaries.
                 if (assetIndex > 0)
                 {

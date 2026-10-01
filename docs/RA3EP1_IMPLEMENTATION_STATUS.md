@@ -33,12 +33,23 @@ snapshot was held while several shared-layout fixes accumulated. This snapshot
 reassesses the native-layout workstream from 53% to 55% after the containment
 audit and attach base recovery, giving roughly 50% overall. End-to-end game
 validation is still at zero. Observable counters are reported separately:
-the compiler self-test currently invokes 60 test groups (some have multiple
+the compiler self-test currently invokes 61 test groups (some have multiple
 fixtures), and the structural coverage script reports the inventory above.
 Neither counter proves runtime compatibility or replaces final type-table gates.
 The coverage script now emits `CompilerTestGroupsDeclared`, counting registered
 groups without executing them. This block adds one test group and leaves model/
-marshaller counts unchanged relative to its starting snapshot (784/760 and 59 groups).
+marshaller counts unchanged relative to its starting snapshot (784/760 and 60 groups).
+
+The [native import encoding proof](RA3EP1_ATTRIBUTE_MODIFIER_IMPORTS.md) adds four
+stock EP1 modifier assets with exact BIN/RELO/IMP and ordered dependency matches.
+Core-normalized XML indices are zero-based; final imported BIN words are index+1.
+The shared Tracker previously omitted this final bias. AttributeModifier.Shader
+is an optional relocated pointer to a four-byte imported record, not an inline
+reference. Legacy XmlCompiler revision is now 3; DocumentProcessor revisions are
+19/20 (VERSION5/other), invalidating all plugin intermediate identities. Production
+EP1 registration remains closed; the modifier profile still rejects dependencies.
+Full Release/x86 builder/inspector builds, compiler/layout tests and 33 enum mappings
+pass. This is native compatibility evidence, not an in-game mod-loading result.
 
 The [experimental modifier profile](RA3EP1_ATTRIBUTE_MODIFIER_PROFILE.md) binds
 that second root through explicit descriptor/registry and real document stages.

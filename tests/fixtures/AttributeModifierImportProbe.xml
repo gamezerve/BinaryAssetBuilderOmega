@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: preserve source attribute order so core normalization can be compared with EA's per-asset manifest dependency order. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+ <AttributeModifier id="Modifier_Test_Suppression" Category="NONE" ModelConditionsSet="SUPPRESSED" StartFX="FX_VoiceSuppressed">
+  <Modifier Type="ARMOR" Value="75%" /><Modifier Type="SPEED" Value="75" />
+ </AttributeModifier>
+ <AttributeModifier id="AttributeModifier_KirovAfterburnersDummy" EndFX="FX_SOV_Kirov_AfterburnersOff" />
+ <AttributeModifier id="AttributeModifier_RapidLaunch" Category="NONE" StartFX="FX_SOV_Dreadnought_Ability_SacrificeLaunchers_Begin" EndFX="FX_SOV_Dreadnought_Ability_SacrificeLaunchers_End">
+  <Modifier Type="RATE_OF_FIRE" Value="300%" />
+ </AttributeModifier>
+ <AttributeModifier id="AttributeModifier_IronCurtain" Category="NONE" ObjectStatusToSet="NO_BRIBE UNDER_IRON_CURTAIN" ModelConditionsSet="IRONCURTAIN"
+  Shader="ShaderOverride_ObjectsIronCurtain" StartFX="FX_IronCurtainHit" EndFX="FX_IronCurtainHitEnd" Duration="20s">
+  <Modifier Type="INVULNERABLE" Value="100%" />
+ </AttributeModifier>
+</AssetDeclaration>

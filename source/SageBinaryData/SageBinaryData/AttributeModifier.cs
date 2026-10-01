@@ -96,7 +96,8 @@ public struct AttributeModifier
     public unsafe ObjectStatusBitFlags* ObjectStatusToSet;
     public uint StackingLimit;
     public ArmorSetType ArmorSetType;
-    public AssetReference<ShaderOverride> Shader;
+    // Reborn: the optional shader is a relocated four-byte reference record, not an inline import word.
+    public unsafe AssetReference<ShaderOverride>* Shader;
     public List<AttributeModifierListType> Modifier;
     public SageBool ReplaceInCategoryIfLongest;
     public SageBool IgnoreIfAnticategoryActive;

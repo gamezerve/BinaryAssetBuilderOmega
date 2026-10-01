@@ -217,7 +217,8 @@ namespace Relo
                             uint from = bookmarks[import.Index] + import.From;
                             *importsBuffer = from;
                             InplaceEndianToPlatform(importsBuffer);
-                            uint to = import.To;
+                            // Reborn: EA MakeRelocatable encodes zero-based dependency indices as index+1; zero is the runtime null reference.
+                            uint to = checked(import.To + 1u);
                             InplaceEndianToPlatform(&to);
                             *(uint*)(instanceBuffer + from) = to;
                             importsBuffer++;

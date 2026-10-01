@@ -67,6 +67,8 @@ internal static class CompilerSmokeTest
         TestAttributeModifierNative();
         // Reborn: bind the validated native subset to explicit experimental compiler/document policy.
         TestEp1ModifierProfile();
+        // Reborn: compare real core-normalized imports and shader pointer records with the final runtime encoding contract.
+        TestModifierImports();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -156,22 +158,24 @@ internal static class CompilerSmokeTest
         }
 
         ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
-        Expect(instance.Length == 216, "instance bytes", 216, instance.Length);
+        // Reborn: the optional shader adds its own four-byte record after the three mask payloads.
+        Expect(instance.Length == 220, "instance bytes", 220, instance.Length);
         Expect(ReadUInt32(instance, 4) == 15, "Category=SHRINK", 15, ReadUInt32(instance, 4));
-        Expect(ReadUInt32(instance, 12) == 123, "StartFX import", 123, ReadUInt32(instance, 12));
-        Expect(ReadUInt32(instance, 16) == 456, "EndFX import", 456, ReadUInt32(instance, 16));
+        Expect(ReadUInt32(instance, 12) == 124, "StartFX import", 124, ReadUInt32(instance, 12)); // Reborn: final BIN imports are one-biased.
+        Expect(ReadUInt32(instance, 16) == 457, "EndFX import", 457, ReadUInt32(instance, 16)); // Reborn: final BIN imports are one-biased.
         Expect(ReadUInt32(instance, 20) == 56, "ModelConditionsSet relocation", 56, ReadUInt32(instance, 20));
         Expect(ReadUInt32(instance, 24) == 116, "ModelConditionsClear relocation", 116, ReadUInt32(instance, 24));
         Expect(ReadUInt32(instance, 28) == 176, "ObjectStatusToSet relocation", 176, ReadUInt32(instance, 28));
         Expect(ReadUInt32(instance, 32) == 2, "StackingLimit", 2, ReadUInt32(instance, 32));
         Expect(ReadUInt32(instance, 36) == 14, "ArmorSetType=SHRINK_EFFECT", 14, ReadUInt32(instance, 36));
-        Expect(ReadUInt32(instance, 40) == 789, "Shader import", 789, ReadUInt32(instance, 40));
+        Expect(ReadUInt32(instance, 40) == 208, "Shader record relocation", 208, ReadUInt32(instance, 40));
+        Expect(ReadUInt32(instance, 208) == 790, "Shader record import", 790, ReadUInt32(instance, 208));
         Expect(ReadUInt32(instance, 44) == 1, "Modifier count", 1, ReadUInt32(instance, 44));
-        Expect(ReadUInt32(instance, 48) == 208, "Modifier relocation", 208, ReadUInt32(instance, 48));
+        Expect(ReadUInt32(instance, 48) == 212, "Modifier relocation", 212, ReadUInt32(instance, 48));
         Expect(instance[52] == 1, "ReplaceInCategoryIfLongest", 1, instance[52]);
         Expect(instance[53] == 1, "IgnoreIfAnticategoryActive", 1, instance[53]);
-        Expect(ReadUInt32(instance, 208) == 36, "Modifier.Type=RADIATION_ARMOR", 36, ReadUInt32(instance, 208));
-        Expect(chunk.RelocationBuffer.Length == 20, "relocation bytes", 20, chunk.RelocationBuffer.Length);
+        Expect(ReadUInt32(instance, 212) == 36, "Modifier.Type=RADIATION_ARMOR", 36, ReadUInt32(instance, 212));
+        Expect(chunk.RelocationBuffer.Length == 24, "relocation bytes", 24, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 16, "imports bytes", 16, chunk.ImportsBuffer.Length);
 
         Console.WriteLine(
@@ -307,7 +311,7 @@ internal static class CompilerSmokeTest
         tracker.MakeRelocatable(chunk);
         ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
         Expect(instance.Length == 148, "InvisibilityUpdate instance bytes", 148, instance.Length);
-        Expect(ReadUInt32(instance, 8) == 321, "InvisibilityUpdate template import", 321, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 8) == 322, "InvisibilityUpdate template import", 322, ReadUInt32(instance, 8)); // Reborn: final BIN imports are one-biased.
         Expect(ReadUInt32(instance, 12) == 0x40000000, "InvisibilityUpdate period", 0x40000000, ReadUInt32(instance, 12));
         Expect(ReadUInt32(instance, 16) == 0x42480000, "InvisibilityUpdate nearby range", 0x42480000, ReadUInt32(instance, 16));
         Expect(ReadUInt32(instance, 32) == 1, "InvisibilityUpdate filter rule", 1, ReadUInt32(instance, 32));
@@ -341,7 +345,7 @@ internal static class CompilerSmokeTest
         tracker.MakeRelocatable(chunk);
         ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
         Expect(instance.Length == 616, "InvisibilitySpecialPower instance bytes", 616, instance.Length);
-        Expect(ReadUInt32(instance, 476) == 654, "InvisibilitySpecialPower template import", 654, ReadUInt32(instance, 476));
+        Expect(ReadUInt32(instance, 476) == 655, "InvisibilitySpecialPower template import", 655, ReadUInt32(instance, 476)); // Reborn: final BIN imports are one-biased.
         Expect(ReadUInt32(instance, 480) == 0x42960000, "InvisibilitySpecialPower radius", 0x42960000, ReadUInt32(instance, 480));
         Expect(ReadUInt32(instance, 484) == 0x40400000, "InvisibilitySpecialPower duration", 0x40400000, ReadUInt32(instance, 484));
         Expect(ReadUInt32(instance, 488) == 496, "InvisibilitySpecialPower filter relocation", 496, ReadUInt32(instance, 488));
@@ -622,9 +626,9 @@ internal static class CompilerSmokeTest
         tracker.MakeRelocatable(chunk);
         ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
         Expect(instance.Length == 516, "FlingStoredObjectsSpecialPower instance bytes", 516, instance.Length);
-        Expect(ReadUInt32(instance, 8) == 123, "Fling SpecialPowerTemplate import", 123, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 8) == 124, "Fling SpecialPowerTemplate import", 124, ReadUInt32(instance, 8)); // Reborn: final BIN imports are one-biased.
         Expect(ReadUInt32(instance, 84) == 0x1000, "Fling DisabledTypesToIgnore", 0x1000, ReadUInt32(instance, 84));
-        Expect(ReadUInt32(instance, 88) == 456, "Fling CanAffectObjectFilter import", 456, ReadUInt32(instance, 88));
+        Expect(ReadUInt32(instance, 88) == 457, "Fling CanAffectObjectFilter import", 457, ReadUInt32(instance, 88)); // Reborn: final BIN imports are one-biased.
         Expect(ReadUInt32(instance, 92) == 1, "Fling ObjectFilterDistType=CIRCLE", 1, ReadUInt32(instance, 92));
         Expect(instance[469] == 1, "Fling AvailableAtStart", 1, instance[469]);
         Expect(ReadUInt32(instance, 476) == 101, "Fling StoreObjectsLinkID", 101, ReadUInt32(instance, 476));
@@ -673,7 +677,7 @@ internal static class CompilerSmokeTest
         Expect(ReadUInt32(instance, 12) == 0x40800000, "LiftObjectUpdate.LiftVelocity", 0x40800000, ReadUInt32(instance, 12));
         Expect(ReadUInt32(instance, 16) == 0x42B40000, "LiftObjectUpdate.MaxElevationFromGround", 0x42B40000, ReadUInt32(instance, 16));
         Expect(ReadUInt32(instance, 40) == 0x3DCCCCCD, "LiftObjectUpdate.RotationSpeed", 0x3DCCCCCD, ReadUInt32(instance, 40));
-        Expect(ReadUInt32(instance, 44) == 123, "LiftObjectUpdate.Shader import", 123, ReadUInt32(instance, 44));
+        Expect(ReadUInt32(instance, 44) == 124, "LiftObjectUpdate.Shader import", 124, ReadUInt32(instance, 44)); // Reborn: final BIN imports are one-biased.
         Expect(ReadUInt32(instance, 48) == 0x3B03126F, "LiftObjectUpdate.ShakeIntensity", 0x3B03126F, ReadUInt32(instance, 48));
         Expect(ReadUInt32(instance, 52) == 0xBF800000, "LiftObjectUpdate.ShakeRadius", unchecked((int)0xBF800000), ReadUInt32(instance, 52));
         Expect(ReadUInt32(instance, 60) == 0x1000, "LiftObjectUpdate.DisabledTypesToProcess", 0x1000, ReadUInt32(instance, 60));
@@ -717,7 +721,7 @@ internal static class CompilerSmokeTest
         tracker.MakeRelocatable(chunk);
         ReadOnlySpan<byte> instance = chunk.InstanceBuffer;
         Expect(instance.Length == 284, "ProjectileReplaceSelf instance bytes", 284, instance.Length);
-        Expect(ReadUInt32(instance, 8) == 68, "ProjectileReplaceSelf SpecialPowerTemplate import", 68, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 8) == 69, "ProjectileReplaceSelf SpecialPowerTemplate import", 69, ReadUInt32(instance, 8)); // Reborn: final BIN imports are one-biased.
         Expect(ReadUInt32(instance, 12) == 0x43480000, "ProjectileReplaceSelf StartAbilityRange", 0x43480000, ReadUInt32(instance, 12));
         Expect(ReadUInt32(instance, 32) == 0x40400000, "ProjectileReplaceSelf PackTime", 0x40400000, ReadUInt32(instance, 32));
         Expect(ReadUInt32(instance, 44) == 0x44180000, "ProjectileReplaceSelf Options", 0x44180000, ReadUInt32(instance, 44));
@@ -731,9 +735,9 @@ internal static class CompilerSmokeTest
         Expect(ReadUInt32(instance, 260) == 0x43610000, "ProjectileReplaceSelf ClearTriggerDistance", 0x43610000, ReadUInt32(instance, 260));
         Expect(ReadUInt32(instance, 264) == 0, "ProjectileReplaceSelf replacement count", 0, ReadUInt32(instance, 264));
         Expect(ReadUInt32(instance, 268) == 0, "ProjectileReplaceSelf omitted replacement pointer", 0, ReadUInt32(instance, 268));
-        Expect(ReadUInt32(instance, 272) == 69, "ProjectileReplaceSelf LaunchingWeapon import", 69, ReadUInt32(instance, 272));
+        Expect(ReadUInt32(instance, 272) == 70, "ProjectileReplaceSelf LaunchingWeapon import", 70, ReadUInt32(instance, 272)); // Reborn: final BIN imports are one-biased.
         Expect(ReadUInt32(instance, 276) == 280, "ProjectileReplaceSelf OCL relocation", 280, ReadUInt32(instance, 276));
-        Expect(ReadUInt32(instance, 280) == 71, "ProjectileReplaceSelf OCL import", 71, ReadUInt32(instance, 280));
+        Expect(ReadUInt32(instance, 280) == 72, "ProjectileReplaceSelf OCL import", 72, ReadUInt32(instance, 280)); // Reborn: final BIN imports are one-biased.
         Expect(chunk.RelocationBuffer.Length == 8, "ProjectileReplaceSelf relocation bytes", 8, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 16, "ProjectileReplaceSelf imports bytes", 16, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  ProjectileReplaceSelf bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
@@ -838,8 +842,8 @@ internal static class CompilerSmokeTest
         Expect(instance.Length == 36, "YurikoHotKeys instance bytes", 36, instance.Length);
         Expect(ReadUInt32(instance, 4) == 2, "YurikoHotKeys entry count", 2, ReadUInt32(instance, 4));
         Expect(ReadUInt32(instance, 8) == 12, "YurikoHotKeys entry relocation", 12, ReadUInt32(instance, 8));
-        Expect(ReadUInt32(instance, 12) == 1, "YurikoHotKeys first slot import", 1, ReadUInt32(instance, 12));
-        Expect(ReadUInt32(instance, 16) == 2, "YurikoHotKeys first key import", 2, ReadUInt32(instance, 16));
+        Expect(ReadUInt32(instance, 12) == 2, "YurikoHotKeys first slot import", 2, ReadUInt32(instance, 12)); // Reborn: final BIN imports are one-biased.
+        Expect(ReadUInt32(instance, 16) == 3, "YurikoHotKeys first key import", 3, ReadUInt32(instance, 16)); // Reborn: final BIN imports are one-biased.
         Expect(ReadUInt32(instance, 20) == 1, "YurikoHotKeys CTRL modifier", 1, ReadUInt32(instance, 20));
         Expect(ReadUInt32(instance, 32) == 4, "YurikoHotKeys SHIFT modifier", 4, ReadUInt32(instance, 32));
         Expect(chunk.RelocationBuffer.Length == 8, "YurikoHotKeys relocation bytes", 8, chunk.RelocationBuffer.Length);
@@ -930,11 +934,11 @@ internal static class CompilerSmokeTest
         groupTracker.MakeRelocatable(groupChunk);
         ReadOnlySpan<byte> groupInstance = groupChunk.InstanceBuffer;
         Expect(groupInstance.Length == 24, "MainMenuPersonalityGroup instance bytes", 24, groupInstance.Length);
-        Expect(ReadUInt32(groupInstance, 4) == 11, "MainMenuPersonalityGroup default import", 11, ReadUInt32(groupInstance, 4));
+        Expect(ReadUInt32(groupInstance, 4) == 12, "MainMenuPersonalityGroup default import", 12, ReadUInt32(groupInstance, 4)); // Reborn: final BIN imports are one-biased.
         Expect(ReadUInt32(groupInstance, 8) == 2, "MainMenuPersonalityGroup entry count", 2, ReadUInt32(groupInstance, 8));
         Expect(ReadUInt32(groupInstance, 12) == 16, "MainMenuPersonalityGroup entry relocation", 16, ReadUInt32(groupInstance, 12));
-        Expect(ReadUInt32(groupInstance, 16) == 12, "MainMenuPersonalityGroup first import", 12, ReadUInt32(groupInstance, 16));
-        Expect(ReadUInt32(groupInstance, 20) == 13, "MainMenuPersonalityGroup second import", 13, ReadUInt32(groupInstance, 20));
+        Expect(ReadUInt32(groupInstance, 16) == 13, "MainMenuPersonalityGroup first import", 13, ReadUInt32(groupInstance, 16)); // Reborn: final BIN imports are one-biased.
+        Expect(ReadUInt32(groupInstance, 20) == 14, "MainMenuPersonalityGroup second import", 14, ReadUInt32(groupInstance, 20)); // Reborn: final BIN imports are one-biased.
         Expect(groupChunk.RelocationBuffer.Length == 8, "MainMenuPersonalityGroup relocation bytes", 8, groupChunk.RelocationBuffer.Length);
         Expect(groupChunk.ImportsBuffer.Length == 16, "MainMenuPersonalityGroup imports bytes", 16, groupChunk.ImportsBuffer.Length);
         Console.WriteLine($"  MainMenuPersonality template={templateChunk.InstanceBuffer.Length}/{templateChunk.RelocationBuffer.Length}/{templateChunk.ImportsBuffer.Length}, group={groupChunk.InstanceBuffer.Length}/{groupChunk.RelocationBuffer.Length}/{groupChunk.ImportsBuffer.Length}");
@@ -965,7 +969,7 @@ internal static class CompilerSmokeTest
         Expect(audioInstance.Length == 128, "AudioEventOverridable instance bytes", 128, audioInstance.Length);
         Expect(ReadUInt32(audioInstance, 104) == 1, "AudioEventOverridable sound count", 1, ReadUInt32(audioInstance, 104));
         Expect(ReadUInt32(audioInstance, 108) == 120, "AudioEventOverridable sound relocation", 120, ReadUInt32(audioInstance, 108));
-        Expect(ReadUInt32(audioInstance, 120) == 23, "AudioEventOverridable sound import", 23, ReadUInt32(audioInstance, 120));
+        Expect(ReadUInt32(audioInstance, 120) == 24, "AudioEventOverridable sound import", 24, ReadUInt32(audioInstance, 120)); // Reborn: final BIN imports are one-biased.
         Expect(ReadUInt32(audioInstance, 124) == 750, "AudioEventOverridable sound weight", 750, ReadUInt32(audioInstance, 124));
         Expect(audioChunk.RelocationBuffer.Length == 8, "AudioEventOverridable relocation bytes", 8, audioChunk.RelocationBuffer.Length);
         Expect(audioChunk.ImportsBuffer.Length == 8, "AudioEventOverridable imports bytes", 8, audioChunk.ImportsBuffer.Length);
@@ -991,7 +995,7 @@ internal static class CompilerSmokeTest
         Expect(ReadUInt32(multisoundInstance, 4) == 2, "MultisoundOverridable control", 2, ReadUInt32(multisoundInstance, 4));
         Expect(ReadUInt32(multisoundInstance, 8) == 1, "MultisoundOverridable subsound count", 1, ReadUInt32(multisoundInstance, 8));
         Expect(ReadUInt32(multisoundInstance, 12) == 16, "MultisoundOverridable subsound relocation", 16, ReadUInt32(multisoundInstance, 12));
-        Expect(ReadUInt32(multisoundInstance, 16) == 31, "MultisoundOverridable subsound import", 31, ReadUInt32(multisoundInstance, 16));
+        Expect(ReadUInt32(multisoundInstance, 16) == 32, "MultisoundOverridable subsound import", 32, ReadUInt32(multisoundInstance, 16)); // Reborn: final BIN imports are one-biased.
         Expect(ReadUInt32(multisoundInstance, 20) == 500, "MultisoundOverridable subsound weight", 500, ReadUInt32(multisoundInstance, 20));
         Expect(multisoundChunk.RelocationBuffer.Length == 8, "MultisoundOverridable relocation bytes", 8, multisoundChunk.RelocationBuffer.Length);
         Expect(multisoundChunk.ImportsBuffer.Length == 8, "MultisoundOverridable imports bytes", 8, multisoundChunk.ImportsBuffer.Length);
@@ -1029,10 +1033,10 @@ internal static class CompilerSmokeTest
         uint generalOffset = ReadUInt32(instance, 12);
         uint scenarioOffset = ReadUInt32(instance, 20);
         uint campaignOffset = ReadUInt32(instance, 28);
-        Expect(ReadUInt32(instance, checked((int)generalOffset + 8)) == 11, "GeneralArchiveMovie preview import", 11, ReadUInt32(instance, checked((int)generalOffset + 8)));
-        Expect(ReadUInt32(instance, checked((int)scenarioOffset + 8)) == 12, "ScenarioArchiveMovie preview import", 12, ReadUInt32(instance, checked((int)scenarioOffset + 8)));
+        Expect(ReadUInt32(instance, checked((int)generalOffset + 8)) == 12, "GeneralArchiveMovie preview import", 12, ReadUInt32(instance, checked((int)generalOffset + 8))); // Reborn: final BIN imports are one-biased.
+        Expect(ReadUInt32(instance, checked((int)scenarioOffset + 8)) == 13, "ScenarioArchiveMovie preview import", 13, ReadUInt32(instance, checked((int)scenarioOffset + 8))); // Reborn: final BIN imports are one-biased.
         Expect(ReadUInt32(instance, checked((int)scenarioOffset + 36)) == 1, "ScenarioArchiveMovie unlock", 1, ReadUInt32(instance, checked((int)scenarioOffset + 36)));
-        Expect(ReadUInt32(instance, checked((int)campaignOffset + 8)) == 13, "CampaignArchiveMovie preview import", 13, ReadUInt32(instance, checked((int)campaignOffset + 8)));
+        Expect(ReadUInt32(instance, checked((int)campaignOffset + 8)) == 14, "CampaignArchiveMovie preview import", 14, ReadUInt32(instance, checked((int)campaignOffset + 8))); // Reborn: final BIN imports are one-biased.
         Expect(ReadUInt32(instance, checked((int)campaignOffset + 36)) == 3, "CampaignArchiveMovie faction", 3, ReadUInt32(instance, checked((int)campaignOffset + 36)));
         Expect(ReadUInt32(instance, checked((int)campaignOffset + 40)) == 3, "CampaignArchiveMovie progress lock", 3, ReadUInt32(instance, checked((int)campaignOffset + 40)));
         Expect(chunk.RelocationBuffer.Length == 64, "UIComponentMovieArchive relocation bytes", 64, chunk.RelocationBuffer.Length);
@@ -1068,11 +1072,11 @@ internal static class CompilerSmokeTest
         Expect(ReadUInt32(previewInstance, 4) == 3, "UIScenarioMapPreview faction count", 3, ReadUInt32(previewInstance, 4));
         Expect(ReadUInt32(previewInstance, 8) == 12, "UIScenarioMapPreview faction relocation", 12, ReadUInt32(previewInstance, 8));
         Expect(ReadUInt32(previewInstance, 12) == 0, "UIScenarioMapPreview Allies value", 0, ReadUInt32(previewInstance, 12));
-        Expect(ReadUInt32(previewInstance, 16) == 21, "UIScenarioMapPreview Allies image", 21, ReadUInt32(previewInstance, 16));
+        Expect(ReadUInt32(previewInstance, 16) == 22, "UIScenarioMapPreview Allies image", 22, ReadUInt32(previewInstance, 16)); // Reborn: image references use one-biased final imports.
         Expect(ReadUInt32(previewInstance, 20) == 1, "UIScenarioMapPreview Soviet value", 1, ReadUInt32(previewInstance, 20));
-        Expect(ReadUInt32(previewInstance, 24) == 22, "UIScenarioMapPreview Soviet image", 22, ReadUInt32(previewInstance, 24));
+        Expect(ReadUInt32(previewInstance, 24) == 23, "UIScenarioMapPreview Soviet image", 23, ReadUInt32(previewInstance, 24)); // Reborn: image references use one-biased final imports.
         Expect(ReadUInt32(previewInstance, 28) == 2, "UIScenarioMapPreview Japan value", 2, ReadUInt32(previewInstance, 28));
-        Expect(ReadUInt32(previewInstance, 32) == 23, "UIScenarioMapPreview Japan image", 23, ReadUInt32(previewInstance, 32));
+        Expect(ReadUInt32(previewInstance, 32) == 24, "UIScenarioMapPreview Japan image", 24, ReadUInt32(previewInstance, 32)); // Reborn: image references use one-biased final imports.
         Expect(previewChunk.RelocationBuffer.Length == 8, "UIScenarioMapPreview relocation bytes", 8, previewChunk.RelocationBuffer.Length);
         Expect(previewChunk.ImportsBuffer.Length == 16, "UIScenarioMapPreview imports bytes", 16, previewChunk.ImportsBuffer.Length);
 
@@ -1146,11 +1150,11 @@ internal static class CompilerSmokeTest
         Expect(instance[checked((int)scenarioOffset + 93)] == 1, "ScenarioTemplate critical flag", 1, instance[checked((int)scenarioOffset + 93)]);
         Expect(instance[checked((int)scenarioOffset + 94)] == 1, "ScenarioTemplate crates flag", 1, instance[checked((int)scenarioOffset + 94)]);
         uint enemyOffset = ReadUInt32(instance, checked((int)scenarioOffset + 80));
-        Expect(ReadUInt32(instance, checked((int)enemyOffset)) == 11, "ScenarioEnemy faction import", 11, ReadUInt32(instance, checked((int)enemyOffset)));
-        Expect(ReadUInt32(instance, checked((int)enemyOffset + 4)) == 12, "ScenarioEnemy personality import", 12, ReadUInt32(instance, checked((int)enemyOffset + 4)));
-        Expect(ReadUInt32(instance, checked((int)enemyOffset + 8)) == 13, "ScenarioEnemy portrait import", 13, ReadUInt32(instance, checked((int)enemyOffset + 8)));
+        Expect(ReadUInt32(instance, checked((int)enemyOffset)) == 12, "ScenarioEnemy faction import", 12, ReadUInt32(instance, checked((int)enemyOffset))); // Reborn: final BIN imports are one-biased.
+        Expect(ReadUInt32(instance, checked((int)enemyOffset + 4)) == 13, "ScenarioEnemy personality import", 13, ReadUInt32(instance, checked((int)enemyOffset + 4))); // Reborn: final BIN imports are one-biased.
+        Expect(ReadUInt32(instance, checked((int)enemyOffset + 8)) == 14, "ScenarioEnemy portrait import", 14, ReadUInt32(instance, checked((int)enemyOffset + 8))); // Reborn: final BIN imports are one-biased.
         Expect(ReadUInt32(instance, checked((int)enemyOffset + 12)) == 2, "ScenarioEnemy difficulty", 2, ReadUInt32(instance, checked((int)enemyOffset + 12)));
-        Expect(ReadUInt32(instance, checked((int)unlockableOffset)) == 14, "UnlockableUnit faction import", 14, ReadUInt32(instance, checked((int)unlockableOffset)));
+        Expect(ReadUInt32(instance, checked((int)unlockableOffset)) == 15, "UnlockableUnit faction import", 15, ReadUInt32(instance, checked((int)unlockableOffset))); // Reborn: final imports reserve zero for null.
         Expect(chunk.RelocationBuffer.Length == 52, "ScenarioManagerData relocation bytes", 52, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 20, "ScenarioManagerData imports bytes", 20, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  ScenarioManager bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
@@ -1229,9 +1233,9 @@ internal static class CompilerSmokeTest
         ReadOnlySpan<byte> instance = proximityChunk.InstanceBuffer;
         Expect(instance.Length == 28, "proximity music condition instance bytes", 28, instance.Length);
         Expect(ReadUInt32(instance, 4) == 0x3F19999A, "proximity check interval", 0x3F19999A, ReadUInt32(instance, 4));
-        Expect(ReadUInt32(instance, 8) == 1, "proximity type A import", 1, ReadUInt32(instance, 8));
+        Expect(ReadUInt32(instance, 8) == 2, "proximity type A import", 2, ReadUInt32(instance, 8)); // Reborn: final BIN imports are one-biased.
         Expect(ReadUInt32(instance, 12) == 1, "proximity type A count", 1, ReadUInt32(instance, 12));
-        Expect(ReadUInt32(instance, 16) == 2, "proximity type B import", 2, ReadUInt32(instance, 16));
+        Expect(ReadUInt32(instance, 16) == 3, "proximity type B import", 3, ReadUInt32(instance, 16)); // Reborn: final BIN imports are one-biased.
         Expect(ReadUInt32(instance, 20) == 3, "proximity type B count", 3, ReadUInt32(instance, 20));
         Expect(ReadUInt32(instance, 24) == 0x43960000, "proximity distance", 0x43960000, ReadUInt32(instance, 24));
         Expect(proximityChunk.RelocationBuffer.Length == 0, "proximity music condition relocation bytes", 0, proximityChunk.RelocationBuffer.Length);
@@ -1804,7 +1808,7 @@ internal static class CompilerSmokeTest
         Expect(bytes.Length == 344, "Slaughter instance bytes", 344, bytes.Length);
         Expect(ReadUInt32(bytes, 184) == 0x3E800000, "Slaughter refund 25 percent", 0x3E800000, ReadUInt32(bytes, 184));
         Expect(ReadUInt32(bytes, 188) == 2, "Slaughter allowed status", 2, ReadUInt32(bytes, 188));
-        Expect(ReadUInt32(bytes, 220) == 123, "Slaughter FX token", 123, ReadUInt32(bytes, 220));
+        Expect(ReadUInt32(bytes, 220) == 124, "Slaughter FX token", 124, ReadUInt32(bytes, 220)); // Reborn: final import indices reserve zero for null.
         Expect(ReadUInt32(bytes, 228) == 1, "Slaughter filter rule", 1, ReadUInt32(bytes, 228));
         Expect(slaughterChunk.RelocationBuffer.Length == 0 && slaughterChunk.ImportsBuffer.Length == 8, "Slaughter FX import bytes", 8, slaughterChunk.ImportsBuffer.Length);
         Expect(ReadUInt32(slaughterChunk.ImportsBuffer, 0) == 220, "Slaughter FX import slot", 220, ReadUInt32(slaughterChunk.ImportsBuffer, 0));
@@ -1861,7 +1865,7 @@ internal static class CompilerSmokeTest
         ReadOnlySpan<byte> bytes = chunk.InstanceBuffer;
         Expect(bytes.Length == 592, "Horde instance bytes", 592, bytes.Length);
         Expect(ReadUInt32(bytes, 364) == 0x42700000, "Horde default leash", 0x42700000, ReadUInt32(bytes, 364));
-        Expect(ReadUInt32(bytes, 372) == 123, "Horde EVA token", 123, ReadUInt32(bytes, 372));
+        Expect(ReadUInt32(bytes, 372) == 124, "Horde EVA token", 124, ReadUInt32(bytes, 372)); // Reborn: final import indices reserve zero for null.
         Expect(ReadUInt32(bytes, 424) == 2 && bytes[520] == 1 && bytes[521] == 0, "Horde status and defaults", 2, ReadUInt32(bytes, 424));
         Expect(ReadUInt32(bytes, 460) == 2 && ReadUInt32(bytes, 464) == 524, "Horde rank list", 524, ReadUInt32(bytes, 464));
         Expect(ReadUInt32(bytes, 524) == 1 && ReadUInt32(bytes, 540) == 2, "Horde rank stride", 2, ReadUInt32(bytes, 540));
@@ -1870,7 +1874,7 @@ internal static class CompilerSmokeTest
         Expect(ReadUInt32(bytes, 536) == 556 && ReadUInt32(bytes, 552) == 572, "Horde nested positions", 572, ReadUInt32(bytes, 552));
         Expect(ReadUInt32(bytes, 556) == 0x40000000 && ReadUInt32(bytes, 576) == 0x40400000, "Horde position values", 0x40400000, ReadUInt32(bytes, 576));
         Expect(ReadUInt32(bytes, 564) == uint.MaxValue && ReadUInt32(bytes, 580) == uint.MaxValue, "Horde default leader rank", -1, ReadUInt32(bytes, 580));
-        Expect(ReadUInt32(bytes, 516) == 588 && ReadUInt32(bytes, 588) == 456, "Horde modifier reference", 456, ReadUInt32(bytes, 588));
+        Expect(ReadUInt32(bytes, 516) == 588 && ReadUInt32(bytes, 588) == 457, "Horde modifier reference", 457, ReadUInt32(bytes, 588)); // Reborn: bias the import value, not its pointer.
         Expect(chunk.RelocationBuffer.Length == 20 && chunk.ImportsBuffer.Length == 12, "Horde relocation and imports", 20, chunk.RelocationBuffer.Length);
         Expect(ReadUInt32(chunk.ImportsBuffer, 0) == 372 && ReadUInt32(chunk.ImportsBuffer, 4) == 588, "Horde import slots", 588, ReadUInt32(chunk.ImportsBuffer, 4));
         Console.WriteLine($"  HordeContain bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
@@ -2004,6 +2008,14 @@ internal static class CompilerSmokeTest
     }
 
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: guard the shared one-biased import serializer using full normalized modifier documents. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestModifierImports()
+    {
+        AttributeModifierImportSmokeTest.Run(Array.Empty<string>());
+    }
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: validate external linking with isolated tiny metadata fixtures, never game BIN streams. */
     //-------------------------------------------------------------------------------------------------
     private static void TestExternalManifestLinks()
@@ -2046,13 +2058,13 @@ internal static class CompilerSmokeTest
         ReadOnlySpan<byte> bytes = chunk.InstanceBuffer;
         Expect(bytes.Length == 144, "Infiltrator bytes", 144, bytes.Length);
         Expect(ReadUInt32(bytes, 8) == 0x40000000, "Infiltrator blocked duration", 0x40000000, ReadUInt32(bytes, 8));
-        Expect(ReadUInt32(bytes, 44) == 123 && ReadUInt32(bytes, 48) == 234, "Infiltrator inline references", 234, ReadUInt32(bytes, 48));
+        Expect(ReadUInt32(bytes, 44) == 124 && ReadUInt32(bytes, 48) == 235, "Infiltrator inline references", 235, ReadUInt32(bytes, 48)); // Reborn: final imports are one-biased.
         Expect(ReadUInt32(bytes, 52) == FastHash.GetHashCode("VoiceInfiltrate"), "Infiltrator voice hash", unchecked((int)FastHash.GetHashCode("VoiceInfiltrate")), ReadUInt32(bytes, 52));
-        Expect(ReadUInt32(bytes, 60) == 345 && ReadUInt32(bytes, 64) == 456 && ReadUInt32(bytes, 68) == 567, "Infiltrator EVA and FX references", 567, ReadUInt32(bytes, 68));
+        Expect(ReadUInt32(bytes, 60) == 346 && ReadUInt32(bytes, 64) == 457 && ReadUInt32(bytes, 68) == 568, "Infiltrator EVA and FX references", 568, ReadUInt32(bytes, 68)); // Reborn: final imports are one-biased.
         Expect(ReadUInt32(bytes, 84) == 8, "Infiltrator effect ordering", 8, ReadUInt32(bytes, 84));
         Expect(ReadUInt32(bytes, 88) == FastHash.GetHashCode("testinfiltrator"), "Infiltrator weak ID", unchecked((int)FastHash.GetHashCode("testinfiltrator")), ReadUInt32(bytes, 88));
         Expect(ReadUInt32(bytes, 92) == 136 && ReadUInt32(bytes, 96) == 140, "Infiltrator optional reference pointers", 140, ReadUInt32(bytes, 96));
-        Expect(ReadUInt32(bytes, 136) == 678 && ReadUInt32(bytes, 140) == 789 && bytes[132] == 1, "Infiltrator pointed references and enable", 789, ReadUInt32(bytes, 140));
+        Expect(ReadUInt32(bytes, 136) == 679 && ReadUInt32(bytes, 140) == 790 && bytes[132] == 1, "Infiltrator pointed references and enable", 790, ReadUInt32(bytes, 140)); // Reborn: bias pointed import values only.
         int noRefund = (int)ObjectStatusType.NO_REFUND;
         Expect((ReadUInt32(bytes, 100 + noRefund / 32 * 4) & (1u << (noRefund % 32))) != 0, "Infiltrator default NO_REFUND", 1, 1);
         Expect(chunk.RelocationBuffer.Length == 12 && chunk.ImportsBuffer.Length == 32, "Infiltrator tables", 32, chunk.ImportsBuffer.Length);
@@ -2089,8 +2101,8 @@ internal static class CompilerSmokeTest
         ReadOnlySpan<byte> bytes = chunk.InstanceBuffer;
         Expect(bytes.Length == 136, "Laser populated bytes", 136, bytes.Length);
         Expect(ReadUInt32(bytes, 8) == 7 && ReadUInt32(bytes, 16) == 48 && bytes[48] == (byte)'A', "Laser ID and bone", 48, ReadUInt32(bytes, 16));
-        Expect(ReadUInt32(bytes, 20) == 1 && ReadUInt32(bytes, 24) == 52 && ReadUInt32(bytes, 52) == 123, "Laser end list", 123, ReadUInt32(bytes, 52));
-        Expect(ReadUInt32(bytes, 28) == 1 && ReadUInt32(bytes, 32) == 56 && ReadUInt32(bytes, 56) == 456, "Laser start list", 456, ReadUInt32(bytes, 56));
+        Expect(ReadUInt32(bytes, 20) == 1 && ReadUInt32(bytes, 24) == 52 && ReadUInt32(bytes, 52) == 124, "Laser end list", 124, ReadUInt32(bytes, 52)); // Reborn: preserve list offsets while biasing imports.
+        Expect(ReadUInt32(bytes, 28) == 1 && ReadUInt32(bytes, 32) == 56 && ReadUInt32(bytes, 56) == 457, "Laser start list", 457, ReadUInt32(bytes, 56)); // Reborn: preserve list offsets while biasing imports.
         Expect(ReadUInt32(bytes, 36) == 60 && ReadUInt32(bytes, 40) == 72 && bytes[44] == 1, "Laser optional pointers and weapon default", 72, ReadUInt32(bytes, 40));
         Expect(ReadUInt32(bytes, 60) == 0x3F800000 && ReadUInt32(bytes, 68) == 0x40400000, "Laser vector", 0x40400000, ReadUInt32(bytes, 68));
         Expect(chunk.RelocationBuffer.Length == 24 && chunk.ImportsBuffer.Length == 12, "Laser populated tables", 24, chunk.RelocationBuffer.Length);
@@ -2220,7 +2232,7 @@ internal static class CompilerSmokeTest
                 Expect(ReadUInt32(bytes, 368) == 2 && ReadUInt32(bytes, 400) == 2, "Attach pointed statuses", 2, ReadUInt32(bytes, 400));
                 Expect(ReadUInt32(bytes, 336) == 432 && ReadUInt32(bytes, 340) == 440, "Attach leech mask pointers", 440, ReadUInt32(bytes, 340));
                 Expect(ReadUInt32(bytes, 348) == 448 && ReadUInt32(bytes, 356) == 568, "Attach filter and modifier pointers", 568, ReadUInt32(bytes, 356));
-                Expect(ReadUInt32(bytes, 244) == 123 && ReadUInt32(bytes, 260) == 456 && ReadUInt32(bytes, 568) == 789, "Attach imported tokens", 789, ReadUInt32(bytes, 568));
+                Expect(ReadUInt32(bytes, 244) == 124 && ReadUInt32(bytes, 260) == 457 && ReadUInt32(bytes, 568) == 790, "Attach imported tokens", 790, ReadUInt32(bytes, 568)); // Reborn: final BIN imports are one-biased.
                 // Reborn: exercise EP1's added bone string as well as its high-order USE_BONE_POSITION flag.
                 Expect(ReadUInt32(bytes, 364) == 572 && bytes[572] == (byte)'A', "Attach EP1 bone string", 572, ReadUInt32(bytes, 364));
                 Expect(chunk.RelocationBuffer.Length == 32 && chunk.ImportsBuffer.Length == 16, "Attach pointer and import tables", 32, chunk.RelocationBuffer.Length);

@@ -154,12 +154,14 @@ internal static class ReferencePipelineSmokeTest
         for (int index = 0; index < slots.Length; index++)
         {
             uint dependencyIndex = BinaryPrimitives.ReadUInt32LittleEndian(chunk.InstanceBuffer.AsSpan(slots[index]));
-            Require(dependencyIndex < instance.ReferencedInstances.Count && instance.ReferencedInstances[(int)dependencyIndex].Name == names[index], "Default reference does not select its correct dependency.");
+            // Reborn: normalized XML stays zero-based but the final import word is one-biased, reserving zero for null.
+            Require(dependencyIndex > 0 && dependencyIndex <= instance.ReferencedInstances.Count
+                && instance.ReferencedInstances[(int)dependencyIndex - 1].Name == names[index], "Default reference does not select its correct dependency.");
             Require(BinaryPrimitives.ReadUInt32LittleEndian(chunk.ImportsBuffer.AsSpan(index * 4)) == slots[index], "Default import slot differs.");
         }
         Require(BinaryPrimitives.ReadUInt32LittleEndian(chunk.ImportsBuffer.AsSpan(16)) == uint.MaxValue, "Default import sentinel is missing.");
         Require(BinaryPrimitives.ReadUInt32LittleEndian(chunk.InstanceBuffer.AsSpan(88)) == FastHash.GetHashCode("testinfiltrator"), "Typed weak reference hashes the wrong name.");
-        Console.WriteLine("  Schema-default InfiltratorContain=136/0/20 (four resolved imports, including dependency index zero)");
+        Console.WriteLine("  Schema-default InfiltratorContain=136/0/20 (four resolved imports; first XML index zero encodes as BIN word one)");
         return chunk;
     }
 

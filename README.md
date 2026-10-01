@@ -16,7 +16,7 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **784/1,390** EP1 complex types have models and
 **760/1,390** have typed marshallers. The compiler test runner invokes
-**60 test groups** (some contain several fixtures). These counters can grow
+**61 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. In this work block, model and
@@ -33,6 +33,7 @@ marshaller counts are unchanged; registered test groups increased by one.
 
 ### Recently completed
 
+- Corrected shared final import encoding: core XML indices remain zero-based, but BIN values are dependency-index + 1 (zero means null). Restored AttributeModifier's optional Shader pointer. Four import-bearing stock EP1 assets now match all native chunks and ordered dependency identities exactly; the no-dependency experimental profile remains restricted. Added boundary/null/repeated-serialization tests and invalidated old intermediate identities. See [import encoding proof](docs/RA3EP1_ATTRIBUTE_MODIFIER_IMPORTS.md).
 - Added an isolated opt-in EP1 AttributeModifier profile for the validated no-dependency subset. Eight compiler-entry outputs match the native proof; real document stages preserve defaults and reject stale experimental reuse. Detached schema revalidation handles core TypeId insertion without trusting stale validity flags. Production, binary-cache and precompiled/session reuse remain denied. See [modifier profile](docs/RA3EP1_ATTRIBUTE_MODIFIER_PROFILE.md).
 - Matched eight AttributeModifier assets byte-for-byte against real EP1 static/WorldBuilder BIN/RELO/IMP slices, including BLAT_TRIGGER and RADIATION_ARMOR. Fixed absent optional model masks incorrectly allocating 120 extra bytes; advanced the legacy processor cache revision without changing its KW type hashes. This establishes a second focused root-processor proof, not production registration. See [modifier native proof](docs/RA3EP1_ATTRIBUTE_MODIFIER_NATIVE.md).
 - Proved document metadata reuse/reload across resident, plain-XML and compressed sessions. Reported same-signature XML/dependency edits and timestamp-preserving dependency size changes reload the source and change identity; quiet documents remain reusable. Fixed a real crash when cached documents have null stream hints. Deleted live dependencies reject rather than silently retaining stale metadata. See [document reuse proof](docs/RA3EP1_DOCUMENT_REUSE.md).
@@ -114,7 +115,7 @@ in-game loading. Overall effort remains approximately 50% complete.
 Previous reference-block verification: full Release/x86 dependency rebuild, final inspector
 rebuild, layout tests, all 46 compiler groups and 33 enum mappings pass.
 The schema-default infiltrator fixture produces `136/0/20`, including a real
-import at dependency index zero. Repeated runs produce identical native chunks
+import selecting dependency index zero (now correctly encoded as BIN word one). Repeated runs produce identical native chunks
 and dependency identities; a previous-revision session cache is rejected.
 Inherited reference types, attribute overrides, invalid explicit types and
 typed/trimmed weak names are regression-tested. The four default targets exist
