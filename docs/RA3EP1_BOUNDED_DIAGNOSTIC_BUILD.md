@@ -184,7 +184,8 @@ Overall effort remains approximately 50%; this command is not a playable mod.
   tentative selection example.
 - Program: diagnostic-build and diagnostic-build-self-test command dispatch.
 
-Next investigate the native FXList processor: existing external FX evidence is
-metadata-only, not compilable local FX output. Production stream lifecycle,
+The later [native FX proof](RA3EP1_FX_NATIVE.md) recovers the optional-pointer base
+and three exact stock chunks. FX is still excluded here until an isolated profile
+proves concrete derived audio dependency resolution. Production stream lifecycle,
 FX custom processing, complete EP1 type identity, cache/inheritance, SDK and
 WorldBuilder packaging and Uprising runtime loading still require separate proof.

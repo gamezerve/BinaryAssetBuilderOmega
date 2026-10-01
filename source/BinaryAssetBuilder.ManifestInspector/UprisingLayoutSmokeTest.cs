@@ -7,6 +7,14 @@ internal static class UprisingLayoutSmokeTest
     public static void Run()
     {
         TestPatchManifestTotals();
+        // Reborn: pin the recovered FX optional-pointer base independently of EP1's 60-byte pointed-to condition masks.
+        ExpectSize<SageBinaryData.FXList>(28);
+        ExpectSize<SageBinaryData.FXNugget>(44);
+        ExpectSize<SageBinaryData.SoundFXNugget>(48);
+        ExpectSize<SageBinaryData.ViewShakeFXNugget>(48);
+        ExpectOffset<SageBinaryData.FXNugget>(nameof(SageBinaryData.FXNugget.Weather), 20);
+        ExpectOffset<SageBinaryData.FXNugget>(nameof(SageBinaryData.FXNugget.SecondaryObjectFilter), 24);
+        ExpectOffset<SageBinaryData.FXNugget>(nameof(SageBinaryData.FXNugget.StopIfPlayed), 40);
         // Reborn: lock infiltrator mask growth and the recovered EP1 laser inheritance chain.
         ExpectSize<SageBinaryData.InfiltratorContainModuleData>(136);
         ExpectOffset<SageBinaryData.InfiltratorContainModuleData>(nameof(SageBinaryData.InfiltratorContainModuleData.UnitFilter), 92);

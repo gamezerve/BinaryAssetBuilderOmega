@@ -14,7 +14,8 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(FXNugget.RequiredSourceModelConditions), null), &objT->RequiredSourceModelConditions, state);
         Marshal(node.GetAttributeValue(nameof(FXNugget.ExcludedSourceModelConditions), null), &objT->ExcludedSourceModelConditions, state);
         Marshal(node.GetAttributeValue(nameof(FXNugget.StopIfPlayed), null), &objT->StopIfPlayed, state);
-        Marshal(node.GetAttributeValue(nameof(FXNugget.Weather), "WEATHER"), &objT->Weather, state);
+        // Reborn: use the official INVALID weather default even for schema-free native test entry points.
+        Marshal(node.GetAttributeValue(nameof(FXNugget.Weather), "INVALID"), &objT->Weather, state);
         Marshal(node.GetAttributeValue(nameof(FXNugget.OnlyIfOnLand), "false"), &objT->OnlyIfOnLand, state);
         Marshal(node.GetAttributeValue(nameof(FXNugget.PlayIfSourceIsStealthed), "false"), &objT->PlayIfSourceIsStealthed, state);
         Marshal(node.GetChildNode(nameof(FXNugget.SecondaryObjectFilter), null), &objT->SecondaryObjectFilter, state);

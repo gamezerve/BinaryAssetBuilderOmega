@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: preserve selected official Uprising literals for native root/sound/mask proof, not runnable FX production registration. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+ <FXList id="FX_NONE"><NuggetList /></FXList>
+ <FXList id="FX_DebrisHitGround"><NuggetList><Sound Value="ImpactDebrisHitsGround" /></NuggetList></FXList>
+ <FXList id="FX_ALL_AntiGroundAircraft_VoiceDie"><NuggetList>
+  <Sound RequiredSourceModelConditions="FLYING" Value="TEMP_RA2_AlliedAir_VoiceCrash" />
+  <Sound ExcludedSourceModelConditions="FLYING" Value="GDI_Generic_VoiceDieMS" />
+ </NuggetList></FXList>
+</AssetDeclaration>

@@ -19,7 +19,8 @@ public class Plugin : IAssetBuilderPlugin
     // private static readonly int _win32 = 0;
     private static readonly int _xbox360 = 2;
     // Reborn: invalidate intermediate identities compiled before final import bias and optional AttributeModifier Shader pointers matched EA.
-    private static readonly int _xmlCompilerVersion = 3;
+    // Reborn: invalidate legacy intermediates after correcting the shared polymorphic FX base's optional mask layout.
+    private static readonly int _xmlCompilerVersion = 4;
     private static readonly IDictionary<uint, MethodInfo> _handleMethods = new SortedDictionary<uint, MethodInfo>();
     private static readonly IDictionary<uint, Delegate> _marshalMethods = new SortedDictionary<uint, Delegate>();
     private static readonly IDictionary<uint, ExtendedTypeInformation> _extendedTypeInformations = new SortedDictionary<uint, ExtendedTypeInformation>();

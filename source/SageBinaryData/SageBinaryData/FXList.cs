@@ -8,10 +8,11 @@ namespace SageBinaryData
     public struct FXNugget : IPolymorphic
     {
         public uint TypeId;
-        public ModelConditionBitFlags RequiredSecondaryModelConditions;
-        public ModelConditionBitFlags ExcludedSecondaryModelConditions;
-        public ModelConditionBitFlags RequiredSourceModelConditions;
-        public ModelConditionBitFlags ExcludedSourceModelConditions;
+        // Reborn: EA's 44-byte FX base stores optional mask pointers; EP1 mask growth belongs in pointed-to allocations, not this root.
+        public unsafe ModelConditionBitFlags* RequiredSecondaryModelConditions;
+        public unsafe ModelConditionBitFlags* ExcludedSecondaryModelConditions;
+        public unsafe ModelConditionBitFlags* RequiredSourceModelConditions;
+        public unsafe ModelConditionBitFlags* ExcludedSourceModelConditions;
         public WeatherType Weather;
         public unsafe ObjectFilter* SecondaryObjectFilter;
         public unsafe ObjectFilter* SourceObjectFilter;

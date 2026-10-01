@@ -93,7 +93,7 @@ internal static class AttributeModifierNativeSmokeTest
             Plugin plugin = new();
             plugin.ReInitialize(TargetPlatform.Win32);
             ExtendedTypeInformation info = plugin.GetExtendedTypeInformation(0xC5E07887u);
-            Require(plugin.VersionNumber == 3 && info.ProcessingHash == (0x8C925761u ^ 3u)
+            Require(plugin.VersionNumber == 4 && info.ProcessingHash == (0x8C925761u ^ 4u)
                 && info.TypeHash == 0x8C925761u && plugin.AllTypesHash == 0x12B3E763u,
                 "Legacy processor revision or unchanged KW type identity policy differs.");
         }

@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: native FX proof reads selected stock slices and never enables production processors.
+            if (args.FirstOrDefault() == "fx-native-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                FXListNativeSmokeTest.Run(args.Skip(1).ToArray());
+                return 0;
+            }
             // Reborn: exercise bounded input/publication and Include guards without accepting production SDK builds.
             if (args.Length == 1 && args[0] == "diagnostic-build-self-test")
             {
@@ -642,6 +649,8 @@ internal static class Program
         Console.WriteLine("  current-layout <SageBinaryData-type-name>");
         Console.WriteLine("  layout-self-test");
         Console.WriteLine("  compiler-self-test");
+        // Reborn: compare only selected native FX chunks while keeping FX processor registration closed.
+        Console.WriteLine("  fx-native-self-test [ep1-static-manifest ...]");
         // Reborn: manifest arguments validate dependency identities without reading their BIN payloads.
         Console.WriteLine("  reference-self-test <schema-fixture> [ep1-manifest ...]");
         // Reborn: external-link checks create only tiny test manifests in the specified artifact directory.

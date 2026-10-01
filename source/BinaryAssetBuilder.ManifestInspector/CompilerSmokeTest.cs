@@ -90,6 +90,8 @@ internal static class CompilerSmokeTest
         TestDiagnosticIncludeBuild();
         // Reborn: weak filter IDs must survive three-family command serialization without invented strong imports.
         TestDiagnosticFilterBuild();
+        // Reborn: recover native FX root/polymorphic base before opening a runnable processor profile.
+        TestFXListNative();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -2090,6 +2092,11 @@ internal static class CompilerSmokeTest
     /** Reborn: prove native filter output and weak reference semantics through the public diagnostic build service. */
     //-------------------------------------------------------------------------------------------------
     private static void TestDiagnosticFilterBuild() => DiagnosticFilterBuildSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify optional FX base masks and source-normalized native chunks with production registration disabled. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestFXListNative() => FXListNativeSmokeTest.Run(Array.Empty<string>());
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate external linking with isolated tiny metadata fixtures, never game BIN streams. */
