@@ -33,12 +33,20 @@ snapshot was held while several shared-layout fixes accumulated. This snapshot
 reassesses the native-layout workstream from 53% to 55% after the containment
 audit and attach base recovery, giving roughly 50% overall. End-to-end game
 validation is still at zero. Observable counters are reported separately:
-the compiler self-test currently invokes 62 test groups (some have multiple
+the compiler self-test currently invokes 63 test groups (some have multiple
 fixtures), and the structural coverage script reports the inventory above.
 Neither counter proves runtime compatibility or replaces final type-table gates.
 The coverage script now emits `CompilerTestGroupsDeclared`, counting registered
 groups without executing them. This block adds one test group and leaves model/
-marshaller counts unchanged relative to its starting snapshot (784/760 and 61 groups).
+marshaller counts unchanged relative to its starting snapshot (784/760 and 62 groups).
+
+The [ObjectFilter native proof](RA3EP1_OBJECT_FILTER_NATIVE.md) matches eleven
+source-derived infiltration filters to real stock chunks. The 124-byte inline
+root and four-byte ordered weak IDs survive actual schema/default/reference
+document normalization. Optional status/exclusion allocations have separate
+synthetic coverage, not stock golden proof. This third asset-family subset remains
+unregistered; inheritance, complete filter combinations and production activation
+remain open. Overall effort remains approximately 50%.
 
 The [output dependency retry proof](RA3EP1_DEPENDENCY_RESOLUTION.md) reproduces
 and fixes a real strict-validation bypass in AddOutputInstance. The first missing

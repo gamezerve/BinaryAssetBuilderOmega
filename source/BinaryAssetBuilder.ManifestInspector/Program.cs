@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: prove native ObjectFilter root output and optional stock slices without enabling production processors.
+            if (args.FirstOrDefault() == "object-filter-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                ObjectFilterNativeSmokeTest.Run(args.Skip(1).ToArray());
+                return 0;
+            }
             // Reborn: run actual dependency preparation retry/mapping checks without authorizing output emission.
             if (args.Length == 1 && args[0] == "dependency-resolution-self-test")
             {
@@ -538,6 +545,8 @@ internal static class Program
         Console.WriteLine("  dependency-hash-self-test");
         // Reborn: this checks strict output dependency metadata, not production compiler readiness.
         Console.WriteLine("  dependency-resolution-self-test");
+        // Reborn: optional real manifests require all eleven source-derived filter goldens.
+        Console.WriteLine("  object-filter-self-test [ep1-static-manifest ...]");
         // Reborn: watcher fixtures own only temporary files and use deterministic callback injection.
         Console.WriteLine("  watcher-cache-self-test");
         // Reborn: atomic batch fixtures test event conservation without writing game/compiler output.

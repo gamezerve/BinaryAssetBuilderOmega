@@ -71,6 +71,8 @@ internal static class CompilerSmokeTest
         TestModifierImports();
         // Reborn: output dependency retries must never trust partially validated or unmapped external targets.
         TestDependencyResolution();
+        // Reborn: validate the inline ObjectFilter root and ordered weak lists before any EP1 registration.
+        TestObjectFilterNative();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -2021,6 +2023,11 @@ internal static class CompilerSmokeTest
     /** Reborn: exercise the production dependency preparation seam independently of experimental output authorization. */
     //-------------------------------------------------------------------------------------------------
     private static void TestDependencyResolution() => DependencyResolutionSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: add source/default/native filter coverage without requiring local game files in the regression suite. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestObjectFilterNative() => ObjectFilterNativeSmokeTest.Run(Array.Empty<string>());
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate external linking with isolated tiny metadata fixtures, never game BIN streams. */

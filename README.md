@@ -16,7 +16,7 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **784/1,390** EP1 complex types have models and
 **760/1,390** have typed marshallers. The compiler test runner invokes
-**62 test groups** (some contain several fixtures). These counters can grow
+**63 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. In this work block, model and
@@ -33,6 +33,7 @@ marshaller counts are unchanged; registered test groups increased by one.
 
 ### Recently completed
 
+- Matched eleven ObjectFilterAsset roots byte-for-byte against stock EP1 BIN/RELO/IMP slices. Real document default/weak-reference normalization preserves the same output; separate synthetic checks cover optional status masks and include/exclude lists. This is the third focused asset-family proof, not production registration or proof of inherited filters. See [ObjectFilter native proof](docs/RA3EP1_OBJECT_FILTER_NATIVE.md).
 - Fixed real output-dependency retry behavior: a failed reference pass no longer leaves a partial validated list that lets the next attempt succeed. Each preparation rechecks current external mappings and file dependencies; errors clear partial state and the visited marker. Ordered external resolution, local chains/cycles, recursive failure/recovery and weak self/tentative/external location tests pass without native output. See [dependency resolution retry proof](docs/RA3EP1_DEPENDENCY_RESOLUTION.md).
 - Added direct diagnostic opt-in for normalized modifier imports, with a separate processing domain and strict index/name/type-to-table checks. The four stock goldens still match through the actual plugin entry; malformed/stale metadata is rejected. Real external lookup resolves all seven FX/Shader targets and refreshes correctly when mappings are removed/restored. Descriptor-created v1 and all production/cache gates remain unchanged. See [import profile and lookup proof](docs/RA3EP1_ATTRIBUTE_MODIFIER_IMPORTS.md#explicit-import-profile-follow-up).
 - Corrected shared final import encoding: core XML indices remain zero-based, but BIN values are dependency-index + 1 (zero means null). Restored AttributeModifier's optional Shader pointer. Four import-bearing stock EP1 assets now match all native chunks and ordered dependency identities exactly; the no-dependency experimental profile remains restricted. Added boundary/null/repeated-serialization tests and invalidated old intermediate identities. See [import encoding proof](docs/RA3EP1_ATTRIBUTE_MODIFIER_IMPORTS.md).

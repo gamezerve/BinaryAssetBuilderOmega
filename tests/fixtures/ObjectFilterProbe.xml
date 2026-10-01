@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: source-derived infiltration filters retain weak name order and literal masks without unrelated includes or production activation. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+ <ObjectFilterAsset id="InfiltrationCanEnterObjectFilter"><Filter Relationship="ENEMIES" Rule="NONE">
+  <IncludeThing>AlliedInfiltrationInfantry</IncludeThing><IncludeThing>JapanInfiltrationInfantry</IncludeThing>
+ </Filter></ObjectFilterAsset>
+ <ObjectFilterAsset id="InfiltrationInfantryObjectFilter"><Filter Rule="NONE" Include="INFANTRY" /></ObjectFilterAsset>
+ <ObjectFilterAsset id="InfiltrationInfantryStructuresFilter"><Filter Rule="NONE">
+  <IncludeThing>AlliedBarracks</IncludeThing><IncludeThing>JapanBarracks</IncludeThing><IncludeThing>SovietBarracks</IncludeThing>
+ </Filter></ObjectFilterAsset>
+ <ObjectFilterAsset id="InfiltrationAircraftObjectFilter"><Filter Rule="NONE" Include="AIRCRAFT" /></ObjectFilterAsset>
+ <ObjectFilterAsset id="InfiltrationAircraftStructuresFilter"><Filter Rule="NONE">
+  <IncludeThing>AlliedAirfield</IncludeThing><IncludeThing>SovietAirfield</IncludeThing>
+ </Filter></ObjectFilterAsset>
+ <ObjectFilterAsset id="InfiltrationShipObjectFilter"><Filter Rule="NONE" Include="SHIP" /></ObjectFilterAsset>
+ <ObjectFilterAsset id="InfiltrationShipStructuresFilter"><Filter Rule="NONE">
+  <IncludeThing>AlliedNavalYard</IncludeThing><IncludeThing>JapanNavalYard</IncludeThing><IncludeThing>SovietNavalYard</IncludeThing>
+ </Filter></ObjectFilterAsset>
+ <ObjectFilterAsset id="InfiltrationVehicleObjectFilter"><Filter Rule="NONE" Include="VEHICLE" /></ObjectFilterAsset>
+ <ObjectFilterAsset id="InfiltrationVehicleStructuresFilter"><Filter Rule="NONE">
+  <IncludeThing>AlliedWarFactory</IncludeThing><IncludeThing>JapanWarFactory</IncludeThing><IncludeThing>SovietWarFactory</IncludeThing>
+ </Filter></ObjectFilterAsset>
+ <ObjectFilterAsset id="InfiltrationEnergyStructuresFilter"><Filter Rule="NONE">
+  <IncludeThing>AlliedPowerPlant</IncludeThing><IncludeThing>JapanPowerPlant</IncludeThing><IncludeThing>SovietPowerPlant</IncludeThing><IncludeThing>SovietPowerPlantAdvanced</IncludeThing>
+ </Filter></ObjectFilterAsset>
+ <ObjectFilterAsset id="InfiltrationParalyzeObjectFilter"><Filter Rule="NONE">
+  <IncludeThing>AlliedAntiVehicleVehicleTech3</IncludeThing><IncludeThing>AlliedAntiStructureShip</IncludeThing><IncludeThing>AlliedBomberAircraft</IncludeThing>
+  <IncludeThing>AlliedAntiStructureVehicle</IncludeThing><IncludeThing>AlliedArtilleryVehicle</IncludeThing><IncludeThing>AlliedGunshipAircraft</IncludeThing><IncludeThing>AlliedFutureTank</IncludeThing>
+  <IncludeThing>SovietBomberAircraft</IncludeThing><IncludeThing>SovietAntiStructureVehicle</IncludeThing><IncludeThing>SovietAntiVehicleVehicleTech3</IncludeThing><IncludeThing>SovietAntiStructureShip</IncludeThing>
+  <IncludeThing>JapanAntiStructureVehicle</IncludeThing><IncludeThing>JapanAntiVehicleVehicleTech3</IncludeThing><IncludeThing>JapanAntiStructureShip</IncludeThing><IncludeThing>JapanFortressShip</IncludeThing>
+ </Filter></ObjectFilterAsset>
+</AssetDeclaration>
