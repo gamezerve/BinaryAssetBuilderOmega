@@ -9,7 +9,7 @@ using BinaryAssetBuilder.XmlCompiler;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: admit bounded modifier/shader Include graphs and publish a verified diagnostic directory without enabling production output.
+// Reborn: admit three proven native families in bounded Include graphs without enabling production output.
 internal static class BoundedDiagnosticBuild
 {
     private static readonly string[] OutputNames = { "diagnostic.manifest", "diagnostic.bin", "diagnostic.relo", "diagnostic.imp", "DIAGNOSTIC_ONLY.txt" };
@@ -69,19 +69,22 @@ internal static class BoundedDiagnosticBuild
                 snapshotManifests[index] = Path.Combine(inputDirectory, name); File.WriteAllBytes(snapshotManifests[index], externalSnapshots[index]);
             }
             string fixtures = Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!;
-            Settings.Current = new Settings { BuildCache = false, ErrorLevel = 1, SchemaPath = Path.Combine(fixtures, "ModifierShaderPipeline.xsd"),
+            Settings.Current = new Settings { BuildCache = false, ErrorLevel = 1, SchemaPath = Path.Combine(fixtures, "DiagnosticAssetPipeline.xsd"),
                 DataRoot = inputDirectory, DataPaths = new[] { inputDirectory }, TargetPlatform = TargetPlatform.Win32,
                 CustomPostfix = "", StreamPostfix = "", ProcessedExternalManifests = snapshotManifests, StringHashBinDescriptors = Array.Empty<StringHashBinDescriptor>() };
             Ra3Ep1AttributeModifierPlugin modifiers = new(true); modifiers.Initialize(TargetPlatform.Win32);
             Ra3Ep1ShaderOverridePlugin shaders = new(); shaders.Initialize(TargetPlatform.Win32);
+            // Reborn: map only the stock-proven NONE-rule weak filter profile; wider masks/status controls stay closed.
+            Ra3Ep1ObjectFilterPlugin filters = new(); filters.Initialize(TargetPlatform.Win32);
             PluginRegistry plugins = new(Array.Empty<PluginDescriptor>(), TargetPlatform.Win32);
             plugins.AddPlugin(0xC5E07887u, modifiers); plugins.AddPlugin(0xBCC23F6Cu, shaders);
+            plugins.AddPlugin(0x44A5973Du, filters);
             SessionCache cache = new(); cache.InitializeCache(new List<string>());
             DocumentProcessor processor = new(Settings.Current, plugins, new VerifierPluginRegistry(Array.Empty<PluginDescriptor>(), TargetPlatform.Win32))
                 { Cache = cache, SchemaSet = new SchemaSet(false) };
             AssetDeclarationDocument document = processor.ProcessDocumentInternal(snapshotPath, snapshotPath, null!,
                 new DocumentProcessor.ProcessOptions { GenerateOutput = false, UsePrecompiled = false });
-            // Reborn: shaders have no graph edges; deterministic type/name ordering puts every local shader before its modifier consumers.
+            // Reborn: literal shaders and weak-only filters precede modifier consumers; every admitted family has an explicit rank.
             // Reborn: seed self/all assets, then retain real resolution's local closure; unused instance-Include roots are not forced into output.
             Dictionary<InstanceHandle, InstanceDeclaration> selected = new();
             foreach (InstanceDeclaration seed in document.Instances)
@@ -89,7 +92,8 @@ internal static class BoundedDiagnosticBuild
                 DependencyResolutionSmokeTest.Prepare(document, seed);
                 foreach (var visited in DependencyResolutionSmokeTest.Visited(document)) selected[visited.Key] = visited.Value;
             }
-            InstanceDeclaration[] ordered = selected.Values.OrderBy(instance => instance.Handle.TypeId == 0xBCC23F6Cu ? 0 : 1)
+            InstanceDeclaration[] ordered = selected.Values.OrderBy(instance => instance.Handle.TypeId switch
+                { 0xBCC23F6Cu => 0, 0x44A5973Du => 1, 0xC5E07887u => 2, _ => throw new InvalidDataException("Unadmitted diagnostic asset type.") })
                 .ThenBy(instance => instance.Handle.Name, StringComparer.Ordinal).ToArray();
             if (ordered.Length == 0 || ordered.Length > 32) throw new InvalidDataException("Diagnostic input must contain 1–32 admitted roots.");
             foreach (InstanceHandle dependency in ordered.SelectMany(instance => instance.ValidatedReferencedInstances!))
@@ -163,9 +167,10 @@ internal static class BoundedDiagnosticBuild
             Invoke(typeof(OutputManager).GetMethod("WriteLinkedStreamHeader", BindingFlags.NonPublic | BindingFlags.Static)!, writer, checksum, stream.Magic);
             foreach (byte[] part in stream.Parts) writer.Write(part); writer.Flush(); result.Add(stream.Name, data.ToArray());
         }
-        result.Add("DIAGNOSTIC_ONLY.txt", Encoding.UTF8.GetBytes("Bounded modifier/shader Include diagnostic only. NOT a playable Uprising mod.\n"
+        result.Add("DIAGNOSTIC_ONLY.txt", Encoding.UTF8.GetBytes("Bounded modifier/shader/filter Include diagnostic only. NOT a playable Uprising mod.\n"
             + "Production/cache gates remain closed; no OutputManager commit/link, packaging or game-load proof.\n"
-            + "External mappings serialize runtime names but do not copy or validate native dependency streams.\n"));
+            + "External mappings serialize runtime names but do not copy or validate native dependency streams.\n"
+            + "Filter GameObject weak IDs do not prove target presence and do not become strong imports.\n"));
         return result;
     }
 

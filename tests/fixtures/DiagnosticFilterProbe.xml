@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: one diagnostic graph combines a strong local shader import with weak filter GameObject IDs. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+ <Includes><Include type="all" source="DiagnosticFilterChildren.xml" /></Includes>
+ <AttributeModifier id="RebornFilterModifier" Shader="RebornFilterShader" />
+</AssetDeclaration>

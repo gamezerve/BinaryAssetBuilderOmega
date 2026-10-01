@@ -40,14 +40,21 @@ Optional external arguments are explicit pairs, for example
 lookup file; the right side is a relative game-visible runtime name. These names
 are serialized only: no external BIN data is compiled, copied or packaged.
 
+For a three-family example, use DiagnosticFilterProbe.xml instead. Its `all`
+Include emits one shader and one weak filter before the parent modifier.
+Linked BIN/RELO/IMP sizes are 240/36/16. See
+[filter integration and weak-ID limits](RA3EP1_DIAGNOSTIC_FILTER_BUILD.md).
+
 ## Admission and deliberate limits
 
 - One entry EA AssetDeclaration and at most sixteen reachable XML files, each
   at most 1 MiB / 1,048,576 characters; aggregate parsed XML is at most two MiB
   of characters. At most 32 Include edges and eight edges of nesting are admitted.
-- 1–32 AttributeModifier/ShaderOverride roots across the entire graph; root IDs are 1–128 ASCII letters,
+- 1–32 AttributeModifier/ShaderOverride/ObjectFilterAsset roots across the entire graph; root IDs are 1–128 ASCII letters,
   digits, underscore, dash or dot characters. Immediate Modifier/Rule records
-  are admitted only under their matching root type.
+  are admitted only under their matching root type. ObjectFilterAsset admits
+  an immediate Filter and its direct IncludeThing weak leaves; wider filter
+  eligibility remains closed by the existing native profile.
 - Only `all` and `instance` Includes are admitted, preserving their real core
   selection semantics. Includes-only wrapper documents are allowed; at least
   one native asset must ultimately be selected. Reference Includes, cycles,
@@ -61,6 +68,10 @@ are serialized only: no external BIN data is compiled, copied or packaged.
 - Native eligibility remains that of the existing isolated Win32 profiles:
   shader rules are bounded to sixteen, literal material basenames and Default
   techniques; modifiers use only the explicitly proven controls/import kinds.
+  Filters allow only NONE rule/alignment, empty/ENEMIES relationship, the proven
+  individual kind masks and at most fifteen IncludeThing leaves. Weak names
+  use the official unqualified-name syntax; colon/type prefixes are rejected
+  by the official schema. Weak target presence is not checked or implied.
 - At most eight unique physical/runtime external mappings; each manifest is at
   most 16 MiB, structurally valid, linked EP1 v7/aggregate and not patch-based.
   Runtime paths use the existing core validator: relative .manifest names with
@@ -91,11 +102,11 @@ names identify the actual asset's snapshot document rather than attributing ever
 asset to its parent; original absolute paths are not embedded in output. A fresh
 command reads fresh sources, while an already approved snapshot retains its data.
 
-The real document pipeline uses both explicitly mapped experimental plugins with
+The real document pipeline uses three explicitly mapped experimental plugins with
 GenerateOutput=false and cache/precompiled reuse disabled. The existing private
 dependency seam resolves ordered identities. Self/all roots seed the real local
 resolution closure; unused instance/tentative roots are not emitted. Selected local shaders are emitted before
-modifiers, then ordinal name order makes this bounded acyclic graph deterministic;
+weak filters and then modifiers; ordinal name order within each family makes this bounded acyclic graph deterministic;
 this is not the production stable sorter or a general dependency graph builder.
 Native compiler entries and the existing identity checksum helper provide data
 and identity stamps. Checksum is not a payload digest.
@@ -142,12 +153,20 @@ Confinement, reference controls, duplicate identities and graph root/file/depth/
 limits reject before publication. These are diagnostic checks, not production
 cache, packaging or game loading proof.
 
-Both Release/x86 builds, all 71 compiler groups, layout checks and 33 enum mappings
+DiagnosticFilterBuildSmokeTest proves eleven source-derived weak filter goldens,
+mixed three-family Include output, native weak ID order, no strong dependency
+promotion, edited weak names, tentative exclusion and unsupported-control rejection.
+The wider shared schema lives in DiagnosticAssetPipeline.xsd; older two-family
+proof fixtures retain their original ModifierShaderPipeline.xsd.
+
+Both Release/x86 builds, all 72 compiler groups, layout checks and 33 enum mappings
 pass. The actual command was also run on DiagnosticBuildProbe.xml, producing
 `Release/DiagnosticBuildPoC-20261001/diagnostic.manifest` locally; generated data is
 ignored by Git. Inventory remains 785/1,390 models and 762/1,390 typed marshallers.
 The actual command also built DiagnosticIncludeProbe.xml to
 `Release/DiagnosticIncludePoC-20261001/diagnostic.manifest` (Git-ignored).
+DiagnosticFilterProbe.xml also built to
+`Release/DiagnosticFilterPoC-20261001/diagnostic.manifest` (Git-ignored).
 Overall effort remains approximately 50%; this command is not a playable mod.
 
 ## Files and next gate
@@ -159,11 +178,13 @@ Overall effort remains approximately 50%; this command is not a playable mod.
 - tests/fixtures/DiagnosticBuildProbe.xml: standalone two-root example.
 - DiagnosticSourceGraph.cs: confined graph admission and approved snapshot rewrite.
 - DiagnosticIncludeBuildSmokeTest.cs: Include source, closure and rejection tests.
+- DiagnosticFilterBuildSmokeTest.cs and DiagnosticAssetPipeline.xsd: three-family
+  native integration and restricted declaration schema.
 - tests/fixtures/DiagnosticIncludeProbe.xml and DiagnosticIncludeShaders.xml:
   tentative selection example.
 - Program: diagnostic-build and diagnostic-build-self-test command dispatch.
 
-Next prove another bounded native asset family through this diagnostic entry
-and its dependency/source readback. Production stream lifecycle,
+Next investigate the native FXList processor: existing external FX evidence is
+metadata-only, not compilable local FX output. Production stream lifecycle,
 FX custom processing, complete EP1 type identity, cache/inheritance, SDK and
 WorldBuilder packaging and Uprising runtime loading still require separate proof.

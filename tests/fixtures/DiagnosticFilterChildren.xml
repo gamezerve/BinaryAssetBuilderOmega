@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: weak filter targets remain inline identity hashes, not strong imports or newly compiled GameObjects. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+ <ShaderOverride id="RebornFilterShader"><Rule ReplaceShaderName="Null.fx" ReplaceTechniqueName="Default" /></ShaderOverride>
+ <ObjectFilterAsset id="RebornFilter"><Filter Relationship="ENEMIES">
+  <IncludeThing>AlliedInfiltrationInfantry</IncludeThing><IncludeThing>JapanInfiltrationInfantry</IncludeThing>
+ </Filter></ObjectFilterAsset>
+</AssetDeclaration>

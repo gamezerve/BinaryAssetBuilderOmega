@@ -16,11 +16,11 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**71 test groups** (some contain several fixtures). These counters can grow
+**72 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
-registered groups but does not execute them. The bounded diagnostic Include proof
-adds one test group without changing model/marshaller counts; all 71 groups were executed.
+registered groups but does not execute them. The diagnostic filter integration proof
+adds one test group without changing model/marshaller counts; all 72 groups were executed.
 
 | Workstream | Status |
 |---|---|
@@ -33,6 +33,7 @@ adds one test group without changing model/marshaller counts; all 71 groups were
 
 ### Recently completed
 
+- Added the stock-proven ObjectFilterAsset profile to `diagnostic-build` using a separate three-family declaration schema. Eleven emitted filter slices match the existing native goldens, which were also rechecked against the real EP1 static streams. Mixed included shader/filter/modifier entries preserve source identity, strong shader imports and inline weak GameObject IDs; unused tentative filters stay excluded. Expanded controls and official-invalid weak name syntax reject without publishing. The command's GameObject weak IDs do not establish target availability or in-game behavior. See [diagnostic filter integration](docs/RA3EP1_DIAGNOSTIC_FILTER_BUILD.md).
 - Extended `diagnostic-build` to bounded nested `all`/`instance` Include graphs. Approved XML is frozen into deterministic flat snapshots; the real resolution closure excludes unused tentative roots and includes required local targets. Manifest entries retain their actual sanitized source identity. Native selection, frozen/edited sources, mixed external FX metadata, cycles/loss/recovery and path/graph limits are tested. A checked-in Include example builds through the actual command. Reference Includes and production SDK output remain disabled. See [bounded diagnostic command and usage](docs/RA3EP1_BOUNDED_DIAGNOSTIC_BUILD.md).
 - Added `diagnostic-build` for bounded modifier/shader XML and explicit external manifest/runtime mappings. It freezes approved inputs, rejects unsupported controls/targets, compiles isolated profiles, verifies staged output through both readers and publishes only a new directory. Existing/raced destinations survive; late corruption rejects without publishing. See [bounded diagnostic command and usage](docs/RA3EP1_BOUNDED_DIAGNOSTIC_BUILD.md).
 - Added a fixed two-family diagnostic stream round trip from actual resolved document/compiler entries. Manifest identities, ordered local/external references and all native slices agree through both readers; repeated output is deterministic and four corruptions reject. This exposed and fixed Utility.Manifest's four-byte linked offset for prefixed EP1 streams (now eight); prefixless v7 behavior and v6 rejection remain unchanged. No production commit/link, packaged FX stream or game loading is enabled. See [diagnostic stream proof](docs/RA3EP1_MODIFIER_SHADER_STREAM.md).

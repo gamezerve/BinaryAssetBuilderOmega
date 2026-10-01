@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: combine three proven experimental root families without expanding the full production EP1 registry. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset"
+ targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Base.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Base/AssetBase.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Ref.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/DamageDef.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/ModelState.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/ObjectStatus.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/KindOf.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/ObjectFilter.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeArmorTemplate.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeAttributeModifier.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeShaderOverride.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeObjectFilter.xsd" />
+ <xs:element name="AttributeModifier" type="AttributeModifier" />
+ <xs:element name="ShaderOverride" type="ShaderOverride" />
+ <xs:element name="ObjectFilterAsset" type="ObjectFilterAsset" />
+ <xs:element name="AssetDeclaration"><xs:complexType><xs:sequence>
+  <!-- Reborn: preserve official all/instance Include parsing while command admission keeps reference builds disabled. -->
+  <xs:element name="Includes" minOccurs="0"><xs:complexType><xs:sequence>
+   <xs:element name="Include" type="Include" minOccurs="0" maxOccurs="unbounded" />
+  </xs:sequence></xs:complexType></xs:element>
+  <xs:choice minOccurs="0" maxOccurs="unbounded">
+   <xs:element ref="AttributeModifier" /><xs:element ref="ShaderOverride" /><xs:element ref="ObjectFilterAsset" />
+  </xs:choice>
+ </xs:sequence></xs:complexType></xs:element>
+</xs:schema>

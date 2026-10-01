@@ -88,6 +88,8 @@ internal static class CompilerSmokeTest
         // Reborn: verify bounded command admission/publication independently of the fixed stream fixture.
         TestBoundedDiagnosticBuild();
         TestDiagnosticIncludeBuild();
+        // Reborn: weak filter IDs must survive three-family command serialization without invented strong imports.
+        TestDiagnosticFilterBuild();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -2083,6 +2085,11 @@ internal static class CompilerSmokeTest
     /** Reborn: prove bounded Include admission and native source attribution through the diagnostic command's real service. */
     //-------------------------------------------------------------------------------------------------
     private static void TestDiagnosticIncludeBuild() => DiagnosticIncludeBuildSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: prove native filter output and weak reference semantics through the public diagnostic build service. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestDiagnosticFilterBuild() => DiagnosticFilterBuildSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate external linking with isolated tiny metadata fixtures, never game BIN streams. */

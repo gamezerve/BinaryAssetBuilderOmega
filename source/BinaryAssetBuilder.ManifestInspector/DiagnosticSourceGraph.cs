@@ -69,9 +69,12 @@ internal sealed class DiagnosticSourceGraph
             // Reborn: matching direct leaves and the official Include container are the only permitted non-root shapes.
             bool valid = element == root || (element.LocalName switch
             {
-                "AttributeModifier" or "ShaderOverride" or "Includes" => element.ParentNode == root,
+                "AttributeModifier" or "ShaderOverride" or "ObjectFilterAsset" or "Includes" => element.ParentNode == root,
                 "Modifier" => element.ParentNode is XmlElement modifier && modifier.LocalName == "AttributeModifier" && modifier.ParentNode == root,
                 "Rule" => element.ParentNode is XmlElement shader && shader.LocalName == "ShaderOverride" && shader.ParentNode == root,
+                "Filter" => element.ParentNode is XmlElement filterAsset && filterAsset.LocalName == "ObjectFilterAsset" && filterAsset.ParentNode == root,
+                "IncludeThing" => element.ParentNode is XmlElement filter && filter.LocalName == "Filter"
+                    && filter.ParentNode is XmlElement owner && owner.LocalName == "ObjectFilterAsset" && owner.ParentNode == root,
                 "Include" => element.ParentNode is XmlElement includes && includes.LocalName == "Includes" && includes.ParentNode == root,
                 _ => false
             });
@@ -80,7 +83,7 @@ internal sealed class DiagnosticSourceGraph
                 if (attribute.NamespaceURI != "http://www.w3.org/2000/xmlns/" && (attribute.LocalName is "inheritFrom" or "override"
                     || attribute.Value.TrimStart().StartsWith("=", StringComparison.Ordinal)))
                     throw new InvalidDataException("Inheritance, overrides and unresolved expressions are not admitted.");
-            if (element.ParentNode == root && element.LocalName is "AttributeModifier" or "ShaderOverride")
+            if (element.ParentNode == root && element.LocalName is "AttributeModifier" or "ShaderOverride" or "ObjectFilterAsset")
             {
                 string id = element.GetAttribute("id");
                 if (id.Length is < 1 or > 128 || id.Any(c => !char.IsAsciiLetterOrDigit(c) && c != '_' && c != '-' && c != '.'))

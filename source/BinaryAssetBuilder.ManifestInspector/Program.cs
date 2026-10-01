@@ -19,6 +19,7 @@ internal static class Program
                 CompilerSmokeTest.InitializeHashProvider();
                 BoundedDiagnosticBuildSmokeTest.Run();
                 DiagnosticIncludeBuildSmokeTest.Run();
+                DiagnosticFilterBuildSmokeTest.Run();
                 return 0;
             }
             // Reborn: bounded diagnostic Include build publishes only a new verified directory and never enables production/cache policies.
