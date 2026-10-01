@@ -69,6 +69,8 @@ internal static class CompilerSmokeTest
         TestEp1ModifierProfile();
         // Reborn: compare real core-normalized imports and shader pointer records with the final runtime encoding contract.
         TestModifierImports();
+        // Reborn: output dependency retries must never trust partially validated or unmapped external targets.
+        TestDependencyResolution();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -2014,6 +2016,11 @@ internal static class CompilerSmokeTest
     {
         AttributeModifierImportSmokeTest.Run(Array.Empty<string>());
     }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: exercise the production dependency preparation seam independently of experimental output authorization. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestDependencyResolution() => DependencyResolutionSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate external linking with isolated tiny metadata fixtures, never game BIN streams. */

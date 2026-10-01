@@ -33,12 +33,20 @@ snapshot was held while several shared-layout fixes accumulated. This snapshot
 reassesses the native-layout workstream from 53% to 55% after the containment
 audit and attach base recovery, giving roughly 50% overall. End-to-end game
 validation is still at zero. Observable counters are reported separately:
-the compiler self-test currently invokes 61 test groups (some have multiple
+the compiler self-test currently invokes 62 test groups (some have multiple
 fixtures), and the structural coverage script reports the inventory above.
 Neither counter proves runtime compatibility or replaces final type-table gates.
 The coverage script now emits `CompilerTestGroupsDeclared`, counting registered
 groups without executing them. This block adds one test group and leaves model/
-marshaller counts unchanged relative to its starting snapshot (784/760 and 60 groups).
+marshaller counts unchanged relative to its starting snapshot (784/760 and 61 groups).
+
+The [output dependency retry proof](RA3EP1_DEPENDENCY_RESOLUTION.md) reproduces
+and fixes a real strict-validation bypass in AddOutputInstance. The first missing
+target throws, but a second preparation previously trusted the incomplete list.
+Each attempt now rechecks current targets/files and errors clear partial metadata
+and the visited marker. Removing/restoring external mappings and repeated missing
+file failures are tested through the actual dependency stage. This is still a
+metadata seam, not a production experimental build or game-loading result.
 
 The [native import encoding proof](RA3EP1_ATTRIBUTE_MODIFIER_IMPORTS.md) adds four
 stock EP1 modifier assets with exact BIN/RELO/IMP and ordered dependency matches.

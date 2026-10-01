@@ -1191,6 +1191,9 @@ namespace BinaryAssetBuilder.Core.SageXml
             return instance;
         }
 
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: revalidate every preparation attempt against current sources/mappings and never retain partial dependency success after an error. */
+        //-------------------------------------------------------------------------------------------------
         private void AddOutputInstance(InstanceDeclaration instance)
         {
             if (instance.Handle.TypeHash == 0u || _current.OutputInstanceSet.ContainsKey(instance.Handle))
@@ -1198,21 +1201,11 @@ namespace BinaryAssetBuilder.Core.SageXml
                 return;
             }
             _current.OutputInstanceSet.Add(instance.Handle, instance);
-            if (instance.ValidatedReferencedInstances is not null)
+            // Reborn: a prior successful list may refer to removed external mappings; only this attempt's set breaks recursion cycles.
+            instance.ValidatedReferencedInstances = new List<InstanceHandle>();
+            instance.AllDependentInstances = new InstanceHandleSet();
+            try
             {
-                foreach (InstanceHandle referencedInstance in instance.ValidatedReferencedInstances)
-                {
-                    InstanceDeclaration other = ResolveReference(instance, referencedInstance, out FindLocation location);
-                    if (other is not null && location != FindLocation.External)
-                    {
-                        AddOutputInstance(other);
-                    }
-                }
-            }
-            else
-            {
-                instance.ValidatedReferencedInstances = new List<InstanceHandle>();
-                instance.AllDependentInstances = new InstanceHandleSet();
                 foreach (InstanceHandle referencedInstance in instance.ReferencedInstances)
                 {
                     InstanceDeclaration other = ResolveReference(instance, referencedInstance, out FindLocation location);
@@ -1279,6 +1272,14 @@ namespace BinaryAssetBuilder.Core.SageXml
                         _tracer.TraceWarning("Referenced file not found: {0}", referencedFile);
                     }
                 }
+            }
+            catch
+            {
+                // Reborn: retries must not confuse a partial list or visited marker with completed validation.
+                instance.ValidatedReferencedInstances = null;
+                instance.AllDependentInstances = null;
+                _current.OutputInstanceSet.Remove(instance.Handle);
+                throw;
             }
         }
 

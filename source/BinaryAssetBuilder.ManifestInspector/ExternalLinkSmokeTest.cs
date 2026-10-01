@@ -188,7 +188,7 @@ internal static class ExternalLinkSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: generate a tiny v7 metadata fixture; no production type-table gate or game-load claim is bypassed. */
     //-------------------------------------------------------------------------------------------------
-    private static void WriteFixture(string path, InstanceHandle handle, ReferencedFileBuffer references, uint allTypesHash = 0x5454A8E9u)
+    internal static void WriteFixture(string path, InstanceHandle handle, ReferencedFileBuffer references, uint allTypesHash = 0x5454A8E9u)
     {
         byte[] name = Encoding.ASCII.GetBytes(handle.Name + '\0');
         byte[] source = Encoding.ASCII.GetBytes("Tests/ExternalLink.xml\0");

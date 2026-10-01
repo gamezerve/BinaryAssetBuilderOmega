@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: run actual dependency preparation retry/mapping checks without authorizing output emission.
+            if (args.Length == 1 && args[0] == "dependency-resolution-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                DependencyResolutionSmokeTest.Run();
+                return 0;
+            }
             // Reborn: verify normalized modifier references against one-biased native imports and optional real EP1 goldens.
             if (args.FirstOrDefault() == "modifier-import-self-test")
             {
@@ -529,6 +536,8 @@ internal static class Program
         Console.WriteLine("  copy-recovery-self-test");
         // Reborn: dependency fixtures compare source identities, not approved native compiler output.
         Console.WriteLine("  dependency-hash-self-test");
+        // Reborn: this checks strict output dependency metadata, not production compiler readiness.
+        Console.WriteLine("  dependency-resolution-self-test");
         // Reborn: watcher fixtures own only temporary files and use deterministic callback injection.
         Console.WriteLine("  watcher-cache-self-test");
         // Reborn: atomic batch fixtures test event conservation without writing game/compiler output.
