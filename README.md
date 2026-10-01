@@ -16,11 +16,11 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**65 test groups** (some contain several fixtures). These counters can grow
+**66 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
-registered groups but does not execute them. The ShaderOverride block adds one
-model, two typed marshallers and one test group; all 65 groups were executed.
+registered groups but does not execute them. The isolated ShaderOverride profile
+adds one test group without changing model/marshaller counts; all 66 groups were executed.
 
 | Workstream | Status |
 |---|---|
@@ -33,6 +33,7 @@ model, two typed marshallers and one test group; all 65 groups were executed.
 
 ### Recently completed
 
+- Added an isolated Win32 ShaderOverride compiler profile with fresh observed type metadata, bounded literal POIDs, checked injected TypeIds and detached current-value schema validation. Four actual descriptor/document compiler entries preserve source-native output, including PsychicCrush's documented difference. Default fields, unsigned priority boundaries, tampered controls/dependencies, fresh reload and production/cache/platform restrictions are tested. Full builder/inspector builds, 66 groups and layout checks pass. See [ShaderOverride profile](docs/RA3EP1_SHADER_OVERRIDE_PROFILE.md).
 - Recovered ShaderOverride's 16-byte root and rule records, optional material-ID pointers and technique strings. Three supplied XML literals match stock EP1 exactly. PsychicCrush's supplied XML differs from stock by one replacement ID; an explicitly labeled detached stock variant matches all 460/132/0 bytes without changing the original XML or adding compiler exceptions. Full builder/inspector builds, 65 compiler groups, layout checks and 33 enum mappings pass. Production registration remains closed. See [ShaderOverride native proof and source variance](docs/RA3EP1_SHADER_OVERRIDE_NATIVE.md).
 - Added a separate experimental ObjectFilter profile for the stock-proven NONE-rule infiltration subset. Eleven actual descriptor/document compiler entries match the native proof. It checks root identity, ordered GameObject weak metadata and nested injected TypeIds, rejects expanded controls, and forces fresh source reload. Production/cache/platform restrictions remain closed. See [filter profile](docs/RA3EP1_OBJECT_FILTER_PROFILE.md).
 - Matched eleven ObjectFilterAsset roots byte-for-byte against stock EP1 BIN/RELO/IMP slices. Real document default/weak-reference normalization preserves the same output; separate synthetic checks cover optional status masks and include/exclude lists. This is the third focused asset-family proof, not production registration or proof of inherited filters. See [ObjectFilter native proof](docs/RA3EP1_OBJECT_FILTER_NATIVE.md).

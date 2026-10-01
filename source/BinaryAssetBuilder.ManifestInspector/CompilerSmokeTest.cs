@@ -77,6 +77,8 @@ internal static class CompilerSmokeTest
         TestObjectFilterProfile();
         // Reborn: recover shader root/rule layout and verify material POIDs do not become imports.
         TestShaderOverrideNative();
+        // Reborn: exercise isolated shader descriptor/document entry and fail closed on stale controls or identity.
+        TestShaderOverrideProfile();
         TestSpawnedSlaveUpdate();
         TestUnitUnpackUpdate();
         TestAddObjectsToLiftUpdate();
@@ -2042,6 +2044,11 @@ internal static class CompilerSmokeTest
     /** Reborn: validate shader ABI/default/document proof without requiring stock game data in the full regression suite. */
     //-------------------------------------------------------------------------------------------------
     private static void TestShaderOverrideNative() => ShaderOverrideNativeSmokeTest.Run(Array.Empty<string>());
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify the bounded shader profile independently of production registration or stock game-data availability. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestShaderOverrideProfile() => Ep1ShaderOverrideProfileSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate external linking with isolated tiny metadata fixtures, never game BIN streams. */

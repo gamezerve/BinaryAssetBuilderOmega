@@ -126,10 +126,11 @@ not close the larger type-table, shader compilation or runtime gates.
 
 ## Remaining gates and next checkpoint
 
-Next: isolate a diagnostic ShaderOverride compiler profile with fresh schema/type
-identity and POID eligibility checks, retaining production/cache restrictions;
-then test normalized modifier-to-shader resolution through that profile. Expand
-stock comparisons to the remaining overrides without assuming source equality.
+The later [isolated compiler profile](RA3EP1_SHADER_OVERRIDE_PROFILE.md) now checks
+schema/type identity and bounded POID eligibility while retaining production/cache
+restrictions. Next: test normalized modifier-to-shader resolution through that
+profile. Expand stock comparisons to the remaining overrides without assuming
+source equality.
 
 Unported FXShaderMaterial compilation/custom data, inheritance and expressions,
 complete EP1 registration/AllTypesHash, native cache reuse, SDK scripts,

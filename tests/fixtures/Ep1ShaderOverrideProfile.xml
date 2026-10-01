@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: explicit shader diagnostic profile, not a complete EP1 registry or production build configuration. -->
+<Settings xmlns="uri:ea.com:eala:asset" BuildCache="false">
+ <Plugin AssetTypes="#all" IsEnabled="true" UseBuildCache="false"
+  QualifiedName="BinaryAssetBuilder.XmlCompiler.Ra3Ep1ShaderOverridePlugin, BinaryAssetBuilder.XmlCompiler" />
+</Settings>

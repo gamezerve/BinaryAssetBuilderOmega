@@ -99,7 +99,7 @@ internal static class ShaderOverrideNativeSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: marshal schema-defaulted shader rules using recovered official field/allocation order, never FXShaderMaterial compilation. */
     //-------------------------------------------------------------------------------------------------
-    private static unsafe Chunk Compile(XmlSchemaSet schemas, string xml)
+    internal static unsafe Chunk Compile(XmlSchemaSet schemas, string xml)
     {
         XmlDocument document = new() { Schemas = schemas, XmlResolver = null };
         document.LoadXml(xml); document.Validate((_, args) => throw new XmlSchemaValidationException(args.Message));
