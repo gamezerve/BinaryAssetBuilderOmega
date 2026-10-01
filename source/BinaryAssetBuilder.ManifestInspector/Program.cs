@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: write only a fixed owned modifier/FX stream proof, never admit FX to the public diagnostic build command.
+            if (args.Length == 1 && args[0] == "modifier-fx-stream-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                ModifierFXStreamSmokeTest.Run();
+                return 0;
+            }
             // Reborn: exercise the isolated FX compiler without production stream publication.
             if (args.FirstOrDefault() == "ep1-fx-profile-self-test")
             {

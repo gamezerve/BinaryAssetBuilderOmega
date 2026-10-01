@@ -96,9 +96,10 @@ references can be substituted for stock strong dependency identities.
 
 Thus the native-only proof does not register FXList. Derived audio lookup and
 the isolated profile now have separate proofs linked above. FXList remains
-excluded from the production registry and diagnostic-build. Next prove mixed
-stream round trips; native byte similarity alone is insufficient to admit FXList
-to the diagnostic command.
+excluded from the production registry and diagnostic-build. A separate
+[fixed modifier/FX stream proof](RA3EP1_MODIFIER_FX_STREAM.md) now passes;
+bounded command admission and publication tests are next. Native byte similarity
+alone is insufficient to admit FXList to the diagnostic command.
 ParticleSystem and other nugget variants, optional filters, inheritance/custom
 processing, FX cache reuse, complete EP1 aggregate/type table, SDK/WorldBuilder
 packaging and actual game loading still need separate validation.

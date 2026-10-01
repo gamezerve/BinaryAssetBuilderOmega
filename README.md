@@ -16,21 +16,24 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**75 test groups** (some contain several fixtures). These counters can grow
+**76 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
-registered groups but does not execute them. The isolated FX compiler profile
-adds one group without changing model/marshaller counts; all 75 groups were executed.
+registered groups but does not execute them. The fixed modifier/FX/audio stream
+proof adds one group without changing model/marshaller counts; all 76 groups were executed.
 
-Latest milestone: [isolated FXList compiler profile](docs/RA3EP1_FX_PROFILE.md).
-An explicit experimental descriptor now compiles empty roots and at most two Sound
-nuggets with checked concrete `AudioEvent`/`Multisound` dependencies. Actual plugin
-output and ordered dependency identities match three real Uprising FX assets exactly.
-Current-value/identity/selector rejection, new typed audio names, fresh source reload
-and platform/output/cache guards are tested. FXList remains excluded from the production
-registry and `diagnostic-build`; mixed-family diagnostic stream round trips are next.
-This is not yet a playable mod. The preceding
-[core external audio resolution proof](docs/RA3EP1_FX_AUDIO_RESOLUTION.md) remains in place.
+Latest milestone: [fixed modifier/FX/audio stream round trip](docs/RA3EP1_MODIFIER_FX_STREAM.md).
+An actual Include graph compiles two local FX assets and their modifier consumer,
+with three concretely resolved external audio targets. Its 388/36/32 native bytes
+round-trip through the shared diagnostic serializer and independent manifest/utility
+readers, preserving source attribution, runtime paths and one-biased selectors.
+Twenty-four corruption cases are rejected even when byte-snapshot expectations are
+changed to match corrupt files. The shared verifier now independently checks stream
+headers, exact lengths and manifest/entry sizes. Existing-output and target-loss/recovery
+checks pass. FXList is still excluded from `diagnostic-build` and production registration;
+bounded command admission is next. This is not yet a playable mod. The preceding
+[isolated FX compiler](docs/RA3EP1_FX_PROFILE.md) and
+[core audio resolution](docs/RA3EP1_FX_AUDIO_RESOLUTION.md) proofs remain in place.
 
 | Workstream | Status |
 |---|---|

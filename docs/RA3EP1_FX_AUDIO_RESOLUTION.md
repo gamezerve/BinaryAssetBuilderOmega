@@ -80,7 +80,8 @@ The subsequent [isolated FX compiler profile](RA3EP1_FX_PROFILE.md) now
 revalidates current declarations, concrete dependency identities, selector
 bounds/order and injected type IDs, rejecting unproven nuggets and options.
 FXList remains excluded from the production registry and `diagnostic-build`.
-Mixed-family diagnostic stream round trips are next, before command admission.
+The [fixed modifier/FX stream round trip](RA3EP1_MODIFIER_FX_STREAM.md) now
+passes; bounded command admission and publication tests are next.
 
 Audio payload compilation/packaging, other FX nugget layouts, final EP1 type
 table/aggregate identity, SDK/WorldBuilder integration and actual Uprising mod

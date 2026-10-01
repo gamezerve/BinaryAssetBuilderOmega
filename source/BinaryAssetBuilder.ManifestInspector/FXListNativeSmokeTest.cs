@@ -158,11 +158,11 @@ internal static class FXListNativeSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: pin the two locally extracted FX dependency enums to the official BaseModules definitions without importing unrelated module layouts. */
     //-------------------------------------------------------------------------------------------------
-    private static void CheckExtractedEnums(string fixtures)
+    internal static void CheckExtractedEnums(string fixtures, string schemaName = "FXListPipeline.xsd")
     {
         XmlDocument official = new(), focused = new();
         official.Load(Path.GetFullPath(Path.Combine(fixtures, "../../schemas/ra3ep1/xsd/Modules/BaseModules.xsd")));
-        focused.Load(Path.Combine(fixtures, "FXListPipeline.xsd"));
+        focused.Load(Path.Combine(fixtures, schemaName));
         foreach (string name in new[] { "FXTriggerType", "FXActionType" })
         {
             string query = "//*[local-name()='simpleType' and @name='" + name + "']/*[local-name()='restriction']/*[local-name()='enumeration']/@value";

@@ -90,10 +90,10 @@ marshallers; adding an isolated processor does not increase those model counters
 
 ## Next gate
 
-Prove mixed modifier/FX/audio diagnostic stream serialization and independent
-readback: concrete dependency tables, final one-biased selectors, runtime manifest
-mapping, offsets, deterministic bytes and failure preservation. Only then extend
-bounded diagnostic command admission. Full audio/particle processing, final EP1
+The subsequent [fixed modifier/FX/audio stream proof](RA3EP1_MODIFIER_FX_STREAM.md)
+now verifies concrete dependency tables, final one-biased selectors, runtime
+mapping, native offsets, deterministic bytes and failure preservation. Next extend
+bounded diagnostic command admission and its full input/publication tests. Full audio/particle processing, final EP1
 registration, SDK/WorldBuilder packaging and actual Uprising loading remain open.
 Overall engineering estimate remains approximately 50% complete / 50% remaining.
 

@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Text;
@@ -135,7 +136,7 @@ internal static class BoundedDiagnosticBuild
     //-------------------------------------------------------------------------------------------------
     /** Reborn: serialize admitted root entries, ordered references and native streams into owned memory before staging publication. */
     //-------------------------------------------------------------------------------------------------
-    private static Dictionary<string, byte[]> Serialize(InstanceDeclaration[] ordered, AssetBuffer[] chunks, uint checksum, ReferencedFileBuffer runtime)
+    internal static Dictionary<string, byte[]> Serialize(InstanceDeclaration[] ordered, AssetBuffer[] chunks, uint checksum, ReferencedFileBuffer runtime)
     {
         using MemoryStream names = new(), sources = new(), references = new(), entries = new();
         using BinaryWriter refWriter = new(references, Encoding.UTF8, true);
@@ -167,7 +168,7 @@ internal static class BoundedDiagnosticBuild
             Invoke(typeof(OutputManager).GetMethod("WriteLinkedStreamHeader", BindingFlags.NonPublic | BindingFlags.Static)!, writer, checksum, stream.Magic);
             foreach (byte[] part in stream.Parts) writer.Write(part); writer.Flush(); result.Add(stream.Name, data.ToArray());
         }
-        result.Add("DIAGNOSTIC_ONLY.txt", Encoding.UTF8.GetBytes("Bounded modifier/shader/filter Include diagnostic only. NOT a playable Uprising mod.\n"
+        result.Add("DIAGNOSTIC_ONLY.txt", Encoding.UTF8.GetBytes("Bounded native Include diagnostic only. NOT a playable Uprising mod.\n"
             + "Production/cache gates remain closed; no OutputManager commit/link, packaging or game-load proof.\n"
             + "External mappings serialize runtime names but do not copy or validate native dependency streams.\n"
             + "Filter GameObject weak IDs do not prove target presence and do not become strong imports.\n"));
@@ -177,14 +178,29 @@ internal static class BoundedDiagnosticBuild
     //-------------------------------------------------------------------------------------------------
     /** Reborn: require exact staged bytes and independent metadata/native-offset readback before the new directory becomes visible. */
     //-------------------------------------------------------------------------------------------------
-    private static void Verify(string directory, InstanceDeclaration[] ordered, AssetBuffer[] chunks, Dictionary<string, byte[]> expected, uint checksum, string[] runtimeNames)
+    internal static void Verify(string directory, InstanceDeclaration[] ordered, AssetBuffer[] chunks, Dictionary<string, byte[]> expected, uint checksum, string[] runtimeNames)
     {
         foreach (var file in expected) if (!File.ReadAllBytes(Path.Combine(directory, file.Key)).SequenceEqual(file.Value)) throw new InvalidDataException("Staged diagnostic bytes differ.");
         string path = Path.Combine(directory, "diagnostic.manifest"); ManifestDocument parsed = ManifestReader.Read(File.ReadAllBytes(path));
         if (parsed.Validate().Count != 0 || parsed.Header.StreamChecksum != checksum || parsed.Assets.Count != ordered.Length
-            || parsed.Header.Version != 7 || !parsed.Header.IsLinked || parsed.Header.AllTypesHash != 0x5454A8E9u
+            || parsed.Header.Version != 7 || parsed.Header.ContainerPrefixSize != 4 || !parsed.Header.IsLinked || parsed.Header.AllTypesHash != 0x5454A8E9u
+            || parsed.Header.TotalInstanceDataSize != chunks.Sum(chunk => chunk.InstanceData.Length)
+            || parsed.Header.MaxInstanceChunkSize != chunks.Max(chunk => chunk.InstanceData.Length)
+            || parsed.Header.MaxRelocationChunkSize != chunks.Max(chunk => chunk.RelocationData.Length)
+            || parsed.Header.MaxImportsChunkSize != chunks.Max(chunk => chunk.ImportsData.Length)
+            || parsed.Header.AssetReferenceBufferSize != ordered.Sum(instance => instance.ValidatedReferencedInstances!.Count) * 8
             || !parsed.ReferencedManifests.SequenceEqual(runtimeNames.Select(name => new ReferencedManifest(name, false))))
             throw new InvalidDataException("Staged manifest validation failed.");
+        // Reborn: independently check stream headers and exact lengths, not just equality with the staged byte snapshot.
+        foreach (var stream in new[] { (Name: "diagnostic.bin", Magic: 0xBABB0000u, Size: chunks.Sum(chunk => chunk.InstanceData.Length)),
+            (Name: "diagnostic.relo", Magic: 0xBABE0000u, Size: chunks.Sum(chunk => chunk.RelocationData.Length)),
+            (Name: "diagnostic.imp", Magic: 0xBAB10000u, Size: chunks.Sum(chunk => chunk.ImportsData.Length)) })
+        {
+            byte[] bytes = File.ReadAllBytes(Path.Combine(directory, stream.Name));
+            if (bytes.Length != 8 + stream.Size || BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(0, 4)) != stream.Magic
+                || BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(4, 4)) != checksum)
+                throw new InvalidDataException("Staged stream header/checksum/length validation failed.");
+        }
         using BinaryAssetBuilder.Utility.Manifest utility = new();
         if (!utility.Load(path, false) || utility.AssetCount != ordered.Length || utility.StreamChecksum != checksum || utility.AllTypesHash != 0x5454A8E9u)
             throw new InvalidDataException("Utility readback failed.");
@@ -194,6 +210,7 @@ internal static class BoundedDiagnosticBuild
             var asset = parsed.Assets[index]; var instance = ordered[index]; var chunk = chunks[index]; var other = utility.Assets[index];
             if (asset.TypeId != instance.Handle.TypeId || asset.InstanceId != instance.Handle.InstanceId || asset.TypeHash != instance.Handle.TypeHash
                 || asset.InstanceHash != instance.Handle.InstanceHash || asset.Name != instance.Handle.Name || asset.Tokenized != 0
+                || asset.InstanceDataSize != chunk.InstanceData.Length || asset.RelocationDataSize != chunk.RelocationData.Length || asset.ImportsDataSize != chunk.ImportsData.Length
                 || asset.SourceFile != Path.GetFileName(instance.Document.SourcePath)
                 || !asset.References.SequenceEqual(instance.ValidatedReferencedInstances!.Select(handle => new AssetId(handle.TypeId, handle.InstanceId)))
                 || other.QualifiedName != asset.Name || other.TypeHash != asset.TypeHash || other.InstanceHash != asset.InstanceHash
