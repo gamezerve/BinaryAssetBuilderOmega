@@ -118,6 +118,11 @@ Overridable model/marshal comments now explicitly identify their synthetic scope
 
 Next bounded package:
 
+Follow-up: [isolated Multisound native proof](RA3EP1_MULTISOUND_NATIVE.md) now
+implements the first native step with three complete stock slice matches and
+synthetic optional-pointer goldens. Production/profile admission remains closed;
+the legacy-layout mismatch table above still describes the unchanged old path.
+
 1. Recover field offsets and optional defaults for MultisoundSubsoundRef from
    reference marshaller IL and varied stock XML/BIN pairs. Start with default
    children, then explicit pitch/volume overrides, including null-vs-zero cases.

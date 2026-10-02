@@ -1,7 +1,7 @@
 # BinaryAssetBuilder
 A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
-## Uprising progress — October 1, 2026
+## Uprising progress — October 2, 2026
 
 Active branch: `feature/ra3ep1-manifest-inspector`. This is not yet a usable
 Uprising Mod SDK release. Replacing XML/XSD files alone is insufficient:
@@ -16,18 +16,26 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**77 test groups** (some contain several fixtures). These counters can grow
+**78 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
-registered groups but does not execute them. The bounded FX command integration
-adds one group without changing model/marshaller counts; all 77 groups were executed.
+registered groups but does not execute them. The isolated Multisound native proof
+adds one group without changing model/marshaller counts; all 78 groups were executed.
 
-Latest milestone: [external audio fingerprints and native gaps](docs/RA3EP1_AUDIO_FINGERPRINTS.md).
+Latest milestone: [isolated Multisound native proof](docs/RA3EP1_MULTISOUND_NATIVE.md).
+An explicit EP1 16/28-byte root/child path now matches three complete stock
+Multisound BIN/RELO/IMP slices and ordered AudioEvent identities. Optional
+pointers, explicit zero and percentage handling have independent synthetic goldens.
+The old 16/8-byte legacy layout remains unchanged. Production audio registration,
+checked ProcessInstance and diagnostic-build audio roots remain closed.
+
+[External audio fingerprints and native gaps](docs/RA3EP1_AUDIO_FINGERPRINTS.md):
 Selected external AudioEvent/Multisound dependencies now require stock EP1 hashes
 and non-tokenized metadata. Wrong fingerprints reject; restored inputs recover
 identical output. Bounded native reads confirm old sound layouts cannot be reused:
-AudioEvent root 120 vs 152 bytes, audio-file references 8 vs 12, and Multisound
-children 8 vs 28. Audio compilation remains closed pending offset/default goldens.
+AudioEvent root 120 vs 152 bytes, audio-file references 8 vs 12, and legacy
+Multisound children 8 vs 28. Multisound now has an isolated native proof;
+AudioEvent/AudioFile recovery and checked audio compiler profiles remain open.
 
 [FX support in bounded diagnostic builds](docs/RA3EP1_DIAGNOSTIC_FX_BUILD.md):
 `diagnostic-build` now accepts the isolated empty/two-Sound FX subset, alongside

@@ -12,6 +12,8 @@ internal static class CompilerSmokeTest
     {
         InitializeHashProvider();
         TestAttributeModifier();
+        // Reborn: exercise isolated EP1 sound records while retaining the legacy child ABI.
+        TestMultisoundNative();
         TestDieMuxData();
         TestGameDependency();
         TestSlowDeath();
@@ -2105,6 +2107,11 @@ internal static class CompilerSmokeTest
     /** Reborn: verify optional FX base masks and source-normalized native chunks with production registration disabled. */
     //-------------------------------------------------------------------------------------------------
     private static void TestFXListNative() => FXListNativeSmokeTest.Run(Array.Empty<string>());
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: register native sound evidence independently from production audio processors. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestMultisoundNative() => MultisoundNativeSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: verify actual external derived resolution without registering a runnable FX/audio processor. */

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: official EP1 audio schema for native-only sound tests; no production audio processors. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset"
+ targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Base.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Base/AssetBase.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Ref.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeAudio.xsd" />
+ <xs:element name="Multisound" type="Multisound" />
+ <xs:element name="AssetDeclaration"><xs:complexType><xs:sequence>
+  <xs:element ref="Multisound" minOccurs="0" maxOccurs="unbounded" />
+ </xs:sequence></xs:complexType></xs:element>
+</xs:schema>

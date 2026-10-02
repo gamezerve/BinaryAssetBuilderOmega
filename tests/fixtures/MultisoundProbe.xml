@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: small stock source excerpts for bounded EP1 native comparisons; original game XML remains read-only. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+ <Multisound id="GDI_Generic_VoiceDieMS" Control="PLAY_ONE">
+  <Subsound>GDI_Commando_VoiceDie</Subsound>
+  <Subsound Weight="800">GDI_Engineer_VoiceDie</Subsound>
+  <Subsound Weight="500">GDI_FireHawk_VoiceDie</Subsound>
+  <Subsound Weight="800">GDI_GrenadierSoldier_VoiceDie</Subsound>
+  <Subsound>GDI_Harvester_VoiceDie</Subsound>
+  <Subsound Weight="500">GDI_Juggernaught_VoiceDie</Subsound>
+  <Subsound Weight="300">GDI_MCV_VoiceDie</Subsound>
+  <Subsound Weight="600">GDI_MissileSoldier_VoiceDie</Subsound>
+  <Subsound Weight="800">GDI_Orca_VoiceDie</Subsound>
+  <Subsound Weight="500">GDI_Ox_VoiceDie</Subsound>
+  <Subsound Weight="500">GDI_PredatorTank_VoiceDie</Subsound>
+  <Subsound Weight="500">GDI_RifleSoldier_VoiceDie</Subsound>
+  <Subsound Weight="300">GDI_Sniper_VoiceDie</Subsound>
+  <Subsound Weight="1300">GDI_Soldier_VoiceDie</Subsound>
+  <Subsound>GDI_ZoneTrooper_VoiceDie</Subsound>
+  <Subsound Weight="200">CIV_Homage_VoiceDie</Subsound>
+ </Multisound>
+ <Multisound id="NOD_Generic_VoiceDieMS" Control="PLAY_ONE">
+  <Subsound Weight="500">NOD_AttackBike_VoiceDie</Subsound>
+  <Subsound Weight="400">NOD_Avatar_VoiceDie</Subsound>
+  <Subsound Weight="500">NOD_BeamCannon_VoiceDie</Subsound>
+  <Subsound Weight="500">NOD_BlackHand_VoiceDie</Subsound>
+  <Subsound Weight="100">NOD_Carryall_VoiceDie</Subsound>
+  <Subsound Weight="700">NOD_Emmisary_VoiceDie</Subsound>
+  <Subsound Weight="500">NOD_Fanatic_VoiceDie</Subsound>
+  <Subsound Weight="500">NOD_FlameTank_VoiceDie</Subsound>
+  <Subsound Weight="500">NOD_Harvester_VoiceDie</Subsound>
+  <Subsound Weight="600">NOD_MCV_VoiceDie</Subsound>
+  <Subsound Weight="500">NOD_RifleMilitant_VoiceDie</Subsound>
+  <Subsound Weight="600">NOD_RaiderBuggy_VoiceDie</Subsound>
+  <Subsound Weight="500">NOD_RocketMilitant_VoiceDie</Subsound>
+  <Subsound Weight="600">NOD_Saboteur_VoiceDie</Subsound>
+  <Subsound Weight="900">NOD_ScorpionTank_VoiceDie</Subsound>
+  <Subsound Weight="700">NOD_Shadow_VoiceDie</Subsound>
+  <Subsound Weight="400">NOD_StealthTank_VoiceDie</Subsound>
+  <Subsound Weight="700">NOD_Venom_VoiceDie</Subsound>
+  <Subsound Weight="300">NOD_VertigoBomber_VoiceDie</Subsound>
+  <Subsound Weight="200">CIV_Homage_VoiceDie</Subsound>
+ </Multisound>
+ <Multisound id="Gui_GlobalShellPanelExpand">
+  <Subsound>Gui_GlobalShellPanelExpand1</Subsound>
+  <Subsound>Gui_GlobalShellPanelExpand2</Subsound>
+ </Multisound>
+</AssetDeclaration>
