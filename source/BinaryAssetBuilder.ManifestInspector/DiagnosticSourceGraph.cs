@@ -69,13 +69,17 @@ internal sealed class DiagnosticSourceGraph
             // Reborn: matching direct leaves and the official Include container are the only permitted non-root shapes.
             bool valid = element == root || (element.LocalName switch
             {
-                "AttributeModifier" or "ShaderOverride" or "ObjectFilterAsset" or "FXList" or "Multisound" or "Includes" => element.ParentNode == root,
+                "AttributeModifier" or "ShaderOverride" or "ObjectFilterAsset" or "FXList" or "Multisound" or "AudioEvent" or "Includes" => element.ParentNode == root,
+                // Reborn: only direct stock-proven event references/ranges enter snapshots; wider audio structures remain closed.
+                "Attack" or "Decay" or "PitchShift" or "PerFilePitchShift" or "Delay" or "InitialDelay" or "NonInterruptibleTime" =>
+                    element.ParentNode is XmlElement eventRoot && eventRoot.LocalName == "AudioEvent" && eventRoot.ParentNode == root,
                 // Reborn: admit only direct weighted sound references; nested/optional audio controls remain profile-gated.
                 "Subsound" => element.ParentNode is XmlElement soundRoot && soundRoot.LocalName == "Multisound" && soundRoot.ParentNode == root,
                 // Reborn: admit only the checked sound-only FX shape; filters, particles and other nuggets remain outside command preflight.
                 "NuggetList" => element.ParentNode is XmlElement fx && fx.LocalName == "FXList" && fx.ParentNode == root,
-                "Sound" => element.ParentNode is XmlElement nuggets && nuggets.LocalName == "NuggetList"
-                    && nuggets.ParentNode is XmlElement fxOwner && fxOwner.LocalName == "FXList" && fxOwner.ParentNode == root,
+                "Sound" => element.ParentNode is XmlElement nuggets && ((nuggets.LocalName == "NuggetList"
+                    && nuggets.ParentNode is XmlElement fxOwner && fxOwner.LocalName == "FXList" && fxOwner.ParentNode == root)
+                    || nuggets.LocalName == "AudioEvent" && nuggets.ParentNode == root),
                 "Modifier" => element.ParentNode is XmlElement modifier && modifier.LocalName == "AttributeModifier" && modifier.ParentNode == root,
                 "Rule" => element.ParentNode is XmlElement shader && shader.LocalName == "ShaderOverride" && shader.ParentNode == root,
                 "Filter" => element.ParentNode is XmlElement filterAsset && filterAsset.LocalName == "ObjectFilterAsset" && filterAsset.ParentNode == root,
@@ -94,7 +98,12 @@ internal sealed class DiagnosticSourceGraph
             // Reborn: authored subsound text cannot contain the selector suffix/formula that normalization would otherwise rewrite.
             if (element.LocalName == "Subsound" && (element.InnerText.Contains('\\') || element.InnerText.TrimStart().StartsWith("=", StringComparison.Ordinal)))
                 throw new InvalidDataException("Authored normalized Subsound selectors and expressions are not admitted.");
-            if (element.ParentNode == root && element.LocalName is "AttributeModifier" or "ShaderOverride" or "ObjectFilterAsset" or "FXList" or "Multisound")
+            // Reborn: authored AudioFile text must not supply a suffix/expression that core reference normalization could silently erase.
+            if (element.ParentNode is XmlElement audioOwner && audioOwner.LocalName == "AudioEvent"
+                && element.LocalName is "Attack" or "Sound" or "Decay"
+                && (element.InnerText.Contains('\\') || element.InnerText.TrimStart().StartsWith("=", StringComparison.Ordinal)))
+                throw new InvalidDataException("Authored normalized AudioFile selectors and expressions are not admitted.");
+            if (element.ParentNode == root && element.LocalName is "AttributeModifier" or "ShaderOverride" or "ObjectFilterAsset" or "FXList" or "Multisound" or "AudioEvent")
             {
                 string id = element.GetAttribute("id");
                 if (id.Length is < 1 or > 128 || id.Any(c => !char.IsAsciiLetterOrDigit(c) && c != '_' && c != '-' && c != '.'))

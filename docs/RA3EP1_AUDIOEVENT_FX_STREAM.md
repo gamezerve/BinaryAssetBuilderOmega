@@ -1,7 +1,8 @@
 # Fixed local AudioEvent / Multisound / FX stream evidence
 
-Date: October 3, 2026. This is a fixed owned test graph, not general
-`diagnostic-build` AudioEvent admission, AudioFile encoding or a playable SDK.
+Date: October 3, 2026. This is a fixed owned test graph; general
+`diagnostic-build` AudioEvent admission is proved separately in the
+[command report](RA3EP1_DIAGNOSTIC_AUDIOEVENT_BUILD.md). This is not AudioFile encoding or a playable SDK.
 Overall engineering effort remains approximately 50% complete / 50% remaining.
 
 ## Graph and artifact
@@ -99,10 +100,10 @@ are metadata-only fixtures, not audio payload goldens.
 .\source\BinaryAssetBuilder.ManifestInspector\bin\x86\Release\net8.0\BinaryAssetBuilder.ManifestInspector.exe audioevent-fx-stream-self-test "D:\TEMP\Red Alert 3 Uprising Source Data\EnglishAudio\data\audio.manifest"
 ```
 
-Registered in `compiler-self-test`: 84 declared groups. Structural inventory
+Registered in `compiler-self-test`: 85 declared groups. Structural inventory
 remains 785/1,390 models and 762/1,390 typed marshallers.
 
-Next: narrow general diagnostic AudioEvent admission with approved source and
+Narrow general AudioEvent admission now passes with approved source and
 metadata snapshots, immutable publication and actual local dependency ordering.
 Wider AudioEvent options/stock evidence, LimitGroup, AudioFile runtime/codec
 generation, aggregate type tables, packaging and game loading remain open.

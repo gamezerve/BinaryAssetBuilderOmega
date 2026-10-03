@@ -22,6 +22,8 @@ internal static class CompilerSmokeTest
         TestAudioEventProfile();
         // Reborn: local AudioEvent closure requires external AudioFile fingerprint and independent mixed-stream proofs.
         TestAudioEventFXStream();
+        // Reborn: general command event admission must preserve snapshot, ordering and publication contracts.
+        TestDiagnosticAudioEventBuild();
         // Reborn: exercise local Multisound closure and independent mixed stream identity/native readback.
         TestMultisoundFXStream();
         // Reborn: public bounded sound admission must preserve all prior snapshot/stream/publication gates.
@@ -2144,6 +2146,11 @@ internal static class CompilerSmokeTest
     /** Reborn: exercise fixed local event/sound/FX streams without production or public admission. */
     //-------------------------------------------------------------------------------------------------
     private static void TestAudioEventFXStream() => AudioEventFXStreamSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: exercise the bounded AudioEvent command through the same service used by the CLI. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestDiagnosticAudioEventBuild() => DiagnosticAudioEventBuildSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: register fixed local-sound stream evidence without widening production or diagnostic command admission. */

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: bounded AudioEvent/Multisound/FX/modifier CLI example; existing external AudioFiles resolve by explicit metadata mapping. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+ <AudioEvent id="RebornDiagnosticAudio" Volume="60" Control="INTERRUPT" SubmixSlider="SOUNDFX">
+  <PitchShift Low="-5" High="5" /><Sound>WImpact_DebrisVsGrounda</Sound><Sound Weight="800">WImpact_DebrisVsGroundb</Sound>
+ </AudioEvent>
+ <Multisound id="RebornDiagnosticMultisound" Control="PLAY_ONE"><Subsound>AudioEvent:RebornDiagnosticAudio</Subsound></Multisound>
+ <FXList id="RebornDiagnosticFX"><NuggetList><Sound Value="RebornDiagnosticMultisound" /></NuggetList></FXList>
+ <AttributeModifier id="RebornDiagnosticModifier" StartFX="RebornDiagnosticFX" />
+</AssetDeclaration>

@@ -53,26 +53,34 @@ Authored/local Multisound is now the fifth narrow family. DiagnosticMultisoundPr
 builds a three-root sound/FX/modifier chain using stock global AudioEvent metadata,
 with linked sizes 216/28/36. See [Multisound command usage and limits](RA3EP1_DIAGNOSTIC_MULTISOUND_BUILD.md).
 
+AudioEvent is now the sixth checked family. DiagnosticAudioEventProbe.xml builds
+an event/sound/FX/modifier chain using explicit external AudioFile metadata.
+The actual CLI example emits four entries and 376/44/44 linked streams.
+See [AudioEvent command integration and limits](RA3EP1_DIAGNOSTIC_AUDIOEVENT_BUILD.md).
+
 ## Admission and deliberate limits
 
 - One entry EA AssetDeclaration and at most sixteen reachable XML files, each
   at most 1 MiB / 1,048,576 characters; aggregate parsed XML is at most two MiB
   of characters. At most 32 Include edges and eight edges of nesting are admitted.
-- 1–32 AttributeModifier/ShaderOverride/ObjectFilterAsset/Multisound/FXList roots across the entire graph; root IDs are 1–128 ASCII letters,
+- 1–32 AttributeModifier/ShaderOverride/ObjectFilterAsset/AudioEvent/Multisound/FXList roots across the entire graph; root IDs are 1–128 ASCII letters,
   digits, underscore, dash or dot characters. Immediate Modifier/Rule records
   are admitted only under their matching root type. ObjectFilterAsset admits
   an immediate Filter and its direct IncludeThing weak leaves; wider filter
   eligibility remains closed by the existing native profile. FXList admits only
   a direct NuggetList with zero to two direct Sound leaves; other nuggets/nesting reject.
   Multisound admits direct weighted Subsound leaves only, under its isolated profile.
+  AudioEvent admits direct Attack/Sound/Decay reference leaves and the five checked
+  PitchShift/PerFilePitchShift/Delay/InitialDelay/NonInterruptibleTime ranges.
 - Only `all` and `instance` Includes are admitted, preserving their real core
   selection semantics. Includes-only wrapper documents are allowed; at least
   one native asset must ultimately be selected. Reference Includes, cycles,
   duplicate identities across distinct files and other asset/control elements,
   DTDs, inheritance, overrides, definitions, authored TypeIds and unresolved expressions reject.
   Sound Value must be an authored literal reference, never a pre-normalized backslash selector.
-  Subsound text likewise rejects authored backslash selectors/expressions. Selected
-  local asset dependency cycles reject during deterministic dependency-first ordering.
+  Subsound text likewise rejects authored backslash selectors/expressions.
+  AudioEvent reference text in all three lists also rejects authored suffixes/expressions.
+  Selected local asset dependency cycles reject during deterministic dependency-first ordering.
 - Include sources must be relative .xml paths beneath the entry directory,
   resolved relative to each including file. Absolute paths, traversal/dot/empty
   segments, macros, reserved syntax, trailing dots/spaces and reparse files or
@@ -89,7 +97,9 @@ with linked sizes 216/28/36. See [Multisound command usage and limits](RA3EP1_DI
   false/default booleans and at most one FLYING source mask per Sound. Concrete
   audio targets are AudioEvent or Multisound, including locally compiled Multisounds.
   Multisound admits 0–32 children and default/PLAY_ONE control, no optional pitch/
-  percentage controls or LOOP. Other audio descendants/options remain closed.
+  percentage controls or LOOP. AudioEvent uses its isolated finite-value/32-reference
+  profile with default child Volume, supported ranges and limited control tokens.
+  Other audio descendants/options remain closed.
 - At most eight unique physical/runtime external mappings; each manifest is at
   most 16 MiB, structurally valid, linked EP1 v7/aggregate and not patch-based.
   Runtime paths use the existing core validator: relative .manifest names with
@@ -99,8 +109,9 @@ with linked sizes 216/28/36. See [Multisound command usage and limits](RA3EP1_DI
   declarations take precedence. External ShaderOverride must match the proven
   native type hash/tokenization. Externally referenced FX/audio remains identity
   metadata only, not native dependency payload compatibility. Locally compiled
-  FX and Multisound are limited to isolated checked profiles; AudioEvent/AudioFile
-  roots and encoded audio compilation remain closed.
+  FX, Multisound and AudioEvent are limited to isolated checked profiles.
+  External AudioFile requires unique stock hash 53C81E47/tokenized false metadata;
+  AudioFile roots and encoded audio compilation remain closed.
 - Compiled BIN+RELO+IMP payload total must stay at or below 1 MiB.
 - Output must be a new child of an existing non-reparse parent chain. Existing
   output files/directories and reparse ancestors are rejected.
@@ -122,11 +133,11 @@ names identify the actual asset's snapshot document rather than attributing ever
 asset to its parent; original absolute paths are not embedded in output. A fresh
 command reads fresh sources, while an already approved snapshot retains its data.
 
-The real document pipeline uses five explicitly mapped experimental plugins with
+The real document pipeline uses six explicitly mapped experimental plugins with
 GenerateOutput=false and cache/precompiled reuse disabled. The existing private
 dependency seam resolves ordered identities. Self/all roots seed the real local
 resolution closure; unused instance/tentative roots are not emitted. Actual selected
-local dependencies are emitted first, with shader/filter/Multisound/FX/modifier
+local dependencies are emitted first, with shader/filter/AudioEvent/Multisound/FX/modifier
 rank and ordinal-name tie-breaks. Nested sounds can therefore precede their
 alphabetically earlier consumers; selected local cycles reject. This bounded
 32-root traversal is not the production stable sorter.

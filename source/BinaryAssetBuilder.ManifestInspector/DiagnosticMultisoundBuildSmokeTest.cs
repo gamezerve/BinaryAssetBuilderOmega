@@ -137,7 +137,7 @@ internal static class DiagnosticMultisoundBuildSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: reject without publication and preserve caller settings; raced/existing owner directories are never removed. */
     //-------------------------------------------------------------------------------------------------
-    private static Exception Reject(string source, string directory, string[] mappings, Settings saved, string? output = null, Action<string>? hook = null)
+    internal static Exception Reject(string source, string directory, string[] mappings, Settings saved, string? output = null, Action<string>? hook = null)
     {
         output ??= Path.Combine(directory, "reject-" + Guid.NewGuid().ToString("N")); bool existed = Directory.Exists(output);
         try { BoundedDiagnosticBuild.Build(source, output, mappings, hook); }
@@ -151,7 +151,7 @@ internal static class DiagnosticMultisoundBuildSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compare all five output files for exact source/metadata snapshot recovery. */
     //-------------------------------------------------------------------------------------------------
-    private static void Same(string first, string second)
+    internal static void Same(string first, string second)
     {
         foreach (string name in new[] { "diagnostic.manifest","diagnostic.bin","diagnostic.relo","diagnostic.imp","DIAGNOSTIC_ONLY.txt" })
             Require(File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(first)!, name)).SequenceEqual(File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(second)!, name))), "Repeated sound command differs.");

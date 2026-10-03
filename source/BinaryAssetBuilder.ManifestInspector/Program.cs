@@ -13,6 +13,11 @@ internal static class Program
     {
         try
         {
+            // Reborn: general checked AudioEvent admission optionally exercises actual external AudioFile metadata.
+            if (args.FirstOrDefault() == "diagnostic-audioevent-build-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider(); DiagnosticAudioEventBuildSmokeTest.Run(args.Skip(1).ToArray()); return 0;
+            }
             // Reborn: fixed local event/sound/FX proof optionally resolves real AudioFile metadata without public root admission.
             if (args.FirstOrDefault() == "audioevent-fx-stream-self-test")
             {
@@ -99,6 +104,8 @@ internal static class Program
                 DiagnosticFXBuildSmokeTest.Run();
                 // Reborn: aggregate command proof now includes narrow authored/local Multisound admission.
                 DiagnosticMultisoundBuildSmokeTest.Run();
+                // Reborn: all generic command families must include checked AudioEvent snapshot/publication tests.
+                DiagnosticAudioEventBuildSmokeTest.Run();
                 return 0;
             }
             // Reborn: bounded diagnostic Include build publishes only a new verified directory and never enables production/cache policies.
@@ -701,6 +708,7 @@ internal static class Program
         Console.WriteLine("  diagnostic-build <source.xml> <new-output-directory> [physical.manifest=runtime.manifest ...]");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.
         Console.WriteLine("  diagnostic-build-self-test");
+        Console.WriteLine("  diagnostic-audioevent-build-self-test [ep1-audio-manifest ...]");
         // Reborn: optional stock mappings prove actual command FX slices and concrete audio identities without rebuilding audio payloads.
         Console.WriteLine("  diagnostic-fx-build-self-test [ep1-global-manifest ep1-static-manifest ep1-audio-manifest]");
         // Reborn: watcher fixtures own only temporary files and use deterministic callback injection.

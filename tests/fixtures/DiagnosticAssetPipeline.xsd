@@ -29,6 +29,8 @@
  <xs:element name="FXList" type="FXList" />
  <!-- Reborn: direct Multisound roots are restricted further by snapshot preflight and the isolated checked profile. -->
  <xs:element name="Multisound" type="Multisound" />
+ <!-- Reborn: AudioEvent roots use the isolated checked profile; no AudioFile source or codec roots are admitted. -->
+ <xs:element name="AudioEvent" type="AudioEvent" />
  <xs:element name="AttributeModifier" type="AttributeModifier" />
  <xs:element name="ShaderOverride" type="ShaderOverride" />
  <xs:element name="ObjectFilterAsset" type="ObjectFilterAsset" />
@@ -38,7 +40,7 @@
    <xs:element name="Include" type="Include" minOccurs="0" maxOccurs="unbounded" />
   </xs:sequence></xs:complexType></xs:element>
   <xs:choice minOccurs="0" maxOccurs="unbounded">
-   <xs:element ref="AttributeModifier" /><xs:element ref="ShaderOverride" /><xs:element ref="ObjectFilterAsset" /><xs:element ref="FXList" /><xs:element ref="Multisound" />
+   <xs:element ref="AttributeModifier" /><xs:element ref="ShaderOverride" /><xs:element ref="ObjectFilterAsset" /><xs:element ref="FXList" /><xs:element ref="Multisound" /><xs:element ref="AudioEvent" />
   </xs:choice>
  </xs:sequence></xs:complexType></xs:element>
 </xs:schema>

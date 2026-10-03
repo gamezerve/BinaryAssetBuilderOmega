@@ -128,7 +128,8 @@ internal static class DiagnosticFXBuildSmokeTest
             "<FXList id=\"Particle\"><NuggetList><EvaEvent /></NuggetList></FXList>",
             "<FXList id=\"Nested\"><NuggetList><Sound Value=\"ImpactDebrisHitsGround\"><SourceObjectFilter /></Sound></NuggetList></FXList>",
             "<FXList id=\"Poisoned\"><NuggetList><Sound TypeId=\"0\" Value=\"ImpactDebrisHitsGround\" /></NuggetList></FXList>",
-            "<AudioEvent id=\"UnadmittedAudioRoot\" />",
+            // Reborn: AudioEvent roots are now admitted, but codec-producing AudioFile roots remain outside this command.
+            "<AudioFile id=\"UnadmittedAudioRoot\" />",
             string.Concat(Enumerable.Range(0, 33).Select(index => "<FXList id=\"TooManyFX" + index + "\"><NuggetList /></FXList>"))
         })
         { File.WriteAllText(source, Xml(invalid)); Reject(source, directory, mappings, saved); }

@@ -16,28 +16,37 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**84 test groups** (some contain several fixtures). These counters can grow
+**85 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
-registered groups but does not execute them. The fixed AudioEvent mixed stream
-adds one group without changing model/marshaller counts; all 84 groups were executed.
+registered groups but does not execute them. General bounded AudioEvent admission
+adds one group without changing model/marshaller counts; all 85 groups were executed.
 
-Latest milestone: [fixed AudioEvent / Multisound / FX stream](docs/RA3EP1_AUDIOEVENT_FX_STREAM.md).
+Latest milestone: [AudioEvent in bounded diagnostic builds](docs/RA3EP1_DIAGNOSTIC_AUDIOEVENT_BUILD.md).
+`diagnostic-build` now admits checked AudioEvent roots as its sixth family.
+Six-family Include graphs preserve source/metadata snapshots, dependency-first
+ordering and exclusive verified publication. Authored AudioFile selector suffixes
+and formulas reject before normalization; wrong/duplicate/missing external
+AudioFile metadata reject. The committed four-root CLI example ran with actual
+EnglishAudio metadata, producing 376/44/44 linked streams. AudioFile codecs,
+production SDK output and in-game loading remain closed.
+
+[Fixed AudioEvent / Multisound / FX stream](docs/RA3EP1_AUDIOEVENT_FX_STREAM.md):
 A three-level Include graph now compiles local FX → Multisound → AudioEvent →
 external AudioFile metadata. Native totals 312/36/28 become 320/44/36 linked
 BIN/RELO/IMP bytes. Ordered concrete selectors, source attribution and runtime
 mapping names round-trip through both readers. Selected AudioFile metadata must
 be unique and match EP1 hash 53C81E47/tokenized false. Actual EnglishAudio mapping,
 20 corruptions, missing/edit/recovery and existing-output preservation pass.
-This fixed proof does not open general diagnostic AudioEvent admission or codecs.
+The separate general bounded admission now passes; this fixed proof does not enable codecs.
 
 [Checked isolated AudioEvent profile](docs/RA3EP1_AUDIOEVENT_PROFILE.md):
 An explicit Win32 ProcessInstance entry now reproduces all five stock native
 records with prepared concrete AudioFile identities. Current XML scalar/range
 edits are revalidated; stale/changed identities, reordered selectors, incomplete
 tables, unsupported options, duplicate aliases and the 33rd reference reject.
-Production/cache/reuse, AudioFile codecs and general diagnostic AudioEvent
-admission stay closed. Source copies and prepared tuples are checked separately
+Production/cache/reuse and AudioFile codecs stay closed. General bounded AudioEvent
+admission now uses this narrow profile. Source copies and prepared tuples are checked separately
 from the shared stream-admission fingerprint gate, now exercised by the fixed proof.
 
 [Isolated AudioEvent native proof](docs/RA3EP1_AUDIOEVENT_NATIVE.md):
@@ -48,7 +57,7 @@ weight/shifted FADE_ON_KILL bit, and Yuriko's weighted footsteps/Delay now have
 real stock comparisons, alongside the original impact. Independent defaults and
 every implemented optional base pointer also pass. The legacy 96/120/8-byte
 path remains unchanged. LimitGroup references reject; remaining stock evidence,
-public diagnostic admission, AudioFile codecs and production/game loading remain open.
+wider diagnostic options, AudioFile codecs and production/game loading remain open.
 
 [Multisound in bounded diagnostic builds](docs/RA3EP1_DIAGNOSTIC_MULTISOUND_BUILD.md):
 `diagnostic-build` now admits narrow authored/local Multisounds as its fifth
@@ -56,7 +65,8 @@ family. Nested local sounds use real dependency-first order; selected local cycl
 reject. Five-family Include/snapshot/fingerprint/recovery/publication checks pass.
 The committed DiagnosticMultisoundProbe.xml was executed through the actual CLI
 with stock global metadata, producing three entries and 216/28/36 linked streams.
-AudioEvent/AudioFile command admission, production SDK output and game loading stay closed.
+Narrow AudioEvent command admission now passes separately; AudioFile command
+admission, production SDK output and game loading stay closed.
 
 [Fixed local Multisound / FX mixed stream](docs/RA3EP1_MULTISOUND_FX_STREAM.md):
 A three-level Include chain compiles modifier → local FX → local Multisound →
@@ -88,7 +98,7 @@ and non-tokenized metadata. Wrong fingerprints reject; restored inputs recover
 identical output. Bounded native reads confirm old sound layouts cannot be reused:
 AudioEvent root 120 vs 152 bytes, audio-file references 8 vs 12, and legacy
 Multisound children 8 vs 28. Multisound and a narrow AudioEvent subset now have
-isolated native proofs; public AudioEvent admission, AudioFile recovery and wider audio
+isolated native proofs; public narrow AudioEvent admission now passes. AudioFile recovery and wider audio
 profiles remain open.
 
 [FX support in bounded diagnostic builds](docs/RA3EP1_DIAGNOSTIC_FX_BUILD.md):

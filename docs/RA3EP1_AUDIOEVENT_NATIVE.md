@@ -104,7 +104,8 @@ bytes, repeat compilation is deterministic, settings are restored, no streams
 are emitted. Reserved LimitGroup slots are not a completed group marshaller.
 
 There is no production plugin, cache/reuse eligibility,
-AudioFile codec, general diagnostic AudioEvent admission or production registry entry.
+AudioFile codec or production registry entry. Narrow diagnostic AudioEvent
+admission now has a [separate command proof](RA3EP1_DIAGNOSTIC_AUDIOEVENT_BUILD.md).
 The [checked isolated profile](RA3EP1_AUDIOEVENT_PROFILE.md) is now available
 separately from these native-only helpers.
 This public native helper is a trusted test primitive, not a hardened authored
@@ -125,6 +126,6 @@ Use the Release/x86 inspector:
 .\source\BinaryAssetBuilder.ManifestInspector\bin\x86\Release\net8.0\BinaryAssetBuilder.ManifestInspector.exe audioevent-native-self-test "D:\TEMP\Red Alert 3 Uprising Source Data\Global Data\data\global.manifest"
 ```
 
-The group also runs in `compiler-self-test`: 84 declared groups including the separate checked profile and fixed mixed stream.
+The group also runs in `compiler-self-test`: 85 declared groups including the separate checked profile, fixed mixed stream and command admission.
 Structural inventory stays 785/1,390 models and 762/1,390 typed marshallers;
 these native-only nested structs deliberately do not expand that inventory.

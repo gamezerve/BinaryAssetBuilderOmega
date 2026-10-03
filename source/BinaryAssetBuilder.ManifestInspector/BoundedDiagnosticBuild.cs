@@ -10,7 +10,7 @@ using BinaryAssetBuilder.XmlCompiler;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: admit five isolated native families in bounded acyclic Include graphs without enabling production output.
+// Reborn: admit six isolated native families in bounded acyclic Include graphs without enabling production output or AudioFile codecs.
 internal static class BoundedDiagnosticBuild
 {
     private static readonly string[] OutputNames = { "diagnostic.manifest", "diagnostic.bin", "diagnostic.relo", "diagnostic.imp", "DIAGNOSTIC_ONLY.txt" };
@@ -84,6 +84,8 @@ internal static class BoundedDiagnosticBuild
             Ra3Ep1FXListPlugin fx = new(); fx.Initialize(TargetPlatform.Win32); plugins.AddPlugin(0x86682E78u, fx);
             // Reborn: admit only the isolated default/weighted Multisound profile; external AudioEvent payloads remain uncompiled.
             Ra3Ep1MultisoundPlugin sounds = new(); sounds.Initialize(TargetPlatform.Win32); plugins.AddPlugin(0xA3A7AF37u, sounds);
+            // Reborn: compile only checked local AudioEvents; selected external AudioFile fingerprints are gated independently below.
+            Ra3Ep1AudioEventPlugin events = new(); events.Initialize(TargetPlatform.Win32); plugins.AddPlugin(0x844D7B9Fu, events);
             SessionCache cache = new(); cache.InitializeCache(new List<string>());
             DocumentProcessor processor = new(Settings.Current, plugins, new VerifierPluginRegistry(Array.Empty<PluginDescriptor>(), TargetPlatform.Win32))
                 { Cache = cache, SchemaSet = new SchemaSet(false) };
@@ -188,10 +190,10 @@ internal static class BoundedDiagnosticBuild
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: retain prior four-family relative order for unrelated roots while sound dependencies precede FX consumers. */
+    /** Reborn: retain prior family relative order while AudioEvent leaves precede local Multisound and FX consumers. */
     //-------------------------------------------------------------------------------------------------
     private static int Rank(InstanceDeclaration instance) => instance.Handle.TypeId switch
-        { 0xBCC23F6Cu => 0,0x44A5973Du => 1,0xA3A7AF37u => 2,0x86682E78u => 3,0xC5E07887u => 4,_ => throw new InvalidDataException("Unadmitted diagnostic asset type.") };
+        { 0xBCC23F6Cu => 0,0x44A5973Du => 1,0x844D7B9Fu => 2,0xA3A7AF37u => 3,0x86682E78u => 4,0xC5E07887u => 5,_ => throw new InvalidDataException("Unadmitted diagnostic asset type.") };
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: serialize admitted root entries, ordered references and native streams into owned memory before staging publication. */
