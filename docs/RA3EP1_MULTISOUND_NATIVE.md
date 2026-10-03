@@ -93,10 +93,14 @@ native compatibility. This adds one evidence group, not a production audio famil
 
 ## Next gate and progress
 
-Next: an isolated Multisound compiler profile with explicit EP1 metadata,
-prepared concrete AudioEvent/Multisound dependencies, duplicate/ambiguous/missing
-reference and current-source tamper guards, and production/cache policy closure.
-Then prove mixed linked streams before considering bounded command admission.
+Follow-up: [the isolated checked Multisound profile](RA3EP1_MULTISOUND_PROFILE.md)
+now implements the compiler-entry/policy and prepared identity-table gate below.
+Mixed linked-stream proof and bounded command admission still remain open.
+
+The isolated profile now covers explicit EP1 metadata, prepared concrete
+AudioEvent/Multisound dependencies, duplicate/ambiguous/missing reference and
+current-source tamper guards, and production/cache policy closure.
+Next: prove mixed linked streams before considering bounded command admission.
 AudioEvent's missing base fields, AudioEventLimitGroup, AudioFileRuntime/codecs,
 SDK packaging, WorldBuilder and actual Uprising loading remain open.
 

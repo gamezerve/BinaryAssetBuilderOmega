@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: explicitly isolated diagnostic Multisound profile, never production SDK/audio output. -->
+<Settings xmlns="uri:ea.com:eala:asset" BuildCache="false">
+ <Plugin AssetTypes="#all" IsEnabled="true" UseBuildCache="false"
+  QualifiedName="BinaryAssetBuilder.XmlCompiler.Ra3Ep1MultisoundPlugin, BinaryAssetBuilder.XmlCompiler" />
+</Settings>

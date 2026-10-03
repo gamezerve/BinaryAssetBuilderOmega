@@ -98,7 +98,7 @@ internal static class MultisoundNativeSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: use the explicit Win32 EP1 root rather than the legacy Multisound marshal overload. */
     //-------------------------------------------------------------------------------------------------
-    private static unsafe Chunk Compile(InstanceDeclaration instance)
+    internal static unsafe Chunk Compile(InstanceDeclaration instance)
     {
         Marshaler.Ep1Multisound* root;
         using Tracker tracker = new((void**)&root, (uint)sizeof(Marshaler.Ep1Multisound), false);
@@ -143,7 +143,7 @@ internal static class MultisoundNativeSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compare only selected stock native slices and ordered concrete audio identities, not full game streams. */
     //-------------------------------------------------------------------------------------------------
-    private static void Compare(Dictionary<string, (Chunk Data, uint[] Names)> expected, string path)
+    internal static void Compare(Dictionary<string, (Chunk Data, uint[] Names)> expected, string path)
     {
         ManifestDocument manifest = ManifestReader.Read(File.ReadAllBytes(path));
         TypeRegistryAudit.ValidateTarget(manifest.Header.Version, manifest.Header.AllTypesHash);

@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: exercise checked sound profile entries without admitting production audio output.
+            if (args.FirstOrDefault() == "ep1-multisound-profile-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                Ep1MultisoundProfileSmokeTest.Run(args.Skip(1).ToArray());
+                return 0;
+            }
             // Reborn: isolated EP1 native sound evidence never enables audio production or diagnostic root admission.
             if (args.FirstOrDefault() == "multisound-native-self-test")
             {
@@ -689,6 +696,8 @@ internal static class Program
         Console.WriteLine("  compiler-self-test");
         // Reborn: optional manifests add bounded sound goldens without registering audio processors.
         Console.WriteLine("  multisound-native-self-test [ep1-global-manifest ...]");
+        // Reborn: optional manifests compare checked profile output and prepared sound dependencies against stock.
+        Console.WriteLine("  ep1-multisound-profile-self-test [ep1-global-manifest ...]");
         // Reborn: compare only selected native FX chunks while keeping FX processor registration closed.
         Console.WriteLine("  fx-native-self-test [ep1-static-manifest ...]");
         // Reborn: manifest arguments validate dependency identities without reading their BIN payloads.
