@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: a small authored local Multisound/FX/modifier chain needs only existing stock AudioEvent metadata. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+ <Multisound id="RebornDiagnosticMultisound" Control="PLAY_ONE">
+  <Subsound>GDI_Commando_VoiceDie</Subsound>
+  <Subsound Weight="800">GDI_Engineer_VoiceDie</Subsound>
+ </Multisound>
+ <FXList id="RebornDiagnosticSoundFX"><NuggetList><Sound Value="RebornDiagnosticMultisound" /></NuggetList></FXList>
+ <AttributeModifier id="RebornDiagnosticSoundModifier" StartFX="RebornDiagnosticSoundFX" />
+</AssetDeclaration>

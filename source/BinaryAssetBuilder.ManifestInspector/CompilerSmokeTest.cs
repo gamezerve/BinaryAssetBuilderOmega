@@ -18,6 +18,8 @@ internal static class CompilerSmokeTest
         TestMultisoundProfile();
         // Reborn: exercise local Multisound closure and independent mixed stream identity/native readback.
         TestMultisoundFXStream();
+        // Reborn: public bounded sound admission must preserve all prior snapshot/stream/publication gates.
+        TestDiagnosticMultisoundBuild();
         TestDieMuxData();
         TestGameDependency();
         TestSlowDeath();
@@ -2126,6 +2128,11 @@ internal static class CompilerSmokeTest
     /** Reborn: register fixed local-sound stream evidence without widening production or diagnostic command admission. */
     //-------------------------------------------------------------------------------------------------
     private static void TestMultisoundFXStream() => MultisoundFXStreamSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: register public-service sound integration proof independently from native/profile/fixed-stream groups. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestDiagnosticMultisoundBuild() => DiagnosticMultisoundBuildSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: verify actual external derived resolution without registering a runnable FX/audio processor. */

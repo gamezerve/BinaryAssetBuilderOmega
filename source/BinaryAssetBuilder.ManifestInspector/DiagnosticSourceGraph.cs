@@ -69,7 +69,9 @@ internal sealed class DiagnosticSourceGraph
             // Reborn: matching direct leaves and the official Include container are the only permitted non-root shapes.
             bool valid = element == root || (element.LocalName switch
             {
-                "AttributeModifier" or "ShaderOverride" or "ObjectFilterAsset" or "FXList" or "Includes" => element.ParentNode == root,
+                "AttributeModifier" or "ShaderOverride" or "ObjectFilterAsset" or "FXList" or "Multisound" or "Includes" => element.ParentNode == root,
+                // Reborn: admit only direct weighted sound references; nested/optional audio controls remain profile-gated.
+                "Subsound" => element.ParentNode is XmlElement soundRoot && soundRoot.LocalName == "Multisound" && soundRoot.ParentNode == root,
                 // Reborn: admit only the checked sound-only FX shape; filters, particles and other nuggets remain outside command preflight.
                 "NuggetList" => element.ParentNode is XmlElement fx && fx.LocalName == "FXList" && fx.ParentNode == root,
                 "Sound" => element.ParentNode is XmlElement nuggets && nuggets.LocalName == "NuggetList"
@@ -89,7 +91,10 @@ internal sealed class DiagnosticSourceGraph
                     || element.LocalName == "Sound" && attribute.LocalName == "Value" && attribute.Value.Contains('\\')
                     || attribute.Value.TrimStart().StartsWith("=", StringComparison.Ordinal)))
                     throw new InvalidDataException("Inheritance, overrides, unresolved expressions, authored TypeIds and normalized Sound selectors are not admitted.");
-            if (element.ParentNode == root && element.LocalName is "AttributeModifier" or "ShaderOverride" or "ObjectFilterAsset" or "FXList")
+            // Reborn: authored subsound text cannot contain the selector suffix/formula that normalization would otherwise rewrite.
+            if (element.LocalName == "Subsound" && (element.InnerText.Contains('\\') || element.InnerText.TrimStart().StartsWith("=", StringComparison.Ordinal)))
+                throw new InvalidDataException("Authored normalized Subsound selectors and expressions are not admitted.");
+            if (element.ParentNode == root && element.LocalName is "AttributeModifier" or "ShaderOverride" or "ObjectFilterAsset" or "FXList" or "Multisound")
             {
                 string id = element.GetAttribute("id");
                 if (id.Length is < 1 or > 128 || id.Any(c => !char.IsAsciiLetterOrDigit(c) && c != '_' && c != '-' && c != '.'))

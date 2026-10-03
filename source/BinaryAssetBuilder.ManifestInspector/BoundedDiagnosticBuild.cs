@@ -10,7 +10,7 @@ using BinaryAssetBuilder.XmlCompiler;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: admit four proven native families in bounded Include graphs without enabling production output.
+// Reborn: admit five isolated native families in bounded acyclic Include graphs without enabling production output.
 internal static class BoundedDiagnosticBuild
 {
     private static readonly string[] OutputNames = { "diagnostic.manifest", "diagnostic.bin", "diagnostic.relo", "diagnostic.imp", "DIAGNOSTIC_ONLY.txt" };
@@ -82,12 +82,14 @@ internal static class BoundedDiagnosticBuild
             plugins.AddPlugin(0x44A5973Du, filters);
             // Reborn: use only the isolated empty/two-Sound FX profile with prepared concrete external audio identities.
             Ra3Ep1FXListPlugin fx = new(); fx.Initialize(TargetPlatform.Win32); plugins.AddPlugin(0x86682E78u, fx);
+            // Reborn: admit only the isolated default/weighted Multisound profile; external AudioEvent payloads remain uncompiled.
+            Ra3Ep1MultisoundPlugin sounds = new(); sounds.Initialize(TargetPlatform.Win32); plugins.AddPlugin(0xA3A7AF37u, sounds);
             SessionCache cache = new(); cache.InitializeCache(new List<string>());
             DocumentProcessor processor = new(Settings.Current, plugins, new VerifierPluginRegistry(Array.Empty<PluginDescriptor>(), TargetPlatform.Win32))
                 { Cache = cache, SchemaSet = new SchemaSet(false) };
             AssetDeclarationDocument document = processor.ProcessDocumentInternal(snapshotPath, snapshotPath, null!,
                 new DocumentProcessor.ProcessOptions { GenerateOutput = false, UsePrecompiled = false });
-            // Reborn: shaders, weak filters and FX precede modifier consumers; admitted FX audio targets are external-only.
+            // Reborn: seed actual local closure; checked Multisounds may now satisfy FX audio dependencies locally.
             // Reborn: seed self/all assets, then retain real resolution's local closure; unused instance-Include roots are not forced into output.
             Dictionary<InstanceHandle, InstanceDeclaration> selected = new();
             foreach (InstanceDeclaration seed in document.Instances)
@@ -95,9 +97,8 @@ internal static class BoundedDiagnosticBuild
                 DependencyResolutionSmokeTest.Prepare(document, seed);
                 foreach (var visited in DependencyResolutionSmokeTest.Visited(document)) selected[visited.Key] = visited.Value;
             }
-            InstanceDeclaration[] ordered = selected.Values.OrderBy(instance => instance.Handle.TypeId switch
-                { 0xBCC23F6Cu => 0, 0x44A5973Du => 1, 0x86682E78u => 2, 0xC5E07887u => 3, _ => throw new InvalidDataException("Unadmitted diagnostic asset type.") })
-                .ThenBy(instance => instance.Handle.Name, StringComparer.Ordinal).ToArray();
+            // Reborn: dependency-first traversal handles nested local sounds and rejects cycles while preserving stable family/name ties.
+            InstanceDeclaration[] ordered = OrderDiagnosticRoots(selected.Values.ToArray());
             if (ordered.Length == 0 || ordered.Length > 32) throw new InvalidDataException("Diagnostic input must contain 1–32 admitted roots.");
             // Reborn: share selected external identity/fingerprint checks with fixed native proofs without widening command root admission.
             ValidateExternalDependencies(ordered, externalMetadata);
@@ -153,6 +154,44 @@ internal static class BoundedDiagnosticBuild
     }
 
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: deterministically order at most 32 prepared roots by actual local edges and reject unsupported native dependency cycles. */
+    //-------------------------------------------------------------------------------------------------
+    private static InstanceDeclaration[] OrderDiagnosticRoots(InstanceDeclaration[] selected)
+    {
+        if (selected.Length is < 1 or > 32) throw new InvalidDataException("Diagnostic input must contain 1–32 admitted roots.");
+        var local = selected.ToDictionary(instance => (instance.Handle.TypeId, instance.Handle.InstanceId));
+        Dictionary<(uint, uint), int> state = new(); List<InstanceDeclaration> result = new();
+        foreach (InstanceDeclaration instance in selected.OrderBy(Rank).ThenBy(instance => instance.Handle.Name, StringComparer.Ordinal)) Visit(instance);
+        return result.ToArray();
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: visit each local dependency once; an active edge is a cycle, not an admitted native sound graph. */
+        //-------------------------------------------------------------------------------------------------
+        void Visit(InstanceDeclaration instance)
+        {
+            var id = (instance.Handle.TypeId, instance.Handle.InstanceId);
+            if (state.TryGetValue(id, out int mark))
+            {
+                if (mark == 1) throw new InvalidDataException("Diagnostic local dependency cycle is not admitted.");
+                return;
+            }
+            if (instance.ValidatedReferencedInstances == null || instance.ValidatedReferencedInstances.Count != instance.ReferencedInstances.Count)
+                throw new InvalidDataException("Prepared diagnostic dependencies are required before ordering.");
+            state[id] = 1;
+            foreach (InstanceDeclaration dependency in instance.ValidatedReferencedInstances
+                .Where(handle => local.ContainsKey((handle.TypeId, handle.InstanceId))).Select(handle => local[(handle.TypeId, handle.InstanceId)])
+                .OrderBy(Rank).ThenBy(value => value.Handle.Name, StringComparer.Ordinal)) Visit(dependency);
+            state[id] = 2; result.Add(instance);
+        }
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: retain prior four-family relative order for unrelated roots while sound dependencies precede FX consumers. */
+    //-------------------------------------------------------------------------------------------------
+    private static int Rank(InstanceDeclaration instance) => instance.Handle.TypeId switch
+        { 0xBCC23F6Cu => 0,0x44A5973Du => 1,0xA3A7AF37u => 2,0x86682E78u => 3,0xC5E07887u => 4,_ => throw new InvalidDataException("Unadmitted diagnostic asset type.") };
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: serialize admitted root entries, ordered references and native streams into owned memory before staging publication. */
     //-------------------------------------------------------------------------------------------------
     internal static Dictionary<string, byte[]> Serialize(InstanceDeclaration[] ordered, AssetBuffer[] chunks, uint checksum, ReferencedFileBuffer runtime)
@@ -187,10 +226,13 @@ internal static class BoundedDiagnosticBuild
             Invoke(typeof(OutputManager).GetMethod("WriteLinkedStreamHeader", BindingFlags.NonPublic | BindingFlags.Static)!, writer, checksum, stream.Magic);
             foreach (byte[] part in stream.Parts) writer.Write(part); writer.Flush(); result.Add(stream.Name, data.ToArray());
         }
+        // Reborn: identify newly compiled local sound payloads explicitly while preserving prior notices for graphs without Multisound.
         result.Add("DIAGNOSTIC_ONLY.txt", Encoding.UTF8.GetBytes("Bounded native Include diagnostic only. NOT a playable Uprising mod.\n"
             + "Production/cache gates remain closed; no OutputManager commit/link, packaging or game-load proof.\n"
             + "External mappings serialize runtime names but do not copy or validate native dependency streams.\n"
             + "FX supports empty roots or at most two checked Sound nuggets; concrete audio metadata does not prove native audio payload compatibility.\n"
+            + (ordered.Any(instance => instance.Handle.TypeId == 0xA3A7AF37u)
+                ? "Local Multisound is experimental; AudioEvent/AudioFile payloads are not rebuilt.\n" : "")
             + "Filter GameObject weak IDs do not prove target presence and do not become strong imports.\n"));
         return result;
     }

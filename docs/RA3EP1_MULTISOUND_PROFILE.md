@@ -7,8 +7,9 @@ stock-proven weighted/default Multisound subset. It uses the separate 16/28-byte
 EP1 root/child model, not the unchanged legacy 16/8-byte sound ABI.
 
 The profile is explicitly experimental: production output, build cache and
-compiled-document reuse are forbidden. Public `diagnostic-build` still does not
-admit Multisound roots. This is not an audio SDK release or a playable mod.
+compiled-document reuse are forbidden. Follow-up [bounded command admission](RA3EP1_DIAGNOSTIC_MULTISOUND_BUILD.md)
+now admits the narrow Multisound subset using this profile. This is not an audio SDK
+release or a playable mod.
 
 Checked compiler buffers and prepared concrete reference tuples match all three
 selected stock roots exactly:

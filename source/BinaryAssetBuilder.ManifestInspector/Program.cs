@@ -13,6 +13,11 @@ internal static class Program
     {
         try
         {
+            // Reborn: exercise public sound admission with optional real stock mappings.
+            if (args.FirstOrDefault() == "diagnostic-multisound-build-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider(); DiagnosticMultisoundBuildSmokeTest.Run(args.Skip(1).ToArray()); return 0;
+            }
             // Reborn: fixed local sound chain proof stays separate from public command admission and game packaging.
             if (args.FirstOrDefault() == "multisound-fx-stream-self-test")
             {
@@ -77,6 +82,8 @@ internal static class Program
                 DiagnosticIncludeBuildSmokeTest.Run();
                 DiagnosticFilterBuildSmokeTest.Run();
                 DiagnosticFXBuildSmokeTest.Run();
+                // Reborn: aggregate command proof now includes narrow authored/local Multisound admission.
+                DiagnosticMultisoundBuildSmokeTest.Run();
                 return 0;
             }
             // Reborn: bounded diagnostic Include build publishes only a new verified directory and never enables production/cache policies.
@@ -707,6 +714,8 @@ internal static class Program
         Console.WriteLine("  ep1-multisound-profile-self-test [ep1-global-manifest ...]");
         // Reborn: optional mappings prove concrete leaf audio identities in a fixed mixed local stream.
         Console.WriteLine("  multisound-fx-stream-self-test [ep1-global-manifest ...]");
+        // Reborn: general service sound snapshots, ordering, cycle and publication proof.
+        Console.WriteLine("  diagnostic-multisound-build-self-test [ep1-global-manifest ...]");
         // Reborn: compare only selected native FX chunks while keeping FX processor registration closed.
         Console.WriteLine("  fx-native-self-test [ep1-static-manifest ...]");
         // Reborn: manifest arguments validate dependency identities without reading their BIN payloads.

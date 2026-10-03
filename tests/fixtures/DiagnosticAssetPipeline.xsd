@@ -14,7 +14,7 @@
  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeAttributeModifier.xsd" />
  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeShaderOverride.xsd" />
  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeObjectFilter.xsd" />
- <!-- Reborn: official FX/audio closure supplies concrete inheritance without admitting audio roots or payload compilers. -->
+ <!-- Reborn: official FX/audio closure supplies concrete inheritance; only the explicit narrow Multisound profile admits an audio root. -->
  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/GlobalGameData.xsd" />
  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/View.xsd" />
  <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeFXList.xsd" />
@@ -27,6 +27,8 @@
   <xs:enumeration value="NONE" /><xs:enumeration value="HOLD" /><xs:enumeration value="KILL" /><xs:enumeration value="SPAWN" />
  </xs:restriction></xs:simpleType>
  <xs:element name="FXList" type="FXList" />
+ <!-- Reborn: direct Multisound roots are restricted further by snapshot preflight and the isolated checked profile. -->
+ <xs:element name="Multisound" type="Multisound" />
  <xs:element name="AttributeModifier" type="AttributeModifier" />
  <xs:element name="ShaderOverride" type="ShaderOverride" />
  <xs:element name="ObjectFilterAsset" type="ObjectFilterAsset" />
@@ -36,7 +38,7 @@
    <xs:element name="Include" type="Include" minOccurs="0" maxOccurs="unbounded" />
   </xs:sequence></xs:complexType></xs:element>
   <xs:choice minOccurs="0" maxOccurs="unbounded">
-   <xs:element ref="AttributeModifier" /><xs:element ref="ShaderOverride" /><xs:element ref="ObjectFilterAsset" /><xs:element ref="FXList" />
+   <xs:element ref="AttributeModifier" /><xs:element ref="ShaderOverride" /><xs:element ref="ObjectFilterAsset" /><xs:element ref="FXList" /><xs:element ref="Multisound" />
   </xs:choice>
  </xs:sequence></xs:complexType></xs:element>
 </xs:schema>

@@ -2,10 +2,14 @@
 
 ## Outcome
 
+Follow-up: [bounded Multisound admission](RA3EP1_DIAGNOSTIC_MULTISOUND_BUILD.md)
+now allows narrow local sounds as FX dependencies and adds a fifth family.
+The four-family external-audio FX evidence below remains valid.
+
 `diagnostic-build` now admits the isolated empty/two-Sound FXList subset alongside
 ShaderOverride, ObjectFilterAsset and AttributeModifier. This is the fourth
 explicit experimental native family, not an expanded production EP1 registry.
-Audio roots/payload compilers, particle/EVA nuggets, wider masks/options and full
+AudioEvent/AudioFile roots, particle/EVA nuggets, wider masks/options and full
 SDK/game loading remain outside admission. Production output and cache/reuse
 policies remain closed.
 
@@ -15,8 +19,9 @@ audio/weather/view components and drift-checked extracted FX module enums.
 Concrete audio inheritance is available without admitting audio root declarations.
 Explicit plugin mapping uses FX TypeId 86682E78 / TypeHash 17B3B82D. Ordering is
 shader, weak filter, FX, modifier, then ordinal name within each family. Existing
-three-family relative ordering is unchanged; admitted FX audio dependencies are
-external-only, so this remains a deliberately bounded acyclic rank scheme.
+three-family relative ordering is unchanged. The original four-family proof used
+external-only audio; the current command also accepts narrow local Multisounds,
+with actual dependency-first traversal and selected local-cycle rejection.
 
 All prior XML/Include/root/mapping/native-size/publication limits remain. FX roots
 count toward the same 32-root graph limit and case-insensitive duplicate-ID checks.

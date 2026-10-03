@@ -89,6 +89,10 @@ Inventory remains 785/1,390 models and 762/1,390 typed marshallers.
 
 ## Reproduce and limitations
 
+Follow-up: [bounded Multisound command admission](RA3EP1_DIAGNOSTIC_MULTISOUND_BUILD.md)
+now passes snapshot/order/cycle/publication checks. The fixed test below remains
+a separate evidence group; AudioEvent/AudioFile and production/game loading stay closed.
+
 After a Release/x86 inspector build, run from the repository root:
 
 ```powershell
@@ -102,14 +106,12 @@ mappings, not packaging instructions or verified game load paths.
 
 This is a fixed self-test, not a general input/output command. It does not extend
 DiagnosticSourceGraph, public root admission, staging/race guarantees or arbitrary
-cycle/ordering support. Public diagnostic-build still admits four families and
-rejects authored Multisound roots. Its existing snapshot/publication machinery
-is unchanged apart from the shared prepared-table gate.
+cycle/ordering support by itself. The follow-up public command now admits five
+families, including narrow Multisounds, and has its own tested dependency-order,
+cycle and snapshot/publication guards.
 
-Next: admit the narrow Multisound subset through the public snapshot grammar and
-schema, extend dependency-first ordering safely, reject unsupported local cycles,
-and test arbitrary bounded Include graphs, immutable metadata/source snapshots,
-mapping limits, retarget/loss/recovery and staged publication. AudioEvent/AudioFile
+The narrow public snapshot grammar/schema, dependency ordering, selected-cycle
+rejection and staged publication gates now pass in that follow-up. AudioEvent/AudioFile
 native recovery/codecs, wider processors, SDK/WorldBuilder packaging and actual
 Uprising loading remain open. Overall effort stays approximately **50% complete /
 50% remaining**: this closes fixed-chain proof, not end-to-end audio or game loading.
