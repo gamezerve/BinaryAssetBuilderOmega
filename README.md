@@ -16,17 +16,24 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**95 test groups** (some contain several fixtures). These counters can grow
+**96 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
-counts; the text-hash boundary regression adds another group and all 95 groups
+counts; text-hash boundary and actual AudioFile identity regressions add groups and all 96 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Identity hash audit and exact text-block correction](docs/RA3EP1_IDENTITY_HASH_BOUNDARY.md).
+Latest milestone: [AudioFile XML and file-dependency identity proof](docs/RA3EP1_AUDIOFILE_IDENTITY.md).
+Actual core parsing of official-schema AudioFile XML and an owned WAV now matches
+an independently reconstructed InstanceHash, including 256-byte dependency-buffer
+padding. XML/PCM/processor changes, path spelling, missing-file recovery and
+production-output denial are checked. This is a managed hash-only gate, not audio
+compiler admission or a stock Uprising identity match.
+
+[Identity hash audit and exact text-block correction](docs/RA3EP1_IDENTITY_HASH_BOUNDARY.md).
 The current XML/text writer dropped exact 512-character final blocks; a failing
 regression and pinned EA IL confirm the defect. The inclusive boundary is fixed
 and document versions are bumped to 22/23 to reject old identities/caches.
