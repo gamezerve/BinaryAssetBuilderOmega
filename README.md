@@ -16,18 +16,27 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**97 test groups** (some contain several fixtures). These counters can grow
+**98 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core AudioFile identity and current-disk preparation regressions
-add groups and all 97 groups
+and the shared core publication gate add groups and all 98 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Current core AudioFile preparation bridge](docs/RA3EP1_CORE_AUDIOFILE_PREPARATION.md).
+Latest milestone: [Actual core preparation to native audio diagnostic packages](docs/RA3EP1_CORE_AUDIO_ENCODER.md).
+The opt-in `core-audio-encoder-poc <absolute-audited-audio.dll>` now uses actual
+core AudioFile identities and frozen PCM to encode RAM/streamed XAS, then rechecks
+disk XML/WAV and runtime metadata before publishing two/three-record diagnostic
+packages. Two native runs reproduced 28 identical files; the older authored-only
+PoC still passes. Core identity and diagnostic content hashes remain separate.
+Native failure injection, a general AudioFile plugin and playable SDK output are
+not yet proven or enabled.
+
+[Current core AudioFile preparation bridge](docs/RA3EP1_CORE_AUDIOFILE_PREPARATION.md).
 Real core instances now bridge to the narrow authored PCM profile with disk XML/WAV
 rechecks, normalized-path and identity binding, immutable input and stale/recovery
 checks. Same-size timestamp-preserving WAV edits revoke old preparation. This is

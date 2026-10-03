@@ -17,6 +17,8 @@ internal static class CompilerSmokeTest
         TestAudioFileIdentity();
         // Reborn: connect normalized core XML/file identity to immutable authored PCM preparation without codecs.
         TestCoreAudioFilePreparation();
+        // Reborn: publication must recheck actual core audio bindings even when compressed framing is synthetic in default tests.
+        TestCoreAudioPackageGate();
         TestAttributeModifier();
         // Reborn: exercise isolated EP1 sound records while retaining the legacy child ABI.
         TestMultisoundNative();
@@ -2214,6 +2216,11 @@ internal static class CompilerSmokeTest
     /** Reborn: reject stale current disk/core data before isolated AudioFile encoding can be integrated. */
     //-------------------------------------------------------------------------------------------------
     private static void TestCoreAudioFilePreparation() => AudioFileCorePreparationSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: prove stale current-source/runtime rejection at the same gate used by optional native core encoding. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestCoreAudioPackageGate() => CoreAudioPackageGateSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: guard custom block envelopes separately from native ABI and codec processing. */

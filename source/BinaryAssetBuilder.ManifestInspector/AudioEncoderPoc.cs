@@ -28,7 +28,7 @@ internal static class AudioEncoderPoc
     //-------------------------------------------------------------------------------------------------
     /** Reborn: pin architecture/hash/exports before invoking native code in an explicitly launched disposable CLI process. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string path)
+    internal static void Run(string path,bool useCore = false)
     {
         path = Path.GetFullPath(path);
         if (!OperatingSystem.IsWindows() || RuntimeInformation.ProcessArchitecture != Architecture.X86)
@@ -47,8 +47,20 @@ internal static class AudioEncoderPoc
         var ramInput = Ra3Ep1AudioFileInputProfile.Prepare(ramRoot,ramId,TargetPlatform.Win32,wave);
         var streamInput = Ra3Ep1AudioFileInputProfile.Prepare(streamRoot,streamId,TargetPlatform.Win32,wave);
         // Reborn: preserve the actual authored definitions as owned provenance, with distinct local AudioFile identities.
-        WriteOwned(Path.Combine(directory,"ram.xml"),System.Text.Encoding.UTF8.GetBytes(ramRoot.OuterXml));
-        WriteOwned(Path.Combine(directory,"streamed.xml"),System.Text.Encoding.UTF8.GetBytes(streamRoot.OuterXml));
+        WriteOwned(Path.Combine(directory,"ram.xml"),System.Text.Encoding.UTF8.GetBytes(useCore ? CoreSource(false) : ramRoot.OuterXml));
+        WriteOwned(Path.Combine(directory,"streamed.xml"),System.Text.Encoding.UTF8.GetBytes(useCore ? CoreSource(true) : streamRoot.OuterXml));
+        // Reborn: optional actual core identities are prepared before native initialization, with no production AudioFile registration.
+        InstanceDeclaration? ramCore = null,streamCore = null;
+        AudioFileCorePreparation? ramPrepared = null,streamPrepared = null;
+        if (useCore)
+        {
+            string schema = Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"AudioFileIdentityPipeline.xsd");
+            ramCore = AudioFileIdentitySmokeTest.Build(directory,schema,AudioFileIdentitySmokeTest.Processing,"ram.xml");
+            streamCore = AudioFileIdentitySmokeTest.Build(directory,schema,AudioFileIdentitySmokeTest.Processing,"streamed.xml");
+            ramPrepared = AudioFileCorePreparation.Prepare(ramCore); streamPrepared = AudioFileCorePreparation.Prepare(streamCore);
+            ramId = ramCore.Handle; streamId = streamCore.Handle;
+            ramInput = ramPrepared.Settings; streamInput = streamPrepared.Settings;
+        }
         Console.WriteLine("Owned audio encoder PoC directory: "+directory);
         IntPtr module = NativeLibrary.Load(path);
         bool initialized = false;
@@ -57,14 +69,26 @@ internal static class AudioEncoderPoc
             VoidCall init = Bind<VoidCall>(module,"SIMEX_init"),shutdown = Bind<VoidCall>(module,"SIMEX_shutdown");
             init(); initialized = true;
             AudioFilePackageProbe.Entry[] package;
-            try { package = new[] { Encode(module,input,Path.Combine(directory,"ram"),ramRoot,ramId,ramInput),Encode(module,input,Path.Combine(directory,"streamed"),streamRoot,streamId,streamInput) }; }
+            try { package = new[] { Encode(module,input,Path.Combine(directory,"ram"),ramRoot,ramId,ramInput,ramCore,ramPrepared),Encode(module,input,Path.Combine(directory,"streamed"),streamRoot,streamId,streamInput,streamCore,streamPrepared) }; }
             finally { shutdown(); initialized = false; }
             // Reborn: only fully checked RAM/streamed results can enter a new staged diagnostic package after native shutdown.
-            string output = Path.Combine(directory,"package"); AudioFilePackageProbe.Publish(output,package); AudioFilePackageProbe.Verify(output,package);
+            CoreAudioPackageGate.Binding[]? bindings = useCore ? new[] { new CoreAudioPackageGate.Binding(ramCore!,ramPrepared!,package[0]),new CoreAudioPackageGate.Binding(streamCore!,streamPrepared!,package[1]) } : null;
+            string output = Path.Combine(directory,"package");
+            if (bindings != null) CoreAudioPackageGate.Publish(output,bindings); else AudioFilePackageProbe.Publish(output,package);
+            AudioFilePackageProbe.Verify(output,package);
             Console.WriteLine("Owned diagnostic audio package: "+Path.Combine(output,"diagnostic.manifest"));
             // Reborn: compile a core-normalized local AudioEvent only after capturing both encoded AudioFile fingerprints.
             AudioFileLocalEventProbe.Entry localEvent = AudioFileLocalEventProbe.Build(directory,package);
-            string mixed = Path.Combine(directory,"local-event-package"); AudioFilePackageProbe.Publish(mixed,package,localEvent); AudioFilePackageProbe.Verify(mixed,package,localEvent);
+            string mixed = Path.Combine(directory,"local-event-package");
+            if (bindings != null) CoreAudioPackageGate.Publish(mixed,bindings,localEvent); else AudioFilePackageProbe.Publish(mixed,package,localEvent);
+            AudioFilePackageProbe.Verify(mixed,package,localEvent);
+            if (bindings != null)
+            {
+                CoreAudioPackageGate.Verify(bindings);
+                WriteOwned(Path.Combine(directory,"core-identities.txt"),System.Text.Encoding.UTF8.GetBytes("Diagnostic evidence only; core hash and package content hash are different domains.\n"+
+                    string.Join("\n",bindings.Select(binding => $"{binding.Encoded.Name}: core={binding.Instance.Handle.InstanceHash:X8}, diagnostic-content={binding.Encoded.Hash:X8}"))+"\n"));
+                Console.WriteLine("Actual core AudioFile preparation -> native XAS -> checked diagnostic publication: OK (core and diagnostic identities kept separate).");
+            }
             Console.WriteLine("Owned local AudioEvent/audio package: "+Path.Combine(mixed,"diagnostic.manifest"));
             Console.WriteLine("Audio encoder PoC: OK; prepared PCM/XAS -> checked runtime/custom data -> two/three-entry local diagnostic packages; no production registration or game-loading proof.");
         }
@@ -78,10 +102,19 @@ internal static class AudioEncoderPoc
     //-------------------------------------------------------------------------------------------------
     /** Reborn: encode one owned WAV using source-declared cdecl signatures, then independently validate generated framing. */
     //-------------------------------------------------------------------------------------------------
-    private static AudioFilePackageProbe.Entry Encode(IntPtr module,string input,string output,XmlElement root,InstanceHandle identity,Ra3Ep1AudioFileInputProfile.PreparedInput prepared)
+    private static AudioFilePackageProbe.Entry Encode(IntPtr module,string input,string output,XmlElement root,InstanceHandle identity,Ra3Ep1AudioFileInputProfile.PreparedInput prepared,InstanceDeclaration? core = null,AudioFileCorePreparation? corePrepared = null)
     {
+        // Reborn: actual core mode encodes a new frozen PCM snapshot, not a later reopened mutable source dependency.
+        if ((core == null) != (corePrepared == null)) throw new InvalidDataException("Core audio encoding requires paired instance/preparation.");
+        if (corePrepared != null)
+        {
+            corePrepared.VerifyCurrent(core!); input = output+".input.wav"; WriteOwned(input,corePrepared.CopyWave());
+        }
+        using FileStream inputLease = new(input,FileMode.Open,FileAccess.Read,FileShare.Read);
         // Reborn: preparation must still match the actual owned input immediately before starting native work.
-        prepared.VerifyCurrent(root,identity,TargetPlatform.Win32,ReadOwnedWave(input)); bool streamed = prepared.Streamed;
+        if (corePrepared == null) prepared.VerifyCurrent(root,identity,TargetPlatform.Win32,ReadOwnedWave(input));
+        else if (!ReadOwnedWave(input).SequenceEqual(corePrepared.CopyWave())) throw new InvalidDataException("Frozen encoder PCM snapshot differs.");
+        bool streamed = prepared.Streamed;
         Identify identify = Bind<Identify>(module,"SIMEX_id"); Open open = Bind<Open>(module,"SIMEX_open"); Create create = Bind<Create>(module,"SIMEX_create");
         Info getInfo = Bind<Info>(module,"SIMEX_info"); Transfer read = Bind<Transfer>(module,"SIMEX_read"),write = Bind<Transfer>(module,"SIMEX_write");
         Getter close = Bind<Getter>(module,"SIMEX_close"),wclose = Bind<Getter>(module,"SIMEX_wclose"),free = Bind<Getter>(module,"SIMEX_freesinfo");
@@ -105,7 +138,7 @@ internal static class AudioEncoderPoc
         if (streamed && header.Length != 8) throw new InvalidDataException("Unexpected generated streamed SNR size.");
         using FileStream encoded = File.OpenRead(custom);
         // Reborn: bind generated custom framing to independently parsed serialized EP1 fields, not hardcoded fake native metadata.
-        AssetBuffer runtime = prepared.SerializeCurrent(root,identity,TargetPlatform.Win32,ReadOwnedWave(input),header);
+        AssetBuffer runtime = corePrepared != null ? corePrepared.SerializeCurrent(core!,header) : prepared.SerializeCurrent(root,identity,TargetPlatform.Win32,ReadOwnedWave(input),header);
         AudioFileRuntimeProbe.Header parsed = AudioFileRuntimeProbe.Parse(runtime.InstanceData,runtime.InstanceData.Length);
         byte[] inline = parsed.HeaderSize == 0 ? Array.Empty<byte>() : runtime.InstanceData.AsSpan(checked((int)parsed.HeaderPointer),checked((int)parsed.HeaderSize)).ToArray();
         AudioCustomDataProbe.Result framing = AudioCustomDataProbe.Inspect(encoded,parsed,inline);
@@ -185,6 +218,11 @@ internal static class AudioEncoderPoc
         document.LoadXml($"<AudioFile xmlns=\"uri:ea.com:eala:asset\" id=\"{(streamed ? "RebornAudioStream" : "RebornAudioRAM")}\" File=\"input.wav\" PCSampleRate=\"48000\" PCCompression=\"XAS\" IsStreamedOnPC=\"{(streamed ? "true" : "false")}\" SubtitleStringName=\"DIALOGEVENT:reborn_audio_encoder_pocSubTitle\" />");
         document.Validate((_, args) => throw new XmlSchemaValidationException(args.Message)); return document.DocumentElement!;
     }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: author one fixed core declaration without serializing inserted defaults as explicitly authored cross-platform settings. */
+    //-------------------------------------------------------------------------------------------------
+    internal static string CoreSource(bool streamed) => $"<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\"><AudioFile id=\"{(streamed ? "RebornAudioStream" : "RebornAudioRAM")}\" File=\"input.wav\" PCSampleRate=\"48000\" PCCompression=\"XAS\" IsStreamedOnPC=\"{(streamed ? "true" : "false")}\" SubtitleStringName=\"DIALOGEVENT:reborn_audio_encoder_pocSubTitle\" /></AssetDeclaration>";
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: bind the authored asset to recovered EP1 metadata without registering it in a production type table. */

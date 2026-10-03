@@ -19,6 +19,8 @@ internal static class Program
             if (args.FirstOrDefault() == "audiofile-identity-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioFileIdentitySmokeTest.Run(); return 0; }
             // Reborn: verify disk/core preparation invalidation without admitting native audio or production streams.
             if (args.FirstOrDefault() == "core-audiofile-preparation-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioFileCorePreparationSmokeTest.Run(); return 0; }
+            // Reborn: current-source package publication regression never executes the optional native encoder.
+            if (args.FirstOrDefault() == "core-audio-package-gate-self-test") { CompilerSmokeTest.InitializeHashProvider(); CoreAudioPackageGateSmokeTest.Run(); return 0; }
             // Reborn: local event/audio packaging proof uses synthetic framing unless the native encoder command is explicitly invoked.
             if (args.FirstOrDefault() == "local-audio-package-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioFileLocalEventSmokeTest.Run(); return 0; }
             // Reborn: managed fixed-package fixtures never execute native codecs or activate production AudioFile compilation.
@@ -34,6 +36,8 @@ internal static class Program
             if (args.FirstOrDefault() == "audio-encoder-wav-self-test") { AudioEncoderPoc.SelfTest(); return 0; }
             // Reborn: native encoding is opt-in and runs only in this standalone inspector process, never in default compiler tests.
             if (args.FirstOrDefault() == "audio-encoder-poc" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderPoc.Run(args[1]); return 0; }
+            // Reborn: opt-in native encoding now accepts actual core preparation and rechecks current sources before diagnostic publication.
+            if (args.FirstOrDefault() == "core-audio-encoder-poc" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderPoc.Run(args[1],true); return 0; }
             // Reborn: expose read-only native audio envelope evidence separately from compilation and codec activation.
             // Reborn: compare the four rejected records directly with bounded original BIG entries, without extraction.
             if (args.FirstOrDefault() == "audio-archive-self-test") { AudioArchiveComparisonProbe.SelfTest(); return 0; }
@@ -774,6 +778,8 @@ internal static class Program
         Console.WriteLine("  audiofile-identity-self-test");
         // Reborn: keep real core preparation testing separate from explicit native codec execution.
         Console.WriteLine("  core-audiofile-preparation-self-test");
+        // Reborn: test current source-to-package binding without native DLL execution.
+        Console.WriteLine("  core-audio-package-gate-self-test");
         Console.WriteLine("  audiofile-runtime-audit <unpacked-ep1-manifest>");
         // Reborn: custom framing evidence commands neither decode audio nor admit an AudioFile processor.
         Console.WriteLine("  audio-custom-self-test");
@@ -786,6 +792,8 @@ internal static class Program
         Console.WriteLine("  audio-encoder-wav-self-test");
         // Reborn: codec experimentation remains separate from public diagnostic-build and production output.
         Console.WriteLine("  audio-encoder-poc <absolute-audited-audio.dll>");
+        // Reborn: distinguish actual core/native integration from the older authored-only experiment.
+        Console.WriteLine("  core-audio-encoder-poc <absolute-audited-audio.dll>");
         Console.WriteLine("  audio-archive-compare <unpacked-ep1-manifest> <original-EnglishAudio.big>");
         // Reborn: reconciliation is a separate explicit audit command, not an automatic error fallback or corpus repair.
         Console.WriteLine("  audio-custom-reconciled-audit <unpacked-ep1-manifest> <original-EnglishAudio.big>");

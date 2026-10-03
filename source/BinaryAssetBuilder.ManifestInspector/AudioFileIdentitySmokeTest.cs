@@ -96,7 +96,7 @@ internal static class AudioFileIdentitySmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: register hash metadata locally, parse through the real DocumentProcessor, restore global settings even after errors. */
     //-------------------------------------------------------------------------------------------------
-    internal static InstanceDeclaration Build(string directory,string schema,uint processing)
+    internal static InstanceDeclaration Build(string directory,string schema,uint processing,string fileName = "audio.xml")
     {
         Settings saved = Settings.Current;
         try
@@ -112,7 +112,7 @@ internal static class AudioFileIdentitySmokeTest
             Require(outputBlocked && !plugins.CanReuseCompiledDocuments,"Hash-only processor unexpectedly authorizes production/reuse.");
             SessionCache cache = new(); cache.InitializeCache(new List<string>());
             DocumentProcessor processor = new(Settings.Current,plugins,new VerifierPluginRegistry(Array.Empty<PluginDescriptor>(),TargetPlatform.Win32)) { Cache = cache,SchemaSet = new SchemaSet(false) };
-            string source = Path.Combine(directory,"audio.xml");
+            string source = Path.Combine(directory,fileName);
             return processor.ProcessDocumentInternal(source,source,null!,new DocumentProcessor.ProcessOptions { GenerateOutput = false }).SelfInstances.Single();
         }
         finally { Settings.Current = saved; }

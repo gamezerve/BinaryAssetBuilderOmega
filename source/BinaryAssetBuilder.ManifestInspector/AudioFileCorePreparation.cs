@@ -16,6 +16,8 @@ internal sealed class AudioFileCorePreparation
     private readonly uint _hash;
     private readonly Ra3Ep1AudioFileInputProfile.PreparedInput _input;
     private readonly XmlElement _root;
+    // Reborn: expose immutable prepared settings/owned-copy methods, never the private schema DOM or mutable core identity.
+    internal Ra3Ep1AudioFileInputProfile.PreparedInput Settings => _input;
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: retain immutable identity/source evidence and privately owned schema-bound authored input. */
