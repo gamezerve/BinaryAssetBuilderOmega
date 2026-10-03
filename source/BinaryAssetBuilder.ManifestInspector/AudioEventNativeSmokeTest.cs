@@ -50,7 +50,20 @@ internal static class AudioEventNativeSmokeTest
             Require(instance.Handle.TypeHash == 0 && instance.ReferencedInstances.Count == 16
                 && instance.ReferencedFiles.Count == 0 && instance.WeakReferencedInstances.Count == 0, "Audio proof activated processors/files.");
             Chunk golden = ImpactGolden(); Equal(Compile(instance), golden); Equal(Compile(instance), Compile(instance));
-            foreach (string manifest in manifests) Compare(golden, instance.ReferencedInstances.Select(handle => handle.InstanceId).ToArray(), manifest);
+            // Reborn: independent stock definitions cover five native roots, not just repeated compilation of the impact fixture.
+            Dictionary<string, (Chunk Data, uint Id, uint[] References)> expected = new(StringComparer.Ordinal)
+            { [instance.Handle.Name] = (golden, 0x30A09D68u, instance.ReferencedInstances.Select(handle => handle.InstanceId).ToArray()) };
+            string extended = Path.Combine(directory, "extended.xml"); File.Copy(Path.Combine(fixtures, "AudioEventExtendedProbe.xml"), extended);
+            foreach (InstanceDeclaration sound in Read(processor, extended).SelfInstances)
+            {
+                var (data, id, referenceCount) = ExtendedGolden(sound.Handle.InstanceName);
+                Require(sound.Handle.InstanceId == id && sound.Handle.TypeHash == 0 && sound.ReferencedInstances.Count == referenceCount
+                    && sound.ReferencedFiles.Count == 0 && sound.WeakReferencedInstances.Count == 0, "Extended stock audio identity/count differs.");
+                Equal(Compile(sound), data); Equal(Compile(sound), Compile(sound));
+                expected.Add(sound.Handle.Name, (data, id, sound.ReferencedInstances.Select(handle => handle.InstanceId).ToArray()));
+            }
+            Require(expected.Count == 5, "Extended audio fixture is missing a stock root.");
+            foreach (string manifest in manifests) Compare(expected, manifest);
             string empty = Path.Combine(directory, "empty.xml");
             File.WriteAllText(empty, "<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\"><AudioEvent id=\"Empty\" /></AssetDeclaration>");
             Chunk emptyGolden = Defaults(); Equal(Compile(Read(processor, empty).SelfInstances.Single()), emptyGolden);
@@ -112,8 +125,11 @@ internal static class AudioEventNativeSmokeTest
             Require(groupRejected, "Unrecovered LimitGroup was silently marshalled.");
             string recovery = Path.Combine(directory, "recovery.xml"); File.Copy(source, recovery);
             Equal(Compile(Read(processor, recovery).SelfInstances.Single()), golden);
+            string extendedRecovery = Path.Combine(directory, "extended-recovery.xml"); File.Copy(extended, extendedRecovery);
+            foreach (InstanceDeclaration sound in Read(processor, extendedRecovery).SelfInstances)
+                Equal(Compile(sound), expected[sound.Handle.Name].Data);
             Require(!Directory.EnumerateFiles(directory, "*.bin").Any(), "Audio native proof emitted streams.");
-            Console.WriteLine("AudioEvent native self-test: OK (isolated 128/152/12 layout; unchanged legacy 96/120/8; exact impact/default/flag/weighted-list/optional-pointer goldens; LimitGroup rejected; no audio plugin/codec)");
+            Console.WriteLine("AudioEvent native self-test: OK (isolated 128/152/12 layout; unchanged legacy 96/120/8; five stock goldens; defaults/EP1 flags/weighted lists/optional pointers; LimitGroup rejected; no audio plugin/codec)");
         }
         finally { Settings.Current = saved; }
     }
@@ -166,31 +182,88 @@ internal static class AudioEventNativeSmokeTest
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: read only the selected record's three native slices and require ordered concrete AudioFile identities. */
+    /** Reborn: read only selected stock slices after exact length checks and require ordered concrete AudioFile identities. */
     //-------------------------------------------------------------------------------------------------
-    private static void Compare(Chunk golden, uint[] identities, string path)
+    private static void Compare(Dictionary<string, (Chunk Data, uint Id, uint[] References)> expected, string path)
     {
         ManifestDocument manifest = ManifestReader.Read(File.ReadAllBytes(path));
         TypeRegistryAudit.ValidateTarget(manifest.Header.Version, manifest.Header.AllTypesHash);
         Require(manifest.Header.IsLinked && manifest.Validate().Count == 0, "Invalid stock audio manifest.");
         long bin = manifest.Header.ContainerPrefixSize + 4, relo = bin, imp = bin; int count = 0;
+        // Reborn: aggregate counts cannot let a repeated selected root hide a different missing root.
+        HashSet<string> seen = new(StringComparer.Ordinal);
         foreach (ManifestAsset asset in manifest.Assets)
         {
-            if (asset.Name == "AudioEvent:ImpactDebrisHitsGround")
+            if (expected.TryGetValue(asset.Name, out var value))
             {
+                Require(seen.Add(asset.Name), "Selected stock AudioEvent is duplicated: " + asset.Name);
                 Require(asset.TypeId == 0x844D7B9Fu && asset.TypeHash == 0x560C2E45u && asset.Tokenized == 0
-                    && asset.InstanceId == 0x30A09D68u && asset.InstanceDataSize == 364 && asset.RelocationDataSize == 20 && asset.ImportsDataSize == 68
+                    && asset.InstanceId == value.Id && asset.InstanceDataSize == value.Data.InstanceBuffer.Length
+                    && asset.RelocationDataSize == value.Data.RelocationBuffer.Length && asset.ImportsDataSize == value.Data.ImportsBuffer.Length
                     && asset.References.All(reference => reference.TypeId == 0x166B084Du)
-                    && asset.References.Select(reference => reference.InstanceId).SequenceEqual(identities), "Stock AudioEvent fingerprint/reference mismatch.");
-                Equal(golden, new Chunk {
+                    && asset.References.Select(reference => reference.InstanceId).SequenceEqual(value.References), "Stock AudioEvent fingerprint/reference mismatch: " + asset.Name);
+                Equal(value.Data, new Chunk {
                     InstanceBuffer = AssetStreamProbe.ReadRange(Path.ChangeExtension(path, ".bin"), null, bin, asset.InstanceDataSize),
                     RelocationBuffer = AssetStreamProbe.ReadRange(Path.ChangeExtension(path, ".relo"), null, relo, asset.RelocationDataSize),
                     ImportsBuffer = AssetStreamProbe.ReadRange(Path.ChangeExtension(path, ".imp"), null, imp, asset.ImportsDataSize) });
-                Console.WriteLine("  Real EP1 AudioEvent golden: ImpactDebrisHitsGround exact 364/20/68; 16 ordered AudioFile identities"); count++;
+                Console.WriteLine($"  Real EP1 AudioEvent golden: {asset.Name} exact {asset.InstanceDataSize}/{asset.RelocationDataSize}/{asset.ImportsDataSize}; {asset.References.Count} ordered AudioFile identities"); count++;
             }
             bin += asset.InstanceDataSize; relo += asset.RelocationDataSize; imp += asset.ImportsDataSize;
         }
-        Require(count == 1, "Selected stock AudioEvent is missing or duplicated.");
+        Require(count == expected.Count, "Selected stock AudioEvent roots are missing or duplicated.");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: encode four independently observed stock layouts and literal native words, without deriving expected fields from source XML. */
+    //-------------------------------------------------------------------------------------------------
+    private static (Chunk Data, uint Id, int ReferenceCount) ExtendedGolden(string name)
+    {
+        uint id, volume, shift, priority, control; int size, references;
+        uint[] relocations;
+        switch (name)
+        {
+            case "ALL_CryoLegionaire_FreezeWeaponLoop":
+                id = 0xA78AD6DD; size = 320; references = 13; volume = 0x3F000000; shift = 0xBDCCCCCC;
+                priority = 3; control = 0x101; relocations = new uint[] { 132,140,148,80,88 }; break;
+            case "ALL_CryoLegionaire_WaterExplosion":
+                id = 0xF9033CE0; size = 228; references = 4; volume = 0x3F000000; shift = 0xBDCCCCCC;
+                priority = 2; control = 8; relocations = new uint[] { 140,80,84,96,124 }; break;
+            case "ALL_MultiGunnerIFV_EngineerRepairLoop":
+                id = 0x4E0BE175; size = 212; references = 4; volume = 0x3F0CCCCD; shift = 0xBD4CCCCC;
+                priority = 1; control = 0x21; relocations = new uint[] { 140,80,84 }; break;
+            case "JAP_Yuriko_FootstepBarefoot":
+                id = 0xC94ADFA4; size = 396; references = 18; volume = 0x3E999999; shift = 0xBF000000;
+                priority = 1; control = 8; relocations = new uint[] { 140,80,84,92,124 }; break;
+            default: throw new InvalidDataException("Unexpected extended AudioEvent fixture.");
+        }
+        Chunk chunk = Defaults(size); byte[] bin = chunk.InstanceBuffer;
+        Put(bin, 4, volume); Put(bin, 8, shift); Put(bin, 20, 0x40000000); Put(bin, 24, 0x3F599999);
+        Put(bin, 32, 3); Put(bin, 36, priority); Put(bin, 40, 0x86); Put(bin, 44, control);
+        Float(bin, 48, 300); Float(bin, 52, 1000); Float(bin, 72, 1);
+        if (references == 13)
+        {
+            Put(bin, 128, 5); Put(bin, 132, 152); Put(bin, 136, 5); Put(bin, 140, 212); Put(bin, 144, 3); Put(bin, 148, 272);
+            Put(bin, 80, 308); Put(bin, 88, 312); Float(bin, 312, -5); Float(bin, 316, 5);
+        }
+        else
+        {
+            int end = 152 + references * 12;
+            Put(bin, 136, (uint)references); Put(bin, 140, 152); Put(bin, 80, (uint)end); Put(bin, 84, (uint)end + 4);
+            Float(bin, end + 4, -5); Float(bin, end + 8, 5);
+            if (name == "ALL_CryoLegionaire_WaterExplosion")
+            { Put(bin, 96, 212); Put(bin, 216, 30); Put(bin, 124, 220); Float(bin, 224, 1.5f); }
+            if (name == "JAP_Yuriko_FootstepBarefoot")
+            { Put(bin, 92, 380); Put(bin, 384, 15); Put(bin, 124, 388); Put(bin, 392, 0x3F666666); }
+        }
+        for (int index = 0; index < references; index++)
+        {
+            uint weight = name == "ALL_MultiGunnerIFV_EngineerRepairLoop" && index == 3 ? 100u
+                : name == "JAP_Yuriko_FootstepBarefoot" && index < 4 ? 500u : 1000u;
+            Put(bin, 152 + index * 12, (uint)index + 1); Put(bin, 156 + index * 12, weight); Float(bin, 160 + index * 12, 1);
+        }
+        chunk.RelocationBuffer = Words(relocations.Append(uint.MaxValue).ToArray());
+        chunk.ImportsBuffer = Words(Enumerable.Range(0,references).Select(index => (uint)(152 + index * 12)).Append(uint.MaxValue).ToArray());
+        return (chunk, id, references);
     }
 
     //-------------------------------------------------------------------------------------------------

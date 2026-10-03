@@ -24,10 +24,12 @@ adds one group without changing model/marshaller counts; all 82 groups were exec
 
 Latest milestone: [isolated AudioEvent native proof](docs/RA3EP1_AUDIOEVENT_NATIVE.md).
 The recovered 128-byte base, 152-byte root and 12-byte weighted AudioFile references
-match one real Uprising record's complete 364/20/68 BIN/RELO/IMP bytes and 16 ordered
-AudioFile identities. Independent defaults, shifted EP1 control bits, three lists
-and every implemented optional base pointer also pass. The legacy 96/120/8-byte
-path remains unchanged. LimitGroup references reject; broader stock evidence,
+match five real Uprising records' complete BIN/RELO/IMP bytes and ordered
+AudioFile identities. Cryo's three-list loop and InitialDelay, IFV's nondefault
+weight/shifted FADE_ON_KILL bit, and Yuriko's weighted footsteps/Delay now have
+real stock comparisons, alongside the original impact. Independent defaults and
+every implemented optional base pointer also pass. The legacy 96/120/8-byte
+path remains unchanged. LimitGroup references reject; remaining stock evidence,
 checked compiler admission, AudioFile codecs and production/game loading remain open.
 
 [Multisound in bounded diagnostic builds](docs/RA3EP1_DIAGNOSTIC_MULTISOUND_BUILD.md):

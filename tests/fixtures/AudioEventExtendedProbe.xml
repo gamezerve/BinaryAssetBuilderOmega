@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: four stock source literals with BaseSoundEffect attributes flattened; Cryo weapon define WEAPON_FIRE=50 is explicitly evaluated. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+ <AudioEvent id="ALL_CryoLegionaire_FreezeWeaponLoop" Volume="50" VolumeShift="-10" Limit="3" Priority="HIGH"
+  Type="WORLD SHROUDED EVERYONE" Control="LOOP IMMEDIATE_DECAY_ON_KILL" SubmixSlider="SOUNDFX"
+  ShrunkenPitchModifier="2" ShrunkenVolumeModifier="85" MinRange="300" MaxRange="1000" ReverbEffectLevel="100">
+  <PerFilePitchShift Low="-5" High="5" />
+  <Attack>AUCryoL_freezeStarta</Attack><Attack>AUCryoL_freezeStartb</Attack><Attack>AUCryoL_freezeStartc</Attack>
+  <Attack>AUCryoL_freezeStartd</Attack><Attack>AUCryoL_freezeStarte</Attack>
+  <Sound>AUCryoL_freezeSwella</Sound><Sound>AUCryoL_freezeSwellb</Sound><Sound>AUCryoL_freezeSwellc</Sound>
+  <Sound>AUCryoL_freezeSwelld</Sound><Sound>AUCryoL_freezeSwelle</Sound>
+  <Decay>AUCryoL_freezeEnda</Decay><Decay>AUCryoL_freezeEndb</Decay><Decay>AUCryoL_freezeEndc</Decay>
+ </AudioEvent>
+ <AudioEvent id="ALL_CryoLegionaire_WaterExplosion" Volume="50" VolumeShift="-10" Limit="3"
+  Type="WORLD SHROUDED EVERYONE" Control="INTERRUPT" SubmixSlider="SOUNDFX"
+  ShrunkenPitchModifier="2" ShrunkenVolumeModifier="85" MinRange="300" MaxRange="1000" ReverbEffectLevel="100">
+  <PitchShift Low="-5" High="5" /><InitialDelay Low="0" High="30" /><NonInterruptibleTime Low="0s" High="1.50s" />
+  <Sound>TEMP_gexpwama</Sound><Sound>TEMP_gexpwamb</Sound><Sound>TEMP_gexpwasa</Sound><Sound>TEMP_gexpwasb</Sound>
+ </AudioEvent>
+ <AudioEvent id="ALL_MultiGunnerIFV_EngineerRepairLoop" Volume="55" VolumeShift="-5" Limit="3" Priority="LOW"
+  Type="WORLD SHROUDED EVERYONE" Control="LOOP FADE_ON_KILL" SubmixSlider="SOUNDFX"
+  ShrunkenPitchModifier="2" ShrunkenVolumeModifier="85" MinRange="300" MaxRange="1000" ReverbEffectLevel="100">
+  <PitchShift Low="-5" High="5" />
+  <Sound>AUMgIFV_repaLoopa</Sound><Sound>AUMgIFV_repaLoopb</Sound><Sound>AUMgIFV_repaLoopc</Sound>
+  <Sound Weight="100">AUMgIFV_repaLoopd</Sound>
+ </AudioEvent>
+ <AudioEvent id="JAP_Yuriko_FootstepBarefoot" Volume="30" VolumeShift="-50" Limit="3" Priority="LOW"
+  Type="WORLD SHROUDED EVERYONE" Control="INTERRUPT" SubmixSlider="SOUNDFX"
+  ShrunkenPitchModifier="2" ShrunkenVolumeModifier="85" MinRange="300" MaxRange="1000" ReverbEffectLevel="100">
+  <PitchShift Low="-5" High="5" /><Delay Low="0" High="15" /><NonInterruptibleTime Low="0s" High="0.9s" />
+  <Sound Weight="500">JUYurik_footstep1a</Sound><Sound Weight="500">JUYurik_footstep1b</Sound>
+  <Sound Weight="500">JUYurik_footstep1c</Sound><Sound Weight="500">JUYurik_footstep1d</Sound>
+  <Sound>JUYurik_footstep2a</Sound><Sound>JUYurik_footstep2b</Sound><Sound>JUYurik_footstep2c</Sound>
+  <Sound>JUYurik_footstep2d</Sound><Sound>JUYurik_footstep2e</Sound><Sound>JUYurik_footstep2f</Sound>
+  <Sound>JUYurik_footstep2g</Sound><Sound>JUYurik_footstep2h</Sound><Sound>JUYurik_footstep2i</Sound>
+  <Sound>JUYurik_footstep2j</Sound><Sound>JUYurik_footstep2k</Sound><Sound>JUYurik_footstep2l</Sound>
+  <Sound>JUYurik_footstep2m</Sound><Sound>JUYurik_footstep2n</Sound>
+ </AudioEvent>
+</AssetDeclaration>

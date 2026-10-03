@@ -2,7 +2,7 @@
 
 Date: October 3, 2026. This is native-only evidence, not a playable mod or a
 production audio processor. Overall effort remains approximately 50% complete /
-50% remaining: recovering one record does not close audio migration.
+50% remaining: five recovered records do not close audio migration.
 
 ## Reference evidence and isolated implementation
 
@@ -61,6 +61,35 @@ sentinel. IMP entries: 152 + 12*i, i=0..15, and sentinel.
 Stock readback checks exact slice lengths before reading. No full binary dump,
 audio decoding or WorldBuilder dump occurs.
 
+### Four additional real records
+
+`AudioEventExtendedProbe.xml` adds four curated literals from the same official
+Uprising `Sounds/SoundEffects.xml` source. BaseSoundEffect is explicitly flattened.
+The Cryo weapon's `=$WEAPON_FIRE` becomes the reference define's value 50; formula
+evaluation and inheritance admission are deliberately not claimed by this fixture.
+`ExtendedGolden` constructs independent expected bytes from fixed observed
+words, IDs, list offsets, weights and relocations, not the source XML or marshaller.
+
+| Selected AudioEvent | Instance ID | BIN/RELO/IMP | AudioFile references | Real evidence |
+| --- | --- | --- | ---: | --- |
+| ALL_CryoLegionaire_FreezeWeaponLoop | A78AD6DD | 320/24/56 | 13 | Attack 5, Sound 5, Decay 3; PerFilePitchShift; LOOP + IMMEDIATE_DECAY_ON_KILL |
+| ALL_CryoLegionaire_WaterExplosion | F9033CE0 | 228/24/20 | 4 | InitialDelay 0..30; PitchShift; NonInterruptibleTime 0..1.5s |
+| ALL_MultiGunnerIFV_EngineerRepairLoop | 4E0BE175 | 212/16/20 | 4 | Last child Weight 100; LOOP + FADE_ON_KILL = 0x21 |
+| JAP_Yuriko_FootstepBarefoot | C94ADFA4 | 396/24/76 | 18 | First four weights 500; Delay 0..15; NonInterruptibleTime 0..0.9s |
+
+All four compiled native buffers exactly match the three selected game slices.
+The reader requires all five selected names exactly once, exact lengths before
+any selected payload read, stock type hash/tokenization and ordered AudioFile
+reference tuples. No linked streams are emitted by these native tests.
+Extended fixtures also compile repeatedly and recover identically after the
+negative cases, with no production/audio codec activation.
+
+A read-only query of the supplied `Sounds/*.xml` AudioEvent nodes did not find
+explicit child Volume, LimitGroup, MinRangeShift, MaxRangeShift or SMART_LIMITING
+examples. This is a source-directory observation, not proof those features are
+unused by every game stream. Child Volume, range shifts and SMART_LIMITING still
+have synthetic/reference-schema evidence only; group imports remain rejected.
+
 ## Synthetic tests, boundaries and next gates
 
 `AudioEventNativeSmokeTest.Run` checks native sizes/offsets and legacy isolation,
@@ -80,8 +109,8 @@ This public native helper is a trusted test primitive, not a hardened authored
 XML entry point. A future checked profile must enforce current identities,
 formula/selector controls and complete prepared AudioFile reference tables.
 
-Next: additional real records covering multiple lists, weighted volumes, ranges
-and EP1 flags; LimitGroup import recovery; bounded checked AudioEvent profile
+Next: additional real records covering explicit child volumes, range shifts,
+group imports and SMART_LIMITING; LimitGroup import recovery; bounded checked AudioEvent profile
 with stock fingerprint gates; mixed stream closure; AudioFile runtime/codec
 generation; aggregate type tables, packaging and game loading.
 
