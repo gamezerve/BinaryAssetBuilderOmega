@@ -14,6 +14,8 @@ internal static class CompilerSmokeTest
         TestAttributeModifier();
         // Reborn: exercise isolated EP1 sound records while retaining the legacy child ABI.
         TestMultisoundNative();
+        // Reborn: recover native AudioEvent ABI without changing legacy audio or enabling codecs.
+        TestAudioEventNative();
         // Reborn: prove checked sound entry policies and prepared dependency identities separately from native-only evidence.
         TestMultisoundProfile();
         // Reborn: exercise local Multisound closure and independent mixed stream identity/native readback.
@@ -2118,6 +2120,11 @@ internal static class CompilerSmokeTest
     /** Reborn: register native sound evidence independently from production audio processors. */
     //-------------------------------------------------------------------------------------------------
     private static void TestMultisoundNative() => MultisoundNativeSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: exercise isolated AudioEvent native evidence without registering legacy audio or codecs. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestAudioEventNative() => AudioEventNativeSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: register isolated checked sound profile evidence without activating production audio. */

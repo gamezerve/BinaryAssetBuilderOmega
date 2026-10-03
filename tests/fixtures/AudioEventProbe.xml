@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: literal ImpactDebrisHitsGround plus explicitly flattened BaseSoundEffect attributes; inheritance itself is not admitted. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+ <AudioEvent id="ImpactDebrisHitsGround" Volume="60" VolumeShift="-20" Limit="3" Control="INTERRUPT"
+  Type="WORLD SHROUDED EVERYONE" SubmixSlider="SOUNDFX" ShrunkenPitchModifier="2.0"
+  ShrunkenVolumeModifier="85" MinRange="300" MaxRange="1000" ReverbEffectLevel="100">
+  <PitchShift Low="-5" High="5" />
+  <NonInterruptibleTime Low="0.0s" High="1.25s" />
+  <Sound>WImpact_DebrisVsGrounda</Sound><Sound>WImpact_DebrisVsGroundb</Sound>
+  <Sound>WImpact_DebrisVsGroundc</Sound><Sound>WImpact_DebrisVsGroundd</Sound>
+  <Sound>WImpact_DebrisVsGrounde</Sound><Sound>WImpact_DebrisVsGroundf</Sound>
+  <Sound>WImpact_DebrisVsGroundg</Sound><Sound>WImpact_DebrisVsGroundh</Sound>
+  <Sound>WImpact_DebrisVsGroundi</Sound><Sound>WImpact_DebrisVsGroundj</Sound>
+  <Sound>WImpact_DebrisVsGroundk</Sound><Sound>WImpact_DebrisVsGroundl</Sound>
+  <Sound>WImpact_DebrisVsGroundm</Sound><Sound>WImpact_DebrisVsGroundn</Sound>
+  <Sound>WImpact_DebrisVsGroundo</Sound><Sound>WImpact_DebrisVsGroundp</Sound>
+ </AudioEvent>
+</AssetDeclaration>

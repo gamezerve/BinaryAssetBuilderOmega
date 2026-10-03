@@ -16,19 +16,27 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**81 test groups** (some contain several fixtures). These counters can grow
+**82 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
-registered groups but does not execute them. The bounded Multisound command
-adds one group without changing model/marshaller counts; all 81 groups were executed.
+registered groups but does not execute them. The isolated AudioEvent native proof
+adds one group without changing model/marshaller counts; all 82 groups were executed.
 
-Latest milestone: [Multisound in bounded diagnostic builds](docs/RA3EP1_DIAGNOSTIC_MULTISOUND_BUILD.md).
+Latest milestone: [isolated AudioEvent native proof](docs/RA3EP1_AUDIOEVENT_NATIVE.md).
+The recovered 128-byte base, 152-byte root and 12-byte weighted AudioFile references
+match one real Uprising record's complete 364/20/68 BIN/RELO/IMP bytes and 16 ordered
+AudioFile identities. Independent defaults, shifted EP1 control bits, three lists
+and every implemented optional base pointer also pass. The legacy 96/120/8-byte
+path remains unchanged. LimitGroup references reject; broader stock evidence,
+checked compiler admission, AudioFile codecs and production/game loading remain open.
+
+[Multisound in bounded diagnostic builds](docs/RA3EP1_DIAGNOSTIC_MULTISOUND_BUILD.md):
 `diagnostic-build` now admits narrow authored/local Multisounds as its fifth
 family. Nested local sounds use real dependency-first order; selected local cycles
 reject. Five-family Include/snapshot/fingerprint/recovery/publication checks pass.
 The committed DiagnosticMultisoundProbe.xml was executed through the actual CLI
 with stock global metadata, producing three entries and 216/28/36 linked streams.
-AudioEvent/AudioFile compilation, production SDK output and game loading stay closed.
+AudioEvent/AudioFile command admission, production SDK output and game loading stay closed.
 
 [Fixed local Multisound / FX mixed stream](docs/RA3EP1_MULTISOUND_FX_STREAM.md):
 A three-level Include chain compiles modifier → local FX → local Multisound →
@@ -59,8 +67,9 @@ Selected external AudioEvent/Multisound dependencies now require stock EP1 hashe
 and non-tokenized metadata. Wrong fingerprints reject; restored inputs recover
 identical output. Bounded native reads confirm old sound layouts cannot be reused:
 AudioEvent root 120 vs 152 bytes, audio-file references 8 vs 12, and legacy
-Multisound children 8 vs 28. Multisound now has an isolated native proof;
-AudioEvent/AudioFile recovery and wider audio profiles remain open.
+Multisound children 8 vs 28. Multisound and a narrow AudioEvent subset now have
+isolated native proofs; AudioEvent admission, AudioFile recovery and wider audio
+profiles remain open.
 
 [FX support in bounded diagnostic builds](docs/RA3EP1_DIAGNOSTIC_FX_BUILD.md):
 `diagnostic-build` now accepts the isolated empty/two-Sound FX subset, alongside

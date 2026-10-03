@@ -13,6 +13,11 @@ internal static class Program
     {
         try
         {
+            // Reborn: isolated native AudioEvent evidence optionally compares bounded stock slices.
+            if (args.FirstOrDefault() == "audioevent-native-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider(); AudioEventNativeSmokeTest.Run(args.Skip(1).ToArray()); return 0;
+            }
             // Reborn: exercise public sound admission with optional real stock mappings.
             if (args.FirstOrDefault() == "diagnostic-multisound-build-self-test")
             {
@@ -710,6 +715,7 @@ internal static class Program
         Console.WriteLine("  compiler-self-test");
         // Reborn: optional manifests add bounded sound goldens without registering audio processors.
         Console.WriteLine("  multisound-native-self-test [ep1-global-manifest ...]");
+        Console.WriteLine("  audioevent-native-self-test [ep1-global-manifest ...]");
         // Reborn: optional manifests compare checked profile output and prepared sound dependencies against stock.
         Console.WriteLine("  ep1-multisound-profile-self-test [ep1-global-manifest ...]");
         // Reborn: optional mappings prove concrete leaf audio identities in a fixed mixed local stream.
