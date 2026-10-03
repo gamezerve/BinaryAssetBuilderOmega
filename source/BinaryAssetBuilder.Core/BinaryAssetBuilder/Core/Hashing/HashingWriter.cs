@@ -40,7 +40,8 @@ namespace BinaryAssetBuilder.Core.Hashing
             }
             else
             {
-                for (int idx = 0; idx + _hashingSize < current.Length; idx += _hashingSize)
+                // Reborn: EA reference IL uses an inclusive boundary; exact-size final blocks must contribute rather than disappear.
+                for (int idx = 0; idx + _hashingSize <= current.Length; idx += _hashingSize)
                 {
                     _runningHash = HashProvider.GetTextHash(_runningHash, current.Substring(idx, _hashingSize));
                 }

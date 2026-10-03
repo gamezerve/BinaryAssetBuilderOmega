@@ -42,11 +42,11 @@ namespace BinaryAssetBuilder.Core.SageXml
             public string Configuration;
         }
 
-        // Reborn: invalidate document/intermediate identities predating concrete external schema-derived dependency resolution.
+        // Reborn: invalidate document/intermediate identities calculated before exact 512-character text blocks were restored to hashing.
 #if VERSION5
-        public const uint Version = 20u;
+        public const uint Version = 22u;
 #else
-        public const uint Version = 21u;
+        public const uint Version = 23u;
 #endif
 
         private static readonly Tracer _tracer = Tracer.GetTracer(nameof(DocumentProcessor), "Provides XML processing functionality");

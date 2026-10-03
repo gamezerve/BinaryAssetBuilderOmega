@@ -13,6 +13,8 @@ internal static class Program
     {
         try
         {
+            // Reborn: pin reference identity evidence and exercise managed hash boundaries without loading old compilers or codecs.
+            if (args.FirstOrDefault() == "hashing-writer-boundary-self-test") { HashingWriterBoundarySmokeTest.Run(); return 0; }
             // Reborn: local event/audio packaging proof uses synthetic framing unless the native encoder command is explicitly invoked.
             if (args.FirstOrDefault() == "local-audio-package-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioFileLocalEventSmokeTest.Run(); return 0; }
             // Reborn: managed fixed-package fixtures never execute native codecs or activate production AudioFile compilation.
@@ -762,6 +764,8 @@ internal static class Program
         Console.WriteLine("  audiofile-package-self-test");
         // Reborn: fixed local selectors and custom-data closure are separate from general SDK graph admission.
         Console.WriteLine("  local-audio-package-self-test");
+        // Reborn: text identity compatibility must precede any claim of stock audio InstanceHash equivalence.
+        Console.WriteLine("  hashing-writer-boundary-self-test");
         Console.WriteLine("  audiofile-runtime-audit <unpacked-ep1-manifest>");
         // Reborn: custom framing evidence commands neither decode audio nor admit an AudioFile processor.
         Console.WriteLine("  audio-custom-self-test");

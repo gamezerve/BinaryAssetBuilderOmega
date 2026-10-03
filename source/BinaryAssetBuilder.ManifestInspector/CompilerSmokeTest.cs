@@ -11,6 +11,8 @@ internal static class CompilerSmokeTest
     public static unsafe void Run()
     {
         InitializeHashProvider();
+        // Reborn: current XML identity hashing must include exact reference-proven text block boundaries.
+        TestHashingWriterBoundary();
         TestAttributeModifier();
         // Reborn: exercise isolated EP1 sound records while retaining the legacy child ABI.
         TestMultisoundNative();
@@ -2193,6 +2195,11 @@ internal static class CompilerSmokeTest
     /** Reborn: test mixed local event/audio packaging while keeping general AudioFile compilation closed. */
     //-------------------------------------------------------------------------------------------------
     private static void TestLocalAudioPackage() => AudioFileLocalEventSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify XML/text identity boundary behavior independently of audio payload fingerprints. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestHashingWriterBoundary() => HashingWriterBoundarySmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: guard custom block envelopes separately from native ABI and codec processing. */
