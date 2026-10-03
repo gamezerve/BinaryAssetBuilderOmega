@@ -16,13 +16,20 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**86 test groups** (some contain several fixtures). These counters can grow
+**87 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
-registered groups but does not execute them. The read-only AudioFile runtime audit
-adds one group without changing model/marshaller counts; all 86 groups were executed.
+registered groups but does not execute them. The read-only custom audio framing audit
+adds one group without changing model/marshaller counts; all 87 groups were executed.
 
-Latest milestone: [AudioFile runtime envelope and streamed boundary](docs/RA3EP1_AUDIOFILE_RUNTIME.md).
+Latest milestone: [Custom audio framing and four rejected records](docs/RA3EP1_AUDIO_CUSTOM_FRAMING.md).
+12,947 identity-mapped EnglishAudio custom files pass bounded RAM/streamed block
+lengths, declared sample totals and EOF checks (268,674 blocks). Four files reject;
+the corpus audit deliberately reports INCOMPLETE and exits 1. Original archive
+comparison is required before treating this as a complete framing proof. No
+compressed payload decoding, encoder activation or production admission is enabled.
+
+[AudioFile runtime envelope and streamed boundary](docs/RA3EP1_AUDIOFILE_RUNTIME.md):
 The recovered 32-byte envelope differs from the legacy 28-byte ABI: subtitle
 length/pointer are inline, shifting subsequent fields by four bytes. All 12,951
 actual EnglishAudio envelopes/relocations pass; 1,280 embedded eight-byte headers

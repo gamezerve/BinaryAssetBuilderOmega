@@ -93,7 +93,7 @@ internal static class AudioFileRuntimeProbe
     //-------------------------------------------------------------------------------------------------
     /** Reborn: audit every selected stock envelope using bounded reads and emit only representative opaque codec prefixes. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string manifestPath)
+    internal static void Run(string manifestPath,bool auditCustom = false)
     {
         if (new FileInfo(manifestPath).Length > 16*1024*1024) throw new InvalidDataException("Audio manifest exceeds audit bound.");
         ManifestDocument manifest = ManifestReader.Read(File.ReadAllBytes(manifestPath));
@@ -109,6 +109,8 @@ internal static class AudioFileRuntimeProbe
         ValidateStream(imp,0xBAB10000u,manifest.Header.StreamChecksum,(ulong)manifest.Assets.Sum(asset => (long)asset.ImportsDataSize));
         long offset = 8, relocationOffset = 8; int count = 0, inline = 0, shown = 0; bool shownInline = false;
         Dictionary<string,int> codecs = new();
+        // Reborn: optional full identity-mapped custom framing audit stays independent of native-only envelope admission.
+        long customBytes = 0,customBlocks = 0; int customFailures = 0; Dictionary<byte,int> customTags = new();
         foreach (ManifestAsset asset in manifest.Assets)
         {
             if (asset.TypeId == 0x166B084Du)
@@ -122,10 +124,29 @@ internal static class AudioFileRuntimeProbe
                     throw new InvalidDataException("AudioFile subtitle length/terminator mismatch.");
                 if (header.HeaderSize != 0) ValidateInlineHeader(Read(bin,offset+header.HeaderPointer,checked((int)header.HeaderSize)),header);
                 uint[] expected = new[] { header.SubtitlePointer == 0 ? 0u : 8u,header.HeaderPointer == 0 ? 0u : 20u }.Where(value => value != 0).Append(uint.MaxValue).ToArray();
+                if (asset.RelocationDataSize != expected.Length*4) throw new InvalidDataException("AudioFile relocation chunk size differs.");
                 byte[] relocation = Read(relo,relocationOffset,expected.Length*4);
                 if (asset.RelocationDataSize != relocation.Length || !expected.Select((value,index) => BinaryPrimitives.ReadUInt32LittleEndian(relocation.AsSpan(index*4,4)) == value).All(value => value))
                     throw new InvalidDataException("AudioFile relocation slots differ from recovered layout.");
                 count++; if (header.HeaderSize != 0) inline++;
+                if (auditCustom)
+                {
+                    string customPath = Path.Combine(Path.GetDirectoryName(manifestPath)!,Path.GetFileNameWithoutExtension(manifestPath),"cdata",
+                        $"{asset.TypeId:x8}.{asset.TypeHash:x8}.{asset.InstanceId:x8}.{asset.InstanceHash:x8}.cdata");
+                    // Reborn: retain strict per-file rejection but inventory all identities when the unpacked corpus is incomplete.
+                    try
+                    {
+                        using FileStream customStream = File.OpenRead(customPath);
+                        AudioCustomDataProbe.Result framing = AudioCustomDataProbe.Inspect(customStream,header,header.HeaderSize == 0 ? Array.Empty<byte>() : Read(bin,offset+header.HeaderPointer,checked((int)header.HeaderSize)));
+                        customBytes = checked(customBytes+framing.Bytes); customBlocks = checked(customBlocks+framing.Blocks);
+                        customTags[framing.CodecTag] = customTags.GetValueOrDefault(framing.CodecTag)+1;
+                    }
+                    catch (Exception error) when (error is IOException or InvalidDataException)
+                    {
+                        customFailures++;
+                        if (customFailures <= 8) Console.WriteLine($"  custom REJECT {asset.Name}: {error.Message}");
+                    }
+                }
                 if (shown < 3 || (!shownInline && header.HeaderSize != 0))
                 {
                     string prefix = "<absent>";
@@ -154,6 +175,12 @@ internal static class AudioFileRuntimeProbe
         Console.WriteLine($"AudioFile runtime audit: OK; records={count}, inline-header={inline}, external-only={count-inline}; no encoding or production admission.");
         foreach (var item in codecs.OrderBy(item => item.Key).Take(16)) Console.WriteLine($"  opaque inline {item.Key}: {item.Value}");
         if (codecs.Count > 16) Console.WriteLine($"  ({codecs.Count-16} further signature groups omitted)");
+        if (auditCustom)
+        {
+            Console.WriteLine($"Custom audio framing audit: {(customFailures == 0 ? "OK" : "INCOMPLETE")}; files={count}, validated={count-customFailures}, rejected={customFailures}, validated-blocks={customBlocks}, validated-bytes={customBytes}; only headers read, payload skipped.");
+            foreach (var tag in customTags.OrderBy(item => item.Key)) Console.WriteLine($"  opaque codec tag {tag.Key:X2}: {tag.Value}");
+            if (customFailures > 0) throw new InvalidDataException($"Custom audio corpus has {customFailures} rejected/missing records; no complete framing proof.");
+        }
     }
 
     //-------------------------------------------------------------------------------------------------

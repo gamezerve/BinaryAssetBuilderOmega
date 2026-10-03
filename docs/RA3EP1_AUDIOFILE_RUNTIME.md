@@ -1,5 +1,9 @@
 # AudioFile runtime envelope and streamed boundary
 
+Follow-up: [Custom audio framing and four rejected records](RA3EP1_AUDIO_CUSTOM_FRAMING.md)
+checks all mapped custom files: 12,947 pass and four reject. Native envelope
+success remains separate; no complete corpus/codec compatibility is claimed.
+
 Date: October 3, 2026. Read-only stock evidence, not an AudioFile compiler,
 codec decoder or playable SDK. Overall effort remains approximately 50% complete /
 50% remaining; model/marshaller inventory is unchanged.
