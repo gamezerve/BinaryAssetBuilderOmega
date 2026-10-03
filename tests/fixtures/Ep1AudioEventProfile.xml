@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: explicitly isolated AudioEvent profile; no production SDK or AudioFile codec output. -->
+<Settings xmlns="uri:ea.com:eala:asset" BuildCache="false">
+ <Plugin AssetTypes="#all" IsEnabled="true" UseBuildCache="false"
+  QualifiedName="BinaryAssetBuilder.XmlCompiler.Ra3Ep1AudioEventPlugin, BinaryAssetBuilder.XmlCompiler" />
+</Settings>

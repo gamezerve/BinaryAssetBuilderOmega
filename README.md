@@ -16,13 +16,22 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**82 test groups** (some contain several fixtures). These counters can grow
+**83 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
-registered groups but does not execute them. The isolated AudioEvent native proof
-adds one group without changing model/marshaller counts; all 82 groups were executed.
+registered groups but does not execute them. The checked AudioEvent profile
+adds one group without changing model/marshaller counts; all 83 groups were executed.
 
-Latest milestone: [isolated AudioEvent native proof](docs/RA3EP1_AUDIOEVENT_NATIVE.md).
+Latest milestone: [checked isolated AudioEvent profile](docs/RA3EP1_AUDIOEVENT_PROFILE.md).
+An explicit Win32 ProcessInstance entry now reproduces all five stock native
+records with prepared concrete AudioFile identities. Current XML scalar/range
+edits are revalidated; stale/changed identities, reordered selectors, incomplete
+tables, unsupported options, duplicate aliases and the 33rd reference reject.
+Production/cache/reuse, AudioFile codecs and general diagnostic AudioEvent
+admission stay closed. Source copies and prepared tuples are checked separately
+from the future stream-admission fingerprint gate.
+
+[Isolated AudioEvent native proof](docs/RA3EP1_AUDIOEVENT_NATIVE.md):
 The recovered 128-byte base, 152-byte root and 12-byte weighted AudioFile references
 match five real Uprising records' complete BIN/RELO/IMP bytes and ordered
 AudioFile identities. Cryo's three-list loop and InitialDelay, IFV's nondefault
@@ -30,7 +39,7 @@ weight/shifted FADE_ON_KILL bit, and Yuriko's weighted footsteps/Delay now have
 real stock comparisons, alongside the original impact. Independent defaults and
 every implemented optional base pointer also pass. The legacy 96/120/8-byte
 path remains unchanged. LimitGroup references reject; remaining stock evidence,
-checked compiler admission, AudioFile codecs and production/game loading remain open.
+public diagnostic admission, AudioFile codecs and production/game loading remain open.
 
 [Multisound in bounded diagnostic builds](docs/RA3EP1_DIAGNOSTIC_MULTISOUND_BUILD.md):
 `diagnostic-build` now admits narrow authored/local Multisounds as its fifth
@@ -70,7 +79,7 @@ and non-tokenized metadata. Wrong fingerprints reject; restored inputs recover
 identical output. Bounded native reads confirm old sound layouts cannot be reused:
 AudioEvent root 120 vs 152 bytes, audio-file references 8 vs 12, and legacy
 Multisound children 8 vs 28. Multisound and a narrow AudioEvent subset now have
-isolated native proofs; AudioEvent admission, AudioFile recovery and wider audio
+isolated native proofs; public AudioEvent admission, AudioFile recovery and wider audio
 profiles remain open.
 
 [FX support in bounded diagnostic builds](docs/RA3EP1_DIAGNOSTIC_FX_BUILD.md):

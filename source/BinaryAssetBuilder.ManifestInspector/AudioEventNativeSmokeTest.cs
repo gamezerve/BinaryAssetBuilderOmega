@@ -143,7 +143,7 @@ internal static class AudioEventNativeSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compile the explicit isolated Win32 root only; callers supply trusted schema-validated test instances. */
     //-------------------------------------------------------------------------------------------------
-    private static unsafe Chunk Compile(InstanceDeclaration instance)
+    internal static unsafe Chunk Compile(InstanceDeclaration instance)
     {
         Marshaler.Ep1AudioEvent* root;
         using Tracker tracker = new((void**)&root, (uint)sizeof(Marshaler.Ep1AudioEvent), false);
@@ -184,7 +184,7 @@ internal static class AudioEventNativeSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: read only selected stock slices after exact length checks and require ordered concrete AudioFile identities. */
     //-------------------------------------------------------------------------------------------------
-    private static void Compare(Dictionary<string, (Chunk Data, uint Id, uint[] References)> expected, string path)
+    internal static void Compare(Dictionary<string, (Chunk Data, uint Id, uint[] References)> expected, string path)
     {
         ManifestDocument manifest = ManifestReader.Read(File.ReadAllBytes(path));
         TypeRegistryAudit.ValidateTarget(manifest.Header.Version, manifest.Header.AllTypesHash);

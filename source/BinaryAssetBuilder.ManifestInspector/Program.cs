@@ -13,6 +13,11 @@ internal static class Program
     {
         try
         {
+            // Reborn: checked isolated AudioEvent entries optionally resolve real AudioFile metadata and compare stock slices.
+            if (args.FirstOrDefault() == "ep1-audioevent-profile-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider(); Ep1AudioEventProfileSmokeTest.Run(args.Skip(1).ToArray()); return 0;
+            }
             // Reborn: isolated native AudioEvent evidence optionally compares bounded stock slices.
             if (args.FirstOrDefault() == "audioevent-native-self-test")
             {
@@ -718,6 +723,7 @@ internal static class Program
         Console.WriteLine("  audioevent-native-self-test [ep1-global-manifest ...]");
         // Reborn: optional manifests compare checked profile output and prepared sound dependencies against stock.
         Console.WriteLine("  ep1-multisound-profile-self-test [ep1-global-manifest ...]");
+        Console.WriteLine("  ep1-audioevent-profile-self-test [ep1-global-manifest ep1-audio-manifest ...]");
         // Reborn: optional mappings prove concrete leaf audio identities in a fixed mixed local stream.
         Console.WriteLine("  multisound-fx-stream-self-test [ep1-global-manifest ...]");
         // Reborn: general service sound snapshots, ordering, cycle and publication proof.

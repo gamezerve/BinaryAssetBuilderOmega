@@ -103,14 +103,16 @@ explicitly rejected before native table allocation. Recovery produces identical
 bytes, repeat compilation is deterministic, settings are restored, no streams
 are emitted. Reserved LimitGroup slots are not a completed group marshaller.
 
-There is no production plugin, profile admission, cache/reuse eligibility,
-AudioFile codec, general diagnostic AudioEvent admission or registry entry.
+There is no production plugin, cache/reuse eligibility,
+AudioFile codec, general diagnostic AudioEvent admission or production registry entry.
+The [checked isolated profile](RA3EP1_AUDIOEVENT_PROFILE.md) is now available
+separately from these native-only helpers.
 This public native helper is a trusted test primitive, not a hardened authored
-XML entry point. A future checked profile must enforce current identities,
+XML entry point. The separate checked profile enforces current identities,
 formula/selector controls and complete prepared AudioFile reference tables.
 
 Next: additional real records covering explicit child volumes, range shifts,
-group imports and SMART_LIMITING; LimitGroup import recovery; bounded checked AudioEvent profile
+group imports and SMART_LIMITING; LimitGroup import recovery; bounded stream admission
 with stock fingerprint gates; mixed stream closure; AudioFile runtime/codec
 generation; aggregate type tables, packaging and game loading.
 
@@ -123,6 +125,6 @@ Use the Release/x86 inspector:
 .\source\BinaryAssetBuilder.ManifestInspector\bin\x86\Release\net8.0\BinaryAssetBuilder.ManifestInspector.exe audioevent-native-self-test "D:\TEMP\Red Alert 3 Uprising Source Data\Global Data\data\global.manifest"
 ```
 
-The group also runs in `compiler-self-test`: 82 declared groups.
+The group also runs in `compiler-self-test`: 83 declared groups including the separate checked profile.
 Structural inventory stays 785/1,390 models and 762/1,390 typed marshallers;
 these native-only nested structs deliberately do not expand that inventory.
