@@ -167,12 +167,12 @@ internal static class MultisoundFXStreamSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compile only explicitly isolated profile entries after current dependency preparation. */
     //-------------------------------------------------------------------------------------------------
-    private static AssetBuffer[] Compile(PluginRegistry plugins, InstanceDeclaration[] ordered) => ordered.Select(instance => plugins.GetPlugin(instance.Handle.TypeId).ProcessInstance(instance)).ToArray();
+    internal static AssetBuffer[] Compile(PluginRegistry plugins, InstanceDeclaration[] ordered) => ordered.Select(instance => plugins.GetPlugin(instance.Handle.TypeId).ProcessInstance(instance)).ToArray();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: share existing native serialization/header/mapping seams without invoking production OutputManager commits. */
     //-------------------------------------------------------------------------------------------------
-    private static Dictionary<string, byte[]> Serialize(InstanceDeclaration[] ordered, AssetBuffer[] chunks, string[] paths, string[] names, out uint checksum)
+    internal static Dictionary<string, byte[]> Serialize(InstanceDeclaration[] ordered, AssetBuffer[] chunks, string[] paths, string[] names, out uint checksum)
     {
         checksum = (uint)typeof(AssetDeclarationDocument).GetMethod("ComputeOutputChecksum", BindingFlags.NonPublic | BindingFlags.Static)!.Invoke(null, new object[] { ordered })!;
         ReferencedFileBuffer runtime = new(); typeof(OutputManager).GetMethod("AddExternalManifestReferences", BindingFlags.NonPublic | BindingFlags.Static)!
@@ -215,7 +215,7 @@ internal static class MultisoundFXStreamSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate mapped metadata without loading external audio payloads or accepting other games/patch bases. */
     //-------------------------------------------------------------------------------------------------
-    private static ManifestDocument[] Metadata(string[] paths) => paths.Select(path =>
+    internal static ManifestDocument[] Metadata(string[] paths) => paths.Select(path =>
     {
         ManifestDocument document = ManifestReader.Read(File.ReadAllBytes(path)); TypeRegistryAudit.ValidateTarget(document.Header.Version, document.Header.AllTypesHash);
         Require(document.Header.IsLinked && document.Validate().Count == 0 && !document.ReferencedManifests.Any(reference => reference.IsPatch), "Invalid external fixed-chain metadata."); return document;

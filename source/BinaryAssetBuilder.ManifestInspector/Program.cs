@@ -13,6 +13,11 @@ internal static class Program
     {
         try
         {
+            // Reborn: fixed local event/sound/FX proof optionally resolves real AudioFile metadata without public root admission.
+            if (args.FirstOrDefault() == "audioevent-fx-stream-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider(); AudioEventFXStreamSmokeTest.Run(args.Skip(1).ToArray()); return 0;
+            }
             // Reborn: checked isolated AudioEvent entries optionally resolve real AudioFile metadata and compare stock slices.
             if (args.FirstOrDefault() == "ep1-audioevent-profile-self-test")
             {
@@ -724,6 +729,7 @@ internal static class Program
         // Reborn: optional manifests compare checked profile output and prepared sound dependencies against stock.
         Console.WriteLine("  ep1-multisound-profile-self-test [ep1-global-manifest ...]");
         Console.WriteLine("  ep1-audioevent-profile-self-test [ep1-global-manifest ep1-audio-manifest ...]");
+        Console.WriteLine("  audioevent-fx-stream-self-test [ep1-audio-manifest ...]");
         // Reborn: optional mappings prove concrete leaf audio identities in a fixed mixed local stream.
         Console.WriteLine("  multisound-fx-stream-self-test [ep1-global-manifest ...]");
         // Reborn: general service sound snapshots, ordering, cycle and publication proof.

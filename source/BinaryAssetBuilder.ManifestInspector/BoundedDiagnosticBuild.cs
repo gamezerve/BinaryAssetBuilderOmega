@@ -147,7 +147,9 @@ internal static class BoundedDiagnosticBuild
             if (dependency.TypeId == 0xBCC23F6Cu && (matches[0].TypeHash != 0x3D5B1D16u || matches[0].Tokenized != 0))
                 throw new InvalidDataException("External shader fingerprint differs from the proven native EP1 type.");
             // Reborn: selected external sounds must match stock EP1 metadata; this does not validate or rebuild audio payloads.
-            uint? audioHash = dependency.TypeId switch { 0x844D7B9Fu => 0x560C2E45u, 0xA3A7AF37u => 0xF79C5A89u, _ => null };
+            uint? audioHash = dependency.TypeId switch { 0x844D7B9Fu => 0x560C2E45u, 0xA3A7AF37u => 0xF79C5A89u,
+                // Reborn: external AudioFile metadata must match stock EP1 even when a local AudioEvent payload is compiled.
+                0x166B084Du => 0x53C81E47u, _ => null };
             if (audioHash.HasValue && (matches[0].TypeHash != audioHash.Value || matches[0].Tokenized != 0))
                 throw new InvalidDataException("External audio fingerprint differs from the observed stock EP1 type.");
         }
@@ -232,7 +234,12 @@ internal static class BoundedDiagnosticBuild
             + "External mappings serialize runtime names but do not copy or validate native dependency streams.\n"
             + "FX supports empty roots or at most two checked Sound nuggets; concrete audio metadata does not prove native audio payload compatibility.\n"
             + (ordered.Any(instance => instance.Handle.TypeId == 0xA3A7AF37u)
-                ? "Local Multisound is experimental; AudioEvent/AudioFile payloads are not rebuilt.\n" : "")
+                ? (ordered.Any(instance => instance.Handle.TypeId == 0x844D7B9Fu)
+                    ? "Local Multisound is experimental; AudioFile payloads are not rebuilt.\n"
+                    : "Local Multisound is experimental; AudioEvent/AudioFile payloads are not rebuilt.\n") : "")
+            // Reborn: fixed AudioEvent stream evidence must not claim that newly compiled local event payloads were left external.
+            + (ordered.Any(instance => instance.Handle.TypeId == 0x844D7B9Fu)
+                ? "Local AudioEvent is experimental; AudioFile codecs, production output and game loading remain unproven.\n" : "")
             + "Filter GameObject weak IDs do not prove target presence and do not become strong imports.\n"));
         return result;
     }

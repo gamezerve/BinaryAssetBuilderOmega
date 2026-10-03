@@ -16,20 +16,29 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**83 test groups** (some contain several fixtures). These counters can grow
+**84 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
-registered groups but does not execute them. The checked AudioEvent profile
-adds one group without changing model/marshaller counts; all 83 groups were executed.
+registered groups but does not execute them. The fixed AudioEvent mixed stream
+adds one group without changing model/marshaller counts; all 84 groups were executed.
 
-Latest milestone: [checked isolated AudioEvent profile](docs/RA3EP1_AUDIOEVENT_PROFILE.md).
+Latest milestone: [fixed AudioEvent / Multisound / FX stream](docs/RA3EP1_AUDIOEVENT_FX_STREAM.md).
+A three-level Include graph now compiles local FX → Multisound → AudioEvent →
+external AudioFile metadata. Native totals 312/36/28 become 320/44/36 linked
+BIN/RELO/IMP bytes. Ordered concrete selectors, source attribution and runtime
+mapping names round-trip through both readers. Selected AudioFile metadata must
+be unique and match EP1 hash 53C81E47/tokenized false. Actual EnglishAudio mapping,
+20 corruptions, missing/edit/recovery and existing-output preservation pass.
+This fixed proof does not open general diagnostic AudioEvent admission or codecs.
+
+[Checked isolated AudioEvent profile](docs/RA3EP1_AUDIOEVENT_PROFILE.md):
 An explicit Win32 ProcessInstance entry now reproduces all five stock native
 records with prepared concrete AudioFile identities. Current XML scalar/range
 edits are revalidated; stale/changed identities, reordered selectors, incomplete
 tables, unsupported options, duplicate aliases and the 33rd reference reject.
 Production/cache/reuse, AudioFile codecs and general diagnostic AudioEvent
 admission stay closed. Source copies and prepared tuples are checked separately
-from the future stream-admission fingerprint gate.
+from the shared stream-admission fingerprint gate, now exercised by the fixed proof.
 
 [Isolated AudioEvent native proof](docs/RA3EP1_AUDIOEVENT_NATIVE.md):
 The recovered 128-byte base, 152-byte root and 12-byte weighted AudioFile references

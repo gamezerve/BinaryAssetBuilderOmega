@@ -88,12 +88,13 @@ The actual audio manifest is likewise used for resolution, not decoding.
 .\source\BinaryAssetBuilder.ManifestInspector\bin\x86\Release\net8.0\BinaryAssetBuilder.ManifestInspector.exe ep1-audioevent-profile-self-test "D:\TEMP\Red Alert 3 Uprising Source Data\Global Data\data\global.manifest" "D:\TEMP\Red Alert 3 Uprising Source Data\EnglishAudio\data\audio.manifest"
 ```
 
-The full compiler suite has 83 declared groups; structural model/marshaller
+The full compiler suite has 84 declared groups; structural model/marshaller
 inventory stays 785/1,390 and 762/1,390. Both Release/x86 projects, layout and
 the 33 existing enum mappings are separately checked.
 
-Next: require unique compatible external AudioFile metadata at stream admission,
-prove an owned mixed AudioEvent/Multisound/FX stream, then consider narrow public
-diagnostic admission. Wider actual audio evidence, LimitGroup, AudioFile codec
+The [fixed mixed stream](RA3EP1_AUDIOEVENT_FX_STREAM.md) now requires unique
+compatible external AudioFile metadata and proves an owned AudioEvent/Multisound/FX
+stream. General public diagnostic admission is still closed.
+Next: narrow public diagnostic admission. Wider actual audio evidence, LimitGroup, AudioFile codec
 generation, aggregate type tables, packaging and in-game loading remain open.
 Do not treat this profile as permission to enable the production audio registry.

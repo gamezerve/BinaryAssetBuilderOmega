@@ -125,6 +125,6 @@ Use the Release/x86 inspector:
 .\source\BinaryAssetBuilder.ManifestInspector\bin\x86\Release\net8.0\BinaryAssetBuilder.ManifestInspector.exe audioevent-native-self-test "D:\TEMP\Red Alert 3 Uprising Source Data\Global Data\data\global.manifest"
 ```
 
-The group also runs in `compiler-self-test`: 83 declared groups including the separate checked profile.
+The group also runs in `compiler-self-test`: 84 declared groups including the separate checked profile and fixed mixed stream.
 Structural inventory stays 785/1,390 models and 762/1,390 typed marshallers;
 these native-only nested structs deliberately do not expand that inventory.
