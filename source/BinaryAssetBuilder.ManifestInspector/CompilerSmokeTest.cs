@@ -16,6 +16,8 @@ internal static class CompilerSmokeTest
         TestMultisoundNative();
         // Reborn: recover native AudioEvent ABI without changing legacy audio or enabling codecs.
         TestAudioEventNative();
+        // Reborn: recover AudioFile envelopes without changing the legacy runtime ABI or opening codec generation.
+        TestAudioFileRuntime();
         // Reborn: prove checked sound entry policies and prepared dependency identities separately from native-only evidence.
         TestMultisoundProfile();
         // Reborn: checked AudioEvent admission stays separate from native evidence and public streams.
@@ -2151,6 +2153,11 @@ internal static class CompilerSmokeTest
     /** Reborn: exercise the bounded AudioEvent command through the same service used by the CLI. */
     //-------------------------------------------------------------------------------------------------
     private static void TestDiagnosticAudioEventBuild() => DiagnosticAudioEventBuildSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: validate the recovered fixed AudioFile prefix and bounded optional native ranges. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestAudioFileRuntime() => AudioFileRuntimeProbe.SelfTest();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: register fixed local-sound stream evidence without widening production or diagnostic command admission. */

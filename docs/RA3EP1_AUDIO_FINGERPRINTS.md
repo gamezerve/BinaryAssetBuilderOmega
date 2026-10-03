@@ -1,5 +1,10 @@
 # EP1 external audio fingerprints and native migration gaps
 
+Follow-up: [AudioFile runtime envelope and streamed boundary](RA3EP1_AUDIOFILE_RUNTIME.md)
+recovers the inline subtitle pair and validates all 12,951 EnglishAudio native
+envelopes, including 1,280 embedded headers. Encoding and production admission
+remain closed; matching metadata alone still does not prove codec compatibility.
+
 ## Outcome
 
 The bounded diagnostic build now checks the TypeHash and Tokenized flag of each

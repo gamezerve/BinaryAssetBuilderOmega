@@ -13,6 +13,9 @@ internal static class Program
     {
         try
         {
+            // Reborn: expose read-only native audio envelope evidence separately from compilation and codec activation.
+            if (args.FirstOrDefault() == "audiofile-runtime-self-test") { AudioFileRuntimeProbe.SelfTest(); return 0; }
+            if (args.FirstOrDefault() == "audiofile-runtime-audit" && args.Length == 2) { AudioFileRuntimeProbe.Run(args[1]); return 0; }
             // Reborn: general checked AudioEvent admission optionally exercises actual external AudioFile metadata.
             if (args.FirstOrDefault() == "diagnostic-audioevent-build-self-test")
             {
@@ -725,6 +728,9 @@ internal static class Program
         Console.WriteLine("  modifier-import-self-test [ep1-static-manifest ...]");
         Console.WriteLine("  utility-verify <manifest-or-big> [--entry <BIG entry>]");
         Console.WriteLine("  assembly-fields <managed-assembly> <type-name>");
+        // Reborn: document bounded AudioFile evidence commands without implying an encoder or public asset profile.
+        Console.WriteLine("  audiofile-runtime-self-test");
+        Console.WriteLine("  audiofile-runtime-audit <unpacked-ep1-manifest>");
         Console.WriteLine("  assembly-methods <managed-assembly> <type-name> [method-filter]");
         Console.WriteLine("  assembly-il <managed-assembly> <method-token>");
         Console.WriteLine("  assembly-size-diff <reference-tokenizer-assembly> [--top <count>]");
