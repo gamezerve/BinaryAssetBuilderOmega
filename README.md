@@ -16,21 +16,30 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**93 test groups** (some contain several fixtures). These counters can grow
+**94 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
-fixed package proof add groups without changing model/marshaller counts; all
-93 groups were executed.
+fixed package/local event proofs add groups without changing model/marshaller
+counts; all 94 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Fixed two-AudioFile diagnostic package](docs/RA3EP1_AUDIOFILE_PACKAGE.md).
+Latest milestone: [Fixed local AudioEvent to AudioFile package](docs/RA3EP1_LOCAL_AUDIO_PACKAGE.md).
+A core-normalized, isolated AudioEvent now references both encoded local AudioFiles
+in one verified three-entry package: 352/36/20 linked BIN/RELO/IMP, two ordered
+local reference tuples and two custom files. Changed leaf fingerprints revoke
+parent preparation; refresh/recovery and corruption checks pass. Preparation is
+explicit for this fixed graph, not general core dependency resolution. Production
+hashes, general AudioFile admission and game loading remain unverified.
+
+[Fixed two-AudioFile diagnostic package](docs/RA3EP1_AUDIOFILE_PACKAGE.md).
 The actual opt-in encoder now stages and verifies a two-entry v7 manifest,
 176/28/8 linked BIN/RELO/IMP and two identity-named custom files. Both readers,
 runtime/custom framing, frozen bytes and corruption/preservation tests pass.
 InstanceHash is explicitly diagnostic, not the EA production algorithm. General
-AudioFile admission, mixed local AudioEvent closure and game loading remain open.
+AudioFile admission and game loading remain open; fixed local event closure now
+passes separately, not arbitrary source graphs.
 
 [Checked authored AudioFile input profile](docs/RA3EP1_AUDIOFILE_INPUT_PROFILE.md).
 Official-schema XML, current EP1 identity and canonical mono 48 kHz PCM16 WAV

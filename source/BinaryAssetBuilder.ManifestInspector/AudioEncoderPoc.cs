@@ -62,7 +62,11 @@ internal static class AudioEncoderPoc
             // Reborn: only fully checked RAM/streamed results can enter a new staged diagnostic package after native shutdown.
             string output = Path.Combine(directory,"package"); AudioFilePackageProbe.Publish(output,package); AudioFilePackageProbe.Verify(output,package);
             Console.WriteLine("Owned diagnostic audio package: "+Path.Combine(output,"diagnostic.manifest"));
-            Console.WriteLine("Audio encoder PoC: OK; prepared PCM/XAS -> checked runtime/custom data -> two-entry diagnostic package; no production registration or game-loading proof.");
+            // Reborn: compile a core-normalized local AudioEvent only after capturing both encoded AudioFile fingerprints.
+            AudioFileLocalEventProbe.Entry localEvent = AudioFileLocalEventProbe.Build(directory,package);
+            string mixed = Path.Combine(directory,"local-event-package"); AudioFilePackageProbe.Publish(mixed,package,localEvent); AudioFilePackageProbe.Verify(mixed,package,localEvent);
+            Console.WriteLine("Owned local AudioEvent/audio package: "+Path.Combine(mixed,"diagnostic.manifest"));
+            Console.WriteLine("Audio encoder PoC: OK; prepared PCM/XAS -> checked runtime/custom data -> two/three-entry local diagnostic packages; no production registration or game-loading proof.");
         }
         finally
         {

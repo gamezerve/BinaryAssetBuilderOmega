@@ -1,5 +1,9 @@
 # Fixed two-AudioFile diagnostic package
 
+Follow-up: [Fixed local AudioEvent to AudioFile package](RA3EP1_LOCAL_AUDIO_PACKAGE.md)
+adds an optional isolated parent and local native/reference readback. The original
+two-entry mode and its tests are retained; general graph/production gates remain open.
+
 Date: October 4, 2026. Actual encoded RAM and streamed audio now have a verified
 v7 manifest, linked native streams and identity-named custom payloads. This is
 a fixed diagnostic packaging proof, not a registered AudioFile SDK processor,

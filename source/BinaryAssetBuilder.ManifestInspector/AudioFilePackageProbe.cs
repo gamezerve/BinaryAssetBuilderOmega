@@ -68,26 +68,37 @@ internal static class AudioFilePackageProbe
     //-------------------------------------------------------------------------------------------------
     /** Reborn: serialize fixed identities with the existing v7 utility writer and recovered linked headers into owned memory. */
     //-------------------------------------------------------------------------------------------------
-    internal static Dictionary<string,byte[]> Serialize(Entry[] entries)
+    internal static Dictionary<string,byte[]> Serialize(Entry[] entries,AudioFileLocalEventProbe.Entry? localEvent = null)
     {
         if (entries.Length != 2 || entries[0].Name != "RebornAudioRAM" || entries[1].Name != "RebornAudioStream" || entries[0].Id == entries[1].Id)
             throw new InvalidDataException("Package requires unique RAM then streamed identities.");
         AssetBuffer[] native = entries.Select(entry => entry.CopyNative()).ToArray();
+        // Reborn: the optional parent comes after both local AudioFiles and must retain their complete captured fingerprints.
+        localEvent?.ValidateDependencies(entries);
+        if (localEvent != null) native = native.Append(localEvent.CopyNative()).ToArray();
+        var rows = entries.Select(entry => (Type:0x166B084Du,TypeHash:0x53C81E47u,Id:entry.Id,Hash:entry.Hash,Name:"AudioFile:"+entry.Name,Source:entry.Source,Refs:Array.Empty<AssetId>())).ToList();
+        if (localEvent != null) rows.Add((0x844D7B9Fu,0x560C2E45u,localEvent.Id,localEvent.Hash,"AudioEvent:RebornLocalAudio","event.xml",entries.Select(entry => new AssetId(0x166B084Du,entry.Id)).ToArray()));
         using MemoryStream identities = new(); using (BinaryWriter writer = new(identities,Encoding.UTF8,true))
-            foreach (Entry entry in entries) { writer.Write(0x166B084Du); writer.Write(0x53C81E47u); writer.Write(entry.Id); writer.Write(entry.Hash); writer.Write(0); }
+            foreach (var row in rows) { writer.Write(row.Type); writer.Write(row.TypeHash); writer.Write(row.Id); writer.Write(row.Hash); writer.Write(row.Refs.Length); }
         uint checksum = FastHash.GetHashCode(identities.GetBuffer());
-        using MemoryStream names = new(),sources = new(),table = new(),manifest = new();
-        for (int index = 0; index < entries.Length; index++)
+        using MemoryStream names = new(),sources = new(),table = new(),manifest = new(),references = new();
+        using BinaryWriter refWriter = new(references,Encoding.UTF8,true);
+        for (int index = 0; index < rows.Count; index++)
         {
-            using AssetEntry entry = new() { TypeId = 0x166B084Du,TypeHash = 0x53C81E47u,InstanceId = entries[index].Id,InstanceHash = entries[index].Hash,
+            var row = rows[index];
+            using AssetEntry entry = new() { TypeId = row.Type,TypeHash = row.TypeHash,InstanceId = row.Id,InstanceHash = row.Hash,
                 Tokenized = false,NameOffset = (int)names.Length,SourceFileNameOffset = (int)sources.Length,
-                InstanceDataSize = native[index].InstanceData.Length,RelocationDataSize = native[index].RelocationData.Length,ImportsDataSize = 0 };
-            entry.SaveToStream(table,false); names.Write(Encoding.UTF8.GetBytes("AudioFile:"+entries[index].Name+'\0')); sources.Write(Encoding.UTF8.GetBytes(entries[index].Source+'\0'));
+                AssetReferenceOffset = (int)references.Length,AssetReferenceCount = row.Refs.Length,
+                InstanceDataSize = native[index].InstanceData.Length,RelocationDataSize = native[index].RelocationData.Length,ImportsDataSize = native[index].ImportsData.Length };
+            entry.SaveToStream(table,false); names.Write(Encoding.UTF8.GetBytes(row.Name+'\0')); sources.Write(Encoding.UTF8.GetBytes(row.Source+'\0'));
+            foreach (AssetId reference in row.Refs) { refWriter.Write(reference.TypeId); refWriter.Write(reference.InstanceId); }
         }
-        using (BinaryAssetBuilder.Utility.ManifestHeader header = new() { IsLinked = true,AllTypesHash = 0x5454A8E9u,StreamChecksum = checksum,AssetCount = 2,
+        refWriter.Flush();
+        using (BinaryAssetBuilder.Utility.ManifestHeader header = new() { IsLinked = true,AllTypesHash = 0x5454A8E9u,StreamChecksum = checksum,AssetCount = (uint)rows.Count,
             TotalInstanceDataSize = (uint)native.Sum(value => value.InstanceData.Length),MaxInstanceChunkSize = (uint)native.Max(value => value.InstanceData.Length),
-            MaxRelocationChunkSize = (uint)native.Max(value => value.RelocationData.Length),AssetNameBufferSize = (uint)names.Length,SourceFileNameBufferSize = (uint)sources.Length }) header.SaveToStream(manifest,false);
-        table.WriteTo(manifest); names.WriteTo(manifest); sources.WriteTo(manifest);
+            MaxRelocationChunkSize = (uint)native.Max(value => value.RelocationData.Length),MaxImportsChunkSize = (uint)native.Max(value => value.ImportsData.Length),
+            AssetReferenceBufferSize = (uint)references.Length,AssetNameBufferSize = (uint)names.Length,SourceFileNameBufferSize = (uint)sources.Length }) header.SaveToStream(manifest,false);
+        table.WriteTo(manifest); references.WriteTo(manifest); names.WriteTo(manifest); sources.WriteTo(manifest);
         Dictionary<string,byte[]> result = new() { ["diagnostic.manifest"] = manifest.ToArray(),
             ["DIAGNOSTIC_ONLY.txt"] = Encoding.UTF8.GetBytes("Fixed owned AudioFile package proof. NOT a playable Uprising mod.\nDiagnostic content InstanceHash; no production hash/cache/SDK/plugin/game-load claim.\n") };
         foreach (var data in new[] { (Name:"diagnostic.bin",Magic:0xBABB0000u,Parts:native.Select(value => value.InstanceData)),
@@ -98,15 +109,16 @@ internal static class AudioFilePackageProbe
             writer.Flush(); result.Add(data.Name,stream.ToArray());
         }
         foreach (Entry entry in entries) result.Add(Path.Combine("diagnostic","cdata",entry.CustomName),entry.CopyCustom());
+        if (localEvent != null) result["DIAGNOSTIC_ONLY.txt"] = Encoding.UTF8.GetBytes("Fixed local AudioEvent -> two AudioFile diagnostic package. NOT a playable Uprising mod.\nExplicit prepared local metadata; diagnostic dependency/content hashes, no general graph/production/SDK/game-load claim.\n");
         return result;
     }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: require exact frozen payloads, two independent readers, linked offsets and custom identity/framing before publication. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Verify(string directory,Entry[] entries)
+    internal static void Verify(string directory,Entry[] entries,AudioFileLocalEventProbe.Entry? localEvent = null)
     {
-        Dictionary<string,byte[]> expected = Serialize(entries);
+        Dictionary<string,byte[]> expected = Serialize(entries,localEvent);
         foreach (var file in expected)
             if (!ReadBounded(Path.Combine(directory,file.Key)).SequenceEqual(file.Value)) throw new InvalidDataException("Frozen audio package bytes differ.");
         string customDirectory = Path.Combine(directory,"diagnostic","cdata");
@@ -114,15 +126,16 @@ internal static class AudioFilePackageProbe
             throw new InvalidDataException("Audio package custom identities are missing or orphaned.");
         string path = Path.Combine(directory,"diagnostic.manifest"); ManifestDocument parsed = ManifestReader.Read(ReadBounded(path));
         AssetBuffer[] approved = entries.Select(entry => entry.CopyNative()).ToArray();
+        if (localEvent != null) approved = approved.Append(localEvent.CopyNative()).ToArray();
         if (parsed.Validate().Count != 0 || parsed.Header.Version != 7 || parsed.Header.ContainerPrefixSize != 4 || !parsed.Header.IsLinked || parsed.Header.IsBigEndian
-            || parsed.Header.AllTypesHash != 0x5454A8E9u || parsed.Assets.Count != 2 || parsed.ReferencedManifests.Count != 0
+            || parsed.Header.AllTypesHash != 0x5454A8E9u || parsed.Assets.Count != approved.Length || parsed.ReferencedManifests.Count != 0
             || parsed.Header.TotalInstanceDataSize != approved.Sum(value => value.InstanceData.Length)
             || parsed.Header.MaxInstanceChunkSize != approved.Max(value => value.InstanceData.Length)
             || parsed.Header.MaxRelocationChunkSize != approved.Max(value => value.RelocationData.Length)
-            || parsed.Header.MaxImportsChunkSize != 0 || parsed.Header.AssetReferenceBufferSize != 0 || parsed.Header.ReferenceManifestNameBufferSize != 0)
+            || parsed.Header.MaxImportsChunkSize != approved.Max(value => value.ImportsData.Length) || parsed.Header.AssetReferenceBufferSize != (localEvent == null ? 0 : 16) || parsed.Header.ReferenceManifestNameBufferSize != 0)
             throw new InvalidDataException("Audio package manifest shape differs.");
         using BinaryAssetBuilder.Utility.Manifest utility = new();
-        if (!utility.Load(path,false) || utility.AssetCount != 2 || utility.StreamChecksum != parsed.Header.StreamChecksum || utility.AllTypesHash != 0x5454A8E9u)
+        if (!utility.Load(path,false) || utility.AssetCount != approved.Length || utility.StreamChecksum != parsed.Header.StreamChecksum || utility.AllTypesHash != 0x5454A8E9u)
             throw new InvalidDataException("Audio package utility readback differs.");
         int bin = 8,relo = 8;
         for (int index = 0; index < 2; index++)
@@ -139,7 +152,30 @@ internal static class AudioFilePackageProbe
                 ReadBounded(Path.Combine(customDirectory,$"{asset.TypeId:x8}.{asset.TypeHash:x8}.{asset.InstanceId:x8}.{asset.InstanceHash:x8}.cdata")));
             bin += asset.InstanceDataSize; relo += asset.RelocationDataSize;
         }
-        foreach (var stream in new[] { (Name:"diagnostic.bin",Magic:0xBABB0000u,Size:bin),(Name:"diagnostic.relo",Magic:0xBABE0000u,Size:relo),(Name:"diagnostic.imp",Magic:0xBAB10000u,Size:8) })
+        // Reborn: independently decode the optional parent's one-biased imports into prior local manifest entries, not external names.
+        if (localEvent != null)
+        {
+            ManifestAsset asset = parsed.Assets[2]; var other = utility.Assets[2];
+            AssetId[] refs = entries.Select(entry => new AssetId(0x166B084Du,entry.Id)).ToArray();
+            if (asset.TypeId != 0x844D7B9Fu || asset.TypeHash != 0x560C2E45u || asset.InstanceId != localEvent.Id || asset.InstanceHash != localEvent.Hash
+                || asset.Name != "AudioEvent:RebornLocalAudio" || asset.SourceFile != "event.xml" || asset.Tokenized != 0
+                || asset.InstanceDataSize != 176 || asset.RelocationDataSize != 8 || asset.ImportsDataSize != 12 || !asset.References.SequenceEqual(refs)
+                || other.QualifiedName != asset.Name || other.TypeHash != asset.TypeHash || other.InstanceHash != asset.InstanceHash || other.Tokenized
+                || !other.ExternalReferences.Select(handle => new AssetId(handle.TypeId,handle.InstanceId)).SequenceEqual(refs)
+                || other.LinkedInstanceOffset != bin || other.LinkedRelocationOffset != relo || other.LinkedImportsOffset != 8)
+                throw new InvalidDataException("Local AudioEvent manifest/native dependency identity differs.");
+            AssetBuffer read = new() { InstanceData = AssetStreamProbe.ReadRange(Path.ChangeExtension(path,".bin"),null,bin,176),
+                RelocationData = AssetStreamProbe.ReadRange(Path.ChangeExtension(path,".relo"),null,relo,8),ImportsData = AssetStreamProbe.ReadRange(Path.ChangeExtension(path,".imp"),null,8,12) };
+            AudioFileLocalEventProbe.CheckNative(read);
+            foreach (int slot in new[] { 152,164 })
+            {
+                uint selector = BinaryPrimitives.ReadUInt32LittleEndian(read.InstanceData.AsSpan(slot)); AssetId target = asset.References[checked((int)selector)-1];
+                if (parsed.Assets.Take(2).Count(candidate => candidate.TypeId == target.TypeId && candidate.InstanceId == target.InstanceId) != 1)
+                    throw new InvalidDataException("Local AudioEvent selector does not resolve uniquely before its parent.");
+            }
+            bin += 176; relo += 8;
+        }
+        foreach (var stream in new[] { (Name:"diagnostic.bin",Magic:0xBABB0000u,Size:bin),(Name:"diagnostic.relo",Magic:0xBABE0000u,Size:relo),(Name:"diagnostic.imp",Magic:0xBAB10000u,Size:localEvent == null ? 8 : 20) })
         {
             byte[] bytes = ReadBounded(Path.Combine(directory,stream.Name));
             if (bytes.Length != stream.Size || BinaryPrimitives.ReadUInt32LittleEndian(bytes) != stream.Magic || BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(4)) != parsed.Header.StreamChecksum)
@@ -150,19 +186,19 @@ internal static class AudioFilePackageProbe
     //-------------------------------------------------------------------------------------------------
     /** Reborn: stage exclusive files below a checked parent, verify them, then rename without replacing existing output; retain failed evidence. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Publish(string output,Entry[] entries)
+    internal static void Publish(string output,Entry[] entries,AudioFileLocalEventProbe.Entry? localEvent = null)
     {
         output = Path.GetFullPath(output); string parent = Path.GetDirectoryName(output)!;
         if (!Directory.Exists(parent) || Directory.Exists(output) || File.Exists(output)) throw new InvalidDataException("Audio package needs an existing parent and absent output directory.");
         for (DirectoryInfo? check = new(parent); check != null; check = check.Parent)
             if ((check.Attributes & FileAttributes.ReparsePoint) != 0) throw new InvalidDataException("Audio package parent cannot contain reparse points.");
-        Dictionary<string,byte[]> payloads = Serialize(entries); string staging = Path.Combine(parent,"Reborn-AudioPackage-Staging-"+Guid.NewGuid().ToString("N"));
+        Dictionary<string,byte[]> payloads = Serialize(entries,localEvent); string staging = Path.Combine(parent,"Reborn-AudioPackage-Staging-"+Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(staging);
         try
         {
             foreach (var file in payloads)
             { string target = Path.Combine(staging,file.Key); Directory.CreateDirectory(Path.GetDirectoryName(target)!); using FileStream writer = new(target,FileMode.CreateNew,FileAccess.Write); writer.Write(file.Value); }
-            Verify(staging,entries); Directory.Move(staging,output);
+            Verify(staging,entries,localEvent); Directory.Move(staging,output);
         }
         catch { Console.Error.WriteLine("Owned audio staging retained after failed publication: "+staging); throw; }
     }

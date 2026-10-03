@@ -24,6 +24,8 @@ internal static class CompilerSmokeTest
         TestAudioFileInput();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
+        // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
+        TestLocalAudioPackage();
         // Reborn: custom sound frame boundaries must agree with native totals without decoding compressed payloads.
         TestAudioCustomData();
         // Reborn: pin original/unpacked comparison boundaries without modifying reference corpus files.
@@ -2186,6 +2188,11 @@ internal static class CompilerSmokeTest
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */
     //-------------------------------------------------------------------------------------------------
     private static void TestAudioFilePackage() => AudioFilePackageSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: test mixed local event/audio packaging while keeping general AudioFile compilation closed. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestLocalAudioPackage() => AudioFileLocalEventSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: guard custom block envelopes separately from native ABI and codec processing. */

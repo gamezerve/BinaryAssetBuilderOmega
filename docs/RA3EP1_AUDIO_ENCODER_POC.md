@@ -1,5 +1,9 @@
 # Native audio API audit and minimal WAV encoder PoC
 
+Latest follow-up: [Fixed local AudioEvent to AudioFile package](RA3EP1_LOCAL_AUDIO_PACKAGE.md)
+also emits a separate three-entry diagnostic package with explicitly prepared
+local event references. General audio compilation and game loading remain closed.
+
 Packaging follow-up: [Fixed two-AudioFile diagnostic package](RA3EP1_AUDIOFILE_PACKAGE.md)
 adds verified v7/native/custom output to the opted-in encoder. InstanceHash is
 diagnostic and this still does not establish production or game compatibility.

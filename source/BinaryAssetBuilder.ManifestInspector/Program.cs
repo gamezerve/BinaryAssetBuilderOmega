@@ -13,6 +13,8 @@ internal static class Program
     {
         try
         {
+            // Reborn: local event/audio packaging proof uses synthetic framing unless the native encoder command is explicitly invoked.
+            if (args.FirstOrDefault() == "local-audio-package-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioFileLocalEventSmokeTest.Run(); return 0; }
             // Reborn: managed fixed-package fixtures never execute native codecs or activate production AudioFile compilation.
             if (args.FirstOrDefault() == "audiofile-package-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioFilePackageSmokeTest.Run(); return 0; }
             // Reborn: authored input preparation is managed-only and remains separate from codec/plugin/stream admission.
@@ -758,6 +760,8 @@ internal static class Program
         Console.WriteLine("  ep1-audiofile-input-self-test");
         // Reborn: packaging proof is synthetic by default; actual encoded packaging remains an explicit encoder PoC run.
         Console.WriteLine("  audiofile-package-self-test");
+        // Reborn: fixed local selectors and custom-data closure are separate from general SDK graph admission.
+        Console.WriteLine("  local-audio-package-self-test");
         Console.WriteLine("  audiofile-runtime-audit <unpacked-ep1-manifest>");
         // Reborn: custom framing evidence commands neither decode audio nor admit an AudioFile processor.
         Console.WriteLine("  audio-custom-self-test");
