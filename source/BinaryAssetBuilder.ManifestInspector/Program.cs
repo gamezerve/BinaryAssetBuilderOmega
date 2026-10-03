@@ -14,6 +14,12 @@ internal static class Program
         try
         {
             // Reborn: expose read-only native audio envelope evidence separately from compilation and codec activation.
+            // Reborn: compare the four rejected records directly with bounded original BIG entries, without extraction.
+            if (args.FirstOrDefault() == "audio-archive-self-test") { AudioArchiveComparisonProbe.SelfTest(); return 0; }
+            if (args.FirstOrDefault() == "audio-archive-compare" && args.Length == 3) { AudioArchiveComparisonProbe.Run(args[1],args[2]); return 0; }
+            // Reborn: opt into a verified four-record in-memory overlay; strict local-only custom audits are unchanged.
+            if (args.FirstOrDefault() == "audio-custom-reconciled-audit" && args.Length == 3)
+            { var corrections = AudioArchiveComparisonProbe.ReadCorrections(args[1],args[2]); AudioFileRuntimeProbe.Run(args[1],true,corrections); return 0; }
             if (args.FirstOrDefault() == "audiofile-runtime-self-test") { AudioFileRuntimeProbe.SelfTest(); return 0; }
             // Reborn: validate mapped custom block envelopes without enabling codecs or copying custom payloads.
             if (args.FirstOrDefault() == "audio-custom-self-test") { AudioCustomDataProbe.SelfTest(); return 0; }
@@ -737,6 +743,11 @@ internal static class Program
         // Reborn: custom framing evidence commands neither decode audio nor admit an AudioFile processor.
         Console.WriteLine("  audio-custom-self-test");
         Console.WriteLine("  audio-custom-audit <unpacked-ep1-manifest>");
+        // Reborn: original-entry comparison is read-only and does not constitute codec or game-loading validation.
+        Console.WriteLine("  audio-archive-self-test");
+        Console.WriteLine("  audio-archive-compare <unpacked-ep1-manifest> <original-EnglishAudio.big>");
+        // Reborn: reconciliation is a separate explicit audit command, not an automatic error fallback or corpus repair.
+        Console.WriteLine("  audio-custom-reconciled-audit <unpacked-ep1-manifest> <original-EnglishAudio.big>");
         Console.WriteLine("  assembly-methods <managed-assembly> <type-name> [method-filter]");
         Console.WriteLine("  assembly-il <managed-assembly> <method-token>");
         Console.WriteLine("  assembly-size-diff <reference-tokenizer-assembly> [--top <count>]");

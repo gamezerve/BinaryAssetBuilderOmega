@@ -93,7 +93,7 @@ internal static class AudioFileRuntimeProbe
     //-------------------------------------------------------------------------------------------------
     /** Reborn: audit every selected stock envelope using bounded reads and emit only representative opaque codec prefixes. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string manifestPath,bool auditCustom = false)
+    internal static void Run(string manifestPath,bool auditCustom = false,IReadOnlyDictionary<string,byte[]>? corrections = null)
     {
         if (new FileInfo(manifestPath).Length > 16*1024*1024) throw new InvalidDataException("Audio manifest exceeds audit bound.");
         ManifestDocument manifest = ManifestReader.Read(File.ReadAllBytes(manifestPath));
@@ -110,7 +110,8 @@ internal static class AudioFileRuntimeProbe
         long offset = 8, relocationOffset = 8; int count = 0, inline = 0, shown = 0; bool shownInline = false;
         Dictionary<string,int> codecs = new();
         // Reborn: optional full identity-mapped custom framing audit stays independent of native-only envelope admission.
-        long customBytes = 0,customBlocks = 0; int customFailures = 0; Dictionary<byte,int> customTags = new();
+        long customBytes = 0,customBlocks = 0; int customFailures = 0,correctionsUsed = 0; Dictionary<byte,int> customTags = new();
+        if (corrections != null && (!auditCustom || corrections.Count != 4)) throw new InvalidDataException("Expected four verified archive corrections for custom audit only.");
         foreach (ManifestAsset asset in manifest.Assets)
         {
             if (asset.TypeId == 0x166B084Du)
@@ -136,7 +137,10 @@ internal static class AudioFileRuntimeProbe
                     // Reborn: retain strict per-file rejection but inventory all identities when the unpacked corpus is incomplete.
                     try
                     {
-                        using FileStream customStream = File.OpenRead(customPath);
+                        // Reborn: an explicit verified archive overlay affects only this read-only audit, never the unpacked files or compiler inputs.
+                        bool corrected = corrections != null && corrections.TryGetValue(asset.Name,out _);
+                        using Stream customStream = corrected ? new MemoryStream(corrections![asset.Name],false) : File.OpenRead(customPath);
+                        if (corrected) correctionsUsed++;
                         AudioCustomDataProbe.Result framing = AudioCustomDataProbe.Inspect(customStream,header,header.HeaderSize == 0 ? Array.Empty<byte>() : Read(bin,offset+header.HeaderPointer,checked((int)header.HeaderSize)));
                         customBytes = checked(customBytes+framing.Bytes); customBlocks = checked(customBlocks+framing.Blocks);
                         customTags[framing.CodecTag] = customTags.GetValueOrDefault(framing.CodecTag)+1;
@@ -177,7 +181,9 @@ internal static class AudioFileRuntimeProbe
         if (codecs.Count > 16) Console.WriteLine($"  ({codecs.Count-16} further signature groups omitted)");
         if (auditCustom)
         {
+            if (corrections != null && correctionsUsed != 4) throw new InvalidDataException("Verified archive corrections did not match four unique native identities.");
             Console.WriteLine($"Custom audio framing audit: {(customFailures == 0 ? "OK" : "INCOMPLETE")}; files={count}, validated={count-customFailures}, rejected={customFailures}, validated-blocks={customBlocks}, validated-bytes={customBytes}; only headers read, payload skipped.");
+            if (corrections != null) Console.WriteLine($"  Explicit original archive overlay used={correctionsUsed}; unpacked files unchanged, default local-only audit still rejects its four records.");
             foreach (var tag in customTags.OrderBy(item => item.Key)) Console.WriteLine($"  opaque codec tag {tag.Key:X2}: {tag.Value}");
             if (customFailures > 0) throw new InvalidDataException($"Custom audio corpus has {customFailures} rejected/missing records; no complete framing proof.");
         }

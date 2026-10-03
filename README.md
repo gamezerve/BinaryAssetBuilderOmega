@@ -16,17 +16,24 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**87 test groups** (some contain several fixtures). These counters can grow
+**88 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
-registered groups but does not execute them. The read-only custom audio framing audit
-adds one group without changing model/marshaller counts; all 87 groups were executed.
+registered groups but does not execute them. The original audio archive comparison
+adds one group without changing model/marshaller counts; all 88 groups were executed.
 
-Latest milestone: [Custom audio framing and four rejected records](docs/RA3EP1_AUDIO_CUSTOM_FRAMING.md).
+Latest milestone: [Original audio archive comparison and reconciliation](docs/RA3EP1_AUDIO_ARCHIVE_COMPARISON.md).
+All four rejected custom records are valid in the original Steam archive and
+differ from the shorter unpacked copies. An explicit verified in-memory overlay
+passes all 12,951 custom records / 281,614 blocks. No files are repaired or changed;
+the default local-only audit still rejects four copies. This closes the framing
+reference-data question, not encoder, production packaging or in-game validation.
+
+[Custom audio framing and four rejected records](docs/RA3EP1_AUDIO_CUSTOM_FRAMING.md):
 12,947 identity-mapped EnglishAudio custom files pass bounded RAM/streamed block
 lengths, declared sample totals and EOF checks (268,674 blocks). Four files reject;
-the corpus audit deliberately reports INCOMPLETE and exits 1. Original archive
-comparison is required before treating this as a complete framing proof. No
+the local-only audit deliberately reports INCOMPLETE and exits 1. The subsequent
+original comparison and explicit read-only reconciled audit pass separately. No
 compressed payload decoding, encoder activation or production admission is enabled.
 
 [AudioFile runtime envelope and streamed boundary](docs/RA3EP1_AUDIOFILE_RUNTIME.md):

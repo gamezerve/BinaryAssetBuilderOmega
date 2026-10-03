@@ -20,6 +20,8 @@ internal static class CompilerSmokeTest
         TestAudioFileRuntime();
         // Reborn: custom sound frame boundaries must agree with native totals without decoding compressed payloads.
         TestAudioCustomData();
+        // Reborn: pin original/unpacked comparison boundaries without modifying reference corpus files.
+        TestAudioArchiveComparison();
         // Reborn: prove checked sound entry policies and prepared dependency identities separately from native-only evidence.
         TestMultisoundProfile();
         // Reborn: checked AudioEvent admission stays separate from native evidence and public streams.
@@ -2165,6 +2167,11 @@ internal static class CompilerSmokeTest
     /** Reborn: guard custom block envelopes separately from native ABI and codec processing. */
     //-------------------------------------------------------------------------------------------------
     private static void TestAudioCustomData() => AudioCustomDataProbe.SelfTest();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: validate chunked original-entry comparisons independently of game archive availability. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestAudioArchiveComparison() => AudioArchiveComparisonProbe.SelfTest();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: register fixed local-sound stream evidence without widening production or diagnostic command admission. */

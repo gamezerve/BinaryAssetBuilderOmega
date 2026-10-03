@@ -1,5 +1,10 @@
 # Custom audio framing: evidence and four rejected records
 
+Follow-up: [Original archive comparison and reconciliation](RA3EP1_AUDIO_ARCHIVE_COMPARISON.md)
+proves all four original entries pass unchanged framing rules; unpacked copies
+differ. An explicit in-memory overlay passes the full corpus, while this default
+local-only command remains strict and still rejects those unchanged local files.
+
 Date: October 3, 2026. Read-only framing audit, not decoding, encoding,
 production AudioFile admission or game-loading proof. Overall effort remains
 approximately 50% complete / 50% remaining.
