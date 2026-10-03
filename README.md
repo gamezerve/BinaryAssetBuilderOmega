@@ -16,17 +16,25 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**96 test groups** (some contain several fixtures). These counters can grow
+**97 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
-counts; text-hash boundary and actual AudioFile identity regressions add groups and all 96 groups
+counts; hash boundary, core AudioFile identity and current-disk preparation regressions
+add groups and all 97 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [AudioFile XML and file-dependency identity proof](docs/RA3EP1_AUDIOFILE_IDENTITY.md).
+Latest milestone: [Current core AudioFile preparation bridge](docs/RA3EP1_CORE_AUDIOFILE_PREPARATION.md).
+Real core instances now bridge to the narrow authored PCM profile with disk XML/WAV
+rechecks, normalized-path and identity binding, immutable input and stale/recovery
+checks. Same-size timestamp-preserving WAV edits revoke old preparation. This is
+inspector-local and managed-only; native encoder integration and production audio
+compilation remain closed.
+
+[AudioFile XML and file-dependency identity proof](docs/RA3EP1_AUDIOFILE_IDENTITY.md).
 Actual core parsing of official-schema AudioFile XML and an owned WAV now matches
 an independently reconstructed InstanceHash, including 256-byte dependency-buffer
 padding. XML/PCM/processor changes, path spelling, missing-file recovery and

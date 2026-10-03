@@ -17,6 +17,8 @@ internal static class Program
             if (args.FirstOrDefault() == "hashing-writer-boundary-self-test") { HashingWriterBoundarySmokeTest.Run(); return 0; }
             // Reborn: exercise real AudioFile file-reference identity with owned WAV fixtures and no native codec/output.
             if (args.FirstOrDefault() == "audiofile-identity-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioFileIdentitySmokeTest.Run(); return 0; }
+            // Reborn: verify disk/core preparation invalidation without admitting native audio or production streams.
+            if (args.FirstOrDefault() == "core-audiofile-preparation-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioFileCorePreparationSmokeTest.Run(); return 0; }
             // Reborn: local event/audio packaging proof uses synthetic framing unless the native encoder command is explicitly invoked.
             if (args.FirstOrDefault() == "local-audio-package-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioFileLocalEventSmokeTest.Run(); return 0; }
             // Reborn: managed fixed-package fixtures never execute native codecs or activate production AudioFile compilation.
@@ -770,6 +772,8 @@ internal static class Program
         Console.WriteLine("  hashing-writer-boundary-self-test");
         // Reborn: expose managed core/file identity verification separately from optional native encoding.
         Console.WriteLine("  audiofile-identity-self-test");
+        // Reborn: keep real core preparation testing separate from explicit native codec execution.
+        Console.WriteLine("  core-audiofile-preparation-self-test");
         Console.WriteLine("  audiofile-runtime-audit <unpacked-ep1-manifest>");
         // Reborn: custom framing evidence commands neither decode audio nor admit an AudioFile processor.
         Console.WriteLine("  audio-custom-self-test");

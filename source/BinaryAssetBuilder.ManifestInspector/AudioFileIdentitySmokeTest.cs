@@ -13,7 +13,7 @@ namespace BinaryAssetBuilder.ManifestInspector;
 internal static class AudioFileIdentitySmokeTest
 {
     // Reborn: keep this test-only processor domain distinct from the observed reference Win32 ProcessingHash.
-    private const uint Processing = 0x52424849u;
+    internal const uint Processing = 0x52424849u;
     private const string Source = "<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\"><AudioFile id=\"RebornIdentity\" File=\"input.wav\" PCSampleRate=\"48000\" PCCompression=\"XAS\" IsStreamedOnPC=\"false\" /></AssetDeclaration>";
 
     //-------------------------------------------------------------------------------------------------
@@ -96,7 +96,7 @@ internal static class AudioFileIdentitySmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: register hash metadata locally, parse through the real DocumentProcessor, restore global settings even after errors. */
     //-------------------------------------------------------------------------------------------------
-    private static InstanceDeclaration Build(string directory,string schema,uint processing)
+    internal static InstanceDeclaration Build(string directory,string schema,uint processing)
     {
         Settings saved = Settings.Current;
         try

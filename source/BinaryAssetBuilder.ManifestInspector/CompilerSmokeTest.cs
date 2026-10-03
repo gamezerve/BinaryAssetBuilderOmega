@@ -15,6 +15,8 @@ internal static class CompilerSmokeTest
         TestHashingWriterBoundary();
         // Reborn: reconstruct actual AudioFile XML/file identity before permitting any codec processor integration.
         TestAudioFileIdentity();
+        // Reborn: connect normalized core XML/file identity to immutable authored PCM preparation without codecs.
+        TestCoreAudioFilePreparation();
         TestAttributeModifier();
         // Reborn: exercise isolated EP1 sound records while retaining the legacy child ABI.
         TestMultisoundNative();
@@ -2207,6 +2209,11 @@ internal static class CompilerSmokeTest
     /** Reborn: verify actual core AudioFile identity against independent XML and file-hash reconstruction. */
     //-------------------------------------------------------------------------------------------------
     private static void TestAudioFileIdentity() => AudioFileIdentitySmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: reject stale current disk/core data before isolated AudioFile encoding can be integrated. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestCoreAudioFilePreparation() => AudioFileCorePreparationSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: guard custom block envelopes separately from native ABI and codec processing. */
