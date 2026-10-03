@@ -16,6 +16,8 @@ internal static class CompilerSmokeTest
         TestMultisoundNative();
         // Reborn: prove checked sound entry policies and prepared dependency identities separately from native-only evidence.
         TestMultisoundProfile();
+        // Reborn: exercise local Multisound closure and independent mixed stream identity/native readback.
+        TestMultisoundFXStream();
         TestDieMuxData();
         TestGameDependency();
         TestSlowDeath();
@@ -2119,6 +2121,11 @@ internal static class CompilerSmokeTest
     /** Reborn: register isolated checked sound profile evidence without activating production audio. */
     //-------------------------------------------------------------------------------------------------
     private static void TestMultisoundProfile() => Ep1MultisoundProfileSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: register fixed local-sound stream evidence without widening production or diagnostic command admission. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestMultisoundFXStream() => MultisoundFXStreamSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: verify actual external derived resolution without registering a runnable FX/audio processor. */

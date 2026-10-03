@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: fixed local sound chain proof stays separate from public command admission and game packaging.
+            if (args.FirstOrDefault() == "multisound-fx-stream-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                MultisoundFXStreamSmokeTest.Run(args.Skip(1).ToArray());
+                return 0;
+            }
             // Reborn: exercise checked sound profile entries without admitting production audio output.
             if (args.FirstOrDefault() == "ep1-multisound-profile-self-test")
             {
@@ -698,6 +705,8 @@ internal static class Program
         Console.WriteLine("  multisound-native-self-test [ep1-global-manifest ...]");
         // Reborn: optional manifests compare checked profile output and prepared sound dependencies against stock.
         Console.WriteLine("  ep1-multisound-profile-self-test [ep1-global-manifest ...]");
+        // Reborn: optional mappings prove concrete leaf audio identities in a fixed mixed local stream.
+        Console.WriteLine("  multisound-fx-stream-self-test [ep1-global-manifest ...]");
         // Reborn: compare only selected native FX chunks while keeping FX processor registration closed.
         Console.WriteLine("  fx-native-self-test [ep1-static-manifest ...]");
         // Reborn: manifest arguments validate dependency identities without reading their BIN payloads.

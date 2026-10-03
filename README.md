@@ -16,18 +16,28 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**79 test groups** (some contain several fixtures). These counters can grow
+**80 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
-registered groups but does not execute them. The checked Multisound profile
-adds one group without changing model/marshaller counts; all 79 groups were executed.
+registered groups but does not execute them. The fixed local Multisound/FX stream
+adds one group without changing model/marshaller counts; all 80 groups were executed.
 
-Latest milestone: [checked Multisound compiler profile](docs/RA3EP1_MULTISOUND_PROFILE.md).
+Latest milestone: [fixed local Multisound / FX mixed stream](docs/RA3EP1_MULTISOUND_FX_STREAM.md).
+A three-level Include chain compiles modifier → local FX → local Multisound →
+stock AudioEvent targets. Linked BIN/RELO/IMP sizes are 216/28/36 bytes; native
+selectors, concrete reference tuples and sources round-trip through both readers.
+Wrong/duplicate/missing external metadata, 20 stream corruptions and leaf edits /
+loss / recovery are tested. The shared stream gate now explicitly requires every
+selected root's prepared reference table. Public Multisound root admission and
+production/game-loading gates remain closed.
+
+[Checked Multisound compiler profile](docs/RA3EP1_MULTISOUND_PROFILE.md):
 Explicit isolated ProcessInstance entries now match three complete stock native
 buffers and prepared concrete dependency tuples. Missing/ambiguous/duplicate
 targets, stale/tampered tables, current source edits and the 32/33-child boundary
 are tested. Production/cache/reuse policies and public diagnostic audio-root
-admission remain closed. Mixed linked-stream proof is the next gate.
+admission remain closed. Fixed mixed-stream proof now passes; public bounded
+Multisound command admission is the next gate.
 
 [Isolated Multisound native proof](docs/RA3EP1_MULTISOUND_NATIVE.md):
 An explicit EP1 16/28-byte root/child path now matches three complete stock
@@ -42,7 +52,7 @@ and non-tokenized metadata. Wrong fingerprints reject; restored inputs recover
 identical output. Bounded native reads confirm old sound layouts cannot be reused:
 AudioEvent root 120 vs 152 bytes, audio-file references 8 vs 12, and legacy
 Multisound children 8 vs 28. Multisound now has an isolated native proof;
-AudioEvent/AudioFile recovery, mixed linked-stream proof and wider audio profiles remain open.
+AudioEvent/AudioFile recovery, public Multisound command admission and wider audio profiles remain open.
 
 [FX support in bounded diagnostic builds](docs/RA3EP1_DIAGNOSTIC_FX_BUILD.md):
 `diagnostic-build` now accepts the isolated empty/two-Sound FX subset, alongside

@@ -142,7 +142,7 @@ internal static class ModifierFXStreamSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: write only this proof's five owned files into an absent directory, never overwrite an existing output location. */
     //-------------------------------------------------------------------------------------------------
-    private static void WriteNew(string directory, Dictionary<string, byte[]> payloads)
+    internal static void WriteNew(string directory, Dictionary<string, byte[]> payloads)
     {
         if (Directory.Exists(directory) || File.Exists(directory)) throw new InvalidDataException("Fixed stream proof requires a new output directory.");
         Directory.CreateDirectory(directory); foreach (var payload in payloads) File.WriteAllBytes(Path.Combine(directory, payload.Key), payload.Value);
@@ -174,7 +174,7 @@ internal static class ModifierFXStreamSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: corrupt owned bytes and matching snapshot expectations, require independent readback failure, then restore both. */
     //-------------------------------------------------------------------------------------------------
-    private static void RejectCorruption(string directory, string name, byte[] bad, InstanceDeclaration[] ordered, AssetBuffer[] chunks,
+    internal static void RejectCorruption(string directory, string name, byte[] bad, InstanceDeclaration[] ordered, AssetBuffer[] chunks,
         Dictionary<string, byte[]> payloads, uint checksum, string[] runtimeNames)
     {
         string path = Path.Combine(directory, name); byte[] saved = payloads[name]; payloads[name] = bad; File.WriteAllBytes(path, bad);

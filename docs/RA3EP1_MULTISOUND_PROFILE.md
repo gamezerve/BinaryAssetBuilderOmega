@@ -99,10 +99,12 @@ legacy models/marshal overloads, official XML/XSD and game files are unchanged.
 
 ## Next gate
 
-Prove a fixed mixed FX/local-Multisound stream with external stock AudioEvent
-targets: actual local closure, concrete selectors, external uniqueness/fingerprints,
-full manifest/utility readback and failure/recovery guards. Only afterward consider
-bounded command admission. AudioEvent/AudioFile native recovery, encoded audio
+Follow-up: [fixed local Multisound / FX mixed-stream proof](RA3EP1_MULTISOUND_FX_STREAM.md)
+now passes local closure, external uniqueness/fingerprints, selector readback,
+corruption and failure/recovery checks. Public bounded command admission remains closed.
+
+Next: bounded command admission after its snapshot grammar/order/cycle and staged
+publication guards are extended and tested. AudioEvent/AudioFile native recovery, encoded audio
 processing, broader processors, full EP1 registry, SDK/WorldBuilder packaging and
 actual Uprising loading remain open.
 

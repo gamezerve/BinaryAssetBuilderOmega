@@ -99,19 +99,8 @@ internal static class BoundedDiagnosticBuild
                 { 0xBCC23F6Cu => 0, 0x44A5973Du => 1, 0x86682E78u => 2, 0xC5E07887u => 3, _ => throw new InvalidDataException("Unadmitted diagnostic asset type.") })
                 .ThenBy(instance => instance.Handle.Name, StringComparer.Ordinal).ToArray();
             if (ordered.Length == 0 || ordered.Length > 32) throw new InvalidDataException("Diagnostic input must contain 1–32 admitted roots.");
-            foreach (InstanceHandle dependency in ordered.SelectMany(instance => instance.ValidatedReferencedInstances!))
-            {
-                if (ordered.Any(instance => instance.Handle.TypeId == dependency.TypeId && instance.Handle.InstanceId == dependency.InstanceId)) continue;
-                ManifestAsset[] matches = externalMetadata.SelectMany(metadata => metadata.Assets)
-                    .Where(asset => asset.TypeId == dependency.TypeId && asset.InstanceId == dependency.InstanceId).ToArray();
-                if (matches.Length != 1) throw new InvalidDataException("External dependency must resolve uniquely to an explicit mapped manifest.");
-                if (dependency.TypeId == 0xBCC23F6Cu && (matches[0].TypeHash != 0x3D5B1D16u || matches[0].Tokenized != 0))
-                    throw new InvalidDataException("External shader fingerprint differs from the proven native EP1 type.");
-                // Reborn: selected external sounds must match stock EP1 metadata; this does not validate or rebuild audio payloads.
-                uint? audioHash = dependency.TypeId switch { 0x844D7B9Fu => 0x560C2E45u, 0xA3A7AF37u => 0xF79C5A89u, _ => null };
-                if (audioHash.HasValue && (matches[0].TypeHash != audioHash.Value || matches[0].Tokenized != 0))
-                    throw new InvalidDataException("External audio fingerprint differs from the observed stock EP1 type.");
-            }
+            // Reborn: share selected external identity/fingerprint checks with fixed native proofs without widening command root admission.
+            ValidateExternalDependencies(ordered, externalMetadata);
             AssetBuffer[] chunks = ordered.Select(instance => plugins.GetPlugin(instance.Handle.TypeId).ProcessInstance(instance)).ToArray();
             if (chunks.Sum(chunk => (long)chunk.InstanceData.Length + chunk.RelocationData.Length + chunk.ImportsData.Length) > 1024 * 1024)
                 throw new InvalidDataException("Compiled diagnostic exceeds its 1 MiB native payload limit.");
@@ -136,6 +125,30 @@ internal static class BoundedDiagnosticBuild
             // Reborn: clean only the five known files of this freshly generated staging directory; unknown files prevent nonrecursive directory removal.
             if (staging != null) CleanOwnedDirectory(staging, OutputNames);
             if (inputDirectory != null) CleanOwnedDirectory(inputDirectory, inputNames);
+        }
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: require unique explicitly mapped external identities and observed shader/audio fingerprints for already prepared roots. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void ValidateExternalDependencies(InstanceDeclaration[] ordered, IEnumerable<ManifestDocument> externalMetadata)
+    {
+        // Reborn: a failed recursive attempt must not reach stream serialization through an original-selector-only compiler entry.
+        if (ordered.Any(instance => instance.ValidatedReferencedInstances == null
+            || instance.ValidatedReferencedInstances.Count != instance.ReferencedInstances.Count))
+            throw new InvalidDataException("Prepared diagnostic dependencies are required for every selected root.");
+        foreach (InstanceHandle dependency in ordered.SelectMany(instance => instance.ValidatedReferencedInstances!))
+        {
+            if (ordered.Any(instance => instance.Handle.TypeId == dependency.TypeId && instance.Handle.InstanceId == dependency.InstanceId)) continue;
+            ManifestAsset[] matches = externalMetadata.SelectMany(metadata => metadata.Assets)
+                .Where(asset => asset.TypeId == dependency.TypeId && asset.InstanceId == dependency.InstanceId).ToArray();
+            if (matches.Length != 1) throw new InvalidDataException("External dependency must resolve uniquely to an explicit mapped manifest.");
+            if (dependency.TypeId == 0xBCC23F6Cu && (matches[0].TypeHash != 0x3D5B1D16u || matches[0].Tokenized != 0))
+                throw new InvalidDataException("External shader fingerprint differs from the proven native EP1 type.");
+            // Reborn: selected external sounds must match stock EP1 metadata; this does not validate or rebuild audio payloads.
+            uint? audioHash = dependency.TypeId switch { 0x844D7B9Fu => 0x560C2E45u, 0xA3A7AF37u => 0xF79C5A89u, _ => null };
+            if (audioHash.HasValue && (matches[0].TypeHash != audioHash.Value || matches[0].Tokenized != 0))
+                throw new InvalidDataException("External audio fingerprint differs from the observed stock EP1 type.");
         }
     }
 
