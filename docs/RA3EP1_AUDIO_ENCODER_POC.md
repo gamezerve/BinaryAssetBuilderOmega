@@ -1,5 +1,10 @@
 # Native audio API audit and minimal WAV encoder PoC
 
+Subsequent input gate: [Checked authored AudioFile input profile](RA3EP1_AUDIOFILE_INPUT_PROFILE.md)
+freezes official-schema settings, identity and owned PCM before native initialization,
+then rechecks them before encoding and runtime output. Current PoC settings are
+derived from that preparation; the mono RAM/streamed custom hashes are unchanged.
+
 October 4 follow-up: [Isolated EP1 AudioFile runtime serialization](RA3EP1_AUDIOFILE_SERIALIZATION.md)
 adds raw runtime output to the opt-in experiment and validates custom blocks
 against independently reread fields. The original observations below remain

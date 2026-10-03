@@ -3,6 +3,9 @@ using System.Security.Cryptography;
 // Reborn: optional owned encoding evidence now carries the checked EP1 envelope, never legacy audio output.
 using BinaryAssetBuilder.Core;
 using BinaryAssetBuilder.XmlCompiler;
+// Reborn: schema-bound authored settings are prepared before invoking the native encoder.
+using System.Xml;
+using System.Xml.Schema;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
@@ -37,6 +40,12 @@ internal static class AudioEncoderPoc
             throw new InvalidDataException("Audio encoder PoC only admits the audited native library.");
         string directory = Path.Combine(Path.GetTempPath(),"Reborn-AudioEncoder-"+Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory); string input = Path.Combine(directory,"input.wav"); WriteWave(input);
+        // Reborn: freeze both authored play locations and owned WAV before native initialization; unsupported XML cannot start encoding.
+        XmlElement ramRoot = CreateDefinition(false),streamRoot = CreateDefinition(true);
+        InstanceHandle ramId = Identity(ramRoot),streamId = Identity(streamRoot);
+        byte[] wave = ReadOwnedWave(input);
+        var ramInput = Ra3Ep1AudioFileInputProfile.Prepare(ramRoot,ramId,TargetPlatform.Win32,wave);
+        var streamInput = Ra3Ep1AudioFileInputProfile.Prepare(streamRoot,streamId,TargetPlatform.Win32,wave);
         Console.WriteLine("Owned audio encoder PoC directory: "+directory);
         IntPtr module = NativeLibrary.Load(path);
         bool initialized = false;
@@ -44,7 +53,7 @@ internal static class AudioEncoderPoc
         {
             VoidCall init = Bind<VoidCall>(module,"SIMEX_init"),shutdown = Bind<VoidCall>(module,"SIMEX_shutdown");
             init(); initialized = true;
-            try { Encode(module,input,Path.Combine(directory,"ram"),false); Encode(module,input,Path.Combine(directory,"streamed"),true); }
+            try { Encode(module,input,Path.Combine(directory,"ram"),ramRoot,ramId,ramInput); Encode(module,input,Path.Combine(directory,"streamed"),streamRoot,streamId,streamInput); }
             finally { shutdown(); initialized = false; }
             Console.WriteLine("Audio encoder PoC: OK; owned mono 48 kHz PCM WAV -> codec 29 RAM/streamed framing with checked EP1 runtime envelopes; no production registration or game-loading proof.");
         }
@@ -58,8 +67,10 @@ internal static class AudioEncoderPoc
     //-------------------------------------------------------------------------------------------------
     /** Reborn: encode one owned WAV using source-declared cdecl signatures, then independently validate generated framing. */
     //-------------------------------------------------------------------------------------------------
-    private static void Encode(IntPtr module,string input,string output,bool streamed)
+    private static void Encode(IntPtr module,string input,string output,XmlElement root,InstanceHandle identity,Ra3Ep1AudioFileInputProfile.PreparedInput prepared)
     {
+        // Reborn: preparation must still match the actual owned input immediately before starting native work.
+        prepared.VerifyCurrent(root,identity,TargetPlatform.Win32,ReadOwnedWave(input)); bool streamed = prepared.Streamed;
         Identify identify = Bind<Identify>(module,"SIMEX_id"); Open open = Bind<Open>(module,"SIMEX_open"); Create create = Bind<Create>(module,"SIMEX_create");
         Info getInfo = Bind<Info>(module,"SIMEX_info"); Transfer read = Bind<Transfer>(module,"SIMEX_read"),write = Bind<Transfer>(module,"SIMEX_write");
         Getter close = Bind<Getter>(module,"SIMEX_close"),wclose = Bind<Getter>(module,"SIMEX_wclose"),free = Bind<Getter>(module,"SIMEX_freesinfo");
@@ -69,10 +80,10 @@ internal static class AudioEncoderPoc
             if (identify(input,0) != 1 || open(input,0,1,out source) != 1 || source == IntPtr.Zero) Fail(module,"WAV open");
             if (getInfo(source,out info,0) <= 0 || info == IntPtr.Zero || read(source,info,0) <= 0) Fail(module,"WAV info/read");
             int rate = Bind<Getter>(module,"SIMEX_getsamplerate")(info),samples = Bind<Getter>(module,"SIMEX_getnumsamples")(info),channels = Bind<Getter>(module,"SIMEX_getchannelconfig")(info);
-            if (rate != 48000 || samples != 12000 || channels != 1) throw new InvalidDataException("Native input getters disagree with the owned WAV.");
-            Bind<Setter>(module,"SIMEX_setcodec")(info,29); Bind<Setter>(module,"SIMEX_setplayloc")(info,streamed ? 4096 : 2048);
+            if (rate != prepared.Rate || samples != prepared.Samples || channels != prepared.Channels) throw new InvalidDataException("Native input getters disagree with the prepared WAV.");
+            Bind<Setter>(module,"SIMEX_setcodec")(info,prepared.Codec); Bind<Setter>(module,"SIMEX_setplayloc")(info,streamed ? 4096 : 2048);
             // Reborn: reference AudioCompiler IL_0524 uses SND 39; legacy LAYER3 34 was rejected by this audited native library.
-            if (create(output,39,out target) <= 0 || target == IntPtr.Zero || write(target,info,0) <= 0) Fail(module,"encoded create/write");
+            if (create(output,prepared.OutputContainer,out target) <= 0 || target == IntPtr.Zero || write(target,info,0) <= 0) Fail(module,"encoded create/write");
             // Reborn: close exactly once; retain the raw status instead of guessing fclose-style versus SIMEX-style success semantics.
             int closeStatus = wclose(target); target = IntPtr.Zero; Console.WriteLine($"  native output close status={closeStatus}");
         }
@@ -83,10 +94,12 @@ internal static class AudioEncoderPoc
         if (streamed && header.Length != 8) throw new InvalidDataException("Unexpected generated streamed SNR size.");
         using FileStream encoded = File.OpenRead(custom);
         // Reborn: bind generated custom framing to independently parsed serialized EP1 fields, not hardcoded fake native metadata.
-        AssetBuffer runtime = Ra3Ep1AudioFileRuntimeSerializer.Serialize(TargetPlatform.Win32,"DIALOGEVENT:reborn_audio_encoder_pocSubTitle",12000,48000,1,header);
+        AssetBuffer runtime = prepared.SerializeCurrent(root,identity,TargetPlatform.Win32,ReadOwnedWave(input),header);
         AudioFileRuntimeProbe.Header parsed = AudioFileRuntimeProbe.Parse(runtime.InstanceData,runtime.InstanceData.Length);
         byte[] inline = parsed.HeaderSize == 0 ? Array.Empty<byte>() : runtime.InstanceData.AsSpan(checked((int)parsed.HeaderPointer),checked((int)parsed.HeaderSize)).ToArray();
         AudioCustomDataProbe.Result framing = AudioCustomDataProbe.Inspect(encoded,parsed,inline);
+        // Reborn: this prepared codec 29 experiment admits only the observed tag 04, not merely any structurally valid frame.
+        if (framing.CodecTag != 4) throw new InvalidDataException("Prepared XAS custom output has an unproven codec tag.");
         WriteOwned(output+".runtime.bin",runtime.InstanceData); WriteOwned(output+".runtime.relo",runtime.RelocationData);
         Console.WriteLine($"  EP1 raw runtime: BIN={runtime.InstanceData.Length}, RELO={runtime.RelocationData.Length}, IMP={runtime.ImportsData.Length}; no linked manifest/container emitted");
         encoded.Position = 0;
@@ -122,7 +135,7 @@ internal static class AudioEncoderPoc
     //-------------------------------------------------------------------------------------------------
     /** Reborn: serialize the fixed PoC waveform to an owned stream while retaining caller ownership. */
     //-------------------------------------------------------------------------------------------------
-    private static void WriteWave(Stream stream)
+    internal static void WriteWave(Stream stream)
     {
         using BinaryWriter writer = new(stream,System.Text.Encoding.ASCII,true);
         writer.Write(System.Text.Encoding.ASCII.GetBytes("RIFF")); writer.Write(24036); writer.Write(System.Text.Encoding.ASCII.GetBytes("WAVEfmt "));
@@ -142,5 +155,36 @@ internal static class AudioEncoderPoc
             || BitConverter.ToInt16(bytes,44) != 0 || BitConverter.ToInt16(bytes,46) != 471)
             throw new InvalidDataException("Owned encoder WAV header/sample golden differs.");
         Console.WriteLine("Audio encoder WAV self-test: OK (24,044 bytes, PCM16 mono 48 kHz/12,000 samples, header/first samples; no native codec calls)");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: validate generated authored definitions against unchanged EP1 AudioFile types, including official defaults. */
+    //-------------------------------------------------------------------------------------------------
+    internal static XmlElement CreateDefinition(bool streamed)
+    {
+        string fixture = Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"AudioFilePipeline.xsd");
+        XmlDocument document = new() { XmlResolver = null };
+        // Reborn: resolve only the checked-in harness's official relative schema includes; authored XML still has no resolver.
+        document.Schemas.XmlResolver = new XmlUrlResolver();
+        document.Schemas.Add("uri:ea.com:eala:asset",fixture);
+        document.LoadXml($"<AudioFile xmlns=\"uri:ea.com:eala:asset\" id=\"RebornAudioInput\" File=\"input.wav\" PCSampleRate=\"48000\" PCCompression=\"XAS\" IsStreamedOnPC=\"{(streamed ? "true" : "false")}\" SubtitleStringName=\"DIALOGEVENT:reborn_audio_encoder_pocSubTitle\" />");
+        document.Validate((_, args) => throw new XmlSchemaValidationException(args.Message)); return document.DocumentElement!;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: bind the authored asset to recovered EP1 metadata without registering it in a production type table. */
+    //-------------------------------------------------------------------------------------------------
+    internal static InstanceHandle Identity(XmlElement root) => new("AudioFile",root.GetAttribute("id")) { TypeHash = 0x53C81E47u };
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: bound repeated owned-input reads before checking the frozen PCM snapshot. */
+    //-------------------------------------------------------------------------------------------------
+    private static byte[] ReadOwnedWave(string path)
+    {
+        using FileStream source = File.OpenRead(path);
+        if (source.Length != 24044) throw new InvalidDataException("Owned WAV size changed after preparation.");
+        byte[] bytes = new byte[24044]; source.ReadExactly(bytes);
+        if (source.ReadByte() != -1) throw new InvalidDataException("Owned WAV grew during bounded input read.");
+        return bytes;
     }
 }

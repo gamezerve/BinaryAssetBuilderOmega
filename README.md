@@ -16,19 +16,27 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**91 test groups** (some contain several fixtures). These counters can grow
+**92 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
-encoder WAV fixture and isolated AudioFile serializer add groups without changing
-model/marshaller counts; all 91 groups were executed. Default tests do not invoke native codecs.
+encoder WAV fixture, isolated AudioFile serializer and authored input profile add
+groups without changing model/marshaller counts; all 92 groups were executed.
+Default tests do not invoke native codecs.
 
-Latest milestone: [Isolated EP1 AudioFile runtime serialization](docs/RA3EP1_AUDIOFILE_SERIALIZATION.md).
+Latest milestone: [Checked authored AudioFile input profile](docs/RA3EP1_AUDIOFILE_INPUT_PROFILE.md).
+Official-schema XML, current EP1 identity and canonical mono 48 kHz PCM16 WAV
+are checked before native work. Immutable snapshots reject changed XML/WAV/hash
+and unsupported codec/rate/platform options. The opt-in native experiment now
+uses prepared settings; RAM/streamed output hashes remain identical. This is
+an authored input gate, not a registered AudioFile processor or linked package.
+
+[Isolated EP1 AudioFile runtime serialization](docs/RA3EP1_AUDIOFILE_SERIALIZATION.md).
 A separate 32-byte serializer matches complete BIN/RELO/IMP slices of two real
 RAM/streamed records (76/8/0 and 88/12/0 bytes). Alignment, ownership and invalid
 inputs are tested. The opt-in WAV experiment now validates encoded custom data
 against independently reread serialized runtime fields and saves raw native buffers.
-No AudioFile XML/compiler admission, linked manifest packaging or game loading is enabled.
+No general AudioFile XML/compiler admission, linked manifest packaging or game loading is enabled.
 
 [Native audio API audit and WAV encoder PoC](docs/RA3EP1_AUDIO_ENCODER_POC.md).
 The current library exports all 20 bindings, but rejects the existing source's

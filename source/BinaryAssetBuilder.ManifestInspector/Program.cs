@@ -13,6 +13,8 @@ internal static class Program
     {
         try
         {
+            // Reborn: authored input preparation is managed-only and remains separate from codec/plugin/stream admission.
+            if (args.FirstOrDefault() == "ep1-audiofile-input-self-test") { CompilerSmokeTest.InitializeHashProvider(); Ep1AudioFileInputSmokeTest.Run(); return 0; }
             // Reborn: native AudioFile serialization proof optionally compares actual selected stock slices without registering an audio processor.
             if (args.FirstOrDefault() == "audiofile-serializer-self-test") { AudioFileSerializationSmokeTest.Run(args.Skip(1).ToArray()); return 0; }
             // Reborn: inspect audio library API evidence without invoking DLL entry points or codecs.
@@ -21,7 +23,7 @@ internal static class Program
             if (args.FirstOrDefault() == "native-audio-api-self-test") { NativeAudioApiProbe.SelfTest(); return 0; }
             if (args.FirstOrDefault() == "audio-encoder-wav-self-test") { AudioEncoderPoc.SelfTest(); return 0; }
             // Reborn: native encoding is opt-in and runs only in this standalone inspector process, never in default compiler tests.
-            if (args.FirstOrDefault() == "audio-encoder-poc" && args.Length == 2) { AudioEncoderPoc.Run(args[1]); return 0; }
+            if (args.FirstOrDefault() == "audio-encoder-poc" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderPoc.Run(args[1]); return 0; }
             // Reborn: expose read-only native audio envelope evidence separately from compilation and codec activation.
             // Reborn: compare the four rejected records directly with bounded original BIG entries, without extraction.
             if (args.FirstOrDefault() == "audio-archive-self-test") { AudioArchiveComparisonProbe.SelfTest(); return 0; }
@@ -750,6 +752,8 @@ internal static class Program
         Console.WriteLine("  audiofile-runtime-self-test");
         // Reborn: serialization evidence is separate from production compilation and custom-data packaging.
         Console.WriteLine("  audiofile-serializer-self-test [unpacked-ep1-audio-manifest ...]");
+        // Reborn: managed authored input checks do not invoke native codecs or write build output.
+        Console.WriteLine("  ep1-audiofile-input-self-test");
         Console.WriteLine("  audiofile-runtime-audit <unpacked-ep1-manifest>");
         // Reborn: custom framing evidence commands neither decode audio nor admit an AudioFile processor.
         Console.WriteLine("  audio-custom-self-test");

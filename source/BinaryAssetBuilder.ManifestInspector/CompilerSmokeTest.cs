@@ -20,6 +20,8 @@ internal static class CompilerSmokeTest
         TestAudioFileRuntime();
         // Reborn: independent runtime bytes must match stock while the legacy AudioFile ABI remains unchanged.
         TestAudioFileSerialization();
+        // Reborn: authored AudioFile inputs must pass official schema, PCM and immutable current-source gates before optional native work.
+        TestAudioFileInput();
         // Reborn: custom sound frame boundaries must agree with native totals without decoding compressed payloads.
         TestAudioCustomData();
         // Reborn: pin original/unpacked comparison boundaries without modifying reference corpus files.
@@ -2172,6 +2174,11 @@ internal static class CompilerSmokeTest
     /** Reborn: prove isolated EP1 AudioFile runtime serialization without enabling codecs or production asset entries. */
     //-------------------------------------------------------------------------------------------------
     private static void TestAudioFileSerialization() => AudioFileSerializationSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: test narrow authored audio input preparation without executing native codecs or enabling production output. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestAudioFileInput() => Ep1AudioFileInputSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: guard custom block envelopes separately from native ABI and codec processing. */

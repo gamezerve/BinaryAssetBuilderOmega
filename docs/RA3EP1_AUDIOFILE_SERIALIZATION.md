@@ -1,5 +1,9 @@
 # Isolated EP1 AudioFile runtime serialization
 
+Follow-up: [Checked authored AudioFile input profile](RA3EP1_AUDIOFILE_INPUT_PROFILE.md)
+adds immutable schema/identity/PCM preparation to the opt-in encoder experiment.
+It remains separate from a complete plugin entry and custom-data packaging.
+
 Date: October 4, 2026. Two real Uprising native records match byte for byte.
 The encoder experiment now produces independently checked raw runtime buffers.
 This is not yet an AudioFile XML compiler, linked mod package or game-loading proof.
