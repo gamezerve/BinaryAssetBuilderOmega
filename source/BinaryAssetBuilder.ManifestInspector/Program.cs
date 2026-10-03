@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: inspect audio library API evidence without invoking DLL entry points or codecs.
+            if (args.FirstOrDefault() == "native-audio-api-audit" && args.Length == 2) { NativeAudioApiProbe.Run(args[1]); return 0; }
+            // Reborn: default-compatible audio regressions inspect PE data and managed WAV bytes but never initialize native codecs.
+            if (args.FirstOrDefault() == "native-audio-api-self-test") { NativeAudioApiProbe.SelfTest(); return 0; }
+            if (args.FirstOrDefault() == "audio-encoder-wav-self-test") { AudioEncoderPoc.SelfTest(); return 0; }
+            // Reborn: native encoding is opt-in and runs only in this standalone inspector process, never in default compiler tests.
+            if (args.FirstOrDefault() == "audio-encoder-poc" && args.Length == 2) { AudioEncoderPoc.Run(args[1]); return 0; }
             // Reborn: expose read-only native audio envelope evidence separately from compilation and codec activation.
             // Reborn: compare the four rejected records directly with bounded original BIG entries, without extraction.
             if (args.FirstOrDefault() == "audio-archive-self-test") { AudioArchiveComparisonProbe.SelfTest(); return 0; }
@@ -745,6 +752,12 @@ internal static class Program
         Console.WriteLine("  audio-custom-audit <unpacked-ep1-manifest>");
         // Reborn: original-entry comparison is read-only and does not constitute codec or game-loading validation.
         Console.WriteLine("  audio-archive-self-test");
+        // Reborn: a PE API inventory is read-only evidence, not permission to trust native signatures.
+        Console.WriteLine("  native-audio-api-audit <native-or-reference-audio-dll>");
+        Console.WriteLine("  native-audio-api-self-test");
+        Console.WriteLine("  audio-encoder-wav-self-test");
+        // Reborn: codec experimentation remains separate from public diagnostic-build and production output.
+        Console.WriteLine("  audio-encoder-poc <absolute-audited-audio.dll>");
         Console.WriteLine("  audio-archive-compare <unpacked-ep1-manifest> <original-EnglishAudio.big>");
         // Reborn: reconciliation is a separate explicit audit command, not an automatic error fallback or corpus repair.
         Console.WriteLine("  audio-custom-reconciled-audit <unpacked-ep1-manifest> <original-EnglishAudio.big>");

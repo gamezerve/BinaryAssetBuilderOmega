@@ -22,6 +22,9 @@ internal static class CompilerSmokeTest
         TestAudioCustomData();
         // Reborn: pin original/unpacked comparison boundaries without modifying reference corpus files.
         TestAudioArchiveComparison();
+        // Reborn: metadata and WAV fixture regressions must not execute native codecs during the ordinary compiler suite.
+        TestNativeAudioApi();
+        TestAudioEncoderWave();
         // Reborn: prove checked sound entry policies and prepared dependency identities separately from native-only evidence.
         TestMultisoundProfile();
         // Reborn: checked AudioEvent admission stays separate from native evidence and public streams.
@@ -2172,6 +2175,16 @@ internal static class CompilerSmokeTest
     /** Reborn: validate chunked original-entry comparisons independently of game archive availability. */
     //-------------------------------------------------------------------------------------------------
     private static void TestAudioArchiveComparison() => AudioArchiveComparisonProbe.SelfTest();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: pin native/reference PE API evidence without DLL initialization. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestNativeAudioApi() => NativeAudioApiProbe.SelfTest();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: validate the owned encoder input golden without launching codec experiments. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestAudioEncoderWave() => AudioEncoderPoc.SelfTest();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: register fixed local-sound stream evidence without widening production or diagnostic command admission. */

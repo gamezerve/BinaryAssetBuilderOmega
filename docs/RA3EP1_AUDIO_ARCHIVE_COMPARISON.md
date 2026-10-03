@@ -1,5 +1,10 @@
 # Original audio archive comparison and read-only reconciliation
 
+Follow-up: [Native audio API audit and WAV encoder PoC](RA3EP1_AUDIO_ENCODER_POC.md)
+identifies the rejected output container 34 versus reference SND 39 and proves
+one owned mono RAM/streamed conversion. Runtime serialization and production
+audio registration remain unimplemented.
+
 Date: October 3, 2026. The four previously rejected custom-audio records are
 valid in the original archive and differ from the unpacked copies. No codec
 rules were relaxed, no game files were changed, and no output was extracted.

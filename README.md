@@ -16,13 +16,21 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**88 test groups** (some contain several fixtures). These counters can grow
+**90 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
-registered groups but does not execute them. The original audio archive comparison
-adds one group without changing model/marshaller counts; all 88 groups were executed.
+registered groups but does not execute them. Native PE evidence and the managed
+encoder WAV fixture add two groups without changing model/marshaller counts;
+all 90 groups were executed. Default tests do not invoke native codecs.
 
-Latest milestone: [Original audio archive comparison and reconciliation](docs/RA3EP1_AUDIO_ARCHIVE_COMPARISON.md).
+Latest milestone: [Native audio API audit and WAV encoder PoC](docs/RA3EP1_AUDIO_ENCODER_POC.md).
+The current library exports all 20 bindings, but rejects the existing source's
+LAYER3 output container 34. Reference SND container 39 succeeds in an opt-in
+worker: mono 48 kHz PCM -> codec 29 RAM/streamed output, with identical hashes
+across two runs and independently checked framing. Production audio code is
+unchanged; this is not an AudioFile runtime serializer, decoder or game-loading proof.
+
+[Original audio archive comparison and reconciliation](docs/RA3EP1_AUDIO_ARCHIVE_COMPARISON.md):
 All four rejected custom records are valid in the original Steam archive and
 differ from the shorter unpacked copies. An explicit verified in-memory overlay
 passes all 12,951 custom records / 281,614 blocks. No files are repaired or changed;
