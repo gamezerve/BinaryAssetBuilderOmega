@@ -21,7 +21,7 @@ internal static class Ep1AudioFileInputSmokeTest
             XmlElement root = AudioEncoderPoc.CreateDefinition(streamed); InstanceHandle identity = AudioEncoderPoc.Identity(root);
             var prepared = Ra3Ep1AudioFileInputProfile.Prepare(root,identity,TargetPlatform.Win32,wave);
             byte[] header = streamed ? streamHeader : Array.Empty<byte>();
-            Require(prepared.FileName == "input.wav" && prepared.InstanceName == "RebornAudioInput" && prepared.Streamed == streamed
+            Require(prepared.FileName == "input.wav" && prepared.InstanceName == (streamed ? "RebornAudioStream" : "RebornAudioRAM") && prepared.Streamed == streamed
                 && prepared.Codec == 29 && prepared.OutputContainer == 39 && prepared.Rate == 48000 && prepared.Samples == 12000 && prepared.Channels == 1,"Prepared fields differ.");
             AssetBuffer baseline = prepared.SerializeCurrent(root,identity,TargetPlatform.Win32,wave,header);
             Require(baseline.InstanceData.Length == (streamed ? 88 : 80) && baseline.RelocationData.Length == (streamed ? 12 : 8) && baseline.ImportsData.Length == 0,"Prepared runtime size differs.");

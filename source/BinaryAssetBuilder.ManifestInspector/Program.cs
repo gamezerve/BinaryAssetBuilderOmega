@@ -13,6 +13,8 @@ internal static class Program
     {
         try
         {
+            // Reborn: managed fixed-package fixtures never execute native codecs or activate production AudioFile compilation.
+            if (args.FirstOrDefault() == "audiofile-package-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioFilePackageSmokeTest.Run(); return 0; }
             // Reborn: authored input preparation is managed-only and remains separate from codec/plugin/stream admission.
             if (args.FirstOrDefault() == "ep1-audiofile-input-self-test") { CompilerSmokeTest.InitializeHashProvider(); Ep1AudioFileInputSmokeTest.Run(); return 0; }
             // Reborn: native AudioFile serialization proof optionally compares actual selected stock slices without registering an audio processor.
@@ -754,6 +756,8 @@ internal static class Program
         Console.WriteLine("  audiofile-serializer-self-test [unpacked-ep1-audio-manifest ...]");
         // Reborn: managed authored input checks do not invoke native codecs or write build output.
         Console.WriteLine("  ep1-audiofile-input-self-test");
+        // Reborn: packaging proof is synthetic by default; actual encoded packaging remains an explicit encoder PoC run.
+        Console.WriteLine("  audiofile-package-self-test");
         Console.WriteLine("  audiofile-runtime-audit <unpacked-ep1-manifest>");
         // Reborn: custom framing evidence commands neither decode audio nor admit an AudioFile processor.
         Console.WriteLine("  audio-custom-self-test");

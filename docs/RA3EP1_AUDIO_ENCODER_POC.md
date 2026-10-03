@@ -1,5 +1,9 @@
 # Native audio API audit and minimal WAV encoder PoC
 
+Packaging follow-up: [Fixed two-AudioFile diagnostic package](RA3EP1_AUDIOFILE_PACKAGE.md)
+adds verified v7/native/custom output to the opted-in encoder. InstanceHash is
+diagnostic and this still does not establish production or game compatibility.
+
 Subsequent input gate: [Checked authored AudioFile input profile](RA3EP1_AUDIOFILE_INPUT_PROFILE.md)
 freezes official-schema settings, identity and owned PCM before native initialization,
 then rechecks them before encoding and runtime output. Current PoC settings are

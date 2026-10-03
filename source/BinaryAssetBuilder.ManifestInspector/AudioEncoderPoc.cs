@@ -46,6 +46,9 @@ internal static class AudioEncoderPoc
         byte[] wave = ReadOwnedWave(input);
         var ramInput = Ra3Ep1AudioFileInputProfile.Prepare(ramRoot,ramId,TargetPlatform.Win32,wave);
         var streamInput = Ra3Ep1AudioFileInputProfile.Prepare(streamRoot,streamId,TargetPlatform.Win32,wave);
+        // Reborn: preserve the actual authored definitions as owned provenance, with distinct local AudioFile identities.
+        WriteOwned(Path.Combine(directory,"ram.xml"),System.Text.Encoding.UTF8.GetBytes(ramRoot.OuterXml));
+        WriteOwned(Path.Combine(directory,"streamed.xml"),System.Text.Encoding.UTF8.GetBytes(streamRoot.OuterXml));
         Console.WriteLine("Owned audio encoder PoC directory: "+directory);
         IntPtr module = NativeLibrary.Load(path);
         bool initialized = false;
@@ -53,9 +56,13 @@ internal static class AudioEncoderPoc
         {
             VoidCall init = Bind<VoidCall>(module,"SIMEX_init"),shutdown = Bind<VoidCall>(module,"SIMEX_shutdown");
             init(); initialized = true;
-            try { Encode(module,input,Path.Combine(directory,"ram"),ramRoot,ramId,ramInput); Encode(module,input,Path.Combine(directory,"streamed"),streamRoot,streamId,streamInput); }
+            AudioFilePackageProbe.Entry[] package;
+            try { package = new[] { Encode(module,input,Path.Combine(directory,"ram"),ramRoot,ramId,ramInput),Encode(module,input,Path.Combine(directory,"streamed"),streamRoot,streamId,streamInput) }; }
             finally { shutdown(); initialized = false; }
-            Console.WriteLine("Audio encoder PoC: OK; owned mono 48 kHz PCM WAV -> codec 29 RAM/streamed framing with checked EP1 runtime envelopes; no production registration or game-loading proof.");
+            // Reborn: only fully checked RAM/streamed results can enter a new staged diagnostic package after native shutdown.
+            string output = Path.Combine(directory,"package"); AudioFilePackageProbe.Publish(output,package); AudioFilePackageProbe.Verify(output,package);
+            Console.WriteLine("Owned diagnostic audio package: "+Path.Combine(output,"diagnostic.manifest"));
+            Console.WriteLine("Audio encoder PoC: OK; prepared PCM/XAS -> checked runtime/custom data -> two-entry diagnostic package; no production registration or game-loading proof.");
         }
         finally
         {
@@ -67,7 +74,7 @@ internal static class AudioEncoderPoc
     //-------------------------------------------------------------------------------------------------
     /** Reborn: encode one owned WAV using source-declared cdecl signatures, then independently validate generated framing. */
     //-------------------------------------------------------------------------------------------------
-    private static void Encode(IntPtr module,string input,string output,XmlElement root,InstanceHandle identity,Ra3Ep1AudioFileInputProfile.PreparedInput prepared)
+    private static AudioFilePackageProbe.Entry Encode(IntPtr module,string input,string output,XmlElement root,InstanceHandle identity,Ra3Ep1AudioFileInputProfile.PreparedInput prepared)
     {
         // Reborn: preparation must still match the actual owned input immediately before starting native work.
         prepared.VerifyCurrent(root,identity,TargetPlatform.Win32,ReadOwnedWave(input)); bool streamed = prepared.Streamed;
@@ -104,6 +111,10 @@ internal static class AudioEncoderPoc
         Console.WriteLine($"  EP1 raw runtime: BIN={runtime.InstanceData.Length}, RELO={runtime.RelocationData.Length}, IMP={runtime.ImportsData.Length}; no linked manifest/container emitted");
         encoded.Position = 0;
         Console.WriteLine($"  {(streamed ? "streamed" : "RAM")}: header={Convert.ToHexString(header)}, bytes={framing.Bytes}, blocks={framing.Blocks}, tag={framing.CodecTag:X2}, sha256={Convert.ToHexString(SHA256.HashData(encoded))}");
+        // Reborn: own a bounded copy of the complete encoded payload; package verification cannot rely on subsequent source-file reads.
+        if (encoded.Length > 1048576) throw new InvalidDataException("Owned audio package payload exceeds proof bound.");
+        encoded.Position = 0; byte[] payload = new byte[checked((int)encoded.Length)]; encoded.ReadExactly(payload);
+        return new AudioFilePackageProbe.Entry(identity.InstanceName,streamed ? "streamed.xml" : "ram.xml",runtime,payload);
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -167,7 +178,7 @@ internal static class AudioEncoderPoc
         // Reborn: resolve only the checked-in harness's official relative schema includes; authored XML still has no resolver.
         document.Schemas.XmlResolver = new XmlUrlResolver();
         document.Schemas.Add("uri:ea.com:eala:asset",fixture);
-        document.LoadXml($"<AudioFile xmlns=\"uri:ea.com:eala:asset\" id=\"RebornAudioInput\" File=\"input.wav\" PCSampleRate=\"48000\" PCCompression=\"XAS\" IsStreamedOnPC=\"{(streamed ? "true" : "false")}\" SubtitleStringName=\"DIALOGEVENT:reborn_audio_encoder_pocSubTitle\" />");
+        document.LoadXml($"<AudioFile xmlns=\"uri:ea.com:eala:asset\" id=\"{(streamed ? "RebornAudioStream" : "RebornAudioRAM")}\" File=\"input.wav\" PCSampleRate=\"48000\" PCCompression=\"XAS\" IsStreamedOnPC=\"{(streamed ? "true" : "false")}\" SubtitleStringName=\"DIALOGEVENT:reborn_audio_encoder_pocSubTitle\" />");
         document.Validate((_, args) => throw new XmlSchemaValidationException(args.Message)); return document.DocumentElement!;
     }
 

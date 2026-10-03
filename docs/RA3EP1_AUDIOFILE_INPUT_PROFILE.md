@@ -1,5 +1,10 @@
 # Checked authored AudioFile input profile
 
+Follow-up: [Fixed two-AudioFile diagnostic package](RA3EP1_AUDIOFILE_PACKAGE.md)
+now stages the opt-in encoded results with manifest/native/custom files. It uses
+distinct RAM/streamed identities and diagnostic content hashes; the complete
+plugin/file-resolution/mixed-stream gates described below remain open.
+
 Date: October 4, 2026. Follow-up to [runtime serialization](RA3EP1_AUDIOFILE_SERIALIZATION.md).
 This stage adds the managed input boundary needed before an isolated AudioFile
 compiler entry. It is not that complete plugin entry or a linked package.
