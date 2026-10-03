@@ -1,5 +1,9 @@
 # AudioFile runtime envelope and streamed boundary
 
+October 4 follow-up: [Isolated EP1 AudioFile runtime serialization](RA3EP1_AUDIOFILE_SERIALIZATION.md)
+matches two complete stock native slices and binds the opt-in WAV encoder proof
+to independently reread runtime fields. This does not activate production compilation.
+
 Follow-up: [Custom audio framing and four rejected records](RA3EP1_AUDIO_CUSTOM_FRAMING.md)
 checks all mapped custom files: 12,947 pass and four reject. Native envelope
 success remains separate; no complete corpus/codec compatibility is claimed.

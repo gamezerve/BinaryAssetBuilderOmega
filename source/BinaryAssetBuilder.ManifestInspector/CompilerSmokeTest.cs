@@ -18,6 +18,8 @@ internal static class CompilerSmokeTest
         TestAudioEventNative();
         // Reborn: recover AudioFile envelopes without changing the legacy runtime ABI or opening codec generation.
         TestAudioFileRuntime();
+        // Reborn: independent runtime bytes must match stock while the legacy AudioFile ABI remains unchanged.
+        TestAudioFileSerialization();
         // Reborn: custom sound frame boundaries must agree with native totals without decoding compressed payloads.
         TestAudioCustomData();
         // Reborn: pin original/unpacked comparison boundaries without modifying reference corpus files.
@@ -2165,6 +2167,11 @@ internal static class CompilerSmokeTest
     /** Reborn: validate the recovered fixed AudioFile prefix and bounded optional native ranges. */
     //-------------------------------------------------------------------------------------------------
     private static void TestAudioFileRuntime() => AudioFileRuntimeProbe.SelfTest();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: prove isolated EP1 AudioFile runtime serialization without enabling codecs or production asset entries. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestAudioFileSerialization() => AudioFileSerializationSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: guard custom block envelopes separately from native ABI and codec processing. */

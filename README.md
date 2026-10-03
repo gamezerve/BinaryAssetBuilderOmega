@@ -1,7 +1,7 @@
 # BinaryAssetBuilder
 A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
-## Uprising progress — October 3, 2026
+## Uprising progress — October 4, 2026
 
 Active branch: `feature/ra3ep1-manifest-inspector`. This is not yet a usable
 Uprising Mod SDK release. Replacing XML/XSD files alone is insufficient:
@@ -16,19 +16,26 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**90 test groups** (some contain several fixtures). These counters can grow
+**91 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
-encoder WAV fixture add two groups without changing model/marshaller counts;
-all 90 groups were executed. Default tests do not invoke native codecs.
+encoder WAV fixture and isolated AudioFile serializer add groups without changing
+model/marshaller counts; all 91 groups were executed. Default tests do not invoke native codecs.
 
-Latest milestone: [Native audio API audit and WAV encoder PoC](docs/RA3EP1_AUDIO_ENCODER_POC.md).
+Latest milestone: [Isolated EP1 AudioFile runtime serialization](docs/RA3EP1_AUDIOFILE_SERIALIZATION.md).
+A separate 32-byte serializer matches complete BIN/RELO/IMP slices of two real
+RAM/streamed records (76/8/0 and 88/12/0 bytes). Alignment, ownership and invalid
+inputs are tested. The opt-in WAV experiment now validates encoded custom data
+against independently reread serialized runtime fields and saves raw native buffers.
+No AudioFile XML/compiler admission, linked manifest packaging or game loading is enabled.
+
+[Native audio API audit and WAV encoder PoC](docs/RA3EP1_AUDIO_ENCODER_POC.md).
 The current library exports all 20 bindings, but rejects the existing source's
 LAYER3 output container 34. Reference SND container 39 succeeds in an opt-in
 worker: mono 48 kHz PCM -> codec 29 RAM/streamed output, with identical hashes
 across two runs and independently checked framing. Production audio code is
-unchanged; this is not an AudioFile runtime serializer, decoder or game-loading proof.
+unchanged; the subsequent isolated serializer does not establish decoder or game-loading compatibility.
 
 [Original audio archive comparison and reconciliation](docs/RA3EP1_AUDIO_ARCHIVE_COMPARISON.md):
 All four rejected custom records are valid in the original Steam archive and

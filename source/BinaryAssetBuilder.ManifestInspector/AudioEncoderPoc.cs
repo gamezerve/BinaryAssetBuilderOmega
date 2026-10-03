@@ -1,5 +1,8 @@
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+// Reborn: optional owned encoding evidence now carries the checked EP1 envelope, never legacy audio output.
+using BinaryAssetBuilder.Core;
+using BinaryAssetBuilder.XmlCompiler;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
@@ -43,7 +46,7 @@ internal static class AudioEncoderPoc
             init(); initialized = true;
             try { Encode(module,input,Path.Combine(directory,"ram"),false); Encode(module,input,Path.Combine(directory,"streamed"),true); }
             finally { shutdown(); initialized = false; }
-            Console.WriteLine("Audio encoder PoC: OK; owned mono 48 kHz PCM WAV -> codec 29 RAM/streamed framing; no runtime serialization, production registration or game-loading proof.");
+            Console.WriteLine("Audio encoder PoC: OK; owned mono 48 kHz PCM WAV -> codec 29 RAM/streamed framing with checked EP1 runtime envelopes; no production registration or game-loading proof.");
         }
         finally
         {
@@ -79,7 +82,13 @@ internal static class AudioEncoderPoc
         byte[] header = streamed ? File.ReadAllBytes(snr) : Array.Empty<byte>();
         if (streamed && header.Length != 8) throw new InvalidDataException("Unexpected generated streamed SNR size.");
         using FileStream encoded = File.OpenRead(custom);
-        AudioCustomDataProbe.Result framing = AudioCustomDataProbe.Inspect(encoded,new AudioFileRuntimeProbe.Header(0,0,12000,48000,streamed ? 32u : 0u,streamed ? 8u : 0u,1),header);
+        // Reborn: bind generated custom framing to independently parsed serialized EP1 fields, not hardcoded fake native metadata.
+        AssetBuffer runtime = Ra3Ep1AudioFileRuntimeSerializer.Serialize(TargetPlatform.Win32,"DIALOGEVENT:reborn_audio_encoder_pocSubTitle",12000,48000,1,header);
+        AudioFileRuntimeProbe.Header parsed = AudioFileRuntimeProbe.Parse(runtime.InstanceData,runtime.InstanceData.Length);
+        byte[] inline = parsed.HeaderSize == 0 ? Array.Empty<byte>() : runtime.InstanceData.AsSpan(checked((int)parsed.HeaderPointer),checked((int)parsed.HeaderSize)).ToArray();
+        AudioCustomDataProbe.Result framing = AudioCustomDataProbe.Inspect(encoded,parsed,inline);
+        WriteOwned(output+".runtime.bin",runtime.InstanceData); WriteOwned(output+".runtime.relo",runtime.RelocationData);
+        Console.WriteLine($"  EP1 raw runtime: BIN={runtime.InstanceData.Length}, RELO={runtime.RelocationData.Length}, IMP={runtime.ImportsData.Length}; no linked manifest/container emitted");
         encoded.Position = 0;
         Console.WriteLine($"  {(streamed ? "streamed" : "RAM")}: header={Convert.ToHexString(header)}, bytes={framing.Bytes}, blocks={framing.Blocks}, tag={framing.CodecTag:X2}, sha256={Convert.ToHexString(SHA256.HashData(encoded))}");
     }
@@ -100,6 +109,14 @@ internal static class AudioEncoderPoc
     private static void WriteWave(string path)
     {
         using FileStream stream = new(path,FileMode.CreateNew,FileAccess.Write); WriteWave(stream);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: preserve only raw native evidence in the fresh owned PoC directory; never overwrite existing artifacts. */
+    //-------------------------------------------------------------------------------------------------
+    private static void WriteOwned(string path,byte[] bytes)
+    {
+        using FileStream stream = new(path,FileMode.CreateNew,FileAccess.Write); stream.Write(bytes);
     }
 
     //-------------------------------------------------------------------------------------------------

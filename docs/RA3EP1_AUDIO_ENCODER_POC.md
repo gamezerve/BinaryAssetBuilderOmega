@@ -1,5 +1,10 @@
 # Native audio API audit and minimal WAV encoder PoC
 
+October 4 follow-up: [Isolated EP1 AudioFile runtime serialization](RA3EP1_AUDIOFILE_SERIALIZATION.md)
+adds raw runtime output to the opt-in experiment and validates custom blocks
+against independently reread fields. The original observations below remain
+historical evidence; a production AudioFile compiler and linked packaging are still absent.
+
 Date: October 3, 2026. An isolated encoder experiment succeeded for one fixed
 mono PCM input and codec setting. This is not an AudioFile compiler, decoded
 audio/playback proof or Uprising loading proof. Overall effort remains

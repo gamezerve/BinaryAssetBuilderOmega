@@ -13,6 +13,8 @@ internal static class Program
     {
         try
         {
+            // Reborn: native AudioFile serialization proof optionally compares actual selected stock slices without registering an audio processor.
+            if (args.FirstOrDefault() == "audiofile-serializer-self-test") { AudioFileSerializationSmokeTest.Run(args.Skip(1).ToArray()); return 0; }
             // Reborn: inspect audio library API evidence without invoking DLL entry points or codecs.
             if (args.FirstOrDefault() == "native-audio-api-audit" && args.Length == 2) { NativeAudioApiProbe.Run(args[1]); return 0; }
             // Reborn: default-compatible audio regressions inspect PE data and managed WAV bytes but never initialize native codecs.
@@ -746,6 +748,8 @@ internal static class Program
         Console.WriteLine("  assembly-fields <managed-assembly> <type-name>");
         // Reborn: document bounded AudioFile evidence commands without implying an encoder or public asset profile.
         Console.WriteLine("  audiofile-runtime-self-test");
+        // Reborn: serialization evidence is separate from production compilation and custom-data packaging.
+        Console.WriteLine("  audiofile-serializer-self-test [unpacked-ep1-audio-manifest ...]");
         Console.WriteLine("  audiofile-runtime-audit <unpacked-ep1-manifest>");
         // Reborn: custom framing evidence commands neither decode audio nor admit an AudioFile processor.
         Console.WriteLine("  audio-custom-self-test");
