@@ -28,8 +28,10 @@ internal static class AudioEncoderPoc
     //-------------------------------------------------------------------------------------------------
     /** Reborn: pin architecture/hash/exports before invoking native code in an explicitly launched disposable CLI process. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string path,bool useCore = false)
+    internal static void Run(string path,bool useCore = false,AudioEncoderFaultAudit? audit = null)
     {
+        // Reborn: fault injection is restricted to the isolated real-core path, never silently applied to another workflow.
+        if (audit != null && !useCore) throw new NotSupportedException("Audio fault injection requires core preparation.");
         path = Path.GetFullPath(path);
         if (!OperatingSystem.IsWindows() || RuntimeInformation.ProcessArchitecture != Architecture.X86)
             throw new NotSupportedException("Audio encoder PoC requires a Windows x86 worker process.");
@@ -40,6 +42,8 @@ internal static class AudioEncoderPoc
             throw new InvalidDataException("Audio encoder PoC only admits the audited native library.");
         string directory = Path.Combine(Path.GetTempPath(),"Reborn-AudioEncoder-"+Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory); string input = Path.Combine(directory,"input.wav"); WriteWave(input);
+        // Reborn: fault injection can access only this newly created worker-owned fixture directory.
+        audit?.SetDirectory(directory);
         // Reborn: freeze both authored play locations and owned WAV before native initialization; unsupported XML cannot start encoding.
         XmlElement ramRoot = CreateDefinition(false),streamRoot = CreateDefinition(true);
         InstanceHandle ramId = Identity(ramRoot),streamId = Identity(streamRoot);
@@ -67,12 +71,14 @@ internal static class AudioEncoderPoc
         try
         {
             VoidCall init = Bind<VoidCall>(module,"SIMEX_init"),shutdown = Bind<VoidCall>(module,"SIMEX_shutdown");
-            init(); initialized = true;
+            init(); initialized = true; audit?.Lifecycle("init");
             AudioFilePackageProbe.Entry[] package;
-            try { package = new[] { Encode(module,input,Path.Combine(directory,"ram"),ramRoot,ramId,ramInput,ramCore,ramPrepared),Encode(module,input,Path.Combine(directory,"streamed"),streamRoot,streamId,streamInput,streamCore,streamPrepared) }; }
-            finally { shutdown(); initialized = false; }
+            try { package = new[] { Encode(module,input,Path.Combine(directory,"ram"),ramRoot,ramId,ramInput,ramCore,ramPrepared,audit),Encode(module,input,Path.Combine(directory,"streamed"),streamRoot,streamId,streamInput,streamCore,streamPrepared,audit) }; }
+            finally { shutdown(); initialized = false; audit?.Lifecycle("shutdown"); }
             // Reborn: only fully checked RAM/streamed results can enter a new staged diagnostic package after native shutdown.
             CoreAudioPackageGate.Binding[]? bindings = useCore ? new[] { new CoreAudioPackageGate.Binding(ramCore!,ramPrepared!,package[0]),new CoreAudioPackageGate.Binding(streamCore!,streamPrepared!,package[1]) } : null;
+            // Reborn: test actual source changes only after both native results and shutdown, before any package staging.
+            audit?.Phase("before-publish");
             string output = Path.Combine(directory,"package");
             if (bindings != null) CoreAudioPackageGate.Publish(output,bindings); else AudioFilePackageProbe.Publish(output,package);
             AudioFilePackageProbe.Verify(output,package);
@@ -95,14 +101,14 @@ internal static class AudioEncoderPoc
         finally
         {
             // Reborn: unload only this process's pinned module after native handles have been closed; preserve owned outputs as evidence.
-            if (!initialized) NativeLibrary.Free(module);
+            if (!initialized) { NativeLibrary.Free(module); audit?.Lifecycle("unload"); }
         }
     }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: encode one owned WAV using source-declared cdecl signatures, then independently validate generated framing. */
     //-------------------------------------------------------------------------------------------------
-    private static AudioFilePackageProbe.Entry Encode(IntPtr module,string input,string output,XmlElement root,InstanceHandle identity,Ra3Ep1AudioFileInputProfile.PreparedInput prepared,InstanceDeclaration? core = null,AudioFileCorePreparation? corePrepared = null)
+    private static AudioFilePackageProbe.Entry Encode(IntPtr module,string input,string output,XmlElement root,InstanceHandle identity,Ra3Ep1AudioFileInputProfile.PreparedInput prepared,InstanceDeclaration? core = null,AudioFileCorePreparation? corePrepared = null,AudioEncoderFaultAudit? audit = null)
     {
         // Reborn: actual core mode encodes a new frozen PCM snapshot, not a later reopened mutable source dependency.
         if ((core == null) != (corePrepared == null)) throw new InvalidDataException("Core audio encoding requires paired instance/preparation.");
@@ -121,17 +127,26 @@ internal static class AudioEncoderPoc
         IntPtr source = IntPtr.Zero,target = IntPtr.Zero,info = IntPtr.Zero;
         try
         {
-            if (identify(input,0) != 1 || open(input,0,1,out source) != 1 || source == IntPtr.Zero) Fail(module,"WAV open");
-            if (getInfo(source,out info,0) <= 0 || info == IntPtr.Zero || read(source,info,0) <= 0) Fail(module,"WAV info/read");
+            if (identify(input,0) != 1) Fail(module,"WAV identify");
+            int openStatus = open(input,0,1,out source); if (source != IntPtr.Zero) audit?.Acquired("source");
+            if (openStatus != 1 || source == IntPtr.Zero) Fail(module,"WAV open"); audit?.Phase("after-open");
+            int infoStatus = getInfo(source,out info,0); if (info != IntPtr.Zero) audit?.Acquired("info");
+            if (infoStatus <= 0 || info == IntPtr.Zero || read(source,info,0) <= 0) Fail(module,"WAV info/read"); audit?.Phase("after-info");
             int rate = Bind<Getter>(module,"SIMEX_getsamplerate")(info),samples = Bind<Getter>(module,"SIMEX_getnumsamples")(info),channels = Bind<Getter>(module,"SIMEX_getchannelconfig")(info);
             if (rate != prepared.Rate || samples != prepared.Samples || channels != prepared.Channels) throw new InvalidDataException("Native input getters disagree with the prepared WAV.");
             Bind<Setter>(module,"SIMEX_setcodec")(info,prepared.Codec); Bind<Setter>(module,"SIMEX_setplayloc")(info,streamed ? 4096 : 2048);
             // Reborn: reference AudioCompiler IL_0524 uses SND 39; legacy LAYER3 34 was rejected by this audited native library.
-            if (create(output,prepared.OutputContainer,out target) <= 0 || target == IntPtr.Zero || write(target,info,0) <= 0) Fail(module,"encoded create/write");
+            // Reborn: the audited DLL crashed on a nonexistent output parent; reject unsafe/existing/reparse output paths before native create.
+            string nativeOutput = audit?.OutputPath(output) ?? output; ValidateNativeOutputPrefix(nativeOutput);
+            int createStatus = create(nativeOutput,prepared.OutputContainer,out target); if (target != IntPtr.Zero) audit?.Acquired("target");
+            if (createStatus <= 0 || target == IntPtr.Zero) Fail(module,"encoded create"); audit?.Phase("after-create");
+            if (write(target,info,0) <= 0) Fail(module,"encoded write"); audit?.Phase("after-write");
             // Reborn: close exactly once; retain the raw status instead of guessing fclose-style versus SIMEX-style success semantics.
-            int closeStatus = wclose(target); target = IntPtr.Zero; Console.WriteLine($"  native output close status={closeStatus}");
+            int closeStatus = Release(ref target,value => wclose(value),"target",audit); Console.WriteLine($"  native output close status={closeStatus}");
         }
-        finally { if (target != IntPtr.Zero) wclose(target); if (info != IntPtr.Zero) free(info); if (source != IntPtr.Zero) close(source); }
+        // Reborn: one cleanup failure must not skip remaining resources; detach each pointer before attempting its release once.
+        finally { Cleanup(ref target,ref info,ref source,value => wclose(value),value => free(value),value => close(value),audit); }
+        audit?.Phase("after-encode");
         string snr = output+".snr",custom = streamed ? output+".sns" : snr;
         if (streamed && new FileInfo(snr).Length != 8) throw new InvalidDataException("Unexpected generated streamed SNR size.");
         byte[] header = streamed ? File.ReadAllBytes(snr) : Array.Empty<byte>();
@@ -158,6 +173,41 @@ internal static class AudioEncoderPoc
     /** Reborn: resolve an explicitly named audited export without implicit library search or delegate guessing. */
     //-------------------------------------------------------------------------------------------------
     private static T Bind<T>(IntPtr module,string name) where T : Delegate => Marshal.GetDelegateForFunctionPointer<T>(NativeLibrary.GetExport(module,name));
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: detach a nonzero handle before exactly one release attempt and record only calls that actually return. */
+    //-------------------------------------------------------------------------------------------------
+    private static int Release(ref IntPtr handle,Func<IntPtr,int> release,string kind,AudioEncoderFaultAudit? audit)
+    {
+        if (handle == IntPtr.Zero) return 0;
+        IntPtr owned = handle; handle = IntPtr.Zero; int status = release(owned); audit?.Released(kind,status); return status;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: independent finally paths attempt every remaining resource even if an earlier release throws; managed tests use no native handles. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void Cleanup(ref IntPtr target,ref IntPtr info,ref IntPtr source,Func<IntPtr,int> closeTarget,Func<IntPtr,int> freeInfo,Func<IntPtr,int> closeSource,AudioEncoderFaultAudit? audit = null)
+    {
+        try { Release(ref target,closeTarget,"target",audit); }
+        finally { try { Release(ref info,freeInfo,"info",audit); } finally { Release(ref source,closeSource,"source",audit); } }
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: reject known-unsafe native output conditions before SIMEX_create; other native failures still require worker isolation. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void ValidateNativeOutputPrefix(string output)
+    {
+        if (!Path.IsPathFullyQualified(output) || !Directory.Exists(Path.GetDirectoryName(output)))
+            throw new InvalidDataException("Native audio output requires an existing absolute parent; invalid-parent calls are unsafe.");
+        string leaf = Path.GetFileName(output);
+        if (leaf.Length is < 1 or > 128 || leaf.Contains("..",StringComparison.Ordinal)
+            || leaf.Any(value => !(value is >= 'a' and <= 'z' or >= 'A' and <= 'Z' or >= '0' and <= '9' or '_' or '-')))
+            throw new InvalidDataException("Native audio output requires a bounded simple prefix.");
+        for (string? directory = Path.GetDirectoryName(output); directory != null; directory = Path.GetDirectoryName(directory))
+            if ((File.GetAttributes(directory) & FileAttributes.ReparsePoint) != 0) throw new InvalidDataException("Native output does not admit reparse ancestry.");
+        foreach (string candidate in new[] { output,output+".snr",output+".sns" })
+            if (File.Exists(candidate) || Directory.Exists(candidate)) throw new InvalidDataException("Native audio output must not replace an existing artifact.");
+    }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: report native errors and abort the experiment instead of publishing partial build output. */

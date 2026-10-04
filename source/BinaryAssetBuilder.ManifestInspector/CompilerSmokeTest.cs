@@ -19,6 +19,8 @@ internal static class CompilerSmokeTest
         TestCoreAudioFilePreparation();
         // Reborn: publication must recheck actual core audio bindings even when compressed framing is synthetic in default tests.
         TestCoreAudioPackageGate();
+        // Reborn: native cleanup control flow is tested with managed callbacks so default tests never load codecs.
+        TestAudioEncoderCleanup();
         TestAttributeModifier();
         // Reborn: exercise isolated EP1 sound records while retaining the legacy child ABI.
         TestMultisoundNative();
@@ -2221,6 +2223,11 @@ internal static class CompilerSmokeTest
     /** Reborn: prove stale current-source/runtime rejection at the same gate used by optional native core encoding. */
     //-------------------------------------------------------------------------------------------------
     private static void TestCoreAudioPackageGate() => CoreAudioPackageGateSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: one failed close callback must not suppress other cleanup or leave handles eligible for repeated release. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestAudioEncoderCleanup() => AudioEncoderCleanupSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: guard custom block envelopes separately from native ABI and codec processing. */
