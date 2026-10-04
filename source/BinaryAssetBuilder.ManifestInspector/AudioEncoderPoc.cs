@@ -28,10 +28,12 @@ internal static class AudioEncoderPoc
     //-------------------------------------------------------------------------------------------------
     /** Reborn: pin architecture/hash/exports before invoking native code in an explicitly launched disposable CLI process. */
     //-------------------------------------------------------------------------------------------------
-    internal static string Run(string path,bool useCore = false,AudioEncoderFaultAudit? audit = null,string? ownedDirectory = null)
+    internal static string Run(string path,bool useCore = false,AudioEncoderFaultAudit? audit = null,string? ownedDirectory = null,AuthoredAudioSnapshot? authored = null)
     {
         // Reborn: fault injection is restricted to the isolated real-core path, never silently applied to another workflow.
         if (audit != null && !useCore) throw new NotSupportedException("Audio fault injection requires core preparation.");
+        // Reborn: authored snapshots are admitted only through isolated current-core encoding, never the legacy authored-only path.
+        if (authored != null && (!useCore || audit != null)) throw new NotSupportedException("Authored snapshots require the supervised core path without fault injection.");
         path = Path.GetFullPath(path);
         if (!OperatingSystem.IsWindows() || RuntimeInformation.ProcessArchitecture != Architecture.X86)
             throw new NotSupportedException("Audio encoder PoC requires a Windows x86 worker process.");
@@ -44,7 +46,8 @@ internal static class AudioEncoderPoc
         // Reborn: a supervised worker may receive only a fresh empty owned result directory, never overwrite earlier evidence.
         if (ownedDirectory != null && Directory.Exists(directory) && Directory.EnumerateFileSystemEntries(directory).Any())
             throw new InvalidDataException("Supervised audio directory must be empty.");
-        Directory.CreateDirectory(directory); string input = Path.Combine(directory,"input.wav"); WriteWave(input);
+        Directory.CreateDirectory(directory); string input = Path.Combine(directory,"input.wav");
+        if (authored != null) authored.Install(directory); else WriteWave(input);
         // Reborn: fault injection can access only this newly created worker-owned fixture directory.
         audit?.SetDirectory(directory);
         // Reborn: freeze both authored play locations and owned WAV before native initialization; unsupported XML cannot start encoding.
@@ -54,8 +57,11 @@ internal static class AudioEncoderPoc
         var ramInput = Ra3Ep1AudioFileInputProfile.Prepare(ramRoot,ramId,TargetPlatform.Win32,wave);
         var streamInput = Ra3Ep1AudioFileInputProfile.Prepare(streamRoot,streamId,TargetPlatform.Win32,wave);
         // Reborn: preserve the actual authored definitions as owned provenance, with distinct local AudioFile identities.
-        WriteOwned(Path.Combine(directory,"ram.xml"),System.Text.Encoding.UTF8.GetBytes(useCore ? CoreSource(false) : ramRoot.OuterXml));
-        WriteOwned(Path.Combine(directory,"streamed.xml"),System.Text.Encoding.UTF8.GetBytes(useCore ? CoreSource(true) : streamRoot.OuterXml));
+        if (authored == null)
+        {
+            WriteOwned(Path.Combine(directory,"ram.xml"),System.Text.Encoding.UTF8.GetBytes(useCore ? CoreSource(false) : ramRoot.OuterXml));
+            WriteOwned(Path.Combine(directory,"streamed.xml"),System.Text.Encoding.UTF8.GetBytes(useCore ? CoreSource(true) : streamRoot.OuterXml));
+        }
         // Reborn: optional actual core identities are prepared before native initialization, with no production AudioFile registration.
         InstanceDeclaration? ramCore = null,streamCore = null;
         AudioFileCorePreparation? ramPrepared = null,streamPrepared = null;

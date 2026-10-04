@@ -11,13 +11,15 @@ namespace BinaryAssetBuilder.ManifestInspector;
 internal static class AudioEncoderSupervisor
 {
     // Reborn: versioned job/result metadata never supplies an authoritative output root or production hash.
-    internal sealed record Request(int Version,string Nonce,string Library,string Mode);
+    internal sealed record Request(int Version,string Nonce,string Library,string Mode,Item[]? Inputs = null);
     internal sealed record Item(string Path,long Length,string Sha256);
     internal sealed record Result(int Version,string Nonce,Item[] Files);
     private sealed record Captured(string Text,bool Overflow);
     private static readonly JsonSerializerOptions JsonOptions = new() { UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow };
     private const int LogLimit = 65536;
     private const string Prefix = "Reborn-SupervisedAudio-";
+    // Reborn: protocol v2 binds an optional authored three-file snapshot; older v1 jobs are not silently reused.
+    private const int ProtocolVersion = 2;
     internal static readonly string[] TestModes = { "exit","crash-exit","timeout","missing-result","malformed-result","wrong-nonce","log-overflow","fake-success","escape-path","duplicate-key","unknown-field","oversized-result" };
     // Reborn: real native tamper tests remain explicitly opt-in, separate from all default managed worker tests.
     private static readonly string[] NativeTestModes = { "encode-tamper","encode-corrupt-package" };
@@ -25,14 +27,18 @@ internal static class AudioEncoderSupervisor
     //-------------------------------------------------------------------------------------------------
     /** Reborn: create one owned job, launch only this apphost without a visible window, enforce exit/time/log limits and verify results before acceptance. */
     //-------------------------------------------------------------------------------------------------
-    internal static string Run(string library,string mode = "encode",int timeoutMs = 30000,Action<string>? jobCreated = null)
+    internal static string Run(string library,string mode = "encode",int timeoutMs = 30000,Action<string>? jobCreated = null,AuthoredAudioSnapshot? authored = null)
     {
-        if (mode != "encode" && !TestModes.Contains(mode,StringComparer.Ordinal) && !NativeTestModes.Contains(mode,StringComparer.Ordinal)) throw new ArgumentException("Unknown supervised worker mode.");
+        if (mode != "encode" && mode != "encode-authored" && !TestModes.Contains(mode,StringComparer.Ordinal) && !NativeTestModes.Contains(mode,StringComparer.Ordinal)) throw new ArgumentException("Unknown supervised worker mode.");
+        if ((mode == "encode-authored") != (authored != null)) throw new InvalidDataException("Authored mode requires a validated input snapshot.");
         if (timeoutMs is < 100 or > 30000) throw new ArgumentOutOfRangeException(nameof(timeoutMs));
         string exe = Environment.ProcessPath ?? throw new NotSupportedException("An inspector apphost is required.");
         if (!exe.EndsWith("BinaryAssetBuilder.ManifestInspector.exe",StringComparison.OrdinalIgnoreCase)) throw new NotSupportedException("Supervisor requires the Windows inspector apphost.");
         string nonce = Guid.NewGuid().ToString("N"); string job = Path.Combine(Path.GetTempPath(),Prefix+nonce);
-        Directory.CreateDirectory(job); WriteNew(Path.Combine(job,"request.json"),JsonSerializer.SerializeToUtf8Bytes(new Request(1,nonce,Path.GetFullPath(library),mode),JsonOptions));
+        Directory.CreateDirectory(job);
+        Item[]? inputs = null;
+        if (authored != null) { string inputRoot = Path.Combine(job,"inputs"); authored.Install(inputRoot); inputs = Inventory(inputRoot); }
+        WriteNew(Path.Combine(job,"request.json"),JsonSerializer.SerializeToUtf8Bytes(new Request(ProtocolVersion,nonce,Path.GetFullPath(library),mode,inputs),JsonOptions));
         // Reborn: managed regressions can inspect the exact owned job after rejection without parsing worker output or guessing paths.
         jobCreated?.Invoke(job);
         Console.WriteLine("Owned supervised audio job: "+job);
@@ -59,8 +65,10 @@ internal static class AudioEncoderSupervisor
         if (timedOut) throw new InvalidDataException("Audio worker timed out; partial evidence retained, no acceptance.");
         if (process.ExitCode != 0) throw new InvalidDataException($"Audio worker exit={process.ExitCode}; partial evidence retained, no acceptance.");
         if (stdout.Result.Overflow || stderr.Result.Overflow) throw new InvalidDataException("Audio worker log limit exceeded; no acceptance.");
-        ValidateResult(job,nonce);
-        WriteNew(Path.Combine(job,"ACCEPTED.json"),JsonSerializer.SerializeToUtf8Bytes(new { Version = 1,Nonce = nonce,DiagnosticOnly = true },JsonOptions));
+        ValidateResult(job,nonce,authored);
+        // Reborn: worker success cannot authorize a stale caller source; reread original inputs before acceptance without writing them.
+        authored?.VerifyCurrent();
+        WriteNew(Path.Combine(job,"ACCEPTED.json"),JsonSerializer.SerializeToUtf8Bytes(new { Version = ProtocolVersion,Nonce = nonce,DiagnosticOnly = true },JsonOptions));
         Console.WriteLine("Supervised audio: ACCEPTED (exit=0, bounded protocol/hash inventory and independent package/core readback; diagnostic only).");
         return job;
     }
@@ -73,7 +81,14 @@ internal static class AudioEncoderSupervisor
         job = Path.GetFullPath(job);
         if (!Guid.TryParseExact(nonce,"N",out _) || job != Path.Combine(Path.GetTempPath(),Prefix+nonce)) throw new InvalidDataException("Worker job root/nonce differs.");
         Request request = ReadJson<Request>(Path.Combine(job,"request.json"));
-        if (request.Version != 1 || request.Nonce != nonce || (request.Mode != "encode" && !TestModes.Contains(request.Mode,StringComparer.Ordinal) && !NativeTestModes.Contains(request.Mode,StringComparer.Ordinal))) throw new InvalidDataException("Worker request differs.");
+        if (request.Version != ProtocolVersion || request.Nonce != nonce || (request.Mode != "encode" && request.Mode != "encode-authored" && !TestModes.Contains(request.Mode,StringComparer.Ordinal) && !NativeTestModes.Contains(request.Mode,StringComparer.Ordinal))) throw new InvalidDataException("Worker request differs.");
+        AuthoredAudioSnapshot? authored = null;
+        if (request.Mode == "encode-authored")
+        {
+            string inputs = Path.Combine(job,"inputs"); Item[] actualInputs = Inventory(inputs);
+            if (request.Inputs == null || request.Inputs.Length != 3 || actualInputs.Length != 3 || actualInputs.Any(item => !request.Inputs.Contains(item))) throw new InvalidDataException("Worker authored snapshot inventory differs.");
+        }
+        else if (request.Inputs != null) throw new InvalidDataException("Unexpected authored worker inputs.");
         string result = Path.Combine(job,"result.json"),work = Path.Combine(job,"worker");
         if (request.Mode == "exit") { Environment.Exit(37); return; }
         // Reborn: simulate an access-violation exit code without crashing or loading native code; do not repeat the known unsafe DLL condition.
@@ -88,15 +103,18 @@ internal static class AudioEncoderSupervisor
         if (request.Mode is "wrong-nonce" or "fake-success" or "escape-path")
         {
             Item[] files = request.Mode == "escape-path" ? new[] { new Item("../request.json",1,new string('0',64)) } : Array.Empty<Item>();
-            WriteNew(result,JsonSerializer.SerializeToUtf8Bytes(new Result(1,request.Mode == "wrong-nonce" ? new string('0',32) : nonce,files),JsonOptions)); return;
+            WriteNew(result,JsonSerializer.SerializeToUtf8Bytes(new Result(ProtocolVersion,request.Mode == "wrong-nonce" ? new string('0',32) : nonce,files),JsonOptions)); return;
         }
-        CompilerSmokeTest.InitializeHashProvider(); AudioEncoderPoc.Run(request.Library,true,null,work);
+        CompilerSmokeTest.InitializeHashProvider();
+        // Reborn: input validation needs the managed symbol tables, never the native codec; synthetic transport failures above bypass this branch.
+        authored = request.Mode == "encode-authored" ? AuthoredAudioSnapshot.Read(Path.Combine(job,"inputs")) : null;
+        AudioEncoderPoc.Run(request.Library,true,null,work,authored);
         // Reborn: mutate only new owned evidence; a matching inventory alone must not authorize an invalid manifest.
         if (request.Mode == "encode-corrupt-package") Flip(Path.Combine(work,"package","diagnostic.manifest"));
         Item[] inventory = Inventory(work);
         if (request.Mode == "encode-tamper") Flip(Path.Combine(work,"ram.runtime.bin"));
         // Reborn: result completion is exclusive and emitted only after normal codec shutdown/unload and full worker verification.
-        WriteNew(result,JsonSerializer.SerializeToUtf8Bytes(new Result(1,nonce,inventory),JsonOptions));
+        WriteNew(result,JsonSerializer.SerializeToUtf8Bytes(new Result(ProtocolVersion,nonce,inventory),JsonOptions));
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -128,12 +146,12 @@ internal static class AudioEncoderSupervisor
     //-------------------------------------------------------------------------------------------------
     /** Reborn: reject forged paths/inventories, then rehash every bounded artifact and reconstruct both diagnostic packages without loading codecs. */
     //-------------------------------------------------------------------------------------------------
-    internal static void ValidateResult(string job,string nonce)
+    internal static void ValidateResult(string job,string nonce,AuthoredAudioSnapshot? authored = null)
     {
         string result = Path.Combine(job,"result.json"),work = Path.Combine(job,"worker");
         if (!File.Exists(result)) throw new InvalidDataException("Audio worker missing result; no acceptance.");
         Result value = ReadJson<Result>(result);
-        if (value.Version != 1 || value.Nonce != nonce || value.Files == null || value.Files.Length is < 1 or > 64) throw new InvalidDataException("Worker result nonce/version/inventory differs.");
+        if (value.Version != ProtocolVersion || value.Nonce != nonce || value.Files == null || value.Files.Length is < 1 or > 64) throw new InvalidDataException("Worker result nonce/version/inventory differs.");
         HashSet<string> paths = new(StringComparer.OrdinalIgnoreCase);
         foreach (Item item in value.Files)
         {
@@ -146,12 +164,14 @@ internal static class AudioEncoderSupervisor
         }
         Item[] actual = Inventory(work);
         if (actual.Length != value.Files.Length || actual.Any(item => !value.Files.Contains(item))) throw new InvalidDataException("Worker artifact inventory/hash differs.");
+        authored?.VerifyCopies(work);
+        if (authored != null) authored.VerifyCopies(Path.Combine(job,"inputs"));
         var entries = new[] { Entry(false),Entry(true) };
         string schema = Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"AudioFileIdentityPipeline.xsd");
         var bindings = entries.Select(entry =>
         {
             // Reborn: this fixed PoC admits only its canonical authored source before invoking the core loader; no forged Includes/DTD/formulas are evaluated.
-            if (!Read(Path.Combine(work,entry.Source),8192).SequenceEqual(Encoding.UTF8.GetBytes(AudioEncoderPoc.CoreSource(entry.Name == "RebornAudioStream"))))
+            if (authored == null && !Read(Path.Combine(work,entry.Source),8192).SequenceEqual(Encoding.UTF8.GetBytes(AudioEncoderPoc.CoreSource(entry.Name == "RebornAudioStream"))))
                 throw new InvalidDataException("Worker authored source differs from fixed profile.");
             InstanceDeclaration instance = AudioFileIdentitySmokeTest.Build(work,schema,AudioFileIdentitySmokeTest.Processing,entry.Source);
             return new CoreAudioPackageGate.Binding(instance,AudioFileCorePreparation.Prepare(instance),entry);
@@ -166,8 +186,10 @@ internal static class AudioEncoderSupervisor
         if (!Read(Path.Combine(work,"core-identities.txt"),8192).SequenceEqual(Encoding.UTF8.GetBytes(expectedSidecar))) throw new InvalidDataException("Worker identity sidecar differs.");
         if (!Read(Path.Combine(work,"event.xml"),8192).SequenceEqual(Encoding.UTF8.GetBytes(AudioFileLocalEventProbe.SourceXml))) throw new InvalidDataException("Worker fixed event source differs.");
         byte[] mixedBin = Read(Path.Combine(work,"local-event-package","diagnostic.bin")),mixedRelo = Read(Path.Combine(work,"local-event-package","diagnostic.relo")),mixedImp = Read(Path.Combine(work,"local-event-package","diagnostic.imp"));
-        if (mixedBin.Length != 352 || mixedRelo.Length != 36 || mixedImp.Length != 20) throw new InvalidDataException("Worker mixed package shape differs.");
-        var localEvent = new AudioFileLocalEventProbe.Entry(new AssetBuffer { InstanceData = mixedBin.AsSpan(176).ToArray(),RelocationData = mixedRelo.AsSpan(28).ToArray(),ImportsData = mixedImp.AsSpan(8).ToArray() },entries);
+        // Reborn: authored subtitles change AudioFile native lengths; locate the fixed event after the independently reconstructed leaves, not old fixture offsets.
+        int eventStart = 8+entries.Sum(entry => entry.CopyNative().InstanceData.Length),eventReloStart = 8+entries.Sum(entry => entry.CopyNative().RelocationData.Length);
+        if (mixedBin.Length != eventStart+176 || mixedRelo.Length != eventReloStart+8 || mixedImp.Length != 20) throw new InvalidDataException("Worker mixed package shape differs.");
+        var localEvent = new AudioFileLocalEventProbe.Entry(new AssetBuffer { InstanceData = mixedBin.AsSpan(eventStart).ToArray(),RelocationData = mixedRelo.AsSpan(eventReloStart).ToArray(),ImportsData = mixedImp.AsSpan(8).ToArray() },entries);
         AudioFilePackageProbe.Verify(Path.Combine(work,"local-event-package"),entries,localEvent);
 
         //-------------------------------------------------------------------------------------------------

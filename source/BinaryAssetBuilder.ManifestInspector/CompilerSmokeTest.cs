@@ -23,6 +23,8 @@ internal static class CompilerSmokeTest
         TestAudioEncoderCleanup();
         // Reborn: supervise real managed transport failures without loading native codecs in default tests.
         TestAudioEncoderSupervisor();
+        // Reborn: caller-source XML/PCM must pass bounded snapshot admission without executing native codecs.
+        TestAuthoredAudioSnapshot();
         TestAttributeModifier();
         // Reborn: exercise isolated EP1 sound records while retaining the legacy child ABI.
         TestMultisoundNative();
@@ -2235,6 +2237,11 @@ internal static class CompilerSmokeTest
     /** Reborn: zero exit is insufficient; worker protocol/timeout/path failures must never receive acceptance. */
     //-------------------------------------------------------------------------------------------------
     private static void TestAudioEncoderSupervisor() => AudioEncoderSupervisorSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: freeze bounded caller audio while preserving originals and rejecting unsupported settings/source changes. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestAuthoredAudioSnapshot() => AuthoredAudioSnapshotSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: guard custom block envelopes separately from native ABI and codec processing. */

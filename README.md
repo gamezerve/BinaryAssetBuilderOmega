@@ -16,18 +16,29 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**100 test groups** (some contain several fixtures). These counters can grow
+**101 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision regressions add groups and all 100 groups
+worker supervision/authored snapshot regressions add groups and all 101 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Supervised audio worker and bounded result acceptance](docs/RA3EP1_AUDIO_SUPERVISOR.md).
+Latest milestone: [Bounded authored audio snapshots through the supervised worker](docs/RA3EP1_AUTHORED_AUDIO_SNAPSHOT.md).
+`supervised-authored-audio-poc <absolute-audited-audio.dll> <source-directory>` now
+reads RAM/streamed XML and PCM from a caller directory, validates/freeze-copies them,
+and uses protocol v2 to bind input/output evidence. Caller PCM content and printable
+subtitles may vary; originals are read-only and rechecked before acceptance. Real
+silence/subtitle encoding passed, while stale originals and tampered input copies
+were rejected. This still requires ram.xml/streamed.xml/input.wav, the two fixed
+diagnostic identities and canonical 250 ms mono 48 kHz PCM16/XAS settings; it is not
+a general music importer or production AudioFile compiler. See the linked contract
+and XML example before using real inputs.
+
+[Supervised audio worker and bounded result acceptance](docs/RA3EP1_AUDIO_SUPERVISOR.md).
 `supervised-core-audio-poc <absolute-audited-audio.dll>` runs encoding in a hidden
 child process. The parent enforces timeout/exit/log/protocol limits, rehashes owned
 artifacts and independently checks current core identities and both packages before
