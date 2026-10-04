@@ -27,9 +27,10 @@ seven characters, in 0..1,000,000 inclusive. One zero weight is allowed; both ze
 reject. This cap and all-zero rejection are diagnostic safety limits, not claims
 of restrictions discovered in the game engine.
 
-Control remains exactly INTERRUPT; there are still two literal local references
-in RAM/streamed order. Child Volume, additional event attributes/ranges, general
-controls, variable sound counts, aliases and external references remain closed.
+Control remains exactly INTERRUPT. The [selected-list follow-up](RA3EP1_AUDIO_EVENT_LISTS.md)
+now admits one/two distinct local references in XML order. Child Volume, additional
+event attributes/ranges, general controls, larger sound counts, aliases and external
+references remain closed.
 All previous XML/PCM limits and stale-source checks remain active.
 
 ## Implementation
@@ -96,7 +97,7 @@ These are owned generated test fixtures, not user game assets or game-load proof
 
 Approximately 50% complete / 50% remaining overall. This extends source admission
 within a fixed local graph and does not change model coverage or establish an SDK
-release. Next: a checked variable local Sound list, followed by additional event
-controls/fields only where their native representation has adequate evidence.
+release. The selected-list follow-up now covers singleton/reversed references.
+Next: additional event controls/fields only with adequate native evidence.
 Broader WAV settings/codecs, production hashes/cache parity, remaining native
 layouts, WorldBuilder and actual Uprising loading remain open.

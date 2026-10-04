@@ -27,14 +27,22 @@ worker supervision/authored snapshot regressions add groups and all 101 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Authored local AudioEvent volume and weights](docs/RA3EP1_AUDIO_EVENT_SCALARS.md).
+Latest milestone: [Selected local AudioEvent Sound lists](docs/RA3EP1_AUDIO_EVENT_LISTS.md).
+The four-file path selects one or two distinct local Sounds in XML order, including
+RAM-only, streamed-only and reversed pairs. Event dimensions, manifest references,
+imports and dependency fingerprints follow the selected list. Managed and actual
+native proofs passed all three variants; empty/duplicate/unknown/oversized lists
+reject. Both audio leaves are still encoded and packaged; this is not an arbitrary
+audio pool or source graph.
+
+[Authored local AudioEvent volume and weights](docs/RA3EP1_AUDIO_EVENT_SCALARS.md).
 The four-file path now accepts Volume decimal literals in 0..100 and independent
 Sound weights in 0..1,000,000 (omitted weights use the official 1000 default).
 Both-zero mixtures and nonliteral/nonfinite/out-of-range values reject. Frozen
 source settings must match exact native scalar words and independent parent
 recompilation. Boundary/default/corruption regressions and actual Volume=37.5,
-weights=125/875 native encoding passed. Control remains INTERRUPT and the ordered
-two-Sound graph remains fixed; this is not yet a general event/music compiler.
+weights=125/875 native encoding passed. Control remains INTERRUPT; selected-list
+support extends the original two-Sound graph, not a general event/music compiler.
 
 [Frozen caller AudioEvent source and supervised local closure](docs/RA3EP1_AUTHORED_AUDIO_EVENT.md).
 `supervised-authored-audio-event-poc <absolute-audited-audio.dll> <source-directory>`

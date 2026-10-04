@@ -65,12 +65,26 @@ internal static class AuthoredAudioSnapshotSmokeTest
         foreach (byte[] invalid in new[] { new byte[8193],new byte[] { 0xFF },new byte[] { 0xEF,0xBB,0xBF }.Concat(Encoding.UTF8.GetBytes(eventXml)).ToArray() })
         { Write("event.xml",invalid); Reject(() => AuthoredAudioSnapshot.Read(directory,true)); }
         Write("event.xml",Encoding.UTF8.GetBytes(eventXml)); withEvent.VerifyCurrent();
+        // Reborn: singleton leaves and reversed pairs retain exact caller order, while empty/oversized/duplicate lists remain closed.
+        const string ramSound = "<Sound>AudioFile:RebornAudioRAM</Sound>",streamSound = "<Sound Weight=\"800\">AudioFile:RebornAudioStream</Sound>";
+        foreach (var list in new[] { (Xml:ramSound,Slots:new[] { 0 }),(Xml:streamSound,Slots:new[] { 1 }),(Xml:streamSound+ramSound,Slots:new[] { 1,0 }) })
+        {
+            Write("event.xml",Encoding.UTF8.GetBytes(eventXml.Replace(ramSound+streamSound,list.Xml)));
+            var selected = AuthoredAudioSnapshot.Read(directory,true);
+            if (!selected.EventSettings!.Slots().SequenceEqual(list.Slots)) throw new InvalidDataException("Authored Sound selection/order changed.");
+            int[] detached = selected.EventSettings.Slots(); detached[0] ^= 1;
+            if (!selected.EventSettings.Slots().SequenceEqual(list.Slots)) throw new InvalidDataException("Caller mutated frozen Sound selection.");
+            selected.VerifyCurrent();
+        }
+        foreach (string bad in new[] { "",ramSound+ramSound,ramSound+streamSound+ramSound,ramSound.Replace("<Sound>","<Sound Weight=\"0\">") })
+        { Write("event.xml",Encoding.UTF8.GetBytes(eventXml.Replace(ramSound+streamSound,bad))); Reject(() => AuthoredAudioSnapshot.Read(directory,true)); }
+        Write("event.xml",Encoding.UTF8.GetBytes(eventXml)); withEvent.VerifyCurrent();
         // Reborn: exercise exact scalar limits/default attribution and reject nonliteral/overflow or meaningless all-zero mixtures before worker launch.
         foreach (string volume in new[] { "0","37.5","100","0.0000001" })
         {
             string varied = eventXml.Replace("Volume=\"60\"","Volume=\""+volume+"\"").Replace("<Sound>","<Sound Weight=\"0\">").Replace("800","1000000");
             Write("event.xml",Encoding.UTF8.GetBytes(varied)); var admitted = AuthoredAudioSnapshot.Read(directory,true);
-            if (admitted.EventSettings!.RamWeight != 0 || admitted.EventSettings.StreamWeight != 1000000) throw new InvalidDataException("Event weight bounds were lost.");
+            if (admitted.EventSettings!.FirstWeight != 0 || admitted.EventSettings.SecondWeight != 1000000) throw new InvalidDataException("Event weight bounds were lost.");
             admitted.VerifyCurrent();
         }
         foreach (string bad in new[] { "NaN","INF","-1","101","100.0000001","1e2","50%","37,5","=60"," 60",new string('1',17) })
@@ -79,7 +93,7 @@ internal static class AuthoredAudioSnapshotSmokeTest
         { Write("event.xml",Encoding.UTF8.GetBytes(eventXml.Replace("800",bad))); Reject(() => AuthoredAudioSnapshot.Read(directory,true)); }
         Write("event.xml",Encoding.UTF8.GetBytes(eventXml.Replace("<Sound>","<Sound Weight=\"0\">").Replace("800","0"))); Reject(() => AuthoredAudioSnapshot.Read(directory,true));
         Write("event.xml",Encoding.UTF8.GetBytes(eventXml.Replace(" Weight=\"800\"","")));
-        if (AuthoredAudioSnapshot.Read(directory,true).EventSettings!.StreamWeight != 1000) throw new InvalidDataException("Absent Sound weight did not use the official default.");
+        if (AuthoredAudioSnapshot.Read(directory,true).EventSettings!.SecondWeight != 1000) throw new InvalidDataException("Absent Sound weight did not use the official default.");
         Write("event.xml",Encoding.UTF8.GetBytes(eventXml)); withEvent.VerifyCurrent();
         Reject(() => AudioEncoderSupervisor.Run("unused.dll","encode-authored",authored:withEvent));
         Reject(() => AudioEncoderSupervisor.Run("unused.dll","encode-authored-event",authored:snapshot));

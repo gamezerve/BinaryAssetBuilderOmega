@@ -79,7 +79,7 @@ internal static class AudioFilePackageProbe
         localEvent?.ValidateDependencies(entries);
         if (localEvent != null) native = native.Append(localEvent.CopyNative()).ToArray();
         var rows = entries.Select(entry => (Type:0x166B084Du,TypeHash:0x53C81E47u,Id:entry.Id,Hash:entry.Hash,Name:"AudioFile:"+entry.Name,Source:entry.Source,Refs:Array.Empty<AssetId>())).ToList();
-        if (localEvent != null) rows.Add((0x844D7B9Fu,0x560C2E45u,localEvent.Id,localEvent.Hash,"AudioEvent:"+localEvent.Name,"event.xml",entries.Select(entry => new AssetId(0x166B084Du,entry.Id)).ToArray()));
+        if (localEvent != null) rows.Add((0x844D7B9Fu,0x560C2E45u,localEvent.Id,localEvent.Hash,"AudioEvent:"+localEvent.Name,"event.xml",localEvent.References(entries)));
         using MemoryStream identities = new(); using (BinaryWriter writer = new(identities,Encoding.UTF8,true))
             foreach (var row in rows) { writer.Write(row.Type); writer.Write(row.TypeHash); writer.Write(row.Id); writer.Write(row.Hash); writer.Write(row.Refs.Length); }
         uint checksum = FastHash.GetHashCode(identities.GetBuffer());
@@ -134,7 +134,7 @@ internal static class AudioFilePackageProbe
             || parsed.Header.TotalInstanceDataSize != approved.Sum(value => value.InstanceData.Length)
             || parsed.Header.MaxInstanceChunkSize != approved.Max(value => value.InstanceData.Length)
             || parsed.Header.MaxRelocationChunkSize != approved.Max(value => value.RelocationData.Length)
-            || parsed.Header.MaxImportsChunkSize != approved.Max(value => value.ImportsData.Length) || parsed.Header.AssetReferenceBufferSize != (localEvent == null ? 0 : 16) || parsed.Header.ReferenceManifestNameBufferSize != 0)
+            || parsed.Header.MaxImportsChunkSize != approved.Max(value => value.ImportsData.Length) || parsed.Header.AssetReferenceBufferSize != (localEvent == null ? 0 : 8*localEvent.Settings.Count) || parsed.Header.ReferenceManifestNameBufferSize != 0)
             throw new InvalidDataException("Audio package manifest shape differs.");
         using BinaryAssetBuilder.Utility.Manifest utility = new();
         if (!utility.Load(path,false) || utility.AssetCount != approved.Length || utility.StreamChecksum != parsed.Header.StreamChecksum || utility.AllTypesHash != 0x5454A8E9u)
@@ -158,26 +158,26 @@ internal static class AudioFilePackageProbe
         if (localEvent != null)
         {
             ManifestAsset asset = parsed.Assets[2]; var other = utility.Assets[2];
-            AssetId[] refs = entries.Select(entry => new AssetId(0x166B084Du,entry.Id)).ToArray();
+            AssetId[] refs = localEvent.References(entries); int eventLength = localEvent.Settings.NativeLength,importLength = localEvent.Settings.ImportsLength;
             if (asset.TypeId != 0x844D7B9Fu || asset.TypeHash != 0x560C2E45u || asset.InstanceId != localEvent.Id || asset.InstanceHash != localEvent.Hash
                 || asset.Name != "AudioEvent:"+localEvent.Name || asset.SourceFile != "event.xml" || asset.Tokenized != 0
-                || asset.InstanceDataSize != 176 || asset.RelocationDataSize != 8 || asset.ImportsDataSize != 12 || !asset.References.SequenceEqual(refs)
+                || asset.InstanceDataSize != eventLength || asset.RelocationDataSize != 8 || asset.ImportsDataSize != importLength || !asset.References.SequenceEqual(refs)
                 || other.QualifiedName != asset.Name || other.TypeHash != asset.TypeHash || other.InstanceHash != asset.InstanceHash || other.Tokenized
                 || !other.ExternalReferences.Select(handle => new AssetId(handle.TypeId,handle.InstanceId)).SequenceEqual(refs)
                 || other.LinkedInstanceOffset != bin || other.LinkedRelocationOffset != relo || other.LinkedImportsOffset != 8)
                 throw new InvalidDataException("Local AudioEvent manifest/native dependency identity differs.");
-            AssetBuffer read = new() { InstanceData = AssetStreamProbe.ReadRange(Path.ChangeExtension(path,".bin"),null,bin,176),
-                RelocationData = AssetStreamProbe.ReadRange(Path.ChangeExtension(path,".relo"),null,relo,8),ImportsData = AssetStreamProbe.ReadRange(Path.ChangeExtension(path,".imp"),null,8,12) };
+            AssetBuffer read = new() { InstanceData = AssetStreamProbe.ReadRange(Path.ChangeExtension(path,".bin"),null,bin,eventLength),
+                RelocationData = AssetStreamProbe.ReadRange(Path.ChangeExtension(path,".relo"),null,relo,8),ImportsData = AssetStreamProbe.ReadRange(Path.ChangeExtension(path,".imp"),null,8,importLength) };
             AudioFileLocalEventProbe.CheckNative(read,localEvent.Settings);
-            foreach (int slot in new[] { 152,164 })
+            foreach (int slot in Enumerable.Range(0,localEvent.Settings.Count).Select(index => 152+12*index))
             {
                 uint selector = BinaryPrimitives.ReadUInt32LittleEndian(read.InstanceData.AsSpan(slot)); AssetId target = asset.References[checked((int)selector)-1];
                 if (parsed.Assets.Take(2).Count(candidate => candidate.TypeId == target.TypeId && candidate.InstanceId == target.InstanceId) != 1)
                     throw new InvalidDataException("Local AudioEvent selector does not resolve uniquely before its parent.");
             }
-            bin += 176; relo += 8;
+            bin += eventLength; relo += 8;
         }
-        foreach (var stream in new[] { (Name:"diagnostic.bin",Magic:0xBABB0000u,Size:bin),(Name:"diagnostic.relo",Magic:0xBABE0000u,Size:relo),(Name:"diagnostic.imp",Magic:0xBAB10000u,Size:localEvent == null ? 8 : 20) })
+        foreach (var stream in new[] { (Name:"diagnostic.bin",Magic:0xBABB0000u,Size:bin),(Name:"diagnostic.relo",Magic:0xBABE0000u,Size:relo),(Name:"diagnostic.imp",Magic:0xBAB10000u,Size:localEvent == null ? 8 : 8+localEvent.Settings.ImportsLength) })
         {
             byte[] bytes = ReadBounded(Path.Combine(directory,stream.Name));
             if (bytes.Length != stream.Size || BinaryPrimitives.ReadUInt32LittleEndian(bytes) != stream.Magic || BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(4)) != parsed.Header.StreamChecksum)

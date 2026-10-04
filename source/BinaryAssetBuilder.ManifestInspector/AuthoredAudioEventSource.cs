@@ -9,17 +9,29 @@ namespace BinaryAssetBuilder.ManifestInspector;
 internal static class AuthoredAudioEventSource
 {
     // Reborn: immutable scalar evidence accompanies the frozen source and checked native event.
-    internal sealed record Settings(float Volume,uint RamWeight,uint StreamWeight)
+    internal sealed record Settings(float Volume,uint FirstWeight,uint SecondWeight,int Count = 2,int FirstSlot = 0,int SecondSlot = 1)
     {
         internal static readonly Settings Default = new(60,1000,800);
         internal uint VolumeBits => BitConverter.SingleToUInt32Bits(Volume*0.01f);
+        // Reborn: layout and detached source-slot selection derive from admitted cardinality/order, not worker metadata.
+        internal int NativeLength => 152+12*Count;
+        internal int ImportsLength => 4*(Count+1);
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: return only a detached selected-slot array so callers cannot change frozen reference order. */
+        //-------------------------------------------------------------------------------------------------
+        internal int[] Slots() => Count == 1 ? new[] { FirstSlot } : new[] { FirstSlot,SecondSlot };
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: read the admitted ordinal weight, independently of the underlying RAM/streamed source slot. */
+        //-------------------------------------------------------------------------------------------------
+        internal uint WeightAt(int ordinal) => ordinal == 0 ? FirstWeight : SecondWeight;
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: internal reconstructed profiles must obey the same bounds as authored literal admission. */
         //-------------------------------------------------------------------------------------------------
         internal void Validate()
         {
-            if (!float.IsFinite(Volume) || Volume is < 0 or > 100 || RamWeight > 1000000 || StreamWeight > 1000000 || (RamWeight == 0 && StreamWeight == 0))
+            if (!float.IsFinite(Volume) || Volume is < 0 or > 100 || FirstWeight > 1000000 || SecondWeight > 1000000 || (FirstWeight == 0 && SecondWeight == 0)
+                || Count is < 1 or > 2 || FirstSlot is < 0 or > 1 || (Count == 1 ? SecondSlot != -1 || SecondWeight != 0 : SecondSlot is < 0 or > 1 || FirstSlot == SecondSlot))
                 throw new InvalidDataException("Audio event scalar evidence is outside the admitted profile.");
         }
     }
@@ -46,11 +58,13 @@ internal static class AuthoredAudioEventSource
             throw new InvalidDataException("Authored event requires one literal id/Volume/Control=INTERRUPT AudioEvent.");
         AudioFileDiagnosticIdentity.Validate(root.GetAttribute("id"));
         XmlElement[] sounds = root.ChildNodes.OfType<XmlElement>().ToArray();
-        if (sounds.Length != 2 || sounds.Any(sound => sound.Name != "Sound" || sound.NamespaceURI != wrapper.NamespaceURI || sound.ChildNodes.OfType<XmlElement>().Any())
-            || sounds.Any(sound => sound.Attributes.Count > 1 || (sound.Attributes.Count == 1 && !sound.HasAttribute("Weight")))
-            || sounds[0].InnerText != "AudioFile:"+ram || sounds[1].InnerText != "AudioFile:"+streamed)
-            throw new InvalidDataException("Authored event requires exact ordered RAM/streamed literal Sound references and weights.");
-        Settings settings = ReadSettings(root);
+        if (sounds.Length is < 1 or > 2 || sounds.Any(sound => sound.Name != "Sound" || sound.NamespaceURI != wrapper.NamespaceURI || sound.ChildNodes.OfType<XmlElement>().Any())
+            || sounds.Any(sound => sound.Attributes.Count > 1 || (sound.Attributes.Count == 1 && !sound.HasAttribute("Weight"))))
+            throw new InvalidDataException("Authored event requires one or two bounded literal Sound references.");
+        // Reborn: exact names map to the frozen source slots; aliases, unknown targets and repeated concrete leaves reject.
+        int[] slots = sounds.Select(sound => sound.InnerText == "AudioFile:"+ram ? 0 : sound.InnerText == "AudioFile:"+streamed ? 1 : -1).ToArray();
+        if (slots.Contains(-1) || slots.Distinct().Count() != slots.Length) throw new InvalidDataException("Authored event Sound targets must be unique exact local names.");
+        Settings settings = ReadSettings(root,slots);
         // Reborn: schema validation rejects extra text/structure; only trusted checked-in schema includes can resolve.
         document.Schemas.XmlResolver = new XmlUrlResolver();
         document.Schemas.Add(wrapper.NamespaceURI,Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"AudioEventPipeline.xsd"));
@@ -61,17 +75,17 @@ internal static class AuthoredAudioEventSource
     //-------------------------------------------------------------------------------------------------
     /** Reborn: parse only finite bounded decimal volume and unsigned weights, including the official absent-weight default. */
     //-------------------------------------------------------------------------------------------------
-    internal static Settings ReadSettings(XmlElement root)
+    internal static Settings ReadSettings(XmlElement root,int[] slots)
     {
         string text = root.GetAttribute("Volume");
         if (text.Length is < 1 or > 16 || text.Any(c => !(c is >= '0' and <= '9' or '.'))
             || !decimal.TryParse(text,NumberStyles.AllowDecimalPoint,CultureInfo.InvariantCulture,out decimal percent) || percent is < 0 or > 100)
             throw new InvalidDataException("Authored event Volume requires a decimal literal in 0..100.");
         XmlElement[] sounds = root.ChildNodes.OfType<XmlElement>().Where(element => element.LocalName == "Sound").ToArray();
-        if (sounds.Length != 2) throw new InvalidDataException("Authored event scalar profile requires two Sounds.");
-        uint ram = Weight(sounds[0]),streamed = Weight(sounds[1]);
-        if (ram == 0 && streamed == 0) throw new InvalidDataException("Authored event cannot have two zero weights.");
-        return new(float.Parse(text,NumberStyles.AllowDecimalPoint,CultureInfo.InvariantCulture),ram,streamed);
+        if (sounds.Length is < 1 or > 2 || slots.Length != sounds.Length) throw new InvalidDataException("Authored event scalar/reference cardinality differs.");
+        Settings settings = new(float.Parse(text,NumberStyles.AllowDecimalPoint,CultureInfo.InvariantCulture),Weight(sounds[0]),sounds.Length == 2 ? Weight(sounds[1]) : 0,
+            sounds.Length,slots[0],sounds.Length == 2 ? slots[1] : -1);
+        settings.Validate(); return settings;
     }
 
     //-------------------------------------------------------------------------------------------------

@@ -123,6 +123,54 @@ internal static class AudioFileLocalEventSmokeTest
         foreach (var bad in new[] { new AuthoredAudioEventSource.Settings(float.NaN,1,1),new AuthoredAudioEventSource.Settings(101,1,1),
             new AuthoredAudioEventSource.Settings(60,0,0),new AuthoredAudioEventSource.Settings(60,1000001,1) })
             Reject(() => new AudioFileLocalEventProbe.Entry(parent.CopyNative(),files,settings:bad));
+        // Reborn: prove source-selected singleton/reversed references, exact variable native/import shapes and dependency hash scope.
+        foreach (int[] slots in new[] { new[] { 0 },new[] { 1 },new[] { 1,0 } })
+        {
+            string selectedDirectory = Path.Combine(root,Guid.NewGuid().ToString("N")); Directory.CreateDirectory(selectedDirectory);
+            string sounds = string.Concat(slots.Select(slot => "<Sound>AudioFile:"+files[slot].Name+"</Sound>"));
+            string xml = SourceWithComment().Replace("<Sound>AudioFile:RebornAudioRAM</Sound><Sound Weight=\"800\">AudioFile:RebornAudioStream</Sound>",sounds);
+            File.WriteAllBytes(Path.Combine(selectedDirectory,"event.xml"),System.Text.Encoding.UTF8.GetBytes(xml));
+            var selected = AudioFileLocalEventProbe.Build(selectedDirectory,files,authoredName:"CallerLocalEvent");
+            byte[] goldenBin = new byte[152+12*slots.Length],goldenImp = new byte[4*(slots.Length+1)];
+            parent.CopyNative().InstanceData.AsSpan(0,152).CopyTo(goldenBin);
+            System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(goldenBin.AsSpan(136),(uint)slots.Length);
+            for (int index = 0; index < slots.Length; index++)
+            {
+                System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(goldenBin.AsSpan(152+12*index),(uint)(index+1));
+                System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(goldenBin.AsSpan(156+12*index),1000);
+                System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(goldenBin.AsSpan(160+12*index),0x3F800000u);
+                System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(goldenImp.AsSpan(4*index),(uint)(152+12*index));
+            }
+            System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(goldenImp.AsSpan(4*slots.Length),uint.MaxValue);
+            Require(selected.CopyNative().InstanceData.SequenceEqual(goldenBin) && selected.CopyNative().ImportsData.SequenceEqual(goldenImp)
+                && selected.CopyNative().RelocationData.SequenceEqual(parent.CopyNative().RelocationData),"Selected list native golden differs.");
+            var expectedRefs = slots.Select(slot => new AssetId(0x166B084Du,files[slot].Id)).ToArray();
+            Require(selected.References(files).SequenceEqual(expectedRefs),"Selected manifest reference order differs.");
+            string outputSelected = Path.Combine(selectedDirectory,"package"); AudioFilePackageProbe.Publish(outputSelected,files,selected);
+            AudioFilePackageProbe.Verify(outputSelected,files,selected);
+            var selectedManifest = ManifestReader.Read(File.ReadAllBytes(Path.Combine(outputSelected,"diagnostic.manifest")));
+            Require(selectedManifest.Assets[2].References.SequenceEqual(expectedRefs),"Serialized selected references differ.");
+            foreach (int offset in new[] { 136,140,152,156,160 })
+            { AssetBuffer bad = selected.CopyNative(); bad.InstanceData[offset] ^= 1; Reject(() => new AudioFileLocalEventProbe.Entry(bad,files,selected.Name,selected.Settings)); }
+            // Reborn: cardinality-specific auxiliary tables cannot be replaced by the old two-reference envelope.
+            foreach (bool imports in new[] { false,true })
+            { AssetBuffer bad = selected.CopyNative(); (imports ? bad.ImportsData : bad.RelocationData)[^1] ^= 1; Reject(() => new AudioFileLocalEventProbe.Entry(bad,files,selected.Name,selected.Settings)); }
+            foreach (int slot in new[] { 0,1 })
+            {
+                byte[] editedCustom = files[slot].CopyCustom(); editedCustom[^1] ^= 1;
+                var editedFiles = (AudioFilePackageProbe.Entry[])files.Clone(); editedFiles[slot] = new(files[slot].Name,files[slot].Source,files[slot].CopyNative(),editedCustom);
+                if (slots.Contains(slot)) Reject(() => selected.ValidateDependencies(editedFiles));
+                else
+                {
+                    selected.ValidateDependencies(editedFiles);
+                    AudioFilePackageProbe.Publish(Path.Combine(selectedDirectory,"unused-leaf-change"),editedFiles,selected);
+                }
+            }
+        }
+        // Reborn: malformed reconstructed cardinalities/slots reject before any native evidence can bless them.
+        foreach (var bad in new[] { new AuthoredAudioEventSource.Settings(60,1,1,0),new AuthoredAudioEventSource.Settings(60,1,1,3),
+            new AuthoredAudioEventSource.Settings(60,1,1,2,0,0),new AuthoredAudioEventSource.Settings(60,1,0,1,2,-1),
+            new AuthoredAudioEventSource.Settings(60,1,0,1,0,1),new AuthoredAudioEventSource.Settings(60,0,0,1,0,-1) }) Reject(bad.Validate);
         Console.WriteLine("Local AudioEvent/audio package self-test: OK (actual core-normalized event; explicitly prepared two local AudioFiles; 352/36/20 linked; native selectors/tuples; corruption/ownership/stale-leaf refresh; production/general graph closed)");
     }
 
