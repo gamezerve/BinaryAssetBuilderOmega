@@ -21,7 +21,8 @@ followed by RAM is legal and must retain that order in the manifest.
 
 Volume/Weight rules remain the [scalar contract](RA3EP1_AUDIO_EVENT_SCALARS.md).
 A singleton must have positive weight; a pair may contain one zero weight but
-not two. Control remains INTERRUPT. Includes, inheritance, additional child types,
+not two. Control now follows the [four-flag contract](RA3EP1_AUDIO_EVENT_CONTROLS.md).
+Includes, inheritance, additional child types,
 arbitrary audio files, broader WAV settings and production registration stay closed.
 
 Example: only the streamed leaf is selected (the RAM file still exists):
@@ -94,8 +95,8 @@ passed. These are diagnostic generated sources, not stock hash parity or game-lo
 
 ## Next gates
 
-Approximately 50% complete / 50% remaining overall. Next: additional proven event
-controls/fields, then a separately bounded variable audio pool/source inventory.
+Approximately 50% complete / 50% remaining overall. The control follow-up covers
+four existing plugin-admitted flags. Next: a separately bounded variable audio pool/source inventory.
 Broader WAV/codecs, production hash/cache parity, remaining native layouts,
 WorldBuilder and in-game loading remain required. No atomic filesystem transaction
 or native-code security sandbox is claimed.

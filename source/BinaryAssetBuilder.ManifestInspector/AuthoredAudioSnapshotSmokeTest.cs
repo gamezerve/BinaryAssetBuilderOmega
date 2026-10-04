@@ -57,13 +57,33 @@ internal static class AuthoredAudioSnapshotSmokeTest
         Reject(withEvent.VerifyCurrent); snapshot.VerifyCurrent();
         foreach (string invalid in new[] { eventXml.Replace("RebornAudioRAM","Unknown"),eventXml.Replace("RebornAudioRAM","rebornAudioRAM"),eventXml.Replace("RebornAudioRAM","RebornAudioStream"),
             eventXml.Replace("AudioFile:","AudioEvent:"),eventXml.Replace("RebornAudioRAM","RebornAudioRAM\\0"),eventXml.Replace("Volume=\"60\"","Volume=\"NaN\""),
-            eventXml.Replace("INTERRUPT","LOOP"),eventXml.Replace("800","1000001"),eventXml.Replace("CallerLocalEvent","Bad:Name"),
+            eventXml.Replace("INTERRUPT","SMART_LIMITING"),eventXml.Replace("800","1000001"),eventXml.Replace("CallerLocalEvent","Bad:Name"),
             eventXml.Replace("<AudioEvent","<Includes /><AudioEvent"),eventXml.Replace("<AudioEvent","<AudioEvent inheritFrom=\"Other\""),
             eventXml.Replace("<Sound>","<Sound Volume=\"100\">"),eventXml.Replace("<AssetDeclaration","<!DOCTYPE x [<!ENTITY e 'x'>]><AssetDeclaration"),
             "<?xml version=\"1.0\" encoding=\"utf-16\"?>"+eventXml })
         { Write("event.xml",Encoding.UTF8.GetBytes(invalid)); Reject(() => AuthoredAudioSnapshot.Read(directory,true)); }
         foreach (byte[] invalid in new[] { new byte[8193],new byte[] { 0xFF },new byte[] { 0xEF,0xBB,0xBF }.Concat(Encoding.UTF8.GetBytes(eventXml)).ToArray() })
         { Write("event.xml",invalid); Reject(() => AuthoredAudioSnapshot.Read(directory,true)); }
+        Write("event.xml",Encoding.UTF8.GetBytes(eventXml)); withEvent.VerifyCurrent();
+        // Reborn: token order/ordinary XML whitespace may vary, but flags must be unique proven literals; raw-source staleness remains byte-based.
+        foreach (var control in new[] { (Text:"",Bits:0u),(Text:"LOOP",Bits:1u),(Text:"FADE_ON_KILL",Bits:0x20u),(Text:"IMMEDIATE_DECAY_ON_KILL",Bits:0x100u),
+            (Text:"LOOP INTERRUPT FADE_ON_KILL IMMEDIATE_DECAY_ON_KILL",Bits:0x129u),(Text:"  IMMEDIATE_DECAY_ON_KILL\tLOOP  FADE_ON_KILL INTERRUPT  ",Bits:0x129u) })
+        {
+            Write("event.xml",Encoding.UTF8.GetBytes(eventXml.Replace("INTERRUPT",control.Text)));
+            var admitted = AuthoredAudioSnapshot.Read(directory,true);
+            if (admitted.EventSettings!.ControlBits != control.Bits) throw new InvalidDataException("Authored control token normalization differs.");
+            admitted.VerifyCurrent();
+        }
+        foreach (string control in new[] { "SMART_LIMITING","SEQUENTIAL","RANDOMSTART","FADE_ON_START","ALLOW_KILL_MID_FILE","UNKNOWN","loop","1","0x1","=LOOP",
+            "LOOP,INTERRUPT","LOOP LOOP","LOOP INTERRUPT LOOP","LOOP\u00A0INTERRUPT",new string(' ',129) })
+        { Write("event.xml",Encoding.UTF8.GetBytes(eventXml.Replace("INTERRUPT",control))); Reject(() => AuthoredAudioSnapshot.Read(directory,true)); }
+        Write("event.xml",Encoding.UTF8.GetBytes(eventXml.Replace("Control=\"INTERRUPT\"","Priority=\"HIGH\""))); Reject(() => AuthoredAudioSnapshot.Read(directory,true));
+        // Reborn: even equivalent bit masks do not authorize changed raw caller provenance with preserved size/timestamp.
+        string controlXml = eventXml.Replace("INTERRUPT","LOOP INTERRUPT"); Write("event.xml",Encoding.UTF8.GetBytes(controlXml));
+        var controlSnapshot = AuthoredAudioSnapshot.Read(directory,true); DateTime controlTime = File.GetLastWriteTimeUtc(Path.Combine(directory,"event.xml"));
+        Write("event.xml",Encoding.UTF8.GetBytes(controlXml.Replace("LOOP INTERRUPT","INTERRUPT LOOP"))); File.SetLastWriteTimeUtc(Path.Combine(directory,"event.xml"),controlTime);
+        if (AuthoredAudioSnapshot.Read(directory,true).EventSettings!.ControlBits != controlSnapshot.EventSettings!.ControlBits) throw new InvalidDataException("Equivalent control order changed bits.");
+        Reject(controlSnapshot.VerifyCurrent); Write("event.xml",Encoding.UTF8.GetBytes(controlXml)); controlSnapshot.VerifyCurrent();
         Write("event.xml",Encoding.UTF8.GetBytes(eventXml)); withEvent.VerifyCurrent();
         // Reborn: singleton leaves and reversed pairs retain exact caller order, while empty/oversized/duplicate lists remain closed.
         const string ramSound = "<Sound>AudioFile:RebornAudioRAM</Sound>",streamSound = "<Sound Weight=\"800\">AudioFile:RebornAudioStream</Sound>";

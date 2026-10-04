@@ -9,7 +9,7 @@ namespace BinaryAssetBuilder.ManifestInspector;
 internal static class AuthoredAudioEventSource
 {
     // Reborn: immutable scalar evidence accompanies the frozen source and checked native event.
-    internal sealed record Settings(float Volume,uint FirstWeight,uint SecondWeight,int Count = 2,int FirstSlot = 0,int SecondSlot = 1)
+    internal sealed record Settings(float Volume,uint FirstWeight,uint SecondWeight,int Count = 2,int FirstSlot = 0,int SecondSlot = 1,uint ControlBits = 8)
     {
         internal static readonly Settings Default = new(60,1000,800);
         internal uint VolumeBits => BitConverter.SingleToUInt32Bits(Volume*0.01f);
@@ -31,7 +31,8 @@ internal static class AuthoredAudioEventSource
         internal void Validate()
         {
             if (!float.IsFinite(Volume) || Volume is < 0 or > 100 || FirstWeight > 1000000 || SecondWeight > 1000000 || (FirstWeight == 0 && SecondWeight == 0)
-                || Count is < 1 or > 2 || FirstSlot is < 0 or > 1 || (Count == 1 ? SecondSlot != -1 || SecondWeight != 0 : SecondSlot is < 0 or > 1 || FirstSlot == SecondSlot))
+                || Count is < 1 or > 2 || FirstSlot is < 0 or > 1 || (Count == 1 ? SecondSlot != -1 || SecondWeight != 0 : SecondSlot is < 0 or > 1 || FirstSlot == SecondSlot)
+                || (ControlBits & ~0x129u) != 0)
                 throw new InvalidDataException("Audio event scalar evidence is outside the admitted profile.");
         }
     }
@@ -54,8 +55,8 @@ internal static class AuthoredAudioEventSource
             || wrapper.Attributes.Count != 1 || wrapper.GetAttribute("xmlns") != wrapper.NamespaceURI
             || wrapper.ChildNodes.OfType<XmlElement>().Count() != 1 || wrapper.ChildNodes.OfType<XmlElement>().Single() is not XmlElement root
             || root.Name != "AudioEvent" || root.Attributes.Count != 3 || !root.HasAttribute("id")
-            || !root.HasAttribute("Volume") || root.GetAttribute("Control") != "INTERRUPT")
-            throw new InvalidDataException("Authored event requires one literal id/Volume/Control=INTERRUPT AudioEvent.");
+            || !root.HasAttribute("Volume") || !root.HasAttribute("Control"))
+            throw new InvalidDataException("Authored event requires one literal id/Volume/Control AudioEvent.");
         AudioFileDiagnosticIdentity.Validate(root.GetAttribute("id"));
         XmlElement[] sounds = root.ChildNodes.OfType<XmlElement>().ToArray();
         if (sounds.Length is < 1 or > 2 || sounds.Any(sound => sound.Name != "Sound" || sound.NamespaceURI != wrapper.NamespaceURI || sound.ChildNodes.OfType<XmlElement>().Any())
@@ -84,7 +85,7 @@ internal static class AuthoredAudioEventSource
         XmlElement[] sounds = root.ChildNodes.OfType<XmlElement>().Where(element => element.LocalName == "Sound").ToArray();
         if (sounds.Length is < 1 or > 2 || slots.Length != sounds.Length) throw new InvalidDataException("Authored event scalar/reference cardinality differs.");
         Settings settings = new(float.Parse(text,NumberStyles.AllowDecimalPoint,CultureInfo.InvariantCulture),Weight(sounds[0]),sounds.Length == 2 ? Weight(sounds[1]) : 0,
-            sounds.Length,slots[0],sounds.Length == 2 ? slots[1] : -1);
+            sounds.Length,slots[0],sounds.Length == 2 ? slots[1] : -1,ReadControls(root.GetAttribute("Control")));
         settings.Validate(); return settings;
     }
 
@@ -98,5 +99,23 @@ internal static class AuthoredAudioEventSource
         if (text.Length is < 1 or > 7 || !uint.TryParse(text,NumberStyles.None,CultureInfo.InvariantCulture,out uint value) || value > 1000000)
             throw new InvalidDataException("Authored event Weight requires an unsigned literal in 0..1000000.");
         return value;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: map only plugin-admitted EP1 flags to audited bits; reject numeric enums, duplicate tokens and unproven controls. */
+    //-------------------------------------------------------------------------------------------------
+    internal static uint ReadControls(string text)
+    {
+        if (text.Length > 128 || text.Any(c => !(c is >= 'A' and <= 'Z' or '_' or ' ' or '\t' or '\r' or '\n')))
+            throw new InvalidDataException("Authored event Control requires bounded literal EP1 flag tokens.");
+        uint bits = 0;
+        foreach (string token in text.Split(new[] { ' ','\t','\r','\n' },StringSplitOptions.RemoveEmptyEntries))
+        {
+            uint flag = token switch { "LOOP" => 0x1u,"INTERRUPT" => 0x8u,"FADE_ON_KILL" => 0x20u,"IMMEDIATE_DECAY_ON_KILL" => 0x100u,
+                _ => throw new InvalidDataException("Authored event Control is outside the proven plugin profile.") };
+            if ((bits & flag) != 0) throw new InvalidDataException("Authored event Control has duplicate tokens.");
+            bits |= flag;
+        }
+        return bits;
     }
 }

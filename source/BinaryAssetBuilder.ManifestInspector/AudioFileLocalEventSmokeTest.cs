@@ -171,6 +171,27 @@ internal static class AudioFileLocalEventSmokeTest
         foreach (var bad in new[] { new AuthoredAudioEventSource.Settings(60,1,1,0),new AuthoredAudioEventSource.Settings(60,1,1,3),
             new AuthoredAudioEventSource.Settings(60,1,1,2,0,0),new AuthoredAudioEventSource.Settings(60,1,0,1,2,-1),
             new AuthoredAudioEventSource.Settings(60,1,0,1,0,1),new AuthoredAudioEventSource.Settings(60,0,0,1,0,-1) }) Reject(bad.Validate);
+        // Reborn: verify all sixteen admitted control subsets with independently pinned EP1 words, not enum parsing or profile-generated expected bytes.
+        string[] flags = { "LOOP","INTERRUPT","FADE_ON_KILL","IMMEDIATE_DECAY_ON_KILL" }; uint[] flagWords = { 1,8,0x20,0x100 };
+        for (int subset = 0; subset < 16; subset++)
+        {
+            List<string> tokens = new(); uint expectedWord = 0;
+            for (int index = 0; index < 4; index++) if ((subset & (1<<index)) != 0) { tokens.Add(flags[index]); expectedWord |= flagWords[index]; }
+            string controlsDirectory = Path.Combine(root,Guid.NewGuid().ToString("N")); Directory.CreateDirectory(controlsDirectory);
+            string xml = SourceWithComment().Replace("Control=\"INTERRUPT\"","Control=\""+string.Join(" ",tokens)+"\"");
+            File.WriteAllBytes(Path.Combine(controlsDirectory,"event.xml"),System.Text.Encoding.UTF8.GetBytes(xml));
+            var controlled = AudioFileLocalEventProbe.Build(controlsDirectory,files,authoredName:"CallerLocalEvent");
+            AssetBuffer golden = parent.CopyNative(); System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(golden.InstanceData.AsSpan(44),expectedWord);
+            Require(controlled.Settings.ControlBits == expectedWord && controlled.CopyNative().InstanceData.SequenceEqual(golden.InstanceData)
+                && controlled.CopyNative().RelocationData.SequenceEqual(golden.RelocationData) && controlled.CopyNative().ImportsData.SequenceEqual(golden.ImportsData),"Control subset native golden differs.");
+            Require((controlled.Hash == parent.Hash) == (expectedWord == 8),"Control subset diagnostic hash did not track native changes.");
+            AudioFilePackageProbe.Publish(Path.Combine(controlsDirectory,"package"),files,controlled);
+            AudioFilePackageProbe.Verify(Path.Combine(controlsDirectory,"package"),files,controlled);
+            AssetBuffer corrupt = controlled.CopyNative(); corrupt.InstanceData[44] ^= 1;
+            Reject(() => new AudioFileLocalEventProbe.Entry(corrupt,files,controlled.Name,controlled.Settings));
+        }
+        foreach (uint unknown in new[] { 2u,4u,0x10u,0x40u,0x80u,0x200u,uint.MaxValue })
+            Reject(() => new AuthoredAudioEventSource.Settings(60,1000,800,ControlBits:unknown).Validate());
         Console.WriteLine("Local AudioEvent/audio package self-test: OK (actual core-normalized event; explicitly prepared two local AudioFiles; 352/36/20 linked; native selectors/tuples; corruption/ownership/stale-leaf refresh; production/general graph closed)");
     }
 

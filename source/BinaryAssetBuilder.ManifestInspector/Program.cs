@@ -29,6 +29,13 @@ internal static class Program
             // Reborn: opt-in singleton/reversed list evidence remains isolated from all default managed tests.
             if (args.FirstOrDefault() == "authored-audio-list-native-proof" && args.Length == 2)
             { CompilerSmokeTest.InitializeHashProvider(); foreach (string selection in new[] { "ram","streamed","reversed" }) AuthoredAudioNativeProbe.Run(args[1],true,selection); return 0; }
+            // Reborn: opt-in control evidence covers zero/single/combined bits across singleton and reversed list shapes.
+            if (args.FirstOrDefault() == "authored-audio-control-native-proof" && args.Length == 2)
+            {
+                CompilerSmokeTest.InitializeHashProvider(); AuthoredAudioNativeProbe.Run(args[1],true,"streamed","",0);
+                AuthoredAudioNativeProbe.Run(args[1],true,"ram","LOOP",1);
+                AuthoredAudioNativeProbe.Run(args[1],true,"reversed","LOOP INTERRUPT FADE_ON_KILL IMMEDIATE_DECAY_ON_KILL",0x129); return 0;
+            }
             // Reborn: real encoded-result tamper tests execute native work only in supervised opt-in children.
             if (args.FirstOrDefault() == "supervised-audio-tamper-test" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.NativeTamperTests(args[1]); return 0; }
             if (args.FirstOrDefault() == "audio-supervisor-self-test") { AudioEncoderSupervisorSmokeTest.Run(); return 0; }
@@ -837,6 +844,8 @@ internal static class Program
         Console.WriteLine("  authored-audio-event-native-proof <absolute-audited-audio.dll>");
         // Reborn: exercise three native list variants and their stale/tampered input rejection in separate child jobs.
         Console.WriteLine("  authored-audio-list-native-proof <absolute-audited-audio.dll>");
+        // Reborn: native control-bit integration is explicit, never part of the default managed test runner.
+        Console.WriteLine("  authored-audio-control-native-proof <absolute-audited-audio.dll>");
         Console.WriteLine("  audio-archive-compare <unpacked-ep1-manifest> <original-EnglishAudio.big>");
         // Reborn: reconciliation is a separate explicit audit command, not an automatic error fallback or corpus repair.
         Console.WriteLine("  audio-custom-reconciled-audit <unpacked-ep1-manifest> <original-EnglishAudio.big>");

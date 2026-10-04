@@ -96,7 +96,8 @@ internal static class AudioFileLocalEventProbe
             || !native.ImportsData.SequenceEqual(imports)) throw new InvalidDataException("Local AudioEvent native shape differs.");
         byte[] bin = native.InstanceData;
         if (BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(136)) != settings.Count || BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(140)) != 152
-            || BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(4)) != settings.VolumeBits) throw new InvalidDataException("Local AudioEvent scalar/count/pointer differs.");
+            || BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(4)) != settings.VolumeBits
+            || BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(44)) != settings.ControlBits) throw new InvalidDataException("Local AudioEvent scalar/control/count/pointer differs.");
         for (int index = 0; index < settings.Count; index++)
             if (BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(152+12*index)) != index+1
                 || BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(156+12*index)) != settings.WeightAt(index)

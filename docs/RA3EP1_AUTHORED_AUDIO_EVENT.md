@@ -18,8 +18,9 @@ declaration. No authored DTD/entity resolution, Includes, inheritance, formulas,
 additional assets or external paths are admitted. Trusted checked-in schema
 includes remain available to schema validation only.
 
-The event must have exactly id, Volume and Control="INTERRUPT" as authored
-attributes. Its id uses the same 1–128 ASCII letter/digit/underscore/hyphen rule.
+The event must have exactly id, Volume and Control as authored
+attributes. Control now follows the [four-flag contract](RA3EP1_AUDIO_EVENT_CONTROLS.md).
+Its id uses the same 1–128 ASCII letter/digit/underscore/hyphen rule.
 Volume now accepts bounded decimal literals in 0..100. The
 [selected-list follow-up](RA3EP1_AUDIO_EVENT_LISTS.md) admits one or two distinct
 Sound entries in XML order, each with an optional Weight in 0..1,000,000

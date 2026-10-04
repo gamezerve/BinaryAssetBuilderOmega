@@ -9,8 +9,11 @@ internal static class AuthoredAudioNativeProbe
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prepare changed authored content, verify accepted native output uses it, and reject a later caller-source change without modifying real user files. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string library,bool includeEvent = false,string selection = "pair")
+    internal static void Run(string library,bool includeEvent = false,string selection = "pair",string controls = "INTERRUPT",uint expectedControl = 8)
     {
+        // Reborn: test choices must match the independently supplied expected word before creating any native job.
+        if (AuthoredAudioEventSource.ReadControls(controls) != expectedControl || (!includeEvent && (selection != "pair" || controls != "INTERRUPT")))
+            throw new InvalidDataException("Native control proof selection/expected word differs.");
         string source = Path.Combine(Path.GetTempPath(),"Reborn-AuthoredNative-"+Guid.NewGuid().ToString("N")); Directory.CreateDirectory(source);
         using MemoryStream pcm = new(); AudioEncoderPoc.WriteWave(pcm); byte[] wave = pcm.ToArray(); wave.AsSpan(44).Clear();
         foreach (bool streamed in new[] { false,true })
@@ -20,7 +23,8 @@ internal static class AuthoredAudioNativeProbe
         string file = Path.Combine(source,"input.wav"); Write(file,wave,true);
         // Reborn: optional caller event is a fourth immutable input with custom identity and exact ordered references.
         string eventXml = AudioFileLocalEventProbe.SourceXml.Replace("RebornLocalAudio","CallerLocalEvent").Replace("RebornAudioRAM","Caller_RAM-01").Replace("RebornAudioStream","Caller_Stream-02")
-            .Replace("Volume=\"60\"","Volume=\"37.5\"").Replace("<Sound>","<Sound Weight=\"125\">").Replace("800","875");
+            .Replace("Volume=\"60\"","Volume=\"37.5\"").Replace("<Sound>","<Sound Weight=\"125\">").Replace("800","875")
+            .Replace("Control=\"INTERRUPT\"","Control=\""+controls+"\"");
         // Reborn: native list proofs choose source order independently of compiler metadata, using only owned fixtures.
         int[] selectedSlots = selection switch { "pair" => new[] { 0,1 },"ram" => new[] { 0 },"streamed" => new[] { 1 },"reversed" => new[] { 1,0 },_ => throw new ArgumentException("Unknown native list proof selection.") };
         const string ramSound = "<Sound Weight=\"125\">AudioFile:Caller_RAM-01</Sound>",streamSound = "<Sound Weight=\"875\">AudioFile:Caller_Stream-02</Sound>";
@@ -46,6 +50,7 @@ internal static class AuthoredAudioNativeProbe
             byte[] bin = File.ReadAllBytes(Path.Combine(accepted,"worker","local-event-package","diagnostic.bin"));
             int start = 8+manifest.Assets.Take(2).Sum(asset => asset.InstanceDataSize);
             if (System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(start+4)) != 0x3EC00000u
+                || System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(start+44)) != expectedControl
                 || manifest.Assets[2].InstanceDataSize != 152+12*selectedSlots.Length || manifest.Assets[2].ImportsDataSize != 4*(selectedSlots.Length+1))
                 throw new InvalidDataException("Native event lost caller volume/weights.");
             for (int index = 0; index < selectedSlots.Length; index++)
@@ -91,7 +96,7 @@ internal static class AuthoredAudioNativeProbe
         if (!tamperedRejected || tamperedJob == null || File.Exists(Path.Combine(tamperedJob,"ACCEPTED.json"))
             || !File.ReadAllText(Path.Combine(tamperedJob,"worker.stderr.txt")).Contains("Worker authored snapshot inventory differs",StringComparison.Ordinal))
             throw new InvalidDataException("Tampered authored input was not rejected at the intended child inventory gate.");
-        Console.WriteLine($"Authored native snapshot proof: OK (mode={mode}, selection={selection}, silence PCM, caller subtitle/identities, preserved originals, payload={payloadHash}; stale caller rejects acceptance, no production admission).");
+        Console.WriteLine($"Authored native snapshot proof: OK (mode={mode}, selection={selection}, control={expectedControl:X}, silence PCM, caller subtitle/identities, preserved originals, payload={payloadHash}; stale caller rejects acceptance, no production admission).");
     }
 
     //-------------------------------------------------------------------------------------------------
