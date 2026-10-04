@@ -29,15 +29,18 @@ internal static class AudioFileLocalEventProbe
     {
         private readonly byte[] _bin,_relo,_imp;
         private readonly (uint Id,uint Hash)[] _dependencies;
-        internal uint Id => InstanceHandle.GetInstanceId("RebornLocalAudio");
+        internal string Name { get; }
+        internal uint Id => InstanceHandle.GetInstanceId(Name);
         internal uint Hash { get; }
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: freeze compiled event data and bind its diagnostic hash to both local AudioFile content identities. */
         //-------------------------------------------------------------------------------------------------
-        internal Entry(AssetBuffer native,AudioFilePackageProbe.Entry[] files)
+        internal Entry(AssetBuffer native,AudioFilePackageProbe.Entry[] files,string name = "RebornLocalAudio")
         {
             ValidateFiles(files); CheckNative(native);
+            // Reborn: freeze the admitted event identity separately from its content/dependency diagnostic hash.
+            AudioFileDiagnosticIdentity.Validate(name); Name = name;
             _bin = (byte[])native.InstanceData.Clone(); _relo = (byte[])native.RelocationData.Clone(); _imp = (byte[])native.ImportsData.Clone();
             _dependencies = files.Select(file => (file.Id,file.Hash)).ToArray();
             using MemoryStream hash = new(); hash.Write(_bin); using BinaryWriter writer = new(hash,Encoding.UTF8,true);
@@ -87,10 +90,10 @@ internal static class AudioFileLocalEventProbe
     //-------------------------------------------------------------------------------------------------
     /** Reborn: check current normalized identities against local metadata before authorizing concrete AudioFile slots and compiling. */
     //-------------------------------------------------------------------------------------------------
-    internal static Entry Compile(InstanceDeclaration instance,AudioFilePackageProbe.Entry[] files,Ra3Ep1AudioEventPlugin plugin)
+    internal static Entry Compile(InstanceDeclaration instance,AudioFilePackageProbe.Entry[] files,Ra3Ep1AudioEventPlugin plugin,string name = "RebornLocalAudio")
     {
         instance.ValidatedReferencedInstances = null!; ValidateFiles(files);
-        if (instance.Handle.TypeId != 0x844D7B9Fu || instance.Handle.TypeHash != 0x560C2E45u || instance.Handle.InstanceName != "RebornLocalAudio"
+        if (instance.Handle.TypeId != 0x844D7B9Fu || instance.Handle.TypeHash != 0x560C2E45u || instance.Handle.InstanceName != name
             || instance.ReferencedInstances.Count != 2) throw new InvalidDataException("Local AudioEvent identity/reference shape differs.");
         List<InstanceHandle> concrete = new();
         for (int index = 0; index < 2; index++)
@@ -101,17 +104,24 @@ internal static class AudioFileLocalEventProbe
             concrete.Add(new InstanceHandle("AudioFile",file.Name) { TypeHash = 0x53C81E47u,InstanceHash = file.Hash });
         }
         instance.ValidatedReferencedInstances = concrete;
-        try { return new Entry(plugin.ProcessInstance(instance),files); }
+        try { return new Entry(plugin.ProcessInstance(instance),files,name); }
         catch { instance.ValidatedReferencedInstances = null!; throw; }
     }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: parse the owned source through the actual core schema/reference normalizer, then explicitly prepare fixed local metadata. */
     //-------------------------------------------------------------------------------------------------
-    internal static Entry Build(string directory,AudioFilePackageProbe.Entry[] files,Action<InstanceDeclaration,Ra3Ep1AudioEventPlugin>? audit = null)
+    internal static Entry Build(string directory,AudioFilePackageProbe.Entry[] files,Action<InstanceDeclaration,Ra3Ep1AudioEventPlugin>? audit = null,string? authoredName = null)
     {
         string path = Path.Combine(directory,"event.xml");
-        using (FileStream writer = new(path,FileMode.CreateNew,FileAccess.Write)) writer.Write(Encoding.UTF8.GetBytes(Source(files)));
+        if (authoredName == null) { using FileStream writer = new(path,FileMode.CreateNew,FileAccess.Write); writer.Write(Encoding.UTF8.GetBytes(Source(files))); }
+        else
+        {
+            // Reborn: validate a bounded installed event before core loading; do not rewrite its raw caller provenance.
+            using FileStream reader = File.OpenRead(path); if (reader.Length > 8192) throw new InvalidDataException("Authored event exceeds source bound.");
+            byte[] bytes = new byte[(int)reader.Length]; reader.ReadExactly(bytes); if (reader.ReadByte() != -1) throw new InvalidDataException("Authored event length changed.");
+            if (AuthoredAudioEventSource.Validate(bytes,files[0].Name,files[1].Name) != authoredName) throw new InvalidDataException("Authored event identity differs.");
+        }
         Settings saved = Settings.Current;
         try
         {
@@ -124,7 +134,7 @@ internal static class AudioFileLocalEventProbe
             InstanceDeclaration instance = processor.ProcessDocumentInternal(path,path,null!,new DocumentProcessor.ProcessOptions { GenerateOutput = false }).SelfInstances.Single();
             // Reborn: optional managed regressions inspect/revoke current core preparation before the final fixed compile.
             audit?.Invoke(instance,plugin);
-            return Compile(instance,files,plugin);
+            return Compile(instance,files,plugin,authoredName ?? "RebornLocalAudio");
         }
         finally { Settings.Current = saved; }
     }

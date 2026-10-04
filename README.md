@@ -27,7 +27,17 @@ worker supervision/authored snapshot regressions add groups and all 101 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Caller-owned AudioFile identities and local package closure](docs/RA3EP1_AUTHORED_AUDIO_IDENTITIES.md).
+Latest milestone: [Frozen caller AudioEvent source and supervised local closure](docs/RA3EP1_AUTHORED_AUDIO_EVENT.md).
+`supervised-authored-audio-event-poc <absolute-audited-audio.dll> <source-directory>`
+adds an explicit four-file path: caller event.xml is frozen alongside both audio
+sources and PCM. Its literal ID and raw source bytes are preserved; exact local
+references and independently recompiled native event bytes must agree before
+acceptance. Real encoding, timestamp-preserving stale event rejection and input-copy
+tamper rejection passed. The first event profile remains two ordered Sounds with
+Volume=60, Control=INTERRUPT and weights 1000/800, not a general event/music importer.
+See the linked report for the exact contract and XML example.
+
+[Caller-owned AudioFile identities and local package closure](docs/RA3EP1_AUTHORED_AUDIO_IDENTITIES.md).
 `supervised-authored-audio-poc <absolute-audited-audio.dll> <source-directory>` now
 reads RAM/streamed XML and PCM from a caller directory, validates/freeze-copies them,
 and uses protocol v2 to bind input/output evidence. Caller PCM content and printable

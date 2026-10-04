@@ -87,6 +87,16 @@ internal static class AudioFileLocalEventSmokeTest
         var alias = new AudioFilePackageProbe.Entry("rebornAudioRAM","streamed.xml",files[1].CopyNative(),files[1].CopyCustom());
         Reject(() => AudioFilePackageProbe.Serialize(new[] { files[0],alias }));
         Require(AudioFileLocalEventProbe.Source(files) == AudioFileLocalEventProbe.SourceXml,"Baseline source compatibility differs.");
+        // Reborn: compile installed raw caller provenance without rewriting it and retain the custom event identity in both readers.
+        string authoredDirectory = Path.Combine(root,"authored-event"); Directory.CreateDirectory(authoredDirectory);
+        byte[] authoredXml = System.Text.Encoding.UTF8.GetBytes(SourceWithComment());
+        File.WriteAllBytes(Path.Combine(authoredDirectory,"event.xml"),authoredXml);
+        var authored = AudioFileLocalEventProbe.Build(authoredDirectory,files,authoredName:"CallerLocalEvent");
+        Require(authored.Name == "CallerLocalEvent" && authored.Id == InstanceHandle.GetInstanceId("CallerLocalEvent")
+            && authored.CopyNative().InstanceData.SequenceEqual(parent.CopyNative().InstanceData)
+            && File.ReadAllBytes(Path.Combine(authoredDirectory,"event.xml")).SequenceEqual(authoredXml),"Authored event identity/provenance changed.");
+        AudioFilePackageProbe.Publish(Path.Combine(authoredDirectory,"package"),files,authored);
+        AudioFilePackageProbe.Verify(Path.Combine(authoredDirectory,"package"),files,authored);
         Console.WriteLine("Local AudioEvent/audio package self-test: OK (actual core-normalized event; explicitly prepared two local AudioFiles; 352/36/20 linked; native selectors/tuples; corruption/ownership/stale-leaf refresh; production/general graph closed)");
     }
 
@@ -103,4 +113,9 @@ internal static class AudioFileLocalEventSmokeTest
     /** Reborn: stop at the first local graph proof mismatch. */
     //-------------------------------------------------------------------------------------------------
     private static void Require(bool condition,string message) { if (!condition) throw new InvalidDataException(message); }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: comments and whitespace are caller provenance, never regenerated from normalized/defaulted XML. */
+    //-------------------------------------------------------------------------------------------------
+    private static string SourceWithComment() => "<!-- Reborn: owned caller event fixture. -->\n"+AudioFileLocalEventProbe.SourceXml.Replace("RebornLocalAudio","CallerLocalEvent");
 }

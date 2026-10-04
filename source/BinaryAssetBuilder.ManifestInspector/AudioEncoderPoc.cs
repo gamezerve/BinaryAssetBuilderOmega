@@ -93,7 +93,7 @@ internal static class AudioEncoderPoc
             AudioFilePackageProbe.Verify(output,package);
             Console.WriteLine("Owned diagnostic audio package: "+Path.Combine(output,"diagnostic.manifest"));
             // Reborn: compile a core-normalized local AudioEvent only after capturing both encoded AudioFile fingerprints.
-            AudioFileLocalEventProbe.Entry localEvent = AudioFileLocalEventProbe.Build(directory,package);
+            AudioFileLocalEventProbe.Entry localEvent = AudioFileLocalEventProbe.Build(directory,package,authoredName:authored?.EventName);
             string mixed = Path.Combine(directory,"local-event-package");
             if (bindings != null) CoreAudioPackageGate.Publish(mixed,bindings,localEvent); else AudioFilePackageProbe.Publish(mixed,package,localEvent);
             AudioFilePackageProbe.Verify(mixed,package,localEvent);

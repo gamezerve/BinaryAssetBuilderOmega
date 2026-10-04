@@ -104,7 +104,8 @@ fixed supervised encoder still pass under protocol v2. Models/marshallers remain
 
 Overall weighted effort remains approximately **50% complete / 50% remaining**.
 The identity follow-up removes fixed asset names while retaining two source slots.
-Next: caller-authored local event references with checked snapshots, child isolation
-and no production/cache admission.
+The [caller-event follow-up](RA3EP1_AUTHORED_AUDIO_EVENT.md) adds explicit event
+snapshots, independent parent compilation and source revalidation without
+production/cache admission. Broader event settings/graphs remain a next gate.
 General source graphs, inheritance, broader WAV settings, stock compiler identity,
 WorldBuilder and in-game loading remain open.

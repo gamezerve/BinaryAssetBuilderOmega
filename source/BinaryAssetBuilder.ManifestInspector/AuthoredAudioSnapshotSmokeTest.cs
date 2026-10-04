@@ -43,7 +43,31 @@ internal static class AuthoredAudioSnapshotSmokeTest
         foreach (byte[] invalid in new[] { Array.Empty<byte>(),new byte[24045] }) { Write("input.wav",invalid); Reject(() => AuthoredAudioSnapshot.Read(directory)); }
         Write("input.wav",wave); snapshot.VerifyCurrent();
         if (!File.ReadAllBytes(Path.Combine(installed,"input.wav")).SequenceEqual(wave)) throw new InvalidDataException("Authored snapshot copy changed through caller mutation.");
-        Console.WriteLine("Authored audio snapshot self-test: OK (bounded XML/PCM/subtitle admission, exact immutable copies, stale timestamp-preserving edits, path/identity/settings/DTD/Include/inheritance rejection and recovery; no native codecs)");
+        // Reborn: explicitly freeze a caller event; three-file mode must ignore it, while four-file mode checks every byte and exact local references.
+        string eventXml = AudioFileLocalEventProbe.SourceXml.Replace("RebornLocalAudio","CallerLocalEvent");
+        Write("event.xml",Encoding.UTF8.GetBytes(eventXml)); var withEvent = AuthoredAudioSnapshot.Read(directory,true);
+        if (withEvent.EventName != "CallerLocalEvent" || withEvent.FileNames.Count() != 4) throw new InvalidDataException("Authored event snapshot lost its identity.");
+        string eventCopy = Path.Combine(directory,"event-copy"); withEvent.Install(eventCopy); withEvent.VerifyCopies(eventCopy);
+        byte[] eventBytes = withEvent.Copy("event.xml"); eventBytes[0] ^= 1; withEvent.VerifyCurrent();
+        // Reborn: an altered installed event must fail the parent's frozen-copy gate independently of schema/native validity.
+        Write(Path.Combine("event-copy","event.xml"),eventBytes); Reject(() => withEvent.VerifyCopies(eventCopy));
+        Write(Path.Combine("event-copy","event.xml"),withEvent.Copy("event.xml")); withEvent.VerifyCopies(eventCopy);
+        DateTime eventTime = File.GetLastWriteTimeUtc(Path.Combine(directory,"event.xml"));
+        Write("event.xml",Encoding.UTF8.GetBytes(eventXml.Replace("CallerLocalEvent","callerLocalEvent"))); File.SetLastWriteTimeUtc(Path.Combine(directory,"event.xml"),eventTime);
+        Reject(withEvent.VerifyCurrent); snapshot.VerifyCurrent();
+        foreach (string invalid in new[] { eventXml.Replace("RebornAudioRAM","Unknown"),eventXml.Replace("RebornAudioRAM","rebornAudioRAM"),eventXml.Replace("RebornAudioRAM","RebornAudioStream"),
+            eventXml.Replace("AudioFile:","AudioEvent:"),eventXml.Replace("RebornAudioRAM","RebornAudioRAM\\0"),eventXml.Replace("Volume=\"60\"","Volume=\"61\""),
+            eventXml.Replace("INTERRUPT","LOOP"),eventXml.Replace("800","801"),eventXml.Replace("CallerLocalEvent","Bad:Name"),
+            eventXml.Replace("<AudioEvent","<Includes /><AudioEvent"),eventXml.Replace("<AudioEvent","<AudioEvent inheritFrom=\"Other\""),
+            eventXml.Replace("<Sound>","<Sound Weight=\"1000\">"),eventXml.Replace("<AssetDeclaration","<!DOCTYPE x [<!ENTITY e 'x'>]><AssetDeclaration"),
+            "<?xml version=\"1.0\" encoding=\"utf-16\"?>"+eventXml })
+        { Write("event.xml",Encoding.UTF8.GetBytes(invalid)); Reject(() => AuthoredAudioSnapshot.Read(directory,true)); }
+        foreach (byte[] invalid in new[] { new byte[8193],new byte[] { 0xFF },new byte[] { 0xEF,0xBB,0xBF }.Concat(Encoding.UTF8.GetBytes(eventXml)).ToArray() })
+        { Write("event.xml",invalid); Reject(() => AuthoredAudioSnapshot.Read(directory,true)); }
+        Write("event.xml",Encoding.UTF8.GetBytes(eventXml)); withEvent.VerifyCurrent();
+        Reject(() => AudioEncoderSupervisor.Run("unused.dll","encode-authored",authored:withEvent));
+        Reject(() => AudioEncoderSupervisor.Run("unused.dll","encode-authored-event",authored:snapshot));
+        Console.WriteLine("Authored audio snapshot self-test: OK (bounded XML/PCM/event admission, exact immutable copies, stale timestamp-preserving edits, explicit 3/4-file modes, local reference/settings/DTD/Include/inheritance rejection and recovery; no native codecs)");
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: mutate only this test's owned temporary fixtures; never a user's existing source directory. */

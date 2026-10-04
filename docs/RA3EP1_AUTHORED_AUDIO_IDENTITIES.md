@@ -81,6 +81,7 @@ time-of-validation diagnostic evidence, not an atomic filesystem transaction or
 a security sandbox for native code.
 
 Overall weighted effort remains approximately 50% complete / 50% remaining.
-Next bounded package: admit a caller-authored local AudioEvent against the frozen
-pair, with explicit reference resolution and source revalidation, before attempting
+The [caller-event follow-up](RA3EP1_AUTHORED_AUDIO_EVENT.md) now admits an explicit
+four-file source snapshot with a narrow independently recompiled local AudioEvent.
+Next: broaden event settings only with source/native validation before attempting
 variable graph size or production registration.

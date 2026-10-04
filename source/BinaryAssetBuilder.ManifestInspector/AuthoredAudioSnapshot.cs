@@ -14,6 +14,9 @@ internal sealed class AuthoredAudioSnapshot
     // Reborn: preserve caller names independently of worker-provided manifests or metadata.
     internal string RamName { get; private init; } = "";
     internal string StreamName { get; private init; } = "";
+    // Reborn: optional event admission is explicit and freezes a fourth file; unrelated files remain ignored in legacy mode.
+    internal string? EventName { get; private init; }
+    internal IEnumerable<string> FileNames => _files.Keys;
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: retain only privately read owned buffers and the source directory needed for a final current-source check. */
@@ -30,15 +33,15 @@ internal sealed class AuthoredAudioSnapshot
     //-------------------------------------------------------------------------------------------------
     internal void VerifyCurrent()
     {
-        AuthoredAudioSnapshot current = Read(_directory);
-        if (Names.Any(name => !_files[name].SequenceEqual(current._files[name]))) throw new InvalidDataException("Authored audio snapshot is stale; prepare current sources again.");
+        AuthoredAudioSnapshot current = Read(_directory,EventName != null);
+        if (FileNames.Any(name => !_files[name].SequenceEqual(current._files[name]))) throw new InvalidDataException("Authored audio snapshot is stale; prepare current sources again.");
     }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compare owned worker/input copies against frozen caller bytes before any core loader evaluates source XML. */
     //-------------------------------------------------------------------------------------------------
     internal void VerifyCopies(string directory)
-    { foreach (string name in Names) if (!_files[name].SequenceEqual(ReadFile(Path.Combine(directory,name),name == "input.wav" ? 24044 : 8192))) throw new InvalidDataException("Authored audio copy differs from frozen snapshot."); }
+    { foreach (string name in FileNames) if (!_files[name].SequenceEqual(ReadFile(Path.Combine(directory,name),name == "input.wav" ? 24044 : 8192))) throw new InvalidDataException("Authored audio copy differs from frozen snapshot."); }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: install only these three files into a fresh empty owned directory, preserving original authored bytes/default attribution. */
@@ -47,14 +50,14 @@ internal sealed class AuthoredAudioSnapshot
     {
         if (Directory.Exists(directory) && Directory.EnumerateFileSystemEntries(directory).Any()) throw new InvalidDataException("Authored snapshot destination must be empty.");
         Directory.CreateDirectory(directory);
-        foreach (string name in Names) { using FileStream stream = new(Path.Combine(directory,name),FileMode.CreateNew,FileAccess.Write); stream.Write(_files[name]); }
+        foreach (string name in FileNames) { using FileStream stream = new(Path.Combine(directory,name),FileMode.CreateNew,FileAccess.Write); stream.Write(_files[name]); }
         VerifyCopies(directory);
     }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate all external XML/PCM in the parent before launching a native worker; only existing narrow direct-file identities are admitted. */
     //-------------------------------------------------------------------------------------------------
-    internal static AuthoredAudioSnapshot Read(string directory)
+    internal static AuthoredAudioSnapshot Read(string directory,bool includeEvent = false)
     {
         directory = Path.GetFullPath(directory);
         Dictionary<string,byte[]> files = Names.ToDictionary(name => name,name => ReadFile(Path.Combine(directory,name),name == "input.wav" ? 24044 : 8192));
@@ -81,7 +84,10 @@ internal sealed class AuthoredAudioSnapshot
         }
         if (InstanceHandle.GetInstanceId(identities[0]) == InstanceHandle.GetInstanceId(identities[1]))
             throw new InvalidDataException("Authored audio identities collide in the SAGE instance-ID domain.");
-        return new(directory,files) { RamName = identities[0],StreamName = identities[1] };
+        // Reborn: freeze and admit authored event bytes before any worker/native codec startup.
+        string? eventName = null;
+        if (includeEvent) { files.Add("event.xml",ReadFile(Path.Combine(directory,"event.xml"),8192)); eventName = AuthoredAudioEventSource.Validate(files["event.xml"],identities[0],identities[1]); }
+        return new(directory,files) { RamName = identities[0],StreamName = identities[1],EventName = eventName };
     }
 
     //-------------------------------------------------------------------------------------------------

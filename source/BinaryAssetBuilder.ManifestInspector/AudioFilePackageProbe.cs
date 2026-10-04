@@ -79,7 +79,7 @@ internal static class AudioFilePackageProbe
         localEvent?.ValidateDependencies(entries);
         if (localEvent != null) native = native.Append(localEvent.CopyNative()).ToArray();
         var rows = entries.Select(entry => (Type:0x166B084Du,TypeHash:0x53C81E47u,Id:entry.Id,Hash:entry.Hash,Name:"AudioFile:"+entry.Name,Source:entry.Source,Refs:Array.Empty<AssetId>())).ToList();
-        if (localEvent != null) rows.Add((0x844D7B9Fu,0x560C2E45u,localEvent.Id,localEvent.Hash,"AudioEvent:RebornLocalAudio","event.xml",entries.Select(entry => new AssetId(0x166B084Du,entry.Id)).ToArray()));
+        if (localEvent != null) rows.Add((0x844D7B9Fu,0x560C2E45u,localEvent.Id,localEvent.Hash,"AudioEvent:"+localEvent.Name,"event.xml",entries.Select(entry => new AssetId(0x166B084Du,entry.Id)).ToArray()));
         using MemoryStream identities = new(); using (BinaryWriter writer = new(identities,Encoding.UTF8,true))
             foreach (var row in rows) { writer.Write(row.Type); writer.Write(row.TypeHash); writer.Write(row.Id); writer.Write(row.Hash); writer.Write(row.Refs.Length); }
         uint checksum = FastHash.GetHashCode(identities.GetBuffer());
@@ -160,7 +160,7 @@ internal static class AudioFilePackageProbe
             ManifestAsset asset = parsed.Assets[2]; var other = utility.Assets[2];
             AssetId[] refs = entries.Select(entry => new AssetId(0x166B084Du,entry.Id)).ToArray();
             if (asset.TypeId != 0x844D7B9Fu || asset.TypeHash != 0x560C2E45u || asset.InstanceId != localEvent.Id || asset.InstanceHash != localEvent.Hash
-                || asset.Name != "AudioEvent:RebornLocalAudio" || asset.SourceFile != "event.xml" || asset.Tokenized != 0
+                || asset.Name != "AudioEvent:"+localEvent.Name || asset.SourceFile != "event.xml" || asset.Tokenized != 0
                 || asset.InstanceDataSize != 176 || asset.RelocationDataSize != 8 || asset.ImportsDataSize != 12 || !asset.References.SequenceEqual(refs)
                 || other.QualifiedName != asset.Name || other.TypeHash != asset.TypeHash || other.InstanceHash != asset.InstanceHash || other.Tokenized
                 || !other.ExternalReferences.Select(handle => new AssetId(handle.TypeId,handle.InstanceId)).SequenceEqual(refs)

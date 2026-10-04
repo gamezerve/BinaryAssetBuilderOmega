@@ -19,9 +19,13 @@ internal static class Program
             if (args.FirstOrDefault() == "supervised-core-audio-poc" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(args[1]); return 0; }
             // Reborn: copy and validate the narrow caller-source pair before launching native work; originals are read-only.
             if (args.FirstOrDefault() == "supervised-authored-audio-poc" && args.Length == 3) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(args[1],"encode-authored",authored:AuthoredAudioSnapshot.Read(args[2])); return 0; }
+            // Reborn: caller event admission explicitly freezes four files, retaining the legacy three-file command unchanged.
+            if (args.FirstOrDefault() == "supervised-authored-audio-event-poc" && args.Length == 3) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(args[1],"encode-authored-event",authored:AuthoredAudioSnapshot.Read(args[2],true)); return 0; }
             if (args.FirstOrDefault() == "authored-audio-snapshot-self-test") { CompilerSmokeTest.InitializeHashProvider(); AuthoredAudioSnapshotSmokeTest.Run(); return 0; }
             // Reborn: caller PCM/subtitle and stale-original integration proof uses only owned sources and opt-in supervised native children.
             if (args.FirstOrDefault() == "authored-audio-native-proof" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AuthoredAudioNativeProbe.Run(args[1]); return 0; }
+            // Reborn: opt-in native evidence exercises event provenance/staleness separately from the three-file baseline.
+            if (args.FirstOrDefault() == "authored-audio-event-native-proof" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AuthoredAudioNativeProbe.Run(args[1],true); return 0; }
             // Reborn: real encoded-result tamper tests execute native work only in supervised opt-in children.
             if (args.FirstOrDefault() == "supervised-audio-tamper-test" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.NativeTamperTests(args[1]); return 0; }
             if (args.FirstOrDefault() == "audio-supervisor-self-test") { AudioEncoderSupervisorSmokeTest.Run(); return 0; }
@@ -821,9 +825,13 @@ internal static class Program
         Console.WriteLine("  supervised-audio-tamper-test <absolute-audited-audio.dll>");
         // Reborn: external authored input admission remains an explicitly opt-in narrow diagnostic command.
         Console.WriteLine("  supervised-authored-audio-poc <absolute-audited-audio.dll> <source-directory>");
+        // Reborn: include caller event source only through the explicit four-file diagnostic command.
+        Console.WriteLine("  supervised-authored-audio-event-poc <absolute-audited-audio.dll> <source-directory>");
         Console.WriteLine("  authored-audio-snapshot-self-test");
         // Reborn: native authored-content evidence is separate from managed snapshot admission tests.
         Console.WriteLine("  authored-audio-native-proof <absolute-audited-audio.dll>");
+        // Reborn: keep caller event native execution out of all default managed regressions.
+        Console.WriteLine("  authored-audio-event-native-proof <absolute-audited-audio.dll>");
         Console.WriteLine("  audio-archive-compare <unpacked-ep1-manifest> <original-EnglishAudio.big>");
         // Reborn: reconciliation is a separate explicit audit command, not an automatic error fallback or corpus repair.
         Console.WriteLine("  audio-custom-reconciled-audit <unpacked-ep1-manifest> <original-EnglishAudio.big>");

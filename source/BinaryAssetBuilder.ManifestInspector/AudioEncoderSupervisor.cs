@@ -29,8 +29,9 @@ internal static class AudioEncoderSupervisor
     //-------------------------------------------------------------------------------------------------
     internal static string Run(string library,string mode = "encode",int timeoutMs = 30000,Action<string>? jobCreated = null,AuthoredAudioSnapshot? authored = null)
     {
-        if (mode != "encode" && mode != "encode-authored" && !TestModes.Contains(mode,StringComparer.Ordinal) && !NativeTestModes.Contains(mode,StringComparer.Ordinal)) throw new ArgumentException("Unknown supervised worker mode.");
-        if ((mode == "encode-authored") != (authored != null)) throw new InvalidDataException("Authored mode requires a validated input snapshot.");
+        if (mode != "encode" && mode is not ("encode-authored" or "encode-authored-event") && !TestModes.Contains(mode,StringComparer.Ordinal) && !NativeTestModes.Contains(mode,StringComparer.Ordinal)) throw new ArgumentException("Unknown supervised worker mode.");
+        if ((mode is "encode-authored" or "encode-authored-event") != (authored != null)
+            || (mode == "encode-authored-event") != (authored?.EventName != null)) throw new InvalidDataException("Authored mode requires a matching validated input snapshot.");
         if (timeoutMs is < 100 or > 30000) throw new ArgumentOutOfRangeException(nameof(timeoutMs));
         string exe = Environment.ProcessPath ?? throw new NotSupportedException("An inspector apphost is required.");
         if (!exe.EndsWith("BinaryAssetBuilder.ManifestInspector.exe",StringComparison.OrdinalIgnoreCase)) throw new NotSupportedException("Supervisor requires the Windows inspector apphost.");
@@ -81,12 +82,14 @@ internal static class AudioEncoderSupervisor
         job = Path.GetFullPath(job);
         if (!Guid.TryParseExact(nonce,"N",out _) || job != Path.Combine(Path.GetTempPath(),Prefix+nonce)) throw new InvalidDataException("Worker job root/nonce differs.");
         Request request = ReadJson<Request>(Path.Combine(job,"request.json"));
-        if (request.Version != ProtocolVersion || request.Nonce != nonce || (request.Mode != "encode" && request.Mode != "encode-authored" && !TestModes.Contains(request.Mode,StringComparer.Ordinal) && !NativeTestModes.Contains(request.Mode,StringComparer.Ordinal))) throw new InvalidDataException("Worker request differs.");
+        if (request.Version != ProtocolVersion || request.Nonce != nonce || (request.Mode != "encode" && request.Mode is not ("encode-authored" or "encode-authored-event") && !TestModes.Contains(request.Mode,StringComparer.Ordinal) && !NativeTestModes.Contains(request.Mode,StringComparer.Ordinal))) throw new InvalidDataException("Worker request differs.");
         AuthoredAudioSnapshot? authored = null;
-        if (request.Mode == "encode-authored")
+        if (request.Mode is "encode-authored" or "encode-authored-event")
         {
             string inputs = Path.Combine(job,"inputs"); Item[] actualInputs = Inventory(inputs);
-            if (request.Inputs == null || request.Inputs.Length != 3 || actualInputs.Length != 3 || actualInputs.Any(item => !request.Inputs.Contains(item))) throw new InvalidDataException("Worker authored snapshot inventory differs.");
+            // Reborn: mode fixes the snapshot cardinality; an event cannot be silently dropped or injected into the three-file path.
+            int count = request.Mode == "encode-authored-event" ? 4 : 3;
+            if (request.Inputs == null || request.Inputs.Length != count || actualInputs.Length != count || actualInputs.Any(item => !request.Inputs.Contains(item))) throw new InvalidDataException("Worker authored snapshot inventory differs.");
         }
         else if (request.Inputs != null) throw new InvalidDataException("Unexpected authored worker inputs.");
         string result = Path.Combine(job,"result.json"),work = Path.Combine(job,"worker");
@@ -107,7 +110,7 @@ internal static class AudioEncoderSupervisor
         }
         CompilerSmokeTest.InitializeHashProvider();
         // Reborn: input validation needs the managed symbol tables, never the native codec; synthetic transport failures above bypass this branch.
-        authored = request.Mode == "encode-authored" ? AuthoredAudioSnapshot.Read(Path.Combine(job,"inputs")) : null;
+        authored = request.Mode is "encode-authored" or "encode-authored-event" ? AuthoredAudioSnapshot.Read(Path.Combine(job,"inputs"),request.Mode == "encode-authored-event") : null;
         AudioEncoderPoc.Run(request.Library,true,null,work,authored);
         // Reborn: mutate only new owned evidence; a matching inventory alone must not authorize an invalid manifest.
         if (request.Mode == "encode-corrupt-package") Flip(Path.Combine(work,"package","diagnostic.manifest"));
@@ -184,12 +187,21 @@ internal static class AudioEncoderSupervisor
         string expectedSidecar = "Diagnostic evidence only; core hash and package content hash are different domains.\n"+
             string.Join("\n",bindings.Select(binding => $"{binding.Encoded.Name}: core={binding.Instance.Handle.InstanceHash:X8}, diagnostic-content={binding.Encoded.Hash:X8}"))+"\n";
         if (!Read(Path.Combine(work,"core-identities.txt"),8192).SequenceEqual(Encoding.UTF8.GetBytes(expectedSidecar))) throw new InvalidDataException("Worker identity sidecar differs.");
-        if (!Read(Path.Combine(work,"event.xml"),8192).SequenceEqual(Encoding.UTF8.GetBytes(AudioFileLocalEventProbe.Source(entries)))) throw new InvalidDataException("Worker derived event source differs.");
+        if (authored?.EventName == null && !Read(Path.Combine(work,"event.xml"),8192).SequenceEqual(Encoding.UTF8.GetBytes(AudioFileLocalEventProbe.Source(entries)))) throw new InvalidDataException("Worker derived event source differs.");
         byte[] mixedBin = Read(Path.Combine(work,"local-event-package","diagnostic.bin")),mixedRelo = Read(Path.Combine(work,"local-event-package","diagnostic.relo")),mixedImp = Read(Path.Combine(work,"local-event-package","diagnostic.imp"));
         // Reborn: authored subtitles change AudioFile native lengths; locate the fixed event after the independently reconstructed leaves, not old fixture offsets.
         int eventStart = 8+entries.Sum(entry => entry.CopyNative().InstanceData.Length),eventReloStart = 8+entries.Sum(entry => entry.CopyNative().RelocationData.Length);
         if (mixedBin.Length != eventStart+176 || mixedRelo.Length != eventReloStart+8 || mixedImp.Length != 20) throw new InvalidDataException("Worker mixed package shape differs.");
-        var localEvent = new AudioFileLocalEventProbe.Entry(new AssetBuffer { InstanceData = mixedBin.AsSpan(eventStart).ToArray(),RelocationData = mixedRelo.AsSpan(eventReloStart).ToArray(),ImportsData = mixedImp.AsSpan(8).ToArray() },entries);
+        var localEvent = new AudioFileLocalEventProbe.Entry(new AssetBuffer { InstanceData = mixedBin.AsSpan(eventStart).ToArray(),RelocationData = mixedRelo.AsSpan(eventReloStart).ToArray(),ImportsData = mixedImp.AsSpan(8).ToArray() },entries,authored?.EventName ?? "RebornLocalAudio");
+        if (authored?.EventName != null)
+        {
+            // Reborn: independently recompile frozen authored event XML in the parent; a matching inventory and valid selector shape alone are insufficient.
+            var rebuilt = AudioFileLocalEventProbe.Build(work,entries,authoredName:authored.EventName);
+            AssetBuffer expectedEvent = rebuilt.CopyNative(),actualEvent = localEvent.CopyNative();
+            if (rebuilt.Id != localEvent.Id || rebuilt.Hash != localEvent.Hash || !expectedEvent.InstanceData.SequenceEqual(actualEvent.InstanceData)
+                || !expectedEvent.RelocationData.SequenceEqual(actualEvent.RelocationData) || !expectedEvent.ImportsData.SequenceEqual(actualEvent.ImportsData))
+                throw new InvalidDataException("Worker authored event differs from independently compiled source.");
+        }
         AudioFilePackageProbe.Verify(Path.Combine(work,"local-event-package"),entries,localEvent);
 
         //-------------------------------------------------------------------------------------------------
