@@ -90,8 +90,10 @@ artifact/package tamper tests also passed. Default tests do not invoke native co
 
 ## Remaining work
 
-Overall effort remains approximately 50% complete / 50% remaining. Next: a separately
-bounded variable audio pool/source inventory rather than widening schema admission
-without processor proof. Additional fields/controls, broader WAV/codecs, production
+Overall effort remains approximately 50% complete / 50% remaining. The subsequent
+[variable pool preflight](RA3EP1_AUTHORED_AUDIO_POOL.md) now validates an explicit
+1–8-source inventory through actual core preparations, without native encoding.
+Next: supervised variable-pool encoding and independently checked publication.
+Additional fields/controls, broader WAV/codecs, production
 hash/cache parity, remaining native layouts, WorldBuilder and actual Uprising loading
 remain open. No atomic filesystem transaction or native-code security sandbox is claimed.

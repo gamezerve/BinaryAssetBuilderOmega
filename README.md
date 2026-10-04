@@ -16,18 +16,27 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**101 test groups** (some contain several fixtures). These counters can grow
+**102 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot regressions add groups and all 101 groups
+worker supervision/authored snapshot/pool regressions add groups and all 102 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Bounded authored AudioEvent control flags](docs/RA3EP1_AUDIO_EVENT_CONTROLS.md).
+Latest milestone: [Explicit variable AudioFile pool preflight](docs/RA3EP1_AUTHORED_AUDIO_POOL.md).
+`authored-audio-pool-preflight <source-directory>` freezes an explicit inventory of
+1–8 XML sources and their shared or distinct direct WAV dependencies. Each leaf
+passes the real isolated core preparation path; source order, unique SAGE IDs and
+exact original/owned-copy bytes are checked. Managed 1/3/8-source fixtures and
+malformed/stale input rejection passed. This emits metadata only: variable native
+encoding, event references and package publication are the next gate. The existing
+supervised encoder still uses its fixed two-source contract.
+
+[Bounded authored AudioEvent control flags](docs/RA3EP1_AUDIO_EVENT_CONTROLS.md).
 The four-file path admits unique LOOP, INTERRUPT, FADE_ON_KILL and
 IMMEDIATE_DECAY_ON_KILL tokens, their combinations, or explicit empty Control.
 Source-derived EP1 bits must match offset 44 exactly and independent parent

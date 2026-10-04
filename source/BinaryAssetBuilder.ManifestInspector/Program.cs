@@ -22,6 +22,16 @@ internal static class Program
             // Reborn: caller event admission explicitly freezes four files, retaining the legacy three-file command unchanged.
             if (args.FirstOrDefault() == "supervised-authored-audio-event-poc" && args.Length == 3) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(args[1],"encode-authored-event",authored:AuthoredAudioSnapshot.Read(args[2],true)); return 0; }
             if (args.FirstOrDefault() == "authored-audio-snapshot-self-test") { CompilerSmokeTest.InitializeHashProvider(); AuthoredAudioSnapshotSmokeTest.Run(); return 0; }
+            // Reborn: variable pools are explicitly preflight-only; no native worker/event graph/package is authorized.
+            if (args.FirstOrDefault() == "authored-audio-pool-preflight" && args.Length == 2)
+            {
+                CompilerSmokeTest.InitializeHashProvider(); var result = AuthoredAudioPool.Read(args[1]).Preflight();
+                Console.WriteLine("Owned pool preflight copies: "+result.Directory);
+                foreach (var row in result.Rows) Console.WriteLine($"{row.Source}: AudioFile:{row.Name}, id={row.Id:X8}, core={row.CoreHash:X8}, streamed={row.Streamed}");
+                Console.WriteLine("Audio pool preflight: OK (frozen source/current core metadata only; no native/event/stream/production admission)."); return 0;
+            }
+            // Reborn: the standalone pool regression command performs only owned managed fixture work.
+            if (args.FirstOrDefault() == "authored-audio-pool-self-test") { CompilerSmokeTest.InitializeHashProvider(); AuthoredAudioPoolSmokeTest.Run(); return 0; }
             // Reborn: caller PCM/subtitle and stale-original integration proof uses only owned sources and opt-in supervised native children.
             if (args.FirstOrDefault() == "authored-audio-native-proof" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AuthoredAudioNativeProbe.Run(args[1]); return 0; }
             // Reborn: opt-in native evidence exercises event provenance/staleness separately from the three-file baseline.
@@ -846,6 +856,9 @@ internal static class Program
         Console.WriteLine("  authored-audio-list-native-proof <absolute-audited-audio.dll>");
         // Reborn: native control-bit integration is explicit, never part of the default managed test runner.
         Console.WriteLine("  authored-audio-control-native-proof <absolute-audited-audio.dll>");
+        // Reborn: variable audio pools remain a separate managed preflight boundary.
+        Console.WriteLine("  authored-audio-pool-preflight <source-directory>");
+        Console.WriteLine("  authored-audio-pool-self-test");
         Console.WriteLine("  audio-archive-compare <unpacked-ep1-manifest> <original-EnglishAudio.big>");
         // Reborn: reconciliation is a separate explicit audit command, not an automatic error fallback or corpus repair.
         Console.WriteLine("  audio-custom-reconciled-audit <unpacked-ep1-manifest> <original-EnglishAudio.big>");
