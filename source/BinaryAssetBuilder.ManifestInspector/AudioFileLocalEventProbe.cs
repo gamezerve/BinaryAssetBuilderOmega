@@ -15,6 +15,15 @@ internal static class AudioFileLocalEventProbe
     // Reborn: source attribution belongs to the actual owned fixture written before core parsing.
     internal const string SourceXml = "<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\"><AudioEvent id=\"RebornLocalAudio\" Volume=\"60\" Control=\"INTERRUPT\"><Sound>AudioFile:RebornAudioRAM</Sound><Sound Weight=\"800\">AudioFile:RebornAudioStream</Sound></AudioEvent></AssetDeclaration>";
 
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: derive literal local references from validated caller identities while preserving the fixed event wire shape. */
+    //-------------------------------------------------------------------------------------------------
+    internal static string Source(AudioFilePackageProbe.Entry[] files)
+    {
+        ValidateFiles(files);
+        return "<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\"><AudioEvent id=\"RebornLocalAudio\" Volume=\"60\" Control=\"INTERRUPT\"><Sound>AudioFile:"+files[0].Name+"</Sound><Sound Weight=\"800\">AudioFile:"+files[1].Name+"</Sound></AudioEvent></AssetDeclaration>";
+    }
+
     // Reborn: preserve copied native output and complete local dependency fingerprints, not mutable preparation handles.
     internal sealed class Entry
     {
@@ -56,7 +65,7 @@ internal static class AudioFileLocalEventProbe
     //-------------------------------------------------------------------------------------------------
     private static void ValidateFiles(AudioFilePackageProbe.Entry[] files)
     {
-        if (files.Length != 2 || files[0].Name != "RebornAudioRAM" || files[1].Name != "RebornAudioStream" || files[0].Id == files[1].Id)
+        if (files.Length != 2 || files[0].Source != "ram.xml" || files[1].Source != "streamed.xml" || files[0].Id == files[1].Id)
             throw new InvalidDataException("Local AudioEvent requires unique RAM then streamed dependency records.");
     }
 
@@ -102,7 +111,7 @@ internal static class AudioFileLocalEventProbe
     internal static Entry Build(string directory,AudioFilePackageProbe.Entry[] files,Action<InstanceDeclaration,Ra3Ep1AudioEventPlugin>? audit = null)
     {
         string path = Path.Combine(directory,"event.xml");
-        using (FileStream writer = new(path,FileMode.CreateNew,FileAccess.Write)) writer.Write(Encoding.UTF8.GetBytes(SourceXml));
+        using (FileStream writer = new(path,FileMode.CreateNew,FileAccess.Write)) writer.Write(Encoding.UTF8.GetBytes(Source(files)));
         Settings saved = Settings.Current;
         try
         {

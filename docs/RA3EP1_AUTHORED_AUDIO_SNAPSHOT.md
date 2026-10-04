@@ -13,8 +13,8 @@ Exactly these three named files are read; the caller's directory is not recursiv
 scanned and its other files are not changed:
 
 - `ram.xml`: UTF-8 without BOM, at most 8,192 bytes, AssetDeclaration containing
-  exactly one AudioFile with id RebornAudioRAM, File=input.wav and RAM play location.
-- `streamed.xml`: same limits, id RebornAudioStream and streamed play location.
+  exactly one AudioFile with a bounded literal ID, File=input.wav and RAM play location.
+- `streamed.xml`: same limits, a distinct SAGE instance ID and streamed play location.
 - `input.wav`: canonical 24,044-byte PCM16 mono 48 kHz / 12,000-sample WAV (250 ms).
   PCM sample content may differ from the old tone; WAV/chunk/header shape may not.
 
@@ -23,8 +23,12 @@ PCQuality must remain 75 (official default is allowed). SubtitleStringName may v
 within the existing printable ASCII, 1–1,024-character profile; omission uses the
 existing input filename subtitle default. Unused platform quality defaults must
 remain defaults, not explicitly authored cross-platform settings. Paths, aliases,
-Includes, DTD/entities, inheritance, formulas, arbitrary IDs, other durations/rates/
+Includes, DTD/entities, inheritance, formulas, unsafe IDs, other durations/rates/
 channels/codecs and resampling remain closed. No silent identity renaming occurs.
+IDs now accept 1–128 ASCII letters, digits, underscores or hyphens; case/hash
+aliases reject. See the [identity follow-up](RA3EP1_AUTHORED_AUDIO_IDENTITIES.md)
+for current implementation and executed native evidence. The evidence below
+records the earlier fixed-name milestone.
 
 Example `ram.xml` (use the stream ID and IsStreamedOnPC=true in streamed.xml):
 
@@ -99,7 +103,8 @@ fixed supervised encoder still pass under protocol v2. Models/marshallers remain
 785/1,390 and 762/1,390. Default tests never execute native codecs.
 
 Overall weighted effort remains approximately **50% complete / 50% remaining**.
-Next: generalize identity/package metadata beyond two fixed diagnostic slots while
-keeping checked authored snapshots, child isolation and no production/cache admission.
+The identity follow-up removes fixed asset names while retaining two source slots.
+Next: caller-authored local event references with checked snapshots, child isolation
+and no production/cache admission.
 General source graphs, inheritance, broader WAV settings, stock compiler identity,
 WorldBuilder and in-game loading remain open.

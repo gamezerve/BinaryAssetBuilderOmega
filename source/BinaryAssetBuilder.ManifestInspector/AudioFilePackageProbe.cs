@@ -25,13 +25,15 @@ internal static class AudioFilePackageProbe
         //-------------------------------------------------------------------------------------------------
         internal Entry(string name,string source,AssetBuffer native,byte[] custom)
         {
-            if (name is not ("RebornAudioRAM" or "RebornAudioStream") || source != (name == "RebornAudioRAM" ? "ram.xml" : "streamed.xml"))
-                throw new InvalidDataException("Only the two fixed owned audio identities/source names are admitted.");
+            // Reborn: names are caller-owned; only the two explicit source slots determine play location.
+            AudioFileDiagnosticIdentity.Validate(name);
+            if (source is not ("ram.xml" or "streamed.xml"))
+                throw new InvalidDataException("Only the two owned audio source slots are admitted.");
             if (native.InstanceData.Length > 2048 || native.RelocationData.Length > 12 || native.ImportsData.Length != 0 || custom.Length > 1048576)
                 throw new InvalidDataException("Audio package snapshot exceeds bounds.");
             _bin = (byte[])native.InstanceData.Clone(); _relo = (byte[])native.RelocationData.Clone(); _imp = (byte[])native.ImportsData.Clone(); _custom = (byte[])custom.Clone();
             Name = name; Source = source; Id = InstanceHandle.GetInstanceId(name);
-            CheckNative(name,CopyNative(),_custom);
+            CheckNative(source,CopyNative(),_custom);
             // Reborn: payload-derived fixture identity prevents stale custom copies; this is explicitly not recovered production hashing.
             Hash = FastHash.GetHashCode(_bin.Concat(_custom).ToArray());
         }
@@ -50,10 +52,10 @@ internal static class AudioFilePackageProbe
     //-------------------------------------------------------------------------------------------------
     /** Reborn: require exact serializer output and tag-04 custom framing for the fixed mono XAS RAM/streamed identities. */
     //-------------------------------------------------------------------------------------------------
-    private static void CheckNative(string name,AssetBuffer native,byte[] custom)
+    private static void CheckNative(string source,AssetBuffer native,byte[] custom)
     {
         AudioFileRuntimeProbe.Header parsed = AudioFileRuntimeProbe.Parse(native.InstanceData,native.InstanceData.Length);
-        bool streamed = name == "RebornAudioStream";
+        bool streamed = source == "streamed.xml";
         if (parsed.Samples != 12000 || parsed.Rate != 48000 || parsed.Channels != 1 || (parsed.HeaderSize != 0) != streamed)
             throw new InvalidDataException("Audio package runtime fields/play location differ.");
         byte[] inline = streamed ? native.InstanceData.AsSpan(checked((int)parsed.HeaderPointer),8).ToArray() : Array.Empty<byte>();
@@ -70,7 +72,7 @@ internal static class AudioFilePackageProbe
     //-------------------------------------------------------------------------------------------------
     internal static Dictionary<string,byte[]> Serialize(Entry[] entries,AudioFileLocalEventProbe.Entry? localEvent = null)
     {
-        if (entries.Length != 2 || entries[0].Name != "RebornAudioRAM" || entries[1].Name != "RebornAudioStream" || entries[0].Id == entries[1].Id)
+        if (entries.Length != 2 || entries[0].Source != "ram.xml" || entries[1].Source != "streamed.xml" || entries[0].Id == entries[1].Id)
             throw new InvalidDataException("Package requires unique RAM then streamed identities.");
         AssetBuffer[] native = entries.Select(entry => entry.CopyNative()).ToArray();
         // Reborn: the optional parent comes after both local AudioFiles and must retain their complete captured fingerprints.
@@ -147,7 +149,7 @@ internal static class AudioFilePackageProbe
                 || other.QualifiedName != asset.Name || other.TypeHash != asset.TypeHash || other.InstanceHash != asset.InstanceHash || other.Tokenized || other.ExternalReferences.Any()
                 || other.LinkedInstanceOffset != bin || other.LinkedRelocationOffset != relo || other.LinkedImportsOffset != 8)
                 throw new InvalidDataException("Audio package entry/offset/identity readback differs.");
-            CheckNative(entry.Name,new AssetBuffer { InstanceData = AssetStreamProbe.ReadRange(Path.ChangeExtension(path,".bin"),null,bin,asset.InstanceDataSize),
+            CheckNative(entry.Source,new AssetBuffer { InstanceData = AssetStreamProbe.ReadRange(Path.ChangeExtension(path,".bin"),null,bin,asset.InstanceDataSize),
                 RelocationData = AssetStreamProbe.ReadRange(Path.ChangeExtension(path,".relo"),null,relo,asset.RelocationDataSize),ImportsData = Array.Empty<byte>() },
                 ReadBounded(Path.Combine(customDirectory,$"{asset.TypeId:x8}.{asset.TypeHash:x8}.{asset.InstanceId:x8}.{asset.InstanceHash:x8}.cdata")));
             bin += asset.InstanceDataSize; relo += asset.RelocationDataSize;

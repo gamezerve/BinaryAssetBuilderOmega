@@ -11,6 +11,9 @@ internal sealed class AuthoredAudioSnapshot
     internal static readonly string[] Names = { "ram.xml","streamed.xml","input.wav" };
     private readonly Dictionary<string,byte[]> _files;
     private readonly string _directory;
+    // Reborn: preserve caller names independently of worker-provided manifests or metadata.
+    internal string RamName { get; private init; } = "";
+    internal string StreamName { get; private init; } = "";
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: retain only privately read owned buffers and the source directory needed for a final current-source check. */
@@ -56,6 +59,8 @@ internal sealed class AuthoredAudioSnapshot
         directory = Path.GetFullPath(directory);
         Dictionary<string,byte[]> files = Names.ToDictionary(name => name,name => ReadFile(Path.Combine(directory,name),name == "input.wav" ? 24044 : 8192));
         string schema = Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"AudioFileIdentityPipeline.xsd");
+        // Reborn: collect validated names in source-slot order and reject aliases in the actual SAGE identity domain.
+        List<string> identities = new();
         foreach (bool streamed in new[] { false,true })
         {
             string name = streamed ? "streamed.xml" : "ram.xml";
@@ -68,12 +73,15 @@ internal sealed class AuthoredAudioSnapshot
                 throw new InvalidDataException("Authored XML declaration must use UTF-8.");
             document.Validate((_,args) => throw new InvalidDataException(args.Message));
             if (document.DocumentElement!.LocalName != "AssetDeclaration" || document.DocumentElement.ChildNodes.Count != 1 || document.DocumentElement.FirstChild is not XmlElement root
-                || root.GetAttribute("id") != (streamed ? "RebornAudioStream" : "RebornAudioRAM") || root.GetAttribute("File") != "input.wav")
-                throw new InvalidDataException("Authored audio requires one fixed RAM/streamed identity and input.wav leaf per declaration.");
+                || root.LocalName != "AudioFile" || root.GetAttribute("File") != "input.wav")
+                throw new InvalidDataException("Authored audio requires one AudioFile and input.wav leaf per declaration.");
+            AudioFileDiagnosticIdentity.Validate(root.GetAttribute("id")); identities.Add(root.GetAttribute("id"));
             var input = Ra3Ep1AudioFileInputProfile.Prepare(root,AudioEncoderPoc.Identity(root),TargetPlatform.Win32,files["input.wav"]);
             if (input.Streamed != streamed) throw new InvalidDataException("Authored audio play location disagrees with its RAM/streamed source slot.");
         }
-        return new(directory,files);
+        if (InstanceHandle.GetInstanceId(identities[0]) == InstanceHandle.GetInstanceId(identities[1]))
+            throw new InvalidDataException("Authored audio identities collide in the SAGE instance-ID domain.");
+        return new(directory,files) { RamName = identities[0],StreamName = identities[1] };
     }
 
     //-------------------------------------------------------------------------------------------------

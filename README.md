@@ -27,16 +27,17 @@ worker supervision/authored snapshot regressions add groups and all 101 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Bounded authored audio snapshots through the supervised worker](docs/RA3EP1_AUTHORED_AUDIO_SNAPSHOT.md).
+Latest milestone: [Caller-owned AudioFile identities and local package closure](docs/RA3EP1_AUTHORED_AUDIO_IDENTITIES.md).
 `supervised-authored-audio-poc <absolute-audited-audio.dll> <source-directory>` now
 reads RAM/streamed XML and PCM from a caller directory, validates/freeze-copies them,
 and uses protocol v2 to bind input/output evidence. Caller PCM content and printable
 subtitles may vary; originals are read-only and rechecked before acceptance. Real
-silence/subtitle encoding passed, while stale originals and tampered input copies
-were rejected. This still requires ram.xml/streamed.xml/input.wav, the two fixed
-diagnostic identities and canonical 250 ms mono 48 kHz PCM16/XAS settings; it is not
+silence/subtitle/custom-name encoding passed, while stale originals and tampered input copies
+were rejected. Literal asset names now come from XML; case/hash aliases reject and
+local event references follow those names. This still requires ram.xml/streamed.xml/input.wav,
+exactly two source slots and canonical 250 ms mono 48 kHz PCM16/XAS settings; it is not
 a general music importer or production AudioFile compiler. See the linked contract
-and XML example before using real inputs.
+and [XML example](docs/RA3EP1_AUTHORED_AUDIO_SNAPSHOT.md) before using real inputs.
 
 [Supervised audio worker and bounded result acceptance](docs/RA3EP1_AUDIO_SUPERVISOR.md).
 `supervised-core-audio-poc <absolute-audited-audio.dll>` runs encoding in a hidden

@@ -171,7 +171,7 @@ internal static class AudioEncoderSupervisor
         var bindings = entries.Select(entry =>
         {
             // Reborn: this fixed PoC admits only its canonical authored source before invoking the core loader; no forged Includes/DTD/formulas are evaluated.
-            if (authored == null && !Read(Path.Combine(work,entry.Source),8192).SequenceEqual(Encoding.UTF8.GetBytes(AudioEncoderPoc.CoreSource(entry.Name == "RebornAudioStream"))))
+            if (authored == null && !Read(Path.Combine(work,entry.Source),8192).SequenceEqual(Encoding.UTF8.GetBytes(AudioEncoderPoc.CoreSource(entry.Source == "streamed.xml"))))
                 throw new InvalidDataException("Worker authored source differs from fixed profile.");
             InstanceDeclaration instance = AudioFileIdentitySmokeTest.Build(work,schema,AudioFileIdentitySmokeTest.Processing,entry.Source);
             return new CoreAudioPackageGate.Binding(instance,AudioFileCorePreparation.Prepare(instance),entry);
@@ -184,7 +184,7 @@ internal static class AudioEncoderSupervisor
         string expectedSidecar = "Diagnostic evidence only; core hash and package content hash are different domains.\n"+
             string.Join("\n",bindings.Select(binding => $"{binding.Encoded.Name}: core={binding.Instance.Handle.InstanceHash:X8}, diagnostic-content={binding.Encoded.Hash:X8}"))+"\n";
         if (!Read(Path.Combine(work,"core-identities.txt"),8192).SequenceEqual(Encoding.UTF8.GetBytes(expectedSidecar))) throw new InvalidDataException("Worker identity sidecar differs.");
-        if (!Read(Path.Combine(work,"event.xml"),8192).SequenceEqual(Encoding.UTF8.GetBytes(AudioFileLocalEventProbe.SourceXml))) throw new InvalidDataException("Worker fixed event source differs.");
+        if (!Read(Path.Combine(work,"event.xml"),8192).SequenceEqual(Encoding.UTF8.GetBytes(AudioFileLocalEventProbe.Source(entries)))) throw new InvalidDataException("Worker derived event source differs.");
         byte[] mixedBin = Read(Path.Combine(work,"local-event-package","diagnostic.bin")),mixedRelo = Read(Path.Combine(work,"local-event-package","diagnostic.relo")),mixedImp = Read(Path.Combine(work,"local-event-package","diagnostic.imp"));
         // Reborn: authored subtitles change AudioFile native lengths; locate the fixed event after the independently reconstructed leaves, not old fixture offsets.
         int eventStart = 8+entries.Sum(entry => entry.CopyNative().InstanceData.Length),eventReloStart = 8+entries.Sum(entry => entry.CopyNative().RelocationData.Length);
@@ -198,7 +198,7 @@ internal static class AudioEncoderSupervisor
         AudioFilePackageProbe.Entry Entry(bool streamed)
         {
             string prefix = Path.Combine(work,streamed ? "streamed" : "ram");
-            return new(streamed ? "RebornAudioStream" : "RebornAudioRAM",streamed ? "streamed.xml" : "ram.xml",
+            return new(authored == null ? (streamed ? "RebornAudioStream" : "RebornAudioRAM") : (streamed ? authored.StreamName : authored.RamName),streamed ? "streamed.xml" : "ram.xml",
                 new AssetBuffer { InstanceData = Read(prefix+".runtime.bin"),RelocationData = Read(prefix+".runtime.relo"),ImportsData = Array.Empty<byte>() },Read(prefix+(streamed ? ".sns" : ".snr")));
         }
     }

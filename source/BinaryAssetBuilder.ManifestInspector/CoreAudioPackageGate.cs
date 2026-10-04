@@ -13,7 +13,7 @@ internal static class CoreAudioPackageGate
     //-------------------------------------------------------------------------------------------------
     internal static void Verify(Binding[] bindings)
     {
-        if (bindings.Length != 2 || bindings[0].Encoded.Name != "RebornAudioRAM" || bindings[1].Encoded.Name != "RebornAudioStream")
+        if (bindings.Length != 2 || bindings[0].Encoded.Source != "ram.xml" || bindings[1].Encoded.Source != "streamed.xml" || bindings[0].Encoded.Id == bindings[1].Encoded.Id)
             throw new InvalidDataException("Core audio publication requires RAM then streamed bindings.");
         foreach (Binding binding in bindings)
         {

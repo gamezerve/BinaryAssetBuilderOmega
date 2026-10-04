@@ -21,7 +21,19 @@ internal static class AuthoredAudioSnapshotSmokeTest
         Reject(() => snapshot.Install(installed));
         DateTime timestamp = File.GetLastWriteTimeUtc(Path.Combine(directory,"input.wav")); byte[] changed = (byte[])wave.Clone(); changed[100] ^= 1;
         Write("input.wav",changed); File.SetLastWriteTimeUtc(Path.Combine(directory,"input.wav"),timestamp); Reject(snapshot.VerifyCurrent); Write("input.wav",wave); snapshot.VerifyCurrent();
-        foreach (string invalid in new[] { ram.Replace("input.wav","../input.wav"),ram.Replace("RebornAudioRAM","OtherName"),ram.Replace("XAS","NONE"),ram.Replace("48000","44100"),
+        // Reborn: names come from caller XML, including names formerly associated with the opposite play-location slot.
+        foreach (var pair in new[] { (Ram:"Caller_RAM-01",Stream:"Caller_Stream-02"),(Ram:"RebornAudioStream",Stream:"RebornAudioRAM"),(Ram:"A",Stream:new string('b',128)) })
+        {
+            Write("ram.xml",Encoding.UTF8.GetBytes(ram.Replace("RebornAudioRAM",pair.Ram)));
+            Write("streamed.xml",Encoding.UTF8.GetBytes(streamed.Replace("RebornAudioStream",pair.Stream)));
+            var named = AuthoredAudioSnapshot.Read(directory);
+            if (named.RamName != pair.Ram || named.StreamName != pair.Stream) throw new InvalidDataException("Caller identities were silently renamed.");
+            named.VerifyCurrent();
+        }
+        Write("streamed.xml",Encoding.UTF8.GetBytes(streamed));
+        foreach (string invalidName in new[] { "", "bad:name", "bad/name", "bad\\name", "bad name", "é",new string('a',129),"RebornAudioStream","rebornAudioStream" })
+        { Write("ram.xml",Encoding.UTF8.GetBytes(ram.Replace("RebornAudioRAM",invalidName))); Reject(() => AuthoredAudioSnapshot.Read(directory)); }
+        foreach (string invalid in new[] { ram.Replace("input.wav","../input.wav"),ram.Replace("XAS","NONE"),ram.Replace("48000","44100"),
             ram.Replace("IsStreamedOnPC=\"false\"","IsStreamedOnPC=\"true\""),ram.Replace("<AssetDeclaration","<!DOCTYPE x [<!ENTITY e 'x'>]><AssetDeclaration"),
             ram.Replace("<AudioFile","<Includes /><AudioFile"),ram.Replace("File=\"input.wav\"","File=\"input.wav\" inheritFrom=\"Other\""),ram.Replace("PCCompression=\"XAS\"","PCCompression=\"XAS\" XenonQuality=\"75\"") })
         { Write("ram.xml",Encoding.UTF8.GetBytes(invalid)); Reject(() => AuthoredAudioSnapshot.Read(directory)); }

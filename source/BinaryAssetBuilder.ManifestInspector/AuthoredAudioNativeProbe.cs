@@ -14,12 +14,21 @@ internal static class AuthoredAudioNativeProbe
         string source = Path.Combine(Path.GetTempPath(),"Reborn-AuthoredNative-"+Guid.NewGuid().ToString("N")); Directory.CreateDirectory(source);
         using MemoryStream pcm = new(); AudioEncoderPoc.WriteWave(pcm); byte[] wave = pcm.ToArray(); wave.AsSpan(44).Clear();
         foreach (bool streamed in new[] { false,true })
-            Write(Path.Combine(source,streamed ? "streamed.xml" : "ram.xml"),Encoding.UTF8.GetBytes(AudioEncoderPoc.CoreSource(streamed).Replace("reborn_audio_encoder_pocSubTitle","authored_snapshotSubTitle",StringComparison.Ordinal)),true);
+            Write(Path.Combine(source,streamed ? "streamed.xml" : "ram.xml"),Encoding.UTF8.GetBytes(AudioEncoderPoc.CoreSource(streamed)
+                .Replace(streamed ? "RebornAudioStream" : "RebornAudioRAM",streamed ? "Caller_Stream-02" : "Caller_RAM-01",StringComparison.Ordinal)
+                .Replace("reborn_audio_encoder_pocSubTitle","authored_snapshotSubTitle",StringComparison.Ordinal)),true);
         string file = Path.Combine(source,"input.wav"); Write(file,wave,true);
         Console.WriteLine("Owned authored audio input fixture: "+source);
         var frozen = AuthoredAudioSnapshot.Read(source);
         var hashes = AuthoredAudioSnapshot.Names.ToDictionary(name => name,name => Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(Path.Combine(source,name)))));
         string accepted = AudioEncoderSupervisor.Run(library,"encode-authored",authored:frozen);
+        // Reborn: independently verify caller names/hashed IDs and the event dependency tuples in accepted native packages.
+        var manifest = ManifestReader.Read(File.ReadAllBytes(Path.Combine(accepted,"worker","local-event-package","diagnostic.manifest")));
+        if (manifest.Assets[0].Name != "AudioFile:Caller_RAM-01" || manifest.Assets[1].Name != "AudioFile:Caller_Stream-02"
+            || manifest.Assets[0].InstanceId != BinaryAssetBuilder.Core.InstanceHandle.GetInstanceId(frozen.RamName)
+            || manifest.Assets[1].InstanceId != BinaryAssetBuilder.Core.InstanceHandle.GetInstanceId(frozen.StreamName)
+            || !manifest.Assets[2].References.SequenceEqual(manifest.Assets.Take(2).Select(asset => new AssetId(asset.TypeId,asset.InstanceId))))
+            throw new InvalidDataException("Native package lost authored names or local dependency identities.");
         foreach (string name in AuthoredAudioSnapshot.Names)
             if (hashes[name] != Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(Path.Combine(source,name))))) throw new InvalidDataException("Authored source was modified by encoding.");
         byte[] runtime = File.ReadAllBytes(Path.Combine(accepted,"worker","ram.runtime.bin")); var parsed = AudioFileRuntimeProbe.Parse(runtime,runtime.Length);

@@ -48,7 +48,8 @@ internal static class AudioFilePackageSmokeTest
         { AssetBuffer bad = entries[0].CopyNative(); bad.InstanceData[offset] ^= 1; Reject(() => new AudioFilePackageProbe.Entry("RebornAudioRAM","ram.xml",bad,custom)); }
         AssetBuffer wrongRelocation = entries[0].CopyNative(); wrongRelocation.RelocationData[0] ^= 4;
         Reject(() => new AudioFilePackageProbe.Entry("RebornAudioRAM","ram.xml",wrongRelocation,custom));
-        Reject(() => new AudioFilePackageProbe.Entry("Other","ram.xml",approved,custom));
+        // Reborn: arbitrary literal names now pass; only unsafe tokens are rejected at the identity boundary.
+        Reject(() => new AudioFilePackageProbe.Entry("Other:Selector","ram.xml",approved,custom));
         Reject(() => new AudioFilePackageProbe.Entry("RebornAudioRAM","../ram.xml",approved,custom));
         Reject(() => new AudioFilePackageProbe.Entry("RebornAudioStream","streamed.xml",approved,custom));
         Reject(() => new AudioFilePackageProbe.Entry("RebornAudioRAM","ram.xml",approved,Flip(custom,0)));

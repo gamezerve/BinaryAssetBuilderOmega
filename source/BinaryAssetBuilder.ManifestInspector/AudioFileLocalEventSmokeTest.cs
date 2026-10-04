@@ -69,6 +69,24 @@ internal static class AudioFileLocalEventSmokeTest
         Reject(() => AudioFilePackageProbe.Publish(output,files,parent)); AudioFilePackageProbe.Verify(output,files,parent);
         var repeated = AudioFilePackageProbe.Serialize(files,parent);
         Require(payloads.All(file => file.Value.SequenceEqual(repeated[file.Key])),"Recovered mixed package differs.");
+        // Reborn: arbitrary caller names and old names exchanged between slots must survive core normalization and manifest closure unchanged.
+        foreach (var names in new[] { (Ram:"Caller_RAM-01",Stream:"Caller_Stream-02"),(Ram:"RebornAudioStream",Stream:"RebornAudioRAM") })
+        {
+            var named = new[] { new AudioFilePackageProbe.Entry(names.Ram,"ram.xml",files[0].CopyNative(),files[0].CopyCustom()),
+                new AudioFilePackageProbe.Entry(names.Stream,"streamed.xml",files[1].CopyNative(),files[1].CopyCustom()) };
+            string namedDirectory = Path.Combine(root,Guid.NewGuid().ToString("N")); Directory.CreateDirectory(namedDirectory);
+            var namedEvent = AudioFileLocalEventProbe.Build(namedDirectory,named,(instance,plugin) =>
+            {
+                InstanceHandle original = instance.ReferencedInstances[0]; instance.ReferencedInstances[0] = instance.ReferencedInstances[1];
+                Reject(() => AudioFileLocalEventProbe.Compile(instance,named,plugin)); instance.ReferencedInstances[0] = original;
+            });
+            AudioFilePackageProbe.Publish(Path.Combine(namedDirectory,"package"),named,namedEvent);
+            AudioFilePackageProbe.Verify(Path.Combine(namedDirectory,"package"),named,namedEvent);
+            Reject(() => parent.ValidateDependencies(named));
+        }
+        var alias = new AudioFilePackageProbe.Entry("rebornAudioRAM","streamed.xml",files[1].CopyNative(),files[1].CopyCustom());
+        Reject(() => AudioFilePackageProbe.Serialize(new[] { files[0],alias }));
+        Require(AudioFileLocalEventProbe.Source(files) == AudioFileLocalEventProbe.SourceXml,"Baseline source compatibility differs.");
         Console.WriteLine("Local AudioEvent/audio package self-test: OK (actual core-normalized event; explicitly prepared two local AudioFiles; 352/36/20 linked; native selectors/tuples; corruption/ownership/stale-leaf refresh; production/general graph closed)");
     }
 
