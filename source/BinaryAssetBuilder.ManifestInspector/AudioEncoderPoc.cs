@@ -116,6 +116,46 @@ internal static class AudioEncoderPoc
     }
 
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: encode an explicit frozen pool in a disposable worker, retaining raw per-leaf evidence without generalizing package/event admission. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void RunPool(string path,string directory,AuthoredAudioPool pool,bool encode)
+    {
+        pool.Install(directory);
+        string schema = Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"AudioFileIdentityPipeline.xsd");
+        var rows = pool.Rows;
+        var cores = rows.Select(row => AudioFileIdentitySmokeTest.Build(directory,schema,AudioFileIdentitySmokeTest.Processing,row.Source)).ToArray();
+        var preparations = cores.Select(AudioFileCorePreparation.Prepare).ToArray();
+        if (encode)
+        {
+            path = Path.GetFullPath(path);
+            if (!OperatingSystem.IsWindows() || RuntimeInformation.ProcessArchitecture != Architecture.X86) throw new NotSupportedException("Pool encoder requires Windows x86.");
+            NativeAudioApiProbe.Evidence evidence = NativeAudioApiProbe.Read(path);
+            if (evidence.Managed || evidence.Machine != System.Reflection.PortableExecutable.Machine.I386 || evidence.Magic != System.Reflection.PortableExecutable.PEMagic.PE32
+                || Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))) != ExpectedHash) throw new InvalidDataException("Pool encoder requires the audited library.");
+            string output = Path.Combine(directory,"encoded"); Directory.CreateDirectory(output);
+            IntPtr module = NativeLibrary.Load(path); bool initialized = false;
+            try
+            {
+                Bind<VoidCall>(module,"SIMEX_init")(); initialized = true;
+                try
+                {
+                    for (int index = 0; index < rows.Length; index++)
+                    {
+                        pool.VerifyCopies(directory); preparations[index].VerifyCurrent(cores[index]);
+                        // Reborn: output prefixes are generated ordinals in a separate directory, never caller IDs or WAV filenames.
+                        Encode(module,Path.Combine(directory,rows[index].Wave),Path.Combine(output,"leaf"+index),CreateDefinition(rows[index].Streamed),cores[index].Handle,preparations[index].Settings,cores[index],preparations[index]);
+                    }
+                }
+                finally { Bind<VoidCall>(module,"SIMEX_shutdown")(); initialized = false; }
+            }
+            finally { if (!initialized) NativeLibrary.Free(module); }
+        }
+        pool.VerifyCopies(directory); pool.VerifyCurrent();
+        var metadata = rows.Select((row,index) => new AuthoredAudioPool.CoreRow(row.Source,row.Name,row.Id,cores[index].Handle.InstanceHash,row.Streamed)).ToArray();
+        WriteOwned(Path.Combine(directory,"pool-core.json"),System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(metadata));
+    }
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: encode one owned WAV using source-declared cdecl signatures, then independently validate generated framing. */
     //-------------------------------------------------------------------------------------------------
     private static AudioFilePackageProbe.Entry Encode(IntPtr module,string input,string output,XmlElement root,InstanceHandle identity,Ra3Ep1AudioFileInputProfile.PreparedInput prepared,InstanceDeclaration? core = null,AudioFileCorePreparation? corePrepared = null,AudioEncoderFaultAudit? audit = null)

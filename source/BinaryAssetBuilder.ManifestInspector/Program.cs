@@ -22,7 +22,13 @@ internal static class Program
             // Reborn: caller event admission explicitly freezes four files, retaining the legacy three-file command unchanged.
             if (args.FirstOrDefault() == "supervised-authored-audio-event-poc" && args.Length == 3) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(args[1],"encode-authored-event",authored:AuthoredAudioSnapshot.Read(args[2],true)); return 0; }
             if (args.FirstOrDefault() == "authored-audio-snapshot-self-test") { CompilerSmokeTest.InitializeHashProvider(); AuthoredAudioSnapshotSmokeTest.Run(); return 0; }
-            // Reborn: variable pools are explicitly preflight-only; no native worker/event graph/package is authorized.
+            // Reborn: separate opt-in pool worker modes retain the fixed encoder path and do not emit package/event graphs.
+            if (args.FirstOrDefault() == "supervised-audio-pool-preflight" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(Path.Combine(Path.GetTempPath(),"unused-native-library.dll"),"preflight-pool",pool:AuthoredAudioPool.Read(args[1])); return 0; }
+            if (args.FirstOrDefault() == "supervised-audio-pool-encode" && args.Length == 3) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(args[1],"encode-pool",pool:AuthoredAudioPool.Read(args[2])); return 0; }
+            // Reborn: pool worker/native regression entry points are explicit and mutate only freshly owned fixtures.
+            if (args.FirstOrDefault() == "audio-pool-worker-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioPoolWorkerSmokeTest.Run(); return 0; }
+            if (args.FirstOrDefault() == "audio-pool-native-proof" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioPoolWorkerSmokeTest.NativeProof(args[1]); return 0; }
+            // Reborn: the original unsupervised preflight remains metadata-only and never launches a codec.
             if (args.FirstOrDefault() == "authored-audio-pool-preflight" && args.Length == 2)
             {
                 CompilerSmokeTest.InitializeHashProvider(); var result = AuthoredAudioPool.Read(args[1]).Preflight();
@@ -859,6 +865,11 @@ internal static class Program
         // Reborn: variable audio pools remain a separate managed preflight boundary.
         Console.WriteLine("  authored-audio-pool-preflight <source-directory>");
         Console.WriteLine("  authored-audio-pool-self-test");
+        // Reborn: variable raw encoding is supervised/opt-in, separate from managed preflight and fixed package proofs.
+        Console.WriteLine("  supervised-audio-pool-preflight <source-directory>");
+        Console.WriteLine("  supervised-audio-pool-encode <absolute-audited-audio.dll> <source-directory>");
+        Console.WriteLine("  audio-pool-worker-self-test");
+        Console.WriteLine("  audio-pool-native-proof <absolute-audited-audio.dll>");
         Console.WriteLine("  audio-archive-compare <unpacked-ep1-manifest> <original-EnglishAudio.big>");
         // Reborn: reconciliation is a separate explicit audit command, not an automatic error fallback or corpus repair.
         Console.WriteLine("  audio-custom-reconciled-audit <unpacked-ep1-manifest> <original-EnglishAudio.big>");

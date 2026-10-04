@@ -62,7 +62,7 @@ internal static class AuthoredAudioPoolSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: generate only owned short PCM/XML fixtures; both play locations retain the existing narrow input profile. */
     //-------------------------------------------------------------------------------------------------
-    private static void Fixture(string directory,int count,bool shared)
+    internal static void Fixture(string directory,int count,bool shared)
     {
         Write(directory,"audio-pool.json",JsonSerializer.SerializeToUtf8Bytes(new { version = 1,sources = Enumerable.Range(0,count).Select(index => "tone"+index+".xml").ToArray() }));
         using MemoryStream pcm = new(); AudioEncoderPoc.WriteWave(pcm); byte[] wave = pcm.ToArray();

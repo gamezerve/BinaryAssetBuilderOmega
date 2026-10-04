@@ -27,6 +27,8 @@ internal static class CompilerSmokeTest
         TestAuthoredAudioSnapshot();
         // Reborn: variable inventory/core preparation is managed-only, separate from the fixed native audio worker path.
         TestAuthoredAudioPool();
+        // Reborn: variable pool transport and acceptance run real managed workers, never native codecs in default tests.
+        TestAudioPoolWorker();
         TestAttributeModifier();
         // Reborn: exercise isolated EP1 sound records while retaining the legacy child ABI.
         TestMultisoundNative();
@@ -2249,6 +2251,11 @@ internal static class CompilerSmokeTest
     /** Reborn: validate explicitly listed variable audio sources and dependencies without codecs or streams. */
     //-------------------------------------------------------------------------------------------------
     private static void TestAuthoredAudioPool() => AuthoredAudioPoolSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: independently verify variable pool worker evidence and negative acceptance boundaries. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestAudioPoolWorker() => AudioPoolWorkerSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: guard custom block envelopes separately from native ABI and codec processing. */

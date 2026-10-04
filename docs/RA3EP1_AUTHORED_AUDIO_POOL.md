@@ -89,14 +89,16 @@ A direct CLI run accepted an eight-source fixture. Owned output:
 These hashes describe this owned diagnostic fixture, not portable EA production
 hash goldens. Native encoding was not executed for the variable pool in this milestone.
 
-## Next gate and risks
+## Subsequent milestone and risks
 
-Keep the existing fixed supervised encoder separate until a variable worker contract
-binds the complete ordered inventory, private source bytes and shared dependencies.
-Then generalize per-leaf encoding and parent reconstruction, independently verify
-each encoded payload and dynamic package record/reference/import tables, and test
-missing/reordered/duplicate/tampered results plus timeout/crash cleanup before acceptance.
-Only then attach selected event references to the variable pool.
+[Supervised variable raw encoding](RA3EP1_AUDIO_POOL_WORKER.md) now binds the pool
+to explicit managed/native child modes and independently checks each raw leaf.
+The historical preflight evidence above remains managed-only. Dynamic package
+publication and selected event references are still pending.
+
+Keep the fixed supervised encoder separate. Next generalize dynamic package
+record/reference/import tables and test missing/reordered/duplicate/tampered results
+before publication. Only then attach selected event references to the variable pool.
 
 Broader WAV durations/codecs, music graphs, production processor/hash/cache parity,
 remaining type/layout work, WorldBuilder integration and actual Uprising game loading
