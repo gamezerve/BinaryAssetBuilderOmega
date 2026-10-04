@@ -30,15 +30,18 @@ internal static class AudioFileLocalEventProbe
         private readonly byte[] _bin,_relo,_imp;
         private readonly (uint Id,uint Hash)[] _dependencies;
         internal string Name { get; }
+        // Reborn: retain source-derived scalar expectations rather than accepting arbitrary worker weight/volume words.
+        internal AuthoredAudioEventSource.Settings Settings { get; }
         internal uint Id => InstanceHandle.GetInstanceId(Name);
         internal uint Hash { get; }
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: freeze compiled event data and bind its diagnostic hash to both local AudioFile content identities. */
         //-------------------------------------------------------------------------------------------------
-        internal Entry(AssetBuffer native,AudioFilePackageProbe.Entry[] files,string name = "RebornLocalAudio")
+        internal Entry(AssetBuffer native,AudioFilePackageProbe.Entry[] files,string name = "RebornLocalAudio",AuthoredAudioEventSource.Settings? settings = null)
         {
-            ValidateFiles(files); CheckNative(native);
+            Settings = settings ?? AuthoredAudioEventSource.Settings.Default;
+            ValidateFiles(files); CheckNative(native,Settings);
             // Reborn: freeze the admitted event identity separately from its content/dependency diagnostic hash.
             AudioFileDiagnosticIdentity.Validate(name); Name = name;
             _bin = (byte[])native.InstanceData.Clone(); _relo = (byte[])native.RelocationData.Clone(); _imp = (byte[])native.ImportsData.Clone();
@@ -75,14 +78,18 @@ internal static class AudioFileLocalEventProbe
     //-------------------------------------------------------------------------------------------------
     /** Reborn: independently require the fixed two-Sound wire shape, one-biased imports and exact relocation/import tables. */
     //-------------------------------------------------------------------------------------------------
-    internal static void CheckNative(AssetBuffer native)
+    internal static void CheckNative(AssetBuffer native,AuthoredAudioEventSource.Settings? settings = null)
     {
         if (native.InstanceData.Length != 176 || !native.RelocationData.SequenceEqual(Convert.FromHexString("8C000000FFFFFFFF"))
             || !native.ImportsData.SequenceEqual(Convert.FromHexString("98000000A4000000FFFFFFFF"))) throw new InvalidDataException("Local AudioEvent native shape differs.");
         byte[] bin = native.InstanceData;
+        // Reborn: changing allowed scalars must still match their independently prepared source values exactly.
+        settings ??= AuthoredAudioEventSource.Settings.Default;
+        settings.Validate();
         if (BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(136)) != 2 || BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(140)) != 152
             || BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(152)) != 1 || BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(164)) != 2
-            || BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(156)) != 1000 || BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(168)) != 800
+            || BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(4)) != settings.VolumeBits
+            || BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(156)) != settings.RamWeight || BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(168)) != settings.StreamWeight
             || BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(160)) != 0x3F800000u || BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(172)) != 0x3F800000u)
             throw new InvalidDataException("Local AudioEvent selectors/weights/pointers differ.");
     }
@@ -104,7 +111,7 @@ internal static class AudioFileLocalEventProbe
             concrete.Add(new InstanceHandle("AudioFile",file.Name) { TypeHash = 0x53C81E47u,InstanceHash = file.Hash });
         }
         instance.ValidatedReferencedInstances = concrete;
-        try { return new Entry(plugin.ProcessInstance(instance),files,name); }
+        try { return new Entry(plugin.ProcessInstance(instance),files,name,AuthoredAudioEventSource.ReadSettings((System.Xml.XmlElement)instance.Node)); }
         catch { instance.ValidatedReferencedInstances = null!; throw; }
     }
 

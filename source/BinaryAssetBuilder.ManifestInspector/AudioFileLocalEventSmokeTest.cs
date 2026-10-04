@@ -97,6 +97,32 @@ internal static class AudioFileLocalEventSmokeTest
             && File.ReadAllBytes(Path.Combine(authoredDirectory,"event.xml")).SequenceEqual(authoredXml),"Authored event identity/provenance changed.");
         AudioFilePackageProbe.Publish(Path.Combine(authoredDirectory,"package"),files,authored);
         AudioFilePackageProbe.Verify(Path.Combine(authoredDirectory,"package"),files,authored);
+        // Reborn: compare varied authored scalar words independently with the stock layout and preserve all untouched bytes/tables.
+        foreach (var scalars in new[] { (Volume:"37.5",Bits:0x3EC00000u,Ram:125u,Stream:875u),(Volume:"0",Bits:0u,Ram:0u,Stream:1000000u),
+            (Volume:"100",Bits:0x3F800000u,Ram:1000000u,Stream:0u),(Volume:"60",Bits:0x3F199999u,Ram:1000u,Stream:1000u) })
+        {
+            string variedDirectory = Path.Combine(root,Guid.NewGuid().ToString("N")); Directory.CreateDirectory(variedDirectory);
+            string xml = SourceWithComment().Replace("Volume=\"60\"","Volume=\""+scalars.Volume+"\"")
+                .Replace("<Sound>","<Sound Weight=\""+scalars.Ram+"\">").Replace("Weight=\"800\"","Weight=\""+scalars.Stream+"\"");
+            // Reborn: absent weights must compile exactly like the explicit official 1000 default on both sounds.
+            if (scalars.Volume == "60") xml = xml.Replace(" Weight=\"1000\"","");
+            File.WriteAllBytes(Path.Combine(variedDirectory,"event.xml"),System.Text.Encoding.UTF8.GetBytes(xml));
+            var varied = AudioFileLocalEventProbe.Build(variedDirectory,files,authoredName:"CallerLocalEvent");
+            AssetBuffer golden = parent.CopyNative();
+            System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(golden.InstanceData.AsSpan(4),scalars.Bits);
+            System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(golden.InstanceData.AsSpan(156),scalars.Ram);
+            System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(golden.InstanceData.AsSpan(168),scalars.Stream);
+            Require(golden.InstanceData.SequenceEqual(varied.CopyNative().InstanceData) && golden.RelocationData.SequenceEqual(varied.CopyNative().RelocationData)
+                && golden.ImportsData.SequenceEqual(varied.CopyNative().ImportsData) && varied.Hash != parent.Hash,"Varied event scalar bytes/hash differ.");
+            AudioFilePackageProbe.Publish(Path.Combine(variedDirectory,"package"),files,varied);
+            AudioFilePackageProbe.Verify(Path.Combine(variedDirectory,"package"),files,varied);
+            foreach (int offset in new[] { 4,156,168 })
+            { AssetBuffer bad = varied.CopyNative(); bad.InstanceData[offset] ^= 1; Reject(() => new AudioFileLocalEventProbe.Entry(bad,files,varied.Name,varied.Settings)); }
+            Reject(() => new AudioFileLocalEventProbe.Entry(varied.CopyNative(),files,varied.Name));
+        }
+        foreach (var bad in new[] { new AuthoredAudioEventSource.Settings(float.NaN,1,1),new AuthoredAudioEventSource.Settings(101,1,1),
+            new AuthoredAudioEventSource.Settings(60,0,0),new AuthoredAudioEventSource.Settings(60,1000001,1) })
+            Reject(() => new AudioFileLocalEventProbe.Entry(parent.CopyNative(),files,settings:bad));
         Console.WriteLine("Local AudioEvent/audio package self-test: OK (actual core-normalized event; explicitly prepared two local AudioFiles; 352/36/20 linked; native selectors/tuples; corruption/ownership/stale-leaf refresh; production/general graph closed)");
     }
 

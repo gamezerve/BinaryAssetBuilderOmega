@@ -27,14 +27,23 @@ worker supervision/authored snapshot regressions add groups and all 101 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Frozen caller AudioEvent source and supervised local closure](docs/RA3EP1_AUTHORED_AUDIO_EVENT.md).
+Latest milestone: [Authored local AudioEvent volume and weights](docs/RA3EP1_AUDIO_EVENT_SCALARS.md).
+The four-file path now accepts Volume decimal literals in 0..100 and independent
+Sound weights in 0..1,000,000 (omitted weights use the official 1000 default).
+Both-zero mixtures and nonliteral/nonfinite/out-of-range values reject. Frozen
+source settings must match exact native scalar words and independent parent
+recompilation. Boundary/default/corruption regressions and actual Volume=37.5,
+weights=125/875 native encoding passed. Control remains INTERRUPT and the ordered
+two-Sound graph remains fixed; this is not yet a general event/music compiler.
+
+[Frozen caller AudioEvent source and supervised local closure](docs/RA3EP1_AUTHORED_AUDIO_EVENT.md).
 `supervised-authored-audio-event-poc <absolute-audited-audio.dll> <source-directory>`
 adds an explicit four-file path: caller event.xml is frozen alongside both audio
 sources and PCM. Its literal ID and raw source bytes are preserved; exact local
 references and independently recompiled native event bytes must agree before
 acceptance. Real encoding, timestamp-preserving stale event rejection and input-copy
-tamper rejection passed. The first event profile remains two ordered Sounds with
-Volume=60, Control=INTERRUPT and weights 1000/800, not a general event/music importer.
+tamper rejection passed. The initial fixed Volume=60 and weights 1000/800 profile
+has now been extended by the scalar milestone above, not a general event/music importer.
 See the linked report for the exact contract and XML example.
 
 [Caller-owned AudioFile identities and local package closure](docs/RA3EP1_AUTHORED_AUDIO_IDENTITIES.md).

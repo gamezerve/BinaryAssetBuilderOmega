@@ -18,10 +18,13 @@ declaration. No authored DTD/entity resolution, Includes, inheritance, formulas,
 additional assets or external paths are admitted. Trusted checked-in schema
 includes remain available to schema validation only.
 
-The event must have exactly id, Volume="60" and Control="INTERRUPT" as authored
+The event must have exactly id, Volume and Control="INTERRUPT" as authored
 attributes. Its id uses the same 1–128 ASCII letter/digit/underscore/hyphen rule.
-It contains exactly two Sound entries in RAM/streamed order: the first has no
-attributes, the second has only Weight="800". References must exactly match
+Volume now accepts bounded decimal literals in 0..100. It contains exactly two
+Sound entries in RAM/streamed order, each with an optional Weight in 0..1,000,000
+(default 1000); both-zero mixtures reject. See the
+[scalar follow-up](RA3EP1_AUDIO_EVENT_SCALARS.md) for parsing and native evidence.
+References must exactly match
 AudioFile:<caller-name>; aliases, unknown names, other types, selectors and
 reordered/duplicate targets reject. Comments/formatting are retained in the raw
 snapshot rather than regenerated from schema-defaulted XML.
@@ -40,7 +43,7 @@ Example event.xml for Caller_RAM-01 and Caller_Stream-02:
 
 This intentionally proves source provenance and local closure without widening
 the already verified 176/8/12 event BIN/RELO/IMP shape. It does not yet expose
-arbitrary event controls, scalar values, sound counts or dependency graphs.
+arbitrary event controls, additional scalar fields, sound counts or dependency graphs.
 
 ## Implementation and acceptance
 
@@ -67,6 +70,9 @@ atomic multi-file filesystem transaction is claimed. Failed jobs retain evidence
 without acceptance; original user sources are never rewritten by the pipeline.
 
 ## Executed evidence
+
+The evidence below records the initial fixed-scalar milestone; the scalar follow-up
+adds current variable-volume/weight validation and native evidence.
 
 Release/x86 build passed and all 101 compiler groups executed successfully.
 The added cases extend existing snapshot/local-event groups. All 33 enum checks
@@ -105,7 +111,7 @@ tests also passed. Default compiler tests never invoke native codecs.
 
 Approximately 50% complete / 50% remaining overall; this bounded source-closure
 milestone does not establish an SDK release or justify a percentage jump.
-Next: expand authored event settings/weights only with source-to-native validation,
-then variable local graph cardinality. Broader WAV/resampling/codecs, production
+Volume/weight expansion is now covered by the scalar follow-up. Next: checked
+variable local graph cardinality. Broader WAV/resampling/codecs, production
 hash/cache parity, remaining native type layouts, WorldBuilder and actual game
 loading remain required work.

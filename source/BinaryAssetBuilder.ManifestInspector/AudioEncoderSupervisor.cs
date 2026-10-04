@@ -192,7 +192,7 @@ internal static class AudioEncoderSupervisor
         // Reborn: authored subtitles change AudioFile native lengths; locate the fixed event after the independently reconstructed leaves, not old fixture offsets.
         int eventStart = 8+entries.Sum(entry => entry.CopyNative().InstanceData.Length),eventReloStart = 8+entries.Sum(entry => entry.CopyNative().RelocationData.Length);
         if (mixedBin.Length != eventStart+176 || mixedRelo.Length != eventReloStart+8 || mixedImp.Length != 20) throw new InvalidDataException("Worker mixed package shape differs.");
-        var localEvent = new AudioFileLocalEventProbe.Entry(new AssetBuffer { InstanceData = mixedBin.AsSpan(eventStart).ToArray(),RelocationData = mixedRelo.AsSpan(eventReloStart).ToArray(),ImportsData = mixedImp.AsSpan(8).ToArray() },entries,authored?.EventName ?? "RebornLocalAudio");
+        var localEvent = new AudioFileLocalEventProbe.Entry(new AssetBuffer { InstanceData = mixedBin.AsSpan(eventStart).ToArray(),RelocationData = mixedRelo.AsSpan(eventReloStart).ToArray(),ImportsData = mixedImp.AsSpan(8).ToArray() },entries,authored?.EventName ?? "RebornLocalAudio",authored?.EventSettings);
         if (authored?.EventName != null)
         {
             // Reborn: independently recompile frozen authored event XML in the parent; a matching inventory and valid selector shape alone are insufficient.

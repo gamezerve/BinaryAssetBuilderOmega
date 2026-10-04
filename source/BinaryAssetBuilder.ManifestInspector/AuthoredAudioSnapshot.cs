@@ -16,6 +16,8 @@ internal sealed class AuthoredAudioSnapshot
     internal string StreamName { get; private init; } = "";
     // Reborn: optional event admission is explicit and freezes a fourth file; unrelated files remain ignored in legacy mode.
     internal string? EventName { get; private init; }
+    // Reborn: native validation must match the parent's independently admitted frozen event scalars.
+    internal AuthoredAudioEventSource.Settings? EventSettings { get; private init; }
     internal IEnumerable<string> FileNames => _files.Keys;
 
     //-------------------------------------------------------------------------------------------------
@@ -86,8 +88,9 @@ internal sealed class AuthoredAudioSnapshot
             throw new InvalidDataException("Authored audio identities collide in the SAGE instance-ID domain.");
         // Reborn: freeze and admit authored event bytes before any worker/native codec startup.
         string? eventName = null;
-        if (includeEvent) { files.Add("event.xml",ReadFile(Path.Combine(directory,"event.xml"),8192)); eventName = AuthoredAudioEventSource.Validate(files["event.xml"],identities[0],identities[1]); }
-        return new(directory,files) { RamName = identities[0],StreamName = identities[1],EventName = eventName };
+        AuthoredAudioEventSource.Settings? eventSettings = null;
+        if (includeEvent) { files.Add("event.xml",ReadFile(Path.Combine(directory,"event.xml"),8192)); (eventName,eventSettings) = AuthoredAudioEventSource.Read(files["event.xml"],identities[0],identities[1]); }
+        return new(directory,files) { RamName = identities[0],StreamName = identities[1],EventName = eventName,EventSettings = eventSettings };
     }
 
     //-------------------------------------------------------------------------------------------------

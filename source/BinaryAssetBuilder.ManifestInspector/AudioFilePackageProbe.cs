@@ -168,7 +168,7 @@ internal static class AudioFilePackageProbe
                 throw new InvalidDataException("Local AudioEvent manifest/native dependency identity differs.");
             AssetBuffer read = new() { InstanceData = AssetStreamProbe.ReadRange(Path.ChangeExtension(path,".bin"),null,bin,176),
                 RelocationData = AssetStreamProbe.ReadRange(Path.ChangeExtension(path,".relo"),null,relo,8),ImportsData = AssetStreamProbe.ReadRange(Path.ChangeExtension(path,".imp"),null,8,12) };
-            AudioFileLocalEventProbe.CheckNative(read);
+            AudioFileLocalEventProbe.CheckNative(read,localEvent.Settings);
             foreach (int slot in new[] { 152,164 })
             {
                 uint selector = BinaryPrimitives.ReadUInt32LittleEndian(read.InstanceData.AsSpan(slot)); AssetId target = asset.References[checked((int)selector)-1];

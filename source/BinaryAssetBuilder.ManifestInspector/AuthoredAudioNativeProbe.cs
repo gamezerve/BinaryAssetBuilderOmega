@@ -19,7 +19,8 @@ internal static class AuthoredAudioNativeProbe
                 .Replace("reborn_audio_encoder_pocSubTitle","authored_snapshotSubTitle",StringComparison.Ordinal)),true);
         string file = Path.Combine(source,"input.wav"); Write(file,wave,true);
         // Reborn: optional caller event is a fourth immutable input with custom identity and exact ordered references.
-        byte[] eventBytes = Encoding.UTF8.GetBytes(AudioFileLocalEventProbe.SourceXml.Replace("RebornLocalAudio","CallerLocalEvent").Replace("RebornAudioRAM","Caller_RAM-01").Replace("RebornAudioStream","Caller_Stream-02"));
+        byte[] eventBytes = Encoding.UTF8.GetBytes(AudioFileLocalEventProbe.SourceXml.Replace("RebornLocalAudio","CallerLocalEvent").Replace("RebornAudioRAM","Caller_RAM-01").Replace("RebornAudioStream","Caller_Stream-02")
+            .Replace("Volume=\"60\"","Volume=\"37.5\"").Replace("<Sound>","<Sound Weight=\"125\">").Replace("800","875"));
         if (includeEvent) Write(Path.Combine(source,"event.xml"),eventBytes,true);
         Console.WriteLine("Owned authored audio input fixture: "+source);
         var frozen = AuthoredAudioSnapshot.Read(source,includeEvent);
@@ -34,6 +35,16 @@ internal static class AuthoredAudioNativeProbe
             || !manifest.Assets[2].References.SequenceEqual(manifest.Assets.Take(2).Select(asset => new AssetId(asset.TypeId,asset.InstanceId))))
             throw new InvalidDataException("Native package lost authored names or local dependency identities.");
         if (includeEvent && manifest.Assets[2].Name != "AudioEvent:CallerLocalEvent") throw new InvalidDataException("Caller event identity was silently replaced.");
+        if (includeEvent)
+        {
+            // Reborn: inspect native words directly, not the profile object or compiler's normalized XML.
+            byte[] bin = File.ReadAllBytes(Path.Combine(accepted,"worker","local-event-package","diagnostic.bin"));
+            int start = 8+manifest.Assets.Take(2).Sum(asset => asset.InstanceDataSize);
+            if (System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(start+4)) != 0x3EC00000u
+                || System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(start+156)) != 125
+                || System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(bin.AsSpan(start+168)) != 875)
+                throw new InvalidDataException("Native event lost caller volume/weights.");
+        }
         foreach (string name in frozen.FileNames)
             if (hashes[name] != Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(Path.Combine(source,name))))) throw new InvalidDataException("Authored source was modified by encoding.");
         byte[] runtime = File.ReadAllBytes(Path.Combine(accepted,"worker","ram.runtime.bin")); var parsed = AudioFileRuntimeProbe.Parse(runtime,runtime.Length);
