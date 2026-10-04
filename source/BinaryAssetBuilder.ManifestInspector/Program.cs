@@ -13,6 +13,13 @@ internal static class Program
     {
         try
         {
+            // Reborn: worker transport is handled before compiler initialization; synthetic worker failure tests never load native codecs.
+            if (args.FirstOrDefault() == "audio-encoder-worker" && args.Length == 3) { AudioEncoderSupervisor.Worker(args[1],args[2]); return 0; }
+            // Reborn: the supervising parent validates results independently and never loads the native audio DLL itself.
+            if (args.FirstOrDefault() == "supervised-core-audio-poc" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(args[1]); return 0; }
+            // Reborn: real encoded-result tamper tests execute native work only in supervised opt-in children.
+            if (args.FirstOrDefault() == "supervised-audio-tamper-test" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.NativeTamperTests(args[1]); return 0; }
+            if (args.FirstOrDefault() == "audio-supervisor-self-test") { AudioEncoderSupervisorSmokeTest.Run(); return 0; }
             // Reborn: pin reference identity evidence and exercise managed hash boundaries without loading old compilers or codecs.
             if (args.FirstOrDefault() == "hashing-writer-boundary-self-test") { HashingWriterBoundarySmokeTest.Run(); return 0; }
             // Reborn: exercise real AudioFile file-reference identity with owned WAV fixtures and no native codec/output.
@@ -802,6 +809,11 @@ internal static class Program
         Console.WriteLine("  core-audio-encoder-poc <absolute-audited-audio.dll>");
         // Reborn: one explicitly selected fault runs per worker process.
         Console.WriteLine("  core-audio-encoder-fault <absolute-audited-audio.dll> <scenario>");
+        // Reborn: supervised native work and managed transport regressions are distinct entry points.
+        Console.WriteLine("  supervised-core-audio-poc <absolute-audited-audio.dll>");
+        Console.WriteLine("  audio-supervisor-self-test");
+        // Reborn: native evidence corruption tests never run in the default compiler suite.
+        Console.WriteLine("  supervised-audio-tamper-test <absolute-audited-audio.dll>");
         Console.WriteLine("  audio-archive-compare <unpacked-ep1-manifest> <original-EnglishAudio.big>");
         // Reborn: reconciliation is a separate explicit audit command, not an automatic error fallback or corpus repair.
         Console.WriteLine("  audio-custom-reconciled-audit <unpacked-ep1-manifest> <original-EnglishAudio.big>");

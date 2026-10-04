@@ -28,7 +28,7 @@ internal static class AudioEncoderPoc
     //-------------------------------------------------------------------------------------------------
     /** Reborn: pin architecture/hash/exports before invoking native code in an explicitly launched disposable CLI process. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string path,bool useCore = false,AudioEncoderFaultAudit? audit = null)
+    internal static string Run(string path,bool useCore = false,AudioEncoderFaultAudit? audit = null,string? ownedDirectory = null)
     {
         // Reborn: fault injection is restricted to the isolated real-core path, never silently applied to another workflow.
         if (audit != null && !useCore) throw new NotSupportedException("Audio fault injection requires core preparation.");
@@ -40,7 +40,10 @@ internal static class AudioEncoderPoc
             || evidence.Magic != System.Reflection.PortableExecutable.PEMagic.PE32
             || Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))) != ExpectedHash)
             throw new InvalidDataException("Audio encoder PoC only admits the audited native library.");
-        string directory = Path.Combine(Path.GetTempPath(),"Reborn-AudioEncoder-"+Guid.NewGuid().ToString("N"));
+        string directory = ownedDirectory ?? Path.Combine(Path.GetTempPath(),"Reborn-AudioEncoder-"+Guid.NewGuid().ToString("N"));
+        // Reborn: a supervised worker may receive only a fresh empty owned result directory, never overwrite earlier evidence.
+        if (ownedDirectory != null && Directory.Exists(directory) && Directory.EnumerateFileSystemEntries(directory).Any())
+            throw new InvalidDataException("Supervised audio directory must be empty.");
         Directory.CreateDirectory(directory); string input = Path.Combine(directory,"input.wav"); WriteWave(input);
         // Reborn: fault injection can access only this newly created worker-owned fixture directory.
         audit?.SetDirectory(directory);
@@ -103,6 +106,7 @@ internal static class AudioEncoderPoc
             // Reborn: unload only this process's pinned module after native handles have been closed; preserve owned outputs as evidence.
             if (!initialized) { NativeLibrary.Free(module); audit?.Lifecycle("unload"); }
         }
+        return directory;
     }
 
     //-------------------------------------------------------------------------------------------------

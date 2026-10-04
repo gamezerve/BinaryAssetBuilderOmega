@@ -16,25 +16,34 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**99 test groups** (some contain several fixtures). These counters can grow
+**100 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
-counts; hash boundary, core AudioFile identity and current-disk preparation regressions
-the shared core publication gate and managed cleanup regression add groups and all 99 groups
+counts; hash boundary, core identity/preparation, publication, cleanup and managed
+worker supervision regressions add groups and all 100 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Audio encoder failure boundaries and native crash prevention](docs/RA3EP1_AUDIO_ENCODER_FAILURES.md).
+Latest milestone: [Supervised audio worker and bounded result acceptance](docs/RA3EP1_AUDIO_SUPERVISOR.md).
+`supervised-core-audio-poc <absolute-audited-audio.dll>` runs encoding in a hidden
+child process. The parent enforces timeout/exit/log/protocol limits, rehashes owned
+artifacts and independently checks current core identities and both packages before
+writing a diagnostic acceptance marker. Twelve managed transport failure tests and
+two opt-in native tamper tests reject invalid results, including a corrupt manifest
+with a matching hash inventory. Fixed fixture outputs remain unchanged. This is not
+a sandbox, generic authored-input worker, production AudioFile plugin or playable SDK.
+
+[Audio encoder failure boundaries and native crash prevention](docs/RA3EP1_AUDIO_ENCODER_FAILURES.md).
 Eight safe opt-in worker scenarios verify completed cleanup calls and rejection
 of changed XML/WAV after encoding or before publication. Independent cleanup
 attempts all remaining resources even if a managed release callback throws.
 An invalid output-parent experiment crashed the native worker with 0xC0000005;
 this condition is now rejected before native create and is not retried as a native
 error test. Other native failures remain unproven, so general/production AudioFile
-compilation stays closed and supervised worker integration is the next gate.
+compilation stays closed; bounded supervision is now implemented for the fixed PoC.
 
 [Actual core preparation to native audio diagnostic packages](docs/RA3EP1_CORE_AUDIO_ENCODER.md).
 The opt-in `core-audio-encoder-poc <absolute-audited-audio.dll>` now uses actual
