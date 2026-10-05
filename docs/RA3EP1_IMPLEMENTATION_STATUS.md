@@ -5,6 +5,17 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-05)
 
+[Pinned Shield schema candidate](RA3EP1_SDK_SHIELD_CANDIDATE.md) removes only the
+reviewed second duplicate in captured memory. The 837-XSD candidate structurally
+compiles with zero errors and two warnings at W3D VertexData/PathMusic Handle.
+Engine status is separated from zero-diagnostic admission; no real source binding
+is published. Reference bytes/default strict behavior remain unchanged. All 115
+default groups and 33 enum checks pass, including existing Yuriko graph proof.
+The SDK tools/dependency workstream is now manually estimated at 25% (previously
+20% in the October 1 snapshot). Weighted total is approximately 50.25%, still
+rounded to 50% complete / 50% remaining; game loading is still 0% proven.
+The following effective-schema block is the prior milestone.
+
 [Effective schema and typed-source gate](RA3EP1_SDK_EFFECTIVE_SCHEMA.md) compiles
 captured Include closures with no external resolver. Positive synthetic tests
 cover inherited/group/prohibited attributes, xsi:type and DataBlob elements.

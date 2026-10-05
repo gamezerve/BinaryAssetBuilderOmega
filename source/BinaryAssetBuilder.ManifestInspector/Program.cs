@@ -218,13 +218,16 @@ internal static class Program
             // Reborn: bounded diagnostic Include build publishes only a new verified directory and never enables production/cache policies.
             // Reborn: expose staged file-field declaration evidence separately from source-path completeness.
             // Reborn: strict effective schema evidence stays separate from production compilation and source readiness.
-            if (args.FirstOrDefault() == "sdk-effective-schema")
+            if (args.FirstOrDefault() is "sdk-effective-schema" or "sdk-shield-schema-candidate")
             {
-                if (args.Length is < 1 or > 2) throw new ArgumentException("sdk-effective-schema [absolute-source.xml]");
-                var effective = SdkEffectiveSchema.Inspect(args.Length == 2 ? args[1] : null); Console.WriteLine(JsonSerializer.Serialize(effective,JsonOptions)); return effective.SchemaCompiled && effective.SourceBinding?.XmlValidated != false ? 0 : 2;
+                if (args.Length is < 1 or > 2) throw new ArgumentException("sdk-effective-schema / sdk-shield-schema-candidate [absolute-source.xml]");
+                // Reborn: normalization is opt-in through a separate named diagnostic command, never a silent resolver fallback.
+                var effective = SdkEffectiveSchema.Inspect(args.Length == 2 ? args[1] : null,args[0] == "sdk-shield-schema-candidate"); Console.WriteLine(JsonSerializer.Serialize(effective,JsonOptions)); return effective.SchemaCompiled && effective.SourceBinding?.XmlValidated != false ? 0 : 2;
             }
             // Reborn: keep effective-schema positive fixtures and real duplicate rejection available without source compilation.
             if (args.FirstOrDefault() == "sdk-effective-schema-self-test") { SdkEffectiveSchemaSmokeTest.Run(); return 0; }
+            // Reborn: prove pinned normalization independently of default strict schema compilation.
+            if (args.FirstOrDefault() == "sdk-shield-schema-candidate-self-test") { SdkShieldSchemaCandidateSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() is "sdk-file-reference-catalog" or "sdk-file-reference-catalog-self-test")
             {
                 if (args.Length != 1) throw new ArgumentException("File-reference catalog commands take no arguments; the staged schema root is explicit in the report.");
@@ -873,6 +876,9 @@ internal static class Program
         // Reborn: report strict compiled XSD evidence without opening source compilation.
         Console.WriteLine("  sdk-effective-schema [absolute-source.xml]");
         Console.WriteLine("  sdk-effective-schema-self-test");
+        // Reborn: fingerprint-pinned in-memory candidate keeps the default strict schema gate intact.
+        Console.WriteLine("  sdk-shield-schema-candidate [absolute-source.xml]");
+        Console.WriteLine("  sdk-shield-schema-candidate-self-test");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.
         Console.WriteLine("  diagnostic-build-self-test");
         Console.WriteLine("  diagnostic-audioevent-build-self-test [ep1-audio-manifest ...]");

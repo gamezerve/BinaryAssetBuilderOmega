@@ -9,17 +9,17 @@ internal static class SdkEffectiveSchema
 {
     // Reborn: effective attributes are not validated source instances, element-particle expansion or complete dependency closure.
     internal sealed record Field(string OwnerType,string Name,string FileType,string DeclarationUri,bool PipelineOnly);
-    internal sealed record Evidence(XmlSchemaSet Schemas,int IncludedFiles,string[] Errors,bool Compiled);
+    internal sealed record Evidence(XmlSchemaSet Schemas,int IncludedFiles,string[] Errors,string[] Warnings,bool EngineCompiled,bool Compiled);
     // Reborn: typed logical values are not resolved payloads or Include/dependency closure evidence.
     internal sealed record BoundField(string OwnerType,string Kind,string Name,string LogicalPath);
     internal sealed record Binding(string SourcePath,string SourceSha256,bool XmlValidated,BoundField[] Fields,string[] Errors);
-    internal sealed record Report(string SchemaRoot,string SchemaCatalogSha256,int IncludedFiles,bool SchemaCompiled,Field[] EffectiveFileAttributes,string[] Errors,
-        string? RequestedSource,Binding? SourceBinding,bool ReadOnly,bool SnapshotOnly,bool FullDependencyCoverage,bool ProductionBuildReady,string[] Limitations);
+    internal sealed record Report(string SchemaRoot,string SchemaCatalogSha256,int IncludedFiles,bool SchemaEngineCompiled,bool SchemaCompiled,Field[] EffectiveFileAttributes,string[] Errors,string[] Warnings,
+        string CandidateProfile,string CandidateCatalogSha256,SdkShieldSchemaCandidate.Change[] Changes,string? RequestedSource,Binding? SourceBinding,bool ReadOnly,bool SnapshotOnly,bool FullDependencyCoverage,bool ProductionBuildReady,string[] Limitations);
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: fingerprint the staged catalog and compile its CnC3Types Include closure without registry/settings/native compiler operations. */
     //-------------------------------------------------------------------------------------------------
-    internal static Report Inspect(string? source = null)
+    internal static Report Inspect(string? source = null,bool shieldCandidate = false)
     {
         // Reborn: reject unsupported physical source syntax even when a schema error would otherwise skip source binding.
         source = source == null ? null : SdkEnvironmentPreflight.Absolute(source);
@@ -31,12 +31,18 @@ internal static class SdkEffectiveSchema
             if (Convert.ToHexString(SHA256.HashData(bytes)) != row.Value) throw new InvalidDataException("Schema changed during effective snapshot capture.");
             snapshots.Add(row.Key,bytes);
         }
+        // Reborn: normalized candidate identity stays separate from the untouched source catalog; default strict compilation remains unmodified.
+        var changes = shieldCandidate ? new[] { SdkShieldSchemaCandidate.Apply(snapshots) } : Array.Empty<SdkShieldSchemaCandidate.Change>();
+        var candidateCatalog = snapshots.ToDictionary(row => row.Key,row => Convert.ToHexString(SHA256.HashData(row.Value)),StringComparer.OrdinalIgnoreCase);
         var evidence = Compile(snapshots,"cnc3types.xsd");
         var after = SdkEnvironmentPreflight.Catalog(root);
         if (after.Count != catalog.Count || catalog.Any(row => !after.TryGetValue(row.Key,out string? hash) || hash != row.Value)) throw new InvalidDataException("Effective schema catalog changed during inspection.");
-        return new(root,SdkEnvironmentPreflight.Digest(catalog),evidence.IncludedFiles,evidence.Compiled,
-            evidence.Compiled ? Attributes(evidence.Schemas) : Array.Empty<Field>(),evidence.Errors,
+        return new(root,SdkEnvironmentPreflight.Digest(catalog),evidence.IncludedFiles,evidence.EngineCompiled,evidence.Compiled,
+            evidence.Compiled ? Attributes(evidence.Schemas) : Array.Empty<Field>(),evidence.Errors,evidence.Warnings,
+            shieldCandidate ? SdkShieldSchemaCandidate.Profile : "unmodified",SdkEnvironmentPreflight.Digest(candidateCatalog),changes,
             source,evidence.Compiled && source != null ? Bind(evidence.Schemas,source,SdkEnvironmentPreflight.Read(source,4*1048576)) : null,true,true,false,false,new[] {
+                "A named diagnostic normalization candidate is not the official catalog, EA type table or an approved production schema.",
+                "SchemaEngineCompiled is structural engine status; SchemaCompiled additionally requires zero errors and zero warnings before publishing trusted fields/bindings.",
                 "Source binding is skipped when schema compilation fails; effective attributes then remain empty, not complete.",
                 "Effective global named-type attributes and one validated source only; no Include traversal, payload resolution, asset inheritance or full dependency closure.",
                 "Diagnostic declaration URIs identify in-memory schema provenance, not physical files opened at those URIs.",
@@ -52,16 +58,27 @@ internal static class SdkEffectiveSchema
         entry = IncludeName("",entry);
         if (snapshots.Count > 1024 || snapshots.Values.Any(bytes => bytes.Length > 2*1048576) || snapshots.Values.Sum(bytes => (long)bytes.Length) > 64*1048576)
             throw new InvalidDataException("Effective schema snapshot bounds exceeded.");
-        XmlSchemaSet set = new() { XmlResolver = null }; List<string> errors = new(); HashSet<string> visited = new(StringComparer.OrdinalIgnoreCase);
-        set.ValidationEventHandler += (_,args) => Error(args.Message);
+        XmlSchemaSet set = new() { XmlResolver = null }; List<string> errors = new(),warnings = new(); HashSet<string> visited = new(StringComparer.OrdinalIgnoreCase);
+        set.ValidationEventHandler += (_,args) => Diagnostic(args);
         Visit(entry,0);
         if (errors.Count == 0) { try { set.Compile(); } catch (XmlSchemaException error) { Error(error.Message); } }
-        return new(set,visited.Count,errors.ToArray(),errors.Count == 0 && set.IsCompiled);
+        return new(set,visited.Count,errors.ToArray(),warnings.ToArray(),errors.Count == 0 && set.IsCompiled,errors.Count == 0 && warnings.Count == 0 && set.IsCompiled);
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: retain at most 64 bounded diagnostics; any warning or error closes effective-schema readiness. */
         //-------------------------------------------------------------------------------------------------
         void Error(string message) { if (errors.Count < 64) errors.Add(message.Length > 1024 ? message[..1024] : message); }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: distinguish compiler severity and retain bounded diagnostic provenance without silently accepting warnings. */
+        //-------------------------------------------------------------------------------------------------
+        void Diagnostic(ValidationEventArgs args)
+        {
+            string message = args.Message;
+            if (!string.IsNullOrEmpty(args.Exception?.SourceUri)) message += " ["+args.Exception.SourceUri+":"+args.Exception.LineNumber+"]";
+            if (args.Severity == XmlSeverityType.Error) Error(message);
+            else if (warnings.Count < 64) warnings.Add(message.Length > 1024 ? message[..1024] : message);
+        }
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: parse captured Include documents once, never resolve a schemaLocation URI through the network or filesystem. */
@@ -75,7 +92,7 @@ internal static class SdkEffectiveSchema
             // Reborn: this URI supplies diagnostic provenance only; the resolver remains null and never opens it.
             string uri = "file:///C:/Reborn-InMemorySchemas/"+string.Join('/',name.Split('/').Select(Uri.EscapeDataString));
             using XmlReader reader = XmlReader.Create(input,new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit,XmlResolver = null,MaxCharactersInDocument = 2*1048576 },uri);
-            XmlSchema schema = XmlSchema.Read(reader,(_,args) => Error(args.Message)) ?? throw new InvalidDataException("XSD document required.");
+            XmlSchema schema = XmlSchema.Read(reader,(_,args) => Diagnostic(args)) ?? throw new InvalidDataException("XSD document required.");
             foreach (XmlSchemaObject item in schema.Includes)
             {
                 if (item is not XmlSchemaInclude include || string.IsNullOrEmpty(include.SchemaLocation)) throw new InvalidDataException("Only explicit captured XSD Includes are admitted; imports/redefines reject.");

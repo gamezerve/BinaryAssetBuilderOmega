@@ -13,21 +13,34 @@ It is rounded from weighted workstreams and is not increased per commit.
 The containment audit and attach-base recovery accumulated enough work to
 reassess the native-layout workstream from 53% to 55%; the overall estimate
 moves from about 49% to 50%. Major type-table and in-game gates remain open.
+The subsequent environment/path/catalog/effective-schema/candidate diagnostics
+raise the manually estimated SDK tools/dependencies workstream from 20% to 25%.
+With its 15% weight, the current total is about 50.25%, still rounded to 50%; this
+is not a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**114 test groups** (some contain several fixtures). These counters can grow
+**115 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding regressions add groups and all 114 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate regressions add groups and all 115 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Effective schema and typed-source gate](docs/RA3EP1_SDK_EFFECTIVE_SCHEMA.md).
+Latest milestone: [Pinned in-memory Shield schema candidate](docs/RA3EP1_SDK_SHIELD_CANDIDATE.md).
+`sdk-shield-schema-candidate` removes only the fingerprint-reviewed second Shield
+definition in captured memory and records separate original/candidate digests.
+The 837-XSD candidate now structurally compiles with zero errors and two prohibition
+warnings (VertexData/Handle); clean-schema admission and real source binding stay
+closed. Default `sdk-effective-schema` still rejects the original duplicate.
+Reference schemas are untouched. All 115 default groups and 33 enum checks pass,
+including the existing Yuriko shield 460/12/0 graph regression.
+
+[Effective schema and typed-source gate](docs/RA3EP1_SDK_EFFECTIVE_SCHEMA.md).
 `sdk-effective-schema [absolute-source.xml]` compiles captured XSD Includes with
 external resolution disabled. Valid synthetic schemas prove inherited/group/
 prohibited attributes, xsi:type and DataBlob element binding. The real 837-XSD

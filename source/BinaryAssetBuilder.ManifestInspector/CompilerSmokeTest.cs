@@ -62,6 +62,8 @@ internal static class CompilerSmokeTest
         TestSdkFileReferenceCatalog();
         // Reborn: effective source binding must not hide the staged duplicate-schema blocker.
         TestSdkEffectiveSchema();
+        // Reborn: diagnostic schema normalization must remain fingerprint-pinned and distinct from reference evidence.
+        TestSdkShieldSchemaCandidate();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2258,6 +2260,11 @@ internal static class CompilerSmokeTest
     /** Reborn: execute effective schema/inherited source regressions independently of production processors and game loading. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkEffectiveSchema() => SdkEffectiveSchemaSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: test the explicit Shield schema candidate without altering the default strict/reference gate. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkShieldSchemaCandidate() => SdkShieldSchemaCandidateSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */
