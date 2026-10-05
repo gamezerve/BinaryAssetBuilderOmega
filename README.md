@@ -16,18 +16,28 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**113 test groups** (some contain several fixtures). These counters can grow
+**114 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog regressions add groups and all 113 groups
+worker supervision/authored snapshot/pool/path/catalog/binding regressions add groups and all 114 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Schema file-reference declaration inventory](docs/RA3EP1_SDK_FILE_REFERENCE_CATALOG.md).
+Latest milestone: [Effective schema and typed-source gate](docs/RA3EP1_SDK_EFFECTIVE_SCHEMA.md).
+`sdk-effective-schema [absolute-source.xml]` compiles captured XSD Includes with
+external resolution disabled. Valid synthetic schemas prove inherited/group/
+prohibited attributes, xsi:type and DataBlob element binding. The real 837-XSD
+Include closure fails: ShieldSphereUpdateModuleData is declared twice in one file.
+The staged and external reference file hashes match; reference XSDs remain untouched.
+Real global.xml binding is explicitly skipped, not passed. All 114 default groups
+and 33 enum checks pass. This closes a diagnostic blind spot, not the schema/build
+gate; effort remains approximately 50% complete / 50% remaining.
+
+[Schema file-reference declaration inventory](docs/RA3EP1_SDK_FILE_REFERENCE_CATALOG.md).
 `sdk-file-reference-catalog` inventories 17 declared file fields across 843 staged
 schemas, including five DataBlob fields, namespace-aware restriction ancestry and
 pipeline-only OnDemandTexture.File evidence. All 113 default groups and 33 enum

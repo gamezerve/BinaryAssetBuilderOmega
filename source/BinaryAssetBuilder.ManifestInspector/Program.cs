@@ -217,6 +217,14 @@ internal static class Program
             }
             // Reborn: bounded diagnostic Include build publishes only a new verified directory and never enables production/cache policies.
             // Reborn: expose staged file-field declaration evidence separately from source-path completeness.
+            // Reborn: strict effective schema evidence stays separate from production compilation and source readiness.
+            if (args.FirstOrDefault() == "sdk-effective-schema")
+            {
+                if (args.Length is < 1 or > 2) throw new ArgumentException("sdk-effective-schema [absolute-source.xml]");
+                var effective = SdkEffectiveSchema.Inspect(args.Length == 2 ? args[1] : null); Console.WriteLine(JsonSerializer.Serialize(effective,JsonOptions)); return effective.SchemaCompiled && effective.SourceBinding?.XmlValidated != false ? 0 : 2;
+            }
+            // Reborn: keep effective-schema positive fixtures and real duplicate rejection available without source compilation.
+            if (args.FirstOrDefault() == "sdk-effective-schema-self-test") { SdkEffectiveSchemaSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() is "sdk-file-reference-catalog" or "sdk-file-reference-catalog-self-test")
             {
                 if (args.Length != 1) throw new ArgumentException("File-reference catalog commands take no arguments; the staged schema root is explicit in the report.");
@@ -862,6 +870,9 @@ internal static class Program
         // Reborn: report declaration inventory without promising source binding or payload availability.
         Console.WriteLine("  sdk-file-reference-catalog");
         Console.WriteLine("  sdk-file-reference-catalog-self-test");
+        // Reborn: report strict compiled XSD evidence without opening source compilation.
+        Console.WriteLine("  sdk-effective-schema [absolute-source.xml]");
+        Console.WriteLine("  sdk-effective-schema-self-test");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.
         Console.WriteLine("  diagnostic-build-self-test");
         Console.WriteLine("  diagnostic-audioevent-build-self-test [ep1-audio-manifest ...]");

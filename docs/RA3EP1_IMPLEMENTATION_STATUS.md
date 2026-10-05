@@ -5,6 +5,15 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-05)
 
+[Effective schema and typed-source gate](RA3EP1_SDK_EFFECTIVE_SCHEMA.md) compiles
+captured Include closures with no external resolver. Positive synthetic tests
+cover inherited/group/prohibited attributes, xsi:type and DataBlob elements.
+The real 837-XSD closure rejects duplicate ShieldSphereUpdateModuleData definitions
+in the same staged/reference file; their bytes match exactly. Real global.xml
+binding is skipped, with no trusted partial fields. All 114 default groups and
+33 enum checks pass. No source/schema reference was normalized or rewritten.
+Weighted effort remains about 50%; the following catalog block is the prior milestone.
+
 [Schema file-reference declarations](RA3EP1_SDK_FILE_REFERENCE_CATALOG.md) add
 namespace-aware FileReference/DataBlob restriction inventory: 17 declared fields,
 five DataBlob fields, 843 staged schemas. Both trailing-dot map Includes have

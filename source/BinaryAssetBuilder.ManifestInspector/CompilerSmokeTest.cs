@@ -60,6 +60,8 @@ internal static class CompilerSmokeTest
         TestSdkSourcePathAudit();
         // Reborn: typed declaration inventory is distinct from literal path graph and production dependency binding.
         TestSdkFileReferenceCatalog();
+        // Reborn: effective source binding must not hide the staged duplicate-schema blocker.
+        TestSdkEffectiveSchema();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2251,6 +2253,11 @@ internal static class CompilerSmokeTest
     /** Reborn: count and execute staged file-dependency declaration regressions without validating or compiling source instances. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkFileReferenceCatalog() => SdkFileReferenceCatalogSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: execute effective schema/inherited source regressions independently of production processors and game loading. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkEffectiveSchema() => SdkEffectiveSchemaSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */
