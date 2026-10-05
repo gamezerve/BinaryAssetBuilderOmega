@@ -1,5 +1,10 @@
 # Supervised bounded-duration AudioFile pools
 
+Historical leaf-only milestone. The subsequent
+[duration AudioEvent proof](RA3EP1_AUDIO_DURATION_EVENT.md) separately enables an
+explicit mixed mode; this report's 109-group counters and leaf-only restrictions
+describe its original stage, not a widening of the existing leaf-only commands.
+
 October 5, 2026. The [managed duration candidate](RA3EP1_AUDIO_DURATION_CANDIDATE.md)
 now has an explicit actual-core, isolated native-worker and checked **leaf-only**
 package path. Canonical commands retain version-1 inventories and 250 ms inputs.

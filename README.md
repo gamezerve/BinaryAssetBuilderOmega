@@ -16,18 +16,27 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**109 test groups** (some contain several fixtures). These counters can grow
+**110 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool regressions add groups and all 109 groups
+worker supervision/authored snapshot/pool regressions add groups and all 110 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Supervised bounded-duration AudioFile pools](docs/RA3EP1_AUDIO_DURATION_POOL.md).
+Latest milestone: [Supervised duration AudioEvent mixed packages](docs/RA3EP1_AUDIO_DURATION_EVENT.md).
+The new `supervised-audio-duration-event` command freezes version-2 duration leaves
+plus event.xml. Singleton, late/reversed subset and all-eight maximum streamed
+selections pass actual core/native XAS, independent parent reconstruction and both
+package readers. Selected payload changes invalidate event fingerprints; unselected
+payload changes do not. Matching-inventory selector/weight/import/custom/source
+corruption rejects. All 110 managed groups pass. Canonical and leaf-only commands
+keep their own admission contracts; production processing and game loading remain open.
+
+[Supervised bounded-duration AudioFile pools](docs/RA3EP1_AUDIO_DURATION_POOL.md).
 Separate version-2 duration commands now prepare actual core identities, encode exact
 mono 48 kHz PCM16/XAS WAVs with 12,000..96,000 samples (250 ms..2 s), and publish
 parent-verified leaf-only packages. RAM/streamed duration pairs, non-frame-aligned
@@ -35,7 +44,7 @@ sample tails and eight maximum distinct/shared/all-streamed leaves passed real X
 proofs and matching-inventory forged-total rejection. The largest tested worker
 inventory is 3,994,573 bytes within the unchanged 4 MiB cap. All 109 managed groups,
 old fixed controls and 3/8-Sound mixed native vectors pass. Original version-1 and
-fixed/mixed commands retain 250 ms admission. Longer-duration mixed AudioEvents,
+canonical fixed/mixed commands retain 250 ms admission. General music graphs,
 other rates/channels/codecs, playback and game loading remain unproven.
 
 The [managed duration candidate](docs/RA3EP1_AUDIO_DURATION_CANDIDATE.md) is the prior

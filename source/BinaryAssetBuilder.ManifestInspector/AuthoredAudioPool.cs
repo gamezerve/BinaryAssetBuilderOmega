@@ -67,8 +67,7 @@ internal sealed class AuthoredAudioPool
     //-------------------------------------------------------------------------------------------------
     internal static AuthoredAudioPool Read(string directory,bool includeEvent = false,bool durationCandidate = false)
     {
-        // Reborn: duration experiments are leaf-only; mixed event duration admission needs its own subsequent proof.
-        if (durationCandidate && includeEvent) throw new InvalidDataException("Duration pool cannot include an event.");
+        // Reborn: both duration and event admission must be explicitly selected; neither is inferred from files on disk.
         directory = Path.GetFullPath(directory);
         Dictionary<string,byte[]> files = new(StringComparer.OrdinalIgnoreCase) { ["audio-pool.json"] = ReadFile(Path.Combine(directory,"audio-pool.json"),4096) };
         using JsonDocument json = JsonDocument.Parse(new UTF8Encoding(false,true).GetString(files["audio-pool.json"]),new JsonDocumentOptions { MaxDepth = 4 });
@@ -107,7 +106,7 @@ internal sealed class AuthoredAudioPool
             files.Add("event.xml",bytes); eventName = authored.Name; eventSettings = authored.Settings;
         }
         // Reborn: eight maximum WAVs plus eight bounded XMLs and one inventory; legacy snapshot caps stay unchanged.
-        int aggregateLimit = durationCandidate ? 8*Ra3Ep1AudioFileInputProfile.MaximumCandidateWaveBytes+8*8192+4096 : includeEvent ? 270336 : 262144;
+        int aggregateLimit = durationCandidate ? 8*Ra3Ep1AudioFileInputProfile.MaximumCandidateWaveBytes+8*8192+4096+(includeEvent ? 8192 : 0) : includeEvent ? 270336 : 262144;
         if (files.Count > (includeEvent ? 18 : 17) || files.Values.Sum(bytes => bytes.Length) > aggregateLimit) throw new InvalidDataException("Audio pool aggregate snapshot exceeds its bound.");
         return new(directory,files,rows.ToArray(),eventName,eventSettings,durationCandidate);
     }

@@ -5,6 +5,14 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-05)
 
+[Duration AudioEvent mixed packages](RA3EP1_AUDIO_DURATION_EVENT.md) add explicit
+version-2 event source admission. Singleton, late/reversed subset and all-eight
+maximum streamed selections passed real XAS/parent/two-reader proofs, including
+selected/unselected dependency fingerprint isolation and matching-inventory forged
+selector/import/custom/source rejection. All 110 default groups and 33 enum checks
+pass; model/marshaller counts and the approximate 50% weighted estimate are unchanged.
+The following duration-leaf evidence is the prior 109-group milestone.
+
 [Supervised bounded-duration AudioFile pools](RA3EP1_AUDIO_DURATION_POOL.md) now
 connect explicit version-2 250 ms..2 s mono PCM/XAS admission to actual core,
 isolated native workers and independently checked leaf-only linked packages.

@@ -35,7 +35,7 @@ internal static class AudioEncoderSupervisor
         // Reborn: parent-selected duration mode must agree with its frozen version-2 source; child metadata cannot widen admission.
         if (DurationMode(mode) != (pool?.DurationCandidate == true)) throw new InvalidDataException("Pool duration mode differs from frozen admission.");
         // Reborn: only the dedicated mixed mode may carry event source, and that mode must not silently omit it.
-        if ((mode == "encode-pool-event") != (pool?.EventName != null)) throw new InvalidDataException("Mixed pool mode requires matching frozen event source.");
+        if (EventMode(mode) != (pool?.EventName != null)) throw new InvalidDataException("Mixed pool mode requires matching frozen event source.");
         if ((mode is "encode-authored" or "encode-authored-event") != (authored != null)
             || (mode == "encode-authored-event") != (authored?.EventName != null)) throw new InvalidDataException("Authored mode requires a matching validated input snapshot.");
         if (timeoutMs is < 100 or > 30000) throw new ArgumentOutOfRangeException(nameof(timeoutMs));
@@ -104,7 +104,7 @@ internal static class AudioEncoderSupervisor
         {
             // Reborn: pool cardinality is bounded independently, and complete request evidence must match before any codec launch.
             Item[] actual = Inventory(Path.Combine(job,"inputs"));
-            int minimum = request.Mode == "encode-pool-event" ? 4 : 3,maximum = request.Mode == "encode-pool-event" ? 18 : 17;
+            int minimum = EventMode(request.Mode) ? 4 : 3,maximum = EventMode(request.Mode) ? 18 : 17;
             if (request.Inputs == null || request.Inputs.Length < minimum || request.Inputs.Length > maximum || actual.Length != request.Inputs.Length || actual.Any(item => !request.Inputs.Contains(item))) throw new InvalidDataException("Worker pool input inventory differs.");
         }
         else if (request.Inputs != null) throw new InvalidDataException("Unexpected authored worker inputs.");
@@ -128,7 +128,7 @@ internal static class AudioEncoderSupervisor
         // Reborn: isolated pool modes never enter fixed two-leaf/event packaging and write completion only after normal shutdown.
         if (PoolMode(request.Mode))
         {
-            var pool = AuthoredAudioPool.Read(Path.Combine(job,"inputs"),request.Mode == "encode-pool-event",DurationMode(request.Mode));
+            var pool = AuthoredAudioPool.Read(Path.Combine(job,"inputs"),EventMode(request.Mode),DurationMode(request.Mode));
             if (pool.FileNames.Length != request.Inputs!.Length) throw new InvalidDataException("Worker pool has unlisted input files.");
             bool packaged = PackageMode(request.Mode);
             AudioEncoderPoc.RunPool(request.Library,work,pool,!PreflightMode(request.Mode),packaged);
@@ -148,7 +148,12 @@ internal static class AudioEncoderSupervisor
     //-------------------------------------------------------------------------------------------------
     /** Reborn: enumerate admitted duration modes exactly, never authorize profile changes from prefix matching. */
     //-------------------------------------------------------------------------------------------------
-    private static bool DurationMode(string mode) => mode is "preflight-pool-duration" or "encode-pool-duration" or "encode-pool-duration-package";
+    private static bool DurationMode(string mode) => mode is "preflight-pool-duration" or "encode-pool-duration" or "encode-pool-duration-package" or "encode-pool-duration-event";
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: explicit mixed modes must carry frozen event source; leaf-only modes cannot silently publish it. */
+    //-------------------------------------------------------------------------------------------------
+    private static bool EventMode(string mode) => mode is "encode-pool-event" or "encode-pool-duration-event";
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: preserve all existing pool modes while separately admitting explicit leaf-only duration experiments. */
@@ -163,7 +168,7 @@ internal static class AudioEncoderSupervisor
     //-------------------------------------------------------------------------------------------------
     /** Reborn: package publication remains explicit and disjoint from metadata-only or raw encoding jobs. */
     //-------------------------------------------------------------------------------------------------
-    private static bool PackageMode(string mode) => mode is "encode-pool-package" or "encode-pool-event" or "encode-pool-duration-package";
+    private static bool PackageMode(string mode) => EventMode(mode) || mode is "encode-pool-package" or "encode-pool-duration-package";
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove parent-side byte and semantic rejection with actual encoded child results; never accept these diagnostic tamper jobs. */

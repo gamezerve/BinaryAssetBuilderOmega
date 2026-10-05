@@ -52,6 +52,8 @@ internal static class CompilerSmokeTest
         TestAudioDurationCandidate();
         // Reborn: versioned duration core/worker/package regressions remain managed-only in the default suite.
         TestAudioDurationPool();
+        // Reborn: mixed duration event closure uses synthetic compressed bodies in default tests, never native codecs.
+        TestAudioDurationEvent();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2223,6 +2225,11 @@ internal static class CompilerSmokeTest
     /** Reborn: exercise explicit duration pool admission and independent managed worker result reconstruction. */
     //-------------------------------------------------------------------------------------------------
     private static void TestAudioDurationPool() => AudioDurationPoolSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify selected duration fingerprints and mixed package tables with real core processing and synthetic audio. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestAudioDurationEvent() => AudioDurationEventSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

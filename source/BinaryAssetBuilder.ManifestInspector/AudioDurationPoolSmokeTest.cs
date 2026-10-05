@@ -102,19 +102,19 @@ internal static class AudioDurationPoolSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: freeze synthetic sample-matched custom framing for managed package tests, not codec correctness evidence. */
     //-------------------------------------------------------------------------------------------------
-    private static AudioFilePackageProbe.Entry Synthetic(AuthoredAudioPool.Row row,int samples)
+    internal static AudioFilePackageProbe.Entry Synthetic(AuthoredAudioPool.Row row,int samples,string subtitle = "DurationSubtitle")
     {
         byte[] header = Convert.FromHexString("0400BB8000000000"); BinaryPrimitives.WriteUInt32BigEndian(header.AsSpan(4,4),(uint)samples|(row.Streamed ? 0x40000000u : 0u));
         byte[] block = Convert.FromHexString(row.Streamed ? "8000000C00000000DEADBEEF" : "0000000C00000000DEADBEEF");
         BinaryPrimitives.WriteUInt32BigEndian(block.AsSpan(4,4),(uint)samples);
-        AssetBuffer native = Ra3Ep1AudioFileRuntimeSerializer.Serialize(TargetPlatform.Win32,"DurationSubtitle",samples,48000,1,row.Streamed ? header : Array.Empty<byte>());
+        AssetBuffer native = Ra3Ep1AudioFileRuntimeSerializer.Serialize(TargetPlatform.Win32,subtitle,samples,48000,1,row.Streamed ? header : Array.Empty<byte>());
         return new(row.Name,row.Source,native,row.Streamed ? block : header.Concat(block).ToArray(),row.Streamed,samples);
     }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: generate only owned version-2 source fixtures; caller/game sources remain untouched. */
     //-------------------------------------------------------------------------------------------------
-    private static string Fixture(int[] samples,bool shared)
+    internal static string Fixture(int[] samples,bool shared)
     {
         string root = Path.Combine(Path.GetTempPath(),"Reborn-DurationPool-"+Guid.NewGuid().ToString("N")); Directory.CreateDirectory(root);
         AuthoredAudioPoolSmokeTest.Fixture(root,samples.Length,shared);
