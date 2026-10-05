@@ -119,6 +119,11 @@ No known unsafe native output-parent calls were repeated.
 
 ## Remaining work and limits
 
+Subsequent milestone: [immutable Sound vectors](RA3EP1_AUDIO_EVENT_VECTORS.md) now
+admits 1–8 unique selections in variable pools and retains pair defaults for fixed
+commands. The earlier one/two-source evidence in this report remains historical.
+Broader WAV/codecs, production identity and game-loading gates remain open.
+
 Next expand selected Sound cardinality beyond the current one/two pair without
 fixed scalar/slot assumptions, retaining source-derived weights, reference order,
 dynamic imports and selected content fingerprints. Broader WAV durations/channels/

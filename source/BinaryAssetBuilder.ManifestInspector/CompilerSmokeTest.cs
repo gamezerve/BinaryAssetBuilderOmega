@@ -35,6 +35,8 @@ internal static class CompilerSmokeTest
         TestAudioPoolEvent();
         // Reborn: mixed variable closure uses synthetic codec framing in the default suite.
         TestAudioPoolMixed();
+        // Reborn: larger event Sound vectors remain synthetic-framing/managed-only in default tests.
+        TestAudioEventVectors();
         TestAttributeModifier();
         // Reborn: exercise isolated EP1 sound records while retaining the legacy child ABI.
         TestMultisoundNative();
@@ -2277,6 +2279,11 @@ internal static class CompilerSmokeTest
     /** Reborn: test mixed linked tables and independent parent acceptance without invoking native codecs. */
     //-------------------------------------------------------------------------------------------------
     private static void TestAudioPoolMixed() => AudioPoolEventSmokeTest.MixedRun();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: prove immutable 1..8 selection vectors and dynamic event wire/import tables. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestAudioEventVectors() => AudioEventVectorSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: guard custom block envelopes separately from native ABI and codec processing. */

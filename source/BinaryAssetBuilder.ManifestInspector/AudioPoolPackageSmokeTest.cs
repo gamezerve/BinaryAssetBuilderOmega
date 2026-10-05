@@ -47,7 +47,7 @@ internal static class AudioPoolPackageSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: construct only synthetic tag-04 bodies with explicit source names and play location; no codec correctness is claimed. */
     //-------------------------------------------------------------------------------------------------
-    private static AudioFilePackageProbe.Entry Entry(int index,bool streamed)
+    internal static AudioFilePackageProbe.Entry Entry(int index,bool streamed)
     {
         byte[] header = streamed ? Convert.FromHexString("0400BB8040002EE0") : Array.Empty<byte>();
         AssetBuffer native = Ra3Ep1AudioFileRuntimeSerializer.Serialize(TargetPlatform.Win32,"PoolSubtitle_"+index,12000,48000,1,header);

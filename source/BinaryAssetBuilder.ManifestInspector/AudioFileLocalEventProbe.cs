@@ -92,7 +92,7 @@ internal static class AudioFileLocalEventProbe
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: independently require the admitted one/two-Sound wire shape, one-biased imports and exact relocation/import tables. */
+    /** Reborn: independently require the admitted 1..8-Sound wire shape, one-biased imports and exact relocation/import tables. */
     //-------------------------------------------------------------------------------------------------
     internal static void CheckNative(AssetBuffer native,AuthoredAudioEventSource.Settings? settings = null)
     {
@@ -122,7 +122,7 @@ internal static class AudioFileLocalEventProbe
     {
         instance.ValidatedReferencedInstances = null!; ValidateFiles(files,variable);
         if (instance.Handle.TypeId != 0x844D7B9Fu || instance.Handle.TypeHash != 0x560C2E45u || instance.Handle.InstanceName != name
-            || instance.ReferencedInstances.Count is < 1 or > 2) throw new InvalidDataException("Local AudioEvent identity/reference shape differs.");
+            || instance.ReferencedInstances.Count < 1 || instance.ReferencedInstances.Count > files.Length) throw new InvalidDataException("Local AudioEvent identity/reference shape differs.");
         List<InstanceHandle> concrete = new();
         List<int> slots = new();
         for (int index = 0; index < instance.ReferencedInstances.Count; index++)

@@ -31,9 +31,9 @@ internal sealed class AudioPoolEventPreflight
         if (_outputsWritten)
         {
             AssetBuffer native = Event.CopyNative();
-            if (!native.InstanceData.SequenceEqual(AudioEncoderSupervisor.Read(Path.Combine(Directory,"event.bin"),176))
+            if (!native.InstanceData.SequenceEqual(AudioEncoderSupervisor.Read(Path.Combine(Directory,"event.bin"),248))
                 || !native.RelocationData.SequenceEqual(AudioEncoderSupervisor.Read(Path.Combine(Directory,"event.relo"),8))
-                || !native.ImportsData.SequenceEqual(AudioEncoderSupervisor.Read(Path.Combine(Directory,"event.imp"),12))) throw new InvalidDataException("Pool event raw evidence differs.");
+                || !native.ImportsData.SequenceEqual(AudioEncoderSupervisor.Read(Path.Combine(Directory,"event.imp"),36))) throw new InvalidDataException("Pool event raw evidence differs.");
         }
     }
 

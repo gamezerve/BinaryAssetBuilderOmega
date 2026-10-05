@@ -30,6 +30,9 @@ internal static class Program
             // Reborn: mixed publication requires an explicitly frozen event.xml and never widens leaf-only worker modes.
             if (args.FirstOrDefault() == "supervised-audio-pool-event" && args.Length == 3) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(args[1],"encode-pool-event",pool:AuthoredAudioPool.Read(args[2],true)); return 0; }
             if (args.FirstOrDefault() == "audio-pool-mixed-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioPoolEventSmokeTest.MixedRun(); return 0; }
+            // Reborn: vector regression and native integration are explicit and preserve all fixed-pair command defaults.
+            if (args.FirstOrDefault() == "audio-event-vector-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioEventVectorSmokeTest.Run(); return 0; }
+            if (args.FirstOrDefault() == "audio-event-vector-native-proof" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioEventVectorSmokeTest.NativeProof(args[1]); return 0; }
             if (args.FirstOrDefault() == "audio-pool-mixed-native-proof" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioPoolEventSmokeTest.MixedNativeProof(args[1]); return 0; }
             if (args.FirstOrDefault() == "audio-pool-package-native-proof" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioPoolWorkerSmokeTest.NativeProof(args[1],true); return 0; }
             if (args.FirstOrDefault() == "audio-pool-package-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioPoolPackageSmokeTest.Run(); return 0; }
@@ -885,6 +888,9 @@ internal static class Program
         // Reborn: selected event closure and mixed package acceptance use a dedicated opt-in worker mode.
         Console.WriteLine("  supervised-audio-pool-event <absolute-audited-audio.dll> <source-directory>");
         Console.WriteLine("  audio-pool-mixed-self-test");
+        // Reborn: default vector tests never invoke the codec; native proof is opt-in.
+        Console.WriteLine("  audio-event-vector-self-test");
+        Console.WriteLine("  audio-event-vector-native-proof <absolute-audited-audio.dll>");
         Console.WriteLine("  audio-pool-mixed-native-proof <absolute-audited-audio.dll>");
         Console.WriteLine("  audio-pool-package-native-proof <absolute-audited-audio.dll>");
         Console.WriteLine("  audio-pool-package-self-test");
