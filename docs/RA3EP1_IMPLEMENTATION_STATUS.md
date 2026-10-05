@@ -5,6 +5,17 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-05)
 
+[Bounded SDK source-path preflight](RA3EP1_SDK_SOURCE_PATH_PREFLIGHT.md) follows
+literal all/instance/reference Include paths and stats scoped ART/AUDIO literals
+and AudioFile File attributes. Real Uprising global.xml yielded 396 XML documents,
+664 Include edges and six open issues without hitting traversal limits. Three
+AUDIO Includes and one AUDIO header require an explicit audio root; two map Include
+paths end in `.xml.` and intentionally reject instead of being silently normalized.
+All 112 default groups and 33 enum checks pass. Reference inputs/output/settings
+remain unchanged; exhaustive schema-typed dependencies, final type hashes, processors,
+WorldBuilder packaging and game loading remain open. Weighted effort remains about
+50% complete / 50% remaining. The following environment block is the prior milestone.
+
 [Explicit SDK environment preflight](RA3EP1_SDK_ENVIRONMENT_PREFLIGHT.md) adds a
 read-only target-aware path/schema/manifest gate and PowerShell wrapper. Real
 external Uprising global.xml and global/static manifest checks pass without creating

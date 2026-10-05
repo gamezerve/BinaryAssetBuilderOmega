@@ -112,7 +112,7 @@ internal static class SdkEnvironmentPreflight
     //-------------------------------------------------------------------------------------------------
     /** Reborn: reject drive-relative/current-directory/environment discovery; all selected physical paths must be explicit absolute literals. */
     //-------------------------------------------------------------------------------------------------
-    private static string Absolute(string path)
+    internal static string Absolute(string path)
     {
         if (!Path.IsPathFullyQualified(path) || path.IndexOfAny(new[] { '*','?' }) >= 0) throw new InvalidDataException("SDK physical paths must be absolute literals without wildcards.");
         // Reborn: do not open Windows device namespaces, reserved leaves or alternate data streams through an apparently ordinary metadata path.
@@ -131,13 +131,13 @@ internal static class SdkEnvironmentPreflight
     //-------------------------------------------------------------------------------------------------
     /** Reborn: resolve only an existing non-reparse explicit directory without modifying it. */
     //-------------------------------------------------------------------------------------------------
-    private static string DirectoryPath(string path)
+    internal static string DirectoryPath(string path)
     { path = Absolute(path); CheckPath(path); if (!Directory.Exists(path)) throw new DirectoryNotFoundException(path); return path; }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compare complete path segments so sibling prefixes cannot impersonate a selected source/schema root. */
     //-------------------------------------------------------------------------------------------------
-    private static bool Inside(string root,string path) => path.StartsWith(Path.TrimEndingDirectorySeparator(root)+Path.DirectorySeparatorChar,StringComparison.OrdinalIgnoreCase);
+    internal static bool Inside(string root,string path) => path.StartsWith(Path.TrimEndingDirectorySeparator(root)+Path.DirectorySeparatorChar,StringComparison.OrdinalIgnoreCase);
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: keep game-visible manifest names relative and separate from physical source locations or lookup macros. */
@@ -154,7 +154,7 @@ internal static class SdkEnvironmentPreflight
     //-------------------------------------------------------------------------------------------------
     /** Reborn: read one bounded metadata file through one handle and reject observed growth/reparse ancestry, never dump a binary stream. */
     //-------------------------------------------------------------------------------------------------
-    private static byte[] Read(string path,int limit,bool checkAncestors = true)
+    internal static byte[] Read(string path,int limit,bool checkAncestors = true)
     {
         // Reborn: only catalog callers may reuse just-checked parent/child metadata; arbitrary source/manifest reads always inspect full ancestry.
         if (checkAncestors) CheckPath(path); using FileStream stream = new(path,FileMode.Open,FileAccess.Read,FileShare.Read);
@@ -165,7 +165,7 @@ internal static class SdkEnvironmentPreflight
     //-------------------------------------------------------------------------------------------------
     /** Reborn: inspect existing ancestors before any read/traversal; this does not promise adversarial filesystem isolation. */
     //-------------------------------------------------------------------------------------------------
-    private static void CheckPath(string path)
+    internal static void CheckPath(string path)
     {
         for (string? current = path; current != null; current = Path.GetDirectoryName(current))
             if ((File.Exists(current) || Directory.Exists(current)) && (File.GetAttributes(current) & FileAttributes.ReparsePoint) != 0) throw new InvalidDataException("SDK preflight rejects reparse paths.");

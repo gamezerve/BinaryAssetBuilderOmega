@@ -16,18 +16,28 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**111 test groups** (some contain several fixtures). These counters can grow
+**112 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool regressions add groups and all 111 groups
+worker supervision/authored snapshot/pool/path regressions add groups and all 112 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Explicit target-aware SDK environment preflight](docs/RA3EP1_SDK_ENVIRONMENT_PREFLIGHT.md).
+Latest milestone: [Bounded SDK source-path preflight](docs/RA3EP1_SDK_SOURCE_PATH_PREFLIGHT.md).
+`sdk-source-preflight` adds reachable Include attribution and optional explicit
+ART/AUDIO roots without compiling or reading resource payloads. A real global.xml
+audit visited 396 XML documents and retained 664 Include edges without hitting a cap.
+It returned incomplete: three AUDIO Includes and one AUDIO header lack an explicit
+root, and two map Includes end in `.xml.` outside the literal safe path profile.
+Reference files remain unchanged. All 112 default groups and 33 enum checks pass.
+This is not schema-complete dependency coverage or game compatibility; effort remains
+about 50% complete / 50% remaining. The original environment-only wrapper is unchanged.
+
+[Explicit target-aware SDK environment preflight](docs/RA3EP1_SDK_ENVIRONMENT_PREFLIGHT.md).
 `sdk-preflight` and `scripts/Test-Ra3Ep1SdkEnvironment.ps1` validate explicit EP1
 schema/source/output paths and external manifest mappings without registry fallback,
 builder launch or output writes. The staged 843-XSD byte catalog must match; wrong

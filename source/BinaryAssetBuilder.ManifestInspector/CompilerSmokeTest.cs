@@ -56,6 +56,8 @@ internal static class CompilerSmokeTest
         TestAudioDurationEvent();
         // Reborn: SDK planning must validate explicit EP1 metadata without writing outputs or changing legacy discovery/settings.
         TestSdkEnvironmentPreflight();
+        // Reborn: source-path planning remains a separate bounded fixture from production dependency resolution.
+        TestSdkSourcePathAudit();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2237,6 +2239,11 @@ internal static class CompilerSmokeTest
     /** Reborn: prove target-aware read-only SDK path/schema/manifest environment admission independently of production build readiness. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkEnvironmentPreflight() => SdkEnvironmentPreflightSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: register the separate bounded source path audit in the measured compiler regression inventory. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkSourcePathAudit() => SdkSourcePathAuditSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

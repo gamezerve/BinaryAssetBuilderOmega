@@ -216,6 +216,30 @@ internal static class Program
                 return 0;
             }
             // Reborn: bounded diagnostic Include build publishes only a new verified directory and never enables production/cache policies.
+            // Reborn: add explicit bounded source-path planning without changing the original environment-only command.
+            if (args.FirstOrDefault() == "sdk-source-preflight")
+            {
+                if (args.Length < 6) throw new ArgumentException("sdk-source-preflight ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
+                string? art = null,audio = null; List<string> mappings = new();
+                for (int index = 6; index < args.Length; index++)
+                {
+                    string option = args[index];
+                    if (option is "--art-root" or "--audio-root")
+                    {
+                        if (++index >= args.Length || args[index].StartsWith("--",StringComparison.Ordinal)) throw new ArgumentException("Explicit root option requires a value.");
+                        if (option == "--art-root") { if (art != null) throw new ArgumentException("Duplicate ART root."); art = args[index]; }
+                        else { if (audio != null) throw new ArgumentException("Duplicate AUDIO root."); audio = args[index]; }
+                    }
+                    else if (option.StartsWith("--",StringComparison.Ordinal)) throw new ArgumentException("Unknown source preflight option.");
+                    else mappings.Add(option);
+                }
+                var environment = SdkEnvironmentPreflight.Inspect(args[1],args[2],args[3],args[4],args[5],mappings.ToArray());
+                var paths = SdkSourcePathAudit.Inspect(environment,art,audio);
+                Console.WriteLine(JsonSerializer.Serialize(new { environment.Target,ReadOnly = true,SnapshotOnly = true,ProductionBuildReady = false,Environment = environment,SourcePaths = paths },JsonOptions));
+                return paths.ScopedPathAuditComplete ? 0 : 2;
+            }
+            // Reborn: run path-only fixtures without invoking codecs, builders or registry discovery.
+            if (args.FirstOrDefault() == "sdk-source-preflight-self-test") { SdkSourcePathAuditSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() == "sdk-preflight")
             {
                 // Reborn: inspect explicit roots and target metadata only; never execute the reference SDK batch files or production compiler.
@@ -824,6 +848,9 @@ internal static class Program
         // Reborn: SDK planning is explicitly target-aware/read-only and separate from diagnostic or production compilation.
         Console.WriteLine("  sdk-preflight ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [absolute.manifest=runtime.manifest ...]");
         Console.WriteLine("  sdk-preflight-self-test");
+        // Reborn: expose optional explicit ART/AUDIO roots and incomplete graph exit status separately from environment readiness.
+        Console.WriteLine("  sdk-source-preflight ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
+        Console.WriteLine("  sdk-source-preflight-self-test");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.
         Console.WriteLine("  diagnostic-build-self-test");
         Console.WriteLine("  diagnostic-audioevent-build-self-test [ep1-audio-manifest ...]");
