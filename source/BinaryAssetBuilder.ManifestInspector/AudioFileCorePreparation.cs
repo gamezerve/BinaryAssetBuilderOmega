@@ -16,14 +16,16 @@ internal sealed class AudioFileCorePreparation
     private readonly uint _hash;
     private readonly Ra3Ep1AudioFileInputProfile.PreparedInput _input;
     private readonly XmlElement _root;
+    // Reborn: revalidation must keep the same explicitly selected duration boundary as initial preparation.
+    private readonly bool _durationCandidate;
     // Reborn: expose immutable prepared settings/owned-copy methods, never the private schema DOM or mutable core identity.
     internal Ra3Ep1AudioFileInputProfile.PreparedInput Settings => _input;
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: retain immutable identity/source evidence and privately owned schema-bound authored input. */
     //-------------------------------------------------------------------------------------------------
-    private AudioFileCorePreparation(string source,string xml,string normalized,uint hash,XmlElement root,Ra3Ep1AudioFileInputProfile.PreparedInput input)
-    { _sourcePath = source; _authoredXml = xml; _normalizedXml = normalized; _hash = hash; _root = root; _input = input; }
+    private AudioFileCorePreparation(string source,string xml,string normalized,uint hash,XmlElement root,Ra3Ep1AudioFileInputProfile.PreparedInput input,bool durationCandidate)
+    { _sourcePath = source; _authoredXml = xml; _normalizedXml = normalized; _hash = hash; _root = root; _input = input; _durationCandidate = durationCandidate; }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: return detached PCM only; callers cannot alter frozen preparation through an encoder input alias. */
@@ -35,7 +37,7 @@ internal sealed class AudioFileCorePreparation
     //-------------------------------------------------------------------------------------------------
     internal void VerifyCurrent(InstanceDeclaration instance)
     {
-        AudioFileCorePreparation current = Prepare(instance);
+        AudioFileCorePreparation current = Prepare(instance,_durationCandidate);
         if (_sourcePath != current._sourcePath || _authoredXml != current._authoredXml || _normalizedXml != current._normalizedXml
             || _hash != current._hash || !_input.CopyWave().SequenceEqual(current._input.CopyWave()))
             throw new InvalidDataException("Core AudioFile preparation is stale.");
@@ -53,7 +55,7 @@ internal sealed class AudioFileCorePreparation
     //-------------------------------------------------------------------------------------------------
     /** Reborn: resolve only a direct owned WAV leaf, bind current disk/source XML to core identity, and preserve authored default attribution. */
     //-------------------------------------------------------------------------------------------------
-    internal static AudioFileCorePreparation Prepare(InstanceDeclaration instance)
+    internal static AudioFileCorePreparation Prepare(InstanceDeclaration instance,bool durationCandidate = false)
     {
         if (instance.XmlNode is not XmlElement normalized || instance.Document == null
             || instance.ProcessingHash != AudioFileIdentitySmokeTest.Processing || instance.InheritFromHandle != null
@@ -71,13 +73,13 @@ internal sealed class AudioFileCorePreparation
             throw new InvalidDataException("Core audio bridge requires exactly one authored AudioFile and no Includes.");
         // Reborn: validate leaf/profile syntax before combining its value with a filesystem directory.
         using MemoryStream knownPcm = new(); AudioEncoderPoc.WriteWave(knownPcm);
-        Ra3Ep1AudioFileInputProfile.Prepare(root,instance.Handle,TargetPlatform.Win32,knownPcm.ToArray());
+        AuthoredAudioPool.PrepareInput(root,instance.Handle,knownPcm.ToArray(),durationCandidate);
         string leaf = root.GetAttribute("File");
         string file = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(source)!,leaf));
         if (instance.ReferencedFiles[0] != leaf.ToLowerInvariant() || normalized.GetAttribute("File") != file.ToLowerInvariant())
             throw new InvalidDataException("Core AudioFile logical/resolved file metadata differs.");
-        byte[] wave = ReadBounded(file,24044);
-        var input = Ra3Ep1AudioFileInputProfile.Prepare(root,instance.Handle,TargetPlatform.Win32,wave);
+        byte[] wave = ReadBounded(file,durationCandidate ? Ra3Ep1AudioFileInputProfile.MaximumCandidateWaveBytes : 24044);
+        var input = AuthoredAudioPool.PrepareInput(root,instance.Handle,wave,durationCandidate);
         uint hash = HashProvider.GetTextHash(instance.ProcessingHash,DocumentProcessor.Version.ToString(CultureInfo.InvariantCulture));
         using EncodedWriter text = new(); using (XmlWriter writer = XmlWriter.Create(text)) { root.WriteTo(writer); writer.Flush(); }
         string xml = text.ToString();
@@ -90,7 +92,7 @@ internal sealed class AudioFileCorePreparation
         string expectedNormalized = root.OuterXml;
         root.SetAttribute("File",leaf); root.RemoveAttribute("TypeId");
         if (normalized.OuterXml != expectedNormalized) throw new InvalidDataException("Current core AudioFile XML differs from its disk source.");
-        return new(source,authored,expectedNormalized,hash,root,input);
+        return new(source,authored,expectedNormalized,hash,root,input,durationCandidate);
     }
 
     // Reborn: preserve the core text writer's declared serialization encoding.

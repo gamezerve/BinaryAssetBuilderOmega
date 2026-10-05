@@ -50,6 +50,8 @@ internal static class CompilerSmokeTest
         TestAudioFileInput();
         // Reborn: experimental duration preparation is managed-only and cannot widen existing audio worker/package admission.
         TestAudioDurationCandidate();
+        // Reborn: versioned duration core/worker/package regressions remain managed-only in the default suite.
+        TestAudioDurationPool();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2216,6 +2218,11 @@ internal static class CompilerSmokeTest
     /** Reborn: test bounded candidate PCM duration separately from the canonical production/core admission profile. */
     //-------------------------------------------------------------------------------------------------
     private static void TestAudioDurationCandidate() => AudioDurationCandidateSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: exercise explicit duration pool admission and independent managed worker result reconstruction. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestAudioDurationPool() => AudioDurationPoolSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

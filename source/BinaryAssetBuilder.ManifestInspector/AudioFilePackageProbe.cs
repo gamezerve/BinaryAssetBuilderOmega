@@ -21,13 +21,18 @@ internal static class AudioFilePackageProbe
         // Reborn: variable records carry explicit play location; fixed-slot admission remains the default constructor contract.
         internal bool Streamed { get; }
         internal bool Variable { get; }
+        // Reborn: retain the source-derived expected sample count for independent linked package readback.
+        internal int Samples { get; }
         internal string CustomName => $"166b084d.53c81e47.{Id:x8}.{Hash:x8}.cdata";
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: freeze one checked native/custom record with a diagnostic content hash, not an asserted EA compiler InstanceHash. */
         //-------------------------------------------------------------------------------------------------
-        internal Entry(string name,string source,AssetBuffer native,byte[] custom,bool? streamed = null)
+        internal Entry(string name,string source,AssetBuffer native,byte[] custom,bool? streamed = null,int expectedSamples = 12000)
         {
+            // Reborn: longer totals require explicit variable admission and source-derived bounded expectations, never runtime inference.
+            if (expectedSamples is < Ra3Ep1AudioFileInputProfile.MinimumCandidateSamples or > Ra3Ep1AudioFileInputProfile.MaximumCandidateSamples
+                || (streamed == null && expectedSamples != 12000)) throw new InvalidDataException("Audio package duration requires bounded explicit variable admission.");
             // Reborn: caller-owned names do not determine play location; fixed slots are inferred only when no explicit variable flag is supplied.
             AudioFileDiagnosticIdentity.Validate(name);
             if (streamed != null) AuthoredAudioPool.ValidateSource(source);
@@ -38,7 +43,8 @@ internal static class AudioFilePackageProbe
             _bin = (byte[])native.InstanceData.Clone(); _relo = (byte[])native.RelocationData.Clone(); _imp = (byte[])native.ImportsData.Clone(); _custom = (byte[])custom.Clone();
             Name = name; Source = source; Id = InstanceHandle.GetInstanceId(name);
             Streamed = streamed ?? source == "streamed.xml"; Variable = streamed != null;
-            CheckNative(Streamed,CopyNative(),_custom);
+            Samples = expectedSamples;
+            CheckNative(Streamed,CopyNative(),_custom,expectedSamples);
             // Reborn: payload-derived fixture identity prevents stale custom copies; this is explicitly not recovered production hashing.
             Hash = FastHash.GetHashCode(_bin.Concat(_custom).ToArray());
         }
@@ -55,16 +61,16 @@ internal static class AudioFilePackageProbe
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: require exact serializer output and tag-04 custom framing for the fixed mono XAS RAM/streamed identities. */
+    /** Reborn: require exact serializer output and tag-04 framing for mono XAS identities with source-derived bounded sample totals. */
     //-------------------------------------------------------------------------------------------------
-    private static void CheckNative(bool streamed,AssetBuffer native,byte[] custom)
+    private static void CheckNative(bool streamed,AssetBuffer native,byte[] custom,int expectedSamples)
     {
         AudioFileRuntimeProbe.Header parsed = AudioFileRuntimeProbe.Parse(native.InstanceData,native.InstanceData.Length);
-        if (parsed.Samples != 12000 || parsed.Rate != 48000 || parsed.Channels != 1 || (parsed.HeaderSize != 0) != streamed)
+        if (parsed.Samples != expectedSamples || parsed.Rate != 48000 || parsed.Channels != 1 || (parsed.HeaderSize != 0) != streamed)
             throw new InvalidDataException("Audio package runtime fields/play location differ.");
         byte[] inline = streamed ? native.InstanceData.AsSpan(checked((int)parsed.HeaderPointer),8).ToArray() : Array.Empty<byte>();
         string subtitle = Encoding.ASCII.GetString(native.InstanceData,32,checked((int)parsed.SubtitleLength));
-        AssetBuffer expected = Ra3Ep1AudioFileRuntimeSerializer.Serialize(TargetPlatform.Win32,subtitle,12000,48000,1,inline);
+        AssetBuffer expected = Ra3Ep1AudioFileRuntimeSerializer.Serialize(TargetPlatform.Win32,subtitle,expectedSamples,48000,1,inline);
         if (!native.InstanceData.SequenceEqual(expected.InstanceData) || !native.RelocationData.SequenceEqual(expected.RelocationData) || native.ImportsData.Length != 0)
             throw new InvalidDataException("Audio package native envelope/relocations/imports differ.");
         using MemoryStream stream = new(custom,false);
@@ -163,7 +169,7 @@ internal static class AudioFilePackageProbe
                 throw new InvalidDataException("Audio package entry/offset/identity readback differs.");
             CheckNative(entry.Streamed,new AssetBuffer { InstanceData = AssetStreamProbe.ReadRange(Path.ChangeExtension(path,".bin"),null,bin,asset.InstanceDataSize),
                 RelocationData = AssetStreamProbe.ReadRange(Path.ChangeExtension(path,".relo"),null,relo,asset.RelocationDataSize),ImportsData = Array.Empty<byte>() },
-                ReadBounded(Path.Combine(customDirectory,$"{asset.TypeId:x8}.{asset.TypeHash:x8}.{asset.InstanceId:x8}.{asset.InstanceHash:x8}.cdata")));
+                ReadBounded(Path.Combine(customDirectory,$"{asset.TypeId:x8}.{asset.TypeHash:x8}.{asset.InstanceId:x8}.{asset.InstanceHash:x8}.cdata")),entry.Samples);
             bin += asset.InstanceDataSize; relo += asset.RelocationDataSize;
         }
         // Reborn: independently decode the optional parent's one-biased imports into prior local manifest entries, not external names.

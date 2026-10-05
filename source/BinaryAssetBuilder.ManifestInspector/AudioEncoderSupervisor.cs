@@ -29,9 +29,11 @@ internal static class AudioEncoderSupervisor
     //-------------------------------------------------------------------------------------------------
     internal static string Run(string library,string mode = "encode",int timeoutMs = 30000,Action<string>? jobCreated = null,AuthoredAudioSnapshot? authored = null,AuthoredAudioPool? pool = null)
     {
-        if (mode != "encode" && mode is not ("encode-authored" or "encode-authored-event" or "encode-pool" or "preflight-pool" or "encode-pool-package" or "encode-pool-event") && !TestModes.Contains(mode,StringComparer.Ordinal) && !NativeTestModes.Contains(mode,StringComparer.Ordinal)) throw new ArgumentException("Unknown supervised worker mode.");
+        if (mode != "encode" && mode is not ("encode-authored" or "encode-authored-event") && !PoolMode(mode) && !TestModes.Contains(mode,StringComparer.Ordinal) && !NativeTestModes.Contains(mode,StringComparer.Ordinal)) throw new ArgumentException("Unknown supervised worker mode.");
         // Reborn: pool input is a separate explicit mode and cannot be mixed with the fixed authored snapshot contract.
-        if ((mode is "encode-pool" or "preflight-pool" or "encode-pool-package" or "encode-pool-event") != (pool != null) || (pool != null && authored != null)) throw new InvalidDataException("Pool mode requires an exclusive validated pool snapshot.");
+        if (PoolMode(mode) != (pool != null) || (pool != null && authored != null)) throw new InvalidDataException("Pool mode requires an exclusive validated pool snapshot.");
+        // Reborn: parent-selected duration mode must agree with its frozen version-2 source; child metadata cannot widen admission.
+        if (DurationMode(mode) != (pool?.DurationCandidate == true)) throw new InvalidDataException("Pool duration mode differs from frozen admission.");
         // Reborn: only the dedicated mixed mode may carry event source, and that mode must not silently omit it.
         if ((mode == "encode-pool-event") != (pool?.EventName != null)) throw new InvalidDataException("Mixed pool mode requires matching frozen event source.");
         if ((mode is "encode-authored" or "encode-authored-event") != (authored != null)
@@ -72,12 +74,12 @@ internal static class AudioEncoderSupervisor
         if (timedOut) throw new InvalidDataException("Audio worker timed out; partial evidence retained, no acceptance.");
         if (process.ExitCode != 0) throw new InvalidDataException($"Audio worker exit={process.ExitCode}; partial evidence retained, no acceptance.");
         if (stdout.Result.Overflow || stderr.Result.Overflow) throw new InvalidDataException("Audio worker log limit exceeded; no acceptance.");
-        ValidateResult(job,nonce,authored,pool,mode is "encode-pool" or "encode-pool-package" or "encode-pool-event",mode is "encode-pool-package" or "encode-pool-event");
+        ValidateResult(job,nonce,authored,pool,PoolMode(mode) && !PreflightMode(mode),PackageMode(mode));
         // Reborn: worker success cannot authorize a stale caller source; reread original inputs before acceptance without writing them.
         authored?.VerifyCurrent();
         pool?.VerifyCurrent();
         WriteNew(Path.Combine(job,"ACCEPTED.json"),JsonSerializer.SerializeToUtf8Bytes(new { Version = ProtocolVersion,Nonce = nonce,DiagnosticOnly = true },JsonOptions));
-        Console.WriteLine(pool == null ? "Supervised audio: ACCEPTED (exit=0, bounded protocol/hash inventory and independent package/core readback; diagnostic only)." : mode is "encode-pool-package" or "encode-pool-event" ? "Supervised pool package: ACCEPTED (parent core/raw/event-source and two-reader variable package verification; diagnostic only, no production/game-load admission)." : "Supervised pool: ACCEPTED (bounded inventory and parent core/raw-evidence readback; no package/event/production admission).");
+        Console.WriteLine(pool == null ? "Supervised audio: ACCEPTED (exit=0, bounded protocol/hash inventory and independent package/core readback; diagnostic only)." : PackageMode(mode) ? "Supervised pool package: ACCEPTED (parent core/raw/event-source and two-reader variable package verification; diagnostic only, no production/game-load admission)." : "Supervised pool: ACCEPTED (bounded inventory and parent core/raw-evidence readback; no package/event/production admission).");
         return job;
     }
 
@@ -89,7 +91,7 @@ internal static class AudioEncoderSupervisor
         job = Path.GetFullPath(job);
         if (!Guid.TryParseExact(nonce,"N",out _) || job != Path.Combine(Path.GetTempPath(),Prefix+nonce)) throw new InvalidDataException("Worker job root/nonce differs.");
         Request request = ReadJson<Request>(Path.Combine(job,"request.json"));
-        if (request.Version != ProtocolVersion || request.Nonce != nonce || (request.Mode != "encode" && request.Mode is not ("encode-authored" or "encode-authored-event" or "encode-pool" or "preflight-pool" or "encode-pool-package" or "encode-pool-event") && !TestModes.Contains(request.Mode,StringComparer.Ordinal) && !NativeTestModes.Contains(request.Mode,StringComparer.Ordinal))) throw new InvalidDataException("Worker request differs.");
+        if (request.Version != ProtocolVersion || request.Nonce != nonce || (request.Mode != "encode" && request.Mode is not ("encode-authored" or "encode-authored-event") && !PoolMode(request.Mode) && !TestModes.Contains(request.Mode,StringComparer.Ordinal) && !NativeTestModes.Contains(request.Mode,StringComparer.Ordinal))) throw new InvalidDataException("Worker request differs.");
         AuthoredAudioSnapshot? authored = null;
         if (request.Mode is "encode-authored" or "encode-authored-event")
         {
@@ -98,7 +100,7 @@ internal static class AudioEncoderSupervisor
             int count = request.Mode == "encode-authored-event" ? 4 : 3;
             if (request.Inputs == null || request.Inputs.Length != count || actualInputs.Length != count || actualInputs.Any(item => !request.Inputs.Contains(item))) throw new InvalidDataException("Worker authored snapshot inventory differs.");
         }
-        else if (request.Mode is "encode-pool" or "preflight-pool" or "encode-pool-package" or "encode-pool-event")
+        else if (PoolMode(request.Mode))
         {
             // Reborn: pool cardinality is bounded independently, and complete request evidence must match before any codec launch.
             Item[] actual = Inventory(Path.Combine(job,"inputs"));
@@ -124,12 +126,12 @@ internal static class AudioEncoderSupervisor
         }
         CompilerSmokeTest.InitializeHashProvider();
         // Reborn: isolated pool modes never enter fixed two-leaf/event packaging and write completion only after normal shutdown.
-        if (request.Mode is "encode-pool" or "preflight-pool" or "encode-pool-package" or "encode-pool-event")
+        if (PoolMode(request.Mode))
         {
-            var pool = AuthoredAudioPool.Read(Path.Combine(job,"inputs"),request.Mode == "encode-pool-event");
+            var pool = AuthoredAudioPool.Read(Path.Combine(job,"inputs"),request.Mode == "encode-pool-event",DurationMode(request.Mode));
             if (pool.FileNames.Length != request.Inputs!.Length) throw new InvalidDataException("Worker pool has unlisted input files.");
-            bool packaged = request.Mode is "encode-pool-package" or "encode-pool-event";
-            AudioEncoderPoc.RunPool(request.Library,work,pool,request.Mode != "preflight-pool",packaged);
+            bool packaged = PackageMode(request.Mode);
+            AudioEncoderPoc.RunPool(request.Library,work,pool,!PreflightMode(request.Mode),packaged);
             WriteNew(result,JsonSerializer.SerializeToUtf8Bytes(new Result(ProtocolVersion,nonce,Inventory(work,packaged ? 80 : 64)),JsonOptions)); return;
         }
         // Reborn: input validation needs the managed symbol tables, never the native codec; synthetic transport failures above bypass this branch.
@@ -142,6 +144,26 @@ internal static class AudioEncoderSupervisor
         // Reborn: result completion is exclusive and emitted only after normal codec shutdown/unload and full worker verification.
         WriteNew(result,JsonSerializer.SerializeToUtf8Bytes(new Result(ProtocolVersion,nonce,inventory),JsonOptions));
     }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: enumerate admitted duration modes exactly, never authorize profile changes from prefix matching. */
+    //-------------------------------------------------------------------------------------------------
+    private static bool DurationMode(string mode) => mode is "preflight-pool-duration" or "encode-pool-duration" or "encode-pool-duration-package";
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: preserve all existing pool modes while separately admitting explicit leaf-only duration experiments. */
+    //-------------------------------------------------------------------------------------------------
+    private static bool PoolMode(string mode) => DurationMode(mode) || mode is "preflight-pool" or "encode-pool" or "encode-pool-package" or "encode-pool-event";
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: metadata-only jobs cannot initialize the native codec regardless of their PCM duration profile. */
+    //-------------------------------------------------------------------------------------------------
+    private static bool PreflightMode(string mode) => mode is "preflight-pool" or "preflight-pool-duration";
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: package publication remains explicit and disjoint from metadata-only or raw encoding jobs. */
+    //-------------------------------------------------------------------------------------------------
+    private static bool PackageMode(string mode) => mode is "encode-pool-package" or "encode-pool-event" or "encode-pool-duration-package";
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove parent-side byte and semantic rejection with actual encoded child results; never accept these diagnostic tamper jobs. */

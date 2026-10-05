@@ -29,6 +29,12 @@ internal static class Program
             if (args.FirstOrDefault() == "supervised-audio-pool-package" && args.Length == 3) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(args[1],"encode-pool-package",pool:AuthoredAudioPool.Read(args[2])); return 0; }
             // Reborn: mixed publication requires an explicitly frozen event.xml and never widens leaf-only worker modes.
             if (args.FirstOrDefault() == "supervised-audio-pool-event" && args.Length == 3) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(args[1],"encode-pool-event",pool:AuthoredAudioPool.Read(args[2],true)); return 0; }
+            // Reborn: version-2 duration commands are explicit and leaf-only; canonical/mixed commands retain their old bounds.
+            if (args.FirstOrDefault() == "supervised-audio-duration-preflight" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(Path.Combine(Path.GetTempPath(),"unused-native-library.dll"),"preflight-pool-duration",pool:AuthoredAudioPool.Read(args[1],durationCandidate:true)); return 0; }
+            if (args.FirstOrDefault() == "supervised-audio-duration-encode" && args.Length == 3) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(args[1],"encode-pool-duration",pool:AuthoredAudioPool.Read(args[2],durationCandidate:true)); return 0; }
+            if (args.FirstOrDefault() == "supervised-audio-duration-package" && args.Length == 3) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(args[1],"encode-pool-duration-package",pool:AuthoredAudioPool.Read(args[2],durationCandidate:true)); return 0; }
+            if (args.FirstOrDefault() == "audio-duration-pool-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioDurationPoolSmokeTest.Run(); return 0; }
+            if (args.FirstOrDefault() == "audio-duration-native-proof" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioDurationPoolSmokeTest.NativeProof(args[1]); return 0; }
             if (args.FirstOrDefault() == "audio-pool-mixed-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioPoolEventSmokeTest.MixedRun(); return 0; }
             // Reborn: vector regression and native integration are explicit and preserve all fixed-pair command defaults.
             if (args.FirstOrDefault() == "audio-event-vector-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioEventVectorSmokeTest.Run(); return 0; }
@@ -887,6 +893,12 @@ internal static class Program
         Console.WriteLine("  supervised-audio-pool-package <absolute-audited-audio.dll> <source-directory>");
         // Reborn: selected event closure and mixed package acceptance use a dedicated opt-in worker mode.
         Console.WriteLine("  supervised-audio-pool-event <absolute-audited-audio.dll> <source-directory>");
+        // Reborn: expose only explicitly versioned leaf-only duration commands and opt-in native evidence.
+        Console.WriteLine("  supervised-audio-duration-preflight <version-2-source-directory>");
+        Console.WriteLine("  supervised-audio-duration-encode <absolute-audited-audio.dll> <version-2-source-directory>");
+        Console.WriteLine("  supervised-audio-duration-package <absolute-audited-audio.dll> <version-2-source-directory>");
+        Console.WriteLine("  audio-duration-pool-self-test");
+        Console.WriteLine("  audio-duration-native-proof <absolute-audited-audio.dll>");
         Console.WriteLine("  audio-pool-mixed-self-test");
         // Reborn: default vector tests never invoke the codec; native proof is opt-in.
         Console.WriteLine("  audio-event-vector-self-test");

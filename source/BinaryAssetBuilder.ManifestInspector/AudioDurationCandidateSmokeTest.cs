@@ -82,7 +82,7 @@ internal static class AudioDurationCandidateSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: create exact managed PCM fixtures without filesystem writes or native codec initialization. */
     //-------------------------------------------------------------------------------------------------
-    private static byte[] Wave(int samples)
+    internal static byte[] Wave(int samples)
     {
         using MemoryStream stream = new(); AudioEncoderPoc.WriteWave(stream);
         byte[] wave = new byte[44+2*samples]; stream.ToArray().AsSpan(0,44).CopyTo(wave);

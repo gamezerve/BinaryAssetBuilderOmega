@@ -5,13 +5,16 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-05)
 
-[Explicit audio duration candidate preparation](RA3EP1_AUDIO_DURATION_CANDIDATE.md)
-adds a managed-only 250 ms..2 s PCM profile behind a separate API. Exact RIFF/data
-lengths determine sample totals; immutable revalidation retains the admission mode.
-The existing canonical API/core/worker/package commands still require 250 ms.
-No longer-duration native codec or game compatibility claim is made. All 108
-default compiler groups and 33 enum checks pass; current inventory is 785/1,390
-models and 762/1,390 typed marshallers. Weighted effort remains about 50% complete.
+[Supervised bounded-duration AudioFile pools](RA3EP1_AUDIO_DURATION_POOL.md) now
+connect explicit version-2 250 ms..2 s mono PCM/XAS admission to actual core,
+isolated native workers and independently checked leaf-only linked packages.
+Duration pairs, non-frame-aligned sample totals and eight maximum distinct/shared/
+all-streamed leaves passed real codec/parent reconstruction and forged-total rejection.
+The largest tested worker inventory is 3,994,573 bytes within the unchanged 4 MiB
+cap. Canonical/fixed/mixed commands still require version-1/250 ms inputs. Mixed
+duration events, other rates/channels/codecs and game compatibility remain unproven.
+All 109 default compiler groups and 33 enum checks pass; current inventory is
+785/1,390 models and 762/1,390 typed marshallers. Weighted effort remains about 50% complete.
 The October 1 block below is a dated historical snapshot, not the current counters.
 
 ## Progress snapshot (2026-10-01)

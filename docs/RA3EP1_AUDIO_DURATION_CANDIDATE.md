@@ -1,5 +1,11 @@
 # Explicit bounded audio duration preparation
 
+Historical preparation milestone. The subsequent
+[supervised duration pool proof](RA3EP1_AUDIO_DURATION_POOL.md) separately enables
+version-2 leaf-only core/worker/package admission and records native evidence.
+This report's 108-group counters and closed-path statements describe its original
+managed-only stage; canonical/fixed/mixed commands still retain their old bounds.
+
 October 5, 2026. This milestone adds **managed candidate preparation**, not native
 duration support. Existing core, authored snapshot/pool, worker and package commands
 still admit only 250 ms PCM. Overall engineering effort remains approximately

@@ -18,14 +18,16 @@ internal sealed class AuthoredAudioPool
     // Reborn: an event snapshot is explicit and cannot be silently injected into leaf-only modes.
     internal string? EventName { get; }
     internal AuthoredAudioEventSource.Settings? EventSettings { get; }
+    // Reborn: duration admission is selected by the caller mode and retained privately with exact versioned input bytes.
+    internal bool DurationCandidate { get; }
     internal Row[] Rows => (Row[])_rows.Clone();
     internal string[] FileNames => _files.Keys.ToArray();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: own only freshly read private byte buffers and immutable inventory metadata. */
     //-------------------------------------------------------------------------------------------------
-    private AuthoredAudioPool(string directory,Dictionary<string,byte[]> files,Row[] rows,string? eventName = null,AuthoredAudioEventSource.Settings? eventSettings = null)
-    { _directory = directory; _files = files; _rows = rows; EventName = eventName; EventSettings = eventSettings; }
+    private AuthoredAudioPool(string directory,Dictionary<string,byte[]> files,Row[] rows,string? eventName = null,AuthoredAudioEventSource.Settings? eventSettings = null,bool durationCandidate = false)
+    { _directory = directory; _files = files; _rows = rows; EventName = eventName; EventSettings = eventSettings; DurationCandidate = durationCandidate; }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: return detached evidence rather than exposing frozen source/WAV buffers to callers. */
@@ -37,7 +39,7 @@ internal sealed class AuthoredAudioPool
     //-------------------------------------------------------------------------------------------------
     internal void VerifyCurrent()
     {
-        var current = Read(_directory,EventName != null);
+        var current = Read(_directory,EventName != null,DurationCandidate);
         if (_files.Count != current._files.Count || _files.Any(file => !current._files.TryGetValue(file.Key,out byte[]? bytes) || !file.Value.SequenceEqual(bytes)))
             throw new InvalidDataException("Authored audio pool snapshot is stale.");
     }
@@ -63,16 +65,18 @@ internal sealed class AuthoredAudioPool
     //-------------------------------------------------------------------------------------------------
     /** Reborn: accept 1..8 explicitly named XML sources and only their bounded direct WAV dependencies, with strict inventory syntax and unique SAGE IDs. */
     //-------------------------------------------------------------------------------------------------
-    internal static AuthoredAudioPool Read(string directory,bool includeEvent = false)
+    internal static AuthoredAudioPool Read(string directory,bool includeEvent = false,bool durationCandidate = false)
     {
+        // Reborn: duration experiments are leaf-only; mixed event duration admission needs its own subsequent proof.
+        if (durationCandidate && includeEvent) throw new InvalidDataException("Duration pool cannot include an event.");
         directory = Path.GetFullPath(directory);
         Dictionary<string,byte[]> files = new(StringComparer.OrdinalIgnoreCase) { ["audio-pool.json"] = ReadFile(Path.Combine(directory,"audio-pool.json"),4096) };
         using JsonDocument json = JsonDocument.Parse(new UTF8Encoding(false,true).GetString(files["audio-pool.json"]),new JsonDocumentOptions { MaxDepth = 4 });
         JsonElement root = json.RootElement;
         if (root.ValueKind != JsonValueKind.Object || root.EnumerateObject().Count() != 2 || root.EnumerateObject().Select(field => field.Name).Distinct(StringComparer.Ordinal).Count() != 2
-            || !root.TryGetProperty("version",out var version) || version.ValueKind != JsonValueKind.Number || !version.TryGetInt32(out int number) || number != 1
+            || !root.TryGetProperty("version",out var version) || version.ValueKind != JsonValueKind.Number || !version.TryGetInt32(out int number) || number != (durationCandidate ? 2 : 1)
             || !root.TryGetProperty("sources",out var sources) || sources.ValueKind != JsonValueKind.Array || sources.GetArrayLength() is < 1 or > 8)
-            throw new InvalidDataException("Audio pool inventory requires exactly version=1 and 1..8 sources.");
+            throw new InvalidDataException("Audio pool inventory version must match its explicit admission mode and contain 1..8 sources.");
         HashSet<string> names = new(StringComparer.OrdinalIgnoreCase); HashSet<uint> ids = new(); List<Row> rows = new();
         using MemoryStream pcm = new(); AudioEncoderPoc.WriteWave(pcm); byte[] knownWave = pcm.ToArray();
         foreach (JsonElement item in sources.EnumerateArray())
@@ -85,11 +89,11 @@ internal sealed class AuthoredAudioPool
             XmlElement audio = Definition(bytes);
             AudioFileDiagnosticIdentity.Validate(audio.GetAttribute("id")); var identity = AudioEncoderPoc.Identity(audio);
             // Reborn: validate the direct File leaf and settings before combining authored text with the filesystem root.
-            Ra3Ep1AudioFileInputProfile.Prepare(audio,identity,TargetPlatform.Win32,knownWave);
+            PrepareInput(audio,identity,knownWave,durationCandidate);
             string wave = audio.GetAttribute("File");
             ValidateDeviceLeaf(wave);
-            if (!files.TryGetValue(wave,out byte[]? waveBytes)) { waveBytes = ReadFile(Path.Combine(directory,wave),24044); files.Add(wave,waveBytes); }
-            var input = Ra3Ep1AudioFileInputProfile.Prepare(audio,identity,TargetPlatform.Win32,waveBytes);
+            if (!files.TryGetValue(wave,out byte[]? waveBytes)) { waveBytes = ReadFile(Path.Combine(directory,wave),durationCandidate ? Ra3Ep1AudioFileInputProfile.MaximumCandidateWaveBytes : 24044); files.Add(wave,waveBytes); }
+            var input = PrepareInput(audio,identity,waveBytes,durationCandidate);
             if (!ids.Add(identity.InstanceId)) throw new InvalidDataException("Audio pool names collide in the SAGE instance-ID domain.");
             rows.Add(new(source,wave,identity.InstanceName,identity.InstanceId,input.Streamed));
         }
@@ -102,8 +106,10 @@ internal sealed class AuthoredAudioPool
             var authored = AuthoredAudioEventSource.Read(bytes,rows.Select(row => row.Name).ToArray());
             files.Add("event.xml",bytes); eventName = authored.Name; eventSettings = authored.Settings;
         }
-        if (files.Count > (includeEvent ? 18 : 17) || files.Values.Sum(bytes => bytes.Length) > (includeEvent ? 270336 : 262144)) throw new InvalidDataException("Audio pool aggregate snapshot exceeds its bound.");
-        return new(directory,files,rows.ToArray(),eventName,eventSettings);
+        // Reborn: eight maximum WAVs plus eight bounded XMLs and one inventory; legacy snapshot caps stay unchanged.
+        int aggregateLimit = durationCandidate ? 8*Ra3Ep1AudioFileInputProfile.MaximumCandidateWaveBytes+8*8192+4096 : includeEvent ? 270336 : 262144;
+        if (files.Count > (includeEvent ? 18 : 17) || files.Values.Sum(bytes => bytes.Length) > aggregateLimit) throw new InvalidDataException("Audio pool aggregate snapshot exceeds its bound.");
+        return new(directory,files,rows.ToArray(),eventName,eventSettings,durationCandidate);
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -118,7 +124,7 @@ internal sealed class AuthoredAudioPool
         {
             VerifyCopies(owned);
             InstanceDeclaration instance = AudioFileIdentitySmokeTest.Build(owned,schema,AudioFileIdentitySmokeTest.Processing,row.Source);
-            var prepared = AudioFileCorePreparation.Prepare(instance); prepared.VerifyCurrent(instance);
+            var prepared = AudioFileCorePreparation.Prepare(instance,DurationCandidate); prepared.VerifyCurrent(instance);
             if (instance.Handle.InstanceName != row.Name || instance.Handle.InstanceId != row.Id || prepared.Settings.FileName != row.Wave || prepared.Settings.Streamed != row.Streamed)
                 throw new InvalidDataException("Audio pool core identity/dependency differs from its frozen inventory.");
             result.Add(new(row.Source,row.Name,row.Id,instance.Handle.InstanceHash,row.Streamed));
@@ -145,7 +151,13 @@ internal sealed class AuthoredAudioPool
     //-------------------------------------------------------------------------------------------------
     /** Reborn: derive a bounded file limit only for the inventory or already validated source/dependency leaf. */
     //-------------------------------------------------------------------------------------------------
-    private static int Limit(string name) => name == "audio-pool.json" ? 4096 : name.EndsWith(".xml",StringComparison.Ordinal) ? 8192 : 24044;
+    private int Limit(string name) => name == "audio-pool.json" ? 4096 : name.EndsWith(".xml",StringComparison.Ordinal) ? 8192 : DurationCandidate ? Ra3Ep1AudioFileInputProfile.MaximumCandidateWaveBytes : 24044;
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: require explicit immutable mode selection before either canonical or duration-candidate input preparation. */
+    //-------------------------------------------------------------------------------------------------
+    internal static Ra3Ep1AudioFileInputProfile.PreparedInput PrepareInput(XmlElement root,InstanceHandle identity,byte[] wave,bool durationCandidate)
+        => durationCandidate ? Ra3Ep1AudioFileInputProfile.PrepareDurationCandidate(root,identity,TargetPlatform.Win32,wave) : Ra3Ep1AudioFileInputProfile.Prepare(root,identity,TargetPlatform.Win32,wave);
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: share the exact bounded source-leaf contract with immutable variable package records. */

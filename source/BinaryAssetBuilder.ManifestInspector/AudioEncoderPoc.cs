@@ -128,7 +128,7 @@ internal static class AudioEncoderPoc
         string schema = Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"AudioFileIdentityPipeline.xsd");
         var rows = pool.Rows;
         var cores = rows.Select(row => AudioFileIdentitySmokeTest.Build(directory,schema,AudioFileIdentitySmokeTest.Processing,row.Source)).ToArray();
-        var preparations = cores.Select(AudioFileCorePreparation.Prepare).ToArray();
+        var preparations = cores.Select(core => AudioFileCorePreparation.Prepare(core,pool.DurationCandidate)).ToArray();
         if (encode)
         {
             path = Path.GetFullPath(path);
@@ -174,8 +174,10 @@ internal static class AudioEncoderPoc
         }
         using FileStream inputLease = new(input,FileMode.Open,FileAccess.Read,FileShare.Read);
         // Reborn: preparation must still match the actual owned input immediately before starting native work.
-        if (corePrepared == null) prepared.VerifyCurrent(root,identity,TargetPlatform.Win32,ReadOwnedWave(input));
-        else if (!ReadOwnedWave(input).SequenceEqual(corePrepared.CopyWave())) throw new InvalidDataException("Frozen encoder PCM snapshot differs.");
+        // Reborn: exact read size comes from the source-prepared sample total; canonical preparations still require 24044 bytes.
+        int waveLength = 44+2*prepared.Samples;
+        if (corePrepared == null) prepared.VerifyCurrent(root,identity,TargetPlatform.Win32,ReadOwnedWave(input,waveLength));
+        else if (!ReadOwnedWave(input,waveLength).SequenceEqual(corePrepared.CopyWave())) throw new InvalidDataException("Frozen encoder PCM snapshot differs.");
         bool streamed = prepared.Streamed;
         Identify identify = Bind<Identify>(module,"SIMEX_id"); Open open = Bind<Open>(module,"SIMEX_open"); Create create = Bind<Create>(module,"SIMEX_create");
         Info getInfo = Bind<Info>(module,"SIMEX_info"); Transfer read = Bind<Transfer>(module,"SIMEX_read"),write = Bind<Transfer>(module,"SIMEX_write");
@@ -209,7 +211,7 @@ internal static class AudioEncoderPoc
         if (streamed && header.Length != 8) throw new InvalidDataException("Unexpected generated streamed SNR size.");
         using FileStream encoded = File.OpenRead(custom);
         // Reborn: bind generated custom framing to independently parsed serialized EP1 fields, not hardcoded fake native metadata.
-        AssetBuffer runtime = corePrepared != null ? corePrepared.SerializeCurrent(core!,header) : prepared.SerializeCurrent(root,identity,TargetPlatform.Win32,ReadOwnedWave(input),header);
+        AssetBuffer runtime = corePrepared != null ? corePrepared.SerializeCurrent(core!,header) : prepared.SerializeCurrent(root,identity,TargetPlatform.Win32,ReadOwnedWave(input,waveLength),header);
         AudioFileRuntimeProbe.Header parsed = AudioFileRuntimeProbe.Parse(runtime.InstanceData,runtime.InstanceData.Length);
         byte[] inline = parsed.HeaderSize == 0 ? Array.Empty<byte>() : runtime.InstanceData.AsSpan(checked((int)parsed.HeaderPointer),checked((int)parsed.HeaderSize)).ToArray();
         AudioCustomDataProbe.Result framing = AudioCustomDataProbe.Inspect(encoded,parsed,inline);
@@ -222,7 +224,7 @@ internal static class AudioEncoderPoc
         // Reborn: own a bounded copy of the complete encoded payload; package verification cannot rely on subsequent source-file reads.
         if (encoded.Length > 1048576) throw new InvalidDataException("Owned audio package payload exceeds proof bound.");
         encoded.Position = 0; byte[] payload = new byte[checked((int)encoded.Length)]; encoded.ReadExactly(payload);
-        return new AudioFilePackageProbe.Entry(identity.InstanceName,streamed ? "streamed.xml" : "ram.xml",runtime,payload);
+        return new AudioFilePackageProbe.Entry(identity.InstanceName,streamed ? "streamed.xml" : "ram.xml",runtime,payload,prepared.Samples == 12000 ? null : streamed,prepared.Samples);
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -338,11 +340,13 @@ internal static class AudioEncoderPoc
     //-------------------------------------------------------------------------------------------------
     /** Reborn: bound repeated owned-input reads before checking the frozen PCM snapshot. */
     //-------------------------------------------------------------------------------------------------
-    private static byte[] ReadOwnedWave(string path)
+    private static byte[] ReadOwnedWave(string path,int expectedLength = 24044)
     {
+        // Reborn: source-derived size cannot expand reads outside the candidate PCM bound or violate PCM16 alignment.
+        if (expectedLength < 24044 || expectedLength > Ra3Ep1AudioFileInputProfile.MaximumCandidateWaveBytes || (expectedLength-44)%2 != 0) throw new InvalidDataException("Owned WAV read size exceeds profile.");
         using FileStream source = File.OpenRead(path);
-        if (source.Length != 24044) throw new InvalidDataException("Owned WAV size changed after preparation.");
-        byte[] bytes = new byte[24044]; source.ReadExactly(bytes);
+        if (source.Length != expectedLength) throw new InvalidDataException("Owned WAV size changed after preparation.");
+        byte[] bytes = new byte[expectedLength]; source.ReadExactly(bytes);
         if (source.ReadByte() != -1) throw new InvalidDataException("Owned WAV grew during bounded input read.");
         return bytes;
     }
