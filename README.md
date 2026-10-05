@@ -16,18 +16,27 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**104 test groups** (some contain several fixtures). These counters can grow
+**105 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool regressions add groups and all 104 groups
+worker supervision/authored snapshot/pool regressions add groups and all 105 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Supervised variable AudioFile packages](docs/RA3EP1_AUDIO_POOL_PACKAGE.md).
+Latest milestone: [Variable pool AudioEvent closure preflight](docs/RA3EP1_AUDIO_POOL_EVENT.md).
+`audio-pool-event-preflight <encoded-worker-directory> <event-xml>` independently
+verifies a leaf package and compiles one/two selected Sound references against its
+1–8 actual identities. Pool slots are distinct from event-local one-biased import
+selectors. Real core recompilation, selected dependency fingerprints and original/
+owned-copy/raw-output staleness checks passed for singleton, late and reversed
+targets; integration against actual eight-leaf XAS also passed. Mixed event/package
+publication remains closed. The existing fixed event controls/native proofs passed.
+
+[Supervised variable AudioFile packages](docs/RA3EP1_AUDIO_POOL_PACKAGE.md).
 `supervised-audio-pool-package <absolute-audited-audio.dll> <source-directory>`
 encodes the explicit 1–8-source pool and stages linked manifest/bin/relo/imp plus
 custom payloads. Actual source names and explicit RAM/streamed flags remain bound
@@ -36,7 +45,8 @@ exact package bytes and artifact membership must match before acceptance. Seven
 native cases (37 leaves), including reversed source order and eight distinct
 streamed dependencies, passed with matching-inventory corruption rejection.
 The old fixed package path also passed. This is leaf-only diagnostic publication;
-selected AudioEvent references and game loading remain open.
+selected AudioEvent references now have the separate closure preflight above;
+mixed publication and game loading remain open.
 
 [Supervised variable AudioFile raw encoding](docs/RA3EP1_AUDIO_POOL_WORKER.md).
 The explicit 1–8-source pool now has separate managed worker preflight and opt-in

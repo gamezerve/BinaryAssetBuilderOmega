@@ -34,14 +34,17 @@ internal static class AudioFileLocalEventProbe
         internal AuthoredAudioEventSource.Settings Settings { get; }
         internal uint Id => InstanceHandle.GetInstanceId(Name);
         internal uint Hash { get; }
+        // Reborn: variable closure is explicit and remains disjoint from the fixed package/event path.
+        internal bool Variable { get; }
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: freeze compiled event data and bind its diagnostic hash to both local AudioFile content identities. */
         //-------------------------------------------------------------------------------------------------
-        internal Entry(AssetBuffer native,AudioFilePackageProbe.Entry[] files,string name = "RebornLocalAudio",AuthoredAudioEventSource.Settings? settings = null)
+        internal Entry(AssetBuffer native,AudioFilePackageProbe.Entry[] files,string name = "RebornLocalAudio",AuthoredAudioEventSource.Settings? settings = null,bool variable = false)
         {
             Settings = settings ?? AuthoredAudioEventSource.Settings.Default;
-            ValidateFiles(files); CheckNative(native,Settings);
+            ValidateFiles(files,variable); CheckNative(native,Settings); Variable = variable;
+            if (Settings.PoolCount != files.Length) throw new InvalidDataException("Event pool cardinality differs from captured settings.");
             // Reborn: freeze the admitted event identity separately from its content/dependency diagnostic hash.
             AudioFileDiagnosticIdentity.Validate(name); Name = name;
             _bin = (byte[])native.InstanceData.Clone(); _relo = (byte[])native.RelocationData.Clone(); _imp = (byte[])native.ImportsData.Clone();
@@ -56,7 +59,8 @@ internal static class AudioFileLocalEventProbe
         //-------------------------------------------------------------------------------------------------
         internal void ValidateDependencies(AudioFilePackageProbe.Entry[] files)
         {
-            ValidateFiles(files);
+            ValidateFiles(files,Variable);
+            if (files.Length != Settings.PoolCount) throw new InvalidDataException("Event dependency pool cardinality changed.");
             if (!_dependencies.SequenceEqual(Settings.Slots().Select(slot => (files[slot].Id,files[slot].Hash)))) throw new InvalidDataException("Local AudioEvent dependency fingerprints are stale.");
         }
 
@@ -75,9 +79,15 @@ internal static class AudioFileLocalEventProbe
     //-------------------------------------------------------------------------------------------------
     /** Reborn: require the same unique ordered RAM/streamed local records that the fixed AudioFile package admits. */
     //-------------------------------------------------------------------------------------------------
-    private static void ValidateFiles(AudioFilePackageProbe.Entry[] files)
+    private static void ValidateFiles(AudioFilePackageProbe.Entry[] files,bool variable = false)
     {
-        if (files.Length != 2 || files[0].Source != "ram.xml" || files[1].Source != "streamed.xml" || files[0].Id == files[1].Id)
+        if (variable)
+        {
+            if (files.Length is < 1 or > 8 || files.Any(file => !file.Variable) || files.Select(file => file.Id).Distinct().Count() != files.Length || files.Select(file => file.Source).Distinct(StringComparer.OrdinalIgnoreCase).Count() != files.Length)
+                throw new InvalidDataException("Variable event requires a bounded unique variable leaf pool.");
+            return;
+        }
+        if (files.Length != 2 || files.Any(file => file.Variable) || files[0].Source != "ram.xml" || files[1].Source != "streamed.xml" || files[0].Id == files[1].Id)
             throw new InvalidDataException("Local AudioEvent requires unique RAM then streamed dependency records.");
     }
 
@@ -108,9 +118,9 @@ internal static class AudioFileLocalEventProbe
     //-------------------------------------------------------------------------------------------------
     /** Reborn: check current normalized identities against local metadata before authorizing concrete AudioFile slots and compiling. */
     //-------------------------------------------------------------------------------------------------
-    internal static Entry Compile(InstanceDeclaration instance,AudioFilePackageProbe.Entry[] files,Ra3Ep1AudioEventPlugin plugin,string name = "RebornLocalAudio")
+    internal static Entry Compile(InstanceDeclaration instance,AudioFilePackageProbe.Entry[] files,Ra3Ep1AudioEventPlugin plugin,string name = "RebornLocalAudio",bool variable = false)
     {
-        instance.ValidatedReferencedInstances = null!; ValidateFiles(files);
+        instance.ValidatedReferencedInstances = null!; ValidateFiles(files,variable);
         if (instance.Handle.TypeId != 0x844D7B9Fu || instance.Handle.TypeHash != 0x560C2E45u || instance.Handle.InstanceName != name
             || instance.ReferencedInstances.Count is < 1 or > 2) throw new InvalidDataException("Local AudioEvent identity/reference shape differs.");
         List<InstanceHandle> concrete = new();
@@ -126,15 +136,18 @@ internal static class AudioFileLocalEventProbe
             concrete.Add(new InstanceHandle("AudioFile",file.Name) { TypeHash = 0x53C81E47u,InstanceHash = file.Hash });
         }
         instance.ValidatedReferencedInstances = concrete;
-        try { return new Entry(plugin.ProcessInstance(instance),files,name,AuthoredAudioEventSource.ReadSettings((System.Xml.XmlElement)instance.Node,slots.ToArray())); }
+        try { return new Entry(plugin.ProcessInstance(instance),files,name,AuthoredAudioEventSource.ReadSettings((System.Xml.XmlElement)instance.Node,slots.ToArray(),files.Length),variable); }
         catch { instance.ValidatedReferencedInstances = null!; throw; }
     }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: parse the owned source through the actual core schema/reference normalizer, then explicitly prepare fixed local metadata. */
     //-------------------------------------------------------------------------------------------------
-    internal static Entry Build(string directory,AudioFilePackageProbe.Entry[] files,Action<InstanceDeclaration,Ra3Ep1AudioEventPlugin>? audit = null,string? authoredName = null)
+    internal static Entry Build(string directory,AudioFilePackageProbe.Entry[] files,Action<InstanceDeclaration,Ra3Ep1AudioEventPlugin>? audit = null,string? authoredName = null,bool variable = false)
     {
+        // Reborn: variable closure requires explicit raw source; generated fixed-pair source must not be used for arbitrary pools.
+        ValidateFiles(files,variable);
+        if (variable && authoredName == null) throw new InvalidDataException("Variable event requires explicit authored source.");
         string path = Path.Combine(directory,"event.xml");
         if (authoredName == null) { using FileStream writer = new(path,FileMode.CreateNew,FileAccess.Write); writer.Write(Encoding.UTF8.GetBytes(Source(files))); }
         else
@@ -142,7 +155,7 @@ internal static class AudioFileLocalEventProbe
             // Reborn: validate a bounded installed event before core loading; do not rewrite its raw caller provenance.
             using FileStream reader = File.OpenRead(path); if (reader.Length > 8192) throw new InvalidDataException("Authored event exceeds source bound.");
             byte[] bytes = new byte[(int)reader.Length]; reader.ReadExactly(bytes); if (reader.ReadByte() != -1) throw new InvalidDataException("Authored event length changed.");
-            if (AuthoredAudioEventSource.Validate(bytes,files[0].Name,files[1].Name) != authoredName) throw new InvalidDataException("Authored event identity differs.");
+            if (AuthoredAudioEventSource.Read(bytes,files.Select(file => file.Name).ToArray()).Name != authoredName) throw new InvalidDataException("Authored event identity differs.");
         }
         Settings saved = Settings.Current;
         try
@@ -156,7 +169,7 @@ internal static class AudioFileLocalEventProbe
             InstanceDeclaration instance = processor.ProcessDocumentInternal(path,path,null!,new DocumentProcessor.ProcessOptions { GenerateOutput = false }).SelfInstances.Single();
             // Reborn: optional managed regressions inspect/revoke current core preparation before the final fixed compile.
             audit?.Invoke(instance,plugin);
-            return Compile(instance,files,plugin,authoredName ?? "RebornLocalAudio");
+            return Compile(instance,files,plugin,authoredName ?? "RebornLocalAudio",variable);
         }
         finally { Settings.Current = saved; }
     }

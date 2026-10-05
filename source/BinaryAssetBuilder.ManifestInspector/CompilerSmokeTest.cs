@@ -31,6 +31,8 @@ internal static class CompilerSmokeTest
         TestAudioPoolWorker();
         // Reborn: bounded variable package tables are tested with synthetic compressed bodies, never codecs by default.
         TestAudioPoolPackage();
+        // Reborn: variable pool event closure remains a managed-only synthetic-framing regression by default.
+        TestAudioPoolEvent();
         TestAttributeModifier();
         // Reborn: exercise isolated EP1 sound records while retaining the legacy child ABI.
         TestMultisoundNative();
@@ -2263,6 +2265,11 @@ internal static class CompilerSmokeTest
     /** Reborn: validate variable leaf-only package cardinality/order and both linked stream readers. */
     //-------------------------------------------------------------------------------------------------
     private static void TestAudioPoolPackage() => AudioPoolPackageSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: prove actual core event selection against a bounded variable pool without mixed publication. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestAudioPoolEvent() => AudioPoolEventSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: guard custom block envelopes separately from native ABI and codec processing. */

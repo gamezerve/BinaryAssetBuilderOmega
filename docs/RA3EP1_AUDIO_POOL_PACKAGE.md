@@ -115,6 +115,11 @@ cover transport/timeout/log/JSON/nonce/path failures and stale originals/copies.
 
 ## Remaining work
 
+Subsequent milestone: [variable pool event closure preflight](RA3EP1_AUDIO_POOL_EVENT.md)
+now resolves and compiles one/two selected Sound targets against actual variable
+leaf identities, including late/reversed pool slots. Mixed linked publication and
+its parent acceptance protocol remain the next gate; this package command stays leaf-only.
+
 Next resolve selected AudioEvent Sound references against the immutable variable
 pool, then derive dynamic reference/import tables and selectors from selected
 targets rather than fixed source slots. Verify graph closure, dependency fingerprints,

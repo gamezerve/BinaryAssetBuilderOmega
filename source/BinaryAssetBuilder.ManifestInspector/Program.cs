@@ -29,6 +29,10 @@ internal static class Program
             if (args.FirstOrDefault() == "supervised-audio-pool-package" && args.Length == 3) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(args[1],"encode-pool-package",pool:AuthoredAudioPool.Read(args[2])); return 0; }
             if (args.FirstOrDefault() == "audio-pool-package-native-proof" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioPoolWorkerSmokeTest.NativeProof(args[1],true); return 0; }
             if (args.FirstOrDefault() == "audio-pool-package-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioPoolPackageSmokeTest.Run(); return 0; }
+            // Reborn: variable event closure is explicit, independently verifies a leaf package and never emits a mixed manifest.
+            if (args.FirstOrDefault() == "audio-pool-event-preflight" && args.Length == 3) { CompilerSmokeTest.InitializeHashProvider(); AudioPoolEventPreflight.Run(args[1],args[2]); return 0; }
+            if (args.FirstOrDefault() == "audio-pool-event-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioPoolEventSmokeTest.Run(); return 0; }
+            if (args.FirstOrDefault() == "audio-pool-event-native-proof" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioPoolEventSmokeTest.NativeProof(args[1]); return 0; }
             // Reborn: pool worker/native regression entry points are explicit and mutate only freshly owned fixtures.
             if (args.FirstOrDefault() == "audio-pool-worker-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioPoolWorkerSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() == "audio-pool-native-proof" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioPoolWorkerSmokeTest.NativeProof(args[1]); return 0; }
@@ -876,6 +880,10 @@ internal static class Program
         Console.WriteLine("  supervised-audio-pool-package <absolute-audited-audio.dll> <source-directory>");
         Console.WriteLine("  audio-pool-package-native-proof <absolute-audited-audio.dll>");
         Console.WriteLine("  audio-pool-package-self-test");
+        // Reborn: event preflight consumes validated encoded worker evidence, not an unchecked arbitrary source graph.
+        Console.WriteLine("  audio-pool-event-preflight <encoded-worker-directory> <event-xml>");
+        Console.WriteLine("  audio-pool-event-self-test");
+        Console.WriteLine("  audio-pool-event-native-proof <absolute-audited-audio.dll>");
         Console.WriteLine("  audio-pool-worker-self-test");
         Console.WriteLine("  audio-pool-native-proof <absolute-audited-audio.dll>");
         Console.WriteLine("  audio-archive-compare <unpacked-ep1-manifest> <original-EnglishAudio.big>");
