@@ -111,6 +111,11 @@ That confirms the default fixed path remains operational after closure refactori
 
 ## Next gate and remaining risks
 
+Subsequent milestone: [supervised variable mixed publication](RA3EP1_AUDIO_POOL_MIXED.md)
+now implements the gate below through a separate explicit event-source mode.
+This report's preflight command remains raw-only. Historical evidence and bounds
+above are unchanged; broader Sound lists, WAV/codecs and production/game loading remain open.
+
 Bind explicit frozen event source/settings into a new supervised variable mixed
 publication mode. Recompile independently in the parent and require identical full
 event bytes/selected fingerprints; derive mixed manifest reference/import offsets

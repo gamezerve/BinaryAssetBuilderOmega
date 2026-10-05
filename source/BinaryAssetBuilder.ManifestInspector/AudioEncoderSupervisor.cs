@@ -29,9 +29,11 @@ internal static class AudioEncoderSupervisor
     //-------------------------------------------------------------------------------------------------
     internal static string Run(string library,string mode = "encode",int timeoutMs = 30000,Action<string>? jobCreated = null,AuthoredAudioSnapshot? authored = null,AuthoredAudioPool? pool = null)
     {
-        if (mode != "encode" && mode is not ("encode-authored" or "encode-authored-event" or "encode-pool" or "preflight-pool" or "encode-pool-package") && !TestModes.Contains(mode,StringComparer.Ordinal) && !NativeTestModes.Contains(mode,StringComparer.Ordinal)) throw new ArgumentException("Unknown supervised worker mode.");
+        if (mode != "encode" && mode is not ("encode-authored" or "encode-authored-event" or "encode-pool" or "preflight-pool" or "encode-pool-package" or "encode-pool-event") && !TestModes.Contains(mode,StringComparer.Ordinal) && !NativeTestModes.Contains(mode,StringComparer.Ordinal)) throw new ArgumentException("Unknown supervised worker mode.");
         // Reborn: pool input is a separate explicit mode and cannot be mixed with the fixed authored snapshot contract.
-        if ((mode is "encode-pool" or "preflight-pool" or "encode-pool-package") != (pool != null) || (pool != null && authored != null)) throw new InvalidDataException("Pool mode requires an exclusive validated pool snapshot.");
+        if ((mode is "encode-pool" or "preflight-pool" or "encode-pool-package" or "encode-pool-event") != (pool != null) || (pool != null && authored != null)) throw new InvalidDataException("Pool mode requires an exclusive validated pool snapshot.");
+        // Reborn: only the dedicated mixed mode may carry event source, and that mode must not silently omit it.
+        if ((mode == "encode-pool-event") != (pool?.EventName != null)) throw new InvalidDataException("Mixed pool mode requires matching frozen event source.");
         if ((mode is "encode-authored" or "encode-authored-event") != (authored != null)
             || (mode == "encode-authored-event") != (authored?.EventName != null)) throw new InvalidDataException("Authored mode requires a matching validated input snapshot.");
         if (timeoutMs is < 100 or > 30000) throw new ArgumentOutOfRangeException(nameof(timeoutMs));
@@ -70,12 +72,12 @@ internal static class AudioEncoderSupervisor
         if (timedOut) throw new InvalidDataException("Audio worker timed out; partial evidence retained, no acceptance.");
         if (process.ExitCode != 0) throw new InvalidDataException($"Audio worker exit={process.ExitCode}; partial evidence retained, no acceptance.");
         if (stdout.Result.Overflow || stderr.Result.Overflow) throw new InvalidDataException("Audio worker log limit exceeded; no acceptance.");
-        ValidateResult(job,nonce,authored,pool,mode is "encode-pool" or "encode-pool-package",mode == "encode-pool-package");
+        ValidateResult(job,nonce,authored,pool,mode is "encode-pool" or "encode-pool-package" or "encode-pool-event",mode is "encode-pool-package" or "encode-pool-event");
         // Reborn: worker success cannot authorize a stale caller source; reread original inputs before acceptance without writing them.
         authored?.VerifyCurrent();
         pool?.VerifyCurrent();
         WriteNew(Path.Combine(job,"ACCEPTED.json"),JsonSerializer.SerializeToUtf8Bytes(new { Version = ProtocolVersion,Nonce = nonce,DiagnosticOnly = true },JsonOptions));
-        Console.WriteLine(pool == null ? "Supervised audio: ACCEPTED (exit=0, bounded protocol/hash inventory and independent package/core readback; diagnostic only)." : mode == "encode-pool-package" ? "Supervised pool package: ACCEPTED (parent core/raw and two-reader variable package verification; no event/production/game-load admission)." : "Supervised pool: ACCEPTED (bounded inventory and parent core/raw-evidence readback; no package/event/production admission).");
+        Console.WriteLine(pool == null ? "Supervised audio: ACCEPTED (exit=0, bounded protocol/hash inventory and independent package/core readback; diagnostic only)." : mode is "encode-pool-package" or "encode-pool-event" ? "Supervised pool package: ACCEPTED (parent core/raw/event-source and two-reader variable package verification; diagnostic only, no production/game-load admission)." : "Supervised pool: ACCEPTED (bounded inventory and parent core/raw-evidence readback; no package/event/production admission).");
         return job;
     }
 
@@ -87,7 +89,7 @@ internal static class AudioEncoderSupervisor
         job = Path.GetFullPath(job);
         if (!Guid.TryParseExact(nonce,"N",out _) || job != Path.Combine(Path.GetTempPath(),Prefix+nonce)) throw new InvalidDataException("Worker job root/nonce differs.");
         Request request = ReadJson<Request>(Path.Combine(job,"request.json"));
-        if (request.Version != ProtocolVersion || request.Nonce != nonce || (request.Mode != "encode" && request.Mode is not ("encode-authored" or "encode-authored-event" or "encode-pool" or "preflight-pool" or "encode-pool-package") && !TestModes.Contains(request.Mode,StringComparer.Ordinal) && !NativeTestModes.Contains(request.Mode,StringComparer.Ordinal))) throw new InvalidDataException("Worker request differs.");
+        if (request.Version != ProtocolVersion || request.Nonce != nonce || (request.Mode != "encode" && request.Mode is not ("encode-authored" or "encode-authored-event" or "encode-pool" or "preflight-pool" or "encode-pool-package" or "encode-pool-event") && !TestModes.Contains(request.Mode,StringComparer.Ordinal) && !NativeTestModes.Contains(request.Mode,StringComparer.Ordinal))) throw new InvalidDataException("Worker request differs.");
         AuthoredAudioSnapshot? authored = null;
         if (request.Mode is "encode-authored" or "encode-authored-event")
         {
@@ -96,11 +98,12 @@ internal static class AudioEncoderSupervisor
             int count = request.Mode == "encode-authored-event" ? 4 : 3;
             if (request.Inputs == null || request.Inputs.Length != count || actualInputs.Length != count || actualInputs.Any(item => !request.Inputs.Contains(item))) throw new InvalidDataException("Worker authored snapshot inventory differs.");
         }
-        else if (request.Mode is "encode-pool" or "preflight-pool" or "encode-pool-package")
+        else if (request.Mode is "encode-pool" or "preflight-pool" or "encode-pool-package" or "encode-pool-event")
         {
             // Reborn: pool cardinality is bounded independently, and complete request evidence must match before any codec launch.
             Item[] actual = Inventory(Path.Combine(job,"inputs"));
-            if (request.Inputs == null || request.Inputs.Length is < 3 or > 17 || actual.Length != request.Inputs.Length || actual.Any(item => !request.Inputs.Contains(item))) throw new InvalidDataException("Worker pool input inventory differs.");
+            int minimum = request.Mode == "encode-pool-event" ? 4 : 3,maximum = request.Mode == "encode-pool-event" ? 18 : 17;
+            if (request.Inputs == null || request.Inputs.Length < minimum || request.Inputs.Length > maximum || actual.Length != request.Inputs.Length || actual.Any(item => !request.Inputs.Contains(item))) throw new InvalidDataException("Worker pool input inventory differs.");
         }
         else if (request.Inputs != null) throw new InvalidDataException("Unexpected authored worker inputs.");
         string result = Path.Combine(job,"result.json"),work = Path.Combine(job,"worker");
@@ -121,12 +124,13 @@ internal static class AudioEncoderSupervisor
         }
         CompilerSmokeTest.InitializeHashProvider();
         // Reborn: isolated pool modes never enter fixed two-leaf/event packaging and write completion only after normal shutdown.
-        if (request.Mode is "encode-pool" or "preflight-pool" or "encode-pool-package")
+        if (request.Mode is "encode-pool" or "preflight-pool" or "encode-pool-package" or "encode-pool-event")
         {
-            var pool = AuthoredAudioPool.Read(Path.Combine(job,"inputs"));
+            var pool = AuthoredAudioPool.Read(Path.Combine(job,"inputs"),request.Mode == "encode-pool-event");
             if (pool.FileNames.Length != request.Inputs!.Length) throw new InvalidDataException("Worker pool has unlisted input files.");
-            AudioEncoderPoc.RunPool(request.Library,work,pool,request.Mode != "preflight-pool",request.Mode == "encode-pool-package");
-            WriteNew(result,JsonSerializer.SerializeToUtf8Bytes(new Result(ProtocolVersion,nonce,Inventory(work,request.Mode == "encode-pool-package" ? 80 : 64)),JsonOptions)); return;
+            bool packaged = request.Mode is "encode-pool-package" or "encode-pool-event";
+            AudioEncoderPoc.RunPool(request.Library,work,pool,request.Mode != "preflight-pool",packaged);
+            WriteNew(result,JsonSerializer.SerializeToUtf8Bytes(new Result(ProtocolVersion,nonce,Inventory(work,packaged ? 80 : 64)),JsonOptions)); return;
         }
         // Reborn: input validation needs the managed symbol tables, never the native codec; synthetic transport failures above bypass this branch.
         authored = request.Mode is "encode-authored" or "encode-authored-event" ? AuthoredAudioSnapshot.Read(Path.Combine(job,"inputs"),request.Mode == "encode-authored-event") : null;

@@ -71,7 +71,7 @@ internal static class AudioPoolWorkerSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: copy only bounded owned evidence into a fresh rejected job, then forge matching hashes to test the full parent acceptance gate. */
     //-------------------------------------------------------------------------------------------------
-    private static void RejectForgedResult(string source,AuthoredAudioPool pool,bool encoded,string leaf,bool packaged = false)
+    internal static void RejectForgedResult(string source,AuthoredAudioPool pool,bool encoded,string leaf,bool packaged = false,int offset = 0)
     {
         string nonce = Guid.NewGuid().ToString("N"),job = Path.Combine(Path.GetTempPath(),"Reborn-SupervisedAudio-"+nonce),work = Path.Combine(job,"worker");
         Directory.CreateDirectory(work); pool.Install(Path.Combine(job,"inputs"));
@@ -80,7 +80,10 @@ internal static class AudioPoolWorkerSmokeTest
             string path = Path.Combine(work,item.Path); Directory.CreateDirectory(Path.GetDirectoryName(path)!);
             using FileStream writer = new(path,FileMode.CreateNew,FileAccess.Write); writer.Write(AudioEncoderSupervisor.Read(Path.Combine(source,item.Path)));
         }
-        string target = Path.Combine(work,leaf); byte[] changed = File.ReadAllBytes(target); changed[0] ^= 1; File.WriteAllBytes(target,changed);
+        string target = Path.Combine(work,leaf); byte[] changed = File.ReadAllBytes(target);
+        // Reborn: targeted event-field corruption must stay inside the exact owned copied artifact.
+        if (offset < 0 || offset >= changed.Length) throw new InvalidDataException("Forged test offset is outside its artifact.");
+        changed[offset] ^= 1; File.WriteAllBytes(target,changed);
         using (FileStream writer = new(Path.Combine(job,"result.json"),FileMode.CreateNew,FileAccess.Write)) writer.Write(System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(new AudioEncoderSupervisor.Result(2,nonce,AudioEncoderSupervisor.Inventory(work,packaged ? 80 : 64))));
         Reject(() => AudioEncoderSupervisor.ValidateResult(job,nonce,pool:pool,poolEncoded:encoded,poolPackaged:packaged));
         if (File.Exists(Path.Combine(job,"ACCEPTED.json"))) throw new InvalidDataException("Forged pool job received acceptance.");

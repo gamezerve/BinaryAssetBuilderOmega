@@ -15,14 +15,17 @@ internal sealed class AuthoredAudioPool
     private readonly string _directory;
     private readonly Dictionary<string,byte[]> _files;
     private readonly Row[] _rows;
+    // Reborn: an event snapshot is explicit and cannot be silently injected into leaf-only modes.
+    internal string? EventName { get; }
+    internal AuthoredAudioEventSource.Settings? EventSettings { get; }
     internal Row[] Rows => (Row[])_rows.Clone();
     internal string[] FileNames => _files.Keys.ToArray();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: own only freshly read private byte buffers and immutable inventory metadata. */
     //-------------------------------------------------------------------------------------------------
-    private AuthoredAudioPool(string directory,Dictionary<string,byte[]> files,Row[] rows)
-    { _directory = directory; _files = files; _rows = rows; }
+    private AuthoredAudioPool(string directory,Dictionary<string,byte[]> files,Row[] rows,string? eventName = null,AuthoredAudioEventSource.Settings? eventSettings = null)
+    { _directory = directory; _files = files; _rows = rows; EventName = eventName; EventSettings = eventSettings; }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: return detached evidence rather than exposing frozen source/WAV buffers to callers. */
@@ -34,7 +37,7 @@ internal sealed class AuthoredAudioPool
     //-------------------------------------------------------------------------------------------------
     internal void VerifyCurrent()
     {
-        var current = Read(_directory);
+        var current = Read(_directory,EventName != null);
         if (_files.Count != current._files.Count || _files.Any(file => !current._files.TryGetValue(file.Key,out byte[]? bytes) || !file.Value.SequenceEqual(bytes)))
             throw new InvalidDataException("Authored audio pool snapshot is stale.");
     }
@@ -60,7 +63,7 @@ internal sealed class AuthoredAudioPool
     //-------------------------------------------------------------------------------------------------
     /** Reborn: accept 1..8 explicitly named XML sources and only their bounded direct WAV dependencies, with strict inventory syntax and unique SAGE IDs. */
     //-------------------------------------------------------------------------------------------------
-    internal static AuthoredAudioPool Read(string directory)
+    internal static AuthoredAudioPool Read(string directory,bool includeEvent = false)
     {
         directory = Path.GetFullPath(directory);
         Dictionary<string,byte[]> files = new(StringComparer.OrdinalIgnoreCase) { ["audio-pool.json"] = ReadFile(Path.Combine(directory,"audio-pool.json"),4096) };
@@ -90,8 +93,17 @@ internal sealed class AuthoredAudioPool
             if (!ids.Add(identity.InstanceId)) throw new InvalidDataException("Audio pool names collide in the SAGE instance-ID domain.");
             rows.Add(new(source,wave,identity.InstanceName,identity.InstanceId,input.Streamed));
         }
-        if (files.Count > 17 || files.Values.Sum(bytes => bytes.Length) > 262144) throw new InvalidDataException("Audio pool aggregate snapshot exceeds its bound.");
-        return new(directory,files,rows.ToArray());
+        string? eventName = null; AuthoredAudioEventSource.Settings? eventSettings = null;
+        if (includeEvent)
+        {
+            // Reborn: fixed event.xml attribution is reserved only in the explicit mixed mode; never overwrite an AudioFile source alias.
+            if (files.ContainsKey("event.xml")) throw new InvalidDataException("Mixed pool reserves event.xml for its event source.");
+            byte[] bytes = ReadFile(Path.Combine(directory,"event.xml"),8192);
+            var authored = AuthoredAudioEventSource.Read(bytes,rows.Select(row => row.Name).ToArray());
+            files.Add("event.xml",bytes); eventName = authored.Name; eventSettings = authored.Settings;
+        }
+        if (files.Count > (includeEvent ? 18 : 17) || files.Values.Sum(bytes => bytes.Length) > (includeEvent ? 270336 : 262144)) throw new InvalidDataException("Audio pool aggregate snapshot exceeds its bound.");
+        return new(directory,files,rows.ToArray(),eventName,eventSettings);
     }
 
     //-------------------------------------------------------------------------------------------------

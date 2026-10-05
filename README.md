@@ -16,25 +16,37 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**105 test groups** (some contain several fixtures). These counters can grow
+**106 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool regressions add groups and all 105 groups
+worker supervision/authored snapshot/pool regressions add groups and all 106 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Variable pool AudioEvent closure preflight](docs/RA3EP1_AUDIO_POOL_EVENT.md).
+Latest milestone: [Supervised variable mixed AudioEvent/AudioFile packages](docs/RA3EP1_AUDIO_POOL_MIXED.md).
+`supervised-audio-pool-event <absolute-audited-audio.dll> <source-directory>` freezes
+explicit event.xml with the 1–8-leaf pool, encodes the audio and appends the selected
+event to a checked linked package. The parent recompiles frozen event source and
+reconstructs exact package bytes, references/imports and dependency hashes before
+acceptance. Managed and actual 1/3/8-source mixed proofs passed, including targeted
+selector/weight/control/import corruption with matching inventories and stale
+original/input event rejection. Existing fixed control proofs still pass.
+This is diagnostic-only; one event/one or two Sounds and narrow canonical PCM/XAS
+remain the admitted profile, not a general music compiler or playable SDK.
+
+[Variable pool AudioEvent closure preflight](docs/RA3EP1_AUDIO_POOL_EVENT.md).
 `audio-pool-event-preflight <encoded-worker-directory> <event-xml>` independently
 verifies a leaf package and compiles one/two selected Sound references against its
 1–8 actual identities. Pool slots are distinct from event-local one-biased import
 selectors. Real core recompilation, selected dependency fingerprints and original/
 owned-copy/raw-output staleness checks passed for singleton, late and reversed
-targets; integration against actual eight-leaf XAS also passed. Mixed event/package
-publication remains closed. The existing fixed event controls/native proofs passed.
+targets; integration against actual eight-leaf XAS also passed. This preflight command
+still emits raw event evidence only; mixed publication uses the separate mode above.
+The existing fixed event controls/native proofs passed.
 
 [Supervised variable AudioFile packages](docs/RA3EP1_AUDIO_POOL_PACKAGE.md).
 `supervised-audio-pool-package <absolute-audited-audio.dll> <source-directory>`

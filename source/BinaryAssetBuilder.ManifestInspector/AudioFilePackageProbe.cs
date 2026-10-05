@@ -77,9 +77,11 @@ internal static class AudioFilePackageProbe
     internal static Dictionary<string,byte[]> Serialize(Entry[] entries,AudioFileLocalEventProbe.Entry? localEvent = null,bool variable = false)
     {
         // Reborn: variable leaf-only packages are explicit, ordered, bounded and disjoint from fixed AudioEvent admission.
-        if (variable && (entries.Length is < 1 or > 8 || entries.Any(entry => !entry.Variable) || localEvent != null
+        if (variable && (entries.Length is < 1 or > 8 || entries.Any(entry => !entry.Variable) || (localEvent != null && !localEvent.Variable)
             || entries.Select(entry => entry.Id).Distinct().Count() != entries.Length || entries.Select(entry => entry.Source).Distinct(StringComparer.OrdinalIgnoreCase).Count() != entries.Length))
-            throw new InvalidDataException("Variable package requires 1..8 unique explicit leaves without an event.");
+            throw new InvalidDataException("Variable package requires 1..8 unique explicit leaves and matching event closure.");
+        // Reborn: a fixed event cannot consume variable records or vice versa even if its raw shape is identical.
+        if (!variable && localEvent?.Variable == true) throw new InvalidDataException("Variable event cannot enter fixed publication.");
         if (!variable && (entries.Length != 2 || entries.Any(entry => entry.Variable) || entries[0].Source != "ram.xml" || entries[1].Source != "streamed.xml" || entries[0].Id == entries[1].Id))
             throw new InvalidDataException("Package requires unique RAM then streamed identities.");
         AssetBuffer[] native = entries.Select(entry => entry.CopyNative()).ToArray();
@@ -121,7 +123,7 @@ internal static class AudioFilePackageProbe
         foreach (Entry entry in entries) result.Add(Path.Combine("diagnostic","cdata",entry.CustomName),entry.CopyCustom());
         if (localEvent != null) result["DIAGNOSTIC_ONLY.txt"] = Encoding.UTF8.GetBytes("Fixed local AudioEvent -> two AudioFile diagnostic package. NOT a playable Uprising mod.\nExplicit prepared local metadata; diagnostic dependency/content hashes, no general graph/production/SDK/game-load claim.\n");
         // Reborn: do not relabel bounded variable leaf evidence as a playable SDK or fixed local event proof.
-        if (variable) result["DIAGNOSTIC_ONLY.txt"] = Encoding.UTF8.GetBytes("Bounded variable AudioFile diagnostic package. NOT a playable Uprising mod.\nDiagnostic content InstanceHash; no event/production hash/cache/SDK/plugin/game-load claim.\n");
+        if (variable) result["DIAGNOSTIC_ONLY.txt"] = Encoding.UTF8.GetBytes(localEvent == null ? "Bounded variable AudioFile diagnostic package. NOT a playable Uprising mod.\nDiagnostic content InstanceHash; no event/production hash/cache/SDK/plugin/game-load claim.\n" : "Bounded variable AudioEvent/AudioFile diagnostic package. NOT a playable Uprising mod.\nSelected local dependencies; no production hash/cache/SDK/plugin/game-load claim.\n");
         return result;
     }
 
@@ -167,7 +169,7 @@ internal static class AudioFilePackageProbe
         // Reborn: independently decode the optional parent's one-biased imports into prior local manifest entries, not external names.
         if (localEvent != null)
         {
-            ManifestAsset asset = parsed.Assets[2]; var other = utility.Assets[2];
+            ManifestAsset asset = parsed.Assets[entries.Length]; var other = utility.Assets[entries.Length];
             AssetId[] refs = localEvent.References(entries); int eventLength = localEvent.Settings.NativeLength,importLength = localEvent.Settings.ImportsLength;
             if (asset.TypeId != 0x844D7B9Fu || asset.TypeHash != 0x560C2E45u || asset.InstanceId != localEvent.Id || asset.InstanceHash != localEvent.Hash
                 || asset.Name != "AudioEvent:"+localEvent.Name || asset.SourceFile != "event.xml" || asset.Tokenized != 0
@@ -182,7 +184,7 @@ internal static class AudioFilePackageProbe
             foreach (int slot in Enumerable.Range(0,localEvent.Settings.Count).Select(index => 152+12*index))
             {
                 uint selector = BinaryPrimitives.ReadUInt32LittleEndian(read.InstanceData.AsSpan(slot)); AssetId target = asset.References[checked((int)selector)-1];
-                if (parsed.Assets.Take(2).Count(candidate => candidate.TypeId == target.TypeId && candidate.InstanceId == target.InstanceId) != 1)
+                if (parsed.Assets.Take(entries.Length).Count(candidate => candidate.TypeId == target.TypeId && candidate.InstanceId == target.InstanceId) != 1)
                     throw new InvalidDataException("Local AudioEvent selector does not resolve uniquely before its parent.");
             }
             bin += eventLength; relo += 8;

@@ -41,8 +41,9 @@ internal static class AudioPoolResultGate
         if (packaged)
         {
             // Reborn: regenerate all linked package bytes from parent-checked leaves, then verify both manifest readers and exact artifact membership.
-            AudioFilePackageProbe.Verify(Path.Combine(directory,"package"),entries.ToArray(),variable:true);
-            foreach (string name in AudioFilePackageProbe.Serialize(entries.ToArray(),variable:true).Keys) expectedFiles.Add("package/"+name.Replace('\\','/'));
+            var localEvent = BuildEvent(directory,pool,entries.ToArray());
+            AudioFilePackageProbe.Verify(Path.Combine(directory,"package"),entries.ToArray(),localEvent,variable:true);
+            foreach (string name in AudioFilePackageProbe.Serialize(entries.ToArray(),localEvent,variable:true).Keys) expectedFiles.Add("package/"+name.Replace('\\','/'));
         }
         var actual = AudioEncoderSupervisor.Inventory(directory,packaged ? 80 : 64);
         if (actual.Length != expectedFiles.Count || actual.Any(item => !expectedFiles.Contains(item.Path))) throw new InvalidDataException("Pool output file set differs.");
@@ -56,7 +57,22 @@ internal static class AudioPoolResultGate
     internal static void Publish(string directory,AuthoredAudioPool pool)
     {
         var entries = Verify(directory,pool,true);
-        AudioFilePackageProbe.Publish(Path.Combine(directory,"package"),entries,variable:true);
+        AudioFilePackageProbe.Publish(Path.Combine(directory,"package"),entries,BuildEvent(directory,pool,entries),variable:true);
         Verify(directory,pool,true,true);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: derive mixed event bytes independently from frozen source and current leaf fingerprints, never worker-provided event metadata. */
+    //-------------------------------------------------------------------------------------------------
+    internal static AudioFileLocalEventProbe.Entry? BuildEvent(string directory,AuthoredAudioPool pool,AudioFilePackageProbe.Entry[] entries)
+    {
+        if (pool.EventName == null) return null;
+        pool.VerifyCopies(directory);
+        var compiled = AudioFileLocalEventProbe.Build(directory,entries,authoredName:pool.EventName,variable:true);
+        if (compiled.Settings != pool.EventSettings) throw new InvalidDataException("Mixed pool event source/settings differ.");
+        var replay = AudioFileLocalEventProbe.Build(directory,entries,authoredName:pool.EventName,variable:true);
+        var native = compiled.CopyNative(); var other = replay.CopyNative();
+        if (compiled.Hash != replay.Hash || !native.InstanceData.SequenceEqual(other.InstanceData) || !native.RelocationData.SequenceEqual(other.RelocationData) || !native.ImportsData.SequenceEqual(other.ImportsData)) throw new InvalidDataException("Mixed pool event recompilation differs.");
+        pool.VerifyCopies(directory); return compiled;
     }
 }

@@ -122,6 +122,8 @@ internal static class AudioEncoderPoc
     {
         // Reborn: package requests are a separate native-only diagnostic mode.
         if (package && !encode) throw new InvalidDataException("Pool package requires native encoding.");
+        // Reborn: explicit mixed source cannot leak into metadata/raw leaf modes.
+        if (pool.EventName != null && !package) throw new InvalidDataException("Mixed pool requires explicit package mode.");
         pool.Install(directory);
         string schema = Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"AudioFileIdentityPipeline.xsd");
         var rows = pool.Rows;

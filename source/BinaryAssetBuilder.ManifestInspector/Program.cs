@@ -27,6 +27,10 @@ internal static class Program
             if (args.FirstOrDefault() == "supervised-audio-pool-encode" && args.Length == 3) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(args[1],"encode-pool",pool:AuthoredAudioPool.Read(args[2])); return 0; }
             // Reborn: variable package publication is explicit and leaf-only, never an implicit extension of raw/event commands.
             if (args.FirstOrDefault() == "supervised-audio-pool-package" && args.Length == 3) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(args[1],"encode-pool-package",pool:AuthoredAudioPool.Read(args[2])); return 0; }
+            // Reborn: mixed publication requires an explicitly frozen event.xml and never widens leaf-only worker modes.
+            if (args.FirstOrDefault() == "supervised-audio-pool-event" && args.Length == 3) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(args[1],"encode-pool-event",pool:AuthoredAudioPool.Read(args[2],true)); return 0; }
+            if (args.FirstOrDefault() == "audio-pool-mixed-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioPoolEventSmokeTest.MixedRun(); return 0; }
+            if (args.FirstOrDefault() == "audio-pool-mixed-native-proof" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioPoolEventSmokeTest.MixedNativeProof(args[1]); return 0; }
             if (args.FirstOrDefault() == "audio-pool-package-native-proof" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioPoolWorkerSmokeTest.NativeProof(args[1],true); return 0; }
             if (args.FirstOrDefault() == "audio-pool-package-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioPoolPackageSmokeTest.Run(); return 0; }
             // Reborn: variable event closure is explicit, independently verifies a leaf package and never emits a mixed manifest.
@@ -878,6 +882,10 @@ internal static class Program
         Console.WriteLine("  supervised-audio-pool-encode <absolute-audited-audio.dll> <source-directory>");
         // Reborn: leaf-only variable packages are opt-in and tested separately from raw encoding.
         Console.WriteLine("  supervised-audio-pool-package <absolute-audited-audio.dll> <source-directory>");
+        // Reborn: selected event closure and mixed package acceptance use a dedicated opt-in worker mode.
+        Console.WriteLine("  supervised-audio-pool-event <absolute-audited-audio.dll> <source-directory>");
+        Console.WriteLine("  audio-pool-mixed-self-test");
+        Console.WriteLine("  audio-pool-mixed-native-proof <absolute-audited-audio.dll>");
         Console.WriteLine("  audio-pool-package-native-proof <absolute-audited-audio.dll>");
         Console.WriteLine("  audio-pool-package-self-test");
         // Reborn: event preflight consumes validated encoded worker evidence, not an unchecked arbitrary source graph.
