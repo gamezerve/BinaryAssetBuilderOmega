@@ -16,18 +16,28 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**112 test groups** (some contain several fixtures). These counters can grow
+**113 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path regressions add groups and all 112 groups
+worker supervision/authored snapshot/pool/path/catalog regressions add groups and all 113 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Bounded SDK source-path preflight](docs/RA3EP1_SDK_SOURCE_PATH_PREFLIGHT.md).
+Latest milestone: [Schema file-reference declaration inventory](docs/RA3EP1_SDK_FILE_REFERENCE_CATALOG.md).
+`sdk-file-reference-catalog` inventories 17 declared file fields across 843 staged
+schemas, including five DataBlob fields, namespace-aware restriction ancestry and
+pipeline-only OnDemandTexture.File evidence. All 113 default groups and 33 enum
+checks pass. The two trailing-dot map Includes have normal `.xml` files on disk;
+searched Uprising reference/unpacked roots lack the three audioassets XMLs and
+RA3EPMus.h. The 1,514 numbered WAV tracks and compiled EnglishAudio stream are not
+an original AUDIO source root. Inherited/instance binding remains open; the effort
+estimate is unchanged at approximately 50% complete / 50% remaining.
+
+[Bounded SDK source-path preflight](docs/RA3EP1_SDK_SOURCE_PATH_PREFLIGHT.md).
 `sdk-source-preflight` adds reachable Include attribution and optional explicit
 ART/AUDIO roots without compiling or reading resource payloads. A real global.xml
 audit visited 396 XML documents and retained 664 Include edges without hitting a cap.

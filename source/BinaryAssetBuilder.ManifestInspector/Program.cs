@@ -216,6 +216,14 @@ internal static class Program
                 return 0;
             }
             // Reborn: bounded diagnostic Include build publishes only a new verified directory and never enables production/cache policies.
+            // Reborn: expose staged file-field declaration evidence separately from source-path completeness.
+            if (args.FirstOrDefault() is "sdk-file-reference-catalog" or "sdk-file-reference-catalog-self-test")
+            {
+                if (args.Length != 1) throw new ArgumentException("File-reference catalog commands take no arguments; the staged schema root is explicit in the report.");
+                if (args[0] == "sdk-file-reference-catalog-self-test") SdkFileReferenceCatalogSmokeTest.Run();
+                else Console.WriteLine(JsonSerializer.Serialize(SdkFileReferenceCatalog.Inspect(),JsonOptions));
+                return 0;
+            }
             // Reborn: add explicit bounded source-path planning without changing the original environment-only command.
             if (args.FirstOrDefault() == "sdk-source-preflight")
             {
@@ -851,6 +859,9 @@ internal static class Program
         // Reborn: expose optional explicit ART/AUDIO roots and incomplete graph exit status separately from environment readiness.
         Console.WriteLine("  sdk-source-preflight ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
         Console.WriteLine("  sdk-source-preflight-self-test");
+        // Reborn: report declaration inventory without promising source binding or payload availability.
+        Console.WriteLine("  sdk-file-reference-catalog");
+        Console.WriteLine("  sdk-file-reference-catalog-self-test");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.
         Console.WriteLine("  diagnostic-build-self-test");
         Console.WriteLine("  diagnostic-audioevent-build-self-test [ep1-audio-manifest ...]");

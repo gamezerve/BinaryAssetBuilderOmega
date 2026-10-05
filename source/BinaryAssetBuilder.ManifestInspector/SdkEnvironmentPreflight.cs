@@ -76,7 +76,7 @@ internal static class SdkEnvironmentPreflight
     //-------------------------------------------------------------------------------------------------
     /** Reborn: enumerate only bounded XSD metadata with reparse checks before descent, including exact relative names and content hashes. */
     //-------------------------------------------------------------------------------------------------
-    private static Dictionary<string,string> Catalog(string root)
+    internal static Dictionary<string,string> Catalog(string root)
     {
         Dictionary<string,string> rows = new(StringComparer.OrdinalIgnoreCase); int directories = 0; long total = 0; Visit(root,0); return rows;
         //-------------------------------------------------------------------------------------------------
@@ -102,7 +102,7 @@ internal static class SdkEnvironmentPreflight
     //-------------------------------------------------------------------------------------------------
     /** Reborn: hash an ordered length-delimited metadata catalog, not an asserted EA AllTypesHash or production cache identity. */
     //-------------------------------------------------------------------------------------------------
-    private static string Digest(Dictionary<string,string> catalog)
+    internal static string Digest(Dictionary<string,string> catalog)
     {
         using MemoryStream bytes = new(); using BinaryWriter writer = new(bytes,Encoding.UTF8,true);
         foreach (var row in catalog.OrderBy(row => row.Key,StringComparer.Ordinal)) { writer.Write(row.Key); writer.Write(row.Value); }

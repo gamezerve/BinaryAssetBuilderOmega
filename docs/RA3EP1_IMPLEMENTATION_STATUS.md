@@ -5,6 +5,16 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-05)
 
+[Schema file-reference declarations](RA3EP1_SDK_FILE_REFERENCE_CATALOG.md) add
+namespace-aware FileReference/DataBlob restriction inventory: 17 declared fields,
+five DataBlob fields, 843 staged schemas. Both trailing-dot map Includes have
+normal XML counterparts; the searched Uprising reference/unpacked directories
+contain no matching audioassets XMLs or RA3EPMus.h. Extracted numbered WAVs and
+EnglishAudio compiled streams do not substitute for original AUDIO inputs.
+All 113 default groups and 33 enum checks pass. Effective inheritance, source
+instance typing and complete dependency closure remain open; weighted effort stays
+about 50%. The following source-path block is the prior milestone.
+
 [Bounded SDK source-path preflight](RA3EP1_SDK_SOURCE_PATH_PREFLIGHT.md) follows
 literal all/instance/reference Include paths and stats scoped ART/AUDIO literals
 and AudioFile File attributes. Real Uprising global.xml yielded 396 XML documents,

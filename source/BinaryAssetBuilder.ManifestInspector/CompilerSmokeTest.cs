@@ -58,6 +58,8 @@ internal static class CompilerSmokeTest
         TestSdkEnvironmentPreflight();
         // Reborn: source-path planning remains a separate bounded fixture from production dependency resolution.
         TestSdkSourcePathAudit();
+        // Reborn: typed declaration inventory is distinct from literal path graph and production dependency binding.
+        TestSdkFileReferenceCatalog();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2244,6 +2246,11 @@ internal static class CompilerSmokeTest
     /** Reborn: register the separate bounded source path audit in the measured compiler regression inventory. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkSourcePathAudit() => SdkSourcePathAuditSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: count and execute staged file-dependency declaration regressions without validating or compiling source instances. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkFileReferenceCatalog() => SdkFileReferenceCatalogSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */
