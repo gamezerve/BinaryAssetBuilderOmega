@@ -48,6 +48,8 @@ internal static class CompilerSmokeTest
         TestAudioFileSerialization();
         // Reborn: authored AudioFile inputs must pass official schema, PCM and immutable current-source gates before optional native work.
         TestAudioFileInput();
+        // Reborn: experimental duration preparation is managed-only and cannot widen existing audio worker/package admission.
+        TestAudioDurationCandidate();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2209,6 +2211,11 @@ internal static class CompilerSmokeTest
     /** Reborn: test narrow authored audio input preparation without executing native codecs or enabling production output. */
     //-------------------------------------------------------------------------------------------------
     private static void TestAudioFileInput() => Ep1AudioFileInputSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: test bounded candidate PCM duration separately from the canonical production/core admission profile. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestAudioDurationCandidate() => AudioDurationCandidateSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

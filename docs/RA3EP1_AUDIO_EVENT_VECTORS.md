@@ -97,6 +97,10 @@ audio payload integration; it does not interpret event selection/playback behavi
 
 ## Remaining work
 
+The next [bounded duration preparation milestone](RA3EP1_AUDIO_DURATION_CANDIDATE.md)
+adds a separate managed-only candidate API; existing native/package commands remain
+canonical 250 ms. This report's 107-group/native evidence is its historical snapshot.
+
 Next broaden the canonical 250 ms mono WAV profile through separate bounded duration/
 channel/rate/codec experiments and exact native/runtime/custom reconstruction. Do
 not widen production plugin admission merely because longer Sound lists serialize.

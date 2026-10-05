@@ -3,6 +3,17 @@
 This branch starts the migration with a read-only compatibility gate. It does
 not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
+## Latest bounded milestone (2026-10-05)
+
+[Explicit audio duration candidate preparation](RA3EP1_AUDIO_DURATION_CANDIDATE.md)
+adds a managed-only 250 ms..2 s PCM profile behind a separate API. Exact RIFF/data
+lengths determine sample totals; immutable revalidation retains the admission mode.
+The existing canonical API/core/worker/package commands still require 250 ms.
+No longer-duration native codec or game compatibility claim is made. All 108
+default compiler groups and 33 enum checks pass; current inventory is 785/1,390
+models and 762/1,390 typed marshallers. Weighted effort remains about 50% complete.
+The October 1 block below is a dated historical snapshot, not the current counters.
+
 ## Progress snapshot (2026-10-01)
 
 The current conservative engineering estimate is **50% complete / 50%
