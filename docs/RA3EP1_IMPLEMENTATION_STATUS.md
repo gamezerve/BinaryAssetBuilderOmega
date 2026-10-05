@@ -5,6 +5,15 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-05)
 
+[Reviewed hook admission](RA3EP1_SDK_REVIEWED_HOOKS.md) introduces only an explicit
+exact-candidate/two-warning policy with effective attribute and authored-hook
+rejection probes. Real global.xml and BasePathMusicEvent.xml bind successfully;
+16 effective file attributes are available. Warnings remain present, clean-schema
+status remains false, and no source Include/payload or processor/game closure is
+claimed. All 116 default groups and 33 enum checks pass. Reference/default gates
+remain unchanged. Weighted effort stays approximately 50.25% (rounded 50%); the
+following pinned candidate block is the prior milestone.
+
 [Pinned Shield schema candidate](RA3EP1_SDK_SHIELD_CANDIDATE.md) removes only the
 reviewed second duplicate in captured memory. The 837-XSD candidate structurally
 compiles with zero errors and two warnings at W3D VertexData/PathMusic Handle.

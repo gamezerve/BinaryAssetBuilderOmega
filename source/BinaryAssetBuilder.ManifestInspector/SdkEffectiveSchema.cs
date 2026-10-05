@@ -14,15 +14,17 @@ internal static class SdkEffectiveSchema
     internal sealed record BoundField(string OwnerType,string Kind,string Name,string LogicalPath);
     internal sealed record Binding(string SourcePath,string SourceSha256,bool XmlValidated,BoundField[] Fields,string[] Errors);
     internal sealed record Report(string SchemaRoot,string SchemaCatalogSha256,int IncludedFiles,bool SchemaEngineCompiled,bool SchemaCompiled,Field[] EffectiveFileAttributes,string[] Errors,string[] Warnings,
-        string CandidateProfile,string CandidateCatalogSha256,SdkShieldSchemaCandidate.Change[] Changes,string? RequestedSource,Binding? SourceBinding,bool ReadOnly,bool SnapshotOnly,bool FullDependencyCoverage,bool ProductionBuildReady,string[] Limitations);
+        string CandidateProfile,string CandidateCatalogSha256,SdkShieldSchemaCandidate.Change[] Changes,bool SchemaAdmitted,string WarningPolicy,string[] WarningReviewChecks,string? RequestedSource,Binding? SourceBinding,bool ReadOnly,bool SnapshotOnly,bool FullDependencyCoverage,bool ProductionBuildReady,string[] Limitations);
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: fingerprint the staged catalog and compile its CnC3Types Include closure without registry/settings/native compiler operations. */
     //-------------------------------------------------------------------------------------------------
-    internal static Report Inspect(string? source = null,bool shieldCandidate = false)
+    internal static Report Inspect(string? source = null,bool shieldCandidate = false,bool reviewHooks = false)
     {
         // Reborn: reject unsupported physical source syntax even when a schema error would otherwise skip source binding.
         source = source == null ? null : SdkEnvironmentPreflight.Absolute(source);
+        // Reborn: reviewed warnings are available only with the explicit pinned Shield candidate, never on arbitrary/default schema evidence.
+        if (reviewHooks && !shieldCandidate) throw new ArgumentException("Dummy-hook review requires the explicit Shield candidate.");
         string root = SdkEnvironmentPreflight.BaselineSchemaRoot(); var catalog = SdkEnvironmentPreflight.Catalog(root);
         Dictionary<string,byte[]> snapshots = new(StringComparer.OrdinalIgnoreCase);
         foreach (var row in catalog)
@@ -35,15 +37,19 @@ internal static class SdkEffectiveSchema
         var changes = shieldCandidate ? new[] { SdkShieldSchemaCandidate.Apply(snapshots) } : Array.Empty<SdkShieldSchemaCandidate.Change>();
         var candidateCatalog = snapshots.ToDictionary(row => row.Key,row => Convert.ToHexString(SHA256.HashData(row.Value)),StringComparer.OrdinalIgnoreCase);
         var evidence = Compile(snapshots,"cnc3types.xsd");
+        // Reborn: keep clean-schema status separate from explicitly reviewed diagnostic admission; warnings remain visible.
+        string candidateDigest = SdkEnvironmentPreflight.Digest(candidateCatalog);
+        string[] checks = reviewHooks ? SdkSchemaHookReview.Review(evidence,candidateDigest) : Array.Empty<string>();
+        bool admitted = evidence.Compiled || reviewHooks;
         var after = SdkEnvironmentPreflight.Catalog(root);
         if (after.Count != catalog.Count || catalog.Any(row => !after.TryGetValue(row.Key,out string? hash) || hash != row.Value)) throw new InvalidDataException("Effective schema catalog changed during inspection.");
         return new(root,SdkEnvironmentPreflight.Digest(catalog),evidence.IncludedFiles,evidence.EngineCompiled,evidence.Compiled,
-            evidence.Compiled ? Attributes(evidence.Schemas) : Array.Empty<Field>(),evidence.Errors,evidence.Warnings,
-            shieldCandidate ? SdkShieldSchemaCandidate.Profile : "unmodified",SdkEnvironmentPreflight.Digest(candidateCatalog),changes,
-            source,evidence.Compiled && source != null ? Bind(evidence.Schemas,source,SdkEnvironmentPreflight.Read(source,4*1048576)) : null,true,true,false,false,new[] {
+            admitted ? Attributes(evidence.Schemas) : Array.Empty<Field>(),evidence.Errors,evidence.Warnings,
+            shieldCandidate ? SdkShieldSchemaCandidate.Profile : "unmodified",candidateDigest,changes,admitted,reviewHooks ? SdkSchemaHookReview.Policy : "none",checks,
+            source,admitted && source != null ? Bind(evidence.Schemas,source,SdkEnvironmentPreflight.Read(source,4*1048576)) : null,true,true,false,false,new[] {
                 "A named diagnostic normalization candidate is not the official catalog, EA type table or an approved production schema.",
-                "SchemaEngineCompiled is structural engine status; SchemaCompiled additionally requires zero errors and zero warnings before publishing trusted fields/bindings.",
-                "Source binding is skipped when schema compilation fails; effective attributes then remain empty, not complete.",
+                "SchemaCompiled requires zero diagnostics; SchemaAdmitted allows only a separately named fingerprint-pinned/probed warning review. Warnings are never removed.",
+                "Source binding is skipped when schema admission fails; effective attributes then remain empty, not complete.",
                 "Effective global named-type attributes and one validated source only; no Include traversal, payload resolution, asset inheritance or full dependency closure.",
                 "Diagnostic declaration URIs identify in-memory schema provenance, not physical files opened at those URIs.",
                 "Captured bytes/consecutive catalog checks are snapshot-only; no atomic filesystem or EA AllTypesHash/game-load proof." });

@@ -64,6 +64,8 @@ internal static class CompilerSmokeTest
         TestSdkEffectiveSchema();
         // Reborn: diagnostic schema normalization must remain fingerprint-pinned and distinct from reference evidence.
         TestSdkShieldSchemaCandidate();
+        // Reborn: exact reviewed warning admission must not become a production or generic ignore-warnings gate.
+        TestSdkSchemaHookReview();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2265,6 +2267,11 @@ internal static class CompilerSmokeTest
     /** Reborn: test the explicit Shield schema candidate without altering the default strict/reference gate. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkShieldSchemaCandidate() => SdkShieldSchemaCandidateSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: test explicit fingerprint/probe-based schema warning admission separately from clean/default schema compilation. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkSchemaHookReview() => SdkSchemaHookReviewSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

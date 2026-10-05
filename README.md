@@ -20,18 +20,28 @@ is not a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**115 test groups** (some contain several fixtures). These counters can grow
+**116 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate regressions add groups and all 115 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review regressions add groups and all 116 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Pinned in-memory Shield schema candidate](docs/RA3EP1_SDK_SHIELD_CANDIDATE.md).
+Latest milestone: [Reviewed dummy-hook schema admission](docs/RA3EP1_SDK_REVIEWED_HOOKS.md).
+`sdk-reviewed-schema-candidate` admits diagnostic binding only for the exact pinned
+Shield candidate and two exact VertexData/Handle warnings after effective-attribute
+and positive/negative source probes. Warnings remain visible; clean-schema status
+remains false. Real global.xml and BasePathMusicEvent.xml validate; the latter binds
+its AUDIO PathfinderEventHeader. The 16 effective file attributes do not prove payload
+availability, complete Include closure or processor readiness. All 116 default groups
+and 33 enum checks pass. Default/unreviewed gates and reference inputs are unchanged.
+Overall weighted effort remains approximately 50.25%, rounded to 50%.
+
+[Pinned in-memory Shield schema candidate](docs/RA3EP1_SDK_SHIELD_CANDIDATE.md).
 `sdk-shield-schema-candidate` removes only the fingerprint-reviewed second Shield
 definition in captured memory and records separate original/candidate digests.
 The 837-XSD candidate now structurally compiles with zero errors and two prohibition
