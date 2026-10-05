@@ -54,6 +54,8 @@ internal static class CompilerSmokeTest
         TestAudioDurationPool();
         // Reborn: mixed duration event closure uses synthetic compressed bodies in default tests, never native codecs.
         TestAudioDurationEvent();
+        // Reborn: SDK planning must validate explicit EP1 metadata without writing outputs or changing legacy discovery/settings.
+        TestSdkEnvironmentPreflight();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2230,6 +2232,11 @@ internal static class CompilerSmokeTest
     /** Reborn: verify selected duration fingerprints and mixed package tables with real core processing and synthetic audio. */
     //-------------------------------------------------------------------------------------------------
     private static void TestAudioDurationEvent() => AudioDurationEventSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: prove target-aware read-only SDK path/schema/manifest environment admission independently of production build readiness. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkEnvironmentPreflight() => SdkEnvironmentPreflightSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

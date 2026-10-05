@@ -5,6 +5,14 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-05)
 
+[Explicit SDK environment preflight](RA3EP1_SDK_ENVIRONMENT_PREFLIGHT.md) adds a
+read-only target-aware path/schema/manifest gate and PowerShell wrapper. Real
+external Uprising global.xml and global/static manifest checks pass without creating
+output or using registry discovery. Schema catalog parity is not compiler/type-table
+readiness; Includes, full source graph, production processors and game loading remain
+open. All 111 default groups and 33 enum checks pass; inventory and approximate 50%
+weighted effort are unchanged. The following audio blocks are prior milestones.
+
 [Duration AudioEvent mixed packages](RA3EP1_AUDIO_DURATION_EVENT.md) add explicit
 version-2 event source admission. Singleton, late/reversed subset and all-eight
 maximum streamed selections passed real XAS/parent/two-reader proofs, including

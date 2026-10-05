@@ -216,6 +216,14 @@ internal static class Program
                 return 0;
             }
             // Reborn: bounded diagnostic Include build publishes only a new verified directory and never enables production/cache policies.
+            if (args.FirstOrDefault() == "sdk-preflight")
+            {
+                // Reborn: inspect explicit roots and target metadata only; never execute the reference SDK batch files or production compiler.
+                if (args.Length < 6) throw new ArgumentException("sdk-preflight ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [absolute.manifest=runtime.manifest ...]");
+                Console.WriteLine(JsonSerializer.Serialize(SdkEnvironmentPreflight.Inspect(args[1],args[2],args[3],args[4],args[5],args.Skip(6).ToArray()),JsonOptions)); return 0;
+            }
+            // Reborn: standalone environment tests use owned fixtures and never launch native codecs or the legacy SDK.
+            if (args.FirstOrDefault() == "sdk-preflight-self-test") { CompilerSmokeTest.InitializeHashProvider(); SdkEnvironmentPreflightSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() == "diagnostic-build")
             {
                 if (args.Length < 3) throw new ArgumentException("diagnostic-build <source.xml> <new-output-directory> [physical.manifest=runtime.manifest ...]");
@@ -813,6 +821,9 @@ internal static class Program
         Console.WriteLine("  modifier-shader-stream-self-test");
         // Reborn: admitted Include graphs and explicit runtime mappings are bounded diagnostic inputs, not a full SDK build.
         Console.WriteLine("  diagnostic-build <source.xml> <new-output-directory> [physical.manifest=runtime.manifest ...]");
+        // Reborn: SDK planning is explicitly target-aware/read-only and separate from diagnostic or production compilation.
+        Console.WriteLine("  sdk-preflight ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [absolute.manifest=runtime.manifest ...]");
+        Console.WriteLine("  sdk-preflight-self-test");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.
         Console.WriteLine("  diagnostic-build-self-test");
         Console.WriteLine("  diagnostic-audioevent-build-self-test [ep1-audio-manifest ...]");

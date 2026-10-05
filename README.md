@@ -16,18 +16,28 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**110 test groups** (some contain several fixtures). These counters can grow
+**111 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool regressions add groups and all 110 groups
+worker supervision/authored snapshot/pool regressions add groups and all 111 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Supervised duration AudioEvent mixed packages](docs/RA3EP1_AUDIO_DURATION_EVENT.md).
+Latest milestone: [Explicit target-aware SDK environment preflight](docs/RA3EP1_SDK_ENVIRONMENT_PREFLIGHT.md).
+`sdk-preflight` and `scripts/Test-Ra3Ep1SdkEnvironment.ps1` validate explicit EP1
+schema/source/output paths and external manifest mappings without registry fallback,
+builder launch or output writes. The staged 843-XSD byte catalog must match; wrong
+targets/custom schemas, overlap, DTDs, traversal, patch bases and oversized metadata
+reject. Real external Uprising global.xml and global/static manifest preflight passed
+with output still absent. All 111 managed groups and 33 enum checks pass. This is
+snapshot-only metadata planning, not Include resolution, production build readiness
+or a usable Uprising SDK. The overall effort estimate remains about 50%.
+
+[Supervised duration AudioEvent mixed packages](docs/RA3EP1_AUDIO_DURATION_EVENT.md).
 The new `supervised-audio-duration-event` command freezes version-2 duration leaves
 plus event.xml. Singleton, late/reversed subset and all-eight maximum streamed
 selections pass actual core/native XAS, independent parent reconstruction and both
