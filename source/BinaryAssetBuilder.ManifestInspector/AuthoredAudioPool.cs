@@ -76,9 +76,7 @@ internal sealed class AuthoredAudioPool
         {
             if (item.ValueKind != JsonValueKind.String) throw new InvalidDataException("Audio pool sources must be literal XML leaf names.");
             string source = item.GetString()!;
-            if (!source.EndsWith(".xml",StringComparison.Ordinal) || source.Length > 100) throw new InvalidDataException("Audio pool requires bounded .xml leaf names.");
-            AudioFileDiagnosticIdentity.Validate(source[..^4]);
-            ValidateDeviceLeaf(source);
+            ValidateSource(source);
             if (!names.Add(source)) throw new InvalidDataException("Audio pool repeats a source name or case alias.");
             byte[] bytes = ReadFile(Path.Combine(directory,source),8192); files.Add(source,bytes);
             XmlElement audio = Definition(bytes);
@@ -136,6 +134,15 @@ internal sealed class AuthoredAudioPool
     /** Reborn: derive a bounded file limit only for the inventory or already validated source/dependency leaf. */
     //-------------------------------------------------------------------------------------------------
     private static int Limit(string name) => name == "audio-pool.json" ? 4096 : name.EndsWith(".xml",StringComparison.Ordinal) ? 8192 : 24044;
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: share the exact bounded source-leaf contract with immutable variable package records. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void ValidateSource(string source)
+    {
+        if (!source.EndsWith(".xml",StringComparison.Ordinal) || source.Length > 100) throw new InvalidDataException("Audio pool requires bounded .xml leaf names.");
+        AudioFileDiagnosticIdentity.Validate(source[..^4]); ValidateDeviceLeaf(source);
+    }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: ordinary ASCII leaf syntax must not open a Windows reserved device, including names with additional extensions. */

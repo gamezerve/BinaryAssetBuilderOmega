@@ -109,6 +109,11 @@ readbacks in job suffix `6815705727d14c9a8109462042ff595d`.
 
 ## Next gate
 
+October 5 update: [variable leaf-only package publication](RA3EP1_AUDIO_POOL_PACKAGE.md)
+now implements the dynamic linked-table gate below through a separate explicit
+worker mode. This report's historical raw-mode evidence remains unchanged; raw
+commands still do not publish packages. Selected AudioEvent references remain open.
+
 Generalize diagnostic package admission separately: immutable variable-source leaf
 records with explicit play location, 1–8 ordered unique identities, dynamic linked
 manifest/bin/relo/imp tables, and custom payload identity/readback through both

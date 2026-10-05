@@ -29,6 +29,8 @@ internal static class CompilerSmokeTest
         TestAuthoredAudioPool();
         // Reborn: variable pool transport and acceptance run real managed workers, never native codecs in default tests.
         TestAudioPoolWorker();
+        // Reborn: bounded variable package tables are tested with synthetic compressed bodies, never codecs by default.
+        TestAudioPoolPackage();
         TestAttributeModifier();
         // Reborn: exercise isolated EP1 sound records while retaining the legacy child ABI.
         TestMultisoundNative();
@@ -2256,6 +2258,11 @@ internal static class CompilerSmokeTest
     /** Reborn: independently verify variable pool worker evidence and negative acceptance boundaries. */
     //-------------------------------------------------------------------------------------------------
     private static void TestAudioPoolWorker() => AudioPoolWorkerSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: validate variable leaf-only package cardinality/order and both linked stream readers. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestAudioPoolPackage() => AudioPoolPackageSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: guard custom block envelopes separately from native ABI and codec processing. */

@@ -94,7 +94,8 @@ hash goldens. Native encoding was not executed for the variable pool in this mil
 [Supervised variable raw encoding](RA3EP1_AUDIO_POOL_WORKER.md) now binds the pool
 to explicit managed/native child modes and independently checks each raw leaf.
 The historical preflight evidence above remains managed-only. Dynamic package
-publication and selected event references are still pending.
+publication is now covered by the separate [variable package milestone](RA3EP1_AUDIO_POOL_PACKAGE.md).
+Selected event references are still pending.
 
 Keep the fixed supervised encoder separate. Next generalize dynamic package
 record/reference/import tables and test missing/reordered/duplicate/tampered results

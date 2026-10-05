@@ -25,6 +25,10 @@ internal static class Program
             // Reborn: separate opt-in pool worker modes retain the fixed encoder path and do not emit package/event graphs.
             if (args.FirstOrDefault() == "supervised-audio-pool-preflight" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(Path.Combine(Path.GetTempPath(),"unused-native-library.dll"),"preflight-pool",pool:AuthoredAudioPool.Read(args[1])); return 0; }
             if (args.FirstOrDefault() == "supervised-audio-pool-encode" && args.Length == 3) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(args[1],"encode-pool",pool:AuthoredAudioPool.Read(args[2])); return 0; }
+            // Reborn: variable package publication is explicit and leaf-only, never an implicit extension of raw/event commands.
+            if (args.FirstOrDefault() == "supervised-audio-pool-package" && args.Length == 3) { CompilerSmokeTest.InitializeHashProvider(); AudioEncoderSupervisor.Run(args[1],"encode-pool-package",pool:AuthoredAudioPool.Read(args[2])); return 0; }
+            if (args.FirstOrDefault() == "audio-pool-package-native-proof" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioPoolWorkerSmokeTest.NativeProof(args[1],true); return 0; }
+            if (args.FirstOrDefault() == "audio-pool-package-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioPoolPackageSmokeTest.Run(); return 0; }
             // Reborn: pool worker/native regression entry points are explicit and mutate only freshly owned fixtures.
             if (args.FirstOrDefault() == "audio-pool-worker-self-test") { CompilerSmokeTest.InitializeHashProvider(); AudioPoolWorkerSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() == "audio-pool-native-proof" && args.Length == 2) { CompilerSmokeTest.InitializeHashProvider(); AudioPoolWorkerSmokeTest.NativeProof(args[1]); return 0; }
@@ -868,6 +872,10 @@ internal static class Program
         // Reborn: variable raw encoding is supervised/opt-in, separate from managed preflight and fixed package proofs.
         Console.WriteLine("  supervised-audio-pool-preflight <source-directory>");
         Console.WriteLine("  supervised-audio-pool-encode <absolute-audited-audio.dll> <source-directory>");
+        // Reborn: leaf-only variable packages are opt-in and tested separately from raw encoding.
+        Console.WriteLine("  supervised-audio-pool-package <absolute-audited-audio.dll> <source-directory>");
+        Console.WriteLine("  audio-pool-package-native-proof <absolute-audited-audio.dll>");
+        Console.WriteLine("  audio-pool-package-self-test");
         Console.WriteLine("  audio-pool-worker-self-test");
         Console.WriteLine("  audio-pool-native-proof <absolute-audited-audio.dll>");
         Console.WriteLine("  audio-archive-compare <unpacked-ep1-manifest> <original-EnglishAudio.big>");

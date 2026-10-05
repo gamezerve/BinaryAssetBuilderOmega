@@ -29,9 +29,9 @@ internal static class AudioEncoderSupervisor
     //-------------------------------------------------------------------------------------------------
     internal static string Run(string library,string mode = "encode",int timeoutMs = 30000,Action<string>? jobCreated = null,AuthoredAudioSnapshot? authored = null,AuthoredAudioPool? pool = null)
     {
-        if (mode != "encode" && mode is not ("encode-authored" or "encode-authored-event" or "encode-pool" or "preflight-pool") && !TestModes.Contains(mode,StringComparer.Ordinal) && !NativeTestModes.Contains(mode,StringComparer.Ordinal)) throw new ArgumentException("Unknown supervised worker mode.");
+        if (mode != "encode" && mode is not ("encode-authored" or "encode-authored-event" or "encode-pool" or "preflight-pool" or "encode-pool-package") && !TestModes.Contains(mode,StringComparer.Ordinal) && !NativeTestModes.Contains(mode,StringComparer.Ordinal)) throw new ArgumentException("Unknown supervised worker mode.");
         // Reborn: pool input is a separate explicit mode and cannot be mixed with the fixed authored snapshot contract.
-        if ((mode is "encode-pool" or "preflight-pool") != (pool != null) || (pool != null && authored != null)) throw new InvalidDataException("Pool mode requires an exclusive validated pool snapshot.");
+        if ((mode is "encode-pool" or "preflight-pool" or "encode-pool-package") != (pool != null) || (pool != null && authored != null)) throw new InvalidDataException("Pool mode requires an exclusive validated pool snapshot.");
         if ((mode is "encode-authored" or "encode-authored-event") != (authored != null)
             || (mode == "encode-authored-event") != (authored?.EventName != null)) throw new InvalidDataException("Authored mode requires a matching validated input snapshot.");
         if (timeoutMs is < 100 or > 30000) throw new ArgumentOutOfRangeException(nameof(timeoutMs));
@@ -70,12 +70,12 @@ internal static class AudioEncoderSupervisor
         if (timedOut) throw new InvalidDataException("Audio worker timed out; partial evidence retained, no acceptance.");
         if (process.ExitCode != 0) throw new InvalidDataException($"Audio worker exit={process.ExitCode}; partial evidence retained, no acceptance.");
         if (stdout.Result.Overflow || stderr.Result.Overflow) throw new InvalidDataException("Audio worker log limit exceeded; no acceptance.");
-        ValidateResult(job,nonce,authored,pool,mode == "encode-pool");
+        ValidateResult(job,nonce,authored,pool,mode is "encode-pool" or "encode-pool-package",mode == "encode-pool-package");
         // Reborn: worker success cannot authorize a stale caller source; reread original inputs before acceptance without writing them.
         authored?.VerifyCurrent();
         pool?.VerifyCurrent();
         WriteNew(Path.Combine(job,"ACCEPTED.json"),JsonSerializer.SerializeToUtf8Bytes(new { Version = ProtocolVersion,Nonce = nonce,DiagnosticOnly = true },JsonOptions));
-        Console.WriteLine(pool == null ? "Supervised audio: ACCEPTED (exit=0, bounded protocol/hash inventory and independent package/core readback; diagnostic only)." : "Supervised pool: ACCEPTED (bounded inventory and parent core/raw-evidence readback; no package/event/production admission).");
+        Console.WriteLine(pool == null ? "Supervised audio: ACCEPTED (exit=0, bounded protocol/hash inventory and independent package/core readback; diagnostic only)." : mode == "encode-pool-package" ? "Supervised pool package: ACCEPTED (parent core/raw and two-reader variable package verification; no event/production/game-load admission)." : "Supervised pool: ACCEPTED (bounded inventory and parent core/raw-evidence readback; no package/event/production admission).");
         return job;
     }
 
@@ -87,7 +87,7 @@ internal static class AudioEncoderSupervisor
         job = Path.GetFullPath(job);
         if (!Guid.TryParseExact(nonce,"N",out _) || job != Path.Combine(Path.GetTempPath(),Prefix+nonce)) throw new InvalidDataException("Worker job root/nonce differs.");
         Request request = ReadJson<Request>(Path.Combine(job,"request.json"));
-        if (request.Version != ProtocolVersion || request.Nonce != nonce || (request.Mode != "encode" && request.Mode is not ("encode-authored" or "encode-authored-event" or "encode-pool" or "preflight-pool") && !TestModes.Contains(request.Mode,StringComparer.Ordinal) && !NativeTestModes.Contains(request.Mode,StringComparer.Ordinal))) throw new InvalidDataException("Worker request differs.");
+        if (request.Version != ProtocolVersion || request.Nonce != nonce || (request.Mode != "encode" && request.Mode is not ("encode-authored" or "encode-authored-event" or "encode-pool" or "preflight-pool" or "encode-pool-package") && !TestModes.Contains(request.Mode,StringComparer.Ordinal) && !NativeTestModes.Contains(request.Mode,StringComparer.Ordinal))) throw new InvalidDataException("Worker request differs.");
         AuthoredAudioSnapshot? authored = null;
         if (request.Mode is "encode-authored" or "encode-authored-event")
         {
@@ -96,7 +96,7 @@ internal static class AudioEncoderSupervisor
             int count = request.Mode == "encode-authored-event" ? 4 : 3;
             if (request.Inputs == null || request.Inputs.Length != count || actualInputs.Length != count || actualInputs.Any(item => !request.Inputs.Contains(item))) throw new InvalidDataException("Worker authored snapshot inventory differs.");
         }
-        else if (request.Mode is "encode-pool" or "preflight-pool")
+        else if (request.Mode is "encode-pool" or "preflight-pool" or "encode-pool-package")
         {
             // Reborn: pool cardinality is bounded independently, and complete request evidence must match before any codec launch.
             Item[] actual = Inventory(Path.Combine(job,"inputs"));
@@ -121,12 +121,12 @@ internal static class AudioEncoderSupervisor
         }
         CompilerSmokeTest.InitializeHashProvider();
         // Reborn: isolated pool modes never enter fixed two-leaf/event packaging and write completion only after normal shutdown.
-        if (request.Mode is "encode-pool" or "preflight-pool")
+        if (request.Mode is "encode-pool" or "preflight-pool" or "encode-pool-package")
         {
             var pool = AuthoredAudioPool.Read(Path.Combine(job,"inputs"));
             if (pool.FileNames.Length != request.Inputs!.Length) throw new InvalidDataException("Worker pool has unlisted input files.");
-            AudioEncoderPoc.RunPool(request.Library,work,pool,request.Mode == "encode-pool");
-            WriteNew(result,JsonSerializer.SerializeToUtf8Bytes(new Result(ProtocolVersion,nonce,Inventory(work)),JsonOptions)); return;
+            AudioEncoderPoc.RunPool(request.Library,work,pool,request.Mode != "preflight-pool",request.Mode == "encode-pool-package");
+            WriteNew(result,JsonSerializer.SerializeToUtf8Bytes(new Result(ProtocolVersion,nonce,Inventory(work,request.Mode == "encode-pool-package" ? 80 : 64)),JsonOptions)); return;
         }
         // Reborn: input validation needs the managed symbol tables, never the native codec; synthetic transport failures above bypass this branch.
         authored = request.Mode is "encode-authored" or "encode-authored-event" ? AuthoredAudioSnapshot.Read(Path.Combine(job,"inputs"),request.Mode == "encode-authored-event") : null;
@@ -168,12 +168,14 @@ internal static class AudioEncoderSupervisor
     //-------------------------------------------------------------------------------------------------
     /** Reborn: reject forged paths/inventories, then rehash every bounded artifact and reconstruct both diagnostic packages without loading codecs. */
     //-------------------------------------------------------------------------------------------------
-    internal static void ValidateResult(string job,string nonce,AuthoredAudioSnapshot? authored = null,AuthoredAudioPool? pool = null,bool poolEncoded = false)
+    internal static void ValidateResult(string job,string nonce,AuthoredAudioSnapshot? authored = null,AuthoredAudioPool? pool = null,bool poolEncoded = false,bool poolPackaged = false)
     {
         string result = Path.Combine(job,"result.json"),work = Path.Combine(job,"worker");
         if (!File.Exists(result)) throw new InvalidDataException("Audio worker missing result; no acceptance.");
         Result value = ReadJson<Result>(result);
-        if (value.Version != ProtocolVersion || value.Nonce != nonce || value.Files == null || value.Files.Length is < 1 or > 64) throw new InvalidDataException("Worker result nonce/version/inventory differs.");
+        // Reborn: only the explicit packaged pool gets 80 files; all older worker/result paths retain their 64-file bound.
+        int fileLimit = pool != null && poolPackaged ? 80 : 64;
+        if (value.Version != ProtocolVersion || value.Nonce != nonce || value.Files == null || value.Files.Length < 1 || value.Files.Length > fileLimit) throw new InvalidDataException("Worker result nonce/version/inventory differs.");
         HashSet<string> paths = new(StringComparer.OrdinalIgnoreCase);
         foreach (Item item in value.Files)
         {
@@ -184,10 +186,10 @@ internal static class AudioEncoderSupervisor
             string resolved = Path.GetFullPath(Path.Combine(work,item.Path));
             if (!resolved.StartsWith(work+Path.DirectorySeparatorChar,StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Worker result escapes owned root.");
         }
-        Item[] actual = Inventory(work);
+        Item[] actual = Inventory(work,fileLimit);
         if (actual.Length != value.Files.Length || actual.Any(item => !value.Files.Contains(item))) throw new InvalidDataException("Worker artifact inventory/hash differs.");
         // Reborn: variable pool results require the parent's original frozen inventory, not a child-reported source list.
-        if (pool != null) { pool.VerifyCopies(Path.Combine(job,"inputs")); AudioPoolResultGate.Verify(work,pool,poolEncoded); return; }
+        if (pool != null) { pool.VerifyCopies(Path.Combine(job,"inputs")); AudioPoolResultGate.Verify(work,pool,poolEncoded,poolPackaged); return; }
         authored?.VerifyCopies(work);
         if (authored != null) authored.VerifyCopies(Path.Combine(job,"inputs"));
         var entries = new[] { Entry(false),Entry(true) };
@@ -241,8 +243,10 @@ internal static class AudioEncoderSupervisor
     //-------------------------------------------------------------------------------------------------
     /** Reborn: inventory only shallow non-reparse owned evidence; bound files, directories and aggregate bytes before hashing. */
     //-------------------------------------------------------------------------------------------------
-    internal static Item[] Inventory(string work)
+    internal static Item[] Inventory(string work,int fileLimit = 64)
     {
+        // Reborn: prevent arbitrary limit expansion while accommodating at most 71 packaged eight-streamed/distinct artifacts.
+        if (fileLimit is not (64 or 80)) throw new InvalidDataException("Unsupported worker file bound.");
         List<Item> result = new(); int directories = 0; long total = 0; Visit(work,0); return result.OrderBy(item => item.Path,StringComparer.Ordinal).ToArray();
         //-------------------------------------------------------------------------------------------------
         /** Reborn: inspect each directory before descending so symlinks cannot expand traversal beyond the owned tree. */
@@ -255,7 +259,7 @@ internal static class AudioEncoderSupervisor
             {
                 CheckPath(path);
                 if (Directory.Exists(path)) { Visit(path,depth+1); continue; }
-                if (result.Count == 64) throw new InvalidDataException("Worker artifact file bound exceeded.");
+                if (result.Count == fileLimit) throw new InvalidDataException("Worker artifact file bound exceeded.");
                 byte[] bytes = Read(path); total += bytes.Length; if (total > 4*1048576) throw new InvalidDataException("Worker artifact aggregate bound exceeded.");
                 result.Add(new(Path.GetRelativePath(work,path).Replace('\\','/'),bytes.Length,Convert.ToHexString(SHA256.HashData(bytes))));
             }

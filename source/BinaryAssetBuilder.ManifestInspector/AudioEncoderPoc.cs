@@ -118,8 +118,10 @@ internal static class AudioEncoderPoc
     //-------------------------------------------------------------------------------------------------
     /** Reborn: encode an explicit frozen pool in a disposable worker, retaining raw per-leaf evidence without generalizing package/event admission. */
     //-------------------------------------------------------------------------------------------------
-    internal static void RunPool(string path,string directory,AuthoredAudioPool pool,bool encode)
+    internal static void RunPool(string path,string directory,AuthoredAudioPool pool,bool encode,bool package = false)
     {
+        // Reborn: package requests are a separate native-only diagnostic mode.
+        if (package && !encode) throw new InvalidDataException("Pool package requires native encoding.");
         pool.Install(directory);
         string schema = Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"AudioFileIdentityPipeline.xsd");
         var rows = pool.Rows;
@@ -153,6 +155,8 @@ internal static class AudioEncoderPoc
         pool.VerifyCopies(directory); pool.VerifyCurrent();
         var metadata = rows.Select((row,index) => new AuthoredAudioPool.CoreRow(row.Source,row.Name,row.Id,cores[index].Handle.InstanceHash,row.Streamed)).ToArray();
         WriteOwned(Path.Combine(directory,"pool-core.json"),System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(metadata));
+        // Reborn: stage only after native shutdown and independent current-core/raw evidence reconstruction.
+        if (package) AudioPoolResultGate.Publish(directory,pool);
     }
 
     //-------------------------------------------------------------------------------------------------

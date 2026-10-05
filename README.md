@@ -1,7 +1,7 @@
 # BinaryAssetBuilder
 A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
-## Uprising progress — October 4, 2026
+## Uprising progress — October 5, 2026
 
 Active branch: `feature/ra3ep1-manifest-inspector`. This is not yet a usable
 Uprising Mod SDK release. Replacing XML/XSD files alone is insufficient:
@@ -16,25 +16,37 @@ moves from about 49% to 50%. Major type-table and in-game gates remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**103 test groups** (some contain several fixtures). These counters can grow
+**104 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool regressions add groups and all 103 groups
+worker supervision/authored snapshot/pool regressions add groups and all 104 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Supervised variable AudioFile raw encoding](docs/RA3EP1_AUDIO_POOL_WORKER.md).
+Latest milestone: [Supervised variable AudioFile packages](docs/RA3EP1_AUDIO_POOL_PACKAGE.md).
+`supervised-audio-pool-package <absolute-audited-audio.dll> <source-directory>`
+encodes the explicit 1–8-source pool and stages linked manifest/bin/relo/imp plus
+custom payloads. Actual source names and explicit RAM/streamed flags remain bound
+to parent-reconstructed core preparations. Both readers check dynamic order/offsets;
+exact package bytes and artifact membership must match before acceptance. Seven
+native cases (37 leaves), including reversed source order and eight distinct
+streamed dependencies, passed with matching-inventory corruption rejection.
+The old fixed package path also passed. This is leaf-only diagnostic publication;
+selected AudioEvent references and game loading remain open.
+
+[Supervised variable AudioFile raw encoding](docs/RA3EP1_AUDIO_POOL_WORKER.md).
 The explicit 1–8-source pool now has separate managed worker preflight and opt-in
 native XAS encoding commands. The parent reconstructs each core binding and checks
 copied sources, frozen PCM, exact runtime/relocations, custom framing, ordered core
 metadata and the complete output file set. Managed failure tests and real native
 singleton/mixed/eight-source shared/distinct proofs passed, including forged
 matching inventories with invalid contents. This publishes raw leaf evidence only;
-dynamic package tables and selected event references remain the next gate.
+dynamic package tables are now implemented through the separate package command;
+selected event references remain the next gate.
 The existing fixed two-source package/event encoder remains unchanged and passed.
 
 [Explicit variable AudioFile pool preflight](docs/RA3EP1_AUTHORED_AUDIO_POOL.md).
