@@ -19,7 +19,7 @@ internal static class SdkEffectiveSchema
     //-------------------------------------------------------------------------------------------------
     /** Reborn: fingerprint the staged catalog and compile its CnC3Types Include closure without registry/settings/native compiler operations. */
     //-------------------------------------------------------------------------------------------------
-    internal static Report Inspect(string? source = null,bool shieldCandidate = false,bool reviewHooks = false)
+    internal static Report Inspect(string? source = null,bool shieldCandidate = false,bool reviewHooks = false,Action<XmlSchemaSet>? onAdmitted = null)
     {
         // Reborn: reject unsupported physical source syntax even when a schema error would otherwise skip source binding.
         source = source == null ? null : SdkEnvironmentPreflight.Absolute(source);
@@ -43,6 +43,8 @@ internal static class SdkEffectiveSchema
         bool admitted = evidence.Compiled || reviewHooks;
         var after = SdkEnvironmentPreflight.Catalog(root);
         if (after.Count != catalog.Count || catalog.Any(row => !after.TryGetValue(row.Key,out string? hash) || hash != row.Value)) throw new InvalidDataException("Effective schema catalog changed during inspection.");
+        // Reborn: pass the exact reviewed compiled set to internal graph inspection only after catalog rechecks and admission; do not compile once per document.
+        if (admitted) onAdmitted?.Invoke(evidence.Schemas);
         return new(root,SdkEnvironmentPreflight.Digest(catalog),evidence.IncludedFiles,evidence.EngineCompiled,evidence.Compiled,
             admitted ? Attributes(evidence.Schemas) : Array.Empty<Field>(),evidence.Errors,evidence.Warnings,
             shieldCandidate ? SdkShieldSchemaCandidate.Profile : "unmodified",candidateDigest,changes,admitted,reviewHooks ? SdkSchemaHookReview.Policy : "none",checks,

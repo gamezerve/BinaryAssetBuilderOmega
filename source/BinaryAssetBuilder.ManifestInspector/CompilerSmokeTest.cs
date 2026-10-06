@@ -66,6 +66,8 @@ internal static class CompilerSmokeTest
         TestSdkShieldSchemaCandidate();
         // Reborn: exact reviewed warning admission must not become a production or generic ignore-warnings gate.
         TestSdkSchemaHookReview();
+        // Reborn: graph source snapshots and XML/resource/preprocessing states need independent bounded regressions.
+        TestSdkTypedSourceGraph();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2272,6 +2274,11 @@ internal static class CompilerSmokeTest
     /** Reborn: test explicit fingerprint/probe-based schema warning admission separately from clean/default schema compilation. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkSchemaHookReview() => SdkSchemaHookReviewSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: execute typed graph snapshot/resource/preprocessing regressions without production compilation. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkTypedSourceGraph() => SdkTypedSourceGraphSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

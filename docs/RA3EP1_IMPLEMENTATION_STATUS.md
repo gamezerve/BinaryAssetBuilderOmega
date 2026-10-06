@@ -3,7 +3,16 @@
 This branch starts the migration with a read-only compatibility gate. It does
 not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
-## Latest bounded milestone (2026-10-05)
+## Latest bounded milestone (2026-10-06)
+
+[Rechecked typed source graph](RA3EP1_SDK_TYPED_SOURCE_GRAPH.md) binds fresh
+reachable source snapshots to a single reviewed compiled schema. Real global.xml
+visits all 396 captured documents: 197 raw-valid, 194 inheritFrom preprocessing
+blocks, five expression-related raw schema failures, one unresolved typed AUDIO
+header path. The original six path issues remain separately visible. No limits,
+reference writes, payload reads or production output. All 117 default groups and
+33 enum checks pass. Weighted effort remains approximately 50.25%, rounded 50%;
+the following reviewed-hook block is the prior October 5 milestone.
 
 [Reviewed hook admission](RA3EP1_SDK_REVIEWED_HOOKS.md) introduces only an explicit
 exact-candidate/two-warning policy with effective attribute and authored-hook

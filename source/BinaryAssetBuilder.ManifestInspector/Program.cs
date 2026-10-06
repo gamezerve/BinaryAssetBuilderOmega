@@ -238,7 +238,7 @@ internal static class Program
                 return 0;
             }
             // Reborn: add explicit bounded source-path planning without changing the original environment-only command.
-            if (args.FirstOrDefault() == "sdk-source-preflight")
+            if (args.FirstOrDefault() is "sdk-source-preflight" or "sdk-typed-source-graph")
             {
                 if (args.Length < 6) throw new ArgumentException("sdk-source-preflight ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
                 string? art = null,audio = null; List<string> mappings = new();
@@ -256,11 +256,20 @@ internal static class Program
                 }
                 var environment = SdkEnvironmentPreflight.Inspect(args[1],args[2],args[3],args[4],args[5],mappings.ToArray());
                 var paths = SdkSourcePathAudit.Inspect(environment,art,audio);
+                // Reborn: typed graph admission is explicit and preserves the original path-only command/report contract.
+                if (args[0] == "sdk-typed-source-graph")
+                {
+                    var typed = SdkTypedSourceGraph.Inspect(paths);
+                    Console.WriteLine(JsonSerializer.Serialize(new { environment.Target,ReadOnly = true,SnapshotOnly = true,ProductionBuildReady = false,Environment = environment,SourcePaths = paths,TypedSources = typed },JsonOptions));
+                    return typed.Graph.ScopedGraphComplete ? 0 : 2;
+                }
                 Console.WriteLine(JsonSerializer.Serialize(new { environment.Target,ReadOnly = true,SnapshotOnly = true,ProductionBuildReady = false,Environment = environment,SourcePaths = paths },JsonOptions));
                 return paths.ScopedPathAuditComplete ? 0 : 2;
             }
             // Reborn: run path-only fixtures without invoking codecs, builders or registry discovery.
             if (args.FirstOrDefault() == "sdk-source-preflight-self-test") { SdkSourcePathAuditSmokeTest.Run(); return 0; }
+            // Reborn: expose managed graph snapshot/type/resource regressions separately from production SDK builds.
+            if (args.FirstOrDefault() == "sdk-typed-source-graph-self-test") { SdkTypedSourceGraphSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() == "sdk-preflight")
             {
                 // Reborn: inspect explicit roots and target metadata only; never execute the reference SDK batch files or production compiler.
@@ -884,6 +893,9 @@ internal static class Program
         // Reborn: reviewed warning admission remains explicit, diagnostic and separate from clean/default schema status.
         Console.WriteLine("  sdk-reviewed-schema-candidate [absolute-source.xml]");
         Console.WriteLine("  sdk-reviewed-schema-candidate-self-test");
+        // Reborn: combine existing explicit path/root planning with rechecked reviewed-schema source bindings.
+        Console.WriteLine("  sdk-typed-source-graph ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
+        Console.WriteLine("  sdk-typed-source-graph-self-test");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.
         Console.WriteLine("  diagnostic-build-self-test");
         Console.WriteLine("  diagnostic-audioevent-build-self-test [ep1-audio-manifest ...]");
