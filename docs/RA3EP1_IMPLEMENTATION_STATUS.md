@@ -5,6 +5,16 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-06)
 
+[Core-backed local attribute inheritance PoC](RA3EP1_SDK_SELF_ATTRIBUTE_INHERITANCE.md)
+proves same-document/same-type leaf overlays through the existing NodeJoiner with
+raw identity, atomic rejection, semantic chain and pre-merge amplification bounds.
+The real graph is unchanged at 202 valid / 194 blocked. First blockers are child
+content in 191 documents and absent local bases in three; no real inherited
+document is newly admitted. General child/instance inheritance remains closed.
+All 121 default groups and 33 enum checks pass; reference bytes and missing path/
+resource gates remain unchanged, no output/game proof. Weighted effort stays about
+50.25%, rounded 50%. The definition-subset block below is the preceding milestone.
+
 [Bounded GlobalDefines expression subset](RA3EP1_SDK_DEFINITION_SUBSET.md) adds a
 separate explicit backward-alias/single-suffix/checked-integer-multiply-add profile.
 Real GlobalDefines resolves its five expression definitions (440/640 numeric

@@ -243,16 +243,18 @@ internal static class Program
                 if (args.Length < 6) throw new ArgumentException("sdk-source-preflight ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
                 string? art = null,audio = null; List<string> mappings = new();
                 // Reborn: diagnostic local literal expressions are never implicitly enabled for the path-only/default graph commands.
-                bool localDefines = false,includeDefines = false,definitionExpressions = false;
+                bool localDefines = false,includeDefines = false,definitionExpressions = false,selfAttributeInheritance = false;
                 for (int index = 6; index < args.Length; index++)
                 {
                     string option = args[index];
-                    if (option is "--local-defines" or "--include-defines" or "--definition-expressions")
+                    if (option is "--local-defines" or "--include-defines" or "--definition-expressions" or "--self-attribute-inheritance")
                     {
-                        if (args[0] != "sdk-typed-source-graph" || localDefines || includeDefines || definitionExpressions) throw new ArgumentException("Choose one define profile on the typed graph command only.");
+                        if (args[0] != "sdk-typed-source-graph" || localDefines || includeDefines || definitionExpressions || selfAttributeInheritance) throw new ArgumentException("Choose one preprocessing profile on the typed graph command only.");
                         localDefines = option == "--local-defines"; includeDefines = option == "--include-defines";
                         // Reborn: the three-form definition subset must be requested separately from either literal profile.
                         definitionExpressions = option == "--definition-expressions";
+                        // Reborn: local leaf overlays are separately explicit and preserve the subset on non-inherited documents only.
+                        selfAttributeInheritance = option == "--self-attribute-inheritance";
                     }
                     else if (option is "--art-root" or "--audio-root")
                     {
@@ -268,7 +270,7 @@ internal static class Program
                 // Reborn: typed graph admission is explicit and preserves the original path-only command/report contract.
                 if (args[0] == "sdk-typed-source-graph")
                 {
-                    var typed = SdkTypedSourceGraph.Inspect(paths,localDefines,includeDefines,definitionExpressions);
+                    var typed = SdkTypedSourceGraph.Inspect(paths,localDefines,includeDefines,definitionExpressions,selfAttributeInheritance);
                     Console.WriteLine(JsonSerializer.Serialize(new { environment.Target,ReadOnly = true,SnapshotOnly = true,ProductionBuildReady = false,Environment = environment,SourcePaths = paths,TypedSources = typed },JsonOptions));
                     return typed.Graph.ScopedGraphComplete ? 0 : 2;
                 }
@@ -285,6 +287,8 @@ internal static class Program
             if (args.FirstOrDefault() == "sdk-include-defines-self-test") { SdkIncludeDefineProfileSmokeTest.Run(); return 0; }
             // Reborn: independently test bounded definition syntax without loading/executing the reference evaluator DLL.
             if (args.FirstOrDefault() == "sdk-definition-subset-self-test") { SdkDefinitionSubsetSmokeTest.Run(); return 0; }
+            // Reborn: test local leaf overlays through the existing core joiner without admitting imported or complex inheritance.
+            if (args.FirstOrDefault() == "sdk-self-attribute-inheritance-self-test") { SdkSelfAttributeInheritanceSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() == "sdk-preflight")
             {
                 // Reborn: inspect explicit roots and target metadata only; never execute the reference SDK batch files or production compiler.
@@ -909,11 +913,12 @@ internal static class Program
         Console.WriteLine("  sdk-reviewed-schema-candidate [absolute-source.xml]");
         Console.WriteLine("  sdk-reviewed-schema-candidate-self-test");
         // Reborn: combine existing explicit path/root planning with rechecked reviewed-schema source bindings.
-        Console.WriteLine("  sdk-typed-source-graph ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--local-defines | --include-defines | --definition-expressions] [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
+        Console.WriteLine("  sdk-typed-source-graph ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--local-defines | --include-defines | --definition-expressions | --self-attribute-inheritance] [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
         Console.WriteLine("  sdk-typed-source-graph-self-test");
         Console.WriteLine("  sdk-local-defines-self-test");
         Console.WriteLine("  sdk-include-defines-self-test");
         Console.WriteLine("  sdk-definition-subset-self-test");
+        Console.WriteLine("  sdk-self-attribute-inheritance-self-test");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.
         Console.WriteLine("  diagnostic-build-self-test");
         Console.WriteLine("  diagnostic-audioevent-build-self-test [ep1-audio-manifest ...]");

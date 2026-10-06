@@ -13,6 +13,8 @@ internal static class SdkTypedSourceGraph
     {
         // Reborn: preprocessing evidence is opt-in and never replaces the captured raw source identity.
         public SdkLocalDefineProfile.Evidence? Preprocessing { get; init; }
+        // Reborn: local overlay evidence has a separate identity chain from definition substitutions and raw source bytes.
+        public SdkSelfAttributeInheritance.Evidence? Inheritance { get; init; }
     }
     internal sealed record Report(Document[] Documents,bool ScopedGraphComplete,bool StoppedAtLimit,bool ReadOnly,bool SnapshotOnly,bool FullDependencyCoverage,bool ProductionBuildReady)
     {
@@ -24,23 +26,23 @@ internal static class SdkTypedSourceGraph
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compile/review once and validate the bounded source path graph without following new Includes or enabling production processors. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result Inspect(SdkSourcePathAudit.Report paths,bool localDefines = false,bool includeDefines = false,bool definitionExpressions = false)
+    internal static Result Inspect(SdkSourcePathAudit.Report paths,bool localDefines = false,bool includeDefines = false,bool definitionExpressions = false,bool selfAttributeInheritance = false)
     {
         XmlSchemaSet? schemas = null;
         var schema = SdkEffectiveSchema.Inspect(shieldCandidate:true,reviewHooks:true,onAdmitted:set => schemas = set);
         if (!schema.SchemaAdmitted || schemas == null) throw new InvalidDataException("Reviewed schema required for typed graph binding.");
-        return new(schema,BindGraph(schemas,paths,localDefines,includeDefines,definitionExpressions));
+        return new(schema,BindGraph(schemas,paths,localDefines,includeDefines,definitionExpressions,selfAttributeInheritance));
     }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: recheck raw source bytes/confinement, refuse inheritFrom overlays, and stat only schema-selected literal dependencies under explicit roots. */
     //-------------------------------------------------------------------------------------------------
-    internal static Report BindGraph(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool localDefines = false,bool includeDefines = false,bool definitionExpressions = false)
+    internal static Report BindGraph(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool localDefines = false,bool includeDefines = false,bool definitionExpressions = false,bool selfAttributeInheritance = false)
     {
         if (!schemas.IsCompiled || paths.Sources.Length > 512) throw new InvalidDataException("Compiled schema and bounded source inventory required.");
         // Reborn: broader literal visibility is independently explicit and cannot silently replace the earlier local-only profile.
-        if ((localDefines ? 1 : 0)+(includeDefines ? 1 : 0)+(definitionExpressions ? 1 : 0) > 1) throw new ArgumentException("Choose one diagnostic define profile.");
-        SdkIncludeDefineProfile? includeProfile = includeDefines || definitionExpressions ? new(paths,definitionExpressions) : null;
+        if ((localDefines ? 1 : 0)+(includeDefines ? 1 : 0)+(definitionExpressions ? 1 : 0)+(selfAttributeInheritance ? 1 : 0) > 1) throw new ArgumentException("Choose one diagnostic preprocessing profile.");
+        SdkIncludeDefineProfile? includeProfile = includeDefines || definitionExpressions || selfAttributeInheritance ? new(paths,definitionExpressions || selfAttributeInheritance) : null;
         List<Document> documents = new(); HashSet<string> seen = new(StringComparer.OrdinalIgnoreCase);
         string[] roots = new[] { paths.SourceRoot,paths.ArtRoot,paths.AudioRoot }.Where(root => root != null).Cast<string>().Select(SdkEnvironmentPreflight.DirectoryPath).ToArray();
         long total = 0; int dependencies = 0; bool stopped = false;
@@ -60,11 +62,21 @@ internal static class SdkTypedSourceGraph
                 { documents.Add(new(source.PhysicalPath,source.Sha256,observed,"StaleSource",Array.Empty<Dependency>(),new[] { "Source bytes differ from path graph snapshot; no new Include traversal or trusted binding." })); continue; }
                 XmlDocument xml = new() { XmlResolver = null }; using MemoryStream input = new(bytes,false);
                 using (XmlReader reader = XmlReader.Create(input,new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit,XmlResolver = null,MaxCharactersInDocument = 4*1048576 })) xml.Load(reader);
-                if (xml.SelectNodes("//*")!.OfType<XmlElement>().Any(element => element.NamespaceURI == "uri:ea.com:eala:asset" && element.HasAttribute("inheritFrom")))
-                { documents.Add(new(source.PhysicalPath,source.Sha256,observed,"RequiresPreprocessing",Array.Empty<Dependency>(),new[] { "Asset inheritFrom overlays are not processed by this raw-source profile; no trusted fields." })); continue; }
+                // Reborn: a combined diagnostic profile keeps the definition subset for non-inherited documents, but admits only expression-free local leaf overlays.
+                SdkSelfAttributeInheritance.Evidence? inheritance = null;
+                bool inherited = xml.SelectNodes("//*")!.OfType<XmlElement>().Any(element => element.NamespaceURI == "uri:ea.com:eala:asset" && element.HasAttribute("inheritFrom"));
+                if (inherited)
+                {
+                    if (!selfAttributeInheritance)
+                    { documents.Add(new(source.PhysicalPath,source.Sha256,observed,"RequiresPreprocessing",Array.Empty<Dependency>(),new[] { "Asset inheritFrom overlays require an explicit admitted profile; no trusted fields." })); continue; }
+                    var expanded = SdkSelfAttributeInheritance.Apply(schemas,bytes); inheritance = expanded.Evidence;
+                    if (expanded.Bytes == null)
+                    { documents.Add(new(source.PhysicalPath,source.Sha256,observed,"RequiresPreprocessing",Array.Empty<Dependency>(),inheritance.Diagnostics) { Inheritance = inheritance }); continue; }
+                    bytes = expanded.Bytes;
+                }
                 // Reborn: explicit diagnostic substitution happens only after raw snapshot recheck and before schema binding.
                 SdkLocalDefineProfile.Evidence? preprocessing = null;
-                if (localDefines || includeDefines || definitionExpressions)
+                if (!inherited && (localDefines || includeDefines || definitionExpressions || selfAttributeInheritance))
                 {
                     var processed = includeProfile == null ? SdkLocalDefineProfile.Apply(bytes) : includeProfile.Apply(source.PhysicalPath,bytes); preprocessing = processed.Evidence;
                     if (processed.Bytes == null)
@@ -73,7 +85,7 @@ internal static class SdkTypedSourceGraph
                 }
                 var binding = SdkEffectiveSchema.Bind(schemas,source.PhysicalPath,bytes);
                 if (!binding.XmlValidated)
-                { documents.Add(new(source.PhysicalPath,source.Sha256,observed,"SchemaInvalid",Array.Empty<Dependency>(),binding.Errors.Take(8).ToArray()) { Preprocessing = preprocessing }); continue; }
+                { documents.Add(new(source.PhysicalPath,source.Sha256,observed,"SchemaInvalid",Array.Empty<Dependency>(),binding.Errors.Take(8).ToArray()) { Preprocessing = preprocessing,Inheritance = inheritance }); continue; }
                 List<Dependency> fields = new();
                 foreach (var field in binding.Fields)
                 {
@@ -90,7 +102,7 @@ internal static class SdkTypedSourceGraph
                     { issue = "ResourcePath"; }
                     fields.Add(new(field.OwnerType,field.Kind,field.Name,field.LogicalPath,physical,length,issue));
                 }
-                documents.Add(new(source.PhysicalPath,source.Sha256,observed,stopped ? "Limit" : "Validated",fields.ToArray(),stopped ? new[] { "4096 typed dependency bound exceeded; inventory incomplete." } : Array.Empty<string>()) { Preprocessing = preprocessing });
+                documents.Add(new(source.PhysicalPath,source.Sha256,observed,stopped ? "Limit" : "Validated",fields.ToArray(),stopped ? new[] { "4096 typed dependency bound exceeded; inventory incomplete." } : Array.Empty<string>()) { Preprocessing = preprocessing,Inheritance = inheritance });
                 if (stopped) break;
             }
             catch (Exception error) when (error is IOException or InvalidDataException or XmlException or ArgumentException or UnauthorizedAccessException)
@@ -98,6 +110,6 @@ internal static class SdkTypedSourceGraph
         }
         return new(documents.ToArray(),paths.ScopedPathAuditComplete && !paths.StoppedAtLimit && !stopped && documents.Count > 0 && documents.Count == paths.Sources.Length
             && documents.All(document => document.Status == "Validated" && document.Dependencies.All(field => field.Issue == null)),stopped || paths.StoppedAtLimit,true,true,false,false)
-            { PreprocessingProfile = definitionExpressions ? SdkDefinitionSubset.Name : includeDefines ? SdkIncludeDefineProfile.Name : localDefines ? SdkLocalDefineProfile.Name : "raw-source" };
+            { PreprocessingProfile = selfAttributeInheritance ? SdkSelfAttributeInheritance.Name : definitionExpressions ? SdkDefinitionSubset.Name : includeDefines ? SdkIncludeDefineProfile.Name : localDefines ? SdkLocalDefineProfile.Name : "raw-source" };
     }
 }

@@ -20,18 +20,29 @@ is not a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**120 test groups** (some contain several fixtures). These counters can grow
+**121 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset regressions add groups and all 120 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance regressions add groups and all 121 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Bounded GlobalDefines expression subset](docs/RA3EP1_SDK_DEFINITION_SUBSET.md).
+Latest milestone: [Core-backed local attribute inheritance PoC](docs/RA3EP1_SDK_SELF_ATTRIBUTE_INHERITANCE.md).
+The explicit `--self-attribute-inheritance` profile uses core NodeJoiner for
+same-document/same-type expression-free leaf assets, with atomic rejection and
+cycle/depth/amplification guards. Owned fixtures prove inherited required attributes
+and typed file binding. The real graph stays 202 valid / 194 blocked: 191 documents
+first encounter child content and three lack local bases. No real inherited document
+is newly validated; broader child/Include semantics remain open. Earlier profiles,
+reference files and missing path/resource gates are unchanged. All 121 default
+groups and 33 enum checks pass; no output or game build is claimed. Effort stays
+about 50.25%, rounded 50% complete / 50% remaining.
+
+[Bounded GlobalDefines expression subset](docs/RA3EP1_SDK_DEFINITION_SUBSET.md).
 The explicit `--definition-expressions` profile admits only observed backward
 aliases, one suffix concatenation and checked integer multiply-add definitions.
 GlobalDefines resolves five expressions (numeric results 440/640); base/EP1
