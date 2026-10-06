@@ -20,18 +20,28 @@ is not a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**119 test groups** (some contain several fixtures). These counters can grow
+**120 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include-define regressions add groups and all 119 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset regressions add groups and all 120 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Source-backed Include literal definitions](docs/RA3EP1_SDK_INCLUDE_DEFINES.md).
+Latest milestone: [Bounded GlobalDefines expression subset](docs/RA3EP1_SDK_DEFINITION_SUBSET.md).
+The explicit `--definition-expressions` profile admits only observed backward
+aliases, one suffix concatenation and checked integer multiply-add definitions.
+GlobalDefines resolves five expressions (numeric results 440/640); base/EP1
+PlayerTemplates now validate after 9/2 substitutions. The 396-document graph has
+202 valid / 194 inheritFrom-blocked documents. Six path issues and the typed AUDIO
+header remain; no output or production build is claimed. This is not general EA
+evaluator equivalence. Raw/local/Include-literal profiles and reference bytes are
+unchanged. All 120 default groups and 33 enum checks pass. Effort stays about 50.25%.
+
+[Source-backed Include literal definitions](docs/RA3EP1_SDK_INCLUDE_DEFINES.md).
 The explicit `--include-defines` profile imports rechecked literal definitions via
 all/instance Includes, preserves origin-aware duplicate rules and keeps reference,
 override, arithmetic and inheritance gates closed. Real AudioSettings (six

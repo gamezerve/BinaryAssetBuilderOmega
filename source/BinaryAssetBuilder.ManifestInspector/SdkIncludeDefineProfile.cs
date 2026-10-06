@@ -16,13 +16,17 @@ internal sealed class SdkIncludeDefineProfile
     private readonly Dictionary<string,SdkSourcePathAudit.Source> inventory = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string,byte[]> snapshots = new(StringComparer.OrdinalIgnoreCase);
     private long snapshotBytes;
+    // Reborn: optional definition syntax admission is a separate explicit profile; the existing literal-only constructor remains the default.
+    private readonly bool definitionExpressions;
+    internal string Profile => definitionExpressions ? SdkDefinitionSubset.Name : Name;
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate every captured source's canonical confinement before any imported-document read; forged graph paths cannot create authority. */
     //-------------------------------------------------------------------------------------------------
-    internal SdkIncludeDefineProfile(SdkSourcePathAudit.Report paths)
+    internal SdkIncludeDefineProfile(SdkSourcePathAudit.Report paths,bool definitionExpressions = false)
     {
         this.paths = paths;
+        this.definitionExpressions = definitionExpressions;
         if (paths.Sources.Length > 512 || paths.Includes.Length > 4096) throw new InvalidDataException("Bounded Include inventory required.");
         string[] roots = new[] { paths.SourceRoot,paths.ArtRoot,paths.AudioRoot }.Where(root => root != null).Cast<string>().Select(SdkEnvironmentPreflight.DirectoryPath).ToArray();
         foreach (var source in paths.Sources)
@@ -45,15 +49,18 @@ internal sealed class SdkIncludeDefineProfile
             Capture(path,bytes);
             var local = SdkLocalDefineProfile.Apply(bytes);
             // Reborn: an asset with no expressions requires no definition-closure claim and keeps its original bytes.
-            if (local.Bytes != null && local.Evidence.Substitutions == 0) return local with { Evidence = local.Evidence with { Profile = Name } };
+            if (local.Bytes != null && local.Evidence.Substitutions == 0) return local with { Evidence = local.Evidence with { Profile = Profile } };
             Dictionary<string,Dictionary<string,Literal>> tables = new(StringComparer.OrdinalIgnoreCase);
             HashSet<string> active = new(StringComparer.OrdinalIgnoreCase);
             Dictionary<string,SourceIdentity> witnesses = new(StringComparer.OrdinalIgnoreCase);
             int edges = 0;
+            // Reborn: deduplicate computations by origin/name across diamond paths without publishing partial results on rejection.
+            Dictionary<string,SdkDefinitionSubset.Evaluation> evaluations = new(StringComparer.Ordinal);
             var table = Visit(path,0);
             var result = SdkLocalDefineProfile.ApplyImported(bytes,table.ToDictionary(pair => pair.Key,pair => pair.Value.Value,StringComparer.Ordinal));
             // Reborn: rejected transformations never publish origins or a partial closure as trusted preprocessing evidence.
-            return result with { Evidence = result.Evidence with { Profile = Name,
+            return result with { Evidence = result.Evidence with { Profile = Profile,
+                EvaluatedDefinitions = result.Bytes == null ? Array.Empty<SdkDefinitionSubset.Evaluation>() : evaluations.Values.OrderBy(item => item.SourcePath,StringComparer.OrdinalIgnoreCase).ThenBy(item => item.Name,StringComparer.Ordinal).ToArray(),
                 DefinitionSources = result.Bytes == null ? Array.Empty<SourceIdentity>() : witnesses.Values.OrderBy(item => item.SourcePath,StringComparer.OrdinalIgnoreCase).ToArray(),
                 DefinitionOrigins = result.Bytes == null ? Array.Empty<Origin>() : table.OrderBy(pair => pair.Key,StringComparer.Ordinal).Select(pair => new Origin(pair.Key,pair.Value.SourcePath)).ToArray() } };
 
@@ -93,17 +100,30 @@ internal sealed class SdkIncludeDefineProfile
                         || !resolved.Root.Equals(child.Root,StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Include definition target differs from captured confined inventory.");
                     foreach (var pair in Visit(resolved.Path,depth+1)) Merge(merged,pair.Key,pair.Value);
                 }
-                foreach (var pair in SdkLocalDefineProfile.ReadLiteralDefinitions(root))
+                // Reborn: derive declaration order from XML, not dictionary enumeration, before admitting backward-only definition expressions.
+                var localDefinitions = SdkLocalDefineProfile.ReadLiteralDefinitions(root,definitionExpressions);
+                var orderedNames = root.ChildNodes.OfType<XmlElement>().Where(element => element.NamespaceURI == Ea && element.LocalName == "Defines")
+                    .SelectMany(element => element.ChildNodes.OfType<XmlElement>()).Select(element => element.GetAttribute("name"));
+                foreach (string localName in orderedNames)
                 {
+                    var pair = new KeyValuePair<string,string>(localName,localDefinitions[localName]);
                     // Reborn: no local override support; imported/local name collisions are rejected even if their literal values happen to match.
                     if (merged.ContainsKey(pair.Key)) throw new InvalidDataException("Local definition collides with imported definition; overrides remain closed.");
-                    Merge(merged,pair.Key,new(pair.Value,current));
+                    // Reborn: evaluate each local definition in declaration order against imported and earlier local values, never forward names.
+                    string value = pair.Value;
+                    if (value[0] == '=')
+                    {
+                        value = SdkDefinitionSubset.Evaluate(value,name => merged.TryGetValue(name,out var literal) ? literal.Value : null);
+                        if (evaluations.Count >= 2048) throw new InvalidDataException("2048 evaluated-definition bound exceeded.");
+                        evaluations.Add(current+"\0"+pair.Key,new(pair.Key,current,pair.Value,value));
+                    }
+                    Merge(merged,pair.Key,new(value,current));
                 }
                 active.Remove(current); tables.Add(current,merged); return merged;
             }
         }
         catch (Exception error) when (error is IOException or InvalidDataException or XmlException or ArgumentException or UnauthorizedAccessException or NotSupportedException)
-        { return new(null,new(Name,raw,null,0,new[] { "Imported literal closure rejected: "+error.Message[..Math.Min(error.Message.Length,512)] })); }
+        { return new(null,new(Profile,raw,null,0,new[] { "Imported definition closure rejected: "+error.Message[..Math.Min(error.Message.Length,512)] })); }
     }
 
     //-------------------------------------------------------------------------------------------------

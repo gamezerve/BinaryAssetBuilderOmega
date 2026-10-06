@@ -5,6 +5,16 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-06)
 
+[Bounded GlobalDefines expression subset](RA3EP1_SDK_DEFINITION_SUBSET.md) adds a
+separate explicit backward-alias/single-suffix/checked-integer-multiply-add profile.
+Real GlobalDefines resolves its five expression definitions (440/640 numeric
+results); base/EP1 PlayerTemplates validate with nine/two substitutions. The graph
+has 202 valid / 194 inheritFrom-blocked documents. Earlier raw/local/Include-literal
+behavior, reference bytes, six path issues and the typed AUDIO header are unchanged.
+No general EA evaluator equivalence, output or production/game build is claimed.
+All 120 default groups and 33 enum checks pass. Weighted effort remains about
+50.25%, rounded 50%. The Include-literal block below is the preceding milestone.
+
 [Source-backed Include literal definitions](RA3EP1_SDK_INCLUDE_DEFINES.md) adds an
 explicit all/instance-only literal profile with captured source/edge identity and
 definition origin checks. Real AudioSettings resolves six imported expressions

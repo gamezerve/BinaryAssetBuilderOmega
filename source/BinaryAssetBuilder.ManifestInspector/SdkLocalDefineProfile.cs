@@ -15,6 +15,8 @@ internal static class SdkLocalDefineProfile
         // Reborn: imported literal evidence records exact source identities and definition origins, not compiled child assets.
         public SdkIncludeDefineProfile.SourceIdentity[] DefinitionSources { get; init; } = Array.Empty<SdkIncludeDefineProfile.SourceIdentity>();
         public SdkIncludeDefineProfile.Origin[] DefinitionOrigins { get; init; } = Array.Empty<SdkIncludeDefineProfile.Origin>();
+        // Reborn: definition computations are distinct from substitutions in asset XML and are exposed only for successful complete closures.
+        public SdkDefinitionSubset.Evaluation[] EvaluatedDefinitions { get; init; } = Array.Empty<SdkDefinitionSubset.Evaluation>();
     }
     internal sealed record Result(byte[]? Bytes,Evidence Evidence);
     private const string Ea = "uri:ea.com:eala:asset";
@@ -73,7 +75,7 @@ internal static class SdkLocalDefineProfile
     //-------------------------------------------------------------------------------------------------
     /** Reborn: share exact local literal admission rules with the source-backed Include profile, without evaluating chained/arithmetic definitions. */
     //-------------------------------------------------------------------------------------------------
-    internal static Dictionary<string,string> ReadLiteralDefinitions(XmlElement root)
+    internal static Dictionary<string,string> ReadLiteralDefinitions(XmlElement root,bool allowExpressions = false)
     {
         Dictionary<string,string> defines = new(StringComparer.Ordinal);
         var containers = root.ChildNodes.OfType<XmlElement>().Where(element => element.NamespaceURI == Ea && element.LocalName == "Defines").ToArray();
@@ -82,7 +84,7 @@ internal static class SdkLocalDefineProfile
         {
             string name = define.GetAttribute("name"),value = define.GetAttribute("value");
             if (define.NamespaceURI != Ea || define.LocalName != "Define" || !Identifier.IsMatch(name) || !define.HasAttribute("value")
-                || value.Length == 0 || value.Length > 512 || value[0] == '=' || define.HasChildNodes
+                || value.Length == 0 || value.Length > 512 || (!allowExpressions && value[0] == '=') || define.HasChildNodes
                 || define.Attributes.OfType<XmlAttribute>().Any(attribute => attribute.Name is not ("name" or "value" or "override"))
                 || (define.HasAttribute("override") && define.GetAttribute("override") != "false") || defines.Count >= 512 || !defines.TryAdd(name,value))
                 throw new InvalidDataException("Unsupported, duplicate, chained or override definition; no partial substitution.");
