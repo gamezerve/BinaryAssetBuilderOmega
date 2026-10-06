@@ -69,6 +69,7 @@ internal static class CompilerSmokeTest
         // Reborn: graph source snapshots and XML/resource/preprocessing states need independent bounded regressions.
         TestSdkTypedSourceGraph();
         TestSdkLocalDefineProfile();
+        TestSdkIncludeDefineProfile();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2285,6 +2286,11 @@ internal static class CompilerSmokeTest
     /** Reborn: exercise explicit bounded local literal preprocessing separately from core/EA expression evaluation. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkLocalDefineProfile() => SdkLocalDefineProfileSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: test source-backed literal Include visibility and origin-aware duplicates without production evaluator/native execution. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkIncludeDefineProfile() => SdkIncludeDefineProfileSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

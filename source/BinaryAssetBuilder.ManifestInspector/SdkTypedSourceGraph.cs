@@ -24,20 +24,23 @@ internal static class SdkTypedSourceGraph
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compile/review once and validate the bounded source path graph without following new Includes or enabling production processors. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result Inspect(SdkSourcePathAudit.Report paths,bool localDefines = false)
+    internal static Result Inspect(SdkSourcePathAudit.Report paths,bool localDefines = false,bool includeDefines = false)
     {
         XmlSchemaSet? schemas = null;
         var schema = SdkEffectiveSchema.Inspect(shieldCandidate:true,reviewHooks:true,onAdmitted:set => schemas = set);
         if (!schema.SchemaAdmitted || schemas == null) throw new InvalidDataException("Reviewed schema required for typed graph binding.");
-        return new(schema,BindGraph(schemas,paths,localDefines));
+        return new(schema,BindGraph(schemas,paths,localDefines,includeDefines));
     }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: recheck raw source bytes/confinement, refuse inheritFrom overlays, and stat only schema-selected literal dependencies under explicit roots. */
     //-------------------------------------------------------------------------------------------------
-    internal static Report BindGraph(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool localDefines = false)
+    internal static Report BindGraph(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool localDefines = false,bool includeDefines = false)
     {
         if (!schemas.IsCompiled || paths.Sources.Length > 512) throw new InvalidDataException("Compiled schema and bounded source inventory required.");
+        // Reborn: broader literal visibility is independently explicit and cannot silently replace the earlier local-only profile.
+        if (localDefines && includeDefines) throw new ArgumentException("Choose one diagnostic define profile.");
+        SdkIncludeDefineProfile? includeProfile = includeDefines ? new(paths) : null;
         List<Document> documents = new(); HashSet<string> seen = new(StringComparer.OrdinalIgnoreCase);
         string[] roots = new[] { paths.SourceRoot,paths.ArtRoot,paths.AudioRoot }.Where(root => root != null).Cast<string>().Select(SdkEnvironmentPreflight.DirectoryPath).ToArray();
         long total = 0; int dependencies = 0; bool stopped = false;
@@ -61,9 +64,9 @@ internal static class SdkTypedSourceGraph
                 { documents.Add(new(source.PhysicalPath,source.Sha256,observed,"RequiresPreprocessing",Array.Empty<Dependency>(),new[] { "Asset inheritFrom overlays are not processed by this raw-source profile; no trusted fields." })); continue; }
                 // Reborn: explicit diagnostic substitution happens only after raw snapshot recheck and before schema binding.
                 SdkLocalDefineProfile.Evidence? preprocessing = null;
-                if (localDefines)
+                if (localDefines || includeDefines)
                 {
-                    var processed = SdkLocalDefineProfile.Apply(bytes); preprocessing = processed.Evidence;
+                    var processed = includeProfile == null ? SdkLocalDefineProfile.Apply(bytes) : includeProfile.Apply(source.PhysicalPath,bytes); preprocessing = processed.Evidence;
                     if (processed.Bytes == null)
                     { documents.Add(new(source.PhysicalPath,source.Sha256,observed,"RequiresPreprocessing",Array.Empty<Dependency>(),preprocessing.Diagnostics) { Preprocessing = preprocessing }); continue; }
                     bytes = processed.Bytes;
@@ -95,6 +98,6 @@ internal static class SdkTypedSourceGraph
         }
         return new(documents.ToArray(),paths.ScopedPathAuditComplete && !paths.StoppedAtLimit && !stopped && documents.Count > 0 && documents.Count == paths.Sources.Length
             && documents.All(document => document.Status == "Validated" && document.Dependencies.All(field => field.Issue == null)),stopped || paths.StoppedAtLimit,true,true,false,false)
-            { PreprocessingProfile = localDefines ? SdkLocalDefineProfile.Name : "raw-source" };
+            { PreprocessingProfile = includeDefines ? SdkIncludeDefineProfile.Name : localDefines ? SdkLocalDefineProfile.Name : "raw-source" };
     }
 }

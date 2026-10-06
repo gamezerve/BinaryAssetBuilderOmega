@@ -10,7 +10,12 @@ internal static class SdkLocalDefineProfile
 {
     internal const string Name = "diagnostic-local-literals-v1";
     // Reborn: retain raw and processed identities separately; rejected documents never publish partially substituted bytes.
-    internal sealed record Evidence(string Profile,string RawSha256,string? ProcessedSha256,int Substitutions,string[] Diagnostics);
+    internal sealed record Evidence(string Profile,string RawSha256,string? ProcessedSha256,int Substitutions,string[] Diagnostics)
+    {
+        // Reborn: imported literal evidence records exact source identities and definition origins, not compiled child assets.
+        public SdkIncludeDefineProfile.SourceIdentity[] DefinitionSources { get; init; } = Array.Empty<SdkIncludeDefineProfile.SourceIdentity>();
+        public SdkIncludeDefineProfile.Origin[] DefinitionOrigins { get; init; } = Array.Empty<SdkIncludeDefineProfile.Origin>();
+    }
     internal sealed record Result(byte[]? Bytes,Evidence Evidence);
     private const string Ea = "uri:ea.com:eala:asset";
     private static readonly Regex Identifier = new("\\A[A-Za-z_][A-Za-z0-9_]{0,127}\\z",RegexOptions.CultureInvariant,TimeSpan.FromSeconds(1));
@@ -18,7 +23,17 @@ internal static class SdkLocalDefineProfile
     //-------------------------------------------------------------------------------------------------
     /** Reborn: substitute only exact local literal references in owned source memory, with no Include reads, expression engine or source writes. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result Apply(byte[] bytes)
+    internal static Result Apply(byte[] bytes) => ApplyCore(bytes,null);
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: only a rechecked Include closure may supply the complete literal table; this entry does not authorize disk reads itself. */
+    //-------------------------------------------------------------------------------------------------
+    internal static Result ApplyImported(byte[] bytes,IReadOnlyDictionary<string,string> literals) => ApplyCore(bytes,literals);
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: share bounded substitution without changing the default local-only Include refusal. */
+    //-------------------------------------------------------------------------------------------------
+    private static Result ApplyCore(byte[] bytes,IReadOnlyDictionary<string,string>? imported)
     {
         if (bytes.Length > 4*1048576) throw new InvalidDataException("Local define source exceeds 4 MiB.");
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
@@ -34,22 +49,13 @@ internal static class SdkLocalDefineProfile
             Collect(asset,slots,0);
         }
         if (slots.Count == 0) return new(bytes,new(Name,raw,raw,0,Array.Empty<string>()));
-        if (root.ChildNodes.OfType<XmlElement>().Any(element => element.NamespaceURI == Ea && element.LocalName == "Includes" && element.ChildNodes.OfType<XmlElement>().Any()))
+        if (imported == null && root.ChildNodes.OfType<XmlElement>().Any(element => element.NamespaceURI == Ea && element.LocalName == "Includes" && element.ChildNodes.OfType<XmlElement>().Any()))
             return Reject(raw,"Expressions with Includes require reviewed imported-definition visibility; local-only substitution refused.");
         if (root.SelectNodes(".//*")!.OfType<XmlElement>().Any(element => element.NamespaceURI == Ea && element.HasAttribute("inheritFrom")))
             return Reject(raw,"Asset inheritFrom processing is outside the local literal profile.");
-        Dictionary<string,string> defines = new(StringComparer.Ordinal);
-        var containers = root.ChildNodes.OfType<XmlElement>().Where(element => element.NamespaceURI == Ea && element.LocalName == "Defines").ToArray();
-        if (containers.Length > 1) return Reject(raw,"Multiple Defines containers are unsupported.");
-        foreach (XmlElement define in containers.SelectMany(element => element.ChildNodes.OfType<XmlElement>()))
-        {
-            string name = define.GetAttribute("name"),value = define.GetAttribute("value");
-            if (define.NamespaceURI != Ea || define.LocalName != "Define" || !Identifier.IsMatch(name) || !define.HasAttribute("value")
-                || value.Length == 0 || value.Length > 512 || value[0] == '=' || define.HasChildNodes
-                || define.Attributes.OfType<XmlAttribute>().Any(attribute => attribute.Name is not ("name" or "value" or "override"))
-                || (define.HasAttribute("override") && define.GetAttribute("override") != "false") || defines.Count >= 512 || !defines.TryAdd(name,value))
-                return Reject(raw,"Unsupported, duplicate, chained or override definition; no partial substitution.");
-        }
+        IReadOnlyDictionary<string,string> defines;
+        try { defines = imported ?? ReadLiteralDefinitions(root); }
+        catch (InvalidDataException) { return Reject(raw,"Unsupported, duplicate, chained or override definition; no partial substitution."); }
         foreach (XmlNode slot in slots)
         {
             string expression = slot.Value!;
@@ -62,6 +68,26 @@ internal static class SdkLocalDefineProfile
         byte[] processed = output.ToArray();
         if (processed.Length > 4*1048576) return Reject(raw,"Processed XML exceeds 4 MiB.");
         return new(processed,new(Name,raw,Convert.ToHexString(SHA256.HashData(processed)),slots.Count,Array.Empty<string>()));
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: share exact local literal admission rules with the source-backed Include profile, without evaluating chained/arithmetic definitions. */
+    //-------------------------------------------------------------------------------------------------
+    internal static Dictionary<string,string> ReadLiteralDefinitions(XmlElement root)
+    {
+        Dictionary<string,string> defines = new(StringComparer.Ordinal);
+        var containers = root.ChildNodes.OfType<XmlElement>().Where(element => element.NamespaceURI == Ea && element.LocalName == "Defines").ToArray();
+        if (containers.Length > 1) throw new InvalidDataException("Multiple Defines containers are unsupported.");
+        foreach (XmlElement define in containers.SelectMany(element => element.ChildNodes.OfType<XmlElement>()))
+        {
+            string name = define.GetAttribute("name"),value = define.GetAttribute("value");
+            if (define.NamespaceURI != Ea || define.LocalName != "Define" || !Identifier.IsMatch(name) || !define.HasAttribute("value")
+                || value.Length == 0 || value.Length > 512 || value[0] == '=' || define.HasChildNodes
+                || define.Attributes.OfType<XmlAttribute>().Any(attribute => attribute.Name is not ("name" or "value" or "override"))
+                || (define.HasAttribute("override") && define.GetAttribute("override") != "false") || defines.Count >= 512 || !defines.TryAdd(name,value))
+                throw new InvalidDataException("Unsupported, duplicate, chained or override definition; no partial substitution.");
+        }
+        return defines;
     }
 
     //-------------------------------------------------------------------------------------------------

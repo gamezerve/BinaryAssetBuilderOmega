@@ -243,14 +243,14 @@ internal static class Program
                 if (args.Length < 6) throw new ArgumentException("sdk-source-preflight ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
                 string? art = null,audio = null; List<string> mappings = new();
                 // Reborn: diagnostic local literal expressions are never implicitly enabled for the path-only/default graph commands.
-                bool localDefines = false;
+                bool localDefines = false,includeDefines = false;
                 for (int index = 6; index < args.Length; index++)
                 {
                     string option = args[index];
-                    if (option == "--local-defines")
+                    if (option is "--local-defines" or "--include-defines")
                     {
-                        if (args[0] != "sdk-typed-source-graph" || localDefines) throw new ArgumentException("Local define profile requires typed graph and cannot be repeated.");
-                        localDefines = true;
+                        if (args[0] != "sdk-typed-source-graph" || localDefines || includeDefines) throw new ArgumentException("Choose one define profile on the typed graph command only.");
+                        localDefines = option == "--local-defines"; includeDefines = option == "--include-defines";
                     }
                     else if (option is "--art-root" or "--audio-root")
                     {
@@ -266,7 +266,7 @@ internal static class Program
                 // Reborn: typed graph admission is explicit and preserves the original path-only command/report contract.
                 if (args[0] == "sdk-typed-source-graph")
                 {
-                    var typed = SdkTypedSourceGraph.Inspect(paths,localDefines);
+                    var typed = SdkTypedSourceGraph.Inspect(paths,localDefines,includeDefines);
                     Console.WriteLine(JsonSerializer.Serialize(new { environment.Target,ReadOnly = true,SnapshotOnly = true,ProductionBuildReady = false,Environment = environment,SourcePaths = paths,TypedSources = typed },JsonOptions));
                     return typed.Graph.ScopedGraphComplete ? 0 : 2;
                 }
@@ -279,6 +279,8 @@ internal static class Program
             if (args.FirstOrDefault() == "sdk-typed-source-graph-self-test") { SdkTypedSourceGraphSmokeTest.Run(); return 0; }
             // Reborn: independently exercise bounded literal expression diagnostics without native asset compilation.
             if (args.FirstOrDefault() == "sdk-local-defines-self-test") { SdkLocalDefineProfileSmokeTest.Run(); return 0; }
+            // Reborn: test imported literal origin/snapshot rules separately from EA expression evaluation and production builds.
+            if (args.FirstOrDefault() == "sdk-include-defines-self-test") { SdkIncludeDefineProfileSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() == "sdk-preflight")
             {
                 // Reborn: inspect explicit roots and target metadata only; never execute the reference SDK batch files or production compiler.
@@ -903,9 +905,10 @@ internal static class Program
         Console.WriteLine("  sdk-reviewed-schema-candidate [absolute-source.xml]");
         Console.WriteLine("  sdk-reviewed-schema-candidate-self-test");
         // Reborn: combine existing explicit path/root planning with rechecked reviewed-schema source bindings.
-        Console.WriteLine("  sdk-typed-source-graph ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--local-defines] [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
+        Console.WriteLine("  sdk-typed-source-graph ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--local-defines | --include-defines] [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
         Console.WriteLine("  sdk-typed-source-graph-self-test");
         Console.WriteLine("  sdk-local-defines-self-test");
+        Console.WriteLine("  sdk-include-defines-self-test");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.
         Console.WriteLine("  diagnostic-build-self-test");
         Console.WriteLine("  diagnostic-audioevent-build-self-test [ep1-audio-manifest ...]");

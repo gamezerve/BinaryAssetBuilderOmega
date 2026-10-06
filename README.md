@@ -20,18 +20,29 @@ is not a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**118 test groups** (some contain several fixtures). These counters can grow
+**119 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local-define regressions add groups and all 118 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include-define regressions add groups and all 119 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Bounded local define diagnostics](docs/RA3EP1_SDK_LOCAL_DEFINES.md).
+Latest milestone: [Source-backed Include literal definitions](docs/RA3EP1_SDK_INCLUDE_DEFINES.md).
+The explicit `--include-defines` profile imports rechecked literal definitions via
+all/instance Includes, preserves origin-aware duplicate rules and keeps reference,
+override, arithmetic and inheritance gates closed. Real AudioSettings (six
+substitutions) and GameLOD (one) now validate; Eva retains its 534 substitutions.
+The 396-document graph has 200 valid / 196 preprocessing-blocked documents.
+PlayerTemplates still requires general definition evaluation; six source-path
+issues and the typed AUDIO header remain. Raw/local defaults and reference files
+are unchanged. All 119 default groups and 33 enum checks pass; no output or game
+build is claimed. Weighted effort remains approximately 50.25%.
+
+[Bounded local define diagnostics](docs/RA3EP1_SDK_LOCAL_DEFINES.md).
 The explicit typed-graph `--local-defines` profile resolves 534 local expressions
 in real `Sounds/Eva.xml`, without modifying sources or invoking the EA evaluator.
 Of 396 reachable documents, 198 validate and 198 require preprocessing (194

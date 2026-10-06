@@ -5,6 +5,17 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-06)
 
+[Source-backed Include literal definitions](RA3EP1_SDK_INCLUDE_DEFINES.md) adds an
+explicit all/instance-only literal profile with captured source/edge identity and
+definition origin checks. Real AudioSettings resolves six imported expressions
+and GameLOD one; Eva retains 534. The 396-document graph is now 200 valid / 196
+preprocessing-blocked: 194 inherited plus two requiring GlobalDefines expression
+evaluation. Reference/precompiled, overrides, chains and arithmetic remain closed.
+The earlier raw/local profiles, official sources, six path issues and unresolved
+typed AUDIO header are unchanged. All 119 default groups and 33 enum checks pass;
+no production build/output/game proof is claimed. Weighted effort stays about
+50.25%, rounded 50%. The local-only block below is the preceding milestone.
+
 [Bounded local define diagnostics](RA3EP1_SDK_LOCAL_DEFINES.md) adds an explicit
 local-only literal expression profile after source fingerprint recheck. Real Eva
 resolves 534 expressions and validates. The 396-document graph now has 198 valid
