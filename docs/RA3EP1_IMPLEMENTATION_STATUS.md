@@ -5,6 +5,17 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-06)
 
+[Bounded local define diagnostics](RA3EP1_SDK_LOCAL_DEFINES.md) adds an explicit
+local-only literal expression profile after source fingerprint recheck. Real Eva
+resolves 534 expressions and validates. The 396-document graph now has 198 valid
+and 198 preprocessing-blocked documents: 194 inherited plus four requiring
+imported definitions. The other four raw schema failures are reclassified, not
+fixed. Default raw behavior, reference files, six path issues and the unresolved
+typed AUDIO header remain unchanged. No output/production compilation occurs.
+All 118 default groups and 33 enum checks pass. Weighted effort remains about
+50.25%, rounded 50% complete / 50% remaining. The typed graph block below is the
+preceding milestone.
+
 [Rechecked typed source graph](RA3EP1_SDK_TYPED_SOURCE_GRAPH.md) binds fresh
 reachable source snapshots to a single reviewed compiled schema. Real global.xml
 visits all 396 captured documents: 197 raw-valid, 194 inheritFrom preprocessing
