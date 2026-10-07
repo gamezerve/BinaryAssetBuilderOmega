@@ -5,6 +5,19 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Complementary upgrade singleton admission](RA3EP1_SDK_INSTANCE_UPGRADES.md)
+adds independent `--instance-upgrades` preparation. Bounded disjoint dependency
+pairs are folded by the unchanged core and must match predicted attributes and
+ordered weak references. The whole Upgrade owner document now validates, not
+just the earlier two isolated fragments. Real graph: **388 valid / 8 blocked**,
+zero earlier-valid regressions; older filters stay 387 / 9. Registered groups:
+136; manual effort stays **51% / 49%**. No source/schema/core edits or native/game
+proof. Six path issues and 198 missing AUDIO-header references remain. Next:
+characterize ObjectCreationLists Include visibility without granting unproved
+precompiled/reference/all exports.
+All 136 compiler groups, 33 enum checks, three classifier fixtures and three
+upgrade CLI isolation probes pass; final build has zero warnings/errors.
+
 [Upgrade singleton normalization review](RA3EP1_SDK_UPGRADE_REVIEW.md) proves
 that the actual core folds complementary GameDependency branches for the two
 known Allied upgrade owners, retaining references and unpacking conditions.
