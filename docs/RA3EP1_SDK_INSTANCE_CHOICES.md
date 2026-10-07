@@ -1,5 +1,10 @@
 # Bounded repeated-choice copying — October 8, 2026
 
+Subsequent pipeline investigation is documented in
+[consumed inheritance markers](RA3EP1_SDK_INSTANCE_MARKERS.md): core declaration
+loading removes inheritFrom before joining, so the AI marker mismatch does not
+require an XSD edit. The choice-only results below remain unchanged.
+
 ## Real result
 
 The independent `--instance-choices` option selects

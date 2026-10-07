@@ -22,6 +22,10 @@ internal static class SdkSelfAttributeInheritance
     internal const string ChildRemovalName = "diagnostic-self-empty-child-removal-v1";
     // Reborn: nested flat repeated-choice copying is independent of older sequence-only profiles; singleton and populated matching stay closed.
     internal const string ChoiceCopyName = "diagnostic-self-repeated-choice-copy-v1";
+    // Reborn: consumed inheritance markers follow core declaration loading; undeclared markers are limited to two reviewed local AI types.
+    internal const string MarkerName = "diagnostic-self-consumed-inheritance-markers-v1";
+    // Reborn: record consumed owner markers separately from overlays and retain whether the schema declared the pipeline attribute.
+    internal sealed record Marker(string Type,string DerivedId,string BaseId,bool SchemaDeclared);
     private const string Instance = "uri:ea.com:eala:asset:instance";
     // Reborn: record actual source-directed removals separately from inheritance overlays and processed source hashes.
     internal sealed record Removal(string Type,string DerivedId,string BaseId,string ChildName,string ChildId);
@@ -35,6 +39,8 @@ internal static class SdkSelfAttributeInheritance
         public SdkInstanceInheritanceProfile.PreparedSource[] PreparedSources { get; init; } = Array.Empty<SdkInstanceInheritanceProfile.PreparedSource>();
         // Reborn: removal witnesses report only commands executed in this owner document, not replayed inherited commands.
         public Removal[] Removals { get; init; } = Array.Empty<Removal>();
+        // Reborn: older profiles retain their XML markers and publish no consumption witnesses.
+        public Marker[] ConsumedMarkers { get; init; } = Array.Empty<Marker>();
     }
     internal sealed record Result(byte[]? Bytes,Evidence Evidence);
     private const string Ea = "uri:ea.com:eala:asset";
@@ -42,10 +48,12 @@ internal static class SdkSelfAttributeInheritance
     //-------------------------------------------------------------------------------------------------
     /** Reborn: expand local asset chains with independently admitted copy/empty-child matching scopes and reject the entire document on unsupported semantics. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false,bool childRemoval = false,bool choiceCopy = false)
+    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false,bool childRemoval = false,bool choiceCopy = false,bool consumeMarkers = false)
     {
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
-        string profile = choiceCopy ? ChoiceCopyName : childRemoval ? ChildRemovalName : childMerge ? ChildMergeName : treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
+        string profile = consumeMarkers ? MarkerName : choiceCopy ? ChoiceCopyName : childRemoval ? ChildRemovalName : childMerge ? ChildMergeName : treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
+        // Reborn: marker consumption builds on the tested choice/removal subsets without broadening older flags.
+        choiceCopy |= consumeMarkers;
         // Reborn: the explicit choice profile retains every earlier removal, matching, tree and resource guard.
         childRemoval |= choiceCopy;
         // Reborn: removal builds on the tested empty-child merge subset without widening its older flags.
@@ -75,6 +83,8 @@ internal static class SdkSelfAttributeInheritance
             HashSet<string> active = new(StringComparer.Ordinal); List<Overlay> overlays = new();
             // Reborn: any later failure withholds all earlier removal witnesses along with partial transformed XML.
             List<Removal> removals = new();
+            // Reborn: consumption evidence is atomic and source-owner-local, never inherited from an imported prepared base.
+            List<Marker> markers = new();
             // Reborn: bound aggregate inherited-attribute amplification before allocating each merged node, not only after final serialization.
             long expandedBytes = bytes.Length+1024L;
             foreach (var asset in assets)
@@ -92,7 +102,7 @@ internal static class SdkSelfAttributeInheritance
             using (XmlWriter writer = XmlWriter.Create(output,new XmlWriterSettings { Encoding = new UTF8Encoding(false),NewLineHandling = NewLineHandling.None })) xml.Save(writer);
             byte[] processed = output.ToArray();
             if (processed.Length > 4*1048576) throw new InvalidDataException("Processed inheritance XML exceeds 4 MiB.");
-            return new(processed,new(profile,raw,Convert.ToHexString(SHA256.HashData(processed)),overlays.ToArray(),Array.Empty<string>()) { Removals = removals.ToArray() });
+            return new(processed,new(profile,raw,Convert.ToHexString(SHA256.HashData(processed)),overlays.ToArray(),Array.Empty<string>()) { Removals = removals.ToArray(),ConsumedMarkers = markers.ToArray() });
 
             //-------------------------------------------------------------------------------------------------
             /** Reborn: local handles precede imported visibility; reject same-handle overrides, missing bases, cross-type inheritance and cycles. */
@@ -127,7 +137,15 @@ internal static class SdkSelfAttributeInheritance
                         if (attribute.NamespaceURI.Length == 0 && !asset.HasAttribute(attribute.Name)) expandedBytes += Encoding.UTF8.GetByteCount(attribute.OuterXml)+1L;
                     if (childCopy) foreach (XmlElement child in baseAsset.ChildNodes.OfType<XmlElement>()) expandedBytes += Encoding.UTF8.GetByteCount(child.OuterXml)+1L;
                     if (expandedBytes > 4*1048576) throw new InvalidDataException("Inherited attribute amplification exceeds 4 MiB before merge.");
-                    result = (XmlElement)NodeJoiner.Override(schemas,xml,baseAsset,asset);
+                    // Reborn: core InstanceDeclaration.XmlNode consumes inheritFrom before joining; retain the original handle only in diagnostic evidence.
+                    XmlElement joinSource = asset;
+                    if (consumeMarkers)
+                    {
+                        joinSource = (XmlElement)asset.CloneNode(true); joinSource.RemoveAttribute("inheritFrom");
+                        var schemaType = (XmlSchemaComplexType)schemas.GlobalTypes[new XmlQualifiedName(type,Ea)]!;
+                        markers.Add(new(type,asset.GetAttribute("id"),baseId,schemaType.AttributeUses[new XmlQualifiedName("inheritFrom")] is XmlSchemaAttribute));
+                    }
+                    result = (XmlElement)NodeJoiner.Override(schemas,xml,baseAsset,joinSource);
                     overlays.Add(new(type,asset.GetAttribute("id"),baseId));
                 }
                 active.Remove(handle); resolved.Add(handle,result); heights.Add(handle,height); return result;
@@ -189,6 +207,8 @@ internal static class SdkSelfAttributeInheritance
                 {
                     if (attribute.NamespaceURI == "http://www.w3.org/2000/xmlns/") continue;
                     if (attribute.NamespaceURI.Length != 0 || attribute.Name == "TypeId" || attribute.Value.StartsWith('=')) throw new InvalidDataException("Namespaced directives, TypeId or unevaluated attributes require broader preprocessing.");
+                    // Reborn: only the reviewed local AI marker exception bypasses schema attribute lookup; arbitrary unknown fields remain closed.
+                    if (consumeMarkers && attribute.Name == "inheritFrom" && ReviewedMarkerType(type)) continue;
                     if (type.AttributeUses[new XmlQualifiedName(attribute.Name)] is not XmlSchemaAttribute use) throw new InvalidDataException("Unknown asset attribute cannot be hidden by an overlay.");
                     if (use.AttributeSchemaType?.Datatype?.Variety == XmlSchemaDatatypeVariety.List && (attribute.Value.Contains('+') || attribute.Value.Contains('-'))) throw new InvalidDataException("Bitflag/list modifiers require separately reviewed semantics.");
                 }
@@ -288,4 +308,19 @@ internal static class SdkSelfAttributeInheritance
     /** Reborn: recognize only the exact instance-namespace Remove command; other directive spellings stay under the earlier refusal rules. */
     //-------------------------------------------------------------------------------------------------
     private static bool RemoveCommand(XmlElement element) => element.GetAttribute("joinAction",Instance) == "Remove";
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: admit undeclared pipeline markers only on the two reviewed named EA AI types with BaseAssetType ancestry, not arbitrary schema mismatches. */
+    //-------------------------------------------------------------------------------------------------
+    private static bool ReviewedMarkerType(XmlSchemaComplexType type)
+    {
+        if (type.QualifiedName.Namespace != Ea || type.QualifiedName.Name is not ("AITargetingHeuristic" or "AIMicroManagerData")) return false;
+        for (int depth = 0; depth < 32; depth++)
+        {
+            if (type.QualifiedName == new XmlQualifiedName("BaseAssetType",Ea)) return true;
+            if (type.BaseXmlSchemaType is not XmlSchemaComplexType parent || ReferenceEquals(type,parent)) break;
+            type = parent;
+        }
+        return false;
+    }
 }

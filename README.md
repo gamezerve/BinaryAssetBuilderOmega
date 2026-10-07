@@ -22,18 +22,31 @@ a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**131 test groups** (some contain several fixtures). These counters can grow
+**132 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy regressions add groups and all 131 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker regressions add groups and all 132 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Bounded repeated-choice copying](docs/RA3EP1_SDK_INSTANCE_CHOICES.md).
+Latest milestone: [Consumed inheritance markers](docs/RA3EP1_SDK_INSTANCE_MARKERS.md).
+The independent `--instance-markers` profile reproduces core declaration-time
+inheritFrom consumption, with undeclared markers limited to two reviewed local
+AI types. Imported non-inheritable bases remain closed. Relevant XSD files match
+the Uprising references; no schema edit is needed for this pipeline step.
+Real admission stays **385 valid / 11 blocked**, with zero regressions: the two
+AI libraries now reach later bitflag-list and matched-branch guards, rather than
+the undeclared marker guard. Counts do not rise until those separate semantics
+are supported. Manual effort stays **51% complete / 49% remaining**; no game proof.
+All 132 compiler groups, 33 enum checks, three classifier fixtures and three
+marker CLI isolation probes pass. The full real audit was repeated for both
+choice and marker profiles; neither creates an output directory.
+
+[Bounded repeated-choice copying](docs/RA3EP1_SDK_INSTANCE_CHOICES.md).
 The separate `--instance-choices` option admits only nested flat repeated choices
 with unit alternatives, aggregate cardinality checks and existing strict tree/
 identity/source guards. Real admission advances to **385 valid / 11 blocked**:

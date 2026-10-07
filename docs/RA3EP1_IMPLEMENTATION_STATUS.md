@@ -5,6 +5,20 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Consumed inheritance markers](RA3EP1_SDK_INSTANCE_MARKERS.md) reproduces the
+core InstanceDeclaration.XmlNode setter's pre-join marker removal under a
+separate `--instance-markers` option. Undeclared marker admission is restricted
+to the two reviewed local AI types; imported non-inheritable bases stay closed.
+Relevant XSDs byte-match Uprising reference files and official RA3 types share
+the BaseAssetType ancestry; no schema/reference/core edit is made.
+Real admission remains **385 valid / 11 blocked**, zero regressions. The two
+previous unknown-attribute blockers now reach bitflag-list and matched-filter
+branch guards. No partial evidence/fields escape those refusals. Registered
+groups: 132; model/marshaller counts, path/dependency gaps and the manual
+**51% complete / 49% remaining** estimate are unchanged. No native/game proof.
+All 132 compiler groups, 33 enum checks, three classifier fixtures and three
+marker CLI isolation probes pass. Expected real audit exit 2, no output.
+
 [Bounded repeated-choice copying](RA3EP1_SDK_INSTANCE_CHOICES.md) advances real
 admission to **385 valid / 11 blocked**. All eleven reviewed owners newly validate;
 there are zero earlier-valid regressions and no SchemaInvalid/limit/stale/read

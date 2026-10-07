@@ -17,6 +17,8 @@ internal sealed class SdkInstanceInheritanceProfile
     internal const string RemovalName = "diagnostic-direct-instance-removals-v1";
     // Reborn: repeated-choice copy preparation is separately explicit and cannot widen the removal-only profile.
     internal const string ChoiceName = "diagnostic-direct-instance-choice-copy-v1";
+    // Reborn: consumed pipeline markers have their own diagnostic option; imported non-inheritable types remain closed.
+    internal const string MarkerName = "diagnostic-direct-instance-markers-v1";
     // Reborn: identify every captured/prepared document contributing to an admitted closure, not native hashes or live-disk state.
     internal sealed record PreparedSource(string SourcePath,string RawSha256,string ProcessedSha256);
     private const string Ea = "uri:ea.com:eala:asset";
@@ -36,11 +38,13 @@ internal sealed class SdkInstanceInheritanceProfile
     private readonly bool removals;
     // Reborn: retain nested repeated-choice admission consistently throughout the child-first source closure.
     private readonly bool choices;
+    // Reborn: apply source-local marker consumption throughout child-first preparation without relaxing imported-base eligibility.
+    private readonly bool markers;
     private sealed record Prepared(SdkSelfAttributeInheritance.Result Result,int Height);
     private readonly Dictionary<string,Prepared> prepared = new(StringComparer.OrdinalIgnoreCase);
     private readonly HashSet<string> active = new(StringComparer.OrdinalIgnoreCase);
     private long preparedBytes;
-    private string Profile => choices ? ChoiceName : removals ? RemovalName : chains ? ChainName : rootFiles ? RootFileName : Name;
+    private string Profile => markers ? MarkerName : choices ? ChoiceName : removals ? RemovalName : chains ? ChainName : rootFiles ? RootFileName : Name;
     private readonly XmlSchemaSet schemas;
     private readonly SdkSourcePathAudit.Report paths;
     private readonly Dictionary<string,SdkSourcePathAudit.Source> inventory = new(StringComparer.OrdinalIgnoreCase);
@@ -50,11 +54,12 @@ internal sealed class SdkInstanceInheritanceProfile
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate the complete captured source inventory before any imported read; caller-supplied graph records cannot authorize escaped files. */
     //-------------------------------------------------------------------------------------------------
-    internal SdkInstanceInheritanceProfile(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool rootFiles = false,bool chains = false,bool removals = false,bool choices = false)
+    internal SdkInstanceInheritanceProfile(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool rootFiles = false,bool chains = false,bool removals = false,bool choices = false,bool markers = false)
     {
         this.schemas = schemas; this.paths = paths;
         // Reborn: choice admission includes the tested chain/removal subsets without changing any earlier constructor defaults.
-        this.rootFiles = rootFiles || chains || removals || choices; this.chains = chains || removals || choices; this.removals = removals || choices; this.choices = choices;
+        // Reborn: explicitly selecting markers includes earlier choices/chains without changing their constructor defaults.
+        this.rootFiles = rootFiles || chains || removals || choices || markers; this.chains = chains || removals || choices || markers; this.removals = removals || choices || markers; this.choices = choices || markers; this.markers = markers;
         if (!schemas.IsCompiled || paths.Sources.Length > 512 || paths.Includes.Length > 4096) throw new InvalidDataException("Compiled schema and bounded instance inventory required.");
         string[] roots = new[] { paths.SourceRoot,paths.ArtRoot,paths.AudioRoot }.Where(root => root != null).Cast<string>().Select(SdkEnvironmentPreflight.DirectoryPath).ToArray();
         foreach (var source in paths.Sources)
@@ -172,13 +177,13 @@ internal sealed class SdkInstanceInheritanceProfile
                 injected.Add(handle); witnesses.Add(entry.Witness with { RootQualifiedFields = baseBinding.Fields });
             }
             // Reborn: the new chain profile includes only the independently tested empty-complex-child merge subset; older imported flags remain one-sided.
-            var merged = SdkSelfAttributeInheritance.Apply(schemas,Serialize(owner),treeCopy:true,childMerge:chains,childRemoval:removals,choiceCopy:choices);
+            var merged = SdkSelfAttributeInheritance.Apply(schemas,Serialize(owner),treeCopy:true,childMerge:chains,childRemoval:removals,choiceCopy:choices,consumeMarkers:markers);
             if (merged.Bytes == null) throw new InvalidDataException((chains ? "Instance overlay exceeds chain merge scope: " : "Instance overlay exceeds copy-only scope: ")+string.Join("; ",merged.Evidence.Diagnostics));
             XmlDocument output = Parse(merged.Bytes);
             foreach (var asset in Assets(output).Where(asset => injected.Contains(asset.LocalName+":"+asset.GetAttribute("id"))).ToArray()) output.DocumentElement!.RemoveChild(asset);
             byte[] processed = Serialize(output);
             if (processed.Length > 4*1048576) throw new InvalidDataException("Processed instance owner exceeds 4 MiB.");
-            return new(processed,new(Profile,raw,Convert.ToHexString(SHA256.HashData(processed)),merged.Evidence.Overlays,Array.Empty<string>()) { ImportedBases = witnesses.ToArray(),PreparedSources = closure.DistinctBy(source => source.SourcePath,StringComparer.OrdinalIgnoreCase).ToArray(),Removals = merged.Evidence.Removals });
+            return new(processed,new(Profile,raw,Convert.ToHexString(SHA256.HashData(processed)),merged.Evidence.Overlays,Array.Empty<string>()) { ImportedBases = witnesses.ToArray(),PreparedSources = closure.DistinctBy(source => source.SourcePath,StringComparer.OrdinalIgnoreCase).ToArray(),Removals = merged.Evidence.Removals,ConsumedMarkers = merged.Evidence.ConsumedMarkers });
         }
         catch (Exception error) when (error is IOException or InvalidDataException or XmlException or ArgumentException or UnauthorizedAccessException or NotSupportedException or BinaryAssetBuilderException)
         { return new(null,new(Profile,raw,null,Array.Empty<SdkSelfAttributeInheritance.Overlay>(),new[] { error.Message[..Math.Min(error.Message.Length,512)] })); }

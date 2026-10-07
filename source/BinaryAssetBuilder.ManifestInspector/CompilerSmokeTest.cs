@@ -91,6 +91,8 @@ internal static class CompilerSmokeTest
         TestSdkChoiceSemantics();
         // Reborn: register separately admitted repeated-choice copying after the unchanged core characterization.
         TestSdkInstanceChoices();
+        // Reborn: register consumed pipeline-marker semantics independently of retained-marker choice preparation.
+        TestSdkInstanceMarkers();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2372,6 +2374,11 @@ internal static class CompilerSmokeTest
     /** Reborn: prove nested repeated-choice copying and strict preservation of all earlier profile boundaries. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkInstanceChoices() => SdkInstanceChoicesSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: prove declaration-time marker consumption and retain the imported non-inheritable gate. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkInstanceMarkers() => SdkInstanceMarkersSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */
