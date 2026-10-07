@@ -1,7 +1,7 @@
 # BinaryAssetBuilder
 A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
-## Uprising progress — October 6, 2026
+## Uprising progress — October 7, 2026
 
 Active branch: `feature/ra3ep1-manifest-inspector`. This is not yet a usable
 Uprising Mod SDK release. Replacing XML/XSD files alone is insufficient:
@@ -20,18 +20,28 @@ is not a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**121 test groups** (some contain several fixtures). These counters can grow
+**122 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance regressions add groups and all 121 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy regressions add groups and all 122 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Core-backed local attribute inheritance PoC](docs/RA3EP1_SDK_SELF_ATTRIBUTE_INHERITANCE.md).
+Latest milestone: [One-sided flat child inheritance](docs/RA3EP1_SDK_SELF_CHILD_COPY.md).
+The explicit `--self-child-copy` profile admits simple sequence children from
+only one side of a same-document overlay, using the existing core joiner. Real
+AmbientStream.xml validates after ten overlays; formatting whitespace follows
+core's default parsing behavior. The graph is now 203 valid / 193 blocked.
+Complex/populated-child merges and imported bases stay closed. Earlier profiles,
+reference bytes and six path issues remain unchanged; no output or game build
+is claimed. All 122 default groups and 33 enum checks pass. Weighted effort stays
+about 50.25%, rounded 50% complete / 50% remaining.
+
+[Core-backed local attribute inheritance PoC](docs/RA3EP1_SDK_SELF_ATTRIBUTE_INHERITANCE.md).
 The explicit `--self-attribute-inheritance` profile uses core NodeJoiner for
 same-document/same-type expression-free leaf assets, with atomic rejection and
 cycle/depth/amplification guards. Owned fixtures prove inherited required attributes

@@ -10,6 +10,8 @@ namespace BinaryAssetBuilder.ManifestInspector;
 internal static class SdkSelfAttributeInheritance
 {
     internal const string Name = "diagnostic-self-attribute-inheritance-v1";
+    // Reborn: one-sided flat child copying is independently explicit; matching/replacing children remains closed.
+    internal const string ChildCopyName = "diagnostic-self-child-copy-v1";
     // Reborn: overlay evidence identifies source-level handles and transformed bytes, never native asset/stream identities.
     internal sealed record Overlay(string Type,string DerivedId,string BaseId);
     internal sealed record Evidence(string Profile,string RawSha256,string? ProcessedSha256,Overlay[] Overlays,string[] Diagnostics);
@@ -19,13 +21,15 @@ internal static class SdkSelfAttributeInheritance
     //-------------------------------------------------------------------------------------------------
     /** Reborn: expand local leaf-asset chains with the core's attribute replacement behavior and reject the entire document on unsupported semantics. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes)
+    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false)
     {
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
+        string profile = childCopy ? ChildCopyName : Name;
         try
         {
             if (!schemas.IsCompiled || bytes.Length > 4*1048576) throw new InvalidDataException("Compiled schema and bounded source required.");
-            XmlDocument xml = new() { XmlResolver = null,PreserveWhitespace = true };
+            // Reborn: child-copy parsing follows core's default whitespace handling so formatting XmlWhitespace nodes do not become unexpected sequence children.
+            XmlDocument xml = new() { XmlResolver = null,PreserveWhitespace = !childCopy };
             using (MemoryStream input = new(bytes,false))
             using (XmlReader reader = XmlReader.Create(input,new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit,XmlResolver = null,MaxCharactersInDocument = 4*1048576 })) xml.Load(reader);
             XmlElement? root = xml.DocumentElement;
@@ -53,7 +57,7 @@ internal static class SdkSelfAttributeInheritance
             using (XmlWriter writer = XmlWriter.Create(output,new XmlWriterSettings { Encoding = new UTF8Encoding(false),NewLineHandling = NewLineHandling.None })) xml.Save(writer);
             byte[] processed = output.ToArray();
             if (processed.Length > 4*1048576) throw new InvalidDataException("Processed inheritance XML exceeds 4 MiB.");
-            return new(processed,new(Name,raw,Convert.ToHexString(SHA256.HashData(processed)),overlays.ToArray(),Array.Empty<string>()));
+            return new(processed,new(profile,raw,Convert.ToHexString(SHA256.HashData(processed)),overlays.ToArray(),Array.Empty<string>()));
 
             //-------------------------------------------------------------------------------------------------
             /** Reborn: local handles precede imported visibility; reject same-handle overrides, missing bases, cross-type inheritance and cycles. */
@@ -74,10 +78,13 @@ internal static class SdkSelfAttributeInheritance
                     { var parts = target.Split(':'); if (parts.Length != 2 || parts[0] != type) throw new InvalidDataException("Cross-type inherited handle is outside the profile."); baseId = parts[1]; }
                     if (!Token(baseId) || baseId == asset.GetAttribute("id")) throw new InvalidDataException("Empty/unsafe base or same-handle imported override remains closed.");
                     XmlElement baseAsset = Resolve(type+":"+baseId,depth+1);
+                    // Reborn: both populated sides require actual child matching semantics and cannot pass a copy-only admission rule.
+                    if (childCopy && baseAsset.ChildNodes.OfType<XmlElement>().Any() && asset.ChildNodes.OfType<XmlElement>().Any()) throw new InvalidDataException("Both base and derived contain children; child merge semantics remain closed.");
                     height = heights[type+":"+baseId]+1;
                     if (height > 32) throw new InvalidDataException("32-link local inheritance chain bound exceeded.");
                     foreach (XmlAttribute attribute in baseAsset.Attributes)
                         if (attribute.NamespaceURI.Length == 0 && !asset.HasAttribute(attribute.Name)) expandedBytes += Encoding.UTF8.GetByteCount(attribute.OuterXml)+1L;
+                    if (childCopy) foreach (XmlElement child in baseAsset.ChildNodes.OfType<XmlElement>()) expandedBytes += Encoding.UTF8.GetByteCount(child.OuterXml)+1L;
                     if (expandedBytes > 4*1048576) throw new InvalidDataException("Inherited attribute amplification exceeds 4 MiB before merge.");
                     result = (XmlElement)NodeJoiner.Override(schemas,xml,baseAsset,asset);
                     overlays.Add(new(type,asset.GetAttribute("id"),baseId));
@@ -90,7 +97,7 @@ internal static class SdkSelfAttributeInheritance
             //-------------------------------------------------------------------------------------------------
             void CheckLeaf(XmlElement asset)
             {
-                if (asset.ChildNodes.OfType<XmlNode>().Any(node => node is not XmlComment && !((node.NodeType is XmlNodeType.Text or XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace) && string.IsNullOrWhiteSpace(node.Value)))) throw new InvalidDataException("Only attribute-only base/derived assets are admitted.");
+                if (!childCopy && asset.ChildNodes.OfType<XmlNode>().Any(node => node is not XmlComment && !((node.NodeType is XmlNodeType.Text or XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace) && string.IsNullOrWhiteSpace(node.Value)))) throw new InvalidDataException("Only attribute-only base/derived assets are admitted.");
                 var name = new XmlQualifiedName(asset.LocalName,Ea);
                 if (schemas.GlobalTypes[name] is not XmlSchemaComplexType type || type.AttributeWildcard != null) throw new InvalidDataException("Exact named complex asset schema without attribute wildcard required.");
                 foreach (XmlAttribute attribute in asset.Attributes)
@@ -100,10 +107,38 @@ internal static class SdkSelfAttributeInheritance
                     if (type.AttributeUses[new XmlQualifiedName(attribute.Name)] is not XmlSchemaAttribute use) throw new InvalidDataException("Unknown asset attribute cannot be hidden by an overlay.");
                     if (use.AttributeSchemaType?.Datatype?.Variety == XmlSchemaDatatypeVariety.List && (attribute.Value.Contains('+') || attribute.Value.Contains('-'))) throw new InvalidDataException("Bitflag/list modifiers require separately reviewed semantics.");
                 }
+                if (childCopy) CheckChildren(asset,type);
+            }
+
+            //-------------------------------------------------------------------------------------------------
+            /** Reborn: admit only direct simple-content sequence children; refuse nested structures, wildcards, choice/group particles and instance directives. */
+            //-------------------------------------------------------------------------------------------------
+            void CheckChildren(XmlElement asset,XmlSchemaComplexType type)
+            {
+                var children = asset.ChildNodes.OfType<XmlElement>().ToArray();
+                foreach (XmlNode node in asset.ChildNodes)
+                    if (node is not XmlElement && node is not XmlComment && !((node.NodeType is XmlNodeType.Text or XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace) && string.IsNullOrWhiteSpace(node.Value))) throw new InvalidDataException("Meaningful asset text or non-element content is outside child-copy scope.");
+                if (children.Length == 0) return;
+                if (type.ContentTypeParticle is not XmlSchemaSequence sequence || sequence.Items.OfType<XmlSchemaObject>().Any(item => item is not XmlSchemaElement)) throw new InvalidDataException("Flat direct sequence child schema required.");
+                Dictionary<XmlQualifiedName,int> counts = new();
+                foreach (var child in children)
+                {
+                    var qualified = new XmlQualifiedName(child.LocalName,child.NamespaceURI);
+                    var declaration = sequence.Items.OfType<XmlSchemaElement>().SingleOrDefault(item => item.QualifiedName == qualified);
+                    if (child.NamespaceURI != Ea || declaration?.ElementSchemaType is not XmlSchemaSimpleType || child.Attributes.OfType<XmlAttribute>().Any(attribute => attribute.NamespaceURI != "http://www.w3.org/2000/xmlns/")) throw new InvalidDataException("Only attribute-free simple sequence children are admitted.");
+                    counts.TryGetValue(qualified,out int count); counts[qualified] = ++count;
+                    if (count > declaration.MaxOccurs) throw new InvalidDataException("Child occurrence bound exceeded before copying.");
+                    foreach (XmlNode node in child.ChildNodes)
+                    {
+                        if (node is not XmlComment && node.NodeType is not (XmlNodeType.Text or XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace)) throw new InvalidDataException("Nested/CDATA/directive child content requires broader merging.");
+                        if (node is not XmlComment && node.Value?.StartsWith('=') == true) throw new InvalidDataException("Child node expressions require preprocessing before inheritance.");
+                    }
+                    if (child.InnerText.StartsWith('=')) throw new InvalidDataException("Child expressions require preprocessing before inheritance.");
+                }
             }
         }
         catch (Exception error) when (error is IOException or InvalidDataException or XmlException or ArgumentException or BinaryAssetBuilderException)
-        { return new(null,new(Name,raw,null,Array.Empty<Overlay>(),new[] { error.Message[..Math.Min(error.Message.Length,512)] })); }
+        { return new(null,new(profile,raw,null,Array.Empty<Overlay>(),new[] { error.Message[..Math.Min(error.Message.Length,512)] })); }
     }
 
     //-------------------------------------------------------------------------------------------------

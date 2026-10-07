@@ -72,6 +72,7 @@ internal static class CompilerSmokeTest
         TestSdkIncludeDefineProfile();
         TestSdkDefinitionSubset();
         TestSdkSelfAttributeInheritance();
+        TestSdkSelfChildCopy();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2303,6 +2304,11 @@ internal static class CompilerSmokeTest
     /** Reborn: execute the core-backed local leaf overlay subset tests without enabling production or imported inheritance. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkSelfAttributeInheritance() => SdkSelfAttributeInheritanceSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify one-sided flat child copying separately from the original local leaf profile and broader core child merges. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkSelfChildCopy() => SdkSelfChildCopySmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

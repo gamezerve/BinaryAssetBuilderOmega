@@ -3,7 +3,17 @@
 This branch starts the migration with a read-only compatibility gate. It does
 not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
-## Latest bounded milestone (2026-10-06)
+## Latest bounded milestone (2026-10-07)
+
+[One-sided flat child inheritance](RA3EP1_SDK_SELF_CHILD_COPY.md) admits simple
+sequence children on only one side of a local overlay and follows core's default
+formatting-whitespace handling. Real AmbientStream.xml validates with ten overlays.
+The graph improves to 203 valid / 193 blocked; remaining first blockers are simple-
+child scope in 190 documents and absent local bases in three. Both-sided/complex
+merging and imported inheritance remain closed. Previous profiles, reference bytes,
+six path issues and the typed AUDIO header remain unchanged. All 122 default groups
+and 33 enum checks pass, no output/game proof. Weighted effort stays about 50.25%,
+rounded 50%. The leaf PoC below is the preceding October 6 milestone.
 
 [Core-backed local attribute inheritance PoC](RA3EP1_SDK_SELF_ATTRIBUTE_INHERITANCE.md)
 proves same-document/same-type leaf overlays through the existing NodeJoiner with
