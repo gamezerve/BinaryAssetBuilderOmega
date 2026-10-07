@@ -6,12 +6,14 @@ using BinaryAssetBuilder.Core.SageXml;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: use the existing core joiner only for bounded same-document, same-type attribute-only overlays; all richer inheritance remains closed.
+// Reborn: use the existing core joiner for separately admitted bounded same-document, same-type attribute/simple/complex-leaf overlays; richer inheritance remains closed.
 internal static class SdkSelfAttributeInheritance
 {
     internal const string Name = "diagnostic-self-attribute-inheritance-v1";
     // Reborn: one-sided flat child copying is independently explicit; matching/replacing children remains closed.
     internal const string ChildCopyName = "diagnostic-self-child-copy-v1";
+    // Reborn: complex leaf children require independent admission, without opening nested trees or populated-child matching.
+    internal const string ComplexChildCopyName = "diagnostic-self-complex-child-copy-v1";
     // Reborn: overlay evidence identifies source-level handles and transformed bytes, never native asset/stream identities.
     internal sealed record Overlay(string Type,string DerivedId,string BaseId);
     internal sealed record Evidence(string Profile,string RawSha256,string? ProcessedSha256,Overlay[] Overlays,string[] Diagnostics);
@@ -21,10 +23,12 @@ internal static class SdkSelfAttributeInheritance
     //-------------------------------------------------------------------------------------------------
     /** Reborn: expand local leaf-asset chains with the core's attribute replacement behavior and reject the entire document on unsupported semantics. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false)
+    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false)
     {
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
-        string profile = childCopy ? ChildCopyName : Name;
+        string profile = complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
+        // Reborn: the independently named complex profile includes the copy-only gate, never the child merge gate.
+        childCopy |= complexChildCopy;
         try
         {
             if (!schemas.IsCompiled || bytes.Length > 4*1048576) throw new InvalidDataException("Compiled schema and bounded source required.");
@@ -111,7 +115,7 @@ internal static class SdkSelfAttributeInheritance
             }
 
             //-------------------------------------------------------------------------------------------------
-            /** Reborn: admit only direct simple-content sequence children; refuse nested structures, wildcards, choice/group particles and instance directives. */
+            /** Reborn: admit direct simple sequence children or separately selected complex leaves; refuse nested structures, wildcards, choice/group particles and instance directives. */
             //-------------------------------------------------------------------------------------------------
             void CheckChildren(XmlElement asset,XmlSchemaComplexType type)
             {
@@ -125,7 +129,21 @@ internal static class SdkSelfAttributeInheritance
                 {
                     var qualified = new XmlQualifiedName(child.LocalName,child.NamespaceURI);
                     var declaration = sequence.Items.OfType<XmlSchemaElement>().SingleOrDefault(item => item.QualifiedName == qualified);
-                    if (child.NamespaceURI != Ea || declaration?.ElementSchemaType is not XmlSchemaSimpleType || child.Attributes.OfType<XmlAttribute>().Any(attribute => attribute.NamespaceURI != "http://www.w3.org/2000/xmlns/")) throw new InvalidDataException("Only attribute-free simple sequence children are admitted.");
+                    if (child.NamespaceURI != Ea || declaration == null) throw new InvalidDataException("Unknown sequence child is outside the profile.");
+                    // Reborn: complex admission is limited to simpleContent or empty-content leaves; every effective attribute is checked before the core sees it.
+                    if (complexChildCopy && declaration.ElementSchemaType is XmlSchemaComplexType leaf)
+                    {
+                        if (leaf.AttributeWildcard != null || leaf.ContentType is not (XmlSchemaContentType.TextOnly or XmlSchemaContentType.Empty)) throw new InvalidDataException("Only simpleContent/empty complex leaf children are admitted; nested/mixed content remains closed.");
+                        foreach (XmlAttribute attribute in child.Attributes)
+                        {
+                            if (attribute.NamespaceURI == "http://www.w3.org/2000/xmlns/") continue;
+                            if (attribute.NamespaceURI.Length != 0 || attribute.Name is "id" or "TypeId" or "inheritFrom" || attribute.Value.StartsWith('=')) throw new InvalidDataException("Complex child identity, directives or expressions require broader preprocessing.");
+                            if (leaf.AttributeUses[new XmlQualifiedName(attribute.Name)] is not XmlSchemaAttribute use) throw new InvalidDataException("Unknown complex child attribute.");
+                            if (use.AttributeSchemaType?.Datatype?.Variety == XmlSchemaDatatypeVariety.List && (attribute.Value.Contains('+') || attribute.Value.Contains('-'))) throw new InvalidDataException("Complex child list modifiers remain closed.");
+                        }
+                        if (leaf.ContentType == XmlSchemaContentType.Empty && !string.IsNullOrWhiteSpace(child.InnerText)) throw new InvalidDataException("Empty complex child contains text.");
+                    }
+                    else if (declaration.ElementSchemaType is not XmlSchemaSimpleType || child.Attributes.OfType<XmlAttribute>().Any(attribute => attribute.NamespaceURI != "http://www.w3.org/2000/xmlns/")) throw new InvalidDataException("Only attribute-free simple sequence children are admitted.");
                     counts.TryGetValue(qualified,out int count); counts[qualified] = ++count;
                     if (count > declaration.MaxOccurs) throw new InvalidDataException("Child occurrence bound exceeded before copying.");
                     foreach (XmlNode node in child.ChildNodes)

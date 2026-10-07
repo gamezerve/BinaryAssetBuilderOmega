@@ -20,18 +20,27 @@ is not a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**122 test groups** (some contain several fixtures). These counters can grow
+**123 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy regressions add groups and all 122 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf regressions add groups and all 123 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [One-sided flat child inheritance](docs/RA3EP1_SDK_SELF_CHILD_COPY.md).
+Latest milestone: [One-sided complex leaf inheritance](docs/RA3EP1_SDK_SELF_COMPLEX_CHILD_COPY.md).
+The independent `--self-complex-child-copy` profile admits attributed simpleContent
+and empty-content children on only one side of local overlays. BaseSoundEffect.xml
+(four overlays) and Speech.xml (one) newly validate: **205 valid / 191 blocked**.
+Nested/mixed children, child IDs, populated-child merging and imported bases remain
+closed. Earlier profiles and reference bytes are unchanged. Six path issues and
+the typed AUDIO header remain; no output or game build is claimed. All 123 default
+groups and 33 enum checks pass. Weighted effort stays about 50.25%, rounded 50%.
+
+[One-sided flat child inheritance](docs/RA3EP1_SDK_SELF_CHILD_COPY.md).
 The explicit `--self-child-copy` profile admits simple sequence children from
 only one side of a same-document overlay, using the existing core joiner. Real
 AmbientStream.xml validates after ten overlays; formatting whitespace follows

@@ -5,6 +5,17 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-07)
 
+[One-sided complex leaf inheritance](RA3EP1_SDK_SELF_COMPLEX_CHILD_COPY.md) adds an
+independent attributed simpleContent/empty-content child profile, still one-sided
+and same-document/same-type only. BaseSoundEffect.xml (four overlays) and Speech.xml
+(one) newly validate, bringing the graph to 205 valid / 191 blocked. First blockers:
+99 child identity/directive/expression, 83 nested/mixed child, five absent local
+base, three asset directive/expression and one unknown asset attribute. These are
+first document-level failures, not exhaustive asset counts. Earlier profiles,
+reference bytes, six path issues and the typed AUDIO header remain unchanged.
+All 123 default groups and 33 enum checks pass; no output/game proof. Weighted
+effort stays about 50.25%, rounded 50%. The flat-child block below is the prior step.
+
 [One-sided flat child inheritance](RA3EP1_SDK_SELF_CHILD_COPY.md) admits simple
 sequence children on only one side of a local overlay and follows core's default
 formatting-whitespace handling. Real AmbientStream.xml validates with ten overlays.
