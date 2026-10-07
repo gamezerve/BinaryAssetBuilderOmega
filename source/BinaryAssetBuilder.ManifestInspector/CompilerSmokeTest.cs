@@ -75,6 +75,8 @@ internal static class CompilerSmokeTest
         TestSdkSelfChildCopy();
         // Reborn: register independently scoped complex leaf copy fixtures in the default runner.
         TestSdkSelfComplexChildCopy();
+        // Reborn: execute recursive sequence-tree admission independently from all earlier copy-only profiles.
+        TestSdkSelfTreeCopy();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2316,6 +2318,11 @@ internal static class CompilerSmokeTest
     /** Reborn: execute complex leaf copy admission without expanding flat/attribute-only profiles. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkSelfComplexChildCopy() => SdkSelfComplexChildCopySmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify bounded recursive copying and original-profile isolation without native processor execution. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkSelfTreeCopy() => SdkSelfTreeCopySmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

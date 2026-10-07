@@ -26,24 +26,25 @@ internal static class SdkTypedSourceGraph
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compile/review once and validate the bounded source path graph without following new Includes or enabling production processors. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result Inspect(SdkSourcePathAudit.Report paths,bool localDefines = false,bool includeDefines = false,bool definitionExpressions = false,bool selfAttributeInheritance = false,bool selfChildCopy = false,bool selfComplexChildCopy = false)
+    internal static Result Inspect(SdkSourcePathAudit.Report paths,bool localDefines = false,bool includeDefines = false,bool definitionExpressions = false,bool selfAttributeInheritance = false,bool selfChildCopy = false,bool selfComplexChildCopy = false,bool selfTreeCopy = false)
     {
         XmlSchemaSet? schemas = null;
         var schema = SdkEffectiveSchema.Inspect(shieldCandidate:true,reviewHooks:true,onAdmitted:set => schemas = set);
         if (!schema.SchemaAdmitted || schemas == null) throw new InvalidDataException("Reviewed schema required for typed graph binding.");
-        return new(schema,BindGraph(schemas,paths,localDefines,includeDefines,definitionExpressions,selfAttributeInheritance,selfChildCopy,selfComplexChildCopy));
+        return new(schema,BindGraph(schemas,paths,localDefines,includeDefines,definitionExpressions,selfAttributeInheritance,selfChildCopy,selfComplexChildCopy,selfTreeCopy));
     }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: recheck raw source bytes/confinement, refuse inheritFrom overlays, and stat only schema-selected literal dependencies under explicit roots. */
     //-------------------------------------------------------------------------------------------------
-    internal static Report BindGraph(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool localDefines = false,bool includeDefines = false,bool definitionExpressions = false,bool selfAttributeInheritance = false,bool selfChildCopy = false,bool selfComplexChildCopy = false)
+    internal static Report BindGraph(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool localDefines = false,bool includeDefines = false,bool definitionExpressions = false,bool selfAttributeInheritance = false,bool selfChildCopy = false,bool selfComplexChildCopy = false,bool selfTreeCopy = false)
     {
         if (!schemas.IsCompiled || paths.Sources.Length > 512) throw new InvalidDataException("Compiled schema and bounded source inventory required.");
         // Reborn: broader literal visibility is independently explicit and cannot silently replace the earlier local-only profile.
         // Reborn: the complex leaf profile is independently explicit; all earlier admission rules remain unchanged.
-        if ((localDefines ? 1 : 0)+(includeDefines ? 1 : 0)+(definitionExpressions ? 1 : 0)+(selfAttributeInheritance ? 1 : 0)+(selfChildCopy ? 1 : 0)+(selfComplexChildCopy ? 1 : 0) > 1) throw new ArgumentException("Choose one diagnostic preprocessing profile.");
-        SdkIncludeDefineProfile? includeProfile = includeDefines || definitionExpressions || selfAttributeInheritance || selfChildCopy || selfComplexChildCopy ? new(paths,definitionExpressions || selfAttributeInheritance || selfChildCopy || selfComplexChildCopy) : null;
+        // Reborn: recursive tree copying is independent of all earlier flags and preserves their raw/definition/inheritance contracts.
+        if ((localDefines ? 1 : 0)+(includeDefines ? 1 : 0)+(definitionExpressions ? 1 : 0)+(selfAttributeInheritance ? 1 : 0)+(selfChildCopy ? 1 : 0)+(selfComplexChildCopy ? 1 : 0)+(selfTreeCopy ? 1 : 0) > 1) throw new ArgumentException("Choose one diagnostic preprocessing profile.");
+        SdkIncludeDefineProfile? includeProfile = includeDefines || definitionExpressions || selfAttributeInheritance || selfChildCopy || selfComplexChildCopy || selfTreeCopy ? new(paths,definitionExpressions || selfAttributeInheritance || selfChildCopy || selfComplexChildCopy || selfTreeCopy) : null;
         List<Document> documents = new(); HashSet<string> seen = new(StringComparer.OrdinalIgnoreCase);
         string[] roots = new[] { paths.SourceRoot,paths.ArtRoot,paths.AudioRoot }.Where(root => root != null).Cast<string>().Select(SdkEnvironmentPreflight.DirectoryPath).ToArray();
         long total = 0; int dependencies = 0; bool stopped = false;
@@ -68,16 +69,16 @@ internal static class SdkTypedSourceGraph
                 bool inherited = xml.SelectNodes("//*")!.OfType<XmlElement>().Any(element => element.NamespaceURI == "uri:ea.com:eala:asset" && element.HasAttribute("inheritFrom"));
                 if (inherited)
                 {
-                    if (!selfAttributeInheritance && !selfChildCopy && !selfComplexChildCopy)
+                    if (!selfAttributeInheritance && !selfChildCopy && !selfComplexChildCopy && !selfTreeCopy)
                     { documents.Add(new(source.PhysicalPath,source.Sha256,observed,"RequiresPreprocessing",Array.Empty<Dependency>(),new[] { "Asset inheritFrom overlays require an explicit admitted profile; no trusted fields." })); continue; }
-                    var expanded = SdkSelfAttributeInheritance.Apply(schemas,bytes,selfChildCopy,selfComplexChildCopy); inheritance = expanded.Evidence;
+                    var expanded = SdkSelfAttributeInheritance.Apply(schemas,bytes,selfChildCopy,selfComplexChildCopy,selfTreeCopy); inheritance = expanded.Evidence;
                     if (expanded.Bytes == null)
                     { documents.Add(new(source.PhysicalPath,source.Sha256,observed,"RequiresPreprocessing",Array.Empty<Dependency>(),inheritance.Diagnostics) { Inheritance = inheritance }); continue; }
                     bytes = expanded.Bytes;
                 }
                 // Reborn: explicit diagnostic substitution happens only after raw snapshot recheck and before schema binding.
                 SdkLocalDefineProfile.Evidence? preprocessing = null;
-                if (!inherited && (localDefines || includeDefines || definitionExpressions || selfAttributeInheritance || selfChildCopy || selfComplexChildCopy))
+                if (!inherited && (localDefines || includeDefines || definitionExpressions || selfAttributeInheritance || selfChildCopy || selfComplexChildCopy || selfTreeCopy))
                 {
                     var processed = includeProfile == null ? SdkLocalDefineProfile.Apply(bytes) : includeProfile.Apply(source.PhysicalPath,bytes); preprocessing = processed.Evidence;
                     if (processed.Bytes == null)
@@ -111,6 +112,6 @@ internal static class SdkTypedSourceGraph
         }
         return new(documents.ToArray(),paths.ScopedPathAuditComplete && !paths.StoppedAtLimit && !stopped && documents.Count > 0 && documents.Count == paths.Sources.Length
             && documents.All(document => document.Status == "Validated" && document.Dependencies.All(field => field.Issue == null)),stopped || paths.StoppedAtLimit,true,true,false,false)
-            { PreprocessingProfile = selfComplexChildCopy ? SdkSelfAttributeInheritance.ComplexChildCopyName : selfChildCopy ? SdkSelfAttributeInheritance.ChildCopyName : selfAttributeInheritance ? SdkSelfAttributeInheritance.Name : definitionExpressions ? SdkDefinitionSubset.Name : includeDefines ? SdkIncludeDefineProfile.Name : localDefines ? SdkLocalDefineProfile.Name : "raw-source" };
+            { PreprocessingProfile = selfTreeCopy ? SdkSelfAttributeInheritance.TreeCopyName : selfComplexChildCopy ? SdkSelfAttributeInheritance.ComplexChildCopyName : selfChildCopy ? SdkSelfAttributeInheritance.ChildCopyName : selfAttributeInheritance ? SdkSelfAttributeInheritance.Name : definitionExpressions ? SdkDefinitionSubset.Name : includeDefines ? SdkIncludeDefineProfile.Name : localDefines ? SdkLocalDefineProfile.Name : "raw-source" };
     }
 }

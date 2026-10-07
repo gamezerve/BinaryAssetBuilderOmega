@@ -5,6 +5,19 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-07)
 
+[Bounded one-sided sequence-tree inheritance](RA3EP1_SDK_SELF_TREE_COPY.md) admits
+recursive direct-sequence children with declared literal IDs unique across all
+siblings. Owned tests prove anonymous/inherited/recursive schema lookup, copied
+text/attributes/order, parent-local ID reuse, 32-level depth and 8,192-element bounds.
+The real graph stays 205 valid / 191 blocked, with zero earlier-valid regressions.
+Remaining first failures: 110 child directive/expression, 65 unavailable local
+base, nine non-flat-sequence particles, three asset directive/expression, two
+unknown asset attribute, one occurrence overflow and one duplicate/unsafe ID.
+This exposes later blockers, not newly compiled game assets. Earlier profiles,
+reference bytes, six path issues and the typed AUDIO header are unchanged. All 124
+default groups and 33 enum checks pass; no output/game proof. Weighted effort stays
+about 50.25%, rounded 50%. The complex-leaf block below is the preceding milestone.
+
 [One-sided complex leaf inheritance](RA3EP1_SDK_SELF_COMPLEX_CHILD_COPY.md) adds an
 independent attributed simpleContent/empty-content child profile, still one-sided
 and same-document/same-type only. BaseSoundEffect.xml (four overlays) and Speech.xml
