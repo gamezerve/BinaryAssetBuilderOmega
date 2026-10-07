@@ -14,11 +14,11 @@ internal static class SdkIdenticalStates
     //-------------------------------------------------------------------------------------------------
     /** Reborn: predict identical empty-complex keyed folding, verify the actual core result and remove only redundant later copies in memory. */
     //-------------------------------------------------------------------------------------------------
-    internal static Witness[] Normalize(XmlSchemaSet schemas,XmlElement asset)
+    internal static Witness[] Normalize(XmlSchemaSet schemas,XmlElement asset,IReadOnlySet<string>? orderedPairIds = null)
     {
         if (asset.LocalName != "AIPersonalityDefinition") return Array.Empty<Witness>();
         var groups = asset.ChildNodes.OfType<XmlElement>().Where(child => child.HasAttribute("id"))
-            .GroupBy(child => child.GetAttribute("id"),StringComparer.Ordinal).Where(group => group.Count() > 1).ToArray();
+            .GroupBy(child => child.GetAttribute("id"),StringComparer.Ordinal).Where(group => group.Count() > 1 && !(orderedPairIds?.Contains(group.Key) ?? false)).ToArray();
         if (groups.Length == 0) return Array.Empty<Witness>();
         if (asset.NamespaceURI != Ea || asset.Prefix.Length != 0
             || schemas.GlobalTypes[new XmlQualifiedName("AIPersonalityDefinition",Ea)] is not XmlSchemaComplexType owner

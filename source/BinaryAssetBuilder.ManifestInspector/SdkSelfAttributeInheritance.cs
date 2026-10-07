@@ -34,6 +34,8 @@ internal static class SdkSelfAttributeInheritance
     internal const string ObjectCreationName = "diagnostic-self-object-creation-markers-v1";
     // Reborn: identical StrategicState normalization is explicit and cannot widen earlier sibling-identity guards.
     internal const string IdenticalStateName = "diagnostic-self-identical-states-v1";
+    // Reborn: ordered state re-adds have a separate contract from identical-state coalescing.
+    internal const string StateReaddName = "diagnostic-self-state-readds-v1";
     // Reborn: record ordered weak-reference payload witnesses separately from attribute overlays and native reference binding.
     internal sealed record Filter(string Type,string DerivedId,string BaseId,string ChildName,string PayloadSource,SdkFilterCopies.Leaf[] Leaves);
     // Reborn: modifier witnesses are diagnostic XML identities and actual core results, not native asset hashes.
@@ -67,6 +69,8 @@ internal static class SdkSelfAttributeInheritance
         public SdkLocalDefineProfile.Evidence? ExpressionPreparation { get; init; }
         // Reborn: normalization events are source-owner-local and withheld atomically if any later gate fails.
         public SdkIdenticalStates.Witness[] IdenticalStates { get; init; } = Array.Empty<SdkIdenticalStates.Witness>();
+        // Reborn: publish source-owner command-pair results only after actual core projection agreement.
+        public SdkStateReadds.Witness[] StateReadds { get; init; } = Array.Empty<SdkStateReadds.Witness>();
     }
     internal sealed record Result(byte[]? Bytes,Evidence Evidence);
     private const string Ea = "uri:ea.com:eala:asset";
@@ -74,12 +78,12 @@ internal static class SdkSelfAttributeInheritance
     //-------------------------------------------------------------------------------------------------
     /** Reborn: expand local asset chains with independently admitted copy/empty-child matching scopes and reject the entire document on unsupported semantics. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false,bool childRemoval = false,bool choiceCopy = false,bool consumeMarkers = false,bool bitflags = false,bool filters = false,bool upgrades = false,bool objectCreationMarkers = false,bool identicalStates = false)
+    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false,bool childRemoval = false,bool choiceCopy = false,bool consumeMarkers = false,bool bitflags = false,bool filters = false,bool upgrades = false,bool objectCreationMarkers = false,bool identicalStates = false,bool stateReadds = false)
     {
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
-        string profile = identicalStates ? IdenticalStateName : objectCreationMarkers ? ObjectCreationName : upgrades ? UpgradeName : filters ? FilterName : bitflags ? BitflagName : consumeMarkers ? MarkerName : choiceCopy ? ChoiceCopyName : childRemoval ? ChildRemovalName : childMerge ? ChildMergeName : treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
+        string profile = stateReadds ? StateReaddName : identicalStates ? IdenticalStateName : objectCreationMarkers ? ObjectCreationName : upgrades ? UpgradeName : filters ? FilterName : bitflags ? BitflagName : consumeMarkers ? MarkerName : choiceCopy ? ChoiceCopyName : childRemoval ? ChildRemovalName : childMerge ? ChildMergeName : treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
         // Reborn: the new local scope composes tested overlay rules without silently changing any earlier defaults.
-        upgrades |= identicalStates;
+        identicalStates |= stateReadds; upgrades |= identicalStates;
         // Reborn: filter admission includes the tested bitflag/marker scopes without changing earlier profile defaults.
         filters |= upgrades;
         // Reborn: explicit upgrade normalization composes previous guards while leaving every earlier default unchanged.
@@ -137,10 +141,18 @@ internal static class SdkSelfAttributeInheritance
             }
             // Reborn: count the raw tree before folding, then normalize only proved identical direct-state groups in memory.
             List<SdkIdenticalStates.Witness> identicalStateEvidence = new();
+            // Reborn: retain exact original command nodes; no Remove instruction is deleted or rewritten.
+            Dictionary<XmlElement,SdkStateReadds.Pair[]> orderedPairs = new();
+            List<SdkStateReadds.Witness> readdEvidence = new();
             if (identicalStates)
             {
                 if (root.SelectNodes(".//*")!.Count > 8192) throw new InvalidDataException("8192-element pre-normalization tree bound exceeded.");
-                foreach (var asset in assets) identicalStateEvidence.AddRange(SdkIdenticalStates.Normalize(schemas,asset));
+                foreach (var asset in assets)
+                {
+                    var pairs = stateReadds ? SdkStateReadds.Find(schemas,asset) : Array.Empty<SdkStateReadds.Pair>();
+                    orderedPairs.Add(asset,pairs);
+                    identicalStateEvidence.AddRange(SdkIdenticalStates.Normalize(schemas,asset,pairs.Select(pair => pair.Removal.GetAttribute("id")).ToHashSet(StringComparer.Ordinal)));
+                }
             }
             // Reborn: bound aggregate inherited-attribute amplification before allocating each merged node, not only after final serialization.
             long expandedBytes = bytes.Length+1024L;
@@ -159,7 +171,7 @@ internal static class SdkSelfAttributeInheritance
             using (XmlWriter writer = XmlWriter.Create(output,new XmlWriterSettings { Encoding = new UTF8Encoding(false),NewLineHandling = NewLineHandling.None })) xml.Save(writer);
             byte[] processed = output.ToArray();
             if (processed.Length > 4*1048576) throw new InvalidDataException("Processed inheritance XML exceeds 4 MiB.");
-            return new(processed,new(profile,raw,Convert.ToHexString(SHA256.HashData(processed)),overlays.ToArray(),Array.Empty<string>()) { Removals = removals.ToArray(),ConsumedMarkers = markers.ToArray(),Bitflags = bitflagEvidence.ToArray(),Filters = filterEvidence.ToArray(),UpgradeNormalizations = upgradeEvidence.ToArray(),IdenticalStates = identicalStateEvidence.ToArray() });
+            return new(processed,new(profile,raw,Convert.ToHexString(SHA256.HashData(processed)),overlays.ToArray(),Array.Empty<string>()) { Removals = removals.ToArray(),ConsumedMarkers = markers.ToArray(),Bitflags = bitflagEvidence.ToArray(),Filters = filterEvidence.ToArray(),UpgradeNormalizations = upgradeEvidence.ToArray(),IdenticalStates = identicalStateEvidence.ToArray(),StateReadds = readdEvidence.ToArray() });
 
             //-------------------------------------------------------------------------------------------------
             /** Reborn: local handles precede imported visibility; reject same-handle overrides, missing bases, cross-type inheritance and cycles. */
@@ -200,6 +212,8 @@ internal static class SdkSelfAttributeInheritance
                         if (!childMerge) throw new InvalidDataException("Both base and derived contain children; child merge semantics remain closed.");
                         CheckMerge(baseAsset,asset,filterPlans);
                     }
+                    // Reborn: resolve and predict existing same-QName targets before invoking the core; projection includes every direct StrategicState.
+                    SdkStateReadds.Plan? readdPlan = orderedPairs.TryGetValue(asset,out var pairs) && pairs.Length > 0 ? SdkStateReadds.Prove(baseAsset,asset,pairs) : null;
                     height = heights[type+":"+baseId]+1;
                     if (height > 32) throw new InvalidDataException("32-link local inheritance chain bound exceeded.");
                     foreach (XmlAttribute attribute in baseAsset.Attributes)
@@ -217,6 +231,8 @@ internal static class SdkSelfAttributeInheritance
                         markers.Add(new(type,asset.GetAttribute("id"),baseId,schemaType.AttributeUses[new XmlQualifiedName("inheritFrom")] is XmlSchemaAttribute));
                     }
                     result = (XmlElement)NodeJoiner.Override(schemas,xml,baseAsset,joinSource);
+                    // Reborn: record neither command pair nor reordered fields unless actual core output matches the complete predicted state projection.
+                    if (readdPlan != null) { SdkStateReadds.Verify(result,readdPlan); readdEvidence.AddRange(readdPlan.Witnesses); }
                     // Reborn: confirm exact anonymous payload order and multiplicity after the actual core merge; do not deduplicate or concatenate references.
                     foreach (var plan in filterPlans)
                     {
@@ -246,6 +262,8 @@ internal static class SdkSelfAttributeInheritance
                 if (type.ContentTypeParticle is not XmlSchemaSequence sequence) throw new InvalidDataException("Direct sequence merge schema required.");
                 var before = baseAsset.ChildNodes.OfType<XmlElement>().ToArray();
                 var after = derived.ChildNodes.OfType<XmlElement>().ToArray();
+                // Reborn: the new profile tracks literal child presence after each command; older flags retain their original static-base lookup.
+                List<XmlElement> live = before.ToList();
                 // Reborn: core ID lookup spans sibling QNames; refuse collisions even where another singleton would otherwise be selected by name.
                 foreach (var child in after.Where(child => child.HasAttribute("id")))
                     if (before.Any(old => old.GetAttribute("id") == child.GetAttribute("id") && old.LocalName != child.LocalName))
@@ -255,13 +273,15 @@ internal static class SdkSelfAttributeInheritance
                 {
                     var declaration = sequence.Items.OfType<XmlSchemaElement>().Single(item => item.QualifiedName == new XmlQualifiedName(child.LocalName,Ea));
                     XmlElement? matched = declaration.MaxOccurs > 1
-                        ? child.HasAttribute("id") ? before.SingleOrDefault(old => old.GetAttribute("id") == child.GetAttribute("id")) : null
+                        ? child.HasAttribute("id") ? (stateReadds ? live : before.AsEnumerable()).SingleOrDefault(old => old.GetAttribute("id") == child.GetAttribute("id")) : null
                         : before.SingleOrDefault(old => old.LocalName == child.LocalName);
                     // Reborn: core warns on absent removal and matches IDs across QNames; this profile instead requires an existing exact named/keyed empty-complex target.
                     if (RemoveCommand(child))
                     {
                         if (!childRemoval || matched == null || matched.LocalName != child.LocalName) throw new InvalidDataException("Removal requires an existing same-QName direct child ID.");
                         counts[child.LocalName]--;
+                        // Reborn: re-added keys must see an absent target and count as a new appended entry, not an overlay of the removed base node.
+                        if (stateReadds) live.Remove(matched);
                         // Reborn: report the resolved base's literal ID consistently even when inheritFrom used a qualified Type:id handle.
                         removals.Add(new(derived.LocalName,derived.GetAttribute("id"),baseAsset.GetAttribute("id"),child.LocalName,child.GetAttribute("id")));
                         continue;
@@ -278,6 +298,7 @@ internal static class SdkSelfAttributeInheritance
                     {
                         counts.TryGetValue(child.LocalName,out int count); counts[child.LocalName] = ++count;
                         if (count > declaration.MaxOccurs) throw new InvalidDataException("Merged child occurrence bound exceeded before core allocation.");
+                        if (stateReadds) live.Add(child);
                     }
                 }
             }
@@ -343,7 +364,9 @@ internal static class SdkSelfAttributeInheritance
                     // Reborn: a bounded element inventory prevents a small source with many tiny nested children from creating unbounded joiner work.
                     if (treeCopy && (++treeNodes > 8192 || child.Prefix.Length != 0)) throw new InvalidDataException("8192-element child tree bound or unprefixed core lookup required.");
                     // Reborn: unique literal sibling IDs cannot select an already copied node on the sole populated side; duplicates/unsafe identities remain closed.
-                    if (treeCopy && child.HasAttribute("id") && (!Token(child.GetAttribute("id")) || !siblingIds.Add(child.GetAttribute("id")))) throw new InvalidDataException("Tree child IDs must be bounded literals unique across all siblings.");
+                    if (treeCopy && child.HasAttribute("id") && (!Token(child.GetAttribute("id")) || !siblingIds.Add(child.GetAttribute("id"))
+                        && !(stateReadds && depth == 0 && orderedPairs.TryGetValue(asset,out var admittedPairs) && admittedPairs.Any(pair => ReferenceEquals(pair.Replacement,child)))))
+                        throw new InvalidDataException("Tree child IDs must be bounded literals unique across all siblings.");
                     var qualified = new XmlQualifiedName(child.LocalName,child.NamespaceURI);
                     var declaration = declarations.OfType<XmlSchemaElement>().SingleOrDefault(item => item.QualifiedName == qualified);
                     if (child.NamespaceURI != Ea || declaration == null) throw new InvalidDataException("Unknown sequence child is outside the profile.");

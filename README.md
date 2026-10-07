@@ -22,18 +22,30 @@ a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**140 test groups** (some contain several fixtures). These counters can grow
+**141 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state regressions add groups and all 140 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd regressions add groups and all 141 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Identical StrategicState admission](docs/RA3EP1_SDK_INSTANCE_IDENTICAL_STATES.md).
+Latest milestone: [Ordered StrategicState Remove/re-add admission](docs/RA3EP1_SDK_INSTANCE_STATE_READDS.md).
+Independent `--instance-state-readds` retains original commands, requires an
+existing exact-QName resolved target and checks the unchanged core against a
+predicted complete state-field/order projection. Gibraltar validates with eight
+pairs and CC01 with one: **392 valid / 4 blocked**, zero earlier-valid regressions.
+Earlier identical-state scope stays 390 / 6; cross-QName removal remains closed.
+All 141 compiler groups, 33 enum checks, three classifier fixtures and three
+CLI isolation probes pass. Final build has zero warnings/errors; reference
+XML/XSD/core files are unchanged. No output/native/game proof; effort **51% / 49%**.
+Remaining: Music/SoundEffects expressions, Voice inventory bound and CC32's
+cross-QName command. Next: inspect CC32 reference/native evidence before admission.
+
+[Identical StrategicState admission](docs/RA3EP1_SDK_INSTANCE_IDENTICAL_STATES.md).
 Independent `--instance-identical-states` folds only bounded, literal, identical
 empty StrategicState siblings after proving the unchanged core's actual result.
 The complete AIP_S04_AlliedGroundBase owner now validates: **390 valid / 6 blocked**,

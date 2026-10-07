@@ -5,6 +5,17 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Ordered StrategicState Remove/re-add admission](RA3EP1_SDK_INSTANCE_STATE_READDS.md)
+adds independent `--instance-state-readds`: original command nodes remain intact,
+existing exact-QName resolved targets are required, and actual core output must
+match the predicted entire StrategicState field/order projection. Gibraltar's
+eight pairs and CC01's one pair now validate as whole owners: **392 valid / 4
+blocked**, zero earlier-valid regressions. Earlier identical-state profile stays
+390 / 6; cross-QName removal stays closed. Registered groups 141; all pass with
+33 enum checks, three classifier fixtures and three CLI isolation probes.
+Final build has zero warnings/errors; no reference/schema/core edits or native/
+game proof. Effort stays **51% / 49%**. Next: source/native CC32 reference review.
+
 [Identical StrategicState admission](RA3EP1_SDK_INSTANCE_IDENTICAL_STATES.md)
 adds independent `--instance-identical-states` without changing earlier flags.
 Literal identical direct empty-state groups are schema-shape checked and their
