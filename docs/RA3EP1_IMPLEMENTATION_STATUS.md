@@ -5,6 +5,17 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Identical StrategicState admission](RA3EP1_SDK_INSTANCE_IDENTICAL_STATES.md)
+adds independent `--instance-identical-states` without changing earlier flags.
+Literal identical direct empty-state groups are schema-shape checked and their
+predicted fields are compared with the unchanged core before in-memory folding.
+The whole AIP_S04_AlliedGroundBase owner validates: **390 valid / 6 blocked**,
+zero earlier-valid regressions. Earlier expressions stay 389 / 7. Registered
+groups: 140; all pass, along with 33 enum checks, three classifier fixtures and
+three CLI isolation probes. Final build has zero warnings/errors. No reference
+source/schema/core edits or output/native/game proof; effort **51% / 49%**.
+Next: independently prove ordered Remove/re-add against an exact resolved base.
+
 [Sibling identity operation review](RA3EP1_SDK_SIBLING_IDENTITY_REVIEW.md)
 separates identical duplicated StrategicStates from ordered Remove/re-add pairs
 and cross-QName removal. Owned unchanged-core fixtures pin coalescing, conflicting

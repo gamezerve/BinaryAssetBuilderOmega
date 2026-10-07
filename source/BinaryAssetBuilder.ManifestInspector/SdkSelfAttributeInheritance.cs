@@ -32,6 +32,8 @@ internal static class SdkSelfAttributeInheritance
     internal const string UpgradeName = "diagnostic-self-upgrade-normalization-v1";
     // Reborn: the local ObjectCreationList pipeline marker has independent evidence when composed by the expression-stage profile.
     internal const string ObjectCreationName = "diagnostic-self-object-creation-markers-v1";
+    // Reborn: identical StrategicState normalization is explicit and cannot widen earlier sibling-identity guards.
+    internal const string IdenticalStateName = "diagnostic-self-identical-states-v1";
     // Reborn: record ordered weak-reference payload witnesses separately from attribute overlays and native reference binding.
     internal sealed record Filter(string Type,string DerivedId,string BaseId,string ChildName,string PayloadSource,SdkFilterCopies.Leaf[] Leaves);
     // Reborn: modifier witnesses are diagnostic XML identities and actual core results, not native asset hashes.
@@ -63,6 +65,8 @@ internal static class SdkSelfAttributeInheritance
         public SdkMetadataDefinitions.Witness[] MetadataDefinitionIncludes { get; init; } = Array.Empty<SdkMetadataDefinitions.Witness>();
         // Reborn: pre-overlay substitutions have their own raw/processed source identity and are withheld atomically on later failure.
         public SdkLocalDefineProfile.Evidence? ExpressionPreparation { get; init; }
+        // Reborn: normalization events are source-owner-local and withheld atomically if any later gate fails.
+        public SdkIdenticalStates.Witness[] IdenticalStates { get; init; } = Array.Empty<SdkIdenticalStates.Witness>();
     }
     internal sealed record Result(byte[]? Bytes,Evidence Evidence);
     private const string Ea = "uri:ea.com:eala:asset";
@@ -70,10 +74,12 @@ internal static class SdkSelfAttributeInheritance
     //-------------------------------------------------------------------------------------------------
     /** Reborn: expand local asset chains with independently admitted copy/empty-child matching scopes and reject the entire document on unsupported semantics. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false,bool childRemoval = false,bool choiceCopy = false,bool consumeMarkers = false,bool bitflags = false,bool filters = false,bool upgrades = false,bool objectCreationMarkers = false)
+    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false,bool childRemoval = false,bool choiceCopy = false,bool consumeMarkers = false,bool bitflags = false,bool filters = false,bool upgrades = false,bool objectCreationMarkers = false,bool identicalStates = false)
     {
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
-        string profile = objectCreationMarkers ? ObjectCreationName : upgrades ? UpgradeName : filters ? FilterName : bitflags ? BitflagName : consumeMarkers ? MarkerName : choiceCopy ? ChoiceCopyName : childRemoval ? ChildRemovalName : childMerge ? ChildMergeName : treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
+        string profile = identicalStates ? IdenticalStateName : objectCreationMarkers ? ObjectCreationName : upgrades ? UpgradeName : filters ? FilterName : bitflags ? BitflagName : consumeMarkers ? MarkerName : choiceCopy ? ChoiceCopyName : childRemoval ? ChildRemovalName : childMerge ? ChildMergeName : treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
+        // Reborn: the new local scope composes tested overlay rules without silently changing any earlier defaults.
+        upgrades |= identicalStates;
         // Reborn: filter admission includes the tested bitflag/marker scopes without changing earlier profile defaults.
         filters |= upgrades;
         // Reborn: explicit upgrade normalization composes previous guards while leaving every earlier default unchanged.
@@ -129,6 +135,13 @@ internal static class SdkSelfAttributeInheritance
                 }
                 assets = root.ChildNodes.OfType<XmlElement>().Where(element => element.LocalName is not ("Includes" or "Defines" or "Tags")).ToArray();
             }
+            // Reborn: count the raw tree before folding, then normalize only proved identical direct-state groups in memory.
+            List<SdkIdenticalStates.Witness> identicalStateEvidence = new();
+            if (identicalStates)
+            {
+                if (root.SelectNodes(".//*")!.Count > 8192) throw new InvalidDataException("8192-element pre-normalization tree bound exceeded.");
+                foreach (var asset in assets) identicalStateEvidence.AddRange(SdkIdenticalStates.Normalize(schemas,asset));
+            }
             // Reborn: bound aggregate inherited-attribute amplification before allocating each merged node, not only after final serialization.
             long expandedBytes = bytes.Length+1024L;
             foreach (var asset in assets)
@@ -146,7 +159,7 @@ internal static class SdkSelfAttributeInheritance
             using (XmlWriter writer = XmlWriter.Create(output,new XmlWriterSettings { Encoding = new UTF8Encoding(false),NewLineHandling = NewLineHandling.None })) xml.Save(writer);
             byte[] processed = output.ToArray();
             if (processed.Length > 4*1048576) throw new InvalidDataException("Processed inheritance XML exceeds 4 MiB.");
-            return new(processed,new(profile,raw,Convert.ToHexString(SHA256.HashData(processed)),overlays.ToArray(),Array.Empty<string>()) { Removals = removals.ToArray(),ConsumedMarkers = markers.ToArray(),Bitflags = bitflagEvidence.ToArray(),Filters = filterEvidence.ToArray(),UpgradeNormalizations = upgradeEvidence.ToArray() });
+            return new(processed,new(profile,raw,Convert.ToHexString(SHA256.HashData(processed)),overlays.ToArray(),Array.Empty<string>()) { Removals = removals.ToArray(),ConsumedMarkers = markers.ToArray(),Bitflags = bitflagEvidence.ToArray(),Filters = filterEvidence.ToArray(),UpgradeNormalizations = upgradeEvidence.ToArray(),IdenticalStates = identicalStateEvidence.ToArray() });
 
             //-------------------------------------------------------------------------------------------------
             /** Reborn: local handles precede imported visibility; reject same-handle overrides, missing bases, cross-type inheritance and cycles. */

@@ -29,6 +29,8 @@ internal sealed class SdkInstanceInheritanceProfile
     internal const string MetadataName = "diagnostic-direct-instance-metadata-v1";
     // Reborn: expression resolution precedes owner overlays only under a separately selected pipeline profile.
     internal const string ExpressionName = "diagnostic-direct-instance-expressions-v1";
+    // Reborn: identical-state folding requires a distinct profile while earlier expression preparation remains unchanged.
+    internal const string IdenticalStateName = "diagnostic-direct-instance-identical-states-v1";
     // Reborn: identify every captured/prepared document contributing to an admitted closure, not native hashes or live-disk state.
     internal sealed record PreparedSource(string SourcePath,string RawSha256,string ProcessedSha256);
     private const string Ea = "uri:ea.com:eala:asset";
@@ -60,11 +62,13 @@ internal sealed class SdkInstanceInheritanceProfile
     private readonly bool metadata;
     // Reborn: retain defining-document expression context before injecting already prepared imported assets.
     private readonly bool expressions;
+    // Reborn: retain narrow same-QName identical-state admission throughout source-local preparation.
+    private readonly bool identicalStates;
     private sealed record Prepared(SdkSelfAttributeInheritance.Result Result,int Height);
     private readonly Dictionary<string,Prepared> prepared = new(StringComparer.OrdinalIgnoreCase);
     private readonly HashSet<string> active = new(StringComparer.OrdinalIgnoreCase);
     private long preparedBytes;
-    private string Profile => expressions ? ExpressionName : metadata ? MetadataName : upgrades ? UpgradeName : filters ? FilterName : bitflags ? BitflagName : markers ? MarkerName : choices ? ChoiceName : removals ? RemovalName : chains ? ChainName : rootFiles ? RootFileName : Name;
+    private string Profile => identicalStates ? IdenticalStateName : expressions ? ExpressionName : metadata ? MetadataName : upgrades ? UpgradeName : filters ? FilterName : bitflags ? BitflagName : markers ? MarkerName : choices ? ChoiceName : removals ? RemovalName : chains ? ChainName : rootFiles ? RootFileName : Name;
     private readonly XmlSchemaSet schemas;
     private readonly SdkSourcePathAudit.Report paths;
     private readonly Dictionary<string,SdkSourcePathAudit.Source> inventory = new(StringComparer.OrdinalIgnoreCase);
@@ -74,13 +78,15 @@ internal sealed class SdkInstanceInheritanceProfile
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate the complete captured source inventory before any imported read; caller-supplied graph records cannot authorize escaped files. */
     //-------------------------------------------------------------------------------------------------
-    internal SdkInstanceInheritanceProfile(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool rootFiles = false,bool chains = false,bool removals = false,bool choices = false,bool markers = false,bool bitflags = false,bool filters = false,bool upgrades = false,bool metadata = false,bool expressions = false)
+    internal SdkInstanceInheritanceProfile(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool rootFiles = false,bool chains = false,bool removals = false,bool choices = false,bool markers = false,bool bitflags = false,bool filters = false,bool upgrades = false,bool metadata = false,bool expressions = false,bool identicalStates = false)
     {
         this.schemas = schemas; this.paths = paths;
         // Reborn: choice admission includes the tested chain/removal subsets without changing any earlier constructor defaults.
         // Reborn: explicitly selecting markers includes earlier choices/chains without changing their constructor defaults.
         // Reborn: modifier admission implies markers/choices/chains, but all earlier constructor defaults remain unchanged.
         // Reborn: filters compose with earlier independently tested scopes, without changing any earlier default or imported-base authority.
+        // Reborn: explicit identical-state scope composes expression preparation but cannot widen the older expression flag.
+        expressions |= identicalStates; this.identicalStates = identicalStates;
         metadata |= expressions; this.expressions = expressions;
         upgrades |= metadata; this.metadata = metadata;
         filters |= upgrades; this.upgrades = upgrades;
@@ -203,6 +209,12 @@ internal sealed class SdkInstanceInheritanceProfile
             List<ImportedBase> witnesses = new(); HashSet<string> injected = new(StringComparer.Ordinal); long expandedSize = bytes.Length+1024L;
             // Reborn: use captured raw owner bytes only after Include authority is proved; never reinterpret imported assets in the consumer's definition context.
             SdkLocalDefineProfile.Evidence? expressionEvidence = null;
+            // Reborn: identical-state eligibility must already be literal in raw sibling fields; expression resolution cannot manufacture equality for this narrow scope.
+            if (identicalStates)
+                foreach (var asset in Assets(owner).Where(asset => asset.LocalName == "AIPersonalityDefinition"))
+                    foreach (var group in asset.ChildNodes.OfType<XmlElement>().Where(child => child.HasAttribute("id")).GroupBy(child => child.GetAttribute("id"),StringComparer.Ordinal).Where(group => group.Count() > 1))
+                        if (group.Any(child => child.Attributes.OfType<XmlAttribute>().Any(attribute => attribute.Value.StartsWith('='))))
+                            throw new InvalidDataException("Expression-valued repeated state fields remain closed before identical-state preparation.");
             if (expressions)
             {
                 var evaluated = new SdkIncludeDefineProfile(paths,definitionExpressions:true).Apply(path,bytes,beforeInheritance:true);
@@ -227,13 +239,13 @@ internal sealed class SdkInstanceInheritanceProfile
             }
             // Reborn: the new chain profile includes only the independently tested empty-complex-child merge subset; older imported flags remain one-sided.
             // Reborn: only this separately selected stage also consumes the reviewed local ObjectCreationList marker; imported eligibility remains unchanged.
-            var merged = SdkSelfAttributeInheritance.Apply(schemas,Serialize(owner),treeCopy:true,childMerge:chains,childRemoval:removals,choiceCopy:choices,consumeMarkers:markers,bitflags:bitflags,filters:filters,upgrades:upgrades,objectCreationMarkers:expressions);
+            var merged = SdkSelfAttributeInheritance.Apply(schemas,Serialize(owner),treeCopy:true,childMerge:chains,childRemoval:removals,choiceCopy:choices,consumeMarkers:markers,bitflags:bitflags,filters:filters,upgrades:upgrades,objectCreationMarkers:expressions,identicalStates:identicalStates);
             if (merged.Bytes == null) throw new InvalidDataException((chains ? "Instance overlay exceeds chain merge scope: " : "Instance overlay exceeds copy-only scope: ")+string.Join("; ",merged.Evidence.Diagnostics));
             XmlDocument output = Parse(merged.Bytes);
             foreach (var asset in Assets(output).Where(asset => injected.Contains(asset.LocalName+":"+asset.GetAttribute("id"))).ToArray()) output.DocumentElement!.RemoveChild(asset);
             byte[] processed = Serialize(output);
             if (processed.Length > 4*1048576) throw new InvalidDataException("Processed instance owner exceeds 4 MiB.");
-            return new(processed,new(Profile,raw,Convert.ToHexString(SHA256.HashData(processed)),merged.Evidence.Overlays,Array.Empty<string>()) { ImportedBases = witnesses.ToArray(),PreparedSources = closure.DistinctBy(source => source.SourcePath,StringComparer.OrdinalIgnoreCase).ToArray(),Removals = merged.Evidence.Removals,ConsumedMarkers = merged.Evidence.ConsumedMarkers,Bitflags = merged.Evidence.Bitflags,Filters = merged.Evidence.Filters,UpgradeNormalizations = merged.Evidence.UpgradeNormalizations,MetadataDefinitionIncludes = metadataWitnesses.ToArray(),ExpressionPreparation = expressionEvidence });
+            return new(processed,new(Profile,raw,Convert.ToHexString(SHA256.HashData(processed)),merged.Evidence.Overlays,Array.Empty<string>()) { ImportedBases = witnesses.ToArray(),PreparedSources = closure.DistinctBy(source => source.SourcePath,StringComparer.OrdinalIgnoreCase).ToArray(),Removals = merged.Evidence.Removals,ConsumedMarkers = merged.Evidence.ConsumedMarkers,Bitflags = merged.Evidence.Bitflags,Filters = merged.Evidence.Filters,UpgradeNormalizations = merged.Evidence.UpgradeNormalizations,MetadataDefinitionIncludes = metadataWitnesses.ToArray(),ExpressionPreparation = expressionEvidence,IdenticalStates = merged.Evidence.IdenticalStates });
         }
         catch (Exception error) when (error is IOException or InvalidDataException or XmlException or ArgumentException or UnauthorizedAccessException or NotSupportedException or BinaryAssetBuilderException)
         { return new(null,new(Profile,raw,null,Array.Empty<SdkSelfAttributeInheritance.Overlay>(),new[] { error.Message[..Math.Min(error.Message.Length,512)] })); }

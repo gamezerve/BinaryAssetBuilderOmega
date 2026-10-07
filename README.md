@@ -22,18 +22,29 @@ a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**139 test groups** (some contain several fixtures). These counters can grow
+**140 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization regressions add groups and all 139 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state regressions add groups and all 140 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Sibling identity operation review](docs/RA3EP1_SDK_SIBLING_IDENTITY_REVIEW.md).
+Latest milestone: [Identical StrategicState admission](docs/RA3EP1_SDK_INSTANCE_IDENTICAL_STATES.md).
+Independent `--instance-identical-states` folds only bounded, literal, identical
+empty StrategicState siblings after proving the unchanged core's actual result.
+The complete AIP_S04_AlliedGroundBase owner now validates: **390 valid / 6 blocked**,
+zero earlier-valid regressions. Conflicting repeats, ordered Remove/re-add and
+cross-QName commands remain closed; earlier expression scope stays 389 / 7.
+All 140 compiler groups, 33 enum checks, three classifier fixtures and three
+CLI isolation probes pass; final build has zero warnings/errors. Reference
+XML/XSD and core implementation are unchanged; no output/native/game proof.
+Manual effort stays **51% / 49%**. Next: separately prove ordered state Remove/re-add.
+
+[Sibling identity operation review](docs/RA3EP1_SDK_SIBLING_IDENTITY_REVIEW.md).
 The remaining AI identity blockers split into identical duplicate states,
 ordered Remove/re-add pairs and cross-QName removal. New core fixtures prove
 that ordinary overlay is not equivalent to Remove/re-add: old-only fields and
