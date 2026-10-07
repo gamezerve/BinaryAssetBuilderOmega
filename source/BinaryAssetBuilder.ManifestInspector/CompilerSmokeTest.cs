@@ -85,6 +85,8 @@ internal static class CompilerSmokeTest
         TestSdkInstanceRootFiles();
         // Reborn: register recursive preparation separately from older direct-only instance profiles.
         TestSdkInstanceChains();
+        // Reborn: register literal keyed removal behavior separately from chain-only preparation.
+        TestSdkInstanceRemovals();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2351,6 +2353,11 @@ internal static class CompilerSmokeTest
     /** Reborn: verify direct-definition eligibility, source closures, cache/depth limits and stale/cyclic source rejection without native compilation. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkInstanceChains() => SdkInstanceChainsSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify strict removal identity, source closures and post-removal validation without native processors. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkInstanceRemovals() => SdkInstanceRemovalsSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

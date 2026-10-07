@@ -5,6 +5,32 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-07)
 
+[Bounded keyed child removal](RA3EP1_SDK_INSTANCE_REMOVALS.md) advances real
+admission to 374 valid / 22 blocked: 120 newly valid documents, zero earlier-valid
+regressions. Exact existing same-QName repeated empty-child IDs are required;
+missing targets and broader directives remain closed. 105 validated documents
+record 481 owner-authored removal commands. All 129 compiler groups pass, with
+permission required for an existing owned temporary audio-file move; all 33 enum
+checks and three classifier fixtures pass. Final build has zero warnings/errors.
+Six path issues and 198 occurrences of one missing AUDIO header remain. No
+reference XML/XSD or core joiner edits, no output/game proof. Eleven remaining
+documents first hit non-flat particle guards, identifying the next review scope.
+
+Current manual effort reassessment: SDK tools/dependencies rise from 25% to 30%
+after the accumulated preparation/removal work, adding 0.75 overall point. The
+weighted estimate becomes **51% complete / 49% remaining**; inventory and proven
+in-game validation remain unchanged.
+
+| Workstream | Effort weight | Estimated complete | Contribution |
+| --- | ---: | ---: | ---: |
+| Manifest/BIG/RefPack and safety gates | 15% | 80% | 12.00% |
+| Schema inventory and enums | 15% | 65% | 9.75% |
+| Native layouts/processors/dispatch/type table | 45% | 55% | 24.75% |
+| SDK scripts/dependencies/WorldBuilder packaging | 15% | 30% | 4.50% |
+| Built-mod validation in Uprising | 10% | 0% | 0.00% |
+
+The following milestone blocks are historical snapshots, not current counters.
+
 [Recursive direct-instance preparation](RA3EP1_SDK_INSTANCE_CHAINS.md) advances
 real admission to 254 valid / 142 blocked: 47 newly valid documents and zero
 earlier-valid regressions. Own-only child export preserves direct-definition

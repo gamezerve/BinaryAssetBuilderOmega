@@ -7,7 +7,7 @@ Active branch: `feature/ra3ep1-manifest-inspector`. This is not yet a usable
 Uprising Mod SDK release. Replacing XML/XSD files alone is insufficient:
 native layouts, type hashes, dependencies and in-game loading must also pass validation.
 
-Approximately **50% complete / 50% remaining**. This is an engineering-effort
+Approximately **51% complete / 49% remaining**. This is an engineering-effort
 estimate, not a file-coverage metric or a measure of working game mods.
 It is rounded from weighted workstreams and is not increased per commit.
 The containment audit and attach-base recovery accumulated enough work to
@@ -15,23 +15,38 @@ reassess the native-layout workstream from 53% to 55%; the overall estimate
 moves from about 49% to 50%. Major type-table and in-game gates remain open.
 The subsequent environment/path/catalog/effective-schema/candidate diagnostics
 raise the manually estimated SDK tools/dependencies workstream from 20% to 25%.
-With its 15% weight, the current total is about 50.25%, still rounded to 50%; this
-is not a measured percentage of usable mods or automatic credit per test/commit.
+The accumulated recursive preparation/removal milestones now reassess that SDK
+workstream from 25% to 30%. Its 15% weight adds 0.75 overall point: 50.25% becomes
+51%. Other workstreams and zero proven game loading are unchanged. This is not
+a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**128 test groups** (some contain several fixtures). These counters can grow
+**129 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain regressions add groups and all 128 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal regressions add groups and all 129 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Recursive direct-instance preparation](docs/RA3EP1_SDK_INSTANCE_CHAINS.md).
+Latest milestone: [Bounded keyed child removal](docs/RA3EP1_SDK_INSTANCE_REMOVALS.md).
+The independent `--instance-removals` flag admits exact literal Remove/id stubs
+only for existing same-QName repeated empty-complex children. Real admission now
+reaches **374 valid / 22 blocked**, with 120 newly valid documents and zero
+earlier-valid regressions. 105 validated documents record 481 owner-authored
+removals; consumed directives do not survive in processed XML. All 129 groups,
+33 enum checks and three classifier fixtures pass; the full suite required
+permission for an existing owned temporary audio-file move. Final build has zero
+warnings/errors. Six path issues and 198 uses of one missing AUDIO header remain;
+reference bytes and older profile admission are unchanged, no output/game proof.
+Next is reviewing exact non-flat particle shapes affecting 11 remaining documents.
+Manual weighted effort is reassessed to about 51% complete / 49% remaining.
+
+[Recursive direct-instance preparation](docs/RA3EP1_SDK_INSTANCE_CHAINS.md).
 The separate `--instance-chains` profile prepares each child in its own scope and
 exposes only its own declarations, not transitive handles. Full per-owner/per-base
 raw/processed source closures, cache-aware depth, cycle/stale and prepared-byte

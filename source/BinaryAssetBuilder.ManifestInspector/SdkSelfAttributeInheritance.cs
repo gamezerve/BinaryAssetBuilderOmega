@@ -18,6 +18,11 @@ internal static class SdkSelfAttributeInheritance
     internal const string TreeCopyName = "diagnostic-self-tree-copy-v1";
     // Reborn: two-sided matching is independently admitted only for empty complex children; populated branches/text concatenation remain closed.
     internal const string ChildMergeName = "diagnostic-self-empty-child-merge-v1";
+    // Reborn: literal keyed empty-child removal is independently scoped; missing targets, singleton/nested removal and other directives remain closed.
+    internal const string ChildRemovalName = "diagnostic-self-empty-child-removal-v1";
+    private const string Instance = "uri:ea.com:eala:asset:instance";
+    // Reborn: record actual source-directed removals separately from inheritance overlays and processed source hashes.
+    internal sealed record Removal(string Type,string DerivedId,string BaseId,string ChildName,string ChildId);
     // Reborn: overlay evidence identifies source-level handles and transformed bytes, never native asset/stream identities.
     internal sealed record Overlay(string Type,string DerivedId,string BaseId);
     internal sealed record Evidence(string Profile,string RawSha256,string? ProcessedSha256,Overlay[] Overlays,string[] Diagnostics)
@@ -26,6 +31,8 @@ internal static class SdkSelfAttributeInheritance
         public SdkInstanceInheritanceProfile.ImportedBase[] ImportedBases { get; init; } = Array.Empty<SdkInstanceInheritanceProfile.ImportedBase>();
         // Reborn: recursive preparation publishes the full diagnostic source closure separately from direct inherited handles.
         public SdkInstanceInheritanceProfile.PreparedSource[] PreparedSources { get; init; } = Array.Empty<SdkInstanceInheritanceProfile.PreparedSource>();
+        // Reborn: removal witnesses report only commands executed in this owner document, not replayed inherited commands.
+        public Removal[] Removals { get; init; } = Array.Empty<Removal>();
     }
     internal sealed record Result(byte[]? Bytes,Evidence Evidence);
     private const string Ea = "uri:ea.com:eala:asset";
@@ -33,10 +40,12 @@ internal static class SdkSelfAttributeInheritance
     //-------------------------------------------------------------------------------------------------
     /** Reborn: expand local asset chains with independently admitted copy/empty-child matching scopes and reject the entire document on unsupported semantics. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false)
+    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false,bool childRemoval = false)
     {
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
-        string profile = childMerge ? ChildMergeName : treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
+        string profile = childRemoval ? ChildRemovalName : childMerge ? ChildMergeName : treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
+        // Reborn: removal builds on the tested empty-child merge subset without widening its older flags.
+        childMerge |= childRemoval;
         // Reborn: retain all existing tree guards when independently enabling the narrower matched-empty-child gate.
         treeCopy |= childMerge;
         // Reborn: recursive copying includes complex leaf admission without changing either earlier profile's scope.
@@ -60,6 +69,8 @@ internal static class SdkSelfAttributeInheritance
             // Reborn: track semantic chain height as well as active recursion so memoized/forward declarations cannot bypass the chain bound.
             Dictionary<string,int> heights = new(StringComparer.Ordinal);
             HashSet<string> active = new(StringComparer.Ordinal); List<Overlay> overlays = new();
+            // Reborn: any later failure withholds all earlier removal witnesses along with partial transformed XML.
+            List<Removal> removals = new();
             // Reborn: bound aggregate inherited-attribute amplification before allocating each merged node, not only after final serialization.
             long expandedBytes = bytes.Length+1024L;
             foreach (var asset in assets)
@@ -77,7 +88,7 @@ internal static class SdkSelfAttributeInheritance
             using (XmlWriter writer = XmlWriter.Create(output,new XmlWriterSettings { Encoding = new UTF8Encoding(false),NewLineHandling = NewLineHandling.None })) xml.Save(writer);
             byte[] processed = output.ToArray();
             if (processed.Length > 4*1048576) throw new InvalidDataException("Processed inheritance XML exceeds 4 MiB.");
-            return new(processed,new(profile,raw,Convert.ToHexString(SHA256.HashData(processed)),overlays.ToArray(),Array.Empty<string>()));
+            return new(processed,new(profile,raw,Convert.ToHexString(SHA256.HashData(processed)),overlays.ToArray(),Array.Empty<string>()) { Removals = removals.ToArray() });
 
             //-------------------------------------------------------------------------------------------------
             /** Reborn: local handles precede imported visibility; reject same-handle overrides, missing bases, cross-type inheritance and cycles. */
@@ -101,7 +112,7 @@ internal static class SdkSelfAttributeInheritance
                     if (!Token(baseId) || baseId == asset.GetAttribute("id")) throw new InvalidDataException("Empty/unsafe base or same-handle imported override remains closed.");
                     XmlElement baseAsset = Resolve(type+":"+baseId,depth+1);
                     // Reborn: both populated sides require actual child matching semantics and cannot pass a copy-only admission rule.
-                    if (childCopy && baseAsset.ChildNodes.OfType<XmlElement>().Any() && asset.ChildNodes.OfType<XmlElement>().Any())
+                    if (childCopy && asset.ChildNodes.OfType<XmlElement>().Any() && (baseAsset.ChildNodes.OfType<XmlElement>().Any() || asset.ChildNodes.OfType<XmlElement>().Any(RemoveCommand)))
                     {
                         if (!childMerge) throw new InvalidDataException("Both base and derived contain children; child merge semantics remain closed.");
                         CheckMerge(baseAsset,asset);
@@ -138,6 +149,15 @@ internal static class SdkSelfAttributeInheritance
                     XmlElement? matched = declaration.MaxOccurs > 1
                         ? child.HasAttribute("id") ? before.SingleOrDefault(old => old.GetAttribute("id") == child.GetAttribute("id")) : null
                         : before.SingleOrDefault(old => old.LocalName == child.LocalName);
+                    // Reborn: core warns on absent removal and matches IDs across QNames; this profile instead requires an existing exact named/keyed empty-complex target.
+                    if (RemoveCommand(child))
+                    {
+                        if (!childRemoval || matched == null || matched.LocalName != child.LocalName) throw new InvalidDataException("Removal requires an existing same-QName direct child ID.");
+                        counts[child.LocalName]--;
+                        // Reborn: report the resolved base's literal ID consistently even when inheritFrom used a qualified Type:id handle.
+                        removals.Add(new(derived.LocalName,derived.GetAttribute("id"),baseAsset.GetAttribute("id"),child.LocalName,child.GetAttribute("id")));
+                        continue;
+                    }
                     if (matched != null)
                     {
                         if (declaration.ElementSchemaType is not XmlSchemaComplexType leaf || leaf.ContentType != XmlSchemaContentType.Empty)
@@ -197,6 +217,19 @@ internal static class SdkSelfAttributeInheritance
                     var qualified = new XmlQualifiedName(child.LocalName,child.NamespaceURI);
                     var declaration = sequence.Items.OfType<XmlSchemaElement>().SingleOrDefault(item => item.QualifiedName == qualified);
                     if (child.NamespaceURI != Ea || declaration == null) throw new InvalidDataException("Unknown sequence child is outside the profile.");
+                    // Reborn: only empty direct repeated-child command stubs on inherited top-level assets can bypass required payload attributes before they are consumed by the core.
+                    if (childRemoval && RemoveCommand(child))
+                    {
+                        if (depth != 0 || !asset.HasAttribute("inheritFrom") || declaration.MaxOccurs <= 1
+                            || declaration.ElementSchemaType is not XmlSchemaComplexType empty || empty.ContentType != XmlSchemaContentType.Empty
+                            || empty.AttributeWildcard != null || empty.AttributeUses[new XmlQualifiedName("id")] is not XmlSchemaAttribute
+                            || !child.HasAttribute("id") || child.HasChildNodes
+                            || child.Attributes.OfType<XmlAttribute>().Any(attribute => attribute.NamespaceURI != "http://www.w3.org/2000/xmlns/"
+                                && !(attribute.NamespaceURI.Length == 0 && attribute.Name == "id")
+                                && !(attribute.NamespaceURI == Instance && attribute.LocalName == "joinAction" && attribute.Value == "Remove")))
+                            throw new InvalidDataException("Only literal Remove/id stubs for direct repeated empty-complex children on inherited assets are admitted.");
+                        continue;
+                    }
                     // Reborn: complex admission includes branches only under the tree profile; every effective attribute is checked before the core sees it.
                     if (complexChildCopy && declaration.ElementSchemaType is XmlSchemaComplexType leaf)
                     {
@@ -233,4 +266,9 @@ internal static class SdkSelfAttributeInheritance
     /** Reborn: admit bounded literal local identity tokens without guessing hash/case/traversal normalization. */
     //-------------------------------------------------------------------------------------------------
     private static bool Token(string value) => value.Length is > 0 and <= 128 && value.All(character => char.IsAsciiLetterOrDigit(character) || character is '_' or '-' or '.');
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: recognize only the exact instance-namespace Remove command; other directive spellings stay under the earlier refusal rules. */
+    //-------------------------------------------------------------------------------------------------
+    private static bool RemoveCommand(XmlElement element) => element.GetAttribute("joinAction",Instance) == "Remove";
 }
