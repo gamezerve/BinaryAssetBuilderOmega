@@ -5,6 +5,18 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Expressions before guarded inheritance](RA3EP1_SDK_INSTANCE_EXPRESSIONS.md)
+adds independent `--instance-expressions`, retaining raw Include/handle authority
+and source-local definition contexts. The complete ObjectCreationLists owner
+validates with 54 substitutions, one overlay and one consumed local undeclared
+marker. Imported non-inheritable ObjectCreationLists remain refused. Earlier
+profiles are unchanged. Real graph: **389 valid / 7 blocked**, zero earlier-valid
+regressions; registered groups: 138. All 138 compiler groups, 33 enum checks,
+three classifier fixtures and three expression CLI isolation probes pass.
+Final build has zero warnings/errors. Six path issues and 198 missing AUDIO
+header occurrences remain; no output/native/game proof. Effort stays **51% / 49%**.
+Next: characterize sibling-ID collisions without relaxing the identity guards.
+
 [Definition-only leaf Include admission](RA3EP1_SDK_INSTANCE_METADATA.md) adds
 independent `--instance-metadata`: source-backed all edges must target a proven
 Include-free, schema-valid metadata definition leaf with zero asset exports and

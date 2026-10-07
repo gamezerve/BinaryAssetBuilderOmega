@@ -33,9 +33,14 @@ internal static class SdkLocalDefineProfile
     internal static Result ApplyImported(byte[] bytes,IReadOnlyDictionary<string,string> literals) => ApplyCore(bytes,literals);
 
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: independently admit bounded literal asset slots before inheritance, while keeping identity/directive expressions closed and every older entry unchanged. */
+    //-------------------------------------------------------------------------------------------------
+    internal static Result ApplyBeforeInheritance(byte[] bytes,IReadOnlyDictionary<string,string>? literals = null) => ApplyCore(bytes,literals,true);
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: share bounded substitution without changing the default local-only Include refusal. */
     //-------------------------------------------------------------------------------------------------
-    private static Result ApplyCore(byte[] bytes,IReadOnlyDictionary<string,string>? imported)
+    private static Result ApplyCore(byte[] bytes,IReadOnlyDictionary<string,string>? imported,bool beforeInheritance = false)
     {
         if (bytes.Length > 4*1048576) throw new InvalidDataException("Local define source exceeds 4 MiB.");
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
@@ -53,8 +58,11 @@ internal static class SdkLocalDefineProfile
         if (slots.Count == 0) return new(bytes,new(Name,raw,raw,0,Array.Empty<string>()));
         if (imported == null && root.ChildNodes.OfType<XmlElement>().Any(element => element.NamespaceURI == Ea && element.LocalName == "Includes" && element.ChildNodes.OfType<XmlElement>().Any()))
             return Reject(raw,"Expressions with Includes require reviewed imported-definition visibility; local-only substitution refused.");
-        if (root.SelectNodes(".//*")!.OfType<XmlElement>().Any(element => element.NamespaceURI == Ea && element.HasAttribute("inheritFrom")))
+        if (!beforeInheritance && root.SelectNodes(".//*")!.OfType<XmlElement>().Any(element => element.NamespaceURI == Ea && element.HasAttribute("inheritFrom")))
             return Reject(raw,"Asset inheritFrom processing is outside the local literal profile.");
+        // Reborn: expression resolution cannot manufacture handles, TypeId metadata or namespaced directives before the unchanged inheritance guards.
+        if (beforeInheritance && slots.OfType<XmlAttribute>().Any(attribute => attribute.NamespaceURI.Length != 0 || attribute.Name is "id" or "inheritFrom" or "TypeId"))
+            return Reject(raw,"Identity/directive expressions remain closed before inheritance.");
         IReadOnlyDictionary<string,string> defines;
         try { defines = imported ?? ReadLiteralDefinitions(root); }
         catch (InvalidDataException) { return Reject(raw,"Unsupported, duplicate, chained or override definition; no partial substitution."); }

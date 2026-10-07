@@ -103,6 +103,8 @@ internal static class CompilerSmokeTest
         TestSdkInstanceUpgrades();
         // Reborn: independently register metadata-only leaf Includes without instance exports.
         TestSdkInstanceMetadata();
+        // Reborn: register expression-before-inheritance stage admission independently of metadata-only Includes.
+        TestSdkInstanceExpressions();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2414,6 +2416,11 @@ internal static class CompilerSmokeTest
     /** Reborn: test bounded metadata Include authority and unchanged expression/inheritance boundaries. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkInstanceMetadata() => SdkInstanceMetadataSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: prove defining-context expression substitution precedes guarded overlays without widening older profiles. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkInstanceExpressions() => SdkInstanceExpressionsSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

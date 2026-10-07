@@ -30,6 +30,8 @@ internal static class SdkSelfAttributeInheritance
     internal const string FilterName = "diagnostic-self-object-filter-copy-v1";
     // Reborn: complementary upgrade singleton normalization is independent of older filter-copy admission.
     internal const string UpgradeName = "diagnostic-self-upgrade-normalization-v1";
+    // Reborn: the local ObjectCreationList pipeline marker has independent evidence when composed by the expression-stage profile.
+    internal const string ObjectCreationName = "diagnostic-self-object-creation-markers-v1";
     // Reborn: record ordered weak-reference payload witnesses separately from attribute overlays and native reference binding.
     internal sealed record Filter(string Type,string DerivedId,string BaseId,string ChildName,string PayloadSource,SdkFilterCopies.Leaf[] Leaves);
     // Reborn: modifier witnesses are diagnostic XML identities and actual core results, not native asset hashes.
@@ -59,6 +61,8 @@ internal static class SdkSelfAttributeInheritance
         public SdkUpgradeNormalization.Witness[] UpgradeNormalizations { get; init; } = Array.Empty<SdkUpgradeNormalization.Witness>();
         // Reborn: Include-only metadata witnesses are separate from local normalization/imported asset authority.
         public SdkMetadataDefinitions.Witness[] MetadataDefinitionIncludes { get; init; } = Array.Empty<SdkMetadataDefinitions.Witness>();
+        // Reborn: pre-overlay substitutions have their own raw/processed source identity and are withheld atomically on later failure.
+        public SdkLocalDefineProfile.Evidence? ExpressionPreparation { get; init; }
     }
     internal sealed record Result(byte[]? Bytes,Evidence Evidence);
     private const string Ea = "uri:ea.com:eala:asset";
@@ -66,10 +70,10 @@ internal static class SdkSelfAttributeInheritance
     //-------------------------------------------------------------------------------------------------
     /** Reborn: expand local asset chains with independently admitted copy/empty-child matching scopes and reject the entire document on unsupported semantics. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false,bool childRemoval = false,bool choiceCopy = false,bool consumeMarkers = false,bool bitflags = false,bool filters = false,bool upgrades = false)
+    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false,bool childRemoval = false,bool choiceCopy = false,bool consumeMarkers = false,bool bitflags = false,bool filters = false,bool upgrades = false,bool objectCreationMarkers = false)
     {
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
-        string profile = upgrades ? UpgradeName : filters ? FilterName : bitflags ? BitflagName : consumeMarkers ? MarkerName : choiceCopy ? ChoiceCopyName : childRemoval ? ChildRemovalName : childMerge ? ChildMergeName : treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
+        string profile = objectCreationMarkers ? ObjectCreationName : upgrades ? UpgradeName : filters ? FilterName : bitflags ? BitflagName : consumeMarkers ? MarkerName : choiceCopy ? ChoiceCopyName : childRemoval ? ChildRemovalName : childMerge ? ChildMergeName : treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
         // Reborn: filter admission includes the tested bitflag/marker scopes without changing earlier profile defaults.
         filters |= upgrades;
         // Reborn: explicit upgrade normalization composes previous guards while leaving every earlier default unchanged.
@@ -279,8 +283,8 @@ internal static class SdkSelfAttributeInheritance
                 {
                     if (attribute.NamespaceURI == "http://www.w3.org/2000/xmlns/") continue;
                     if (attribute.NamespaceURI.Length != 0 || attribute.Name == "TypeId" || attribute.Value.StartsWith('=')) throw new InvalidDataException("Namespaced directives, TypeId or unevaluated attributes require broader preprocessing.");
-                    // Reborn: only the reviewed local AI marker exception bypasses schema attribute lookup; arbitrary unknown fields remain closed.
-                    if (consumeMarkers && attribute.Name == "inheritFrom" && ReviewedMarkerType(type)) continue;
+                    // Reborn: only reviewed local marker exceptions bypass schema attribute lookup; ObjectCreationList additionally requires the explicit expression-stage flag.
+                    if (consumeMarkers && attribute.Name == "inheritFrom" && ReviewedMarkerType(type,objectCreationMarkers)) continue;
                     if (type.AttributeUses[new XmlQualifiedName(attribute.Name)] is not XmlSchemaAttribute use) throw new InvalidDataException("Unknown asset attribute cannot be hidden by an overlay.");
                     if (use.AttributeSchemaType?.Datatype?.Variety == XmlSchemaDatatypeVariety.List && (attribute.Value.Contains('+') || attribute.Value.Contains('-')))
                     {
@@ -387,11 +391,12 @@ internal static class SdkSelfAttributeInheritance
     private static bool RemoveCommand(XmlElement element) => element.GetAttribute("joinAction",Instance) == "Remove";
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: admit undeclared pipeline markers only on the two reviewed named EA AI types with BaseAssetType ancestry, not arbitrary schema mismatches. */
+    /** Reborn: admit reviewed local EA pipeline markers with BaseAssetType ancestry; the ObjectCreationList exception is separately explicit, not a generic schema mismatch bypass. */
     //-------------------------------------------------------------------------------------------------
-    private static bool ReviewedMarkerType(XmlSchemaComplexType type)
+    private static bool ReviewedMarkerType(XmlSchemaComplexType type,bool objectCreationMarkers = false)
     {
-        if (type.QualifiedName.Namespace != Ea || type.QualifiedName.Name is not ("AITargetingHeuristic" or "AIMicroManagerData")) return false;
+        // Reborn: the third local pipeline-marker exception is explicit to expression-stage preparation, never an imported-inheritance or older-profile expansion.
+        if (type.QualifiedName.Namespace != Ea || !(type.QualifiedName.Name is "AITargetingHeuristic" or "AIMicroManagerData" || objectCreationMarkers && type.QualifiedName.Name == "ObjectCreationList")) return false;
         for (int depth = 0; depth < 32; depth++)
         {
             if (type.QualifiedName == new XmlQualifiedName("BaseAssetType",Ea)) return true;

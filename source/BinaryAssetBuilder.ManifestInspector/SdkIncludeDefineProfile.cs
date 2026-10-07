@@ -7,6 +7,8 @@ namespace BinaryAssetBuilder.ManifestInspector;
 internal sealed class SdkIncludeDefineProfile
 {
     internal const string Name = "diagnostic-include-literals-v1";
+    // Reborn: pre-inheritance substitution uses a distinct diagnostic witness, without changing earlier literal entry defaults.
+    internal const string BeforeInheritanceName = "diagnostic-before-inheritance-definitions-v1";
     private const string Ea = "uri:ea.com:eala:asset";
     // Reborn: identical-name definitions may coalesce only when they originate from the same captured document, matching core diamond inclusion rules.
     internal sealed record SourceIdentity(string SourcePath,string Sha256);
@@ -40,16 +42,18 @@ internal sealed class SdkIncludeDefineProfile
     //-------------------------------------------------------------------------------------------------
     /** Reborn: build an atomic child-first literal table from the existing graph only, then substitute the owner's captured XML without source writes. */
     //-------------------------------------------------------------------------------------------------
-    internal SdkLocalDefineProfile.Result Apply(string path,byte[] bytes)
+    internal SdkLocalDefineProfile.Result Apply(string path,byte[] bytes,bool beforeInheritance = false)
     {
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
+        // Reborn: preserve explicit pipeline-stage identity even for owners with no substitution slots.
+        string selectedProfile = beforeInheritance ? BeforeInheritanceName : Profile;
         try
         {
             if (paths.StoppedAtLimit) throw new InvalidDataException("Incomplete path inventory cannot authorize imported definitions.");
             Capture(path,bytes);
-            var local = SdkLocalDefineProfile.Apply(bytes);
+            var local = beforeInheritance ? SdkLocalDefineProfile.ApplyBeforeInheritance(bytes) : SdkLocalDefineProfile.Apply(bytes);
             // Reborn: an asset with no expressions requires no definition-closure claim and keeps its original bytes.
-            if (local.Bytes != null && local.Evidence.Substitutions == 0) return local with { Evidence = local.Evidence with { Profile = Profile } };
+            if (local.Bytes != null && local.Evidence.Substitutions == 0) return local with { Evidence = local.Evidence with { Profile = selectedProfile } };
             Dictionary<string,Dictionary<string,Literal>> tables = new(StringComparer.OrdinalIgnoreCase);
             HashSet<string> active = new(StringComparer.OrdinalIgnoreCase);
             Dictionary<string,SourceIdentity> witnesses = new(StringComparer.OrdinalIgnoreCase);
@@ -57,9 +61,10 @@ internal sealed class SdkIncludeDefineProfile
             // Reborn: deduplicate computations by origin/name across diamond paths without publishing partial results on rejection.
             Dictionary<string,SdkDefinitionSubset.Evaluation> evaluations = new(StringComparer.Ordinal);
             var table = Visit(path,0);
-            var result = SdkLocalDefineProfile.ApplyImported(bytes,table.ToDictionary(pair => pair.Key,pair => pair.Value.Value,StringComparer.Ordinal));
+            var literals = table.ToDictionary(pair => pair.Key,pair => pair.Value.Value,StringComparer.Ordinal);
+            var result = beforeInheritance ? SdkLocalDefineProfile.ApplyBeforeInheritance(bytes,literals) : SdkLocalDefineProfile.ApplyImported(bytes,literals);
             // Reborn: rejected transformations never publish origins or a partial closure as trusted preprocessing evidence.
-            return result with { Evidence = result.Evidence with { Profile = Profile,
+            return result with { Evidence = result.Evidence with { Profile = selectedProfile,
                 EvaluatedDefinitions = result.Bytes == null ? Array.Empty<SdkDefinitionSubset.Evaluation>() : evaluations.Values.OrderBy(item => item.SourcePath,StringComparer.OrdinalIgnoreCase).ThenBy(item => item.Name,StringComparer.Ordinal).ToArray(),
                 DefinitionSources = result.Bytes == null ? Array.Empty<SourceIdentity>() : witnesses.Values.OrderBy(item => item.SourcePath,StringComparer.OrdinalIgnoreCase).ToArray(),
                 DefinitionOrigins = result.Bytes == null ? Array.Empty<Origin>() : table.OrderBy(pair => pair.Key,StringComparer.Ordinal).Select(pair => new Origin(pair.Key,pair.Value.SourcePath)).ToArray() } };
@@ -79,7 +84,7 @@ internal sealed class SdkIncludeDefineProfile
                 using (XmlReader reader = XmlReader.Create(input,new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit,XmlResolver = null,MaxCharactersInDocument = 4*1048576 })) xml.Load(reader);
                 XmlElement? root = xml.DocumentElement;
                 if (root?.LocalName != "AssetDeclaration" || root.NamespaceURI != Ea) throw new InvalidDataException("EA definition source required.");
-                if (root.SelectNodes(".//*")!.OfType<XmlElement>().Any(element => element.NamespaceURI == Ea && element.HasAttribute("inheritFrom"))) throw new InvalidDataException("Inherited definition source requires asset preprocessing.");
+                if (!beforeInheritance && root.SelectNodes(".//*")!.OfType<XmlElement>().Any(element => element.NamespaceURI == Ea && element.HasAttribute("inheritFrom"))) throw new InvalidDataException("Inherited definition source requires asset preprocessing.");
                 var containers = root.ChildNodes.OfType<XmlElement>().Where(element => element.LocalName == "Includes").ToArray();
                 if (containers.Length > 1 || containers.Any(element => element.NamespaceURI != Ea)
                     || root.ChildNodes.OfType<XmlElement>().Any(element => element.LocalName == "Defines" && element.NamespaceURI != Ea)) throw new InvalidDataException("Unsupported definition/Include container shape.");
@@ -123,7 +128,7 @@ internal sealed class SdkIncludeDefineProfile
             }
         }
         catch (Exception error) when (error is IOException or InvalidDataException or XmlException or ArgumentException or UnauthorizedAccessException or NotSupportedException)
-        { return new(null,new(Profile,raw,null,0,new[] { "Imported definition closure rejected: "+error.Message[..Math.Min(error.Message.Length,512)] })); }
+        { return new(null,new(selectedProfile,raw,null,0,new[] { "Imported definition closure rejected: "+error.Message[..Math.Min(error.Message.Length,512)] })); }
     }
 
     //-------------------------------------------------------------------------------------------------

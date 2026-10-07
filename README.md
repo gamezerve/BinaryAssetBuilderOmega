@@ -22,18 +22,30 @@ a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**137 test groups** (some contain several fixtures). These counters can grow
+**138 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf regressions add groups and all 137 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression regressions add groups and all 138 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Definition-only leaf Include admission](docs/RA3EP1_SDK_INSTANCE_METADATA.md).
+Latest milestone: [Expressions before guarded inheritance](docs/RA3EP1_SDK_INSTANCE_EXPRESSIONS.md).
+Independent `--instance-expressions` resolves captured definitions in each
+source's own context before overlays. The complete ObjectCreationLists owner
+now validates: 54 substitutions, one local overlay and one consumed undeclared
+marker. Imported non-inheritable bases and identity/directive expressions remain
+closed. Real counts reach **389 valid / 7 blocked**, with zero earlier-valid
+regressions. No source/schema/core edits or output/native/game proof.
+All 138 compiler groups, 33 enum checks, three classifier fixtures and three
+expression CLI isolation probes pass. Final build has zero warnings/errors.
+Effort stays **51% complete / 49% remaining**: native compatibility and game
+loading remain open. Next: characterize the remaining sibling-ID collisions.
+
+[Definition-only leaf Include admission](docs/RA3EP1_SDK_INSTANCE_METADATA.md).
 Independent `--instance-metadata` proves bounded all-Include definition leaves
 with zero asset exports. ObjectCreationLists now passes its Include-role gate,
 then stops at unsupported expressions in inherited assets. Its 54 expression
