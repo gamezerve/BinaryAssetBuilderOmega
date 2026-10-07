@@ -6,7 +6,7 @@ using BinaryAssetBuilder.Core.SageXml;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: use the existing core joiner for separately admitted bounded same-document, same-type attribute/simple/complex-leaf/sequence-tree overlays; populated-child merges remain closed.
+// Reborn: use the existing core joiner for separately admitted bounded local copy or empty-child matching scopes; matched text/populated branches remain closed.
 internal static class SdkSelfAttributeInheritance
 {
     internal const string Name = "diagnostic-self-attribute-inheritance-v1";
@@ -16,6 +16,8 @@ internal static class SdkSelfAttributeInheritance
     internal const string ComplexChildCopyName = "diagnostic-self-complex-child-copy-v1";
     // Reborn: nested sequence trees require a separate copy-only admission profile with bounded recursive schema lookup.
     internal const string TreeCopyName = "diagnostic-self-tree-copy-v1";
+    // Reborn: two-sided matching is independently admitted only for empty complex children; populated branches/text concatenation remain closed.
+    internal const string ChildMergeName = "diagnostic-self-empty-child-merge-v1";
     // Reborn: overlay evidence identifies source-level handles and transformed bytes, never native asset/stream identities.
     internal sealed record Overlay(string Type,string DerivedId,string BaseId);
     internal sealed record Evidence(string Profile,string RawSha256,string? ProcessedSha256,Overlay[] Overlays,string[] Diagnostics)
@@ -27,12 +29,14 @@ internal static class SdkSelfAttributeInheritance
     private const string Ea = "uri:ea.com:eala:asset";
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: expand local asset chains with independently admitted copy-only child scopes and reject the entire document on unsupported semantics. */
+    /** Reborn: expand local asset chains with independently admitted copy/empty-child matching scopes and reject the entire document on unsupported semantics. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false)
+    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false)
     {
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
-        string profile = treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
+        string profile = childMerge ? ChildMergeName : treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
+        // Reborn: retain all existing tree guards when independently enabling the narrower matched-empty-child gate.
+        treeCopy |= childMerge;
         // Reborn: recursive copying includes complex leaf admission without changing either earlier profile's scope.
         complexChildCopy |= treeCopy;
         // Reborn: the independently named complex profile includes the copy-only gate, never the child merge gate.
@@ -95,7 +99,11 @@ internal static class SdkSelfAttributeInheritance
                     if (!Token(baseId) || baseId == asset.GetAttribute("id")) throw new InvalidDataException("Empty/unsafe base or same-handle imported override remains closed.");
                     XmlElement baseAsset = Resolve(type+":"+baseId,depth+1);
                     // Reborn: both populated sides require actual child matching semantics and cannot pass a copy-only admission rule.
-                    if (childCopy && baseAsset.ChildNodes.OfType<XmlElement>().Any() && asset.ChildNodes.OfType<XmlElement>().Any()) throw new InvalidDataException("Both base and derived contain children; child merge semantics remain closed.");
+                    if (childCopy && baseAsset.ChildNodes.OfType<XmlElement>().Any() && asset.ChildNodes.OfType<XmlElement>().Any())
+                    {
+                        if (!childMerge) throw new InvalidDataException("Both base and derived contain children; child merge semantics remain closed.");
+                        CheckMerge(baseAsset,asset);
+                    }
                     height = heights[type+":"+baseId]+1;
                     if (height > 32) throw new InvalidDataException("32-link local inheritance chain bound exceeded.");
                     foreach (XmlAttribute attribute in baseAsset.Attributes)
@@ -106,6 +114,39 @@ internal static class SdkSelfAttributeInheritance
                     overlays.Add(new(type,asset.GetAttribute("id"),baseId));
                 }
                 active.Remove(handle); resolved.Add(handle,result); heights.Add(handle,height); return result;
+            }
+
+            //-------------------------------------------------------------------------------------------------
+            /** Reborn: mirror core singleton-name/repeated-ID selection without permitting cross-QName replacement, matched text append or recursive populated branches. */
+            //-------------------------------------------------------------------------------------------------
+            void CheckMerge(XmlElement baseAsset,XmlElement derived)
+            {
+                var type = (XmlSchemaComplexType)schemas.GlobalTypes[new XmlQualifiedName(derived.LocalName,Ea)]!;
+                if (type.ContentTypeParticle is not XmlSchemaSequence sequence) throw new InvalidDataException("Direct sequence merge schema required.");
+                var before = baseAsset.ChildNodes.OfType<XmlElement>().ToArray();
+                var after = derived.ChildNodes.OfType<XmlElement>().ToArray();
+                // Reborn: core ID lookup spans sibling QNames; refuse collisions even where another singleton would otherwise be selected by name.
+                foreach (var child in after.Where(child => child.HasAttribute("id")))
+                    if (before.Any(old => old.GetAttribute("id") == child.GetAttribute("id") && old.LocalName != child.LocalName))
+                        throw new InvalidDataException("Cross-QName child ID collisions remain closed.");
+                Dictionary<string,int> counts = before.GroupBy(child => child.LocalName).ToDictionary(group => group.Key,group => group.Count(),StringComparer.Ordinal);
+                foreach (var child in after)
+                {
+                    var declaration = sequence.Items.OfType<XmlSchemaElement>().Single(item => item.QualifiedName == new XmlQualifiedName(child.LocalName,Ea));
+                    XmlElement? matched = declaration.MaxOccurs > 1
+                        ? child.HasAttribute("id") ? before.SingleOrDefault(old => old.GetAttribute("id") == child.GetAttribute("id")) : null
+                        : before.SingleOrDefault(old => old.LocalName == child.LocalName);
+                    if (matched != null)
+                    {
+                        if (declaration.ElementSchemaType is not XmlSchemaComplexType leaf || leaf.ContentType != XmlSchemaContentType.Empty)
+                            throw new InvalidDataException("Matched children require empty complex content; text append and populated branch merging remain closed.");
+                    }
+                    else
+                    {
+                        counts.TryGetValue(child.LocalName,out int count); counts[child.LocalName] = ++count;
+                        if (count > declaration.MaxOccurs) throw new InvalidDataException("Merged child occurrence bound exceeded before core allocation.");
+                    }
+                }
             }
 
             //-------------------------------------------------------------------------------------------------

@@ -5,6 +5,15 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-07)
 
+[Local empty-child matching](RA3EP1_SDK_SELF_CHILD_MERGE.md) adds the independently
+selected singleton-name/repeated-ID empty-complex-child overlay scope. Matched
+text/populated branches and cross-QName ID collisions remain closed; the core's
+matched-text concatenation is demonstrated by an owned fixture. All 127 default
+groups, 33 enum checks and three classifier fixtures pass. The local profile stays
+205 valid / 191 blocked with zero earlier-tree regressions; the unchanged root-file
+profile still has 207 / 189. Recursive imported preparation remains the next gate.
+No output/game proof, model/marshaller counts unchanged, estimate still about 50%.
+
 [Direct-instance Include-chain triage](RA3EP1_SDK_INSTANCE_INCLUDE_BLOCKERS.md)
 reduces 178 first-blocked owners to 23 shared imported sources, all with instance-only
 child edges and all independently blocked. The largest three affect 69 owners.

@@ -20,18 +20,27 @@ is not a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**126 test groups** (some contain several fixtures). These counters can grow
+**127 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file regressions add groups and all 126 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge regressions add groups and all 127 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest analysis: [Direct-instance Include-chain triage](docs/RA3EP1_SDK_INSTANCE_INCLUDE_BLOCKERS.md).
+Latest milestone: [Local empty-child matching](docs/RA3EP1_SDK_SELF_CHILD_MERGE.md).
+The independent `--self-child-merge` flag adds singleton-name/repeated-ID matching
+only for empty complex children. Core matched text appends rather than replaces;
+text/branch matching and cross-QName ID collisions remain closed. All 127 default
+groups, 33 enum checks and three classifier fixtures pass. Real local admission
+stays 205 valid / 191 blocked with zero earlier-tree regressions; the unchanged
+root-file profile remains the best 207 / 189. Include chains remain closed. No
+output/game proof; weighted effort stays about 50.25%, rounded 50%.
+
+[Direct-instance Include-chain triage](docs/RA3EP1_SDK_INSTANCE_INCLUDE_BLOCKERS.md).
 The 178 first Include-free blockers reduce to 23 shared imported sources; all have
 instance-only child edges but all remain independently blocked. The largest three
 account for 69 owners. A read-only classifier and three owned script fixtures

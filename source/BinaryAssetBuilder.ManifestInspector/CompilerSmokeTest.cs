@@ -77,6 +77,8 @@ internal static class CompilerSmokeTest
         TestSdkSelfComplexChildCopy();
         // Reborn: execute recursive sequence-tree admission independently from all earlier copy-only profiles.
         TestSdkSelfTreeCopy();
+        // Reborn: run the independent two-sided empty-child matching group in the default managed suite.
+        TestSdkSelfChildMerge();
         // Reborn: register imported-instance eligibility and snapshot/provenance guards independently.
         TestSdkInstanceInheritance();
         // Reborn: register root-qualified imported files without enabling defining-document relative fallback.
@@ -2327,6 +2329,11 @@ internal static class CompilerSmokeTest
     /** Reborn: verify bounded recursive copying and original-profile isolation without native processor execution. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkSelfTreeCopy() => SdkSelfTreeCopySmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify empty-child matching, anonymous append and two-sided scope guards without native compilation. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkSelfChildMerge() => SdkSelfChildMergeSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: exercise narrow direct-instance XML inheritance without loading native processors or publishing streams. */
