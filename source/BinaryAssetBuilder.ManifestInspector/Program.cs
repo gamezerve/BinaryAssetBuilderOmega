@@ -246,13 +246,13 @@ internal static class Program
                 // Reborn: complex leaf copying is a separate diagnostic profile, not an implicit widening of older flags.
                 // Reborn: matching empty children remains a distinct opt-in, separate from tree copying and imported base visibility.
                 // Reborn: recursive preparation remains separately explicit from direct-only visibility and local child matching.
-                bool localDefines = false,includeDefines = false,definitionExpressions = false,selfAttributeInheritance = false,selfChildCopy = false,selfComplexChildCopy = false,selfTreeCopy = false,instanceInheritance = false,instanceRootFiles = false,selfChildMerge = false,instanceChains = false,instanceRemovals = false,instanceChoices = false,instanceMarkers = false,instanceBitflags = false,instanceFilters = false,instanceUpgrades = false,instanceMetadata = false,instanceExpressions = false,instanceIdenticalStates = false,instanceStateReadds = false;
+                bool localDefines = false,includeDefines = false,definitionExpressions = false,selfAttributeInheritance = false,selfChildCopy = false,selfComplexChildCopy = false,selfTreeCopy = false,instanceInheritance = false,instanceRootFiles = false,selfChildMerge = false,instanceChains = false,instanceRemovals = false,instanceChoices = false,instanceMarkers = false,instanceBitflags = false,instanceFilters = false,instanceUpgrades = false,instanceMetadata = false,instanceExpressions = false,instanceIdenticalStates = false,instanceStateReadds = false,instanceCrossStateRemovals = false;
                 for (int index = 6; index < args.Length; index++)
                 {
                     string option = args[index];
-                    if (option is "--local-defines" or "--include-defines" or "--definition-expressions" or "--self-attribute-inheritance" or "--self-child-copy" or "--self-complex-child-copy" or "--self-tree-copy" or "--instance-inheritance" or "--instance-root-files" or "--self-child-merge" or "--instance-chains" or "--instance-removals" or "--instance-choices" or "--instance-markers" or "--instance-bitflags" or "--instance-filters" or "--instance-upgrades" or "--instance-metadata" or "--instance-expressions" or "--instance-identical-states" or "--instance-state-readds")
+                    if (option is "--local-defines" or "--include-defines" or "--definition-expressions" or "--self-attribute-inheritance" or "--self-child-copy" or "--self-complex-child-copy" or "--self-tree-copy" or "--instance-inheritance" or "--instance-root-files" or "--self-child-merge" or "--instance-chains" or "--instance-removals" or "--instance-choices" or "--instance-markers" or "--instance-bitflags" or "--instance-filters" or "--instance-upgrades" or "--instance-metadata" or "--instance-expressions" or "--instance-identical-states" or "--instance-state-readds" or "--instance-cross-state-removals")
                     {
-                        if (args[0] != "sdk-typed-source-graph" || localDefines || includeDefines || definitionExpressions || selfAttributeInheritance || selfChildCopy || selfComplexChildCopy || selfTreeCopy || instanceInheritance || instanceRootFiles || selfChildMerge || instanceChains || instanceRemovals || instanceChoices || instanceMarkers || instanceBitflags || instanceFilters || instanceUpgrades || instanceMetadata || instanceExpressions || instanceIdenticalStates || instanceStateReadds) throw new ArgumentException("Choose one preprocessing profile on the typed graph command only.");
+                        if (args[0] != "sdk-typed-source-graph" || localDefines || includeDefines || definitionExpressions || selfAttributeInheritance || selfChildCopy || selfComplexChildCopy || selfTreeCopy || instanceInheritance || instanceRootFiles || selfChildMerge || instanceChains || instanceRemovals || instanceChoices || instanceMarkers || instanceBitflags || instanceFilters || instanceUpgrades || instanceMetadata || instanceExpressions || instanceIdenticalStates || instanceStateReadds || instanceCrossStateRemovals) throw new ArgumentException("Choose one preprocessing profile on the typed graph command only.");
                         localDefines = option == "--local-defines"; includeDefines = option == "--include-defines";
                         // Reborn: the three-form definition subset must be requested separately from either literal profile.
                         definitionExpressions = option == "--definition-expressions";
@@ -292,6 +292,8 @@ internal static class Program
                         instanceIdenticalStates = option == "--instance-identical-states";
                         // Reborn: explicitly select ordered literal state Remove/re-add rather than changing duplicate coalescing.
                         instanceStateReadds = option == "--instance-state-readds";
+                        // Reborn: explicitly select removal-only cross-QName state commands, never generic replacement.
+                        instanceCrossStateRemovals = option == "--instance-cross-state-removals";
                     }
                     else if (option is "--art-root" or "--audio-root")
                     {
@@ -307,7 +309,7 @@ internal static class Program
                 // Reborn: typed graph admission is explicit and preserves the original path-only command/report contract.
                 if (args[0] == "sdk-typed-source-graph")
                 {
-                    var typed = SdkTypedSourceGraph.Inspect(paths,localDefines,includeDefines,definitionExpressions,selfAttributeInheritance,selfChildCopy,selfComplexChildCopy,selfTreeCopy,instanceInheritance,instanceRootFiles,selfChildMerge,instanceChains,instanceRemovals,instanceChoices,instanceMarkers,instanceBitflags,instanceFilters,instanceUpgrades,instanceMetadata,instanceExpressions,instanceIdenticalStates,instanceStateReadds);
+                    var typed = SdkTypedSourceGraph.Inspect(paths,localDefines,includeDefines,definitionExpressions,selfAttributeInheritance,selfChildCopy,selfComplexChildCopy,selfTreeCopy,instanceInheritance,instanceRootFiles,selfChildMerge,instanceChains,instanceRemovals,instanceChoices,instanceMarkers,instanceBitflags,instanceFilters,instanceUpgrades,instanceMetadata,instanceExpressions,instanceIdenticalStates,instanceStateReadds,instanceCrossStateRemovals);
                     Console.WriteLine(JsonSerializer.Serialize(new { environment.Target,ReadOnly = true,SnapshotOnly = true,ProductionBuildReady = false,Environment = environment,SourcePaths = paths,TypedSources = typed },JsonOptions));
                     return typed.Graph.ScopedGraphComplete ? 0 : 2;
                 }
@@ -372,6 +374,8 @@ internal static class Program
             }
             // Reborn: independently test metadata identity boundaries without external native payloads.
             if (args.FirstOrDefault() == "sdk-cc32-review-self-test") { SdkCc32ReviewSmokeTest.Run(); return 0; }
+            // Reborn: test independent removal-only cross-QName admission without native emission.
+            if (args.FirstOrDefault() == "sdk-instance-cross-state-removals-self-test") { SdkInstanceCrossStateRemovalsSmokeTest.Run(); return 0; }
             // Reborn: review explicit source bytes only for the two known upgrade owners, without graph admission or emitted output.
             if (args.FirstOrDefault() == "sdk-upgrade-semantics-review")
             {
@@ -1002,7 +1006,7 @@ internal static class Program
         Console.WriteLine("  sdk-reviewed-schema-candidate [absolute-source.xml]");
         Console.WriteLine("  sdk-reviewed-schema-candidate-self-test");
         // Reborn: combine existing explicit path/root planning with rechecked reviewed-schema source bindings.
-        Console.WriteLine("  sdk-typed-source-graph ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--local-defines | --include-defines | --definition-expressions | --self-attribute-inheritance | --self-child-copy | --self-complex-child-copy | --self-tree-copy | --instance-inheritance | --instance-root-files | --self-child-merge | --instance-chains | --instance-removals | --instance-choices | --instance-markers | --instance-bitflags | --instance-filters | --instance-upgrades | --instance-metadata | --instance-expressions | --instance-identical-states | --instance-state-readds] [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
+        Console.WriteLine("  sdk-typed-source-graph ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--local-defines | --include-defines | --definition-expressions | --self-attribute-inheritance | --self-child-copy | --self-complex-child-copy | --self-tree-copy | --instance-inheritance | --instance-root-files | --self-child-merge | --instance-chains | --instance-removals | --instance-choices | --instance-markers | --instance-bitflags | --instance-filters | --instance-upgrades | --instance-metadata | --instance-expressions | --instance-identical-states | --instance-state-readds | --instance-cross-state-removals] [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
         Console.WriteLine("  sdk-typed-source-graph-self-test");
         Console.WriteLine("  sdk-local-defines-self-test");
         Console.WriteLine("  sdk-include-defines-self-test");
@@ -1047,6 +1051,8 @@ internal static class Program
         // Reborn: separate pinned read-only review from owned metadata regression tests and production preprocessing.
         Console.WriteLine("  sdk-cc32-review <absolute-Uprising-source-root> <absolute-EP1-global.manifest>");
         Console.WriteLine("  sdk-cc32-review-self-test");
+        // Reborn: expose exact-target removal-only regressions separately from CC32 review.
+        Console.WriteLine("  sdk-instance-cross-state-removals-self-test");
         // Reborn: the explicit source review remains partial and read-only even if both isolated owners validate.
         Console.WriteLine("  sdk-upgrade-semantics-review <absolute-upgrade.xml>");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.

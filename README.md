@@ -22,18 +22,28 @@ a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**142 test groups** (some contain several fixtures). These counters can grow
+**143 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review regressions add groups and all 142 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal regressions add groups and all 143 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Pinned CC32 source/core/native-metadata review](docs/RA3EP1_SDK_CC32_REVIEW.md).
+Latest milestone: [Empty cross-QName state removal admission](docs/RA3EP1_SDK_INSTANCE_CROSS_STATE_REMOVALS.md).
+Independent `--instance-cross-state-removals` admits one empty authored BuildState
+Remove against a unique inherited StrategicState per AI owner, with exact schema
+reference types and actual-core agreement on all state fields/order. Whole CC32
+now validates: **393 valid / 3 blocked**, zero earlier-valid regressions. Earlier
+state-readd scope stays 392 / 4. Replacement, reverse direction and mixed
+cross-removal/re-add owners remain closed. All 143 compiler groups pass; no
+reference XML/XSD/core edits, native emission or game proof. Effort stays
+**51% / 49%**. Next: bounded audio-expression inventory and Voice tree-limit review.
+
+[Pinned CC32 source/core/native-metadata review](docs/RA3EP1_SDK_CC32_REVIEW.md).
 Read-only `sdk-cc32-review` proves that the unchanged core removes CC32's inherited
 StrategicState via its authored BuildState Remove and yields a schema-valid
 isolated owner. The stock native owner's 109 manifest references omit the exact
