@@ -1,5 +1,9 @@
 # Consumed inheritance markers — October 8, 2026
 
+Subsequent [whole-token-proven bitflag support](RA3EP1_SDK_INSTANCE_BITFLAGS.md)
+admits the target library under a separate option. Marker-only admission remains
+385 / 11; the results below are the marker milestone, not current best admission.
+
 ## Pipeline finding
 
 The apparent XML/XSD mismatch in the two AI libraries is a missing diagnostic

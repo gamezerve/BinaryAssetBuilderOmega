@@ -5,6 +5,19 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Whole-token-proven bitflag modifiers](RA3EP1_SDK_INSTANCE_BITFLAGS.md) adds the
+independent `--instance-bitflags` option without editing the core joiner. Real
+admission advances to **386 valid / 10 blocked**: AITargetHeuristicLibrary now
+validates with five signed operations, five overlays/consumed markers and one
+prepared source. Zero earlier-valid regressions; final audit preserves the XML
+witness hash after tighter operand/token bounds. Missing base/defaults, substring
+collisions, nested modifiers and arbitrary lists remain closed. Registered groups:
+133; model/marshaller coverage and manual effort stay unchanged at **51% / 49%**.
+Six path issues and 198 uses of the missing AUDIO header remain; no output/native/
+game proof. Next is matched element-only ObjectFilter branch preparation.
+All 133 compiler groups, 33 enum checks, three classifier fixtures and three
+bitflag CLI isolation probes pass. Final build has zero warnings/errors.
+
 [Consumed inheritance markers](RA3EP1_SDK_INSTANCE_MARKERS.md) reproduces the
 core InstanceDeclaration.XmlNode setter's pre-join marker removal under a
 separate `--instance-markers` option. Undeclared marker admission is restricted
