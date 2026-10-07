@@ -20,18 +20,30 @@ is not a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**124 test groups** (some contain several fixtures). These counters can grow
+**125 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree regressions add groups and all 124 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance regressions add groups and all 125 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Bounded one-sided sequence-tree inheritance](docs/RA3EP1_SDK_SELF_TREE_COPY.md).
+Latest milestone: [Narrow direct-instance inheritance](docs/RA3EP1_SDK_INSTANCE_INHERITANCE.md).
+The explicit `--instance-inheritance` profile admits rechecked direct-instance,
+Include-free base documents with BaseInheritableAsset-derived types and no imported
+file fields. Source-local chains are expanded before copy-only owner overlays;
+temporary bases never appear in the returned owner XML. Voice_RetailOnly.xml now
+validates after 102 overlays using BaseUnitResponse: **206 valid / 190 blocked**.
+No earlier-valid document regresses. Transitive/all/reference visibility, inherited
+file-field provenance, populated-child merging and general expressions remain
+closed. All 125 default groups and 33 enum checks pass; English documentation is
+updated, reference bytes and six path issues unchanged, no output/game build proof.
+Weighted effort stays about 50.25%, rounded 50% complete / 50% remaining.
+
+[Bounded one-sided sequence-tree inheritance](docs/RA3EP1_SDK_SELF_TREE_COPY.md).
 The independent `--self-tree-copy` profile admits recursive direct-sequence children
 and bounded IDs unique across all direct siblings, without populated-child merging.
 Owned tests prove inherited/anonymous/recursive schema lookup, order, attributes,

@@ -5,6 +5,19 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-07)
 
+[Narrow direct-instance inheritance](RA3EP1_SDK_INSTANCE_INHERITANCE.md) admits
+captured/rechecked direct-instance bases with no child Include edges, reviewed
+schema BaseInheritableAsset ancestry and no schema-selected imported file fields.
+Source-local chains are expanded/validated before copy-only owner delegation, and
+temporary bases are removed from returned XML. Real Voice_RetailOnly.xml validates
+with 102 overlays, yielding 206 valid / 190 blocked and zero earlier-valid regressions.
+178 documents now first encounter the imported-source Include gate; this changed
+check order is not 178 otherwise-ready documents. PathMusicEvents.xml remains
+blocked on file-field provenance, and three documents on populated-child merging.
+Earlier profiles, reference bytes, six path issues and the typed AUDIO header are
+unchanged. All 125 default groups and 33 enum checks pass; no output/game proof.
+Weighted effort stays about 50.25%, rounded 50%. The tree block below is the prior step.
+
 [Bounded one-sided sequence-tree inheritance](RA3EP1_SDK_SELF_TREE_COPY.md) admits
 recursive direct-sequence children with declared literal IDs unique across all
 siblings. Owned tests prove anonymous/inherited/recursive schema lookup, copied

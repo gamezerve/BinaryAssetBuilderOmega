@@ -18,7 +18,11 @@ internal static class SdkSelfAttributeInheritance
     internal const string TreeCopyName = "diagnostic-self-tree-copy-v1";
     // Reborn: overlay evidence identifies source-level handles and transformed bytes, never native asset/stream identities.
     internal sealed record Overlay(string Type,string DerivedId,string BaseId);
-    internal sealed record Evidence(string Profile,string RawSha256,string? ProcessedSha256,Overlay[] Overlays,string[] Diagnostics);
+    internal sealed record Evidence(string Profile,string RawSha256,string? ProcessedSha256,Overlay[] Overlays,string[] Diagnostics)
+    {
+        // Reborn: imported base identities are separate from local overlay handles and do not imply native asset hashes.
+        public SdkInstanceInheritanceProfile.ImportedBase[] ImportedBases { get; init; } = Array.Empty<SdkInstanceInheritanceProfile.ImportedBase>();
+    }
     internal sealed record Result(byte[]? Bytes,Evidence Evidence);
     private const string Ea = "uri:ea.com:eala:asset";
 

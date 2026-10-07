@@ -77,6 +77,8 @@ internal static class CompilerSmokeTest
         TestSdkSelfComplexChildCopy();
         // Reborn: execute recursive sequence-tree admission independently from all earlier copy-only profiles.
         TestSdkSelfTreeCopy();
+        // Reborn: register imported-instance eligibility and snapshot/provenance guards independently.
+        TestSdkInstanceInheritance();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2323,6 +2325,11 @@ internal static class CompilerSmokeTest
     /** Reborn: verify bounded recursive copying and original-profile isolation without native processor execution. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkSelfTreeCopy() => SdkSelfTreeCopySmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: exercise narrow direct-instance XML inheritance without loading native processors or publishing streams. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkInstanceInheritance() => SdkInstanceInheritanceSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

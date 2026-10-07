@@ -244,13 +244,13 @@ internal static class Program
                 string? art = null,audio = null; List<string> mappings = new();
                 // Reborn: diagnostic local literal expressions are never implicitly enabled for the path-only/default graph commands.
                 // Reborn: complex leaf copying is a separate diagnostic profile, not an implicit widening of older flags.
-                bool localDefines = false,includeDefines = false,definitionExpressions = false,selfAttributeInheritance = false,selfChildCopy = false,selfComplexChildCopy = false,selfTreeCopy = false;
+                bool localDefines = false,includeDefines = false,definitionExpressions = false,selfAttributeInheritance = false,selfChildCopy = false,selfComplexChildCopy = false,selfTreeCopy = false,instanceInheritance = false;
                 for (int index = 6; index < args.Length; index++)
                 {
                     string option = args[index];
-                    if (option is "--local-defines" or "--include-defines" or "--definition-expressions" or "--self-attribute-inheritance" or "--self-child-copy" or "--self-complex-child-copy" or "--self-tree-copy")
+                    if (option is "--local-defines" or "--include-defines" or "--definition-expressions" or "--self-attribute-inheritance" or "--self-child-copy" or "--self-complex-child-copy" or "--self-tree-copy" or "--instance-inheritance")
                     {
-                        if (args[0] != "sdk-typed-source-graph" || localDefines || includeDefines || definitionExpressions || selfAttributeInheritance || selfChildCopy || selfComplexChildCopy || selfTreeCopy) throw new ArgumentException("Choose one preprocessing profile on the typed graph command only.");
+                        if (args[0] != "sdk-typed-source-graph" || localDefines || includeDefines || definitionExpressions || selfAttributeInheritance || selfChildCopy || selfComplexChildCopy || selfTreeCopy || instanceInheritance) throw new ArgumentException("Choose one preprocessing profile on the typed graph command only.");
                         localDefines = option == "--local-defines"; includeDefines = option == "--include-defines";
                         // Reborn: the three-form definition subset must be requested separately from either literal profile.
                         definitionExpressions = option == "--definition-expressions";
@@ -262,6 +262,8 @@ internal static class Program
                         selfComplexChildCopy = option == "--self-complex-child-copy";
                         // Reborn: recursive sequence-tree copying is selected only by its distinct opt-in flag.
                         selfTreeCopy = option == "--self-tree-copy";
+                        // Reborn: source-backed direct-instance visibility is independently explicit and remains copy-only.
+                        instanceInheritance = option == "--instance-inheritance";
                     }
                     else if (option is "--art-root" or "--audio-root")
                     {
@@ -277,7 +279,7 @@ internal static class Program
                 // Reborn: typed graph admission is explicit and preserves the original path-only command/report contract.
                 if (args[0] == "sdk-typed-source-graph")
                 {
-                    var typed = SdkTypedSourceGraph.Inspect(paths,localDefines,includeDefines,definitionExpressions,selfAttributeInheritance,selfChildCopy,selfComplexChildCopy,selfTreeCopy);
+                    var typed = SdkTypedSourceGraph.Inspect(paths,localDefines,includeDefines,definitionExpressions,selfAttributeInheritance,selfChildCopy,selfComplexChildCopy,selfTreeCopy,instanceInheritance);
                     Console.WriteLine(JsonSerializer.Serialize(new { environment.Target,ReadOnly = true,SnapshotOnly = true,ProductionBuildReady = false,Environment = environment,SourcePaths = paths,TypedSources = typed },JsonOptions));
                     return typed.Graph.ScopedGraphComplete ? 0 : 2;
                 }
@@ -302,6 +304,8 @@ internal static class Program
             if (args.FirstOrDefault() == "sdk-self-complex-child-copy-self-test") { SdkSelfComplexChildCopySmokeTest.Run(); return 0; }
             // Reborn: expose recursive sequence-tree copying fixtures separately from the default compiler suite.
             if (args.FirstOrDefault() == "sdk-self-tree-copy-self-test") { SdkSelfTreeCopySmokeTest.Run(); return 0; }
+            // Reborn: expose direct-instance eligibility/source/provenance regression fixtures independently.
+            if (args.FirstOrDefault() == "sdk-instance-inheritance-self-test") { SdkInstanceInheritanceSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() == "sdk-preflight")
             {
                 // Reborn: inspect explicit roots and target metadata only; never execute the reference SDK batch files or production compiler.
@@ -926,7 +930,7 @@ internal static class Program
         Console.WriteLine("  sdk-reviewed-schema-candidate [absolute-source.xml]");
         Console.WriteLine("  sdk-reviewed-schema-candidate-self-test");
         // Reborn: combine existing explicit path/root planning with rechecked reviewed-schema source bindings.
-        Console.WriteLine("  sdk-typed-source-graph ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--local-defines | --include-defines | --definition-expressions | --self-attribute-inheritance | --self-child-copy | --self-complex-child-copy | --self-tree-copy] [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
+        Console.WriteLine("  sdk-typed-source-graph ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--local-defines | --include-defines | --definition-expressions | --self-attribute-inheritance | --self-child-copy | --self-complex-child-copy | --self-tree-copy | --instance-inheritance] [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
         Console.WriteLine("  sdk-typed-source-graph-self-test");
         Console.WriteLine("  sdk-local-defines-self-test");
         Console.WriteLine("  sdk-include-defines-self-test");
@@ -937,6 +941,8 @@ internal static class Program
         Console.WriteLine("  sdk-self-complex-child-copy-self-test");
         // Reborn: advertise the bounded recursive sequence-tree admission test.
         Console.WriteLine("  sdk-self-tree-copy-self-test");
+        // Reborn: advertise imported-base eligibility and source-identity tests.
+        Console.WriteLine("  sdk-instance-inheritance-self-test");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.
         Console.WriteLine("  diagnostic-build-self-test");
         Console.WriteLine("  diagnostic-audioevent-build-self-test [ep1-audio-manifest ...]");
