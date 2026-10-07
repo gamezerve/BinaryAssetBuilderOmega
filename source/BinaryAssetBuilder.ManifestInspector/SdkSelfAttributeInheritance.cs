@@ -24,6 +24,8 @@ internal static class SdkSelfAttributeInheritance
     {
         // Reborn: imported base identities are separate from local overlay handles and do not imply native asset hashes.
         public SdkInstanceInheritanceProfile.ImportedBase[] ImportedBases { get; init; } = Array.Empty<SdkInstanceInheritanceProfile.ImportedBase>();
+        // Reborn: recursive preparation publishes the full diagnostic source closure separately from direct inherited handles.
+        public SdkInstanceInheritanceProfile.PreparedSource[] PreparedSources { get; init; } = Array.Empty<SdkInstanceInheritanceProfile.PreparedSource>();
     }
     internal sealed record Result(byte[]? Bytes,Evidence Evidence);
     private const string Ea = "uri:ea.com:eala:asset";

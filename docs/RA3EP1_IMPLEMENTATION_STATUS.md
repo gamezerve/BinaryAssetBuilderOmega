@@ -5,6 +5,19 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-07)
 
+[Recursive direct-instance preparation](RA3EP1_SDK_INSTANCE_CHAINS.md) advances
+real admission to 254 valid / 142 blocked: 47 newly valid documents and zero
+earlier-valid regressions. Own-only child export preserves direct-definition
+eligibility. Full per-base/owner source witnesses, shared-source coalescing,
+cache-aware depth, cyclic/stale/forged input and prepared-byte limits are tested.
+MissionDialogue has 1,272 overlays; new documents include AI personalities and
+campaign maps. All 128 default groups, 33 enum checks and three classifier fixtures
+pass. Six path issues and 198 occurrences of one missing AUDIO header remain.
+134 first blockers now concern child identity/directives/expressions; real
+joinAction Remove examples identify the next bounded subset. Older profiles,
+model/marshaller counts and reference XML/XSD are unchanged. No output/game proof;
+effort estimate stays about 50.25%, rounded 50% complete / 50% remaining.
+
 [Local empty-child matching](RA3EP1_SDK_SELF_CHILD_MERGE.md) adds the independently
 selected singleton-name/repeated-ID empty-complex-child overlay scope. Matched
 text/populated branches and cross-QName ID collisions remain closed; the core's

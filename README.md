@@ -20,18 +20,30 @@ is not a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**127 test groups** (some contain several fixtures). These counters can grow
+**128 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge regressions add groups and all 127 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain regressions add groups and all 128 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Local empty-child matching](docs/RA3EP1_SDK_SELF_CHILD_MERGE.md).
+Latest milestone: [Recursive direct-instance preparation](docs/RA3EP1_SDK_INSTANCE_CHAINS.md).
+The separate `--instance-chains` profile prepares each child in its own scope and
+exposes only its own declarations, not transitive handles. Full per-owner/per-base
+raw/processed source closures, cache-aware depth, cycle/stale and prepared-byte
+guards are tested. Real admission advances to **254 valid / 142 blocked**: 47 newly
+valid documents (34 maps, 12 SkirmishAI, one Sounds), zero earlier-valid regressions.
+MissionDialogue.xml now has 1,272 overlays. All 128 default groups, 33 enum checks
+and three classifier fixtures pass. Six path issues and 198 uses of one missing
+AUDIO header remain. Older profiles are unchanged; no output/game proof. The next
+concrete scope is bounded child-removal directives. Effort remains about 50.25%,
+rounded 50%; this measures XML preparation progress, not a usable SDK release.
+
+[Local empty-child matching](docs/RA3EP1_SDK_SELF_CHILD_MERGE.md).
 The independent `--self-child-merge` flag adds singleton-name/repeated-ID matching
 only for empty complex children. Core matched text appends rather than replaces;
 text/branch matching and cross-QName ID collisions remain closed. All 127 default
@@ -48,7 +60,7 @@ make this reproducible. Recursive preparation alone will not solve populated-chi
 merging in the inspected personality chain. Admission stays 207 valid / 189 blocked;
 compiler groups remain 126 and the effort estimate remains about 50%.
 
-Latest admission milestone: [Inherited explicit-root file fields](docs/RA3EP1_SDK_INSTANCE_ROOT_FILES.md).
+Previous direct-only admission milestone: [Inherited explicit-root file fields](docs/RA3EP1_SDK_INSTANCE_ROOT_FILES.md).
 The separate `--instance-root-files` profile admits imported DATA/ART/AUDIO fields
 under explicit diagnostic roots, while keeping imported relative paths closed.
 PathMusicEvents.xml now validates with 197 overlays: **207 valid / 189 blocked**.
