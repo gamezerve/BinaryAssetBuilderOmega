@@ -5,13 +5,22 @@ using System.Xml.Schema;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: admit only rechecked direct-instance bases with no transitive visibility or inherited physical file fields.
+// Reborn: admit rechecked direct-instance bases with separately selected file-free or explicit-alias scopes; transitive/relative-file provenance remains closed.
 internal sealed class SdkInstanceInheritanceProfile
 {
     internal const string Name = "diagnostic-direct-instance-inheritance-v1";
+    // Reborn: root-qualified imported files are separately explicit; relative defining-document paths remain closed.
+    internal const string RootFileName = "diagnostic-direct-instance-root-files-v1";
     private const string Ea = "uri:ea.com:eala:asset";
     // Reborn: source and processed-document hashes identify imported XML witnesses, never native streams or cache identities.
-    internal sealed record ImportedBase(string Type,string BaseId,string SourcePath,string RawSha256,string ProcessedSha256);
+    internal sealed record ImportedBase(string Type,string BaseId,string SourcePath,string RawSha256,string ProcessedSha256)
+    {
+        // Reborn: these are selected pre-overlay base fields, not a claim that each survives a derived override or resolves to an existing payload.
+        public SdkEffectiveSchema.BoundField[] RootQualifiedFields { get; init; } = Array.Empty<SdkEffectiveSchema.BoundField>();
+    }
+    // Reborn: distinguish independent alias-root admission from the earlier zero-imported-file-field contract.
+    private readonly bool rootFiles;
+    private string Profile => rootFiles ? RootFileName : Name;
     private readonly XmlSchemaSet schemas;
     private readonly SdkSourcePathAudit.Report paths;
     private readonly Dictionary<string,SdkSourcePathAudit.Source> inventory = new(StringComparer.OrdinalIgnoreCase);
@@ -21,9 +30,10 @@ internal sealed class SdkInstanceInheritanceProfile
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate the complete captured source inventory before any imported read; caller-supplied graph records cannot authorize escaped files. */
     //-------------------------------------------------------------------------------------------------
-    internal SdkInstanceInheritanceProfile(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths)
+    internal SdkInstanceInheritanceProfile(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool rootFiles = false)
     {
         this.schemas = schemas; this.paths = paths;
+        this.rootFiles = rootFiles;
         if (!schemas.IsCompiled || paths.Sources.Length > 512 || paths.Includes.Length > 4096) throw new InvalidDataException("Compiled schema and bounded instance inventory required.");
         string[] roots = new[] { paths.SourceRoot,paths.ArtRoot,paths.AudioRoot }.Where(root => root != null).Cast<string>().Select(SdkEnvironmentPreflight.DirectoryPath).ToArray();
         foreach (var source in paths.Sources)
@@ -48,7 +58,7 @@ internal sealed class SdkInstanceInheritanceProfile
             // Reborn: preserve the earlier local tree path when no external handle is needed; malformed handles still fail the tree profile.
             var needed = ownAssets.Where(asset => asset.HasAttribute("inheritFrom")).Select(Target).Where(handle => !local.ContainsKey(handle)).Distinct(StringComparer.Ordinal).ToArray();
             if (needed.Length == 0)
-            { var localResult = SdkSelfAttributeInheritance.Apply(schemas,bytes,treeCopy:true); return localResult with { Evidence = localResult.Evidence with { Profile = Name } }; }
+            { var localResult = SdkSelfAttributeInheritance.Apply(schemas,bytes,treeCopy:true); return localResult with { Evidence = localResult.Evidence with { Profile = Profile } }; }
             var includes = Includes(owner); var expected = paths.Includes.Where(edge => edge.Document.Equals(path,StringComparison.OrdinalIgnoreCase)).ToArray();
             if (includes.Length != expected.Length || includes.Length > 64) throw new InvalidDataException("Instance Include edges differ from captured source or exceed 64 direct Includes.");
             Dictionary<string,(XmlElement Asset,ImportedBase Witness)> external = new(StringComparer.Ordinal);
@@ -82,15 +92,16 @@ internal sealed class SdkInstanceInheritanceProfile
             {
                 if (!external.TryGetValue(handle,out var entry)) throw new InvalidDataException("Inherited handle is absent from direct-instance source assets.");
                 if (!Inheritable(entry.Asset.LocalName)) throw new InvalidDataException("Imported base type is not derived from BaseInheritableAsset.");
-                // Reborn: field origins cannot be guessed after overlay; refuse every schema-selected imported file field until provenance-aware binding exists.
+                // Reborn: inspect selected imported fields before overlay; defining-document relative paths cannot be guessed from the consuming document.
                 XmlDocument single = Parse(Encoding.UTF8.GetBytes("<AssetDeclaration xmlns='"+Ea+"'/>")); single.DocumentElement!.AppendChild(single.ImportNode(entry.Asset,true));
                 var baseBinding = SdkEffectiveSchema.Bind(schemas,entry.Witness.SourcePath,Serialize(single));
-                if (!baseBinding.XmlValidated || baseBinding.Fields.Length != 0) throw new InvalidDataException("Imported file-field provenance requires broader binding; no consumer-relative fallback.");
+                // Reborn: explicit alias roots under the scoped diagnostic resolver are source-directory independent; native wildcard/postfix search and physical safety/existence are separate gates.
+                if (!baseBinding.XmlValidated || (baseBinding.Fields.Length != 0 && (!rootFiles || baseBinding.Fields.Any(field => !RootQualified(field.LogicalPath))))) throw new InvalidDataException("Imported file-field provenance requires broader binding; only explicit DATA/ART/AUDIO roots are admitted by the root-file profile.");
                 expandedSize += Encoding.UTF8.GetByteCount(entry.Asset.OuterXml)+1L;
                 if (expandedSize > 4*1048576) throw new InvalidDataException("Injected instance bases exceed 4 MiB before merge.");
                 // Reborn: imported source-local chains were already expanded/validated; remove only their retained diagnostic inheritFrom marker before local delegation.
                 var imported = (XmlElement)owner.ImportNode(entry.Asset,true); imported.RemoveAttribute("inheritFrom"); owner.DocumentElement!.AppendChild(imported);
-                injected.Add(handle); witnesses.Add(entry.Witness);
+                injected.Add(handle); witnesses.Add(entry.Witness with { RootQualifiedFields = baseBinding.Fields });
             }
             var merged = SdkSelfAttributeInheritance.Apply(schemas,Serialize(owner),treeCopy:true);
             if (merged.Bytes == null) throw new InvalidDataException("Instance overlay exceeds copy-only scope: "+string.Join("; ",merged.Evidence.Diagnostics));
@@ -98,10 +109,20 @@ internal sealed class SdkInstanceInheritanceProfile
             foreach (var asset in Assets(output).Where(asset => injected.Contains(asset.LocalName+":"+asset.GetAttribute("id"))).ToArray()) output.DocumentElement!.RemoveChild(asset);
             byte[] processed = Serialize(output);
             if (processed.Length > 4*1048576) throw new InvalidDataException("Processed instance owner exceeds 4 MiB.");
-            return new(processed,new(Name,raw,Convert.ToHexString(SHA256.HashData(processed)),merged.Evidence.Overlays,Array.Empty<string>()) { ImportedBases = witnesses.ToArray() });
+            return new(processed,new(Profile,raw,Convert.ToHexString(SHA256.HashData(processed)),merged.Evidence.Overlays,Array.Empty<string>()) { ImportedBases = witnesses.ToArray() });
         }
         catch (Exception error) when (error is IOException or InvalidDataException or XmlException or ArgumentException or UnauthorizedAccessException or NotSupportedException or BinaryAssetBuilderException)
-        { return new(null,new(Name,raw,null,Array.Empty<SdkSelfAttributeInheritance.Overlay>(),new[] { error.Message[..Math.Min(error.Message.Length,512)] })); }
+        { return new(null,new(Profile,raw,null,Array.Empty<SdkSelfAttributeInheritance.Overlay>(),new[] { error.Message[..Math.Min(error.Message.Length,512)] })); }
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: recognize only explicit supported alias authority, without claiming lexical confinement, root availability or payload identity. */
+    //-------------------------------------------------------------------------------------------------
+    private static bool RootQualified(string logical)
+    {
+        int colon = logical.IndexOf(':');
+        return colon > 0 && colon < logical.Length-1 && logical == logical.Trim()
+            && logical[..colon].ToLowerInvariant() is "data" or "art" or "audio";
     }
 
     //-------------------------------------------------------------------------------------------------

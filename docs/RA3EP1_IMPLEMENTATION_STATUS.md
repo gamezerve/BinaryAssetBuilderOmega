@@ -5,6 +5,18 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-07)
 
+[Inherited explicit-root file fields](RA3EP1_SDK_INSTANCE_ROOT_FILES.md) adds the
+independent DATA/ART/AUDIO imported-field profile with pre-overlay witness fields.
+Relative imported paths remain closed; consumer-authored overrides retain consumer
+context. Real PathMusicEvents.xml validates with 197 overlays, bringing the graph to
+207 valid / 189 blocked and zero earlier-valid regressions. The original AUDIO
+header now appears in 198 unresolved typed occurrences, not 198 distinct paths.
+Six path issues remain; missing roots/unsafe paths never gain physical authority.
+No native wildcard/postfix search or physical file-hash rewriting is emulated.
+All 126 default groups and 33 enum checks pass; reference bytes and earlier-profile
+admission are unchanged, no output/game proof. Weighted effort stays about 50.25%,
+rounded 50%. The direct-instance block below is the preceding milestone.
+
 [Narrow direct-instance inheritance](RA3EP1_SDK_INSTANCE_INHERITANCE.md) admits
 captured/rechecked direct-instance bases with no child Include edges, reviewed
 schema BaseInheritableAsset ancestry and no schema-selected imported file fields.

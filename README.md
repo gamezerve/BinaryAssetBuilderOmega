@@ -20,18 +20,29 @@ is not a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**125 test groups** (some contain several fixtures). These counters can grow
+**126 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance regressions add groups and all 125 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file regressions add groups and all 126 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Narrow direct-instance inheritance](docs/RA3EP1_SDK_INSTANCE_INHERITANCE.md).
+Latest milestone: [Inherited explicit-root file fields](docs/RA3EP1_SDK_INSTANCE_ROOT_FILES.md).
+The separate `--instance-root-files` profile admits imported DATA/ART/AUDIO fields
+under explicit diagnostic roots, while keeping imported relative paths closed.
+PathMusicEvents.xml now validates with 197 overlays: **207 valid / 189 blocked**.
+The unresolved typed field count becomes 198 occurrences of the same AUDIO header,
+not 198 distinct missing files. Root availability, confinement and file existence
+remain separate gates; native wildcard/postfix search and file-hash rewriting are
+not emulated. All 126 default groups and 33 enum checks pass. Reference bytes, six
+path issues and earlier-profile admission remain unchanged; no output/game proof.
+English reports are updated. Weighted effort stays about 50.25%, rounded 50%.
+
+[Narrow direct-instance inheritance](docs/RA3EP1_SDK_INSTANCE_INHERITANCE.md).
 The explicit `--instance-inheritance` profile admits rechecked direct-instance,
 Include-free base documents with BaseInheritableAsset-derived types and no imported
 file fields. Source-local chains are expanded before copy-only owner overlays;
