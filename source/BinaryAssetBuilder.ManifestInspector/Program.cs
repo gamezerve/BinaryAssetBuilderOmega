@@ -340,6 +340,14 @@ internal static class Program
             if (args.FirstOrDefault() == "sdk-instance-bitflags-self-test") { SdkInstanceBitflagsSmokeTest.Run(); return 0; }
             // Reborn: expose the independently scoped matched ObjectFilter regression without running native compilers.
             if (args.FirstOrDefault() == "sdk-instance-filters-self-test") { SdkInstanceFiltersSmokeTest.Run(); return 0; }
+            // Reborn: characterize duplicate upgrade singleton semantics without admitting production normalization.
+            if (args.FirstOrDefault() == "sdk-upgrade-semantics-self-test") { SdkUpgradeSemanticsSmokeTest.Run(); return 0; }
+            // Reborn: review explicit source bytes only for the two known upgrade owners, without graph admission or emitted output.
+            if (args.FirstOrDefault() == "sdk-upgrade-semantics-review")
+            {
+                if (args.Length != 2) throw new ArgumentException("sdk-upgrade-semantics-review <absolute-upgrade.xml>");
+                Console.WriteLine(JsonSerializer.Serialize(SdkUpgradeSemanticsSmokeTest.Review(args[1]),JsonOptions)); return 0;
+            }
             if (args.FirstOrDefault() == "sdk-preflight")
             {
                 // Reborn: inspect explicit roots and target metadata only; never execute the reference SDK batch files or production compiler.
@@ -992,6 +1000,10 @@ internal static class Program
         // Reborn: expose the separate enum-list modifier regression command.
         Console.WriteLine("  sdk-instance-bitflags-self-test");
         Console.WriteLine("  sdk-instance-filters-self-test");
+        // Reborn: expose the independent upgrade singleton characterization group.
+        Console.WriteLine("  sdk-upgrade-semantics-self-test");
+        // Reborn: the explicit source review remains partial and read-only even if both isolated owners validate.
+        Console.WriteLine("  sdk-upgrade-semantics-review <absolute-upgrade.xml>");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.
         Console.WriteLine("  diagnostic-build-self-test");
         Console.WriteLine("  diagnostic-audioevent-build-self-test [ep1-audio-manifest ...]");

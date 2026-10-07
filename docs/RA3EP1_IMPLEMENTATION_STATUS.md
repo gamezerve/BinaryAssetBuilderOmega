@@ -5,6 +5,19 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Upgrade singleton normalization review](RA3EP1_SDK_UPGRADE_REVIEW.md) proves
+that the actual core folds complementary GameDependency branches for the two
+known Allied upgrade owners, retaining references and unpacking conditions.
+Both isolated owners validate; conflicting singleton attributes can still lose
+earlier values while final validation passes. The real EVA field names match
+the schema. Official RA3 and EP1 agree on the inspected singleton declarations.
+No new graph admission or schema/source edits: **387 valid / 9 blocked** remains.
+Registered compiler groups: 135; manual effort remains **51% / 49%**. Next:
+independent bounded complementary-singleton normalization with predicted-result
+checks and whole-owner validation, not a generic cardinality relaxation.
+All 135 compiler groups, 33 enum checks, three classifier fixtures and three
+review CLI refusal probes pass; final build has zero warnings/errors.
+
 [One-sided matched ObjectFilter copying](RA3EP1_SDK_INSTANCE_FILTERS.md) adds
 independent `--instance-filters` admission for AIMicroManagerData/IgnoreTargets.
 The unchanged core must preserve proved weak-reference order and duplicates;

@@ -97,6 +97,8 @@ internal static class CompilerSmokeTest
         TestSdkInstanceBitflags();
         // Reborn: register one-sided matched micromanager filter payload copying independently of enum modifiers.
         TestSdkInstanceFilters();
+        // Reborn: characterize upgrade singleton folding separately without widening any diagnostic profile.
+        TestSdkUpgradeSemantics();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2393,6 +2395,11 @@ internal static class CompilerSmokeTest
     /** Reborn: pin ordered weak-reference copying, bounded refusal and final schema binding for matched micromanager filters. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkInstanceFilters() => SdkInstanceFiltersSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: pin duplicate singleton upgrade requirements and validation-hidden conflicts before normalization admission. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkUpgradeSemantics() => SdkUpgradeSemanticsSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */
