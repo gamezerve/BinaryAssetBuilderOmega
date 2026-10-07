@@ -31,7 +31,15 @@ worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Inherited explicit-root file fields](docs/RA3EP1_SDK_INSTANCE_ROOT_FILES.md).
+Latest analysis: [Direct-instance Include-chain triage](docs/RA3EP1_SDK_INSTANCE_INCLUDE_BLOCKERS.md).
+The 178 first Include-free blockers reduce to 23 shared imported sources; all have
+instance-only child edges but all remain independently blocked. The largest three
+account for 69 owners. A read-only classifier and three owned script fixtures
+make this reproducible. Recursive preparation alone will not solve populated-child
+merging in the inspected personality chain. Admission stays 207 valid / 189 blocked;
+compiler groups remain 126 and the effort estimate remains about 50%.
+
+Latest admission milestone: [Inherited explicit-root file fields](docs/RA3EP1_SDK_INSTANCE_ROOT_FILES.md).
 The separate `--instance-root-files` profile admits imported DATA/ART/AUDIO fields
 under explicit diagnostic roots, while keeping imported relative paths closed.
 PathMusicEvents.xml now validates with 197 overlays: **207 valid / 189 blocked**.

@@ -5,6 +5,14 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-07)
 
+[Direct-instance Include-chain triage](RA3EP1_SDK_INSTANCE_INCLUDE_BLOCKERS.md)
+reduces 178 first-blocked owners to 23 shared imported sources, all with instance-only
+child edges and all independently blocked. The largest three affect 69 owners.
+A read-only report classifier passes three owned script fixtures. The inspected
+BasePersonality/SoloBasePersonality chain also requires populated-child merging;
+recursive preparation alone is insufficient. No admission change: 207 valid / 189
+blocked, compiler registry still 126, no output/game proof, estimate still about 50%.
+
 [Inherited explicit-root file fields](RA3EP1_SDK_INSTANCE_ROOT_FILES.md) adds the
 independent DATA/ART/AUDIO imported-field profile with pre-overlay witness fields.
 Relative imported paths remain closed; consumer-authored overrides retain consumer
