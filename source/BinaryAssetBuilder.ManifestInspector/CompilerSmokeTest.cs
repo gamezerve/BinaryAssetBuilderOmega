@@ -105,6 +105,8 @@ internal static class CompilerSmokeTest
         TestSdkInstanceMetadata();
         // Reborn: register expression-before-inheritance stage admission independently of metadata-only Includes.
         TestSdkInstanceExpressions();
+        // Reborn: characterize sibling identity operations independently without widening preprocessing profiles.
+        TestSdkSiblingIdentitySemantics();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2421,6 +2423,11 @@ internal static class CompilerSmokeTest
     /** Reborn: prove defining-context expression substitution precedes guarded overlays without widening older profiles. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkInstanceExpressions() => SdkInstanceExpressionsSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: pin repeated-key loss and ordered command semantics before a separate source-bound normalization scope. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkSiblingIdentitySemantics() => SdkSiblingIdentitySemanticsSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

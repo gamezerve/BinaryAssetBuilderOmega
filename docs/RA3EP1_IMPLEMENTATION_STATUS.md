@@ -5,6 +5,16 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Sibling identity operation review](RA3EP1_SDK_SIBLING_IDENTITY_REVIEW.md)
+separates identical duplicated StrategicStates from ordered Remove/re-add pairs
+and cross-QName removal. Owned unchanged-core fixtures pin coalescing, conflicting
+last-write-wins, removal ordering, loss of old-only attributes and cross-QName
+deletion/replacement despite schema-valid results. No graph admission expands:
+**389 valid / 7 blocked**, registered groups 139, effort **51% / 49%**.
+All 139 compiler groups pass. Next: bounded identical-state coalescing under
+an independent profile, then separately proved ordered command pairs. Preserve
+cross-QName refusal and source/schema/core files.
+
 [Expressions before guarded inheritance](RA3EP1_SDK_INSTANCE_EXPRESSIONS.md)
 adds independent `--instance-expressions`, retaining raw Include/handle authority
 and source-local definition contexts. The complete ObjectCreationLists owner

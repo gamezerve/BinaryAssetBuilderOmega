@@ -354,6 +354,8 @@ internal static class Program
             if (args.FirstOrDefault() == "sdk-instance-metadata-self-test") { SdkInstanceMetadataSmokeTest.Run(); return 0; }
             // Reborn: test separately admitted expression-before-overlay ordering without native compiler execution.
             if (args.FirstOrDefault() == "sdk-instance-expressions-self-test") { SdkInstanceExpressionsSmokeTest.Run(); return 0; }
+            // Reborn: expose owned sibling-key characterization without admitting new source normalization.
+            if (args.FirstOrDefault() == "sdk-sibling-identity-semantics-self-test") { SdkSiblingIdentitySemanticsSmokeTest.Run(); return 0; }
             // Reborn: review explicit source bytes only for the two known upgrade owners, without graph admission or emitted output.
             if (args.FirstOrDefault() == "sdk-upgrade-semantics-review")
             {
@@ -1020,6 +1022,8 @@ internal static class Program
         Console.WriteLine("  sdk-instance-metadata-self-test");
         // Reborn: expose expression stage regressions independently of metadata-only Includes.
         Console.WriteLine("  sdk-instance-expressions-self-test");
+        // Reborn: expose destructive keyed-operation regression checks without authorizing normalization.
+        Console.WriteLine("  sdk-sibling-identity-semantics-self-test");
         // Reborn: the explicit source review remains partial and read-only even if both isolated owners validate.
         Console.WriteLine("  sdk-upgrade-semantics-review <absolute-upgrade.xml>");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.

@@ -22,18 +22,28 @@ a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**138 test groups** (some contain several fixtures). These counters can grow
+**139 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression regressions add groups and all 138 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization regressions add groups and all 139 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Expressions before guarded inheritance](docs/RA3EP1_SDK_INSTANCE_EXPRESSIONS.md).
+Latest milestone: [Sibling identity operation review](docs/RA3EP1_SDK_SIBLING_IDENTITY_REVIEW.md).
+The remaining AI identity blockers split into identical duplicate states,
+ordered Remove/re-add pairs and cross-QName removal. New core fixtures prove
+that ordinary overlay is not equivalent to Remove/re-add: old-only fields and
+entry order differ. Final schema validation can pass after destructive keyed
+operations. No identity guard is relaxed; real counts stay **389 valid / 7 blocked**.
+All 139 compiler groups pass. Manual effort stays **51% / 49%**; no native/game
+proof. Next: independent narrowly bounded identical-state coalescing, followed
+by separately proved ordered Remove/re-add support; cross-QName removal stays closed.
+
+[Expressions before guarded inheritance](docs/RA3EP1_SDK_INSTANCE_EXPRESSIONS.md).
 Independent `--instance-expressions` resolves captured definitions in each
 source's own context before overlays. The complete ObjectCreationLists owner
 now validates: 54 substitutions, one local overlay and one consumed undeclared
