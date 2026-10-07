@@ -25,6 +25,8 @@ internal sealed class SdkInstanceInheritanceProfile
     internal const string FilterName = "diagnostic-direct-instance-filters-v1";
     // Reborn: source-owner complementary upgrade folding must be selected independently of filter copying.
     internal const string UpgradeName = "diagnostic-direct-instance-upgrades-v1";
+    // Reborn: metadata-only all Includes are independent of older source-backed instance visibility.
+    internal const string MetadataName = "diagnostic-direct-instance-metadata-v1";
     // Reborn: identify every captured/prepared document contributing to an admitted closure, not native hashes or live-disk state.
     internal sealed record PreparedSource(string SourcePath,string RawSha256,string ProcessedSha256);
     private const string Ea = "uri:ea.com:eala:asset";
@@ -52,11 +54,13 @@ internal sealed class SdkInstanceInheritanceProfile
     private readonly bool filters;
     // Reborn: propagate separately admitted singleton normalization without relaxing imported-base eligibility.
     private readonly bool upgrades;
+    // Reborn: this scope proves definition-only leaf Includes but does not enable pre-inheritance expression substitution.
+    private readonly bool metadata;
     private sealed record Prepared(SdkSelfAttributeInheritance.Result Result,int Height);
     private readonly Dictionary<string,Prepared> prepared = new(StringComparer.OrdinalIgnoreCase);
     private readonly HashSet<string> active = new(StringComparer.OrdinalIgnoreCase);
     private long preparedBytes;
-    private string Profile => upgrades ? UpgradeName : filters ? FilterName : bitflags ? BitflagName : markers ? MarkerName : choices ? ChoiceName : removals ? RemovalName : chains ? ChainName : rootFiles ? RootFileName : Name;
+    private string Profile => metadata ? MetadataName : upgrades ? UpgradeName : filters ? FilterName : bitflags ? BitflagName : markers ? MarkerName : choices ? ChoiceName : removals ? RemovalName : chains ? ChainName : rootFiles ? RootFileName : Name;
     private readonly XmlSchemaSet schemas;
     private readonly SdkSourcePathAudit.Report paths;
     private readonly Dictionary<string,SdkSourcePathAudit.Source> inventory = new(StringComparer.OrdinalIgnoreCase);
@@ -66,13 +70,14 @@ internal sealed class SdkInstanceInheritanceProfile
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate the complete captured source inventory before any imported read; caller-supplied graph records cannot authorize escaped files. */
     //-------------------------------------------------------------------------------------------------
-    internal SdkInstanceInheritanceProfile(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool rootFiles = false,bool chains = false,bool removals = false,bool choices = false,bool markers = false,bool bitflags = false,bool filters = false,bool upgrades = false)
+    internal SdkInstanceInheritanceProfile(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool rootFiles = false,bool chains = false,bool removals = false,bool choices = false,bool markers = false,bool bitflags = false,bool filters = false,bool upgrades = false,bool metadata = false)
     {
         this.schemas = schemas; this.paths = paths;
         // Reborn: choice admission includes the tested chain/removal subsets without changing any earlier constructor defaults.
         // Reborn: explicitly selecting markers includes earlier choices/chains without changing their constructor defaults.
         // Reborn: modifier admission implies markers/choices/chains, but all earlier constructor defaults remain unchanged.
         // Reborn: filters compose with earlier independently tested scopes, without changing any earlier default or imported-base authority.
+        upgrades |= metadata; this.metadata = metadata;
         filters |= upgrades; this.upgrades = upgrades;
         this.rootFiles = rootFiles || chains || removals || choices || markers || bitflags || filters; this.chains = chains || removals || choices || markers || bitflags || filters; this.removals = removals || choices || markers || bitflags || filters; this.choices = choices || markers || bitflags || filters; this.markers = markers || bitflags || filters; this.bitflags = bitflags || filters; this.filters = filters;
         if (!schemas.IsCompiled || paths.Sources.Length > 512 || paths.Includes.Length > 4096) throw new InvalidDataException("Compiled schema and bounded instance inventory required.");
@@ -147,18 +152,33 @@ internal sealed class SdkInstanceInheritanceProfile
             Dictionary<string,(XmlElement Asset,ImportedBase Witness)> external = new(StringComparer.Ordinal);
             // Reborn: include all visited preparation sources, including direct visibility candidates not ultimately selected as inherited handles.
             List<PreparedSource> closure = new();
+            // Reborn: metadata-only witnesses never enter the external instance handle dictionary.
+            List<SdkMetadataDefinitions.Witness> metadataWitnesses = new();
             // Reborn: cap source-local expansion across the entire direct visibility set, not only each imported document individually.
             long expandedBaseBytes = 0;
             for (int index = 0; index < includes.Length; index++)
             {
                 var include = includes[index]; var edge = expected[index]; string logical = include.GetAttribute("source");
-                if (include.NamespaceURI != Ea || include.LocalName != "Include" || include.GetAttribute("type") != "instance" || include.HasChildNodes
+                // Reborn: only an explicitly selected all edge can attempt a metadata proof; reference/precompiled edges remain closed.
+                bool metadataEdge = metadata && include.GetAttribute("type") == "all" && edge.Kind == "all";
+                if (include.NamespaceURI != Ea || include.LocalName != "Include" || (!metadataEdge && include.GetAttribute("type") != "instance") || include.HasChildNodes
                     || include.Attributes.OfType<XmlAttribute>().Any(attribute => attribute.Name is not ("source" or "type"))
-                    || edge.Kind != "instance" || edge.LogicalPath != logical || edge.PhysicalPath == null) throw new InvalidDataException("Only direct source-backed instance Includes are admitted; all/reference/precompiled visibility remains closed.");
+                    || (!metadataEdge && edge.Kind != "instance") || edge.LogicalPath != logical || edge.PhysicalPath == null) throw new InvalidDataException("Only direct source-backed instance Includes are admitted; all/reference/precompiled visibility remains closed.");
                 var resolved = SdkSourcePathAudit.Resolve(logical,Path.GetDirectoryName(path)!,inventory[path].Root,paths.SourceRoot,paths.ArtRoot,paths.AudioRoot);
                 if (!resolved.Path.Equals(edge.PhysicalPath,StringComparison.OrdinalIgnoreCase) || !inventory.TryGetValue(resolved.Path,out var source)
                     || !resolved.Root.Equals(source.Root,StringComparison.OrdinalIgnoreCase) || resolved.Path.Equals(path,StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Instance target differs from captured confined inventory or is cyclic.");
                 byte[] baseBytes = Capture(resolved.Path); XmlDocument baseXml = Parse(baseBytes);
+                if (metadataEdge)
+                {
+                    // Reborn: metadata leaves consume one source edge and cannot bypass depth bounds or mix duplicate role witnesses.
+                    if (depth >= 32 || expected.Count(candidate => string.Equals(candidate.PhysicalPath,resolved.Path,StringComparison.OrdinalIgnoreCase)) != 1) throw new InvalidDataException("Metadata-only depth/duplicate-role bound exceeded.");
+                    if (metadataWitnesses.Any(witness => witness.SourcePath.Equals(resolved.Path,StringComparison.OrdinalIgnoreCase))) throw new InvalidDataException("Duplicate metadata-only Include remains closed.");
+                    int count = SdkMetadataDefinitions.Prove(schemas,baseXml,resolved.Path,baseBytes);
+                    metadataWitnesses.Add(new(resolved.Path,source.Sha256,count));
+                    // Reborn: the validated leaf is unchanged, captured and Include-free; it adds closure evidence but no prepared asset handles.
+                    closure.Add(new(resolved.Path,source.Sha256,source.Sha256)); height = Math.Max(height,1);
+                    continue;
+                }
                 if (!chains && Includes(baseXml).Length != 0) throw new InvalidDataException("Imported base documents must be Include-free; transitive visibility remains closed.");
                 // Reborn: source-local preparation never exports a descendant's declarations as this direct child's own assets.
                 Prepared? child = chains ? Prepare(resolved.Path,null,depth+1) : null;
@@ -198,7 +218,7 @@ internal sealed class SdkInstanceInheritanceProfile
             foreach (var asset in Assets(output).Where(asset => injected.Contains(asset.LocalName+":"+asset.GetAttribute("id"))).ToArray()) output.DocumentElement!.RemoveChild(asset);
             byte[] processed = Serialize(output);
             if (processed.Length > 4*1048576) throw new InvalidDataException("Processed instance owner exceeds 4 MiB.");
-            return new(processed,new(Profile,raw,Convert.ToHexString(SHA256.HashData(processed)),merged.Evidence.Overlays,Array.Empty<string>()) { ImportedBases = witnesses.ToArray(),PreparedSources = closure.DistinctBy(source => source.SourcePath,StringComparer.OrdinalIgnoreCase).ToArray(),Removals = merged.Evidence.Removals,ConsumedMarkers = merged.Evidence.ConsumedMarkers,Bitflags = merged.Evidence.Bitflags,Filters = merged.Evidence.Filters,UpgradeNormalizations = merged.Evidence.UpgradeNormalizations });
+            return new(processed,new(Profile,raw,Convert.ToHexString(SHA256.HashData(processed)),merged.Evidence.Overlays,Array.Empty<string>()) { ImportedBases = witnesses.ToArray(),PreparedSources = closure.DistinctBy(source => source.SourcePath,StringComparer.OrdinalIgnoreCase).ToArray(),Removals = merged.Evidence.Removals,ConsumedMarkers = merged.Evidence.ConsumedMarkers,Bitflags = merged.Evidence.Bitflags,Filters = merged.Evidence.Filters,UpgradeNormalizations = merged.Evidence.UpgradeNormalizations,MetadataDefinitionIncludes = metadataWitnesses.ToArray() });
         }
         catch (Exception error) when (error is IOException or InvalidDataException or XmlException or ArgumentException or UnauthorizedAccessException or NotSupportedException or BinaryAssetBuilderException)
         { return new(null,new(Profile,raw,null,Array.Empty<SdkSelfAttributeInheritance.Overlay>(),new[] { error.Message[..Math.Min(error.Message.Length,512)] })); }

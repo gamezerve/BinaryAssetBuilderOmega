@@ -101,6 +101,8 @@ internal static class CompilerSmokeTest
         TestSdkUpgradeSemantics();
         // Reborn: register independent complementary-singleton admission after core characterization.
         TestSdkInstanceUpgrades();
+        // Reborn: independently register metadata-only leaf Includes without instance exports.
+        TestSdkInstanceMetadata();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2407,6 +2409,11 @@ internal static class CompilerSmokeTest
     /** Reborn: prove bounded upgrade normalization and unchanged earlier profile refusals. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkInstanceUpgrades() => SdkInstanceUpgradesSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: test bounded metadata Include authority and unchanged expression/inheritance boundaries. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkInstanceMetadata() => SdkInstanceMetadataSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

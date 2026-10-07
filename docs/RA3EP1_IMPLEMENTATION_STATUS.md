@@ -5,6 +5,17 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Definition-only leaf Include admission](RA3EP1_SDK_INSTANCE_METADATA.md) adds
+independent `--instance-metadata`: source-backed all edges must target a proven
+Include-free, schema-valid metadata definition leaf with zero asset exports and
+zero typed fields. ObjectCreationLists passes that gate but remains refused on
+its inherited asset expressions, with all partial evidence withheld. Real graph
+stays **388 valid / 8 blocked**, no earlier-valid regressions. Registered groups:
+137; effort remains **51% / 49%**. Next: separately prove expression substitution
+before inheritance without weakening older profiles or source authority.
+All 137 compiler groups, 33 enum checks, three classifier fixtures and three
+metadata CLI isolation probes pass; final build has zero warnings/errors.
+
 [Complementary upgrade singleton admission](RA3EP1_SDK_INSTANCE_UPGRADES.md)
 adds independent `--instance-upgrades` preparation. Bounded disjoint dependency
 pairs are folded by the unchanged core and must match predicted attributes and

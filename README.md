@@ -22,18 +22,28 @@ a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**136 test groups** (some contain several fixtures). These counters can grow
+**137 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization regressions add groups and all 136 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf regressions add groups and all 137 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Complementary upgrade singleton admission](docs/RA3EP1_SDK_INSTANCE_UPGRADES.md).
+Latest milestone: [Definition-only leaf Include admission](docs/RA3EP1_SDK_INSTANCE_METADATA.md).
+Independent `--instance-metadata` proves bounded all-Include definition leaves
+with zero asset exports. ObjectCreationLists now passes its Include-role gate,
+then stops at unsupported expressions in inherited assets. Its 54 expression
+attributes need a separately proved expressions-before-overrides step. Real
+counts remain **388 valid / 8 blocked**, with zero earlier-valid regressions.
+No partial witness/output/native/game proof; effort stays **51% / 49%**.
+All 137 compiler groups, 33 enum checks, three classifier fixtures and three
+metadata CLI isolation probes pass. Final build has zero warnings/errors.
+
+[Complementary upgrade singleton admission](docs/RA3EP1_SDK_INSTANCE_UPGRADES.md).
 Independent `--instance-upgrades` normalizes only bounded, disjoint complementary
 GameDependency pairs and checks the unchanged core's actual attribute union and
 ordered references. The entire prepared Upgrade library now validates:

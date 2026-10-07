@@ -57,6 +57,8 @@ internal static class SdkSelfAttributeInheritance
         public Filter[] Filters { get; init; } = Array.Empty<Filter>();
         // Reborn: source-local normalization witnesses remain atomic with all other inheritance evidence.
         public SdkUpgradeNormalization.Witness[] UpgradeNormalizations { get; init; } = Array.Empty<SdkUpgradeNormalization.Witness>();
+        // Reborn: Include-only metadata witnesses are separate from local normalization/imported asset authority.
+        public SdkMetadataDefinitions.Witness[] MetadataDefinitionIncludes { get; init; } = Array.Empty<SdkMetadataDefinitions.Witness>();
     }
     internal sealed record Result(byte[]? Bytes,Evidence Evidence);
     private const string Ea = "uri:ea.com:eala:asset";
