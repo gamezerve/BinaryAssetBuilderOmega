@@ -22,18 +22,29 @@ a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**129 test groups** (some contain several fixtures). These counters can grow
+**130 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal regressions add groups and all 129 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization regressions add groups and all 130 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Bounded keyed child removal](docs/RA3EP1_SDK_INSTANCE_REMOVALS.md).
+Latest milestone: [Choice-particle behavior review](docs/RA3EP1_SDK_CHOICE_REVIEW.md).
+The new regression group characterizes anonymous repeated rules and their order,
+choice aggregate cardinality, cross-QName ID replacement, same-key text append,
+and destructive singleton replacement. Existing profiles remain closed to choice
+particles. Read-only inspection identifies 69 authored Heuristic blocks across
+ten blocked owners; the eleventh inherits through three direct Includes. No
+choice profile is enabled yet, so admission remains **374 valid / 22 blocked**.
+All 130 compiler groups, 33 enum checks and three classifier fixtures pass;
+the full real-source audit was repeated and created no output directory.
+This review does not increase the manual **51% complete / 49% remaining** estimate.
+
+[Bounded keyed child removal](docs/RA3EP1_SDK_INSTANCE_REMOVALS.md).
 The independent `--instance-removals` flag admits exact literal Remove/id stubs
 only for existing same-QName repeated empty-complex children. Real admission now
 reaches **374 valid / 22 blocked**, with 120 newly valid documents and zero
@@ -43,7 +54,8 @@ removals; consumed directives do not survive in processed XML. All 129 groups,
 permission for an existing owned temporary audio-file move. Final build has zero
 warnings/errors. Six path issues and 198 uses of one missing AUDIO header remain;
 reference bytes and older profile admission are unchanged, no output/game proof.
-Next is reviewing exact non-flat particle shapes affecting 11 remaining documents.
+The subsequent choice review above identifies the exact particle shapes affecting
+11 remaining documents; bounded choice-copy admission is the next implementation.
 Manual weighted effort is reassessed to about 51% complete / 49% remaining.
 
 [Recursive direct-instance preparation](docs/RA3EP1_SDK_INSTANCE_CHAINS.md).

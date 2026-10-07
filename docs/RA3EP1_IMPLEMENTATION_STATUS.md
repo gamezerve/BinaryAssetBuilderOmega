@@ -5,6 +5,17 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-07)
 
+[Choice-particle behavior review](RA3EP1_SDK_CHOICE_REVIEW.md) identifies 69
+authored Heuristic blocks across ten of the eleven non-flat first-blocker owners;
+TestPersonalities inherits the affected personalities via direct Includes.
+The new registered compiler group (130 total) pins anonymous repeated copying,
+choice aggregate cardinality, cross-QName keyed replacement, same-key text append
+and destructive singleton replacement. No choice profile is enabled: existing
+atomic refusal rules and real admission (374 valid / 22 blocked) are unchanged.
+All 130 compiler groups, 33 enum checks and three classifier fixtures pass.
+The full real-source graph audit was repeated (expected exit 2, no output).
+This characterization alone does not raise the 51% engineering-effort estimate.
+
 [Bounded keyed child removal](RA3EP1_SDK_INSTANCE_REMOVALS.md) advances real
 admission to 374 valid / 22 blocked: 120 newly valid documents, zero earlier-valid
 regressions. Exact existing same-QName repeated empty-child IDs are required;
