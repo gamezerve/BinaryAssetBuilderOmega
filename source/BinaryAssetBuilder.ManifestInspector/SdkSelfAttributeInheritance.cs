@@ -6,7 +6,7 @@ using BinaryAssetBuilder.Core.SageXml;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: use the existing core joiner for separately admitted bounded local copy or empty-child matching scopes; matched text/populated branches remain closed.
+// Reborn: use the existing core joiner for independently admitted sequence/repeated-choice copy and empty-child matching scopes; populated matching remains closed.
 internal static class SdkSelfAttributeInheritance
 {
     internal const string Name = "diagnostic-self-attribute-inheritance-v1";
@@ -20,6 +20,8 @@ internal static class SdkSelfAttributeInheritance
     internal const string ChildMergeName = "diagnostic-self-empty-child-merge-v1";
     // Reborn: literal keyed empty-child removal is independently scoped; missing targets, singleton/nested removal and other directives remain closed.
     internal const string ChildRemovalName = "diagnostic-self-empty-child-removal-v1";
+    // Reborn: nested flat repeated-choice copying is independent of older sequence-only profiles; singleton and populated matching stay closed.
+    internal const string ChoiceCopyName = "diagnostic-self-repeated-choice-copy-v1";
     private const string Instance = "uri:ea.com:eala:asset:instance";
     // Reborn: record actual source-directed removals separately from inheritance overlays and processed source hashes.
     internal sealed record Removal(string Type,string DerivedId,string BaseId,string ChildName,string ChildId);
@@ -40,10 +42,12 @@ internal static class SdkSelfAttributeInheritance
     //-------------------------------------------------------------------------------------------------
     /** Reborn: expand local asset chains with independently admitted copy/empty-child matching scopes and reject the entire document on unsupported semantics. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false,bool childRemoval = false)
+    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false,bool childRemoval = false,bool choiceCopy = false)
     {
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
-        string profile = childRemoval ? ChildRemovalName : childMerge ? ChildMergeName : treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
+        string profile = choiceCopy ? ChoiceCopyName : childRemoval ? ChildRemovalName : childMerge ? ChildMergeName : treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
+        // Reborn: the explicit choice profile retains every earlier removal, matching, tree and resource guard.
+        childRemoval |= choiceCopy;
         // Reborn: removal builds on the tested empty-child merge subset without widening its older flags.
         childMerge |= childRemoval;
         // Reborn: retain all existing tree guards when independently enabling the narrower matched-empty-child gate.
@@ -192,7 +196,7 @@ internal static class SdkSelfAttributeInheritance
             }
 
             //-------------------------------------------------------------------------------------------------
-            /** Reborn: admit direct sequence children with independently selected leaf/tree scope; keep non-sequence particles and instance directives closed. */
+            /** Reborn: admit sequence trees or independently selected nested unit repeated choices; keep singleton/structural particles and child directives closed. */
             //-------------------------------------------------------------------------------------------------
             void CheckChildren(XmlElement asset,XmlSchemaComplexType type,int depth = 0)
             {
@@ -204,7 +208,19 @@ internal static class SdkSelfAttributeInheritance
                 foreach (XmlNode node in asset.ChildNodes)
                     if (node is not XmlElement && node is not XmlComment && !((node.NodeType is XmlNodeType.Text or XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace) && string.IsNullOrWhiteSpace(node.Value))) throw new InvalidDataException("Meaningful asset text or non-element content is outside child-copy scope.");
                 if (children.Length == 0) return;
-                if (type.ContentTypeParticle is not XmlSchemaSequence sequence || sequence.Items.OfType<XmlSchemaObject>().Any(item => item is not XmlSchemaElement)) throw new InvalidDataException("Flat direct sequence child schema required.");
+                // Reborn: only nested flat repeated choices with exactly one element per alternative slot are new; top-level/singleton/structural particles stay closed.
+                XmlSchemaObjectCollection declarations;
+                bool repeatedChoice = false;
+                if (type.ContentTypeParticle is XmlSchemaSequence sequence) declarations = sequence.Items;
+                else if (choiceCopy && depth > 0 && type.ContentTypeParticle is XmlSchemaChoice choice && choice.MaxOccurs > 1)
+                {
+                    declarations = choice.Items; repeatedChoice = true;
+                    if (declarations.OfType<XmlSchemaObject>().Any(item => item is not XmlSchemaElement element || element.MinOccurs != 1 || element.MaxOccurs != 1)
+                        || children.Length < choice.MinOccurs || children.Length > choice.MaxOccurs)
+                        throw new InvalidDataException("Repeated choice requires unit element alternatives and bounded aggregate cardinality before copying.");
+                }
+                else throw new InvalidDataException("Flat direct sequence child schema required; only explicit nested repeated-choice copying is admitted.");
+                if (declarations.OfType<XmlSchemaObject>().Any(item => item is not XmlSchemaElement)) throw new InvalidDataException("Structural child particles remain closed.");
                 Dictionary<XmlQualifiedName,int> counts = new();
                 // Reborn: core repeated-child matching compares IDs across sibling names; uniqueness must therefore span all direct siblings, not one QName.
                 HashSet<string> siblingIds = new(StringComparer.Ordinal);
@@ -215,7 +231,7 @@ internal static class SdkSelfAttributeInheritance
                     // Reborn: unique literal sibling IDs cannot select an already copied node on the sole populated side; duplicates/unsafe identities remain closed.
                     if (treeCopy && child.HasAttribute("id") && (!Token(child.GetAttribute("id")) || !siblingIds.Add(child.GetAttribute("id")))) throw new InvalidDataException("Tree child IDs must be bounded literals unique across all siblings.");
                     var qualified = new XmlQualifiedName(child.LocalName,child.NamespaceURI);
-                    var declaration = sequence.Items.OfType<XmlSchemaElement>().SingleOrDefault(item => item.QualifiedName == qualified);
+                    var declaration = declarations.OfType<XmlSchemaElement>().SingleOrDefault(item => item.QualifiedName == qualified);
                     if (child.NamespaceURI != Ea || declaration == null) throw new InvalidDataException("Unknown sequence child is outside the profile.");
                     // Reborn: only empty direct repeated-child command stubs on inherited top-level assets can bypass required payload attributes before they are consumed by the core.
                     if (childRemoval && RemoveCommand(child))
@@ -245,8 +261,9 @@ internal static class SdkSelfAttributeInheritance
                     }
                     else if (declaration.ElementSchemaType is not XmlSchemaSimpleType || child.Attributes.OfType<XmlAttribute>().Any(attribute => attribute.NamespaceURI != "http://www.w3.org/2000/xmlns/")) throw new InvalidDataException("Only attribute-free simple sequence children are admitted.");
                     counts.TryGetValue(qualified,out int count); counts[qualified] = ++count;
-                    if (count > declaration.MaxOccurs) throw new InvalidDataException("Child occurrence bound exceeded before copying.");
-                    // Reborn: recurse only through schema-selected direct sequence declarations; choice/group/wildcard/mixed branches remain closed.
+                    // Reborn: repeated choice slots may select the same unit alternative repeatedly; aggregate cardinality was checked before core allocation.
+                    if (!repeatedChoice && count > declaration.MaxOccurs) throw new InvalidDataException("Child occurrence bound exceeded before copying.");
+                    // Reborn: recurse through schema-selected declarations under the active sequence/repeated-choice gate; singleton/group/wildcard/mixed branches remain closed.
                     if (treeCopy && declaration.ElementSchemaType is XmlSchemaComplexType branch && branch.ContentType == XmlSchemaContentType.ElementOnly)
                     { CheckChildren(child,branch,depth+1); continue; }
                     foreach (XmlNode node in child.ChildNodes)

@@ -1,7 +1,7 @@
 # BinaryAssetBuilder
 A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
-## Uprising progress — October 7, 2026
+## Uprising progress — October 8, 2026
 
 Active branch: `feature/ra3ep1-manifest-inspector`. This is not yet a usable
 Uprising Mod SDK release. Replacing XML/XSD files alone is insufficient:
@@ -22,18 +22,32 @@ a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**130 test groups** (some contain several fixtures). These counters can grow
+**131 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization regressions add groups and all 130 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy regressions add groups and all 131 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Choice-particle behavior review](docs/RA3EP1_SDK_CHOICE_REVIEW.md).
+Latest milestone: [Bounded repeated-choice copying](docs/RA3EP1_SDK_INSTANCE_CHOICES.md).
+The separate `--instance-choices` option admits only nested flat repeated choices
+with unit alternatives, aggregate cardinality checks and existing strict tree/
+identity/source guards. Real admission advances to **385 valid / 11 blocked**:
+all eleven reviewed owners newly validate, with zero earlier-valid regressions.
+Older removal-only admission stays 374 / 22. Singleton choice replacement and
+populated-branch matching remain closed. Six path issues and 198 uses of one
+missing AUDIO header remain; no output/native stream/game proof. Manual effort
+stays **51% complete / 49% remaining**, not 385/396 working-mod readiness.
+All 131 compiler groups, 33 enum checks, three classifier fixtures and three
+choice CLI isolation probes pass. Final build has zero warnings/errors.
+Next is reviewing XML/XSD inheritance mismatches in the two AI libraries;
+the undeclared field is inheritFrom, not a newly discovered native payload field.
+
+[Choice-particle behavior review](docs/RA3EP1_SDK_CHOICE_REVIEW.md).
 The new regression group characterizes anonymous repeated rules and their order,
 choice aggregate cardinality, cross-QName ID replacement, same-key text append,
 and destructive singleton replacement. Existing profiles remain closed to choice

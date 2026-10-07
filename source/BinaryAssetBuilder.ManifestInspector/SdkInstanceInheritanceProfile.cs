@@ -15,6 +15,8 @@ internal sealed class SdkInstanceInheritanceProfile
     internal const string ChainName = "diagnostic-direct-instance-chains-v1";
     // Reborn: keyed empty-child removals are explicit and cannot silently widen the previous chain profile.
     internal const string RemovalName = "diagnostic-direct-instance-removals-v1";
+    // Reborn: repeated-choice copy preparation is separately explicit and cannot widen the removal-only profile.
+    internal const string ChoiceName = "diagnostic-direct-instance-choice-copy-v1";
     // Reborn: identify every captured/prepared document contributing to an admitted closure, not native hashes or live-disk state.
     internal sealed record PreparedSource(string SourcePath,string RawSha256,string ProcessedSha256);
     private const string Ea = "uri:ea.com:eala:asset";
@@ -32,11 +34,13 @@ internal sealed class SdkInstanceInheritanceProfile
     private readonly bool chains;
     // Reborn: select only the separately tested literal-removal subset during each child-first preparation.
     private readonly bool removals;
+    // Reborn: retain nested repeated-choice admission consistently throughout the child-first source closure.
+    private readonly bool choices;
     private sealed record Prepared(SdkSelfAttributeInheritance.Result Result,int Height);
     private readonly Dictionary<string,Prepared> prepared = new(StringComparer.OrdinalIgnoreCase);
     private readonly HashSet<string> active = new(StringComparer.OrdinalIgnoreCase);
     private long preparedBytes;
-    private string Profile => removals ? RemovalName : chains ? ChainName : rootFiles ? RootFileName : Name;
+    private string Profile => choices ? ChoiceName : removals ? RemovalName : chains ? ChainName : rootFiles ? RootFileName : Name;
     private readonly XmlSchemaSet schemas;
     private readonly SdkSourcePathAudit.Report paths;
     private readonly Dictionary<string,SdkSourcePathAudit.Source> inventory = new(StringComparer.OrdinalIgnoreCase);
@@ -46,10 +50,11 @@ internal sealed class SdkInstanceInheritanceProfile
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate the complete captured source inventory before any imported read; caller-supplied graph records cannot authorize escaped files. */
     //-------------------------------------------------------------------------------------------------
-    internal SdkInstanceInheritanceProfile(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool rootFiles = false,bool chains = false,bool removals = false)
+    internal SdkInstanceInheritanceProfile(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool rootFiles = false,bool chains = false,bool removals = false,bool choices = false)
     {
         this.schemas = schemas; this.paths = paths;
-        this.rootFiles = rootFiles || chains || removals; this.chains = chains || removals; this.removals = removals;
+        // Reborn: choice admission includes the tested chain/removal subsets without changing any earlier constructor defaults.
+        this.rootFiles = rootFiles || chains || removals || choices; this.chains = chains || removals || choices; this.removals = removals || choices; this.choices = choices;
         if (!schemas.IsCompiled || paths.Sources.Length > 512 || paths.Includes.Length > 4096) throw new InvalidDataException("Compiled schema and bounded instance inventory required.");
         string[] roots = new[] { paths.SourceRoot,paths.ArtRoot,paths.AudioRoot }.Where(root => root != null).Cast<string>().Select(SdkEnvironmentPreflight.DirectoryPath).ToArray();
         foreach (var source in paths.Sources)
@@ -167,7 +172,7 @@ internal sealed class SdkInstanceInheritanceProfile
                 injected.Add(handle); witnesses.Add(entry.Witness with { RootQualifiedFields = baseBinding.Fields });
             }
             // Reborn: the new chain profile includes only the independently tested empty-complex-child merge subset; older imported flags remain one-sided.
-            var merged = SdkSelfAttributeInheritance.Apply(schemas,Serialize(owner),treeCopy:true,childMerge:chains,childRemoval:removals);
+            var merged = SdkSelfAttributeInheritance.Apply(schemas,Serialize(owner),treeCopy:true,childMerge:chains,childRemoval:removals,choiceCopy:choices);
             if (merged.Bytes == null) throw new InvalidDataException((chains ? "Instance overlay exceeds chain merge scope: " : "Instance overlay exceeds copy-only scope: ")+string.Join("; ",merged.Evidence.Diagnostics));
             XmlDocument output = Parse(merged.Bytes);
             foreach (var asset in Assets(output).Where(asset => injected.Contains(asset.LocalName+":"+asset.GetAttribute("id"))).ToArray()) output.DocumentElement!.RemoveChild(asset);

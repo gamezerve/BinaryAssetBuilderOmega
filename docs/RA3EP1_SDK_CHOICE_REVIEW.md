@@ -2,6 +2,9 @@
 
 Date: 2026-10-07. This milestone characterizes the unchanged core joiner;
 it does **not** enable a new preprocessing profile or claim game compatibility.
+The subsequent October 8 implementation is documented in
+[bounded repeated-choice copying](RA3EP1_SDK_INSTANCE_CHOICES.md); the review
+and counts below are the historical pre-admission checkpoint.
 
 ## Real source and schema evidence
 

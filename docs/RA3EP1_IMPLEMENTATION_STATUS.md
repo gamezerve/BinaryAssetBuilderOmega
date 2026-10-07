@@ -3,7 +3,25 @@
 This branch starts the migration with a read-only compatibility gate. It does
 not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
-## Latest bounded milestone (2026-10-07)
+## Latest bounded milestone (2026-10-08)
+
+[Bounded repeated-choice copying](RA3EP1_SDK_INSTANCE_CHOICES.md) advances real
+admission to **385 valid / 11 blocked**. All eleven reviewed owners newly validate;
+there are zero earlier-valid regressions and no SchemaInvalid/limit/stale/read
+failures. The independent `--instance-choices` flag preserves removal-only scope
+and closes singleton replacement, structural particles and populated matching.
+Its owned fixtures and three CLI conflict/isolation probes pass. Six path issues
+and 198 uses of the missing AUDIO header remain; no output/native/game proof.
+Registered compiler groups: 131; model/marshaller inventory and manual effort
+remain unchanged at **51% complete / 49% remaining**. Remaining first blockers
+are three expression/directive owners, three duplicate-ID owners, two unknown
+attribute owners, one occurrence, one Include-role and one cross-QName collision.
+All 131 compiler groups, 33 enum checks, three classifier fixtures and three
+choice CLI isolation probes pass; final build has zero warnings/errors.
+Read-only schema/source comparison identifies inheritFrom as the undeclared
+attribute in the two AI libraries (5 and 122 authored occurrences). Their named
+types extend BaseAssetType rather than BaseInheritableAsset; no schema edit or
+new native inheritance authority is inferred from this mismatch.
 
 [Choice-particle behavior review](RA3EP1_SDK_CHOICE_REVIEW.md) identifies 69
 authored Heuristic blocks across ten of the eleven non-flat first-blocker owners;
