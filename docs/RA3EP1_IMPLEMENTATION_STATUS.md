@@ -5,6 +5,15 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Pinned CC32 source/core/native-metadata review](RA3EP1_SDK_CC32_REVIEW.md)
+adds read-only `sdk-cc32-review`, not a preprocessing option. The captured five-
+source base prepares under existing guards. The original BuildState Remove
+deletes the unique inherited StrategicState, and an isolated owner validates.
+Stock native metadata has 109 owner references and omits the exact target pair;
+native state layout is not decoded. Current graph still refuses CC32: **392
+valid / 4 blocked**. All 142 compiler groups pass; effort **51% / 49%**.
+Next: bounded removal-only cross-QName proof, not generic replacement or XML edits.
+
 [Ordered StrategicState Remove/re-add admission](RA3EP1_SDK_INSTANCE_STATE_READDS.md)
 adds independent `--instance-state-readds`: original command nodes remain intact,
 existing exact-QName resolved targets are required, and actual core output must

@@ -364,6 +364,14 @@ internal static class Program
             if (args.FirstOrDefault() == "sdk-instance-identical-states-self-test") { SdkInstanceIdenticalStatesSmokeTest.Run(); return 0; }
             // Reborn: independently test original ordered state commands without native compiler execution.
             if (args.FirstOrDefault() == "sdk-instance-state-readds-self-test") { SdkInstanceStateReaddsSmokeTest.Run(); return 0; }
+            // Reborn: expose read-only pinned CC32 source/core/native-metadata review without changing graph admission.
+            if (args.FirstOrDefault() == "sdk-cc32-review")
+            {
+                if (args.Length != 3) throw new ArgumentException("sdk-cc32-review <absolute-Uprising-source-root> <absolute-EP1-global.manifest>");
+                Console.WriteLine(JsonSerializer.Serialize(SdkCc32Review.Review(args[1],args[2]),JsonOptions)); return 0;
+            }
+            // Reborn: independently test metadata identity boundaries without external native payloads.
+            if (args.FirstOrDefault() == "sdk-cc32-review-self-test") { SdkCc32ReviewSmokeTest.Run(); return 0; }
             // Reborn: review explicit source bytes only for the two known upgrade owners, without graph admission or emitted output.
             if (args.FirstOrDefault() == "sdk-upgrade-semantics-review")
             {
@@ -1036,6 +1044,9 @@ internal static class Program
         Console.WriteLine("  sdk-instance-identical-states-self-test");
         // Reborn: expose resolved-base ordered state command regression coverage.
         Console.WriteLine("  sdk-instance-state-readds-self-test");
+        // Reborn: separate pinned read-only review from owned metadata regression tests and production preprocessing.
+        Console.WriteLine("  sdk-cc32-review <absolute-Uprising-source-root> <absolute-EP1-global.manifest>");
+        Console.WriteLine("  sdk-cc32-review-self-test");
         // Reborn: the explicit source review remains partial and read-only even if both isolated owners validate.
         Console.WriteLine("  sdk-upgrade-semantics-review <absolute-upgrade.xml>");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.
