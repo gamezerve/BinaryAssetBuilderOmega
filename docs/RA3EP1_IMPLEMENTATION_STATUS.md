@@ -5,6 +5,19 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[One-sided matched ObjectFilter copying](RA3EP1_SDK_INSTANCE_FILTERS.md) adds
+independent `--instance-filters` admission for AIMicroManagerData/IgnoreTargets.
+The unchanged core must preserve proved weak-reference order and duplicates;
+two populated sides and arbitrary branches remain closed. Real admission reaches
+**387 valid / 9 blocked**, adding AIMicroManagerLibrary with zero earlier-valid
+regressions. Registered compiler groups: 134. Reference XML/XSD and the core
+joiner are unchanged. Six path issues and 198 missing AUDIO-header references
+remain; no output/native/game proof. Manual effort stays **51% / 49%**.
+Next: characterize the Upgrade child occurrence blocker without weakening its
+schema cardinality gate.
+All 134 compiler groups, 33 enum checks, three classifier fixtures and three
+filter CLI isolation probes pass.
+
 [Whole-token-proven bitflag modifiers](RA3EP1_SDK_INSTANCE_BITFLAGS.md) adds the
 independent `--instance-bitflags` option without editing the core joiner. Real
 admission advances to **386 valid / 10 blocked**: AITargetHeuristicLibrary now

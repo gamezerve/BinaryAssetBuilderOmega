@@ -246,13 +246,13 @@ internal static class Program
                 // Reborn: complex leaf copying is a separate diagnostic profile, not an implicit widening of older flags.
                 // Reborn: matching empty children remains a distinct opt-in, separate from tree copying and imported base visibility.
                 // Reborn: recursive preparation remains separately explicit from direct-only visibility and local child matching.
-                bool localDefines = false,includeDefines = false,definitionExpressions = false,selfAttributeInheritance = false,selfChildCopy = false,selfComplexChildCopy = false,selfTreeCopy = false,instanceInheritance = false,instanceRootFiles = false,selfChildMerge = false,instanceChains = false,instanceRemovals = false,instanceChoices = false,instanceMarkers = false,instanceBitflags = false;
+                bool localDefines = false,includeDefines = false,definitionExpressions = false,selfAttributeInheritance = false,selfChildCopy = false,selfComplexChildCopy = false,selfTreeCopy = false,instanceInheritance = false,instanceRootFiles = false,selfChildMerge = false,instanceChains = false,instanceRemovals = false,instanceChoices = false,instanceMarkers = false,instanceBitflags = false,instanceFilters = false;
                 for (int index = 6; index < args.Length; index++)
                 {
                     string option = args[index];
-                    if (option is "--local-defines" or "--include-defines" or "--definition-expressions" or "--self-attribute-inheritance" or "--self-child-copy" or "--self-complex-child-copy" or "--self-tree-copy" or "--instance-inheritance" or "--instance-root-files" or "--self-child-merge" or "--instance-chains" or "--instance-removals" or "--instance-choices" or "--instance-markers" or "--instance-bitflags")
+                    if (option is "--local-defines" or "--include-defines" or "--definition-expressions" or "--self-attribute-inheritance" or "--self-child-copy" or "--self-complex-child-copy" or "--self-tree-copy" or "--instance-inheritance" or "--instance-root-files" or "--self-child-merge" or "--instance-chains" or "--instance-removals" or "--instance-choices" or "--instance-markers" or "--instance-bitflags" or "--instance-filters")
                     {
-                        if (args[0] != "sdk-typed-source-graph" || localDefines || includeDefines || definitionExpressions || selfAttributeInheritance || selfChildCopy || selfComplexChildCopy || selfTreeCopy || instanceInheritance || instanceRootFiles || selfChildMerge || instanceChains || instanceRemovals || instanceChoices || instanceMarkers || instanceBitflags) throw new ArgumentException("Choose one preprocessing profile on the typed graph command only.");
+                        if (args[0] != "sdk-typed-source-graph" || localDefines || includeDefines || definitionExpressions || selfAttributeInheritance || selfChildCopy || selfComplexChildCopy || selfTreeCopy || instanceInheritance || instanceRootFiles || selfChildMerge || instanceChains || instanceRemovals || instanceChoices || instanceMarkers || instanceBitflags || instanceFilters) throw new ArgumentException("Choose one preprocessing profile on the typed graph command only.");
                         localDefines = option == "--local-defines"; includeDefines = option == "--include-defines";
                         // Reborn: the three-form definition subset must be requested separately from either literal profile.
                         definitionExpressions = option == "--definition-expressions";
@@ -280,6 +280,8 @@ internal static class Program
                         instanceMarkers = option == "--instance-markers";
                         // Reborn: enable whole-token-proven enum-list modifications only through their independent profile.
                         instanceBitflags = option == "--instance-bitflags";
+                        // Reborn: explicitly select one-sided matched ObjectFilter payload copying, never general branch merging.
+                        instanceFilters = option == "--instance-filters";
                     }
                     else if (option is "--art-root" or "--audio-root")
                     {
@@ -295,7 +297,7 @@ internal static class Program
                 // Reborn: typed graph admission is explicit and preserves the original path-only command/report contract.
                 if (args[0] == "sdk-typed-source-graph")
                 {
-                    var typed = SdkTypedSourceGraph.Inspect(paths,localDefines,includeDefines,definitionExpressions,selfAttributeInheritance,selfChildCopy,selfComplexChildCopy,selfTreeCopy,instanceInheritance,instanceRootFiles,selfChildMerge,instanceChains,instanceRemovals,instanceChoices,instanceMarkers,instanceBitflags);
+                    var typed = SdkTypedSourceGraph.Inspect(paths,localDefines,includeDefines,definitionExpressions,selfAttributeInheritance,selfChildCopy,selfComplexChildCopy,selfTreeCopy,instanceInheritance,instanceRootFiles,selfChildMerge,instanceChains,instanceRemovals,instanceChoices,instanceMarkers,instanceBitflags,instanceFilters);
                     Console.WriteLine(JsonSerializer.Serialize(new { environment.Target,ReadOnly = true,SnapshotOnly = true,ProductionBuildReady = false,Environment = environment,SourcePaths = paths,TypedSources = typed },JsonOptions));
                     return typed.Graph.ScopedGraphComplete ? 0 : 2;
                 }
@@ -336,6 +338,8 @@ internal static class Program
             if (args.FirstOrDefault() == "sdk-instance-markers-self-test") { SdkInstanceMarkersSmokeTest.Run(); return 0; }
             // Reborn: independently prove bounded KindOf modifiers without invoking production compilation.
             if (args.FirstOrDefault() == "sdk-instance-bitflags-self-test") { SdkInstanceBitflagsSmokeTest.Run(); return 0; }
+            // Reborn: expose the independently scoped matched ObjectFilter regression without running native compilers.
+            if (args.FirstOrDefault() == "sdk-instance-filters-self-test") { SdkInstanceFiltersSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() == "sdk-preflight")
             {
                 // Reborn: inspect explicit roots and target metadata only; never execute the reference SDK batch files or production compiler.
@@ -960,7 +964,7 @@ internal static class Program
         Console.WriteLine("  sdk-reviewed-schema-candidate [absolute-source.xml]");
         Console.WriteLine("  sdk-reviewed-schema-candidate-self-test");
         // Reborn: combine existing explicit path/root planning with rechecked reviewed-schema source bindings.
-        Console.WriteLine("  sdk-typed-source-graph ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--local-defines | --include-defines | --definition-expressions | --self-attribute-inheritance | --self-child-copy | --self-complex-child-copy | --self-tree-copy | --instance-inheritance | --instance-root-files | --self-child-merge | --instance-chains | --instance-removals | --instance-choices | --instance-markers | --instance-bitflags] [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
+        Console.WriteLine("  sdk-typed-source-graph ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--local-defines | --include-defines | --definition-expressions | --self-attribute-inheritance | --self-child-copy | --self-complex-child-copy | --self-tree-copy | --instance-inheritance | --instance-root-files | --self-child-merge | --instance-chains | --instance-removals | --instance-choices | --instance-markers | --instance-bitflags | --instance-filters] [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
         Console.WriteLine("  sdk-typed-source-graph-self-test");
         Console.WriteLine("  sdk-local-defines-self-test");
         Console.WriteLine("  sdk-include-defines-self-test");
@@ -987,6 +991,7 @@ internal static class Program
         Console.WriteLine("  sdk-instance-markers-self-test");
         // Reborn: expose the separate enum-list modifier regression command.
         Console.WriteLine("  sdk-instance-bitflags-self-test");
+        Console.WriteLine("  sdk-instance-filters-self-test");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.
         Console.WriteLine("  diagnostic-build-self-test");
         Console.WriteLine("  diagnostic-audioevent-build-self-test [ep1-audio-manifest ...]");

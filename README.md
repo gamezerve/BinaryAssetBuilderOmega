@@ -22,18 +22,29 @@ a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**133 test groups** (some contain several fixtures). These counters can grow
+**134 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag regressions add groups and all 133 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter regressions add groups and all 134 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Whole-token-proven bitflag modifiers](docs/RA3EP1_SDK_INSTANCE_BITFLAGS.md).
+Latest milestone: [One-sided matched ObjectFilter copying](docs/RA3EP1_SDK_INSTANCE_FILTERS.md).
+The independent `--instance-filters` profile proves ordered weak-reference
+payload copying for matched AIMicroManagerData/IgnoreTargets branches, then
+checks the unchanged core's actual result. Two populated sides remain closed.
+Real admission reaches **387 valid / 9 blocked**, with zero earlier-valid
+regressions. AIMicroManagerLibrary validates without changing reference schemas
+or the core joiner. Six path issues and 198 missing-header references remain;
+no output/native/game proof. Manual effort stays **51% / 49%**.
+All 134 compiler groups, 33 enum checks, three classifier fixtures and three
+filter CLI isolation probes pass. Next: the Upgrade XML/schema occurrence conflict.
+
+[Whole-token-proven bitflag modifiers](docs/RA3EP1_SDK_INSTANCE_BITFLAGS.md).
 The independent `--instance-bitflags` option permits only bounded signed
 VitalKindOf/ForbiddenKindOf operations on inherited AITargetingHeuristic assets,
 after proving token semantics agree with the unchanged core's substring logic.

@@ -95,6 +95,8 @@ internal static class CompilerSmokeTest
         TestSdkInstanceMarkers();
         // Reborn: register whole-token-proven modifiers separately from marker-only preparation.
         TestSdkInstanceBitflags();
+        // Reborn: register one-sided matched micromanager filter payload copying independently of enum modifiers.
+        TestSdkInstanceFilters();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2386,6 +2388,11 @@ internal static class CompilerSmokeTest
     /** Reborn: pin enum-list token identity, ordered modifications and unchanged core substring hazards. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkInstanceBitflags() => SdkInstanceBitflagsSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: pin ordered weak-reference copying, bounded refusal and final schema binding for matched micromanager filters. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkInstanceFilters() => SdkInstanceFiltersSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

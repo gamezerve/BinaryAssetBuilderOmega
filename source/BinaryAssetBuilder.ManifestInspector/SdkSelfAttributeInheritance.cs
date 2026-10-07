@@ -26,6 +26,10 @@ internal static class SdkSelfAttributeInheritance
     internal const string MarkerName = "diagnostic-self-consumed-inheritance-markers-v1";
     // Reborn: top-level AI enum-list modifiers are independently admitted only when core substring operations equal whole-token semantics.
     internal const string BitflagName = "diagnostic-self-bitflag-modifiers-v1";
+    // Reborn: one-sided payload copying in matched micromanager ObjectFilters is independent of earlier empty-complex matching.
+    internal const string FilterName = "diagnostic-self-object-filter-copy-v1";
+    // Reborn: record ordered weak-reference payload witnesses separately from attribute overlays and native reference binding.
+    internal sealed record Filter(string Type,string DerivedId,string BaseId,string ChildName,string PayloadSource,SdkFilterCopies.Leaf[] Leaves);
     // Reborn: modifier witnesses are diagnostic XML identities and actual core results, not native asset hashes.
     internal sealed record Bitflag(string Type,string DerivedId,string BaseId,string Attribute,string Before,string Modifiers,string After,int Operations);
     // Reborn: record consumed owner markers separately from overlays and retain whether the schema declared the pipeline attribute.
@@ -47,6 +51,8 @@ internal static class SdkSelfAttributeInheritance
         public Marker[] ConsumedMarkers { get; init; } = Array.Empty<Marker>();
         // Reborn: record only source-owner modifier operations that the core executed and the token proof verified.
         public Bitflag[] Bitflags { get; init; } = Array.Empty<Bitflag>();
+        // Reborn: report only matched owner filters whose actual copied payload agrees with the pre-allocation proof.
+        public Filter[] Filters { get; init; } = Array.Empty<Filter>();
     }
     internal sealed record Result(byte[]? Bytes,Evidence Evidence);
     private const string Ea = "uri:ea.com:eala:asset";
@@ -54,10 +60,12 @@ internal static class SdkSelfAttributeInheritance
     //-------------------------------------------------------------------------------------------------
     /** Reborn: expand local asset chains with independently admitted copy/empty-child matching scopes and reject the entire document on unsupported semantics. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false,bool childRemoval = false,bool choiceCopy = false,bool consumeMarkers = false,bool bitflags = false)
+    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false,bool childRemoval = false,bool choiceCopy = false,bool consumeMarkers = false,bool bitflags = false,bool filters = false)
     {
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
-        string profile = bitflags ? BitflagName : consumeMarkers ? MarkerName : choiceCopy ? ChoiceCopyName : childRemoval ? ChildRemovalName : childMerge ? ChildMergeName : treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
+        string profile = filters ? FilterName : bitflags ? BitflagName : consumeMarkers ? MarkerName : choiceCopy ? ChoiceCopyName : childRemoval ? ChildRemovalName : childMerge ? ChildMergeName : treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
+        // Reborn: filter admission includes the tested bitflag/marker scopes without changing earlier profile defaults.
+        bitflags |= filters;
         // Reborn: explicit modifier admission includes consumed markers while older profiles keep rejecting list modifiers.
         consumeMarkers |= bitflags;
         // Reborn: marker consumption builds on the tested choice/removal subsets without broadening older flags.
@@ -95,6 +103,8 @@ internal static class SdkSelfAttributeInheritance
             List<Marker> markers = new();
             // Reborn: any failure withholds all previously executed modifier evidence together with transformed XML.
             List<Bitflag> bitflagEvidence = new();
+            // Reborn: filter evidence is atomic with all other local overlay operations.
+            List<Filter> filterEvidence = new();
             // Reborn: bound aggregate inherited-attribute amplification before allocating each merged node, not only after final serialization.
             long expandedBytes = bytes.Length+1024L;
             foreach (var asset in assets)
@@ -112,7 +122,7 @@ internal static class SdkSelfAttributeInheritance
             using (XmlWriter writer = XmlWriter.Create(output,new XmlWriterSettings { Encoding = new UTF8Encoding(false),NewLineHandling = NewLineHandling.None })) xml.Save(writer);
             byte[] processed = output.ToArray();
             if (processed.Length > 4*1048576) throw new InvalidDataException("Processed inheritance XML exceeds 4 MiB.");
-            return new(processed,new(profile,raw,Convert.ToHexString(SHA256.HashData(processed)),overlays.ToArray(),Array.Empty<string>()) { Removals = removals.ToArray(),ConsumedMarkers = markers.ToArray(),Bitflags = bitflagEvidence.ToArray() });
+            return new(processed,new(profile,raw,Convert.ToHexString(SHA256.HashData(processed)),overlays.ToArray(),Array.Empty<string>()) { Removals = removals.ToArray(),ConsumedMarkers = markers.ToArray(),Bitflags = bitflagEvidence.ToArray(),Filters = filterEvidence.ToArray() });
 
             //-------------------------------------------------------------------------------------------------
             /** Reborn: local handles precede imported visibility; reject same-handle overrides, missing bases, cross-type inheritance and cycles. */
@@ -135,6 +145,8 @@ internal static class SdkSelfAttributeInheritance
                     { var parts = target.Split(':'); if (parts.Length != 2 || parts[0] != type) throw new InvalidDataException("Cross-type inherited handle is outside the profile."); baseId = parts[1]; }
                     if (!Token(baseId) || baseId == asset.GetAttribute("id")) throw new InvalidDataException("Empty/unsafe base or same-handle imported override remains closed.");
                     XmlElement baseAsset = Resolve(type+":"+baseId,depth+1);
+                    // Reborn: collect only this overlay's paired-filter plans; recursive source overlays retain their own event identity.
+                    List<(string Child,SdkFilterCopies.Plan Plan)> filterPlans = new();
                     // Reborn: prove every selected modifier against the fully resolved explicit base field before core allocation.
                     List<(string Attribute,SdkBitflagModifiers.Plan Plan)> plans = new();
                     if (bitflags)
@@ -149,7 +161,7 @@ internal static class SdkSelfAttributeInheritance
                     if (childCopy && asset.ChildNodes.OfType<XmlElement>().Any() && (baseAsset.ChildNodes.OfType<XmlElement>().Any() || asset.ChildNodes.OfType<XmlElement>().Any(RemoveCommand)))
                     {
                         if (!childMerge) throw new InvalidDataException("Both base and derived contain children; child merge semantics remain closed.");
-                        CheckMerge(baseAsset,asset);
+                        CheckMerge(baseAsset,asset,filterPlans);
                     }
                     height = heights[type+":"+baseId]+1;
                     if (height > 32) throw new InvalidDataException("32-link local inheritance chain bound exceeded.");
@@ -168,6 +180,14 @@ internal static class SdkSelfAttributeInheritance
                         markers.Add(new(type,asset.GetAttribute("id"),baseId,schemaType.AttributeUses[new XmlQualifiedName("inheritFrom")] is XmlSchemaAttribute));
                     }
                     result = (XmlElement)NodeJoiner.Override(schemas,xml,baseAsset,joinSource);
+                    // Reborn: confirm exact anonymous payload order and multiplicity after the actual core merge; do not deduplicate or concatenate references.
+                    foreach (var plan in filterPlans)
+                    {
+                        var actual = result.ChildNodes.OfType<XmlElement>().Single(child => child.LocalName == plan.Child);
+                        var leaves = SdkFilterCopies.Leaves(actual);
+                        if (!leaves.SequenceEqual(plan.Plan.Expected)) throw new InvalidDataException("Core ObjectFilter payload differs from one-sided copy proof.");
+                        filterEvidence.Add(new(type,asset.GetAttribute("id"),baseId,plan.Child,plan.Plan.PayloadSource,leaves));
+                    }
                     // Reborn: trust no transformed output unless actual core token order/membership matches the pre-allocation proof.
                     foreach (var plan in plans)
                     {
@@ -183,7 +203,7 @@ internal static class SdkSelfAttributeInheritance
             //-------------------------------------------------------------------------------------------------
             /** Reborn: mirror core singleton-name/repeated-ID selection without permitting cross-QName replacement, matched text append or recursive populated branches. */
             //-------------------------------------------------------------------------------------------------
-            void CheckMerge(XmlElement baseAsset,XmlElement derived)
+            void CheckMerge(XmlElement baseAsset,XmlElement derived,List<(string Child,SdkFilterCopies.Plan Plan)> filterPlans)
             {
                 var type = (XmlSchemaComplexType)schemas.GlobalTypes[new XmlQualifiedName(derived.LocalName,Ea)]!;
                 if (type.ContentTypeParticle is not XmlSchemaSequence sequence) throw new InvalidDataException("Direct sequence merge schema required.");
@@ -211,6 +231,9 @@ internal static class SdkSelfAttributeInheritance
                     }
                     if (matched != null)
                     {
+                        // Reborn: only AIMicroManagerData/IgnoreTargets may pair a named element-only filter; all other populated/branch matching stays closed.
+                        if (filters && derived.LocalName == "AIMicroManagerData" && child.LocalName == "IgnoreTargets")
+                        { filterPlans.Add((child.LocalName,SdkFilterCopies.Prove(declaration,matched,child))); continue; }
                         if (declaration.ElementSchemaType is not XmlSchemaComplexType leaf || leaf.ContentType != XmlSchemaContentType.Empty)
                             throw new InvalidDataException("Matched children require empty complex content; text append and populated branch merging remain closed.");
                     }
