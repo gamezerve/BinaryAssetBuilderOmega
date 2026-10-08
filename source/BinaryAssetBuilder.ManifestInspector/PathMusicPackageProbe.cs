@@ -13,20 +13,57 @@ internal static class PathMusicPackageProbe
     // Reborn: retain only the observed type ID; zero type/catalog hashes deliberately prevent a stock identity claim.
     private const uint TypeId = 0x9A651D89u;
     private const string Notice = "Reborn: LOCAL PATHMUSIC DIAGNOSTIC ONLY. NOT a playable Uprising mod.\nAllTypesHash=0; TypeHash=0; InstanceHash/checksum are diagnostic SHA-256 prefixes, not Core/EA processing identities.\nNo official AUDIO resolution, processor/cache registration, production linking or game-load proof.\n";
+    // Reborn: private identity policy cannot be supplied by callers as an arbitrary hash array or forged preflight report.
+    private sealed record Policy(uint Checksum,uint[] Hashes,string Notice);
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: derive version-one experimental identities only from current private Core preparation paired with the exact native snapshot. */
+    //-------------------------------------------------------------------------------------------------
+    private static Policy Experimental(PathMusicAuthoredSnapshot snapshot,PathMusicCorePreparation preparation)
+    {
+        var checksum = PathMusicCoreChecksum.Inspect(preparation); var core = preparation.Preflight(); var native = snapshot.Preflight();
+        if (core.DocumentVersion != 23 || core.SourceSha256 != native.SourceSha256 || core.HeaderSha256 != native.HeaderSha256
+            || core.DiagnosticFingerprint != native.DiagnosticFingerprint || !core.Rows.Select(row => (row.Name,row.InstanceId))
+                .SequenceEqual(native.Rows.Select(row => (row.Name,row.InstanceId)))) throw new InvalidDataException("Experimental music Core/native profile differs.");
+        string notice = "Reborn: PATHMUSIC EXPERIMENTAL CORE PROFILE v1. NOT a playable Uprising mod.\n"
+            +"ProcessingHash=52424D49 (synthetic); DocumentVersion=23; TypeHash=0; AllTypesHash=0.\n"
+            +"InstanceHash=current synthetic-domain Core; checksum=Core ordered padded identity table.\n"
+            +"SourceSha256="+core.SourceSha256+"\nHeaderSha256="+core.HeaderSha256+"\nDiagnosticFingerprint="+core.DiagnosticFingerprint+"\n"
+            +"No recovered EP1 ProcessingHash, official AUDIO, production/cache/processor admission or game-load proof.\n";
+        snapshot.VerifyCurrent(); preparation.VerifyCurrent(); return new(checksum.CoreChecksum,core.Rows.Select(row => row.CoreInstanceHash).ToArray(),notice);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: publish a separately marked experimental policy with mandatory fresh Core gates, never substituting hashes in old diagnostic commands. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void PublishExperimental(string output,PathMusicAuthoredSnapshot snapshot,PathMusicCorePreparation preparation,Action? beforeCommit = null)
+    { Publish(output,snapshot,preparation.VerifyCurrent,beforeCommit,Experimental(snapshot,preparation)); }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: regenerate experimental expected identities and bracket two-reader/native verification with actual current Core checks. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void VerifyExperimental(string directory,PathMusicAuthoredSnapshot snapshot,PathMusicCorePreparation preparation)
+    { Verify(directory,snapshot,Experimental(snapshot,preparation)); preparation.VerifyCurrent(); }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: serialize frozen authored order and weak-ID chunks into owned memory with v7 utility framing and explicit non-stock identities. */
     //-------------------------------------------------------------------------------------------------
     internal static Dictionary<string,byte[]> Serialize(PathMusicAuthoredSnapshot snapshot)
+    { return Serialize(snapshot,null); }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: share framing only; private versioned policy chooses identity/checksum and exact profile marker without changing legacy bytes. */
+    //-------------------------------------------------------------------------------------------------
+    private static Dictionary<string,byte[]> Serialize(PathMusicAuthoredSnapshot snapshot,Policy? policy)
     {
         var report = snapshot.Preflight(); Chunk[] chunks = snapshot.Compile();
-        uint checksum = DiagnosticWord(report.DiagnosticFingerprint);
+        uint checksum = policy?.Checksum ?? DiagnosticWord(report.DiagnosticFingerprint);
         using MemoryStream names = new(),sources = new(),table = new(),manifest = new();
         for (int index = 0; index < report.Rows.Length; index++)
         {
             var row = report.Rows[index]; Chunk chunk = chunks[index];
             using AssetEntry entry = new() { TypeId = TypeId,TypeHash = 0,InstanceId = row.InstanceId,
-                InstanceHash = DiagnosticWord(report.DiagnosticFingerprint+":"+row.Name),Tokenized = false,
+                InstanceHash = policy?.Hashes[index] ?? DiagnosticWord(report.DiagnosticFingerprint+":"+row.Name),Tokenized = false,
                 NameOffset = (int)names.Length,SourceFileNameOffset = (int)sources.Length,
                 AssetReferenceOffset = 0,AssetReferenceCount = 0,InstanceDataSize = chunk.InstanceBuffer.Length,
                 RelocationDataSize = chunk.RelocationBuffer.Length,ImportsDataSize = 0 };
@@ -39,7 +76,8 @@ internal static class PathMusicPackageProbe
             MaxRelocationChunkSize = (uint)chunks.Max(chunk => chunk.RelocationBuffer.Length),MaxImportsChunkSize = 0,
             AssetNameBufferSize = (uint)names.Length,SourceFileNameBufferSize = (uint)sources.Length }) header.SaveToStream(manifest,false);
         table.WriteTo(manifest); names.WriteTo(manifest); sources.WriteTo(manifest);
-        Dictionary<string,byte[]> files = new() { ["diagnostic.manifest"] = manifest.ToArray(),["DIAGNOSTIC_ONLY.txt"] = Encoding.UTF8.GetBytes(Notice) };
+        Dictionary<string,byte[]> files = new() { ["diagnostic.manifest"] = manifest.ToArray(),
+            [policy == null ? "DIAGNOSTIC_ONLY.txt" : "EXPERIMENTAL_CORE_V1.txt"] = Encoding.UTF8.GetBytes(policy?.Notice ?? Notice) };
         foreach (var stream in new[] { (Name:"diagnostic.bin",Magic:0xBABB0000u,Parts:chunks.Select(chunk => chunk.InstanceBuffer)),
             (Name:"diagnostic.relo",Magic:0xBABE0000u,Parts:chunks.Select(chunk => chunk.RelocationBuffer)),
             (Name:"diagnostic.imp",Magic:0xBAB10000u,Parts:chunks.Select(chunk => chunk.ImportsBuffer)) })
@@ -55,8 +93,14 @@ internal static class PathMusicPackageProbe
     /** Reborn: compare all bounded bytes, independent metadata/utility readers and manually decoded native weak IDs and relocation offsets. */
     //-------------------------------------------------------------------------------------------------
     internal static void Verify(string directory,PathMusicAuthoredSnapshot snapshot)
+    { Verify(directory,snapshot,null); }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: validate exact private profile bytes and selected identity policy with shared independent readers and native decoding. */
+    //-------------------------------------------------------------------------------------------------
+    private static void Verify(string directory,PathMusicAuthoredSnapshot snapshot,Policy? policy)
     {
-        Dictionary<string,byte[]> expected = Serialize(snapshot);
+        Dictionary<string,byte[]> expected = Serialize(snapshot,policy);
         directory = Path.GetFullPath(directory);
         CheckParents(directory);
         if (!Directory.EnumerateFileSystemEntries(directory).Select(Path.GetFileName).Order(StringComparer.Ordinal)
@@ -71,7 +115,7 @@ internal static class PathMusicPackageProbe
             || parsed.Header.TotalInstanceDataSize != report.Rows.Sum(row => row.BinBytes)
             || parsed.Header.MaxInstanceChunkSize != report.Rows.Max(row => row.BinBytes)
             || parsed.Header.MaxRelocationChunkSize != report.Rows.Max(row => row.RelocationBytes) || parsed.Header.MaxImportsChunkSize != 0
-            || parsed.Header.StreamChecksum != DiagnosticWord(report.DiagnosticFingerprint)) throw new InvalidDataException("Music manifest metadata differs.");
+            || parsed.Header.StreamChecksum != (policy?.Checksum ?? DiagnosticWord(report.DiagnosticFingerprint))) throw new InvalidDataException("Music manifest metadata differs.");
         using BinaryAssetBuilder.Utility.Manifest utility = new();
         if (!utility.Load(Path.Combine(directory,"diagnostic.manifest"),false) || utility.AssetCount != report.Rows.Length
             || utility.AllTypesHash != 0 || utility.StreamChecksum != parsed.Header.StreamChecksum) throw new InvalidDataException("Music utility readback differs.");
@@ -80,7 +124,7 @@ internal static class PathMusicPackageProbe
         {
             var row = report.Rows[index]; var asset = parsed.Assets[index]; var other = utility.Assets[index];
             if (asset.TypeId != TypeId || asset.TypeHash != 0 || asset.InstanceId != row.InstanceId
-                || asset.InstanceHash != DiagnosticWord(report.DiagnosticFingerprint+":"+row.Name) || asset.Tokenized != 0
+                || asset.InstanceHash != (policy?.Hashes[index] ?? DiagnosticWord(report.DiagnosticFingerprint+":"+row.Name)) || asset.Tokenized != 0
                 || asset.Name != "PathMusicEvent:"+row.Name || asset.SourceFile != "events.xml" || asset.References.Count != 0
                 || asset.InstanceDataSize != row.BinBytes || asset.RelocationDataSize != row.RelocationBytes || asset.ImportsDataSize != 0
                 || other.QualifiedName != asset.Name || other.TypeHash != 0 || other.InstanceHash != asset.InstanceHash || other.Tokenized
@@ -109,16 +153,22 @@ internal static class PathMusicPackageProbe
     /** Reborn: recheck raw inputs before staging and immediately before a no-overwrite rename; retain failed owned staging for inspection. */
     //-------------------------------------------------------------------------------------------------
     internal static void Publish(string output,PathMusicAuthoredSnapshot snapshot,Action? currentGate = null,Action? beforeCommit = null)
+    { Publish(output,snapshot,currentGate,beforeCommit,null); }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: stage exact selected profile, verify it before mandatory freshness/no-overwrite commit, and retain owned failures. */
+    //-------------------------------------------------------------------------------------------------
+    private static void Publish(string output,PathMusicAuthoredSnapshot snapshot,Action? currentGate,Action? beforeCommit,Policy? policy)
     {
         output = Path.GetFullPath(output); string parent = Path.GetDirectoryName(output)!;
         if (!Directory.Exists(parent) || Directory.Exists(output) || File.Exists(output)) throw new InvalidDataException("Music package requires existing parent and absent output.");
         // Reborn: an explicit Core-bound caller must pass current identity admission before any staging exists; default diagnostic identities stay unchanged.
-        CheckParents(parent); currentGate?.Invoke(); Dictionary<string,byte[]> files = Serialize(snapshot);
+        CheckParents(parent); currentGate?.Invoke(); Dictionary<string,byte[]> files = Serialize(snapshot,policy);
         string staging = Path.Combine(parent,"Reborn-MusicPackage-Staging-"+Guid.NewGuid().ToString("N")); Directory.CreateDirectory(staging);
         try
         {
             foreach (var file in files) { using FileStream writer = new(Path.Combine(staging,file.Key),FileMode.CreateNew,FileAccess.Write); writer.Write(file.Value); }
-            Verify(staging,snapshot);
+            Verify(staging,snapshot,policy);
             // Reborn: owned test fault injection cannot bypass the mandatory post-staging current-input/Core gate or no-overwrite rename.
             beforeCommit?.Invoke(); snapshot.VerifyCurrent(); currentGate?.Invoke(); Directory.Move(staging,output);
         }

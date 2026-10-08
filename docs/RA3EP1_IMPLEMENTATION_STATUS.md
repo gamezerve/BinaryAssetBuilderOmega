@@ -5,6 +5,17 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-09)
 
+[PathMusic experimental Core package profile v1](RA3EP1_PATHMUSIC_EXPERIMENTAL_CORE_V1.md)
+adds distinct versioned commands for actual synthetic-domain Core InstanceHash
+and padded checksum emission, with zero type/catalog hashes. Exact markers and
+source/header fingerprints isolate old/new profiles, including raw XML comments
+that leave owner hashes unchanged. Two-reader/native validation, repeated and
+legacy bytes, corruption/stale/late edits and no-overwrite/retained staging pass.
+All 162 groups pass; CLI package/verify exit 0 and both cross-profile directions,
+existing output and missing arguments exit 1. No stock EP1 identity recovery or
+production/game admission. Effort **52% / 48%** unchanged. Next: narrowly gated
+controlled Core music processor integration; authentic metadata/AUDIO remain open.
+
 [Bounded PathMusic Core checksum contract](RA3EP1_PATHMUSIC_CORE_CHECKSUM.md)
 specializes the existing checksum audit to fresh actual synthetic-domain music
 InstanceHash projections. Independent 20-byte rows and 256-byte zero-padded

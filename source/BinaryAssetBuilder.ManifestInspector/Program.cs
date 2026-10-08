@@ -359,6 +359,17 @@ internal static class Program
             }
             // Reborn: managed checksum fixtures do not run codecs or mutate reference sources.
             if (args.FirstOrDefault() == "pathmusic-core-checksum-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicCoreChecksumSmokeTest.Run(); return 0; }
+            // Reborn: explicit versioned experimental publication never relabels old diagnostic or production commands.
+            if (args.FirstOrDefault() is "pathmusic-experimental-core-v1-package" or "pathmusic-experimental-core-v1-verify")
+            {
+                if (args.Length != 3) throw new ArgumentException("pathmusic-experimental-core-v1-package/verify <events.xml/events.h-directory> <package-directory>");
+                CompilerSmokeTest.InitializeHashProvider(); var prepared = PathMusicCorePreparation.Read(args[1]);
+                if (args[0] == "pathmusic-experimental-core-v1-package") prepared.PublishExperimentalPackage(args[2]);
+                prepared.VerifyExperimentalPackage(args[2]);
+                Console.WriteLine("Experimental Core music profile v1 verified; synthetic processing domain, zero type/catalog hashes, production/game readiness=false."); return 0;
+            }
+            // Reborn: experimental profile regressions use only owned temporary files and managed Core identities.
+            if (args.FirstOrDefault() == "pathmusic-experimental-core-v1-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicExperimentalCoreSmokeTest.Run(); return 0; }
             // Reborn: exact alias fixtures are independent of general source-path and dependency classification tests.
             if (args.FirstOrDefault() == "sdk-known-map-aliases-self-test") { SdkKnownMapAliasesSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() is "sdk-source-preflight" or "sdk-typed-source-graph")
@@ -1258,6 +1269,10 @@ internal static class Program
         // Reborn: expose read-only checksum evidence separately from package publication commands.
         Console.WriteLine("  pathmusic-core-checksum <events.xml/events.h-directory>");
         Console.WriteLine("  pathmusic-core-checksum-self-test");
+        // Reborn: versioned command names make experimental Core identities an explicit caller choice.
+        Console.WriteLine("  pathmusic-experimental-core-v1-package <events.xml/events.h-directory> <new-package-directory>");
+        Console.WriteLine("  pathmusic-experimental-core-v1-verify <events.xml/events.h-directory> <existing-package-directory>");
+        Console.WriteLine("  pathmusic-experimental-core-v1-self-test");
         // Reborn: known aliases require explicit typed singleton preparation and never apply to path-only/older profiles.
         Console.WriteLine("  --known-map-aliases (sdk-typed-source-graph with --instance-sound-singletons only)");
         Console.WriteLine("  sdk-known-map-aliases-self-test");

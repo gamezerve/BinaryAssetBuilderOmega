@@ -96,4 +96,16 @@ internal sealed class PathMusicCorePreparation
     //-------------------------------------------------------------------------------------------------
     internal void VerifyDiagnosticPackage(string directory)
     { VerifyCurrent(); PathMusicPackageProbe.Verify(directory,_snapshot); VerifyCurrent(); }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: publish versioned synthetic Core identities from privately owned paired snapshots, keeping legacy diagnostics separate. */
+    //-------------------------------------------------------------------------------------------------
+    internal void PublishExperimentalPackage(string output,Action? beforeCommit = null)
+    { PathMusicPackageProbe.PublishExperimental(output,_snapshot,this,beforeCommit); }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify experimental profile membership and current Core/native evidence without authenticating historical publication. */
+    //-------------------------------------------------------------------------------------------------
+    internal void VerifyExperimentalPackage(string directory)
+    { PathMusicPackageProbe.VerifyExperimental(directory,_snapshot,this); }
 }
