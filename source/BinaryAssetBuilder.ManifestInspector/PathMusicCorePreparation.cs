@@ -84,4 +84,16 @@ internal sealed class PathMusicCorePreparation
     {
         VerifyCurrent(); Chunk[] chunks = _snapshot.Compile(); VerifyCurrent(); return chunks;
     }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: publish the unchanged diagnostic hash policy only through mandatory current-Core gates before staging and immediately before commit. */
+    //-------------------------------------------------------------------------------------------------
+    internal void PublishDiagnosticPackage(string output,Action? beforeCommit = null)
+    { PathMusicPackageProbe.Publish(output,_snapshot,VerifyCurrent,beforeCommit); }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: bracket independent existing package readback with actual current-Core checks, without relabeling manifest identity fields. */
+    //-------------------------------------------------------------------------------------------------
+    internal void VerifyDiagnosticPackage(string directory)
+    { VerifyCurrent(); PathMusicPackageProbe.Verify(directory,_snapshot); VerifyCurrent(); }
 }

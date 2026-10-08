@@ -339,6 +339,17 @@ internal static class Program
             }
             // Reborn: Core-bound music fixtures own temporary source/header files only.
             if (args.FirstOrDefault() == "pathmusic-core-preparation-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicCorePreparationSmokeTest.Run(); return 0; }
+            // Reborn: distinct Core-gated package commands retain diagnostic SHA identities and zero type/catalog hashes.
+            if (args.FirstOrDefault() is "pathmusic-core-diagnostic-package" or "pathmusic-core-diagnostic-verify")
+            {
+                if (args.Length != 3) throw new ArgumentException("pathmusic-core-diagnostic-package/verify <events.xml/events.h-directory> <package-directory>");
+                CompilerSmokeTest.InitializeHashProvider(); var prepared = PathMusicCorePreparation.Read(args[1]);
+                if (args[0] == "pathmusic-core-diagnostic-package") prepared.PublishDiagnosticPackage(args[2]);
+                prepared.VerifyDiagnosticPackage(args[2]);
+                Console.WriteLine("Core-bound music diagnostic package verified; manifest hash policy unchanged; production/game readiness=false."); return 0;
+            }
+            // Reborn: Core-gated package fixtures use owned temporary files and do not execute codecs.
+            if (args.FirstOrDefault() == "pathmusic-core-package-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicCorePackageSmokeTest.Run(); return 0; }
             // Reborn: exact alias fixtures are independent of general source-path and dependency classification tests.
             if (args.FirstOrDefault() == "sdk-known-map-aliases-self-test") { SdkKnownMapAliasesSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() is "sdk-source-preflight" or "sdk-typed-source-graph")
@@ -1231,6 +1242,10 @@ internal static class Program
         // Reborn: immutable Core/native admission is independent of earlier diagnostic package commands.
         Console.WriteLine("  pathmusic-core-preflight <events.xml/events.h-directory>");
         Console.WriteLine("  pathmusic-core-preparation-self-test");
+        // Reborn: explicit Core publication gating is separate from legacy diagnostic commands and production SDK output.
+        Console.WriteLine("  pathmusic-core-diagnostic-package <events.xml/events.h-directory> <new-package-directory>");
+        Console.WriteLine("  pathmusic-core-diagnostic-verify <events.xml/events.h-directory> <existing-package-directory>");
+        Console.WriteLine("  pathmusic-core-package-self-test");
         // Reborn: known aliases require explicit typed singleton preparation and never apply to path-only/older profiles.
         Console.WriteLine("  --known-map-aliases (sdk-typed-source-graph with --instance-sound-singletons only)");
         Console.WriteLine("  sdk-known-map-aliases-self-test");

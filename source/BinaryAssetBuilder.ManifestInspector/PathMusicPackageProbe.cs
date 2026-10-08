@@ -108,16 +108,19 @@ internal static class PathMusicPackageProbe
     //-------------------------------------------------------------------------------------------------
     /** Reborn: recheck raw inputs before staging and immediately before a no-overwrite rename; retain failed owned staging for inspection. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Publish(string output,PathMusicAuthoredSnapshot snapshot)
+    internal static void Publish(string output,PathMusicAuthoredSnapshot snapshot,Action? currentGate = null,Action? beforeCommit = null)
     {
         output = Path.GetFullPath(output); string parent = Path.GetDirectoryName(output)!;
         if (!Directory.Exists(parent) || Directory.Exists(output) || File.Exists(output)) throw new InvalidDataException("Music package requires existing parent and absent output.");
-        CheckParents(parent); Dictionary<string,byte[]> files = Serialize(snapshot);
+        // Reborn: an explicit Core-bound caller must pass current identity admission before any staging exists; default diagnostic identities stay unchanged.
+        CheckParents(parent); currentGate?.Invoke(); Dictionary<string,byte[]> files = Serialize(snapshot);
         string staging = Path.Combine(parent,"Reborn-MusicPackage-Staging-"+Guid.NewGuid().ToString("N")); Directory.CreateDirectory(staging);
         try
         {
             foreach (var file in files) { using FileStream writer = new(Path.Combine(staging,file.Key),FileMode.CreateNew,FileAccess.Write); writer.Write(file.Value); }
-            Verify(staging,snapshot); snapshot.VerifyCurrent(); Directory.Move(staging,output);
+            Verify(staging,snapshot);
+            // Reborn: owned test fault injection cannot bypass the mandatory post-staging current-input/Core gate or no-overwrite rename.
+            beforeCommit?.Invoke(); snapshot.VerifyCurrent(); currentGate?.Invoke(); Directory.Move(staging,output);
         }
         catch { Console.Error.WriteLine("Owned music staging retained: "+staging); throw; }
     }

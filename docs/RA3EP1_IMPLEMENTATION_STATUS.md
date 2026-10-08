@@ -5,6 +5,16 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-09)
 
+[Current-Core PathMusic diagnostic publication gate](RA3EP1_PATHMUSIC_CORE_PACKAGE_GATE.md)
+adds distinct Core-bound package/verify commands with mandatory current identity
+checks before staging/commit and around two-reader readback. Stale-before-staging,
+late input edits, competing destination preservation, corruption and retained
+failure evidence are covered. All 160 groups pass; CLI new/legacy verification
+exit 0, existing output/missing arguments exit 1. Diagnostic identities and all
+serialized bytes remain unchanged: no silent Core hash substitution or historical
+publication attestation. Coverage/effort **52% / 48%** unchanged. Next: explicitly
+versioned synthetic-Core manifest identities and checksum/readback contract.
+
 [Immutable Core/native PathMusic preparation](RA3EP1_PATHMUSIC_CORE_PREPARATION.md)
 binds actual independently verified Core identities to the same frozen local
 source/header/native closure. Fresh Core and raw snapshot checks bracket detached
