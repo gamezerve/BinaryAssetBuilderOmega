@@ -26,18 +26,27 @@ Missing dependencies, native emission and game loading remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**160 test groups** (some contain several fixtures). These counters can grow
+**161 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset/sound-singleton-characterization/full-sound-owner-review/sound-singleton-admission/dependency-classification/known-map-alias/stock-music-review/header-semantics/music-runtime/music-authored-snapshot/music-package/music-Core-identity/music-reference-identity/music-Core-preparation/music-Core-publication regressions add groups and all 160 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset/sound-singleton-characterization/full-sound-owner-review/sound-singleton-admission/dependency-classification/known-map-alias/stock-music-review/header-semantics/music-runtime/music-authored-snapshot/music-package/music-Core-identity/music-reference-identity/music-Core-preparation/music-Core-publication/music-Core-checksum regressions add groups and all 161 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Current-Core PathMusic diagnostic publication gate](docs/RA3EP1_PATHMUSIC_CORE_PACKAGE_GATE.md).
+Latest milestone: [Bounded PathMusic Core checksum contract](docs/RA3EP1_PATHMUSIC_CORE_CHECKSUM.md).
+Fresh synthetic-domain music identities now reproduce the unchanged Core output
+checksum through an independent 20-byte-row/256-byte-padded layout. Order,
+identity/type hash and strong-count sensitivity, direct weak/file exclusions,
+stale/refreshed/restored inputs and bounds pass. All 161 groups pass. Two-owner
+CLI actual/expected checksum is `CF2CABDA`; missing arguments return 1.
+Existing package policy is unchanged. Effort **52% / 48%**; next separately
+versioned experimental Core manifest profile, not production output.
+
+[Current-Core PathMusic diagnostic publication gate](docs/RA3EP1_PATHMUSIC_CORE_PACKAGE_GATE.md).
 Explicit Core-bound package/verify commands require current actual Core/native
 binding before staging and commit/readback. Stale/late input edits and competing
 destinations refuse; failed staging is retained. All 160 groups pass. Serialized

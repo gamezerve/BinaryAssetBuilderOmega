@@ -350,6 +350,15 @@ internal static class Program
             }
             // Reborn: Core-gated package fixtures use owned temporary files and do not execute codecs.
             if (args.FirstOrDefault() == "pathmusic-core-package-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicCorePackageSmokeTest.Run(); return 0; }
+            // Reborn: checksum audit reports current synthetic Core identities only and never publishes or relabels a package.
+            if (args.FirstOrDefault() == "pathmusic-core-checksum")
+            {
+                if (args.Length != 2) throw new ArgumentException("pathmusic-core-checksum <events.xml/events.h-directory>");
+                CompilerSmokeTest.InitializeHashProvider();
+                Console.WriteLine(JsonSerializer.Serialize(PathMusicCoreChecksum.Inspect(PathMusicCorePreparation.Read(args[1])),JsonOptions)); return 0;
+            }
+            // Reborn: managed checksum fixtures do not run codecs or mutate reference sources.
+            if (args.FirstOrDefault() == "pathmusic-core-checksum-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicCoreChecksumSmokeTest.Run(); return 0; }
             // Reborn: exact alias fixtures are independent of general source-path and dependency classification tests.
             if (args.FirstOrDefault() == "sdk-known-map-aliases-self-test") { SdkKnownMapAliasesSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() is "sdk-source-preflight" or "sdk-typed-source-graph")
@@ -1246,6 +1255,9 @@ internal static class Program
         Console.WriteLine("  pathmusic-core-diagnostic-package <events.xml/events.h-directory> <new-package-directory>");
         Console.WriteLine("  pathmusic-core-diagnostic-verify <events.xml/events.h-directory> <existing-package-directory>");
         Console.WriteLine("  pathmusic-core-package-self-test");
+        // Reborn: expose read-only checksum evidence separately from package publication commands.
+        Console.WriteLine("  pathmusic-core-checksum <events.xml/events.h-directory>");
+        Console.WriteLine("  pathmusic-core-checksum-self-test");
         // Reborn: known aliases require explicit typed singleton preparation and never apply to path-only/older profiles.
         Console.WriteLine("  --known-map-aliases (sdk-typed-source-graph with --instance-sound-singletons only)");
         Console.WriteLine("  sdk-known-map-aliases-self-test");

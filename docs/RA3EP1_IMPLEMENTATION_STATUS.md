@@ -5,6 +5,16 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-09)
 
+[Bounded PathMusic Core checksum contract](RA3EP1_PATHMUSIC_CORE_CHECKSUM.md)
+specializes the existing checksum audit to fresh actual synthetic-domain music
+InstanceHash projections. Independent 20-byte rows and 256-byte zero-padded
+capacity match unchanged Core, with order/hash/type/count sensitivity, direct
+weak/file exclusions, stale/refreshed/restored inputs and bounds covered.
+All 161 groups pass; repeated two-owner CLI checksum `CF2CABDA` agrees,
+missing arguments return 1. No package policy change, stock EP1 identity recovery
+or production admission. Engineering effort **52% / 48%** unchanged. Next:
+separately versioned experimental Core manifest profile and two-reader validation.
+
 [Current-Core PathMusic diagnostic publication gate](RA3EP1_PATHMUSIC_CORE_PACKAGE_GATE.md)
 adds distinct Core-bound package/verify commands with mandatory current identity
 checks before staging/commit and around two-reader readback. Stale-before-staging,
