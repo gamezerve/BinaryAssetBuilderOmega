@@ -38,7 +38,15 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Actual selected PathMusic package v2](docs/RA3EP1_PATHMUSIC_SELECTED_PACKAGE_V2.md).
+Latest milestone: [EP1 archive source provenance inventory](docs/RA3EP1_ARCHIVE_SOURCE_EVIDENCE.md).
+Read-only inventory of 14 shipping BIG directories covers 17,497 records with
+2,174,196 metadata bytes read and zero payload reads. No named music header,
+AUDIO source XML or compiler artifacts were found; embedded content was not
+searched. Six duplicate multiplayer map names remain visible. Bounded scripts
+and owned-fixture regressions pass; compiler coverage stays 165 groups and
+effort stays **52% / 48%**. Authentic EP1 metadata/header recovery remains open.
+
+[Actual selected PathMusic package v2](docs/RA3EP1_PATHMUSIC_SELECTED_PACKAGE_V2.md).
 Explicit v2 commands publish actual Core-selected plugin native buffers after
 frozen native/identity checks. Local TypeHash `48E303B8`, checksum `117BE305` and
 exact v2 marker isolate old profiles; v1 bytes remain unchanged. Two-reader/native,

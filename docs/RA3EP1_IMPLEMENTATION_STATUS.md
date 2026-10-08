@@ -5,6 +5,19 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-09)
 
+[EP1 archive source provenance inventory](RA3EP1_ARCHIVE_SOURCE_EVIDENCE.md)
+adds standalone read-only BIG directory audit and owned-fixture regression
+scripts. Fourteen actual shipping archives expose 17,497 records; two passes
+read 2,174,196 metadata bytes and no payloads. No named Pathfinder/music header,
+AUDIO authoring XML or compiler DLL/PDB was found. This is directory-name
+evidence, not an embedded-content search or machine-wide absence claim.
+The audit reports six duplicated multiplayer map entry names without selecting
+an ambiguous payload. Both BIG signatures, repeat/JSON/candidate/duplicate/runtime
+contracts, relative rejection and ten malformed cases pass. No C# compiler
+implementation changed; the previous 165-group suite result is retained, not
+claimed as rerun. Effort remains **52% / 48%**, with authentic EP1 metadata/header
+recovery and production/game validation still open.
+
 [Actual selected PathMusic package v2](RA3EP1_PATHMUSIC_SELECTED_PACKAGE_V2.md)
 publishes actual selected/prepared plugin buffers under local TypeHash `48E303B8`
 and synthetic processing domain, with paired frozen native/identity checks and
