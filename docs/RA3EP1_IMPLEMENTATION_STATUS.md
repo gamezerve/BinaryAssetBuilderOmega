@@ -5,6 +5,15 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Complete isolated sound owner review](RA3EP1_SDK_SOUND_OWNER_REVIEW.md)
+adds read-only `sdk-sound-owner-review` and compiler group 148. Captured guarded
+base preparation, independently predicted full explicit root/child projection,
+actual Core equality and isolated schema validity pass for both pinned owners.
+Two real runs return identical reports. Existing whole-source refusal remains;
+last measured graph **395 valid / 1 blocked**. All 148 groups pass; no reference
+XML/XSD/Core edits, outputs or native emission/game proof. Effort **51% / 49%**.
+Next: separately scoped singleton admission with full atomic graph regression.
+
 [Sound singleton Core/native characterization](RA3EP1_SDK_SOUND_SINGLETON_SEMANTICS.md)
 adds managed-only compiler group 147, not an admission option. The reviewed
 EP1 schema and unchanged Core pin ordered field overlay, inherited retention,

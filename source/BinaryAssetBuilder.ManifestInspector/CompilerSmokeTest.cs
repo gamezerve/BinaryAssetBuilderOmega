@@ -123,6 +123,8 @@ internal static class CompilerSmokeTest
         TestSdkInstanceSoundOffsets();
         // Reborn: characterize conflicting sound singletons without widening source admission.
         TestSdkSoundSingletonSemantics();
+        // Reborn: prove complete isolated sound owner projection independently of preprocessing admission.
+        TestSdkSoundOwnerReview();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2484,6 +2486,11 @@ internal static class CompilerSmokeTest
     /** Reborn: execute sound singleton order/retention evidence separately from normalization or native proof. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkSoundSingletonSemantics() => SdkSoundSingletonSemanticsSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: register full isolated owner field/child projection and tamper refusals without native execution. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkSoundOwnerReview() => SdkSoundOwnerReviewSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

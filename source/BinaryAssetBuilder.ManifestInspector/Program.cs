@@ -399,6 +399,14 @@ internal static class Program
             if (args.FirstOrDefault() == "sdk-instance-sound-offsets-self-test") { SdkInstanceSoundOffsetsSmokeTest.Run(); return 0; }
             // Reborn: characterize reviewed-schema sound singleton conflicts without native execution or graph admission.
             if (args.FirstOrDefault() == "sdk-sound-singleton-semantics-self-test") { SdkSoundSingletonSemanticsSmokeTest.Run(); return 0; }
+            // Reborn: review complete pinned isolated sound owners without admitting the whole source or writing outputs.
+            if (args.FirstOrDefault() == "sdk-sound-owner-review")
+            {
+                if (args.Length != 2) throw new ArgumentException("sdk-sound-owner-review <absolute-Uprising-source-root>");
+                Console.WriteLine(JsonSerializer.Serialize(SdkSoundOwnerReview.Review(args[1]),JsonOptions)); return 2;
+            }
+            // Reborn: run owned projection/tamper fixtures without external source/game dependencies.
+            if (args.FirstOrDefault() == "sdk-sound-owner-review-self-test") { SdkSoundOwnerReviewSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() == "sdk-instance-audio-trees-self-test") { SdkInstanceAudioTreesSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() == "sdk-instance-music-offsets-self-test") { SdkInstanceMusicOffsetsSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() == "sdk-instance-cross-state-removals-self-test") { SdkInstanceCrossStateRemovalsSmokeTest.Run(); return 0; }
@@ -1084,6 +1092,9 @@ internal static class Program
         Console.WriteLine("  sdk-instance-sound-offsets-self-test");
         // Reborn: expose independent sound singleton characterization, not a preprocessing flag.
         Console.WriteLine("  sdk-sound-singleton-semantics-self-test");
+        // Reborn: isolated complete-owner review remains explicitly separate from graph admission.
+        Console.WriteLine("  sdk-sound-owner-review <absolute-Uprising-source-root>");
+        Console.WriteLine("  sdk-sound-owner-review-self-test");
         Console.WriteLine("  sdk-sound-expression-review ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory>");
         // Reborn: the explicit source review remains partial and read-only even if both isolated owners validate.
         Console.WriteLine("  sdk-upgrade-semantics-review <absolute-upgrade.xml>");
