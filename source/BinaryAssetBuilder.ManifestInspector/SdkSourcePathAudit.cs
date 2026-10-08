@@ -12,14 +12,19 @@ internal static class SdkSourcePathAudit
     internal sealed record Resource(string Document,string Field,string LogicalPath,string PhysicalPath,long Bytes);
     internal sealed record Issue(string Code,string Document,string LogicalPath,string Detail);
     internal sealed record Report(string SourceRoot,string? ArtRoot,string? AudioRoot,Source[] Sources,Edge[] Includes,Resource[] Resources,
-        Issue[] Issues,bool ScopedPathAuditComplete,bool StoppedAtLimit,bool SnapshotOnly,bool FullDependencyCoverage,bool ProductionBuildReady,string[] Limitations);
+        Issue[] Issues,bool ScopedPathAuditComplete,bool StoppedAtLimit,bool SnapshotOnly,bool FullDependencyCoverage,bool ProductionBuildReady,string[] Limitations)
+    {
+        // Reborn: exact opt-in aliases preserve original edge authority; older audits retain no alias witnesses.
+        public SdkKnownMapAliases.Witness[] KnownMapAliases { get; init; } = Array.Empty<SdkKnownMapAliases.Witness>();
+        public string PathProfile => KnownMapAliases.Length == 0 ? "strict-source-paths" : SdkKnownMapAliases.Name;
+    }
     // Reborn: carry relative-path confinement with a resolved physical path; overlapping roots are not permitted.
     internal sealed record Resolved(string Path,string Root);
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: inspect a bounded reachable path graph from explicit environment evidence without recursive directory scans or source writes. */
     //-------------------------------------------------------------------------------------------------
-    internal static Report Inspect(SdkEnvironmentPreflight.Report environment,string? artRoot = null,string? audioRoot = null)
+    internal static Report Inspect(SdkEnvironmentPreflight.Report environment,string? artRoot = null,string? audioRoot = null,bool knownMapAliases = false)
     {
         string data = SdkEnvironmentPreflight.DirectoryPath(environment.SourceRoot);
         artRoot = artRoot == null ? null : SdkEnvironmentPreflight.DirectoryPath(artRoot);
@@ -33,16 +38,23 @@ internal static class SdkSourcePathAudit
                     throw new InvalidDataException("SDK source/art/audio roots must be distinct and non-overlapping for this attribution profile.");
         }
         List<Source> sources = new(); List<Edge> edges = new(); List<Resource> resources = new(); List<Issue> issues = new();
+        // Reborn: cache at most two exact recipe proofs; repeated edges do not multiply source reads.
+        List<SdkKnownMapAliases.Witness> aliases = new();
         HashSet<string> visited = new(StringComparer.OrdinalIgnoreCase),active = new(StringComparer.OrdinalIgnoreCase);
         long total = 0; bool stopped = false;
         Visit(environment.SourceEntry,data,0);
         if (sources.Count > 0 && sources[0].Sha256 != environment.SourceEntrySha256) Add("StaleEntry",environment.SourceEntry,"","Source entry changed after environment inspection.");
+        // Reborn: no alias witness survives an uncaptured, changed or invalid target; the source graph must include its proved bytes.
+        foreach (var alias in aliases)
+            if (!sources.Any(source => source.PhysicalPath.Equals(alias.PhysicalPath,StringComparison.OrdinalIgnoreCase) && source.Sha256 == alias.Sha256 && source.Bytes == alias.Bytes)
+                || Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(alias.PhysicalPath,4*1048576))) != alias.Sha256)
+                throw new InvalidDataException("Known map alias target changed or was not captured as valid source XML.");
         return new(data,artRoot,audioRoot,sources.ToArray(),edges.ToArray(),resources.ToArray(),issues.ToArray(),issues.Count == 0 && !stopped,
             stopped,true,false,false,new[] { "Path scope only: all/instance/reference Include edges are inspected, not compiled or substituted with manifests.",
                 "Explicit ART/AUDIO attribute and leaf-text literals plus AudioFile File attributes only; no schema-typed complete file dependency inventory.",
                 "Resource existence/length only: compressed/audio/art bodies are not read or SHA-fingerprinted.",
                 "ROOT alias, expressions/macros, registry/search fallbacks, postfix/LOD variants and overlapping roots are outside this profile.",
-                "Snapshot-only with bounded current reads; no atomic concurrent-filesystem transaction or production/game-load readiness." });
+                "Snapshot-only with bounded current reads; no atomic concurrent-filesystem transaction or production/game-load readiness." }) { KnownMapAliases = aliases.ToArray() };
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: cap retained diagnostics and stop traversal instead of silently treating a partial graph as complete. */
@@ -86,7 +98,11 @@ internal static class SdkSourcePathAudit
                     { Add("IncludeShape",path,logical,"Only direct all/instance/reference Include elements are audited."); continue; }
                     try
                     {
-                        Resolved child = Resolve(logical,Path.GetDirectoryName(path)!,confinement,data,artRoot,audioRoot);
+                        // Reborn: opt in only to exact two-library/all aliases, keeping original logical spelling and role intact.
+                        var alias = knownMapAliases ? aliases.SingleOrDefault(item => item.Document.Equals(path,StringComparison.OrdinalIgnoreCase) && item.LogicalPath == logical && item.Kind == kind)
+                            ?? SdkKnownMapAliases.Prove(data,path,kind,logical) : null;
+                        if (alias != null && !aliases.Contains(alias)) { if (aliases.Count >= 2) throw new InvalidDataException("Two known map alias proof bound exceeded."); aliases.Add(alias); }
+                        Resolved child = alias == null ? Resolve(logical,Path.GetDirectoryName(path)!,confinement,data,artRoot,audioRoot) : new(alias.PhysicalPath,data);
                         if (!child.Path.EndsWith(".xml",StringComparison.OrdinalIgnoreCase) && !child.Path.EndsWith(".w3x",StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Include must name XML/W3X source.");
                         edges.Add(new(path,kind,logical,child.Path)); Visit(child.Path,child.Root,depth+1);
                     }

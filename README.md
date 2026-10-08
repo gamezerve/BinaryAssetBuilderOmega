@@ -26,18 +26,28 @@ Missing dependencies, native emission and game loading remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**150 test groups** (some contain several fixtures). These counters can grow
+**151 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset/sound-singleton-characterization/full-sound-owner-review/sound-singleton-admission/dependency-classification regressions add groups and all 150 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset/sound-singleton-characterization/full-sound-owner-review/sound-singleton-admission/dependency-classification/known-map-alias regressions add groups and all 151 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Remaining dependency/path classification](docs/RA3EP1_SDK_DEPENDENCY_REVIEW.md).
+Latest milestone: [Known map Include aliases](docs/RA3EP1_SDK_KNOWN_MAP_ALIASES.md).
+Explicit `--known-map-aliases` with `--instance-sound-singletons` admits only
+two exact library/all paths after native Windows identity and captured-source
+proof. Both map closures were independently prepared first; no generic path
+normalization or source rewrite. Real graph: **398 validated / 0 XML blockers**,
+666 Includes, four AUDIO path issues, 198 occurrences of one required header.
+Zero earlier-valid regressions, raw hash mismatches or repeated-run differences;
+no output/native/game proof. All 151 compiler groups pass. Effort stays
+**52% / 48%**. Next: authentic AUDIO inputs and PathMusic header/processor contract.
+
+[Remaining dependency/path classification](docs/RA3EP1_SDK_DEPENDENCY_REVIEW.md).
 Read-only `sdk-dependency-review` identifies 198 occurrences of one required
 PathMusic header, not 198 proved missing files. Four path issues have no explicit
 AUDIO root; two known trailing-dot map Includes have equal ordinary/dotted

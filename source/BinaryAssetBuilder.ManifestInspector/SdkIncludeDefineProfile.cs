@@ -106,7 +106,8 @@ internal sealed class SdkIncludeDefineProfile
                     if (include.LocalName != "Include" || include.NamespaceURI != Ea || kind is not ("all" or "instance")
                         || include.HasChildNodes || include.Attributes.OfType<XmlAttribute>().Any(attribute => attribute.Name is not ("source" or "type"))
                         || edge.Kind != kind || edge.LogicalPath != logical || edge.PhysicalPath == null) throw new InvalidDataException("Only captured source-backed all/instance definition Includes are admitted; reference/precompiled paths remain closed.");
-                    var resolved = SdkSourcePathAudit.Resolve(logical,Path.GetDirectoryName(current)!,inventory[current].Root,paths.SourceRoot,paths.ArtRoot,paths.AudioRoot);
+                    // Reborn: replay only captured exact alias context/role/source proof; all other paths stay strict.
+                    var resolved = SdkKnownMapAliases.ResolveCaptured(paths,current,kind,logical,inventory[current].Root);
                     if (!resolved.Path.Equals(edge.PhysicalPath,StringComparison.OrdinalIgnoreCase) || !inventory.TryGetValue(resolved.Path,out var child)
                         || !resolved.Root.Equals(child.Root,StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Include definition target differs from captured confined inventory.");
                     foreach (var pair in Visit(resolved.Path,depth+1)) Merge(merged,pair.Key,pair.Value);

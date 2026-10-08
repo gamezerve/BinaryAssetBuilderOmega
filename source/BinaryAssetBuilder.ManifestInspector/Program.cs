@@ -264,10 +264,14 @@ internal static class Program
             }
             // Reborn: classifier fixtures require no external sources or native path/codec execution.
             if (args.FirstOrDefault() == "sdk-dependency-review-self-test") { SdkDependencyReviewSmokeTest.Run(); return 0; }
+            // Reborn: exact alias fixtures are independent of general source-path and dependency classification tests.
+            if (args.FirstOrDefault() == "sdk-known-map-aliases-self-test") { SdkKnownMapAliasesSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() is "sdk-source-preflight" or "sdk-typed-source-graph")
             {
                 if (args.Length < 6) throw new ArgumentException("sdk-source-preflight ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
                 string? art = null,audio = null; List<string> mappings = new();
+                // Reborn: two known map aliases require an independent path option and the fully proved XML preparation profile.
+                bool knownMapAliases = false;
                 // Reborn: diagnostic local literal expressions are never implicitly enabled for the path-only/default graph commands.
                 // Reborn: complex leaf copying is a separate diagnostic profile, not an implicit widening of older flags.
                 // Reborn: matching empty children remains a distinct opt-in, separate from tree copying and imported base visibility.
@@ -329,6 +333,11 @@ internal static class Program
                         // Reborn: choose only the known full-owner-proved sound singleton scope.
                         instanceSoundSingletons = option == "--instance-sound-singletons";
                     }
+                    else if (option == "--known-map-aliases")
+                    {
+                        if (args[0] != "sdk-typed-source-graph" || knownMapAliases) throw new ArgumentException("Known map aliases require typed graph command and one explicit option.");
+                        knownMapAliases = true;
+                    }
                     else if (option is "--art-root" or "--audio-root")
                     {
                         if (++index >= args.Length || args[index].StartsWith("--",StringComparison.Ordinal)) throw new ArgumentException("Explicit root option requires a value.");
@@ -339,7 +348,9 @@ internal static class Program
                     else mappings.Add(option);
                 }
                 var environment = SdkEnvironmentPreflight.Inspect(args[1],args[2],args[3],args[4],args[5],mappings.ToArray());
-                var paths = SdkSourcePathAudit.Inspect(environment,art,audio);
+                // Reborn: earlier preparation profiles cannot gain map alias authority through this new option.
+                if (knownMapAliases && !instanceSoundSingletons) throw new ArgumentException("Known map aliases require --instance-sound-singletons.");
+                var paths = SdkSourcePathAudit.Inspect(environment,art,audio,knownMapAliases);
                 // Reborn: typed graph admission is explicit and preserves the original path-only command/report contract.
                 if (args[0] == "sdk-typed-source-graph")
                 {
@@ -1119,6 +1130,9 @@ internal static class Program
         // Reborn: dependency evidence does not authorize resolver mutations or production readiness.
         Console.WriteLine("  sdk-dependency-review ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory>");
         Console.WriteLine("  sdk-dependency-review-self-test");
+        // Reborn: known aliases require explicit typed singleton preparation and never apply to path-only/older profiles.
+        Console.WriteLine("  --known-map-aliases (sdk-typed-source-graph with --instance-sound-singletons only)");
+        Console.WriteLine("  sdk-known-map-aliases-self-test");
         // Reborn: the explicit source review remains partial and read-only even if both isolated owners validate.
         Console.WriteLine("  sdk-upgrade-semantics-review <absolute-upgrade.xml>");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.

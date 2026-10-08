@@ -5,6 +5,18 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Known map Include aliases](RA3EP1_SDK_KNOWN_MAP_ALIASES.md) adds explicit
+`--known-map-aliases` only with the singleton preparation profile. Exact two
+library/all recipes require Windows native canonical/byte equality and captured,
+unchanged target snapshots; no generic normalization, source rewrite or all-to-instance
+coercion. Independently prepared map closures expand the global graph to
+**398 validated / 0 XML blockers**, 666 Includes, four AUDIO path issues and
+198 occurrences of one required header. Repeated hashes/statuses agree, all raw
+post-audits match, zero earlier-valid regressions or outputs. All 151 groups pass;
+coverage and effort **52% / 48%** unchanged. Native/game readiness remains unproved.
+Next: recover authentic AUDIO sources/header or prove a separate precompiled-reference
+and PathMusic processor contract.
+
 [Remaining dependency/path classification](RA3EP1_SDK_DEPENDENCY_REVIEW.md)
 adds read-only `sdk-dependency-review`, not resolver admission. The 198 typed
 dependency occurrences share one required PathMusic header path with no explicit

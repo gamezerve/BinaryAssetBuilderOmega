@@ -205,7 +205,8 @@ internal sealed class SdkInstanceInheritanceProfile
                 if (include.NamespaceURI != Ea || include.LocalName != "Include" || (!metadataEdge && include.GetAttribute("type") != "instance") || include.HasChildNodes
                     || include.Attributes.OfType<XmlAttribute>().Any(attribute => attribute.Name is not ("source" or "type"))
                     || (!metadataEdge && edge.Kind != "instance") || edge.LogicalPath != logical || edge.PhysicalPath == null) throw new InvalidDataException("Only direct source-backed instance Includes are admitted; all/reference/precompiled visibility remains closed.");
-                var resolved = SdkSourcePathAudit.Resolve(logical,Path.GetDirectoryName(path)!,inventory[path].Root,paths.SourceRoot,paths.ArtRoot,paths.AudioRoot);
+                // Reborn: recheck exact aliases without widening all/instance eligibility or handle visibility.
+                var resolved = SdkKnownMapAliases.ResolveCaptured(paths,path,include.GetAttribute("type"),logical,inventory[path].Root);
                 if (!resolved.Path.Equals(edge.PhysicalPath,StringComparison.OrdinalIgnoreCase) || !inventory.TryGetValue(resolved.Path,out var source)
                     || !resolved.Root.Equals(source.Root,StringComparison.OrdinalIgnoreCase) || resolved.Path.Equals(path,StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Instance target differs from captured confined inventory or is cyclic.");
                 byte[] baseBytes = Capture(resolved.Path); XmlDocument baseXml = Parse(baseBytes);
