@@ -117,6 +117,8 @@ internal static class CompilerSmokeTest
         TestSdkInstanceCrossStateRemovals();
         // Reborn: pin bounded MusicTrack.Volume arithmetic and definition-context isolation independently of earlier profiles.
         TestSdkInstanceMusicOffsets();
+        // Reborn: pin independent shallow broad-audio resource admission and unchanged generic tree bounds.
+        TestSdkInstanceAudioTrees();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2463,6 +2465,11 @@ internal static class CompilerSmokeTest
     /** Reborn: exercise music-only integer offsets, source closure, atomic refusals and final schema binding. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkInstanceMusicOffsets() => SdkInstanceMusicOffsetsSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: exercise bounded broad audio owners, actual Core merges and atomic resource failures. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkInstanceAudioTrees() => SdkInstanceAudioTreesSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

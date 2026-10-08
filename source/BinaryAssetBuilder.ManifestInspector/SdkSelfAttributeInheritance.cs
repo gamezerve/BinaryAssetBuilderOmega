@@ -73,21 +73,25 @@ internal static class SdkSelfAttributeInheritance
         public SdkIdenticalStates.Witness[] IdenticalStates { get; init; } = Array.Empty<SdkIdenticalStates.Witness>();
         // Reborn: publish source-owner command-pair results only after actual core projection agreement.
         public SdkStateReadds.Witness[] StateReadds { get; init; } = Array.Empty<SdkStateReadds.Witness>();
+        // Reborn: complete broad-audio budget evidence is published only after final Core output checks.
+        public SdkAudioTreeBudget.Evidence? AudioTree { get; init; }
         // Reborn: cross-removal witnesses name both schema reference types and are atomic with other owner events.
         public SdkCrossStateRemovals.Witness[] CrossStateRemovals { get; init; } = Array.Empty<SdkCrossStateRemovals.Witness>();
     }
     internal sealed record Result(byte[]? Bytes,Evidence Evidence);
+    // Reborn: broad shallow audio documents require independent resource proof, not a global tree-limit increase.
+    internal const string AudioTreeName = "diagnostic-self-audio-trees-v1";
     private const string Ea = "uri:ea.com:eala:asset";
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: expand local asset chains with independently admitted copy/empty-child matching scopes and reject the entire document on unsupported semantics. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false,bool childRemoval = false,bool choiceCopy = false,bool consumeMarkers = false,bool bitflags = false,bool filters = false,bool upgrades = false,bool objectCreationMarkers = false,bool identicalStates = false,bool stateReadds = false,bool crossStateRemovals = false)
+    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false,bool childRemoval = false,bool choiceCopy = false,bool consumeMarkers = false,bool bitflags = false,bool filters = false,bool upgrades = false,bool objectCreationMarkers = false,bool identicalStates = false,bool stateReadds = false,bool crossStateRemovals = false,bool audioTrees = false)
     {
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
-        string profile = crossStateRemovals ? CrossRemovalName : stateReadds ? StateReaddName : identicalStates ? IdenticalStateName : objectCreationMarkers ? ObjectCreationName : upgrades ? UpgradeName : filters ? FilterName : bitflags ? BitflagName : consumeMarkers ? MarkerName : choiceCopy ? ChoiceCopyName : childRemoval ? ChildRemovalName : childMerge ? ChildMergeName : treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
+        string profile = audioTrees ? AudioTreeName : crossStateRemovals ? CrossRemovalName : stateReadds ? StateReaddName : identicalStates ? IdenticalStateName : objectCreationMarkers ? ObjectCreationName : upgrades ? UpgradeName : filters ? FilterName : bitflags ? BitflagName : consumeMarkers ? MarkerName : choiceCopy ? ChoiceCopyName : childRemoval ? ChildRemovalName : childMerge ? ChildMergeName : treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
         // Reborn: the new local scope composes tested overlay rules without silently changing any earlier defaults.
-        stateReadds |= crossStateRemovals; identicalStates |= stateReadds; upgrades |= identicalStates;
+        crossStateRemovals |= audioTrees; stateReadds |= crossStateRemovals; identicalStates |= stateReadds; upgrades |= identicalStates;
         // Reborn: filter admission includes the tested bitflag/marker scopes without changing earlier profile defaults.
         filters |= upgrades;
         // Reborn: explicit upgrade normalization composes previous guards while leaving every earlier default unchanged.
@@ -119,6 +123,9 @@ internal static class SdkSelfAttributeInheritance
             if (assets.Length > 4096) throw new InvalidDataException("4096 local asset bound exceeded.");
             // Reborn: count original asset/tree elements once per document; resolved copies are separately covered by amplification limits.
             int treeNodes = assets.Length;
+            // Reborn: only fully proved broad audio input may use 16384; all earlier/default callers retain 8192.
+            var audioBudget = audioTrees ? SdkAudioTreeBudget.Prove(root,assets,schemas) : null;
+            int treeLimit = audioBudget == null ? 8192 : SdkAudioTreeBudget.ElementLimit;
             Dictionary<string,XmlElement> originals = new(StringComparer.Ordinal),resolved = new(StringComparer.Ordinal);
             // Reborn: track semantic chain height as well as active recursion so memoized/forward declarations cannot bypass the chain bound.
             Dictionary<string,int> heights = new(StringComparer.Ordinal);
@@ -135,7 +142,7 @@ internal static class SdkSelfAttributeInheritance
             List<SdkUpgradeNormalization.Witness> upgradeEvidence = new();
             if (upgrades && assets.Any(asset => asset.LocalName == "UpgradeTemplate" && asset.ChildNodes.OfType<XmlElement>().Count(child => child.LocalName == "GameDependency") > 1))
             {
-                if (root.SelectNodes(".//*")!.Count > 8192) throw new InvalidDataException("8192-element pre-normalization tree bound exceeded.");
+                if (root.SelectNodes(".//*")!.Count > treeLimit) throw new InvalidDataException($"{treeLimit}-element pre-normalization tree bound exceeded.");
                 foreach (var asset in assets)
                 {
                     var witness = SdkUpgradeNormalization.Normalize(schemas,asset);
@@ -152,7 +159,7 @@ internal static class SdkSelfAttributeInheritance
             List<SdkCrossStateRemovals.Witness> crossEvidence = new();
             if (identicalStates)
             {
-                if (root.SelectNodes(".//*")!.Count > 8192) throw new InvalidDataException("8192-element pre-normalization tree bound exceeded.");
+                if (root.SelectNodes(".//*")!.Count > treeLimit) throw new InvalidDataException($"{treeLimit}-element pre-normalization tree bound exceeded.");
                 foreach (var asset in assets)
                 {
                     var pairs = stateReadds ? SdkStateReadds.Find(schemas,asset) : Array.Empty<SdkStateReadds.Pair>();
@@ -173,11 +180,13 @@ internal static class SdkSelfAttributeInheritance
             if (root.SelectNodes(".//*")!.OfType<XmlElement>().Any(element => element.HasAttribute("inheritFrom") && !assets.Contains(element))) throw new InvalidDataException("Nested inheritFrom is outside the profile.");
             foreach (var asset in assets.Where(element => element.HasAttribute("inheritFrom"))) Resolve(asset.LocalName+":"+asset.GetAttribute("id"),0);
             foreach (var asset in assets.Where(element => element.HasAttribute("inheritFrom"))) root.ReplaceChild(resolved[asset.LocalName+":"+asset.GetAttribute("id")],asset);
+            // Reborn: output breadth/owner checks precede serialization and atomic evidence publication.
+            var audioEvidence = audioBudget?.Verify(root);
             using MemoryStream output = new();
             using (XmlWriter writer = XmlWriter.Create(output,new XmlWriterSettings { Encoding = new UTF8Encoding(false),NewLineHandling = NewLineHandling.None })) xml.Save(writer);
             byte[] processed = output.ToArray();
             if (processed.Length > 4*1048576) throw new InvalidDataException("Processed inheritance XML exceeds 4 MiB.");
-            return new(processed,new(profile,raw,Convert.ToHexString(SHA256.HashData(processed)),overlays.ToArray(),Array.Empty<string>()) { Removals = removals.ToArray(),ConsumedMarkers = markers.ToArray(),Bitflags = bitflagEvidence.ToArray(),Filters = filterEvidence.ToArray(),UpgradeNormalizations = upgradeEvidence.ToArray(),IdenticalStates = identicalStateEvidence.ToArray(),StateReadds = readdEvidence.ToArray(),CrossStateRemovals = crossEvidence.ToArray() });
+            return new(processed,new(profile,raw,Convert.ToHexString(SHA256.HashData(processed)),overlays.ToArray(),Array.Empty<string>()) { Removals = removals.ToArray(),ConsumedMarkers = markers.ToArray(),Bitflags = bitflagEvidence.ToArray(),Filters = filterEvidence.ToArray(),UpgradeNormalizations = upgradeEvidence.ToArray(),IdenticalStates = identicalStateEvidence.ToArray(),StateReadds = readdEvidence.ToArray(),CrossStateRemovals = crossEvidence.ToArray(),AudioTree = audioEvidence });
 
             //-------------------------------------------------------------------------------------------------
             /** Reborn: local handles precede imported visibility; reject same-handle overrides, missing bases, cross-type inheritance and cycles. */
@@ -200,6 +209,8 @@ internal static class SdkSelfAttributeInheritance
                     { var parts = target.Split(':'); if (parts.Length != 2 || parts[0] != type) throw new InvalidDataException("Cross-type inherited handle is outside the profile."); baseId = parts[1]; }
                     if (!Token(baseId) || baseId == asset.GetAttribute("id")) throw new InvalidDataException("Empty/unsafe base or same-handle imported override remains closed.");
                     XmlElement baseAsset = Resolve(type+":"+baseId,depth+1);
+                    // Reborn: charge actual resolved base/source pairs before invoking any Core merge under the broad audio exception.
+                    audioBudget?.Charge(baseAsset,asset);
                     // Reborn: collect only this overlay's paired-filter plans; recursive source overlays retain their own event identity.
                     List<(string Child,SdkFilterCopies.Plan Plan)> filterPlans = new();
                     // Reborn: prove every selected modifier against the fully resolved explicit base field before core allocation.
@@ -375,7 +386,7 @@ internal static class SdkSelfAttributeInheritance
                 foreach (var child in children)
                 {
                     // Reborn: a bounded element inventory prevents a small source with many tiny nested children from creating unbounded joiner work.
-                    if (treeCopy && (++treeNodes > 8192 || child.Prefix.Length != 0)) throw new InvalidDataException("8192-element child tree bound or unprefixed core lookup required.");
+                    if (treeCopy && (++treeNodes > treeLimit || child.Prefix.Length != 0)) throw new InvalidDataException($"{treeLimit}-element child tree bound or unprefixed core lookup required.");
                     // Reborn: unique literal sibling IDs cannot select an already copied node on the sole populated side; duplicates/unsafe identities remain closed.
                     if (treeCopy && child.HasAttribute("id") && (!Token(child.GetAttribute("id")) || !siblingIds.Add(child.GetAttribute("id"))
                         && !(stateReadds && depth == 0 && orderedPairs.TryGetValue(asset,out var admittedPairs) && admittedPairs.Any(pair => ReferenceEquals(pair.Replacement,child)))))
