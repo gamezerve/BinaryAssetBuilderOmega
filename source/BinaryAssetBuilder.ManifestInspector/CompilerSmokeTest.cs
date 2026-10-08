@@ -143,6 +143,8 @@ internal static class CompilerSmokeTest
         TestPathMusicPackage();
         // Reborn: actual Core music hashing remains synthetic-domain evidence independent of package identity fields.
         TestPathMusicCoreIdentity();
+        // Reborn: pinned reference processing metadata cannot silently become EP1 production identity.
+        TestPathMusicReferenceIdentity();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2554,6 +2556,11 @@ internal static class CompilerSmokeTest
     /** Reborn: register independent Core music XML/weak/file identity reconstruction and change-isolation tests. */
     //-------------------------------------------------------------------------------------------------
     private static void TestPathMusicCoreIdentity() => PathMusicCoreIdentitySmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: register pinned static music processing metadata and RA3/EP1 identity mismatch regressions. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestPathMusicReferenceIdentity() => PathMusicReferenceIdentitySmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

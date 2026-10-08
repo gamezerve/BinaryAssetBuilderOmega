@@ -1,7 +1,7 @@
 # BinaryAssetBuilder
 A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
-## Uprising progress — October 8, 2026
+## Uprising progress — October 9, 2026
 
 Active branch: `feature/ra3ep1-manifest-inspector`. This is not yet a usable
 Uprising Mod SDK release. Replacing XML/XSD files alone is insufficient:
@@ -26,18 +26,26 @@ Missing dependencies, native emission and game loading remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**157 test groups** (some contain several fixtures). These counters can grow
+**158 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset/sound-singleton-characterization/full-sound-owner-review/sound-singleton-admission/dependency-classification/known-map-alias/stock-music-review/header-semantics/music-runtime/music-authored-snapshot/music-package/music-Core-identity regressions add groups and all 157 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset/sound-singleton-characterization/full-sound-owner-review/sound-singleton-admission/dependency-classification/known-map-alias/stock-music-review/header-semantics/music-runtime/music-authored-snapshot/music-package/music-Core-identity/music-reference-identity regressions add groups and all 158 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [PathMusic actual Core identity proof](docs/RA3EP1_PATHMUSIC_CORE_IDENTITY.md).
+Latest milestone: [Pinned reference PathMusic processing metadata](docs/RA3EP1_PATHMUSIC_REFERENCE_IDENTITY.md).
+Static field/branch/dispatcher checks recover RA3 reference ProcessingHash
+`76D0CEE6`, TypeHash `76D0CEEF`, catalog `54EEE764` and HasCustomData=false.
+TypeHash differs from observed EP1 `599CDAF2`; this is not EP1 processing hash
+recovery or permission to relabel diagnostic packages. No DLL execution.
+All 158 groups pass. Effort **52% / 48%**; next immutable Core/native binding
+under a declared domain, with EP1 metadata/authentic dependencies still open.
+
+[PathMusic actual Core identity proof](docs/RA3EP1_PATHMUSIC_CORE_IDENTITY.md).
 Actual Core InstanceHash matches independent authored XML/512-block and padded
 weak-type/header folding for 1–8 owners under an explicitly synthetic processing
 domain. Shared header edits invalidate all owners; omitted/default cache attributes

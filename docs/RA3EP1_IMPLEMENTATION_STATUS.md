@@ -3,7 +3,17 @@
 This branch starts the migration with a read-only compatibility gate. It does
 not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
-## Latest bounded milestone (2026-10-08)
+## Latest bounded milestone (2026-10-09)
+
+[Pinned reference PathMusic processing metadata](RA3EP1_PATHMUSIC_REFERENCE_IDENTITY.md)
+recovers RA3 reference event ProcessingHash `76D0CEE6`, TypeHash `76D0CEEF`,
+catalog `54EEE764` and HasCustomData=false from exact static IL fields/branches and
+metadata/processor dispatchers. Reference TypeHash differs from observed EP1
+`599CDAF2`; no EP1 ProcessingHash recovery or diagnostic package relabeling.
+All 158 groups pass; repeated CLI reports agree and missing/unreviewed inputs
+return 1. No reference/native execution. Coverage and effort **52% / 48%** unchanged.
+Next: immutable Core/native preparation binding under a declared domain and
+independent EP1 processing/type-table/authentic dependency provenance.
 
 [PathMusic actual Core identity proof](RA3EP1_PATHMUSIC_CORE_IDENTITY.md)
 compares actual fresh DocumentProcessor identities to independent default-attributed

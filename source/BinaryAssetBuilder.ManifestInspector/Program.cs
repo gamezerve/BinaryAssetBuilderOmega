@@ -322,6 +322,14 @@ internal static class Program
             }
             // Reborn: Core identity regressions use owned temporary music fixtures and metadata-only registration.
             if (args.FirstOrDefault() == "pathmusic-core-identity-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicCoreIdentitySmokeTest.Run(); return 0; }
+            // Reborn: pinned RA3 processing metadata is evidence only; it cannot authorize EP1 package identities.
+            if (args.FirstOrDefault() == "pathmusic-reference-identity")
+            {
+                if (args.Length != 2) throw new ArgumentException("pathmusic-reference-identity <reference-audio-compiler.dll>");
+                Console.WriteLine(JsonSerializer.Serialize(PathMusicReferenceIdentity.Inspect(args[1]),JsonOptions)); return 0;
+            }
+            // Reborn: review static reference bytes only, never execute the mixed-mode compiler.
+            if (args.FirstOrDefault() == "pathmusic-reference-identity-self-test") { PathMusicReferenceIdentitySmokeTest.Run(); return 0; }
             // Reborn: exact alias fixtures are independent of general source-path and dependency classification tests.
             if (args.FirstOrDefault() == "sdk-known-map-aliases-self-test") { SdkKnownMapAliasesSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() is "sdk-source-preflight" or "sdk-typed-source-graph")
@@ -1208,6 +1216,9 @@ internal static class Program
         // Reborn: read-only synthetic-domain Core evidence is distinct from diagnostic package hashes.
         Console.WriteLine("  pathmusic-core-identity <events.xml/events.h-directory>");
         Console.WriteLine("  pathmusic-core-identity-self-test");
+        // Reborn: separate recovered RA3 metadata from unrecovered EP1 processing identity.
+        Console.WriteLine("  pathmusic-reference-identity <reference-audio-compiler.dll>");
+        Console.WriteLine("  pathmusic-reference-identity-self-test");
         // Reborn: known aliases require explicit typed singleton preparation and never apply to path-only/older profiles.
         Console.WriteLine("  --known-map-aliases (sdk-typed-source-graph with --instance-sound-singletons only)");
         Console.WriteLine("  sdk-known-map-aliases-self-test");
