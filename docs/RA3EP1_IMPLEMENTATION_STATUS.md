@@ -5,6 +5,18 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Reference PathMusic header semantics](RA3EP1_PATHMUSIC_HEADER_SEMANTICS.md)
+pins static reference IL for the actual Plugin header parser/event processor.
+Runtime event values come from hexadecimal PATH_EVENT definitions, not asset
+symbol hashing. Missing/zero reference results warn and serialize zero; this does
+not justify EP1 dependency bypass. Read-only reference/header commands and a
+conservative diagnostic literal model retain first-match, explicit zero/missing,
+lexical hazards and unknown CRT behavior. No reference execution/authentic header
+or production processor. All 153 groups pass; coverage and effort **52% / 48%**
+unchanged, last graph 398 valid / four AUDIO issues / 198 header occurrences.
+Next: genuine EP1 header or explicit stock binding, with content identity,
+zero/missing policy and native output validation before admission.
+
 [PathMusic authored/stock reconciliation](RA3EP1_PATHMUSIC_STOCK_REVIEW.md)
 adds read-only `pathmusic-stock-review`: exact 197 names/instance identities,
 178 plain 16-byte records and 19 relocated 20-byte weak-alternate records.

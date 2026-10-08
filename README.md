@@ -26,18 +26,29 @@ Missing dependencies, native emission and game loading remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**152 test groups** (some contain several fixtures). These counters can grow
+**153 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset/sound-singleton-characterization/full-sound-owner-review/sound-singleton-admission/dependency-classification/known-map-alias/stock-music-review regressions add groups and all 152 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset/sound-singleton-characterization/full-sound-owner-review/sound-singleton-admission/dependency-classification/known-map-alias/stock-music-review/header-semantics regressions add groups and all 153 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [PathMusic authored/stock reconciliation](docs/RA3EP1_PATHMUSIC_STOCK_REVIEW.md).
+Latest milestone: [Reference PathMusic header semantics](docs/RA3EP1_PATHMUSIC_HEADER_SEMANTICS.md).
+Pinned static IL identifies the header parser and event processor: the runtime
+event word comes from a hexadecimal `PATH_EVENT_<id>` definition, not an asset
+symbol hash. Legacy missing/zero results warn and continue with zero; that policy
+is not enabled for EP1 production. Explicit reference/header review commands and
+a conservative managed diagnostic model retain first-match/zero distinctions,
+lexical hazards and unsupported CRT results. No reference DLL execution or
+authentic header recovery. All 153 groups pass; graph/dependency coverage and
+effort **52% / 48%** unchanged. Next: authentic header or separately proved stock
+binding, then content invalidation/zero policy/native emission checks.
+
+[PathMusic authored/stock reconciliation](docs/RA3EP1_PATHMUSIC_STOCK_REVIEW.md).
 Read-only `pathmusic-stock-review` matches all 197 authored names/instance IDs
 and observes 178 plain 16-byte records plus 19 relocated 20-byte alternate records.
 Only 3,228 BIN / 152 RELO bytes per pass; repeated reports agree. Offset-4 event

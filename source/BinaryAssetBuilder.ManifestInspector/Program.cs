@@ -272,6 +272,20 @@ internal static class Program
             }
             // Reborn: synthetic music evidence tests require neither external streams nor codecs.
             if (args.FirstOrDefault() == "pathmusic-stock-review-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicStockReviewSmokeTest.Run(); return 0; }
+            // Reborn: pin static reference IL metadata without executing the mixed-mode audio compiler.
+            if (args.FirstOrDefault() == "pathmusic-reference-review")
+            {
+                if (args.Length != 2) throw new ArgumentException("pathmusic-reference-review <reference-audio.dll>");
+                Console.WriteLine(JsonSerializer.Serialize(PathMusicHeaderSemantics.InspectReference(args[1]),JsonOptions)); return 0;
+            }
+            // Reborn: caller-supplied headers are diagnostic snapshots only; first-match/zero/unsupported distinctions never enable production music.
+            if (args.FirstOrDefault() == "pathmusic-header-review")
+            {
+                if (args.Length != 4) throw new ArgumentException("pathmusic-header-review <reference-audio.dll> <header.h> <event-id>");
+                Console.WriteLine(JsonSerializer.Serialize(PathMusicHeaderSemantics.InspectHeader(args[1],args[2],args[3]),JsonOptions)); return 0;
+            }
+            // Reborn: header semantics fixtures remain entirely managed and independent of authentic headers/native code.
+            if (args.FirstOrDefault() == "pathmusic-header-semantics-self-test") { PathMusicHeaderSemanticsSmokeTest.Run(); return 0; }
             // Reborn: exact alias fixtures are independent of general source-path and dependency classification tests.
             if (args.FirstOrDefault() == "sdk-known-map-aliases-self-test") { SdkKnownMapAliasesSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() is "sdk-source-preflight" or "sdk-typed-source-graph")
@@ -1141,6 +1155,10 @@ internal static class Program
         // Reborn: bounded stock observations remain separate from header recovery and production processors.
         Console.WriteLine("  pathmusic-stock-review <PathMusicEvents.xml> <global.manifest>");
         Console.WriteLine("  pathmusic-stock-review-self-test");
+        // Reborn: reference/header observations are independently explicit and never production processor registration.
+        Console.WriteLine("  pathmusic-reference-review <reference-audio.dll>");
+        Console.WriteLine("  pathmusic-header-review <reference-audio.dll> <header.h> <event-id>");
+        Console.WriteLine("  pathmusic-header-semantics-self-test");
         // Reborn: known aliases require explicit typed singleton preparation and never apply to path-only/older profiles.
         Console.WriteLine("  --known-map-aliases (sdk-typed-source-graph with --instance-sound-singletons only)");
         Console.WriteLine("  sdk-known-map-aliases-self-test");
