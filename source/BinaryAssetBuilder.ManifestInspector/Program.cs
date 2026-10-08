@@ -286,6 +286,14 @@ internal static class Program
             }
             // Reborn: header semantics fixtures remain entirely managed and independent of authentic headers/native code.
             if (args.FirstOrDefault() == "pathmusic-header-semantics-self-test") { PathMusicHeaderSemanticsSmokeTest.Run(); return 0; }
+            // Reborn: isolated music layout proof replays stock words, not recovered header inputs or production processor output.
+            if (args.FirstOrDefault() == "pathmusic-runtime-layout-proof")
+            {
+                if (args.Length != 3) throw new ArgumentException("pathmusic-runtime-layout-proof <PathMusicEvents.xml> <global.manifest>");
+                CompilerSmokeTest.InitializeHashProvider(); Console.WriteLine(JsonSerializer.Serialize(PathMusicRuntimeProbe.CompareStock(args[1],args[2]),JsonOptions)); return 0;
+            }
+            // Reborn: native ABI fixture checks use the existing tracker only, without reference compiler/codec execution.
+            if (args.FirstOrDefault() == "pathmusic-runtime-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicRuntimeProbeSmokeTest.Run(); return 0; }
             // Reborn: exact alias fixtures are independent of general source-path and dependency classification tests.
             if (args.FirstOrDefault() == "sdk-known-map-aliases-self-test") { SdkKnownMapAliasesSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() is "sdk-source-preflight" or "sdk-typed-source-graph")
@@ -1159,6 +1167,9 @@ internal static class Program
         Console.WriteLine("  pathmusic-reference-review <reference-audio.dll>");
         Console.WriteLine("  pathmusic-header-review <reference-audio.dll> <header.h> <event-id>");
         Console.WriteLine("  pathmusic-header-semantics-self-test");
+        // Reborn: isolated runtime proof does not broaden general XML/model/processor admission.
+        Console.WriteLine("  pathmusic-runtime-layout-proof <PathMusicEvents.xml> <global.manifest>");
+        Console.WriteLine("  pathmusic-runtime-self-test");
         // Reborn: known aliases require explicit typed singleton preparation and never apply to path-only/older profiles.
         Console.WriteLine("  --known-map-aliases (sdk-typed-source-graph with --instance-sound-singletons only)");
         Console.WriteLine("  sdk-known-map-aliases-self-test");

@@ -5,6 +5,17 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Isolated PathMusic runtime serialization](RA3EP1_PATHMUSIC_RUNTIME_PROBE.md)
+proves actual tracker output for all 197 stock records (19 alternates/four zeros),
+with full selected BIN/RELO hash equality. Stock values are replayed, not recovered
+from a genuine header. Separate strict synthetic header fixtures match independent
+native goldens. Runtime complex type exists but authored declaration rejects its
+root; a test-only in-memory wrapper verifies runtime fields/defaults without
+schema changes. All 154 groups pass. Graph rerun remains 398 valid / four AUDIO
+issues / 198 required-header occurrences, no output. Coverage and effort **52% / 48%**
+unchanged; no production processor/registry or game proof. Next: scoped authored
+input/content identity or stock binding, followed by isolated package readback.
+
 [Reference PathMusic header semantics](RA3EP1_PATHMUSIC_HEADER_SEMANTICS.md)
 pins static reference IL for the actual Plugin header parser/event processor.
 Runtime event values come from hexadecimal PATH_EVENT definitions, not asset

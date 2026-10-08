@@ -135,6 +135,8 @@ internal static class CompilerSmokeTest
         TestPathMusicStockReview();
         // Reborn: characterize reference header lexical/zero semantics independently of music processor admission.
         TestPathMusicHeaderSemantics();
+        // Reborn: independent music runtime tracker goldens and strict literal preparation remain isolated from production processors.
+        TestPathMusicRuntimeProbe();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2526,6 +2528,11 @@ internal static class CompilerSmokeTest
     /** Reborn: register bounded literal and legacy-quirk diagnostic tests without external DLL execution. */
     //-------------------------------------------------------------------------------------------------
     private static void TestPathMusicHeaderSemantics() => PathMusicHeaderSemanticsSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: execute isolated header-to-native fixture proof without admitting general music compilation. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestPathMusicRuntimeProbe() => PathMusicRuntimeProbeSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */
