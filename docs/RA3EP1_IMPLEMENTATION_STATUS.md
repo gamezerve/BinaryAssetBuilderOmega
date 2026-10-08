@@ -5,6 +5,16 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Remaining dependency/path classification](RA3EP1_SDK_DEPENDENCY_REVIEW.md)
+adds read-only `sdk-dependency-review`, not resolver admission. The 198 typed
+dependency occurrences share one required PathMusic header path with no explicit
+AUDIO root. Four path issues are unsupplied AUDIO inputs; two trailing-dot map
+Includes have matching ordinary/dotted Windows snapshots but are uncaptured and
+still refused. Stock compiled music/audio metadata cannot replace source Includes
+or headers. All 150 groups pass; captured XML remains 396/396, six path issues and
+198 dependency occurrences, effort **52% / 48%**. No reference/resolver changes
+or production/game proof. Next: prepare uncaptured map sources before alias admission.
+
 [Known sound singleton admission](RA3EP1_SDK_INSTANCE_SOUND_SINGLETONS.md)
 adds independent `--instance-sound-singletons`: two exact complete literal
 sound bodies, schema cardinality/shape checks and full predicted-vs-actual owner

@@ -250,6 +250,20 @@ internal static class Program
                 Console.WriteLine(JsonSerializer.Serialize(SdkSoundExpressionReview.Inspect(paths,schemas,environment.SourceEntry),JsonOptions));
                 return 2;
             }
+            // Reborn: summarize remaining failures after the admitted XML profile without changing roots or Include resolution.
+            if (args.FirstOrDefault() == "sdk-dependency-review")
+            {
+                if (args.Length != 6 || args[1] != "ra3ep1") throw new ArgumentException("sdk-dependency-review ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory>");
+                var environment = SdkEnvironmentPreflight.Inspect(args[1],args[2],args[3],args[4],args[5],Array.Empty<string>());
+                var paths = SdkSourcePathAudit.Inspect(environment);
+                var typed = SdkTypedSourceGraph.Inspect(paths,instanceSoundSingletons:true);
+                var review = SdkDependencyReview.Inspect(paths,typed.Graph,observeAliases:true);
+                foreach (var source in paths.Sources)
+                    if (Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(SdkEnvironmentPreflight.Read(source.PhysicalPath,4*1048576))) != source.Sha256) throw new InvalidDataException("Source changed during dependency review.");
+                Console.WriteLine(JsonSerializer.Serialize(review,JsonOptions)); return 2;
+            }
+            // Reborn: classifier fixtures require no external sources or native path/codec execution.
+            if (args.FirstOrDefault() == "sdk-dependency-review-self-test") { SdkDependencyReviewSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() is "sdk-source-preflight" or "sdk-typed-source-graph")
             {
                 if (args.Length < 6) throw new ArgumentException("sdk-source-preflight ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");
@@ -1102,6 +1116,9 @@ internal static class Program
         Console.WriteLine("  sdk-sound-owner-review <absolute-Uprising-source-root>");
         Console.WriteLine("  sdk-sound-owner-review-self-test");
         Console.WriteLine("  sdk-sound-expression-review ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory>");
+        // Reborn: dependency evidence does not authorize resolver mutations or production readiness.
+        Console.WriteLine("  sdk-dependency-review ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory>");
+        Console.WriteLine("  sdk-dependency-review-self-test");
         // Reborn: the explicit source review remains partial and read-only even if both isolated owners validate.
         Console.WriteLine("  sdk-upgrade-semantics-review <absolute-upgrade.xml>");
         // Reborn: command self-tests own only fresh temporary inputs and outputs.

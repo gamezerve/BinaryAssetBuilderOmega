@@ -26,18 +26,29 @@ Missing dependencies, native emission and game loading remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**149 test groups** (some contain several fixtures). These counters can grow
+**150 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset/sound-singleton-characterization/full-sound-owner-review/sound-singleton-admission regressions add groups and all 149 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset/sound-singleton-characterization/full-sound-owner-review/sound-singleton-admission/dependency-classification regressions add groups and all 150 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Known sound singleton admission](docs/RA3EP1_SDK_INSTANCE_SOUND_SINGLETONS.md).
+Latest milestone: [Remaining dependency/path classification](docs/RA3EP1_SDK_DEPENDENCY_REVIEW.md).
+Read-only `sdk-dependency-review` identifies 198 occurrences of one required
+PathMusic header, not 198 proved missing files. Four path issues have no explicit
+AUDIO root; two known trailing-dot map Includes have equal ordinary/dotted
+Windows snapshots but remain outside resolver admission and the captured graph.
+Stock manifests contain compiled music/audio assets, not replacement source
+Includes or headers. All 150 compiler groups pass; no resolver/reference changes.
+Graph remains **396/396 captured XML valid**, six path issues and 198 dependency
+occurrences; effort **52% / 48%**, no production/game readiness. Next: prepare
+both uncaptured map sources before a narrow alias opt-in, and recover AUDIO inputs.
+
+[Known sound singleton admission](docs/RA3EP1_SDK_INSTANCE_SOUND_SINGLETONS.md).
 Independent `--instance-sound-singletons` admits only the two proved complete
 literal sound bodies and verifies every explicit final owner field/child after
 the actual Core merge. Real graph: **396 validated / 0 XML blockers**, zero
