@@ -38,7 +38,16 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 archive source provenance inventory](docs/RA3EP1_ARCHIVE_SOURCE_EVIDENCE.md).
+Latest milestone: [EP1 executable music/type provenance](docs/RA3EP1_EXECUTABLE_MUSIC_EVIDENCE.md).
+Static engine/launcher PE review pins build SHA/CodeView provenance and records
+five music type-name pointer candidates, six stock TypeId matches and one stock
+TypeHash match. These are bounded reverse-engineering targets, not a recovered
+compiler ProcessingHash/header or verified type registry. Owned static-PE and
+archive regression scripts pass; no target code executed. Compiler groups stay
+165 and estimated effort stays **52% / 48%**; next establish the actual runtime
+name/hash table relationship before considering any production identity change.
+
+[EP1 archive source provenance inventory](docs/RA3EP1_ARCHIVE_SOURCE_EVIDENCE.md).
 Read-only inventory of 14 shipping BIG directories covers 17,497 records with
 2,174,196 metadata bytes read and zero payload reads. No named music header,
 AUDIO source XML or compiler artifacts were found; embedded content was not

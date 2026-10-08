@@ -5,6 +5,18 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-09)
 
+[EP1 executable music/type provenance](RA3EP1_EXECUTABLE_MUSIC_EVIDENCE.md)
+pins the actual native x86 engine/launcher PE identities and embedded CodeView
+records. Engine review records 31 targeted printable windows, five preferred
+music string-VA match candidates, six stock event TypeId matches in `.text`,
+and one stock event TypeHash match in `.rdata`. The stock catalog literal has
+zero byte matches. These are concrete bounded runtime investigation targets,
+not verified instructions/table relationships or compiler ProcessingHash/header
+recovery. New static-PE owned-fixture and prior archive script tests pass; no
+target executed or C# compiler change, no full compiler-suite rerun claimed.
+Effort stays **52% / 48%** and groups stay 165. Next verify the runtime name/hash
+table relationship against several stock types while retaining production guards.
+
 [EP1 archive source provenance inventory](RA3EP1_ARCHIVE_SOURCE_EVIDENCE.md)
 adds standalone read-only BIG directory audit and owned-fixture regression
 scripts. Fourteen actual shipping archives expose 17,497 records; two passes
