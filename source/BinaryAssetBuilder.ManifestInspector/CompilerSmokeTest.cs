@@ -131,6 +131,8 @@ internal static class CompilerSmokeTest
         TestSdkDependencyReview();
         // Reborn: register exact map alias capture/replay without widening strict path defaults.
         TestSdkKnownMapAliases();
+        // Reborn: reconcile exact authored/stock music identities and bounded raw words without admitting a Pathfinder processor.
+        TestPathMusicStockReview();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2512,6 +2514,11 @@ internal static class CompilerSmokeTest
     /** Reborn: execute independently opted-in native alias identity and expanded source graph fixtures. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkKnownMapAliases() => SdkKnownMapAliasesSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: register bounded stock music observations independently of source/header admission. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestPathMusicStockReview() => PathMusicStockReviewSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

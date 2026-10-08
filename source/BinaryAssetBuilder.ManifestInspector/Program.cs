@@ -264,6 +264,14 @@ internal static class Program
             }
             // Reborn: classifier fixtures require no external sources or native path/codec execution.
             if (args.FirstOrDefault() == "sdk-dependency-review-self-test") { SdkDependencyReviewSmokeTest.Run(); return 0; }
+            // Reborn: observe exact stock event identities/words without replacing missing authored headers or registering a processor.
+            if (args.FirstOrDefault() == "pathmusic-stock-review")
+            {
+                if (args.Length != 3) throw new ArgumentException("pathmusic-stock-review <PathMusicEvents.xml> <global.manifest>");
+                CompilerSmokeTest.InitializeHashProvider(); Console.WriteLine(JsonSerializer.Serialize(PathMusicStockReview.Inspect(args[1],args[2]),JsonOptions)); return 0;
+            }
+            // Reborn: synthetic music evidence tests require neither external streams nor codecs.
+            if (args.FirstOrDefault() == "pathmusic-stock-review-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicStockReviewSmokeTest.Run(); return 0; }
             // Reborn: exact alias fixtures are independent of general source-path and dependency classification tests.
             if (args.FirstOrDefault() == "sdk-known-map-aliases-self-test") { SdkKnownMapAliasesSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() is "sdk-source-preflight" or "sdk-typed-source-graph")
@@ -1130,6 +1138,9 @@ internal static class Program
         // Reborn: dependency evidence does not authorize resolver mutations or production readiness.
         Console.WriteLine("  sdk-dependency-review ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory>");
         Console.WriteLine("  sdk-dependency-review-self-test");
+        // Reborn: bounded stock observations remain separate from header recovery and production processors.
+        Console.WriteLine("  pathmusic-stock-review <PathMusicEvents.xml> <global.manifest>");
+        Console.WriteLine("  pathmusic-stock-review-self-test");
         // Reborn: known aliases require explicit typed singleton preparation and never apply to path-only/older profiles.
         Console.WriteLine("  --known-map-aliases (sdk-typed-source-graph with --instance-sound-singletons only)");
         Console.WriteLine("  sdk-known-map-aliases-self-test");

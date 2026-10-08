@@ -5,6 +5,18 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[PathMusic authored/stock reconciliation](RA3EP1_PATHMUSIC_STOCK_REVIEW.md)
+adds read-only `pathmusic-stock-review`: exact 197 names/instance identities,
+178 plain 16-byte records and 19 relocated 20-byte weak-alternate records.
+3,228 BIN / 152 RELO bytes per pass, repeated snapshots agree. Offset-4 words
+are not asset IDs; four are zero, requiring explicit reference/header semantics
+rather than guessed constants. A 94-file RA3 audio collection exists but is not
+admitted as complete EP1 input. All 152 groups pass; coverage and graph remain
+398 valid / four AUDIO path issues / 198 required-header occurrences. No source,
+schema, Core or registry changes; no processor/emission/game proof. Effort stays
+**52% / 48%**. Next: reference processor/header lookup and zero-event contract,
+or separately validated stock-reference binding.
+
 [Known map Include aliases](RA3EP1_SDK_KNOWN_MAP_ALIASES.md) adds explicit
 `--known-map-aliases` only with the singleton preparation profile. Exact two
 library/all recipes require Windows native canonical/byte equality and captured,
