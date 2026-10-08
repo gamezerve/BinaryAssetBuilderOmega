@@ -5,6 +5,16 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Local authored PathMusic snapshot](RA3EP1_PATHMUSIC_AUTHORED_SNAPSHOT.md)
+adds a strict 1–8-event local source/header closure with reviewed schema binding,
+exact weak targets, canonical nonzero constants, detached chunks and diagnostic
+content fingerprints. Same-length timestamp-preserving edits invalidate old
+snapshots; refreshed preparation sees current values. Synthetic two-event CLI
+reports repeat exactly; missing arguments return 1. All 155 compiler groups pass.
+No official AUDIO bypass, Core production identity, processor/package admission
+or game proof. Coverage and effort **52% / 48%** unchanged. Next: isolated package
+framing/readback and explicit experimental identity policy.
+
 [Isolated PathMusic runtime serialization](RA3EP1_PATHMUSIC_RUNTIME_PROBE.md)
 proves actual tracker output for all 197 stock records (19 alternates/four zeros),
 with full selected BIN/RELO hash equality. Stock values are replayed, not recovered

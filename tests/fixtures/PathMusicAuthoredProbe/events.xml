@@ -1,0 +1,5 @@
+<!-- Reborn: synthetic local diagnostic music closure; not official EP1 music input or a production mod. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <PathMusicEvent id="RebornMusicPrimary" PathfinderEventHeader="events.h" RestartAlternateEvent="RebornMusicAlternate" IsCacheable="false"/>
+  <PathMusicEvent id="RebornMusicAlternate" PathfinderEventHeader="events.h"/>
+</AssetDeclaration>

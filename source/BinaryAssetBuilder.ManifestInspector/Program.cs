@@ -294,6 +294,15 @@ internal static class Program
             }
             // Reborn: native ABI fixture checks use the existing tracker only, without reference compiler/codec execution.
             if (args.FirstOrDefault() == "pathmusic-runtime-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicRuntimeProbeSmokeTest.Run(); return 0; }
+            // Reborn: local authored music snapshots never resolve official AUDIO dependencies or emit a production package.
+            if (args.FirstOrDefault() == "pathmusic-authored-preflight")
+            {
+                if (args.Length != 2) throw new ArgumentException("pathmusic-authored-preflight <events.xml/events.h-directory>");
+                CompilerSmokeTest.InitializeHashProvider(); var snapshot = PathMusicAuthoredSnapshot.Read(args[1]); snapshot.VerifyCurrent();
+                Console.WriteLine(JsonSerializer.Serialize(snapshot.Preflight(),JsonOptions)); return 0;
+            }
+            // Reborn: authored music fixtures own only temporary source/header files and detached native chunks.
+            if (args.FirstOrDefault() == "pathmusic-authored-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicAuthoredSnapshotSmokeTest.Run(); return 0; }
             // Reborn: exact alias fixtures are independent of general source-path and dependency classification tests.
             if (args.FirstOrDefault() == "sdk-known-map-aliases-self-test") { SdkKnownMapAliasesSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() is "sdk-source-preflight" or "sdk-typed-source-graph")
@@ -1170,6 +1179,9 @@ internal static class Program
         // Reborn: isolated runtime proof does not broaden general XML/model/processor admission.
         Console.WriteLine("  pathmusic-runtime-layout-proof <PathMusicEvents.xml> <global.manifest>");
         Console.WriteLine("  pathmusic-runtime-self-test");
+        // Reborn: authored music content admission is a distinct local diagnostic profile.
+        Console.WriteLine("  pathmusic-authored-preflight <events.xml/events.h-directory>");
+        Console.WriteLine("  pathmusic-authored-self-test");
         // Reborn: known aliases require explicit typed singleton preparation and never apply to path-only/older profiles.
         Console.WriteLine("  --known-map-aliases (sdk-typed-source-graph with --instance-sound-singletons only)");
         Console.WriteLine("  sdk-known-map-aliases-self-test");
