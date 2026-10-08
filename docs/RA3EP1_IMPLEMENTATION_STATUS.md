@@ -5,6 +5,19 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-09)
 
+[EP1 runtime name/hash table reconciliation](RA3EP1_RUNTIME_TYPE_TABLE.md)
+recovers 1,341 contiguous name-pointer/hash associations and one separately
+located Texture slot from the pinned EP1 executable. All 254 root fingerprints
+in four SHA-rechecked stock manifests match. Weather enums before the actual
+array are excluded; decoded associations/raw hash block have separate forensic
+digests, not substituted EA aggregate hashes. Repeat/JSON, twelve private-memory
+faults and three public artifact-pin/path rejections pass, along with PE/archive
+script regressions. No C# compiler mutation/full-suite rerun; groups stay 165.
+This advances runtime table evidence, not authoring ProcessingHash/header/native
+processor or game admission. Estimate stays **52% / 48%**. Next map official
+schema roles and review table callers; never blindly register the 1,088 rows
+not observed as stock roots in this manifest set.
+
 [EP1 executable music/type provenance](RA3EP1_EXECUTABLE_MUSIC_EVIDENCE.md)
 pins the actual native x86 engine/launcher PE identities and embedded CodeView
 records. Engine review records 31 targeted printable windows, five preferred

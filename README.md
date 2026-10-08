@@ -38,7 +38,17 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 executable music/type provenance](docs/RA3EP1_EXECUTABLE_MUSIC_EVIDENCE.md).
+Latest milestone: [EP1 runtime name/hash table reconciliation](docs/RA3EP1_RUNTIME_TYPE_TABLE.md).
+Pinned runtime decoding recovers 1,341 parallel name/hash rows plus a separate
+Texture slot. All 254 independently observed stock root fingerprints match;
+weather enum pointers are explicitly excluded. Ordered/raw table fingerprints,
+repeat/JSON, twelve memory faults and three public pin rejections pass. The
+remaining 1,088 runtime names are not automatically admitted compiler roots.
+No ProcessingHash, aggregate hash derivation or game-loading proof; production
+guards remain closed. Estimated effort stays **52% / 48%**, groups stay 165.
+Next map runtime names to official schema roles and audit actual table callers.
+
+[EP1 executable music/type provenance](docs/RA3EP1_EXECUTABLE_MUSIC_EVIDENCE.md).
 Static engine/launcher PE review pins build SHA/CodeView provenance and records
 five music type-name pointer candidates, six stock TypeId matches and one stock
 TypeHash match. These are bounded reverse-engineering targets, not a recovered
