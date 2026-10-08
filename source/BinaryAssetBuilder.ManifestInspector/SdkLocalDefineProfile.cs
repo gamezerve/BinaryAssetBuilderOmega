@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
+using System.Xml.Schema;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
@@ -15,9 +16,12 @@ internal static class SdkLocalDefineProfile
         // Reborn: imported literal evidence records exact source identities and definition origins, not compiled child assets.
         public SdkIncludeDefineProfile.SourceIdentity[] DefinitionSources { get; init; } = Array.Empty<SdkIncludeDefineProfile.SourceIdentity>();
         public SdkIncludeDefineProfile.Origin[] DefinitionOrigins { get; init; } = Array.Empty<SdkIncludeDefineProfile.Origin>();
+        // Reborn: successful bounded Volume arithmetic is explicit evidence, not implied by earlier literal flags.
+        public SdkMusicVolumeOffsets.Witness[] MusicVolumeOffsets { get; init; } = Array.Empty<SdkMusicVolumeOffsets.Witness>();
         // Reborn: definition computations are distinct from substitutions in asset XML and are exposed only for successful complete closures.
         public SdkDefinitionSubset.Evaluation[] EvaluatedDefinitions { get; init; } = Array.Empty<SdkDefinitionSubset.Evaluation>();
     }
+    // Reborn: transformed bytes and computation witnesses are published atomically.
     internal sealed record Result(byte[]? Bytes,Evidence Evidence);
     private const string Ea = "uri:ea.com:eala:asset";
     private static readonly Regex Identifier = new("\\A[A-Za-z_][A-Za-z0-9_]{0,127}\\z",RegexOptions.CultureInvariant,TimeSpan.FromSeconds(1));
@@ -38,9 +42,14 @@ internal static class SdkLocalDefineProfile
     internal static Result ApplyBeforeInheritance(byte[] bytes,IReadOnlyDictionary<string,string>? literals = null) => ApplyCore(bytes,literals,true);
 
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: select schema-proven direct music Volume offsets while retaining literal, visibility and identity guards. */
+    //-------------------------------------------------------------------------------------------------
+    internal static Result ApplyMusicOffsets(byte[] bytes,IReadOnlyDictionary<string,string>? literals,XmlSchemaSet schemas,bool beforeInheritance) => ApplyCore(bytes,literals,beforeInheritance,schemas);
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: share bounded substitution without changing the default local-only Include refusal. */
     //-------------------------------------------------------------------------------------------------
-    private static Result ApplyCore(byte[] bytes,IReadOnlyDictionary<string,string>? imported,bool beforeInheritance = false)
+    private static Result ApplyCore(byte[] bytes,IReadOnlyDictionary<string,string>? imported,bool beforeInheritance = false,XmlSchemaSet? musicSchemas = null)
     {
         if (bytes.Length > 4*1048576) throw new InvalidDataException("Local define source exceeds 4 MiB.");
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
@@ -66,18 +75,27 @@ internal static class SdkLocalDefineProfile
         IReadOnlyDictionary<string,string> defines;
         try { defines = imported ?? ReadLiteralDefinitions(root); }
         catch (InvalidDataException) { return Reject(raw,"Unsupported, duplicate, chained or override definition; no partial substitution."); }
+        // Reborn: collect only complete successful arithmetic evidence; rejection exposes no partially computed slots.
+        List<SdkMusicVolumeOffsets.Witness> offsets = new();
         foreach (XmlNode slot in slots)
         {
             string expression = slot.Value!;
-            if (!expression.StartsWith("=$",StringComparison.Ordinal) || !Identifier.IsMatch(expression[2..]) || !defines.TryGetValue(expression[2..],out string? value))
-                return Reject(raw,"Only exact =$NAME references to case-sensitive local literal definitions are admitted.");
-            slot.Value = value;
+            if (expression.StartsWith("=$",StringComparison.Ordinal) && Identifier.IsMatch(expression[2..]) && defines.TryGetValue(expression[2..],out string? value))
+            { slot.Value = value; continue; }
+            if (musicSchemas == null) return Reject(raw,"Only exact =$NAME references to case-sensitive local literal definitions are admitted.");
+            try
+            {
+                if (offsets.Count >= 16) throw new InvalidDataException("16 music offset slots per source bound exceeded.");
+                var witness = SdkMusicVolumeOffsets.Evaluate(slot,defines,musicSchemas);
+                offsets.Add(witness); slot.Value = witness.Result;
+            }
+            catch (InvalidDataException error) { return Reject(raw,error.Message); }
         }
         using MemoryStream output = new();
         using (XmlWriter writer = XmlWriter.Create(output,new XmlWriterSettings { Encoding = new UTF8Encoding(false),Indent = false,NewLineHandling = NewLineHandling.None })) xml.Save(writer);
         byte[] processed = output.ToArray();
         if (processed.Length > 4*1048576) return Reject(raw,"Processed XML exceeds 4 MiB.");
-        return new(processed,new(Name,raw,Convert.ToHexString(SHA256.HashData(processed)),slots.Count,Array.Empty<string>()));
+        return new(processed,new(Name,raw,Convert.ToHexString(SHA256.HashData(processed)),slots.Count,Array.Empty<string>()) { MusicVolumeOffsets = offsets.ToArray() });
     }
 
     //-------------------------------------------------------------------------------------------------

@@ -115,6 +115,8 @@ internal static class CompilerSmokeTest
         TestSdkCc32Review();
         // Reborn: register separately proved empty cross-QName state removal without changing earlier defaults.
         TestSdkInstanceCrossStateRemovals();
+        // Reborn: pin bounded MusicTrack.Volume arithmetic and definition-context isolation independently of earlier profiles.
+        TestSdkInstanceMusicOffsets();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2456,6 +2458,11 @@ internal static class CompilerSmokeTest
     /** Reborn: prove exact reference-bearing state removal and atomic refusal of every broader operation. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkInstanceCrossStateRemovals() => SdkInstanceCrossStateRemovalsSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: exercise music-only integer offsets, source closure, atomic refusals and final schema binding. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkInstanceMusicOffsets() => SdkInstanceMusicOffsetsSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

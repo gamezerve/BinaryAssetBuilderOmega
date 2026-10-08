@@ -22,18 +22,29 @@ a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**143 test groups** (some contain several fixtures). These counters can grow
+**144 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal regressions add groups and all 143 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset regressions add groups and all 144 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Empty cross-QName state removal admission](docs/RA3EP1_SDK_INSTANCE_CROSS_STATE_REMOVALS.md).
+Latest milestone: [Bounded MusicTrack Volume offsets](docs/RA3EP1_SDK_INSTANCE_MUSIC_OFFSETS.md).
+Independent `--instance-music-offsets` allows only direct MusicTrack.Volume
+integer offsets with exact Percentage schema type and operands/results in 0..100.
+Music.xml now validates; its authored `70 + 5` resolves to `75` before inheritance
+and is verified again against the actual Core output. Real graph: **394 valid /
+2 blocked**, zero earlier-valid regressions. Earlier cross-removal scope stays
+393 / 3. All 144 compiler groups pass. SoundEffects arithmetic and Voice's tree
+bound remain closed; native emission and game loading are unproved.
+Effort stays **51% / 49%**. Next: audio tree/merge-complexity review and separately
+typed SoundEffects arithmetic; XML counts are not usable-mod readiness.
+
+[Empty cross-QName state removal admission](docs/RA3EP1_SDK_INSTANCE_CROSS_STATE_REMOVALS.md).
 Independent `--instance-cross-state-removals` admits one empty authored BuildState
 Remove against a unique inherited StrategicState per AI owner, with exact schema
 reference types and actual-core agreement on all state fields/order. Whole CC32

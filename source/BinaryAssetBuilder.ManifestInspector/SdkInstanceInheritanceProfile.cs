@@ -37,6 +37,8 @@ internal sealed class SdkInstanceInheritanceProfile
     internal const string CrossRemovalName = "diagnostic-direct-instance-cross-state-removals-v1";
     // Reborn: identify every captured/prepared document contributing to an admitted closure, not native hashes or live-disk state.
     internal sealed record PreparedSource(string SourcePath,string RawSha256,string ProcessedSha256);
+    // Reborn: direct music Volume arithmetic is a separately selected profile, not general audio expression admission.
+    internal const string MusicOffsetName = "diagnostic-direct-instance-music-offsets-v1";
     private const string Ea = "uri:ea.com:eala:asset";
     // Reborn: source and processed-document hashes identify imported XML witnesses, never native streams or cache identities.
     internal sealed record ImportedBase(string Type,string BaseId,string SourcePath,string RawSha256,string ProcessedSha256)
@@ -72,11 +74,13 @@ internal sealed class SdkInstanceInheritanceProfile
     private readonly bool stateReadds;
     // Reborn: preserve the narrow cross-removal proof throughout captured child-first source preparation.
     private readonly bool crossStateRemovals;
+    // Reborn: carry the selected music-only expression stage into each defining source context.
+    private readonly bool musicOffsets;
     private sealed record Prepared(SdkSelfAttributeInheritance.Result Result,int Height);
     private readonly Dictionary<string,Prepared> prepared = new(StringComparer.OrdinalIgnoreCase);
     private readonly HashSet<string> active = new(StringComparer.OrdinalIgnoreCase);
     private long preparedBytes;
-    private string Profile => crossStateRemovals ? CrossRemovalName : stateReadds ? StateReaddName : identicalStates ? IdenticalStateName : expressions ? ExpressionName : metadata ? MetadataName : upgrades ? UpgradeName : filters ? FilterName : bitflags ? BitflagName : markers ? MarkerName : choices ? ChoiceName : removals ? RemovalName : chains ? ChainName : rootFiles ? RootFileName : Name;
+    private string Profile => musicOffsets ? MusicOffsetName : crossStateRemovals ? CrossRemovalName : stateReadds ? StateReaddName : identicalStates ? IdenticalStateName : expressions ? ExpressionName : metadata ? MetadataName : upgrades ? UpgradeName : filters ? FilterName : bitflags ? BitflagName : markers ? MarkerName : choices ? ChoiceName : removals ? RemovalName : chains ? ChainName : rootFiles ? RootFileName : Name;
     private readonly XmlSchemaSet schemas;
     private readonly SdkSourcePathAudit.Report paths;
     private readonly Dictionary<string,SdkSourcePathAudit.Source> inventory = new(StringComparer.OrdinalIgnoreCase);
@@ -86,7 +90,7 @@ internal sealed class SdkInstanceInheritanceProfile
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate the complete captured source inventory before any imported read; caller-supplied graph records cannot authorize escaped files. */
     //-------------------------------------------------------------------------------------------------
-    internal SdkInstanceInheritanceProfile(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool rootFiles = false,bool chains = false,bool removals = false,bool choices = false,bool markers = false,bool bitflags = false,bool filters = false,bool upgrades = false,bool metadata = false,bool expressions = false,bool identicalStates = false,bool stateReadds = false,bool crossStateRemovals = false)
+    internal SdkInstanceInheritanceProfile(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool rootFiles = false,bool chains = false,bool removals = false,bool choices = false,bool markers = false,bool bitflags = false,bool filters = false,bool upgrades = false,bool metadata = false,bool expressions = false,bool identicalStates = false,bool stateReadds = false,bool crossStateRemovals = false,bool musicOffsets = false)
     {
         this.schemas = schemas; this.paths = paths;
         // Reborn: choice admission includes the tested chain/removal subsets without changing any earlier constructor defaults.
@@ -94,6 +98,7 @@ internal sealed class SdkInstanceInheritanceProfile
         // Reborn: modifier admission implies markers/choices/chains, but all earlier constructor defaults remain unchanged.
         // Reborn: filters compose with earlier independently tested scopes, without changing any earlier default or imported-base authority.
         // Reborn: explicit identical-state scope composes expression preparation but cannot widen the older expression flag.
+        crossStateRemovals |= musicOffsets; this.musicOffsets = musicOffsets;
         stateReadds |= crossStateRemovals; this.crossStateRemovals = crossStateRemovals;
         identicalStates |= stateReadds; this.stateReadds = stateReadds;
         expressions |= identicalStates; this.identicalStates = identicalStates;
@@ -227,7 +232,8 @@ internal sealed class SdkInstanceInheritanceProfile
                             throw new InvalidDataException("Expression-valued repeated state fields remain closed before identical-state preparation.");
             if (expressions)
             {
-                var evaluated = new SdkIncludeDefineProfile(paths,definitionExpressions:true).Apply(path,bytes,beforeInheritance:true);
+                // Reborn: music offsets resolve in the defining document before overlays; imported bases never use the consumer's local values.
+                var evaluated = new SdkIncludeDefineProfile(paths,definitionExpressions:true,musicSchemas:musicOffsets ? schemas : null).Apply(path,bytes,beforeInheritance:true);
                 if (evaluated.Bytes == null) throw new InvalidDataException("Pre-inheritance expressions rejected: "+string.Join("; ",evaluated.Evidence.Diagnostics));
                 owner = Parse(evaluated.Bytes); expressionEvidence = evaluated.Evidence;
                 expandedSize = evaluated.Bytes.Length+1024L;
@@ -253,6 +259,8 @@ internal sealed class SdkInstanceInheritanceProfile
             if (merged.Bytes == null) throw new InvalidDataException((chains ? "Instance overlay exceeds chain merge scope: " : "Instance overlay exceeds copy-only scope: ")+string.Join("; ",merged.Evidence.Diagnostics));
             XmlDocument output = Parse(merged.Bytes);
             foreach (var asset in Assets(output).Where(asset => injected.Contains(asset.LocalName+":"+asset.GetAttribute("id"))).ToArray()) output.DocumentElement!.RemoveChild(asset);
+            // Reborn: verify the actual owner Volume after Core merging and temporary-base removal, not just the expression-stage substitution.
+            if (musicOffsets && expressionEvidence != null) SdkMusicVolumeOffsets.Verify(output,expressionEvidence.MusicVolumeOffsets);
             byte[] processed = Serialize(output);
             if (processed.Length > 4*1048576) throw new InvalidDataException("Processed instance owner exceeds 4 MiB.");
             return new(processed,new(Profile,raw,Convert.ToHexString(SHA256.HashData(processed)),merged.Evidence.Overlays,Array.Empty<string>()) { ImportedBases = witnesses.ToArray(),PreparedSources = closure.DistinctBy(source => source.SourcePath,StringComparer.OrdinalIgnoreCase).ToArray(),Removals = merged.Evidence.Removals,ConsumedMarkers = merged.Evidence.ConsumedMarkers,Bitflags = merged.Evidence.Bitflags,Filters = merged.Evidence.Filters,UpgradeNormalizations = merged.Evidence.UpgradeNormalizations,MetadataDefinitionIncludes = metadataWitnesses.ToArray(),ExpressionPreparation = expressionEvidence,IdenticalStates = merged.Evidence.IdenticalStates,StateReadds = merged.Evidence.StateReadds,CrossStateRemovals = merged.Evidence.CrossStateRemovals });
