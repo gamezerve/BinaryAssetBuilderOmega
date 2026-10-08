@@ -108,4 +108,22 @@ internal sealed class PathMusicCorePreparation
     //-------------------------------------------------------------------------------------------------
     internal void VerifyExperimentalPackage(string directory)
     { PathMusicPackageProbe.VerifyExperimental(directory,_snapshot,this); }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: bind freshly selected actual plugin payloads to the private captured input closure with current raw/Core checks before and after compilation. */
+    //-------------------------------------------------------------------------------------------------
+    internal PathMusicControlledCompiler.Payload SelectedPayload()
+    { VerifyCurrent(); var payload = PathMusicControlledCompiler.CompileSelectedPayload(_directory); VerifyCurrent(); return payload; }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: publish separately versioned selected-owner actual native payloads; no caller-supplied report or hash policy is admitted. */
+    //-------------------------------------------------------------------------------------------------
+    internal void PublishSelectedPackage(string output,Action? beforeCommit = null)
+    { PathMusicPackageProbe.PublishSelected(output,_snapshot,this,beforeCommit); }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: regenerate actual selected-owner payload evidence for independent version-two readback, retaining current snapshot gates. */
+    //-------------------------------------------------------------------------------------------------
+    internal void VerifySelectedPackage(string directory)
+    { PathMusicPackageProbe.VerifySelected(directory,_snapshot,this); }
 }

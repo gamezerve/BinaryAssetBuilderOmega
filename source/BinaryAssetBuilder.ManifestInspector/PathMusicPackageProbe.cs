@@ -14,7 +14,51 @@ internal static class PathMusicPackageProbe
     private const uint TypeId = 0x9A651D89u;
     private const string Notice = "Reborn: LOCAL PATHMUSIC DIAGNOSTIC ONLY. NOT a playable Uprising mod.\nAllTypesHash=0; TypeHash=0; InstanceHash/checksum are diagnostic SHA-256 prefixes, not Core/EA processing identities.\nNo official AUDIO resolution, processor/cache registration, production linking or game-load proof.\n";
     // Reborn: private identity policy cannot be supplied by callers as an arbitrary hash array or forged preflight report.
-    private sealed record Policy(uint Checksum,uint[] Hashes,string Notice);
+    private sealed record Policy(uint Checksum,uint[] Hashes,string Notice,uint TypeHash = 0,string Marker = "EXPERIMENTAL_CORE_V1.txt",Chunk[]? Chunks = null);
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: privately pair actual selected v2 native buffers and metadata with frozen Core/raw identities; reject arbitrary or mismatched projections. */
+    //-------------------------------------------------------------------------------------------------
+    private static Policy Selected(PathMusicAuthoredSnapshot snapshot,PathMusicCorePreparation preparation)
+    {
+        var payload = preparation.SelectedPayload(); var selected = payload.Report; var core = preparation.Preflight(); var native = snapshot.Preflight();
+        if (selected.LocalProfileVersion != 2 || selected.TypeHash != PathMusicControlledCompiler.LocalTypeHash || !selected.SyntheticTypeDomain
+            || selected.CoreOutputSelectionSkipped || !selected.CoreDependenciesPrepared || selected.Ep1ProcessingHashRecovered || selected.ProductionBuildReady
+            || selected.CanUseBuildCache || selected.CanReuseCompiledDocuments || selected.GameLoadProved || selected.ProcessingHash != core.ProcessingHash
+            || core.DocumentVersion != 23 || selected.DocumentVersion != core.DocumentVersion || selected.ProcessorCalls != core.Rows.Length
+            || core.SourceSha256 != native.SourceSha256 || core.HeaderSha256 != native.HeaderSha256 || core.DiagnosticFingerprint != native.DiagnosticFingerprint
+            || selected.Rows.Length != native.Rows.Length || payload.Chunks.Length != native.Rows.Length) throw new InvalidDataException("Selected music package domain/closure differs.");
+        for (int index = 0; index < native.Rows.Length; index++)
+        {
+            var row = native.Rows[index]; var identity = core.Rows[index]; var compiled = selected.Rows[index]; var chunk = payload.Chunks[index];
+            if (row.Name != identity.Name || row.InstanceId != identity.InstanceId || compiled.Name != row.Name || compiled.InstanceId != row.InstanceId
+                || compiled.InstanceHash != identity.CoreInstanceHash || compiled.BinBytes != row.BinBytes || compiled.RelocationBytes != row.RelocationBytes || compiled.ImportsBytes != 0
+                || compiled.BinSha256 != row.BinSha256 || compiled.RelocationSha256 != row.RelocationSha256 || chunk.ImportsBuffer.Length != 0
+                || chunk.InstanceBuffer.Length != row.BinBytes || chunk.RelocationBuffer.Length != row.RelocationBytes
+                || Convert.ToHexString(SHA256.HashData(chunk.InstanceBuffer)) != row.BinSha256
+                || Convert.ToHexString(SHA256.HashData(chunk.RelocationBuffer)) != row.RelocationSha256) throw new InvalidDataException("Actual selected music native/identity pairing differs.");
+        }
+        string notice = "Reborn: PATHMUSIC EXPERIMENTAL SELECTED CORE PROFILE v2. NOT a playable Uprising mod.\n"
+            +"TypeHash=48E303B8 (local native-contract SHA-256 prefix; NOT EA); ProcessingHash=52424D49 (synthetic); DocumentVersion=23; AllTypesHash=0.\n"
+            +"Actual Core-selected owners/prepared dependencies and plugin native buffers; checksum=Core ordered padded identity table.\n"
+            +"SourceSha256="+core.SourceSha256+"\nHeaderSha256="+core.HeaderSha256+"\nDiagnosticFingerprint="+core.DiagnosticFingerprint+"\n"
+            +"No recovered EP1 ProcessingHash, official AUDIO, production/cache/reuse or game-load proof.\n";
+        snapshot.VerifyCurrent(); preparation.VerifyCurrent();
+        return new(selected.Checksum,selected.Rows.Select(row => row.InstanceHash).ToArray(),notice,selected.TypeHash,"EXPERIMENTAL_CORE_V2.txt",
+            payload.Chunks.Select(chunk => new Chunk { InstanceBuffer = (byte[])chunk.InstanceBuffer.Clone(),RelocationBuffer = (byte[])chunk.RelocationBuffer.Clone(),ImportsBuffer = (byte[])chunk.ImportsBuffer.Clone() }).ToArray());
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: publish actual selected native buffers under an exact v2 marker with mandatory captured Core/raw freshness and no-overwrite gates. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void PublishSelected(string output,PathMusicAuthoredSnapshot snapshot,PathMusicCorePreparation preparation,Action? beforeCommit = null)
+    { Publish(output,snapshot,preparation.VerifyCurrent,beforeCommit,Selected(snapshot,preparation)); }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: regenerate fresh actual selected plugin output and verify v2 through both readers, native decoding and full expected-byte equality. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void VerifySelected(string directory,PathMusicAuthoredSnapshot snapshot,PathMusicCorePreparation preparation)
+    { Verify(directory,snapshot,Selected(snapshot,preparation)); preparation.VerifyCurrent(); }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: derive version-one experimental identities only from current private Core preparation paired with the exact native snapshot. */
@@ -56,13 +100,13 @@ internal static class PathMusicPackageProbe
     //-------------------------------------------------------------------------------------------------
     private static Dictionary<string,byte[]> Serialize(PathMusicAuthoredSnapshot snapshot,Policy? policy)
     {
-        var report = snapshot.Preflight(); Chunk[] chunks = snapshot.Compile();
+        var report = snapshot.Preflight(); snapshot.VerifyCurrent(); Chunk[] chunks = policy?.Chunks ?? snapshot.Compile();
         uint checksum = policy?.Checksum ?? DiagnosticWord(report.DiagnosticFingerprint);
         using MemoryStream names = new(),sources = new(),table = new(),manifest = new();
         for (int index = 0; index < report.Rows.Length; index++)
         {
             var row = report.Rows[index]; Chunk chunk = chunks[index];
-            using AssetEntry entry = new() { TypeId = TypeId,TypeHash = 0,InstanceId = row.InstanceId,
+            using AssetEntry entry = new() { TypeId = TypeId,TypeHash = policy?.TypeHash ?? 0,InstanceId = row.InstanceId,
                 InstanceHash = policy?.Hashes[index] ?? DiagnosticWord(report.DiagnosticFingerprint+":"+row.Name),Tokenized = false,
                 NameOffset = (int)names.Length,SourceFileNameOffset = (int)sources.Length,
                 AssetReferenceOffset = 0,AssetReferenceCount = 0,InstanceDataSize = chunk.InstanceBuffer.Length,
@@ -77,7 +121,7 @@ internal static class PathMusicPackageProbe
             AssetNameBufferSize = (uint)names.Length,SourceFileNameBufferSize = (uint)sources.Length }) header.SaveToStream(manifest,false);
         table.WriteTo(manifest); names.WriteTo(manifest); sources.WriteTo(manifest);
         Dictionary<string,byte[]> files = new() { ["diagnostic.manifest"] = manifest.ToArray(),
-            [policy == null ? "DIAGNOSTIC_ONLY.txt" : "EXPERIMENTAL_CORE_V1.txt"] = Encoding.UTF8.GetBytes(policy?.Notice ?? Notice) };
+            [policy?.Marker ?? "DIAGNOSTIC_ONLY.txt"] = Encoding.UTF8.GetBytes(policy?.Notice ?? Notice) };
         foreach (var stream in new[] { (Name:"diagnostic.bin",Magic:0xBABB0000u,Parts:chunks.Select(chunk => chunk.InstanceBuffer)),
             (Name:"diagnostic.relo",Magic:0xBABE0000u,Parts:chunks.Select(chunk => chunk.RelocationBuffer)),
             (Name:"diagnostic.imp",Magic:0xBAB10000u,Parts:chunks.Select(chunk => chunk.ImportsBuffer)) })
@@ -123,11 +167,11 @@ internal static class PathMusicPackageProbe
         for (int index = 0; index < report.Rows.Length; index++)
         {
             var row = report.Rows[index]; var asset = parsed.Assets[index]; var other = utility.Assets[index];
-            if (asset.TypeId != TypeId || asset.TypeHash != 0 || asset.InstanceId != row.InstanceId
+            if (asset.TypeId != TypeId || asset.TypeHash != (policy?.TypeHash ?? 0) || asset.InstanceId != row.InstanceId
                 || asset.InstanceHash != (policy?.Hashes[index] ?? DiagnosticWord(report.DiagnosticFingerprint+":"+row.Name)) || asset.Tokenized != 0
                 || asset.Name != "PathMusicEvent:"+row.Name || asset.SourceFile != "events.xml" || asset.References.Count != 0
                 || asset.InstanceDataSize != row.BinBytes || asset.RelocationDataSize != row.RelocationBytes || asset.ImportsDataSize != 0
-                || other.QualifiedName != asset.Name || other.TypeHash != 0 || other.InstanceHash != asset.InstanceHash || other.Tokenized
+                || other.QualifiedName != asset.Name || other.TypeHash != (policy?.TypeHash ?? 0) || other.InstanceHash != asset.InstanceHash || other.Tokenized
                 || other.ExternalReferences.Any() || other.LinkedInstanceOffset != bin || other.LinkedRelocationOffset != relo || other.LinkedImportsOffset != 8)
                 throw new InvalidDataException("Music entry/identity/offset readback differs.");
             ReadOnlySpan<byte> native = actual["diagnostic.bin"].AsSpan(bin,row.BinBytes);

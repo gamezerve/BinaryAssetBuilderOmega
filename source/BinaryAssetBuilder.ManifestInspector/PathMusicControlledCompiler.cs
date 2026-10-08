@@ -44,10 +44,24 @@ internal static class PathMusicControlledCompiler
     internal static Report CompileSelected(string directory,Action<IAssetBuilderPlugin,InstanceDeclaration[]>? beforeSelection = null,Action<IAssetBuilderPlugin,InstanceDeclaration[]>? beforeCompile = null)
     { return Compile(directory,true,beforeSelection,beforeCompile); }
 
+    // Reborn: actual compiled buffers are detached payload evidence, never a public authority to select arbitrary manifest hashes.
+    internal sealed record Payload(Report Report,Relo.Chunk[] Chunks);
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: capture only freshly selected and independently checked actual plugin buffers, cloning each array before the private compiler lifetime ends. */
+    //-------------------------------------------------------------------------------------------------
+    internal static Payload CompileSelectedPayload(string directory)
+    {
+        Payload? payload = null;
+        Compile(directory,true,null,null,(report,buffers) => payload = new(report,buffers.Select(buffer => new Relo.Chunk {
+            InstanceBuffer = (byte[])buffer.InstanceData.Clone(),RelocationBuffer = (byte[])buffer.RelocationData.Clone(),ImportsBuffer = (byte[])buffer.ImportsData.Clone() }).ToArray()));
+        return payload ?? throw new InvalidDataException("Selected music payload was not captured.");
+    }
+
     //-------------------------------------------------------------------------------------------------
     /** Reborn: share private native containment while keeping zero-hash v1 and declared nonzero local v2 metadata paths distinct from creation onward. */
     //-------------------------------------------------------------------------------------------------
-    private static Report Compile(string directory,bool selected,Action<IAssetBuilderPlugin,InstanceDeclaration[]>? beforeSelection,Action<IAssetBuilderPlugin,InstanceDeclaration[]>? beforeCompile)
+    private static Report Compile(string directory,bool selected,Action<IAssetBuilderPlugin,InstanceDeclaration[]>? beforeSelection,Action<IAssetBuilderPlugin,InstanceDeclaration[]>? beforeCompile,Action<Report,AssetBuffer[]>? onCompiled = null)
     {
         directory = Path.GetFullPath(directory); var preparation = PathMusicCorePreparation.Read(directory);
         var evidence = preparation.Preflight(); var expected = preparation.Compile(); Settings saved = Settings.Current;
@@ -77,10 +91,11 @@ internal static class PathMusicControlledCompiler
             plugin.Admit(instances); preparation.VerifyCurrent();
             // Reborn: owned tests may mutate prepared objects but cannot remove any plugin freshness/identity/dependency check.
             beforeCompile?.Invoke(plugin,instances);
-            Row[] rows = new Row[instances.Length];
+            Row[] rows = new Row[instances.Length]; AssetBuffer[] buffers = new AssetBuffer[instances.Length];
             for (int index = 0; index < instances.Length; index++)
             {
                 var instance = instances[index]; AssetBuffer actual = plugins.GetPlugin(instance.Handle.TypeId).ProcessInstance(instance);
+                buffers[index] = actual;
                 if (!actual.InstanceData.AsSpan().SequenceEqual(expected[index].InstanceBuffer)
                     || !actual.RelocationData.AsSpan().SequenceEqual(expected[index].RelocationBuffer)
                     || !actual.ImportsData.AsSpan().SequenceEqual(expected[index].ImportsBuffer)) throw new InvalidDataException("Controlled music differs from frozen native chunks.");
@@ -93,7 +108,8 @@ internal static class PathMusicControlledCompiler
             foreach (var identity in expectedIdentities) identity.Handle.TypeHash = plugin.TypeHash;
             if (checksum != PathMusicCoreChecksum.Independent(instances) || checksum != PathMusicCoreChecksum.Independent(expectedIdentities))
                 throw new InvalidDataException("Controlled music identity checksum differs.");
-            preparation.VerifyCurrent(); return new(evidence.ProcessingHash,evidence.DocumentVersion,checksum,plugin.Calls,rows,plugin.TypeHash);
+            preparation.VerifyCurrent(); Report result = new(evidence.ProcessingHash,evidence.DocumentVersion,checksum,plugin.Calls,rows,plugin.TypeHash);
+            onCompiled?.Invoke(result,buffers); preparation.VerifyCurrent(); return result;
         }
         finally { Settings.Current = saved; }
     }

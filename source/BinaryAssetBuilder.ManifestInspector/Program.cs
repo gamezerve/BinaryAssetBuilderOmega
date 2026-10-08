@@ -386,6 +386,17 @@ internal static class Program
             }
             // Reborn: test original nonzero local metadata and unchanged Core selection with owned temporary fixtures only.
             if (args.FirstOrDefault() == "pathmusic-selected-compiler-v2-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicSelectedCompilerSmokeTest.Run(); return 0; }
+            // Reborn: selected-owner package v2 is an explicit local experimental profile, never an implicit upgrade of older diagnostic formats.
+            if (args.FirstOrDefault() is "pathmusic-experimental-core-v2-package" or "pathmusic-experimental-core-v2-verify")
+            {
+                if (args.Length != 3) throw new ArgumentException("pathmusic-experimental-core-v2-package/verify <events.xml/events.h-directory> <package-directory>");
+                CompilerSmokeTest.InitializeHashProvider(); var prepared = PathMusicCorePreparation.Read(args[1]);
+                if (args[0] == "pathmusic-experimental-core-v2-package") prepared.PublishSelectedPackage(args[2]);
+                prepared.VerifySelectedPackage(args[2]);
+                Console.WriteLine("Selected Core music package v2 verified; local type/synthetic processing domain, actual selected plugin payloads, zero catalog hash, production/game readiness=false."); return 0;
+            }
+            // Reborn: owned temporary package fixtures never run codecs or publish production SDK output.
+            if (args.FirstOrDefault() == "pathmusic-selected-package-v2-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicSelectedPackageSmokeTest.Run(); return 0; }
             // Reborn: exact alias fixtures are independent of general source-path and dependency classification tests.
             if (args.FirstOrDefault() == "sdk-known-map-aliases-self-test") { SdkKnownMapAliasesSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() is "sdk-source-preflight" or "sdk-typed-source-graph")
@@ -1295,6 +1306,10 @@ internal static class Program
         // Reborn: versioned selected command does not change the old controlled or experimental package identity policy.
         Console.WriteLine("  pathmusic-selected-compile-v2 <events.xml/events.h-directory>");
         Console.WriteLine("  pathmusic-selected-compiler-v2-self-test");
+        // Reborn: explicit v2 package commands preserve older v1 and diagnostic profiles.
+        Console.WriteLine("  pathmusic-experimental-core-v2-package <events.xml/events.h-directory> <new-package-directory>");
+        Console.WriteLine("  pathmusic-experimental-core-v2-verify <events.xml/events.h-directory> <existing-package-directory>");
+        Console.WriteLine("  pathmusic-selected-package-v2-self-test");
         // Reborn: known aliases require explicit typed singleton preparation and never apply to path-only/older profiles.
         Console.WriteLine("  --known-map-aliases (sdk-typed-source-graph with --instance-sound-singletons only)");
         Console.WriteLine("  sdk-known-map-aliases-self-test");
