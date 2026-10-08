@@ -378,6 +378,14 @@ internal static class Program
             }
             // Reborn: managed owned-input fixtures prove containment without native codec execution.
             if (args.FirstOrDefault() == "pathmusic-controlled-compiler-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicControlledCompilerSmokeTest.Run(); return 0; }
+            // Reborn: local v2 type metadata is an explicit synthetic domain, not recovered stock EP1 processing or production output admission.
+            if (args.FirstOrDefault() == "pathmusic-selected-compile-v2")
+            {
+                if (args.Length != 2) throw new ArgumentException("pathmusic-selected-compile-v2 <events.xml/events.h-directory>");
+                CompilerSmokeTest.InitializeHashProvider(); Console.WriteLine(JsonSerializer.Serialize(PathMusicControlledCompiler.CompileSelected(args[1]),JsonOptions)); return 0;
+            }
+            // Reborn: test original nonzero local metadata and unchanged Core selection with owned temporary fixtures only.
+            if (args.FirstOrDefault() == "pathmusic-selected-compiler-v2-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicSelectedCompilerSmokeTest.Run(); return 0; }
             // Reborn: exact alias fixtures are independent of general source-path and dependency classification tests.
             if (args.FirstOrDefault() == "sdk-known-map-aliases-self-test") { SdkKnownMapAliasesSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() is "sdk-source-preflight" or "sdk-typed-source-graph")
@@ -1284,6 +1292,9 @@ internal static class Program
         // Reborn: expose memory-only controlled music compilation separately from versioned package publication.
         Console.WriteLine("  pathmusic-controlled-compile <events.xml/events.h-directory>");
         Console.WriteLine("  pathmusic-controlled-compiler-self-test");
+        // Reborn: versioned selected command does not change the old controlled or experimental package identity policy.
+        Console.WriteLine("  pathmusic-selected-compile-v2 <events.xml/events.h-directory>");
+        Console.WriteLine("  pathmusic-selected-compiler-v2-self-test");
         // Reborn: known aliases require explicit typed singleton preparation and never apply to path-only/older profiles.
         Console.WriteLine("  --known-map-aliases (sdk-typed-source-graph with --instance-sound-singletons only)");
         Console.WriteLine("  sdk-known-map-aliases-self-test");

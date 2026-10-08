@@ -5,6 +5,18 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-09)
 
+[Local PathMusic Core selection profile v2](RA3EP1_PATHMUSIC_SELECTED_COMPILER_V2.md)
+declares native-contract-derived local TypeHash `48E303B8` before Core owner
+creation and invokes unchanged AddOutputInstance for actual membership and
+dependency preparation. Synthetic type/processing domains are explicit; no EA
+metadata recovery claim, sentinel handle edits or guard bypass. Weak self/cycles,
+missing file/target, native/hash invariance and checksum separation, old-profile
+isolation, settings recovery/no-output and production/cache guards pass.
+All 164 groups pass; repeated two-event CLI checksum `117BE305` agrees and missing
+arguments exit 1. Effort **52% / 48%** unchanged. Next: separately versioned
+selected-owner experimental package/readback, with authentic EP1 metadata/AUDIO
+and game loading still separate open gates.
+
 [Controlled in-memory PathMusic compiler](RA3EP1_PATHMUSIC_CONTROLLED_COMPILER.md)
 adds fresh Core XML/private registered plugin native dispatch with strict current
 identity/XML/closure/platform checks, no production/cache/reuse and settings

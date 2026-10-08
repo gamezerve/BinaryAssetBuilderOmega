@@ -26,7 +26,7 @@ Missing dependencies, native emission and game loading remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**163 test groups** (some contain several fixtures). These counters can grow
+**164 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
@@ -35,10 +35,20 @@ fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
 worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset/sound-singleton-characterization/full-sound-owner-review/sound-singleton-admission/dependency-classification/known-map-alias/stock-music-review/header-semantics/music-runtime/music-authored-snapshot/music-package/music-Core-identity/music-reference-identity/music-Core-preparation/music-Core-publication/music-Core-checksum/music-experimental-Core-v1 regressions add groups and all 162 groups
 were executed.
-Controlled music dispatch adds a further group; all 163 groups were executed.
+Controlled music dispatch/selection add two further groups; all 164 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Controlled in-memory PathMusic compiler](docs/RA3EP1_PATHMUSIC_CONTROLLED_COMPILER.md).
+Latest milestone: [Local PathMusic Core selection profile v2](docs/RA3EP1_PATHMUSIC_SELECTED_COMPILER_V2.md).
+Explicit local TypeHash `48E303B8` is deterministically derived from the reviewed
+native contract, not EA metadata. Core receives it before owner creation; unchanged
+AddOutputInstance now selects owners and creates real dependency tables. Weak
+self/cycles, missing file/target, native/hash invariance and checksum separation
+pass; all 164 groups pass. Two-event CLI checksum `117BE305` repeats exactly.
+Old zero-hash profiles/packages stay unchanged. No production/cache/reuse or game
+admission; authentic EP1 ProcessingHash remains unrecovered. Effort **52% / 48%**;
+next a separately versioned selected-owner experimental package/readback.
+
+[Controlled in-memory PathMusic compiler](docs/RA3EP1_PATHMUSIC_CONTROLLED_COMPILER.md).
 Fresh Core XML and private registered plugin dispatch match frozen music native
 chunks/checksum. Mutation/platform/stale/output/cache/reuse guards pass; all 163
 groups pass. Two-event CLI reports repeat exactly, with two processor calls and
