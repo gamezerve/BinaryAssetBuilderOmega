@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: focused hash-only Core harness includes unchanged official EP1 music/base types; no production schema or plugin admission. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset" xmlns:xas="uri:ea.com:eala:asset:schema"
+ targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Base.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Base/AssetBase.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Ref.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypePathMusic.xsd"/>
+ <!-- Reborn: unrelated transition-only ref is a schema harness stub; no music condition asset or native layout is admitted. -->
+ <xs:simpleType name="MusicScriptConditionRef" xas:isRef="true" xas:refType="MusicScriptConditionNuggetBase"><xs:restriction base="AssetReference"/></xs:simpleType>
+ <xs:element name="PathMusicEvent" type="PathMusicEvent"/>
+ <xs:element name="AssetDeclaration"><xs:complexType><xs:sequence>
+  <xs:element ref="PathMusicEvent" minOccurs="1" maxOccurs="8"/>
+ </xs:sequence></xs:complexType></xs:element>
+</xs:schema>

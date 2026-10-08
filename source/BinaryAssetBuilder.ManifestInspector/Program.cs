@@ -314,6 +314,14 @@ internal static class Program
             }
             // Reborn: synthetic package tests never need official AUDIO inputs or native codecs.
             if (args.FirstOrDefault() == "pathmusic-package-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicPackageSmokeTest.Run(); return 0; }
+            // Reborn: expose actual Core identity evidence only under the explicit synthetic processing domain, never as a package-build switch.
+            if (args.FirstOrDefault() == "pathmusic-core-identity")
+            {
+                if (args.Length != 2) throw new ArgumentException("pathmusic-core-identity <events.xml/events.h-directory>");
+                CompilerSmokeTest.InitializeHashProvider(); Console.WriteLine(JsonSerializer.Serialize(PathMusicCoreIdentity.Inspect(args[1]),JsonOptions)); return 0;
+            }
+            // Reborn: Core identity regressions use owned temporary music fixtures and metadata-only registration.
+            if (args.FirstOrDefault() == "pathmusic-core-identity-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicCoreIdentitySmokeTest.Run(); return 0; }
             // Reborn: exact alias fixtures are independent of general source-path and dependency classification tests.
             if (args.FirstOrDefault() == "sdk-known-map-aliases-self-test") { SdkKnownMapAliasesSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() is "sdk-source-preflight" or "sdk-typed-source-graph")
@@ -1197,6 +1205,9 @@ internal static class Program
         Console.WriteLine("  pathmusic-diagnostic-package <events.xml/events.h-directory> <new-package-directory>");
         Console.WriteLine("  pathmusic-diagnostic-verify <events.xml/events.h-directory> <existing-package-directory>");
         Console.WriteLine("  pathmusic-package-self-test");
+        // Reborn: read-only synthetic-domain Core evidence is distinct from diagnostic package hashes.
+        Console.WriteLine("  pathmusic-core-identity <events.xml/events.h-directory>");
+        Console.WriteLine("  pathmusic-core-identity-self-test");
         // Reborn: known aliases require explicit typed singleton preparation and never apply to path-only/older profiles.
         Console.WriteLine("  --known-map-aliases (sdk-typed-source-graph with --instance-sound-singletons only)");
         Console.WriteLine("  sdk-known-map-aliases-self-test");

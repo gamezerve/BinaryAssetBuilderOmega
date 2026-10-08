@@ -5,6 +5,16 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[PathMusic actual Core identity proof](RA3EP1_PATHMUSIC_CORE_IDENTITY.md)
+compares actual fresh DocumentProcessor identities to independent default-attributed
+XML/512-block and 256-byte weak-type/header dependency folding. Shared header edits,
+comments, timestamp-preserving changes, physical-path independence, restore/recovery
+and synthetic processor domains are covered. Explicit versus default true has equal
+runtime cache semantics but different authored XML hashing provenance. All 157
+groups pass; repeated CLI reports agree, missing arguments return 1. No EA processing
+hash recovery or package relabeling; coverage/effort **52% / 48%** unchanged. Next:
+reference processing metadata and immutable Core/native preparation binding.
+
 [Local PathMusic diagnostic package](RA3EP1_PATHMUSIC_PACKAGE_PROBE.md)
 adds explicit no-overwrite publication and exact five-file verification for
 1–8 local owners, using existing v7 writers, two readers and independently decoded
