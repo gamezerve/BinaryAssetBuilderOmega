@@ -75,6 +75,8 @@ internal static class SdkSelfAttributeInheritance
         public SdkStateReadds.Witness[] StateReadds { get; init; } = Array.Empty<SdkStateReadds.Witness>();
         // Reborn: complete broad-audio budget evidence is published only after final Core output checks.
         public SdkAudioTreeBudget.Evidence? AudioTree { get; init; }
+        // Reborn: proved sound singleton events are withheld with every other witness on failure.
+        public SdkSoundSingletons.Witness[] SoundSingletons { get; init; } = Array.Empty<SdkSoundSingletons.Witness>();
         // Reborn: cross-removal witnesses name both schema reference types and are atomic with other owner events.
         public SdkCrossStateRemovals.Witness[] CrossStateRemovals { get; init; } = Array.Empty<SdkCrossStateRemovals.Witness>();
     }

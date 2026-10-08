@@ -7,7 +7,7 @@ Active branch: `feature/ra3ep1-manifest-inspector`. This is not yet a usable
 Uprising Mod SDK release. Replacing XML/XSD files alone is insufficient:
 native layouts, type hashes, dependencies and in-game loading must also pass validation.
 
-Approximately **51% complete / 49% remaining**. This is an engineering-effort
+Approximately **52% complete / 48% remaining**. This is an engineering-effort
 estimate, not a file-coverage metric or a measure of working game mods.
 It is rounded from weighted workstreams and is not increased per commit.
 The containment audit and attach-base recovery accumulated enough work to
@@ -19,21 +19,36 @@ The accumulated recursive preparation/removal milestones now reassess that SDK
 workstream from 25% to 30%. Its 15% weight adds 0.75 overall point: 50.25% becomes
 51%. Other workstreams and zero proven game loading are unchanged. This is not
 a measured percentage of usable mods or automatic credit per test/commit.
+The accumulated audio-expression/breadth/full-owner/native-corroboration work
+and complete measured XML preparation now reassess SDK tooling from 30% to 35%.
+Its 15% weight adds another 0.75 point: 51.0% becomes 51.75%, rounded 52%.
+Missing dependencies, native emission and game loading remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**148 test groups** (some contain several fixtures). These counters can grow
+**149 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset/sound-singleton-characterization/full-sound-owner-review regressions add groups and all 148 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset/sound-singleton-characterization/full-sound-owner-review/sound-singleton-admission regressions add groups and all 149 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Complete isolated sound owner review](docs/RA3EP1_SDK_SOUND_OWNER_REVIEW.md).
+Latest milestone: [Known sound singleton admission](docs/RA3EP1_SDK_INSTANCE_SOUND_SINGLETONS.md).
+Independent `--instance-sound-singletons` admits only the two proved complete
+literal sound bodies and verifies every explicit final owner field/child after
+the actual Core merge. Real graph: **396 validated / 0 XML blockers**, zero
+earlier-valid regressions. SoundEffects has 1800 overlays, 353 substitutions,
+276 calculations and two singleton witnesses; repeated hash/post-audit checks
+agree. Earlier sound-offset scope stays 395 / 1. All 149 compiler groups pass.
+Six path issues and 198 missing dependency occurrences still prevent complete
+closure; no output/native emission/game proof. Effort is now **52% / 48%**.
+Next: classify remaining dependencies and paths before changing resolver rules.
+
+[Complete isolated sound owner review](docs/RA3EP1_SDK_SOUND_OWNER_REVIEW.md).
 Read-only `sdk-sound-owner-review` independently predicts and verifies every
 explicit root field, direct child/order and Sound reference of the two pinned
 owners after existing guarded BaseSoundEffect preparation. Both complete XML

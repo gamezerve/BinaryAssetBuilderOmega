@@ -5,6 +5,19 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Known sound singleton admission](RA3EP1_SDK_INSTANCE_SOUND_SINGLETONS.md)
+adds independent `--instance-sound-singletons`: two exact complete literal
+sound bodies, schema cardinality/shape checks and full predicted-vs-actual owner
+verification before/after guarded inheritance. Real graph **396 validated /
+0 XML blockers**, zero earlier-valid regressions; old sound offsets stays 395/1.
+SoundEffects: 1800 overlays, 353 substitutions, 276 calculations, two singleton
+witnesses. Repeated final hashes and raw post-audit agree; source/schema/Core
+unchanged, no outputs/native emission/game proof. All 149 groups pass.
+Six path issues and 198 missing dependencies keep complete closure false.
+SDK workstream reassessed 30%->35%; weighted total 51.0%->51.75%, rounded
+**52% complete / 48% remaining**. Other workstreams unchanged. Next: classify
+remaining path/dependency issues without guessing resolver mappings.
+
 [Complete isolated sound owner review](RA3EP1_SDK_SOUND_OWNER_REVIEW.md)
 adds read-only `sdk-sound-owner-review` and compiler group 148. Captured guarded
 base preparation, independently predicted full explicit root/child projection,

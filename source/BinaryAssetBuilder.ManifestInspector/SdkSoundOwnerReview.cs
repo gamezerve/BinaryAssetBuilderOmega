@@ -80,6 +80,7 @@ internal static class SdkSoundOwnerReview
     internal static XmlElement Predict(XmlElement basis,XmlElement owner)
     {
         if (basis.Name != "AudioEvent" || owner.Name != "AudioEvent" || basis.NamespaceURI != Ea || owner.NamespaceURI != Ea
+            || basis.Attributes.Count > 64 || owner.Attributes.Count > 64
             || basis.GetAttribute("id") != "BaseSoundEffect" || basis.HasAttribute("inheritFrom") || basis.ChildNodes.OfType<XmlElement>().Any()
             || owner.GetAttribute("inheritFrom") != "AudioEvent:BaseSoundEffect") throw new InvalidDataException("Exact empty direct AudioEvent base and owner handle required.");
         string id = owner.GetAttribute("id");
