@@ -303,6 +303,17 @@ internal static class Program
             }
             // Reborn: authored music fixtures own only temporary source/header files and detached native chunks.
             if (args.FirstOrDefault() == "pathmusic-authored-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicAuthoredSnapshotSmokeTest.Run(); return 0; }
+            // Reborn: explicit diagnostic music publication cannot be mistaken for the production SDK build command.
+            if (args.FirstOrDefault() is "pathmusic-diagnostic-package" or "pathmusic-diagnostic-verify")
+            {
+                if (args.Length != 3) throw new ArgumentException("pathmusic-diagnostic-package/verify <events.xml/events.h-directory> <package-directory>");
+                CompilerSmokeTest.InitializeHashProvider(); var snapshot = PathMusicAuthoredSnapshot.Read(args[1]);
+                if (args[0] == "pathmusic-diagnostic-package") PathMusicPackageProbe.Publish(args[2],snapshot);
+                PathMusicPackageProbe.Verify(args[2],snapshot);
+                Console.WriteLine("Local music diagnostic package verified; TypeHash/AllTypesHash=0; production/game readiness=false."); return 0;
+            }
+            // Reborn: synthetic package tests never need official AUDIO inputs or native codecs.
+            if (args.FirstOrDefault() == "pathmusic-package-self-test") { CompilerSmokeTest.InitializeHashProvider(); PathMusicPackageSmokeTest.Run(); return 0; }
             // Reborn: exact alias fixtures are independent of general source-path and dependency classification tests.
             if (args.FirstOrDefault() == "sdk-known-map-aliases-self-test") { SdkKnownMapAliasesSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() is "sdk-source-preflight" or "sdk-typed-source-graph")
@@ -1182,6 +1193,10 @@ internal static class Program
         // Reborn: authored music content admission is a distinct local diagnostic profile.
         Console.WriteLine("  pathmusic-authored-preflight <events.xml/events.h-directory>");
         Console.WriteLine("  pathmusic-authored-self-test");
+        // Reborn: local package commands require explicit diagnostic naming and never enable production output.
+        Console.WriteLine("  pathmusic-diagnostic-package <events.xml/events.h-directory> <new-package-directory>");
+        Console.WriteLine("  pathmusic-diagnostic-verify <events.xml/events.h-directory> <existing-package-directory>");
+        Console.WriteLine("  pathmusic-package-self-test");
         // Reborn: known aliases require explicit typed singleton preparation and never apply to path-only/older profiles.
         Console.WriteLine("  --known-map-aliases (sdk-typed-source-graph with --instance-sound-singletons only)");
         Console.WriteLine("  sdk-known-map-aliases-self-test");

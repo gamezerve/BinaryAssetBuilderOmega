@@ -5,6 +5,16 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Local PathMusic diagnostic package](RA3EP1_PATHMUSIC_PACKAGE_PROBE.md)
+adds explicit no-overwrite publication and exact five-file verification for
+1–8 local owners, using existing v7 writers, two readers and independently decoded
+native weak IDs/linked offsets. TypeHash/AllTypesHash are zero and diagnostic SHA
+prefixes explicitly replace neither Core nor EA production identities. All 156
+groups pass; CLI package/verify exit 0, existing output/missing arguments exit 1.
+Two-event streams are 44/16/8 bytes. No official AUDIO, production processor/cache
+or game admission; coverage and effort **52% / 48%** unchanged. Next: actual
+Core/reference music processing identity and authentic dependency/stock contract.
+
 [Local authored PathMusic snapshot](RA3EP1_PATHMUSIC_AUTHORED_SNAPSHOT.md)
 adds a strict 1–8-event local source/header closure with reviewed schema binding,
 exact weak targets, canonical nonzero constants, detached chunks and diagnostic
