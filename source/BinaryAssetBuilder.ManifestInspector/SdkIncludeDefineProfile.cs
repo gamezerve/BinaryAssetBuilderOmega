@@ -23,14 +23,17 @@ internal sealed class SdkIncludeDefineProfile
     private readonly bool definitionExpressions;
     // Reborn: schema-backed music offsets are independently opt-in; no prior caller gains arithmetic.
     private readonly XmlSchemaSet? musicSchemas;
-    internal string Profile => musicSchemas != null ? SdkMusicVolumeOffsets.Name : definitionExpressions ? SdkDefinitionSubset.Name : Name;
+    // Reborn: typed sound arithmetic must be selected separately from the earlier music-only schema scope.
+    private readonly bool soundOffsets;
+    internal string Profile => soundOffsets ? SdkSoundOffsets.Name : musicSchemas != null ? SdkMusicVolumeOffsets.Name : definitionExpressions ? SdkDefinitionSubset.Name : Name;
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate every captured source's canonical confinement before any imported-document read; forged graph paths cannot create authority. */
     //-------------------------------------------------------------------------------------------------
-    internal SdkIncludeDefineProfile(SdkSourcePathAudit.Report paths,bool definitionExpressions = false,XmlSchemaSet? musicSchemas = null)
+    internal SdkIncludeDefineProfile(SdkSourcePathAudit.Report paths,bool definitionExpressions = false,XmlSchemaSet? musicSchemas = null,bool soundOffsets = false)
     {
-        this.paths = paths; this.musicSchemas = musicSchemas;
+        this.paths = paths; this.musicSchemas = musicSchemas; this.soundOffsets = soundOffsets;
+        if (soundOffsets && musicSchemas == null) throw new ArgumentException("Typed sound arithmetic requires compiled schema authority.");
         this.definitionExpressions = definitionExpressions;
         if (paths.Sources.Length > 512 || paths.Includes.Length > 4096) throw new InvalidDataException("Bounded Include inventory required.");
         string[] roots = new[] { paths.SourceRoot,paths.ArtRoot,paths.AudioRoot }.Where(root => root != null).Cast<string>().Select(SdkEnvironmentPreflight.DirectoryPath).ToArray();
@@ -49,12 +52,12 @@ internal sealed class SdkIncludeDefineProfile
     {
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
         // Reborn: preserve explicit pipeline-stage identity even for owners with no substitution slots.
-        string selectedProfile = musicSchemas != null ? SdkMusicVolumeOffsets.Name : beforeInheritance ? BeforeInheritanceName : Profile;
+        string selectedProfile = soundOffsets ? SdkSoundOffsets.Name : musicSchemas != null ? SdkMusicVolumeOffsets.Name : beforeInheritance ? BeforeInheritanceName : Profile;
         try
         {
             if (paths.StoppedAtLimit) throw new InvalidDataException("Incomplete path inventory cannot authorize imported definitions.");
             Capture(path,bytes);
-            var local = musicSchemas != null ? SdkLocalDefineProfile.ApplyMusicOffsets(bytes,null,musicSchemas,beforeInheritance) : beforeInheritance ? SdkLocalDefineProfile.ApplyBeforeInheritance(bytes) : SdkLocalDefineProfile.Apply(bytes);
+            var local = soundOffsets ? SdkLocalDefineProfile.ApplySoundOffsets(bytes,null,musicSchemas!,beforeInheritance) : musicSchemas != null ? SdkLocalDefineProfile.ApplyMusicOffsets(bytes,null,musicSchemas,beforeInheritance) : beforeInheritance ? SdkLocalDefineProfile.ApplyBeforeInheritance(bytes) : SdkLocalDefineProfile.Apply(bytes);
             // Reborn: an asset with no expressions requires no definition-closure claim and keeps its original bytes.
             if (local.Bytes != null && local.Evidence.Substitutions == 0) return local with { Evidence = local.Evidence with { Profile = selectedProfile } };
             Dictionary<string,Dictionary<string,Literal>> tables = new(StringComparer.OrdinalIgnoreCase);
@@ -65,7 +68,7 @@ internal sealed class SdkIncludeDefineProfile
             Dictionary<string,SdkDefinitionSubset.Evaluation> evaluations = new(StringComparer.Ordinal);
             var table = Visit(path,0);
             var literals = table.ToDictionary(pair => pair.Key,pair => pair.Value.Value,StringComparer.Ordinal);
-            var result = musicSchemas != null ? SdkLocalDefineProfile.ApplyMusicOffsets(bytes,literals,musicSchemas,beforeInheritance) : beforeInheritance ? SdkLocalDefineProfile.ApplyBeforeInheritance(bytes,literals) : SdkLocalDefineProfile.ApplyImported(bytes,literals);
+            var result = soundOffsets ? SdkLocalDefineProfile.ApplySoundOffsets(bytes,literals,musicSchemas!,beforeInheritance) : musicSchemas != null ? SdkLocalDefineProfile.ApplyMusicOffsets(bytes,literals,musicSchemas,beforeInheritance) : beforeInheritance ? SdkLocalDefineProfile.ApplyBeforeInheritance(bytes,literals) : SdkLocalDefineProfile.ApplyImported(bytes,literals);
             // Reborn: rejected transformations never publish origins or a partial closure as trusted preprocessing evidence.
             return result with { Evidence = result.Evidence with { Profile = selectedProfile,
                 EvaluatedDefinitions = result.Bytes == null ? Array.Empty<SdkDefinitionSubset.Evaluation>() : evaluations.Values.OrderBy(item => item.SourcePath,StringComparer.OrdinalIgnoreCase).ThenBy(item => item.Name,StringComparer.Ordinal).ToArray(),

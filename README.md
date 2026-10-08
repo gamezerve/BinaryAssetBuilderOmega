@@ -22,26 +22,38 @@ a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**145 test groups** (some contain several fixtures). These counters can grow
+**146 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget regressions add groups and all 145 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset regressions add groups and all 146 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Bounded shallow audio document breadth](docs/RA3EP1_SDK_INSTANCE_AUDIO_TREES.md).
+Latest milestone: [Typed sound integer offsets and expression-stage review](docs/RA3EP1_SDK_INSTANCE_SOUND_OFFSETS.md).
+Independent `--instance-sound-offsets` admits only schema-checked integer
+arithmetic on selected AudioEvent/AudioEventOverridable and singleton PitchShift
+fields, with per-field bounds and actual Core result checks. A separate read-only
+review of SoundEffects records **353 substitutions / 276 calculations**, with
+identical hashes on two runs. Whole graph remains **395 valid / 1 blocked**:
+two conflicting singleton repeats prevent SoundEffects owner validation. Earlier
+audio-tree scope remains 395 / 1; no earlier-valid regressions. All **146 compiler
+groups** pass. Reference XML/XSD/Core remain unchanged; no native/game proof.
+Effort stays **51% / 49%** because this expression-stage advance does not close
+the owner, native-layout or game-loading gates. Next: independently characterize
+the unchanged Core's handling of the two singleton repeats before any admission.
+
+[Bounded shallow audio document breadth](docs/RA3EP1_SDK_INSTANCE_AUDIO_TREES.md).
 Independent `--instance-audio-trees` permits up to 16,384 elements only for
 proved shallow audio owners, with per-owner/node/depth/attribute/metadata and
 aggregate merge-pair limits. Voice.xml validates with 1,698 overlays and 884
 substitutions: **395 valid / 1 blocked**, zero earlier-valid regressions. Earlier
 music scope stays 394 / 2 and retains its 8192 tree limit. All 145 compiler groups
-pass; reference XML/XSD/Core remain unchanged. SoundEffects arithmetic remains
-closed; no native/game proof. Effort stays **51% / 49%**. Next: separately typed
-SoundEffects arithmetic, not a generic evaluator or further global limit increase.
+pass; reference XML/XSD/Core remain unchanged. At that milestone, SoundEffects
+arithmetic remained closed; no native/game proof. Effort stayed **51% / 49%**.
 
 [Bounded MusicTrack Volume offsets](docs/RA3EP1_SDK_INSTANCE_MUSIC_OFFSETS.md).
 Independent `--instance-music-offsets` allows only direct MusicTrack.Volume

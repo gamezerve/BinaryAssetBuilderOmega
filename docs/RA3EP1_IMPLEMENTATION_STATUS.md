@@ -5,6 +5,24 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-08)
 
+[Typed sound integer offsets and expression-stage review](RA3EP1_SDK_INSTANCE_SOUND_OFFSETS.md)
+adds independent `--instance-sound-offsets` and read-only
+`sdk-sound-expression-review`. SoundEffects has 353 substitutions including
+276 bounded calculations, reproduced with identical stage hashes. This does
+not admit the whole owner: conflicting PitchShift and NonInterruptibleTime
+singleton repeats remain. Graph **395 valid / 1 blocked**, zero earlier-valid
+regressions; all **146 compiler groups** pass. Source/schema/Core unchanged,
+no native/game proof; effort **51% / 49%**. Next: separate unchanged-Core
+singleton characterization and native corroboration, not guessed normalization.
+
+The preceding published [audio breadth](RA3EP1_SDK_INSTANCE_AUDIO_TREES.md)
+milestone admitted Voice.xml (395 / 1; 145 groups), following
+[MusicTrack offsets](RA3EP1_SDK_INSTANCE_MUSIC_OFFSETS.md) (394 / 2; 144 groups)
+and [cross-state removals](RA3EP1_SDK_INSTANCE_CROSS_STATE_REMOVALS.md)
+(393 / 3; 143 groups). These are independently scoped diagnostics, not a
+production build or game-loading claim. The entries below retain historical
+counts for their respective milestones.
+
 [Pinned CC32 source/core/native-metadata review](RA3EP1_SDK_CC32_REVIEW.md)
 adds read-only `sdk-cc32-review`, not a preprocessing option. The captured five-
 source base prepares under existing guards. The original BuildState Remove
