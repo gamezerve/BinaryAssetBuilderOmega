@@ -121,6 +121,8 @@ internal static class CompilerSmokeTest
         TestSdkInstanceAudioTrees();
         // Reborn: pin separately typed sound arithmetic without widening earlier Music/tree profiles.
         TestSdkInstanceSoundOffsets();
+        // Reborn: characterize conflicting sound singletons without widening source admission.
+        TestSdkSoundSingletonSemantics();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2477,6 +2479,11 @@ internal static class CompilerSmokeTest
     /** Reborn: exercise typed sound arithmetic, actual Core results and atomic source failures. */
     //-------------------------------------------------------------------------------------------------
     private static void TestSdkInstanceSoundOffsets() => SdkInstanceSoundOffsetsSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: execute sound singleton order/retention evidence separately from normalization or native proof. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestSdkSoundSingletonSemantics() => SdkSoundSingletonSemanticsSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

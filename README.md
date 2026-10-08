@@ -22,18 +22,29 @@ a measured percentage of usable mods or automatic credit per test/commit.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**146 test groups** (some contain several fixtures). These counters can grow
+**147 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset regressions add groups and all 146 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset/sound-singleton-characterization regressions add groups and all 147 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Typed sound integer offsets and expression-stage review](docs/RA3EP1_SDK_INSTANCE_SOUND_OFFSETS.md).
+Latest milestone: [Sound singleton Core/native characterization](docs/RA3EP1_SDK_SOUND_SINGLETON_SEMANTICS.md).
+Owned fixtures against the reviewed EP1 schema prove ordered field-level overlay:
+later explicit values win, but omitted fields retain earlier/inherited values.
+Selected stock native slices independently corroborate PitchShift -1 / 1 and
+NonInterruptibleTime 0 / 0.8 seconds for the two known conflicting owners.
+This does not expand preprocessing admission. The last measured graph remains
+**395 valid / 1 blocked**; full owner/base projection must be proved next.
+All 147 compiler groups pass. Source/schema/Core remain unchanged; no game or
+production emission proof. Effort stays **51% / 49%**. A full rebuild reports
+three existing Core/XmlCompiler warnings, zero errors; no new test warning.
+
+[Typed sound integer offsets and expression-stage review](docs/RA3EP1_SDK_INSTANCE_SOUND_OFFSETS.md).
 Independent `--instance-sound-offsets` admits only schema-checked integer
 arithmetic on selected AudioEvent/AudioEventOverridable and singleton PitchShift
 fields, with per-field bounds and actual Core result checks. A separate read-only

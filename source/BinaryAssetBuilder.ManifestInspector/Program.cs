@@ -397,6 +397,8 @@ internal static class Program
             // Reborn: test independent audio breadth/work guards without native codecs or game output.
             // Reborn: test typed sound arithmetic and actual Core field retention independently of earlier scopes.
             if (args.FirstOrDefault() == "sdk-instance-sound-offsets-self-test") { SdkInstanceSoundOffsetsSmokeTest.Run(); return 0; }
+            // Reborn: characterize reviewed-schema sound singleton conflicts without native execution or graph admission.
+            if (args.FirstOrDefault() == "sdk-sound-singleton-semantics-self-test") { SdkSoundSingletonSemanticsSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() == "sdk-instance-audio-trees-self-test") { SdkInstanceAudioTreesSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() == "sdk-instance-music-offsets-self-test") { SdkInstanceMusicOffsetsSmokeTest.Run(); return 0; }
             if (args.FirstOrDefault() == "sdk-instance-cross-state-removals-self-test") { SdkInstanceCrossStateRemovalsSmokeTest.Run(); return 0; }
@@ -1080,6 +1082,8 @@ internal static class Program
         Console.WriteLine("  sdk-instance-music-offsets-self-test");
         Console.WriteLine("  sdk-instance-audio-trees-self-test");
         Console.WriteLine("  sdk-instance-sound-offsets-self-test");
+        // Reborn: expose independent sound singleton characterization, not a preprocessing flag.
+        Console.WriteLine("  sdk-sound-singleton-semantics-self-test");
         Console.WriteLine("  sdk-sound-expression-review ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory>");
         // Reborn: the explicit source review remains partial and read-only even if both isolated owners validate.
         Console.WriteLine("  sdk-upgrade-semantics-review <absolute-upgrade.xml>");
