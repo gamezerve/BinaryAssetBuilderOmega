@@ -5,6 +5,17 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-09)
 
+[Immutable Core/native PathMusic preparation](RA3EP1_PATHMUSIC_CORE_PREPARATION.md)
+binds actual independently verified Core identities to the same frozen local
+source/header/native closure. Fresh Core and raw snapshot checks bracket detached
+serialization; stale same-size/timestamp edits, native-equal comments/default
+provenance and missing headers reject, with explicit refreshed/restored recovery.
+No mutable Core instances or captured arrays escape. All 159 groups pass; repeated
+CLI paired reports agree, missing arguments return 1. Synthetic processing domain
+only; no EP1 ProcessingHash, package relabeling, official AUDIO or production
+admission. Coverage/effort **52% / 48%** unchanged. Next: explicit Core-bound
+experimental publication gate and independent package readback.
+
 [Pinned reference PathMusic processing metadata](RA3EP1_PATHMUSIC_REFERENCE_IDENTITY.md)
 recovers RA3 reference event ProcessingHash `76D0CEE6`, TypeHash `76D0CEEF`,
 catalog `54EEE764` and HasCustomData=false from exact static IL fields/branches and

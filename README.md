@@ -26,18 +26,27 @@ Missing dependencies, native emission and game loading remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**158 test groups** (some contain several fixtures). These counters can grow
+**159 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
 encoder WAV fixture, isolated AudioFile serializer, authored input profile and
 fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
-worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset/sound-singleton-characterization/full-sound-owner-review/sound-singleton-admission/dependency-classification/known-map-alias/stock-music-review/header-semantics/music-runtime/music-authored-snapshot/music-package/music-Core-identity/music-reference-identity regressions add groups and all 158 groups
+worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset/sound-singleton-characterization/full-sound-owner-review/sound-singleton-admission/dependency-classification/known-map-alias/stock-music-review/header-semantics/music-runtime/music-authored-snapshot/music-package/music-Core-identity/music-reference-identity/music-Core-preparation regressions add groups and all 159 groups
 were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [Pinned reference PathMusic processing metadata](docs/RA3EP1_PATHMUSIC_REFERENCE_IDENTITY.md).
+Latest milestone: [Immutable Core/native PathMusic preparation](docs/RA3EP1_PATHMUSIC_CORE_PREPARATION.md).
+Local preparation pairs independently verified actual Core identities with the
+same frozen native closure. Current Core/raw checks surround serialization;
+timestamp-preserving edits, native-equal comments/default provenance and missing
+headers refuse until explicit refresh/restoration. Detached reports/chunks cannot
+mutate captured evidence. All 159 groups pass; no package identity relabeling,
+EP1 processing hash recovery or production admission. Effort **52% / 48%**;
+next explicit Core-bound experimental publication gate and independent readback.
+
+[Pinned reference PathMusic processing metadata](docs/RA3EP1_PATHMUSIC_REFERENCE_IDENTITY.md).
 Static field/branch/dispatcher checks recover RA3 reference ProcessingHash
 `76D0CEE6`, TypeHash `76D0CEEF`, catalog `54EEE764` and HasCustomData=false.
 TypeHash differs from observed EP1 `599CDAF2`; this is not EP1 processing hash
