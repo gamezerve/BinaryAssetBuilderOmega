@@ -5,6 +5,17 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-09)
 
+[Controlled in-memory PathMusic compiler](RA3EP1_PATHMUSIC_CONTROLLED_COMPILER.md)
+adds fresh Core XML/private registered plugin native dispatch with strict current
+identity/XML/closure/platform checks, no production/cache/reuse and settings
+restoration. All 163 groups pass; repeated CLI reports agree with two calls and
+checksum `CF2CABDA`, missing arguments exit 1. Integration gate characterized:
+AddOutputInstance skips zero TypeHash; standard dependency/output preparation
+remains absent and `CoreOutputSelectionSkipped=true`. No Core guard bypass,
+temporary type-hash substitution, forged prepared table or production claim.
+Effort **52% / 48%** unchanged. Next: explicitly justified nonzero metadata and
+authentic EP1 processing/type-table provenance before standard output integration.
+
 [PathMusic experimental Core package profile v1](RA3EP1_PATHMUSIC_EXPERIMENTAL_CORE_V1.md)
 adds distinct versioned commands for actual synthetic-domain Core InstanceHash
 and padded checksum emission, with zero type/catalog hashes. Exact markers and

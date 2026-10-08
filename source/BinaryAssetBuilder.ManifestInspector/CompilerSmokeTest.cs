@@ -153,6 +153,8 @@ internal static class CompilerSmokeTest
         TestPathMusicCoreChecksum();
         // Reborn: require versioned synthetic music identities and cross-profile refusal before experimental publication.
         TestPathMusicExperimentalCore();
+        // Reborn: controlled registered music dispatch must retain every production and immutable-closure guard.
+        TestPathMusicControlledCompiler();
         // Reborn: fixed custom-data packaging uses synthetic framing and must not initialize native codecs in default tests.
         TestAudioFilePackage();
         // Reborn: fixed local event/audio closure must prove selectors and dependency fingerprint invalidation without native codecs.
@@ -2589,6 +2591,11 @@ internal static class CompilerSmokeTest
     /** Reborn: register independent experimental music manifest identity/native readback and safe publication regressions. */
     //-------------------------------------------------------------------------------------------------
     private static void TestPathMusicExperimentalCore() => PathMusicExperimentalCoreSmokeTest.Run();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: register real Core music preparation/dependency/native dispatch containment and mutation regressions. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestPathMusicControlledCompiler() => PathMusicControlledCompilerSmokeTest.Run();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove fixed two-entry AudioFile packaging separately from production compiler admission. */

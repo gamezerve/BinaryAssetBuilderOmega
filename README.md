@@ -26,7 +26,7 @@ Missing dependencies, native emission and game loading remain open.
 
 Measured inventory: **785/1,390** EP1 complex types have models and
 **762/1,390** have typed marshallers. The compiler test runner invokes
-**162 test groups** (some contain several fixtures). These counters can grow
+**163 test groups** (some contain several fixtures). These counters can grow
 without making a usable SDK; they measure coverage, not game compatibility.
 The coverage script also reports `CompilerTestGroupsDeclared`; it counts
 registered groups but does not execute them. Native PE evidence and the managed
@@ -35,9 +35,20 @@ fixed package/local event proofs add groups without changing model/marshaller
 counts; hash boundary, core identity/preparation, publication, cleanup and managed
 worker supervision/authored snapshot/pool/path/catalog/binding/candidate/review/graph/local/Include/definition-subset/self-inheritance/child-copy/complex-leaf/sequence-tree/direct-instance/root-file/empty-child-merge/instance-chain/removal/choice-characterization/choice-copy/consumed-marker/bitflag/filter/upgrade-characterization/upgrade-normalization/metadata-leaf/pre-inheritance-expression/sibling-identity-characterization/identical-state/ordered-state-readd/CC32-reference-review/cross-state-removal/music-volume-offset/audio-tree-budget/sound-offset/sound-singleton-characterization/full-sound-owner-review/sound-singleton-admission/dependency-classification/known-map-alias/stock-music-review/header-semantics/music-runtime/music-authored-snapshot/music-package/music-Core-identity/music-reference-identity/music-Core-preparation/music-Core-publication/music-Core-checksum/music-experimental-Core-v1 regressions add groups and all 162 groups
 were executed.
+Controlled music dispatch adds a further group; all 163 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [PathMusic experimental Core package profile v1](docs/RA3EP1_PATHMUSIC_EXPERIMENTAL_CORE_V1.md).
+Latest milestone: [Controlled in-memory PathMusic compiler](docs/RA3EP1_PATHMUSIC_CONTROLLED_COMPILER.md).
+Fresh Core XML and private registered plugin dispatch match frozen music native
+chunks/checksum. Mutation/platform/stale/output/cache/reuse guards pass; all 163
+groups pass. Two-event CLI reports repeat exactly, with two processor calls and
+checksum `CF2CABDA`. Important integration gate: Core's AddOutputInstance skips
+zero TypeHash, so normal dependency/output selection remains unprepared.
+`CoreOutputSelectionSkipped=true`; this memory-only path does not bypass that guard
+or complete standard output integration. Effort **52% / 48%**; next explicitly
+justified nonzero metadata and authentic EP1 processing/type-table provenance.
+
+[PathMusic experimental Core package profile v1](docs/RA3EP1_PATHMUSIC_EXPERIMENTAL_CORE_V1.md).
 Explicit versioned commands publish actual synthetic-domain Core InstanceHash and
 padded identity checksum with zero type/catalog hashes. Distinct exact profile
 markers and raw source/header fingerprints prevent cross-profile and unchanged-hash
