@@ -38,7 +38,16 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 scoped reader cache lifetime](docs/RA3EP11_READER_CACHE_LIFETIME.md).
+Latest milestone: [EP1 1.1 config consumer](docs/RA3EP11_CONFIG_CONSUMER.md).
+File probing (004D6F10) is separate from config reading (004D86B0), line
+splitting (004D9040) and nine-prefix dispatch (004D8DE0). Native add-big,
+recursive config and add-manifest routes are pinned; add-manifest queues a
+string and is not proof of asset loading. Eight pins, eleven detached prefix
+fixtures, three policy rejections, eighteen faults and repeat JSON pass.
+Full mounting/queue consumption and game loading remain open. Effort **52% /
+48%**; compiler groups 165 (not rerun). Next: mount and manifest queue consumers.
+
+[EP1 1.1 scoped reader cache lifetime](docs/RA3EP11_READER_CACHE_LIFETIME.md).
 The complete destructor calls lookup/removal for both ordinary/tag-two caches,
 then resource and member cleanup. Ordinary publication returns node+20h on
 both existing/insertion paths. Six whole-body pins, five detached deletion
