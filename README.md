@@ -38,7 +38,17 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 runtime type/hash table](docs/RA3EP11_RUNTIME_TYPE_TABLE.md).
+Latest milestone: [EP1 1.1 registry/hash consumer](docs/RA3EP11_HASH_CONSUMER.md).
+Independently reviewed TypeId lookup/registration and inline TypeHash comparison
+share registry head 00CF1528. Entry+8 is compared with metadata+8; separate
+lookup callers instead use opaque metadata+12. Seven branch fixtures, nine
+private code faults, repeat JSON and original 1.0 consumer regressions pass.
+The 1.1 initializer-to-metadata hash link and complete stream-pointer provenance
+remain open; diagnostic entry is not proven unconditional rejection. No native
+execution or production-policy change. Effort **52% / 48%**, compiler groups
+165 (not rerun). Next initializer/object binding and stream-loader rebase.
+
+[EP1 1.1 runtime type/hash table](docs/RA3EP11_RUNTIME_TYPE_TABLE.md).
 Independently located 1.1 arrays yield 1,342 ordered name/hash pairs identical
 to the pinned 1.0 table; all 254 roots from four previously captured stock
 manifests match. Pointer slots and hash slots moved by different amounts, so

@@ -99,6 +99,11 @@ pass. Full compiler suite not rerun: previously executed 165 groups.
 
 ## Next gates
 
+Follow-up: [1.1 registry/hash consumer](RA3EP11_HASH_CONSUMER.md) independently
+pins registry insertion/lookup and the metadata+8/entry+8 comparison. This closes
+the scoped consumer-body rebase, not startup initializer-to-metadata binding
+or complete loader pointer provenance.
+
 Rebase native initializer/type registry and TypeHash consumer code, then
 factory/header/descriptor/sidecar/cleanup evidence to 1.1. Separately recover
 modconfig file commands and package registration. Runtime identity equality
