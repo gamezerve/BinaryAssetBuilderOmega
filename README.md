@@ -38,7 +38,18 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 descriptor-to-gate pointer trace](docs/RA3EP11_ENTRY_POINTER_TRACE.md).
+Latest milestone: [EP1 1.1 concrete reader/descriptor producer](docs/RA3EP11_DESCRIPTOR_PRODUCER.md).
+The reviewed concrete reader reads a 52-byte header and requests 48 bytes per
+entry. Producer 00449750 writes 20-byte descriptors with entry pointer+12,
+source pointer+16 and cumulative bin/relo/imp offsets+0/+4/+8. Its loop uses
+buffer capacity, not requested count; projections remain count-equals-capacity
+only. Seven code/vtable pins, four captured-stock projections (55,519 entries),
+five malformed raw fixtures, eight detached code faults and repeat JSON pass.
+No adjacent payload or native code executed. Linked post-read helper, factory
+selection/lifetime and full stream provenance remain open. Effort **52% / 48%**;
+compiler groups 165 (not rerun). Next: rebase linked-sidecar setup/ranges to 1.1.
+
+[EP1 1.1 descriptor-to-gate pointer trace](docs/RA3EP11_ENTRY_POINTER_TRACE.md).
 One independently disassembled loader path carries descriptor+12 through a
 28-byte pending record+4 into the TypeHash gate's fourth argument (ESI).
 Descriptor stride is 20 bytes; a separate branch copies 12 DWORDs/48 bytes.
