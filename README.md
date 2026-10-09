@@ -38,7 +38,19 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 scoped BIG name index](docs/RA3EP11_BIG_NAME_INDEX.md).
+Latest milestone: [EP1 1.1 scoped BIG open selection](docs/RA3EP11_BIG_OPEN_SELECTION.md).
+The manager searches its forward list and retains the first successful node.
+An exact archive selector has a distinct ordinary-miss early failure; Viv4
+misses continue. Open preparation removes exact big: and at most one leading
+separator, without interior slash normalization. Slash conversion/trailing
+slash removal belongs to a separate iterator initializer, not the copy helper.
+Three complete pins/one literal, eight query/eight selection/four iterator
+fixtures, three policy rejections, sixteen faults and repeat JSON pass.
+No archive payload is read. Actual startup order, global provider precedence,
+native stream lifetime, authentic compiler hash and game loading remain open.
+Effort **52% / 48%**; compiler groups 165 (not rerun).
+
+[EP1 1.1 scoped BIG name index](docs/RA3EP11_BIG_NAME_INDEX.md).
 The native mount builds eight-byte hash/directory-pointer records and sorts
 unsigned name hashes. ASCII case folds but separators remain distinct; this
 is not compiler ProcessingHash. Thirteen stock directory-only models cover
