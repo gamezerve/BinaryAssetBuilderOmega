@@ -38,7 +38,17 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 fresh core manifest archive bridge](docs/RA3EP11_CORE_MANIFEST_ARCHIVE_BRIDGE.md).
+Latest milestone: [EP1 1.1 fresh archive sidecar headers](docs/RA3EP11_ARCHIVE_SIDECAR_HEADERS.md).
+Twelve BIN/RELO/IMP logical headers and lengths match the freshly bridged
+manifest checksums/totals: six raw and six compressed literal prefixes.
+Only 384 sidecar prefix bytes are read per invocation, including eight-byte
+WorldBuilder BIN headers; no whole instance stream is read/decompressed.
+Three positive/three malformed detached fixtures and repeat JSON pass.
+Stored BIG length is not logical length for compressed streams. Whole bodies,
+authentic compiler hash and game loading remain open. Effort **52% / 48%**;
+compiler groups 165 (not rerun). Next: native BIG mount/package profile.
+
+[EP1 1.1 fresh core manifest archive bridge](docs/RA3EP11_CORE_MANIFEST_ARCHIVE_BRIDGE.md).
 Four selected manifests in the configured 1.1 archives now match complete
 SHA-256 of the captured unpacked evidence: three RefPack-expanded and one raw
 (WorldBuilder), covering 55,519 entries. Three malformed detached decoder

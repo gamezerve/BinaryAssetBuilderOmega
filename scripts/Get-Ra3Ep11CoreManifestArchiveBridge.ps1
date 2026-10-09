@@ -60,7 +60,8 @@ foreach($selection in $selections){
     $captured=$evidence.Inputs[$selection.EvidenceIndex]
     $projection=Read-Ep11FreshProjection ([byte[]]$expanded) $captured.AssetCount
     if([BitConverter]::ToUInt32([byte[]]$expanded,12)-ne 0x5454a8e9){throw 'Fresh selected manifest all-types identity differs.'}
-    $rows.Add([pscustomobject]@{Archive=$selection.Archive;Name=$selection.Name;Offset=$entry.Offset;StoredBytes=$entry.StoredBytes;StoredSha256=$firstHash;RefPackCompressed=$compressed;ExpandedBytes=$expanded.Length;ExpandedSha256=$expandedHash;CapturedPath=$captured.Path;CapturedSha256=$captured.Sha256;ExpandedMatchesCaptured=($expandedHash-ceq $captured.Sha256);Projection=$projection})
+    # Reborn: expose the fresh manifest's physical checksum word for separately bounded sidecar-header comparisons.
+    $rows.Add([pscustomobject]@{Archive=$selection.Archive;Name=$selection.Name;Offset=$entry.Offset;StoredBytes=$entry.StoredBytes;StoredSha256=$firstHash;RefPackCompressed=$compressed;ExpandedBytes=$expanded.Length;ExpandedSha256=$expandedHash;Checksum=[BitConverter]::ToUInt32($expanded,8);CapturedPath=$captured.Path;CapturedSha256=$captured.Sha256;ExpandedMatchesCaptured=($expandedHash-ceq $captured.Sha256);Projection=$projection})
 }
 if($SelfTest){
     # Reborn: malformed detached RefPack examples must reject truncation, output mismatch and a declared output exceeding the bridge cap.
