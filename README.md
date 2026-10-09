@@ -38,7 +38,16 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 stock package preflight](docs/RA3EP11_STOCK_PACKAGE_PREFLIGHT.md).
+Latest milestone: [EP1 1.1 fresh core manifest archive bridge](docs/RA3EP11_CORE_MANIFEST_ARCHIVE_BRIDGE.md).
+Four selected manifests in the configured 1.1 archives now match complete
+SHA-256 of the captured unpacked evidence: three RefPack-expanded and one raw
+(WorldBuilder), covering 55,519 entries. Three malformed detached decoder
+fixtures and repeat JSON pass. No adjacent BIN/RELO/IMP payload is read; the
+large worldbuilder instance stream is untouched. Stock campaign completeness,
+authentic compiler ProcessingHash and game loading remain open. Effort **52% /
+48%**; compiler groups 165 (not rerun). Next: fresh sidecar headers/lengths.
+
+[EP1 1.1 stock package preflight](docs/RA3EP11_STOCK_PACKAGE_PREFLIGHT.md).
 The stock 1.1 SKU matches the audited executable but MapsCampaign.big is missing
 under its configured name (a Disabled-named file is present and not substituted).
 Thirteen available archives contain 17,383 entries and 639 manifest directory
