@@ -38,7 +38,18 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 referenced-reader factory/cache/storage](docs/RA3EP1_READER_FACTORY.md).
+Latest milestone: [EP1 source forwarding and pointer membership](docs/RA3EP1_READER_OWNERSHIP.md).
+The ordinary helper tests reader-pointer membership in three global lists; it
+does not validate asset contents. Wrapper source argument 2 supplies header,
+first-loader factory dispatch and normal cleanup, while argument 3 supplies
+the list owner. Both reviewed iterator branches forward node+8 source data
+into the wrapper. Six membership fixtures, two invalid group counts, eleven
+private code faults, repeat JSON and factory regressions pass. Specific head
+store traversal/container lifetime and concrete root-reader provenance remain
+open. No production/game proof; effort **52% / 48%**, compiler groups 165
+(not rerun). Next list head movement/lifetime and initial root-reader binding.
+
+[EP1 referenced-reader factory/cache/storage](docs/RA3EP1_READER_FACTORY.md).
 Raw tag 2 uses virtual slot 2Ch; other tags use 28h. Concrete table targets,
 new-reader construction and ordinary cache publication are pinned. Stack tracking
 distinguishes factory-owner argument 3 from list-owner argument 4. Conditional

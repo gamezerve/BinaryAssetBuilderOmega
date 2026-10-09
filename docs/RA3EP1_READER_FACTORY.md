@@ -93,6 +93,12 @@ suite rerun is claimed; the previously executed total remains 165 groups.
 
 ## Next gates and remaining work
 
+Follow-up: [source forwarding and pointer membership](RA3EP1_READER_OWNERSHIP.md)
+resolves ordinary helper `0045F000` as pointer equality across three global
+lists, binds factory dispatch to the wrapper's header/cleanup source handle,
+and recovers scoped iterator forwarding of node+8. Tag-two admission, concrete
+live vtable provenance and specific head-store traversal remain unresolved.
+
 Trace argument-three factory-owner provenance from the outer wrapper, and
 argument-four head storage consumers/destruction before asserting complete
 source binding. Recover admission helper behavior and cache population/lifetime
