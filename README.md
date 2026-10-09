@@ -38,7 +38,18 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 linked-sidecar setup](docs/RA3EP11_LINKED_SIDECARS.md).
+Latest milestone: [EP1 1.1 linked chunk addressing/ranges](docs/RA3EP11_LINKED_CHUNK_RANGES.md).
+The concrete queue/dispatch path forwards descriptor pointers into 00418340;
+bin/relo/imp offsets each receive the eight-byte header bias. The memcpy thunk
+is independently bound to its import. All 166,557 ranges across 55,519 captured
+stock entries fit their twelve sidecars and end exactly at file lengths,
+including WorldBuilder. Four positive/four invalid range fixtures, nine detached
+code/import faults and repeat JSON pass. Each audit reads 288 header bytes and
+zero payload bytes. Native read-result/bounds safety, factories/lifetime and
+game loading remain unproved. Effort **52% / 48%**; compiler groups 165 (not
+rerun). Next: 1.1 context creation/cleanup, then factory/source ownership.
+
+[EP1 1.1 linked-sidecar setup](docs/RA3EP11_LINKED_SIDECARS.md).
 The complete helper 00449810 prepares sidecars, not entry hash transformations.
 Two whole helper bodies and three suffix literals are pinned independently to
 1.1. All twelve captured-stock companions pass header/checksum/exact-length

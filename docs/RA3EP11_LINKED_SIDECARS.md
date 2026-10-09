@@ -118,7 +118,12 @@ must fail. The large source streams are never modified.
 
 ## Next gate
 
-Rebase concrete queue/dispatch/chunk reads and descriptor-range consumption,
+Follow-up: [1.1 linked chunk addressing/ranges](RA3EP11_LINKED_CHUNK_RANGES.md)
+rebases the concrete queue/dispatch/reader segment and checks 166,557 captured
+stock ranges. Its metadata-only checks do not prove payload integrity or
+complete source bindings; this sidecar report retains its original scope.
+
+Next rebase source context creation and cleanup,
 then factories, source ownership and context lifetime. Authentic authoring
 ProcessingHash, unresolved AUDIO inputs, native emission ABI and actual
 modconfig package loading remain separate blockers. The 165-group compiler
