@@ -45,14 +45,25 @@ gates and no reliable date yet. See [first mod-test plan](docs/RA3EP11_FIRST_MOD
 The complete SDK is not a prerequisite for a narrow test; synthetic diagnostic
 music packages remain ineligible. No game launch has been performed.
 
-Latest milestone: [EP1 1.1 bounded installed-config inventory](docs/RA3EP11_CONFIG_INVENTORY.md).
+Latest milestone: [EP1 launcher profile and scoped observer](docs/RA3EP11_LAUNCHER_PROFILE.md).
+The selected launcher has a .bind entry point; five launch/config literal pins
+and four API import bindings are verified, but their consumer flow, version
+selection and argument forwarding remain unproved. Five literal faults, one
+truncation refusal and repeat JSON pass. A separate read-only observer accepts
+an explicit already-running launcher PID and records immediate same-installation
+game child paths/raw command lines. Its two positive/three refusal detached tests
+pass; no live process query or game launch was performed. Next: controlled
+baseline/isolated-config experiment preparation and actual child/read evidence.
+Effort **52% / 48%**; 165 compiler groups (not rerun).
+
+[EP1 1.1 bounded installed-config inventory](docs/RA3EP11_CONFIG_INVENTORY.md).
 Four small loose ASCII configs are content-pinned; both WorldBuilder configs
 are byte-identical. No filesystem.cfg was found in the root/Data directories
 or the 13 available configured archive directories (17,383 entries). This is
 scoped absence, not a proved runtime fallback. Zero archive payload bytes read;
 three text/two directory fixtures, one size refusal, six malformed-directory
 refusals and repeat JSON pass. Effort **52% / 48%**; 165 compiler groups (not
-rerun). Next: launcher/argument forwarding and an observable Phase A read signal.
+rerun). Launcher static boundaries/observation preparation are documented above.
 
 [EP1 1.1 scoped startup config order](docs/RA3EP11_STARTUP_CONFIG_ORDER.md).
 Conditional mod config reading precedes reverse additional config candidates

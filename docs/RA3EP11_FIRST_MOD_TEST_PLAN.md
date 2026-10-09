@@ -29,7 +29,11 @@ Remaining preparation:
    candidates and reconcile later updates with the intended test config; do not
    infer effective precedence from SKU order or create a stock replacement.
 2. Verify launcher-to-1.1 argument forwarding and define a reproducible baseline
-   launch plus isolated config launch. Keep test artifacts in a new workspace
+   launch plus isolated config launch. The [launcher profile and read-only
+   observer](RA3EP11_LAUNCHER_PROFILE.md) now pin static literals/imports and
+   prepare a scoped child-path/command-line observation. The `.bind` entry and
+   unavailable reviewed consumer flow leave actual forwarding unproved; use
+   runtime observation rather than infer it from strings. Keep test artifacts in a new workspace
    directory; do not patch executables, change registry settings or overwrite
    installed configs/archives.
 3. Resolve the stock-profile discrepancy before treating a launch failure as a
