@@ -5,6 +5,18 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-09)
 
+[EP1 bounded entry-pointer trace](RA3EP1_ENTRY_POINTER_TRACE.md) follows the
+first hash-gate caller's pointer from a 20-byte descriptor row through a 28-byte
+pending stack record to argument four. A separate 48-byte copy branch and
+entry hash reads are pinned; these intermediate strides are not disk layout
+changes. Diagnostic wrapper 0040EDB0 forwards both arguments to global object
+virtual slot 64h, with actual policy unresolved. Repeat JSON, three positive/
+two rejection stack fixtures, seven detached code faults and hash-consumer
+regressions pass. Descriptor production/disk provenance and the other two
+caller paths are not fully recovered. No target execution/C# changes/full-suite
+rerun; groups 165, effort **52% / 48%**. Next resolve descriptor producer and
+virtual source-reader implementation; production admission stays unchanged.
+
 [EP1 runtime TypeHash consumer](RA3EP1_TYPEHASH_CONSUMER.md) pins the inline
 ResourceManager lookup and actual entry+8/metadata+8 comparison at VA 004AB615.
 The mismatch diagnostic reads expected/actual hashes and identifies embedded

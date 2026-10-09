@@ -38,7 +38,18 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 runtime TypeHash consumer](docs/RA3EP1_TYPEHASH_CONSUMER.md).
+Latest milestone: [EP1 bounded entry-pointer trace](docs/RA3EP1_ENTRY_POINTER_TRACE.md).
+The first hash-gate caller carries an entry pointer from a 20-byte descriptor
+row through a 28-byte pending record to argument four; a separate 48-byte copy
+branch and entry hash reads are pinned. The diagnostic wrapper forwards to the
+global object's virtual slot 64h; its implementation/policy remains unknown.
+Repeat JSON, three positive/two rejection stack cases, seven code faults and
+hash-consumer regressions pass. Descriptor construction/disk provenance and the
+other two caller traces remain open. No target execution or production changes;
+effort **52% / 48%**, compiler groups 165 (not rerun). Next resolve the descriptor
+producer and actual virtual source-reader implementation.
+
+[EP1 runtime TypeHash consumer](docs/RA3EP1_TYPEHASH_CONSUMER.md).
 An inline ResourceManager lookup compares entry+8 with registered metadata+8
 at VA 004AB615 and reaches the explicit TypeHash mismatch diagnostic. Missing
 metadata, nonzero entry word44 and zero entry hash skip this comparison; these
