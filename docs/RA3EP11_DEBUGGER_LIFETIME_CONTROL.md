@@ -39,8 +39,9 @@ and detaches, and `-pd` requests detachment when the debugger ends for any reaso
 See also [CDB options](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/cdb-command-line-options).
 
 The controls validate this installed x86 CDB build on one simple managed
-helper, including actual forced debugger loss. They do not prove cleanup of
-software breakpoints, restoration of arbitrary target state, exception handling,
+helper, including actual forced debugger loss. The additional breakpoint control
+below checks one restored byte after normal detach, not forced-loss cleanup with
+installed breakpoints, arbitrary target-state restoration, exception handling,
 multithreaded engine behavior or safe detachment from Uprising.
 
 Debugger version: `10.0.26100.3916`; SHA-256:
@@ -60,6 +61,55 @@ concurrent filesystem replacement is outside this local control's guarantee.
 The existing helper read-control runner now adds `-pd`; its architecture
 selection and native read evidence rules are unchanged. Its x64 loss behavior
 has not been calibrated by this x86-only lifetime test.
+
+## Initial ownership and active-breakpoint follow-up
+
+The runner now emits `REBORN_OWNER` at the initial debugger break, before `g`.
+After the helper starts it retains its OS process handle, checks executable
+path and creation ticks, and queries that exact PID's Windows process record
+to confirm CDB is its direct parent. The initial CDB PID must match. This is
+post-resume evidence validation, **not a fail-closed admission gate before
+target execution**. No arbitrary PID, attach or child-follow option is exposed.
+
+`BreakpointDetach` additionally records the address and first byte of
+`ntdll!NtDelayExecution`, installs a software breakpoint and detaches with `qd`
+when it hits. The helper's sleep supplies a short post-detach inspection window.
+The supervisor independently reads exactly one byte from the recorded address
+through the retained helper handle, requiring Windows success, an actual count
+of one and equality with the original non-`CC` byte. It does not write memory.
+The byte address comes from that target's symbol resolution, not a preferred
+address copied between runs. API transfer semantics are documented in
+[ReadProcessMemory](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory);
+the temporary software breakpoint is described in
+[CDB breakpoint commands](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/bp--bu--bm--set-breakpoint-).
+
+Two actual breakpoint-detach controls passed (PIDs 43124 and 14536): initial
+identity and direct-parent checks, one hit, restored byte, survived debugger
+exit and natural helper exit 0. Local directories:
+
+- `RebornDebuggerLifetime-006ac15261794eca91f3ff9c15d1d13d`
+- `RebornDebuggerLifetime-4e6aee4d8c3d4e7bbd6c424cfbb5f58f`
+
+Normal detach (PID 13660) and debugger loss without breakpoints (PID 52268)
+also passed again with initial-owner and direct-parent validation. The policy
+has two detached positives and twelve refusal cases for identity mismatch,
+duplicate/missing/out-of-order records, null/pre-existing-trap sites, missing or
+duplicate hits, unexpected breakpoints, oversized logs and diagnostic errors.
+These do not inject OS-level identity races or memory-read failures.
+
+The restricted environment denied the CIM process query; the runner refused
+proof instead of bypassing that check. The scoped helper-only rerun used the
+permitted external execution context, not an admin/UAC game launch.
+Two subsequent attempts exposed inherited redirected-output handles after
+detach. The bounded log reader now allows read/write sharing after CDB exits;
+the reviewed helper never writes to standard output. Those failed attempts are
+not successes and their artifacts remain local. Interop compilation occurs
+before launch so it cannot consume the helper's five-second observation window.
+Successful new runs persist `result.json` alongside raw logs.
+The persisted-result control (PID 26416) passed in
+`RebornDebuggerLifetime-5227d28a5e1648a4813b005ab452229e`; the restored byte
+was `B8`. The supervisor does not wait indefinitely for inherited output
+handles; if the bounded snapshot lacks complete records it refuses proof.
 
 ## Remaining gate before a game trial
 

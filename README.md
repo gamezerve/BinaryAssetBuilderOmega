@@ -3,12 +3,16 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 10, 2026
 
-Latest helper-only safety milestone: [debugger lifetime control](docs/RA3EP11_DEBUGGER_LIFETIME_CONTROL.md).
-The installed x86 debugger detached normally and also survived forced debugger
-loss without terminating the newly owned helper; both helpers then completed
-naturally. The read-control runner now requests `-pd` too. This is not a game
-detachment guarantee or an authorized game-debug recipe. Early game ownership,
-actual config read and parser consumption remain open. No game was launched.
+Latest helper-only safety milestone: [debugger ownership and breakpoint cleanup](docs/RA3EP11_DEBUGGER_LIFETIME_CONTROL.md).
+Normal detach, forced debugger loss and active-breakpoint detach controls pass.
+Initial debugger PID matches the owned helper and its direct-parent identity.
+In the active-breakpoint case, one native code byte is independently read after
+detach and matches its original value; the helper then exits naturally. Two
+detached positives and twelve evidence refusals pass. The read-control runner
+also requests `-pd`. This is not a game detachment guarantee: ownership is
+validated after resume, not enforced at initial break, and forced-loss cleanup
+with installed breakpoints is untested. Actual config read/parser consumption
+and an early game admission gate remain open. No game was launched.
 
 Latest static bridge: [config disk backend](docs/RA3EP11_CONFIG_DISK_BACKEND.md).
 A concrete provider now connects the engine request to `CreateFileW`/`ReadFile`.
