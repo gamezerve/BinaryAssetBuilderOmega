@@ -50,6 +50,14 @@ Successful entry to a menu is startup evidence only. Keep rollback trivial:
 the isolated configuration is not the installation's active stock config.
 No game launch has been performed by the current audit sequence.
 
+Prepared next experiment: [inert config-read plan](RA3EP11_CONFIG_READ_SMOKE_PLAN.md).
+A single-LF external fixture and checked baseline/probe request arrays now
+exist. The probe has zero directives; it targets config consumption first,
+not effective mod paths or asset-package loading. Actual child/version capture,
+a validated attributable file-read signal and the incomplete-stock decision
+remain before runtime validation. No launcher invocation is generated or run
+by the planner.
+
 ## Phase B: first narrowly authored asset
 
 Prefer a simple already-characterized type rather than starting with music.

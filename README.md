@@ -45,7 +45,16 @@ gates and no reliable date yet. See [first mod-test plan](docs/RA3EP11_FIRST_MOD
 The complete SDK is not a prerequisite for a narrow test; synthetic diagnostic
 music packages remain ineligible. No game launch has been performed.
 
-Latest milestone: [EP1 launcher profile and scoped observer](docs/RA3EP11_LAUNCHER_PROFILE.md).
+Latest milestone: [Phase A inert config-read plan](docs/RA3EP11_CONFIG_READ_SMOKE_PLAN.md).
+A byte-pinned single-LF external config (zero directives/assets) and checked
+baseline/probe launch-request arrays are prepared. Two whitespace fixtures,
+nine refusal fixtures, exact config identity and repeat JSON pass. The current
+profile explicitly discloses missing MapsCampaign.big without aliasing it.
+No launch occurs: actual child/version/argument capture and a validated
+attributable config-read signal remain. This is preparation, not mod loading.
+Effort **52% / 48%**; 165 compiler groups (not rerun).
+
+[EP1 launcher profile and scoped observer](docs/RA3EP11_LAUNCHER_PROFILE.md).
 The selected launcher has a .bind entry point; five launch/config literal pins
 and four API import bindings are verified, but their consumer flow, version
 selection and argument forwarding remain unproved. Five literal faults, one
