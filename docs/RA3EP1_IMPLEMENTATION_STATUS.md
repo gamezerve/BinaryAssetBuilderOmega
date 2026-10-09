@@ -5,6 +5,18 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-09)
 
+[EP1 runtime hash initializers](RA3EP1_TYPE_INITIALIZERS.md) verifies limited
+straight-line x86 templates for 150 named table-hash reads/object+8 writes:
+43 short, 107 with an additional vtable-shaped base write. Exact opcode boundaries,
+mapped source/destination operands and signed common call targets are checked;
+Texture and five independently proven root types are covered, PathMusicEvent
+is not. Repeat JSON/routine digest, eight detached-memory faults and public
+image pin rejection pass, along with runtime table/schema-role regressions.
+This is not general disassembly, startup reachability, complete registry/object
+ABI or authoring ProcessingHash recovery; all production gates remain unchanged.
+No target executed or C# mutation/full-suite rerun. Estimate **52% / 48%**,
+groups 165; next review common initialization body and hash consumers.
+
 [EP1 runtime/schema roles](RA3EP1_RUNTIME_SCHEMA_ROLES.md) maps all 1,342
 runtime names: 299 direct AssetDeclaration choices, 1,043 non-direct complex
 names; all 254 observed stock roots are direct choices. The 843-file catalog

@@ -38,7 +38,17 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 runtime/schema roles](docs/RA3EP1_RUNTIME_SCHEMA_ROLES.md).
+Latest milestone: [EP1 runtime hash initializers](docs/RA3EP1_TYPE_INITIALIZERS.md).
+Limited x86 decoding verifies 150 named hash-table reads/object+8 writes in
+43 short and 107 vtable-writing initializer templates. Exact opcodes, mapped
+operands and signed call targets are checked, with routine SHA/bytes retained.
+Texture and five independently proven roots are covered; PathMusicEvent and
+1,192 other table rows are not admitted by these templates. Repeat/JSON, eight
+memory faults and artifact rejection pass; table/schema regressions pass.
+No startup reachability, full metadata ABI or authoring ProcessingHash claim;
+production guards stay closed. Effort stays **52% / 48%**, compiler groups 165.
+
+[EP1 runtime/schema roles](docs/RA3EP1_RUNTIME_SCHEMA_ROLES.md).
 All 1,342 runtime names match declared schema complex types: 299 direct asset
 choices and 1,043 non-direct complex names; all 254 observed roots are direct
 choices. Forty-eight schema-only names and both duplicate declarations remain
