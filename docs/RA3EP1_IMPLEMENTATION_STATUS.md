@@ -5,6 +5,20 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-09)
 
+[EP1 runtime/schema roles](RA3EP1_RUNTIME_SCHEMA_ROLES.md) maps all 1,342
+runtime names: 299 direct AssetDeclaration choices, 1,043 non-direct complex
+names; all 254 observed stock roots are direct choices. The 843-file catalog
+retains 48 schema-only names and both duplicate complex declaration provenances;
+it is not a schema compilation/admission result. Counts/repeat JSON, authored
+versus runtime music roles, positive nested/direct/duplicate fixture and four
+XML faults pass; runtime table regressions pass. A new RA3Music.h candidate has
+70/197 exact stock event matches, 123 missing names and four conflicting nonzero
+values for stock zeros; strict ASCII header review rejects it unchanged.
+No header alias/parser relaxation or production registry activation. A single
+hash-block base literal in `.text` narrows the next disassembly target; table
+callers remain unverified. Estimate **52% / 48%**, groups 165; no C# mutation or
+full compiler-suite rerun claimed.
+
 [EP1 runtime name/hash table reconciliation](RA3EP1_RUNTIME_TYPE_TABLE.md)
 recovers 1,341 contiguous name-pointer/hash associations and one separately
 located Texture slot from the pinned EP1 executable. All 254 root fingerprints

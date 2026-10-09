@@ -38,7 +38,17 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 runtime name/hash table reconciliation](docs/RA3EP1_RUNTIME_TYPE_TABLE.md).
+Latest milestone: [EP1 runtime/schema roles](docs/RA3EP1_RUNTIME_SCHEMA_ROLES.md).
+All 1,342 runtime names match declared schema complex types: 299 direct asset
+choices and 1,043 non-direct complex names; all 254 observed roots are direct
+choices. Forty-eight schema-only names and both duplicate declarations remain
+visible. Repeat/JSON, authored/runtime separation and XML fault tests pass.
+New RA3Music.h candidate matches only 70/197 stock events, misses 123 and conflicts
+on four zero-valued stock events; it is not the missing EP1 header replacement.
+One bounded hash-block address-use target is recorded, with callers unverified.
+No production/schema/parser guards changed. Effort stays **52% / 48%**, groups 165.
+
+[EP1 runtime name/hash table reconciliation](docs/RA3EP1_RUNTIME_TYPE_TABLE.md).
 Pinned runtime decoding recovers 1,341 parallel name/hash rows plus a separate
 Texture slot. All 254 independently observed stock root fingerprints match;
 weather enum pointers are explicitly excluded. Ordered/raw table fingerprints,
