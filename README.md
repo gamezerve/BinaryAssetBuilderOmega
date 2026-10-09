@@ -3,6 +3,17 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 10, 2026
 
+Latest admission milestone: [initial-break helper gate](docs/RA3EP11_DEBUGGER_ADMISSION_CONTROL.md).
+The new supervisor waits at CDB's initial break, validates the owned helper's
+PID/parent/path and reads six stage-specific entry bytes at its actual live base
+before sending observation `g`. Admission, injected-byte refusal and withheld
+admission controls pass, as do four detached positives and sixteen refusals.
+Rejected helpers receive cleanup detach and therefore can run afterward; this
+is not execution containment. The managed helper's raw CLR thunk remains
+unchanged at this stage despite a nonpreferred base, so its byte policy must
+not be copied into Uprising. Native-game live pins/relocation, config consumption
+and game-debug authorization remain open. No game was launched; estimate **52% / 48%**.
+
 Latest helper-only safety milestone: [debugger ownership and breakpoint cleanup](docs/RA3EP11_DEBUGGER_LIFETIME_CONTROL.md).
 Normal detach, forced debugger loss and active-breakpoint detach controls pass.
 Initial debugger PID matches the owned helper and its direct-parent identity.

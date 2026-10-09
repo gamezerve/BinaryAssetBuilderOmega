@@ -113,6 +113,11 @@ handles; if the bounded snapshot lacks complete records it refuses proof.
 
 ## Remaining gate before a game trial
 
+The helper-only [initial-break admission control](RA3EP11_DEBUGGER_ADMISSION_CONTROL.md)
+now verifies identity and stage-specific helper entry bytes before observation
+continuation. Its cleanup can still resume rejected helpers; it is not a game
+recipe or a general native-code relocation verifier.
+
 Implement a separately reviewed early-ownership runner with relocation and
 live-byte verification, thread/object/handle correlation and bounded observation.
 Do not attach to existing games or enable descendant debugging. A direct-native
