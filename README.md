@@ -38,7 +38,17 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 linked sidecar setup](docs/RA3EP1_LINKED_SIDECARS.md).
+Latest milestone: [EP1 linked chunk addressing](docs/RA3EP1_LINKED_CHUNK_RANGES.md).
+Queue/dispatcher/reader evidence connects descriptor-relative positions to
+physical offsets +8: binary seek/read and relocation/import memcpy. All 166,557
+ranges from 55,519 stock entries fit twelve sidecar lengths, with exact final
+endpoints and zero payload reads. Repeat digests, four positive/four rejection
+range fixtures, nine code/import faults and sidecar regressions pass. Native
+read results/bounds are not checked in the reviewed method; our stricter audit
+does not become engine policy. No production/game proof; effort **52% / 48%**,
+compiler groups 165 (not rerun). Next concrete source binding/capacity lifecycle.
+
+[EP1 linked sidecar setup](docs/RA3EP1_LINKED_SIDECARS.md).
 Full helper review resolves 00449760 as sidecar preparation, not entry-table
 transformation: it opens .imp/.relo/.bin, checks manifest checksums and advances
 past eight-byte headers. Twelve authentic headers/exact sizes match, including

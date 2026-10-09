@@ -5,6 +5,17 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-09)
 
+[EP1 linked chunk addressing](RA3EP1_LINKED_CHUNK_RANGES.md) pins queue,
+dispatcher, linked reader and verified memcpy import. Descriptor positions
+gain +8 physical header bias; instance seek/read and relocation/import buffer
+copies preserve entry size offsets 32/36/40. All 166,557 ranges across 55,519
+raw entries fit twelve sidecars and end exactly at file lengths, without
+payload reads. Repeat digests, four positive/four rejection range fixtures,
+nine code/import faults and sidecar regressions pass. Reviewed native reader
+does not check read/seek returns or memcpy bounds; diagnostic checks remain
+separate policy. No target/C# changes/full-suite rerun; groups 165, effort
+**52% / 48%**. Next concrete source-object binding and capacity reuse lifecycle.
+
 [EP1 linked sidecar setup](RA3EP1_LINKED_SIDECARS.md) resolves 00449760 as
 sidecar preparation rather than entry transformation. Full helper/body pins
 show .imp/.relo/.bin reads, checksum diagnostic paths and eight-byte header
