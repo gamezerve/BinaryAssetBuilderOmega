@@ -38,7 +38,17 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 wrapper-local loader lifecycle](docs/RA3EP1_LOADER_LIFECYCLE.md).
+Latest milestone: [EP1 referenced-reader factory/cache/storage](docs/RA3EP1_READER_FACTORY.md).
+Raw tag 2 uses virtual slot 2Ch; other tags use 28h. Concrete table targets,
+new-reader construction and ordinary cache publication are pinned. Stack tracking
+distinguishes factory-owner argument 3 from list-owner argument 4. Conditional
+reader storage is at the existing head+8, not a proven fresh-node payload.
+Six route fixtures, two invalid tags, eleven detached code faults, repeat JSON
+and lifecycle regressions pass. Live owner-vtable/cache provenance and admission
+semantics remain open. No production changes; effort **52% / 48%**, compiler
+groups 165 (not rerun). Next outer-owner binding and stored-reader consumers.
+
+[EP1 wrapper-local loader lifecycle](docs/RA3EP1_LOADER_LIFECYCLE.md).
 Both wrapper dispatch branches pass a fresh zero-capacity context and join
 normal entry/descriptor cleanup. The capacity-based producer therefore does
 not reuse an earlier wrapper invocation's capacity. Concrete reader constructor

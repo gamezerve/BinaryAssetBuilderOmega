@@ -92,6 +92,11 @@ count stays 165 groups. No source/game files or production guards are changed.
 
 ## Next gate
 
+Follow-up: [referenced-reader factory/cache/storage](RA3EP1_READER_FACTORY.md)
+pins the concrete factory table targets, new-reader branches and conditional
+head+8 storage. It distinguishes factory-owner argument 3 from list-owner
+argument 4; live owner-vtable and universal cache provenance remain open.
+
 Trace the factory/cache return into the outer loader's source list to bind
 the concrete reader object, rather than inferring it from its vtable alone.
 Keep other-call-site capacity reuse and allocator failure semantics separate.
