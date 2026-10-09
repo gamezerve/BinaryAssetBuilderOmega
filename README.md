@@ -38,7 +38,17 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 fresh archive sidecar headers](docs/RA3EP11_ARCHIVE_SIDECAR_HEADERS.md).
+Latest milestone: [EP1 1.1 scoped BIG mount metadata](docs/RA3EP11_BIG_MOUNT_METADATA.md).
+The add-big mode reaches the pinned native mount/index route; node allocation,
+header classification, directory-size arithmetic and list append are recovered
+within their reviewed scope. Thirteen stock BIG4 directories agree. Four
+whole-body pins, six detached header fixtures, one truncation rejection,
+twelve byte faults and repeat JSON pass, with zero archive payload bytes.
+Full lookup/precedence, native failure safety, authentic compiler hash and
+game loading remain open. Effort **52% / 48%**; compiler groups 165 (not rerun).
+This is a documented stopping checkpoint, not a usable SDK release.
+
+[EP1 1.1 fresh archive sidecar headers](docs/RA3EP11_ARCHIVE_SIDECAR_HEADERS.md).
 Twelve BIN/RELO/IMP logical headers and lengths match the freshly bridged
 manifest checksums/totals: six raw and six compressed literal prefixes.
 Only 384 sidecar prefix bytes are read per invocation, including eight-byte
