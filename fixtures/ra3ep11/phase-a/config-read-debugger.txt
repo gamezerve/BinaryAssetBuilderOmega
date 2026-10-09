@@ -1,0 +1,8 @@
+$$ Reborn: observe only the explicitly launched x64 non-game helper without attaching or tracing the system.
+$$ Reborn: capture synchronous one-byte NtReadFile calls and their native return, not a game-load claim.
+$$ Reborn: retain native open path and returned handle because user-mode !handle did not disclose the name.
+$$ Reborn: invalidate closed handles rather than reusing an old fixture-to-handle association.
+bu ntdll!NtClose ".printf \"REBORN_CLOSE %x %p\", @$tid, @rcx; .echo; gc"
+bu ntdll!NtCreateFile "r @$t2 = @rcx; .printf \"REBORN_OPEN_ENTRY %x %mu\", @$tid, poi(poi(@r8+0x10)+8); .echo; bp /1 poi(@rsp) \".printf \\\"REBORN_OPEN_RETURN %x %x %p\\\", @$tid, @eax, poi(@$t2); .echo; gc\"; gc"
+bu ntdll!NtReadFile ".if (dwo(@rsp+0x38) == 1) { r @$t0 = poi(@rsp+0x28); r @$t1 = poi(@rsp+0x30); .printf \"REBORN_READ_ENTRY %x %x %p\", @$tpid, @$tid, @rcx; .echo; bp /1 poi(@rsp) \".printf \\\"REBORN_READ_RETURN %x %x %p %p %x\\\", @$tid, @eax, poi(@$t0), poi(@$t0+8), by(@$t1); .echo; gc\"; gc } .else { gc }"
+g

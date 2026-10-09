@@ -77,6 +77,10 @@ No further recording session was started during this analysis.
 
 ## Next decision
 
+Subsequent [owned-helper debugger calibration](RA3EP11_DEBUGGER_READ_CONTROL.md)
+observed exact native open/read/return without system recording. It does not
+repair this rejected WPR profile or validate an x86 game observation workflow.
+
 Design a replacement that enforces capture-time isolation, or explicitly
 request user approval for a short broader local recording with post-filtering
 and disclose that it collects unrelated activity. Post-filtering is not a

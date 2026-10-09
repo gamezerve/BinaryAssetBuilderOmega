@@ -45,7 +45,17 @@ gates and no reliable date yet. See [first mod-test plan](docs/RA3EP11_FIRST_MOD
 The complete SDK is not a prerequisite for a narrow test; synthetic diagnostic
 music packages remain ineligible. No game launch has been performed.
 
-Latest milestone: [actual read-control ETL result](docs/RA3EP11_READ_CONTROL_RESULT.md).
+Latest milestone: [owned-helper debugger calibration](docs/RA3EP11_DEBUGGER_READ_CONTROL.md).
+The existing x64 CDB debugger observed one exact probe open/read/return in a
+newly owned non-game helper: native status 0, one actual byte, value 0A,
+and matching native/managed PID. No administrator elevation, WPR, installation,
+existing-process attach or game launch was needed. Nine detached fault cases
+are refused; the default runner is preflight only. This is not a game read/load
+result: Uprising is x86 and needs a separate owned-launch/instrumentation plan.
+Software breakpoints affect only the helper's temporary memory and timing.
+Effort **52% / 48%**; compiler groups 165 (not rerun).
+
+[Actual read-control ETL result](docs/RA3EP11_READ_CONTROL_RESULT.md).
 The user's administrator capture succeeded, but read-only decoding found both
 positive and negative probe reads and 24 other PIDs: the requested process-name
 scope is REJECTED. -Record is disabled even with elevation; do not rerun the
@@ -60,11 +70,11 @@ Effort **52% / 48%**; no game mod loaded; compiler groups 165 (not rerun).
 Both distinct compiled helper processes successfully read the one-byte fixture
 in helper-only validation. Reviewed source/scope and four detached refusals
 pass. A real WPR start was denied (0x80070005): sandbox approval is not Windows
-administrator elevation. The hardened runner defaults to preflight, requires
-explicit -Record/admin token for capture, uses uniquely owned instances and
-five-second helper deadlines. No trace/game was captured; live filtering and
-read/completion correlation remain unproved. The report provides the required
-administrator command. Effort **52% / 48%**; compiler groups 165 (not rerun).
+administrator elevation. The historical recording subsequently succeeded in
+the user's admin session but failed its scope control, as documented above.
+The runner now refuses -Record; the old administrator command is superseded.
+Helper-only validation remains available. Effort **52% / 48%**; compiler groups
+165 (not rerun).
 
 [Narrow config-read trace candidate](docs/RA3EP11_CONFIG_TRACE_CANDIDATE.md).
 WPR metadata accepts one Kernel-File provider, the ra3ep1_1.1.game process-name
