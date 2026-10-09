@@ -96,6 +96,12 @@ The full compiler suite was not rerun; its previous total remains 165 groups.
 
 ## Remaining gates
 
+Follow-up: [sentinel insertion and reader lifetime](RA3EP1_READER_LIST_LIFETIME.md)
+resolves the head+8 store as fresh-node payload under healthy circular-sentinel
+invariants, and distinguishes scoped resource cleanup from list-triggered
+reader release. All live initializers/cache behavior remain unproven. A distinct
+[1.1 image](RA3EP11_MODCONFIG_BASELINE.md) now requires independent rebasing.
+
 Resolve list insertion/head movement and reader lifetime before claiming the
 specific stored object is consumed. Trace initial root-reader construction and
 cache lifetime to establish concrete vtable provenance. Raw-tag-2 admission

@@ -38,7 +38,28 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 source forwarding and pointer membership](docs/RA3EP1_READER_OWNERSHIP.md).
+Latest finding: [EP1 1.1 baseline and modconfig](docs/RA3EP11_MODCONFIG_BASELINE.md).
+The user's second Steam installation contains a distinct 13,381,632-byte
+ra3ep1_1.1.game; its 1.1 SkuDef selects that executable. Previous fixed-offset
+runtime audits remain scoped to the identical 1.0 images and correctly refuse
+1.1. A separate pinned 1.1 audit verifies -modconfig table/parser/handler,
+path storage and downstream consumption. Seven code faults and repeat JSON
+pass. The option also has a literal/handler in 1.0; it is not proven 1.1-only.
+No launcher forwarding or successful mod load is claimed. Next priority:
+independently rebase runtime type/hash/stream evidence to 1.1, then recover
+config-file handling. Effort **52% / 48%**, compiler groups 165 (not rerun).
+
+[EP1 1.0 sentinel insertion and reader lifetime](docs/RA3EP1_READER_LIST_LIFETIME.md).
+Healthy circular-sentinel aliases explain how the indirect previous-link write
+updates the first node, making the following head+8 store a fresh-node payload.
+Source-list release calls reader slot+8, clears nodes and restores self-links;
+concrete release delegates to deleting slot+3Ch. Normal slot+24h cleanup closes
+resources/sidecar buffers without directly freeing the reader object. Four
+insertion scenarios, two malformed lists, twelve byte faults, repeat JSON and
+ownership regressions pass. All-list initializers/cache/callback guarantees
+remain open; these 1.0 addresses must not be silently reused for 1.1.
+
+[EP1 source forwarding and pointer membership](docs/RA3EP1_READER_OWNERSHIP.md).
 The ordinary helper tests reader-pointer membership in three global lists; it
 does not validate asset contents. Wrapper source argument 2 supplies header,
 first-loader factory dispatch and normal cleanup, while argument 3 supplies
