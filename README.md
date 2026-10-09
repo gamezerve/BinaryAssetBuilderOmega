@@ -38,7 +38,19 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 scoped provider routing](docs/RA3EP11_PROVIDER_ROUTING.md).
+Latest milestone: [EP1 1.1 scoped provider-open forwarding](docs/RA3EP11_PROVIDER_OPEN_FORWARDING.md).
+Explicit providers receive the path after one leading dot-separator removal,
+without interior slash conversion or prefix case changes. Default-provider
+opens instead walk ordered search-root/registration pairs: relative names use
+exact %s/%s joining, rooted names bypass joining, null roots stop and first
+success wins. Empty search lists do not gain an invented raw fallback.
+Two complete bodies/one literal, six forwarding/eight search-plan/four composed
+prefix fixtures, three policy rejections, eighteen faults and repeat JSON pass.
+No archive payload is read. Runtime search-pair contents, startup priority,
+native safety/lifetime, compiler identity and game loading remain open.
+Effort **52% / 48%**; compiler groups 165 (not rerun).
+
+[EP1 1.1 scoped provider routing](docs/RA3EP11_PROVIDER_ROUTING.md).
 Provider prefix routing is distinct from per-archive file selection: first
 matching registered alias wins (ASCII case-insensitive), unknown prefixes
 return null, and unprefixed queries use the context default. Registration and
