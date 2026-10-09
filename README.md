@@ -38,7 +38,18 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 linked chunk addressing/ranges](docs/RA3EP11_LINKED_CHUNK_RANGES.md).
+Latest milestone: [EP1 1.1 wrapper-local lifecycle](docs/RA3EP11_LOADER_LIFECYCLE.md).
+Wrapper 004CFEB0 initializes fresh entry/descriptor pointers and capacities,
+passes context as argument seven and frees both buffers on normal cleanup.
+Its 1.1 loader calls have nine arguments/36-byte cleanup, versus eight/32 in
+the independently checked 1.0 wrapper: do not assume identical call contracts.
+Four exact code pins, four fresh-invocation fixtures, seven detached faults
+and repeat JSON pass. Capacity-equals-count is scoped to successful fresh
+preparation in this wrapper, not allocator failures or all reader callers.
+Effort **52% / 48%**; compiler groups 165 (not rerun). Next: independently
+rebase factories/source ownership and resolve the added 1.1 argument's uses.
+
+[EP1 1.1 linked chunk addressing/ranges](docs/RA3EP11_LINKED_CHUNK_RANGES.md).
 The concrete queue/dispatch path forwards descriptor pointers into 00418340;
 bin/relo/imp offsets each receive the eight-byte header bias. The memcpy thunk
 is independently bound to its import. All 166,557 ranges across 55,519 captured
