@@ -1,5 +1,11 @@
 # Inert modconfig trial — October 10, 2026
 
+Later static diagnosis: [post-reader filename identity](RA3EP11_CONFIG_IDENTITY_LIMIT.md)
+reveals that the historical 20-byte basename cannot fit a reviewed 16-byte
+copy. The CRT fault matches that function's error path; exact runtime caller
+is still unproved. The launch runner now refuses the old name and uses the
+same-content short-name replacement. This does not retroactively fix this run.
+
 ## Outcome: forwarding observed, startup failed
 
 The user authorized one normal launcher invocation with the fixed single-LF

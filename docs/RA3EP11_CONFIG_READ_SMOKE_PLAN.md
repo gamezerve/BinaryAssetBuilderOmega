@@ -1,5 +1,11 @@
 # Phase A inert config-read experiment
 
+**Probe-name correction:** future plans use `probe_1.0.cfg`, containing the
+same one LF byte, rather than the historical `config-read-only.cfg` described
+below. The [post-reader identity copy](RA3EP11_CONFIG_IDENTITY_LIMIT.md) cannot
+fit that historical 20-byte basename. Both runner and planner now enforce
+the identity-copy boundary. The replacement has not been tested in-game.
+
 **Runtime update, October 10:** the [single inert trial](RA3EP11_INERT_CONFIG_TRIAL.md)
 showed the expected option/path in the 1.1 child, then crashed with a PID-matched
 Windows error record. The earlier normal baseline reached the menu; this trial

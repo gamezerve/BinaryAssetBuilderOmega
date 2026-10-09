@@ -3,6 +3,13 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 10, 2026
 
+Latest diagnosis: [post-config identity limit](docs/RA3EP11_CONFIG_IDENTITY_LIMIT.md).
+Our old inert probe's 20-byte basename does not fit the reviewed 16-byte
+identity copy after config processing. The recorded CRT fault maps to the
+`strcpy_s` error path, consistent with this defect but not exact-caller proof.
+The runner/planner now refuse that name; a same-content `probe_1.0.cfg` is
+prepared and has not been launched. No game/CRT patch or guard relaxation.
+
 Latest runtime result: [inert modconfig trial](docs/RA3EP11_INERT_CONFIG_TRIAL.md).
 The single-LF probe path reached the 1.1 child's visible command line, but the
 game crashed without user-confirmed menu arrival. Windows Event 1000 matches

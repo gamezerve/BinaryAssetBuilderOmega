@@ -2,6 +2,8 @@
 [CmdletBinding()]
 param([Parameter(Mandatory=$true)][string]$ImagePath,[Parameter(Mandatory=$true)][string]$BaselineImagePath,[Parameter(Mandatory=$true)][string]$SkuDefinitionPath,[Parameter(Mandatory=$true)][string]$LauncherPath,[Parameter(Mandatory=$true)][string]$ConfigPath,[switch]$SelfTest,[switch]$AsJson)
 $ErrorActionPreference='Stop'
+# Reborn: whitespace content alone is insufficient; guard the post-reader basename identity copy before planning any future native trial.
+. (Join-Path $PSScriptRoot 'Ra3Ep11ConfigNamePolicy.ps1')
 $smokeSelfTest=$SelfTest;$smokeAsJson=$AsJson
 $smokeInventory=. (Join-Path $PSScriptRoot 'Get-Ra3Ep11ConfigInventory.ps1') -ImagePath $ImagePath -BaselineImagePath $BaselineImagePath -SkuDefinitionPath $SkuDefinitionPath
 $SelfTest=$smokeSelfTest;$AsJson=$smokeAsJson
@@ -13,6 +15,7 @@ $smokeLauncher=& (Join-Path $PSScriptRoot 'Get-Ra3Ep11LauncherProfile.ps1') -Lau
 function Assert-Ep11ReadOnlyProbe([byte[]]$Bytes,[string]$Path) {
     if(-not [IO.Path]::IsPathFullyQualified($Path) -or $Path.Length-gt 240 -or $Path-match '[^\x20-\x7E]|[";]' -or $Bytes.Length-lt 1 -or $Bytes.Length-gt 64){throw 'Config-read probe exceeds conservative path/content policy.'}
     foreach($value in $Bytes){if($value-notin @(9,10,13,32)){throw 'Config-read probe must contain whitespace only, with no directives or comments.'}}
+    Assert-Ep11ConfigNamePolicy $Path
 }
 # Reborn: reject a relative caller path before normalization can disguise it as an absolute request.
 if(-not [IO.Path]::IsPathFullyQualified($ConfigPath)){throw 'Smoke config path must be explicitly absolute.'}

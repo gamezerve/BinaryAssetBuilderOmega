@@ -1,3 +1,5 @@
 Working[[:space:]]RA3[[:space:]]Compiler[[:space:]]for[[:space:]]Reference/buildmods/worldbuilder.bin filter=lfs diff=lfs merge=lfs -text
 # Reborn: preserve the single-LF config-read probe identity across Windows checkouts.
 /fixtures/ra3ep11/phase-a/config-read-only.cfg -text
+# Reborn: preserve the short-name follow-up probe's exact single-LF content.
+/fixtures/ra3ep11/phase-a/probe_1.0.cfg -text

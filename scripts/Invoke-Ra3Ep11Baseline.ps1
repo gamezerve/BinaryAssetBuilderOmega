@@ -2,13 +2,16 @@
 [CmdletBinding()]
 param([switch]$Run,[switch]$ConfigProbe,[switch]$SelfTest)
 $ErrorActionPreference='Stop'
-$probe=Join-Path (Split-Path $PSScriptRoot -Parent) 'fixtures\ra3ep11\phase-a\config-read-only.cfg'
+# Reborn: retain the historical long-name fixture for evidence, but never reuse it for game startup.
+. (Join-Path $PSScriptRoot 'Ra3Ep11ConfigNamePolicy.ps1')
+$probe=Join-Path (Split-Path $PSScriptRoot -Parent) 'fixtures\ra3ep11\phase-a\probe_1.0.cfg'
 #-------------------------------------------------------------------------------------------------
 <# Reborn: construct only an empty baseline request or the fixed single-LF config probe request; never accept arbitrary configs or directives. #>
 #-------------------------------------------------------------------------------------------------
 function Get-Ep11BaselineArguments([bool]$UseProbe,[string]$Path,[byte[]]$Bytes) {
     if(-not $UseProbe){return}
     if(-not [IO.Path]::IsPathFullyQualified($Path) -or $Path.Length-gt 240 -or $Path-match '[^\x20-\x7E]|[";]' -or $Bytes.Length-ne 1 -or $Bytes[0]-ne 10){throw 'Only the reviewed absolute ASCII path and single-LF probe are admitted.'}
+    Assert-Ep11ConfigNamePolicy $Path
     '-modconfig';$Path
 }
 #-------------------------------------------------------------------------------------------------
@@ -31,6 +34,7 @@ if($SelfTest){
         [pscustomobject]@{Path='relative.cfg';Bytes=[byte[]]@(10)},
         [pscustomobject]@{Path=$probe+'"';Bytes=[byte[]]@(10)},
         [pscustomobject]@{Path=$probe+';';Bytes=[byte[]]@(10)},
+        [pscustomobject]@{Path=[IO.Path]::Combine([IO.Path]::GetDirectoryName($probe),'config-read-only.cfg');Bytes=[byte[]]@(10)},
         [pscustomobject]@{Path=$probe;Bytes=[byte[]]@(13,10)},
         [pscustomobject]@{Path=$probe;Bytes=[byte[]]@(0)},
         [pscustomobject]@{Path=$probe;Bytes=[byte[]]::new(0)}
@@ -42,7 +46,7 @@ if($SelfTest){
     foreach($line in @($null,'game -config "'+$probe+'"','game -modconfig "'+$probe+'.other"','game -modconfig "'+$probe+'"extra','game -modconfig '+$probe+'.other')){
         if(Test-Ep11VisibleConfigArgument $line $probe){throw 'Visible argument negative admitted.'}
     }
-    Write-Output 'Baseline/config detached tests: PASS; two request positives, six request refusals, three visible-argument positives and six negatives; no game or process query.'
+    Write-Output 'Baseline/config detached tests: PASS; two request positives, seven request refusals, three visible-argument positives and six negatives; no game or process query.'
     return
 }
 $requestedArguments=@()
