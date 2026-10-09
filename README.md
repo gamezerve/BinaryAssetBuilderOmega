@@ -38,7 +38,16 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 config manifest queue to reader bridge](docs/RA3EP11_MANIFEST_QUEUE.md).
+Latest milestone: [EP1 1.1 reader suffix/probe behavior](docs/RA3EP11_READER_VARIANTS.md).
+004AA300 takes a suffix index/text, selects three reader-over-global suffix
+slots and inserts them before the last dot unless reader+68h bypasses it.
+The queue driver passes slot one; source probing can set slot two to _v%d.
+004D7840 is a file-probe adapter, not a manifest parser. Four pins, five detached
+filename fixtures/five policy rejections, sixteen faults and repeat JSON pass.
+Full fallback/native safety and game loading remain open. Effort **52% / 48%**;
+compiler groups 165 (not rerun). Next: stock-bound package preflight/BIG mounting.
+
+[EP1 1.1 config manifest queue to reader bridge](docs/RA3EP11_MANIFEST_QUEUE.md).
 Driver 0064D440 sends queued add-manifest strings to ordinary reader factory
 004AAC80 when its reader vector is empty, and conditionally calls 004D05E0
 after source probing. A third wrapper caller forwards queue argument zero to
