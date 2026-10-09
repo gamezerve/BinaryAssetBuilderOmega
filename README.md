@@ -3,6 +3,15 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 10, 2026
 
+Latest native preparation: [fixed-base admission plan](docs/RA3EP11_NATIVE_ADMISSION_PLAN.md).
+The pinned 1.1 executable has stripped relocations and no relocation directory;
+the native policy requires actual base `00400000`, rather than applying the
+managed helper's byte policy. Twenty-three code/vtable ranges total 3,906 bytes;
+IAT and writable sections are excluded from raw-byte comparison. Twenty-six
+detached refusal cases pass. No process was queried or executed and no live
+game bytes were validated. Native supervisor integration and actual config
+consumption remain open; estimate **52% / 48%**.
+
 Latest admission milestone: [initial-break helper gate](docs/RA3EP11_DEBUGGER_ADMISSION_CONTROL.md).
 The new supervisor waits at CDB's initial break, validates the owned helper's
 PID/parent/path and reads six stage-specific entry bytes at its actual live base

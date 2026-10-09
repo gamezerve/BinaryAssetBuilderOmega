@@ -98,6 +98,11 @@ actual memory-transfer success/count semantics are documented in
 
 ## Next gate
 
+The [native fixed-base admission plan](RA3EP11_NATIVE_ADMISSION_PLAN.md) now
+defines 23 bounded code/table comparisons for the pinned image, which has
+stripped relocations. Nonpreferred bases refuse; it still needs integration
+with the initial-break supervisor and does not validate a running game.
+
 Adapt the admission/supervision mechanism to the separately pinned native
 image, with correct live code/vtable verification and relocation/stage policy,
 before installing the narrow config-reader observations. A direct-native
