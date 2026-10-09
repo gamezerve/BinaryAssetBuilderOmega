@@ -75,6 +75,11 @@ No target code, game, launcher or native codec was executed.
 
 ## Next priorities
 
+Follow-up: [1.1 runtime type/hash reconciliation](RA3EP11_RUNTIME_TYPE_TABLE.md)
+independently locates the arrays and establishes exact ordered identity for
+all 1,342 rows plus all 254 previously captured stock roots. This closes the
+table rebase below, but not initializer/consumer/stream/authoring/game gates.
+
 1. Independently recover 1.1 runtime name/type/hash table and correlate the
    observed stock manifests; retain a separate version-specific evidence profile.
 2. Rebase factory/loader/sidecar/lifetime evidence using reviewed instruction

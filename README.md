@@ -38,7 +38,18 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest finding: [EP1 1.1 baseline and modconfig](docs/RA3EP11_MODCONFIG_BASELINE.md).
+Latest milestone: [EP1 1.1 runtime type/hash table](docs/RA3EP11_RUNTIME_TYPE_TABLE.md).
+Independently located 1.1 arrays yield 1,342 ordered name/hash pairs identical
+to the pinned 1.0 table; all 254 roots from four previously captured stock
+manifests match. Pointer slots and hash slots moved by different amounts, so
+no global address shift is assumed. Ten detached faults, four public version/
+path/evidence refusals, repeat JSON and original 1.0 regressions pass. This is
+runtime identity evidence, not a fresh audit of the new installation's BIG
+archives, authoring ProcessingHashes, layout compatibility or loaded mods.
+Next: rebase registry/hash consumer and native stream pipeline to 1.1.
+Effort **52% / 48%**, compiler groups 165 (not rerun).
+
+[EP1 1.1 baseline and modconfig](docs/RA3EP11_MODCONFIG_BASELINE.md).
 The user's second Steam installation contains a distinct 13,381,632-byte
 ra3ep1_1.1.game; its 1.1 SkuDef selects that executable. Previous fixed-offset
 runtime audits remain scoped to the identical 1.0 images and correctly refuse
