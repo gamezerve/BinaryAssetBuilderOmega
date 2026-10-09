@@ -3,8 +3,9 @@
 Later runtime update: the [normal baseline](RA3EP11_NORMAL_BASELINE.md) observed
 default selection of 1.1 and its `-config` SKU argument, with user-confirmed main
 menu arrival. The no-launch statements in the static discovery below describe
-the earlier inspection, not current project state. No runtime `-modconfig`
-forwarding or config-read proof has been obtained.
+the earlier inspection, not current project state. The subsequent
+[inert trial](RA3EP11_INERT_CONFIG_TRIAL.md) observed runtime `-modconfig`
+forwarding but crashed; config-read proof remains unavailable.
 
 ## Version correction
 

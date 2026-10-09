@@ -1,5 +1,11 @@
 # Phase A inert config-read experiment
 
+**Runtime update, October 10:** the [single inert trial](RA3EP11_INERT_CONFIG_TRIAL.md)
+showed the expected option/path in the 1.1 child, then crashed with a PID-matched
+Windows error record. The earlier normal baseline reached the menu; this trial
+did not. The probe below is not a proven successful read. These results do
+not authorize an automatic rerun or game instrumentation.
+
 **Current installation update:** [campaign restoration](RA3EP11_CAMPAIGN_RESTORE.md)
 was explicitly authorized and completed without overwrite. The user then
 authorized reversible isolation of the known loose metadata/map overrides.

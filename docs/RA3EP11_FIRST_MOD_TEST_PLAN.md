@@ -2,11 +2,18 @@
 
 ## Current runtime milestone
 
+Update October 10: the [inert trial](RA3EP11_INERT_CONFIG_TRIAL.md) forwarded
+the probe to the 1.1 child but crashed, with a matching Windows error record.
+Root cause and actual config consumption remain unresolved. New runtime
+controls/instrumentation require separate authorization; do not introduce
+asset packages before resolving this startup failure.
+
 The [first normal baseline](RA3EP11_NORMAL_BASELINE.md) now selected the reviewed
 1.1 game child and showed the default `-config` SKU argument; the user confirmed
 the main menu opened. It did not use `-modconfig`, a debugger or a mod package.
-Forwarding an isolated mod config and proving its actual read remain separate
-gates. The preparation estimate below is historical, not a renewed countdown.
+The later trial observed isolated mod-config forwarding; proving its actual
+read remains a separate gate. The preparation estimate below is historical,
+not a renewed countdown.
 
 ## Timing: a target, not a promise
 

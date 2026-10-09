@@ -1,7 +1,16 @@
 # BinaryAssetBuilder
 A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
-## Uprising progress — October 9, 2026
+## Uprising progress — October 10, 2026
+
+Latest runtime result: [inert modconfig trial](docs/RA3EP11_INERT_CONFIG_TRIAL.md).
+The single-LF probe path reached the 1.1 child's visible command line, but the
+game crashed without user-confirmed menu arrival. Windows Event 1000 matches
+the PID and records `MSVCR80.dll`, exception `0xc000000d`, offset `0x00014584`.
+Root cause and actual config consumption remain unproved. No debugger, mod
+package, system-wide recording or automatic retry was used. The quoted-only
+matcher was corrected offline (5/5 snapshots); raw evidence is preserved.
+Overall estimate stays **52% / 48%**.
 
 First real runtime milestone: [normal 1.1 baseline](docs/RA3EP11_NORMAL_BASELINE.md).
 One user-authorized normal launch selected `ra3ep1_1.1.game`; 41 process

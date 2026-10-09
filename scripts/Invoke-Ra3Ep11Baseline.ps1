@@ -1,7 +1,62 @@
-# Reborn: one explicitly requested normal launcher start; bounded process observation only, without debugger, mod arguments, retries or process termination.
+# Reborn: one explicitly requested baseline or inert config launcher start; no debugger, mod package, retries or process termination.
 [CmdletBinding()]
-param([switch]$Run)
+param([switch]$Run,[switch]$ConfigProbe,[switch]$SelfTest)
 $ErrorActionPreference='Stop'
+$probe=Join-Path (Split-Path $PSScriptRoot -Parent) 'fixtures\ra3ep11\phase-a\config-read-only.cfg'
+#-------------------------------------------------------------------------------------------------
+<# Reborn: construct only an empty baseline request or the fixed single-LF config probe request; never accept arbitrary configs or directives. #>
+#-------------------------------------------------------------------------------------------------
+function Get-Ep11BaselineArguments([bool]$UseProbe,[string]$Path,[byte[]]$Bytes) {
+    if(-not $UseProbe){return}
+    if(-not [IO.Path]::IsPathFullyQualified($Path) -or $Path.Length-gt 240 -or $Path-match '[^\x20-\x7E]|[";]' -or $Bytes.Length-ne 1 -or $Bytes[0]-ne 10){throw 'Only the reviewed absolute ASCII path and single-LF probe are admitted.'}
+    '-modconfig';$Path
+}
+#-------------------------------------------------------------------------------------------------
+<# Reborn: match the visible quoted probe or whitespace-free unquoted path only, not the native parser result or any config file read. #>
+#-------------------------------------------------------------------------------------------------
+function Test-Ep11VisibleConfigArgument([string]$CommandLine,[string]$Path) {
+    if([string]::IsNullOrEmpty($CommandLine)){return $false}
+    $escaped=[regex]::Escape($Path)
+    $pathPattern='"'+$escaped+'"'
+    if($Path-notmatch '\s'){ $pathPattern='(?:'+$pathPattern+'|'+$escaped+')' }
+    return [regex]::IsMatch($CommandLine,'(?:^|\s)-modconfig\s+'+$pathPattern+'(?:\s|$)',[Text.RegularExpressions.RegexOptions]::CultureInvariant)
+}
+if($SelfTest){
+    # Reborn: detached request/visible-argument fixtures never inspect the installation, query processes or launch a target.
+    if($Run){throw 'SelfTest and Run cannot be combined.'}
+    if(@(Get-Ep11BaselineArguments $false $null $null).Count-ne 0){throw 'Baseline argument fixture differs.'}
+    $request=@(Get-Ep11BaselineArguments $true $probe ([byte[]]@(10)))
+    if($request.Count-ne 2 -or $request[0]-cne '-modconfig' -or $request[1]-cne $probe){throw 'Probe argument fixture differs.'}
+    foreach($fault in @(
+        [pscustomobject]@{Path='relative.cfg';Bytes=[byte[]]@(10)},
+        [pscustomobject]@{Path=$probe+'"';Bytes=[byte[]]@(10)},
+        [pscustomobject]@{Path=$probe+';';Bytes=[byte[]]@(10)},
+        [pscustomobject]@{Path=$probe;Bytes=[byte[]]@(13,10)},
+        [pscustomobject]@{Path=$probe;Bytes=[byte[]]@(0)},
+        [pscustomobject]@{Path=$probe;Bytes=[byte[]]::new(0)}
+    )){$rejected=$false;try{$null=@(Get-Ep11BaselineArguments $true $fault.Path $fault.Bytes)}catch{$rejected=$true};if(-not $rejected){throw 'Invalid probe request admitted.'}}
+    if(-not (Test-Ep11VisibleConfigArgument ('game -modconfig "'+$probe+'" -config "sku"') $probe)){throw 'Visible argument positive rejected.'}
+    if(-not (Test-Ep11VisibleConfigArgument ('game -modconfig '+$probe+' -config "sku"') $probe)){throw 'Unquoted whitespace-free argument rejected.'}
+    $spaced='C:\detached fixture\probe.cfg'
+    if(-not (Test-Ep11VisibleConfigArgument ('game -modconfig "'+$spaced+'"') $spaced) -or (Test-Ep11VisibleConfigArgument ('game -modconfig '+$spaced) $spaced)){throw 'Spaced argument boundary differs.'}
+    foreach($line in @($null,'game -config "'+$probe+'"','game -modconfig "'+$probe+'.other"','game -modconfig "'+$probe+'"extra','game -modconfig '+$probe+'.other')){
+        if(Test-Ep11VisibleConfigArgument $line $probe){throw 'Visible argument negative admitted.'}
+    }
+    Write-Output 'Baseline/config detached tests: PASS; two request positives, six request refusals, three visible-argument positives and six negatives; no game or process query.'
+    return
+}
+$requestedArguments=@()
+$probeHandle=$null
+if($ConfigProbe){
+    # Reborn: reject probe reparse ancestry and hold a read-only, read-share handle throughout the experiment to deny ordinary replacement/writes.
+    $probeItem=Get-Item -LiteralPath $probe
+    for($ancestor=$probeItem;$null-ne $ancestor;$ancestor=if($ancestor.PSIsContainer){$ancestor.Parent}else{$ancestor.Directory}){
+        if(($ancestor.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0){throw 'Probe reparse ancestry refused.'}
+    }
+    $probeHandle=[IO.File]::Open($probe,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::Read)
+    if($probeHandle.Length-ne 1 -or $probeHandle.ReadByte()-ne 10){$probeHandle.Dispose();throw 'Probe identity differs.'}
+    $requestedArguments=@(Get-Ep11BaselineArguments $true $probe ([byte[]]@(10)))
+}
 $root='D:\Program Files (x86)\Steam\steamapps\common\Command and Conquer Red Alert 3 Uprising'
 $launcher=Join-Path $root 'RA3EP1.exe'
 $pins=@{
@@ -30,7 +85,7 @@ function Get-Ep11BaselineProcesses {
     @(Get-CimInstance -ClassName Win32_Process -Filter "Name = 'RA3EP1.exe' OR Name = 'ra3ep1_1.0.game' OR Name = 'ra3ep1_1.1.game'")
 }
 if(@(Get-Ep11BaselineProcesses).Count-ne 0){throw 'Existing Uprising process detected; it will not be touched.'}
-if(-not $Run){Write-Output 'Baseline preflight: PASS; reviewed identities and no existing Uprising process; game not executed.';return}
+if(-not $Run){if($null-ne $probeHandle){$probeHandle.Dispose()};Write-Output 'Baseline/config preflight: PASS; reviewed identities and no existing Uprising process; game not executed.';return}
 $artifactRoot=Join-Path (Split-Path $PSScriptRoot -Parent) 'artifacts'
 # Reborn: create only a unique repository-local result directory after validating its ancestry.
 for($ancestor=Get-Item -LiteralPath $artifactRoot;$null-ne $ancestor;$ancestor=$ancestor.Parent){
@@ -40,11 +95,12 @@ $output=Join-Path $artifactRoot ('Baseline-'+[Guid]::NewGuid().ToString('N'))
 $null=New-Item -ItemType Directory -Path $output
 $started=$false;$launcherId=$null;$observations=[Collections.Generic.List[object]]::new();$failure=$null
 try{
-    # Reborn: repeat the exclusion immediately before the sole start; no parent cwd/PATH changes or mod/runver arguments.
+    # Reborn: repeat the exclusion before the sole start; optional probe is the only modconfig argument, with no runver or parent cwd/PATH changes.
     if(@(Get-Ep11BaselineProcesses).Count-ne 0){throw 'Uprising appeared before launch; refusing start.'}
     $startUtc=[DateTime]::UtcNow
     $info=[Diagnostics.ProcessStartInfo]::new()
     $info.FileName=$launcher;$info.WorkingDirectory=$root;$info.UseShellExecute=$false
+    foreach($argument in $requestedArguments){$info.ArgumentList.Add($argument)}
     $owned=[Diagnostics.Process]::Start($info)
     $started=$true;$launcherId=$owned.Id
     $ownedCreationUtc=$owned.StartTime.ToUniversalTime()
@@ -62,10 +118,14 @@ try{
     }
 }catch{$failure=$_.Exception.Message}finally{
     # Reborn: save evidence even after post-start observation failure; never terminate the game or automatically retry.
-    $report=[pscustomobject]@{LauncherPath=$launcher;RequestedArguments=@();GameExecuted=$started;LauncherProcessId=$launcherId;Failure=$failure;Observations=$observations.ToArray();ProcessSnapshotAtomic=$false;PidReuseFullyExcluded=$false;IndirectDescendantsObserved=$false;ConfigConsumedProven=$false;ModPackageLoaded=$false;MainMenuReachedProven=$false;GameStoppedByObserver=$false;OutputDirectory=$output}
+    # Reborn: record exact visible argument matches separately from unproved native consumption; no command-line presence can certify a read.
+    $matching=0
+    if($ConfigProbe){foreach($observation in $observations){if(Test-Ep11VisibleConfigArgument $observation.CommandLine $probe){$matching++}}}
+    $report=[pscustomobject]@{LauncherPath=$launcher;RequestedArguments=$requestedArguments;ConfigProbeRequested=[bool]$ConfigProbe;MatchingConfigArgumentSnapshotCount=$matching;GameExecuted=$started;LauncherProcessId=$launcherId;Failure=$failure;Observations=$observations.ToArray();ProcessSnapshotAtomic=$false;PidReuseFullyExcluded=$false;IndirectDescendantsObserved=$false;ConfigConsumedProven=$false;ModPackageLoaded=$false;MainMenuReachedProven=$false;GameStoppedByObserver=$false;OutputDirectory=$output}
     [IO.File]::WriteAllText((Join-Path $output 'baseline.json'),(ConvertTo-Json -InputObject $report -Depth 6))
     if($null-ne $owned){$owned.Dispose()}
+    if($null-ne $probeHandle){$probeHandle.Dispose()}
 }
 # Reborn: keep full snapshots local while displaying only the bounded outcome, not repeated process command lines.
-$report|Select-Object LauncherPath,GameExecuted,LauncherProcessId,Failure,@{Name='ObservationCount';Expression={$_.Observations.Count}},ConfigConsumedProven,ModPackageLoaded,MainMenuReachedProven,GameStoppedByObserver,OutputDirectory|ConvertTo-Json -Depth 3
+$report|Select-Object LauncherPath,GameExecuted,LauncherProcessId,Failure,ConfigProbeRequested,MatchingConfigArgumentSnapshotCount,@{Name='ObservationCount';Expression={$_.Observations.Count}},ConfigConsumedProven,ModPackageLoaded,MainMenuReachedProven,GameStoppedByObserver,OutputDirectory|ConvertTo-Json -Depth 3
 if($null-ne $failure){throw "Baseline observation failed; do not relaunch automatically: $failure"}
