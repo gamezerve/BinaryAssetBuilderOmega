@@ -17,7 +17,8 @@ internal sealed class BigArchive : IDisposable
 
     public IReadOnlyList<BigEntry> Entries { get; }
 
-    public static BigArchive Open(string path)
+    // Reborn: callers may impose narrower reference-audit index bounds without changing legacy defaults.
+    public static BigArchive Open(string path, int maximumEntries = 1_000_000, long maximumDirectoryBytes = long.MaxValue)
     {
         var stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
         try
@@ -32,7 +33,7 @@ internal sealed class BigArchive : IDisposable
             _ = ReadUInt32BigEndian(reader); // Archive size.
             var entryCount = ReadUInt32BigEndian(reader);
             var headerSize = ReadUInt32BigEndian(reader);
-            if (entryCount > 1_000_000 || headerSize > stream.Length)
+            if (maximumEntries < 0 || maximumDirectoryBytes < 16 || entryCount > maximumEntries || headerSize < 16 || headerSize > maximumDirectoryBytes || headerSize > stream.Length)
             {
                 throw new InvalidDataException("Invalid BIG directory header.");
             }

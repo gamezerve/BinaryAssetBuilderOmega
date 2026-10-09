@@ -45,6 +45,22 @@ gates and no reliable date yet. See [first mod-test plan](docs/RA3EP11_FIRST_MOD
 The complete SDK is not a prerequisite for a narrow test; synthetic diagnostic
 music packages remain ineligible. No game launch has been performed.
 
+Current installation update: [campaign archive restoration](docs/RA3EP11_CAMPAIGN_RESTORE.md).
+The user-identified original campaign backup was restored to MapsCampaign.big
+with unchanged SHA-256 and no overwrite. Four loose mapmetadata files and 118
+files in Data/maps remain untouched. The Phase A planner discloses those known
+overrides and does not claim a clean stock baseline. Earlier missing-campaign
+observations below are historical. No game was started.
+
+Latest implementation: [stream marker/family audit](docs/RA3EP1_STREAM_VARIANT_AUDIT.md).
+`stream-variant-audit` now checks a bounded selected BIG marker, exact candidate
+stream siblings, linked manifest structure and target-specific checksum headers.
+Three real KW/RA3 examples pass, plus 16 detached positives and 26 refusals.
+It neither certifies EP1 compatibility nor resolves cdata/patch bases or proves
+native suffix selection. No game or reference package is modified; overall
+estimate remains **52% / 48%**. All 165 existing compiler groups and layout tests
+were rerun successfully; the new variant CLI tests are counted separately.
+
 The [first runtime-test plan](docs/RA3EP11_FIRST_MOD_TEST_PLAN.md) now explicitly
 separates mod SKU selection, optional launcher game-version requests, SKU
 executable selection and stream `.version` suffixes. RA3 loading conventions

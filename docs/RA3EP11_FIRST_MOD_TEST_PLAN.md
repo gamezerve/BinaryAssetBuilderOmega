@@ -42,7 +42,7 @@ and reaches existing valid stock assets. This is not an authored-asset test.
 Remaining preparation:
 
 1. Bounded config discovery is complete for the selected root/Data directories
-   and 13 available configured archives: [config inventory](RA3EP11_CONFIG_INVENTORY.md)
+   and originally 13 available configured archives: [config inventory](RA3EP11_CONFIG_INVENTORY.md)
    found four loose configs and no `filesystem.cfg`. This is not global absence
    or proof of runtime fallback. Resolve actual joined roots/additional config
    candidates and reconcile later updates with the intended test config; do not
@@ -55,10 +55,10 @@ Remaining preparation:
    runtime observation rather than infer it from strings. Keep test artifacts in a new workspace
    directory; do not patch executables, change registry settings or overwrite
    installed configs/archives.
-3. Resolve the stock-profile discrepancy before treating a launch failure as a
-   mod failure. Configured `Data\MapsCampaign.big` is absent; a Disabled-named
-   file exists. Do not rename it without the user's decision. A missing-campaign
-   test profile must be explicitly documented if chosen, not silently aliased.
+3. The [user-authorized campaign restoration](RA3EP11_CAMPAIGN_RESTORE.md)
+   restored the missing configured archive without overwrite or byte changes.
+   Known loose metadata/map files remain; disclose them and resolve the baseline
+   isolation decision before attributing a launch result to a new mod.
 4. Choose an observable read/load signal. A main menu screenshot alone cannot
    prove `-modconfig` was consumed: require a supported log, attributable file
    access observation or another independently validated signal.
@@ -68,6 +68,37 @@ SKU/config identities, arguments, observable result and failure symptoms.
 Successful entry to a menu is startup evidence only. Keep rollback trivial:
 the isolated configuration is not the installation's active stock config.
 No game launch has been performed by the current audit sequence.
+
+### First real observation: execution and stop policy still require review
+
+Before a game-under-debugger run, explicitly approve that instrumentation.
+Do not attach to an existing process or use the helper runner as a game runner.
+A newly owned launcher/child observation must identify exact file identities,
+creation time and ancestry, not merely a process name or reused PID. Keep
+baseline and probe separate. Do not automatically launch both or retry failures.
+No blanket child-debug flag, system-wide trace, injected library, binary patch,
+registry edit, save overwrite or campaign-file rename is part of this plan.
+
+Define a bounded deadline and log budget, plus shutdown of only owned debugger
+and verified owned game process(es). If ancestry/ownership is lost, stop
+automated intervention and report it rather than killing matching names.
+Unexpected x86 breakpoint/return errors, asynchronous completion, ambiguous
+handle reuse, non-target read correlation, missing expected child or fixture
+identity changes must fail observation, not be treated as config consumption.
+The helper recipe's global scratch registers and all-open logging are not a
+general concurrent-game tracer; an exact-target/thread-aware design remains
+necessary. Starting a game may write ordinary user preferences/logs or trigger
+Steam behavior even without changing installed files; disclose this before run.
+
+The user authorized restoration of the original Disabled-named campaign archive;
+it was restored without overwrite or byte changes. Four loose `Data/mapmetadata.*`
+files and 118 files under `Data/maps` remain untouched. Archive completeness
+does not establish a clean stock baseline or effective override precedence.
+Separately decide whether to test that modified baseline or reversibly isolate
+the exact loose namespace; no blanket deletion is authorized. Restoration
+does not by itself authorize a debugger-under-game run. Runtime test
+timing now depends on these choices and observation implementation; the earlier
+2–4-session target is historical planning, not a renewed countdown.
 
 Prepared next experiment: [inert config-read plan](RA3EP11_CONFIG_READ_SMOKE_PLAN.md).
 A single-LF external fixture and checked baseline/probe request arrays now

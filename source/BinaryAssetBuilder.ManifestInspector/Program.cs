@@ -13,6 +13,9 @@ internal static class Program
     {
         try
         {
+            // Reborn: inspect a caller-selected version-marker stream family without codecs, compiler initialization or game execution.
+            if (args.FirstOrDefault() == "stream-variant-audit" && args.Length == 3) { StreamVariantAudit.Run(args[1], args[2]); return 0; }
+            if (args.FirstOrDefault() == "stream-variant-self-test" && args.Length == 1) { StreamVariantAudit.SelfTest(); return 0; }
             // Reborn: worker transport is handled before compiler initialization; synthetic worker failure tests never load native codecs.
             if (args.FirstOrDefault() == "audio-encoder-worker" && args.Length == 3) { AudioEncoderSupervisor.Worker(args[1],args[2]); return 0; }
             // Reborn: the supervising parent validates results independently and never loads the native audio DLL itself.
@@ -1151,6 +1154,9 @@ internal static class Program
     private static void PrintUsage()
     {
         Console.WriteLine("BinaryAssetBuilder.ManifestInspector");
+        // Reborn: marker candidates are package metadata checks, not native suffix selection or playable-mod certification.
+        Console.WriteLine("  stream-variant-audit <BIG> <relative-stream-stem-without-extension>");
+        Console.WriteLine("  stream-variant-self-test");
         Console.WriteLine("  inspect <manifest-or-big> [--entry <BIG entry>] [--json]");
         Console.WriteLine("  verify  <manifest-or-big> [--entry <BIG entry>] [--json]");
         Console.WriteLine("  compare <left> <right> [--left-entry <entry>] [--right-entry <entry>] [--json]");

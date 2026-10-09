@@ -1,5 +1,10 @@
 # Phase A inert config-read experiment
 
+**Current installation update:** [campaign restoration](RA3EP11_CAMPAIGN_RESTORE.md)
+was explicitly authorized and completed without overwrite. The planner now
+reports configured archives present with known loose metadata/map overrides,
+not a clean stock baseline. Earlier missing-campaign statements are historical.
+
 **Current capture gate:** [the user's real control trace](RA3EP11_READ_CONTROL_RESULT.md)
 contained the negative helper and unrelated processes. The requested WPR
 process-name scope is rejected and recording is disabled. The game experiment

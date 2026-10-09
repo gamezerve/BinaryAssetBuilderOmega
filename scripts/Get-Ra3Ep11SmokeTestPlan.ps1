@@ -21,6 +21,13 @@ $smokeConfigBytes=Read-RuntimeInput $smokeConfigFull 64
 Assert-Ep11ReadOnlyProbe $smokeConfigBytes $smokeConfigFull
 $smokeConfigHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($smokeConfigBytes))
 $smokeRoot=[IO.Path]::GetDirectoryName([IO.Path]::GetFullPath($SkuDefinitionPath))
+# Reborn: restored archive availability does not establish a clean stock baseline while known loose overrides remain.
+$smokeLooseMetadata=@(foreach($kind in @('bin','imp','manifest','relo')){
+    $loosePath=Join-Path $smokeRoot ('Data/mapmetadata.'+$kind)
+    if(Test-Path -LiteralPath $loosePath -PathType Leaf){$looseItem=Get-Item -LiteralPath $loosePath;[pscustomobject]@{Path=$looseItem.FullName;Bytes=$looseItem.Length}}
+})
+$smokeLooseMapsPresent=Test-Path -LiteralPath (Join-Path $smokeRoot 'Data/maps') -PathType Container
+$smokeKnownOverrides=($smokeLooseMetadata.Count -gt 0 -or $smokeLooseMapsPresent)
 if(-not [IO.Path]::GetFullPath($LauncherPath).Equals([IO.Path]::Combine($smokeRoot,'RA3EP1.exe'),[StringComparison]::OrdinalIgnoreCase)){throw 'Smoke launcher and SKU must belong to the same installation.'}
 if($smokeConfigFull.StartsWith($smokeRoot.TrimEnd('\')+'\',[StringComparison]::OrdinalIgnoreCase)){throw 'Config-read probe must remain outside the installed game tree.'}
 if($SelfTest){
@@ -50,7 +57,10 @@ $report=[pscustomobject]@{
     LauncherPath=$smokeLauncher.LauncherPath;LauncherSha256=$smokeLauncher.LauncherSha256
     RequiredObservedGamePath=[IO.Path]::GetFullPath($ImagePath);ConfigPath=$smokeConfigFull;ConfigBytes=$smokeConfigBytes.Length;ConfigSha256=$smokeConfigHash;ConfigDirectiveCount=0
     ConfiguredArchiveCount=$smokeInventory.ConfiguredArchiveCount;AvailableArchiveCount=$smokeInventory.AvailableArchiveCount;MissingConfiguredArchives=$smokeInventory.MissingConfiguredArchives
-    InstallationProfile=$(if($smokeInventory.MissingConfiguredArchives.Count-eq 0){'ConfiguredStockComplete'}else{'IncompleteStock-CampaignMissing-NoAlias'})
+    InstallationProfile=$(if($smokeInventory.MissingConfiguredArchives.Count-ne 0){'IncompleteStock-CampaignMissing-NoAlias'}elseif($smokeKnownOverrides){'ConfiguredArchivesPresent-KnownLooseOverrides'}else{'ConfiguredArchivesPresent-StockPurityUnverified'})
+    KnownLooseMetadataFiles=$smokeLooseMetadata;LooseMapDirectoryPresent=$smokeLooseMapsPresent;KnownLooseOverridesPresent=$smokeKnownOverrides
+    # Reborn: this targeted existence inventory neither authenticates stock files nor measures effective VFS precedence.
+    StockBaselineCleanProven=$false;LooseOverridePrecedenceProven=$false
     Cases=$smokeCases;ConfigReadSignalRequired='Attributable successful read of the exact probe by the observed 1.1 process; argument presence or menu alone is insufficient.'
     WhitespaceFixturesExecuted=$(if($SelfTest){2}else{0});PolicyRefusalsExecuted=$(if($SelfTest){9}else{0})
     ReadOnly=$true;TargetExecuted=$false;ArgumentsForwardedProven=$false;ConfigConsumedProven=$false;EffectiveModPathsProven=$false
