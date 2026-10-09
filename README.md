@@ -38,7 +38,18 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 wrapper-local lifecycle](docs/RA3EP11_LOADER_LIFECYCLE.md).
+Latest milestone: [EP1 1.1 loader argument provenance](docs/RA3EP11_LOADER_ARGUMENTS.md).
+The added ninth loader argument comes from wrapper argument six. The eighth
+flag already exists in 1.0: first branch passes 1, second passes 0. Reviewed
+1.1 branches use argument eight for cache-related entry routing and forward
+it as gate argument seven; C4h after one push is still argument eight, not nine.
+Six current/baseline pins, six positive/four invalid stack checks, ten detached
+faults and repeat JSON pass. Ninth-argument consumer/full semantics remain
+unproved; no authoring or bypass permission follows. Effort **52% / 48%**;
+compiler groups 165 (not rerun). Next: 1.1 factories/source ownership and
+caller-side provenance of wrapper argument six.
+
+[EP1 1.1 wrapper-local lifecycle](docs/RA3EP11_LOADER_LIFECYCLE.md).
 Wrapper 004CFEB0 initializes fresh entry/descriptor pointers and capacities,
 passes context as argument seven and frees both buffers on normal cleanup.
 Its 1.1 loader calls have nine arguments/36-byte cleanup, versus eight/32 in

@@ -113,6 +113,11 @@ guard was relaxed; the older report remains correctly scoped to eight arguments.
 
 ## Remaining migration gates
 
+Follow-up: [loader argument provenance](RA3EP11_LOADER_ARGUMENTS.md) traces
+the ninth argument to wrapper argument six and distinguishes it from the
+preserved eighth flag already present in 1.0. Ninth-argument consumption and
+full semantics remain open; this lifecycle report retains its original scope.
+
 Next independently locate 1.1 factories, source ownership and reader lifetime,
 and trace the added loader argument's consumers. This milestone strengthens
 the fresh-capacity projection scope but does not establish complete stream
