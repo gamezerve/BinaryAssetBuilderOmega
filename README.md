@@ -45,7 +45,17 @@ gates and no reliable date yet. See [first mod-test plan](docs/RA3EP11_FIRST_MOD
 The complete SDK is not a prerequisite for a narrow test; synthetic diagnostic
 music packages remain ineligible. No game launch has been performed.
 
-Latest milestone: [Phase A inert config-read plan](docs/RA3EP11_CONFIG_READ_SMOKE_PLAN.md).
+Latest milestone: [narrow config-read trace candidate](docs/RA3EP11_CONFIG_TRACE_CANDIDATE.md).
+WPR metadata accepts one Kernel-File provider, the ra3ep1_1.1.game process-name
+filter, five event IDs and a 4 MiB configured buffer product; no stacks or broad
+system profile is requested. Eight scope mutations/two XML-policy refusals and
+repeat JSON pass. Local event templates distinguish filename/file-object/key,
+read request and Irp completion. Live filtering/correlation are not proved;
+no trace or game was started. Next: a non-game controlled read capture before
+using this candidate for the prepared probe. Effort **52% / 48%**; compiler
+groups 165 (not rerun).
+
+[Phase A inert config-read plan](docs/RA3EP11_CONFIG_READ_SMOKE_PLAN.md).
 A byte-pinned single-LF external config (zero directives/assets) and checked
 baseline/probe launch-request arrays are prepared. Two whitespace fixtures,
 nine refusal fixtures, exact config identity and repeat JSON pass. The current

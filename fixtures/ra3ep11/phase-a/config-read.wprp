@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: request only EP1 1.1 file-name/create/read/completion events; runtime filtering and correlation must still be validated before use. -->
+<WindowsPerformanceRecorder Version="1.0" Author="Reborn">
+  <Profiles>
+    <EventCollector Id="RebornConfigCollector" Name="Reborn EP1 config-read collector">
+      <BufferSize Value="64" />
+      <Buffers Value="64" />
+    </EventCollector>
+    <EventProvider Id="RebornKernelFile" Name="edd08927-9cc4-4e65-b970-c2560fb5c289" Level="4" NonPagedMemory="true" Stack="false" Strict="true" ProcessExeFilter="ra3ep1_1.1.game">
+      <Keywords>
+        <Keyword Value="0x1D0" />
+      </Keywords>
+      <EventFilters FilterIn="true">
+        <EventId Value="10" />
+        <EventId Value="11" />
+        <EventId Value="12" />
+        <EventId Value="15" />
+        <EventId Value="24" />
+      </EventFilters>
+    </EventProvider>
+    <Profile Id="Ra3Ep11ConfigRead.Light.Memory" Name="Ra3Ep11ConfigRead" Description="Reborn EP1 config-read candidate; not runtime validated" LoggingMode="Memory" DetailLevel="Light">
+      <Collectors>
+        <EventCollectorId Value="RebornConfigCollector">
+          <EventProviders>
+            <EventProviderId Value="RebornKernelFile" />
+          </EventProviders>
+        </EventCollectorId>
+      </Collectors>
+    </Profile>
+  </Profiles>
+</WindowsPerformanceRecorder>

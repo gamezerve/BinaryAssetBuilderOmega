@@ -91,6 +91,11 @@ test groups, which are not rerun by this milestone.
    game trace; no recording session was started. Narrow capture design, event
    decoding and read/result-to-path/PID correlation remain required before
    enabling tracing; default profile availability does not close that gate.
+   Follow-up: a [single-provider/process-name/five-event candidate](RA3EP11_CONFIG_TRACE_CANDIDATE.md)
+   is now accepted by WPR's metadata commands and scope mutation tests. Its
+   4 MiB configured buffer product replaces the broad default request, not
+   runtime validation. A non-game controlled capture must verify live filtering
+   and file/read/completion correlation before the game probe is attempted.
 3. Record baseline and probe outcomes separately, including early failures;
    repeat a successful case before marking the config-read gate satisfied.
 4. Only afterward prepare an unchanged-stock package-loading configuration.
