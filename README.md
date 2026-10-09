@@ -3,6 +3,13 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 9, 2026
 
+First real runtime milestone: [normal 1.1 baseline](docs/RA3EP11_NORMAL_BASELINE.md).
+One user-authorized normal launch selected `ra3ep1_1.1.game`; 41 process
+snapshots show its default `-config` SKU argument, and the user confirmed the
+main menu opened. No debugger, mod package or `-modconfig` was used. Config
+consumption and authored-mod loading remain unproved. Overall estimate stays
+approximately **52% / 48%**; this closes launch-selection uncertainty only.
+
 Active branch: `feature/ra3ep1-manifest-inspector`. This is not yet a usable
 Uprising Mod SDK release. Replacing XML/XSD files alone is insufficient:
 native layouts, type hashes, dependencies and in-game loading must also pass validation.
@@ -43,7 +50,8 @@ config/unchanged-stock loading smoke test, not a promised date. An authored XML
 asset changing the game has separate selected-type/hash/dependency/package
 gates and no reliable date yet. See [first mod-test plan](docs/RA3EP11_FIRST_MOD_TEST_PLAN.md).
 The complete SDK is not a prerequisite for a narrow test; synthetic diagnostic
-music packages remain ineligible. No game launch has been performed.
+music packages remain ineligible. The first normal baseline is now complete;
+the earlier 2–4-session estimate concerned preparation, not a new countdown.
 
 Current installation update: [campaign archive restoration](docs/RA3EP11_CAMPAIGN_RESTORE.md).
 The user-identified original campaign backup was restored to MapsCampaign.big
@@ -52,7 +60,8 @@ isolation of four loose mapmetadata files and 118 files in Data/maps; all 122
 backup SHA-256 hashes match. The originals are absent from the installation,
 and backup contents remain local. The Phase A planner reports known overrides
 absent without claiming complete stock authenticity. Earlier missing-campaign
-observations below are historical. No game was started.
+observations below are historical. Restoration/isolation did not start a game;
+the later separately authorized normal baseline is linked above.
 
 Latest implementation: [stream marker/family audit](docs/RA3EP1_STREAM_VARIANT_AUDIT.md).
 `stream-variant-audit` now checks a bounded selected BIG marker, exact candidate

@@ -1,5 +1,13 @@
 # First Uprising mod-test plan
 
+## Current runtime milestone
+
+The [first normal baseline](RA3EP11_NORMAL_BASELINE.md) now selected the reviewed
+1.1 game child and showed the default `-config` SKU argument; the user confirmed
+the main menu opened. It did not use `-modconfig`, a debugger or a mod package.
+Forwarding an isolated mod config and proving its actual read remain separate
+gates. The preparation estimate below is historical, not a renewed countdown.
+
 ## Timing: a target, not a promise
 
 We do not need a complete SDK to begin a narrow controlled loading test.
