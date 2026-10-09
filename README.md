@@ -45,7 +45,15 @@ gates and no reliable date yet. See [first mod-test plan](docs/RA3EP11_FIRST_MOD
 The complete SDK is not a prerequisite for a narrow test; synthetic diagnostic
 music packages remain ineligible. No game launch has been performed.
 
-Latest milestone: [owned-helper debugger calibration](docs/RA3EP11_DEBUGGER_READ_CONTROL.md).
+Latest package evidence: [user-built Reborn comparison](docs/REBORN_MOD_PACKAGE_COMPARISON.md).
+Actual KW/WrathEd and RA3/EA SDK examples confirm nonempty `_mod` markers as
+well as whitespace-only markers. RA3 deneme packages `map.version` with `_mod`
+and `map_mod.*`; its map references `worldbuilder.11.manifest` as a patch base.
+Five selected manifests pass structural inspection; this is not payload/runtime
+validation. KW v5 / RA3 v6 packages are not converted to EP1 v7 by renaming.
+No sample files or installed games were changed. Effort remains **52% / 48%**.
+
+[Owned-helper debugger calibration](docs/RA3EP11_DEBUGGER_READ_CONTROL.md).
 The existing x64 CDB debugger observed one exact probe open/read/return in a
 newly owned non-game helper: native status 0, one actual byte, value 0A,
 and matching native/managed PID. No administrator elevation, WPR, installation,
