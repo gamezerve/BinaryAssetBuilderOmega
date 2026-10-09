@@ -38,7 +38,19 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 scoped provider-open forwarding](docs/RA3EP11_PROVIDER_OPEN_FORWARDING.md).
+Latest milestone: [EP1 1.1 scoped search-path pairs](docs/RA3EP11_SEARCH_PATH_PAIRS.md).
+The native builder clears and rebuilds ordered semicolon root/registration
+pairs, rather than appending old pairs. It removes only one trailing slash,
+preserves duplicates/whitespace and stores provider resolution results without
+a null check. Context +38h is the unchanged capacity/iteration bound, not an
+active count written by this routine. The complete config writer now links
+set-search-path to rebuilding. Two complete pins, six pair/one rebuild/one
+open-composition fixtures, nine policy rejections, sixteen faults and repeat
+JSON pass. No payload is read. Native capacity/empty-token safety, full startup
+order, authentic compiler hash and game loading remain open. Effort **52% / 48%**;
+compiler groups 165 (not rerun).
+
+[EP1 1.1 scoped provider-open forwarding](docs/RA3EP11_PROVIDER_OPEN_FORWARDING.md).
 Explicit providers receive the path after one leading dot-separator removal,
 without interior slash conversion or prefix case changes. Default-provider
 opens instead walk ordered search-root/registration pairs: relative names use
