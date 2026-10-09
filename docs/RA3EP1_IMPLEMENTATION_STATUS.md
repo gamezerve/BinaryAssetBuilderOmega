@@ -5,6 +5,18 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-09)
 
+[EP1 registry/lookup characterization](RA3EP1_REGISTRY_LOOKUP.md) pins the
+211-byte shared registration and 34-byte TypeId lookup bodies. The list-node
+key/metadata pointer is distinct from object+8 initialized hash; node+8 repeats
+TypeId, not TypeHash. All 150 static object IDs match the repo-managed FastHash
+diagnostic; 138 are independently observed stock roots. Unknown object+12 words
+disagree with stock Tokenized in 122 cases and remain opaque. Lookup returns
+the object pointer without consuming TypeHash. Repeat JSON, four private body/
+object faults, opaque preservation and initializer regressions pass. No target
+execution, compiler changes or full-suite rerun; groups 165, effort **52% / 48%**.
+Next follow actual lookup callers/hash consumers; authoring/production gates
+remain closed.
+
 [EP1 runtime hash initializers](RA3EP1_TYPE_INITIALIZERS.md) verifies limited
 straight-line x86 templates for 150 named table-hash reads/object+8 writes:
 43 short, 107 with an additional vtable-shaped base write. Exact opcode boundaries,

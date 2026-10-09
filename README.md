@@ -38,7 +38,17 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 runtime hash initializers](docs/RA3EP1_TYPE_INITIALIZERS.md).
+Latest milestone: [EP1 registry/lookup characterization](docs/RA3EP1_REGISTRY_LOOKUP.md).
+Pinned shared registration and 34-byte linked-list lookup separate the TypeId
+key from the metadata object's initialized hash. All 150 raw object TypeIds match
+the managed FastHash provider; 138 match independently observed stock roots.
+The opaque object+12 word differs from Tokenized in 122 cases and is never
+relabelled. This lookup returns a metadata pointer and does not consume TypeHash.
+Repeat/JSON, body/object faults and opaque preservation tests pass; initializer
+regressions pass. No target execution/production changes. Effort **52% / 48%**,
+groups 165; next follow lookup callers to actual returned-object hash consumers.
+
+[EP1 runtime hash initializers](docs/RA3EP1_TYPE_INITIALIZERS.md).
 Limited x86 decoding verifies 150 named hash-table reads/object+8 writes in
 43 short and 107 vtable-writing initializer templates. Exact opcodes, mapped
 operands and signed call targets are checked, with routine SHA/bytes retained.
