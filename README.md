@@ -3,6 +3,13 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 10, 2026
 
+Next read-observation preparation: [native config read route](docs/RA3EP11_CONFIG_READ_ROUTE.md).
+The `0x400` open flag attempts a memory-reader conversion before parsing;
+zero-byte population can still count as conversion success. A positive read
+return also needs a non-null destination/content check. Six new static pins
+and vtable bindings define narrower observation sites, not game-read proof
+or an authorized debugger recipe. No new runtime trial was performed.
+
 Latest runtime milestone: [short-name config control](docs/RA3EP11_SHORT_NAME_CONFIG_TRIAL.md).
 The user-authorized same-content `probe_1.0.cfg` trial reached the main menu
 (user confirmed); 34/34 child snapshots match its `-modconfig` path. No
