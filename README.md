@@ -38,7 +38,19 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 concrete reader/descriptor producer](docs/RA3EP11_DESCRIPTOR_PRODUCER.md).
+Latest milestone: [EP1 1.1 linked-sidecar setup](docs/RA3EP11_LINKED_SIDECARS.md).
+The complete helper 00449810 prepares sidecars, not entry hash transformations.
+Two whole helper bodies and three suffix literals are pinned independently to
+1.1. All twelve captured-stock companions pass header/checksum/exact-length
+checks, including the 1,394,571,528-byte WorldBuilder.bin. Each audit reads only
+192 sidecar header bytes over two passes, zero payload bytes. Four detached
+header faults, eleven private code/literal faults and repeat JSON pass. Native
+checksum diagnostics do not prove unconditional rejection or magic validation.
+No native execution, production-policy change or fresh 1.1 archive extraction.
+Effort **52% / 48%**; compiler groups 165 (not rerun). Next: 1.1 chunk read/range
+dispatch, then factories/context lifetime and modconfig package handling.
+
+[EP1 1.1 concrete reader/descriptor producer](docs/RA3EP11_DESCRIPTOR_PRODUCER.md).
 The reviewed concrete reader reads a 52-byte header and requests 48 bytes per
 entry. Producer 00449750 writes 20-byte descriptors with entry pointer+12,
 source pointer+16 and cumulative bin/relo/imp offsets+0/+4/+8. Its loop uses

@@ -117,7 +117,12 @@ allocator size and direct producer call. Existing version guards remain strict.
 ```
 
 The 165-group compiler suite was not rerun for this standalone static audit.
-Next inspect `00449810` and the concrete linked chunk queue/dispatch/read paths,
+Follow-up: [1.1 linked-sidecar setup](RA3EP11_LINKED_SIDECARS.md) reviews the
+complete `00449810` body and resolves its scoped role as sidecar setup, not
+direct entry transformation. This producer report's false helper/provenance
+flags describe its original narrower scope and are not silently rewritten.
+
+Next inspect the concrete linked chunk queue/dispatch/read paths,
 then source factories and context lifetime. Complete pointer provenance,
 authentic authoring ProcessingHash, marshaller compatibility and game loading
 remain open. Engineering effort remains **52% complete / 48% remaining**;
