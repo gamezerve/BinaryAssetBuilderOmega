@@ -29,6 +29,43 @@ still advancing/returning a positive count. Thus a positive return alone is
 insufficient: observe valid source/destination pointers and actual content.
 Signed arithmetic behavior for malformed state is not modeled as safe.
 
+## Source-reader fallback contract
+
+Follow-up static review binds source vtable slot `0Ch` to `004D5BB0`.
+The function returns zero if its +E4h source pointer is null or the signed
+requested count is nonpositive. Otherwise it branches on stored flags +8h,
+bit `200h`. Do not infer the stored flags solely from the opener's incoming
+`401h` request; the open implementation may transform them.
+
+In the non-buffered branch, `009699E0` creates/submits an internal request,
+initializing state +4h and 64-bit count +38h/+3Ch to zero. `00969870` invokes
+an internal completion helper when the caller supplies a nonzero wait value,
+then returns state +4h. The source reader does not test that returned state.
+It calls `009698D0`, which also invokes the completion helper and returns the
+count in EDX:EAX. The source reader advances its cursor and returns only EAX,
+the **low 32-bit count**, not a Windows status code. Negative/error encodings,
+the state enum and the full completion worker are not established here.
+
+In the `200h` branch, it waits on two internal buffers, copies available
+segments, submits refills through the same request helper, and accumulates
+the copied count. A nonnegative return is not by itself verified kernel I/O
+completion. For a one-byte probe, require count **1**, matching non-null
+buffer and byte **0A**, plus the exact-path/object/invocation chain. Do not
+apply `NTSTATUS == 0` to this engine method's count return. Conversely, do
+not interpret a kernel `NtReadFile` status as a transferred-byte count.
+Kernel success/Information and engine count/content are separate observations.
+
+The now-pinned completion helper `00969CD0` loops while request +4h is zero,
+but can return when its supplied time limit is reached without establishing
+a nonzero final state. Its mere return must not be interpreted as completion.
+The pinned read worker `00969630` calls backend virtual slot `14h`, adds the
+returned EAX into request count +38h/+3Ch and advances destination/offset.
+It resubmits when remaining bytes exist and the last count equals the requested
+chunk; otherwise it returns its finish indicator, including after a short or
+zero count. A worker finish therefore does not prove a complete transfer.
+The concrete backend slot and kernel status are still unresolved, as are
+the queue's full state publication/cancellation semantics.
+
 ## Narrow proposed evidence chain
 
 | Site | Evidence needed | What it does not establish alone |
@@ -42,8 +79,9 @@ Signed arithmetic behavior for malformed state is not modeled as safe.
 Those addresses are preferred VAs, **not automatically valid live addresses**.
 Resolve and verify the loaded image base and instruction bytes before setting
 any game breakpoint. Refuse unexpected reader vtables rather than interpreting
-their EAX using the memory-reader contract. The fallback source-reader read
-body is not yet pinned/characterized by this audit.
+their EAX using the memory-reader contract. The source fallback body is now
+pinned, but its internal completion worker and status enum remain unresolved;
+engine buffer proof must not be relabeled as kernel completion proof.
 
 Do not reuse helper CDB commands unchanged: the game may have multiple threads
 and concurrent opens; global scratch registers and broad one-shot return
@@ -63,9 +101,9 @@ asking the user to approve a separately scoped real trial.
 ## Validation
 
 `Get-Ra3Ep11ConfigReadRoute.ps1` reuses the full image/consumer identity guard,
-adds six exact code/data pins and three concrete vtable bindings, and rechecks
-the image hash at completion. `-SelfTest` exercises nine private mutation
-refusals without calling the native code. All nine refusals and final image
+now has twelve exact code/data pins and four concrete vtable bindings, and rechecks
+the image hash at completion. `-SelfTest` exercises sixteen private mutation
+refusals without calling the native code. All sixteen refusals and final image
 identity recheck passed. This is static route recovery, not
 a runnable debugger recipe or another compiler test group.
 

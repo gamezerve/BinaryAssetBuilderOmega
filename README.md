@@ -4,9 +4,14 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 ## Uprising progress — October 10, 2026
 
 Next read-observation preparation: [native config read route](docs/RA3EP11_CONFIG_READ_ROUTE.md).
+The source-reader fallback is now independently pinned: direct-request and
+buffered branches return engine byte counts, not NTSTATUS. The completion
+wait can time out while pending; a worker can finish after a short read.
+Twelve code/data pins and sixteen private mutation refusals pass; full internal completion-state
+semantics remain open. No debugger or game was executed in this follow-up.
 The `0x400` open flag attempts a memory-reader conversion before parsing;
 zero-byte population can still count as conversion success. A positive read
-return also needs a non-null destination/content check. Six new static pins
+return also needs a non-null destination/content check. Static pins
 and vtable bindings define narrower observation sites, not game-read proof
 or an authorized debugger recipe. No new runtime trial was performed.
 
