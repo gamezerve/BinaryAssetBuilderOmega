@@ -8,8 +8,8 @@ $first=& $audit @arguments -SelfTest
 $second=& $audit @arguments -AsJson|ConvertFrom-Json
 if(-not $first.ReadOnly -or $first.ConfigBytes-ne 1 -or $first.ConfigSha256-cne '01BA4719C80B6FE911B091A7C05124B64EEECE964E09C058EF8F9805DACA546B' -or
     $first.ConfigDirectiveCount-ne 0 -or $first.Cases.Count-ne 2 -or $first.WhitespaceFixturesExecuted-ne 2 -or $first.PolicyRefusalsExecuted-ne 9 -or
-    $first.InstallationProfile-cne 'ConfiguredArchivesPresent-KnownLooseOverrides' -or $first.MissingConfiguredArchives.Count-ne 0 -or
-    $first.KnownLooseMetadataFiles.Count-ne 4 -or -not $first.LooseMapDirectoryPresent -or -not $first.KnownLooseOverridesPresent){throw 'Reviewed restored-archive/loose-override smoke-test profile differs.'}
+    $first.InstallationProfile-cne 'ConfiguredArchivesPresent-StockPurityUnverified' -or $first.MissingConfiguredArchives.Count-ne 0 -or
+    $first.KnownLooseMetadataFiles.Count-ne 0 -or $first.LooseMapDirectoryPresent -or $first.KnownLooseOverridesPresent){throw 'Reviewed restored-archive/isolated-loose-override smoke-test profile differs.'}
 if($first.Cases[0].Name-cne 'baseline' -or $first.Cases[0].RequestedArgumentList.Count-ne 0 -or
     $first.Cases[1].Name-cne 'isolated-config-read' -or $first.Cases[1].RequestedArgumentList.Count-ne 2 -or
     $first.Cases[1].RequestedArgumentList[0]-cne '-modconfig' -or $first.Cases[1].RequestedArgumentList[1]-cne $first.ConfigPath){throw 'Smoke-test request arguments differ.'}
@@ -20,4 +20,4 @@ foreach($property in $first.PSObject.Properties){
     if($property.Name-in @('WhitespaceFixturesExecuted','PolicyRefusalsExecuted')){continue}
     if((ConvertTo-Json -InputObject $property.Value -Depth 8 -Compress)-cne (ConvertTo-Json -InputObject $second.($property.Name) -Depth 8 -Compress)){throw "Repeat smoke-test field differs: $($property.Name)"}
 }
-Write-Output 'EP1 Phase A plan: PASS; single-LF/no-directive config, two explicit launch requests, two whitespace fixtures, nine policy refusals and repeat JSON. Campaign archive restored; four loose metadata files and map directory disclosed. No clean stock baseline, VFS precedence, launch, forwarding, config consumption or authored mod load is claimed.'
+Write-Output 'EP1 Phase A plan: PASS; single-LF/no-directive config, two explicit launch requests, two whitespace fixtures, nine policy refusals and repeat JSON. Campaign archive restored; known loose metadata/maps isolated. No complete stock purity, VFS precedence, launch, forwarding, config consumption or authored mod load is claimed.'

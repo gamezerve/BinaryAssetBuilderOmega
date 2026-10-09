@@ -47,9 +47,11 @@ music packages remain ineligible. No game launch has been performed.
 
 Current installation update: [campaign archive restoration](docs/RA3EP11_CAMPAIGN_RESTORE.md).
 The user-identified original campaign backup was restored to MapsCampaign.big
-with unchanged SHA-256 and no overwrite. Four loose mapmetadata files and 118
-files in Data/maps remain untouched. The Phase A planner discloses those known
-overrides and does not claim a clean stock baseline. Earlier missing-campaign
+with unchanged SHA-256 and no overwrite. The user then authorized reversible
+isolation of four loose mapmetadata files and 118 files in Data/maps; all 122
+backup SHA-256 hashes match. The originals are absent from the installation,
+and backup contents remain local. The Phase A planner reports known overrides
+absent without claiming complete stock authenticity. Earlier missing-campaign
 observations below are historical. No game was started.
 
 Latest implementation: [stream marker/family audit](docs/RA3EP1_STREAM_VARIANT_AUDIT.md).

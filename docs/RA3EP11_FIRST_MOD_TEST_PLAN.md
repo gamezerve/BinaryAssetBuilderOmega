@@ -91,11 +91,12 @@ necessary. Starting a game may write ordinary user preferences/logs or trigger
 Steam behavior even without changing installed files; disclose this before run.
 
 The user authorized restoration of the original Disabled-named campaign archive;
-it was restored without overwrite or byte changes. Four loose `Data/mapmetadata.*`
-files and 118 files under `Data/maps` remain untouched. Archive completeness
-does not establish a clean stock baseline or effective override precedence.
-Separately decide whether to test that modified baseline or reversibly isolate
-the exact loose namespace; no blanket deletion is authorized. Restoration
+it was restored without overwrite or byte changes. The user subsequently
+authorized reversible isolation of four loose `Data/mapmetadata.*` files and
+118 files under `Data/maps`; all 122 backup hashes match and source paths are
+absent. Archive presence and removal of known overrides do not establish
+complete stock authenticity or effective override precedence. No file was
+deleted; the backup is retained outside the installation. Restoration
 does not by itself authorize a debugger-under-game run. Runtime test
 timing now depends on these choices and observation implementation; the earlier
 2–4-session target is historical planning, not a renewed countdown.

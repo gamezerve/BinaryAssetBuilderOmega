@@ -1,5 +1,33 @@
 # Campaign archive restoration and remaining loose files
 
+## Subsequent user-authorized isolation — current state
+
+The user subsequently explicitly authorized moving the identified loose
+namespace. Four `Data/mapmetadata.*` files and the entire reviewed `Data/maps`
+directory (118 files) were moved, not deleted, to:
+
+`D:\Temp\Reborn-Uprising-LooseBackup-20261009-b6b77ecd0dd44871985c9196c03bd7f5`
+
+All **122 files / 224,665,042 bytes** matched their pre-move SHA-256 hashes
+on backup readback. `backup-inventory.json` records each original relative
+path, size and SHA-256. Sources and backup ancestry were checked for reparse
+points; the exact scope stayed within the installed Data directory and a new
+same-volume backup outside the installation. The game was stopped, no existing
+destination was overwritten and no campaign archive was moved or changed.
+Read/delete-sharing file handles denied ordinary content writers during the
+move. No game was launched.
+
+The four metadata paths and Data/maps are now absent from the installation.
+The planner's current profile is `ConfiguredArchivesPresent-StockPurityUnverified`:
+known loose overrides are isolated, but complete installation authenticity and
+actual startup/loading are still unproved. Earlier "left untouched" inventory
+below describes the initial restoration stage, not current placement.
+
+Restore the five top-level backup items to their recorded Data paths only
+when the game is stopped and every destination is absent; compare inventory
+hashes first. If new files occupy those paths, do not overwrite them. The
+backup and inventory remain local; mod contents are not published in Git.
+
 October 9, 2026. The user explicitly identified `MapsCampaign (Disabled).big`
 as their renamed original campaign archive and authorized restoration.
 This is user-provided provenance; no independent vendor/Steam checksum was
