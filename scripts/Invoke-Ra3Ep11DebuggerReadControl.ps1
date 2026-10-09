@@ -88,7 +88,8 @@ $executable=Join-Path $runDirectory.FullName 'RebornConfigReadControl.exe'
 & $compiler /nologo /target:exe ('/platform:'+$Architecture) /optimize+ ('/out:'+$executable) $source
 if($LASTEXITCODE -ne 0){throw 'Owned helper compilation failed.'}
 # Reborn: disable shell commands/SQM, ignore symbol environment, use only the empty local directory and launch exactly one owned target.
-$arguments='-G -noshell -nosqm -sins -y "'+$runDirectory.FullName+'" -logo "'+$runDirectory.FullName+'\debugger.log" -cf "'+$commands+'" "'+$executable+'" "'+$fixture+'"'
+# Reborn: request detach on debugger exit; lifetime behavior is separately calibrated on a self-expiring helper, not a game.
+$arguments='-pd -G -noshell -nosqm -sins -y "'+$runDirectory.FullName+'" -logo "'+$runDirectory.FullName+'\debugger.log" -cf "'+$commands+'" "'+$executable+'" "'+$fixture+'"'
 $stdout=Join-Path $runDirectory.FullName 'stdout.txt';$stderr=Join-Path $runDirectory.FullName 'stderr.txt'
 $process=Start-Process -FilePath $debugger -ArgumentList $arguments -WindowStyle Hidden -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru
 try{
