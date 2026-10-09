@@ -38,7 +38,16 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 reader suffix/probe behavior](docs/RA3EP11_READER_VARIANTS.md).
+Latest milestone: [EP1 1.1 stock package preflight](docs/RA3EP11_STOCK_PACKAGE_PREFLIGHT.md).
+The stock 1.1 SKU matches the audited executable but MapsCampaign.big is missing
+under its configured name (a Disabled-named file is present and not substituted).
+Thirteen available archives contain 17,383 entries and 639 manifest directory
+entries, including static/_l/_m/global/worldbuilder. Repeat preflight reads only
+directory metadata, zero archive payload bytes. Stock completeness, payload
+validation and game loading remain separate unresolved gates. Effort **52% /
+48%**; compiler groups 165 (not rerun). No installed file was changed.
+
+[EP1 1.1 reader suffix/probe behavior](docs/RA3EP11_READER_VARIANTS.md).
 004AA300 takes a suffix index/text, selects three reader-over-global suffix
 slots and inserts them before the last dot unless reader+68h bypasses it.
 The queue driver passes slot one; source probing can set slot two to _v%d.
