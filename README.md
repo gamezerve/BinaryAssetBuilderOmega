@@ -38,7 +38,19 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 scoped BIG open selection](docs/RA3EP11_BIG_OPEN_SELECTION.md).
+Latest milestone: [EP1 1.1 scoped provider routing](docs/RA3EP11_PROVIDER_ROUTING.md).
+Provider prefix routing is distinct from per-archive file selection: first
+matching registered alias wins (ASCII case-insensitive), unknown prefixes
+return null, and unprefixed queries use the context default. Registration and
+alias nodes append to their lists. A pinned startup slice connects BIG interface
+registration to virtual open slot +0C and the previously reviewed BIG open body.
+Seven complete bodies, a scoped startup slice/two vtable slices/alias literal,
+eight detached routing fixtures, three policy rejections, twenty byte faults
+and repeat JSON pass. No archive payload is read. Complete startup order,
+path qualification, global precedence, native safety and game loading remain
+open. Effort **52% / 48%**; compiler groups 165 (not rerun).
+
+[EP1 1.1 scoped BIG open selection](docs/RA3EP11_BIG_OPEN_SELECTION.md).
 The manager searches its forward list and retains the first successful node.
 An exact archive selector has a distinct ordinary-miss early failure; Viv4
 misses continue. Open preparation removes exact big: and at most one leading
