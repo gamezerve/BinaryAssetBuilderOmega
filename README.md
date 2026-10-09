@@ -38,7 +38,18 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 registry/lookup characterization](docs/RA3EP1_REGISTRY_LOOKUP.md).
+Latest milestone: [EP1 runtime TypeHash consumer](docs/RA3EP1_TYPEHASH_CONSUMER.md).
+An inline ResourceManager lookup compares entry+8 with registered metadata+8
+at VA 004AB615 and reaches the explicit TypeHash mismatch diagnostic. Missing
+metadata, nonzero entry word44 and zero entry hash skip this comparison; these
+observations do not authorize compiler bypasses. Three separate small-lookup
+call contexts consume opaque word12, not this hash. Repeat JSON, seven branch
+cases, five private code faults and registry regressions pass. Complete stream
+pointer provenance and unconditional rejection are not proved; no target or
+production changes. Effort **52% / 48%**, compiler groups 165 (not rerun here).
+Next recover bounded entry-pointer provenance and diagnostic control semantics.
+
+[EP1 registry/lookup characterization](docs/RA3EP1_REGISTRY_LOOKUP.md).
 Pinned shared registration and 34-byte linked-list lookup separate the TypeId
 key from the metadata object's initialized hash. All 150 raw object TypeIds match
 the managed FastHash provider; 138 match independently observed stock roots.

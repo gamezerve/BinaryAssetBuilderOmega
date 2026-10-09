@@ -5,6 +5,18 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-09)
 
+[EP1 runtime TypeHash consumer](RA3EP1_TYPEHASH_CONSUMER.md) pins the inline
+ResourceManager lookup and actual entry+8/metadata+8 comparison at VA 004AB615.
+The mismatch diagnostic reads expected/actual hashes and identifies embedded
+resourcemanager.cpp:224 provenance. Null metadata, word44 and zero-entry-hash
+skip branches are observations, not compiler permission. Three separately
+reviewed small-lookup call contexts read opaque word12, not this hash gate.
+Repeat JSON, seven branch cases, five detached code faults and registry
+regressions pass. Complete stream pointer provenance, diagnostic control
+semantics and unconditional rejection are not proved. No target execution or
+C# changes/full-suite rerun; groups 165, effort **52% / 48%**. Next trace entry
+provenance; production identity and game-loading gates stay closed.
+
 [EP1 registry/lookup characterization](RA3EP1_REGISTRY_LOOKUP.md) pins the
 211-byte shared registration and 34-byte TypeId lookup bodies. The list-node
 key/metadata pointer is distinct from object+8 initialized hash; node+8 repeats
