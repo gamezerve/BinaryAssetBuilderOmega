@@ -38,7 +38,15 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 config consumer](docs/RA3EP11_CONFIG_CONSUMER.md).
+Latest milestone: [EP1 1.1 config manifest queue to reader bridge](docs/RA3EP11_MANIFEST_QUEUE.md).
+Driver 0064D440 sends queued add-manifest strings to ordinary reader factory
+004AAC80 when its reader vector is empty, and conditionally calls 004D05E0
+after source probing. A third wrapper caller forwards queue argument zero to
+the ninth loader argument. Four independent pins, eighteen detached faults
+and repeat JSON pass. Full variant/mount/startup semantics and game loading
+remain open. Effort **52% / 48%**; compiler groups 165 (not rerun).
+
+[EP1 1.1 config consumer](docs/RA3EP11_CONFIG_CONSUMER.md).
 File probing (004D6F10) is separate from config reading (004D86B0), line
 splitting (004D9040) and nine-prefix dispatch (004D8DE0). Native add-big,
 recursive config and add-manifest routes are pinned; add-manifest queues a
