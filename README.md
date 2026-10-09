@@ -38,7 +38,23 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 scoped search-path pairs](docs/RA3EP11_SEARCH_PATH_PAIRS.md).
+First runtime-test target: **2–4 focused work sessions** to prepare a controlled
+config/unchanged-stock loading smoke test, not a promised date. An authored XML
+asset changing the game has separate selected-type/hash/dependency/package
+gates and no reliable date yet. See [first mod-test plan](docs/RA3EP11_FIRST_MOD_TEST_PLAN.md).
+The complete SDK is not a prerequisite for a narrow test; synthetic diagnostic
+music packages remain ineligible. No game launch has been performed.
+
+Latest milestone: [EP1 1.1 scoped startup config order](docs/RA3EP11_STARTUP_CONFIG_ORDER.md).
+Conditional mod config reading precedes reverse additional config candidates
+and filesystem.cfg. Base read failure synthesizes set-search-path; success may
+append a language path. Later startup updates can therefore matter to effective
+mod paths. Three scoped slices/five strings, six ordering fixtures, three policy
+rejections, nineteen faults and repeat JSON pass. No whole-startup or effective
+override claim; no archive payload read. Effort **52% / 48%**; compiler groups
+165 (not rerun). Next: locate actual config contents and prepare Phase A smoke test.
+
+[EP1 1.1 scoped search-path pairs](docs/RA3EP11_SEARCH_PATH_PAIRS.md).
 The native builder clears and rebuilds ordered semicolon root/registration
 pairs, rather than appending old pairs. It removes only one trailing slash,
 preserves duplicates/whitespace and stores provider resolution results without
