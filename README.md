@@ -38,7 +38,20 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 scoped BIG mount metadata](docs/RA3EP11_BIG_MOUNT_METADATA.md).
+Latest milestone: [EP1 1.1 scoped BIG name index](docs/RA3EP11_BIG_NAME_INDEX.md).
+The native mount builds eight-byte hash/directory-pointer records and sorts
+unsigned name hashes. ASCII case folds but separators remain distinct; this
+is not compiler ProcessingHash. Thirteen stock directory-only models cover
+17,383 entries, with six repeated-name hash groups and no distinct-name hash
+collision within an available archive. Native adjacent collision comparisons
+use the midpoint name, so arbitrary collision correctness is not claimed.
+Seven complete pins, eight hash fixtures, three name-policy rejections, one
+collision directory/six malformed directories, sixteen faults and repeat JSON
+pass. No archive payload is read. Native array identity, outer lookup/precedence,
+authentic compiler hash and game loading remain open. Effort **52% / 48%**;
+compiler groups 165 (not rerun).
+
+[EP1 1.1 scoped BIG mount metadata](docs/RA3EP11_BIG_MOUNT_METADATA.md).
 The add-big mode reaches the pinned native mount/index route; node allocation,
 header classification, directory-size arithmetic and list append are recovered
 within their reviewed scope. Thirteen stock BIG4 directories agree. Four
