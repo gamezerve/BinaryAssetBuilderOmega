@@ -3,14 +3,21 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 10, 2026
 
+Latest runtime milestone: [short-name config control](docs/RA3EP11_SHORT_NAME_CONFIG_TRIAL.md).
+The user-authorized same-content `probe_1.0.cfg` trial reached the main menu
+(user confirmed); 34/34 child snapshots match its `-modconfig` path. No
+Application 1000/1001 events were found in the narrow trial window. This
+strengthens the filename-limit explanation for the historical crash without
+proving the exact caller or actual config read. No debugger or mod package.
+
 Latest diagnosis: [post-config identity limit](docs/RA3EP11_CONFIG_IDENTITY_LIMIT.md).
 Our old inert probe's 20-byte basename does not fit the reviewed 16-byte
 identity copy after config processing. The recorded CRT fault maps to the
 `strcpy_s` error path, consistent with this defect but not exact-caller proof.
-The runner/planner now refuse that name; a same-content `probe_1.0.cfg` is
-prepared and has not been launched. No game/CRT patch or guard relaxation.
+The runner/planner now refuse that name; the same-content `probe_1.0.cfg`
+follow-up reached the menu as described above. No game/CRT patch or guard relaxation.
 
-Latest runtime result: [inert modconfig trial](docs/RA3EP11_INERT_CONFIG_TRIAL.md).
+Historical failed runtime result: [old-name inert trial](docs/RA3EP11_INERT_CONFIG_TRIAL.md).
 The single-LF probe path reached the 1.1 child's visible command line, but the
 game crashed without user-confirmed menu arrival. Windows Event 1000 matches
 the PID and records `MSVCR80.dll`, exception `0xc000000d`, offset `0x00014584`.

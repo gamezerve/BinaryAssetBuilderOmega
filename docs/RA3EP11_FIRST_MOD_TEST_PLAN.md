@@ -2,11 +2,18 @@
 
 ## Current runtime milestone
 
+Latest October 10 control: the [short-name probe](RA3EP11_SHORT_NAME_CONFIG_TRIAL.md)
+reached the menu with user confirmation and 34/34 exact argument matches.
+Content and launch conditions were unchanged apart from the config filename.
+The immediate harness startup obstacle is cleared for this control, but actual
+config consumption/effective paths and authored-mod loading remain open.
+
 Update October 10: the [inert trial](RA3EP11_INERT_CONFIG_TRIAL.md) forwarded
 the probe to the 1.1 child but crashed, with a matching Windows error record.
-Root cause and actual config consumption remain unresolved. New runtime
-controls/instrumentation require separate authorization; do not introduce
-asset packages before resolving this startup failure.
+That earlier crash's exact caller and actual config consumption remain
+unproved; the replacement control above strengthens the filename explanation.
+New runtime controls/instrumentation require separate authorization; do not
+introduce asset packages before resolving the config/load evidence gates.
 
 The [first normal baseline](RA3EP11_NORMAL_BASELINE.md) now selected the reviewed
 1.1 game child and showed the default `-config` SKU argument; the user confirmed

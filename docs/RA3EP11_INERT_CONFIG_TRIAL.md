@@ -1,5 +1,11 @@
 # Inert modconfig trial — October 10, 2026
 
+Subsequent [short-name control](RA3EP11_SHORT_NAME_CONFIG_TRIAL.md): identical
+single-LF content with `probe_1.0.cfg` reached the menu (user confirmed), with
+34/34 expected argument snapshots. This strengthens the filename-copy
+explanation but does not retroactively turn this failed run into a success
+or prove actual config consumption.
+
 Later static diagnosis: [post-reader filename identity](RA3EP11_CONFIG_IDENTITY_LIMIT.md)
 reveals that the historical 20-byte basename cannot fit a reviewed 16-byte
 copy. The CRT fault matches that function's error path; exact runtime caller

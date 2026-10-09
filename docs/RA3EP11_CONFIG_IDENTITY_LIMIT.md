@@ -26,7 +26,8 @@ Its identity before the underscore is `probe`, five bytes. The reviewed later
 branch extracts `1.0` between the first underscore and final dot and copies
 it into a separate six-byte destination at `00CF1868`; this chosen value fits
 that copy as well. Full numeric-version semantics are not certified.
-The replacement is prepared **but has not been passed to the game**.
+The separately authorized [replacement control](RA3EP11_SHORT_NAME_CONFIG_TRIAL.md)
+subsequently reached the menu; all 34 child snapshots show the expected path.
 The old fixture remains unchanged for historical/helper evidence only.
 
 ## Correlation with the recorded CRT fault
@@ -69,8 +70,9 @@ The complete smoke-plan repeat/whitespace/refusal check passed with the new
 absolute probe path, unchanged one-LF hash and restored installation profile.
 These tests do not count as new compiler test groups or successful game loads.
 
-Next: separately authorize one replacement-name control, keeping content,
-launcher, flags and file-sharing conditions unchanged. Even if the menu opens,
-successful config I/O will still require its own evidence. Do not introduce
-authored assets, silently relaunch, or claim the crash is fixed before testing.
+The same-content replacement-name control is now complete, keeping launcher,
+flags and sharing unchanged. It strengthens this explanation but does not
+provide the earlier crash stack or certify config I/O. Next: scope actual
+config-consumption evidence separately. Do not introduce authored assets or
+silently relaunch/add instrumentation.
 Overall estimate remains approximately **52% / 48%**.

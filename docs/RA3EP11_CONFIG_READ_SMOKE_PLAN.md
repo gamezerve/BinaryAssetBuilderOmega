@@ -1,10 +1,16 @@
 # Phase A inert config-read experiment
 
+**Latest runtime control:** [short-name probe](RA3EP11_SHORT_NAME_CONFIG_TRIAL.md)
+reached the menu (user confirmed), with 34/34 matching `-modconfig` argument
+snapshots. Actual config consumption is still unproved: the inert file has
+no observable directive effect. No debugger or mod package was used.
+
 **Probe-name correction:** future plans use `probe_1.0.cfg`, containing the
 same one LF byte, rather than the historical `config-read-only.cfg` described
 below. The [post-reader identity copy](RA3EP11_CONFIG_IDENTITY_LIMIT.md) cannot
 fit that historical 20-byte basename. Both runner and planner now enforce
-the identity-copy boundary. The replacement has not been tested in-game.
+the identity-copy boundary. The replacement subsequently passed the menu
+control linked above; this does not prove a successful file read.
 
 **Runtime update, October 10:** the [single inert trial](RA3EP11_INERT_CONFIG_TRIAL.md)
 showed the expected option/path in the 1.1 child, then crashed with a PID-matched
