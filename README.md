@@ -38,7 +38,18 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 referenced-reader factories](docs/RA3EP11_READER_FACTORY.md).
+Latest milestone: [EP1 1.1 pointer membership/source forwarding](docs/RA3EP11_READER_OWNERSHIP.md).
+Helper 0045F060 checks reader pointer equality across three global lists; it
+does not validate asset contents. Iterator 004D04A0 forwards node+8 directly
+or as a local handle copy to wrapper 004CFEB0. In both reviewed calls wrapper
+argument six is zero, hence the added ninth loader argument is zero. Four raw
+call candidates are pinned, only two caller paths reviewed. Three whole-body
+pins, six membership fixtures/two invalid groups, twelve detached faults and
+repeat JSON pass. Healthy-list insertion aliases, deletion/cache lifetime and
+the ninth argument's consumer remain open. Effort **52% / 48%**; compiler groups
+165 (not rerun). Next: 1.1 circular-list insertion and cleanup/delete paths.
+
+[EP1 1.1 referenced-reader factories](docs/RA3EP11_READER_FACTORY.md).
 The concrete vtable routes tag 2 through slot 2Ch/004AAE80, other signed tags
 through slot 28h/004AAE60 and ordinary factory 004AAC80. Cache hits return
 node+20h reader pointers without reviewed vtable revalidation; misses call

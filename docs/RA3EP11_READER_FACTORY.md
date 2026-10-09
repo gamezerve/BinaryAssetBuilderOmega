@@ -114,7 +114,12 @@ not a live native cache or acceptance of malformed assets.
 ./scripts/Test-Ra3Ep11ReaderFactory.ps1 -ImagePath 'D:\Program Files (x86)\Steam\steamapps\common\Command and Conquer Red Alert 3 Uprising\Data\ra3ep1_1.1.game' -BaselineImagePath 'D:\Program Files (x86)\Steam\steamapps\common\Command and Conquer Red Alert 3 Uprising\Data\ra3ep1_1.0.game'
 ```
 
-Next independently rebase membership helper, source-list iterator, healthy-list
+Follow-up: [1.1 pointer membership/source forwarding](RA3EP11_READER_OWNERSHIP.md)
+recovers the ordinary helper's pointer-equality semantics and two iterator
+paths. Factory report flags retain their original narrower scope; healthy-list
+insertion aliases and full lifetime remain unproved.
+
+Next independently rebase healthy-list
 insertion aliases and reader cleanup/delete paths. Added ninth-argument
 caller/consumer semantics, universal source binding, authentic authoring
 ProcessingHash, native emission ABI and game loading remain open. The

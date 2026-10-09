@@ -84,7 +84,12 @@ Shipping images, synced sources and reference schemas are never modified.
 ./scripts/Test-Ra3Ep11LoaderArguments.ps1 -ImagePath 'D:\Program Files (x86)\Steam\steamapps\common\Command and Conquer Red Alert 3 Uprising\Data\ra3ep1_1.1.game' -BaselineImagePath 'D:\Program Files (x86)\Steam\steamapps\common\Command and Conquer Red Alert 3 Uprising\Data\ra3ep1_1.0.game'
 ```
 
-Next rebase concrete factories/source ownership and trace caller-side wrapper
+Follow-up: [1.1 pointer membership/source forwarding](RA3EP11_READER_OWNERSHIP.md)
+traces two iterator callers: each supplies zero for wrapper argument six,
+hence zero for the added ninth loader argument. Two other raw wrapper-call
+candidates and the ninth argument's ultimate consumer remain unreviewed.
+
+Next rebase source lifetime and continue tracing caller-side wrapper
 argument six. Full ninth-argument consumer semantics, all source bindings,
 authentic authoring ProcessingHash, native emission ABI and game loading remain
 open. The 165-group compiler suite was not rerun. Weighted engineering effort
