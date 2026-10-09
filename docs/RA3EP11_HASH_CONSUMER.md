@@ -123,6 +123,12 @@ No full compiler-suite rerun: previously executed 165 groups.
 
 ## Next gate and migration impact
 
+Follow-up: [1.1 initializer/metadata sample](RA3EP11_TYPE_INITIALIZERS.md)
+binds 150 narrowly decoded hash writes to the same registry body, with exact
+name-TypeId checks for all 150 objects and 138 observed roots. This resolves
+the sampled initializer link, not full initializer coverage/startup reachability
+or the complete stream-pointer trace.
+
 Recover 1.1 initializer writes/object TypeIds to connect runtime arrays to these
 metadata consumers, then rebase factory/header/descriptor and linked-sidecar
 pointer provenance. Separately recover modconfig file commands/package setup.

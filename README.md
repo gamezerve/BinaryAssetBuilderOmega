@@ -38,7 +38,18 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 registry/hash consumer](docs/RA3EP11_HASH_CONSUMER.md).
+Latest milestone: [EP1 1.1 initializer/metadata sample](docs/RA3EP11_TYPE_INITIALIZERS.md).
+Two reviewed templates decode 150 initializers (43 short/107 vtable). Every
+sample copies the runtime hash into object+8 and registers that same object;
+all 150 raw TypeIds match the managed name provider, including 138 stock roots.
+Ten detached faults, opaque-word preservation, repeat JSON and consumer
+regressions pass. This closes the sampled table-to-metadata consumer link,
+not full startup reachability or the remaining 1,192 runtime-name coverage.
+PathMusicEvent is not in this template sample. No production/authoring hash
+change or native execution. Effort **52% / 48%**, compiler groups 165 (not rerun).
+Next: rebase stream entry/factory/header/descriptor flow to the 1.1 hash gate.
+
+[EP1 1.1 registry/hash consumer](docs/RA3EP11_HASH_CONSUMER.md).
 Independently reviewed TypeId lookup/registration and inline TypeHash comparison
 share registry head 00CF1528. Entry+8 is compared with metadata+8; separate
 lookup callers instead use opaque metadata+12. Seven branch fixtures, nine
