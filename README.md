@@ -45,14 +45,23 @@ gates and no reliable date yet. See [first mod-test plan](docs/RA3EP11_FIRST_MOD
 The complete SDK is not a prerequisite for a narrow test; synthetic diagnostic
 music packages remain ineligible. No game launch has been performed.
 
-Latest milestone: [EP1 1.1 scoped startup config order](docs/RA3EP11_STARTUP_CONFIG_ORDER.md).
+Latest milestone: [EP1 1.1 bounded installed-config inventory](docs/RA3EP11_CONFIG_INVENTORY.md).
+Four small loose ASCII configs are content-pinned; both WorldBuilder configs
+are byte-identical. No filesystem.cfg was found in the root/Data directories
+or the 13 available configured archive directories (17,383 entries). This is
+scoped absence, not a proved runtime fallback. Zero archive payload bytes read;
+three text/two directory fixtures, one size refusal, six malformed-directory
+refusals and repeat JSON pass. Effort **52% / 48%**; 165 compiler groups (not
+rerun). Next: launcher/argument forwarding and an observable Phase A read signal.
+
+[EP1 1.1 scoped startup config order](docs/RA3EP11_STARTUP_CONFIG_ORDER.md).
 Conditional mod config reading precedes reverse additional config candidates
 and filesystem.cfg. Base read failure synthesizes set-search-path; success may
 append a language path. Later startup updates can therefore matter to effective
 mod paths. Three scoped slices/five strings, six ordering fixtures, three policy
 rejections, nineteen faults and repeat JSON pass. No whole-startup or effective
 override claim; no archive payload read. Effort **52% / 48%**; compiler groups
-165 (not rerun). Next: locate actual config contents and prepare Phase A smoke test.
+165 (not rerun). The bounded config inventory above follows up this milestone.
 
 [EP1 1.1 scoped search-path pairs](docs/RA3EP11_SEARCH_PATH_PAIRS.md).
 The native builder clears and rebuilds ordered semicolon root/registration

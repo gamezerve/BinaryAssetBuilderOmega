@@ -22,9 +22,12 @@ and reaches existing valid stock assets. This is not an authored-asset test.
 
 Remaining preparation:
 
-1. Locate and inspect the actual `filesystem.cfg` and relevant config candidates
-   with bounded reads. Reconcile later startup updates with the intended test
-   config; do not infer effective precedence from SKU order.
+1. Bounded config discovery is complete for the selected root/Data directories
+   and 13 available configured archives: [config inventory](RA3EP11_CONFIG_INVENTORY.md)
+   found four loose configs and no `filesystem.cfg`. This is not global absence
+   or proof of runtime fallback. Resolve actual joined roots/additional config
+   candidates and reconcile later updates with the intended test config; do not
+   infer effective precedence from SKU order or create a stock replacement.
 2. Verify launcher-to-1.1 argument forwarding and define a reproducible baseline
    launch plus isolated config launch. Keep test artifacts in a new workspace
    directory; do not patch executables, change registry settings or overwrite
