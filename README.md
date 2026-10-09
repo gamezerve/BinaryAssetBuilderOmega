@@ -38,7 +38,16 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 linked chunk addressing](docs/RA3EP1_LINKED_CHUNK_RANGES.md).
+Latest milestone: [EP1 wrapper-local loader lifecycle](docs/RA3EP1_LOADER_LIFECYCLE.md).
+Both wrapper dispatch branches pass a fresh zero-capacity context and join
+normal entry/descriptor cleanup. The capacity-based producer therefore does
+not reuse an earlier wrapper invocation's capacity. Concrete reader constructor
+is pinned, but complete factory/cache-to-loader source binding remains open.
+Repeat JSON, four fresh/zero-count fixtures, seven code faults and descriptor
+regressions pass. No target/production changes; effort **52% / 48%**, compiler
+groups 165 (not rerun). Next trace concrete reader factory/cache source binding.
+
+[EP1 linked chunk addressing](docs/RA3EP1_LINKED_CHUNK_RANGES.md).
 Queue/dispatcher/reader evidence connects descriptor-relative positions to
 physical offsets +8: binary seek/read and relocation/import memcpy. All 166,557
 ranges from 55,519 stock entries fit twelve sidecar lengths, with exact final

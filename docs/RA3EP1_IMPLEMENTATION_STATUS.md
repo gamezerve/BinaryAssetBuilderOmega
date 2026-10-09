@@ -5,6 +5,16 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-09)
 
+[EP1 wrapper-local loader lifecycle](RA3EP1_LOADER_LIFECYCLE.md) resolves
+fresh context ownership on both 004CFBF0 dispatch branches and normal cleanup
+at 004CFD56/00449650. Successful preparation starts with capacity zero per
+invocation, so decreasing later wrapper counts do not reuse prior capacity.
+Concrete constructor 004AA950 is pinned; global factory/cache-to-source binding
+and allocator failures are not recovered. Repeat JSON, argument-seven binding,
+four fresh/zero-count fixtures, seven code faults and descriptor regressions
+pass. No target/C# changes/full-suite rerun; groups 165, effort **52% / 48%**.
+Next bind concrete factory/cache returns to the outer source list.
+
 [EP1 linked chunk addressing](RA3EP1_LINKED_CHUNK_RANGES.md) pins queue,
 dispatcher, linked reader and verified memcpy import. Descriptor positions
 gain +8 physical header bias; instance seek/read and relocation/import buffer
