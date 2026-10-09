@@ -38,7 +38,15 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 pointer membership/source forwarding](docs/RA3EP11_READER_OWNERSHIP.md).
+Latest milestone: [EP1 1.1 reader list lifetime](docs/RA3EP11_READER_LIST_LIFETIME.md).
+Seven independently pinned regions recover newest-first insertion under a
+healthy circular sentinel, source-list virtual release/reset, resource-only
+cleanup and conditional reader deletion. Four insertion scenarios, two broken
+lists, twelve detached faults and repeat JSON pass. Complete cache lifetime,
+all initializers and game loading remain open. Effort **52% / 48%**; compiler
+groups 165 (not rerun). Next: destructor/cache helper internals.
+
+[EP1 1.1 pointer membership/source forwarding](docs/RA3EP11_READER_OWNERSHIP.md).
 Helper 0045F060 checks reader pointer equality across three global lists; it
 does not validate asset contents. Iterator 004D04A0 forwards node+8 directly
 or as a local handle copy to wrapper 004CFEB0. In both reviewed calls wrapper
