@@ -4,6 +4,12 @@ October 10, 2026. Read-only review of the same SHA-pinned 1.1 executable.
 The short-name probe reached the menu, but actual consumption remains open.
 No game launch, debugger attach, system trace or binary patch in this review.
 
+Follow-up: the [concrete disk bridge](RA3EP11_CONFIG_DISK_BACKEND.md) now binds
+one provider's slot `14h` to `0096BBF0` and imported `ReadFile`, and its open
+slot to `CreateFileW`. Earlier unresolved-backend statements below describe
+this generic route's remaining runtime-selection boundary, not absence of
+a statically identified disk implementation. No actual read was observed.
+
 ## Why the last read need not be a kernel file read
 
 Config reader `004D86B0` opens through `004D7E90` with flags `401h`.

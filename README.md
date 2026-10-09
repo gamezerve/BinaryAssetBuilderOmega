@@ -3,6 +3,13 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 10, 2026
 
+Latest static bridge: [config disk backend](docs/RA3EP11_CONFIG_DISK_BACKEND.md).
+A concrete provider now connects the engine request to `CreateFileW`/`ReadFile`.
+The wrapper ignores the Windows read boolean and returns its output count,
+so both must be observed separately. Five new pins, three import bindings and
+seven private mutation refusals pass. Live provider selection/actual config
+read remain unproved; no new game or debugger execution in this follow-up.
+
 Next read-observation preparation: [native config read route](docs/RA3EP11_CONFIG_READ_ROUTE.md).
 The source-reader fallback is now independently pinned: direct-request and
 buffered branches return engine byte counts, not NTSTATUS. The completion
