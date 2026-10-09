@@ -38,7 +38,17 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 concrete reader/descriptor producer](docs/RA3EP1_DESCRIPTOR_PRODUCER.md).
+Latest milestone: [EP1 linked sidecar setup](docs/RA3EP1_LINKED_SIDECARS.md).
+Full helper review resolves 00449760 as sidecar preparation, not entry-table
+transformation: it opens .imp/.relo/.bin, checks manifest checksums and advances
+past eight-byte headers. Twelve authentic headers/exact sizes match, including
+1,394,571,528-byte WorldBuilder.bin with zero payload reads. Repeat JSON, four
+header faults, eight code faults and descriptor regressions pass. Magic checks
+are diagnostic policy, not proven native rejection; no full payload or game
+proof. Effort **52% / 48%**, compiler groups 165 (not rerun). Next trace linked
+chunk positions/cursors and concrete source-object binding.
+
+[EP1 concrete reader/descriptor producer](docs/RA3EP1_DESCRIPTOR_PRODUCER.md).
 The recovered producer at VA 004496A0 connects 48-byte entries to 20-byte
 descriptors with cumulative instance/relocation/import positions. A constructed
 concrete reader uses a 52-byte physical header and count*48 table; four pinned

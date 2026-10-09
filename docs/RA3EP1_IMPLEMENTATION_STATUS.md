@@ -5,6 +5,17 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-09)
 
+[EP1 linked sidecar setup](RA3EP1_LINKED_SIDECARS.md) resolves 00449760 as
+sidecar preparation rather than entry transformation. Full helper/body pins
+show .imp/.relo/.bin reads, checksum diagnostic paths and eight-byte header
+handling; no supplied entry-argument reads or direct entry-hash/size writes.
+Twelve authentic headers/exact sizes match; WorldBuilder.bin is included at
+1,394,571,528 bytes without reading payload. Repeat JSON, four header faults,
+eight code faults and descriptor regressions pass. No unconditional checksum
+rejection, full payload or complete source binding is claimed. No target/C#
+changes/full-suite rerun; groups 165, effort **52% / 48%**. Next trace downstream
+linked chunk positions and source binding; production admission stays closed.
+
 [EP1 concrete reader/descriptor producer](RA3EP1_DESCRIPTOR_PRODUCER.md) recovers
 004496A0 and concrete vtable 00BF2E78: a 52-byte header, count*48 entry read,
 and 20-byte descriptor projection with cumulative instance/relo/import offsets.

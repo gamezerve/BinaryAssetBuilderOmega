@@ -1,5 +1,9 @@
 # EP1 concrete reader and descriptor producer — October 9, 2026
 
+Follow-up: [linked sidecar audit](RA3EP1_LINKED_SIDECARS.md) resolves the helper
+previously left open below as sidecar setup, not an entry-table transformation.
+The original raw-projection audit retains its conservative historical flags.
+
 ## Result
 
 The intermediate descriptor producer is identified at preferred VA `004496A0`.
