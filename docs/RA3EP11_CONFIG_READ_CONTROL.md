@@ -1,5 +1,11 @@
 # Non-game file-read control: helper validated, capture blocked
 
+**Superseded live-capture status:** the user's administrator capture succeeded,
+but [actual ETL inspection](RA3EP11_READ_CONTROL_RESULT.md) found the negative
+helper and unrelated processes in the record. The scope is rejected and
+`-Record` is now disabled. Do not rerun the historical administrator command
+below; it documents the experiment that produced this counterexample.
+
 ## Actual results on October 9, 2026
 
 The first scoped WPR start attempt returned **Access is denied / 0x80070005**.

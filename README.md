@@ -45,7 +45,18 @@ gates and no reliable date yet. See [first mod-test plan](docs/RA3EP11_FIRST_MOD
 The complete SDK is not a prerequisite for a narrow test; synthetic diagnostic
 music packages remain ineligible. No game launch has been performed.
 
-Latest milestone: [non-game config-read control](docs/RA3EP11_CONFIG_READ_CONTROL.md).
+Latest milestone: [actual read-control ETL result](docs/RA3EP11_READ_CONTROL_RESULT.md).
+The user's administrator capture succeeded, but read-only decoding found both
+positive and negative probe reads and 24 other PIDs: the requested process-name
+scope is REJECTED. -Record is disabled even with elevation; do not rerun the
+previous command or use the equivalent game candidate. Exact ETL/count pins,
+five detached correlation checks and repeat decoding pass. Adjacent completion
+candidates are not a universal loss-free/byte-transfer proof. Raw ETL stays
+ignored/local. Next: validate replacement capture-time isolation or obtain
+explicit approval for disclosed broader local capture/post-filtering.
+Effort **52% / 48%**; no game mod loaded; compiler groups 165 (not rerun).
+
+[Non-game config-read control](docs/RA3EP11_CONFIG_READ_CONTROL.md).
 Both distinct compiled helper processes successfully read the one-byte fixture
 in helper-only validation. Reviewed source/scope and four detached refusals
 pass. A real WPR start was denied (0x80070005): sandbox approval is not Windows

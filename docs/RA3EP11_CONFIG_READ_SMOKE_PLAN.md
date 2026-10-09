@@ -1,5 +1,10 @@
 # Phase A inert config-read experiment
 
+**Current capture gate:** [the user's real control trace](RA3EP11_READ_CONTROL_RESULT.md)
+contained the negative helper and unrelated processes. The requested WPR
+process-name scope is rejected and recording is disabled. The game experiment
+must not use that candidate merely because its XML was accepted.
+
 ## Prepared artifact, not a run result
 
 `fixtures/ra3ep11/phase-a/config-read-only.cfg` contains **one LF byte** (`0A`),

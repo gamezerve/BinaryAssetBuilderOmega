@@ -1,5 +1,10 @@
 # EP1 config-read trace candidate
 
+**Live counterexample:** the [actual non-game control](RA3EP11_READ_CONTROL_RESULT.md)
+captured the nonmatching helper and 24 other PIDs. The requested process-name
+scope failed. Static metadata acceptance below is historical evidence only;
+do not use this candidate for a game recording or treat it as privacy-isolated.
+
 ## Prepared and validated statically
 
 `fixtures/ra3ep11/phase-a/config-read.wprp` is accepted by installed Windows

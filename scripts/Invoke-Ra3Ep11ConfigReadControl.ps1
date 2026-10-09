@@ -3,6 +3,8 @@
 param([switch]$Record,[switch]$SelfTest,[switch]$ValidateHelpers)
 $ErrorActionPreference='Stop'
 if(([int]$Record.IsPresent+[int]$SelfTest.IsPresent+[int]$ValidateHelpers.IsPresent)-gt 1){throw 'Detached tests, helper-only validation and live recording must be separate invocations.'}
+# Reborn: the real negative control was captured despite ProcessExeFilter; do not permit another recording with this rejected scope.
+if($Record){throw 'Recording disabled: the 2026-10-09 control ETL captured the nonmatching helper and unrelated processes. ProcessExeFilter did not enforce the requested scope. Review a replacement capture method before recording again.'}
 $repoRoot=Split-Path -Parent $PSScriptRoot
 $fixture=Join-Path $repoRoot 'fixtures/ra3ep11/phase-a/config-read-only.cfg'
 $source=Join-Path $repoRoot 'fixtures/ra3ep11/phase-a/ConfigReadControl.cs'
