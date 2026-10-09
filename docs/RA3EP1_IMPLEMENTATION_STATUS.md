@@ -5,6 +5,17 @@ not yet claim that BinaryAssetBuilder can emit Uprising-compatible streams.
 
 ## Latest bounded milestone (2026-10-09)
 
+[EP1 concrete reader/descriptor producer](RA3EP1_DESCRIPTOR_PRODUCER.md) recovers
+004496A0 and concrete vtable 00BF2E78: a 52-byte header, count*48 entry read,
+and 20-byte descriptor projection with cumulative instance/relo/import offsets.
+Four pinned manifests/55,519 raw entries corroborate bounds and repeated
+projection digests. All are linked; helper 00449760 is unresolved. The native
+producer walks capacity, so the diagnostic only models fresh count-equals-
+capacity records, not reuse. Five raw-fixture rejections, seven code/vtable
+faults and prior pointer-trace regression pass. No target/C# changes/full-suite
+rerun; groups 165, effort **52% / 48%**. Next audit linked transformation and
+source-object binding; full disk-to-runtime provenance remains unproved.
+
 [EP1 bounded entry-pointer trace](RA3EP1_ENTRY_POINTER_TRACE.md) follows the
 first hash-gate caller's pointer from a 20-byte descriptor row through a 28-byte
 pending stack record to argument four. A separate 48-byte copy branch and

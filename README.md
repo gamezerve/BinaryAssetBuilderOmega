@@ -38,7 +38,18 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 bounded entry-pointer trace](docs/RA3EP1_ENTRY_POINTER_TRACE.md).
+Latest milestone: [EP1 concrete reader/descriptor producer](docs/RA3EP1_DESCRIPTOR_PRODUCER.md).
+The recovered producer at VA 004496A0 connects 48-byte entries to 20-byte
+descriptors with cumulative instance/relocation/import positions. A constructed
+concrete reader uses a 52-byte physical header and count*48 table; four pinned
+EP1 manifests/55,519 entries corroborate that layout and repeated projections.
+All four are linked: post-read helper 00449760 remains unresolved, as does
+capacity-reuse behavior. Fresh projections do not claim native linked loading.
+Seven code faults, five raw rejections and entry-pointer regressions pass;
+no target execution/production changes. Effort **52% / 48%**, compiler groups
+165 (not rerun). Next review linked-entry transformation before full provenance.
+
+[EP1 bounded entry-pointer trace](docs/RA3EP1_ENTRY_POINTER_TRACE.md).
 The first hash-gate caller carries an entry pointer from a 20-byte descriptor
 row through a 28-byte pending record to argument four; a separate 48-byte copy
 branch and entry hash reads are pinned. The diagnostic wrapper forwards to the
