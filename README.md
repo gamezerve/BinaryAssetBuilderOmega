@@ -3,6 +3,15 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 10, 2026
 
+Latest integration: [shared supervisor admission gate](docs/RA3EP11_SUPERVISOR_ADMISSION_GATE.md).
+The native factory plan and calibrated helper supervisor now use the same
+identity/read decision. The 23-range native disk fixture passes; 18 identity
+and 7 range faults refuse before any read callback, and 8 read faults stop at
+the first failed range. Actual helper admission, shared-gate byte refusal and
+withheld admission controls pass. Native preflight rejects `-Run` before any
+action: no native game capture/launch path is enabled and no config consumption
+is proved. English report updated; estimate **52% / 48%**.
+
 Latest native preparation: [fixed-base admission plan](docs/RA3EP11_NATIVE_ADMISSION_PLAN.md).
 The pinned 1.1 executable has stripped relocations and no relocation directory;
 the native policy requires actual base `00400000`, rather than applying the

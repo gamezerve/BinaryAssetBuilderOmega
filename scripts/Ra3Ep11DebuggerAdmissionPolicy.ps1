@@ -38,7 +38,7 @@ function Get-Ep11InitialHelperEntry([byte[]]$Bytes,[long]$LiveBase) {
     $pointer=[BitConverter]::ToUInt32($expected,2)
     if($pointer -lt $preferred -or [long]$pointer+4 -gt [long]$preferred+$size){throw 'Helper thunk pointer outside image.'}
     # Reborn: actual helper controls showed raw thunk operands at initial break despite a relocated module base; never admit both byte variants.
-    [pscustomobject]@{Address=$LiveBase+$entry;ExpectedBytes=$expected;PreferredBase=$preferred;LiveBase=$LiveBase;EntryRva=$entry;BytePolicy='RawClrThunkAtInitialBreak-HelperOnly';GameRelocationValidated=$false}
+    [pscustomobject]@{Address=$LiveBase+$entry;ExpectedBytes=$expected;PreferredBase=$preferred;LiveBase=$LiveBase;SizeOfImage=$size;EntryRva=$entry;BytePolicy='RawClrThunkAtInitialBreak-HelperOnly';GameRelocationValidated=$false}
 }
 
 #-------------------------------------------------------------------------------------------------

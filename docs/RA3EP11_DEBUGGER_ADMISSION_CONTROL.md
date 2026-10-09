@@ -98,6 +98,10 @@ actual memory-transfer success/count semantics are documented in
 
 ## Next gate
 
+The [shared supervisor admission gate](RA3EP11_SUPERVISOR_ADMISSION_GATE.md)
+is now used by the actual helper supervisor and by native detached preflight.
+Helper calibration passes, but the native execution path remains disabled.
+
 The [native fixed-base admission plan](RA3EP11_NATIVE_ADMISSION_PLAN.md) now
 defines 23 bounded code/table comparisons for the pinned image, which has
 stripped relocations. Nonpreferred bases refuse; it still needs integration

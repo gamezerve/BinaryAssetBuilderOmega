@@ -3,6 +3,7 @@
 param([switch]$Run,[switch]$SelfTest,[ValidateSet('Admit','RejectLiveBytes','Timeout')][string]$Mode='Admit')
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'Ra3Ep11DebuggerAdmissionPolicy.ps1')
+. (Join-Path $PSScriptRoot 'Ra3Ep11SupervisorAdmissionGate.ps1')
 if($SelfTest){
     if($Run){throw 'Run and detached tests must be separate.'}
     # Reborn: detached admission mutations do not start a debugger or read any process memory.
@@ -72,7 +73,7 @@ $info.FileName=$debugger;$info.WorkingDirectory=$directory;$info.UseShellExecute
 $info.RedirectStandardInput=$true;$info.RedirectStandardOutput=$true;$info.RedirectStandardError=$true
 foreach($argument in @('-pd','-G','-noshell','-nosqm','-sins','-y',$directory,'-cf',$commandPath,$executable,$directory)){$info.ArgumentList.Add($argument)}
 $debug=[Diagnostics.Process]::new();$debug.StartInfo=$info
-$helper=$null;$started=$false;$admitted=$false;$resumeIssued=$false;$cleanupIssued=$false;$failure=$null;$decision=$null;$entry=$null;$beforeDecision=$false;$observed=$null;$read=$false;$actual=[UIntPtr]::Zero;$owner=$null;$debuggerId=$null;$creationTicks=$null;$forcedExit=$false
+$helper=$null;$started=$false;$admitted=$false;$resumeIssued=$false;$cleanupIssued=$false;$failure=$null;$decision=$null;$entry=$null;$beforeDecision=$false;$observed=$null;$read=$false;$actual=[UIntPtr]::Zero;$owner=$null;$debuggerId=$null;$creationTicks=$null;$forcedExit=$false;$sharedDecision=$null;$sharedFaultRefused=$false
 $streams=@()
 #-------------------------------------------------------------------------------------------------
 <# Reborn: pump bounded redirected chunks without blocking on a prompt or needing a PowerShell runspace in callbacks. #>
@@ -109,6 +110,18 @@ try{
     $beforeDecision=-not (Test-Path -LiteralPath (Join-Path $directory 'started.txt'))
     if(-not $beforeDecision){throw 'Helper Main marker preceded admission.'}
     $entry=Get-Ep11InitialHelperEntry $bytes $helper.MainModule.BaseAddress.ToInt64()
+    # Reborn: connect the calibrated supervisor to the same admission decision used by the native preflight, before any continuation command.
+    $helperHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes))
+    $helperPlan=[pscustomobject]@{Kind='OwnedClrHelper';ImageSha256=$helperHash;PreferredBase=$entry.LiveBase;SizeOfImage=$entry.SizeOfImage;Ranges=@([pscustomobject]@{Name='HelperInitialEntry';Rva=$entry.EntryRva;Address=$entry.Address;Length=6;ExpectedSha256=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($entry.ExpectedBytes))})}
+    $context=[pscustomobject]@{ProcessId=$helper.Id;DebuggerProcessId=$debug.Id;SnapshotCount=$snapshot.Count;SnapshotProcessId=$snapshot[0].ProcessId;ParentProcessId=$snapshot[0].ParentProcessId;TargetHasExited=$helper.HasExited;DebuggerHasExited=$debug.HasExited;ExpectedExecutablePath=$executable;ActualExecutablePath=$helper.MainModule.FileName;SnapshotExecutablePath=$snapshot[0].ExecutablePath;CreationUtcTicks=$creationTicks;DebuggerCreationUtcTicks=$debug.StartTime.ToUniversalTime().Ticks;SnapshotCreationUtcTicks=$snapshot[0].CreationDate.ToUniversalTime().Ticks;ObservedUtcTicks=[DateTime]::UtcNow.Ticks;DiskImageSha256=$helperHash;ModuleBase=$entry.LiveBase;ModuleSize=$helper.MainModule.ModuleMemorySize}
+    $adapter={param($range)
+        # Reborn: this callback reads only through the retained owned-helper handle, not a caller-supplied PID.
+        $buffer=[byte[]]::new($range.Length);$transferred=[UIntPtr]::Zero
+        $success=[RebornAdmissionMemory]::ReadProcessMemory($helper.Handle,[IntPtr]$range.Address,$buffer,[UIntPtr]$range.Length,[ref]$transferred)
+        [pscustomobject]@{Name=$range.Name;Address=$range.Address;Succeeded=$success;ActualCount=$transferred.ToUInt64();Bytes=$buffer}
+    }
+    $sharedDecision=Get-Ep11SupervisorAdmissionDecision $helperPlan $context $streams[0].Text $adapter
+    if(-not $sharedDecision.CanIssueObservationContinue){throw 'Shared supervisor admission did not permit observation.'}
     $observed=[byte[]]::new(6);$actual=[UIntPtr]::Zero
     $read=[RebornAdmissionMemory]::ReadProcessMemory($helper.Handle,[IntPtr]$entry.Address,$observed,[UIntPtr]6,[ref]$actual)
     # Reborn: validate the genuine baseline first so a failed OS read cannot masquerade as a successful injected refusal.
@@ -119,6 +132,13 @@ try{
         $expected[0]=$expected[0] -bxor 1
         $refused=$false;try{Assert-Ep11AdmissionBytes $read $actual.ToUInt64() $expected $observed}catch{$refused=$true}
         if(-not $refused){throw 'Live-byte fault injection was admitted.'};$decision='ByteMismatchRefused'
+        # Reborn: also reject the private expected-byte fault through the shared gate; unrelated OS/identity failures cannot count as this success.
+        $faultPlan=$helperPlan.PSObject.Copy();$faultPlan.Ranges=@($helperPlan.Ranges[0].PSObject.Copy())
+        $faultPlan.Ranges[0].ExpectedSha256=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($expected))
+        try{$null=Get-Ep11SupervisorAdmissionDecision $faultPlan $context $streams[0].Text $adapter}catch{
+            if($_.Exception.Message -cne 'Supervisor code/table bytes differ.'){throw};$sharedFaultRefused=$true
+        }
+        if(-not $sharedFaultRefused){throw 'Shared gate admitted injected helper byte fault.'}
     }else{
         Assert-Ep11AdmissionBytes $read $actual.ToUInt64() $expected $observed
         if($Mode -ceq 'Timeout'){
@@ -145,7 +165,7 @@ try{
     # Reborn: on unexpected failure end only our debugger; -pd can release the helper, so rejection is not execution containment.
     if($started -and -not $debug.HasExited){$debug.Kill();$forcedExit=$true;$null=$debug.WaitForExit(5000)}
     if($streams.Count -eq 2){[IO.File]::WriteAllText((Join-Path $directory 'stdout.txt'),$streams[0].Text);[IO.File]::WriteAllText((Join-Path $directory 'stderr.txt'),$streams[1].Text)}
-    $result=[pscustomobject]@{Mode=$Mode;Decision=$decision;Failure=$failure;HelperProcessId=$owner;OwnedDebuggerProcessId=$debuggerId;HelperCreationUtcTicks=$creationTicks;CompiledHelperSha256=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes));InitialOwnershipAndBytesAdmitted=$admitted;ObservationResumeIssued=$resumeIssued;CleanupDetachIssued=$cleanupIssued;ForcedDebuggerExit=$forcedExit;MainMarkerAbsentBeforeDecision=$beforeDecision;Entry=$entry;ObservedEntryBytes=$observed;MemoryReadSucceeded=$read;ActualEntryBytesRead=$actual.ToUInt64();NaturalCompletionValidated=($null -eq $failure);RejectedHelperCanRunDuringCleanup=$true;GameExecuted=$false;GameRecipeReady=$false;OutputDirectory=$directory}
+    $result=[pscustomobject]@{Mode=$Mode;Decision=$decision;Failure=$failure;HelperProcessId=$owner;OwnedDebuggerProcessId=$debuggerId;HelperCreationUtcTicks=$creationTicks;CompiledHelperSha256=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes));SharedAdmissionDecision=$sharedDecision;SharedGateInjectedByteFaultRefused=$sharedFaultRefused;InitialOwnershipAndBytesAdmitted=$admitted;ObservationResumeIssued=$resumeIssued;CleanupDetachIssued=$cleanupIssued;ForcedDebuggerExit=$forcedExit;MainMarkerAbsentBeforeDecision=$beforeDecision;Entry=$entry;ObservedEntryBytes=$observed;MemoryReadSucceeded=$read;ActualEntryBytesRead=$actual.ToUInt64();NaturalCompletionValidated=($null -eq $failure);RejectedHelperCanRunDuringCleanup=$true;GameExecuted=$false;GameRecipeReady=$false;OutputDirectory=$directory}
     [IO.File]::WriteAllText((Join-Path $directory 'result.json'),($result|ConvertTo-Json -Depth 4))
     $debug.Dispose();if($null -ne $helper){$helper.Dispose()}
 }

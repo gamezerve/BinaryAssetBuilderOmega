@@ -33,7 +33,7 @@ try{
         $mapped=Get-Ep11NativeRawRange $pe $modBytes $rva 4
         $ranges.Add([pscustomobject]@{Name=('SourceSlotRva{0:X8}' -f $rva);Rva=$rva;Address=0x400000L+$rva;Length=4;Section=$mapped.Section;ExpectedSha256=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($mapped.Bytes))})
     }
-    $plan=[pscustomobject]@{ImageSha256=$modHash;PreferredBase=0x400000L;SizeOfImage=$header.SizeOfImage;RelocationsStripped=$stripped;RelocationDirectoryRva=0;RelocationDirectoryBytes=0;DynamicBase=$false;NativeImage=$true;RequireExactPreferredBase=$true;Ranges=$ranges.ToArray();IatRawByteComparisonAllowed=$false;OwnershipValidated=$false;LiveBytesValidated=$false;TargetExecuted=$false;DebuggerRecipeReady=$false;GameRecipeReady=$false;ProductionBuildReady=$false;DetachedObservationMatches=0;PrivateRefusals=0}
+    $plan=[pscustomobject]@{Kind='NativeEp11';ImageSha256=$modHash;PreferredBase=0x400000L;SizeOfImage=$header.SizeOfImage;RelocationsStripped=$stripped;RelocationDirectoryRva=0;RelocationDirectoryBytes=0;DynamicBase=$false;NativeImage=$true;RequireExactPreferredBase=$true;Ranges=$ranges.ToArray();IatRawByteComparisonAllowed=$false;OwnershipValidated=$false;LiveBytesValidated=$false;TargetExecuted=$false;DebuggerRecipeReady=$false;GameRecipeReady=$false;ProductionBuildReady=$false;DetachedObservationMatches=0;PrivateRefusals=0}
     if($SelfTest){
         # Reborn: observations are private disk snapshots, never ReadProcessMemory output or game execution evidence.
         $observations=@($plan.Ranges|ForEach-Object {$mapped=Get-Ep11NativeRawRange $pe $modBytes $_.Rva $_.Length;[pscustomobject]@{Name=$_.Name;Address=$_.Address;Succeeded=$true;ActualCount=$_.Length;Bytes=$mapped.Bytes}})

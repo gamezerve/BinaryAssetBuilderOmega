@@ -87,6 +87,12 @@ execution. No comparison bound or version guard was relaxed.
 
 ## Remaining runtime integration
 
+The [shared supervisor admission gate](RA3EP11_SUPERVISOR_ADMISSION_GATE.md)
+now connects this plan to the same decision used by the actual helper
+supervisor. Its native preflight passes detached integration faults but keeps
+`-Run` disabled; actual native process capture and config observation are not
+implemented by that preflight.
+
 Combine the helper-calibrated initial-break supervisor with this native plan:
 verify exact process ownership and actual module base, inspect every range
 through the retained owned process handle, then install narrow config-reader
