@@ -1,0 +1,6 @@
+$$ Reborn: observe only a newly owned x86 non-game helper without attaching or tracing the system.
+$$ Reborn: use x86 stack arguments and four-byte IO_STATUS_BLOCK fields, not the x64 layout.
+bu ntdll!NtClose ".printf \"REBORN_CLOSE %x %p\", @$tid, poi(@esp+4); .echo; gc"
+bu ntdll!NtCreateFile "r @$t2 = poi(@esp+4); .printf \"REBORN_OPEN_ENTRY %x %mu\", @$tid, poi(poi(poi(@esp+0xc)+8)+4); .echo; bp /1 poi(@esp) \".printf \\\"REBORN_OPEN_RETURN %x %x %p\\\", @$tid, @eax, poi(@$t2); .echo; gc\"; gc"
+bu ntdll!NtReadFile ".if (dwo(@esp+0x1c) == 1) { r @$t0 = poi(@esp+0x14); r @$t1 = poi(@esp+0x18); .printf \"REBORN_READ_ENTRY %x %x %p\", @$tpid, @$tid, poi(@esp+4); .echo; bp /1 poi(@esp) \".printf \\\"REBORN_READ_RETURN %x %x %p %p %x\\\", @$tid, @eax, poi(@$t0), poi(@$t0+4), by(@$t1); .echo; gc\"; gc } .else { gc }"
+g

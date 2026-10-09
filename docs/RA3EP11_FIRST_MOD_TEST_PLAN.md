@@ -17,6 +17,25 @@ will not replace missing hashes with zero or relax production guards either.
 
 ## Phase A: config and unchanged-stock loading
 
+### Keep launch selection separate from stream variants
+
+A selected mod `.skudef`, a launcher's optional `-runver` request, SKU
+`set-exe` selection and a stream `.version` suffix serve different roles.
+The first EP1 plan remains pinned to the existing SKU's
+`Data\ra3ep1_1.1.game` declaration and requires observing the actual child.
+Do not add `-runver 1.1` merely because a RA3 launcher uses `-runver`;
+EP1 forwarding and version selection must be independently verified.
+Use an explicit child WorkingDirectory and disclose any child PATH changes;
+do not change the observer's own working directory or saved game settings.
+An application's started-process exit event does not independently describe
+the final native game child's lifetime or prove config consumption.
+
+Helper-only CDB calibration now includes separate x64 and x86 recipes. Before any
+game-under-debugger trial, define the x86 argument/return observation,
+ownership, cleanup and instrumentation impact separately. The WPR candidate
+remains rejected. Private reference-source audits stay local; they are not
+bundled into this SDK or treated as working EP1 launcher implementations.
+
 Goal: prove the selected 1.1 launch path actually consumes the isolated config
 and reaches existing valid stock assets. This is not an authored-asset test.
 

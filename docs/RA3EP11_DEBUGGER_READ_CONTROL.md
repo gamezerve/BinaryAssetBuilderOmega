@@ -39,12 +39,40 @@ Pending/asynchronous completion is deliberately rejected rather than inferred.
 
 ## Files and safety boundary
 
+### x86 follow-up
+
+`-Architecture x86` now selects the existing x86 CDB, `/platform:x86`
+helper compilation and independently pinned `config-read-debugger-x86.txt`.
+Default remains x64. The x86 recipe uses stack arguments: NtReadFile handle
+at ESP+4, IO_STATUS_BLOCK pointer at ESP+14h, buffer at ESP+18h and length
+at ESP+1Ch; its status/information fields are four bytes apart. It uses the
+x86 OBJECT_ATTRIBUTES/UNICODE_STRING pointer layout for NtCreateFile.
+This is explicit architecture-specific calibration, not a claim that changing
+the debugger path alone makes the x64 command file portable.
+
+First x86 run passed: PID 16416, 22 observed opens, one successful exact-path
+one-byte read, IO_STATUS_BLOCK.Information=1 and buffer value 0A. Ignored
+directory: `artifacts/RebornDebuggerControl-481509d4d0694b5fbc5fc67382ee474e`.
+stdout SHA-256: `A6E878C39C090924CB30DEF75BE0787C764A9E716805407933233C8CC0795C8F`.
+No administrator elevation, WPR, installed-file change or game execution.
+
+The repeat x86 run passed with PID 24984 and the same semantic proof
+(22 opens / one read), directory
+`artifacts/RebornDebuggerControl-f74596d9db74487d8fca74a2e7555a41`, stdout SHA
+`FF7B95432C29CC0C80FDA0916C896E253B0ABE7F8B2FC958019903EF6951B20B`.
+The x64 regression also passed with PID 11340, 18 opens / one read and stdout
+SHA `B09629CD746862C9882B52D1E5562F58B0EB875B6D7DF57CD85E11DBEAC00767`.
+Both pointer-width fixtures, all nine evidence refusals, the detached
+launcher observer's two valid/three invalid scope cases and diff whitespace
+checks passed. No compiler/asset test groups were rerun.
+
 - `scripts/Invoke-Ra3Ep11DebuggerReadControl.ps1`: no-argument preflight,
   detached `-SelfTest`, explicit helper-only `-Run`.
 - `fixtures/ra3ep11/phase-a/config-read-debugger.txt`: reviewed, SHA-pinned
-  CDB commands. All new code/comments use the Reborn convention.
+  x64 CDB commands; `config-read-debugger-x86.txt` supplies the separate x86
+  recipe. All new code/comments use the Reborn convention.
 - `fixtures/ra3ep11/phase-a/ConfigReadControl.cs`: unchanged reviewed helper,
-  compiled x64 into a new ignored directory.
+  compiled for the explicitly selected architecture into a new ignored directory.
 - `fixtures/ra3ep11/phase-a/config-read-only.cfg`: unchanged SHA-pinned one-LF probe.
 
 The runner fixes the debugger and helper paths; it accepts no arbitrary
@@ -88,18 +116,20 @@ nor compiler. `-Run` compiles and starts only the reviewed non-game helper.
 # Reborn: detached evidence validation, followed by owned-helper-only native observation; no game or WPR.
 & 'C:\Users\drknt\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\powershell\pwsh.exe' -NoProfile -File '.\scripts\Invoke-Ra3Ep11DebuggerReadControl.ps1' -SelfTest
 & 'C:\Users\drknt\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\powershell\pwsh.exe' -NoProfile -File '.\scripts\Invoke-Ra3Ep11DebuggerReadControl.ps1' -Run
+# Reborn: calibrate the separate x86 recipe on an owned helper only, never an installed game.
+& 'C:\Users\drknt\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\powershell\pwsh.exe' -NoProfile -File '.\scripts\Invoke-Ra3Ep11DebuggerReadControl.ps1' -Architecture x86 -Run
 ```
 
-Detached tests: one valid synthetic sequence and nine refusals covering wrong
+Detached tests now include two valid pointer-width sequences and nine refusals covering wrong
 path, pending status, transfer size, byte value, PID, thread, closed handle,
 missing return and duplicate observation. These are observer tests, not new
 compiler/asset test groups. The original 165 compiler groups were not rerun.
 
 ## Remaining runtime gate
 
-Do **not** point these commands at `ra3ep1_1.1.game`: the helper is x64, whereas
-the inspected game is x86. Argument locations, calling convention and
-supervision differ. The owned launch does not prove that a Steam launcher
+Do **not** point these commands at `ra3ep1_1.1.game`: both helper architectures
+are now calibrated, but game ownership, supervision and instrumentation policy
+remain separate gates. The owned launch does not prove that a Steam launcher
 forwards `-modconfig`, selects the intended child or tolerates debugging.
 Instrumentation/timing changes also make this different from a normal startup.
 

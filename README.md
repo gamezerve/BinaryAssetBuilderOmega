@@ -45,6 +45,13 @@ gates and no reliable date yet. See [first mod-test plan](docs/RA3EP11_FIRST_MOD
 The complete SDK is not a prerequisite for a narrow test; synthetic diagnostic
 music packages remain ineligible. No game launch has been performed.
 
+The [first runtime-test plan](docs/RA3EP11_FIRST_MOD_TEST_PLAN.md) now explicitly
+separates mod SKU selection, optional launcher game-version requests, SKU
+executable selection and stream `.version` suffixes. RA3 loading conventions
+do not independently establish EP1 forwarding or compatibility; the actual
+1.1 child and config read remain required. No game/launcher settings changed.
+Private reference-source audit details remain local, not published here.
+
 Latest package evidence: [user-built Reborn comparison](docs/REBORN_MOD_PACKAGE_COMPARISON.md).
 Actual KW/WrathEd and RA3/EA SDK examples confirm nonempty `_mod` markers as
 well as whitespace-only markers. RA3 deneme packages `map.version` with `_mod`
@@ -54,12 +61,14 @@ validation. KW v5 / RA3 v6 packages are not converted to EP1 v7 by renaming.
 No sample files or installed games were changed. Effort remains **52% / 48%**.
 
 [Owned-helper debugger calibration](docs/RA3EP11_DEBUGGER_READ_CONTROL.md).
-The existing x64 CDB debugger observed one exact probe open/read/return in a
+The existing CDB debugger observed one exact probe open/read/return in a
 newly owned non-game helper: native status 0, one actual byte, value 0A,
-and matching native/managed PID. No administrator elevation, WPR, installation,
+and matching native/managed PID. Separate x64 and x86 command recipes now pass
+owned-helper calibration; x64 is default and x86 requires explicit selection.
+No administrator elevation, WPR, installation,
 existing-process attach or game launch was needed. Nine detached fault cases
 are refused; the default runner is preflight only. This is not a game read/load
-result: Uprising is x86 and needs a separate owned-launch/instrumentation plan.
+result: Uprising still needs a separate owned-launch/instrumentation plan.
 Software breakpoints affect only the helper's temporary memory and timing.
 Effort **52% / 48%**; compiler groups 165 (not rerun).
 

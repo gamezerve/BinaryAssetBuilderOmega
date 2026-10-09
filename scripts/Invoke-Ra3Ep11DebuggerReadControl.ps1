@@ -1,13 +1,16 @@
-# Reborn: calibrate native read observation on one newly compiled, owned x64 helper only, never on a game.
+# Reborn: calibrate native read observation on one newly compiled, owned architecture-matched helper only, never on a game.
 [CmdletBinding()]
-param([switch]$Run,[switch]$SelfTest)
+param([switch]$Run,[switch]$SelfTest,[ValidateSet('x64','x86')][string]$Architecture='x64')
 $ErrorActionPreference='Stop'
 if($Run -and $SelfTest){throw 'Run and detached tests must be separate.'}
 $repo=Split-Path -Parent $PSScriptRoot
 $fixture=Join-Path $repo 'fixtures/ra3ep11/phase-a/config-read-only.cfg'
 $source=Join-Path $repo 'fixtures/ra3ep11/phase-a/ConfigReadControl.cs'
-$commands=Join-Path $repo 'fixtures/ra3ep11/phase-a/config-read-debugger.txt'
-$debugger='C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\cdb.exe'
+# Reborn: select a reviewed command file and matching debugger together; x64 remains the compatible default.
+$commandLeaf=if($Architecture -ceq 'x86'){'config-read-debugger-x86.txt'}else{'config-read-debugger.txt'}
+$commands=Join-Path $repo ('fixtures/ra3ep11/phase-a/'+$commandLeaf)
+$debugger='C:\Program Files (x86)\Windows Kits\10\Debuggers\'+$Architecture+'\cdb.exe'
+$commandHash=if($Architecture -ceq 'x86'){'2941CCA25E4CECEE57F9533E2460E3920E85CDF9C372DEBB1B979830CCB98147'}else{'950C4B5CBD3A1379BF5C73833EF6AACEA3CDF26AB2742645F3CA74C904681B4C'}
 $compiler=Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::Windows)) 'Microsoft.NET/Framework/v4.0.30319/csc.exe'
 
 #-------------------------------------------------------------------------------------------------
@@ -53,9 +56,12 @@ if($SelfTest){
     $sample=@('REBORN_OPEN_ENTRY 20 \??\C:\probe.cfg','REBORN_OPEN_RETURN 20 0 0000000000000040','REBORN_READ_ENTRY 10 20 0000000000000040','REBORN_READ_RETURN 20 0 0000000000000000 0000000000000001 a','16|READ|1|10') -join "`n"
     $expected='\??\C:\probe.cfg'
     $null=Get-Ep11DebuggerReadProof $sample $expected
+    # Reborn: admit debugger pointer formatting for both 32-bit and 64-bit helper observations.
+    $sample32=$sample.Replace('0000000000000040','00000040').Replace('0000000000000000','00000000').Replace('0000000000000001','00000001')
+    $null=Get-Ep11DebuggerReadProof $sample32 $expected
     $faults=@($sample.Replace('probe.cfg','other.cfg'),$sample.Replace('RETURN 20 0 0000000000000000','RETURN 20 103 0000000000000000'),$sample.Replace('0000000000000001 a','0000000000000000 a'),$sample.Replace('0000000000000001 a','0000000000000001 b'),$sample.Replace('16|READ','17|READ'),$sample.Replace('READ_RETURN 20','READ_RETURN 21'),$sample.Replace('REBORN_READ_ENTRY',"REBORN_CLOSE 20 0000000000000040`nREBORN_READ_ENTRY"),$sample.Replace('REBORN_READ_RETURN','REMOVED_RETURN'),($sample+"`n"+$sample))
     foreach($fault in $faults){$rejected=$false;try{$null=Get-Ep11DebuggerReadProof $fault $expected}catch{$rejected=$true};if(-not $rejected){throw 'Detached debugger evidence fault admitted.'}}
-    'EP1 debugger control: detached PASS; one valid case and nine refusal cases. No compiler, debugger, helper or game executed.';return
+    'EP1 debugger control: detached PASS; two pointer-width cases and nine refusal cases. No compiler, debugger, helper or game executed.';return
 }
 $controlPaths=@($repo,$fixture,$source,$commands,$compiler,$debugger)
 # Reborn: an existing artifacts directory must not redirect the fresh output outside this checkout.
@@ -67,7 +73,7 @@ foreach($path in $controlPaths){
         $item=if($item -is [IO.FileInfo]){$item.Directory}else{$item.Parent}
     }
 }
-foreach($spec in @(@($source,'195B7403B1D92BB7B9A1D18C135BC1B21381E9C6CC46281FCBB00FA415BC6B4C'),@($commands,'950C4B5CBD3A1379BF5C73833EF6AACEA3CDF26AB2742645F3CA74C904681B4C'))){
+foreach($spec in @(@($source,'195B7403B1D92BB7B9A1D18C135BC1B21381E9C6CC46281FCBB00FA415BC6B4C'),@($commands,$commandHash))){
     # Reborn: pin reviewed helper/commands independently of checkout line endings.
     if((Get-Item -LiteralPath $spec[0]).Length -gt 8192){throw 'Control input too large.'}
     $value=[IO.File]::ReadAllText($spec[0]).Replace("`r`n","`n")
@@ -75,11 +81,11 @@ foreach($spec in @(@($source,'195B7403B1D92BB7B9A1D18C135BC1B21381E9C6CC46281FCB
     if($hash -cne $spec[1]){throw 'Unreviewed helper or debugger commands.'}
 }
 if((Get-Item -LiteralPath $fixture).Length -ne 1 -or (Get-FileHash -LiteralPath $fixture).Hash -cne '01BA4719C80B6FE911B091A7C05124B64EEECE964E09C058EF8F9805DACA546B'){throw 'Probe identity differs.'}
-if(-not $Run){[pscustomobject]@{ControlInputsValidated=$true;DebuggerPath=$debugger;RunRequested=$false;GameExecuted=$false;Scope='One newly owned x64 helper; no attach, children, WPR or game'};return}
+if(-not $Run){[pscustomobject]@{ControlInputsValidated=$true;Architecture=$Architecture;DebuggerPath=$debugger;RunRequested=$false;GameExecuted=$false;Scope='One newly owned architecture-matched helper; no attach, children, WPR or game'};return}
 # Reborn: compile only the reviewed helper to a fresh ignored run directory, not an installed executable.
 $runDirectory=New-Item -ItemType Directory -Path (Join-Path $repo ('artifacts/RebornDebuggerControl-'+[guid]::NewGuid().ToString('N')))
 $executable=Join-Path $runDirectory.FullName 'RebornConfigReadControl.exe'
-& $compiler /nologo /target:exe /platform:x64 /optimize+ ('/out:'+$executable) $source
+& $compiler /nologo /target:exe ('/platform:'+$Architecture) /optimize+ ('/out:'+$executable) $source
 if($LASTEXITCODE -ne 0){throw 'Owned helper compilation failed.'}
 # Reborn: disable shell commands/SQM, ignore symbol environment, use only the empty local directory and launch exactly one owned target.
 $arguments='-G -noshell -nosqm -sins -y "'+$runDirectory.FullName+'" -logo "'+$runDirectory.FullName+'\debugger.log" -cf "'+$commands+'" "'+$executable+'" "'+$fixture+'"'
@@ -94,6 +100,8 @@ try{
     $process.WaitForExit()
     if($process.ExitCode -ne 0 -or (Get-Item -LiteralPath $stdout).Length -gt 262144 -or (Get-Item -LiteralPath $stderr).Length -ne 0){throw 'Owned debugger exited unsuccessfully or emitted unexpected stderr.'}
     $result=Get-Ep11DebuggerReadProof ([IO.File]::ReadAllText($stdout)) ('\??\'+$fixture)
+    # Reborn: record which actual ABI was calibrated without claiming that a game target was validated.
+    $result|Add-Member -NotePropertyName Architecture -NotePropertyValue $Architecture
     $result|Add-Member -NotePropertyName OutputDirectory -NotePropertyValue $runDirectory.FullName
     $result|Add-Member -NotePropertyName LogSha256 -NotePropertyValue (Get-FileHash -LiteralPath $stdout).Hash
     $result
