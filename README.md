@@ -38,7 +38,15 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 reader list lifetime](docs/RA3EP11_READER_LIST_LIFETIME.md).
+Latest milestone: [EP1 1.1 scoped reader cache lifetime](docs/RA3EP11_READER_CACHE_LIFETIME.md).
+The complete destructor calls lookup/removal for both ordinary/tag-two caches,
+then resource and member cleanup. Ordinary publication returns node+20h on
+both existing/insertion paths. Six whole-body pins, five detached deletion
+flags, eighteen detached faults and repeat JSON pass. Full tree/key/member
+safety and game loading remain open. Effort **52% / 48%**; compiler groups 165
+(not rerun). Next: mod-config file consumer and package-loading prerequisites.
+
+[EP1 1.1 reader list lifetime](docs/RA3EP11_READER_LIST_LIFETIME.md).
 Seven independently pinned regions recover newest-first insertion under a
 healthy circular sentinel, source-list virtual release/reset, resource-only
 cleanup and conditional reader deletion. Four insertion scenarios, two broken
