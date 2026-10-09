@@ -38,7 +38,18 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 loader argument provenance](docs/RA3EP11_LOADER_ARGUMENTS.md).
+Latest milestone: [EP1 1.1 referenced-reader factories](docs/RA3EP11_READER_FACTORY.md).
+The concrete vtable routes tag 2 through slot 2Ch/004AAE80, other signed tags
+through slot 28h/004AAE60 and ordinary factory 004AAC80. Cache hits return
+node+20h reader pointers without reviewed vtable revalidation; misses call
+004AAC10 with distinct flags. Factory owner is loader argument three, list
+owner argument four. Ordinary publication writes through a cache-helper slot;
+helper internals and healthy-list insertion aliases remain unproved here.
+Six code/vtable pins, six tag routes/two invalid tags, eleven detached faults
+and repeat JSON pass. Effort **52% / 48%**; compiler groups 165 (not rerun).
+Next: 1.1 membership helper, source-list iterator and reader cleanup/lifetime.
+
+[EP1 1.1 loader argument provenance](docs/RA3EP11_LOADER_ARGUMENTS.md).
 The added ninth loader argument comes from wrapper argument six. The eighth
 flag already exists in 1.0: first branch passes 1, second passes 0. Reviewed
 1.1 branches use argument eight for cache-related entry routing and forward
