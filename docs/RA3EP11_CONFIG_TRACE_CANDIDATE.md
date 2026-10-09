@@ -103,3 +103,9 @@ config reading remains distinct from manifest/BIG loading or authored assets.
 Overall SDK effort stays approximately **52% / 48%**. The narrow trace request
 is now syntax/scope validated, but live filtering, successful read correlation,
 config consumption and game loading remain unproved.
+
+Follow-up: [non-game control](RA3EP11_CONFIG_READ_CONTROL.md) now has pinned
+source/scope, owned-instance cleanup and five-second helper deadlines. Both
+helper reads passed without tracing; actual WPR start was denied (0x80070005)
+because this host token is not Windows-admin elevated. Administrator capture
+is required before live filtering/correlation can be validated.

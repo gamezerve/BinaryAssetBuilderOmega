@@ -45,7 +45,17 @@ gates and no reliable date yet. See [first mod-test plan](docs/RA3EP11_FIRST_MOD
 The complete SDK is not a prerequisite for a narrow test; synthetic diagnostic
 music packages remain ineligible. No game launch has been performed.
 
-Latest milestone: [narrow config-read trace candidate](docs/RA3EP11_CONFIG_TRACE_CANDIDATE.md).
+Latest milestone: [non-game config-read control](docs/RA3EP11_CONFIG_READ_CONTROL.md).
+Both distinct compiled helper processes successfully read the one-byte fixture
+in helper-only validation. Reviewed source/scope and four detached refusals
+pass. A real WPR start was denied (0x80070005): sandbox approval is not Windows
+administrator elevation. The hardened runner defaults to preflight, requires
+explicit -Record/admin token for capture, uses uniquely owned instances and
+five-second helper deadlines. No trace/game was captured; live filtering and
+read/completion correlation remain unproved. The report provides the required
+administrator command. Effort **52% / 48%**; compiler groups 165 (not rerun).
+
+[Narrow config-read trace candidate](docs/RA3EP11_CONFIG_TRACE_CANDIDATE.md).
 WPR metadata accepts one Kernel-File provider, the ra3ep1_1.1.game process-name
 filter, five event IDs and a 4 MiB configured buffer product; no stacks or broad
 system profile is requested. Eight scope mutations/two XML-policy refusals and

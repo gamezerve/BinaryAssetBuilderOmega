@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: non-game calibration profile; the helper's distinct name must never impersonate the game. -->
+<WindowsPerformanceRecorder Version="1.0" Author="Reborn">
+  <Profiles>
+    <EventCollector Id="RebornControlCollector" Name="Reborn config-read control collector">
+      <BufferSize Value="64" />
+      <Buffers Value="64" />
+    </EventCollector>
+    <EventProvider Id="RebornControlKernelFile" Name="edd08927-9cc4-4e65-b970-c2560fb5c289" Level="4" NonPagedMemory="true" Stack="false" Strict="true" ProcessExeFilter="RebornConfigReadControl.exe">
+      <Keywords><Keyword Value="0x1D0" /></Keywords>
+      <EventFilters FilterIn="true">
+        <EventId Value="10" /><EventId Value="11" /><EventId Value="12" /><EventId Value="15" /><EventId Value="24" />
+      </EventFilters>
+    </EventProvider>
+    <Profile Id="RebornConfigReadControl.Light.Memory" Name="RebornConfigReadControl" Description="Reborn non-game config-read calibration" LoggingMode="Memory" DetailLevel="Light">
+      <Collectors><EventCollectorId Value="RebornControlCollector"><EventProviders><EventProviderId Value="RebornControlKernelFile" /></EventProviders></EventCollectorId></Collectors>
+    </Profile>
+  </Profiles>
+</WindowsPerformanceRecorder>
