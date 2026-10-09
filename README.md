@@ -38,7 +38,18 @@ were executed.
 Controlled music dispatch/selection/selected publication add three further groups; all 165 groups were executed.
 Default tests do not invoke native codecs.
 
-Latest milestone: [EP1 1.1 initializer/metadata sample](docs/RA3EP11_TYPE_INITIALIZERS.md).
+Latest milestone: [EP1 1.1 descriptor-to-gate pointer trace](docs/RA3EP11_ENTRY_POINTER_TRACE.md).
+One independently disassembled loader path carries descriptor+12 through a
+28-byte pending record+4 into the TypeHash gate's fourth argument (ESI).
+Descriptor stride is 20 bytes; a separate branch copies 12 DWORDs/48 bytes.
+Six exact code pins, three stack fixtures, four malformed-stack refusals,
+seven detached code faults and repeat JSON pass. Stream entry reading,
+descriptor construction and the other two gate callers are not yet rebased.
+No engine execution or production-policy change. Effort **52% / 48%**;
+compiler groups 165 (not rerun). Next: independently recover the 1.1 reader
+vtable, header/entry read and descriptor producer.
+
+[EP1 1.1 initializer/metadata sample](docs/RA3EP11_TYPE_INITIALIZERS.md).
 Two reviewed templates decode 150 initializers (43 short/107 vtable). Every
 sample copies the runtime hash into object+8 and registers that same object;
 all 150 raw TypeIds match the managed name provider, including 138 stock roots.
