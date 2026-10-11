@@ -30,6 +30,12 @@ Studio components and compatible .NET Framework 4/CodeDOM environment, plus an
 unpacked Uprising `static.manifest` and its corresponding BIN/RELO/IMP files.
 Game binaries, stock streams, codecs and WorldBuilder are not provided.
 
+Armor FAQ: this alpha does not accept unlimited or arbitrary ArmorTemplate IDs.
+One of either supported yard identity, or exactly one of each, is the current
+limit. `inheritFrom` is not supported; supply each complete flattened thirteen-
+entry list. The five root scalars are optional, defaulting to 100. Inheritance
+diagnostics elsewhere in the repository do not enable it in this build path.
+
 `uprising-alpha.paths` configures four literal `key=absolute-path` lines:
 PowerShell7, StaticManifest, Driver and
 CompilerDirectory. Update Driver and CompilerDirectory after relocating this

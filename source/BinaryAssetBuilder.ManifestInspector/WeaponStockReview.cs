@@ -10,7 +10,7 @@ internal static class WeaponStockReview
     //-------------------------------------------------------------------------------------------------
     /** Reborn: recover root scalar token offsets from the stock AK47 and verify the known 340-byte native root relationship. */
     //-------------------------------------------------------------------------------------------------
-    internal static object Inspect(string path)
+    internal static object Inspect(string path, string? referenceManifest = null)
     {
         path = Path.GetFullPath(path);
         var metadata = File.ReadAllBytes(path);
@@ -31,6 +31,36 @@ internal static class WeaponStockReview
         if (Word(header, 0) != 0xBABB0000u || Word(header, 4) != document.Header.StreamChecksum)
             throw new InvalidDataException("Weapon BIN stream header differs from manifest.");
         var root = DecodeRoot(bytes);
+        // Reborn: optional global metadata resolves direct stock names only, not recursive import closure or recompilation.
+        var documents = new List<ManifestDocument> { document };
+        string? referenceHash = null;
+        if (referenceManifest != null)
+        {
+            var referenceBytes = File.ReadAllBytes(Path.GetFullPath(referenceManifest));
+            var reference = ManifestReader.Read(referenceBytes);
+            TypeRegistryAudit.ValidateTarget(reference.Header.Version, reference.Header.AllTypesHash);
+            if (reference.Validate().Count != 0) throw new InvalidDataException("Invalid reference metadata.");
+            documents.Add(reference); referenceHash = Convert.ToHexString(SHA256.HashData(referenceBytes));
+        }
+        var dependencies = asset.References.Select(item => new {
+            TypeId = $"{item.TypeId:X8}", InstanceId = $"{item.InstanceId:X8}",
+            Names = documents.SelectMany(value => value.Assets).Where(value => value.TypeId == item.TypeId
+                && value.InstanceId == item.InstanceId).Select(value => value.Name).Distinct().ToArray()
+        }).ToArray();
+        if (referenceManifest != null && (dependencies.Length != 3
+            || dependencies[0].Names.SingleOrDefault() != "Multisound:SOV_Conscript_GunFireMS"
+            || dependencies[1].Names.SingleOrDefault() != "FXList:FX_MuzzleSoviet"
+            || dependencies[2].Names.SingleOrDefault() != "FXList:FX_MuzzleSoviet"))
+            throw new InvalidDataException("Expected stock weapon direct references not resolved.");
+        // Reborn: follow the polymorphic list rather than finding a coincidental float value anywhere in the slice.
+        var damage = DecodeDamage(bytes, root.Native);
+        foreach (var fault in new[] { (damage.Damage, 0u), (root.Native + 264, 2u), (damage.Native, 0u) })
+        {
+            var changed = (byte[])bytes.Clone(); Put(changed, fault.Item1, fault.Item2);
+            try { DecodeDamage(changed, root.Native); }
+            catch (InvalidDataException) { continue; }
+            throw new InvalidDataException("Stock damage subtree corruption accepted.");
+        }
         return new {
             Asset = asset.Name, TypeId = $"{asset.TypeId:X8}", TypeHash = $"{asset.TypeHash:X8}", asset.Tokenized,
             ManifestSha256 = Convert.ToHexString(SHA256.HashData(metadata)), SliceOffset = offset,
@@ -38,9 +68,12 @@ internal static class WeaponStockReview
             SliceSha256 = Convert.ToHexString(SHA256.HashData(bytes)), RootTokenCount = root.Count,
             NativeRootOffset = root.Native, NativeRootSize = 340, AttackRangeOffset = root.Range, AttackRange = 150,
             WeaponSpeedOffset = root.Speed, WeaponSpeed = 999999,
-            Dependencies = asset.References.Select(item => new { TypeId = $"{item.TypeId:X8}", InstanceId = $"{item.InstanceId:X8}" }).ToArray(),
+            DamageNuggetTokenTableOffset = damage.Table, DamageNuggetNativeOffset = damage.Native,
+            DamageValueOffset = damage.Damage, DamageValue = 5, DamageTypeValueOffset = damage.DamageType,
+            DamageTypeValue = 21, SelectedDamageScalarChainVerified = true, DetachedDamageControlsPassed = true,
+            Dependencies = dependencies, ReferenceManifestSha256 = referenceHash, DirectReferenceNamesVerified = referenceManifest != null,
             StockRootScalarsVerified = true, CompletePayloadVerified = false, WeaponCompilerEnabled = false,
-            ModPackageBuilt = false, GameExecuted = false
+            RecursiveDependencyClosureVerified = false, ModPackageBuilt = false, GameExecuted = false
         };
     }
 
@@ -49,15 +82,7 @@ internal static class WeaponStockReview
     //-------------------------------------------------------------------------------------------------
     private static (int Count, int Native, int Range, int Speed) DecodeRoot(byte[] bytes)
     {
-        var tokens = new Dictionary<uint, (uint Type, int Offset)>();
-        bool terminated = false;
-        for (int at = 0; at + 12 <= bytes.Length; at += 12)
-        {
-            uint name = Word(bytes, at), type = Word(bytes, at + 4), value = Word(bytes, at + 8);
-            if (name == 0 && type == 0 && value == 0) { terminated = true; break; }
-            if (!tokens.TryAdd(name, (type, checked((int)value)))) throw new InvalidDataException("Duplicate root token.");
-        }
-        if (!terminated) throw new InvalidDataException("Root token terminator absent.");
+        var tokens = Tokens(bytes, 0);
         int range = Field(tokens, "AttackRange", 0x645864F3u, bytes.Length, 4);
         int speed = Field(tokens, "WeaponSpeed", 0x645864F3u, bytes.Length, 4);
         int native = range - 4;
@@ -66,6 +91,63 @@ internal static class WeaponStockReview
             || BitConverter.Int32BitsToSingle(unchecked((int)Word(bytes, speed))) != 999999f)
             throw new InvalidDataException("Known stock AK47 root scalar/native relationship differs.");
         return (tokens.Count, native, range, speed);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: require the observed single DamageNugget class/base chain, native list pointers and GUN damage value. */
+    //-------------------------------------------------------------------------------------------------
+    private static (int Table, int Native, int Damage, int DamageType) DecodeDamage(byte[] bytes, int root)
+    {
+        var tokens = Tokens(bytes, 0);
+        int list = Field(tokens, "Nuggets", 0xA5C43252u, bytes.Length, 48);
+        if (Word(bytes, list) != 0x6C827073u || Word(bytes, list + 4) != 0x5D448FD8u
+            || Word(bytes, list + 8) != root + 264 || Word(bytes, root + 264) != 1
+            || Word(bytes, list + 12) != 0xB151A0EBu || Word(bytes, list + 16) != 0)
+            throw new InvalidDataException("Weapon nugget list/count differs.");
+        int classes = Pointer(bytes, list + 20, 24);
+        if (Word(bytes, classes) != 2 || Word(bytes, classes + 4) != 0xC0F53E99u)
+            throw new InvalidDataException("Expected DamageNuggetType token class.");
+        int table = Pointer(bytes, classes + 8, 12);
+        if (Word(bytes, table) != 1 || Word(bytes, table + 4) != 0xC7C2CC04u)
+            throw new InvalidDataException("Expected WeaponEffectNugget base table.");
+        var fields = Tokens(bytes, table);
+        int damage = Field(fields, "Damage", 0x645864F3u, bytes.Length, 4);
+        int damageType = Field(fields, "DamageType", 0x46486FF1u, bytes.Length, 4);
+        int native = damage - 40;
+        int item = Pointer(bytes, root + 268, 4);
+        if (native < 0 || native > bytes.Length - 156 || Word(bytes, item) != native
+            || Word(bytes, native) != 0xC0F53E99u || damageType != native + 76
+            || Word(bytes, damage) != unchecked((uint)BitConverter.SingleToInt32Bits(5f))
+            || Word(bytes, damageType) != 21)
+            throw new InvalidDataException("Stock GUN DamageNugget payload relationship differs.");
+        return (table, native, damage, damageType);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: decode an in-slice absolute pointer with an explicit required target size, never trust arbitrary token offsets. */
+    //-------------------------------------------------------------------------------------------------
+    private static int Pointer(byte[] bytes, int at, int size)
+    {
+        int value = checked((int)Word(bytes, at));
+        if (value < 0 || value > bytes.Length - size) throw new InvalidDataException("Weapon table pointer out of bounds.");
+        return value;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: parse bounded twelve-byte token records and require an explicit zero terminator and unique names. */
+    //-------------------------------------------------------------------------------------------------
+    private static Dictionary<uint, (uint Type, int Offset)> Tokens(byte[] bytes, int start)
+    {
+        var tokens = new Dictionary<uint, (uint Type, int Offset)>();
+        bool terminated = false;
+        for (int at = start; at + 12 <= bytes.Length; at += 12)
+        {
+            uint name = Word(bytes, at), type = Word(bytes, at + 4), value = Word(bytes, at + 8);
+            if (name == 0 && type == 0 && value == 0) { terminated = true; break; }
+            if (!tokens.TryAdd(name, (type, checked((int)value)))) throw new InvalidDataException("Duplicate root token.");
+        }
+        if (!terminated) throw new InvalidDataException("Root token terminator absent.");
+        return tokens;
     }
 
     //-------------------------------------------------------------------------------------------------

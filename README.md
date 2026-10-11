@@ -5,8 +5,16 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 The next type is a [bounded Conscript weapon vertical slice](docs/RA3EP1_WEAPON_VERTICAL_SLICE.md).
 Read-only stock review now verifies AK47 root scalar token/native relationships,
-repeat output and corruption refusals. Full weapon tokenization and dependency
+selected DamageNugget class/list/GUN=5 relationships, direct reference names
+through static/global metadata, repeat output and corruption refusals.
+Full weapon tokenization and dependency
 proof are not yet complete; WeaponTemplate stays disabled in the alpha.
+
+Current armor authoring is bounded, not arbitrary: at most one AlliedConYardArmor
+and one SovietConYardArmor per build, thirteen ordered damage entries each plus
+five optional root scalars, canonical integer percentages 0..10000. New IDs,
+changed list shapes and `inheritFrom` are rejected. Existing generic inheritance
+diagnostics do not mean inheritance is enabled in the alpha authoring path.
 
 The first narrow ArmorTemplate override now works in-game by user observation:
 AlliedConYardArmor GUN 100 → 5000 caused markedly increased damage with the

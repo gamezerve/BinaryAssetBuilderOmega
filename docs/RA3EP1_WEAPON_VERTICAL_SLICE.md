@@ -30,8 +30,9 @@ Manifest SHA256: `74FACD9056EEE20942BB274A924BEFFB03D7ADBB71B9609E804A39619B2C60
 Slice SHA256: `2B0C3AABB5521C7C8315A1A5EA22DFCF8D681C6546E9AC58DBF0D0495B2A8C6B`.
 Manifest references, in order: `A3A7AF37:9EF0AACB`, then twice
 `86682E78:902735BD`. The latter is named FXList:FX_MuzzleSoviet in static;
-the first is external to that manifest's named assets. Resolving it against
-audio metadata is still required. Zero IMP bytes do not mean no dependencies.
+the first is external to that manifest's named assets. It is now resolved from
+global metadata as Multisound:SOV_Conscript_GunFireMS (not from the audio manifest).
+Zero IMP bytes do not mean no dependencies.
 
 ## Why the existing processor is not enough yet
 
@@ -66,3 +67,29 @@ Two real stock reviews return identical JSON. An EP1 global manifest lacking
 the required AK47 identity is refused. Incremental build: zero warnings/errors;
 the preceding rebuild had 111 existing warnings and zero errors. No new full
 generic regression suite, package build, GUI or game run was performed here.
+
+## Damage token chain and direct names
+
+The review now follows Nuggets through its count record and polymorphic class
+table instead of scanning for a coincidental float. Observed list table: 1428;
+class table: 1452; DamageNuggetType derived token table: 1464; native nugget: 2352.
+The native list has one member. Damage token points to 2392 (native + 40),
+float 5. DamageType points to 2428 (native + 76), enum 21, GUN.
+The class hashes are C0F53E99 for DamageNuggetType and C7C2CC04 for its
+WeaponEffectNugget base. Only these selected scalar/class/list relationships
+are verified, not every nugget field or the complete 156-byte native tail.
+
+`weapon-stock-review <static.manifest> <global.manifest>` verifies the three
+direct reference names against EP1 metadata. Global SHA256:
+`08A415789062B1707EDBA3C456884B94791097505431E17A03D10EE34DF050FD`.
+The Multisound itself references AudioEvent:SOV_Conscript_GunFire and
+AudioEvent:SOV_Conscript_GunFireDelayed; recursively proving those and the
+underlying audio files remains separate from resolving weapon-level names.
+Supplying audio.manifest alone as the additional manifest is refused because
+it does not resolve the required Multisound. Static-only review still reports
+unresolved external names without claiming direct-name verification.
+
+Checks pass: existing five synthetic root corruptions, three detached copies
+of the actual weapon slice (wrong damage, list count and nugget class), identical
+repeat JSON and wrong-reference-manifest refusal. Incremental build has zero
+warnings/errors. These changes do not add a weapon build to the exported e SDK.
