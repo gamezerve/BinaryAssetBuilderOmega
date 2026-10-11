@@ -2,6 +2,10 @@
 
 Date: October 11, 2026 (Europe/Istanbul).
 
+Follow-up: the [x86 snapshot adapter](RA3EP11_CONFIG_SNAPSHOT_ADAPTER.md) now
+derives these events from supplied register snapshots and bounded read
+callbacks. It does not implement or enable actual process collection.
+
 ## Outcome and boundary
 
 `scripts/Ra3Ep11ConfigReadCorrelation.ps1` validates supplied records only.

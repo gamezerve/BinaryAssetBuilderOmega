@@ -3,6 +3,13 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 11, 2026
 
+Latest implementation: [x86 config snapshot adapter](docs/RA3EP11_CONFIG_SNAPSHOT_ADAPTER.md).
+Reviewed stack/register locations now feed the engine correlation validator
+through an exact-address bounded read callback. Two detached reader cases
+and 26 faults pass; invalid initial identity/register inputs perform no reads.
+This is not an owned-process collector: native debugger execution remains
+disabled and no live game evidence was collected. Estimate **52% / 48%**.
+
 Latest evidence preparation: [engine config-read correlation](docs/RA3EP11_CONFIG_READ_CORRELATION.md).
 The detached validator links exact-probe entry, concrete reader object, actual
 one-byte read buffer, splitter input and caller return within one same-thread
