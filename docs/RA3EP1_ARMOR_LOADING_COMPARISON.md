@@ -132,3 +132,15 @@ authorized `-DefaultReader -Run` would start exactly once with the stock
 launcher and installation working directory, retaining read-only candidate
 handles during observation. No game has been started with this second package.
 The full compiler suite was not rerun in this focused change.
+
+## Authorized default-reader launch
+
+After separate user approval, `Invoke-Ra3Ep1ArmorTrial.ps1 -DefaultReader -Run`
+repeated the preflight and started the stock launcher exactly once. Artifact:
+`artifacts/ArmorLaunch-c550944c19c8488ab90d16d4eaaa72cd/launch.json`.
+Launcher PID 36784 was recorded, with no observation failure. Thirty-three
+direct selected 1.1 child snapshots matched the second candidate's config
+argument. No debugger, installation writes, retry or process termination
+occurred. These snapshots establish command-line visibility only, not config
+reads, manifest loads or effective override. User menu/gameplay feedback is
+pending; no success claim is made.

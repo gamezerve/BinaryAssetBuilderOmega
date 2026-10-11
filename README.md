@@ -16,7 +16,7 @@ ArmorTemplate mod, not more general debugger preparation or all 1,390 types.
 | Package the verified linked family | [Diagnostic BIG4 passes](docs/RA3EP1_ARMOR_DIAGNOSTIC_PACKAGE.md): four exact archive entries and corruption/no-overwrite controls |
 | Prepare a behavior-changing asset | [AlliedConYardArmor GUN 100 → 5000](docs/RA3EP1_ALLIED_CONYARD_OVERRIDE.md) is packaged; stock baseline matches and all other bytes are preserved |
 | Prepare its runtime loading route | Queue candidate tested without observed effect; [second default-reader candidate prepared](docs/RA3EP1_ARMOR_LOADING_COMPARISON.md): fifteen entries, unchanged stream bytes, detached controls and no-launch preflight pass |
-| Start with the armor candidate | One authorized trial reached the main menu (user observation); 37 direct 1.1 child snapshots carried the exact config argument. Config reads and gameplay override remain unproved |
+| Start with the armor candidate | First trial reached the menu but produced normal damage; second default-reader trial has 33 matching direct 1.1 child snapshots, with user gameplay feedback pending. Config reads and override remain unproved |
 | Load our authored change in Uprising | First candidate produced normal damage (user observation), not the expected increase. [Loading comparison](docs/RA3EP1_ARMOR_LOADING_COMPARISON.md) identifies a default-reader route experiment; no playable result yet |
 
 Run `scripts/Invoke-Ra3Ep1ArmorPoc.ps1` under PowerShell 7 to reproduce the
