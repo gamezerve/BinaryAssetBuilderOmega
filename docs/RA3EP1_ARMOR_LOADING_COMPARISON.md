@@ -144,4 +144,23 @@ direct selected 1.1 child snapshots matched the second candidate's config
 argument. No debugger, installation writes, retry or process termination
 occurred. These snapshots establish command-line visibility only, not config
 reads, manifest loads or effective override. User menu/gameplay feedback is
-pending; no success claim is made.
+was subsequently received: the user confirmed the menu opened and damage
+increased markedly ("evet bu sefer oldu. belirgin biçimde arttı"). The requested
+test was a fresh Allied skirmish with a Peacekeeper attacking the yard.
+`user-observation.json` retains this separately from the process-only report.
+
+This closes the narrow **user-observed behavioral override** gate for the
+default-reader candidate. The first queue candidate had normal damage; the
+same admitted stream bytes in the second namespace/marker/config combination
+produced the expected directional effect. This supports that routing recipe,
+but does not isolate namespace versus marker contributions, prove the queue's
+specific failure cause, instrument individual config/manifest reads or measure
+an exact 50-fold damage ratio. The immutable launch report's original false
+flags describe what the observer alone established, not this later user evidence.
+
+Next work is a reproducible authored-armor build/package workflow with the
+validated default-route recipe, followed by controlled baseline/repeatability
+checks. The broad compiler guard remains closed: one armor does not validate
+other processors, general dependency closure, cache/reuse, WorldBuilder or a
+complete Uprising SDK. Do not automatically relaunch, install, or replace stock
+files based on this success.

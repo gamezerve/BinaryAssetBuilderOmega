@@ -3,8 +3,11 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Current outcome — October 11, 2026
 
-This is not yet a playable Uprising SDK. The next deliverable is one valid
-ArmorTemplate mod, not more general debugger preparation or all 1,390 types.
+The first narrow ArmorTemplate override now works in-game by user observation:
+AlliedConYardArmor GUN 100 → 5000 caused markedly increased damage with the
+default `mod.manifest` loading recipe. This is not yet a complete playable
+Uprising SDK. The next deliverable is a reproducible authored-armor mod workflow,
+not more general debugger preparation or all 1,390 types.
 
 | User-visible milestone | Current evidence |
 | --- | --- |
@@ -16,15 +19,16 @@ ArmorTemplate mod, not more general debugger preparation or all 1,390 types.
 | Package the verified linked family | [Diagnostic BIG4 passes](docs/RA3EP1_ARMOR_DIAGNOSTIC_PACKAGE.md): four exact archive entries and corruption/no-overwrite controls |
 | Prepare a behavior-changing asset | [AlliedConYardArmor GUN 100 → 5000](docs/RA3EP1_ALLIED_CONYARD_OVERRIDE.md) is packaged; stock baseline matches and all other bytes are preserved |
 | Prepare its runtime loading route | Queue candidate tested without observed effect; [second default-reader candidate prepared](docs/RA3EP1_ARMOR_LOADING_COMPARISON.md): fifteen entries, unchanged stream bytes, detached controls and no-launch preflight pass |
-| Start with the armor candidate | First trial reached the menu but produced normal damage; second default-reader trial has 33 matching direct 1.1 child snapshots, with user gameplay feedback pending. Config reads and override remain unproved |
-| Load our authored change in Uprising | First candidate produced normal damage (user observation), not the expected increase. [Loading comparison](docs/RA3EP1_ARMOR_LOADING_COMPARISON.md) identifies a default-reader route experiment; no playable result yet |
+| Start with the armor candidate | Second default-reader trial reached the menu (user confirmation); 33 direct 1.1 child snapshots matched its config argument |
+| Load our authored change in Uprising | [First behavioral success](docs/RA3EP1_ARMOR_LOADING_COMPARISON.md): user reported markedly increased yard damage in the second trial; exact multiplier and individual file reads were not instrumented |
 
 Run `scripts/Invoke-Ra3Ep1ArmorPoc.ps1` under PowerShell 7 to reproduce the
 isolated diagnostic streams and `readiness.json`; it does not install files
 or start a game. See the linked guide for the exact command and limitations.
 Current `document/core-*` streams use real Core InstanceHash/checksum values;
 the older `static`/`worldbuilder` golden fixtures keep their fixed diagnostic
-values. Neither stream family has been loaded in the game.
+values. Those older test streams have no in-game validation; the current
+AlliedConYardArmor default-reader package has user-observed behavioral validation.
 The runner also emits one `document/RebornArmorOutput-*` directory through the
 real OutputManager and reports `OutputManagerCommitLinkValidated`. This is
 explicitly diagnostic-only; `.version` publication and general production
@@ -35,7 +39,10 @@ the existing AlliedConYardArmor identity, with only GUN changed from 100 to
 5000 (damage multiplier 1.0 → 50.0). A separate preparation command now creates
 a 3,650-byte three-variant BIG plus `reborn_1.0.cfg` and an identical mod SKU
 fragment. It does not install or launch anything. No observed gameplay
-override exists; `OverrideAppliedInGame` remains false. The `1.0` in the
+override existed at preparation time. The subsequent default-reader trial now
+has user-confirmed increased damage. Generated preparation/process reports keep
+their original false runtime flags; later user evidence is recorded separately.
+The `1.0` in the
 mod config is a mod version label; the selected game remains Uprising 1.1.
 ProcessingHash has no standalone manifest field and stock equality is not
 a proven runtime requirement; the linked report separates this from the
