@@ -65,6 +65,8 @@ $files.Add([pscustomobject]@{Source=(Join-Path $repo 'samples/armor/AlliedConYar
 $files.Add([pscustomobject]@{Source=(Join-Path $repo 'samples/armor/SovietConYardArmor.xml');Relative='mods/SovietArmor/data/mod.xml';Origin='project-sample'})
 # Reborn: package the bounded two-identity sample; its pair path never replays two independent single-asset archives.
 $files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/mods/CombinedArmor/data/mod.xml');Relative='mods/CombinedArmor/data/mod.xml';Origin='project-sample'})
+# Reborn: use the <=15-character Studio name CombinedStrong for the high-contrast pair; preserve the original sample.
+$files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/mods/CombinedArmorStrong/data/mod.xml');Relative='mods/CombinedStrong/data/mod.xml';Origin='project-sample'})
 foreach($name in @('EALAModStudio.exe','EALABuild.dll','EULA for RA3 MOD SDK.rtf')){
     $files.Add([pscustomobject]@{Source=(Join-Path $StudioDirectory $name);Relative=$name;Origin='user-supplied-EA-SDK-local-use-only'})
 }

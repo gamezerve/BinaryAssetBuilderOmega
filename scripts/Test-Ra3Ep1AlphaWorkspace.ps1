@@ -23,7 +23,10 @@ $compiler=Join-Path $Workspace 'tools/compiler'
 $output=Join-Path $Workspace 'builtmods'
 $rows=[Collections.Generic.List[object]]::new()
 # Reborn: execute the copied driver in child PowerShell processes so failure exit codes cannot terminate the test harness.
-foreach($name in @('Reborn','Armor250','ArmorCannon','SovietArmor','CombinedArmor')){
+# Reborn: exercise both pair revisions alongside all four unchanged single-armor golden packages.
+foreach($name in @('Reborn','Armor250','ArmorCannon','SovietArmor','CombinedArmor','CombinedStrong')){
+    # Reborn: every exported sample must satisfy the unchanged Studio adapter's mod-name bound.
+    if($name.Length-gt 15){throw 'Sample exceeds Studio mod-name length.'}
     $before=@(Get-ChildItem -LiteralPath $output -Directory).FullName
     $log=Join-Path $test ($name+'.log')
     & $runtime -NoProfile -File $driver -ModXml (Join-Path $Workspace ('mods/'+$name+'/data/mod.xml')) -StaticManifest $StaticManifest -CompilerDirectory $compiler -OutputRoot $output *> $log
@@ -33,12 +36,15 @@ foreach($name in @('Reborn','Armor250','ArmorCannon','SovietArmor','CombinedArmo
     $receipt=Get-Content -LiteralPath (Join-Path $created[0].FullName 'alpha-build.json') -Raw|ConvertFrom-Json
     $build=Get-Content -LiteralPath $receipt.BuildReceipt -Raw|ConvertFrom-Json
     # Reborn: pair receipts have two independent member value sets; verify the combined golden without treating it as one GUN scalar.
-    if($name-ceq 'CombinedArmor'){
-        $digest='826859F2CD92D840B37D0AABB239DF1C799F433A3A8014912F34757AEF5554E3'
+    if($name -cin @('CombinedArmor','CombinedStrong')){
+        # Reborn: pin each complete shared-stream package independently; a single-member digest cannot satisfy this check.
+        $digest=if($name-ceq 'CombinedStrong'){'A9878D5120EF7037C2B2C4ABEC2679BBB6B57EEC9B3D35CCFE2644A8AA368385'}else{'826859F2CD92D840B37D0AABB239DF1C799F433A3A8014912F34757AEF5554E3'}
         if($receipt.ArmorCount-ne 2 -or $build.ArmorCount-ne 2 -or @($receipt.Assets).Count-ne 2 -or @($build.Assets).Count-ne 2 -or $build.ArchiveSha256-cne $digest -or -not $receipt.PrebuiltCompilerUsed -or -not $build.ActualCoreOutputUsed -or -not $build.AuthoredPayloadVerified -or $build.GameExecuted){throw 'Combined package receipt differs.'}
+        # Reborn: pair builds obey the same isolated prebuilt compiler boundary as single-armor samples.
+        if($receipt.CompilerPath-cne (Join-Path $compiler 'BinaryAssetBuilder.ManifestInspector.exe') -or (Test-Path -LiteralPath (Join-Path $created[0].FullName 'compiler-build.log'))){throw 'Combined build escaped the prebuilt compiler boundary.'}
         foreach($identity in @('AlliedConYardArmor','SovietConYardArmor')){
             $member=@($build.Assets|Where-Object ArmorId -CEQ $identity)
-            $expected=if($identity-ceq 'AlliedConYardArmor'){250}else{5000}
+            $expected=if($identity-ceq 'AlliedConYardArmor' -and $name-ceq 'CombinedArmor'){250}else{5000}
             if($member.Count-ne 1 -or $member[0].EditableFloatCount-ne 18 -or $member[0].Percentages.'Armor/GUN'-ne $expected){throw 'Combined member values differ.'}
         }
         $text=Get-Content -LiteralPath $log -Raw

@@ -67,7 +67,8 @@ try {
             if($LASTEXITCODE-ne 0){$json|Write-Output;throw 'Pair XML failed admission.'}
             $admission=($json-join [Environment]::NewLine)|ConvertFrom-Json
             if($ValidateOnly){Write-Output ('Reborn: pair input admitted; no package built. '+$directory);return}
-            Write-Output 'Warning: ALPHA002 Two supported yard armors share one stream. Each has 18 editable percentages. Combined package gameplay is not yet verified.'
+            # Reborn: distinguish observed pair revisions from an arbitrary newly authored package's unproven runtime behavior.
+            Write-Output 'Warning: ALPHA002 Two supported yard armors share one stream; 18 editable percentages each. Soviet GUN=5000 and Allied GUN=5000 have user-observed combined-stream evidence in separate revisions. Allied GUN=250 and other edits remain unconfirmed; this new build is not automatically gameplay-verified.'
             $output=Join-Path $directory 'build'
             & $exe armor-pair-authored-build $snapshot $output $StaticManifest
             if($LASTEXITCODE-ne 0){throw 'Pair Core/package build failed.'}

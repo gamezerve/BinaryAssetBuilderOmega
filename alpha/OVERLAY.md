@@ -39,13 +39,15 @@ extraction; no rollback deletion or overwriting is performed. Never merge this
 overlay into your original SDK or game directory.
 
 After setup, open this copy's EALAModStudio.exe manually, select Reborn or
-Armor250, ArmorCannon, SovietArmor or CombinedArmor and Build Mod. Only AlliedConYardArmor or
+Armor250, ArmorCannon, SovietArmor, CombinedArmor or CombinedStrong and Build Mod. Only AlliedConYardArmor or
 SovietConYardArmor's thirteen ordered
 Percent values and five optional root scalars accept integers 0..10000. Expanded
 edits are offline validated; Allied GUN/CANNON have user-observed gameplay evidence,
 and Soviet GUN are user-observed in gameplay. CombinedArmor builds both distinct
 identities into one shared stream, with one of each required and no third asset.
-The combined package and other edits are not independently gameplay proven.
+CombinedArmor has positive Soviet GUN=5000 evidence; CombinedStrong has
+positive Allied GUN=5000 evidence. Allied GUN=250 remains inconclusive; Soviet
+was not re-tested in the stronger revision. Other edits are not gameplay proven.
 Output goes to fresh builtmods subdirectories; unsupported XML fails visibly.
 No automatic mod installation or game launch is provided. Setup's configuration
 and receipt contain local paths and must not be added to a public archive.

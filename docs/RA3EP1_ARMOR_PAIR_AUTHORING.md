@@ -176,3 +176,29 @@ This does not claim that both members were independently observed in the same
 5000/5000 session: Soviet was not re-tested there. The original Allied GUN=250
 result stays inconclusive. Other coefficients/scalars, Japan/civilian consumers
 and arbitrary additional asset types remain outside these runtime observations.
+
+## Refreshed six-sample alpha — October 12, 2026
+
+`UprisingAlpha-20261012-e` exports the new sample as `CombinedStrong`, keeping
+Studio's unchanged 15-character mod-name limit. The source remains
+`alpha/mods/CombinedArmorStrong/data/mod.xml`. The initial d preparation used the
+too-long directory name and is superseded, not a tested GUI candidate. Its
+files are retained for diagnostics; existing c artifacts are also preserved.
+
+The e compiler rebuild completed with 111 existing warnings and zero errors.
+`offline-test-4175dcf3e15747e39cefd48038953bb0/workspace-test.json` confirms all
+six sample golden packages, both pair member maps, the prebuilt compiler boundary,
+input inventory preservation, unsupported XML refusal and correct error/critical
+callback prefixes. CombinedStrong reproduces the user-tested BIG digest exactly.
+The pair warning now distinguishes the two observed revisions from arbitrary
+new authored builds. Help and README describe the inconclusive Allied GUN=250
+result without treating it as confirmed.
+
+`UprisingOverlay-20261012-e-OVERLAY-CANDIDATE.zip` contains 30 owned payload
+files, with eight hash-pinned external EA/schema dependencies. SHA256:
+`2CB26F0E295674F0AD8C1F1254F9724AF6620CE08F756E5FA1F82A2E95B258B4`.
+Binary privacy auditing passed. Fresh extraction/setup and all six sample builds
+passed again in `UprisingOverlay-20261012-e-test/overlay-test.json`; wrong
+dependency digest and occupied setup were refused. No GUI or game was launched.
+New-workspace GUI observation and public redistribution review remain separate;
+this does not claim a new full generic compiler regression-suite run.

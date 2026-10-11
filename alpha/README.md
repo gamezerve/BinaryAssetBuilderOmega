@@ -19,8 +19,11 @@ fixed; includes/inheritance/other asset types remain unsupported. Unsupported XM
 fails rather than being silently omitted. Reborn uses GUN=5000; ArmorCannon uses
 CANNON=5000 and stock GUN=100. SovietArmor uses Soviet GUN=5000. Allied GUN/CANNON
 and Soviet GUN have user-observed gameplay evidence. CombinedArmor uses Allied
-GUN=250 and Soviet GUN=5000 in one stream; this combined package is offline-only
-so far. Duplicate identities and a third asset fail the whole build.
+GUN=250 and Soviet GUN=5000 in one stream; Soviet has positive user-observed damage,
+while Allied GUN=250 is inconclusive. CombinedStrong uses GUN=5000 for both;
+its Allied Peacekeeper test is positive, but Soviet was not re-tested in that
+revision. These are qualitative observations, not exact multiplier measurements
+or proof of every new build. Duplicate identities and a third asset fail the whole build.
 
 Prerequisites: PowerShell 7, an x86 .NET 8 runtime, your existing RA3 Mod SDK
 Studio components and compatible .NET Framework 4/CodeDOM environment, plus an

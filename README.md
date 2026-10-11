@@ -27,8 +27,9 @@ The reference XML also binds Japan's yard and one civilian
 building to this shared armor. The separately authorized Soviet GUN=5000 trial
 now also has user-reported increased damage with the requested Conscript test.
 Japan/civilian consumers and foreign-identity gameplay controls remain untested.
-Current local candidate: `UprisingAlpha-20261012-c`, with five offline-verified
-samples including CombinedArmor. Its fresh overlay extraction also passes.
+Current local candidate: `UprisingAlpha-20261012-e`, with six offline-verified
+samples including CombinedArmor and CombinedStrong. Its fresh overlay extraction
+also passes; the new workspace GUI has not yet been observed.
 The combined package now has user-reported markedly increased Conscript damage
 for Soviet GUN=5000. Allied Peacekeeper GUN=250 remains inconclusive: the user
 was unsure of its stock damage and observed no exaggerated increase. Both
@@ -44,7 +45,12 @@ damage in the requested Allied test. Thus both identities have positive gameplay
 observations in two-member streams, across two different package revisions.
 Soviet was not re-tested in the 5000/5000 revision; Allied GUN=250 remains
 inconclusive, and no exact damage multiplier is claimed.
-This sample has not been added to the already exported five-sample c workspace.
+The repository source sample is exported as `CombinedStrong` to satisfy Studio's
+unchanged 15-character mod-name bound. Both pair samples are in the e workspace.
+The e overlay has 30 payload files and eight external EA/schema dependencies;
+private-path auditing, fresh setup, six builds and failure diagnostics pass.
+It remains a local candidate with external prerequisites and outstanding public
+redistribution review, not a complete standalone SDK.
 The refreshed local workspace `UprisingAlpha-20261011-h` and clean overlay
 extraction pass all three samples (Reborn, Armor250, ArmorCannon); the full
 compiler regression suite also passes. Packaging now forces recompilation to
