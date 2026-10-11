@@ -1,5 +1,6 @@
 # Reborn: correlate one requested CDB register response with the incremental decoder; no debugger I/O, launch, resume or breakpoint API.
 . (Join-Path $PSScriptRoot 'Ra3Ep11ConfigSnapshotAdapter.ps1')
+. (Join-Path $PSScriptRoot 'Ra3Ep11ConfigProbeFilter.ps1')
 
 #-------------------------------------------------------------------------------------------------
 <# Reborn: require an empty breakpoint listing after clearing our helper breakpoint, not just a printed acknowledgement or temporarily restored code byte. #>
@@ -71,6 +72,8 @@ function New-Ep11ConfigContextRequest($Session) {
     if($null -eq $Session -or $Session.Status -cne 'Open'){throw 'Context session is not open.'}
     try{
         if($Session.Sequence -ge 320 -or $null -ne $Session.PendingContext){throw 'Context request exceeds bounds or overlaps.'}
+        # Reborn: bound every observed stop, including ignored stock calls, before preparing another debugger request.
+        if($Session.FilterProbeEntries -and $Session.ContextResponses -ge 128){throw 'Filtered context stop limit exceeded.'}
         $nonce=[guid]::NewGuid().ToString('N')
         # Reborn: eight x86 context fields only; the command deliberately contains no g/gc, memory writes or external commands.
         $command='.printf "REBORN_CONTEXT '+$nonce+' %x %x %x %x %x %x %x %x", @$tpid, @$tid, @eip, @eax, @ebx, @esi, @edi, @esp; .echo'
@@ -104,6 +107,15 @@ function Add-Ep11ConfigDebuggerResponse($Session,[string]$Text) {
         $nonce=$Session.PendingContext;$Session.PendingContext=$null
         $record=Get-Ep11ConfigContextRecord $Text $nonce
         if($record.ProcessId -ne $Session.ExpectedProcessId){throw 'Context process differs from session.'}
+        if($Session.FilterProbeEntries){
+            if($Session.ContextResponses -ge 128){throw 'Filtered context stop limit exceeded.'}
+            $selection=Get-Ep11ConfigProbeSelection $Session $record
+            $Session.ContextResponses++
+            if($selection -in @('CallerMismatch','PathMismatch','UntrackedEvent')){
+                # Reborn: count only reason codes, never unrelated paths or buffers; ignored calls are not successful evidence.
+                $Session.IgnoredContextResponses++;$Session.IgnoreReasons[$selection]++;return
+            }
+        }
         $thread=$record.ThreadId.ToString()
         if($record.SiteAddress -eq 0x4d86b0){
             if($Session.Threads.ContainsKey($thread)){throw 'Context entry overlaps same-thread invocation.'}

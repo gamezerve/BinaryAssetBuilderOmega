@@ -17,13 +17,14 @@ function Read-Ep11SnapshotBytes([scriptblock]$ReadAdapter,[long]$Address,[int]$C
 #-------------------------------------------------------------------------------------------------
 <# Reborn: create bounded per-observation state without retaining stale process-memory snapshots for later replay. #>
 #-------------------------------------------------------------------------------------------------
-function New-Ep11ConfigSnapshotSession([int]$ExpectedProcessId,[string]$ProbePath,[scriptblock]$ReadAdapter,[long]$ModuleBase=0x400000) {
+function New-Ep11ConfigSnapshotSession([int]$ExpectedProcessId,[string]$ProbePath,[scriptblock]$ReadAdapter,[long]$ModuleBase=0x400000,[switch]$FilterProbeEntries) {
     if($ExpectedProcessId -le 0 -or $ModuleBase -ne 0x400000 -or
        $null -eq $ReadAdapter -or -not [IO.Path]::IsPathFullyQualified($ProbePath) -or $ProbePath.Length -gt 240 -or
        $ProbePath -match '[^\x20-\x7E]|[";]'){throw 'Snapshot scope outside bounds.'}
     Assert-Ep11ConfigNamePolicy $ProbePath
     return @{Status='Open';Sequence=0;ExpectedProcessId=$ExpectedProcessId;ProbePath=$ProbePath;ReadAdapter=$ReadAdapter;ModuleBase=$ModuleBase;
-        PathBytes=[Text.Encoding]::ASCII.GetBytes($ProbePath+[char]0);Active=@{};Seen=@{};Threads=@{};Objects=@{};Buffers=@{};Events=[Collections.Generic.List[object]]::new()}
+        PathBytes=[Text.Encoding]::ASCII.GetBytes($ProbePath+[char]0);Active=@{};Seen=@{};Threads=@{};Objects=@{};Buffers=@{};Events=[Collections.Generic.List[object]]::new();
+        FilterProbeEntries=[bool]$FilterProbeEntries;ContextResponses=0;IgnoredContextResponses=0;IgnoreReasons=@{CallerMismatch=0;PathMismatch=0;UntrackedEvent=0}}
 }
 
 #-------------------------------------------------------------------------------------------------

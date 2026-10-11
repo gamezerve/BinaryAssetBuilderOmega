@@ -2,6 +2,10 @@
 
 Date: October 11, 2026 (Europe/Istanbul). Detached protocol tests only.
 
+Selection follow-up: [bounded exact-probe filtering](RA3EP11_CONFIG_PROBE_FILTER.md)
+now distinguishes ignored contexts from selected probe lifetimes, with a
+128-response total bound. No actual native-game collection is enabled.
+
 Follow-up: [actual helper-only context calibration](RA3EP11_CONTEXT_HELPER_CALIBRATION.md)
 now validates the command's two real round trips at an owned helper's initial
 break. The statements below describe the original detached-only milestone;

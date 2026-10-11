@@ -3,6 +3,15 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 11, 2026
 
+Latest exact-probe preparation: [bounded config selection](docs/RA3EP11_CONFIG_PROBE_FILTER.md).
+Optional filtered sessions stop unrelated path comparison at its first
+mismatch and ignore known untracked-thread events without reader/buffer
+captures. Nested same-thread ambiguity and read failures fault permanently;
+ignored-only streams cannot prove a read. Seven detached positives and 20
+fault/retry refusals pass; all stops, including ignored calls, are capped at
+128. No game/debugger was executed in this follow-up. Live native integration
+and armed-breakpoint failure cleanup remain open; estimate **52% / 48%**.
+
 Latest actual breakpoint milestone: [admitted-helper event transport](docs/RA3EP11_BREAKPOINT_HELPER_CALIBRATION.md).
 The shared gate now precedes a helper-only delay breakpoint; its owned hit
 matches a separate register response. Explicit clearing, an empty breakpoint
