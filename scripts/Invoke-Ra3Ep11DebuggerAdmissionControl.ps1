@@ -1,6 +1,6 @@
 # Reborn: gate one newly compiled helper at CDB's initial break; rejection cleanup detaches/resumes that helper, never a game.
 [CmdletBinding()]
-param([switch]$Run,[switch]$SelfTest,[ValidateSet('Admit','RejectLiveBytes','Timeout')][string]$Mode='Admit',[switch]$CalibrateContext,[switch]$CalibrateBreakpoint,
+param([switch]$Run,[switch]$SelfTest,[ValidateSet('Admit','RejectLiveBytes','Timeout')][string]$Mode='Admit',[switch]$CalibrateContext,[switch]$CalibrateBreakpoint,[switch]$CalibrateDisplayProfile,
     [ValidateSet('ClearAndResume','TimeoutDetachArmed','DebuggerLossArmed')][string]$BreakpointDisposition='ClearAndResume',
     [ValidateSet('None','CaptureRefusal','ObservationTimeout')][string]$InjectObservationFailure='None')
 $ErrorActionPreference='Stop'
@@ -8,6 +8,10 @@ $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'Ra3Ep11SupervisorAdmissionGate.ps1')
 . (Join-Path $PSScriptRoot 'Ra3Ep11ConfigDebuggerTransport.ps1')
 . (Join-Path $PSScriptRoot 'Ra3Ep11DebuggerOutputPump.ps1')
+. (Join-Path $PSScriptRoot 'Ra3Ep11DebuggerDisplayProfile.ps1')
+. (Join-Path $PSScriptRoot 'Ra3Ep11NativeOutputBridge.ps1')
+# Reborn: quiet stop calibration is confined to the fixed helper's normal clear/resume path; native launch and fault/loss modes are not enabled.
+if($CalibrateDisplayProfile -and ($SelfTest -or -not $CalibrateBreakpoint -or $BreakpointDisposition -cne 'ClearAndResume' -or $InjectObservationFailure -cne 'None')){throw 'Display calibration requires separate helper clear/resume control.'}
 # Reborn: context calibration is an explicit helper-only admission mode, never a native-game launch option.
 if($CalibrateContext -and ($SelfTest -or $Mode -cne 'Admit')){throw 'Context calibration requires the separate Admit helper control.'}
 # Reborn: keep breakpoint calibration separate from initial-context and refusal controls; all use the same fixed new helper only.
@@ -59,7 +63,7 @@ foreach($path in $paths){
 }
 if((Get-Item -LiteralPath $source).Length -gt 4096 -or [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes([IO.File]::ReadAllText($source).Replace("`r`n","`n")))) -cne '1EFA171DAE77F686E2E120EB6530B37F0D359E41C836F74A11C247CD5FC1FB46'){throw 'Unreviewed admission helper.'}
 if((Get-FileHash -LiteralPath $debugger).Hash -cne 'E6771A874286D8A053C744D428D50A13091318DD1261F07B6C2C17BF42A486A5'){throw 'Debugger differs from calibrated build.'}
-if(-not $Run){[pscustomobject]@{Mode=$Mode;CalibrateContextRequested=[bool]$CalibrateContext;CalibrateBreakpointRequested=[bool]$CalibrateBreakpoint;BreakpointDisposition=$BreakpointDisposition;ArmedDebuggerLossRunEnabled=$false;RunRequested=$false;GameExecuted=$false;Scope='Fixed new helper, initial-break gate only'};return}
+if(-not $Run){[pscustomobject]@{Mode=$Mode;CalibrateContextRequested=[bool]$CalibrateContext;CalibrateBreakpointRequested=[bool]$CalibrateBreakpoint;DisplayProfileCalibrationRequested=[bool]$CalibrateDisplayProfile;BreakpointDisposition=$BreakpointDisposition;ArmedDebuggerLossRunEnabled=$false;RunRequested=$false;GameExecuted=$false;Scope='Fixed new helper, initial-break gate only'};return}
 # Reborn: prepare bounded read-only native interop before any target exists.
 Add-Type -TypeDefinition @'
 using System;
@@ -97,6 +101,8 @@ $breakpointSite=$null;$breakpointOriginalByte=$null
 $armedBreakpointValidated=$false;$debuggerLossInjected=$false;$survivedDebuggerExit=$false;$timeoutHoldMs=0
 # Reborn: distinguish an issued breakpoint command from a verified stopped event; unknown armed states must never use the old forced-kill fallback.
 $breakpointCommandIssued=$false;$atOwnedBreakpoint=$false;$recoveryAttempted=$false;$recoveryValidated=$false;$recoveryFailure=$null;$injectedFailureObserved=$false
+# Reborn: separate actual display/framing calibration from native stop acceptance and startup diagnostic classification.
+$displayProfileValidated=$false;$quietStopFramed=$false;$quietContextFramed=$false;$quietClearFramed=$false;$startupCharsBeforeHelperMarker=0
 #-------------------------------------------------------------------------------------------------
 <# Reborn: pump bounded redirected chunks without blocking on a prompt or needing a PowerShell runspace in callbacks. #>
 #-------------------------------------------------------------------------------------------------
@@ -201,13 +207,28 @@ try{
         do{
             Update-Ep11AdmissionOutput;$siteText=$streams[0].Text.Substring($siteOffset)
             if($siteText.Length -gt 4096 -or $debug.HasExited -or $helper.HasExited -or [DateTime]::UtcNow -gt $siteDeadline -or $streams[1].Text.Length -ne 0){throw 'Helper delay-site query failed.'}
-            if($siteText -notmatch ('(?m)^REBORN_SITE '+$siteNonce+' [0-9a-f]+ [0-9a-f]+\r?\n')){Start-Sleep -Milliseconds 25}
-        }while($siteText -notmatch ('(?m)^REBORN_SITE '+$siteNonce+' [0-9a-f]+ [0-9a-f]+\r?\n'))
+            $siteDone=$siteText -cmatch ('(?m)^REBORN_SITE '+$siteNonce+' [0-9a-f]+ [0-9a-f]+\r?\n')
+            # Reborn: display calibration starts at a complete prompt boundary, never in a trailing fragment of the previous site response.
+            if($CalibrateDisplayProfile){$siteDone=$siteDone -and $siteText -cmatch '(?m)^[0-9a-fA-F]{1,8}:[0-9a-fA-F]{1,8}> \z'}
+            if(-not $siteDone){Start-Sleep -Milliseconds 25}
+        }while(-not $siteDone)
         $site=Get-Ep11HelperBreakpointSite $siteText $siteNonce
         $siteByte=[byte[]]::new(1);$siteActual=[UIntPtr]::Zero
         $siteSuccess=[RebornAdmissionMemory]::ReadProcessMemory($helper.Handle,[IntPtr]$site.Address,$siteByte,[UIntPtr]1,[ref]$siteActual)
         Assert-Ep11AdmissionBytes $siteSuccess $siteActual.ToUInt64() ([byte[]]@($site.OriginalByte)) $siteByte
         $breakpointSite=$site.Address;$breakpointOriginalByte=$site.OriginalByte
+        if($CalibrateDisplayProfile){
+            # Reborn: configure only debugger display after ownership/byte admission and before installing the helper breakpoint.
+            $displayRequest=New-Ep11DebuggerDisplayRequest;Update-Ep11AdmissionOutput;$displayOffset=$streams[0].Text.Length
+            $debug.StandardInput.WriteLine($displayRequest.Command);$debug.StandardInput.Flush();$displayDeadline=[DateTime]::UtcNow.AddSeconds(5)
+            do{
+                Update-Ep11AdmissionOutput;$displayText=$streams[0].Text.Substring($displayOffset)
+                if($displayText.Length -gt 4096 -or $debug.HasExited -or $helper.HasExited -or [DateTime]::UtcNow -gt $displayDeadline -or $streams[1].Text.Length -ne 0){throw 'Display profile acknowledgement failed.'}
+                $displayDone=$displayText -cmatch ('(?m)^REBORN_DISPLAY '+$displayRequest.Nonce+'\r?\n') -and $displayText -cmatch '(?m)^[0-9a-fA-F]{1,8}:[0-9a-fA-F]{1,8}> \z'
+                if(-not $displayDone){Start-Sleep -Milliseconds 25}
+            }while(-not $displayDone)
+            Assert-Ep11DebuggerDisplayProfile $displayText $displayRequest.Nonce;$displayProfileValidated=$true
+        }
         # Reborn: install only the owned helper's one observed delay-site breakpoint, without automatic continuation in its command.
         $breakNonce=[guid]::NewGuid().ToString('N');$siteHex='{0:x}' -f $breakpointSite
         Update-Ep11AdmissionOutput;$breakOffset=$streams[0].Text.Length
@@ -223,6 +244,18 @@ try{
         }while($breakText -notmatch ('(?m)^REBORN_BREAK '+$breakNonce+' [0-9a-f]+ [0-9a-f]+ [0-9a-f]+\r?\n'))
         $hit=Get-Ep11HelperBreakpointHit $breakText $breakNonce $owner $breakpointSite
         $atOwnedBreakpoint=$true
+        if($CalibrateDisplayProfile){
+            # Reborn: calibrate only the suffix beginning at the already ownership-validated helper marker; startup diagnostics remain separately unresolved for native use.
+            $helperMarker=[regex]::Match($breakText,'(?m)^REBORN_BREAK '+$breakNonce+' ')
+            $startupCharsBeforeHelperMarker=$helperMarker.Index;$quietDeadline=[DateTime]::UtcNow.AddSeconds(5)
+            do{
+                Update-Ep11AdmissionOutput;$quietText=$streams[0].Text.Substring($breakOffset+$helperMarker.Index)
+                if($debug.HasExited -or $helper.HasExited -or [DateTime]::UtcNow -gt $quietDeadline -or $streams[1].Text.Length -ne 0){throw 'Quiet helper stop framing failed.'}
+                $quietFrame=Get-Ep11NativeOutputFrame $quietText 'AwaitHelperStop' $breakNonce
+                if($null -eq $quietFrame){Start-Sleep -Milliseconds 25}
+            }while($null -eq $quietFrame)
+            $null=Get-Ep11HelperBreakpointHit $quietFrame.Text $breakNonce $owner $breakpointSite;$quietStopFramed=$true
+        }
         $contextSession=New-Ep11ConfigSnapshotSession $owner (Join-Path $repo 'fixtures/ra3ep11/phase-a/probe_1.0.cfg') {throw 'Helper breakpoint must not invoke native config decoding.'}
         $request=New-Ep11ConfigContextRequest $contextSession
         Update-Ep11AdmissionOutput;$offset=$streams[0].Text.Length
@@ -231,9 +264,12 @@ try{
         do{
             Update-Ep11AdmissionOutput;$response=$streams[0].Text.Substring($offset)
             if($response.Length -gt 4096 -or $debug.HasExited -or $helper.HasExited -or [DateTime]::UtcNow -gt $contextDeadline -or $streams[1].Text.Length -ne 0){throw 'Breakpoint context capture failed.'}
-            if($response -notmatch ('(?m)^REBORN_CONTEXT_END '+$request.Nonce+'\r?\n')){Start-Sleep -Milliseconds 25}
-        }while($response -notmatch ('(?m)^REBORN_CONTEXT_END '+$request.Nonce+'\r?\n'))
-        $window=Get-Ep11CompletedContextWindow $response $request.Nonce
+            $contextDone=$response -cmatch ('(?m)^REBORN_CONTEXT_END '+$request.Nonce+'\r?\n')
+            if($contextDone -and $CalibrateDisplayProfile){$contextFrame=Get-Ep11NativeOutputFrame $response 'AwaitContext' $request.Nonce;$contextDone=$null -ne $contextFrame}
+            if(-not $contextDone){Start-Sleep -Milliseconds 25}
+        }while(-not $contextDone)
+        $window=Get-Ep11CompletedContextWindow $(if($CalibrateDisplayProfile){$contextFrame.Text}else{$response}) $request.Nonce
+        if($CalibrateDisplayProfile){$quietContextFramed=$true}
         $breakpointContext=Get-Ep11ConfigContextRecord $window $request.Nonce
         if($breakpointContext.ProcessId -ne $owner -or $breakpointContext.ThreadId -ne $hit.ThreadId -or $breakpointContext.SiteAddress -ne $breakpointSite){throw 'Breakpoint context does not match owned hit.'}
         $contextSession.PendingContext=$null;$contextSession.Status='Closed';$breakpointHitValidated=$true
@@ -288,9 +324,12 @@ try{
         do{
             Update-Ep11AdmissionOutput;$clearText=$streams[0].Text.Substring($clearOffset)
             if($clearText.Length -gt 4096 -or $debug.HasExited -or $helper.HasExited -or [DateTime]::UtcNow -gt $clearDeadline -or $streams[1].Text.Length -ne 0){throw 'Breakpoint clear acknowledgement failed.'}
-            if($clearText -notmatch ('(?m)^REBORN_CLEAR '+$clearNonce+'\r?\n')){Start-Sleep -Milliseconds 25}
-        }while($clearText -notmatch ('(?m)^REBORN_CLEAR '+$clearNonce+'\r?\n'))
-        Assert-Ep11HelperBreakpointCleared $clearText $clearNonce
+            $clearDone=$clearText -cmatch ('(?m)^REBORN_CLEAR '+$clearNonce+'\r?\n')
+            if($clearDone -and $CalibrateDisplayProfile){$clearFrame=Get-Ep11NativeOutputFrame $clearText 'AwaitClear' $clearNonce;$clearDone=$null -ne $clearFrame}
+            if(-not $clearDone){Start-Sleep -Milliseconds 25}
+        }while(-not $clearDone)
+        Assert-Ep11HelperBreakpointCleared $(if($CalibrateDisplayProfile){$clearFrame.Text}else{$clearText}) $clearNonce
+        if($CalibrateDisplayProfile){$quietClearFramed=$true}
         $breakpointCommandIssued=$false
         $restored=[byte[]]::new(1);$restoredActual=[UIntPtr]::Zero
         $restoredSuccess=[RebornAdmissionMemory]::ReadProcessMemory($helper.Handle,[IntPtr]$breakpointSite,$restored,[UIntPtr]1,[ref]$restoredActual)
@@ -382,6 +421,13 @@ try{
     $result|Add-Member CooperativeRecoveryValidated $recoveryValidated
     $result|Add-Member RecoveryFailure $recoveryFailure
     $result|Add-Member RecoveryNeedsUserAction ($null -ne $recoveryFailure)
+    # Reborn: helper-only display/framing proof does not validate native startup events, five-site detach or config consumption.
+    $result|Add-Member DisplayProfileCalibrationRequested ([bool]$CalibrateDisplayProfile)
+    $result|Add-Member DisplayProfileReportValidated $displayProfileValidated
+    $result|Add-Member QuietHelperStopFramed $quietStopFramed
+    $result|Add-Member QuietHelperContextFramed $quietContextFramed
+    $result|Add-Member QuietHelperClearFramed $quietClearFramed
+    $result|Add-Member StartupCharactersBeforeHelperMarker $startupCharsBeforeHelperMarker
     [IO.File]::WriteAllText((Join-Path $directory 'result.json'),($result|ConvertTo-Json -Depth 4))
     $debug.Dispose();if($null -ne $helper){$helper.Dispose()}
 }

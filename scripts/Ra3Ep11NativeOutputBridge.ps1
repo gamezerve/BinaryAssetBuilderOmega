@@ -29,6 +29,7 @@ function Get-Ep11NativeOutputFrame([string]$Text,[string]$Phase,[string]$Nonce) 
         if([string]::IsNullOrWhiteSpace($line)){continue}
         $accepted=switch($Phase){
             'AwaitStop' {$line -cmatch ('^REBORN_NATIVE_STOP '+$Nonce+' [0-4](?: [0-9a-fA-F]{1,8}){3}$')}
+            'AwaitHelperStop' {$line -cmatch ('^REBORN_BREAK '+$Nonce+'(?: [0-9a-fA-F]{1,8}){3}$')}
             'AwaitContext' {$line -cmatch ('^REBORN_CONTEXT '+$Nonce+'(?: [0-9a-fA-F]{1,8}){8}$') -or $line -ceq ('REBORN_CONTEXT_END '+$Nonce)}
             'AwaitClear' {$line -ceq ('REBORN_CLEAR '+$Nonce)}
             default {$false}
@@ -37,6 +38,7 @@ function Get-Ep11NativeOutputFrame([string]$Text,[string]$Phase,[string]$Nonce) 
     }
     switch($Phase){
         'AwaitStop' {if(@(($content -split '\r?\n')|Where-Object {$_ -cmatch '^REBORN_NATIVE_STOP '}).Count -ne 1){throw 'Stop response duplicated or missing.'}}
+        'AwaitHelperStop' {if(@(($content -split '\r?\n')|Where-Object {$_ -cmatch '^REBORN_BREAK '}).Count -ne 1){throw 'Helper stop response duplicated or missing.'}}
         'AwaitContext' {$null=Get-Ep11CompletedContextWindow $content $Nonce}
         'AwaitClear' {Assert-Ep11HelperBreakpointCleared $content $Nonce}
     }

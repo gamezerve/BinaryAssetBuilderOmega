@@ -3,6 +3,15 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 11, 2026
 
+Latest actual calibration: [helper stop-display profile](docs/RA3EP11_DEBUGGER_DISPLAY_CALIBRATION.md).
+Two fixed non-game controls verified all five automatic display categories off
+and strict complete-prompt stop/context/clear framing, original-byte restoration
+and natural exit. Default display regression also passed. A prior report-format
+refusal is retained separately: its legacy unarmed debugger termination did
+not prove helper completion. Display tests pass 3 positives / 13 refusals;
+bridge regression remains 4/24. Startup/event classification and legacy error
+cleanup remain open; no Uprising execution/config-read proof. **52% / 48%**.
+
 Latest transport integration: [bounded output-to-controller bridge](docs/RA3EP11_NATIVE_OUTPUT_BRIDGE.md).
 Phase/nonce-scoped response windows now dispatch shared pump output only after
 complete prompt framing; partial chunks cannot authorize captures. Four

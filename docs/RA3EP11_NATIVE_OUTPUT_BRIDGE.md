@@ -75,6 +75,12 @@ or assumed successful here. See [Microsoft prompt-display documentation](https:/
 Startup/event diagnostics and unexpected exceptions also need their own
 bounded classification, not unrestricted line skipping or blanket filtering.
 
+Follow-up: [actual helper display calibration](RA3EP11_DEBUGGER_DISPLAY_CALIBRATION.md)
+now verifies that profile and strict helper-stop/context/clear suffix framing.
+It adds a framing-only `AwaitHelperStop` mode; native controller phases remain
+unchanged. The calibration does not classify earlier startup diagnostics or
+prove native game stop handling.
+
 The prompt is a framing delimiter, not proof that Windows has stopped the
 same retained process. The execution backend still must supply actual stop
 state, owned handles, nonce-command updates, bounded waits and read provenance.
