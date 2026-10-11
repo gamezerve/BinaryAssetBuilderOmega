@@ -22,7 +22,7 @@ if($SelfTest){
         [pscustomobject]@{Name=$range.Name;Address=$range.Address;Succeeded=$true;ActualCount=$range.Length;Bytes=[byte[]]$diskRanges[$range.Name].Clone()}
     }
     $decision=Get-Ep11SupervisorAdmissionDecision $plan $context $initial $adapter
-    if(-not $decision.CanIssueObservationContinue -or $decision.ValidatedRangeCount -ne 23 -or $script:rebornAdmissionReadCalls -ne 23){throw 'Detached shared native decision failed.'}
+    if(-not $decision.CanIssueObservationContinue -or $decision.ValidatedRangeCount -ne $plan.Ranges.Count -or $script:rebornAdmissionReadCalls -ne $plan.Ranges.Count){throw 'Detached shared native decision failed.'}
     foreach($mode in @('Owner','Debugger','Parent','SnapshotPid','SnapshotCount','TargetExited','DebuggerExited','ActualPath','SnapshotPath','CreationWindow','CreationSnapshot','ObservedTime','DiskHash','Base','ModuleSize','ExpectedPath','Transcript','Profile')){
         $fault=$context.PSObject.Copy();$faultPlan=$plan.PSObject.Copy();$text=$initial
         switch($mode){
@@ -88,7 +88,7 @@ if($SelfTest){
     # Reborn: repeat the valid decision after all mutations to prove private fault copies did not poison the trusted baseline.
     $script:rebornAdmissionReadCalls=0
     $decision=Get-Ep11SupervisorAdmissionDecision $plan $context $initial $adapter
-    if(-not $decision.CanIssueObservationContinue -or $decision.ValidatedRangeCount -ne 23 -or $script:rebornAdmissionReadCalls -ne 23){throw 'Detached baseline changed after fault injection.'}
+    if(-not $decision.CanIssueObservationContinue -or $decision.ValidatedRangeCount -ne $plan.Ranges.Count -or $script:rebornAdmissionReadCalls -ne $plan.Ranges.Count){throw 'Detached baseline changed after fault injection.'}
     $result.DetachedDecisionValidated=$true
 }
 if($AsJson){$result|ConvertTo-Json -Depth 4}else{$result}

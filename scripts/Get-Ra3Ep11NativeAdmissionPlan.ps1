@@ -16,7 +16,9 @@ try{
         [pscustomobject]@{Raw=0xd86b0;Length=169;Hash='0EE0C54E6C53825FCFF4A43DE01C0B30A7C0ACF3BBF1FA888764C8B118742FFE'},
         [pscustomobject]@{Raw=0xd9040;Length=287;Hash='39D04C96658A634EA0A5D965A2B4EB1B0B5ED68CDEE041A1314C51F9D8192EEE'},
         [pscustomobject]@{Raw=0xd985e;Length=77;Hash='870C2332C1463EAAE55E0185E0F018FE9B454163CFA4464E1793D08FEC4CD899'},
-        [pscustomobject]@{Raw=0xd69a0;Length=209;Hash='C97162AB160538037FCE33BBBA756BBC583BCC86B950DE300010068D47E017E7'}
+        [pscustomobject]@{Raw=0xd69a0;Length=209;Hash='C97162AB160538037FCE33BBBA756BBC583BCC86B950DE300010068D47E017E7'},
+        # Reborn: the correlated reader-return site is inside this previously reviewed post-config identity body.
+        [pscustomobject]@{Raw=0xd98ab;Length=310;Hash='04B0A870215320721B84D219DFD5AC2A409E25410FD894376DCD8CB1532973B5'}
     )
     $ranges=[Collections.Generic.List[object]]::new()
     foreach($pin in $pins){

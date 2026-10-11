@@ -2,6 +2,11 @@
 
 Date: October 10, 2026 (Europe/Istanbul). Native execution remains disabled.
 
+October 11 regression: the expanded native plan now admits 24 disk-derived
+ranges / 4,216 bytes, including the post-reader return body. All 18 identity,
+8 read and 7 range refusals still pass. Historical helper runs below were
+not repeated; no game, debugger or process query occurred in this regression.
+
 ## What is now connected
 
 `Ra3Ep11SupervisorAdmissionGate.ps1` connects the native range factory and the

@@ -1,6 +1,6 @@
 # Reborn: pinned native 1.1 admission ranges
 
-Date: October 10, 2026 (Europe/Istanbul). Static/detached checks only.
+Updated: October 11, 2026 (Europe/Istanbul). Static/detached checks only.
 
 ## Native load policy
 
@@ -36,7 +36,7 @@ There is no Run, debugger, process query, attach or memory-writing route.
   must have one same-address successful read, full actual count, exact byte-array
   length and matching SHA. Missing, duplicate or unknown observations refuse.
 
-The plan has **23 ranges / 3,906 bytes**. Each range is at most 557 bytes;
+The plan has **24 ranges / 4,216 bytes**. Each range is at most 557 bytes;
 the mapper's hard maximum is 4,096. It compares code and immutable table bytes,
 not the whole loaded image, mutable config buffers or resolved IAT pointers.
 Ranges contain addresses, lengths and expected hashes, not a binary dump.
@@ -48,6 +48,7 @@ Selected bindings (the plan includes the complete reviewed bodies):
 | `004D86B0` | Config reader | 169 |
 | `004D9040` | Line splitter | 287 |
 | `004D985E` | Top-level config gate | 77 |
+| `004D98AB` | Post-reader caller return / identity body | 310 |
 | `004D7170` | Memory-reader population | 137 |
 | `004D5BB0` | Source reader | 557 |
 | `0096C1D0` | Windows disk opener | 338 |
@@ -65,8 +66,13 @@ not be mistaken for original game code in subsequent comparisons.
 
 ## Detached validation
 
-The installed pinned image passes 23 disk-derived observation matches and
+The installed pinned image passes 24 disk-derived observation matches and
 26 refusal cases:
+
+The October 11 extension adds the already-reviewed post-config identity body
+to cover the correlation return site. The original October 10 plan contained
+23 ranges / 3,906 bytes. Both the expanded plan and shared-gate preflight were
+rerun without process queries, debugger execution or game execution.
 
 - Ten observation faults: altered bytes, count, status, address, duplicate,
   missing, unknown name, nonpreferred base, buffer length and nonboolean status.

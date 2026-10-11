@@ -1,9 +1,20 @@
 # BinaryAssetBuilder
 A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
-## Uprising progress — October 10, 2026
+## Uprising progress — October 11, 2026
 
-Latest integration: [shared supervisor admission gate](docs/RA3EP11_SUPERVISOR_ADMISSION_GATE.md).
+Latest evidence preparation: [engine config-read correlation](docs/RA3EP11_CONFIG_READ_CORRELATION.md).
+The detached validator links exact-probe entry, concrete reader object, actual
+one-byte read buffer, splitter input and caller return within one same-thread
+invocation. Four positive cases and 41 injected refusals pass, including
+interleaved threads and sequential pointer reuse. The native admission plan
+now covers the return site: 24 ranges / 4,216 bytes, with 26 plan refusals and
+33 shared-gate refusals passing. These are supplied/disk-derived fixtures,
+not live game observations. No game or debugger was executed; the native
+collector remains disabled/unimplemented. Estimate remains **52% / 48%**:
+runtime config consumption and a loaded mod are still unproved.
+
+Previous integration: [shared supervisor admission gate](docs/RA3EP11_SUPERVISOR_ADMISSION_GATE.md).
 The native factory plan and calibrated helper supervisor now use the same
 identity/read decision. The 23-range native disk fixture passes; 18 identity
 and 7 range faults refuse before any read callback, and 8 read faults stop at
@@ -12,7 +23,7 @@ withheld admission controls pass. Native preflight rejects `-Run` before any
 action: no native game capture/launch path is enabled and no config consumption
 is proved. English report updated; estimate **52% / 48%**.
 
-Latest native preparation: [fixed-base admission plan](docs/RA3EP11_NATIVE_ADMISSION_PLAN.md).
+Previous native preparation: [fixed-base admission plan](docs/RA3EP11_NATIVE_ADMISSION_PLAN.md).
 The pinned 1.1 executable has stripped relocations and no relocation directory;
 the native policy requires actual base `00400000`, rather than applying the
 managed helper's byte policy. Twenty-three code/vtable ranges total 3,906 bytes;
