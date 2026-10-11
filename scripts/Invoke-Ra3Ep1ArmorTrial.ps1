@@ -1,11 +1,13 @@
 # Reborn: one explicitly authorized armor candidate launch; no debugger, installation writes, retries or process termination.
 [CmdletBinding()]
-param([switch]$Run,[switch]$DefaultReader,[switch]$Cannon)
+param([switch]$Run,[switch]$DefaultReader,[switch]$Cannon,[switch]$Soviet)
 $ErrorActionPreference='Stop'
 if($PSVersionTable.PSVersion.Major -lt 7){throw 'PowerShell 7 is required.'}
 $repo=Split-Path -Parent $PSScriptRoot
 # Reborn: select one separately verified fixed candidate; never accept caller-supplied configs or digests.
 if($Cannon -and $DefaultReader){throw 'Choose Cannon or the historical DefaultReader trial, not both.'}
+# Reborn: the second identity needs its own separately pinned package; never combine faction/test selectors.
+if($Soviet -and ($Cannon -or $DefaultReader)){throw 'Soviet cannot be combined with Cannon or DefaultReader.'}
 $trial=Join-Path $repo $(if($DefaultReader){'artifacts/RebornArmorDefault-abb50afbef8745af952b8cc879c43aa9'}else{'artifacts/RebornArmorTrial-0f2a34bd39dd4eef9946d7e3b818f57f'})
 $expectedBytes=if($DefaultReader){3552}else{3650}
 $expectedHash=if($DefaultReader){'DD7DE09E3A81B9714DC2861ADE0AA9ECDFE72A1851EDD1ED20BE2155EF31C2DC'}else{'3FE964292FA72A1DF961EC93D3CFDA884E1334F55ACB294FF75FE1E4144F3F85'}
@@ -15,7 +17,13 @@ if($Cannon){
     $expectedBytes=3552
     $expectedHash='40C09781BAB82643FBBC6DF5A8DFA674B74BF16B8B93F4A5B605FF5778F0BE7F'
 }
-$useDefaultReader=$DefaultReader -or $Cannon
+# Reborn: pin the independently stock-matched Soviet GUN=5000 output from the current clean alpha, not a mutable newest-build lookup.
+if($Soviet){
+    $trial=Join-Path (Split-Path -Parent $repo) 'UprisingAlpha-20261012-a/builtmods/RebornAlphaInput-4cdaaed8530a4d5fa735fab8da5e37d9/build/package'
+    $expectedBytes=3552
+    $expectedHash='0414E554AE9049631B163C508806F2A5EC2AE277030CE1A5DEE9374150C483BD'
+}
+$useDefaultReader=$DefaultReader -or $Cannon -or $Soviet
 $root='D:\Program Files (x86)\Steam\steamapps\common\Command and Conquer Red Alert 3 Uprising'
 $config=Join-Path $trial 'reborn_1.0.cfg'
 $archive=Join-Path $trial 'RebornArmorProbe.big'

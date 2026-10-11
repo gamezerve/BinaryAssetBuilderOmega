@@ -87,3 +87,28 @@ guards (`artifacts/RebornSovietArmor-document.log`). The broader compiler suite
 last passed during the previous eighteen-field milestone; it was not rerun in
 this identity-only increment. No GUI or game was started in this increment;
 fresh UI observation and public redistribution review remain outstanding.
+
+## Controlled gameplay preparation
+
+`Invoke-Ra3Ep1ArmorTrial.ps1 -Soviet` now selects the pinned four-sample workspace
+output `RebornAlphaInput-4cdaaed8530a4d5fa735fab8da5e37d9/build/package`.
+The config is exactly the default-reader add-big fragment and the 3552-byte
+archive must match the Soviet digest above. Combining Soviet with Cannon or
+DefaultReader is refused before preflight. Without `-Run`, no game is started.
+The read-only stock/config/package/process preflight passes with no existing
+Uprising process (`artifacts/RebornSovietArmor-preflight-20261012.log`).
+
+The external Uprising source binds the Conscript's primary weapon to
+SovietAntiInfantryInfantryAK47 in
+Soviet/Units/SovietAntiInfantryInfantry.xml:1809. GlobalData/Weapon.xml:3733
+defines it, with active DamageType=GUN at line 3761. Its Molotov toggle is a
+different secondary weapon and must not be used for the GUN check.
+
+After separate launch authorization: start a fresh Soviet skirmish, keep the
+Construction Yard unpacked, produce an unpromoted Conscript and force-attack
+the yard in normal AK-47 mode. Record whether damage markedly increases relative
+to stock. Avoid buffs and old saves. Exact 50x health loss is not an acceptance
+requirement. An Allied yard, if separately available under comparable conditions,
+is a foreign-identity control, not a prerequisite to reporting the first result.
+Japan/civilian consumers need their own checks before being called gameplay
+validated. No new game launch or gameplay observation has occurred yet.
