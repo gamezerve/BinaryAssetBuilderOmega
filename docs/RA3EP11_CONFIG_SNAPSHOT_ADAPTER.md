@@ -47,6 +47,33 @@ permitted after closure; nested same-thread invocations are unsupported.
 
 ## Tests and remaining integration
 
+### Incremental session follow-up
+
+The decoder now exposes `New-Ep11ConfigSnapshotSession`,
+`Add-Ep11ConfigSnapshot` and `Complete-Ep11ConfigSnapshotSession`.
+The caller submits exactly one stopped-context snapshot at a time. Reads
+occur inside that add operation; only captured private event records are
+retained afterward. The batch interface remains a detached-fixture wrapper
+over this same implementation, not a second ABI decoder.
+
+An open session accepts at most 320 events. An add/capture failure permanently
+faults it; incomplete or empty completion also faults it. Successful completion
+validates the existing correlation chain, closes the session and exports copied
+records with cloned byte arrays. Closed/faulted sessions cannot accept another
+snapshot or complete again, and refused retries invoke no read callback.
+The session is trusted in-process state, not a tamper-proof object: callers
+must not modify its internal maps, counters or read adapter. It still does not
+establish that a real debugger stopped the admitted process.
+
+`Test-Ra3Ep11ConfigSnapshotSession.ps1` passes three positive controls:
+stop-scoped capture with six reads, exported-byte isolation, and sequential
+invocation pointer reuse with twelve reads. Nine faulty/terminal situations
+and their nine refused retries give 18 refusals. The event-limit case injects
+a private boundary-state fixture; it is not a real 320-event runtime trace.
+The prior two ABI fixture positives and 26 refusals pass through the batch
+compatibility wrapper. The 4/41 engine correlation regression also passes.
+No process, debugger, helper or game was executed.
+
 `Test-Ra3Ep11ConfigSnapshotAdapter.ps1` passes two detached positives (both
 reader vtables) and 26 private faults. Initial PID/order/site/register/base
 and null-stack faults perform zero read callbacks. Each positive performs
@@ -56,9 +83,10 @@ or debugger was queried or executed.
 
 The actual initial-break native supervisor still needs a stopped-context
 source, owned-process read binding, thread-scoped invocation tracking,
-bounded streaming capture and independently tested breakpoint cleanup.
-This batch adapter checks supplied snapshots; it does not provide those
-operations. No runtime authorization is inferred from its existence.
+bounded debugger event transport and independently tested breakpoint cleanup.
+The incremental decoder now supplies bounded event state, but it does not
+provide a stopped-context source or process ownership. No runtime
+authorization is inferred from its existence.
 
 Windows handle/request/provider correlation, actual directive consumption
 and mod-package loading remain separate outstanding proof. Project estimate

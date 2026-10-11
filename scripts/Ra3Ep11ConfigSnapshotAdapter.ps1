@@ -15,17 +15,28 @@ function Read-Ep11SnapshotBytes([scriptblock]$ReadAdapter,[long]$Address,[int]$C
 }
 
 #-------------------------------------------------------------------------------------------------
-<# Reborn: derive the five engine events from reviewed x86 ABI locations and retain arguments per same-thread invocation. #>
+<# Reborn: create bounded per-observation state without retaining stale process-memory snapshots for later replay. #>
 #-------------------------------------------------------------------------------------------------
-function ConvertTo-Ep11ConfigReadEvents([object[]]$Snapshots,[int]$ExpectedProcessId,[string]$ProbePath,[scriptblock]$ReadAdapter,[long]$ModuleBase=0x400000) {
-    if($ExpectedProcessId -le 0 -or $ModuleBase -ne 0x400000 -or $Snapshots.Count -lt 5 -or $Snapshots.Count -gt 320 -or
+function New-Ep11ConfigSnapshotSession([int]$ExpectedProcessId,[string]$ProbePath,[scriptblock]$ReadAdapter,[long]$ModuleBase=0x400000) {
+    if($ExpectedProcessId -le 0 -or $ModuleBase -ne 0x400000 -or
        $null -eq $ReadAdapter -or -not [IO.Path]::IsPathFullyQualified($ProbePath) -or $ProbePath.Length -gt 240 -or
        $ProbePath -match '[^\x20-\x7E]|[";]'){throw 'Snapshot scope outside bounds.'}
     Assert-Ep11ConfigNamePolicy $ProbePath
-    $pathBytes=[Text.Encoding]::ASCII.GetBytes($ProbePath+[char]0)
-    $active=@{};$seen=@{};$threads=@{};$objects=@{};$buffers=@{};$events=[Collections.Generic.List[object]]::new();$sequence=0
-    foreach($snapshot in $Snapshots){
-        $sequence++
+    return @{Status='Open';Sequence=0;ExpectedProcessId=$ExpectedProcessId;ProbePath=$ProbePath;ReadAdapter=$ReadAdapter;ModuleBase=$ModuleBase;
+        PathBytes=[Text.Encoding]::ASCII.GetBytes($ProbePath+[char]0);Active=@{};Seen=@{};Threads=@{};Objects=@{};Buffers=@{};Events=[Collections.Generic.List[object]]::new()}
+}
+
+#-------------------------------------------------------------------------------------------------
+<# Reborn: consume exactly one currently stopped-context snapshot; a failed capture permanently faults this trusted in-process session. #>
+#-------------------------------------------------------------------------------------------------
+function Add-Ep11ConfigSnapshot($Session,$snapshot) {
+    if($null -eq $Session -or $Session.Status -cne 'Open'){throw 'Snapshot session is not open.'}
+    try{
+        if($Session.Sequence -ge 320){throw 'Snapshot session event limit exceeded.'}
+        $sequence=$Session.Sequence+1;$ExpectedProcessId=$Session.ExpectedProcessId;$ProbePath=$Session.ProbePath
+        $ReadAdapter=$Session.ReadAdapter;$pathBytes=$Session.PathBytes
+        $active=$Session.Active;$seen=$Session.Seen;$threads=$Session.Threads;$objects=$Session.Objects;$buffers=$Session.Buffers
+        $capture=$null
         foreach($field in @('Sequence','ProcessId','ThreadId','InvocationId','SiteAddress','Eax','Ebx','Esi','Edi','Esp')){
             # Reborn: accept integral register values only; strings, booleans and fractional values cannot impersonate a machine snapshot.
             $value=$snapshot.$field
@@ -88,9 +99,36 @@ function ConvertTo-Ep11ConfigReadEvents([object[]]$Snapshots,[int]$ExpectedProce
                 $event|Add-Member CaptureSucceeded $true;$event|Add-Member CapturedCount $capture.Length;$event|Add-Member Bytes ([byte[]]$capture.Clone())
             }
         }
-        $events.Add($event)
+        $Session.Events.Add($event);$Session.Sequence=$sequence
+    }catch{
+        # Reborn: never repair a partial capture or continue reading after a refused snapshot.
+        $Session.Status='Faulted';throw
     }
-    if($active.Count -ne 0){throw 'Snapshot chain incomplete.'}
-    $null=Get-Ep11ConfigReadCorrelation $events.ToArray() $ExpectedProcessId $ProbePath $ModuleBase
-    return $events.ToArray()
+}
+
+#-------------------------------------------------------------------------------------------------
+<# Reborn: close only complete chains, validate all captured events, and export private copies without performing more reads. #>
+#-------------------------------------------------------------------------------------------------
+function Complete-Ep11ConfigSnapshotSession($Session) {
+    if($null -eq $Session -or $Session.Status -cne 'Open'){throw 'Snapshot session is not open.'}
+    try{
+        if($Session.Active.Count -ne 0){throw 'Snapshot chain incomplete.'}
+        $null=Get-Ep11ConfigReadCorrelation $Session.Events.ToArray() $Session.ExpectedProcessId $Session.ProbePath $Session.ModuleBase
+        $Session.Status='Closed'
+        foreach($event in $Session.Events){
+            $copy=$event.PSObject.Copy()
+            if($event.PSObject.Properties.Name -contains 'Bytes'){$copy.Bytes=[byte[]]$event.Bytes.Clone()}
+            $copy
+        }
+    }catch{$Session.Status='Faulted';throw}
+}
+
+#-------------------------------------------------------------------------------------------------
+<# Reborn: retain batch compatibility for detached fixtures only, using the same incremental decoder rather than a second ABI implementation. #>
+#-------------------------------------------------------------------------------------------------
+function ConvertTo-Ep11ConfigReadEvents([object[]]$Snapshots,[int]$ExpectedProcessId,[string]$ProbePath,[scriptblock]$ReadAdapter,[long]$ModuleBase=0x400000) {
+    if($Snapshots.Count -lt 5 -or $Snapshots.Count -gt 320){throw 'Snapshot batch outside bounds.'}
+    $session=New-Ep11ConfigSnapshotSession $ExpectedProcessId $ProbePath $ReadAdapter $ModuleBase
+    foreach($snapshot in $Snapshots){Add-Ep11ConfigSnapshot $session $snapshot}
+    Complete-Ep11ConfigSnapshotSession $session
 }
