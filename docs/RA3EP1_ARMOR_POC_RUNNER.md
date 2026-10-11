@@ -67,14 +67,19 @@ entry point, not five new compiler groups or a replacement for the full suite.
 
 ## Direct next gate, not another debugger subproject
 
-The generated streams still have the existing fixed diagnostic checksum and
-zero InstanceHash and are marked `DIAGNOSTIC_ONLY.txt`. They must not be
-installed as a production mod. Production registry policy remains disabled.
+Follow-up: [actual Core armor streams](RA3EP1_ARMOR_CORE_STREAMS.md) are now
+written under `document/core-empty`, `core-repeat`, `core-edited` and
+`core-populated`, using actual Core InstanceHash and padded checksum values.
+The runner reports `CoreIdentityStreamsValidated` separately. The original
+`static`/`worldbuilder` golden fixtures retain the fixed diagnostic checksum
+and zero InstanceHash. All stream families are marked `DIAGNOSTIC_ONLY.txt`;
+none is an approved playable mod. Production registry policy remains disabled.
 
 Next work should resolve the narrow armor production output contract in
 `OutputManager`/`Ra3Ep1ArmorPlugin`: apply the already recovered Core identity
-and padded checksum implementation to this selected armor path,
-manifest commit/linking and dependency handling for this one supported type.
+and padded checksum implementation through actual production manifest
+commit/linking and justify output policy for this one supported type. The
+diagnostic writer follow-up does not execute OutputManager.CommitManifest.
 Then create a reversible package with independent readback and request the
 separate runtime test authorization when it is actually ready. Existing
 config-consumption evidence remains a runtime gate; it does not prevent

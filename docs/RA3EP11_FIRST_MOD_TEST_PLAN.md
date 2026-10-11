@@ -9,13 +9,17 @@ not a universal debugger/event-classification system or complete schema port.
 
 The [one-command armor PoC](RA3EP1_ARMOR_POC_RUNNER.md) now freshly reproduces
 the schema/plugin/document path and both actual Uprising byte comparisons.
+Follow-up: [Core-identity armor streams](RA3EP1_ARMOR_CORE_STREAMS.md) now pass
+diagnostic writing/readback, repeat and same-ID edit invalidation with actual
+Core hashes/padded checksum. This is not the production commit/link step.
 Its diagnostic output remains non-playable; the following concrete changes
 still require justified implementation, not relaxing guards:
 
 1. Apply and validate the existing Core identity/checksum contract for armor.
    `OutputManager.CommitManifest` writes `outputInstance.Handle.InstanceHash`
-   and `document.OutputChecksum`; the current PoC instead uses diagnostic
-   values. `ComputeOutputChecksum` already preserves the reviewed RA3 identity
+   and `document.OutputChecksum`; the original golden fixtures use diagnostic
+   values, while the new `document/core-*` streams use real Core values.
+   `ComputeOutputChecksum` already preserves the reviewed RA3 identity
    rows and MemoryStream capacity padding: reuse it, do not start another
    general checksum reverse-engineering task. Validate its armor-specific
    document-to-writer path and distinguish project-local processing identity

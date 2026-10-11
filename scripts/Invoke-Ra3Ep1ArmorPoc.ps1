@@ -42,13 +42,17 @@ try{
     $outputs=@(Get-ChildItem -LiteralPath $directory -Recurse -File|Where-Object {$_.Extension -in @('.manifest','.bin','.relo','.imp')}|ForEach-Object {
         [pscustomobject]@{Path=$_.FullName;Bytes=$_.Length;Sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash}
     })
+    # Reborn: distinguish current-Core diagnostic streams from the older fixed-checksum golden fixtures; neither is production output.
+    $coreDirectories=@('core-empty','core-repeat','core-edited','core-populated')|ForEach-Object {Join-Path $directory ('document/'+$_)}
+    $coreOutputsPresent=@($coreDirectories|Where-Object {Test-Path -LiteralPath (Join-Path $_ 'diagnostic.manifest') -PathType Leaf}).Count -eq 4
     $report=[pscustomobject]@{
         Scope='ArmorTemplate diagnostic XML/document/profile and independent stock-byte comparisons'
         CreatedUtc=[DateTime]::UtcNow.ToString('o');OutputDirectory=$directory;Steps=$steps.ToArray();Failure=$failure
         AllStepsPassed=($null -eq $failure -and $steps.Count -eq 5);StaticManifest=[IO.Path]::GetFullPath($StaticManifest)
         WorldBuilderManifest=[IO.Path]::GetFullPath($WorldBuilderManifest);GeneratedStreams=$outputs
         ProductionOutputEnabled=$false;AuthenticProcessingHashProven=$false;GameExecuted=$false;ModLoaded=$false
-        NextGate='Narrow production stream/checksum/InstanceHash contract, then reversible package and separately authorized runtime test.'
+        CoreIdentityStreamsValidated=($null -eq $failure -and $steps.Count -eq 5 -and $coreOutputsPresent);CoreStreamDirectories=$coreDirectories
+        NextGate='Actual OutputManager commit/link with justified narrow output policy and runtime-compatible identity, then package and authorized game test.'
     }
     [IO.File]::WriteAllText((Join-Path $directory 'readiness.json'),($report|ConvertTo-Json -Depth 6))
 }

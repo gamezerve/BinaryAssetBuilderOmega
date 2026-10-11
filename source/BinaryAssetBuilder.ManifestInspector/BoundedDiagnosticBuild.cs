@@ -198,8 +198,13 @@ internal static class BoundedDiagnosticBuild
     //-------------------------------------------------------------------------------------------------
     /** Reborn: serialize admitted root entries, ordered references and native streams into owned memory before staging publication. */
     //-------------------------------------------------------------------------------------------------
-    internal static Dictionary<string, byte[]> Serialize(InstanceDeclaration[] ordered, AssetBuffer[] chunks, uint checksum, ReferencedFileBuffer runtime)
+    internal static Dictionary<string, byte[]> Serialize(InstanceDeclaration[] ordered, AssetBuffer[] chunks, uint checksum, ReferencedFileBuffer runtime, bool[]? tokenized = null)
     {
+        // Reborn: preserve non-tokenized defaults; only the independently characterized armor fingerprint may opt into tokenized diagnostic writing.
+        tokenized ??= new bool[ordered.Length];
+        if (tokenized.Length != ordered.Length || chunks.Length != ordered.Length
+            || ordered.Where((instance, index) => tokenized[index] && (instance.Handle.TypeId != 0x3A6C5E8Eu || instance.Handle.TypeHash != 0xA0E237D8u)).Any())
+            throw new InvalidDataException("Diagnostic tokenized profile differs.");
         using MemoryStream names = new(), sources = new(), references = new(), entries = new();
         using BinaryWriter refWriter = new(references, Encoding.UTF8, true);
         for (int index = 0; index < ordered.Length; index++)
@@ -208,7 +213,7 @@ internal static class BoundedDiagnosticBuild
             // Reborn: each manifest entry retains its actual approved snapshot document identity, not the parent source name.
             string sourceName = Path.GetFileName(instance.Document.SourcePath);
             using AssetEntry entry = new() { TypeId = instance.Handle.TypeId, TypeHash = instance.Handle.TypeHash, InstanceId = instance.Handle.InstanceId,
-                InstanceHash = instance.Handle.InstanceHash, Tokenized = false, NameOffset = (int)names.Length, SourceFileNameOffset = (int)sources.Length,
+                InstanceHash = instance.Handle.InstanceHash, Tokenized = tokenized[index], NameOffset = (int)names.Length, SourceFileNameOffset = (int)sources.Length,
                 AssetReferenceOffset = (int)references.Length, AssetReferenceCount = instance.ValidatedReferencedInstances!.Count,
                 InstanceDataSize = chunk.InstanceData.Length, RelocationDataSize = chunk.RelocationData.Length, ImportsDataSize = chunk.ImportsData.Length };
             entry.SaveToStream(entries, false); names.Write(Encoding.UTF8.GetBytes(instance.Handle.Name + '\0')); sources.Write(Encoding.UTF8.GetBytes(sourceName + '\0'));
@@ -249,8 +254,11 @@ internal static class BoundedDiagnosticBuild
     //-------------------------------------------------------------------------------------------------
     /** Reborn: require exact staged bytes and independent metadata/native-offset readback before the new directory becomes visible. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Verify(string directory, InstanceDeclaration[] ordered, AssetBuffer[] chunks, Dictionary<string, byte[]> expected, uint checksum, string[] runtimeNames)
+    internal static void Verify(string directory, InstanceDeclaration[] ordered, AssetBuffer[] chunks, Dictionary<string, byte[]> expected, uint checksum, string[] runtimeNames, bool[]? tokenized = null)
     {
+        // Reborn: metadata and Utility readback must agree on the explicit per-entry tokenized flag, never silently relabel a native payload.
+        tokenized ??= new bool[ordered.Length];
+        if (tokenized.Length != ordered.Length) throw new InvalidDataException("Diagnostic tokenized verification count differs.");
         foreach (var file in expected) if (!File.ReadAllBytes(Path.Combine(directory, file.Key)).SequenceEqual(file.Value)) throw new InvalidDataException("Staged diagnostic bytes differ.");
         string path = Path.Combine(directory, "diagnostic.manifest"); ManifestDocument parsed = ManifestReader.Read(File.ReadAllBytes(path));
         if (parsed.Validate().Count != 0 || parsed.Header.StreamChecksum != checksum || parsed.Assets.Count != ordered.Length
@@ -280,11 +288,11 @@ internal static class BoundedDiagnosticBuild
         {
             var asset = parsed.Assets[index]; var instance = ordered[index]; var chunk = chunks[index]; var other = utility.Assets[index];
             if (asset.TypeId != instance.Handle.TypeId || asset.InstanceId != instance.Handle.InstanceId || asset.TypeHash != instance.Handle.TypeHash
-                || asset.InstanceHash != instance.Handle.InstanceHash || asset.Name != instance.Handle.Name || asset.Tokenized != 0
+                || asset.InstanceHash != instance.Handle.InstanceHash || asset.Name != instance.Handle.Name || asset.Tokenized != (tokenized[index] ? 1 : 0)
                 || asset.InstanceDataSize != chunk.InstanceData.Length || asset.RelocationDataSize != chunk.RelocationData.Length || asset.ImportsDataSize != chunk.ImportsData.Length
                 || asset.SourceFile != Path.GetFileName(instance.Document.SourcePath)
                 || !asset.References.SequenceEqual(instance.ValidatedReferencedInstances!.Select(handle => new AssetId(handle.TypeId, handle.InstanceId)))
-                || other.QualifiedName != asset.Name || other.TypeHash != asset.TypeHash || other.InstanceHash != asset.InstanceHash
+                || other.QualifiedName != asset.Name || other.TypeHash != asset.TypeHash || other.InstanceHash != asset.InstanceHash || other.Tokenized != tokenized[index]
                 || !other.ExternalReferences.Select(handle => new AssetId(handle.TypeId, handle.InstanceId)).SequenceEqual(asset.References)
                 || other.LinkedInstanceOffset != bin || other.LinkedRelocationOffset != relo || other.LinkedImportsOffset != imp
                 || !AssetStreamProbe.ReadRange(Path.ChangeExtension(path, ".bin"), null, bin, chunk.InstanceData.Length).SequenceEqual(chunk.InstanceData)

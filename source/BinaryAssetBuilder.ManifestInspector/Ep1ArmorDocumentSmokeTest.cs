@@ -1,9 +1,12 @@
 using System.Reflection;
+using System.Buffers.Binary;
+using System.Text;
 using System.Xml;
 using BinaryAssetBuilder;
 using BinaryAssetBuilder.Core;
 using BinaryAssetBuilder.Core.SageXml;
 using BinaryAssetBuilder.Core.Session;
+using BinaryAssetBuilder.Utility;
 using BinaryAssetBuilder.XmlCompiler;
 
 namespace BinaryAssetBuilder.ManifestInspector;
@@ -43,6 +46,8 @@ internal static class Ep1ArmorDocumentSmokeTest
                 "Full document pipeline did not insert defaults or bind EP1 identity/processor metadata.");
             AssetBuffer first = plugins.GetPlugin(instance.Handle.TypeId).ProcessInstance(instance);
             Require(first.InstanceData.Length == 128, "Document-to-profile compilation did not produce empty-list armor tokens.");
+            // Reborn: write the actual Core identity and padded checksum, retaining all experimental production restrictions.
+            var emptyStreams = WriteCoreStream(Path.Combine(directory, "core-empty"), instance, first, plugins);
 
             // Reborn: poison only the in-memory cached declaration; an unchanged source file must override this stale state.
             instance.XmlNode.Attributes["Default"]!.Value = "5";
@@ -51,6 +56,23 @@ internal static class Ep1ArmorDocumentSmokeTest
             AssetBuffer second = plugins.GetPlugin(fresh.Handle.TypeId).ProcessInstance(fresh);
             Require(fresh.XmlNode.Attributes!["Default"]!.Value == "100" && first.InstanceData.SequenceEqual(second.InstanceData)
                 && options.UsePrecompiled, "Experimental document reused stale state or mutated caller options.");
+            var repeatedStreams = WriteCoreStream(Path.Combine(directory, "core-repeat"), fresh, second, plugins);
+            Require(emptyStreams.All(pair => pair.Value.SequenceEqual(repeatedStreams[pair.Key])), "Repeated Core armor streams changed.");
+            // Reborn: edit only this generated source, retaining the same asset ID; restore it after proving identity/checksum/payload invalidation.
+            string originalSource = File.ReadAllText(source);
+            try
+            {
+                File.WriteAllText(source, originalSource.Replace("id=\"DocumentArmor\"", "id=\"DocumentArmor\" Default=\"50\""));
+                var edited = processor.ProcessDocumentInternal(source, source, null!, options).SelfInstances.Single();
+                var editedBuffer = plugins.GetPlugin(edited.Handle.TypeId).ProcessInstance(edited);
+                var editedStreams = WriteCoreStream(Path.Combine(directory, "core-edited"), edited, editedBuffer, plugins);
+                Require(edited.Handle.InstanceId == fresh.Handle.InstanceId && edited.Handle.InstanceHash != fresh.Handle.InstanceHash
+                    && !editedBuffer.InstanceData.SequenceEqual(second.InstanceData)
+                    && !editedStreams["diagnostic.manifest"].SequenceEqual(repeatedStreams["diagnostic.manifest"])
+                    && !editedStreams["diagnostic.bin"].AsSpan(4, 4).SequenceEqual(repeatedStreams["diagnostic.bin"].AsSpan(4, 4)),
+                    "Armor source edit did not invalidate Core identity/checksum/payload.");
+            }
+            finally { File.WriteAllText(source, originalSource); }
 
             // Reborn: populated documents also receive core-generated TypeId attributes on nested Armor records.
             XmlDocument populatedXml = new();
@@ -63,6 +85,7 @@ internal static class Ep1ArmorDocumentSmokeTest
             var golden = ArmorTokenSmokeTest.Compile(ArmorTokenSmokeTest.LoadSchemas(fixtures), populatedXml.DocumentElement.OuterXml);
             Require(populatedBuffer.InstanceData.SequenceEqual(golden.InstanceBuffer)
                 && populatedBuffer.RelocationData.SequenceEqual(golden.RelocationBuffer), "Full populated document differs from golden-tested compiler output.");
+            WriteCoreStream(Path.Combine(directory, "core-populated"), populatedInstance, populatedBuffer, plugins);
             populatedInstance.XmlNode.Attributes!["TypeId"]!.Value = "0";
             bool wrongIdentityRejected = false;
             try { plugins.GetPlugin(populatedInstance.Handle.TypeId).ProcessInstance(populatedInstance); }
@@ -88,9 +111,69 @@ internal static class Ep1ArmorDocumentSmokeTest
             Require(precompiled.Invoke(processor, new object?[] { document, "missing", Array.Empty<string>() }) is false,
                 "Experimental precompiled reference lookup was not disabled before file access.");
             Require(!File.Exists(Path.ChangeExtension(source, ".manifest")), "Document test unexpectedly emitted a production manifest.");
-            Console.WriteLine("EP1 armor document self-test: OK (official base schema, document defaults/hash, compiler entry, forced session reload, production/precompiled guards)");
+            Console.WriteLine("EP1 armor document self-test: OK (official schema/Core hashes, padded checksum, tokenized streams/two-reader readback/repeat/corruption, forced session reload, production/precompiled guards)");
         }
         finally { Settings.Current = saved; }
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: publish diagnostic armor streams with real Core identity rows and independently packed checksum, not zero hashes or a fixed checksum marker. */
+    //-------------------------------------------------------------------------------------------------
+    private static Dictionary<string, byte[]> WriteCoreStream(string directory, InstanceDeclaration instance, AssetBuffer buffer, PluginRegistry plugins)
+    {
+        var metadata = plugins.GetExtendedTypeInformation(instance.Handle.TypeId);
+        Require(metadata.Tokenized && metadata.TypeHash == instance.Handle.TypeHash && instance.Handle.InstanceHash != 0,
+            "Core armor identity or tokenized profile differs.");
+        DependencyResolutionSmokeTest.Prepare(instance.Document, instance);
+        Require(instance.ValidatedReferencedInstances!.Count == 0 && instance.ReferencedInstances.Count == 0, "Standalone armor has dependencies.");
+        InstanceDeclaration[] ordered = { instance }; AssetBuffer[] chunks = { buffer }; bool[] flags = { metadata.Tokenized };
+        uint checksum = (uint)typeof(AssetDeclarationDocument).GetMethod("ComputeOutputChecksum", BindingFlags.NonPublic | BindingFlags.Static)!
+            .Invoke(null, new object[] { ordered })!;
+        // Reborn: independently reproduce one 20-byte identity row in the reviewed 256-byte capacity; never hash just the logical payload.
+        byte[] padded = new byte[256];
+        uint[] fields = { instance.Handle.TypeId, instance.Handle.TypeHash, instance.Handle.InstanceId, instance.Handle.InstanceHash, 0 };
+        for (int index = 0; index < fields.Length; index++) BinaryPrimitives.WriteUInt32LittleEndian(padded.AsSpan(index * 4), fields[index]);
+        Require(checksum == BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(padded), "Armor checksum differs from independent padded row.");
+        var payloads = BoundedDiagnosticBuild.Serialize(ordered, chunks, checksum, new ReferencedFileBuffer(), flags);
+        // Reborn: refuse a tokenized flag count mismatch or a non-armor fingerprint without changing any production registration.
+        bool refusedFlags = false;
+        try { BoundedDiagnosticBuild.Serialize(ordered, chunks, checksum, new ReferencedFileBuffer(), Array.Empty<bool>()); }
+        catch (InvalidDataException) { refusedFlags = true; }
+        Require(refusedFlags, "Tokenized flag count mismatch accepted.");
+        uint savedTypeHash = instance.Handle.TypeHash;
+        try
+        {
+            instance.Handle.TypeHash ^= 1; bool refusedFingerprint = false;
+            try { BoundedDiagnosticBuild.Serialize(ordered, chunks, checksum, new ReferencedFileBuffer(), flags); }
+            catch (InvalidDataException) { refusedFingerprint = true; }
+            Require(refusedFingerprint, "Unvalidated armor fingerprint relabeled tokenized.");
+        }
+        finally { instance.Handle.TypeHash = savedTypeHash; }
+        payloads["DIAGNOSTIC_ONLY.txt"] = Encoding.UTF8.GetBytes("Reborn: actual Core armor identities/checksum; experimental local ProcessingHash, NOT a playable mod. Production/cache guards remain closed.\n");
+        Require(!Directory.Exists(directory) && !File.Exists(directory), "Core armor output already exists.");
+        Directory.CreateDirectory(directory);
+        foreach (var pair in payloads) File.WriteAllBytes(Path.Combine(directory, pair.Key), pair.Value);
+        BoundedDiagnosticBuild.Verify(directory, ordered, chunks, payloads, checksum, Array.Empty<string>(), flags);
+        bool refusedRelabel = false;
+        try { BoundedDiagnosticBuild.Verify(directory, ordered, chunks, payloads, checksum, Array.Empty<string>(), new[] { false }); }
+        catch (InvalidDataException) { refusedRelabel = true; }
+        Require(refusedRelabel, "Tokenized armor metadata verified as non-tokenized.");
+        // Reborn: verify independent mismatch detection, then restore the known generated file even when the refusal assertion fails.
+        string binPath = Path.Combine(directory, "diagnostic.bin");
+        byte[] damaged = (byte[])payloads["diagnostic.bin"].Clone(); damaged[4] ^= 1;
+        try
+        {
+            File.WriteAllBytes(binPath, damaged); bool refused = false;
+            // Reborn: also change the expected snapshot so rejection must reach independent header/checksum validation, not byte equality alone.
+            var matchingDamage = new Dictionary<string, byte[]>(payloads) { ["diagnostic.bin"] = damaged };
+            try { BoundedDiagnosticBuild.Verify(directory, ordered, chunks, matchingDamage, checksum, Array.Empty<string>(), flags); }
+            catch (InvalidDataException) { refused = true; }
+            Require(refused, "Corrupt Core armor stream accepted.");
+        }
+        finally { File.WriteAllBytes(binPath, payloads["diagnostic.bin"]); }
+        BoundedDiagnosticBuild.Verify(directory, ordered, chunks, payloads, checksum, Array.Empty<string>(), flags);
+        Console.WriteLine($"  Core armor stream: {instance.Handle.Name}; InstanceHash={instance.Handle.InstanceHash:X8}; checksum={checksum:X8}; BIN={buffer.InstanceData.Length}; diagnostic={directory}");
+        return payloads;
     }
 
     //-------------------------------------------------------------------------------------------------
