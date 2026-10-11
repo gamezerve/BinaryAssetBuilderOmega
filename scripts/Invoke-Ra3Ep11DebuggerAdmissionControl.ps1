@@ -7,6 +7,7 @@ $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'Ra3Ep11DebuggerAdmissionPolicy.ps1')
 . (Join-Path $PSScriptRoot 'Ra3Ep11SupervisorAdmissionGate.ps1')
 . (Join-Path $PSScriptRoot 'Ra3Ep11ConfigDebuggerTransport.ps1')
+. (Join-Path $PSScriptRoot 'Ra3Ep11DebuggerOutputPump.ps1')
 # Reborn: context calibration is an explicit helper-only admission mode, never a native-game launch option.
 if($CalibrateContext -and ($SelfTest -or $Mode -cne 'Admit')){throw 'Context calibration requires the separate Admit helper control.'}
 # Reborn: keep breakpoint calibration separate from initial-context and refusal controls; all use the same fixed new helper only.
@@ -100,22 +101,11 @@ $breakpointCommandIssued=$false;$atOwnedBreakpoint=$false;$recoveryAttempted=$fa
 <# Reborn: pump bounded redirected chunks without blocking on a prompt or needing a PowerShell runspace in callbacks. #>
 #-------------------------------------------------------------------------------------------------
 function Update-Ep11AdmissionOutput {
-    foreach($stream in $streams){
-        if($null -ne $stream.Task -and $stream.Task.IsCompleted){
-            $count=$stream.Task.GetAwaiter().GetResult()
-            if($count -eq 0){$stream.Task=$null;continue}
-            $stream.Text+=[string]::new($stream.Buffer,0,$count)
-            if($stream.Text.Length -gt $stream.Limit){throw 'Admission output bound exceeded.'}
-            $stream.Task=$stream.Reader.ReadAsync($stream.Buffer,0,$stream.Buffer.Length)
-        }
-    }
+    Update-Ep11DebuggerOutputPump $streams
 }
 try{
     $started=$debug.Start();if(-not $started){throw 'Debugger did not start.'};$debuggerId=$debug.Id
-    foreach($spec in @(@($debug.StandardOutput,65536),@($debug.StandardError,8192))){
-        $state=[pscustomobject]@{Reader=$spec[0];Limit=$spec[1];Text='';Buffer=[char[]]::new(1024);Task=$null}
-        $state.Task=$state.Reader.ReadAsync($state.Buffer,0,$state.Buffer.Length);$streams+=$state
-    }
+    $streams=New-Ep11DebuggerOutputPump $debug.StandardOutput $debug.StandardError
     $deadline=[DateTime]::UtcNow.AddSeconds(10)
     while($streams[0].Text -notmatch '(?m)^REBORN_ADMISSION_WAIT\r?$'){
         Update-Ep11AdmissionOutput

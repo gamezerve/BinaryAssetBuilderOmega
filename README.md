@@ -3,6 +3,14 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 11, 2026
 
+Latest backend component: [shared bounded output pump](docs/RA3EP11_DEBUGGER_OUTPUT_PUMP.md).
+The admission helper now uses a reusable completed-task reader with independent
+stdout/stderr caps, pre-append overflow checks, explicit EOF and permanent read
+faults; it never disposes caller-owned streams. Five detached positives / nine
+refusal/retry checks pass. Two actual non-game helper regressions pass normal
+clear/resume and injected-failure cooperative detach with the new pump. No
+Uprising was executed; native output-to-state integration remains open. **52% / 48%**.
+
 Latest lifecycle integration: [composed native supervisor decisions](docs/RA3EP11_NATIVE_SUPERVISOR_SESSION.md).
 The final captured reader return now stays stopped for cleanup instead of
 losing its pending-stop identity through continuation. Observation failures
