@@ -13,6 +13,11 @@ internal static class Program
     {
         try
         {
+            // Reborn: editable input admission is explicitly separate from production build or runtime loading.
+            if (args.Length == 1 && args[0] == "armor-authoring-input-self-test")
+            { ArmorAuthoringAdmission.SelfTest(); return 0; }
+            if (args.Length == 3 && args[0] == "armor-authoring-preflight")
+            { ArmorAuthoringAdmission.Stage(args[1], args[2]); return 0; }
             // Reborn: candidate config/package preparation and detached controls never launch the engine or replace stock files.
             if (args.Length == 3 && args[0] is "armor-trial-prepare" or "armor-trial-controls" or "armor-default-trial-prepare" or "armor-default-trial-controls")
             {
@@ -1477,6 +1482,9 @@ internal static class Program
         // Reborn: default-reader candidate preparation is a separate offline experiment, never a runtime switch.
         Console.WriteLine("  armor-default-trial-prepare <conyard-package.big> <new-output-directory>");
         Console.WriteLine("  armor-default-trial-controls <conyard-package.big> <owned-output-directory>");
+        // Reborn: admit only a GUN-only ConYard input snapshot, not arbitrary SDK assets.
+        Console.WriteLine("  armor-authoring-input-self-test");
+        Console.WriteLine("  armor-authoring-preflight <standalone-conyard.xml> <new-output-directory>");
     }
 
     private sealed record TypeFingerprint(uint TypeId, uint TypeHash, uint? Tokenized);

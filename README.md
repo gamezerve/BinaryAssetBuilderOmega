@@ -11,6 +11,14 @@ now combines compilation, stock comparisons and the validated package recipe.
 The next compiler deliverable is safely admitted editable armor XML,
 not more general debugger preparation or all 1,390 types.
 
+Release plan: [Armor Preview versus general SDK gates](docs/RA3EP1_SDK_RELEASE_PLAN.md).
+The narrow preview is provisionally 2–5 focused working days away; a basic
+gameplay alpha needs weeks and RA3-SDK-like breadth needs months or longer.
+These are planning estimates, not promised dates or a percentage countdown.
+Editable [input admission](docs/RA3EP1_ARMOR_AUTHORING_ADMISSION.md) is now
+separate from the fixed reproducer; connecting
+that snapshot to fresh Core identities and packaging remains the next gate.
+
 | User-visible milestone | Current evidence |
 | --- | --- |
 | Compile a focused ArmorTemplate XML path | Schema, plugin and document controls pass |
