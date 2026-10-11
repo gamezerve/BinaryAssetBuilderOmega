@@ -1,5 +1,10 @@
 # Editable armor input admission
 
+Current scope update (October 11, 2026): the GUN-only stage described below is
+historical. [Expanded authoring](RA3EP1_ARMOR_EXPANDED_AUTHORING.md) now admits
+thirteen ordered coefficients and five optional root scalars for the same
+identity, with eighteen verified float slots. Other identities/types remain closed.
+
 ## Supported input
 
 This is the bounded input stage used by the editable alpha backend toward the

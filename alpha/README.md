@@ -11,8 +11,12 @@ extraction with the fix. These checks do not establish all
 original Studio features.
 
 Supported: exactly one flattened `AlliedConYardArmor` with thirteen ordered armor
-entries. Only GUN Percent is editable, as an integer 0..10000. Unsupported XML
-fails rather than being silently omitted. The bundled sample uses 5000.
+entries. Each Percent and five optional root scalar fields (Default, DamageScalar,
+SideDamageScalar, RearDamageScalar, FlankedPenalty) accept canonical integers
+0..10000. Omitted scalars retain 100. Identity, list shape and damage order remain
+fixed; includes/inheritance/other asset types remain unsupported. Unsupported XML
+fails rather than being silently omitted. Reborn uses GUN=5000; ArmorCannon uses
+CANNON=5000 and stock GUN=100. Only the earlier GUN recipe has gameplay evidence.
 
 Prerequisites: PowerShell 7, an x86 .NET 8 runtime, your existing RA3 Mod SDK
 Studio components and compatible .NET Framework 4/CodeDOM environment, plus an

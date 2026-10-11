@@ -10,6 +10,14 @@ Uprising SDK. A [one-command fixed armor reproducer](docs/RA3EP1_ARMOR_MOD_BUILD
 now combines compilation, stock comparisons and the validated package recipe.
 Editable armor XML now reaches actual Core/OutputManager compilation and
 verified default-reader packaging, rather than replaying a fixed fixture.
+The [expanded armor authoring path](docs/RA3EP1_ARMOR_EXPANDED_AUTHORING.md) now
+admits thirteen ordered coefficients and five optional scalars (integer 0..10000)
+for the same AlliedConYardArmor identity. All eighteen fields pass offline
+compile/package comparisons; new values are not yet independently game-tested.
+The refreshed local workspace `UprisingAlpha-20261011-h` and clean overlay
+extraction pass all three samples (Reborn, Armor250, ArmorCannon); the full
+compiler regression suite also passes. Packaging now forces recompilation to
+prevent stale managed debug paths. These are local candidates, not a public release.
 
 Release plan: [Armor Preview versus general SDK gates](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 The first alpha targets the existing EA Mod BuildStudio interface with explicit
@@ -29,7 +37,8 @@ user's subsequent Reborn build succeeds after the failure (1.73 seconds), with
 the same verified BIG digest. Earlier timing ranges
 refer to broader scopes, not a prerequisite to releasing this limited alpha.
 Editable [input admission and building](docs/RA3EP1_ARMOR_AUTHORING_ADMISSION.md)
-now support canonical integer GUN values 0..10000 for AlliedConYardArmor.
+now support canonical integer percentages 0..10000 for AlliedConYardArmor's
+thirteen coefficients and five optional root scalars.
 Five values and repeated output passed offline; 5000 retains the exact
 user-tested package digest. Updated clean extraction passes; the next alpha gate
 is distribution review, not completion of every processor.

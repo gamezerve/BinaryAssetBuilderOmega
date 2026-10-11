@@ -37,7 +37,8 @@ $compiler=Join-Path $repo 'source/BinaryAssetBuilder.ManifestInspector/bin/x86/R
 # Reborn: build once at preparation time, never rely on stale binaries or copy every build-directory artifact.
 $buildLog=Join-Path $repo ('artifacts/RebornAlphaWorkspaceBuild-'+[guid]::NewGuid().ToString('N')+'.log')
 # Reborn: distribution candidates must not embed local managed PDB paths; normal developer builds retain their own debug defaults.
-& dotnet build (Join-Path $repo 'source/BinaryAssetBuilder.ManifestInspector/BinaryAssetBuilder.ManifestInspector.csproj') --no-restore -c Release -p:Platform=x86 -p:DebugType=None -p:DebugSymbols=false -m:1 -nr:false -v:q *> $buildLog
+# Reborn: force recompilation when switching from ordinary developer symbols; incremental outputs can otherwise retain old CodeView paths.
+& dotnet build (Join-Path $repo 'source/BinaryAssetBuilder.ManifestInspector/BinaryAssetBuilder.ManifestInspector.csproj') --no-restore --no-incremental -c Release -p:Platform=x86 -p:DebugType=None -p:DebugSymbols=false -m:1 -nr:false -v:q *> $buildLog
 if($LASTEXITCODE-ne 0){throw ('Workspace compiler build failed; see '+$buildLog)}
 $files=[Collections.Generic.List[object]]::new()
 foreach($name in @('BinaryAssetBuilder.ManifestInspector.exe','BinaryAssetBuilder.ManifestInspector.dll',
@@ -57,6 +58,8 @@ $files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/studio/defaultscript
 $files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/Documentation/index.htm');Relative='Documentation/index.htm';Origin='project-local-help'})
 $files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/studio/EALAModStudio.exe.config');Relative='EALAModStudio.exe.config';Origin='project-isolated-CLR4-config'})
 $files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/mods/Reborn/data/mod.xml');Relative='mods/Reborn/data/mod.xml';Origin='project-sample'})
+# Reborn: include a non-GUN editable example without claiming gameplay validation or enabling another asset identity.
+$files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/mods/ArmorCannon/data/mod.xml');Relative='mods/ArmorCannon/data/mod.xml';Origin='project-sample'})
 $files.Add([pscustomobject]@{Source=(Join-Path $repo 'samples/armor/AlliedConYardArmor.xml');Relative='mods/Armor250/data/mod.xml';Origin='project-sample'})
 foreach($name in @('EALAModStudio.exe','EALABuild.dll','EULA for RA3 MOD SDK.rtf')){
     $files.Add([pscustomobject]@{Source=(Join-Path $StudioDirectory $name);Relative=$name;Origin='user-supplied-EA-SDK-local-use-only'})

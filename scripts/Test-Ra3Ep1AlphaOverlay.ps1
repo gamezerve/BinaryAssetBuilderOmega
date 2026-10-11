@@ -22,7 +22,7 @@ Expand-Archive -LiteralPath $Archive -DestinationPath $OutputDirectory
 Expand-Archive -LiteralPath $Archive -DestinationPath $negative
 $runtime=(Get-Process -Id $PID).Path
 $manifest=Get-Content -LiteralPath (Join-Path $OutputDirectory 'overlay-manifest.json') -Raw|ConvertFrom-Json
-if($manifest.Files.Count-ne 26 -or $manifest.Requirements.Count-ne 8){throw 'Unexpected overlay inventory.'}
+if($manifest.Files.Count-ne 27 -or $manifest.Requirements.Count-ne 8){throw 'Unexpected overlay inventory.'}
 # Reborn: require complete pinned notice files and preserved project attribution, not just a release flag.
 foreach($relative in @('LICENSE','THIRD_PARTY_NOTICES.md','notices/dotnet/LICENSE.txt','notices/dotnet/ThirdPartyNotices.txt')){
     $entry=@($manifest.Files|Where-Object Relative -CEQ $relative)

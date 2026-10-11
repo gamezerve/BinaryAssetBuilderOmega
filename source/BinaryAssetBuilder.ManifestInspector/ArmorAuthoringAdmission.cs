@@ -7,11 +7,13 @@ using System.Xml;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: admit only a bounded standalone ConYard XML whose sole editable field is the GUN coefficient; no production or runtime authority.
+// Reborn: admit bounded standalone ConYard percentages in fixed eighteen float slots; no general type or runtime authority.
 internal static class ArmorAuthoringAdmission
 {
     private const int Limit = 16384;
     private const string Namespace = "uri:ea.com:eala:asset";
+    // Reborn: preserve the tokenizer's root field order; list shape, damage identities and pointer fields remain immutable.
+    internal static readonly string[] ScalarFields = { "Default", "DamageScalar", "SideDamageScalar", "RearDamageScalar", "FlankedPenalty" };
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prohibit DTD/entity resolution and admit a complete small XML document before any output is created. */
@@ -28,7 +30,7 @@ internal static class ArmorAuthoringAdmission
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: allow exact identity/order/coefficient shape and canonical integer GUN percentages from zero through ten thousand only. */
+    /** Reborn: preserve identity/order and admit canonical integer percentages 0..10000 for thirteen entries and five optional scalars. */
     //-------------------------------------------------------------------------------------------------
     internal static (string Xml, int GunPercent) Admit(byte[] bytes)
     {
@@ -38,7 +40,7 @@ internal static class ArmorAuthoringAdmission
         var root = document.DocumentElement ?? throw new InvalidDataException("Armor root absent.");
         var expected = reference.DocumentElement!;
         if (root.LocalName != "ArmorTemplate" || root.NamespaceURI != Namespace || root.GetAttribute("id") != "AlliedConYardArmor"
-            || root.Attributes.Cast<XmlAttribute>().Any(attribute => attribute.Name != "id" && attribute.Name != "xmlns")
+            || root.Attributes.Cast<XmlAttribute>().Any(attribute => attribute.Name != "id" && attribute.Name != "xmlns" && !ScalarFields.Contains(attribute.Name))
             || document.ChildNodes.Cast<XmlNode>().Any(node => node is not XmlElement && node is not XmlDeclaration))
             throw new InvalidDataException("Only the standalone AlliedConYardArmor root is admitted.");
         var entries = root.ChildNodes.Cast<XmlNode>().ToArray();
@@ -52,29 +54,69 @@ internal static class ArmorAuthoringAdmission
                 || item.GetAttribute("Damage") != originals[index].GetAttribute("Damage"))
                 throw new InvalidDataException("Armor entry shape/order differs.");
             string value = item.GetAttribute("Percent");
-            if (item.GetAttribute("Damage") == "GUN")
-            {
-                if (!int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out percent) || percent < 0 || percent > 10000
-                    || percent.ToString(CultureInfo.InvariantCulture) != value) throw new InvalidDataException("GUN requires canonical integer Percent 0..10000.");
-            }
-            else if (value != originals[index].GetAttribute("Percent")) throw new InvalidDataException("Only GUN Percent is editable in this admission version.");
+            int coefficient = ReadPercent(value);
+            if (item.GetAttribute("Damage") == "GUN") percent = coefficient;
+            originals[index].SetAttribute("Percent", value);
         }
         // Reborn: canonicalize through the known fixture, never carry caller comments, attributes, includes or formatting into a later compile.
-        expected.ChildNodes.OfType<XmlElement>().Single(item => item.GetAttribute("Damage") == "GUN")
-            .SetAttribute("Percent", percent.ToString(CultureInfo.InvariantCulture));
+        foreach (string field in ScalarFields)
+            if (root.HasAttribute(field)) { ReadPercent(root.GetAttribute(field)); expected.SetAttribute(field, root.GetAttribute(field)); }
         string canonical = expected.OuterXml;
         var schemas = ArmorTokenSmokeTest.LoadSchemas(fixtures);
         var compiled = ArmorTokenSmokeTest.Compile(schemas, canonical);
-        expected.ChildNodes.OfType<XmlElement>().Single(item => item.GetAttribute("Damage") == "GUN").SetAttribute("Percent", "100");
-        var baseline = ArmorTokenSmokeTest.Compile(schemas, expected.OuterXml);
-        const int gunOffset = 788;
+        reference = Parse(File.ReadAllBytes(Path.Combine(fixtures, "AlliedConYardArmorProbe.xml")));
+        reference.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(item => item.GetAttribute("Damage") == "GUN").SetAttribute("Percent", "100");
+        var baseline = ArmorTokenSmokeTest.Compile(schemas, reference.DocumentElement.OuterXml);
         if (compiled.InstanceBuffer.Length != 856 || baseline.InstanceBuffer.Length != 856
             || compiled.ImportsBuffer.Length != 0 || !compiled.RelocationBuffer.SequenceEqual(baseline.RelocationBuffer)
-            || !compiled.InstanceBuffer.AsSpan(0, gunOffset).SequenceEqual(baseline.InstanceBuffer.AsSpan(0, gunOffset))
-            || !compiled.InstanceBuffer.AsSpan(gunOffset + 4).SequenceEqual(baseline.InstanceBuffer.AsSpan(gunOffset + 4))
-            || BitConverter.Int32BitsToSingle(BinaryPrimitives.ReadInt32LittleEndian(compiled.InstanceBuffer.AsSpan(gunOffset))) != percent / 100f)
-            throw new InvalidDataException("Editable armor changed bytes outside the admitted GUN float.");
+            || baseline.ImportsBuffer.Length != 0)
+            throw new InvalidDataException("Editable armor changed stream shape.");
+        VerifyPayload(canonical, baseline.InstanceBuffer, compiled.InstanceBuffer);
         return (canonical, percent);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: reject signs, leading zeros, formulas, percent suffixes, decimals and non-finite text before schema compilation. */
+    //-------------------------------------------------------------------------------------------------
+    private static int ReadPercent(string value)
+    {
+        if (!int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out int number) || number < 0 || number > 10000
+            || number.ToString(CultureInfo.InvariantCulture) != value) throw new InvalidDataException("Armor percentage requires canonical integer 0..10000.");
+        return number;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: expose normalized values and fixed native offsets without admitting alternate identities or list shapes. */
+    //-------------------------------------------------------------------------------------------------
+    internal static Dictionary<string, (int Percent, int Offset)> Values(string xml)
+    {
+        var root = Parse(Encoding.UTF8.GetBytes(xml)).DocumentElement!;
+        var result = new Dictionary<string, (int Percent, int Offset)>();
+        for (int index = 0; index < ScalarFields.Length; index++)
+            result.Add(ScalarFields[index], (root.HasAttribute(ScalarFields[index]) ? ReadPercent(root.GetAttribute(ScalarFields[index])) : 100, 724 + index * 4));
+        int itemIndex = 0;
+        foreach (XmlElement item in root.ChildNodes.OfType<XmlElement>())
+            result.Add("Armor/" + item.GetAttribute("Damage"), (ReadPercent(item.GetAttribute("Percent")), 756 + itemIndex++ * 8));
+        return result;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: independently verify each percentage float and require every identity/token/pointer byte outside the eighteen slots to match stock. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void VerifyPayload(string xml, byte[] baseline, byte[] compiled)
+    {
+        if (baseline.Length != 856 || compiled.Length != 856) throw new InvalidDataException("Armor payload length differs.");
+        byte[] masked = compiled.ToArray();
+        var values = Values(xml);
+        if (values.Count != 18) throw new InvalidDataException("Expected eighteen fixed percentage slots.");
+        foreach (var value in values.Values)
+        {
+            // Reborn: use the marshaler's exact single-precision multiplication, not division with different rounding for values such as 73.
+            if (BinaryPrimitives.ReadInt32LittleEndian(compiled.AsSpan(value.Offset)) != BitConverter.SingleToInt32Bits(value.Percent * 0.01f))
+                throw new InvalidDataException("Armor percentage float differs from authored input.");
+            baseline.AsSpan(value.Offset, 4).CopyTo(masked.AsSpan(value.Offset, 4));
+        }
+        if (!masked.SequenceEqual(baseline)) throw new InvalidDataException("Armor changed bytes outside the eighteen percentage slots.");
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -89,12 +131,13 @@ internal static class ArmorAuthoringAdmission
         if (input.Length == 0 || input.Length > Limit) throw new InvalidDataException("Armor input exceeds bound.");
         byte[] bytes = new byte[(int)input.Length]; input.ReadExactly(bytes);
         var admitted = Admit(bytes);
-        byte[] canonical = Encoding.UTF8.GetBytes("<!-- Reborn: admitted ConYard GUN-only authoring snapshot; not a built mod. -->\n" + admitted.Xml + "\n");
+        byte[] canonical = Encoding.UTF8.GetBytes("<!-- Reborn: admitted ConYard authoring snapshot; not a built mod. -->\n" + admitted.Xml + "\n");
         Directory.CreateDirectory(directory);
         string snapshot = Path.Combine(directory, "admitted-armor.xml"); File.WriteAllBytes(snapshot, canonical);
         var report = new { Source = source, SourceSha256 = Convert.ToHexString(SHA256.HashData(bytes)), Snapshot = snapshot,
             SnapshotSha256 = Convert.ToHexString(SHA256.HashData(canonical)), admitted.GunPercent,
-            InputAdmitted = true, CompilerPayloadCompared = true, OnlyGunFloatEditable = true,
+            InputAdmitted = true, CompilerPayloadCompared = true, OnlyGunFloatEditable = false,
+            EditableFloatCount = 18, Percentages = Values(admitted.Xml).ToDictionary(item => item.Key, item => item.Value.Percent),
             LinkedStreamsEmitted = false, ModPackageBuilt = false, GameExecuted = false, RuntimeOverrideProven = false,
             NextGate = "Use armor-authored-build with a fresh output directory and stock baseline; this admission receipt alone proves no package or runtime effect." };
         string json = JsonSerializer.Serialize(report, new JsonSerializerOptions { WriteIndented = true });
@@ -126,14 +169,23 @@ internal static class ArmorAuthoringAdmission
             xml.Replace("Percent=\"5000\"", "Percent=\"-1\""), xml.Replace("Percent=\"5000\"", "Percent=\"10001\""),
             xml.Replace("Percent=\"5000\"", "Percent=\"05000\""), xml.Replace("Percent=\"5000\"", "Percent=\"=Formula\""),
             xml.Replace("Percent=\"5000\"", "Percent=\"NaN\""), xml.Replace("Percent=\"5000\"", "Percent=\"5.5\""),
-            xml.Replace("Damage=\"GUN\"", "Damage=\"CANNON\""), xml.Replace("Damage=\"CANNON\" Percent=\"100\"", "Damage=\"CANNON\" Percent=\"200\""),
+            xml.Replace("Damage=\"GUN\"", "Damage=\"CANNON\""), xml.Replace("Damage=\"CANNON\" Percent=\"100\"", "Damage=\"CANNON\" Percent=\"10001\""),
             xml.Replace("<Armor Damage=\"GUN\"", "<Armor Extra=\"1\" Damage=\"GUN\""), xml.Replace("</ArmorTemplate>", "<Include source=\"other.xml\" /></ArmorTemplate>"),
             xml.Replace("uri:ea.com:eala:asset", "wrong:namespace"), xml.Replace("<ArmorTemplate", "<GameObject").Replace("</ArmorTemplate>", "</GameObject>"),
             xml.Replace("?>", "?><!DOCTYPE ArmorTemplate [<!ENTITY x '100'>]>")
         };
         foreach (string fault in faults) Refuse(Encoding.UTF8.GetBytes(fault));
         Refuse(Array.Empty<byte>()); Refuse(new byte[Limit + 1]);
-        Console.WriteLine("Armor authoring admission: PASS (five coefficients, seventeen refusals; no linked output or game).");
+        // Reborn: every editable slot gets boundary and rounding-sensitive coverage, while all shape refusals remain active.
+        foreach (string field in Values(Admit(Encoding.UTF8.GetBytes(xml)).Xml).Keys)
+            foreach (int value in new[] { 0, 73, 250, 10000 })
+            {
+                var edited = Parse(Encoding.UTF8.GetBytes(xml));
+                if (field.StartsWith("Armor/")) edited.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(item => item.GetAttribute("Damage") == field.Substring(6)).SetAttribute("Percent", value.ToString(CultureInfo.InvariantCulture));
+                else edited.DocumentElement!.SetAttribute(field, value.ToString(CultureInfo.InvariantCulture));
+                if (Values(Admit(Encoding.UTF8.GetBytes(edited.OuterXml)).Xml)[field].Percent != value) throw new InvalidDataException("Expanded percentage differs.");
+            }
+        Console.WriteLine("Armor authoring admission: PASS (five legacy values, eighteen fields x four values, seventeen refusals; no linked output or game).");
     }
 
     //-------------------------------------------------------------------------------------------------

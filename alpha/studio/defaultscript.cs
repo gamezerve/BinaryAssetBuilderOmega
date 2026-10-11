@@ -45,7 +45,7 @@ namespace EALABuild
             string input = Path.Combine(Path.Combine(Path.Combine(StaticPaths.CurrentDirectory, "mods"), name), "data\\mod.xml");
             CheckPath(input);
             BuildHelper.CurrentBuildSteps = 1;
-            BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha; supported build: ConYard GUN 0..10000. Other capabilities are not silently compiled.");
+            BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha; supported build: ConYard thirteen coefficients and five scalars 0..10000. Other capabilities are not silently compiled.");
             RunExecutableArguments request = new RunExecutableArguments(runtime);
             // Reborn: bind every Studio build to the configured read-only stock baseline.
             request.Arguments = "-NoProfile -File \"" + driver + "\" -ModXml \"" + input + "\" -StaticManifest \"" + staticManifest
@@ -79,7 +79,7 @@ namespace EALABuild
         {
             List<GUIElementData> options = new List<GUIElementData>();
             options.Add(new GUIElementData("alpha", "Uprising Alpha: Validate XML / Build Data / Make BIG", GUIElementData.LabelType, ScriptIndex.ModScript));
-            options.Add(new GUIElementData("scope", "Only AlliedConYardArmor GUN 0..10000 is package-enabled", GUIElementData.LabelType, ScriptIndex.ModScript));
+            options.Add(new GUIElementData("scope", "AlliedConYardArmor: 13 coefficients + 5 scalars, integer 0..10000", GUIElementData.LabelType, ScriptIndex.ModScript));
             return options;
         }
 

@@ -23,7 +23,7 @@ $compiler=Join-Path $Workspace 'tools/compiler'
 $output=Join-Path $Workspace 'builtmods'
 $rows=[Collections.Generic.List[object]]::new()
 # Reborn: execute the copied driver in child PowerShell processes so failure exit codes cannot terminate the test harness.
-foreach($name in @('Reborn','Armor250')){
+foreach($name in @('Reborn','Armor250','ArmorCannon')){
     $before=@(Get-ChildItem -LiteralPath $output -Directory).FullName
     $log=Join-Path $test ($name+'.log')
     & $runtime -NoProfile -File $driver -ModXml (Join-Path $Workspace ('mods/'+$name+'/data/mod.xml')) -StaticManifest $StaticManifest -CompilerDirectory $compiler -OutputRoot $output *> $log
@@ -32,9 +32,11 @@ foreach($name in @('Reborn','Armor250')){
     if($created.Count-ne 1){throw 'Expected exactly one fresh alpha output.'}
     $receipt=Get-Content -LiteralPath (Join-Path $created[0].FullName 'alpha-build.json') -Raw|ConvertFrom-Json
     $build=Get-Content -LiteralPath $receipt.BuildReceipt -Raw|ConvertFrom-Json
-    $expected=if($name-eq 'Reborn'){5000}else{250}
-    $digest=if($expected-eq 5000){'DD7DE09E3A81B9714DC2861ADE0AA9ECDFE72A1851EDD1ED20BE2155EF31C2DC'}else{'E97EAEE9D2B423AC7360C9A401FAB1EC9A55B60F50B9F02BB74CEDC9E8B38F7E'}
+    # Reborn: preserve both legacy golden packages and independently pin the new non-GUN example.
+    $expected=switch($name){'Reborn'{5000};'Armor250'{250};'ArmorCannon'{100}}
+    $digest=switch($name){'Reborn'{'DD7DE09E3A81B9714DC2861ADE0AA9ECDFE72A1851EDD1ED20BE2155EF31C2DC'};'Armor250'{'E97EAEE9D2B423AC7360C9A401FAB1EC9A55B60F50B9F02BB74CEDC9E8B38F7E'};'ArmorCannon'{'40C09781BAB82643FBBC6DF5A8DFA674B74BF16B8B93F4A5B605FF5778F0BE7F'}}
     if(-not $receipt.PrebuiltCompilerUsed -or $receipt.CompilerPath-cne (Join-Path $compiler 'BinaryAssetBuilder.ManifestInspector.exe') -or $build.GunPercent-ne $expected -or $build.ArchiveSha256-cne $digest -or $build.GameExecuted -or -not $build.AuthoredPayloadVerified){throw 'Workspace receipt/package differs.'}
+    if($receipt.EditableFloatCount-ne 18 -or $build.EditableFloatCount-ne 18 -or ($name-eq 'ArmorCannon' -and $build.Percentages.'Armor/CANNON'-ne 5000)){throw 'Expanded armor values differ.'}
     if(Test-Path -LiteralPath (Join-Path $created[0].FullName 'compiler-build.log')){throw 'Standalone build unexpectedly rebuilt repository source.'}
     $text=Get-Content -LiteralPath $log -Raw
     if(-not $text.Contains('Warning: ALPHA001') -or -not $text.Contains('Warning: ALPHA002')){throw 'EA-compatible warning prefixes missing.'}

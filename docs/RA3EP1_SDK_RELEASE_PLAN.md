@@ -2,6 +2,12 @@
 
 ## Current position — October 11, 2026
 
+The local alpha now exposes [all eighteen fixed ConYard armor percentage
+fields](RA3EP1_ARMOR_EXPANDED_AUTHORING.md), not only GUN. Individual-field and
+combined Core/package regressions pass offline; only the earlier GUN=5000
+recipe has user-observed gameplay evidence. This is a capability expansion,
+not completion of the general gameplay or broad SDK gates below.
+
 One existing armor identity has a user-observed in-game override. The same
 working package can be reproduced from current source in one command. That
 is a useful vertical slice, not evidence that all asset processors or the

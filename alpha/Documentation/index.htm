@@ -9,9 +9,12 @@ warning/error display, malformed-XML failure and this documentation pane. This i
 <p>A rejected build reports Error: ALPHA100 and Critical: ALPHA101, followed by an alpha build failed message.
 Successful builds report package paths and Build Completed. Inspect the final receipt; old packages from earlier builds are not new output.</p>
 <h2>Supported build</h2>
-<p>Select Reborn (GUN 5000) or Armor250 (GUN 250). Edit mods/&lt;name&gt;/data/mod.xml.
-Only the GUN Percent of AlliedConYardArmor is editable, as an integer from 0 to 10000.
-Keep all thirteen ordered armor entries. Unsupported input fails; it is not silently skipped.</p>
+<p>Select Reborn (GUN 5000), Armor250 (GUN 250) or ArmorCannon (CANNON 5000, GUN 100).
+Edit mods/&lt;name&gt;/data/mod.xml. All thirteen AlliedConYardArmor Percent values
+and five optional root scalars (Default, DamageScalar, SideDamageScalar, RearDamageScalar,
+FlankedPenalty) accept canonical integers from 0 to 10000; omitted scalars default to 100.
+Keep the identity and thirteen ordered armor entries. Unsupported input fails; it is not silently skipped.
+Only the earlier GUN 5000 recipe has gameplay evidence; expanded edits are experimental.</p>
 <p>The single alpha build step validates XML, compiles through Core and creates a BIG/config/SKU package.
 Results are under builtmods/RebornAlphaInput-&lt;guid&gt;. Read alpha-build.json for the final build receipt.</p>
 <h2>Not supported by this alpha</h2>

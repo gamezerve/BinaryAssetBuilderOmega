@@ -39,7 +39,9 @@ extraction; no rollback deletion or overwriting is performed. Never merge this
 overlay into your original SDK or game directory.
 
 After setup, open this copy's EALAModStudio.exe manually, select Reborn or
-Armor250 and Build Mod. Only AlliedConYardArmor GUN integer 0..10000 is supported.
+Armor250 or ArmorCannon and Build Mod. Only AlliedConYardArmor's thirteen ordered
+Percent values and five optional root scalars accept integers 0..10000. Expanded
+edits are offline validated, not independently gameplay proven.
 Output goes to fresh builtmods subdirectories; unsupported XML fails visibly.
 No automatic mod installation or game launch is provided. Setup's configuration
 and receipt contain local paths and must not be added to a public archive.

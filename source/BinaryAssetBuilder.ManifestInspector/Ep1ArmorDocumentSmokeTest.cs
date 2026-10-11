@@ -203,7 +203,7 @@ internal static class Ep1ArmorDocumentSmokeTest
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: retain the real ConYard identity and non-GUN values; preserve the fixed recipe or compile a separately admitted coefficient. */
+    /** Reborn: retain real ConYard identity and fixed token shape while independently verifying all eighteen admitted percentage floats. */
     //-------------------------------------------------------------------------------------------------
     private static string WriteConYardOverride(string directory, string fixtures, DocumentProcessor processor, PluginRegistry plugins,
         DocumentProcessor.ProcessOptions options, string? stockManifest, string? admittedXml = null, int gunPercent = 5000)
@@ -218,29 +218,27 @@ internal static class Ep1ArmorDocumentSmokeTest
         Require(root.GetAttribute("id") == "AlliedConYardArmor" && !root.HasAttribute("inheritFrom")
             && entries.Length == 13 && gun.GetAttribute("Percent") == gunPercent.ToString(System.Globalization.CultureInfo.InvariantCulture), "ConYard probe identity/value differs.");
         string authored = root.OuterXml;
-        gun.SetAttribute("Percent", "100");
-        var baseline = ArmorTokenSmokeTest.Compile(ArmorTokenSmokeTest.LoadSchemas(fixtures), root.OuterXml);
+        // Reborn: stock baseline is always the unchanged fixture, never authored non-GUN or scalar edits masquerading as stock.
+        XmlDocument stock = new() { XmlResolver = null }; stock.Load(Path.Combine(fixtures, "AlliedConYardArmorProbe.xml"));
+        stock.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(item => item.GetAttribute("Damage") == "GUN").SetAttribute("Percent", "100");
+        var baseline = ArmorTokenSmokeTest.Compile(ArmorTokenSmokeTest.LoadSchemas(fixtures), stock.DocumentElement.OuterXml);
         if (stockManifest != null) ArmorTokenSmokeTest.CompareGolden(new Dictionary<string, Relo.Chunk>
             { ["ArmorTemplate:AlliedConYardArmor"] = baseline }, stockManifest);
         string source = Path.Combine(directory, "allied-conyard-override.xml");
-        File.WriteAllText(source, $"<!-- Reborn: owned test source; only AlliedConYardArmor GUN changes to {gunPercent}. -->\n"
+        File.WriteAllText(source, $"<!-- Reborn: owned test source; admitted AlliedConYardArmor percentage edits, GUN={gunPercent}. -->\n"
             + "<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\">" + authored + "</AssetDeclaration>");
         var document = processor.ProcessDocumentInternal(source, source, null!, options);
         var instance = document.SelfInstances.Single();
         var buffer = plugins.GetPlugin(instance.Handle.TypeId).ProcessInstance(instance);
         var expected = new InstanceHandle("ArmorTemplate", "AlliedConYardArmor");
-        int gunOffset = 96 + entries.Length * 48 + 32 + Array.IndexOf(entries, gun) * 8 + 4;
         Require(instance.Handle.TypeId == expected.TypeId && instance.Handle.InstanceId == expected.InstanceId
             && instance.Handle.Name == "ArmorTemplate:AlliedConYardArmor" && buffer.InstanceData.Length == 856
-            && BitConverter.Int32BitsToSingle(BinaryPrimitives.ReadInt32LittleEndian(baseline.InstanceBuffer.AsSpan(gunOffset))) == 1f
-            && BitConverter.Int32BitsToSingle(BinaryPrimitives.ReadInt32LittleEndian(buffer.InstanceData.AsSpan(gunOffset))) == gunPercent / 100f
-            && buffer.RelocationData.SequenceEqual(baseline.RelocationBuffer) && buffer.ImportsData.Length == 0
-            && buffer.InstanceData.AsSpan(0, gunOffset).SequenceEqual(baseline.InstanceBuffer.AsSpan(0, gunOffset))
-            && buffer.InstanceData.AsSpan(gunOffset + 4).SequenceEqual(baseline.InstanceBuffer.AsSpan(gunOffset + 4)),
-            "ConYard override altered identity or bytes outside the single GUN float.");
+            && buffer.RelocationData.SequenceEqual(baseline.RelocationBuffer) && buffer.ImportsData.Length == 0,
+            "ConYard override altered identity or stream shape.");
+        ArmorAuthoringAdmission.VerifyPayload(authored, baseline.InstanceBuffer, buffer.InstanceData);
         DependencyResolutionSmokeTest.Prepare(document, instance);
         string package = WriteManagedStream(directory, processor, document, instance, buffer);
-        Console.WriteLine($"  ConYard override: InstanceId={instance.Handle.InstanceId:X8}; GUN 100 -> {gunPercent}; only GUN value slot may differ; stockCompared={stockManifest != null}");
+        Console.WriteLine($"  ConYard override: InstanceId={instance.Handle.InstanceId:X8}; GUN={gunPercent}; eighteen fixed percentage slots verified; stockCompared={stockManifest != null}");
         return package;
     }
 

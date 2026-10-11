@@ -42,7 +42,51 @@ internal static class ArmorAuthoredBuild
             throw new InvalidDataException("Repeated authored package changed.");
         if (Convert.ToHexString(SHA256.HashData(packages[5000])) != "DD7DE09E3A81B9714DC2861ADE0AA9ECDFE72A1851EDD1ED20BE2155EF31C2DC")
             throw new InvalidDataException("Legacy user-tested 5000 package changed.");
+        ExpandedSelfTest(directory, fixture, stockManifest);
         Console.WriteLine("Authored armor regression: PASS (five coefficients, fresh identities, single float edit, repeated package, legacy digest, occupied/source/corruption refusals; no game).");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: exercise each percentage through actual Core/stock/default packaging and a combined edit; preserve legacy tests and never launch. */
+    //-------------------------------------------------------------------------------------------------
+    private static void ExpandedSelfTest(string directory, string fixture, string stockManifest)
+    {
+        var fields = ArmorAuthoringAdmission.Values(ArmorAuthoringAdmission.Admit(System.Text.Encoding.UTF8.GetBytes(fixture)).Xml);
+        var combined = new System.Xml.XmlDocument { XmlResolver = null }; combined.LoadXml(fixture);
+        int index = 0;
+        foreach (string field in fields.Keys)
+        {
+            var xml = new System.Xml.XmlDocument { XmlResolver = null }; xml.LoadXml(fixture);
+            SetValue(xml, field, "73"); SetValue(combined, field, "250");
+            string source = Path.Combine(directory, $"field-{index}.xml"); File.WriteAllText(source, xml.OuterXml);
+            string output = Path.Combine(directory, $"field-{index++}"); Run(source, output, stockManifest);
+            using var archive = BigArchive.Open(Path.Combine(output, "package", "RebornArmorProbe.big"), 15, 4096);
+            byte[] actual = archive.ReadEntry(archive.Entries[1], 1024 * 1024).AsSpan(8).ToArray();
+            var root = new System.Xml.XmlDocument { XmlResolver = null }; root.LoadXml(fixture);
+            SetValue(root, "Armor/GUN", "100");
+            string fixtures = Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!;
+            var stock = ArmorTokenSmokeTest.Compile(ArmorTokenSmokeTest.LoadSchemas(fixtures), root.DocumentElement!.OuterXml);
+            ArmorAuthoringAdmission.VerifyPayload(xml.DocumentElement!.OuterXml, stock.InstanceBuffer, actual);
+            // Reborn: only this field may differ from the legacy fixed-GUN fixture in a one-field case.
+            var legacy = ArmorTokenSmokeTest.Compile(ArmorTokenSmokeTest.LoadSchemas(fixtures), new System.Xml.XmlDocument { InnerXml = fixture }.DocumentElement!.OuterXml);
+            actual.AsSpan(fields[field].Offset, 4).Clear(); legacy.InstanceBuffer.AsSpan(fields[field].Offset, 4).Clear();
+            if (!actual.SequenceEqual(legacy.InstanceBuffer)) throw new InvalidDataException("One-field package changed another coefficient.");
+        }
+        string mixed = Path.Combine(directory, "combined.xml"); File.WriteAllText(mixed, combined.OuterXml);
+        Run(mixed, Path.Combine(directory, "combined"), stockManifest);
+        Run(mixed, Path.Combine(directory, "combined-repeat"), stockManifest);
+        if (!File.ReadAllBytes(Path.Combine(directory, "combined", "package", "RebornArmorProbe.big")).SequenceEqual(
+            File.ReadAllBytes(Path.Combine(directory, "combined-repeat", "package", "RebornArmorProbe.big")))) throw new InvalidDataException("Repeated combined edit changed package.");
+        Console.WriteLine("Expanded armor regression: PASS (eighteen single-field packages, combined/repeat, stock comparison and detached corruption/mismatch controls; no game).");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: change only an identified owned fixture field while keeping the thirteen-entry list and original identity. */
+    //-------------------------------------------------------------------------------------------------
+    private static void SetValue(System.Xml.XmlDocument xml, string field, string value)
+    {
+        if (field.StartsWith("Armor/")) xml.DocumentElement!.ChildNodes.OfType<System.Xml.XmlElement>().Single(item => item.GetAttribute("Damage") == field.Substring(6)).SetAttribute("Percent", value);
+        else xml.DocumentElement!.SetAttribute(field, value);
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -71,6 +115,7 @@ internal static class ArmorAuthoredBuild
         if (!refused || Directory.Exists(rejected)) throw new InvalidDataException("Authored package/source mismatch accepted.");
         string archive = Path.Combine(package, "RebornArmorProbe.big");
         var receipt = new { admitted.GunPercent, Snapshot = snapshot,
+            EditableFloatCount = 18, Percentages = ArmorAuthoringAdmission.Values(admitted.Xml).ToDictionary(item => item.Key, item => item.Value.Percent),
             SnapshotSha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(snapshot))),
             PackagePath = archive, ConfigPath = Path.Combine(package, "reborn_1.0.cfg"),
             ModSkuPath = Path.Combine(package, "reborn_1.0.skudef"),
