@@ -28,7 +28,7 @@ foreach($entry in $inventory.Files){
     }
 }
 # Reborn: own setup/docs are explicit additions rather than copying arbitrary repository files.
-foreach($pair in @(@('Initialize-Ra3Ep1AlphaOverlay.ps1','scripts/Initialize-Ra3Ep1AlphaOverlay.ps1'),@('../alpha/OVERLAY.md','OVERLAY.md'))){
+foreach($pair in @(@('Initialize-Ra3Ep1AlphaOverlay.ps1','scripts/Initialize-Ra3Ep1AlphaOverlay.ps1'),@('Update-Ra3Ep1AlphaPaths.ps1','scripts/Update-Ra3Ep1AlphaPaths.ps1'),@('../alpha/OVERLAY.md','OVERLAY.md'))){
     $source=Join-Path $PSScriptRoot $pair[0];$hash=(Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash
     if(-not $seen.Add($pair[1])){throw 'Overlay addition duplicates inventory.'}
     $files.Add([pscustomobject]@{Relative=$pair[1];Sha256=$hash});$copies.Add([pscustomobject]@{Source=$source;Relative=$pair[1];Sha256=$hash})

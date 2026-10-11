@@ -39,3 +39,23 @@ Armor250 and Build Mod. Only AlliedConYardArmor GUN integer 0..10000 is supporte
 Output goes to fresh builtmods subdirectories; unsupported XML fails visibly.
 No automatic mod installation or game launch is provided. Setup's configuration
 and receipt contain local paths and must not be added to a public archive.
+
+## Relocating a configured copy
+
+Close Studio and active builds before moving/copying your workspace. From its
+new location run:
+
+```powershell
+# Reborn: derive driver/compiler paths from this copy and retain a byte-exact backup of old configuration.
+& .\scripts\Update-Ra3Ep1AlphaPaths.ps1
+```
+
+Existing PowerShell7/StaticManifest settings are retained only if their files
+still exist. On another computer, pass new explicit -PowerShell7 and
+-StaticManifest paths. Driver and CompilerDirectory always resolve to the new
+workspace. Missing stock stream siblings, redirected paths, malformed config
+and oversized/non-ASCII workspace paths are refused before config replacement.
+The helper preserves samples/build outputs and does not move files, relaunch
+Studio, change registry or install runtimes. Old config is retained as a unique
+uprising-alpha.paths.&lt;guid&gt;.bak. Backups contain local paths and are not
+distribution payload. This still is not a self-contained runtime bundle.

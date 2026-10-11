@@ -58,6 +58,10 @@ local managed PDB paths from candidate builds. The overlay exporter now refuses
 the old path-bearing files; a fresh candidate passes setup and both sample
 regressions with unchanged mod digests. Native apphost vendor metadata and
 distribution notices remain explicitly documented, not silently cleared.
+The newest overlay also includes a [relocation helper](docs/RA3EP1_ALPHA_RELOCATION.md):
+it updates internal paths after copying the configured folder, validates external
+paths and preserves an exact config backup. Both sample builds pass in the new
+location. This is not a runtime-bundled, cross-machine-tested portable SDK.
 
 | User-visible milestone | Current evidence |
 | --- | --- |

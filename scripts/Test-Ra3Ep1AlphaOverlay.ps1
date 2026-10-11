@@ -22,7 +22,7 @@ Expand-Archive -LiteralPath $Archive -DestinationPath $OutputDirectory
 Expand-Archive -LiteralPath $Archive -DestinationPath $negative
 $runtime=(Get-Process -Id $PID).Path
 $manifest=Get-Content -LiteralPath (Join-Path $OutputDirectory 'overlay-manifest.json') -Raw|ConvertFrom-Json
-if($manifest.Files.Count-ne 22 -or $manifest.Requirements.Count-ne 8){throw 'Unexpected overlay inventory.'}
+if($manifest.Files.Count-ne 23 -or $manifest.Requirements.Count-ne 8){throw 'Unexpected overlay inventory.'}
 $manifestText=Get-Content -LiteralPath (Join-Path $OutputDirectory 'overlay-manifest.json') -Raw
 if($manifestText -match '(?i)[a-z]:\\|C:/Users/|D:/|"Source"|"Workspace"'){throw 'Manifest exposes absolute provenance.'}
 # Reborn: alter only a disposable negative manifest digest, never the user SDK or schema files.

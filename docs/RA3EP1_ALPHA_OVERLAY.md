@@ -66,3 +66,8 @@ overlay export blocks those private hints. Updated candidate `UprisingOverlay-20
 and clean setup `UprisingOverlay-test-b` pass both sample/refusal regressions.
 The earlier candidate is retained for history but is not the preferred package.
 Distribution notice/provenance review remains open.
+
+Candidate `UprisingOverlay-20261011-c` adds the relocation helper (23 payload
+files). Fresh setup and copied configured-workspace repair both pass, including
+byte-exact configuration backup and repeated sample builds. See
+[relocation evidence and portability limits](RA3EP1_ALPHA_RELOCATION.md).
