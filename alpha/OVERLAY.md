@@ -9,6 +9,10 @@ review; absence of EA executables alone is not a distribution approval.
 Candidate builds now omit managed debug symbols to avoid local PDB paths, and
 packaging refuses bounded private-path hints. The .NET apphost's vendor debug
 metadata is distinct from user paths; this does not replace a notice review.
+THIRD_PARTY_NOTICES.md records component attribution. The complete project
+LICENSE and explicitly supplied installed-.NET license/third-party notices are
+included unchanged and pinned in the manifest. Exact apphost notice coverage
+remains unreviewed; including these copies is not redistribution clearance.
 
 Extract to a short ASCII path. Use PowerShell 7 to initialize that fresh copy:
 

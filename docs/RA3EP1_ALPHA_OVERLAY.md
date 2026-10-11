@@ -71,3 +71,9 @@ Candidate `UprisingOverlay-20261011-c` adds the relocation helper (23 payload
 files). Fresh setup and copied configured-workspace repair both pass, including
 byte-exact configuration backup and repeated sample builds. See
 [relocation evidence and portability limits](RA3EP1_ALPHA_RELOCATION.md).
+
+Candidate `UprisingOverlay-20261011-d` includes component attribution and two
+unchanged explicitly supplied .NET notice files (26 payload files). The exporter
+now requires DotNetNoticeDirectory; old invocations without this argument are
+incomplete. See [notice preservation and scope](RA3EP1_ALPHA_NOTICES.md) for
+fresh setup/relocation evidence and remaining review limitations.

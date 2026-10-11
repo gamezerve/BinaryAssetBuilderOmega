@@ -1,6 +1,7 @@
 # Reborn: stage an overlay candidate from a verified local workspace, excluding external EA/schema files and all absolute provenance; no public upload.
 [CmdletBinding()]
-param([Parameter(Mandatory)][string]$Workspace,[Parameter(Mandatory)][string]$OutputDirectory)
+param([Parameter(Mandatory)][string]$Workspace,[Parameter(Mandatory)][string]$OutputDirectory,
+    [Parameter(Mandatory)][string]$DotNetNoticeDirectory)
 $ErrorActionPreference='Stop'
 if($PSVersionTable.PSVersion.Major-lt 7){throw 'PowerShell 7 is required.'}
 $Workspace=[IO.Path]::GetFullPath($Workspace);$OutputDirectory=[IO.Path]::GetFullPath($OutputDirectory)
@@ -28,10 +29,25 @@ foreach($entry in $inventory.Files){
     }
 }
 # Reborn: own setup/docs are explicit additions rather than copying arbitrary repository files.
-foreach($pair in @(@('Initialize-Ra3Ep1AlphaOverlay.ps1','scripts/Initialize-Ra3Ep1AlphaOverlay.ps1'),@('Update-Ra3Ep1AlphaPaths.ps1','scripts/Update-Ra3Ep1AlphaPaths.ps1'),@('../alpha/OVERLAY.md','OVERLAY.md'))){
+foreach($pair in @(@('Initialize-Ra3Ep1AlphaOverlay.ps1','scripts/Initialize-Ra3Ep1AlphaOverlay.ps1'),@('Update-Ra3Ep1AlphaPaths.ps1','scripts/Update-Ra3Ep1AlphaPaths.ps1'),@('../alpha/OVERLAY.md','OVERLAY.md'),@('../alpha/THIRD_PARTY_NOTICES.md','THIRD_PARTY_NOTICES.md'))){
     $source=Join-Path $PSScriptRoot $pair[0];$hash=(Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash
     if(-not $seen.Add($pair[1])){throw 'Overlay addition duplicates inventory.'}
     $files.Add([pscustomobject]@{Relative=$pair[1];Sha256=$hash});$copies.Add([pscustomobject]@{Source=$source;Relative=$pair[1];Sha256=$hash})
+}
+# Reborn: preserve complete explicitly supplied vendor notice bytes, not an invented replacement license or automatic network download.
+if(-not [IO.Path]::IsPathFullyQualified($DotNetNoticeDirectory)){throw 'Notice directory must be an explicit absolute path.'}
+foreach($name in @('LICENSE.txt','ThirdPartyNotices.txt')){
+    $source=Join-Path $DotNetNoticeDirectory $name
+    for($item=Get-Item -LiteralPath $source;$null-ne $item;$item=if($item.PSIsContainer){$item.Parent}else{$item.Directory}){
+        if(($item.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0){throw 'Redirected notice input refused.'}
+    }
+    $noticeFile=Get-Item -LiteralPath $source
+    if($noticeFile.PSIsContainer -or $noticeFile.Length-eq 0 -or $noticeFile.Length-gt 1MB){throw 'Notice file must be nonempty and at most 1 MiB.'}
+    $relative='notices/dotnet/'+$name
+    if(-not $seen.Add($relative)){throw 'Duplicate notice destination.'}
+    $hash=(Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash
+    $files.Add([pscustomobject]@{Relative=$relative;Sha256=$hash})
+    $copies.Add([pscustomobject]@{Source=$source;Relative=$relative;Sha256=$hash})
 }
 if($requirements.Count-ne 8){throw 'Expected three supplied Studio files and five external schema files.'}
 # Reborn: block a candidate with private path hints or absolute managed debug paths before creating the overlay; keep the audit report outside the ZIP.
@@ -45,7 +61,7 @@ foreach($copy in $copies){
 }
 # Reborn: export only relative file names and digests, never Source/Workspace/compiler log or personal path fields.
 $manifest=[pscustomobject]@{Format='RebornAlphaOverlay1';Files=$files;Requirements=$requirements;
-    PublicRedistributionReviewed=$false;RequiresUserSuppliedEaFiles=$true}
+    PublicRedistributionReviewed=$false;RequiresUserSuppliedEaFiles=$true;SuppliedDotNetNoticesIncluded=$true;ExactHostNoticeCoverageReviewed=$false}
 [IO.File]::WriteAllText((Join-Path $OutputDirectory 'overlay-manifest.json'),($manifest|ConvertTo-Json -Depth 6))
 Compress-Archive -Path (Join-Path $OutputDirectory '*') -DestinationPath $archive
 [pscustomobject]@{Archive=$archive;ArchiveSha256=(Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash;

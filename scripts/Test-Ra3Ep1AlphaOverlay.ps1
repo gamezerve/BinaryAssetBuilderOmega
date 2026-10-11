@@ -22,7 +22,13 @@ Expand-Archive -LiteralPath $Archive -DestinationPath $OutputDirectory
 Expand-Archive -LiteralPath $Archive -DestinationPath $negative
 $runtime=(Get-Process -Id $PID).Path
 $manifest=Get-Content -LiteralPath (Join-Path $OutputDirectory 'overlay-manifest.json') -Raw|ConvertFrom-Json
-if($manifest.Files.Count-ne 23 -or $manifest.Requirements.Count-ne 8){throw 'Unexpected overlay inventory.'}
+if($manifest.Files.Count-ne 26 -or $manifest.Requirements.Count-ne 8){throw 'Unexpected overlay inventory.'}
+# Reborn: require complete pinned notice files and preserved project attribution, not just a release flag.
+foreach($relative in @('LICENSE','THIRD_PARTY_NOTICES.md','notices/dotnet/LICENSE.txt','notices/dotnet/ThirdPartyNotices.txt')){
+    $entry=@($manifest.Files|Where-Object Relative -CEQ $relative)
+    if($entry.Count-ne 1 -or (Get-FileHash -LiteralPath (Join-Path $OutputDirectory $relative)).Hash-cne $entry[0].Sha256){throw 'Required distribution notice missing or changed.'}
+}
+if(-not $manifest.SuppliedDotNetNoticesIncluded -or $manifest.ExactHostNoticeCoverageReviewed){throw 'Notice coverage state differs from candidate scope.'}
 $manifestText=Get-Content -LiteralPath (Join-Path $OutputDirectory 'overlay-manifest.json') -Raw
 if($manifestText -match '(?i)[a-z]:\\|C:/Users/|D:/|"Source"|"Workspace"'){throw 'Manifest exposes absolute provenance.'}
 # Reborn: alter only a disposable negative manifest digest, never the user SDK or schema files.
@@ -43,6 +49,6 @@ foreach($entry in @($manifest.Files)+@($manifest.Requirements)){$inventory.Add([
 $builds=& (Join-Path $PSScriptRoot 'Test-Ra3Ep1AlphaWorkspace.ps1') -Workspace $OutputDirectory -StaticManifest $StaticManifest
 $report=[pscustomobject]@{ArchiveSha256=(Get-FileHash -LiteralPath $Archive).Hash;ExternalFilesAbsentFromArchive=$true;
     ManifestHasNoAbsoluteProvenance=$true;DependencyMismatchRefusedBeforeCopy=$true;CleanSetupPassed=$true;
-    OccupiedSetupRefused=$true;WorkspaceTest=$builds;PublicRedistributionReviewed=$false;StudioExecuted=$false;GameExecuted=$false}
+    OccupiedSetupRefused=$true;RequiredNoticeHashesPassed=$true;WorkspaceTest=$builds;PublicRedistributionReviewed=$false;StudioExecuted=$false;GameExecuted=$false}
 [IO.File]::WriteAllText((Join-Path $OutputDirectory 'overlay-test.json'),($report|ConvertTo-Json -Depth 7))
 $report

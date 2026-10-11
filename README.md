@@ -62,6 +62,10 @@ The newest overlay also includes a [relocation helper](docs/RA3EP1_ALPHA_RELOCAT
 it updates internal paths after copying the configured folder, validates external
 paths and preserves an exact config backup. Both sample builds pass in the new
 location. This is not a runtime-bundled, cross-machine-tested portable SDK.
+The latest overlay [preserves supplied vendor notices](docs/RA3EP1_ALPHA_NOTICES.md)
+and upstream attribution, refuses missing notice inputs and passes fresh setup
+and relocation regressions. Exact host/fixture provenance review remains open;
+these copies are not a public redistribution approval.
 
 | User-visible milestone | Current evidence |
 | --- | --- |
