@@ -4,8 +4,9 @@ This is a limited, experimental **local-use candidate**, not a public release
 or a complete Uprising SDK. It retains the existing EA Mod BuildStudio interface.
 User-provided screenshot/log evidence now confirms actual Studio loading,
 Reborn selection, output capture and successful completion, with independently
-verified package bytes. Warning classification and GUI failure handling remain
-to be checked; success does not establish all original Studio features.
+verified package bytes. A subsequent Error Log screenshot confirms ALPHA001 and
+ALPHA002 under Warnings. GUI failure handling remains to be checked; success
+does not establish all original Studio features.
 
 Supported: exactly one flattened `AlliedConYardArmor` with thirteen ordered armor
 entries. Only GUN Percent is editable, as an integer 0..10000. Unsupported XML

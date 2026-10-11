@@ -15,13 +15,14 @@ It is not a complete RA3-SDK-equivalent release. See the
 A local inventory-only ZIP has passed fresh extraction and editable armor builds
 without a repository source tree. It is still a LOCAL-USE-ONLY candidate:
 the real GUI success path now passes by user screenshot/log and independent
-output readback. GUI warning/failure checks and public distribution/rights
+output readback. Both warnings are now visibly categorized in the user's Error
+Log screenshot. GUI failure checks and public distribution/rights
 review remain. Do not label it
 as a validated public SDK release. See [workspace evidence](RA3EP1_ALPHA_WORKSPACE.md).
 
 | Deliverable | Remaining gates | Working effort estimate |
 | --- | --- | --- |
-| Limited EA-UI SDK alpha | Editable GUN/Core/package path, clean extraction and user-run Studio success pass; GUI warning/failure checks and public distribution review remain | A few focused working sessions; the initial GUI compatibility blocker did not materialize, but remaining checks are not yet complete |
+| Limited EA-UI SDK alpha | Editable GUN/Core/package path, clean extraction, user-run Studio success and warning classification pass; GUI failure checks and public distribution review remain | A few focused working sessions; the initial GUI compatibility blocker did not materialize, but remaining checks are not yet complete |
 | Basic gameplay SDK alpha | GameObject/Weapon and needed modules, dependency/import closure, reference/override precedence, repeatable build and controlled gameplay checks | Several weeks; reassess after the first unit/weapon vertical slice |
 | RA3-SDK-like broad release | Wider typed processor coverage, inheritance/includes/cache contracts, textures/models/audio/shaders, map workflows and WorldBuilder integration, distribution/dependency review | Several months or longer; no reliable fixed release date yet |
 
@@ -80,7 +81,8 @@ The principal editable-armor functional gap is closed offline. An isolated EA
 Studio candidate includes explicit configuration, CLR4 selection, local help
 and prebuilt tools; exact loader-reference/config/options checks and fresh ZIP
 extraction pass. The user-run Reborn GUI build now also succeeds with the exact
-game-tested digest. Next check GUI warnings/failure and review public distribution.
+game-tested digest, and its warning categorization is visible. Next check GUI
+failure handling and review public distribution.
 The successful default-reader trial
 does not by itself resolve queue-route failure, exact runtime file reads,
 generic duplicate asset ordering or full WorldBuilder support.

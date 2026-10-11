@@ -47,7 +47,8 @@ with missing/unknown/duplicate keys refused. The old XML example is historical.
 `processInputLine` (`0x06000028`) searches case-sensitively for `Critical:`,
 `Error:` and `Warning:`. The previous uppercase diagnostic prefixes did not
 match. The backend now emits `Warning: ALPHA001/ALPHA002` and `Error: ALPHA100`.
-This follows inspected dispatch; actual colored Error Log rows remain unobserved.
+The user's subsequent Error Log screenshot confirms both warnings categorized
+under Warnings; the successful build shows no error entries.
 The reference loader scans immediate mod directories, explaining the prepared
 Reborn/Armor250 folder layout. The application also reads the optional RA3
 UserDataLeafName registry value; the alpha backend does not depend on it or
@@ -112,7 +113,16 @@ their original false runtime flags; no historical artifact was rewritten.
 
 ## Remaining gates / distribution limits
 
-Next observe the GUI failure callback, Error Log categorization and local help.
+The next user screenshot confirms ALPHA001 and ALPHA002 appear under the expanded
+Warnings node. No entries are shown beneath Critical Errors or Errors. Warning
+classification is now observed; actual error classification remains untested.
+
+An isolated `mods/InvalidXml/data/mod.xml` has been added only to the extracted
+local workspace for the next manual test. Its closing tag is deliberately
+mismatched. It is not part of the release inventory or a gameplay package, and
+the existing Reborn/Armor250 inputs remain unchanged.
+
+Next observe the GUI failure callback, error categorization and local help.
 Successful loading, Reborn selection, output capture and completion now have
 user-provided GUI evidence plus independent package readback. The adapter currently
 uses one combined validation/compile/package step, not every original SDK checkbox.

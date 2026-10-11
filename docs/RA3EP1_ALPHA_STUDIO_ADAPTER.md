@@ -107,7 +107,8 @@ See [workspace evidence and distribution limits](RA3EP1_ALPHA_WORKSPACE.md).
    leaving the reference SDK intact. The user's October 11 screenshot/full log
    confirm real GUI loading, Reborn discovery, output capture and successful
    completion; independent package readback matches the game-tested digest.
-   Still observe GUI failure handling and Error Log classification. See the
+   A subsequent screenshot confirms ALPHA001/ALPHA002 under Warnings.
+   Still observe GUI failure handling and error classification. See the
    workspace report for the exact manual-run evidence and its limits.
 3. Keep familiar Build Data/Make BIG/Create SKUDef stages while clearly marking
    unsupported LOD, STR, misc, map, hash-repair and copy/install features. The
