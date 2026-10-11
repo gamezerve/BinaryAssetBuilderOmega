@@ -2,6 +2,47 @@
 . (Join-Path $PSScriptRoot 'Ra3Ep11ConfigSnapshotAdapter.ps1')
 
 #-------------------------------------------------------------------------------------------------
+<# Reborn: require an empty breakpoint listing after clearing our helper breakpoint, not just a printed acknowledgement or temporarily restored code byte. #>
+#-------------------------------------------------------------------------------------------------
+function Assert-Ep11HelperBreakpointCleared([string]$Text,[string]$Nonce) {
+    if($Text.Length -gt 4096 -or $Nonce -cnotmatch '^[0-9a-f]{32}$'){throw 'Helper clear envelope invalid.'}
+    $marker='REBORN_CLEAR '+$Nonce;$found=0
+    foreach($line in ($Text -split '\r?\n')){
+        if($line -ceq $marker){$found++;continue}
+        if($line -cnotmatch '^\s*(?:[0-9a-fA-F]+:[0-9a-fA-F]+>\s*)?$'){throw 'Helper breakpoint listing not empty or clear command failed.'}
+    }
+    if($found -ne 1){throw 'Helper clear acknowledgement missing or ambiguous.'}
+}
+
+#-------------------------------------------------------------------------------------------------
+<# Reborn: parse one helper-only delay-site address/byte query, refusing a preexisting trap byte before installing any breakpoint. #>
+#-------------------------------------------------------------------------------------------------
+function Get-Ep11HelperBreakpointSite([string]$Text,[string]$Nonce) {
+    if($Text.Length -gt 4096 -or $Nonce -cnotmatch '^[0-9a-f]{32}$' -or
+       $Text -match '(?i)syntax error|could not resolve|unable to|memory access error|invalid command'){throw 'Helper site envelope invalid.'}
+    $records=@(($Text -split '\r?\n')|Where-Object {$_ -cmatch '^REBORN_'})
+    if($records.Count -ne 1 -or $records[0] -cnotmatch ('^REBORN_SITE '+$Nonce+' ([0-9a-fA-F]{1,8}) ([0-9a-fA-F]{1,2})$')){throw 'Helper site marker missing or ambiguous.'}
+    $address=[long][Convert]::ToUInt32($Matches[1],16);$original=[byte][Convert]::ToByte($Matches[2],16)
+    Assert-Ep11ReadPointer $address 1
+    if($original -eq 0xcc){throw 'Helper site already contains a trap byte.'}
+    [pscustomobject]@{Address=$address;OriginalByte=$original;NativeGameSiteValidated=$false}
+}
+
+#-------------------------------------------------------------------------------------------------
+<# Reborn: admit exactly one bounded helper-only breakpoint marker bound to the requested nonce, retained PID and admitted entry address. #>
+#-------------------------------------------------------------------------------------------------
+function Get-Ep11HelperBreakpointHit([string]$Text,[string]$Nonce,[int]$ExpectedProcessId,[long]$ExpectedAddress) {
+    if($Text.Length -gt 65536 -or $Nonce -cnotmatch '^[0-9a-f]{32}$' -or $ExpectedProcessId -le 0 -or
+       $Text -match '(?i)syntax error|could not resolve|unable to|memory access error|invalid command'){throw 'Helper breakpoint envelope invalid.'}
+    Assert-Ep11ReadPointer $ExpectedAddress 1
+    $records=@(($Text -split '\r?\n')|Where-Object {$_ -cmatch '^REBORN_'})
+    if($records.Count -ne 1 -or $records[0] -cnotmatch ('^REBORN_BREAK '+$Nonce+' ([0-9a-fA-F]{1,8}) ([0-9a-fA-F]{1,8}) ([0-9a-fA-F]{1,8})$')){throw 'Helper breakpoint marker missing or ambiguous.'}
+    $process=[long][Convert]::ToUInt32($Matches[1],16);$thread=[long][Convert]::ToUInt32($Matches[2],16);$address=[long][Convert]::ToUInt32($Matches[3],16)
+    if($process -ne $ExpectedProcessId -or $thread -le 0 -or $address -ne $ExpectedAddress){throw 'Helper breakpoint owner/site differs.'}
+    [pscustomobject]@{ProcessId=$process;ThreadId=$thread;SiteAddress=$address;SuppliedHitValidated=$true;GameReadProven=$false}
+}
+
+#-------------------------------------------------------------------------------------------------
 <# Reborn: isolate one fully terminated response window before parsing registers; a completion marker is framing, not stopped-process proof. #>
 #-------------------------------------------------------------------------------------------------
 function Get-Ep11CompletedContextWindow([string]$Text,[string]$Nonce) {

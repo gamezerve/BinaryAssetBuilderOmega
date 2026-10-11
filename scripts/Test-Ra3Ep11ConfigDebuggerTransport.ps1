@@ -110,4 +110,23 @@ foreach($length in @(1,5,20,($completed.Length-10),($completed.Length-1))){
     $refused=$false;try{$null=Get-Ep11CompletedContextWindow $completed.Substring(0,$length) $nonce}catch{$refused=$true}
     if(-not $refused){throw 'Partial context chunk admitted.'};$partialFaults++
 }
-[pscustomobject]@{DetachedPositiveCases=$positives;PrivateRefusals=$refusals;WindowPositiveCases=1;WindowRefusals=$windowFaults;PartialChunkRefusals=$partialFaults;PerThreadInvocationIdsAssigned=$true;CommandsSent=$false;GameExecuted=$false;DebuggerExecuted=$false;LiveContextProven=$false;CollectorReady=$false}
+# Reborn: helper-only site/hit protocols must not accept unowned, wrong-site, preexisting-trap or ambiguous markers.
+$siteSample='REBORN_SITE '+$nonce+' 77661234 b8';$hitSample='REBORN_BREAK '+$nonce+' 10 20 77661234';$markerFaults=0
+$null=Get-Ep11HelperBreakpointSite $siteSample $nonce
+$null=Get-Ep11HelperBreakpointHit $hitSample $nonce 16 0x77661234
+$clearSample="REBORN_CLEAR "+$nonce+"`n0:000> "
+Assert-Ep11HelperBreakpointCleared $clearSample $nonce
+$clearFaults=0
+foreach($fault in @('',$clearSample.Replace($nonce,'fedcba9876543210fedcba9876543210'),($clearSample+"`nREBORN_CLEAR "+$nonce),($clearSample+"`n 0 e 77661234 0001 (0001)"),($clearSample+"`nSyntax error"))){
+    $refused=$false;try{Assert-Ep11HelperBreakpointCleared $fault $nonce}catch{$refused=$true}
+    if(-not $refused){throw 'Helper clear fault admitted.'};$clearFaults++
+}
+foreach($fault in @($siteSample.Replace('b8','cc'),$siteSample.Replace('77661234','0'),($siteSample+"`n"+$siteSample),$siteSample.Replace($nonce,'fedcba9876543210fedcba9876543210'),($siteSample+"`nSyntax error"),$siteSample.Replace('b8','100'),($siteSample+"`nREBORN_UNKNOWN"),'')){
+    $refused=$false;try{$null=Get-Ep11HelperBreakpointSite $fault $nonce}catch{$refused=$true}
+    if(-not $refused){throw 'Helper site fault admitted.'};$markerFaults++
+}
+foreach($fault in @($hitSample.Replace(' 10 20 ',' 11 20 '),$hitSample.Replace('77661234','77661235'),$hitSample.Replace(' 10 20 ',' 10 0 '),$hitSample.Replace($nonce,'fedcba9876543210fedcba9876543210'),($hitSample+"`n"+$hitSample),($hitSample+"`nREBORN_UNKNOWN"),($hitSample+"`nMemory access error"),'')){
+    $refused=$false;try{$null=Get-Ep11HelperBreakpointHit $fault $nonce 16 0x77661234}catch{$refused=$true}
+    if(-not $refused){throw 'Helper hit fault admitted.'};$markerFaults++
+}
+[pscustomobject]@{DetachedPositiveCases=$positives;PrivateRefusals=$refusals;WindowPositiveCases=1;WindowRefusals=$windowFaults;PartialChunkRefusals=$partialFaults;HelperMarkerPositiveCases=2;HelperMarkerRefusals=$markerFaults;HelperClearPositiveCases=1;HelperClearRefusals=$clearFaults;PerThreadInvocationIdsAssigned=$true;CommandsSent=$false;GameExecuted=$false;DebuggerExecuted=$false;LiveContextProven=$false;CollectorReady=$false}

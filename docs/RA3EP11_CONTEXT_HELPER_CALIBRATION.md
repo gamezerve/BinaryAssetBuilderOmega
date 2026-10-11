@@ -2,6 +2,11 @@
 
 Date: October 11, 2026 (Europe/Istanbul).
 
+Follow-up: [admitted-helper breakpoint transport](RA3EP11_BREAKPOINT_HELPER_CALIBRATION.md)
+now observes an actual helper delay breakpoint and separately verifies its
+register response, explicit clearing and original-byte restoration. No
+native game collector has been enabled.
+
 ## Actual result
 
 `Invoke-Ra3Ep11DebuggerAdmissionControl.ps1 -Run -CalibrateContext` now performs

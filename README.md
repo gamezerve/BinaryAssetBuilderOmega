@@ -3,6 +3,14 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 11, 2026
 
+Latest actual breakpoint milestone: [admitted-helper event transport](docs/RA3EP11_BREAKPOINT_HELPER_CALIBRATION.md).
+The shared gate now precedes a helper-only delay breakpoint; its owned hit
+matches a separate register response. Explicit clearing, an empty breakpoint
+listing and independent original-byte restoration pass before normal resume.
+Three actual controls pass, including the final clear-list guard; a failed
+managed PE-entry experiment is recorded separately. No game was launched.
+Probe-only selection and native config consumption remain open; **52% / 48%**.
+
 Latest actual helper milestone: [CDB context calibration](docs/RA3EP11_CONTEXT_HELPER_CALIBRATION.md).
 Two admitted helper runs each returned two stable nonce-bound x86 contexts;
 owned-handle stack reads matched and actual stale responses were refused.

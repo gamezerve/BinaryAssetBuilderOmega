@@ -1,12 +1,14 @@
 # Reborn: gate one newly compiled helper at CDB's initial break; rejection cleanup detaches/resumes that helper, never a game.
 [CmdletBinding()]
-param([switch]$Run,[switch]$SelfTest,[ValidateSet('Admit','RejectLiveBytes','Timeout')][string]$Mode='Admit',[switch]$CalibrateContext)
+param([switch]$Run,[switch]$SelfTest,[ValidateSet('Admit','RejectLiveBytes','Timeout')][string]$Mode='Admit',[switch]$CalibrateContext,[switch]$CalibrateBreakpoint)
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'Ra3Ep11DebuggerAdmissionPolicy.ps1')
 . (Join-Path $PSScriptRoot 'Ra3Ep11SupervisorAdmissionGate.ps1')
 . (Join-Path $PSScriptRoot 'Ra3Ep11ConfigDebuggerTransport.ps1')
 # Reborn: context calibration is an explicit helper-only admission mode, never a native-game launch option.
 if($CalibrateContext -and ($SelfTest -or $Mode -cne 'Admit')){throw 'Context calibration requires the separate Admit helper control.'}
+# Reborn: keep breakpoint calibration separate from initial-context and refusal controls; all use the same fixed new helper only.
+if($CalibrateBreakpoint -and ($SelfTest -or $CalibrateContext -or $Mode -cne 'Admit')){throw 'Breakpoint calibration requires the separate Admit helper control.'}
 if($SelfTest){
     if($Run){throw 'Run and detached tests must be separate.'}
     # Reborn: detached admission mutations do not start a debugger or read any process memory.
@@ -48,7 +50,7 @@ foreach($path in $paths){
 }
 if((Get-Item -LiteralPath $source).Length -gt 4096 -or [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes([IO.File]::ReadAllText($source).Replace("`r`n","`n")))) -cne '1EFA171DAE77F686E2E120EB6530B37F0D359E41C836F74A11C247CD5FC1FB46'){throw 'Unreviewed admission helper.'}
 if((Get-FileHash -LiteralPath $debugger).Hash -cne 'E6771A874286D8A053C744D428D50A13091318DD1261F07B6C2C17BF42A486A5'){throw 'Debugger differs from calibrated build.'}
-if(-not $Run){[pscustomobject]@{Mode=$Mode;CalibrateContextRequested=[bool]$CalibrateContext;RunRequested=$false;GameExecuted=$false;Scope='Fixed new helper, initial-break gate only'};return}
+if(-not $Run){[pscustomobject]@{Mode=$Mode;CalibrateContextRequested=[bool]$CalibrateContext;CalibrateBreakpointRequested=[bool]$CalibrateBreakpoint;RunRequested=$false;GameExecuted=$false;Scope='Fixed new helper, initial-break gate only'};return}
 # Reborn: prepare bounded read-only native interop before any target exists.
 Add-Type -TypeDefinition @'
 using System;
@@ -80,6 +82,9 @@ $helper=$null;$started=$false;$admitted=$false;$resumeIssued=$false;$cleanupIssu
 $streams=@()
 # Reborn: retain actual helper context results separately from native config consumption evidence.
 $contextRecords=@();$contextRoundTripValidated=$false;$staleContextRefused=$false;$stackContextValidated=$false
+# Reborn: track actual breakpoint transport and byte restoration without claiming game cleanup or config consumption.
+$breakpointHitValidated=$false;$breakpointRestored=$false;$breakpointContext=$null
+$breakpointSite=$null;$breakpointOriginalByte=$null
 #-------------------------------------------------------------------------------------------------
 <# Reborn: pump bounded redirected chunks without blocking on a prompt or needing a PowerShell runspace in callbacks. #>
 #-------------------------------------------------------------------------------------------------
@@ -187,7 +192,63 @@ try{
         }
         $contextSession.Status='Closed';$contextRoundTripValidated=$true;$stackContextValidated=$true
     }
-    if($admitted){$debug.StandardInput.WriteLine('g');$resumeIssued=$true}else{
+    if($admitted -and $CalibrateBreakpoint){
+        # Reborn: query the already-calibrated helper delay site after admission; CLR startup need not execute the PE entry thunk.
+        $siteNonce=[guid]::NewGuid().ToString('N');Update-Ep11AdmissionOutput;$siteOffset=$streams[0].Text.Length
+        $debug.StandardInput.WriteLine('.printf "REBORN_SITE '+$siteNonce+' %x %x", ntdll!NtDelayExecution, by(ntdll!NtDelayExecution); .echo');$debug.StandardInput.Flush()
+        $siteDeadline=[DateTime]::UtcNow.AddSeconds(5)
+        do{
+            Update-Ep11AdmissionOutput;$siteText=$streams[0].Text.Substring($siteOffset)
+            if($siteText.Length -gt 4096 -or $debug.HasExited -or $helper.HasExited -or [DateTime]::UtcNow -gt $siteDeadline -or $streams[1].Text.Length -ne 0){throw 'Helper delay-site query failed.'}
+            if($siteText -notmatch ('(?m)^REBORN_SITE '+$siteNonce+' [0-9a-f]+ [0-9a-f]+\r?\n')){Start-Sleep -Milliseconds 25}
+        }while($siteText -notmatch ('(?m)^REBORN_SITE '+$siteNonce+' [0-9a-f]+ [0-9a-f]+\r?\n'))
+        $site=Get-Ep11HelperBreakpointSite $siteText $siteNonce
+        $siteByte=[byte[]]::new(1);$siteActual=[UIntPtr]::Zero
+        $siteSuccess=[RebornAdmissionMemory]::ReadProcessMemory($helper.Handle,[IntPtr]$site.Address,$siteByte,[UIntPtr]1,[ref]$siteActual)
+        Assert-Ep11AdmissionBytes $siteSuccess $siteActual.ToUInt64() ([byte[]]@($site.OriginalByte)) $siteByte
+        $breakpointSite=$site.Address;$breakpointOriginalByte=$site.OriginalByte
+        # Reborn: install only the owned helper's one observed delay-site breakpoint, without automatic continuation in its command.
+        $breakNonce=[guid]::NewGuid().ToString('N');$siteHex='{0:x}' -f $breakpointSite
+        Update-Ep11AdmissionOutput;$breakOffset=$streams[0].Text.Length
+        $breakCommand='bp0 '+$siteHex+' ".printf \"REBORN_BREAK '+$breakNonce+' %x %x %x\", @$tpid, @$tid, @eip; .echo"'
+        $debug.StandardInput.WriteLine($breakCommand);$debug.StandardInput.WriteLine('g');$debug.StandardInput.Flush();$resumeIssued=$true
+        $breakDeadline=[DateTime]::UtcNow.AddSeconds(10)
+        do{
+            Update-Ep11AdmissionOutput;$breakText=$streams[0].Text.Substring($breakOffset)
+            if($debug.HasExited -or $helper.HasExited -or [DateTime]::UtcNow -gt $breakDeadline -or $streams[1].Text.Length -ne 0){throw 'Owned helper breakpoint not reached within bound.'}
+            if($breakText -notmatch ('(?m)^REBORN_BREAK '+$breakNonce+' [0-9a-f]+ [0-9a-f]+ [0-9a-f]+\r?\n')){Start-Sleep -Milliseconds 25}
+        }while($breakText -notmatch ('(?m)^REBORN_BREAK '+$breakNonce+' [0-9a-f]+ [0-9a-f]+ [0-9a-f]+\r?\n'))
+        $hit=Get-Ep11HelperBreakpointHit $breakText $breakNonce $owner $breakpointSite
+        $contextSession=New-Ep11ConfigSnapshotSession $owner (Join-Path $repo 'fixtures/ra3ep11/phase-a/probe_1.0.cfg') {throw 'Helper breakpoint must not invoke native config decoding.'}
+        $request=New-Ep11ConfigContextRequest $contextSession
+        Update-Ep11AdmissionOutput;$offset=$streams[0].Text.Length
+        $debug.StandardInput.WriteLine($request.Command+'; .echo REBORN_CONTEXT_END '+$request.Nonce);$debug.StandardInput.Flush()
+        $contextDeadline=[DateTime]::UtcNow.AddSeconds(5)
+        do{
+            Update-Ep11AdmissionOutput;$response=$streams[0].Text.Substring($offset)
+            if($response.Length -gt 4096 -or $debug.HasExited -or $helper.HasExited -or [DateTime]::UtcNow -gt $contextDeadline -or $streams[1].Text.Length -ne 0){throw 'Breakpoint context capture failed.'}
+            if($response -notmatch ('(?m)^REBORN_CONTEXT_END '+$request.Nonce+'\r?\n')){Start-Sleep -Milliseconds 25}
+        }while($response -notmatch ('(?m)^REBORN_CONTEXT_END '+$request.Nonce+'\r?\n'))
+        $window=Get-Ep11CompletedContextWindow $response $request.Nonce
+        $breakpointContext=Get-Ep11ConfigContextRecord $window $request.Nonce
+        if($breakpointContext.ProcessId -ne $owner -or $breakpointContext.ThreadId -ne $hit.ThreadId -or $breakpointContext.SiteAddress -ne $breakpointSite){throw 'Breakpoint context does not match owned hit.'}
+        $contextSession.PendingContext=$null;$contextSession.Status='Closed';$breakpointHitValidated=$true
+        # Reborn: clear exactly our breakpoint and await its acknowledgement while stopped, then independently verify its original code byte.
+        $clearNonce=[guid]::NewGuid().ToString('N');Update-Ep11AdmissionOutput;$clearOffset=$streams[0].Text.Length
+        $debug.StandardInput.WriteLine('bc 0; bl; .echo REBORN_CLEAR '+$clearNonce);$debug.StandardInput.Flush()
+        $clearDeadline=[DateTime]::UtcNow.AddSeconds(5)
+        do{
+            Update-Ep11AdmissionOutput;$clearText=$streams[0].Text.Substring($clearOffset)
+            if($clearText.Length -gt 4096 -or $debug.HasExited -or $helper.HasExited -or [DateTime]::UtcNow -gt $clearDeadline -or $streams[1].Text.Length -ne 0){throw 'Breakpoint clear acknowledgement failed.'}
+            if($clearText -notmatch ('(?m)^REBORN_CLEAR '+$clearNonce+'\r?\n')){Start-Sleep -Milliseconds 25}
+        }while($clearText -notmatch ('(?m)^REBORN_CLEAR '+$clearNonce+'\r?\n'))
+        Assert-Ep11HelperBreakpointCleared $clearText $clearNonce
+        $restored=[byte[]]::new(1);$restoredActual=[UIntPtr]::Zero
+        $restoredSuccess=[RebornAdmissionMemory]::ReadProcessMemory($helper.Handle,[IntPtr]$breakpointSite,$restored,[UIntPtr]1,[ref]$restoredActual)
+        Assert-Ep11AdmissionBytes $restoredSuccess $restoredActual.ToUInt64() ([byte[]]@($breakpointOriginalByte)) $restored
+        $breakpointRestored=$true
+        $debug.StandardInput.WriteLine('g')
+    }elseif($admitted){$debug.StandardInput.WriteLine('g');$resumeIssued=$true}else{
         # Reborn: rejected observation never gets g; helper-only cleanup detaches and therefore releases it to self-expire.
         $debug.StandardInput.WriteLine('qd');$cleanupIssued=$true
     }
@@ -212,6 +273,12 @@ try{
     $result|Add-Member ActualStaleContextRefused $staleContextRefused
     $result|Add-Member OwnedContextStackReadValidated $stackContextValidated
     $result|Add-Member NativeConfigReadProven $false
+    $result|Add-Member BreakpointCalibrationRequested ([bool]$CalibrateBreakpoint)
+    $result|Add-Member OwnedBreakpointHitValidated $breakpointHitValidated
+    $result|Add-Member BreakpointContext $breakpointContext
+    $result|Add-Member BreakpointOriginalByteRestored $breakpointRestored
+    $result|Add-Member BreakpointSite $breakpointSite
+    $result|Add-Member BreakpointOriginalByte $breakpointOriginalByte
     [IO.File]::WriteAllText((Join-Path $directory 'result.json'),($result|ConvertTo-Json -Depth 4))
     $debug.Dispose();if($null -ne $helper){$helper.Dispose()}
 }
