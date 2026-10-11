@@ -1,7 +1,7 @@
 # BinaryAssetBuilder
 A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
-## Current outcome — October 11, 2026
+## Current outcome — October 12, 2026
 
 The first narrow ArmorTemplate override now works in-game by user observation:
 AlliedConYardArmor GUN 100 → 5000 caused markedly increased damage with the
@@ -13,7 +13,10 @@ verified default-reader packaging, rather than replaying a fixed fixture.
 The [expanded armor authoring path](docs/RA3EP1_ARMOR_EXPANDED_AUTHORING.md) now
 admits thirteen ordered coefficients and five optional scalars (integer 0..10000)
 for the same AlliedConYardArmor identity. All eighteen fields pass offline
-compile/package comparisons; new values are not yet independently game-tested.
+compile/package comparisons. The separately authorized ArmorCannon trial now
+also has user-reported markedly increased damage with CANNON=5000 and GUN=100.
+The unchanged GUN gameplay control was not reported; the other coefficients
+and root scalars remain offline-only evidence.
 The refreshed local workspace `UprisingAlpha-20261011-h` and clean overlay
 extraction pass all three samples (Reborn, Armor250, ArmorCannon); the full
 compiler regression suite also passes. Packaging now forces recompilation to

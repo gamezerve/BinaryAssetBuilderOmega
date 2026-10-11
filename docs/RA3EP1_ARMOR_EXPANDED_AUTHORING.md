@@ -1,5 +1,11 @@
 # Expanded ConYard armor authoring — October 11, 2026
 
+Outcome update — October 12, 2026: the user reported markedly increased damage
+in the separately authorized CANNON trial. The preparation notes below retain
+their original offline-only status; the new observation is recorded separately
+at the end. Other coefficients/scalars and the unchanged GUN control are not
+newly gameplay-proven by this report.
+
 ## Scope
 
 The alpha authoring gate now accepts all thirteen ordered Armor Percent values
@@ -131,3 +137,21 @@ to stock; GUN=100 should not show the earlier GUN=5000 behavior. Do not treat
 exact per-shot health loss as proven: friendly-fire rules, other engine scalars
 and unit state may affect it. No gameplay result has yet been recorded for this
 candidate. Menu success alone will not count as coefficient validation.
+
+## User-observed CANNON result — October 12, 2026
+
+The user authorized one launch and replied to the Guardian Tank / Construction
+Yard test prompt: "hasar belirgin artmış" (damage markedly increased). This is
+positive qualitative gameplay evidence for the pinned CANNON=5000 candidate,
+whose authored GUN remains 100. It is not an exact 50x health-loss measurement
+or an independent instrumented capture. The reply did not separately confirm
+the Peacekeeper GUN control, main-menu status, veterancy/toggle conditions or
+game closure; do not infer those additional results.
+
+`artifacts/ArmorLaunch-c72662ca74ed4abdbaeeffb442395368/launch.json` records one
+successful launcher start, no observer failure and 37 child-process observations
+with the expected config argument. That command-line receipt alone does not
+prove config consumption, manifest loading or gameplay behavior. Its conservative
+false evidence flags remain unchanged; the user's observation is this separate
+evidence layer. No second launch, process termination or installation write
+was performed to record the result.
