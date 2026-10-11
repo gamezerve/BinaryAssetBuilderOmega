@@ -1,6 +1,15 @@
 # Uprising SDK release gates and effort estimate
 
-## Current position — October 11, 2026
+## Current position — October 12, 2026
+
+The six-sample e local alpha and fresh overlay setup/build now pass. Two yard
+armor identities have positive combined-stream gameplay observations across
+separate revisions; Allied GUN=250 remains inconclusive. Public redistribution
+review and new-workspace GUI observation remain separate. The next type is the
+[Conscript AK47 weapon slice](RA3EP1_WEAPON_VERTICAL_SLICE.md): root token/native
+scalar relationships pass read-only stock review, but full tokenization,
+dependency closure and an authored weapon build are still required. The older
+armor-only milestones below are historical scope, not the current type count.
 
 The local alpha now exposes [all eighteen fixed ConYard armor percentage
 fields](RA3EP1_ARMOR_EXPANDED_AUTHORING.md), not only GUN. Individual-field and

@@ -3,6 +3,11 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Current outcome — October 12, 2026
 
+The next type is a [bounded Conscript weapon vertical slice](docs/RA3EP1_WEAPON_VERTICAL_SLICE.md).
+Read-only stock review now verifies AK47 root scalar token/native relationships,
+repeat output and corruption refusals. Full weapon tokenization and dependency
+proof are not yet complete; WeaponTemplate stays disabled in the alpha.
+
 The first narrow ArmorTemplate override now works in-game by user observation:
 AlliedConYardArmor GUN 100 → 5000 caused markedly increased damage with the
 default `mod.manifest` loading recipe. This is not yet a complete playable

@@ -13,6 +13,12 @@ internal static class Program
     {
         try
         {
+            // Reborn: weapon stock review is read-only and never enables the alpha build gate.
+            if (args.Length == 2 && args[0] == "weapon-stock-review")
+            { CompilerSmokeTest.InitializeHashProvider(); Console.WriteLine(JsonSerializer.Serialize(WeaponStockReview.Inspect(args[1]), JsonOptions)); return 0; }
+            // Reborn: detached weapon token controls never modify reference streams or enable builds.
+            if (args.Length == 1 && args[0] == "weapon-stock-self-test")
+            { CompilerSmokeTest.InitializeHashProvider(); WeaponStockReview.SelfTest(); return 0; }
             // Reborn: authored publication is explicit and limited to one admitted armor with a required stock baseline.
             if (args.Length == 4 && args[0] == "armor-authored-build")
             { CompilerSmokeTest.InitializeHashProvider(); ArmorAuthoredBuild.Run(args[1], args[2], args[3]); return 0; }
@@ -1199,6 +1205,9 @@ internal static class Program
 
     private static void PrintUsage()
     {
+        // Reborn: document the bounded stock weapon proof separately from build commands.
+        Console.WriteLine("  weapon-stock-review <ep1-static-manifest>");
+        Console.WriteLine("  weapon-stock-self-test");
         Console.WriteLine("BinaryAssetBuilder.ManifestInspector");
         // Reborn: marker candidates are package metadata checks, not native suffix selection or playable-mod certification.
         Console.WriteLine("  stream-variant-audit <BIG> <relative-stream-stem-without-extension>");
