@@ -36,6 +36,10 @@ members are not yet independently confirmed in-game within this package.
 The fixed `Invoke-Ra3Ep1ArmorTrial.ps1 -Combined` launch preparation now passes
 its no-game preflight and rejects conflicting selectors. One authorized combined
 launch completed without an observer error; a clearer Allied comparison is next.
+A separate repository sample, `CombinedArmorStrong`, now passes offline builds
+with Allied/Soviet GUN=5000/5000. Only Allied GUN differs from the preserved pair.
+Its pinned `-CombinedStrong` no-game preflight passes; gameplay is not yet tested.
+This sample has not been added to the already exported five-sample c workspace.
 The refreshed local workspace `UprisingAlpha-20261011-h` and clean overlay
 extraction pass all three samples (Reborn, Armor250, ArmorCannon); the full
 compiler regression suite also passes. Packaging now forces recompilation to

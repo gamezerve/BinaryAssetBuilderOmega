@@ -1,9 +1,11 @@
 # Reborn: one explicitly authorized armor candidate launch; no debugger, installation writes, retries or process termination.
 [CmdletBinding()]
-param([switch]$Run,[switch]$DefaultReader,[switch]$Cannon,[switch]$Soviet,[switch]$Combined)
+param([switch]$Run,[switch]$DefaultReader,[switch]$Cannon,[switch]$Soviet,[switch]$Combined,[switch]$CombinedStrong)
 $ErrorActionPreference='Stop'
 if($PSVersionTable.PSVersion.Major -lt 7){throw 'PowerShell 7 is required.'}
 $repo=Split-Path -Parent $PSScriptRoot
+# Reborn: the high-contrast pair is separately pinned and cannot be mixed with any previous trial selector.
+if($CombinedStrong -and ($DefaultReader -or $Cannon -or $Soviet -or $Combined)){throw 'CombinedStrong cannot be combined with other trial selectors.'}
 # Reborn: the two-member candidate is one fixed package, not a combination of independent trial selectors.
 if($Combined -and ($DefaultReader -or $Cannon -or $Soviet)){throw 'Combined cannot be combined with DefaultReader, Cannon or Soviet.'}
 # Reborn: select one separately verified fixed candidate; never accept caller-supplied configs or digests.
@@ -31,7 +33,13 @@ if($Combined){
     $expectedBytes=6348
     $expectedHash='826859F2CD92D840B37D0AABB239DF1C799F433A3A8014912F34757AEF5554E3'
 }
-$useDefaultReader=$DefaultReader -or $Cannon -or $Soviet -or $Combined
+# Reborn: retain the original pair unchanged and select only the independently verified 5000/5000 comparison package.
+if($CombinedStrong){
+    $trial=Join-Path $repo 'artifacts/RebornAlphaInput-8ebe8fae44ed494292081781c0d11346/build/package'
+    $expectedBytes=6348
+    $expectedHash='A9878D5120EF7037C2B2C4ABEC2679BBB6B57EEC9B3D35CCFE2644A8AA368385'
+}
+$useDefaultReader=$DefaultReader -or $Cannon -or $Soviet -or $Combined -or $CombinedStrong
 $root='D:\Program Files (x86)\Steam\steamapps\common\Command and Conquer Red Alert 3 Uprising'
 $config=Join-Path $trial 'reborn_1.0.cfg'
 $archive=Join-Path $trial 'RebornArmorProbe.big'

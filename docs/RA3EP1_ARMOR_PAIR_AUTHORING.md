@@ -139,3 +139,23 @@ GUN=5000 and Soviet GUN=5000, followed by a separately authorized Peacekeeper
 test in a fresh Allied skirmish. Preserve this GUN=250 package and receipt;
 do not alter the already pinned launch candidate or start a second game without
 approval. A stock comparison remains an alternative for quantifying GUN=250.
+
+## High-contrast comparison candidate
+
+`alpha/mods/CombinedArmorStrong/data/mod.xml` is a separate 5000/5000 sample.
+It passed the alpha backend using the c workspace compiler, each own-stock
+baseline comparison, real two-member Core output, independent package readback
+and corruption controls. Receipt:
+`artifacts/RebornAlphaInput-8ebe8fae44ed494292081781c0d11346/alpha-build.json`.
+Comparing all 36 authored values with the original pair confirms exactly one
+change: Allied Armor/GUN 250 to 5000. The original pair archive hash remains
+unchanged. The new 6348-byte BIG SHA256 is
+`A9878D5120EF7037C2B2C4ABEC2679BBB6B57EEC9B3D35CCFE2644A8AA368385`.
+
+`Invoke-Ra3Ep1ArmorTrial.ps1 -CombinedStrong` pins this exact output. Its no-Run
+preflight passed with no existing game process, and all four conflicting trial
+selectors were refused before preflight. No game was started. A separate launch
+approval and fresh Allied Peacekeeper observation remain necessary; no runtime
+success is claimed for this new candidate. The c workspace/overlay still has
+its original five samples; this new source sample does not imply a refreshed
+six-sample portable distribution.
