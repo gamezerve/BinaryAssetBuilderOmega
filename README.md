@@ -21,21 +21,23 @@ The user's real Studio screenshot and full log now confirm Reborn dropdown
 discovery, output capture and a successful build callback (1.83 seconds).
 Independent output readback matches the previously game-tested GUN-5000 BIG.
 The subsequent Error Log screenshot confirms both ALPHA001 and ALPHA002 under
-Warnings, with no error entries shown. GUI failure handling and public distribution review
-remain open. Earlier timing ranges
+Warnings, with no error entries shown. The corrected InvalidXml run now visibly
+reaches the failure callback without Build Completed. Fresh packaging of this
+fix, local help checks and public distribution review remain. Earlier timing ranges
 refer to broader scopes, not a prerequisite to releasing this limited alpha.
 Editable [input admission and building](docs/RA3EP1_ARMOR_AUTHORING_ADMISSION.md)
 now support canonical integer GUN values 0..10000 for AlliedConYardArmor.
 Five values and repeated output passed offline; 5000 retains the exact
-user-tested package digest. The next alpha gates are GUI negative checks and
-distribution review, not completion of every processor.
+user-tested package digest. The next alpha gates are updated extraction checks,
+local help and distribution review, not completion of every processor.
 See [local workspace and extraction evidence](docs/RA3EP1_ALPHA_WORKSPACE.md).
 
 The manual InvalidXml GUI test correctly categorized ALPHA100 as an error, but
 revealed that EA Studio still called the success callback: its process completion
 does not consult ExitCode, and only `Critical:` sets `stepFailed`. The backend
-now also emits `Critical: ALPHA101` on failure. Offline refusal passes; a repeat
-GUI test is pending. EA binaries are unchanged.
+now also emits `Critical: ALPHA101` on failure. Offline refusal passes; the user's
+repeat screenshot confirms the failure callback and no Build Completed line.
+EA binaries are unchanged; the earlier ZIP predates this fix.
 
 | User-visible milestone | Current evidence |
 | --- | --- |

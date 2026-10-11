@@ -49,10 +49,12 @@ Documents installation is performed.
 Diagnostics now use EA's inspected case-sensitive text prefixes:
 `Warning: ALPHA001` for partial support,
 `Warning: ALPHA002` for the narrow editable scope and `Error: ALPHA100`
-for failure. A nonzero backend exit must trigger Studio's failure callback.
-Build Output redirection is requested; Error Log parsing/coloring and actual
-callback behavior still need a real UI test. Do not claim these diagnostics
-already appear as correctly categorized Error Log rows.
+for detailed failure, plus `Critical: ALPHA101` to trigger the failure callback.
+EA Studio's process completion does not inspect ExitCode; only Critical sets
+its stepFailed flag. User screenshots confirm warning/error categorization,
+successful completion and, after this correction, the failure callback without
+Build Completed. The repeat screenshot is of Build Log, not the critical tree
+row; that row is not separately observed.
 
 ## Verification
 
@@ -108,7 +110,8 @@ See [workspace evidence and distribution limits](RA3EP1_ALPHA_WORKSPACE.md).
    confirm real GUI loading, Reborn discovery, output capture and successful
    completion; independent package readback matches the game-tested digest.
    A subsequent screenshot confirms ALPHA001/ALPHA002 under Warnings.
-   Still observe GUI failure handling and error classification. See the
+   ALPHA100 error classification and the corrected failure callback now also
+   have user screenshot evidence. Local help and updated extraction remain. See the
    workspace report for the exact manual-run evidence and its limits.
 3. Keep familiar Build Data/Make BIG/Create SKUDef stages while clearly marking
    unsupported LOD, STR, misc, map, hash-repair and copy/install features. The

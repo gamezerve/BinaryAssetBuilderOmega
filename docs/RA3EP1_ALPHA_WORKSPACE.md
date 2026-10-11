@@ -135,7 +135,18 @@ The repository driver and the user's extracted test copy are patched; EA binarie
 samples and previous build outputs remain unchanged. The original workspace
 inventory hash no longer describes that patched driver, and the older ZIP does
 not contain this fix. A fresh preparation/extraction is required before releasing
-an updated candidate. Repeat GUI callback validation remains pending.
+an updated candidate.
+
+The user's repeat Build Log screenshot confirms the corrected behavior:
+ALPHA100 and Critical ALPHA101 are followed by the adapter's exact failure
+callback message, `Reborn: alpha build failed; no install or launch was attempted.
+Review the build output.` No Build Completed or success timing line appears,
+and Build Mod is available again. Thus the corrected GUI failure callback now
+passes by user-provided visual evidence. The preceding detached check separately
+verified exit 1 and no fresh output directory. The screenshot does not show the
+Error Log tab's critical node, and is not a new gameplay test. Remaining immediate
+checks are local help, successful-build regression and fresh preparation/extraction
+with the corrected driver before distribution review.
 Successful loading, Reborn selection, output capture and completion now have
 user-provided GUI evidence plus independent package readback. The adapter currently
 uses one combined validation/compile/package step, not every original SDK checkbox.
