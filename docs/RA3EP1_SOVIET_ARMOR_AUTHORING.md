@@ -1,5 +1,9 @@
 # Second armor identity — October 12, 2026
 
+Outcome update: the user reported increased damage in the separately authorized
+Soviet GUN=5000 test. The original preparation sections retain their offline-only
+status; the subsequent gameplay observation is recorded at the end.
+
 ## Capability
 
 The alpha now accepts exactly one standalone AlliedConYardArmor **or**
@@ -112,3 +116,20 @@ requirement. An Allied yard, if separately available under comparable conditions
 is a foreign-identity control, not a prerequisite to reporting the first result.
 Japan/civilian consumers need their own checks before being called gameplay
 validated. No new game launch or gameplay observation has occurred yet.
+
+## User-observed Soviet result — October 12, 2026
+
+The user authorized one launch and answered "arttı" (increased) to the fresh
+Soviet skirmish / normal Conscript AK-47 / unpacked Construction Yard test prompt.
+This is positive qualitative gameplay evidence for the pinned SovietConYardArmor
+GUN=5000 package, not an exact 50x damage measurement or an automated capture.
+The reply did not separately report Japan/civilian behavior, an Allied armor
+control, exact damage, game closure or all requested unit-state conditions.
+Those additional facts are not inferred.
+
+`artifacts/ArmorLaunch-3494f1bab7ee491aa26835821b0a66e2/launch.json` records one
+launcher start with no observer failure and 37 matching config-argument child
+observations. It is command-line evidence, not independent config-read or
+manifest-load proof. Its conservative runtime-proof flags remain unchanged;
+the user's report is recorded here as a separate evidence layer. No extra launch,
+process termination or installation modification was used to save this result.

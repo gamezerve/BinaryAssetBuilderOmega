@@ -22,7 +22,9 @@ The [second armor identity](docs/RA3EP1_SOVIET_ARMOR_AUTHORING.md),
 SovietConYardArmor, now also passes its own stock/Core/package comparisons,
 eighteen field edits, repeat and cross-identity refusal. One armor per build
 remains the limit. The reference XML also binds Japan's yard and one civilian
-building to this shared armor; Soviet gameplay is not yet verified.
+building to this shared armor. The separately authorized Soviet GUN=5000 trial
+now also has user-reported increased damage with the requested Conscript test.
+Japan/civilian consumers and foreign-identity gameplay controls remain untested.
 Current local candidate: `UprisingAlpha-20261012-a`, with four offline-verified
 samples including SovietArmor. Its fresh overlay extraction also passes.
 The refreshed local workspace `UprisingAlpha-20261011-h` and clean overlay
