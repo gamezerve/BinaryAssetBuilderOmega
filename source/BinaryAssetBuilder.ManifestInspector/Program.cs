@@ -729,10 +729,10 @@ internal static class Program
                 return 0;
             }
             // Reborn: exercise focused full-document stages and experimental cache guards without production output.
-            if (args.Length == 2 && args[0] == "ep1-armor-document-self-test")
+            if (args.Length is 2 or 3 && args[0] == "ep1-armor-document-self-test")
             {
                 CompilerSmokeTest.InitializeHashProvider();
-                Ep1ArmorDocumentSmokeTest.Run(args[1]);
+                Ep1ArmorDocumentSmokeTest.Run(args[1], args.Length == 3 ? args[2] : null);
                 return 0;
             }
             // Reborn: exercise the opt-in EP1 profile through the actual descriptor and compiler entry point.
@@ -1460,8 +1460,8 @@ internal static class Program
         Console.WriteLine("  armor-token-self-test <output-directory> [ep1-static-or-worldbuilder-manifest]");
         // Reborn: profile verification performs no production manifest emission.
         Console.WriteLine("  ep1-armor-profile-self-test");
-        // Reborn: only isolated XML fixtures are written by the document regression harness.
-        Console.WriteLine("  ep1-armor-document-self-test <output-directory>");
+        // Reborn: optional stock input proves the ConYard baseline; all generated override output stays isolated.
+        Console.WriteLine("  ep1-armor-document-self-test <output-directory> [ep1-static-manifest]");
     }
 
     private sealed record TypeFingerprint(uint TypeId, uint TypeHash, uint? Tokenized);

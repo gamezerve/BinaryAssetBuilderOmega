@@ -117,7 +117,7 @@ internal static class ArmorTokenSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compare known tiny golden slices and stream headers, never the full static/WorldBuilder BIN. */
     //-------------------------------------------------------------------------------------------------
-    private static void CompareGolden(IReadOnlyDictionary<string, Chunk> goldens, string path)
+    internal static void CompareGolden(IReadOnlyDictionary<string, Chunk> goldens, string path)
     {
         ManifestDocument manifest = ManifestReader.Read(File.ReadAllBytes(path));
         TypeRegistryAudit.ValidateTarget(manifest.Header.Version, manifest.Header.AllTypesHash);
@@ -136,6 +136,7 @@ internal static class ArmorTokenSmokeTest
             if (goldens.TryGetValue(asset.Name, out Chunk? expected))
             {
                 Require(asset.TypeId == 0x3A6C5E8Eu && asset.TypeHash == 0xA0E237D8u && asset.Tokenized == 1
+                    && asset.InstanceId == new InstanceHandle(asset.Name).InstanceId
                     && asset.InstanceDataSize == expected.InstanceBuffer.Length && asset.RelocationDataSize == expected.RelocationBuffer.Length
                     && asset.ImportsDataSize == 0, "Golden asset fingerprint or bounded slice size differs.");
                 byte[] actual = AssetStreamProbe.ReadRange(Path.ChangeExtension(path, ".bin"), null, binOffset, expected.InstanceBuffer.Length);

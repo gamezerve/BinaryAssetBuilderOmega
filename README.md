@@ -9,12 +9,13 @@ ArmorTemplate mod, not more general debugger preparation or all 1,390 types.
 | User-visible milestone | Current evidence |
 | --- | --- |
 | Compile a focused ArmorTemplate XML path | Schema, plugin and document controls pass |
-| Match actual Uprising armor payloads | Static 744-byte and WorldBuilder 128-byte BIN samples match, with their RELO data |
+| Match actual Uprising armor payloads | Static 744/856-byte and WorldBuilder 128-byte BIN samples match, with their RELO data |
 | Reproduce this path from current source | New one-command [armor PoC runner](docs/RA3EP1_ARMOR_POC_RUNNER.md): build + four checks passed |
 | Write actual Core identity/checksum armor streams | [Four cases pass](docs/RA3EP1_ARMOR_CORE_STREAMS.md): empty/repeat/edit/populated, two-reader readback and corruption refusal |
 | Exercise actual intermediate commit and linked output | [Scoped OutputManager path passes](docs/RA3EP1_ARMOR_OUTPUT_MANAGER.md): one populated armor, real `.asset` commit and manifest/link writers |
 | Package the verified linked family | [Diagnostic BIG4 passes](docs/RA3EP1_ARMOR_DIAGNOSTIC_PACKAGE.md): four exact archive entries and corruption/no-overwrite controls |
-| Prepare a behavior-changing runtime trial | Open: used stock armor target and effective stream/config route; package is not launch-ready |
+| Prepare a behavior-changing asset | [AlliedConYardArmor GUN 100 → 5000](docs/RA3EP1_ALLIED_CONYARD_OVERRIDE.md) is packaged; stock baseline matches and all other bytes are preserved |
+| Prepare its runtime loading route | Open: effective stream/config route; package is not launch-ready |
 | Load our authored change in Uprising | Not demonstrated; no playable mod result yet |
 
 Run `scripts/Invoke-Ra3Ep1ArmorPoc.ps1` under PowerShell 7 to reproduce the
@@ -27,9 +28,11 @@ The runner also emits one `document/RebornArmorOutput-*` directory through the
 real OutputManager and reports `OutputManagerCommitLinkValidated`. This is
 explicitly diagnostic-only; `.version` publication and general production
 output remain disabled.
-The runner now also writes a 1,111-byte diagnostic BIG4 and reports
-`DiagnosticArmorPackageValidated`. It contains an unused test armor, not a
-stock override; no launch configuration or observed gameplay change exists.
+The runner now writes a 1,222-byte diagnostic BIG4 and reports
+`DiagnosticArmorPackageValidated` and `BehaviorOverridePrepared`. It targets
+the existing AlliedConYardArmor identity, with only GUN changed from 100 to
+5000 (damage multiplier 1.0 → 50.0). No launch configuration or observed
+gameplay override exists; `OverrideAppliedInGame` remains false.
 ProcessingHash has no standalone manifest field and stock equality is not
 a proven runtime requirement; the linked report separates this from the
 characterized TypeHash and unresolved runtime acceptance.

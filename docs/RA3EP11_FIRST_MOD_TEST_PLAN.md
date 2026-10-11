@@ -2,14 +2,19 @@
 
 ## Priority reset — October 11, 2026
 
+The user has now selected [AlliedConYardArmor GUN 100 → 5000](RA3EP1_ALLIED_CONYARD_OVERRIDE.md).
+Its unchanged baseline matches the stock 856/8/0 payload and the prepared
+override changes only the GUN float slot. Target selection/asset preparation
+are complete; effective stream/config routing and runtime application are not.
+
 Current follow-up: [actual commit/link](RA3EP1_ARMOR_OUTPUT_MANAGER.md) and a
 [four-entry diagnostic BIG4](RA3EP1_ARMOR_DIAGNOSTIC_PACKAGE.md) now pass.
 The numbered items below retain their earlier planning context; actual
 single-document commit/link is no longer outstanding. ProcessingHash is not
 a standalone manifest field, and stock equality is not an established runtime
-prerequisite. The remaining actionable gates are a used stock armor target,
-effective config/stream route and an authorized observable runtime trial.
-The packaged probe is still an unused asset, not a behavioral override.
+prerequisite. The remaining actionable gates are the effective config/stream
+route and an authorized observable runtime trial. The earlier unused probe
+has been replaced by the prepared ConYard override; application is unproved.
 
 Recent helper/debugger work has not demonstrated an authored mod in the game.
 Do not treat additional infrastructure tests as progress on that result. The

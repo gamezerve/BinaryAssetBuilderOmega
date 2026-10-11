@@ -17,7 +17,7 @@ internal static class Ep1ArmorDocumentSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate official schema defaults through document loading/validation/hash stages and force stale-session reload. */
     //-------------------------------------------------------------------------------------------------
-    public static void Run(string directory)
+    public static void Run(string directory, string? stockManifest = null)
     {
         directory = Path.GetFullPath(directory);
         Directory.CreateDirectory(directory);
@@ -87,7 +87,7 @@ internal static class Ep1ArmorDocumentSmokeTest
                 && populatedBuffer.RelocationData.SequenceEqual(golden.RelocationBuffer), "Full populated document differs from golden-tested compiler output.");
             WriteCoreStream(Path.Combine(directory, "core-populated"), populatedInstance, populatedBuffer, plugins);
             // Reborn: exercise the actual intermediate commit, output selection, manifest writer and linker for one bounded document.
-            WriteManagedStream(directory, processor, populated, populatedInstance, populatedBuffer);
+            WriteConYardOverride(directory, fixtures, processor, plugins, options, stockManifest);
             populatedInstance.XmlNode.Attributes!["TypeId"]!.Value = "0";
             bool wrongIdentityRejected = false;
             try { plugins.GetPlugin(populatedInstance.Handle.TypeId).ProcessInstance(populatedInstance); }
@@ -176,6 +176,45 @@ internal static class Ep1ArmorDocumentSmokeTest
         BoundedDiagnosticBuild.Verify(directory, ordered, chunks, payloads, checksum, Array.Empty<string>(), flags);
         Console.WriteLine($"  Core armor stream: {instance.Handle.Name}; InstanceHash={instance.Handle.InstanceHash:X8}; checksum={checksum:X8}; BIN={buffer.InstanceData.Length}; diagnostic={directory}");
         return payloads;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: retain the real ConYard asset identity and all inherited armor values except the user-selected GUN 100-to-5000 change. */
+    //-------------------------------------------------------------------------------------------------
+    private static void WriteConYardOverride(string directory, string fixtures, DocumentProcessor processor, PluginRegistry plugins,
+        DocumentProcessor.ProcessOptions options, string? stockManifest)
+    {
+        XmlDocument probe = new() { XmlResolver = null };
+        probe.Load(Path.Combine(fixtures, "AlliedConYardArmorProbe.xml"));
+        var root = probe.DocumentElement!;
+        var entries = root.ChildNodes.OfType<XmlElement>().ToArray();
+        var gun = entries.Single(item => item.GetAttribute("Damage") == "GUN");
+        Require(root.GetAttribute("id") == "AlliedConYardArmor" && !root.HasAttribute("inheritFrom")
+            && entries.Length == 13 && gun.GetAttribute("Percent") == "5000", "ConYard probe identity/value differs.");
+        string authored = root.OuterXml;
+        gun.SetAttribute("Percent", "100");
+        var baseline = ArmorTokenSmokeTest.Compile(ArmorTokenSmokeTest.LoadSchemas(fixtures), root.OuterXml);
+        if (stockManifest != null) ArmorTokenSmokeTest.CompareGolden(new Dictionary<string, Relo.Chunk>
+            { ["ArmorTemplate:AlliedConYardArmor"] = baseline }, stockManifest);
+        string source = Path.Combine(directory, "allied-conyard-override.xml");
+        File.WriteAllText(source, "<!-- Reborn: owned test source; only AlliedConYardArmor GUN changes to 5000. -->\n"
+            + "<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\">" + authored + "</AssetDeclaration>");
+        var document = processor.ProcessDocumentInternal(source, source, null!, options);
+        var instance = document.SelfInstances.Single();
+        var buffer = plugins.GetPlugin(instance.Handle.TypeId).ProcessInstance(instance);
+        var expected = new InstanceHandle("ArmorTemplate", "AlliedConYardArmor");
+        int gunOffset = 96 + entries.Length * 48 + 32 + Array.IndexOf(entries, gun) * 8 + 4;
+        Require(instance.Handle.TypeId == expected.TypeId && instance.Handle.InstanceId == expected.InstanceId
+            && instance.Handle.Name == "ArmorTemplate:AlliedConYardArmor" && buffer.InstanceData.Length == 856
+            && BitConverter.Int32BitsToSingle(BinaryPrimitives.ReadInt32LittleEndian(baseline.InstanceBuffer.AsSpan(gunOffset))) == 1f
+            && BitConverter.Int32BitsToSingle(BinaryPrimitives.ReadInt32LittleEndian(buffer.InstanceData.AsSpan(gunOffset))) == 50f
+            && buffer.RelocationData.SequenceEqual(baseline.RelocationBuffer) && buffer.ImportsData.Length == 0
+            && buffer.InstanceData.AsSpan(0, gunOffset).SequenceEqual(baseline.InstanceBuffer.AsSpan(0, gunOffset))
+            && buffer.InstanceData.AsSpan(gunOffset + 4).SequenceEqual(baseline.InstanceBuffer.AsSpan(gunOffset + 4)),
+            "ConYard override altered identity or bytes outside the single GUN float.");
+        DependencyResolutionSmokeTest.Prepare(document, instance);
+        WriteManagedStream(directory, processor, document, instance, buffer);
+        Console.WriteLine($"  ConYard override: InstanceId={instance.Handle.InstanceId:X8}; GUN 100 -> 5000 (1.0 -> 50.0); only four-byte value slot differs; stockCompared={stockManifest != null}");
     }
 
     //-------------------------------------------------------------------------------------------------

@@ -4,7 +4,7 @@ using BinaryAssetBuilder.Core;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: package only the actual single-armor linked family; no stock override, version marker or launch configuration is inferred.
+// Reborn: package only the actual single-armor linked family; authored stock identity is allowed, but runtime override precedence is not inferred.
 internal static class ArmorDiagnosticPackage
 {
     private const int Limit = 1024 * 1024;

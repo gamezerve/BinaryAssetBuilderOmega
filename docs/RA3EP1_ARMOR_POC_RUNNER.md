@@ -84,8 +84,11 @@ still uses the separate diagnostic serializer.
 
 The [diagnostic BIG4 follow-up](RA3EP1_ARMOR_DIAGNOSTIC_PACKAGE.md) packages
 this actual writer's four streams. The report records
-`DiagnosticArmorPackageValidated` and the archive's size/SHA-256. It retains
-false launch-config and behavior-override flags; do not install this probe.
+`DiagnosticArmorPackageValidated` and the archive's size/SHA-256. The latest
+[ConYard follow-up](RA3EP1_ALLIED_CONYARD_OVERRIDE.md) sets
+`BehaviorOverridePrepared=true` only after the stock-baseline/one-float-change
+checks pass, while launch-config and actual runtime application remain false.
+Do not install this probe as an already validated mod.
 
 Next resolve runtime-compatible armor identity and production eligibility.
 Then create a reversible package with independent readback and request the

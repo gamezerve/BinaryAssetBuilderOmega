@@ -3,6 +3,11 @@
 Date: October 11, 2026. Workspace-only packaging; no installed file changed,
 native code executed, game launched or mod-loading success claimed.
 
+Current follow-up: the user selected [AlliedConYardArmor GUN 5000](RA3EP1_ALLIED_CONYARD_OVERRIDE.md).
+The current actual-writer package contains that prepared override (1,222 bytes),
+not the unused probe described in the original milestone below. Stream names
+remain unchanged; behavior preparation is now true, runtime application false.
+
 ## Delivered
 
 `ArmorDiagnosticPackage.Exercise` packages the actual OutputManager result

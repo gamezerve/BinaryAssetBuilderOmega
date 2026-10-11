@@ -34,7 +34,7 @@ try{
     # Reborn: rebuild current source with cached dependencies only; do not download packages or trust an old inspector binary.
     Invoke-RebornArmorPocStep 'build' (Get-Command dotnet -ErrorAction Stop).Source @('build',$project,'--no-restore','-c','Release','-p:Platform=x86','-m:1','-nr:false')
     Invoke-RebornArmorPocStep 'profile' $executable @('ep1-armor-profile-self-test')
-    Invoke-RebornArmorPocStep 'document' $executable @('ep1-armor-document-self-test',(Join-Path $directory 'document'))
+    Invoke-RebornArmorPocStep 'document' $executable @('ep1-armor-document-self-test',(Join-Path $directory 'document'),$StaticManifest)
     Invoke-RebornArmorPocStep 'static-golden' $executable @('armor-token-self-test',(Join-Path $directory 'static'),$StaticManifest)
     Invoke-RebornArmorPocStep 'worldbuilder-golden' $executable @('armor-token-self-test',(Join-Path $directory 'worldbuilder'),$WorldBuilderManifest)
 }catch{$failure=$_.Exception.Message}finally{
@@ -61,8 +61,10 @@ try{
         CoreIdentityStreamsValidated=($null -eq $failure -and $steps.Count -eq 5 -and $coreOutputsPresent);CoreStreamDirectories=$coreDirectories
         OutputManagerCommitLinkValidated=($null -eq $failure -and $steps.Count -eq 5 -and $managedOutputsPresent);OutputManagerDirectories=$managedDirectories
         DiagnosticArmorPackageValidated=($null -eq $failure -and $steps.Count -eq 5 -and $packages.Count -eq 1);DiagnosticPackages=$packages
-        LaunchConfigurationPrepared=$false;BehaviorOverridePrepared=$false
-        NextGate='Select a stock armor override and effective stream/config loading route, prepare an explicit runtime trial, then obtain separate game-test authorization; archive is diagnostic only.'
+        LaunchConfigurationPrepared=$false;BehaviorOverridePrepared=($null -eq $failure -and $steps.Count -eq 5 -and $packages.Count -eq 1)
+        OverrideTarget='ArmorTemplate:AlliedConYardArmor';OverrideDamage='GUN';StockPercent=100;OverridePercent=5000
+        OverrideAppliedInGame=$false
+        NextGate='Prepare and verify effective stream/config loading route, then obtain separate game-test authorization; the AlliedConYardArmor GUN override is prepared but not proven loaded.'
     }
     [IO.File]::WriteAllText((Join-Path $directory 'readiness.json'),($report|ConvertTo-Json -Depth 6))
 }
