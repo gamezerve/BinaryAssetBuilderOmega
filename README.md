@@ -12,7 +12,8 @@ ArmorTemplate mod, not more general debugger preparation or all 1,390 types.
 | Match actual Uprising armor payloads | Static 744-byte and WorldBuilder 128-byte BIN samples match, with their RELO data |
 | Reproduce this path from current source | New one-command [armor PoC runner](docs/RA3EP1_ARMOR_POC_RUNNER.md): build + four checks passed |
 | Write actual Core identity/checksum armor streams | [Four cases pass](docs/RA3EP1_ARMOR_CORE_STREAMS.md): empty/repeat/edit/populated, two-reader readback and corruption refusal |
-| Emit a production-valid package | Open: real OutputManager commit/link, narrow output policy and runtime-compatible identity; no production approval yet |
+| Exercise actual intermediate commit and linked output | [Scoped OutputManager path passes](docs/RA3EP1_ARMOR_OUTPUT_MANAGER.md): one populated armor, real `.asset` commit and manifest/link writers |
+| Emit a production-valid package | Open: runtime-compatible identity/output eligibility and reversible packaging; no production approval yet |
 | Load our authored change in Uprising | Not demonstrated; no playable mod result yet |
 
 Run `scripts/Invoke-Ra3Ep1ArmorPoc.ps1` under PowerShell 7 to reproduce the
@@ -21,6 +22,10 @@ or start a game. See the linked guide for the exact command and limitations.
 Current `document/core-*` streams use real Core InstanceHash/checksum values;
 the older `static`/`worldbuilder` golden fixtures keep their fixed diagnostic
 values. Neither stream family has been loaded in the game.
+The runner also emits one `document/RebornArmorOutput-*` directory through the
+real OutputManager and reports `OutputManagerCommitLinkValidated`. This is
+explicitly diagnostic-only; `.version` publication and general production
+output remain disabled.
 
 Why progress has felt slow: recent work mainly hardened the debugger path,
 without closing production package or loaded-mod gates. The historical 52%

@@ -33,6 +33,8 @@ namespace BinaryAssetBuilder.Core
         private readonly string _versionFile;
         private string _basePatchStreamRelativePath = string.Empty;
         private ManifestHeader _header;
+        // Reborn: a diagnostic capability belongs to one manager/document only; null retains the unchanged production guard.
+        private readonly ExperimentalArmorOutputScope _experimentalArmorScope;
 
         public SortedDictionary<string, BinaryAsset> Assets { get; } = new SortedDictionary<string, BinaryAsset>();
         public DocumentProcessor DocumentProcessor { get; }
@@ -44,6 +46,52 @@ namespace BinaryAssetBuilder.Core
         public Manifest BasePatchStreamManifest { get; private set; }
         public string BasePatchStream { get; private set; }
 
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: opt into one diagnostic armor stream in a new owned directory, without granting production/cache eligibility. */
+        //-------------------------------------------------------------------------------------------------
+        public static OutputManager CreateExperimentalArmorDiagnostic(DocumentProcessor processor, AssetDeclarationDocument document, string parentDirectory)
+        {
+            if (!Directory.Exists(parentDirectory)) throw new InvalidDataException("Experimental output parent must already exist.");
+            ExperimentalArmorOutputScope.CheckAncestors(parentDirectory);
+            if (document.OutputInstances.Count != 0) throw new InvalidDataException("Experimental armor requires fresh output selection.");
+            var scope = new ExperimentalArmorOutputScope(processor, document);
+            string root = Path.Combine(parentDirectory, "RebornArmorOutput-" + Guid.NewGuid().ToString("N"));
+            if (Directory.Exists(root) || File.Exists(root)) throw new InvalidDataException("Experimental output already exists.");
+            Directory.CreateDirectory(root);
+            File.WriteAllText(Path.Combine(root, "DIAGNOSTIC_ONLY.txt"), "Reborn: single-document experimental armor commit/link; not a playable mod or authentic EA ProcessingHash proof.\n");
+            return new OutputManager(processor, null, Path.Combine(root, "armor"), Path.Combine(root, "intermediate"), null, null, Array.Empty<string>(), scope);
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: scoped writes remain bound to the original source and exact committed compiler payload. */
+        //-------------------------------------------------------------------------------------------------
+        private void ValidateOutputPolicy(AssetDeclarationDocument document)
+        {
+            if (_experimentalArmorScope == null) { DocumentProcessor.Plugins.ValidateProductionOutput(); return; }
+            _experimentalArmorScope.Validate(document);
+            ExperimentalArmorOutputScope.CheckAncestors(Path.GetDirectoryName(OutputDirectory));
+            if (document == null || document.OutputInstances.Count != 1 || Assets.Count != 1)
+                throw new InvalidDataException("Experimental armor output is incomplete.");
+            foreach (var asset in Assets.Values)
+            {
+                if (asset.AssetOutputDirectory != _assetDirectory) throw new InvalidDataException("Experimental armor asset directory differs.");
+                _experimentalArmorScope.ValidateCommittedAsset(asset);
+            }
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: only this manager's exact in-memory armor result may enter its fresh intermediate directory. */
+        //-------------------------------------------------------------------------------------------------
+        internal void ValidateAssetOutput(BinaryAsset asset)
+        {
+            if (_experimentalArmorScope == null) { DocumentProcessor.Plugins.ValidateProductionOutput(); return; }
+            ExperimentalArmorOutputScope.CheckAncestors(Path.GetDirectoryName(OutputDirectory));
+            if (Directory.Exists(IntermediateOutputDirectory)) ExperimentalArmorOutputScope.CheckAncestors(IntermediateOutputDirectory);
+            if (Directory.Exists(_assetDirectory)) ExperimentalArmorOutputScope.CheckAncestors(_assetDirectory);
+            if (Assets.Count != 1 || !Assets.ContainsValue(asset)) throw new InvalidDataException("Foreign experimental asset refused.");
+            _experimentalArmorScope.ValidateAsset(asset);
+        }
+
         public OutputManager(DocumentProcessor documentProcessor,
                              IEnumerable<OutputAsset> lastOutputInstances,
                              string outputDirectory,
@@ -51,9 +99,21 @@ namespace BinaryAssetBuilder.Core
                              string basePatchStream,
                              string baseStreamRelativePath,
                              string[] baseStreamSearchPaths)
+            : this(documentProcessor, lastOutputInstances, outputDirectory, intermediateOutputDirectory,
+                basePatchStream, baseStreamRelativePath, baseStreamSearchPaths, null)
+        { }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: construct the existing writer after either production eligibility or a private single-document diagnostic scope passes. */
+        //-------------------------------------------------------------------------------------------------
+        private OutputManager(DocumentProcessor documentProcessor, IEnumerable<OutputAsset> lastOutputInstances,
+            string outputDirectory, string intermediateOutputDirectory, string basePatchStream, string baseStreamRelativePath,
+            string[] baseStreamSearchPaths, ExperimentalArmorOutputScope experimentalArmorScope)
         {
             // Reborn: production profile eligibility must be checked before the constructor moves/removes old output files.
-            documentProcessor?.Plugins.ValidateProductionOutput();
+            if (experimentalArmorScope == null) documentProcessor?.Plugins.ValidateProductionOutput();
+            else experimentalArmorScope.Validate();
+            _experimentalArmorScope = experimentalArmorScope;
             DocumentProcessor = documentProcessor;
             OutputDirectory = outputDirectory;
             IntermediateOutputDirectory = intermediateOutputDirectory;
@@ -288,7 +348,7 @@ namespace BinaryAssetBuilder.Core
         public void CommitManifest(AssetDeclarationDocument document)
         {
             // Reborn: evaluate experimental profile policy before aggregate hashes, old-file moves or output writes.
-            DocumentProcessor.Plugins.ValidateProductionOutput();
+            ValidateOutputPolicy(document);
             uint allTypesHash = DocumentProcessor.Plugins.DefaultPlugin.AllTypesHash;
 #if VERSION7
             const uint uprisingAllTypesHash = 0x5454A8E9u;
@@ -438,7 +498,7 @@ namespace BinaryAssetBuilder.Core
         public void LinkStream(AssetDeclarationDocument document)
         {
             // Reborn: block direct linker calls before document access or any output-file operations.
-            DocumentProcessor.Plugins.ValidateProductionOutput();
+            ValidateOutputPolicy(document);
             string linkPath = OutputDirectory + ".temp";
             string outputDirectory = OutputDirectory;
             uint checksum = document.OutputChecksum;
@@ -574,6 +634,8 @@ namespace BinaryAssetBuilder.Core
 
         public void CleanOutput()
         {
+            // Reborn: scoped diagnostics retain their intermediate evidence and never enter the broad cleanup path.
+            if (_experimentalArmorScope != null) throw new InvalidDataException("Experimental armor cleanup is disabled.");
             bool intermediateIsOutput = Path.GetFullPath(IntermediateOutputDirectory) == Path.GetFullPath(OutputDirectory);
             DirectoryInfo outputDirectory = new(OutputDirectory);
             if (outputDirectory.Exists)

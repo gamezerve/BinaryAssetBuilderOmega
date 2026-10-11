@@ -65,6 +65,11 @@ the existing armor document group gains these stream assertions.
 
 ## Remaining production boundary
 
+Follow-up: [actual OutputManager commit/link](RA3EP1_ARMOR_OUTPUT_MANAGER.md)
+now passes through a private single-document diagnostic scope. The paragraph
+below describes this original `document/core-*` serializer family, not the
+new `document/RebornArmorOutput-*` actual-writer family.
+
 This closes the diagnostic fixed-checksum/zero-InstanceHash limitation for the
 new `document/core-*` output family. It does **not** call production
 `OutputManager.CommitManifest`, intermediate asset commit or coordinated

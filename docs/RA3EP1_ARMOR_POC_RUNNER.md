@@ -75,11 +75,14 @@ The runner reports `CoreIdentityStreamsValidated` separately. The original
 and zero InstanceHash. All stream families are marked `DIAGNOSTIC_ONLY.txt`;
 none is an approved playable mod. Production registry policy remains disabled.
 
-Next work should resolve the narrow armor production output contract in
-`OutputManager`/`Ra3Ep1ArmorPlugin`: apply the already recovered Core identity
-and padded checksum implementation through actual production manifest
-commit/linking and justify output policy for this one supported type. The
-diagnostic writer follow-up does not execute OutputManager.CommitManifest.
+The [actual OutputManager follow-up](RA3EP1_ARMOR_OUTPUT_MANAGER.md) now runs
+intermediate `.asset` commit, output selection, manifest commit and linking
+inside step 3 through a private one-document diagnostic scope. The runner
+reports `OutputManagerCommitLinkValidated` and its fresh output directory;
+production output remains disabled. The standalone `document/core-*` family
+still uses the separate diagnostic serializer.
+
+Next resolve runtime-compatible armor identity and production eligibility.
 Then create a reversible package with independent readback and request the
 separate runtime test authorization when it is actually ready. Existing
 config-consumption evidence remains a runtime gate; it does not prevent

@@ -641,8 +641,8 @@ namespace BinaryAssetBuilder.Core
 
         public AssetLocation Commit()
         {
-            // Reborn: prevent direct intermediate asset/cache writes through an experimental processor profile.
-            _parent.DocumentProcessor.Plugins.ValidateProductionOutput();
+            // Reborn: retain production denial unless this manager owns an explicit exact-payload diagnostic scope.
+            _parent.ValidateAssetOutput(this);
             AssetLocation result = GetLocation(AssetLocation.All, AssetLocationOption.None);
             switch (result)
             {

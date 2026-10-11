@@ -45,6 +45,9 @@ try{
     # Reborn: distinguish current-Core diagnostic streams from the older fixed-checksum golden fixtures; neither is production output.
     $coreDirectories=@('core-empty','core-repeat','core-edited','core-populated')|ForEach-Object {Join-Path $directory ('document/'+$_)}
     $coreOutputsPresent=@($coreDirectories|Where-Object {Test-Path -LiteralPath (Join-Path $_ 'diagnostic.manifest') -PathType Leaf}).Count -eq 4
+    # Reborn: identify actual committed armor artifacts separately from the older standalone diagnostic serializer.
+    $managedDirectories=@(Get-ChildItem -LiteralPath (Join-Path $directory 'document') -Directory -ErrorAction SilentlyContinue|Where-Object {$_.Name -like 'RebornArmorOutput-*'}|ForEach-Object {$_.FullName})
+    $managedOutputsPresent=$managedDirectories.Count -eq 1 -and (Test-Path -LiteralPath (Join-Path $managedDirectories[0] 'armor.manifest') -PathType Leaf)
     $report=[pscustomobject]@{
         Scope='ArmorTemplate diagnostic XML/document/profile and independent stock-byte comparisons'
         CreatedUtc=[DateTime]::UtcNow.ToString('o');OutputDirectory=$directory;Steps=$steps.ToArray();Failure=$failure
@@ -52,7 +55,8 @@ try{
         WorldBuilderManifest=[IO.Path]::GetFullPath($WorldBuilderManifest);GeneratedStreams=$outputs
         ProductionOutputEnabled=$false;AuthenticProcessingHashProven=$false;GameExecuted=$false;ModLoaded=$false
         CoreIdentityStreamsValidated=($null -eq $failure -and $steps.Count -eq 5 -and $coreOutputsPresent);CoreStreamDirectories=$coreDirectories
-        NextGate='Actual OutputManager commit/link with justified narrow output policy and runtime-compatible identity, then package and authorized game test.'
+        OutputManagerCommitLinkValidated=($null -eq $failure -and $steps.Count -eq 5 -and $managedOutputsPresent);OutputManagerDirectories=$managedDirectories
+        NextGate='Runtime-compatible armor identity/output eligibility, reversible package and separately authorized game test; scoped commit/link is diagnostic only.'
     }
     [IO.File]::WriteAllText((Join-Path $directory 'readiness.json'),($report|ConvertTo-Json -Depth 6))
 }

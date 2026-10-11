@@ -86,6 +86,8 @@ internal static class Ep1ArmorDocumentSmokeTest
             Require(populatedBuffer.InstanceData.SequenceEqual(golden.InstanceBuffer)
                 && populatedBuffer.RelocationData.SequenceEqual(golden.RelocationBuffer), "Full populated document differs from golden-tested compiler output.");
             WriteCoreStream(Path.Combine(directory, "core-populated"), populatedInstance, populatedBuffer, plugins);
+            // Reborn: exercise the actual intermediate commit, output selection, manifest writer and linker for one bounded document.
+            WriteManagedStream(directory, processor, populated, populatedInstance, populatedBuffer);
             populatedInstance.XmlNode.Attributes!["TypeId"]!.Value = "0";
             bool wrongIdentityRejected = false;
             try { plugins.GetPlugin(populatedInstance.Handle.TypeId).ProcessInstance(populatedInstance); }
@@ -174,6 +176,84 @@ internal static class Ep1ArmorDocumentSmokeTest
         BoundedDiagnosticBuild.Verify(directory, ordered, chunks, payloads, checksum, Array.Empty<string>(), flags);
         Console.WriteLine($"  Core armor stream: {instance.Handle.Name}; InstanceHash={instance.Handle.InstanceHash:X8}; checksum={checksum:X8}; BIN={buffer.InstanceData.Length}; diagnostic={directory}");
         return payloads;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: validate real OutputManager armor commit/link and fail-closed mutations without opening production output. */
+    //-------------------------------------------------------------------------------------------------
+    private static void WriteManagedStream(string parent, DocumentProcessor processor, AssetDeclarationDocument document,
+        InstanceDeclaration instance, AssetBuffer buffer)
+    {
+        bool linked = Settings.Current.LinkedStreams;
+        Settings.Current.LinkedStreams = true;
+        try
+        {
+            using var manager = OutputManager.CreateExperimentalArmorDiagnostic(processor, document, parent);
+            var asset = manager.GetBinaryAsset(instance, true);
+            asset.Buffer = buffer;
+            byte original = buffer.InstanceData[0];
+            buffer.InstanceData[0] ^= 1;
+            try { ExpectScope(() => asset.Commit()); }
+            finally { buffer.InstanceData[0] = original; }
+            document.PrepareOutputInstances(manager);
+            string intermediate = Path.Combine(asset.AssetOutputDirectory, asset.AssetFileName);
+            byte[] committed = File.ReadAllBytes(intermediate);
+            byte[] damaged = (byte[])committed.Clone(); damaged[^1] ^= 1;
+            try { File.WriteAllBytes(intermediate, damaged); ExpectScope(() => manager.CommitManifest(document)); }
+            finally { File.WriteAllBytes(intermediate, committed); }
+            Require(!File.Exists(manager.OutputDirectory + ".manifest"), "Rejected intermediate emitted manifest.");
+            manager.CommitManifest(document);
+            manager.LinkStream(document);
+            string path = manager.OutputDirectory + ".manifest";
+            var parsed = ManifestReader.Read(File.ReadAllBytes(path));
+            Require(parsed.Validate().Count == 0 && parsed.Header.Version == 7 && parsed.Header.IsLinked
+                && parsed.Header.AllTypesHash == 0x5454A8E9u && parsed.Header.StreamChecksum == document.OutputChecksum
+                && parsed.Assets.Count == 1, "Actual OutputManager manifest header differs.");
+            var entry = parsed.Assets.Single();
+            Require(entry.TypeId == instance.Handle.TypeId && entry.TypeHash == instance.Handle.TypeHash
+                && entry.InstanceId == instance.Handle.InstanceId && entry.InstanceHash == instance.Handle.InstanceHash
+                && entry.Tokenized == 1 && entry.SourceFile == document.LogicalSourcePath && entry.References.Count == 0,
+                "Actual OutputManager manifest identity differs.");
+            using var utility = new BinaryAssetBuilder.Utility.Manifest();
+            Require(utility.Load(path, false) && utility.AssetCount == 1 && utility.Assets[0].Tokenized
+                && utility.Assets[0].InstanceHash == entry.InstanceHash && utility.StreamChecksum == document.OutputChecksum,
+                "Actual OutputManager second-reader identity differs.");
+            foreach (var stream in new[] { (".bin", 0xBABB0000u, buffer.InstanceData),
+                (".relo", 0xBABE0000u, buffer.RelocationData), (".imp", 0xBAB10000u, buffer.ImportsData) })
+            {
+                byte[] bytes = File.ReadAllBytes(manager.OutputDirectory + stream.Item1);
+                Require(bytes.Length == 8 + stream.Item3.Length && BinaryPrimitives.ReadUInt32LittleEndian(bytes) == stream.Item2
+                    && BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(4)) == document.OutputChecksum
+                    && bytes.AsSpan(8).SequenceEqual(stream.Item3), "Actual OutputManager linked payload differs.");
+            }
+            string xml = instance.XmlNode.OuterXml;
+            string typeIdValue = instance.XmlNode.Attributes!["TypeId"]!.Value;
+            try { instance.XmlNode.Attributes["TypeId"]!.Value = "0"; ExpectScope(() => manager.LinkStream(document)); }
+            finally { instance.XmlNode.Attributes["TypeId"]!.Value = typeIdValue; }
+            Require(instance.XmlNode.OuterXml == xml, "Scope mutation restore differs.");
+            // Reborn: source and settings changes cannot reuse a previously validated output capability.
+            byte[] source = File.ReadAllBytes(document.SourcePath);
+            try { File.AppendAllText(document.SourcePath, " "); ExpectScope(() => manager.LinkStream(document)); }
+            finally { File.WriteAllBytes(document.SourcePath, source); }
+            try { Settings.Current.BuildCache = true; ExpectScope(() => manager.LinkStream(document)); }
+            finally { Settings.Current.BuildCache = false; }
+            ExpectScope(() => manager.LinkStream(null!));
+            ExpectScope(() => manager.CleanOutput());
+            ExpectPolicy(() => manager.CreateVersionFile(document, "_mod"));
+            Require(!processor.Plugins.CanReuseCompiledDocuments, "Diagnostic scope enabled compiled reuse.");
+            Console.WriteLine($"  Actual OutputManager: committed .asset + manifest/bin/relo/imp verified; diagnostic={manager.OutputDirectory}");
+        }
+        finally { Settings.Current.LinkedStreams = linked; }
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: negative controls must fail through the scoped policy, not an unrelated I/O failure. */
+    //-------------------------------------------------------------------------------------------------
+    private static void ExpectScope(Action action)
+    {
+        try { action(); }
+        catch (InvalidDataException error) when (error.Message.Contains("Experimental", StringComparison.Ordinal)) { return; }
+        throw new InvalidDataException("Experimental armor scope negative control was accepted.");
     }
 
     //-------------------------------------------------------------------------------------------------
