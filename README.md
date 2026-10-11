@@ -3,6 +3,15 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 11, 2026
 
+Latest lifecycle integration: [composed native supervisor decisions](docs/RA3EP11_NATIVE_SUPERVISOR_SESSION.md).
+The final captured reader return now stays stopped for cleanup instead of
+losing its pending-stop identity through continuation. Observation failures
+survive successful supplied cleanup; no-response deadlines and unknown states
+cannot choose a forced-exit fallback. Four detached positives / 28 refusal
+and retry checks pass, together with inherited observation/cleanup suites.
+This is policy integration, not an execution backend. No game/debugger was
+started and runtime config consumption remains unproved. **52% / 48%**.
+
 Latest cleanup integration: [five-site native evidence session](docs/RA3EP11_NATIVE_CLEANUP_SESSION.md).
 Original site bytes now come from private admission-captured copies. A known
 matching stop, an empty breakpoint list, five original bytes before detach,
