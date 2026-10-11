@@ -227,6 +227,8 @@ internal static class Ep1ArmorDocumentSmokeTest
                     && bytes.AsSpan(8).SequenceEqual(stream.Item3), "Actual OutputManager linked payload differs.");
             }
             string xml = instance.XmlNode.OuterXml;
+            // Reborn: build a fresh four-entry diagnostic BIG only after actual intermediate/linked payload verification.
+            ArmorDiagnosticPackage.Exercise(manager.OutputDirectory, instance, buffer, document.OutputChecksum);
             string typeIdValue = instance.XmlNode.Attributes!["TypeId"]!.Value;
             try { instance.XmlNode.Attributes["TypeId"]!.Value = "0"; ExpectScope(() => manager.LinkStream(document)); }
             finally { instance.XmlNode.Attributes["TypeId"]!.Value = typeIdValue; }

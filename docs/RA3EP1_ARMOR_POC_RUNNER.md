@@ -82,6 +82,11 @@ reports `OutputManagerCommitLinkValidated` and its fresh output directory;
 production output remains disabled. The standalone `document/core-*` family
 still uses the separate diagnostic serializer.
 
+The [diagnostic BIG4 follow-up](RA3EP1_ARMOR_DIAGNOSTIC_PACKAGE.md) packages
+this actual writer's four streams. The report records
+`DiagnosticArmorPackageValidated` and the archive's size/SHA-256. It retains
+false launch-config and behavior-override flags; do not install this probe.
+
 Next resolve runtime-compatible armor identity and production eligibility.
 Then create a reversible package with independent readback and request the
 separate runtime test authorization when it is actually ready. Existing

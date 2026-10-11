@@ -48,6 +48,10 @@ try{
     # Reborn: identify actual committed armor artifacts separately from the older standalone diagnostic serializer.
     $managedDirectories=@(Get-ChildItem -LiteralPath (Join-Path $directory 'document') -Directory -ErrorAction SilentlyContinue|Where-Object {$_.Name -like 'RebornArmorOutput-*'}|ForEach-Object {$_.FullName})
     $managedOutputsPresent=$managedDirectories.Count -eq 1 -and (Test-Path -LiteralPath (Join-Path $managedDirectories[0] 'armor.manifest') -PathType Leaf)
+    # Reborn: archive existence is evidence only after the document step's exact payload and negative package controls pass.
+    $packages=@(Get-ChildItem -LiteralPath $directory -Recurse -Filter RebornArmorProbe.big -File|ForEach-Object {
+        [pscustomobject]@{Path=$_.FullName;Bytes=$_.Length;Sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash}
+    })
     $report=[pscustomobject]@{
         Scope='ArmorTemplate diagnostic XML/document/profile and independent stock-byte comparisons'
         CreatedUtc=[DateTime]::UtcNow.ToString('o');OutputDirectory=$directory;Steps=$steps.ToArray();Failure=$failure
@@ -56,7 +60,9 @@ try{
         ProductionOutputEnabled=$false;AuthenticProcessingHashProven=$false;GameExecuted=$false;ModLoaded=$false
         CoreIdentityStreamsValidated=($null -eq $failure -and $steps.Count -eq 5 -and $coreOutputsPresent);CoreStreamDirectories=$coreDirectories
         OutputManagerCommitLinkValidated=($null -eq $failure -and $steps.Count -eq 5 -and $managedOutputsPresent);OutputManagerDirectories=$managedDirectories
-        NextGate='Runtime-compatible armor identity/output eligibility, reversible package and separately authorized game test; scoped commit/link is diagnostic only.'
+        DiagnosticArmorPackageValidated=($null -eq $failure -and $steps.Count -eq 5 -and $packages.Count -eq 1);DiagnosticPackages=$packages
+        LaunchConfigurationPrepared=$false;BehaviorOverridePrepared=$false
+        NextGate='Select a stock armor override and effective stream/config loading route, prepare an explicit runtime trial, then obtain separate game-test authorization; archive is diagnostic only.'
     }
     [IO.File]::WriteAllText((Join-Path $directory 'readiness.json'),($report|ConvertTo-Json -Depth 6))
 }

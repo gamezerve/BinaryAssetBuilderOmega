@@ -2,6 +2,15 @@
 
 ## Priority reset — October 11, 2026
 
+Current follow-up: [actual commit/link](RA3EP1_ARMOR_OUTPUT_MANAGER.md) and a
+[four-entry diagnostic BIG4](RA3EP1_ARMOR_DIAGNOSTIC_PACKAGE.md) now pass.
+The numbered items below retain their earlier planning context; actual
+single-document commit/link is no longer outstanding. ProcessingHash is not
+a standalone manifest field, and stock equality is not an established runtime
+prerequisite. The remaining actionable gates are a used stock armor target,
+effective config/stream route and an authorized observable runtime trial.
+The packaged probe is still an unused asset, not a behavioral override.
+
 Recent helper/debugger work has not demonstrated an authored mod in the game.
 Do not treat additional infrastructure tests as progress on that result. The
 next offline deliverable is the narrow ArmorTemplate production package path,
