@@ -98,3 +98,23 @@ Current overlay SHA256:
 `2E3788F081678FF377129B3CEE71E816A2AE288743CC8F4532C6D7CACE287C00`.
 This new sample has not yet been observed in the GUI or in a game. Public release
 review remains separate. The full generic compiler suite was not rerun here.
+
+## Controlled runtime test preparation
+
+`scripts/Invoke-Ra3Ep1ArmorTrial.ps1 -Combined` now pins the exact c workspace
+package at `builtmods/RebornAlphaInput-c9d132f96e1049e689f1574c741ee126/build/package`,
+with the 6348-byte size and SHA256 above. It refuses combination with any other
+trial selector. The no-Run preflight passed on October 12: stock identities,
+campaign archive, exact config/archive bytes and absence of existing Uprising
+processes. All three conflicting-selector checks failed before preflight as
+intended. No game was started or installation file changed.
+
+After separate approval, adding `-Run` performs one launch with the pinned config.
+In that session, use two fresh skirmishes: Allied Peacekeeper against an unpacked
+Allied Construction Yard (GUN=250), then Soviet Conscript in normal AK-47 mode
+against an unpacked Soviet Construction Yard (GUN=5000). Expect a smaller increase
+for Allied and a large increase for Soviet relative to stock, not a claimed exact
+health-loss ratio. Avoid saved matches, alternate weapons and temporary buffs.
+Record the two observations separately; a menu opening or one successful armor
+does not prove the other member loaded. Japan/civilian shared consumers remain
+untested. Automated launch receipts do not claim gameplay confirmation.

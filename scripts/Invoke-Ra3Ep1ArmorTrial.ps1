@@ -1,9 +1,11 @@
 # Reborn: one explicitly authorized armor candidate launch; no debugger, installation writes, retries or process termination.
 [CmdletBinding()]
-param([switch]$Run,[switch]$DefaultReader,[switch]$Cannon,[switch]$Soviet)
+param([switch]$Run,[switch]$DefaultReader,[switch]$Cannon,[switch]$Soviet,[switch]$Combined)
 $ErrorActionPreference='Stop'
 if($PSVersionTable.PSVersion.Major -lt 7){throw 'PowerShell 7 is required.'}
 $repo=Split-Path -Parent $PSScriptRoot
+# Reborn: the two-member candidate is one fixed package, not a combination of independent trial selectors.
+if($Combined -and ($DefaultReader -or $Cannon -or $Soviet)){throw 'Combined cannot be combined with DefaultReader, Cannon or Soviet.'}
 # Reborn: select one separately verified fixed candidate; never accept caller-supplied configs or digests.
 if($Cannon -and $DefaultReader){throw 'Choose Cannon or the historical DefaultReader trial, not both.'}
 # Reborn: the second identity needs its own separately pinned package; never combine faction/test selectors.
@@ -23,7 +25,13 @@ if($Soviet){
     $expectedBytes=3552
     $expectedHash='0414E554AE9049631B163C508806F2A5EC2AE277030CE1A5DEE9374150C483BD'
 }
-$useDefaultReader=$DefaultReader -or $Cannon -or $Soviet
+# Reborn: pin the offline-verified shared stream containing Allied GUN=250 and Soviet GUN=5000; runtime loading is still unproven.
+if($Combined){
+    $trial=Join-Path (Split-Path -Parent $repo) 'UprisingAlpha-20261012-c/builtmods/RebornAlphaInput-c9d132f96e1049e689f1574c741ee126/build/package'
+    $expectedBytes=6348
+    $expectedHash='826859F2CD92D840B37D0AABB239DF1C799F433A3A8014912F34757AEF5554E3'
+}
+$useDefaultReader=$DefaultReader -or $Cannon -or $Soviet -or $Combined
 $root='D:\Program Files (x86)\Steam\steamapps\common\Command and Conquer Red Alert 3 Uprising'
 $config=Join-Path $trial 'reborn_1.0.cfg'
 $archive=Join-Path $trial 'RebornArmorProbe.big'

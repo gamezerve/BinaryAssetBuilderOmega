@@ -31,6 +31,9 @@ Current local candidate: `UprisingAlpha-20261012-c`, with five offline-verified
 samples including CombinedArmor. Its fresh overlay extraction also passes.
 The combined package has not yet been game-tested; individual armor successes
 do not substitute for that new runtime check.
+The fixed `Invoke-Ra3Ep1ArmorTrial.ps1 -Combined` launch preparation now passes
+its no-game preflight and rejects conflicting selectors. A separately authorized
+single launch and two fresh faction skirmish observations are the next gate.
 The refreshed local workspace `UprisingAlpha-20261011-h` and clean overlay
 extraction pass all three samples (Reborn, Armor250, ArmorCannon); the full
 compiler regression suite also passes. Packaging now forces recompilation to
