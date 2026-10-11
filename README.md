@@ -1,6 +1,35 @@
 # BinaryAssetBuilder
 A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
+## Current outcome — October 11, 2026
+
+This is not yet a playable Uprising SDK. The next deliverable is one valid
+ArmorTemplate mod, not more general debugger preparation or all 1,390 types.
+
+| User-visible milestone | Current evidence |
+| --- | --- |
+| Compile a focused ArmorTemplate XML path | Schema, plugin and document controls pass |
+| Match actual Uprising armor payloads | Static 744-byte and WorldBuilder 128-byte BIN samples match, with their RELO data |
+| Reproduce this path from current source | New one-command [armor PoC runner](docs/RA3EP1_ARMOR_POC_RUNNER.md): build + four checks passed |
+| Emit a production-valid package | Open: checksum/InstanceHash/output policy; current fixtures are diagnostic only |
+| Load our authored change in Uprising | Not demonstrated; no playable mod result yet |
+
+Run `scripts/Invoke-Ra3Ep1ArmorPoc.ps1` under PowerShell 7 to reproduce the
+isolated diagnostic streams and `readiness.json`; it does not install files
+or start a game. See the linked guide for the exact command and limitations.
+
+Why progress has felt slow: recent work mainly hardened the debugger path,
+without closing production package or loaded-mod gates. The historical 52%
+figure is a coarse effort estimate, not measured readiness; it should not be
+used as a countdown. Track the milestones above instead. Measured inventory
+remains 785/1,390 models and 762/1,390 typed marshallers; those counts do not
+prove runtime compatibility. Broad work can wait until this narrow path's
+remaining production contract is resolved. Config consumption still needs
+proof, but debugger subsystem expansion is not a prerequisite for compiler work.
+
+<details>
+<summary>Detailed engineering history and historical effort estimates</summary>
+
 ## Uprising progress — October 11, 2026
 
 Latest output classification: [bounded module-load stop prefixes](docs/RA3EP11_MODULE_LOAD_STOP_PREFIX.md).
@@ -1883,6 +1912,8 @@ Detailed findings, file/class references and limitations:
 This summary and the detailed report are updated together as work progresses.
 Changes are published only to the working branch in
 `gamezerve/BinaryAssetBuilderOmega`; no pushes or PRs go to the Qibbi upstream.
+
+</details>
 
 ## Legacy KW asset list (historical reference)
 

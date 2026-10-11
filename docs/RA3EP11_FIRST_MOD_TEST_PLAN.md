@@ -1,5 +1,39 @@
 # First Uprising mod-test plan
 
+## Priority reset — October 11, 2026
+
+Recent helper/debugger work has not demonstrated an authored mod in the game.
+Do not treat additional infrastructure tests as progress on that result. The
+next offline deliverable is the narrow ArmorTemplate production package path,
+not a universal debugger/event-classification system or complete schema port.
+
+The [one-command armor PoC](RA3EP1_ARMOR_POC_RUNNER.md) now freshly reproduces
+the schema/plugin/document path and both actual Uprising byte comparisons.
+Its diagnostic output remains non-playable; the following concrete changes
+still require justified implementation, not relaxing guards:
+
+1. Apply and validate the existing Core identity/checksum contract for armor.
+   `OutputManager.CommitManifest` writes `outputInstance.Handle.InstanceHash`
+   and `document.OutputChecksum`; the current PoC instead uses diagnostic
+   values. `ComputeOutputChecksum` already preserves the reviewed RA3 identity
+   rows and MemoryStream capacity padding: reuse it, do not start another
+   general checksum reverse-engineering task. Validate its armor-specific
+   document-to-writer path and distinguish project-local processing identity
+   from a proven runtime-compatible identity.
+2. Define a narrowly justified output policy for `Ra3Ep1ArmorPlugin`, whose
+   `CanWriteProductionOutput` remains false and whose ProcessingHash is a
+   project-local experimental cache revision, not an authentic EA compiler hash.
+   Keep cache reuse off and preserve unsupported-root/dependency refusals.
+3. Commit/link a one-asset stream, independently read it back, then prepare a
+   reversible package and a distinguishable test asset. Only after that can
+   the separately authorized runtime test establish loading and behavior.
+
+Config consumption remains a runtime gate, but offline work on these three
+deliverables can proceed without new game/debugger authorization. The old
+2–4-session preparation target below is historical and missed as a useful
+predictor; do not renew it. Report actual milestones and remaining blockers
+instead of another unchanged rounded percentage.
+
 ## Current runtime milestone
 
 Latest October 10 control: the [short-name probe](RA3EP11_SHORT_NAME_CONFIG_TRIAL.md)
