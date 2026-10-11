@@ -111,7 +111,8 @@ See [workspace evidence and distribution limits](RA3EP1_ALPHA_WORKSPACE.md).
    completion; independent package readback matches the game-tested digest.
    A subsequent screenshot confirms ALPHA001/ALPHA002 under Warnings.
    ALPHA100 error classification and the corrected failure callback now also
-   have user screenshot evidence. Local help and updated extraction remain. See the
+   have user screenshot evidence. Local help renders, and a subsequent Reborn
+   build passes with independent package readback. Updated extraction remains. See the
    workspace report for the exact manual-run evidence and its limits.
 3. Keep familiar Build Data/Make BIG/Create SKUDef stages while clearly marking
    unsupported LOD, STR, misc, map, hash-repair and copy/install features. The

@@ -3,7 +3,11 @@
 <html lang="en"><head><meta charset="utf-8"><title>Uprising Mod SDK Alpha</title></head>
 <body>
 <h1>Uprising Mod SDK Alpha — local candidate</h1>
-<p>This limited candidate uses EA's existing Mod BuildStudio interface. Actual GUI behavior still needs validation.</p>
+<p>This limited candidate uses EA's existing Mod BuildStudio interface. Local user tests confirm sample build success,
+warning/error display, malformed-XML failure and this documentation pane. This is not full original-SDK feature parity.</p>
+<!-- Reborn: explain the corrected EA callback contract without treating a completion label as independent package proof. -->
+<p>A rejected build reports Error: ALPHA100 and Critical: ALPHA101, followed by an alpha build failed message.
+Successful builds report package paths and Build Completed. Inspect the final receipt; old packages from earlier builds are not new output.</p>
 <h2>Supported build</h2>
 <p>Select Reborn (GUN 5000) or Armor250 (GUN 250). Edit mods/&lt;name&gt;/data/mod.xml.
 Only the GUN Percent of AlliedConYardArmor is editable, as an integer from 0 to 10000.

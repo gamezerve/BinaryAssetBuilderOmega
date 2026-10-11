@@ -145,8 +145,38 @@ and Build Mod is available again. Thus the corrected GUI failure callback now
 passes by user-provided visual evidence. The preceding detached check separately
 verified exit 1 and no fresh output directory. The screenshot does not show the
 Error Log tab's critical node, and is not a new gameplay test. Remaining immediate
-checks are local help, successful-build regression and fresh preparation/extraction
-with the corrected driver before distribution review.
+checks at that point were local help, successful-build regression and fresh
+preparation/extraction with the corrected driver before distribution review.
+
+The subsequent Documentation screenshot shows the project-owned local HTML
+rendering in EA's pane. The user's next full Reborn log reports Build Completed
+in `00:00:01.7286652` after the InvalidXml failure. Independent readback at
+`builtmods/RebornAlphaInput-11290314282d44cb999956c6e723d540` confirms prebuilt
+mode, GUN=5000, unchanged installation/no game and the exact earlier game-tested
+BIG digest. This demonstrates the next success path after the failed attempt;
+it does not separately prove whether Studio was restarted between these runs.
+Local help and the success-after-failure regression gates are now satisfied.
+
+## Corrected local candidate extraction
+
+`UprisingAlpha-20261011-e` was freshly prepared from current source, including
+the corrected driver and updated project help, then archived/extracted to
+`UprisingAlpha-extracted-c`. The 28-file inventory test passes, GUN-5000 and
+GUN-250 retain both known package digests, DTD input returns exit 1 with both
+ALPHA100 and Critical ALPHA101 before creating output, and successful logs
+contain neither failure marker. No repository source tree or compiler rebuild
+is needed for those extracted builds. The new ZIP SHA256 is
+`D6E70F459B066A9301589A3CA758FF4A31ED182373BBB53050FE156770C2118A`.
+The updated workspace test asserts this EA failure-marker contract explicitly.
+
+The GUI evidence above comes from the manually tested patched extracted-b
+workspace; the new extracted-c was tested offline, not relaunched in the GUI.
+No fresh gameplay test or full compiler-suite run is claimed. The local ZIP
+excludes build outputs, InvalidXml and live path configuration; extraction test
+regenerates configuration for the local opened copy. A bare ZIP extraction still
+requires explicit path configuration and an existing builtmods directory.
+It retains user-supplied EA files and absolute preparation provenance and must
+not be uploaded as a publicly reviewed SDK release.
 Successful loading, Reborn selection, output capture and completion now have
 user-provided GUI evidence plus independent package readback. The adapter currently
 uses one combined validation/compile/package step, not every original SDK checkbox.

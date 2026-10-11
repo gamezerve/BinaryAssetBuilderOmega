@@ -38,6 +38,8 @@ foreach($name in @('Reborn','Armor250')){
     if(Test-Path -LiteralPath (Join-Path $created[0].FullName 'compiler-build.log')){throw 'Standalone build unexpectedly rebuilt repository source.'}
     $text=Get-Content -LiteralPath $log -Raw
     if(-not $text.Contains('Warning: ALPHA001') -or -not $text.Contains('Warning: ALPHA002')){throw 'EA-compatible warning prefixes missing.'}
+    # Reborn: successful packages must not carry the failure marker that drives EA Studio's callback.
+    if($text.Contains('Error: ALPHA100') -or $text.Contains('Critical: ALPHA101')){throw 'Successful build emitted a failure diagnostic.'}
     $rows.Add([pscustomobject]@{Sample=$name;GunPercent=$expected;Receipt=(Join-Path $created[0].FullName 'alpha-build.json');ArchiveSha256=$digest})
 }
 # Reborn: a DTD in an owned negative fixture must fail before publishing any success receipt/package.
@@ -46,11 +48,14 @@ $invalid=Join-Path $test 'invalid.xml'
 $before=@(Get-ChildItem -LiteralPath $output -Directory).FullName
 $negativeLog=Join-Path $test 'invalid.log'
 & $runtime -NoProfile -File $driver -ModXml $invalid -StaticManifest $StaticManifest -CompilerDirectory $compiler -OutputRoot $output *> $negativeLog
-if($LASTEXITCODE-ne 1 -or -not (Get-Content -LiteralPath $negativeLog -Raw).Contains('Error: ALPHA100')){throw 'Unsupported input did not return the expected error.'}
+# Reborn: assert both detailed error and critical callback markers; EA Studio does not inspect process ExitCode.
+$negativeExit=$LASTEXITCODE
+$negativeText=Get-Content -LiteralPath $negativeLog -Raw
+if($negativeExit-ne 1 -or -not $negativeText.Contains('Error: ALPHA100') -or -not $negativeText.Contains('Critical: ALPHA101')){throw 'Unsupported input did not return the expected error and Studio failure marker.'}
 if(@(Get-ChildItem -LiteralPath $output -Directory|Where-Object FullName -NotIn $before).Count-ne 0){throw 'Invalid XML created alpha output.'}
 foreach($entry in $inventory.Files){if((Get-FileHash -LiteralPath (Join-Path $Workspace $entry.Relative) -Algorithm SHA256).Hash-ne $entry.Sha256){throw 'Workspace input modified by build.'}}
 $report=[pscustomobject]@{Workspace=$Workspace;InventoryPassed=$true;Samples=$rows;
-    UnsupportedXmlRefused=$true;EaDiagnosticPrefixesPassed=$true;SourceTreeAbsent=$true;PrebuiltModePassed=$true;
+    UnsupportedXmlRefused=$true;EaDiagnosticPrefixesPassed=$true;CriticalFailureMarkerPassed=$true;SuccessHasNoFailureMarker=$true;SourceTreeAbsent=$true;PrebuiltModePassed=$true;
     StudioExecuted=$false;GameExecuted=$false;PublicRedistributionReviewed=$false;UiValidated=$false}
 [IO.File]::WriteAllText((Join-Path $test 'workspace-test.json'),($report|ConvertTo-Json -Depth 5))
 $report

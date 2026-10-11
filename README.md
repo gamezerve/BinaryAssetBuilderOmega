@@ -23,13 +23,16 @@ Independent output readback matches the previously game-tested GUN-5000 BIG.
 The subsequent Error Log screenshot confirms both ALPHA001 and ALPHA002 under
 Warnings, with no error entries shown. The corrected InvalidXml run now visibly
 reaches the failure callback without Build Completed. Fresh packaging of this
-fix, local help checks and public distribution review remain. Earlier timing ranges
+fix now passes with the corrected failure marker; public distribution review
+remains. Local help renders correctly, and the
+user's subsequent Reborn build succeeds after the failure (1.73 seconds), with
+the same verified BIG digest. Earlier timing ranges
 refer to broader scopes, not a prerequisite to releasing this limited alpha.
 Editable [input admission and building](docs/RA3EP1_ARMOR_AUTHORING_ADMISSION.md)
 now support canonical integer GUN values 0..10000 for AlliedConYardArmor.
 Five values and repeated output passed offline; 5000 retains the exact
-user-tested package digest. The next alpha gates are updated extraction checks,
-local help and distribution review, not completion of every processor.
+user-tested package digest. Updated clean extraction passes; the next alpha gate
+is distribution review, not completion of every processor.
 See [local workspace and extraction evidence](docs/RA3EP1_ALPHA_WORKSPACE.md).
 
 The manual InvalidXml GUI test correctly categorized ALPHA100 as an error, but
@@ -38,6 +41,11 @@ does not consult ExitCode, and only `Critical:` sets `stepFailed`. The backend
 now also emits `Critical: ALPHA101` on failure. Offline refusal passes; the user's
 repeat screenshot confirms the failure callback and no Build Completed line.
 EA binaries are unchanged; the earlier ZIP predates this fix.
+The new LOCAL-USE-ONLY ZIP extracted to `UprisingAlpha-extracted-c` contains the
+fix and updated help. Both sample builds and DTD refusal with ALPHA100/ALPHA101
+pass; success logs contain neither failure marker. ZIP SHA256:
+`D6E70F459B066A9301589A3CA758FF4A31ED182373BBB53050FE156770C2118A`.
+This local artifact is not a public release or a new gameplay test.
 
 | User-visible milestone | Current evidence |
 | --- | --- |

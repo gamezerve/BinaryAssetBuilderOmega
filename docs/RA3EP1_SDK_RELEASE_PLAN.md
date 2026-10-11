@@ -17,13 +17,14 @@ without a repository source tree. It is still a LOCAL-USE-ONLY candidate:
 the real GUI success path now passes by user screenshot/log and independent
 output readback. Both warnings are now visibly categorized in the user's Error
 Log screenshot; the corrected InvalidXml failure callback also passes visually.
-Updated extraction, local help and public distribution/rights
-review remain. Do not label it
+Local help and the subsequent Reborn success also pass. The corrected driver
+and help now pass fresh extraction and both sample builds in extracted-c.
+Public distribution/rights review remains. Do not label it
 as a validated public SDK release. See [workspace evidence](RA3EP1_ALPHA_WORKSPACE.md).
 
 | Deliverable | Remaining gates | Working effort estimate |
 | --- | --- | --- |
-| Limited EA-UI SDK alpha | Editable GUN/Core/package path, earlier clean extraction, Studio success, warning/error classification and corrected failure callback pass; updated extraction, local help and public distribution review remain | A few focused working sessions; the GUI failure protocol issue is fixed, but remaining checks are not yet complete |
+| Limited EA-UI SDK alpha | Editable GUN/Core/package path, corrected clean extraction, Studio success, warning/error classification, corrected failure callback, subsequent success and local help pass; public distribution review remains | Local-use candidate is available now; public-ready packaging is a separate dependency/setup/metadata review, not an all-processors prerequisite |
 | Basic gameplay SDK alpha | GameObject/Weapon and needed modules, dependency/import closure, reference/override precedence, repeatable build and controlled gameplay checks | Several weeks; reassess after the first unit/weapon vertical slice |
 | RA3-SDK-like broad release | Wider typed processor coverage, inheritance/includes/cache contracts, textures/models/audio/shaders, map workflows and WorldBuilder integration, distribution/dependency review | Several months or longer; no reliable fixed release date yet |
 
@@ -84,7 +85,8 @@ and prebuilt tools; exact loader-reference/config/options checks and fresh ZIP
 extraction pass. The user-run Reborn GUI build now also succeeds with the exact
 game-tested digest, and its warning categorization is visible. The corrected
 InvalidXml failure callback now passes too. Next repeat extraction with the
-corrected driver, check local help and review public distribution.
+corrected driver and review public distribution; local help and subsequent
+Reborn success have now been observed.
 The successful default-reader trial
 does not by itself resolve queue-route failure, exact runtime file reads,
 generic duplicate asset ordering or full WorldBuilder support.
