@@ -136,6 +136,7 @@ retains that statement; it is not a process-derived assertion.
 Command-line visibility and a menu do not prove config reads, manifest loads
 or effective asset replacement. The user subsequently attacked the yard and
 reported normal damage, then closed the game. The expected behavioral effect
-was not observed; attacking-unit damage type and fresh-match conditions have
-not yet been confirmed. The observer never stopped the game and changed no
+was not observed. The user confirmed a fresh Allied skirmish and a Peacekeeper;
+the Uprising reference XML confirms its shotgun deals GUN damage.
+The observer never stopped the game and changed no
 installation files. See [the follow-up comparison](RA3EP1_ARMOR_LOADING_COMPARISON.md).

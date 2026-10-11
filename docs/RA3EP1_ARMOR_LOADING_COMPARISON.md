@@ -5,8 +5,14 @@
 The first candidate reached the menu, but the user reported normal damage
 after attacking the Allied Construction Yard. The expected GUN increase was
 not observed. This is a failed behavioral acceptance check, not proof of
-which loading stage failed. The attacking unit/damage type and fresh-match
-versus saved-game conditions still require confirmation. The user closed
+which loading stage failed. The user confirmed a newly started Allied
+skirmish and a Peacekeeper attacking the Construction Yard. Reference
+`Allied/Units/AlliedAntiInfantryInfantry.xml:1274` binds
+`AlliedAntiInfantryInfantryShotgun`, and `GlobalData/Weapon.xml:3265`
+specifies `DamageType="GUN"`. These files are under the user's Uprising
+`Xml (Uprising)` reference directory, not edited inputs. Thus wrong weapon
+category and an old save are not supported explanations for this test.
+The user closed
 the game; no second launch occurred in this investigation.
 
 `scripts/Get-Ra3Ep1ArmorLoadingComparison.ps1` now reproduces a read-only
