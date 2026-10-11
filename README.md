@@ -6,7 +6,9 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 The first narrow ArmorTemplate override now works in-game by user observation:
 AlliedConYardArmor GUN 100 → 5000 caused markedly increased damage with the
 default `mod.manifest` loading recipe. This is not yet a complete playable
-Uprising SDK. The next deliverable is a reproducible authored-armor mod workflow,
+Uprising SDK. A [one-command fixed armor reproducer](docs/RA3EP1_ARMOR_MOD_BUILD.md)
+now combines compilation, stock comparisons and the validated package recipe.
+The next compiler deliverable is safely admitted editable armor XML,
 not more general debugger preparation or all 1,390 types.
 
 | User-visible milestone | Current evidence |
@@ -21,6 +23,7 @@ not more general debugger preparation or all 1,390 types.
 | Prepare its runtime loading route | Queue candidate tested without observed effect; [second default-reader candidate prepared](docs/RA3EP1_ARMOR_LOADING_COMPARISON.md): fifteen entries, unchanged stream bytes, detached controls and no-launch preflight pass |
 | Start with the armor candidate | Second default-reader trial reached the menu (user confirmation); 33 direct 1.1 child snapshots matched its config argument |
 | Load our authored change in Uprising | [First behavioral success](docs/RA3EP1_ARMOR_LOADING_COMPARISON.md): user reported markedly increased yard damage in the second trial; exact multiplier and individual file reads were not instrumented |
+| Rebuild the working example in one command | `Build-Ra3Ep1ArmorMod.ps1` composes a fresh XML/Core build and default-route packaging, requiring the exact user-tested package digest; fixed example only |
 
 Run `scripts/Invoke-Ra3Ep1ArmorPoc.ps1` under PowerShell 7 to reproduce the
 isolated diagnostic streams and `readiness.json`; it does not install files
@@ -48,8 +51,9 @@ ProcessingHash has no standalone manifest field and stock equality is not
 a proven runtime requirement; the linked report separates this from the
 characterized TypeHash and unresolved runtime acceptance.
 
-Why progress has felt slow: recent work mainly hardened the debugger path,
-without closing production package or loaded-mod gates. The historical 52%
+Why progress previously felt slow: earlier work mainly hardened the debugger
+path without closing package or loaded-mod gates. The narrow armor package
+has now passed a user-observed in-game test. The historical 52%
 figure is a coarse effort estimate, not measured readiness; it should not be
 used as a countdown. Track the milestones above instead. Measured inventory
 remains 785/1,390 models and 762/1,390 typed marshallers; those counts do not
