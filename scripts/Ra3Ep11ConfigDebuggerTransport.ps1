@@ -3,6 +3,23 @@
 . (Join-Path $PSScriptRoot 'Ra3Ep11ConfigProbeFilter.ps1')
 
 #-------------------------------------------------------------------------------------------------
+<# Reborn: require exactly our enabled helper breakpoint and one nonce acknowledgement before an armed-exit control. #>
+#-------------------------------------------------------------------------------------------------
+function Assert-Ep11HelperBreakpointArmed([string]$Text,[string]$Nonce,[long]$ExpectedAddress) {
+    if($Text.Length -gt 4096 -or $Nonce -cnotmatch '^[0-9a-f]{32}$'){throw 'Helper armed envelope invalid.'}
+    Assert-Ep11ReadPointer $ExpectedAddress 1
+    $marker='REBORN_ARMED '+$Nonce;$found=0;$listed=0
+    foreach($line in ($Text -split '\r?\n')){
+        if($line -ceq $marker){$found++;continue}
+        if($line -cmatch '^\s*0\s+e\s+(?:Disable\s+Clear\s+)?([0-9a-fA-F]{8})\s+.+$'){
+            if([long][Convert]::ToUInt32($Matches[1],16) -ne $ExpectedAddress){throw 'Armed helper site differs.'};$listed++;continue
+        }
+        if($line -cnotmatch '^\s*(?:[0-9a-fA-F]+:[0-9a-fA-F]+>\s*)?$'){throw 'Unexpected helper armed listing or command error.'}
+    }
+    if($found -ne 1 -or $listed -ne 1){throw 'Helper armed listing missing or ambiguous.'}
+}
+
+#-------------------------------------------------------------------------------------------------
 <# Reborn: require an empty breakpoint listing after clearing our helper breakpoint, not just a printed acknowledgement or temporarily restored code byte. #>
 #-------------------------------------------------------------------------------------------------
 function Assert-Ep11HelperBreakpointCleared([string]$Text,[string]$Nonce) {

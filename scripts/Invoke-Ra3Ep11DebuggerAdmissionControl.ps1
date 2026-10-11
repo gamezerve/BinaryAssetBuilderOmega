@@ -1,6 +1,7 @@
 # Reborn: gate one newly compiled helper at CDB's initial break; rejection cleanup detaches/resumes that helper, never a game.
 [CmdletBinding()]
-param([switch]$Run,[switch]$SelfTest,[ValidateSet('Admit','RejectLiveBytes','Timeout')][string]$Mode='Admit',[switch]$CalibrateContext,[switch]$CalibrateBreakpoint)
+param([switch]$Run,[switch]$SelfTest,[ValidateSet('Admit','RejectLiveBytes','Timeout')][string]$Mode='Admit',[switch]$CalibrateContext,[switch]$CalibrateBreakpoint,
+    [ValidateSet('ClearAndResume','TimeoutDetachArmed','DebuggerLossArmed')][string]$BreakpointDisposition='ClearAndResume')
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'Ra3Ep11DebuggerAdmissionPolicy.ps1')
 . (Join-Path $PSScriptRoot 'Ra3Ep11SupervisorAdmissionGate.ps1')
@@ -9,6 +10,10 @@ $ErrorActionPreference='Stop'
 if($CalibrateContext -and ($SelfTest -or $Mode -cne 'Admit')){throw 'Context calibration requires the separate Admit helper control.'}
 # Reborn: keep breakpoint calibration separate from initial-context and refusal controls; all use the same fixed new helper only.
 if($CalibrateBreakpoint -and ($SelfTest -or $CalibrateContext -or $Mode -cne 'Admit')){throw 'Breakpoint calibration requires the separate Admit helper control.'}
+# Reborn: never enable an armed-breakpoint loss control outside the fixed admitted helper calibration.
+if($BreakpointDisposition -cne 'ClearAndResume' -and -not $CalibrateBreakpoint){throw 'Armed breakpoint disposition requires helper breakpoint calibration.'}
+# Reborn: actual armed debugger loss left the helper incomplete despite byte restoration; block replay before any file/process action.
+if($Run -and $BreakpointDisposition -ceq 'DebuggerLossArmed'){throw 'Armed debugger-loss execution disabled: byte restoration did not prove helper completion.'}
 if($SelfTest){
     if($Run){throw 'Run and detached tests must be separate.'}
     # Reborn: detached admission mutations do not start a debugger or read any process memory.
@@ -50,7 +55,7 @@ foreach($path in $paths){
 }
 if((Get-Item -LiteralPath $source).Length -gt 4096 -or [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes([IO.File]::ReadAllText($source).Replace("`r`n","`n")))) -cne '1EFA171DAE77F686E2E120EB6530B37F0D359E41C836F74A11C247CD5FC1FB46'){throw 'Unreviewed admission helper.'}
 if((Get-FileHash -LiteralPath $debugger).Hash -cne 'E6771A874286D8A053C744D428D50A13091318DD1261F07B6C2C17BF42A486A5'){throw 'Debugger differs from calibrated build.'}
-if(-not $Run){[pscustomobject]@{Mode=$Mode;CalibrateContextRequested=[bool]$CalibrateContext;CalibrateBreakpointRequested=[bool]$CalibrateBreakpoint;RunRequested=$false;GameExecuted=$false;Scope='Fixed new helper, initial-break gate only'};return}
+if(-not $Run){[pscustomobject]@{Mode=$Mode;CalibrateContextRequested=[bool]$CalibrateContext;CalibrateBreakpointRequested=[bool]$CalibrateBreakpoint;BreakpointDisposition=$BreakpointDisposition;ArmedDebuggerLossRunEnabled=$false;RunRequested=$false;GameExecuted=$false;Scope='Fixed new helper, initial-break gate only'};return}
 # Reborn: prepare bounded read-only native interop before any target exists.
 Add-Type -TypeDefinition @'
 using System;
@@ -85,6 +90,7 @@ $contextRecords=@();$contextRoundTripValidated=$false;$staleContextRefused=$fals
 # Reborn: track actual breakpoint transport and byte restoration without claiming game cleanup or config consumption.
 $breakpointHitValidated=$false;$breakpointRestored=$false;$breakpointContext=$null
 $breakpointSite=$null;$breakpointOriginalByte=$null
+$armedBreakpointValidated=$false;$debuggerLossInjected=$false;$survivedDebuggerExit=$false;$timeoutHoldMs=0
 #-------------------------------------------------------------------------------------------------
 <# Reborn: pump bounded redirected chunks without blocking on a prompt or needing a PowerShell runspace in callbacks. #>
 #-------------------------------------------------------------------------------------------------
@@ -233,6 +239,42 @@ try{
         $breakpointContext=Get-Ep11ConfigContextRecord $window $request.Nonce
         if($breakpointContext.ProcessId -ne $owner -or $breakpointContext.ThreadId -ne $hit.ThreadId -or $breakpointContext.SiteAddress -ne $breakpointSite){throw 'Breakpoint context does not match owned hit.'}
         $contextSession.PendingContext=$null;$contextSession.Status='Closed';$breakpointHitValidated=$true
+        if($BreakpointDisposition -cne 'ClearAndResume'){
+            # Reborn: establish an enabled breakpoint in CDB's table before testing loss, rather than assuming it remains armed after the hit.
+            $armedNonce=[guid]::NewGuid().ToString('N');Update-Ep11AdmissionOutput;$armedOffset=$streams[0].Text.Length
+            $debug.StandardInput.WriteLine('bl; .echo REBORN_ARMED '+$armedNonce);$debug.StandardInput.Flush()
+            $armedDeadline=[DateTime]::UtcNow.AddSeconds(5)
+            do{
+                Update-Ep11AdmissionOutput;$armedText=$streams[0].Text.Substring($armedOffset)
+                if($armedText.Length -gt 4096 -or $debug.HasExited -or $helper.HasExited -or [DateTime]::UtcNow -gt $armedDeadline -or $streams[1].Text.Length -ne 0){throw 'Armed breakpoint listing failed.'}
+                if($armedText -notmatch ('(?m)^REBORN_ARMED '+$armedNonce+'\r?\n')){Start-Sleep -Milliseconds 25}
+            }while($armedText -notmatch ('(?m)^REBORN_ARMED '+$armedNonce+'\r?\n'))
+            Assert-Ep11HelperBreakpointArmed $armedText $armedNonce $breakpointSite
+            $armedBreakpointValidated=$true
+            if($BreakpointDisposition -ceq 'TimeoutDetachArmed'){
+                # Reborn: model a bounded observation timeout by withholding continuation, then detach without first clearing the armed breakpoint.
+                $holdStart=[DateTime]::UtcNow;$holdDeadline=$holdStart.AddSeconds(2)
+                while([DateTime]::UtcNow -lt $holdDeadline){
+                    Update-Ep11AdmissionOutput
+                    if($debug.HasExited -or $helper.HasExited -or (Test-Path -LiteralPath (Join-Path $directory 'completed.txt'))){throw 'Helper escaped armed timeout hold.'}
+                    Start-Sleep -Milliseconds 25
+                }
+                $timeoutHoldMs=[int]([DateTime]::UtcNow-$holdStart).TotalMilliseconds
+                $debug.StandardInput.WriteLine('qd');$debug.StandardInput.Flush();$cleanupIssued=$true
+            }else{
+                # Reborn: intentionally terminate only the retained newly owned debugger; never kill or enumerate helpers/games by name.
+                $debug.Kill();$forcedExit=$true;$debuggerLossInjected=$true
+            }
+            $exitDeadline=[DateTime]::UtcNow.AddSeconds(5)
+            while(-not $debug.HasExited){Update-Ep11AdmissionOutput;if([DateTime]::UtcNow -gt $exitDeadline){throw 'Owned debugger exit deadline exceeded.'};Start-Sleep -Milliseconds 25}
+            $survivedDebuggerExit=-not $helper.HasExited
+            if(-not $survivedDebuggerExit){throw 'Helper did not survive armed debugger exit.'}
+            # Reborn: inspect the restored byte through the retained helper handle after debugger exit, while this helper is still alive.
+            $restored=[byte[]]::new(1);$restoredActual=[UIntPtr]::Zero
+            $restoredSuccess=[RebornAdmissionMemory]::ReadProcessMemory($helper.Handle,[IntPtr]$breakpointSite,$restored,[UIntPtr]1,[ref]$restoredActual)
+            Assert-Ep11AdmissionBytes $restoredSuccess $restoredActual.ToUInt64() ([byte[]]@($breakpointOriginalByte)) $restored
+            $breakpointRestored=$true
+        }else{
         # Reborn: clear exactly our breakpoint and await its acknowledgement while stopped, then independently verify its original code byte.
         $clearNonce=[guid]::NewGuid().ToString('N');Update-Ep11AdmissionOutput;$clearOffset=$streams[0].Text.Length
         $debug.StandardInput.WriteLine('bc 0; bl; .echo REBORN_CLEAR '+$clearNonce);$debug.StandardInput.Flush()
@@ -248,11 +290,12 @@ try{
         Assert-Ep11AdmissionBytes $restoredSuccess $restoredActual.ToUInt64() ([byte[]]@($breakpointOriginalByte)) $restored
         $breakpointRestored=$true
         $debug.StandardInput.WriteLine('g')
+        }
     }elseif($admitted){$debug.StandardInput.WriteLine('g');$resumeIssued=$true}else{
         # Reborn: rejected observation never gets g; helper-only cleanup detaches and therefore releases it to self-expire.
         $debug.StandardInput.WriteLine('qd');$cleanupIssued=$true
     }
-    $debug.StandardInput.Flush()
+    if(-not $debug.HasExited){$debug.StandardInput.Flush()}
     $deadline=[DateTime]::UtcNow.AddSeconds(10)
     while(-not $helper.HasExited -or -not $debug.HasExited){
         Update-Ep11AdmissionOutput
@@ -260,7 +303,9 @@ try{
     }
     Update-Ep11AdmissionOutput
     $identity=[IO.File]::ReadAllText((Join-Path $directory 'started.txt'))
-    if($identity -cne ($owner.ToString()+'|'+$helper.StartTime.ToUniversalTime().Ticks) -or $helper.ExitCode -ne 0 -or $debug.ExitCode -ne 0 -or $streams[1].Text.Length -ne 0 -or [IO.File]::ReadAllText((Join-Path $directory 'completed.txt')) -cne 'REBORN_NATURAL_COMPLETION'){throw 'Final owned helper completion differs.'}
+    if($identity -cne ($owner.ToString()+'|'+$helper.StartTime.ToUniversalTime().Ticks) -or $helper.ExitCode -ne 0 -or
+       (-not $debuggerLossInjected -and $debug.ExitCode -ne 0) -or $streams[1].Text.Length -ne 0 -or
+       [IO.File]::ReadAllText((Join-Path $directory 'completed.txt')) -cne 'REBORN_NATURAL_COMPLETION'){throw 'Final owned helper completion differs.'}
 }catch{$failure=$_.Exception.Message}finally{
     # Reborn: on unexpected failure end only our debugger; -pd can release the helper, so rejection is not execution containment.
     if($started -and -not $debug.HasExited){$debug.Kill();$forcedExit=$true;$null=$debug.WaitForExit(5000)}
@@ -279,6 +324,13 @@ try{
     $result|Add-Member BreakpointOriginalByteRestored $breakpointRestored
     $result|Add-Member BreakpointSite $breakpointSite
     $result|Add-Member BreakpointOriginalByte $breakpointOriginalByte
+    # Reborn: distinguish intentional helper-only debugger termination from successful natural debugger exit.
+    $result|Add-Member BreakpointDisposition $BreakpointDisposition
+    $result|Add-Member ArmedBreakpointTableValidated $armedBreakpointValidated
+    $result|Add-Member IntentionalOwnedDebuggerLoss $debuggerLossInjected
+    $result|Add-Member SurvivedArmedDebuggerExit $survivedDebuggerExit
+    $result|Add-Member ArmedTimeoutHoldMs $timeoutHoldMs
+    $result|Add-Member OwnedDebuggerExitCode $(if($debug.HasExited){$debug.ExitCode}else{$null})
     [IO.File]::WriteAllText((Join-Path $directory 'result.json'),($result|ConvertTo-Json -Depth 4))
     $debug.Dispose();if($null -ne $helper){$helper.Dispose()}
 }

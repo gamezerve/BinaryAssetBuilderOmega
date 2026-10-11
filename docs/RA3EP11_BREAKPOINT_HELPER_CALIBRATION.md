@@ -2,6 +2,11 @@
 
 Date: October 11, 2026 (Europe/Istanbul).
 
+Important follow-up: [armed exit controls](RA3EP11_ARMED_EXIT_HELPER_CONTROL.md)
+passed cooperative timeout detach but failed forced debugger loss despite
+original-byte restoration. Forced-loss replay is now disabled; the successful
+explicit-clear controls below are not evidence for forced-loss safety.
+
 ## Implemented and observed
 
 `Invoke-Ra3Ep11DebuggerAdmissionControl.ps1 -Run -CalibrateBreakpoint`

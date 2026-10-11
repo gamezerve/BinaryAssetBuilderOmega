@@ -3,6 +3,15 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 11, 2026
 
+Latest safety result: [armed-breakpoint exit controls](docs/RA3EP11_ARMED_EXIT_HELPER_CONTROL.md).
+A bounded helper timeout followed by normal detach passed: original byte
+restored, helper survived and completed naturally. Forced debugger loss
+failed despite byte restoration: no normal completion marker within the
+deadline. That execution path is now blocked before any process action;
+the later exact helper PID was absent, with no normal-exit proof. Native
+game execution remains disabled. Armed-list tests pass 2 positives / 10
+faults; this is a safety boundary, not mod readiness. Estimate **52% / 48%**.
+
 Latest exact-probe preparation: [bounded config selection](docs/RA3EP11_CONFIG_PROBE_FILTER.md).
 Optional filtered sessions stop unrelated path comparison at its first
 mismatch and ignore known untracked-thread events without reader/buffer

@@ -121,6 +121,20 @@ foreach($fault in @('',$clearSample.Replace($nonce,'fedcba9876543210fedcba987654
     $refused=$false;try{Assert-Ep11HelperBreakpointCleared $fault $nonce}catch{$refused=$true}
     if(-not $refused){throw 'Helper clear fault admitted.'};$clearFaults++
 }
+# Reborn: require one enabled ID-zero listing at the observed address before any armed-loss control can count as exercised.
+$armedLine=' 0 e 77661234 0001 (0001) 0:**** ntdll!NtDelayExecution'
+$armedSample=$armedLine+"`nREBORN_ARMED "+$nonce+"`n";$armedFaults=0
+Assert-Ep11HelperBreakpointArmed $armedSample $nonce 0x77661234
+Assert-Ep11HelperBreakpointArmed $armedSample.Replace('0 e 77661234','0 e Disable Clear 77661234') $nonce 0x77661234
+foreach($fault in @(
+    $armedSample.Replace('0 e','0 d'),$armedSample.Replace('0 e','1 e'),$armedSample.Replace('77661234','77661235'),
+    ($armedLine+"`n"+$armedSample),$armedLine,("REBORN_ARMED "+$nonce+"`n"),
+    ($armedSample+"REBORN_ARMED "+$nonce+"`n"),($armedSample+"REBORN_UNKNOWN`n"),
+    $armedSample.Replace($nonce,'fedcba9876543210fedcba9876543210'),($armedSample+"Syntax error`n")
+)){
+    $refused=$false;try{Assert-Ep11HelperBreakpointArmed $fault $nonce 0x77661234}catch{$refused=$true}
+    if(-not $refused){throw 'Helper armed listing fault admitted.'};$armedFaults++
+}
 foreach($fault in @($siteSample.Replace('b8','cc'),$siteSample.Replace('77661234','0'),($siteSample+"`n"+$siteSample),$siteSample.Replace($nonce,'fedcba9876543210fedcba9876543210'),($siteSample+"`nSyntax error"),$siteSample.Replace('b8','100'),($siteSample+"`nREBORN_UNKNOWN"),'')){
     $refused=$false;try{$null=Get-Ep11HelperBreakpointSite $fault $nonce}catch{$refused=$true}
     if(-not $refused){throw 'Helper site fault admitted.'};$markerFaults++
@@ -129,4 +143,4 @@ foreach($fault in @($hitSample.Replace(' 10 20 ',' 11 20 '),$hitSample.Replace('
     $refused=$false;try{$null=Get-Ep11HelperBreakpointHit $fault $nonce 16 0x77661234}catch{$refused=$true}
     if(-not $refused){throw 'Helper hit fault admitted.'};$markerFaults++
 }
-[pscustomobject]@{DetachedPositiveCases=$positives;PrivateRefusals=$refusals;WindowPositiveCases=1;WindowRefusals=$windowFaults;PartialChunkRefusals=$partialFaults;HelperMarkerPositiveCases=2;HelperMarkerRefusals=$markerFaults;HelperClearPositiveCases=1;HelperClearRefusals=$clearFaults;PerThreadInvocationIdsAssigned=$true;CommandsSent=$false;GameExecuted=$false;DebuggerExecuted=$false;LiveContextProven=$false;CollectorReady=$false}
+[pscustomobject]@{DetachedPositiveCases=$positives;PrivateRefusals=$refusals;WindowPositiveCases=1;WindowRefusals=$windowFaults;PartialChunkRefusals=$partialFaults;HelperMarkerPositiveCases=2;HelperMarkerRefusals=$markerFaults;HelperClearPositiveCases=1;HelperClearRefusals=$clearFaults;HelperArmedPositiveCases=2;HelperArmedRefusals=$armedFaults;PerThreadInvocationIdsAssigned=$true;CommandsSent=$false;GameExecuted=$false;DebuggerExecuted=$false;LiveContextProven=$false;CollectorReady=$false}
