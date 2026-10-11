@@ -15,7 +15,7 @@ ArmorTemplate mod, not more general debugger preparation or all 1,390 types.
 | Exercise actual intermediate commit and linked output | [Scoped OutputManager path passes](docs/RA3EP1_ARMOR_OUTPUT_MANAGER.md): one populated armor, real `.asset` commit and manifest/link writers |
 | Package the verified linked family | [Diagnostic BIG4 passes](docs/RA3EP1_ARMOR_DIAGNOSTIC_PACKAGE.md): four exact archive entries and corruption/no-overwrite controls |
 | Prepare a behavior-changing asset | [AlliedConYardArmor GUN 100 → 5000](docs/RA3EP1_ALLIED_CONYARD_OVERRIDE.md) is packaged; stock baseline matches and all other bytes are preserved |
-| Prepare its runtime loading route | Open: effective stream/config route; package is not launch-ready |
+| Prepare its runtime loading route | [Workspace candidate prepared](docs/RA3EP1_ARMOR_TRIAL_PREPARATION.md): short config identity, twelve BIG entries and detached controls pass; effective runtime route remains unproved |
 | Load our authored change in Uprising | Not demonstrated; no playable mod result yet |
 
 Run `scripts/Invoke-Ra3Ep1ArmorPoc.ps1` under PowerShell 7 to reproduce the
@@ -31,8 +31,11 @@ output remain disabled.
 The runner now writes a 1,222-byte diagnostic BIG4 and reports
 `DiagnosticArmorPackageValidated` and `BehaviorOverridePrepared`. It targets
 the existing AlliedConYardArmor identity, with only GUN changed from 100 to
-5000 (damage multiplier 1.0 → 50.0). No launch configuration or observed
-gameplay override exists; `OverrideAppliedInGame` remains false.
+5000 (damage multiplier 1.0 → 50.0). A separate preparation command now creates
+a 3,650-byte three-variant BIG plus `reborn_1.0.cfg` and an identical mod SKU
+fragment. It does not install or launch anything. No observed gameplay
+override exists; `OverrideAppliedInGame` remains false. The `1.0` in the
+mod config is a mod version label; the selected game remains Uprising 1.1.
 ProcessingHash has no standalone manifest field and stock equality is not
 a proven runtime requirement; the linked report separates this from the
 characterized TypeHash and unresolved runtime acceptance.

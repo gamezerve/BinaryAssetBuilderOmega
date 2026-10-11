@@ -89,26 +89,31 @@ internal static class ArmorDiagnosticPackage
     //-------------------------------------------------------------------------------------------------
     /** Reborn: preserve the observed BIG4 mixed-endian header and use explicit ASCII names/offsets for four uncompressed streams only. */
     //-------------------------------------------------------------------------------------------------
-    private static byte[] Serialize(byte[][] payloads)
+    internal static byte[] Serialize(byte[][] payloads, bool includeVariants = false)
     {
-        byte[][] names = Extensions.Select(extension => Encoding.ASCII.GetBytes("data\\reborn_armor_probe" + extension + "\0")).ToArray();
+        // Reborn: the explicit trial mode clones only this verified armor family into the observed empty/_L/_M suffix slots.
+        if (payloads.Length != 4) throw new InvalidDataException("Armor package requires four chunks.");
+        string[] variants = includeVariants ? new[] { "", "_l", "_m" } : new[] { "" };
+        byte[][] names = variants.SelectMany(variant => Extensions.Select(extension =>
+            Encoding.ASCII.GetBytes("data\\reborn_armor_probe" + variant + extension + "\0"))).ToArray();
         int directorySize = 16 + names.Sum(name => 8 + name.Length);
         int headerSize = (directorySize + 7) & ~7;
-        int size = checked(headerSize + payloads.Sum(payload => payload.Length));
+        int size = checked(headerSize + variants.Length * payloads.Sum(payload => payload.Length));
         if (size > Limit) throw new InvalidDataException("Armor package exceeds one MiB.");
         byte[] bytes = new byte[size];
         Encoding.ASCII.GetBytes("BIG4").CopyTo(bytes, 0);
         BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(4), (uint)size);
-        BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(8), 4);
+        BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(8), (uint)names.Length);
         BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(12), (uint)headerSize);
         int directoryOffset = 16, payloadOffset = headerSize;
         for (int index = 0; index < names.Length; index++)
         {
+            byte[] payload = payloads[index % 4];
             BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(directoryOffset), (uint)payloadOffset);
-            BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(directoryOffset + 4), (uint)payloads[index].Length);
+            BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(directoryOffset + 4), (uint)payload.Length);
             names[index].CopyTo(bytes, directoryOffset + 8);
-            payloads[index].CopyTo(bytes, payloadOffset);
-            directoryOffset += 8 + names[index].Length; payloadOffset += payloads[index].Length;
+            payload.CopyTo(bytes, payloadOffset);
+            directoryOffset += 8 + names[index].Length; payloadOffset += payload.Length;
         }
         return bytes;
     }
