@@ -89,16 +89,21 @@ internal static class ArmorDiagnosticPackage
     //-------------------------------------------------------------------------------------------------
     /** Reborn: preserve the observed BIG4 mixed-endian header and use explicit ASCII names/offsets for four uncompressed streams only. */
     //-------------------------------------------------------------------------------------------------
-    internal static byte[] Serialize(byte[][] payloads, bool includeVariants = false)
+    internal static byte[] Serialize(byte[][] payloads, bool includeVariants = false, bool defaultRoute = false)
     {
         // Reborn: the explicit trial mode clones only this verified armor family into the observed empty/_L/_M suffix slots.
         if (payloads.Length != 4) throw new InvalidDataException("Armor package requires four chunks.");
+        // Reborn: the separate default-reader experiment uses mod names and CRLF markers without changing any stream bytes.
+        if (defaultRoute && !includeVariants) throw new InvalidDataException("Default route requires all three families.");
         string[] variants = includeVariants ? new[] { "", "_l", "_m" } : new[] { "" };
-        byte[][] names = variants.SelectMany(variant => Extensions.Select(extension =>
-            Encoding.ASCII.GetBytes("data\\reborn_armor_probe" + variant + extension + "\0"))).ToArray();
+        string stem = defaultRoute ? "data\\mod" : "data\\reborn_armor_probe";
+        string[] extensions = defaultRoute ? Extensions.Concat(new[] { ".version" }).ToArray() : Extensions;
+        byte[][] names = variants.SelectMany(variant => extensions.Select(extension =>
+            Encoding.ASCII.GetBytes(stem + variant + extension + "\0"))).ToArray();
+        byte[][] contents = variants.SelectMany(_ => defaultRoute ? payloads.Concat(new[] { Encoding.ASCII.GetBytes("\r\n") }) : payloads).ToArray();
         int directorySize = 16 + names.Sum(name => 8 + name.Length);
         int headerSize = (directorySize + 7) & ~7;
-        int size = checked(headerSize + variants.Length * payloads.Sum(payload => payload.Length));
+        int size = checked(headerSize + contents.Sum(payload => payload.Length));
         if (size > Limit) throw new InvalidDataException("Armor package exceeds one MiB.");
         byte[] bytes = new byte[size];
         Encoding.ASCII.GetBytes("BIG4").CopyTo(bytes, 0);
@@ -108,7 +113,7 @@ internal static class ArmorDiagnosticPackage
         int directoryOffset = 16, payloadOffset = headerSize;
         for (int index = 0; index < names.Length; index++)
         {
-            byte[] payload = payloads[index % 4];
+            byte[] payload = contents[index];
             BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(directoryOffset), (uint)payloadOffset);
             BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(directoryOffset + 4), (uint)payload.Length);
             names[index].CopyTo(bytes, directoryOffset + 8);

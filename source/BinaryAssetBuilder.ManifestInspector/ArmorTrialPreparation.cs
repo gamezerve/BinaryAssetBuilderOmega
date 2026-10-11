@@ -13,6 +13,8 @@ internal static class ArmorTrialPreparation
 {
     private const int Limit = 1024 * 1024;
     private const string Config = "add-big RebornArmorProbe.big\nadd-manifest data\\reborn_armor_probe.manifest\n";
+    // Reborn: mount only for the default-reader experiment; do not also queue the same mod reader.
+    private const string DefaultConfig = "add-big RebornArmorProbe.big\n";
     private static readonly string[] Extensions = { ".manifest", ".bin", ".relo", ".imp" };
 
     //-------------------------------------------------------------------------------------------------
@@ -59,7 +61,7 @@ internal static class ArmorTrialPreparation
     //-------------------------------------------------------------------------------------------------
     /** Reborn: publish one fresh candidate with a short mod identity, observed stream variants and a non-executable launch plan. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Prepare(string source, string directory)
+    internal static void Prepare(string source, string directory, bool defaultRoute = false)
     {
         source = Path.GetFullPath(source); directory = Path.GetFullPath(directory);
         CheckPath(Path.GetDirectoryName(directory)!);
@@ -70,19 +72,25 @@ internal static class ArmorTrialPreparation
         string sourceHash = Convert.ToHexString(SHA256.HashData(ReadBounded(source)));
         byte[][] payloads = ReadSource(source);
         if (Convert.ToHexString(SHA256.HashData(ReadBounded(source))) != sourceHash) throw new InvalidDataException("Trial source changed during admission.");
-        byte[] archive = ArmorDiagnosticPackage.Serialize(payloads, true);
+        byte[] archive = ArmorDiagnosticPackage.Serialize(payloads, true, defaultRoute);
+        string config = defaultRoute ? DefaultConfig : Config;
         Directory.CreateDirectory(directory);
         File.WriteAllBytes(Path.Combine(directory, "RebornArmorProbe.big"), archive);
-        File.WriteAllText(configPath, Config, new UTF8Encoding(false));
-        File.WriteAllText(Path.Combine(directory, "reborn_1.0.skudef"), Config, new UTF8Encoding(false));
+        File.WriteAllText(configPath, config, new UTF8Encoding(false));
+        File.WriteAllText(Path.Combine(directory, "reborn_1.0.skudef"), config, new UTF8Encoding(false));
         File.WriteAllText(Path.Combine(directory, "DO_NOT_LAUNCH_YET.txt"),
-            "Reborn: candidate only. Mod SKU is the same two-command mod fragment, NOT a replacement stock SKU. No launch or effective precedence proved. Separate game-test authorization and runtime preflight are required.\n");
-        Verify(directory, payloads);
+            "Reborn: candidate only. Mod SKU is the same mod fragment, NOT a replacement stock SKU. No launch or effective precedence proved. Separate game-test authorization and runtime preflight are required.\n");
+        Verify(directory, payloads, defaultRoute);
         var report = new { CandidatePrepared = true, OfflinePackageValidated = true, ConfigContentsValidated = true,
             OutputDirectory = directory, ConfigPath = configPath, ModSkuPath = Path.Combine(directory, "reborn_1.0.skudef"),
             ArchivePath = Path.Combine(directory, "RebornArmorProbe.big"), ArchiveBytes = archive.Length,
             ArchiveSha256 = Convert.ToHexString(SHA256.HashData(archive)), SourcePackageSha256 = sourceHash,
-            ManifestQueueArgument = "data\\reborn_armor_probe.manifest", StreamVariants = new[] { "", "_l", "_m" },
+            // Reborn: identify the route hypothesis explicitly, keeping all runtime acceptance flags false.
+            Route = defaultRoute ? "default-mod-reader" : "config-manifest-queue",
+            ManifestQueueArgument = defaultRoute ? null : "data\\reborn_armor_probe.manifest",
+            StreamStem = defaultRoute ? "data\\mod" : "data\\reborn_armor_probe",
+            ArchiveEntryCount = defaultRoute ? 15 : 12, VersionMarkerHex = defaultRoute ? "0D0A" : null,
+            StreamBytesUnchanged = true, StreamVariants = new[] { "", "_l", "_m" },
             RequestedArguments = new[] { "-modconfig", configPath }, WorkingDirectoryMustBeInstallation = true,
             ConfigConsumptionProven = false, ManifestLoadProven = false, OverrideAppliedInGame = false, GameExecuted = false,
             RuntimeReady = false, NextGate = "Separately authorized single controlled launch with effective config/package observation and GUN behavioral comparison." };
@@ -94,29 +102,34 @@ internal static class ArmorTrialPreparation
     //-------------------------------------------------------------------------------------------------
     /** Reborn: exact config text and all twelve independently indexed variant entries must recover the same four admitted stream payloads. */
     //-------------------------------------------------------------------------------------------------
-    private static void Verify(string directory, byte[][] expected)
+    private static void Verify(string directory, byte[][] expected, bool defaultRoute = false)
     {
         CheckPath(directory);
         foreach (string name in new[] { "reborn_1.0.cfg", "reborn_1.0.skudef" })
         {
             string path = Path.Combine(directory, name); CheckPath(path);
-            if (!File.ReadAllBytes(path).SequenceEqual(Encoding.ASCII.GetBytes(Config))) throw new InvalidDataException("Trial config differs.");
+            if (!File.ReadAllBytes(path).SequenceEqual(Encoding.ASCII.GetBytes(defaultRoute ? DefaultConfig : Config))) throw new InvalidDataException("Trial config differs.");
         }
         string archivePath = Path.Combine(directory, "RebornArmorProbe.big"); CheckPath(archivePath);
         if (new FileInfo(archivePath).Length > Limit) throw new InvalidDataException("Trial archive exceeds bound.");
         byte[] bytes = File.ReadAllBytes(archivePath);
         if (bytes.Length < 16 || Encoding.ASCII.GetString(bytes, 0, 4) != "BIG4"
             || BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(4)) != bytes.Length
-            || BinaryPrimitives.ReadUInt32BigEndian(bytes.AsSpan(8)) != 12) throw new InvalidDataException("Trial BIG header differs.");
-        using var archive = BigArchive.Open(archivePath, 12, 4096);
-        string[] names = new[] { "", "_l", "_m" }.SelectMany(variant => Extensions.Select(extension => "data\\reborn_armor_probe" + variant + extension)).ToArray();
+            || BinaryPrimitives.ReadUInt32BigEndian(bytes.AsSpan(8)) != (defaultRoute ? 15 : 12)) throw new InvalidDataException("Trial BIG header differs.");
+        using var archive = BigArchive.Open(archivePath, defaultRoute ? 15 : 12, 4096);
+        // Reborn: independently reconstruct the expected directory and per-family marker bytes for readback.
+        string[] extensions = defaultRoute ? Extensions.Concat(new[] { ".version" }).ToArray() : Extensions;
+        string stem = defaultRoute ? "data\\mod" : "data\\reborn_armor_probe";
+        string[] names = new[] { "", "_l", "_m" }.SelectMany(variant => extensions.Select(extension => stem + variant + extension)).ToArray();
         long offset = BinaryPrimitives.ReadUInt32BigEndian(bytes.AsSpan(12));
-        if (archive.Entries.Count != 12) throw new InvalidDataException("Trial variant count differs.");
-        for (int index = 0; index < 12; index++)
+        if (archive.Entries.Count != names.Length) throw new InvalidDataException("Trial variant count differs.");
+        for (int index = 0; index < names.Length; index++)
         {
             var entry = archive.Entries[index];
-            if (entry.Name != names[index] || entry.Offset != offset || entry.StoredSize != expected[index % 4].Length
-                || !archive.ReadEntry(entry, Limit).SequenceEqual(expected[index % 4])) throw new InvalidDataException("Trial variant bytes differ.");
+            int slot = index % extensions.Length;
+            byte[] payload = slot == 4 ? Encoding.ASCII.GetBytes("\r\n") : expected[slot];
+            if (entry.Name != names[index] || entry.Offset != offset || entry.StoredSize != payload.Length
+                || !archive.ReadEntry(entry, Limit).SequenceEqual(payload)) throw new InvalidDataException("Trial variant bytes differ.");
             offset += entry.StoredSize;
         }
         if (offset != bytes.Length) throw new InvalidDataException("Trial trailing bytes differ.");
@@ -125,11 +138,11 @@ internal static class ArmorTrialPreparation
     //-------------------------------------------------------------------------------------------------
     /** Reborn: exercise generated-file corruption and occupied-directory refusals without changing source or leaving damaged candidate bytes. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Controls(string source, string directory)
+    internal static void Controls(string source, string directory, bool defaultRoute = false)
     {
-        byte[][] expected = ReadSource(source); Verify(directory, expected);
+        byte[][] expected = ReadSource(source); Verify(directory, expected, defaultRoute);
         bool refused = false;
-        try { Prepare(source, directory); } catch (InvalidDataException) { refused = true; }
+        try { Prepare(source, directory, defaultRoute); } catch (InvalidDataException) { refused = true; }
         if (!refused) throw new InvalidDataException("Trial occupied output accepted.");
         foreach (string name in new[] { "reborn_1.0.cfg", "reborn_1.0.skudef", "RebornArmorProbe.big" })
         {
@@ -138,13 +151,13 @@ internal static class ArmorTrialPreparation
             try
             {
                 File.WriteAllBytes(path, damaged); refused = false;
-                try { Verify(directory, expected); } catch (InvalidDataException) { refused = true; }
+                try { Verify(directory, expected, defaultRoute); } catch (InvalidDataException) { refused = true; }
                 if (!refused) throw new InvalidDataException("Trial corruption accepted.");
             }
             finally { File.WriteAllBytes(path, original); }
         }
-        Verify(directory, expected);
-        Console.WriteLine("Armor trial controls: OK (12 exact entries, two exact config fragments, occupied directory and three corruptions refused; no game).");
+        Verify(directory, expected, defaultRoute);
+        Console.WriteLine($"Armor trial controls: OK ({(defaultRoute ? 15 : 12)} exact entries, two exact config fragments, occupied directory and three corruptions refused; no game).");
     }
 
     //-------------------------------------------------------------------------------------------------

@@ -79,3 +79,56 @@ weapon; collect startup and gameplay results separately. If no effect remains,
 establish actual config/BIG reads and then inspect reader/asset replacement
 ordering rather than expanding general debugger scaffolding. All effective
 load and override claims remain unproved.
+
+## Default-reader candidate prepared
+
+The next isolated candidate is now prepared at
+`artifacts/RebornArmorDefault-abb50afbef8745af952b8cc879c43aa9`.
+It contains fifteen BIG entries: three unchanged four-file v7 stream families
+under `data\mod{,_l,_m}`, each followed by its own CRLF-only `.version`.
+The BIG is 3,552 bytes, SHA-256
+`DD7DE09E3A81B9714DC2861ADE0AA9ECDFE72A1851EDD1ED20BE2155EF31C2DC`.
+Both `reborn_1.0.cfg` and the mod SKU fragment contain only
+`add-big RebornArmorProbe.big` followed by LF. There is no explicit manifest
+queue entry, no added stock reference, no patch base and no stock-file change.
+This is a routing experiment, not a proven fix or a playable SDK release.
+
+Reproduce under PowerShell 7 from the repository directory:
+
+```powershell
+# Reborn: generate a fresh default-reader candidate from successful ConYard PoC evidence; no game launch.
+& .\scripts\New-Ra3Ep1ArmorTrial.ps1 -DefaultReader -PocReport .\artifacts\RebornArmorPoc-31a740f7284746ab971f5b2539e286e7\readiness.json
+```
+
+The CLI exposes separate `armor-default-trial-prepare` and
+`armor-default-trial-controls` commands. Source admission is shared with the
+original candidate and still reproduces the actual authored GUN-5000 bytes.
+`ArmorDiagnosticPackage.Serialize` has a restricted opt-in default-route mode;
+the default four-entry serializer and twelve-entry queue mode remain intact.
+`ArmorTrialPreparation.Verify` independently checks fifteen names, contiguous
+ranges, complete stream bytes, three markers and exact config fragments.
+
+Completed validation:
+
+- Build and default-route preparation/control checks passed, including occupied
+  destination refusal and restored CFG/SKU/BIG corruption tests.
+- Independent `stream-variant-audit` passed for `data/mod`, `data/mod_l` and
+  `data/mod_m`: each v7 manifest and sidecar header has checksum `33DF1C99`.
+- Existing queue controls passed. A newly prepared queue package retained
+  its exact earlier SHA-256; using queue controls against the default candidate
+  deliberately refused the different config. An initial regression invocation
+  with relative directory arguments correctly refused them; rerunning with
+  required absolute paths passed.
+- A fresh five-step PoC passed at `RebornArmorPoc-31a740f7284746ab971f5b2539e286e7`;
+  its original four-entry BIG remained 1,222 bytes with the same digest.
+- `Invoke-Ra3Ep1ArmorTrial.ps1 -DefaultReader` passed **without `-Run`**:
+  reviewed stock identities/campaign digest, archive presence, candidate
+  digest/config and absence of existing Uprising processes were checked.
+
+The launch helper now selects only one of the two fixed reviewed candidates;
+it accepts no arbitrary path or caller-provided hash. Its original queue route
+is unchanged. `-DefaultReader` alone does not launch. A future separately
+authorized `-DefaultReader -Run` would start exactly once with the stock
+launcher and installation working directory, retaining read-only candidate
+handles during observation. No game has been started with this second package.
+The full compiler suite was not rerun in this focused change.

@@ -1,10 +1,13 @@
 # Reborn: one explicitly authorized armor candidate launch; no debugger, installation writes, retries or process termination.
 [CmdletBinding()]
-param([switch]$Run)
+param([switch]$Run,[switch]$DefaultReader)
 $ErrorActionPreference='Stop'
 if($PSVersionTable.PSVersion.Major -lt 7){throw 'PowerShell 7 is required.'}
 $repo=Split-Path -Parent $PSScriptRoot
-$trial=Join-Path $repo 'artifacts/RebornArmorTrial-0f2a34bd39dd4eef9946d7e3b818f57f'
+# Reborn: select only one of two separately admitted fixed candidates, never a caller-supplied config or digest.
+$trial=Join-Path $repo $(if($DefaultReader){'artifacts/RebornArmorDefault-abb50afbef8745af952b8cc879c43aa9'}else{'artifacts/RebornArmorTrial-0f2a34bd39dd4eef9946d7e3b818f57f'})
+$expectedBytes=if($DefaultReader){3552}else{3650}
+$expectedHash=if($DefaultReader){'DD7DE09E3A81B9714DC2861ADE0AA9ECDFE72A1851EDD1ED20BE2155EF31C2DC'}else{'3FE964292FA72A1DF961EC93D3CFDA884E1334F55ACB294FF75FE1E4144F3F85'}
 $root='D:\Program Files (x86)\Steam\steamapps\common\Command and Conquer Red Alert 3 Uprising'
 $config=Join-Path $trial 'reborn_1.0.cfg'
 $archive=Join-Path $trial 'RebornArmorProbe.big'
@@ -33,11 +36,11 @@ try {
     Assert-Ep11ConfigNamePolicy $config
     $cfgHandle=Open-RebornFrozenFile $config
     $bigHandle=Open-RebornFrozenFile $archive
-    $expected=[Text.Encoding]::ASCII.GetBytes("add-big RebornArmorProbe.big`nadd-manifest data\reborn_armor_probe.manifest`n")
+    $expected=[Text.Encoding]::ASCII.GetBytes($(if($DefaultReader){"add-big RebornArmorProbe.big`n"}else{"add-big RebornArmorProbe.big`nadd-manifest data\reborn_armor_probe.manifest`n"}))
     if($cfgHandle.Length-ne $expected.Length){throw 'Candidate config length differs.'}
     $actual=[byte[]]::new($expected.Length);$cfgHandle.ReadExactly($actual)
     if([Convert]::ToHexString($actual)-cne [Convert]::ToHexString($expected)){throw 'Candidate config bytes differ.'}
-    if($bigHandle.Length-ne 3650 -or [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bigHandle))-cne '3FE964292FA72A1DF961EC93D3CFDA884E1334F55ACB294FF75FE1E4144F3F85'){throw 'Candidate archive digest differs.'}
+    if($bigHandle.Length-ne $expectedBytes -or [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bigHandle))-cne $expectedHash){throw 'Candidate archive digest differs.'}
     $sku=Join-Path $root 'RA3EP1_english_1.1.SkuDef'
     foreach($line in Get-Content -LiteralPath $sku){if($line.StartsWith('add-big ')){
         $file=Join-Path $root $line.Substring(8)

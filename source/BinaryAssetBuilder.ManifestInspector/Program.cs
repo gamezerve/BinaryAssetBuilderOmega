@@ -14,11 +14,12 @@ internal static class Program
         try
         {
             // Reborn: candidate config/package preparation and detached controls never launch the engine or replace stock files.
-            if (args.Length == 3 && args[0] is "armor-trial-prepare" or "armor-trial-controls")
+            if (args.Length == 3 && args[0] is "armor-trial-prepare" or "armor-trial-controls" or "armor-default-trial-prepare" or "armor-default-trial-controls")
             {
                 CompilerSmokeTest.InitializeHashProvider();
-                if (args[0] == "armor-trial-prepare") ArmorTrialPreparation.Prepare(args[1], args[2]);
-                else ArmorTrialPreparation.Controls(args[1], args[2]);
+                bool defaultRoute = args[0].StartsWith("armor-default-", StringComparison.Ordinal);
+                if (args[0].EndsWith("-prepare", StringComparison.Ordinal)) ArmorTrialPreparation.Prepare(args[1], args[2], defaultRoute);
+                else ArmorTrialPreparation.Controls(args[1], args[2], defaultRoute);
                 return 0;
             }
             // Reborn: inspect a caller-selected version-marker stream family without codecs, compiler initialization or game execution.
@@ -1473,6 +1474,9 @@ internal static class Program
         // Reborn: prepare or verify only the isolated candidate, never launch a game.
         Console.WriteLine("  armor-trial-prepare <conyard-package.big> <new-output-directory>");
         Console.WriteLine("  armor-trial-controls <conyard-package.big> <owned-output-directory>");
+        // Reborn: default-reader candidate preparation is a separate offline experiment, never a runtime switch.
+        Console.WriteLine("  armor-default-trial-prepare <conyard-package.big> <new-output-directory>");
+        Console.WriteLine("  armor-default-trial-controls <conyard-package.big> <owned-output-directory>");
     }
 
     private sealed record TypeFingerprint(uint TypeId, uint TypeHash, uint? Tokenized);

@@ -2,6 +2,8 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)][string]$PocReport,
+    # Reborn: opt into the separate default-mod-reader experiment without changing the original queue candidate.
+    [switch]$DefaultReader,
     [string]$GameRoot='D:\Program Files (x86)\Steam\steamapps\common\Command and Conquer Red Alert 3 Uprising'
 )
 $ErrorActionPreference='Stop'
@@ -55,11 +57,13 @@ foreach($relative in @('Data\maps','Data\mapmetadata.bin','Data\mapmetadata.imp'
 $output=@(& (Get-Command dotnet).Source build (Join-Path $repo 'source/BinaryAssetBuilder.ManifestInspector/BinaryAssetBuilder.ManifestInspector.csproj') --no-restore -c Release -p:Platform=x86 -m:1 -nr:false -v:q 2>&1)
 if($LASTEXITCODE-ne 0){$output;throw 'Trial helper build failed.'}
 $executable=Join-Path $repo 'source/BinaryAssetBuilder.ManifestInspector/bin/x86/Release/net8.0/BinaryAssetBuilder.ManifestInspector.exe'
-$directory=Join-Path $repo ('artifacts/RebornArmorTrial-'+[guid]::NewGuid().ToString('N'))
+$directory=Join-Path $repo ('artifacts/'+$(if($DefaultReader){'RebornArmorDefault-'}else{'RebornArmorTrial-'})+[guid]::NewGuid().ToString('N'))
 $config=Join-Path $directory 'reborn_1.0.cfg'; Assert-Ep11ConfigNamePolicy $config
-$json=@(& $executable armor-trial-prepare $package $directory)
+$prepareCommand=if($DefaultReader){'armor-default-trial-prepare'}else{'armor-trial-prepare'}
+$controlCommand=if($DefaultReader){'armor-default-trial-controls'}else{'armor-trial-controls'}
+$json=@(& $executable $prepareCommand $package $directory)
 if($LASTEXITCODE-ne 0){throw 'Trial candidate preparation failed; inspect retained output.'}
-$controls=@(& $executable armor-trial-controls $package $directory)
+$controls=@(& $executable $controlCommand $package $directory)
 if($LASTEXITCODE-ne 0){throw 'Trial detached controls failed; do not launch.'}
 $plan=$json-join [Environment]::NewLine|ConvertFrom-Json
 # Reborn: preserve distinct static/offline versus runtime claims and emit launch arguments as data only, never execute them.
