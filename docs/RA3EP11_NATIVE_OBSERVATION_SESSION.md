@@ -60,7 +60,9 @@ none and does not assume that generated commands have run. A printed marker
 alone does not establish the Windows debugger stop state.
 
 The helper's single-site cooperative clear/detach control is **not** copied
-as native five-site cleanup. Native cleanup still needs an independently
+as native five-site cleanup. The follow-up [cleanup evidence session](RA3EP11_NATIVE_CLEANUP_SESSION.md)
+now validates ordered supplied five-site evidence against private admission
+copies. Actual native cleanup still needs an independently
 validated empty listing and all five original bytes, before/after detach,
 plus an explicit unresolved-transport policy. Lost transport and unknown stops
 remain unresolved. See [helper recovery](RA3EP11_COOPERATIVE_HELPER_RECOVERY.md).

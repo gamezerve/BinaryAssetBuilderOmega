@@ -7,14 +7,26 @@
 #-------------------------------------------------------------------------------------------------
 function New-Ep11NativeObservationSession($Plan,$Identity,[string]$InitialText,[scriptblock]$ReadRange,[string]$ProbePath,[scriptblock]$ReadCapture) {
     if($Plan.Kind -cne 'NativeEp11'){throw 'Observation requires the native admission profile.'}
-    $decision=Get-Ep11SupervisorAdmissionDecision $Plan $Identity $InitialText $ReadRange
+    # Reborn: retain private copies of the exact admitted transfers, never accept caller-supplied replacement original bytes during cleanup.
+    $admittedBytes=@{};$originalRangeReader=$ReadRange
+    $captureRange={param($range)
+        # Reborn: the shared gate still validates status/count/hash; copies become usable only after that complete decision succeeds.
+        $records=@(& $originalRangeReader $range)
+        if($records.Count -eq 1 -and $records[0].Bytes -is [byte[]]){$admittedBytes[$range.Name]=[byte[]]$records[0].Bytes.Clone()}
+        $records
+    }
+    $decision=Get-Ep11SupervisorAdmissionDecision $Plan $Identity $InitialText $captureRange
     $sites=@(0x4d86b0L,0x4d86f2L,0x4d8725L,0x4d9040L,0x4d98abL)
+    $originalBytes=[byte[]]::new(5);$index=0
     foreach($site in $sites){
-        if(@($Plan.Ranges|Where-Object {$_.Address -le $site -and $site -lt [long]$_.Address+$_.Length}).Count -ne 1){throw 'Observation site not uniquely covered by admitted ranges.'}
+        $range=@($Plan.Ranges|Where-Object {$_.Address -le $site -and $site -lt [long]$_.Address+$_.Length})
+        if($range.Count -ne 1){throw 'Observation site not uniquely covered by admitted ranges.'}
+        $originalBytes[$index]=$admittedBytes[$range[0].Name][[int]($site-$range[0].Address)]
+        if($originalBytes[$index] -eq 0xcc){throw 'Observation site already contains a trap byte.'};$index++
     }
     $decoder=New-Ep11ConfigSnapshotSession $Identity.ProcessId $ProbePath $ReadCapture -FilterProbeEntries
     return @{Status='AwaitStop';Decoder=$decoder;Sites=$sites;StopNonce=[guid]::NewGuid().ToString('N');StopCount=0;PendingStop=$null;
-        Admission=$decision;SuppliedStopContextPairs=0;NeedsBreakpointCleanup=$false;NativeRunEnabled=$false}
+        Admission=$decision;OriginalSiteBytes=$originalBytes;AdmittedIdentity=$Identity.PSObject.Copy();SuppliedStopContextPairs=0;NeedsBreakpointCleanup=$false;NativeRunEnabled=$false}
 }
 
 #-------------------------------------------------------------------------------------------------

@@ -3,6 +3,14 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 11, 2026
 
+Latest cleanup integration: [five-site native evidence session](docs/RA3EP11_NATIVE_CLEANUP_SESSION.md).
+Original site bytes now come from private admission-captured copies. A known
+matching stop, an empty breakpoint list, five original bytes before detach,
+normal debugger exit and five bytes after detach are separately required.
+Two detached positives / 207 refusal and retry checks pass; observation failure
+is preserved. No actual clear/detach or game operation was performed, and real
+cleanup proof is still required. Native execution remains disabled. **52% / 48%**.
+
 Latest integration: [native admission-to-observation session](docs/RA3EP11_NATIVE_OBSERVATION_SESSION.md).
 The pinned native gate now feeds an exact-probe decoder through independently
 matched stop/context PID, thread and site identities before memory captures.
