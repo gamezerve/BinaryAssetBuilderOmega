@@ -47,6 +47,13 @@ pass; success logs contain neither failure marker. ZIP SHA256:
 `D6E70F459B066A9301589A3CA758FF4A31ED182373BBB53050FE156770C2118A`.
 This local artifact is not a public release or a new gameplay test.
 
+A [user-supplied dependency overlay](docs/RA3EP1_ALPHA_OVERLAY.md) now separates
+EA Studio and official schemas from the candidate ZIP. Clean setup verifies
+eight pinned external files, refuses mismatched/occupied inputs and reproduces
+both sample builds. Its relative manifest excludes absolute preparation paths.
+Compiler/fixture provenance and embedded metadata review remain; no public
+release artifact has been uploaded.
+
 | User-visible milestone | Current evidence |
 | --- | --- |
 | Compile a focused ArmorTemplate XML path | Schema, plugin and document controls pass |

@@ -1,0 +1,48 @@
+# Reborn: stage an overlay candidate from a verified local workspace, excluding external EA/schema files and all absolute provenance; no public upload.
+[CmdletBinding()]
+param([Parameter(Mandatory)][string]$Workspace,[Parameter(Mandatory)][string]$OutputDirectory)
+$ErrorActionPreference='Stop'
+if($PSVersionTable.PSVersion.Major-lt 7){throw 'PowerShell 7 is required.'}
+$Workspace=[IO.Path]::GetFullPath($Workspace);$OutputDirectory=[IO.Path]::GetFullPath($OutputDirectory)
+if((Split-Path -Parent $Workspace)-cne (Split-Path -Parent $OutputDirectory)){throw 'Overlay must be a fresh sibling of the local workspace.'}
+$archive=$OutputDirectory+'-OVERLAY-CANDIDATE.zip'
+foreach($path in @($OutputDirectory,$archive)){if(Test-Path -LiteralPath $path){throw 'Overlay output already exists; nothing overwritten.'}}
+for($item=Get-Item -LiteralPath $Workspace;$null-ne $item;$item=$item.Parent){if(($item.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0){throw 'Redirected workspace refused.'}}
+$inventory=Get-Content -LiteralPath (Join-Path $Workspace 'workspace-preparation.json') -Raw|ConvertFrom-Json
+$files=[Collections.Generic.List[object]]::new();$requirements=[Collections.Generic.List[object]]::new()
+$copies=[Collections.Generic.List[object]]::new();$seen=[Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach($entry in $inventory.Files){
+    if(-not $entry.Relative -or [IO.Path]::IsPathRooted($entry.Relative) -or $entry.Relative.Contains('..') -or $entry.Relative.Contains(':') -or -not $seen.Add($entry.Relative)){throw 'Invalid or duplicate inventory path.'}
+    $source=Join-Path $Workspace $entry.Relative
+    for($item=Get-Item -LiteralPath $source;$null-ne $item;$item=if($item.PSIsContainer){$item.Parent}else{$item.Directory}){if(($item.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0){throw 'Redirected inventory input refused.'}}
+    if((Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash-cne $entry.Sha256){throw 'Source workspace inventory differs.'}
+    # Reborn: EA executable/DLL/EULA and all official XSD graph files are requirements, not redistribution payload.
+    if($entry.Origin-ceq 'user-supplied-EA-SDK-local-use-only'){
+        $requirements.Add([pscustomobject]@{Relative=$entry.Relative;InputRelative=$entry.Relative;Kind='EA-Studio';Sha256=$entry.Sha256})
+    }elseif($entry.Relative.StartsWith('schemas/ra3ep1/xsd/',[StringComparison]::Ordinal)){
+        $requirements.Add([pscustomobject]@{Relative=$entry.Relative;InputRelative=$entry.Relative.Substring('schemas/ra3ep1/xsd/'.Length);Kind='EA-Schema';Sha256=$entry.Sha256})
+    }else{
+        $files.Add([pscustomobject]@{Relative=$entry.Relative;Sha256=$entry.Sha256})
+        $copies.Add([pscustomobject]@{Source=$source;Relative=$entry.Relative;Sha256=$entry.Sha256})
+    }
+}
+# Reborn: own setup/docs are explicit additions rather than copying arbitrary repository files.
+foreach($pair in @(@('Initialize-Ra3Ep1AlphaOverlay.ps1','scripts/Initialize-Ra3Ep1AlphaOverlay.ps1'),@('../alpha/OVERLAY.md','OVERLAY.md'))){
+    $source=Join-Path $PSScriptRoot $pair[0];$hash=(Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash
+    if(-not $seen.Add($pair[1])){throw 'Overlay addition duplicates inventory.'}
+    $files.Add([pscustomobject]@{Relative=$pair[1];Sha256=$hash});$copies.Add([pscustomobject]@{Source=$source;Relative=$pair[1];Sha256=$hash})
+}
+if($requirements.Count-ne 8){throw 'Expected three supplied Studio files and five external schema files.'}
+$null=New-Item -ItemType Directory -Path $OutputDirectory
+foreach($copy in $copies){
+    $target=Join-Path $OutputDirectory $copy.Relative;$null=New-Item -ItemType Directory -Path (Split-Path -Parent $target) -Force
+    Copy-Item -LiteralPath $copy.Source -Destination $target
+    if((Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash-cne $copy.Sha256){throw 'Overlay copy differs.'}
+}
+# Reborn: export only relative file names and digests, never Source/Workspace/compiler log or personal path fields.
+$manifest=[pscustomobject]@{Format='RebornAlphaOverlay1';Files=$files;Requirements=$requirements;
+    PublicRedistributionReviewed=$false;RequiresUserSuppliedEaFiles=$true}
+[IO.File]::WriteAllText((Join-Path $OutputDirectory 'overlay-manifest.json'),($manifest|ConvertTo-Json -Depth 6))
+Compress-Archive -Path (Join-Path $OutputDirectory '*') -DestinationPath $archive
+[pscustomobject]@{Archive=$archive;ArchiveSha256=(Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash;
+    IncludedFiles=$files.Count;ExternalDependencies=$requirements.Count;PublicRedistributionReviewed=$false;GameExecuted=$false}

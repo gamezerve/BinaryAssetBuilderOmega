@@ -6,8 +6,8 @@ User-provided screenshot/log evidence now confirms actual Studio loading,
 Reborn selection, output capture and successful completion, with independently
 verified package bytes. A subsequent Error Log screenshot confirms ALPHA001 and
 ALPHA002 under Warnings. The corrected InvalidXml screenshot also confirms the
-failure callback without Build Completed. The older local ZIP predates this
-fix; fresh packaging remains required. These checks do not establish all
+failure callback without Build Completed. Updated local packaging passes clean
+extraction with the fix. These checks do not establish all
 original Studio features.
 
 Supported: exactly one flattened `AlliedConYardArmor` with thirteen ordered armor
@@ -52,3 +52,7 @@ is still open; do not upload this workspace as a reviewed release ZIP.
 
 This candidate contains a focused compiler executable with additional developer
 commands; only the documented armor backend is part of the alpha scope.
+
+For the separate dependency overlay candidate, see OVERLAY.md when supplied.
+It requires user-supplied matching EA components/schema files rather than
+bundling them. Compiler/fixture provenance review still precedes public release.

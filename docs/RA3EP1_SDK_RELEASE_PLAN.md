@@ -22,6 +22,12 @@ and help now pass fresh extraction and both sample builds in extracted-c.
 Public distribution/rights review remains. Do not label it
 as a validated public SDK release. See [workspace evidence](RA3EP1_ALPHA_WORKSPACE.md).
 
+A separate [overlay candidate](RA3EP1_ALPHA_OVERLAY.md) now passes clean setup
+and both offline sample builds without bundling EA Studio or official schemas.
+Eight external dependency hashes are verified before copying; the manifest has
+no absolute preparation paths. Compiler/fixture provenance and embedded metadata
+review still prevent treating this packaging candidate as a public-ready release.
+
 | Deliverable | Remaining gates | Working effort estimate |
 | --- | --- | --- |
 | Limited EA-UI SDK alpha | Editable GUN/Core/package path, corrected clean extraction, Studio success, warning/error classification, corrected failure callback, subsequent success and local help pass; public distribution review remains | Local-use candidate is available now; public-ready packaging is a separate dependency/setup/metadata review, not an all-processors prerequisite |
