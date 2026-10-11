@@ -16,6 +16,7 @@ ArmorTemplate mod, not more general debugger preparation or all 1,390 types.
 | Package the verified linked family | [Diagnostic BIG4 passes](docs/RA3EP1_ARMOR_DIAGNOSTIC_PACKAGE.md): four exact archive entries and corruption/no-overwrite controls |
 | Prepare a behavior-changing asset | [AlliedConYardArmor GUN 100 → 5000](docs/RA3EP1_ALLIED_CONYARD_OVERRIDE.md) is packaged; stock baseline matches and all other bytes are preserved |
 | Prepare its runtime loading route | [Workspace candidate prepared](docs/RA3EP1_ARMOR_TRIAL_PREPARATION.md): short config identity, twelve BIG entries and detached controls pass; effective runtime route remains unproved |
+| Start with the armor candidate | One authorized trial reached the main menu (user observation); 37 direct 1.1 child snapshots carried the exact config argument. Config reads and gameplay override remain unproved |
 | Load our authored change in Uprising | Not demonstrated; no playable mod result yet |
 
 Run `scripts/Invoke-Ra3Ep1ArmorPoc.ps1` under PowerShell 7 to reproduce the

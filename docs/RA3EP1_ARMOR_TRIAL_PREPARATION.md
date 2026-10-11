@@ -4,8 +4,9 @@
 
 The GUN 100 → 5000 override now has a workspace-only candidate loading
 fragment and a twelve-entry BIG4. Preparation and detached checks pass.
-No game was started, no installed files were modified, and neither config
-consumption nor an in-game armor override has been demonstrated.
+Preparation started no game and modified no installed files. A subsequent
+separately authorized single launch reached the main menu (user observation).
+Neither config consumption nor an in-game armor override has been demonstrated.
 
 Latest preparation artifact: `artifacts/RebornArmorTrial-0f2a34bd39dd4eef9946d7e3b818f57f`.
 Its `preparation.json` records the input PoC, installation pins, archive
@@ -111,3 +112,27 @@ unchanged damage is not success. Report no window, error, or unchanged
 behavior separately; close the test normally rather than auto-killing
 existing processes. Runtime load/override claims remain false until
 the corresponding observation exists.
+
+## First authorized candidate launch
+
+`scripts/Invoke-Ra3Ep1ArmorTrial.ps1` admits only the fixed, reviewed candidate
+directory and digest above. Without `-Run` it is preflight-only. With `-Run`
+it repeats the existing strict stock baseline preflight, checks stock archive
+presence, locks the exact candidate CFG/BIG read-only, refuses existing
+Uprising processes and starts the launcher once. It observes only the direct
+selected 1.1 child for approximately thirty seconds. No retry, debugger or
+process termination is implemented; the inert baseline script was not relaxed.
+This fixed-path trial is not a general-purpose mod launcher.
+
+The first sandboxed preflight could not access CIM process information and
+stopped before launch. The approved out-of-sandbox preflight passed, followed
+by exactly one authorized launch. Artifact:
+`artifacts/ArmorLaunch-62ad536da6014faca2ad86c71628f6f5/launch.json`.
+Launcher PID 45516 was recorded, with no observation failure. Thirty-seven
+direct `ra3ep1_1.1.game` snapshots matched the candidate `-modconfig` argument.
+The user confirmed the main menu opened. A separate `user-observation.json`
+retains that statement; it is not a process-derived assertion.
+
+Command-line visibility and a menu do not prove config reads, manifest loads
+or effective asset replacement. The GUN gameplay comparison is pending.
+The observer left the game running and changed no installation files.
