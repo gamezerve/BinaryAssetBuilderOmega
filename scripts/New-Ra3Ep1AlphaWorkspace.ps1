@@ -61,6 +61,8 @@ $files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/mods/Reborn/data/mod
 # Reborn: include a non-GUN editable example without claiming gameplay validation or enabling another asset identity.
 $files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/mods/ArmorCannon/data/mod.xml');Relative='mods/ArmorCannon/data/mod.xml';Origin='project-sample'})
 $files.Add([pscustomobject]@{Source=(Join-Path $repo 'samples/armor/AlliedConYardArmor.xml');Relative='mods/Armor250/data/mod.xml';Origin='project-sample'})
+# Reborn: expose only the separately stock-matched Soviet yard identity; still one armor per selected mod.
+$files.Add([pscustomobject]@{Source=(Join-Path $repo 'samples/armor/SovietConYardArmor.xml');Relative='mods/SovietArmor/data/mod.xml';Origin='project-sample'})
 foreach($name in @('EALAModStudio.exe','EALABuild.dll','EULA for RA3 MOD SDK.rtf')){
     $files.Add([pscustomobject]@{Source=(Join-Path $StudioDirectory $name);Relative=$name;Origin='user-supplied-EA-SDK-local-use-only'})
 }

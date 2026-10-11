@@ -63,19 +63,23 @@ try {
         if($LASTEXITCODE-ne 0){$json|Write-Output;throw 'Selected XML failed alpha armor admission.'}
         $admission=($json-join [Environment]::NewLine)|ConvertFrom-Json
         if($ValidateOnly){Write-Output ('Reborn: selected mod input admitted; validation only, no package built. '+$directory);return}
-        Write-Output 'Warning: ALPHA002 Only AlliedConYardArmor is build-enabled: thirteen ordered coefficients and five optional scalars, integer 0..10000. Only the earlier GUN=5000 recipe has gameplay evidence; other edits require runtime testing.'
+        Write-Output 'Warning: ALPHA002 Only AlliedConYardArmor and SovietConYardArmor are build-enabled, one per build: thirteen ordered coefficients and five optional scalars, integer 0..10000. Allied GUN/CANNON have user-observed gameplay evidence; Soviet and other edits require runtime testing.'
         $output=Join-Path $directory 'build'
         & $exe armor-authored-build $snapshot $output $StaticManifest
         if($LASTEXITCODE-ne 0){throw 'Authored XML/Core/package build failed.'}
         $buildReceipt=Join-Path $output 'authored-build.json'
         $build=Get-Content -LiteralPath $buildReceipt -Raw|ConvertFrom-Json
         if(-not $build.ActualCoreOutputUsed -or -not $build.AuthoredPayloadVerified -or $build.GunPercent-ne $admission.GunPercent){throw 'Authored build receipt differs from admitted input.'}
+        # Reborn: require the authored identity at both stages; an old compiler cannot silently relabel another faction's package.
+        if($admission.ArmorId-cne $root.GetAttribute('id') -or $build.ArmorId-cne $admission.ArmorId){throw 'Compiled armor identity differs from selected input.'}
         # Reborn: compare the whole expanded authored value set, not only GUN; old narrow compiler receipts fail closed.
         if($build.EditableFloatCount-ne 18 -or $admission.EditableFloatCount-ne 18 -or @($build.Percentages.PSObject.Properties).Count-ne 18 -or @($admission.Percentages.PSObject.Properties).Count-ne 18){throw 'Expanded armor receipt must describe all eighteen fields.'}
         foreach($property in $admission.Percentages.PSObject.Properties){
             if($null-eq $build.Percentages.PSObject.Properties[$property.Name] -or $build.Percentages.PSObject.Properties[$property.Name].Value-ne $property.Value){throw 'Compiled percentage receipt differs from admitted input.'}
         }
         $receipt=[pscustomobject]@{SelectedModXml=$ModXml;SelectedModXmlSha256=([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)));AdmissionReport=(Join-Path $directory 'admitted/admission.json');BuildReceipt=$buildReceipt;GunPercent=$build.GunPercent;EditableFloatCount=18;Percentages=$build.Percentages;CompilerPath=$exe;CompilerSha256=(Get-FileHash -LiteralPath $exe -Algorithm SHA256).Hash;PrebuiltCompilerUsed=[bool]$CompilerDirectory;SelectedInputAdmitted=$true;CanonicalFixedRecipeUsed=$false;InstalledFilesModified=$false;GameExecuted=$false}
+        # Reborn: expose the verified selected identity in the final alpha receipt as well as the admission/Core receipts.
+        $receipt|Add-Member -NotePropertyName ArmorId -NotePropertyValue $build.ArmorId
         [IO.File]::WriteAllText((Join-Path $directory 'alpha-build.json'),($receipt|ConvertTo-Json))
         Write-Output ('Reborn: build succeeded. BIG: '+$build.PackagePath)
         Write-Output ('Reborn: config: '+$build.ConfigPath)

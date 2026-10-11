@@ -1,5 +1,9 @@
 # Expanded ConYard armor authoring — October 11, 2026
 
+Capability update — October 12, 2026: [SovietConYardArmor authoring](RA3EP1_SOVIET_ARMOR_AUTHORING.md)
+now passes its own stock/Core/package regression. The Allied-only scope below
+records the earlier stage, not the current two-identity allowlist.
+
 Outcome update — October 12, 2026: the user reported markedly increased damage
 in the separately authorized CANNON trial. The preparation notes below retain
 their original offline-only status; the new observation is recorded separately

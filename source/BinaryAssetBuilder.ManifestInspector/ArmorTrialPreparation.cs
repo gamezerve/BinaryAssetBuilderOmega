@@ -29,7 +29,11 @@ internal static class ArmorTrialPreparation
         ArmorDiagnosticPackage.Verify(path, payloads);
         var manifest = ManifestReader.Read(payloads[0]);
         var entry = manifest.Assets.Single();
-        var identity = new InstanceHandle("ArmorTemplate", "AlliedConYardArmor");
+        // Reborn: reconstruct and admit the snapshot before selecting the expected manifest identity; legacy packages remain Allied-only.
+        string fixtures = Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!;
+        XmlDocument xml = new() { XmlResolver = null }; xml.Load(Path.Combine(fixtures, "AlliedConYardArmorProbe.xml"));
+        if (authoredXml != null) xml.LoadXml(ArmorAuthoringAdmission.Admit(Encoding.UTF8.GetBytes(authoredXml)).Xml);
+        var identity = new InstanceHandle("ArmorTemplate", ArmorAuthoringAdmission.Identity(xml.DocumentElement!.OuterXml));
         if (manifest.Validate().Count != 0 || manifest.Header.Version != 7 || !manifest.Header.IsLinked
             || manifest.Header.AllTypesHash != 0x5454A8E9u || manifest.ReferencedManifests.Count != 0
             || entry.TypeId != identity.TypeId || entry.TypeHash != 0xA0E237D8u || entry.InstanceId != identity.InstanceId
@@ -37,11 +41,8 @@ internal static class ArmorTrialPreparation
             || entry.InstanceDataSize != 856 || entry.RelocationDataSize != 8 || entry.ImportsDataSize != 0)
             throw new InvalidDataException("Trial source armor identity differs.");
         // Reborn: reproduce actual current authored compiler bytes, not just a claimed GUN number in JSON.
-        string fixtures = Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!;
-        XmlDocument xml = new() { XmlResolver = null }; xml.Load(Path.Combine(fixtures, "AlliedConYardArmorProbe.xml"));
-        // Reborn: variable builds must reproduce the separately admitted authored snapshot; legacy commands retain their fixed fixture.
-        if (authoredXml != null) xml.LoadXml(ArmorAuthoringAdmission.Admit(Encoding.UTF8.GetBytes(authoredXml)).Xml);
-        if (xml.DocumentElement!.GetAttribute("id") != "AlliedConYardArmor"
+        // Reborn: legacy commands retain the fixed GUN-5000 fixture; variable builds already reproduced the admitted snapshot above.
+        if (!ArmorAuthoringAdmission.SupportedIdentity(xml.DocumentElement!.GetAttribute("id"))
             || (authoredXml == null && xml.DocumentElement.ChildNodes.OfType<XmlElement>().Single(item => item.GetAttribute("Damage") == "GUN").GetAttribute("Percent") != "5000"))
             throw new InvalidDataException("Trial authored fixture differs.");
         var chunk = ArmorTokenSmokeTest.Compile(ArmorTokenSmokeTest.LoadSchemas(fixtures), xml.DocumentElement.OuterXml);

@@ -14,6 +14,18 @@ internal static class ArmorAuthoringAdmission
     private const string Namespace = "uri:ea.com:eala:asset";
     // Reborn: preserve the tokenizer's root field order; list shape, damage identities and pointer fields remain immutable.
     internal static readonly string[] ScalarFields = { "Default", "DamageScalar", "SideDamageScalar", "RearDamageScalar", "FlankedPenalty" };
+    // Reborn: admit only same-shape faction yards whose untouched baseline must separately match the supplied stock stream.
+    internal static bool SupportedIdentity(string identity) => identity is "AlliedConYardArmor" or "SovietConYardArmor";
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: extract only the bounded supported standalone identity, never a manifest-supplied name. */
+    //-------------------------------------------------------------------------------------------------
+    internal static string Identity(string xml)
+    {
+        string identity = Parse(Encoding.UTF8.GetBytes(xml)).DocumentElement!.GetAttribute("id");
+        if (!SupportedIdentity(identity)) throw new InvalidDataException("Unsupported armor identity.");
+        return identity;
+    }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prohibit DTD/entity resolution and admit a complete small XML document before any output is created. */
@@ -39,10 +51,11 @@ internal static class ArmorAuthoringAdmission
         var reference = Parse(File.ReadAllBytes(Path.Combine(fixtures, "AlliedConYardArmorProbe.xml")));
         var root = document.DocumentElement ?? throw new InvalidDataException("Armor root absent.");
         var expected = reference.DocumentElement!;
-        if (root.LocalName != "ArmorTemplate" || root.NamespaceURI != Namespace || root.GetAttribute("id") != "AlliedConYardArmor"
+        if (root.LocalName != "ArmorTemplate" || root.NamespaceURI != Namespace || !SupportedIdentity(root.GetAttribute("id"))
             || root.Attributes.Cast<XmlAttribute>().Any(attribute => attribute.Name != "id" && attribute.Name != "xmlns" && !ScalarFields.Contains(attribute.Name))
             || document.ChildNodes.Cast<XmlNode>().Any(node => node is not XmlElement && node is not XmlDeclaration))
-            throw new InvalidDataException("Only the standalone AlliedConYardArmor root is admitted.");
+            throw new InvalidDataException("Only standalone AlliedConYardArmor or SovietConYardArmor is admitted.");
+        expected.SetAttribute("id", root.GetAttribute("id"));
         var entries = root.ChildNodes.Cast<XmlNode>().ToArray();
         var originals = expected.ChildNodes.OfType<XmlElement>().ToArray();
         if (entries.Length != 13 || originals.Length != 13) throw new InvalidDataException("Exactly thirteen ordered armor entries are required.");
@@ -65,6 +78,7 @@ internal static class ArmorAuthoringAdmission
         var schemas = ArmorTokenSmokeTest.LoadSchemas(fixtures);
         var compiled = ArmorTokenSmokeTest.Compile(schemas, canonical);
         reference = Parse(File.ReadAllBytes(Path.Combine(fixtures, "AlliedConYardArmorProbe.xml")));
+        reference.DocumentElement!.SetAttribute("id", root.GetAttribute("id"));
         reference.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(item => item.GetAttribute("Damage") == "GUN").SetAttribute("Percent", "100");
         var baseline = ArmorTokenSmokeTest.Compile(schemas, reference.DocumentElement.OuterXml);
         if (compiled.InstanceBuffer.Length != 856 || baseline.InstanceBuffer.Length != 856
@@ -136,7 +150,7 @@ internal static class ArmorAuthoringAdmission
         string snapshot = Path.Combine(directory, "admitted-armor.xml"); File.WriteAllBytes(snapshot, canonical);
         var report = new { Source = source, SourceSha256 = Convert.ToHexString(SHA256.HashData(bytes)), Snapshot = snapshot,
             SnapshotSha256 = Convert.ToHexString(SHA256.HashData(canonical)), admitted.GunPercent,
-            InputAdmitted = true, CompilerPayloadCompared = true, OnlyGunFloatEditable = false,
+            ArmorId = Identity(admitted.Xml), InputAdmitted = true, CompilerPayloadCompared = true, OnlyGunFloatEditable = false,
             EditableFloatCount = 18, Percentages = Values(admitted.Xml).ToDictionary(item => item.Key, item => item.Value.Percent),
             LinkedStreamsEmitted = false, ModPackageBuilt = false, GameExecuted = false, RuntimeOverrideProven = false,
             NextGate = "Use armor-authored-build with a fresh output directory and stock baseline; this admission receipt alone proves no package or runtime effect." };
@@ -177,15 +191,19 @@ internal static class ArmorAuthoringAdmission
         foreach (string fault in faults) Refuse(Encoding.UTF8.GetBytes(fault));
         Refuse(Array.Empty<byte>()); Refuse(new byte[Limit + 1]);
         // Reborn: every editable slot gets boundary and rounding-sensitive coverage, while all shape refusals remain active.
+        foreach (string identity in new[] { "AlliedConYardArmor", "SovietConYardArmor" })
         foreach (string field in Values(Admit(Encoding.UTF8.GetBytes(xml)).Xml).Keys)
             foreach (int value in new[] { 0, 73, 250, 10000 })
             {
                 var edited = Parse(Encoding.UTF8.GetBytes(xml));
+                // Reborn: cover both bounded identities, including preservation through canonicalization.
+                edited.DocumentElement!.SetAttribute("id", identity);
                 if (field.StartsWith("Armor/")) edited.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(item => item.GetAttribute("Damage") == field.Substring(6)).SetAttribute("Percent", value.ToString(CultureInfo.InvariantCulture));
                 else edited.DocumentElement!.SetAttribute(field, value.ToString(CultureInfo.InvariantCulture));
-                if (Values(Admit(Encoding.UTF8.GetBytes(edited.OuterXml)).Xml)[field].Percent != value) throw new InvalidDataException("Expanded percentage differs.");
+                var admitted = Admit(Encoding.UTF8.GetBytes(edited.OuterXml));
+                if (Identity(admitted.Xml) != identity || Values(admitted.Xml)[field].Percent != value) throw new InvalidDataException("Expanded percentage/identity differs.");
             }
-        Console.WriteLine("Armor authoring admission: PASS (five legacy values, eighteen fields x four values, seventeen refusals; no linked output or game).");
+        Console.WriteLine("Armor authoring admission: PASS (five legacy values, two identities x eighteen fields x four values, seventeen refusals; no linked output or game).");
     }
 
     //-------------------------------------------------------------------------------------------------

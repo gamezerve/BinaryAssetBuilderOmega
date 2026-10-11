@@ -18,6 +18,13 @@ also has user-reported markedly increased damage with CANNON=5000 and GUN=100.
 The user also confirmed normal Peacekeeper damage with GUN=100, providing the
 unchanged damage-type control. Other coefficients and root scalars remain
 offline-only evidence.
+The [second armor identity](docs/RA3EP1_SOVIET_ARMOR_AUTHORING.md),
+SovietConYardArmor, now also passes its own stock/Core/package comparisons,
+eighteen field edits, repeat and cross-identity refusal. One armor per build
+remains the limit. The reference XML also binds Japan's yard and one civilian
+building to this shared armor; Soviet gameplay is not yet verified.
+Current local candidate: `UprisingAlpha-20261012-a`, with four offline-verified
+samples including SovietArmor. Its fresh overlay extraction also passes.
 The refreshed local workspace `UprisingAlpha-20261011-h` and clean overlay
 extraction pass all three samples (Reborn, Armor250, ArmorCannon); the full
 compiler regression suite also passes. Packaging now forces recompilation to

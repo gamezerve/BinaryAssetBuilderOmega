@@ -23,7 +23,7 @@ $compiler=Join-Path $Workspace 'tools/compiler'
 $output=Join-Path $Workspace 'builtmods'
 $rows=[Collections.Generic.List[object]]::new()
 # Reborn: execute the copied driver in child PowerShell processes so failure exit codes cannot terminate the test harness.
-foreach($name in @('Reborn','Armor250','ArmorCannon')){
+foreach($name in @('Reborn','Armor250','ArmorCannon','SovietArmor')){
     $before=@(Get-ChildItem -LiteralPath $output -Directory).FullName
     $log=Join-Path $test ($name+'.log')
     & $runtime -NoProfile -File $driver -ModXml (Join-Path $Workspace ('mods/'+$name+'/data/mod.xml')) -StaticManifest $StaticManifest -CompilerDirectory $compiler -OutputRoot $output *> $log
@@ -33,8 +33,11 @@ foreach($name in @('Reborn','Armor250','ArmorCannon')){
     $receipt=Get-Content -LiteralPath (Join-Path $created[0].FullName 'alpha-build.json') -Raw|ConvertFrom-Json
     $build=Get-Content -LiteralPath $receipt.BuildReceipt -Raw|ConvertFrom-Json
     # Reborn: preserve both legacy golden packages and independently pin the new non-GUN example.
-    $expected=switch($name){'Reborn'{5000};'Armor250'{250};'ArmorCannon'{100}}
-    $digest=switch($name){'Reborn'{'DD7DE09E3A81B9714DC2861ADE0AA9ECDFE72A1851EDD1ED20BE2155EF31C2DC'};'Armor250'{'E97EAEE9D2B423AC7360C9A401FAB1EC9A55B60F50B9F02BB74CEDC9E8B38F7E'};'ArmorCannon'{'40C09781BAB82643FBBC6DF5A8DFA674B74BF16B8B93F4A5B605FF5778F0BE7F'}}
+    $expected=switch($name){'Reborn'{5000};'Armor250'{250};'ArmorCannon'{100};'SovietArmor'{5000}}
+    $digest=switch($name){'Reborn'{'DD7DE09E3A81B9714DC2861ADE0AA9ECDFE72A1851EDD1ED20BE2155EF31C2DC'};'Armor250'{'E97EAEE9D2B423AC7360C9A401FAB1EC9A55B60F50B9F02BB74CEDC9E8B38F7E'};'ArmorCannon'{'40C09781BAB82643FBBC6DF5A8DFA674B74BF16B8B93F4A5B605FF5778F0BE7F'};'SovietArmor'{'0414E554AE9049631B163C508806F2A5EC2AE277030CE1A5DEE9374150C483BD'}}
+    # Reborn: independently check faction identity in both receipts, not just the numeric GUN value and known archive digest.
+    $identity=if($name-ceq 'SovietArmor'){'SovietConYardArmor'}else{'AlliedConYardArmor'}
+    if($receipt.ArmorId-cne $identity -or $build.ArmorId-cne $identity){throw 'Sample armor identity differs.'}
     if(-not $receipt.PrebuiltCompilerUsed -or $receipt.CompilerPath-cne (Join-Path $compiler 'BinaryAssetBuilder.ManifestInspector.exe') -or $build.GunPercent-ne $expected -or $build.ArchiveSha256-cne $digest -or $build.GameExecuted -or -not $build.AuthoredPayloadVerified){throw 'Workspace receipt/package differs.'}
     if($receipt.EditableFloatCount-ne 18 -or $build.EditableFloatCount-ne 18 -or ($name-eq 'ArmorCannon' -and $build.Percentages.'Armor/CANNON'-ne 5000)){throw 'Expanded armor values differ.'}
     if(Test-Path -LiteralPath (Join-Path $created[0].FullName 'compiler-build.log')){throw 'Standalone build unexpectedly rebuilt repository source.'}

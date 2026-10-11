@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: flatten the stock structure baseline; this shared armor is referenced by Soviet and Japan yards, not Allied armor. -->
+<ArmorTemplate xmlns="uri:ea.com:eala:asset" id="SovietConYardArmor">
+  <Armor Damage="SNIPER" Percent="0" />
+  <Armor Damage="CANNON" Percent="100" />
+  <Armor Damage="ROCKET" Percent="100" />
+  <Armor Damage="GRENADE" Percent="100" />
+  <Armor Damage="GUN" Percent="5000" />
+  <Armor Damage="MELEE" Percent="0" />
+  <Armor Damage="AUTO_CANNON" Percent="50" />
+  <Armor Damage="IMPACT" Percent="100" />
+  <Armor Damage="EXPLOSIVE" Percent="125" />
+  <Armor Damage="FLAK" Percent="100" />
+  <Armor Damage="PRISM" Percent="100" />
+  <Armor Damage="TESLA" Percent="100" />
+  <Armor Damage="RADIATION" Percent="0" />
+</ArmorTemplate>

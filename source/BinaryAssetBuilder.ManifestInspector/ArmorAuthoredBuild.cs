@@ -43,6 +43,7 @@ internal static class ArmorAuthoredBuild
         if (Convert.ToHexString(SHA256.HashData(packages[5000])) != "DD7DE09E3A81B9714DC2861ADE0AA9ECDFE72A1851EDD1ED20BE2155EF31C2DC")
             throw new InvalidDataException("Legacy user-tested 5000 package changed.");
         ExpandedSelfTest(directory, fixture, stockManifest);
+        SovietIdentitySelfTest(directory, fixture, stockManifest);
         Console.WriteLine("Authored armor regression: PASS (five coefficients, fresh identities, single float edit, repeated package, legacy digest, occupied/source/corruption refusals; no game).");
     }
 
@@ -90,6 +91,43 @@ internal static class ArmorAuthoredBuild
     }
 
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: prove Soviet stock equality, field edits, identity separation, repeat output and foreign-source refusal using actual Core packages. */
+    //-------------------------------------------------------------------------------------------------
+    private static void SovietIdentitySelfTest(string directory, string fixture, string stockManifest)
+    {
+        string soviet = fixture.Replace("AlliedConYardArmor", "SovietConYardArmor");
+        var fields = ArmorAuthoringAdmission.Values(ArmorAuthoringAdmission.Admit(System.Text.Encoding.UTF8.GetBytes(soviet)).Xml);
+        int index = 0;
+        foreach (string field in fields.Keys)
+        {
+            var xml = new System.Xml.XmlDocument { XmlResolver = null }; xml.LoadXml(soviet);
+            SetValue(xml, field, "73");
+            string source = Path.Combine(directory, $"soviet-field-{index}.xml"); File.WriteAllText(source, xml.OuterXml);
+            Run(source, Path.Combine(directory, $"soviet-field-{index++}"), stockManifest);
+        }
+        string fixedSource = Path.Combine(directory, "soviet-gun.xml"); File.WriteAllText(fixedSource, soviet);
+        string first = Path.Combine(directory, "soviet-gun"), repeat = Path.Combine(directory, "soviet-repeat");
+        Run(fixedSource, first, stockManifest); Run(fixedSource, repeat, stockManifest);
+        byte[] package = File.ReadAllBytes(Path.Combine(first, "package", "RebornArmorProbe.big"));
+        if (!package.SequenceEqual(File.ReadAllBytes(Path.Combine(repeat, "package", "RebornArmorProbe.big"))))
+            throw new InvalidDataException("Repeated Soviet package differs.");
+        using var archive = BigArchive.Open(Path.Combine(first, "package", "RebornArmorProbe.big"), 15, 4096);
+        var entry = ManifestReader.Read(archive.ReadEntry(archive.Entries[0], 1024 * 1024)).Assets.Single();
+        var expected = new BinaryAssetBuilder.Core.InstanceHandle("ArmorTemplate", "SovietConYardArmor");
+        if (entry.InstanceId != expected.InstanceId || entry.Name != expected.Name || package.SequenceEqual(
+            File.ReadAllBytes(Path.Combine(directory, "build-5000", "package", "RebornArmorProbe.big"))))
+            throw new InvalidDataException("Soviet package lost identity separation.");
+        // Reborn: use the actual generated diagnostic path rather than assuming a file name.
+        string diagnostic = Directory.GetFiles(Path.Combine(first, "core"), "*.big", SearchOption.AllDirectories).Single();
+        string refusedPath = Path.Combine(directory, "soviet-foreign-source");
+        bool refused = false;
+        try { ArmorTrialPreparation.Prepare(diagnostic, refusedPath, true, fixture); }
+        catch (InvalidDataException) { refused = true; }
+        if (!refused || Directory.Exists(refusedPath)) throw new InvalidDataException("Foreign Allied snapshot accepted for Soviet package.");
+        Console.WriteLine($"Soviet armor identity regression: PASS (eighteen fields, own stock baseline, repeat, foreign snapshot refusal; InstanceId={entry.InstanceId:X8}; no game).");
+    }
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: require stock comparison, fresh output and exact independently reproduced payloads before publishing a success receipt. */
     //-------------------------------------------------------------------------------------------------
     internal static void Run(string source, string directory, string stockManifest)
@@ -114,7 +152,7 @@ internal static class ArmorAuthoredBuild
         catch (InvalidDataException) { refused = true; }
         if (!refused || Directory.Exists(rejected)) throw new InvalidDataException("Authored package/source mismatch accepted.");
         string archive = Path.Combine(package, "RebornArmorProbe.big");
-        var receipt = new { admitted.GunPercent, Snapshot = snapshot,
+        var receipt = new { ArmorId = ArmorAuthoringAdmission.Identity(admitted.Xml), admitted.GunPercent, Snapshot = snapshot,
             EditableFloatCount = 18, Percentages = ArmorAuthoringAdmission.Values(admitted.Xml).ToDictionary(item => item.Key, item => item.Value.Percent),
             SnapshotSha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(snapshot))),
             PackagePath = archive, ConfigPath = Path.Combine(package, "reborn_1.0.cfg"),

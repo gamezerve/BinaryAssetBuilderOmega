@@ -215,24 +215,27 @@ internal static class Ep1ArmorDocumentSmokeTest
         var root = probe.DocumentElement!;
         var entries = root.ChildNodes.OfType<XmlElement>().ToArray();
         var gun = entries.Single(item => item.GetAttribute("Damage") == "GUN");
-        Require(root.GetAttribute("id") == "AlliedConYardArmor" && !root.HasAttribute("inheritFrom")
+        string armorId = ArmorAuthoringAdmission.Identity(root.OuterXml);
+        Require(!root.HasAttribute("inheritFrom")
             && entries.Length == 13 && gun.GetAttribute("Percent") == gunPercent.ToString(System.Globalization.CultureInfo.InvariantCulture), "ConYard probe identity/value differs.");
         string authored = root.OuterXml;
         // Reborn: stock baseline is always the unchanged fixture, never authored non-GUN or scalar edits masquerading as stock.
         XmlDocument stock = new() { XmlResolver = null }; stock.Load(Path.Combine(fixtures, "AlliedConYardArmorProbe.xml"));
+        // Reborn: compare each admitted identity to its own actual stock asset, never reuse the Allied stock comparison for Soviet output.
+        stock.DocumentElement!.SetAttribute("id", armorId);
         stock.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(item => item.GetAttribute("Damage") == "GUN").SetAttribute("Percent", "100");
         var baseline = ArmorTokenSmokeTest.Compile(ArmorTokenSmokeTest.LoadSchemas(fixtures), stock.DocumentElement.OuterXml);
         if (stockManifest != null) ArmorTokenSmokeTest.CompareGolden(new Dictionary<string, Relo.Chunk>
-            { ["ArmorTemplate:AlliedConYardArmor"] = baseline }, stockManifest);
+            { ["ArmorTemplate:" + armorId] = baseline }, stockManifest);
         string source = Path.Combine(directory, "allied-conyard-override.xml");
-        File.WriteAllText(source, $"<!-- Reborn: owned test source; admitted AlliedConYardArmor percentage edits, GUN={gunPercent}. -->\n"
+        File.WriteAllText(source, $"<!-- Reborn: owned test source; admitted {armorId} percentage edits, GUN={gunPercent}. -->\n"
             + "<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\">" + authored + "</AssetDeclaration>");
         var document = processor.ProcessDocumentInternal(source, source, null!, options);
         var instance = document.SelfInstances.Single();
         var buffer = plugins.GetPlugin(instance.Handle.TypeId).ProcessInstance(instance);
-        var expected = new InstanceHandle("ArmorTemplate", "AlliedConYardArmor");
+        var expected = new InstanceHandle("ArmorTemplate", armorId);
         Require(instance.Handle.TypeId == expected.TypeId && instance.Handle.InstanceId == expected.InstanceId
-            && instance.Handle.Name == "ArmorTemplate:AlliedConYardArmor" && buffer.InstanceData.Length == 856
+            && instance.Handle.Name == expected.Name && buffer.InstanceData.Length == 856
             && buffer.RelocationData.SequenceEqual(baseline.RelocationBuffer) && buffer.ImportsData.Length == 0,
             "ConYard override altered identity or stream shape.");
         ArmorAuthoringAdmission.VerifyPayload(authored, baseline.InstanceBuffer, buffer.InstanceData);
