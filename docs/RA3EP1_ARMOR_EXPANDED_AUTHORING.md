@@ -3,8 +3,8 @@
 Outcome update — October 12, 2026: the user reported markedly increased damage
 in the separately authorized CANNON trial. The preparation notes below retain
 their original offline-only status; the new observation is recorded separately
-at the end. Other coefficients/scalars and the unchanged GUN control are not
-newly gameplay-proven by this report.
+at the end. A subsequent user reply confirms normal Peacekeeper GUN damage in
+the same trial; other coefficients/scalars remain offline-only evidence.
 
 ## Scope
 
@@ -155,3 +155,12 @@ prove config consumption, manifest loading or gameplay behavior. Its conservativ
 false evidence flags remain unchanged; the user's observation is this separate
 evidence layer. No second launch, process termination or installation write
 was performed to record the result.
+
+The user subsequently clarified: "peacekeeperın hasarı normale dönmüştü"
+(Peacekeeper damage had returned to normal). This supplies the previously
+unreported GUN=100 behavioral control for this CANNON=5000 trial. Together the
+two qualitative observations support damage-type-specific authoring: increased
+CANNON damage with normal GUN damage, rather than an observed global increase.
+They do not establish exact damage ratios or validate the remaining sixteen
+editable fields. Earlier wording about the missing control describes the first
+reply only. No additional game launch or automated runtime capture was needed.

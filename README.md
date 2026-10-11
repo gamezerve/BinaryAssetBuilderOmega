@@ -15,8 +15,9 @@ admits thirteen ordered coefficients and five optional scalars (integer 0..10000
 for the same AlliedConYardArmor identity. All eighteen fields pass offline
 compile/package comparisons. The separately authorized ArmorCannon trial now
 also has user-reported markedly increased damage with CANNON=5000 and GUN=100.
-The unchanged GUN gameplay control was not reported; the other coefficients
-and root scalars remain offline-only evidence.
+The user also confirmed normal Peacekeeper damage with GUN=100, providing the
+unchanged damage-type control. Other coefficients and root scalars remain
+offline-only evidence.
 The refreshed local workspace `UprisingAlpha-20261011-h` and clean overlay
 extraction pass all three samples (Reborn, Armor250, ArmorCannon); the full
 compiler regression suite also passes. Packaging now forces recompilation to
