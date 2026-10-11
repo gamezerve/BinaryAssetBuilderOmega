@@ -35,10 +35,15 @@ was unsure of its stock damage and observed no exaggerated increase. Both
 members are not yet independently confirmed in-game within this package.
 The fixed `Invoke-Ra3Ep1ArmorTrial.ps1 -Combined` launch preparation now passes
 its no-game preflight and rejects conflicting selectors. One authorized combined
-launch completed without an observer error; a clearer Allied comparison is next.
+launch completed without an observer error; the separate stronger comparison
+below now supplies positive Allied evidence.
 A separate repository sample, `CombinedArmorStrong`, now passes offline builds
 with Allied/Soviet GUN=5000/5000. Only Allied GUN differs from the preserved pair.
-Its pinned `-CombinedStrong` no-game preflight passes; gameplay is not yet tested.
+Its pinned `-CombinedStrong` launch now has user-reported increased Peacekeeper
+damage in the requested Allied test. Thus both identities have positive gameplay
+observations in two-member streams, across two different package revisions.
+Soviet was not re-tested in the 5000/5000 revision; Allied GUN=250 remains
+inconclusive, and no exact damage multiplier is claimed.
 This sample has not been added to the already exported five-sample c workspace.
 The refreshed local workspace `UprisingAlpha-20261011-h` and clean overlay
 extraction pass all three samples (Reborn, Armor250, ArmorCannon); the full

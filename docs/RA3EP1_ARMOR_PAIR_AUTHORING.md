@@ -154,8 +154,25 @@ unchanged. The new 6348-byte BIG SHA256 is
 
 `Invoke-Ra3Ep1ArmorTrial.ps1 -CombinedStrong` pins this exact output. Its no-Run
 preflight passed with no existing game process, and all four conflicting trial
-selectors were refused before preflight. No game was started. A separate launch
-approval and fresh Allied Peacekeeper observation remain necessary; no runtime
-success is claimed for this new candidate. The c workspace/overlay still has
+selectors were refused before preflight. That preparation did not start a game;
+the subsequent separately authorized launch is recorded below. The c workspace/overlay still has
 its original five samples; this new source sample does not imply a refreshed
 six-sample portable distribution.
+
+## High-contrast runtime observation — October 12, 2026
+
+The user separately authorized one CombinedStrong launch. Receipt
+`artifacts/ArmorLaunch-220c539ff2734a63afb2b72af351b632/launch.json` records
+launcher PID 7192, 38 matching config argument observations and no observer
+failure. No installation writes or process termination were performed.
+After the fresh Allied skirmish/Peacekeeper versus unpacked Construction Yard
+prompt, the user reported increased damage. This is positive qualitative Allied
+GUN=5000 evidence in the independently verified two-member stream, not an exact
+multiplier measurement. Automated receipt proof flags remain unchanged.
+
+Together with the earlier Soviet observation, both supported identities now
+have positive gameplay evidence in combined streams across two package revisions.
+This does not claim that both members were independently observed in the same
+5000/5000 session: Soviet was not re-tested there. The original Allied GUN=250
+result stays inconclusive. Other coefficients/scalars, Japan/civilian consumers
+and arbitrary additional asset types remain outside these runtime observations.
