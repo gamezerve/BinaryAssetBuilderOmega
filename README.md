@@ -3,6 +3,14 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 11, 2026
 
+Latest actual helper milestone: [CDB context calibration](docs/RA3EP11_CONTEXT_HELPER_CALIBRATION.md).
+Two admitted helper runs each returned two stable nonce-bound x86 contexts;
+owned-handle stack reads matched and actual stale responses were refused.
+Both helpers/debuggers exited normally. Completion framing also passes
+10 detached faults and 5 partial-chunk refusals. No game was executed and
+native config consumption remains unproved. Estimate **52% / 48%**; next
+is breakpoint-event transport and probe-only selection, not mod readiness.
+
 Latest debugger bridge: [nonce-bound context transport](docs/RA3EP11_CONFIG_DEBUGGER_TRANSPORT.md).
 One requested register response now feeds the incremental decoder with
 thread-scoped invocation IDs. Three detached controls and 40 refusal/retry

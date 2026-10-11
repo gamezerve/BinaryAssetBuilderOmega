@@ -2,6 +2,11 @@
 
 Date: October 11, 2026 (Europe/Istanbul). Detached protocol tests only.
 
+Follow-up: [actual helper-only context calibration](RA3EP11_CONTEXT_HELPER_CALIBRATION.md)
+now validates the command's two real round trips at an owned helper's initial
+break. The statements below describe the original detached-only milestone;
+no native game collector or game run has been enabled by the follow-up.
+
 ## Implemented connection
 
 `Ra3Ep11ConfigDebuggerTransport.ps1` connects a supplied CDB-format register

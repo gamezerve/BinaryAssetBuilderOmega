@@ -1,9 +1,12 @@
 # Reborn: gate one newly compiled helper at CDB's initial break; rejection cleanup detaches/resumes that helper, never a game.
 [CmdletBinding()]
-param([switch]$Run,[switch]$SelfTest,[ValidateSet('Admit','RejectLiveBytes','Timeout')][string]$Mode='Admit')
+param([switch]$Run,[switch]$SelfTest,[ValidateSet('Admit','RejectLiveBytes','Timeout')][string]$Mode='Admit',[switch]$CalibrateContext)
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'Ra3Ep11DebuggerAdmissionPolicy.ps1')
 . (Join-Path $PSScriptRoot 'Ra3Ep11SupervisorAdmissionGate.ps1')
+. (Join-Path $PSScriptRoot 'Ra3Ep11ConfigDebuggerTransport.ps1')
+# Reborn: context calibration is an explicit helper-only admission mode, never a native-game launch option.
+if($CalibrateContext -and ($SelfTest -or $Mode -cne 'Admit')){throw 'Context calibration requires the separate Admit helper control.'}
 if($SelfTest){
     if($Run){throw 'Run and detached tests must be separate.'}
     # Reborn: detached admission mutations do not start a debugger or read any process memory.
@@ -45,7 +48,7 @@ foreach($path in $paths){
 }
 if((Get-Item -LiteralPath $source).Length -gt 4096 -or [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes([IO.File]::ReadAllText($source).Replace("`r`n","`n")))) -cne '1EFA171DAE77F686E2E120EB6530B37F0D359E41C836F74A11C247CD5FC1FB46'){throw 'Unreviewed admission helper.'}
 if((Get-FileHash -LiteralPath $debugger).Hash -cne 'E6771A874286D8A053C744D428D50A13091318DD1261F07B6C2C17BF42A486A5'){throw 'Debugger differs from calibrated build.'}
-if(-not $Run){[pscustomobject]@{Mode=$Mode;RunRequested=$false;GameExecuted=$false;Scope='Fixed new helper, initial-break gate only'};return}
+if(-not $Run){[pscustomobject]@{Mode=$Mode;CalibrateContextRequested=[bool]$CalibrateContext;RunRequested=$false;GameExecuted=$false;Scope='Fixed new helper, initial-break gate only'};return}
 # Reborn: prepare bounded read-only native interop before any target exists.
 Add-Type -TypeDefinition @'
 using System;
@@ -75,6 +78,8 @@ foreach($argument in @('-pd','-G','-noshell','-nosqm','-sins','-y',$directory,'-
 $debug=[Diagnostics.Process]::new();$debug.StartInfo=$info
 $helper=$null;$started=$false;$admitted=$false;$resumeIssued=$false;$cleanupIssued=$false;$failure=$null;$decision=$null;$entry=$null;$beforeDecision=$false;$observed=$null;$read=$false;$actual=[UIntPtr]::Zero;$owner=$null;$debuggerId=$null;$creationTicks=$null;$forcedExit=$false;$sharedDecision=$null;$sharedFaultRefused=$false
 $streams=@()
+# Reborn: retain actual helper context results separately from native config consumption evidence.
+$contextRecords=@();$contextRoundTripValidated=$false;$staleContextRefused=$false;$stackContextValidated=$false
 #-------------------------------------------------------------------------------------------------
 <# Reborn: pump bounded redirected chunks without blocking on a prompt or needing a PowerShell runspace in callbacks. #>
 #-------------------------------------------------------------------------------------------------
@@ -148,6 +153,40 @@ try{
             $decision='AdmissionWithheldTimeout'
         }else{$admitted=$true;$decision='IdentityAndEntryAdmitted'}
     }
+    if($admitted -and $CalibrateContext){
+        # Reborn: request registers twice at the admitted initial break; no breakpoint, context write or continuation occurs between captures.
+        $contextSession=New-Ep11ConfigSnapshotSession $owner (Join-Path $repo 'fixtures/ra3ep11/phase-a/probe_1.0.cfg') {throw 'Context-only calibration must not invoke the config memory adapter.'}
+        $lastWindow=$null
+        foreach($round in @(1,2)){
+            $request=New-Ep11ConfigContextRequest $contextSession
+            Update-Ep11AdmissionOutput;$offset=$streams[0].Text.Length
+            $debug.StandardInput.WriteLine($request.Command+'; .echo REBORN_CONTEXT_END '+$request.Nonce);$debug.StandardInput.Flush()
+            $contextDeadline=[DateTime]::UtcNow.AddSeconds(5)
+            do{
+                Update-Ep11AdmissionOutput;$response=$streams[0].Text.Substring($offset)
+                if($response.Length -gt 4096 -or $debug.HasExited -or $helper.HasExited -or [DateTime]::UtcNow -gt $contextDeadline -or $streams[1].Text.Length -ne 0){throw 'Owned helper context response failed or exceeded bounds.'}
+                if($response -notmatch ('(?m)^REBORN_CONTEXT_END '+$request.Nonce+'\r?\n')){Start-Sleep -Milliseconds 25}
+            }while($response -notmatch ('(?m)^REBORN_CONTEXT_END '+$request.Nonce+'\r?\n'))
+            $window=Get-Ep11CompletedContextWindow $response $request.Nonce
+            $record=Get-Ep11ConfigContextRecord $window $request.Nonce
+            if($record.ProcessId -ne $owner -or $record.Esp -le 0 -or $record.SiteAddress -le 0 -or (Test-Path -LiteralPath (Join-Path $directory 'started.txt'))){throw 'Owned helper context identity/hold mismatch.'}
+            if($round -eq 2){
+                foreach($field in @('ProcessId','ThreadId','SiteAddress','Eax','Ebx','Esi','Edi','Esp')){if($record.$field -ne $contextRecords[0].$field){throw 'Helper context changed without continuation.'}}
+                try{$null=Get-Ep11ConfigContextRecord $lastWindow $request.Nonce}catch{
+                    if($_.Exception.Message -cne 'Context nonce or register format differs.'){throw};$staleContextRefused=$true
+                }
+                if(-not $staleContextRefused){throw 'Actual stale helper context response admitted.'}
+            }
+            # Reborn: bind returned ESP to a real read through the retained owned helper handle, not a synthetic memory callback.
+            $stack=[byte[]]::new(4);$stackActual=[UIntPtr]::Zero
+            $stackSuccess=[RebornAdmissionMemory]::ReadProcessMemory($helper.Handle,[IntPtr]$record.Esp,$stack,[UIntPtr]4,[ref]$stackActual)
+            if(-not $stackSuccess -or $stackActual.ToUInt64() -ne 4){throw 'Owned helper context stack capture incomplete.'}
+            if($round -eq 2 -and [Convert]::ToHexString($stack) -cne $contextRecords[0].StackHex){throw 'Helper stack changed without continuation.'}
+            $record|Add-Member StackHex ([Convert]::ToHexString($stack));$contextRecords+=$record
+            $lastWindow=$window;$contextSession.PendingContext=$null
+        }
+        $contextSession.Status='Closed';$contextRoundTripValidated=$true;$stackContextValidated=$true
+    }
     if($admitted){$debug.StandardInput.WriteLine('g');$resumeIssued=$true}else{
         # Reborn: rejected observation never gets g; helper-only cleanup detaches and therefore releases it to self-expire.
         $debug.StandardInput.WriteLine('qd');$cleanupIssued=$true
@@ -166,6 +205,13 @@ try{
     if($started -and -not $debug.HasExited){$debug.Kill();$forcedExit=$true;$null=$debug.WaitForExit(5000)}
     if($streams.Count -eq 2){[IO.File]::WriteAllText((Join-Path $directory 'stdout.txt'),$streams[0].Text);[IO.File]::WriteAllText((Join-Path $directory 'stderr.txt'),$streams[1].Text)}
     $result=[pscustomobject]@{Mode=$Mode;Decision=$decision;Failure=$failure;HelperProcessId=$owner;OwnedDebuggerProcessId=$debuggerId;HelperCreationUtcTicks=$creationTicks;CompiledHelperSha256=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes));SharedAdmissionDecision=$sharedDecision;SharedGateInjectedByteFaultRefused=$sharedFaultRefused;InitialOwnershipAndBytesAdmitted=$admitted;ObservationResumeIssued=$resumeIssued;CleanupDetachIssued=$cleanupIssued;ForcedDebuggerExit=$forcedExit;MainMarkerAbsentBeforeDecision=$beforeDecision;Entry=$entry;ObservedEntryBytes=$observed;MemoryReadSucceeded=$read;ActualEntryBytesRead=$actual.ToUInt64();NaturalCompletionValidated=($null -eq $failure);RejectedHelperCanRunDuringCleanup=$true;GameExecuted=$false;GameRecipeReady=$false;OutputDirectory=$directory}
+    # Reborn: helper-only context proof does not validate any native config observation site or loaded mod.
+    $result|Add-Member ContextCalibrationRequested ([bool]$CalibrateContext)
+    $result|Add-Member ContextRoundTripValidated $contextRoundTripValidated
+    $result|Add-Member ContextRecords $contextRecords
+    $result|Add-Member ActualStaleContextRefused $staleContextRefused
+    $result|Add-Member OwnedContextStackReadValidated $stackContextValidated
+    $result|Add-Member NativeConfigReadProven $false
     [IO.File]::WriteAllText((Join-Path $directory 'result.json'),($result|ConvertTo-Json -Depth 4))
     $debug.Dispose();if($null -ne $helper){$helper.Dispose()}
 }

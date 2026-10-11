@@ -87,4 +87,27 @@ foreach($mode in @('Nonce','Duplicate','UnknownMarker','Missing','Syntax','Memor
     if(-not $retryRefused){throw 'Faulted context session accepted retry.'}
     $refusals+=2
 }
-[pscustomobject]@{DetachedPositiveCases=$positives;PrivateRefusals=$refusals;PerThreadInvocationIdsAssigned=$true;CommandsSent=$false;GameExecuted=$false;DebuggerExecuted=$false;LiveContextProven=$false;CollectorReady=$false}
+# Reborn: response framing must wait for a complete newline-terminated marker and refuse ambiguous or trailing evidence.
+$completed=$sample+"`nREBORN_CONTEXT_END "+$nonce+"`n";$windowFaults=0;$partialFaults=0
+$null=Get-Ep11CompletedContextWindow ($completed+'0:000> ') $nonce
+$windowCases=@(
+    $sample,
+    ($completed+"REBORN_CONTEXT_END "+$nonce+"`n"),
+    $completed.Replace($nonce,'fedcba9876543210fedcba9876543210'),
+    ("REBORN_CONTEXT_END "+$nonce+"`n"+$sample+"`n"),
+    ($completed+'unexpected trailing output'),
+    ($completed+('x'*4096)),
+    ("Syntax error`n"+$completed),
+    ($sample+"`n"+$completed),
+    ("REBORN_CONTEXT "+$nonce+" 10`nREBORN_CONTEXT_END "+$nonce+"`n"),
+    $completed.TrimEnd("`n")
+)
+foreach($fault in $windowCases){
+    $refused=$false;try{$null=Get-Ep11CompletedContextWindow $fault $nonce}catch{$refused=$true}
+    if(-not $refused){throw 'Context window fault admitted.'};$windowFaults++
+}
+foreach($length in @(1,5,20,($completed.Length-10),($completed.Length-1))){
+    $refused=$false;try{$null=Get-Ep11CompletedContextWindow $completed.Substring(0,$length) $nonce}catch{$refused=$true}
+    if(-not $refused){throw 'Partial context chunk admitted.'};$partialFaults++
+}
+[pscustomobject]@{DetachedPositiveCases=$positives;PrivateRefusals=$refusals;WindowPositiveCases=1;WindowRefusals=$windowFaults;PartialChunkRefusals=$partialFaults;PerThreadInvocationIdsAssigned=$true;CommandsSent=$false;GameExecuted=$false;DebuggerExecuted=$false;LiveContextProven=$false;CollectorReady=$false}

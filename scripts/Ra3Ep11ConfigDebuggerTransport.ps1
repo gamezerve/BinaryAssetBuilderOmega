@@ -2,6 +2,28 @@
 . (Join-Path $PSScriptRoot 'Ra3Ep11ConfigSnapshotAdapter.ps1')
 
 #-------------------------------------------------------------------------------------------------
+<# Reborn: isolate one fully terminated response window before parsing registers; a completion marker is framing, not stopped-process proof. #>
+#-------------------------------------------------------------------------------------------------
+function Get-Ep11CompletedContextWindow([string]$Text,[string]$Nonce) {
+    if($Nonce -cnotmatch '^[0-9a-f]{32}$' -or $Text.Length -gt 4096){throw 'Context window outside bounds.'}
+    $lines=@($Text -split '\r?\n');$end='REBORN_CONTEXT_END '+$Nonce
+    # Reborn: a chunk ending inside the completion line is not a complete response window.
+    if($Text -cnotmatch ('(?m)^'+$end+'\r?\n')){throw 'Context completion line is not terminated.'}
+    $ends=@(0..($lines.Count-1)|Where-Object {$lines[$_] -ceq $end})
+    if($ends.Count -ne 1){throw 'Context completion marker missing or ambiguous.'}
+    $index=$ends[0]
+    if($index -lt 1){throw 'Context completion precedes response.'}
+    if($index+1 -lt $lines.Count){
+        foreach($line in $lines[($index+1)..($lines.Count-1)]){
+            if($line -cnotmatch '^\s*(?:[0-9a-fA-F]+:[0-9a-fA-F]+>\s*)?$'){throw 'Unexpected output after context completion.'}
+        }
+    }
+    $window=$lines[0..($index-1)] -join "`n"
+    $null=Get-Ep11ConfigContextRecord $window $Nonce
+    $window
+}
+
+#-------------------------------------------------------------------------------------------------
 <# Reborn: prepare a unique read-only register command without sending it or permitting overlapping requests. #>
 #-------------------------------------------------------------------------------------------------
 function New-Ep11ConfigContextRequest($Session) {
