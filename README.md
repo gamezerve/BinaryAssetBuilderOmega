@@ -3,6 +3,15 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 11, 2026
 
+Latest transport integration: [bounded output-to-controller bridge](docs/RA3EP11_NATIVE_OUTPUT_BRIDGE.md).
+Phase/nonce-scoped response windows now dispatch shared pump output only after
+complete prompt framing; partial chunks cannot authorize captures. Four
+detached positives / 24 refusal and retry checks pass, including a character-
+fragmented five-stop chain, no-response timeout and recorded helper context/
+clear format replay. Default CDB stop diagnostics are deliberately refused:
+their bounded calibration is still required. No game/debugger was launched
+in this follow-up. Native execution/config consumption remain open. **52% / 48%**.
+
 Latest backend component: [shared bounded output pump](docs/RA3EP11_DEBUGGER_OUTPUT_PUMP.md).
 The admission helper now uses a reusable completed-task reader with independent
 stdout/stderr caps, pre-append overflow checks, explicit EOF and permanent read
