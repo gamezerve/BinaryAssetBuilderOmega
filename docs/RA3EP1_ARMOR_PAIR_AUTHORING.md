@@ -70,7 +70,7 @@ The existing single-armor authored suite passes again in
 eighteen-field coverage and the original Allied golden digests. Combined backend
 build and complete two-member receipt checks pass. This is not a new full general
 compiler-suite run. Individual Allied/Soviet gameplay successes do not prove the
-combined package's runtime loading; that remains a separate authorized test.
+combined package's runtime loading; see the separate runtime observations below.
 
 ## Usage
 
@@ -96,7 +96,7 @@ five-sample and clean extraction checks. The focused single-document test passes
 again with current reference-membership guards (`artifacts/RebornArmorPairSingleGuard.log`).
 Current overlay SHA256:
 `2E3788F081678FF377129B3CEE71E816A2AE288743CC8F4532C6D7CACE287C00`.
-This new sample has not yet been observed in the GUI or in a game. Public release
+This new sample has not yet been observed in the GUI. Public release
 review remains separate. The full generic compiler suite was not rerun here.
 
 ## Controlled runtime test preparation
@@ -118,3 +118,24 @@ health-loss ratio. Avoid saved matches, alternate weapons and temporary buffs.
 Record the two observations separately; a menu opening or one successful armor
 does not prove the other member loaded. Japan/civilian shared consumers remain
 untested. Automated launch receipts do not claim gameplay confirmation.
+
+## First combined runtime observations — October 12, 2026
+
+The user authorized one Combined launch. Receipt
+`artifacts/ArmorLaunch-5a2f06506eca4f61bb06f6bee273fc74/launch.json` records
+launcher PID 52928, 39 matching child-process config argument observations and
+no observer failure. These observations alone do not prove config consumption.
+The game was left running; no installation files were modified by the script.
+
+The user then reported markedly increased Conscript damage: positive qualitative
+evidence for Soviet GUN=5000 in this two-member package. For Peacekeeper, the
+user was unsure of the stock damage, saw no exaggerated damage and thought it
+possibly worked. Record Allied GUN=250 as inconclusive, not a pass or failure.
+The report does not establish an exact multiplier or independent confirmation
+of both members. Automated receipt proof flags remain unchanged.
+
+The next useful control is a separately built two-member package with Allied
+GUN=5000 and Soviet GUN=5000, followed by a separately authorized Peacekeeper
+test in a fresh Allied skirmish. Preserve this GUN=250 package and receipt;
+do not alter the already pinned launch candidate or start a second game without
+approval. A stock comparison remains an alternative for quantifying GUN=250.

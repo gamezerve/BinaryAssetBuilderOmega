@@ -29,11 +29,13 @@ now also has user-reported increased damage with the requested Conscript test.
 Japan/civilian consumers and foreign-identity gameplay controls remain untested.
 Current local candidate: `UprisingAlpha-20261012-c`, with five offline-verified
 samples including CombinedArmor. Its fresh overlay extraction also passes.
-The combined package has not yet been game-tested; individual armor successes
-do not substitute for that new runtime check.
+The combined package now has user-reported markedly increased Conscript damage
+for Soviet GUN=5000. Allied Peacekeeper GUN=250 remains inconclusive: the user
+was unsure of its stock damage and observed no exaggerated increase. Both
+members are not yet independently confirmed in-game within this package.
 The fixed `Invoke-Ra3Ep1ArmorTrial.ps1 -Combined` launch preparation now passes
-its no-game preflight and rejects conflicting selectors. A separately authorized
-single launch and two fresh faction skirmish observations are the next gate.
+its no-game preflight and rejects conflicting selectors. One authorized combined
+launch completed without an observer error; a clearer Allied comparison is next.
 The refreshed local workspace `UprisingAlpha-20261011-h` and clean overlay
 extraction pass all three samples (Reborn, Armor250, ArmorCannon); the full
 compiler regression suite also passes. Packaging now forces recompilation to
