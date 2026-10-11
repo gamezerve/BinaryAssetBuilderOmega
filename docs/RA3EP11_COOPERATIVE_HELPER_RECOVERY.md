@@ -29,9 +29,10 @@ the recovery flag separately validates its cleanup and natural helper exit.
 Only the exact expected injected failure plus fully validated recovery lets
 the private test control return successfully. Unrelated failures still throw.
 
-The legacy helper-only forced-exit fallback remains only when our tracked
-state has no installed software breakpoint. It is not exported as native
-game policy. Forced armed-loss execution remains unconditionally disabled.
+The original implementation retained a generic unarmed forced-exit fallback.
+The [initial-stop recovery follow-up](RA3EP11_INITIAL_STOP_RECOVERY.md) removes
+that fallback and verifies cooperative recovery at an admitted initial stop.
+Forced armed-loss execution remains unconditionally disabled.
 Unknown/broken-stream recovery is not solved: closing the host/streams can
 also affect a debugger, so no guarantee that an unresolved target remains
 safely stopped is made. Such a result requires explicit user direction.

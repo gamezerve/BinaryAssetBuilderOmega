@@ -2,7 +2,7 @@
 [CmdletBinding()]
 param([switch]$Run,[switch]$SelfTest,[ValidateSet('Admit','RejectLiveBytes','Timeout')][string]$Mode='Admit',[switch]$CalibrateContext,[switch]$CalibrateBreakpoint,[switch]$CalibrateDisplayProfile,
     [ValidateSet('ClearAndResume','TimeoutDetachArmed','DebuggerLossArmed')][string]$BreakpointDisposition='ClearAndResume',
-    [ValidateSet('None','CaptureRefusal','ObservationTimeout')][string]$InjectObservationFailure='None')
+    [ValidateSet('None','CaptureRefusal','ObservationTimeout','InitialStopRefusal')][string]$InjectObservationFailure='None')
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'Ra3Ep11DebuggerAdmissionPolicy.ps1')
 . (Join-Path $PSScriptRoot 'Ra3Ep11SupervisorAdmissionGate.ps1')
@@ -20,8 +20,11 @@ if($CalibrateBreakpoint -and ($SelfTest -or $CalibrateContext -or $Mode -cne 'Ad
 if($BreakpointDisposition -cne 'ClearAndResume' -and -not $CalibrateBreakpoint){throw 'Armed breakpoint disposition requires helper breakpoint calibration.'}
 # Reborn: actual armed debugger loss left the helper incomplete despite byte restoration; block replay before any file/process action.
 if($Run -and $BreakpointDisposition -ceq 'DebuggerLossArmed'){throw 'Armed debugger-loss execution disabled: byte restoration did not prove helper completion.'}
-# Reborn: private failure injection is restricted to the same separately admitted helper breakpoint control.
-if($InjectObservationFailure -cne 'None' -and ($SelfTest -or -not $CalibrateBreakpoint -or $BreakpointDisposition -cne 'ClearAndResume')){throw 'Failure injection requires the separate clear/resume helper breakpoint control.'}
+# Reborn: private failure injection is restricted to a separately admitted fixed-helper initial or breakpoint stop.
+if($InjectObservationFailure -ceq 'InitialStopRefusal'){
+    # Reborn: initial-stop injection is a separate fixed-helper control before any breakpoint or observation continuation.
+    if($SelfTest -or $Mode -cne 'Admit' -or $CalibrateBreakpoint -or $CalibrateContext -or $CalibrateDisplayProfile -or $BreakpointDisposition -cne 'ClearAndResume'){throw 'Initial-stop failure injection requires the separate admitted helper control.'}
+}elseif($InjectObservationFailure -cne 'None' -and ($SelfTest -or -not $CalibrateBreakpoint -or $BreakpointDisposition -cne 'ClearAndResume')){throw 'Failure injection requires the separate clear/resume helper breakpoint control.'}
 if($SelfTest){
     if($Run){throw 'Run and detached tests must be separate.'}
     # Reborn: detached admission mutations do not start a debugger or read any process memory.
@@ -103,6 +106,8 @@ $armedBreakpointValidated=$false;$debuggerLossInjected=$false;$survivedDebuggerE
 $breakpointCommandIssued=$false;$atOwnedBreakpoint=$false;$recoveryAttempted=$false;$recoveryValidated=$false;$recoveryFailure=$null;$injectedFailureObserved=$false
 # Reborn: separate actual display/framing calibration from native stop acceptance and startup diagnostic classification.
 $displayProfileValidated=$false;$quietStopFramed=$false;$quietContextFramed=$false;$quietClearFramed=$false;$startupCharsBeforeHelperMarker=0
+# Reborn: an initial stop is known only after retained ownership and live bytes pass, and is invalidated before any potentially releasing write.
+$initialStopKnown=$false;$initialStopRecoveryValidated=$false;$cleanupRoute='None'
 #-------------------------------------------------------------------------------------------------
 <# Reborn: pump bounded redirected chunks without blocking on a prompt or needing a PowerShell runspace in callbacks. #>
 #-------------------------------------------------------------------------------------------------
@@ -143,6 +148,7 @@ try{
     $read=[RebornAdmissionMemory]::ReadProcessMemory($helper.Handle,[IntPtr]$entry.Address,$observed,[UIntPtr]6,[ref]$actual)
     # Reborn: validate the genuine baseline first so a failed OS read cannot masquerade as a successful injected refusal.
     Assert-Ep11AdmissionBytes $read $actual.ToUInt64() $entry.ExpectedBytes $observed
+    $initialStopKnown=$true
     $expected=[byte[]]$entry.ExpectedBytes.Clone()
     if($Mode -ceq 'RejectLiveBytes'){
         # Reborn: corrupt only a private expected-byte snapshot, never the helper's live memory or executable.
@@ -164,6 +170,10 @@ try{
             while([DateTime]::UtcNow -lt $hold){Update-Ep11AdmissionOutput;if($debug.HasExited -or (Test-Path -LiteralPath (Join-Path $directory 'started.txt'))){throw 'Helper escaped admission hold.'};Start-Sleep -Milliseconds 50}
             $decision='AdmissionWithheldTimeout'
         }else{$admitted=$true;$decision='IdentityAndEntryAdmitted'}
+    }
+    if($admitted -and $InjectObservationFailure -ceq 'InitialStopRefusal'){
+        # Reborn: throw a private supervisor error at the admitted initial stop without changing target files, memory, registers or execution.
+        $injectedFailureObserved=$true;throw 'Reborn injected observation failure: InitialStopRefusal'
     }
     if($admitted -and $CalibrateContext){
         # Reborn: request registers twice at the admitted initial break; no breakpoint, context write or continuation occurs between captures.
@@ -233,9 +243,9 @@ try{
         $breakNonce=[guid]::NewGuid().ToString('N');$siteHex='{0:x}' -f $breakpointSite
         Update-Ep11AdmissionOutput;$breakOffset=$streams[0].Text.Length
         $breakCommand='bp0 '+$siteHex+' ".printf \"REBORN_BREAK '+$breakNonce+' %x %x %x\", @$tpid, @$tid, @eip; .echo"'
-        # Reborn: mark possible arming before writing; a partial/broken pipe must not enter the unarmed forced-exit fallback.
+        # Reborn: mark possible arming before writing; a partial/broken pipe cannot reuse the initial-stop cleanup route.
         $breakpointCommandIssued=$true;$debug.StandardInput.WriteLine($breakCommand)
-        $debug.StandardInput.WriteLine('g');$debug.StandardInput.Flush();$resumeIssued=$true
+        $initialStopKnown=$false;$debug.StandardInput.WriteLine('g');$debug.StandardInput.Flush();$resumeIssued=$true
         $breakDeadline=[DateTime]::UtcNow.AddSeconds(10)
         do{
             Update-Ep11AdmissionOutput;$breakText=$streams[0].Text.Substring($breakOffset)
@@ -337,9 +347,9 @@ try{
         $breakpointRestored=$true
         $debug.StandardInput.WriteLine('g');$atOwnedBreakpoint=$false
         }
-    }elseif($admitted){$debug.StandardInput.WriteLine('g');$resumeIssued=$true}else{
+    }elseif($admitted){$initialStopKnown=$false;$debug.StandardInput.WriteLine('g');$resumeIssued=$true}else{
         # Reborn: rejected observation never gets g; helper-only cleanup detaches and therefore releases it to self-expire.
-        $debug.StandardInput.WriteLine('qd');$cleanupIssued=$true
+        $initialStopKnown=$false;$debug.StandardInput.WriteLine('qd');$cleanupIssued=$true
     }
     if(-not $debug.HasExited){$debug.StandardInput.Flush()}
     $deadline=[DateTime]::UtcNow.AddSeconds(10)
@@ -356,7 +366,7 @@ try{
     if($started -and -not $debug.HasExited){
         if($breakpointCommandIssued){
             # Reborn: recover only a verified owned stopped helper cooperatively; armed unknown states cannot be made safe by killing the debugger.
-            $recoveryAttempted=$true
+            $recoveryAttempted=$true;$cleanupRoute='OwnedBreakpoint'
             try{
                 if(-not $admitted -or -not $atOwnedBreakpoint -or $null -eq $helper -or $helper.HasExited){throw 'No verified owned stop for cooperative breakpoint recovery.'}
                 $recoveryNonce=[guid]::NewGuid().ToString('N');Update-Ep11AdmissionOutput;$recoveryOffset=$streams[0].Text.Length
@@ -387,9 +397,41 @@ try{
                    [IO.File]::ReadAllText((Join-Path $directory 'completed.txt')) -cne 'REBORN_NATURAL_COMPLETION'){throw 'Recovered helper completion evidence differs.'}
                 $recoveryValidated=$true
             }catch{$recoveryFailure=$_.Exception.Message}
+        }elseif($initialStopKnown){
+            # Reborn: recover an admitted initial stop cooperatively; debugger termination is not proof that this helper ever entered Main.
+            $recoveryAttempted=$true;$cleanupRoute='OwnedInitialStop'
+            try{
+                if($null -eq $sharedDecision -or -not $sharedDecision.CanIssueObservationContinue -or $null -eq $helper -or $helper.HasExited -or
+                   $helper.Id -ne $owner -or $helper.StartTime.ToUniversalTime().Ticks -ne $creationTicks -or $helper.MainModule.FileName -ine $executable -or
+                   $helper.MainModule.BaseAddress.ToInt64() -ne $entry.LiveBase -or $helper.MainModule.ModuleMemorySize -ne $entry.SizeOfImage -or
+                   (Test-Path -LiteralPath (Join-Path $directory 'started.txt'))){throw 'Initial-stop recovery identity/stop differs.'}
+                $initialNonce=[guid]::NewGuid().ToString('N');Update-Ep11AdmissionOutput;$initialOffset=$streams[0].Text.Length
+                $debug.StandardInput.WriteLine('bl; .echo REBORN_CLEAR '+$initialNonce);$debug.StandardInput.Flush();$initialDeadline=[DateTime]::UtcNow.AddSeconds(5)
+                do{
+                    Update-Ep11AdmissionOutput;$initialText=$streams[0].Text.Substring($initialOffset)
+                    if($debug.HasExited -or $helper.HasExited -or [DateTime]::UtcNow -gt $initialDeadline -or $streams[1].Text.Length -ne 0){throw 'Initial-stop empty-list acknowledgement failed.'}
+                    $initialFrame=Get-Ep11NativeOutputFrame $initialText 'AwaitClear' $initialNonce
+                    if($null -eq $initialFrame){Start-Sleep -Milliseconds 25}
+                }while($null -eq $initialFrame)
+                Assert-Ep11HelperBreakpointCleared $initialFrame.Text $initialNonce
+                $initialBytes=[byte[]]::new(6);$initialActual=[UIntPtr]::Zero
+                $initialRead=[RebornAdmissionMemory]::ReadProcessMemory($helper.Handle,[IntPtr]$entry.Address,$initialBytes,[UIntPtr]6,[ref]$initialActual)
+                Assert-Ep11AdmissionBytes $initialRead $initialActual.ToUInt64() $entry.ExpectedBytes $initialBytes
+                # Reborn: invalidate the stop before writing qd so a partial/broken write cannot be reused as another verified initial stop.
+                $initialStopKnown=$false;$debug.StandardInput.WriteLine('qd');$debug.StandardInput.Flush();$cleanupIssued=$true
+                $initialDeadline=[DateTime]::UtcNow.AddSeconds(5)
+                while(-not $debug.HasExited){Update-Ep11AdmissionOutput;if([DateTime]::UtcNow -gt $initialDeadline){throw 'Initial-stop normal detach timed out.'};Start-Sleep -Milliseconds 25}
+                $initialDeadline=[DateTime]::UtcNow.AddSeconds(8)
+                while(-not $helper.HasExited){Update-Ep11AdmissionOutput;if([DateTime]::UtcNow -gt $initialDeadline){throw 'Initial-stop helper did not finish naturally.'};Start-Sleep -Milliseconds 25}
+                Update-Ep11AdmissionOutput
+                if($helper.ExitCode -ne 0 -or $debug.ExitCode -ne 0 -or $streams[1].Text.Length -ne 0 -or
+                   [IO.File]::ReadAllText((Join-Path $directory 'started.txt')) -cne ($owner.ToString()+'|'+$creationTicks) -or
+                   [IO.File]::ReadAllText((Join-Path $directory 'completed.txt')) -cne 'REBORN_NATURAL_COMPLETION'){throw 'Initial-stop completion evidence differs.'}
+                $initialStopRecoveryValidated=$true;$recoveryValidated=$true
+            }catch{$recoveryFailure=$_.Exception.Message}
         }else{
-            # Reborn: retain the legacy helper-only fallback solely when no installed software breakpoint remains in our tracked state.
-            $debug.Kill();$forcedExit=$true;$null=$debug.WaitForExit(5000)
+            # Reborn: remove the generic unarmed forced-exit fallback; unknown/running ownership or transport needs explicit direction, never guessed cleanup.
+            $recoveryAttempted=$true;$cleanupRoute='Unresolved';$recoveryFailure='No verified owned stopped helper for cooperative cleanup.'
         }
     }
     if($streams.Count -eq 2){[IO.File]::WriteAllText((Join-Path $directory 'stdout.txt'),$streams[0].Text);[IO.File]::WriteAllText((Join-Path $directory 'stderr.txt'),$streams[1].Text)}
@@ -421,6 +463,11 @@ try{
     $result|Add-Member CooperativeRecoveryValidated $recoveryValidated
     $result|Add-Member RecoveryFailure $recoveryFailure
     $result|Add-Member RecoveryNeedsUserAction ($null -ne $recoveryFailure)
+    # Reborn: record cleanup routing before handle/stream disposal; unknown transport is not guaranteed to keep its target safely stopped.
+    $result|Add-Member CleanupRoute $cleanupRoute
+    $result|Add-Member InitialStopRecoveryValidated $initialStopRecoveryValidated
+    $result|Add-Member GenericForcedDebuggerExitEnabled $false
+    $result|Add-Member OwnedDebuggerAliveAtCleanupEnd (-not $debug.HasExited)
     # Reborn: helper-only display/framing proof does not validate native startup events, five-site detach or config consumption.
     $result|Add-Member DisplayProfileCalibrationRequested ([bool]$CalibrateDisplayProfile)
     $result|Add-Member DisplayProfileReportValidated $displayProfileValidated
