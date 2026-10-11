@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml;
 using EALABuild;
 
 namespace EALABuild
@@ -13,6 +12,9 @@ namespace EALABuild
         private string driver;
         // Reborn: require an explicit stock baseline location instead of inheriting the developer's default.
         private string staticManifest;
+        // Reborn: standalone workspaces use checked prebuilt compiler and output directories, never hidden repository paths.
+        private string compilerDirectory;
+        private string outputRoot;
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: load explicit local adapter configuration instead of RA3 registry paths or inherited destructive cleanup stages. */
@@ -21,13 +23,15 @@ namespace EALABuild
         {
             BuildHelper.AutomaticallyResetBuildHelper = true;
             BuildHelper.EnableBenchmarking = true;
-            XmlDocument settings = new XmlDocument();
-            settings.XmlResolver = null;
-            settings.Load(Path.Combine(StaticPaths.CurrentDirectory, "uprising-alpha.xml"));
-            runtime = settings.DocumentElement.GetAttribute("PowerShell7");
-            driver = settings.DocumentElement.GetAttribute("Driver");
-            staticManifest = settings.DocumentElement.GetAttribute("StaticManifest");
+            // Reborn: EA's actual CodeDOM loader references only System.dll/EALABuild.dll, not System.Xml.dll.
+            Dictionary<string, string> settings = ReadPaths(Path.Combine(StaticPaths.CurrentDirectory, "uprising-alpha.paths"));
+            runtime = settings["PowerShell7"];
+            driver = settings["Driver"];
+            staticManifest = settings["StaticManifest"];
+            compilerDirectory = settings["CompilerDirectory"];
+            outputRoot = Path.Combine(StaticPaths.CurrentDirectory, "builtmods");
             CheckPath(runtime); CheckPath(driver); CheckPath(staticManifest);
+            CheckDirectory(compilerDirectory); CheckDirectory(outputRoot);
         }
 
         //-------------------------------------------------------------------------------------------------
@@ -44,7 +48,8 @@ namespace EALABuild
             BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha; supported build: ConYard GUN 0..10000. Other capabilities are not silently compiled.");
             RunExecutableArguments request = new RunExecutableArguments(runtime);
             // Reborn: bind every Studio build to the configured read-only stock baseline.
-            request.Arguments = "-NoProfile -File \"" + driver + "\" -ModXml \"" + input + "\" -StaticManifest \"" + staticManifest + "\"";
+            request.Arguments = "-NoProfile -File \"" + driver + "\" -ModXml \"" + input + "\" -StaticManifest \"" + staticManifest
+                + "\" -CompilerDirectory \"" + compilerDirectory + "\" -OutputRoot \"" + outputRoot + "\"";
             request.RedirectOutput = true; request.CreateWindow = false;
             // Reborn: retain the SDK's step-counter protocol before RunStep advances it for the callback.
             if (BuildHelper.GetNextExecutableStep() != 1)
@@ -85,6 +90,36 @@ namespace EALABuild
         {
             if (String.IsNullOrEmpty(path) || !Path.IsPathRooted(path) || path.IndexOf('"') >= 0 || path.IndexOf('\r') >= 0 || path.IndexOf('\n') >= 0 || !File.Exists(path))
                 throw new InvalidDataException("Reborn: adapter requires existing absolute file paths.");
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: require explicitly configured existing directories with unambiguous process argument quoting. */
+        //-------------------------------------------------------------------------------------------------
+        private static void CheckDirectory(string path)
+        {
+            if (String.IsNullOrEmpty(path) || !Path.IsPathRooted(path) || path.IndexOf('"') >= 0 || path.IndexOf('\r') >= 0 || path.IndexOf('\n') >= 0 || !Directory.Exists(path))
+                throw new InvalidDataException("Reborn: adapter requires existing absolute directory paths.");
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: admit exactly four literal path settings without XML libraries, duplicate keys or implicit machine defaults. */
+        //-------------------------------------------------------------------------------------------------
+        private static Dictionary<string, string> ReadPaths(string path)
+        {
+            if (new FileInfo(path).Length > 16384) throw new InvalidDataException("Reborn: alpha path configuration exceeds bound.");
+            Dictionary<string, string> settings = new Dictionary<string, string>(StringComparer.Ordinal);
+            foreach (string line in File.ReadAllLines(path))
+            {
+                if (line.Length == 0 || line.StartsWith("#", StringComparison.Ordinal)) continue;
+                int separator = line.IndexOf('=');
+                if (separator <= 0) throw new InvalidDataException("Reborn: invalid alpha path setting.");
+                string key = line.Substring(0, separator);
+                if ((key != "PowerShell7" && key != "Driver" && key != "StaticManifest" && key != "CompilerDirectory") || settings.ContainsKey(key))
+                    throw new InvalidDataException("Reborn: unknown or duplicate alpha path setting.");
+                settings.Add(key, line.Substring(separator + 1));
+            }
+            if (settings.Count != 4) throw new InvalidDataException("Reborn: alpha requires exactly four path settings.");
+            return settings;
         }
     }
 }

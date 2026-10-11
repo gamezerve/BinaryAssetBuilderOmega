@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<!-- Reborn: local alpha help for the existing Studio documentation pane; no remote content or executable scripts. -->
+<html lang="en"><head><meta charset="utf-8"><title>Uprising Mod SDK Alpha</title></head>
+<body>
+<h1>Uprising Mod SDK Alpha — local candidate</h1>
+<p>This limited candidate uses EA's existing Mod BuildStudio interface. Actual GUI behavior still needs validation.</p>
+<h2>Supported build</h2>
+<p>Select Reborn (GUN 5000) or Armor250 (GUN 250). Edit mods/&lt;name&gt;/data/mod.xml.
+Only the GUN Percent of AlliedConYardArmor is editable, as an integer from 0 to 10000.
+Keep all thirteen ordered armor entries. Unsupported input fails; it is not silently skipped.</p>
+<p>The single alpha build step validates XML, compiles through Core and creates a BIG/config/SKU package.
+Results are under builtmods/RebornAlphaInput-&lt;guid&gt;. Read alpha-build.json for the final build receipt.</p>
+<h2>Not supported by this alpha</h2>
+<p>Other asset identities/types, includes, inheritance, models, textures, music, maps,
+LOD selection, STR processing, automatic installation and game launch are not build-enabled here.</p>
+<h2>Configuration and prerequisites</h2>
+<p>uprising-alpha.paths contains four literal absolute paths: PowerShell7, Driver, StaticManifest and CompilerDirectory.
+Update Driver and CompilerDirectory after relocation. PowerShell 7, x86 .NET 8,
+compatible .NET Framework 4 and unpacked Uprising stock streams are required.</p>
+<p>No stock archive is replaced. The SKU is a mod fragment, not a replacement game SKU.
+Only the earlier GUN-5000 package has user-observed gameplay evidence.</p>
+<p>Local use only: EA components come from your own SDK. Public redistribution review is incomplete.</p>
+</body></html>

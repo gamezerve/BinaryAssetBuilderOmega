@@ -15,14 +15,17 @@ Release plan: [Armor Preview versus general SDK gates](docs/RA3EP1_SDK_RELEASE_P
 The first alpha targets the existing EA Mod BuildStudio interface with explicit
 limited-capability warnings, not broad feature parity before release. An
 [EA-interface adapter prototype](docs/RA3EP1_ALPHA_STUDIO_ADAPTER.md) compiles
-against the original API; backend tests pass, but actual UI loading/Error Log
-behavior and portable packaging are not validated yet. Earlier timing ranges
+against the actual loader's reference set. An isolated local workspace and
+fresh ZIP extraction both pass offline builds without the repository source tree.
+Actual GUI loading/Error Log/callback behavior and public distribution review
+remain open. Earlier timing ranges
 refer to broader scopes, not a prerequisite to releasing this limited alpha.
 Editable [input admission and building](docs/RA3EP1_ARMOR_AUTHORING_ADMISSION.md)
 now support canonical integer GUN values 0..10000 for AlliedConYardArmor.
 Five values and repeated output passed offline; 5000 retains the exact
 user-tested package digest. The next alpha gates are real Studio UI validation
-and portable distribution, not completion of every processor.
+and distribution review, not completion of every processor.
+See [local workspace and extraction evidence](docs/RA3EP1_ALPHA_WORKSPACE.md).
 
 | User-visible milestone | Current evidence |
 | --- | --- |

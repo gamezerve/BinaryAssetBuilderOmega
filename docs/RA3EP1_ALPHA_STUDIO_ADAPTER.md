@@ -29,9 +29,9 @@ completed UI integration or identical warning-parser behavior.
 - `alpha/studio/defaultscript.cs`: implements the existing interface and
   starts the reviewed PowerShell backend as one build step. It sets output
   redirection and no console window; no game/registry/install/cleanup actions.
-- `alpha/studio/uprising-alpha.example.xml`: explicit runtime/backend path
-  configuration template, including required `StaticManifest`. The prototype reads `uprising-alpha.xml` from the
-  isolated Studio working directory. Placeholder paths must be replaced.
+- `alpha/studio/uprising-alpha.paths.example`: current literal path configuration
+  for PowerShell7/Driver/StaticManifest/CompilerDirectory. The adapter reads
+  `uprising-alpha.paths`; the old XML template is historical only.
 - `alpha/mods/Reborn/data/mod.xml`: familiar one-asset declaration sample.
 - `scripts/Invoke-Ra3Ep1AlphaBuild.ps1`: accepts that declaration or standalone
   armor, bounds input at sixteen KiB, prohibits DTD resolution/includes and
@@ -42,11 +42,13 @@ through fresh Core identity generation and the actual scoped OutputManager.
 It no longer replays the fixed-5000 fixture: `CanonicalFixedRecipeUsed=false`.
 Only the GUN coefficient of the thirteen-entry flattened AlliedConYardArmor
 is editable; this is not arbitrary asset-declaration compilation.
-It emits fresh repository-local output, not a release-style `builtmods` tree
-or automatic Documents installation yet.
+Development mode emits fresh repository-local output. The isolated workspace
+passes explicit prebuilt compiler and `builtmods` output paths; no automatic
+Documents installation is performed.
 
-Diagnostics are explicit text: `WARNING ALPHA001` for partial support,
-`WARNING ALPHA002` for the narrow editable scope and `ERROR ALPHA100`
+Diagnostics now use EA's inspected case-sensitive text prefixes:
+`Warning: ALPHA001` for partial support,
+`Warning: ALPHA002` for the narrow editable scope and `Error: ALPHA100`
 for failure. A nonzero backend exit must trigger Studio's failure callback.
 Build Output redirection is requested; Error Log parsing/coloring and actual
 callback behavior still need a real UI test. Do not claim these diagnostics
@@ -89,18 +91,27 @@ an unsupported armor identity returned `ERROR ALPHA100` with exit code 1.
 The updated adapter compiled again with the .NET 2 reference assemblies.
 These changes do not prove a real Studio GUI run.
 
+Subsequent loader inspection found that EA CodeDOM references only
+System.dll/EALABuild.dll and its dispatcher searches `Warning:`/`Error:`.
+The adapter dropped System.Xml for four literal path settings and diagnostics
+were corrected. Exact-reference compilation/interface/config/options passed
+under CLR4; the isolated copy selects CLR4 through its own app configuration.
+Workspace and fresh ZIP extraction builds passed without the source tree.
+See [workspace evidence and distribution limits](RA3EP1_ALPHA_WORKSPACE.md).
+
 ## Remaining alpha gates
 
 1. Editable XML binding to fresh Core/OutputManager/package output is completed
    for the narrow GUN-only scope; wider capabilities remain explicitly unsupported.
-2. Prepare an isolated Studio workspace, leaving the existing reference SDK
-   intact; verify script loading, mod dropdown discovery, callback/exit status,
+2. An isolated workspace and offline loader/extraction checks are prepared,
+   leaving the reference SDK intact; now observe actual GUI script loading,
+   mod dropdown discovery, callback/exit status,
    output capture and Error Log classification with a real UI test.
 3. Keep familiar Build Data/Make BIG/Create SKUDef stages while clearly marking
    unsupported LOD, STR, misc, map, hash-repair and copy/install features. The
    prototype's single operation is not yet full step-for-step UI parity.
-4. Parameterize stock/runtime locations, normalize outputs under `builtmods`,
-   then test a clean extracted package and review distribution contents.
+4. Explicit stock/runtime/prebuilt paths, `builtmods` output and a clean extracted
+   package passed offline. Public distribution/rights and metadata review remain.
 
 The release objective is now an **EA-UI-compatible Uprising SDK Alpha with a
 limited capability matrix**, not broad feature parity before the first alpha.

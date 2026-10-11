@@ -1,0 +1,5 @@
+# Reborn: use literal absolute paths, no quotes; copy to uprising-alpha.paths in an isolated Studio workspace with builtmods.
+PowerShell7=C:\PATH\TO\pwsh.exe
+Driver=C:\PATH\TO\ALPHA\scripts\Invoke-Ra3Ep1AlphaBuild.ps1
+StaticManifest=C:\PATH\TO\UNPACKED\Static Data\data\static.manifest
+CompilerDirectory=C:\PATH\TO\ALPHA\tools\compiler

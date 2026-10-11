@@ -12,20 +12,22 @@ Mod BuildStudio interface while exposing a limited capability matrix. The
 initial package can be armor-only; supported types grow after release.
 It is not a complete RA3-SDK-equivalent release. See the
 [Studio adapter prototype](RA3EP1_ALPHA_STUDIO_ADAPTER.md).
-A zipped working sample could be assembled now, but
-its fixed example, local paths and repository/runtime dependencies would not
-make it a portable editable SDK. Do not label it as one.
+A local inventory-only ZIP has passed fresh extraction and editable armor builds
+without a repository source tree. It is still a LOCAL-USE-ONLY candidate:
+real GUI tests and public distribution/rights review remain. Do not label it
+as a validated public SDK release. See [workspace evidence](RA3EP1_ALPHA_WORKSPACE.md).
 
 | Deliverable | Remaining gates | Working effort estimate |
 | --- | --- | --- |
-| Limited EA-UI SDK alpha | Editable GUN/Core/package path is complete offline; real Studio UI/log/callback checks, portable paths/runtime instructions, distribution review and clean-directory test remain | A few focused working sessions if Studio compatibility introduces no new blocker; reassess after the UI test |
+| Limited EA-UI SDK alpha | Editable GUN/Core/package path and clean ZIP extraction pass offline; real Studio UI/log/callback checks and public distribution review remain | A few focused working sessions if Studio compatibility introduces no new blocker; reassess after the UI test |
 | Basic gameplay SDK alpha | GameObject/Weapon and needed modules, dependency/import closure, reference/override precedence, repeatable build and controlled gameplay checks | Several weeks; reassess after the first unit/weapon vertical slice |
 | RA3-SDK-like broad release | Wider typed processor coverage, inheritance/includes/cache contracts, textures/models/audio/shaders, map workflows and WorldBuilder integration, distribution/dependency review | Several months or longer; no reliable fixed release date yet |
 
 The table's broader gameplay/full-SDK scopes are not prerequisites for the
 first limited EA-UI-compatible alpha. Its remaining immediate gates are
-actual Studio integration, meaningful warnings/failure behavior and
-portable package validation. The user has explicitly selected this early-alpha
+actual Studio integration and distribution review. Diagnostic prefixes follow
+inspected Studio dispatch; offline prebuilt/extracted package checks pass.
+The user has explicitly selected this early-alpha
 approach; do not defer it until GameObject/Weapon or every processor is complete.
 
 These are provisional engineering estimates, not measured remaining hours,
@@ -72,8 +74,10 @@ the fixed recipe. CLI preflight alone remains input-only; the final authored
 receipt distinguishes successful package publication. The fixed
 `Build-Ra3Ep1ArmorMod.ps1` stays an exact-recipe regression tool.
 
-The principal editable-armor functional gap is closed offline. Next prepare
-and test the isolated EA Studio integration, then portable distribution.
+The principal editable-armor functional gap is closed offline. An isolated EA
+Studio candidate includes explicit configuration, CLR4 selection, local help
+and prebuilt tools; exact loader-reference/config/options checks and fresh ZIP
+extraction pass. Next observe the real GUI and review public distribution.
 The successful default-reader trial
 does not by itself resolve queue-route failure, exact runtime file reads,
 generic duplicate asset ordering or full WorldBuilder support.
