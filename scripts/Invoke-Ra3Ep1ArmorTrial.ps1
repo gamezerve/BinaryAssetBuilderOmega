@@ -1,13 +1,21 @@
 # Reborn: one explicitly authorized armor candidate launch; no debugger, installation writes, retries or process termination.
 [CmdletBinding()]
-param([switch]$Run,[switch]$DefaultReader)
+param([switch]$Run,[switch]$DefaultReader,[switch]$Cannon)
 $ErrorActionPreference='Stop'
 if($PSVersionTable.PSVersion.Major -lt 7){throw 'PowerShell 7 is required.'}
 $repo=Split-Path -Parent $PSScriptRoot
-# Reborn: select only one of two separately admitted fixed candidates, never a caller-supplied config or digest.
+# Reborn: select one separately verified fixed candidate; never accept caller-supplied configs or digests.
+if($Cannon -and $DefaultReader){throw 'Choose Cannon or the historical DefaultReader trial, not both.'}
 $trial=Join-Path $repo $(if($DefaultReader){'artifacts/RebornArmorDefault-abb50afbef8745af952b8cc879c43aa9'}else{'artifacts/RebornArmorTrial-0f2a34bd39dd4eef9946d7e3b818f57f'})
 $expectedBytes=if($DefaultReader){3552}else{3650}
 $expectedHash=if($DefaultReader){'DD7DE09E3A81B9714DC2861ADE0AA9ECDFE72A1851EDD1ED20BE2155EF31C2DC'}else{'3FE964292FA72A1DF961EC93D3CFDA884E1334F55ACB294FF75FE1E4144F3F85'}
+# Reborn: pin the clean alpha's independently read-back CANNON=5000/GUN=100 package, not the latest mutable build directory.
+if($Cannon){
+    $trial=Join-Path (Split-Path -Parent $repo) 'UprisingAlpha-20261011-h/builtmods/RebornAlphaInput-827c7fe6f81d44bdb39aed9e5d73f46c/build/package'
+    $expectedBytes=3552
+    $expectedHash='40C09781BAB82643FBBC6DF5A8DFA674B74BF16B8B93F4A5B605FF5778F0BE7F'
+}
+$useDefaultReader=$DefaultReader -or $Cannon
 $root='D:\Program Files (x86)\Steam\steamapps\common\Command and Conquer Red Alert 3 Uprising'
 $config=Join-Path $trial 'reborn_1.0.cfg'
 $archive=Join-Path $trial 'RebornArmorProbe.big'
@@ -36,7 +44,7 @@ try {
     Assert-Ep11ConfigNamePolicy $config
     $cfgHandle=Open-RebornFrozenFile $config
     $bigHandle=Open-RebornFrozenFile $archive
-    $expected=[Text.Encoding]::ASCII.GetBytes($(if($DefaultReader){"add-big RebornArmorProbe.big`n"}else{"add-big RebornArmorProbe.big`nadd-manifest data\reborn_armor_probe.manifest`n"}))
+    $expected=[Text.Encoding]::ASCII.GetBytes($(if($useDefaultReader){"add-big RebornArmorProbe.big`n"}else{"add-big RebornArmorProbe.big`nadd-manifest data\reborn_armor_probe.manifest`n"}))
     if($cfgHandle.Length-ne $expected.Length){throw 'Candidate config length differs.'}
     $actual=[byte[]]::new($expected.Length);$cfgHandle.ReadExactly($actual)
     if([Convert]::ToHexString($actual)-cne [Convert]::ToHexString($expected)){throw 'Candidate config bytes differ.'}

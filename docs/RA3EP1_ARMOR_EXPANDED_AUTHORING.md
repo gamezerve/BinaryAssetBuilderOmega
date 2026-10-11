@@ -100,3 +100,34 @@ check should distinguish CANNON editing from unchanged GUN, using a fresh match
 and weapons whose actual damage types have been verified. Scalar combinations
 can interact; do not assume a damage multiplier from a single coefficient without
 considering those fields. New runtime tests require separate launch authorization.
+
+## CANNON runtime candidate — October 12, 2026
+
+`Invoke-Ra3Ep1ArmorTrial.ps1 -Cannon` selects only the pinned ArmorCannon package
+from `UprisingAlpha-20261011-h`, not an arbitrary or latest build. Its 3552-byte
+BIG must match the CANNON digest above and its config must contain exactly the
+default-reader add-big line. Stock identity/campaign/process preflight and
+read-share-only package locks are retained. `-Cannon -DefaultReader` is refused.
+Without `-Run`, it never starts a game. The October 12 preflight passed with no
+existing Uprising process (`artifacts/RebornArmorCannon-preflight-20261012.log`).
+
+Read-only source inspection under the external Uprising `Xml (Uprising)` root
+confirms the weapon chain, not just a name inferred from RA3:
+
+- `Allied/Units/AlliedAntiVehicleVehicleTech1.xml:36` identifies Guardian Tank;
+  lines 291..294 bind the primary `AlliedAntiVehicleVehicleTech1Cannon` while
+  the target-painter toggle is off.
+- `GlobalData/Weapon.xml:2558` binds `AlliedAntiVehicleVehicleTech1Warhead`.
+  The active warhead at lines 2578..2585 supplies Damage=60 and CANNON;
+  the earlier commented-out direct DamageNugget is not the evidence used.
+- `Allied/Structures/AlliedConstructionYard.xml:49` binds AlliedConYardArmor.
+
+The separately authorized test should use a fresh Allied skirmish, an unpacked
+Construction Yard, and a Guardian Tank in normal cannon mode (no target painter,
+veterancy or supporting buffs). Force-attack the same target, then use a
+Peacekeeper as the unchanged GUN control, preferably against an undamaged
+Construction Yard. CANNON=5000 should markedly increase cannon damage relative
+to stock; GUN=100 should not show the earlier GUN=5000 behavior. Do not treat
+exact per-shot health loss as proven: friendly-fire rules, other engine scalars
+and unit state may affect it. No gameplay result has yet been recorded for this
+candidate. Menu success alone will not count as coefficient validation.
