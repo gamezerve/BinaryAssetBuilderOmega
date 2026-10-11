@@ -104,9 +104,11 @@ See [workspace evidence and distribution limits](RA3EP1_ALPHA_WORKSPACE.md).
 1. Editable XML binding to fresh Core/OutputManager/package output is completed
    for the narrow GUN-only scope; wider capabilities remain explicitly unsupported.
 2. An isolated workspace and offline loader/extraction checks are prepared,
-   leaving the reference SDK intact; now observe actual GUI script loading,
-   mod dropdown discovery, callback/exit status,
-   output capture and Error Log classification with a real UI test.
+   leaving the reference SDK intact. The user's October 11 screenshot/full log
+   confirm real GUI loading, Reborn discovery, output capture and successful
+   completion; independent package readback matches the game-tested digest.
+   Still observe GUI failure handling and Error Log classification. See the
+   workspace report for the exact manual-run evidence and its limits.
 3. Keep familiar Build Data/Make BIG/Create SKUDef stages while clearly marking
    unsupported LOD, STR, misc, map, hash-repair and copy/install features. The
    prototype's single operation is not yet full step-for-step UI parity.

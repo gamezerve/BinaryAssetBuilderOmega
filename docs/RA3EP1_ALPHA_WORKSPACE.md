@@ -6,8 +6,10 @@ The supported armor backend now runs from a prepared local workspace containing
 prebuilt compiler files and focused schema fixtures, without a source tree or
 SDK rebuild during each mod build. GUN-5000 and GUN-250 packages retain their
 known digests. Fresh ZIP extraction into another directory passes both builds,
-inventory preservation and DTD rejection. This is **offline portability evidence**,
-not proof of a working Studio window or a publicly distributable SDK release.
+inventory preservation and DTD rejection. The user subsequently opened the
+extracted Studio and built Reborn successfully; its screenshot/log and output
+readback now add real GUI success evidence. This is not a publicly distributable
+SDK release.
 
 ## Preparation
 
@@ -58,7 +60,8 @@ harness compiled the adapter with the exact two declared references, discovered
 and instantiated its EA interface, ran initialize, read all paths and checked
 the two option labels/single-step scope successfully under CLR4. No GUI,
 build callback, registry read or game launch is performed by that harness.
-CLR4 compatibility of the actual Studio window remains a test gate.
+The subsequent user-run GUI build confirms CLR4 compatibility for this success
+path, not every original Studio feature.
 
 ## Evidence
 
@@ -87,10 +90,31 @@ staging for inspection; nothing is deleted. The preparation provenance still
 names the original workspace, while `extraction-test.json` separately records
 the relocated tested path. Only the local ZIP is created, not a public release.
 
+## User-run Studio success — October 11, 2026
+
+The user supplied a screenshot of the actual EA window and its complete pasted
+build log. Reborn appears selected; the Build Log shows `Build Completed` and
+total time `00:00:01.8285614`. This was a manual user run, not an automated UI
+observation. The output was independently read back at:
+
+`UprisingAlpha-extracted-b/builtmods/RebornAlphaInput-44b8674bcb974d39ae1ead0867fa6319`.
+
+`alpha-build.json` confirms GUN=5000, prebuilt compiler use, selected-input
+admission, no fixed-recipe replay, no installed-file modification and no game
+execution. The 3,552-byte BIG has SHA256
+`DD7DE09E3A81B9714DC2861ADE0AA9ECDFE72A1851EDD1ED20BE2155EF31C2DC`,
+identical to the earlier game-tested package. The log also records fifteen
+entries and passed detached package controls. This closes the selected sample's
+real GUI loading/dropdown/output/success-callback gate. It does not establish
+warning tree classification, the GUI failure callback, local help rendering,
+another coefficient's GUI build or a new gameplay run. Existing receipts keep
+their original false runtime flags; no historical artifact was rewritten.
+
 ## Remaining gates / distribution limits
 
-Next observe actual Studio loading, mod dropdowns, build success/failure callbacks,
-output capture, Error Log categorization and local help. The adapter currently
+Next observe the GUI failure callback, Error Log categorization and local help.
+Successful loading, Reborn selection, output capture and completion now have
+user-provided GUI evidence plus independent package readback. The adapter currently
 uses one combined validation/compile/package step, not every original SDK checkbox.
 No game test is part of preparation or extraction. Changed coefficients still
 need separately authorized runtime checks if new gameplay evidence is desired.

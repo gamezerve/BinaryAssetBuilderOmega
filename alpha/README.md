@@ -2,8 +2,10 @@
 
 This is a limited, experimental **local-use candidate**, not a public release
 or a complete Uprising SDK. It retains the existing EA Mod BuildStudio interface.
-Actual Studio loading, dropdown discovery, warning classification and callbacks
-must still be observed; offline backend success alone does not prove the UI works.
+User-provided screenshot/log evidence now confirms actual Studio loading,
+Reborn selection, output capture and successful completion, with independently
+verified package bytes. Warning classification and GUI failure handling remain
+to be checked; success does not establish all original Studio features.
 
 Supported: exactly one flattened `AlliedConYardArmor` with thirteen ordered armor
 entries. Only GUN Percent is editable, as an integer 0..10000. Unsupported XML
@@ -20,7 +22,7 @@ CompilerDirectory. Update Driver and CompilerDirectory after relocating this
 workspace. Launching the UI is a separate test; no preparation/build command
 starts a game or modifies a game installation.
 The local `EALAModStudio.exe.config` selects CLR4 rather than repairing the
-machine's old CLR2 compiler. This compatibility choice still needs a real GUI test.
+machine's old CLR2 compiler. The user-run Reborn GUI success path passed with it.
 
 For an offline backend build, run from this workspace in PowerShell 7:
 

@@ -17,14 +17,17 @@ limited-capability warnings, not broad feature parity before release. An
 [EA-interface adapter prototype](docs/RA3EP1_ALPHA_STUDIO_ADAPTER.md) compiles
 against the actual loader's reference set. An isolated local workspace and
 fresh ZIP extraction both pass offline builds without the repository source tree.
-Actual GUI loading/Error Log/callback behavior and public distribution review
+The user's real Studio screenshot and full log now confirm Reborn dropdown
+discovery, output capture and a successful build callback (1.83 seconds).
+Independent output readback matches the previously game-tested GUN-5000 BIG.
+Error Log classification, GUI failure handling and public distribution review
 remain open. Earlier timing ranges
 refer to broader scopes, not a prerequisite to releasing this limited alpha.
 Editable [input admission and building](docs/RA3EP1_ARMOR_AUTHORING_ADMISSION.md)
 now support canonical integer GUN values 0..10000 for AlliedConYardArmor.
 Five values and repeated output passed offline; 5000 retains the exact
-user-tested package digest. The next alpha gates are real Studio UI validation
-and distribution review, not completion of every processor.
+user-tested package digest. The next alpha gates are the remaining GUI negative
+and warning checks and distribution review, not completion of every processor.
 See [local workspace and extraction evidence](docs/RA3EP1_ALPHA_WORKSPACE.md).
 
 | User-visible milestone | Current evidence |
