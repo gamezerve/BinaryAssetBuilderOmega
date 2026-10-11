@@ -112,6 +112,8 @@ function Add-Ep11ConfigSnapshot($Session,$snapshot) {
 function Complete-Ep11ConfigSnapshotSession($Session) {
     if($null -eq $Session -or $Session.Status -cne 'Open'){throw 'Snapshot session is not open.'}
     try{
+        # Reborn: a requested debugger context must be consumed before finalizing its captured evidence.
+        if($null -ne $Session.PendingContext){throw 'Snapshot session has a pending context response.'}
         if($Session.Active.Count -ne 0){throw 'Snapshot chain incomplete.'}
         $null=Get-Ep11ConfigReadCorrelation $Session.Events.ToArray() $Session.ExpectedProcessId $Session.ProbePath $Session.ModuleBase
         $Session.Status='Closed'

@@ -2,6 +2,10 @@
 
 Date: October 11, 2026 (Europe/Istanbul). Detached implementation only.
 
+Follow-up: the [nonce-bound context bridge](RA3EP11_CONFIG_DEBUGGER_TRANSPORT.md)
+now parses supplied register responses and assigns invocation IDs per thread.
+It does not yet collect actual CDB output or prove a stopped process.
+
 ## Implemented bridge
 
 `scripts/Ra3Ep11ConfigSnapshotAdapter.ps1` converts five supplied register

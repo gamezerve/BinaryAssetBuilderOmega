@@ -3,6 +3,13 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 11, 2026
 
+Latest debugger bridge: [nonce-bound context transport](docs/RA3EP11_CONFIG_DEBUGGER_TRANSPORT.md).
+One requested register response now feeds the incremental decoder with
+thread-scoped invocation IDs. Three detached controls and 40 refusal/retry
+checks pass, including interleaved threads, stale responses and pending
+completion. No commands were sent; actual CDB framing still needs helper
+calibration. Native execution/config consumption remain unproved; **52% / 48%**.
+
 Latest streaming preparation: the [snapshot adapter](docs/RA3EP11_CONFIG_SNAPSHOT_ADAPTER.md)
 now accepts one stop at a time through a bounded session. Captures happen at
 that stop, not by rereading old snapshots after the process resumes. Three
