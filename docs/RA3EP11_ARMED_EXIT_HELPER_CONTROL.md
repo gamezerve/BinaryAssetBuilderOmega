@@ -2,6 +2,12 @@
 
 Date: October 11, 2026 (Europe/Istanbul). No game executed.
 
+Follow-up: [cooperative helper recovery](RA3EP11_COOPERATIVE_HELPER_RECOVERY.md)
+now handles recoverable failures at verified owned stops through explicit
+clear/byte checks/normal detach. Unknown armed states no longer invoke the
+generic forced-kill fallback. This does not overturn the failed loss result
+or solve lost/unresponsive debugger transport.
+
 ## Outcome: normal detach passed; forced loss failed
 
 The helper supervisor now distinguishes `ClearAndResume` (existing default),

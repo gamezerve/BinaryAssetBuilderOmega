@@ -1,7 +1,8 @@
 # Reborn: gate one newly compiled helper at CDB's initial break; rejection cleanup detaches/resumes that helper, never a game.
 [CmdletBinding()]
 param([switch]$Run,[switch]$SelfTest,[ValidateSet('Admit','RejectLiveBytes','Timeout')][string]$Mode='Admit',[switch]$CalibrateContext,[switch]$CalibrateBreakpoint,
-    [ValidateSet('ClearAndResume','TimeoutDetachArmed','DebuggerLossArmed')][string]$BreakpointDisposition='ClearAndResume')
+    [ValidateSet('ClearAndResume','TimeoutDetachArmed','DebuggerLossArmed')][string]$BreakpointDisposition='ClearAndResume',
+    [ValidateSet('None','CaptureRefusal','ObservationTimeout')][string]$InjectObservationFailure='None')
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'Ra3Ep11DebuggerAdmissionPolicy.ps1')
 . (Join-Path $PSScriptRoot 'Ra3Ep11SupervisorAdmissionGate.ps1')
@@ -14,6 +15,8 @@ if($CalibrateBreakpoint -and ($SelfTest -or $CalibrateContext -or $Mode -cne 'Ad
 if($BreakpointDisposition -cne 'ClearAndResume' -and -not $CalibrateBreakpoint){throw 'Armed breakpoint disposition requires helper breakpoint calibration.'}
 # Reborn: actual armed debugger loss left the helper incomplete despite byte restoration; block replay before any file/process action.
 if($Run -and $BreakpointDisposition -ceq 'DebuggerLossArmed'){throw 'Armed debugger-loss execution disabled: byte restoration did not prove helper completion.'}
+# Reborn: private failure injection is restricted to the same separately admitted helper breakpoint control.
+if($InjectObservationFailure -cne 'None' -and ($SelfTest -or -not $CalibrateBreakpoint -or $BreakpointDisposition -cne 'ClearAndResume')){throw 'Failure injection requires the separate clear/resume helper breakpoint control.'}
 if($SelfTest){
     if($Run){throw 'Run and detached tests must be separate.'}
     # Reborn: detached admission mutations do not start a debugger or read any process memory.
@@ -91,6 +94,8 @@ $contextRecords=@();$contextRoundTripValidated=$false;$staleContextRefused=$fals
 $breakpointHitValidated=$false;$breakpointRestored=$false;$breakpointContext=$null
 $breakpointSite=$null;$breakpointOriginalByte=$null
 $armedBreakpointValidated=$false;$debuggerLossInjected=$false;$survivedDebuggerExit=$false;$timeoutHoldMs=0
+# Reborn: distinguish an issued breakpoint command from a verified stopped event; unknown armed states must never use the old forced-kill fallback.
+$breakpointCommandIssued=$false;$atOwnedBreakpoint=$false;$recoveryAttempted=$false;$recoveryValidated=$false;$recoveryFailure=$null;$injectedFailureObserved=$false
 #-------------------------------------------------------------------------------------------------
 <# Reborn: pump bounded redirected chunks without blocking on a prompt or needing a PowerShell runspace in callbacks. #>
 #-------------------------------------------------------------------------------------------------
@@ -217,7 +222,9 @@ try{
         $breakNonce=[guid]::NewGuid().ToString('N');$siteHex='{0:x}' -f $breakpointSite
         Update-Ep11AdmissionOutput;$breakOffset=$streams[0].Text.Length
         $breakCommand='bp0 '+$siteHex+' ".printf \"REBORN_BREAK '+$breakNonce+' %x %x %x\", @$tpid, @$tid, @eip; .echo"'
-        $debug.StandardInput.WriteLine($breakCommand);$debug.StandardInput.WriteLine('g');$debug.StandardInput.Flush();$resumeIssued=$true
+        # Reborn: mark possible arming before writing; a partial/broken pipe must not enter the unarmed forced-exit fallback.
+        $breakpointCommandIssued=$true;$debug.StandardInput.WriteLine($breakCommand)
+        $debug.StandardInput.WriteLine('g');$debug.StandardInput.Flush();$resumeIssued=$true
         $breakDeadline=[DateTime]::UtcNow.AddSeconds(10)
         do{
             Update-Ep11AdmissionOutput;$breakText=$streams[0].Text.Substring($breakOffset)
@@ -225,6 +232,7 @@ try{
             if($breakText -notmatch ('(?m)^REBORN_BREAK '+$breakNonce+' [0-9a-f]+ [0-9a-f]+ [0-9a-f]+\r?\n')){Start-Sleep -Milliseconds 25}
         }while($breakText -notmatch ('(?m)^REBORN_BREAK '+$breakNonce+' [0-9a-f]+ [0-9a-f]+ [0-9a-f]+\r?\n'))
         $hit=Get-Ep11HelperBreakpointHit $breakText $breakNonce $owner $breakpointSite
+        $atOwnedBreakpoint=$true
         $contextSession=New-Ep11ConfigSnapshotSession $owner (Join-Path $repo 'fixtures/ra3ep11/phase-a/probe_1.0.cfg') {throw 'Helper breakpoint must not invoke native config decoding.'}
         $request=New-Ep11ConfigContextRequest $contextSession
         Update-Ep11AdmissionOutput;$offset=$streams[0].Text.Length
@@ -239,6 +247,14 @@ try{
         $breakpointContext=Get-Ep11ConfigContextRecord $window $request.Nonce
         if($breakpointContext.ProcessId -ne $owner -or $breakpointContext.ThreadId -ne $hit.ThreadId -or $breakpointContext.SiteAddress -ne $breakpointSite){throw 'Breakpoint context does not match owned hit.'}
         $contextSession.PendingContext=$null;$contextSession.Status='Closed';$breakpointHitValidated=$true
+        if($InjectObservationFailure -cne 'None'){
+            # Reborn: inject only a supervisor failure after a real owned stop, never corrupt target registers, memory or input files.
+            if($InjectObservationFailure -ceq 'ObservationTimeout'){
+                $injectedDeadline=[DateTime]::UtcNow.AddSeconds(1)
+                while([DateTime]::UtcNow -lt $injectedDeadline){Update-Ep11AdmissionOutput;if($debug.HasExited -or $helper.HasExited){throw 'Helper lost during injected timeout hold.'};Start-Sleep -Milliseconds 25}
+            }
+            $injectedFailureObserved=$true;throw ('Reborn injected observation failure: '+$InjectObservationFailure)
+        }
         if($BreakpointDisposition -cne 'ClearAndResume'){
             # Reborn: establish an enabled breakpoint in CDB's table before testing loss, rather than assuming it remains armed after the hit.
             $armedNonce=[guid]::NewGuid().ToString('N');Update-Ep11AdmissionOutput;$armedOffset=$streams[0].Text.Length
@@ -285,11 +301,12 @@ try{
             if($clearText -notmatch ('(?m)^REBORN_CLEAR '+$clearNonce+'\r?\n')){Start-Sleep -Milliseconds 25}
         }while($clearText -notmatch ('(?m)^REBORN_CLEAR '+$clearNonce+'\r?\n'))
         Assert-Ep11HelperBreakpointCleared $clearText $clearNonce
+        $breakpointCommandIssued=$false
         $restored=[byte[]]::new(1);$restoredActual=[UIntPtr]::Zero
         $restoredSuccess=[RebornAdmissionMemory]::ReadProcessMemory($helper.Handle,[IntPtr]$breakpointSite,$restored,[UIntPtr]1,[ref]$restoredActual)
         Assert-Ep11AdmissionBytes $restoredSuccess $restoredActual.ToUInt64() ([byte[]]@($breakpointOriginalByte)) $restored
         $breakpointRestored=$true
-        $debug.StandardInput.WriteLine('g')
+        $debug.StandardInput.WriteLine('g');$atOwnedBreakpoint=$false
         }
     }elseif($admitted){$debug.StandardInput.WriteLine('g');$resumeIssued=$true}else{
         # Reborn: rejected observation never gets g; helper-only cleanup detaches and therefore releases it to self-expire.
@@ -307,8 +324,45 @@ try{
        (-not $debuggerLossInjected -and $debug.ExitCode -ne 0) -or $streams[1].Text.Length -ne 0 -or
        [IO.File]::ReadAllText((Join-Path $directory 'completed.txt')) -cne 'REBORN_NATURAL_COMPLETION'){throw 'Final owned helper completion differs.'}
 }catch{$failure=$_.Exception.Message}finally{
-    # Reborn: on unexpected failure end only our debugger; -pd can release the helper, so rejection is not execution containment.
-    if($started -and -not $debug.HasExited){$debug.Kill();$forcedExit=$true;$null=$debug.WaitForExit(5000)}
+    if($started -and -not $debug.HasExited){
+        if($breakpointCommandIssued){
+            # Reborn: recover only a verified owned stopped helper cooperatively; armed unknown states cannot be made safe by killing the debugger.
+            $recoveryAttempted=$true
+            try{
+                if(-not $admitted -or -not $atOwnedBreakpoint -or $null -eq $helper -or $helper.HasExited){throw 'No verified owned stop for cooperative breakpoint recovery.'}
+                $recoveryNonce=[guid]::NewGuid().ToString('N');Update-Ep11AdmissionOutput;$recoveryOffset=$streams[0].Text.Length
+                $debug.StandardInput.WriteLine('bc 0; bl; .echo REBORN_CLEAR '+$recoveryNonce);$debug.StandardInput.Flush()
+                $recoveryDeadline=[DateTime]::UtcNow.AddSeconds(5)
+                do{
+                    Update-Ep11AdmissionOutput;$recoveryText=$streams[0].Text.Substring($recoveryOffset)
+                    if($recoveryText.Length -gt 4096 -or $debug.HasExited -or $helper.HasExited -or [DateTime]::UtcNow -gt $recoveryDeadline -or $streams[1].Text.Length -ne 0){throw 'Cooperative clear acknowledgement failed.'}
+                    if($recoveryText -notmatch ('(?m)^REBORN_CLEAR '+$recoveryNonce+'\r?\n')){Start-Sleep -Milliseconds 25}
+                }while($recoveryText -notmatch ('(?m)^REBORN_CLEAR '+$recoveryNonce+'\r?\n'))
+                Assert-Ep11HelperBreakpointCleared $recoveryText $recoveryNonce;$breakpointCommandIssued=$false
+                $recoveryByte=[byte[]]::new(1);$recoveryActual=[UIntPtr]::Zero
+                $recoveryRead=[RebornAdmissionMemory]::ReadProcessMemory($helper.Handle,[IntPtr]$breakpointSite,$recoveryByte,[UIntPtr]1,[ref]$recoveryActual)
+                Assert-Ep11AdmissionBytes $recoveryRead $recoveryActual.ToUInt64() ([byte[]]@($breakpointOriginalByte)) $recoveryByte
+                $debug.StandardInput.WriteLine('qd');$debug.StandardInput.Flush();$cleanupIssued=$true
+                $recoveryDeadline=[DateTime]::UtcNow.AddSeconds(5)
+                while(-not $debug.HasExited){Update-Ep11AdmissionOutput;if([DateTime]::UtcNow -gt $recoveryDeadline){throw 'Cooperative detach did not finish.'};Start-Sleep -Milliseconds 25}
+                if($helper.HasExited){throw 'Helper did not survive cooperative detach for byte validation.'}
+                # Reborn: repeat the actual byte check after debugger exit, not just while its breakpoint could be temporarily restored.
+                $recoveryActual=[UIntPtr]::Zero
+                $recoveryRead=[RebornAdmissionMemory]::ReadProcessMemory($helper.Handle,[IntPtr]$breakpointSite,$recoveryByte,[UIntPtr]1,[ref]$recoveryActual)
+                Assert-Ep11AdmissionBytes $recoveryRead $recoveryActual.ToUInt64() ([byte[]]@($breakpointOriginalByte)) $recoveryByte
+                $breakpointRestored=$true;$survivedDebuggerExit=$true;$recoveryDeadline=[DateTime]::UtcNow.AddSeconds(8)
+                while(-not $helper.HasExited){Update-Ep11AdmissionOutput;if([DateTime]::UtcNow -gt $recoveryDeadline){throw 'Recovered helper did not complete naturally.'};Start-Sleep -Milliseconds 25}
+                Update-Ep11AdmissionOutput
+                if($helper.ExitCode -ne 0 -or $debug.ExitCode -ne 0 -or $streams[1].Text.Length -ne 0 -or
+                   [IO.File]::ReadAllText((Join-Path $directory 'started.txt')) -cne ($owner.ToString()+'|'+$creationTicks) -or
+                   [IO.File]::ReadAllText((Join-Path $directory 'completed.txt')) -cne 'REBORN_NATURAL_COMPLETION'){throw 'Recovered helper completion evidence differs.'}
+                $recoveryValidated=$true
+            }catch{$recoveryFailure=$_.Exception.Message}
+        }else{
+            # Reborn: retain the legacy helper-only fallback solely when no installed software breakpoint remains in our tracked state.
+            $debug.Kill();$forcedExit=$true;$null=$debug.WaitForExit(5000)
+        }
+    }
     if($streams.Count -eq 2){[IO.File]::WriteAllText((Join-Path $directory 'stdout.txt'),$streams[0].Text);[IO.File]::WriteAllText((Join-Path $directory 'stderr.txt'),$streams[1].Text)}
     $result=[pscustomobject]@{Mode=$Mode;Decision=$decision;Failure=$failure;HelperProcessId=$owner;OwnedDebuggerProcessId=$debuggerId;HelperCreationUtcTicks=$creationTicks;CompiledHelperSha256=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes));SharedAdmissionDecision=$sharedDecision;SharedGateInjectedByteFaultRefused=$sharedFaultRefused;InitialOwnershipAndBytesAdmitted=$admitted;ObservationResumeIssued=$resumeIssued;CleanupDetachIssued=$cleanupIssued;ForcedDebuggerExit=$forcedExit;MainMarkerAbsentBeforeDecision=$beforeDecision;Entry=$entry;ObservedEntryBytes=$observed;MemoryReadSucceeded=$read;ActualEntryBytesRead=$actual.ToUInt64();NaturalCompletionValidated=($null -eq $failure);RejectedHelperCanRunDuringCleanup=$true;GameExecuted=$false;GameRecipeReady=$false;OutputDirectory=$directory}
     # Reborn: helper-only context proof does not validate any native config observation site or loaded mod.
@@ -331,8 +385,15 @@ try{
     $result|Add-Member SurvivedArmedDebuggerExit $survivedDebuggerExit
     $result|Add-Member ArmedTimeoutHoldMs $timeoutHoldMs
     $result|Add-Member OwnedDebuggerExitCode $(if($debug.HasExited){$debug.ExitCode}else{$null})
+    # Reborn: an observation failure remains a failure even when cooperative helper cleanup succeeds.
+    $result|Add-Member InjectObservationFailure $InjectObservationFailure
+    $result|Add-Member InjectedFailureObserved $injectedFailureObserved
+    $result|Add-Member CooperativeRecoveryAttempted $recoveryAttempted
+    $result|Add-Member CooperativeRecoveryValidated $recoveryValidated
+    $result|Add-Member RecoveryFailure $recoveryFailure
+    $result|Add-Member RecoveryNeedsUserAction ($null -ne $recoveryFailure)
     [IO.File]::WriteAllText((Join-Path $directory 'result.json'),($result|ConvertTo-Json -Depth 4))
     $debug.Dispose();if($null -ne $helper){$helper.Dispose()}
 }
-if($null -ne $failure){throw $failure}
+if($null -ne $failure -and -not ($injectedFailureObserved -and $failure -ceq ('Reborn injected observation failure: '+$InjectObservationFailure) -and $recoveryValidated)){throw $failure}
 $result

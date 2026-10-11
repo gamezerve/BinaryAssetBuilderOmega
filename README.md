@@ -3,6 +3,14 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 11, 2026
 
+Latest recovery implementation: [cooperative helper exception cleanup](docs/RA3EP11_COOPERATIVE_HELPER_RECOVERY.md).
+Errors at a verified owned breakpoint now clear/verify/detach normally;
+unknown armed states no longer use the forced-kill fallback. Capture-refusal
+and timeout injections both passed actual cleanup and natural helper exit,
+without erasing the original observation failure. Normal clear/resume also
+passed. This does not fix lost/broken debugger transport or enable native
+game execution. Actual config consumption remains open; **52% / 48%**.
+
 Latest safety result: [armed-breakpoint exit controls](docs/RA3EP11_ARMED_EXIT_HELPER_CONTROL.md).
 A bounded helper timeout followed by normal detach passed: original byte
 restored, helper survived and completed naturally. Forced debugger loss
