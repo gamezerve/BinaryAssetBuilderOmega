@@ -31,6 +31,12 @@ user-tested package digest. The next alpha gates are GUI negative checks and
 distribution review, not completion of every processor.
 See [local workspace and extraction evidence](docs/RA3EP1_ALPHA_WORKSPACE.md).
 
+The manual InvalidXml GUI test correctly categorized ALPHA100 as an error, but
+revealed that EA Studio still called the success callback: its process completion
+does not consult ExitCode, and only `Critical:` sets `stepFailed`. The backend
+now also emits `Critical: ALPHA101` on failure. Offline refusal passes; a repeat
+GUI test is pending. EA binaries are unchanged.
+
 | User-visible milestone | Current evidence |
 | --- | --- |
 | Compile a focused ArmorTemplate XML path | Schema, plugin and document controls pass |

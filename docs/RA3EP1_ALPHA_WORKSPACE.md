@@ -123,6 +123,19 @@ mismatched. It is not part of the release inventory or a gameplay package, and
 the existing Reborn/Armor250 inputs remain unchanged.
 
 Next observe the GUI failure callback, error categorization and local help.
+
+The user then ran InvalidXml: ALPHA100 appeared correctly beneath Errors, but
+the log still said Build Completed (0.746 seconds). Bounded IL inspection of
+`ModStudioUI.processInputLine` shows only `Critical:` sets `stepFailed`; `Error:`
+merely dispatches the error row. `executableExited` branches on `stepFailed`
+without consulting the process ExitCode. Thus error categorization passes but
+the original failure callback claim does not. The backend now retains detailed
+`Error: ALPHA100` and additionally emits `Critical: ALPHA101` before exit 1.
+The repository driver and the user's extracted test copy are patched; EA binaries,
+samples and previous build outputs remain unchanged. The original workspace
+inventory hash no longer describes that patched driver, and the older ZIP does
+not contain this fix. A fresh preparation/extraction is required before releasing
+an updated candidate. Repeat GUI callback validation remains pending.
 Successful loading, Reborn selection, output capture and completion now have
 user-provided GUI evidence plus independent package readback. The adapter currently
 uses one combined validation/compile/package step, not every original SDK checkbox.

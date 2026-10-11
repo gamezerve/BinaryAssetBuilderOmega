@@ -78,5 +78,7 @@ try {
     }finally{$file.Dispose()}
 }catch{
     Write-Output ('Error: ALPHA100 '+$_.Exception.Message)
+    # Reborn: EA Studio ignores the child exit code and only Critical sets stepFailed; retain the detailed Errors row and explicitly fail the GUI step.
+    Write-Output 'Critical: ALPHA101 Alpha build failed; no successful package publication. See ALPHA100 for details.'
     exit 1
 }
