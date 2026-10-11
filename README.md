@@ -3,6 +3,15 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 ## Uprising progress — October 11, 2026
 
+Latest output classification: [bounded module-load stop prefixes](docs/RA3EP11_MODULE_LOAD_STOP_PREFIX.md).
+An explicit stop-window opt-in can classify up to 32 strictly shaped module
+records before a fresh stop marker; default/context/clear framing remains
+strict. Six detached positives / 21 refusals pass with inherited bridge
+controls. The complete 2,234-character recorded helper window still refuses
+its unknown exception rather than silently dropping it. Printed module paths
+are not identity evidence. No debugger/game executed; native runtime remains
+disabled. Startup exceptions/backend integration remain open. **52% / 48%**.
+
 Latest safety correction: [admitted initial-stop recovery](docs/RA3EP11_INITIAL_STOP_RECOVERY.md).
 The generic unarmed forced-debugger-exit fallback is removed. A verified
 initial helper stop now requires an empty breakpoint table, an independent

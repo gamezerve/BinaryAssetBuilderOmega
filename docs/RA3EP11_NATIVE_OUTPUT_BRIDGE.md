@@ -81,6 +81,12 @@ It adds a framing-only `AwaitHelperStop` mode; native controller phases remain
 unchanged. The calibration does not classify earlier startup diagnostics or
 prove native game stop handling.
 
+Follow-up: [module-load prefix classification](RA3EP11_MODULE_LOAD_STOP_PREFIX.md)
+adds a stop-window-only opt-in for bounded informational `ModLoad` records.
+The default remains unchanged, and context/clear cannot enable that opt-in.
+Unknown exceptions and automatic register diagnostics are still refused;
+the complete recorded helper prefix is not silently discarded or accepted.
+
 The prompt is a framing delimiter, not proof that Windows has stopped the
 same retained process. The execution backend still must supply actual stop
 state, owned handles, nonce-command updates, bounded waits and read provenance.
@@ -89,6 +95,6 @@ evidence; polling this bridge cannot cancel them. Unknown/lost-transport
 cleanup remains unresolved, and native `-Run` remains disabled.
 
 Overall estimate stays **52% complete / 48% remaining**. The next concrete step
-is a non-game calibration of the CDB stop-output profile and event framing,
-then connecting retained process evidence. Actual Uprising config consumption
+is classification of remaining startup exceptions/event framing and then
+connecting retained process evidence. Actual Uprising config consumption
 and mod-package loading are still unproved.
