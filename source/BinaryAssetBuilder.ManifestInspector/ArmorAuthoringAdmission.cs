@@ -96,7 +96,7 @@ internal static class ArmorAuthoringAdmission
             SnapshotSha256 = Convert.ToHexString(SHA256.HashData(canonical)), admitted.GunPercent,
             InputAdmitted = true, CompilerPayloadCompared = true, OnlyGunFloatEditable = true,
             LinkedStreamsEmitted = false, ModPackageBuilt = false, GameExecuted = false, RuntimeOverrideProven = false,
-            NextGate = "Bind the admitted snapshot to fresh document/Core identities and the scoped OutputManager, then verify a parameterized package." };
+            NextGate = "Use armor-authored-build with a fresh output directory and stock baseline; this admission receipt alone proves no package or runtime effect." };
         string json = JsonSerializer.Serialize(report, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(Path.Combine(directory, "admission.json"), json); Console.WriteLine(json);
     }

@@ -30,23 +30,23 @@ completed UI integration or identical warning-parser behavior.
   starts the reviewed PowerShell backend as one build step. It sets output
   redirection and no console window; no game/registry/install/cleanup actions.
 - `alpha/studio/uprising-alpha.example.xml`: explicit runtime/backend path
-  configuration template. The prototype reads `uprising-alpha.xml` from the
+  configuration template, including required `StaticManifest`. The prototype reads `uprising-alpha.xml` from the
   isolated Studio working directory. Placeholder paths must be replaced.
 - `alpha/mods/Reborn/data/mod.xml`: familiar one-asset declaration sample.
 - `scripts/Invoke-Ra3Ep1AlphaBuild.ps1`: accepts that declaration or standalone
   armor, bounds input at sixteen KiB, prohibits DTD resolution/includes and
   unexpected declaration contents, and invokes the existing admission gate.
 
-The backend currently packages **GUN 5000 only** after admitting equivalent
-selected XML, by rebuilding the known canonical fixture. It explicitly warns
-about that restriction. Other coefficients can be valid at the admission
-level yet not package-enabled. The receipt records selected-input provenance
-and `CanonicalFixedRecipeUsed`, rather than claiming arbitrary compilation.
+The backend now packages **GUN 0..10000** after admitting selected XML,
+through fresh Core identity generation and the actual scoped OutputManager.
+It no longer replays the fixed-5000 fixture: `CanonicalFixedRecipeUsed=false`.
+Only the GUN coefficient of the thirteen-entry flattened AlliedConYardArmor
+is editable; this is not arbitrary asset-declaration compilation.
 It emits fresh repository-local output, not a release-style `builtmods` tree
 or automatic Documents installation yet.
 
 Diagnostics are explicit text: `WARNING ALPHA001` for partial support,
-`WARNING ALPHA002` for the canonical-recipe restriction and `ERROR ALPHA100`
+`WARNING ALPHA002` for the narrow editable scope and `ERROR ALPHA100`
 for failure. A nonzero backend exit must trigger Studio's failure callback.
 Build Output redirection is requested; Error Log parsing/coloring and actual
 callback behavior still need a real UI test. Do not claim these diagnostics
@@ -62,7 +62,7 @@ environment with a system DLL relocation error; no installation was repaired.
 The successful fallback compile used backslash paths after an initial
 forward-slash command was interpreted incorrectly by csc.
 
-Fixed-5000 input passed validation-only. GUN-250 input produced a deliberate
+In the earlier fixed prototype, GUN-250 input produced a deliberate
 nonzero refusal, distinguishing valid input from unavailable packaging.
 The EA-style `AssetDeclaration` sample also passed validation-only. A complete
 backend run succeeded at `RebornAlphaInput-23013c8409c44312b18b174ccb99a23d`;
@@ -74,9 +74,25 @@ No Studio/game window has been opened, reference SDK file replaced, registry
 written or game install modified. Compiled test DLLs stay in local artifacts;
 the EA binaries are not newly bundled or published by this step.
 
+The editable backend subsequently passed five actual package coefficients
+(0/100/250/5000/10000), repeated GUN-250 byte equality, original-input preservation,
+Core hash invalidation, single-float BIN changes and occupied/corrupt/mismatched
+source refusals at `RebornAuthoredRegression-20261011-a`. The fixed-5000 package
+still matches the user-tested SHA256. A complete standalone GUN-250 backend
+build passed at `RebornAlphaInput-608b465d5c9d45f4a7ef5b663d282ff9`.
+The backend builds current inspector source before use and captures compiler
+diagnostics in `compiler-build.log`; `-StaticManifest` can override the current
+local stock baseline default. The Studio adapter always passes an explicitly
+configured stock path; its example configuration now requires all three paths.
+Validate-only GUN-250 and a complete EA declaration GUN-5000 build also passed;
+an unsupported armor identity returned `ERROR ALPHA100` with exit code 1.
+The updated adapter compiled again with the .NET 2 reference assemblies.
+These changes do not prove a real Studio GUI run.
+
 ## Remaining alpha gates
 
-1. Connect admitted editable XML to fresh Core/OutputManager/package output.
+1. Editable XML binding to fresh Core/OutputManager/package output is completed
+   for the narrow GUN-only scope; wider capabilities remain explicitly unsupported.
 2. Prepare an isolated Studio workspace, leaving the existing reference SDK
    intact; verify script loading, mod dropdown discovery, callback/exit status,
    output capture and Error Log classification with a real UI test.

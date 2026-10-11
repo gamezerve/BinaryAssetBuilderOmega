@@ -18,9 +18,9 @@ internal static class ArmorTrialPreparation
     private static readonly string[] Extensions = { ".manifest", ".bin", ".relo", ".imp" };
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: freeze and independently admit only the current ConYard GUN-5000 package before creating any candidate directory. */
+    /** Reborn: independently reproduce the fixed ConYard fixture or separately admitted authored payload before creating a candidate directory. */
     //-------------------------------------------------------------------------------------------------
-    private static byte[][] ReadSource(string path)
+    private static byte[][] ReadSource(string path, string? authoredXml = null)
     {
         CheckPath(path);
         if (new FileInfo(path).Length > Limit) throw new InvalidDataException("Trial source exceeds bound.");
@@ -39,8 +39,10 @@ internal static class ArmorTrialPreparation
         // Reborn: reproduce actual current authored compiler bytes, not just a claimed GUN number in JSON.
         string fixtures = Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!;
         XmlDocument xml = new() { XmlResolver = null }; xml.Load(Path.Combine(fixtures, "AlliedConYardArmorProbe.xml"));
+        // Reborn: variable builds must reproduce the separately admitted authored snapshot; legacy commands retain their fixed fixture.
+        if (authoredXml != null) xml.LoadXml(ArmorAuthoringAdmission.Admit(Encoding.UTF8.GetBytes(authoredXml)).Xml);
         if (xml.DocumentElement!.GetAttribute("id") != "AlliedConYardArmor"
-            || xml.DocumentElement.ChildNodes.OfType<XmlElement>().Single(item => item.GetAttribute("Damage") == "GUN").GetAttribute("Percent") != "5000")
+            || (authoredXml == null && xml.DocumentElement.ChildNodes.OfType<XmlElement>().Single(item => item.GetAttribute("Damage") == "GUN").GetAttribute("Percent") != "5000"))
             throw new InvalidDataException("Trial authored fixture differs.");
         var chunk = ArmorTokenSmokeTest.Compile(ArmorTokenSmokeTest.LoadSchemas(fixtures), xml.DocumentElement.OuterXml);
         byte[][] chunks = { chunk.InstanceBuffer, chunk.RelocationBuffer, chunk.ImportsBuffer };
@@ -61,7 +63,7 @@ internal static class ArmorTrialPreparation
     //-------------------------------------------------------------------------------------------------
     /** Reborn: publish one fresh candidate with a short mod identity, observed stream variants and a non-executable launch plan. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Prepare(string source, string directory, bool defaultRoute = false)
+    internal static void Prepare(string source, string directory, bool defaultRoute = false, string? authoredXml = null)
     {
         source = Path.GetFullPath(source); directory = Path.GetFullPath(directory);
         CheckPath(Path.GetDirectoryName(directory)!);
@@ -70,7 +72,7 @@ internal static class ArmorTrialPreparation
         if (configPath.Length > 240 || configPath.Any(character => character > 126 || character < 32) || configPath.Contains('"') || configPath.Contains(';'))
             throw new InvalidDataException("Trial config path exceeds conservative ASCII/path policy.");
         string sourceHash = Convert.ToHexString(SHA256.HashData(ReadBounded(source)));
-        byte[][] payloads = ReadSource(source);
+        byte[][] payloads = ReadSource(source, authoredXml);
         if (Convert.ToHexString(SHA256.HashData(ReadBounded(source))) != sourceHash) throw new InvalidDataException("Trial source changed during admission.");
         byte[] archive = ArmorDiagnosticPackage.Serialize(payloads, true, defaultRoute);
         string config = defaultRoute ? DefaultConfig : Config;
@@ -138,11 +140,11 @@ internal static class ArmorTrialPreparation
     //-------------------------------------------------------------------------------------------------
     /** Reborn: exercise generated-file corruption and occupied-directory refusals without changing source or leaving damaged candidate bytes. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Controls(string source, string directory, bool defaultRoute = false)
+    internal static void Controls(string source, string directory, bool defaultRoute = false, string? authoredXml = null)
     {
-        byte[][] expected = ReadSource(source); Verify(directory, expected, defaultRoute);
+        byte[][] expected = ReadSource(source, authoredXml); Verify(directory, expected, defaultRoute);
         bool refused = false;
-        try { Prepare(source, directory, defaultRoute); } catch (InvalidDataException) { refused = true; }
+        try { Prepare(source, directory, defaultRoute, authoredXml); } catch (InvalidDataException) { refused = true; }
         if (!refused) throw new InvalidDataException("Trial occupied output accepted.");
         foreach (string name in new[] { "reborn_1.0.cfg", "reborn_1.0.skudef", "RebornArmorProbe.big" })
         {

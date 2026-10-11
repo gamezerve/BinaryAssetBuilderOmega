@@ -8,8 +8,8 @@ AlliedConYardArmor GUN 100 → 5000 caused markedly increased damage with the
 default `mod.manifest` loading recipe. This is not yet a complete playable
 Uprising SDK. A [one-command fixed armor reproducer](docs/RA3EP1_ARMOR_MOD_BUILD.md)
 now combines compilation, stock comparisons and the validated package recipe.
-The next compiler deliverable is safely admitted editable armor XML,
-not more general debugger preparation or all 1,390 types.
+Editable armor XML now reaches actual Core/OutputManager compilation and
+verified default-reader packaging, rather than replaying a fixed fixture.
 
 Release plan: [Armor Preview versus general SDK gates](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 The first alpha targets the existing EA Mod BuildStudio interface with explicit
@@ -18,9 +18,11 @@ limited-capability warnings, not broad feature parity before release. An
 against the original API; backend tests pass, but actual UI loading/Error Log
 behavior and portable packaging are not validated yet. Earlier timing ranges
 refer to broader scopes, not a prerequisite to releasing this limited alpha.
-Editable [input admission](docs/RA3EP1_ARMOR_AUTHORING_ADMISSION.md) is now
-separate from the fixed reproducer; connecting
-that snapshot to fresh Core identities and packaging remains the next gate.
+Editable [input admission and building](docs/RA3EP1_ARMOR_AUTHORING_ADMISSION.md)
+now support canonical integer GUN values 0..10000 for AlliedConYardArmor.
+Five values and repeated output passed offline; 5000 retains the exact
+user-tested package digest. The next alpha gates are real Studio UI validation
+and portable distribution, not completion of every processor.
 
 | User-visible milestone | Current evidence |
 | --- | --- |
@@ -35,6 +37,7 @@ that snapshot to fresh Core identities and packaging remains the next gate.
 | Start with the armor candidate | Second default-reader trial reached the menu (user confirmation); 33 direct 1.1 child snapshots matched its config argument |
 | Load our authored change in Uprising | [First behavioral success](docs/RA3EP1_ARMOR_LOADING_COMPARISON.md): user reported markedly increased yard damage in the second trial; exact multiplier and individual file reads were not instrumented |
 | Rebuild the working example in one command | `Build-Ra3Ep1ArmorMod.ps1` composes a fresh XML/Core build and default-route packaging, requiring the exact user-tested package digest; fixed example only |
+| Build edited XML through the alpha backend | `Invoke-Ra3Ep1AlphaBuild.ps1 -ModXml samples/armor/AlliedConYardArmor.xml` builds the selected GUN coefficient through actual Core; five coefficients, repeat, corruption, mismatch and no-overwrite controls pass offline |
 
 Run `scripts/Invoke-Ra3Ep1ArmorPoc.ps1` under PowerShell 7 to reproduce the
 isolated diagnostic streams and `readiness.json`; it does not install files

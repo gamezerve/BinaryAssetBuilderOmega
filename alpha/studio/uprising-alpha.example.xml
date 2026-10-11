@@ -1,3 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Reborn: copy to uprising-alpha.xml in an isolated BuildStudio workspace and replace both paths; never overwrite the reference SDK configuration. -->
-<UprisingAlpha PowerShell7="C:\PATH\TO\pwsh.exe" Driver="C:\PATH\TO\BinaryAssetBuilderOmega2-uprising\scripts\Invoke-Ra3Ep1AlphaBuild.ps1" />
+<!-- Reborn: copy to uprising-alpha.xml in an isolated BuildStudio workspace and replace all three paths; never overwrite the reference SDK configuration. -->
+<UprisingAlpha PowerShell7="C:\PATH\TO\pwsh.exe" Driver="C:\PATH\TO\BinaryAssetBuilderOmega2-uprising\scripts\Invoke-Ra3Ep1AlphaBuild.ps1" StaticManifest="C:\PATH\TO\UNPACKED\Static Data\data\static.manifest" />

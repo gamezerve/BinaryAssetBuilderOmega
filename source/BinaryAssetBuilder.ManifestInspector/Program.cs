@@ -13,6 +13,12 @@ internal static class Program
     {
         try
         {
+            // Reborn: authored publication is explicit and limited to one admitted armor with a required stock baseline.
+            if (args.Length == 4 && args[0] == "armor-authored-build")
+            { CompilerSmokeTest.InitializeHashProvider(); ArmorAuthoredBuild.Run(args[1], args[2], args[3]); return 0; }
+            // Reborn: offline authored regression never grants engine launch or general type publication.
+            if (args.Length == 3 && args[0] == "armor-authored-build-self-test")
+            { CompilerSmokeTest.InitializeHashProvider(); ArmorAuthoredBuild.SelfTest(args[1], args[2]); return 0; }
             // Reborn: editable input admission is explicitly separate from production build or runtime loading.
             if (args.Length == 1 && args[0] == "armor-authoring-input-self-test")
             { ArmorAuthoringAdmission.SelfTest(); return 0; }
@@ -1474,6 +1480,9 @@ internal static class Program
         Console.WriteLine("  armor-token-self-test <output-directory> [ep1-static-or-worldbuilder-manifest]");
         // Reborn: profile verification performs no production manifest emission.
         Console.WriteLine("  ep1-armor-profile-self-test");
+        // Reborn: explicitly document the bounded variable build and its required stock baseline.
+        Console.WriteLine("  armor-authored-build <standalone-xml> <new-output-directory> <ep1-static-manifest>");
+        Console.WriteLine("  armor-authored-build-self-test <new-output-directory> <ep1-static-manifest>");
         // Reborn: optional stock input proves the ConYard baseline; all generated override output stays isolated.
         Console.WriteLine("  ep1-armor-document-self-test <output-directory> [ep1-static-manifest]");
         // Reborn: prepare or verify only the isolated candidate, never launch a game.

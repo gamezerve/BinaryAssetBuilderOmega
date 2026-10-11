@@ -18,13 +18,13 @@ make it a portable editable SDK. Do not label it as one.
 
 | Deliverable | Remaining gates | Working effort estimate |
 | --- | --- | --- |
-| Armor Preview | Editable GUN input through actual document/Core/package path; 100/250/5000 cases; portable paths/runtime instructions; clean-directory package test and restore guidance | Approximately 2–5 focused working days |
+| Limited EA-UI SDK alpha | Editable GUN/Core/package path is complete offline; real Studio UI/log/callback checks, portable paths/runtime instructions, distribution review and clean-directory test remain | A few focused working sessions if Studio compatibility introduces no new blocker; reassess after the UI test |
 | Basic gameplay SDK alpha | GameObject/Weapon and needed modules, dependency/import closure, reference/override precedence, repeatable build and controlled gameplay checks | Several weeks; reassess after the first unit/weapon vertical slice |
 | RA3-SDK-like broad release | Wider typed processor coverage, inheritance/includes/cache contracts, textures/models/audio/shaders, map workflows and WorldBuilder integration, distribution/dependency review | Several months or longer; no reliable fixed release date yet |
 
 The table's broader gameplay/full-SDK scopes are not prerequisites for the
-first limited EA-UI-compatible alpha. Its immediate gates are editable input
-binding, actual Studio integration, meaningful warnings/failure behavior and
+first limited EA-UI-compatible alpha. Its remaining immediate gates are
+actual Studio integration, meaningful warnings/failure behavior and
 portable package validation. The user has explicitly selected this early-alpha
 approach; do not defer it until GameObject/Weapon or every processor is complete.
 
@@ -63,15 +63,17 @@ the old 52% figure is historical and not a release countdown.
 
 ## Current next implementation
 
-`ArmorAuthoringAdmission` adds a bounded XML admission stage and canonical
-snapshot. It proves an accepted GUN coefficient changes only the known float
-slot in tokenized compiler output. It is **not** yet connected to editable
-linked-stream/package publication. CLI preflight reports that distinction
-explicitly. The fixed `Build-Ra3Ep1ArmorMod.ps1` remains a reproducer, not an
-arbitrary-input build command.
+`ArmorAuthoringAdmission` now feeds `ArmorAuthoredBuild` and the actual
+document/Core/scoped OutputManager path. Five coefficients, including
+100/250/5000, have verified default-reader packages; repeated GUN-250 bytes
+are deterministic and GUN-5000 retains the exact user-tested digest.
+`Invoke-Ra3Ep1AlphaBuild.ps1` builds selected supported XML, rather than replaying
+the fixed recipe. CLI preflight alone remains input-only; the final authored
+receipt distinguishes successful package publication. The fixed
+`Build-Ra3Ep1ArmorMod.ps1` stays an exact-recipe regression tool.
 
-Once this snapshot is bound to the real document/Core pipeline, changed XML
-can produce a parameterized package. That closes the principal functional
-gap before packaging the Armor Preview. The successful default-reader trial
+The principal editable-armor functional gap is closed offline. Next prepare
+and test the isolated EA Studio integration, then portable distribution.
+The successful default-reader trial
 does not by itself resolve queue-route failure, exact runtime file reads,
 generic duplicate asset ordering or full WorldBuilder support.

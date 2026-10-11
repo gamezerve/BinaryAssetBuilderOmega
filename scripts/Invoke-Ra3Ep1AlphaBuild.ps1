@@ -1,6 +1,7 @@
-# Reborn: EA BuildStudio backend prototype; warn about alpha limitations, refuse unsupported input, build only the validated fixed recipe without install/launch.
+# Reborn: EA BuildStudio alpha backend; compile admitted selected XML through real Core without install/launch.
 [CmdletBinding()]
-param([Parameter(Mandatory)][string]$ModXml,[switch]$ValidateOnly)
+param([Parameter(Mandatory)][string]$ModXml,[switch]$ValidateOnly,
+    [string]$StaticManifest='D:\TEMP\Red Alert 3 Uprising Source Data\Static Data\data\static.manifest')
 $ErrorActionPreference='Stop'
 $repo=Split-Path -Parent $PSScriptRoot
 try {
@@ -32,15 +33,22 @@ try {
         $snapshot=Join-Path $directory 'selected-armor.xml'
         [IO.File]::WriteAllText($snapshot,$root.OuterXml)
         $exe=Join-Path $repo 'source/BinaryAssetBuilder.ManifestInspector/bin/x86/Release/net8.0/BinaryAssetBuilder.ManifestInspector.exe'
-        if(-not (Test-Path -LiteralPath $exe -PathType Leaf)){throw 'Build the current inspector before using this prototype.'}
+        # Reborn: build current source before admission/publication; capture diagnostics without hiding build failure.
+        $log=Join-Path $directory 'compiler-build.log'
+        & dotnet build (Join-Path $repo 'source/BinaryAssetBuilder.ManifestInspector/BinaryAssetBuilder.ManifestInspector.csproj') --no-restore -c Release -p:Platform=x86 -m:1 -nr:false -v:q *> $log
+        if($LASTEXITCODE-ne 0){throw ('Compiler build failed; see '+$log)}
         $json=@(& $exe armor-authoring-preflight $snapshot (Join-Path $directory 'admitted'))
         if($LASTEXITCODE-ne 0){$json|Write-Output;throw 'Selected XML failed alpha armor admission.'}
         $admission=($json-join [Environment]::NewLine)|ConvertFrom-Json
-        if($admission.GunPercent-ne 5000){throw 'GUN input is valid, but changed-value packaging is not enabled yet. Current package-enabled coefficient is 5000.'}
         if($ValidateOnly){Write-Output ('Reborn: selected mod input admitted; validation only, no package built. '+$directory);return}
-        Write-Output 'WARNING ALPHA002: This prototype rebuilds the canonical fixed recipe after admitting equivalent selected XML. It does not yet build arbitrary asset declarations.'
-        $build=& (Join-Path $PSScriptRoot 'Build-Ra3Ep1ArmorMod.ps1')
-        $receipt=[pscustomobject]@{SelectedModXml=$ModXml;SelectedModXmlSha256=([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)));AdmissionReport=(Join-Path $directory 'admitted/admission.json');BuildReceipt=$build.ReceiptPath;SelectedInputAdmitted=$true;CanonicalFixedRecipeUsed=$true;InstalledFilesModified=$false;GameExecuted=$false}
+        Write-Output 'WARNING ALPHA002: Only AlliedConYardArmor GUN Percent 0..10000 is build-enabled; all thirteen flattened entries are required. New coefficient runtime behavior is not independently proven.'
+        $output=Join-Path $directory 'build'
+        & $exe armor-authored-build $snapshot $output $StaticManifest
+        if($LASTEXITCODE-ne 0){throw 'Authored XML/Core/package build failed.'}
+        $buildReceipt=Join-Path $output 'authored-build.json'
+        $build=Get-Content -LiteralPath $buildReceipt -Raw|ConvertFrom-Json
+        if(-not $build.ActualCoreOutputUsed -or -not $build.AuthoredPayloadVerified -or $build.GunPercent-ne $admission.GunPercent){throw 'Authored build receipt differs from admitted input.'}
+        $receipt=[pscustomobject]@{SelectedModXml=$ModXml;SelectedModXmlSha256=([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)));AdmissionReport=(Join-Path $directory 'admitted/admission.json');BuildReceipt=$buildReceipt;GunPercent=$build.GunPercent;SelectedInputAdmitted=$true;CanonicalFixedRecipeUsed=$false;InstalledFilesModified=$false;GameExecuted=$false}
         [IO.File]::WriteAllText((Join-Path $directory 'alpha-build.json'),($receipt|ConvertTo-Json))
         Write-Output ('Reborn: build succeeded. BIG: '+$build.PackagePath)
         Write-Output ('Reborn: config: '+$build.ConfigPath)

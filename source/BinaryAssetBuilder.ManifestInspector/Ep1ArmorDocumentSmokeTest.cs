@@ -15,6 +15,30 @@ namespace BinaryAssetBuilder.ManifestInspector;
 internal static class Ep1ArmorDocumentSmokeTest
 {
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: compile one admitted caller snapshot through real Core output without enabling general production or cache reuse. */
+    //-------------------------------------------------------------------------------------------------
+    internal static string BuildAuthored(string directory, string authored, int gunPercent, string stockManifest)
+    {
+        Settings saved = Settings.Current;
+        try
+        {
+            string fixtures = Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!;
+            Settings.Current = new Settings { BuildCache = false, SchemaPath = Path.Combine(fixtures, "ArmorDocumentPipeline.xsd"),
+                DataRoot = directory, DataPaths = new[] { directory }, TargetPlatform = TargetPlatform.Win32, CustomPostfix = "", StreamPostfix = "",
+                StringHashBinDescriptors = Array.Empty<StringHashBinDescriptor>() };
+            PluginDescriptor descriptor = new() { IsEnabled = true, AssetTypes = "#all", UseBuildCache = false,
+                QualifiedName = "BinaryAssetBuilder.XmlCompiler.Ra3Ep1ArmorPlugin, BinaryAssetBuilder.XmlCompiler" };
+            PluginRegistry plugins = new(new[] { descriptor }, TargetPlatform.Win32);
+            SessionCache cache = new(); cache.InitializeCache(new List<string>());
+            DocumentProcessor processor = new(Settings.Current, plugins, new VerifierPluginRegistry(Array.Empty<PluginDescriptor>(), TargetPlatform.Win32))
+                { Cache = cache, SchemaSet = new SchemaSet(false) };
+            return WriteConYardOverride(directory, fixtures, processor, plugins,
+                new DocumentProcessor.ProcessOptions { GenerateOutput = false, UsePrecompiled = true }, stockManifest, authored, gunPercent);
+        }
+        finally { Settings.Current = saved; }
+    }
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: validate official schema defaults through document loading/validation/hash stages and force stale-session reload. */
     //-------------------------------------------------------------------------------------------------
     public static void Run(string directory, string? stockManifest = null)
@@ -179,25 +203,27 @@ internal static class Ep1ArmorDocumentSmokeTest
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: retain the real ConYard asset identity and all inherited armor values except the user-selected GUN 100-to-5000 change. */
+    /** Reborn: retain the real ConYard identity and non-GUN values; preserve the fixed recipe or compile a separately admitted coefficient. */
     //-------------------------------------------------------------------------------------------------
-    private static void WriteConYardOverride(string directory, string fixtures, DocumentProcessor processor, PluginRegistry plugins,
-        DocumentProcessor.ProcessOptions options, string? stockManifest)
+    private static string WriteConYardOverride(string directory, string fixtures, DocumentProcessor processor, PluginRegistry plugins,
+        DocumentProcessor.ProcessOptions options, string? stockManifest, string? admittedXml = null, int gunPercent = 5000)
     {
         XmlDocument probe = new() { XmlResolver = null };
-        probe.Load(Path.Combine(fixtures, "AlliedConYardArmorProbe.xml"));
+        // Reborn: preserve the legacy fixture recipe while allowing the separately admitted canonical caller snapshot.
+        if (admittedXml == null) probe.Load(Path.Combine(fixtures, "AlliedConYardArmorProbe.xml"));
+        else probe.LoadXml(admittedXml);
         var root = probe.DocumentElement!;
         var entries = root.ChildNodes.OfType<XmlElement>().ToArray();
         var gun = entries.Single(item => item.GetAttribute("Damage") == "GUN");
         Require(root.GetAttribute("id") == "AlliedConYardArmor" && !root.HasAttribute("inheritFrom")
-            && entries.Length == 13 && gun.GetAttribute("Percent") == "5000", "ConYard probe identity/value differs.");
+            && entries.Length == 13 && gun.GetAttribute("Percent") == gunPercent.ToString(System.Globalization.CultureInfo.InvariantCulture), "ConYard probe identity/value differs.");
         string authored = root.OuterXml;
         gun.SetAttribute("Percent", "100");
         var baseline = ArmorTokenSmokeTest.Compile(ArmorTokenSmokeTest.LoadSchemas(fixtures), root.OuterXml);
         if (stockManifest != null) ArmorTokenSmokeTest.CompareGolden(new Dictionary<string, Relo.Chunk>
             { ["ArmorTemplate:AlliedConYardArmor"] = baseline }, stockManifest);
         string source = Path.Combine(directory, "allied-conyard-override.xml");
-        File.WriteAllText(source, "<!-- Reborn: owned test source; only AlliedConYardArmor GUN changes to 5000. -->\n"
+        File.WriteAllText(source, $"<!-- Reborn: owned test source; only AlliedConYardArmor GUN changes to {gunPercent}. -->\n"
             + "<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\">" + authored + "</AssetDeclaration>");
         var document = processor.ProcessDocumentInternal(source, source, null!, options);
         var instance = document.SelfInstances.Single();
@@ -207,20 +233,21 @@ internal static class Ep1ArmorDocumentSmokeTest
         Require(instance.Handle.TypeId == expected.TypeId && instance.Handle.InstanceId == expected.InstanceId
             && instance.Handle.Name == "ArmorTemplate:AlliedConYardArmor" && buffer.InstanceData.Length == 856
             && BitConverter.Int32BitsToSingle(BinaryPrimitives.ReadInt32LittleEndian(baseline.InstanceBuffer.AsSpan(gunOffset))) == 1f
-            && BitConverter.Int32BitsToSingle(BinaryPrimitives.ReadInt32LittleEndian(buffer.InstanceData.AsSpan(gunOffset))) == 50f
+            && BitConverter.Int32BitsToSingle(BinaryPrimitives.ReadInt32LittleEndian(buffer.InstanceData.AsSpan(gunOffset))) == gunPercent / 100f
             && buffer.RelocationData.SequenceEqual(baseline.RelocationBuffer) && buffer.ImportsData.Length == 0
             && buffer.InstanceData.AsSpan(0, gunOffset).SequenceEqual(baseline.InstanceBuffer.AsSpan(0, gunOffset))
             && buffer.InstanceData.AsSpan(gunOffset + 4).SequenceEqual(baseline.InstanceBuffer.AsSpan(gunOffset + 4)),
             "ConYard override altered identity or bytes outside the single GUN float.");
         DependencyResolutionSmokeTest.Prepare(document, instance);
-        WriteManagedStream(directory, processor, document, instance, buffer);
-        Console.WriteLine($"  ConYard override: InstanceId={instance.Handle.InstanceId:X8}; GUN 100 -> 5000 (1.0 -> 50.0); only four-byte value slot differs; stockCompared={stockManifest != null}");
+        string package = WriteManagedStream(directory, processor, document, instance, buffer);
+        Console.WriteLine($"  ConYard override: InstanceId={instance.Handle.InstanceId:X8}; GUN 100 -> {gunPercent}; only GUN value slot may differ; stockCompared={stockManifest != null}");
+        return package;
     }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate real OutputManager armor commit/link and fail-closed mutations without opening production output. */
     //-------------------------------------------------------------------------------------------------
-    private static void WriteManagedStream(string parent, DocumentProcessor processor, AssetDeclarationDocument document,
+    private static string WriteManagedStream(string parent, DocumentProcessor processor, AssetDeclarationDocument document,
         InstanceDeclaration instance, AssetBuffer buffer)
     {
         bool linked = Settings.Current.LinkedStreams;
@@ -283,6 +310,8 @@ internal static class Ep1ArmorDocumentSmokeTest
             ExpectPolicy(() => manager.CreateVersionFile(document, "_mod"));
             Require(!processor.Plugins.CanReuseCompiledDocuments, "Diagnostic scope enabled compiled reuse.");
             Console.WriteLine($"  Actual OutputManager: committed .asset + manifest/bin/relo/imp verified; diagnostic={manager.OutputDirectory}");
+            // Reborn: return only the package produced and independently verified in this exact scoped output directory.
+            return Path.Combine(Path.GetDirectoryName(manager.OutputDirectory)!, "RebornArmorProbe.big");
         }
         finally { Settings.Current.LinkedStreams = linked; }
     }

@@ -11,6 +11,8 @@ namespace EALABuild
     {
         private string runtime;
         private string driver;
+        // Reborn: require an explicit stock baseline location instead of inheriting the developer's default.
+        private string staticManifest;
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: load explicit local adapter configuration instead of RA3 registry paths or inherited destructive cleanup stages. */
@@ -24,7 +26,8 @@ namespace EALABuild
             settings.Load(Path.Combine(StaticPaths.CurrentDirectory, "uprising-alpha.xml"));
             runtime = settings.DocumentElement.GetAttribute("PowerShell7");
             driver = settings.DocumentElement.GetAttribute("Driver");
-            CheckPath(runtime); CheckPath(driver);
+            staticManifest = settings.DocumentElement.GetAttribute("StaticManifest");
+            CheckPath(runtime); CheckPath(driver); CheckPath(staticManifest);
         }
 
         //-------------------------------------------------------------------------------------------------
@@ -38,9 +41,10 @@ namespace EALABuild
             string input = Path.Combine(Path.Combine(Path.Combine(StaticPaths.CurrentDirectory, "mods"), name), "data\\mod.xml");
             CheckPath(input);
             BuildHelper.CurrentBuildSteps = 1;
-            BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha; supported build: ConYard GUN 5000 only. Other capabilities are not silently compiled.");
+            BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha; supported build: ConYard GUN 0..10000. Other capabilities are not silently compiled.");
             RunExecutableArguments request = new RunExecutableArguments(runtime);
-            request.Arguments = "-NoProfile -File \"" + driver + "\" -ModXml \"" + input + "\"";
+            // Reborn: bind every Studio build to the configured read-only stock baseline.
+            request.Arguments = "-NoProfile -File \"" + driver + "\" -ModXml \"" + input + "\" -StaticManifest \"" + staticManifest + "\"";
             request.RedirectOutput = true; request.CreateWindow = false;
             // Reborn: retain the SDK's step-counter protocol before RunStep advances it for the callback.
             if (BuildHelper.GetNextExecutableStep() != 1)
@@ -70,7 +74,7 @@ namespace EALABuild
         {
             List<GUIElementData> options = new List<GUIElementData>();
             options.Add(new GUIElementData("alpha", "Uprising Alpha: Validate XML / Build Data / Make BIG", GUIElementData.LabelType, ScriptIndex.ModScript));
-            options.Add(new GUIElementData("scope", "Only AlliedConYardArmor GUN 5000 is package-enabled", GUIElementData.LabelType, ScriptIndex.ModScript));
+            options.Add(new GUIElementData("scope", "Only AlliedConYardArmor GUN 0..10000 is package-enabled", GUIElementData.LabelType, ScriptIndex.ModScript));
             return options;
         }
 
