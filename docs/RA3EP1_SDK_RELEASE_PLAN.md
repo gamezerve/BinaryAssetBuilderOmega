@@ -7,8 +7,12 @@ working package can be reproduced from current source in one command. That
 is a useful vertical slice, not evidence that all asset processors or the
 complete EA SDK workflow are compatible.
 
-The next release should be called **Uprising Armor Preview**, not a complete
-RA3 Uprising Mod SDK. A zipped working sample could be assembled now, but
+The next release now targets **Uprising Mod SDK Alpha**, retaining EA's existing
+Mod BuildStudio interface while exposing a limited capability matrix. The
+initial package can be armor-only; supported types grow after release.
+It is not a complete RA3-SDK-equivalent release. See the
+[Studio adapter prototype](RA3EP1_ALPHA_STUDIO_ADAPTER.md).
+A zipped working sample could be assembled now, but
 its fixed example, local paths and repository/runtime dependencies would not
 make it a portable editable SDK. Do not label it as one.
 
@@ -17,6 +21,12 @@ make it a portable editable SDK. Do not label it as one.
 | Armor Preview | Editable GUN input through actual document/Core/package path; 100/250/5000 cases; portable paths/runtime instructions; clean-directory package test and restore guidance | Approximately 2–5 focused working days |
 | Basic gameplay SDK alpha | GameObject/Weapon and needed modules, dependency/import closure, reference/override precedence, repeatable build and controlled gameplay checks | Several weeks; reassess after the first unit/weapon vertical slice |
 | RA3-SDK-like broad release | Wider typed processor coverage, inheritance/includes/cache contracts, textures/models/audio/shaders, map workflows and WorldBuilder integration, distribution/dependency review | Several months or longer; no reliable fixed release date yet |
+
+The table's broader gameplay/full-SDK scopes are not prerequisites for the
+first limited EA-UI-compatible alpha. Its immediate gates are editable input
+binding, actual Studio integration, meaningful warnings/failure behavior and
+portable package validation. The user has explicitly selected this early-alpha
+approach; do not defer it until GameObject/Weapon or every processor is complete.
 
 These are provisional engineering estimates, not measured remaining hours,
 calendar deadlines or a promise of unattended background work. Unknown runtime

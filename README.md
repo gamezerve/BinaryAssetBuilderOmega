@@ -12,9 +12,12 @@ The next compiler deliverable is safely admitted editable armor XML,
 not more general debugger preparation or all 1,390 types.
 
 Release plan: [Armor Preview versus general SDK gates](docs/RA3EP1_SDK_RELEASE_PLAN.md).
-The narrow preview is provisionally 2–5 focused working days away; a basic
-gameplay alpha needs weeks and RA3-SDK-like breadth needs months or longer.
-These are planning estimates, not promised dates or a percentage countdown.
+The first alpha targets the existing EA Mod BuildStudio interface with explicit
+limited-capability warnings, not broad feature parity before release. An
+[EA-interface adapter prototype](docs/RA3EP1_ALPHA_STUDIO_ADAPTER.md) compiles
+against the original API; backend tests pass, but actual UI loading/Error Log
+behavior and portable packaging are not validated yet. Earlier timing ranges
+refer to broader scopes, not a prerequisite to releasing this limited alpha.
 Editable [input admission](docs/RA3EP1_ARMOR_AUTHORING_ADMISSION.md) is now
 separate from the fixed reproducer; connecting
 that snapshot to fresh Core identities and packaging remains the next gate.
