@@ -6,6 +6,9 @@ official schema files, stock streams, live configuration and absolute preparatio
 provenance. The relative manifest pins the currently tested dependency hashes.
 The included compiler and fixtures still require a separate provenance/license
 review; absence of EA executables alone is not a distribution approval.
+Candidate builds now omit managed debug symbols to avoid local PDB paths, and
+packaging refuses bounded private-path hints. The .NET apphost's vendor debug
+metadata is distinct from user paths; this does not replace a notice review.
 
 Extract to a short ASCII path. Use PowerShell 7 to initialize that fresh copy:
 

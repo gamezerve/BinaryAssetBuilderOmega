@@ -53,6 +53,11 @@ eight pinned external files, refuses mismatched/occupied inputs and reproduces
 both sample builds. Its relative manifest excludes absolute preparation paths.
 Compiler/fixture provenance and embedded metadata review remain; no public
 release artifact has been uploaded.
+The [bounded binary audit](docs/RA3EP1_ALPHA_BINARY_AUDIT.md) found and removed
+local managed PDB paths from candidate builds. The overlay exporter now refuses
+the old path-bearing files; a fresh candidate passes setup and both sample
+regressions with unchanged mod digests. Native apphost vendor metadata and
+distribution notices remain explicitly documented, not silently cleared.
 
 | User-visible milestone | Current evidence |
 | --- | --- |

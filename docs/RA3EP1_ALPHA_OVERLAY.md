@@ -59,3 +59,10 @@ repeat GUI/game testing or grant redistribution rights. `PublicRedistributionRev
 remains false. The candidate ZIP is local only; only project scripts/docs are
 committed/pushed. Next review compiler/fixture provenance and embedded metadata,
 then choose a reviewed release allowlist and dependency/setup policy.
+
+The subsequent [binary audit](RA3EP1_ALPHA_BINARY_AUDIT.md) found local managed
+PDB paths in this first candidate. Preparation now omits managed symbols and
+overlay export blocks those private hints. Updated candidate `UprisingOverlay-20261011-b`
+and clean setup `UprisingOverlay-test-b` pass both sample/refusal regressions.
+The earlier candidate is retained for history but is not the preferred package.
+Distribution notice/provenance review remains open.

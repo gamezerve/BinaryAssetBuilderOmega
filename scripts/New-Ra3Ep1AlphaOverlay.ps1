@@ -6,7 +6,8 @@ if($PSVersionTable.PSVersion.Major-lt 7){throw 'PowerShell 7 is required.'}
 $Workspace=[IO.Path]::GetFullPath($Workspace);$OutputDirectory=[IO.Path]::GetFullPath($OutputDirectory)
 if((Split-Path -Parent $Workspace)-cne (Split-Path -Parent $OutputDirectory)){throw 'Overlay must be a fresh sibling of the local workspace.'}
 $archive=$OutputDirectory+'-OVERLAY-CANDIDATE.zip'
-foreach($path in @($OutputDirectory,$archive)){if(Test-Path -LiteralPath $path){throw 'Overlay output already exists; nothing overwritten.'}}
+$auditPath=$OutputDirectory+'-binary-audit.json'
+foreach($path in @($OutputDirectory,$archive,$auditPath)){if(Test-Path -LiteralPath $path){throw 'Overlay output already exists; nothing overwritten.'}}
 for($item=Get-Item -LiteralPath $Workspace;$null-ne $item;$item=$item.Parent){if(($item.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0){throw 'Redirected workspace refused.'}}
 $inventory=Get-Content -LiteralPath (Join-Path $Workspace 'workspace-preparation.json') -Raw|ConvertFrom-Json
 $files=[Collections.Generic.List[object]]::new();$requirements=[Collections.Generic.List[object]]::new()
@@ -33,6 +34,9 @@ foreach($pair in @(@('Initialize-Ra3Ep1AlphaOverlay.ps1','scripts/Initialize-Ra3
     $files.Add([pscustomobject]@{Relative=$pair[1];Sha256=$hash});$copies.Add([pscustomobject]@{Source=$source;Relative=$pair[1];Sha256=$hash})
 }
 if($requirements.Count-ne 8){throw 'Expected three supplied Studio files and five external schema files.'}
+# Reborn: block a candidate with private path hints or absolute managed debug paths before creating the overlay; keep the audit report outside the ZIP.
+$audit=& (Join-Path $PSScriptRoot 'Get-Ra3Ep1AlphaBinaryAudit.ps1') -CompilerDirectory (Join-Path $Workspace 'tools/compiler') -OutputPath $auditPath
+if($audit.FilesWithPrivateHints.Count-gt 0 -or @($audit.Files|Where-Object {$_.Managed -and @($_.DebugEntries|Where-Object AbsolutePath).Count-gt 0}).Count-gt 0){throw 'Overlay contains private path hints or absolute managed debug paths; inspect the separate binary audit.'}
 $null=New-Item -ItemType Directory -Path $OutputDirectory
 foreach($copy in $copies){
     $target=Join-Path $OutputDirectory $copy.Relative;$null=New-Item -ItemType Directory -Path (Split-Path -Parent $target) -Force

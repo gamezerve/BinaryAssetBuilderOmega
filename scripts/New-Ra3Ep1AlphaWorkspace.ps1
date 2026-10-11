@@ -36,7 +36,8 @@ if($probe.Length-gt 240 -or $probe.ToCharArray().Where({[int]$_-gt 126 -or [int]
 $compiler=Join-Path $repo 'source/BinaryAssetBuilder.ManifestInspector/bin/x86/Release/net8.0'
 # Reborn: build once at preparation time, never rely on stale binaries or copy every build-directory artifact.
 $buildLog=Join-Path $repo ('artifacts/RebornAlphaWorkspaceBuild-'+[guid]::NewGuid().ToString('N')+'.log')
-& dotnet build (Join-Path $repo 'source/BinaryAssetBuilder.ManifestInspector/BinaryAssetBuilder.ManifestInspector.csproj') --no-restore -c Release -p:Platform=x86 -m:1 -nr:false -v:q *> $buildLog
+# Reborn: distribution candidates must not embed local managed PDB paths; normal developer builds retain their own debug defaults.
+& dotnet build (Join-Path $repo 'source/BinaryAssetBuilder.ManifestInspector/BinaryAssetBuilder.ManifestInspector.csproj') --no-restore -c Release -p:Platform=x86 -p:DebugType=None -p:DebugSymbols=false -m:1 -nr:false -v:q *> $buildLog
 if($LASTEXITCODE-ne 0){throw ('Workspace compiler build failed; see '+$buildLog)}
 $files=[Collections.Generic.List[object]]::new()
 foreach($name in @('BinaryAssetBuilder.ManifestInspector.exe','BinaryAssetBuilder.ManifestInspector.dll',
