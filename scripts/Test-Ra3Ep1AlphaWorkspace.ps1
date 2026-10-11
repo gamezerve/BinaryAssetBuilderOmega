@@ -23,7 +23,7 @@ $compiler=Join-Path $Workspace 'tools/compiler'
 $output=Join-Path $Workspace 'builtmods'
 $rows=[Collections.Generic.List[object]]::new()
 # Reborn: execute the copied driver in child PowerShell processes so failure exit codes cannot terminate the test harness.
-foreach($name in @('Reborn','Armor250','ArmorCannon','SovietArmor')){
+foreach($name in @('Reborn','Armor250','ArmorCannon','SovietArmor','CombinedArmor')){
     $before=@(Get-ChildItem -LiteralPath $output -Directory).FullName
     $log=Join-Path $test ($name+'.log')
     & $runtime -NoProfile -File $driver -ModXml (Join-Path $Workspace ('mods/'+$name+'/data/mod.xml')) -StaticManifest $StaticManifest -CompilerDirectory $compiler -OutputRoot $output *> $log
@@ -32,6 +32,20 @@ foreach($name in @('Reborn','Armor250','ArmorCannon','SovietArmor')){
     if($created.Count-ne 1){throw 'Expected exactly one fresh alpha output.'}
     $receipt=Get-Content -LiteralPath (Join-Path $created[0].FullName 'alpha-build.json') -Raw|ConvertFrom-Json
     $build=Get-Content -LiteralPath $receipt.BuildReceipt -Raw|ConvertFrom-Json
+    # Reborn: pair receipts have two independent member value sets; verify the combined golden without treating it as one GUN scalar.
+    if($name-ceq 'CombinedArmor'){
+        $digest='826859F2CD92D840B37D0AABB239DF1C799F433A3A8014912F34757AEF5554E3'
+        if($receipt.ArmorCount-ne 2 -or $build.ArmorCount-ne 2 -or @($receipt.Assets).Count-ne 2 -or @($build.Assets).Count-ne 2 -or $build.ArchiveSha256-cne $digest -or -not $receipt.PrebuiltCompilerUsed -or -not $build.ActualCoreOutputUsed -or -not $build.AuthoredPayloadVerified -or $build.GameExecuted){throw 'Combined package receipt differs.'}
+        foreach($identity in @('AlliedConYardArmor','SovietConYardArmor')){
+            $member=@($build.Assets|Where-Object ArmorId -CEQ $identity)
+            $expected=if($identity-ceq 'AlliedConYardArmor'){250}else{5000}
+            if($member.Count-ne 1 -or $member[0].EditableFloatCount-ne 18 -or $member[0].Percentages.'Armor/GUN'-ne $expected){throw 'Combined member values differ.'}
+        }
+        $text=Get-Content -LiteralPath $log -Raw
+        if(-not $text.Contains('Warning: ALPHA001') -or -not $text.Contains('Warning: ALPHA002') -or $text.Contains('Error: ALPHA100') -or $text.Contains('Critical: ALPHA101')){throw 'Combined callback diagnostics differ.'}
+        $rows.Add([pscustomobject]@{Sample=$name;ArmorCount=2;Receipt=(Join-Path $created[0].FullName 'alpha-build.json');ArchiveSha256=$digest})
+        continue
+    }
     # Reborn: preserve both legacy golden packages and independently pin the new non-GUN example.
     $expected=switch($name){'Reborn'{5000};'Armor250'{250};'ArmorCannon'{100};'SovietArmor'{5000}}
     $digest=switch($name){'Reborn'{'DD7DE09E3A81B9714DC2861ADE0AA9ECDFE72A1851EDD1ED20BE2155EF31C2DC'};'Armor250'{'E97EAEE9D2B423AC7360C9A401FAB1EC9A55B60F50B9F02BB74CEDC9E8B38F7E'};'ArmorCannon'{'40C09781BAB82643FBBC6DF5A8DFA674B74BF16B8B93F4A5B605FF5778F0BE7F'};'SovietArmor'{'0414E554AE9049631B163C508806F2A5EC2AE277030CE1A5DEE9374150C483BD'}}

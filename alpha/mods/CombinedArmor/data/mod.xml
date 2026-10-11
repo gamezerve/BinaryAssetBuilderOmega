@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: one mod stream overrides two distinct armor identities; Soviet armor is shared by Japan/civilian reference consumers. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <ArmorTemplate id="AlliedConYardArmor">
+    <Armor Damage="SNIPER" Percent="0" />
+    <Armor Damage="CANNON" Percent="100" />
+    <Armor Damage="ROCKET" Percent="100" />
+    <Armor Damage="GRENADE" Percent="100" />
+    <Armor Damage="GUN" Percent="250" />
+    <Armor Damage="MELEE" Percent="0" />
+    <Armor Damage="AUTO_CANNON" Percent="50" />
+    <Armor Damage="IMPACT" Percent="100" />
+    <Armor Damage="EXPLOSIVE" Percent="125" />
+    <Armor Damage="FLAK" Percent="100" />
+    <Armor Damage="PRISM" Percent="100" />
+    <Armor Damage="TESLA" Percent="100" />
+    <Armor Damage="RADIATION" Percent="0" />
+  </ArmorTemplate>
+  <ArmorTemplate id="SovietConYardArmor">
+    <Armor Damage="SNIPER" Percent="0" />
+    <Armor Damage="CANNON" Percent="100" />
+    <Armor Damage="ROCKET" Percent="100" />
+    <Armor Damage="GRENADE" Percent="100" />
+    <Armor Damage="GUN" Percent="5000" />
+    <Armor Damage="MELEE" Percent="0" />
+    <Armor Damage="AUTO_CANNON" Percent="50" />
+    <Armor Damage="IMPACT" Percent="100" />
+    <Armor Damage="EXPLOSIVE" Percent="125" />
+    <Armor Damage="FLAK" Percent="100" />
+    <Armor Damage="PRISM" Percent="100" />
+    <Armor Damage="TESLA" Percent="100" />
+    <Armor Damage="RADIATION" Percent="0" />
+  </ArmorTemplate>
+</AssetDeclaration>

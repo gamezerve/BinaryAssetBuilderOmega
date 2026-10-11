@@ -10,14 +10,17 @@ failure callback without Build Completed. Updated local packaging passes clean
 extraction with the fix. These checks do not establish all
 original Studio features.
 
-Supported: exactly one flattened `AlliedConYardArmor` or `SovietConYardArmor` with thirteen ordered armor
+Supported: one flattened `AlliedConYardArmor` or `SovietConYardArmor`, or one of
+each together in an AssetDeclaration. Each has thirteen ordered armor
 entries. Each Percent and five optional root scalar fields (Default, DamageScalar,
 SideDamageScalar, RearDamageScalar, FlankedPenalty) accept canonical integers
 0..10000. Omitted scalars retain 100. Identity, list shape and damage order remain
 fixed; includes/inheritance/other asset types remain unsupported. Unsupported XML
 fails rather than being silently omitted. Reborn uses GUN=5000; ArmorCannon uses
 CANNON=5000 and stock GUN=100. SovietArmor uses Soviet GUN=5000. Allied GUN/CANNON
-have user-observed gameplay evidence; Soviet support is offline-only so far.
+and Soviet GUN have user-observed gameplay evidence. CombinedArmor uses Allied
+GUN=250 and Soviet GUN=5000 in one stream; this combined package is offline-only
+so far. Duplicate identities and a third asset fail the whole build.
 
 Prerequisites: PowerShell 7, an x86 .NET 8 runtime, your existing RA3 Mod SDK
 Studio components and compatible .NET Framework 4/CodeDOM environment, plus an

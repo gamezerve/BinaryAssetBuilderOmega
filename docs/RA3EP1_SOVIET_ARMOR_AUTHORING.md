@@ -1,5 +1,10 @@
 # Second armor identity — October 12, 2026
 
+Capability update: [combined armor authoring](RA3EP1_ARMOR_PAIR_AUTHORING.md) now
+admits one of each supported identity in a shared stream. The one-per-build
+restriction below records the earlier stage; arbitrary multi-asset input is
+still not enabled.
+
 Outcome update: the user reported increased damage in the separately authorized
 Soviet GUN=5000 test. The original preparation sections retain their offline-only
 status; the subsequent gameplay observation is recorded at the end.

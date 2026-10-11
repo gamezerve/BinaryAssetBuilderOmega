@@ -33,12 +33,14 @@ try {
         $stream=[IO.MemoryStream]::new($bytes,$false);$reader=[Xml.XmlReader]::Create($stream,$settings)
         try{$xml=[Xml.XmlDocument]::new();$xml.XmlResolver=$null;$xml.Load($reader)}finally{$reader.Dispose();$stream.Dispose()}
         $root=$xml.DocumentElement
+        # Reborn: a pair stays a declaration for its separate admission/compile path; the historical one-member path keeps its exact snapshot.
+        $isPair=$false
         if($root.NamespaceURI-cne 'uri:ea.com:eala:asset'){throw 'Expected EA asset namespace.'}
         if($root.LocalName-ceq 'AssetDeclaration'){
-            if(@($root.Attributes|Where-Object Name -NE 'xmlns').Count-ne 0 -or $root.ChildNodes.Count-ne 1 -or $root.FirstChild-isnot [Xml.XmlElement]){throw 'Alpha declaration must contain exactly one standalone armor; includes and other types are not build-enabled.'}
-            $root=$root.FirstChild
+            if(@($root.Attributes|Where-Object Name -NE 'xmlns').Count-ne 0 -or $root.ChildNodes.Count -notin @(1,2) -or @($root.ChildNodes|Where-Object {$_-isnot [Xml.XmlElement]}).Count-ne 0){throw 'Alpha declaration requires one or two supported armors; includes and other types are not build-enabled.'}
+            if($root.ChildNodes.Count-eq 2){$isPair=$true}else{$root=$root.FirstChild}
         }
-        if($root.LocalName-cne 'ArmorTemplate'){throw ('Asset type is not build-enabled in this alpha: '+$root.LocalName)}
+        if(-not $isPair -and $root.LocalName-cne 'ArmorTemplate'){throw ('Asset type is not build-enabled in this alpha: '+$root.LocalName)}
         # Reborn: keep all generated validation artifacts isolated; original selected-mod XML remains read-only.
         # Reborn: explicit standalone output stays under a pre-existing checked root; developer defaults remain repository-local.
         if(-not $OutputRoot){$OutputRoot=Join-Path $repo 'artifacts'}
@@ -59,11 +61,37 @@ try {
             & dotnet build (Join-Path $repo 'source/BinaryAssetBuilder.ManifestInspector/BinaryAssetBuilder.ManifestInspector.csproj') --no-restore -c Release -p:Platform=x86 -m:1 -nr:false -v:q *> $log
             if($LASTEXITCODE-ne 0){throw ('Compiler build failed; see '+$log)}
         }
+        # Reborn: two assets use their own frozen-document capability and receipt; never concatenate independently built single-asset streams.
+        if($isPair){
+            $json=@(& $exe armor-pair-authoring-preflight $snapshot (Join-Path $directory 'admitted'))
+            if($LASTEXITCODE-ne 0){$json|Write-Output;throw 'Pair XML failed admission.'}
+            $admission=($json-join [Environment]::NewLine)|ConvertFrom-Json
+            if($ValidateOnly){Write-Output ('Reborn: pair input admitted; no package built. '+$directory);return}
+            Write-Output 'Warning: ALPHA002 Two supported yard armors share one stream. Each has 18 editable percentages. Combined package gameplay is not yet verified.'
+            $output=Join-Path $directory 'build'
+            & $exe armor-pair-authored-build $snapshot $output $StaticManifest
+            if($LASTEXITCODE-ne 0){throw 'Pair Core/package build failed.'}
+            $buildReceipt=Join-Path $output 'pair-build.json'
+            $build=Get-Content -LiteralPath $buildReceipt -Raw|ConvertFrom-Json
+            if($admission.ArmorCount-ne 2 -or $build.ArmorCount-ne 2 -or @($admission.Assets).Count-ne 2 -or @($build.Assets).Count-ne 2 -or -not $build.ActualCoreOutputUsed -or -not $build.AuthoredPayloadVerified -or -not $build.StockBaselineCompared){throw 'Pair receipt shape or compiler proof differs.'}
+            foreach($member in $admission.Assets){
+                $compiled=@($build.Assets|Where-Object ArmorId -CEQ $member.ArmorId)
+                if($compiled.Count-ne 1 -or $member.EditableFloatCount-ne 18 -or $compiled[0].EditableFloatCount-ne 18 -or @($member.Percentages.PSObject.Properties).Count-ne 18 -or @($compiled[0].Percentages.PSObject.Properties).Count-ne 18){throw 'Pair member receipt differs.'}
+                foreach($property in $member.Percentages.PSObject.Properties){
+                    if($null-eq $compiled[0].Percentages.PSObject.Properties[$property.Name] -or $compiled[0].Percentages.PSObject.Properties[$property.Name].Value-ne $property.Value){throw 'Pair compiled percentage differs.'}
+                }
+            }
+            $receipt=[pscustomobject]@{ArmorCount=2;Assets=$build.Assets;SelectedModXml=$ModXml;SelectedModXmlSha256=([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)));BuildReceipt=$buildReceipt;CompilerPath=$exe;PrebuiltCompilerUsed=[bool]$CompilerDirectory;InstalledFilesModified=$false;GameExecuted=$false}
+            [IO.File]::WriteAllText((Join-Path $directory 'alpha-build.json'),($receipt|ConvertTo-Json -Depth 6))
+            Write-Output ('Reborn: build succeeded. BIG: '+$build.PackagePath)
+            Write-Output ('Reborn: config: '+$build.ConfigPath)
+            return
+        }
         $json=@(& $exe armor-authoring-preflight $snapshot (Join-Path $directory 'admitted'))
         if($LASTEXITCODE-ne 0){$json|Write-Output;throw 'Selected XML failed alpha armor admission.'}
         $admission=($json-join [Environment]::NewLine)|ConvertFrom-Json
         if($ValidateOnly){Write-Output ('Reborn: selected mod input admitted; validation only, no package built. '+$directory);return}
-        Write-Output 'Warning: ALPHA002 Only AlliedConYardArmor and SovietConYardArmor are build-enabled, one per build: thirteen ordered coefficients and five optional scalars, integer 0..10000. Allied GUN/CANNON have user-observed gameplay evidence; Soviet and other edits require runtime testing.'
+        Write-Output 'Warning: ALPHA002 Standalone AlliedConYardArmor or SovietConYardArmor: thirteen ordered coefficients and five optional scalars, integer 0..10000. Allied GUN/CANNON and Soviet GUN have user-observed gameplay evidence; other edits require runtime testing.'
         $output=Join-Path $directory 'build'
         & $exe armor-authored-build $snapshot $output $StaticManifest
         if($LASTEXITCODE-ne 0){throw 'Authored XML/Core/package build failed.'}

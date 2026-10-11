@@ -63,6 +63,8 @@ $files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/mods/ArmorCannon/dat
 $files.Add([pscustomobject]@{Source=(Join-Path $repo 'samples/armor/AlliedConYardArmor.xml');Relative='mods/Armor250/data/mod.xml';Origin='project-sample'})
 # Reborn: expose only the separately stock-matched Soviet yard identity; still one armor per selected mod.
 $files.Add([pscustomobject]@{Source=(Join-Path $repo 'samples/armor/SovietConYardArmor.xml');Relative='mods/SovietArmor/data/mod.xml';Origin='project-sample'})
+# Reborn: package the bounded two-identity sample; its pair path never replays two independent single-asset archives.
+$files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/mods/CombinedArmor/data/mod.xml');Relative='mods/CombinedArmor/data/mod.xml';Origin='project-sample'})
 foreach($name in @('EALAModStudio.exe','EALABuild.dll','EULA for RA3 MOD SDK.rtf')){
     $files.Add([pscustomobject]@{Source=(Join-Path $StudioDirectory $name);Relative=$name;Origin='user-supplied-EA-SDK-local-use-only'})
 }

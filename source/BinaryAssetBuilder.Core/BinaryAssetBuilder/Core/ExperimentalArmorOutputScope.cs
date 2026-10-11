@@ -18,14 +18,38 @@ internal sealed class ExperimentalArmorOutputScope
     private readonly string _xml, _source, _name, _logicalSource;
     private readonly byte[] _sourceBytes;
     private readonly AssetBuffer _expected;
+    // Reborn: pair admission is a separate opt-in; each original instance retains its own frozen proof.
+    private readonly InstanceDeclaration[] _allowedInstances;
+    private readonly ExperimentalArmorOutputScope _peer;
+    internal int InstanceCount => _allowedInstances.Length;
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: freeze one normalized armor declaration and its compiler bytes before any output directory is created. */
     //-------------------------------------------------------------------------------------------------
-    internal ExperimentalArmorOutputScope(DocumentProcessor processor, AssetDeclarationDocument document)
+    internal ExperimentalArmorOutputScope(DocumentProcessor processor, AssetDeclarationDocument document, bool pair = false)
+        : this(processor, document, SelectInstances(document, pair), 0) { }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: only the explicit pair factory may bind both distinct known yard identities; historical scope still requires one instance. */
+    //-------------------------------------------------------------------------------------------------
+    private static InstanceDeclaration[] SelectInstances(AssetDeclarationDocument document, bool pair)
+    {
+        var instances = document.SelfInstances.ToArray();
+        if ((!pair && instances.Length != 1) || (pair && (instances.Length != 2
+            || !instances.Select(item => item.Handle.Name).OrderBy(name => name, StringComparer.Ordinal).SequenceEqual(
+                new[] { "ArmorTemplate:AlliedConYardArmor", "ArmorTemplate:SovietConYardArmor" }))))
+            throw new InvalidDataException("Experimental armor scope requires the exact admitted instance set.");
+        return instances;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: freeze each member independently and retain the shared exact document selection, without a global production switch. */
+    //-------------------------------------------------------------------------------------------------
+    private ExperimentalArmorOutputScope(DocumentProcessor processor, AssetDeclarationDocument document, InstanceDeclaration[] instances, int index)
     {
         _processor = processor; _document = document; _settings = Settings.Current;
-        _instance = document.SelfInstances.Single(); _plugin = processor.Plugins.DefaultPlugin;
+        _allowedInstances = instances;
+        _instance = instances[index]; _plugin = processor.Plugins.DefaultPlugin;
         _instanceHash = _instance.Handle.InstanceHash; _instanceId = _instance.Handle.InstanceId;
         _processingHash = _instance.ProcessingHash; _xml = _instance.XmlNode.OuterXml; _source = document.SourcePath;
         _name = _instance.Handle.Name; _logicalSource = document.LogicalSourcePath;
@@ -36,6 +60,7 @@ internal sealed class ExperimentalArmorOutputScope
             throw new InvalidDataException("Experimental armor payload exceeds scope.");
         _expected = new AssetBuffer { InstanceData = (byte[])compiled.InstanceData.Clone(),
             RelocationData = (byte[])compiled.RelocationData.Clone(), ImportsData = (byte[])compiled.ImportsData.Clone() };
+        if (index == 0 && instances.Length == 2) _peer = new ExperimentalArmorOutputScope(processor, document, instances, 1);
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -52,8 +77,8 @@ internal sealed class ExperimentalArmorOutputScope
             || _settings.TargetPlatform != TargetPlatform.Win32 || !_settings.LinkedStreams || _settings.BigEndian || _settings.BuildCache
             || !string.IsNullOrEmpty(_settings.CustomPostfix) || !string.IsNullOrEmpty(_settings.StreamPostfix)
             || (_settings.ProcessedExternalManifests?.Length ?? 0) != 0 || !string.IsNullOrEmpty(_settings.ExternalManifestReferences)
-            || _document.InclusionItems.Count != 0 || _document.Instances.Count != 1 || _document.SelfInstances.Count != 1
-            || !ReferenceEquals(_document.SelfInstances.Single(), _instance) || _instance.InheritFromHandle != null || _instance.HasCustomData
+            || _document.InclusionItems.Count != 0 || _document.Instances.Count != InstanceCount || _document.SelfInstances.Count != InstanceCount
+            || _document.SelfInstances.Where((item, index) => !ReferenceEquals(item, _allowedInstances[index])).Any() || _instance.InheritFromHandle != null || _instance.HasCustomData
             || _instance.ReferencedInstances.Count != 0 || _instance.WeakReferencedInstances.Count != 0
             || _instance.ValidatedReferencedInstances == null || _instance.ValidatedReferencedInstances.Count != 0
             || _instance.Handle.TypeId != 0x3A6C5E8Eu || _instance.Handle.TypeHash != 0xA0E237D8u
@@ -61,13 +86,15 @@ internal sealed class ExperimentalArmorOutputScope
             || _instance.ProcessingHash != _processingHash || _instanceHash == 0 || _instance.Handle.InstanceHash != _instanceHash
             || _instance.Handle.InstanceId != _instanceId || _instance.XmlNode.OuterXml != _xml || _document.SourcePath != _source
             || _instance.Handle.Name != _name || _document.LogicalSourcePath != _logicalSource
-            || _document.OutputInstances.Count > 1 || _document.OutputInstances.Any(item => !ReferenceEquals(item, _instance)))
+            || _document.OutputInstances.Count > InstanceCount || _document.OutputInstances.Any(item => !_allowedInstances.Any(bound => ReferenceEquals(item, bound)))
+            || _document.OutputInstances.Distinct().Count() != _document.OutputInstances.Count)
             throw new InvalidDataException("Experimental armor output scope changed or is unsupported.");
         CheckSource(_source);
         if (new FileInfo(_source).Length != _sourceBytes.Length || !File.ReadAllBytes(_source).SequenceEqual(_sourceBytes))
             throw new InvalidDataException("Experimental armor source changed.");
-        if (_document.OutputInstances.Count == 1 && _document.OutputChecksum != AssetDeclarationDocument.ComputeOutputChecksum(_document.OutputInstances))
+        if (_document.OutputInstances.Count == InstanceCount && _document.OutputChecksum != AssetDeclarationDocument.ComputeOutputChecksum(_document.OutputInstances))
             throw new InvalidDataException("Experimental armor document checksum differs.");
+        _peer?.Validate(document);
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -76,6 +103,8 @@ internal sealed class ExperimentalArmorOutputScope
     internal void ValidateAsset(BinaryAsset asset)
     {
         Validate();
+        // Reborn: route to the peer's own frozen bytes, never accept the first asset's identity for the second buffer.
+        if (_peer != null && ReferenceEquals(asset.Instance, _peer._instance)) { _peer.ValidateAsset(asset); return; }
         if (!ReferenceEquals(asset.Instance, _instance) || asset.Buffer == null
             || !asset.Buffer.InstanceData.SequenceEqual(_expected.InstanceData)
             || !asset.Buffer.RelocationData.SequenceEqual(_expected.RelocationData)
@@ -88,6 +117,9 @@ internal sealed class ExperimentalArmorOutputScope
     //-------------------------------------------------------------------------------------------------
     internal void ValidateCommittedAsset(BinaryAsset asset)
     {
+        // Reborn: all members must stay valid before independently checking this member's committed header/payload.
+        Validate();
+        if (_peer != null && ReferenceEquals(asset.Instance, _peer._instance)) { _peer.ValidateCommittedAsset(asset); return; }
         if (!ReferenceEquals(asset.Instance, _instance) || !asset.IsOutputAsset || asset.Buffer != null)
             throw new InvalidDataException("Experimental armor asset has not been committed.");
         string path = Path.Combine(asset.AssetOutputDirectory, asset.AssetFileName);

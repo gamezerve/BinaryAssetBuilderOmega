@@ -22,6 +22,8 @@ internal static class ArmorTrialPreparation
     //-------------------------------------------------------------------------------------------------
     private static byte[][] ReadSource(string path, string? authoredXml = null)
     {
+        // Reborn: the canonical pair declaration has a distinct verifier; never send two members through the legacy Single path.
+        if (authoredXml != null && authoredXml.StartsWith("<AssetDeclaration ", StringComparison.Ordinal)) return ReadPairSource(path, authoredXml);
         CheckPath(path);
         if (new FileInfo(path).Length > Limit) throw new InvalidDataException("Trial source exceeds bound.");
         byte[][] payloads;
@@ -58,6 +60,52 @@ internal static class ArmorTrialPreparation
                 || BinaryPrimitives.ReadUInt32LittleEndian(payloads[index + 1].AsSpan(4)) != manifest.Header.StreamChecksum
                 || !payloads[index + 1].AsSpan(8).SequenceEqual(chunks[index]))
                 throw new InvalidDataException("Trial source compiler payload differs.");
+        return payloads;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: independently verify both named compiler slices, shared padded checksum and complete stream ranges before pair packaging. */
+    //-------------------------------------------------------------------------------------------------
+    private static byte[][] ReadPairSource(string path, string authoredXml)
+    {
+        string[] pair = ArmorPairAuthoredBuild.Admit(authoredXml);
+        CheckPath(path);
+        if (new FileInfo(path).Length > Limit) throw new InvalidDataException("Pair source exceeds bound.");
+        byte[][] payloads;
+        using (var archive = BigArchive.Open(path, 4, 4096)) payloads = archive.Entries.Select(entry => archive.ReadEntry(entry, Limit)).ToArray();
+        ArmorDiagnosticPackage.Verify(path, payloads);
+        var manifest = ManifestReader.Read(payloads[0]);
+        if (manifest.Validate().Count != 0 || manifest.Header.Version != 7 || !manifest.Header.IsLinked
+            || manifest.Header.AllTypesHash != 0x5454A8E9u || manifest.ReferencedManifests.Count != 0 || manifest.Assets.Count != 2)
+            throw new InvalidDataException("Pair source manifest differs.");
+        string fixtures = Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!;
+        var schema = ArmorTokenSmokeTest.LoadSchemas(fixtures);
+        var expected = pair.ToDictionary(xml => "ArmorTemplate:" + ArmorAuthoringAdmission.Identity(xml), xml => ArmorTokenSmokeTest.Compile(schema, xml));
+        int[] offsets = { 8, 8, 8 }; byte[] table = new byte[256]; int rowOffset = 0;
+        var seen = new HashSet<string>(); uint[] magics = { 0xBABB0000u, 0xBABE0000u, 0xBAB10000u };
+        foreach (var entry in manifest.Assets)
+        {
+            if (!expected.TryGetValue(entry.Name, out var chunk) || !seen.Add(entry.Name)) throw new InvalidDataException("Pair member absent or duplicated.");
+            var identity = new InstanceHandle("ArmorTemplate", entry.Name.Substring("ArmorTemplate:".Length));
+            if (entry.TypeId != identity.TypeId || entry.TypeHash != 0xA0E237D8u || entry.InstanceId != identity.InstanceId || entry.InstanceHash == 0
+                || entry.Tokenized != 1 || entry.References.Count != 0 || entry.InstanceDataSize != 856 || entry.RelocationDataSize != 8 || entry.ImportsDataSize != 0)
+                throw new InvalidDataException("Pair member identity/shape differs.");
+            foreach (uint word in new[] { entry.TypeId, entry.TypeHash, entry.InstanceId, entry.InstanceHash, 0u })
+            { BinaryPrimitives.WriteUInt32LittleEndian(table.AsSpan(rowOffset), word); rowOffset += 4; }
+            byte[][] chunks = { chunk.InstanceBuffer, chunk.RelocationBuffer, chunk.ImportsBuffer };
+            for (int index = 0; index < 3; index++)
+            {
+                if (payloads[index + 1].Length < offsets[index] + chunks[index].Length
+                    || !payloads[index + 1].AsSpan(offsets[index], chunks[index].Length).SequenceEqual(chunks[index]))
+                    throw new InvalidDataException("Pair authored member payload differs.");
+                offsets[index] += chunks[index].Length;
+            }
+        }
+        if (seen.Count != 2 || FastHash.GetHashCode(table) != manifest.Header.StreamChecksum) throw new InvalidDataException("Pair checksum/member set differs.");
+        for (int index = 0; index < 3; index++)
+            if (payloads[index + 1].Length != offsets[index] || BinaryPrimitives.ReadUInt32LittleEndian(payloads[index + 1]) != magics[index]
+                || BinaryPrimitives.ReadUInt32LittleEndian(payloads[index + 1].AsSpan(4)) != manifest.Header.StreamChecksum)
+                throw new InvalidDataException("Pair stream header/range differs.");
         return payloads;
     }
 

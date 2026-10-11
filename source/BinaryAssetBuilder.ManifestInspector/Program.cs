@@ -749,6 +749,32 @@ internal static class Program
                 return 0;
             }
             // Reborn: exercise focused full-document stages and experimental cache guards without production output.
+            if (args.Length == 4 && args[0] == "armor-pair-authored-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                ArmorPairAuthoredBuild.SelfTest(args[1], args[2], args[3]);
+                return 0;
+            }
+            if (args.Length == 4 && args[0] == "armor-pair-authored-build")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                ArmorPairAuthoredBuild.Run(args[1], args[2], args[3]);
+                return 0;
+            }
+            // Reborn: pair preflight creates only a frozen admitted snapshot and two-identity value receipt.
+            if (args.Length == 3 && args[0] == "armor-pair-authoring-preflight")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                ArmorPairAuthoredBuild.Stage(args[1], args[2]);
+                return 0;
+            }
+            if (args.Length == 3 && args[0] == "armor-pair-document-self-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                ArmorPairDocumentSmokeTest.Run(args[1], args[2]);
+                return 0;
+            }
+            // Reborn: retain the historical single-document proof separately from pair admission.
             if (args.Length is 2 or 3 && args[0] == "ep1-armor-document-self-test")
             {
                 CompilerSmokeTest.InitializeHashProvider();
@@ -1485,6 +1511,11 @@ internal static class Program
         Console.WriteLine("  armor-authored-build-self-test <new-output-directory> <ep1-static-manifest>");
         // Reborn: optional stock input proves the ConYard baseline; all generated override output stays isolated.
         Console.WriteLine("  ep1-armor-document-self-test <output-directory> [ep1-static-manifest]");
+        // Reborn: pair commands are separately admitted diagnostics/builds, never general multi-asset production switches.
+        Console.WriteLine("  armor-pair-document-self-test <output-directory> <ep1-static-manifest>");
+        Console.WriteLine("  armor-pair-authoring-preflight <xml> <output-directory>");
+        Console.WriteLine("  armor-pair-authored-build <xml> <output-directory> <ep1-static-manifest>");
+        Console.WriteLine("  armor-pair-authored-self-test <xml> <output-directory> <ep1-static-manifest>");
         // Reborn: prepare or verify only the isolated candidate, never launch a game.
         Console.WriteLine("  armor-trial-prepare <conyard-package.big> <new-output-directory>");
         Console.WriteLine("  armor-trial-controls <conyard-package.big> <owned-output-directory>");

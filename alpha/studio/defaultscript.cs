@@ -79,7 +79,7 @@ namespace EALABuild
         {
             List<GUIElementData> options = new List<GUIElementData>();
             options.Add(new GUIElementData("alpha", "Uprising Alpha: Validate XML / Build Data / Make BIG", GUIElementData.LabelType, ScriptIndex.ModScript));
-            options.Add(new GUIElementData("scope", "Allied/Soviet ConYardArmor: 13 coefficients + 5 scalars, integer 0..10000", GUIElementData.LabelType, ScriptIndex.ModScript));
+            options.Add(new GUIElementData("scope", "1 or 2 Allied/Soviet yard armors: 18 percentages each, integer 0..10000", GUIElementData.LabelType, ScriptIndex.ModScript));
             return options;
         }
 

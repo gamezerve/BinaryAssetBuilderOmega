@@ -20,13 +20,17 @@ unchanged damage-type control. Other coefficients and root scalars remain
 offline-only evidence.
 The [second armor identity](docs/RA3EP1_SOVIET_ARMOR_AUTHORING.md),
 SovietConYardArmor, now also passes its own stock/Core/package comparisons,
-eighteen field edits, repeat and cross-identity refusal. One armor per build
-remains the limit. The reference XML also binds Japan's yard and one civilian
+eighteen field edits, repeat and cross-identity refusal. The
+[combined armor path](docs/RA3EP1_ARMOR_PAIR_AUTHORING.md) now builds one of each
+together into the same actual Core stream. Duplicate/third assets remain refused.
+The reference XML also binds Japan's yard and one civilian
 building to this shared armor. The separately authorized Soviet GUN=5000 trial
 now also has user-reported increased damage with the requested Conscript test.
 Japan/civilian consumers and foreign-identity gameplay controls remain untested.
-Current local candidate: `UprisingAlpha-20261012-a`, with four offline-verified
-samples including SovietArmor. Its fresh overlay extraction also passes.
+Current local candidate: `UprisingAlpha-20261012-c`, with five offline-verified
+samples including CombinedArmor. Its fresh overlay extraction also passes.
+The combined package has not yet been game-tested; individual armor successes
+do not substitute for that new runtime check.
 The refreshed local workspace `UprisingAlpha-20261011-h` and clean overlay
 extraction pass all three samples (Reborn, Armor250, ArmorCannon); the full
 compiler regression suite also passes. Packaging now forces recompilation to

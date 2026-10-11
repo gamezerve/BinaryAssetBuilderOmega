@@ -50,11 +50,23 @@ namespace BinaryAssetBuilder.Core
         /** Reborn: opt into one diagnostic armor stream in a new owned directory, without granting production/cache eligibility. */
         //-------------------------------------------------------------------------------------------------
         public static OutputManager CreateExperimentalArmorDiagnostic(DocumentProcessor processor, AssetDeclarationDocument document, string parentDirectory)
+            => CreateExperimentalArmorDiagnosticCore(processor, document, parentDirectory, false);
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: separately opt into exactly the Allied/Soviet yard pair; historical single-asset admission stays unchanged. */
+        //-------------------------------------------------------------------------------------------------
+        public static OutputManager CreateExperimentalArmorPairDiagnostic(DocumentProcessor processor, AssetDeclarationDocument document, string parentDirectory)
+            => CreateExperimentalArmorDiagnosticCore(processor, document, parentDirectory, true);
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: create an owned manager only after the explicit single or pair capability freezes every member. */
+        //-------------------------------------------------------------------------------------------------
+        private static OutputManager CreateExperimentalArmorDiagnosticCore(DocumentProcessor processor, AssetDeclarationDocument document, string parentDirectory, bool pair)
         {
             if (!Directory.Exists(parentDirectory)) throw new InvalidDataException("Experimental output parent must already exist.");
             ExperimentalArmorOutputScope.CheckAncestors(parentDirectory);
             if (document.OutputInstances.Count != 0) throw new InvalidDataException("Experimental armor requires fresh output selection.");
-            var scope = new ExperimentalArmorOutputScope(processor, document);
+            var scope = new ExperimentalArmorOutputScope(processor, document, pair);
             string root = Path.Combine(parentDirectory, "RebornArmorOutput-" + Guid.NewGuid().ToString("N"));
             if (Directory.Exists(root) || File.Exists(root)) throw new InvalidDataException("Experimental output already exists.");
             Directory.CreateDirectory(root);
@@ -70,7 +82,7 @@ namespace BinaryAssetBuilder.Core
             if (_experimentalArmorScope == null) { DocumentProcessor.Plugins.ValidateProductionOutput(); return; }
             _experimentalArmorScope.Validate(document);
             ExperimentalArmorOutputScope.CheckAncestors(Path.GetDirectoryName(OutputDirectory));
-            if (document == null || document.OutputInstances.Count != 1 || Assets.Count != 1)
+            if (document == null || document.OutputInstances.Count != _experimentalArmorScope.InstanceCount || Assets.Count != _experimentalArmorScope.InstanceCount)
                 throw new InvalidDataException("Experimental armor output is incomplete.");
             foreach (var asset in Assets.Values)
             {
@@ -88,7 +100,7 @@ namespace BinaryAssetBuilder.Core
             ExperimentalArmorOutputScope.CheckAncestors(Path.GetDirectoryName(OutputDirectory));
             if (Directory.Exists(IntermediateOutputDirectory)) ExperimentalArmorOutputScope.CheckAncestors(IntermediateOutputDirectory);
             if (Directory.Exists(_assetDirectory)) ExperimentalArmorOutputScope.CheckAncestors(_assetDirectory);
-            if (Assets.Count != 1 || !Assets.ContainsValue(asset)) throw new InvalidDataException("Foreign experimental asset refused.");
+            if (Assets.Count < 1 || Assets.Count > _experimentalArmorScope.InstanceCount || !Assets.ContainsValue(asset)) throw new InvalidDataException("Foreign experimental asset refused.");
             _experimentalArmorScope.ValidateAsset(asset);
         }
 

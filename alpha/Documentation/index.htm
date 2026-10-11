@@ -10,11 +10,12 @@ warning/error display, malformed-XML failure and this documentation pane. This i
 Successful builds report package paths and Build Completed. Inspect the final receipt; old packages from earlier builds are not new output.</p>
 <h2>Supported build</h2>
 <p>Select Reborn (GUN 5000), Armor250 (GUN 250), ArmorCannon (CANNON 5000, GUN 100) or SovietArmor (Soviet GUN 5000).
-Edit mods/&lt;name&gt;/data/mod.xml. One AlliedConYardArmor or SovietConYardArmor is accepted per build. All thirteen Percent values
+CombinedArmor contains Allied GUN=250 and Soviet GUN=5000 together.
+Edit mods/&lt;name&gt;/data/mod.xml. One AlliedConYardArmor or SovietConYardArmor, or one of each together, is accepted per build. All thirteen Percent values
 and five optional root scalars (Default, DamageScalar, SideDamageScalar, RearDamageScalar,
 FlankedPenalty) accept canonical integers from 0 to 10000; omitted scalars default to 100.
 Keep the identity and thirteen ordered armor entries. Unsupported input fails; it is not silently skipped.
-Allied GUN 5000 and CANNON 5000 have user-observed gameplay evidence; Soviet and other edits are experimental.</p>
+Allied GUN 5000/CANNON 5000 and Soviet GUN 5000 have user-observed gameplay evidence; the combined package and other edits are experimental.</p>
 <p>The single alpha build step validates XML, compiles through Core and creates a BIG/config/SKU package.
 Results are under builtmods/RebornAlphaInput-&lt;guid&gt;. Read alpha-build.json for the final build receipt.</p>
 <h2>Not supported by this alpha</h2>
@@ -25,6 +26,6 @@ LOD selection, STR processing, automatic installation and game launch are not bu
 Update Driver and CompilerDirectory after relocation. PowerShell 7, x86 .NET 8,
 compatible .NET Framework 4 and unpacked Uprising stock streams are required.</p>
 <p>No stock archive is replaced. The SKU is a mod fragment, not a replacement game SKU.
-Soviet support has offline stock/Core/package evidence, not gameplay validation.</p>
+Duplicate identities, a third asset or unsupported input fail the whole build. The combined package has not yet been game-tested.</p>
 <p>Local use only: EA components come from your own SDK. Public redistribution review is incomplete.</p>
 </body></html>
