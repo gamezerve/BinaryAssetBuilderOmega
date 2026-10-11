@@ -130,7 +130,8 @@ it accepts no arbitrary path or caller-provided hash. Its original queue route
 is unchanged. `-DefaultReader` alone does not launch. A future separately
 authorized `-DefaultReader -Run` would start exactly once with the stock
 launcher and installation working directory, retaining read-only candidate
-handles during observation. No game has been started with this second package.
+handles during observation. At preparation completion no game had been started
+with this second package; the subsequent authorized launch is recorded below.
 The full compiler suite was not rerun in this focused change.
 
 ## Authorized default-reader launch
