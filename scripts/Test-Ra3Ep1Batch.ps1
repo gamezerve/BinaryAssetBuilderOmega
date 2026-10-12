@@ -70,6 +70,8 @@ if($SchedulerControl){
     Add-BatchCase 'armor-pair-core' 'BoundedScopedStream' @('armor-pair-document-self-test',(Join-Path $OutputDirectory 'armor-pair-core'),$StaticManifest)
     # Reborn: general single-armor identities/list/literals are tested jointly without widening the exported alpha gate.
     Add-BatchCase 'armor-general-authoring' 'ExperimentalGeneralArmorPackage' @('armor-general-authored-self-test',(Join-Path $OutputDirectory 'general-armors'))
+    # Reborn: independently exercise multiple user-defined identities in one real stream, including the bounded maximum.
+    Add-BatchCase 'armor-general-sets' 'ExperimentalGeneralArmorSetPackage' @('armor-general-set-self-test',(Join-Path $OutputDirectory 'armor-sets'))
     if($Full){
         Add-BatchCase 'armor-authored-fields' 'BoundedScopedPackage' @('armor-authored-build-self-test',(Join-Path $OutputDirectory 'armor-builds'),$StaticManifest)
         Add-BatchCase 'compiler-broad' 'DiagnosticOnly' @('compiler-self-test')

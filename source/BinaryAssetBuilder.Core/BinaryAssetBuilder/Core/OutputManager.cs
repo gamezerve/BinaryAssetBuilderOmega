@@ -59,6 +59,12 @@ namespace BinaryAssetBuilder.Core
             => CreateExperimentalArmorDiagnosticCore(processor, document, parentDirectory, true);
 
         //-------------------------------------------------------------------------------------------------
+        /** Reborn: separately bind a bounded general armor set without widening the single/pair or production factories. */
+        //-------------------------------------------------------------------------------------------------
+        public static OutputManager CreateExperimentalGeneralArmorSetDiagnostic(DocumentProcessor processor, AssetDeclarationDocument document, string parentDirectory)
+            => CreateExperimentalArmorDiagnosticCore(processor, document, parentDirectory, false, true);
+
+        //-------------------------------------------------------------------------------------------------
         /** Reborn: separately admit one reviewed AK47 diagnostic in fresh owned output without enabling production weapons. */
         //-------------------------------------------------------------------------------------------------
         public static OutputManager CreateExperimentalWeaponDiagnostic(DocumentProcessor processor, AssetDeclarationDocument document, string parentDirectory)
@@ -76,12 +82,12 @@ namespace BinaryAssetBuilder.Core
         //-------------------------------------------------------------------------------------------------
         /** Reborn: create an owned manager only after the explicit single or pair capability freezes every member. */
         //-------------------------------------------------------------------------------------------------
-        private static OutputManager CreateExperimentalArmorDiagnosticCore(DocumentProcessor processor, AssetDeclarationDocument document, string parentDirectory, bool pair)
+        private static OutputManager CreateExperimentalArmorDiagnosticCore(DocumentProcessor processor, AssetDeclarationDocument document, string parentDirectory, bool pair, bool generalSet = false)
         {
             if (!Directory.Exists(parentDirectory)) throw new InvalidDataException("Experimental output parent must already exist.");
             ExperimentalArmorOutputScope.CheckAncestors(parentDirectory);
             if (document.OutputInstances.Count != 0) throw new InvalidDataException("Experimental armor requires fresh output selection.");
-            var scope = new ExperimentalArmorOutputScope(processor, document, pair);
+            var scope = new ExperimentalArmorOutputScope(processor, document, pair, generalSet);
             string root = Path.Combine(parentDirectory, "RebornArmorOutput-" + Guid.NewGuid().ToString("N"));
             if (Directory.Exists(root) || File.Exists(root)) throw new InvalidDataException("Experimental output already exists.");
             Directory.CreateDirectory(root);

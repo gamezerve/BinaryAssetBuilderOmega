@@ -13,6 +13,12 @@ internal static class Program
     {
         try
         {
+            // Reborn: general sets use separately bounded multi-member output, never the fixed-yard alpha adapter.
+            if (args.Length == 3 && args[0] == "armor-general-set-build")
+            { CompilerSmokeTest.InitializeHashProvider(); GeneralArmorAuthoredBuild.Run(args[1], args[2], true); return 0; }
+            // Reborn: batch variable shapes, maximum size, identity collisions and scoped publication controls.
+            if (args.Length == 2 && args[0] == "armor-general-set-self-test")
+            { CompilerSmokeTest.InitializeHashProvider(); GeneralArmorAuthoredBuild.SetSelfTest(args[1]); return 0; }
             // Reborn: general single-armor candidates are separate from the fixed-yard alpha authoring gate.
             if (args.Length == 3 && args[0] == "armor-general-authored-build")
             { CompilerSmokeTest.InitializeHashProvider(); GeneralArmorAuthoredBuild.Run(args[1], args[2]); return 0; }
@@ -1572,6 +1578,8 @@ internal static class Program
         // Reborn: admit only a GUN-only ConYard input snapshot, not arbitrary SDK assets.
         Console.WriteLine("  armor-authoring-input-self-test");
         Console.WriteLine("  armor-general-authored-build <one-armor.xml> <new-output-directory>");
+        Console.WriteLine("  armor-general-set-build <armor-declaration.xml> <new-output-directory>");
+        Console.WriteLine("  armor-general-set-self-test <new-output-directory>");
         Console.WriteLine("  armor-general-authored-self-test <new-output-directory>");
         Console.WriteLine("  armor-authoring-preflight <standalone-conyard.xml> <new-output-directory>");
     }

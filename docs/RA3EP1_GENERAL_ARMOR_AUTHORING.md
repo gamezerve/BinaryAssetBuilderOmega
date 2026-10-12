@@ -1,15 +1,22 @@
-# General single-armor authoring backend
+# General armor authoring backend
 
 This is the first broader type-based authoring path, not another fixed unit
 recipe. `GeneralArmorAuthoredBuild.cs` reuses the existing EP1 ArmorTemplate
 plugin, variable-length tokenizer, actual DocumentProcessor and single-document
-experimental OutputManager capability. No shared Core/native layout or ordinary
-production output policy is changed. The existing exported g alpha retains its
+experimental OutputManager capability. A separate bounded set capability now
+freezes every selected armor; shared native layout and ordinary production
+output policy are unchanged. The existing exported g alpha retains its
 fixed-yard admission until a separate adapter/export milestone.
 
 ## Admitted surface
 
-One standalone ArmorTemplate or one member of AssetDeclaration is accepted.
+The historical command accepts one standalone ArmorTemplate or one member of
+AssetDeclaration. The explicit set command accepts 1..32 ArmorTemplate members
+in one AssetDeclaration (or a standalone armor). Duplicate names and duplicate
+case-insensitive engine lookup IDs are refused before creating output. This
+includes case-only name differences; hash comparison uses Core's InstanceHandle
+API, not a replacement hashing algorithm. The 32-member limit is an experimental
+resource bound, not the final SDK design limit.
 User-selected IDs follow `[A-Za-z_][A-Za-z0-9_.-]{0,127}`; they are no longer
 restricted to AlliedConYardArmor/SovietConYardArmor in this backend. XML is
 bounded to 64 KiB. Zero through 64 leaf Armor entries are allowed, preserving
@@ -24,10 +31,10 @@ decimal values and an optional `%` suffix. EA percentage normalization applies:
 `75.5` and `75.5%` both compile as `75.5 * 0.01f`. This is not a ratio-literal
 syntax where 0.755 represents 75.5 percent.
 
-Inheritance, definitions, formulas, includes, multiple assets and other types
+Inheritance, definitions, formulas, includes, mixed asset types and other types
 are still refused rather than ignored. DTDs, processing instructions, unexpected
 attributes/children and injected TypeId are refused. This is bounded general
-single-armor authoring, not unrestricted full SDK XML semantics.
+armor authoring, not unrestricted full SDK XML semantics.
 
 ## Output and validation
 
@@ -77,12 +84,60 @@ ID. Diagnostic/default-reader packages repeat byte-identically; changed identity
 or source shapes produce different packages. Original source remains unchanged,
 occupied outputs are refused and eleven unsupported-input controls pass.
 
-The new group is included in Test-Ra3Ep1Batch.ps1: 16 focused groups and 18 in
+## Multiple armors in one stream
+
+`armor-general-set-build <armor-declaration.xml> <new-output-directory>` uses
+the same schema admission and native/token validation per member, then the
+separate `CreateExperimentalGeneralArmorSetDiagnostic` capability. Each original
+instance, XML, source and compiler buffer is frozen independently. Historical
+single/fixed-pair factories remain restricted. One manifest and one linked
+BIN/RELO/IMP family contain all members, not concatenated standalone packages.
+
+A minimal authored set (the source file is read-only during the build):
+
+```xml
+<!-- Reborn: independently named armors share one declaration and one compiled stream. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <ArmorTemplate id="MyGunArmor" Default="100">
+    <Armor Damage="GUN" Percent="250.5" />
+  </ArmorTemplate>
+  <ArmorTemplate id="MyCannonArmor">
+    <Armor Damage="CANNON" Percent="25%" />
+  </ArmorTemplate>
+</AssetDeclaration>
+```
+
+Run the ManifestInspector command with the authored XML and a fresh output
+directory. This produces an offline candidate; it neither installs nor starts
+the game and does not add these identities to a GameObject automatically.
+
+Both readers check every identity. Full payload slices are verified in manifest
+order at cumulative offsets, including stream magic/checksum and exact EOF.
+The checksum is independently reconstructed from serialized identity rows with
+Core's capacity padding, including the 256/512/1024-byte table transitions.
+Empty and nonempty armor lists may coexist. The final member's identity and
+committed payload are corrupted deliberately to prove scope traversal extends
+beyond the former two-member case. Source corruption controls also remain.
+Foreign same-handle objects and incomplete selections are refused before manifest
+publication. Payload routing validates the entire set once per public scope
+entry rather than repeatedly revalidating suffixes while locating a member.
+The set receipt adds ArmorCount and ArmorIds; PackagePath is the default-reader
+candidate for a set, whereas the single command retains its separate BIG4
+diagnostic archive. No new stock collision inventory or gameplay claim is made.
+
+`armor-general-set-self-test <new-output-directory>` exercises 1, 2, 3, 13 and 32
+members, including both a custom pair and the historical Allied/Soviet pair,
+with mixed list shapes and byte-identical repeat packages. Eight
+pre-output refusals cover empty/oversized sets, duplicate/case-colliding names,
+invalid final-member percent, includes, inheritance and DTD input. Occupied
+outputs and historical single/pair capability isolation are also checked.
+
+The groups are included in Test-Ra3Ep1Batch.ps1: 17 focused groups and 19 in
 Full mode. Existing fixed armor/weapon checks remain independent regressions.
 Broader gameplay/alpha integration is not implied by diagnostic source-semantic
 groups passing in the same matrix.
 
-Final verification on October 13: incremental Release/x86 build passes with
+Earlier single-armor verification on October 13: incremental Release/x86 build passes with
 zero warnings/errors; the complete focused matrix passes **16/16** in 26.407
 seconds excluding its 4.69-second compiler build. All eight compiler/runtime
 file hashes remain unchanged. Final local evidence:
@@ -90,3 +145,24 @@ file hashes remain unchanged. Final local evidence:
 and `armor-general-authoring.log`, with the general armor receipts under its
 `general-armors` child. The broad Full suite was not rerun for this wrapper;
 shared native/Core/tokenizer layouts were unchanged. No game was executed.
+
+## Set milestone verification — October 13
+
+The initial expanded Full run passed **19/19** groups in 585.18 seconds,
+including the broad compiler and authored armor field regressions. Evidence:
+`artifacts/BatchArmorSets-20261013-a/batch-report.json`. Its multi-armor group
+used the initial 3/32-member cases before the routing optimization and final
+checksum/boundary controls; do not treat it as a Full rerun of final code.
+
+Final code passed **17/17** focused groups in **32.522 seconds**, with a
+27.08-second Release/x86 compiler build (zero errors, 54 analyzer warnings;
+no GeneralArmorAuthoredBuild nullable warning). The expanded set group passed
+in **14.956 seconds**: six inputs and repeats, independent checksum tables,
+all-member identity/slice checks, final-member corruption/foreign/incomplete
+selection refusals, capability isolation and eight pre-output refusals.
+All eight compiler/runtime hashes stayed unchanged during both batch runs.
+Final evidence: `artifacts/BatchArmorSets-20261013-final/batch-report.json`,
+`armor-general-sets.log` and the receipts under `armor-sets`.
+The broad compiler was not rerun after final scope-routing optimization;
+the final focused matrix reran single/pair scopes and armor/weapon regressions.
+No game, installation or exported alpha capability was changed.

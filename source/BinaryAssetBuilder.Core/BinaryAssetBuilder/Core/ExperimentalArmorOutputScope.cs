@@ -18,7 +18,7 @@ internal sealed class ExperimentalArmorOutputScope : IExperimentalOutputScope
     private readonly string _xml, _source, _name, _logicalSource;
     private readonly byte[] _sourceBytes;
     private readonly AssetBuffer _expected;
-    // Reborn: pair admission is a separate opt-in; each original instance retains its own frozen proof.
+    // Reborn: pair/set admission are separate opt-ins; each original instance retains its own frozen proof.
     private readonly InstanceDeclaration[] _allowedInstances;
     private readonly ExperimentalArmorOutputScope _peer;
     public int InstanceCount => _allowedInstances.Length;
@@ -26,15 +26,24 @@ internal sealed class ExperimentalArmorOutputScope : IExperimentalOutputScope
     //-------------------------------------------------------------------------------------------------
     /** Reborn: freeze one normalized armor declaration and its compiler bytes before any output directory is created. */
     //-------------------------------------------------------------------------------------------------
-    internal ExperimentalArmorOutputScope(DocumentProcessor processor, AssetDeclarationDocument document, bool pair = false)
-        : this(processor, document, SelectInstances(document, pair), 0) { }
+    internal ExperimentalArmorOutputScope(DocumentProcessor processor, AssetDeclarationDocument document, bool pair = false, bool generalSet = false)
+        : this(processor, document, SelectInstances(document, pair, generalSet), 0) { }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: only the explicit pair factory may bind both distinct known yard identities; historical scope still requires one instance. */
     //-------------------------------------------------------------------------------------------------
-    private static InstanceDeclaration[] SelectInstances(AssetDeclarationDocument document, bool pair)
+    private static InstanceDeclaration[] SelectInstances(AssetDeclarationDocument document, bool pair, bool generalSet)
     {
         var instances = document.SelfInstances.ToArray();
+        // Reborn: general-set authority is separate from historical factories and rejects duplicate names or engine lookup keys.
+        if (generalSet)
+        {
+            if (pair || instances.Length < 1 || instances.Length > 32
+                || instances.Select(item => item.Handle.Name).Distinct(StringComparer.Ordinal).Count() != instances.Length
+                || instances.Select(item => (item.Handle.TypeId, item.Handle.InstanceId)).Distinct().Count() != instances.Length)
+                throw new InvalidDataException("Experimental general armor set requires 1..32 unique lookup identities.");
+            return instances;
+        }
         if ((!pair && instances.Length != 1) || (pair && (instances.Length != 2
             || !instances.Select(item => item.Handle.Name).OrderBy(name => name, StringComparer.Ordinal).SequenceEqual(
                 new[] { "ArmorTemplate:AlliedConYardArmor", "ArmorTemplate:SovietConYardArmor" }))))
@@ -60,7 +69,8 @@ internal sealed class ExperimentalArmorOutputScope : IExperimentalOutputScope
             throw new InvalidDataException("Experimental armor payload exceeds scope.");
         _expected = new AssetBuffer { InstanceData = (byte[])compiled.InstanceData.Clone(),
             RelocationData = (byte[])compiled.RelocationData.Clone(), ImportsData = (byte[])compiled.ImportsData.Clone() };
-        if (index == 0 && instances.Length == 2) _peer = new ExperimentalArmorOutputScope(processor, document, instances, 1);
+        // Reborn: freeze every admitted member, including the final member in a bounded general set.
+        if (index + 1 < instances.Length) _peer = new ExperimentalArmorOutputScope(processor, document, instances, index + 1);
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -103,8 +113,16 @@ internal sealed class ExperimentalArmorOutputScope : IExperimentalOutputScope
     public void ValidateAsset(BinaryAsset asset)
     {
         Validate();
+        ValidateAssetBound(asset);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: route frozen payload checks after one complete set validation, avoiding repeated suffix validation per member. */
+    //-------------------------------------------------------------------------------------------------
+    private void ValidateAssetBound(BinaryAsset asset)
+    {
         // Reborn: route to the peer's own frozen bytes, never accept the first asset's identity for the second buffer.
-        if (_peer != null && ReferenceEquals(asset.Instance, _peer._instance)) { _peer.ValidateAsset(asset); return; }
+        if (_peer != null && !ReferenceEquals(asset.Instance, _instance)) { _peer.ValidateAssetBound(asset); return; }
         if (!ReferenceEquals(asset.Instance, _instance) || asset.Buffer == null
             || !asset.Buffer.InstanceData.SequenceEqual(_expected.InstanceData)
             || !asset.Buffer.RelocationData.SequenceEqual(_expected.RelocationData)
@@ -119,7 +137,15 @@ internal sealed class ExperimentalArmorOutputScope : IExperimentalOutputScope
     {
         // Reborn: all members must stay valid before independently checking this member's committed header/payload.
         Validate();
-        if (_peer != null && ReferenceEquals(asset.Instance, _peer._instance)) { _peer.ValidateCommittedAsset(asset); return; }
+        ValidateCommittedAssetBound(asset);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: inspect the selected member's committed bytes only after the public entry point validates the entire set. */
+    //-------------------------------------------------------------------------------------------------
+    private void ValidateCommittedAssetBound(BinaryAsset asset)
+    {
+        if (_peer != null && !ReferenceEquals(asset.Instance, _instance)) { _peer.ValidateCommittedAssetBound(asset); return; }
         if (!ReferenceEquals(asset.Instance, _instance) || !asset.IsOutputAsset || asset.Buffer != null)
             throw new InvalidDataException("Experimental armor asset has not been committed.");
         string path = Path.Combine(asset.AssetOutputDirectory, asset.AssetFileName);

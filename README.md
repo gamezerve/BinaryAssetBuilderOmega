@@ -6,20 +6,29 @@ asset IDs, instance includes, inheritance, `$` definitions/expressions,
 TGA/DDS textures and W3X models. Current fixed-identity alpha restrictions are
 temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
-## Current outcome — October 12, 2026
+## Current outcome — October 13, 2026
 
-October 13 update: the [general single-armor backend](docs/RA3EP1_GENERAL_ARMOR_AUTHORING.md)
+October 13 update: the [general armor backend](docs/RA3EP1_GENERAL_ARMOR_AUTHORING.md)
 now accepts user-chosen IDs, variable 0..64-entry unique damage lists, decimal/%
 literal percentages and official scalar defaults. Real Core/scoped streams,
 two-reader readback and default-reader candidates are produced without another
-hard-coded unit recipe. Inheritance/includes/definitions/multiple assets remain
+hard-coded unit recipe. The explicit set command also accepts 1..32 user-defined
+armors in one real Core stream, rejects duplicate names/lookup IDs and validates
+every member's cumulative BIN/RELO/IMP slice through two readers.
+Inheritance/includes/definitions/mixed types remain
 refused; the exported g alpha is unchanged pending adapter integration. New IDs
 need consuming GameObjects before they can visibly affect gameplay.
-Final focused regression: 16/16 groups pass in about 26 seconds, plus a roughly
+Earlier single-armor focused regression: 16/16 groups pass in about 26 seconds, plus a roughly
 5-second incremental compiler build; existing armor/weapon behavior stays covered.
+Final multi-armor code passes **17/17** focused groups in **32.522 seconds**
+(27.08-second compiler build, zero errors and 54 analyzer warnings).
+The set group covers 1/2/3/13/32 members, custom/historical pairs, checksum
+capacity boundaries and corruption controls in 14.956 seconds. The initial
+expanded Full run passed 19/19 before the final routing/checksum refinements;
+see the linked backend report for exact evidence and rerun boundaries.
 
 The [batched offline test workflow](docs/RA3EP1_BATCH_TESTING.md) now builds once,
-runs 16 focused groups with isolated concurrent workers and aggregates failures
+runs 17 focused groups with isolated concurrent workers and aggregates failures
 without stopping the remaining groups. `-Full` adds broader compiler/armor
 regressions. Source-semantic diagnostic passes do not expand playable alpha
 capabilities or imply mixed-stream support.

@@ -13,11 +13,37 @@ using BinaryAssetBuilder.XmlCompiler;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: general single-armor candidate reuses the reviewed type processor, not a hard-coded yard identity or fixed list recipe.
+// Reborn: general armor candidates reuse the reviewed type processor for single or bounded sets, not fixed yard/list recipes.
 internal static class GeneralArmorAuthoredBuild
 {
     private const string Namespace = "uri:ea.com:eala:asset";
     private static readonly string[] Scalars = { "Default", "DamageScalar", "SideDamageScalar", "RearDamageScalar", "FlankedPenalty" };
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: admit 1..32 independently schema-validated armors, rejecting duplicate textual and hashed engine identities before output. */
+    //-------------------------------------------------------------------------------------------------
+    internal static XmlDocument[] AdmitSet(byte[] bytes)
+    {
+        if (bytes.Length == 0 || bytes.Length > 65536) throw new InvalidDataException("General armor set exceeds input bound.");
+        using var input = new MemoryStream(bytes, false);
+        using var reader = XmlReader.Create(input, new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit,
+            XmlResolver = null, IgnoreWhitespace = true, IgnoreComments = true, MaxCharactersInDocument = 65536 });
+        var xml = new XmlDocument { XmlResolver = null }; xml.Load(reader);
+        if (xml.ChildNodes.Cast<XmlNode>().Any(node => node is not XmlElement && node is not XmlDeclaration))
+            throw new InvalidDataException("Unsupported armor set document content.");
+        var root = xml.DocumentElement!;
+        if (root.LocalName != "AssetDeclaration") return new[] { Admit(bytes) };
+        CheckAttributes(root, Array.Empty<string>());
+        if (root.NamespaceURI != Namespace || root.ChildNodes.Count < 1 || root.ChildNodes.Count > 32
+            || root.ChildNodes.Cast<XmlNode>().Any(node => node is not XmlElement))
+            throw new InvalidDataException("General armor set requires 1..32 armor elements.");
+        var armors = root.ChildNodes.Cast<XmlElement>().Select(node => Admit(Encoding.UTF8.GetBytes(node.OuterXml))).ToArray();
+        var names = armors.Select(item => item.DocumentElement!.GetAttribute("id")).ToArray();
+        if (names.Distinct(StringComparer.Ordinal).Count() != names.Length
+            || names.Select(InstanceHandle.GetInstanceId).Distinct().Count() != names.Length)
+            throw new InvalidDataException("Duplicate armor name or hashed lookup identity.");
+        return armors;
+    }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: admit bounded one-armor XML with user-chosen identity, unique damage entries and literal percentages; no source semantics are ignored. */
@@ -144,13 +170,15 @@ internal static class GeneralArmorAuthoredBuild
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: actual Core documents publish one frozen single-armor candidate using the existing experimental capability, never ordinary production. */
+    /** Reborn: actual Core publishes frozen single/set armor candidates through separate experimental capabilities, never ordinary production. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string source, string directory)
+    internal static void Run(string source, string directory, bool generalSet = false)
     {
         using var input = File.Open(source, FileMode.Open, FileAccess.Read, FileShare.Read);
         if (input.Length == 0 || input.Length > 65536) throw new InvalidDataException("General armor source exceeds bound.");
-        byte[] bytes = new byte[(int)input.Length]; input.ReadExactly(bytes); var admitted = Admit(bytes);
+        byte[] bytes = new byte[(int)input.Length]; input.ReadExactly(bytes);
+        // Reborn: the historical command remains single-only; multiple declarations require explicit set admission.
+        var admittedSet = generalSet ? AdmitSet(bytes) : new[] { Admit(bytes) }; var admitted = admittedSet[0];
         directory = Path.GetFullPath(directory);
         if (Directory.Exists(directory) || File.Exists(directory) || !Directory.Exists(Path.GetDirectoryName(directory)))
             throw new InvalidDataException("General armor output must be a fresh child directory.");
@@ -158,7 +186,7 @@ internal static class GeneralArmorAuthoredBuild
             if ((parent.Attributes & FileAttributes.ReparsePoint) != 0) throw new InvalidDataException("Redirected armor output refused.");
         Directory.CreateDirectory(directory);
         string authored = Path.Combine(directory, "armor.xml");
-        File.WriteAllText(authored, "<AssetDeclaration xmlns=\"" + Namespace + "\">" + admitted.DocumentElement!.OuterXml + "</AssetDeclaration>");
+        File.WriteAllText(authored, "<AssetDeclaration xmlns=\"" + Namespace + "\">" + string.Concat(admittedSet.Select(item => item.DocumentElement!.OuterXml)) + "</AssetDeclaration>");
         Settings saved = Settings.Current;
         try
         {
@@ -172,11 +200,32 @@ internal static class GeneralArmorAuthoredBuild
             var processor = new DocumentProcessor(Settings.Current, plugins, new VerifierPluginRegistry(Array.Empty<PluginDescriptor>(), TargetPlatform.Win32))
                 { Cache = cache, SchemaSet = new SchemaSet(false) };
             var document = processor.ProcessDocumentInternal(authored, authored, null!, new DocumentProcessor.ProcessOptions { GenerateOutput = false, UsePrecompiled = false });
-            var instance = document.SelfInstances.Single(); DependencyResolutionSmokeTest.Prepare(document, instance);
-            var buffer = plugins.GetPlugin(instance.Handle.TypeId).ProcessInstance(instance); VerifyPayload(admitted.DocumentElement!, buffer);
+            var instances = document.SelfInstances.ToArray();
+            if (instances.Length != admittedSet.Length) throw new InvalidDataException("General armor set lost declarations.");
+            var buffers = new Dictionary<string, AssetBuffer>(StringComparer.Ordinal);
+            foreach (var member in instances)
+            {
+                DependencyResolutionSmokeTest.Prepare(document, member);
+                var memberBuffer = plugins.GetPlugin(member.Handle.TypeId).ProcessInstance(member);
+                var memberXml = admittedSet.Single(item => item.DocumentElement!.GetAttribute("id") == member.Handle.InstanceName);
+                VerifyPayload(memberXml.DocumentElement!, memberBuffer); buffers.Add(member.Handle.Name, memberBuffer);
+            }
+            var instance = instances[^1]; var buffer = buffers[instance.Handle.Name];
+            // Reborn: arbitrary multi-member input must not acquire the historical single or fixed-pair capability.
+            if (generalSet && instances.Length > 1)
+            {
+                ExpectScope(() => { using var rejected = OutputManager.CreateExperimentalArmorDiagnostic(processor, document, directory); });
+                // Reborn: a genuinely historical Allied/Soviet pair is also valid set input, not a pair-isolation negative case.
+                if (!instances.Select(item => item.Handle.Name).OrderBy(name => name, StringComparer.Ordinal).SequenceEqual(
+                    new[] { "ArmorTemplate:AlliedConYardArmor", "ArmorTemplate:SovietConYardArmor" }))
+                    ExpectScope(() => { using var rejected = OutputManager.CreateExperimentalArmorPairDiagnostic(processor, document, directory); });
+            }
             // Reborn: no ordinary output authority is introduced; existing scope freezes source, identity and compiler bytes for this manager.
-            using var manager = OutputManager.CreateExperimentalArmorDiagnostic(processor, document, directory);
-            var asset = manager.GetBinaryAsset(instance, true); asset.Buffer = buffer;
+            using var manager = generalSet ? OutputManager.CreateExperimentalGeneralArmorSetDiagnostic(processor, document, directory)
+                : OutputManager.CreateExperimentalArmorDiagnostic(processor, document, directory);
+            // Reborn: queue only original selected declarations; per-member scope validates each independent buffer.
+            foreach (var member in instances) manager.GetBinaryAsset(member, true).Buffer = buffers[member.Handle.Name];
+            var asset = manager.GetBinaryAsset(instance, true);
             document.PrepareOutputInstances(manager);
             // Reborn: the generalized identity/list path retains source, normalized XML and committed-buffer immutability controls.
             byte[] snapshot = File.ReadAllBytes(authored);
@@ -188,28 +237,74 @@ internal static class GeneralArmorAuthoredBuild
             string intermediate = Path.Combine(asset.AssetOutputDirectory, asset.AssetFileName); byte[] committed = File.ReadAllBytes(intermediate);
             try { var changed = committed.ToArray(); changed[^1] ^= 1; File.WriteAllBytes(intermediate, changed); ExpectScope(() => manager.CommitManifest(document)); }
             finally { File.WriteAllBytes(intermediate, committed); }
+            // Reborn: a matching-handle clone and an incomplete set cannot impersonate the original fully selected declarations.
+            if (generalSet && instances.Length > 1)
+            {
+                int last = document.OutputInstances.Count - 1; var original = document.OutputInstances[last];
+                var foreign = (InstanceDeclaration)typeof(object).GetMethod("MemberwiseClone", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.Invoke(original, null)!;
+                try { document.OutputInstances[last] = foreign; ExpectScope(() => manager.CommitManifest(document)); }
+                finally { document.OutputInstances[last] = original; }
+                try { document.OutputInstances.RemoveAt(last); ExpectScope(() => manager.CommitManifest(document)); }
+                finally { document.OutputInstances.Add(original); }
+            }
             manager.CommitManifest(document); manager.LinkStream(document);
             string manifestPath = manager.OutputDirectory + ".manifest";
-            var manifest = ManifestReader.Read(File.ReadAllBytes(manifestPath)); var entry = manifest.Assets.Single();
-            if (manifest.Validate().Count != 0 || entry.Name != instance.Handle.Name || entry.InstanceId != instance.Handle.InstanceId
-                || entry.InstanceHash != instance.Handle.InstanceHash || entry.TypeId != 0x3A6C5E8E || entry.TypeHash != 0xA0E237D8
-                || entry.Tokenized != 1 || entry.References.Count != 0 || manifest.ReferencedManifests.Count != 0)
+            var manifest = ManifestReader.Read(File.ReadAllBytes(manifestPath));
+            if (manifest.Validate().Count != 0 || manifest.Assets.Count != instances.Length || manifest.ReferencedManifests.Count != 0
+                || manifest.Header.StreamChecksum != document.OutputChecksum || !manifest.Header.IsLinked
+                || manifest.Header.Version != 7 || manifest.Header.AllTypesHash != 0x5454A8E9u)
                 throw new InvalidDataException("General armor manifest differs.");
             using var utility = new BinaryAssetBuilder.Utility.Manifest();
-            if (!utility.Load(manifestPath, false) || utility.AssetCount != 1 || utility.Assets[0].InstanceId != entry.InstanceId
-                || utility.Assets[0].InstanceHash != entry.InstanceHash || !utility.Assets[0].Tokenized)
+            if (!utility.Load(manifestPath, false) || utility.AssetCount != instances.Length || utility.StreamChecksum != document.OutputChecksum)
                 throw new InvalidDataException("General armor second reader differs.");
-            string archive = ArmorDiagnosticPackage.Exercise(manager.OutputDirectory, instance, buffer, document.OutputChecksum);
+            // Reborn: both readers must retain every identity; verify cumulative slices rather than treating each member as offset zero.
+            // Reborn: independently reconstruct Core's capacity-padded identity checksum from serialized rows, not payload hashes.
+            int capacity = 256; while (capacity < instances.Length * 20) capacity *= 2;
+            byte[] identityTable = new byte[capacity]; int rowOffset = 0;
+            for (int index = 0; index < manifest.Assets.Count; index++)
+            {
+                var entry = manifest.Assets[index]; var member = instances.Single(item => item.Handle.Name == entry.Name);
+                var expected = buffers[entry.Name];
+                if (entry.InstanceId != member.Handle.InstanceId || entry.InstanceHash != member.Handle.InstanceHash
+                    || entry.TypeId != 0x3A6C5E8E || entry.TypeHash != 0xA0E237D8 || entry.Tokenized != 1 || entry.References.Count != 0
+                    || entry.SourceFile != document.LogicalSourcePath || entry.InstanceDataSize != expected.InstanceData.Length
+                    || entry.RelocationDataSize != expected.RelocationData.Length || entry.ImportsDataSize != expected.ImportsData.Length
+                    || utility.Assets[index].InstanceId != entry.InstanceId || utility.Assets[index].InstanceHash != entry.InstanceHash || !utility.Assets[index].Tokenized)
+                    throw new InvalidDataException("General armor member identity differs.");
+                foreach (uint word in new[] { entry.TypeId, entry.TypeHash, entry.InstanceId, entry.InstanceHash, 0u })
+                { BinaryPrimitives.WriteUInt32LittleEndian(identityTable.AsSpan(rowOffset), word); rowOffset += 4; }
+            }
+            if (BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(identityTable) != manifest.Header.StreamChecksum)
+                throw new InvalidDataException("General armor independent identity checksum differs.");
+            foreach (var chunk in new[] { (".bin", 0xBABB0000u, 0), (".relo", 0xBABE0000u, 1), (".imp", 0xBAB10000u, 2) })
+            {
+                byte[] linked = File.ReadAllBytes(manager.OutputDirectory + chunk.Item1); int offset = 8;
+                if (BinaryPrimitives.ReadUInt32LittleEndian(linked) != chunk.Item2 || BinaryPrimitives.ReadUInt32LittleEndian(linked.AsSpan(4)) != document.OutputChecksum)
+                    throw new InvalidDataException("General armor linked header differs.");
+                foreach (var entry in manifest.Assets)
+                {
+                    var expected = buffers[entry.Name]; byte[] payload = chunk.Item3 == 0 ? expected.InstanceData : chunk.Item3 == 1 ? expected.RelocationData : expected.ImportsData;
+                    if (offset + payload.Length > linked.Length || !linked.AsSpan(offset, payload.Length).SequenceEqual(payload))
+                        throw new InvalidDataException("General armor member slice differs.");
+                    offset += payload.Length;
+                }
+                if (offset != linked.Length) throw new InvalidDataException("General armor linked trailing bytes differ.");
+            }
+            string archive = generalSet ? "" : ArmorDiagnosticPackage.Exercise(manager.OutputDirectory, instance, buffer, document.OutputChecksum);
             // Reborn: only already verified actual streams enter the default-reader family; the diagnostic archive remains separate.
             string candidate = CreateCandidate(directory, manager.OutputDirectory);
-            var receipt = new { ArmorId = instance.Handle.InstanceName, EntryCount = admitted.DocumentElement.ChildNodes.Count,
+            if (generalSet) archive = candidate;
+            // Reborn: set receipts report all identities/counts; scalar identity fields apply only to the historical single member.
+            var receipt = new { ArmorId = instances.Length == 1 ? instance.Handle.InstanceName : null,
+                EntryCount = admittedSet.Sum(item => item.DocumentElement!.ChildNodes.Count),
                 SourceSha256 = Convert.ToHexString(SHA256.HashData(bytes)), ActualCoreOutputUsed = true,
                 AuthoredPayloadVerified = true, ManifestPath = manifestPath, PackagePath = archive,
                 PackageSha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(archive))),
-                InstanceHash = instance.Handle.InstanceHash, DefaultReaderPackage = true, DefaultReaderPackagePath = candidate,
+                InstanceHash = instances.Length == 1 ? (uint?)instance.Handle.InstanceHash : null, DefaultReaderPackage = true, DefaultReaderPackagePath = candidate,
                 DefaultReaderPackageSha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(candidate))),
                 ConfigPath = Path.Combine(Path.GetDirectoryName(candidate)!, "general_1.0.cfg"), AlphaCapabilitiesExpanded = false,
-                ScopeCorruptionControlsPassed = 3, CandidateCorruptionControlsPassed = 3,
+                ScopeCorruptionControlsPassed = generalSet && instances.Length > 1 ? 5 : 3, CandidateCorruptionControlsPassed = 3,
+                ArmorCount = instances.Length, ArmorIds = instances.Select(item => item.Handle.InstanceName).ToArray(),
                 GameExecuted = false, RuntimeOverrideProven = false };
             string json = JsonSerializer.Serialize(receipt, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(Path.Combine(directory, "general-armor-build.json"), json); Console.WriteLine(json);
@@ -227,7 +322,7 @@ internal static class GeneralArmorAuthoredBuild
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: prepare/read back fifteen exact default-reader entries and config fragments from verified single-armor streams, without launch authority. */
+    /** Reborn: prepare/read back fifteen exact default-reader entries and config fragments from verified armor streams, without launch authority. */
     //-------------------------------------------------------------------------------------------------
     private static string CreateCandidate(string directory, string prefix)
     {
@@ -342,5 +437,66 @@ internal static class GeneralArmorAuthoredBuild
             if (!refused) throw new InvalidDataException("General armor unsupported input accepted.");
         }
         Console.WriteLine("General armor authoring: PASS (new IDs, 0/1/2/13 entries, decimal/%/defaults, Core/scoped output/two readers/default-reader package, repeat and eleven refusals; no alpha/game).");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: exercise mixed list shapes and the maximum set, repeat determinism and pre-output identity/source refusals in one batch. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void SetSelfTest(string directory)
+    {
+        directory = Path.GetFullPath(directory);
+        if (Directory.Exists(directory) || File.Exists(directory)) throw new InvalidDataException("General armor set test output exists.");
+        Directory.CreateDirectory(directory);
+        string prefix = "<AssetDeclaration xmlns=\"" + Namespace + "\">";
+        string[] sets = {
+            prefix + "<ArmorTemplate id=\"RebornEmpty\"/><ArmorTemplate id=\"RebornGun\" Default=\"75.5%\"><Armor Damage=\"GUN\" Percent=\"250.5\"/></ArmorTemplate>"
+                + "<ArmorTemplate id=\"RebornMixed\" DamageScalar=\"0\"><Armor Damage=\"CANNON\" Percent=\"25%\"/><Armor Damage=\"GUN\" Percent=\"10000\"/></ArmorTemplate></AssetDeclaration>",
+            prefix + string.Concat(Enumerable.Range(0, 32).Select(index => "<ArmorTemplate id=\"RebornSet" + index + "\"><Armor Damage=\"GUN\" Percent=\"" + index + "\"/></ArmorTemplate>")) + "</AssetDeclaration>",
+            prefix + string.Concat(Enumerable.Range(0, 13).Select(index => "<ArmorTemplate id=\"RebornBoundary" + index + "\"/>")) + "</AssetDeclaration>",
+            "<ArmorTemplate xmlns=\"" + Namespace + "\" id=\"RebornStandaloneSet\"/>",
+            prefix + "<ArmorTemplate id=\"RebornCustomPairA\"/><ArmorTemplate id=\"RebornCustomPairB\"/></AssetDeclaration>",
+            prefix + "<ArmorTemplate id=\"AlliedConYardArmor\"/><ArmorTemplate id=\"SovietConYardArmor\"/></AssetDeclaration>"
+        };
+        // Reborn: sizes exercise 256/512/1024-byte padded checksum tables and the set factory's standalone admission.
+        int[] expectedCounts = { 3, 32, 13, 1, 2, 2 };
+        for (int index = 0; index < sets.Length; index++)
+        {
+            string source = Path.Combine(directory, "set-" + index + ".xml"); File.WriteAllText(source, sets[index]);
+            string output = Path.Combine(directory, "build-" + index), repeat = Path.Combine(directory, "repeat-" + index);
+            Run(source, output, true); Run(source, repeat, true);
+            using var report = JsonDocument.Parse(File.ReadAllText(Path.Combine(output, "general-armor-build.json")));
+            using var repeated = JsonDocument.Parse(File.ReadAllText(Path.Combine(repeat, "general-armor-build.json")));
+            if (report.RootElement.GetProperty("ArmorCount").GetInt32() != expectedCounts[index]
+                || !File.ReadAllBytes(report.RootElement.GetProperty("DefaultReaderPackagePath").GetString()!).SequenceEqual(
+                    File.ReadAllBytes(repeated.RootElement.GetProperty("DefaultReaderPackagePath").GetString()!)) || File.ReadAllText(source) != sets[index])
+                throw new InvalidDataException("General armor set count/repeat/source differs.");
+            Refuse(() => Run(source, output, true));
+        }
+        string[] faults = {
+            prefix + "</AssetDeclaration>",
+            prefix + "<ArmorTemplate id=\"Same\"/><ArmorTemplate id=\"Same\"/></AssetDeclaration>",
+            prefix + "<ArmorTemplate id=\"Same\"/><ArmorTemplate id=\"same\"/></AssetDeclaration>",
+            sets[1].Replace("</AssetDeclaration>", "<ArmorTemplate id=\"Overflow\"/></AssetDeclaration>"),
+            sets[0].Replace("Percent=\"10000\"", "Percent=\"10001\""),
+            sets[0].Replace("<ArmorTemplate id=\"RebornEmpty\"/>", "<Includes/>"),
+            sets[0].Replace("id=\"RebornMixed\"", "id=\"RebornMixed\" inheritFrom=\"RebornGun\""),
+            "<!DOCTYPE AssetDeclaration>" + sets[0]
+        };
+        for (int index = 0; index < faults.Length; index++)
+        {
+            string source = Path.Combine(directory, "refuse-" + index + ".xml"), output = Path.Combine(directory, "refused-" + index);
+            File.WriteAllText(source, faults[index]); Refuse(() => Run(source, output, true));
+            if (Directory.Exists(output) || File.ReadAllText(source) != faults[index]) throw new InvalidDataException("Rejected armor set created output or changed source.");
+        }
+        Console.WriteLine("General armor set: PASS (1/2/3/13/32 members, custom/historical pairs, mixed list shapes, real Core/two readers/checksum/full slices, final-member corruption/foreign/incomplete controls, single/pair isolation, repeats and eight pre-output refusals; no alpha/game).");
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: unsupported sets must deliberately fail admission rather than publish a partial successful subset. */
+        //-------------------------------------------------------------------------------------------------
+        static void Refuse(Action action)
+        {
+            try { action(); } catch (Exception error) when (error is InvalidDataException or XmlException) { return; }
+            throw new InvalidDataException("General armor set negative control accepted.");
+        }
     }
 }
