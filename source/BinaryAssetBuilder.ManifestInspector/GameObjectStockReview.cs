@@ -19,24 +19,8 @@ internal static class GameObjectStockReview
     //-------------------------------------------------------------------------------------------------
     internal static object Inspect(string path, string name)
     {
-        path = Path.GetFullPath(path);
-        byte[] metadata = File.ReadAllBytes(path);
-        var document = ManifestReader.Read(metadata);
-        TypeRegistryAudit.ValidateTarget(document.Header.Version, document.Header.AllTypesHash);
-        if (document.Validate().Count != 0 || !document.Header.IsLinked || document.Header.ContainerPrefixSize != 4)
-            throw new InvalidDataException("Expected valid linked EP1 metadata with the reviewed stream prefix.");
-        var asset = document.Assets.Single(item => item.Name == name);
-        if (asset.TypeId != 0x942FFF2Du || asset.TypeHash != 0xCEB9FE36u || asset.Tokenized != 1
-            || asset.InstanceDataSize < 600 || asset.InstanceDataSize > 1048576)
-            throw new InvalidDataException("Unsupported GameObject fingerprint or slice size.");
-        long offset = 8;
-        foreach (var member in document.Assets) { if (ReferenceEquals(member, asset)) break; offset = checked(offset + member.InstanceDataSize); }
-        string bin = Path.ChangeExtension(path, ".bin");
-        byte[] header = AssetStreamProbe.ReadRange(bin, null, 0, 8);
-        if (Word(header, 0) != 0xBABB0000u || Word(header, 4) != document.Header.StreamChecksum)
-            throw new InvalidDataException("GameObject stream header does not match its manifest.");
-        byte[] bytes = AssetStreamProbe.ReadRange(bin, null, offset, asset.InstanceDataSize);
-        var projection = Decode(bytes, asset.References.ToArray());
+        var captured = Capture(path, name);
+        var (metadata, document, asset, offset, bytes, projection) = captured;
         var bindings = projection.Armors.Select(binding => new {
             binding.TokenTable, binding.NativeOffset, binding.Conditions, binding.ArmorReference, binding.DamageFxReference,
             Armor = Resolve(binding.ArmorReference, ArmorType), DamageFX = Resolve(binding.DamageFxReference, DamageFxType)
@@ -63,6 +47,32 @@ internal static class GameObjectStockReview
             return document.Assets.Where(item => item.TypeId == id.TypeId && item.InstanceId == id.InstanceId)
                 .Select(item => item.Name).Distinct().Single();
         }
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: share the bounded fingerprint/header/root capture with follow-up inspectors without sharing compiler/publication authority. */
+    //-------------------------------------------------------------------------------------------------
+    internal static (byte[] Metadata, ManifestDocument Document, ManifestAsset Asset, long Offset, byte[] Bytes, Projection Projection) Capture(string path, string name)
+    {
+        path = Path.GetFullPath(path);
+        byte[] metadata = SdkEnvironmentPreflight.Read(path, 64 * 1048576);
+        var document = ManifestReader.Read(metadata);
+        TypeRegistryAudit.ValidateTarget(document.Header.Version, document.Header.AllTypesHash);
+        if (document.Validate().Count != 0 || !document.Header.IsLinked || document.Header.ContainerPrefixSize != 4)
+            throw new InvalidDataException("Expected valid linked EP1 metadata with the reviewed stream prefix.");
+        var asset = document.Assets.Single(item => item.Name == name);
+        if (asset.TypeId != 0x942FFF2Du || asset.TypeHash != 0xCEB9FE36u || asset.Tokenized != 1
+            || asset.InstanceDataSize < 600 || asset.InstanceDataSize > 1048576)
+            throw new InvalidDataException("Unsupported GameObject fingerprint or slice size.");
+        long offset = 8;
+        foreach (var member in document.Assets) { if (ReferenceEquals(member, asset)) break; offset = checked(offset + member.InstanceDataSize); }
+        string bin = Path.ChangeExtension(path, ".bin");
+        byte[] header = AssetStreamProbe.ReadRange(bin, null, 0, 8);
+        if (Word(header, 0) != 0xBABB0000u || Word(header, 4) != document.Header.StreamChecksum)
+            throw new InvalidDataException("GameObject stream header does not match its manifest.");
+        byte[] bytes = AssetStreamProbe.ReadRange(bin, null, offset, asset.InstanceDataSize);
+        var projection = Decode(bytes, asset.References.ToArray());
+        return (metadata, document, asset, offset, bytes, projection);
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -159,7 +169,7 @@ internal static class GameObjectStockReview
     //-------------------------------------------------------------------------------------------------
     /** Reborn: bound token walks before native decoding, reject duplicate field hashes and require an explicit zero terminator. */
     //-------------------------------------------------------------------------------------------------
-    private static Dictionary<uint, (uint Type, int Offset)> Tokens(byte[] bytes, int start)
+    internal static Dictionary<uint, (uint Type, int Offset)> Tokens(byte[] bytes, int start)
     {
         var result = new Dictionary<uint, (uint, int)>();
         for (int index = 0; index <= 512; index++)

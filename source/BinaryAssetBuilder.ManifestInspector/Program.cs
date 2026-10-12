@@ -13,6 +13,12 @@ internal static class Program
     {
         try
         {
+            // Reborn: full root-name/offset inventory still does not grant indirect module/compiler authority.
+            if (args.Length == 3 && args[0] == "gameobject-root-layout-review")
+            { CompilerSmokeTest.InitializeHashProvider(); Console.WriteLine(JsonSerializer.Serialize(GameObjectRootLayoutReview.Inspect(args[1], args[2]), JsonOptions)); return 0; }
+            // Reborn: stock root drift controls stay offline and read-only.
+            if (args.Length == 2 && args[0] == "gameobject-root-layout-self-test")
+            { CompilerSmokeTest.InitializeHashProvider(); GameObjectRootLayoutReview.SelfTest(args[1]); return 0; }
             // Reborn: named consumer preparation stays separate from GameObject stream/alpha publication.
             if (args.Length is 3 or 4 && args[0] == "gameobject-armor-source-probe")
             { CompilerSmokeTest.InitializeHashProvider(); Console.WriteLine(JsonSerializer.Serialize(GameObjectArmorSourceProbe.Inspect(args[1], args.Skip(2).ToArray()), JsonOptions)); return 0; }
@@ -1262,6 +1268,9 @@ internal static class Program
 
     private static void PrintUsage()
     {
+        // Reborn: root coverage commands report incomplete indirect graphs explicitly.
+        Console.WriteLine("  gameobject-root-layout-review <static.manifest> <GameObject:Name>");
+        Console.WriteLine("  gameobject-root-layout-self-test <static.manifest>");
         // Reborn: advertise named-reference diagnostic commands without implying a general GameObject compiler.
         Console.WriteLine("  gameobject-armor-source-probe <GameObject.xml> <static.manifest> [authored-armor.manifest]");
         Console.WriteLine("  gameobject-armor-source-self-test <new-output-directory> <static.manifest>");

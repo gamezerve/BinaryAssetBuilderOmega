@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 13, 2026
 
+The [root-layout follow-up](docs/RA3EP1_GAMEOBJECT_VERTICAL_SLICE.md#whole-root-layout-follow-up)
+maps all 126 stock root tokens for Conscript and Allied Construction Yard:
+90 direct native-offset matches, one verified pointer/pointee relationship,
+and 35 explicitly unverified indirect token tables. No unknown stock root hashes
+remain. The model's extra UnitSpecificFX slot at +484 has no root token and is
+nonzero in both objects; it remains an unresolved native member, not an unused
+field to remove. This narrows the complete-object migration work without enabling
+GameObject builds in alpha h. Final focused regression: **21/21** groups pass;
+the detailed report records the remaining graphs and opaque slot explicitly.
+
 The new named-reference follow-up in the [GameObject armor-consumer slice](docs/RA3EP1_GAMEOBJECT_VERTICAL_SLICE.md)
 normalizes plain XML armor/DamageFX names through the actual Core reference
 handler, resolves stock and genuinely Core-built custom armor identities, and
@@ -80,7 +90,7 @@ expanded Full run passed 19/19 before the final routing/checksum refinements;
 see the linked backend report for exact evidence and rerun boundaries.
 
 The [batched offline test workflow](docs/RA3EP1_BATCH_TESTING.md) now builds once,
-runs 20 focused groups with isolated concurrent workers and aggregates failures
+runs 21 focused groups with isolated concurrent workers and aggregates failures
 without stopping the remaining groups. `-Full` adds broader compiler/armor
 regressions. Source-semantic diagnostic passes do not expand playable alpha
 capabilities or imply mixed-stream support.

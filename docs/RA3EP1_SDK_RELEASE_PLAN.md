@@ -43,6 +43,12 @@ validation, complete GameObject/module tokenization and mixed
 GameObject/armor Core publication remain gates; this diagnostic does not enable
 GameObject input in the exported alpha.
 
+The subsequent whole-root inventory maps all 126 stock token names and verifies
+90 direct offsets plus one pointee relation per reviewed object. Thirty-five
+indirect graphs and the nonzero untokenized native +484 slot remain explicit
+work before complete payload/tokenization equality. No general GameObject
+publication is unlocked by root coverage alone.
+
 October 13 source follow-up: the [armor source bridge](RA3EP1_ARMOR_SOURCE_BRIDGE.md)
 connects captured instance/definition Includes, imported/local inheritance and
 exact field substitutions to real scoped armor set publication. Defining source

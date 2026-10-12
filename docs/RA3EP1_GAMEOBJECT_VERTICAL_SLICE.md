@@ -121,6 +121,61 @@ dependency list must be checked too. A native hash alone is not reference proof.
 The generated armor package is an armor-only candidate, not a published
 GameObject package. No full object token tree, mixed stream or gameplay is proven.
 
+## Whole-root layout follow-up
+
+`GameObjectRootLayoutReview.cs` now maps every root token name to a reflected
+field/offset in the current x86 GameObject native model. Both reviewed objects
+have **126 named root tokens**, with no unknown name hashes: **90 direct native
+offset matches, one pointer-target match and 35 indirect token tables**. The
+600-byte model and stock root anchors remain unchanged. Observed token type tags
+are retained but their full schema/type semantics are not claimed verified.
+
+DisplayName is the pointer case: its token targets the in-slice string object,
+not the native pointer slot at +404. The review checks the stored root pointer
+against the token target and bounds the target; it does not infer string contents
+or verify string allocation/relocation semantics from that address match.
+
+The native model has one additional field without a stock root token:
+**UnitSpecificFX at +484**. Its captured bytes are nonzero, and receipts retain
+those bytes under NativeSlotsWithoutTokens. It is therefore **not safe to call
+this field unused, remove it, or substitute a null pointer**. The existing
+PerUnitFX native structure is empty; interpreting that slot and recovering its
+initialization/payload semantics remain explicit reverse-engineering work.
+`StockRootNameCoverageComplete=true` is separate from
+`NativeModelFullyTokenRepresented=false`; neither grants complete-payload support.
+
+The 35 indirect targets include Draws, Behaviors, AI, Body, ClientUpdates,
+ClientBehaviors, Geometry, audio/event arrays, shadow/vision/crusher data,
+ArmorSet and other lists. Their names/prefix-table positions are known; recursive
+class chains, native allocation/import/relocation coverage and token encoding
+are not established by this root inventory. Preserve the opaque slot and focus
+the next full-object comparison on these graphs rather than reimplementing the
+already mapped scalar root layout.
+
+```powershell
+# Reborn: bounded stock root inventory only; no object publication, installation or launch.
+& .\source\BinaryAssetBuilder.ManifestInspector\bin\x86\Release\net8.0\BinaryAssetBuilder.ManifestInspector.exe `
+  gameobject-root-layout-review 'C:\YOUR\UNPACKED\data\static.manifest' `
+  'GameObject:AlliedConstructionYard'
+```
+
+The self-test checks both real stock objects and detached BountyValue name/offset
+and DisplayName pointee-target drift controls. Unknown names remain visible;
+pointer-target mismatches cannot be reported as successful direct offsets.
+The shared stock capture now bounds stored manifest input to 64 MiB and keeps
+the previous one-MiB asset-slice and stream-prefix/fingerprint checks.
+No reference schema, native structure, marshaler, tokenizer or exported h files
+were changed. The full compiler suite is not required for this inspector-only
+addition; the focused matrix retains existing stock and named-source regressions.
+
+Final local evidence: `artifacts/GameObjRoot-c`, **21/21** groups in **36.872
+seconds**, plus a **5.09-second** build with zero warnings/errors; all eight
+compiler/runtime hashes remain unchanged during workers. Earlier attempts remain
+as failed evidence: `GameObjRoot-a` assumed every native target was a direct root
+slot, and `GameObjRoot-b` incorrectly required the untokenized slot to be zero.
+The final report verifies the pointer relationship and preserves the nonzero
+opaque slot instead of hiding either observation.
+
 ## Next implementation gates
 
 1. Extend the now-proven focused source-name/armor lookup path to the complete
