@@ -299,3 +299,10 @@ nine scoped controls and ordinary production-writer denial. The no-output
 document command, stock-review and layout tests also pass. Actual single-armor
 and two-armor document/stream regressions both retain their stock matches and
 policy refusals. Test artifacts stay local and are not part of the alpha export.
+The full managed compiler regression also passes. Its temporary directory was
+redirected into an owned repository artifact directory after the initial system
+TEMP move was denied by sandbox permissions; no production source was changed
+to work around that environment limitation. The broad run used the initial
+scope-enabled tool build; final-build focused probes above cover the subsequent
+scope field rename, reference-signature strengthening and added runtime/ordinary
+production-denial controls.
