@@ -363,3 +363,28 @@ controls pass. The single-armor actual Core/package regression also passes.
 Core layouts/output scope and the shared BIG serializer were not changed in
 this addition; the preceding full compiler regression is retained evidence,
 not claimed as a newly rerun full suite for the packaging wrapper.
+
+## First separately authorized weapon launch
+
+`scripts/Invoke-Ra3Ep1WeaponTrial.ps1` pins the reviewed Damage=50 candidate
+path, 8730-byte size and SHA256 rather than selecting a mutable latest build.
+Its default invocation is preflight-only. It reuses the strict reviewed
+launcher/game/SKU/campaign identity and known loose-override checks, validates
+both exact config fragments, verifies stock archive presence and refuses any
+existing named Uprising process. Read-share handles freeze the candidate files
+through the observation period. Only an explicit `-Run` starts one normal
+launcher with stock working directory and separately quoted fixed arguments.
+No debugger, system-wide trace, retries, installation writes or termination
+are implemented. Process snapshots remain non-atomic and PID reuse is not fully
+excluded, matching the existing armor observer's limits.
+
+The user explicitly authorized this single Damage=50 start. Preflight passed;
+the initial sandbox CIM denial was resolved by running the same read-only
+preflight with host access, not by omitting process exclusion. One launch then
+completed its 30-second observer without error: 37 direct 1.1 child snapshots
+carried the exact requested config argument. The local launch receipt is
+`artifacts/WeaponLaunch-05870f31a9be4ce8840e9b1cec943d07/launch.json`.
+These are visible argument observations, not config-read, manifest-load,
+main-menu or gameplay proof. User feedback on normal Conscript AK47 damage in
+a fresh skirmish is pending. The alpha remains unchanged; no second start is
+authorized by this single-trial approval.

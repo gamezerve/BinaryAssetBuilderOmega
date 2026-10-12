@@ -38,6 +38,10 @@ packages are byte-identical. Stock archives are not bundled or replaced.
 Runtime external-reference loading and gameplay remain unproven; the exported
 alpha is unchanged. Next: fresh runtime preflight and a separately authorized
 Conscript AK47 damage comparison, then bounded alpha integration if successful.
+The user has now authorized one Damage=50 candidate launch. Strict preflight
+passes and the 30-second observer completes without error, with 37 matching
+1.1 child config-argument snapshots. Gameplay/main-menu feedback is pending;
+argument presence is not evidence of package consumption or an effective override.
 Full weapon tokenization and dependency
 proof are not yet complete; WeaponTemplate stays disabled in the alpha.
 
