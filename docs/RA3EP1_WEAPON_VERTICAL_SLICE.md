@@ -39,8 +39,9 @@ Zero IMP bytes do not mean no dependencies.
 `SageBinaryData.WeaponTemplate` and `Marshaler.WeaponTemplate.cs` already implement
 the 340-byte native root; compiler/layout fixtures cover selected fields.
 The real tokenized payload is much larger and includes nested tables/allocations.
-Root scalar recovery is not a complete native payload comparison, tokenizer,
-schema/default proof or dependency/linking proof. The experimental armor
+Initial root scalar recovery alone was insufficient. The fixed native/token
+reproduction below now matches this specimen, but still does not establish
+general schema/default admission or source dependency/linking. The experimental armor
 tokenizer cannot simply be applied to weapons. Alpha WeaponTemplate input
 remains refused; the six-sample e alpha binaries are not changed by this probe.
 
@@ -59,12 +60,17 @@ remains refused; the six-sample e alpha binaries are not changed by this probe.
 5. Request a separately authorized fresh-skirmish test with stock armor and
    normal Conscript AK-47. Armor overrides must not confound the weapon test.
 
-## Checks run
+Progress update: the fixed-layout diagnostic below satisfies full BIN/RELO
+reproduction for this unchanged specimen and isolates its Damage edit. It does
+not close general schema/default admission, source dependency preparation,
+scoped Core publication or gameplay gates above.
+
+## Initial stock-review checks
 
 The focused decoder self-test passes a synthetic root and five corruptions
 (tag, out-of-bounds pointer, duplicate field, wrong scalar, native offset drift).
-Two real stock reviews return identical JSON. An EP1 global manifest lacking
-the required AK47 identity is refused. Incremental build: zero warnings/errors;
+Two real stock reviews return identical JSON. An additional manifest lacking
+the required Multisound identity is refused. Incremental build: zero warnings/errors;
 the preceding rebuild had 111 existing warnings and zero errors. No new full
 generic regression suite, package build, GUI or game run was performed here.
 
@@ -76,8 +82,8 @@ class table: 1452; DamageNuggetType derived token table: 1464; native nugget: 23
 The native list has one member. Damage token points to 2392 (native + 40),
 float 5. DamageType points to 2428 (native + 76), enum 21, GUN.
 The class hashes are C0F53E99 for DamageNuggetType and C7C2CC04 for its
-WeaponEffectNugget base. Only these selected scalar/class/list relationships
-are verified, not every nugget field or the complete 156-byte native tail.
+WeaponEffectNugget base. This stock-review step verifies selected scalar/class/list
+relationships only; the later native/token reproduction extends byte coverage.
 
 `weapon-stock-review <static.manifest> <global.manifest>` verifies the three
 direct reference names against EP1 metadata. Global SHA256:
@@ -128,3 +134,42 @@ baseline compilation is deterministic. The broad compiler self-test passes
 with the corrected defaults/ABI/enum, and final focused layout/native checks
 pass. An overlapping incremental build initially hit the running test's EXE
 file lock; retry after the test completed succeeded with zero warnings/errors.
+
+## Fixed token-layout reproduction — October 12, 2026
+
+`WeaponTokenLayoutReview.cs` identifies 13 tables with 159 explicit records;
+six zero field-table terminators bring the token prefix to 1980 bytes. Tables
+include 109 root fields, three RangeDuration subtrees, a one-element nugget
+count table and concrete class wrapper, a derived DamageNugget table with
+its base table, and five empty count tables. Count tables/class wrappers use
+explicit lengths; treating every subtree as zero-terminated was incorrect.
+
+`WeaponTokenReproduction.cs` stores the reviewed field/tag/offset descriptors
+as code, writes records into a fresh prefix, and appends actual XML-marshaled
+native data. It does not copy a stock prefix at execution time. This is still
+a stock-derived, fixed-shape diagnostic recipe, not schema-driven general
+tokenization. Only a finite Damage scalar 0..10000 may differ from the proven
+native fingerprint; different fields, allocations, references or list shapes
+are refused. Relocation locations are 88,244,248,256,268,368, then the sentinel;
+native pointers and those locations are shifted by the generated prefix.
+The tokenized representation has no IMP entries; its three dependency indices
+remain in BIN and must be paired with the ordered manifest references.
+
+Observed full BIN (2508 bytes) and RELO (28 bytes) exactly match stock;
+BIN SHA256 is `2B0C3AABB5521C7C8315A1A5EA22DFCF8D681C6546E9AC58DBF0D0495B2A8C6B`.
+An actual Damage=50 XML compile changes only the scalar slot at offset 2392;
+all other token/native bytes and RELO are retained. Seven detached negative
+controls refuse truncated native data, NaN/negative/oversized damage, a changed
+root default, wrong relocation and wrong import locations. Repeat reproduction
+is deterministic and caller BIN buffers remain unchanged.
+
+The optional global manifest argument to `weapon-native-probe` independently
+checks all three direct reference names/order via the stock-review path, which
+also binds BIN headers to the manifest checksum. This does not recursively
+prove audio closure or bind arbitrary authored references to compiler indices.
+Production/schema gates stay closed; no BIG, install, GUI or game run occurred.
+Final focused stock/layout/token checks pass, two full JSON reports are identical,
+and supplying audio.manifest instead of global.manifest is refused. The first rebuild had 111 existing
+warnings and no errors; subsequent incremental rebuilds had no warnings/errors.
+The prior broad regression still covers the preceding ABI/default/enum fixes;
+it was not rerun for this diagnostic-only addition.

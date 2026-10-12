@@ -10,10 +10,12 @@ namespace BinaryAssetBuilder.ManifestInspector;
 internal static class WeaponNativeProbe
 {
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: prepare known direct-reference indices in an owned XML copy and compare real marshaling to the bounded stock native tail. */
+    /** Reborn: prepare known reference indices in owned XML and compare native marshaling plus fixed token reproduction to bounded stock data. */
     //-------------------------------------------------------------------------------------------------
-    internal static object Inspect(string source, string manifest)
+    internal static object Inspect(string source, string manifest, string? referenceManifest = null)
     {
+        // Reborn: bind the diagnostic payload to stream checksum and optional independently resolved ordered dependency names.
+        WeaponStockReview.Inspect(manifest, referenceManifest);
         using var stream = File.OpenRead(source);
         if (stream.Length == 0 || stream.Length > 16 * 1024 * 1024) throw new InvalidDataException("Weapon source is empty or exceeds 16 MiB.");
         using var reader = XmlReader.Create(stream, new XmlReaderSettings {
@@ -58,6 +60,17 @@ internal static class WeaponNativeProbe
         var stock = AssetStreamProbe.ReadRange(Path.ChangeExtension(manifest, ".bin"), null, offset, asset.InstanceDataSize);
         // Reborn: compare independently read stock relocation locations rather than deriving all expected locations from compiler output.
         var stockRelocations = AssetStreamProbe.ReadRange(Path.ChangeExtension(manifest, ".relo"), null, relocationOffset, asset.RelocationDataSize);
+        // Reborn: compare independently reconstructed diagnostic token output before normalizing the stock native tail.
+        var tokenized = WeaponTokenReproduction.Encode(native);
+        WeaponTokenReproduction.CheckControls(native);
+        var tokenizedEdit = WeaponTokenReproduction.Encode(edited);
+        var expectedTokenEdit = tokenized.InstanceBuffer.ToArray();
+        BinaryPrimitives.WriteSingleLittleEndian(expectedTokenEdit.AsSpan(2392, 4), 50f);
+        if (!tokenizedEdit.InstanceBuffer.SequenceEqual(expectedTokenEdit)
+            || !tokenizedEdit.RelocationBuffer.SequenceEqual(tokenized.RelocationBuffer) || tokenizedEdit.ImportsBuffer.Length != 0)
+            throw new InvalidDataException("Authored tokenized edit changed unproven data.");
+        bool tokenizedMatch = tokenized.InstanceBuffer.SequenceEqual(stock) && tokenized.RelocationBuffer.SequenceEqual(stockRelocations);
+        var tokenDifferences = Enumerable.Range(0, stock.Length).Where(at => stock[at] != tokenized.InstanceBuffer[at]).Take(32).ToArray();
         // Reborn: the independently recovered native base is comparison evidence only, never a stock template for emitted output.
         const int prefix = 1980;
         for (int at = 0; at + 4 <= stockRelocations.Length; at += 4)
@@ -89,7 +102,13 @@ internal static class WeaponNativeProbe
             DifferenceDetails = differences.Select(at => new { Offset = at, StockByte = expected[at], CompiledByte = native.InstanceBuffer[at] }).ToArray(),
             Deterministic = true, SchemaValidated = false,
             NativeRelocationLocationsMatchStock = true, AuthoredDamageEditIsolated = true,
-            ReferencePreparationIsFixedDiagnostic = true, CompleteTokenizedPayloadVerified = false,
+            FixedTokenizedBinReloMatchStock = tokenizedMatch, TokenizedDifferenceOffsets = tokenDifferences,
+            FixedTokenizedBinSha256 = Convert.ToHexString(SHA256.HashData(tokenized.InstanceBuffer)),
+            FixedTokenizedDamageEditIsolated = true,
+            FixedTokenizedCorruptionControlsPassed = 7,
+            DirectReferenceNamesVerified = referenceManifest != null, GeneralWeaponTokenizationVerified = false,
+            TokenTables = WeaponTokenLayoutReview.Inspect(stock, prefix),
+            ReferencePreparationIsFixedDiagnostic = true, CompleteTokenizedPayloadVerified = tokenizedMatch,
             WeaponCompilerEnabled = false, ModPackageBuilt = false, GameExecuted = false
         };
     }

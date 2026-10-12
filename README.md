@@ -14,7 +14,10 @@ selected DamageNugget class/list/GUN=5 relationships, direct reference names
 through static/global metadata, repeat output and corruption refusals.
 The real marshaler now reproduces all 528 normalized native AK47 BIN bytes
 from reference XML, after correcting an EP1 default, DamageNugget field order
-and DamageFX enum order. This diagnostic does not yet emit tokenized weapons.
+and DamageFX enum order. A fixed diagnostic token-layout reproduction also
+matches all 2508 stock BIN bytes and 28 RELO bytes, verifies an isolated
+Damage=5→50 edit and seven corruption refusals. This does not enable generic
+tokenization or alpha weapon publication.
 Full weapon tokenization and dependency
 proof are not yet complete; WeaponTemplate stays disabled in the alpha.
 
