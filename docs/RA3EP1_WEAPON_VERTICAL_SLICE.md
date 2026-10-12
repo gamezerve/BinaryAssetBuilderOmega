@@ -407,3 +407,56 @@ this separate user report is behavioral evidence, not a rewrite of the
 observer's capabilities. No additional launch or installation change follows
 this feedback. The next implementation gate is a bounded editable AK47 authoring
 profile and alpha integration, not arbitrary weapons/IDs or full SDK completion.
+
+## Selected XML weapon authoring backend
+
+`WeaponAuthoringAdmission.cs` now accepts the reviewed complete AK47 shape as
+standalone WeaponTemplate or exactly one member of AssetDeclaration. Only
+Damage is editable: an unsigned canonical integer 0..10000, optionally with
+`.0`. Attribute order, whitespace and comments are normalized, but no unknown
+attribute/element, changed identity/reference, include, definition, inheritance,
+expression or changed non-Damage value is discarded. XML is bounded to 16 KiB;
+DTDs/resolvers and processing instructions are refused. The reviewed shape is
+in `tests/fixtures/WeaponAuthoringProbe.xml`.
+
+`weapon-authoring-preflight <selected-AK47.xml> <new-output-directory>` writes
+only an admitted canonical snapshot and receipt. It performs no native compile,
+package publication or launch. `weapon-authoring-input-self-test` verifies five
+values, standalone/declaration equivalence, repeat canonicalization and eighteen
+semantic refusal controls.
+
+`weapon-authored-build <selected-AK47.xml> <new-output-directory>
+<static-manifest> <global-manifest>` binds that selected value to real
+DocumentProcessor/dependency preparation and the existing checked weapon
+profile, without opening ordinary production output authority. It compiles a
+stock Damage=5 baseline and verifies the independently reviewed full BIN digest,
+then compiles selected/repeated input. Only the four bytes at offset 2392 may
+differ; RELO and IMP must stay equal. A non-stock value must invalidate the Core
+instance hash. Scoped OutputManager and the two-reader/default-reader package
+checks are reused, including nine scope and ten package refusal controls.
+
+The original input is held read-only. Owned snapshots may be modified/restored
+by detached corruption controls. Existing output is refused; partial failed
+artifacts are retained without an authored build success receipt. The final
+`authored-weapon-build.json` binds selected SHA256, Damage, instance hash,
+manifest, package SHA256 and config. New candidates are not automatically
+gameplay-verified. Source canonicalization can change instance hash/checksum
+relative to the earlier gameplay candidate even when Damage is 50; no package
+identity equality with that candidate is claimed.
+
+Verification: final incremental Release/x86 build has zero warnings/errors.
+`weapon-authored-build-self-test` passes 0/5/50/73/10000 and repeated 73:
+different values have distinct hashes, repeated BIG bytes match, original source
+bytes remain unchanged and occupied outputs are refused. Local evidence is at
+`artifacts/RebornWeaponAuthored-f1e4200d1c6f4312b7c9712d0bb70b25`.
+The fixed-reference weapon package probe still passes baseline/repeat/50 and
+its corruption controls. Armor admission and actual armor document/Core output
+regressions also pass. The full broad compiler suite was not rerun for this
+selected-input addition; shared native/Core layouts were not changed.
+
+Remaining integration gate: BuildStudio adapter dispatch, external global
+manifest configuration, supported/unsupported GUI diagnostics, export fixture
+copying and relocation/extraction regressions. The existing exported alpha is
+unchanged and still rejects WeaponTemplate. Mixed armor/weapon streams and
+arbitrary weapon identities/shapes remain unsupported. No game was launched or
+installation changed in these authoring tests.

@@ -13,6 +13,18 @@ internal static class Program
     {
         try
         {
+            // Reborn: selected weapon regression uses owned fixtures and never installs or launches packages.
+            if (args.Length == 4 && args[0] == "weapon-authored-build-self-test")
+            { CompilerSmokeTest.InitializeHashProvider(); WeaponAuthoredBuild.SelfTest(args[1], args[2], args[3]); return 0; }
+            // Reborn: selected weapon authoring uses scoped real Core output; no automatic alpha export/install/launch.
+            if (args.Length == 5 && args[0] == "weapon-authored-build")
+            { CompilerSmokeTest.InitializeHashProvider(); WeaponAuthoredBuild.Run(args[1], args[2], args[3], args[4]); return 0; }
+            // Reborn: editable weapon admission does not yet grant alpha build, package or runtime authority.
+            if (args.Length == 1 && args[0] == "weapon-authoring-input-self-test")
+            { WeaponAuthoringAdmission.SelfTest(); return 0; }
+            // Reborn: freeze only fully admitted selected XML without substituting the fixed Damage=50 diagnostic.
+            if (args.Length == 3 && args[0] == "weapon-authoring-preflight")
+            { WeaponAuthoringAdmission.Stage(args[1], args[2]); return 0; }
             // Reborn: offline fixed-weapon package candidates do not authorize alpha publication, installation or a game launch.
             if (args.Length == 5 && args[0] == "weapon-package-probe")
             { CompilerSmokeTest.InitializeHashProvider(); WeaponDocumentProbe.Run(args[1], args[2], args[3], args[4], true, true); return 0; }
@@ -1220,6 +1232,10 @@ internal static class Program
         // Reborn: document the bounded stock weapon proof separately from build commands.
         Console.WriteLine("  weapon-stock-review <ep1-static-manifest> [ep1-global-manifest]");
         Console.WriteLine("  weapon-stock-self-test");
+        Console.WriteLine("  weapon-authoring-input-self-test");
+        Console.WriteLine("  weapon-authored-build-self-test <new-output-directory> <static-manifest> <global-manifest>");
+        Console.WriteLine("  weapon-authored-build <selected-AK47.xml> <new-output-directory> <static-manifest> <global-manifest>");
+        Console.WriteLine("  weapon-authoring-preflight <selected-AK47.xml> <new-output-directory>");
         Console.WriteLine("  weapon-native-probe <reference-Weapon.xml> <ep1-static-manifest> [ep1-global-manifest]");
         Console.WriteLine("  weapon-document-probe <reference-Weapon.xml> <ep1-static-manifest> <ep1-global-manifest> <new-output-directory>");
         Console.WriteLine("  weapon-stream-probe <reference-Weapon.xml> <ep1-static-manifest> <ep1-global-manifest> <new-output-directory>");

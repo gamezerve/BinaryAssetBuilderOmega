@@ -45,6 +45,14 @@ first positive behavioral observation for the exact Damage=50 weapon candidate,
 not a measured multiplier, config-read trace or general WeaponTemplate proof.
 Next: bounded editable weapon authoring and alpha integration, retaining strict
 unsupported-type/identity/shape errors and the existing armor regressions.
+The selected-input backend is now implemented: `weapon-authored-build` admits
+the complete reviewed AK47 XML as standalone or a one-member declaration, with
+only Damage editable (integer 0..10000, optionally `.0`). Actual Core stock-byte
+comparison, isolated edit, scoped streams and verified default-reader packaging
+pass for 0/5/50/73/10000, with byte-identical repeated 73 output and eighteen
+input refusal controls. No automatic installation or launch occurs. BuildStudio
+adapter/export integration is still pending; the existing alpha does not accept
+WeaponTemplate yet. See [selected weapon authoring](docs/RA3EP1_WEAPON_VERTICAL_SLICE.md#selected-xml-weapon-authoring-backend).
 Full weapon tokenization and dependency
 proof are not yet complete; WeaponTemplate stays disabled in the alpha.
 

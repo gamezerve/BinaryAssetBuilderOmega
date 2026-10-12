@@ -180,7 +180,7 @@ internal static class WeaponDocumentProbe
     }
 
     // Reborn: private diagnostic registration cannot be selected by the production registry or SDK alpha adapter.
-    private sealed class Profile : IAssetBuilderPlugin, IAssetBuilderOutputPolicy
+    internal sealed class Profile : IAssetBuilderPlugin, IAssetBuilderOutputPolicy
     {
         private bool initialized;
         public string ProfileName => "RA3EP1-AK47-Document-Diagnostic-v1";
