@@ -454,9 +454,57 @@ its corruption controls. Armor admission and actual armor document/Core output
 regressions also pass. The full broad compiler suite was not rerun for this
 selected-input addition; shared native/Core layouts were not changed.
 
-Remaining integration gate: BuildStudio adapter dispatch, external global
-manifest configuration, supported/unsupported GUI diagnostics, export fixture
-copying and relocation/extraction regressions. The existing exported alpha is
-unchanged and still rejects WeaponTemplate. Mixed armor/weapon streams and
-arbitrary weapon identities/shapes remain unsupported. No game was launched or
+The following integration milestone adds BuildStudio adapter dispatch and
+external global manifest configuration. Mixed armor/weapon streams and arbitrary
+weapon identities/shapes remain unsupported. No game was launched or
 installation changed in these authoring tests.
+
+## Weapon-enabled local alpha integration
+
+`Invoke-Ra3Ep1AlphaBuild.ps1` now dispatches a single weapon through admission
+and authored Core build rather than the armor path. Its final alpha receipt
+compares selected identity/Damage with both admission and authored receipts.
+ALPHA003 describes the bounded weapon scope and distinguishes earlier observed
+gameplay from newly generated packages. Failure retains the existing ALPHA100
+and Critical ALPHA101 protocol. Pair builds still use the separate armor path;
+mixed types are refused, not concatenated or silently skipped.
+
+`alpha/studio/defaultscript.cs` passes GlobalManifest as an explicit fifth
+path setting, checks it before requesting the child process and exposes the
+weapon scope label. Legacy four-key configs remain accepted for armor only;
+missing GlobalManifest fails weapon dispatch without inferring a local path.
+The adapter still has one build step and no installation/game-launch action.
+
+`New-Ra3Ep1AlphaWorkspace.ps1` exports seven samples including ConscriptAK47,
+the reviewed authoring fixture, focused weapon schema and its 21 official schema
+dependencies/enum-check source. `New-Ra3Ep1AlphaOverlay.ps1` excludes those
+official schemas and three EA components, listing 24 external requirements
+beside 33 included payloads. Overlay setup and path repair retain explicit global
+metadata. No stock streams or game assets are bundled; public rights/provenance
+review remains open.
+
+Final local candidate: `../UprisingAlpha-20261012-g`. Fresh tested extraction:
+`../UprisingAlpha-g-extracted`; local-use archive:
+`../UprisingAlpha-g-extracted-LOCAL-USE-ONLY.zip`, SHA256
+`59A544AD80CBCD28A9A67525A28434877A87BF28C627DC6BB7768FCC7B3C6E8A`.
+The overlay archive is `../UprisingOverlay-20261012-g-OVERLAY-CANDIDATE.zip`,
+SHA256 `B122B780B31DCE591E20BDA902F957FCE7CA9F01E6E40219B49ED104A93B9CE9`.
+
+Verification: all six armor samples retain their prior package golden digests.
+ConscriptAK47's authored Damage=50 package matches
+`0225F0ED8B1128BD69FA0CEA807D1E0225F083F037E8A9C15E8FD476E2525B11`.
+Fresh extraction, clean overlay setup, hash mismatch/occupied setup refusals,
+notice/private-path audit and relocated seven-sample builds pass. Path repair
+retains byte-exact backup, old workspace configuration and existing output;
+missing dependency and duplicate config keys are refused without mutation.
+Missing global metadata, changed weapon AttackRange and mixed armor/weapon input
+all fail with ALPHA100/ALPHA101 and no success receipt/BIG. The CLR4 harness
+compiles the updated adapter with the exact EA loader references and verifies
+initialization, three scope labels and one-step contract in the extracted copy.
+
+An initial extraction helper failed on PowerShell overload binding for the
+optional GlobalManifest line. Explicit string-array binding repaired it; that
+partial f extraction remains retained and is not the delivered candidate.
+The final g extraction/overlay/relocation checks above all pass. Actual new GUI
+dropdown/build/log interaction still needs user observation; the loader harness
+is not a visual GUI test. No game or Studio window was launched in this milestone.

@@ -36,25 +36,28 @@ entries, three blank-CRLF version markers, matching config/mod-SKU fragments,
 two-reader metadata and ten package refusal controls pass. Repeated baseline
 packages are byte-identical. Stock archives are not bundled or replaced.
 Independent runtime external-reference loading evidence remains unavailable;
-the exported alpha is unchanged.
+the diagnostic command itself does not change the exported alpha.
 The user has now authorized one Damage=50 candidate launch. Strict preflight
 passes and the 30-second observer completes without error, with 37 matching
 1.1 child config-argument snapshots. In response to the requested fresh-Soviet
 skirmish/normal-AK47 comparison, the user reports increased damage. This is the
 first positive behavioral observation for the exact Damage=50 weapon candidate,
 not a measured multiplier, config-read trace or general WeaponTemplate proof.
-Next: bounded editable weapon authoring and alpha integration, retaining strict
-unsupported-type/identity/shape errors and the existing armor regressions.
+Bounded editable weapon authoring and alpha integration now pass offline,
+retaining strict unsupported-type/identity/shape errors and armor regressions.
 The selected-input backend is now implemented: `weapon-authored-build` admits
 the complete reviewed AK47 XML as standalone or a one-member declaration, with
 only Damage editable (integer 0..10000, optionally `.0`). Actual Core stock-byte
 comparison, isolated edit, scoped streams and verified default-reader packaging
 pass for 0/5/50/73/10000, with byte-identical repeated 73 output and eighteen
-input refusal controls. No automatic installation or launch occurs. BuildStudio
-adapter/export integration is still pending; the existing alpha does not accept
-WeaponTemplate yet. See [selected weapon authoring](docs/RA3EP1_WEAPON_VERTICAL_SLICE.md#selected-xml-weapon-authoring-backend).
-Full weapon tokenization and dependency
-proof are not yet complete; WeaponTemplate stays disabled in the alpha.
+input refusal controls. No automatic installation or launch occurs. The new
+BuildStudio adapter/export dispatches ConscriptAK47 through this path with an
+explicit GlobalManifest setting and ALPHA003 scope warning. Seven sample builds,
+fresh ZIP extraction, external-dependency overlay setup and relocation pass;
+the exact-reference CLR4 loader/options test passes. Actual updated GUI build
+interaction remains unobserved. See [selected weapon authoring](docs/RA3EP1_WEAPON_VERTICAL_SLICE.md#selected-xml-weapon-authoring-backend).
+Generic weapon tokenization, dependency closure and arbitrary IDs/shapes remain
+unsupported; the alpha accepts only this complete AK47 shape with Damage edits.
 
 The [diagnostic compatibility contract](docs/RA3EP1_SDK_RELEASE_PLAN.md)
 separates current alpha errors from planned general XML/schema, definition,
@@ -91,8 +94,8 @@ The reference XML also binds Japan's yard and one civilian
 building to this shared armor. The separately authorized Soviet GUN=5000 trial
 now also has user-reported increased damage with the requested Conscript test.
 Japan/civilian consumers and foreign-identity gameplay controls remain untested.
-Current local candidate: `UprisingAlpha-20261012-e`, with six offline-verified
-samples including CombinedArmor and CombinedStrong. Its fresh overlay extraction
+Current local candidate: `UprisingAlpha-20261012-g`, with seven offline-verified
+samples including CombinedArmor, CombinedStrong and ConscriptAK47. Its fresh overlay extraction
 also passes; the new workspace GUI has not yet been observed.
 The combined package now has user-reported markedly increased Conscript damage
 for Soviet GUN=5000. Allied Peacekeeper GUN=250 remains inconclusive: the user

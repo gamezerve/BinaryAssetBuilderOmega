@@ -1,7 +1,7 @@
 # Reborn: create a LOCAL-USE-ONLY candidate ZIP from the prepared inventory, extract fresh and test offline; never upload or launch Studio/game.
 [CmdletBinding()]
 param([Parameter(Mandatory)][string]$Workspace,[Parameter(Mandatory)][string]$OutputDirectory,
-    [Parameter(Mandatory)][string]$StaticManifest)
+    [Parameter(Mandatory)][string]$StaticManifest,[string]$GlobalManifest)
 $ErrorActionPreference='Stop'
 if($PSVersionTable.PSVersion.Major-lt 7){throw 'PowerShell 7 is required.'}
 $Workspace=[IO.Path]::GetFullPath($Workspace);$OutputDirectory=[IO.Path]::GetFullPath($OutputDirectory)
@@ -36,7 +36,9 @@ $runtime=(Get-Process -Id $PID).Path
     '# Reborn: extracted local test configuration; not public release settings.',('PowerShell7='+$runtime),
     ('StaticManifest='+$StaticManifest),('Driver='+(Join-Path $OutputDirectory 'scripts/Invoke-Ra3Ep1AlphaBuild.ps1')),
     ('CompilerDirectory='+(Join-Path $OutputDirectory 'tools/compiler'))))
-$result=& (Join-Path $PSScriptRoot 'Test-Ra3Ep1AlphaWorkspace.ps1') -Workspace $OutputDirectory -StaticManifest $StaticManifest
+# Reborn: extracted weapon workspace keeps its explicit external global metadata path outside the archive.
+if($GlobalManifest){[IO.File]::AppendAllLines((Join-Path $OutputDirectory 'uprising-alpha.paths'),[string[]]@('GlobalManifest='+$GlobalManifest))}
+$result=& (Join-Path $PSScriptRoot 'Test-Ra3Ep1AlphaWorkspace.ps1') -Workspace $OutputDirectory -StaticManifest $StaticManifest -GlobalManifest $GlobalManifest
 # Reborn: extracted working path is recorded separately from the original preparation provenance; no claim of GUI or redistribution approval.
 $report=[pscustomobject]@{Archive=$archive;ArchiveSha256=(Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash;
     ExtractedWorkspace=$OutputDirectory;OfflineExtractionTestPassed=$true;InventoryFileCount=$inventory.Files.Count;

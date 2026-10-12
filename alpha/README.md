@@ -25,9 +25,19 @@ its Allied Peacekeeper test is positive, but Soviet was not re-tested in that
 revision. These are qualitative observations, not exact multiplier measurements
 or proof of every new build. Duplicate identities and a third asset fail the whole build.
 
+Also supported, separately from armor: one complete stock-shaped
+`SovietAntiInfantryInfantryAK47` WeaponTemplate. Select ConscriptAK47 (Damage=50)
+and edit only Damage in mods/ConscriptAK47/data/mod.xml. Integers 0..10000 with
+an optional `.0` suffix are accepted. All other fields, reference names, identity
+and child order must remain unchanged. Standalone XML or a one-member
+AssetDeclaration is accepted. Mixed armor/weapon streams are not supported.
+The earlier diagnostic Damage=50 candidate has positive user-observed damage
+evidence; freshly authored packages are not automatically gameplay-verified.
+
 Prerequisites: PowerShell 7, an x86 .NET 8 runtime, your existing RA3 Mod SDK
 Studio components and compatible .NET Framework 4/CodeDOM environment, plus an
 unpacked Uprising `static.manifest` and its corresponding BIN/RELO/IMP files.
+Weapon builds additionally require an explicit unpacked `global.manifest`.
 Game binaries, stock streams, codecs and WorldBuilder are not provided.
 
 Armor FAQ: this alpha does not accept unlimited or arbitrary ArmorTemplate IDs.
@@ -36,11 +46,13 @@ limit. `inheritFrom` is not supported; supply each complete flattened thirteen-
 entry list. The five root scalars are optional, defaulting to 100. Inheritance
 diagnostics elsewhere in the repository do not enable it in this build path.
 
-`uprising-alpha.paths` configures four literal `key=absolute-path` lines:
-PowerShell7, StaticManifest, Driver and
+`uprising-alpha.paths` configures five literal `key=absolute-path` lines:
+PowerShell7, StaticManifest, GlobalManifest, Driver and
 CompilerDirectory. Update Driver and CompilerDirectory after relocating this
 workspace. Launching the UI is a separate test; no preparation/build command
 starts a game or modifies a game installation.
+Legacy four-key armor configurations remain accepted, but cannot build weapons
+without the explicit GlobalManifest setting.
 The local `EALAModStudio.exe.config` selects CLR4 rather than repairing the
 machine's old CLR2 compiler. The user-run Reborn GUI success path passed with it.
 
@@ -58,8 +70,9 @@ Output is a fresh `builtmods/RebornAlphaInput-<guid>` directory. The final
 `alpha-build.json` points to a verified BIG/config/SKU package and its authored
 receipt. Intermediate/admission reports alone do not mean the build succeeded.
 The SKU is a mod fragment, not a replacement stock SKU. No automatic install
-or launch is provided. Only the earlier GUN-5000 package has user-observed
-in-game behavioral evidence; changed values are initially offline validated.
+or launch is provided. The armor observations above and the earlier diagnostic
+AK47 Damage=50 trial are behavioral evidence for those specific candidates;
+newly authored values/packages are initially offline validated.
 
 The preparation inventory records source/copy hashes and origins. Existing EA
 SDK files are copied locally from your supplied installation, not newly
@@ -68,7 +81,7 @@ all EA components or official schema material. Public redistribution review
 is still open; do not upload this workspace as a reviewed release ZIP.
 
 This candidate contains a focused compiler executable with additional developer
-commands; only the documented armor backend is part of the alpha scope.
+commands; only the documented armor and single-AK47 backend are part of the alpha scope.
 
 For the separate dependency overlay candidate, see OVERLAY.md when supplied.
 It requires user-supplied matching EA components/schema files rather than

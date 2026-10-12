@@ -1,6 +1,6 @@
 # Reborn: exercise a prepared local workspace's prebuilt backend and own negative fixtures without opening Studio or a game.
 [CmdletBinding()]
-param([Parameter(Mandatory)][string]$Workspace,[Parameter(Mandatory)][string]$StaticManifest)
+param([Parameter(Mandatory)][string]$Workspace,[Parameter(Mandatory)][string]$StaticManifest,[string]$GlobalManifest)
 $ErrorActionPreference='Stop'
 if($PSVersionTable.PSVersion.Major-lt 7){throw 'PowerShell 7 is required.'}
 $Workspace=[IO.Path]::GetFullPath($Workspace)
@@ -78,6 +78,44 @@ $negativeExit=$LASTEXITCODE
 $negativeText=Get-Content -LiteralPath $negativeLog -Raw
 if($negativeExit-ne 1 -or -not $negativeText.Contains('Error: ALPHA100') -or -not $negativeText.Contains('Critical: ALPHA101')){throw 'Unsupported input did not return the expected error and Studio failure marker.'}
 if(@(Get-ChildItem -LiteralPath $output -Directory|Where-Object FullName -NotIn $before).Count-ne 0){throw 'Invalid XML created alpha output.'}
+# Reborn: exercise the new weapon dispatch independently of all unchanged armor golden packages.
+if(Test-Path -LiteralPath (Join-Path $Workspace 'mods/ConscriptAK47/data/mod.xml')){
+    if(-not $GlobalManifest){throw 'Weapon workspace test requires explicit GlobalManifest.'}
+    $sample=Join-Path $Workspace 'mods/ConscriptAK47/data/mod.xml'
+    $before=@(Get-ChildItem -LiteralPath $output -Directory).FullName
+    $weaponLog=Join-Path $test 'ConscriptAK47.log'
+    & $runtime -NoProfile -File $driver -ModXml $sample -StaticManifest $StaticManifest -GlobalManifest $GlobalManifest -CompilerDirectory $compiler -OutputRoot $output *> $weaponLog
+    if($LASTEXITCODE-ne 0){throw ('Weapon workspace build failed: '+$weaponLog)}
+    $created=@(Get-ChildItem -LiteralPath $output -Directory|Where-Object FullName -NotIn $before)
+    if($created.Count-ne 1){throw 'Expected one fresh weapon alpha output.'}
+    $receipt=Get-Content -LiteralPath (Join-Path $created[0].FullName 'alpha-build.json') -Raw|ConvertFrom-Json
+    $build=Get-Content -LiteralPath $receipt.BuildReceipt -Raw|ConvertFrom-Json
+    $digest='0225F0ED8B1128BD69FA0CEA807D1E0225F083F037E8A9C15E8FD476E2525B11'
+    if($receipt.WeaponId-cne 'SovietAntiInfantryInfantryAK47' -or $receipt.Damage-ne 50 -or $build.Damage-ne 50 -or $build.PackageSha256-cne $digest -or (Get-FileHash -LiteralPath $build.PackagePath).Hash-cne $digest -or -not $receipt.PrebuiltCompilerUsed -or $receipt.CompilerPath-cne (Join-Path $compiler 'BinaryAssetBuilder.ManifestInspector.exe') -or -not $build.ActualCoreOutputUsed -or -not $build.AuthoredPayloadVerified -or $build.GameExecuted){throw 'Selected weapon package/receipt differs.'}
+    $text=Get-Content -LiteralPath $weaponLog -Raw
+    if(-not $text.Contains('Warning: ALPHA003') -or $text.Contains('Critical: ALPHA101') -or $text.Contains('Error: ALPHA100') -or (Test-Path -LiteralPath (Join-Path $created[0].FullName 'compiler-build.log'))){throw 'Weapon callback/prebuilt boundary differs.'}
+    $rows.Add([pscustomobject]@{Sample='ConscriptAK47';Damage=50;ArchiveSha256=$digest;Receipt=(Join-Path $created[0].FullName 'alpha-build.json')})
+    # Reborn: fail each unsupported selected weapon without a success receipt; retained partial diagnostic artifacts are not packages.
+    $weaponXml=Get-Content -LiteralPath $sample -Raw
+    foreach($fault in @('missing-global','wrong-field','mixed-types')){
+        $input=$sample
+        if($fault-ceq 'wrong-field'){$input=Join-Path $test 'wrong-weapon.xml';[IO.File]::WriteAllText($input,$weaponXml.Replace('AttackRange="150.0"','AttackRange="151.0"'))}
+        if($fault-ceq 'mixed-types'){
+            $weapon=[xml]$weaponXml;$armor=[xml](Get-Content -LiteralPath (Join-Path $Workspace 'mods/Reborn/data/mod.xml') -Raw)
+            $input=Join-Path $test 'mixed.xml'
+            [IO.File]::WriteAllText($input,('<AssetDeclaration xmlns="uri:ea.com:eala:asset">'+$weapon.DocumentElement.OuterXml+$armor.DocumentElement.OuterXml+'</AssetDeclaration>'))
+        }
+        $before=@(Get-ChildItem -LiteralPath $output -Directory).FullName;$log=Join-Path $test ($fault+'.log')
+        $arguments=@('-NoProfile','-File',$driver,'-ModXml',$input,'-StaticManifest',$StaticManifest,'-CompilerDirectory',$compiler,'-OutputRoot',$output)
+        if($fault-cne 'missing-global'){$arguments+=@('-GlobalManifest',$GlobalManifest)}
+        & $runtime @arguments *> $log
+        $text=Get-Content -LiteralPath $log -Raw
+        if($LASTEXITCODE-ne 1 -or -not $text.Contains('Error: ALPHA100') -or -not $text.Contains('Critical: ALPHA101')){throw ('Weapon fault accepted or missing failure callback: '+$fault)}
+        foreach($created in @(Get-ChildItem -LiteralPath $output -Directory|Where-Object FullName -NotIn $before)){
+            if((Test-Path -LiteralPath (Join-Path $created.FullName 'alpha-build.json')) -or @(Get-ChildItem -LiteralPath $created.FullName -Recurse -Filter '*.big').Count){throw 'Rejected weapon published success/package.'}
+        }
+    }
+}
 foreach($entry in $inventory.Files){if((Get-FileHash -LiteralPath (Join-Path $Workspace $entry.Relative) -Algorithm SHA256).Hash-ne $entry.Sha256){throw 'Workspace input modified by build.'}}
 $report=[pscustomobject]@{Workspace=$Workspace;InventoryPassed=$true;Samples=$rows;
     UnsupportedXmlRefused=$true;EaDiagnosticPrefixesPassed=$true;CriticalFailureMarkerPassed=$true;SuccessHasNoFailureMarker=$true;SourceTreeAbsent=$true;PrebuiltModePassed=$true;

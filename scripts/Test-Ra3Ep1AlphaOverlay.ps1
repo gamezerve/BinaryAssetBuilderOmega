@@ -2,7 +2,7 @@
 [CmdletBinding()]
 param([Parameter(Mandatory)][string]$Archive,[Parameter(Mandatory)][string]$OutputDirectory,
     [Parameter(Mandatory)][string]$StudioDirectory,[Parameter(Mandatory)][string]$SchemaDirectory,
-    [Parameter(Mandatory)][string]$StaticManifest)
+    [Parameter(Mandatory)][string]$StaticManifest,[string]$GlobalManifest)
 $ErrorActionPreference='Stop'
 if($PSVersionTable.PSVersion.Major-lt 7){throw 'PowerShell 7 is required.'}
 $OutputDirectory=[IO.Path]::GetFullPath($OutputDirectory)
@@ -22,8 +22,8 @@ Expand-Archive -LiteralPath $Archive -DestinationPath $OutputDirectory
 Expand-Archive -LiteralPath $Archive -DestinationPath $negative
 $runtime=(Get-Process -Id $PID).Path
 $manifest=Get-Content -LiteralPath (Join-Path $OutputDirectory 'overlay-manifest.json') -Raw|ConvertFrom-Json
-# Reborn: the sixth sample adds one owned XML payload; the eight external EA/schema dependencies remain excluded.
-if($manifest.Files.Count-ne 30 -or $manifest.Requirements.Count-ne 8){throw 'Unexpected overlay inventory.'}
+# Reborn: admit the pinned legacy armor or seven-sample weapon inventory; all external EA/schema dependencies remain excluded.
+if(-not (($manifest.Files.Count-eq 30 -and $manifest.Requirements.Count-eq 8) -or ($manifest.Files.Count-eq 33 -and $manifest.Requirements.Count-eq 24))){throw 'Unexpected overlay inventory.'}
 # Reborn: require complete pinned notice files and preserved project attribution, not just a release flag.
 foreach($relative in @('LICENSE','THIRD_PARTY_NOTICES.md','notices/dotnet/LICENSE.txt','notices/dotnet/ThirdPartyNotices.txt')){
     $entry=@($manifest.Files|Where-Object Relative -CEQ $relative)
@@ -36,18 +36,18 @@ if($manifestText -match '(?i)[a-z]:\\|C:/Users/|D:/|"Source"|"Workspace"'){throw
 $negativeManifest=Get-Content -LiteralPath (Join-Path $negative 'overlay-manifest.json') -Raw|ConvertFrom-Json
 $negativeManifest.Requirements[0].Sha256='0'*64
 [IO.File]::WriteAllText((Join-Path $negative 'overlay-manifest.json'),($negativeManifest|ConvertTo-Json -Depth 6))
-& $runtime -NoProfile -File (Join-Path $negative 'scripts/Initialize-Ra3Ep1AlphaOverlay.ps1') -StudioDirectory $StudioDirectory -SchemaDirectory $SchemaDirectory -StaticManifest $StaticManifest -PowerShell7 $runtime *> (Join-Path $negative 'refusal.log')
+& $runtime -NoProfile -File (Join-Path $negative 'scripts/Initialize-Ra3Ep1AlphaOverlay.ps1') -StudioDirectory $StudioDirectory -SchemaDirectory $SchemaDirectory -StaticManifest $StaticManifest -GlobalManifest $GlobalManifest -PowerShell7 $runtime *> (Join-Path $negative 'refusal.log')
 if($LASTEXITCODE-eq 0 -or (Test-Path -LiteralPath (Join-Path $negative 'overlay-setup.json')) -or (Test-Path -LiteralPath (Join-Path $negative 'EALAModStudio.exe')) -or (Test-Path -LiteralPath (Join-Path $negative 'builtmods'))){throw 'Wrong dependency digest was not refused before setup.'}
-& $runtime -NoProfile -File (Join-Path $OutputDirectory 'scripts/Initialize-Ra3Ep1AlphaOverlay.ps1') -StudioDirectory $StudioDirectory -SchemaDirectory $SchemaDirectory -StaticManifest $StaticManifest -PowerShell7 $runtime *> (Join-Path $OutputDirectory 'setup-test.log')
+& $runtime -NoProfile -File (Join-Path $OutputDirectory 'scripts/Initialize-Ra3Ep1AlphaOverlay.ps1') -StudioDirectory $StudioDirectory -SchemaDirectory $SchemaDirectory -StaticManifest $StaticManifest -GlobalManifest $GlobalManifest -PowerShell7 $runtime *> (Join-Path $OutputDirectory 'setup-test.log')
 if($LASTEXITCODE-ne 0){throw 'Clean overlay setup failed.'}
 $configHash=(Get-FileHash -LiteralPath (Join-Path $OutputDirectory 'uprising-alpha.paths')).Hash
-& $runtime -NoProfile -File (Join-Path $OutputDirectory 'scripts/Initialize-Ra3Ep1AlphaOverlay.ps1') -StudioDirectory $StudioDirectory -SchemaDirectory $SchemaDirectory -StaticManifest $StaticManifest -PowerShell7 $runtime *> (Join-Path $OutputDirectory 'occupied-test.log')
+& $runtime -NoProfile -File (Join-Path $OutputDirectory 'scripts/Initialize-Ra3Ep1AlphaOverlay.ps1') -StudioDirectory $StudioDirectory -SchemaDirectory $SchemaDirectory -StaticManifest $StaticManifest -GlobalManifest $GlobalManifest -PowerShell7 $runtime *> (Join-Path $OutputDirectory 'occupied-test.log')
 if($LASTEXITCODE-eq 0 -or (Get-FileHash -LiteralPath (Join-Path $OutputDirectory 'uprising-alpha.paths')).Hash-cne $configHash){throw 'Occupied setup did not preserve configuration.'}
 # Reborn: synthesize only a local test inventory to reuse offline build checks; never put this provenance in the overlay ZIP.
 $inventory=[Collections.Generic.List[object]]::new()
 foreach($entry in @($manifest.Files)+@($manifest.Requirements)){$inventory.Add([pscustomobject]@{Relative=$entry.Relative;Sha256=$entry.Sha256})}
 [IO.File]::WriteAllText((Join-Path $OutputDirectory 'workspace-preparation.json'),([pscustomobject]@{Files=$inventory}|ConvertTo-Json -Depth 6))
-$builds=& (Join-Path $PSScriptRoot 'Test-Ra3Ep1AlphaWorkspace.ps1') -Workspace $OutputDirectory -StaticManifest $StaticManifest
+$builds=& (Join-Path $PSScriptRoot 'Test-Ra3Ep1AlphaWorkspace.ps1') -Workspace $OutputDirectory -StaticManifest $StaticManifest -GlobalManifest $GlobalManifest
 $report=[pscustomobject]@{ArchiveSha256=(Get-FileHash -LiteralPath $Archive).Hash;ExternalFilesAbsentFromArchive=$true;
     ManifestHasNoAbsoluteProvenance=$true;DependencyMismatchRefusedBeforeCopy=$true;CleanSetupPassed=$true;
     OccupiedSetupRefused=$true;RequiredNoticeHashesPassed=$true;WorkspaceTest=$builds;PublicRedistributionReviewed=$false;StudioExecuted=$false;GameExecuted=$false}

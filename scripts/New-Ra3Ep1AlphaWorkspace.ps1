@@ -3,6 +3,7 @@
 param([Parameter(Mandatory)][string]$OutputDirectory,
     [Parameter(Mandatory)][string]$PowerShell7,
     [Parameter(Mandatory)][string]$StaticManifest,
+    [Parameter(Mandatory)][string]$GlobalManifest,
     [string]$StudioDirectory)
 $ErrorActionPreference='Stop'
 $repo=Split-Path -Parent $PSScriptRoot
@@ -25,12 +26,12 @@ function Test-WorkspacePath([string]$Path){
     }
 }
 $OutputDirectory=[IO.Path]::GetFullPath($OutputDirectory)
-foreach($path in @($OutputDirectory,$PowerShell7,$StaticManifest,$StudioDirectory)){Test-WorkspacePath $path}
+foreach($path in @($OutputDirectory,$PowerShell7,$StaticManifest,$GlobalManifest,$StudioDirectory)){Test-WorkspacePath $path}
 if(Test-Path -LiteralPath $OutputDirectory){throw 'Alpha workspace output already exists; nothing was overwritten.'}
-foreach($path in @($PowerShell7,$StaticManifest)){if(-not (Test-Path -LiteralPath $path -PathType Leaf)){throw ('Required file is missing: '+$path)}}
+foreach($path in @($PowerShell7,$StaticManifest,$GlobalManifest)){if(-not (Test-Path -LiteralPath $path -PathType Leaf)){throw ('Required file is missing: '+$path)}}
 if(-not (Test-Path -LiteralPath $StudioDirectory -PathType Container)){throw 'Existing user-supplied Studio directory is required.'}
 # Reborn: enforce the compiler's conservative config path bound before creating the workspace.
-$probe=Join-Path $OutputDirectory 'builtmods/RebornAlphaInput-00000000000000000000000000000000/build/package/reborn_1.0.cfg'
+$probe=Join-Path $OutputDirectory 'builtmods/RebornAlphaInput-00000000000000000000000000000000/build/weapon-00000000/weaponprobe_1.0.cfg'
 if($probe.Length-gt 240 -or $probe.ToCharArray().Where({[int]$_-gt 126 -or [int]$_-lt 32}).Count-gt 0){throw 'Choose a shorter ASCII workspace path (generated config must fit 240 characters).'}
 
 $compiler=Join-Path $repo 'source/BinaryAssetBuilder.ManifestInspector/bin/x86/Release/net8.0'
@@ -54,6 +55,20 @@ foreach($relative in @('scripts/Invoke-Ra3Ep1AlphaBuild.ps1','LICENSE','alpha/RE
     $destination=if($relative-eq 'alpha/README.md'){'README.md'}else{$relative}
     $files.Add([pscustomobject]@{Source=(Join-Path $repo $relative);Relative=$destination;Origin='repository-reference-or-code'})
 }
+# Reborn: copy only the reviewed weapon schema graph plus enum drift-check source, not the full SDK schema catalog.
+foreach($relative in @('tests/fixtures/WeaponDocumentPipeline.xsd','tests/fixtures/WeaponAuthoringProbe.xml',
+    'schemas/ra3ep1/xsd/Includes/ModelState.xsd','schemas/ra3ep1/xsd/Includes/ObjectStatus.xsd',
+    'schemas/ra3ep1/xsd/Includes/KindOf.xsd','schemas/ra3ep1/xsd/Includes/ObjectFilter.xsd',
+    'schemas/ra3ep1/xsd/Includes/GlobalGameData.xsd','schemas/ra3ep1/xsd/Includes/View.xsd',
+    'schemas/ra3ep1/xsd/Includes/Common.xsd','schemas/ra3ep1/xsd/Includes/Death.xsd',
+    'schemas/ra3ep1/xsd/Includes/DamageFX.xsd','schemas/ra3ep1/xsd/Includes/DistTestType.xsd',
+    'schemas/ra3ep1/xsd/AssetTypeAttributeModifier.xsd','schemas/ra3ep1/xsd/AssetTypeShaderOverride.xsd',
+    'schemas/ra3ep1/xsd/AssetTypeAudio.xsd','schemas/ra3ep1/xsd/AssetTypeFXList.xsd',
+    'schemas/ra3ep1/xsd/AssetTypeWeaponTemplate.xsd','schemas/ra3ep1/xsd/Modules/BaseModules.xsd')){
+    $files.Add([pscustomobject]@{Source=(Join-Path $repo $relative);Relative=$relative;Origin='repository-reference-or-code'})
+}
+# Reborn: the complete stock-shaped weapon sample edits only Damage; no armor asset is bundled with it.
+$files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/mods/ConscriptAK47/data/mod.xml');Relative='mods/ConscriptAK47/data/mod.xml';Origin='project-sample'})
 $files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/studio/defaultscript.cs');Relative='defaultscript.cs';Origin='project-adapter'})
 $files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/Documentation/index.htm');Relative='Documentation/index.htm';Origin='project-local-help'})
 $files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/studio/EALAModStudio.exe.config');Relative='EALAModStudio.exe.config';Origin='project-isolated-CLR4-config'})
@@ -87,7 +102,7 @@ $null=New-Item -ItemType Directory -Path (Join-Path $OutputDirectory 'builtmods'
 # Reborn: generated configuration points only to this workspace's driver/compiler and explicitly supplied runtime/stock files.
 [IO.File]::WriteAllLines((Join-Path $OutputDirectory 'uprising-alpha.paths'),@(
     '# Reborn: generated local-use paths; update Driver/CompilerDirectory after relocation.',
-    ('PowerShell7='+$PowerShell7),('StaticManifest='+$StaticManifest),
+    ('PowerShell7='+$PowerShell7),('StaticManifest='+$StaticManifest),('GlobalManifest='+$GlobalManifest),
     ('Driver='+(Join-Path $OutputDirectory 'scripts/Invoke-Ra3Ep1AlphaBuild.ps1')),
     ('CompilerDirectory='+(Join-Path $OutputDirectory 'tools/compiler'))))
 $report=[pscustomobject]@{Workspace=$OutputDirectory;CreatedUtc=[DateTime]::UtcNow.ToString('o');

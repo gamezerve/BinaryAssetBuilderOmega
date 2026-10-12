@@ -34,13 +34,18 @@ Public distribution review is separate from achieving functional parity.
 
 ## Current position — October 12, 2026
 
-The six-sample e local alpha and fresh overlay setup/build now pass. Two yard
+The seven-sample g local alpha, fresh extraction, overlay setup/build and
+relocation now pass. ConscriptAK47 adds one complete fixed weapon identity with
+only Damage editable (integer 0..10000, optional .0); mixed armor/weapon builds
+remain refused. Exact-reference CLR4 adapter loading/options pass, but actual
+updated GUI interaction is still pending. Two yard
 armor identities have positive combined-stream gameplay observations across
 separate revisions; Allied GUN=250 remains inconclusive. Public redistribution
 review and new-workspace GUI observation remain separate. The next type is the
-[Conscript AK47 weapon slice](RA3EP1_WEAPON_VERTICAL_SLICE.md): root token/native
-scalar relationships pass read-only stock review, but full tokenization,
-dependency closure and an authored weapon build are still required. The older
+[Conscript AK47 weapon slice](RA3EP1_WEAPON_VERTICAL_SLICE.md) now has full stock-byte
+equality for its reviewed shape, positive user-reported diagnostic Damage=50
+behavior and selected XML/Core/package builds. General weapon tokenization and
+dependency closure remain required for broader support. The older
 armor-only milestones below are historical scope, not the current type count.
 
 The local alpha now exposes [all eighteen fixed ConYard armor percentage

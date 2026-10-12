@@ -3,6 +3,7 @@
 param([Parameter(Mandatory)][string]$StudioDirectory,
     [Parameter(Mandatory)][string]$SchemaDirectory,
     [Parameter(Mandatory)][string]$StaticManifest,
+    [string]$GlobalManifest,
     [Parameter(Mandatory)][string]$PowerShell7)
 $ErrorActionPreference='Stop'
 if($PSVersionTable.PSVersion.Major-lt 7){throw 'PowerShell 7 is required.'}
@@ -32,6 +33,12 @@ function Get-OverlayTarget([string]$Relative){
 }
 foreach($path in @($workspace,$StudioDirectory,$SchemaDirectory,$StaticManifest,$PowerShell7)){Test-OverlayPath $path}
 foreach($path in @($StaticManifest,$PowerShell7)){if(-not (Test-Path -LiteralPath $path -PathType Leaf)){throw 'Required file is missing.'}}
+# Reborn: weapon-enabled overlays require explicit metadata; legacy armor overlays may omit it.
+if(Test-Path -LiteralPath (Join-Path $workspace 'mods/ConscriptAK47/data/mod.xml')){
+    if(-not $GlobalManifest){throw 'Weapon-enabled overlay requires GlobalManifest.'}
+    Test-OverlayPath $GlobalManifest
+    if(-not (Test-Path -LiteralPath $GlobalManifest -PathType Leaf)){throw 'Global manifest is missing.'}
+}
 foreach($extension in @('.bin','.relo','.imp')){Test-OverlayPath ([IO.Path]::ChangeExtension($StaticManifest,$extension))}
 $config=Join-Path $workspace 'uprising-alpha.paths'
 $receipt=Join-Path $workspace 'overlay-setup.json'
@@ -72,6 +79,7 @@ $null=New-Item -ItemType Directory -Path $outputs
     ('PowerShell7='+$PowerShell7),('StaticManifest='+$StaticManifest),
     ('Driver='+(Join-Path $workspace 'scripts/Invoke-Ra3Ep1AlphaBuild.ps1')),
     ('CompilerDirectory='+(Join-Path $workspace 'tools/compiler'))))
+if($GlobalManifest){[IO.File]::AppendAllLines($config,[string[]]@('GlobalManifest='+$GlobalManifest))}
 # Reborn: keep personal setup provenance local, separate from the path-free distributable manifest.
 $report=[pscustomobject]@{Workspace=$workspace;DependenciesVerified=$true;DependencyCount=$copies.Count;
     GameExecuted=$false;StudioExecuted=$false;RegistryModified=$false;InstalledFilesModified=$false}

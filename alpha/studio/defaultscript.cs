@@ -12,6 +12,8 @@ namespace EALABuild
         private string driver;
         // Reborn: require an explicit stock baseline location instead of inheriting the developer's default.
         private string staticManifest;
+        // Reborn: optional legacy-config compatibility; weapon builds require an explicitly configured global manifest.
+        private string globalManifest;
         // Reborn: standalone workspaces use checked prebuilt compiler and output directories, never hidden repository paths.
         private string compilerDirectory;
         private string outputRoot;
@@ -28,9 +30,11 @@ namespace EALABuild
             runtime = settings["PowerShell7"];
             driver = settings["Driver"];
             staticManifest = settings["StaticManifest"];
+            globalManifest = settings.ContainsKey("GlobalManifest") ? settings["GlobalManifest"] : null;
             compilerDirectory = settings["CompilerDirectory"];
             outputRoot = Path.Combine(StaticPaths.CurrentDirectory, "builtmods");
             CheckPath(runtime); CheckPath(driver); CheckPath(staticManifest);
+            if (globalManifest != null) CheckPath(globalManifest);
             CheckDirectory(compilerDirectory); CheckDirectory(outputRoot);
         }
 
@@ -45,11 +49,13 @@ namespace EALABuild
             string input = Path.Combine(Path.Combine(Path.Combine(StaticPaths.CurrentDirectory, "mods"), name), "data\\mod.xml");
             CheckPath(input);
             BuildHelper.CurrentBuildSteps = 1;
-            BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha; supported build: ConYard thirteen coefficients and five scalars 0..10000. Other capabilities are not silently compiled.");
+            BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha; supported build: yard armor percentages or AK47 Damage 0..10000. Mixed types and other capabilities are not silently compiled.");
             RunExecutableArguments request = new RunExecutableArguments(runtime);
             // Reborn: bind every Studio build to the configured read-only stock baseline.
             request.Arguments = "-NoProfile -File \"" + driver + "\" -ModXml \"" + input + "\" -StaticManifest \"" + staticManifest
                 + "\" -CompilerDirectory \"" + compilerDirectory + "\" -OutputRoot \"" + outputRoot + "\"";
+            // Reborn: preserve four-key armor workspaces without inferring a weapon dependency path.
+            if (globalManifest != null) request.Arguments += " -GlobalManifest \"" + globalManifest + "\"";
             request.RedirectOutput = true; request.CreateWindow = false;
             // Reborn: retain the SDK's step-counter protocol before RunStep advances it for the callback.
             if (BuildHelper.GetNextExecutableStep() != 1)
@@ -80,6 +86,7 @@ namespace EALABuild
             List<GUIElementData> options = new List<GUIElementData>();
             options.Add(new GUIElementData("alpha", "Uprising Alpha: Validate XML / Build Data / Make BIG", GUIElementData.LabelType, ScriptIndex.ModScript));
             options.Add(new GUIElementData("scope", "1 or 2 Allied/Soviet yard armors: 18 percentages each, integer 0..10000", GUIElementData.LabelType, ScriptIndex.ModScript));
+            options.Add(new GUIElementData("weapon", "Or 1 Conscript AK47: Damage 0..10000 only; no mixed armor/weapon stream", GUIElementData.LabelType, ScriptIndex.ModScript));
             return options;
         }
 
@@ -102,7 +109,7 @@ namespace EALABuild
         }
 
         //-------------------------------------------------------------------------------------------------
-        /** Reborn: admit exactly four literal path settings without XML libraries, duplicate keys or implicit machine defaults. */
+        /** Reborn: require four legacy path keys and optionally GlobalManifest, without implicit dependency defaults. */
         //-------------------------------------------------------------------------------------------------
         private static Dictionary<string, string> ReadPaths(string path)
         {
@@ -114,11 +121,12 @@ namespace EALABuild
                 int separator = line.IndexOf('=');
                 if (separator <= 0) throw new InvalidDataException("Reborn: invalid alpha path setting.");
                 string key = line.Substring(0, separator);
-                if ((key != "PowerShell7" && key != "Driver" && key != "StaticManifest" && key != "CompilerDirectory") || settings.ContainsKey(key))
+                if ((key != "PowerShell7" && key != "Driver" && key != "StaticManifest" && key != "CompilerDirectory" && key != "GlobalManifest") || settings.ContainsKey(key))
                     throw new InvalidDataException("Reborn: unknown or duplicate alpha path setting.");
                 settings.Add(key, line.Substring(separator + 1));
             }
-            if (settings.Count != 4) throw new InvalidDataException("Reborn: alpha requires exactly four path settings.");
+            if (!settings.ContainsKey("PowerShell7") || !settings.ContainsKey("Driver") || !settings.ContainsKey("StaticManifest") || !settings.ContainsKey("CompilerDirectory"))
+                throw new InvalidDataException("Reborn: alpha requires all four base path settings; GlobalManifest enables weapon builds.");
             return settings;
         }
     }

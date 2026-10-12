@@ -28,7 +28,7 @@ class RebornAlphaStudioLoaderHarness
                     if (typeof(EALABuildScript).IsAssignableFrom(type)) adapter = (EALABuildScript)type.GetConstructor(Type.EmptyTypes).Invoke(new object[0]);
                 if (adapter == null) throw new InvalidDataException("EA loader interface discovery failed.");
                 adapter.initialize();
-                if (adapter.GetModBuildGUIData().Count != 2 || !adapter.shouldExecuteStep(1) || adapter.shouldExecuteStep(2))
+                if (adapter.GetModBuildGUIData().Count != 3 || !adapter.shouldExecuteStep(1) || adapter.shouldExecuteStep(2))
                     throw new InvalidDataException("Adapter options/step scope differs.");
                 Console.WriteLine("Reborn: exact-reference CLR4 CodeDOM/interface/config/options PASS; no Studio window or build/game execution.");
             }

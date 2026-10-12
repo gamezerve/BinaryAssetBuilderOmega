@@ -49,7 +49,8 @@ foreach($name in @('LICENSE.txt','ThirdPartyNotices.txt')){
     $files.Add([pscustomobject]@{Relative=$relative;Sha256=$hash})
     $copies.Add([pscustomobject]@{Source=$source;Relative=$relative;Sha256=$hash})
 }
-if($requirements.Count-ne 8){throw 'Expected three supplied Studio files and five external schema files.'}
+# Reborn: armor-only legacy and weapon-enabled inventories have explicitly bounded external schema graphs.
+if($requirements.Count -notin @(8,24)){throw 'Expected three Studio files plus the reviewed armor/weapon schema graph.'}
 # Reborn: block a candidate with private path hints or absolute managed debug paths before creating the overlay; keep the audit report outside the ZIP.
 $audit=& (Join-Path $PSScriptRoot 'Get-Ra3Ep1AlphaBinaryAudit.ps1') -CompilerDirectory (Join-Path $Workspace 'tools/compiler') -OutputPath $auditPath
 if($audit.FilesWithPrivateHints.Count-gt 0 -or @($audit.Files|Where-Object {$_.Managed -and @($_.DebugEntries|Where-Object AbsolutePath).Count-gt 0}).Count-gt 0){throw 'Overlay contains private path hints or absolute managed debug paths; inspect the separate binary audit.'}

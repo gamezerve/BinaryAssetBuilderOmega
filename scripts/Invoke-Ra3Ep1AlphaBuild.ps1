@@ -2,7 +2,7 @@
 [CmdletBinding()]
 param([Parameter(Mandatory)][string]$ModXml,[switch]$ValidateOnly,
     [string]$StaticManifest='D:\TEMP\Red Alert 3 Uprising Source Data\Static Data\data\static.manifest',
-    [string]$CompilerDirectory,[string]$OutputRoot)
+    [string]$CompilerDirectory,[string]$OutputRoot,[string]$GlobalManifest)
 $ErrorActionPreference='Stop'
 $repo=Split-Path -Parent $PSScriptRoot
 #-------------------------------------------------------------------------------------------------
@@ -34,20 +34,23 @@ try {
         try{$xml=[Xml.XmlDocument]::new();$xml.XmlResolver=$null;$xml.Load($reader)}finally{$reader.Dispose();$stream.Dispose()}
         $root=$xml.DocumentElement
         # Reborn: a pair stays a declaration for its separate admission/compile path; the historical one-member path keeps its exact snapshot.
-        $isPair=$false
+        $isPair=$false;$isWeapon=$false
         if($root.NamespaceURI-cne 'uri:ea.com:eala:asset'){throw 'Expected EA asset namespace.'}
         if($root.LocalName-ceq 'AssetDeclaration'){
             if(@($root.Attributes|Where-Object Name -NE 'xmlns').Count-ne 0 -or $root.ChildNodes.Count -notin @(1,2) -or @($root.ChildNodes|Where-Object {$_-isnot [Xml.XmlElement]}).Count-ne 0){throw 'Alpha declaration requires one or two supported armors; includes and other types are not build-enabled.'}
             if($root.ChildNodes.Count-eq 2){$isPair=$true}else{$root=$root.FirstChild}
         }
-        if(-not $isPair -and $root.LocalName-cne 'ArmorTemplate'){throw ('Asset type is not build-enabled in this alpha: '+$root.LocalName)}
+        # Reborn: one reviewed weapon is a separate stream path; mixed armor/weapon declarations never use the armor pair route.
+        $isWeapon=(-not $isPair -and $root.LocalName-ceq 'WeaponTemplate')
+        if(-not $isPair -and -not $isWeapon -and $root.LocalName-cne 'ArmorTemplate'){throw ('Asset type is not build-enabled in this alpha: '+$root.LocalName)}
+        if($isWeapon -and -not $GlobalManifest){throw 'AK47 builds require an explicit GlobalManifest; no machine-path fallback is used.'}
         # Reborn: keep all generated validation artifacts isolated; original selected-mod XML remains read-only.
         # Reborn: explicit standalone output stays under a pre-existing checked root; developer defaults remain repository-local.
         if(-not $OutputRoot){$OutputRoot=Join-Path $repo 'artifacts'}
         Test-AlphaDirectory $OutputRoot
         $directory=Join-Path $OutputRoot ('RebornAlphaInput-'+[guid]::NewGuid().ToString('N'))
         $null=New-Item -ItemType Directory -Path $directory
-        $snapshot=Join-Path $directory 'selected-armor.xml'
+        $snapshot=Join-Path $directory $(if($isWeapon){'selected-weapon.xml'}else{'selected-armor.xml'})
         [IO.File]::WriteAllText($snapshot,$root.OuterXml)
         $exe=Join-Path $repo 'source/BinaryAssetBuilder.ManifestInspector/bin/x86/Release/net8.0/BinaryAssetBuilder.ManifestInspector.exe'
         # Reborn: prebuilt mode is explicit for isolated alpha workspaces; normal repository mode still builds current source.
@@ -60,6 +63,26 @@ try {
             $log=Join-Path $directory 'compiler-build.log'
             & dotnet build (Join-Path $repo 'source/BinaryAssetBuilder.ManifestInspector/BinaryAssetBuilder.ManifestInspector.csproj') --no-restore -c Release -p:Platform=x86 -m:1 -nr:false -v:q *> $log
             if($LASTEXITCODE-ne 0){throw ('Compiler build failed; see '+$log)}
+        }
+        # Reborn: the weapon path compiles the admitted selected Damage, never the fixed Damage=50 diagnostic or an armor package.
+        if($isWeapon){
+            $json=@(& $exe weapon-authoring-preflight $snapshot (Join-Path $directory 'admitted'))
+            if($LASTEXITCODE-ne 0){$json|Write-Output;throw 'Selected XML failed AK47 admission.'}
+            $admission=($json-join [Environment]::NewLine)|ConvertFrom-Json
+            if($ValidateOnly){Write-Output ('Reborn: AK47 input admitted; validation only, no package built. '+$directory);return}
+            Write-Output 'Warning: ALPHA003 Only SovietAntiInfantryInfantryAK47 Damage 0..10000 is editable. Earlier Damage=50 has user-observed gameplay evidence; this new package is not automatically gameplay-verified. Mixed types, other fields, IDs, includes and inheritance are unsupported.'
+            $output=Join-Path $directory 'build'
+            & $exe weapon-authored-build $snapshot $output $StaticManifest $GlobalManifest
+            if($LASTEXITCODE-ne 0){throw 'Authored AK47 Core/package build failed.'}
+            $buildReceipt=Join-Path $output 'authored-weapon-build.json'
+            $build=Get-Content -LiteralPath $buildReceipt -Raw|ConvertFrom-Json
+            if($admission.WeaponId-cne $root.GetAttribute('id') -or $build.WeaponId-cne $admission.WeaponId -or $admission.Damage-ne $build.Damage -or $build.EditableFieldCount-ne 1 -or -not $build.ActualCoreOutputUsed -or -not $build.StockBaselineCompared -or -not $build.AuthoredPayloadVerified -or -not $build.RepeatDeterministic -or $build.GameExecuted -or $build.InstalledFilesModified){throw 'Authored AK47 receipt differs from admitted selected input.'}
+            $receipt=[pscustomobject]@{WeaponId=$build.WeaponId;Damage=$build.Damage;EditableFieldCount=1;SelectedModXml=$ModXml;SelectedModXmlSha256=([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)));BuildReceipt=$buildReceipt;CompilerPath=$exe;PrebuiltCompilerUsed=[bool]$CompilerDirectory;InstalledFilesModified=$false;GameExecuted=$false}
+            [IO.File]::WriteAllText((Join-Path $directory 'alpha-build.json'),($receipt|ConvertTo-Json))
+            Write-Output ('Reborn: build succeeded. BIG: '+$build.PackagePath)
+            Write-Output ('Reborn: config: '+$build.ConfigPath)
+            Write-Output ('Reborn: alpha receipt: '+(Join-Path $directory 'alpha-build.json'))
+            return
         }
         # Reborn: two assets use their own frozen-document capability and receipt; never concatenate independently built single-asset streams.
         if($isPair){

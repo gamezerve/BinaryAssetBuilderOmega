@@ -1,7 +1,7 @@
 # Reborn: simulate a copied configured overlay at a new location, repair paths and repeat offline sample builds; preserve the original workspace.
 [CmdletBinding()]
 param([Parameter(Mandatory)][string]$Workspace,[Parameter(Mandatory)][string]$OutputDirectory,
-    [Parameter(Mandatory)][string]$StaticManifest)
+    [Parameter(Mandatory)][string]$StaticManifest,[string]$GlobalManifest)
 $ErrorActionPreference='Stop'
 if($PSVersionTable.PSVersion.Major-lt 7){throw 'PowerShell 7 is required.'}
 $Workspace=[IO.Path]::GetFullPath($Workspace);$OutputDirectory=[IO.Path]::GetFullPath($OutputDirectory)
@@ -35,6 +35,8 @@ if($backups.Count-ne 1 -or (Get-FileHash -LiteralPath $backups[0].FullName).Hash
 $text=Get-Content -LiteralPath $config -Raw
 if(-not $text.Contains('Driver='+(Join-Path $OutputDirectory 'scripts/Invoke-Ra3Ep1AlphaBuild.ps1')) -or
     -not $text.Contains('CompilerDirectory='+(Join-Path $OutputDirectory 'tools/compiler'))){throw 'Paths still refer to old workspace.'}
+# Reborn: relocation must retain explicit weapon metadata rather than silently reverting to armor-only settings.
+if($GlobalManifest -and -not $text.Contains('GlobalManifest='+$GlobalManifest)){throw 'Relocation lost explicit GlobalManifest.'}
 if((Get-Content -LiteralPath $sentinel -Raw)-cne 'Reborn: retained output sentinel.' -or (Get-FileHash -LiteralPath (Join-Path $Workspace 'uprising-alpha.paths')).Hash-cne $originalHash){throw 'Original config or retained output changed.'}
 # Reborn: exercise malformed settings only in the disposable relocated copy, then restore its valid configuration bytes.
 $validBytes=[IO.File]::ReadAllBytes($config)
@@ -46,7 +48,7 @@ if($LASTEXITCODE-eq 0 -or (Get-FileHash -LiteralPath $config).Hash-cne $duplicat
 # Reborn: reuse the established offline regression only with a local synthesized inventory, never archive this test provenance.
 $inventory=@($manifest.Files)+@($manifest.Requirements)
 [IO.File]::WriteAllText((Join-Path $OutputDirectory 'workspace-preparation.json'),([pscustomobject]@{Files=$inventory}|ConvertTo-Json -Depth 6))
-$builds=& (Join-Path $PSScriptRoot 'Test-Ra3Ep1AlphaWorkspace.ps1') -Workspace $OutputDirectory -StaticManifest $StaticManifest
+$builds=& (Join-Path $PSScriptRoot 'Test-Ra3Ep1AlphaWorkspace.ps1') -Workspace $OutputDirectory -StaticManifest $StaticManifest -GlobalManifest $GlobalManifest
 $report=[pscustomobject]@{RelocatedCopy=$OutputDirectory;InternalPathsUpdated=$true;OriginalConfigurationUnchanged=$true;
     ExactBackupVerified=$true;MissingDependencyRefusedWithoutMutation=$true;DuplicateKeysRefusedWithoutMutation=$true;ExistingOutputPreserved=$true;
     WorkspaceTest=$builds;StudioExecuted=$false;GameExecuted=$false}
