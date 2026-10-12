@@ -383,12 +383,17 @@ internal static class UprisingLayoutSmokeTest
         ExpectOffset<SageBinaryData.AudioDynamicsCollideModuleData>(nameof(SageBinaryData.AudioDynamicsCollideModuleData.MinimumImpactVelocity), 8);
         ExpectOffset<SageBinaryData.AudioDynamicsCollideModuleData>(nameof(SageBinaryData.AudioDynamicsCollideModuleData.MagnitudeSoundSelector), 12);
         ExpectSize<SageBinaryData.WeaponEffectNugget>(40);
+        // Reborn: independently recovered AK47 tokens lock the EP1 DamageNugget status/scalar ordering while retaining its 156-byte tail.
+        ExpectSize<SageBinaryData.DamageNuggetType>(156);
+        ExpectOffset<SageBinaryData.DamageNuggetType>(nameof(SageBinaryData.DamageNuggetType.InvalidTargetStatus), 108);
+        ExpectOffset<SageBinaryData.DamageNuggetType>(nameof(SageBinaryData.DamageNuggetType.DamageScalarDetails), 140);
+        // Reborn: pin the schema enum ordering to the independently observed AK47 DamageFX value.
+        Expect((int)SageBinaryData.DamageFXType.DEFAULT == -1, "DamageFX DEFAULT", -1, (int)SageBinaryData.DamageFXType.DEFAULT);
+        Expect((int)SageBinaryData.DamageFXType.SOVIET_AK47 == 45, "DamageFX SOVIET_AK47", 45, (int)SageBinaryData.DamageFXType.SOVIET_AK47);
         ExpectOffset<SageBinaryData.WeaponEffectNugget>(nameof(SageBinaryData.WeaponEffectNugget.Radius), 16);
         ExpectOffset<SageBinaryData.WeaponEffectNugget>(nameof(SageBinaryData.WeaponEffectNugget.SpecialObjectFilter), 20);
         ExpectOffset<SageBinaryData.WeaponEffectNugget>(nameof(SageBinaryData.WeaponEffectNugget.RequiredUpgrade), 24);
-        ExpectSize<SageBinaryData.DamageNuggetType>(156);
         ExpectOffset<SageBinaryData.DamageNuggetType>(nameof(SageBinaryData.DamageNuggetType.Damage), 40);
-        ExpectOffset<SageBinaryData.DamageNuggetType>(nameof(SageBinaryData.DamageNuggetType.InvalidTargetStatus), 116);
         ExpectOffset<SageBinaryData.DamageNuggetType>(nameof(SageBinaryData.DamageNuggetType.DamageArcInverted), 148);
         ExpectOffset<SageBinaryData.DamageNuggetType>(nameof(SageBinaryData.DamageNuggetType.RadiusAffectsBridges), 155);
         ExpectSize<SageBinaryData.DamageDynamicsCollideModuleData>(20);

@@ -1,5 +1,37 @@
 # Uprising SDK release gates and effort estimate
 
+## Final product contract
+
+The user's target is an RA3-Mod-SDK-style Uprising SDK, not a collection of
+fixed override recipes. The intended authoring surface includes arbitrary
+schema-valid new ArmorTemplate, GameObject and other asset identities; multiple
+assets and files; official or authored XML through instance includes; inherited
+objects/assets using the source syntax accepted by the SDK; definitions and `$`
+references/expressions; TGA/DDS textures and W3X model declarations; and a familiar
+Studio build/log/error workflow. EA's Uprising XML/schema semantics are the
+compatibility target. Platform/file-format/runtime constraints still apply;
+"arbitrary" does not mean malformed assets or physically unbounded resources.
+
+The current one/two-yard identity restrictions are temporary experimental
+publication boundaries, not a planned permanent user-facing limitation.
+Generic inheritance/definitions have diagnostic implementations in the repo,
+but they are not yet connected to general playable asset publication. Do not
+rewrite the final goal as "armor SDK complete" merely because a preview ships.
+
+Implementation must converge on shared layers instead of adding one hard-coded
+compiler per unit: (1) source graph/includes/definitions/inheritance, (2) typed
+schema/default/marshal/tokenization processors, (3) identity/reference/import
+resolution, (4) scoped then general Core stream publication, (5) art/custom-data
+processors and (6) Studio/packaging/environment integration. The weapon slice
+is a test of those reusable layers, not the final limit on weapon identity.
+
+Acceptance requires a mod creating multiple new armors and game objects under
+user-chosen IDs, importing an official instance and a separate authored file,
+inheriting and overriding selected fields, using shared `$` definitions, and
+building referenced texture/model assets into a playable package. Each of
+these capabilities needs explicit build and appropriate gameplay evidence.
+Public distribution review is separate from achieving functional parity.
+
 ## Current position — October 12, 2026
 
 The six-sample e local alpha and fresh overlay setup/build now pass. Two yard
@@ -90,6 +122,40 @@ the old 52% figure is historical and not a release countdown.
    restoration. Never replace stock archives as an automatic install step.
 
 ## Current next implementation
+
+### Diagnostic and post-build compatibility contract
+
+The final SDK must surface malformed XML, official EP1 XSD violations,
+missing definitions, includes, art/W3X files and unresolved asset references
+in the familiar Build Log/Error Log. Required input failures must stop
+publication; unsupported processors must not silently skip assets. These
+checks belong before publication, not merely after a BIG has been created.
+
+Current alpha evidence covers malformed XML, bounded armor authoring rejection
+and failed-build reporting. It does not establish general W3X, expression or
+schema diagnostics for arbitrary assets. Core already has schema validation
+(`AssetDeclarationDocument.HandleValidationEvents`), referenced-file checks
+(`HandleFileReferenceType`) and unknown-asset checks. Expression evaluation
+also depends on a separately loaded evaluator; the wrapper's existence is not
+proof that missing-definition handling works in the released alpha.
+
+The local, modified RA3 reference SDK invokes `hashfix.exe` in
+`defaultscript.cs`, case 8, with mod.manifest and worldbuilder.manifest,
+then assetresolver, streamsorter and LoDStreamBuilder. `BuildMap.bat` has a
+related map-specific sequence. This is observed reference behavior, not proof
+that every tool is an unmodified official EA component. No such executable
+has been run against EP1 output here. A hash-fix invocation is a corrective
+postprocessor, not itself XML validation.
+
+For EP1, verify identities/type hashes, ordered dependencies, relocation and
+import ranges, LOD/version routing and default-reader package consistency.
+Use EP1 reference streams, never RA3 worldbuilder hashes as an automatic
+substitute. If correct compiler output makes a legacy correction unnecessary,
+retain the verified invariant rather than a cosmetic "hash fix" step.
+Acceptance requires controlled invalid XML, wrong schema/enum, undefined `$`
+name, missing include/W3X, unknown asset and corrupted-output tests, with clear
+file/asset context and no successful publication. General diagnostics remain
+an implementation gate, not an already shipped capability.
 
 `ArmorAuthoringAdmission` now feeds `ArmorAuthoredBuild` and the actual
 document/Core/scoped OutputManager path. Five coefficients, including

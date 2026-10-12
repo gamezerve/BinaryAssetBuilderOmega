@@ -1,14 +1,27 @@
 # BinaryAssetBuilder
 A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
+Final target: RA3-SDK-style general Uprising authoring, including user-defined
+asset IDs, instance includes, inheritance, `$` definitions/expressions,
+TGA/DDS textures and W3X models. Current fixed-identity alpha restrictions are
+temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
+
 ## Current outcome — October 12, 2026
 
 The next type is a [bounded Conscript weapon vertical slice](docs/RA3EP1_WEAPON_VERTICAL_SLICE.md).
 Read-only stock review now verifies AK47 root scalar token/native relationships,
 selected DamageNugget class/list/GUN=5 relationships, direct reference names
 through static/global metadata, repeat output and corruption refusals.
+The real marshaler now reproduces all 528 normalized native AK47 BIN bytes
+from reference XML, after correcting an EP1 default, DamageNugget field order
+and DamageFX enum order. This diagnostic does not yet emit tokenized weapons.
 Full weapon tokenization and dependency
 proof are not yet complete; WeaponTemplate stays disabled in the alpha.
+
+The [diagnostic compatibility contract](docs/RA3EP1_SDK_RELEASE_PLAN.md)
+separates current alpha errors from planned general XML/schema, definition,
+W3X/reference and post-build integrity checks. The modified reference SDK's
+hash-fix chain is not blindly executed against Uprising output.
 
 Current armor authoring is bounded, not arbitrary: at most one AlliedConYardArmor
 and one SovietConYardArmor per build, thirteen ordered damage entries each plus

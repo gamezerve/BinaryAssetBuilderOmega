@@ -316,8 +316,9 @@ public struct DamageNuggetType
     public float DamageSpeed;
     public unsafe AnsiString* UnderAttackOverrideEvaEvent;
     public AssetReference<GameObject> VictimShroudRevealer;
-    public List<ScalarInfo> DamageScalarDetails;
+    // Reborn: EP1 stock tokens place the status mask at +108, then the scalar list at +140; the former order shifts both by eight bytes.
     public ObjectStatusBitFlags InvalidTargetStatus;
+    public List<ScalarInfo> DamageScalarDetails;
     public SageBool DamageArcInverted;
     public SageBool AcceptDamageAdd;
     public SageBool OnlyKillOwnerWhenTriggered;

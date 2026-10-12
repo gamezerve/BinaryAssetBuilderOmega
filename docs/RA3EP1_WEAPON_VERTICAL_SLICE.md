@@ -93,3 +93,38 @@ Checks pass: existing five synthetic root corruptions, three detached copies
 of the actual weapon slice (wrong damage, list count and nugget class), identical
 repeat JSON and wrong-reference-manifest refusal. Incremental build has zero
 warnings/errors. These changes do not add a weapon build to the exported e SDK.
+
+## Real native XML marshaling comparison
+
+`weapon-native-probe <reference-Weapon.xml> <ep1-static-manifest>` selects the
+unchanged AK47 XML into an owned document, verifies its three expected textual
+references, then prepares fixed diagnostic indices and the known nugget TypeId.
+It invokes the actual weapon marshaler twice; this is not stock-byte patching.
+It does not validate the full XML against XSD or prove general dependency
+preparation, and does not create a tokenized stream or package.
+
+The initial native compile differed at six byte positions. Corrections:
+
+- `Marshaler.WeaponTemplate.cs`: FinishAttackOnceStarted defaults to false,
+  matching the official EP1 XSD and stock byte, not the old true fallback.
+- `WeaponTemplate.cs`: DamageNugget InvalidTargetStatus starts at native +108,
+  before DamageScalarDetails at +140; the 156-byte struct size is unchanged.
+- `Includes/DamageFX.cs`: VERSION7 uses the full EP1 schema enum order,
+  DEFAULT=-1 and SOVIET_AK47=45; the legacy non-VERSION7 branch is retained.
+
+After those corrections, all 528 normalized native BIN bytes match.
+Compiled and normalized-stock SHA256:
+`3DA83658B59755C6F5FDFDA98E2AE740E51798CC33CB85CBB7CB28BE8D70A841`.
+The compiler emits 28 native RELO bytes and 16 IMP bytes; stock tokenized
+representation has 28 RELO and zero IMP, so native equality is not full
+tokenized output equality. Remaining gates include complete token/reference
+encoding, dependency preparation and scoped publication. WeaponTemplate
+remains disabled in the exported e alpha.
+
+Independent stock RELO reads also match all normalized native relocation
+locations. An actual second XML compile with Damage=50 changes only the
+four-byte Damage slot at native offset 412; RELO/IMP stay identical. Repeated
+baseline compilation is deterministic. The broad compiler self-test passes
+with the corrected defaults/ABI/enum, and final focused layout/native checks
+pass. An overlapping incremental build initially hit the running test's EXE
+file lock; retry after the test completed succeeded with zero warnings/errors.

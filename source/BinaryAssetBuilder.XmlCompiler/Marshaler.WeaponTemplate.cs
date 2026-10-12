@@ -683,7 +683,8 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.HitPassengerPercentage), "100%"), &objT->HitPassengerPercentage, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.HealthProportionalResolution), "0"), &objT->HealthProportionalResolution, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.MaxAttackPassengers), null), &objT->MaxAttackPassengers, state);
-        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.FinishAttackOnceStarted), "true"), &objT->FinishAttackOnceStarted, state);
+        // Reborn: EP1 WeaponTemplate schema defaults this flag to false; true changes unchanged source weapons.
+        Marshal(node.GetAttributeValue(nameof(WeaponTemplate.FinishAttackOnceStarted), "false"), &objT->FinishAttackOnceStarted, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.RestrictedHeightRange), "0"), &objT->RestrictedHeightRange, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.CannotTargetCastleVictims), "false"), &objT->CannotTargetCastleVictims, state);
         Marshal(node.GetAttributeValue(nameof(WeaponTemplate.RequireFollowThru), "false"), &objT->RequireFollowThru, state);

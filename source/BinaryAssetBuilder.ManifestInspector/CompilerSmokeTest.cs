@@ -624,6 +624,8 @@ internal static class CompilerSmokeTest
         Expect(instance[311] == 1, "ProjectileSelf", 1, instance[311]);
         Expect(instance[312] == 0, "ProjectileSelfUsesPathfinder", 0, instance[312]);
         Expect(instance[338] == 1, "UpdateBarrelModelConditions", 1, instance[338]);
+        // Reborn: unchanged EP1 schema default must agree with the observed stock AK47 root flag.
+        Expect(instance[324] == 0, "FinishAttackOnceStarted default", 0, instance[324]);
         Expect(chunk.RelocationBuffer.Length == 0, "WeaponTemplate relocation bytes", 0, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 0, "WeaponTemplate imports bytes", 0, chunk.ImportsBuffer.Length);
         Console.WriteLine(
