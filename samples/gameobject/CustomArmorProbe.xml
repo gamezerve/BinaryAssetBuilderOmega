@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: compile this new target through armor-general-authored-build before probing the named consumer. -->
+<ArmorTemplate xmlns="uri:ea.com:eala:asset" id="RebornAuthoredArmor">
+  <Armor Damage="GUN" Percent="250.5" />
+</ArmorTemplate>

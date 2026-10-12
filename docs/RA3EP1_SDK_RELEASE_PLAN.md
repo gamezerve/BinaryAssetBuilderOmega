@@ -36,8 +36,10 @@ Public distribution review is separate from achieving functional parity.
 
 October 13 consumer follow-up: the [GameObject native slice](RA3EP1_GAMEOBJECT_VERTICAL_SLICE.md)
 verifies Conscript/Allied yard ArmorSet token/native/dependency relationships and
-reproduces their selected armor-list bytes through the existing marshaler. Real
-source-name normalization, complete GameObject/module tokenization and mixed
+reproduces their selected armor-list bytes through the existing marshaler. The
+follow-up proves actual Core name normalization and stock/new armor lookup for
+the bounded BuildTime/ArmorSet projection. Full official GameObject schema
+validation, complete GameObject/module tokenization and mixed
 GameObject/armor Core publication remain gates; this diagnostic does not enable
 GameObject input in the exported alpha.
 

@@ -13,6 +13,12 @@ internal static class Program
     {
         try
         {
+            // Reborn: named consumer preparation stays separate from GameObject stream/alpha publication.
+            if (args.Length is 3 or 4 && args[0] == "gameobject-armor-source-probe")
+            { CompilerSmokeTest.InitializeHashProvider(); Console.WriteLine(JsonSerializer.Serialize(GameObjectArmorSourceProbe.Inspect(args[1], args.Skip(2).ToArray()), JsonOptions)); return 0; }
+            // Reborn: exercise real authored armor targets and source/native refusal controls without a GameObject package.
+            if (args.Length == 3 && args[0] == "gameobject-armor-source-self-test")
+            { CompilerSmokeTest.InitializeHashProvider(); GameObjectArmorSourceProbe.SelfTest(args[1], args[2]); return 0; }
             // Reborn: bounded stock GameObject review does not authorize general source or package publication.
             if (args.Length == 3 && args[0] == "gameobject-stock-review")
             { CompilerSmokeTest.InitializeHashProvider(); Console.WriteLine(JsonSerializer.Serialize(GameObjectStockReview.Inspect(args[1], args[2]), JsonOptions)); return 0; }
@@ -1256,6 +1262,9 @@ internal static class Program
 
     private static void PrintUsage()
     {
+        // Reborn: advertise named-reference diagnostic commands without implying a general GameObject compiler.
+        Console.WriteLine("  gameobject-armor-source-probe <GameObject.xml> <static.manifest> [authored-armor.manifest]");
+        Console.WriteLine("  gameobject-armor-source-self-test <new-output-directory> <static.manifest>");
         // Reborn: advertise read-only armor-consumer recovery separately from source/compiler commands.
         Console.WriteLine("  gameobject-stock-review <ep1-static-manifest> <GameObject:Name>");
         Console.WriteLine("  gameobject-stock-self-test [ep1-static-manifest]");

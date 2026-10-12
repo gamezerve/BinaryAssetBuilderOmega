@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: reference a real newly compiled armor by name; no captured numeric reference suffix is supplied. -->
+<GameObject xmlns="uri:ea.com:eala:asset" id="RebornNewConsumer" BuildTime="25">
+  <ArmorSet Armor="RebornAuthoredArmor" DamageFX="FactionStructureDamageFX" />
+</GameObject>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: focused diagnostic projection, NOT the full official GameObject schema; selected declarations are drift-checked against official EP1 before use. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset"
+ targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Base.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Base/AssetBase.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Ref.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/DamageDef.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeArmorTemplate.xsd" />
+ <!-- Reborn: official GameObject-local reference restriction, also drift-checked before normalization. -->
+ <xs:simpleType name="DamageFXRef" xmlns:xas="uri:ea.com:eala:asset:schema" xas:refType="DamageFX"><xs:restriction base="AssetReference" /></xs:simpleType>
+ <!-- Reborn: only this copied member type and BuildTime declaration carry official-field semantics; other GameObject fields are deliberately unavailable. -->
+ <xs:complexType name="ArmorTemplateSet" xmlns:xas="uri:ea.com:eala:asset:schema" xmlns:balance="uri:ea.com:eala:balance">
+  <xs:sequence />
+  <xs:attribute name="id" type="Poid" xas:pipelineOnly="true" />
+  <xs:attribute name="Armor" balance:field="Armor" balance:category="Armor" type="AssetReference" xas:refType="ArmorTemplate" use="required" />
+  <xs:attribute name="DamageFX" type="DamageFXRef" />
+  <xs:attribute name="Conditions" type="ArmorSetBitFlags" />
+ </xs:complexType>
+ <xs:complexType name="GameObject"><xs:complexContent><xs:extension base="BaseInheritableAsset">
+  <xs:sequence><xs:element name="ArmorSet" type="ArmorTemplateSet" minOccurs="1" maxOccurs="32" /></xs:sequence>
+  <xs:attribute name="BuildTime" xmlns:balance="uri:ea.com:eala:balance" xmlns:XmlEdit="http://tempuri.org/XmlEdit.xsd" balance:field="Build Time" type="SageReal" default="0.0" XmlEdit:Category="Design" />
+ </xs:extension></xs:complexContent></xs:complexType>
+ <xs:element name="GameObject" type="GameObject" />
+</xs:schema>

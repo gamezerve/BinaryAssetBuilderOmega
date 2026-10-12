@@ -8,7 +8,18 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 13, 2026
 
-The [GameObject armor-consumer slice](docs/RA3EP1_GAMEOBJECT_VERTICAL_SLICE.md)
+The new named-reference follow-up in the [GameObject armor-consumer slice](docs/RA3EP1_GAMEOBJECT_VERTICAL_SLICE.md)
+normalizes plain XML armor/DamageFX names through the actual Core reference
+handler, resolves stock and genuinely Core-built custom armor identities, and
+checks native import slots without captured numeric indices. A focused schema
+drift-checks the selected official declarations; this is not full official
+GameObject schema validation. Fourteen refusal controls and repeat/edited-source
+checks pass. The final batch passes **20/20** groups in **37.272 seconds**, plus
+a **5.31-second**, zero-warning/error build. GameObject publication and the h
+alpha remain unchanged. Next: complete module/native/token graph, then a mixed
+GameObject/armor Core stream, before exposing new consumers in Studio.
+
+The earlier [GameObject armor-consumer slice](docs/RA3EP1_GAMEOBJECT_VERTICAL_SLICE.md)
 now proves the stock root/token/native/dependency chain for Conscript and Allied
 Construction Yard. The existing marshaler reproduces their selected ArmorSet
 records and BuildTime, with exact relocation/import positions. Fifteen synthetic
@@ -69,7 +80,7 @@ expanded Full run passed 19/19 before the final routing/checksum refinements;
 see the linked backend report for exact evidence and rerun boundaries.
 
 The [batched offline test workflow](docs/RA3EP1_BATCH_TESTING.md) now builds once,
-runs 19 focused groups with isolated concurrent workers and aggregates failures
+runs 20 focused groups with isolated concurrent workers and aggregates failures
 without stopping the remaining groups. `-Full` adds broader compiler/armor
 regressions. Source-semantic diagnostic passes do not expand playable alpha
 capabilities or imply mixed-stream support.

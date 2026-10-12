@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: diagnostic named armor consumer only; this minimal graph is not a playable object or alpha build input. -->
+<GameObject xmlns="uri:ea.com:eala:asset" id="RebornConsumer" BuildTime="25">
+  <ArmorSet Armor="AlliedConYardArmor" DamageFX="FactionStructureDamageFX" />
+</GameObject>
