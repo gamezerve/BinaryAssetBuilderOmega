@@ -34,7 +34,7 @@ namespace BinaryAssetBuilder.Core
         private string _basePatchStreamRelativePath = string.Empty;
         private ManifestHeader _header;
         // Reborn: a diagnostic capability belongs to one manager/document only; null retains the unchanged production guard.
-        private readonly ExperimentalArmorOutputScope _experimentalArmorScope;
+        private readonly IExperimentalOutputScope _experimentalOutputScope;
 
         public SortedDictionary<string, BinaryAsset> Assets { get; } = new SortedDictionary<string, BinaryAsset>();
         public DocumentProcessor DocumentProcessor { get; }
@@ -59,6 +59,21 @@ namespace BinaryAssetBuilder.Core
             => CreateExperimentalArmorDiagnosticCore(processor, document, parentDirectory, true);
 
         //-------------------------------------------------------------------------------------------------
+        /** Reborn: separately admit one reviewed AK47 diagnostic in fresh owned output without enabling production weapons. */
+        //-------------------------------------------------------------------------------------------------
+        public static OutputManager CreateExperimentalWeaponDiagnostic(DocumentProcessor processor, AssetDeclarationDocument document, string parentDirectory)
+        {
+            if (!Directory.Exists(parentDirectory)) throw new InvalidDataException("Experimental output parent must already exist.");
+            ExperimentalArmorOutputScope.CheckAncestors(parentDirectory);
+            var scope = new ExperimentalWeaponOutputScope(processor, document);
+            string root = Path.Combine(parentDirectory, "RebornWeaponOutput-" + Guid.NewGuid().ToString("N"));
+            if (Directory.Exists(root) || File.Exists(root)) throw new InvalidDataException("Experimental output already exists.");
+            Directory.CreateDirectory(root);
+            File.WriteAllText(Path.Combine(root, "DIAGNOSTIC_ONLY.txt"), "Reborn: fixed AK47 scoped stream proof; not a playable package or general weapon compiler.\n");
+            return new OutputManager(processor, null, Path.Combine(root, "weapon"), Path.Combine(root, "intermediate"), null, null, Array.Empty<string>(), scope);
+        }
+
+        //-------------------------------------------------------------------------------------------------
         /** Reborn: create an owned manager only after the explicit single or pair capability freezes every member. */
         //-------------------------------------------------------------------------------------------------
         private static OutputManager CreateExperimentalArmorDiagnosticCore(DocumentProcessor processor, AssetDeclarationDocument document, string parentDirectory, bool pair)
@@ -79,29 +94,29 @@ namespace BinaryAssetBuilder.Core
         //-------------------------------------------------------------------------------------------------
         private void ValidateOutputPolicy(AssetDeclarationDocument document)
         {
-            if (_experimentalArmorScope == null) { DocumentProcessor.Plugins.ValidateProductionOutput(); return; }
-            _experimentalArmorScope.Validate(document);
+            if (_experimentalOutputScope == null) { DocumentProcessor.Plugins.ValidateProductionOutput(); return; }
+            _experimentalOutputScope.Validate(document);
             ExperimentalArmorOutputScope.CheckAncestors(Path.GetDirectoryName(OutputDirectory));
-            if (document == null || document.OutputInstances.Count != _experimentalArmorScope.InstanceCount || Assets.Count != _experimentalArmorScope.InstanceCount)
-                throw new InvalidDataException("Experimental armor output is incomplete.");
+            if (document == null || document.OutputInstances.Count != _experimentalOutputScope.InstanceCount || Assets.Count != _experimentalOutputScope.InstanceCount)
+                throw new InvalidDataException("Experimental scoped output is incomplete.");
             foreach (var asset in Assets.Values)
             {
-                if (asset.AssetOutputDirectory != _assetDirectory) throw new InvalidDataException("Experimental armor asset directory differs.");
-                _experimentalArmorScope.ValidateCommittedAsset(asset);
+                if (asset.AssetOutputDirectory != _assetDirectory) throw new InvalidDataException("Experimental scoped asset directory differs.");
+                _experimentalOutputScope.ValidateCommittedAsset(asset);
             }
         }
 
         //-------------------------------------------------------------------------------------------------
-        /** Reborn: only this manager's exact in-memory armor result may enter its fresh intermediate directory. */
+        /** Reborn: only this manager's family-scoped exact in-memory result may enter its fresh intermediate directory. */
         //-------------------------------------------------------------------------------------------------
         internal void ValidateAssetOutput(BinaryAsset asset)
         {
-            if (_experimentalArmorScope == null) { DocumentProcessor.Plugins.ValidateProductionOutput(); return; }
+            if (_experimentalOutputScope == null) { DocumentProcessor.Plugins.ValidateProductionOutput(); return; }
             ExperimentalArmorOutputScope.CheckAncestors(Path.GetDirectoryName(OutputDirectory));
             if (Directory.Exists(IntermediateOutputDirectory)) ExperimentalArmorOutputScope.CheckAncestors(IntermediateOutputDirectory);
             if (Directory.Exists(_assetDirectory)) ExperimentalArmorOutputScope.CheckAncestors(_assetDirectory);
-            if (Assets.Count < 1 || Assets.Count > _experimentalArmorScope.InstanceCount || !Assets.ContainsValue(asset)) throw new InvalidDataException("Foreign experimental asset refused.");
-            _experimentalArmorScope.ValidateAsset(asset);
+            if (Assets.Count < 1 || Assets.Count > _experimentalOutputScope.InstanceCount || !Assets.ContainsValue(asset)) throw new InvalidDataException("Foreign experimental asset refused.");
+            _experimentalOutputScope.ValidateAsset(asset);
         }
 
         public OutputManager(DocumentProcessor documentProcessor,
@@ -120,12 +135,12 @@ namespace BinaryAssetBuilder.Core
         //-------------------------------------------------------------------------------------------------
         private OutputManager(DocumentProcessor documentProcessor, IEnumerable<OutputAsset> lastOutputInstances,
             string outputDirectory, string intermediateOutputDirectory, string basePatchStream, string baseStreamRelativePath,
-            string[] baseStreamSearchPaths, ExperimentalArmorOutputScope experimentalArmorScope)
+            string[] baseStreamSearchPaths, IExperimentalOutputScope experimentalOutputScope)
         {
             // Reborn: production profile eligibility must be checked before the constructor moves/removes old output files.
-            if (experimentalArmorScope == null) documentProcessor?.Plugins.ValidateProductionOutput();
-            else experimentalArmorScope.Validate();
-            _experimentalArmorScope = experimentalArmorScope;
+            if (experimentalOutputScope == null) documentProcessor?.Plugins.ValidateProductionOutput();
+            else experimentalOutputScope.Validate();
+            _experimentalOutputScope = experimentalOutputScope;
             DocumentProcessor = documentProcessor;
             OutputDirectory = outputDirectory;
             IntermediateOutputDirectory = intermediateOutputDirectory;
@@ -647,7 +662,7 @@ namespace BinaryAssetBuilder.Core
         public void CleanOutput()
         {
             // Reborn: scoped diagnostics retain their intermediate evidence and never enter the broad cleanup path.
-            if (_experimentalArmorScope != null) throw new InvalidDataException("Experimental armor cleanup is disabled.");
+            if (_experimentalOutputScope != null) throw new InvalidDataException("Experimental scoped cleanup is disabled.");
             bool intermediateIsOutput = Path.GetFullPath(IntermediateOutputDirectory) == Path.GetFullPath(OutputDirectory);
             DirectoryInfo outputDirectory = new(OutputDirectory);
             if (outputDirectory.Exists)

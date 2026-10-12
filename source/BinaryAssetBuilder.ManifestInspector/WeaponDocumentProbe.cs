@@ -15,7 +15,7 @@ internal static class WeaponDocumentProbe
     //-------------------------------------------------------------------------------------------------
     /** Reborn: freeze a selected reference weapon and manifests, then compare baseline/repeat/edit through actual Core documents. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string source, string staticManifest, string globalManifest, string directory)
+    internal static void Run(string source, string staticManifest, string globalManifest, string directory, bool writeStreams = false)
     {
         directory = Path.GetFullPath(directory);
         if (Directory.Exists(directory) || File.Exists(directory) || !Directory.Exists(Path.GetDirectoryName(directory)))
@@ -45,7 +45,7 @@ internal static class WeaponDocumentProbe
                 CustomPostfix = "", StreamPostfix = "", ProcessedExternalManifests = snapshots,
                 StringHashBinDescriptors = Array.Empty<StringHashBinDescriptor>() };
             var profile = new Profile(); profile.Initialize(TargetPlatform.Win32);
-            var plugins = new PluginRegistry(Array.Empty<PluginDescriptor>(), TargetPlatform.Win32);
+            var plugins = new PluginRegistry(Array.Empty<PluginDescriptor>(), TargetPlatform.Win32) { DefaultPlugin = profile };
             plugins.AddPlugin(0x94D4D96Eu, profile);
             var cache = new SessionCache(); cache.InitializeCache(new List<string>());
             var processor = new DocumentProcessor(Settings.Current, plugins,
@@ -91,6 +91,39 @@ internal static class WeaponDocumentProbe
             if (!restored.Buffer.InstanceData.SequenceEqual(first.Buffer.InstanceData)
                 || restored.Instance.Handle.InstanceHash != first.Instance.Handle.InstanceHash)
                 throw new InvalidDataException("Restored Core weapon differs.");
+            // Reborn: the separate explicit stream command alone may enter the bounded weapon output factory.
+            string? streamManifest = null;
+            string? editedStreamManifest = null;
+            if (writeStreams)
+            {
+                Settings.Current.LinkedStreams = true;
+                Settings.Current.ExternalManifestReferences = "static.manifest;global.manifest";
+                streamManifest = WeaponStreamProbe.Write(directory, processor, restored.Document, restored.Instance, restored.Buffer);
+                var fresh = Process();
+                string repeatManifest = WeaponStreamProbe.Write(directory, processor, fresh.Document, fresh.Instance, fresh.Buffer);
+                foreach (string extension in new[] { ".manifest", ".bin", ".relo", ".imp" })
+                    if (!File.ReadAllBytes(Path.ChangeExtension(streamManifest, extension)).SequenceEqual(File.ReadAllBytes(Path.ChangeExtension(repeatManifest, extension))))
+                        throw new InvalidDataException("Repeated weapon streams differ.");
+                // Reborn: publish the authored edit through fresh Core identity/checksum state, then restore the owned source even on failure.
+                try
+                {
+                    File.WriteAllText(sourcePath, editXml.OuterXml);
+                    var streamEdit = Process();
+                    string editedManifest = WeaponStreamProbe.Write(directory, processor, streamEdit.Document, streamEdit.Instance, streamEdit.Buffer);
+                    editedStreamManifest = editedManifest;
+                    var originalManifest = ManifestReader.Read(File.ReadAllBytes(streamManifest));
+                    var changedManifest = ManifestReader.Read(File.ReadAllBytes(editedManifest));
+                    if (changedManifest.Assets.Single().InstanceHash == originalManifest.Assets.Single().InstanceHash
+                        || changedManifest.Header.StreamChecksum == originalManifest.Header.StreamChecksum
+                        || !File.ReadAllBytes(Path.ChangeExtension(editedManifest, ".bin")).AsSpan(8).SequenceEqual(edited.Buffer.InstanceData))
+                        throw new InvalidDataException("Weapon edited stream retained stale identity/checksum/payload.");
+                }
+                finally { File.WriteAllText(sourcePath, authored); }
+                var finalRestore = Process();
+                if (!finalRestore.Buffer.InstanceData.SequenceEqual(first.Buffer.InstanceData)
+                    || finalRestore.Instance.Handle.InstanceHash != first.Instance.Handle.InstanceHash)
+                    throw new InvalidDataException("Weapon stream source restoration retained changed bytes/hash.");
+            }
             if (Directory.EnumerateFiles(directory).Any(path => Path.GetExtension(path) is ".bin" or ".relo" or ".imp"))
                 throw new InvalidDataException("Document probe unexpectedly wrote streams.");
             var receipt = new { Asset = first.Instance.Handle.Name, CoreDocumentProcessed = true, CoreDependenciesPrepared = true,
@@ -98,6 +131,9 @@ internal static class WeaponDocumentProbe
                 BaselineInstanceHash = first.Instance.Handle.InstanceHash, EditedInstanceHash = edited.Instance.Handle.InstanceHash,
                 Dependencies = first.Instance.ValidatedReferencedInstances.Select(handle => handle.Name).ToArray(),
                 RepeatDeterministic = true, DamageEditIsolated = true, SourceRestoreVerified = true, NegativeControlsPassed = refusals,
+                DiagnosticStreamManifest = streamManifest, DiagnosticStreamsWritten = writeStreams,
+                EditedDiagnosticStreamManifest = editedStreamManifest,
+                EditedStreamVerified = writeStreams,
                 ProductionOutputWritten = false, ModPackageBuilt = false, GameExecuted = false };
             File.WriteAllText(Path.Combine(directory, "weapon-document.json"), JsonSerializer.Serialize(receipt, new JsonSerializerOptions { WriteIndented = true }));
             Console.WriteLine(JsonSerializer.Serialize(receipt, new JsonSerializerOptions { WriteIndented = true }));
@@ -117,7 +153,7 @@ internal static class WeaponDocumentProbe
             //-------------------------------------------------------------------------------------------------
             /** Reborn: use actual source loading, hashing, derived external resolution and checked plugin dispatch on each fresh attempt. */
             //-------------------------------------------------------------------------------------------------
-            (InstanceDeclaration Instance, AssetBuffer Buffer) Process()
+            (AssetDeclarationDocument Document, InstanceDeclaration Instance, AssetBuffer Buffer) Process()
             {
                 var document = processor.ProcessDocumentInternal(sourcePath, sourcePath, null!,
                     new DocumentProcessor.ProcessOptions { GenerateOutput = false, UsePrecompiled = false });
@@ -125,7 +161,7 @@ internal static class WeaponDocumentProbe
                 DependencyResolutionSmokeTest.Prepare(document, instance);
                 if (DependencyResolutionSmokeTest.Visited(document).Count != 1 || instance.AllDependentInstances.Count != 0)
                     throw new InvalidDataException("Stock weapon references queued local dependency compilation.");
-                return (instance, plugins.GetPlugin(instance.Handle.TypeId).ProcessInstance(instance));
+                return (document, instance, plugins.GetPlugin(instance.Handle.TypeId).ProcessInstance(instance));
             }
         }
         finally { Settings.Current = saved; }

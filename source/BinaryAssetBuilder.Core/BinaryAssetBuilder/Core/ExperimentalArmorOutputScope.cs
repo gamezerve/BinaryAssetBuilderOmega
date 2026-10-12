@@ -7,7 +7,7 @@ using BinaryAssetBuilder.Utility;
 namespace BinaryAssetBuilder.Core;
 
 // Reborn: private per-manager diagnostic capability, not production eligibility or a mutable global output switch.
-internal sealed class ExperimentalArmorOutputScope
+internal sealed class ExperimentalArmorOutputScope : IExperimentalOutputScope
 {
     private readonly DocumentProcessor _processor;
     private readonly AssetDeclarationDocument _document;
@@ -21,7 +21,7 @@ internal sealed class ExperimentalArmorOutputScope
     // Reborn: pair admission is a separate opt-in; each original instance retains its own frozen proof.
     private readonly InstanceDeclaration[] _allowedInstances;
     private readonly ExperimentalArmorOutputScope _peer;
-    internal int InstanceCount => _allowedInstances.Length;
+    public int InstanceCount => _allowedInstances.Length;
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: freeze one normalized armor declaration and its compiler bytes before any output directory is created. */
@@ -66,7 +66,7 @@ internal sealed class ExperimentalArmorOutputScope
     //-------------------------------------------------------------------------------------------------
     /** Reborn: reject changed profile, settings, source, identity, dependencies or selected document before every scoped write. */
     //-------------------------------------------------------------------------------------------------
-    internal void Validate(AssetDeclarationDocument document = null)
+    public void Validate(AssetDeclarationDocument document = null)
     {
         var policy = _plugin as IAssetBuilderOutputPolicy;
         var metadata = _plugin.GetExtendedTypeInformation(0x3A6C5E8Eu);
@@ -100,7 +100,7 @@ internal sealed class ExperimentalArmorOutputScope
     //-------------------------------------------------------------------------------------------------
     /** Reborn: intermediate commits must contain exactly the bound compiler result, never cache/local data or a foreign declaration. */
     //-------------------------------------------------------------------------------------------------
-    internal void ValidateAsset(BinaryAsset asset)
+    public void ValidateAsset(BinaryAsset asset)
     {
         Validate();
         // Reborn: route to the peer's own frozen bytes, never accept the first asset's identity for the second buffer.
@@ -115,7 +115,7 @@ internal sealed class ExperimentalArmorOutputScope
     //-------------------------------------------------------------------------------------------------
     /** Reborn: refuse intermediate tampering before manifest/link writes, including equal-length payload changes. */
     //-------------------------------------------------------------------------------------------------
-    internal void ValidateCommittedAsset(BinaryAsset asset)
+    public void ValidateCommittedAsset(BinaryAsset asset)
     {
         // Reborn: all members must stay valid before independently checking this member's committed header/payload.
         Validate();

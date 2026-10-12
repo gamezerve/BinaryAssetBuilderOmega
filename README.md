@@ -25,8 +25,12 @@ schema/control/dependency refusals pass. A new private document diagnostic now
 loads the authored weapon through DocumentProcessor, prepares actual external
 dependencies and dispatches a checked weapon plugin. Its stock baseline,
 repeat, isolated Damage=50 edit and restored source/hash pass, together with
-four additional refusal controls. Production stream publication remains a
-separate gate; this does not expand alpha support.
+four additional refusal controls. A separately opted-in scoped OutputManager
+now writes the actual intermediate asset and linked v7 manifest/BIN/RELO/IMP;
+two readers verify ordered dependencies and runtime external paths. Baseline
+repeat, Damage=50 hash/checksum/payload invalidation and nine scoped refusal
+controls pass. This is diagnostic stream output, not a playable package or
+expanded alpha support. Package/load validation remains a separate gate.
 Full weapon tokenization and dependency
 proof are not yet complete; WeaponTemplate stays disabled in the alpha.
 
