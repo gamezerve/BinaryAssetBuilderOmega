@@ -38,7 +38,9 @@ October 13 source follow-up: the [armor source bridge](RA3EP1_ARMOR_SOURCE_BRIDG
 connects captured instance/definition Includes, imported/local inheritance and
 exact field substitutions to real scoped armor set publication. Defining source
 contexts and raw closure hashes remain explicit. This closes a source-to-output
-integration gap for the bounded armor subset; Studio admission, full list-merge
+integration gap for the bounded armor subset. The source-enabled alpha now wires
+this route into the existing Studio driver with ALPHA004, leaving old golden
+samples unchanged. Full list-merge
 semantics and consuming GameObject/runtime publication remain open.
 
 October 13: [general armor authoring](RA3EP1_GENERAL_ARMOR_AUTHORING.md)
@@ -46,7 +48,7 @@ connects user-selected IDs, variable list lengths, decimal/% literals and schema
 defaults to actual Core/scoped streams and offline default-reader packaging.
 The separate set command now connects 1..32 distinct user-defined armors to one
 Core manifest/linked stream, with duplicate lookup-ID rejection and per-member
-scope freezing. This is a shared type path, not a new fixed-unit recipe. Alpha adapter admission,
+scope freezing. This is a shared type path, not a new fixed-unit recipe. Actual updated GUI observation,
 mixed types, broader source/list-merge semantics and consuming GameObject
 publication remain the next integration gates; no new gameplay proof is claimed.
 

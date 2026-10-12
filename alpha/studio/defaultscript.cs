@@ -49,7 +49,7 @@ namespace EALABuild
             string input = Path.Combine(Path.Combine(Path.Combine(StaticPaths.CurrentDirectory, "mods"), name), "data\\mod.xml");
             CheckPath(input);
             BuildHelper.CurrentBuildSteps = 1;
-            BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha; supported build: yard armor percentages or AK47 Damage 0..10000. Mixed types and other capabilities are not silently compiled.");
+            BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha; fixed yard/AK47 samples or experimental armor source declarations. Unsupported/mixed assets fail; new source packages need runtime testing.");
             RunExecutableArguments request = new RunExecutableArguments(runtime);
             // Reborn: bind every Studio build to the configured read-only stock baseline.
             request.Arguments = "-NoProfile -File \"" + driver + "\" -ModXml \"" + input + "\" -StaticManifest \"" + staticManifest
@@ -85,7 +85,7 @@ namespace EALABuild
         {
             List<GUIElementData> options = new List<GUIElementData>();
             options.Add(new GUIElementData("alpha", "Uprising Alpha: Validate XML / Build Data / Make BIG", GUIElementData.LabelType, ScriptIndex.ModScript));
-            options.Add(new GUIElementData("scope", "1 or 2 Allied/Soviet yard armors: 18 percentages each, integer 0..10000", GUIElementData.LabelType, ScriptIndex.ModScript));
+            options.Add(new GUIElementData("scope", "Fixed yard samples or 1..32 source armors with Includes/Defines/inheritFrom (experimental)", GUIElementData.LabelType, ScriptIndex.ModScript));
             options.Add(new GUIElementData("weapon", "Or 1 Conscript AK47: Damage 0..10000 only; no mixed armor/weapon stream", GUIElementData.LabelType, ScriptIndex.ModScript));
             return options;
         }

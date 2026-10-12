@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: definition-only all Include supplies literal coefficients; no runtime consumption or asset export is implied. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+ <Defines><Define name="GUN" value="5000"/><Define name="DEFAULT" value="100"/></Defines>
+</AssetDeclaration>

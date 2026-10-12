@@ -14,11 +14,13 @@ internal static class GeneralArmorSourceBuild
     //-------------------------------------------------------------------------------------------------
     /** Reborn: capture/recheck confined armor sources, hold read-only Windows sharing locks, prepare inheritance/defines then compile one owner stream. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string sourceRoot, string entry, string output)
+    internal static void Run(string sourceRoot, string entry, string output, bool validateOnly = false)
     {
         sourceRoot = SdkEnvironmentPreflight.DirectoryPath(sourceRoot);
         entry = SdkEnvironmentPreflight.Absolute(entry); output = SdkEnvironmentPreflight.Absolute(output);
-        var environment = SdkEnvironmentPreflight.Inspect("ra3ep1", SdkEnvironmentPreflight.BaselineSchemaRoot(), sourceRoot, entry, output, Array.Empty<string>());
+        // Reborn: focused armor deployments carry only their reviewed schema graph, not the full SDK catalog or a developer checkout.
+        string schemaPath = Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!, "ArmorSourcePipeline.xsd");
+        var environment = SourceEnvironment(sourceRoot, entry, output, schemaPath);
         var paths = SdkSourcePathAudit.Inspect(environment);
         if (!paths.ScopedPathAuditComplete || paths.StoppedAtLimit || paths.Sources.Length > 32 || paths.Includes.Length > 64 || paths.Resources.Length != 0)
             throw new InvalidDataException("Armor source build requires complete 1..32-source/64-edge file-free path inventory: "
@@ -45,7 +47,7 @@ internal static class GeneralArmorSourceBuild
                 snapshots.Add(source.PhysicalPath, bytes);
             }
             var schemas = new XmlSchemaSet { XmlResolver = new XmlUrlResolver() };
-            schemas.Add(null, Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!, "ArmorSourcePipeline.xsd"));
+            schemas.Add(null, schemaPath);
             schemas.Compile();
             var result = new SdkInstanceInheritanceProfile(schemas, paths, expressions: true).Apply(entry, snapshots[entry]);
             if (result.Bytes == null) throw new InvalidDataException("Armor source preparation: " + string.Join("; ", result.Evidence.Diagnostics));
@@ -57,8 +59,17 @@ internal static class GeneralArmorSourceBuild
             foreach (var metadata in prepared.DocumentElement!.ChildNodes.OfType<XmlElement>().Where(node => node.LocalName is "Tags" or "Includes" or "Defines").ToArray())
                 prepared.DocumentElement.RemoveChild(metadata);
             byte[] normalized = Encoding.UTF8.GetBytes(prepared.OuterXml);
-            GeneralArmorAuthoredBuild.AdmitSet(normalized);
+            var admitted = GeneralArmorAuthoredBuild.AdmitSet(normalized);
             VerifySnapshots();
+            // Reborn: Studio validation-only requests must prepare/schema-check the whole graph without native compilation, directory or package publication.
+            if (validateOnly)
+            {
+                Console.WriteLine(JsonSerializer.Serialize(new { ArmorCount = admitted.Length, SourceCount = paths.Sources.Length,
+                    Sources = paths.Sources,
+                    PreparedSha256 = Convert.ToHexString(SHA256.HashData(normalized)), ValidationOnly = true,
+                    GameExecuted = false, OutputCreated = false }));
+                return;
+            }
             // Reborn: preparation cannot authorize overwriting a directory that appeared after the initial preflight.
             SdkEnvironmentPreflight.CheckPath(Path.GetDirectoryName(output)!);
             if (Directory.Exists(output) || File.Exists(output)) throw new InvalidDataException("Armor source output already exists.");
@@ -92,6 +103,23 @@ internal static class GeneralArmorSourceBuild
             }
         }
         finally { foreach (var stream in locks) stream.Dispose(); }
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: validate explicit confined source/output geometry for the focused schema harness without falsely claiming full catalog parity. */
+    //-------------------------------------------------------------------------------------------------
+    private static SdkEnvironmentPreflight.Report SourceEnvironment(string root, string entry, string output, string schemaPath)
+    {
+        string schemaRoot = SdkEnvironmentPreflight.DirectoryPath(Path.GetDirectoryName(schemaPath)!);
+        SdkEnvironmentPreflight.CheckPath(schemaPath);
+        SdkEnvironmentPreflight.DirectoryPath(Path.GetDirectoryName(output)!);
+        if (!entry.EndsWith(".xml", StringComparison.OrdinalIgnoreCase) || !SdkEnvironmentPreflight.Inside(root, entry)
+            || SdkEnvironmentPreflight.Inside(root, output) || SdkEnvironmentPreflight.Inside(schemaRoot, output)
+            || Directory.Exists(output) || File.Exists(output)) throw new InvalidDataException("Focused armor entry/output geometry is unsupported or occupied.");
+        byte[] bytes = SdkEnvironmentPreflight.Read(entry, 65536); Parse(bytes);
+        return new("ra3ep1", schemaRoot, schemaPath, 0, "", root, entry, Convert.ToHexString(SHA256.HashData(bytes)), output,
+            Array.Empty<SdkEnvironmentPreflight.Mapping>(), true, true, false, false, false, "0x5454A8E9",
+            new[] { "Focused armor path geometry only; full SDK schema catalog parity is not asserted." });
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -147,6 +175,9 @@ internal static class GeneralArmorSourceBuild
         const string ownerBody = "<Includes><Include type='instance' source='Middle.xml'/><Include type='all' source='Defs.xml'/></Includes><Defines><Define name='OWN' value='40'/></Defines><ArmorTemplate id='Owner' inheritFrom='ArmorTemplate:MiddleBase' SideDamageScalar='=$SIDE'/><ArmorTemplate id='LocalBase' Default='=$OWN'/><ArmorTemplate id='LocalDerived' inheritFrom='LocalBase' RearDamageScalar='25%'><Armor Damage='CANNON' Percent='10'/></ArmorTemplate>";
         Fixture(ownerBody);
         var before = Directory.GetFiles(data).ToDictionary(path => path, File.ReadAllBytes);
+        // Reborn: preparation-only validation must not create output or depend on a full CnC3Types catalog in deployment.
+        string validation = Path.Combine(directory, "v"); Run(data, entry, validation, true);
+        if (Directory.Exists(validation)) throw new InvalidDataException("Validation-only armor source created output.");
         string output = Path.Combine(directory, "b"); Run(data, entry, output);
         string repeat = Path.Combine(directory, "r"); Run(data, entry, repeat);
         using var receipt = JsonDocument.Parse(File.ReadAllText(Path.Combine(output, "armor-source-build.json")));

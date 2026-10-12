@@ -67,6 +67,59 @@ foreach($name in @('Reborn','Armor250','ArmorCannon','SovietArmor','CombinedArmo
     if($text.Contains('Error: ALPHA100') -or $text.Contains('Critical: ALPHA101')){throw 'Successful build emitted a failure diagnostic.'}
     $rows.Add([pscustomobject]@{Sample=$name;GunPercent=$expected;Receipt=(Join-Path $created[0].FullName 'alpha-build.json');ArchiveSha256=$digest})
 }
+# Reborn: source-aware workspaces use the same selected-mod driver with only the focused schema allowlist and no source repository.
+if(Test-Path -LiteralPath (Join-Path $Workspace 'mods/ArmorSource/data/mod.xml')){
+    if(Test-Path -LiteralPath (Join-Path $Workspace 'schemas/ra3ep1/xsd/CnC3Types.xsd')){throw 'Source alpha test unexpectedly relies on a full SDK catalog.'}
+    $sample=Join-Path $Workspace 'mods/ArmorSource/data/mod.xml'
+    $before=@(Get-ChildItem -LiteralPath $output -Directory).FullName
+    $log=Join-Path $test 'ArmorSource.log'
+    & $runtime -NoProfile -File $driver -ModXml $sample -StaticManifest $StaticManifest -CompilerDirectory $compiler -OutputRoot $output *> $log
+    if($LASTEXITCODE-ne 0){throw ('Armor source workspace build failed: '+$log)}
+    $created=@(Get-ChildItem -LiteralPath $output -Directory|Where-Object FullName -NotIn $before)
+    if($created.Count-ne 1){throw 'Expected one fresh source alpha output.'}
+    $receipt=Get-Content -LiteralPath (Join-Path $created[0].FullName 'alpha-build.json') -Raw|ConvertFrom-Json
+    $source=Get-Content -LiteralPath $receipt.SourceReceipt -Raw|ConvertFrom-Json
+    $build=Get-Content -LiteralPath $receipt.BuildReceipt -Raw|ConvertFrom-Json
+    if($receipt.Profile-cne 'armor-source' -or $receipt.ArmorCount-ne 2 -or $source.ArmorCount-ne 2 -or @($source.Sources).Count-ne 3 -or @($build.ArmorIds).Count-ne 2 -or $build.ArmorIds -cnotcontains 'AlliedConYardArmor' -or $build.ArmorIds -cnotcontains 'RebornNewArmor' -or $build.ArmorIds -ccontains 'RebornSourceBase' -or -not $source.OwnerOnlyOutput -or -not $source.SourceSnapshotsVerified -or $receipt.GameExecuted -or $receipt.RuntimeOverrideProven -or -not $receipt.PrebuiltCompilerUsed -or $receipt.CompilerPath-cne (Join-Path $compiler 'BinaryAssetBuilder.ManifestInspector.exe')){throw 'Source alpha selection/provenance/consumer boundary differs.'}
+    if((Get-FileHash -LiteralPath $receipt.PackagePath -Algorithm SHA256).Hash-cne $build.DefaultReaderPackageSha256 -or -not $build.ActualCoreOutputUsed -or -not $build.AuthoredPayloadVerified -or -not $build.DefaultReaderPackage){throw 'Source alpha native/package proof differs.'}
+    $text=Get-Content -LiteralPath $log -Raw
+    if(-not $text.Contains('Warning: ALPHA004') -or $text.Contains('Critical: ALPHA101') -or $text.Contains('Error: ALPHA100') -or (Test-Path -LiteralPath (Join-Path $created[0].FullName 'compiler-build.log'))){throw 'Source alpha callback/prebuilt boundary differs.'}
+    $rows.Add([pscustomobject]@{Sample='ArmorSource';ArmorCount=2;ArchiveSha256=$build.DefaultReaderPackageSha256;Receipt=(Join-Path $created[0].FullName 'alpha-build.json')})
+    # Reborn: validation must prepare Includes without producing native output, a BIG or successful alpha receipt.
+    $before=@(Get-ChildItem -LiteralPath $output -Directory).FullName;$log=Join-Path $test 'source-validation.log'
+    & $runtime -NoProfile -File $driver -ModXml $sample -ValidateOnly -StaticManifest $StaticManifest -CompilerDirectory $compiler -OutputRoot $output *> $log
+    if($LASTEXITCODE-ne 0){throw 'Source validation-only failed.'}
+    $validation=@(Get-ChildItem -LiteralPath $output -Directory|Where-Object FullName -NotIn $before)
+    if($validation.Count-ne 1 -or (Test-Path -LiteralPath (Join-Path $validation[0].FullName 'alpha-build.json')) -or @(Get-ChildItem -LiteralPath $validation[0].FullName -Recurse -Filter '*.big').Count-ne 0){throw 'Source validation-only published a package.'}
+    # Reborn: a plain three-member authored declaration automatically selects the new source route, without Includes or a sidecar flag.
+    $multi=Join-Path $test 'multi.xml'
+    [IO.File]::WriteAllText($multi,'<!-- Reborn: owned general declaration fixture. --><AssetDeclaration xmlns="uri:ea.com:eala:asset"><ArmorTemplate id="First"/><ArmorTemplate id="Second"><Armor Damage="GUN" Percent="250.5"/></ArmorTemplate><ArmorTemplate id="Third" Default="75.5%"/></AssetDeclaration>')
+    $before=@(Get-ChildItem -LiteralPath $output -Directory).FullName;$log=Join-Path $test 'multi.log'
+    & $runtime -NoProfile -File $driver -ModXml $multi -StaticManifest $StaticManifest -CompilerDirectory $compiler -OutputRoot $output *> $log
+    if($LASTEXITCODE-ne 0){throw ('General declaration alpha build failed: '+$log)}
+    $created=@(Get-ChildItem -LiteralPath $output -Directory|Where-Object FullName -NotIn $before)
+    if($created.Count-ne 1){throw 'General declaration produced unexpected outputs.'}
+    $multiReceipt=Get-Content -LiteralPath (Join-Path $created[0].FullName 'alpha-build.json') -Raw|ConvertFrom-Json
+    if($multiReceipt.Profile-cne 'armor-source' -or $multiReceipt.ArmorCount-ne 3){throw 'General declaration routing differs.'}
+    # Reborn: unsupported source features must mark the actual Studio callback as failed, with no final alpha receipt.
+    foreach($fault in @('missing-include','unknown-define','duplicate-id','mixed-source','arithmetic')){
+        $bad=switch($fault){
+            'missing-include'{'<Includes><Include type="instance" source="Missing.xml"/></Includes><ArmorTemplate id="Bad"/>'}
+            'unknown-define'{'<Defines/><ArmorTemplate id="Bad" Default="=$UNKNOWN"/>'}
+            'duplicate-id'{'<ArmorTemplate id="Bad"/><ArmorTemplate id="bad"/>'}
+            'mixed-source'{'<Defines/><ArmorTemplate id="Bad"/><WeaponTemplate id="BadWeapon"/>'}
+            'arithmetic'{'<Defines/><ArmorTemplate id="Bad" Default="=1+2"/>'}
+        }
+        $input=Join-Path $test ($fault+'.xml');[IO.File]::WriteAllText($input,('<AssetDeclaration xmlns="uri:ea.com:eala:asset">'+$bad+'</AssetDeclaration>'))
+        $before=@(Get-ChildItem -LiteralPath $output -Directory).FullName;$log=Join-Path $test ($fault+'.log')
+        & $runtime -NoProfile -File $driver -ModXml $input -StaticManifest $StaticManifest -CompilerDirectory $compiler -OutputRoot $output *> $log
+        $code=$LASTEXITCODE;$text=Get-Content -LiteralPath $log -Raw
+        if($code-ne 1 -or -not $text.Contains('Error: ALPHA100') -or -not $text.Contains('Critical: ALPHA101')){throw 'Source refusal callback differs.'}
+        foreach($partial in @(Get-ChildItem -LiteralPath $output -Directory|Where-Object FullName -NotIn $before)){
+            if(Test-Path -LiteralPath (Join-Path $partial.FullName 'alpha-build.json')){throw 'Failed source input published a successful alpha receipt.'}
+        }
+    }
+}
 # Reborn: a DTD in an owned negative fixture must fail before publishing any success receipt/package.
 $invalid=Join-Path $test 'invalid.xml'
 [IO.File]::WriteAllText($invalid,'<!-- Reborn: owned rejection fixture. --><!DOCTYPE x [<!ENTITY x "1">]><ArmorTemplate xmlns="uri:ea.com:eala:asset" id="AlliedConYardArmor"/>')

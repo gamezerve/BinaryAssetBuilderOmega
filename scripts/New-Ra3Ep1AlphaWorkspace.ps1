@@ -49,6 +49,7 @@ foreach($name in @('BinaryAssetBuilder.ManifestInspector.exe','BinaryAssetBuilde
 }
 foreach($relative in @('scripts/Invoke-Ra3Ep1AlphaBuild.ps1','LICENSE','alpha/README.md',
     'tests/fixtures/ReferencePipeline.xsd','tests/fixtures/ArmorDocumentPipeline.xsd',
+    'tests/fixtures/ArmorSourcePipeline.xsd',
     'tests/fixtures/ArmorTokenPipeline.xsd','tests/fixtures/AlliedConYardArmorProbe.xml',
     'schemas/ra3ep1/xsd/Includes/Base.xsd','schemas/ra3ep1/xsd/Base/AssetBase.xsd',
     'schemas/ra3ep1/xsd/Includes/Ref.xsd','schemas/ra3ep1/xsd/Includes/DamageDef.xsd','schemas/ra3ep1/xsd/AssetTypeArmorTemplate.xsd')){
@@ -69,6 +70,10 @@ foreach($relative in @('tests/fixtures/WeaponDocumentPipeline.xsd','tests/fixtur
 }
 # Reborn: the complete stock-shaped weapon sample edits only Damage; no armor asset is bundled with it.
 $files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/mods/ConscriptAK47/data/mod.xml');Relative='mods/ConscriptAK47/data/mod.xml';Origin='project-sample'})
+# Reborn: explicitly copy the entire reviewed source sample closure, never scan/include arbitrary mod directories.
+foreach($name in @('mod.xml','Base.xml','Defs.xml')){
+    $files.Add([pscustomobject]@{Source=(Join-Path $repo ('alpha/mods/ArmorSource/data/'+$name));Relative=('mods/ArmorSource/data/'+$name);Origin='project-sample'})
+}
 $files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/studio/defaultscript.cs');Relative='defaultscript.cs';Origin='project-adapter'})
 $files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/Documentation/index.htm');Relative='Documentation/index.htm';Origin='project-local-help'})
 $files.Add([pscustomobject]@{Source=(Join-Path $repo 'alpha/studio/EALAModStudio.exe.config');Relative='EALAModStudio.exe.config';Origin='project-isolated-CLR4-config'})

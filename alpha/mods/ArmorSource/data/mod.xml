@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: source-mode sample publishes one inherited stock-identity override and one new unconsumed armor in one stream. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+ <Includes><Include type="instance" source="DATA:Base.xml"/><Include type="all" source="DATA:Defs.xml"/></Includes>
+ <ArmorTemplate id="AlliedConYardArmor" inheritFrom="RebornSourceBase" Default="=$DEFAULT"/>
+ <ArmorTemplate id="RebornNewArmor" Default="75.5%"><Armor Damage="CANNON" Percent="25%"/></ArmorTemplate>
+</AssetDeclaration>

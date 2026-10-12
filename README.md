@@ -8,11 +8,21 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 13, 2026
 
+The source-enabled local alpha `UprisingAlpha-20261013-h` now connects the general
+armor source bridge to the existing Studio build driver. Its new `ArmorSource`
+sample combines Includes, `$` definitions, inheritance and custom IDs in one
+real Core/package build, with explicit ALPHA004 experimental warnings. Eight
+samples pass in a source-tree-free workspace and fresh ZIP extraction; the seven
+old golden package hashes remain unchanged. Exact-reference CLR4 script loading
+passes without opening Studio. The new package has no gameplay proof or automatic
+GameObject consumers. See the [source integration report](docs/RA3EP1_ALPHA_SOURCE_INTEGRATION.md)
+and [alpha authoring guide](alpha/README.md) for limits and the next user GUI test.
+
 The new [armor source bridge](docs/RA3EP1_ARMOR_SOURCE_BRIDGE.md) connects confined
 instance Includes, definition-only all Includes, local/imported inheritance and
 exact `=$NAME` field substitution to the real general armor Core/package path.
 It preserves defining-source contexts and publishes only owner-declared armors.
-The literal single/set commands and exported g alpha remain unchanged; arbitrary
+The literal single/set commands and preserved g alpha remain unchanged; arbitrary
 arithmetic and duplicate-damage inherited list replacement are not enabled.
 Final source-bridge regression passes **18/18** focused groups in **43.618
 seconds**, plus a 5.33-second incremental compiler build with zero warnings/errors.
@@ -30,7 +40,7 @@ armors in one real Core stream, rejects duplicate names/lookup IDs and validates
 every member's cumulative BIN/RELO/IMP slice through two readers.
 The literal commands still refuse inheritance/includes/definitions/mixed types;
 the source command above adds a separate bounded preparation path. The exported
-g alpha is unchanged pending adapter integration. New IDs
+g alpha is unchanged; the new h alpha adds the separate source adapter. New IDs
 need consuming GameObjects before they can visibly affect gameplay.
 Earlier single-armor focused regression: 16/16 groups pass in about 26 seconds, plus a roughly
 5-second incremental compiler build; existing armor/weapon behavior stays covered.
@@ -106,11 +116,12 @@ separates current alpha errors from planned general XML/schema, definition,
 W3X/reference and post-build integrity checks. The modified reference SDK's
 hash-fix chain is not blindly executed against Uprising output.
 
-Current armor authoring is bounded, not arbitrary: at most one AlliedConYardArmor
+Legacy fixed armor authoring remains bounded: at most one AlliedConYardArmor
 and one SovietConYardArmor per build, thirteen ordered damage entries each plus
 five optional root scalars, canonical integer percentages 0..10000. New IDs,
 changed list shapes and `inheritFrom` are rejected. Existing generic inheritance
-diagnostics do not mean inheritance is enabled in the alpha authoring path.
+diagnostics alone do not enable inheritance in that legacy path. The new
+experimental h source route supports the reviewed inheritance subset above.
 
 The first narrow ArmorTemplate override now works in-game by user observation:
 AlliedConYardArmor GUN 100 → 5000 caused markedly increased damage with the
@@ -136,7 +147,7 @@ The reference XML also binds Japan's yard and one civilian
 building to this shared armor. The separately authorized Soviet GUN=5000 trial
 now also has user-reported increased damage with the requested Conscript test.
 Japan/civilian consumers and foreign-identity gameplay controls remain untested.
-Current local candidate: `UprisingAlpha-20261012-g`, with seven offline-verified
+Previous local candidate: `UprisingAlpha-20261012-g`, with seven offline-verified
 samples including CombinedArmor, CombinedStrong and ConscriptAK47. Its fresh overlay extraction
 also passes; the new workspace GUI has not yet been observed.
 The combined package now has user-reported markedly increased Conscript damage

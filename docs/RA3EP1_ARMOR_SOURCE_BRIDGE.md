@@ -2,7 +2,7 @@
 
 `GeneralArmorSourceBuild.cs` connects the existing captured Include/definition/
 inheritance profile to the general armor set compiler. This is an offline CLI
-backend milestone, not a new exported Studio alpha or runtime certification.
+backend milestone, now connected to an experimental Studio alpha route, not runtime certification.
 The old literal single/set commands keep their original admission rules.
 
 ## Workflow
@@ -12,7 +12,9 @@ explicit existing source root and an EA AssetDeclaration entry inside it. Output
 must be fresh and outside that root. No registry/environment lookup, installation,
 game launch or stock-file replacement occurs.
 
-The source graph is audited with SdkEnvironmentPreflight/SdkSourcePathAudit.
+The source graph is audited with a focused source/output geometry check and
+SdkSourcePathAudit. It does not require or claim full SDK schema-catalog parity;
+the staged armor schema dependencies and focused harness suffice for this route.
 Every captured XML is rechecked against its SHA-256 and held with FileShare.Read
 through preparation and compilation. On Windows this denies concurrent writes
 and deletion. Schema types come from the staged official EP1 files via the focused
@@ -96,7 +98,7 @@ Source checks are bounded current snapshots, not protection against malicious
 filesystem races or a general cross-platform transactional build. Staged schema
 catalog parity is not EA ProcessingHash/type-table equivalence. New IDs still
 need consuming GameObjects for observable gameplay; stock collision inventories,
-GameObject publication, Studio integration and art/custom-data remain separate
+GameObject publication, actual new Studio GUI observation and art/custom-data remain separate
 gates. No new gameplay proof is claimed.
 
 ## Regression
@@ -115,7 +117,14 @@ override directives and unsupported two-sided duplicate-damage list behavior.
 
 The batch matrix now has 18 focused groups and 20 with Full enabled. Existing
 literal armor, fixed armor/weapon and diagnostic source regressions stay
-independent; this connection does not relax their policies or the exported alpha.
+independent; this connection does not relax their policies. The experimental alpha
+route is separately warned and never used as a fallback after a failed fixed input.
+
+`armor-source-preflight` accepts the same arguments and emits a validation summary
+without creating the requested output directory or compiling a package. The alpha
+driver compares all original source hashes and the prepared digest between this
+admission and the real build before publishing its final receipt. See the alpha
+README for the supported source subset and automatic route selection.
 
 Final verification on October 13: **18/18** focused groups passed in **43.618
 seconds**, excluding a **5.33-second** incremental Release/x86 build with zero

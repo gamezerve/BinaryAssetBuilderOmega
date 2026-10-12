@@ -27,8 +27,21 @@ Results are under builtmods/RebornAlphaInput-&lt;guid&gt;. Read alpha-build.json
 Only Damage may change (integer 0..10000, optional .0); all other fields stay as supplied.
 The sample uses Damage=50. An earlier diagnostic package has user-observed increased damage;
 new builds remain experimental. Armor and weapon assets cannot share a build in this alpha.</p>
+<!-- Reborn: expose the bounded source bridge separately from the proven fixed-shape samples. -->
+<h2>Experimental armor source build</h2>
+<p>Select ArmorSource for a three-file Includes/Defines/inheritFrom example producing
+AlliedConYardArmor and RebornNewArmor; imported bases are not emitted. ALPHA004
+warns that this package has no gameplay proof and new IDs need consuming GameObjects.</p>
+<p>Armor-only source declarations accept 1..32 owner IDs, 0..64 unique non-ALL damage
+entries each, and unsigned finite percentages 0..10000 with optional decimals/%.
+Exact =$NAME fields, reviewed definition forms, local/imported inheritance,
+directly visible instance bases and Include-free definition-only all leaves are supported.
+The graph is confined to the mod data root (32 sources, 64 edges, 64 KiB/file, one MiB total).
+Child replacement by Damage, same-ID source shadowing, definition overrides,
+arbitrary expressions/all Includes, reference Includes and nonempty Tags are rejected.
+Read README.md for route selection and validation-only usage. Old sample routes remain unchanged.</p>
 <h2>Not supported by this alpha</h2>
-<p>Other asset identities/types, includes, inheritance, models, textures, music, maps,
+<p>Other asset types, mixed armor/weapon streams, models, textures, music, maps,
 LOD selection, STR processing, automatic installation and game launch are not build-enabled here.</p>
 <h2>Configuration and prerequisites</h2>
 <p>uprising-alpha.paths contains five literal absolute paths: PowerShell7, Driver, StaticManifest, GlobalManifest and CompilerDirectory.
@@ -36,6 +49,6 @@ GlobalManifest is required for weapon builds; legacy four-key armor configuratio
 Update Driver and CompilerDirectory after relocation. PowerShell 7, x86 .NET 8,
 compatible .NET Framework 4 and unpacked Uprising stock streams are required.</p>
 <p>No stock archive is replaced. The SKU is a mod fragment, not a replacement game SKU.
-Duplicate identities, a third asset or unsupported input fail the whole build. New builds are not automatically gameplay-verified.</p>
+Duplicate identities or unsupported input fail the whole build. New builds are not automatically gameplay-verified.</p>
 <p>Local use only: EA components come from your own SDK. Public redistribution review is incomplete.</p>
 </body></html>

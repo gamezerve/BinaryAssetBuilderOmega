@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: inherited source sample is not compiled as a separate owner asset; GUN 5000 is prepared from its defining context. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+ <Includes><Include type="all" source="DATA:Defs.xml"/></Includes>
+ <ArmorTemplate id="RebornSourceBase">
+  <Armor Damage="GUN" Percent="=$GUN"/>
+  <Armor Damage="CANNON" Percent="100"/>
+ </ArmorTemplate>
+</AssetDeclaration>

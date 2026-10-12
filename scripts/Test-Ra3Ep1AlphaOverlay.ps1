@@ -22,8 +22,8 @@ Expand-Archive -LiteralPath $Archive -DestinationPath $OutputDirectory
 Expand-Archive -LiteralPath $Archive -DestinationPath $negative
 $runtime=(Get-Process -Id $PID).Path
 $manifest=Get-Content -LiteralPath (Join-Path $OutputDirectory 'overlay-manifest.json') -Raw|ConvertFrom-Json
-# Reborn: admit the pinned legacy armor or seven-sample weapon inventory; all external EA/schema dependencies remain excluded.
-if(-not (($manifest.Files.Count-eq 30 -and $manifest.Requirements.Count-eq 8) -or ($manifest.Files.Count-eq 33 -and $manifest.Requirements.Count-eq 24))){throw 'Unexpected overlay inventory.'}
+# Reborn: admit the pinned legacy armor, seven-sample weapon or eight-sample source inventory; external EA/schema dependencies remain excluded.
+if(-not (($manifest.Files.Count-eq 30 -and $manifest.Requirements.Count-eq 8) -or ($manifest.Files.Count-eq 33 -and $manifest.Requirements.Count-eq 24) -or ($manifest.Files.Count-eq 37 -and $manifest.Requirements.Count-eq 24))){throw 'Unexpected overlay inventory.'}
 # Reborn: require complete pinned notice files and preserved project attribution, not just a release flag.
 foreach($relative in @('LICENSE','THIRD_PARTY_NOTICES.md','notices/dotnet/LICENSE.txt','notices/dotnet/ThirdPartyNotices.txt')){
     $entry=@($manifest.Files|Where-Object Relative -CEQ $relative)

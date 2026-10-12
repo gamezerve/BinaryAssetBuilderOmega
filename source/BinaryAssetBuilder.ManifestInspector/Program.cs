@@ -13,6 +13,9 @@ internal static class Program
     {
         try
         {
+            // Reborn: source preflight prepares the complete armor graph without creating or compiling a native package.
+            if (args.Length == 4 && args[0] == "armor-source-preflight")
+            { CompilerSmokeTest.InitializeHashProvider(); GeneralArmorSourceBuild.Run(args[1], args[2], args[3], true); return 0; }
             // Reborn: captured armor source semantics bridge into scoped set output through a separate explicit command.
             if (args.Length == 4 && args[0] == "armor-source-build")
             { CompilerSmokeTest.InitializeHashProvider(); GeneralArmorSourceBuild.Run(args[1], args[2], args[3]); return 0; }
@@ -1586,6 +1589,7 @@ internal static class Program
         Console.WriteLine("  armor-general-authored-build <one-armor.xml> <new-output-directory>");
         Console.WriteLine("  armor-general-set-build <armor-declaration.xml> <new-output-directory>");
         Console.WriteLine("  armor-source-build <source-root> <entry.xml> <new-output-directory>");
+        Console.WriteLine("  armor-source-preflight <source-root> <entry.xml> <absent-output-directory>");
         Console.WriteLine("  armor-source-self-test <new-output-directory>");
         Console.WriteLine("  armor-general-set-self-test <new-output-directory>");
         Console.WriteLine("  armor-general-authored-self-test <new-output-directory>");

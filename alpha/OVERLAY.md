@@ -56,6 +56,13 @@ GlobalManifest metadata. Mixed types and other weapon fields/IDs are refused.
 No automatic mod installation or game launch is provided. Setup's configuration
 and receipt contain local paths and must not be added to a public archive.
 
+The source-enabled candidate adds `ArmorSource`: 1..32 owner-declared armor IDs,
+confined instance Includes, definition-only all leaves, reviewed `$` definitions
+and local/imported inheritance. This route emits ALPHA004 and has no new gameplay
+proof. Imported bases are not emitted; new identities still need consumers. It
+uses the same focused official schema dependencies, not the full SDK catalog.
+Read README.md for limits/refusals; list merging and mixed types remain unsupported.
+
 ## Relocating a configured copy
 
 Close Studio and active builds before moving/copying your workspace. From its
