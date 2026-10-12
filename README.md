@@ -30,7 +30,14 @@ now writes the actual intermediate asset and linked v7 manifest/BIN/RELO/IMP;
 two readers verify ordered dependencies and runtime external paths. Baseline
 repeat, Damage=50 hash/checksum/payload invalidation and nine scoped refusal
 controls pass. This is diagnostic stream output, not a playable package or
-expanded alpha support. Package/load validation remains a separate gate.
+expanded alpha support. A separate `weapon-package-probe` now prepares baseline
+Damage=5 and edited Damage=50 default-reader candidates: fifteen exact BIG
+entries, three blank-CRLF version markers, matching config/mod-SKU fragments,
+two-reader metadata and ten package refusal controls pass. Repeated baseline
+packages are byte-identical. Stock archives are not bundled or replaced.
+Runtime external-reference loading and gameplay remain unproven; the exported
+alpha is unchanged. Next: fresh runtime preflight and a separately authorized
+Conscript AK47 damage comparison, then bounded alpha integration if successful.
 Full weapon tokenization and dependency
 proof are not yet complete; WeaponTemplate stays disabled in the alpha.
 

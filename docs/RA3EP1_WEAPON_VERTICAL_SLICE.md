@@ -306,3 +306,60 @@ to work around that environment limitation. The broad run used the initial
 scope-enabled tool build; final-build focused probes above cover the subsequent
 scope field rename, reference-signature strengthening and added runtime/ordinary
 production-denial controls.
+
+## Offline default-reader weapon candidates
+
+`weapon-package-probe` accepts the same four inputs as `weapon-stream-probe`
+and explicitly runs the complete source/schema/Core/dependency/plugin/scoped
+stream chain before packaging. Neither older command generates a BIG or config.
+`WeaponDiagnosticPackage.cs` independently binds each stream's identity,
+checksum, full payload, ordered direct reference IDs and explicit static/global
+runtime paths to the actual Core result. The stock-shaped fingerprint and
+relocation locations are rechecked before publication.
+
+Only the existing BIG4 framing serializer is reused from the armor path;
+armor authoring and package admission are not widened. Each candidate has
+fifteen entries: `data\\mod`, `data\\mod_l`, `data\\mod_m` families, each with
+manifest/BIN/RELO/IMP and a two-byte blank CRLF version marker. All three
+families carry byte-identical compiled streams. Both independent readers
+validate embedded identities, hashes, ordered references and external paths.
+Exact directory ranges, names, lengths, full payloads and EOF are checked.
+
+`weaponprobe_1.0.cfg` and `weaponprobe_1.0.skudef` contain only
+`add-big RebornWeaponProbe.big`. The SKU is a mod fragment, not a replacement
+game SKU. Short sibling candidate directories avoid deep scope paths; config
+paths must satisfy the existing conservative 240-character printable-ASCII
+bound and the fixed filename's 11-character identity fits the reviewed 15-byte
+limit. These detached checks are not runtime-safety or config-consumption proof.
+Reports include requested arguments as data only, and require the installation
+as working directory; no launch is implemented here.
+
+Baseline Damage=5, repeated baseline and edited Damage=50 candidates pass.
+Repeated baseline BIGs are byte-identical. Each candidate exercises ten
+refusals: occupied destination, corrupt BIN, altered concrete reference ID,
+altered external runtime path, four BIG directory/payload corruptions and two
+changed config fragments. Source streams/packages/fragments are restored after
+each owned corruption test. Reader scratch copies stay outside the BIG.
+The per-candidate `weapon-package.json` records SHA256, size, damage, Core hash,
+checksum, paths and offline evidence. The parent document receipt distinguishes
+`DiagnosticPackagesBuilt=true` from `ModPackageBuilt=false` (no playable SDK
+package certification). Partial failed artifacts remain retained without a
+success receipt; existing output is never overwritten by a new preparation.
+
+No armor overrides, stock assets, game binaries or stock SKU are bundled.
+No installation changes, alpha export, GUI changes or game execution occur.
+RuntimeReady, config consumption, effective weapon override and recursive
+audio closure remain false/unproven. Next gate: fresh installation/process
+preflight and separately authorized gameplay comparison in a new skirmish with
+Conscript's normal AK47, not Molotov. Only after that should the bounded weapon
+profile enter the alpha; arbitrary weapons and IDs remain future work.
+
+Verification: final Release/x86 build passes with zero warnings/errors. The
+package probe passes baseline/repeat/Damage=50 candidates and ten package
+controls each; the edited candidate is 8730 bytes with SHA256
+`932415FE98AC7C527604A01923AC9D7910E6C6116C6F59A42C51912C0DCEBC5E`.
+The existing stream-only command still reports no packages and its stream
+controls pass. The single-armor actual Core/package regression also passes.
+Core layouts/output scope and the shared BIG serializer were not changed in
+this addition; the preceding full compiler regression is retained evidence,
+not claimed as a newly rerun full suite for the packaging wrapper.

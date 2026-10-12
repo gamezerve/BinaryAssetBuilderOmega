@@ -13,6 +13,9 @@ internal static class Program
     {
         try
         {
+            // Reborn: offline fixed-weapon package candidates do not authorize alpha publication, installation or a game launch.
+            if (args.Length == 5 && args[0] == "weapon-package-probe")
+            { CompilerSmokeTest.InitializeHashProvider(); WeaponDocumentProbe.Run(args[1], args[2], args[3], args[4], true, true); return 0; }
             // Reborn: separate scoped stream opt-in does not permit BIG packaging, alpha publication or game launch.
             if (args.Length == 5 && args[0] == "weapon-stream-probe")
             { CompilerSmokeTest.InitializeHashProvider(); WeaponDocumentProbe.Run(args[1], args[2], args[3], args[4], true); return 0; }
@@ -1220,6 +1223,7 @@ internal static class Program
         Console.WriteLine("  weapon-native-probe <reference-Weapon.xml> <ep1-static-manifest> [ep1-global-manifest]");
         Console.WriteLine("  weapon-document-probe <reference-Weapon.xml> <ep1-static-manifest> <ep1-global-manifest> <new-output-directory>");
         Console.WriteLine("  weapon-stream-probe <reference-Weapon.xml> <ep1-static-manifest> <ep1-global-manifest> <new-output-directory>");
+        Console.WriteLine("  weapon-package-probe <reference-Weapon.xml> <ep1-static-manifest> <ep1-global-manifest> <new-output-directory>");
         Console.WriteLine("BinaryAssetBuilder.ManifestInspector");
         // Reborn: marker candidates are package metadata checks, not native suffix selection or playable-mod certification.
         Console.WriteLine("  stream-variant-audit <BIG> <relative-stream-stem-without-extension>");

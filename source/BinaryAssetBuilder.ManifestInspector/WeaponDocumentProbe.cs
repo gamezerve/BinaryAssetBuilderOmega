@@ -9,14 +9,16 @@ using BinaryAssetBuilder.Core.Session;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: exercise actual weapon document/dependency/plugin dispatch in owned snapshots without authorizing stream output.
+// Reborn: exercise actual weapon documents in owned snapshots; only separate explicit options admit scoped streams/offline candidates.
 internal static class WeaponDocumentProbe
 {
     //-------------------------------------------------------------------------------------------------
     /** Reborn: freeze a selected reference weapon and manifests, then compare baseline/repeat/edit through actual Core documents. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string source, string staticManifest, string globalManifest, string directory, bool writeStreams = false)
+    internal static void Run(string source, string staticManifest, string globalManifest, string directory, bool writeStreams = false, bool buildPackages = false)
     {
+        // Reborn: diagnostic packaging cannot skip the actual document/scoped stream proof.
+        if (buildPackages && !writeStreams) throw new InvalidDataException("Weapon packaging requires scoped streams.");
         directory = Path.GetFullPath(directory);
         if (Directory.Exists(directory) || File.Exists(directory) || !Directory.Exists(Path.GetDirectoryName(directory)))
             throw new InvalidDataException("Weapon probe output must be a new child of an existing directory.");
@@ -98,18 +100,20 @@ internal static class WeaponDocumentProbe
             {
                 Settings.Current.LinkedStreams = true;
                 Settings.Current.ExternalManifestReferences = "static.manifest;global.manifest";
-                streamManifest = WeaponStreamProbe.Write(directory, processor, restored.Document, restored.Instance, restored.Buffer);
+                streamManifest = WeaponStreamProbe.Write(directory, processor, restored.Document, restored.Instance, restored.Buffer, buildPackages);
                 var fresh = Process();
-                string repeatManifest = WeaponStreamProbe.Write(directory, processor, fresh.Document, fresh.Instance, fresh.Buffer);
+                string repeatManifest = WeaponStreamProbe.Write(directory, processor, fresh.Document, fresh.Instance, fresh.Buffer, buildPackages);
                 foreach (string extension in new[] { ".manifest", ".bin", ".relo", ".imp" })
                     if (!File.ReadAllBytes(Path.ChangeExtension(streamManifest, extension)).SequenceEqual(File.ReadAllBytes(Path.ChangeExtension(repeatManifest, extension))))
                         throw new InvalidDataException("Repeated weapon streams differ.");
+                if (buildPackages && !File.ReadAllBytes(PackagePath(streamManifest)).SequenceEqual(File.ReadAllBytes(PackagePath(repeatManifest))))
+                    throw new InvalidDataException("Repeated weapon candidate packages differ.");
                 // Reborn: publish the authored edit through fresh Core identity/checksum state, then restore the owned source even on failure.
                 try
                 {
                     File.WriteAllText(sourcePath, editXml.OuterXml);
                     var streamEdit = Process();
-                    string editedManifest = WeaponStreamProbe.Write(directory, processor, streamEdit.Document, streamEdit.Instance, streamEdit.Buffer);
+                    string editedManifest = WeaponStreamProbe.Write(directory, processor, streamEdit.Document, streamEdit.Instance, streamEdit.Buffer, buildPackages);
                     editedStreamManifest = editedManifest;
                     var originalManifest = ManifestReader.Read(File.ReadAllBytes(streamManifest));
                     var changedManifest = ManifestReader.Read(File.ReadAllBytes(editedManifest));
@@ -134,9 +138,17 @@ internal static class WeaponDocumentProbe
                 DiagnosticStreamManifest = streamManifest, DiagnosticStreamsWritten = writeStreams,
                 EditedDiagnosticStreamManifest = editedStreamManifest,
                 EditedStreamVerified = writeStreams,
+                DiagnosticPackagesBuilt = buildPackages,
+                DiagnosticPackages = buildPackages ? new[] { PackagePath(streamManifest!), PackagePath(editedStreamManifest!) } : Array.Empty<string>(),
+                RuntimeReady = false, OverrideAppliedInGame = false,
                 ProductionOutputWritten = false, ModPackageBuilt = false, GameExecuted = false };
             File.WriteAllText(Path.Combine(directory, "weapon-document.json"), JsonSerializer.Serialize(receipt, new JsonSerializerOptions { WriteIndented = true }));
             Console.WriteLine(JsonSerializer.Serialize(receipt, new JsonSerializerOptions { WriteIndented = true }));
+
+            //-------------------------------------------------------------------------------------------------
+            /** Reborn: only the fixed child candidate path from an actual scoped output is reported; no external package is selected. */
+            //-------------------------------------------------------------------------------------------------
+            string PackagePath(string manifest) => WeaponDiagnosticPackage.PathFor(manifest);
 
             //-------------------------------------------------------------------------------------------------
             /** Reborn: accept only expected validation/unsupported/reference failures, never a successful corrupted compile. */

@@ -4,14 +4,14 @@ using BinaryAssetBuilder.Core.SageXml;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: verify actual intermediate/manifest/link output through the separate bounded weapon capability, never package or launch it.
+// Reborn: verify bounded weapon streams; packaging requires a separate explicit option and no path launches the game.
 internal static class WeaponStreamProbe
 {
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compare actual Core streams with both readers and exercise capability refusals before handing back their diagnostic path. */
     //-------------------------------------------------------------------------------------------------
     internal static string Write(string parent, DocumentProcessor processor, AssetDeclarationDocument document,
-        InstanceDeclaration instance, AssetBuffer buffer)
+        InstanceDeclaration instance, AssetBuffer buffer, bool buildPackage = false)
     {
         // Reborn: the ordinary writer must still deny this same plugin before touching any production path.
         string denied = Path.Combine(parent, "ProductionDeniedWeapon");
@@ -82,7 +82,9 @@ internal static class WeaponStreamProbe
             extension => File.ReadAllBytes(manager.OutputDirectory + extension));
         manager.LinkStream(document);
         foreach (var item in before) Require(File.ReadAllBytes(manager.OutputDirectory + item.Key).SequenceEqual(item.Value), "Weapon refusal/recovery changed streams.");
-        Console.WriteLine("Weapon scoped streams: PASS (two readers, ordered references, nine refusal controls, recovery; no package/game).");
+        Console.WriteLine("Weapon scoped streams: PASS (two readers, ordered references, nine refusal controls, recovery; stream step only, no game).");
+        // Reborn: a separate explicit command may prepare offline candidates only after all scoped stream controls recover.
+        if (buildPackage) WeaponDiagnosticPackage.Exercise(manager.OutputDirectory, instance, buffer, document.OutputChecksum);
         return path;
     }
 
