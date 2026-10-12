@@ -13,6 +13,9 @@ internal static class Program
     {
         try
         {
+            // Reborn: actual document/plugin weapon proof has no production stream or game authority.
+            if (args.Length == 5 && args[0] == "weapon-document-probe")
+            { CompilerSmokeTest.InitializeHashProvider(); WeaponDocumentProbe.Run(args[1], args[2], args[3], args[4]); return 0; }
             // Reborn: native weapon comparison does not enable authored/tokenized weapon output.
             if (args.Length is 3 or 4 && args[0] == "weapon-native-probe")
             { CompilerSmokeTest.InitializeHashProvider(); Console.WriteLine(JsonSerializer.Serialize(WeaponNativeProbe.Inspect(args[1], args[2], args.Length == 4 ? args[3] : null), JsonOptions)); return 0; }
@@ -1212,6 +1215,7 @@ internal static class Program
         Console.WriteLine("  weapon-stock-review <ep1-static-manifest> [ep1-global-manifest]");
         Console.WriteLine("  weapon-stock-self-test");
         Console.WriteLine("  weapon-native-probe <reference-Weapon.xml> <ep1-static-manifest> [ep1-global-manifest]");
+        Console.WriteLine("  weapon-document-probe <reference-Weapon.xml> <ep1-static-manifest> <ep1-global-manifest> <new-output-directory>");
         Console.WriteLine("BinaryAssetBuilder.ManifestInspector");
         // Reborn: marker candidates are package metadata checks, not native suffix selection or playable-mod certification.
         Console.WriteLine("  stream-variant-audit <BIG> <relative-stream-stem-without-extension>");

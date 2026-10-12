@@ -219,3 +219,37 @@ layout and stock-review self-tests pass. The full compiler regression also
 passes, including absent/empty/nonempty EVA allocation checks. Final build has
 zero warnings/errors; the intermediate XmlCompiler rebuild had two existing
 nullable-context warnings. No output package or gameplay evidence is added.
+
+## Actual Core document and private plugin dispatch
+
+`WeaponDocumentProbe.cs` adds `weapon-document-probe <reference-Weapon.xml>
+<static.manifest> <global.manifest> <new-output-directory>`. It selects the
+reference AK47 into an owned AssetDeclaration source, snapshots the external
+manifests and loads that file with actual DocumentProcessor (no precompiled
+reuse or output). The real AddOutputInstance dependency preparation resolves
+the ordered Multisound/FXList/FXList targets; only the weapon is queued locally.
+The private registry then dispatches a WeaponTemplate plugin. This diagnostic
+uses the previously proven fixed token recipe, not a general token compiler.
+
+The plugin rejects unprepared/foreign dependencies and unsupported identities,
+requires current schema identity, verifies Core-injected TypeId annotations
+against their schema-name hashes and revalidates a detached copy before native
+compilation. Production output, build cache and compiled-document reuse remain
+disabled. Its private processing revision is not claimed to be an EA hash.
+
+The full 2508-byte baseline must match the independently reviewed stock SHA256.
+Repeat compilation is deterministic. Damage=50 changes only the four-byte slot
+at offset 2392 and changes Core's instance hash from 4094310166 to 3643575635;
+restoring the source restores both bytes and hash. Four additional controls
+reject a forged TypeId, unknown post-validation attribute, removal of all
+external mappings after successful preparation and an unsupported type ID.
+Restored external mapping permits compilation again. A JSON receipt records
+the evidence in the owned output directory. No BIN/RELO/IMP stream, BIG,
+installation change, GUI update or game launch is made by this command.
+
+Verification: Release/x86 build passes with zero warnings/errors; the document
+probe passes its stock/repeat/edit/restoration and four refusal checks. Earlier
+schema-only receipts remain historical evidence, not full-document receipts.
+Next gate: narrowly authorized OutputManager stream emission with independent
+reader checks, followed by package checks and separately authorized gameplay.
+The exported e alpha is unchanged and WeaponTemplate remains unavailable there.

@@ -123,7 +123,7 @@ internal static class WeaponNativeProbe
     //-------------------------------------------------------------------------------------------------
     /** Reborn: invoke the existing weapon marshaler on diagnostic prepared XML without schema or production gate bypass. */
     //-------------------------------------------------------------------------------------------------
-    private static unsafe Chunk Compile(XmlDocument xml)
+    internal static unsafe Chunk Compile(XmlDocument xml)
     {
         var namespaces = new XmlNamespaceManager(xml.NameTable); namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
         var node = new Node(xml.CreateNavigator()!.SelectSingleNode("/ea:WeaponTemplate", namespaces)!, namespaces);

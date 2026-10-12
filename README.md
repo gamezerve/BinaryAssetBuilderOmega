@@ -21,8 +21,12 @@ tokenization or alpha weapon publication.
 The focused weapon proof now validates official EP1 type definitions, inserts
 schema defaults and obtains reference indices through Core normalization.
 Both baseline and Damage=50 XML retain the exact stock-byte proof. Eight
-schema/control/dependency refusals pass; full Core document publication is
-still a separate gate.
+schema/control/dependency refusals pass. A new private document diagnostic now
+loads the authored weapon through DocumentProcessor, prepares actual external
+dependencies and dispatches a checked weapon plugin. Its stock baseline,
+repeat, isolated Damage=50 edit and restored source/hash pass, together with
+four additional refusal controls. Production stream publication remains a
+separate gate; this does not expand alpha support.
 Full weapon tokenization and dependency
 proof are not yet complete; WeaponTemplate stays disabled in the alpha.
 
