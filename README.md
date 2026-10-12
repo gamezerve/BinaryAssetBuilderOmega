@@ -8,6 +8,19 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 13, 2026
 
+The new [armor source bridge](docs/RA3EP1_ARMOR_SOURCE_BRIDGE.md) connects confined
+instance Includes, definition-only all Includes, local/imported inheritance and
+exact `=$NAME` field substitution to the real general armor Core/package path.
+It preserves defining-source contexts and publishes only owner-declared armors.
+The literal single/set commands and exported g alpha remain unchanged; arbitrary
+arithmetic and duplicate-damage inherited list replacement are not enabled.
+Final source-bridge regression passes **18/18** focused groups in **43.618
+seconds**, plus a 5.33-second incremental compiler build with zero warnings/errors.
+The four-file source package equals the independent literal package byte-for-byte;
+repeat/changed-input controls and nineteen pre-output refusals pass. All eight
+compiler/runtime hashes stayed unchanged. Full was not rerun for this adapter;
+Core/native/profile implementations were unchanged.
+
 October 13 update: the [general armor backend](docs/RA3EP1_GENERAL_ARMOR_AUTHORING.md)
 now accepts user-chosen IDs, variable 0..64-entry unique damage lists, decimal/%
 literal percentages and official scalar defaults. Real Core/scoped streams,
@@ -15,8 +28,9 @@ two-reader readback and default-reader candidates are produced without another
 hard-coded unit recipe. The explicit set command also accepts 1..32 user-defined
 armors in one real Core stream, rejects duplicate names/lookup IDs and validates
 every member's cumulative BIN/RELO/IMP slice through two readers.
-Inheritance/includes/definitions/mixed types remain
-refused; the exported g alpha is unchanged pending adapter integration. New IDs
+The literal commands still refuse inheritance/includes/definitions/mixed types;
+the source command above adds a separate bounded preparation path. The exported
+g alpha is unchanged pending adapter integration. New IDs
 need consuming GameObjects before they can visibly affect gameplay.
 Earlier single-armor focused regression: 16/16 groups pass in about 26 seconds, plus a roughly
 5-second incremental compiler build; existing armor/weapon behavior stays covered.
@@ -28,7 +42,7 @@ expanded Full run passed 19/19 before the final routing/checksum refinements;
 see the linked backend report for exact evidence and rerun boundaries.
 
 The [batched offline test workflow](docs/RA3EP1_BATCH_TESTING.md) now builds once,
-runs 17 focused groups with isolated concurrent workers and aggregates failures
+runs 18 focused groups with isolated concurrent workers and aggregates failures
 without stopping the remaining groups. `-Full` adds broader compiler/armor
 regressions. Source-semantic diagnostic passes do not expand playable alpha
 capabilities or imply mixed-stream support.

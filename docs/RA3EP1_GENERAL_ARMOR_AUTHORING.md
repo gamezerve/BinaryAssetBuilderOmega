@@ -35,6 +35,10 @@ Inheritance, definitions, formulas, includes, mixed asset types and other types
 are still refused rather than ignored. DTDs, processing instructions, unexpected
 attributes/children and injected TypeId are refused. This is bounded general
 armor authoring, not unrestricted full SDK XML semantics.
+The separate [armor source bridge](RA3EP1_ARMOR_SOURCE_BRIDGE.md) now connects a
+bounded Include/definition/inheritance subset to this compiler. It does not
+change literal-command admission or the exported alpha; use armor-source-build
+for source-backed preparation and its complete closure receipt.
 
 ## Output and validation
 

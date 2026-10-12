@@ -13,6 +13,12 @@ internal static class Program
     {
         try
         {
+            // Reborn: captured armor source semantics bridge into scoped set output through a separate explicit command.
+            if (args.Length == 4 && args[0] == "armor-source-build")
+            { CompilerSmokeTest.InitializeHashProvider(); GeneralArmorSourceBuild.Run(args[1], args[2], args[3]); return 0; }
+            // Reborn: test source-to-native behavior jointly rather than counting diagnostic preprocessing alone as publication support.
+            if (args.Length == 2 && args[0] == "armor-source-self-test")
+            { CompilerSmokeTest.InitializeHashProvider(); GeneralArmorSourceBuild.SelfTest(args[1]); return 0; }
             // Reborn: general sets use separately bounded multi-member output, never the fixed-yard alpha adapter.
             if (args.Length == 3 && args[0] == "armor-general-set-build")
             { CompilerSmokeTest.InitializeHashProvider(); GeneralArmorAuthoredBuild.Run(args[1], args[2], true); return 0; }
@@ -1579,6 +1585,8 @@ internal static class Program
         Console.WriteLine("  armor-authoring-input-self-test");
         Console.WriteLine("  armor-general-authored-build <one-armor.xml> <new-output-directory>");
         Console.WriteLine("  armor-general-set-build <armor-declaration.xml> <new-output-directory>");
+        Console.WriteLine("  armor-source-build <source-root> <entry.xml> <new-output-directory>");
+        Console.WriteLine("  armor-source-self-test <new-output-directory>");
         Console.WriteLine("  armor-general-set-self-test <new-output-directory>");
         Console.WriteLine("  armor-general-authored-self-test <new-output-directory>");
         Console.WriteLine("  armor-authoring-preflight <standalone-conyard.xml> <new-output-directory>");
