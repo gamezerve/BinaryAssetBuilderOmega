@@ -8,6 +8,14 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 13, 2026
 
+The [GameObject armor-consumer slice](docs/RA3EP1_GAMEOBJECT_VERTICAL_SLICE.md)
+now proves the stock root/token/native/dependency chain for Conscript and Allied
+Construction Yard. The existing marshaler reproduces their selected ArmorSet
+records and BuildTime, with exact relocation/import positions. Fifteen synthetic
+corruption controls accompany the two stock comparisons. This is a bounded native
+projection using captured reference indices, not complete GameObject/XML/Core
+publication. The h alpha is unchanged; GameObject input remains unsupported there.
+
 Armor inheritance follow-up: **distinct-Damage list append already works** in
 the h source route. Imported intermediate and owner lists preserve
 base-then-derived order; a local chain also passes. Independent literal package
@@ -61,7 +69,7 @@ expanded Full run passed 19/19 before the final routing/checksum refinements;
 see the linked backend report for exact evidence and rerun boundaries.
 
 The [batched offline test workflow](docs/RA3EP1_BATCH_TESTING.md) now builds once,
-runs 18 focused groups with isolated concurrent workers and aggregates failures
+runs 19 focused groups with isolated concurrent workers and aggregates failures
 without stopping the remaining groups. `-Full` adds broader compiler/armor
 regressions. Source-semantic diagnostic passes do not expand playable alpha
 capabilities or imply mixed-stream support.

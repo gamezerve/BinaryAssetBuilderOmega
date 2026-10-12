@@ -34,6 +34,13 @@ Public distribution review is separate from achieving functional parity.
 
 ## Current position — October 12, 2026
 
+October 13 consumer follow-up: the [GameObject native slice](RA3EP1_GAMEOBJECT_VERTICAL_SLICE.md)
+verifies Conscript/Allied yard ArmorSet token/native/dependency relationships and
+reproduces their selected armor-list bytes through the existing marshaler. Real
+source-name normalization, complete GameObject/module tokenization and mixed
+GameObject/armor Core publication remain gates; this diagnostic does not enable
+GameObject input in the exported alpha.
+
 October 13 source follow-up: the [armor source bridge](RA3EP1_ARMOR_SOURCE_BRIDGE.md)
 connects captured instance/definition Includes, imported/local inheritance and
 exact field substitutions to real scoped armor set publication. Defining source

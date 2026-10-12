@@ -13,6 +13,12 @@ internal static class Program
     {
         try
         {
+            // Reborn: bounded stock GameObject review does not authorize general source or package publication.
+            if (args.Length == 3 && args[0] == "gameobject-stock-review")
+            { CompilerSmokeTest.InitializeHashProvider(); Console.WriteLine(JsonSerializer.Serialize(GameObjectStockReview.Inspect(args[1], args[2]), JsonOptions)); return 0; }
+            // Reborn: corruption tests and optional stock comparisons remain read-only, separate from the alpha build surface.
+            if (args.Length is 1 or 2 && args[0] == "gameobject-stock-self-test")
+            { CompilerSmokeTest.InitializeHashProvider(); GameObjectStockReview.SelfTest(args.Length == 2 ? args[1] : null); return 0; }
             // Reborn: source preflight prepares the complete armor graph without creating or compiling a native package.
             if (args.Length == 4 && args[0] == "armor-source-preflight")
             { CompilerSmokeTest.InitializeHashProvider(); GeneralArmorSourceBuild.Run(args[1], args[2], args[3], true); return 0; }
@@ -1250,6 +1256,9 @@ internal static class Program
 
     private static void PrintUsage()
     {
+        // Reborn: advertise read-only armor-consumer recovery separately from source/compiler commands.
+        Console.WriteLine("  gameobject-stock-review <ep1-static-manifest> <GameObject:Name>");
+        Console.WriteLine("  gameobject-stock-self-test [ep1-static-manifest]");
         // Reborn: document the bounded stock weapon proof separately from build commands.
         Console.WriteLine("  weapon-stock-review <ep1-static-manifest> [ep1-global-manifest]");
         Console.WriteLine("  weapon-stock-self-test");

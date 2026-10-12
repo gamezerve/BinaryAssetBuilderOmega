@@ -66,6 +66,8 @@ if($SchedulerControl){
         @('dependency-hash','dependency-hash-self-test'),
         @('checksum','checksum-self-test'))){Add-BatchCase $case[0] 'DiagnosticOnly' @($case[1])}
     Add-BatchCase 'weapon-authored-values' 'BoundedScopedPackage' @('weapon-authored-build-self-test',(Join-Path $OutputDirectory 'weapon-builds'),$StaticManifest,$GlobalManifest)
+    # Reborn: independently pin stock GameObject armor-consumer links before permitting a source/compiler/publication path.
+    Add-BatchCase 'gameobject-stock' 'BoundedStockNativeProjection' @('gameobject-stock-self-test',$StaticManifest)
     Add-BatchCase 'armor-core' 'BoundedScopedStream' @('ep1-armor-document-self-test',(Join-Path $OutputDirectory 'armor-core'),$StaticManifest)
     Add-BatchCase 'armor-pair-core' 'BoundedScopedStream' @('armor-pair-document-self-test',(Join-Path $OutputDirectory 'armor-pair-core'),$StaticManifest)
     # Reborn: general single-armor identities/list/literals are tested jointly without widening the exported alpha gate.

@@ -135,7 +135,8 @@ Includes, unknown/mixed identities, out-of-range values, nonempty Tags, PI,
 lookup collisions (also across imported/owner sources), definition collision/
 override directives and unsupported two-sided duplicate-damage list behavior.
 
-The batch matrix now has 18 focused groups and 20 with Full enabled. Existing
+The batch matrix now has 19 focused groups and 21 with Full enabled, including
+the separate stock/native GameObject consumer projection. Existing
 literal armor, fixed armor/weapon and diagnostic source regressions stay
 independent; this connection does not relax their policies. The experimental alpha
 route is separately warned and never used as a fallback after a failed fixed input.
