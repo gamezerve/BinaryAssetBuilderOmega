@@ -34,6 +34,13 @@ Public distribution review is separate from achieving functional parity.
 
 ## Current position — October 12, 2026
 
+October 13: [general single-armor authoring](RA3EP1_GENERAL_ARMOR_AUTHORING.md)
+connects user-selected IDs, variable list lengths, decimal/% literals and schema
+defaults to actual Core/scoped streams and offline default-reader packaging.
+This is a shared type path, not a new fixed-unit recipe. Alpha adapter admission,
+multiple assets, source inheritance/includes/definitions and consuming GameObject
+publication remain the next integration gates; no new gameplay proof is claimed.
+
 Development now uses a [batched validation matrix](RA3EP1_BATCH_TESTING.md):
 one build, isolated workers, independent feature/negative-control groups and a
 single report. Future milestones should connect reusable source/type/output

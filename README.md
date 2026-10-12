@@ -8,8 +8,18 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 12, 2026
 
+October 13 update: the [general single-armor backend](docs/RA3EP1_GENERAL_ARMOR_AUTHORING.md)
+now accepts user-chosen IDs, variable 0..64-entry unique damage lists, decimal/%
+literal percentages and official scalar defaults. Real Core/scoped streams,
+two-reader readback and default-reader candidates are produced without another
+hard-coded unit recipe. Inheritance/includes/definitions/multiple assets remain
+refused; the exported g alpha is unchanged pending adapter integration. New IDs
+need consuming GameObjects before they can visibly affect gameplay.
+Final focused regression: 16/16 groups pass in about 26 seconds, plus a roughly
+5-second incremental compiler build; existing armor/weapon behavior stays covered.
+
 The [batched offline test workflow](docs/RA3EP1_BATCH_TESTING.md) now builds once,
-runs 15 focused groups with isolated concurrent workers and aggregates failures
+runs 16 focused groups with isolated concurrent workers and aggregates failures
 without stopping the remaining groups. `-Full` adds broader compiler/armor
 regressions. Source-semantic diagnostic passes do not expand playable alpha
 capabilities or imply mixed-stream support.

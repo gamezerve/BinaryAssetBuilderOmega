@@ -68,6 +68,8 @@ if($SchedulerControl){
     Add-BatchCase 'weapon-authored-values' 'BoundedScopedPackage' @('weapon-authored-build-self-test',(Join-Path $OutputDirectory 'weapon-builds'),$StaticManifest,$GlobalManifest)
     Add-BatchCase 'armor-core' 'BoundedScopedStream' @('ep1-armor-document-self-test',(Join-Path $OutputDirectory 'armor-core'),$StaticManifest)
     Add-BatchCase 'armor-pair-core' 'BoundedScopedStream' @('armor-pair-document-self-test',(Join-Path $OutputDirectory 'armor-pair-core'),$StaticManifest)
+    # Reborn: general single-armor identities/list/literals are tested jointly without widening the exported alpha gate.
+    Add-BatchCase 'armor-general-authoring' 'ExperimentalGeneralArmorPackage' @('armor-general-authored-self-test',(Join-Path $OutputDirectory 'general-armors'))
     if($Full){
         Add-BatchCase 'armor-authored-fields' 'BoundedScopedPackage' @('armor-authored-build-self-test',(Join-Path $OutputDirectory 'armor-builds'),$StaticManifest)
         Add-BatchCase 'compiler-broad' 'DiagnosticOnly' @('compiler-self-test')
