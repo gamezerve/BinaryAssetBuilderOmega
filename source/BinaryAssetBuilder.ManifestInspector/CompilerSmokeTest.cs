@@ -1675,6 +1675,21 @@ internal static class CompilerSmokeTest
         Expect(ReadUInt32(instance, 36) == 0, "DamageNugget.Radius", 0, ReadUInt32(instance, 36));
         Expect(instance[170] == 1, "DamageNugget.OnlyKillOwnerWhenTriggered", 1, instance[170]);
         Expect(chunk.ImportsBuffer.Length == 0, "DamageDynamicsCollide imports bytes", 0, chunk.ImportsBuffer.Length);
+        // Reborn: schema-inserted empty EvaEventRef must match absent override without creating a string allocation.
+        var eva = (XmlElement)document.GetElementsByTagName("DamageNugget", "uri:ea.com:eala:asset")[0]!;
+        eva.SetAttribute("UnderAttackOverrideEvaEvent", "");
+        DamageDynamicsCollideModuleData* emptyRoot;
+        using var emptyTracker = new Tracker((void**)&emptyRoot, (uint)sizeof(DamageDynamicsCollideModuleData), false);
+        Marshaler.Marshal(node, emptyRoot, emptyTracker); var emptyChunk = new Chunk(); emptyTracker.MakeRelocatable(emptyChunk);
+        Expect(chunk.InstanceBuffer.SequenceEqual(emptyChunk.InstanceBuffer) && chunk.RelocationBuffer.SequenceEqual(emptyChunk.RelocationBuffer),
+            "Empty EVA override matches absent", 1, 0);
+        // Reborn: a real nonempty override still allocates its string instead of being erased by the empty-default correction.
+        eva.SetAttribute("UnderAttackOverrideEvaEvent", "TestEvaEvent");
+        DamageDynamicsCollideModuleData* namedRoot;
+        using var namedTracker = new Tracker((void**)&namedRoot, (uint)sizeof(DamageDynamicsCollideModuleData), false);
+        Marshaler.Marshal(node, namedRoot, namedTracker); var namedChunk = new Chunk(); namedTracker.MakeRelocatable(namedChunk);
+        Expect(namedChunk.InstanceBuffer.Length > chunk.InstanceBuffer.Length && namedChunk.RelocationBuffer.Length == chunk.RelocationBuffer.Length + 8,
+            "Nonempty EVA override retains allocation", 1, 0);
         Console.WriteLine($"  DamageDynamicsCollide bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 

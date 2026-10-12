@@ -18,6 +18,11 @@ and DamageFX enum order. A fixed diagnostic token-layout reproduction also
 matches all 2508 stock BIN bytes and 28 RELO bytes, verifies an isolated
 Damage=5→50 edit and seven corruption refusals. This does not enable generic
 tokenization or alpha weapon publication.
+The focused weapon proof now validates official EP1 type definitions, inserts
+schema defaults and obtains reference indices through Core normalization.
+Both baseline and Damage=50 XML retain the exact stock-byte proof. Eight
+schema/control/dependency refusals pass; full Core document publication is
+still a separate gate.
 Full weapon tokenization and dependency
 proof are not yet complete; WeaponTemplate stays disabled in the alpha.
 

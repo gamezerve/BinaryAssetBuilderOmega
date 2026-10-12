@@ -141,7 +141,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(DamageNuggetType.DrainLifeMultiplier), "1"), &objT->DrainLifeMultiplier, state);
         Marshal(node.GetAttributeValue(nameof(DamageNuggetType.DrainLife), "false"), &objT->DrainLife, state);
         Marshal(node.GetAttributeValue(nameof(DamageNuggetType.DamageSpeed), "0"), &objT->DamageSpeed, state);
-        Marshal(node.GetAttributeValue(nameof(DamageNuggetType.UnderAttackOverrideEvaEvent), null), &objT->UnderAttackOverrideEvaEvent, state);
+        // Reborn: EP1's schema-inserted empty EvaEventRef means no override; allocating an empty string shifts every subsequent native block.
+        Value evaOverride = node.GetAttributeValue(nameof(DamageNuggetType.UnderAttackOverrideEvaEvent), null);
+        if (evaOverride is not null && !string.IsNullOrWhiteSpace(evaOverride.GetText()))
+            Marshal(evaOverride, &objT->UnderAttackOverrideEvaEvent, state);
         Marshal(node.GetAttributeValue(nameof(DamageNuggetType.VictimShroudRevealer), null), &objT->VictimShroudRevealer, state);
         Marshal(node.GetChildNodes(nameof(DamageNuggetType.DamageScalarDetails)), &objT->DamageScalarDetails, state);
         Marshal(node.GetAttributeValue(nameof(DamageNuggetType.NotifyOwnerOnVictimDeath), "false"), &objT->NotifyOwnerOnVictimDeath, state);

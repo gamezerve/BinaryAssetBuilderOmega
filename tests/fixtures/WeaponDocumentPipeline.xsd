@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: focused weapon harness includes untouched EP1 type definitions; this is not the full SDK root schema. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset"
+ targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Base.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Base/AssetBase.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Ref.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/DamageDef.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/ModelState.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/ObjectStatus.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/KindOf.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/ObjectFilter.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/GlobalGameData.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/View.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Common.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Death.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/DamageFX.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/DistTestType.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeArmorTemplate.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeAttributeModifier.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeShaderOverride.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeAudio.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeFXList.xsd" />
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeWeaponTemplate.xsd" />
+ <!-- Reborn: extracted dependency enums are drift-checked against official BaseModules before compilation. -->
+ <xs:simpleType name="FXTriggerType"><xs:restriction base="xs:string">
+  <xs:enumeration value="NONE" /><xs:enumeration value="CATAPULT_ROCK" /><xs:enumeration value="TREBUCHET_ROCK" />
+ </xs:restriction></xs:simpleType>
+ <xs:simpleType name="FXActionType"><xs:restriction base="xs:string">
+  <xs:enumeration value="NONE" /><xs:enumeration value="HOLD" /><xs:enumeration value="KILL" /><xs:enumeration value="SPAWN" />
+ </xs:restriction></xs:simpleType>
+ <xs:element name="WeaponTemplate" type="WeaponTemplate" />
+ <xs:element name="AssetDeclaration"><xs:complexType><xs:sequence>
+  <xs:element ref="WeaponTemplate" minOccurs="1" maxOccurs="1" />
+ </xs:sequence></xs:complexType></xs:element>
+</xs:schema>

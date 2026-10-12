@@ -85,7 +85,7 @@ internal static class ReferencePipelineSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: invoke the production normalization stage on schema-validated DOM nodes, not a test reimplementation. */
     //-------------------------------------------------------------------------------------------------
-    private static InstanceDeclaration Normalize(SchemaSet schemas, string xml)
+    internal static InstanceDeclaration Normalize(SchemaSet schemas, string xml)
     {
         XmlDocument document = new();
         document.LoadXml(xml);

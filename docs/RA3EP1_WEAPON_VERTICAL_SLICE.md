@@ -102,6 +102,10 @@ warnings/errors. These changes do not add a weapon build to the exported e SDK.
 
 ## Real native XML marshaling comparison
 
+Historical note: this section describes the initial schema-free comparison.
+The focused schema preparation update below replaces manual reference-index
+and nugget TypeId injection in the current probe.
+
 `weapon-native-probe <reference-Weapon.xml> <ep1-static-manifest>` selects the
 unchanged AK47 XML into an owned document, verifies its three expected textual
 references, then prepares fixed diagnostic indices and the known nugget TypeId.
@@ -173,3 +177,45 @@ and supplying audio.manifest instead of global.manifest is refused. The first re
 warnings and no errors; subsequent incremental rebuilds had no warnings/errors.
 The prior broad regression still covers the preceding ABI/default/enum fixes;
 it was not rerun for this diagnostic-only addition.
+
+## Focused schema/default/reference preparation
+
+`tests/fixtures/WeaponDocumentPipeline.xsd` includes untouched official EP1
+WeaponTemplate, primitive/reference, damage/death/DamageFX, status/filter and
+audio/FX type definitions. Its weapon/container roots are a focused harness,
+not the complete SDK schema. Two extracted FX enum definitions are checked
+against the official BaseModules definitions before use; no missing-type
+stubs or edits to the official XSD catalog are introduced.
+
+`WeaponSchemaPreparation.cs` validates the selected weapon, inserts defaults
+and invokes the actual Core `HandleAssetReferenceType` normalization through
+the existing shared reference-test seam. Numeric indices are no longer
+assigned by the probe. DamageNugget TypeId is derived from its validated
+schema type, not a manually injected tag. Optional stock metadata checks the
+schema-derived concrete candidate names/order, including BaseAudioEventInfo
+resolution to Multisound. This is not a complete DocumentProcessor/plugin/
+OutputManager build or recursive dependency-closure proof; the report explicitly
+sets `FullCoreDocumentBuildUsed=false`.
+
+Schema insertion exposed a native allocation bug: the default empty
+UnderAttackOverrideEvaEvent produced a 12-byte empty-string allocation and two
+additional relocation entries. `Marshaler.WeaponTemplate.cs` now preserves
+the stock null override for empty/whitespace EvaEventRef values. This is scoped
+to that weapon field, not a blanket removal of schema defaults. A compiler
+regression checks absent versus empty equality and retains nonempty allocation.
+
+Baseline and authored Damage=50 XML both pass focused schema/Core reference
+preparation, then retain the full BIN/RELO proof and isolated edit. Eight
+detached controls reject unknown attribute, invalid damage enum, unknown child,
+missing sound reference, wrong FX reference, unsupported identity, inheritance
+and unresolved expression. Source XML and global Settings are preserved.
+These are diagnostic errors, not new BuildStudio weapon capabilities.
+The exported e alpha remains unchanged. Next: full document/dependency
+preparation with a private weapon processor, scoped output and default-reader
+package checks, before a separately authorized gameplay test.
+
+Verification: focused schema/token proof passes twice with identical JSON;
+layout and stock-review self-tests pass. The full compiler regression also
+passes, including absent/empty/nonempty EVA allocation checks. Final build has
+zero warnings/errors; the intermediate XmlCompiler rebuild had two existing
+nullable-context warnings. No output package or gameplay evidence is added.

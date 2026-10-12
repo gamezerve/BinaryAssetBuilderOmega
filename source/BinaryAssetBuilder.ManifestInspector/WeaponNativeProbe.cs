@@ -25,24 +25,29 @@ internal static class WeaponNativeProbe
         var selected = xml.SelectSingleNode("/ea:AssetDeclaration/ea:WeaponTemplate[@id='SovietAntiInfantryInfantryAK47']", manager) as XmlElement
             ?? throw new InvalidDataException("Reference AK47 XML absent.");
         var owned = new XmlDocument { XmlResolver = null }; owned.LoadXml(selected.OuterXml);
+        WeaponSchemaPreparation.CheckControls(owned, referenceManifest == null ? Array.Empty<string>() : new[] { manifest, referenceManifest });
+        // Reborn: defaults and dependency indices must now come from schema validation and the actual Core normalization seam.
+        owned = WeaponSchemaPreparation.Prepare(owned, referenceManifest == null ? Array.Empty<string>() : new[] { manifest, referenceManifest });
         var root = owned.DocumentElement!;
         var names = new[] { "FireSoundPerClip", "FireFX", "FireVeteranFX" };
         var references = new[] { "SOV_Conscript_GunFireMS", "FX_MuzzleSoviet", "FX_MuzzleSoviet" };
         for (int index = 0; index < names.Length; index++)
         {
-            if (root.GetAttribute(names[index]) != references[index]) throw new InvalidDataException("Reference weapon source changed: " + names[index]);
-            root.SetAttribute(names[index], (index == 0 ? "Multisound" : "FXList") + "\\" + index);
+            if (root.GetAttribute(names[index]) != references[index] + "\\" + index)
+                throw new InvalidDataException("Core normalized reference weapon source differs: " + names[index]);
         }
         var nugget = root.GetElementsByTagName("DamageNugget", "uri:ea.com:eala:asset").Cast<XmlElement>().Single();
         if (nugget.GetAttribute("Damage") != "5.0" || nugget.GetAttribute("DamageType") != "GUN")
             throw new InvalidDataException("Expected unedited reference AK47 damage.");
-        nugget.SetAttribute("TypeId", "0xC0F53E99");
+        if (nugget.GetAttribute("TypeId") != "3237297817") throw new InvalidDataException("Schema-derived DamageNugget identity differs.");
         var native = Compile(owned); var repeated = Compile(owned);
         if (!native.InstanceBuffer.SequenceEqual(repeated.InstanceBuffer) || !native.RelocationBuffer.SequenceEqual(repeated.RelocationBuffer)
             || !native.ImportsBuffer.SequenceEqual(repeated.ImportsBuffer)) throw new InvalidDataException("Native weapon compile nondeterministic.");
         // Reborn: an authored damage edit must change only its proven native scalar, without changing allocation or reference preparation.
-        nugget.SetAttribute("Damage", "50.0");
-        var edited = Compile(owned); nugget.SetAttribute("Damage", "5.0");
+        var authoredEdit = new XmlDocument { XmlResolver = null }; authoredEdit.LoadXml(selected.OuterXml);
+        ((XmlElement)authoredEdit.GetElementsByTagName("DamageNugget", "uri:ea.com:eala:asset")[0]!).SetAttribute("Damage", "50.0");
+        var edited = Compile(WeaponSchemaPreparation.Prepare(authoredEdit,
+            referenceManifest == null ? Array.Empty<string>() : new[] { manifest, referenceManifest }));
         var expectedEdit = native.InstanceBuffer.ToArray();
         BinaryPrimitives.WriteSingleLittleEndian(expectedEdit.AsSpan(412, 4), 50f);
         if (!edited.InstanceBuffer.SequenceEqual(expectedEdit) || !edited.RelocationBuffer.SequenceEqual(native.RelocationBuffer)
@@ -100,7 +105,8 @@ internal static class WeaponNativeProbe
             NativePayloadMatchesNormalizedStock = native.InstanceBuffer.SequenceEqual(expected),
             FirstDifferingNativeOffsets = differences,
             DifferenceDetails = differences.Select(at => new { Offset = at, StockByte = expected[at], CompiledByte = native.InstanceBuffer[at] }).ToArray(),
-            Deterministic = true, SchemaValidated = false,
+            Deterministic = true, SchemaValidated = true, FocusedSchemaOnly = true, CoreReferenceNormalizationUsed = true,
+            SchemaPreparationControlsPassed = 8,
             NativeRelocationLocationsMatchStock = true, AuthoredDamageEditIsolated = true,
             FixedTokenizedBinReloMatchStock = tokenizedMatch, TokenizedDifferenceOffsets = tokenDifferences,
             FixedTokenizedBinSha256 = Convert.ToHexString(SHA256.HashData(tokenized.InstanceBuffer)),
@@ -109,6 +115,7 @@ internal static class WeaponNativeProbe
             DirectReferenceNamesVerified = referenceManifest != null, GeneralWeaponTokenizationVerified = false,
             TokenTables = WeaponTokenLayoutReview.Inspect(stock, prefix),
             ReferencePreparationIsFixedDiagnostic = true, CompleteTokenizedPayloadVerified = tokenizedMatch,
+            EditedSourceSchemaValidated = true, FullCoreDocumentBuildUsed = false,
             WeaponCompilerEnabled = false, ModPackageBuilt = false, GameExecuted = false
         };
     }

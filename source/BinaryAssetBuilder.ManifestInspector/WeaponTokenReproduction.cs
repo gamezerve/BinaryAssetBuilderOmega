@@ -208,7 +208,7 @@ internal static class WeaponTokenReproduction
     {
         const int prefix = 1980;
         if (native.InstanceBuffer.Length != 528 || native.RelocationBuffer.Length != 28 || native.ImportsBuffer.Length != 16)
-            throw new InvalidDataException("AK47 diagnostic native shape differs.");
+            throw new InvalidDataException($"AK47 diagnostic native shape differs: BIN={native.InstanceBuffer.Length}, RELO={native.RelocationBuffer.Length}, IMP={native.ImportsBuffer.Length}.");
         var canonical = native.InstanceBuffer.ToArray();
         float damage = BinaryPrimitives.ReadSingleLittleEndian(canonical.AsSpan(412, 4));
         if (!float.IsFinite(damage) || damage < 0 || damage > 10000)
