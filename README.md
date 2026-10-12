@@ -8,6 +8,15 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 13, 2026
 
+Armor inheritance follow-up: **distinct-Damage list append already works** in
+the h source route. Imported intermediate and owner lists preserve
+base-then-derived order; a local chain also passes. Independent literal package
+equality and changed-coefficient controls pass, with **18/18** focused groups in
+39.504 seconds and unchanged runtime hashes. The exported h compiler builds the
+three-file [append example](samples/armor/source-append/mod.xml) unchanged.
+This corrects an overly narrow copy-only description; duplicate Damage and
+Damage-key replacement remain refused, and no new gameplay proof is claimed.
+
 The source-enabled local alpha `UprisingAlpha-20261013-h` now connects the general
 armor source bridge to the existing Studio build driver. Its new `ArmorSource`
 sample combines Includes, `$` definitions, inheritance and custom IDs in one

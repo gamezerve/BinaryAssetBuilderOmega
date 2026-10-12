@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: this imported base supplies one damage entry and is not emitted by the owner build. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <Includes>
+    <Include type="all" source="DATA:Defs.xml" />
+  </Includes>
+  <ArmorTemplate id="RebornAppendBase" Default="75.5%">
+    <Armor Damage="GUN" Percent="=$GUN" />
+  </ArmorTemplate>
+</AssetDeclaration>

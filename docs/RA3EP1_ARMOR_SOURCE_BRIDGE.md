@@ -47,7 +47,9 @@ Partial failed outputs are retained without a successful outer receipt.
 - `type="all"` is restricted to Include-free, definition-only metadata leaves.
   It does not import arbitrary assets or precompiled manifests.
 - Local and imported `inheritFrom="BaseId"` or `ArmorTemplate:BaseId` can copy
-  inherited scalars and one-sided armor lists through existing Core joins.
+  inherited scalars and armor lists through existing Core joins. Two populated
+  lists can append distinct Damage kinds in base-then-derived order, including
+  imported/local chains. This is append, not Damage-key replacement.
   Local inheritance chains and scalar overrides are supported. Final schema
   defaults are inserted by the existing general armor compiler.
 - Asset fields accept exact `=$NAME` references. Definitions may be literals
@@ -93,6 +95,24 @@ has identity-based child semantics; adding a same-damage leaf to an inherited
 list may append rather than replace. Duplicate damage kinds in the final armor
 are refused. Do not claim that all EA armor inheritance/list override syntax is
 supported from scalar and one-sided list-copy evidence alone.
+
+Distinct-Damage append is now independently tested: a four-file graph adds
+SNIPER at an imported intermediate base and CANNON at its owner, while a local
+base/derived pair adds GUN then CANNON. Prepared order and complete real package
+bytes equal a separately authored literal declaration. Editing the appended
+definition-derived coefficient changes the package. No shared joiner or source
+admission policy changed. The already exported h compiler also builds the new
+`samples/armor/source-append/mod.xml` graph; this corrects an overly narrow
+description of its existing source semantics, not a new runtime certification.
+
+The follow-up focused run passes 18/18 groups in 39.504 seconds with unchanged
+compiler/runtime hashes (`artifacts/ArmorAppend-a/batch-report.json`). The source
+bridge group, including the new append controls, passes in 4.041 seconds. The
+append example built through the preserved h driver/compiler produces one owner
+armor with GUN=250.5%, CANNON=40%, Default=75.5% and SideDamageScalar=125%.
+Its default-reader BIG SHA-256 is
+`491A7718F395056BB7ECCA0B24D688108B7608CFC1CC7335A96A66D33962B0B5`.
+No new workspace inventory, actual GUI observation or gameplay claim is added.
 
 Source checks are bounded current snapshots, not protection against malicious
 filesystem races or a general cross-platform transactional build. Staged schema

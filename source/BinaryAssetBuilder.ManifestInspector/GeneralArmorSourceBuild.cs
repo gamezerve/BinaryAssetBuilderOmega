@@ -202,6 +202,30 @@ internal static class GeneralArmorSourceBuild
         File.WriteAllBytes(definitions, Source(defs.Replace("250.5", "5000", StringComparison.Ordinal)));
         string changed = Path.Combine(directory, "c"); Run(data, entry, changed);
         if (Package(changed, "armor-source-build.json").SequenceEqual(expected)) throw new InvalidDataException("Changed definition did not alter the native package.");
+        // Reborn: prove two-sided unkeyed armor append across imported/local chains, not guessed Damage-key replacement or one-sided copying.
+        string appendedOwner = ownerBody.Replace("SideDamageScalar='=$SIDE'/>", "SideDamageScalar='=$SIDE'><Armor Damage='CANNON' Percent='=$OWN'/></ArmorTemplate>", StringComparison.Ordinal)
+            .Replace("<ArmorTemplate id='LocalBase' Default='=$OWN'/>", "<ArmorTemplate id='LocalBase' Default='=$OWN'><Armor Damage='GUN' Percent='=$ALIAS'/></ArmorTemplate>", StringComparison.Ordinal);
+        Fixture(appendedOwner);
+        File.WriteAllBytes(middle, Source(middleBody.Replace("DamageScalar='50'/>", "DamageScalar='50'><Armor Damage='SNIPER' Percent='25%'/></ArmorTemplate>", StringComparison.Ordinal)));
+        string appended = Path.Combine(directory, "append"); Run(data, entry, appended);
+        var appendedXml = Parse(File.ReadAllBytes(Path.Combine(appended, "prepared-armors.xml")));
+        var appendedAssets = appendedXml.DocumentElement!.ChildNodes.OfType<XmlElement>().ToArray();
+        string[] expectedDamage = { "GUN", "SNIPER", "CANNON" };
+        if (!appendedAssets.Single(node => node.GetAttribute("id") == "Owner").ChildNodes.OfType<XmlElement>().Select(node => node.GetAttribute("Damage")).SequenceEqual(expectedDamage)
+            || !appendedAssets.Single(node => node.GetAttribute("id") == "LocalDerived").ChildNodes.OfType<XmlElement>().Select(node => node.GetAttribute("Damage")).SequenceEqual(new[] { "GUN", "CANNON" }))
+            throw new InvalidDataException("Imported/local armor append order differs from Core inheritance.");
+        string appendLiteral = Path.Combine(directory, "append-literal.xml");
+        File.WriteAllBytes(appendLiteral, Source("<ArmorTemplate id='Owner' Default='75.5%' DamageScalar='50' SideDamageScalar='125'><Armor Damage='GUN' Percent='250.5'/><Armor Damage='SNIPER' Percent='25%'/><Armor Damage='CANNON' Percent='40'/></ArmorTemplate><ArmorTemplate id='LocalBase' Default='40'><Armor Damage='GUN' Percent='250.5'/></ArmorTemplate><ArmorTemplate id='LocalDerived' Default='40' RearDamageScalar='25%'><Armor Damage='GUN' Percent='250.5'/><Armor Damage='CANNON' Percent='10'/></ArmorTemplate>"));
+        string appendExpected = Path.Combine(directory, "append-expected"); GeneralArmorAuthoredBuild.Run(appendLiteral, appendExpected, true);
+        byte[] appendPackage = Package(appended, "armor-source-build.json");
+        if (!appendPackage.SequenceEqual(Package(appendExpected, "general-armor-build.json")))
+            throw new InvalidDataException("Two-sided armor append does not reproduce independent literal package.");
+        // Reborn: changed owner append coefficients must affect output; overlapping Damage remains a pre-output refusal, not last-wins normalization.
+        Fixture(appendedOwner.Replace("Percent='=$OWN'", "Percent='80'", StringComparison.Ordinal));
+        File.WriteAllBytes(middle, Source(middleBody.Replace("DamageScalar='50'/>", "DamageScalar='50'><Armor Damage='SNIPER' Percent='25%'/></ArmorTemplate>", StringComparison.Ordinal)));
+        string appendChanged = Path.Combine(directory, "append-changed"); Run(data, entry, appendChanged);
+        if (Package(appendChanged, "armor-source-build.json").SequenceEqual(appendPackage))
+            throw new InvalidDataException("Changed appended coefficient did not alter package.");
         string[] faults = {
             ownerBody.Replace("=$SIDE", "=$MISSING", StringComparison.Ordinal),
             ownerBody.Replace("=$SIDE", "=1+2", StringComparison.Ordinal),
@@ -230,7 +254,7 @@ internal static class GeneralArmorSourceBuild
         Fixture(ownerBody); File.WriteAllBytes(basis, Source("<Includes><Include type='instance' source='Entry.xml'/></Includes><ArmorTemplate id='RemoteBase'/>"));
         Refuse(() => Run(data, entry, Path.Combine(directory, "cycle")));
         Fixture(ownerBody); File.Delete(definitions); Refuse(() => Run(data, entry, Path.Combine(directory, "missing")));
-        Console.WriteLine("Armor source bridge: PASS (4-file instance/metadata closure, imported/local chains, definition alias/arithmetic contexts, literal package equality/repeat/changed-input controls and nineteen pre-output refusals; no alpha/game).");
+        Console.WriteLine("Armor source bridge: PASS (4-file instance/metadata closure, imported/local chains, two-sided distinct-Damage append, definition alias/arithmetic contexts, independent literal package equality/changed-input controls and nineteen pre-output refusals; no game).");
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: create only owned XML fixtures; reference XSD and external game data remain unchanged. */

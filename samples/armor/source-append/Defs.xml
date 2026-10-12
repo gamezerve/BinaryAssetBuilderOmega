@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: both defining source and owner consume the same definition-only leaf. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <Defines>
+    <Define name="GUN" value="250.5" />
+    <Define name="CANNON" value="40" />
+    <Define name="SIDE" value="125" />
+  </Defines>
+</AssetDeclaration>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: append a distinct CANNON entry to an imported GUN base; this does not replace an inherited Damage entry. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <Includes>
+    <Include type="instance" source="DATA:Base.xml" />
+    <Include type="all" source="DATA:Defs.xml" />
+  </Includes>
+  <ArmorTemplate id="RebornAppendArmor" inheritFrom="RebornAppendBase" SideDamageScalar="=$SIDE">
+    <Armor Damage="CANNON" Percent="=$CANNON" />
+  </ArmorTemplate>
+</AssetDeclaration>

@@ -65,6 +65,14 @@ GameObjects, which are not build-enabled here. The old fixed samples retain
 their original admission and golden package checks. `-ValidateOnly` audits and
 prepares source input without publishing a BIG or successful alpha receipt.
 
+Both base and child may contain Armor entries when their Damage kinds are
+distinct: Core appends base entries first, then child entries. This is proven
+through imported/local chains and independent literal package equality; it is
+not replacement of an existing GUN entry. See repository example
+`samples/armor/source-append/mod.xml`. All three XML files must stay together
+inside the selected mod data root. This documentation follow-up does not modify
+the preserved h workspace or claim new gameplay proof.
+
 `uprising-alpha.paths` configures five literal `key=absolute-path` lines:
 PowerShell7, StaticManifest, GlobalManifest, Driver and
 CompilerDirectory. Update Driver and CompilerDirectory after relocating this
