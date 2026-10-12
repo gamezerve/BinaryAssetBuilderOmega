@@ -35,13 +35,16 @@ Damage=5 and edited Damage=50 default-reader candidates: fifteen exact BIG
 entries, three blank-CRLF version markers, matching config/mod-SKU fragments,
 two-reader metadata and ten package refusal controls pass. Repeated baseline
 packages are byte-identical. Stock archives are not bundled or replaced.
-Runtime external-reference loading and gameplay remain unproven; the exported
-alpha is unchanged. Next: fresh runtime preflight and a separately authorized
-Conscript AK47 damage comparison, then bounded alpha integration if successful.
+Independent runtime external-reference loading evidence remains unavailable;
+the exported alpha is unchanged.
 The user has now authorized one Damage=50 candidate launch. Strict preflight
 passes and the 30-second observer completes without error, with 37 matching
-1.1 child config-argument snapshots. Gameplay/main-menu feedback is pending;
-argument presence is not evidence of package consumption or an effective override.
+1.1 child config-argument snapshots. In response to the requested fresh-Soviet
+skirmish/normal-AK47 comparison, the user reports increased damage. This is the
+first positive behavioral observation for the exact Damage=50 weapon candidate,
+not a measured multiplier, config-read trace or general WeaponTemplate proof.
+Next: bounded editable weapon authoring and alpha integration, retaining strict
+unsupported-type/identity/shape errors and the existing armor regressions.
 Full weapon tokenization and dependency
 proof are not yet complete; WeaponTemplate stays disabled in the alpha.
 

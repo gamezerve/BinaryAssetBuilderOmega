@@ -385,6 +385,25 @@ completed its 30-second observer without error: 37 direct 1.1 child snapshots
 carried the exact requested config argument. The local launch receipt is
 `artifacts/WeaponLaunch-05870f31a9be4ce8840e9b1cec943d07/launch.json`.
 These are visible argument observations, not config-read, manifest-load,
-main-menu or gameplay proof. User feedback on normal Conscript AK47 damage in
-a fresh skirmish is pending. The alpha remains unchanged; no second start is
-authorized by this single-trial approval.
+main-menu or gameplay proof. Subsequent user feedback on the requested normal
+Conscript AK47 damage comparison is positive, as recorded below. The alpha
+remains unchanged; no second start is authorized by this single-trial approval.
+
+## User-observed Damage=50 behavior
+
+After the single authorized launch, the user answered the requested
+fresh-Soviet-skirmish/normal-AK47 comparison with "hasar artmış" (damage
+increased). This supplies the first positive user-observed gameplay evidence
+for the exact Damage=50 candidate, SHA256
+`932415FE98AC7C527604A01923AC9D7910E6C6116C6F59A42C51912C0DCEBC5E`.
+The package contains only WeaponTemplate:SovietAntiInfantryInfantryAK47 and no
+armor override; the offline payload differs from the stock weapon only at the
+reviewed Damage slot, apart from corresponding identity/checksum fields.
+
+No exact multiplier, quantified stock-versus-edit timing, independent runtime
+file-read trace or recursive audio closure is claimed. The immutable launch
+receipt retains its technical config-consumption/override flags as false;
+this separate user report is behavioral evidence, not a rewrite of the
+observer's capabilities. No additional launch or installation change follows
+this feedback. The next implementation gate is a bounded editable AK47 authoring
+profile and alpha integration, not arbitrary weapons/IDs or full SDK completion.
