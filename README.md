@@ -8,6 +8,15 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 12, 2026
 
+The [batched offline test workflow](docs/RA3EP1_BATCH_TESTING.md) now builds once,
+runs 15 focused groups with isolated concurrent workers and aggregates failures
+without stopping the remaining groups. `-Full` adds broader compiler/armor
+regressions. Source-semantic diagnostic passes do not expand playable alpha
+capabilities or imply mixed-stream support.
+The final two-worker focused run passes 15/15 groups in about 28 seconds
+excluding the compiler build; all eight compiler/runtime file hashes remain
+unchanged. Failure-continuation and occupied-output controls also pass.
+
 The next type is a [bounded Conscript weapon vertical slice](docs/RA3EP1_WEAPON_VERTICAL_SLICE.md).
 Read-only stock review now verifies AK47 root scalar token/native relationships,
 selected DamageNugget class/list/GUN=5 relationships, direct reference names

@@ -34,6 +34,12 @@ Public distribution review is separate from achieving functional parity.
 
 ## Current position — October 12, 2026
 
+Development now uses a [batched validation matrix](RA3EP1_BATCH_TESTING.md):
+one build, isolated workers, independent feature/negative-control groups and a
+single report. Future milestones should connect reusable source/type/output
+layers in larger batches rather than add one fixed unit field per turn. This
+workflow change is not a capability-percentage increase or runtime proof.
+
 The seven-sample g local alpha, fresh extraction, overlay setup/build and
 relocation now pass. ConscriptAK47 adds one complete fixed weapon identity with
 only Damage editable (integer 0..10000, optional .0); mixed armor/weapon builds
