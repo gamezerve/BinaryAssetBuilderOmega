@@ -123,6 +123,12 @@ GameObject package. No full object token tree, mixed stream or gameplay is prove
 
 ## Whole-root layout follow-up
 
+This section records the preceding root-only milestone. The subsequent
+[module/AI report](RA3EP1_GAMEOBJECT_MODULE_TOPOLOGY.md) resolves the apparent
+UnitSpecificFX slot as AI.Items and corrects the model. Current root coverage
+has no unmatched native fields; the older opaque-slot findings below remain
+historical evidence, not the current unresolved-member status.
+
 `GameObjectRootLayoutReview.cs` now maps every root token name to a reflected
 field/offset in the current x86 GameObject native model. Both reviewed objects
 have **126 named root tokens**, with no unknown name hashes: **90 direct native

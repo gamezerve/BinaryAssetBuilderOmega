@@ -189,7 +189,18 @@ internal static class UprisingLayoutSmokeTest
         ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.InvisibilityOpacityMin), 376);
         ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.UnitIntro), 400);
         ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.ObjectResourceInfo), 416);
-        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.UnitSpecificFX), 484);
+        // Reborn: stock/XSD establish the inline eight-byte AI list; Body remains at +488.
+        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.AI), 480);
+        // Reborn: unmanaged generic layout uses pointer arithmetic; Marshal.SizeOf rejects generic types.
+        unsafe
+        {
+            Relo.PolymorphicList<SageBinaryData.UpdateModuleData> aiLayout = default;
+            int size = sizeof(Relo.PolymorphicList<SageBinaryData.UpdateModuleData>);
+            int items = (int)((byte*)&aiLayout.Items - (byte*)&aiLayout);
+            Expect(size == 8, "sizeof inline AI list", 8, size);
+            Expect(items == 4, "offsetof AI.Items", 4, items);
+        }
+        ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.Body), 488);
         ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.UpgradeCameo), 544);
         ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.DisplayUpgrade), 576);
         ExpectOffset<SageBinaryData.GameObject>(nameof(SageBinaryData.GameObject.RefundValue), 584);

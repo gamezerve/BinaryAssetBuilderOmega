@@ -13,6 +13,11 @@ internal static class Program
     {
         try
         {
+            // Reborn: selected stock module topology and AI marshaler controls remain separate from general source/publication.
+            if (args.Length == 3 && args[0] == "gameobject-module-review")
+            { CompilerSmokeTest.InitializeHashProvider(); Console.WriteLine(JsonSerializer.Serialize(GameObjectModuleReview.Inspect(args[1], args[2]), JsonOptions)); return 0; }
+            if (args.Length == 2 && args[0] == "gameobject-module-self-test")
+            { CompilerSmokeTest.InitializeHashProvider(); GameObjectModuleReview.SelfTest(args[1]); return 0; }
             // Reborn: full root-name/offset inventory still does not grant indirect module/compiler authority.
             if (args.Length == 3 && args[0] == "gameobject-root-layout-review")
             { CompilerSmokeTest.InitializeHashProvider(); Console.WriteLine(JsonSerializer.Serialize(GameObjectRootLayoutReview.Inspect(args[1], args[2]), JsonOptions)); return 0; }
@@ -1268,6 +1273,9 @@ internal static class Program
 
     private static void PrintUsage()
     {
+        // Reborn: module review does not enable GameObject package publication.
+        Console.WriteLine("  gameobject-module-review <static.manifest> <GameObject:Name>");
+        Console.WriteLine("  gameobject-module-self-test <static.manifest>");
         // Reborn: root coverage commands report incomplete indirect graphs explicitly.
         Console.WriteLine("  gameobject-root-layout-review <static.manifest> <GameObject:Name>");
         Console.WriteLine("  gameobject-root-layout-self-test <static.manifest>");

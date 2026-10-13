@@ -311,8 +311,8 @@ namespace SageBinaryData
         public unsafe SkirmishAIInformation* SkirmishAIInformation;
         public unsafe PolymorphicList<DrawModuleData>* Draws;
         public unsafe PolymorphicList<BehaviorModuleData>* Behaviors;
-        public unsafe UpdateModuleData* AI;
-        public unsafe PerUnitFX* UnitSpecificFX;
+        // Reborn: EP1 AIModule is an inline count/items list at +480/+484, not a single AI pointer followed by a UnitSpecificFX pointer.
+        public PolymorphicList<UpdateModuleData> AI;
         public unsafe BodyModuleData* Body;
         public unsafe PolymorphicList<ClientUpdateModuleData>* ClientUpdates;
         public unsafe PolymorphicList<ClientBehaviorModuleData>* ClientBehaviors;

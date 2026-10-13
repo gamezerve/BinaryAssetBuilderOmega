@@ -83,7 +83,7 @@ internal static class GameObjectRootLayoutReview
             var proof = Decode(name, captured.Bytes, captured.Projection.NativeRoot);
             Console.WriteLine(JsonSerializer.Serialize(proof, new JsonSerializerOptions { WriteIndented = true }));
             if (!proof.StockRootNameCoverageComplete || !proof.DirectRootOffsetsMatch || proof.DirectMatches == 0 || proof.IndirectTables == 0
-                || !proof.MissingNativeFields.SequenceEqual(new[] { "UnitSpecificFX" }))
+                || !proof.NativeModelFullyTokenRepresented)
                 throw new InvalidDataException("GameObject stock root model requires an explicit layout correction/review.");
             var field = proof.Fields.Single(f => f.Name == "BountyValue");
             int entry = Enumerable.Range(0, proof.RootTokens).Single(i => BinaryPrimitives.ReadUInt32LittleEndian(captured.Bytes.AsSpan(i * 12, 4)) == field.NameHash) * 12;

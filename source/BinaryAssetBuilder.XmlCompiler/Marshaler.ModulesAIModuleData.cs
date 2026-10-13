@@ -50,7 +50,7 @@ public static partial class Marshaler
                 MarshalPolymorphicType<AIUpdateModuleData, UpdateModuleData>(node, objT, state);
                 break;
             default:
-                break;
+                // Reborn: unknown AI classes must fail rather than publish an allocated null/partial module list as success.
                 throw new BinaryAssetBuilderException(ErrorCode.InternalError, "AI module {0:X08} is not implemented.", typeId);
         }
     }

@@ -45,9 +45,11 @@ GameObject input in the exported alpha.
 
 The subsequent whole-root inventory maps all 126 stock token names and verifies
 90 direct offsets plus one pointee relation per reviewed object. Thirty-five
-indirect graphs and the nonzero untokenized native +484 slot remain explicit
-work before complete payload/tokenization equality. No general GameObject
-publication is unlocked by root coverage alone.
+indirect graphs remain work before complete payload/tokenization equality. The
+module follow-up resolves +484 as AI.Items and corrects the inline AI native
+model/marshaler. Six module-container topologies now cover 93 stock instances,
+and nine absent native model families are concrete migration targets. No general
+GameObject publication is unlocked by root/list/class coverage alone.
 
 October 13 source follow-up: the [armor source bridge](RA3EP1_ARMOR_SOURCE_BRIDGE.md)
 connects captured instance/definition Includes, imported/local inheritance and

@@ -70,6 +70,8 @@ if($SchedulerControl){
     Add-BatchCase 'gameobject-stock' 'BoundedStockNativeProjection' @('gameobject-stock-self-test',$StaticManifest)
     # Reborn: map every native root field against stock tokens without claiming indirect module semantics.
     Add-BatchCase 'gameobject-root-layout' 'BoundedRootLayoutEvidence' @('gameobject-root-layout-self-test',$StaticManifest)
+    # Reborn: six module-container graphs and actual inline AI marshaler controls are one batched offline gate.
+    Add-BatchCase 'gameobject-modules' 'BoundedModuleTopology' @('gameobject-module-self-test',$StaticManifest)
     # Reborn: actual named source references must bind stock and newly compiled armor without captured numeric dependency indices.
     Add-BatchCase 'gameobject-armor-source' 'BoundedNamedNativeProjection' @('gameobject-armor-source-self-test',(Join-Path $OutputDirectory 'go'),$StaticManifest)
     Add-BatchCase 'armor-core' 'BoundedScopedStream' @('ep1-armor-document-self-test',(Join-Path $OutputDirectory 'armor-core'),$StaticManifest)

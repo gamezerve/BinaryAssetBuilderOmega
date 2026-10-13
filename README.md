@@ -8,15 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 13, 2026
 
-The [root-layout follow-up](docs/RA3EP1_GAMEOBJECT_VERTICAL_SLICE.md#whole-root-layout-follow-up)
-maps all 126 stock root tokens for Conscript and Allied Construction Yard:
-90 direct native-offset matches, one verified pointer/pointee relationship,
-and 35 explicitly unverified indirect token tables. No unknown stock root hashes
-remain. The model's extra UnitSpecificFX slot at +484 has no root token and is
-nonzero in both objects; it remains an unresolved native member, not an unused
-field to remove. This narrows the complete-object migration work without enabling
-GameObject builds in alpha h. Final focused regression: **21/21** groups pass;
-the detailed report records the remaining graphs and opaque slot explicitly.
+The [module/AI follow-up](docs/RA3EP1_GAMEOBJECT_MODULE_TOPOLOGY.md) resolves the
+previous +484 mystery: EP1 AI is an inline count/items list at +480/+484, not a
+single AI pointer followed by UnitSpecificFX. The native model and marshaler are
+corrected without moving Body (+488) or changing the 600-byte root. Actual 0/1/2
+AI builds and relocation/ID/scalar controls pass; excess/unknown AI is refused.
+Six container topologies cover 93 stock module instances in two objects, with
+nine missing native model families explicitly listed. Final focused regression
+passes **22/22** groups; the broader compiler suite also passes against identical
+shared assembly hashes. Full module payload/tokenization/mixed publication and
+GameObject input in alpha h remain closed.
 
 The new named-reference follow-up in the [GameObject armor-consumer slice](docs/RA3EP1_GAMEOBJECT_VERTICAL_SLICE.md)
 normalizes plain XML armor/DamageFX names through the actual Core reference
@@ -90,7 +91,7 @@ expanded Full run passed 19/19 before the final routing/checksum refinements;
 see the linked backend report for exact evidence and rerun boundaries.
 
 The [batched offline test workflow](docs/RA3EP1_BATCH_TESTING.md) now builds once,
-runs 21 focused groups with isolated concurrent workers and aggregates failures
+runs 22 focused groups with isolated concurrent workers and aggregates failures
 without stopping the remaining groups. `-Full` adds broader compiler/armor
 regressions. Source-semantic diagnostic passes do not expand playable alpha
 capabilities or imply mixed-stream support.

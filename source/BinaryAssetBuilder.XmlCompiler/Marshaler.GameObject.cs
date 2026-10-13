@@ -1226,8 +1226,11 @@ public static partial class Marshaler
         Marshal(node.GetChildNode(nameof(GameObject.SkirmishAIInformation), null), &objT->SkirmishAIInformation, state);
         Marshal(node.GetChildNode(nameof(GameObject.Draws), null), &objT->Draws, state);
         Marshal(node.GetChildNode(nameof(GameObject.Behaviors), null), &objT->Behaviors, state);
-        MarshalSinglePolymorphic(node.GetChildNode(nameof(GameObject.AI), null), &objT->AI, state);
-        Marshal(node.GetChildNode(nameof(GameObject.UnitSpecificFX), null), &objT->UnitSpecificFX, state);
+        // Reborn: preserve EP1's by-value AI list and refuse more than the official two modules instead of silently losing multiple children.
+        var ai = node.GetChildNode(nameof(GameObject.AI), null);
+        if (ai?.GetChildNodes(null)?.GetCount() > 2)
+            throw new BinaryAssetBuilderException(ErrorCode.InternalError, "EP1 GameObject AI admits at most two modules.");
+        Marshal(ai, &objT->AI, state);
         MarshalSinglePolymorphic(node.GetChildNode(nameof(GameObject.Body), null), &objT->Body, state);
         Marshal(node.GetChildNode(nameof(GameObject.ClientUpdates), null), &objT->ClientUpdates, state);
         Marshal(node.GetChildNode(nameof(GameObject.ClientBehaviors), null), &objT->ClientBehaviors, state);
