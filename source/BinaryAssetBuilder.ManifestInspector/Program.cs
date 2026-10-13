@@ -13,6 +13,9 @@ internal static class Program
     {
         try
         {
+            // Reborn: nested damage/motion graphs and real modifier imports remain diagnostic, not GameObject publication.
+            if (args.Length == 2 && args[0] == "ep1-damage-motion-self-test")
+            { CompilerSmokeTest.InitializeHashProvider(); Ep1DamageMotionSmokeTest.Run(args[1]); return 0; }
             // Reborn: selected new module payload/dispatch tests remain distinct from general GameObject publication.
             if (args.Length == 2 && args[0] == "ep1-basic-module-self-test")
             { CompilerSmokeTest.InitializeHashProvider(); Ep1BasicModuleSmokeTest.Run(args[1]); return 0; }
@@ -1276,6 +1279,8 @@ internal static class Program
 
     private static void PrintUsage()
     {
+        // Reborn: bounded module graph/native/reference checks do not create a playable object.
+        Console.WriteLine("  ep1-damage-motion-self-test <static.manifest>");
         // Reborn: this command tests bounded module families without building a GameObject package.
         Console.WriteLine("  ep1-basic-module-self-test <static.manifest>");
         // Reborn: module review does not enable GameObject package publication.

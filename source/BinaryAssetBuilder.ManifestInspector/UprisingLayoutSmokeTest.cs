@@ -7,6 +7,15 @@ internal static class UprisingLayoutSmokeTest
     public static void Run()
     {
         TestPatchManifestTotals();
+        // Reborn: lock stock-backed tracker/effect/freefall field packing independently of marshalling.
+        ExpectSize<SageBinaryData.EffectInfoType>(16);
+        ExpectOffset<SageBinaryData.EffectInfoType>(nameof(SageBinaryData.EffectInfoType.Options), 8);
+        ExpectOffset<SageBinaryData.EffectInfoType>(nameof(SageBinaryData.EffectInfoType.OnEnterDisable), 12);
+        ExpectSize<SageBinaryData.SecondaryDamageTrackerModuleData>(36);
+        ExpectOffset<SageBinaryData.SecondaryDamageTrackerModuleData>(nameof(SageBinaryData.SecondaryDamageTrackerModuleData.EffectInfo), 24);
+        ExpectOffset<SageBinaryData.SecondaryDamageTrackerModuleData>(nameof(SageBinaryData.SecondaryDamageTrackerModuleData.ObjectStatusValidation), 32);
+        ExpectSize<SageBinaryData.FreefallUpdateModuleData>(80);
+        ExpectOffset<SageBinaryData.FreefallUpdateModuleData>(nameof(SageBinaryData.FreefallUpdateModuleData.InitialVelocity), 68);
         // Reborn: pin the three independently stock-compared EP1 module layouts.
         ExpectSize<SageBinaryData.ObjectSMCHelperModuleData>(8);
         ExpectSize<SageBinaryData.StructureSellUpdateModuleData>(16);

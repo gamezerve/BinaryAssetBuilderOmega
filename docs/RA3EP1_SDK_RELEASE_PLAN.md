@@ -56,6 +56,11 @@ the required ObjectSMCHelper, with real marshaler dispatch and stock payload
 equality. Six observed families remain unported. This is native implementation
 progress, not general GameObject source/Core/package support.
 
+The damage/motion follow-up ports tracker and freefall, with selected full nested
+native graph equality and actual Core-normalized modifier names/imports. Four
+observed families remain without native models, but existing model review and
+complete GameObject tokenization/publication are separate remaining work.
+
 October 13 source follow-up: the [armor source bridge](RA3EP1_ARMOR_SOURCE_BRIDGE.md)
 connects captured instance/definition Includes, imported/local inheritance and
 exact field substitutions to real scoped armor set publication. Defining source

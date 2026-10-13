@@ -91,6 +91,10 @@ No reference schema/XML or installed game files were changed.
 
 ## Remaining work
 
+This list records the basic-batch milestone. The subsequent
+[damage/motion batch](RA3EP1_DAMAGE_MOTION_MODULES.md) ports SecondaryDamageTracker
+and FreefallUpdate; four observed model families remain absent now.
+
 The two reviewed objects now have six missing native model families:
 SecondaryDamageTracker, FreefallUpdate, ToggleStatusSpecialAbilityUpdate,
 BuildingDestruction, TechUpgrade and LUAEventListBehavior. This is not a list of

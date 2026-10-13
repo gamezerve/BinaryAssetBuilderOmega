@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: focused native/reference diagnostic harness; module and primitive definitions are untouched official Includes, not a full GameObject schema. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset"
+ targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Base.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Base/AssetBase.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Ref.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/ObjectStatus.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/ModelState.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Modules/SecondaryDamageTracker.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Modules/FreefallUpdate.xsd"/>
+ <!-- Reborn: diagnostic inheritance-only base stubs carry no production schema/layout authority. -->
+ <xs:complexType name="UpdateModuleData"><xs:complexContent><xs:extension base="BaseInheritableAsset"/></xs:complexContent></xs:complexType>
+ <xs:complexType name="AttributeModifier"><xs:complexContent><xs:extension base="BaseInheritableAsset"/></xs:complexContent></xs:complexType>
+ <!-- Reborn: these official status fields are drift-checked against BaseModules before test use. -->
+ <xs:complexType name="ObjectStatusValidationDataType">
+  <xs:sequence/>
+  <xs:attribute name="ForbiddenStatus" type="ObjectStatusBitFlags"/>
+  <xs:attribute name="RequiredStatus" type="ObjectStatusBitFlags"/>
+ </xs:complexType>
+ <xs:element name="SecondaryDamageTracker" type="SecondaryDamageTrackerModuleData"/>
+ <xs:element name="FreefallUpdate" type="FreefallUpdateModuleData"/>
+</xs:schema>

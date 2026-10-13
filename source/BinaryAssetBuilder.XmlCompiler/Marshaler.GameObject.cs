@@ -14,6 +14,13 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: EP1 damage/motion classes preserve their real concrete IDs and nested import/mask layouts.
+            case 0xB21C7E67u:
+                MarshalPolymorphicType<SecondaryDamageTrackerModuleData, BehaviorModuleData>(node, objT, state);
+                break;
+            case 0xFC222F04u:
+                MarshalPolymorphicType<FreefallUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                break;
             // Reborn: stock-proven EP1 helper/sell classes use their own concrete IDs, not approximate legacy substitutes.
             case 0x7F72F242u:
                 MarshalPolymorphicType<ObjectSMCHelperModuleData, BehaviorModuleData>(node, objT, state);

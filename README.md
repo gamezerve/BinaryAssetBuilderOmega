@@ -8,6 +8,17 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 13, 2026
 
+The [damage/motion batch](docs/RA3EP1_DAMAGE_MOTION_MODULES.md) adds
+SecondaryDamageTracker and FreefallUpdate with real polymorphic dispatch.
+Two complete selected tracker graphs and one freefall payload match stock,
+including color, ordered effects, packed options/bools and optional status masks.
+Plain modifier names pass through actual Core normalization and resolve to the
+same stock identities; native import/relocation slots are checked. The observed
+missing model families in the two reviewed objects fall from six to four.
+GameObject tokenization/publication and alpha h remain unchanged.
+Final Full regression: **26/26** groups pass, with all eight runtime-file hashes
+unchanged during workers; the detailed damage/motion report records exact scope.
+
 The [first module-port batch](docs/RA3EP1_BASIC_MODULE_PORTS.md) implements
 ObjectSMCHelper, StructureSellUpdate and LargeGroupAudioClientUpdate models,
 marshalers and real polymorphic dispatch. Four stock comparisons verify complete
@@ -101,7 +112,7 @@ expanded Full run passed 19/19 before the final routing/checksum refinements;
 see the linked backend report for exact evidence and rerun boundaries.
 
 The [batched offline test workflow](docs/RA3EP1_BATCH_TESTING.md) now builds once,
-runs 23 focused groups with isolated concurrent workers and aggregates failures
+runs 24 focused groups with isolated concurrent workers and aggregates failures
 without stopping the remaining groups. `-Full` adds broader compiler/armor
 regressions. Source-semantic diagnostic passes do not expand playable alpha
 capabilities or imply mixed-stream support.
