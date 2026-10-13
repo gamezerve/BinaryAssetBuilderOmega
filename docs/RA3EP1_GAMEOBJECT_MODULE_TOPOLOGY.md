@@ -47,7 +47,10 @@ or applied to official files. It is used as a name catalog, not as authority to
 publish all admitted asset types. NativeModelPresent is only an exact native
 type-name match, not complete native layout, marshaler or gameplay proof.
 
-Nine schema-named families in these objects have no matching current native model:
+At this topology milestone, nine schema-named families had no matching native
+model. The subsequent [basic module batch](RA3EP1_BASIC_MODULE_PORTS.md) implements
+ObjectSMCHelper, StructureSellUpdate and LargeGroupAudioClientUpdate with independent
+payload/dispatch evidence. Six listed families still lack matching models:
 
 - ObjectSMCHelperModuleData (a required official BehaviorModules member)
 - SecondaryDamageTrackerModuleData

@@ -7,6 +7,15 @@ internal static class UprisingLayoutSmokeTest
     public static void Run()
     {
         TestPatchManifestTotals();
+        // Reborn: pin the three independently stock-compared EP1 module layouts.
+        ExpectSize<SageBinaryData.ObjectSMCHelperModuleData>(8);
+        ExpectSize<SageBinaryData.StructureSellUpdateModuleData>(16);
+        ExpectOffset<SageBinaryData.StructureSellUpdateModuleData>(nameof(SageBinaryData.StructureSellUpdateModuleData.SellTime), 8);
+        ExpectOffset<SageBinaryData.StructureSellUpdateModuleData>(nameof(SageBinaryData.StructureSellUpdateModuleData.ActiveModelCondition), 12);
+        ExpectSize<SageBinaryData.LargeGroupAudioClientUpdateModuleData>(28);
+        ExpectOffset<SageBinaryData.LargeGroupAudioClientUpdateModuleData>(nameof(SageBinaryData.LargeGroupAudioClientUpdateModuleData.FramesBetweenUpdatesMin), 8);
+        ExpectOffset<SageBinaryData.LargeGroupAudioClientUpdateModuleData>(nameof(SageBinaryData.LargeGroupAudioClientUpdateModuleData.Key), 16);
+        ExpectOffset<SageBinaryData.LargeGroupAudioClientUpdateModuleData>(nameof(SageBinaryData.LargeGroupAudioClientUpdateModuleData.UnitWeight), 24);
         // Reborn: pin the recovered FX optional-pointer base independently of EP1's 60-byte pointed-to condition masks.
         ExpectSize<SageBinaryData.FXList>(28);
         ExpectSize<SageBinaryData.FXNugget>(44);

@@ -14,6 +14,13 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: stock-proven EP1 helper/sell classes use their own concrete IDs, not approximate legacy substitutes.
+            case 0x7F72F242u:
+                MarshalPolymorphicType<ObjectSMCHelperModuleData, BehaviorModuleData>(node, objT, state);
+                break;
+            case 0x4E9CB811u:
+                MarshalPolymorphicType<StructureSellUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                break;
             case 0x2B847E06u:
                 MarshalPolymorphicType<AISpecialPowerUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;

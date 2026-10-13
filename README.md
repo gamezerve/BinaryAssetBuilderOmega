@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 13, 2026
 
+The [first module-port batch](docs/RA3EP1_BASIC_MODULE_PORTS.md) implements
+ObjectSMCHelper, StructureSellUpdate and LargeGroupAudioClientUpdate models,
+marshalers and real polymorphic dispatch. Four stock comparisons verify complete
+selected payloads plus audio key data; edited IDs/scalars/key order and a combined
+three-family native graph pass. This reduces the missing native model families
+observed in the two reviewed objects from nine to six, not the entire SDK backlog.
+General GameObject tokenization/publication and alpha h remain unchanged.
+Final Full regression passes **25/25** groups, including the broad compiler
+suite; all eight runtime hashes remain unchanged during workers.
+
 The [module/AI follow-up](docs/RA3EP1_GAMEOBJECT_MODULE_TOPOLOGY.md) resolves the
 previous +484 mystery: EP1 AI is an inline count/items list at +480/+484, not a
 single AI pointer followed by UnitSpecificFX. The native model and marshaler are
@@ -91,7 +101,7 @@ expanded Full run passed 19/19 before the final routing/checksum refinements;
 see the linked backend report for exact evidence and rerun boundaries.
 
 The [batched offline test workflow](docs/RA3EP1_BATCH_TESTING.md) now builds once,
-runs 22 focused groups with isolated concurrent workers and aggregates failures
+runs 23 focused groups with isolated concurrent workers and aggregates failures
 without stopping the remaining groups. `-Full` adds broader compiler/armor
 regressions. Source-semantic diagnostic passes do not expand playable alpha
 capabilities or imply mixed-stream support.

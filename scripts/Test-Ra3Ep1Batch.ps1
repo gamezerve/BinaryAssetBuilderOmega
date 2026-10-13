@@ -72,6 +72,8 @@ if($SchedulerControl){
     Add-BatchCase 'gameobject-root-layout' 'BoundedRootLayoutEvidence' @('gameobject-root-layout-self-test',$StaticManifest)
     # Reborn: six module-container graphs and actual inline AI marshaler controls are one batched offline gate.
     Add-BatchCase 'gameobject-modules' 'BoundedModuleTopology' @('gameobject-module-self-test',$StaticManifest)
+    # Reborn: three real module dispatch/payload implementations share one stock/edited-source regression gate.
+    Add-BatchCase 'ep1-basic-modules' 'BoundedModuleNativePayload' @('ep1-basic-module-self-test',$StaticManifest)
     # Reborn: actual named source references must bind stock and newly compiled armor without captured numeric dependency indices.
     Add-BatchCase 'gameobject-armor-source' 'BoundedNamedNativeProjection' @('gameobject-armor-source-self-test',(Join-Path $OutputDirectory 'go'),$StaticManifest)
     Add-BatchCase 'armor-core' 'BoundedScopedStream' @('ep1-armor-document-self-test',(Join-Path $OutputDirectory 'armor-core'),$StaticManifest)

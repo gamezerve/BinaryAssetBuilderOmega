@@ -8,19 +8,20 @@ Each group has a separate log and owned TEMP/TMP directory; Core static
 settings/caches do not cross process boundaries. Default concurrency is two
 workers, configurable from one to four. Concurrency is not multiple agents.
 
-The focused matrix has 22 groups: layout, armor input, weapon input,
+The focused matrix has 23 groups: layout, armor input, weapon input,
 includes/definitions, definition subset, instance inheritance, expressions,
 file-reference catalog, document reuse, dependency resolution, dependency hash,
 checksum, authored weapon values, actual armor Core output and actual pair Core
 output, general single-armor authoring, general multi-armor sets, the armor source bridge
 and bounded stock/native and named-source GameObject ArmorSet projections,
 plus complete stock root-name/offset inventory with explicit indirect/unmapped
-native-member boundaries, and selected module topology/inline AI marshal controls.
+native-member boundaries, selected module topology/inline AI marshal controls,
+and three newly ported module payload/dispatch/combined-native-graph controls.
 One group can contain many value/negative-control checks; group counts
 are not a count of newly supported SDK features.
 
 `-Full` adds the complete existing compiler suite and expanded authored armor
-field/package regression (24 groups total). This mode is deliberately heavier;
+field/package regression (25 groups total). This mode is deliberately heavier;
 use it for shared schema/native/token/output changes and release gates rather
 than every documentation/adapter change. The focused matrix is the default
 iteration gate. Batch scheduling does not change individual test assertions.

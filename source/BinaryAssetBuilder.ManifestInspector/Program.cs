@@ -13,6 +13,9 @@ internal static class Program
     {
         try
         {
+            // Reborn: selected new module payload/dispatch tests remain distinct from general GameObject publication.
+            if (args.Length == 2 && args[0] == "ep1-basic-module-self-test")
+            { CompilerSmokeTest.InitializeHashProvider(); Ep1BasicModuleSmokeTest.Run(args[1]); return 0; }
             // Reborn: selected stock module topology and AI marshaler controls remain separate from general source/publication.
             if (args.Length == 3 && args[0] == "gameobject-module-review")
             { CompilerSmokeTest.InitializeHashProvider(); Console.WriteLine(JsonSerializer.Serialize(GameObjectModuleReview.Inspect(args[1], args[2]), JsonOptions)); return 0; }
@@ -1273,6 +1276,8 @@ internal static class Program
 
     private static void PrintUsage()
     {
+        // Reborn: this command tests bounded module families without building a GameObject package.
+        Console.WriteLine("  ep1-basic-module-self-test <static.manifest>");
         // Reborn: module review does not enable GameObject package publication.
         Console.WriteLine("  gameobject-module-review <static.manifest> <GameObject:Name>");
         Console.WriteLine("  gameobject-module-self-test <static.manifest>");

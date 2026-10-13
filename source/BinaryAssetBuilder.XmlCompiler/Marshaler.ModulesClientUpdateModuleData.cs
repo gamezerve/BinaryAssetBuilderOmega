@@ -13,6 +13,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: EP1's client audio class differs from the legacy behavior-update class.
+            case 0x9826A297u:
+                MarshalPolymorphicType<LargeGroupAudioClientUpdateModuleData, ClientUpdateModuleData>(node, objT, state);
+                break;
             case 0x246E3C5Fu:
                 MarshalPolymorphicType<SwayClientUpdateModuleData, ClientUpdateModuleData>(node, objT, state);
                 break;
@@ -35,7 +39,7 @@ public static partial class Marshaler
                 MarshalPolymorphicType<AnimatedParticleSysBoneClientUpdateModuleData, ClientUpdateModuleData>(node, objT, state);
                 break;
             default:
-                break;
+                // Reborn: unsupported client updates must not silently leave null list entries.
                 throw new BinaryAssetBuilderException(ErrorCode.InternalError, "Client update module {0:X08} is not implemented.", typeId);
         }
     }

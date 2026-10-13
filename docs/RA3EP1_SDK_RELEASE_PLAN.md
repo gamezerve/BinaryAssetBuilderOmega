@@ -51,6 +51,11 @@ model/marshaler. Six module-container topologies now cover 93 stock instances,
 and nine absent native model families are concrete migration targets. No general
 GameObject publication is unlocked by root/list/class coverage alone.
 
+The basic module batch now adds three of those missing model families, including
+the required ObjectSMCHelper, with real marshaler dispatch and stock payload
+equality. Six observed families remain unported. This is native implementation
+progress, not general GameObject source/Core/package support.
+
 October 13 source follow-up: the [armor source bridge](RA3EP1_ARMOR_SOURCE_BRIDGE.md)
 connects captured instance/definition Includes, imported/local inheritance and
 exact field substitutions to real scoped armor set publication. Defining source
