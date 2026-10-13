@@ -8,6 +8,14 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 13, 2026
 
+The [standalone toggle AI implementation](docs/RA3EP1_TOGGLE_AI_NATIVE.md)
+adds native AI/weapon models and marshalers. Six selected stock AI graphs match,
+including four present optional pointer/value joins, absent weapon children,
+flags/defaults and actual Core-normalized weapon identities/imports. Authored
+controls exercise all thirteen optional allocation slots and edited XML values.
+Nine present optional layouts remain without stock corroboration. Enclosing
+toggle dispatch and GameObject publication are still closed; alpha h is unchanged.
+
 The [toggle-status layout checkpoint](docs/RA3EP1_TOGGLE_STATUS_LAYOUT.md)
 verifies the existing 252-byte special-ability base's field offsets and two
 304-byte stock toggle-state records, including inline AI, separate weapon

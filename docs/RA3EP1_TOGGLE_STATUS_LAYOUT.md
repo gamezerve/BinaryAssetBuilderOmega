@@ -22,7 +22,9 @@ The toggle module has a count/items list at +252/+256 and packed booleans at
 There are two ordered **304-byte** toggle-state records. Their eleven direct
 field anchors match both records. `SkirmishAiInfo` begins inline at state +132;
 its `StateWeapon` pointer is at AI +144 (state +276), **not inline weapon data**.
-Each present weapon record has ten field anchors and a 32-byte layout candidate.
+Each present weapon record has ten field anchors. The initial 32-byte layout
+candidate is superseded by the [standalone AI implementation](RA3EP1_TOGGLE_AI_NATIVE.md):
+the declared weapon native record is 28 bytes; allocation spacing is not its size.
 AI has 33 schema-named field tokens, including 13 absent optionals. Module and
 ActiveGeometry child lists are empty at state +288/+296.
 
@@ -65,10 +67,16 @@ the final batch build was clean. Full compiler tests were not rerun for this
 inspector-only change; the preceding damage/motion milestone retains its 26/26
 Full evidence. Do not mistake focused results for a new Full run.
 
-Next present-value source fixtures have been located but not yet decoded:
+At this original checkpoint, present-value source fixtures were located but not yet decoded:
 `Soviet/Units/SovietMiner.xml` has 2s look-ahead/look-behind and 0.2 damage fraction;
 `Soviet/Units/SovietScoutVehicle.xml` has power-advantage 1.0 with RETREAT/REPAIRING
 restrictions. These provide specific stock candidates to resolve optional layouts.
+
+The subsequent [standalone AI milestone](RA3EP1_TOGGLE_AI_NATIVE.md) now compiles
+and compares six AI graphs from these three objects, including the four present
+pointer/value joins. The review command accepts an optional object name and
+reports observed present joins individually. Enclosing toggle module compilation,
+other present optional fields and nonempty child-list publication are still unproven.
 
 ## Next implementation gates
 

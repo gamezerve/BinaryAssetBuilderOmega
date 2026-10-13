@@ -34,6 +34,14 @@ Public distribution review is separate from achieving functional parity.
 
 ## Current position — October 12, 2026
 
+October 13 toggle AI follow-up: standalone 156-byte AI / 28-byte weapon native
+models and marshalers now reproduce six selected stock graphs across Conscript,
+Ore Collector and Terror Drone. Four present optional pointer/value joins,
+actual Core-normalized weapon imports, enums/masks/defaults and authored optional
+allocation controls pass. This advances one internal dependency of the missing
+toggle family; it does not enable enclosing module dispatch or reduce the four
+missing module families yet. See [the precise evidence boundary](RA3EP1_TOGGLE_AI_NATIVE.md).
+
 October 13 consumer follow-up: the [GameObject native slice](RA3EP1_GAMEOBJECT_VERTICAL_SLICE.md)
 verifies Conscript/Allied yard ArmorSet token/native/dependency relationships and
 reproduces their selected armor-list bytes through the existing marshaler. The

@@ -15,8 +15,11 @@ internal static class Program
         {
             // Reborn: nested damage/motion graphs and real modifier imports remain diagnostic, not GameObject publication.
             // Reborn: recover toggle layout before admitting a new native family or claiming source/compiler support.
-            if (args.Length == 2 && args[0] == "toggle-status-layout-review")
-            { CompilerSmokeTest.InitializeHashProvider(); Console.WriteLine(JsonSerializer.Serialize(ToggleStatusLayoutReview.Inspect(args[1]), JsonOptions)); return 0; }
+            // Reborn: standalone AI payload/reference gates do not admit the enclosing toggle/GameObject family.
+            if (args.Length == 2 && args[0] == "ep1-toggle-ai-self-test")
+            { CompilerSmokeTest.InitializeHashProvider(); Ep1ToggleAiSmokeTest.Run(args[1]); return 0; }
+            if ((args.Length == 2 || args.Length == 3) && args[0] == "toggle-status-layout-review")
+            { CompilerSmokeTest.InitializeHashProvider(); Console.WriteLine(JsonSerializer.Serialize(ToggleStatusLayoutReview.Inspect(args[1], args.Length == 3 ? args[2] : "GameObject:SovietAntiInfantryInfantry"), JsonOptions)); return 0; }
             // Reborn: reject detached stock-field/list corruptions without editing stock or launching the game.
             if (args.Length == 2 && args[0] == "toggle-status-layout-self-test")
             { CompilerSmokeTest.InitializeHashProvider(); ToggleStatusLayoutReview.SelfTest(args[1]); return 0; }
@@ -1287,7 +1290,9 @@ internal static class Program
     {
         // Reborn: bounded module graph/native/reference checks do not create a playable object.
         // Reborn: toggle layout diagnostics do not enable source compilation or GameObject publication.
-        Console.WriteLine("  toggle-status-layout-review <static.manifest>");
+        // Reborn: verify selected AI native graphs separately from GameObject dispatch/publication.
+        Console.WriteLine("  ep1-toggle-ai-self-test <static.manifest>");
+        Console.WriteLine("  toggle-status-layout-review <static.manifest> [GameObject:Name]");
         Console.WriteLine("  toggle-status-layout-self-test <static.manifest>");
         Console.WriteLine("  ep1-damage-motion-self-test <static.manifest>");
         // Reborn: this command tests bounded module families without building a GameObject package.

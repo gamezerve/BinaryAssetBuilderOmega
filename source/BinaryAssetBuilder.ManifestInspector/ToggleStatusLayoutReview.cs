@@ -10,14 +10,17 @@ namespace BinaryAssetBuilder.ManifestInspector;
 internal static class ToggleStatusLayoutReview
 {
     internal sealed record Field(string Name, uint Type, int Target, int RelativeOffset, string Relationship);
-    internal sealed record State(int Native, Field[] Fields, Field[] AiFields, Field[] WeaponFields);
-    internal sealed record Proof(int Native, int ExistingBaseSize, Field[] BaseFields, State[] States)
+    internal sealed record Optional(string Name, int Slot, int Target, uint? Value);
+    internal sealed record State(int Native, Field[] Fields, Field[] AiFields, Field[] WeaponFields, Optional[] Optionals);
+    internal sealed record Proof(string Asset, int Native, int ExistingBaseSize, Field[] BaseFields, State[] States)
     {
         // Reborn: token/native anchors are only layout evidence, not complete payload, references, defaults or marshaler correctness.
         public bool ExistingBaseFieldOffsetsVerified => true;
         public bool ToggleStateStrideVerified => true;
         // Reborn: absent optional tokens cannot independently prove which native pointer slot belongs to a future present value.
         public bool PresentOptionalAiLayoutsVerified => false;
+        // Reborn: report only the present pointer/value joins actually observed; this count is not coverage of all thirteen optional fields.
+        public int ObservedPresentOptionalJoins => States.Sum(s => s.Optionals.Count(o => o.Target != 0));
         public bool ReferenceIdentitiesVerified => false;
         public bool MarshalerPayloadVerified => false;
         public bool ToggleCompilerEnabled => false;
@@ -28,19 +31,18 @@ internal static class ToggleStatusLayoutReview
     //-------------------------------------------------------------------------------------------------
     /** Reborn: reuse the fingerprint-admitted stock capture and select the known Conscript toggle module through its reviewed class chain. */
     //-------------------------------------------------------------------------------------------------
-    internal static Proof Inspect(string manifest)
+    internal static Proof Inspect(string manifest, string name = "GameObject:SovietAntiInfantryInfantry")
     {
-        const string name = "GameObject:SovietAntiInfantryInfantry";
         var capture = GameObjectStockReview.Capture(manifest, name);
         var module = GameObjectModuleReview.Inspect(manifest, name).Containers.SelectMany(c => c.Modules)
             .Single(m => m.Type == "ToggleStatusSpecialAbilityUpdateModuleData");
-        return Decode(capture.Bytes, capture.Projection.NativeRoot, module);
+        return Decode(name, capture.Bytes, capture.Projection.NativeRoot, module);
     }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: require direct reflected base offsets, two ordered 304-byte state records and bounded nested field tables without inferring their type semantics. */
     //-------------------------------------------------------------------------------------------------
-    private static Proof Decode(byte[] bytes, int root, GameObjectModuleReview.Module module)
+    private static Proof Decode(string name, byte[] bytes, int root, GameObjectModuleReview.Module module)
     {
         //-------------------------------------------------------------------------------------------------
         /** Reborn: read only aligned words inside the admitted asset slice. */
@@ -114,17 +116,30 @@ internal static class ToggleStatusLayoutReview
                 ("NeverUseWhenTargetIsAnyKindOf", 100), ("Location", 140), ("OnlyUseWhenHaveTarget", 148), ("NeverUseWhenClear", 149),
                 ("DontUseIfInRange", 150), ("EnemyMustBeInVisionRange", 151), ("AlwaysUseWhenEnemiesInRange", 152) });
             // Reborn: the candidate optional-pointer slots are zero here; absent tokens alone do not prove their individual present-value mappings.
+            var optionals = new List<Optional>();
             foreach (var optional in new[] { ("UseOnlyWhenPowerAdvantageIsAbove", 4), ("UseOnlyWhenPowerAdvantageIsBelow", 8),
                 ("UseOnlyWhenCostAdvantageIsAbove", 12), ("UseOnlyWhenCostAdvantageIsBelow", 16), ("NeverUseWhenFurtherThanNUnitsFromTarget", 20),
                 ("NeverUseWhenCloserThanNUnitsFromTarget", 24), ("NeverUseWhenHealthIsBelow", 28), ("MaxZDifferenceFromTarget", 32),
                 ("SelfDefenseDamageLookAheadTime", 44), ("SelfDefenseDamageLookBehindTime", 48), ("SelfDefenseDamageFraction", 52),
                 ("LeechWeaponSOLModuleId", 68), ("StealthOthersInvisibilityModuleId", 80) })
-                if (ai.Single(f => f.Name == optional.Item1).Target != 0 || Word(native + 132 + optional.Item2) != 0)
-                    throw new InvalidDataException("Toggle absent optional storage differs.");
+            {
+                int target = ai.Single(f => f.Name == optional.Item1).Target, slot = native + 132 + optional.Item2;
+                if (target == 0)
+                {
+                    if (Word(slot) != 0) throw new InvalidDataException("Toggle absent optional storage differs.");
+                    optionals.Add(new(optional.Item1, slot, 0, null));
+                }
+                else
+                {
+                    if (target < root || target > bytes.Length - 4 || Word(slot) != target) throw new InvalidDataException("Toggle present optional pointer/token join differs.");
+                    optionals.Add(new(optional.Item1, slot, target, Word(target)));
+                }
+            }
             int weaponTable = ai.Single(f => f.Name == "StateWeapon").Target;
             int weaponNative = checked((int)Word(native + 276));
-            if (weaponNative < root || weaponNative > bytes.Length - 32) throw new InvalidDataException("Toggle weapon pointer out of bounds.");
-            var weapon = Named(weaponTable, weaponNative, "SkirmishAI/AssetTypeAISpecialPower.xsd", "AISpecialPowerWeaponData");
+            if ((weaponTable == 0) != (weaponNative == 0) || (weaponNative != 0 && (weaponNative < root || weaponNative > bytes.Length - 28))) throw new InvalidDataException("Toggle weapon pointer out of bounds.");
+            var weapon = weaponTable == 0 ? Array.Empty<Field>() : Named(weaponTable, weaponNative, "SkirmishAI/AssetTypeAISpecialPower.xsd", "AISpecialPowerWeaponData");
+            if (weaponTable != 0)
             CheckAnchors(weapon, weaponNative, new[] { ("Weapon", 0), ("TotalValueGreaterThan", 4), ("AoeAttackPowerLocationPreference", 8),
                 ("AoeAttackPowerBlockAreaAfterActivationTime", 12), ("AoeAttackEmanationLocation", 16), ("ToggleRangeHysteresis", 20),
                 ("IsDisablingAttack", 24), ("AffectsFriendlies", 25), ("AffectsSelf", 26), ("ToggleShortRangeTargetForcesTarget", 27) });
@@ -136,9 +151,9 @@ internal static class ToggleStatusLayoutReview
                     || Word(t + 8) != native + empty.Item2 || Word(native + empty.Item2) != 0 || Word(native + empty.Item2 + 4) != 0)
                     throw new InvalidDataException("Toggle empty child list differs.");
             }
-            states.Add(new(native, state, ai, weapon));
+            states.Add(new(native, state, ai, weapon, optionals.ToArray()));
         }
-        return new(module.Native, size, fields.ToArray(), states.ToArray());
+        return new(name, module.Native, size, fields.ToArray(), states.ToArray());
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: independently pin named native addresses across both records rather than trusting a relative offset printed in a report. */
@@ -177,7 +192,7 @@ internal static class ToggleStatusLayoutReview
         const string name = "GameObject:SovietAntiInfantryInfantry";
         var capture = GameObjectStockReview.Capture(manifest, name);
         var module = GameObjectModuleReview.Inspect(manifest, name).Containers.SelectMany(c => c.Modules).Single(m => m.Type == "ToggleStatusSpecialAbilityUpdateModuleData");
-        var proof = Decode(capture.Bytes, capture.Projection.NativeRoot, module);
+        var proof = Decode(name, capture.Bytes, capture.Projection.NativeRoot, module);
         Console.WriteLine(JsonSerializer.Serialize(proof, new JsonSerializerOptions { WriteIndented = true }));
         int own = (int)BinaryPrimitives.ReadUInt32LittleEndian(capture.Bytes.AsSpan(module.Wrapper + 8, 4));
         int baseTable = (int)BinaryPrimitives.ReadUInt32LittleEndian(capture.Bytes.AsSpan(own + 8, 4));
@@ -188,7 +203,7 @@ internal static class ToggleStatusLayoutReview
             (proof.States[0].Native + 276, 4u), (proof.States[1].Native + 288, 1u), (proof.States[0].Native + 136, 1u) })
         {
             var broken = capture.Bytes.ToArray(); BinaryPrimitives.WriteUInt32LittleEndian(broken.AsSpan(fault.Item1, 4), fault.Item2);
-            try { Decode(broken, capture.Projection.NativeRoot, module); }
+            try { Decode(name, broken, capture.Projection.NativeRoot, module); }
             catch (InvalidDataException) { continue; }
             throw new InvalidDataException("Toggle layout corruption accepted.");
         }
