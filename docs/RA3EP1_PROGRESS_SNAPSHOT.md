@@ -48,8 +48,9 @@ this full-product estimate, not evidence that completed code was lost.
 
 ## Remaining work, in practical order
 
-1. **Close the current toggle slice:** replace captured-index module diagnostics
-   with real Core-normalized references; validate source ordering and nonempty
+1. **Close the current toggle slice:** the three selected literal modules now pass
+   actual Core-normalized references with independent catalog lookup (see the
+   [precise source seam boundary](RA3EP1_TOGGLE_SOURCE_NATIVE.md)); validate source ordering and nonempty
    Module/ActiveGeometry lists against stock; enable and verify polymorphic dispatch.
 2. **Complete the initial GameObject native/token graph:** review existing EP1
    models/processors, port BuildingDestruction, TechUpgrade and LUAEventListBehavior,

@@ -39,6 +39,15 @@ Public distribution review is separate from achieving functional parity.
 
 ## Current position — October 12, 2026
 
+October 13 toggle source checkpoint: three complete selected modules now pass
+actual Core schema/default/reference normalization with independent static/global
+lookup and semantic import-identity comparison, not captured input indices.
+Authored Module/geometry lists and local-ID/schema/dependency refusals pass.
+This is still a focused source seam, not full GameObject document compilation;
+stock nonempty-list proof, polymorphic dispatch and general publication remain.
+See [source evidence and boundaries](RA3EP1_TOGGLE_SOURCE_NATIVE.md). Focused
+28/28 regressions pass; the broad full-product estimate remains about 45%.
+
 October 13 direct toggle-module checkpoint: ordered state/root marshalers now
 reproduce three complete selected native graphs, including the existing special-
 ability base. Captured-index diagnostics, not a general named-source route, are

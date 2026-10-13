@@ -18,10 +18,7 @@ internal static class Ep1ToggleModuleSmokeTest
         if (Marshal.SizeOf<ToggleStatusNugget>() != 304 || Marshal.SizeOf<ToggleStatusSpecialAbilityUpdateModuleData>() != 264 || Marshal.SizeOf<SpecialPowerModuleInfo>() != 12)
             throw new InvalidDataException("Toggle native model sizes differ.");
         const string ns = " xmlns='uri:ea.com:eala:asset'";
-        var sources = new[] {
-            ("SovietAntiInfantryInfantry", "<ToggleStatusSpecialAbilityUpdate" + ns + " id='ModuleTag_ToggleMolotovCocktail' SpecialPowerTemplate='SpecialPower_MolotovCocktail' Options='RECONSTITUTE_STORED_COMMAND' PackTime='1s'><ToggleState><SkirmishAiInfo ToggleHint='TOGGLE_DEFAULT'><StateWeapon Weapon='SovietAntiInfantryInfantryAK47'/></SkirmishAiInfo></ToggleState><ToggleState ObjectStatus='GENERIC_TOGGLE_STATE ANTI_GARRISON' ModelConditions='USER_5' EnterStateSound='SOV_Conscript_ArmMolotovCocktailMS'><SkirmishAiInfo ToggleHint='TOGGLE_WEAPON'><StateWeapon Weapon='SovietAntiInfantryInfantryMolotovCocktail'/></SkirmishAiInfo></ToggleState></ToggleStatusSpecialAbilityUpdate>"),
-            ("SovietMiner", "<ToggleStatusSpecialAbilityUpdate" + ns + " id='ModuleTag_ToggleArmorUpUpdate' Options='RECONSTITUTE_STORED_COMMAND' SpecialPowerTemplate='SpecialPower_ToggleArmorUp'><ToggleState><SkirmishAiInfo ToggleHint='TOGGLE_DEFAULT'/></ToggleState><ToggleState AttributeModifier='AttributeModifier_ArmorUp' ObjectStatus='GENERIC_TOGGLE_STATE SPECIAL_ARMOR_ACTIVE' ModelConditions='WEAPONSTATE_ONE' EnterStateSound='SOV_OreCollector_ReactiveArmorOn'><SkirmishAiInfo ToggleHint='TOGGLE_DEFENSE_SELF_ONLY' SelfDefenseDamageLookAheadTime='2s' SelfDefenseDamageLookBehindTime='2s' SelfDefenseDamageFraction='0.2'/></ToggleState></ToggleStatusSpecialAbilityUpdate>"),
-            ("SovietScoutVehicle", "<ToggleStatusSpecialAbilityUpdate" + ns + " id='ModuleTag_ToggleBinaryWeaponsTriggerUpdate' Options='RECONSTITUTE_STORED_COMMAND' SpecialPowerTemplate='SpecialPower_ToggleBinaryWeapons'><ToggleState ObjectStatus='WEAPON_UPGRADED_01' EnterStateSound='SOV_TerrorDrone_WeaponToggleMS'><SkirmishAiInfo ToggleHint='TOGGLE_DEFAULT'/></ToggleState><ToggleState ObjectStatus='WEAPON_UPGRADED_02' AttributeModifier='AttributeModifier_TerrorDroneVisionBonus' EnterStateSound='SOV_TerrorDrone_WeaponToggleMS' ModelConditions='USER_4'><SkirmishAiInfo ToggleHint='TOGGLE_IMMOBILIZE' NeverUseInState='RETREAT' NeverUseDuringTask='REPAIRING' UseOnlyWhenPowerAdvantageIsAbove='1.0'><StateWeapon Weapon='SovietScoutVehicleParalyzeWeapon'/></SkirmishAiInfo></ToggleState></ToggleStatusSpecialAbilityUpdate>") };
+        var sources = Cases();
         foreach (var c in sources)
         {
             var capture = GameObjectStockReview.Capture(manifest, "GameObject:" + c.Item1);
@@ -51,6 +48,18 @@ internal static class Ep1ToggleModuleSmokeTest
         Refuse(() => Compile(own.Replace("LocomotorSet='EXITING_PRODUCTION_STRUCTURE'", "LocomotorSet='COMBO2'", StringComparison.Ordinal)));
         Refuse(() => Compile(own.Replace("<Module ModuleId='Drain' TriggerType='TARGET_OBJECT' TriggerAtTargetPosition='false'/>", string.Concat(Enumerable.Repeat("<Module ModuleId='TooMany'/>", 5)), StringComparison.Ordinal)));
         Console.WriteLine("EP1 toggle module: PASS (three complete selected native graphs/base, captured-index reference diagnostics, repeats/edits, authored Module/geometry/string lists and refusals; no full source normalization, polymorphic dispatch, tokenized package or game).");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: share reviewed literal stock module fixtures between captured-index and actual-Core normalization gates. */
+    //-------------------------------------------------------------------------------------------------
+    internal static (string Name, string Xml)[] Cases()
+    {
+        const string ns = " xmlns='uri:ea.com:eala:asset'";
+        return new[] {
+            ("SovietAntiInfantryInfantry", "<ToggleStatusSpecialAbilityUpdate" + ns + " id='ModuleTag_ToggleMolotovCocktail' SpecialPowerTemplate='SpecialPower_MolotovCocktail' Options='RECONSTITUTE_STORED_COMMAND' PackTime='1s'><ToggleState><SkirmishAiInfo ToggleHint='TOGGLE_DEFAULT'><StateWeapon Weapon='SovietAntiInfantryInfantryAK47'/></SkirmishAiInfo></ToggleState><ToggleState ObjectStatus='GENERIC_TOGGLE_STATE ANTI_GARRISON' ModelConditions='USER_5' EnterStateSound='SOV_Conscript_ArmMolotovCocktailMS'><SkirmishAiInfo ToggleHint='TOGGLE_WEAPON'><StateWeapon Weapon='SovietAntiInfantryInfantryMolotovCocktail'/></SkirmishAiInfo></ToggleState></ToggleStatusSpecialAbilityUpdate>"),
+            ("SovietMiner", "<ToggleStatusSpecialAbilityUpdate" + ns + " id='ModuleTag_ToggleArmorUpUpdate' Options='RECONSTITUTE_STORED_COMMAND' SpecialPowerTemplate='SpecialPower_ToggleArmorUp'><ToggleState><SkirmishAiInfo ToggleHint='TOGGLE_DEFAULT'/></ToggleState><ToggleState AttributeModifier='AttributeModifier_ArmorUp' ObjectStatus='GENERIC_TOGGLE_STATE SPECIAL_ARMOR_ACTIVE' ModelConditions='WEAPONSTATE_ONE' EnterStateSound='SOV_OreCollector_ReactiveArmorOn'><SkirmishAiInfo ToggleHint='TOGGLE_DEFENSE_SELF_ONLY' SelfDefenseDamageLookAheadTime='2s' SelfDefenseDamageLookBehindTime='2s' SelfDefenseDamageFraction='0.2'/></ToggleState></ToggleStatusSpecialAbilityUpdate>"),
+            ("SovietScoutVehicle", "<ToggleStatusSpecialAbilityUpdate" + ns + " id='ModuleTag_ToggleBinaryWeaponsTriggerUpdate' Options='RECONSTITUTE_STORED_COMMAND' SpecialPowerTemplate='SpecialPower_ToggleBinaryWeapons'><ToggleState ObjectStatus='WEAPON_UPGRADED_01' EnterStateSound='SOV_TerrorDrone_WeaponToggleMS'><SkirmishAiInfo ToggleHint='TOGGLE_DEFAULT'/></ToggleState><ToggleState ObjectStatus='WEAPON_UPGRADED_02' AttributeModifier='AttributeModifier_TerrorDroneVisionBonus' EnterStateSound='SOV_TerrorDrone_WeaponToggleMS' ModelConditions='USER_4'><SkirmishAiInfo ToggleHint='TOGGLE_IMMOBILIZE' NeverUseInState='RETREAT' NeverUseDuringTask='REPAIRING' UseOnlyWhenPowerAdvantageIsAbove='1.0'><StateWeapon Weapon='SovietScoutVehicleParalyzeWeapon'/></SkirmishAiInfo></ToggleState></ToggleStatusSpecialAbilityUpdate>") };
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -91,7 +100,7 @@ internal static class Ep1ToggleModuleSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compile a direct concrete module diagnostic without changing the production GameObject behavior dispatch table. */
     //-------------------------------------------------------------------------------------------------
-    private static unsafe Chunk Compile(string source)
+    internal static unsafe Chunk Compile(string source)
     {
         var d = new XmlDocument { XmlResolver = null }; d.LoadXml(source);
         var ns = new XmlNamespaceManager(d.NameTable); ns.AddNamespace("ea", "uri:ea.com:eala:asset");
@@ -106,12 +115,14 @@ internal static class Ep1ToggleModuleSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: independently join every selected native pointer/reference slot, then compare complete root/state/AI/weapon payload bytes. */
     //-------------------------------------------------------------------------------------------------
-    private static void Compare(byte[] stock, ToggleStatusLayoutReview.Proof proof, Chunk chunk)
+    internal static void Compare(byte[] stock, ToggleStatusLayoutReview.Proof proof, Chunk chunk, AssetId[]? stockRefs = null, BinaryAssetBuilder.Core.InstanceDeclaration? instance = null)
     {
         var b = chunk.InstanceBuffer; int items = (int)Word(b, 256);
         if (Word(stock, proof.Native + 256) != proof.States[0].Native || Word(b, 252) != 2 || Word(b, 0) != FastHash.GetHashCode(nameof(ToggleStatusSpecialAbilityUpdateModuleData)))
             throw new InvalidDataException("Toggle root state list/concrete ID differs.");
         byte[] left = stock.AsSpan(proof.Native, 264).ToArray(), right = b.AsSpan(0, 264).ToArray(); left.AsSpan(256, 4).Clear(); right.AsSpan(256, 4).Clear();
+        // Reborn: compare actual Core dependency identities in the source gate; preserve captured numeric comparison for the earlier raw diagnostic.
+        if (instance != null) Identity(left, right, 8);
         if (!left.SequenceEqual(right)) throw new InvalidDataException("Toggle complete special-ability base/root payload differs.");
         var relocs = new System.Collections.Generic.List<uint> { 256 }; var imports = new System.Collections.Generic.List<uint>();
         if (Word(b, 8) != 0) imports.Add(8);
@@ -119,6 +130,7 @@ internal static class Ep1ToggleModuleSmokeTest
         {
             var s = proof.States[i]; int n = items + i * 304;
             left = stock.AsSpan(s.Native, 304).ToArray(); right = b.AsSpan(n, 304).ToArray();
+            if (instance != null) foreach (int slot in new[] { 0, 96, 120, 124, 192 }) Identity(left, right, slot);
             // Reborn: even the empty generic-event default has its own relocated string target in stock.
             if (Word(stock, s.Native + 116) == 0 || Word(b, n + 116) == 0 || Text(stock, s.Native + 112) != Text(b, n + 112)) throw new InvalidDataException("Toggle generic-event string differs.");
             left.AsSpan(116, 4).Clear(); right.AsSpan(116, 4).Clear(); relocs.Add((uint)(n + 116));
@@ -136,11 +148,27 @@ internal static class Ep1ToggleModuleSmokeTest
             if (ow != 0)
             {
                 relocs.Add((uint)(n + 276));
-                if (!stock.AsSpan(sw, 28).SequenceEqual(b.AsSpan(ow, 28))) throw new InvalidDataException("Toggle weapon payload differs.");
+                var sl = stock.AsSpan(sw, 28).ToArray(); var sr = b.AsSpan(ow, 28).ToArray();
+                if (instance != null) Identity(sl, sr, 0);
+                if (!sl.SequenceEqual(sr)) throw new InvalidDataException("Toggle weapon payload differs.");
                 if (Word(b, ow) != 0) imports.Add((uint)ow);
             }
         }
         CheckSlots(chunk.RelocationBuffer, relocs); CheckSlots(chunk.ImportsBuffer, imports);
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: stock/Core one-biased words must identify the same concrete type and instance before clearing their bytes. */
+        //-------------------------------------------------------------------------------------------------
+        void Identity(byte[] a, byte[] c, int slot)
+        {
+            uint x = Word(a, slot), y = Word(c, slot);
+            if ((x == 0) != (y == 0)) throw new InvalidDataException("Toggle Core reference presence differs.");
+            if (x == 0) return;
+            if (stockRefs == null || instance == null || x > stockRefs.Length || y > instance.ReferencedInstances.Count) throw new InvalidDataException("Toggle Core reference index bounds exceeded.");
+            var one = stockRefs[(int)x - 1]; var two = instance.ReferencedInstances[(int)y - 1];
+            if (one.TypeId != two.TypeId || one.InstanceId != two.InstanceId) throw new InvalidDataException("Toggle Core reference identity differs.");
+            a.AsSpan(slot, 4).Clear(); c.AsSpan(slot, 4).Clear();
+        }
     }
 
     //-------------------------------------------------------------------------------------------------

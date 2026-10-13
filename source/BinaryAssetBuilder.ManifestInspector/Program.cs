@@ -17,6 +17,9 @@ internal static class Program
             // Reborn: recover toggle layout before admitting a new native family or claiming source/compiler support.
             // Reborn: standalone AI payload/reference gates do not admit the enclosing toggle/GameObject family.
             // Reborn: direct concrete graph diagnostics keep captured-reference and dispatch/publication boundaries explicit.
+            // Reborn: named source/default/reference normalization remains separate from captured native diagnostics and publication.
+            if (args.Length == 3 && args[0] == "ep1-toggle-source-self-test")
+            { CompilerSmokeTest.InitializeHashProvider(); Ep1ToggleSourceSmokeTest.Run(args[1], args[2]); return 0; }
             if (args.Length == 2 && args[0] == "ep1-toggle-module-self-test")
             { CompilerSmokeTest.InitializeHashProvider(); Ep1ToggleModuleSmokeTest.Run(args[1]); return 0; }
             if (args.Length == 2 && args[0] == "ep1-toggle-ai-self-test")
@@ -1295,6 +1298,8 @@ internal static class Program
         // Reborn: toggle layout diagnostics do not enable source compilation or GameObject publication.
         // Reborn: verify selected AI native graphs separately from GameObject dispatch/publication.
         // Reborn: selected direct module graph checks do not admit general source/Core/GameObject publication.
+        // Reborn: the source gate requires explicit independently validated static/global lookup catalogs.
+        Console.WriteLine("  ep1-toggle-source-self-test <static.manifest> <global.manifest>");
         Console.WriteLine("  ep1-toggle-module-self-test <static.manifest>");
         Console.WriteLine("  ep1-toggle-ai-self-test <static.manifest>");
         Console.WriteLine("  toggle-status-layout-review <static.manifest> [GameObject:Name]");

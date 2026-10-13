@@ -82,6 +82,8 @@ if($SchedulerControl){
     Add-BatchCase 'ep1-toggle-ai' 'BoundedStandaloneAiNativePayload' @('ep1-toggle-ai-self-test',$StaticManifest)
     # Reborn: concrete module graphs currently use captured-index diagnostics; normal source/dispatch/publication is deliberately separate.
     Add-BatchCase 'ep1-toggle-module' 'BoundedCapturedIndexModuleNativePayload' @('ep1-toggle-module-self-test',$StaticManifest)
+    # Reborn: independently catalog-normalized full module reference/default graphs must not substitute captured stock dependency indices.
+    Add-BatchCase 'ep1-toggle-source' 'BoundedCoreNormalizedModuleNativePayload' @('ep1-toggle-source-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: actual named source references must bind stock and newly compiled armor without captured numeric dependency indices.
     Add-BatchCase 'gameobject-armor-source' 'BoundedNamedNativeProjection' @('gameobject-armor-source-self-test',(Join-Path $OutputDirectory 'go'),$StaticManifest)
     Add-BatchCase 'armor-core' 'BoundedScopedStream' @('ep1-armor-document-self-test',(Join-Path $OutputDirectory 'armor-core'),$StaticManifest)

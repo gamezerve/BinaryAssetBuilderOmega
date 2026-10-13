@@ -178,7 +178,7 @@ internal static class Ep1ToggleAiSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: copied declaration shapes and all enum orders must agree with official staged schema before focused source testing. */
     //-------------------------------------------------------------------------------------------------
-    private static void CheckSchema(string fixture)
+    internal static void CheckSchema(string fixture)
     {
         if (Marshal.SizeOf<AIToggleSpecialPowerInfo>() != 156 || Marshal.SizeOf<AISpecialPowerWeaponData>() != 28) throw new InvalidDataException("Toggle AI model sizes differ.");
         //-------------------------------------------------------------------------------------------------

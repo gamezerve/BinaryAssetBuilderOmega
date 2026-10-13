@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 13, 2026
 
+The [toggle source/Core checkpoint](docs/RA3EP1_TOGGLE_SOURCE_NATIVE.md) now
+normalizes the three complete selected modules through actual Core, without
+captured source indices. Independent static/global lookup resolves audio families
+and all strong dependencies; complete selected native graphs/import identities
+match. Authored Module/geometry lists, local-ID context and schema/reference
+refusals pass. This is a focused source/reference seam, not full GameObject
+document build or publication; polymorphic dispatch and alpha h remain unchanged.
+Final focused regression: **28/28** groups in **113.314 seconds**; new source
+checks took **17.441 seconds**, with eight runtime hashes unchanged during workers.
+
 Full-target planning estimate: **about 45% (40–50% range)**, not a test-pass or
 asset-coverage ratio. The limited local alpha already exists. See the
 [remaining-work snapshot and weighting](docs/RA3EP1_PROGRESS_SNAPSHOT.md).
