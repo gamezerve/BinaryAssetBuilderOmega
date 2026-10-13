@@ -15,6 +15,9 @@ flags/defaults and actual Core-normalized weapon identities/imports. Authored
 controls exercise all thirteen optional allocation slots and edited XML values.
 Nine present optional layouts remain without stock corroboration. Enclosing
 toggle dispatch and GameObject publication are still closed; alpha h is unchanged.
+Final Full regression: **28/28** groups passed with all eight runtime hashes
+unchanged during workers. New AI checks took **10.017 seconds**; the existing
+broad compiler suite dominated the **1087.326-second** total.
 
 The [toggle-status layout checkpoint](docs/RA3EP1_TOGGLE_STATUS_LAYOUT.md)
 verifies the existing 252-byte special-ability base's field offsets and two

@@ -80,6 +80,15 @@ BinaryAssetBuilder.ManifestInspector.exe toggle-status-layout-review <static.man
 
 The new batch gate is `ep1-toggle-ai` in `scripts/Test-Ra3Ep1Batch.ps1`.
 
+Final Full evidence: `artifacts/ToggleAi-a/batch-report.json`, **28/28 groups
+passed in 1087.326 seconds**, excluding the 1.33-second incremental batch build
+(zero warnings/errors). All eight runtime-file hashes remained unchanged during
+workers. The new AI gate took **10.017 seconds**; the existing broad compiler
+suite accounted for **1018.463 seconds**. The initial dependency rebuild had
+111 existing warnings and zero errors; later targeted/batch builds were clean.
+Trailing whitespace in copied schema comments was cleaned afterward without
+changing declarations; the schema-drift/native AI test was rerun separately.
+
 Next: validate the existing special-ability base's actual marshaler payload and
 enum semantics, implement the enclosing toggle/state and module/geometry child
 lists, normalize their additional references, and compare complete selected
