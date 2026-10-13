@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 13, 2026
 
+The [toggle-status layout checkpoint](docs/RA3EP1_TOGGLE_STATUS_LAYOUT.md)
+verifies the existing 252-byte special-ability base's field offsets and two
+304-byte stock toggle-state records, including inline AI, separate weapon
+pointers and empty child-list anchors. Nine detached corruption controls pass.
+This establishes the next module's layout prerequisite, not a new compiler
+capability: present optional AI values, references and marshaler payloads still
+need validation. Alpha h and the four observed missing model families are unchanged.
+Final focused regression: **25/25** groups in **55.667 seconds**, with eight
+runtime hashes unchanged during workers. This is not a new Full-suite run.
+
 The [damage/motion batch](docs/RA3EP1_DAMAGE_MOTION_MODULES.md) adds
 SecondaryDamageTracker and FreefallUpdate with real polymorphic dispatch.
 Two complete selected tracker graphs and one freefall payload match stock,
