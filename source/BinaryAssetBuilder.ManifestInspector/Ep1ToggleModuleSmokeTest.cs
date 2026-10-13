@@ -122,10 +122,10 @@ internal static class Ep1ToggleModuleSmokeTest
             throw new InvalidDataException("Toggle root state list/concrete ID differs.");
         byte[] left = stock.AsSpan(proof.Native, 264).ToArray(), right = b.AsSpan(0, 264).ToArray(); left.AsSpan(256, 4).Clear(); right.AsSpan(256, 4).Clear();
         // Reborn: compare actual Core dependency identities in the source gate; preserve captured numeric comparison for the earlier raw diagnostic.
-        if (instance != null) Identity(left, right, 8);
+        if (instance != null) foreach (int slot in new[] { 8, 92, 96, 100, 104, 108, 112, 212, 220 }) Identity(left, right, slot);
         if (!left.SequenceEqual(right)) throw new InvalidDataException("Toggle complete special-ability base/root payload differs.");
         var relocs = new System.Collections.Generic.List<uint> { 256 }; var imports = new System.Collections.Generic.List<uint>();
-        if (Word(b, 8) != 0) imports.Add(8);
+        foreach (int slot in new[] { 8, 92, 96, 100, 104, 108, 112, 212, 220 }) if (Word(b, slot) != 0) imports.Add((uint)slot);
         for (int i = 0; i < 2; i++)
         {
             var s = proof.States[i]; int n = items + i * 304;
@@ -143,6 +143,25 @@ internal static class Ep1ToggleModuleSmokeTest
             int sw = (int)Word(stock, s.Native + 276), ow = (int)Word(b, n + 276);
             if ((sw == 0) != (ow == 0)) throw new InvalidDataException("Toggle weapon presence differs.");
             left.AsSpan(276, 4).Clear(); right.AsSpan(276, 4).Clear();
+            // Reborn: compare all stock-admitted inline child records/text before rebasing only their owning pointers.
+            foreach (var child in s.Children)
+            {
+                int offset = child.Name == "Module" ? 288 : 296, width = child.Name == "Module" ? 12 : 8;
+                int ptr = (int)Word(b, n + offset + 4);
+                if (Word(b, n + offset) != child.Count || (child.Count == 0) != (ptr == 0)) throw new InvalidDataException("Toggle compiled child count/presence differs.");
+                if (ptr != 0) relocs.Add((uint)(n + offset + 4));
+                for (int j = 0; j < child.Count; j++)
+                    if (width == 12)
+                    {
+                        if (!stock.AsSpan(child.Items + j * 12, 12).SequenceEqual(b.AsSpan(ptr + j * 12, 12))) throw new InvalidDataException("Toggle Module record differs.");
+                    }
+                    else
+                    {
+                        if (Text(stock, child.Items + j * 8) != Text(b, ptr + j * 8)) throw new InvalidDataException("Toggle geometry text differs.");
+                        relocs.Add((uint)(ptr + j * 8 + 4));
+                    }
+                left.AsSpan(offset + 4, 4).Clear(); right.AsSpan(offset + 4, 4).Clear();
+            }
             if (!left.SequenceEqual(right)) throw new InvalidDataException("Toggle complete state/AI native payload differs: " + string.Join(", ", Enumerable.Range(0, 304).Where(o => left[o] != right[o]).Take(12).Select(o => $"+{o}:{left[o]:X2}/{right[o]:X2}")));
             foreach (int slot in new[] { 0, 96, 120, 124, 192 }) if (Word(b, n + slot) != 0) imports.Add((uint)(n + slot));
             if (ow != 0)

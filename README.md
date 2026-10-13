@@ -8,7 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 13, 2026
 
-The [toggle source/Core checkpoint](docs/RA3EP1_TOGGLE_SOURCE_NATIVE.md) now
+The [toggle dispatch milestone](docs/RA3EP1_TOGGLE_DISPATCH.md) now verifies
+five complete selected stock/Core module graphs, including Dreadnought's Module
+record and Gigafortress's geometry strings. Actual GameObject polymorphic native
+dispatch/class ID and shifted relocation/import slots match. Canonical literal
+fixture ordering and the official 4.0s value are explicit, not generic source
+preprocessing. General GameObject tokenized publication and alpha h remain closed.
+Final focused regression: **28/28** groups in **87.182 seconds**, with eight
+runtime hashes unchanged; source/dispatch checks took **33.614 seconds**.
+
+The earlier [toggle source/Core checkpoint](docs/RA3EP1_TOGGLE_SOURCE_NATIVE.md)
 normalizes the three complete selected modules through actual Core, without
 captured source indices. Independent static/global lookup resolves audio families
 and all strong dependencies; complete selected native graphs/import identities

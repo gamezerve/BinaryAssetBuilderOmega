@@ -21,6 +21,10 @@ public static partial class Marshaler
             case 0xFC222F04u:
                 MarshalPolymorphicType<FreefallUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
+            // Reborn: EP1 toggle states/base/AI and nonempty child lists have selected stock/Core native proof; this dispatch is not full GameObject publication.
+            case 0xED1AE55Cu:
+                MarshalPolymorphicType<ToggleStatusSpecialAbilityUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                break;
             // Reborn: stock-proven EP1 helper/sell classes use their own concrete IDs, not approximate legacy substitutes.
             case 0x7F72F242u:
                 MarshalPolymorphicType<ObjectSMCHelperModuleData, BehaviorModuleData>(node, objT, state);

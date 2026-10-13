@@ -11,7 +11,8 @@ internal static class ToggleStatusLayoutReview
 {
     internal sealed record Field(string Name, uint Type, int Target, int RelativeOffset, string Relationship);
     internal sealed record Optional(string Name, int Slot, int Target, uint? Value);
-    internal sealed record State(int Native, Field[] Fields, Field[] AiFields, Field[] WeaponFields, Optional[] Optionals);
+    internal sealed record Child(string Name, int Count, int Items, int[] Tables);
+    internal sealed record State(int Native, Field[] Fields, Field[] AiFields, Field[] WeaponFields, Optional[] Optionals, Child[] Children);
     internal sealed record Proof(string Asset, int Native, int ExistingBaseSize, Field[] BaseFields, State[] States)
     {
         // Reborn: token/native anchors are only layout evidence, not complete payload, references, defaults or marshaler correctness.
@@ -42,7 +43,7 @@ internal static class ToggleStatusLayoutReview
     //-------------------------------------------------------------------------------------------------
     /** Reborn: require direct reflected base offsets, two ordered 304-byte state records and bounded nested field tables without inferring their type semantics. */
     //-------------------------------------------------------------------------------------------------
-    private static Proof Decode(string name, byte[] bytes, int root, GameObjectModuleReview.Module module)
+    internal static Proof Decode(string name, byte[] bytes, int root, GameObjectModuleReview.Module module)
     {
         //-------------------------------------------------------------------------------------------------
         /** Reborn: read only aligned words inside the admitted asset slice. */
@@ -143,15 +144,37 @@ internal static class ToggleStatusLayoutReview
             CheckAnchors(weapon, weaponNative, new[] { ("Weapon", 0), ("TotalValueGreaterThan", 4), ("AoeAttackPowerLocationPreference", 8),
                 ("AoeAttackPowerBlockAreaAfterActivationTime", 12), ("AoeAttackEmanationLocation", 16), ("ToggleRangeHysteresis", 20),
                 ("IsDisablingAttack", 24), ("AffectsFriendlies", 25), ("AffectsSelf", 26), ("ToggleShortRangeTargetForcesTarget", 27) });
-            // Reborn: both observed optional child lists are empty; this does not prove nonempty Module or ActiveGeometry serialization.
-            foreach (var empty in new[] { ("Module", 288, 0xADA54D29u), ("ActiveGeometry", 296, 0x1A2933AAu) })
+            // Reborn: independently join bounded child-list markers to inline module/string records, not only zero-count headers.
+            var children = new List<Child>();
+            foreach (var child in new[] { ("Module", 288, 0xADA54D29u), ("ActiveGeometry", 296, 0x1A2933AAu) })
             {
-                var f = state.Single(f => f.Name == empty.Item1); int t = f.Target;
-                if (t <= 0 || t + 12 > root || f.Type != empty.Item3 || Word(t) != 0x6C827073 || Word(t + 4) != 0x5D448FD8
-                    || Word(t + 8) != native + empty.Item2 || Word(native + empty.Item2) != 0 || Word(native + empty.Item2 + 4) != 0)
-                    throw new InvalidDataException("Toggle empty child list differs.");
+                var f = state.Single(f => f.Name == child.Item1); int t = f.Target;
+                int count = checked((int)Word(native + child.Item2)), data = checked((int)Word(native + child.Item2 + 4));
+                int width = child.Item1 == "Module" ? 12 : 8;
+                if (count < 0 || count > (width == 12 ? 4 : 128) || t <= 0 || t + (count + 1) * 12 > root || f.Type != child.Item3
+                    || Word(t) != 0x6C827073 || Word(t + 4) != 0x5D448FD8 || Word(t + 8) != native + child.Item2
+                    || (count == 0 ? data != 0 : data < root || data > bytes.Length - count * width)) throw new InvalidDataException("Toggle child list header/range differs.");
+                var tables = new List<int>();
+                for (int j = 0; j < count; j++)
+                {
+                    int childMarker = t + 12 + j * 12, target = data + j * width;
+                    if (Word(childMarker) != 0xB151A0EB || Word(childMarker + 4) != 0) throw new InvalidDataException("Toggle child marker differs.");
+                    int entry = checked((int)Word(childMarker + 8)); tables.Add(entry);
+                    if (width == 12)
+                    {
+                        var moduleFields = Named(entry, target, "Modules/ActivateModuleSpecialAbilityUpdate.xsd", "SpecialPowerModuleInfo");
+                        CheckAnchors(moduleFields, target, new[] { ("ModuleId", 0), ("TriggerType", 4), ("TriggerAtTargetPosition", 8) });
+                    }
+                    else
+                    {
+                        int length = checked((int)Word(target)), text = checked((int)Word(target + 4));
+                        if (entry != target || length < 0 || length > 65536 || text < root || text > bytes.Length - length - 1 || bytes[text + length] != 0)
+                            throw new InvalidDataException("Toggle geometry string marker/length/target differs.");
+                    }
+                }
+                children.Add(new(child.Item1, count, data, tables.ToArray()));
             }
-            states.Add(new(native, state, ai, weapon, optionals.ToArray()));
+            states.Add(new(native, state, ai, weapon, optionals.ToArray(), children.ToArray()));
         }
         return new(name, module.Native, size, fields.ToArray(), states.ToArray());
 

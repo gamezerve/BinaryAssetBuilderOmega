@@ -1,5 +1,10 @@
 # EP1 toggle source / Core-normalized native checkpoint
 
+This records the original three-object checkpoint. The subsequent
+[five-object child-list/dispatch milestone](RA3EP1_TOGGLE_DISPATCH.md) supersedes
+the remaining dispatch/nonempty-list items below, while retaining the source
+preparation and publication limits.
+
 The three selected complete toggle-module graphs now pass **actual Core schema
 default/reference normalization without captured stock indices in source input**.
 This closes the prior direct-module checkpoint's specific reference-normalization

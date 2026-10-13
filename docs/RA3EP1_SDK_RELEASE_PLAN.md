@@ -39,6 +39,12 @@ Public distribution review is separate from achieving functional parity.
 
 ## Current position — October 12, 2026
 
+October 13 toggle dispatch milestone: five selected complete Core/native graphs
+now include stock nonempty Module/geometry list proof and actual GameObject
+polymorphic behavior dispatch. Generic source-order/definition handling and full
+GameObject tokenized publication remain open; alpha h is unchanged. Focused
+28/28 regressions pass. See [dispatch evidence](RA3EP1_TOGGLE_DISPATCH.md).
+
 October 13 toggle source checkpoint: three complete selected modules now pass
 actual Core schema/default/reference normalization with independent static/global
 lookup and semantic import-identity comparison, not captured input indices.

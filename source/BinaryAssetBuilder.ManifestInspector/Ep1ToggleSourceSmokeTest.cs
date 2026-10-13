@@ -26,19 +26,36 @@ internal static class Ep1ToggleSourceSmokeTest
             var schemas = new SchemaSet(false);
             var docs = new[] { Catalog(manifest), Catalog(globalManifest) };
             var catalog = docs.SelectMany(d => d.Assets).ToArray();
-            foreach (var c in Ep1ToggleModuleSmokeTest.Cases())
+            foreach (var c in Cases())
             {
                 var capture = GameObjectStockReview.Capture(manifest, "GameObject:" + c.Name);
                 var proof = ToggleStatusLayoutReview.Inspect(manifest, "GameObject:" + c.Name);
-                var instance = Normalize(schemas, c.Xml, catalog, new HashSet<uint>());
+                // Reborn: selected stock module-ID context is independently recovered from the whole object's reviewed module graph; authored-source collection remains separate work.
+                var graph = GameObjectModuleReview.Inspect(manifest, "GameObject:" + c.Name);
+                var context = graph.Containers.SelectMany(g => g.Modules).Select(m => Word(capture.Bytes, m.Native + 4)).ToHashSet();
+                // Reborn: detached corruptions must fail fresh child token/native admission, not rely on an already-computed good proof.
+                var selected = graph.Containers.SelectMany(g => g.Modules).Single(m => m.Type == "ToggleStatusSpecialAbilityUpdateModuleData");
+                foreach (var stateProof in proof.States)
+                    foreach (var child in stateProof.Children.Where(c => c.Count > 0))
+                    {
+                        int table = stateProof.Fields.Single(f => f.Name == child.Name).Target;
+                        int slot = stateProof.Native + (child.Name == "Module" ? 292 : 300);
+                        foreach (int at in new[] { slot, table + 20 })
+                        {
+                            var broken = capture.Bytes.ToArray(); BinaryPrimitives.WriteUInt32LittleEndian(broken.AsSpan(at, 4), 4);
+                            Refuse(() => ToggleStatusLayoutReview.Decode("GameObject:" + c.Name, broken, capture.Projection.NativeRoot, selected));
+                        }
+                    }
+                var instance = Normalize(schemas, c.Xml, catalog, context);
                 Resolve(instance, catalog);
                 var chunk = Ep1ToggleModuleSmokeTest.Compile(instance.XmlNode.OuterXml);
                 Ep1ToggleModuleSmokeTest.Compare(capture.Bytes, proof, chunk, capture.Asset.References.ToArray(), instance);
+                CheckDispatch(instance.XmlNode.OuterXml, chunk);
                 // Reborn: rebasing must reject the wrong valid Core dependency, not merely bounds-check and clear imported words.
                 var wrong = new Relo.Chunk { InstanceBuffer = chunk.InstanceBuffer.ToArray(), RelocationBuffer = chunk.RelocationBuffer.ToArray(), ImportsBuffer = chunk.ImportsBuffer.ToArray() };
                 BinaryPrimitives.WriteUInt32LittleEndian(wrong.InstanceBuffer.AsSpan(8, 4), 2);
                 Refuse(() => Ep1ToggleModuleSmokeTest.Compare(capture.Bytes, proof, wrong, capture.Asset.References.ToArray(), instance));
-                var repeat = Normalize(schemas, c.Xml, catalog, new HashSet<uint>());
+                var repeat = Normalize(schemas, c.Xml, catalog, context);
                 if (instance.ReferencedInstances.Count != repeat.ReferencedInstances.Count
                     || !chunk.InstanceBuffer.SequenceEqual(Ep1ToggleModuleSmokeTest.Compile(repeat.XmlNode.OuterXml).InstanceBuffer)) throw new InvalidDataException("Toggle Core source repeat drift.");
                 Console.WriteLine($"Toggle actual Core {c.Name}: dependencies={instance.ReferencedInstances.Count}; selected full native graph/import identities match (no captured source indices)");
@@ -62,7 +79,7 @@ internal static class Ep1ToggleSourceSmokeTest
             Refuse(() => Resolve(absent, catalog));
             var sound = catalog.Single(a => a.TypeId == 0xA3A7AF37u && a.InstanceId == FastHash.GetHashCode("sov_conscript_armmolotovcocktailms"));
             Refuse(() => Normalize(schemas, Ep1ToggleModuleSmokeTest.Cases()[0].Xml, catalog.Append(sound).ToArray(), locals));
-            Console.WriteLine("EP1 toggle source: PASS (three actual-Core/default/native graphs, independent audio family lookup, strong dependency/import identities, authored lists/local IDs and schema/missing/ambiguous-reference refusals; no full GameObject source graph, polymorphic dispatch, stock nonempty-list proof or package/game).");
+            Console.WriteLine("EP1 toggle source: PASS (five actual-Core/stock graphs, nonempty module/geometry lists, real polymorphic dispatch/class ID/auxiliary slots, independent dependency identities and source refusals; canonical fixture order/4s literal, not generic preprocessing or GameObject tokenized publication/game).");
         }
         finally { Settings.Current = saved; }
     }
@@ -75,6 +92,54 @@ internal static class Ep1ToggleSourceSmokeTest
         var doc = ManifestReader.Read(SdkEnvironmentPreflight.Read(path, 64 * 1048576));
         TypeRegistryAudit.ValidateTarget(doc.Header.Version, doc.Header.AllTypesHash);
         if (!doc.Header.IsLinked || doc.Validate().Count != 0) throw new InvalidDataException("Expected a valid linked EP1 dependency catalog."); return doc;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: additional stock-derived literals explicitly canonicalize Dreadnought child order and bake the official 4.0s definition; no generic preprocessing claim. */
+    //-------------------------------------------------------------------------------------------------
+    private static (string Name, string Xml)[] Cases()
+    {
+        const string ns = " xmlns='uri:ea.com:eala:asset'";
+        return Ep1ToggleModuleSmokeTest.Cases().Concat(new[] {
+            ("SovietAntiStructureShip", "<ToggleStatusSpecialAbilityUpdate" + ns + " id='ModuleTag_ToggleRapidLaunchTriggerUpdate' Options='RECONSTITUTE_STORED_COMMAND' SpecialPowerTemplate='SpecialPower_ToggleRapidLaunch'><ToggleState><SkirmishAiInfo ToggleHint='TOGGLE_DEFAULT'/></ToggleState><ToggleState ObjectStatus='GENERIC_TOGGLE_STATE' AttributeModifier='AttributeModifier_RapidLaunch' ModelConditions='USER_6'><SkirmishAiInfo ToggleHint='TOGGLE_ALWAYS' UseOnlyWhenCostAdvantageIsBelow='0.75' NeverUseInState='RETREAT' NeverUseDuringTask='REPAIRING' OnlyUseWhenHaveTarget='true' NeverUseWhenHealthIsBelow='500'/><Module ModuleId='ModuleTag_RapidLaunchHealthDrain' TriggerAtTargetPosition='false' TriggerType='SELF_POSITION'/></ToggleState></ToggleStatusSpecialAbilityUpdate>"),
+            ("JapanFortressShip", "<ToggleStatusSpecialAbilityUpdate" + ns + " id='ModuleTag_ToggleDesolatorWeaponMode' SpecialPowerTemplate='SpecialPower_JapanFortressShipTransformMode' Options='RECONSTITUTE_STORED_COMMAND' TriggerAttributeModifier='AttributeModifier_JapanFortressShipTransformation' AttributeModifierDuration='4.0s'><ToggleState LocomotorSet='NORMAL' EnterStateSound='JAP_Gigafortress_AirToWater_Player'><SkirmishAiInfo ToggleHint='TOGGLE_DEFAULT' Location='Water' NeverUseWhenClear='true'><StateWeapon Weapon='JapanFortressShipMissilePods_Aircraft'/></SkirmishAiInfo><ActiveGeometry>ship_geom</ActiveGeometry></ToggleState><ToggleState ObjectStatus='TRANSFORMATION_TOGGLE_STATE' LocomotorSet='SUPERSONIC' ModelConditions='USER_1' EnterStateSound='JAP_Gigafortress_WaterToAir_Player' AttributeModifier='AttributeMod_GigaFortressVision_Head'><SkirmishAiInfo ToggleHint='TOGGLE_TRANSFORM' Location='Water'><StateWeapon Weapon='JapanFortressShipCannonWeapon'/></SkirmishAiInfo><ActiveGeometry>air_geom</ActiveGeometry></ToggleState></ToggleStatusSpecialAbilityUpdate>") }).ToArray();
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: actual GameObject polymorphic dispatch must emit the same module graph and exactly the parent plus module relocation/import slots. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void CheckDispatch(string source, Relo.Chunk direct)
+    {
+        var doc = new XmlDocument { XmlResolver = null }; doc.LoadXml("<GameObject xmlns='uri:ea.com:eala:asset'><Behaviors/></GameObject>");
+        var input = new XmlDocument { XmlResolver = null }; input.LoadXml(source);
+        var leaf = (XmlElement)doc.ImportNode(input.DocumentElement!, true); doc.DocumentElement!.FirstChild!.AppendChild(leaf);
+        // Reborn: class selection is internally normalized after source validation, not accepted as an authored XML TypeId field.
+        leaf.SetAttribute("TypeId", "3977962844");
+        var ns = new XmlNamespaceManager(doc.NameTable); ns.AddNamespace("ea", "uri:ea.com:eala:asset");
+        GameObject* root;
+        using var tracker = new Relo.Tracker((void**)&root, (uint)sizeof(GameObject), false);
+        Marshaler.Marshal(new Node(doc.DocumentElement.CreateNavigator()!, ns), root, tracker);
+        var output = new Relo.Chunk(); if (!tracker.MakeRelocatable(output)) throw new InvalidDataException("Toggle dispatch allocation failed.");
+        int list = (int)Word(output.InstanceBuffer, 476), items = (int)Word(output.InstanceBuffer, list + 4), native = (int)Word(output.InstanceBuffer, items);
+        if (Word(output.InstanceBuffer, list) != 1 || Word(output.InstanceBuffer, native) != 0xED1AE55Cu || output.InstanceBuffer.Length != native + direct.InstanceBuffer.Length)
+            throw new InvalidDataException("Toggle polymorphic class/count/size differs.");
+        var graph = output.InstanceBuffer.AsSpan(native).ToArray();
+        var directRelos = Enumerable.Range(0, direct.RelocationBuffer.Length / 4 - 1).Select(i => Word(direct.RelocationBuffer, i * 4)).ToArray();
+        foreach (uint at in directRelos)
+        {
+            uint p = Word(graph, (int)at);
+            if (p < native) throw new InvalidDataException("Toggle dispatched graph pointer escapes its module.");
+            BinaryPrimitives.WriteUInt32LittleEndian(graph.AsSpan((int)at, 4), p - (uint)native);
+        }
+        if (!graph.SequenceEqual(direct.InstanceBuffer)) throw new InvalidDataException("Toggle real dispatched module graph differs.");
+        var expected = new[] { 476u, (uint)(list + 4), (uint)items }.Concat(directRelos.Select(p => p + (uint)native)).Order().ToArray();
+        var actual = Enumerable.Range(0, output.RelocationBuffer.Length / 4 - 1).Select(i => Word(output.RelocationBuffer, i * 4)).Order().ToArray();
+        if (!expected.SequenceEqual(actual) || Word(output.RelocationBuffer, output.RelocationBuffer.Length - 4) != uint.MaxValue)
+            throw new InvalidDataException("Toggle dispatch relocation slots differ.");
+        var expectedImports = Enumerable.Range(0, direct.ImportsBuffer.Length / 4 - 1).Select(i => Word(direct.ImportsBuffer, i * 4) + (uint)native).Order();
+        var actualImports = Enumerable.Range(0, output.ImportsBuffer.Length / 4 - 1).Select(i => Word(output.ImportsBuffer, i * 4)).Order();
+        if (!expectedImports.SequenceEqual(actualImports) || Word(output.ImportsBuffer, output.ImportsBuffer.Length - 4) != uint.MaxValue)
+            throw new InvalidDataException("Toggle dispatch import slots differ.");
     }
 
     //-------------------------------------------------------------------------------------------------
