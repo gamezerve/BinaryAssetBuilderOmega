@@ -16,6 +16,9 @@ internal static class Program
             // Reborn: nested damage/motion graphs and real modifier imports remain diagnostic, not GameObject publication.
             // Reborn: recover toggle layout before admitting a new native family or claiming source/compiler support.
             // Reborn: standalone AI payload/reference gates do not admit the enclosing toggle/GameObject family.
+            // Reborn: direct concrete graph diagnostics keep captured-reference and dispatch/publication boundaries explicit.
+            if (args.Length == 2 && args[0] == "ep1-toggle-module-self-test")
+            { CompilerSmokeTest.InitializeHashProvider(); Ep1ToggleModuleSmokeTest.Run(args[1]); return 0; }
             if (args.Length == 2 && args[0] == "ep1-toggle-ai-self-test")
             { CompilerSmokeTest.InitializeHashProvider(); Ep1ToggleAiSmokeTest.Run(args[1]); return 0; }
             if ((args.Length == 2 || args.Length == 3) && args[0] == "toggle-status-layout-review")
@@ -1291,6 +1294,8 @@ internal static class Program
         // Reborn: bounded module graph/native/reference checks do not create a playable object.
         // Reborn: toggle layout diagnostics do not enable source compilation or GameObject publication.
         // Reborn: verify selected AI native graphs separately from GameObject dispatch/publication.
+        // Reborn: selected direct module graph checks do not admit general source/Core/GameObject publication.
+        Console.WriteLine("  ep1-toggle-module-self-test <static.manifest>");
         Console.WriteLine("  ep1-toggle-ai-self-test <static.manifest>");
         Console.WriteLine("  toggle-status-layout-review <static.manifest> [GameObject:Name]");
         Console.WriteLine("  toggle-status-layout-self-test <static.manifest>");

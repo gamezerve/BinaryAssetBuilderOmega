@@ -2,6 +2,11 @@
 
 ## Final product contract
 
+Current full-target planning calibration: **about 45%, with a 40–50% range**.
+This subjective weighted maturity estimate supersedes archived percentage figures
+for the full-product scope; it is not a coverage ratio or deadline. See the
+[October 13 snapshot](RA3EP1_PROGRESS_SNAPSHOT.md) for remaining gates and weights.
+
 The user's target is an RA3-Mod-SDK-style Uprising SDK, not a collection of
 fixed override recipes. The intended authoring surface includes arbitrary
 schema-valid new ArmorTemplate, GameObject and other asset identities; multiple
@@ -33,6 +38,14 @@ these capabilities needs explicit build and appropriate gameplay evidence.
 Public distribution review is separate from achieving functional parity.
 
 ## Current position — October 12, 2026
+
+October 13 direct toggle-module checkpoint: ordered state/root marshalers now
+reproduce three complete selected native graphs, including the existing special-
+ability base. Captured-index diagnostics, not a general named-source route, are
+used here; nonempty child-list stock proof and polymorphic dispatch remain open.
+Three model families remain absent in the two-object inventory, plus the toggle
+integration gate. Focused 27/27 regressions pass. See the
+[direct-module evidence boundary](RA3EP1_TOGGLE_MODULE_NATIVE.md).
 
 October 13 toggle AI follow-up: standalone 156-byte AI / 28-byte weapon native
 models and marshalers now reproduce six selected stock graphs across Conscript,

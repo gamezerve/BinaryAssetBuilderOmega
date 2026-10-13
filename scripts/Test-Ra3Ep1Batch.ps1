@@ -80,6 +80,8 @@ if($SchedulerControl){
     Add-BatchCase 'toggle-status-layout' 'BoundedNestedLayoutReview' @('toggle-status-layout-self-test',$StaticManifest)
     # Reborn: selected complete standalone AI graphs include present pointer values and real Core-normalized weapon imports, not enclosing module dispatch.
     Add-BatchCase 'ep1-toggle-ai' 'BoundedStandaloneAiNativePayload' @('ep1-toggle-ai-self-test',$StaticManifest)
+    # Reborn: concrete module graphs currently use captured-index diagnostics; normal source/dispatch/publication is deliberately separate.
+    Add-BatchCase 'ep1-toggle-module' 'BoundedCapturedIndexModuleNativePayload' @('ep1-toggle-module-self-test',$StaticManifest)
     # Reborn: actual named source references must bind stock and newly compiled armor without captured numeric dependency indices.
     Add-BatchCase 'gameobject-armor-source' 'BoundedNamedNativeProjection' @('gameobject-armor-source-self-test',(Join-Path $OutputDirectory 'go'),$StaticManifest)
     Add-BatchCase 'armor-core' 'BoundedScopedStream' @('ep1-armor-document-self-test',(Join-Path $OutputDirectory 'armor-core'),$StaticManifest)

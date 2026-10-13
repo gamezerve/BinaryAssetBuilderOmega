@@ -71,7 +71,7 @@ public static partial class Marshaler
     //-------------------------------------------------------------------------------------------------
     /** Reborn: reject unknown/numeric enum tokens and preserve official enum-index bits rather than treating XML lists as arrays. */
     //-------------------------------------------------------------------------------------------------
-    private static unsafe void Ep1ToggleEnum(Value value, uint* target, Tracker state, Type type, bool flags)
+    private static unsafe void Ep1ToggleEnum(Value value, uint* target, Tracker state, Type type, bool flags, int scalarBias = 0)
     {
         string text = value?.GetText() ?? "";
         string[] tokens = text.Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
@@ -81,7 +81,8 @@ public static partial class Marshaler
         {
             int index = Array.IndexOf(names, token);
             if (index < 0 || (flags && index >= 32)) throw new BinaryAssetBuilderException(ErrorCode.InternalError, "Unknown EP1 toggle enum token '{0}'.", token);
-            if (flags) result |= 1u << index; else result = (uint)index;
+            // Reborn: EP1 locomotor scalar encoding starts at INVALID=-1 while its schema name order starts at zero.
+            if (flags) result |= 1u << index; else result = unchecked((uint)(index + scalarBias));
         }
         state.InplaceEndianToPlatform(&result); *target = result;
     }

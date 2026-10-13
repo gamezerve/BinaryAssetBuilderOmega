@@ -8,6 +8,19 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 13, 2026
 
+Full-target planning estimate: **about 45% (40–50% range)**, not a test-pass or
+asset-coverage ratio. The limited local alpha already exists. See the
+[remaining-work snapshot and weighting](docs/RA3EP1_PROGRESS_SNAPSHOT.md).
+
+The [direct toggle module checkpoint](docs/RA3EP1_TOGGLE_MODULE_NATIVE.md) adds
+native state/module models and marshalers. Three selected complete native graphs
+match stock, including the special-ability base and empty-string relocation.
+References currently use captured-index diagnostics; normal source normalization,
+nonempty child-list stock comparison and polymorphic dispatch remain separate.
+This is implementation progress, not general GameObject publication in alpha h.
+Final focused regression: **27/27** groups in **66.833 seconds**, with eight
+runtime hashes unchanged. No new Full-suite run is claimed for this checkpoint.
+
 The [standalone toggle AI implementation](docs/RA3EP1_TOGGLE_AI_NATIVE.md)
 adds native AI/weapon models and marshalers. Six selected stock AI graphs match,
 including four present optional pointer/value joins, absent weapon children,
