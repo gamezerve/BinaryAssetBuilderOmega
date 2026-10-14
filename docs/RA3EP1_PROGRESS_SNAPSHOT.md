@@ -45,6 +45,9 @@ this full-product estimate, not evidence that completed code was lost.
   stock/native module comparisons. New tracker/freefall and basic module ports.
 - Standalone toggle AI/weapon native compilation; the enclosing toggle/state model
   and direct marshaler now reproduce three selected native graphs diagnostically.
+- Destruction, TechUpgrade and LUAEventList native models/dispatch reproduce four
+  selected stock graphs; no missing native model names remain in the original
+  two-object inventory. This is not a complete compatibility or publication gate.
 
 ## Remaining work, in practical order
 
@@ -54,9 +57,12 @@ this full-product estimate, not evidence that completed code was lost.
    Generic source ordering, definition/expression evaluation and authored local-ID
    context collection still need full source-graph integration.
 2. **Complete the initial GameObject native/token graph:** review existing EP1
-   models/processors, port BuildingDestruction, TechUpgrade and LUAEventListBehavior,
-   and verify recursive field/token/relocation/import contracts. These three are
-   absent native models in the two reviewed objects, not the entire SDK backlog.
+   models/processors and verify recursive field/token/relocation/import contracts.
+   BuildingDestruction, TechUpgrade and LUAEventListBehavior now have selected
+   native evidence (see [the module batch](RA3EP1_ALLIED_MODULES_NATIVE.md));
+   normal FX source normalization, inherited/nested tokenization and general
+   source closure still need integration. No missing native model names in the
+   initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a
    newly built armor/weapon in a mixed Core stream; validate default-reader package
    selection, dependencies/override precedence, then obtain controlled gameplay proof.

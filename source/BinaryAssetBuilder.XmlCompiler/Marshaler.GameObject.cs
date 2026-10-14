@@ -25,6 +25,16 @@ public static partial class Marshaler
             case 0xED1AE55Cu:
                 MarshalPolymorphicType<ToggleStatusSpecialAbilityUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
+            // Reborn: EP1 destruction/tech/LUA families retain their concrete identities; selected native proof is separate from tokenized publication.
+            case 0x0D96A2F4u:
+                MarshalPolymorphicType<BuildingDestructionModuleData, BehaviorModuleData>(node, objT, state);
+                break;
+            case 0xFF7BCDB3u:
+                MarshalPolymorphicType<TechUpgradeModuleData, BehaviorModuleData>(node, objT, state);
+                break;
+            case 0xFA6AC8B6u:
+                MarshalPolymorphicType<LUAEventListBehaviorModuleData, BehaviorModuleData>(node, objT, state);
+                break;
             // Reborn: stock-proven EP1 helper/sell classes use their own concrete IDs, not approximate legacy substitutes.
             case 0x7F72F242u:
                 MarshalPolymorphicType<ObjectSMCHelperModuleData, BehaviorModuleData>(node, objT, state);

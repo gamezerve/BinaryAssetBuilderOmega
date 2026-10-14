@@ -2,6 +2,12 @@
 
 ## Final product contract
 
+The latest [Allied native batch](RA3EP1_ALLIED_MODULES_NATIVE.md) ports the final
+three missing native model families in the original two-object inventory.
+Selected native/dispatch evidence advances internal GameObject dependencies;
+general source closure, recursive tokenized publication and alpha h are unchanged.
+This is not complete gameplay-type coverage or a new general SDK release.
+
 Current full-target planning calibration: **about 45%, with a 40–50% range**.
 This subjective weighted maturity estimate supersedes archived percentage figures
 for the full-product scope; it is not a coverage ratio or deadline. See the

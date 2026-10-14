@@ -109,7 +109,7 @@ internal static class Ep1BasicModuleSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate the raw leaf in a minimal complete schema container before adding an internal normalized TypeId for the diagnostic dispatch. */
     //-------------------------------------------------------------------------------------------------
-    private static void Validate(XmlSchemaSet schemas, string leaf, bool client)
+    internal static void Validate(XmlSchemaSet schemas, string leaf, bool client)
     {
         string container = client ? "ClientUpdates" : "Behaviors";
         // Reborn: preserve the official GameObject particle order around required Body and optional client updates.

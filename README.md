@@ -8,6 +8,17 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 13, 2026
 
+The [Allied module batch](docs/RA3EP1_ALLIED_MODULES_NATIVE.md) adds destruction,
+tech-upgrade and LUA-event-list native models/marshalers and real behavior dispatch.
+Four selected complete stock native graphs match. Ordered/default/edited source
+controls and invalid-input checks are included. Destruction FX still uses an
+explicit captured-index diagnostic; LUA callback execution is not proven.
+There are no remaining missing native model names in the original two-object
+inventory, but existing-model EP1 review and recursive tokenized GameObject
+publication remain open. Alpha h is unchanged.
+Final focused regression: **29/29** groups in **85.380 seconds**; the new family
+gate took **7.141 seconds**. Eight runtime hashes remained unchanged during workers.
+
 The [toggle dispatch milestone](docs/RA3EP1_TOGGLE_DISPATCH.md) now verifies
 five complete selected stock/Core module graphs, including Dreadnought's Module
 record and Gigafortress's geometry strings. Actual GameObject polymorphic native
