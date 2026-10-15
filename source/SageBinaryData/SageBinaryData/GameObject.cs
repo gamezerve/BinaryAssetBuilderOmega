@@ -303,12 +303,14 @@ namespace SageBinaryData
         public List<ArmorTemplateSet> ArmorSet;
         // Reborn: EP1 root conditions differ from the legacy shared locomotor enum without changing the twelve-byte record ABI.
         public List<Ep1LocomotorSet> LocomotorSet;
-        public unsafe BuildableStatus* Buildable;
-        public unsafe ThingClassType* ThingClass;
+        // Reborn: stock tokens target these four-byte enum words directly, not allocated enum pointers.
+        public BuildableStatus Buildable;
+        public ThingClassType ThingClass;
         public unsafe List<AnsiString>* BuildFadeInOnCreateList;
         public unsafe List<AnsiString>* BuildVariations;
         public List<TypedAssetId<BaseAssetType>> EquivalentTo; // should be TypedAssetId<GameObject> but .net thinks it might be a circular reference
-        public unsafe Color* DisplayColor;
+        // Reborn: official Color4 is by-value; retain its packed BGRA bytes in the root at +460.
+        public Color DisplayColor;
         public unsafe Flammability* Flammability;
         public unsafe SkirmishAIInformation* SkirmishAIInformation;
         public unsafe PolymorphicList<DrawModuleData>* Draws;

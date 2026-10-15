@@ -70,7 +70,7 @@ internal static class GameObjectRootValueSmokeTest
             }
         flags.DocumentElement!.SetAttribute("KindOf","UNKNOWN_EP1_FLAG"); Refuse(()=>Compile(schemas,flags));
         Weak(schemas);
-        Console.WriteLine($"GameObject root values: PASS (15 extra descriptors/three stock roots, {literals} enum literals including forced/sentinel values, {names.Length} KindOf bit order/cross-word masks, seven real-Core weak IDs; no target existence/payload/complete object claim).");
+        Console.WriteLine($"GameObject root values: PASS ({Ep1GameObjectRootValueTokens.ExtraFields.Count} extra descriptors/three stock roots, {literals} enum literals including forced/sentinel values, {names.Length} KindOf bit order/cross-word masks, seven real-Core weak IDs; no target existence/payload/complete object claim).");
     }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: inherit real official weak-reference types and compare the focused attribute declarations with the admitted GameObject schema before Core normalization. */

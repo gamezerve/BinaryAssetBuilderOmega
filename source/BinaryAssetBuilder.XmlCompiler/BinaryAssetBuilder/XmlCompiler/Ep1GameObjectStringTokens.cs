@@ -23,6 +23,8 @@ public static class Ep1GameObjectStringTokens
     public static Layout Inspect(byte[] b, uint[] relos, uint[] imports)
     {
         uint list = Word(476);
+        // Reborn: inline enum children must not retain out-of-range words that a pointer-shaped legacy model could previously generate.
+        if(Word(436)>3 || Word(440)>15)throw new InvalidDataException("Unsupported inline Buildable/ThingClass value.");
         if (list < 600 || list % 4 != 0 || list > b.Length - 8)throw new InvalidDataException("Projection requires a bounded behavior envelope after root allocations.");
         uint count=Word((int)list);
         if(count<1 || count>3 || list>b.Length-8-count*4 || Word((int)list+4)!=list+8)throw new InvalidDataException("Projection admits one to three canonical behavior pointers.");

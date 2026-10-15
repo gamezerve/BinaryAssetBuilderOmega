@@ -132,6 +132,10 @@ diagnostic and gameplay boundaries.
    The [shared geometry composition](RA3EP1_GAMEOBJECT_GEOMETRY_COMPOSITION.md)
    joins those fragments with all selected root/movement/armor/body/behavior owners,
    including a genuine new armor target. Complete publication remains open.
+   The [inline child correction](RA3EP1_INLINE_ROOT_CHILDREN.md) adds Buildable,
+   ThingClass and packed DisplayColor without allocating legacy pointer payloads;
+   the selected combination now has 94 partial root fields. General publication
+   and independent nonzero inline-child runtime evidence remain open.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

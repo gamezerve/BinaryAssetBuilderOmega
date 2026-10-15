@@ -58,7 +58,7 @@ internal static class GameObjectMovementCompositionSmokeTest
             var good=Ep1GameObjectDestructionProjection.Compose(populated);var root=GameObjectStockReview.Tokens(good.InstanceBuffer,0);int table=root[FastHash.GetHashCode("LocomotorSet")].Offset,memberTable=(int)Word(good.InstanceBuffer,table+20),metadataFaults=0;
             foreach(int offset in new[]{table,table+4,table+8,table+12,table+16,table+20,memberTable,memberTable+4,memberTable+8,memberTable+12,memberTable+16,memberTable+20,memberTable+24,memberTable+28,memberTable+32,memberTable+36})
             {var bad=Clone(good);Put(bad.InstanceBuffer,offset,Word(bad.InstanceBuffer,offset)^4u);Refuse(()=>Verify(bad,populated,populatedInstance!,targets[8],3,18));metadataFaults++;}
-            Console.WriteLine($"GameObject movement composition: PASS (four stock roots, {cases} Core/native cases including 20 enum literals, 0/1/3/32 records, three behavior orders, armor/body/weapons/strings; {faults} input and {metadataFaults} metadata refusals; 90-field partial root when present; no generic locomotor processor/object publication/game).");
+            Console.WriteLine($"GameObject movement composition: PASS (four stock roots, {cases} Core/native cases including 20 enum literals, 0/1/3/32 records, three behavior orders, armor/body/weapons/strings; {faults} input and {metadataFaults} metadata refusals; {Ep1GameObjectRootValueTokens.AllFields.Count+4}-field partial root when present; no generic locomotor processor/object publication/game).");
 
             //-------------------------------------------------------------------------------------------------
             /** Reborn: raw official validation precedes focused Core normalization and unique catalog closure, with no caller-authored reference indices. */
@@ -150,7 +150,7 @@ internal static class GameObjectMovementCompositionSmokeTest
     private static void Verify(Chunk output,Chunk native,InstanceDeclaration instance,ManifestAsset target,int count,int condition)
     {
         var b=output.InstanceBuffer;var roots=GameObjectStockReview.Tokens(b,0);int prefix=roots[FastHash.GetHashCode("BuildTime")].Offset-140,items=(int)Word(native.InstanceBuffer,432);
-        if(roots.Count!=(count==0?89:90) || Word(b,prefix+428)!=count)throw new InvalidDataException("Movement composed root differs.");
+        if(roots.Count!=Ep1GameObjectRootValueTokens.AllFields.Count+3+(count==0?0:1) || Word(b,prefix+428)!=count)throw new InvalidDataException("Movement composed root differs.");
         if(count!=0)
         {
             var field=roots[FastHash.GetHashCode("LocomotorSet")];int expectedTable=prefix-12-count*60;

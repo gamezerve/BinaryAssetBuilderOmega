@@ -8,6 +8,15 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [inline root child correction](docs/RA3EP1_INLINE_ROOT_CHILDREN.md) fixes
+Buildable, ThingClass and DisplayColor: these are inline enum/packed-color words,
+not allocated pointers. Five stock direct-target contracts and 257 authored/default
+cases pass; the root remains 600 bytes with no extra allocations. Three new flat
+descriptors raise the selected full combination to 94 partial root fields. Nonzero
+stock/runtime behavior and general publication remain separate gates.
+Final Focused regression: **48/48** in **127.251 seconds**, inline group 3.515
+seconds, eight runtime hashes stable and no game/installation changes.
+
 The [shared geometry/movement/combat projection](docs/RA3EP1_GAMEOBJECT_GEOMETRY_COMPOSITION.md)
 now combines all selected owners on one real Tracker/Core occurrence table,
 including a genuinely new compiled armor target. Stock/authored modes each cover

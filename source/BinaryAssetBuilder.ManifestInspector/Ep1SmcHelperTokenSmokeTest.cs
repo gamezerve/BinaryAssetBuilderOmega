@@ -26,7 +26,7 @@ internal static class Ep1SmcHelperTokenSmokeTest
         }
         // Reborn: smallest no-Body/no-Armor helper projection proves the new eight-byte native owner boundary, not just a three-module special case.
         var composed=Ep1GameObjectDestructionProjection.Compose(compiled.Chunk);var root=GameObjectStockReview.Tokens(composed.InstanceBuffer,0);
-        if(root.Count!=87 || compiled.Chunk.InstanceBuffer.Length!=620)throw new InvalidDataException("Single-helper minimal projection contract differs.");
+        if(root.Count!=Ep1GameObjectRootValueTokens.AllFields.Count+1 || compiled.Chunk.InstanceBuffer.Length!=620)throw new InvalidDataException("Single-helper minimal projection contract differs.");
         int failures=0;foreach(int length in new[]{0,7,9}){var bad=new Chunk {InstanceBuffer=new byte[length],RelocationBuffer=Array.Empty<byte>(),ImportsBuffer=Array.Empty<byte>()};Refuse(()=>Ep1SmcHelperTokenizer.Tokenize(bad));failures++;}
         foreach(bool imports in new[]{false,true}){var bad=Clone(native);if(imports)bad.ImportsBuffer=new byte[4];else bad.RelocationBuffer=new byte[4];Refuse(()=>Ep1SmcHelperTokenizer.Tokenize(bad));failures++;}
         var wrong=Clone(native);Put(wrong.InstanceBuffer,0,0);Refuse(()=>Ep1SmcHelperTokenizer.Tokenize(wrong));failures++;

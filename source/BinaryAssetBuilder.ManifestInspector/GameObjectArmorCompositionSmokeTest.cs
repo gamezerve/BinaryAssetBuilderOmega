@@ -70,7 +70,7 @@ internal static class GameObjectArmorCompositionSmokeTest
             var good=Check(populated,populatedInstance!,2,true,targets);var rootGood=GameObjectStockReview.Tokens(good.InstanceBuffer,0);int armorTable=rootGood[FastHash.GetHashCode("ArmorSet")].Offset,metadataFailures=0;
             foreach(int at in new[]{(Ep1GameObjectRootValueTokens.AllFields.Count+2)*12+4,(Ep1GameObjectRootValueTokens.AllFields.Count+2)*12+8,armorTable,armorTable+4,armorTable+8,armorTable+12,armorTable+20,armorTable+40,armorTable+44,armorTable+52,armorTable+56,armorTable+64,armorTable+68})
             {var bad=Clone(good);Put(bad.InstanceBuffer,at,Word(bad.InstanceBuffer,at)^4u);Refuse(()=>Verify(bad,populated,populatedInstance!,2,true,targets));metadataFailures++;}
-            Console.WriteLine($"GameObject ArmorSet composition: PASS ({cases} actual-Core cases: 0/1/2/32 armors, optional DamageFX, dynamic strings, root/body/destruction and shared references; two stock contracts, 89 root fields when both present, {failures} input and {metadataFailures} metadata refusals; no complete GameObject/package/game).");
+            Console.WriteLine($"GameObject ArmorSet composition: PASS ({cases} actual-Core cases: 0/1/2/32 armors, optional DamageFX, dynamic strings, root/body/destruction and shared references; two stock contracts, {Ep1GameObjectRootValueTokens.AllFields.Count+3} root fields when both present, {failures} input and {metadataFailures} metadata refusals; no complete GameObject/package/game).");
             if(authoredArmor!=null)Console.WriteLine($"Authored armor consumer: PASS (real Core stream target {authoredArmor.Name}; target removal refuses; partial combined consumer only, no GameObject manifest/package/game).");
         }
         finally{Settings.Current=saved;}
@@ -132,7 +132,7 @@ internal static class GameObjectArmorCompositionSmokeTest
     private static void Verify(Chunk output,Chunk native,InstanceDeclaration instance,int count,bool damage,ManifestAsset[] targets)
     {
         var b=output.InstanceBuffer;var root=GameObjectStockReview.Tokens(b,0);int prefix=root[FastHash.GetHashCode("BuildTime")].Offset-140,items=(int)Word(native.InstanceBuffer,424),body=(int)Word(native.InstanceBuffer,488);
-        if(root.Count!=(count==0?88:89) || Word(b,prefix+420)!=count || (count!=0 && Word(b,prefix+424)!=prefix+items) || Word(b,prefix+488)!=prefix+body)throw new InvalidDataException("Combined ArmorSet root ownership differs.");
+        if(root.Count!=Ep1GameObjectRootValueTokens.AllFields.Count+2+(count==0?0:1) || Word(b,prefix+420)!=count || (count!=0 && Word(b,prefix+424)!=prefix+items) || Word(b,prefix+488)!=prefix+body)throw new InvalidDataException("Combined ArmorSet root ownership differs.");
         int expectedPrefix=(Ep1GameObjectRootValueTokens.AllFields.Count+3+(count==0?0:1))*12+24+384+384+(count==0?0:12+count*60);
         if(prefix!=expectedPrefix)throw new InvalidDataException("Combined ArmorSet token extent differs.");
         if(count!=0)
