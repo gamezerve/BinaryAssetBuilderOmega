@@ -7,11 +7,11 @@ using Chunk = Relo.Chunk;
 
 namespace BinaryAssetBuilder.XmlCompiler;
 
-// Reborn: scalar root/container projection only; omitted indirect/reference/enum fields still prevent complete GameObject publication.
+// Reborn: root-value/container projection only; omitted strings, strong references and indirect fields still prevent complete GameObject publication.
 public static class Ep1GameObjectDestructionProjection
 {
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: compose reviewed scalar fields/Behaviors and a generated destruction fragment while preserving the original native graph and reference indices. */
+    /** Reborn: compose reviewed root values/Behaviors and a generated destruction fragment while preserving the original native graph and reference indices. */
     //-------------------------------------------------------------------------------------------------
     public static Chunk Compose(Chunk native)
     {
@@ -34,16 +34,16 @@ public static class Ep1GameObjectDestructionProjection
         module.ImportsBuffer = Pack(imports.Select(s => s - 612));
         var fragment = Ep1DestructionTokenizer.Tokenize(module);
         // Reborn: root token count is descriptor-driven; nested fragment coordinates must never retain the old two-field prefix size.
-        int container = checked((Ep1GameObjectScalarTokens.Fields.Count + 2) * 12), fragmentStart = container + 24;
+        int container = checked((Ep1GameObjectRootValueTokens.AllFields.Count + 2) * 12), fragmentStart = container + 24;
         int modulePrefix = checked(312 + (int)Word(module.InstanceBuffer, 64) * 72), prefix = checked(fragmentStart + modulePrefix);
         var result = new Chunk { InstanceBuffer = new byte[checked(prefix + b.Length)] };
         b.CopyTo(result.InstanceBuffer, prefix);
-        for (int i = 0; i < Ep1GameObjectScalarTokens.Fields.Count; i++)
+        for (int i = 0; i < Ep1GameObjectRootValueTokens.AllFields.Count; i++)
         {
-            var field = Ep1GameObjectScalarTokens.Fields[i];
+            var field = Ep1GameObjectRootValueTokens.AllFields[i];
             Token(i * 12, FastHash.GetHashCode(field.Name), field.Type, (uint)(prefix + field.Offset));
         }
-        Token(Ep1GameObjectScalarTokens.Fields.Count * 12, FastHash.GetHashCode("Behaviors"), 0x24FCCAE2u, (uint)container);
+        Token(Ep1GameObjectRootValueTokens.AllFields.Count * 12, FastHash.GetHashCode("Behaviors"), 0x24FCCAE2u, (uint)container);
         Token(container, 0x6C827073u, 0x5D448FD8u, (uint)(prefix + 600));
         Token(container + 12, 0xB151A0EBu, 0, (uint)fragmentStart);
         fragment.InstanceBuffer.AsSpan(0, modulePrefix).CopyTo(result.InstanceBuffer.AsSpan(fragmentStart));

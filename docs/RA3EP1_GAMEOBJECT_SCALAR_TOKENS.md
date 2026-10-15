@@ -1,5 +1,9 @@
 # Batched GameObject scalar-root token expansion
 
+Follow-up: the [enum/flag/weak-ID batch](RA3EP1_GAMEOBJECT_ENUM_FLAG_WEAK.md)
+extends root metadata to 78 fields and adds scoped native enum corrections.
+The 63-field/124-corruption numbers below describe this earlier scalar checkpoint.
+
 ## Scope
 
 `Ep1GameObjectScalarTokens` supplies 62 explicit read-only scalar descriptors for

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: focused real-Core weak-reference harness; target stubs establish schema inheritance only, never payload/existence support. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset" targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Base.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Base/AssetBase.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Ref.xsd"/>
+ <xs:complexType name="PlayerTemplate"><xs:complexContent><xs:extension base="BaseAssetType"/></xs:complexContent></xs:complexType>
+ <xs:complexType name="LogicCommandSet"><xs:complexContent><xs:extension base="BaseAssetType"/></xs:complexContent></xs:complexType>
+ <xs:complexType name="PackedTextureImage"><xs:complexContent><xs:extension base="BaseAssetType"/></xs:complexContent></xs:complexType>
+ <xs:complexType name="HealthBarTemplate"><xs:complexContent><xs:extension base="BaseAssetType"/></xs:complexContent></xs:complexType>
+ <!-- Reborn: the selected attribute type/default declarations are compared with official GameObject before use. -->
+ <xs:complexType name="RootWeakProbeType"><xs:complexContent><xs:extension base="BaseAssetType">
+  <xs:attribute name="Side" type="PlayerTemplateWeakRef"/>
+  <xs:attribute name="CommandSet" type="LogicCommandSetWeakRef" default=""/>
+  <xs:attribute name="SelectPortrait" type="ImageWeakRef" default=""/>
+  <xs:attribute name="SelectPortraitTransformed" type="ImageWeakRef" default=""/>
+  <xs:attribute name="ButtonImage" type="ImageWeakRef" default=""/>
+  <xs:attribute name="ButtonImageTransformed" type="ImageWeakRef" default=""/>
+  <xs:attribute name="HealthBar" type="HealthBarTemplateWeakRef"/>
+ </xs:extension></xs:complexContent></xs:complexType>
+ <xs:element name="RootWeakProbe" type="RootWeakProbeType"/>
+</xs:schema>

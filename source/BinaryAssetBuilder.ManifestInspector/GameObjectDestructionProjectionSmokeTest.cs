@@ -36,14 +36,14 @@ internal static class GameObjectDestructionProjectionSmokeTest
         var badOutput = Clone(result); Put(badOutput.InstanceBuffer, fragmentStart - 4, (uint)(fragmentStart - 24)); Refuse(() => Verify(badOutput, source.Chunk));
         var edited = Clone(source.Chunk); Put(edited.InstanceBuffer, 140, unchecked((uint)BitConverter.SingleToInt32Bits(12.5f))); Check(edited);
         // Reborn: every emitted scalar type and native target must reject independent output metadata corruption, not merely pass a shared descriptor loop.
-        for (int i = 0; i < Ep1GameObjectScalarTokens.Fields.Count; i++)
+        for (int i = 0; i < Ep1GameObjectRootValueTokens.AllFields.Count; i++)
             foreach (int word in new[] { 4, 8 })
             {
                 var badScalar = Clone(result); int at = i * 12 + word;
                 Put(badScalar.InstanceBuffer, at, Word(badScalar.InstanceBuffer, at) ^ 4u);
                 Refuse(() => Verify(badScalar, source.Chunk));
             }
-        Console.WriteLine($"GameObject scalar metadata corruptions: {Ep1GameObjectScalarTokens.Fields.Count * 2} rejected.");
+        Console.WriteLine($"GameObject root-value metadata corruptions: {Ep1GameObjectRootValueTokens.AllFields.Count * 2} rejected.");
         Console.WriteLine($"GameObject destruction projection: BIN/RELO/IMP={result.InstanceBuffer.Length}/{result.RelocationBuffer.Length}/{result.ImportsBuffer.Length}; root/container/stock module joins, BuildTime edit and nine refusals PASS (partial root, no asset publication).");
     }
     //-------------------------------------------------------------------------------------------------
@@ -67,16 +67,16 @@ internal static class GameObjectDestructionProjectionSmokeTest
     {
         byte[] b = result.InstanceBuffer; var root = GameObjectStockReview.Tokens(b, 0);
         int prefix = root[FastHash.GetHashCode("BuildTime")].Offset - 140;
-        int container = (Ep1GameObjectScalarTokens.Fields.Count + 2) * 12, fragmentStart = container + 24;
+        int container = (Ep1GameObjectRootValueTokens.AllFields.Count + 2) * 12, fragmentStart = container + 24;
         int count = (int)Word(native.InstanceBuffer, 676);
-        if (root.Count != Ep1GameObjectScalarTokens.Fields.Count + 1 || prefix != fragmentStart + 312 + count * 72 || root[FastHash.GetHashCode("Behaviors")].Offset != container ||
+        if (root.Count != Ep1GameObjectRootValueTokens.AllFields.Count + 1 || prefix != fragmentStart + 312 + count * 72 || root[FastHash.GetHashCode("Behaviors")].Offset != container ||
             Word(b, container) != 0x6C827073u || Word(b, container + 4) != 0x5D448FD8u || Word(b, container + 8) != prefix + 600 ||
             Word(b, container + 12) != 0xB151A0EBu || Word(b, container + 16) != 0 || Word(b, container + 20) != fragmentStart ||
             Word(b, prefix + 476) != prefix + 600 || Word(b, prefix + 600) != 1 || Word(b, prefix + 604) != prefix + 608 || Word(b, prefix + 608) != prefix + 612 ||
             Word(b, fragmentStart) != 2 || Word(b, fragmentStart + 4) != 0x0D96A2F4u || Word(b, fragmentStart + 8) != fragmentStart + 12 || Word(b, prefix + 612) != Word(b, fragmentStart + 4))
             throw new InvalidDataException("Composed root/container/module coordinate chain differs.");
         // Reborn: every scalar token is independently bound to its emitted native storage, including packed byte/ushort fields.
-        foreach (var field in Ep1GameObjectScalarTokens.Fields)
+        foreach (var field in Ep1GameObjectRootValueTokens.AllFields)
             if (!root.TryGetValue(FastHash.GetHashCode(field.Name), out var token) || token.Type != field.Type || token.Offset != prefix + field.Offset)
                 throw new InvalidDataException("Composed scalar token differs: " + field.Name);
         var own = GameObjectStockReview.Tokens(b, fragmentStart + 12); int itemTable = own[FastHash.GetHashCode("Item")].Offset;

@@ -77,6 +77,10 @@ this full-product estimate, not evidence that completed code was lost.
    The [scalar-root batch](RA3EP1_GAMEOBJECT_SCALAR_TOKENS.md) widens that projection
    with two-stock-audited scalar descriptors and batched explicit source/value
    checks; indirect/reference/string/enum/flag coverage and publication remain open.
+   The [enum/flag/weak-ID batch](RA3EP1_GAMEOBJECT_ENUM_FLAG_WEAK.md) adds 15 fields,
+   corrects scoped EP1 enum/default mismatches and verifies actual Core weak-ID
+   conversion. Root metadata now covers 78 fields; strong references, strings,
+   indirect graphs, target closure and publication remain open.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

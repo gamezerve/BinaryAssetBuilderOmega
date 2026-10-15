@@ -226,7 +226,8 @@ namespace SageBinaryData
         public AnsiString DescriptionTransformed;
         public AnsiString TypeDescription;
         public AnsiString TypeDescriptionTransformed;
-        public RadarPriorityType RadarPriority;
+        // Reborn: GameObject's EP1 enum policies differ from the older shared KW declarations.
+        public Ep1RadarPriorityType RadarPriority;
         public float FenceWidth;
         public float FenceXOffset;
         public float RemoveTerrainRadius;
@@ -237,7 +238,7 @@ namespace SageBinaryData
         public float FactoryExtraBibWidth;
         public TypedAssetId<BaseAssetType> Side;
         public AnsiString EditorName;
-        public EditorSortingType EditorSorting;
+        public Ep1EditorSortingType EditorSorting;
         public int BountyValue;
         public float BuildTime;
         public int EnergyProduction;
@@ -280,7 +281,7 @@ namespace SageBinaryData
         public int CamouflageDetectorLevel;
         public int SelectionPriority;
         public int PathPriority;
-        public ProductionQueueType ProductionQueueType;
+        public Ep1ProductionQueueType ProductionQueueType;
         public BuildPlacementType BuildPlacementTypeFlag;
         public KindOfBitFlags BuildOnRequiredObjectKindOf;
         public UnitCategory UnitCategory;

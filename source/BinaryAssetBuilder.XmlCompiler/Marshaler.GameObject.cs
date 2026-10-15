@@ -1156,7 +1156,8 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(GameObject.DescriptionTransformed), null), &objT->DescriptionTransformed, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.TypeDescription), null), &objT->TypeDescription, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.TypeDescriptionTransformed), null), &objT->TypeDescriptionTransformed, state);
-        Marshal(node.GetAttributeValue(nameof(GameObject.RadarPriority), null), &objT->RadarPriority, state);
+        // Reborn: official EP1 RadarPriority defaults to INVALID=-1 rather than zero/STRUCTURE when omitted.
+        Marshal(node.GetAttributeValue(nameof(GameObject.RadarPriority), "INVALID"), &objT->RadarPriority, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.TransportSlotCount), "0"), &objT->TransportSlotCount, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.FenceWidth), "0"), &objT->FenceWidth, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.FenceXOffset), "0"), &objT->FenceXOffset, state);

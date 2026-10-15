@@ -8,7 +8,18 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
-The [scalar-root batch](docs/RA3EP1_GAMEOBJECT_SCALAR_TOKENS.md) widens generated
+The [enum/flag/weak-ID batch](docs/RA3EP1_GAMEOBJECT_ENUM_FLAG_WEAK.md) adds 15
+root fields, bringing generated metadata to **78 fields including Behaviors**.
+GameObject-specific EP1 radar/editor/production enum mismatches are corrected;
+50 enum literals, 291 KindOf bit positions and seven actual-Core weak identities
+are checked. Three stock roots pin the new field contracts and selected enum
+values; four real stock weak IDs are corroborated. Weak-ID conversion is not
+target existence or payload support. The root projection is still incomplete
+and does not expand the alpha package.
+Final Focused regression: **30/30** in **81.046 seconds**, including 154 root-value
+metadata refusals; eight runtime hashes remain unchanged during workers.
+
+The earlier [scalar-root batch](docs/RA3EP1_GAMEOBJECT_SCALAR_TOKENS.md) widens generated
 root tokens to reviewed float/integer/time/angle and packed ushort/byte/bool
 families plus Behaviors. Every scalar descriptor is checked against two stock
 roots, and two all-field authored sets exercise schema/native/token conversion.

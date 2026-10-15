@@ -57,7 +57,7 @@ internal static class GameObjectScalarTokenSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate authored root attributes in a schema-complete container; the required Body is validation context, not part of this native projection. */
     //-------------------------------------------------------------------------------------------------
-    private static void Validate(XmlSchemaSet schemas, string source)
+    internal static void Validate(XmlSchemaSet schemas, string source)
     {
         string complete = source.Replace("</GameObject>", "<Body><ActiveBody id='ValidationBody' MaxHealth='100'/></Body></GameObject>", StringComparison.Ordinal);
         var binding = SdkEffectiveSchema.Bind(schemas, "in-memory-scalar-root.xml", Encoding.UTF8.GetBytes("<AssetDeclaration xmlns='uri:ea.com:eala:asset'>" + complete + "</AssetDeclaration>"));
@@ -66,7 +66,7 @@ internal static class GameObjectScalarTokenSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: marshal explicit scalar values through real GameObject dispatch after validation, adding the concrete module class ID internally. */
     //-------------------------------------------------------------------------------------------------
-    private static unsafe Ep1AlliedModuleSmokeTest.Output Compile(string source)
+    internal static unsafe Ep1AlliedModuleSmokeTest.Output Compile(string source)
     {
         var xml = new XmlDocument { XmlResolver = null }; xml.LoadXml(source);
         ((XmlElement)xml.DocumentElement!.FirstChild!.FirstChild!).SetAttribute("TypeId", "227975924");
