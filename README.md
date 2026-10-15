@@ -8,6 +8,17 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [named root/module source gate](docs/RA3EP1_GAMEOBJECT_ROOT_NAMED_SOURCE.md)
+now normalizes UnitTypeIcon/UnitIntro and repeated destruction FX names in one
+actual Core reference table. Eight plain/typed presence cases bind to independent
+real stock identities; twelve source/catalog/semantic failure controls pass.
+The supplied catalogs have no CrowdResponse targets, so that field has explicit
+missing-target evidence rather than a fabricated positive. This remains a focused
+diagnostic path: target payload compilation, complete GameObject and alpha
+publication remain open. Root metadata stays at 87 fields.
+Final Focused regression: **31/31** in **84.376 seconds**; new named-root group
+3.417 seconds, all eight runtime hashes stable, no game/install changes.
+
 See the [large-family and smaller-subsystem capability inventory](docs/RA3EP1_CAPABILITY_MATRIX.md)
 for what is alpha-enabled, experimental or still open. No whole major family is
 yet unrestricted EA-SDK parity; overall planning maturity remains about 45%

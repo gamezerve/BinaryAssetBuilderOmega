@@ -91,8 +91,10 @@ diagnostic and gameplay boundaries.
    The [strong root slot follow-up](RA3EP1_GAMEOBJECT_ROOT_STRONG_SLOTS.md) now adds
    three stock-audited root import descriptors (87 fields including Behaviors),
    exact root/module slot ownership and unchanged diagnostic reference indices.
-   Actual Core shared root/module name resolution and target payload closure
-   remain open; the alpha is unchanged.
+   The [named source follow-up](RA3EP1_GAMEOBJECT_ROOT_NAMED_SOURCE.md) now checks
+   actual Core shared icon/intro/FX name resolution against real catalogs;
+   CrowdResponse has no target in the supplied catalogs and is a refusal case.
+   General target payload/source closure remains open; the alpha is unchanged.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

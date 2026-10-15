@@ -47,7 +47,7 @@ types must still fail rather than silently compile via the legacy KW table.
 | Definitions / `$` expressions | Exact `=$NAME`, reviewed aliases/suffixes and bounded nonnegative integer multiply-add in the armor source route. | General expression language and all field/type contexts. |
 | Scalars / enums / bit flags / defaults | Selected EP1 numeric widths, units, enum sentinels, KindOf masks and default/native/token tests. | Review all other asset/module fields; no generic compatibility inference from schema ordinal order. |
 | Strings / localization | Six GameObject ASCII length/pointer headers with variable allocations; missing/empty/escaped/long test cases. | Lossless arbitrary Unicode/ANSI handling, localization tables, complete STR workflow and production string assets. |
-| Strong / weak references | Real Core normalization and scoped typed resolution tests; selected stock identities; root/module import slot preservation. | Generic named closure across a whole GameObject build and compiling every target payload. New root strong-slot tests use diagnostic normalized indices, not named-target proof. |
+| Strong / weak references | Real Core normalization and scoped typed resolution tests; selected stock identities; root/module import slot preservation. A separate gate now normalizes icon/intro and repeated FX names in one Core table and checks real catalogs. | Generic closure across a whole GameObject build and compiling every target payload. CrowdResponse is absent from the supplied catalogs; no positive named stock target proof is claimed for it. |
 | Type IDs / hashes / hash fix | Extensive independent runtime/schema identity and fingerprint audits; bounded profiles use checked EP1 contracts. | Complete production registry and general RA3-style post-build hash correction across all families. |
 | BIN / RELO / IMP / manifest | Independent readers, bounded real Core builds, selected token/native emitters and byte/slot/identity validation. | Complete recursive GameObject tokens, arbitrary mixed-type streams and broader production/cache paths. |
 | VERSION / suffix / BIG / config / launch | Scoped package naming/selection, independent package checks and controlled launcher/game observations. | General install/run UI and robust arbitrary mod closure. A filename suffix cannot fix an incomplete asset graph. |
@@ -81,7 +81,8 @@ Do not raise it merely because another selected field test passes.
 - [Alpha contract and limits](../alpha/README.md)
 - [Weapon slice](RA3EP1_WEAPON_VERTICAL_SLICE.md)
 - [GameObject root strings](RA3EP1_GAMEOBJECT_ROOT_STRINGS.md) and
-  [root import-slot follow-up](RA3EP1_GAMEOBJECT_ROOT_STRONG_SLOTS.md)
+  [root import-slot follow-up](RA3EP1_GAMEOBJECT_ROOT_STRONG_SLOTS.md), followed by
+  [actual Core root/module names](RA3EP1_GAMEOBJECT_ROOT_NAMED_SOURCE.md)
 - [Basic module ports](RA3EP1_BASIC_MODULE_PORTS.md)
 - [AttributeModifier](RA3EP1_ATTRIBUTE_MODIFIER_PROFILE.md),
   [ObjectFilter](RA3EP1_OBJECT_FILTER_PROFILE.md),
