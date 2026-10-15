@@ -8,6 +8,15 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [selected module identity gate](docs/RA3EP1_SELECTED_MODULE_IDENTITY.md) now
+checks Body/behavior hash uniqueness and destruction AssociatedModule closure
+before allocation and independently in native projection. Its 25 valid cases
+and source/native refusals cover all six module orders, forward/backward/case-folded
+links and per-object scope. This remains a strict partial-object profile, not a
+general local-ID/inheritObject resolver or alpha expansion.
+Final Focused regression: **43/43** in **118.130 seconds**; identity group 3.528
+seconds, eight runtime hashes stable and no game/installation changes.
+
 The [movement/combat follow-up](docs/RA3EP1_MOVEMENT_COMPOSITION.md) adds scoped
 root LocomotorSet native data and generated count/member metadata to the shared
 armor/body/three-behavior graph. Four stock movement arrays match native output;

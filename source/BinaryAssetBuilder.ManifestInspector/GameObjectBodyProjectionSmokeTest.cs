@@ -99,6 +99,8 @@ internal static class GameObjectBodyProjectionSmokeTest
     //-------------------------------------------------------------------------------------------------
     internal static unsafe Chunk Compile(XmlDocument source,bool selectedBehaviors=false)
     {
+        // Reborn: the explicit selected path owns a cross-container module scope before its source containers are detached.
+        if(selectedBehaviors)Ep1SelectedModuleIdentity.ValidateSource(source.DocumentElement!);
         var d=(XmlDocument)source.CloneNode(true);var body=(XmlElement)d.DocumentElement!.LastChild!.FirstChild!;var bodyContainer=body.ParentNode!;d.DocumentElement.RemoveChild(bodyContainer);
         // Reborn: direct ArmorSet children may precede Behaviors; never treat the first root child as the behavior container.
         var behaviors=(XmlElement)d.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]!;

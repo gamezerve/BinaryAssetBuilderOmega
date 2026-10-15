@@ -93,6 +93,7 @@ Do not raise it merely because another selected field test passes.
 - [Selected combat GameObject composition](RA3EP1_GAMEOBJECT_COMBAT_COMPOSITION.md)
 - [SMC helper and three-behavior composition](RA3EP1_SMC_COMBAT_COMPOSITION.md)
 - [Root movement and combat composition](RA3EP1_MOVEMENT_COMPOSITION.md)
+- [Selected Body/behavior module-local identity scope](RA3EP1_SELECTED_MODULE_IDENTITY.md)
 - [AttributeModifier](RA3EP1_ATTRIBUTE_MODIFIER_PROFILE.md),
   [ObjectFilter](RA3EP1_OBJECT_FILTER_PROFILE.md),
   [FX](RA3EP1_FX_PROFILE.md), [ShaderOverride](RA3EP1_SHADER_OVERRIDE_PROFILE.md)

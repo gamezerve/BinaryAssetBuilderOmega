@@ -119,6 +119,9 @@ diagnostic and gameplay boundaries.
    LocomotorSet records, independently stock-corroborated engine values and
    generated metadata to the same selected graph. General LocomotorTemplate/AI
    compilation, draw/geometry, other root/container graphs and publication remain open.
+   The [selected module identity gate](RA3EP1_SELECTED_MODULE_IDENTITY.md) now
+   rejects Body/behavior hash collisions and dangling AssociatedModule links at
+   source and native boundaries; it is not the general cross-container resolver.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

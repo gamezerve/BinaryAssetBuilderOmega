@@ -29,6 +29,9 @@ internal static class Program
             // Reborn: selected two-behavior combat graphs have explicit native allocation and never authorize a complete GameObject stream.
             // Reborn: the required SMC helper has its own stock/token gate and optional three-module integration cases.
             // Reborn: movement joins the selected graph only after independent root condition/stock/reference ownership checks.
+            // Reborn: selected local ModuleData scope is separate from named asset reference closure.
+            if(args.Length==1 && args[0]=="selected-module-identity-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();SelectedModuleIdentitySmokeTest.Run();return 0;}
             if(args.Length==3 && args[0]=="gameobject-movement-composition-self-test")
             {CompilerSmokeTest.InitializeHashProvider();GameObjectMovementCompositionSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==2 && args[0]=="ep1-smc-helper-token-self-test")
@@ -1359,6 +1362,8 @@ internal static class Program
         Console.WriteLine("  gameobject-smc-combat-self-test <static.manifest> <global.manifest>");
         // Reborn: movement remains a bounded offline diagnostic, not a generic object publication command.
         Console.WriteLine("  gameobject-movement-composition-self-test <static.manifest> <global.manifest>");
+        // Reborn: check selected source/native local module identities without launching a game.
+        Console.WriteLine("  selected-module-identity-self-test");
         Console.WriteLine("  gameobject-authored-smc-combat-self-test <fresh-output> <static.manifest> <global.manifest>");
         Console.WriteLine("  ep1-allied-modules-self-test <static.manifest>");
         // Reborn: explicit source normalization does not open general GameObject publication.

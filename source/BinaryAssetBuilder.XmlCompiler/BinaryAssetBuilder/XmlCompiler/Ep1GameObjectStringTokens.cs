@@ -93,6 +93,8 @@ public static class Ep1GameObjectStringTokens
         }
         if (!relos.Where(s => s < module).OrderBy(s => s).SequenceEqual(owners.OrderBy(s => s)) || !imports.Where(s => s < module).OrderBy(s => s).SequenceEqual(rootImports.OrderBy(s => s)))
             throw new InvalidDataException("Unsupported root allocation/import ownership in string projection.");
+        // Reborn: selected native module scope spans Behaviors and Body, independently of source-side validation.
+        Ep1SelectedModuleIdentity.ValidateNative(b,modules,(int)body);
         return new((int)list,(int)list + 8,module,(int)body,(int)armor,(int)armorCount,Array.AsReadOnly(modules),(int)locomotor,(int)locomotorCount);
 
         //-------------------------------------------------------------------------------------------------
