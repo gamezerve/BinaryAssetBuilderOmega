@@ -145,6 +145,11 @@ diagnostic and gameplay boundaries.
    word, matches three complete stock native/table graphs and joins optional
    vision with 576 actual-Core combinations, reaching 99 partial root fields.
    Draw/AI/client and remaining root closures still block general publication.
+   The [common AI native port](RA3EP1_AI_UPDATE_NATIVE.md) now matches two selected
+   stock AI/chooser graphs with actual Core references and inline 0/1/2 AI dispatch.
+   Generated AI metadata, nonempty vision filters, shared combat integration and
+   other concrete AI classes remain open. This native-only milestone leaves the
+   partial composed root at 99 fields and the approximate maturity estimate unchanged.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

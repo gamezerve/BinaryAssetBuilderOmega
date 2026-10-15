@@ -47,7 +47,8 @@ public static partial class Marshaler
                 MarshalPolymorphicType<ConstructionYardAIUpdateModuleData, UpdateModuleData>(node, objT, state);
                 break;
             case 0x08DBC00Eu:
-                MarshalPolymorphicType<AIUpdateModuleData, UpdateModuleData>(node, objT, state);
+                // Reborn: this concrete EP1 wire class has a different native layout from KW; derived legacy AI routes are not broadly upgraded here.
+                MarshalEp1AIUpdate(node,objT,state);
                 break;
             default:
                 // Reborn: unknown AI classes must fail rather than publish an allocated null/partial module list as success.

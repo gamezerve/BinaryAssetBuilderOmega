@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: official AI/chooser declarations share reviewed bases; TargetingCompareList inheritance does not grant its payload compiler. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset" targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="WeaponSetPipeline.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/KindOf.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/ObjectFilter.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/UnitAIStateEnums.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Modules/UnitAITargetChooser.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Modules/AIUpdate.xsd"/>
+ <xs:element name="AIUpdate" type="AIUpdateModuleData"/>
+ <!-- Reborn: this source-only envelope creates one real shared Core occurrence table for the inline AI list diagnostic. -->
+ <xs:complexType name="AIProbeType"><xs:complexContent><xs:extension base="BaseAssetType"><xs:sequence>
+  <xs:element ref="AIUpdate" minOccurs="0" maxOccurs="2"/>
+ </xs:sequence></xs:extension></xs:complexContent></xs:complexType>
+ <xs:element name="AIProbe" type="AIProbeType"/>
+</xs:schema>

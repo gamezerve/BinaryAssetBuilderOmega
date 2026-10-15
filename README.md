@@ -8,6 +8,17 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [common AIUpdate native port](docs/RA3EP1_AI_UPDATE_NATIVE.md) replaces the
+wrong KW concrete layout with separate 76-byte EP1 AI and 40-byte chooser models.
+Two complete selected stock native graphs and 680 state/locomotor/chooser/string
+cases pass actual Core name/default normalization. Inline AI counts 0/1/2 use real
+dispatch and shared reference occurrences. Generated AI metadata, nonempty vision
+filters and integration with the selected combat projection remain open; the
+partial token root stays at 99 fields and the alpha admission gate is unchanged.
+Final Focused regression: **52/52** in **336.633 seconds**, AI group 22.782
+seconds, eight runtime hashes stable and no game/installation changes. Final
+ASCII/list/finite/boolean guards and their source hashes are verified; no Full run.
+
 The [EP1 vision correction](docs/RA3EP1_VISION_INFO.md) restores the missing
 ShroudClearingHeight word through a separate 40-byte model. Three complete stock
 native/metadata graphs match; 576 actual-Core combinations join optional vision
