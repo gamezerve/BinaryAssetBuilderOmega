@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: one focused Core table now covers selected root/vision/combat and common inline AI source children. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset" targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="RootVisionPipeline.xsd"/>
+ <xs:include schemaLocation="AIUpdatePipeline.xsd"/>
+ <xs:complexType name="RootAiProbeType"><xs:complexContent><xs:extension base="RootVisionProbeType"><xs:sequence>
+  <xs:element ref="AIUpdate" minOccurs="0" maxOccurs="2"/>
+ </xs:sequence></xs:extension></xs:complexContent></xs:complexType>
+ <xs:element name="RootAiProbe" type="RootAiProbeType"/>
+</xs:schema>

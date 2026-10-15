@@ -8,7 +8,7 @@ inheritance, definitions/expressions, art assets and familiar Studio diagnostics
 The existing limited local alpha is available now; that is not completion of the
 full target.
 
-For planning, the current subjective engineering estimate is **about 47% complete,
+For planning, the current subjective engineering estimate is **about 48% complete,
 with a reasonable 40–50% range**. This is not a measured asset-coverage percentage,
 test-pass ratio, time-spent ratio or release countdown. Many working components
 have diagnostic/bounded evidence without general production integration. The
@@ -20,17 +20,19 @@ updated against actual deliverables rather than conversation count:
 | Workstream | Weight | Estimated engineering maturity | Main remaining gate |
 | --- | ---: | ---: | --- |
 | Source graph, schemas, Includes, inheritance, definitions | 20% | ~65% | Connect broader supported source semantics to general playable output; full schema/default diagnostics |
-| EP1 identities, references, streams, build pipeline | 20% | ~70% | Remaining recursive GameObject tokenization, mixed-type streams, cache/reuse and broader dependency closure |
-| Gameplay types and modules | 25% | ~30% | General GameObjects/weapons, remaining models/modules and new consumer gameplay proof |
+| EP1 identities, references, streams, build pipeline | 20% | ~72% | Remaining recursive GameObject tokenization, mixed-type streams, cache/reuse and broader dependency closure |
+| Gameplay types and modules | 25% | ~33% | General GameObjects/weapons, remaining models/modules and new consumer gameplay proof |
 | Models, textures, audio/shaders, maps/WorldBuilder | 20% | ~20% | General TGA/DDS/W3X/custom-data production and map/editor integration |
 | Studio, setup, portability and packaging | 10% | ~65% | General build UI/options, relocation/dependency setup and clear capability errors |
 | Acceptance, gameplay matrix and distribution review | 5% | ~30% | Multi-new-object acceptance mod, clean-machine workflow and redistribution review |
 
-The weighted estimate is 46.5%, rounded to roughly 47%; the individual values are judgments,
+The weighted estimate is 47.65%, rounded to roughly 48%; the individual values are judgments,
 not six independently measured completion counters. Infrastructure maturity does
-**not** mean 47% of EA XML asset types are now build-enabled. The previous 45%
-planning estimate is revised after shared armor/body/SMC/weapon/movement/geometry
-native and generated-token composition, not because the test count increased.
+**not** mean 48% of EA XML asset types are now build-enabled. The previous 47%
+planning estimate is revised after the common AI native/chooser port, complete
+stock-matching generated metadata and shared AI/armor/body/behavior/movement/
+geometry/vision composition with a genuine new armor target, not because the
+test or field count increased. The earlier geometry checkpoint revised 45% to 47%.
 The limited alpha still has its existing admission boundaries. The historical 52%
 figures in archived notes used an older scope/calibration; they are superseded for
 this full-product estimate, not evidence that completed code was lost.
@@ -154,6 +156,12 @@ diagnostic and gameplay boundaries.
    selected stock prefixes with empty contact/vision lists. Shared inline AI
    metadata composition, broader list elements and cross-container identity
    remain next; native-only nonempty contacts do not imply token support.
+   The [shared inline AI composition](RA3EP1_GAMEOBJECT_AI_COMPOSITION.md) now
+   closes that selected AI/root metadata and identity gate, with one actual Core
+   occurrence table, 0/1/2 AI modules and stock/new-armor target modes. Both modes
+   cover 864 combinations; the partial root reaches 100 fields. The native-only
+   minimal-AI refusal becomes a positive projection control. Other AI/list/Draw/
+   client/root graphs and complete asset publication remain open.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

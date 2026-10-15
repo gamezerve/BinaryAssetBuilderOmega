@@ -8,6 +8,17 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [shared inline AI projection](docs/RA3EP1_GAMEOBJECT_AI_COMPOSITION.md) now
+joins common AI with armor, movement, Body, three behaviors, geometry and pointed
+root children on one Tracker/Core occurrence table. Its 864-case stock-target
+test reaches **100 partial root fields**, checks AI counts 0/1/2 and extends local
+identity scope across AI/Body/Behaviors. A new-armor variant exercises the same
+path. This is not complete GameObject stream publication or an alpha expansion.
+Final Focused regression: **55/55** in **423.644 seconds**, stock/authored AI
+groups 26.400/26.070 seconds, eight runtime hashes stable, no game/install changes.
+Full-product planning estimate: **about 48% (40–50% range)**; see the transparent
+[maturity breakdown](docs/RA3EP1_PROGRESS_SNAPSHOT.md), not an asset-coverage score.
+
 The [generated AI fragment follow-up](docs/RA3EP1_AI_UPDATE_TOKENS.md) matches two
 complete independent stock metadata prefixes, with 348/552-byte generated layouts
 for absent/present chooser graphs. Empty-contact variants cover all 680 selected

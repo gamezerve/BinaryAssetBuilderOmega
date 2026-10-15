@@ -38,6 +38,11 @@ internal static class Program
             // Reborn: independently stock-matching forty-byte vision joins selected root owners without enabling complete objects.
             // Reborn: common AI/chooser native source and real inline dispatch are distinct from generated AI metadata and general object publication.
             // Reborn: generated AI fragments require complete independent stock-prefix and native/metadata corruption gates.
+            // Reborn: inline AI joins the selected shared Core graph, optionally referencing a genuinely new compiled armor target.
+            if(args.Length==3 && args[0]=="gameobject-ai-composition-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();GameObjectAiCompositionSmokeTest.Run(args[1],args[2]);return 0;}
+            if(args.Length==4 && args[0]=="gameobject-authored-ai-composition-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();GameObjectAiCompositionSmokeTest.Run(args[2],args[3],args[1]);return 0;}
             if(args.Length==3 && args[0]=="ep1-ai-update-token-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1AIUpdateSmokeTest.Run(args[1],args[2],includeTokens:true);return 0;}
             if(args.Length==3 && args[0]=="ep1-ai-update-self-test")
@@ -1427,6 +1432,9 @@ internal static class Program
         Console.WriteLine("  ep1-ai-update-self-test <static.manifest> <global.manifest>");
         // Reborn: nonempty contact/vision list tokens and shared object publication are separate unfinished gates.
         Console.WriteLine("  ep1-ai-update-token-self-test <static.manifest> <global.manifest>");
+        // Reborn: selected combined AI graphs do not authorize general GameObject stream publication.
+        Console.WriteLine("  gameobject-ai-composition-self-test <static.manifest> <global.manifest>");
+        Console.WriteLine("  gameobject-authored-ai-composition-self-test <fresh-output> <static.manifest> <global.manifest>");
         Console.WriteLine("  gameobject-root-layout-self-test <static.manifest>");
         // Reborn: advertise named-reference diagnostic commands without implying a general GameObject compiler.
         Console.WriteLine("  gameobject-armor-source-probe <GameObject.xml> <static.manifest> [authored-armor.manifest]");

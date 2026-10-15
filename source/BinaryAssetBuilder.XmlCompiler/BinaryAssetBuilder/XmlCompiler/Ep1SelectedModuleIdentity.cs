@@ -8,7 +8,7 @@ using BinaryAssetBuilder.Core.Hashing;
 
 namespace BinaryAssetBuilder.XmlCompiler;
 
-// Reborn: the selected partial-object profile owns one local ModuleData identity scope across Behaviors and Body, not a general EA Poid resolver.
+// Reborn: the selected partial-object profile owns one local ModuleData scope across Behaviors, Body and common AI, not a general EA Poid resolver.
 public static class Ep1SelectedModuleIdentity
 {
     //-------------------------------------------------------------------------------------------------
@@ -23,11 +23,15 @@ public static class Ep1SelectedModuleIdentity
         if(behaviors.Length!=1 || bodies.Length!=1)throw new InvalidDataException("Selected module identity requires exactly one Behaviors and Body container.");
         var modules=behaviors[0].ChildNodes.OfType<XmlElement>().ToArray();var body=bodies[0].ChildNodes.OfType<XmlElement>().ToArray();
         if(modules.Length<1 || modules.Length>3 || body.Length!=1 || body[0].LocalName!="ActiveBody" || body[0].NamespaceURI!=ns || modules.Any(e=>e.NamespaceURI!=ns || e.LocalName is not ("BuildingDestructionBehavior" or "WeaponSetUpdate" or "ObjectSMCHelper")))throw new InvalidDataException("Unreviewed selected identity container/class.");
+        // Reborn: the selected common AI class shares the same local identity scope; Draw/client/other concrete AI families remain unadmitted.
+        var aiContainers=root.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="AI" && e.NamespaceURI==ns).ToArray();
+        if(aiContainers.Length>1)throw new InvalidDataException("Selected identity permits at most one AI container.");var ai=aiContainers.SelectMany(e=>e.ChildNodes.OfType<XmlElement>()).ToArray();
+        if(ai.Length>2 || ai.Any(e=>e.NamespaceURI!=ns || e.LocalName!="AIUpdate"))throw new InvalidDataException("Unreviewed selected AI identity class/count.");
         var ids=new HashSet<uint>();
-        foreach(var module in modules.Concat(body))
+        foreach(var module in modules.Concat(body).Concat(ai))
         {
             string id=module.GetAttribute("id");
-            if(string.IsNullOrWhiteSpace(id) || !ids.Add(FastHash.GetHashCode(id.ToLowerInvariant())))throw new InvalidDataException("Selected Body/behavior module IDs must be nonempty and hash-distinct in this object.");
+            if(string.IsNullOrWhiteSpace(id) || !ids.Add(FastHash.GetHashCode(id.ToLowerInvariant())))throw new InvalidDataException("Selected Body/behavior/AI module IDs must be nonempty and hash-distinct in this object.");
         }
         foreach(var module in modules.Where(e=>e.LocalName=="BuildingDestructionBehavior" && e.HasAttribute("AssociatedModule")))
         {
@@ -38,10 +42,10 @@ public static class Ep1SelectedModuleIdentity
     //-------------------------------------------------------------------------------------------------
     /** Reborn: raw native callers cannot bypass selected scope uniqueness or retain a dangling destruction-to-module hash after source checks. */
     //-------------------------------------------------------------------------------------------------
-    public static void ValidateNative(byte[] data,IReadOnlyList<int> modules,int body)
+    public static void ValidateNative(byte[] data,IReadOnlyList<int> modules,int body,IReadOnlyList<int> additionalModules=null)
     {
         var ids=new HashSet<uint>();
-        foreach(int start in modules.Concat(body==0?Array.Empty<int>():new[]{body}))if(!ids.Add(Word(start+4)))throw new InvalidDataException("Selected native Body/behavior module IDs collide.");
+        foreach(int start in modules.Concat(body==0?Array.Empty<int>():new[]{body}).Concat(additionalModules??Array.Empty<int>()))if(!ids.Add(Word(start+4)))throw new InvalidDataException("Selected native Body/behavior/AI module IDs collide.");
         for(int i=0;i<modules.Count;i++)
         {
             int start=modules[i],end=i+1<modules.Count?modules[i+1]:body==0?data.Length:body;

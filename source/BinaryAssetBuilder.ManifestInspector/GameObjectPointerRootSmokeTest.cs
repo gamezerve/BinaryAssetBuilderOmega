@@ -110,9 +110,9 @@ internal static class GameObjectPointerRootSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: added root fields shift old fragments but never change strong occurrence identities or permit their pointer records to masquerade as inline values. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Verify(Chunk output,Chunk native,InstanceDeclaration instance,ManifestAsset[] targets,int mask,int profile,int extraRoots=0,int extraMetadata=0)
+    internal static void Verify(Chunk output,Chunk native,InstanceDeclaration instance,ManifestAsset[] targets,int mask,int profile,int extraRoots=0,int extraMetadata=0,IReadOnlyList<int>? extraImportSlots=null)
     {
-        int count=Enumerable.Range(0,4).Count(i=>(mask&(1<<i))!=0),tableBytes=(mask&4)==0?0:60;GameObjectGeometryCompositionSmokeTest.Verify(output,native,instance,targets,2,true,count+extraRoots,tableBytes+extraMetadata);var b=output.InstanceBuffer;var roots=GameObjectStockReview.Tokens(b,0);int prefix=roots[FastHash.GetHashCode("BuildTime")].Offset-140,flammabilityTable=prefix-extraMetadata-60;
+        int count=Enumerable.Range(0,4).Count(i=>(mask&(1<<i))!=0),tableBytes=(mask&4)==0?0:60;GameObjectGeometryCompositionSmokeTest.Verify(output,native,instance,targets,2,true,count+extraRoots,tableBytes+extraMetadata,extraImportSlots);var b=output.InstanceBuffer;var roots=GameObjectStockReview.Tokens(b,0);int prefix=roots[FastHash.GetHashCode("BuildTime")].Offset-140,flammabilityTable=prefix-extraMetadata-60;
         foreach(var item in Fields().Select((f,i)=>(f,i)))
         {
             var f=item.f;int pointer=(int)Word(native.InstanceBuffer,f.Slot);if((mask&(1<<item.i))==0){if(pointer!=0 || roots.ContainsKey(FastHash.GetHashCode(f.Name)))throw new InvalidDataException("Absent pointed root retained data/metadata.");continue;}

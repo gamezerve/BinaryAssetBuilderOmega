@@ -117,6 +117,9 @@ if($SchedulerControl){
     Add-BatchCase 'ep1-ai-update' 'BoundedStockAiNativeAndCoreReferences' @('ep1-ai-update-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: bounded generated AI inheritance/chooser metadata must match complete independent stock prefixes before root composition.
     Add-BatchCase 'ep1-ai-update-tokens' 'BoundedStockAiTokenFragments' @('ep1-ai-update-token-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: inline AI/count/identity joins the complete selected graph with stock or genuine newly compiled armor targets.
+    Add-BatchCase 'gameobject-ai-composition' 'BoundedCoreAiCombatGeometryComposition' @('gameobject-ai-composition-self-test',$StaticManifest,$GlobalManifest)
+    Add-BatchCase 'gameobject-authored-ai-composition' 'BoundedAuthoredArmorAiConsumer' @('gameobject-authored-ai-composition-self-test',(Join-Path $OutputDirectory 'ai-consumer'),$StaticManifest,$GlobalManifest)
     # Reborn: actual Core destruction FX names/defaults and semantic imports must pass without captured source dependency indices.
     Add-BatchCase 'ep1-destruction-source' 'BoundedCoreNormalizedModuleNativePayload' @('ep1-destruction-source-self-test',$StaticManifest)
     # Reborn: nested effect/status graphs and Core-normalized strong imports share one new update-family gate.

@@ -35,7 +35,7 @@ internal static class Ep1AIUpdateTokenSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: literal stock field hashes, known metadata extents and independent base chains pin every prefix word before inverse native/auxiliary comparison. */
     //-------------------------------------------------------------------------------------------------
-    private static void Verify(Chunk output,Chunk native)
+    internal static void Verify(Chunk output,Chunk native)
     {
         int prefix=Prefix(native),chooser=(int)Word(native.InstanceBuffer,68);if(output.InstanceBuffer.Length!=prefix+native.InstanceBuffer.Length)throw new InvalidDataException("AI token output extent differs.");var expected=new byte[prefix];Row(0,2,0x08DBC00E,12);Row(12,1,0xF1002505,228);
         var fields=new[]{(0xD4EF4947u,0x1A2933AAu,8),(0x6CC5B6BFu,0x8B0FB9DAu,16),(0x77A11801u,0x645864F3u,20),(0x0766B407u,0x77E3F4F7u,72),(0x027B58C4u,0x998669E8u,24),(0xE5984206u,0x998669E8u,28),(0x9BE286ABu,0x998669E8u,32),(0x294ACDB5u,0x645864F3u,36),(0xAC461227u,0x6D66AE18u,-1),(0x1D330B2Au,0x77E3F4F7u,73),(0xB9DF8CE7u,0x998669E8u,48),(0x00537EBEu,0x763177A4u,52),(0x99FB0294u,0x645864F3u,56),(0x7392FB34u,0xAC6E35E0u,60),(0xF64C9F9Bu,0x845D12B2u,64),(0x243BEF01u,0x243BEF01u,-2)};
