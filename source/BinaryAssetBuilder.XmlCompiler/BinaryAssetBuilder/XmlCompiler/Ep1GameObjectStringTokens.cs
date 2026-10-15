@@ -42,7 +42,9 @@ public static class Ep1GameObjectStringTokens
                 if (b[(int)at] == 0 || b[(int)at] > 127) throw new InvalidDataException("Projection root strings currently require non-NUL ASCII content.");
             ranges.Add((pointer,end)); owners.Add((uint)(field.Offset + 4));
         }
-        if (!relos.Where(s => s < module).OrderBy(s => s).SequenceEqual(owners.OrderBy(s => s)) || imports.Any(s => s < module))
+        // Reborn: present root references require exactly one import slot each; zero is absence and no unreviewed root slot is admitted.
+        var rootImports = Ep1GameObjectStrongTokens.Fields.Where(f => Word(f.Offset) != 0).Select(f => (uint)f.Offset);
+        if (!relos.Where(s => s < module).OrderBy(s => s).SequenceEqual(owners.OrderBy(s => s)) || !imports.Where(s => s < module).OrderBy(s => s).SequenceEqual(rootImports.OrderBy(s => s)))
             throw new InvalidDataException("Unsupported root allocation/import ownership in string projection.");
         return new((int)list,(int)list + 8,module);
 

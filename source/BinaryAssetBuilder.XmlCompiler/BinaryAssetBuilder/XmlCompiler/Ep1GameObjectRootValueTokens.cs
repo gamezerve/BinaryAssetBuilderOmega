@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace BinaryAssetBuilder.XmlCompiler;
 
-// Reborn: explicit enum/flag/weak-ID root fields supplement scalars; strings and strong/indirect references are not implicitly admitted.
+// Reborn: explicit scalar/enum/flag/weak/string/strong-slot descriptors drive a partial projection, not implicit indirect-graph admission.
 public static class Ep1GameObjectRootValueTokens
 {
     // Reborn: independent stock contracts include two 40-byte inline KindOf masks, not native allocation pointers.
@@ -18,5 +18,5 @@ public static class Ep1GameObjectRootValueTokens
         new("WeaponCategory",360,0x27D46083u,4), new("HealthBar",384,0xE0A943E1u,4)
     });
     // Reborn: stable combined descriptors drive root table extent and metadata corruption coverage without changing the scalar test's literal policy.
-    public static IReadOnlyList<Ep1GameObjectScalarTokens.Field> AllFields { get; } = Array.AsReadOnly(Ep1GameObjectScalarTokens.Fields.Concat(ExtraFields).Concat(Ep1GameObjectStringTokens.Fields).ToArray());
+    public static IReadOnlyList<Ep1GameObjectScalarTokens.Field> AllFields { get; } = Array.AsReadOnly(Ep1GameObjectScalarTokens.Fields.Concat(ExtraFields).Concat(Ep1GameObjectStringTokens.Fields).Concat(Ep1GameObjectStrongTokens.Fields).ToArray());
 }

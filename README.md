@@ -8,6 +8,22 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+See the [large-family and smaller-subsystem capability inventory](docs/RA3EP1_CAPABILITY_MATRIX.md)
+for what is alpha-enabled, experimental or still open. No whole major family is
+yet unrestricted EA-SDK parity; overall planning maturity remains about 45%
+(40–50% range), not a percentage of build-enabled asset types.
+
+The [root strong-import slot follow-up](docs/RA3EP1_GAMEOBJECT_ROOT_STRONG_SLOTS.md)
+adds CrowdResponse/UnitTypeIcon/UnitIntro storage ownership and token descriptors,
+bringing the partial projection to **87 root fields including Behaviors**.
+Root imports are no longer incorrectly included in module-only IMP subtraction;
+shared dependency indices survive root/module composition and moved strings.
+Eight presence combinations and ten ownership refusals pass. These new tests use
+diagnostic normalized indices, not actual Core root-name resolution or target
+payload compilation. General GameObject and alpha publication remain closed.
+Final Focused regression: **30/30** in **83.388 seconds**, including 172 metadata
+corruption controls; eight runtime hashes remain stable.
+
 The [root-string/dynamic-allocation batch](docs/RA3EP1_GAMEOBJECT_ROOT_STRINGS.md)
 adds six string headers, bringing generated root metadata to **84 fields**.
 Behavior/module addresses are decoded instead of fixed at 600/608/612. Omitted,

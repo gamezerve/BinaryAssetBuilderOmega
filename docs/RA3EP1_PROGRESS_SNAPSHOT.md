@@ -34,6 +34,10 @@ this full-product estimate, not evidence that completed code was lost.
 
 ## Already established
 
+See the [capability inventory](RA3EP1_CAPABILITY_MATRIX.md) for separate large
+asset-family and smaller/shared-subsystem status tables, including alpha versus
+diagnostic and gameplay boundaries.
+
 - Local EA-style Studio alpha with build logs, unsupported-input warnings/errors,
   corrected failed-build handling and reproducible bounded packaging.
 - Positive user-observed armor overrides, GUN/CANNON separation and fixed AK-47
@@ -84,6 +88,11 @@ this full-product estimate, not evidence that completed code was lost.
    The [root-string/ownership batch](RA3EP1_GAMEOBJECT_ROOT_STRINGS.md) adds six
    ASCII string headers and dynamic behavior/module allocation decoding (84 root
    fields); full encoding, strong root references and indirect writers remain open.
+   The [strong root slot follow-up](RA3EP1_GAMEOBJECT_ROOT_STRONG_SLOTS.md) now adds
+   three stock-audited root import descriptors (87 fields including Behaviors),
+   exact root/module slot ownership and unchanged diagnostic reference indices.
+   Actual Core shared root/module name resolution and target payload closure
+   remain open; the alpha is unchanged.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

@@ -28,6 +28,8 @@ internal static class Ep1AlliedModuleSmokeTest
         GameObjectRootValueSmokeTest.Run(schemas, manifest);
         // Reborn: explicit root strings move allocation ownership and must survive the same generated projection path.
         GameObjectRootStringSmokeTest.Run(schemas,manifest);
+        // Reborn: reviewed strong root slots must coexist with module imports without index renumbering or ownership underflow.
+        GameObjectRootStrongSmokeTest.Run(schemas,manifest);
         var stock = GameObjectStockReview.Capture(manifest, "GameObject:AlliedConstructionYard");
         var graph = GameObjectModuleReview.Inspect(manifest, "GameObject:AlliedConstructionYard");
         var cases = new[] {

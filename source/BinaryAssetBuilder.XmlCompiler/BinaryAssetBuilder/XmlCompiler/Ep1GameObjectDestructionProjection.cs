@@ -7,7 +7,7 @@ using Chunk = Relo.Chunk;
 
 namespace BinaryAssetBuilder.XmlCompiler;
 
-// Reborn: root-value/ASCII-string/container projection only; strong references and other indirect fields still prevent complete GameObject publication.
+// Reborn: root-value/string/import/container projection only; dependency closure and other indirect fields still prevent complete GameObject publication.
 public static class Ep1GameObjectDestructionProjection
 {
     //-------------------------------------------------------------------------------------------------
@@ -29,7 +29,8 @@ public static class Ep1GameObjectDestructionProjection
             Put(module.InstanceBuffer, checked((int)slot - moduleStart), Word(b, (int)slot) - (uint)moduleStart);
         }
         module.RelocationBuffer = Pack(relos.Where(s => s >= moduleStart).Select(s => s - (uint)moduleStart));
-        module.ImportsBuffer = Pack(imports.Select(s => s - (uint)moduleStart));
+        // Reborn: split slot ownership without subtracting the module start from root slots or renumbering shared dependency indices.
+        module.ImportsBuffer = Pack(imports.Where(s => s >= moduleStart).Select(s => s - (uint)moduleStart));
         var fragment = Ep1DestructionTokenizer.Tokenize(module);
         // Reborn: root token count is descriptor-driven; nested fragment coordinates must never retain the old two-field prefix size.
         int container = checked((Ep1GameObjectRootValueTokens.AllFields.Count + 2) * 12), fragmentStart = container + 24;
