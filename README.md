@@ -8,6 +8,8 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The selected stock destruction Item now has explicit token/native checks for BonePrefix, FX, CreationObject and FlingVelocity, including their schema type IDs and native offsets. A detached-copy corruption test confirms that a shifted BonePrefix token target is rejected. The manual Focused regression passed 30/30 groups. This strengthens selected nested-token validation; it does not enable general GameObject tokenized publication or expand alpha capabilities.
+
 The [destruction source walkthrough](docs/RA3EP1_DESTRUCTION_SOURCE_WALKTHROUGH.md)
 now demonstrates actual Core normalization of named FXList references and official
 defaults, with a complete selected stock native graph/dispatch/import-identity

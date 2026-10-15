@@ -50,6 +50,35 @@ internal static class Ep1AlliedModuleSmokeTest
             var broken = stock.Bytes.ToArray(); int table = (int)Word(broken, module.Wrapper + 8);
             BinaryPrimitives.WriteUInt32LittleEndian(broken.AsSpan(table + 20, 4), (uint)(module.Native + 4));
             Refuse(() => Compare(broken, module, output, c.Item4));
+
+            // Reborn: corrupt only a detached stock copy's BonePrefix token target; the native item remains unchanged and comparison must refuse it.
+            if (c.Item1 == "BuildingDestructionModuleData")
+            {
+                var itemBroken = stock.Bytes.ToArray();
+
+                var ownFields = GameObjectStockReview.Tokens(
+                    itemBroken, (int)Word(itemBroken, module.Wrapper + 8));
+
+                int itemTable = ownFields[FastHash.GetHashCode("Item")].Offset;
+                int fieldTable = (int)Word(itemBroken, itemTable + 20);
+
+                if (Word(itemBroken, fieldTable) != FastHash.GetHashCode("BonePrefix"))
+                {
+                    throw new InvalidDataException(
+                        "Destruction corruption fixture expected BonePrefix first.");
+                }
+
+                uint originalTarget = Word(itemBroken, fieldTable + 8);
+
+                BinaryPrimitives.WriteUInt32LittleEndian(
+                    itemBroken.AsSpan(fieldTable + 8, 4),
+                    originalTarget + 4);
+
+                Refuse(() => Compare(itemBroken, module, output, c.Item4));
+
+                Console.WriteLine("Destruction Item token corruption: rejected.");
+            }
+
             Console.WriteLine($"Allied native {c.Item2}: BIN/RELO/IMP={output.Chunk.InstanceBuffer.Length}/{output.Chunk.RelocationBuffer.Length}/{output.Chunk.ImportsBuffer.Length}");
         }
         var own = Compile("<TechUpgrade id='Custom' Radius='20' RadiusY='0' DistanceType='CIRCULAR' FXLineBoneName='new bone'/>", "TechUpgradeModuleData");
@@ -106,7 +135,39 @@ internal static class Ep1AlliedModuleSmokeTest
         if (module.Type == "LUAEventListBehaviorModuleData") String(8);
         else if (module.Type == "BuildingDestructionModuleData")
         {
+
+            // Reborn: locate stock and compiled destruction items before validating their token/native bindings.
             int a = List(64, 20, "Item"), c = (int)Word(b, n + 68);
+
+            // Reborn: require the stock Item marker and all four named field tokens to bind their verified native offsets and schema types.
+            int itemTokenTable = fields[FastHash.GetHashCode("Item")].Offset;
+
+            if (Word(stock, itemTokenTable + 12) != 0xB151A0EBu ||
+                Word(stock, itemTokenTable + 16) != 0)
+            {
+                throw new InvalidDataException("Destruction Item token marker differs.");
+            }
+
+            int itemFieldTable = (int)Word(stock, itemTokenTable + 20);
+            var itemFields = GameObjectStockReview.Tokens(stock, itemFieldTable);
+
+            foreach (var field in new (string Name, int Offset, uint Type)[]
+            {
+                ("BonePrefix", 0, 0x1A2933AAu),
+                ("FX", 8, 0x0D1C8E83u),
+                ("CreationObject", 12, 0x148ED75Du),
+                ("FlingVelocity", 16, 0x645864F3u)
+            })
+            {
+                if (!itemFields.TryGetValue(FastHash.GetHashCode(field.Name), out var token) ||
+                    token.Type != field.Type ||
+                    token.Offset != a + field.Offset)
+                {
+                    throw new InvalidDataException(
+                        $"Destruction Item token/native anchor differs: {field.Name}.");
+                }
+            }
+
             var l = stock.AsSpan(a, 20).ToArray(); var r = b.AsSpan(c, 20).ToArray();
             if (Text(stock, a) != Text(b, c)) throw new InvalidDataException("Destruction bone string differs.");
             l.AsSpan(4, 4).Clear(); r.AsSpan(4, 4).Clear(); relocs.Add((uint)(c + 4));
