@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: focused Core/native reference harness; included declarations are official, target stubs only establish diagnostic reference inheritance. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset" xmlns:xas="uri:ea.com:eala:asset:schema" targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Base.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Base/AssetBase.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Ref.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/ObjectStatus.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Death.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/DieMux.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Modules/Die.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Modules/BuildingDestructionBehavior.xsd"/>
+ <!-- Reborn: these two exact base declarations are drift-checked against official BaseModules before use. -->
+ <xs:complexType name="ModuleData" xas:isPolymorphic="true"><xs:attribute name="id" type="Poid" xas:refType="ModuleData"/></xs:complexType>
+ <xs:complexType name="BehaviorModuleData"><xs:complexContent><xs:extension base="ModuleData"><xs:sequence/></xs:extension></xs:complexContent></xs:complexType>
+ <!-- Reborn: no layout or processor capability is granted to these inheritance-only target stubs. -->
+ <xs:complexType name="FXList"><xs:complexContent><xs:extension base="BaseInheritableAsset"/></xs:complexContent></xs:complexType>
+ <xs:complexType name="GameObject"><xs:complexContent><xs:extension base="BaseInheritableAsset"/></xs:complexContent></xs:complexType>
+ <xs:complexType name="SubObject"/>
+ <xs:element name="BuildingDestructionBehavior" type="BuildingDestructionModuleData"/>
+</xs:schema>

@@ -19,6 +19,9 @@ internal static class Program
             // Reborn: direct concrete graph diagnostics keep captured-reference and dispatch/publication boundaries explicit.
             // Reborn: named source/default/reference normalization remains separate from captured native diagnostics and publication.
             // Reborn: three additional native families remain bounded diagnostics, not general GameObject publication.
+            // Reborn: actual Core FX name resolution is a separate gate from captured destruction indices.
+            if (args.Length == 2 && args[0] == "ep1-destruction-source-self-test")
+            { CompilerSmokeTest.InitializeHashProvider(); Ep1DestructionSourceSmokeTest.Run(args[1]); return 0; }
             if (args.Length == 2 && args[0] == "ep1-allied-modules-self-test")
             { CompilerSmokeTest.InitializeHashProvider(); Ep1AlliedModuleSmokeTest.Run(args[1]); return 0; }
             if (args.Length == 3 && args[0] == "ep1-toggle-source-self-test")
@@ -1304,6 +1307,8 @@ internal static class Program
         // Reborn: the source gate requires explicit independently validated static/global lookup catalogs.
         // Reborn: compare the Allied family batch without invoking the game or opening general asset publication.
         Console.WriteLine("  ep1-allied-modules-self-test <static.manifest>");
+        // Reborn: explicit source normalization does not open general GameObject publication.
+        Console.WriteLine("  ep1-destruction-source-self-test <static.manifest>");
         Console.WriteLine("  ep1-toggle-source-self-test <static.manifest> <global.manifest>");
         Console.WriteLine("  ep1-toggle-module-self-test <static.manifest>");
         Console.WriteLine("  ep1-toggle-ai-self-test <static.manifest>");

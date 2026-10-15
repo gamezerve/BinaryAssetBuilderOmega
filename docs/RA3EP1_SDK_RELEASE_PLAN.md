@@ -2,6 +2,12 @@
 
 ## Final product contract
 
+The [destruction source checkpoint/walkthrough](RA3EP1_DESTRUCTION_SOURCE_WALKTHROUGH.md)
+now resolves named FX through actual Core and an independent stock catalog, then
+compares the complete selected native graph and semantic import target. Repeated
+source references and failure controls are checked. This narrows one prior
+captured-index limit; general source closure/tokenization/publication remains open.
+
 The latest [Allied native batch](RA3EP1_ALLIED_MODULES_NATIVE.md) ports the final
 three missing native model families in the original two-object inventory.
 Selected native/dispatch evidence advances internal GameObject dependencies;
@@ -11,7 +17,7 @@ This is not complete gameplay-type coverage or a new general SDK release.
 Current full-target planning calibration: **about 45%, with a 40–50% range**.
 This subjective weighted maturity estimate supersedes archived percentage figures
 for the full-product scope; it is not a coverage ratio or deadline. See the
-[October 13 snapshot](RA3EP1_PROGRESS_SNAPSHOT.md) for remaining gates and weights.
+[current progress snapshot](RA3EP1_PROGRESS_SNAPSHOT.md) for remaining gates and weights.
 
 The user's target is an RA3-Mod-SDK-style Uprising SDK, not a collection of
 fixed override recipes. The intended authoring surface includes arbitrary

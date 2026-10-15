@@ -1,4 +1,4 @@
-# Uprising SDK progress snapshot — October 13, 2026
+# Uprising SDK progress snapshot — October 15, 2026
 
 ## Scope and approximate completion
 
@@ -48,6 +48,9 @@ this full-product estimate, not evidence that completed code was lost.
 - Destruction, TechUpgrade and LUAEventList native models/dispatch reproduce four
   selected stock graphs; no missing native model names remain in the original
   two-object inventory. This is not a complete compatibility or publication gate.
+- Destruction named FX/defaults now pass actual Core normalization and complete
+  selected native/import-identity comparison; repeated authored reference
+  occurrences and missing/wrong/ambiguous dependency controls pass independently.
 
 ## Remaining work, in practical order
 
@@ -60,8 +63,9 @@ this full-product estimate, not evidence that completed code was lost.
    models/processors and verify recursive field/token/relocation/import contracts.
    BuildingDestruction, TechUpgrade and LUAEventListBehavior now have selected
    native evidence (see [the module batch](RA3EP1_ALLIED_MODULES_NATIVE.md));
-   normal FX source normalization, inherited/nested tokenization and general
-   source closure still need integration. No missing native model names in the
+   selected destruction FX source normalization now has a focused Core gate,
+   but inherited/nested tokenization and general source closure still need
+   integration. No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a
    newly built armor/weapon in a mixed Core stream; validate default-reader package

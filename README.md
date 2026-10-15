@@ -6,7 +6,19 @@ asset IDs, instance includes, inheritance, `$` definitions/expressions,
 TGA/DDS textures and W3X models. Current fixed-identity alpha restrictions are
 temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
-## Current outcome — October 13, 2026
+## Current outcome — October 15, 2026
+
+The [destruction source walkthrough](docs/RA3EP1_DESTRUCTION_SOURCE_WALKTHROUGH.md)
+now demonstrates actual Core normalization of named FXList references and official
+defaults, with a complete selected stock native graph/dispatch/import-identity
+comparison. Three authored items check ordered occurrence imports and repeated
+targets; missing/wrong/ambiguous dependencies and authored numeric indices fail.
+This replaces captured FX input indices **for this selected source gate**, not
+general GameObject source closure, FX payload compilation or tokenized publication.
+Alpha h is unchanged. The walkthrough includes the exact files, commands and
+comparison criteria needed to reproduce this engineering step.
+Final Focused regression: **30/30** groups in **90.503 seconds**; the new source
+gate took **3.967 seconds**, with eight runtime hashes unchanged during workers.
 
 The [Allied module batch](docs/RA3EP1_ALLIED_MODULES_NATIVE.md) adds destruction,
 tech-upgrade and LUA-event-list native models/marshalers and real behavior dispatch.

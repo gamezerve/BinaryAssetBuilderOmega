@@ -76,6 +76,8 @@ if($SchedulerControl){
     Add-BatchCase 'ep1-basic-modules' 'BoundedModuleNativePayload' @('ep1-basic-module-self-test',$StaticManifest)
     # Reborn: destruction/tech/LUA native dispatch and complete selected graphs share one gate; captured FX and callback limits remain explicit.
     Add-BatchCase 'ep1-allied-modules' 'BoundedCapturedIndexModuleNativePayload' @('ep1-allied-modules-self-test',$StaticManifest)
+    # Reborn: actual Core destruction FX names/defaults and semantic imports must pass without captured source dependency indices.
+    Add-BatchCase 'ep1-destruction-source' 'BoundedCoreNormalizedModuleNativePayload' @('ep1-destruction-source-self-test',$StaticManifest)
     # Reborn: nested effect/status graphs and Core-normalized strong imports share one new update-family gate.
     Add-BatchCase 'ep1-damage-motion' 'BoundedNestedModuleNativePayload' @('ep1-damage-motion-self-test',$StaticManifest)
     # Reborn: stock toggle/base/nested anchors and detached corruptions are a layout gate, not a new compiler capability.

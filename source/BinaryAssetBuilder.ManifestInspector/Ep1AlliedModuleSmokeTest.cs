@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using BinaryAssetBuilder.Core.Hashing;
+using BinaryAssetBuilder.Core;
 using Relo;
 using SageBinaryData;
 
@@ -78,7 +79,7 @@ internal static class Ep1AlliedModuleSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: native class selection is injected internally after schema validation, then passed through actual polymorphic GameObject behavior dispatch. */
     //-------------------------------------------------------------------------------------------------
-    private static unsafe Output Compile(string source, string type)
+    internal static unsafe Output Compile(string source, string type)
     {
         var d = new XmlDocument { XmlResolver = null }; d.LoadXml("<GameObject xmlns='uri:ea.com:eala:asset'><Behaviors>" + source + "</Behaviors></GameObject>");
         ((XmlElement)d.DocumentElement!.FirstChild!.FirstChild!).SetAttribute("TypeId", FastHash.GetHashCode(type).ToString(System.Globalization.CultureInfo.InvariantCulture));
@@ -93,7 +94,7 @@ internal static class Ep1AlliedModuleSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compare full selected native roots/child graphs after joining own-field tokens and rebasing only admitted string/list pointers. */
     //-------------------------------------------------------------------------------------------------
-    private static void Compare(byte[] stock, GameObjectModuleReview.Module module, Output o, int size)
+    internal static void Compare(byte[] stock, GameObjectModuleReview.Module module, Output o, int size, AssetId[]? references = null, InstanceDeclaration? instance = null)
     {
         var b = o.Chunk.InstanceBuffer; int n = o.Native;
         var fields = GameObjectStockReview.Tokens(stock, (int)Word(stock, module.Wrapper + 8));
@@ -109,6 +110,17 @@ internal static class Ep1AlliedModuleSmokeTest
             var l = stock.AsSpan(a, 20).ToArray(); var r = b.AsSpan(c, 20).ToArray();
             if (Text(stock, a) != Text(b, c)) throw new InvalidDataException("Destruction bone string differs.");
             l.AsSpan(4, 4).Clear(); r.AsSpan(4, 4).Clear(); relocs.Add((uint)(c + 4));
+            // Reborn: source-normalized dependency indices may differ; rebase only after the actual type/instance identity agrees with stock.
+            if (instance != null)
+            {
+                uint x = Word(stock, a + 8), y = Word(b, c + 8);
+                if (references == null || x == 0 || x > references.Length || y == 0 || y > instance.ReferencedInstances.Count)
+                    throw new InvalidDataException("Destruction source import index bounds differ.");
+                var expected = references[(int)x - 1]; var actual = instance.ReferencedInstances[(int)y - 1];
+                if (expected.TypeId != actual.TypeId || expected.InstanceId != actual.InstanceId)
+                    throw new InvalidDataException("Destruction source import identity differs.");
+                l.AsSpan(8, 4).Clear(); r.AsSpan(8, 4).Clear();
+            }
             if (!l.SequenceEqual(r)) throw new InvalidDataException("Destruction complete item differs."); imports.Add((uint)(c + 8));
         }
         else
