@@ -14,6 +14,8 @@ internal static class DestructionTokenWriterSmokeTest
     internal static void Stock(Ep1AlliedModuleSmokeTest.Output source, byte[] stock, GameObjectModuleReview.Module module)
     {
         var native = Extract(source); var result = Check(native); int prefix = (int)Word(result.InstanceBuffer, 152);
+        // Reborn: the reviewed fragment is also composed into the explicit partial root/container coordinate projection.
+        GameObjectDestructionProjectionSmokeTest.Stock(source, stock, module);
         if (prefix != 384) throw new InvalidDataException("Selected destruction token prefix size differs.");
         var expected = stock.AsSpan(module.Wrapper, prefix).ToArray();
         for (int at = 8; at < prefix; at += 12)
@@ -36,7 +38,12 @@ internal static class DestructionTokenWriterSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: authored variable item counts, strings and named-reference occurrence indices use the same writer and independent field/slot round trip. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Authored(Ep1AlliedModuleSmokeTest.Output source) => Check(Extract(source));
+    internal static void Authored(Ep1AlliedModuleSmokeTest.Output source)
+    {
+        Check(Extract(source));
+        // Reborn: authored count/reference variants must survive root/container composition as well as isolated fragment emission.
+        GameObjectDestructionProjectionSmokeTest.Authored(source);
+    }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate generated list/field metadata and remove exactly its prefix/pointer shift to recover the untouched native graph and auxiliary slots. */
     //-------------------------------------------------------------------------------------------------

@@ -1,5 +1,9 @@
 # Destruction module-fragment token writer
 
+Follow-up: the [root/container projection](RA3EP1_GAMEOBJECT_DESTRUCTION_PROJECTION.md)
+now composes this fragment with two explicit root tokens and shared native/auxiliary
+coordinates. That projection is not complete GameObject coverage or publication.
+
 ## Implementation advance
 
 `Ep1DestructionTokenizer.Tokenize` now **generates** a token prefix from reviewed

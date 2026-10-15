@@ -71,6 +71,9 @@ this full-product estimate, not evidence that completed code was lost.
    A separate [module-fragment writer](RA3EP1_DESTRUCTION_TOKEN_WRITER.md) now
    generates this reviewed graph from native output; general root/container
    composition, other module writers and shared stream ownership remain open.
+   A [two-field root/container projection](RA3EP1_GAMEOBJECT_DESTRUCTION_PROJECTION.md)
+   now composes the destruction fragment and native/auxiliary coordinates; it is
+   deliberately not complete root token coverage or a publishable asset.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

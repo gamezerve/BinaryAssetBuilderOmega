@@ -8,6 +8,14 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [GameObject destruction projection](docs/RA3EP1_GAMEOBJECT_DESTRUCTION_PROJECTION.md)
+now joins BuildTime/Behaviors root tokens, the behavior container and generated
+module/Item tokens in one address space. Native graph/import indices survive
+global pointer and auxiliary-slot rebasing. **Only two root fields are emitted**;
+this is not a complete or publishable GameObject asset and does not expand alpha.
+Final Focused regression: **30/30** in **81.998 seconds**, including composed
+stock/native joins, authored 1/2/3/256-item cases and nine projection refusals.
+
 The [destruction token writer](docs/RA3EP1_DESTRUCTION_TOKEN_WRITER.md) now generates
 the module fragment's inheritance/inline/list token graph from native compiler
 data, without copying stock prefixes. Selected output is independently compared
