@@ -99,6 +99,8 @@ if($SchedulerControl){
     Add-BatchCase 'gameobject-movement-composition' 'BoundedCoreMovementCombatProjection' @('gameobject-movement-composition-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: selected module-local hashes span Body/Behaviors but are not global asset imports or arbitrary XML id declarations.
     Add-BatchCase 'selected-module-identity' 'BoundedSelectedModuleIdentityScope' @('selected-module-identity-self-test')
+    # Reborn: independently stock-corroborated placement/contact/RING geometry uses a separate EP1 native model.
+    Add-BatchCase 'ep1-geometry-native' 'BoundedStockGeometryNativeGraph' @('ep1-geometry-native-self-test',$StaticManifest)
     # Reborn: actual Core destruction FX names/defaults and semantic imports must pass without captured source dependency indices.
     Add-BatchCase 'ep1-destruction-source' 'BoundedCoreNormalizedModuleNativePayload' @('ep1-destruction-source-self-test',$StaticManifest)
     # Reborn: nested effect/status graphs and Core-normalized strong imports share one new update-family gate.

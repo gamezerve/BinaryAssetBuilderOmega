@@ -8,6 +8,15 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [EP1 geometry native port](docs/RA3EP1_GEOMETRY_NATIVE.md) corrects the missing
+PlacementShape pointer: a 28-byte header replaces the legacy root geometry layout,
+with a separate RING-aware Shape model. Five selected stock graphs match complete
+native records/payloads; 24 authored cases cover placement, rotation, strings,
+contacts, enums and defaults through standalone and real root dispatch. Geometry
+metadata/composition/publication remains a separate gate; the alpha is unchanged.
+Final Focused regression: **44/44** in **117.804 seconds**; geometry group 3.389
+seconds, eight runtime hashes stable and no game/installation changes.
+
 The [selected module identity gate](docs/RA3EP1_SELECTED_MODULE_IDENTITY.md) now
 checks Body/behavior hash uniqueness and destruction AssociatedModule closure
 before allocation and independently in native projection. Its 25 valid cases

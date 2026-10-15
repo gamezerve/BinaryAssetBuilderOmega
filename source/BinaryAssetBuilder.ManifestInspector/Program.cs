@@ -30,6 +30,9 @@ internal static class Program
             // Reborn: the required SMC helper has its own stock/token gate and optional three-module integration cases.
             // Reborn: movement joins the selected graph only after independent root condition/stock/reference ownership checks.
             // Reborn: selected local ModuleData scope is separate from named asset reference closure.
+            // Reborn: separate geometry ABI/default/native stock proof does not admit recursive object metadata/publication.
+            if(args.Length==2 && args[0]=="ep1-geometry-native-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1GeometryNativeSmokeTest.Run(args[1]);return 0;}
             if(args.Length==1 && args[0]=="selected-module-identity-self-test")
             {CompilerSmokeTest.InitializeHashProvider();SelectedModuleIdentitySmokeTest.Run();return 0;}
             if(args.Length==3 && args[0]=="gameobject-movement-composition-self-test")
@@ -1364,6 +1367,8 @@ internal static class Program
         Console.WriteLine("  gameobject-movement-composition-self-test <static.manifest> <global.manifest>");
         // Reborn: check selected source/native local module identities without launching a game.
         Console.WriteLine("  selected-module-identity-self-test");
+        // Reborn: stock/authoring geometry remains an offline native gate.
+        Console.WriteLine("  ep1-geometry-native-self-test <static.manifest>");
         Console.WriteLine("  gameobject-authored-smc-combat-self-test <fresh-output> <static.manifest> <global.manifest>");
         Console.WriteLine("  ep1-allied-modules-self-test <static.manifest>");
         // Reborn: explicit source normalization does not open general GameObject publication.

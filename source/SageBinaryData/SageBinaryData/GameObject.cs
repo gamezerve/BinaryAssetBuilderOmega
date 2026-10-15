@@ -318,7 +318,8 @@ namespace SageBinaryData
         public unsafe BodyModuleData* Body;
         public unsafe PolymorphicList<ClientUpdateModuleData>* ClientUpdates;
         public unsafe PolymorphicList<ClientBehaviorModuleData>* ClientBehaviors;
-        public unsafe Geometry* Geometry;
+        // Reborn: EP1 geometry has a placement-shape pointer missing from the legacy KW header.
+        public unsafe Ep1Geometry* Geometry;
         public unsafe ReplaceModule* ReplaceModule;
         public unsafe InheritableModule* InheritableModule;
         public unsafe AutoResolveArmor* AutoResolveArmor;

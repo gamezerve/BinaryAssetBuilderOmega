@@ -122,6 +122,9 @@ diagnostic and gameplay boundaries.
    The [selected module identity gate](RA3EP1_SELECTED_MODULE_IDENTITY.md) now
    rejects Body/behavior hash collisions and dangling AssociatedModule links at
    source and native boundaries; it is not the general cross-container resolver.
+   The [geometry native port](RA3EP1_GEOMETRY_NATIVE.md) corrects the EP1
+   PlacementShape/header difference and adds stock-proven placement/contact/RING
+   graphs. Geometry token writing/composition and complete publication remain open.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a
