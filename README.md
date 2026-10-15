@@ -8,6 +8,15 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [shared geometry/movement/combat projection](docs/RA3EP1_GAMEOBJECT_GEOMETRY_COMPOSITION.md)
+now combines all selected owners on one real Tracker/Core occurrence table,
+including a genuinely new compiled armor target. Stock/authored modes each cover
+73 source combinations, optional geometry/movement, all six behavior orders,
+strings, ranges, weapons and placement/contact graphs. The partial root reaches
+91 reviewed fields; complete GameObject publication and alpha expansion remain open.
+Final Focused regression: **47/47** in **125.413 seconds**, stock/authored geometry
+groups 4.158/4.487 seconds, eight runtime hashes stable, no game/install changes.
+
 The [generated geometry fragment](docs/RA3EP1_GEOMETRY_TOKENS.md) now matches every
 metadata prefix byte in five independent stock examples. Native ownership,
 placement/shapes/contacts, direct vector targets and pointer rebasing are explicit;
@@ -117,7 +126,7 @@ Final Focused regression: **31/31** in **84.376 seconds**; new named-root group
 
 See the [large-family and smaller-subsystem capability inventory](docs/RA3EP1_CAPABILITY_MATRIX.md)
 for what is alpha-enabled, experimental or still open. No whole major family is
-yet unrestricted EA-SDK parity; overall planning maturity remains about 45%
+yet unrestricted EA-SDK parity; overall planning maturity is now about 47%
 (40–50% range), not a percentage of build-enabled asset types.
 
 The [root strong-import slot follow-up](docs/RA3EP1_GAMEOBJECT_ROOT_STRONG_SLOTS.md)
@@ -234,7 +243,7 @@ document build or publication; polymorphic dispatch and alpha h remain unchanged
 Final focused regression: **28/28** groups in **113.314 seconds**; new source
 checks took **17.441 seconds**, with eight runtime hashes unchanged during workers.
 
-Full-target planning estimate: **about 45% (40–50% range)**, not a test-pass or
+Full-target planning estimate: **about 47% (40–50% range)**, not a test-pass or
 asset-coverage ratio. The limited local alpha already exists. See the
 [remaining-work snapshot and weighting](docs/RA3EP1_PROGRESS_SNAPSHOT.md).
 

@@ -25,7 +25,7 @@ Status terms:
 | GameObject (units/buildings/props) | 600-byte root layout; selected stock inventories and module topology; reviewed scalar/enum/flag/weak/string/root-import token projection. Selected native module ports and generated destruction fragment. Root LocomotorSet now shares the armor/body/three-behavior graph with stock-corroborated enum/list metadata and actual Core names (90 partial root fields when present). | Remaining root/child graphs, recursive token writers, shared named dependency closure, general processor, complete mixed stream and new-unit gameplay acceptance. | **Experimental**; no general GameObject in alpha. |
 | Behavior / AIUpdate / ClientUpdate / other GameObject modules | Selected basic helper/sell/group-audio, tracker/freefall, toggle AI/weapon/state, destruction, TechUpgrade and LUAEventList native evidence. SMC now also has a stock-matching generated inheritance writer and shares the selected three-behavior graph in all six orders. | Remaining legacy module review, other containers, generic source preparation and full recursive publication. Native LUAEventList storage is not execution proof. | **Experimental**, selected families only. |
 | Body / ActiveBody | Separate EP1 76-byte model/token writer; two complete stock bodies; explicit EP1 allocation and root/body/destruction composition with shared Core imports and bounded range children. Legacy KW dispatch unchanged. | Other body classes/string graphs, general source/processor integration and complete GameObject publication. | **Experimental**, selected combined projection; not alpha-enabled. |
-| Geometry / collision / placement | Separate EP1 28-byte Geometry and RING-aware 48-byte Shape; placement/contact/offset/string graphs match five selected stock examples. A generated writer now matches every selected stock metadata prefix byte; source/default/native/root-dispatch and corruption gates pass. | Full root/behavior/body composition, broader admission and gameplay. | **Experimental native/token fragment**, not alpha-enabled. |
+| Geometry / collision / placement | Separate EP1 28-byte Geometry and RING-aware 48-byte Shape; five complete selected stock metadata/native graphs. Geometry now joins root/armor/movement/body/three behaviors on one Tracker/Core table, including a genuine new armor target and optional-geometry cases. | Remaining root/other containers, full object publication, broader admission and gameplay. | **Experimental combined native/token graph**, not alpha-enabled. |
 | AttributeModifier | Selected native/stock comparison, isolated plugin/Core profile and checked import experiments. | General FX/shader dependencies, unrestricted source semantics, production integration and gameplay. | **Experimental**. |
 | ObjectFilterAsset | Selected filter subset, native/Core profile, reviewed weak IDs and source-merge cases. | Full rules/include/exclude combinations, general source graph and production integration. | **Experimental**. |
 | FXList | Empty/sound-nugget subset, checked Core profile, audio target resolution and bounded diagnostic streams. | Particle/light/decal/model and other nuggets; full dependency closure and gameplay. | **Experimental**, not general visual FX. |
@@ -74,7 +74,7 @@ token/native graph, referencing newly compiled armor/weapon/assets in one valid
 stream, then exposed in Studio and accepted in gameplay. Texture/model/audio/map
 work must subsequently open their own production and runtime gates.
 
-The full-product planning estimate remains **about 45%, with a 40–50% range**.
+The full-product planning estimate is now **about 47%, with a 40–50% range**.
 It is subjective weighted engineering maturity, not a count of build-enabled
 types. See [progress snapshot](RA3EP1_PROGRESS_SNAPSHOT.md) for the weighting.
 Do not raise it merely because another selected field test passes.
@@ -97,6 +97,7 @@ Do not raise it merely because another selected field test passes.
 - [Selected Body/behavior module-local identity scope](RA3EP1_SELECTED_MODULE_IDENTITY.md)
 - [EP1 geometry native port](RA3EP1_GEOMETRY_NATIVE.md)
 - [Generated EP1 geometry metadata](RA3EP1_GEOMETRY_TOKENS.md)
+- [Shared geometry/movement/combat object composition](RA3EP1_GAMEOBJECT_GEOMETRY_COMPOSITION.md)
 - [AttributeModifier](RA3EP1_ATTRIBUTE_MODIFIER_PROFILE.md),
   [ObjectFilter](RA3EP1_OBJECT_FILTER_PROFILE.md),
   [FX](RA3EP1_FX_PROFILE.md), [ShaderOverride](RA3EP1_SHADER_OVERRIDE_PROFILE.md)

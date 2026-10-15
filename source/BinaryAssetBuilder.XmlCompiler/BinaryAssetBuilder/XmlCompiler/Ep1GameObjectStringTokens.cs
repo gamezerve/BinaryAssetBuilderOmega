@@ -16,7 +16,7 @@ public static class Ep1GameObjectStringTokens
         new("EditorName",124,0x1A2933AAu,8), new("ExperienceScalarTable",284,0x1A2933AAu,8)
     });
     // Reborn: behavior allocation addresses are decoded from native pointers, never inferred from root string lengths or fixed at 600/608/612.
-    public readonly record struct Layout(int List, int Items, int Module, int Body, int Armor, int ArmorCount, IReadOnlyList<int> Modules, int Locomotor, int LocomotorCount);
+    public readonly record struct Layout(int List, int Items, int Module, int Body, int Armor, int ArmorCount, IReadOnlyList<int> Modules, int Locomotor, int LocomotorCount, int Geometry);
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate dynamic behavior ownership, bounded ASCII string storage and exact root relocation membership before splitting the module graph. */
     //-------------------------------------------------------------------------------------------------
@@ -40,6 +40,13 @@ public static class Ep1GameObjectStringTokens
         {
             if(body % 4 != 0 || body < modules[^1] + 8 || body > b.Length - 76)throw new InvalidDataException("Body tail ownership/bounds differ.");
             owners.Add(488);
+        }
+        // Reborn: geometry owns a separate final native graph after Body/behaviors; its nested owners are checked by the geometry tokenizer.
+        uint geometry=Word(500);
+        if(geometry!=0)
+        {
+            if(geometry%4!=0 || geometry<(body==0?modules[^1]+8:body+76) || geometry>b.Length-76)throw new InvalidDataException("Geometry tail ownership/bounds differ.");
+            owners.Add(500);
         }
         var ranges = new List<(uint Start, uint End)>();
         // Reborn: inline ArmorSet count/items own a disjoint pre-behavior allocation; absent lists cannot retain a dangling pointer.
@@ -95,7 +102,7 @@ public static class Ep1GameObjectStringTokens
             throw new InvalidDataException("Unsupported root allocation/import ownership in string projection.");
         // Reborn: selected native module scope spans Behaviors and Body, independently of source-side validation.
         Ep1SelectedModuleIdentity.ValidateNative(b,modules,(int)body);
-        return new((int)list,(int)list + 8,module,(int)body,(int)armor,(int)armorCount,Array.AsReadOnly(modules),(int)locomotor,(int)locomotorCount);
+        return new((int)list,(int)list + 8,module,(int)body,(int)armor,(int)armorCount,Array.AsReadOnly(modules),(int)locomotor,(int)locomotorCount,(int)geometry);
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: all dynamic headers and pointers stay inside the supplied native chunk. */

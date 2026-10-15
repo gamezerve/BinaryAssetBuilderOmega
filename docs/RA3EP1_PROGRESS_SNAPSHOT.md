@@ -8,7 +8,7 @@ inheritance, definitions/expressions, art assets and familiar Studio diagnostics
 The existing limited local alpha is available now; that is not completion of the
 full target.
 
-For planning, the current subjective engineering estimate is **about 45% complete,
+For planning, the current subjective engineering estimate is **about 47% complete,
 with a reasonable 40–50% range**. This is not a measured asset-coverage percentage,
 test-pass ratio, time-spent ratio or release countdown. Many working components
 have diagnostic/bounded evidence without general production integration. The
@@ -20,15 +20,18 @@ updated against actual deliverables rather than conversation count:
 | Workstream | Weight | Estimated engineering maturity | Main remaining gate |
 | --- | ---: | ---: | --- |
 | Source graph, schemas, Includes, inheritance, definitions | 20% | ~65% | Connect broader supported source semantics to general playable output; full schema/default diagnostics |
-| EP1 identities, references, streams, build pipeline | 20% | ~65% | Recursive GameObject tokenization, mixed-type streams, cache/reuse and broader dependency closure |
-| Gameplay types and modules | 25% | ~25% | General GameObjects/weapons, existing-model EP1 review, remaining modules and new consumer gameplay proof |
+| EP1 identities, references, streams, build pipeline | 20% | ~70% | Remaining recursive GameObject tokenization, mixed-type streams, cache/reuse and broader dependency closure |
+| Gameplay types and modules | 25% | ~30% | General GameObjects/weapons, remaining models/modules and new consumer gameplay proof |
 | Models, textures, audio/shaders, maps/WorldBuilder | 20% | ~20% | General TGA/DDS/W3X/custom-data production and map/editor integration |
 | Studio, setup, portability and packaging | 10% | ~65% | General build UI/options, relocation/dependency setup and clear capability errors |
 | Acceptance, gameplay matrix and distribution review | 5% | ~30% | Multi-new-object acceptance mod, clean-machine workflow and redistribution review |
 
-The rounded weighted estimate is roughly 45%; the individual values are judgments,
+The weighted estimate is 46.5%, rounded to roughly 47%; the individual values are judgments,
 not six independently measured completion counters. Infrastructure maturity does
-**not** mean 45% of EA XML asset types are now build-enabled. The historical 52%
+**not** mean 47% of EA XML asset types are now build-enabled. The previous 45%
+planning estimate is revised after shared armor/body/SMC/weapon/movement/geometry
+native and generated-token composition, not because the test count increased.
+The limited alpha still has its existing admission boundaries. The historical 52%
 figures in archived notes used an older scope/calibration; they are superseded for
 this full-product estimate, not evidence that completed code was lost.
 
@@ -118,15 +121,17 @@ diagnostic and gameplay boundaries.
    The [root movement follow-up](RA3EP1_MOVEMENT_COMPOSITION.md) adds scoped
    LocomotorSet records, independently stock-corroborated engine values and
    generated metadata to the same selected graph. General LocomotorTemplate/AI
-   compilation, draw/geometry, other root/container graphs and publication remain open.
+   compilation, draw, other root/container graphs and publication remain open.
    The [selected module identity gate](RA3EP1_SELECTED_MODULE_IDENTITY.md) now
    rejects Body/behavior hash collisions and dangling AssociatedModule links at
    source and native boundaries; it is not the general cross-container resolver.
    The [geometry native port](RA3EP1_GEOMETRY_NATIVE.md) corrects the EP1
    PlacementShape/header difference and adds stock-proven placement/contact/RING
    graphs. The [geometry metadata follow-up](RA3EP1_GEOMETRY_TOKENS.md) now
-   matches five complete selected stock prefixes; root composition and complete
-   publication remain open.
+   matches five complete selected stock prefixes.
+   The [shared geometry composition](RA3EP1_GAMEOBJECT_GEOMETRY_COMPOSITION.md)
+   joins those fragments with all selected root/movement/armor/body/behavior owners,
+   including a genuine new armor target. Complete publication remains open.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

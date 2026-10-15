@@ -27,7 +27,7 @@ public static class Ep1GameObjectDestructionProjection
         var fragments=new System.Collections.Generic.List<(Chunk Data,int Prefix,int Native)>();
         for(int i=0;i<layout.Modules.Count;i++)
         {
-            int start=layout.Modules[i],end=i+1<layout.Modules.Count?layout.Modules[i+1]:layout.Body==0?b.Length:layout.Body;
+            int start=layout.Modules[i],end=i+1<layout.Modules.Count?layout.Modules[i+1]:layout.Body!=0?layout.Body:layout.Geometry!=0?layout.Geometry:b.Length;
             var module=Extract(start,end);
             var piece=Word(module.InstanceBuffer,0) switch {
                 0x0D96A2F4u=>Ep1DestructionTokenizer.Tokenize(module),
@@ -36,16 +36,20 @@ public static class Ep1GameObjectDestructionProjection
                 _=>throw new InvalidDataException("Unreviewed behavior module in selected projection.")};
             fragments.Add((piece,piece.InstanceBuffer.Length-module.InstanceBuffer.Length,start));
         }
-        var body = layout.Body == 0 ? null : Extract(layout.Body,b.Length);
+        var body = layout.Body == 0 ? null : Extract(layout.Body,layout.Geometry==0?b.Length:layout.Geometry);
         var bodyFragment = body == null ? null : Ep1ActiveBodyTokenizer.Tokenize(body);
+        // Reborn: geometry is a non-polymorphic final owner with a separately validated generated prefix.
+        var geometry=layout.Geometry==0?null:Extract(layout.Geometry,b.Length);
+        var geometryFragment=geometry==null?null:Ep1GeometryTokenizer.Tokenize(geometry);
         // Reborn: root token count is descriptor-driven; nested fragment coordinates must never retain the old two-field prefix size.
-        int armorFields=(layout.ArmorCount==0?0:1)+(layout.LocomotorCount==0?0:1);
+        int armorFields=(layout.ArmorCount==0?0:1)+(layout.LocomotorCount==0?0:1)+(geometry==null?0:1);
         int container = checked((Ep1GameObjectRootValueTokens.AllFields.Count + (body == null ? 2 : 3) + armorFields) * 12), fragmentStart = checked(container + 12 + fragments.Count*12);
         int bodyStart=checked(fragmentStart+fragments.Sum(f=>f.Prefix));
         int bodyPrefix = body == null ? 0 : checked(324 + (int)Word(body.InstanceBuffer,64) * 60),armorStart=checked(bodyStart+bodyPrefix);
         int armorPrefix=layout.ArmorCount==0?0:checked(12+layout.ArmorCount*60),locomotorStart=checked(armorStart+armorPrefix);
         // Reborn: movement count/marker/member tables follow the other reviewed fragments without altering absent-list output.
-        int locomotorPrefix=layout.LocomotorCount==0?0:checked(12+layout.LocomotorCount*60),prefix=checked(locomotorStart+locomotorPrefix);
+        int locomotorPrefix=layout.LocomotorCount==0?0:checked(12+layout.LocomotorCount*60),geometryStart=checked(locomotorStart+locomotorPrefix);
+        int geometryPrefix=geometryFragment==null?0:geometryFragment.InstanceBuffer.Length-geometry!.InstanceBuffer.Length,prefix=checked(geometryStart+geometryPrefix);
         var result = new Chunk { InstanceBuffer = new byte[checked(prefix + b.Length)] };
         b.CopyTo(result.InstanceBuffer, prefix);
         for (int i = 0; i < Ep1GameObjectRootValueTokens.AllFields.Count; i++)
@@ -60,6 +64,8 @@ public static class Ep1GameObjectDestructionProjection
         if(layout.ArmorCount!=0)Token((Ep1GameObjectRootValueTokens.AllFields.Count+1+(body==null?0:1))*12,FastHash.GetHashCode("ArmorSet"),0x5E5AF575u,(uint)armorStart);
         // Reborn: LocomotorSet metadata targets its native count, not the items pointer or a behavior wrapper.
         if(layout.LocomotorCount!=0)Token((Ep1GameObjectRootValueTokens.AllFields.Count+1+(body==null?0:1)+(layout.ArmorCount==0?0:1))*12,FastHash.GetHashCode("LocomotorSet"),0x6E6BF482u,(uint)locomotorStart);
+        // Reborn: root geometry points to its generated own-field table, not native pointer storage or a concrete module wrapper.
+        if(geometryFragment!=null)Token((Ep1GameObjectRootValueTokens.AllFields.Count+1+(body==null?0:1)+(layout.ArmorCount==0?0:1)+(layout.LocomotorCount==0?0:1))*12,FastHash.GetHashCode("Geometry"),FastHash.GetHashCode("Geometry"),(uint)geometryStart);
         Token(container, 0x6C827073u, 0x5D448FD8u, (uint)(prefix + layout.List));
         int nextFragment=fragmentStart;
         for(int i=0;i<fragments.Count;i++)
@@ -93,6 +99,7 @@ public static class Ep1GameObjectDestructionProjection
                 Token(table+24,FastHash.GetHashCode("Locomotor"),0xFED20C6Cu,(uint)(member+8));
             }
         }
+        if(geometryFragment!=null)Join(geometryFragment,geometryPrefix,geometryStart,layout.Geometry);
         foreach (uint slot in relos)
         {
             if (slot > b.Length - 4 || Word(b, (int)slot) >= b.Length) throw new InvalidDataException("Root projection relocation bounds exceeded.");

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: actual official geometry declarations extend the already drift-checked movement/combat diagnostic source closure. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset" targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="RootMovementPipeline.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/Geometry.xsd"/>
+ <xs:complexType name="RootGeometryProbeType"><xs:complexContent><xs:extension base="RootMovementProbeType"><xs:sequence>
+  <xs:element name="Geometry" type="Geometry" minOccurs="0"/>
+ </xs:sequence></xs:extension></xs:complexContent></xs:complexType>
+ <xs:element name="RootGeometryProbe" type="RootGeometryProbeType"/>
+</xs:schema>

@@ -101,7 +101,9 @@ internal static class GameObjectBodyProjectionSmokeTest
     {
         // Reborn: the explicit selected path owns a cross-container module scope before its source containers are detached.
         if(selectedBehaviors)Ep1SelectedModuleIdentity.ValidateSource(source.DocumentElement!);
-        var d=(XmlDocument)source.CloneNode(true);var body=(XmlElement)d.DocumentElement!.LastChild!.FirstChild!;var bodyContainer=body.ParentNode!;d.DocumentElement.RemoveChild(bodyContainer);
+        var d=(XmlDocument)source.CloneNode(true);var bodyContainer=d.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName=="Body" && e.NamespaceURI==SchemaSet.XmlNamespace);var body=bodyContainer.ChildNodes.OfType<XmlElement>().Single();d.DocumentElement.RemoveChild(bodyContainer);
+        // Reborn: optional geometry follows Body in official source/native order and must be detached before the root-only allocation pass.
+        var geometry=d.DocumentElement.ChildNodes.OfType<XmlElement>().SingleOrDefault(e=>e.LocalName=="Geometry" && e.NamespaceURI==SchemaSet.XmlNamespace);if(geometry!=null)d.DocumentElement.RemoveChild(geometry);
         // Reborn: direct ArmorSet children may precede Behaviors; never treat the first root child as the behavior container.
         var behaviors=(XmlElement)d.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]!;
         if(selectedBehaviors)
@@ -117,6 +119,8 @@ internal static class GameObjectBodyProjectionSmokeTest
         Marshaler.Marshal(new Node(d.DocumentElement.CreateNavigator()!,ns),root,tracker);
         if(selectedBehaviors)Marshaler.MarshalEp1SelectedBehaviors(new Node(behaviors.CreateNavigator()!,ns),&root->Behaviors,tracker);
         Marshaler.MarshalEp1ActiveBody(new Node(body.CreateNavigator()!,ns),&root->Body,tracker);
+        // Reborn: no copied native bytes or second Tracker are appended to compose the geometry tail.
+        if(geometry!=null)Marshaler.MarshalEp1Geometry(new Node(geometry.CreateNavigator()!,ns),&root->Geometry,tracker);
         var chunk=new Chunk();if(!tracker.MakeRelocatable(chunk))throw new InvalidDataException("Root/body allocation failed.");return chunk;
     }
     //-------------------------------------------------------------------------------------------------

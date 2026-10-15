@@ -4,6 +4,13 @@ using SageBinaryData;
 public static partial class Marshaler
 {
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: selected object allocation appends geometry after Body on the same Tracker rather than preallocating an orphan legacy graph. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void MarshalEp1Geometry(Node node,Ep1Geometry** objT,Tracker state)
+    {
+        Marshal(node,objT,state);
+    }
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: apply official Shape defaults with the EP1 enum while preserving native field/allocation order. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node,Ep1Shape* objT,Tracker state)

@@ -103,6 +103,9 @@ if($SchedulerControl){
     Add-BatchCase 'ep1-geometry-native' 'BoundedStockGeometryNativeGraph' @('ep1-geometry-native-self-test',$StaticManifest)
     # Reborn: generated geometry tokens require full independent stock-prefix and adversarial ownership checks.
     Add-BatchCase 'ep1-geometry-tokens' 'BoundedStockGeometryTokenFragment' @('ep1-geometry-token-self-test',$StaticManifest)
+    # Reborn: optional geometry joins movement/armor/body/three-behavior graphs with stock or genuinely new compiled armor targets.
+    Add-BatchCase 'gameobject-geometry-composition' 'BoundedCoreGeometryCombatProjection' @('gameobject-geometry-composition-self-test',$StaticManifest,$GlobalManifest)
+    Add-BatchCase 'gameobject-authored-geometry-composition' 'BoundedAuthoredArmorGeometryConsumer' @('gameobject-authored-geometry-composition-self-test',(Join-Path $OutputDirectory 'geometry-consumer'),$StaticManifest,$GlobalManifest)
     # Reborn: actual Core destruction FX names/defaults and semantic imports must pass without captured source dependency indices.
     Add-BatchCase 'ep1-destruction-source' 'BoundedCoreNormalizedModuleNativePayload' @('ep1-destruction-source-self-test',$StaticManifest)
     # Reborn: nested effect/status graphs and Core-normalized strong imports share one new update-family gate.

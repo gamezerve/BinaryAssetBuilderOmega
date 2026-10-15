@@ -32,6 +32,11 @@ internal static class Program
             // Reborn: selected local ModuleData scope is separate from named asset reference closure.
             // Reborn: separate geometry ABI/default/native stock proof does not admit recursive object metadata/publication.
             // Reborn: generated standalone geometry metadata has a separate stock and corruption gate before root composition.
+            // Reborn: selected geometry and genuine new-armor variants share one Core occurrence table, without enabling object publication.
+            if(args.Length==3 && args[0]=="gameobject-geometry-composition-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();GameObjectGeometryCompositionSmokeTest.Run(args[1],args[2]);return 0;}
+            if(args.Length==4 && args[0]=="gameobject-authored-geometry-composition-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();GameObjectGeometryCompositionSmokeTest.Run(args[2],args[3],args[1]);return 0;}
             if(args.Length==2 && args[0]=="ep1-geometry-token-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1GeometryNativeSmokeTest.Run(args[1],includeTokens:true);return 0;}
             if(args.Length==2 && args[0]=="ep1-geometry-native-self-test")
@@ -1374,6 +1379,9 @@ internal static class Program
         Console.WriteLine("  ep1-geometry-native-self-test <static.manifest>");
         // Reborn: generated standalone geometry metadata is not a complete GameObject stream.
         Console.WriteLine("  ep1-geometry-token-self-test <static.manifest>");
+        // Reborn: geometry/armor/body/combat composition remains a bounded offline graph diagnostic.
+        Console.WriteLine("  gameobject-geometry-composition-self-test <static.manifest> <global.manifest>");
+        Console.WriteLine("  gameobject-authored-geometry-composition-self-test <fresh-output> <static.manifest> <global.manifest>");
         Console.WriteLine("  gameobject-authored-smc-combat-self-test <fresh-output> <static.manifest> <global.manifest>");
         Console.WriteLine("  ep1-allied-modules-self-test <static.manifest>");
         // Reborn: explicit source normalization does not open general GameObject publication.

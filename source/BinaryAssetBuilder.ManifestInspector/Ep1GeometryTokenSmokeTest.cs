@@ -59,7 +59,7 @@ internal static class Ep1GeometryTokenSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: independent table sizes/types/targets and inverse RELO rebasing verify output without invoking Tokenize again. */
     //-------------------------------------------------------------------------------------------------
-    private static void Verify(Chunk output,Chunk native)
+    internal static void Verify(Chunk output,Chunk native)
     {
         var b=output.InstanceBuffer;int shapes=(int)Word(native.InstanceBuffer,8),contacts=(int)Word(native.InstanceBuffer,16),placement=(int)Word(native.InstanceBuffer,4),items=(int)Word(native.InstanceBuffer,12),points=(int)Word(native.InstanceBuffer,20),rotation=(int)Word(native.InstanceBuffer,0);
         int shapeList=72+(placement==0?0:144),contactList=shapeList+12+shapes*156,prefix=contactList+12+contacts*48;
