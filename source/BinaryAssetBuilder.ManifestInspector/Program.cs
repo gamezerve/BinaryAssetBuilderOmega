@@ -27,6 +27,13 @@ internal static class Program
             // Reborn: authored armor mode requires a fresh evidence child and real Core output metadata.
             // Reborn: EP1 hardpoint native/token fragments are explicit diagnostics, not legacy dispatch replacement.
             // Reborn: selected two-behavior combat graphs have explicit native allocation and never authorize a complete GameObject stream.
+            // Reborn: the required SMC helper has its own stock/token gate and optional three-module integration cases.
+            if(args.Length==2 && args[0]=="ep1-smc-helper-token-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1SmcHelperTokenSmokeTest.Run(args[1]);return 0;}
+            if(args.Length==3 && args[0]=="gameobject-smc-combat-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();GameObjectCombatCompositionSmokeTest.Run(args[1],args[2],includeSmc:true);return 0;}
+            if(args.Length==4 && args[0]=="gameobject-authored-smc-combat-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();GameObjectCombatCompositionSmokeTest.Run(args[2],args[3],args[1],includeSmc:true);return 0;}
             if(args.Length==3 && args[0]=="gameobject-combat-composition-self-test")
             {CompilerSmokeTest.InitializeHashProvider();GameObjectCombatCompositionSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==4 && args[0]=="gameobject-authored-combat-composition-self-test")
@@ -1344,6 +1351,10 @@ internal static class Program
         // Reborn: combat composition is a bounded source/native diagnostic, not a game launch or full asset build.
         Console.WriteLine("  gameobject-combat-composition-self-test <static.manifest> <global.manifest>");
         Console.WriteLine("  gameobject-authored-combat-composition-self-test <fresh-output> <static.manifest> <global.manifest>");
+        // Reborn: SMC selection extends the diagnostic module list, not the public SDK asset registry.
+        Console.WriteLine("  ep1-smc-helper-token-self-test <static.manifest>");
+        Console.WriteLine("  gameobject-smc-combat-self-test <static.manifest> <global.manifest>");
+        Console.WriteLine("  gameobject-authored-smc-combat-self-test <fresh-output> <static.manifest> <global.manifest>");
         Console.WriteLine("  ep1-allied-modules-self-test <static.manifest>");
         // Reborn: explicit source normalization does not open general GameObject publication.
         Console.WriteLine("  ep1-destruction-source-self-test <static.manifest>");

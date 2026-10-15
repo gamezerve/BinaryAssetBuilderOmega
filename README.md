@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [SMC helper writer and three-module composition](docs/RA3EP1_SMC_COMBAT_COMPOSITION.md)
+now adds the required helper to destruction and EP1 weapon behaviors. Both selected
+stock helpers match all 8 native/168 metadata bytes. All six behavior orders pass
+48 actual-Core source/value/list cases, with a separately compiled new-armor mode.
+The 620-byte minimal native helper graph also composes. This closes selected
+helper tokenization/integration, not remaining movement/draw/geometry or full
+GameObject publication. Root field count stays 89 with ArmorSet/Body present.
+Final Focused regression: **41/41** in **115.529 seconds**; stock/authored three-module
+groups 3.960/4.590 seconds, eight runtime hashes stable and no game/install changes.
+
 The [selected combat GameObject composition](docs/RA3EP1_GAMEOBJECT_COMBAT_COMPOSITION.md)
 now joins armor, Body and one/two destruction/EP1 weapon behaviors in either
 order, using explicit native allocation and one actual Core reference table.

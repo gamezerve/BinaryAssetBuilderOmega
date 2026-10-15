@@ -91,6 +91,10 @@ if($SchedulerControl){
     # Reborn: selected destruction/weapon modules share armor/body/root references, with optional newly built armor proof.
     Add-BatchCase 'gameobject-combat-composition' 'BoundedCombatNativeTokenProjection' @('gameobject-combat-composition-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'gameobject-authored-combat-composition' 'BoundedAuthoredArmorCombatConsumer' @('gameobject-authored-combat-composition-self-test',(Join-Path $OutputDirectory 'combat-consumer'),$StaticManifest,$GlobalManifest)
+    # Reborn: stock-corroborated required helper and all three-module orders keep native/token/reference ownership explicit.
+    Add-BatchCase 'ep1-smc-helper-tokens' 'BoundedStockSmcTokenFragment' @('ep1-smc-helper-token-self-test',$StaticManifest)
+    Add-BatchCase 'gameobject-smc-combat' 'BoundedThreeModuleCombatProjection' @('gameobject-smc-combat-self-test',$StaticManifest,$GlobalManifest)
+    Add-BatchCase 'gameobject-authored-smc-combat' 'BoundedAuthoredArmorThreeModuleConsumer' @('gameobject-authored-smc-combat-self-test',(Join-Path $OutputDirectory 'smc-combat-consumer'),$StaticManifest,$GlobalManifest)
     # Reborn: actual Core destruction FX names/defaults and semantic imports must pass without captured source dependency indices.
     Add-BatchCase 'ep1-destruction-source' 'BoundedCoreNormalizedModuleNativePayload' @('ep1-destruction-source-self-test',$StaticManifest)
     # Reborn: nested effect/status graphs and Core-normalized strong imports share one new update-family gate.

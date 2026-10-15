@@ -21,7 +21,7 @@ public static partial class Marshaler
     public static unsafe void MarshalEp1SelectedBehaviors(Node node,PolymorphicList<BehaviorModuleData>** objT,Tracker state)
     {
         var children=node?.GetChildNodes(null);int count=children?.GetCount()??0;
-        if(count<1 || count>2)throw new BinaryAssetBuilderException(ErrorCode.InternalError,"Selected EP1 behavior envelope requires one or two modules.");
+        if(count<1 || count>3)throw new BinaryAssetBuilderException(ErrorCode.InternalError,"Selected EP1 behavior envelope requires one to three modules.");
         var ids=new HashSet<uint>();
         using(var header=state.Push((void**)objT,(uint)sizeof(PolymorphicList<BehaviorModuleData>),1u))
         {
@@ -34,6 +34,7 @@ public static partial class Marshaler
                     string type=child.GetAttributeValue("TypeId",null)?.GetText();
                     if(type=="227975924")MarshalPolymorphicType<BuildingDestructionModuleData,BehaviorModuleData>(child,&(*objT)->Items[i],state);
                     else if(type=="1125589673")MarshalEp1WeaponSet(child,&(*objT)->Items[i],state);
+                    else if(type=="2138239554")MarshalPolymorphicType<ObjectSMCHelperModuleData,BehaviorModuleData>(child,&(*objT)->Items[i],state);
                     else throw new BinaryAssetBuilderException(ErrorCode.InternalError,"Unreviewed selected EP1 behavior class.");
                 }
         }

@@ -3,10 +3,14 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset" targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
  <xs:include schemaLocation="RootArmorBodyPipeline.xsd"/>
  <xs:include schemaLocation="WeaponSetPipeline.xsd"/>
+ <!-- Reborn: exact official empty helper/base declarations; the normal full schema remains a separate raw-validation gate. -->
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Modules/ObjectHelper.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Modules/ObjectSMCHelper.xsd"/>
+ <xs:element name="ObjectSMCHelper" type="ObjectSMCHelperModuleData"/>
  <xs:complexType name="RootCombatProbeType"><xs:complexContent><xs:extension base="BaseAssetType">
   <xs:sequence>
    <xs:element name="ArmorSet" type="ArmorTemplateSet" minOccurs="0" maxOccurs="32"/>
-   <xs:choice minOccurs="1" maxOccurs="2"><xs:element ref="BuildingDestructionBehavior"/><xs:element ref="WeaponSetUpdate"/></xs:choice>
+   <xs:choice minOccurs="1" maxOccurs="3"><xs:element ref="BuildingDestructionBehavior"/><xs:element ref="WeaponSetUpdate"/><xs:element ref="ObjectSMCHelper"/></xs:choice>
    <xs:element name="ActiveBody" type="ActiveBodyModuleData"/>
   </xs:sequence>
   <xs:attribute name="UnitTypeIcon" type="UnitTypeIconRef"/><xs:attribute name="UnitIntro" type="UnitIntroRef"/>

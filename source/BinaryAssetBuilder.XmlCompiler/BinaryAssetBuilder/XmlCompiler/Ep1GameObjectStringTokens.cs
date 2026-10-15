@@ -25,12 +25,12 @@ public static class Ep1GameObjectStringTokens
         uint list = Word(476);
         if (list < 600 || list % 4 != 0 || list > b.Length - 8)throw new InvalidDataException("Projection requires a bounded behavior envelope after root allocations.");
         uint count=Word((int)list);
-        if(count<1 || count>2 || list>b.Length-8-count*4 || Word((int)list+4)!=list+8)throw new InvalidDataException("Projection admits one or two canonical behavior pointers.");
+        if(count<1 || count>3 || list>b.Length-8-count*4 || Word((int)list+4)!=list+8)throw new InvalidDataException("Projection admits one to three canonical behavior pointers.");
         var modules=new int[count];var owners=new List<uint>{476,list+4};
         for(int i=0;i<count;i++)
         {
             uint slot=list+8+(uint)i*4,target=Word((int)slot);
-            if(target%4!=0 || target>b.Length-44 || (i==0 ? target!=list+8+count*4 : target<modules[i-1]+44))throw new InvalidDataException("Behavior native owners alias or escape their ordered envelope.");
+            if(target%4!=0 || target>b.Length-8 || (i==0 ? target!=list+8+count*4 : target<modules[i-1]+8))throw new InvalidDataException("Behavior native owners alias or escape their ordered envelope.");
             modules[i]=(int)target;owners.Add(slot);
         }
         int module=modules[0];
@@ -38,7 +38,7 @@ public static class Ep1GameObjectStringTokens
         uint body = Word(488);
         if(body != 0)
         {
-            if(body % 4 != 0 || body < modules[^1] + 44 || body > b.Length - 76)throw new InvalidDataException("Body tail ownership/bounds differ.");
+            if(body % 4 != 0 || body < modules[^1] + 8 || body > b.Length - 76)throw new InvalidDataException("Body tail ownership/bounds differ.");
             owners.Add(488);
         }
         var ranges = new List<(uint Start, uint End)>();

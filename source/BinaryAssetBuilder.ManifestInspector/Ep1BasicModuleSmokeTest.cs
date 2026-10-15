@@ -124,7 +124,7 @@ internal static class Ep1BasicModuleSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: exercise actual GameObject polymorphic dispatch with internally injected class IDs; the diagnostic root is deliberately not a published complete object. */
     //-------------------------------------------------------------------------------------------------
-    private static unsafe (Chunk Chunk, int Native) Compile(string leaf, string type, bool client)
+    internal static unsafe (Chunk Chunk, int Native) Compile(string leaf, string type, bool client)
     {
         string container = client ? "ClientUpdates" : "Behaviors";
         var xml = new XmlDocument { XmlResolver = null };

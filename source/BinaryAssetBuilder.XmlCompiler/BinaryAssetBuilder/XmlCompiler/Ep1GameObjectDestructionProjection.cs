@@ -15,7 +15,7 @@ public static class Ep1GameObjectDestructionProjection
     //-------------------------------------------------------------------------------------------------
     public static Chunk Compose(Chunk native)
     {
-        if (native == null || native.InstanceBuffer == null || native.InstanceBuffer.Length < 656 || native.InstanceBuffer.Length > 1048576)
+        if (native == null || native.InstanceBuffer == null || native.InstanceBuffer.Length < 620 || native.InstanceBuffer.Length > 1048576)
             throw new InvalidDataException("GameObject destruction projection requires bounded native dispatch output.");
         byte[] b = native.InstanceBuffer;
         var relos = Slots(native.RelocationBuffer); var imports = Slots(native.ImportsBuffer);
@@ -32,6 +32,7 @@ public static class Ep1GameObjectDestructionProjection
             var piece=Word(module.InstanceBuffer,0) switch {
                 0x0D96A2F4u=>Ep1DestructionTokenizer.Tokenize(module),
                 0x431722A9u=>Ep1WeaponSetTokenizer.Tokenize(module),
+                0x7F72F242u=>Ep1SmcHelperTokenizer.Tokenize(module),
                 _=>throw new InvalidDataException("Unreviewed behavior module in selected projection.")};
             fragments.Add((piece,piece.InstanceBuffer.Length-module.InstanceBuffer.Length,start));
         }

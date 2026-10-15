@@ -106,7 +106,7 @@ internal static class GameObjectBodyProjectionSmokeTest
         {
             // Reborn: remove the legacy behavior route entirely before explicit selected allocation; no orphaned old list or second reference table is created.
             d.DocumentElement.RemoveChild(behaviors);
-            foreach(XmlElement child in behaviors.ChildNodes.OfType<XmlElement>())child.SetAttribute("TypeId",child.LocalName switch {"BuildingDestructionBehavior"=>"227975924","WeaponSetUpdate"=>"1125589673",_=>throw new InvalidDataException("Unsupported selected source module.")});
+            foreach(XmlElement child in behaviors.ChildNodes.OfType<XmlElement>())child.SetAttribute("TypeId",child.LocalName switch {"BuildingDestructionBehavior"=>"227975924","WeaponSetUpdate"=>"1125589673","ObjectSMCHelper"=>"2138239554",_=>throw new InvalidDataException("Unsupported selected source module.")});
         }
         else ((XmlElement)behaviors.FirstChild!).SetAttribute("TypeId","227975924");
         body.SetAttribute("TypeId","1510882715");
