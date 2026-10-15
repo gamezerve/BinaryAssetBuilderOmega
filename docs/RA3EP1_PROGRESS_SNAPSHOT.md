@@ -108,8 +108,10 @@ diagnostic and gameplay boundaries.
    gameplay of the complete consuming GameObject still remain open.
    The [EP1 hardpoint writer](RA3EP1_WEAPON_SET_FRAGMENT.md) now matches complete
    selected Peacekeeper/Conscript native/token graphs and actual Core references.
-   Explicit module selection and multi-behavior composition are the next gate;
-   turret/contained and general consumer publication remain open.
+   The [combat composition follow-up](RA3EP1_GAMEOBJECT_COMBAT_COMPOSITION.md)
+   now adds explicit selected allocation and one/two destruction/weapon behaviors
+   in either order, sharing armor/body/root references and a real new armor target.
+   Other object graphs, turret/contained and general consumer publication remain open.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

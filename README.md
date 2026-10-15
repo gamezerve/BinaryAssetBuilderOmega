@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [selected combat GameObject composition](docs/RA3EP1_GAMEOBJECT_COMBAT_COMPOSITION.md)
+now joins armor, Body and one/two destruction/EP1 weapon behaviors in either
+order, using explicit native allocation and one actual Core reference table.
+Sixteen source/value/list cases plus a single-weapon case pass; an authored-armor
+variant uses a genuine new Core stream and refuses when that target is removed.
+Root metadata remains 89 fields with Body/ArmorSet present. Legacy dispatch,
+general source/asset publication and the alpha remain unchanged.
+Final Focused regression: **38/38** in **104.923 seconds**; stock/authored combat
+groups 3.610/3.960 seconds, eight runtime hashes stable, no game/install changes.
+
 The [EP1 weapon-set hardpoint port and token writer](docs/RA3EP1_WEAPON_SET_FRAGMENT.md)
 now reproduces the complete selected Peacekeeper/Conscript native graphs and
 generated token prefixes (152/480 and 232/588 bytes). Separate 44/28/80-byte

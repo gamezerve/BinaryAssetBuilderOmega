@@ -97,14 +97,23 @@ internal static class GameObjectBodyProjectionSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: opt into the separate EP1 allocator after existing root/behavior dispatch, on the same Tracker and native Body pointer slot. */
     //-------------------------------------------------------------------------------------------------
-    internal static unsafe Chunk Compile(XmlDocument source)
+    internal static unsafe Chunk Compile(XmlDocument source,bool selectedBehaviors=false)
     {
         var d=(XmlDocument)source.CloneNode(true);var body=(XmlElement)d.DocumentElement!.LastChild!.FirstChild!;var bodyContainer=body.ParentNode!;d.DocumentElement.RemoveChild(bodyContainer);
         // Reborn: direct ArmorSet children may precede Behaviors; never treat the first root child as the behavior container.
-        ((XmlElement)d.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]!.FirstChild!).SetAttribute("TypeId","227975924");body.SetAttribute("TypeId","1510882715");
+        var behaviors=(XmlElement)d.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]!;
+        if(selectedBehaviors)
+        {
+            // Reborn: remove the legacy behavior route entirely before explicit selected allocation; no orphaned old list or second reference table is created.
+            d.DocumentElement.RemoveChild(behaviors);
+            foreach(XmlElement child in behaviors.ChildNodes.OfType<XmlElement>())child.SetAttribute("TypeId",child.LocalName switch {"BuildingDestructionBehavior"=>"227975924","WeaponSetUpdate"=>"1125589673",_=>throw new InvalidDataException("Unsupported selected source module.")});
+        }
+        else ((XmlElement)behaviors.FirstChild!).SetAttribute("TypeId","227975924");
+        body.SetAttribute("TypeId","1510882715");
         var ns=new XmlNamespaceManager(d.NameTable);ns.AddNamespace("ea",SchemaSet.XmlNamespace);
         GameObject* root;using var tracker=new Tracker((void**)&root,(uint)sizeof(GameObject),false);
         Marshaler.Marshal(new Node(d.DocumentElement.CreateNavigator()!,ns),root,tracker);
+        if(selectedBehaviors)Marshaler.MarshalEp1SelectedBehaviors(new Node(behaviors.CreateNavigator()!,ns),&root->Behaviors,tracker);
         Marshaler.MarshalEp1ActiveBody(new Node(body.CreateNavigator()!,ns),&root->Body,tracker);
         var chunk=new Chunk();if(!tracker.MakeRelocatable(chunk))throw new InvalidDataException("Root/body allocation failed.");return chunk;
     }

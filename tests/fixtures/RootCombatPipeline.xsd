@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: one shared Core table covers selected armor/body and one or two destruction/weapon modules; not the complete GameObject schema. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset" targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="RootArmorBodyPipeline.xsd"/>
+ <xs:include schemaLocation="WeaponSetPipeline.xsd"/>
+ <xs:complexType name="RootCombatProbeType"><xs:complexContent><xs:extension base="BaseAssetType">
+  <xs:sequence>
+   <xs:element name="ArmorSet" type="ArmorTemplateSet" minOccurs="0" maxOccurs="32"/>
+   <xs:choice minOccurs="1" maxOccurs="2"><xs:element ref="BuildingDestructionBehavior"/><xs:element ref="WeaponSetUpdate"/></xs:choice>
+   <xs:element name="ActiveBody" type="ActiveBodyModuleData"/>
+  </xs:sequence>
+  <xs:attribute name="UnitTypeIcon" type="UnitTypeIconRef"/><xs:attribute name="UnitIntro" type="UnitIntroRef"/>
+ </xs:extension></xs:complexContent></xs:complexType>
+ <xs:element name="RootCombatProbe" type="RootCombatProbeType"/>
+</xs:schema>

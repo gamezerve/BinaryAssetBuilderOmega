@@ -78,7 +78,7 @@ internal static class GameObjectArmorCompositionSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: create only a fresh owned evidence child, build a genuine custom armor stream and independently read its published metadata. */
     //-------------------------------------------------------------------------------------------------
-    private static ManifestDocument BuildArmor(string directory)
+    internal static ManifestDocument BuildArmor(string directory)
     {
         directory=SdkEnvironmentPreflight.Absolute(directory);
         if(Directory.Exists(directory) || File.Exists(directory))throw new InvalidDataException("Authored armor composition output occupied.");

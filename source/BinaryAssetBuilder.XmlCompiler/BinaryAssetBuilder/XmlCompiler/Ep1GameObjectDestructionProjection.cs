@@ -15,23 +15,32 @@ public static class Ep1GameObjectDestructionProjection
     //-------------------------------------------------------------------------------------------------
     public static Chunk Compose(Chunk native)
     {
-        if (native == null || native.InstanceBuffer == null || native.InstanceBuffer.Length < 704 || native.InstanceBuffer.Length > 1048576)
+        if (native == null || native.InstanceBuffer == null || native.InstanceBuffer.Length < 656 || native.InstanceBuffer.Length > 1048576)
             throw new InvalidDataException("GameObject destruction projection requires bounded native dispatch output.");
         byte[] b = native.InstanceBuffer;
         var relos = Slots(native.RelocationBuffer); var imports = Slots(native.ImportsBuffer);
         // Reborn: range partitioning must not hide auxiliary slots outside every native owner.
         if(relos.Any(s=>s>b.Length-4) || imports.Any(s=>s>b.Length-4))throw new InvalidDataException("Projection auxiliary slot escapes native buffer.");
         // Reborn: explicit root-string allocations may move the behavior list and module; decode and validate ownership before extracting the tail.
-        var layout = Ep1GameObjectStringTokens.Inspect(b, relos, imports); int moduleStart = layout.Module;
-        // Reborn: module and optional EP1 body own disjoint native tails; imports retain one shared occurrence table.
-        var module = Extract(moduleStart,layout.Body == 0 ? b.Length : layout.Body);
-        var fragment = Ep1DestructionTokenizer.Tokenize(module);
+        var layout = Ep1GameObjectStringTokens.Inspect(b, relos, imports);
+        // Reborn: selected behavior modules own ordered disjoint tails; explicit class dispatch has no legacy or unknown-module fallback.
+        var fragments=new System.Collections.Generic.List<(Chunk Data,int Prefix,int Native)>();
+        for(int i=0;i<layout.Modules.Count;i++)
+        {
+            int start=layout.Modules[i],end=i+1<layout.Modules.Count?layout.Modules[i+1]:layout.Body==0?b.Length:layout.Body;
+            var module=Extract(start,end);
+            var piece=Word(module.InstanceBuffer,0) switch {
+                0x0D96A2F4u=>Ep1DestructionTokenizer.Tokenize(module),
+                0x431722A9u=>Ep1WeaponSetTokenizer.Tokenize(module),
+                _=>throw new InvalidDataException("Unreviewed behavior module in selected projection.")};
+            fragments.Add((piece,piece.InstanceBuffer.Length-module.InstanceBuffer.Length,start));
+        }
         var body = layout.Body == 0 ? null : Extract(layout.Body,b.Length);
         var bodyFragment = body == null ? null : Ep1ActiveBodyTokenizer.Tokenize(body);
         // Reborn: root token count is descriptor-driven; nested fragment coordinates must never retain the old two-field prefix size.
         int armorFields=layout.ArmorCount==0?0:1;
-        int container = checked((Ep1GameObjectRootValueTokens.AllFields.Count + (body == null ? 2 : 3) + armorFields) * 12), fragmentStart = container + 24;
-        int modulePrefix = checked(312 + (int)Word(module.InstanceBuffer, 64) * 72), bodyStart = checked(fragmentStart + modulePrefix);
+        int container = checked((Ep1GameObjectRootValueTokens.AllFields.Count + (body == null ? 2 : 3) + armorFields) * 12), fragmentStart = checked(container + 12 + fragments.Count*12);
+        int bodyStart=checked(fragmentStart+fragments.Sum(f=>f.Prefix));
         int bodyPrefix = body == null ? 0 : checked(324 + (int)Word(body.InstanceBuffer,64) * 60),armorStart=checked(bodyStart+bodyPrefix);
         int armorPrefix=layout.ArmorCount==0?0:checked(12+layout.ArmorCount*60),prefix = checked(armorStart+armorPrefix);
         var result = new Chunk { InstanceBuffer = new byte[checked(prefix + b.Length)] };
@@ -47,8 +56,12 @@ public static class Ep1GameObjectDestructionProjection
         // Reborn: ArmorSet is an inline native list with indirect count/marker/member metadata, not another pointer-based module wrapper.
         if(layout.ArmorCount!=0)Token((Ep1GameObjectRootValueTokens.AllFields.Count+1+(body==null?0:1))*12,FastHash.GetHashCode("ArmorSet"),0x5E5AF575u,(uint)armorStart);
         Token(container, 0x6C827073u, 0x5D448FD8u, (uint)(prefix + layout.List));
-        Token(container + 12, 0xB151A0EBu, 0, (uint)fragmentStart);
-        Join(fragment,modulePrefix,fragmentStart,moduleStart);
+        int nextFragment=fragmentStart;
+        for(int i=0;i<fragments.Count;i++)
+        {
+            var f=fragments[i];Token(container+12+i*12,0xB151A0EBu,0,(uint)nextFragment);
+            Join(f.Data,f.Prefix,nextFragment,f.Native);nextFragment=checked(nextFragment+f.Prefix);
+        }
         if(bodyFragment != null)Join(bodyFragment,bodyPrefix,bodyStart,layout.Body);
         if(layout.ArmorCount!=0)
         {

@@ -26,6 +26,11 @@ internal static class Program
             // Reborn: ArmorSet joins the selected graph without enabling complete GameObject publication.
             // Reborn: authored armor mode requires a fresh evidence child and real Core output metadata.
             // Reborn: EP1 hardpoint native/token fragments are explicit diagnostics, not legacy dispatch replacement.
+            // Reborn: selected two-behavior combat graphs have explicit native allocation and never authorize a complete GameObject stream.
+            if(args.Length==3 && args[0]=="gameobject-combat-composition-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();GameObjectCombatCompositionSmokeTest.Run(args[1],args[2]);return 0;}
+            if(args.Length==4 && args[0]=="gameobject-authored-combat-composition-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();GameObjectCombatCompositionSmokeTest.Run(args[2],args[3],args[1]);return 0;}
             if(args.Length==3 && args[0]=="ep1-weapon-set-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1WeaponSetSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==4 && args[0]=="gameobject-authored-armor-composition-self-test")
@@ -1336,6 +1341,9 @@ internal static class Program
         Console.WriteLine("  gameobject-authored-armor-composition-self-test <fresh-output> <static.manifest> <global.manifest>");
         // Reborn: this bounded weapon-set profile does not admit turret/contained slots or complete GameObject publication.
         Console.WriteLine("  ep1-weapon-set-self-test <static.manifest> <global.manifest>");
+        // Reborn: combat composition is a bounded source/native diagnostic, not a game launch or full asset build.
+        Console.WriteLine("  gameobject-combat-composition-self-test <static.manifest> <global.manifest>");
+        Console.WriteLine("  gameobject-authored-combat-composition-self-test <fresh-output> <static.manifest> <global.manifest>");
         Console.WriteLine("  ep1-allied-modules-self-test <static.manifest>");
         // Reborn: explicit source normalization does not open general GameObject publication.
         Console.WriteLine("  ep1-destruction-source-self-test <static.manifest>");
