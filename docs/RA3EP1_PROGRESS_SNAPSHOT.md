@@ -74,6 +74,9 @@ this full-product estimate, not evidence that completed code was lost.
    A [two-field root/container projection](RA3EP1_GAMEOBJECT_DESTRUCTION_PROJECTION.md)
    now composes the destruction fragment and native/auxiliary coordinates; it is
    deliberately not complete root token coverage or a publishable asset.
+   The [scalar-root batch](RA3EP1_GAMEOBJECT_SCALAR_TOKENS.md) widens that projection
+   with two-stock-audited scalar descriptors and batched explicit source/value
+   checks; indirect/reference/string/enum/flag coverage and publication remain open.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

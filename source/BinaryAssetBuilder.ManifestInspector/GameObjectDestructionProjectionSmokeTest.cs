@@ -5,7 +5,7 @@ using Relo;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: projection tests prove root/container/module coordinate ownership without pretending two root tokens are a complete GameObject asset.
+// Reborn: projection tests prove scalar root/container/module ownership without pretending omitted root fields are complete GameObject support.
 internal static class GameObjectDestructionProjectionSmokeTest
 {
     //-------------------------------------------------------------------------------------------------
@@ -14,16 +14,18 @@ internal static class GameObjectDestructionProjectionSmokeTest
     internal static void Stock(Ep1AlliedModuleSmokeTest.Output source, byte[] stock, GameObjectModuleReview.Module module)
     {
         var result = Check(source.Chunk); var root = GameObjectStockReview.Tokens(stock, 0);
-        if (root[FastHash.GetHashCode("Behaviors")].Type != Word(result.InstanceBuffer, 16) || root[FastHash.GetHashCode("BuildTime")].Type != Word(result.InstanceBuffer, 4))
+        var generatedRoot = GameObjectStockReview.Tokens(result.InstanceBuffer, 0);
+        if (root[FastHash.GetHashCode("Behaviors")].Type != generatedRoot[FastHash.GetHashCode("Behaviors")].Type || root[FastHash.GetHashCode("BuildTime")].Type != generatedRoot[FastHash.GetHashCode("BuildTime")].Type)
             throw new InvalidDataException("Projection root type tags differ from stock.");
-        int prefix = (int)Word(result.InstanceBuffer, 8) - 140, modulePrefix = prefix - 60;
+        int prefix = generatedRoot[FastHash.GetHashCode("BuildTime")].Offset - 140;
+        int fragmentStart = generatedRoot[FastHash.GetHashCode("Behaviors")].Offset + 24, modulePrefix = prefix - fragmentStart;
         var expected = stock.AsSpan(module.Wrapper, modulePrefix).ToArray();
         for (int at = 8; at < expected.Length; at += 12)
         {
             uint target = Word(expected, at);
-            if (target != 0) Put(expected, at, target >= module.Native ? checked(target - (uint)module.Native + (uint)prefix + 612u) : checked(target - (uint)module.Wrapper + 60u));
+            if (target != 0) Put(expected, at, target >= module.Native ? checked(target - (uint)module.Native + (uint)prefix + 612u) : checked(target - (uint)module.Wrapper + (uint)fragmentStart));
         }
-        if (!expected.SequenceEqual(result.InstanceBuffer.AsSpan(60, modulePrefix).ToArray())) throw new InvalidDataException("Composed module tokens differ from stock semantic coordinates.");
+        if (!expected.SequenceEqual(result.InstanceBuffer.AsSpan(fragmentStart, modulePrefix).ToArray())) throw new InvalidDataException("Composed module tokens differ from stock semantic coordinates.");
         foreach (int at in new[] { 476, 600, 604, 608, 612, 680 })
         {
             var bad = Clone(source.Chunk); Put(bad.InstanceBuffer, at, Word(bad.InstanceBuffer, at) ^ 4u);
@@ -31,8 +33,17 @@ internal static class GameObjectDestructionProjectionSmokeTest
         }
         var badOwner = Clone(source.Chunk); badOwner.RelocationBuffer = Pack(Slots(badOwner.RelocationBuffer).Append(140u)); Refuse(() => Ep1GameObjectDestructionProjection.Compose(badOwner));
         var cycle = Clone(source.Chunk); Put(cycle.InstanceBuffer, 680, 476); Refuse(() => Ep1GameObjectDestructionProjection.Compose(cycle));
-        var badOutput = Clone(result); Put(badOutput.InstanceBuffer, 56, 36); Refuse(() => Verify(badOutput, source.Chunk));
+        var badOutput = Clone(result); Put(badOutput.InstanceBuffer, fragmentStart - 4, (uint)(fragmentStart - 24)); Refuse(() => Verify(badOutput, source.Chunk));
         var edited = Clone(source.Chunk); Put(edited.InstanceBuffer, 140, unchecked((uint)BitConverter.SingleToInt32Bits(12.5f))); Check(edited);
+        // Reborn: every emitted scalar type and native target must reject independent output metadata corruption, not merely pass a shared descriptor loop.
+        for (int i = 0; i < Ep1GameObjectScalarTokens.Fields.Count; i++)
+            foreach (int word in new[] { 4, 8 })
+            {
+                var badScalar = Clone(result); int at = i * 12 + word;
+                Put(badScalar.InstanceBuffer, at, Word(badScalar.InstanceBuffer, at) ^ 4u);
+                Refuse(() => Verify(badScalar, source.Chunk));
+            }
+        Console.WriteLine($"GameObject scalar metadata corruptions: {Ep1GameObjectScalarTokens.Fields.Count * 2} rejected.");
         Console.WriteLine($"GameObject destruction projection: BIN/RELO/IMP={result.InstanceBuffer.Length}/{result.RelocationBuffer.Length}/{result.ImportsBuffer.Length}; root/container/stock module joins, BuildTime edit and nine refusals PASS (partial root, no asset publication).");
     }
     //-------------------------------------------------------------------------------------------------
@@ -50,20 +61,25 @@ internal static class GameObjectDestructionProjectionSmokeTest
         Verify(result, native); return result;
     }
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: independently walk two root fields through behavior marker and native pointers, validate authored item targets, then reverse the global shift. */
+    /** Reborn: independently walk admitted root fields through behavior marker/native pointers, validate item targets, then reverse the global shift. */
     //-------------------------------------------------------------------------------------------------
     private static void Verify(Chunk result, Chunk native)
     {
         byte[] b = result.InstanceBuffer; var root = GameObjectStockReview.Tokens(b, 0);
         int prefix = root[FastHash.GetHashCode("BuildTime")].Offset - 140;
+        int container = (Ep1GameObjectScalarTokens.Fields.Count + 2) * 12, fragmentStart = container + 24;
         int count = (int)Word(native.InstanceBuffer, 676);
-        if (root.Count != 2 || prefix != 372 + count * 72 || root[FastHash.GetHashCode("Behaviors")].Offset != 36 ||
-            Word(b, 36) != 0x6C827073u || Word(b, 40) != 0x5D448FD8u || Word(b, 44) != prefix + 600 ||
-            Word(b, 48) != 0xB151A0EBu || Word(b, 52) != 0 || Word(b, 56) != 60 ||
+        if (root.Count != Ep1GameObjectScalarTokens.Fields.Count + 1 || prefix != fragmentStart + 312 + count * 72 || root[FastHash.GetHashCode("Behaviors")].Offset != container ||
+            Word(b, container) != 0x6C827073u || Word(b, container + 4) != 0x5D448FD8u || Word(b, container + 8) != prefix + 600 ||
+            Word(b, container + 12) != 0xB151A0EBu || Word(b, container + 16) != 0 || Word(b, container + 20) != fragmentStart ||
             Word(b, prefix + 476) != prefix + 600 || Word(b, prefix + 600) != 1 || Word(b, prefix + 604) != prefix + 608 || Word(b, prefix + 608) != prefix + 612 ||
-            Word(b, 60) != 2 || Word(b, 64) != 0x0D96A2F4u || Word(b, 68) != 72 || Word(b, prefix + 612) != Word(b, 64))
+            Word(b, fragmentStart) != 2 || Word(b, fragmentStart + 4) != 0x0D96A2F4u || Word(b, fragmentStart + 8) != fragmentStart + 12 || Word(b, prefix + 612) != Word(b, fragmentStart + 4))
             throw new InvalidDataException("Composed root/container/module coordinate chain differs.");
-        var own = GameObjectStockReview.Tokens(b, 72); int itemTable = own[FastHash.GetHashCode("Item")].Offset;
+        // Reborn: every scalar token is independently bound to its emitted native storage, including packed byte/ushort fields.
+        foreach (var field in Ep1GameObjectScalarTokens.Fields)
+            if (!root.TryGetValue(FastHash.GetHashCode(field.Name), out var token) || token.Type != field.Type || token.Offset != prefix + field.Offset)
+                throw new InvalidDataException("Composed scalar token differs: " + field.Name);
+        var own = GameObjectStockReview.Tokens(b, fragmentStart + 12); int itemTable = own[FastHash.GetHashCode("Item")].Offset;
         if (Word(b, itemTable + 8) != prefix + 676) throw new InvalidDataException("Composed Item count binding differs.");
         for (int i = 0; i < count; i++)
         {

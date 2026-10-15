@@ -8,7 +8,18 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
-The [GameObject destruction projection](docs/RA3EP1_GAMEOBJECT_DESTRUCTION_PROJECTION.md)
+The [scalar-root batch](docs/RA3EP1_GAMEOBJECT_SCALAR_TOKENS.md) widens generated
+root tokens to reviewed float/integer/time/angle and packed ushort/byte/bool
+families plus Behaviors. Every scalar descriptor is checked against two stock
+roots, and two all-field authored sets exercise schema/native/token conversion.
+Root/container/module coordinates now scale with the emitted field count.
+This is still a partial root projection, not general GameObject publication.
+The batch emits **62 scalar fields + Behaviors = 63 root fields**, with 124
+independent scalar type/target corruption controls. This is not SDK percentage.
+Final Focused regression: **30/30** in **80.569 seconds**; all eight runtime hashes
+remain unchanged during workers. The selected composed BIN is now 1900 bytes.
+
+The earlier [GameObject destruction projection](docs/RA3EP1_GAMEOBJECT_DESTRUCTION_PROJECTION.md)
 now joins BuildTime/Behaviors root tokens, the behavior container and generated
 module/Item tokens in one address space. Native graph/import indices survive
 global pointer and auxiliary-slot rebasing. **Only two root fields are emitted**;

@@ -1,5 +1,9 @@
 # GameObject root/container/destruction composition projection
 
+Historical two-field checkpoint: the [scalar batch](RA3EP1_GAMEOBJECT_SCALAR_TOKENS.md)
+supersedes the fixed two-field prefix described below. Root scalar coverage is
+now wider and offsets are count-derived; complete root publication remains closed.
+
 ## What changed
 
 `Ep1GameObjectDestructionProjection.Compose` composes the generated destruction

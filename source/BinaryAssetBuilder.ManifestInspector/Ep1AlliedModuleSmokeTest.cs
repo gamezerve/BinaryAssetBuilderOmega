@@ -22,6 +22,8 @@ internal static class Ep1AlliedModuleSmokeTest
         XmlSchemaSet? schemas = null;
         SdkEffectiveSchema.Inspect(shieldCandidate: true, reviewHooks: true, onAdmitted: s => schemas = s);
         if (schemas == null) throw new InvalidDataException("Reviewed schema candidate required.");
+        // Reborn: scalar root families are audited/compiled as one batch, not promoted from native-name coverage alone.
+        GameObjectScalarTokenSmokeTest.Run(schemas, manifest);
         var stock = GameObjectStockReview.Capture(manifest, "GameObject:AlliedConstructionYard");
         var graph = GameObjectModuleReview.Inspect(manifest, "GameObject:AlliedConstructionYard");
         var cases = new[] {

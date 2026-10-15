@@ -7,11 +7,11 @@ using Chunk = Relo.Chunk;
 
 namespace BinaryAssetBuilder.XmlCompiler;
 
-// Reborn: partial root/container projection only; two root tokens cannot represent or publish a complete GameObject asset.
+// Reborn: scalar root/container projection only; omitted indirect/reference/enum fields still prevent complete GameObject publication.
 public static class Ep1GameObjectDestructionProjection
 {
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: compose BuildTime/Behaviors and a generated destruction fragment into one address space while preserving the original native graph and reference indices. */
+    /** Reborn: compose reviewed scalar fields/Behaviors and a generated destruction fragment while preserving the original native graph and reference indices. */
     //-------------------------------------------------------------------------------------------------
     public static Chunk Compose(Chunk native)
     {
@@ -33,19 +33,25 @@ public static class Ep1GameObjectDestructionProjection
         module.RelocationBuffer = Pack(relos.Where(s => s >= 612).Select(s => s - 612));
         module.ImportsBuffer = Pack(imports.Select(s => s - 612));
         var fragment = Ep1DestructionTokenizer.Tokenize(module);
-        int modulePrefix = checked(312 + (int)Word(module.InstanceBuffer, 64) * 72), prefix = checked(60 + modulePrefix);
+        // Reborn: root token count is descriptor-driven; nested fragment coordinates must never retain the old two-field prefix size.
+        int container = checked((Ep1GameObjectScalarTokens.Fields.Count + 2) * 12), fragmentStart = container + 24;
+        int modulePrefix = checked(312 + (int)Word(module.InstanceBuffer, 64) * 72), prefix = checked(fragmentStart + modulePrefix);
         var result = new Chunk { InstanceBuffer = new byte[checked(prefix + b.Length)] };
         b.CopyTo(result.InstanceBuffer, prefix);
-        Token(0, FastHash.GetHashCode("BuildTime"), 0x645864F3u, (uint)(prefix + 140));
-        Token(12, FastHash.GetHashCode("Behaviors"), 0x24FCCAE2u, 36);
-        Token(36, 0x6C827073u, 0x5D448FD8u, (uint)(prefix + 600));
-        Token(48, 0xB151A0EBu, 0, 60);
-        fragment.InstanceBuffer.AsSpan(0, modulePrefix).CopyTo(result.InstanceBuffer.AsSpan(60));
-        // Reborn: metadata targets have distinct ownership: fragment token offsets shift by 60, module-native targets bind the preserved root-native graph.
+        for (int i = 0; i < Ep1GameObjectScalarTokens.Fields.Count; i++)
+        {
+            var field = Ep1GameObjectScalarTokens.Fields[i];
+            Token(i * 12, FastHash.GetHashCode(field.Name), field.Type, (uint)(prefix + field.Offset));
+        }
+        Token(Ep1GameObjectScalarTokens.Fields.Count * 12, FastHash.GetHashCode("Behaviors"), 0x24FCCAE2u, (uint)container);
+        Token(container, 0x6C827073u, 0x5D448FD8u, (uint)(prefix + 600));
+        Token(container + 12, 0xB151A0EBu, 0, (uint)fragmentStart);
+        fragment.InstanceBuffer.AsSpan(0, modulePrefix).CopyTo(result.InstanceBuffer.AsSpan(fragmentStart));
+        // Reborn: metadata targets have distinct ownership: fragment token offsets shift by the root/container extent, native targets bind the preserved module graph.
         for (int at = 8; at < modulePrefix; at += 12)
         {
             uint target = Word(fragment.InstanceBuffer, at);
-            if (target != 0) Put(result.InstanceBuffer, 60 + at, target < modulePrefix ? checked(target + 60u) : checked(target - (uint)modulePrefix + (uint)prefix + 612u));
+            if (target != 0) Put(result.InstanceBuffer, fragmentStart + at, target < modulePrefix ? checked(target + (uint)fragmentStart) : checked(target - (uint)modulePrefix + (uint)prefix + 612u));
         }
         foreach (uint slot in relos)
         {
