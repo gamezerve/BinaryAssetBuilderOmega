@@ -16,7 +16,7 @@ public static class Ep1GameObjectStringTokens
         new("EditorName",124,0x1A2933AAu,8), new("ExperienceScalarTable",284,0x1A2933AAu,8)
     });
     // Reborn: behavior allocation addresses are decoded from native pointers, never inferred from root string lengths or fixed at 600/608/612.
-    public readonly record struct Layout(int List, int Items, int Module);
+    public readonly record struct Layout(int List, int Items, int Module, int Body);
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate dynamic behavior ownership, bounded ASCII string storage and exact root relocation membership before splitting the module graph. */
     //-------------------------------------------------------------------------------------------------
@@ -27,6 +27,13 @@ public static class Ep1GameObjectStringTokens
             throw new InvalidDataException("Projection requires a bounded single-behavior envelope after root allocations.");
         int module = (int)list + 12;
         var owners = new List<uint> { 476, list + 4, list + 8 };
+        // Reborn: the explicit EP1 body path owns a separate tail after destruction; no alias into the root/list/module is admissible.
+        uint body = Word(488);
+        if(body != 0)
+        {
+            if(body % 4 != 0 || body < module + 92 || body > b.Length - 76)throw new InvalidDataException("Body tail ownership/bounds differ.");
+            owners.Add(488);
+        }
         var ranges = new List<(uint Start, uint End)>();
         foreach (var field in Fields)
         {
@@ -46,7 +53,7 @@ public static class Ep1GameObjectStringTokens
         var rootImports = Ep1GameObjectStrongTokens.Fields.Where(f => Word(f.Offset) != 0).Select(f => (uint)f.Offset);
         if (!relos.Where(s => s < module).OrderBy(s => s).SequenceEqual(owners.OrderBy(s => s)) || !imports.Where(s => s < module).OrderBy(s => s).SequenceEqual(rootImports.OrderBy(s => s)))
             throw new InvalidDataException("Unsupported root allocation/import ownership in string projection.");
-        return new((int)list,(int)list + 8,module);
+        return new((int)list,(int)list + 8,module,(int)body);
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: all dynamic headers and pointers stay inside the supplied native chunk. */

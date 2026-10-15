@@ -1,5 +1,9 @@
 # EP1 ActiveBody native port and token fragment
 
+Follow-up: [root/body/destruction composition](RA3EP1_GAMEOBJECT_BODY_COMPOSITION.md)
+now connects this fragment through an explicit EP1 allocator. The standalone
+milestone and its original evidence/limitations are preserved below.
+
 October 15, 2026. A separate **76-byte EP1 ActiveBody model**, marshaler overload
 and generated standalone token fragment now reproduce two selected stock bodies.
 This is a new writer milestone, not merely another source inventory. It does not

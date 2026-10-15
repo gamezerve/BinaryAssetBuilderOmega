@@ -4,6 +4,16 @@ using SageBinaryData;
 public static partial class Marshaler
 {
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: explicit EP1-only allocation selects the reviewed body ABI and concrete wire ID without altering legacy polymorphic dispatch. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void MarshalEp1ActiveBody(Node node,BodyModuleData** objT,Tracker state)
+    {
+        if(node is null || node.GetAttributeValue("TypeId",null)?.GetText() != "1510882715")throw new BinaryAssetBuilderException(ErrorCode.InternalError,"Explicit EP1 ActiveBody class ID required.");
+        using(var context=state.Push((void**)objT,(uint)sizeof(Ep1ActiveBodyModuleData),1u))Marshal(node,(Ep1ActiveBodyModuleData*)*objT,state);
+        // Reborn: hashing the separate C# name would be wrong; the bound EP1 schema retains ActiveBodyModuleData's original concrete ID.
+        uint type=0x5A0E3D9B;state.InplaceEndianToPlatform(&type);*(uint*)*objT=type;
+    }
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: preserve ordered EP1 damage-range percentages and the already-normalized modifier occurrence index. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node,Ep1ActiveBodyDamageRangeModifier* objT,Tracker state)

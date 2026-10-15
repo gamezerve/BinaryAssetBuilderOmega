@@ -19,22 +19,19 @@ public static class Ep1GameObjectDestructionProjection
             throw new InvalidDataException("GameObject destruction projection requires bounded native dispatch output.");
         byte[] b = native.InstanceBuffer;
         var relos = Slots(native.RelocationBuffer); var imports = Slots(native.ImportsBuffer);
+        // Reborn: range partitioning must not hide auxiliary slots outside every native owner.
+        if(relos.Any(s=>s>b.Length-4) || imports.Any(s=>s>b.Length-4))throw new InvalidDataException("Projection auxiliary slot escapes native buffer.");
         // Reborn: explicit root-string allocations may move the behavior list and module; decode and validate ownership before extracting the tail.
         var layout = Ep1GameObjectStringTokens.Inspect(b, relos, imports); int moduleStart = layout.Module;
-        var module = new Chunk { InstanceBuffer = b.AsSpan(moduleStart).ToArray() };
-        foreach (uint slot in relos.Where(s => s >= moduleStart))
-        {
-            if (slot > b.Length - 4 || Word(b, (int)slot) < moduleStart || Word(b, (int)slot) >= b.Length)
-                throw new InvalidDataException("Destruction module pointer escapes its owned graph.");
-            Put(module.InstanceBuffer, checked((int)slot - moduleStart), Word(b, (int)slot) - (uint)moduleStart);
-        }
-        module.RelocationBuffer = Pack(relos.Where(s => s >= moduleStart).Select(s => s - (uint)moduleStart));
-        // Reborn: split slot ownership without subtracting the module start from root slots or renumbering shared dependency indices.
-        module.ImportsBuffer = Pack(imports.Where(s => s >= moduleStart).Select(s => s - (uint)moduleStart));
+        // Reborn: module and optional EP1 body own disjoint native tails; imports retain one shared occurrence table.
+        var module = Extract(moduleStart,layout.Body == 0 ? b.Length : layout.Body);
         var fragment = Ep1DestructionTokenizer.Tokenize(module);
+        var body = layout.Body == 0 ? null : Extract(layout.Body,b.Length);
+        var bodyFragment = body == null ? null : Ep1ActiveBodyTokenizer.Tokenize(body);
         // Reborn: root token count is descriptor-driven; nested fragment coordinates must never retain the old two-field prefix size.
-        int container = checked((Ep1GameObjectRootValueTokens.AllFields.Count + 2) * 12), fragmentStart = container + 24;
-        int modulePrefix = checked(312 + (int)Word(module.InstanceBuffer, 64) * 72), prefix = checked(fragmentStart + modulePrefix);
+        int container = checked((Ep1GameObjectRootValueTokens.AllFields.Count + (body == null ? 2 : 3)) * 12), fragmentStart = container + 24;
+        int modulePrefix = checked(312 + (int)Word(module.InstanceBuffer, 64) * 72), bodyStart = checked(fragmentStart + modulePrefix);
+        int bodyPrefix = body == null ? 0 : checked(324 + (int)Word(body.InstanceBuffer,64) * 60), prefix = checked(bodyStart + bodyPrefix);
         var result = new Chunk { InstanceBuffer = new byte[checked(prefix + b.Length)] };
         b.CopyTo(result.InstanceBuffer, prefix);
         for (int i = 0; i < Ep1GameObjectRootValueTokens.AllFields.Count; i++)
@@ -43,15 +40,12 @@ public static class Ep1GameObjectDestructionProjection
             Token(i * 12, FastHash.GetHashCode(field.Name), field.Type, (uint)(prefix + field.Offset));
         }
         Token(Ep1GameObjectRootValueTokens.AllFields.Count * 12, FastHash.GetHashCode("Behaviors"), 0x24FCCAE2u, (uint)container);
+        // Reborn: Body is an indirect concrete wrapper, not a direct token pointing at root pointer storage.
+        if(body != null)Token((Ep1GameObjectRootValueTokens.AllFields.Count + 1) * 12,FastHash.GetHashCode("Body"),0xAFAD56F4u,(uint)bodyStart);
         Token(container, 0x6C827073u, 0x5D448FD8u, (uint)(prefix + layout.List));
         Token(container + 12, 0xB151A0EBu, 0, (uint)fragmentStart);
-        fragment.InstanceBuffer.AsSpan(0, modulePrefix).CopyTo(result.InstanceBuffer.AsSpan(fragmentStart));
-        // Reborn: metadata targets have distinct ownership: fragment token offsets shift by the root/container extent, native targets bind the preserved module graph.
-        for (int at = 8; at < modulePrefix; at += 12)
-        {
-            uint target = Word(fragment.InstanceBuffer, at);
-            if (target != 0) Put(result.InstanceBuffer, fragmentStart + at, target < modulePrefix ? checked(target + (uint)fragmentStart) : checked(target - (uint)modulePrefix + (uint)prefix + (uint)moduleStart));
-        }
+        Join(fragment,modulePrefix,fragmentStart,moduleStart);
+        if(bodyFragment != null)Join(bodyFragment,bodyPrefix,bodyStart,layout.Body);
         foreach (uint slot in relos)
         {
             if (slot > b.Length - 4 || Word(b, (int)slot) >= b.Length) throw new InvalidDataException("Root projection relocation bounds exceeded.");
@@ -65,6 +59,33 @@ public static class Ep1GameObjectDestructionProjection
         /** Reborn: root projection metadata never enters native relocation/import streams. */
         //-------------------------------------------------------------------------------------------------
         void Token(int at, uint name, uint type, uint target) { Put(result.InstanceBuffer, at, name); Put(result.InstanceBuffer, at + 4, type); Put(result.InstanceBuffer, at + 8, target); }
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: reject cross-owner pointers before local rebasing; strong dependency indices are never interpreted as addresses. */
+        //-------------------------------------------------------------------------------------------------
+        Chunk Extract(int start,int end)
+        {
+            if(start < 600 || end < start || end > b.Length)throw new InvalidDataException("Projection native owner bounds differ.");
+            var chunk = new Chunk {InstanceBuffer=b.AsSpan(start,end-start).ToArray()};
+            foreach(uint slot in relos.Where(s=>s>=start && s<end))
+            {
+                if(slot>end-4 || Word(b,(int)slot)<start || Word(b,(int)slot)>=end)throw new InvalidDataException("Projection pointer crosses native owners.");
+                Put(chunk.InstanceBuffer,(int)slot-start,Word(b,(int)slot)-(uint)start);
+            }
+            chunk.RelocationBuffer=Pack(relos.Where(s=>s>=start && s<end).Select(s=>s-(uint)start));
+            chunk.ImportsBuffer=Pack(imports.Where(s=>s>=start && s<end).Select(s=>s-(uint)start));return chunk;
+        }
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: local fragment tables and local native targets have different origins in the composed global coordinate system. */
+        //-------------------------------------------------------------------------------------------------
+        void Join(Chunk piece,int metadataBytes,int tableStart,int nativeStart)
+        {
+            piece.InstanceBuffer.AsSpan(0,metadataBytes).CopyTo(result.InstanceBuffer.AsSpan(tableStart));
+            for(int at=8;at<metadataBytes;at+=12)
+            {
+                uint target=Word(piece.InstanceBuffer,at);
+                if(target!=0)Put(result.InstanceBuffer,tableStart+at,target<metadataBytes?checked(target+(uint)tableStart):checked(target-(uint)metadataBytes+(uint)prefix+(uint)nativeStart));
+            }
+        }
     }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: auxiliary streams require an aligned, unique bounded slot list and one final sentinel. */

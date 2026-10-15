@@ -97,8 +97,11 @@ diagnostic and gameplay boundaries.
    General target payload/source closure remains open; the alpha is unchanged.
    A separate [EP1 ActiveBody writer](RA3EP1_ACTIVE_BODY_FRAGMENT.md) now matches
    two complete stock bodies and generates standalone inherited/range metadata.
-   Root/body/behavior composition and explicit EP1 body dispatch selection remain
-   the next integration gate; legacy KW body dispatch and alpha are unchanged.
+   The [combined body/root writer](RA3EP1_GAMEOBJECT_BODY_COMPOSITION.md) now adds
+   explicit EP1 allocation and disjoint root/destruction/body ownership with shared
+   actual-Core names and 88 root fields when Body is present (87 otherwise).
+   General source/processor integration and other body/consumer graphs remain
+   open; legacy KW body dispatch and alpha are unchanged.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

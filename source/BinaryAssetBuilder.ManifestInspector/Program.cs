@@ -22,6 +22,9 @@ internal static class Program
             // Reborn: actual Core FX name resolution is a separate gate from captured destruction indices.
             // Reborn: selected root and module names share actual Core normalization and independent static/global target admission.
             // Reborn: opt-in EP1 ActiveBody native/token fragments do not replace legacy body dispatch or enable complete GameObjects.
+            // Reborn: combined body/root/behavior projection is an explicit native/source diagnostic, not general asset publication.
+            if(args.Length==3 && args[0]=="gameobject-body-projection-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();GameObjectBodyProjectionSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==2 && args[0]=="ep1-active-body-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1ActiveBodySmokeTest.Run(args[1]);return 0;}
             if (args.Length == 3 && args[0] == "gameobject-root-strong-source-self-test")
@@ -1316,6 +1319,8 @@ internal static class Program
         Console.WriteLine("  gameobject-root-strong-source-self-test <static.manifest> <global.manifest>");
         // Reborn: body native/fragment admission is a separate diagnostic command.
         Console.WriteLine("  ep1-active-body-self-test <static.manifest>");
+        // Reborn: root/body composition still requires independent stock lookup inputs and explicit EP1 allocation.
+        Console.WriteLine("  gameobject-body-projection-self-test <static.manifest> <global.manifest>");
         Console.WriteLine("  ep1-allied-modules-self-test <static.manifest>");
         // Reborn: explicit source normalization does not open general GameObject publication.
         Console.WriteLine("  ep1-destruction-source-self-test <static.manifest>");

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: selected root, behavior and body references share a single official-type Core table; target stubs grant no payload support. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset" targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="RootStrongPipeline.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Modules/Body.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Modules/ActiveBody.xsd"/>
+ <xs:complexType name="AttributeModifier"><xs:complexContent><xs:extension base="BaseInheritableAsset"/></xs:complexContent></xs:complexType>
+ <!-- Reborn: icon/intro declarations are compared with the full reviewed GameObject before this projection is used. -->
+ <xs:complexType name="RootBodyProbeType"><xs:complexContent><xs:extension base="BaseAssetType">
+  <xs:sequence><xs:element ref="BuildingDestructionBehavior"/><xs:element name="ActiveBody" type="ActiveBodyModuleData"/></xs:sequence>
+  <xs:attribute name="UnitTypeIcon" type="UnitTypeIconRef"/>
+  <xs:attribute name="UnitIntro" type="UnitIntroRef"/>
+ </xs:extension></xs:complexContent></xs:complexType>
+ <xs:element name="RootBodyProbe" type="RootBodyProbeType"/>
+</xs:schema>
