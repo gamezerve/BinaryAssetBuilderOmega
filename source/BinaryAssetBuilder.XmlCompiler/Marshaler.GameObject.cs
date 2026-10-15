@@ -869,6 +869,17 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(ArmorTemplateSet.Conditions), null), &objT->Conditions, state);
     }
 
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: marshal the EP1 root record with its independently reviewed condition policy; missing fields retain native zero defaults. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node, Ep1LocomotorSet* objT, Tracker state)
+    {
+        if (node is null) return;
+        Marshal(node.GetAttributeValue(nameof(Ep1LocomotorSet.Speed), null), &objT->Speed, state);
+        Marshal(node.GetAttributeValue(nameof(Ep1LocomotorSet.Condition), null), &objT->Condition, state);
+        Marshal(node.GetAttributeValue(nameof(Ep1LocomotorSet.Locomotor), null), &objT->Locomotor, state);
+    }
+
     public static unsafe void Marshal(Node node, LocomotorSet* objT, Tracker state)
     {
         if (node is null)

@@ -64,7 +64,7 @@ internal static class GameObjectCombatCompositionSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: controlled sources exercise source order, real identities and literal fields without pretending to support a general mod input graph. */
     //-------------------------------------------------------------------------------------------------
-    private static string Source(ManifestAsset[] t,bool reverse,int weapons,int ranges,int helperPosition=-1)
+    internal static string Source(ManifestAsset[] t,bool reverse,int weapons,int ranges,int helperPosition=-1)
     {
         string destruction=$"<BuildingDestructionBehavior id='Destroy'><DieMuxData/><Item FX='{t[4].Name}' BonePrefix='BONE_'/></BuildingDestructionBehavior>";
         string weapon=$"<WeaponSetUpdate id='Shooter'><WeaponSlotHardpoint ID='1'>"+string.Concat(Enumerable.Range(0,weapons).Select(i=>$"<Weapon Ordering='{(i==0?"PRIMARY_WEAPON":"SECONDARY_WEAPON")}' Template='{t[6].Name}' Upgrade='{t[7].Name}' ForbiddenObjectStatus='GENERIC_TOGGLE_STATE'/>"))+"</WeaponSlotHardpoint></WeaponSetUpdate>";
@@ -74,10 +74,11 @@ internal static class GameObjectCombatCompositionSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: move focused children into the real root/ArmorSet/Behaviors/Body containers while retaining normalized source order. */
     //-------------------------------------------------------------------------------------------------
-    private static XmlDocument Adapt(XmlNode probe,bool strings)
+    internal static XmlDocument Adapt(XmlNode probe,bool strings)
     {
         var d=Xml("<GameObject xmlns='uri:ea.com:eala:asset' id='CombatProbe'><Behaviors/><Body/></GameObject>");foreach(string name in new[]{"UnitTypeIcon","UnitIntro"})d.DocumentElement!.SetAttribute(name,probe.Attributes![name]!.Value);if(strings)d.DocumentElement!.SetAttribute("EditorName",new string('R',300));
-        foreach(XmlElement child in probe.ChildNodes.OfType<XmlElement>())if(child.LocalName=="ArmorSet")d.DocumentElement!.InsertBefore(d.ImportNode(child,true),d.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]);else if(child.LocalName=="ActiveBody")d.GetElementsByTagName("Body",SchemaSet.XmlNamespace)[0]!.AppendChild(d.ImportNode(child,true));else d.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]!.AppendChild(d.ImportNode(child,true));return d;
+        // Reborn: movement probes retain root allocation order rather than becoming fake behavior modules.
+        foreach(XmlElement child in probe.ChildNodes.OfType<XmlElement>())if(child.LocalName is "ArmorSet" or "LocomotorSet")d.DocumentElement!.InsertBefore(d.ImportNode(child,true),d.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]);else if(child.LocalName=="ActiveBody")d.GetElementsByTagName("Body",SchemaSet.XmlNamespace)[0]!.AppendChild(d.ImportNode(child,true));else d.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]!.AppendChild(d.ImportNode(child,true));return d;
     }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: separate output verification from production so detached metadata cannot be repaired by a repeated write. */

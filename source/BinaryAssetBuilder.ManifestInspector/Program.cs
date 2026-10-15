@@ -28,6 +28,9 @@ internal static class Program
             // Reborn: EP1 hardpoint native/token fragments are explicit diagnostics, not legacy dispatch replacement.
             // Reborn: selected two-behavior combat graphs have explicit native allocation and never authorize a complete GameObject stream.
             // Reborn: the required SMC helper has its own stock/token gate and optional three-module integration cases.
+            // Reborn: movement joins the selected graph only after independent root condition/stock/reference ownership checks.
+            if(args.Length==3 && args[0]=="gameobject-movement-composition-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();GameObjectMovementCompositionSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==2 && args[0]=="ep1-smc-helper-token-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1SmcHelperTokenSmokeTest.Run(args[1]);return 0;}
             if(args.Length==3 && args[0]=="gameobject-smc-combat-self-test")
@@ -1354,6 +1357,8 @@ internal static class Program
         // Reborn: SMC selection extends the diagnostic module list, not the public SDK asset registry.
         Console.WriteLine("  ep1-smc-helper-token-self-test <static.manifest>");
         Console.WriteLine("  gameobject-smc-combat-self-test <static.manifest> <global.manifest>");
+        // Reborn: movement remains a bounded offline diagnostic, not a generic object publication command.
+        Console.WriteLine("  gameobject-movement-composition-self-test <static.manifest> <global.manifest>");
         Console.WriteLine("  gameobject-authored-smc-combat-self-test <fresh-output> <static.manifest> <global.manifest>");
         Console.WriteLine("  ep1-allied-modules-self-test <static.manifest>");
         // Reborn: explicit source normalization does not open general GameObject publication.

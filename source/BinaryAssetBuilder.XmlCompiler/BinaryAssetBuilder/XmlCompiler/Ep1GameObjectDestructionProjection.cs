@@ -39,11 +39,13 @@ public static class Ep1GameObjectDestructionProjection
         var body = layout.Body == 0 ? null : Extract(layout.Body,b.Length);
         var bodyFragment = body == null ? null : Ep1ActiveBodyTokenizer.Tokenize(body);
         // Reborn: root token count is descriptor-driven; nested fragment coordinates must never retain the old two-field prefix size.
-        int armorFields=layout.ArmorCount==0?0:1;
+        int armorFields=(layout.ArmorCount==0?0:1)+(layout.LocomotorCount==0?0:1);
         int container = checked((Ep1GameObjectRootValueTokens.AllFields.Count + (body == null ? 2 : 3) + armorFields) * 12), fragmentStart = checked(container + 12 + fragments.Count*12);
         int bodyStart=checked(fragmentStart+fragments.Sum(f=>f.Prefix));
         int bodyPrefix = body == null ? 0 : checked(324 + (int)Word(body.InstanceBuffer,64) * 60),armorStart=checked(bodyStart+bodyPrefix);
-        int armorPrefix=layout.ArmorCount==0?0:checked(12+layout.ArmorCount*60),prefix = checked(armorStart+armorPrefix);
+        int armorPrefix=layout.ArmorCount==0?0:checked(12+layout.ArmorCount*60),locomotorStart=checked(armorStart+armorPrefix);
+        // Reborn: movement count/marker/member tables follow the other reviewed fragments without altering absent-list output.
+        int locomotorPrefix=layout.LocomotorCount==0?0:checked(12+layout.LocomotorCount*60),prefix=checked(locomotorStart+locomotorPrefix);
         var result = new Chunk { InstanceBuffer = new byte[checked(prefix + b.Length)] };
         b.CopyTo(result.InstanceBuffer, prefix);
         for (int i = 0; i < Ep1GameObjectRootValueTokens.AllFields.Count; i++)
@@ -56,6 +58,8 @@ public static class Ep1GameObjectDestructionProjection
         if(body != null)Token((Ep1GameObjectRootValueTokens.AllFields.Count + 1) * 12,FastHash.GetHashCode("Body"),0xAFAD56F4u,(uint)bodyStart);
         // Reborn: ArmorSet is an inline native list with indirect count/marker/member metadata, not another pointer-based module wrapper.
         if(layout.ArmorCount!=0)Token((Ep1GameObjectRootValueTokens.AllFields.Count+1+(body==null?0:1))*12,FastHash.GetHashCode("ArmorSet"),0x5E5AF575u,(uint)armorStart);
+        // Reborn: LocomotorSet metadata targets its native count, not the items pointer or a behavior wrapper.
+        if(layout.LocomotorCount!=0)Token((Ep1GameObjectRootValueTokens.AllFields.Count+1+(body==null?0:1)+(layout.ArmorCount==0?0:1))*12,FastHash.GetHashCode("LocomotorSet"),0x6E6BF482u,(uint)locomotorStart);
         Token(container, 0x6C827073u, 0x5D448FD8u, (uint)(prefix + layout.List));
         int nextFragment=fragmentStart;
         for(int i=0;i<fragments.Count;i++)
@@ -74,6 +78,19 @@ public static class Ep1GameObjectDestructionProjection
                 Token(table,FastHash.GetHashCode("Armor"),0x34E9127Bu,(uint)member);
                 Token(table+12,FastHash.GetHashCode("DamageFX"),0x9A95EDFFu,(uint)(member+4));
                 Token(table+24,FastHash.GetHashCode("Conditions"),0xED8BC8E9u,(uint)(member+8));
+            }
+        }
+        // Reborn: three inline movement fields use independently recovered stock token identities and native offsets.
+        if(layout.LocomotorCount!=0)
+        {
+            Token(locomotorStart,0x6C827073u,0x5D448FD8u,(uint)(prefix+428));
+            for(int i=0;i<layout.LocomotorCount;i++)
+            {
+                int table=locomotorStart+12+layout.LocomotorCount*12+i*48,member=prefix+layout.Locomotor+i*12;
+                Token(locomotorStart+12+i*12,0xB151A0EBu,0,(uint)table);
+                Token(table,FastHash.GetHashCode("Speed"),0x645864F3u,(uint)member);
+                Token(table+12,FastHash.GetHashCode("Condition"),0x845D12B2u,(uint)(member+4));
+                Token(table+24,FastHash.GetHashCode("Locomotor"),0xFED20C6Cu,(uint)(member+8));
             }
         }
         foreach (uint slot in relos)

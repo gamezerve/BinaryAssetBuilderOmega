@@ -95,6 +95,8 @@ if($SchedulerControl){
     Add-BatchCase 'ep1-smc-helper-tokens' 'BoundedStockSmcTokenFragment' @('ep1-smc-helper-token-self-test',$StaticManifest)
     Add-BatchCase 'gameobject-smc-combat' 'BoundedThreeModuleCombatProjection' @('gameobject-smc-combat-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'gameobject-authored-smc-combat' 'BoundedAuthoredArmorThreeModuleConsumer' @('gameobject-authored-smc-combat-self-test',(Join-Path $OutputDirectory 'smc-combat-consumer'),$StaticManifest,$GlobalManifest)
+    # Reborn: independent stock locomotor records and scoped enum values precede combined movement/combat ownership admission.
+    Add-BatchCase 'gameobject-movement-composition' 'BoundedCoreMovementCombatProjection' @('gameobject-movement-composition-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: actual Core destruction FX names/defaults and semantic imports must pass without captured source dependency indices.
     Add-BatchCase 'ep1-destruction-source' 'BoundedCoreNormalizedModuleNativePayload' @('ep1-destruction-source-self-test',$StaticManifest)
     # Reborn: nested effect/status graphs and Core-normalized strong imports share one new update-family gate.

@@ -8,6 +8,15 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [movement/combat follow-up](docs/RA3EP1_MOVEMENT_COMPOSITION.md) adds scoped
+root LocomotorSet native data and generated count/member metadata to the shared
+armor/body/three-behavior graph. Four stock movement arrays match native output;
+69 source/composition cases cover all twenty condition names, 0/1/3/32 records,
+named Core references and dynamic allocations. Present movement raises the partial
+root inventory to 90 fields; no complete object publication or alpha expansion.
+Final Focused regression: **42/42** in **116.493 seconds**, eight runtime hashes
+stable, no game or installed-file changes.
+
 The [SMC helper writer and three-module composition](docs/RA3EP1_SMC_COMBAT_COMPOSITION.md)
 now adds the required helper to destruction and EP1 weapon behaviors. Both selected
 stock helpers match all 8 native/168 metadata bytes. All six behavior orders pass

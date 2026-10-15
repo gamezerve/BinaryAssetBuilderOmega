@@ -301,7 +301,8 @@ namespace SageBinaryData
         public unsafe GameDependencyType* GameDependency;
         public unsafe ObjectResourceInfo* ObjectResourceInfo;
         public List<ArmorTemplateSet> ArmorSet;
-        public List<LocomotorSet> LocomotorSet;
+        // Reborn: EP1 root conditions differ from the legacy shared locomotor enum without changing the twelve-byte record ABI.
+        public List<Ep1LocomotorSet> LocomotorSet;
         public unsafe BuildableStatus* Buildable;
         public unsafe ThingClassType* ThingClass;
         public unsafe List<AnsiString>* BuildFadeInOnCreateList;

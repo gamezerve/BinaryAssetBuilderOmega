@@ -114,8 +114,11 @@ diagnostic and gameplay boundaries.
    Other object graphs, turret/contained and general consumer publication remain open.
    The [SMC helper follow-up](RA3EP1_SMC_COMBAT_COMPOSITION.md) adds independently
    stock-matching helper metadata and all six orders of the selected three-module
-   graph, including a real newly compiled armor target. Movement/draw/geometry,
-   other root/container graphs and publication remain open.
+   graph, including a real newly compiled armor target.
+   The [root movement follow-up](RA3EP1_MOVEMENT_COMPOSITION.md) adds scoped
+   LocomotorSet records, independently stock-corroborated engine values and
+   generated metadata to the same selected graph. General LocomotorTemplate/AI
+   compilation, draw/geometry, other root/container graphs and publication remain open.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a
