@@ -31,6 +31,8 @@ internal static class Ep1DestructionSourceSmokeTest
             var normalized = Normalize(schemas, source, catalog);
             var output = Ep1AlliedModuleSmokeTest.Compile(normalized.XmlNode.OuterXml, module.Type);
             Ep1AlliedModuleSmokeTest.Compare(stock.Bytes, module, output, 72, stock.Asset.References.ToArray(), normalized);
+            // Reborn: generate, independently compare and round-trip the module fragment from actual Core native output, never a captured prefix.
+            DestructionTokenWriterSmokeTest.Stock(output, stock.Bytes, module);
             var target = normalized.ReferencedInstances.Single();
             if (target.TypeId != FastHash.GetHashCode("FXList") || target.InstanceId != FastHash.GetHashCode("sovietrefineryhit")) throw new InvalidDataException("Destruction source target differs.");
             // Reborn: both schema-inserted weak SubObject identity and native default values must survive Core, not be patched after compilation.
@@ -49,6 +51,8 @@ internal static class Ep1DestructionSourceSmokeTest
             string multi = source.Replace("</BuildingDestructionBehavior>", "<Item BonePrefix='second' FX='" + otherName + "'/><Item BonePrefix='third' FX='SovietRefineryHit'/></BuildingDestructionBehavior>", StringComparison.Ordinal);
             var ordered = Normalize(schemas, multi, catalog);
             var many = Ep1AlliedModuleSmokeTest.Compile(ordered.XmlNode.OuterXml, module.Type);
+            // Reborn: ordered repeated named FX occurrences also exercise variable-sized token-list emission.
+            DestructionTokenWriterSmokeTest.Authored(many);
             int items = (int)Word(many.Chunk.InstanceBuffer, many.Native + 68);
             // Reborn: Core appends each source reference occurrence here; repeated identity is retained rather than deduplicated at this seam.
             if (ordered.ReferencedInstances.Count != 3 || ordered.ReferencedInstances[0].InstanceId != target.InstanceId || ordered.ReferencedInstances[1].InstanceId != other.InstanceId || ordered.ReferencedInstances[2].InstanceId != target.InstanceId ||

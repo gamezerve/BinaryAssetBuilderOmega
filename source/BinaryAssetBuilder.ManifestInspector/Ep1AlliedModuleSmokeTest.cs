@@ -107,6 +107,14 @@ internal static class Ep1AlliedModuleSmokeTest
         const string destruction = "<BuildingDestructionBehavior id='CustomDestruction'><DieMuxData/><Item BonePrefix='first'/><Item BonePrefix='second' FlingVelocity='7'/></BuildingDestructionBehavior>";
         Ep1BasicModuleSmokeTest.Validate(schemas, destruction, false);
         var authored = Compile(destruction, "BuildingDestructionModuleData");
+        // Reborn: authored two-item fragments with absent FX imports use the same generated-token path.
+        DestructionTokenWriterSmokeTest.Authored(authored);
+        // Reborn: the token writer must preserve null strings/absent imports, admit its bounded maximum and reject an excessive item count explicitly.
+        const string emptyBoneStart = "<BuildingDestructionBehavior id='WriterBoundary'><DieMuxData/>";
+        const string emptyBoneEnd = "</BuildingDestructionBehavior>";
+        foreach (int count in new[] { 1, 256 })
+            DestructionTokenWriterSmokeTest.Authored(Compile(emptyBoneStart + string.Concat(Enumerable.Repeat("<Item/>", count)) + emptyBoneEnd, "BuildingDestructionModuleData"));
+        Refuse(() => DestructionTokenWriterSmokeTest.Authored(Compile(emptyBoneStart + string.Concat(Enumerable.Repeat("<Item/>", 257)) + emptyBoneEnd, "BuildingDestructionModuleData")));
         var db = authored.Chunk.InstanceBuffer; int dn = authored.Native, di = (int)Word(db, dn + 68);
         if (Word(db, dn + 56) != Float(2) || Word(db, dn + 60) != FastHash.GetHashCode("newskin_fill") || Word(db, dn + 64) != 2 ||
             Text(db, di) != "first" || Text(db, di + 20) != "second" || Word(db, di + 16) != Float(1) || Word(db, di + 36) != Float(7) ||

@@ -68,6 +68,9 @@ this full-product estimate, not evidence that completed code was lost.
    integration. The [selected destruction base review](RA3EP1_DESTRUCTION_BASE_TOKENS.md)
    now validates inheritance/terminal ID/inline DieMux tokens and selected
    empty/absent storage, but does not generate tokenized output.
+   A separate [module-fragment writer](RA3EP1_DESTRUCTION_TOKEN_WRITER.md) now
+   generates this reviewed graph from native output; general root/container
+   composition, other module writers and shared stream ownership remain open.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

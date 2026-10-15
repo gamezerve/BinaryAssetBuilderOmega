@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [destruction token writer](docs/RA3EP1_DESTRUCTION_TOKEN_WRITER.md) now generates
+the module fragment's inheritance/inline/list token graph from native compiler
+data, without copying stock prefixes. Selected output is independently compared
+with stock; native pointer/RELO/IMP round trips, deterministic repeats and authored
+multi-item cases are checked. This advances writing, not only stock validation.
+The writer is not yet composed into a general GameObject stream or exposed by
+the alpha registry/Studio package.
+Final Focused regression: **30/30** in **109.505 seconds**; stock-generated token
+comparison, native round trips, 1/2/3/256-item cases and refusal controls pass.
+
 The [destruction inheritance/DieMux checkpoint](docs/RA3EP1_DESTRUCTION_BASE_TOKENS.md)
 adds explicit base-class marker/type/table checks, terminal TypeId/id anchors and
 all eight selected inline DieMux field relationships. Empty veterancy and absent
