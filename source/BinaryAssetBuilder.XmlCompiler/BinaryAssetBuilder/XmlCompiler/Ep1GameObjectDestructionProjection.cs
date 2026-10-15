@@ -108,7 +108,8 @@ public static class Ep1GameObjectDestructionProjection
         // Reborn: Flammability is four native unsigned words, not a polymorphic class or a root pointer-token target.
         foreach(var field in layout.PointerRoots.Where(f=>f.HasTable))
         {
-            var names=new[]{"Fuel","MaxBurnRate","Decay","Resistance"};for(int i=0;i<names.Length;i++)Token(pointerStart+i*12,FastHash.GetHashCode(names[i]),0x23E650B8u,(uint)(prefix+field.Target+i*4));
+            // Reborn: unsigned Sage words use the stock CampnessValue/segment primitive tag, not signed SageInt/TypeId 23E650B8.
+            var names=new[]{"Fuel","MaxBurnRate","Decay","Resistance"};for(int i=0;i<names.Length;i++)Token(pointerStart+i*12,FastHash.GetHashCode(names[i]),0x763177A4u,(uint)(prefix+field.Target+i*4));
         }
         foreach (uint slot in relos)
         {

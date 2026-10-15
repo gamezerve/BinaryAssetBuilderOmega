@@ -14,7 +14,7 @@ the preceding milestone. The native root remains 600 bytes.
 
 Name and camera tokens target the native pointee directly. Flammability instead
 targets its generated 60-byte field table: Fuel, MaxBurnRate, Decay and Resistance,
-each using the reviewed unsigned-32 primitive token 23E650B8, followed by a zero
+each using unsigned-32 primitive token 763177A4, followed by a zero
 terminator. The four optional fields raise the largest selected root from 94 to
 **98 fields**; this is still not the complete 126-field selected stock inventory.
 
@@ -27,6 +27,16 @@ contracts and authored composition evidence, **not positive stock or gameplay
 parity**. Finding and comparing independent nonnull stock examples is a remaining
 validation step. Names are localization-key text, not compiled localization tables;
 Unicode/STR production and arbitrary string assets are not enabled here.
+
+Follow-up review corrected the initial inferred Flammability primitive tag:
+23E650B8 is the signed/TypeId primitive, whereas stock CampnessValue and
+VisionBonusTestSegments independently establish 763177A4 for unsigned values.
+The test now checks that independent stock anchor before authored verification;
+this correction still does not replace nonnull Flammability stock evidence.
+The corrected standalone test passes all 288 combinations and 20 input/18
+metadata refusals, including explicit rejection of the old signed tag. Its fresh
+build succeeds with 111 existing warnings and no errors. The 50-group result
+below records the initial checkpoint, before this primitive-tag correction.
 
 `gameobject-pointer-root-self-test <static> <global>` runs 288 actual-Core/native
 cases: all 16 presence masks, three text/default/scalar profiles and six orders of
