@@ -111,6 +111,8 @@ if($SchedulerControl){
     # Reborn: pointed name headers/flammability/camera join the full selected graph with stock or genuine new compiled armor targets.
     Add-BatchCase 'gameobject-pointer-roots' 'BoundedCorePointedRootComposition' @('gameobject-pointer-root-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'gameobject-authored-pointer-roots' 'BoundedAuthoredArmorPointedRootConsumer' @('gameobject-authored-pointer-root-self-test',(Join-Path $OutputDirectory 'pointer-root-consumer'),$StaticManifest,$GlobalManifest)
+    # Reborn: complete independent stock vision tables and optional shared root owners use the separate forty-byte EP1 record.
+    Add-BatchCase 'ep1-vision-info' 'BoundedStockVisionAndCoreComposition' @('ep1-vision-info-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: actual Core destruction FX names/defaults and semantic imports must pass without captured source dependency indices.
     Add-BatchCase 'ep1-destruction-source' 'BoundedCoreNormalizedModuleNativePayload' @('ep1-destruction-source-self-test',$StaticManifest)
     # Reborn: nested effect/status graphs and Core-normalized strong imports share one new update-family gate.

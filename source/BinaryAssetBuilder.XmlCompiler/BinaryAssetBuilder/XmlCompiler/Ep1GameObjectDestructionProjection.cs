@@ -1,5 +1,6 @@
 using System;
 using System.Buffers.Binary;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BinaryAssetBuilder.Core.Hashing;
@@ -50,8 +51,10 @@ public static class Ep1GameObjectDestructionProjection
         // Reborn: movement count/marker/member tables follow the other reviewed fragments without altering absent-list output.
         int locomotorPrefix=layout.LocomotorCount==0?0:checked(12+layout.LocomotorCount*60),geometryStart=checked(locomotorStart+locomotorPrefix);
         int geometryPrefix=geometryFragment==null?0:geometryFragment.InstanceBuffer.Length-geometry!.InstanceBuffer.Length,pointerStart=checked(geometryStart+geometryPrefix);
-        // Reborn: pointed text/vector roots target native payload directly; the optional four-field Flammability table follows geometry metadata.
-        int pointerPrefix=layout.PointerRoots.Any(f=>f.HasTable)?60:0,prefix=checked(pointerStart+pointerPrefix);
+        // Reborn: optional own-field tables have disjoint metadata extents; simple pointed text/vector roots target native payload directly.
+        int pointerPrefix=layout.PointerRoots.Sum(f=>f.MetadataSize),prefix=checked(pointerStart+pointerPrefix);
+        var pointerTables=new Dictionary<string,int>();int pointerNext=pointerStart;
+        foreach(var field in layout.PointerRoots.Where(f=>f.HasTable)){pointerTables.Add(field.Name,pointerNext);pointerNext=checked(pointerNext+field.MetadataSize);}
         var result = new Chunk { InstanceBuffer = new byte[checked(prefix + b.Length)] };
         b.CopyTo(result.InstanceBuffer, prefix);
         for (int i = 0; i < Ep1GameObjectRootValueTokens.AllFields.Count; i++)
@@ -70,7 +73,7 @@ public static class Ep1GameObjectDestructionProjection
         if(geometryFragment!=null)Token((Ep1GameObjectRootValueTokens.AllFields.Count+1+(body==null?0:1)+(layout.ArmorCount==0?0:1)+(layout.LocomotorCount==0?0:1))*12,FastHash.GetHashCode("Geometry"),FastHash.GetHashCode("Geometry"),(uint)geometryStart);
         // Reborn: absent optional root pointers emit no additional partial-projection fields, preserving older zero-pointer cases.
         int pointerRow=Ep1GameObjectRootValueTokens.AllFields.Count+1+(body==null?0:1)+(layout.ArmorCount==0?0:1)+(layout.LocomotorCount==0?0:1)+(geometryFragment==null?0:1);
-        foreach(var field in layout.PointerRoots)Token(pointerRow++*12,FastHash.GetHashCode(field.Name),field.Type,(uint)(field.HasTable?pointerStart:prefix+field.Target));
+        foreach(var field in layout.PointerRoots)Token(pointerRow++*12,FastHash.GetHashCode(field.Name),field.Type,(uint)(field.HasTable?pointerTables[field.Name]:prefix+field.Target));
         Token(container, 0x6C827073u, 0x5D448FD8u, (uint)(prefix + layout.List));
         int nextFragment=fragmentStart;
         for(int i=0;i<fragments.Count;i++)
@@ -106,11 +109,13 @@ public static class Ep1GameObjectDestructionProjection
         }
         if(geometryFragment!=null)Join(geometryFragment,geometryPrefix,geometryStart,layout.Geometry);
         // Reborn: Flammability is four native unsigned words, not a polymorphic class or a root pointer-token target.
-        foreach(var field in layout.PointerRoots.Where(f=>f.HasTable))
+        foreach(var field in layout.PointerRoots.Where(f=>f.Name=="Flammability"))
         {
             // Reborn: unsigned Sage words use the stock CampnessValue/segment primitive tag, not signed SageInt/TypeId 23E650B8.
-            var names=new[]{"Fuel","MaxBurnRate","Decay","Resistance"};for(int i=0;i<names.Length;i++)Token(pointerStart+i*12,FastHash.GetHashCode(names[i]),0x763177A4u,(uint)(prefix+field.Target+i*4));
+            var names=new[]{"Fuel","MaxBurnRate","Decay","Resistance"};for(int i=0;i<names.Length;i++)Token(pointerTables[field.Name]+i*12,FastHash.GetHashCode(names[i]),0x763177A4u,(uint)(prefix+field.Target+i*4));
         }
+        // Reborn: reuse the exact standalone vision fragment; native and metadata coordinates join through separate origins.
+        foreach(var field in layout.PointerRoots.Where(f=>f.Name=="VisionInfo"))Join(Ep1VisionInfoTokenizer.Tokenize(new Chunk{InstanceBuffer=b.AsSpan(field.Target,40).ToArray(),RelocationBuffer=Array.Empty<byte>(),ImportsBuffer=Array.Empty<byte>()}),132,pointerTables[field.Name],field.Target);
         foreach (uint slot in relos)
         {
             if (slot > b.Length - 4 || Word(b, (int)slot) >= b.Length) throw new InvalidDataException("Root projection relocation bounds exceeded.");

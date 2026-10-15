@@ -37,6 +37,10 @@ The corrected standalone test passes all 288 combinations and 20 input/18
 metadata refusals, including explicit rejection of the old signed tag. Its fresh
 build succeeds with 111 existing warnings and no errors. The 50-group result
 below records the initial checkpoint, before this primitive-tag correction.
+The subsequent `artifacts/Ep1VisionInfo-a/batch-report.json` passes **51/51 Focused
+groups in 378 seconds**, including both corrected pointer variants and the new
+vision group. Corrected stock/authored pointer groups take 14.826/16.424 seconds;
+eight runtime hashes remain stable, with no game/installation/alpha changes.
 
 `gameobject-pointer-root-self-test <static> <global>` runs 288 actual-Core/native
 cases: all 16 presence masks, three text/default/scalar profiles and six orders of

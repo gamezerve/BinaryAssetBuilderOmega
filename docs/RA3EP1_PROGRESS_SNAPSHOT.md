@@ -141,6 +141,10 @@ diagnostic and gameplay boundaries.
    per stock/authored target mode, reaching 98 partial root fields. Positive stock
    names are verified; nonnull Flammability/camera stock evidence is still open.
    This does not change the approximate full-product maturity estimate.
+   The [EP1 vision correction](RA3EP1_VISION_INFO.md) restores the missing height
+   word, matches three complete stock native/table graphs and joins optional
+   vision with 576 actual-Core combinations, reaching 99 partial root fields.
+   Draw/AI/client and remaining root closures still block general publication.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

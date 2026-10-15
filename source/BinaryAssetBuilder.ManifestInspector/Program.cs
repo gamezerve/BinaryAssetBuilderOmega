@@ -35,6 +35,9 @@ internal static class Program
             // Reborn: selected geometry and genuine new-armor variants share one Core occurrence table, without enabling object publication.
             // Reborn: child-element enums and Color4 are independently verified inline EP1 root values, not pointer allocations.
             // Reborn: pointed names/flammability/camera add bounded root owners, not general localization or object publication.
+            // Reborn: independently stock-matching forty-byte vision joins selected root owners without enabling complete objects.
+            if(args.Length==3 && args[0]=="ep1-vision-info-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1VisionInfoSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="gameobject-pointer-root-self-test")
             {CompilerSmokeTest.InitializeHashProvider();GameObjectPointerRootSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==4 && args[0]=="gameobject-authored-pointer-root-self-test")
@@ -1412,6 +1415,8 @@ internal static class Program
         Console.WriteLine("  gameobject-module-self-test <static.manifest>");
         // Reborn: root coverage commands report incomplete indirect graphs explicitly.
         Console.WriteLine("  gameobject-root-layout-review <static.manifest> <GameObject:Name>");
+        // Reborn: vision source/native/token diagnostics remain separate from alpha or GameObject publication.
+        Console.WriteLine("  ep1-vision-info-self-test <static.manifest> <global.manifest>");
         Console.WriteLine("  gameobject-root-layout-self-test <static.manifest>");
         // Reborn: advertise named-reference diagnostic commands without implying a general GameObject compiler.
         Console.WriteLine("  gameobject-armor-source-probe <GameObject.xml> <static.manifest> [authored-armor.manifest]");

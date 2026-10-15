@@ -335,7 +335,8 @@ namespace SageBinaryData
         public List<AnsiString> UpgradeCameo;
         public unsafe ShadowInfo* ShadowInfo;
         public unsafe AutoResolveInfo* AutoResolveInfo;
-        public unsafe VisionInfo* VisionInfo;
+        // Reborn: EP1's forty-byte vision record includes ShroudClearingHeight, absent from the legacy model.
+        public unsafe Ep1VisionInfo* VisionInfo;
         public unsafe CrusherInfo* CrusherInfo;
         public List<ProjectedBuildabilityInfo> ProjectedBuildabilityInfo;
         public List<TypedAssetId<UpgradeTemplate>> DisplayUpgrade;

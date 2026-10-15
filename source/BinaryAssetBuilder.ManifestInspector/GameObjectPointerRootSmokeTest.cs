@@ -87,7 +87,7 @@ internal static class GameObjectPointerRootSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: source adds no new asset references; text is XML-escaped and includes explicit-empty and long special-character cases. */
     //-------------------------------------------------------------------------------------------------
-    private static string Source(ManifestAsset[] targets,int mask,int profile,bool reverse,int position)
+    internal static string Source(ManifestAsset[] targets,int mask,int profile,bool reverse,int position)
     {
         string source=GameObjectGeometryCompositionSmokeTest.Source(targets,2,true,reverse,position).Replace("RootGeometryProbe","RootPointerProbe",StringComparison.Ordinal),children="";
         foreach(var field in Fields().Select((f,i)=>(f,i)))
@@ -110,15 +110,15 @@ internal static class GameObjectPointerRootSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: added root fields shift old fragments but never change strong occurrence identities or permit their pointer records to masquerade as inline values. */
     //-------------------------------------------------------------------------------------------------
-    private static void Verify(Chunk output,Chunk native,InstanceDeclaration instance,ManifestAsset[] targets,int mask,int profile)
+    internal static void Verify(Chunk output,Chunk native,InstanceDeclaration instance,ManifestAsset[] targets,int mask,int profile,int extraRoots=0,int extraMetadata=0)
     {
-        int count=Enumerable.Range(0,4).Count(i=>(mask&(1<<i))!=0),tableBytes=(mask&4)==0?0:60;GameObjectGeometryCompositionSmokeTest.Verify(output,native,instance,targets,2,true,count,tableBytes);var b=output.InstanceBuffer;var roots=GameObjectStockReview.Tokens(b,0);int prefix=roots[FastHash.GetHashCode("BuildTime")].Offset-140;
+        int count=Enumerable.Range(0,4).Count(i=>(mask&(1<<i))!=0),tableBytes=(mask&4)==0?0:60;GameObjectGeometryCompositionSmokeTest.Verify(output,native,instance,targets,2,true,count+extraRoots,tableBytes+extraMetadata);var b=output.InstanceBuffer;var roots=GameObjectStockReview.Tokens(b,0);int prefix=roots[FastHash.GetHashCode("BuildTime")].Offset-140,flammabilityTable=prefix-extraMetadata-60;
         foreach(var item in Fields().Select((f,i)=>(f,i)))
         {
             var f=item.f;int pointer=(int)Word(native.InstanceBuffer,f.Slot);if((mask&(1<<item.i))==0){if(pointer!=0 || roots.ContainsKey(FastHash.GetHashCode(f.Name)))throw new InvalidDataException("Absent pointed root retained data/metadata.");continue;}
-            var field=roots[FastHash.GetHashCode(f.Name)];if(pointer<600 || pointer>=Word(native.InstanceBuffer,476) || field.Type!=f.Type || field.Offset!=(item.i==2?prefix-60:prefix+pointer) || Word(b,prefix+f.Slot)!=prefix+pointer || !Slots(native.RelocationBuffer).Contains((uint)f.Slot))throw new InvalidDataException("Pointed-root metadata/native ownership differs.");
+            var field=roots[FastHash.GetHashCode(f.Name)];if(pointer<600 || pointer>=Word(native.InstanceBuffer,476) || field.Type!=f.Type || field.Offset!=(item.i==2?flammabilityTable:prefix+pointer) || Word(b,prefix+f.Slot)!=prefix+pointer || !Slots(native.RelocationBuffer).Contains((uint)f.Slot))throw new InvalidDataException("Pointed-root metadata/native ownership differs.");
             if(item.i<2){if(ReadText(b,prefix+pointer)!=Text(profile))throw new InvalidDataException("Pointed root authored text differs.");uint text=Word(native.InstanceBuffer,pointer+4);if((text!=0)!=Slots(native.RelocationBuffer).Contains((uint)(pointer+4)))throw new InvalidDataException("Pointed text nested relocation differs.");}
-            else if(item.i==2){var values=profile==0?new[]{5u,10u,uint.MaxValue,7u}:profile==1?new uint[4]:new[]{200u,300u,400u,500u};var rows=GameObjectStockReview.Tokens(b,prefix-60);if(rows.Count!=4)throw new InvalidDataException("Flammability metadata inventory differs.");int i=0;foreach(string name in new[]{"Fuel","MaxBurnRate","Decay","Resistance"}){var row=rows[FastHash.GetHashCode(name)];if(row.Type!=0x763177A4 || row.Offset!=prefix+pointer+i*4 || Word(b,row.Offset)!=values[i])throw new InvalidDataException("Flammability literal/native/token differs.");i++;}}
+            else if(item.i==2){var values=profile==0?new[]{5u,10u,uint.MaxValue,7u}:profile==1?new uint[4]:new[]{200u,300u,400u,500u};var rows=GameObjectStockReview.Tokens(b,flammabilityTable);if(rows.Count!=4)throw new InvalidDataException("Flammability metadata inventory differs.");int i=0;foreach(string name in new[]{"Fuel","MaxBurnRate","Decay","Resistance"}){var row=rows[FastHash.GetHashCode(name)];if(row.Type!=0x763177A4 || row.Offset!=prefix+pointer+i*4 || Word(b,row.Offset)!=values[i])throw new InvalidDataException("Flammability literal/native/token differs.");i++;}}
             else{var vector=profile==0?new[]{1f,-2f,3f}:profile==1?new float[3]:new[]{0.25f,-3.5f,250f};for(int i=0;i<3;i++)if(Word(b,prefix+pointer+i*4)!=BitConverter.SingleToUInt32Bits(vector[i]))throw new InvalidDataException("Camera vector literal differs.");}
         }
     }

@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [EP1 vision correction](docs/RA3EP1_VISION_INFO.md) restores the missing
+ShroudClearingHeight word through a separate 40-byte model. Three complete stock
+native/metadata graphs match; 576 actual-Core combinations join optional vision
+with all prior pointed roots and selected movement/combat/geometry owners. The
+largest partial root reaches 99 fields. General publication and alpha admission
+are still unfinished; this does not claim new gameplay evidence.
+Final Focused regression: **51/51** in **378 seconds**, vision group 18.408
+seconds, eight runtime hashes stable and no game/installation changes. This also
+rechecks the corrected unsigned Flammability metadata; no Full-suite run is claimed.
+
 The [pointed root child follow-up](docs/RA3EP1_POINTED_ROOT_CHILDREN.md) adds
 DisplayName/DisplayNameTransformed, Flammability and LiveCameraOffset to the shared
 selected graph. Both stock-target and newly built armor-target modes exercise 288

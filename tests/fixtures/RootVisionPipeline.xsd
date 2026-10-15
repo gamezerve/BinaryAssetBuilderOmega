@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: the ten official EP1 vision attributes are independently drift-checked before focused Core normalization. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset" targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="RootPointerPipeline.xsd"/>
+ <xs:complexType name="VisionInfo"><xs:sequence/>
+  <xs:attribute name="VisionRange" type="SageReal" default="0.00"/>
+  <xs:attribute name="ShroudClearingRange" type="SageReal" default="0.0"/>
+  <xs:attribute name="ShroudClearingHeight" type="SageReal" default="50.0"/>
+  <xs:attribute name="VisionSide" type="Percentage" default="100"/>
+  <xs:attribute name="VisionRear" type="Percentage" default="100"/>
+  <xs:attribute name="VisionBonusTestRadius" type="SageReal" default="100"/>
+  <xs:attribute name="VisionBonusTestSegments" type="SageUnsignedInt" default="8"/>
+  <xs:attribute name="VisionBonusPercentPerFoot" type="Percentage" default="0"/>
+  <xs:attribute name="MaxVisionBonusPercent" type="Percentage" default="50"/>
+  <xs:attribute name="MinVisionBonusPercent" type="Percentage" default="-50"/>
+ </xs:complexType>
+ <xs:complexType name="RootVisionProbeType"><xs:complexContent><xs:extension base="RootPointerProbeType"><xs:sequence>
+  <xs:element name="VisionInfo" type="VisionInfo" minOccurs="0"/>
+ </xs:sequence></xs:extension></xs:complexContent></xs:complexType>
+ <xs:element name="RootVisionProbe" type="RootVisionProbeType"/>
+</xs:schema>
