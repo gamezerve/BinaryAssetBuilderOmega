@@ -16,7 +16,7 @@ public static class Ep1GameObjectStringTokens
         new("EditorName",124,0x1A2933AAu,8), new("ExperienceScalarTable",284,0x1A2933AAu,8)
     });
     // Reborn: behavior allocation addresses are decoded from native pointers, never inferred from root string lengths or fixed at 600/608/612.
-    public readonly record struct Layout(int List, int Items, int Module, int Body);
+    public readonly record struct Layout(int List, int Items, int Module, int Body, int Armor, int ArmorCount);
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate dynamic behavior ownership, bounded ASCII string storage and exact root relocation membership before splitting the module graph. */
     //-------------------------------------------------------------------------------------------------
@@ -35,6 +35,11 @@ public static class Ep1GameObjectStringTokens
             owners.Add(488);
         }
         var ranges = new List<(uint Start, uint End)>();
+        // Reborn: inline ArmorSet count/items own a disjoint pre-behavior allocation; absent lists cannot retain a dangling pointer.
+        uint armorCount=Word(420),armor=Word(424);
+        if(armorCount>32 || (armorCount==0 ? armor!=0 : armor<600 || armor%4!=0 || armor>list || armorCount*12>list-armor))
+            throw new InvalidDataException("ArmorSet count/allocation ownership differs.");
+        if(armorCount!=0)owners.Add(424);
         foreach (var field in Fields)
         {
             uint length = Word(field.Offset), pointer = Word(field.Offset + 4);
@@ -43,6 +48,8 @@ public static class Ep1GameObjectStringTokens
             if (pointer < 600 || pointer >= list || length > list - pointer - 1 || b[(int)(pointer + length)] != 0)
                 throw new InvalidDataException("Root string allocation bounds/terminator differ: " + field.Name);
             uint end = pointer + length + 1;
+            // Reborn: even identical byte spans cannot alias an ArmorSet record as a string allocation.
+            if(armorCount!=0 && pointer<armor+armorCount*12 && end>armor)throw new InvalidDataException("Root string aliases ArmorSet storage.");
             if (ranges.Any(r => pointer < r.End && end > r.Start && (pointer != r.Start || end != r.End)))
                 throw new InvalidDataException("Root string allocations partially overlap.");
             for (uint at = pointer; at < pointer + length; at++)
@@ -50,10 +57,17 @@ public static class Ep1GameObjectStringTokens
             ranges.Add((pointer,end)); owners.Add((uint)(field.Offset + 4));
         }
         // Reborn: present root references require exactly one import slot each; zero is absence and no unreviewed root slot is admitted.
-        var rootImports = Ep1GameObjectStrongTokens.Fields.Where(f => Word(f.Offset) != 0).Select(f => (uint)f.Offset);
+        var rootImports = Ep1GameObjectStrongTokens.Fields.Where(f => Word(f.Offset) != 0).Select(f => (uint)f.Offset).ToList();
+        // Reborn: armor and optional DamageFX fields share the same occurrence table, but no other slot in the twelve-byte records is an import.
+        for(int i=0;i<armorCount;i++)
+        {
+            int member=(int)armor+i*12;
+            if((Word(member+8)>>23)!=0)throw new InvalidDataException("Unsupported ArmorSet condition bits.");
+            foreach(int offset in new[]{0,4})if(Word(member+offset)!=0)rootImports.Add((uint)(member+offset));
+        }
         if (!relos.Where(s => s < module).OrderBy(s => s).SequenceEqual(owners.OrderBy(s => s)) || !imports.Where(s => s < module).OrderBy(s => s).SequenceEqual(rootImports.OrderBy(s => s)))
             throw new InvalidDataException("Unsupported root allocation/import ownership in string projection.");
-        return new((int)list,(int)list + 8,module,(int)body);
+        return new((int)list,(int)list + 8,module,(int)body,(int)armor,(int)armorCount);
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: all dynamic headers and pointers stay inside the supplied native chunk. */

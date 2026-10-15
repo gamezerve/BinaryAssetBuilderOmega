@@ -23,6 +23,12 @@ internal static class Program
             // Reborn: selected root and module names share actual Core normalization and independent static/global target admission.
             // Reborn: opt-in EP1 ActiveBody native/token fragments do not replace legacy body dispatch or enable complete GameObjects.
             // Reborn: combined body/root/behavior projection is an explicit native/source diagnostic, not general asset publication.
+            // Reborn: ArmorSet joins the selected graph without enabling complete GameObject publication.
+            // Reborn: authored armor mode requires a fresh evidence child and real Core output metadata.
+            if(args.Length==4 && args[0]=="gameobject-authored-armor-composition-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();GameObjectArmorCompositionSmokeTest.Run(args[2],args[3],args[1]);return 0;}
+            if(args.Length==3 && args[0]=="gameobject-armor-composition-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();GameObjectArmorCompositionSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="gameobject-body-projection-self-test")
             {CompilerSmokeTest.InitializeHashProvider();GameObjectBodyProjectionSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==2 && args[0]=="ep1-active-body-self-test")
@@ -1321,6 +1327,10 @@ internal static class Program
         Console.WriteLine("  ep1-active-body-self-test <static.manifest>");
         // Reborn: root/body composition still requires independent stock lookup inputs and explicit EP1 allocation.
         Console.WriteLine("  gameobject-body-projection-self-test <static.manifest> <global.manifest>");
+        // Reborn: ordered armor metadata/import ownership is verified independently from body-only composition.
+        Console.WriteLine("  gameobject-armor-composition-self-test <static.manifest> <global.manifest>");
+        // Reborn: custom armor target proof publishes the armor only, not a complete consuming GameObject asset.
+        Console.WriteLine("  gameobject-authored-armor-composition-self-test <fresh-output> <static.manifest> <global.manifest>");
         Console.WriteLine("  ep1-allied-modules-self-test <static.manifest>");
         // Reborn: explicit source normalization does not open general GameObject publication.
         Console.WriteLine("  ep1-destruction-source-self-test <static.manifest>");

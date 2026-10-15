@@ -82,6 +82,10 @@ if($SchedulerControl){
     Add-BatchCase 'ep1-active-body' 'BoundedCoreBodyNativeTokenFragment' @('ep1-active-body-self-test',$StaticManifest)
     # Reborn: combined root/body/destruction native owners and shared Core indices are verified before any publication gate.
     Add-BatchCase 'gameobject-body-projection' 'BoundedRootBodyBehaviorProjection' @('gameobject-body-projection-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: ordered armor owners share root/body/behavior references; this is not full GameObject asset publication.
+    Add-BatchCase 'gameobject-armor-composition' 'BoundedArmorRootBodyBehaviorProjection' @('gameobject-armor-composition-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: a newly compiled custom armor manifest must resolve in the combined consumer and fail when removed.
+    Add-BatchCase 'gameobject-authored-armor-composition' 'BoundedAuthoredArmorConsumerProjection' @('gameobject-authored-armor-composition-self-test',(Join-Path $OutputDirectory 'armor-consumer'),$StaticManifest,$GlobalManifest)
     # Reborn: actual Core destruction FX names/defaults and semantic imports must pass without captured source dependency indices.
     Add-BatchCase 'ep1-destruction-source' 'BoundedCoreNormalizedModuleNativePayload' @('ep1-destruction-source-self-test',$StaticManifest)
     # Reborn: nested effect/status graphs and Core-normalized strong imports share one new update-family gate.

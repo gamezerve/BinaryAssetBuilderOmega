@@ -102,6 +102,10 @@ diagnostic and gameplay boundaries.
    actual-Core names and 88 root fields when Body is present (87 otherwise).
    General source/processor integration and other body/consumer graphs remain
    open; legacy KW body dispatch and alpha are unchanged.
+   The [ArmorSet composition follow-up](RA3EP1_GAMEOBJECT_ARMOR_COMPOSITION.md)
+   joins ordered 0..32 armor records, optional DamageFX and a newly Core-compiled
+   armor target to that graph (89 root fields with both present). Publication and
+   gameplay of the complete consuming GameObject still remain open.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

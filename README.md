@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [combined ArmorSet writer and newly authored consumer](docs/RA3EP1_GAMEOBJECT_ARMOR_COMPOSITION.md)
+now joins 0..32 ordered armors, optional DamageFX and literal condition masks to
+the root/destruction/ActiveBody projection. Sixteen stock-target cases and the
+same sixteen cases referencing a real Core-compiled RebornComposedArmor pass;
+removing the new target catalog refuses rather than falling back to stock.
+Both-present output has **89 root fields**, with earlier 88/87-field paths retained.
+This does not publish a consuming GameObject or expand the alpha.
+Final Focused regression: **35/35** in **136.888 seconds**; stock/authored consumer
+groups 5.950/6.470 seconds, eight runtime hashes stable and no game/install changes.
+
 The [root/destruction/EP1 body composition](docs/RA3EP1_GAMEOBJECT_BODY_COMPOSITION.md)
 now joins all three native owners and their generated metadata in one output.
 An explicit EP1 body allocator preserves legacy KW dispatch. Eight actual-Core

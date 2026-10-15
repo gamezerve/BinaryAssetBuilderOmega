@@ -93,14 +93,15 @@ internal static class GameObjectBodyProjectionSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: raw authored Body is already present, so validation must not append the older required-body placeholder. */
     //-------------------------------------------------------------------------------------------------
-    private static void Validate(XmlSchemaSet schemas,string source){var b=SdkEffectiveSchema.Bind(schemas,"in-memory-root-body.xml",Encoding.UTF8.GetBytes("<AssetDeclaration xmlns='uri:ea.com:eala:asset'>"+source+"</AssetDeclaration>"));if(!b.XmlValidated)throw new InvalidDataException("Raw root/body source refused: "+string.Join("; ",b.Errors));}
+    internal static void Validate(XmlSchemaSet schemas,string source){var b=SdkEffectiveSchema.Bind(schemas,"in-memory-root-body.xml",Encoding.UTF8.GetBytes("<AssetDeclaration xmlns='uri:ea.com:eala:asset'>"+source+"</AssetDeclaration>"));if(!b.XmlValidated)throw new InvalidDataException("Raw root/body source refused: "+string.Join("; ",b.Errors));}
     //-------------------------------------------------------------------------------------------------
     /** Reborn: opt into the separate EP1 allocator after existing root/behavior dispatch, on the same Tracker and native Body pointer slot. */
     //-------------------------------------------------------------------------------------------------
-    private static unsafe Chunk Compile(XmlDocument source)
+    internal static unsafe Chunk Compile(XmlDocument source)
     {
         var d=(XmlDocument)source.CloneNode(true);var body=(XmlElement)d.DocumentElement!.LastChild!.FirstChild!;var bodyContainer=body.ParentNode!;d.DocumentElement.RemoveChild(bodyContainer);
-        ((XmlElement)d.DocumentElement.FirstChild!.FirstChild!).SetAttribute("TypeId","227975924");body.SetAttribute("TypeId","1510882715");
+        // Reborn: direct ArmorSet children may precede Behaviors; never treat the first root child as the behavior container.
+        ((XmlElement)d.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]!.FirstChild!).SetAttribute("TypeId","227975924");body.SetAttribute("TypeId","1510882715");
         var ns=new XmlNamespaceManager(d.NameTable);ns.AddNamespace("ea",SchemaSet.XmlNamespace);
         GameObject* root;using var tracker=new Tracker((void**)&root,(uint)sizeof(GameObject),false);
         Marshaler.Marshal(new Node(d.DocumentElement.CreateNavigator()!,ns),root,tracker);

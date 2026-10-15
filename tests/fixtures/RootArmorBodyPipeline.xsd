@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: bounded ArmorSet/root/body/destruction source envelope; copied armor declarations are compared with official compiled contracts. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset" xmlns:xas="uri:ea.com:eala:asset:schema" xmlns:balance="uri:ea.com:eala:balance" targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="RootBodyPipeline.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/DamageDef.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/AssetTypeArmorTemplate.xsd"/>
+ <xs:complexType name="DamageFX"><xs:complexContent><xs:extension base="BaseInheritableAsset"/></xs:complexContent></xs:complexType>
+ <xs:simpleType name="DamageFXRef" xas:refType="DamageFX"><xs:restriction base="AssetReference"/></xs:simpleType>
+ <xs:complexType name="ArmorTemplateSet">
+  <xs:sequence/>
+  <xs:attribute name="id" type="Poid" xas:pipelineOnly="true"/>
+  <xs:attribute name="Armor" balance:field="Armor" balance:category="Armor" type="AssetReference" xas:refType="ArmorTemplate" use="required"/>
+  <xs:attribute name="DamageFX" type="DamageFXRef"/>
+  <xs:attribute name="Conditions" type="ArmorSetBitFlags"/>
+ </xs:complexType>
+ <xs:complexType name="RootArmorBodyProbeType"><xs:complexContent><xs:extension base="BaseAssetType">
+  <xs:sequence><xs:element name="ArmorSet" type="ArmorTemplateSet" minOccurs="0" maxOccurs="32"/><xs:element ref="BuildingDestructionBehavior"/><xs:element name="ActiveBody" type="ActiveBodyModuleData"/></xs:sequence>
+  <xs:attribute name="UnitTypeIcon" type="UnitTypeIconRef"/><xs:attribute name="UnitIntro" type="UnitIntroRef"/>
+ </xs:extension></xs:complexContent></xs:complexType>
+ <xs:element name="RootArmorBodyProbe" type="RootArmorBodyProbeType"/>
+</xs:schema>

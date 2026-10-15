@@ -19,7 +19,7 @@ Status terms:
 
 | Area | Delivered | Main missing gate | Current availability |
 | --- | --- | --- | --- |
-| ArmorTemplate | Custom IDs, bounded multiple-armor compilation, selected scalar/default semantics, Includes/definitions/inheritance source bridge, Core streams and BIG/config packaging. Specific Allied/Soviet armor overrides have gameplay observations. | General EA source semantics, arbitrary graph sizes and a new GameObject consuming a newly authored armor. | **Alpha / bounded**, most mature family. |
+| ArmorTemplate | Custom IDs, bounded multiple-armor compilation, selected scalar/default semantics, Includes/definitions/inheritance source bridge, Core streams and BIG/config packaging. Specific Allied/Soviet armor overrides have gameplay observations. A new Core armor now resolves inside a combined diagnostic GameObject graph. | General EA source semantics, arbitrary graph sizes and publication/gameplay of a complete new GameObject consuming that armor. | **Alpha / bounded**, most mature family. |
 | WeaponTemplate | Complete selected stock-shaped AK-47 slice, dependencies/native/token/stream checks; Damage=50 has gameplay evidence. | Arbitrary IDs, different weapons/nuggets, unrestricted fields and mixed armor/weapon/GameObject builds. | **Alpha / fixed AK-47 slice** only. |
 | GameObject (units/buildings/props) | 600-byte root layout; selected stock inventories and module topology; reviewed scalar/enum/flag/weak/string/root-import token projection. Selected native module ports and generated destruction fragment. | Remaining root/child graphs, recursive token writers, shared named dependency closure, general processor, complete mixed stream and new-unit gameplay acceptance. | **Experimental**; no general GameObject in alpha. |
 | Behavior / AIUpdate / ClientUpdate / other GameObject modules | Selected basic helper/sell/group-audio, tracker/freefall, toggle AI/weapon/state, destruction, TechUpgrade and LUAEventList native comparisons/dispatch. | EP1 review of remaining legacy modules, all required containers, generic source preparation and recursive token publication. Native LUAEventList storage is not execution proof. | **Experimental**, selected families only. |
@@ -87,6 +87,7 @@ Do not raise it merely because another selected field test passes.
 - [Basic module ports](RA3EP1_BASIC_MODULE_PORTS.md)
 - [EP1 ActiveBody fragment](RA3EP1_ACTIVE_BODY_FRAGMENT.md)
 - [Combined root/body/destruction projection](RA3EP1_GAMEOBJECT_BODY_COMPOSITION.md)
+- [Combined armor graph and newly authored target](RA3EP1_GAMEOBJECT_ARMOR_COMPOSITION.md)
 - [AttributeModifier](RA3EP1_ATTRIBUTE_MODIFIER_PROFILE.md),
   [ObjectFilter](RA3EP1_OBJECT_FILTER_PROFILE.md),
   [FX](RA3EP1_FX_PROFILE.md), [ShaderOverride](RA3EP1_SHADER_OVERRIDE_PROFILE.md)
