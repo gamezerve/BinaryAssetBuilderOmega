@@ -65,7 +65,10 @@ this full-product estimate, not evidence that completed code was lost.
    native evidence (see [the module batch](RA3EP1_ALLIED_MODULES_NATIVE.md));
    selected destruction FX source normalization now has a focused Core gate,
    but inherited/nested tokenization and general source closure still need
-   integration. No missing native model names in the
+   integration. The [selected destruction base review](RA3EP1_DESTRUCTION_BASE_TOKENS.md)
+   now validates inheritance/terminal ID/inline DieMux tokens and selected
+   empty/absent storage, but does not generate tokenized output.
+   No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a
    newly built armor/weapon in a mixed Core stream; validate default-reader package

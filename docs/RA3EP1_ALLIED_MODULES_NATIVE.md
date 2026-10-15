@@ -1,5 +1,10 @@
 # Allied destruction, tech and LUA native module checkpoint
 
+Additional review: [destruction inheritance and DieMux tokens](RA3EP1_DESTRUCTION_BASE_TOKENS.md)
+now binds the selected base-class chain, terminal IDs, eight inline fields and
+empty/absent storage independently of native-byte equality. This narrows the
+earlier inherited-token limitation for this selected module, not general schemas.
+
 Follow-up: the [destruction source gate and walkthrough](RA3EP1_DESTRUCTION_SOURCE_WALKTHROUGH.md)
 now independently checks actual Core named-FX/default normalization and semantic
 import identity for the selected graph. The captured-index test below is retained

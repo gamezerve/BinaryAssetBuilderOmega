@@ -8,6 +8,15 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [destruction inheritance/DieMux checkpoint](docs/RA3EP1_DESTRUCTION_BASE_TOKENS.md)
+adds explicit base-class marker/type/table checks, terminal TypeId/id anchors and
+all eight selected inline DieMux field relationships. Empty veterancy and absent
+status storage are independently checked. Detached corruptions exercise the same
+comparison used by native and actual Core source tests. This is selected stock
+token validation, not general token generation or expanded alpha support.
+Final Focused regression: **30/30** in **96.211 seconds**, including **40**
+inherited/inline corruption refusals; eight runtime hashes remained unchanged.
+
 The selected stock destruction Item now has explicit token/native checks for BonePrefix, FX, CreationObject and FlingVelocity, including their schema type IDs and native offsets. A detached-copy corruption test confirms that a shifted BonePrefix token target is rejected. The manual Focused regression passed 30/30 groups. This strengthens selected nested-token validation; it does not enable general GameObject tokenized publication or expand alpha capabilities.
 
 The [destruction source walkthrough](docs/RA3EP1_DESTRUCTION_SOURCE_WALKTHROUGH.md)

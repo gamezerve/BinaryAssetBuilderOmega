@@ -77,6 +77,23 @@ internal static class Ep1AlliedModuleSmokeTest
                 Refuse(() => Compare(itemBroken, module, output, c.Item4));
 
                 Console.WriteLine("Destruction Item token corruption: rejected.");
+                // Reborn: independently corrupt every admitted base/inline token type, pointer and selected empty-storage obligation on fresh memory copies.
+                var baseSlots = DestructionBaseTokenReview.Inspect(stock.Bytes, module);
+                foreach (int slot in baseSlots)
+                {
+                    var baseBroken = stock.Bytes.ToArray();
+                    BinaryPrimitives.WriteUInt32LittleEndian(baseBroken.AsSpan(slot, 4), Word(baseBroken, slot) ^ 4u);
+                    Refuse(() => Compare(baseBroken, module, output, c.Item4));
+                }
+                // Reborn: a self-cycle and a token link into native storage must fail even though their values remain within the captured asset.
+                int concreteTable = (int)Word(stock.Bytes, module.Wrapper + 8);
+                foreach (uint target in new[] { (uint)concreteTable, (uint)module.Native })
+                {
+                    var badLink = stock.Bytes.ToArray();
+                    BinaryPrimitives.WriteUInt32LittleEndian(badLink.AsSpan(concreteTable + 8, 4), target);
+                    Refuse(() => Compare(badLink, module, output, c.Item4));
+                }
+                Console.WriteLine($"Destruction inheritance/DieMux token corruptions: {baseSlots.Length + 2} rejected.");
             }
 
             Console.WriteLine($"Allied native {c.Item2}: BIN/RELO/IMP={output.Chunk.InstanceBuffer.Length}/{output.Chunk.RelocationBuffer.Length}/{output.Chunk.ImportsBuffer.Length}");
@@ -135,7 +152,8 @@ internal static class Ep1AlliedModuleSmokeTest
         if (module.Type == "LUAEventListBehaviorModuleData") String(8);
         else if (module.Type == "BuildingDestructionModuleData")
         {
-
+            // Reborn: equal native bytes cannot substitute for concrete/base/inline token graph validation.
+            DestructionBaseTokenReview.Inspect(stock, module);
             // Reborn: locate stock and compiled destruction items before validating their token/native bindings.
             int a = List(64, 20, "Item"), c = (int)Word(b, n + 68);
 
