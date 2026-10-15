@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: official EP1 weapon-set declarations with exact empty native bases and inheritance-only target/turret stubs. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset" targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="DestructionPipeline.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Includes/GlobalGameData.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Modules/WeaponSetUpdate.xsd"/>
+ <xs:complexType name="ContainModuleData"><xs:complexContent><xs:extension base="BehaviorModuleData"><xs:sequence/></xs:extension></xs:complexContent></xs:complexType>
+ <xs:complexType name="UpdateModuleData"><xs:complexContent><xs:extension base="ContainModuleData"><xs:sequence/></xs:extension></xs:complexContent></xs:complexType>
+ <xs:complexType name="WeaponTemplate"><xs:complexContent><xs:extension base="BaseInheritableAsset"/></xs:complexContent></xs:complexType>
+ <xs:complexType name="UpgradeTemplate"><xs:complexContent><xs:extension base="BaseInheritableAsset"/></xs:complexContent></xs:complexType>
+ <!-- Reborn: a turret source is rejected by the EP1 marshaler; this empty schema stub does not establish turret payload support. -->
+ <xs:complexType name="TurretAIData"/>
+ <xs:element name="WeaponSetUpdate" type="WeaponSetUpdateModuleData"/>
+</xs:schema>

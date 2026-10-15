@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [EP1 weapon-set hardpoint port and token writer](docs/RA3EP1_WEAPON_SET_FRAGMENT.md)
+now reproduces the complete selected Peacekeeper/Conscript native graphs and
+generated token prefixes (152/480 and 232/588 bytes). Separate 44/28/80-byte
+models preserve forbidden-status, auto-choice and metrics fields missing in KW.
+Actual Core weapon/upgrade names, five authored list shapes, sixteen input and
+54 metadata refusal controls pass. Legacy dispatch, general turret support and
+enclosing multi-behavior/GameObject publication remain unchanged.
+Final Focused regression: **36/36** in **143.162 seconds**; weapon-set group 9.575
+seconds, eight runtime hashes stable and no game/install changes.
+
 The [combined ArmorSet writer and newly authored consumer](docs/RA3EP1_GAMEOBJECT_ARMOR_COMPOSITION.md)
 now joins 0..32 ordered armors, optional DamageFX and literal condition masks to
 the root/destruction/ActiveBody projection. Sixteen stock-target cases and the

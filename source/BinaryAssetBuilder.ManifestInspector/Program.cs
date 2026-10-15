@@ -25,6 +25,9 @@ internal static class Program
             // Reborn: combined body/root/behavior projection is an explicit native/source diagnostic, not general asset publication.
             // Reborn: ArmorSet joins the selected graph without enabling complete GameObject publication.
             // Reborn: authored armor mode requires a fresh evidence child and real Core output metadata.
+            // Reborn: EP1 hardpoint native/token fragments are explicit diagnostics, not legacy dispatch replacement.
+            if(args.Length==3 && args[0]=="ep1-weapon-set-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1WeaponSetSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==4 && args[0]=="gameobject-authored-armor-composition-self-test")
             {CompilerSmokeTest.InitializeHashProvider();GameObjectArmorCompositionSmokeTest.Run(args[2],args[3],args[1]);return 0;}
             if(args.Length==3 && args[0]=="gameobject-armor-composition-self-test")
@@ -1331,6 +1334,8 @@ internal static class Program
         Console.WriteLine("  gameobject-armor-composition-self-test <static.manifest> <global.manifest>");
         // Reborn: custom armor target proof publishes the armor only, not a complete consuming GameObject asset.
         Console.WriteLine("  gameobject-authored-armor-composition-self-test <fresh-output> <static.manifest> <global.manifest>");
+        // Reborn: this bounded weapon-set profile does not admit turret/contained slots or complete GameObject publication.
+        Console.WriteLine("  ep1-weapon-set-self-test <static.manifest> <global.manifest>");
         Console.WriteLine("  ep1-allied-modules-self-test <static.manifest>");
         // Reborn: explicit source normalization does not open general GameObject publication.
         Console.WriteLine("  ep1-destruction-source-self-test <static.manifest>");

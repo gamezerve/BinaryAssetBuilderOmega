@@ -86,6 +86,8 @@ if($SchedulerControl){
     Add-BatchCase 'gameobject-armor-composition' 'BoundedArmorRootBodyBehaviorProjection' @('gameobject-armor-composition-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: a newly compiled custom armor manifest must resolve in the combined consumer and fail when removed.
     Add-BatchCase 'gameobject-authored-armor-composition' 'BoundedAuthoredArmorConsumerProjection' @('gameobject-authored-armor-composition-self-test',(Join-Path $OutputDirectory 'armor-consumer'),$StaticManifest,$GlobalManifest)
+    # Reborn: separate EP1 hardpoint ABI/token writer must match real stock graphs before any enclosing object integration.
+    Add-BatchCase 'ep1-weapon-set' 'BoundedCoreWeaponSetNativeTokenFragment' @('ep1-weapon-set-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: actual Core destruction FX names/defaults and semantic imports must pass without captured source dependency indices.
     Add-BatchCase 'ep1-destruction-source' 'BoundedCoreNormalizedModuleNativePayload' @('ep1-destruction-source-self-test',$StaticManifest)
     # Reborn: nested effect/status graphs and Core-normalized strong imports share one new update-family gate.
