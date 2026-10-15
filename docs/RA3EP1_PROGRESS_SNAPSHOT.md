@@ -95,6 +95,10 @@ diagnostic and gameplay boundaries.
    actual Core shared icon/intro/FX name resolution against real catalogs;
    CrowdResponse has no target in the supplied catalogs and is a refusal case.
    General target payload/source closure remains open; the alpha is unchanged.
+   A separate [EP1 ActiveBody writer](RA3EP1_ACTIVE_BODY_FRAGMENT.md) now matches
+   two complete stock bodies and generates standalone inherited/range metadata.
+   Root/body/behavior composition and explicit EP1 body dispatch selection remain
+   the next integration gate; legacy KW body dispatch and alpha are unchanged.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

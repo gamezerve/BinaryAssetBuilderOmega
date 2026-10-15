@@ -8,6 +8,15 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [EP1 ActiveBody native/token-fragment port](docs/RA3EP1_ACTIVE_BODY_FRAGMENT.md)
+adds a separate 76-byte layout and actual metadata writer without overwriting KW
+models/dispatch. Two selected stock bodies match completely; authored Core cases
+cover four parent imports and 0/1/3/64 range modifiers, with percentage/time/flag
+checks, eleven input and sixty output-metadata refusals. This is a standalone
+fragment, not Body/root composition, a complete GameObject or expanded alpha.
+Final Focused regression: **32/32** in **87.900 seconds**; body group 9.319 seconds,
+eight runtime hashes stable and no game/install changes.
+
 The [named root/module source gate](docs/RA3EP1_GAMEOBJECT_ROOT_NAMED_SOURCE.md)
 now normalizes UnitTypeIcon/UnitIntro and repeated destruction FX names in one
 actual Core reference table. Eight plain/typed presence cases bind to independent

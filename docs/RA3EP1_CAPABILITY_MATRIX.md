@@ -23,6 +23,7 @@ Status terms:
 | WeaponTemplate | Complete selected stock-shaped AK-47 slice, dependencies/native/token/stream checks; Damage=50 has gameplay evidence. | Arbitrary IDs, different weapons/nuggets, unrestricted fields and mixed armor/weapon/GameObject builds. | **Alpha / fixed AK-47 slice** only. |
 | GameObject (units/buildings/props) | 600-byte root layout; selected stock inventories and module topology; reviewed scalar/enum/flag/weak/string/root-import token projection. Selected native module ports and generated destruction fragment. | Remaining root/child graphs, recursive token writers, shared named dependency closure, general processor, complete mixed stream and new-unit gameplay acceptance. | **Experimental**; no general GameObject in alpha. |
 | Behavior / AIUpdate / ClientUpdate / other GameObject modules | Selected basic helper/sell/group-audio, tracker/freefall, toggle AI/weapon/state, destruction, TechUpgrade and LUAEventList native comparisons/dispatch. | EP1 review of remaining legacy modules, all required containers, generic source preparation and recursive token publication. Native LUAEventList storage is not execution proof. | **Experimental**, selected families only. |
+| Body / ActiveBody | Separate EP1 76-byte model and standalone generated token writer; two complete stock bodies, authored Core imports and bounded range-child lists verified. Legacy KW dispatch unchanged. | Explicit EP1 selection, root/body/behavior ownership composition, other body classes and complete GameObject publication. | **Experimental**, standalone ActiveBody fragment only. |
 | AttributeModifier | Selected native/stock comparison, isolated plugin/Core profile and checked import experiments. | General FX/shader dependencies, unrestricted source semantics, production integration and gameplay. | **Experimental**. |
 | ObjectFilterAsset | Selected filter subset, native/Core profile, reviewed weak IDs and source-merge cases. | Full rules/include/exclude combinations, general source graph and production integration. | **Experimental**. |
 | FXList | Empty/sound-nugget subset, checked Core profile, audio target resolution and bounded diagnostic streams. | Particle/light/decal/model and other nuggets; full dependency closure and gameplay. | **Experimental**, not general visual FX. |
@@ -84,6 +85,7 @@ Do not raise it merely because another selected field test passes.
   [root import-slot follow-up](RA3EP1_GAMEOBJECT_ROOT_STRONG_SLOTS.md), followed by
   [actual Core root/module names](RA3EP1_GAMEOBJECT_ROOT_NAMED_SOURCE.md)
 - [Basic module ports](RA3EP1_BASIC_MODULE_PORTS.md)
+- [EP1 ActiveBody fragment](RA3EP1_ACTIVE_BODY_FRAGMENT.md)
 - [AttributeModifier](RA3EP1_ATTRIBUTE_MODIFIER_PROFILE.md),
   [ObjectFilter](RA3EP1_OBJECT_FILTER_PROFILE.md),
   [FX](RA3EP1_FX_PROFILE.md), [ShaderOverride](RA3EP1_SHADER_OVERRIDE_PROFILE.md)

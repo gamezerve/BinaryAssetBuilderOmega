@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: direct official EP1 body declarations plus inheritance-only target stubs; no general GameObject admission. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset" targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="DestructionPipeline.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Modules/Body.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Modules/ActiveBody.xsd"/>
+ <xs:complexType name="AttributeModifier"><xs:complexContent><xs:extension base="BaseInheritableAsset"/></xs:complexContent></xs:complexType>
+ <xs:element name="ActiveBody" type="ActiveBodyModuleData"/>
+</xs:schema>

@@ -78,6 +78,8 @@ if($SchedulerControl){
     Add-BatchCase 'ep1-allied-modules' 'BoundedCapturedIndexModuleNativePayload' @('ep1-allied-modules-self-test',$StaticManifest)
     # Reborn: one real Core occurrence table binds named root and module imports to independently read stock catalogs.
     Add-BatchCase 'gameobject-root-strong-source' 'BoundedCoreNormalizedRootModuleImports' @('gameobject-root-strong-source-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: separate EP1 body ABI/token fragment gate preserves legacy dispatch and explicit publication boundaries.
+    Add-BatchCase 'ep1-active-body' 'BoundedCoreBodyNativeTokenFragment' @('ep1-active-body-self-test',$StaticManifest)
     # Reborn: actual Core destruction FX names/defaults and semantic imports must pass without captured source dependency indices.
     Add-BatchCase 'ep1-destruction-source' 'BoundedCoreNormalizedModuleNativePayload' @('ep1-destruction-source-self-test',$StaticManifest)
     # Reborn: nested effect/status graphs and Core-normalized strong imports share one new update-family gate.
