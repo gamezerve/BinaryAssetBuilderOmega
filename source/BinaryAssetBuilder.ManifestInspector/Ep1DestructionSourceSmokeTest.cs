@@ -30,6 +30,11 @@ internal static class Ep1DestructionSourceSmokeTest
             var module = GameObjectModuleReview.Inspect(manifest, "GameObject:AlliedConstructionYard").Containers.SelectMany(g => g.Modules).Single(m => m.Type == "BuildingDestructionModuleData");
             var normalized = Normalize(schemas, source, catalog);
             var output = Ep1AlliedModuleSmokeTest.Compile(normalized.XmlNode.OuterXml, module.Type);
+            // Reborn: raw root/module validation is distinct from normalized FX import input; moved strings must preserve actual Core dependency indices.
+            System.Xml.Schema.XmlSchemaSet? rootSchemas=null;
+            SdkEffectiveSchema.Inspect(shieldCandidate:true,reviewHooks:true,onAdmitted:s=>rootSchemas=s);
+            if(rootSchemas==null)throw new InvalidDataException("Reviewed root schema candidate required for string/import integration.");
+            GameObjectRootStringSmokeTest.WithNamedFx(rootSchemas,source,normalized.XmlNode.OuterXml);
             Ep1AlliedModuleSmokeTest.Compare(stock.Bytes, module, output, 72, stock.Asset.References.ToArray(), normalized);
             // Reborn: generate, independently compare and round-trip the module fragment from actual Core native output, never a captured prefix.
             DestructionTokenWriterSmokeTest.Stock(output, stock.Bytes, module);

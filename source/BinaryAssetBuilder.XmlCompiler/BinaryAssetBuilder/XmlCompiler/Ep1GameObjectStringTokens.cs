@@ -1,0 +1,54 @@
+using System;
+using System.Buffers.Binary;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+namespace BinaryAssetBuilder.XmlCompiler;
+
+// Reborn: six inline ASCII string headers and their variable-sized allocations are reviewed projection fields, not arbitrary Unicode/localization support.
+public static class Ep1GameObjectStringTokens
+{
+    // Reborn: native string headers remain eight-byte length/pointer pairs even when absent or explicitly empty.
+    public static IReadOnlyList<Ep1GameObjectScalarTokens.Field> Fields { get; } = Array.AsReadOnly(new Ep1GameObjectScalarTokens.Field[] {
+        new("Description",52,0x1A2933AAu,8), new("DescriptionTransformed",60,0x1A2933AAu,8),
+        new("TypeDescription",68,0x1A2933AAu,8), new("TypeDescriptionTransformed",76,0x1A2933AAu,8),
+        new("EditorName",124,0x1A2933AAu,8), new("ExperienceScalarTable",284,0x1A2933AAu,8)
+    });
+    // Reborn: behavior allocation addresses are decoded from native pointers, never inferred from root string lengths or fixed at 600/608/612.
+    public readonly record struct Layout(int List, int Items, int Module);
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: validate dynamic behavior ownership, bounded ASCII string storage and exact root relocation membership before splitting the module graph. */
+    //-------------------------------------------------------------------------------------------------
+    public static Layout Inspect(byte[] b, uint[] relos, uint[] imports)
+    {
+        uint list = Word(476);
+        if (list < 600 || list % 4 != 0 || list > b.Length - 104 || Word((int)list) != 1 || Word((int)list + 4) != list + 8 || Word((int)list + 8) != list + 12)
+            throw new InvalidDataException("Projection requires a bounded single-behavior envelope after root allocations.");
+        int module = (int)list + 12;
+        var owners = new List<uint> { 476, list + 4, list + 8 };
+        var ranges = new List<(uint Start, uint End)>();
+        foreach (var field in Fields)
+        {
+            uint length = Word(field.Offset), pointer = Word(field.Offset + 4);
+            if (pointer == 0)
+            { if (length != 0) throw new InvalidDataException("Absent root string has nonzero length: " + field.Name); continue; }
+            if (pointer < 600 || pointer >= list || length > list - pointer - 1 || b[(int)(pointer + length)] != 0)
+                throw new InvalidDataException("Root string allocation bounds/terminator differ: " + field.Name);
+            uint end = pointer + length + 1;
+            if (ranges.Any(r => pointer < r.End && end > r.Start && (pointer != r.Start || end != r.End)))
+                throw new InvalidDataException("Root string allocations partially overlap.");
+            for (uint at = pointer; at < pointer + length; at++)
+                if (b[(int)at] == 0 || b[(int)at] > 127) throw new InvalidDataException("Projection root strings currently require non-NUL ASCII content.");
+            ranges.Add((pointer,end)); owners.Add((uint)(field.Offset + 4));
+        }
+        if (!relos.Where(s => s < module).OrderBy(s => s).SequenceEqual(owners.OrderBy(s => s)) || imports.Any(s => s < module))
+            throw new InvalidDataException("Unsupported root allocation/import ownership in string projection.");
+        return new((int)list,(int)list + 8,module);
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: all dynamic headers and pointers stay inside the supplied native chunk. */
+        //-------------------------------------------------------------------------------------------------
+        uint Word(int at) { if (at < 0 || at > b.Length - 4) throw new InvalidDataException("String projection bounds exceeded."); return BinaryPrimitives.ReadUInt32LittleEndian(b.AsSpan(at,4)); }
+    }
+}

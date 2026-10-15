@@ -1,5 +1,9 @@
 # GameObject enum, inline flag and weak-ID root batch
 
+Follow-up: the [string/ownership batch](RA3EP1_GAMEOBJECT_ROOT_STRINGS.md) adds six
+headers and dynamic allocation decoding, extending the 78-field checkpoint below
+to 84 represented fields. Strong imports and general publication remain closed.
+
 ## Outcome and native corrections
 
 15 extra root descriptors extend the prior 62 scalars: six enum fields, two

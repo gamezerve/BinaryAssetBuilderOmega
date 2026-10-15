@@ -18,5 +18,5 @@ public static class Ep1GameObjectRootValueTokens
         new("WeaponCategory",360,0x27D46083u,4), new("HealthBar",384,0xE0A943E1u,4)
     });
     // Reborn: stable combined descriptors drive root table extent and metadata corruption coverage without changing the scalar test's literal policy.
-    public static IReadOnlyList<Ep1GameObjectScalarTokens.Field> AllFields { get; } = Array.AsReadOnly(Ep1GameObjectScalarTokens.Fields.Concat(ExtraFields).ToArray());
+    public static IReadOnlyList<Ep1GameObjectScalarTokens.Field> AllFields { get; } = Array.AsReadOnly(Ep1GameObjectScalarTokens.Fields.Concat(ExtraFields).Concat(Ep1GameObjectStringTokens.Fields).ToArray());
 }

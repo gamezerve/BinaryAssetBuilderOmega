@@ -7,7 +7,7 @@ using Chunk = Relo.Chunk;
 
 namespace BinaryAssetBuilder.XmlCompiler;
 
-// Reborn: root-value/container projection only; omitted strings, strong references and indirect fields still prevent complete GameObject publication.
+// Reborn: root-value/ASCII-string/container projection only; strong references and other indirect fields still prevent complete GameObject publication.
 public static class Ep1GameObjectDestructionProjection
 {
     //-------------------------------------------------------------------------------------------------
@@ -18,20 +18,18 @@ public static class Ep1GameObjectDestructionProjection
         if (native == null || native.InstanceBuffer == null || native.InstanceBuffer.Length < 704 || native.InstanceBuffer.Length > 1048576)
             throw new InvalidDataException("GameObject destruction projection requires bounded native dispatch output.");
         byte[] b = native.InstanceBuffer;
-        if (Word(b, 476) != 600 || Word(b, 600) != 1 || Word(b, 604) != 608 || Word(b, 608) != 612)
-            throw new InvalidDataException("GameObject destruction projection requires its canonical single-behavior envelope.");
         var relos = Slots(native.RelocationBuffer); var imports = Slots(native.ImportsBuffer);
-        if (!relos.Where(s => s < 612).OrderBy(s => s).SequenceEqual(new[] { 476u, 604u, 608u }) || imports.Any(s => s < 612))
-            throw new InvalidDataException("Unsupported root pointer/import ownership in destruction projection.");
-        var module = new Chunk { InstanceBuffer = b.AsSpan(612).ToArray() };
-        foreach (uint slot in relos.Where(s => s >= 612))
+        // Reborn: explicit root-string allocations may move the behavior list and module; decode and validate ownership before extracting the tail.
+        var layout = Ep1GameObjectStringTokens.Inspect(b, relos, imports); int moduleStart = layout.Module;
+        var module = new Chunk { InstanceBuffer = b.AsSpan(moduleStart).ToArray() };
+        foreach (uint slot in relos.Where(s => s >= moduleStart))
         {
-            if (slot > b.Length - 4 || Word(b, (int)slot) < 612 || Word(b, (int)slot) >= b.Length)
+            if (slot > b.Length - 4 || Word(b, (int)slot) < moduleStart || Word(b, (int)slot) >= b.Length)
                 throw new InvalidDataException("Destruction module pointer escapes its owned graph.");
-            Put(module.InstanceBuffer, checked((int)slot - 612), Word(b, (int)slot) - 612);
+            Put(module.InstanceBuffer, checked((int)slot - moduleStart), Word(b, (int)slot) - (uint)moduleStart);
         }
-        module.RelocationBuffer = Pack(relos.Where(s => s >= 612).Select(s => s - 612));
-        module.ImportsBuffer = Pack(imports.Select(s => s - 612));
+        module.RelocationBuffer = Pack(relos.Where(s => s >= moduleStart).Select(s => s - (uint)moduleStart));
+        module.ImportsBuffer = Pack(imports.Select(s => s - (uint)moduleStart));
         var fragment = Ep1DestructionTokenizer.Tokenize(module);
         // Reborn: root token count is descriptor-driven; nested fragment coordinates must never retain the old two-field prefix size.
         int container = checked((Ep1GameObjectRootValueTokens.AllFields.Count + 2) * 12), fragmentStart = container + 24;
@@ -44,14 +42,14 @@ public static class Ep1GameObjectDestructionProjection
             Token(i * 12, FastHash.GetHashCode(field.Name), field.Type, (uint)(prefix + field.Offset));
         }
         Token(Ep1GameObjectRootValueTokens.AllFields.Count * 12, FastHash.GetHashCode("Behaviors"), 0x24FCCAE2u, (uint)container);
-        Token(container, 0x6C827073u, 0x5D448FD8u, (uint)(prefix + 600));
+        Token(container, 0x6C827073u, 0x5D448FD8u, (uint)(prefix + layout.List));
         Token(container + 12, 0xB151A0EBu, 0, (uint)fragmentStart);
         fragment.InstanceBuffer.AsSpan(0, modulePrefix).CopyTo(result.InstanceBuffer.AsSpan(fragmentStart));
         // Reborn: metadata targets have distinct ownership: fragment token offsets shift by the root/container extent, native targets bind the preserved module graph.
         for (int at = 8; at < modulePrefix; at += 12)
         {
             uint target = Word(fragment.InstanceBuffer, at);
-            if (target != 0) Put(result.InstanceBuffer, fragmentStart + at, target < modulePrefix ? checked(target + (uint)fragmentStart) : checked(target - (uint)modulePrefix + (uint)prefix + 612u));
+            if (target != 0) Put(result.InstanceBuffer, fragmentStart + at, target < modulePrefix ? checked(target + (uint)fragmentStart) : checked(target - (uint)modulePrefix + (uint)prefix + (uint)moduleStart));
         }
         foreach (uint slot in relos)
         {

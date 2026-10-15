@@ -74,7 +74,10 @@ internal static class GameObjectScalarTokenSmokeTest
         GameObject* root; using var tracker = new Tracker((void**)&root, (uint)sizeof(GameObject), false);
         Marshaler.Marshal(new Node(xml.DocumentElement.CreateNavigator()!, ns), root, tracker);
         var chunk = new Chunk(); if (!tracker.MakeRelocatable(chunk)) throw new InvalidDataException("Scalar root allocation failed.");
-        return new(chunk, 612);
+        // Reborn: root strings can move allocations before Behaviors; recover the actual module pointer instead of returning a fixed 612.
+        int list = (int)BinaryPrimitives.ReadUInt32LittleEndian(chunk.InstanceBuffer.AsSpan(476,4));
+        int items = (int)BinaryPrimitives.ReadUInt32LittleEndian(chunk.InstanceBuffer.AsSpan(list+4,4));
+        return new(chunk,(int)BinaryPrimitives.ReadUInt32LittleEndian(chunk.InstanceBuffer.AsSpan(items,4)));
     }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: malformed scalar/schema cases must fail rather than compile as omitted/default values. */

@@ -8,7 +8,17 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
-The [enum/flag/weak-ID batch](docs/RA3EP1_GAMEOBJECT_ENUM_FLAG_WEAK.md) adds 15
+The [root-string/dynamic-allocation batch](docs/RA3EP1_GAMEOBJECT_ROOT_STRINGS.md)
+adds six string headers, bringing generated root metadata to **84 fields**.
+Behavior/module addresses are decoded instead of fixed at 600/608/612. Omitted,
+empty, ASCII/XML-escaped and 4096-character strings preserve pointer and auxiliary
+ownership, including integration with actual Core named FX imports. General
+encoding, strong root references and complete GameObject/alpha publication remain
+outside this partial projection.
+Final Focused regression: **30/30** in **83.366 seconds**; 37 malformed string
+cases and 166 metadata corruptions are refused, with eight runtime hashes stable.
+
+The earlier [enum/flag/weak-ID batch](docs/RA3EP1_GAMEOBJECT_ENUM_FLAG_WEAK.md) adds 15
 root fields, bringing generated metadata to **78 fields including Behaviors**.
 GameObject-specific EP1 radar/editor/production enum mismatches are corrected;
 50 enum literals, 291 KindOf bit positions and seven actual-Core weak identities

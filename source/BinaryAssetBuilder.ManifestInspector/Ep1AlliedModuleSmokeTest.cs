@@ -26,6 +26,8 @@ internal static class Ep1AlliedModuleSmokeTest
         GameObjectScalarTokenSmokeTest.Run(schemas, manifest);
         // Reborn: EP1 enum/flag/weak-reference root families share one stock/source/metadata batch gate.
         GameObjectRootValueSmokeTest.Run(schemas, manifest);
+        // Reborn: explicit root strings move allocation ownership and must survive the same generated projection path.
+        GameObjectRootStringSmokeTest.Run(schemas,manifest);
         var stock = GameObjectStockReview.Capture(manifest, "GameObject:AlliedConstructionYard");
         var graph = GameObjectModuleReview.Inspect(manifest, "GameObject:AlliedConstructionYard");
         var cases = new[] {

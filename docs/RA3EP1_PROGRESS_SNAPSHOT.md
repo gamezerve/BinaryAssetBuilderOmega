@@ -81,6 +81,9 @@ this full-product estimate, not evidence that completed code was lost.
    corrects scoped EP1 enum/default mismatches and verifies actual Core weak-ID
    conversion. Root metadata now covers 78 fields; strong references, strings,
    indirect graphs, target closure and publication remain open.
+   The [root-string/ownership batch](RA3EP1_GAMEOBJECT_ROOT_STRINGS.md) adds six
+   ASCII string headers and dynamic behavior/module allocation decoding (84 root
+   fields); full encoding, strong root references and indirect writers remain open.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

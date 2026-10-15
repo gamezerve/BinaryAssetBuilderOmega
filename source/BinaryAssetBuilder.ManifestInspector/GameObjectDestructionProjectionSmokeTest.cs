@@ -68,24 +68,26 @@ internal static class GameObjectDestructionProjectionSmokeTest
         byte[] b = result.InstanceBuffer; var root = GameObjectStockReview.Tokens(b, 0);
         int prefix = root[FastHash.GetHashCode("BuildTime")].Offset - 140;
         int container = (Ep1GameObjectRootValueTokens.AllFields.Count + 2) * 12, fragmentStart = container + 24;
-        int count = (int)Word(native.InstanceBuffer, 676);
+        // Reborn: decode original native ownership independently; string allocations can move all three behavior envelope addresses.
+        int list = (int)Word(native.InstanceBuffer,476), items = (int)Word(native.InstanceBuffer,list+4), module = (int)Word(native.InstanceBuffer,items);
+        int count = (int)Word(native.InstanceBuffer, module+64);
         if (root.Count != Ep1GameObjectRootValueTokens.AllFields.Count + 1 || prefix != fragmentStart + 312 + count * 72 || root[FastHash.GetHashCode("Behaviors")].Offset != container ||
-            Word(b, container) != 0x6C827073u || Word(b, container + 4) != 0x5D448FD8u || Word(b, container + 8) != prefix + 600 ||
+            Word(b, container) != 0x6C827073u || Word(b, container + 4) != 0x5D448FD8u || Word(b, container + 8) != prefix + list ||
             Word(b, container + 12) != 0xB151A0EBu || Word(b, container + 16) != 0 || Word(b, container + 20) != fragmentStart ||
-            Word(b, prefix + 476) != prefix + 600 || Word(b, prefix + 600) != 1 || Word(b, prefix + 604) != prefix + 608 || Word(b, prefix + 608) != prefix + 612 ||
-            Word(b, fragmentStart) != 2 || Word(b, fragmentStart + 4) != 0x0D96A2F4u || Word(b, fragmentStart + 8) != fragmentStart + 12 || Word(b, prefix + 612) != Word(b, fragmentStart + 4))
+            Word(b, prefix + 476) != prefix + list || Word(b, prefix + list) != 1 || Word(b, prefix + list + 4) != prefix + items || Word(b, prefix + items) != prefix + module ||
+            Word(b, fragmentStart) != 2 || Word(b, fragmentStart + 4) != 0x0D96A2F4u || Word(b, fragmentStart + 8) != fragmentStart + 12 || Word(b, prefix + module) != Word(b, fragmentStart + 4))
             throw new InvalidDataException("Composed root/container/module coordinate chain differs.");
         // Reborn: every scalar token is independently bound to its emitted native storage, including packed byte/ushort fields.
         foreach (var field in Ep1GameObjectRootValueTokens.AllFields)
             if (!root.TryGetValue(FastHash.GetHashCode(field.Name), out var token) || token.Type != field.Type || token.Offset != prefix + field.Offset)
                 throw new InvalidDataException("Composed scalar token differs: " + field.Name);
         var own = GameObjectStockReview.Tokens(b, fragmentStart + 12); int itemTable = own[FastHash.GetHashCode("Item")].Offset;
-        if (Word(b, itemTable + 8) != prefix + 676) throw new InvalidDataException("Composed Item count binding differs.");
+        if (Word(b, itemTable + 8) != prefix + module + 64) throw new InvalidDataException("Composed Item count binding differs.");
         for (int i = 0; i < count; i++)
         {
             int table = (int)Word(b, itemTable + 20 + i * 12); var fields = GameObjectStockReview.Tokens(b, table);
             foreach (var f in new[] { ("BonePrefix", 0), ("FX", 8), ("CreationObject", 12), ("FlingVelocity", 16) })
-                if (fields[FastHash.GetHashCode(f.Item1)].Offset != prefix + 684 + i * 20 + f.Item2) throw new InvalidDataException("Composed authored Item field differs.");
+                if (fields[FastHash.GetHashCode(f.Item1)].Offset != prefix + module + 72 + i * 20 + f.Item2) throw new InvalidDataException("Composed authored Item field differs.");
         }
         var recovered = b.AsSpan(prefix).ToArray(); var relos = Slots(result.RelocationBuffer); var imports = Slots(result.ImportsBuffer);
         if (!relos.Select(s => checked(s - (uint)prefix)).SequenceEqual(Slots(native.RelocationBuffer)) || !imports.Select(s => checked(s - (uint)prefix)).SequenceEqual(Slots(native.ImportsBuffer)))
