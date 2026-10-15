@@ -37,6 +37,9 @@ internal static class Program
             // Reborn: pointed names/flammability/camera add bounded root owners, not general localization or object publication.
             // Reborn: independently stock-matching forty-byte vision joins selected root owners without enabling complete objects.
             // Reborn: common AI/chooser native source and real inline dispatch are distinct from generated AI metadata and general object publication.
+            // Reborn: generated AI fragments require complete independent stock-prefix and native/metadata corruption gates.
+            if(args.Length==3 && args[0]=="ep1-ai-update-token-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1AIUpdateSmokeTest.Run(args[1],args[2],includeTokens:true);return 0;}
             if(args.Length==3 && args[0]=="ep1-ai-update-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1AIUpdateSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="ep1-vision-info-self-test")
@@ -1422,6 +1425,8 @@ internal static class Program
         Console.WriteLine("  ep1-vision-info-self-test <static.manifest> <global.manifest>");
         // Reborn: this AI native gate refuses nonempty ObjectVisionRange and does not publish a GameObject.
         Console.WriteLine("  ep1-ai-update-self-test <static.manifest> <global.manifest>");
+        // Reborn: nonempty contact/vision list tokens and shared object publication are separate unfinished gates.
+        Console.WriteLine("  ep1-ai-update-token-self-test <static.manifest> <global.manifest>");
         Console.WriteLine("  gameobject-root-layout-self-test <static.manifest>");
         // Reborn: advertise named-reference diagnostic commands without implying a general GameObject compiler.
         Console.WriteLine("  gameobject-armor-source-probe <GameObject.xml> <static.manifest> [authored-armor.manifest]");

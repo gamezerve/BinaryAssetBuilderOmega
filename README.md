@@ -8,6 +8,14 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [generated AI fragment follow-up](docs/RA3EP1_AI_UPDATE_TOKENS.md) matches two
+complete independent stock metadata prefixes, with 348/552-byte generated layouts
+for absent/present chooser graphs. Empty-contact variants cover all 680 selected
+state/locomotor/chooser/string combinations. Nonempty contact/vision list tokens
+still refuse; shared AI/root composition and general publication remain open.
+Final Focused regression: **53/53** in **390.651 seconds**, AI token group
+28.998 seconds, eight runtime hashes stable and no game/installation changes.
+
 The [common AIUpdate native port](docs/RA3EP1_AI_UPDATE_NATIVE.md) replaces the
 wrong KW concrete layout with separate 76-byte EP1 AI and 40-byte chooser models.
 Two complete selected stock native graphs and 680 state/locomotor/chooser/string

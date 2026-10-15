@@ -20,7 +20,7 @@ internal static class Ep1AIUpdateSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compare two complete selected stock graphs, every state/locomotor literal, source defaults and actual inline AI root dispatch. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string manifest,string globalManifest)
+    internal static void Run(string manifest,string globalManifest,bool includeTokens=false)
     {
         var saved=Settings.Current;
         try
@@ -39,6 +39,8 @@ internal static class Ep1AIUpdateSmokeTest
                 if(Word(b,0)!=0x08DBC00E || Word(b,4)!=FastHash.GetHashCode("authoredai") || Word(b,60)!=(uint)Array.IndexOf(states,state) || unchecked((int)Word(b,64))!=(int)Enum.Parse<Ep1RootLocomotorSetType>(locomotor) || Word(b,20)!=BitConverter.SingleToUInt32Bits(500) || Word(b,36)!=BitConverter.SingleToUInt32Bits(80) || Word(b,52)!=1 || b[72]!=0 || b[73]!=0)throw new InvalidDataException("Authored AI enum/default fields differ.");
                 if(ReadText(b,8)!=(profile==2?"Attack & Defend":"") || Word(b,40)!=(profile==2?3u:0u))throw new InvalidDataException("AI authored string/list differs.");if(profile==2){int list=(int)Word(b,44);var words=new[]{"LEFT","CENTER","RIGHT"};for(int i=0;i<3;i++)if(ReadText(b,list+i*8)!=words[i])throw new InvalidDataException("AI contact-point order differs.");}
                 CheckChooser(native,chooser,target,pair.Instance);var repeat=Compile(text).Native;if(!b.SequenceEqual(repeat.InstanceBuffer) || !native.RelocationBuffer.SequenceEqual(repeat.RelocationBuffer) || !native.ImportsBuffer.SequenceEqual(repeat.ImportsBuffer))throw new InvalidDataException("AI native repeat differs.");cases++;
+                // Reborn: nonempty contacts have native support but no admitted element-token contract; test their refusal plus an explicitly separate empty-contact source variant.
+                if(includeTokens){if(profile==2){Ep1AIUpdateTokenSmokeTest.RefuseContacts(native);Ep1AIUpdateTokenSmokeTest.Check(Compile(text.Replace(" SpecialContactPoints='LEFT CENTER RIGHT'"," SpecialContactPoints=''",StringComparison.Ordinal)).Native);}else Ep1AIUpdateTokenSmokeTest.Check(native);}
             }
             for(int mask=0;mask<32;mask++){string value=string.Join(" ",Enum.GetNames<AutoAcquireEnemiesType>().Where((_,i)=>(mask&(1<<i))!=0));var native=Compile("<AIUpdate id='Flags' AutoAcquireEnemiesWhenIdle='"+value+"'/>").Native;if(Word(native.InstanceBuffer,16)!=mask)throw new InvalidDataException("AI acquire mask differs.");}
             for(int mask=0;mask<16;mask++){string value=string.Join(" ",Enum.GetNames<Ep1DynamicTargetFlag>().Where((_,i)=>(mask&(1<<i))!=0));var native=Compile("<AIUpdate id='Flags'><UnitAITargetChooserData CanPickDynamicTargetType='"+value+"'/></AIUpdate>").Native;int chooser=(int)Word(native.InstanceBuffer,68);if(Word(native.InstanceBuffer,chooser+16)!=mask)throw new InvalidDataException("AI chooser dynamic mask differs.");}
@@ -48,6 +50,8 @@ internal static class Ep1AIUpdateSmokeTest
             foreach(string literal in new[]{"0","0.0","0x0","4294967295"}){var b=Compile("<AIUpdate id='Unsigned' MaxCombineChildren='"+literal+"'/>").Native.InstanceBuffer;if(Word(b,52)!=(literal=="4294967295"?uint.MaxValue:0u))throw new InvalidDataException("AI unsigned lexical value differs.");}
             // Reborn: the admitted text and list limits are positively exercised, not only rejected just beyond their boundary.
             var textBoundary=Compile("<AIUpdate id='Boundary' AttackPriority='"+new string('R',4096)+"'/>").Native;if(ReadText(textBoundary.InstanceBuffer,8)!=new string('R',4096))throw new InvalidDataException("AI text boundary differs.");var listBoundary=Compile("<AIUpdate id='Boundary' SpecialContactPoints='"+string.Join(" ",Enumerable.Repeat("POINT",32))+"'/>").Native;if(Word(listBoundary.InstanceBuffer,40)!=32)throw new InvalidDataException("AI contact-list boundary differs.");
+            // Reborn: the token boundary also admits the maximum reviewed ASCII text while explicitly refusing the native-only contact-list maximum.
+            if(includeTokens){Ep1AIUpdateTokenSmokeTest.Check(textBoundary);Ep1AIUpdateTokenSmokeTest.RefuseContacts(listBoundary);}
             // Reborn: every admitted official boolean spelling must preserve all eight packed AI/chooser bits, including numeric zero/one.
             foreach(string literal in new[]{"true","True","1","false","False","0"}){var b=Compile("<AIUpdate id='Boolean' StandGround='"+literal+"' FadeOnPortals='"+literal+"'><UnitAITargetChooserData "+string.Join(" ",new[]{"CheckVisionRange","CanPickDynamicTargets","RotateToTargetWhenAiming","CanAutoAcquireNonAutoAcquirable","CanChaseAttack","CanOnlyAttackTargetsInFront"}.Select(n=>n+"='"+literal+"'"))+"/></AIUpdate>").Native.InstanceBuffer;byte expected=literal is "true" or "True" or "1"?(byte)1:(byte)0;int chooser=(int)Word(b,68);if(b[72]!=expected || b[73]!=expected || b.AsSpan(chooser+28,6).ToArray().Any(v=>v!=expected))throw new InvalidDataException("AI numeric/named boolean spelling differs.");}
             InlineRoot();int failures=0;
@@ -57,7 +61,8 @@ internal static class Ep1AIUpdateSmokeTest
             foreach(string bad in new[]{"<AIUpdate id='Bad' StopChaseDistance='1e999'/>","<AIUpdate id='Bad'><UnitAITargetChooserData SympathyRange='-1e999'/></AIUpdate>"}){Refuse(()=>Compile(bad));failures++;}
             // Reborn: refuse unsupported text encoding/size/list counts before invoking the legacy ANSI allocator.
             foreach(string bad in new[]{"<AIUpdate id='Bad' AttackPriority='é'/>","<AIUpdate id='Bad' SpecialContactPoints='LEFT é'/>","<AIUpdate id='Bad' AttackPriority='"+new string('R',4097)+"'/>","<AIUpdate id='Bad' SpecialContactPoints='"+string.Join(" ",Enumerable.Repeat("P",33))+"'/>"}){Refuse(()=>Compile(bad));failures++;}
-            Console.WriteLine($"EP1 AIUpdate: PASS (two complete selected stock native graphs; {cases} state/locomotor/chooser/string cases, 32 acquire/16 dynamic/64 chooser-bool masks, edits/defaults/unsigned syntax; inline AI counts 0/1/2 and real concrete dispatch; {failures} source/dependency refusals; empty ObjectVisionRange only, no generated AI tokens/shared combat projection/general object package/game).");
+            if(includeTokens)Ep1AIUpdateTokenSmokeTest.Controls(Compile("<AIUpdate id='TokenControls' AttackPriority='AI priority'><UnitAITargetChooserData/></AIUpdate>").Native);
+            Console.WriteLine($"EP1 AIUpdate: PASS (two complete selected stock native graphs; {cases} state/locomotor/chooser/string cases, 32 acquire/16 dynamic/64 chooser-bool masks, edits/defaults/unsigned syntax; inline AI counts 0/1/2 and real concrete dispatch; {failures} source/dependency refusals; empty ObjectVisionRange only; "+(includeTokens?"generated bounded AI fragments, empty contact-token lists only; ":"no generated AI tokens; ")+"no shared combat projection/general object package/game).");
             //-------------------------------------------------------------------------------------------------
             /** Reborn: actual Core normalization supplies occurrence indices; admission requires unique independently catalogued type/instance identities. */
             //-------------------------------------------------------------------------------------------------
@@ -77,6 +82,8 @@ internal static class Ep1AIUpdateSmokeTest
                 var chooserField=fields[FastHash.GetHashCode("UnitAITargetChooserData")];if(chooserField.Type!=0x243BEF01 || (chooserField.Offset==0)!=(original==0))throw new InvalidDataException("Stock chooser pointer/table presence differs.");
                 if(original!=0){StockChooserFields(stock.Bytes,chooserField.Offset,(int)original);var chooser=stock.Bytes.AsSpan((int)original,40).ToArray();uint stockReference=Word(chooser,36);if(stockReference==0 || stockReference>stock.Asset.References.Count || stock.Asset.References[(int)stockReference-1]!=new AssetId(target.TypeId,target.InstanceId))throw new InvalidDataException("Stock chooser reference identity differs.");Put(chooser,36,Word(pair.Native.InstanceBuffer,(int)actual+36));if(!chooser.AsSpan().SequenceEqual(pair.Native.InstanceBuffer.AsSpan((int)actual,40)))throw new InvalidDataException("Complete stock EP1 chooser record differs.");}
                 CheckChooser(pair.Native,original!=0,target,pair.Instance);
+                // Reborn: token follow-up compares the complete independent stock prefix, not just a generated table against another generated table.
+                if(includeTokens)Ep1AIUpdateTokenSmokeTest.Stock(pair.Native,stock.Bytes,module.Wrapper,module.Native);
             }
             //-------------------------------------------------------------------------------------------------
             /** Reborn: one real shared Core occurrence table feeds the existing inline AI root container and the new concrete EP1 dispatch. */

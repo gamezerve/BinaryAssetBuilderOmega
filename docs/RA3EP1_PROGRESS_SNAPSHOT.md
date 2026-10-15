@@ -150,6 +150,10 @@ diagnostic and gameplay boundaries.
    Generated AI metadata, nonempty vision filters, shared combat integration and
    other concrete AI classes remain open. This native-only milestone leaves the
    partial composed root at 99 fields and the approximate maturity estimate unchanged.
+   The [generated AI fragment](RA3EP1_AI_UPDATE_TOKENS.md) matches both complete
+   selected stock prefixes with empty contact/vision lists. Shared inline AI
+   metadata composition, broader list elements and cross-container identity
+   remain next; native-only nonempty contacts do not imply token support.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

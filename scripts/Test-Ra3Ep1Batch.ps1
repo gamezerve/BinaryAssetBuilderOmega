@@ -115,6 +115,8 @@ if($SchedulerControl){
     Add-BatchCase 'ep1-vision-info' 'BoundedStockVisionAndCoreComposition' @('ep1-vision-info-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: the concrete EP1 AI/chooser native port has independent stock/default/reference/inline-dispatch gates before token publication.
     Add-BatchCase 'ep1-ai-update' 'BoundedStockAiNativeAndCoreReferences' @('ep1-ai-update-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: bounded generated AI inheritance/chooser metadata must match complete independent stock prefixes before root composition.
+    Add-BatchCase 'ep1-ai-update-tokens' 'BoundedStockAiTokenFragments' @('ep1-ai-update-token-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: actual Core destruction FX names/defaults and semantic imports must pass without captured source dependency indices.
     Add-BatchCase 'ep1-destruction-source' 'BoundedCoreNormalizedModuleNativePayload' @('ep1-destruction-source-self-test',$StaticManifest)
     # Reborn: nested effect/status graphs and Core-normalized strong imports share one new update-family gate.
