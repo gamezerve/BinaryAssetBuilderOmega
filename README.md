@@ -8,6 +8,14 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [generated geometry fragment](docs/RA3EP1_GEOMETRY_TOKENS.md) now matches every
+metadata prefix byte in five independent stock examples. Native ownership,
+placement/shapes/contacts, direct vector targets and pointer rebasing are explicit;
+33 native and 40 detached metadata/payload corruptions refuse. Root composition
+and complete GameObject publication remain separate unfinished gates.
+Final Focused regression: **45/45** in **121.457 seconds**, eight runtime hashes
+stable and no game/installation changes.
+
 The [EP1 geometry native port](docs/RA3EP1_GEOMETRY_NATIVE.md) corrects the missing
 PlacementShape pointer: a 28-byte header replaces the legacy root geometry layout,
 with a separate RING-aware Shape model. Five selected stock graphs match complete
