@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: selected pointed root children extend the shared Core geometry/combat closure; Flammability attributes are drift-checked before use. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset" targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="RootGeometryPipeline.xsd"/>
+ <xs:complexType name="Flammability"><xs:sequence/>
+  <xs:attribute name="Fuel" type="SageUnsignedInt" default="0"/>
+  <xs:attribute name="MaxBurnRate" type="SageUnsignedInt" default="0"/>
+  <xs:attribute name="Decay" type="SageUnsignedInt" default="0"/>
+  <xs:attribute name="Resistance" type="SageUnsignedInt" default="0"/>
+ </xs:complexType>
+ <xs:complexType name="RootPointerProbeType"><xs:complexContent><xs:extension base="RootGeometryProbeType"><xs:sequence>
+  <xs:element name="DisplayName" type="xs:string" minOccurs="0"/>
+  <xs:element name="DisplayNameTransformed" type="xs:string" minOccurs="0"/>
+  <xs:element name="Flammability" type="Flammability" minOccurs="0"/>
+  <xs:element name="LiveCameraOffset" type="Vector3" minOccurs="0"/>
+ </xs:sequence></xs:extension></xs:complexContent></xs:complexType>
+ <xs:element name="RootPointerProbe" type="RootPointerProbeType"/>
+</xs:schema>

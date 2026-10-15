@@ -136,6 +136,11 @@ diagnostic and gameplay boundaries.
    ThingClass and packed DisplayColor without allocating legacy pointer payloads;
    the selected combination now has 94 partial root fields. General publication
    and independent nonzero inline-child runtime evidence remain open.
+   The [pointed root children](RA3EP1_POINTED_ROOT_CHILDREN.md) add two name
+   headers, Flammability and LiveCameraOffset to 288 selected shared-graph cases
+   per stock/authored target mode, reaching 98 partial root fields. Positive stock
+   names are verified; nonnull Flammability/camera stock evidence is still open.
+   This does not change the approximate full-product maturity estimate.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

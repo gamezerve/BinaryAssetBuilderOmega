@@ -80,7 +80,7 @@ internal static class GameObjectGeometryCompositionSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: controlled sources share actual asset names and local Body links; geometry adds no strong asset imports. */
     //-------------------------------------------------------------------------------------------------
-    private static string Source(ManifestAsset[] targets,int profile,bool moving,bool reverse,int position)
+    internal static string Source(ManifestAsset[] targets,int profile,bool moving,bool reverse,int position)
     {
         string source=GameObjectCombatCompositionSmokeTest.Source(targets,reverse,2,3,position).Replace("RootCombatProbe","RootGeometryProbe",StringComparison.Ordinal).Replace("id='Destroy'","id='Destroy' AssociatedModule='Body'",StringComparison.Ordinal);
         if(moving)source=source.Insert(source.IndexOf("/>",StringComparison.Ordinal)+2,$"<LocomotorSet Speed='75' Condition='SPECIALABILITY_ACTIVE' Locomotor='{targets[8].Name}'/>");
@@ -95,9 +95,9 @@ internal static class GameObjectGeometryCompositionSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: independently verify partial root/module/body/list relationships, every geometry metadata row and the complete shared occurrence/native/auxiliary graph. */
     //-------------------------------------------------------------------------------------------------
-    private static void Verify(Chunk output,Chunk native,InstanceDeclaration instance,ManifestAsset[] targets,int profile,bool moving)
+    internal static void Verify(Chunk output,Chunk native,InstanceDeclaration instance,ManifestAsset[] targets,int profile,bool moving,int pointerRoots=0,int pointerMetadata=0)
     {
-        var b=output.InstanceBuffer;var n=native.InstanceBuffer;var root=GameObjectStockReview.Tokens(b,0);int prefix=root[FastHash.GetHashCode("BuildTime")].Offset-140,rootCount=Ep1GameObjectRootValueTokens.AllFields.Count+3+(moving?1:0)+(profile==0?0:1),list=(int)Word(n,476),body=(int)Word(n,488),armor=(int)Word(n,424),locomotor=(int)Word(n,432),geometry=(int)Word(n,500),container=(rootCount+1)*12;
+        var b=output.InstanceBuffer;var n=native.InstanceBuffer;var root=GameObjectStockReview.Tokens(b,0);int prefix=root[FastHash.GetHashCode("BuildTime")].Offset-140,rootCount=Ep1GameObjectRootValueTokens.AllFields.Count+3+(moving?1:0)+(profile==0?0:1)+pointerRoots,list=(int)Word(n,476),body=(int)Word(n,488),armor=(int)Word(n,424),locomotor=(int)Word(n,432),geometry=(int)Word(n,500),container=(rootCount+1)*12;
         if(root.Count!=rootCount || root[FastHash.GetHashCode("Behaviors")].Offset!=container || Word(b,container)!=0x6C827073 || Word(b,container+4)!=0x5D448FD8 || Word(b,container+8)!=prefix+list || Word(b,prefix+list)!=3 || Word(b,prefix+488)!=prefix+body || (profile==0?Word(b,prefix+500)!=0:Word(b,prefix+500)!=prefix+geometry))throw new InvalidDataException("Geometry composed root/container differs.");
         foreach(var field in Ep1GameObjectRootValueTokens.AllFields)if(root[FastHash.GetHashCode(field.Name)].Type!=field.Type || root[FastHash.GetHashCode(field.Name)].Offset!=prefix+field.Offset)throw new InvalidDataException("Geometry composed flat root target differs.");
         var references=new List<(int Slot,int Target)>{(368,0),(400,1),(armor,2),(armor+4,3)};if(moving)references.Add((locomotor+8,8));int next=container+48;
@@ -116,13 +116,13 @@ internal static class GameObjectGeometryCompositionSmokeTest
         if(moving){if(root[FastHash.GetHashCode("LocomotorSet")].Offset!=next || Word(b,next+8)!=prefix+428 || Word(b,prefix+locomotor+4)!=18)throw new InvalidDataException("Geometry composed movement metadata differs.");var fields=GameObjectStockReview.Tokens(b,(int)Word(b,next+20));foreach(var f in new[]{("Speed",0),("Condition",4),("Locomotor",8)})if(fields[FastHash.GetHashCode(f.Item1)].Offset!=prefix+locomotor+f.Item2)throw new InvalidDataException("Geometry movement member target differs.");next+=72;}
         references.Add((body+44,4));for(int i=0;i<3;i++)references.Add((body+76+i*12+8,5));
         if(instance.ReferencedInstances.Count!=references.Count)throw new InvalidDataException("Geometry shared occurrence count differs.");for(int i=0;i<references.Count;i++){var reference=instance.ReferencedInstances[i];var expected=targets[references[i].Target];if(reference.TypeId!=expected.TypeId || reference.InstanceId!=expected.InstanceId || Word(b,prefix+references[i].Slot)!=i+1)throw new InvalidDataException("Geometry shared reference identity/index differs.");}
-        if(profile==0){if(prefix!=next || root.ContainsKey(FastHash.GetHashCode("Geometry")))throw new InvalidDataException("Absent geometry emitted metadata.");}
+        if(profile==0){if(prefix!=next+pointerMetadata || root.ContainsKey(FastHash.GetHashCode("Geometry")))throw new InvalidDataException("Absent geometry emitted metadata.");}
         else
         {
-            var field=root[FastHash.GetHashCode("Geometry")];int size=profile==1?252:804;if(field.Type!=FastHash.GetHashCode("Geometry") || field.Offset!=next || prefix!=next+size)throw new InvalidDataException("Geometry root field/metadata extent differs.");
+            var field=root[FastHash.GetHashCode("Geometry")];int size=profile==1?252:804;if(field.Type!=FastHash.GetHashCode("Geometry") || field.Offset!=next || prefix!=next+size+pointerMetadata)throw new InvalidDataException("Geometry root field/metadata extent differs.");
             // Reborn: extract the composed fragment into local coordinates, then run the standalone independent verifier against native owner bytes.
             var original=Extract(native,geometry,n.Length);var local=new Chunk{InstanceBuffer=new byte[size+n.Length-geometry],RelocationBuffer=Pack(Slots(output.RelocationBuffer).Where(s=>s>=prefix+geometry).Select(s=>s-(uint)(prefix+geometry)+(uint)size)),ImportsBuffer=Array.Empty<byte>()};b.AsSpan(next,size).CopyTo(local.InstanceBuffer);b.AsSpan(prefix+geometry).CopyTo(local.InstanceBuffer.AsSpan(size));
-            for(int at=8;at<size;at+=12){uint target=Word(local.InstanceBuffer,at);if(target==0)continue;if(target>=next && target<prefix)Put(local.InstanceBuffer,at,target-(uint)next);else if(target>=prefix+geometry && target<b.Length)Put(local.InstanceBuffer,at,target-(uint)(prefix+geometry)+(uint)size);else throw new InvalidDataException("Composed geometry metadata crosses fragment owners.");}
+            for(int at=8;at<size;at+=12){uint target=Word(local.InstanceBuffer,at);if(target==0)continue;if(target>=next && target<next+size)Put(local.InstanceBuffer,at,target-(uint)next);else if(target>=prefix+geometry && target<b.Length)Put(local.InstanceBuffer,at,target-(uint)(prefix+geometry)+(uint)size);else throw new InvalidDataException("Composed geometry metadata crosses fragment owners.");}
             foreach(uint slot in Slots(local.RelocationBuffer))Put(local.InstanceBuffer,(int)slot,Word(local.InstanceBuffer,(int)slot)-(uint)(prefix+geometry)+(uint)size);Ep1GeometryTokenSmokeTest.Verify(local,original);
         }
         var recovered=b.AsSpan(prefix).ToArray();foreach(uint slot in Slots(output.RelocationBuffer)){if(slot<prefix || Word(b,(int)slot)<prefix)throw new InvalidDataException("Geometry combined pointer escapes native owners.");Put(recovered,(int)slot-prefix,Word(b,(int)slot)-(uint)prefix);}

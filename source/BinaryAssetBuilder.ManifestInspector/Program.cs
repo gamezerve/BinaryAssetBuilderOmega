@@ -34,6 +34,11 @@ internal static class Program
             // Reborn: generated standalone geometry metadata has a separate stock and corruption gate before root composition.
             // Reborn: selected geometry and genuine new-armor variants share one Core occurrence table, without enabling object publication.
             // Reborn: child-element enums and Color4 are independently verified inline EP1 root values, not pointer allocations.
+            // Reborn: pointed names/flammability/camera add bounded root owners, not general localization or object publication.
+            if(args.Length==3 && args[0]=="gameobject-pointer-root-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();GameObjectPointerRootSmokeTest.Run(args[1],args[2]);return 0;}
+            if(args.Length==4 && args[0]=="gameobject-authored-pointer-root-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();GameObjectPointerRootSmokeTest.Run(args[2],args[3],args[1]);return 0;}
             if(args.Length==2 && args[0]=="gameobject-inline-child-self-test")
             {CompilerSmokeTest.InitializeHashProvider();GameObjectInlineChildSmokeTest.Run(args[1]);return 0;}
             if(args.Length==3 && args[0]=="gameobject-geometry-composition-self-test")
@@ -1387,6 +1392,9 @@ internal static class Program
         Console.WriteLine("  gameobject-authored-geometry-composition-self-test <fresh-output> <static.manifest> <global.manifest>");
         // Reborn: inline root child proof remains an offline source/native/token diagnostic.
         Console.WriteLine("  gameobject-inline-child-self-test <static.manifest>");
+        // Reborn: optional pointed root children remain selected offline source/native/token diagnostics.
+        Console.WriteLine("  gameobject-pointer-root-self-test <static.manifest> <global.manifest>");
+        Console.WriteLine("  gameobject-authored-pointer-root-self-test <absolute-fresh-output> <static.manifest> <global.manifest>");
         Console.WriteLine("  gameobject-authored-smc-combat-self-test <fresh-output> <static.manifest> <global.manifest>");
         Console.WriteLine("  ep1-allied-modules-self-test <static.manifest>");
         // Reborn: explicit source normalization does not open general GameObject publication.

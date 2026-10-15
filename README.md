@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 15, 2026
 
+The [pointed root child follow-up](docs/RA3EP1_POINTED_ROOT_CHILDREN.md) adds
+DisplayName/DisplayNameTransformed, Flammability and LiveCameraOffset to the shared
+selected graph. Both stock-target and newly built armor-target modes exercise 288
+combinations. The largest partial root reaches 98 fields; positive stock names are
+verified, while nonnull flammability/camera still need independent stock evidence.
+General GameObject publication and alpha admission remain separate gates.
+Final Focused regression: **50/50** in **309.755 seconds**, eight runtime hashes
+stable, no game/installation changes. Pointer stock/authored groups take
+20.651/13.238 seconds; this is not a Full-suite or runtime acceptance result.
+
 The [inline root child correction](docs/RA3EP1_INLINE_ROOT_CHILDREN.md) fixes
 Buildable, ThingClass and DisplayColor: these are inline enum/packed-color words,
 not allocated pointers. Five stock direct-target contracts and 257 authored/default

@@ -16,7 +16,7 @@ public static class Ep1GameObjectStringTokens
         new("EditorName",124,0x1A2933AAu,8), new("ExperienceScalarTable",284,0x1A2933AAu,8)
     });
     // Reborn: behavior allocation addresses are decoded from native pointers, never inferred from root string lengths or fixed at 600/608/612.
-    public readonly record struct Layout(int List, int Items, int Module, int Body, int Armor, int ArmorCount, IReadOnlyList<int> Modules, int Locomotor, int LocomotorCount, int Geometry);
+    public readonly record struct Layout(int List, int Items, int Module, int Body, int Armor, int ArmorCount, IReadOnlyList<int> Modules, int Locomotor, int LocomotorCount, int Geometry, IReadOnlyList<Ep1GameObjectPointerRoots.Field> PointerRoots);
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate dynamic behavior ownership, bounded ASCII string storage and exact root relocation membership before splitting the module graph. */
     //-------------------------------------------------------------------------------------------------
@@ -83,6 +83,8 @@ public static class Ep1GameObjectStringTokens
                 if (b[(int)at] == 0 || b[(int)at] > 127) throw new InvalidDataException("Projection root strings currently require non-NUL ASCII content.");
             ranges.Add((pointer,end)); owners.Add((uint)(field.Offset + 4));
         }
+        // Reborn: selected pointed root records and their nested text must be disjoint from every already reviewed root allocation.
+        var pointerRoots=Ep1GameObjectPointerRoots.Inspect(b,list,armor,armorCount,locomotor,locomotorCount,owners,ranges);
         // Reborn: present root references require exactly one import slot each; zero is absence and no unreviewed root slot is admitted.
         var rootImports = Ep1GameObjectStrongTokens.Fields.Where(f => Word(f.Offset) != 0).Select(f => (uint)f.Offset).ToList();
         // Reborn: armor and optional DamageFX fields share the same occurrence table, but no other slot in the twelve-byte records is an import.
@@ -104,7 +106,7 @@ public static class Ep1GameObjectStringTokens
             throw new InvalidDataException("Unsupported root allocation/import ownership in string projection.");
         // Reborn: selected native module scope spans Behaviors and Body, independently of source-side validation.
         Ep1SelectedModuleIdentity.ValidateNative(b,modules,(int)body);
-        return new((int)list,(int)list + 8,module,(int)body,(int)armor,(int)armorCount,Array.AsReadOnly(modules),(int)locomotor,(int)locomotorCount,(int)geometry);
+        return new((int)list,(int)list + 8,module,(int)body,(int)armor,(int)armorCount,Array.AsReadOnly(modules),(int)locomotor,(int)locomotorCount,(int)geometry,pointerRoots);
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: all dynamic headers and pointers stay inside the supplied native chunk. */
