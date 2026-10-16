@@ -1,4 +1,4 @@
-# Uprising SDK progress snapshot — October 15, 2026
+# Uprising SDK progress snapshot — October 16, 2026
 
 ## Scope and approximate completion
 
@@ -62,6 +62,34 @@ diagnostic and gameplay boundaries.
   occurrences and missing/wrong/ambiguous dependency controls pass independently.
 
 ## Remaining work, in practical order
+
+### First new-ID GameObject gameplay gate
+
+The first practical custom-object target is a new user-chosen ID based on an
+existing stock unit, reusing stock art/audio dependencies, with a visible gameplay
+change and an explicit way to spawn/build it in a fresh match. It is not a promise
+of arbitrary GameObjects, new models/textures, or every source feature at once.
+
+Three deliverable gates remain before that controlled game test:
+
+1. Close the selected object's recursive root/module graph, including required
+   Draw/client containers and their dependency/token ownership. The current
+   101-field selected root projection is not a complete publishable object.
+2. Publish that new-ID GameObject and selected authored dependencies through real
+   mixed Core streams, validating IDs, imports, relocations and metadata offline.
+3. Package a reachable test object (build/spawn path), then obtain approval for
+   one controlled launch and verify creation, appearance, movement, attack and
+   the intended changed behavior in a fresh match.
+
+The general SDK need not be finished first. A credible calendar date cannot be
+derived from field/test counts: required Draw/client graph and first mixed-output
+failures still determine effort. Re-estimate after the complete selected-object
+offline publication gate, not after another individual scalar passes.
+
+Latest checkpoint: timeout/default repair passes Focused **56/56** in **368.721s**
+with eight frozen runtime hashes stable; no Full run or gameplay is implied.
+
+### Broader SDK work
 
 1. **Complete general toggle source preparation:** five selected literal modules
    now pass Core/native comparison, nonempty child-list stock proof and actual
@@ -162,6 +190,11 @@ diagnostic and gameplay boundaries.
    cover 864 combinations; the partial root reaches 100 fields. The native-only
    minimal-AI refusal becomes a positive projection control. Other AI/list/Draw/
    client/root graphs and complete asset publication remain open.
+   The [duration default correction](RA3EP1_GAMEOBJECT_DURATION.md) adds the final
+   reviewed flat scalar: the official 31000ms timeout is 155 stored frames, not
+   raw milliseconds or the previous missing-attribute fallback 0. The selected
+   root now reaches 101 fields with ten full shared-graph cases; this smaller
+   scalar fix does not change the approximate full-product maturity estimate.
    No missing native model names in the
    initial inventory does not mean all those modules are EP1-compatible.
 3. **Publish a general consumer:** build a new user-ID GameObject referencing a

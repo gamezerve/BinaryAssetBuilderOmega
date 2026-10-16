@@ -120,6 +120,8 @@ if($SchedulerControl){
     # Reborn: inline AI/count/identity joins the complete selected graph with stock or genuine newly compiled armor targets.
     Add-BatchCase 'gameobject-ai-composition' 'BoundedCoreAiCombatGeometryComposition' @('gameobject-ai-composition-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'gameobject-authored-ai-composition' 'BoundedAuthoredArmorAiConsumer' @('gameobject-authored-ai-composition-self-test',(Join-Path $OutputDirectory 'ai-consumer'),$StaticManifest,$GlobalManifest)
+    # Reborn: the timeout scalar's default and frame conversion remain independently stock/schema/Core checked inside the shared graph.
+    Add-BatchCase 'gameobject-duration' 'BoundedStockDurationDefaultAndCoreGraph' @('gameobject-duration-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: actual Core destruction FX names/defaults and semantic imports must pass without captured source dependency indices.
     Add-BatchCase 'ep1-destruction-source' 'BoundedCoreNormalizedModuleNativePayload' @('ep1-destruction-source-self-test',$StaticManifest)
     # Reborn: nested effect/status graphs and Core-normalized strong imports share one new update-family gate.

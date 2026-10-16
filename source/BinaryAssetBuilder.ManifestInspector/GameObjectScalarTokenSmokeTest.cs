@@ -35,7 +35,7 @@ internal static class GameObjectScalarTokenSmokeTest
             foreach (var field in Ep1GameObjectScalarTokens.Fields)
             {
                 uint actual = field.Width == 1 ? native.Chunk.InstanceBuffer[field.Offset] : field.Width == 2 ? BinaryPrimitives.ReadUInt16LittleEndian(native.Chunk.InstanceBuffer.AsSpan(field.Offset, 2)) : BinaryPrimitives.ReadUInt32LittleEndian(native.Chunk.InstanceBuffer.AsSpan(field.Offset, 4));
-                uint expected = field.Type is 0x645864F3u or 0x4E16EA4Du ? Float(alternate ? 0.25f : 0.5f) : field.Type == 0x998669E8u ? Float(alternate ? 1 : 2) : field.Type == 0x77E3F4F7u ? (alternate ? 0u : 1u) : (alternate ? 11u : 7u);
+                uint expected = field.Type is 0x645864F3u or 0x4E16EA4Du ? Float(alternate ? 0.25f : 0.5f) : field.Type == 0x998669E8u ? Float(alternate ? 1 : 2) : field.Type == 0x6F6D1AE7u ? (alternate ? 155u : 2u) : field.Type == 0x77E3F4F7u ? (alternate ? 0u : 1u) : (alternate ? 11u : 7u);
                 if (actual != expected) throw new InvalidDataException($"Authored scalar {field.Name} differs: {actual:X8}/{expected:X8}.");
             }
             GameObjectDestructionProjectionSmokeTest.Authored(native);
@@ -53,7 +53,7 @@ internal static class GameObjectScalarTokenSmokeTest
     //-------------------------------------------------------------------------------------------------
     private static string Text(uint type, bool alternate) => type switch {
         0x645864F3u => alternate ? "0.25" : "0.5", 0x4E16EA4Du => alternate ? "0.25r" : "0.5r",
-        0x998669E8u => alternate ? "1000ms" : "2s", 0x77E3F4F7u => alternate ? "false" : "true", _ => alternate ? "11" : "7" };
+        0x998669E8u => alternate ? "1000ms" : "2s", 0x6F6D1AE7u => alternate ? "31000" : "201", 0x77E3F4F7u => alternate ? "false" : "true", _ => alternate ? "11" : "7" };
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate authored root attributes in a schema-complete container; the required Body is validation context, not part of this native projection. */
     //-------------------------------------------------------------------------------------------------

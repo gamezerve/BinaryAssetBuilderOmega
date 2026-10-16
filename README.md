@@ -6,7 +6,15 @@ asset IDs, instance includes, inheritance, `$` definitions/expressions,
 TGA/DDS textures and W3X models. Current fixed-identity alpha restrictions are
 temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
-## Current outcome — October 15, 2026
+## Current outcome — October 16, 2026
+
+The [timeout duration correction](docs/RA3EP1_GAMEOBJECT_DURATION.md) restores
+the stock/schema default: 31000 source milliseconds become 155 native logic
+frames, rather than the old missing-attribute fallback 0. Ten full shared AI/root
+cases and eleven refusals pass. The new descriptor raises the selected root to
+**101 partial fields**; generic Duration conversion and alpha admission are unchanged.
+Final Focused regression: **56/56** in **368.721 seconds**, duration group
+10.010 seconds, eight runtime hashes stable; no Full run or game/install changes.
 
 The [shared inline AI projection](docs/RA3EP1_GAMEOBJECT_AI_COMPOSITION.md) now
 joins common AI with armor, movement, Body, three behaviors, geometry and pointed

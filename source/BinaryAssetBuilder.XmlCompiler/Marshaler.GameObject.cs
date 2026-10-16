@@ -1248,7 +1248,8 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(GameObject.HealthBar), null), &objT->HealthBar, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.SubGroupPriority), "0"), &objT->SubGroupPriority, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.EvaEventSecondDamageFarFromFirstScanRange), "0"), &objT->EvaEventSecondDamageFarFromFirstScanRange, state);
-        Marshal(node.GetAttributeValue(nameof(GameObject.EvaEventSecondDamageFarFromFirstTimeoutMS), "0"), &objT->EvaEventSecondDamageFarFromFirstTimeoutMS, state);
+        // Reborn: official EP1 defaults to 31000 milliseconds, stored as 155 logic frames; preserve the existing Duration conversion rather than copying raw milliseconds.
+        Marshal(node.GetAttributeValue(nameof(GameObject.EvaEventSecondDamageFarFromFirstTimeoutMS), "31000"), &objT->EvaEventSecondDamageFarFromFirstTimeoutMS, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.UnitIntro), null), &objT->UnitIntro, state);
         Marshal(node.GetChildNode(nameof(GameObject.DisplayName), null), &objT->DisplayName, state);
         Marshal(node.GetChildNode(nameof(GameObject.DisplayNameTransformed), null), &objT->DisplayNameTransformed, state);

@@ -39,6 +39,9 @@ internal static class Program
             // Reborn: common AI/chooser native source and real inline dispatch are distinct from generated AI metadata and general object publication.
             // Reborn: generated AI fragments require complete independent stock-prefix and native/metadata corruption gates.
             // Reborn: inline AI joins the selected shared Core graph, optionally referencing a genuinely new compiled armor target.
+            // Reborn: the final timeout scalar preserves stock frame-duration/default semantics rather than copying raw milliseconds.
+            if(args.Length==3 && args[0]=="gameobject-duration-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();GameObjectDurationSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="gameobject-ai-composition-self-test")
             {CompilerSmokeTest.InitializeHashProvider();GameObjectAiCompositionSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==4 && args[0]=="gameobject-authored-ai-composition-self-test")
@@ -1435,6 +1438,8 @@ internal static class Program
         // Reborn: selected combined AI graphs do not authorize general GameObject stream publication.
         Console.WriteLine("  gameobject-ai-composition-self-test <static.manifest> <global.manifest>");
         Console.WriteLine("  gameobject-authored-ai-composition-self-test <fresh-output> <static.manifest> <global.manifest>");
+        // Reborn: duration default/rounding and shared graph diagnostics do not publish a GameObject.
+        Console.WriteLine("  gameobject-duration-self-test <static.manifest> <global.manifest>");
         Console.WriteLine("  gameobject-root-layout-self-test <static.manifest>");
         // Reborn: advertise named-reference diagnostic commands without implying a general GameObject compiler.
         Console.WriteLine("  gameobject-armor-source-probe <GameObject.xml> <static.manifest> [authored-armor.manifest]");

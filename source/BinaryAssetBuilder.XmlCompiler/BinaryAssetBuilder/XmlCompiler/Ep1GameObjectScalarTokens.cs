@@ -28,6 +28,8 @@ public static class Ep1GameObjectScalarTokens
         new("HasFiredRecentlyTime",364,0x998669E8u,4), new("ReinvisibilityDelay",372,0x998669E8u,4),
         new("InvisibilityOpacityMin",376,0x645864F3u,4), new("InvisibilityOpacityMax",380,0x645864F3u,4),
         new("SubGroupPriority",388,0x23E650B8u,4), new("EvaEventSecondDamageFarFromFirstScanRange",392,0x645864F3u,4),
+        // Reborn: this unsigned duration uses the stock frame-duration tag, not Time/float or a raw unsigned-millisecond primitive.
+        new("EvaEventSecondDamageFarFromFirstTimeoutMS",396,0x6F6D1AE7u,4),
         new("RefundValue",584,0x43501092u,2), new("MaxSimultaneousOfType",586,0x43501092u,2), new("TransportSlotCount",588,0x30916B96u,1),
         new("IsTrainable",589,0x77E3F4F7u,1), new("IsForbidden",590,0x77E3F4F7u,1), new("IsPrerequisite",591,0x77E3F4F7u,1),
         new("IsGrabbable",592,0x77E3F4F7u,1), new("IsHarvestable",593,0x77E3F4F7u,1), new("ForceLuaRegistration",594,0x77E3F4F7u,1),

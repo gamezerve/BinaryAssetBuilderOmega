@@ -43,7 +43,7 @@ internal static class GameObjectAiCompositionSmokeTest
             var good=Ep1GameObjectDestructionProjection.Compose(populated);var roots=GameObjectStockReview.Tokens(good.InstanceBuffer,0);int aiTable=roots[FastHash.GetHashCode("AI")].Offset,aiRow=FindRow(good.InstanceBuffer,FastHash.GetHashCode("AI"));
             foreach(int at in new[]{aiRow+4,aiRow+8}.Concat(Enumerable.Range(0,9).Select(i=>aiTable+i*4))){var bad=Clone(good);Put(bad.InstanceBuffer,at,Word(bad.InstanceBuffer,at)^1u);Refuse(()=>Verify(bad,populated,populatedInstance!,targets,15,2,2));metadataFailures++;}
             for(int i=0;i<2;i++){int table=(int)Word(good.InstanceBuffer,aiTable+20+i*12);for(int at=table;at<table+552;at+=4){var bad=Clone(good);Put(bad.InstanceBuffer,at,Word(bad.InstanceBuffer,at)^1u);Refuse(()=>Verify(bad,populated,populatedInstance!,targets,15,2,2));metadataFailures++;}}
-            Console.WriteLine($"Shared GameObject AI: PASS ({cases} actual-Core combinations, all pointed-root masks and six behavior orders, AI counts 0/1/2, up to 100 partial root fields; {nativeFailures} native/{sourceFailures} source/{metadataFailures} detached metadata refusals; local Body/behavior/AI scope and named references; empty AI contact/vision lists only, no general object stream/package/game).");
+            Console.WriteLine($"Shared GameObject AI: PASS ({cases} actual-Core combinations, all pointed-root masks and six behavior orders, AI counts 0/1/2, up to {Ep1GameObjectRootValueTokens.AllFields.Count+11} partial root fields; {nativeFailures} native/{sourceFailures} source/{metadataFailures} detached metadata refusals; local Body/behavior/AI scope and named references; empty AI contact/vision lists only, no general object stream/package/game).");
             //-------------------------------------------------------------------------------------------------
             /** Reborn: schema-valid raw source must precede actual Core normalization and unique stock/authored dependency identity admission. */
             //-------------------------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ internal static class GameObjectAiCompositionSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: appended focused AI leaves retain one Core occurrence table; adaptation restores actual official AI/Body/root-child source order. */
     //-------------------------------------------------------------------------------------------------
-    private static string Source(ManifestAsset[] targets,int mask,int profile,int count,bool reverse,int position)
+    internal static string Source(ManifestAsset[] targets,int mask,int profile,int count,bool reverse,int position)
     {
         string source=GameObjectPointerRootSmokeTest.Source(targets,mask,profile,reverse,position).Replace("RootPointerProbe","RootAiProbe",StringComparison.Ordinal);string children=Ep1VisionInfoSmokeTest.Vision(profile);
         for(int i=0;i<count;i++){string text=profile==0?"":profile==1?" AttackPriority=''":" AttackPriority='AI &amp; &lt;priority&gt; "+new string('R',80)+"'";children+=$"<AIUpdate id='AI{i}' StateMachine='{(i==0?"UnitAIStateMachine":"StructureAIStateMachine")}' DefaultLocomotorSet='{(profile==2?"SPECIALABILITY_ACTIVE":"NORMAL")}' StandGround='{(profile==2?"true":"false")}' FadeOnPortals='{(profile==1?"true":"false")}'"+text+">"+(HasChooser(profile,i)?"<UnitAITargetChooserData/>":"")+"</AIUpdate>";}
@@ -70,7 +70,7 @@ internal static class GameObjectAiCompositionSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: all older independent graph checks remain active; AI list/class fragments are separately inverted into their reviewed local coordinates. */
     //-------------------------------------------------------------------------------------------------
-    private static void Verify(Chunk output,Chunk native,InstanceDeclaration instance,ManifestAsset[] targets,int mask,int profile,int count)
+    internal static void Verify(Chunk output,Chunk native,InstanceDeclaration instance,ManifestAsset[] targets,int mask,int profile,int count)
     {
         var b=output.InstanceBuffer;var n=native.InstanceBuffer;var roots=GameObjectStockReview.Tokens(b,0);int prefix=roots[FastHash.GetHashCode("BuildTime")].Offset-140,items=(int)Word(n,484);var extra=new List<int>();int metadata=count==0?0:12+count*12;for(int i=0;i<count;i++){metadata+=HasChooser(profile,i)?552:348;if(HasChooser(profile,i)){int module=(int)Word(n,items+i*4);extra.Add((int)Word(n,module+68)+36);}}
         Ep1VisionInfoSmokeTest.Verify(output,native,instance,targets,mask,profile,true,count==0?0:1,metadata,extra);if(Word(n,480)!=count)throw new InvalidDataException("Shared AI native count differs.");if(count==0){if(items!=0 || roots.ContainsKey(FastHash.GetHashCode("AI")))throw new InvalidDataException("Absent shared AI retains storage/metadata.");return;}
