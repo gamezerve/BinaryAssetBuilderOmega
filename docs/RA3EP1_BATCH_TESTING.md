@@ -8,7 +8,7 @@ Each group has a separate log and owned TEMP/TMP directory; Core static
 settings/caches do not cross process boundaries. Default concurrency is two
 workers, configurable from one to four. Concurrency is not multiple agents.
 
-Current Focused profile: **58** groups by default, **61** when the external
+Current Focused profile: **58** groups by default, **62** when the external
 official XML root is explicitly supplied through `-UprisingXmlRoot`. The extra
 groups compile both complete Conscript scripted-draw native graphs, 288 particle
 controls, animation defaults and detached/source/dependency refusals. It also
@@ -21,6 +21,9 @@ and [metadata evidence](RA3EP1_CONSCRIPT_SCRIPTED_DRAW_TOKENS.md).
 The shared-container group adds all four complete Draws on one Core occurrence
 table/Tracker, independent whole-list metadata, 12 source cases and 14,682
 refusals. See [shared Draws evidence](RA3EP1_CONSCRIPT_SHARED_DRAWS.md).
+The selected root + complete Draws group adds 13 combined source cases on one
+Core table/Tracker, up to 102 partial root fields/189 imports, and cross-container
+identity/ownership/output refusals. See [root integration evidence](RA3EP1_GAMEOBJECT_DRAWS_COMPOSITION.md).
 
 At the original milestone the focused matrix had 24 groups: layout, armor input, weapon input,
 includes/definitions, definition subset, instance inheritance, expressions,

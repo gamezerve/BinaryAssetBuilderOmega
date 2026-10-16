@@ -20,7 +20,7 @@ internal static class Ep1ScriptedDrawNativeSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: retain every source child/script and compare complete typed native graphs, exact auxiliary ownership and semantic stock import identities. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string sourceRoot, string manifest, string globalManifest, bool includeTokens = false, bool includeContainer = false)
+    internal static void Run(string sourceRoot, string manifest, string globalManifest, bool includeTokens = false, bool includeContainer = false, bool includeRoot = false)
     {
         var saved = Settings.Current;
         try
@@ -35,6 +35,8 @@ internal static class Ep1ScriptedDrawNativeSmokeTest
             // Reborn: this diagnostic asset envelope uses the unchanged official DrawModules type for one Core pass, not whole GameObject admission.
             var drawEnvelope = new XmlSchemaComplexType { ContentModel = new XmlSchemaComplexContent { Content = new XmlSchemaComplexContentExtension { BaseTypeName = new XmlQualifiedName("BaseAssetType", SchemaSet.XmlNamespace), Particle = new XmlSchemaSequence { Items = { new XmlSchemaElement { Name = "Draws", SchemaTypeName = new XmlQualifiedName("DrawModules", SchemaSet.XmlNamespace) } } } } } };
             alias.Items.Add(new XmlSchemaElement { Name = "DrawsProbe", SchemaType = drawEnvelope });
+            // Reborn: the reviewed SDK declares GameObject locally under AssetDeclaration; expose that unchanged type only for this diagnostic standalone normalization envelope.
+            if(includeRoot)alias.Items.Add(new XmlSchemaElement { Name = "GameObject", SchemaTypeName = new XmlQualifiedName("GameObject", SchemaSet.XmlNamespace) });
             official.Add(alias); official.Compile();
             Settings.Current = new Settings { SchemaPath = Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!, "TracerDrawPipeline.xsd"), BuildCache = false, StringHashBinDescriptors = Array.Empty<StringHashBinDescriptor>() };
             var schemas = new SchemaSet(false);
@@ -127,7 +129,7 @@ internal static class Ep1ScriptedDrawNativeSmokeTest
             }
             Console.WriteLine($"EP1 complete scripted Draw native graphs: PASS (two stock graphs, 10 model/84 animation states, {totalRecords} visited native records/{totalStrings} string allocations/{totalImports} typed import slots, {particleBindings} complete particle token/native bindings, 288 authored particle/3 flag-default controls and existing combined record fixture, 22 detached/3 source-dependency refusals; one explicitly bounded Script CRLF/LF equivalence; generated metadata checked={includeTokens}; no complete GameObject publication, XInclude execution or LUA execution claim).");
             // Reborn: compile both full scripted leaves and both source tracers together after the independent component gates.
-            if (includeContainer) Ep1DrawsCompositionSmokeTest.Run(schemas, sourceRoot, manifest, catalog, scriptedSources.ToArray());
+            if (includeContainer || includeRoot) Ep1DrawsCompositionSmokeTest.Run(schemas, sourceRoot, manifest, catalog, scriptedSources.ToArray(),includeRoot);
         }
         finally { Settings.Current = saved; }
     }

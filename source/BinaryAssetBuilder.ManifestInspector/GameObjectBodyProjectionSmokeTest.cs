@@ -116,6 +116,8 @@ internal static class GameObjectBodyProjectionSmokeTest
         body.SetAttribute("TypeId","1510882715");
         // Reborn: selected common AI receives only the reviewed internal class identity after raw validation, on the same root Tracker.
         if(selectedBehaviors)foreach(XmlElement ai in d.GetElementsByTagName("AI",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>())){if(ai.LocalName!="AIUpdate")throw new InvalidDataException("Unreviewed selected AI class.");ai.SetAttribute("TypeId","148619278");}
+        // Reborn: selected Draw classes use the actual dispatcher on the same root Tracker after source validation; no separate compiled fragment is appended.
+        if(selectedBehaviors)foreach(XmlElement draw in d.GetElementsByTagName("Draws",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>()))draw.SetAttribute("TypeId",(draw.LocalName switch{"ScriptedModelDraw"=>0x4ECF2A4Bu,"TracerModelDraw"=>0x54018E60u,_=>throw new InvalidDataException("Unreviewed selected Draw dispatch class.")}).ToString(System.Globalization.CultureInfo.InvariantCulture));
         var ns=new XmlNamespaceManager(d.NameTable);ns.AddNamespace("ea",SchemaSet.XmlNamespace);
         GameObject* root;using var tracker=new Tracker((void**)&root,(uint)sizeof(GameObject),false);
         Marshaler.Marshal(new Node(d.DocumentElement.CreateNavigator()!,ns),root,tracker);

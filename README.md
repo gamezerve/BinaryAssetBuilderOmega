@@ -8,12 +8,24 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 16, 2026
 
+The [selected root + complete Conscript Draws graph](docs/RA3EP1_GAMEOBJECT_DRAWS_COMPOSITION.md)
+now reaches **102 partial root fields / 189 shared Core imports** on one Tracker.
+All four complete Draws retain their 58,608-byte independent stock metadata oracle
+inside the combined armor/movement/Body/behavior/AI/geometry/vision graph.
+Thirteen scenarios and cross-container identity/ownership/metadata refusals pass.
+The original Conscript's remaining root/behavior/client owners and complete
+object-stream/package validation remain open; no reduced unit is substituted.
+Final Focused regression with explicit official XML root: **62/62** in
+**238.945 seconds**, root/Draws group 19.762 seconds, eight runtime hashes stable.
+No Full run, game launch, install mutation or alpha admission expansion.
+
 The [complete four-module Conscript Draws container](docs/RA3EP1_CONSCRIPT_SHARED_DRAWS.md)
 now passes **one Core occurrence table / 173 strong slots**, one Tracker and a
 complete independent **58,608-byte** stock metadata prefix. Twelve source cases
 cover order/subsets, full module-ID/scalar edits and optional tracer status;
-14,682 refusals pass. Whole-object root/Draw/client/behavior integration and
-publication remain open; the complete Conscript is still the gameplay target.
+14,682 refusals pass. The subsequent selected root integration is above; original
+remaining root/client/behavior owners and publication remain open. The complete
+Conscript is still the gameplay target.
 Final Focused regression with explicit official XML root: **61/61** in
 **225.340 seconds**, shared Draws group 15.610 seconds, eight runtime hashes
 stable. No Full run, game launch, install mutation or alpha admission expansion.

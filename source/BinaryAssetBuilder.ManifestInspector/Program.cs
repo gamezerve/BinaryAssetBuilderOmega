@@ -55,6 +55,9 @@ internal static class Program
             // Reborn: all four complete Conscript draws share actual Core occurrences, Tracker ownership and independent stock metadata in one container gate.
             if(args.Length==4 && args[0]=="ep1-draws-composition-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeContainer:true);return 0;}
+            // Reborn: the complete selected Draws container joins root/Body/behaviors/common AI on one Core table without admitting whole GameObjects.
+            if(args.Length==4 && args[0]=="gameobject-draws-composition-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true);return 0;}
             if(args.Length==3 && args[0]=="gameobject-duration-self-test")
             {CompilerSmokeTest.InitializeHashProvider();GameObjectDurationSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="gameobject-ai-composition-self-test")
@@ -1465,6 +1468,8 @@ internal static class Program
         Console.WriteLine("  ep1-scripted-draw-token-self-test <official-xml-root> <static.manifest> <global.manifest>");
         // Reborn: container composition is explicitly separate from standalone component and complete GameObject admission.
         Console.WriteLine("  ep1-draws-composition-self-test <official-xml-root> <static.manifest> <global.manifest>");
+        // Reborn: selected root integration is a separate diagnostic from complete GameObject publication.
+        Console.WriteLine("  gameobject-draws-composition-self-test <official-xml-root> <static.manifest> <global.manifest>");
         Console.WriteLine("  gameobject-root-layout-self-test <static.manifest>");
         // Reborn: advertise named-reference diagnostic commands without implying a general GameObject compiler.
         Console.WriteLine("  gameobject-armor-source-probe <GameObject.xml> <static.manifest> [authored-armor.manifest]");

@@ -87,6 +87,8 @@ if($SchedulerControl){
         Add-BatchCase 'ep1-scripted-draw-tokens' 'CompleteSelectedConscriptScriptedTokenGraphs' @('ep1-scripted-draw-token-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
         # Reborn: both complete scripted and both tracer modules share one Core/Tracker container before whole object integration.
         Add-BatchCase 'ep1-draws-composition' 'CompleteSelectedConscriptSharedDraws' @('ep1-draws-composition-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
+        # Reborn: selected root/Body/behavior/AI and all four complete Draws share one Core occurrence table and Tracker.
+        Add-BatchCase 'gameobject-draws-composition' 'SelectedRootCompleteDrawsSharedGraph' @('gameobject-draws-composition-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
     }
     # Reborn: destruction/tech/LUA native dispatch and complete selected graphs share one gate; captured FX and callback limits remain explicit.
     Add-BatchCase 'ep1-allied-modules' 'BoundedCapturedIndexModuleNativePayload' @('ep1-allied-modules-self-test',$StaticManifest)

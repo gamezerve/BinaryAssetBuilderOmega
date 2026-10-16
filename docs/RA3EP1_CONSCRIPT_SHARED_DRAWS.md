@@ -85,9 +85,10 @@ The Focused batch adds this group only with explicit `-UprisingXmlRoot`.
 
 ## Next gate
 
-Join this complete Draws container with the selected root/armor/movement/Body/
-behavior/AI owners on a single whole-object graph and occurrence table, then
-complete the remaining root/client/behavior owners before mixed-stream packaging
+The subsequent [selected root integration](RA3EP1_GAMEOBJECT_DRAWS_COMPOSITION.md)
+now joins this complete Draws container with selected root/armor/movement/Body/
+behavior/AI owners on one graph and occurrence table. Next: complete the original
+remaining root/client/behavior owners before mixed-stream packaging
 and first new-ID Conscript gameplay. The complete Conscript remains the target;
 no reduced replacement is used. No general GameObject/alpha admission, package,
 new model compilation, game launch or install mutation is claimed here.
