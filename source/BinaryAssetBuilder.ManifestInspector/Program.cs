@@ -46,6 +46,9 @@ internal static class Program
             // Reborn: both complete Conscript tracer Draw graphs share one source/native/token/reference and fail-closed dispatch gate.
             if(args.Length==3 && args[0]=="ep1-tracer-draw-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1TracerDrawSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: use both complete official scripted leaves, preserving model/animation/script contents and real typed stock references.
+            if(args.Length==4 && args[0]=="ep1-scripted-draw-native-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==3 && args[0]=="gameobject-duration-self-test")
             {CompilerSmokeTest.InitializeHashProvider();GameObjectDurationSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="gameobject-ai-composition-self-test")
@@ -1450,6 +1453,8 @@ internal static class Program
         Console.WriteLine("  ep1-group-audio-client-token-self-test <static.manifest>");
         // Reborn: this Draw diagnostic retains both official tracers but does not publish the complete Conscript.
         Console.WriteLine("  ep1-tracer-draw-self-test <static.manifest> <global.manifest>");
+        // Reborn: the external official source root is explicit; this diagnostic never copies stock XML into a published mod.
+        Console.WriteLine("  ep1-scripted-draw-native-self-test <official-xml-root> <static.manifest> <global.manifest>");
         Console.WriteLine("  gameobject-root-layout-self-test <static.manifest>");
         // Reborn: advertise named-reference diagnostic commands without implying a general GameObject compiler.
         Console.WriteLine("  gameobject-armor-source-probe <GameObject.xml> <static.manifest> [authored-armor.manifest]");

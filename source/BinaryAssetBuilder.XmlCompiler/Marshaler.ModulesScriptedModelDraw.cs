@@ -58,7 +58,8 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(AnimationState.ConditionsYes), null), &objT->ConditionsYes, state);
         Marshal(node.GetAttributeValue(nameof(AnimationState.Name), null), &objT->Name, state);
         Marshal(node.GetAttributeValue(nameof(AnimationState.StateName), null), &objT->StateName, state);
-        Marshal(node.GetAttributeValue(nameof(AnimationState.Flags), null), &objT->Flags, state);
+        // Reborn: official schema and stock empty states default to the NONE bit (1), distinct from an explicitly empty flag list (0).
+        Marshal(node.GetAttributeValue(nameof(AnimationState.Flags), "NONE"), &objT->Flags, state);
         Marshal(node.GetAttributeValue(nameof(AnimationState.ShareAnimation), "false"), &objT->ShareAnimation, state);
         Marshal(node.GetAttributeValue(nameof(AnimationState.EnteringStateFX), null), &objT->EnteringStateFX, state);
         Marshal(node.GetAttributeValue(nameof(AnimationState.FrameForPristineBonePositions), "0"), &objT->FrameForPristineBonePositions, state);

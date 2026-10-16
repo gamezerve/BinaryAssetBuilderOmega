@@ -1251,6 +1251,11 @@ the official 140 bytes. `Animation` replaces the KW string/fade bookkeeping
 with the RA3 animation-mode enum and absolute time (60 bytes), while
 `ParticleSysBone` now uses the RA3 trigger/action enums and POID hash (36
 bytes). The audit therefore advances to 199 exact matches and 179 mismatches.
+**October 16 correction:** the historical particle POID/hash statement above is
+superseded: its AssetId is an 8-byte ASCII header at +24; enums are +12/+16 and
+flags +32..34, while total size remains 36. Independent EP1 token bindings, EA
+Tokenizer IL and complete Conscript comparisons exposed the interior ABI error.
+See [the corrected evidence](RA3EP1_CONSCRIPT_SCRIPTED_DRAW_NATIVE.md).
 A combined animation/particle compiler fixture emits `236 bin / 12 relo / 0
 imp`. Real Uprising GameObject chunks contain the expected scripted-model type
 ID `0x4ECF2A4B` at their module pointer targets, independently confirming this

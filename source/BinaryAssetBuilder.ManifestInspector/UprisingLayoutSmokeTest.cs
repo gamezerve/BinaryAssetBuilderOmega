@@ -386,7 +386,14 @@ internal static class UprisingLayoutSmokeTest
         ExpectSize<SageBinaryData.Animation>(60);
         ExpectOffset<SageBinaryData.Animation>(nameof(SageBinaryData.Animation.AnimationAbsoluteTime), 40);
         ExpectSize<SageBinaryData.ParticleSysBone>(36);
-        ExpectOffset<SageBinaryData.ParticleSysBone>(nameof(SageBinaryData.ParticleSysBone.FXAction), 20);
+        // Reborn: size alone missed the old interior ABI error; independent EP1 token targets and EA Tokenizer IL pin every corrected particle field.
+        ExpectOffset<SageBinaryData.ParticleSysBone>(nameof(SageBinaryData.ParticleSysBone.FXTrigger), 12);
+        ExpectOffset<SageBinaryData.ParticleSysBone>(nameof(SageBinaryData.ParticleSysBone.FXAction), 16);
+        ExpectOffset<SageBinaryData.ParticleSysBone>(nameof(SageBinaryData.ParticleSysBone.PersistID), 20);
+        ExpectOffset<SageBinaryData.ParticleSysBone>(nameof(SageBinaryData.ParticleSysBone.id), 24);
+        ExpectOffset<SageBinaryData.ParticleSysBone>(nameof(SageBinaryData.ParticleSysBone.FollowBone), 32);
+        ExpectOffset<SageBinaryData.ParticleSysBone>(nameof(SageBinaryData.ParticleSysBone.OnlyIfOnWater), 33);
+        ExpectOffset<SageBinaryData.ParticleSysBone>(nameof(SageBinaryData.ParticleSysBone.OnlyIfOnLand), 34);
         // Reborn: Pin official shared dynamics sizes and the EP1 +4-byte joint-pointer extension.
         ExpectSize<SageBinaryData.DynamicsShapeType>(8);
         ExpectSize<SageBinaryData.DynamicsSphereShapeType>(12);

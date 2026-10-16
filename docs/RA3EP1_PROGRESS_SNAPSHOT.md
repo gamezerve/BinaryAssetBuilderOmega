@@ -102,17 +102,29 @@ The [two tracer draws](RA3EP1_CONSCRIPT_TRACER_DRAWS.md) now have complete selec
 stock native/metadata comparisons and actual Core texture resolution; 24 authored
 slot/status/blend/FX graphs also check changed real/frame/color values. They are
 not yet composed into a whole published object.
-Next drawing work batch: the two scripted draws and their model/animation/bone/
-particle/FX dependencies, including the parachute include. The main source draw
-contains 5 model states and 80 animation states; the included parachute draw
-contains 5 model states and 4 animation states. Then compose all client containers
-and the remaining behavior/root graphs.
+The [two complete scripted-draw native graphs](RA3EP1_CONSCRIPT_SCRIPTED_DRAW_NATIVE.md)
+now pass actual Core named references and real Draw dispatch: 5+5 model states,
+80+4 animation states, 70 string allocations and 171 fully consumed import slots.
+The main graph matches stock; the parachute comparison explicitly admits only
+one Script CRLF/LF equivalence, without changing source/producer text. Fourteen
+stock particle metadata bindings exposed a wrong interior ABI/id-string type;
+that defect and the omitted AnimationState NONE default are now corrected.
+Next drawing work batch: recursive generated metadata for both scripted graphs,
+then compose the two scripted and two tracer modules in one Draws container.
+The actual XInclude/XPointer path, all client containers and remaining behavior/
+root graphs still need integration; reading the two complete leaves separately
+does not prove the include processor or whole-unit publication.
 Implementing shared child writers and testing multiple selected graphs together
 is preferred to stopping after each scalar or enabling a reduced alternative.
 The legacy Draw dispatcher's silent unknown-type fallthrough is now replaced by
 an explicit error with a refusal test; supported dispatch cases remain unchanged.
 
-Latest checkpoint: [both complete Conscript tracers](RA3EP1_CONSCRIPT_TRACER_DRAWS.md)
+Latest checkpoint: [both complete scripted-draw native graphs](RA3EP1_CONSCRIPT_SCRIPTED_DRAW_NATIVE.md)
+pass Focused **59/59** with explicit official XML root in **217.593s**, scripted
+group **8.906s**, eight runtime hashes stable. Recursive scripted metadata and
+whole-unit publication remain open. No Full run or new gameplay is implied;
+full-product maturity remains about **48%**, not a type/field pass ratio.
+The preceding [both complete Conscript tracers](RA3EP1_CONSCRIPT_TRACER_DRAWS.md)
 pass Focused **58/58** in **368.540s**, with eight frozen runtime hashes stable.
 This does not raise the full-product estimate or complete the enclosing object.
 The preceding [group-audio client metadata fragment](RA3EP1_GROUP_AUDIO_CLIENT_TOKENS.md)

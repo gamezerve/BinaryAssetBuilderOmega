@@ -4,6 +4,8 @@ param(
     [Parameter(Mandatory)][string]$OutputDirectory,
     [string]$StaticManifest,
     [string]$GlobalManifest,
+    # Reborn: complete official scripted leaves are optional external read-only inputs, not embedded machine-specific source paths.
+    [string]$UprisingXmlRoot,
     [ValidateRange(1,4)][int]$Workers=2,
     [switch]$Full,
     [switch]$SchedulerControl
@@ -78,6 +80,10 @@ if($SchedulerControl){
     Add-BatchCase 'ep1-group-audio-client-tokens' 'BoundedStockClientPrimitiveListTokens' @('ep1-group-audio-client-token-self-test',$StaticManifest)
     # Reborn: retain both complete Conscript tracers with real texture/FX names and exact metadata/native ownership.
     Add-BatchCase 'ep1-tracer-draw' 'BoundedConscriptDrawNativeTokenGraphs' @('ep1-tracer-draw-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: add this complete native/script/reference gate only when its official source root is explicitly supplied; no reduced unit is substituted.
+    if($UprisingXmlRoot){
+        Add-BatchCase 'ep1-scripted-draw-native' 'CompleteSelectedConscriptScriptedNativeGraphs' @('ep1-scripted-draw-native-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
+    }
     # Reborn: destruction/tech/LUA native dispatch and complete selected graphs share one gate; captured FX and callback limits remain explicit.
     Add-BatchCase 'ep1-allied-modules' 'BoundedCapturedIndexModuleNativePayload' @('ep1-allied-modules-self-test',$StaticManifest)
     # Reborn: one real Core occurrence table binds named root and module imports to independently read stock catalogs.

@@ -1576,7 +1576,7 @@ internal static class CompilerSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: exercise the corrected RA3 animation bit sets, enums and particle record in one graph. */
     //-------------------------------------------------------------------------------------------------
-    private static unsafe void TestScriptedModelRecords()
+    internal static unsafe void TestScriptedModelRecords()
     {
         const string xml = """
             <AnimationState xmlns="uri:ea.com:eala:asset" ParseCondStateType="PARSE_NORMAL"
@@ -1605,7 +1605,8 @@ internal static class CompilerSmokeTest
         Expect(ReadUInt32(instance, 128) == 1, "animation-state particle count", 1, ReadUInt32(instance, 128));
         Expect(ReadUInt32(instance, 132) == 200, "animation-state particle relocation", 200, ReadUInt32(instance, 132));
         Expect(ReadUInt32(instance, 152) == 1, "animation mode LOOP", 1, ReadUInt32(instance, 152));
-        Expect(ReadUInt32(instance, 220) == 3, "particle action SPAWN", 3, ReadUInt32(instance, 220));
+        // Reborn: independent stock metadata and EA Tokenizer IL correct FXAction to +16 within the 36-byte particle record.
+        Expect(ReadUInt32(instance, 216) == 3, "particle action SPAWN", 3, ReadUInt32(instance, 216));
         Expect(chunk.RelocationBuffer.Length == 12, "scripted-model records relocation bytes", 12, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 0, "scripted-model records imports bytes", 0, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  ScriptedModelRecords bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");

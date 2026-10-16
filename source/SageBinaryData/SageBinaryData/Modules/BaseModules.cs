@@ -100,14 +100,15 @@ public struct ParticleSysBone
 {
     public AnsiString BoneName;
     public AssetReference<FXParticleSystemTemplate> FXParticleSystemTemplate;
-    public SageBool FollowBone;
+    // Reborn: stock EP1 tokens and EA Tokenizer IL place enums at 12/16, PersistID at 20 and an ASCII AssetId header at 24; flags are trailing bytes 32..34.
     public FXTriggerType FXTrigger;
     // Reborn: RA3 stores the particle action as an enum, not Kane's Wrath's Persist string.
     public FXActionType FXAction;
     public int PersistID;
 #pragma warning disable IDE1006 // Naming Styles
-    public StringHash id;
+    public AnsiString id;
 #pragma warning restore IDE1006 // Naming Styles
+    public SageBool FollowBone;
     public SageBool OnlyIfOnWater;
     public SageBool OnlyIfOnLand;
 }

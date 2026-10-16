@@ -8,6 +8,18 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 16, 2026
 
+Both [complete Conscript scripted-draw native graphs](docs/RA3EP1_CONSCRIPT_SCRIPTED_DRAW_NATIVE.md)
+now pass actual Core named-reference and Draw dispatch comparison: **10 model
+states, 84 animation states and 171 strong import slots**. This exposed and fixes
+the ParticleSysBone interior ABI/id-string error and missing AnimationState NONE
+default. The main graph matches stock; the parachute graph has one explicitly
+bounded Script CRLF/LF equivalence. No source members are dropped. Generated
+scripted-draw metadata, full Draws composition and GameObject publication remain
+open; the target is still the complete Conscript, not a reduced replacement.
+Final Focused regression with explicit official XML root: **59/59** in
+**217.593 seconds**, scripted-draw group 8.906 seconds, eight runtime hashes
+stable. No Full run, game/install changes or alpha admission expansion.
+
 The [two complete Conscript tracer Draw graphs](docs/RA3EP1_CONSCRIPT_TRACER_DRAWS.md)
 now match independent stock native/metadata output through real Draw dispatch
 and Core texture names. Twenty-four authored combinations check edited tracer
