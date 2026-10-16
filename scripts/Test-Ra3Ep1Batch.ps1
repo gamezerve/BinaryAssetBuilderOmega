@@ -76,6 +76,8 @@ if($SchedulerControl){
     Add-BatchCase 'ep1-basic-modules' 'BoundedModuleNativePayload' @('ep1-basic-module-self-test',$StaticManifest)
     # Reborn: primitive nonempty Key list tokens need independent stock/client and detached corruption coverage.
     Add-BatchCase 'ep1-group-audio-client-tokens' 'BoundedStockClientPrimitiveListTokens' @('ep1-group-audio-client-token-self-test',$StaticManifest)
+    # Reborn: retain both complete Conscript tracers with real texture/FX names and exact metadata/native ownership.
+    Add-BatchCase 'ep1-tracer-draw' 'BoundedConscriptDrawNativeTokenGraphs' @('ep1-tracer-draw-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: destruction/tech/LUA native dispatch and complete selected graphs share one gate; captured FX and callback limits remain explicit.
     Add-BatchCase 'ep1-allied-modules' 'BoundedCapturedIndexModuleNativePayload' @('ep1-allied-modules-self-test',$StaticManifest)
     # Reborn: one real Core occurrence table binds named root and module imports to independently read stock catalogs.

@@ -43,6 +43,9 @@ internal static class Program
             // Reborn: nonempty primitive Key lists require independent stock metadata and detached client-fragment controls.
             if(args.Length==2 && args[0]=="ep1-group-audio-client-token-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1GroupAudioClientTokenSmokeTest.Run(args[1]);return 0;}
+            // Reborn: both complete Conscript tracer Draw graphs share one source/native/token/reference and fail-closed dispatch gate.
+            if(args.Length==3 && args[0]=="ep1-tracer-draw-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1TracerDrawSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="gameobject-duration-self-test")
             {CompilerSmokeTest.InitializeHashProvider();GameObjectDurationSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="gameobject-ai-composition-self-test")
@@ -1445,6 +1448,8 @@ internal static class Program
         Console.WriteLine("  gameobject-duration-self-test <static.manifest> <global.manifest>");
         // Reborn: this client metadata diagnostic does not compile sound assets or publish a whole GameObject.
         Console.WriteLine("  ep1-group-audio-client-token-self-test <static.manifest>");
+        // Reborn: this Draw diagnostic retains both official tracers but does not publish the complete Conscript.
+        Console.WriteLine("  ep1-tracer-draw-self-test <static.manifest> <global.manifest>");
         Console.WriteLine("  gameobject-root-layout-self-test <static.manifest>");
         // Reborn: advertise named-reference diagnostic commands without implying a general GameObject compiler.
         Console.WriteLine("  gameobject-armor-source-probe <GameObject.xml> <static.manifest> [authored-armor.manifest]");

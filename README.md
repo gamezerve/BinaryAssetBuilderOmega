@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 16, 2026
 
+The [two complete Conscript tracer Draw graphs](docs/RA3EP1_CONSCRIPT_TRACER_DRAWS.md)
+now match independent stock native/metadata output through real Draw dispatch
+and Core texture names. Twenty-four authored combinations check edited tracer
+real/frame/color values, all weapon slots, blend flags, optional status and
+repeated FX imports. Unknown Draw classes now fail instead of silently vanishing.
+The complete Conscript remains the target; scripted/parachute drawing and full
+object publication are not claimed by this selected-module milestone.
+Final Focused regression: **58/58** in **368.540 seconds**, tracer group
+14.725 seconds, eight runtime hashes stable; no Full run or game/install changes.
+
 The [group-audio client metadata fragment](docs/RA3EP1_GROUP_AUDIO_CLIENT_TOKENS.md)
 matches a complete independent stock metadata/native graph. Twelve real-dispatch
 cases cover ordered 1/2/32/64-key lists and raw frame/ushort values; 15 native,

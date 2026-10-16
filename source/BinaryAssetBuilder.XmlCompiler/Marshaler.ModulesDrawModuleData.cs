@@ -63,8 +63,8 @@ public static partial class Marshaler
                 MarshalPolymorphicType<W3DFloorDrawModuleData, DrawModuleData>(node, objT, state);
                 break;
             default:
-                break;
-                // throw new BinaryAssetBuilderException(ErrorCode.InternalError, "Draw module {0:X08} is not implemented.", typeId);
+                // Reborn: an unknown Draw class must fail rather than silently dropping part of the complete authored GameObject.
+                throw new System.IO.InvalidDataException($"Draw module {typeId:X08} is not implemented.");
         }
     }
 }

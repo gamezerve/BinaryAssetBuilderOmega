@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: use official tracer/color/status declarations and a drift-checked Draw base; Texture is a reference-inheritance stub, not a texture compiler. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="uri:ea.com:eala:asset" targetNamespace="uri:ea.com:eala:asset" elementFormDefault="qualified">
+ <xs:include schemaLocation="WeaponSetPipeline.xsd"/>
+ <xs:include schemaLocation="../../schemas/ra3ep1/xsd/Modules/TracerDraw.xsd"/>
+ <xs:complexType name="DrawModuleData"><xs:complexContent><xs:extension base="ModuleData"><xs:sequence/></xs:extension></xs:complexContent></xs:complexType>
+ <xs:complexType name="Texture"><xs:complexContent><xs:extension base="BaseAssetType"/></xs:complexContent></xs:complexType>
+ <xs:complexType name="ObjectStatusValidationDataType"><xs:sequence/><xs:attribute name="ForbiddenStatus" type="ObjectStatusBitFlags"/><xs:attribute name="RequiredStatus" type="ObjectStatusBitFlags"/></xs:complexType>
+ <xs:element name="TracerModelDraw" type="W3DTracerDrawModuleData"/>
+</xs:schema>

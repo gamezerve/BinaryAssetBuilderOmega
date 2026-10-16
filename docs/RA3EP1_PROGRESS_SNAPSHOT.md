@@ -98,15 +98,24 @@ for the complete Conscript target; a smaller passing projection is diagnostic
 evidence only, not acceptance of the requested object.
 The existing 216-byte scripted-draw and 196/140-byte model/animation-state models
 are useful groundwork, not complete recursive Draw metadata/publication proof.
-Next drawing work batch: the two scripted draws and two tracer draws, including
-their model/animation/bone/particle/FX dependencies and included parachute draw;
-then compose all client containers and the remaining behavior/root graphs.
+The [two tracer draws](RA3EP1_CONSCRIPT_TRACER_DRAWS.md) now have complete selected
+stock native/metadata comparisons and actual Core texture resolution; 24 authored
+slot/status/blend/FX graphs also check changed real/frame/color values. They are
+not yet composed into a whole published object.
+Next drawing work batch: the two scripted draws and their model/animation/bone/
+particle/FX dependencies, including the parachute include. The main source draw
+contains 5 model states and 80 animation states; the included parachute draw
+contains 5 model states and 4 animation states. Then compose all client containers
+and the remaining behavior/root graphs.
 Implementing shared child writers and testing multiple selected graphs together
 is preferred to stopping after each scalar or enabling a reduced alternative.
-The legacy Draw dispatcher also has a silent unknown-type fallthrough that needs
-a tested fail-closed boundary before general input is admitted.
+The legacy Draw dispatcher's silent unknown-type fallthrough is now replaced by
+an explicit error with a refusal test; supported dispatch cases remain unchanged.
 
-Latest checkpoint: the [group-audio client metadata fragment](RA3EP1_GROUP_AUDIO_CLIENT_TOKENS.md)
+Latest checkpoint: [both complete Conscript tracers](RA3EP1_CONSCRIPT_TRACER_DRAWS.md)
+pass Focused **58/58** in **368.540s**, with eight frozen runtime hashes stable.
+This does not raise the full-product estimate or complete the enclosing object.
+The preceding [group-audio client metadata fragment](RA3EP1_GROUP_AUDIO_CLIENT_TOKENS.md)
 passes a complete stock prefix/native comparison, 12 author cases and 76 refusal
 controls. Focused **57/57** passes in **289.857s**, with eight frozen runtime hashes
 stable. The earlier timeout/default repair passes **56/56** in **368.721s**.
