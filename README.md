@@ -8,6 +8,19 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 16, 2026
 
+The [selected root + complete Conscript client containers](docs/RA3EP1_GAMEOBJECT_CLIENTS_COMPOSITION.md)
+now reaches **104 partial root fields / 237 shared Core occurrences** on one
+Tracker, retaining all four complete Draws, all six original ClientBehaviors
+and the original LargeGroupAudioClientUpdate. Independent stock prefixes remain
+**58,608 / 7,404 / 216 bytes**. Thirteen combined source scenarios and 23 native,
+eight source and 1,916 detached-output refusals pass. Cross-container local IDs
+and a forward behavior-to-client link are checked. This remains a selected
+partial root/behavior/AI profile, not the complete original Conscript, an alpha
+capability expansion or new gameplay evidence. Final Focused regression with
+explicit official XML root: **65/65** in **230.342 seconds**, combined client
+group 23.529 seconds, eight runtime hashes stable. No Full run, game launch or
+installation mutation.
+
 The [generated Conscript client metadata](docs/RA3EP1_CONSCRIPT_CLIENT_BEHAVIORS_TOKENS.md)
 now matches the complete **7,404-byte independent stock prefix** for all six
 original client leaves. The native-only-input writer checks allocation/auxiliary
@@ -16,8 +29,9 @@ token variants cover IDs, range caps, frame lists, order and subsets; 20 malform
 unreviewed token controls refuse. Populated EvaEvent is blocked in the EP1
 marshaler rather than passed through the legacy string-pointer ABI. AudioArraySound
 and object-specific/named voice children remain outside populated token admission.
-Root/client composition, whole-object packaging and new-ID gameplay remain open;
-this is not an alpha capability expansion. Final Focused regression with explicit
+Root/client composition was the next gate at this milestone and now passes above;
+whole-object packaging and new-ID gameplay remain open. This is not an alpha
+capability expansion. Final Focused regression with explicit
 official XML root: **64/64** in **210.929 seconds**, client token group 7.016
 seconds, eight runtime hashes stable. No Full run, game or installation change.
 
@@ -27,8 +41,8 @@ KW/EP1 voice/sound enum drift; separate EP1 records preserve the old KW route.
 All 67 voice/39 sound values, five authored variants and 43 refusal controls pass.
 The two inherited source leaves are explicitly retained, not skipped. Generated
 client metadata was unproven at this native-only milestone; the subsequent
-metadata gate above now passes. Root/client integration and audio playback
-remain unproven.
+metadata and root/client integration gates above now pass. Audio playback
+remains unproven.
 Final Focused regression with explicit official XML root: **63/63** in
 **210.082 seconds**, client group 7.387 seconds, eight runtime hashes stable.
 No Full run, game launch, install mutation or alpha admission expansion.

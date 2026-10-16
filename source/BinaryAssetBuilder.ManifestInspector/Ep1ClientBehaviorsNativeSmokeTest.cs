@@ -131,7 +131,7 @@ internal static class Ep1ClientBehaviorsNativeSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: concrete schema-derived audio types are resolved uniquely before actual Core normalization, never authored captured reference indices. */
     //-------------------------------------------------------------------------------------------------
-    private static int ResolveSounds(XmlDocument document,SchemaSet schemas,ManifestAsset[] catalog)
+    internal static int ResolveSounds(XmlDocument document,SchemaSet schemas,ManifestAsset[] catalog)
     {
         var audio=schemas.GetXmlType("BaseAudioEventInfo")??throw new InvalidDataException("Audio base schema missing.");var allowed=schemas.Schemas.GlobalTypes.Values.Cast<XmlSchemaType>().Where(t=>XmlSchemaType.IsDerivedFrom(t,audio,XmlSchemaDerivationMethod.None)).Select(t=>FastHash.GetHashCode(t.Name!)).ToHashSet();int resolved=0;
         foreach(XmlElement element in document.SelectNodes("//*[@Sound]")!){string name=element.GetAttribute("Sound").Trim();if(name.Length==0 || name.Contains(':'))continue;var id=new InstanceHandle(name).InstanceId;var targets=catalog.Where(a=>a.InstanceId==id && allowed.Contains(a.TypeId)).ToArray();if(targets.Length!=1)throw new InvalidDataException("Client sound missing/ambiguous: "+name);element.SetAttribute("Sound",targets[0].Name);resolved++;}return resolved;

@@ -18,7 +18,7 @@ internal static class Ep1DrawsCompositionSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: preserve both full scripted leaves, read the actual two official tracers, then test ordering, subsets, edits, optional status and corrupt ownership in one batch. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(SchemaSet schemas, string sourceRoot, string manifest, ManifestAsset[] catalog, string[] scripted, bool includeRoot = false)
+    internal static void Run(SchemaSet schemas, string sourceRoot, string manifest, ManifestAsset[] catalog, string[] scripted, bool includeRoot = false, bool includeClients = false)
     {
         var stock = GameObjectStockReview.Capture(manifest, "GameObject:SovietAntiInfantryInfantry");
         var topology = GameObjectModuleReview.Inspect(manifest, stock.Asset.Name).Containers.Single(c => c.Name == "Draws");
@@ -79,7 +79,8 @@ internal static class Ep1DrawsCompositionSmokeTest
         { Refuse(() => { var pair = Build(schemas, bad, catalog); Ep1DrawsTokenizer.Tokenize(pair.Native); }); faults++; }
         Console.WriteLine($"EP1 complete shared Draws: PASS ({cases} source cases, four full modules, one Core occurrence table/{totalImports} strong slots, full {prefix}-byte independent stock prefix, {faults} ownership/source and detached boundary refusals; no whole GameObject/package, XInclude execution or new gameplay claim).");
         // Reborn: root composition reuses the independent stock-proven full Draws oracle and original named sources, never separately normalized sibling fragments.
-        if(includeRoot)GameObjectDrawsCompositionSmokeTest.Run(schemas,manifest,catalog,leaves,full!,fullInstance!,fullExpected!);
+        if(includeClients)GameObjectClientsCompositionSmokeTest.Run(schemas,sourceRoot,manifest,catalog,leaves,fullExpected!);
+        else if(includeRoot)GameObjectDrawsCompositionSmokeTest.Run(schemas,manifest,catalog,leaves,full!,fullInstance!,fullExpected!);
     }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: one typed envelope retains complete source members while explicitly naming the separately captured include leaf; no include engine is simulated. */

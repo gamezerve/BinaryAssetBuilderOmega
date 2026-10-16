@@ -26,6 +26,8 @@ public static class Ep1GameObjectAiRoot
         if(count>2 || (count==0?items!=0:items<600 || items%4!=0 || items>list || count*4>list-items))throw new InvalidDataException("Selected inline AI count/items ownership differs.");
         if(count==0)return new(0,Array.Empty<Module>());
         var outer=strings.Select(r=>((int)r.Start,(int)r.End)).ToList();
+        // Reborn: later client containers delimit AI tails even before their independent full-owner checks run.
+        foreach(int slot in new[]{492,496})if(Word(slot)!=0)outer.Add(((int)Word(slot),checked((int)Word(slot)+8)));
         if(armorCount!=0)outer.Add(((int)armor,checked((int)(armor+armorCount*12))));if(locomotorCount!=0)outer.Add(((int)locomotor,checked((int)(locomotor+locomotorCount*12))));
         foreach(var field in pointerRoots)
         {

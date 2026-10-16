@@ -118,9 +118,18 @@ internal static class GameObjectBodyProjectionSmokeTest
         if(selectedBehaviors)foreach(XmlElement ai in d.GetElementsByTagName("AI",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>())){if(ai.LocalName!="AIUpdate")throw new InvalidDataException("Unreviewed selected AI class.");ai.SetAttribute("TypeId","148619278");}
         // Reborn: selected Draw classes use the actual dispatcher on the same root Tracker after source validation; no separate compiled fragment is appended.
         if(selectedBehaviors)foreach(XmlElement draw in d.GetElementsByTagName("Draws",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>()))draw.SetAttribute("TypeId",(draw.LocalName switch{"ScriptedModelDraw"=>0x4ECF2A4Bu,"TracerModelDraw"=>0x54018E60u,_=>throw new InvalidDataException("Unreviewed selected Draw dispatch class.")}).ToString(System.Globalization.CultureInfo.InvariantCulture));
+        // Reborn: detach client behaviors from legacy KW enum dispatch; updates retain actual root dispatch on this same Tracker, never copied separately compiled bytes.
+        XmlElement? clientBehaviors=null;
+        if(selectedBehaviors)
+        {
+            clientBehaviors=d.DocumentElement.ChildNodes.OfType<XmlElement>().SingleOrDefault(e=>e.LocalName=="ClientBehaviors" && e.NamespaceURI==SchemaSet.XmlNamespace);if(clientBehaviors!=null){d.DocumentElement.RemoveChild(clientBehaviors);foreach(XmlElement child in clientBehaviors.ChildNodes.OfType<XmlElement>())child.SetAttribute("TypeId",FastHash.GetHashCode(child.LocalName+"ModuleData").ToString(System.Globalization.CultureInfo.InvariantCulture));}
+            foreach(XmlElement update in d.GetElementsByTagName("ClientUpdates",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>()))update.SetAttribute("TypeId","2552668823");
+        }
         var ns=new XmlNamespaceManager(d.NameTable);ns.AddNamespace("ea",SchemaSet.XmlNamespace);
         GameObject* root;using var tracker=new Tracker((void**)&root,(uint)sizeof(GameObject),false);
         Marshaler.Marshal(new Node(d.DocumentElement.CreateNavigator()!,ns),root,tracker);
+        // Reborn: explicit EP1 clients precede selected behavior/body tails and share all normalized strong occurrences with the complete root/Draws graph.
+        if(clientBehaviors!=null)Marshaler.MarshalEp1ClientBehaviors(new Node(clientBehaviors.CreateNavigator()!,ns),&root->ClientBehaviors,tracker);
         if(selectedBehaviors)Marshaler.MarshalEp1SelectedBehaviors(new Node(behaviors.CreateNavigator()!,ns),&root->Behaviors,tracker);
         Marshaler.MarshalEp1ActiveBody(new Node(body.CreateNavigator()!,ns),&root->Body,tracker);
         // Reborn: no copied native bytes or second Tracker are appended to compose the geometry tail.

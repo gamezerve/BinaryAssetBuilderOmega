@@ -93,6 +93,8 @@ if($SchedulerControl){
         Add-BatchCase 'ep1-client-behaviors-native' 'CompleteSelectedConscriptClientNativeGraphs' @('ep1-client-behaviors-native-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
         # Reborn: generated recursive client metadata is verified independently against all six original stock leaves.
         Add-BatchCase 'ep1-client-behaviors-tokens' 'GeneratedSelectedConscriptClientMetadata' @('ep1-client-behaviors-token-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
+        # Reborn: shared client/root/Draws composition does not replace standalone complete stock-native/token gates.
+        Add-BatchCase 'gameobject-clients-composition' 'SharedRootDrawsClientContainers' @('gameobject-clients-composition-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
     }
     # Reborn: destruction/tech/LUA native dispatch and complete selected graphs share one gate; captured FX and callback limits remain explicit.
     Add-BatchCase 'ep1-allied-modules' 'BoundedCapturedIndexModuleNativePayload' @('ep1-allied-modules-self-test',$StaticManifest)

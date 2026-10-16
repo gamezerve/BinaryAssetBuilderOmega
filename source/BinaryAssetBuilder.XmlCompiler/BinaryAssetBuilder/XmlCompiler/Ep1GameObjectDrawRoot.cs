@@ -23,6 +23,8 @@ public static class Ep1GameObjectDrawRoot
         uint pointer = Word(472); if (pointer == 0) return new(0, 0, Array.Empty<int>(), null);
         if (pointer < 600 || pointer % 4 != 0 || pointer > list || 8 > list - pointer) throw new InvalidDataException("Draws root pointer bounds/alignment differ.");
         var outer = strings.Select(s => ((int)s.Start, (int)s.End)).ToList();
+        // Reborn: a following client header terminates the Draws owner and cannot be swallowed as an unowned scripted tail.
+        foreach(int slot in new[]{492,496})if(Word(slot)!=0)outer.Add(((int)Word(slot),checked((int)Word(slot)+8)));
         if (armorCount != 0) outer.Add(((int)armor, checked((int)(armor + armorCount * 12))));
         if (locomotorCount != 0) outer.Add(((int)locomotor, checked((int)(locomotor + locomotorCount * 12))));
         foreach (var field in pointerRoots)

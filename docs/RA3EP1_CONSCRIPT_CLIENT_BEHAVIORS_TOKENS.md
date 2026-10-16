@@ -74,6 +74,11 @@ EA serializer evidence and an isolated EP1 reference record remain required.
 
 ## Files and next gate
 
+Follow-up: [shared root/client composition](RA3EP1_GAMEOBJECT_CLIENTS_COMPOSITION.md)
+now passes with both original client containers, complete Draws and 237 shared
+Core occurrences. The next-gate text below records this standalone milestone's
+original boundary; whole-object closure/publication still remains open.
+
 - `source/BinaryAssetBuilder.XmlCompiler/BinaryAssetBuilder/XmlCompiler/Ep1ClientBehaviorsTokenizer.cs`
 - `source/BinaryAssetBuilder.XmlCompiler/Marshaler.Ep1ClientBehaviors.cs`
 - `source/BinaryAssetBuilder.ManifestInspector/Ep1ClientBehaviorsNativeSmokeTest.cs`

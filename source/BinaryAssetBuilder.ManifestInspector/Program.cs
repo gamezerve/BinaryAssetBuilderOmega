@@ -56,6 +56,9 @@ internal static class Program
             if(args.Length==4 && args[0]=="ep1-draws-composition-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeContainer:true);return 0;}
             // Reborn: the complete selected Draws container joins root/Body/behaviors/common AI on one Core table without admitting whole GameObjects.
+            // Reborn: both complete client containers join root/Draws/Body/selected behaviors/common AI on one reference table and Tracker.
+            if(args.Length==4 && args[0]=="gameobject-clients-composition-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeClients:true);return 0;}
             if(args.Length==4 && args[0]=="gameobject-draws-composition-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true);return 0;}
             // Reborn: all six original client behavior leaves share actual Core audio names and independent complete native stock comparison.
@@ -1476,6 +1479,7 @@ internal static class Program
         Console.WriteLine("  ep1-draws-composition-self-test <official-xml-root> <static.manifest> <global.manifest>");
         // Reborn: selected root integration is a separate diagnostic from complete GameObject publication.
         Console.WriteLine("  gameobject-draws-composition-self-test <official-xml-root> <static.manifest> <global.manifest>");
+        Console.WriteLine("  gameobject-clients-composition-self-test <official-xml-root> <static.manifest> <global.manifest>");
         // Reborn: native client proof is separate from generated metadata, inheritance execution and playback/publication.
         Console.WriteLine("  ep1-client-behaviors-native-self-test <official-xml-root> <static.manifest> <global.manifest>");
         Console.WriteLine("  ep1-client-behaviors-token-self-test <official-xml-root> <static.manifest> <global.manifest>");

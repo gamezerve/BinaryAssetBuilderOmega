@@ -14,6 +14,11 @@ public static class Ep1DrawsTokenizer
     /** Reborn: verify canonical list/leaf ownership before rebasing metadata and the shared native graph exactly once; unknown classes and duplicate local identities fail. */
     //-------------------------------------------------------------------------------------------------
     public static Chunk Tokenize(Chunk native)
+        => TokenizeSelected(native, leaf => Word(leaf.InstanceBuffer, 0) switch { 0x4ECF2A4B => Ep1ScriptedDrawTokenizer.Tokenize(leaf), 0x54018E60 => Ep1TracerDrawTokenizer.Tokenize(leaf), _ => throw new InvalidDataException("Draws class is not token-enabled.") });
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: selected pointer-list families share canonical ownership and coordinate composition, while the caller supplies an explicit fail-closed leaf tokenizer. */
+    //-------------------------------------------------------------------------------------------------
+    internal static Chunk TokenizeSelected(Chunk native, Func<Chunk, Chunk> tokenize)
     {
         if (native?.InstanceBuffer == null || native.RelocationBuffer == null || native.ImportsBuffer == null || native.InstanceBuffer.Length < 8 || native.InstanceBuffer.Length > 4 * 1048576) throw new InvalidDataException("Bounded Draws native list required.");
         var bytes = native.InstanceBuffer; uint serializedCount = Word(bytes, 0); if (serializedCount > 64) throw new InvalidDataException("Draws module count exceeds bound."); int count = (int)serializedCount;
@@ -38,7 +43,7 @@ public static class Ep1DrawsTokenizer
             }
             foreach (uint slot in localImports) expectedImports.Add(slot + (uint)start);
             leaf.RelocationBuffer = Pack(localRelos); leaf.ImportsBuffer = Pack(localImports);
-            Chunk tokens = Word(bytes, start) switch { 0x4ECF2A4B => Ep1ScriptedDrawTokenizer.Tokenize(leaf), 0x54018E60 => Ep1TracerDrawTokenizer.Tokenize(leaf), _ => throw new InvalidDataException("Draws class is not token-enabled.") };
+            Chunk tokens = tokenize(leaf);
             int leafPrefix = tokens.InstanceBuffer.Length - leaf.InstanceBuffer.Length;
             if (leafPrefix <= 0 || leafPrefix % 12 != 0 || prefix > 8 * 1048576 - leafPrefix) throw new InvalidDataException("Draws metadata extent exceeds bound.");
             fragments.Add((start, leafPrefix, tokens)); prefix += leafPrefix;

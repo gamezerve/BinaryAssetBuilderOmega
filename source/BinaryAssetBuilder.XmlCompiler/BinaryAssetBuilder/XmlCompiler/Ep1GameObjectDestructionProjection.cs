@@ -43,7 +43,7 @@ public static class Ep1GameObjectDestructionProjection
         var geometry=layout.Geometry==0?null:Extract(layout.Geometry,b.Length);
         var geometryFragment=geometry==null?null:Ep1GeometryTokenizer.Tokenize(geometry);
         // Reborn: root token count is descriptor-driven; nested fragment coordinates must never retain the old two-field prefix size.
-        int armorFields=(layout.ArmorCount==0?0:1)+(layout.LocomotorCount==0?0:1)+(geometry==null?0:1)+layout.PointerRoots.Count+(layout.Ai.Modules.Count==0?0:1)+(layout.Draws.Start==0?0:1);
+        int armorFields=(layout.ArmorCount==0?0:1)+(layout.LocomotorCount==0?0:1)+(geometry==null?0:1)+layout.PointerRoots.Count+(layout.Ai.Modules.Count==0?0:1)+(layout.Draws.Start==0?0:1)+layout.Clients.Count(c=>c.Start!=0);
         int container = checked((Ep1GameObjectRootValueTokens.AllFields.Count + (body == null ? 2 : 3) + armorFields) * 12), fragmentStart = checked(container + 12 + fragments.Count*12);
         int bodyStart=checked(fragmentStart+fragments.Sum(f=>f.Prefix));
         int bodyPrefix = body == null ? 0 : checked(324 + (int)Word(body.InstanceBuffer,64) * 60),armorStart=checked(bodyStart+bodyPrefix);
@@ -56,7 +56,7 @@ public static class Ep1GameObjectDestructionProjection
         // Reborn: an inline AI list has a count header and marker array followed by independently generated class fragments.
         int aiPrefix=layout.Ai.Modules.Count==0?0:checked(12+layout.Ai.Modules.Count*12+layout.Ai.Modules.Sum(m=>m.Prefix));
         // Reborn: append complete Draws metadata without changing any absent-Draws root row or fragment layout.
-        int drawsStart=checked(aiStart+aiPrefix),prefix=checked(drawsStart+layout.Draws.Prefix);
+        int drawsStart=checked(aiStart+aiPrefix),clientStart=checked(drawsStart+layout.Draws.Prefix),prefix=checked(clientStart+layout.Clients.Sum(c=>c.Prefix));
         var pointerTables=new Dictionary<string,int>();int pointerNext=pointerStart;
         foreach(var field in layout.PointerRoots.Where(f=>f.HasTable)){pointerTables.Add(field.Name,pointerNext);pointerNext=checked(pointerNext+field.MetadataSize);}
         var result = new Chunk { InstanceBuffer = new byte[checked(prefix + b.Length)] };
@@ -81,7 +81,10 @@ public static class Ep1GameObjectDestructionProjection
         // Reborn: the stock AI tag targets inline count metadata, never a root pointer-to-list header.
         if(layout.Ai.Modules.Count!=0)Token(pointerRow++*12,FastHash.GetHashCode("AI"),0x5FD8691D,(uint)aiStart);
         // Reborn: independently stock-checked DrawModules wire tag targets list metadata, not the native root pointer slot.
-        if(layout.Draws.Start!=0)Token(pointerRow*12,FastHash.GetHashCode("Draws"),0xEFBBA791,(uint)drawsStart);
+        if(layout.Draws.Start!=0)Token(pointerRow++*12,FastHash.GetHashCode("Draws"),0xEFBBA791,(uint)drawsStart);
+        // Reborn: reviewed client root tags bind generated count tables, not native pointer slots or sibling metadata origins.
+        int clientNext=clientStart;
+        foreach(var client in layout.Clients.Where(c=>c.Start!=0)){string name=client.Slot==492?"ClientUpdates":"ClientBehaviors";Token(pointerRow++*12,FastHash.GetHashCode(name),FastHash.GetHashCode(client.Slot==492?"ClientUpdateModules":"ClientBehaviorModules"),(uint)clientNext);clientNext=checked(clientNext+client.Prefix);}
         Token(container, 0x6C827073u, 0x5D448FD8u, (uint)(prefix + layout.List));
         int nextFragment=fragmentStart;
         for(int i=0;i<fragments.Count;i++)
@@ -132,6 +135,8 @@ public static class Ep1GameObjectDestructionProjection
         }
         // Reborn: shared Draws tables and native targets retain distinct origins; the whole native graph is still shifted only once below.
         if(layout.Draws.Start!=0)Join(layout.Draws.Tokens,layout.Draws.Prefix,drawsStart,layout.Draws.Start);
+        // Reborn: all client fragments retain the same Core indices and native graph; only metadata coordinate origins are joined here.
+        clientNext=clientStart;foreach(var client in layout.Clients.Where(c=>c.Start!=0)){Join(client.Tokens,client.Prefix,clientNext,client.Start);clientNext=checked(clientNext+client.Prefix);}
         foreach (uint slot in relos)
         {
             if (slot > b.Length - 4 || Word(b, (int)slot) >= b.Length) throw new InvalidDataException("Root projection relocation bounds exceeded.");

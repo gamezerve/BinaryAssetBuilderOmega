@@ -16,7 +16,7 @@ public static class Ep1GameObjectStringTokens
         new("EditorName",124,0x1A2933AAu,8), new("ExperienceScalarTable",284,0x1A2933AAu,8)
     });
     // Reborn: behavior allocation addresses are decoded from native pointers, never inferred from root string lengths or fixed at 600/608/612.
-    public readonly record struct Layout(int List, int Items, int Module, int Body, int Armor, int ArmorCount, IReadOnlyList<int> Modules, int Locomotor, int LocomotorCount, int Geometry, IReadOnlyList<Ep1GameObjectPointerRoots.Field> PointerRoots, Ep1GameObjectAiRoot.Layout Ai, Ep1GameObjectDrawRoot.Layout Draws);
+    public readonly record struct Layout(int List, int Items, int Module, int Body, int Armor, int ArmorCount, IReadOnlyList<int> Modules, int Locomotor, int LocomotorCount, int Geometry, IReadOnlyList<Ep1GameObjectPointerRoots.Field> PointerRoots, Ep1GameObjectAiRoot.Layout Ai, Ep1GameObjectDrawRoot.Layout Draws, IReadOnlyList<Ep1GameObjectClientRoots.Layout> Clients);
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate dynamic behavior ownership, bounded ASCII string storage and exact root relocation membership before splitting the module graph. */
     //-------------------------------------------------------------------------------------------------
@@ -106,11 +106,13 @@ public static class Ep1GameObjectStringTokens
         var ai=Ep1GameObjectAiRoot.Inspect(b,list,relos,imports,armor,armorCount,locomotor,locomotorCount,pointerRoots,ranges,owners,rootImports);
         // Reborn: complete Draws is a separate pre-behavior owner; every neighboring root/AI range remains excluded from its extracted native graph.
         var draws=Ep1GameObjectDrawRoot.Inspect(b,list,relos,imports,armor,armorCount,locomotor,locomotorCount,pointerRoots,ranges,ai,owners,rootImports);
+        // Reborn: both client families share the enclosing reference table but own disjoint native and metadata fragments.
+        var clients=Ep1GameObjectClientRoots.Inspect(b,list,relos,imports,armor,armorCount,locomotor,locomotorCount,pointerRoots,ranges,ai,draws,owners,rootImports);
         if (!relos.Where(s => s < module).OrderBy(s => s).SequenceEqual(owners.OrderBy(s => s)) || !imports.Where(s => s < module).OrderBy(s => s).SequenceEqual(rootImports.OrderBy(s => s)))
             throw new InvalidDataException("Unsupported root allocation/import ownership in string projection.");
         // Reborn: selected native module scope spans Behaviors, Body and common AI, independently of source-side validation.
-        Ep1SelectedModuleIdentity.ValidateNative(b,modules,(int)body,ai.Modules.Select(m=>m.Start).Concat(draws.Modules).ToArray());
-        return new((int)list,(int)list + 8,module,(int)body,(int)armor,(int)armorCount,Array.AsReadOnly(modules),(int)locomotor,(int)locomotorCount,(int)geometry,pointerRoots,ai,draws);
+        Ep1SelectedModuleIdentity.ValidateNative(b,modules,(int)body,ai.Modules.Select(m=>m.Start).Concat(draws.Modules).Concat(clients.SelectMany(c=>c.Modules)).ToArray());
+        return new((int)list,(int)list + 8,module,(int)body,(int)armor,(int)armorCount,Array.AsReadOnly(modules),(int)locomotor,(int)locomotorCount,(int)geometry,pointerRoots,ai,draws,clients);
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: all dynamic headers and pointers stay inside the supplied native chunk. */
