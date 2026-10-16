@@ -83,6 +83,8 @@ if($SchedulerControl){
     # Reborn: add this complete native/script/reference gate only when its official source root is explicitly supplied; no reduced unit is substituted.
     if($UprisingXmlRoot){
         Add-BatchCase 'ep1-scripted-draw-native' 'CompleteSelectedConscriptScriptedNativeGraphs' @('ep1-scripted-draw-native-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
+        # Reborn: independently compare recursive metadata for the same complete source graphs and authored edits.
+        Add-BatchCase 'ep1-scripted-draw-tokens' 'CompleteSelectedConscriptScriptedTokenGraphs' @('ep1-scripted-draw-token-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
     }
     # Reborn: destruction/tech/LUA native dispatch and complete selected graphs share one gate; captured FX and callback limits remain explicit.
     Add-BatchCase 'ep1-allied-modules' 'BoundedCapturedIndexModuleNativePayload' @('ep1-allied-modules-self-test',$StaticManifest)

@@ -20,7 +20,7 @@ internal static class Ep1ScriptedDrawNativeSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: retain every source child/script and compare complete typed native graphs, exact auxiliary ownership and semantic stock import identities. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string sourceRoot, string manifest, string globalManifest)
+    internal static void Run(string sourceRoot, string manifest, string globalManifest, bool includeTokens = false)
     {
         var saved = Settings.Current;
         try
@@ -83,7 +83,25 @@ internal static class Ep1ScriptedDrawNativeSmokeTest
                 var instance = ReferencePipelineSmokeTest.Normalize(schemas, probe.OuterXml);
                 foreach (var reference in instance.ReferencedInstances) if (catalog.Count(a => a.TypeId == reference.TypeId && a.InstanceId == reference.InstanceId) != 1) throw new InvalidDataException("Scripted draw dependency missing/ambiguous: " + reference.Name);
                 var native = Compile(instance.XmlNode);
-                var result = new SelectedNativeGraphComparer(stock.Bytes, stock.Asset.References.ToArray(), native, instance, allowScriptCrLfEquivalent: true).Compare(typeof(W3DScriptedModelDrawModuleData), modules[index].Native);
+                var comparer = new SelectedNativeGraphComparer(stock.Bytes, stock.Asset.References.ToArray(), native, instance, allowScriptCrLfEquivalent: true);
+                var result = comparer.Compare(typeof(W3DScriptedModelDrawModuleData), modules[index].Native);
+                // Reborn: complete independent stock metadata anchors both full graphs and a new weak module ID/scalar edit without reducing their child inventories.
+                if (includeTokens)
+                {
+                    int prefix = index == 0 ? 53052 : 4512;
+                    var expected = Ep1ScriptedDrawTokenSmokeTest.Stock(native, stock.Bytes, modules[index].Wrapper, prefix, comparer.NativeOffsets, controls: true);
+                    var edited = Xml(System.Text.Encoding.UTF8.GetBytes(instance.XmlNode.OuterXml));
+                    string newId = "RebornCompleteScriptedDraw" + index;
+                    edited.DocumentElement!.SetAttribute("id", newId);
+                    edited.DocumentElement.SetAttribute("MaxRecoilDistance", "17.5");
+                    edited.DocumentElement.SetAttribute("NoRotate", "true");
+                    edited.DocumentElement.SetAttribute("UseProducerTexture", "true");
+                    var editedInstance = ReferencePipelineSmokeTest.Normalize(schemas, edited.OuterXml);
+                    var editedNative = Compile(editedInstance.XmlNode);
+                    if (Word(editedNative.InstanceBuffer, 4) != FastHash.GetHashCode(newId.ToLowerInvariant()) || Word(editedNative.InstanceBuffer, 20) != 0x418C0000 || editedNative.InstanceBuffer[200] != 1 || editedNative.InstanceBuffer[201] != 1) throw new InvalidDataException("Complete scripted authored edit not applied.");
+                    Ep1ScriptedDrawTokenSmokeTest.Verify(BinaryAssetBuilder.XmlCompiler.Ep1ScriptedDrawTokenizer.Tokenize(editedNative), editedNative, prefix, expected);
+                    Console.WriteLine("Complete scripted source edit/new module ID: PASS; full child topology retained.");
+                }
                 if (result.ScriptLineEndingEquivalences != index) throw new InvalidDataException("Selected script newline evidence inventory changed.");
                 var repeat = Compile(instance.XmlNode);
                 if (!native.InstanceBuffer.SequenceEqual(repeat.InstanceBuffer) || !native.RelocationBuffer.SequenceEqual(repeat.RelocationBuffer) || !native.ImportsBuffer.SequenceEqual(repeat.ImportsBuffer)) throw new InvalidDataException("Complete scripted draw repeat differs.");
@@ -101,7 +119,7 @@ internal static class Ep1ScriptedDrawNativeSmokeTest
                 int scriptData = (int)Word(native.InstanceBuffer, scriptHeader + 4);
                 foreach (int at in new[] { scriptHeader, scriptData }) { var bad = Clone(native); bad.InstanceBuffer[at] ^= 1; Refuse(() => new SelectedNativeGraphComparer(stock.Bytes, stock.Asset.References.ToArray(), bad, instance, true).Compare(typeof(W3DScriptedModelDrawModuleData), modules[index].Native)); }
             }
-            Console.WriteLine($"EP1 complete scripted Draw native graphs: PASS (two stock graphs, 10 model/84 animation states, {totalRecords} visited native records/{totalStrings} string allocations/{totalImports} typed import slots, {particleBindings} complete particle token/native bindings, 288 authored particle/3 flag-default controls and existing combined record fixture, 22 detached/3 source-dependency refusals; one explicitly bounded Script CRLF/LF equivalence, no generated metadata, complete GameObject publication, XInclude execution or LUA execution claim).");
+            Console.WriteLine($"EP1 complete scripted Draw native graphs: PASS (two stock graphs, 10 model/84 animation states, {totalRecords} visited native records/{totalStrings} string allocations/{totalImports} typed import slots, {particleBindings} complete particle token/native bindings, 288 authored particle/3 flag-default controls and existing combined record fixture, 22 detached/3 source-dependency refusals; one explicitly bounded Script CRLF/LF equivalence; generated metadata checked={includeTokens}; no complete GameObject publication, XInclude execution or LUA execution claim).");
         }
         finally { Settings.Current = saved; }
     }

@@ -49,6 +49,9 @@ internal static class Program
             // Reborn: use both complete official scripted leaves, preserving model/animation/script contents and real typed stock references.
             if(args.Length==4 && args[0]=="ep1-scripted-draw-native-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3]);return 0;}
+            // Reborn: recursively generated metadata must match both complete independent stock prefixes before any object publication gate.
+            if(args.Length==4 && args[0]=="ep1-scripted-draw-token-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeTokens:true);return 0;}
             if(args.Length==3 && args[0]=="gameobject-duration-self-test")
             {CompilerSmokeTest.InitializeHashProvider();GameObjectDurationSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="gameobject-ai-composition-self-test")
@@ -1455,6 +1458,8 @@ internal static class Program
         Console.WriteLine("  ep1-tracer-draw-self-test <static.manifest> <global.manifest>");
         // Reborn: the external official source root is explicit; this diagnostic never copies stock XML into a published mod.
         Console.WriteLine("  ep1-scripted-draw-native-self-test <official-xml-root> <static.manifest> <global.manifest>");
+        // Reborn: explicit token diagnostic preserves the original native-only command.
+        Console.WriteLine("  ep1-scripted-draw-token-self-test <official-xml-root> <static.manifest> <global.manifest>");
         Console.WriteLine("  gameobject-root-layout-self-test <static.manifest>");
         // Reborn: advertise named-reference diagnostic commands without implying a general GameObject compiler.
         Console.WriteLine("  gameobject-armor-source-probe <GameObject.xml> <static.manifest> [authored-armor.manifest]");

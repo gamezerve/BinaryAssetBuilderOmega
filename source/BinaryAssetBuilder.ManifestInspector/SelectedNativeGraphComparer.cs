@@ -21,6 +21,8 @@ internal sealed class SelectedNativeGraphComparer
     private readonly bool allowScriptCrLfEquivalent;
     private int scriptLineEndingEquivalences;
     private int records, strings;
+    // Reborn: metadata targets address native records/headers, not interned character arrays; expose only the independently compared native byte-coordinate map.
+    internal Dictionary<int, int> NativeOffsets { get; } = new();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: stock and compiled graphs keep separate origins and semantic reference occurrence tables. */
@@ -50,6 +52,8 @@ internal sealed class SelectedNativeGraphComparer
         try
         {
             int size = Size(type); Range(stock, a, size); Range(compiled.InstanceBuffer, b, size); Array.Fill(covered, true, b, size);
+            // Reborn: one stock native header cannot ambiguously map to different emitted headers; shared character payloads are not metadata targets and are deliberately excluded.
+            for (int i = 0; i < size; i++) { if (NativeOffsets.TryGetValue(a + i, out int prior) && prior != b + i) throw new InvalidDataException("Ambiguous selected native metadata coordinate at " + path); NativeOffsets[a + i] = b + i; }
             if (type.IsEnum || type.IsPrimitive) { Equal(a, b, size, path); return; }
             if (type.IsGenericType)
             {

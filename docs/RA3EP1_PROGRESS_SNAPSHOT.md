@@ -109,8 +109,12 @@ The main graph matches stock; the parachute comparison explicitly admits only
 one Script CRLF/LF equivalence, without changing source/producer text. Fourteen
 stock particle metadata bindings exposed a wrong interior ABI/id-string type;
 that defect and the omitted AnimationState NONE default are now corrected.
-Next drawing work batch: recursive generated metadata for both scripted graphs,
-then compose the two scripted and two tracer modules in one Draws container.
+The [recursive metadata gate](RA3EP1_CONSCRIPT_SCRIPTED_DRAW_TOKENS.md) now passes
+both complete stock prefixes (53,052/4,512 bytes), two full-source weak module-ID/
+scalar edits, 66 malformed-native and 14,405 detached-output controls. The producer
+uses no stock template and refuses currently unreviewed populated child families.
+Next drawing work batch: compose the two scripted and two tracer modules in one
+Draws container on one reference occurrence table.
 The actual XInclude/XPointer path, all client containers and remaining behavior/
 root graphs still need integration; reading the two complete leaves separately
 does not prove the include processor or whole-unit publication.
@@ -119,10 +123,11 @@ is preferred to stopping after each scalar or enabling a reduced alternative.
 The legacy Draw dispatcher's silent unknown-type fallthrough is now replaced by
 an explicit error with a refusal test; supported dispatch cases remain unchanged.
 
-Latest checkpoint: [both complete scripted-draw native graphs](RA3EP1_CONSCRIPT_SCRIPTED_DRAW_NATIVE.md)
-pass Focused **59/59** with explicit official XML root in **217.593s**, scripted
-group **8.906s**, eight runtime hashes stable. Recursive scripted metadata and
-whole-unit publication remain open. No Full run or new gameplay is implied;
+Latest checkpoint: [both complete scripted-draw metadata graphs](RA3EP1_CONSCRIPT_SCRIPTED_DRAW_TOKENS.md)
+pass Focused **60/60** with explicit official XML root in **265.734s**, token
+group **14.480s**, eight runtime hashes stable. The preceding complete native
+checkpoint passed 59/59 in 217.593s; both source graphs remain intact.
+Whole-unit publication remains open. No Full run or new gameplay is implied;
 full-product maturity remains about **48%**, not a type/field pass ratio.
 The preceding [both complete Conscript tracers](RA3EP1_CONSCRIPT_TRACER_DRAWS.md)
 pass Focused **58/58** in **368.540s**, with eight frozen runtime hashes stable.

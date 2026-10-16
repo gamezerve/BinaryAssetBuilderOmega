@@ -27,9 +27,11 @@ paired CRLF versus LF is compared equivalently for the explicitly selected
 `.Script` field; arbitrary text/whitespace changes and corrupt lengths/terminators
 still fail. This is not byte-identical script storage or LUA execution evidence.
 
-Generated recursive scripted-draw metadata, full Draws/container composition,
-complete GameObject streams, XInclude execution, gameplay and general art-asset
-compilation remain open. Stock W3D references are **not** newly compiled models.
+The subsequent [recursive metadata gate](RA3EP1_CONSCRIPT_SCRIPTED_DRAW_TOKENS.md)
+now covers both complete selected scripted graphs. Full Draws/container
+composition, complete GameObject streams, XInclude execution, gameplay and
+general art-asset compilation remain open. Stock W3D references are **not**
+newly compiled models.
 
 ## Two actual compiler defects corrected
 
@@ -130,7 +132,7 @@ launch, install mutation, alpha expansion or whole-Conscript publication is
 claimed. The broad runner itself was not rerun; its relevant existing combined
 animation/particle fixture was executed directly inside this new group.
 
-Next integration batch: reusable recursive metadata writers for the shared
-model-state, animation-state, animation, bone, particle, string and list shapes;
-then combine the two scripted draws and two already-tokenized tracers on one
-Draws container/reference graph. This checkpoint does not itself publish a unit.
+The subsequent token checkpoint implements recursive metadata for the shared
+model-state, animation-state, animation, bone, particle, string and list shapes.
+Next: combine the two scripted draws and two already-tokenized tracers on one
+Draws container/reference graph. Neither checkpoint itself publishes a unit.
