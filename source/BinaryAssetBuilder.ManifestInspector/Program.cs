@@ -57,6 +57,12 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeContainer:true);return 0;}
             // Reborn: the complete selected Draws container joins root/Body/behaviors/common AI on one Core table without admitting whole GameObjects.
             // Reborn: both complete client containers join root/Draws/Body/selected behaviors/common AI on one reference table and Tracker.
+            // Reborn: the full 36-leaf survey reports blocked work explicitly instead of treating CLR model presence as native support.
+            if(args.Length==4 && args[0]=="conscript-behavior-survey")
+            {CompilerSmokeTest.InitializeHashProvider();ConscriptBehaviorSurvey.Run(args[1],args[2],args[3]);return 0;}
+            // Reborn: a green full native behavior gate requires all 36 rows to pass; a survey with blocked rows never satisfies this command.
+            if(args.Length==4 && args[0]=="conscript-behavior-native-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();ConscriptBehaviorSurvey.Run(args[1],args[2],args[3],requireAll:true);return 0;}
             if(args.Length==4 && args[0]=="gameobject-clients-composition-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeClients:true);return 0;}
             if(args.Length==4 && args[0]=="gameobject-draws-composition-self-test")
@@ -1480,6 +1486,8 @@ internal static class Program
         // Reborn: selected root integration is a separate diagnostic from complete GameObject publication.
         Console.WriteLine("  gameobject-draws-composition-self-test <official-xml-root> <static.manifest> <global.manifest>");
         Console.WriteLine("  gameobject-clients-composition-self-test <official-xml-root> <static.manifest> <global.manifest>");
+        Console.WriteLine("  conscript-behavior-survey <official-xml-root> <static.manifest> <global.manifest>");
+        Console.WriteLine("  conscript-behavior-native-self-test <official-xml-root> <static.manifest> <global.manifest>");
         // Reborn: native client proof is separate from generated metadata, inheritance execution and playback/publication.
         Console.WriteLine("  ep1-client-behaviors-native-self-test <official-xml-root> <static.manifest> <global.manifest>");
         Console.WriteLine("  ep1-client-behaviors-token-self-test <official-xml-root> <static.manifest> <global.manifest>");

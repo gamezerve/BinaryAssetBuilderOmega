@@ -8,6 +8,21 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 16, 2026
 
+All [36 original Conscript behavior native graphs](docs/RA3EP1_CONSCRIPT_ALL_BEHAVIORS_NATIVE.md)
+now pass complete stock comparison across **24 families**, both separately and
+on **one Core table / 21 strong occurrences / one Tracker**. The shared native
+container is **5,624 / 388 / 88 bytes** (BIN/RELO/IMP). Four isolated EP1 records
+fix SquishCollide, Physics, HitReaction and StatusBitsUpgrade without changing
+legacy KW dispatch. Seven complete SlowDeath sources retain every member after
+stable family grouping; one actual external definition is explicitly captured.
+142 native corruptions, ten authored/refusal controls and nine shared-container/
+reference refusals pass. This proves the selected original native graphs, not
+arbitrary variants of all 24 families. Generated behavior metadata, full-root
+composition and complete GameObject publication remain open. Final Focused
+regression with explicit official XML root: **66/66** in **330.759 seconds**,
+all-36 behavior group 7.889 seconds, eight runtime hashes stable. No Full run,
+game launch, installation mutation or alpha admission expansion.
+
 The [selected root + complete Conscript client containers](docs/RA3EP1_GAMEOBJECT_CLIENTS_COMPOSITION.md)
 now reaches **104 partial root fields / 237 shared Core occurrences** on one
 Tracker, retaining all four complete Draws, all six original ClientBehaviors

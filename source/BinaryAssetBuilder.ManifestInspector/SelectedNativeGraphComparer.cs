@@ -21,6 +21,8 @@ internal sealed class SelectedNativeGraphComparer
     private readonly bool allowScriptCrLfEquivalent;
     // Reborn: shared-container callers verify full occurrence consumption across all leaves, not separately for each sibling.
     private readonly bool requireAllReferences;
+    // Reborn: native-only surveys may compare independently allocated copies of shared stock records without claiming one-to-one metadata coordinates; all existing token gates keep the strict default.
+    private readonly bool captureNativeCoordinates;
     private int scriptLineEndingEquivalences;
     private int records, strings;
     // Reborn: metadata targets address native records/headers, not interned character arrays; expose only the independently compared native byte-coordinate map.
@@ -29,8 +31,8 @@ internal sealed class SelectedNativeGraphComparer
     //-------------------------------------------------------------------------------------------------
     /** Reborn: stock and compiled graphs keep separate origins and semantic reference occurrence tables. */
     //-------------------------------------------------------------------------------------------------
-    internal SelectedNativeGraphComparer(byte[] stock, AssetId[] references, Chunk compiled, InstanceDeclaration instance, bool allowScriptCrLfEquivalent = false, bool requireAllReferences = true)
-    { this.stock = stock; stockReferences = references; this.compiled = compiled; this.instance = instance; this.allowScriptCrLfEquivalent = allowScriptCrLfEquivalent; this.requireAllReferences = requireAllReferences; covered = new bool[compiled.InstanceBuffer.Length]; }
+    internal SelectedNativeGraphComparer(byte[] stock, AssetId[] references, Chunk compiled, InstanceDeclaration instance, bool allowScriptCrLfEquivalent = false, bool requireAllReferences = true, bool captureNativeCoordinates = true)
+    { this.stock = stock; stockReferences = references; this.compiled = compiled; this.instance = instance; this.allowScriptCrLfEquivalent = allowScriptCrLfEquivalent; this.requireAllReferences = requireAllReferences; this.captureNativeCoordinates = captureNativeCoordinates; covered = new bool[compiled.InstanceBuffer.Length]; }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: complete selected graph equality requires every native field, exact auxiliary ownership and no hidden nonzero/orphan heap allocations. */
@@ -55,7 +57,7 @@ internal sealed class SelectedNativeGraphComparer
         {
             int size = Size(type); Range(stock, a, size); Range(compiled.InstanceBuffer, b, size); Array.Fill(covered, true, b, size);
             // Reborn: one stock native header cannot ambiguously map to different emitted headers; shared character payloads are not metadata targets and are deliberately excluded.
-            for (int i = 0; i < size; i++) { if (NativeOffsets.TryGetValue(a + i, out int prior) && prior != b + i) throw new InvalidDataException("Ambiguous selected native metadata coordinate at " + path); NativeOffsets[a + i] = b + i; }
+            if(captureNativeCoordinates)for (int i = 0; i < size; i++) { if (NativeOffsets.TryGetValue(a + i, out int prior) && prior != b + i) throw new InvalidDataException("Ambiguous selected native metadata coordinate at " + path); NativeOffsets[a + i] = b + i; }
             if (type.IsEnum || type.IsPrimitive) { Equal(a, b, size, path); return; }
             if (type.IsGenericType)
             {
