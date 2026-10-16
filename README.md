@@ -8,13 +8,24 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 16, 2026
 
+The [complete four-module Conscript Draws container](docs/RA3EP1_CONSCRIPT_SHARED_DRAWS.md)
+now passes **one Core occurrence table / 173 strong slots**, one Tracker and a
+complete independent **58,608-byte** stock metadata prefix. Twelve source cases
+cover order/subsets, full module-ID/scalar edits and optional tracer status;
+14,682 refusals pass. Whole-object root/Draw/client/behavior integration and
+publication remain open; the complete Conscript is still the gameplay target.
+Final Focused regression with explicit official XML root: **61/61** in
+**225.340 seconds**, shared Draws group 15.610 seconds, eight runtime hashes
+stable. No Full run, game launch, install mutation or alpha admission expansion.
+
 Both [complete Conscript scripted-draw metadata graphs](docs/RA3EP1_CONSCRIPT_SCRIPTED_DRAW_TOKENS.md)
 now match independent full stock prefixes: **53,052 and 4,512 bytes**. The writer
 builds recursive tables from native data, without a stock template. Both full
 source graphs also pass new weak module-ID/scalar edits; 66 malformed native and
 14,405 detached-output controls pass. Unsupported populated child families fail
-explicitly. Shared four-module Draws composition and whole GameObject publication
-remain open; this is not an alpha admission expansion or new gameplay evidence.
+explicitly. The subsequent shared four-module Draws gate is above; whole
+GameObject publication remains open. This is not an alpha admission expansion
+or new gameplay evidence.
 Final Focused regression with explicit official XML root: **60/60** in
 **265.734 seconds**, token group 14.480 seconds, eight runtime hashes stable.
 No Full run, game launch or installed-file change.
@@ -25,8 +36,8 @@ states, 84 animation states and 171 strong import slots**. This exposed and fixe
 the ParticleSysBone interior ABI/id-string error and missing AnimationState NONE
 default. The main graph matches stock; the parachute graph has one explicitly
 bounded Script CRLF/LF equivalence. No source members are dropped. The follow-up
-token gate above also verifies generated scripted-draw metadata; full Draws
-composition and GameObject publication remain open. The target
+token and shared-container gates above also verify generated scripted-draw
+metadata and Draws composition. Whole GameObject publication remains open. The target
 is still the complete Conscript, not a reduced replacement.
 Final Focused regression with explicit official XML root: **59/59** in
 **217.593 seconds**, scripted-draw group 8.906 seconds, eight runtime hashes

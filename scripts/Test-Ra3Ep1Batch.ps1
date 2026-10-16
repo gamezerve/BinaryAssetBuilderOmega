@@ -85,6 +85,8 @@ if($SchedulerControl){
         Add-BatchCase 'ep1-scripted-draw-native' 'CompleteSelectedConscriptScriptedNativeGraphs' @('ep1-scripted-draw-native-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
         # Reborn: independently compare recursive metadata for the same complete source graphs and authored edits.
         Add-BatchCase 'ep1-scripted-draw-tokens' 'CompleteSelectedConscriptScriptedTokenGraphs' @('ep1-scripted-draw-token-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
+        # Reborn: both complete scripted and both tracer modules share one Core/Tracker container before whole object integration.
+        Add-BatchCase 'ep1-draws-composition' 'CompleteSelectedConscriptSharedDraws' @('ep1-draws-composition-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
     }
     # Reborn: destruction/tech/LUA native dispatch and complete selected graphs share one gate; captured FX and callback limits remain explicit.
     Add-BatchCase 'ep1-allied-modules' 'BoundedCapturedIndexModuleNativePayload' @('ep1-allied-modules-self-test',$StaticManifest)

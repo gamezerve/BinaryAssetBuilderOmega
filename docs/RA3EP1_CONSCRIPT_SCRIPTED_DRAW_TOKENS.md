@@ -69,8 +69,9 @@ All 66 input and 14,405 detached controls pass.
 - CLI: `ep1-scripted-draw-token-self-test <official-xml-root> <static.manifest> <global.manifest>`.
   The batch adds this group only with explicit `-UprisingXmlRoot`.
 
-Next: compose both scripted and both tracer modules into one Draws container,
-then join the remaining whole-unit owners and a single Core occurrence table.
+The subsequent [shared Draws gate](RA3EP1_CONSCRIPT_SHARED_DRAWS.md) now composes
+both scripted and both tracer modules on one Core occurrence table. Next: join
+this container with the remaining whole-unit owners and their shared references.
 There is no complete GameObject stream/package, alpha admission expansion,
 new-model compilation, game launch or install change in this milestone.
 

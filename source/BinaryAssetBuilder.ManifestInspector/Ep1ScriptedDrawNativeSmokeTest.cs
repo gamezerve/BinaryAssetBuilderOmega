@@ -20,7 +20,7 @@ internal static class Ep1ScriptedDrawNativeSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: retain every source child/script and compare complete typed native graphs, exact auxiliary ownership and semantic stock import identities. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string sourceRoot, string manifest, string globalManifest, bool includeTokens = false)
+    internal static void Run(string sourceRoot, string manifest, string globalManifest, bool includeTokens = false, bool includeContainer = false)
     {
         var saved = Settings.Current;
         try
@@ -32,6 +32,9 @@ internal static class Ep1ScriptedDrawNativeSmokeTest
             alias.Items.Add(new XmlSchemaElement { Name = "ScriptedDrawProbe", SchemaTypeName = new XmlQualifiedName("W3DScriptedModelDrawModuleData", SchemaSet.XmlNamespace) });
             // Reborn: the particle alias uses the unchanged official type for authored field/AssetId controls, not an invented reduced declaration.
             alias.Items.Add(new XmlSchemaElement { Name = "ParticleProbe", SchemaTypeName = new XmlQualifiedName("ParticleSysBone", SchemaSet.XmlNamespace) });
+            // Reborn: this diagnostic asset envelope uses the unchanged official DrawModules type for one Core pass, not whole GameObject admission.
+            var drawEnvelope = new XmlSchemaComplexType { ContentModel = new XmlSchemaComplexContent { Content = new XmlSchemaComplexContentExtension { BaseTypeName = new XmlQualifiedName("BaseAssetType", SchemaSet.XmlNamespace), Particle = new XmlSchemaSequence { Items = { new XmlSchemaElement { Name = "Draws", SchemaTypeName = new XmlQualifiedName("DrawModules", SchemaSet.XmlNamespace) } } } } } };
+            alias.Items.Add(new XmlSchemaElement { Name = "DrawsProbe", SchemaType = drawEnvelope });
             official.Add(alias); official.Compile();
             Settings.Current = new Settings { SchemaPath = Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!, "TracerDrawPipeline.xsd"), BuildCache = false, StringHashBinDescriptors = Array.Empty<StringHashBinDescriptor>() };
             var schemas = new SchemaSet(false);
@@ -54,6 +57,8 @@ internal static class Ep1ScriptedDrawNativeSmokeTest
             CompilerSmokeTest.TestScriptedModelRecords(); AuthoredParticleControls(schemas);
             var files = new[] { Path.Combine(sourceRoot, "Soviet", "Units", "SovietAntiInfantryInfantry.xml"), Path.Combine(sourceRoot, "Includes", "ParachuteDrawSoviet.xml") };
             int totalRecords = 0, totalStrings = 0, totalImports = 0;
+            // Reborn: keep authored names before per-leaf normalization for the common container occurrence table.
+            var scriptedSources = new List<string>();
             for (int index = 0; index < files.Length; index++)
             {
                 byte[] bytes = SdkEnvironmentPreflight.Read(files[index], 1048576); var digest = SHA256.HashData(bytes); var source = Xml(bytes);
@@ -80,6 +85,7 @@ internal static class Ep1ScriptedDrawNativeSmokeTest
                     var ambiguous = Xml(System.Text.Encoding.UTF8.GetBytes(probe.OuterXml)); uint modelId = new InstanceHandle(modelName).InstanceId; var duplicates = catalog.Where(a => a.InstanceId == modelId).ToArray(); Refuse(() => ResolveRenderNames(ambiguous, schemas, catalog.Concat(duplicates).ToArray()));
                 }
                 int resolved = ResolveRenderNames(probe, schemas, catalog);
+                scriptedSources.Add(probe.OuterXml);
                 var instance = ReferencePipelineSmokeTest.Normalize(schemas, probe.OuterXml);
                 foreach (var reference in instance.ReferencedInstances) if (catalog.Count(a => a.TypeId == reference.TypeId && a.InstanceId == reference.InstanceId) != 1) throw new InvalidDataException("Scripted draw dependency missing/ambiguous: " + reference.Name);
                 var native = Compile(instance.XmlNode);
@@ -120,6 +126,8 @@ internal static class Ep1ScriptedDrawNativeSmokeTest
                 foreach (int at in new[] { scriptHeader, scriptData }) { var bad = Clone(native); bad.InstanceBuffer[at] ^= 1; Refuse(() => new SelectedNativeGraphComparer(stock.Bytes, stock.Asset.References.ToArray(), bad, instance, true).Compare(typeof(W3DScriptedModelDrawModuleData), modules[index].Native)); }
             }
             Console.WriteLine($"EP1 complete scripted Draw native graphs: PASS (two stock graphs, 10 model/84 animation states, {totalRecords} visited native records/{totalStrings} string allocations/{totalImports} typed import slots, {particleBindings} complete particle token/native bindings, 288 authored particle/3 flag-default controls and existing combined record fixture, 22 detached/3 source-dependency refusals; one explicitly bounded Script CRLF/LF equivalence; generated metadata checked={includeTokens}; no complete GameObject publication, XInclude execution or LUA execution claim).");
+            // Reborn: compile both full scripted leaves and both source tracers together after the independent component gates.
+            if (includeContainer) Ep1DrawsCompositionSmokeTest.Run(schemas, sourceRoot, manifest, catalog, scriptedSources.ToArray());
         }
         finally { Settings.Current = saved; }
     }

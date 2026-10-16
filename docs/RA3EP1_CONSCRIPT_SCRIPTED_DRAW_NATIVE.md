@@ -134,5 +134,6 @@ animation/particle fixture was executed directly inside this new group.
 
 The subsequent token checkpoint implements recursive metadata for the shared
 model-state, animation-state, animation, bone, particle, string and list shapes.
-Next: combine the two scripted draws and two already-tokenized tracers on one
-Draws container/reference graph. Neither checkpoint itself publishes a unit.
+The subsequent [shared Draws gate](RA3EP1_CONSCRIPT_SHARED_DRAWS.md) also combines
+both scripted draws and both tracers on one container/reference graph. Joining
+the whole object's other owners remains open; none of these gates publishes a unit.

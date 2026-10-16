@@ -19,6 +19,8 @@ internal sealed class SelectedNativeGraphComparer
     private readonly HashSet<(Type, int, int)> active = new();
     private readonly bool[] covered;
     private readonly bool allowScriptCrLfEquivalent;
+    // Reborn: shared-container callers verify full occurrence consumption across all leaves, not separately for each sibling.
+    private readonly bool requireAllReferences;
     private int scriptLineEndingEquivalences;
     private int records, strings;
     // Reborn: metadata targets address native records/headers, not interned character arrays; expose only the independently compared native byte-coordinate map.
@@ -27,8 +29,8 @@ internal sealed class SelectedNativeGraphComparer
     //-------------------------------------------------------------------------------------------------
     /** Reborn: stock and compiled graphs keep separate origins and semantic reference occurrence tables. */
     //-------------------------------------------------------------------------------------------------
-    internal SelectedNativeGraphComparer(byte[] stock, AssetId[] references, Chunk compiled, InstanceDeclaration instance, bool allowScriptCrLfEquivalent = false)
-    { this.stock = stock; stockReferences = references; this.compiled = compiled; this.instance = instance; this.allowScriptCrLfEquivalent = allowScriptCrLfEquivalent; covered = new bool[compiled.InstanceBuffer.Length]; }
+    internal SelectedNativeGraphComparer(byte[] stock, AssetId[] references, Chunk compiled, InstanceDeclaration instance, bool allowScriptCrLfEquivalent = false, bool requireAllReferences = true)
+    { this.stock = stock; stockReferences = references; this.compiled = compiled; this.instance = instance; this.allowScriptCrLfEquivalent = allowScriptCrLfEquivalent; this.requireAllReferences = requireAllReferences; covered = new bool[compiled.InstanceBuffer.Length]; }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: complete selected graph equality requires every native field, exact auxiliary ownership and no hidden nonzero/orphan heap allocations. */
@@ -37,7 +39,7 @@ internal sealed class SelectedNativeGraphComparer
     {
         if (compiled.InstanceBuffer.Length > 2 * 1048576) throw new InvalidDataException("Selected native graph exceeds diagnostic bound.");
         Visit(root, original, 0, root.Name, 0);
-        if (!Slots(compiled.RelocationBuffer).Order().SequenceEqual(relos.Order()) || !Slots(compiled.ImportsBuffer).Order().SequenceEqual(imports.Order()) || imports.Count != instance.ReferencedInstances.Count) throw new InvalidDataException("Selected graph auxiliary ownership or Core reference consumption differs.");
+        if (!Slots(compiled.RelocationBuffer).Order().SequenceEqual(relos.Order()) || !Slots(compiled.ImportsBuffer).Order().SequenceEqual(imports.Order()) || requireAllReferences && imports.Count != instance.ReferencedInstances.Count) throw new InvalidDataException("Selected graph auxiliary ownership or Core reference consumption differs.");
         int gap = 0;
         for (int i = 0; i < covered.Length; i++) { if (covered[i]) { gap = 0; continue; } if (compiled.InstanceBuffer[i] != 0 || ++gap > 3) throw new InvalidDataException("Selected graph has unowned native storage at " + i); }
         return (records, strings, imports.Count, scriptLineEndingEquivalences);

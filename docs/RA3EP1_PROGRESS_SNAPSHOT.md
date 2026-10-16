@@ -113,8 +113,11 @@ The [recursive metadata gate](RA3EP1_CONSCRIPT_SCRIPTED_DRAW_TOKENS.md) now pass
 both complete stock prefixes (53,052/4,512 bytes), two full-source weak module-ID/
 scalar edits, 66 malformed-native and 14,405 detached-output controls. The producer
 uses no stock template and refuses currently unreviewed populated child families.
-Next drawing work batch: compose the two scripted and two tracer modules in one
-Draws container on one reference occurrence table.
+The [shared Draws container](RA3EP1_CONSCRIPT_SHARED_DRAWS.md) now joins all four
+complete modules on one Core table/173 strong slots and one Tracker. Its complete
+58,608-byte stock metadata prefix matches; 12 source cases and 14,682 negative
+controls pass. Next: join this complete container with the selected whole-object
+root/Body/behavior/AI graph on a common occurrence table.
 The actual XInclude/XPointer path, all client containers and remaining behavior/
 root graphs still need integration; reading the two complete leaves separately
 does not prove the include processor or whole-unit publication.
@@ -123,10 +126,11 @@ is preferred to stopping after each scalar or enabling a reduced alternative.
 The legacy Draw dispatcher's silent unknown-type fallthrough is now replaced by
 an explicit error with a refusal test; supported dispatch cases remain unchanged.
 
-Latest checkpoint: [both complete scripted-draw metadata graphs](RA3EP1_CONSCRIPT_SCRIPTED_DRAW_TOKENS.md)
-pass Focused **60/60** with explicit official XML root in **265.734s**, token
-group **14.480s**, eight runtime hashes stable. The preceding complete native
-checkpoint passed 59/59 in 217.593s; both source graphs remain intact.
+Latest checkpoint: [complete shared four-module Draws](RA3EP1_CONSCRIPT_SHARED_DRAWS.md)
+passes Focused **61/61** with explicit official XML root in **225.340s**, shared
+Draws group **15.610s**, eight runtime hashes stable. The preceding component
+metadata checkpoint passed 60/60 in 265.734s; complete native passed 59/59 in
+217.593s. Both full scripted source graphs remain intact.
 Whole-unit publication remains open. No Full run or new gameplay is implied;
 full-product maturity remains about **48%**, not a type/field pass ratio.
 The preceding [both complete Conscript tracers](RA3EP1_CONSCRIPT_TRACER_DRAWS.md)
