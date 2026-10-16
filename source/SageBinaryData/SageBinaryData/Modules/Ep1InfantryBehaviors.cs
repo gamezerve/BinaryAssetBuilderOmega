@@ -50,3 +50,26 @@ public struct Ep1StatusBitsUpgradeModuleData
     public UpgradeModuleData Base;
     public ObjectStatusBitFlags StatusToSet, StatusToClear;
 }
+
+// Reborn: EP1 CreateObjectDie has no KW DebrisPortionOfSelf header; the two list headers start at 56/64 in its 72-byte record.
+[StructLayout(LayoutKind.Sequential)]
+public struct Ep1CreateObjectDieModuleData
+{
+    public DieModuleData Base;
+    public AssetReference<ObjectCreationList> CreationList;
+    public List<AssetReference<UpgradeTemplate>> UpgradeRequired, UpgradeForbidden;
+}
+
+// Reborn: EP1 death-weapon metadata exposes two additional booleans at 143/144, extending the original record to 148 bytes.
+[StructLayout(LayoutKind.Sequential)]
+public unsafe struct Ep1FireWeaponWhenDeadBehaviorModuleData
+{
+    public UpgradeModuleData Base;
+    public Time DelayTime;
+    public AssetReference<WeaponTemplate> DeathWeapon;
+    public KindOfBitFlags FocusFireKindOfFlag;
+    public Coord3D* WeaponOffset;
+    public DieMuxDataType DieMuxData;
+    public List<WeaponFireProbabilityType> WeaponFireProbability;
+    public SageBool InitiallyActive, ActiveDuringConstruction, ContinueToBezierDestination, FireAtGround, UseMyKillerAsWeaponSource;
+}

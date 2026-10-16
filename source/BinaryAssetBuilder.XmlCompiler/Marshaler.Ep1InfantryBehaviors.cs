@@ -15,6 +15,9 @@ public static partial class Marshaler
         else if(type==0x79BFEDCB){using var scope=state.Push((void**)objT,(uint)sizeof(Ep1PhysicsBehaviorModuleData),1u);Marshal(node,(Ep1PhysicsBehaviorModuleData*)*objT,state);}
         else if(type==0x59D12990){using var scope=state.Push((void**)objT,(uint)sizeof(Ep1HitReactionBehaviorModuleData),1u);Marshal(node,(Ep1HitReactionBehaviorModuleData*)*objT,state);}
         else if(type==0x786C9458){using var scope=state.Push((void**)objT,(uint)sizeof(Ep1StatusBitsUpgradeModuleData),1u);Marshal(node,(Ep1StatusBitsUpgradeModuleData*)*objT,state);}
+        // Reborn: schema/native metadata review identified two additional KW/EP1 layout differences hidden by empty original fields.
+        else if(type==0x3B68B768){using var scope=state.Push((void**)objT,(uint)sizeof(Ep1CreateObjectDieModuleData),1u);Marshal(node,(Ep1CreateObjectDieModuleData*)*objT,state);}
+        else if(type==0x90CEB49C){using var scope=state.Push((void**)objT,(uint)sizeof(Ep1FireWeaponWhenDeadBehaviorModuleData),1u);Marshal(node,(Ep1FireWeaponWhenDeadBehaviorModuleData*)*objT,state);}
         else throw new InvalidDataException("Unreviewed EP1 infantry class.");state.InplaceEndianToPlatform(&type);*(uint*)*objT=type;
     }
     //-------------------------------------------------------------------------------------------------
@@ -48,4 +51,18 @@ public static partial class Marshaler
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node,Ep1StatusBitsUpgradeModuleData* objT,Tracker state)
     {if(node==null)return;Marshal(node.GetAttributeValue("StatusToSet",null),&objT->StatusToSet,state);Marshal(node.GetAttributeValue("StatusToClear",null),&objT->StatusToClear,state);Marshal(node,(UpgradeModuleData*)objT,state);}
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: retain creation references, both ordered upgrade lists and every Die base field without allocating the absent KW string header. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node,Ep1CreateObjectDieModuleData* objT,Tracker state)
+    {if(node==null)return;Marshal(node.GetAttributeValue("CreationList",null),&objT->CreationList,state);Marshal(node.GetChildNodes("UpgradeRequired"),&objT->UpgradeRequired,state);Marshal(node.GetChildNodes("UpgradeForbidden"),&objT->UpgradeForbidden,state);Marshal(node,(DieModuleData*)objT,state);}
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: retain every official EP1 death-weapon field, including both formerly unmodeled false-default flags; legacy KW dispatch remains unchanged. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node,Ep1FireWeaponWhenDeadBehaviorModuleData* objT,Tracker state)
+    {
+        if(node==null)return;
+        Marshal(node.GetAttributeValue("InitiallyActive","false"),&objT->InitiallyActive,state);Marshal(node.GetAttributeValue("ActiveDuringConstruction","false"),&objT->ActiveDuringConstruction,state);Marshal(node.GetAttributeValue("ContinueToBezierDestination","false"),&objT->ContinueToBezierDestination,state);Marshal(node.GetAttributeValue("FireAtGround","false"),&objT->FireAtGround,state);Marshal(node.GetAttributeValue("UseMyKillerAsWeaponSource","false"),&objT->UseMyKillerAsWeaponSource,state);
+        Marshal(node.GetAttributeValue("DelayTime","0s"),&objT->DelayTime,state);Marshal(node.GetAttributeValue("DeathWeapon",null),&objT->DeathWeapon,state);Marshal(node.GetAttributeValue("FocusFireKindOfFlag",null),&objT->FocusFireKindOfFlag,state);Marshal(node.GetChildNode("WeaponOffset",null),&objT->WeaponOffset,state);Marshal(node.GetChildNode("DieMuxData",null),&objT->DieMuxData,state);Marshal(node.GetChildNodes("WeaponFireProbability"),&objT->WeaponFireProbability,state);Marshal(node,(UpgradeModuleData*)objT,state);
+    }
 }

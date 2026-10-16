@@ -97,6 +97,8 @@ if($SchedulerControl){
         Add-BatchCase 'gameobject-clients-composition' 'SharedRootDrawsClientContainers' @('gameobject-clients-composition-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
         # Reborn: all original 36 Conscript behavior native graphs must pass; blocked survey rows do not count as success.
         Add-BatchCase 'conscript-behavior-native' 'All36OriginalConscriptBehaviorNativeGraphs' @('conscript-behavior-native-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
+        # Reborn: all original behavior metadata must independently match stock; a survey with explicit blocked rows is not a passing regression.
+        Add-BatchCase 'conscript-behavior-tokens' 'All36OriginalConscriptBehaviorMetadataGraphs' @('conscript-behavior-token-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
     }
     # Reborn: destruction/tech/LUA native dispatch and complete selected graphs share one gate; captured FX and callback limits remain explicit.
     Add-BatchCase 'ep1-allied-modules' 'BoundedCapturedIndexModuleNativePayload' @('ep1-allied-modules-self-test',$StaticManifest)

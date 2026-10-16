@@ -6,19 +6,41 @@ asset IDs, instance includes, inheritance, `$` definitions/expressions,
 TGA/DDS textures and W3X models. Current fixed-identity alpha restrictions are
 temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
-## Current outcome — October 16, 2026
+## Current outcome — October 17, 2026
 
-All [36 original Conscript behavior native graphs](docs/RA3EP1_CONSCRIPT_ALL_BEHAVIORS_NATIVE.md)
-now pass complete stock comparison across **24 families**, both separately and
-on **one Core table / 21 strong occurrences / one Tracker**. The shared native
-container is **5,624 / 388 / 88 bytes** (BIN/RELO/IMP). Four isolated EP1 records
-fix SquishCollide, Physics, HitReaction and StatusBitsUpgrade without changing
-legacy KW dispatch. Seven complete SlowDeath sources retain every member after
-stable family grouping; one actual external definition is explicitly captured.
+All [36 original Conscript behavior metadata graphs](docs/RA3EP1_CONSCRIPT_ALL_BEHAVIORS_TOKENS.md)
+now independently match stock across **24 families / 16,608 metadata bytes**.
+The schema/native-input generator receives no stock token tables or coordinates;
+reviewed wire signatures distinguish field-level reference targets and repeated
+types. Independent field-context comparison handles shared stock allocations
+without ambiguous global address substitution. The gate checks deterministic
+output, unchanged inputs, exact native-tail/RELO/IMP transformation and **250
+metadata/input refusals**. Fourteen authored/refusal controls plus one real
+Core-normalized, two-upgrade-list control pass. Metadata exposed two additional
+KW/EP1 differences: CreateObjectDie has no KW debris header; FireWeaponWhenDead
+adds two flags. Their isolated EP1 records leave legacy dispatch unchanged.
+The corrected shared native graph is **5,620 / 388 / 88 bytes**, with 21 strong
+occurrences. These are complete **individual leaf** metadata proofs, not a
+combined Behaviors token container or a complete GameObject package. Full
+root/Body/AI composition, all-49-module integration and new-ID gameplay remain
+open; no alpha admission expansion or installation change. Final Focused
+regression with explicit official XML root: **67/67** in **231.180 seconds**;
+all-36 metadata group **6.959 seconds**. Eight runtime hashes remained stable;
+the batch build had zero warnings/errors. No Full run or game launch.
+
+The earlier [36 original Conscript behavior native gate](docs/RA3EP1_CONSCRIPT_ALL_BEHAVIORS_NATIVE.md)
+passed complete stock comparison across **24 families**, both separately and
+on **one Core table / 21 strong occurrences / one Tracker**. Its shared native
+container was **5,624 / 388 / 88 bytes** (BIN/RELO/IMP). Four isolated EP1 records
+fixed SquishCollide, Physics, HitReaction and StatusBitsUpgrade without changing
+legacy KW dispatch. Seven complete SlowDeath sources retained every member after
+stable family grouping; one actual external definition was explicitly captured.
 142 native corruptions, ten authored/refusal controls and nine shared-container/
-reference refusals pass. This proves the selected original native graphs, not
-arbitrary variants of all 24 families. Generated behavior metadata, full-root
-composition and complete GameObject publication remain open. Final Focused
+reference refusals passed. This proved the selected original native graphs, not
+arbitrary variants of all 24 families. The subsequent metadata gate above now
+passes and strengthens two native layouts that empty/default fields could not
+distinguish. Full-root composition and complete GameObject publication remain
+open. Final Focused
 regression with explicit official XML root: **66/66** in **330.759 seconds**,
 all-36 behavior group 7.889 seconds, eight runtime hashes stable. No Full run,
 game launch, installation mutation or alpha admission expansion.

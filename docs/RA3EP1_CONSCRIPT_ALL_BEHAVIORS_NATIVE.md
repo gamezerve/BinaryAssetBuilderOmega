@@ -1,5 +1,12 @@
 # All 36 original Conscript Behaviors: native gate
 
+Historical October 16 milestone. The subsequent [all-leaf metadata gate](RA3EP1_CONSCRIPT_ALL_BEHAVIORS_TOKENS.md)
+strengthens two layouts that original empty/default fields did not distinguish:
+CreateObjectDie and FireWeaponWhenDeadBehavior. The corrected shared native BIN
+is 5,620 bytes, not this milestone's 5,624. Generated metadata now passes for all
+36 individual leaves; combined Behaviors metadata/full GameObject publication
+remain open. The original evidence and limits below are retained as history.
+
 ## Outcome
 
 All **36 original behavior leaves / 24 concrete families** now match their
