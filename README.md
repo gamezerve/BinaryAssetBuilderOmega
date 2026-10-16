@@ -8,6 +8,23 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 17, 2026
 
+The [complete original Conscript Behaviors container](docs/RA3EP1_CONSCRIPT_BEHAVIORS_COMPOSITION.md)
+now passes independent stock metadata/native comparison with **all 36 leaves /
+24 families / one Core table / 21 strong occurrences / one Tracker**. Its
+**17,052-byte metadata prefix** combines 444 bytes of count/item rows with the
+16,608 already qualified leaf bytes. BIN/RELO/IMP is **22,672 / 388 / 88 bytes**.
+Only generated metadata is joined; the shared native graph is copied once, and
+every native pointer/auxiliary slot shifts once. **166 shared metadata/input
+refusals** and three authored container scenarios (reverse order, renamed helper,
+mixed eight-leaf subset) pass alongside the existing native/leaf gates. Reordered
+and subset native graphs independently retain their stock semantic references.
+The selected GameObject root composer is not broadened: all-49-module integration,
+the remaining full root/Body/AI owners, complete dependency publication and new-ID
+gameplay remain open. No alpha capability expansion, game or installation change.
+Final Focused regression with explicit official XML root: **68/68** in
+**236.678 seconds**; complete-container group **7.283 seconds**. Eight runtime
+hashes stayed stable; the batch build had zero warnings/errors. No Full run.
+
 All [36 original Conscript behavior metadata graphs](docs/RA3EP1_CONSCRIPT_ALL_BEHAVIORS_TOKENS.md)
 now independently match stock across **24 families / 16,608 metadata bytes**.
 The schema/native-input generator receives no stock token tables or coordinates;
@@ -20,8 +37,9 @@ Core-normalized, two-upgrade-list control pass. Metadata exposed two additional
 KW/EP1 differences: CreateObjectDie has no KW debris header; FireWeaponWhenDead
 adds two flags. Their isolated EP1 records leave legacy dispatch unchanged.
 The corrected shared native graph is **5,620 / 388 / 88 bytes**, with 21 strong
-occurrences. These are complete **individual leaf** metadata proofs, not a
-combined Behaviors token container or a complete GameObject package. Full
+occurrences. That milestone proved complete **individual leaf** metadata; the
+subsequent shared-container gate above now passes too, not a complete GameObject
+package. Full
 root/Body/AI composition, all-49-module integration and new-ID gameplay remain
 open; no alpha admission expansion or installation change. Final Focused
 regression with explicit official XML root: **67/67** in **231.180 seconds**;

@@ -99,6 +99,8 @@ if($SchedulerControl){
         Add-BatchCase 'conscript-behavior-native' 'All36OriginalConscriptBehaviorNativeGraphs' @('conscript-behavior-native-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
         # Reborn: all original behavior metadata must independently match stock; a survey with explicit blocked rows is not a passing regression.
         Add-BatchCase 'conscript-behavior-tokens' 'All36OriginalConscriptBehaviorMetadataGraphs' @('conscript-behavior-token-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
+        # Reborn: independently verify one shared metadata/native container with all original behavior leaves and common Core indices.
+        Add-BatchCase 'conscript-behavior-composition' 'Shared36OriginalConscriptBehaviorMetadataContainer' @('conscript-behavior-composition-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
     }
     # Reborn: destruction/tech/LUA native dispatch and complete selected graphs share one gate; captured FX and callback limits remain explicit.
     Add-BatchCase 'ep1-allied-modules' 'BoundedCapturedIndexModuleNativePayload' @('ep1-allied-modules-self-test',$StaticManifest)

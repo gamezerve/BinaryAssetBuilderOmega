@@ -1,5 +1,9 @@
 # All 36 original Conscript behavior metadata graphs
 
+The subsequent [complete shared Behaviors container gate](RA3EP1_CONSCRIPT_BEHAVIORS_COMPOSITION.md)
+now passes too. This document retains the preceding individual-leaf milestone
+and its separate regression evidence; full GameObject publication remains open.
+
 ## Outcome — October 17, 2026
 
 All 36 complete original behavior leaves, covering 24 concrete families, pass

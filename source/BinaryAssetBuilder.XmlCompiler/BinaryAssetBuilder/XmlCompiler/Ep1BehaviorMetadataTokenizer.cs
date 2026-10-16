@@ -29,6 +29,37 @@ public static class Ep1BehaviorMetadataTokenizer
         return new Builder(native.InstanceBuffer, schemas).Build(native, wireName, nativeType);
     }
 
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: generate one ordered Behaviors metadata container over one already compiled native/Core graph; only metadata fragments are joined, never independently compiled native payloads. */
+    //-------------------------------------------------------------------------------------------------
+    public static Chunk TokenizeContainer(Chunk native, XmlSchemaSet schemas)
+    {
+        if(native?.InstanceBuffer==null || native.RelocationBuffer==null || native.ImportsBuffer==null || schemas==null || native.InstanceBuffer.Length<16 || native.InstanceBuffer.Length>2*1048576)throw new InvalidDataException("Bounded shared behavior graph required.");
+        byte[] bytes=native.InstanceBuffer;uint count=Word(bytes,0);if(count==0 || count>64 || Word(bytes,4)!=8)throw new InvalidDataException("Reviewed nonempty canonical behavior list required.");
+        int first=checked(8+(int)count*4);if(first>bytes.Length-8 || Word(bytes,8)!=first)throw new InvalidDataException("Behavior item array ownership differs.");
+        uint[] relos=Slots(native.RelocationBuffer),imports=Slots(native.ImportsBuffer);var parent=new[]{4u}.Concat(Enumerable.Range(0,(int)count).Select(i=>(uint)(8+i*4))).ToArray();
+        if(relos.Concat(imports).Any(s=>s>bytes.Length-4) || relos.Intersect(imports).Any() || !relos.Where(s=>s<first).OrderBy(s=>s).SequenceEqual(parent) || imports.Any(s=>s<first))throw new InvalidDataException("Shared behavior auxiliary parent/range ownership differs.");
+        var pieces=new List<(Chunk Data,int Prefix,int Start)>();var ids=new HashSet<uint>();int prefix=checked(12+(int)count*12);
+        for(int i=0;i<count;i++)
+        {
+            int start=checked((int)Word(bytes,8+i*4)),end=i+1<count?checked((int)Word(bytes,12+i*4)):bytes.Length;
+            if(start<first || start%4!=0 || end%4!=0 || end<start+8 || end>bytes.Length || !ids.Add(Word(bytes,start+4)))throw new InvalidDataException("Shared behavior module order/identity/bounds differs.");
+            uint wire=Word(bytes,start);var names=Families.Where(n=>FastHash.GetHashCode(n)==wire).ToArray();if(names.Length!=1)throw new InvalidDataException("Shared behavior family is not reviewed.");
+            var leaf=new Chunk{InstanceBuffer=bytes.AsSpan(start,end-start).ToArray(),RelocationBuffer=Pack(relos.Where(s=>s>=start && s<end).Select(s=>s-(uint)start)),ImportsBuffer=Pack(imports.Where(s=>s>=start && s<end).Select(s=>s-(uint)start))};
+            foreach(uint slot in Slots(leaf.RelocationBuffer)){uint target=Word(leaf.InstanceBuffer,(int)slot);if(slot>leaf.InstanceBuffer.Length-4 || target<start || target>=end)throw new InvalidDataException("Shared behavior pointer crosses native owners.");Put(leaf.InstanceBuffer,(int)slot,target-(uint)start);}
+            string name=names[0];string model=name is "WeaponSetUpdateModuleData" or "SquishCollideModuleData" or "PhysicsBehaviorModuleData" or "HitReactionBehaviorModuleData" or "StatusBitsUpgradeModuleData" or "CreateObjectDieModuleData" or "FireWeaponWhenDeadBehaviorModuleData"?"Ep1"+name:name;
+            Type type=typeof(SageBinaryData.GameObject).Assembly.GetType("SageBinaryData."+model)??throw new InvalidDataException("Shared behavior native model absent.");var piece=Tokenize(leaf,schemas,name,type);int length=piece.InstanceBuffer.Length-leaf.InstanceBuffer.Length;prefix=checked(prefix+length);if(prefix>4*1048576)throw new InvalidDataException("Shared behavior metadata bound exceeded.");pieces.Add((piece,length,start));
+        }
+        var result=new Chunk{InstanceBuffer=new byte[checked(prefix+bytes.Length)],RelocationBuffer=Pack(relos.Select(s=>s+(uint)prefix)),ImportsBuffer=Pack(imports.Select(s=>s+(uint)prefix))};bytes.CopyTo(result.InstanceBuffer,prefix);
+        Put(result.InstanceBuffer,0,0x6C827073);Put(result.InstanceBuffer,4,0x5D448FD8);Put(result.InstanceBuffer,8,(uint)prefix);int next=12+(int)count*12;
+        for(int i=0;i<pieces.Count;i++)
+        {
+            var piece=pieces[i];Put(result.InstanceBuffer,12+i*12,0xB151A0EB);Put(result.InstanceBuffer,20+i*12,(uint)next);
+            for(int at=0;at<piece.Prefix;at+=12){Put(result.InstanceBuffer,next+at,Word(piece.Data.InstanceBuffer,at));Put(result.InstanceBuffer,next+at+4,Word(piece.Data.InstanceBuffer,at+4));uint target=Word(piece.Data.InstanceBuffer,at+8);if(target!=0){if(target>=piece.Data.InstanceBuffer.Length)throw new InvalidDataException("Shared behavior fragment target escapes its owner.");Put(result.InstanceBuffer,next+at+8,checked(target<piece.Prefix?(uint)next+target:(uint)(prefix+piece.Start)+target-(uint)piece.Prefix));}}next=checked(next+piece.Prefix);
+        }
+        foreach(uint slot in relos){uint target=Word(bytes,(int)slot);if(target>=bytes.Length)throw new InvalidDataException("Shared behavior native pointer bounds differ.");Put(result.InstanceBuffer,prefix+(int)slot,checked(target+(uint)prefix));}return result;
+    }
+
     // Reborn: each invocation owns all tables, allocation checks and final coordinate patches.
     private sealed class Builder
     {

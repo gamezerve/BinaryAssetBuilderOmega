@@ -67,6 +67,10 @@ internal static class Program
             // Reborn: publication-independent metadata regression requires all original leaves, never a successful discovery survey with blocked token rows.
             if(args.Length==4 && args[0]=="conscript-behavior-token-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ConscriptBehaviorSurvey.Run(args[1],args[2],args[3],requireAll:true,includeTokens:true,requireTokens:true);return 0;}
+
+            // Reborn: complete shared behavior metadata retains every original source leaf and one common Core occurrence table.
+            if(args.Length==4 && args[0]=="conscript-behavior-composition-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();ConscriptBehaviorSurvey.Run(args[1],args[2],args[3],requireAll:true,includeTokens:true,requireTokens:true,compose:true);return 0;}
             // Reborn: a green full native behavior gate requires all 36 rows to pass; a survey with blocked rows never satisfies this command.
             if(args.Length==4 && args[0]=="conscript-behavior-native-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ConscriptBehaviorSurvey.Run(args[1],args[2],args[3],requireAll:true);return 0;}
@@ -1498,6 +1502,8 @@ internal static class Program
         // Reborn: keep discovery and strict all-leaf metadata qualification visibly distinct.
         Console.WriteLine("  conscript-behavior-token-survey <official-xml-root> <static.manifest> <global.manifest>");
         Console.WriteLine("  conscript-behavior-token-self-test <official-xml-root> <static.manifest> <global.manifest>");
+        // Reborn: composed metadata is a separate gate from individually correct fragments.
+        Console.WriteLine("  conscript-behavior-composition-self-test <official-xml-root> <static.manifest> <global.manifest>");
         // Reborn: native client proof is separate from generated metadata, inheritance execution and playback/publication.
         Console.WriteLine("  ep1-client-behaviors-native-self-test <official-xml-root> <static.manifest> <global.manifest>");
         Console.WriteLine("  ep1-client-behaviors-token-self-test <official-xml-root> <static.manifest> <global.manifest>");
