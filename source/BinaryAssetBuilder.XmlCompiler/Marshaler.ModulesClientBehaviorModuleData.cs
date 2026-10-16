@@ -29,8 +29,8 @@ public static partial class Marshaler
                 MarshalPolymorphicType<AnimationSoundClientBehaviorModuleData, ClientBehaviorModuleData>(node, objT, state);
                 break;
             default:
-                break;
-                throw new BinaryAssetBuilderException(ErrorCode.InternalError, "Client behavior module {0:X08} is not implemented.", typeId);
+                // Reborn: unknown client classes must fail instead of silently dropping part of the original complete object.
+                throw new System.IO.InvalidDataException($"Client behavior module {typeId:X08} is not implemented.");
         }
     }
 }

@@ -89,6 +89,8 @@ if($SchedulerControl){
         Add-BatchCase 'ep1-draws-composition' 'CompleteSelectedConscriptSharedDraws' @('ep1-draws-composition-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
         # Reborn: selected root/Body/behavior/AI and all four complete Draws share one Core occurrence table and Tracker.
         Add-BatchCase 'gameobject-draws-composition' 'SelectedRootCompleteDrawsSharedGraph' @('gameobject-draws-composition-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
+        # Reborn: six original client behavior graphs include explicitly captured inherited leaves and real Core sound names.
+        Add-BatchCase 'ep1-client-behaviors-native' 'CompleteSelectedConscriptClientNativeGraphs' @('ep1-client-behaviors-native-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
     }
     # Reborn: destruction/tech/LUA native dispatch and complete selected graphs share one gate; captured FX and callback limits remain explicit.
     Add-BatchCase 'ep1-allied-modules' 'BoundedCapturedIndexModuleNativePayload' @('ep1-allied-modules-self-test',$StaticManifest)

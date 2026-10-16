@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 16, 2026
 
+All [six complete Conscript client-behavior native graphs](docs/RA3EP1_CONSCRIPT_CLIENT_BEHAVIORS_NATIVE.md)
+now match stock on **one Core table / 48 strong sound occurrences**. This exposed
+KW/EP1 voice/sound enum drift; separate EP1 records preserve the old KW route.
+All 67 voice/39 sound values, five authored variants and 43 refusal controls pass.
+The two inherited source leaves are explicitly retained, not skipped. Generated
+client metadata, root/client integration and audio playback remain unproven.
+Final Focused regression with explicit official XML root: **63/63** in
+**210.082 seconds**, client group 7.387 seconds, eight runtime hashes stable.
+No Full run, game launch, install mutation or alpha admission expansion.
+
 The [selected root + complete Conscript Draws graph](docs/RA3EP1_GAMEOBJECT_DRAWS_COMPOSITION.md)
 now reaches **102 partial root fields / 189 shared Core imports** on one Tracker.
 All four complete Draws retain their 58,608-byte independent stock metadata oracle

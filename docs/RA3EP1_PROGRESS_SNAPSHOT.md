@@ -121,6 +121,13 @@ now joins it with armor/movement/Body/three behaviors/common AI/geometry/vision
 on one table and Tracker: up to 102 partial root fields/189 imports, 13 source
 cases, cross-container identity and forward-link controls. This is not the
 original whole Conscript: remaining root/behavior/client owners are next.
+The [six complete client native graphs](RA3EP1_CONSCRIPT_CLIENT_BEHAVIORS_NATIVE.md)
+now pass one Core table/48 strong sound slots, 380 typed visits and 296 stock
+metadata/native bindings. This exposed KW/EP1 voice/sound enum drift, repaired
+through separate EP1 records without changing the original enums. All 67 voice/
+39 sound categories, five authored variants and 43 refusals pass. The two known
+inherited leaves are explicitly captured; no general inheritance is claimed.
+Generated client metadata and root/client composition remain next gates.
 The actual XInclude/XPointer path, all client containers and remaining behavior/
 root graphs still need integration; reading the two complete leaves separately
 does not prove the include processor or whole-unit publication.
@@ -129,11 +136,11 @@ is preferred to stopping after each scalar or enabling a reduced alternative.
 The legacy Draw dispatcher's silent unknown-type fallthrough is now replaced by
 an explicit error with a refusal test; supported dispatch cases remain unchanged.
 
-Latest checkpoint: [selected root + complete Draws](RA3EP1_GAMEOBJECT_DRAWS_COMPOSITION.md)
-passes Focused **62/62** with explicit official XML root in **238.945s**,
-root/Draws group **19.762s**, eight runtime hashes stable. The preceding shared
-Draws checkpoint passed 61/61 in 225.340s; component metadata passed 60/60 in
-265.734s. Both full scripted source graphs remain intact.
+Latest checkpoint: [six complete client native graphs](RA3EP1_CONSCRIPT_CLIENT_BEHAVIORS_NATIVE.md)
+passes Focused **63/63** with explicit official XML root in **210.082s**,
+client group **7.387s**, eight runtime hashes stable. The preceding root/Draws
+checkpoint passed 62/62 in 238.945s; shared Draws passed 61/61 in 225.340s.
+Both full scripted source graphs and all six client source leaves remain intact.
 Whole-unit publication remains open. No Full run or new gameplay is implied;
 full-product maturity remains about **48%**, not a type/field pass ratio.
 The preceding [both complete Conscript tracers](RA3EP1_CONSCRIPT_TRACER_DRAWS.md)
