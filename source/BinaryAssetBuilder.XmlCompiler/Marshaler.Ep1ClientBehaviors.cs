@@ -32,10 +32,10 @@ public static partial class Marshaler
         }
     }
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: the reviewed twelve-byte voice entry uses EP1 enum ordinals and the unchanged optional Sound/Eva pointer layout. */
+    /** Reborn: the reviewed twelve-byte voice entry uses EP1 enum ordinals; populated EvaEvent is refused until its strong-reference ABI replaces the legacy string-pointer route. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node,Ep1AudioVoiceEntry* objT,Tracker state)
-    {if(node==null)return;Marshal(node.GetAttributeValue(nameof(Ep1AudioVoiceEntry.AudioType),null),&objT->AudioType,state);Marshal(node,(SoundOrEvaEvent*)objT,state);}
+    {if(node==null)return;if(!string.IsNullOrEmpty(node.GetAttributeValue("EvaEvent",null)?.GetText()))throw new InvalidDataException("Selected EP1 populated EvaEvent ABI is not reviewed.");Marshal(node.GetAttributeValue(nameof(Ep1AudioVoiceEntry.AudioType),null),&objT->AudioType,state);Marshal(node,(SoundOrEvaEvent*)objT,state);}
     //-------------------------------------------------------------------------------------------------
     /** Reborn: the reviewed eight-byte sound entry uses EP1 sound ordinals without changing its strong-reference occurrence representation. */
     //-------------------------------------------------------------------------------------------------

@@ -2,6 +2,13 @@
 
 ## Outcome
 
+Follow-up: [generated recursive client metadata](RA3EP1_CONSCRIPT_CLIENT_BEHAVIORS_TOKENS.md)
+now matches the complete independent 7,404-byte stock prefix. That gate also
+adds an explicit populated-EvaEvent refusal to the EP1 marshaler: the legacy
+string-pointer declaration is not proof of the official strong-reference ABI.
+The previous native-only counts/evidence below remain historical; the current
+native source/dispatch refusal count is eight instead of seven.
+
 All **six complete original client-behavior leaves / three families** now match
 stock native graphs through one actual Core reference table and one explicit
 EP1 Tracker allocation. The source contains four direct leaves; the other two

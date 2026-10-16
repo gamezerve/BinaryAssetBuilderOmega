@@ -59,6 +59,9 @@ internal static class Program
             if(args.Length==4 && args[0]=="gameobject-draws-composition-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true);return 0;}
             // Reborn: all six original client behavior leaves share actual Core audio names and independent complete native stock comparison.
+            // Reborn: generated client tables have a separate offline gate from the independently preserved native-only proof.
+            if(args.Length==4 && args[0]=="ep1-client-behaviors-token-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1ClientBehaviorsNativeSmokeTest.Run(args[1],args[2],args[3],includeTokens:true);return 0;}
             if(args.Length==4 && args[0]=="ep1-client-behaviors-native-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1ClientBehaviorsNativeSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==3 && args[0]=="gameobject-duration-self-test")
@@ -1475,6 +1478,7 @@ internal static class Program
         Console.WriteLine("  gameobject-draws-composition-self-test <official-xml-root> <static.manifest> <global.manifest>");
         // Reborn: native client proof is separate from generated metadata, inheritance execution and playback/publication.
         Console.WriteLine("  ep1-client-behaviors-native-self-test <official-xml-root> <static.manifest> <global.manifest>");
+        Console.WriteLine("  ep1-client-behaviors-token-self-test <official-xml-root> <static.manifest> <global.manifest>");
         Console.WriteLine("  gameobject-root-layout-self-test <static.manifest>");
         // Reborn: advertise named-reference diagnostic commands without implying a general GameObject compiler.
         Console.WriteLine("  gameobject-armor-source-probe <GameObject.xml> <static.manifest> [authored-armor.manifest]");

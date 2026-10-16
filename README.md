@@ -8,12 +8,27 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 16, 2026
 
+The [generated Conscript client metadata](docs/RA3EP1_CONSCRIPT_CLIENT_BEHAVIORS_TOKENS.md)
+now matches the complete **7,404-byte independent stock prefix** for all six
+original client leaves. The native-only-input writer checks allocation/auxiliary
+ownership and preserves the one Core table's 48 sound occurrences. Nine authored
+token variants cover IDs, range caps, frame lists, order and subsets; 20 malformed/
+unreviewed token controls refuse. Populated EvaEvent is blocked in the EP1
+marshaler rather than passed through the legacy string-pointer ABI. AudioArraySound
+and object-specific/named voice children remain outside populated token admission.
+Root/client composition, whole-object packaging and new-ID gameplay remain open;
+this is not an alpha capability expansion. Final Focused regression with explicit
+official XML root: **64/64** in **210.929 seconds**, client token group 7.016
+seconds, eight runtime hashes stable. No Full run, game or installation change.
+
 All [six complete Conscript client-behavior native graphs](docs/RA3EP1_CONSCRIPT_CLIENT_BEHAVIORS_NATIVE.md)
 now match stock on **one Core table / 48 strong sound occurrences**. This exposed
 KW/EP1 voice/sound enum drift; separate EP1 records preserve the old KW route.
 All 67 voice/39 sound values, five authored variants and 43 refusal controls pass.
 The two inherited source leaves are explicitly retained, not skipped. Generated
-client metadata, root/client integration and audio playback remain unproven.
+client metadata was unproven at this native-only milestone; the subsequent
+metadata gate above now passes. Root/client integration and audio playback
+remain unproven.
 Final Focused regression with explicit official XML root: **63/63** in
 **210.082 seconds**, client group 7.387 seconds, eight runtime hashes stable.
 No Full run, game launch, install mutation or alpha admission expansion.

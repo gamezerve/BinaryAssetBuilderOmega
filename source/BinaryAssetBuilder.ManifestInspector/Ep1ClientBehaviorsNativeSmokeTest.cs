@@ -21,7 +21,7 @@ internal static class Ep1ClientBehaviorsNativeSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: one official-type envelope and Core table cover all three client families, complete native stock equality, edits and fail-closed corruption/dispatch controls. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string sourceRoot,string manifest,string globalManifest)
+    internal static void Run(string sourceRoot,string manifest,string globalManifest,bool includeTokens=false)
     {
         var saved=Settings.Current;
         try
@@ -57,28 +57,64 @@ internal static class Ep1ClientBehaviorsNativeSmokeTest
             for(int i=0;i<8;i++)coordinateMap.Add(topology.CountAt+i,i);for(int i=0;i<24;i++)coordinateMap.Add(topology.Items+i,8+i);
             var rootTokens=GameObjectStockReview.Tokens(stock.Bytes,0);int table=rootTokens[FastHash.GetHashCode("ClientBehaviors")].Offset,end=rootTokens[FastHash.GetHashCode("Geometry")].Offset;if(table+84!=topology.Modules[0].Wrapper || end<=topology.Modules[^1].Wrapper || (end-table)%12!=0)throw new InvalidDataException("Client stock metadata bounds differ.");int bindings=0;
             for(int at=table+8;at<end;at+=12){uint target=Word(stock.Bytes,at);if(target==0 || target>=table && target<end)continue;if(!coordinateMap.ContainsKey((int)target))throw new InvalidDataException("Client stock metadata target escapes independently compared native graph.");bindings++;}
-            int edits=Authored(source,schemas,catalog),sourceFailures=0;string firstSound=source.GetElementsByTagName("ModelConditionSound",SchemaSet.XmlNamespace)[0]!.Attributes!["Sound"]!.Value;
+            // Reborn: optional generated-table proof uses stock only as an independent expected result after native ownership has already been established.
+            if(includeTokens)TokenProof(native,stock.Bytes,table,end,coordinateMap);
+            int edits=Authored(source,schemas,catalog,includeTokens),sourceFailures=0;string firstSound=source.GetElementsByTagName("ModelConditionSound",SchemaSet.XmlNamespace)[0]!.Attributes!["Sound"]!.Value;
             EnumControls(source,schemas,catalog,firstSound);edits++;
             foreach(string bad in new[]{source.OuterXml.Replace("Sound=\""+firstSound+"\"","Sound=\"RebornMissingClientAudio\"",StringComparison.Ordinal),source.OuterXml.Replace("Frame=\"3\"","Frame=\"\"",StringComparison.Ordinal),source.OuterXml.Replace("AudioType=\"voiceAttack\"","AudioType=\"RebornInvalidVoice\"",StringComparison.Ordinal),source.OuterXml.Replace("id=\"Frozen\"","id=\"moduletag_shockdeathoverland\"",StringComparison.Ordinal)}){Refuse(()=>Build(bad,schemas,catalog));sourceFailures++;}
             Refuse(()=>Compile(pair.Instance.XmlNode,true));sourceFailures++;
             Refuse(()=>Compile(pair.Instance.XmlNode,true,legacy:true));sourceFailures++;
+            // Reborn: exercise the EP1 marshaler directly so Core catalog validation cannot hide a populated EvaEvent ABI refusal.
+            var unreviewedEva=Xml(pair.Instance.XmlNode.OuterXml);((XmlElement)unreviewedEva.GetElementsByTagName("AudioEntry",SchemaSet.XmlNamespace)[0]!).SetAttribute("EvaEvent","RebornUnsupportedEva");Refuse(()=>Compile(unreviewedEva.DocumentElement!));sourceFailures++;
             var ambiguous=Xml(source.OuterXml);var audio=catalog.First(a=>a.Name==ambiguous.GetElementsByTagName("ModelConditionSound",SchemaSet.XmlNamespace)[0]!.Attributes!["Sound"]!.Value);Refuse(()=>Build(source.OuterXml,schemas,catalog.Concat(new[]{audio}).ToArray()));sourceFailures++;
             for(int i=0;i<files.Length;i++)if(!SHA256.HashData(captures[i]).SequenceEqual(SHA256.HashData(SdkEnvironmentPreflight.Read(files[i],1048576))))throw new InvalidDataException("Official client source changed during verification.");
-            Console.WriteLine($"EP1 complete client native graphs: PASS (six leaves/three families, two explicit BaseInfantry and four direct source leaves, one Core table/{imports} strong slots, {records} typed visits/{strings} strings, {resolved} concrete sound names, {bindings} stock metadata/native bindings in {end-table} bytes, {edits} authored variants, {failures} native/{sourceFailures} source/dispatch refusals; no generated client metadata, general inheritance, root-container integration, package, audio playback or gameplay claim).");
+            Console.WriteLine($"EP1 complete client native graphs: PASS (six leaves/three families, two explicit BaseInfantry and four direct source leaves, one Core table/{imports} strong slots, {records} typed visits/{strings} strings, {resolved} concrete sound names, {bindings} stock metadata/native bindings in {end-table} bytes, {edits} authored variants, {failures} native/{sourceFailures} source/dispatch refusals; generated metadata {(includeTokens?"verified":"not requested")}; no general inheritance, root-container integration, package, audio playback or gameplay claim).");
         }
         finally{Settings.Current=saved;}
     }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: authored IDs, optional range-cap pointers and ordered frame lists are literal edits to all six complete source leaves, not native byte patches. */
     //-------------------------------------------------------------------------------------------------
-    private static int Authored(XmlDocument source,SchemaSet schemas,ManifestAsset[] catalog)
+    private static int Authored(XmlDocument source,SchemaSet schemas,ManifestAsset[] catalog,bool includeTokens)
     {
         int cases=0;foreach(bool cap in new[]{false,true})foreach(string frames in new[]{"1","1 7 23"})
         {
             var edited=Xml(source.OuterXml);int index=0;foreach(XmlElement leaf in edited.DocumentElement!.FirstChild!.ChildNodes.OfType<XmlElement>())leaf.SetAttribute("id","RebornClient"+index++);var animation=(XmlElement)edited.GetElementsByTagName("AnimationSoundClientBehavior",SchemaSet.XmlNamespace)[0]!;if(cap)animation.SetAttribute("MaxUpdateRangeCap","17.5");var sound=(XmlElement)animation.GetElementsByTagName("Sound",SchemaSet.XmlNamespace)[0]!;sound.SetAttribute("Frame",frames);
-            var pair=Build(edited.OuterXml,schemas,catalog);CheckOccurrences(pair.Native,pair.Instance);for(int i=0;i<6;i++){int at=(int)Word(pair.Native.InstanceBuffer,8+i*4);if(Word(pair.Native.InstanceBuffer,at+4)!=FastHash.GetHashCode(("RebornClient"+i).ToLowerInvariant()))throw new InvalidDataException("Authored client module ID not applied.");}
+            var pair=Build(edited.OuterXml,schemas,catalog);CheckOccurrences(pair.Native,pair.Instance);if(includeTokens)CheckTokenRoundTrip(pair.Native);for(int i=0;i<6;i++){int at=(int)Word(pair.Native.InstanceBuffer,8+i*4);if(Word(pair.Native.InstanceBuffer,at+4)!=FastHash.GetHashCode(("RebornClient"+i).ToLowerInvariant()))throw new InvalidDataException("Authored client module ID not applied.");}
             var native=Leaf(pair.Native,4);uint pointer=Word(native.InstanceBuffer,8);if(cap?pointer==0 || Word(native.InstanceBuffer,(int)pointer)!=0x418C0000:pointer!=0)throw new InvalidDataException("Client range-cap presence/value differs.");int items=(int)Word(native.InstanceBuffer,16),frameCount=(int)Word(native.InstanceBuffer,items+16),frameItems=(int)Word(native.InstanceBuffer,items+20);int[] expected=frames.Split(' ').Select(int.Parse).ToArray();if(frameCount!=expected.Length || !Enumerable.Range(0,frameCount).Select(i=>unchecked((int)Word(native.InstanceBuffer,frameItems+i*4))).SequenceEqual(expected))throw new InvalidDataException("Client ordered frame values differ.");cases++;
-        }return cases;
+        }
+        // Reborn: singleton, reversed and subset containers prove the writer does not depend on Conscript's six fixed module positions.
+        if(includeTokens)foreach(int[] selection in new[]{new[]{0},new[]{1},new[]{4},new[]{5,4,3,2,1,0},new[]{4,1,0}}){var edited=Xml(source.OuterXml);var container=edited.DocumentElement!.FirstChild!;var original=container.ChildNodes.OfType<XmlElement>().Select(e=>(XmlElement)e.CloneNode(true)).ToArray();container.RemoveAll();foreach(int i in selection)container.AppendChild(original[i]);var pair=Build(edited.OuterXml,schemas,catalog);CheckOccurrences(pair.Native,pair.Instance);CheckTokenRoundTrip(pair.Native);cases++;}return cases;
+    }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: compare every generated stock-prefix byte, retain native/auxiliary data exactly and reject malformed or explicitly unreviewed graph variants. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TokenProof(Chunk native,byte[] stock,int table,int end,Dictionary<int,int> coordinates)
+    {
+        int prefix=end-table;var expected=stock.AsSpan(table,prefix).ToArray();for(int at=8;at<prefix;at+=12){uint target=Word(expected,at);if(target==0)continue;Put(expected,at,target>=table && target<end?target-(uint)table:checked((uint)(prefix+coordinates[(int)target])));}
+        var tokens=CheckTokenRoundTrip(native);if(tokens.InstanceBuffer.Length-native.InstanceBuffer.Length!=prefix || !tokens.InstanceBuffer.AsSpan(0,prefix).SequenceEqual(expected)){int mismatch=Enumerable.Range(0,Math.Min(prefix,tokens.InstanceBuffer.Length)).FirstOrDefault(i=>tokens.InstanceBuffer[i]!=expected[i]);throw new InvalidDataException("Generated client stock metadata differs at "+mismatch+"; prefix="+(tokens.InstanceBuffer.Length-native.InstanceBuffer.Length));}
+        int failures=0;
+        foreach(bool relo in new[]{false,true}){var bad=Clone(native);if(relo)bad.RelocationBuffer=Array.Empty<byte>();else bad.ImportsBuffer=Array.Empty<byte>();Refuse(()=>BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize(bad));failures++;}
+        int loopItems=(int)Word(native.InstanceBuffer,44);
+        foreach(var mutation in new (int At,uint Value)[]{(0,65),(4,12),(8,0),(32,0xDEADBEEF),(36,0),(12,32),(loopItems+60,0xFFFFFFFF)}){var bad=Clone(native);Put(bad.InstanceBuffer,mutation.At,mutation.Value);Refuse(()=>BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize(bad));failures++;}
+        // Reborn: optional EvaEvent uses a different reviewed metadata shape than the legacy string marshaler, and populated sound arrays have no independent metadata proof yet.
+        int selector=(int)Word(native.InstanceBuffer,12),over=(int)Word(native.InstanceBuffer,selector+12),voices=(int)Word(native.InstanceBuffer,over+124),entries=(int)Word(native.InstanceBuffer,voices+4);
+        foreach(int at in new[]{entries+4,voices+8,voices+16,over+128}){var bad=Clone(native);Put(bad.InstanceBuffer,at,1);Refuse(()=>BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize(bad));failures++;}
+        // Reborn: cross-leaf aliases, duplicate identities, invalid ordinals and extra storage cannot be admitted by a merely byte-preserving round trip.
+        foreach(var mutation in new (int At,uint Value)[]{(selector+4,Word(native.InstanceBuffer,36)),(entries+8,67),(selector+12,48),(loopItems,4),(over+124,(uint)over)}){var bad=Clone(native);Put(bad.InstanceBuffer,mutation.At,mutation.Value);Refuse(()=>BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize(bad));failures++;}
+        var appended=Clone(native);appended.InstanceBuffer=appended.InstanceBuffer.Concat(new byte[4]).ToArray();Refuse(()=>BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize(appended));failures++;
+        var duplicate=Clone(native);duplicate.RelocationBuffer=Pack(Slots(native.RelocationBuffer).Concat(new[]{4u}));Refuse(()=>BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize(duplicate));failures++;
+        var empty=new Chunk{InstanceBuffer=new byte[8],RelocationBuffer=Array.Empty<byte>(),ImportsBuffer=Array.Empty<byte>()};if(CheckTokenRoundTrip(empty).InstanceBuffer.Length!=20)throw new InvalidDataException("Client empty token list differs.");
+        Console.WriteLine($"EP1 generated client metadata: PASS ({prefix} independent stock-prefix bytes; six complete leaves; unchanged native/RELO/IMP round trip; {failures} malformed/unreviewed refusals; empty container; no root/package/gameplay claim).");
+    }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: detach only the newly generated metadata and reverse its single native shift; all original bytes, slot order and reference values must survive exactly. */
+    //-------------------------------------------------------------------------------------------------
+    private static Chunk CheckTokenRoundTrip(Chunk native)
+    {
+        var tokens=BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize(native);var repeat=BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize(native);int prefix=tokens.InstanceBuffer.Length-native.InstanceBuffer.Length;if(prefix<12 || prefix%12!=0 || !tokens.InstanceBuffer.SequenceEqual(repeat.InstanceBuffer) || !tokens.RelocationBuffer.SequenceEqual(repeat.RelocationBuffer) || !tokens.ImportsBuffer.SequenceEqual(repeat.ImportsBuffer))throw new InvalidDataException("Client token repeat/framing differs.");
+        var detached=tokens.InstanceBuffer.AsSpan(prefix).ToArray();foreach(uint slot in Slots(native.RelocationBuffer))Put(detached,(int)slot,Word(detached,(int)slot)-(uint)prefix);
+        if(!detached.SequenceEqual(native.InstanceBuffer) || !Slots(tokens.RelocationBuffer).SequenceEqual(Slots(native.RelocationBuffer).Select(s=>s+(uint)prefix)) || !Slots(tokens.ImportsBuffer).SequenceEqual(Slots(native.ImportsBuffer).Select(s=>s+(uint)prefix)))throw new InvalidDataException("Client token native/auxiliary round trip differs.");return tokens;
     }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: one authored selector exercises every official EP1 voice/sound ordinal and optional priority while literal legacy anchors prove the KW enums remain unchanged. */
