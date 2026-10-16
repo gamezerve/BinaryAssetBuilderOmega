@@ -20,7 +20,7 @@ internal static class Ep1ScriptedDrawNativeSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: retain every source child/script and compare complete typed native graphs, exact auxiliary ownership and semantic stock import identities. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string sourceRoot, string manifest, string globalManifest, bool includeTokens = false, bool includeContainer = false, bool includeRoot = false, bool includeClients = false)
+    internal static void Run(string sourceRoot, string manifest, string globalManifest, bool includeTokens = false, bool includeContainer = false, bool includeRoot = false, bool includeClients = false,bool includeAllModules=false)
     {
         var saved = Settings.Current;
         try
@@ -129,7 +129,7 @@ internal static class Ep1ScriptedDrawNativeSmokeTest
             }
             Console.WriteLine($"EP1 complete scripted Draw native graphs: PASS (two stock graphs, 10 model/84 animation states, {totalRecords} visited native records/{totalStrings} string allocations/{totalImports} typed import slots, {particleBindings} complete particle token/native bindings, 288 authored particle/3 flag-default controls and existing combined record fixture, 22 detached/3 source-dependency refusals; one explicitly bounded Script CRLF/LF equivalence; generated metadata checked={includeTokens}; no complete GameObject publication, XInclude execution or LUA execution claim).");
             // Reborn: compile both full scripted leaves and both source tracers together after the independent component gates.
-            if (includeContainer || includeRoot) Ep1DrawsCompositionSmokeTest.Run(schemas, sourceRoot, manifest, catalog, scriptedSources.ToArray(),includeRoot,includeClients);
+            if (includeContainer || includeRoot) Ep1DrawsCompositionSmokeTest.Run(schemas, sourceRoot, manifest, catalog, scriptedSources.ToArray(),includeRoot,includeClients,includeAllModules);
         }
         finally { Settings.Current = saved; }
     }

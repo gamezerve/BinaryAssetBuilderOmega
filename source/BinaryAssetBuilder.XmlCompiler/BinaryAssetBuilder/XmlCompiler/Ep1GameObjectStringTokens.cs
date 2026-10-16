@@ -20,14 +20,19 @@ public static class Ep1GameObjectStringTokens
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate dynamic behavior ownership, bounded ASCII string storage and exact root relocation membership before splitting the module graph. */
     //-------------------------------------------------------------------------------------------------
-    public static Layout Inspect(byte[] b, uint[] relos, uint[] imports)
+    public static Layout Inspect(byte[] b,uint[] relos,uint[] imports)=>Inspect(b,relos,imports,false);
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: keep the original three-argument entry point and its narrow profile; the larger family set needs explicit admission. */
+    //-------------------------------------------------------------------------------------------------
+    public static Layout Inspect(byte[] b, uint[] relos, uint[] imports,bool reviewedBehaviors)
     {
         uint list = Word(476);
         // Reborn: inline enum children must not retain out-of-range words that a pointer-shaped legacy model could previously generate.
         if(Word(436)>3 || Word(440)>15)throw new InvalidDataException("Unsupported inline Buildable/ThingClass value.");
         if (list < 600 || list % 4 != 0 || list > b.Length - 8)throw new InvalidDataException("Projection requires a bounded behavior envelope after root allocations.");
         uint count=Word((int)list);
-        if(count<1 || count>3 || list>b.Length-8-count*4 || Word((int)list+4)!=list+8)throw new InvalidDataException("Projection admits one to three canonical behavior pointers.");
+        // Reborn: only the explicit all-reviewed-family composer raises the existing three-module envelope bound.
+        if(count<1 || count>(reviewedBehaviors?64:3) || list>b.Length-8-count*4 || Word((int)list+4)!=list+8)throw new InvalidDataException("Projection behavior count/canonical pointers differ.");
         var modules=new int[count];var owners=new List<uint>{476,list+4};
         for(int i=0;i<count;i++)
         {

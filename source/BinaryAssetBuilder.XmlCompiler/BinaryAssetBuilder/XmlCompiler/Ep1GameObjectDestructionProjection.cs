@@ -14,7 +14,11 @@ public static class Ep1GameObjectDestructionProjection
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compose reviewed root values/Behaviors and a generated destruction fragment while preserving the original native graph and reference indices. */
     //-------------------------------------------------------------------------------------------------
-    public static Chunk Compose(Chunk native)
+    public static Chunk Compose(Chunk native)=>Compose(native,null);
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: preserve the original public composer and default allowlist; reviewed behavior schemas explicitly opt into the wider container route. */
+    //-------------------------------------------------------------------------------------------------
+    public static Chunk Compose(Chunk native,System.Xml.Schema.XmlSchemaSet behaviorSchemas)
     {
         if (native == null || native.InstanceBuffer == null || native.InstanceBuffer.Length < 620 || native.InstanceBuffer.Length > 1048576)
             throw new InvalidDataException("GameObject destruction projection requires bounded native dispatch output.");
@@ -23,10 +27,13 @@ public static class Ep1GameObjectDestructionProjection
         // Reborn: range partitioning must not hide auxiliary slots outside every native owner.
         if(relos.Any(s=>s>b.Length-4) || imports.Any(s=>s>b.Length-4))throw new InvalidDataException("Projection auxiliary slot escapes native buffer.");
         // Reborn: explicit root-string allocations may move the behavior list and module; decode and validate ownership before extracting the tail.
-        var layout = Ep1GameObjectStringTokens.Inspect(b, relos, imports);
+        var layout = Ep1GameObjectStringTokens.Inspect(b, relos, imports,reviewedBehaviors:behaviorSchemas!=null);
+        // Reborn: the explicit broader route reuses the independently qualified complete container writer, not a new hand-built collection of native leaves.
+        var allBehaviors=behaviorSchemas==null?null:Ep1BehaviorMetadataTokenizer.TokenizeContainer(Extract(layout.List,layout.Body!=0?layout.Body:layout.Geometry!=0?layout.Geometry:b.Length),behaviorSchemas);
+        int allBehaviorPrefix=allBehaviors==null?0:allBehaviors.InstanceBuffer.Length-(layout.Body!=0?layout.Body:layout.Geometry!=0?layout.Geometry:b.Length)+layout.List;
         // Reborn: selected behavior modules own ordered disjoint tails; explicit class dispatch has no legacy or unknown-module fallback.
         var fragments=new System.Collections.Generic.List<(Chunk Data,int Prefix,int Native)>();
-        for(int i=0;i<layout.Modules.Count;i++)
+        for(int i=0;allBehaviors==null && i<layout.Modules.Count;i++)
         {
             int start=layout.Modules[i],end=i+1<layout.Modules.Count?layout.Modules[i+1]:layout.Body!=0?layout.Body:layout.Geometry!=0?layout.Geometry:b.Length;
             var module=Extract(start,end);
@@ -45,7 +52,7 @@ public static class Ep1GameObjectDestructionProjection
         // Reborn: root token count is descriptor-driven; nested fragment coordinates must never retain the old two-field prefix size.
         int armorFields=(layout.ArmorCount==0?0:1)+(layout.LocomotorCount==0?0:1)+(geometry==null?0:1)+layout.PointerRoots.Count+(layout.Ai.Modules.Count==0?0:1)+(layout.Draws.Start==0?0:1)+layout.Clients.Count(c=>c.Start!=0);
         int container = checked((Ep1GameObjectRootValueTokens.AllFields.Count + (body == null ? 2 : 3) + armorFields) * 12), fragmentStart = checked(container + 12 + fragments.Count*12);
-        int bodyStart=checked(fragmentStart+fragments.Sum(f=>f.Prefix));
+        int bodyStart=allBehaviors==null?checked(fragmentStart+fragments.Sum(f=>f.Prefix)):checked(container+allBehaviorPrefix);
         int bodyPrefix = body == null ? 0 : checked(324 + (int)Word(body.InstanceBuffer,64) * 60),armorStart=checked(bodyStart+bodyPrefix);
         int armorPrefix=layout.ArmorCount==0?0:checked(12+layout.ArmorCount*60),locomotorStart=checked(armorStart+armorPrefix);
         // Reborn: movement count/marker/member tables follow the other reviewed fragments without altering absent-list output.
@@ -85,7 +92,9 @@ public static class Ep1GameObjectDestructionProjection
         // Reborn: reviewed client root tags bind generated count tables, not native pointer slots or sibling metadata origins.
         int clientNext=clientStart;
         foreach(var client in layout.Clients.Where(c=>c.Start!=0)){string name=client.Slot==492?"ClientUpdates":"ClientBehaviors";Token(pointerRow++*12,FastHash.GetHashCode(name),FastHash.GetHashCode(client.Slot==492?"ClientUpdateModules":"ClientBehaviorModules"),(uint)clientNext);clientNext=checked(clientNext+client.Prefix);}
-        Token(container, 0x6C827073u, 0x5D448FD8u, (uint)(prefix + layout.List));
+        // Reborn: joining the complete behavior metadata changes no native origin or common Core occurrence values.
+        if(allBehaviors!=null)Join(allBehaviors,allBehaviorPrefix,container,layout.List);
+        else Token(container, 0x6C827073u, 0x5D448FD8u, (uint)(prefix + layout.List));
         int nextFragment=fragmentStart;
         for(int i=0;i<fragments.Count;i++)
         {

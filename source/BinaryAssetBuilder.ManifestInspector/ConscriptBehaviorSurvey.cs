@@ -90,7 +90,7 @@ internal static class ConscriptBehaviorSurvey
     //-------------------------------------------------------------------------------------------------
     /** Reborn: schema-derived strong references resolve to one concrete catalog target before production Core normalization; weak IDs and numeric compiler indices are not authored. */
     //-------------------------------------------------------------------------------------------------
-    private static void ResolveStrong(XmlDocument document,SchemaSet schemas,ManifestAsset[] catalog)
+    internal static void ResolveStrong(XmlDocument document,SchemaSet schemas,ManifestAsset[] catalog)
     {
         foreach(XmlNode node in document.SelectNodes("//* | //@*")!)
         {
@@ -178,7 +178,7 @@ internal static class ConscriptBehaviorSurvey
     //-------------------------------------------------------------------------------------------------
     /** Reborn: group only the five reviewed independent SlowDeath child families, retaining within-family order and every member; substitute only the single captured external scaler definition. */
     //-------------------------------------------------------------------------------------------------
-    private static void Prepare(XmlElement leaf,string scaler)
+    internal static void Prepare(XmlElement leaf,string scaler)
     {
         if(leaf.LocalName=="SecondaryDamageTracker" && leaf.GetAttribute("MaxDamageClampScaler")=="=$MAX_SECONDARY_DAMAGE_SCALER")leaf.SetAttribute("MaxDamageClampScaler",scaler);
         if(leaf.LocalName!="SlowDeath")return;string[] families={"FX","OCL","Weapon","Sound","DieMuxData"};var children=leaf.ChildNodes.OfType<XmlElement>().ToArray();if(children.Any(e=>e.NamespaceURI!=SchemaSet.XmlNamespace || !families.Contains(e.LocalName)))throw new InvalidDataException("Unreviewed SlowDeath child family.");var inventory=families.Select(f=>children.Where(e=>e.LocalName==f).Select(e=>e.OuterXml).ToArray()).ToArray();foreach(var child in children.OrderBy(e=>Array.IndexOf(families,e.LocalName)))leaf.AppendChild(child);for(int i=0;i<families.Length;i++)if(!leaf.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName==families[i]).Select(e=>e.OuterXml).SequenceEqual(inventory[i]))throw new InvalidDataException("SlowDeath source preparation lost members/order.");

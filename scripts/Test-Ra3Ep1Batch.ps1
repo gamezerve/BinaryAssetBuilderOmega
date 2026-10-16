@@ -101,6 +101,8 @@ if($SchedulerControl){
         Add-BatchCase 'conscript-behavior-tokens' 'All36OriginalConscriptBehaviorMetadataGraphs' @('conscript-behavior-token-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
         # Reborn: independently verify one shared metadata/native container with all original behavior leaves and common Core indices.
         Add-BatchCase 'conscript-behavior-composition' 'Shared36OriginalConscriptBehaviorMetadataContainer' @('conscript-behavior-composition-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
+        # Reborn: all original module owners must independently match stock on one selected root/Core/Tracker graph; full-root publication remains separate.
+        Add-BatchCase 'gameobject-all-modules' 'All49OriginalConscriptModulesOnSelectedRoot' @('gameobject-all-modules-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
     }
     # Reborn: destruction/tech/LUA native dispatch and complete selected graphs share one gate; captured FX and callback limits remain explicit.
     Add-BatchCase 'ep1-allied-modules' 'BoundedCapturedIndexModuleNativePayload' @('ep1-allied-modules-self-test',$StaticManifest)

@@ -58,6 +58,10 @@ internal static class Program
             // Reborn: the complete selected Draws container joins root/Body/behaviors/common AI on one Core table without admitting whole GameObjects.
             // Reborn: both complete client containers join root/Draws/Body/selected behaviors/common AI on one reference table and Tracker.
             // Reborn: the full 36-leaf survey reports blocked work explicitly instead of treating CLR model presence as native support.
+            // Reborn: all original 49 module graphs share one selected partial root without claiming complete root or playable publication.
+            if(args.Length==4 && args[0]=="gameobject-all-modules-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true);return 0;}
+
             if(args.Length==4 && args[0]=="conscript-behavior-survey")
             {CompilerSmokeTest.InitializeHashProvider();ConscriptBehaviorSurvey.Run(args[1],args[2],args[3]);return 0;}
             // Reborn: generated behavior metadata discovery reports blocked rows without claiming successful admission of all families.
@@ -1504,6 +1508,8 @@ internal static class Program
         Console.WriteLine("  conscript-behavior-token-self-test <official-xml-root> <static.manifest> <global.manifest>");
         // Reborn: composed metadata is a separate gate from individually correct fragments.
         Console.WriteLine("  conscript-behavior-composition-self-test <official-xml-root> <static.manifest> <global.manifest>");
+        // Reborn: explicit whole-module integration remains separate from general full-object support.
+        Console.WriteLine("  gameobject-all-modules-self-test <official-xml-root> <static.manifest> <global.manifest>");
         // Reborn: native client proof is separate from generated metadata, inheritance execution and playback/publication.
         Console.WriteLine("  ep1-client-behaviors-native-self-test <official-xml-root> <static.manifest> <global.manifest>");
         Console.WriteLine("  ep1-client-behaviors-token-self-test <official-xml-root> <static.manifest> <global.manifest>");

@@ -97,10 +97,12 @@ internal static class GameObjectBodyProjectionSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: opt into the separate EP1 allocator after existing root/behavior dispatch, on the same Tracker and native Body pointer slot. */
     //-------------------------------------------------------------------------------------------------
-    internal static unsafe Chunk Compile(XmlDocument source,bool selectedBehaviors=false)
+    internal static unsafe Chunk Compile(XmlDocument source,bool selectedBehaviors=false,bool reviewedBehaviors=false)
     {
         // Reborn: the explicit selected path owns a cross-container module scope before its source containers are detached.
-        if(selectedBehaviors)Ep1SelectedModuleIdentity.ValidateSource(source.DocumentElement!);
+        // Reborn: explicit wider behavior compilation cannot fall through the legacy/default object route.
+        if(reviewedBehaviors && !selectedBehaviors)throw new InvalidDataException("Reviewed behaviors require explicit selected root allocation.");
+        if(selectedBehaviors)Ep1SelectedModuleIdentity.ValidateSource(source.DocumentElement!,reviewedBehaviors);
         var d=(XmlDocument)source.CloneNode(true);var bodyContainer=d.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName=="Body" && e.NamespaceURI==SchemaSet.XmlNamespace);var body=bodyContainer.ChildNodes.OfType<XmlElement>().Single();d.DocumentElement.RemoveChild(bodyContainer);
         // Reborn: optional geometry follows Body in official source/native order and must be detached before the root-only allocation pass.
         var geometry=d.DocumentElement.ChildNodes.OfType<XmlElement>().SingleOrDefault(e=>e.LocalName=="Geometry" && e.NamespaceURI==SchemaSet.XmlNamespace);if(geometry!=null)d.DocumentElement.RemoveChild(geometry);
@@ -110,7 +112,7 @@ internal static class GameObjectBodyProjectionSmokeTest
         {
             // Reborn: remove the legacy behavior route entirely before explicit selected allocation; no orphaned old list or second reference table is created.
             d.DocumentElement.RemoveChild(behaviors);
-            foreach(XmlElement child in behaviors.ChildNodes.OfType<XmlElement>())child.SetAttribute("TypeId",child.LocalName switch {"BuildingDestructionBehavior"=>"227975924","WeaponSetUpdate"=>"1125589673","ObjectSMCHelper"=>"2138239554",_=>throw new InvalidDataException("Unsupported selected source module.")});
+            foreach(XmlElement child in behaviors.ChildNodes.OfType<XmlElement>())child.SetAttribute("TypeId",reviewedBehaviors?FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(child.LocalName)).ToString(System.Globalization.CultureInfo.InvariantCulture):child.LocalName switch {"BuildingDestructionBehavior"=>"227975924","WeaponSetUpdate"=>"1125589673","ObjectSMCHelper"=>"2138239554",_=>throw new InvalidDataException("Unsupported selected source module.")});
         }
         else ((XmlElement)behaviors.FirstChild!).SetAttribute("TypeId","227975924");
         body.SetAttribute("TypeId","1510882715");
@@ -130,7 +132,8 @@ internal static class GameObjectBodyProjectionSmokeTest
         Marshaler.Marshal(new Node(d.DocumentElement.CreateNavigator()!,ns),root,tracker);
         // Reborn: explicit EP1 clients precede selected behavior/body tails and share all normalized strong occurrences with the complete root/Draws graph.
         if(clientBehaviors!=null)Marshaler.MarshalEp1ClientBehaviors(new Node(clientBehaviors.CreateNavigator()!,ns),&root->ClientBehaviors,tracker);
-        if(selectedBehaviors)Marshaler.MarshalEp1SelectedBehaviors(new Node(behaviors.CreateNavigator()!,ns),&root->Behaviors,tracker);
+        if(reviewedBehaviors)Marshaler.MarshalEp1ReviewedBehaviors(new Node(behaviors.CreateNavigator()!,ns),&root->Behaviors,tracker);
+        else if(selectedBehaviors)Marshaler.MarshalEp1SelectedBehaviors(new Node(behaviors.CreateNavigator()!,ns),&root->Behaviors,tracker);
         Marshaler.MarshalEp1ActiveBody(new Node(body.CreateNavigator()!,ns),&root->Body,tracker);
         // Reborn: no copied native bytes or second Tracker are appended to compose the geometry tail.
         if(geometry!=null)Marshaler.MarshalEp1Geometry(new Node(geometry.CreateNavigator()!,ns),&root->Geometry,tracker);

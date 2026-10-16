@@ -1,5 +1,10 @@
 # Complete original Conscript Behaviors container
 
+The subsequent [all-49-module selected-root gate](RA3EP1_CONSCRIPT_ALL_MODULES.md)
+now joins this container with the original Body/AI, four complete Draws and seven
+client modules. This document retains its preceding standalone-container evidence;
+the complete original root and asset publication remain open.
+
 ## Outcome — October 17, 2026
 
 All **36 original leaves / 24 concrete families** now share one generated

@@ -8,6 +8,26 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 17, 2026
 
+All [49 original Conscript module graphs](docs/RA3EP1_CONSCRIPT_ALL_MODULES.md)
+now independently match stock on **one selected root / one Core table / 248
+strong occurrences / one Tracker**: 36 Behaviors, four Draws, one original
+AIUpdate, one original ActiveBody, one ClientUpdate and six ClientBehaviors.
+All six container metadata graphs are checked against independent stock tables;
+the complete native tail and RELO/IMP round-trip exactly. Generated BIN/RELO/IMP
+is **126,612 / 1,788 / 996 bytes**, with an **86,580-byte metadata prefix**.
+The root still has **104 selected partial-root fields**: this is not the entire
+original root, a general GameObject stream, a playable new-ID package or an alpha
+admission expansion. **43** ownership/source/detached/default-profile refusals
+pass; the old public signatures and three-behavior default route remain intact.
+The stock root has 126 named fields: 22 names remain outside this selected
+profile, including six populated pointer owners (resource, skirmish AI, voice,
+Eva, shadow and crusher data). Existing selected root values still also need
+original-source qualification. Next: full original root closure, then asset
+stream publication and controlled gameplay. Final Focused regression:
+**69/69** in **237.026 seconds**; all-module group **15.978 seconds**. Eight
+runtime hashes stayed stable; the batch build had zero warnings/errors. No
+Full run, game launch or installation change.
+
 The [complete original Conscript Behaviors container](docs/RA3EP1_CONSCRIPT_BEHAVIORS_COMPOSITION.md)
 now passes independent stock metadata/native comparison with **all 36 leaves /
 24 families / one Core table / 21 strong occurrences / one Tracker**. Its
@@ -18,9 +38,10 @@ every native pointer/auxiliary slot shifts once. **166 shared metadata/input
 refusals** and three authored container scenarios (reverse order, renamed helper,
 mixed eight-leaf subset) pass alongside the existing native/leaf gates. Reordered
 and subset native graphs independently retain their stock semantic references.
-The selected GameObject root composer is not broadened: all-49-module integration,
-the remaining full root/Body/AI owners, complete dependency publication and new-ID
-gameplay remain open. No alpha capability expansion, game or installation change.
+At that milestone the selected root composer was not broadened. The subsequent
+explicit opt-in all-module route above now integrates the original Body/AI and
+all 49 modules; remaining original root owners, complete dependency publication
+and new-ID gameplay remain open. No alpha capability expansion, game or installation change.
 Final Focused regression with explicit official XML root: **68/68** in
 **236.678 seconds**; complete-container group **7.283 seconds**. Eight runtime
 hashes stayed stable; the batch build had zero warnings/errors. No Full run.

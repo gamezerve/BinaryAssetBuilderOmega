@@ -14,7 +14,11 @@ public static class Ep1SelectedModuleIdentity
     //-------------------------------------------------------------------------------------------------
     /** Reborn: collect all selected source module IDs before checking forward/backward AssociatedModule links or allocating native buffers. */
     //-------------------------------------------------------------------------------------------------
-    public static void ValidateSource(XmlElement root)
+    public static void ValidateSource(XmlElement root)=>ValidateSource(root,false);
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: preserve the original public entry point while explicitly opting into the stock-qualified wider behavior family set. */
+    //-------------------------------------------------------------------------------------------------
+    public static void ValidateSource(XmlElement root,bool reviewedBehaviors)
     {
         const string ns="uri:ea.com:eala:asset";
         if(root.LocalName!="GameObject" || root.NamespaceURI!=ns)throw new InvalidDataException("Selected module identity requires an EP1 GameObject root.");
@@ -22,7 +26,9 @@ public static class Ep1SelectedModuleIdentity
         var bodies=root.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="Body" && e.NamespaceURI==ns).ToArray();
         if(behaviors.Length!=1 || bodies.Length!=1)throw new InvalidDataException("Selected module identity requires exactly one Behaviors and Body container.");
         var modules=behaviors[0].ChildNodes.OfType<XmlElement>().ToArray();var body=bodies[0].ChildNodes.OfType<XmlElement>().ToArray();
-        if(modules.Length<1 || modules.Length>3 || body.Length!=1 || body[0].LocalName!="ActiveBody" || body[0].NamespaceURI!=ns || modules.Any(e=>e.NamespaceURI!=ns || e.LocalName is not ("BuildingDestructionBehavior" or "WeaponSetUpdate" or "ObjectSMCHelper")))throw new InvalidDataException("Unreviewed selected identity container/class.");
+        // Reborn: the wider behavior path is explicit; the existing three-class/default profile remains unchanged.
+        if(modules.Length<1 || modules.Length>(reviewedBehaviors?64:3) || body.Length!=1 || body[0].LocalName!="ActiveBody" || body[0].NamespaceURI!=ns || modules.Any(e=>e.NamespaceURI!=ns || (!reviewedBehaviors && e.LocalName is not ("BuildingDestructionBehavior" or "WeaponSetUpdate" or "ObjectSMCHelper"))))throw new InvalidDataException("Unreviewed selected identity container/class.");
+        if(reviewedBehaviors)foreach(var module in modules)Ep1BehaviorMetadataTokenizer.ReviewedWireName(module.LocalName);
         // Reborn: selected common AI shares the same local identity scope; client/other concrete AI families remain unadmitted.
         var aiContainers=root.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="AI" && e.NamespaceURI==ns).ToArray();
         if(aiContainers.Length>1)throw new InvalidDataException("Selected identity permits at most one AI container.");var ai=aiContainers.SelectMany(e=>e.ChildNodes.OfType<XmlElement>()).ToArray();

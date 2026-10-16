@@ -13,9 +13,10 @@ internal static class BehaviorContainerStockProof
     //-------------------------------------------------------------------------------------------------
     /** Reborn: literal stock container rows precede independently field-context-checked leaves; the producer receives none of these oracle coordinates. */
     //-------------------------------------------------------------------------------------------------
-    internal static (int Prefix,int Refusals) Run(Chunk native,System.Xml.Schema.XmlSchemaSet schemas,GameObjectModuleReview.Module[] modules,byte[] stock,AssetId[] references,InstanceDeclaration instance,Func<uint,string,Type> model)
+    internal static (int Prefix,int Refusals) Run(Chunk native,System.Xml.Schema.XmlSchemaSet schemas,GameObjectModuleReview.Module[] modules,byte[] stock,AssetId[] references,InstanceDeclaration instance,Func<uint,string,Type> model,Chunk? observed=null,bool controls=true)
     {
-        var before=Clone(native);var tokens=Ep1BehaviorMetadataTokenizer.TokenizeContainer(native,schemas);int prefix=Verify(tokens);if(!Equal(before,native) || !Equal(tokens,Ep1BehaviorMetadataTokenizer.TokenizeContainer(native,schemas)))throw new InvalidDataException("Shared behavior metadata repeat/input isolation differs.");int refusals=0;
+        // Reborn: enclosing root tests may supply detached observed metadata; the same independent stock oracle must accept that actual output before any producer repeat comparison.
+        var before=Clone(native);var tokens=observed??Ep1BehaviorMetadataTokenizer.TokenizeContainer(native,schemas);int prefix=Verify(tokens);if(!Equal(before,native) || !Equal(tokens,Ep1BehaviorMetadataTokenizer.TokenizeContainer(native,schemas)))throw new InvalidDataException("Shared behavior metadata repeat/input isolation differs.");if(!controls)return(prefix,0);int refusals=0;
         foreach(int at in new[]{0,4,8,12,16,20,prefix,prefix+4}){var bad=Clone(tokens);bad.InstanceBuffer[at]^=1;Refuse(()=>Verify(bad));refusals++;}
         for(int i=0;i<modules.Length;i++){int wrapper=checked((int)Word(tokens.InstanceBuffer,20+i*12));foreach(int at in new[]{20+i*12,wrapper+4,wrapper+8,prefix+(int)Word(native.InstanceBuffer,8+i*4)+4}){var bad=Clone(tokens);bad.InstanceBuffer[at]^=1;Refuse(()=>Verify(bad));refusals++;}}
         foreach(bool relo in new[]{true,false}){var bad=Clone(tokens);if(relo)bad.RelocationBuffer=Array.Empty<byte>();else bad.ImportsBuffer=Array.Empty<byte>();Refuse(()=>Verify(bad));refusals++;}

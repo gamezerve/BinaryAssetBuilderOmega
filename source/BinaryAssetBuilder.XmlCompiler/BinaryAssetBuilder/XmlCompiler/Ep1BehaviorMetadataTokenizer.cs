@@ -17,6 +17,16 @@ public static class Ep1BehaviorMetadataTokenizer
 {
     private const string Ns = "uri:ea.com:eala:asset";
     private static readonly HashSet<string> Families = new(StringComparer.Ordinal) { "ObjectSMCHelperModuleData", "ObjectDefectionHelperModuleData", "AttributeModifierPoolUpdateModuleData", "SquishCollideModuleData", "CrushDieModuleData", "StancesBehaviorModuleData", "DestroyDieModuleData", "CreateObjectDieModuleData", "FXListBehaviorModuleData", "FireWeaponWhenDeadBehaviorModuleData", "AutoHealBehaviorModuleData", "SecondaryDamageTrackerModuleData", "RunOffMapBehaviorModuleData", "LevelUpUpgradeModuleData", "SuppressionUpdateModuleData", "FreefallUpdateModuleData", "WeaponSetUpdateModuleData", "PhysicsBehaviorModuleData", "SlowDeathBehaviorModuleData", "SpecialPowerModuleData", "ToggleStatusSpecialAbilityUpdateModuleData", "StatusBitsUpgradeModuleData", "HitReactionBehaviorModuleData", "ModelConditionUpgradeModuleData" };
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: raw source class admission uses only the already stock-qualified behavior family set; three EA leaf aliases differ from their native class names. */
+    //-------------------------------------------------------------------------------------------------
+    public static string ReviewedWireName(string sourceName)
+    {string wire=sourceName switch{"FireWeaponWhenDead"=>"FireWeaponWhenDeadBehaviorModuleData","Physics"=>"PhysicsBehaviorModuleData","SlowDeath"=>"SlowDeathBehaviorModuleData",_=>sourceName+"ModuleData"};if(!Families.Contains(wire))throw new InvalidDataException("Behavior source family not reviewed: "+sourceName);return wire;}
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: shared compilation/composition uses one explicit wire-to-native-model mapping, including all seven isolated EP1 records. */
+    //-------------------------------------------------------------------------------------------------
+    public static Type ReviewedNativeType(uint wire)
+    {var names=Families.Where(n=>FastHash.GetHashCode(n)==wire).ToArray();if(names.Length!=1)throw new InvalidDataException("Behavior wire family not reviewed.");string name=names[0];string model=name is "WeaponSetUpdateModuleData" or "SquishCollideModuleData" or "PhysicsBehaviorModuleData" or "HitReactionBehaviorModuleData" or "StatusBitsUpgradeModuleData" or "CreateObjectDieModuleData" or "FireWeaponWhenDeadBehaviorModuleData"?"Ep1"+name:name;return typeof(SageBinaryData.GameObject).Assembly.GetType("SageBinaryData."+model)??throw new InvalidDataException("Reviewed behavior native model absent.");}
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: select a bounded concrete family by its original wire identity; callers cannot submit unreviewed classes through the reflection/schema seam. */
@@ -47,8 +57,7 @@ public static class Ep1BehaviorMetadataTokenizer
             uint wire=Word(bytes,start);var names=Families.Where(n=>FastHash.GetHashCode(n)==wire).ToArray();if(names.Length!=1)throw new InvalidDataException("Shared behavior family is not reviewed.");
             var leaf=new Chunk{InstanceBuffer=bytes.AsSpan(start,end-start).ToArray(),RelocationBuffer=Pack(relos.Where(s=>s>=start && s<end).Select(s=>s-(uint)start)),ImportsBuffer=Pack(imports.Where(s=>s>=start && s<end).Select(s=>s-(uint)start))};
             foreach(uint slot in Slots(leaf.RelocationBuffer)){uint target=Word(leaf.InstanceBuffer,(int)slot);if(slot>leaf.InstanceBuffer.Length-4 || target<start || target>=end)throw new InvalidDataException("Shared behavior pointer crosses native owners.");Put(leaf.InstanceBuffer,(int)slot,target-(uint)start);}
-            string name=names[0];string model=name is "WeaponSetUpdateModuleData" or "SquishCollideModuleData" or "PhysicsBehaviorModuleData" or "HitReactionBehaviorModuleData" or "StatusBitsUpgradeModuleData" or "CreateObjectDieModuleData" or "FireWeaponWhenDeadBehaviorModuleData"?"Ep1"+name:name;
-            Type type=typeof(SageBinaryData.GameObject).Assembly.GetType("SageBinaryData."+model)??throw new InvalidDataException("Shared behavior native model absent.");var piece=Tokenize(leaf,schemas,name,type);int length=piece.InstanceBuffer.Length-leaf.InstanceBuffer.Length;prefix=checked(prefix+length);if(prefix>4*1048576)throw new InvalidDataException("Shared behavior metadata bound exceeded.");pieces.Add((piece,length,start));
+            string name=names[0];var piece=Tokenize(leaf,schemas,name,ReviewedNativeType(wire));int length=piece.InstanceBuffer.Length-leaf.InstanceBuffer.Length;prefix=checked(prefix+length);if(prefix>4*1048576)throw new InvalidDataException("Shared behavior metadata bound exceeded.");pieces.Add((piece,length,start));
         }
         var result=new Chunk{InstanceBuffer=new byte[checked(prefix+bytes.Length)],RelocationBuffer=Pack(relos.Select(s=>s+(uint)prefix)),ImportsBuffer=Pack(imports.Select(s=>s+(uint)prefix))};bytes.CopyTo(result.InstanceBuffer,prefix);
         Put(result.InstanceBuffer,0,0x6C827073);Put(result.InstanceBuffer,4,0x5D448FD8);Put(result.InstanceBuffer,8,(uint)prefix);int next=12+(int)count*12;
