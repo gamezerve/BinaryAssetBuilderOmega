@@ -74,6 +74,8 @@ if($SchedulerControl){
     Add-BatchCase 'gameobject-modules' 'BoundedModuleTopology' @('gameobject-module-self-test',$StaticManifest)
     # Reborn: three real module dispatch/payload implementations share one stock/edited-source regression gate.
     Add-BatchCase 'ep1-basic-modules' 'BoundedModuleNativePayload' @('ep1-basic-module-self-test',$StaticManifest)
+    # Reborn: primitive nonempty Key list tokens need independent stock/client and detached corruption coverage.
+    Add-BatchCase 'ep1-group-audio-client-tokens' 'BoundedStockClientPrimitiveListTokens' @('ep1-group-audio-client-token-self-test',$StaticManifest)
     # Reborn: destruction/tech/LUA native dispatch and complete selected graphs share one gate; captured FX and callback limits remain explicit.
     Add-BatchCase 'ep1-allied-modules' 'BoundedCapturedIndexModuleNativePayload' @('ep1-allied-modules-self-test',$StaticManifest)
     # Reborn: one real Core occurrence table binds named root and module imports to independently read stock catalogs.

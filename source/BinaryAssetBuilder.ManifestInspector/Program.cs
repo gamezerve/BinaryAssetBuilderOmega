@@ -40,6 +40,9 @@ internal static class Program
             // Reborn: generated AI fragments require complete independent stock-prefix and native/metadata corruption gates.
             // Reborn: inline AI joins the selected shared Core graph, optionally referencing a genuinely new compiled armor target.
             // Reborn: the final timeout scalar preserves stock frame-duration/default semantics rather than copying raw milliseconds.
+            // Reborn: nonempty primitive Key lists require independent stock metadata and detached client-fragment controls.
+            if(args.Length==2 && args[0]=="ep1-group-audio-client-token-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1GroupAudioClientTokenSmokeTest.Run(args[1]);return 0;}
             if(args.Length==3 && args[0]=="gameobject-duration-self-test")
             {CompilerSmokeTest.InitializeHashProvider();GameObjectDurationSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="gameobject-ai-composition-self-test")
@@ -1440,6 +1443,8 @@ internal static class Program
         Console.WriteLine("  gameobject-authored-ai-composition-self-test <fresh-output> <static.manifest> <global.manifest>");
         // Reborn: duration default/rounding and shared graph diagnostics do not publish a GameObject.
         Console.WriteLine("  gameobject-duration-self-test <static.manifest> <global.manifest>");
+        // Reborn: this client metadata diagnostic does not compile sound assets or publish a whole GameObject.
+        Console.WriteLine("  ep1-group-audio-client-token-self-test <static.manifest>");
         Console.WriteLine("  gameobject-root-layout-self-test <static.manifest>");
         // Reborn: advertise named-reference diagnostic commands without implying a general GameObject compiler.
         Console.WriteLine("  gameobject-armor-source-probe <GameObject.xml> <static.manifest> [authored-armor.manifest]");

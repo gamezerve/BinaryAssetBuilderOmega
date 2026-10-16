@@ -8,6 +8,19 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 16, 2026
 
+The [group-audio client metadata fragment](docs/RA3EP1_GROUP_AUDIO_CLIENT_TOKENS.md)
+matches a complete independent stock metadata/native graph. Twelve real-dispatch
+cases cover ordered 1/2/32/64-key lists and raw frame/ushort values; 15 native,
+53 detached-output and 8 source/boundary refusals pass. This does not enable
+audio playback, shared ClientUpdates composition or whole GameObject publication.
+Final Focused regression: **57/57** in **289.857 seconds**, client group
+8.673 seconds, eight frozen runtime hashes stable; no Full run or game/install changes.
+
+The first new-ID GameObject gameplay target and its three remaining delivery
+gates are tracked in the [progress snapshot](docs/RA3EP1_PROGRESS_SNAPSHOT.md#first-new-id-gameobject-gameplay-gate).
+The target remains the **complete Conscript graph**, not a reduced substitute,
+and reuses stock art; completing the entire SDK is not a prerequisite.
+
 The [timeout duration correction](docs/RA3EP1_GAMEOBJECT_DURATION.md) restores
 the stock/schema default: 31000 source milliseconds become 155 native logic
 frames, rather than the old missing-attribute fallback 0. Ten full shared AI/root

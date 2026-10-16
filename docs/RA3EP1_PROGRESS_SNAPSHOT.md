@@ -65,10 +65,12 @@ diagnostic and gameplay boundaries.
 
 ### First new-ID GameObject gameplay gate
 
-The first practical custom-object target is a new user-chosen ID based on an
-existing stock unit, reusing stock art/audio dependencies, with a visible gameplay
-change and an explicit way to spawn/build it in a fresh match. It is not a promise
-of arbitrary GameObjects, new models/textures, or every source feature at once.
+The first practical custom-object target is a new user-chosen ID based on the
+**complete Conscript graph**, reusing stock art/audio dependencies, with a visible
+gameplay change and an explicit way to spawn/build it in a fresh match. The user
+explicitly rejected a reduced substitute on October 16: do not remove modules to
+reach an easier first gameplay milestone. This is not a promise of arbitrary
+GameObjects, newly compiled models/textures, or every source feature at once.
 
 Three deliverable gates remain before that controlled game test:
 
@@ -86,8 +88,29 @@ derived from field/test counts: required Draw/client graph and first mixed-outpu
 failures still determine effort. Re-estimate after the complete selected-object
 offline publication gate, not after another individual scalar passes.
 
-Latest checkpoint: timeout/default repair passes Focused **56/56** in **368.721s**
-with eight frozen runtime hashes stable; no Full run or gameplay is implied.
+October 16 read-only target review: the complete stock Conscript has **4 Draws,
+36 Behaviors, 1 AI, 1 Body, 1 ClientUpdate and 6 ClientBehaviors**. Its primary
+`ScriptedModelDraw` source alone has 261 descendant elements. Its four source
+Draw entries include an XInclude of `DATA:Includes/ParachuteDrawSoviet.xml`,
+which expands into another scripted draw in the stock graph. All 49 module
+instances and the include-expanded drawing/client dependencies remain in scope
+for the complete Conscript target; a smaller passing projection is diagnostic
+evidence only, not acceptance of the requested object.
+The existing 216-byte scripted-draw and 196/140-byte model/animation-state models
+are useful groundwork, not complete recursive Draw metadata/publication proof.
+Next drawing work batch: the two scripted draws and two tracer draws, including
+their model/animation/bone/particle/FX dependencies and included parachute draw;
+then compose all client containers and the remaining behavior/root graphs.
+Implementing shared child writers and testing multiple selected graphs together
+is preferred to stopping after each scalar or enabling a reduced alternative.
+The legacy Draw dispatcher also has a silent unknown-type fallthrough that needs
+a tested fail-closed boundary before general input is admitted.
+
+Latest checkpoint: the [group-audio client metadata fragment](RA3EP1_GROUP_AUDIO_CLIENT_TOKENS.md)
+passes a complete stock prefix/native comparison, 12 author cases and 76 refusal
+controls. Focused **57/57** passes in **289.857s**, with eight frozen runtime hashes
+stable. The earlier timeout/default repair passes **56/56** in **368.721s**.
+Neither checkpoint implies a Full run, whole GameObject publication or gameplay.
 
 ### Broader SDK work
 

@@ -1,4 +1,4 @@
-# Uprising SDK capability inventory — October 15, 2026
+# Uprising SDK capability inventory — October 16, 2026
 
 This inventory describes **delivered capability**, not the presence of legacy C#
 classes or XML schemas. No major family yet has unrestricted EA-SDK parity.
@@ -74,13 +74,16 @@ token/native graph, referencing newly compiled armor/weapon/assets in one valid
 stream, then exposed in Studio and accepted in gameplay. Texture/model/audio/map
 work must subsequently open their own production and runtime gates.
 
-The full-product planning estimate is now **about 47%, with a 40–50% range**.
+The full-product planning estimate is now **about 48%, with a 40–50% range**.
 It is subjective weighted engineering maturity, not a count of build-enabled
 types. See [progress snapshot](RA3EP1_PROGRESS_SNAPSHOT.md) for the weighting.
 Do not raise it merely because another selected field test passes.
 
 ## Evidence entry points
 
+- [Nonempty group-audio client metadata](RA3EP1_GROUP_AUDIO_CLIENT_TOKENS.md):
+  one complete stock prefix/native graph; ordered hash-list and refusal gates,
+  not sound asset compilation, shared client composition or audio playback.
 - [Alpha contract and limits](../alpha/README.md)
 - [Weapon slice](RA3EP1_WEAPON_VERTICAL_SLICE.md)
 - [GameObject root strings](RA3EP1_GAMEOBJECT_ROOT_STRINGS.md) and

@@ -14,7 +14,7 @@ Selected native/dispatch evidence advances internal GameObject dependencies;
 general source closure, recursive tokenized publication and alpha h are unchanged.
 This is not complete gameplay-type coverage or a new general SDK release.
 
-Current full-target planning calibration: **about 45%, with a 40–50% range**.
+Current full-target planning calibration: **about 48%, with a 40–50% range**.
 This subjective weighted maturity estimate supersedes archived percentage figures
 for the full-product scope; it is not a coverage ratio or deadline. See the
 [current progress snapshot](RA3EP1_PROGRESS_SNAPSHOT.md) for remaining gates and weights.
