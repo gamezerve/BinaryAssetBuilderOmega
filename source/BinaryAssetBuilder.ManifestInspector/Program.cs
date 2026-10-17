@@ -72,6 +72,14 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();GameObjectEmptyRootSmokeTest.Survey(args[1]);return 0;}
 
             // Reborn: all 126 named stock fields are checked without claiming complete original values or populated empty-profile variants.
+            // Reborn: a whole native ownership union qualifies actual original root values, not merely complete field names or a published asset stream.
+            // Reborn: direct default fallbacks are checked independently of schema-injected values or whole-object publication.
+            if(args.Length==1 && args[0]=="gameobject-root-defaults-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();GameObjectRootDefaultSmokeTest.Run();return 0;}
+
+            if(args.Length==4 && args[0]=="gameobject-original-native-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeOriginalRoot:true);return 0;}
+
             if(args.Length==4 && args[0]=="gameobject-root-fields-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeRootOwners:true,includeEmptyRoots:true);return 0;}
 
@@ -1533,6 +1541,10 @@ internal static class Program
         Console.WriteLine("  gameobject-root-owners-self-test <official-xml-root> <static.manifest> <global.manifest>");
         // Reborn: explicit complete-name profile still requires independent original-value qualification before publication.
         Console.WriteLine("  gameobject-root-fields-self-test <official-xml-root> <static.manifest> <global.manifest>");
+        // Reborn: original-value/native closure is separate from complete metadata and asset publication.
+        Console.WriteLine("  gameobject-original-native-self-test <official-xml-root> <static.manifest> <global.manifest>");
+        // Reborn: direct default vectors require no external game source assets.
+        Console.WriteLine("  gameobject-root-defaults-self-test");
         // Reborn: root-owner native and metadata qualification do not imply complete object publication.
         Console.WriteLine("  conscript-remaining-roots-self-test <official-xml-root> <static.manifest> <global.manifest>");
         Console.WriteLine("  conscript-remaining-root-tokens-self-test <official-xml-root> <static.manifest> <global.manifest>");

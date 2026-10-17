@@ -1,5 +1,10 @@
 # Complete named Conscript root: sixteen empty/null contracts
 
+Subsequent update — October 18: [actual original-root native values and complete
+ownership now pass](RA3EP1_CONSCRIPT_ORIGINAL_NATIVE.md), including all 49 modules,
+six owners and geometry. That native gate is separate from this selected-root
+metadata profile; complete actual-root metadata/publication remain open.
+
 ## Outcome — October 18, 2026
 
 The explicit complete-name profile now retains **126/126 original root field

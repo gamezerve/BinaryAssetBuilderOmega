@@ -109,6 +109,8 @@ if($SchedulerControl){
         Add-BatchCase 'gameobject-root-owners' 'All49ModulesAndSixPopulatedOriginalRootOwners' @('gameobject-root-owners-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
         # Reborn: complete stock name/type coverage includes five empty list tables and eleven null targets, not complete original values or populated child admission.
         Add-BatchCase 'gameobject-root-fields' 'All126StockRootNamesAndEmptyNullContracts' @('gameobject-root-fields-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
+        # Reborn: actual root values and every native owner require a complete disjoint coverage/auxiliary union, not only field names.
+        Add-BatchCase 'gameobject-original-native' 'CompleteOriginalConscriptNativeOwnershipAndValues' @('gameobject-original-native-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
     }
     # Reborn: destruction/tech/LUA native dispatch and complete selected graphs share one gate; captured FX and callback limits remain explicit.
     Add-BatchCase 'ep1-allied-modules' 'BoundedCapturedIndexModuleNativePayload' @('ep1-allied-modules-self-test',$StaticManifest)
@@ -158,6 +160,8 @@ if($SchedulerControl){
     Add-BatchCase 'gameobject-authored-ai-composition' 'BoundedAuthoredArmorAiConsumer' @('gameobject-authored-ai-composition-self-test',(Join-Path $OutputDirectory 'ai-consumer'),$StaticManifest,$GlobalManifest)
     # Reborn: the timeout scalar's default and frame conversion remain independently stock/schema/Core checked inside the shared graph.
     Add-BatchCase 'gameobject-duration' 'BoundedStockDurationDefaultAndCoreGraph' @('gameobject-duration-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: direct omitted/explicit/zero defaults cannot hide behind schema default materialization or synthetic stock metadata.
+    Add-BatchCase 'gameobject-root-defaults' 'FourteenOfficialRootDefaultsAndOverrides' @('gameobject-root-defaults-self-test')
     # Reborn: actual Core destruction FX names/defaults and semantic imports must pass without captured source dependency indices.
     Add-BatchCase 'ep1-destruction-source' 'BoundedCoreNormalizedModuleNativePayload' @('ep1-destruction-source-self-test',$StaticManifest)
     # Reborn: nested effect/status graphs and Core-normalized strong imports share one new update-family gate.

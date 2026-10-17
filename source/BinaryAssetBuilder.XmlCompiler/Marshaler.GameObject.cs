@@ -1214,13 +1214,16 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(GameObject.ShockwaveResistance), "0"), &objT->ShockwaveResistance, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.CommandPoints), "0"), &objT->CommandPoints, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.CommandPointBonus), "0"), &objT->CommandPointBonus, state);
-        Marshal(node.GetAttributeValue(nameof(GameObject.VoiceAttackChargeTimeout), null), &objT->VoiceAttackChargeTimeout, state);
-        Marshal(node.GetAttributeValue(nameof(GameObject.VoiceMoveLandToWaterTimeout), "0s"), &objT->VoiceMoveLandToWaterTimeout, state);
-        Marshal(node.GetAttributeValue(nameof(GameObject.VoiceMoveWaterToLandTimeout), "0s"), &objT->VoiceMoveWaterToLandTimeout, state);
-        Marshal(node.GetAttributeValue(nameof(GameObject.VoiceSelectUnderFireTimeout), "0s"), &objT->VoiceSelectUnderFireTimeout, state);
-        Marshal(node.GetAttributeValue(nameof(GameObject.VoiceSelectUnderFireDamageTime), "0s"), &objT->VoiceSelectUnderFireDamageTime, state);
-        Marshal(node.GetAttributeValue(nameof(GameObject.MaxDistanceForEngaged), null), &objT->MaxDistanceForEngaged, state);
-        Marshal(node.GetAttributeValue(nameof(GameObject.EngagedStateTimeout), null), &objT->EngagedStateTimeout, state);
+        // Reborn: official RA3/EP1 stores this default as 150 raw logic frames, not zero or 150 seconds.
+        Marshal(node.GetAttributeValue(nameof(GameObject.VoiceAttackChargeTimeout), "150"), &objT->VoiceAttackChargeTimeout, state);
+        // Reborn: these four official Time defaults are seconds, unlike the adjacent raw-frame unsigned timeouts; explicit inherited/user attributes still override them.
+        Marshal(node.GetAttributeValue(nameof(GameObject.VoiceMoveLandToWaterTimeout), "5s"), &objT->VoiceMoveLandToWaterTimeout, state);
+        Marshal(node.GetAttributeValue(nameof(GameObject.VoiceMoveWaterToLandTimeout), "5s"), &objT->VoiceMoveWaterToLandTimeout, state);
+        Marshal(node.GetAttributeValue(nameof(GameObject.VoiceSelectUnderFireTimeout), "20s"), &objT->VoiceSelectUnderFireTimeout, state);
+        Marshal(node.GetAttributeValue(nameof(GameObject.VoiceSelectUnderFireDamageTime), "3s"), &objT->VoiceSelectUnderFireDamageTime, state);
+        // Reborn: original-root stock equality exposes omitted official defaults; the engaged timeout is also raw logic frames, not Time seconds.
+        Marshal(node.GetAttributeValue(nameof(GameObject.MaxDistanceForEngaged), "150"), &objT->MaxDistanceForEngaged, state);
+        Marshal(node.GetAttributeValue(nameof(GameObject.EngagedStateTimeout), "30"), &objT->EngagedStateTimeout, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.ThreatLevel), "1.0"), &objT->ThreatLevel, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.ForceLuaRegistration), "false"), &objT->ForceLuaRegistration, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.KeepSelectableWhenDead), "false"), &objT->KeepSelectableWhenDead, state);
@@ -1231,9 +1234,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(GameObject.SupplyOverride), "0"), &objT->SupplyOverride, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.ExperienceScalarTable), null), &objT->ExperienceScalarTable, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.FiringArc), "360"), &objT->FiringArc, state);
-        Marshal(node.GetAttributeValue(nameof(GameObject.CamouflageDetectorLevel), "0"), &objT->CamouflageDetectorLevel, state);
+        // Reborn: retain official RA3/EP1 detection/path defaults instead of the legacy zero fallbacks.
+        Marshal(node.GetAttributeValue(nameof(GameObject.CamouflageDetectorLevel), "1"), &objT->CamouflageDetectorLevel, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.SelectionPriority), "2147483647"), &objT->SelectionPriority, state);
-        Marshal(node.GetAttributeValue(nameof(GameObject.PathPriority), "0"), &objT->PathPriority, state);
+        Marshal(node.GetAttributeValue(nameof(GameObject.PathPriority), "25"), &objT->PathPriority, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.ProductionQueueType), "INVALID"), &objT->ProductionQueueType, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.BuildPlacementTypeFlag), "INVALID"), &objT->BuildPlacementTypeFlag, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.BuildInProximityToSamePlayerStucture), "true"), &objT->BuildInProximityToSamePlayerStucture, state);
@@ -1242,12 +1246,14 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(GameObject.WeaponCategory), "NONE"), &objT->WeaponCategory, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.HasFiredRecentlyTime), "2s"), &objT->HasFiredRecentlyTime, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.UnitTypeIcon), null), &objT->UnitTypeIcon, state);
-        Marshal(node.GetAttributeValue(nameof(GameObject.ReinvisibilityDelay), "4s"), &objT->ReinvisibilityDelay, state);
-        Marshal(node.GetAttributeValue(nameof(GameObject.InvisibilityOpacityMin), "0"), &objT->InvisibilityOpacityMin, state);
-        Marshal(node.GetAttributeValue(nameof(GameObject.InvisibilityOpacityMax), "1"), &objT->InvisibilityOpacityMax, state);
+        // Reborn: original stock root values match official 0.5 seconds and 0.4/0.9 opacity defaults, not the older 4/0/1 profile.
+        Marshal(node.GetAttributeValue(nameof(GameObject.ReinvisibilityDelay), "0.5s"), &objT->ReinvisibilityDelay, state);
+        Marshal(node.GetAttributeValue(nameof(GameObject.InvisibilityOpacityMin), "0.4"), &objT->InvisibilityOpacityMin, state);
+        Marshal(node.GetAttributeValue(nameof(GameObject.InvisibilityOpacityMax), "0.9"), &objT->InvisibilityOpacityMax, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.HealthBar), null), &objT->HealthBar, state);
-        Marshal(node.GetAttributeValue(nameof(GameObject.SubGroupPriority), "0"), &objT->SubGroupPriority, state);
-        Marshal(node.GetAttributeValue(nameof(GameObject.EvaEventSecondDamageFarFromFirstScanRange), "0"), &objT->EvaEventSecondDamageFarFromFirstScanRange, state);
+        // Reborn: these schema defaults remain overrideable by concrete/inherited values such as Conscript's 505 and 600.
+        Marshal(node.GetAttributeValue(nameof(GameObject.SubGroupPriority), "500"), &objT->SubGroupPriority, state);
+        Marshal(node.GetAttributeValue(nameof(GameObject.EvaEventSecondDamageFarFromFirstScanRange), "200"), &objT->EvaEventSecondDamageFarFromFirstScanRange, state);
         // Reborn: official EP1 defaults to 31000 milliseconds, stored as 155 logic frames; preserve the existing Duration conversion rather than copying raw milliseconds.
         Marshal(node.GetAttributeValue(nameof(GameObject.EvaEventSecondDamageFarFromFirstTimeoutMS), "31000"), &objT->EvaEventSecondDamageFarFromFirstTimeoutMS, state);
         Marshal(node.GetAttributeValue(nameof(GameObject.UnitIntro), null), &objT->UnitIntro, state);

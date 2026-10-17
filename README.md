@@ -8,6 +8,32 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 18, 2026
 
+The [actual original Conscript native graph](docs/RA3EP1_CONSCRIPT_ORIGINAL_NATIVE.md)
+now independently matches stock semantics: **all 600 root bytes / actual root
+values / all 49 modules / six populated owners / geometry**, compiled on one
+Core table / **275 strong occurrences** / one Tracker. A complete disjoint
+ownership union checks **449 relocation sources and 275 import slots**, with no
+unowned native payload. BIN/RELO/IMP is **39,360 / 1,800 / 1,104 bytes**.
+**108** native/source refusals pass. The existing single explicitly bounded
+Script CRLF/LF equivalence remains; this is not raw address/byte identity.
+The source is the explicitly captured three-object chain, not the prior
+synthetic root values or a general inheritance/include engine.
+
+This exposed **14 incorrect legacy root defaults**, now corrected to official
+RA3/EP1 schema values. An independent direct-marshaler gate checks omitted,
+explicit-default and explicit-zero source vectors, keeping Time seconds distinct
+from raw logic-frame integers. Explicit inherited values remain authoritative.
+Next: complete metadata for this **actual** root and its stream/dependency
+publication. The existing 126-name metadata gate below still uses the selected
+root scenario; native closure does not yet make a playable new-ID package or
+expand alpha admission. No game or installation change.
+
+Original-native Focused regression: **74/74** in **402.885 seconds**, four
+isolated workers; original-native group **59.483 seconds**, default-vector
+group **9.225 seconds**, prior 126-name group **48.228 seconds**. Eight frozen
+runtime hashes stayed stable; batch build had zero warnings/errors. No Full
+run. Timings include overlapping diagnostic scenarios, not a mod-build benchmark.
+
 The [complete named Conscript root profile](docs/RA3EP1_CONSCRIPT_EMPTY_ROOTS.md)
 now matches **126/126 stock field names and wire tags**, retaining all 49 original
 modules and six populated owners on one Core / **271 occurrences** / one Tracker.
@@ -17,9 +43,9 @@ optionality/type/cardinality and original-source absence. **102** native/source/
 output refusals pass. BIN/RELO/IMP is **129,848 / 1,860 / 1,088 bytes**, with an
 **89,316-byte metadata prefix**. Populated variants of those sixteen fields are
 explicitly refused. The prior 104-field and 110-field routes remain unchanged.
-**Named-field coverage is not original-value completeness:** selected root
-values (including actual BuildTime/ArmorSet/source inheritance) still require
-qualification before complete original Conscript stream/publication and gameplay.
+At this earlier named-field milestone, selected root values still required
+original-source qualification. The actual native-value gate above now passes;
+complete original metadata/stream publication and gameplay still remain open.
 This is not 100% SDK completion, a general GameObject compiler or alpha expansion.
 
 Complete-name Focused regression: **72/72** in **612.261 seconds**, two workers;

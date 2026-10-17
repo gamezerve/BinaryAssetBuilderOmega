@@ -28,6 +28,9 @@ internal sealed class SelectedNativeGraphComparer
     internal Dictionary<string,(int Stock,int Compiled,int Size)> NativeRecords { get; } = new(StringComparer.Ordinal);
     private int scriptLineEndingEquivalences;
     private int records, strings;
+    // Reborn: only the explicitly detached root-selection entry point may walk zeroed polymorphic headers; ordinary complete graph comparisons retain their old generic admission.
+    private bool rootSelection;
+    internal sealed record RootSelection(bool[] Covered,uint[] Relocations,uint[] Imports);
     // Reborn: metadata targets address native records/headers, not interned character arrays; expose only the independently compared native byte-coordinate map.
     internal Dictionary<int, int> NativeOffsets { get; } = new();
 
@@ -51,6 +54,22 @@ internal sealed class SelectedNativeGraphComparer
     }
 
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: compare the complete typed root with caller-detached module/EP1-owner pointers; return exact visited ownership for an enclosing whole-graph union, never claim untouched heap bytes are verified. */
+    //-------------------------------------------------------------------------------------------------
+    internal RootSelection CompareRootSelection(int original)
+    {
+        rootSelection=true;
+        try
+        {
+            var declaredRelos=Slots(compiled.RelocationBuffer);var declaredImports=Slots(compiled.ImportsBuffer);if(declaredRelos.Concat(declaredImports).Any(s=>s>compiled.InstanceBuffer.Length-4))throw new InvalidDataException("Root selection auxiliary source bounds.");
+            Visit(typeof(SageBinaryData.GameObject),original,0,"GameObject",0);
+            if(!declaredRelos.Where(s=>covered[(int)s]).Order().SequenceEqual(relos.Order()) || !declaredImports.Where(s=>covered[(int)s]).Order().SequenceEqual(imports.Order()))throw new InvalidDataException("Root selection auxiliary ownership differs.");
+            return new(covered.ToArray(),relos.ToArray(),imports.ToArray());
+        }
+        finally{rootSelection=false;}
+    }
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: pointers, lists, strings, imports and fixed masks have explicit handling; all remaining struct bytes, including padding, are compared recursively. */
     //-------------------------------------------------------------------------------------------------
     private void Visit(Type type, int a, int b, string path, int depth)
@@ -66,6 +85,8 @@ internal sealed class SelectedNativeGraphComparer
             if (type.IsGenericType)
             {
                 string generic = type.GetGenericTypeDefinition().FullName!; Type element = type.GetGenericArguments()[0];
+                // Reborn: the root-only partial walk cannot infer concrete classes; enclosing callers must separately prove and restore every detached polymorphic owner.
+                if(rootSelection && generic=="Relo.PolymorphicList`1"){if(Word(stock,a)!=0 || Word(stock,a+4)!=0 || Word(compiled.InstanceBuffer,b)!=0 || Word(compiled.InstanceBuffer,b+4)!=0)throw new InvalidDataException("Root selection requires detached empty polymorphic headers.");Equal(a,b,8,path);return;}
                 // Reborn: typed weak IDs remain exact native hashes and never become strong imports or pointer relocations.
                 if (generic == "TypedAssetId`1") { Equal(a, b, 4, path); return; }
                 if (generic == "Relo.AssetReference`1" || generic == "Relo.AssetReference`2")
@@ -149,7 +170,7 @@ internal sealed class SelectedNativeGraphComparer
     //-------------------------------------------------------------------------------------------------
     /** Reborn: generic list/string/ref wire sizes are explicit because Marshal.SizeOf rejects closed generic types. */
     //-------------------------------------------------------------------------------------------------
-    private static int Size(Type type) => type.IsPointer ? 4 : type.IsEnum ? Size(Enum.GetUnderlyingType(type)) : type.IsGenericType ? type.GetGenericTypeDefinition().FullName switch { "Relo.List`1" or "Relo.String`1" => 8, "Relo.AssetReference`1" or "Relo.AssetReference`2" or "TypedAssetId`1" => 4, _ => throw new InvalidDataException("Unknown selected generic size.") } : Marshal.SizeOf(type);
+    private static int Size(Type type) => type.IsPointer ? 4 : type.IsEnum ? Size(Enum.GetUnderlyingType(type)) : type.IsGenericType ? type.GetGenericTypeDefinition().FullName switch { "Relo.List`1" or "Relo.String`1" or "Relo.PolymorphicList`1" => 8, "Relo.AssetReference`1" or "Relo.AssetReference`2" or "TypedAssetId`1" => 4, _ => throw new InvalidDataException("Unknown selected generic size.") } : Marshal.SizeOf(type);
     //-------------------------------------------------------------------------------------------------
     /** Reborn: malformed auxiliary size, sentinel and duplicate entries cannot be normalized away by set comparison. */
     //-------------------------------------------------------------------------------------------------
