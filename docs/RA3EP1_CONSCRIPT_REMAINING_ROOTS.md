@@ -1,5 +1,10 @@
 # Six remaining populated original Conscript root owners
 
+Update — October 18: [the combined 49-module / six-owner gate](RA3EP1_CONSCRIPT_COMBINED_OWNERS.md)
+now joins all six to one shared selected root/Core/Tracker. This report preserves
+the earlier standalone proof and its ABI/source boundaries; it does not imply
+complete original-root closure.
+
 ## Outcome — October 17, 2026
 
 All six previously missing populated owners independently match the original

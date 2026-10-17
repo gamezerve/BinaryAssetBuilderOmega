@@ -6,7 +6,26 @@ asset IDs, instance includes, inheritance, `$` definitions/expressions,
 TGA/DDS textures and W3X models. Current fixed-identity alpha restrictions are
 temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
-## Current outcome — October 17, 2026
+## Current outcome — October 18, 2026
+
+All [49 original Conscript modules and six populated root owners](docs/RA3EP1_CONSCRIPT_COMBINED_OWNERS.md)
+now independently match stock on **one selected root / one Core table / 271
+strong occurrences / one Tracker**. The generated partial projection has **110
+named root fields**, an **89,064-byte metadata prefix**, a **40,532-byte native
+graph**, and **BIN/RELO/IMP = 129,596 / 1,860 / 1,088 bytes**. The combined gate
+passes 46 scope/ownership/output refusals and checks the real composed metadata,
+not a regenerated expected fragment. Existing default and 49-module-only routes
+remain unchanged. The remaining **16 stock-empty/null names** and full original
+root-value/source qualification still block complete original-root publication.
+This is not a playable new-ID package, general GameObject admission or an alpha
+capability expansion.
+
+Combined-owner Focused regression: **71/71** in **643.863 seconds** with two
+workers; combined-owner group **44.474 seconds**, unchanged all-module group
+**46.869 seconds**, standalone remaining-owner group **10.216 seconds**. All
+eight runtime hashes stayed stable; the batch build had zero warnings/errors.
+No Full run, game launch or installation change. Timing includes overlapping
+regression cases and is not a promised build-time benchmark.
 
 The [six remaining populated Conscript root owners](docs/RA3EP1_CONSCRIPT_REMAINING_ROOTS.md)
 now independently match stock native graphs **and generated metadata**: resource
@@ -15,7 +34,7 @@ costs, skirmish AI, voice, EVA, shadow and crusher data. One Core normalization 
 metadata totals **2,412 bytes**; **43 authored/refusal controls**, **18 native
 corruption refusals** and **30 metadata corruption refusals** pass. EP1-specific
 skirmish, crusher and EVA layouts leave the old KW layouts/dispatch unchanged.
-These owners are not yet joined to the all-49-module selected root below. The
+At that standalone milestone these owners were not yet joined to the all-49-module selected root below; the combined gate above now joins them. The
 remaining 16 stock-empty/null root fields and original-source qualification of
 selected root values still need closure before complete Conscript publication.
 Unreviewed populated child variants fail explicitly; no alpha or gameplay

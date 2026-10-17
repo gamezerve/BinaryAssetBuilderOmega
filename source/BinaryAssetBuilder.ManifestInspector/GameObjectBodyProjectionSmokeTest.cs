@@ -97,7 +97,7 @@ internal static class GameObjectBodyProjectionSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: opt into the separate EP1 allocator after existing root/behavior dispatch, on the same Tracker and native Body pointer slot. */
     //-------------------------------------------------------------------------------------------------
-    internal static unsafe Chunk Compile(XmlDocument source,bool selectedBehaviors=false,bool reviewedBehaviors=false)
+    internal static unsafe Chunk Compile(XmlDocument source,bool selectedBehaviors=false,bool reviewedBehaviors=false,bool remainingRoots=false)
     {
         // Reborn: the explicit selected path owns a cross-container module scope before its source containers are detached.
         // Reborn: explicit wider behavior compilation cannot fall through the legacy/default object route.
@@ -127,6 +127,10 @@ internal static class GameObjectBodyProjectionSmokeTest
             clientBehaviors=d.DocumentElement.ChildNodes.OfType<XmlElement>().SingleOrDefault(e=>e.LocalName=="ClientBehaviors" && e.NamespaceURI==SchemaSet.XmlNamespace);if(clientBehaviors!=null){d.DocumentElement.RemoveChild(clientBehaviors);foreach(XmlElement child in clientBehaviors.ChildNodes.OfType<XmlElement>())child.SetAttribute("TypeId",FastHash.GetHashCode(child.LocalName+"ModuleData").ToString(System.Globalization.CultureInfo.InvariantCulture));}
             foreach(XmlElement update in d.GetElementsByTagName("ClientUpdates",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>()))update.SetAttribute("TypeId","2552668823");
         }
+        // Reborn: the explicit six-owner route bypasses incompatible legacy root dispatch and allocates those original sources on this same Tracker at the end.
+        if(remainingRoots && !reviewedBehaviors)throw new InvalidDataException("Remaining roots require the reviewed full-module route.");
+        var remaining=d.CreateElement("Remaining",SchemaSet.XmlNamespace);
+        if(remainingRoots)foreach(var field in Ep1GameObjectRootOwnersProjection.Fields){var child=d.DocumentElement.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName==field.Name && e.NamespaceURI==SchemaSet.XmlNamespace);d.DocumentElement.RemoveChild(child);remaining.AppendChild(child);}
         var ns=new XmlNamespaceManager(d.NameTable);ns.AddNamespace("ea",SchemaSet.XmlNamespace);
         GameObject* root;using var tracker=new Tracker((void**)&root,(uint)sizeof(GameObject),false);
         Marshaler.Marshal(new Node(d.DocumentElement.CreateNavigator()!,ns),root,tracker);
@@ -137,6 +141,8 @@ internal static class GameObjectBodyProjectionSmokeTest
         Marshaler.MarshalEp1ActiveBody(new Node(body.CreateNavigator()!,ns),&root->Body,tracker);
         // Reborn: no copied native bytes or second Tracker are appended to compose the geometry tail.
         if(geometry!=null)Marshaler.MarshalEp1Geometry(new Node(geometry.CreateNavigator()!,ns),&root->Geometry,tracker);
+        // Reborn: all six new native owners share the enclosing root allocation and normalized occurrence table, not separately compiled bytes.
+        if(remainingRoots)Marshaler.MarshalEp1RootOwners(new Node(remaining.CreateNavigator()!,ns),root,tracker);
         var chunk=new Chunk();if(!tracker.MakeRelocatable(chunk))throw new InvalidDataException("Root/body allocation failed.");return chunk;
     }
     //-------------------------------------------------------------------------------------------------

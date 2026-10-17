@@ -1,5 +1,10 @@
 # All 49 original Conscript modules on one selected root
 
+Update — October 18: [the combined root-owner gate](RA3EP1_CONSCRIPT_COMBINED_OWNERS.md)
+also retains all six original populated owners on one shared Core/Tracker,
+raising that explicit profile to 110 fields / 271 occurrences. The original
+104-field route and the milestone below remain unchanged for compatibility.
+
 ## Outcome — October 17, 2026
 
 All original module graphs now share **one actual Core normalization / 248 strong

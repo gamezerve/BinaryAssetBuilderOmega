@@ -105,6 +105,8 @@ if($SchedulerControl){
         Add-BatchCase 'gameobject-all-modules' 'All49OriginalConscriptModulesOnSelectedRoot' @('gameobject-all-modules-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
         # Reborn: all six populated remaining original root owners require native and independent metadata proof; no blocked discovery rows count as success.
         Add-BatchCase 'conscript-remaining-roots' 'SixOriginalPopulatedRootNativeMetadataOwners' @('conscript-remaining-root-tokens-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
+        # Reborn: all 49 modules and six original populated root owners share one Core/Tracker before independent stock proof.
+        Add-BatchCase 'gameobject-root-owners' 'All49ModulesAndSixPopulatedOriginalRootOwners' @('gameobject-root-owners-self-test',$UprisingXmlRoot,$StaticManifest,$GlobalManifest)
     }
     # Reborn: destruction/tech/LUA native dispatch and complete selected graphs share one gate; captured FX and callback limits remain explicit.
     Add-BatchCase 'ep1-allied-modules' 'BoundedCapturedIndexModuleNativePayload' @('ep1-allied-modules-self-test',$StaticManifest)

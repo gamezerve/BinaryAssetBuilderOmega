@@ -66,6 +66,10 @@ internal static class Program
             if(args.Length==4 && args[0] is "conscript-remaining-root-tokens-survey" or "conscript-remaining-root-tokens-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ConscriptRemainingRoots.Run(args[1],args[2],args[3],requireAll:true,includeTokens:true,requireTokens:args[0].EndsWith("self-test",StringComparison.Ordinal));return 0;}
 
+            // Reborn: explicit six-owner composition retains all original module oracles without widening their default CLI route.
+            if(args.Length==4 && args[0]=="gameobject-root-owners-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeRootOwners:true);return 0;}
+
             if(args.Length==4 && args[0]=="gameobject-all-modules-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true);return 0;}
 
@@ -1517,6 +1521,8 @@ internal static class Program
         Console.WriteLine("  conscript-behavior-composition-self-test <official-xml-root> <static.manifest> <global.manifest>");
         // Reborn: explicit whole-module integration remains separate from general full-object support.
         Console.WriteLine("  gameobject-all-modules-self-test <official-xml-root> <static.manifest> <global.manifest>");
+        // Reborn: original populated owners are a further opt-in, not a full original root or playable package.
+        Console.WriteLine("  gameobject-root-owners-self-test <official-xml-root> <static.manifest> <global.manifest>");
         // Reborn: root-owner native and metadata qualification do not imply complete object publication.
         Console.WriteLine("  conscript-remaining-roots-self-test <official-xml-root> <static.manifest> <global.manifest>");
         Console.WriteLine("  conscript-remaining-root-tokens-self-test <official-xml-root> <static.manifest> <global.manifest>");
