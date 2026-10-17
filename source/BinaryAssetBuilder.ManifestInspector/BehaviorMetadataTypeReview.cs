@@ -11,9 +11,9 @@ internal static class BehaviorMetadataTypeReview
     //-------------------------------------------------------------------------------------------------
     /** Reborn: field type signatures differ from plain concrete class hashes; require one consistent observed tag per qualified schema type across every selected original graph. */
     //-------------------------------------------------------------------------------------------------
-    internal static SortedDictionary<string,uint> Collect(XmlSchemaSet schemas,byte[] stock,GameObjectModuleReview.Module[] modules,int nativeRoot)
+    internal static SortedDictionary<string,uint> Collect(XmlSchemaSet schemas,byte[] stock,GameObjectModuleReview.Module[] modules,int nativeRoot,IEnumerable<(string Schema,int Table)>? records=null)
     {
-        const string ns="uri:ea.com:eala:asset";var result=new SortedDictionary<string,uint>(StringComparer.Ordinal);var visited=new HashSet<(string,int)>();foreach(var module in modules)Record((XmlSchemaComplexType)schemas.GlobalTypes[new XmlQualifiedName(module.Type,ns)]!,module.Wrapper,0);return result;
+        const string ns="uri:ea.com:eala:asset";var result=new SortedDictionary<string,uint>(StringComparer.Ordinal);var visited=new HashSet<(string,int)>();foreach(var module in modules)Record((XmlSchemaComplexType)schemas.GlobalTypes[new XmlQualifiedName(module.Type,ns)]!,module.Wrapper,0);if(records!=null)foreach(var record in records)Record((XmlSchemaComplexType)schemas.GlobalTypes[new XmlQualifiedName(record.Schema,ns)]!,record.Table,0);return result;
         //-------------------------------------------------------------------------------------------------
         /** Reborn: read the stock record structure, then bind its names to actual schema declarations rather than guessing type IDs from native field names. */
         //-------------------------------------------------------------------------------------------------
@@ -30,7 +30,7 @@ internal static class BehaviorMetadataTypeReview
         //-------------------------------------------------------------------------------------------------
         /** Reborn: only explicit sequence members supply field type identity facts. */
         //-------------------------------------------------------------------------------------------------
-        static void Elements(XmlSchemaParticle? particle,Dictionary<uint,(XmlSchemaType Type,bool Repeated)> fields,Dictionary<uint,string> refs){if(particle==null)return;if(particle is XmlSchemaSequence sequence){foreach(XmlSchemaParticle child in sequence.Items)Elements(child,fields,refs);}else if(particle is XmlSchemaElement e){uint name=FastHash.GetHashCode(e.Name!);fields.Add(name,(e.ElementSchemaType!,e.MaxOccurs>1 || e.MaxOccursString=="unbounded"));refs[name]=Reference(e.UnhandledAttributes);}else throw new InvalidDataException("Unreviewed behavior type particle.");}
+        static void Elements(XmlSchemaParticle? particle,Dictionary<uint,(XmlSchemaType Type,bool Repeated)> fields,Dictionary<uint,string> refs){if(particle==null)return;if(particle is XmlSchemaSequence sequence){foreach(XmlSchemaParticle child in sequence.Items)Elements(child,fields,refs);}else if(particle is XmlSchemaChoice choice && choice.Items.Count==1 && choice.Items[0] is XmlSchemaElement cost && cost.Name=="BuildCost" && cost.ElementSchemaType?.Name=="MoneyTransaction")Elements(cost,fields,refs);else if(particle is XmlSchemaElement e){uint name=FastHash.GetHashCode(e.Name!);fields.Add(name,(e.ElementSchemaType!,e.MaxOccurs>1 || e.MaxOccursString=="unbounded"));refs[name]=Reference(e.UnhandledAttributes);}else throw new InvalidDataException("Unreviewed behavior type particle.");}
         //-------------------------------------------------------------------------------------------------
         /** Reborn: field-level reference targets are part of wire signature identity, even when both declarations use Poid. */
         //-------------------------------------------------------------------------------------------------

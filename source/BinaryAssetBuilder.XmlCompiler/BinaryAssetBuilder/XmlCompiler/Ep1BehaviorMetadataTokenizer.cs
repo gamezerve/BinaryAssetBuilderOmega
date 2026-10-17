@@ -38,6 +38,18 @@ public static class Ep1BehaviorMetadataTokenizer
         if (wireName == "WeaponSetUpdateModuleData") return Ep1WeaponSetTokenizer.Tokenize(native);
         return new Builder(native.InstanceBuffer, schemas).Build(native, wireName, nativeType);
     }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: reuse schema/native traversal for six explicitly selected non-polymorphic root records; no stock coordinates or arbitrary class admission enter this API. */
+    //-------------------------------------------------------------------------------------------------
+    public static Chunk TokenizeRootRecord(Chunk native,XmlSchemaSet schemas,string name)
+    {
+        Type type=name switch{"ObjectResourceInfo"=>typeof(SageBinaryData.ObjectResourceInfo),"SkirmishAIInformation"=>typeof(SageBinaryData.Ep1SkirmishAIInformation),"AudioArrayVoice"=>typeof(SageBinaryData.Ep1AudioArrayVoice),"EvaEventArray"=>typeof(SageBinaryData.Ep1EvaEventArray),"ShadowInfo"=>typeof(SageBinaryData.ShadowInfo),"CrusherInfo"=>typeof(SageBinaryData.Ep1CrusherInfo),_=>throw new InvalidDataException("Root record family not reviewed.")};
+        if(native?.InstanceBuffer==null || native.RelocationBuffer==null || native.ImportsBuffer==null || native.InstanceBuffer.Length<Size(type) || native.InstanceBuffer.Length>2*1048576 || schemas==null)throw new InvalidDataException("Bounded root record required.");
+        // Reborn: inactive child headers/pointers are not guessed native ABIs; caller-authored raw buffers cannot bypass source-side refusal.
+        int[] inactive=name switch{"SkirmishAIInformation"=>new[]{36,64,68,72,76,80},"CrusherInfo"=>new[]{24,28,32,36},"AudioArrayVoice"=>new[]{8,12,16,20},_=>Array.Empty<int>()};if(inactive.Any(at=>Word(native.InstanceBuffer,at)!=0))throw new InvalidDataException("Unreviewed populated root child/storage.");
+        if(name=="AudioArrayVoice"){uint count=Word(native.InstanceBuffer,0),items=Word(native.InstanceBuffer,4);if(count>4096 || items>native.InstanceBuffer.Length || count*12>native.InstanceBuffer.Length-items)throw new InvalidDataException("Root voice entries exceed bounds.");for(int i=0;i<count;i++)if(Word(native.InstanceBuffer,(int)items+i*12+4)!=0)throw new InvalidDataException("Root voice populated EvaEvent ABI not reviewed.");}
+        return new Builder(native.InstanceBuffer,schemas).BuildRecord(native,name,type);
+    }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: generate one ordered Behaviors metadata container over one already compiled native/Core graph; only metadata fragments are joined, never independently compiled native payloads. */
@@ -89,6 +101,17 @@ public static class Ep1BehaviorMetadataTokenizer
         internal Chunk Build(Chunk native, string wireName, Type type)
         {
             Claim(0, Size(type)); int wrapper = Allocate(1); Row(wrapper, 2, FastHash.GetHashCode(wireName), (uint)Emit(wireName, type, 0, 0));
+            return Finish(native);
+        }
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: root own-field tables have no synthetic concrete wrapper or ModuleData identity. */
+        //-------------------------------------------------------------------------------------------------
+        internal Chunk BuildRecord(Chunk native,string schemaName,Type type){Claim(0,Size(type));if(Emit(schemaName,type,0,0)!=0)throw new InvalidDataException("Root metadata own table origin differs.");return Finish(native);}
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: both reviewed envelope forms share the exact ownership, native-tail and auxiliary transformation. */
+        //-------------------------------------------------------------------------------------------------
+        private Chunk Finish(Chunk native)
+        {
             uint[] suppliedRelos = Slots(native.RelocationBuffer), suppliedImports = Slots(native.ImportsBuffer);
             if (!relos.SetEquals(suppliedRelos) || !imports.SetEquals(suppliedImports)) throw new InvalidDataException("Behavior metadata auxiliary ownership differs.");
             int gap = 0; for (int i = 0; i < bytes.Length; i++) { if (covered[i]) { gap = 0; continue; } if (bytes[i] != 0 || ++gap > 3) throw new InvalidDataException("Behavior metadata unowned allocation at " + i); }
@@ -107,7 +130,7 @@ public static class Ep1BehaviorMetadataTokenizer
             if (schema.ContentModel != null && extension == null) throw new InvalidDataException("Unreviewed behavior schema content: " + schemaName);
             var fields = new List<(string Name, XmlSchemaType Schema, string Reference, bool Repeated)>(); var attributes = extension?.Attributes ?? schema.Attributes;
             if (schemaName == "ModuleData") fields.Add(("TypeId", null, "", false));
-            foreach (XmlSchemaObject item in attributes) { if (item is not XmlSchemaAttribute a || a.Name == null || a.AttributeSchemaType == null) throw new InvalidDataException("Unreviewed behavior attribute declaration."); fields.Add((a.Name, a.AttributeSchemaType, Reference(a.UnhandledAttributes), false)); }
+            foreach (XmlSchemaObject item in attributes) { if (item is not XmlSchemaAttribute a || a.Name == null || a.AttributeSchemaType == null) throw new InvalidDataException("Unreviewed behavior attribute declaration.");if(a.UnhandledAttributes?.Any(x=>x.LocalName=="pipelineOnly" && x.NamespaceURI=="uri:ea.com:eala:asset:schema" && x.Value=="true")==true)continue; fields.Add((a.Name, a.AttributeSchemaType, Reference(a.UnhandledAttributes), false)); }
             Elements(extension?.Particle ?? schema.Particle, fields);
             bool parent = extension != null; int table = Allocate(fields.Count + (parent ? 1 : 0) + 1), next = table; var used = new bool[Size(type)];
             if (parent)
@@ -123,7 +146,9 @@ public static class Ep1BehaviorMetadataTokenizer
                 if (field.Schema?.QualifiedName.Namespace == XmlSchema.Namespace) wire = "xs:" + wire;
                 if (field.Reference.Length != 0) wire += ":" + field.Reference;
                 if (field.Repeated) wire += "[]";
-                Row(next, FastHash.GetHashCode(field.Name), field.Name == "TypeId" ? 0x23E650B8 : Signature(wire), 0); Field(field.Schema, info.FieldType, checked(native + offset), next + 8, depth + 1); next += 12;
+                Row(next, FastHash.GetHashCode(field.Name), field.Name == "TypeId" ? 0x23E650B8 : Signature(wire), 0);
+                // Reborn: empty SoundOrEvaEvent.EvaEvent is a strong-reference zero word in EP1 metadata, not a missing String pointee; populated legacy pointer storage stays refused.
+                if(schemaName=="SoundOrEvaEvent" && field.Name=="EvaEvent"){if(Word(bytes,native+offset)!=0)throw new InvalidDataException("Populated voice EvaEvent ABI not reviewed.");Native(next+8,native+offset);}else Field(field.Schema, info.FieldType, checked(native + offset), next + 8, depth + 1);next += 12;
             }
             foreach (var info in type.GetFields(BindingFlags.Public | BindingFlags.Instance)) { int at = Offset(type, info); if (Enumerable.Range(at, Size(info.FieldType)).Any(i => !used[i])) throw new InvalidDataException("Behavior native member is not schema-enabled: " + schemaName + "." + info.Name); }
             for (int i = 0; i < used.Length; i++) if (!used[i] && bytes[native + i] != 0) throw new InvalidDataException("Behavior nonzero native padding."); return table;
@@ -172,7 +197,7 @@ public static class Ep1BehaviorMetadataTokenizer
         /** Reborn: only literal sequence/element schema particles are admitted; choices, wildcards and unresolved groups do not become guessed layouts. */
         //-------------------------------------------------------------------------------------------------
         private static void Elements(XmlSchemaParticle particle, List<(string Name, XmlSchemaType Schema, string Reference, bool Repeated)> fields)
-        { if (particle == null) return; if (particle is XmlSchemaSequence sequence) { foreach (XmlSchemaObject child in sequence.Items) { if (child is not XmlSchemaParticle p) throw new InvalidDataException("Behavior particle invalid."); Elements(p, fields); } } else if (particle is XmlSchemaElement e && e.Name != null && e.ElementSchemaType != null) fields.Add((e.Name, e.ElementSchemaType, Reference(e.UnhandledAttributes), e.MaxOccurs > 1 || e.MaxOccursString == "unbounded")); else throw new InvalidDataException("Behavior schema particle is not metadata-enabled."); }
+        { if (particle == null) return; if (particle is XmlSchemaSequence sequence) { foreach (XmlSchemaObject child in sequence.Items) { if (child is not XmlSchemaParticle p) throw new InvalidDataException("Behavior particle invalid."); Elements(p, fields); } } else if(particle is XmlSchemaChoice choice && choice.Items.Count==1 && choice.Items[0] is XmlSchemaElement cost && cost.Name=="BuildCost" && cost.ElementSchemaType?.Name=="MoneyTransaction")Elements(cost,fields);else if (particle is XmlSchemaElement e && e.Name != null && e.ElementSchemaType != null) fields.Add((e.Name, e.ElementSchemaType, Reference(e.UnhandledAttributes), e.MaxOccurs > 1 || e.MaxOccursString == "unbounded")); else throw new InvalidDataException("Behavior schema particle is not metadata-enabled."); }
         //-------------------------------------------------------------------------------------------------
         /** Reborn: all native allocation owners must be disjoint and bounded before any metadata target is emitted. */
         //-------------------------------------------------------------------------------------------------
@@ -207,6 +232,14 @@ public static class Ep1BehaviorMetadataTokenizer
     //-------------------------------------------------------------------------------------------------
     private static uint Signature(string key) => key switch
     {
+        // Reborn: independently observed root-record signatures contain no native offsets or per-asset metadata templates.
+        "MoneyTransaction[]"=>0xB706334D,"SkirmishAIBaseLocation"=>0xCE5B5436,"DamageType"=>0x46486FF1,
+        "WeaponAntiBitFlags"=>0xC8C69390,"EconomyResourceType"=>0x071B12C5,"AISpecialPowerInfo[]"=>0xCBA6C0C2,
+        "AIBaseSelectionCriteria"=>0xC153D5E0,"AudioVoiceEntry[]"=>0x8AA9CB14,"AudioObjectSpecificVoiceEntry[]"=>0xAEDFC4CD,
+        "AudioVoiceReferentialEntry[]"=>0xF8ED487B,"ThingTemplateVoiceType"=>0x4DA708B0,"EvaEventEntry[]"=>0xD7B4DEDB,
+        "EvaEventRef"=>0xC4EC43B1,"ThingTemplateEvaEventType"=>0xC053B716,"ShadowType"=>0x3B581951,
+        "TextureRef"=>0x4C3E3938,"xs:boolean"=>0x77E3F4F7,"xs:byte"=>0x371E5DC2,
+        "CrusherLevelModelConditionInfo[]"=>0x9091F97B,"CrushKillDelayForObjectFilter[]"=>0x038D6BB2,
         "AIAoeAttackPowerEmanationLocation" => 0x33433965, "AIAoeAttackPowerLocationPreference" => 0x0B3BCAE4,
         "AISpecialPowerWeaponData" => 0x43DBA49D, "AITargetLocationBitFlags" => 0x73B8B420, "AIToggleSpecialPowerInfo" => 0xFE374CCD,
         "Angle" => 0x4E16EA4D, "AnimAndDuration" => 0x6B746AF6, "ArmorSetType" => 0x2037048F, "AssetId" => 0x805D25F4,

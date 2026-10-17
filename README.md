@@ -8,6 +8,24 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 17, 2026
 
+The [six remaining populated Conscript root owners](docs/RA3EP1_CONSCRIPT_REMAINING_ROOTS.md)
+now independently match stock native graphs **and generated metadata**: resource
+costs, skirmish AI, voice, EVA, shadow and crusher data. One Core normalization /
+23 strong occurrences / one diagnostic Tracker feeds all six. Their generated
+metadata totals **2,412 bytes**; **43 authored/refusal controls**, **18 native
+corruption refusals** and **30 metadata corruption refusals** pass. EP1-specific
+skirmish, crusher and EVA layouts leave the old KW layouts/dispatch unchanged.
+These owners are not yet joined to the all-49-module selected root below. The
+remaining 16 stock-empty/null root fields and original-source qualification of
+selected root values still need closure before complete Conscript publication.
+Unreviewed populated child variants fail explicitly; no alpha or gameplay
+capability is newly claimed.
+
+Final Focused regression with the official XML root: **70/70** in **434.649
+seconds**; remaining-root group **5.494 seconds**, existing all-module group
+**27.627 seconds**. All eight frozen runtime files remained unchanged; the batch
+build had zero warnings/errors. No Full run, game launch or installation change.
+
 All [49 original Conscript module graphs](docs/RA3EP1_CONSCRIPT_ALL_MODULES.md)
 now independently match stock on **one selected root / one Core table / 248
 strong occurrences / one Tracker**: 36 Behaviors, four Draws, one original
@@ -20,8 +38,8 @@ original root, a general GameObject stream, a playable new-ID package or an alph
 admission expansion. **43** ownership/source/detached/default-profile refusals
 pass; the old public signatures and three-behavior default route remain intact.
 The stock root has 126 named fields: 22 names remain outside this selected
-profile, including six populated pointer owners (resource, skirmish AI, voice,
-Eva, shadow and crusher data). Existing selected root values still also need
+profile. Its six populated pointer owners now have the separate qualification
+above, but are not integrated into this projection. Existing selected root values still also need
 original-source qualification. Next: full original root closure, then asset
 stream publication and controlled gameplay. Final Focused regression:
 **69/69** in **237.026 seconds**; all-module group **15.978 seconds**. Eight

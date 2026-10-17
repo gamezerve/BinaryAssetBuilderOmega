@@ -59,6 +59,13 @@ internal static class Program
             // Reborn: both complete client containers join root/Draws/Body/selected behaviors/common AI on one reference table and Tracker.
             // Reborn: the full 36-leaf survey reports blocked work explicitly instead of treating CLR model presence as native support.
             // Reborn: all original 49 module graphs share one selected partial root without claiming complete root or playable publication.
+            if(args.Length==4 && args[0] is "conscript-remaining-roots-survey" or "conscript-remaining-roots-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();ConscriptRemainingRoots.Run(args[1],args[2],args[3],requireAll:args[0].EndsWith("self-test",StringComparison.Ordinal));return 0;}
+
+            // Reborn: six root-record metadata gates retain explicit discovery/strict separation from full root publication.
+            if(args.Length==4 && args[0] is "conscript-remaining-root-tokens-survey" or "conscript-remaining-root-tokens-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();ConscriptRemainingRoots.Run(args[1],args[2],args[3],requireAll:true,includeTokens:true,requireTokens:args[0].EndsWith("self-test",StringComparison.Ordinal));return 0;}
+
             if(args.Length==4 && args[0]=="gameobject-all-modules-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true);return 0;}
 
@@ -1510,6 +1517,9 @@ internal static class Program
         Console.WriteLine("  conscript-behavior-composition-self-test <official-xml-root> <static.manifest> <global.manifest>");
         // Reborn: explicit whole-module integration remains separate from general full-object support.
         Console.WriteLine("  gameobject-all-modules-self-test <official-xml-root> <static.manifest> <global.manifest>");
+        // Reborn: root-owner native and metadata qualification do not imply complete object publication.
+        Console.WriteLine("  conscript-remaining-roots-self-test <official-xml-root> <static.manifest> <global.manifest>");
+        Console.WriteLine("  conscript-remaining-root-tokens-self-test <official-xml-root> <static.manifest> <global.manifest>");
         // Reborn: native client proof is separate from generated metadata, inheritance execution and playback/publication.
         Console.WriteLine("  ep1-client-behaviors-native-self-test <official-xml-root> <static.manifest> <global.manifest>");
         Console.WriteLine("  ep1-client-behaviors-token-self-test <official-xml-root> <static.manifest> <global.manifest>");

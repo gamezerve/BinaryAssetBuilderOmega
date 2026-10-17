@@ -1,0 +1,29 @@
+using Relo;
+using SageBinaryData;
+using System.IO;
+
+public static partial class Marshaler
+{
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: retain all official SkirmishAI scalars, masks and optional scalar pointers; unreviewed contextual/base-selection/filter child payloads fail closed. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node,Ep1SkirmishAIInformation* objT,Tracker state)
+    {
+        if(node==null)return;foreach(string child in new[]{"AIContextualPower","ConstructionBaseSelectionCriteria","ResourceNodeBaseClosenessTestSelectionCriteria","DodgeWithUnits"})if((node.GetChildNodes(child)?.GetCount()??0)!=0)throw new InvalidDataException("EP1 SkirmishAI populated child not reviewed: "+child);
+        Marshal(node.GetAttributeValue("BaseBuildingLocation","FRONT"),&objT->BaseBuildingLocation,state);Marshal(node.GetAttributeValue("AdditionalRotation","0r"),&objT->AdditionalRotation,state);Marshal(node.GetAttributeValue("BaseBuildingMaxNudges","3"),&objT->BaseBuildingMaxNudges,state);Marshal(node.GetAttributeValue("CrushSpeedBonus","0.0"),&objT->CrushSpeedBonus,state);Marshal(node.GetAttributeValue("OutOfRangePenalty","1.3"),&objT->OutOfRangePenalty,state);
+        Marshal(node.GetAttributeValue("ConquerMetricsOverrideDPS",null),&objT->ConquerMetricsOverrideDPS,state);Marshal(node.GetAttributeValue("ConquerMetricsOverrideDamageType","UNDEFINED"),&objT->ConquerMetricsOverrideDamageType,state);Marshal(node.GetAttributeValue("ConquerMetricsOverrideAntiMask","ANTI_GROUND ANTI_WATER"),&objT->ConquerMetricsOverrideAntiMask,state);Marshal(node.GetAttributeValue("ConquerMetricsOverrideForbiddenAntiMask",""),&objT->ConquerMetricsOverrideForbiddenAntiMask,state);
+        // Reborn: optional defending-mask storage is refused until its independent pointer/mask marshal path is qualified, rather than silently becoming an inline mask.
+        if(node.GetAttributeValue("ConquerMetricsOverrideDefendingAntiMask",null)!=null)throw new InvalidDataException("EP1 SkirmishAI optional defending mask is not yet reviewed.");
+        Marshal(node.GetAttributeValue("ConquerMetricsDpsBonusAgainstDefenses","1.0"),&objT->ConquerMetricsDpsBonusAgainstDefenses,state);Ep1ToggleEnum(node.GetAttributeValue("NearResourceNodeType","ORE"),(uint*)&objT->NearResourceNodeType,state,typeof(Ep1EconomyResourceType),false);Marshal(node.GetAttributeValue("DodgeSafetyDistance","300.0"),&objT->DodgeSafetyDistance,state);Marshal(node.GetAttributeValue("OverrideInnerDistanceToTarget",null),&objT->OverrideInnerDistanceToTarget,state);Marshal(node.GetAttributeValue("OverrideOuterDistanceToTarget",null),&objT->OverrideOuterDistanceToTarget,state);Marshal(node.GetAttributeValue("DodgingRequiredObjectStatus",null),&objT->DodgingRequiredObjectStatus,state);
+        Marshal(node.GetAttributeValue("BlockIfUnpackTargetBuildingCannotBeRebuilt","true"),&objT->BlockIfUnpackTargetBuildingCannotBeRebuilt,state);Marshal(node.GetAttributeValue("UnitBuilderStandardCombatUnit","false"),&objT->UnitBuilderStandardCombatUnit,state);Marshal(node.GetAttributeValue("TargetDuringCrush","false"),&objT->TargetDuringCrush,state);Marshal(node.GetAttributeValue("ContainedMembersProvideWeapon","false"),&objT->ContainedMembersProvideWeapon,state);Marshal(node.GetAttributeValue("CanFireUpCliffs","false"),&objT->CanFireUpCliffs,state);Marshal(node.GetAttributeValue("DoesSecondaryDamage","false"),&objT->DoesSecondaryDamage,state);
+    }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: use EP1 crusher internal offsets and complete scalar/reference/flag source semantics; nonempty extra-crush payload families stay explicitly closed. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node,Ep1CrusherInfo* objT,Tracker state)
+    {
+        if(node==null)return;if((node.GetChildNodes("ExtraCrushLevels")?.GetCount()??0)!=0 || (node.GetChildNodes("ExtraCrushKillDelays")?.GetCount()??0)!=0)throw new InvalidDataException("EP1 populated extra-crush child ABI not reviewed.");
+        Marshal(node.GetAttributeValue("CrusherLevel","0"),&objT->CrusherLevel,state);Marshal(node.GetAttributeValue("CrushableLevel","127"),&objT->CrushableLevel,state);Marshal(node.GetAttributeValue("CrushKnockback","0"),&objT->CrushKnockback,state);Marshal(node.GetAttributeValue("CrushZFactor","1"),&objT->CrushZFactor,state);Marshal(node.GetAttributeValue("MinCrushVelocityPercent","1"),&objT->MinCrushVelocityPercent,state);Marshal(node.GetAttributeValue("CrushDecelerationPercent","0"),&objT->CrushDecelerationPercent,state);Marshal(node.GetAttributeValue("CrushWeapon",null),&objT->CrushWeapon,state);Marshal(node.GetAttributeValue("DefaultCrushKillDelay",".5s"),&objT->DefaultCrushKillDelay,state);
+        Marshal(node.GetAttributeValue("CrushEqualLevelProps","false"),&objT->CrushEqualLevelProps,state);Marshal(node.GetAttributeValue("UseCrushAttack","true"),&objT->UseCrushAttack,state);Marshal(node.GetAttributeValue("CrushOnlyWhileCharging","false"),&objT->CrushOnlyWhileCharging,state);Marshal(node.GetAttributeValue("CrushAllies","false"),&objT->CrushAllies,state);Marshal(node.GetAttributeValue("CrushAircraftWhileStationary","false"),&objT->CrushAircraftWhileStationary,state);Marshal(node.GetAttributeValue("UseDirectionCheck","true"),&objT->UseDirectionCheck,state);Marshal(node.GetAttributeValue("ShouldSquishOnCollide","true"),&objT->ShouldSquishOnCollide,state);Marshal(node.GetAttributeValue("DecelerateForAllCollides","false"),&objT->DecelerateForAllCollides,state);Marshal(node.GetAttributeValue("CannotCrushTarget","false"),&objT->CannotCrushTarget,state);
+    }
+}

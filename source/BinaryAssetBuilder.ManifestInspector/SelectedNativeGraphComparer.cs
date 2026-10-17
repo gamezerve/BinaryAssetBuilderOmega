@@ -119,7 +119,9 @@ internal sealed class SelectedNativeGraphComparer
                 string child = path + "." + field.Name;
                 if (fixedBuffer != null) Equal(a + offset, b + offset, fieldSize, child);
                 else if (field.FieldType.IsPointer)
-                { var pointers = Pointer(a + offset, b + offset, child); if (pointers.A != 0) Visit(field.FieldType.GetElementType()!, pointers.A, pointers.B, child, depth + 1); }
+                { var pointers = Pointer(a + offset, b + offset, child); if (pointers.A != 0) Visit(field.FieldType.GetElementType()!, pointers.A, pointers.B, child, depth + 1);
+                    // Reborn: an independently proven null word can itself be a metadata reference target, as with EP1's empty voice EVA handle; nonnull paths still describe only their real pointees.
+                    else if(captureNativePaths && !NativeRecords.TryAdd(child,(a+offset,b+offset,4)))throw new InvalidDataException("Duplicate contextual null native field path."); }
                 else Visit(field.FieldType, a + offset, b + offset, child, depth + 1);
             }
             for (int i = 0; i < size; i++) if (!used[i]) Equal(a + i, b + i, 1, path + ".padding");
