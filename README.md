@@ -8,6 +8,26 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 18, 2026
 
+The [complete named Conscript root profile](docs/RA3EP1_CONSCRIPT_EMPTY_ROOTS.md)
+now matches **126/126 stock field names and wire tags**, retaining all 49 original
+modules and six populated owners on one Core / **271 occurrences** / one Tracker.
+The remaining sixteen names have independently qualified **five empty list
+tables and eleven null pointer targets**, including native offsets, schema
+optionality/type/cardinality and original-source absence. **102** native/source/
+output refusals pass. BIN/RELO/IMP is **129,848 / 1,860 / 1,088 bytes**, with an
+**89,316-byte metadata prefix**. Populated variants of those sixteen fields are
+explicitly refused. The prior 104-field and 110-field routes remain unchanged.
+**Named-field coverage is not original-value completeness:** selected root
+values (including actual BuildTime/ArmorSet/source inheritance) still require
+qualification before complete original Conscript stream/publication and gameplay.
+This is not 100% SDK completion, a general GameObject compiler or alpha expansion.
+
+Complete-name Focused regression: **72/72** in **612.261 seconds**, two workers;
+126-field group **39.977 seconds**, unchanged 110-field group **40.041 seconds**,
+unchanged 49-module group **39.194 seconds**. Eight frozen runtime hashes stayed
+stable; the batch build had zero warnings/errors. No Full run, game launch or
+installation change. Overlapping regression-case timing is not a mod-build benchmark.
+
 All [49 original Conscript modules and six populated root owners](docs/RA3EP1_CONSCRIPT_COMBINED_OWNERS.md)
 now independently match stock on **one selected root / one Core table / 271
 strong occurrences / one Tracker**. The generated partial projection has **110
@@ -15,10 +35,11 @@ named root fields**, an **89,064-byte metadata prefix**, a **40,532-byte native
 graph**, and **BIN/RELO/IMP = 129,596 / 1,860 / 1,088 bytes**. The combined gate
 passes 46 scope/ownership/output refusals and checks the real composed metadata,
 not a regenerated expected fragment. Existing default and 49-module-only routes
-remain unchanged. The remaining **16 stock-empty/null names** and full original
-root-value/source qualification still block complete original-root publication.
+remain unchanged. At that milestone, **16 stock-empty/null names** and full
+original root-value/source qualification still blocked original-root publication.
 This is not a playable new-ID package, general GameObject admission or an alpha
-capability expansion.
+capability expansion. Its sixteen-name metadata gap is now closed by the
+separate empty-profile gate above; the original-value/source gap is still open.
 
 Combined-owner Focused regression: **71/71** in **643.863 seconds** with two
 workers; combined-owner group **44.474 seconds**, unchanged all-module group
@@ -35,8 +56,8 @@ metadata totals **2,412 bytes**; **43 authored/refusal controls**, **18 native
 corruption refusals** and **30 metadata corruption refusals** pass. EP1-specific
 skirmish, crusher and EVA layouts leave the old KW layouts/dispatch unchanged.
 At that standalone milestone these owners were not yet joined to the all-49-module selected root below; the combined gate above now joins them. The
-remaining 16 stock-empty/null root fields and original-source qualification of
-selected root values still need closure before complete Conscript publication.
+sixteen empty/null metadata fields are now qualified by the complete-name gate;
+original-source qualification of selected values still blocks complete publication.
 Unreviewed populated child variants fail explicitly; no alpha or gameplay
 capability is newly claimed.
 

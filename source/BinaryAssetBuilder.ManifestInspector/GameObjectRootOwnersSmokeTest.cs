@@ -15,13 +15,15 @@ internal static class GameObjectRootOwnersSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: actual original owner sources join the already qualified module source before a single normalization/allocation pass. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(SchemaSet schemas,XmlDocument moduleSource,XmlElement[] objects,XmlDocument definitions,string manifest,ManifestAsset[] catalog,Func<Chunk,Chunk,InstanceDeclaration,int> verifyModules)
+    internal static void Run(SchemaSet schemas,XmlDocument moduleSource,XmlElement[] objects,XmlDocument definitions,string manifest,ManifestAsset[] catalog,Func<Chunk,Chunk,InstanceDeclaration,int> verifyModules,bool includeEmptyRoots=false)
     {
         var stock=GameObjectStockReview.Capture(manifest,"GameObject:SovietAntiInfantryInfantry");var fields=Ep1GameObjectRootOwnersProjection.Fields;int[] lengths={84,336,840,660,228,264};var source=(XmlDocument)moduleSource.CloneNode(true);
         string account=definitions.GetElementsByTagName("Define",SchemaSet.XmlNamespace).OfType<XmlElement>().Single(e=>e.GetAttribute("name")=="ACCOUNT_ORE").GetAttribute("value");if(account!="0")throw new InvalidDataException("Combined original account changed.");
         foreach(var field in fields){var owner=objects.SelectMany(o=>o.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName==field.Name)).Last();var copy=(XmlElement)source.ImportNode(owner,true);if(field.Name=="ObjectResourceInfo")foreach(XmlElement cost in copy.GetElementsByTagName("BuildCost",SchemaSet.XmlNamespace))if(cost.GetAttribute("Account")=="=$ACCOUNT_ORE")cost.SetAttribute("Account",account);source.DocumentElement!.AppendChild(copy);}
         // Reborn: order only the direct root children by the admitted official compiled sequence; nested source order stays intact.
         var rootType=(XmlSchemaComplexType)((XmlSchemaElement)schemas.Schemas.GlobalElements[new XmlQualifiedName("GameObject",SchemaSet.XmlNamespace)]!).ElementSchemaType!;var order=new List<string>();Order(rootType.ContentTypeParticle);foreach(var child in source.DocumentElement!.ChildNodes.OfType<XmlElement>().OrderBy(e=>order.IndexOf(e.LocalName)).ToArray())source.DocumentElement.AppendChild(child);
+        // Reborn: the explicit empty-profile route rejects any populated original or selected source before Core normalization or native allocation.
+        if(includeEmptyRoots){foreach(var original in objects)Ep1GameObjectEmptyRootProjection.ValidateSource(original);Ep1GameObjectEmptyRootProjection.ValidateSource(source.DocumentElement!);}
         var pair=Build(source);var before=Clone(pair.Native);var output=Ep1GameObjectRootOwnersProjection.Compose(pair.Native,schemas.Schemas);int prefix=Verify(output,pair.Native,pair.Instance);var repeat=Build(source);if(!Equal(pair.Native,before) || !Equal(pair.Native,repeat.Native) || !Equal(output,Ep1GameObjectRootOwnersProjection.Compose(repeat.Native,schemas.Schemas)))throw new InvalidDataException("Combined root determinism/input isolation differs.");int refusals=0;
         Refuse(()=>Ep1GameObjectDestructionProjection.Compose(pair.Native,schemas.Schemas));refusals++;
         foreach(var field in fields)
@@ -31,6 +33,8 @@ internal static class GameObjectRootOwnersSmokeTest
         }
         foreach(bool relo in new[]{true,false}){var bad=Clone(pair.Native);if(relo)bad.RelocationBuffer=Array.Empty<byte>();else bad.ImportsBuffer=Array.Empty<byte>();Refuse(()=>Ep1GameObjectRootOwnersProjection.Compose(bad,schemas.Schemas));refusals++;}
         var orphan=Clone(pair.Native);orphan.InstanceBuffer=orphan.InstanceBuffer.Concat(new byte[]{1,0,0,0}).ToArray();Refuse(()=>Ep1GameObjectRootOwnersProjection.Compose(orphan,schemas.Schemas));refusals++;
+        // Reborn: empty/null root metadata is a distinct opt-in; the existing 110-field and original-value boundaries stay intact.
+        if(includeEmptyRoots)GameObjectEmptyRootSmokeTest.Qualify(schemas.Schemas,source,objects,pair.Native,pair.Instance,manifest,Verify);
         Console.WriteLine($"Combined Conscript root owners: PASS (49 modules + six full native/metadata owners; one Core/{pair.Instance.ReferencedInstances.Count} occurrences/one Tracker; 110 selected partial-root fields; BIN/RELO/IMP={output.InstanceBuffer.Length}/{output.RelocationBuffer.Length}/{output.ImportsBuffer.Length}, prefix={prefix}; {refusals} scope/ownership/output refusals; no complete original root, playable publication, game or alpha expansion).");
         //-------------------------------------------------------------------------------------------------
         /** Reborn: schema/identity checks and concrete stock dependency resolution precede one actual Core normalization. */

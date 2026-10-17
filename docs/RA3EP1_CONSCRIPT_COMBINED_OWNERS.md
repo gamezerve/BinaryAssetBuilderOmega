@@ -1,5 +1,10 @@
 # All 49 Conscript modules plus six populated root owners
 
+Subsequent update — October 18: [the complete-name empty/null profile](RA3EP1_CONSCRIPT_EMPTY_ROOTS.md)
+also qualifies the remaining sixteen named metadata fields. That separate route
+retains all 126 stock names/tags, not complete original values. This report
+preserves the unchanged 110-field milestone and its independent compatibility gate.
+
 ## Outcome — October 18, 2026
 
 All 49 original module graphs and the six original populated root owners now
