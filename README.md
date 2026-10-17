@@ -8,6 +8,25 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 18, 2026
 
+The [actual original Conscript diagnostic stream](docs/RA3EP1_CONSCRIPT_ORIGINAL_STREAM.md)
+now writes and independently reads back **one tokenized v7 GameObject**, its
+complete qualified metadata/native graph and **275 ordered external reference
+occurrences**. Real static/global metadata map to explicit runtime paths. Core
+checksum packing, Manifest/Utility readers, deterministic fresh output and
+**580** stream/dependency/profile refusals pass. Default tokenized GameObject
+serialization remains blocked; this is a separate original-identity diagnostic.
+The instance hash is explicitly an experimental normalized-source hash, not a
+full EA processed-document identity. External native closure, arbitrary/new-ID
+authoring, BIG/config packaging and gameplay are not proved by this milestone.
+Next: the authored identity/edit profile and a controlled playable trial package.
+
+Original-stream Focused regression: **74/74** in **409.014 seconds**, four
+isolated workers. The actual-original native/metadata/stream group took
+**77.205 seconds**; unchanged all-module and selected-root groups passed in
+**39.023 / 33.842 seconds**. All eight frozen runtime hashes stayed stable;
+batch build had zero warnings/errors. No Full run, game launch, installation
+change or alpha capability expansion.
+
 The [actual original Conscript metadata](docs/RA3EP1_CONSCRIPT_ORIGINAL_METADATA.md)
 now also passes independent stock qualification: **126/126 root fields**, **21
 disjoint metadata owners**, and the entire **88,824-byte prefix**, retaining the
@@ -17,7 +36,8 @@ corruption controls pass, including every metadata word. The original-only
 route retains null DisplayNameTransformed, Flammability and LiveCameraOffset;
 the previous selected-root route is unchanged. This closes actual-root metadata
 qualification, not stream publication, playable new-ID packaging, general
-inheritance or alpha admission. Next: stream/dependency publication.
+inheritance or alpha admission. Scoped diagnostic stream serialization now
+passes the separate gate above; general production publication remains open.
 
 Original-metadata Focused regression: **74/74** in **389.051 seconds**, four
 isolated workers. The original-native group now also runs full metadata proof
@@ -40,8 +60,8 @@ This exposed **14 incorrect legacy root defaults**, now corrected to official
 RA3/EP1 schema values. An independent direct-marshaler gate checks omitted,
 explicit-default and explicit-zero source vectors, keeping Time seconds distinct
 from raw logic-frame integers. Explicit inherited values remain authoritative.
-Actual-root metadata now passes the separate gate above; stream/dependency
-publication remains next. The earlier 126-name gate below uses the selected
+Actual-root metadata and scoped diagnostic streams now pass the separate gates
+above; general production publication remains open. The earlier 126-name gate uses the selected
 root scenario. Neither milestone makes a playable new-ID package or expands
 alpha admission. No game or installation change.
 

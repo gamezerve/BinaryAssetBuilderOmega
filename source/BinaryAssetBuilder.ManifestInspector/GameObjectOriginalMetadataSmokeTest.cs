@@ -14,7 +14,7 @@ internal static class GameObjectOriginalMetadataSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: stock tables supply names/tags/shape; independently walked typed native records alone translate their native targets. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(XmlSchemaSet schemas,Chunk native,InstanceDeclaration instance,string manifest)
+    internal static Chunk Run(XmlSchemaSet schemas,Chunk native,InstanceDeclaration instance,string manifest)
     {
         var stock=GameObjectStockReview.Capture(manifest,"GameObject:SovietAntiInfantryInfantry");var topology=GameObjectModuleReview.Inspect(manifest,stock.Asset.Name);var oldRows=GameObjectStockReview.Tokens(stock.Bytes,0);var before=Clone(native);
         var output=Ep1GameObjectEmptyRootProjection.ComposeOriginal(native,schemas);int prefix=output.InstanceBuffer.Length-native.InstanceBuffer.Length;var rows=GameObjectStockReview.Tokens(output.InstanceBuffer,0);
@@ -65,6 +65,8 @@ internal static class GameObjectOriginalMetadataSmokeTest
         for(int at=0;at<prefix;at+=4){var bad=Clone(output);bad.InstanceBuffer[at]^=1;Refuse(()=>Verify(bad));refusals++;}foreach(int slot in new[]{408,464,528}){var bad=Clone(native);Put(bad.InstanceBuffer,slot,1);Refuse(()=>Ep1GameObjectEmptyRootProjection.ComposeOriginal(bad,schemas));refusals++;}
         foreach(bool relocation in new[]{true,false}){var bad=Clone(output);if(relocation)bad.RelocationBuffer=Array.Empty<byte>();else bad.ImportsBuffer=Array.Empty<byte>();Refuse(()=>Verify(bad));refusals++;}var changed=Clone(output);changed.InstanceBuffer[prefix+140]^=1;Refuse(()=>Verify(changed));refusals++;
         Console.WriteLine($"Original Conscript metadata: PASS (126/126 original root fields, {tables} disjoint stock-bound metadata owners, full {prefix}-byte prefix; one Core/{instance.ReferencedInstances.Count} occurrences; BIN/RELO/IMP={output.InstanceBuffer.Length}/{output.RelocationBuffer.Length}/{output.ImportsBuffer.Length}; {refusals} output/native refusals; exact native tail inversion; no stream/package/gameplay or general inheritance admission).");
+        // Reborn: only a fully qualified owned output can reach the subsequent scoped stream test.
+        return output;
         //-------------------------------------------------------------------------------------------------
         /** Reborn: a frozen independently stock-qualified oracle supports exhaustive corruption controls without regenerating expected metadata through the producer. */
         //-------------------------------------------------------------------------------------------------

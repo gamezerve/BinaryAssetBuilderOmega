@@ -18,7 +18,7 @@ internal static class GameObjectOriginalNativeSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: replace every synthetic root attribute/child with the captured three-object source chain, retaining the complete already reviewed original module sources. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(SchemaSet schemas,XmlDocument modules,XmlElement[] objects,XmlDocument definitions,string manifest,ManifestAsset[] catalog)
+    internal static void Run(SchemaSet schemas,XmlDocument modules,XmlElement[] objects,XmlDocument definitions,string manifest,ManifestAsset[] catalog,string globalManifest)
     {
         GameObjectRootDefaultSmokeTest.Run(schemas.Schemas);
         var stock=GameObjectStockReview.Capture(manifest,"GameObject:SovietAntiInfantryInfantry");var topology=GameObjectModuleReview.Inspect(manifest,stock.Asset.Name);var source=Assemble();var pair=Build(source);var snapshot=Clone(pair.Native);var proof=Verify(pair.Native,pair.Instance);var repeat=Build(source);if(!Equal(snapshot,pair.Native) || !Equal(pair.Native,repeat.Native))throw new InvalidDataException("Original native repeat/input isolation differs.");int refusals=0;
@@ -30,7 +30,9 @@ internal static class GameObjectOriginalNativeSmokeTest
         edit=(XmlDocument)source.CloneNode(true);edit.DocumentElement!.SetAttribute("UnitTypeIcon","RebornMissingOriginalIcon");Refuse(()=>Build(edit));refusals++;
         Console.WriteLine($"Original Conscript native: PASS (all 600 root bytes and actual root values; {proof.Modules}/49 original modules + six populated owners + geometry; {proof.Relocations} relocation sources/{proof.Imports} imports, one Core/{pair.Instance.ReferencedInstances.Count} occurrences/one Tracker; BIN/RELO/IMP={pair.Native.InstanceBuffer.Length}/{pair.Native.RelocationBuffer.Length}/{pair.Native.ImportsBuffer.Length}; {refusals} native/source refusals; exact whole ownership union, one bounded Script CRLF/LF equivalence; no complete metadata/stream publication, general inheritance or new gameplay).");
         // Reborn: actual-root metadata must qualify independently after whole native ownership, without broadening alpha or publishing a stream.
-        GameObjectOriginalMetadataSmokeTest.Run(schemas.Schemas,pair.Native,pair.Instance,manifest);
+        var tokens=GameObjectOriginalMetadataSmokeTest.Run(schemas.Schemas,pair.Native,pair.Instance,manifest);
+        // Reborn: publish only a fresh diagnostic stream after complete native and metadata qualification; game packaging remains closed.
+        GameObjectOriginalStreamSmokeTest.Run(tokens,pair.Instance,manifest,globalManifest);
         //-------------------------------------------------------------------------------------------------
         /** Reborn: explicit attribute override, additive ArmorSet/LocomotorSet and last direct singleton selection are qualified only for this captured chain by independent native stock equality. */
         //-------------------------------------------------------------------------------------------------

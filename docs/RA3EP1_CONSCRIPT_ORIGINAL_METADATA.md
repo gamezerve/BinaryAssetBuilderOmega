@@ -102,8 +102,9 @@ batch build. Timings include overlapping diagnostics, not a mod-build benchmark.
 
 ## Remaining gate
 
-This does **not** yet write/validate an original-root GameObject stream with
-its dependency publication, expose arbitrary new GameObject IDs in the alpha,
-produce a playable custom Conscript package, execute LUA, or launch the game.
-The next step is the stream/dependency publication gate using this now-qualified
-native/metadata pair, followed by a controlled new-ID gameplay test.
+This metadata proof alone does not publish a stream. The subsequent
+[scoped original Conscript stream proof](RA3EP1_CONSCRIPT_ORIGINAL_STREAM.md)
+now writes and independently reads back the qualified pair with its ordered
+external metadata references. General production dependency publication,
+arbitrary/new-ID GameObject authoring, playable packaging, LUA execution and
+gameplay remain separate gates.

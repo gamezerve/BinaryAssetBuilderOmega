@@ -199,11 +199,27 @@ internal static class BoundedDiagnosticBuild
     /** Reborn: serialize admitted root entries, ordered references and native streams into owned memory before staging publication. */
     //-------------------------------------------------------------------------------------------------
     internal static Dictionary<string, byte[]> Serialize(InstanceDeclaration[] ordered, AssetBuffer[] chunks, uint checksum, ReferencedFileBuffer runtime, bool[]? tokenized = null)
+        =>SerializeCore(ordered,chunks,checksum,runtime,tokenized,false);
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: opt in only the independently qualified original Conscript diagnostic; the general serializer still refuses tokenized GameObjects. */
+    //-------------------------------------------------------------------------------------------------
+    internal static Dictionary<string,byte[]> SerializeOriginalConscript(InstanceDeclaration instance,AssetBuffer chunk,uint checksum,ReferencedFileBuffer runtime)
+    {
+        if(instance.Handle.Name!="GameObject:SovietAntiInfantryInfantry" || instance.Handle.InstanceId!=InstanceHandle.GetInstanceId("SovietAntiInfantryInfantry") || instance.Handle.TypeId!=0x942FFF2Du || instance.Handle.TypeHash!=0xCEB9FE36u || instance.Handle.InstanceHash==0
+            || instance.ValidatedReferencedInstances?.Count!=275 || !instance.ValidatedReferencedInstances.SequenceEqual(instance.ReferencedInstances) || chunk.InstanceData.Length!=128184 || chunk.RelocationData.Length!=1800 || chunk.ImportsData.Length!=1104)
+            throw new InvalidDataException("Original Conscript diagnostic stream profile differs.");
+        return SerializeCore(new[]{instance},new[]{chunk},checksum,runtime,new[]{true},true);
+    }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: share byte serialization without broadening default tokenized admission; the explicit Conscript route is diagnostic-only and single-entry. */
+    //-------------------------------------------------------------------------------------------------
+    private static Dictionary<string,byte[]> SerializeCore(InstanceDeclaration[] ordered,AssetBuffer[] chunks,uint checksum,ReferencedFileBuffer runtime,bool[]? tokenized,bool originalConscript)
     {
         // Reborn: preserve non-tokenized defaults; only the independently characterized armor fingerprint may opt into tokenized diagnostic writing.
         tokenized ??= new bool[ordered.Length];
         if (tokenized.Length != ordered.Length || chunks.Length != ordered.Length
-            || ordered.Where((instance, index) => tokenized[index] && (instance.Handle.TypeId != 0x3A6C5E8Eu || instance.Handle.TypeHash != 0xA0E237D8u)).Any())
+            || ordered.Where((instance, index) => tokenized[index] && (instance.Handle.TypeId != 0x3A6C5E8Eu || instance.Handle.TypeHash != 0xA0E237D8u)
+                && !(originalConscript && ordered.Length==1 && instance.Handle.TypeId==0x942FFF2Du && instance.Handle.TypeHash==0xCEB9FE36u)).Any())
             throw new InvalidDataException("Diagnostic tokenized profile differs.");
         using MemoryStream names = new(), sources = new(), references = new(), entries = new();
         using BinaryWriter refWriter = new(references, Encoding.UTF8, true);
