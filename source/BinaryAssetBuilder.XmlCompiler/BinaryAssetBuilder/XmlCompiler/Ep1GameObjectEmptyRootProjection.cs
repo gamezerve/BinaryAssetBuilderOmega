@@ -34,18 +34,29 @@ public static class Ep1GameObjectEmptyRootProjection
     /** Reborn: preserve the full selected native graph and prior 110-field route; emit five count-marker tables and eleven null targets without inventing child allocations. */
     //-------------------------------------------------------------------------------------------------
     public static Chunk Compose(Chunk native,XmlSchemaSet schemas)
+        =>ComposeCore(native,schemas,false);
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: the original Conscript profile also retains three absent pointer declarations; this opt-in does not change the selected-root producer or admit populated variants. */
+    //-------------------------------------------------------------------------------------------------
+    public static Chunk ComposeOriginal(Chunk native,XmlSchemaSet schemas)
+        =>ComposeCore(native,schemas,true);
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: one insertion pass emits reviewed empty contracts, copying the native graph once without stock templates or captured asset coordinates. */
+    //-------------------------------------------------------------------------------------------------
+    private static Chunk ComposeCore(Chunk native,XmlSchemaSet schemas,bool original)
     {
         if(native?.InstanceBuffer==null || native.InstanceBuffer.Length<600)throw new InvalidDataException("Bounded empty-root native input required.");
-        foreach(var field in Fields)for(int at=field.Slot;at<field.Slot+(field.List?8:4);at+=4)if(Word(native.InstanceBuffer,at)!=0)throw new InvalidDataException("Populated empty-profile native storage: "+field.Name);
+        var fields=original?Fields.Concat(new[]{new Field("DisplayNameTransformed",408,0x1A2933AA,false),new Field("Flammability",464,0x10444D6C,false),new Field("LiveCameraOffset",528,0x29368077,false)}).ToArray():Fields.ToArray();
+        foreach(var field in fields)for(int at=field.Slot;at<field.Slot+(field.List?8:4);at+=4)if(Word(native.InstanceBuffer,at)!=0)throw new InvalidDataException("Populated empty-profile native storage: "+field.Name);
         var old=Ep1GameObjectRootOwnersProjection.Compose(native,schemas);int oldPrefix=old.InstanceBuffer.Length-native.InstanceBuffer.Length,insert=0;
         for(;insert<oldPrefix;insert+=12)if(Word(old.InstanceBuffer,insert)==0 && Word(old.InstanceBuffer,insert+4)==0 && Word(old.InstanceBuffer,insert+8)==0)break;
-        if(insert>=oldPrefix)throw new InvalidDataException("Empty-root base sentinel absent.");int extra=Fields.Count*12,prefix=oldPrefix+extra+Fields.Count(f=>f.List)*12;var result=new Chunk{InstanceBuffer=new byte[prefix+native.InstanceBuffer.Length]};
+        if(insert>=oldPrefix)throw new InvalidDataException("Empty-root base sentinel absent.");int extra=fields.Length*12,prefix=oldPrefix+extra+fields.Count(f=>f.List)*12;var result=new Chunk{InstanceBuffer=new byte[prefix+native.InstanceBuffer.Length]};
         old.InstanceBuffer.AsSpan(0,insert).CopyTo(result.InstanceBuffer);old.InstanceBuffer.AsSpan(insert,oldPrefix-insert).CopyTo(result.InstanceBuffer.AsSpan(insert+extra));
         for(int at=8;at<oldPrefix;at+=12){uint target=Word(old.InstanceBuffer,at);if(target!=0)Put(result.InstanceBuffer,at+(at<insert?0:extra),target<oldPrefix?target+(uint)(target>=insert?extra:0):target-(uint)oldPrefix+(uint)prefix);}
         int table=oldPrefix+extra;
-        for(int i=0;i<Fields.Count;i++)
+        for(int i=0;i<fields.Length;i++)
         {
-            var field=Fields[i];int row=insert+i*12;Put(result.InstanceBuffer,row,FastHash.GetHashCode(field.Name));Put(result.InstanceBuffer,row+4,field.Wire);
+            var field=fields[i];int row=insert+i*12;Put(result.InstanceBuffer,row,FastHash.GetHashCode(field.Name));Put(result.InstanceBuffer,row+4,field.Wire);
             if(field.List){Put(result.InstanceBuffer,row+8,(uint)table);Put(result.InstanceBuffer,table,0x6C827073);Put(result.InstanceBuffer,table+4,0x5D448FD8);Put(result.InstanceBuffer,table+8,(uint)(prefix+field.Slot));table+=12;}
         }
         // Reborn: the prior producer already proves exact native/auxiliary ownership; reuse its transformed tail once and shift its native pointer words by only the additional prefix delta.

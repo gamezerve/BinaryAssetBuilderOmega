@@ -27,10 +27,11 @@ ignored. Stock's native slice is 39,364 bytes; address layout, string allocation
 and bounded Script line endings need not produce a byte-identical heap. The
 complete typed/ownership proof, not equal file length, establishes this gate.
 
-**Boundary:** this milestone does not generate/qualify complete token metadata
-for the actual root, publish its GameObject stream, create a playable new-ID
-package, execute LUA or expand exported alpha admission. The existing 126-name
-metadata profile remains a separately qualified selected-root scenario.
+**Native-only milestone boundary:** this proof does not itself qualify token
+metadata, publish a GameObject stream, create a playable new-ID package, execute
+LUA or expand exported alpha admission. The subsequent
+[actual-root metadata proof](RA3EP1_CONSCRIPT_ORIGINAL_METADATA.md) now closes
+the metadata gap separately; stream publication and gameplay remain open.
 
 ## Explicit original source assembly
 

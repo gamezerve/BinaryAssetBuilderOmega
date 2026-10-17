@@ -8,6 +8,23 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 18, 2026
 
+The [actual original Conscript metadata](docs/RA3EP1_CONSCRIPT_ORIGINAL_METADATA.md)
+now also passes independent stock qualification: **126/126 root fields**, **21
+disjoint metadata owners**, and the entire **88,824-byte prefix**, retaining the
+already qualified complete native graph and one Core / **275 occurrences**.
+BIN/RELO/IMP is **128,184 / 1,800 / 1,104 bytes**. **22,212** metadata/native
+corruption controls pass, including every metadata word. The original-only
+route retains null DisplayNameTransformed, Flammability and LiveCameraOffset;
+the previous selected-root route is unchanged. This closes actual-root metadata
+qualification, not stream publication, playable new-ID packaging, general
+inheritance or alpha admission. Next: stream/dependency publication.
+
+Original-metadata Focused regression: **74/74** in **389.051 seconds**, four
+isolated workers. The original-native group now also runs full metadata proof
+and took **79.091 seconds**; the previous 126-field selected-root group passed
+in **46.883 seconds**. All eight frozen runtime hashes stayed stable; the batch
+build had zero warnings/errors. No Full run, game launch or installation change.
+
 The [actual original Conscript native graph](docs/RA3EP1_CONSCRIPT_ORIGINAL_NATIVE.md)
 now independently matches stock semantics: **all 600 root bytes / actual root
 values / all 49 modules / six populated owners / geometry**, compiled on one
@@ -23,10 +40,10 @@ This exposed **14 incorrect legacy root defaults**, now corrected to official
 RA3/EP1 schema values. An independent direct-marshaler gate checks omitted,
 explicit-default and explicit-zero source vectors, keeping Time seconds distinct
 from raw logic-frame integers. Explicit inherited values remain authoritative.
-Next: complete metadata for this **actual** root and its stream/dependency
-publication. The existing 126-name metadata gate below still uses the selected
-root scenario; native closure does not yet make a playable new-ID package or
-expand alpha admission. No game or installation change.
+Actual-root metadata now passes the separate gate above; stream/dependency
+publication remains next. The earlier 126-name gate below uses the selected
+root scenario. Neither milestone makes a playable new-ID package or expands
+alpha admission. No game or installation change.
 
 Original-native Focused regression: **74/74** in **402.885 seconds**, four
 isolated workers; original-native group **59.483 seconds**, default-vector
@@ -45,7 +62,8 @@ output refusals pass. BIN/RELO/IMP is **129,848 / 1,860 / 1,088 bytes**, with an
 explicitly refused. The prior 104-field and 110-field routes remain unchanged.
 At this earlier named-field milestone, selected root values still required
 original-source qualification. The actual native-value gate above now passes;
-complete original metadata/stream publication and gameplay still remain open.
+complete original metadata now passes too; stream publication and gameplay
+remain open.
 This is not 100% SDK completion, a general GameObject compiler or alpha expansion.
 
 Complete-name Focused regression: **72/72** in **612.261 seconds**, two workers;
@@ -65,7 +83,8 @@ remain unchanged. At that milestone, **16 stock-empty/null names** and full
 original root-value/source qualification still blocked original-root publication.
 This is not a playable new-ID package, general GameObject admission or an alpha
 capability expansion. Its sixteen-name metadata gap is now closed by the
-separate empty-profile gate above; the original-value/source gap is still open.
+separate empty-profile gate above; the actual original-value and metadata gates
+now pass as well. General source semantics and stream publication remain open.
 
 Combined-owner Focused regression: **71/71** in **643.863 seconds** with two
 workers; combined-owner group **44.474 seconds**, unchanged all-module group
