@@ -108,7 +108,21 @@ root using `inventory.json` for the path map. This full local backup is ignored
 by Git; it is not a public release or a permanent requirement to keep every
 generated DLL uncompressed. Cleanup does not erase the only copy of mod inputs.
 
-The initial plan selected 311 generated directories / 117,989 files /
-2,527,122,802 bytes, before compression, while retaining live dependencies.
-Actual completion metrics are recorded after verified cleanup, not inferred
-from this plan.
+## Completed cleanup — October 18, 2026
+
+The verified cleanup removed 311 generated directories / 117,989 files /
+2,527,122,802 bytes. No dated UprisingAlpha/UprisingOverlay sibling remains.
+The eleven retained artifact directories plus the new LegacyLaunches directory
+remain in place. This is a completed deletion result, not just a plan.
+
+The complete SHA-256-verified backup is
+`.maintenance/cleanup-20261018-023556-d6453cf2/complete-experiments.zip`
+(598,878,956 bytes), with a 70,393,554-byte `inventory.json` and `result.json`
+alongside it. Originals remain recoverable, including any old editable mod XML.
+Approximately 1.86 GB is reclaimed after accounting for the compressed backup
+and inventory. Do not delete this only full backup merely to save more space.
+
+Game/source/reference installations and the live alpha were not cleanup targets.
+Historical launch package hashes were checked before their old SDK containers
+were removed. The learned limitations above and existing technical reports stay
+in Git; the local archive is not published.

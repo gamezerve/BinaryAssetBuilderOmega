@@ -20,6 +20,12 @@ See [supported alpha input](alpha/README.md) and
 The Conscript developer proof below does not yet enable general GameObjects
 in the Studio build profile.
 
+Obsolete generated SDK/artifact snapshots have been consolidated: 311 directories
+and 117,989 files were removed only after complete archive/hash verification.
+The recoverable local backup and inventory reduce net storage by approximately
+1.86 GB. Live mod sources, required test inputs and runtime evidence were retained;
+see the maintenance report above for the exact archive location and recovery policy.
+
 **User-confirmed gameplay:** the SKUDef-only trial worked and the Conscript
 was reported produced in approximately **one second**, matching authored
 BuildTime=1 rather than stock 4. This supplies the first gameplay evidence for
