@@ -18,8 +18,10 @@ This remains a repository-linked local alpha, not a portable public release.
 See [supported alpha input](alpha/README.md) and
 [maintenance / retained lessons](docs/RA3EP1_LIVE_ALPHA_AND_RETENTION.md).
 Studio now lists only the user's **Reborn** and the developer's **RebornTest**.
-RebornTest contains the complete original-ID Conscript BuildTime=1 XML and a
-bounded real source-build route. Other GameObject edits remain unsupported;
+RebornTest contains the complete original-ID Conscript XML with six editable
+scalars: BuildTime, cost Amount, MaxHealth, VisionRange, ShroudClearingRange and
+LocomotorSet Speed. See [ranges and grouped trial](docs/RA3EP1_CONSCRIPT_SCALARS.md).
+The bounded real source-build route still rejects other GameObject changes;
 this is not general GameObject authoring. Automated regressions reuse RebornTest
 and leave the user's Reborn source and outputs untouched. Old armor/weapon
 samples are retained as fixtures outside the Studio mod list.

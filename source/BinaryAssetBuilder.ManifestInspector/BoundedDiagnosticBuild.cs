@@ -211,17 +211,26 @@ internal static class BoundedDiagnosticBuild
         return SerializeCore(new[]{instance},new[]{chunk},checksum,runtime,new[]{true},true);
     }
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: admit only two reviewed BuildTime=1 trial identities, separately from the unchanged original-stock and ordinary serializer routes. */
+    /** Reborn: admit only two reviewed Conscript identities with six checked scalar values, separately from unchanged stock and ordinary serializer routes. */
     //-------------------------------------------------------------------------------------------------
     internal static Dictionary<string,byte[]> SerializeConscriptTrial(InstanceDeclaration instance,AssetBuffer chunk,uint checksum,ReferencedFileBuffer runtime)
     {
         string id=instance.XmlNode.Attributes?["id"]?.Value??"";
         if(id is not ("SovietAntiInfantryInfantry" or "RebornConscriptTrial") || instance.Handle.Name!="GameObject:"+id || instance.Handle.InstanceId!=InstanceHandle.GetInstanceId(id)
-            || instance.XmlNode.Attributes?["BuildTime"]?.Value!="1" || instance.Handle.TypeId!=0x942FFF2Du || instance.Handle.TypeHash!=0xCEB9FE36u || instance.Handle.InstanceHash==0
+            || instance.Handle.TypeId!=0x942FFF2Du || instance.Handle.TypeHash!=0xCEB9FE36u || instance.Handle.InstanceHash==0
             || instance.ValidatedReferencedInstances?.Count!=275 || !instance.ValidatedReferencedInstances.SequenceEqual(instance.ReferencedInstances)
             || chunk.InstanceData.Length!=128184 || chunk.RelocationData.Length!=1800 || chunk.ImportsData.Length!=1104
-            || BinaryPrimitives.ReadUInt32LittleEndian(chunk.InstanceData.AsSpan(88824+140,4))!=0x3F800000u)
+            )
             throw new InvalidDataException("Conscript authored trial profile differs.");
+        // Reborn: check each authored scalar again at serialization; source/native ownership was qualified before this explicit route.
+        var source=new System.Xml.XmlDocument{PreserveWhitespace=true,XmlResolver=null};source.LoadXml(instance.XmlNode.OuterXml);
+        int[] offsets=ConscriptEditableScalars.Offsets(chunk.InstanceData.AsSpan(88824).ToArray(),88824);
+        for(int i=0;i<offsets.Length;i++)
+        {
+            ConscriptEditableScalars.Read(source,ConscriptEditableScalars.Fields[i]);
+            if(BinaryPrimitives.ReadUInt32LittleEndian(chunk.InstanceData.AsSpan(88824+offsets[i],4))!=ConscriptEditableScalars.Bits(source,ConscriptEditableScalars.Fields[i]))
+                throw new InvalidDataException("Serialized Conscript scalar differs.");
+        }
         return SerializeCore(new[]{instance},new[]{chunk},checksum,runtime,new[]{true},true);
     }
     //-------------------------------------------------------------------------------------------------

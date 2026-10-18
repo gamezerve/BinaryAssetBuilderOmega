@@ -27,13 +27,18 @@ Restart an already-open Studio once to enable this update; earlier uncontained b
 <h2>Your mod and developer tests</h2>
 <p><b>Reborn</b> belongs to the user. Automated developer tests do not modify or build it.
 <b>RebornTest</b> is the reusable developer slot. Previous sample mods are now regression fixtures outside this list.</p>
-<h2>Conscript BuildTime=1</h2>
+<h2>Conscript: six editable scalars</h2>
 <p>Select <b>RebornTest</b> and click <b>Build Mod</b>. Its data/mod.xml contains the complete original-ID
-SovietAntiInfantryInfantry Conscript with BuildTime=1. The selected XML is compiled through Core, native ownership,
+SovietAntiInfantryInfantry Conscript. The selected XML is compiled through Core, native ownership,
 metadata and reference/stream checks before a fresh BIG is published. This is not a cached BIG export.</p>
-<p>Only this exact reviewed source profile is admitted. Other edits, arbitrary GameObjects, mixed assets and recruitable new identities
+<!-- Reborn: distinguish editable source fields from unchanged identity/dependency/graph restrictions and unproven new gameplay values. -->
+<p>Editable attributes: GameObject BuildTime (0.1–600), ObjectResourceInfo/BuildCost Amount (integer 0–100000),
+Body/ActiveBody MaxHealth (1–100000), VisionInfo VisionRange and ShroudClearingRange (1–5000),
+LocomotorSet Speed (1–500). Keep the rest of the supplied XML unchanged.
+RebornTest grouped trial: time=1, cost=25, health=500, vision=350, shroud=650, speed=90.</p>
+<p>Other edits, arbitrary GameObjects, mixed assets and recruitable new identities
 are not enabled. ALPHA005 reports this limitation. UprisingXmlRoot in uprising-alpha.paths must point to matching official Uprising XML.
-The earlier matching package has user-observed one-second production; a new build is not a new gameplay test.</p>
+The earlier BuildTime=1-only package has user-observed one-second production; the new grouped scalar profile needs gameplay testing.</p>
 <h2>Other supported input profiles</h2>
 <p>The original Reborn sample uses Allied GUN=5000. Archived ArmorCannon uses CANNON=5000 and GUN=100.
 The archived CombinedArmor fixture contains Allied GUN=250 and Soviet GUN=5000 together.
@@ -67,7 +72,7 @@ Child replacement by Damage, same-ID source shadowing, definition overrides,
 arbitrary expressions/all Includes, reference Includes and nonempty Tags are rejected.
 Read README.md for supported source forms. Old sample routes remain unchanged.</p>
 <h2>Not supported by this alpha</h2>
-<p>General GameObject edits beyond the exact Conscript profile, other asset types, mixed armor/weapon streams, models, textures, music, maps,
+<p>General GameObject edits beyond the six Conscript scalars, other asset types, mixed armor/weapon streams, models, textures, music, maps,
 LOD selection, STR processing, automatic installation and game launch are not build-enabled here.</p>
 <h2>Configuration and prerequisites</h2>
 <p>uprising-alpha.paths contains literal absolute paths: PowerShell7, Driver, StaticManifest, GlobalManifest, CompilerDirectory and UprisingXmlRoot.

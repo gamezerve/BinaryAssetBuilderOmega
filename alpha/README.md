@@ -38,20 +38,38 @@ Only two mod folders belong in the Studio list:
 
 - `Reborn`: the user's mod. Developer tests do not change its sources or build its outputs.
 - `RebornTest`: the developer's reusable test mod. Its current `data/mod.xml`
-  contains the complete original-ID Conscript with **BuildTime=1**.
+  contains the complete original-ID Conscript with six editable numeric fields.
 
 Select **RebornTest → Build Mod** to compile that Conscript from the selected
 XML through Core, including complete native/metadata/reference/stream checks.
 The output is `alpha/builtmods/RebornTest/RebornTest.big` and `mod_1.0.skudef`.
-This is not a cached trial-BIG export. The generated BIG must reproduce the
-previous game-observed candidate. A fresh run is not a new gameplay observation.
+This is not a cached trial-BIG export. The unchanged BuildTime=1 regression fixture
+must still reproduce the previous game-observed candidate. New scalar values are
+offline-qualified, not new gameplay observations.
 
-This Conscript route accepts only the exact reviewed original identity and
-BuildTime=1 source profile. Other changes, arbitrary GameObjects, additional
+This Conscript route accepts the reviewed original identity and six scalar edits.
+Other changes, arbitrary GameObjects, additional
 assets and new-ID recruitment still fail; this is not a general unit compiler.
 It additionally needs `UprisingXmlRoot` in the local paths file, pointing to the
 matching official Uprising XML directory. Preserve the supplied complete XML;
 unreviewed changes are rejected, not silently ignored. ALPHA005 marks this scope.
+
+| XML location | Editable attribute | Alpha range |
+| --- | --- | --- |
+| GameObject | BuildTime | 0.1–600 |
+| ObjectResourceInfo/BuildCost | Amount | integer 0–100000 |
+| Body/ActiveBody | MaxHealth | 1–100000 |
+| VisionInfo | VisionRange | 1–5000 |
+| VisionInfo | ShroudClearingRange | 1–5000 |
+| LocomotorSet | Speed | 1–500 |
+
+Keep all other XML, identities and linked references as supplied. The current
+RebornTest grouped trial uses time=1, cost=25, health=500, vision=350, shroud=650
+and speed=90 (stock: 4, 100, 100, 200, 500 and 50 respectively).
+Speed is the existing GameObject LocomotorSet speed; the referenced locomotor
+asset is not replaced. Decimal/scientific finite values are accepted except cost.
+These are conservative alpha admission ranges, not assertions of engine limits.
+See [qualification and gameplay checklist](../docs/RA3EP1_CONSCRIPT_SCALARS.md).
 
 Previous armor/AK47 samples now live under `tests/fixtures/live-alpha/`, outside
 the Studio mod list. Automated checks run them sequentially through RebornTest
