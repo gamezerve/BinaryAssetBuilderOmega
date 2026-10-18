@@ -12,8 +12,10 @@ There is **no automatic LogicCommand generation**. Read the
 inheritance, source aliases, omission rules or arbitrary modules.
 
 DATA/ART/AUDIO use mod-first, then stock SDK lookup; DATA defaults to adjacent
-SageXML. The local ignored paths file explicitly points SdkDataRoot at the existing
-Uprising XML library instead of copying it. ART basename lookup tries direct mod
+SageXML. This local SDK now contains an exact original Uprising source copy there;
+the external SdkDataRoot override is removed, and UprisingXmlRoot uses the same
+local copy. The stock library is ignored by Git pending redistribution review.
+ART basename lookup tries direct mod
 Art, mod two-character fanout, then SDK fanout. AUDIO searches mod then SDK Audio.
 See [source search details](../docs/RA3EP1_SOURCE_SEARCH.md). Locating resources
 does not yet enable W3X/audio compilation.

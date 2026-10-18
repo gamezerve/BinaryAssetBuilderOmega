@@ -19,14 +19,26 @@ paths fail; they do not authorize falling through to a stock file.
 
 ## Local development stock library
 
-The portable default data library is `alpha/SageXML`. This checkout has not copied
-the entire EA XML library there. Its local ignored `alpha/uprising-alpha.paths`
-explicitly sets `SdkDataRoot` to the existing official Uprising XML directory.
-That replaces only the stock DATA root; mod Data still has priority.
-Removing that setting restores the adjacent SageXML layout. This setting is
-independent of `UprisingXmlRoot`, which remains the native qualification fixture
-input. Stock ART/AUDIO roots are `alpha/Art` and `alpha/Audio`; RA3 resources are
-not silently substituted for Uprising resources.
+The default data library is `alpha/SageXML`. This local SDK now contains an exact
+copy of the original Uprising XML source directory, preserving its subdirectories
+and accompanying map/helper files. The external `SdkDataRoot` override has been
+removed: DATA now falls back directly to the adjacent SageXML directory. The
+native qualification input `UprisingXmlRoot` also points at this local copy.
+The original OneDrive source directory is not edited or moved.
+
+`SdkDataRoot` remains an optional override for other installations; mod Data still
+has priority. Stock ART/AUDIO roots are `alpha/Art` and `alpha/Audio`; RA3 resources
+are not silently substituted for Uprising resources. Having the source XML library
+locally does not supply the separate ART/AUDIO libraries or enable their processors.
+The local original EA library is ignored by Git pending redistribution review;
+ordinary source commits do not publish it to GitHub.
+
+Local copy verification: **7,758 files, including 7,113 XML files**, totaling
+528,352,494 bytes. Every copied file's SHA-256 matched its original; the copy is
+an ordinary local tree, not a junction/link to OneDrive. The complete source
+directory was retained, including map/helper files rather than XML-only filtering.
+Studio loading and the complete RebornTest native/package build passed using
+this local library; the published BIG retained the previously verified SHA-256.
 
 The reference RA3 `defaultscript.cs` passes ordered `/data`, `/art`, `/audio`
 lists with mod paths before SDK SageXml/Art/Audio. Its inherited

@@ -17,8 +17,8 @@ emitted. General derived child merges and official ART/W3X resource closure rema
 disabled. See [precise source support and omission/order rules](docs/RA3EP1_EA_SOURCE_FRONTEND.md).
 
 **SDK source lookup:** DATA/ART/AUDIO now use explicit mod-first, stock-SDK
-fallback search. DATA defaults to adjacent SageXML; this local checkout explicitly
-uses the existing official Uprising XML library via SdkDataRoot. Resource lookup
+fallback search. This local SDK contains the original Uprising source copy under
+`alpha/SageXML`, using adjacent stock DATA lookup without an external override. Resource lookup
 does not enable resource compilation. See [exact search order](docs/RA3EP1_SOURCE_SEARCH.md).
 
 **One live alpha SDK:** open `alpha/EALAModStudio.exe`, edit the selected mod's

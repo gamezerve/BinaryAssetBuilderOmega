@@ -390,4 +390,6 @@ MigrationBackup/
 /alpha/EULA for RA3 MOD SDK.rtf
 /alpha/uprising-alpha.paths
 /alpha/toolchain.json
+# Reborn: local original EA source library is copied for SDK use, not published before redistribution review.
+/alpha/SageXML/
 /.maintenance/
