@@ -11,8 +11,10 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 **Explicit EA XML frontend:** RebornTest now uses an AssetDeclaration `mod.xml`
 including `Conscript.xml` and `CommandData.xml`. No LogicCommand is generated
 implicitly. XML headers/namespaces/local all-XML includes and attribute order
-are accepted; full original Conscript inheritance/DATA/ART/W3X preprocessing is
-still not connected. See [precise source support and omission/order rules](docs/RA3EP1_EA_SOURCE_FRONTEND.md).
+are accepted. RebornTest now also uses actual instance inheritance from
+`ConscriptBase.xml` and a `DATA:Defines.xml` BuildTime definition. The base is not
+emitted. General derived child merges and official ART/W3X resource closure remain
+disabled. See [precise source support and omission/order rules](docs/RA3EP1_EA_SOURCE_FRONTEND.md).
 
 **One live alpha SDK:** open `alpha/EALAModStudio.exe`, edit the selected mod's
 `alpha/mods/<name>/data/mod.xml`, then use **Build Mod**. Successful builds reuse

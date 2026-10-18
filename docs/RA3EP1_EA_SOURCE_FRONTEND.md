@@ -11,7 +11,9 @@ Use only **alpha/EALAModStudio.exe → RebornTest → Build Mod**.
 
 - `alpha/mods/RebornTest/data/mod.xml`: XML declaration, EA AssetDeclaration,
   namespace declarations, empty Tags and two explicit all-XML Includes.
-- `Conscript.xml`: EA AssetDeclaration containing the complete flattened unit.
+- `Conscript.xml`: attribute-only derived unit, with explicit instance base and imported definition.
+- `ConscriptBase.xml`: complete authored Conscript base; imported for inheritance, never emitted as an asset.
+- `Defines.xml`: `REBORN_CONSCRIPT_BUILD_TIME=2`, referenced as `=$REBORN_CONSCRIPT_BUILD_TIME`.
 - `CommandData.xml`: EA AssetDeclaration containing the explicit existing
   construction-command override and its `<Object>RebornConscriptTrial</Object>`.
 
@@ -37,9 +39,11 @@ command IDs can be compiled but do not acquire consumers automatically.
 | Custom GameObject/command IDs | ASCII identifiers, 1–128 characters; stock GameObject collisions other than the explicit Conscript override refuse |
 | GameObject edits | Still only the six scalar fields plus ID, on the complete Conscript shape |
 | LogicCommand | Explicit UNIT_BUILD with one Object targeting the same local GameObject; no options/special payloads |
-| inheritFrom / instance/reference includes | Not connected to this GameObject frontend yet; explicit error |
-| Defines / $ expressions in this GameObject frontend | Not connected yet; no substitution/pretended success |
-| DATA:/ART: aliases / W3X processing | Not connected; explicit error |
+| inheritFrom / instance includes | Actual Core inheritance, including captured base chains; derived Conscript must be attribute-only and resolved output must retain the admitted complete shape |
+| reference includes | Not enabled; explicit error |
+| Defines / $ expressions | Existing bounded definition engine, including imported metadata definitions and `=$NAME` substitutions before inheritance; not arbitrary expression execution |
+| DATA: XML alias | Mod data root only; no implicit fallback to official source directories |
+| ART:/AUDIO: aliases / W3X processing | Not connected to this frontend; explicit error, no skipped model sources |
 | xi:include execution | Not connected; explicit error |
 | Nonempty Tags | Not enabled; explicit error |
 | Arbitrary module additions/removals/edits | Not enabled by accepting an EA document envelope |
@@ -83,9 +87,32 @@ explicit captured command. All source hashes are rechecked before publication.
 Final build receipts expose `AutomaticCommandGenerated=false` and AuthoredSources.
 Temporary frontend paths, like other backend paths, remain provenance only.
 
-Next major frontend work: connect existing inheritance/definition preparation to
-GameObjects, then resource/source-root resolution, rather than adding more magic
-unit profiles. Full arbitrary GameObject authoring is still not complete.
+The source bridge uses `SdkSourcePathAudit`, `SdkIncludeDefineProfile` and
+`SdkInstanceInheritanceProfile`, not a second inheritance implementation. A new
+opt-in complete-Conscript copy gate schema/structure-checks the actual authored
+base before allowing the existing Core NodeJoiner to copy it. Earlier generic
+tree profiles retain their previous limits. Meaningful Lua/leaf text is preserved;
+only structural indentation is removed for the Core joiner's node handling.
+Populated derived child merges remain explicitly closed. The final resolved object
+still passes complete native/metadata/reference/stream checks.
+
+Next major frontend work: official source-root/resource closure and actual W3X,
+then broader child/module edits. Full arbitrary GameObject authoring is not complete.
+
+## Instance/definition integration update
+
+RebornTest now has five source files. Editing the definition changes the actual
+derived BuildTime, while the base remains source-only. Missing definitions/bases,
+reference-role Includes, nonempty Tags and include cycles are refusal controls.
+This is source preparation, not replacement with a stored flattened object.
+
+Integration checks passed: the grouped source-language suite, the existing four
+Include/definition/inheritance/expression suites, and **21/21 alpha regression
+cases**, including the unchanged BuildTime=1 golden archive and the restored
+five-file developer source. Studio's exact-reference CLR4 loader also passed.
+No game was launched and the user's Reborn sources/outputs were not changed.
+Evidence is local under `alpha/.work/inheritance-*.log` and `dev-sdk-test.json`;
+these generated logs are not shipped as source assets.
 
 ## Verification — October 18, 2026
 

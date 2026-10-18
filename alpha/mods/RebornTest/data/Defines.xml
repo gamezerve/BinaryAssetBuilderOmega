@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+    <!-- Reborn: owner-visible definition resolved before the actual Core inheritance overlay. -->
+    <Defines>
+        <Define name="REBORN_CONSCRIPT_BUILD_TIME" value="2" />
+    </Defines>
+</AssetDeclaration>

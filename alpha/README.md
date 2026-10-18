@@ -2,8 +2,11 @@
 
 ## Build your mod
 
-Current RebornTest uses three EA-shaped XML files: `data/mod.xml` (Includes),
-`data/Conscript.xml` (complete unit), `data/CommandData.xml` (explicit command).
+Current RebornTest uses five EA-shaped XML files: `data/mod.xml` (Includes),
+`data/Conscript.xml` (derived unit), `data/ConscriptBase.xml` (complete instance base),
+`data/Defines.xml` (BuildTime definition), `data/CommandData.xml` (explicit command).
+Change `REBORN_CONSCRIPT_BUILD_TIME` in Defines.xml to edit the inherited unit's
+BuildTime. Actual Core inheritance runs; the instance base is not emitted.
 There is **no automatic LogicCommand generation**. Read the
 [source frontend support table](../docs/RA3EP1_EA_SOURCE_FRONTEND.md) before using
 inheritance, source aliases, omission rules or arbitrary modules.
@@ -44,7 +47,9 @@ Only two mod folders belong in the Studio list:
 
 - `Reborn`: the user's mod. Developer tests do not change its sources or build its outputs.
 - `RebornTest`: the developer's reusable test mod. Its `data/mod.xml` includes
-  the complete unit in `Conscript.xml` and the explicit command in `CommandData.xml`.
+  the derived unit in `Conscript.xml` and explicit command in `CommandData.xml`.
+  `ConscriptBase.xml` supplies the actual instance base; `DATA:Defines.xml` supplies
+  the owner-visible BuildTime definition. General derived child merges remain closed.
 
 Select **RebornTest → Build Mod** to compile that Conscript from the selected
 XML through Core, including complete native/metadata/reference/stream checks.

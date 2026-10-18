@@ -29,7 +29,17 @@ internal static class ConscriptSourceInput
         Directory.CreateDirectory(output);string single=Path.Combine(output,"object-only.xml");File.WriteAllText(single,"<?xml version='1.0'?><!-- Reborn: explicit object-only source must not acquire a generated command. --><AssetDeclaration xmlns='"+Ea+"'><Tags/><Includes/>"+source.Game.DocumentElement.OuterXml+"</AssetDeclaration>");
         var objectOnly=Load(single);if(objectOnly.Command!=null || objectOnly.Sources.Length!=1)throw new InvalidDataException("A hidden command was generated.");
         string cycle=Path.Combine(output,"cycle.xml");File.WriteAllText(cycle,"<!-- Reborn: confined include-cycle refusal control. --><AssetDeclaration xmlns='"+Ea+"'><Includes><Include type='all' source='cycle.xml'/></Includes></AssetDeclaration>");refused=false;try{Load(cycle);}catch(InvalidDataException){refused=true;}if(!refused)throw new InvalidDataException("Include cycle accepted.");
-        Console.WriteLine("EA source frontend: PASS (authored three-file graph; reversed attributes; omitted matching schema default; changed default refused; standalone object produces no command; include cycle refused; no game).");
+        // Reborn: exercise real instance/definition preparation from authored XML, including observable edits and atomic refusal controls.
+        string basePath=Path.Combine(output,"base.xml"),defines=Path.Combine(output,"defines.xml"),derived=Path.Combine(output,"derived.xml");
+        var baseXml=Parse(Encoding.UTF8.GetBytes(source.Game.DocumentElement.OuterXml));baseXml.DocumentElement!.SetAttribute("id","BaseConscriptTemplate");
+        File.WriteAllText(basePath,"<!-- Reborn: complete authored instance base. --><AssetDeclaration xmlns='"+Ea+"'>"+baseXml.DocumentElement.OuterXml+"</AssetDeclaration>");
+        File.WriteAllText(defines,"<!-- Reborn: definition owner. --><AssetDeclaration xmlns='"+Ea+"'><Defines><Define name='BUILD_TIME' value='3'/></Defines></AssetDeclaration>");
+        string inherited="<!-- Reborn: actual Core inheritance and imported definition. --><AssetDeclaration xmlns='"+Ea+"'><Includes><Include type='all' source='DATA:defines.xml'/><Include type='instance' source='base.xml'/></Includes><GameObject id='RebornConscriptTrial' inheritFrom='BaseConscriptTemplate' BuildTime='=$BUILD_TIME'/></AssetDeclaration>";
+        File.WriteAllText(derived,inherited);var expanded=Load(derived);Admit(expanded.Game,Read(fixture),schemas);
+        if(expanded.Game.DocumentElement!.GetAttribute("BuildTime")!="3" || expanded.Game.DocumentElement.HasAttribute("inheritFrom") || expanded.Command!=null || expanded.Sources.Length!=3)throw new InvalidDataException("Instance/definition output or base publication differs.");
+        foreach(var invalid in new[]{inherited.Replace("=$BUILD_TIME","=$MISSING"),inherited.Replace("BaseConscriptTemplate' BuildTime","MissingBase' BuildTime"),inherited.Replace("type='instance'","type='reference'"),inherited.Replace("<Includes>","<Tags><Unexpected/></Tags><Includes>")})
+        {File.WriteAllText(derived,invalid);refused=false;try{Load(derived);}catch(InvalidDataException){refused=true;}if(!refused)throw new InvalidDataException("Unsupported inheritance/metadata accepted.");}
+        Console.WriteLine("EA source frontend: PASS (explicit graph; attribute/default controls; no hidden command; cycle refusal; actual instance base + DATA definition edit; missing definition/base and reference/metadata refusals; no game).");
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -49,7 +59,7 @@ internal static class ConscriptSourceInput
             if(element.NamespaceURI!=Ea)return false;
             if(element.LocalName=="GameObject" || element.ChildNodes.OfType<XmlElement>().Any(e=>e.NamespaceURI==Ea && e.LocalName=="GameObject"))return true;
             foreach(XmlElement include in element.GetElementsByTagName("Include",Ea))
-            {string source=include.GetAttribute("source");if(!source.EndsWith(".xml",StringComparison.OrdinalIgnoreCase) || source.Contains(':'))continue;if(Visit(Resolve(root,path,source)))return true;}
+            {string source=include.GetAttribute("source");if(!source.EndsWith(".xml",StringComparison.OrdinalIgnoreCase))continue;if(source.StartsWith("DATA:",StringComparison.OrdinalIgnoreCase)){if(Visit(Resolve(root,Path.Combine(root,"mod.xml"),source[5..])))return true;}else if(!source.Contains(':') && Visit(Resolve(root,path,source)))return true;}
             return false;
         }
     }
@@ -110,48 +120,14 @@ internal static class ConscriptSourceInput
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: consume only explicit local all-XML imports; instance inheritance, defines, ART resources and XInclude fail with actionable errors. */
+    /** Reborn: prepare explicit all/instance XML sources and bounded definitions; unsupported resource processors still fail explicitly. */
     //-------------------------------------------------------------------------------------------------
-    internal static Input Load(string entry)
-    {
-        entry=Path.GetFullPath(entry);string root=Path.GetDirectoryName(entry)!;var active=new HashSet<string>(StringComparer.OrdinalIgnoreCase);var files=new Dictionary<string,SourceFile>(StringComparer.OrdinalIgnoreCase);var assets=new List<XmlElement>();long total=0;
-        Visit(entry);var games=assets.Where(e=>e.LocalName=="GameObject").ToArray();var commands=assets.Where(e=>e.LocalName=="LogicCommand").ToArray();
-        if(games.Length!=1 || commands.Length>1)throw new InvalidDataException("This alpha source route requires one GameObject and zero or one explicit LogicCommand.");
-        return new(Detach(games[0]),commands.Length==0?null:Detach(commands[0]),files.Values.ToArray());
-        //-------------------------------------------------------------------------------------------------
-        /** Reborn: cycles/redirects and unsupported metadata are errors, never silently skipped assets or imported filesystem escape paths. */
-        //-------------------------------------------------------------------------------------------------
-        void Visit(string path)
-        {
-            if(active.Contains(path))throw new InvalidDataException("XML Include cycle: "+path);if(files.ContainsKey(path))return;
-            if(files.Count>=32)throw new InvalidDataException("Source graph exceeds 32 XML files.");SdkEnvironmentPreflight.CheckPath(path);byte[] bytes=SdkEnvironmentPreflight.Read(path,1048576);if((total+=bytes.Length)>4*1048576)throw new InvalidDataException("Source graph exceeds four MiB.");
-            var xml=Parse(bytes);var element=xml.DocumentElement!;if(element.NamespaceURI!=Ea)throw new InvalidDataException("Expected EA asset namespace: "+path);
-            files.Add(path,new(path,Convert.ToHexString(SHA256.HashData(bytes))));active.Add(path);
-            if(element.LocalName=="GameObject")Add(element);
-            else if(element.LocalName=="AssetDeclaration")foreach(var child in Envelope(element))
-            {
-                if(child.NamespaceURI!=Ea)throw new InvalidDataException("XInclude/foreign elements are not implemented: "+child.Name);
-                switch(child.LocalName)
-                {
-                    case "Tags":if(!string.IsNullOrWhiteSpace(child.InnerText) || child.ChildNodes.OfType<XmlElement>().Any())throw new InvalidDataException("Nonempty Tags metadata is not enabled.");break;
-                    case "Includes":foreach(var include in child.ChildNodes.OfType<XmlElement>()){if(include.LocalName!="Include" || include.NamespaceURI!=Ea || include.GetAttribute("type")!="all")throw new InvalidDataException("Only local XML Include type=all is enabled; instance/reference inheritance is not yet connected.");foreach(XmlAttribute attribute in include.Attributes)if(attribute.NamespaceURI.Length==0 && attribute.Name is not ("source" or "type"))throw new InvalidDataException("Unsupported Include attribute: "+attribute.Name);Visit(Resolve(root,path,include.GetAttribute("source")));}break;
-                    case "GameObject":case "LogicCommand":Add(child);break;
-                    default:throw new InvalidDataException("Source directive/asset not enabled in this GameObject route: "+child.LocalName);
-                }
-            }
-            else throw new InvalidDataException("Expected AssetDeclaration or standalone GameObject: "+path);
-            active.Remove(path);
-        }
-        //-------------------------------------------------------------------------------------------------
-        /** Reborn: incomplete inheritance is reported explicitly instead of flattening a base silently or substituting the captured original object. */
-        //-------------------------------------------------------------------------------------------------
-        void Add(XmlElement element){if(element.HasAttribute("inheritFrom"))throw new InvalidDataException("GameObject/LogicCommand inheritFrom is not yet connected to this alpha frontend; supply complete source, not the original unprocessed EA chain.");assets.Add(element);}
-    }
+    internal static Input Load(string entry)=>ConscriptSourcePreparation.Load(entry);
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: accept normal namespace declarations but reject unknown wrapper fields and mixed text rather than silently discarding malformed metadata. */
     //-------------------------------------------------------------------------------------------------
-    private static IEnumerable<XmlElement> Envelope(XmlElement root)
+    internal static IEnumerable<XmlElement> Envelope(XmlElement root)
     {
         foreach(XmlAttribute attribute in root.Attributes)if(attribute.NamespaceURI!="http://www.w3.org/2000/xmlns/" && !(attribute.NamespaceURI=="http://www.w3.org/2001/XMLSchema-instance" && attribute.LocalName is "schemaLocation" or "noNamespaceSchemaLocation"))throw new InvalidDataException("Unsupported AssetDeclaration attribute: "+attribute.Name);
         if(root.ChildNodes.Cast<XmlNode>().Any(n=>n is not XmlElement && n is not XmlComment && !string.IsNullOrWhiteSpace(n.InnerText)))throw new InvalidDataException("AssetDeclaration mixed text is invalid.");
@@ -177,7 +153,7 @@ internal static class ConscriptSourceInput
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate against the unchanged admitted official types with standalone aliases only; never fetch xsi:schemaLocation over the network. */
     //-------------------------------------------------------------------------------------------------
-    private static XmlSchemaSet Schemas()
+    internal static XmlSchemaSet Schemas()
     {
         XmlSchemaSet? official=null;SdkEffectiveSchema.Inspect(shieldCandidate:true,reviewHooks:true,onAdmitted:s=>official=s);if(official==null)throw new InvalidDataException("Reviewed EP1 schemas unavailable.");
         var aliases=new XmlSchema{TargetNamespace=Ea,ElementFormDefault=XmlSchemaForm.Qualified};foreach(string name in new[]{"GameObject","LogicCommand"})aliases.Items.Add(new XmlSchemaElement{Name=name,SchemaTypeName=new XmlQualifiedName(name,Ea)});official.Add(aliases);official.Compile();return official;

@@ -7,4 +7,6 @@ Working[[:space:]]RA3[[:space:]]Compiler[[:space:]]for[[:space:]]Reference/build
 /alpha/mods/RebornTest/data/mod.xml -text whitespace=-blank-at-eol
 # Reborn: preserve significant Lua/string text in the explicit EA-style unit source after splitting the entry document.
 /alpha/mods/RebornTest/data/Conscript.xml -text whitespace=-blank-at-eol
+# Reborn: preserve the instance base's literal Lua and leaf text through checkout and source preparation.
+/alpha/mods/RebornTest/data/ConscriptBase.xml -text whitespace=-blank-at-eol
 /tests/fixtures/live-alpha/ConscriptBuildTime1/data/mod.xml -text whitespace=-blank-at-eol

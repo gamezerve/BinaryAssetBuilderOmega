@@ -88,7 +88,7 @@ internal static class SdkSelfAttributeInheritance
     //-------------------------------------------------------------------------------------------------
     /** Reborn: expand local asset chains with independently admitted copy/empty-child matching scopes and reject the entire document on unsupported semantics. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false,bool childRemoval = false,bool choiceCopy = false,bool consumeMarkers = false,bool bitflags = false,bool filters = false,bool upgrades = false,bool objectCreationMarkers = false,bool identicalStates = false,bool stateReadds = false,bool crossStateRemovals = false,bool audioTrees = false)
+    internal static Result Apply(XmlSchemaSet schemas,byte[] bytes,bool childCopy = false,bool complexChildCopy = false,bool treeCopy = false,bool childMerge = false,bool childRemoval = false,bool choiceCopy = false,bool consumeMarkers = false,bool bitflags = false,bool filters = false,bool upgrades = false,bool objectCreationMarkers = false,bool identicalStates = false,bool stateReadds = false,bool crossStateRemovals = false,bool audioTrees = false,bool conscriptCopy = false)
     {
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
         string profile = audioTrees ? AudioTreeName : crossStateRemovals ? CrossRemovalName : stateReadds ? StateReaddName : identicalStates ? IdenticalStateName : objectCreationMarkers ? ObjectCreationName : upgrades ? UpgradeName : filters ? FilterName : bitflags ? BitflagName : consumeMarkers ? MarkerName : choiceCopy ? ChoiceCopyName : childRemoval ? ChildRemovalName : childMerge ? ChildMergeName : treeCopy ? TreeCopyName : complexChildCopy ? ComplexChildCopyName : childCopy ? ChildCopyName : Name;
@@ -116,11 +116,19 @@ internal static class SdkSelfAttributeInheritance
         {
             if (!schemas.IsCompiled || bytes.Length > 4*1048576) throw new InvalidDataException("Compiled schema and bounded source required.");
             // Reborn: child-copy parsing follows core's default whitespace handling so formatting XmlWhitespace nodes do not become unexpected sequence children.
-            XmlDocument xml = new() { XmlResolver = null,PreserveWhitespace = !childCopy };
+            XmlDocument xml = new() { XmlResolver = null,PreserveWhitespace = conscriptCopy || !childCopy };
             using (MemoryStream input = new(bytes,false))
             using (XmlReader reader = XmlReader.Create(input,new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit,XmlResolver = null,MaxCharactersInDocument = 4*1048576 })) xml.Load(reader);
             XmlElement? root = xml.DocumentElement;
             if (root?.LocalName != "AssetDeclaration" || root.NamespaceURI != Ea) throw new InvalidDataException("EA AssetDeclaration required.");
+            // Reborn: Core handles XmlText but not XmlWhitespace; discard only structural indentation and preserve every leaf/script character as text.
+            if (conscriptCopy)
+                foreach (XmlElement element in root.SelectNodes("descendant-or-self::*")!)
+                    foreach (XmlNode node in element.ChildNodes.Cast<XmlNode>().Where(n=>n.NodeType is XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace).ToArray())
+                    {
+                        if(element.ChildNodes.OfType<XmlElement>().Any() || element.LocalName=="GameObject")element.RemoveChild(node);
+                        else element.ReplaceChild(xml.CreateTextNode(node.Value??""),node);
+                    }
             var assets = root.ChildNodes.OfType<XmlElement>().Where(element => element.LocalName is not ("Includes" or "Defines" or "Tags")).ToArray();
             if (assets.Length > 4096) throw new InvalidDataException("4096 local asset bound exceeded.");
             // Reborn: count original asset/tree elements once per document; resolved copies are separately covered by amplification limits.
@@ -352,6 +360,17 @@ internal static class SdkSelfAttributeInheritance
                         if (!bitflags || asset.LocalName != "AITargetingHeuristic" || !asset.HasAttribute("inheritFrom") || attribute.Name is not ("VitalKindOf" or "ForbiddenKindOf")) throw new InvalidDataException("Bitflag/list modifiers require separately reviewed semantics.");
                         SdkBitflagModifiers.Syntax(use,attribute.Value);
                     }
+                }
+                // Reborn: permit only an independently schema/structure-checked complete Conscript tree; the actual joiner still copies authored content.
+                if (conscriptCopy && asset.LocalName == "GameObject" && asset.ChildNodes.OfType<XmlElement>().Any())
+                {
+                    if (asset.HasAttribute("inheritFrom")) throw new InvalidDataException("Conscript derived children need separately reviewed merge semantics; use an attribute-only derived object.");
+                    var candidate = new XmlDocument { PreserveWhitespace = true, XmlResolver = null };
+                    candidate.AppendChild(candidate.ImportNode(asset,true));
+                    var baseline = new XmlDocument { PreserveWhitespace = true, XmlResolver = null };
+                    baseline.Load(Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"live-alpha","ConscriptBuildTime1","data","mod.xml"));
+                    ConscriptSourceInput.Admit(candidate,baseline,schemas);
+                    return;
                 }
                 if (childCopy) CheckChildren(asset,type);
             }

@@ -46,6 +46,8 @@ internal sealed class SdkInstanceInheritanceProfile
     // Reborn: known sound singleton normalization has independent opt-in authority.
     internal const string SoundSingletonName = "diagnostic-direct-instance-sound-singletons-v1";
     private readonly bool soundSingletons;
+    // Reborn: complete Conscript copying is explicit and does not relax any existing generic tree profile.
+    private readonly bool conscriptCopy;
     private const string Ea = "uri:ea.com:eala:asset";
     // Reborn: source and processed-document hashes identify imported XML witnesses, never native streams or cache identities.
     internal sealed record ImportedBase(string Type,string BaseId,string SourcePath,string RawSha256,string ProcessedSha256)
@@ -101,9 +103,9 @@ internal sealed class SdkInstanceInheritanceProfile
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate the complete captured source inventory before any imported read; caller-supplied graph records cannot authorize escaped files. */
     //-------------------------------------------------------------------------------------------------
-    internal SdkInstanceInheritanceProfile(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool rootFiles = false,bool chains = false,bool removals = false,bool choices = false,bool markers = false,bool bitflags = false,bool filters = false,bool upgrades = false,bool metadata = false,bool expressions = false,bool identicalStates = false,bool stateReadds = false,bool crossStateRemovals = false,bool musicOffsets = false,bool audioTrees = false,bool soundOffsets = false,bool soundSingletons = false)
+    internal SdkInstanceInheritanceProfile(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool rootFiles = false,bool chains = false,bool removals = false,bool choices = false,bool markers = false,bool bitflags = false,bool filters = false,bool upgrades = false,bool metadata = false,bool expressions = false,bool identicalStates = false,bool stateReadds = false,bool crossStateRemovals = false,bool musicOffsets = false,bool audioTrees = false,bool soundOffsets = false,bool soundSingletons = false,bool conscriptCopy = false)
     {
-        this.schemas = schemas; this.paths = paths;
+        this.schemas = schemas; this.paths = paths; this.conscriptCopy = conscriptCopy;
         // Reborn: choice admission includes the tested chain/removal subsets without changing any earlier constructor defaults.
         // Reborn: explicitly selecting markers includes earlier choices/chains without changing their constructor defaults.
         // Reborn: modifier admission implies markers/choices/chains, but all earlier constructor defaults remain unchanged.
@@ -187,7 +189,7 @@ internal sealed class SdkInstanceInheritanceProfile
             // Reborn: preserve the earlier local tree path when no external handle is needed; malformed handles still fail the tree profile.
             var needed = ownAssets.Where(asset => asset.HasAttribute("inheritFrom")).Select(Target).Where(handle => !local.ContainsKey(handle)).Distinct(StringComparer.Ordinal).ToArray();
             if (needed.Length == 0 && !chains)
-            { var localResult = SdkSelfAttributeInheritance.Apply(schemas,bytes,treeCopy:true); return localResult with { Evidence = localResult.Evidence with { Profile = Profile } }; }
+            { var localResult = SdkSelfAttributeInheritance.Apply(schemas,bytes,treeCopy:true,conscriptCopy:conscriptCopy); return localResult with { Evidence = localResult.Evidence with { Profile = Profile } }; }
             var includes = Includes(owner); var expected = paths.Includes.Where(edge => edge.Document.Equals(path,StringComparison.OrdinalIgnoreCase)).ToArray();
             if (includes.Length != expected.Length || includes.Length > 64) throw new InvalidDataException("Instance Include edges differ from captured source or exceed 64 direct Includes.");
             Dictionary<string,(XmlElement Asset,ImportedBase Witness)> external = new(StringComparer.Ordinal);
@@ -224,7 +226,7 @@ internal sealed class SdkInstanceInheritanceProfile
                 if (!chains && Includes(baseXml).Length != 0) throw new InvalidDataException("Imported base documents must be Include-free; transitive visibility remains closed.");
                 // Reborn: source-local preparation never exports a descendant's declarations as this direct child's own assets.
                 Prepared? child = chains ? Prepare(resolved.Path,null,depth+1) : null;
-                var expanded = child?.Result ?? SdkSelfAttributeInheritance.Apply(schemas,baseBytes,treeCopy:true);
+                var expanded = child?.Result ?? SdkSelfAttributeInheritance.Apply(schemas,baseBytes,treeCopy:true,conscriptCopy:conscriptCopy);
                 if (child != null) { height = Math.Max(height,child.Height+1); closure.AddRange(expanded.Evidence.PreparedSources); }
                 if (expanded.Bytes == null || !SdkEffectiveSchema.Bind(schemas,resolved.Path,expanded.Bytes).XmlValidated) throw new InvalidDataException("Imported base document requires unsupported preprocessing or fails schema validation.");
                 expandedBaseBytes += expanded.Bytes.Length;
@@ -273,7 +275,7 @@ internal sealed class SdkInstanceInheritanceProfile
             // Reborn: only this separately selected stage also consumes the reviewed local ObjectCreationList marker; imported eligibility remains unchanged.
             // Reborn: normalize only proved full literal owner bodies, retaining separate plans for final actual-output verification.
             var soundPlans = soundSingletons ? SdkSoundSingletons.Normalize(schemas,owner) : Array.Empty<SdkSoundSingletons.Plan>();
-            var merged = SdkSelfAttributeInheritance.Apply(schemas,Serialize(owner),treeCopy:true,childMerge:chains,childRemoval:removals,choiceCopy:choices,consumeMarkers:markers,bitflags:bitflags,filters:filters,upgrades:upgrades,objectCreationMarkers:expressions,identicalStates:identicalStates,stateReadds:stateReadds,crossStateRemovals:crossStateRemovals,audioTrees:audioTrees);
+            var merged = SdkSelfAttributeInheritance.Apply(schemas,Serialize(owner),treeCopy:true,childMerge:chains,childRemoval:removals,choiceCopy:choices,consumeMarkers:markers,bitflags:bitflags,filters:filters,upgrades:upgrades,objectCreationMarkers:expressions,identicalStates:identicalStates,stateReadds:stateReadds,crossStateRemovals:crossStateRemovals,audioTrees:audioTrees,conscriptCopy:conscriptCopy);
             if (merged.Bytes == null) throw new InvalidDataException((chains ? "Instance overlay exceeds chain merge scope: " : "Instance overlay exceeds copy-only scope: ")+string.Join("; ",merged.Evidence.Diagnostics));
             XmlDocument output = Parse(merged.Bytes);
             foreach (var asset in Assets(output).Where(asset => injected.Contains(asset.LocalName+":"+asset.GetAttribute("id"))).ToArray()) output.DocumentElement!.RemoveChild(asset);
@@ -329,9 +331,10 @@ internal sealed class SdkInstanceInheritanceProfile
     //-------------------------------------------------------------------------------------------------
     /** Reborn: parse bounded owner/base XML without DTD, resolver or formatting whitespace that core treats as sequence children. */
     //-------------------------------------------------------------------------------------------------
-    private static XmlDocument Parse(byte[] bytes)
+    private XmlDocument Parse(byte[] bytes)
     {
-        XmlDocument xml = new() { XmlResolver = null }; using MemoryStream input = new(bytes,false);
+        // Reborn: complete Conscript source includes literal Lua and empty leaf whitespace; retain it only in this explicit copy profile.
+        XmlDocument xml = new() { XmlResolver = null, PreserveWhitespace = conscriptCopy }; using MemoryStream input = new(bytes,false);
         using (XmlReader reader = XmlReader.Create(input,new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit,XmlResolver = null,MaxCharactersInDocument = 4*1048576 })) xml.Load(reader);
         if (xml.DocumentElement?.LocalName != "AssetDeclaration" || xml.DocumentElement.NamespaceURI != Ea) throw new InvalidDataException("EA instance declaration required."); return xml;
     }

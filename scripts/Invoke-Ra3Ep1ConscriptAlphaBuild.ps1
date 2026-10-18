@@ -9,7 +9,7 @@ try {
     & $exe conscript-source-prepare $ModXml $prepared;if($LASTEXITCODE-ne 0){throw 'EA source preparation failed; see the XML/include/schema diagnostic above.'}
     $inputReceipt=Get-Content -LiteralPath (Join-Path $prepared 'source-input.json') -Raw|ConvertFrom-Json
     $identity=$inputReceipt.Identity;$hasCommand=[bool]$inputReceipt.CommandPath;$newIdentity=$identity-cne 'SovietAntiInfantryInfantry'
-    Write-Output 'Warning: ALPHA005 EA source frontend: one complete Conscript-shaped GameObject, six scalar edits, optional explicit UNIT_BUILD LogicCommand. Defaults/attribute order supported; general inheritance/ART/W3X not yet connected.'
+    Write-Output 'Warning: ALPHA005 EA source frontend: one Conscript-shaped GameObject, six scalar edits, optional explicit UNIT_BUILD command. Local/DATA XML, definitions and attribute-only instance inheritance supported. General child merges/ART/W3X remain disabled.'
     Write-Output ('Reborn: authored asset count: '+$(if($hasCommand){2}else{1})+'; no automatic LogicCommand generation.')
     $scratch=Join-Path $OutputRoot 'temp';$null=New-Item -ItemType Directory -Path $scratch;$previousTemp=$env:TEMP;$previousTmp=$env:TMP
     try {

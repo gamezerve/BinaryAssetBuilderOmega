@@ -53,7 +53,7 @@ Invoke-TestCase RestoredDeveloperSource $true
 $restored=[Xml.XmlDocument]::new();$restored.Load($input)
 if($restored.DocumentElement.LocalName-ceq 'AssetDeclaration'){
     $receipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json
-    if($receipt.Core.Asset-cne 'GameObject:RebornConscriptTrial' -or $receipt.Core.AssetCount-ne 2 -or -not $receipt.Core.RecruitableNewIdentity -or $receipt.Core.CommandOverride-cne 'LogicCommand:Command_ConstructSovietAntiInfantryInfantry' -or $receipt.Backend.AutomaticCommandGenerated -or @($receipt.Backend.AuthoredSources).Count-ne 3){throw 'Explicit source/command publication receipt differs.'}
+    if($receipt.Core.Asset-cne 'GameObject:RebornConscriptTrial' -or $receipt.Core.AssetCount-ne 2 -or -not $receipt.Core.RecruitableNewIdentity -or $receipt.Core.CommandOverride-cne 'LogicCommand:Command_ConstructSovietAntiInfantryInfantry' -or $receipt.Backend.AutomaticCommandGenerated -or @($receipt.Backend.AuthoredSources).Count-ne 5){throw 'Explicit source/command publication receipt differs.'}
     $rows.Add([pscustomobject]@{Name='RecruitmentLocalConsumer';Passed=$true;ExpectedSuccess=$true})
 }
 if((Get-FileHash -LiteralPath $userSource).Hash-cne $userHash -or ($userOutputHash -and (Get-FileHash -LiteralPath $userReceipt).Hash-cne $userOutputHash) -or (-not $userOutputHash -and (Test-Path -LiteralPath $userReceipt))){throw 'User Reborn changed.'}
