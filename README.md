@@ -8,14 +8,24 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 18, 2026
 
+One authorized **SKUDef-only** Conscript trial has now been started using
+`artifacts/Conscript-Sku-20261018-a/reborn_1.0.skudef` (163-character path).
+This separate candidate contains **no `.cfg` counterpart** and retains the same
+pinned BIG/source bytes. The 30-second observer recorded **39 matching child
+argument snapshots**, no observer failure and no installation writes. Main-menu,
+config consumption and BuildTime behavior remain **awaiting user feedback**;
+visible arguments alone prove none of those. The legacy CFG candidate is kept
+unchanged until this experiment's outcome is known.
+
 The fixed BuildTime=1 override is now exported unchanged to the short local
 folder **`artifacts/Conscript-20261018-a`**. Its config path is **156 characters**,
 and pinned archive/source hashes, exact config/SKU bytes and readback pass.
 `scripts/New-Ra3Ep1ConscriptTrial.ps1` provides export, `-CheckOnly` and
 `-SelfTest`; five byte/receipt controls and three output-policy refusals pass.
 `scripts/Invoke-Ra3Ep1ConscriptTrial.ps1` **without `-Run`** passes the reviewed
-installation/SKU/campaign/loose-file/process checks. No game was launched;
-`-Run` remains a separately authorized single controlled trial. See the
+installation/SKU/campaign/loose-file/process checks. That preflight did not
+launch a game; the subsequent authorized SKUDef experiment is recorded above.
+`-Run` always requires a separately authorized single controlled trial. See the
 [file map and runtime preparation](docs/RA3EP1_CONSCRIPT_AUTHORED_TRIALS.md#short-export-and-file-map).
 
 Two [source-authored Conscript trial candidates](docs/RA3EP1_CONSCRIPT_AUTHORED_TRIALS.md)

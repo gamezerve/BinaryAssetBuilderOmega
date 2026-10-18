@@ -1,6 +1,6 @@
 # Reborn: export only the pinned source-compiled BuildTime=1 override to a fresh short artifact path; never install or execute a game.
 [CmdletBinding()]
-param([string]$OutputDirectory,[switch]$CheckOnly,[switch]$SelfTest)
+param([string]$OutputDirectory,[switch]$CheckOnly,[switch]$SelfTest,[switch]$SkuDefOnly)
 $ErrorActionPreference='Stop'
 if($PSVersionTable.PSVersion.Major-lt 7){throw 'PowerShell 7 is required.'}
 if($SelfTest -and $CheckOnly){throw 'Choose SelfTest or CheckOnly.'}
@@ -27,7 +27,9 @@ function Assert-RebornConscriptBytes($Files,$Receipt) {
     if([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([byte[]]$Files['RebornConscriptProbe.big']))-cne $archiveHash){throw 'Conscript archive digest differs.'}
     if([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([byte[]]$Files['trial-source.xml']))-cne $sourceHash){throw 'Conscript source digest differs.'}
     $expected=[Text.Encoding]::ASCII.GetBytes("add-big RebornConscriptProbe.big`n")
-    foreach($name in @('reborn_1.0.cfg','reborn_1.0.skudef')){if([Convert]::ToHexString([byte[]]$Files[$name])-cne [Convert]::ToHexString($expected)){throw 'Conscript mod fragment differs.'}}
+    # Reborn: the isolated SKUDef experiment intentionally has no CFG counterpart; the historical dual-file route remains unchanged.
+    $fragments=if($SkuDefOnly){@('reborn_1.0.skudef')}else{@('reborn_1.0.cfg','reborn_1.0.skudef')}
+    foreach($name in $fragments){if([Convert]::ToHexString([byte[]]$Files[$name])-cne [Convert]::ToHexString($expected)){throw 'Conscript mod fragment differs.'}}
     if($Receipt.Asset-cne 'GameObject:SovietAntiInfantryInfantry' -or $Receipt.BuildTime-ne 1 -or $Receipt.StreamProfile-cne 'bounded-conscript-trial' -or $Receipt.ArchiveSha256-cne $archiveHash -or $Receipt.SourceSha256-cne $sourceHash -or $Receipt.MetadataPrefix-ne 88824 -or $Receipt.ReferenceOccurrences-ne 275 -or $Receipt.ArchiveEntryCount-ne 15 -or $Receipt.OfflineValidated-ne $true -or $Receipt.NewIdentity-ne $false -or $Receipt.GameExecuted-ne $false -or $Receipt.InstalledFilesModified-ne $false -or $Receipt.RuntimeReady-ne $false){throw 'Conscript receipt profile differs.'}
 }
 try {
@@ -35,14 +37,16 @@ try {
     $destination=[IO.Path]::GetFullPath($OutputDirectory)
     if([IO.Path]::GetDirectoryName($destination)-ine $artifactRoot){throw 'Destination must be one direct child of repository artifacts.'}
     for($item=Get-Item -LiteralPath $artifactRoot;$null-ne $item;$item=$item.Parent){if(($item.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0){throw 'Redirected artifact root refused.'}}
-    $config=Join-Path $destination 'reborn_1.0.cfg'
+    $config=Join-Path $destination $(if($SkuDefOnly){'reborn_1.0.skudef'}else{'reborn_1.0.cfg'})
     if($config.Length-gt 240 -or $config-match '[^\x20-\x7E]|[";]'){throw 'Conscript config exceeds the conservative path policy.'};Assert-Ep11ConfigNamePolicy $config
     $inputDirectory=if($CheckOnly){$destination}else{$source}
-    $files=@{};foreach($name in @('RebornConscriptProbe.big','reborn_1.0.cfg','reborn_1.0.skudef','trial-source.xml','DO_NOT_LAUNCH_YET.txt')){$files[$name]=Read-RebornConscriptFile (Join-Path $inputDirectory $name)}
+    if($CheckOnly -and $SkuDefOnly -and (Test-Path -LiteralPath (Join-Path $destination 'reborn_1.0.cfg'))){throw 'SKUDef-only candidate must not contain the CFG counterpart.'}
+    $names=@('RebornConscriptProbe.big','reborn_1.0.skudef','trial-source.xml','DO_NOT_LAUNCH_YET.txt');if(-not $SkuDefOnly){$names+='reborn_1.0.cfg'}
+    $files=@{};foreach($name in $names){$files[$name]=Read-RebornConscriptFile (Join-Path $inputDirectory $name)}
     $receiptBytes=Read-RebornConscriptFile (Join-Path $inputDirectory 'trial-plan.json');$receipt=[Text.Encoding]::UTF8.GetString($receiptBytes)|ConvertFrom-Json;Assert-RebornConscriptBytes $files $receipt
     if($SelfTest){
         $refusals=0
-        foreach($name in @('RebornConscriptProbe.big','reborn_1.0.cfg','reborn_1.0.skudef','trial-source.xml')){$bad=$files.Clone();$bad[$name]=([byte[]]$files[$name]).Clone();$bad[$name][0]=$bad[$name][0]-bxor 1;$rejected=$false;try{Assert-RebornConscriptBytes $bad $receipt}catch{$rejected=$true};if(-not $rejected){throw 'Corrupt export bytes accepted.'};$refusals++}
+        foreach($name in @('RebornConscriptProbe.big','reborn_1.0.cfg','reborn_1.0.skudef','trial-source.xml')|Where-Object {$files.ContainsKey($_)}){$bad=$files.Clone();$bad[$name]=([byte[]]$files[$name]).Clone();$bad[$name][0]=$bad[$name][0]-bxor 1;$rejected=$false;try{Assert-RebornConscriptBytes $bad $receipt}catch{$rejected=$true};if(-not $rejected){throw 'Corrupt export bytes accepted.'};$refusals++}
         $badReceipt=$receipt|ConvertTo-Json -Depth 6|ConvertFrom-Json;$badReceipt.BuildTime=4;$rejected=$false;try{Assert-RebornConscriptBytes $files $badReceipt}catch{$rejected=$true};if(-not $rejected){throw 'Wrong authored receipt accepted.'};$refusals++
         [pscustomobject]@{SelfTestPassed=$true;Refusals=$refusals;GameExecuted=$false;FilesCreated=$false};return
     }

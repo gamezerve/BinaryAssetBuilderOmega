@@ -1,12 +1,13 @@
 # Reborn: one separately authorized fixed Conscript BuildTime=1 launch; no debugger, stock writes, retries or process termination.
 [CmdletBinding()]
-param([switch]$Run)
+param([switch]$Run,[switch]$SkuDef)
 $ErrorActionPreference='Stop'
 if($PSVersionTable.PSVersion.Major -lt 7){throw 'PowerShell 7 is required.'}
 $repo=Split-Path -Parent $PSScriptRoot
-$trial=Join-Path $repo 'artifacts/Conscript-20261018-a'
+# Reborn: the new experiment mounts an isolated SKUDef-only export; the previous CFG candidate is preserved unchanged.
+$trial=Join-Path $repo $(if($SkuDef){'artifacts/Conscript-Sku-20261018-a'}else{'artifacts/Conscript-20261018-a'})
 $root='D:\Program Files (x86)\Steam\steamapps\common\Command and Conquer Red Alert 3 Uprising'
-$config=Join-Path $trial 'reborn_1.0.cfg'
+$config=Join-Path $trial $(if($SkuDef){'reborn_1.0.skudef'}else{'reborn_1.0.cfg'})
 $archive=Join-Path $trial 'RebornConscriptProbe.big'
 $expectedHash='3FCDFFB9909B39E9C3A6B75AC50791A19D3EFBAE5A83D6169C174197C50C8FB2'
 $handles=[Collections.Generic.List[IDisposable]]::new()
@@ -33,7 +34,7 @@ function Get-RebornConscriptProcesses {
 
 try {
     # Reborn: revalidate the pinned short export without creating files or accepting arbitrary package identities.
-    $exportCheck=& (Join-Path $PSScriptRoot 'New-Ra3Ep1ConscriptTrial.ps1') -OutputDirectory $trial -CheckOnly
+    $exportCheck=& (Join-Path $PSScriptRoot 'New-Ra3Ep1ConscriptTrial.ps1') -OutputDirectory $trial -CheckOnly -SkuDefOnly:$SkuDef
     if(-not $exportCheck.ExportValidated){throw 'Conscript short export check failed.'}
     # Reborn: retain the reviewed launcher/game/SKU/campaign identity and loose-override checks without relaxing the baseline's inert-config gate.
     & (Join-Path $PSScriptRoot 'Invoke-Ra3Ep11Baseline.ps1')
@@ -41,7 +42,7 @@ try {
     Assert-Ep11ConfigNamePolicy $config
     if($config.Length-gt 240 -or $config-match '[^\x20-\x7E]|[";]'){throw 'Conscript config path exceeds conservative policy.'}
     $fragment=[Text.Encoding]::ASCII.GetBytes("add-big RebornConscriptProbe.big`n")
-    foreach($path in @($config,(Join-Path $trial 'reborn_1.0.skudef'))){
+    foreach($path in @($config,(Join-Path $trial 'reborn_1.0.skudef'))|Select-Object -Unique){
         $stream=Open-RebornConscriptFile $path
         if($stream.Length-ne $fragment.Length){throw 'Conscript fragment length differs.'}
         $bytes=[byte[]]::new($fragment.Length);$stream.ReadExactly($bytes)
@@ -85,7 +86,7 @@ try {
         }
     }catch{$failure=$_.Exception.Message}finally{
         # Reborn: command-line observations never certify config reads or Conscript override; retain failure evidence without killing the game.
-        $report=[pscustomobject]@{Asset='GameObject:SovietAntiInfantryInfantry';BuildTime=1;ArchiveSha256=$expectedHash
+        $report=[pscustomobject]@{Asset='GameObject:SovietAntiInfantryInfantry';BuildTime=1;ArchiveSha256=$expectedHash;SkuDefExperiment=[bool]$SkuDef;CfgCounterpartPresent=(Test-Path -LiteralPath (Join-Path $trial 'reborn_1.0.cfg'))
             GameExecuted=$started;LauncherProcessId=$launcherId;Failure=$failure;ConfigPath=$config;ArchivePath=$archive;WorkingDirectory=$root
             Observations=$observations.ToArray();ConfigConsumptionProven=$false;ManifestLoadProven=$false;OverrideAppliedInGame=$false;MainMenuReachedProven=$false
             InstalledFilesModified=$false;GameStoppedByObserver=$false;ProcessSnapshotAtomic=$false;PidReuseFullyExcluded=$false;OutputDirectory=$output}

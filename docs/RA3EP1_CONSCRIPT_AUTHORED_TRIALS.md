@@ -147,7 +147,7 @@ absence of Uprising processes. That preflight passed. The sandbox initially
 denied the CIM process query; the same **non-launch** preflight then passed
 with read-only host access. No checks were removed or relaxed.
 
-Its `-Run` branch is prepared but **not executed or runtime-validated**. It is
+At that preflight checkpoint its `-Run` branch had **not been executed or runtime-validated**. It is
 reserved for one separately authorized launcher start using the stock working
 directory and fixed config. It never retries, terminates games, installs files,
 uses a debugger or records system-wide traces. Thirty-second process/argument
@@ -159,3 +159,24 @@ selected by this launcher and is not yet recruitable.
 This update changes only scripts/docs and local export artifacts; the preceding
 74/74 compiler/native/package regression remains its own evidence. No new C#
 compiler build or full batch was necessary for this export-only step.
+
+## SKUDef-only experiment — outcome pending
+
+Following explicit user authorization, a distinct candidate was exported to
+`artifacts/Conscript-Sku-20261018-a`, with only `reborn_1.0.skudef`, no CFG
+counterpart and unchanged pinned archive/source bytes. The selected path is
+163 characters. `New-Ra3Ep1ConscriptTrial.ps1 -SkuDefOnly` exports/checks this
+format; it refuses a SKUDef-only check if a CFG counterpart is present. Four
+SKUDef-only byte/receipt controls pass, the prior five legacy controls still
+pass, and checking the legacy dual-file directory as SKUDef-only refuses.
+
+`Invoke-Ra3Ep1ConscriptTrial.ps1 -SkuDef -Run` performed one controlled launcher
+start. Report: `artifacts/ConscriptLaunch-970ba463f81a43b3b06730ee4d68a3d0/launch.json`.
+The 30-second observer recorded 39 direct-child snapshots matching the selected
+SKUDef argument; `SkuDefExperiment=true`, `CfgCounterpartPresent=false`,
+`GameExecuted=true`, `Failure=null`, and `InstalledFilesModified=false`.
+No automatic retry or process termination was performed.
+
+Main-menu arrival, actual config consumption and BuildTime override remain
+unproven pending user observation. This is not yet evidence to remove the
+historical CFG route everywhere. The separate legacy candidate remains intact.
