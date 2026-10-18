@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 18, 2026
 
+The fixed BuildTime=1 override is now exported unchanged to the short local
+folder **`artifacts/Conscript-20261018-a`**. Its config path is **156 characters**,
+and pinned archive/source hashes, exact config/SKU bytes and readback pass.
+`scripts/New-Ra3Ep1ConscriptTrial.ps1` provides export, `-CheckOnly` and
+`-SelfTest`; five byte/receipt controls and three output-policy refusals pass.
+`scripts/Invoke-Ra3Ep1ConscriptTrial.ps1` **without `-Run`** passes the reviewed
+installation/SKU/campaign/loose-file/process checks. No game was launched;
+`-Run` remains a separately authorized single controlled trial. See the
+[file map and runtime preparation](docs/RA3EP1_CONSCRIPT_AUTHORED_TRIALS.md#short-export-and-file-map).
+
 Two [source-authored Conscript trial candidates](docs/RA3EP1_CONSCRIPT_AUTHORED_TRIALS.md)
 now pass offline qualification: the original identity with **BuildTime 4 -> 1**,
 and **RebornConscriptTrial** with the same edit. Both are genuinely recompiled
@@ -19,9 +29,11 @@ that one edit; arbitrary GameObjects are not enabled in the alpha.
 
 The new identity has **no CommandButton/CommandSet/spawn integration**, so it is
 not yet recruitable from the menu. Neither candidate has been installed or
-launched. Batch candidate config paths are **256 / 258 characters**; export to
-a shorter validated path and runtime preflight are required before a controlled
-game test. Receipts correctly retain `RuntimeReady=false`.
+launched. The original batch config paths remain **256 / 258 characters**.
+The override now has the separately validated **156-character export** above;
+the new-ID candidate still needs short export and recruitment integration.
+Receipts conservatively retain `RuntimeReady=false`; no gameplay is inferred
+from a successful preflight.
 
 Authored-trial Focused regression: **74/74** in **225.049 seconds**, four
 isolated workers. The actual-original/native/metadata/three-stream/two-package

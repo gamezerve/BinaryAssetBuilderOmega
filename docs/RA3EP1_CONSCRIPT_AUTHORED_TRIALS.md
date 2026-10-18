@@ -108,3 +108,54 @@ replace the original Conscript and cannot be recruited merely by loading its
 stream: a CommandButton/CommandSet or explicit map/script spawn integration is
 still needed. Arbitrary identity/field authoring and exported-alpha capability
 expansion remain open. No new-ID gameplay or menu support is claimed.
+
+## Short export and file map
+
+The original-identity BuildTime=1 candidate is now exported to
+`artifacts/Conscript-20261018-a`, unchanged from the source-qualified package:
+
+| File | Purpose |
+| --- | --- |
+| RebornConscriptProbe.big | Actual 15-entry mod data archive, 400,971 bytes |
+| reborn_1.0.cfg | Fixed `-modconfig` input; mounts that BIG only |
+| reborn_1.0.skudef | Identical mod fragment, not the stock game SKU |
+| trial-source.xml | Captured authored XML snapshot; editing it does not rebuild the BIG |
+| trial-plan.json | Hashes, provenance, relocated config path and conservative false runtime flags |
+| DO_NOT_LAUNCH_YET.txt | Reminder that preparation is not game-test authorization |
+
+Archive SHA-256:
+`3FCDFFB9909B39E9C3A6B75AC50791A19D3EFBAE5A83D6169C174197C50C8FB2`.
+Source SHA-256:
+`B7EDFA37B5F1A26FA2ED5610BFEB2B2F05496B5BF150B9E068F9A4AB066DC6D6`.
+The absolute config path is **156 characters**, within the conservative 240
+character limit; its basename also passes the reviewed short-identity policy.
+
+`scripts/New-Ra3Ep1ConscriptTrial.ps1` pins those exact hashes and the fixed
+receipt profile. It reads bounded files through read-share-only handles,
+rejects reparse ancestry, accepts only a direct child of repository artifacts,
+creates new files exclusively and never overwrites an occupied export. It
+preserves source bytes/provenance and updates only the exported receipt's path.
+`-CheckOnly -OutputDirectory <absolute-export>` verifies without creating files.
+`-SelfTest` rejects four byte corruptions and a wrong BuildTime receipt without
+creating output. Separate occupied/nested/overlong output refusals passed and
+the candidate archive remained unchanged.
+
+`scripts/Invoke-Ra3Ep1ConscriptTrial.ps1` selects **only** this fixed short
+export. Without `-Run`, it rechecks the export, stock launcher/1.0/1.1/SKU/
+campaign hashes, absence of known loose overrides, stock archive presence and
+absence of Uprising processes. That preflight passed. The sandbox initially
+denied the CIM process query; the same **non-launch** preflight then passed
+with read-only host access. No checks were removed or relaxed.
+
+Its `-Run` branch is prepared but **not executed or runtime-validated**. It is
+reserved for one separately authorized launcher start using the stock working
+directory and fixed config. It never retries, terminates games, installs files,
+uses a debugger or records system-wide traces. Thirty-second process/argument
+observations would be saved separately and would not certify config reads,
+main-menu success or effective overrides. A new Soviet skirmish production-time
+comparison is still required after authorization. The new-ID candidate is not
+selected by this launcher and is not yet recruitable.
+
+This update changes only scripts/docs and local export artifacts; the preceding
+74/74 compiler/native/package regression remains its own evidence. No new C#
+compiler build or full batch was necessary for this export-only step.
