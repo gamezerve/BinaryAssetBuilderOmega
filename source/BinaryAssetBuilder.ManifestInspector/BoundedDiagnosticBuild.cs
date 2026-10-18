@@ -226,6 +226,10 @@ internal static class BoundedDiagnosticBuild
         var source=new System.Xml.XmlDocument{PreserveWhitespace=true,XmlResolver=null};source.LoadXml(instance.XmlNode.OuterXml);
         int[] offsets=ConscriptEditableScalars.Offsets(chunk.InstanceData.AsSpan(88824).ToArray(),88824);
         GameObjectScalarContract.Verify(source,chunk.InstanceData,88824);
+        // Reborn: package publication independently rechecks enabled fixed root enums, masks and weak IDs.
+        GameObjectRootAttributeContract.Verify(source,chunk.InstanceData,88824);
+        // Reborn: fixed-allocation authored root strings are checked again after metadata rebasing and before stream publication.
+        GameObjectRootStringContract.Verify(source,chunk.InstanceData,88824);
         for(int i=1;i<offsets.Length;i++)
         {
             ConscriptEditableScalars.Read(source,ConscriptEditableScalars.Fields[i]);

@@ -27,16 +27,19 @@ Restart an already-open Studio once to enable this update; earlier uncontained b
 <h2>Your mod and developer tests</h2>
 <p><b>Reborn</b> belongs to the user. Automated developer tests do not modify or build it.
 <b>RebornTest</b> is the reusable developer slot. Previous sample mods are now regression fixtures outside this list.</p>
-<h2>GameObject: schema/native primitive capabilities</h2>
+<h2>GameObject: schema/native root capabilities</h2>
 <p>Select <b>RebornTest</b> and click <b>Build Mod</b>. Its data/mod.xml is an EA AssetDeclaration including
 Conscript.xml (derived unit) and CommandData.xml (explicit command). ConscriptBase.xml is its source-only instance base;
 DATA:Defines.xml supplies REBORN_CONSCRIPT_BUILD_TIME (currently 2). The selected XML is compiled through Core, native ownership,
 metadata and reference/stream checks before a fresh BIG is published. This is not a cached BIG export.</p>
 <!-- Reborn: distinguish editable source fields from unchanged identity/dependency/graph restrictions and unproven new gameplay values. -->
-<p>Root primitive edits now follow the official schema intersected with the existing scalar processor ABI registry (63 attributes),
-not a six-field gameplay whitelist. This includes Scale, ThreatLevel, BountyValue, root booleans and Time/Angle/duration fields.
+<p>Root edits now follow the official schema intersected with reviewed processor ABI registries: 63 primitives plus 15 fixed
+enum/KindOf/weak-ID attributes, not a six-field gameplay whitelist. Existing nonempty root strong references may also retarget
+different stock assets one-for-one without changing import count or order. This includes Scale, ThreatLevel, BountyValue,
+root booleans, Time/Angle/duration fields, both KindOf masks and the EP1 root enums.
 Existing nested Amount, MaxHealth, VisionRange, ShroudClearingRange and Speed remain editable. No former practical alpha caps apply;
-values must satisfy the schema and concrete native type, and real values must be finite. Module/reference/string topology remains unchanged.
+values must satisfy the schema and concrete native type, and real values must be finite. Existing root ASCII strings may change content
+at the exact same byte length. String allocation presence/size, import presence/count and module topology remain unchanged.
 RebornTest: time=2, cost=15, health=750, vision=400, shroud=700, speed=100, Scale=1.2, ThreatLevel=15.</p>
 <p>Custom ASCII IDs are accepted on this same Conscript shape; stock object collisions are refused except the explicit Conscript override.
 Other edits, arbitrary GameObjects and mixed arbitrary assets
@@ -60,7 +63,7 @@ Optional/default omissions work only when they retain the currently admitted uni
 <p>Attribute-only derived Conscript inheritance, instance Includes, bounded imported Defines/=$NAME expressions and mod-root DATA: XML work.
 Untouched official Conscript source is not yet directly buildable: general derived child merges, reference Includes,
 W3X/audio processing and xi:include execution are not connected to this GameObject frontend.
-Those produce explicit errors, not hidden stock substitutions. Arbitrary module/reference/string edits remain outside the current primitive capability.</p>
+Those produce explicit errors, not hidden stock substitutions. Resized/new string allocations, new/removed imports and arbitrary module edits remain outside the current capability.</p>
 <!-- Reborn: ordered path search does not imply successful resource compilation. -->
 <p>DATA/ART/AUDIO search the selected mod before the SDK stock library. DATA defaults to adjacent SageXML;
 this local SDK contains the original Uprising source copy there, without an external SdkDataRoot override. Short ART names search direct mod Art,

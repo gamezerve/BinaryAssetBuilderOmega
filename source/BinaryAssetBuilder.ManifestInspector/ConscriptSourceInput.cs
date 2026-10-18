@@ -105,11 +105,20 @@ internal static class ConscriptSourceInput
         if(!Identity(input.DocumentElement!.GetAttribute("id")))throw new InvalidDataException("GameObject ID must be an ASCII identifier of 1..128 characters.");
         // Reborn: schema/native primitive capabilities validate all supported root values before structural masking; no gameplay-specific numeric caps are introduced.
         GameObjectScalarContract.Validate(input);
+        // Reborn: fixed EP1 enums, KindOf masks and weak IDs use their schema/native contract rather than remaining trial-shape differences.
+        GameObjectRootAttributeContract.Validate(input);
+        // Reborn: existing root imports may retarget assets without changing dependency count or traversal topology.
+        GameObjectStrongReferenceContract.Validate(input,baseline);
+        // Reborn: existing root string allocations may edit bounded ASCII content without moving graph owners.
+        GameObjectRootStringContract.Validate(input,baseline);
         foreach(var field in ConscriptEditableScalars.Fields)ConscriptEditableScalars.Read(qualified,field);
         // Reborn: materialize schema-added default attributes before cloning; XmlDocument.CloneNode can lose their default value children.
         var copy=Parse(Encoding.UTF8.GetBytes(qualified.DocumentElement!.OuterXml));copy.DocumentElement!.SetAttribute("id",model.DocumentElement!.GetAttribute("id"));
         foreach(var field in ConscriptEditableScalars.Fields)ConscriptEditableScalars.Element(copy,field).SetAttribute(field.Attribute,ConscriptEditableScalars.Element(model,field).GetAttribute(field.Attribute));
         GameObjectScalarContract.Mask(copy,model);
+        GameObjectRootAttributeContract.Mask(copy,model);
+        GameObjectStrongReferenceContract.Mask(copy,model);
+        GameObjectRootStringContract.Mask(copy,model);
         if(Signature(copy.DocumentElement)!=Signature(model.DocumentElement))throw new InvalidDataException("GameObject requires an unsupported structural/reference/module capability: "+Difference(copy.DocumentElement,model.DocumentElement,"GameObject")+". Schema-valid primitive edits are enabled; general graph changes are not enabled yet.");
         // Reborn: make attribute traversal deterministic before Core assigns strong-reference occurrence indices; caller formatting must not reorder imports.
         Align(input.DocumentElement,baseline.DocumentElement);
