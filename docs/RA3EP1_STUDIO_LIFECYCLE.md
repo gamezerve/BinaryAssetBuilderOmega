@@ -63,14 +63,14 @@ and active work; late dispatch; stdout/stderr forwarding; completed work;
 child/grandchild termination; exclusive-lock release; an unrelated concurrent
 session surviving; completion while a prompt is open; publication exclusion;
 real SDK worker cancellation and lock release; preserving user source and the
-last-good BIG; marked-work cleanup; a successful real publication through the
+last-good BIG; marked-work cleanup and preserving refused occupied work; a successful real publication through the
 new job/mutex path; restoring the developer source/output; and abrupt synthetic
 owner exit killing its worker and grandchild.
 
-All 24 lifecycle controls passed in both x86 and AnyCPU/64-bit harnesses;
+All 25 lifecycle controls passed in both x86 and AnyCPU/64-bit harnesses;
 the report remains under the ignored
 `alpha/.work/lifecycle-test-<id>/result.txt`, with latest console output in
-`alpha/.work/lifecycle-controls.log`.
+`alpha/.work/lifecycle-controls-anycpu.log` and `lifecycle-controls-x86.log`.
 
 The tests keep exactly Reborn/RebornTest in the UI list. Hidden helper processes
 are created solely for these controls; no existing process is selected for

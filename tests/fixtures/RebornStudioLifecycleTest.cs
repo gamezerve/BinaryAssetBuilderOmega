@@ -106,6 +106,16 @@ internal static class RebornStudioLifecycleTest
                 Check(Hash(source) == sourceHash && Hash(package) == packageHash, "user source and last-good BIG preserved");
                 Check(!Directory.Exists(Path.Combine(sdk, ".work", token)), "only cancelled owned work tree cleaned");
             }
+            // Reborn: an occupied unowned work directory must be refused without deleting its contents during failure cleanup.
+            token = StudioLifecycle.Begin(); own = Current(); string occupied = Path.Combine(sdk, ".work", token); Directory.CreateDirectory(occupied);
+            string note = Path.Combine(occupied, "unowned.txt"); File.WriteAllText(note, "Reborn: preserve this pre-existing control.");
+            try
+            {
+                using (Process refused = Start(host, "--run", token, args[1], "-NoProfile", "-File", args[2], "-ModName", "RebornTest", "-StudioSession", token))
+                { WaitExit(refused); Check(refused.ExitCode != 0 && File.Exists(note), "occupied unowned work is refused and preserved"); }
+                StudioLifecycle.Complete();
+            }
+            finally { File.Delete(note); Directory.Delete(occupied, false); }
             // Reborn: also prove a successful real publication through the new host/mutex path, restoring all developer source/output bytes afterward.
             string developerData = Path.Combine(sdk, "mods", "RebornTest", "data"), developerOutput = Path.Combine(sdk, "builtmods", "RebornTest");
             string savedData = Path.Combine(root, "saved-data"), savedOutput = Path.Combine(root, "saved-output");
