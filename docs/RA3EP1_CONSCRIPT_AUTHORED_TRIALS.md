@@ -160,7 +160,7 @@ This update changes only scripts/docs and local export artifacts; the preceding
 74/74 compiler/native/package regression remains its own evidence. No new C#
 compiler build or full batch was necessary for this export-only step.
 
-## SKUDef-only experiment — outcome pending
+## SKUDef-only experiment — user-confirmed outcome
 
 Following explicit user authorization, a distinct candidate was exported to
 `artifacts/Conscript-Sku-20261018-a`, with only `reborn_1.0.skudef`, no CFG
@@ -177,6 +177,24 @@ SKUDef argument; `SkuDefExperiment=true`, `CfgCounterpartPresent=false`,
 `GameExecuted=true`, `Failure=null`, and `InstalledFilesModified=false`.
 No automatic retry or process termination was performed.
 
-Main-menu arrival, actual config consumption and BuildTime override remain
-unproven pending user observation. This is not yet evidence to remove the
-historical CFG route everywhere. The separate legacy candidate remains intact.
+Those process snapshots alone did not establish config consumption or gameplay.
+The user subsequently answered: "evet çalıştı. 1 saniyede üretildi" (the trial
+worked and the Conscript was produced in one second). That is separately
+recorded in the same artifact directory's `user-observation.json`; the raw
+`launch.json` was not retroactively relabeled as instrumented proof.
+
+This is positive human-observed gameplay evidence for the complete
+source-compiled original-identity Conscript GameObject override and direct
+SKUDef-only loading without a CFG counterpart. Approximate timing was not
+independently measured; all 49 module branches/LUA execution, new-ID spawning,
+recruitment UI and general SDK authoring are not thereby proved.
+
+The Conscript **export and launch scripts now default to SKUDef-only**.
+`-SkuDefOnly` / `-SkuDef` remain accepted explicit selectors for compatibility;
+`-LegacyCfg` selects the unchanged historical dual-file fixture. Conflicting
+selectors refuse. Default SKUDef self-tests pass four byte/receipt controls;
+explicit legacy tests pass five. Both exports pass CheckOnly in the matching
+mode. No second game start was performed for that default-selection change.
+The old candidate is retained, not deleted. The C# diagnostic fixture generator
+still retains its earlier dual-file artifacts; it is not yet a general SDK
+packaging policy migration.

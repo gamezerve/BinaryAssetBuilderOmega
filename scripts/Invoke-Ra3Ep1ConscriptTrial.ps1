@@ -1,13 +1,16 @@
 # Reborn: one separately authorized fixed Conscript BuildTime=1 launch; no debugger, stock writes, retries or process termination.
 [CmdletBinding()]
-param([switch]$Run,[switch]$SkuDef)
+param([switch]$Run,[switch]$SkuDef,[switch]$LegacyCfg)
 $ErrorActionPreference='Stop'
 if($PSVersionTable.PSVersion.Major -lt 7){throw 'PowerShell 7 is required.'}
+# Reborn: use the successfully observed SKUDef-only candidate by default, retaining CFG only as an explicit historical experiment.
+if($SkuDef -and $LegacyCfg){throw 'SkuDef and LegacyCfg cannot be combined.'}
+$useSkuDef=-not $LegacyCfg
 $repo=Split-Path -Parent $PSScriptRoot
 # Reborn: the new experiment mounts an isolated SKUDef-only export; the previous CFG candidate is preserved unchanged.
-$trial=Join-Path $repo $(if($SkuDef){'artifacts/Conscript-Sku-20261018-a'}else{'artifacts/Conscript-20261018-a'})
+$trial=Join-Path $repo $(if($useSkuDef){'artifacts/Conscript-Sku-20261018-a'}else{'artifacts/Conscript-20261018-a'})
 $root='D:\Program Files (x86)\Steam\steamapps\common\Command and Conquer Red Alert 3 Uprising'
-$config=Join-Path $trial $(if($SkuDef){'reborn_1.0.skudef'}else{'reborn_1.0.cfg'})
+$config=Join-Path $trial $(if($useSkuDef){'reborn_1.0.skudef'}else{'reborn_1.0.cfg'})
 $archive=Join-Path $trial 'RebornConscriptProbe.big'
 $expectedHash='3FCDFFB9909B39E9C3A6B75AC50791A19D3EFBAE5A83D6169C174197C50C8FB2'
 $handles=[Collections.Generic.List[IDisposable]]::new()
@@ -34,7 +37,7 @@ function Get-RebornConscriptProcesses {
 
 try {
     # Reborn: revalidate the pinned short export without creating files or accepting arbitrary package identities.
-    $exportCheck=& (Join-Path $PSScriptRoot 'New-Ra3Ep1ConscriptTrial.ps1') -OutputDirectory $trial -CheckOnly -SkuDefOnly:$SkuDef
+    $exportCheck=& (Join-Path $PSScriptRoot 'New-Ra3Ep1ConscriptTrial.ps1') -OutputDirectory $trial -CheckOnly -LegacyCfg:$LegacyCfg
     if(-not $exportCheck.ExportValidated){throw 'Conscript short export check failed.'}
     # Reborn: retain the reviewed launcher/game/SKU/campaign identity and loose-override checks without relaxing the baseline's inert-config gate.
     & (Join-Path $PSScriptRoot 'Invoke-Ra3Ep11Baseline.ps1')
@@ -86,7 +89,7 @@ try {
         }
     }catch{$failure=$_.Exception.Message}finally{
         # Reborn: command-line observations never certify config reads or Conscript override; retain failure evidence without killing the game.
-        $report=[pscustomobject]@{Asset='GameObject:SovietAntiInfantryInfantry';BuildTime=1;ArchiveSha256=$expectedHash;SkuDefExperiment=[bool]$SkuDef;CfgCounterpartPresent=(Test-Path -LiteralPath (Join-Path $trial 'reborn_1.0.cfg'))
+        $report=[pscustomobject]@{Asset='GameObject:SovietAntiInfantryInfantry';BuildTime=1;ArchiveSha256=$expectedHash;SkuDefExperiment=[bool]$useSkuDef;CfgCounterpartPresent=(Test-Path -LiteralPath (Join-Path $trial 'reborn_1.0.cfg'))
             GameExecuted=$started;LauncherProcessId=$launcherId;Failure=$failure;ConfigPath=$config;ArchivePath=$archive;WorkingDirectory=$root
             Observations=$observations.ToArray();ConfigConsumptionProven=$false;ManifestLoadProven=$false;OverrideAppliedInGame=$false;MainMenuReachedProven=$false
             InstalledFilesModified=$false;GameStoppedByObserver=$false;ProcessSnapshotAtomic=$false;PidReuseFullyExcluded=$false;OutputDirectory=$output}

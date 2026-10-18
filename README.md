@@ -8,14 +8,27 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 18, 2026
 
+**User-confirmed gameplay:** the SKUDef-only trial worked and the Conscript
+was reported produced in approximately **one second**, matching authored
+BuildTime=1 rather than stock 4. This supplies the first gameplay evidence for
+the complete source-compiled Conscript **original-identity GameObject override**,
+not merely an armor/weapon edit. Timing is a human observation, not an
+instrumented measurement or execution proof for every module/LUA branch.
+`New-Ra3Ep1ConscriptTrial.ps1` and `Invoke-Ra3Ep1ConscriptTrial.ps1` now default
+to **SKUDef-only**; `-LegacyCfg` explicitly preserves the historical dual-file
+route. The tested folder contains no CFG counterpart. No universal CFG+SKUDef
+requirement exists for this observed route. New-ID recruitment and general
+GameObject authoring remain separate.
+
 One authorized **SKUDef-only** Conscript trial has now been started using
 `artifacts/Conscript-Sku-20261018-a/reborn_1.0.skudef` (163-character path).
 This separate candidate contains **no `.cfg` counterpart** and retains the same
 pinned BIG/source bytes. The 30-second observer recorded **39 matching child
 argument snapshots**, no observer failure and no installation writes. Main-menu,
-config consumption and BuildTime behavior remain **awaiting user feedback**;
-visible arguments alone prove none of those. The legacy CFG candidate is kept
-unchanged until this experiment's outcome is known.
+config consumption and BuildTime behavior were not inferred from those
+snapshots. Subsequent user gameplay feedback is recorded separately above;
+the raw launch report remains unchanged. The legacy CFG candidate is retained
+as historical evidence, not selected by default.
 
 The fixed BuildTime=1 override is now exported unchanged to the short local
 folder **`artifacts/Conscript-20261018-a`**. Its config path is **156 characters**,
