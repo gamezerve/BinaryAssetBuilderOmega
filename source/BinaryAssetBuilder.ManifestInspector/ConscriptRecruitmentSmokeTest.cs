@@ -87,13 +87,14 @@ internal static class ConscriptRecruitmentSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: combine a fully qualified new GameObject with a freshly compiled command; prove the command import selects the unique local new identity. */
     //-------------------------------------------------------------------------------------------------
-    internal static Dictionary<string,byte[]> Compose(Dictionary<string,byte[]> objectStreams, InstanceDeclaration original, SchemaSet schemas, string manifest, string globalManifest)
+    internal static Dictionary<string,byte[]> Compose(Dictionary<string,byte[]> objectStreams, InstanceDeclaration original, SchemaSet schemas, string manifest, string globalManifest,XmlDocument commandSource)
     {
         var objectMetadata=ManifestReader.Read(objectStreams["diagnostic.manifest"]);var objectAsset=objectMetadata.Assets.Single();
-        if(objectAsset.Name!="GameObject:RebornConscriptTrial")throw new InvalidDataException("Recruitment requires the reviewed new object identity.");
+        if(objectAsset.Name!=original.Handle.Name)throw new InvalidDataException("Authored GameObject identity differs from its qualified stream.");
         var game=Attach(original.XmlNode,"OriginalConscript.normalized.xml");game.ReferencedInstances.AddRange(original.ReferencedInstances);game.ValidatedReferencedInstances=new(game.ReferencedInstances);game.Handle.TypeHash=objectAsset.TypeHash;game.Handle.InstanceHash=objectAsset.InstanceHash;
         var objectBuffer=new AssetBuffer{InstanceData=objectStreams["diagnostic.bin"].AsSpan(8).ToArray(),RelocationData=objectStreams["diagnostic.relo"].AsSpan(8).ToArray(),ImportsData=objectStreams["diagnostic.imp"].AsSpan(8).ToArray()};
-        var command=Compile(schemas,"RebornConscriptTrial");var ordered=new[]{game,command.Instance};var chunks=new[]{objectBuffer,command.Chunk};
+        // Reborn: compile exactly the authored command, never Source(target) or an ID-triggered synthetic command.
+        var command=CompileXml(schemas,commandSource.DocumentElement!.OuterXml);var ordered=new[]{game,command.Instance};var chunks=new[]{objectBuffer,command.Chunk};
         uint checksum=(uint)typeof(AssetDeclarationDocument).GetMethod("ComputeOutputChecksum",BindingFlags.NonPublic|BindingFlags.Static)!.Invoke(null,new object[]{ordered})!;
         var runtime=new ReferencedFileBuffer();typeof(OutputManager).GetMethod("AddExternalManifestReferences",BindingFlags.NonPublic|BindingFlags.Static)!.Invoke(null,new object[]{runtime,new[]{Path.GetFullPath(manifest),Path.GetFullPath(globalManifest)},"data\\static.manifest;data\\global.manifest"});
         var streams=BoundedDiagnosticBuild.SerializeConscriptRecruitment(ordered,chunks,checksum,runtime);
@@ -103,7 +104,7 @@ internal static class ConscriptRecruitmentSmokeTest
         BoundedDiagnosticBuild.Verify(directory,ordered,chunks,streams,checksum,new[]{"data\\static.manifest","data\\global.manifest"},new[]{true,false});
         var parsed=ManifestReader.Read(streams["diagnostic.manifest"]);var target=parsed.Assets[1].References.Single();
         if(target!=new AssetId(parsed.Assets[0].TypeId,parsed.Assets[0].InstanceId)
-            || Word(chunks[1].InstanceData,28)!=1 || parsed.Assets[0].Name!="GameObject:RebornConscriptTrial")throw new InvalidDataException("Recruitment local object resolution differs.");
+            || Word(chunks[1].InstanceData,28)!=1 || parsed.Assets[0].Name!=original.Handle.Name)throw new InvalidDataException("Authored command must select the local GameObject identity.");
         // Reborn: missing/reversed local targets, wrong command import and truncation must fail the explicit two-asset publication gate.
         Refuse(()=>BoundedDiagnosticBuild.SerializeConscriptRecruitment(ordered.Reverse().ToArray(),chunks.Reverse().ToArray(),checksum,runtime));
         Refuse(()=>BoundedDiagnosticBuild.SerializeConscriptRecruitment(new[]{command.Instance},new[]{command.Chunk},checksum,runtime));
@@ -125,8 +126,10 @@ internal static class ConscriptRecruitmentSmokeTest
     {
         var xml=new XmlDocument{PreserveWhitespace=true,XmlResolver=null};xml.LoadXml(text);xml.Schemas.Add(schemas.Schemas);xml.Validate((_,e)=>throw new InvalidDataException(e.Message));
         var root=xml.DocumentElement!;var children=root.ChildNodes.OfType<XmlElement>().ToArray();
-        if(root.GetAttribute("id")!=CommandId || root.GetAttribute("Type")!="UNIT_BUILD" || root.Attributes.OfType<XmlAttribute>().Any(a=>a.NamespaceURI.Length==0 && a.Name is not ("id" or "Type" or "Options"))
-            || root.GetAttribute("Options")!="" || children.Length!=1 || children[0].LocalName!="Object" || children[0].InnerText is not ("GameObject:SovietAntiInfantryInfantry" or "GameObject:RebornConscriptTrial"))throw new InvalidDataException("Unsupported recruitment command source.");
+        if(!ConscriptSourceInput.Identity(root.GetAttribute("id")) || root.GetAttribute("Type")!="UNIT_BUILD" || root.Attributes.OfType<XmlAttribute>().Any(a=>a.NamespaceURI.Length==0 && a.Name is not ("id" or "Type" or "Options"))
+            || root.GetAttribute("Options")!="" || children.Length!=1 || children[0].LocalName!="Object")throw new InvalidDataException("Only explicit UNIT_BUILD/Object commands are supported in this profile.");
+        // Reborn: plain EA GameObjectRef names and explicit GameObject: names resolve to the same typed Core import; other reference types are rejected.
+        string targetName=children[0].InnerText.Trim();if(targetName.StartsWith("GameObject:",StringComparison.Ordinal))targetName=targetName.Substring(11);if(!ConscriptSourceInput.Identity(targetName))throw new InvalidDataException("Invalid GameObject command target.");children[0].InnerText="GameObject:"+targetName;
         var normalized=ReferencePipelineSmokeTest.Normalize(schemas,xml.OuterXml);var instance=Attach(normalized.XmlNode,"ConscriptRecruitment.normalized.xml");instance.ReferencedInstances.AddRange(normalized.ReferencedInstances);instance.ValidatedReferencedInstances=new(instance.ReferencedInstances);
         if(instance.ReferencedInstances.Count!=1 || instance.ReferencedInstances[0].TypeId!=0x942FFF2D)throw new InvalidDataException("Recruitment command reference normalization differs.");
         instance.Handle.TypeHash=CommandHash;instance.Handle.InstanceHash=FastHash.GetHashCode(Encoding.UTF8.GetBytes(instance.XmlNode.OuterXml));

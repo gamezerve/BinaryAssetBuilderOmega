@@ -213,10 +213,10 @@ internal static class BoundedDiagnosticBuild
     //-------------------------------------------------------------------------------------------------
     /** Reborn: admit only two reviewed Conscript identities with six checked scalar values, separately from unchanged stock and ordinary serializer routes. */
     //-------------------------------------------------------------------------------------------------
-    internal static Dictionary<string,byte[]> SerializeConscriptTrial(InstanceDeclaration instance,AssetBuffer chunk,uint checksum,ReferencedFileBuffer runtime)
+    internal static Dictionary<string,byte[]> SerializeConscriptTrial(InstanceDeclaration instance,AssetBuffer chunk,uint checksum,ReferencedFileBuffer runtime,string? approvedIdentity=null)
     {
         string id=instance.XmlNode.Attributes?["id"]?.Value??"";
-        if(id is not ("SovietAntiInfantryInfantry" or "RebornConscriptTrial") || instance.Handle.Name!="GameObject:"+id || instance.Handle.InstanceId!=InstanceHandle.GetInstanceId(id)
+        if(!ConscriptSourceInput.Identity(id) || (approvedIdentity==null?id is not ("SovietAntiInfantryInfantry" or "RebornConscriptTrial"):id!=approvedIdentity) || instance.Handle.Name!="GameObject:"+id || instance.Handle.InstanceId!=InstanceHandle.GetInstanceId(id)
             || instance.Handle.TypeId!=0x942FFF2Du || instance.Handle.TypeHash!=0xCEB9FE36u || instance.Handle.InstanceHash==0
             || instance.ValidatedReferencedInstances?.Count!=275 || !instance.ValidatedReferencedInstances.SequenceEqual(instance.ReferencedInstances)
             || chunk.InstanceData.Length!=128184 || chunk.RelocationData.Length!=1800 || chunk.ImportsData.Length!=1104
@@ -238,12 +238,13 @@ internal static class BoundedDiagnosticBuild
     //-------------------------------------------------------------------------------------------------
     internal static Dictionary<string,byte[]> SerializeConscriptRecruitment(InstanceDeclaration[] ordered,AssetBuffer[] chunks,uint checksum,ReferencedFileBuffer runtime)
     {
-        if(ordered.Length!=2 || chunks.Length!=2 || ordered[0].Handle.Name!="GameObject:RebornConscriptTrial")throw new InvalidDataException("Recruitment requires the ordered object/command pair.");
+        if(ordered.Length!=2 || chunks.Length!=2 || ordered[0].Handle.TypeId!=0x942FFF2D)throw new InvalidDataException("Recruitment requires the ordered object/command pair.");
         // Reborn: retain every existing new-object graph/scalar gate before admitting its second local consumer.
-        SerializeConscriptTrial(ordered[0],chunks[0],checksum,runtime);
+        SerializeConscriptTrial(ordered[0],chunks[0],checksum,runtime,ordered[0].XmlNode.Attributes?["id"]?.Value);
         var command=ordered[1];var chunk=chunks[1];var target=ordered[0].Handle;
         uint[] words={0,6,0,0,0,28,0,1};var expected=new byte[32];for(int i=0;i<words.Length;i++)BinaryPrimitives.WriteUInt32LittleEndian(expected.AsSpan(i*4,4),words[i]);
-        if(command.Handle.Name!="LogicCommand:"+ConscriptRecruitmentSmokeTest.CommandId || command.Handle.InstanceId!=InstanceHandle.GetInstanceId(ConscriptRecruitmentSmokeTest.CommandId) || command.Handle.TypeId!=ConscriptRecruitmentSmokeTest.CommandType || command.Handle.TypeHash!=ConscriptRecruitmentSmokeTest.CommandHash || command.Handle.InstanceHash==0
+        string commandId=command.XmlNode.Attributes?["id"]?.Value??"";
+        if(!ConscriptSourceInput.Identity(commandId) || command.Handle.Name!="LogicCommand:"+commandId || command.Handle.InstanceId!=InstanceHandle.GetInstanceId(commandId) || command.Handle.TypeId!=ConscriptRecruitmentSmokeTest.CommandType || command.Handle.TypeHash!=ConscriptRecruitmentSmokeTest.CommandHash || command.Handle.InstanceHash==0
             || command.ReferencedInstances.Count!=1 || command.ValidatedReferencedInstances?.Count!=1 || !command.ValidatedReferencedInstances.SequenceEqual(command.ReferencedInstances)
             || command.ReferencedInstances[0].TypeId!=target.TypeId || command.ReferencedInstances[0].InstanceId!=target.InstanceId
             || !chunk.InstanceData.SequenceEqual(expected) || !chunk.RelocationData.SequenceEqual(new byte[]{20,0,0,0,255,255,255,255}) || !chunk.ImportsData.SequenceEqual(new byte[]{28,0,0,0,255,255,255,255}))

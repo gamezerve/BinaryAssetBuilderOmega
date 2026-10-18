@@ -80,6 +80,14 @@ internal static class Program
             if(args.Length==4 && args[0]=="gameobject-original-native-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeOriginalRoot:true);return 0;}
 
+            // Reborn: EA source envelopes/includes are prepared explicitly before bounded native compilation; no hidden command is generated.
+            if(args.Length==2 && args[0]=="conscript-source-kind")
+            {Console.WriteLine(ConscriptSourceInput.Detect(args[1])?"conscript":"other");return 0;}
+            if(args.Length==3 && args[0]=="conscript-source-prepare")
+            {CompilerSmokeTest.InitializeHashProvider();ConscriptSourceInput.Prepare(args[1],args[2]);return 0;}
+            // Reborn: group frontend structure/default/no-hidden-command checks independently of full GameObject compilation.
+            if(args.Length==3 && args[0]=="conscript-source-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();ConscriptSourceInput.SelfTest(args[1],args[2]);return 0;}
             // Reborn: qualify EP1 production commands independently before exposing the bounded new-identity recruitment trial.
             if(args.Length==2 && args[0]=="conscript-recruitment-command-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ConscriptRecruitmentSmokeTest.Run(args[1]);return 0;}

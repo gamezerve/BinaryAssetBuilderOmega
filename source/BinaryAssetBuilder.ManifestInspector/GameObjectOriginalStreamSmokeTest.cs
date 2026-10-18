@@ -42,7 +42,7 @@ internal static class GameObjectOriginalStreamSmokeTest
         // Reborn: reject ambiguous catalogs, relabeled tokenization, changed fixed identities and truncated qualified chunks without widening default dispatch.
         Refuse(()=>ValidateDependencies(dependencies,catalogs.Concat(catalogs).ToArray()));refusals++;
         Refuse(()=>BoundedDiagnosticBuild.Verify(first,ordered,chunks,payloads,checksum,runtimeNames,new[]{false}));refusals++;
-        var wrongXml=original.XmlNode.CloneNode(true);wrongXml.Attributes!["id"]!.Value="RebornUnadmittedConscript";var wrongIdentity=new InstanceDeclaration(document){XmlNode=wrongXml,ValidatedReferencedInstances=new(original.ReferencedInstances)};wrongIdentity.ReferencedInstances.AddRange(original.ReferencedInstances);wrongIdentity.Handle.TypeHash=instance.Handle.TypeHash;wrongIdentity.Handle.InstanceHash=instance.Handle.InstanceHash;Refuse(()=>Serialize(wrongIdentity,chunk));refusals++;
+        var wrongXml=original.XmlNode.CloneNode(true);wrongXml.Attributes!["id"]!.Value=original.XmlNode.Attributes!["id"]!.Value+"Unadmitted";var wrongIdentity=new InstanceDeclaration(document){XmlNode=wrongXml,ValidatedReferencedInstances=new(original.ReferencedInstances)};wrongIdentity.ReferencedInstances.AddRange(original.ReferencedInstances);wrongIdentity.Handle.TypeHash=instance.Handle.TypeHash;wrongIdentity.Handle.InstanceHash=instance.Handle.InstanceHash;Refuse(()=>Serialize(wrongIdentity,chunk));refusals++;
         byte[] savedData=chunk.InstanceData;try{chunk.InstanceData=savedData[..^1];Refuse(()=>Serialize(instance,chunk));refusals++;}finally{chunk.InstanceData=savedData;}
         var savedReferences=instance.ValidatedReferencedInstances;try{instance.ValidatedReferencedInstances=savedReferences.AsEnumerable().Reverse().ToList();Refuse(()=>Serialize(instance,chunk));refusals++;}finally{instance.ValidatedReferencedInstances=savedReferences;}
         foreach(uint hash in new[]{0u,0xCEB9FE37u}){uint saved=instance.Handle.TypeHash;try{instance.Handle.TypeHash=hash;Refuse(()=>Serialize(instance,chunk));refusals++;}finally{instance.Handle.TypeHash=saved;}}
@@ -53,7 +53,7 @@ internal static class GameObjectOriginalStreamSmokeTest
         //-------------------------------------------------------------------------------------------------
         /** Reborn: preserve original-stock serializer admission while explicitly selecting the separate two-identity authored profile. */
         //-------------------------------------------------------------------------------------------------
-        Dictionary<string,byte[]> Serialize(InstanceDeclaration declaration,AssetBuffer buffer)=>authoredTrial?BoundedDiagnosticBuild.SerializeConscriptTrial(declaration,buffer,checksum,runtime):BoundedDiagnosticBuild.SerializeOriginalConscript(declaration,buffer,checksum,runtime);
+        Dictionary<string,byte[]> Serialize(InstanceDeclaration declaration,AssetBuffer buffer)=>authoredTrial?BoundedDiagnosticBuild.SerializeConscriptTrial(declaration,buffer,checksum,runtime,original.XmlNode.Attributes?["id"]?.Value):BoundedDiagnosticBuild.SerializeOriginalConscript(declaration,buffer,checksum,runtime);
         //-------------------------------------------------------------------------------------------------
         /** Reborn: independent source selectors, stock root directory shape and native payload readback precede trusting a serialized diagnostic. */
         //-------------------------------------------------------------------------------------------------

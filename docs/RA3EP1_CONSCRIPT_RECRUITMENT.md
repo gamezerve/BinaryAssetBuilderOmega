@@ -1,5 +1,10 @@
 # New-ID Conscript recruitment trial
 
+**Historical bridge:** the user reported this new-ID package worked. Its former
+automatic command generation is now removed; see the [explicit EA XML frontend](RA3EP1_EA_SOURCE_FRONTEND.md).
+The implementation/workflow details below record the preceding trial, not the
+current frontend contract.
+
 ## Current user workflow
 
 Open **alpha/EALAModStudio.exe**, select **RebornTest**, click **Build Mod**.

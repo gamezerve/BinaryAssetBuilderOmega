@@ -29,7 +29,9 @@ try{
     if($StudioSession){[IO.File]::WriteAllText((Join-Path $run 'studio-owner.txt'),$StudioSession)}
     # Reborn: standalone GameObject XML uses the explicit complete-Conscript route; other assets retain their original admission and compiler path.
     $xmlSettings=[Xml.XmlReaderSettings]::new();$xmlSettings.DtdProcessing=[Xml.DtdProcessing]::Prohibit;$xmlSettings.XmlResolver=$null;$xmlSettings.MaxCharactersInDocument=1048576
-    $reader=[Xml.XmlReader]::Create($ModXml,$xmlSettings);try{$null=$reader.MoveToContent();$isConscript=$reader.LocalName-ceq 'GameObject'}finally{$reader.Dispose()}
+    $reader=[Xml.XmlReader]::Create($ModXml,$xmlSettings);try{$null=$reader.MoveToContent();$isConscript=$reader.LocalName-ceq 'GameObject';$isDeclaration=$reader.LocalName-ceq 'AssetDeclaration'}finally{$reader.Dispose()}
+    # Reborn: detect GameObject declarations in a real local XML closure without an automatic production command.
+    if($isDeclaration){$kind=@(& (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') conscript-source-kind $ModXml);if($LASTEXITCODE-ne 0){throw ($kind -join [Environment]::NewLine)};$isConscript=($kind -join '').Trim()-ceq 'conscript'}
     $backend=if($isConscript){'Invoke-Ra3Ep1ConscriptAlphaBuild.ps1'}else{'Invoke-Ra3Ep1AlphaBuild.ps1'}
     $arguments=@('-NoProfile','-File',(Join-Path $PSScriptRoot $backend),'-ModXml',$ModXml,'-StaticManifest',$StaticManifest,'-GlobalManifest',$GlobalManifest,'-CompilerDirectory',$expectedCompiler,'-OutputRoot',$run)
     if($ValidateOnly){$arguments+='-ValidateOnly'}

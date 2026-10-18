@@ -5,4 +5,6 @@ Working[[:space:]]RA3[[:space:]]Compiler[[:space:]]for[[:space:]]Reference/build
 /fixtures/ra3ep11/phase-a/probe_1.0.cfg -text
 # Reborn: these exact captured Conscript sources contain significant Script/whitespace data; do not normalize or trim them as ordinary code.
 /alpha/mods/RebornTest/data/mod.xml -text whitespace=-blank-at-eol
+# Reborn: preserve significant Lua/string text in the explicit EA-style unit source after splitting the entry document.
+/alpha/mods/RebornTest/data/Conscript.xml -text whitespace=-blank-at-eol
 /tests/fixtures/live-alpha/ConscriptBuildTime1/data/mod.xml -text whitespace=-blank-at-eol

@@ -28,25 +28,35 @@ Restart an already-open Studio once to enable this update; earlier uncontained b
 <p><b>Reborn</b> belongs to the user. Automated developer tests do not modify or build it.
 <b>RebornTest</b> is the reusable developer slot. Previous sample mods are now regression fixtures outside this list.</p>
 <h2>Conscript: six editable scalars</h2>
-<p>Select <b>RebornTest</b> and click <b>Build Mod</b>. Its data/mod.xml contains the complete original-ID
-Conscript XML. The selected XML is compiled through Core, native ownership,
+<p>Select <b>RebornTest</b> and click <b>Build Mod</b>. Its data/mod.xml is an EA AssetDeclaration including
+Conscript.xml (complete unit) and CommandData.xml (explicit command). The selected XML is compiled through Core, native ownership,
 metadata and reference/stream checks before a fresh BIG is published. This is not a cached BIG export.</p>
 <!-- Reborn: distinguish editable source fields from unchanged identity/dependency/graph restrictions and unproven new gameplay values. -->
 <p>Editable attributes: GameObject BuildTime (0.1–600), ObjectResourceInfo/BuildCost Amount (integer 0–100000),
 Body/ActiveBody MaxHealth (1–100000), VisionInfo VisionRange and ShroudClearingRange (1–5000),
 LocomotorSet Speed (1–500). Keep the rest of the supplied XML unchanged.
 RebornTest new-ID trial: time=2, cost=15, health=750, vision=400, shroud=700, speed=100.</p>
-<p>Other edits, arbitrary GameObjects, mixed arbitrary assets and unreviewed new identities
+<p>Custom ASCII IDs are accepted on this same Conscript shape; stock object collisions are refused except the explicit Conscript override.
+Other edits, arbitrary GameObjects and mixed arbitrary assets
 are not enabled. ALPHA005 reports this limitation. UprisingXmlRoot in uprising-alpha.paths must point to matching official Uprising XML.
 The earlier original-ID grouped scalar profile has qualitative user gameplay confirmation, not independent numeric measurements.</p>
 <!-- Reborn: an explicit new-object consumer is distinct from general GameObject or CommandSet authoring. -->
 <h2>New-ID recruitment trial</h2>
-<p>RebornTest now uses <b>RebornConscriptTrial</b>. Build Mod creates two assets: the new GameObject and a freshly compiled override of
+<p>RebornTest uses <b>RebornConscriptTrial</b>. CommandData.xml explicitly declares the override; the compiler no longer generates commands automatically.
+Build Mod creates only authored assets: the new GameObject and a freshly compiled override of
 Command_ConstructSovietAntiInfantryInfantry pointing to it. The existing Conscript slot/icon produces the new unit;
 the original GameObject and Barracks CommandSet/other choices are not replaced. This is not an additional menu slot.</p>
 <p>The UNIT_BUILD command matches the complete stock EP1 native layout. The mixed stream's local new-object reference is checked independently.
-New-ID recruitment still needs gameplay testing. Start a new Soviet skirmish: Conscript should cost 15 and take about two seconds.
+The preceding new-ID package had user-reported gameplay success; the explicit-source revision is build-validated. Conscript should cost 15 and take about two seconds.
 The original GameObject remains stock (cost 100/time 4); scripted/map spawns referring directly to it are unaffected.</p>
+<!-- Reborn: namespaces, source preparation and native asset support are separate capabilities. -->
+<h2>EA source syntax and current limits</h2>
+<p>XML declarations, EA namespace, xsi/xi declarations, comments, empty Tags and local XML Include type=all are supported.
+Attribute order is flexible. Children must still satisfy the official XSD sequence/list rules.
+Optional/default omissions work only when they retain the currently admitted unit semantics/native graph.</p>
+<p>Untouched official Conscript source is not yet directly buildable: inheritFrom, instance/reference Includes, Defines/$ expressions,
+DATA:/ART: aliases, W3X processing and xi:include execution are not connected to this GameObject frontend.
+Those produce explicit errors, not hidden stock substitutions. Arbitrary modules/field edits remain outside the six-scalar profile.</p>
 <h2>Other supported input profiles</h2>
 <p>The original Reborn sample uses Allied GUN=5000. Archived ArmorCannon uses CANNON=5000 and GUN=100.
 The archived CombinedArmor fixture contains Allied GUN=250 and Soviet GUN=5000 together.

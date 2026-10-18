@@ -8,6 +8,12 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 18, 2026
 
+**Explicit EA XML frontend:** RebornTest now uses an AssetDeclaration `mod.xml`
+including `Conscript.xml` and `CommandData.xml`. No LogicCommand is generated
+implicitly. XML headers/namespaces/local all-XML includes and attribute order
+are accepted; full original Conscript inheritance/DATA/ART/W3X preprocessing is
+still not connected. See [precise source support and omission/order rules](docs/RA3EP1_EA_SOURCE_FRONTEND.md).
+
 **One live alpha SDK:** open `alpha/EALAModStudio.exe`, edit the selected mod's
 `alpha/mods/<name>/data/mod.xml`, then use **Build Mod**. Successful builds reuse
 `alpha/builtmods/<name>/` for `<name>.big`, `mod_1.0.skudef`, `build.json` and
@@ -22,10 +28,11 @@ RebornTest contains complete Conscript XML with six editable
 scalars: BuildTime, cost Amount, MaxHealth, VisionRange, ShroudClearingRange and
 LocomotorSet Speed. See [ranges and grouped trial](docs/RA3EP1_CONSCRIPT_SCALARS.md).
 The original-ID six-scalar trial now has qualitative user gameplay confirmation.
-The next bounded trial uses `RebornConscriptTrial` (cost=15, time=2): a genuinely
-new GameObject plus an overridden existing UNIT_BUILD command. It reuses the
+The bounded `RebornConscriptTrial` (cost=15, time=2) has user-reported gameplay
+success: a new GameObject plus an overridden existing UNIT_BUILD command. It reuses the
 Conscript Barracks slot, leaving CommandSet/other choices unchanged; recruitment
-is offline-qualified, not yet gameplay-proven. See [recruitment scope](docs/RA3EP1_CONSCRIPT_RECRUITMENT.md).
+was gameplay-observed for that package. Its command is now explicitly authored in XML.
+See [historical recruitment scope](docs/RA3EP1_CONSCRIPT_RECRUITMENT.md).
 The bounded real source-build route still rejects other GameObject changes;
 this is not general GameObject authoring. Automated regressions reuse RebornTest
 and leave the user's Reborn source and outputs untouched. Old armor/weapon

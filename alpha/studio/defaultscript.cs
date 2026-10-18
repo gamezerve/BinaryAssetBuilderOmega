@@ -58,7 +58,7 @@ namespace EALABuild
             CheckPath(input);
             BuildHelper.CurrentBuildSteps = 1;
             // Reborn: separate the user's Reborn workspace from developer tests, including the strictly bounded complete Conscript build.
-            BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha; yard/AK47/armor-source or bounded Conscript scalars. RebornConscriptTrial redirects the existing Barracks Conscript slot. Unsupported edits fail; recruitment needs runtime testing.");
+            BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha; bounded Conscript source via AssetDeclaration/local XML Includes. Commands must be authored explicitly; none are generated. Full inheritance/ART/W3X preprocessing is not connected yet.");
             // Reborn: session resources exist before EA starts the host; the suspended worker cannot escape its own job.
             string session = (string)Lifecycle("Begin");
             RunExecutableArguments request = new RunExecutableArguments(buildHost);
@@ -106,7 +106,7 @@ namespace EALABuild
             List<GUIElementData> options = new List<GUIElementData>();
             options.Add(new GUIElementData("alpha", "Uprising Alpha: Validate XML / Build Data / Make BIG", GUIElementData.LabelType, ScriptIndex.ModScript));
             options.Add(new GUIElementData("scope", "Fixed yard samples or 1..32 source armors with Includes/Defines/inheritFrom (experimental)", GUIElementData.LabelType, ScriptIndex.ModScript));
-            options.Add(new GUIElementData("weapon", "RebornTest: new-ID Conscript via existing slot; time/cost/health/vision/shroud/speed", GUIElementData.LabelType, ScriptIndex.ModScript));
+            options.Add(new GUIElementData("weapon", "RebornTest: mod.xml includes Conscript.xml and explicit CommandData.xml", GUIElementData.LabelType, ScriptIndex.ModScript));
             return options;
         }
 

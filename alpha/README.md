@@ -2,6 +2,12 @@
 
 ## Build your mod
 
+Current RebornTest uses three EA-shaped XML files: `data/mod.xml` (Includes),
+`data/Conscript.xml` (complete unit), `data/CommandData.xml` (explicit command).
+There is **no automatic LogicCommand generation**. Read the
+[source frontend support table](../docs/RA3EP1_EA_SOURCE_FRONTEND.md) before using
+inheritance, source aliases, omission rules or arbitrary modules.
+
 Open **`alpha/EALAModStudio.exe`**. This is the user-facing entry point.
 Select `Reborn` or `RebornTest`, edit its `alpha/mods/<name>/data/mod.xml`, then click
 **Build Mod** in Studio. Read Build Log / Error Log for the result.
@@ -37,8 +43,8 @@ additional user workflow.
 Only two mod folders belong in the Studio list:
 
 - `Reborn`: the user's mod. Developer tests do not change its sources or build its outputs.
-- `RebornTest`: the developer's reusable test mod. Its current `data/mod.xml`
-  contains the complete `RebornConscriptTrial` Conscript, with six editable numeric fields.
+- `RebornTest`: the developer's reusable test mod. Its `data/mod.xml` includes
+  the complete unit in `Conscript.xml` and the explicit command in `CommandData.xml`.
 
 Select **RebornTest → Build Mod** to compile that Conscript from the selected
 XML through Core, including complete native/metadata/reference/stream checks.
@@ -47,9 +53,10 @@ This is not a cached trial-BIG export. The unchanged BuildTime=1 regression fixt
 must still reproduce the previous game-observed candidate. New scalar values are
 offline-qualified, not new gameplay observations.
 
-This Conscript route accepts the original identity or the reviewed `RebornConscriptTrial` identity and six scalar edits.
-Other changes, arbitrary GameObjects, additional
-assets and arbitrary new identities still fail; this is not a general unit compiler.
+This Conscript route accepts the original identity or a custom collision-free
+ASCII ID and six scalar edits on the same complete Conscript shape. An explicit
+UNIT_BUILD command may target that local object. Other GameObject/module changes
+and arbitrary asset mixes still fail; this is not a general unit compiler.
 It additionally needs `UprisingXmlRoot` in the local paths file, pointing to the
 matching official Uprising XML directory. Preserve the supplied complete XML;
 unreviewed changes are rejected, not silently ignored. ALPHA005 marks this scope.
@@ -72,11 +79,12 @@ These are conservative alpha admission ranges, not assertions of engine limits.
 See [qualification and gameplay checklist](../docs/RA3EP1_CONSCRIPT_SCALARS.md).
 
 The earlier original-ID grouped scalar trial has qualitative user confirmation.
-For `RebornConscriptTrial`, the build automatically adds one freshly compiled
+For `RebornConscriptTrial`, `CommandData.xml` explicitly declares the freshly compiled
 `Command_ConstructSovietAntiInfantryInfantry` LogicCommand override pointing to
 the new object. The existing Conscript Barracks slot/icon produces the new unit;
 no extra menu slot or CommandSet edit is made. Other Barracks choices and the
-original GameObject remain stock. New-ID recruitment is not yet gameplay-proven.
+original GameObject remain stock. The preceding new-ID package has user-reported
+gameplay success; this source-frontend revision is independently build-validated.
 See [new-ID build and test](../docs/RA3EP1_CONSCRIPT_RECRUITMENT.md).
 
 Previous armor/AK47 samples now live under `tests/fixtures/live-alpha/`, outside
@@ -191,10 +199,10 @@ all EA components or official schema material. Public redistribution review
 is still open; do not upload this workspace as a reviewed release ZIP.
 
 This candidate contains a focused compiler executable with additional developer
-commands; only the documented fixed armor, experimental armor source and single-AK47
-backends are part of the alpha scope. Model/texture/audio/map/GameObject builds
-remain unsupported, except the exact original-ID Conscript BuildTime=1 profile
-documented above.
+commands; only the documented armor, single-AK47 and bounded explicit Conscript
+source backends are part of alpha scope. General model/texture/audio/map and
+arbitrary GameObject/module builds remain unsupported. Diagnostic command
+presence is not evidence that an asset type is enabled in Studio.
 
 Older dated workspaces and the dependency-overlay route are historical
 maintenance experiments, not additional user entry points. Compiler/fixture
