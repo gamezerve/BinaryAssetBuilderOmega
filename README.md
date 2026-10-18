@@ -8,6 +8,18 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 18, 2026
 
+**One live alpha SDK:** open `alpha/EALAModStudio.exe`, edit the selected mod's
+`alpha/mods/<name>/data/mod.xml`, then use **Build Mod**. Successful builds reuse
+`alpha/builtmods/<name>/` for `<name>.big`, `mod_1.0.skudef`, `build.json` and
+`last-build.log`; no CFG is published. Failed builds preserve the last good
+output. Successful Release/x86 compiler builds refresh the tools in this same
+SDK without replacing editable mod sources. No new dated SDK copy is needed.
+This remains a repository-linked local alpha, not a portable public release.
+See [supported alpha input](alpha/README.md) and
+[maintenance / retained lessons](docs/RA3EP1_LIVE_ALPHA_AND_RETENTION.md).
+The Conscript developer proof below does not yet enable general GameObjects
+in the Studio build profile.
+
 **User-confirmed gameplay:** the SKUDef-only trial worked and the Conscript
 was reported produced in approximately **one second**, matching authored
 BuildTime=1 rather than stock 4. This supplies the first gameplay evidence for

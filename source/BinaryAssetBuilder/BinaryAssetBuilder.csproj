@@ -32,4 +32,8 @@
     </None>
   </ItemGroup>
 
+  <!-- Reborn: rebuilding the legacy main executable also refreshes the focused alpha toolchain and its stable SDK generation. -->
+  <Target Name="RebornRefreshAlphaToolchain" AfterTargets="Build" Condition="'$(Configuration)' == 'Release' and '$(Platform)' == 'x86' and '$(DesignTimeBuild)' != 'true' and '$(SkipAlphaSync)' != 'true'">
+    <MSBuild Projects="$(MSBuildProjectDirectory)\..\BinaryAssetBuilder.ManifestInspector\BinaryAssetBuilder.ManifestInspector.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform)" BuildInParallel="false" />
+  </Target>
 </Project>

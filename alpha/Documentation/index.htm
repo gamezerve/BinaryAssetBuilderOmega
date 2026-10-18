@@ -2,26 +2,33 @@
 <!-- Reborn: local alpha help for the existing Studio documentation pane; no remote content or executable scripts. -->
 <html lang="en"><head><meta charset="utf-8"><title>Uprising Mod SDK Alpha</title></head>
 <body>
-<h1>Uprising Mod SDK Alpha — local candidate</h1>
+<h1>Uprising Mod SDK Alpha — live repository workspace</h1>
+<!-- Reborn: keep Studio as the sole user entry and document stable output instead of dated workspace copies. -->
+<p>Open alpha/EALAModStudio.exe, select your mod, edit alpha/mods/&lt;name&gt;/data/mod.xml and click Build Mod.
+The same SDK receives updated compiler tools after successful Release/x86 compiler builds. Editable mod sources are preserved.</p>
+<p>Successful builds publish alpha/builtmods/&lt;name&gt;/&lt;name&gt;.big and mod_1.0.skudef,
+with build.json and last-build.log in that directory. No CFG counterpart is published.
+Failures preserve the previous successful output; an old package does not indicate a successful new build.
+Temporary backend files are removed after each build. No game installation or automatic launch occurs.</p>
 <p>This limited candidate uses EA's existing Mod BuildStudio interface. Local user tests confirm sample build success,
 warning/error display, malformed-XML failure and this documentation pane. This is not full original-SDK feature parity.</p>
 <!-- Reborn: explain the corrected EA callback contract without treating a completion label as independent package proof. -->
 <p>A rejected build reports Error: ALPHA100 and Critical: ALPHA101, followed by an alpha build failed message.
 Successful builds report package paths and Build Completed. Inspect the final receipt; old packages from earlier builds are not new output.</p>
 <h2>Supported build</h2>
-<p>Select Reborn (GUN 5000), Armor250 (GUN 250), ArmorCannon (CANNON 5000, GUN 100) or SovietArmor (Soviet GUN 5000).
+<p>Select Reborn (GUN 5000) or ArmorCannon (CANNON 5000, GUN 100).
 CombinedArmor contains Allied GUN=250 and Soviet GUN=5000 together.
 <!-- Reborn: preserve both sample revisions and report their separate qualitative gameplay observations. -->
-CombinedStrong contains Allied and Soviet GUN=5000 together.
+CombinedArmorStrong contains Allied and Soviet GUN=5000 together.
 Edit mods/&lt;name&gt;/data/mod.xml. One AlliedConYardArmor or SovietConYardArmor, or one of each together, is accepted per build. All thirteen Percent values
 and five optional root scalars (Default, DamageScalar, SideDamageScalar, RearDamageScalar,
 FlankedPenalty) accept canonical integers from 0 to 10000; omitted scalars default to 100.
 Keep the identity and thirteen ordered armor entries. Unsupported input fails; it is not silently skipped.
 Allied GUN 5000/CANNON 5000 and Soviet GUN 5000 have user-observed gameplay evidence.
-CombinedArmor has positive Soviet evidence; CombinedStrong has positive Allied evidence.
-Allied GUN=250 is inconclusive. Soviet was not re-tested in CombinedStrong; other edits remain experimental.</p>
-<p>The single alpha build step validates XML, compiles through Core and creates a BIG/config/SKU package.
-Results are under builtmods/RebornAlphaInput-&lt;guid&gt;. Read alpha-build.json for the final build receipt.</p>
+CombinedArmor has positive Soviet evidence; CombinedArmorStrong has positive Allied evidence.
+Allied GUN=250 is inconclusive. Soviet was not re-tested in that stronger revision; other edits remain experimental.</p>
+<p>The single alpha build step validates XML, compiles through Core and creates a BIG/SKUDef package.
+Read build.json for the final receipt. Embedded backend paths describe removed intermediates, not live output locations.</p>
 <!-- Reborn: weapon authoring is a separate bounded build, not general WeaponTemplate or mixed-stream support. -->
 <p>Select ConscriptAK47 for one complete SovietAntiInfantryInfantryAK47 weapon.
 Only Damage may change (integer 0..10000, optional .0); all other fields stay as supplied.
@@ -39,7 +46,7 @@ directly visible instance bases and Include-free definition-only all leaves are 
 The graph is confined to the mod data root (32 sources, 64 edges, 64 KiB/file, one MiB total).
 Child replacement by Damage, same-ID source shadowing, definition overrides,
 arbitrary expressions/all Includes, reference Includes and nonempty Tags are rejected.
-Read README.md for route selection and validation-only usage. Old sample routes remain unchanged.</p>
+Read README.md for supported source forms. Old sample routes remain unchanged.</p>
 <h2>Not supported by this alpha</h2>
 <p>Other asset types, mixed armor/weapon streams, models, textures, music, maps,
 LOD selection, STR processing, automatic installation and game launch are not build-enabled here.</p>
@@ -47,7 +54,8 @@ LOD selection, STR processing, automatic installation and game launch are not bu
 <p>uprising-alpha.paths contains five literal absolute paths: PowerShell7, Driver, StaticManifest, GlobalManifest and CompilerDirectory.
 GlobalManifest is required for weapon builds; legacy four-key armor configurations remain accepted.
 Update Driver and CompilerDirectory after relocation. PowerShell 7, x86 .NET 8,
-compatible .NET Framework 4 and unpacked Uprising stock streams are required.</p>
+compatible .NET Framework 4 and unpacked Uprising stock streams are required.
+This is a repository-linked development SDK, not a standalone portable distribution.</p>
 <p>No stock archive is replaced. The SKU is a mod fragment, not a replacement game SKU.
 Duplicate identities or unsupported input fail the whole build. New builds are not automatically gameplay-verified.</p>
 <p>Local use only: EA components come from your own SDK. Public redistribution review is incomplete.</p>

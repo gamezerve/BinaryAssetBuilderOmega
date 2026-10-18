@@ -44,7 +44,8 @@ namespace EALABuild
         public void buildMod(string modName, Dictionary<string, Object> gui)
         {
             string name = BuildHelper.BuildTarget;
-            if (String.IsNullOrEmpty(name) || name.Length > 15 || name.IndexOfAny(new char[] { '\\', '/', '"', ':', ';' }) >= 0 || name == "." || name == "..")
+            // Reborn: the stable SDK uses a short fixed SKUDef basename, independent of the editable mod folder name.
+            if (String.IsNullOrEmpty(name) || name.Length > 48 || name.IndexOfAny(new char[] { '\\', '/', '"', ':', ';', '\r', '\n' }) >= 0 || name == "." || name == "..")
                 throw new InvalidDataException("Reborn: invalid alpha mod name.");
             string input = Path.Combine(Path.Combine(Path.Combine(StaticPaths.CurrentDirectory, "mods"), name), "data\\mod.xml");
             CheckPath(input);

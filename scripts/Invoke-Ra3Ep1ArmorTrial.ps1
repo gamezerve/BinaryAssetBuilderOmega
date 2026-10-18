@@ -17,19 +17,20 @@ $expectedBytes=if($DefaultReader){3552}else{3650}
 $expectedHash=if($DefaultReader){'DD7DE09E3A81B9714DC2861ADE0AA9ECDFE72A1851EDD1ED20BE2155EF31C2DC'}else{'3FE964292FA72A1DF961EC93D3CFDA884E1334F55ACB294FF75FE1E4144F3F85'}
 # Reborn: pin the clean alpha's independently read-back CANNON=5000/GUN=100 package, not the latest mutable build directory.
 if($Cannon){
-    $trial=Join-Path (Split-Path -Parent $repo) 'UprisingAlpha-20261011-h/builtmods/RebornAlphaInput-827c7fe6f81d44bdb39aed9e5d73f46c/build/package'
+    # Reborn: preserve the exact historical gameplay package without retaining a whole superseded SDK checkout.
+    $trial=Join-Path $repo 'artifacts/LegacyLaunches/Cannon'
     $expectedBytes=3552
     $expectedHash='40C09781BAB82643FBBC6DF5A8DFA674B74BF16B8B93F4A5B605FF5778F0BE7F'
 }
 # Reborn: pin the independently stock-matched Soviet GUN=5000 output from the current clean alpha, not a mutable newest-build lookup.
 if($Soviet){
-    $trial=Join-Path (Split-Path -Parent $repo) 'UprisingAlpha-20261012-a/builtmods/RebornAlphaInput-4cdaaed8530a4d5fa735fab8da5e37d9/build/package'
+    $trial=Join-Path $repo 'artifacts/LegacyLaunches/Soviet'
     $expectedBytes=3552
     $expectedHash='0414E554AE9049631B163C508806F2A5EC2AE277030CE1A5DEE9374150C483BD'
 }
 # Reborn: pin the offline-verified shared stream containing Allied GUN=250 and Soviet GUN=5000; runtime loading is still unproven.
 if($Combined){
-    $trial=Join-Path (Split-Path -Parent $repo) 'UprisingAlpha-20261012-c/builtmods/RebornAlphaInput-c9d132f96e1049e689f1574c741ee126/build/package'
+    $trial=Join-Path $repo 'artifacts/LegacyLaunches/Combined'
     $expectedBytes=6348
     $expectedHash='826859F2CD92D840B37D0AABB239DF1C799F433A3A8014912F34757AEF5554E3'
 }

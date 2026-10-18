@@ -378,3 +378,16 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 /Working RA3 Compiler for Reference/builtmods/worldbuilder.bin
+# Reborn: one live local SDK; keep source templates/mod XML tracked, never commit EA binaries, personal paths or build outputs.
+/alpha/tools/
+/alpha/builtmods/
+/alpha/.work/
+/alpha/.sdk.lock
+/alpha/defaultscript.cs
+/alpha/EALAModStudio.exe
+/alpha/EALAModStudio.exe.config
+/alpha/EALABuild.dll
+/alpha/EULA for RA3 MOD SDK.rtf
+/alpha/uprising-alpha.paths
+/alpha/toolchain.json
+/.maintenance/

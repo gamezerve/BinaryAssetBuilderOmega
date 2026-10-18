@@ -15,4 +15,8 @@
     <ProjectReference Include="..\BinaryAssetBuilder.XmlCompiler\BinaryAssetBuilder.XmlCompiler.csproj" />
   </ItemGroup>
 
+  <!-- Reborn: the successful complete alpha toolchain build refreshes one stable development SDK; failed builds never publish tools. -->
+  <Target Name="RebornSyncDevelopmentSdk" AfterTargets="Build" Condition="'$(Configuration)' == 'Release' and '$(Platform)' == 'x86' and '$(DesignTimeBuild)' != 'true' and '$(SkipAlphaSync)' != 'true'">
+    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\..\scripts\Sync-Ra3Ep1DevSdk.ps1&quot; -CompilerDirectory &quot;$(TargetDir).&quot;" />
+  </Target>
 </Project>

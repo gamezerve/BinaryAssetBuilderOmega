@@ -1,4 +1,34 @@
-# Uprising Mod SDK Alpha — local workspace candidate
+# Uprising Mod SDK Alpha — live repository workspace
+
+## Build your mod
+
+Open **`alpha/EALAModStudio.exe`**. This is the user-facing entry point.
+Select a supplied mod, edit its `alpha/mods/<name>/data/mod.xml`, then click
+**Build Mod** in Studio. Read Build Log / Error Log for the result.
+
+Successful builds publish these files in the same SDK:
+
+- `alpha/builtmods/<name>/<name>.big`
+- `alpha/builtmods/<name>/mod_1.0.skudef`
+- `alpha/builtmods/<name>/build.json` and `last-build.log`
+
+No CFG counterpart is required by this workflow. This temporary output directory
+is reused per mod, not multiplied into dated SDK copies. A failed build leaves
+the last successful output intact; it is not evidence of a new successful build.
+No automatic installation or game launch occurs.
+
+Compiler maintenance refreshes `alpha/tools/compiler` after a successful
+Release/x86 build of BinaryAssetBuilder or ManifestInspector. Your mod XML and
+personal paths are preserved. Studio builds and synchronization share a lock to
+avoid mixed compiler generations. An up-to-date toolchain does not expand the
+supported input scope listed below. Internal maintenance scripts are not an
+additional user workflow.
+
+This is a repository-linked local SDK, **not a standalone portable distribution**.
+EA binaries and personal paths are generated locally and ignored by Git.
+See [maintenance and retained lessons](../docs/RA3EP1_LIVE_ALPHA_AND_RETENTION.md).
+
+## Supported input and evidence
 
 This is a limited, experimental **local-use candidate**, not a public release
 or a complete Uprising SDK. It retains the existing EA Mod BuildStudio interface.
@@ -18,10 +48,10 @@ SideDamageScalar, RearDamageScalar, FlankedPenalty) accept canonical integers
 fixed in this legacy route. The experimental armor source route below adds bounded
 includes/inheritance and custom armor identities. Unsupported XML
 fails rather than being silently omitted. Reborn uses GUN=5000; ArmorCannon uses
-CANNON=5000 and stock GUN=100. SovietArmor uses Soviet GUN=5000. Allied GUN/CANNON
+CANNON=5000 and stock GUN=100. Soviet GUN=5000 is supported. Allied GUN/CANNON
 and Soviet GUN have user-observed gameplay evidence. CombinedArmor uses Allied
 GUN=250 and Soviet GUN=5000 in one stream; Soviet has positive user-observed damage,
-while Allied GUN=250 is inconclusive. CombinedStrong uses GUN=5000 for both;
+while Allied GUN=250 is inconclusive. CombinedArmorStrong uses GUN=5000 for both;
 its Allied Peacekeeper test is positive, but Soviet was not re-tested in that
 revision. These are qualitative observations, not exact multiplier measurements
 or proof of every new build. Duplicate identities fail the whole build.
@@ -71,7 +101,7 @@ through imported/local chains and independent literal package equality; it is
 not replacement of an existing GUN entry. See repository example
 `samples/armor/source-append/mod.xml`. All three XML files must stay together
 inside the selected mod data root. This documentation follow-up does not modify
-the preserved h workspace or claim new gameplay proof.
+historical evidence or claim new gameplay proof.
 
 `uprising-alpha.paths` configures five literal `key=absolute-path` lines:
 PowerShell7, StaticManifest, GlobalManifest, Driver and
@@ -83,19 +113,11 @@ without the explicit GlobalManifest setting.
 The local `EALAModStudio.exe.config` selects CLR4 rather than repairing the
 machine's old CLR2 compiler. The user-run Reborn GUI success path passed with it.
 
-For an offline backend build, run from this workspace in PowerShell 7:
-
-```powershell
-# Reborn: compile only the supported sample into a fresh builtmods child; do not install or launch.
-& .\scripts\Invoke-Ra3Ep1AlphaBuild.ps1 -ModXml .\mods\Reborn\data\mod.xml `
-  -StaticManifest 'C:\YOUR\UNPACKED\data\static.manifest' `
-  -CompilerDirectory (Join-Path $PWD 'tools/compiler') `
-  -OutputRoot (Join-Path $PWD 'builtmods')
-```
-
-Output is a fresh `builtmods/RebornAlphaInput-<guid>` directory. The final
-`alpha-build.json` points to a verified BIG/config/SKU package and its authored
-receipt. Intermediate/admission reports alone do not mean the build succeeded.
+Studio uses the live repository build driver. Backend intermediates use a
+private `alpha/.work/<id>` directory and are removed after the build. The final
+`alpha/builtmods/<name>/build.json` embeds the verified backend receipts;
+their temporary paths are historical provenance, not current file links.
+Intermediate/admission reports alone do not mean the build succeeded.
 The SKU is a mod fragment, not a replacement stock SKU. No automatic install
 or launch is provided. The armor observations above and the earlier diagnostic
 AK47 Damage=50 trial are behavioral evidence for those specific candidates;
@@ -112,6 +134,6 @@ commands; only the documented fixed armor, experimental armor source and single-
 backends are part of the alpha scope. Model/texture/audio/map/GameObject builds
 remain unsupported.
 
-For the separate dependency overlay candidate, see OVERLAY.md when supplied.
-It requires user-supplied matching EA components/schema files rather than
-bundling them. Compiler/fixture provenance review still precedes public release.
+Older dated workspaces and the dependency-overlay route are historical
+maintenance experiments, not additional user entry points. Compiler/fixture
+provenance review still precedes public release.
