@@ -24,6 +24,12 @@ this is not general GameObject authoring. Automated regressions reuse RebornTest
 and leave the user's Reborn source and outputs untouched. Old armor/weapon
 samples are retained as fixtures outside the Studio mod list.
 
+Closing Studio during its own active build now asks for cancellation. Yes stops
+only that session's worker tree and releases the SDK lock; No keeps Studio/build
+running. Final output publication is protected against mid-commit cancellation.
+Restart an already-open Studio once after this update; see the
+[lifecycle implementation and checks](docs/RA3EP1_STUDIO_LIFECYCLE.md).
+
 Obsolete generated SDK/artifact snapshots have been consolidated: 311 directories
 and 117,989 files were removed only after complete archive/hash verification.
 The recoverable local backup and inventory reduce net storage by approximately

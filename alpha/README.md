@@ -17,6 +17,14 @@ is reused per mod, not multiplied into dated SDK copies. A failed build leaves
 the last successful output intact; it is not evidence of a new successful build.
 No automatic installation or game launch occurs.
 
+Closing Studio while its own build is active asks whether to cancel that build.
+**Yes** stops its worker process tree, releases the SDK lock and closes Studio;
+**No** keeps Studio and the build running. A completed/idle build needs no prompt.
+Other Studio sessions and unrelated processes are not cancelled. The empty
+`.sdk.lock` file may remain: lock ownership is a live OS handle, not file existence.
+Restart an already-open Studio once after installing this update. Earlier builds
+started without this lifecycle helper cannot be retroactively adopted.
+
 Compiler maintenance refreshes `alpha/tools/compiler` after a successful
 Release/x86 build of BinaryAssetBuilder or ManifestInspector. Your mod XML and
 personal paths are preserved. Studio builds and synchronization share a lock to

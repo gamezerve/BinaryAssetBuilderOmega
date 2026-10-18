@@ -17,6 +17,9 @@ namespace EALABuild
         // Reborn: standalone workspaces use checked prebuilt compiler and output directories, never hidden repository paths.
         private string compilerDirectory;
         private string outputRoot;
+        // Reborn: the isolated CLR4 helper adds close protection without changing EA's executable or CodeDOM reference list.
+        private Type lifecycle;
+        private string buildHost;
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: load explicit local adapter configuration instead of RA3 registry paths or inherited destructive cleanup stages. */
@@ -36,6 +39,10 @@ namespace EALABuild
             CheckPath(runtime); CheckPath(driver); CheckPath(staticManifest);
             if (globalManifest != null) CheckPath(globalManifest);
             CheckDirectory(compilerDirectory); CheckDirectory(outputRoot);
+            buildHost = Path.Combine(StaticPaths.CurrentDirectory, "tools\\studio\\RebornStudioLifecycle.exe");
+            CheckPath(buildHost);
+            lifecycle = System.Reflection.Assembly.LoadFrom(buildHost).GetType("Reborn.StudioLifecycle", true);
+            Lifecycle("Install");
         }
 
         //-------------------------------------------------------------------------------------------------
@@ -52,28 +59,39 @@ namespace EALABuild
             BuildHelper.CurrentBuildSteps = 1;
             // Reborn: separate the user's Reborn workspace from developer tests, including the strictly bounded complete Conscript build.
             BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha; yard/AK47/armor-source profiles or complete original-ID Conscript BuildTime=1. Unsupported edits fail; new builds need runtime testing.");
-            RunExecutableArguments request = new RunExecutableArguments(runtime);
+            // Reborn: session resources exist before EA starts the host; the suspended worker cannot escape its own job.
+            string session = (string)Lifecycle("Begin");
+            RunExecutableArguments request = new RunExecutableArguments(buildHost);
             // Reborn: bind every Studio build to the configured read-only stock baseline.
-            request.Arguments = "-NoProfile -File \"" + driver + "\" -ModXml \"" + input + "\" -StaticManifest \"" + staticManifest
+            request.Arguments = "--run " + session + " \"" + runtime + "\" -NoProfile -File \"" + driver + "\" -StudioSession " + session + " -ModXml \"" + input + "\" -StaticManifest \"" + staticManifest
                 + "\" -CompilerDirectory \"" + compilerDirectory + "\" -OutputRoot \"" + outputRoot + "\"";
             // Reborn: preserve four-key armor workspaces without inferring a weapon dependency path.
             if (globalManifest != null) request.Arguments += " -GlobalManifest \"" + globalManifest + "\"";
             request.RedirectOutput = true; request.CreateWindow = false;
             // Reborn: retain the SDK's step-counter protocol before RunStep advances it for the callback.
-            if (BuildHelper.GetNextExecutableStep() != 1)
-                throw new InvalidDataException("Reborn: unexpected alpha build step state.");
-            BuildHelper.RunStep(StepType.RunExecutable, request);
+            try
+            {
+                if (BuildHelper.GetNextExecutableStep() != 1)
+                    throw new InvalidDataException("Reborn: unexpected alpha build step state.");
+                BuildHelper.RunStep(StepType.RunExecutable, request);
+            }
+            catch { Lifecycle("Complete"); throw; }
         }
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: complete the single backend operation without advancing to unvalidated RA3 postprocessors. */
         //-------------------------------------------------------------------------------------------------
-        public void onStepSuccess(int stepId) { BuildHelper.OnBuildComplete(); }
+        public void onStepSuccess(int stepId) { Lifecycle("Complete"); BuildHelper.OnBuildComplete(); }
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: make an unsuccessful backend visible and retain diagnostic output without automatic retry or cleanup. */
         //-------------------------------------------------------------------------------------------------
-        public void onStepFailure(int stepId) { BuildHelper.DisplayLine("Reborn: alpha build failed; no install or launch was attempted. Review the build output."); }
+        public void onStepFailure(int stepId) { Lifecycle("Complete"); BuildHelper.DisplayLine("Reborn: alpha build failed; no install or launch was attempted. Review the build output."); }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: keep Windows Forms types in the separately compiled helper, preserving EA's exact two-reference CodeDOM contract. */
+        //-------------------------------------------------------------------------------------------------
+        private object Lifecycle(string method) { return lifecycle.GetMethod(method).Invoke(null, null); }
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: this alpha has exactly one indivisible validation/build/package operation. */

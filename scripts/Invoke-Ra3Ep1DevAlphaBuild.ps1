@@ -1,13 +1,15 @@
 # Reborn: stable local SDK front end; keep editable mod sources, publish only BIG/SKUDef plus receipts, never install or launch.
 [CmdletBinding()]
-param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot)
-$ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$lock=$null;$run=$null
+param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot,[string]$StudioSession)
+$ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$lock=$null;$run=$null;$publishMutex=$null;$cancelEvent=$null;$publishHeld=$false
 #-------------------------------------------------------------------------------------------------
 <# Reborn: delete only a newly owned work/output generation after proving containment and refusing every redirected descendant. #>
 #-------------------------------------------------------------------------------------------------
 function Remove-DevAlphaOwned([string]$Path,[string]$Parent){$resolved=[IO.Path]::GetFullPath($Path);if([IO.Path]::GetDirectoryName($resolved)-ine [IO.Path]::GetFullPath($Parent)){throw 'Cleanup target is not a direct owned child.'};foreach($item in @(Get-Item -LiteralPath $resolved -Force)+@(Get-ChildItem -LiteralPath $resolved -Force -Recurse)){if(($item.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0){throw 'Redirected cleanup target retained.'}};Remove-Item -LiteralPath $resolved -Recurse -Force}
 try{
     if($PSVersionTable.PSVersion.Major-lt 7){throw 'PowerShell 7 is required.'}
+    # Reborn: only a Studio-created session supplies cancellation/publication synchronization; unrelated CLI builds remain independent.
+    if($StudioSession){if($StudioSession-cnotmatch '^[a-f0-9]{32}$'){throw 'Invalid Studio session.'};$publishMutex=[Threading.Mutex]::OpenExisting('Local\RebornStudio-'+$StudioSession+'-Publish');$cancelEvent=[Threading.EventWaitHandle]::OpenExisting('Local\RebornStudio-'+$StudioSession+'-Cancel');if($cancelEvent.WaitOne(0)){throw 'Studio build cancelled before starting.'}}
     if(-not $ModXml){$ModXml=Join-Path $sdk ('mods/'+$ModName+'/data/mod.xml')};$ModXml=[IO.Path]::GetFullPath($ModXml)
     $ModName=Split-Path -Leaf (Split-Path -Parent (Split-Path -Parent $ModXml))
     if($ModName-notmatch '^[A-Za-z0-9_-]{1,48}$' -or $ModXml-ine (Join-Path $sdk ('mods/'+$ModName+'/data/mod.xml'))){throw 'Select alpha/mods/<name>/data/mod.xml; paths cannot escape the live SDK.'}
@@ -21,7 +23,9 @@ try{
     $lock=[IO.File]::Open((Join-Path $sdk '.sdk.lock'),[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
     $toolchain=Get-Content -LiteralPath (Join-Path $sdk 'toolchain.json') -Raw|ConvertFrom-Json
     foreach($entry in $toolchain.Files){if((Get-FileHash -LiteralPath (Join-Path $expectedCompiler $entry.Name) -Algorithm SHA256).Hash-cne $entry.Sha256){throw 'Alpha compiler generation differs from its synchronization receipt.'}}
-    $run=Join-Path $sdk ('.work/'+[guid]::NewGuid().ToString('N').Substring(0,8));$null=New-Item -ItemType Directory -Path $run;$log=Join-Path $run 'build.log'
+    $runId=if($StudioSession){$StudioSession}else{[guid]::NewGuid().ToString('N').Substring(0,8)}
+    $run=Join-Path $sdk ('.work/'+$runId);$null=New-Item -ItemType Directory -Path $run;$log=Join-Path $run 'build.log'
+    if($StudioSession){[IO.File]::WriteAllText((Join-Path $run 'studio-owner.txt'),$StudioSession)}
     # Reborn: standalone GameObject XML uses the explicit complete-Conscript route; other assets retain their original admission and compiler path.
     $xmlSettings=[Xml.XmlReaderSettings]::new();$xmlSettings.DtdProcessing=[Xml.DtdProcessing]::Prohibit;$xmlSettings.XmlResolver=$null;$xmlSettings.MaxCharactersInDocument=1048576
     $reader=[Xml.XmlReader]::Create($ModXml,$xmlSettings);try{$null=$reader.MoveToContent();$isConscript=$reader.LocalName-ceq 'GameObject'}finally{$reader.Dispose()}
@@ -35,6 +39,8 @@ try{
     $receipt=Get-Content -LiteralPath $receipts[0].FullName -Raw|ConvertFrom-Json;$core=Get-Content -LiteralPath $receipt.BuildReceipt -Raw|ConvertFrom-Json
     $package=if($receipt.PackagePath){$receipt.PackagePath}elseif($core.PackagePath){$core.PackagePath}else{$core.DefaultReaderPackagePath}
     $package=[IO.Path]::GetFullPath($package);if(-not $package.StartsWith($run+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Backend package escaped its private work generation.'}
+    # Reborn: close cancellation must never terminate the worker halfway through staged publication/rollback of a last-good package.
+    if($publishMutex){try{$publishHeld=$publishMutex.WaitOne()}catch [Threading.AbandonedMutexException]{$publishHeld=$true};if($cancelEvent.WaitOne(0)){throw 'Studio build cancelled before publication.'}}
     $stage=Join-Path $expectedOutput ('.stage-'+[guid]::NewGuid().ToString('N'));$null=New-Item -ItemType Directory -Path $stage
     $big=$ModName+'.big';Copy-Item -LiteralPath $package -Destination (Join-Path $stage $big);$hash=(Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash
     if((Get-FileHash -LiteralPath (Join-Path $stage $big) -Algorithm SHA256).Hash-cne $hash){throw 'Published BIG differs from the verified backend package.'}
@@ -49,4 +55,4 @@ try{
     if(Test-Path -LiteralPath $previous){Remove-DevAlphaOwned $previous $expectedOutput}
     Write-Output ('Reborn: live SDK output: '+$result.BigPath);Write-Output ('Reborn: SKUDef: '+$sku)
 }catch{Write-Output ('Error: ALPHA110 '+$_.Exception.Message);Write-Output 'Critical: ALPHA111 Stable SDK build failed; no successful new publication.';exit 1}
-finally{if($stage -and (Test-Path -LiteralPath $stage)){Remove-DevAlphaOwned $stage (Join-Path $sdk 'builtmods')};if($run -and (Test-Path -LiteralPath $run)){Remove-DevAlphaOwned $run (Join-Path $sdk '.work')};if($lock){$lock.Dispose()}}
+finally{try{if($stage -and (Test-Path -LiteralPath $stage)){Remove-DevAlphaOwned $stage (Join-Path $sdk 'builtmods')};if($run -and (Test-Path -LiteralPath $run)){Remove-DevAlphaOwned $run (Join-Path $sdk '.work')}}finally{if($lock){$lock.Dispose()};if($publishHeld){$publishMutex.ReleaseMutex()};if($publishMutex){$publishMutex.Dispose()};if($cancelEvent){$cancelEvent.Dispose()}}}

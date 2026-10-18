@@ -28,6 +28,19 @@ try{
         try{[IO.Directory]::Move($stage,$destination)}catch{if(Test-Path -LiteralPath $previous){[IO.Directory]::Move($previous,$destination)};throw}
         if(Test-Path -LiteralPath $previous){foreach($name in $names){$path=Join-Path $previous $name;if(Test-Path -LiteralPath $path){Remove-Item -LiteralPath $path}};[IO.Directory]::Delete($previous,$false)}
     }
+    # Reborn: compile the independent CLR4 close/build supervisor without adding references to EA's CodeDOM loader or altering EA binaries.
+    $lifecycleSource=Join-Path $repo 'alpha/studio/RebornStudioLifecycle.cs';$lifecycleHash=(Get-FileHash -LiteralPath $lifecycleSource).Hash
+    $studioTools=Join-Path $tools 'studio';Assert-DevSdkPath $studioTools;$null=New-Item -ItemType Directory -Path $studioTools -Force
+    $lifecycleExe=Join-Path $studioTools 'RebornStudioLifecycle.exe';$lifecycleReceipt=Join-Path $studioTools 'lifecycle.json';$refreshLifecycle=$true
+    Assert-DevSdkPath $lifecycleExe;Assert-DevSdkPath $lifecycleReceipt
+    if((Test-Path -LiteralPath $lifecycleExe) -and (Test-Path -LiteralPath $lifecycleReceipt)){$prior=Get-Content -LiteralPath $lifecycleReceipt -Raw|ConvertFrom-Json;$refreshLifecycle=$prior.Platform-cne 'AnyCPU' -or $prior.SourceSha256-cne $lifecycleHash -or (Get-FileHash -LiteralPath $lifecycleExe).Hash-cne $prior.BinarySha256}
+    if($refreshLifecycle){
+        if(Test-Path -LiteralPath $lifecycleExe){try{$probe=[IO.File]::Open($lifecycleExe,[IO.FileMode]::Open,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None);$probe.Dispose()}catch{throw 'Close Studio before updating its lifecycle helper; existing files were preserved.'}}
+        $stagedHelper=Join-Path $studioTools ('.next-'+[guid]::NewGuid().ToString('N')+'.exe')
+        $csc=Join-Path $env:WINDIR 'Microsoft.NET/Framework/v4.0.30319/csc.exe'
+        # Reborn: AnyCPU permits loading in EA's process and both CLR4 loader harness bitnesses; native structures use pointer-sized fields.
+        try{& $csc /nologo /target:exe /platform:anycpu /codepage:65001 /reference:System.Windows.Forms.dll /reference:System.Drawing.dll ('/out:'+$stagedHelper) $lifecycleSource;if($LASTEXITCODE-ne 0){throw 'Studio lifecycle helper compilation failed.'};Copy-Item -LiteralPath $stagedHelper -Destination $lifecycleExe -Force;[IO.File]::WriteAllText($lifecycleReceipt,([pscustomobject]@{Platform='AnyCPU';SourceSha256=$lifecycleHash;BinarySha256=(Get-FileHash -LiteralPath $lifecycleExe).Hash}|ConvertTo-Json))}finally{if(Test-Path -LiteralPath $stagedHelper){Remove-Item -LiteralPath $stagedHelper}}
+    }
     # Reborn: live repository scripts are referenced directly; only EA loader files are derived copies in the stable SDK root.
     foreach($pair in @(@('alpha/studio/defaultscript.cs','defaultscript.cs'),@('alpha/studio/EALAModStudio.exe.config','EALAModStudio.exe.config'))){Copy-Item -LiteralPath (Join-Path $repo $pair[0]) -Destination (Join-Path $sdk $pair[1]) -Force}
     if($Initialize){

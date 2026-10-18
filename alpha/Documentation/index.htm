@@ -16,6 +16,14 @@ warning/error display, malformed-XML failure and this documentation pane. This i
 <p>A rejected build reports Error: ALPHA100 and Critical: ALPHA101, followed by an alpha build failed message.
 Successful builds report package paths and Build Completed. Inspect the final receipt; old packages from earlier builds are not new output.</p>
 <!-- Reborn: separate user ownership from developer tests and keep exactly two mod entries in the UI. -->
+<!-- Reborn: close confirmation applies only to this Studio's owned worker tree, never another session or arbitrary process. -->
+<h2>Closing during a build</h2>
+<p>If this Studio still owns an active build, closing asks whether to cancel it.
+<b>Yes</b> stops its worker processes and releases the SDK lock before closing.
+<b>No</b> leaves Studio and the build running. Idle/completed builds do not prompt.
+Other sessions/processes are untouched. Last-good output is preserved; cancellation cannot interrupt final publication halfway through.
+The .sdk.lock file may remain normally after its operating-system lock is released.
+Restart an already-open Studio once to enable this update; earlier uncontained builds are not adopted.</p>
 <h2>Your mod and developer tests</h2>
 <p><b>Reborn</b> belongs to the user. Automated developer tests do not modify or build it.
 <b>RebornTest</b> is the reusable developer slot. Previous sample mods are now regression fixtures outside this list.</p>
