@@ -37,6 +37,8 @@ internal static class Ep1ScriptedDrawNativeSmokeTest
             alias.Items.Add(new XmlSchemaElement { Name = "DrawsProbe", SchemaType = drawEnvelope });
             // Reborn: the reviewed SDK declares GameObject locally under AssetDeclaration; expose that unchanged type only for this diagnostic standalone normalization envelope.
             if(includeRoot)alias.Items.Add(new XmlSchemaElement { Name = "GameObject", SchemaTypeName = new XmlQualifiedName("GameObject", SchemaSet.XmlNamespace) });
+            // Reborn: expose the unchanged official construction-command type only in the diagnostic complete-object/recruitment envelope.
+            if(includeOriginalRoot)alias.Items.Add(new XmlSchemaElement { Name = "LogicCommand", SchemaTypeName = new XmlQualifiedName("LogicCommand", SchemaSet.XmlNamespace) });
             official.Add(alias); official.Compile();
             Settings.Current = new Settings { SchemaPath = Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!, "TracerDrawPipeline.xsd"), BuildCache = false, StringHashBinDescriptors = Array.Empty<StringHashBinDescriptor>() };
             var schemas = new SchemaSet(false);

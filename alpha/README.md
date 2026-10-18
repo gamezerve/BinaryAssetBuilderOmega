@@ -38,7 +38,7 @@ Only two mod folders belong in the Studio list:
 
 - `Reborn`: the user's mod. Developer tests do not change its sources or build its outputs.
 - `RebornTest`: the developer's reusable test mod. Its current `data/mod.xml`
-  contains the complete original-ID Conscript with six editable numeric fields.
+  contains the complete `RebornConscriptTrial` Conscript, with six editable numeric fields.
 
 Select **RebornTest → Build Mod** to compile that Conscript from the selected
 XML through Core, including complete native/metadata/reference/stream checks.
@@ -47,9 +47,9 @@ This is not a cached trial-BIG export. The unchanged BuildTime=1 regression fixt
 must still reproduce the previous game-observed candidate. New scalar values are
 offline-qualified, not new gameplay observations.
 
-This Conscript route accepts the reviewed original identity and six scalar edits.
+This Conscript route accepts the original identity or the reviewed `RebornConscriptTrial` identity and six scalar edits.
 Other changes, arbitrary GameObjects, additional
-assets and new-ID recruitment still fail; this is not a general unit compiler.
+assets and arbitrary new identities still fail; this is not a general unit compiler.
 It additionally needs `UprisingXmlRoot` in the local paths file, pointing to the
 matching official Uprising XML directory. Preserve the supplied complete XML;
 unreviewed changes are rejected, not silently ignored. ALPHA005 marks this scope.
@@ -64,12 +64,20 @@ unreviewed changes are rejected, not silently ignored. ALPHA005 marks this scope
 | LocomotorSet | Speed | 1–500 |
 
 Keep all other XML, identities and linked references as supplied. The current
-RebornTest grouped trial uses time=1, cost=25, health=500, vision=350, shroud=650
-and speed=90 (stock: 4, 100, 100, 200, 500 and 50 respectively).
+RebornTest new-ID trial uses time=2, cost=15, health=750, vision=400, shroud=700
+and speed=100 (stock: 4, 100, 100, 200, 500 and 50 respectively).
 Speed is the existing GameObject LocomotorSet speed; the referenced locomotor
 asset is not replaced. Decimal/scientific finite values are accepted except cost.
 These are conservative alpha admission ranges, not assertions of engine limits.
 See [qualification and gameplay checklist](../docs/RA3EP1_CONSCRIPT_SCALARS.md).
+
+The earlier original-ID grouped scalar trial has qualitative user confirmation.
+For `RebornConscriptTrial`, the build automatically adds one freshly compiled
+`Command_ConstructSovietAntiInfantryInfantry` LogicCommand override pointing to
+the new object. The existing Conscript Barracks slot/icon produces the new unit;
+no extra menu slot or CommandSet edit is made. Other Barracks choices and the
+original GameObject remain stock. New-ID recruitment is not yet gameplay-proven.
+See [new-ID build and test](../docs/RA3EP1_CONSCRIPT_RECRUITMENT.md).
 
 Previous armor/AK47 samples now live under `tests/fixtures/live-alpha/`, outside
 the Studio mod list. Automated checks run them sequentially through RebornTest

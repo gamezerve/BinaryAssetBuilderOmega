@@ -49,5 +49,12 @@ try {
     try{Remove-TestData;[IO.Directory]::Move($saved,$data)}finally{$testLock.Dispose()}
 }
 Invoke-TestCase RestoredDeveloperSource $true
+# Reborn: the live new-ID profile must publish its real local consumer, not merely another original-ID scalar package.
+$restored=[Xml.XmlDocument]::new();$restored.Load($input)
+if($restored.DocumentElement.GetAttribute('id')-ceq 'RebornConscriptTrial'){
+    $receipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json
+    if($receipt.Core.Asset-cne 'GameObject:RebornConscriptTrial' -or $receipt.Core.AssetCount-ne 2 -or -not $receipt.Core.RecruitableNewIdentity -or $receipt.Core.CommandOverride-cne 'Command_ConstructSovietAntiInfantryInfantry'){throw 'New-ID recruitment publication receipt differs.'}
+    $rows.Add([pscustomobject]@{Name='RecruitmentLocalConsumer';Passed=$true;ExpectedSuccess=$true})
+}
 if((Get-FileHash -LiteralPath $userSource).Hash-cne $userHash -or ($userOutputHash -and (Get-FileHash -LiteralPath $userReceipt).Hash-cne $userOutputHash) -or (-not $userOutputHash -and (Test-Path -LiteralPath $userReceipt))){throw 'User Reborn changed.'}
 $report=[pscustomobject]@{Passed=$true;Cases=$rows;GameExecuted=$false;UserSamplesModified=$false;UserRebornBuilt=$false;DeveloperSourceRestored=$true};[IO.File]::WriteAllText((Join-Path $sdk '.work/dev-sdk-test.json'),($report|ConvertTo-Json -Depth 6));$report

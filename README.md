@@ -18,9 +18,14 @@ This remains a repository-linked local alpha, not a portable public release.
 See [supported alpha input](alpha/README.md) and
 [maintenance / retained lessons](docs/RA3EP1_LIVE_ALPHA_AND_RETENTION.md).
 Studio now lists only the user's **Reborn** and the developer's **RebornTest**.
-RebornTest contains the complete original-ID Conscript XML with six editable
+RebornTest contains complete Conscript XML with six editable
 scalars: BuildTime, cost Amount, MaxHealth, VisionRange, ShroudClearingRange and
 LocomotorSet Speed. See [ranges and grouped trial](docs/RA3EP1_CONSCRIPT_SCALARS.md).
+The original-ID six-scalar trial now has qualitative user gameplay confirmation.
+The next bounded trial uses `RebornConscriptTrial` (cost=15, time=2): a genuinely
+new GameObject plus an overridden existing UNIT_BUILD command. It reuses the
+Conscript Barracks slot, leaving CommandSet/other choices unchanged; recruitment
+is offline-qualified, not yet gameplay-proven. See [recruitment scope](docs/RA3EP1_CONSCRIPT_RECRUITMENT.md).
 The bounded real source-build route still rejects other GameObject changes;
 this is not general GameObject authoring. Automated regressions reuse RebornTest
 and leave the user's Reborn source and outputs untouched. Old armor/weapon

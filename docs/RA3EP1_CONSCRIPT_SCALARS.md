@@ -59,9 +59,11 @@ launcher. Start a **new Soviet skirmish**, not a saved game:
 4. Under comparable fire a fresh Conscript should survive longer (500 max health
    versus 100); weapon damage, armor and model remain stock.
 
-Menu loading alone does not prove any scalar behavior. Only the earlier
-BuildTime=1-only package has user-observed gameplay evidence so far. New custom
-identities/recruitment and arbitrary modules remain separate work.
+Menu loading alone does not prove scalar behavior. The user subsequently reported
+the grouped trial **worked**. This is qualitative gameplay evidence for this
+specific six-scalar package, not six independent numeric measurements or proof
+of arbitrary values. New custom identities/recruitment and arbitrary modules
+remain separate work from this original-ID trial.
 
 ## Local verification — October 18, 2026
 
@@ -71,7 +73,7 @@ identities/recruitment and arbitrary modules remain separate work.
 - Final refreshed RebornTest build: all nine native/metadata scalar profiles,
   36 source/native refusal controls, original complete ownership, both stream
   readback suites and fresh package publication passed.
-- Current grouped BIG SHA256:
+- Confirmed original-ID grouped BIG SHA256:
   `739B9B8B544940E99DF83770AB12DE2F02D302FCF8D1B785C2A8224D9B513A36`.
 - Exact-reference CLR4 Studio adapter loader/config/options check passed without
   showing Studio or starting a build callback/game.

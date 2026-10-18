@@ -234,15 +234,33 @@ internal static class BoundedDiagnosticBuild
         return SerializeCore(new[]{instance},new[]{chunk},checksum,runtime,new[]{true},true);
     }
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: share byte serialization without broadening default tokenized admission; explicit Conscript routes are bounded and single-entry. */
+    /** Reborn: opt in exactly one qualified new Conscript and one stock construction-command override, with a uniquely resolved local object import. */
     //-------------------------------------------------------------------------------------------------
-    private static Dictionary<string,byte[]> SerializeCore(InstanceDeclaration[] ordered,AssetBuffer[] chunks,uint checksum,ReferencedFileBuffer runtime,bool[]? tokenized,bool originalConscript)
+    internal static Dictionary<string,byte[]> SerializeConscriptRecruitment(InstanceDeclaration[] ordered,AssetBuffer[] chunks,uint checksum,ReferencedFileBuffer runtime)
+    {
+        if(ordered.Length!=2 || chunks.Length!=2 || ordered[0].Handle.Name!="GameObject:RebornConscriptTrial")throw new InvalidDataException("Recruitment requires the ordered object/command pair.");
+        // Reborn: retain every existing new-object graph/scalar gate before admitting its second local consumer.
+        SerializeConscriptTrial(ordered[0],chunks[0],checksum,runtime);
+        var command=ordered[1];var chunk=chunks[1];var target=ordered[0].Handle;
+        uint[] words={0,6,0,0,0,28,0,1};var expected=new byte[32];for(int i=0;i<words.Length;i++)BinaryPrimitives.WriteUInt32LittleEndian(expected.AsSpan(i*4,4),words[i]);
+        if(command.Handle.Name!="LogicCommand:"+ConscriptRecruitmentSmokeTest.CommandId || command.Handle.InstanceId!=InstanceHandle.GetInstanceId(ConscriptRecruitmentSmokeTest.CommandId) || command.Handle.TypeId!=ConscriptRecruitmentSmokeTest.CommandType || command.Handle.TypeHash!=ConscriptRecruitmentSmokeTest.CommandHash || command.Handle.InstanceHash==0
+            || command.ReferencedInstances.Count!=1 || command.ValidatedReferencedInstances?.Count!=1 || !command.ValidatedReferencedInstances.SequenceEqual(command.ReferencedInstances)
+            || command.ReferencedInstances[0].TypeId!=target.TypeId || command.ReferencedInstances[0].InstanceId!=target.InstanceId
+            || !chunk.InstanceData.SequenceEqual(expected) || !chunk.RelocationData.SequenceEqual(new byte[]{20,0,0,0,255,255,255,255}) || !chunk.ImportsData.SequenceEqual(new byte[]{28,0,0,0,255,255,255,255}))
+            throw new InvalidDataException("Recruitment command fingerprint/native/local dependency differs.");
+        return SerializeCore(ordered,chunks,checksum,runtime,new[]{true,false},false,true);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: share byte serialization without broadening default tokenized admission; explicit Conscript routes remain bounded. */
+    //-------------------------------------------------------------------------------------------------
+    private static Dictionary<string,byte[]> SerializeCore(InstanceDeclaration[] ordered,AssetBuffer[] chunks,uint checksum,ReferencedFileBuffer runtime,bool[]? tokenized,bool originalConscript,bool recruitment=false)
     {
         // Reborn: preserve non-tokenized defaults; only the independently characterized armor fingerprint may opt into tokenized diagnostic writing.
         tokenized ??= new bool[ordered.Length];
         if (tokenized.Length != ordered.Length || chunks.Length != ordered.Length
             || ordered.Where((instance, index) => tokenized[index] && (instance.Handle.TypeId != 0x3A6C5E8Eu || instance.Handle.TypeHash != 0xA0E237D8u)
-                && !(originalConscript && ordered.Length==1 && instance.Handle.TypeId==0x942FFF2Du && instance.Handle.TypeHash==0xCEB9FE36u)).Any())
+                && !((originalConscript && ordered.Length==1 || recruitment && ordered.Length==2 && index==0) && instance.Handle.TypeId==0x942FFF2Du && instance.Handle.TypeHash==0xCEB9FE36u)).Any())
             throw new InvalidDataException("Diagnostic tokenized profile differs.");
         using MemoryStream names = new(), sources = new(), references = new(), entries = new();
         using BinaryWriter refWriter = new(references, Encoding.UTF8, true);

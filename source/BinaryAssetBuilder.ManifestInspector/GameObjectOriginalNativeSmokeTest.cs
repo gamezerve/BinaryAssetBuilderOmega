@@ -35,7 +35,7 @@ internal static class GameObjectOriginalNativeSmokeTest
         GameObjectOriginalStreamSmokeTest.Run(tokens,pair.Instance,manifest,globalManifest);
         // Reborn: separately qualify explicit source edits/new identity and offline trial packages without changing the original-stock oracle or launching the game.
         // Reborn: compile the selected alpha XML through actual Core rather than copying a previously built trial package.
-        GameObjectConscriptTrialSmokeTest.Run(source,pair.Native,pair.Instance,tokens,schemas.Schemas,catalog,manifest,globalManifest,Build,(value,instance)=>{Verify(value,instance);},alphaSource,alphaOutput);
+        GameObjectConscriptTrialSmokeTest.Run(source,pair.Native,pair.Instance,tokens,schemas,catalog,manifest,globalManifest,Build,(value,instance)=>{Verify(value,instance);},alphaSource,alphaOutput);
         //-------------------------------------------------------------------------------------------------
         /** Reborn: explicit attribute override, additive ArmorSet/LocomotorSet and last direct singleton selection are qualified only for this captured chain by independent native stock equality. */
         //-------------------------------------------------------------------------------------------------

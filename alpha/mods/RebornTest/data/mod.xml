@@ -1,7 +1,7 @@
-<!-- Reborn: developer-owned complete original-ID Conscript trial; six qualified scalar edits; grouped gameplay trial, not arbitrary object editing. -->
-<GameObject RadarPriority="UNIT" TransportSlotCount="1" ProductionQueueType="INFANTRY" HealthBoxHeightOffset="30" UnitCategory="INFANTRY" CommandPoints="1" EvaEventSecondDamageFarFromFirstScanRange="600" VoiceSelectUnderFireTimeout="10s" VoiceSelectUnderFireDamageTime="3s" SelectPortrait="Portrait_SovietAntiInfantryInfantry_big" ButtonImage="Button_SovietAntiInfantryInfantry_small" Side="Soviet" SubGroupPriority="505" EditorSorting="UNIT" BuildTime="1" CommandSet="SovietAntiInfantryInfantryCommandSet" KindOf="SELECTABLE CAN_ATTACK CAN_CAST_REFLECTIONS INFANTRY SCORE" ThreatLevel="10" WeaponCategory="GUN" VoicePriority="104" EditorName="SovietAntiInfantryInfantry" Description="Desc:SovietAntiInfantryInfantry" TypeDescription="Type:SovietAntiInfantryInfantry" UnitTypeIcon="RiflemenIcon" UnitIntro="Soviet_Conscript_UnitIntro" id="SovietAntiInfantryInfantry" xmlns="uri:ea.com:eala:asset"><DisplayName xmlns:xai="uri:ea.com:eala:asset:instance">Name:SovietAntiInfantryInfantry</DisplayName><ObjectResourceInfo>
-			<BuildCost Account="0" Amount="25" />
-		</ObjectResourceInfo><ArmorSet Armor="CryoBeamFrozenArmor" DamageFX="VehicleDamageFX" Conditions="SECONDARY_DAMAGE" /><ArmorSet Armor="ShrinkRayEffectArmor" DamageFX="VehicleDamageFX" Conditions="SHRINK_EFFECT" /><ArmorSet Armor="SovietAntiInfantryInfantryArmor" DamageFX="InfantryDamageFX" /><LocomotorSet Locomotor="TestReactiveLocomotorHUMAN" Condition="NORMAL" Speed="90" /><SkirmishAIInformation UnitBuilderStandardCombatUnit="true" /><Draws><ScriptedModelDraw id="ModuleTag_Draw" OkToChangeModelColor="true" InitialRecoilSpeed="0.1" MaxRecoilDistance="0.1" RecoilDamping="2.0" RecoilSettleSpeed="3.0" ExtraPublicBone="FXMUZZLE RIGHTHAND">
+<!-- Reborn: RebornConscriptTrial: new-ID recruitment through the existing Conscript production slot; cost 15/time 2; bounded scalar profile. -->
+<GameObject RadarPriority="UNIT" TransportSlotCount="1" ProductionQueueType="INFANTRY" HealthBoxHeightOffset="30" UnitCategory="INFANTRY" CommandPoints="1" EvaEventSecondDamageFarFromFirstScanRange="600" VoiceSelectUnderFireTimeout="10s" VoiceSelectUnderFireDamageTime="3s" SelectPortrait="Portrait_SovietAntiInfantryInfantry_big" ButtonImage="Button_SovietAntiInfantryInfantry_small" Side="Soviet" SubGroupPriority="505" EditorSorting="UNIT" BuildTime="2" CommandSet="SovietAntiInfantryInfantryCommandSet" KindOf="SELECTABLE CAN_ATTACK CAN_CAST_REFLECTIONS INFANTRY SCORE" ThreatLevel="10" WeaponCategory="GUN" VoicePriority="104" EditorName="SovietAntiInfantryInfantry" Description="Desc:SovietAntiInfantryInfantry" TypeDescription="Type:SovietAntiInfantryInfantry" UnitTypeIcon="RiflemenIcon" UnitIntro="Soviet_Conscript_UnitIntro" id="RebornConscriptTrial" xmlns="uri:ea.com:eala:asset"><DisplayName xmlns:xai="uri:ea.com:eala:asset:instance">Name:SovietAntiInfantryInfantry</DisplayName><ObjectResourceInfo>
+			<BuildCost Account="0" Amount="15" />
+		</ObjectResourceInfo><ArmorSet Armor="CryoBeamFrozenArmor" DamageFX="VehicleDamageFX" Conditions="SECONDARY_DAMAGE" /><ArmorSet Armor="ShrinkRayEffectArmor" DamageFX="VehicleDamageFX" Conditions="SHRINK_EFFECT" /><ArmorSet Armor="SovietAntiInfantryInfantryArmor" DamageFX="InfantryDamageFX" /><LocomotorSet Locomotor="TestReactiveLocomotorHUMAN" Condition="NORMAL" Speed="100" /><SkirmishAIInformation UnitBuilderStandardCombatUnit="true" /><Draws><ScriptedModelDraw id="ModuleTag_Draw" OkToChangeModelColor="true" InitialRecoilSpeed="0.1" MaxRecoilDistance="0.1" RecoilDamping="2.0" RecoilSettleSpeed="3.0" ExtraPublicBone="FXMUZZLE RIGHTHAND">
 				<ModelConditionState ParseCondStateType="PARSE_DEFAULT">
 					
 					
@@ -670,7 +670,7 @@
 				<TriggeredBy>Upgrade_AlliesFaction</TriggeredBy>
 			</ModelConditionUpgrade></Behaviors><AI><AIUpdate id="ModuleTag_AI" AutoAcquireEnemiesWhenIdle="YES" StateMachine="UnitAIStateMachine">
 				<UnitAITargetChooserData TargetingCompareList="DefaultTargetingCompareList" />
-			</AIUpdate></AI><Body><ActiveBody id="ModuleTag_Body" MaxHealth="500" /></Body><ClientUpdates><LargeGroupAudioClientUpdate id="LargeGroupKey">
+			</AIUpdate></AI><Body><ActiveBody id="ModuleTag_Body" MaxHealth="750" /></Body><ClientUpdates><LargeGroupAudioClientUpdate id="LargeGroupKey">
 				<Key>HumanInfantryWithGearThatRuns</Key>
 			</LargeGroupAudioClientUpdate></ClientUpdates><ClientBehaviors><ModelConditionAudioLoopClientBehavior id="ModuleTag_ShockDeathOverLand">
 				<ModelConditionSound Sound="Electro_BoneRattle_Death" RequiredFlags="DYING DEATH_1" ExcludedFlags="OVER_WATER" />
@@ -778,4 +778,4 @@
 			<EvaEntry EvaEvent="BuildOnHold" EvaType="buildOnHold" />
 			<EvaEntry EvaEvent="BuildCancelled" EvaType="buildCancelled" />
 			<EvaEntry EvaEvent="UnitPromoted" EvaType="promotedOwner" />
-		</EvaEventArray><ShadowInfo Type="DECAL" SizeX="14" SizeY="14" Texture="ShadowI" /><VisionInfo VisionRange="350" ShroudClearingRange="650" /><CrusherInfo id="id_CrusherInfo" CrushableLevel="10" /></GameObject>
+		</EvaEventArray><ShadowInfo Type="DECAL" SizeX="14" SizeY="14" Texture="ShadowI" /><VisionInfo VisionRange="400" ShroudClearingRange="700" /><CrusherInfo id="id_CrusherInfo" CrushableLevel="10" /></GameObject>
