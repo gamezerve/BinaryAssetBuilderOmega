@@ -21,10 +21,11 @@ they do not create strong imports or prove that a target payload exists.
 of root strong-reference slots already populated by the admitted Conscript graph.
 The target must resolve in the current stock catalogs and its captured target
 type, occurrence position, import count and order must remain unchanged.
-`GameObjectRootStringContract` enables content changes in existing root ASCII
-string allocations. The authored value must have the same ASCII byte length as
-the admitted Conscript value; this keeps every downstream native pointer and
-relocation source stable while checking the exact payload and terminator.
+`GameObjectRootStringContract` enables all six root ASCII string fields. Each
+may be added, removed, explicitly emptied or resized independently up to 4096
+bytes. The compiler checks the exact payload, terminator and padding, then
+rebases every later native pointer, metadata token target, RELO source/target
+and IMP source while preserving EA's original auxiliary-table order.
 
 Supported codecs are finite single-precision real, signed/unsigned 32-bit integer,
 unsigned 16-bit and 8-bit integer, SageBool, Angle, Time and Duration. Official
@@ -54,8 +55,9 @@ checks every root primitive again. Repeat determinism alone is not the proof.
 
 The grouped test authors every primitive and fixed-root codec in one complete
 source, retargets the existing root imports to different real stock assets,
-changes every populated root string without changing its allocation extent,
-compiles it, checks native/metadata/dependency results, and corrupts each fixed
+resizes/removes/empties the populated root strings and populates all previously
+absent string fields, compiles through native/metadata/stream, checks dependency
+results, and corrupts each fixed
 storage descriptor to prove refusal. It also checks boolean spelling, omitted
 default BuildTime, BuildTime=0, Scale=2 and VisionRange=6000, without turning
 those into new gameplay claims.
@@ -66,9 +68,9 @@ Legacy golden fixtures still must reproduce their exact earlier archive.
 The complete Conscript shape, selected module graph and 275 strong-reference
 occurrences remain the supported topology. Root enums/KindOf masks and weak IDs
 are now editable. Already-present root strong references may retarget stock
-assets one-for-one. Existing root ASCII strings may change at fixed byte length.
-Resizing/adding/removing string allocations, adding/removing imports, module/list
-composition, resource bodies and arbitrary nested fields still need their own
+assets one-for-one. All six root ASCII strings now support bounded dynamic
+presence and length. Adding/removing strong imports, module/list composition,
+resource bodies and arbitrary nested fields still need their own
 typed processor/ownership/dependency contracts, not removal of safety checks.
 The six-field **business whitelist** is gone; full schema-driven GameObject
 coverage is still in progress.
@@ -85,15 +87,17 @@ Use only EALAModStudio.exe. No game is automatically launched by this work.
   individual native-slot corruption controls were rejected.
 - A second grouped probe passed 15 fixed enum/KindOf/weak-ID descriptors and
   one-for-one stock retargeting of the two populated Conscript root strong slots.
-  The same probe changed all three populated root string allocations at fixed
-  byte length and verified native plus rebased metadata payloads.
-  The complete authored-trial suite rejected 127 source/native corruption cases,
-  including string payload, string resize and strong-import presence controls.
+  The same probe resized one populated root string, removed one, made one an
+  explicit empty allocation, populated the other three, and verified native,
+  metadata and serialized stream rebasing.
+  The complete authored-trial suite rejected 129 source/native corruption cases,
+  including string payload, oversize and strong-import presence controls.
 - Boolean `1`, omitted default BuildTime, BuildTime=0, Scale=2 and VisionRange=6000
   passed source/native verification; invalid real, boolean and overflow controls
   refused. These are offline tests, not new game-load observations.
-- Alpha regression: **21/21**, including unchanged original BuildTime=1 golden
-  BIG, failure preservation and user Reborn isolation.
+- Alpha regression: **22/22**, including unchanged original BuildTime=1 golden,
+  dynamic root-string allocation through the public Studio backend,
+  failure preservation and user Reborn isolation.
 - Source-search/inheritance-expression and exact-reference Studio loader tests
   passed. Final Scale=1.2/ThreatLevel=15 RebornTest native/package build passed.
 - Generated evidence remains in local `alpha/.work/scalar-*.log` and

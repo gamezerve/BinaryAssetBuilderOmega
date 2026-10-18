@@ -211,7 +211,7 @@ internal static class BoundedDiagnosticBuild
         return SerializeCore(new[]{instance},new[]{chunk},checksum,runtime,new[]{true},true);
     }
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: admit only two reviewed Conscript identities with six checked scalar values, separately from unchanged stock and ordinary serializer routes. */
+    /** Reborn: admit only reviewed Conscript identities with contracted root/nested values and bounded dynamic root strings, separately from ordinary serializer routes. */
     //-------------------------------------------------------------------------------------------------
     internal static Dictionary<string,byte[]> SerializeConscriptTrial(InstanceDeclaration instance,AssetBuffer chunk,uint checksum,ReferencedFileBuffer runtime,string? approvedIdentity=null)
     {
@@ -219,16 +219,19 @@ internal static class BoundedDiagnosticBuild
         if(!ConscriptSourceInput.Identity(id) || (approvedIdentity==null?id is not ("SovietAntiInfantryInfantry" or "RebornConscriptTrial"):id!=approvedIdentity) || instance.Handle.Name!="GameObject:"+id || instance.Handle.InstanceId!=InstanceHandle.GetInstanceId(id)
             || instance.Handle.TypeId!=0x942FFF2Du || instance.Handle.TypeHash!=0xCEB9FE36u || instance.Handle.InstanceHash==0
             || instance.ValidatedReferencedInstances?.Count!=275 || !instance.ValidatedReferencedInstances.SequenceEqual(instance.ReferencedInstances)
-            || chunk.InstanceData.Length!=128184 || chunk.RelocationData.Length!=1800 || chunk.ImportsData.Length!=1104
+            || chunk.ImportsData.Length!=1104
             )
             throw new InvalidDataException("Conscript authored trial profile differs.");
         // Reborn: check each authored scalar again at serialization; source/native ownership was qualified before this explicit route.
         var source=new System.Xml.XmlDocument{PreserveWhitespace=true,XmlResolver=null};source.LoadXml(instance.XmlNode.OuterXml);
+        // Reborn: the stock Conscript owns 39,268 non-string native bytes after its 88,824-byte metadata prefix; root string blocks add exact aligned extents and relocation slots.
+        int stringBytes=GameObjectRootStringContract.AllocationSize(source),stringCount=GameObjectRootStringContract.PresentCount(source);
+        if(chunk.InstanceData.Length!=88824+39268+stringBytes || chunk.RelocationData.Length!=1800+(stringCount-3)*4)throw new InvalidDataException("Conscript dynamic root string stream extent differs.");
         int[] offsets=ConscriptEditableScalars.Offsets(chunk.InstanceData.AsSpan(88824).ToArray(),88824);
         GameObjectScalarContract.Verify(source,chunk.InstanceData,88824);
         // Reborn: package publication independently rechecks enabled fixed root enums, masks and weak IDs.
         GameObjectRootAttributeContract.Verify(source,chunk.InstanceData,88824);
-        // Reborn: fixed-allocation authored root strings are checked again after metadata rebasing and before stream publication.
+        // Reborn: dynamic authored root strings are checked again after metadata/native/auxiliary rebasing and before stream publication.
         GameObjectRootStringContract.Verify(source,chunk.InstanceData,88824);
         for(int i=1;i<offsets.Length;i++)
         {

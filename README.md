@@ -34,10 +34,10 @@ Studio now lists only the user's **Reborn** and the developer's **RebornTest**.
 RebornTest now uses schema/native capability contracts instead of the six-field
 authoring whitelist: all 63 root primitive ABI descriptors, 15 fixed root
 enum/KindOf/weak-ID descriptors, one-for-one retargeting of already-present root
-strong references, fixed-byte-length edits of existing root ASCII strings, plus
+strong references, independent bounded allocation of all six root ASCII strings, plus
 the existing nested numeric owners. Scale=1.2 and
 ThreatLevel=15 demonstrate the primitive route. Former gameplay caps are removed;
-string allocation size/presence, import presence/count and module topology are still restricted.
+new strong-reference import presence/count and module topology are still restricted.
 See [current capability contract](docs/RA3EP1_GAMEOBJECT_SCALAR_CAPABILITIES.md).
 The original-ID six-scalar trial now has qualitative user gameplay confirmation.
 The bounded `RebornConscriptTrial` (cost=15, time=2) has user-reported gameplay
