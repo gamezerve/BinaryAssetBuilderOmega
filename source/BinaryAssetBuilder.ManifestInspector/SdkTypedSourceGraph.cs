@@ -52,7 +52,7 @@ internal static class SdkTypedSourceGraph
         SdkIncludeDefineProfile? includeProfile = includeDefines || definitionExpressions || selfAttributeInheritance || selfChildCopy || selfComplexChildCopy || selfTreeCopy || instanceInheritance || instanceRootFiles || selfChildMerge || instanceChains || instanceRemovals || instanceChoices || instanceMarkers || instanceBitflags || instanceFilters || instanceUpgrades || instanceMetadata || instanceExpressions || instanceIdenticalStates || instanceStateReadds || instanceCrossStateRemovals || instanceMusicOffsets || instanceAudioTrees || instanceSoundOffsets || instanceSoundSingletons ? new(paths,definitionExpressions || selfAttributeInheritance || selfChildCopy || selfComplexChildCopy || selfTreeCopy || instanceInheritance || instanceRootFiles || selfChildMerge || instanceChains || instanceRemovals || instanceChoices || instanceMarkers || instanceBitflags || instanceFilters || instanceUpgrades || instanceMetadata || instanceExpressions || instanceIdenticalStates || instanceStateReadds || instanceCrossStateRemovals || instanceMusicOffsets || instanceAudioTrees || instanceSoundOffsets || instanceSoundSingletons,instanceMusicOffsets || instanceAudioTrees || instanceSoundOffsets || instanceSoundSingletons ? schemas : null,instanceSoundOffsets || instanceSoundSingletons) : null;
         SdkInstanceInheritanceProfile? instanceProfile = instanceInheritance || instanceRootFiles || instanceChains || instanceRemovals || instanceChoices || instanceMarkers || instanceBitflags || instanceFilters || instanceUpgrades || instanceMetadata || instanceExpressions || instanceIdenticalStates || instanceStateReadds || instanceCrossStateRemovals || instanceMusicOffsets || instanceAudioTrees || instanceSoundOffsets || instanceSoundSingletons ? new(schemas,paths,instanceRootFiles,instanceChains,instanceRemovals,instanceChoices,instanceMarkers,instanceBitflags,instanceFilters,instanceUpgrades,instanceMetadata,instanceExpressions,instanceIdenticalStates,instanceStateReadds,instanceCrossStateRemovals,instanceMusicOffsets,instanceAudioTrees,instanceSoundOffsets,instanceSoundSingletons) : null;
         List<Document> documents = new(); HashSet<string> seen = new(StringComparer.OrdinalIgnoreCase);
-        string[] roots = new[] { paths.SourceRoot,paths.ArtRoot,paths.AudioRoot }.Where(root => root != null).Cast<string>().Select(SdkEnvironmentPreflight.DirectoryPath).ToArray();
+        string[] roots = paths.AllowedRoots.Select(r=>paths.Search==null?SdkEnvironmentPreflight.DirectoryPath(r):SdkEnvironmentPreflight.Absolute(r)).ToArray();
         long total = 0; int dependencies = 0; bool stopped = false;
         foreach (var source in paths.Sources)
         {
@@ -101,7 +101,7 @@ internal static class SdkTypedSourceGraph
                     string? physical = null,issue = null; long? length = null;
                     try
                     {
-                        var resolved = SdkSourcePathAudit.Resolve(field.LogicalPath,Path.GetDirectoryName(source.PhysicalPath)!,source.Root,paths.SourceRoot,paths.ArtRoot,paths.AudioRoot);
+                        var resolved = SdkKnownMapAliases.ResolveCaptured(paths,source.PhysicalPath,"resource",field.LogicalPath,source.Root);
                         physical = resolved.Path;
                         if (!File.Exists(physical)) issue = "ResourceMissing";
                         else { SdkEnvironmentPreflight.CheckPath(physical); length = new FileInfo(physical).Length; }

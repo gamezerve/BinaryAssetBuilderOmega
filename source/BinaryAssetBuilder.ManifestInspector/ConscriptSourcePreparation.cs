@@ -13,7 +13,7 @@ internal static class ConscriptSourcePreparation
     //-------------------------------------------------------------------------------------------------
     /** Reborn: capture a confined graph, prepare each owner in its defining context and publish all-imported owners only, never instance bases. */
     //-------------------------------------------------------------------------------------------------
-    internal static ConscriptSourceInput.Input Load(string entry)
+    internal static ConscriptSourceInput.Input Load(string entry,SdkSourceSearch? search=null)
     {
         entry=SdkEnvironmentPreflight.Absolute(entry);string root=SdkEnvironmentPreflight.DirectoryPath(Path.GetDirectoryName(entry)!);
         byte[] initial=SdkEnvironmentPreflight.Read(entry,1048576);var first=Parse(initial);
@@ -21,7 +21,9 @@ internal static class ConscriptSourcePreparation
         if(first.DocumentElement?.LocalName=="GameObject")return new(first,null,new[]{new ConscriptSourceInput.SourceFile(entry,Hash(initial))});
         string fixture=ReferencePipelineSmokeTest.FindFixture();string output=Path.Combine(Path.GetTempPath(),"Reborn-SourcePlan-"+Guid.NewGuid().ToString("N"));
         var environment=new SdkEnvironmentPreflight.Report("ra3ep1",Path.GetDirectoryName(fixture)!,fixture,0,"",root,entry,Hash(initial),output,Array.Empty<SdkEnvironmentPreflight.Mapping>(),true,true,false,false,false,"0x5454A8E9",Array.Empty<string>());
-        var paths=SdkSourcePathAudit.Inspect(environment);
+        var paths=SdkSourcePathAudit.Inspect(environment,search:search);
+        // Reborn: report the actual physical winner before resource/processor admission; finding a W3X never means it was compiled.
+        foreach(var selection in paths.Searches.Where(s=>s.LogicalPath.Contains(':')))Console.WriteLine("Reborn: source path ["+selection.Layer+"] "+selection.LogicalPath+" -> "+selection.PhysicalPath);
         if(!paths.ScopedPathAuditComplete || paths.StoppedAtLimit || paths.Sources.Length>32 || paths.Sources.Sum(s=>s.Bytes)>4*1048576)
             throw new InvalidDataException("Source graph: "+string.Join("; ",paths.Issues.Select(i=>i.Code+" "+i.LogicalPath+": "+i.Detail)));
         if(paths.Resources.Length!=0 || paths.Sources.Any(s=>!s.PhysicalPath.EndsWith(".xml",StringComparison.OrdinalIgnoreCase)))throw new InvalidDataException("ART/audio/W3X source processors are not connected; no resources are silently skipped.");
@@ -35,7 +37,8 @@ internal static class ConscriptSourcePreparation
         var games=assets.Where(a=>a.LocalName=="GameObject").ToArray();var commands=assets.Where(a=>a.LocalName=="LogicCommand").ToArray();
         if(games.Length!=1 || commands.Length>1)throw new InvalidDataException("Source output requires one GameObject and zero/one explicit LogicCommand; imported bases must use type=instance.");
         foreach(var source in paths.Sources)if(Hash(SdkEnvironmentPreflight.Read(source.PhysicalPath,1048576))!=source.Sha256)throw new InvalidDataException("Source changed during inheritance/definition preparation.");
-        return new(Detach(games[0]),commands.Length==0?null:Detach(commands[0]),paths.Sources.Select(s=>new ConscriptSourceInput.SourceFile(s.PhysicalPath,s.Sha256)).ToArray());
+        SdkSourceSearch.Verify(paths.Searches);
+        return new(Detach(games[0]),commands.Length==0?null:Detach(commands[0]),paths.Sources.Select(s=>new ConscriptSourceInput.SourceFile(s.PhysicalPath,s.Sha256)).ToArray()){Searches=paths.Searches};
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: all Includes contribute emitted owner assets; instance Includes are read by the existing engine but never emitted by this traversal. */

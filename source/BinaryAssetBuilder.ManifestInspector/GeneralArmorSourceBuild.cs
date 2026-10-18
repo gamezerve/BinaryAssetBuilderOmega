@@ -14,14 +14,14 @@ internal static class GeneralArmorSourceBuild
     //-------------------------------------------------------------------------------------------------
     /** Reborn: capture/recheck confined armor sources, hold read-only Windows sharing locks, prepare inheritance/defines then compile one owner stream. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string sourceRoot, string entry, string output, bool validateOnly = false)
+    internal static void Run(string sourceRoot, string entry, string output, bool validateOnly = false,string? sdk=null,string? stockData=null)
     {
         sourceRoot = SdkEnvironmentPreflight.DirectoryPath(sourceRoot);
         entry = SdkEnvironmentPreflight.Absolute(entry); output = SdkEnvironmentPreflight.Absolute(output);
         // Reborn: focused armor deployments carry only their reviewed schema graph, not the full SDK catalog or a developer checkout.
         string schemaPath = Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!, "ArmorSourcePipeline.xsd");
         var environment = SourceEnvironment(sourceRoot, entry, output, schemaPath);
-        var paths = SdkSourcePathAudit.Inspect(environment);
+        var paths = SdkSourcePathAudit.Inspect(environment,search:sdk==null?null:SdkSourceSearch.ForMod(entry,sdk,stockData));
         if (!paths.ScopedPathAuditComplete || paths.StoppedAtLimit || paths.Sources.Length > 32 || paths.Includes.Length > 64 || paths.Resources.Length != 0)
             throw new InvalidDataException("Armor source build requires complete 1..32-source/64-edge file-free path inventory: "
                 + string.Join("; ", paths.Issues.Select(issue => issue.Code + ": " + issue.Detail)));
@@ -65,7 +65,7 @@ internal static class GeneralArmorSourceBuild
             if (validateOnly)
             {
                 Console.WriteLine(JsonSerializer.Serialize(new { ArmorCount = admitted.Length, SourceCount = paths.Sources.Length,
-                    Sources = paths.Sources,
+                    Sources = paths.Sources,PathSearches=paths.Searches,
                     PreparedSha256 = Convert.ToHexString(SHA256.HashData(normalized)), ValidationOnly = true,
                     GameExecuted = false, OutputCreated = false }));
                 return;
@@ -79,7 +79,7 @@ internal static class GeneralArmorSourceBuild
             VerifySnapshots();
             using var build = JsonDocument.Parse(File.ReadAllText(Path.Combine(compiled, "general-armor-build.json")));
             // Reborn: preserve raw closure and processed-owner identities separately from the native build receipt and runtime evidence.
-            var receipt = new { SourceRoot = sourceRoot, SourceEntry = entry, Sources = paths.Sources,
+            var receipt = new { SourceRoot = sourceRoot, SourceEntry = entry, Sources = paths.Sources,PathSearches=paths.Searches,
                 Preparation = result.Evidence, PreparedSha256 = Convert.ToHexString(SHA256.HashData(normalized)),
                 OwnerOnlyOutput = true, SourceSharingLocksHeldThroughBuild = true, SourceSnapshotsVerified = true,
                 ArmorCount = build.RootElement.GetProperty("ArmorCount").GetInt32(),
@@ -94,6 +94,8 @@ internal static class GeneralArmorSourceBuild
             //-------------------------------------------------------------------------------------------------
             void VerifySnapshots()
             {
+                // Reborn: locked stock files alone cannot protect against a newly created higher-priority mod override.
+                SdkSourceSearch.Verify(paths.Searches);
                 foreach (var source in paths.Sources)
                 {
                     SdkEnvironmentPreflight.CheckPath(source.PhysicalPath);

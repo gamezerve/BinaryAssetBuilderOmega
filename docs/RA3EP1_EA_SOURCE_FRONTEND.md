@@ -42,8 +42,9 @@ command IDs can be compiled but do not acquire consumers automatically.
 | inheritFrom / instance includes | Actual Core inheritance, including captured base chains; derived Conscript must be attribute-only and resolved output must retain the admitted complete shape |
 | reference includes | Not enabled; explicit error |
 | Defines / $ expressions | Existing bounded definition engine, including imported metadata definitions and `=$NAME` substitutions before inheritance; not arbitrary expression execution |
-| DATA: XML alias | Mod data root only; no implicit fallback to official source directories |
-| ART:/AUDIO: aliases / W3X processing | Not connected to this frontend; explicit error, no skipped model sources |
+| DATA: XML alias | Mod Data first, then SDK SageXML (or explicit local SdkDataRoot) |
+| ART:/AUDIO: aliases | Mod-first/SDK-fallback path resolution; ART basename two-character fanout; see source-search contract |
+| W3X/audio resource processing | Still not connected to this frontend; explicit error after path resolution, no skipped model sources |
 | xi:include execution | Not connected; explicit error |
 | Nonempty Tags | Not enabled; explicit error |
 | Arbitrary module additions/removals/edits | Not enabled by accepting an EA document envelope |
@@ -98,6 +99,10 @@ still passes complete native/metadata/reference/stream checks.
 
 Next major frontend work: official source-root/resource closure and actual W3X,
 then broader child/module edits. Full arbitrary GameObject authoring is not complete.
+
+The mod-over-SDK source root search is now connected; exact precedence,
+local stock-library configuration and resource limitations are documented in
+[Mod-first SDK source search](RA3EP1_SOURCE_SEARCH.md).
 
 ## Instance/definition integration update
 

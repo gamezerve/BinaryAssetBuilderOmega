@@ -124,7 +124,7 @@ internal sealed class SdkInstanceInheritanceProfile
         filters |= upgrades; this.upgrades = upgrades;
         this.rootFiles = rootFiles || chains || removals || choices || markers || bitflags || filters; this.chains = chains || removals || choices || markers || bitflags || filters; this.removals = removals || choices || markers || bitflags || filters; this.choices = choices || markers || bitflags || filters; this.markers = markers || bitflags || filters; this.bitflags = bitflags || filters; this.filters = filters;
         if (!schemas.IsCompiled || paths.Sources.Length > 512 || paths.Includes.Length > 4096) throw new InvalidDataException("Compiled schema and bounded instance inventory required.");
-        string[] roots = new[] { paths.SourceRoot,paths.ArtRoot,paths.AudioRoot }.Where(root => root != null).Cast<string>().Select(SdkEnvironmentPreflight.DirectoryPath).ToArray();
+        string[] roots = paths.AllowedRoots.Select(r=>paths.Search==null?SdkEnvironmentPreflight.DirectoryPath(r):SdkEnvironmentPreflight.Absolute(r)).ToArray();
         foreach (var source in paths.Sources)
         {
             string canonical = SdkEnvironmentPreflight.Absolute(source.PhysicalPath);

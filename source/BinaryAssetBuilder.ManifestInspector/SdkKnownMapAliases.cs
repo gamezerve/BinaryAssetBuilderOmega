@@ -37,7 +37,12 @@ internal static class SdkKnownMapAliases
     internal static SdkSourcePathAudit.Resolved ResolveCaptured(SdkSourcePathAudit.Report paths,string document,string kind,string logical,string confinement)
     {
         var witness = paths.KnownMapAliases.SingleOrDefault(item => item.Document.Equals(document,StringComparison.OrdinalIgnoreCase) && item.Kind == kind && item.LogicalPath == logical);
-        if (witness == null) return SdkSourcePathAudit.Resolve(logical,Path.GetDirectoryName(document)!,confinement,paths.SourceRoot,paths.ArtRoot,paths.AudioRoot);
+        if (witness == null)
+        {
+            // Reborn: replay mod-over-SDK precedence on every consumer read; a newly created shadow must not reuse the old captured edge.
+            if(paths.Search!=null){var selected=paths.Search.Select(document,logical,confinement);return new(selected.PhysicalPath,selected.Root);}
+            return SdkSourcePathAudit.Resolve(logical,Path.GetDirectoryName(document)!,confinement,paths.SourceRoot,paths.ArtRoot,paths.AudioRoot);
+        }
         var observed = Prove(paths.SourceRoot,document,kind,logical);
         if (observed != witness || !paths.Sources.Any(source => source.PhysicalPath.Equals(witness.PhysicalPath,StringComparison.OrdinalIgnoreCase) && source.Sha256 == witness.Sha256 && source.Bytes == witness.Bytes))
             throw new InvalidDataException("Captured known map alias identity changed or is absent from source inventory.");

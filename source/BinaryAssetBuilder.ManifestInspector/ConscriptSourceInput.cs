@@ -13,7 +13,11 @@ internal static class ConscriptSourceInput
 {
     private const string Ea="uri:ea.com:eala:asset";
     internal sealed record SourceFile(string Path,string Sha256);
-    internal sealed record Input(XmlDocument Game,XmlDocument? Command,SourceFile[] Sources);
+    internal sealed record Input(XmlDocument Game,XmlDocument? Command,SourceFile[] Sources)
+    {
+        // Reborn: source hashes and alias-precedence witnesses are independent publication requirements.
+        public SdkSourceSearch.Selection[] Searches { get; init; }=Array.Empty<SdkSourceSearch.Selection>();
+    }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: group source-language checks without launching the game or building another ladder of one-field runtime trials. */
@@ -45,21 +49,27 @@ internal static class ConscriptSourceInput
     //-------------------------------------------------------------------------------------------------
     /** Reborn: route EA wrappers/local include graphs without treating namespace declarations as working XInclude or resource processors. */
     //-------------------------------------------------------------------------------------------------
-    internal static bool Detect(string entry)
+    internal static bool Detect(string entry,string? sdk=null,string? stockData=null)
     {
         var seen=new HashSet<string>(StringComparer.OrdinalIgnoreCase);string root=Path.GetDirectoryName(Path.GetFullPath(entry))!;
-        return Visit(Path.GetFullPath(entry));
+        var search=sdk==null?null:SdkSourceSearch.ForMod(entry,sdk,stockData);
+        return Visit(Path.GetFullPath(entry),root);
         //-------------------------------------------------------------------------------------------------
         /** Reborn: inspect only confined XML include candidates; actual admission still validates every directive in Prepare. */
         //-------------------------------------------------------------------------------------------------
-        bool Visit(string path)
+        bool Visit(string path,string confinement)
         {
             if(!seen.Add(path))return false;if(seen.Count>32)throw new InvalidDataException("Source routing exceeds 32 XML files.");
             var xml=Read(path);var element=xml.DocumentElement!;
             if(element.NamespaceURI!=Ea)return false;
             if(element.LocalName=="GameObject" || element.ChildNodes.OfType<XmlElement>().Any(e=>e.NamespaceURI==Ea && e.LocalName=="GameObject"))return true;
             foreach(XmlElement include in element.GetElementsByTagName("Include",Ea))
-            {string source=include.GetAttribute("source");if(!source.EndsWith(".xml",StringComparison.OrdinalIgnoreCase))continue;if(source.StartsWith("DATA:",StringComparison.OrdinalIgnoreCase)){if(Visit(Resolve(root,Path.Combine(root,"mod.xml"),source[5..])))return true;}else if(!source.Contains(':') && Visit(Resolve(root,path,source)))return true;}
+            {
+                string source=include.GetAttribute("source");if(!source.EndsWith(".xml",StringComparison.OrdinalIgnoreCase))continue;
+                if(search!=null){var selected=search.Select(path,source,confinement);if(Visit(selected.PhysicalPath,selected.Root))return true;}
+                else if(source.StartsWith("DATA:",StringComparison.OrdinalIgnoreCase)){if(Visit(Resolve(root,Path.Combine(root,"mod.xml"),source[5..]),root))return true;}
+                else if(!source.Contains(':') && Visit(Resolve(root,path,source),root))return true;
+            }
             return false;
         }
     }
@@ -67,17 +77,17 @@ internal static class ConscriptSourceInput
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prepare one explicit GameObject and optional UNIT_BUILD command from AssetDeclaration/all-XML includes, preserving source provenance and significant scripts. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Prepare(string entry,string output)
+    internal static void Prepare(string entry,string output,string? sdk=null,string? stockData=null)
     {
         if(Directory.Exists(output) || File.Exists(output))throw new InvalidDataException("Fresh source-preparation output required.");
-        var input=Load(entry);var schemas=Schemas();
+        var input=ConscriptSourcePreparation.Load(entry,sdk==null?null:SdkSourceSearch.ForMod(entry,sdk,stockData));var schemas=Schemas();
         var baseline=Read(Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"live-alpha","ConscriptBuildTime1","data","mod.xml"));
         Admit(input.Game,baseline,schemas);
         if(input.Command!=null){input.Command.Schemas.Add(schemas);input.Command.Validate((_,e)=>throw new InvalidDataException(e.Message));}
         Directory.CreateDirectory(output);string game=Path.Combine(output,"game.xml"),command=Path.Combine(output,"command.xml");
         File.WriteAllText(game,input.Game.DocumentElement!.OuterXml,new UTF8Encoding(false));if(input.Command!=null)File.WriteAllText(command,input.Command.DocumentElement!.OuterXml,new UTF8Encoding(false));
         foreach(var source in input.Sources)if(Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(source.Path,1048576)))!=source.Sha256)throw new InvalidDataException("Source changed during preparation: "+source.Path);
-        File.WriteAllText(Path.Combine(output,"source-input.json"),JsonSerializer.Serialize(new{GamePath=game,CommandPath=input.Command==null?null:command,Identity=input.Game.DocumentElement.GetAttribute("id"),PreparedSourceSha256=Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(input.Game.DocumentElement.OuterXml))),Sources=input.Sources,AutomaticCommandGenerated=false},new JsonSerializerOptions{WriteIndented=true}));
+        File.WriteAllText(Path.Combine(output,"source-input.json"),JsonSerializer.Serialize(new{GamePath=game,CommandPath=input.Command==null?null:command,Identity=input.Game.DocumentElement.GetAttribute("id"),PreparedSourceSha256=Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(input.Game.DocumentElement.OuterXml))),Sources=input.Sources,Searches=input.Searches,AutomaticCommandGenerated=false},new JsonSerializerOptions{WriteIndented=true}));
         Console.WriteLine("Reborn: explicit EA XML prepared; "+input.Sources.Length+" source file(s), "+(input.Command==null?"one GameObject; no command generated.":"GameObject + authored LogicCommand; no hidden asset generation."));
     }
 

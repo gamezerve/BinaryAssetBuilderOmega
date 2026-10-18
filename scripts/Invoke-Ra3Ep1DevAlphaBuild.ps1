@@ -31,10 +31,13 @@ try{
     $xmlSettings=[Xml.XmlReaderSettings]::new();$xmlSettings.DtdProcessing=[Xml.DtdProcessing]::Prohibit;$xmlSettings.XmlResolver=$null;$xmlSettings.MaxCharactersInDocument=1048576
     $reader=[Xml.XmlReader]::Create($ModXml,$xmlSettings);try{$null=$reader.MoveToContent();$isConscript=$reader.LocalName-ceq 'GameObject';$isDeclaration=$reader.LocalName-ceq 'AssetDeclaration'}finally{$reader.Dispose()}
     # Reborn: detect GameObject declarations in a real local XML closure without an automatic production command.
-    if($isDeclaration){$kind=@(& (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') conscript-source-kind $ModXml);if($LASTEXITCODE-ne 0){throw ($kind -join [Environment]::NewLine)};$isConscript=($kind -join '').Trim()-ceq 'conscript'}
+    $searchArgs=@($sdk);if($settings.SdkDataRoot){$searchArgs+=$settings.SdkDataRoot}
+    if($isDeclaration){$kind=@(& (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') conscript-source-kind $ModXml @searchArgs);if($LASTEXITCODE-ne 0){throw ($kind -join [Environment]::NewLine)};$isConscript=($kind -join '').Trim()-ceq 'conscript'}
     $backend=if($isConscript){'Invoke-Ra3Ep1ConscriptAlphaBuild.ps1'}else{'Invoke-Ra3Ep1AlphaBuild.ps1'}
     $arguments=@('-NoProfile','-File',(Join-Path $PSScriptRoot $backend),'-ModXml',$ModXml,'-StaticManifest',$StaticManifest,'-GlobalManifest',$GlobalManifest,'-CompilerDirectory',$expectedCompiler,'-OutputRoot',$run)
     if($ValidateOnly){$arguments+='-ValidateOnly'}
+    # Reborn: the armor source backend uses the same explicit SDK search roots as GameObject routing/preparation.
+    if(-not $isConscript){$arguments+=@('-SdkRoot',$sdk);if($settings.SdkDataRoot){$arguments+=@('-SdkDataRoot',$settings.SdkDataRoot)}}
     & $settings.PowerShell7 @arguments *> $log;$code=$LASTEXITCODE;Get-Content -LiteralPath $log|Write-Output
     if($code-ne 0){Copy-Item -LiteralPath $log -Destination (Join-Path $sdk '.work/last-failure.log') -Force;throw 'Alpha backend failed; previous successful output is unchanged. See alpha/.work/last-failure.log.'}
     if($ValidateOnly){Copy-Item -LiteralPath $log -Destination (Join-Path $sdk '.work/last-validation.log') -Force;return}
@@ -44,6 +47,12 @@ try{
     $package=[IO.Path]::GetFullPath($package);if(-not $package.StartsWith($run+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Backend package escaped its private work generation.'}
     # Reborn: close cancellation must never terminate the worker halfway through staged publication/rollback of a last-good package.
     if($publishMutex){try{$publishHeld=$publishMutex.WaitOne()}catch [Threading.AbandonedMutexException]{$publishHeld=$true};if($cancelEvent.WaitOne(0)){throw 'Studio build cancelled before publication.'}}
+    # Reborn: refuse a late higher-priority override even if the originally selected SDK file's hash is unchanged.
+    foreach($selection in $receipt.PathSearches){
+        $winner=$null
+        foreach($candidate in $selection.Candidates){for($ancestor=$candidate;$ancestor;$ancestor=[IO.Path]::GetDirectoryName($ancestor)){if((Test-Path -LiteralPath $ancestor) -and ((Get-Item -LiteralPath $ancestor -Force).Attributes-band [IO.FileAttributes]::ReparsePoint)){throw 'Redirected alias search candidate.'}};if(Test-Path -LiteralPath $candidate -PathType Container){throw 'Alias candidate became a directory.'};if(Test-Path -LiteralPath $candidate -PathType Leaf){$winner=$candidate;break}}
+        if($winner-ine $selection.PhysicalPath){throw ('Alias precedence changed: '+$selection.LogicalPath)}
+    }
     $stage=Join-Path $expectedOutput ('.stage-'+[guid]::NewGuid().ToString('N'));$null=New-Item -ItemType Directory -Path $stage;$stageOwned=$true
     $big=$ModName+'.big';Copy-Item -LiteralPath $package -Destination (Join-Path $stage $big);$hash=(Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash
     if((Get-FileHash -LiteralPath (Join-Path $stage $big) -Algorithm SHA256).Hash-cne $hash){throw 'Published BIG differs from the verified backend package.'}

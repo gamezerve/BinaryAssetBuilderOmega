@@ -39,6 +39,8 @@ namespace EALABuild
             CheckPath(runtime); CheckPath(driver); CheckPath(staticManifest);
             if (globalManifest != null) CheckPath(globalManifest);
             CheckDirectory(compilerDirectory); CheckDirectory(outputRoot);
+            // Reborn: an optional stock DATA override changes the library root, not the required four-key Studio workflow.
+            if (settings.ContainsKey("SdkDataRoot")) CheckDirectory(settings["SdkDataRoot"]);
             buildHost = Path.Combine(StaticPaths.CurrentDirectory, "tools\\studio\\RebornStudioLifecycle.exe");
             CheckPath(buildHost);
             lifecycle = System.Reflection.Assembly.LoadFrom(buildHost).GetType("Reborn.StudioLifecycle", true);
@@ -58,7 +60,7 @@ namespace EALABuild
             CheckPath(input);
             BuildHelper.CurrentBuildSteps = 1;
             // Reborn: separate the user's Reborn workspace from developer tests, including the strictly bounded complete Conscript build.
-            BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha; bounded Conscript source via AssetDeclaration/local XML Includes. Commands must be authored explicitly; none are generated. Full inheritance/ART/W3X preprocessing is not connected yet.");
+            BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha; bounded Conscript source with explicit commands, instance/definitions and mod-first SDK alias lookup. General child merges and ART/W3X/audio processing are not enabled yet.");
             // Reborn: session resources exist before EA starts the host; the suspended worker cannot escape its own job.
             string session = (string)Lifecycle("Begin");
             RunExecutableArguments request = new RunExecutableArguments(buildHost);
@@ -142,7 +144,7 @@ namespace EALABuild
                 if (separator <= 0) throw new InvalidDataException("Reborn: invalid alpha path setting.");
                 string key = line.Substring(0, separator);
                 // Reborn: official source root is used only by the bounded Conscript build driver; legacy configurations remain valid.
-                if ((key != "PowerShell7" && key != "Driver" && key != "StaticManifest" && key != "CompilerDirectory" && key != "GlobalManifest" && key != "UprisingXmlRoot") || settings.ContainsKey(key))
+                if ((key != "PowerShell7" && key != "Driver" && key != "StaticManifest" && key != "CompilerDirectory" && key != "GlobalManifest" && key != "UprisingXmlRoot" && key != "SdkDataRoot") || settings.ContainsKey(key))
                     throw new InvalidDataException("Reborn: unknown or duplicate alpha path setting.");
                 settings.Add(key, line.Substring(separator + 1));
             }

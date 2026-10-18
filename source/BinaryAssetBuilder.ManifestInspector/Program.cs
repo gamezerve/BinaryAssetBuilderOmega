@@ -81,11 +81,13 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeOriginalRoot:true);return 0;}
 
             // Reborn: EA source envelopes/includes are prepared explicitly before bounded native compilation; no hidden command is generated.
-            if(args.Length==2 && args[0]=="conscript-source-kind")
-            {Console.WriteLine(ConscriptSourceInput.Detect(args[1])?"conscript":"other");return 0;}
-            if(args.Length==3 && args[0]=="conscript-source-prepare")
-            {CompilerSmokeTest.InitializeHashProvider();ConscriptSourceInput.Prepare(args[1],args[2]);return 0;}
+            if(args.Length is >=2 and <=4 && args[0]=="conscript-source-kind")
+            {Console.WriteLine(ConscriptSourceInput.Detect(args[1],args.ElementAtOrDefault(2),args.ElementAtOrDefault(3))?"conscript":"other");return 0;}
+            if(args.Length is >=3 and <=5 && args[0]=="conscript-source-prepare")
+            {CompilerSmokeTest.InitializeHashProvider();ConscriptSourceInput.Prepare(args[1],args[2],args.ElementAtOrDefault(3),args.ElementAtOrDefault(4));return 0;}
             // Reborn: group frontend structure/default/no-hidden-command checks independently of full GameObject compilation.
+            if(args.Length==3 && args[0]=="sdk-source-search-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();SdkSourceSearchSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="conscript-source-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ConscriptSourceInput.SelfTest(args[1],args[2]);return 0;}
             // Reborn: qualify EP1 production commands independently before exposing the bounded new-identity recruitment trial.
@@ -226,11 +228,11 @@ internal static class Program
             if (args.Length is 1 or 2 && args[0] == "gameobject-stock-self-test")
             { CompilerSmokeTest.InitializeHashProvider(); GameObjectStockReview.SelfTest(args.Length == 2 ? args[1] : null); return 0; }
             // Reborn: source preflight prepares the complete armor graph without creating or compiling a native package.
-            if (args.Length == 4 && args[0] == "armor-source-preflight")
-            { CompilerSmokeTest.InitializeHashProvider(); GeneralArmorSourceBuild.Run(args[1], args[2], args[3], true); return 0; }
+            if (args.Length is >=4 and <=6 && args[0] == "armor-source-preflight")
+            { CompilerSmokeTest.InitializeHashProvider(); GeneralArmorSourceBuild.Run(args[1], args[2], args[3], true,args.ElementAtOrDefault(4),args.ElementAtOrDefault(5)); return 0; }
             // Reborn: captured armor source semantics bridge into scoped set output through a separate explicit command.
-            if (args.Length == 4 && args[0] == "armor-source-build")
-            { CompilerSmokeTest.InitializeHashProvider(); GeneralArmorSourceBuild.Run(args[1], args[2], args[3]); return 0; }
+            if (args.Length is >=4 and <=6 && args[0] == "armor-source-build")
+            { CompilerSmokeTest.InitializeHashProvider(); GeneralArmorSourceBuild.Run(args[1], args[2], args[3], false,args.ElementAtOrDefault(4),args.ElementAtOrDefault(5)); return 0; }
             // Reborn: test source-to-native behavior jointly rather than counting diagnostic preprocessing alone as publication support.
             if (args.Length == 2 && args[0] == "armor-source-self-test")
             { CompilerSmokeTest.InitializeHashProvider(); GeneralArmorSourceBuild.SelfTest(args[1]); return 0; }

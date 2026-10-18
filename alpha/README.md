@@ -11,6 +11,13 @@ There is **no automatic LogicCommand generation**. Read the
 [source frontend support table](../docs/RA3EP1_EA_SOURCE_FRONTEND.md) before using
 inheritance, source aliases, omission rules or arbitrary modules.
 
+DATA/ART/AUDIO use mod-first, then stock SDK lookup; DATA defaults to adjacent
+SageXML. The local ignored paths file explicitly points SdkDataRoot at the existing
+Uprising XML library instead of copying it. ART basename lookup tries direct mod
+Art, mod two-character fanout, then SDK fanout. AUDIO searches mod then SDK Audio.
+See [source search details](../docs/RA3EP1_SOURCE_SEARCH.md). Locating resources
+does not yet enable W3X/audio compilation.
+
 Open **`alpha/EALAModStudio.exe`**. This is the user-facing entry point.
 Select `Reborn` or `RebornTest`, edit its `alpha/mods/<name>/data/mod.xml`, then click
 **Build Mod** in Studio. Read Build Log / Error Log for the result.

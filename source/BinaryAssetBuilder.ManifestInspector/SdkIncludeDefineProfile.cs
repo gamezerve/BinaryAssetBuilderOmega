@@ -36,7 +36,7 @@ internal sealed class SdkIncludeDefineProfile
         if (soundOffsets && musicSchemas == null) throw new ArgumentException("Typed sound arithmetic requires compiled schema authority.");
         this.definitionExpressions = definitionExpressions;
         if (paths.Sources.Length > 512 || paths.Includes.Length > 4096) throw new InvalidDataException("Bounded Include inventory required.");
-        string[] roots = new[] { paths.SourceRoot,paths.ArtRoot,paths.AudioRoot }.Where(root => root != null).Cast<string>().Select(SdkEnvironmentPreflight.DirectoryPath).ToArray();
+        string[] roots = paths.AllowedRoots.Select(r=>paths.Search==null?SdkEnvironmentPreflight.DirectoryPath(r):SdkEnvironmentPreflight.Absolute(r)).ToArray();
         foreach (var source in paths.Sources)
         {
             string canonical = SdkEnvironmentPreflight.Absolute(source.PhysicalPath);

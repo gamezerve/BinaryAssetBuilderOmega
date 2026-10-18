@@ -16,6 +16,11 @@ are accepted. RebornTest now also uses actual instance inheritance from
 emitted. General derived child merges and official ART/W3X resource closure remain
 disabled. See [precise source support and omission/order rules](docs/RA3EP1_EA_SOURCE_FRONTEND.md).
 
+**SDK source lookup:** DATA/ART/AUDIO now use explicit mod-first, stock-SDK
+fallback search. DATA defaults to adjacent SageXML; this local checkout explicitly
+uses the existing official Uprising XML library via SdkDataRoot. Resource lookup
+does not enable resource compilation. See [exact search order](docs/RA3EP1_SOURCE_SEARCH.md).
+
 **One live alpha SDK:** open `alpha/EALAModStudio.exe`, edit the selected mod's
 `alpha/mods/<name>/data/mod.xml`, then use **Build Mod**. Successful builds reuse
 `alpha/builtmods/<name>/` for `<name>.big`, `mod_1.0.skudef`, `build.json` and

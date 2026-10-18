@@ -2,7 +2,7 @@
 [CmdletBinding()]
 param([Parameter(Mandatory)][string]$ModXml,[switch]$ValidateOnly,
     [string]$StaticManifest='D:\TEMP\Red Alert 3 Uprising Source Data\Static Data\data\static.manifest',
-    [string]$CompilerDirectory,[string]$OutputRoot,[string]$GlobalManifest,[switch]$ArmorSource)
+    [string]$CompilerDirectory,[string]$OutputRoot,[string]$GlobalManifest,[switch]$ArmorSource,[string]$SdkRoot,[string]$SdkDataRoot)
 $ErrorActionPreference='Stop'
 $repo=Split-Path -Parent $PSScriptRoot
 #-------------------------------------------------------------------------------------------------
@@ -77,12 +77,15 @@ try {
         if($sourceMode){
             $output=Join-Path $directory 'build';$sourceRoot=Split-Path -Parent $ModXml
             Write-Output 'Warning: ALPHA004 Experimental armor source path: 1..32 user-defined owner armors, confined instance/definition Includes, bounded inheritance and =$NAME. No GameObject consumer or new-package gameplay proof is implied; unsupported list replacement and mixed types fail.'
-            $json=@(& $exe armor-source-preflight $sourceRoot $ModXml $output)
+            # Reborn: standalone diagnostic callers remain strict; the live SDK supplies mod-over-SDK roots explicitly.
+            $searchArgs=@();if($SdkRoot){$searchArgs+= $SdkRoot;if($SdkDataRoot){$searchArgs+=$SdkDataRoot}}
+            $json=@(& $exe armor-source-preflight $sourceRoot $ModXml $output @searchArgs)
             if($LASTEXITCODE-ne 0){$json|Write-Output;throw 'Armor source preflight failed.'}
             $admission=($json-join [Environment]::NewLine)|ConvertFrom-Json
             if(-not $admission.ValidationOnly -or $admission.OutputCreated -or $admission.ArmorCount-lt 1 -or $admission.ArmorCount-gt 32){throw 'Armor source preflight receipt differs.'}
             if($ValidateOnly){Write-Output 'Reborn: armor source input admitted; validation only, no package built.';return}
-            & $exe armor-source-build $sourceRoot $ModXml $output
+            foreach($selection in $admission.PathSearches){Write-Output ('Reborn: source path ['+$selection.Layer+'] '+$selection.LogicalPath+' -> '+$selection.PhysicalPath)}
+            & $exe armor-source-build $sourceRoot $ModXml $output @searchArgs
             if($LASTEXITCODE-ne 0){throw 'Armor source Core/package build failed.'}
             $sourceReceipt=Join-Path $output 'armor-source-build.json';$source=Get-Content -LiteralPath $sourceReceipt -Raw|ConvertFrom-Json
             $build=Get-Content -LiteralPath $source.BuildReceipt -Raw|ConvertFrom-Json
@@ -97,7 +100,7 @@ try {
             $selectedSha=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes))
             $entryWitness=@($source.Sources|Where-Object PhysicalPath -CEQ $ModXml)
             if($entryWitness.Count-ne 1 -or $entryWitness[0].Sha256-cne $selectedSha -or (Get-FileHash -LiteralPath $build.DefaultReaderPackagePath -Algorithm SHA256).Hash-cne $build.DefaultReaderPackageSha256){throw 'Armor source/package hash differs.'}
-            $receipt=[pscustomobject]@{Profile='armor-source';ArmorCount=$build.ArmorCount;ArmorIds=$build.ArmorIds;SelectedModXml=$ModXml;SelectedModXmlSha256=$selectedSha;SourceReceipt=$sourceReceipt;BuildReceipt=$source.BuildReceipt;PackagePath=$build.DefaultReaderPackagePath;ConfigPath=$build.ConfigPath;CompilerPath=$exe;PrebuiltCompilerUsed=[bool]$CompilerDirectory;InstalledFilesModified=$false;GameExecuted=$false;RuntimeOverrideProven=$false}
+            $receipt=[pscustomobject]@{Profile='armor-source';ArmorCount=$build.ArmorCount;ArmorIds=$build.ArmorIds;SelectedModXml=$ModXml;SelectedModXmlSha256=$selectedSha;SourceReceipt=$sourceReceipt;BuildReceipt=$source.BuildReceipt;PackagePath=$build.DefaultReaderPackagePath;ConfigPath=$build.ConfigPath;PathSearches=$source.PathSearches;CompilerPath=$exe;PrebuiltCompilerUsed=[bool]$CompilerDirectory;InstalledFilesModified=$false;GameExecuted=$false;RuntimeOverrideProven=$false}
             [IO.File]::WriteAllText((Join-Path $directory 'alpha-build.json'),($receipt|ConvertTo-Json -Depth 6))
             Write-Output ('Reborn: build succeeded. BIG: '+$receipt.PackagePath)
             Write-Output ('Reborn: config: '+$receipt.ConfigPath)

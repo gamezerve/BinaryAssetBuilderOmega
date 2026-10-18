@@ -6,7 +6,9 @@ try {
     $settings=@{};foreach($line in Get-Content -LiteralPath (Join-Path $sdk 'uprising-alpha.paths')){if($line -and -not $line.StartsWith('#')){$pair=$line.Split('=',2);$settings[$pair[0]]=$pair[1]}}
     if(-not $settings.UprisingXmlRoot -or -not(Test-Path -LiteralPath $settings.UprisingXmlRoot -PathType Container)){throw 'Conscript requires UprisingXmlRoot in alpha/uprising-alpha.paths.'}
     $exe=Join-Path $CompilerDirectory 'BinaryAssetBuilder.ManifestInspector.exe';$prepared=Join-Path $OutputRoot 'source'
-    & $exe conscript-source-prepare $ModXml $prepared;if($LASTEXITCODE-ne 0){throw 'EA source preparation failed; see the XML/include/schema diagnostic above.'}
+    # Reborn: standard SDK roots are adjacent to Studio; an explicit local stock XML override changes only the SageXML root.
+    $searchArgs=@($sdk);if($settings.SdkDataRoot){$searchArgs+=$settings.SdkDataRoot}
+    & $exe conscript-source-prepare $ModXml $prepared @searchArgs;if($LASTEXITCODE-ne 0){throw 'EA source preparation failed; see the XML/include/schema diagnostic above.'}
     $inputReceipt=Get-Content -LiteralPath (Join-Path $prepared 'source-input.json') -Raw|ConvertFrom-Json
     $identity=$inputReceipt.Identity;$hasCommand=[bool]$inputReceipt.CommandPath;$newIdentity=$identity-cne 'SovietAntiInfantryInfantry'
     Write-Output 'Warning: ALPHA005 EA source frontend: one Conscript-shaped GameObject, six scalar edits, optional explicit UNIT_BUILD command. Local/DATA XML, definitions and attribute-only instance inheritance supported. General child merges/ART/W3X remain disabled.'
@@ -24,5 +26,5 @@ try {
     # Reborn: recheck every source, including included command XML, before publication rather than trusting only prepared-source hashes.
     foreach($source in $inputReceipt.Sources){if((Get-FileHash -LiteralPath $source.Path -Algorithm SHA256).Hash-cne $source.Sha256){throw ('Authored source changed during compilation: '+$source.Path)}}
     if($ValidateOnly){Write-Output 'Reborn: explicit source qualification passed; validation-only, no publication.';return}
-    [IO.File]::WriteAllText((Join-Path $OutputRoot 'alpha-build.json'),([pscustomobject]@{BuildReceipt=$receiptPath;PackagePath=$package;Profile='conscript-explicit-source';AuthoredSources=$inputReceipt.Sources;AutomaticCommandGenerated=$false;GameExecuted=$false;InstalledFilesModified=$false}|ConvertTo-Json -Depth 5))
+    [IO.File]::WriteAllText((Join-Path $OutputRoot 'alpha-build.json'),([pscustomobject]@{BuildReceipt=$receiptPath;PackagePath=$package;Profile='conscript-explicit-source';AuthoredSources=$inputReceipt.Sources;PathSearches=$inputReceipt.Searches;AutomaticCommandGenerated=$false;GameExecuted=$false;InstalledFilesModified=$false}|ConvertTo-Json -Depth 8))
 } catch {Write-Output ('Error: ALPHA120 '+$_.Exception.Message);Write-Output 'Critical: ALPHA121 Conscript alpha build failed.';exit 1}
