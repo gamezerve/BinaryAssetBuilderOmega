@@ -17,8 +17,12 @@ SDK without replacing editable mod sources. No new dated SDK copy is needed.
 This remains a repository-linked local alpha, not a portable public release.
 See [supported alpha input](alpha/README.md) and
 [maintenance / retained lessons](docs/RA3EP1_LIVE_ALPHA_AND_RETENTION.md).
-The Conscript developer proof below does not yet enable general GameObjects
-in the Studio build profile.
+Studio now lists only the user's **Reborn** and the developer's **RebornTest**.
+RebornTest contains the complete original-ID Conscript BuildTime=1 XML and a
+bounded real source-build route. Other GameObject edits remain unsupported;
+this is not general GameObject authoring. Automated regressions reuse RebornTest
+and leave the user's Reborn source and outputs untouched. Old armor/weapon
+samples are retained as fixtures outside the Studio mod list.
 
 Obsolete generated SDK/artifact snapshots have been consolidated: 311 directories
 and 117,989 files were removed only after complete archive/hash verification.

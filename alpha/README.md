@@ -3,7 +3,7 @@
 ## Build your mod
 
 Open **`alpha/EALAModStudio.exe`**. This is the user-facing entry point.
-Select a supplied mod, edit its `alpha/mods/<name>/data/mod.xml`, then click
+Select `Reborn` or `RebornTest`, edit its `alpha/mods/<name>/data/mod.xml`, then click
 **Build Mod** in Studio. Read Build Log / Error Log for the result.
 
 Successful builds publish these files in the same SDK:
@@ -23,6 +23,32 @@ personal paths are preserved. Studio builds and synchronization share a lock to
 avoid mixed compiler generations. An up-to-date toolchain does not expand the
 supported input scope listed below. Internal maintenance scripts are not an
 additional user workflow.
+
+## Workspace ownership
+
+Only two mod folders belong in the Studio list:
+
+- `Reborn`: the user's mod. Developer tests do not change its sources or build its outputs.
+- `RebornTest`: the developer's reusable test mod. Its current `data/mod.xml`
+  contains the complete original-ID Conscript with **BuildTime=1**.
+
+Select **RebornTest → Build Mod** to compile that Conscript from the selected
+XML through Core, including complete native/metadata/reference/stream checks.
+The output is `alpha/builtmods/RebornTest/RebornTest.big` and `mod_1.0.skudef`.
+This is not a cached trial-BIG export. The generated BIG must reproduce the
+previous game-observed candidate. A fresh run is not a new gameplay observation.
+
+This Conscript route accepts only the exact reviewed original identity and
+BuildTime=1 source profile. Other changes, arbitrary GameObjects, additional
+assets and new-ID recruitment still fail; this is not a general unit compiler.
+It additionally needs `UprisingXmlRoot` in the local paths file, pointing to the
+matching official Uprising XML directory. Preserve the supplied complete XML;
+unreviewed changes are rejected, not silently ignored. ALPHA005 marks this scope.
+
+Previous armor/AK47 samples now live under `tests/fixtures/live-alpha/`, outside
+the Studio mod list. Automated checks run them sequentially through RebornTest
+and restore its original source directory afterward. Historical generated sample
+outputs were moved recoverably to `alpha/.work/legacy-fixture-outputs/`.
 
 This is a repository-linked local SDK, **not a standalone portable distribution**.
 EA binaries and personal paths are generated locally and ignored by Git.
@@ -57,8 +83,8 @@ revision. These are qualitative observations, not exact multiplier measurements
 or proof of every new build. Duplicate identities fail the whole build.
 
 Also supported, separately from armor: one complete stock-shaped
-`SovietAntiInfantryInfantryAK47` WeaponTemplate. Select ConscriptAK47 (Damage=50)
-and edit only Damage in mods/ConscriptAK47/data/mod.xml. Integers 0..10000 with
+`SovietAntiInfantryInfantryAK47` WeaponTemplate. The archived ConscriptAK47 fixture
+uses Damage=50; only Damage is editable in that profile. Integers 0..10000 with
 an optional `.0` suffix are accepted. All other fields, reference names, identity
 and child order must remain unchanged. Standalone XML or a one-member
 AssetDeclaration is accepted. Mixed armor/weapon streams are not supported.
@@ -71,7 +97,7 @@ unpacked Uprising `static.manifest` and its corresponding BIN/RELO/IMP files.
 Weapon builds additionally require an explicit unpacked `global.manifest`.
 Game binaries, stock streams, codecs and WorldBuilder are not provided.
 
-Experimental armor source route: select `ArmorSource`. Its three-file graph
+Experimental armor source route: the archived `ArmorSource` fixture's three-file graph
 compiles two owner-declared armors: `AlliedConYardArmor` inherits a prepared base
 with GUN=5000, and `RebornNewArmor` is a new identity without a gameplay consumer.
 The imported base is not emitted. This new package has no gameplay proof.
@@ -103,9 +129,10 @@ not replacement of an existing GUN entry. See repository example
 inside the selected mod data root. This documentation follow-up does not modify
 historical evidence or claim new gameplay proof.
 
-`uprising-alpha.paths` configures five literal `key=absolute-path` lines:
-PowerShell7, StaticManifest, GlobalManifest, Driver and
-CompilerDirectory. Update Driver and CompilerDirectory after relocating this
+`uprising-alpha.paths` configures literal `key=absolute-path` lines:
+PowerShell7, StaticManifest, GlobalManifest, Driver,
+CompilerDirectory and UprisingXmlRoot (required for Conscript only).
+Update Driver and CompilerDirectory after relocating this
 workspace. Launching the UI is a separate test; no preparation/build command
 starts a game or modifies a game installation.
 Legacy four-key armor configurations remain accepted, but cannot build weapons
@@ -132,7 +159,8 @@ is still open; do not upload this workspace as a reviewed release ZIP.
 This candidate contains a focused compiler executable with additional developer
 commands; only the documented fixed armor, experimental armor source and single-AK47
 backends are part of the alpha scope. Model/texture/audio/map/GameObject builds
-remain unsupported.
+remain unsupported, except the exact original-ID Conscript BuildTime=1 profile
+documented above.
 
 Older dated workspaces and the dependency-overlay route are historical
 maintenance experiments, not additional user entry points. Compiler/fixture

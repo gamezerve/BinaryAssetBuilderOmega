@@ -15,9 +15,20 @@ warning/error display, malformed-XML failure and this documentation pane. This i
 <!-- Reborn: explain the corrected EA callback contract without treating a completion label as independent package proof. -->
 <p>A rejected build reports Error: ALPHA100 and Critical: ALPHA101, followed by an alpha build failed message.
 Successful builds report package paths and Build Completed. Inspect the final receipt; old packages from earlier builds are not new output.</p>
-<h2>Supported build</h2>
-<p>Select Reborn (GUN 5000) or ArmorCannon (CANNON 5000, GUN 100).
-CombinedArmor contains Allied GUN=250 and Soviet GUN=5000 together.
+<!-- Reborn: separate user ownership from developer tests and keep exactly two mod entries in the UI. -->
+<h2>Your mod and developer tests</h2>
+<p><b>Reborn</b> belongs to the user. Automated developer tests do not modify or build it.
+<b>RebornTest</b> is the reusable developer slot. Previous sample mods are now regression fixtures outside this list.</p>
+<h2>Conscript BuildTime=1</h2>
+<p>Select <b>RebornTest</b> and click <b>Build Mod</b>. Its data/mod.xml contains the complete original-ID
+SovietAntiInfantryInfantry Conscript with BuildTime=1. The selected XML is compiled through Core, native ownership,
+metadata and reference/stream checks before a fresh BIG is published. This is not a cached BIG export.</p>
+<p>Only this exact reviewed source profile is admitted. Other edits, arbitrary GameObjects, mixed assets and recruitable new identities
+are not enabled. ALPHA005 reports this limitation. UprisingXmlRoot in uprising-alpha.paths must point to matching official Uprising XML.
+The earlier matching package has user-observed one-second production; a new build is not a new gameplay test.</p>
+<h2>Other supported input profiles</h2>
+<p>The original Reborn sample uses Allied GUN=5000. Archived ArmorCannon uses CANNON=5000 and GUN=100.
+The archived CombinedArmor fixture contains Allied GUN=250 and Soviet GUN=5000 together.
 <!-- Reborn: preserve both sample revisions and report their separate qualitative gameplay observations. -->
 CombinedArmorStrong contains Allied and Soviet GUN=5000 together.
 Edit mods/&lt;name&gt;/data/mod.xml. One AlliedConYardArmor or SovietConYardArmor, or one of each together, is accepted per build. All thirteen Percent values
@@ -30,13 +41,13 @@ Allied GUN=250 is inconclusive. Soviet was not re-tested in that stronger revisi
 <p>The single alpha build step validates XML, compiles through Core and creates a BIG/SKUDef package.
 Read build.json for the final receipt. Embedded backend paths describe removed intermediates, not live output locations.</p>
 <!-- Reborn: weapon authoring is a separate bounded build, not general WeaponTemplate or mixed-stream support. -->
-<p>Select ConscriptAK47 for one complete SovietAntiInfantryInfantryAK47 weapon.
+<p>The archived ConscriptAK47 fixture describes one complete SovietAntiInfantryInfantryAK47 weapon.
 Only Damage may change (integer 0..10000, optional .0); all other fields stay as supplied.
 The sample uses Damage=50. An earlier diagnostic package has user-observed increased damage;
 new builds remain experimental. Armor and weapon assets cannot share a build in this alpha.</p>
 <!-- Reborn: expose the bounded source bridge separately from the proven fixed-shape samples. -->
 <h2>Experimental armor source build</h2>
-<p>Select ArmorSource for a three-file Includes/Defines/inheritFrom example producing
+<p>The archived ArmorSource fixture is a three-file Includes/Defines/inheritFrom example producing
 AlliedConYardArmor and RebornNewArmor; imported bases are not emitted. ALPHA004
 warns that this package has no gameplay proof and new IDs need consuming GameObjects.</p>
 <p>Armor-only source declarations accept 1..32 owner IDs, 0..64 unique non-ALL damage
@@ -48,11 +59,11 @@ Child replacement by Damage, same-ID source shadowing, definition overrides,
 arbitrary expressions/all Includes, reference Includes and nonempty Tags are rejected.
 Read README.md for supported source forms. Old sample routes remain unchanged.</p>
 <h2>Not supported by this alpha</h2>
-<p>Other asset types, mixed armor/weapon streams, models, textures, music, maps,
+<p>General GameObject edits beyond the exact Conscript profile, other asset types, mixed armor/weapon streams, models, textures, music, maps,
 LOD selection, STR processing, automatic installation and game launch are not build-enabled here.</p>
 <h2>Configuration and prerequisites</h2>
-<p>uprising-alpha.paths contains five literal absolute paths: PowerShell7, Driver, StaticManifest, GlobalManifest and CompilerDirectory.
-GlobalManifest is required for weapon builds; legacy four-key armor configurations remain accepted.
+<p>uprising-alpha.paths contains literal absolute paths: PowerShell7, Driver, StaticManifest, GlobalManifest, CompilerDirectory and UprisingXmlRoot.
+GlobalManifest is required for weapons/Conscript; UprisingXmlRoot is required for Conscript. Legacy armor configurations remain accepted.
 Update Driver and CompilerDirectory after relocation. PowerShell 7, x86 .NET 8,
 compatible .NET Framework 4 and unpacked Uprising stock streams are required.
 This is a repository-linked development SDK, not a standalone portable distribution.</p>

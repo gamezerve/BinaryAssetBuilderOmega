@@ -1,6 +1,6 @@
 # Reborn: stable local SDK front end; keep editable mod sources, publish only BIG/SKUDef plus receipts, never install or launch.
 [CmdletBinding()]
-param([string]$ModName='Reborn',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot)
+param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot)
 $ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$lock=$null;$run=$null
 #-------------------------------------------------------------------------------------------------
 <# Reborn: delete only a newly owned work/output generation after proving containment and refusing every redirected descendant. #>
@@ -22,7 +22,11 @@ try{
     $toolchain=Get-Content -LiteralPath (Join-Path $sdk 'toolchain.json') -Raw|ConvertFrom-Json
     foreach($entry in $toolchain.Files){if((Get-FileHash -LiteralPath (Join-Path $expectedCompiler $entry.Name) -Algorithm SHA256).Hash-cne $entry.Sha256){throw 'Alpha compiler generation differs from its synchronization receipt.'}}
     $run=Join-Path $sdk ('.work/'+[guid]::NewGuid().ToString('N').Substring(0,8));$null=New-Item -ItemType Directory -Path $run;$log=Join-Path $run 'build.log'
-    $arguments=@('-NoProfile','-File',(Join-Path $PSScriptRoot 'Invoke-Ra3Ep1AlphaBuild.ps1'),'-ModXml',$ModXml,'-StaticManifest',$StaticManifest,'-GlobalManifest',$GlobalManifest,'-CompilerDirectory',$expectedCompiler,'-OutputRoot',$run)
+    # Reborn: standalone GameObject XML uses the explicit complete-Conscript route; other assets retain their original admission and compiler path.
+    $xmlSettings=[Xml.XmlReaderSettings]::new();$xmlSettings.DtdProcessing=[Xml.DtdProcessing]::Prohibit;$xmlSettings.XmlResolver=$null;$xmlSettings.MaxCharactersInDocument=1048576
+    $reader=[Xml.XmlReader]::Create($ModXml,$xmlSettings);try{$null=$reader.MoveToContent();$isConscript=$reader.LocalName-ceq 'GameObject'}finally{$reader.Dispose()}
+    $backend=if($isConscript){'Invoke-Ra3Ep1ConscriptAlphaBuild.ps1'}else{'Invoke-Ra3Ep1AlphaBuild.ps1'}
+    $arguments=@('-NoProfile','-File',(Join-Path $PSScriptRoot $backend),'-ModXml',$ModXml,'-StaticManifest',$StaticManifest,'-GlobalManifest',$GlobalManifest,'-CompilerDirectory',$expectedCompiler,'-OutputRoot',$run)
     if($ValidateOnly){$arguments+='-ValidateOnly'}
     & $settings.PowerShell7 @arguments *> $log;$code=$LASTEXITCODE;Get-Content -LiteralPath $log|Write-Output
     if($code-ne 0){Copy-Item -LiteralPath $log -Destination (Join-Path $sdk '.work/last-failure.log') -Force;throw 'Alpha backend failed; previous successful output is unchanged. See alpha/.work/last-failure.log.'}

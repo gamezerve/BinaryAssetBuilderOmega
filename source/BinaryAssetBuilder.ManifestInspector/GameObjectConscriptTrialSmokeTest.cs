@@ -17,21 +17,31 @@ internal static class GameObjectConscriptTrialSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: recompile original-source edits through actual normalization/allocation and prove the entire graph differs only at the authored BuildTime word. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(XmlDocument baseline,Chunk native,InstanceDeclaration original,Chunk tokens,XmlSchemaSet schemas,ManifestAsset[] catalog,string manifest,string globalManifest,Func<XmlDocument,(Chunk Native,InstanceDeclaration Instance)> build,Action<Chunk,InstanceDeclaration> verifyOriginal)
+    internal static void Run(XmlDocument baseline,Chunk native,InstanceDeclaration original,Chunk tokens,XmlSchemaSet schemas,ManifestAsset[] catalog,string manifest,string globalManifest,Func<XmlDocument,(Chunk Native,InstanceDeclaration Instance)> build,Action<Chunk,InstanceDeclaration> verifyOriginal,string? alphaSource=null,string? alphaOutput=null)
     {
         if(Word(native.InstanceBuffer,140)!=0x40800000u)throw new InvalidDataException("Conscript original BuildTime anchor is not 4.");
         uint newId=InstanceHandle.GetInstanceId("RebornConscriptTrial");if(catalog.Any(a=>a.TypeId==0x942FFF2Du && a.InstanceId==newId))throw new InvalidDataException("Trial identity collides with a real catalog asset.");
-        string sourceSnapshot=baseline.OuterXml;var originalDependencies=original.ReferencedInstances.Select(h=>new AssetId(h.TypeId,h.InstanceId)).ToArray();string root=Path.Combine(Path.GetTempPath(),"Reborn-ConscriptTrials-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(root);int refusals=0;
-        foreach(string id in new[]{"SovietAntiInfantryInfantry","RebornConscriptTrial"})
+        // Reborn: selected XML is safely parsed and compared to the complete captured source; only the reviewed original identity and BuildTime=1 enter the Studio route.
+        XmlDocument? selected=null;
+        if(alphaSource!=null)
         {
-            var source=(XmlDocument)baseline.CloneNode(true);source.DocumentElement!.SetAttribute("id",id);source.DocumentElement.SetAttribute("BuildTime","1");Admit(source);var pair=build(source);Verify(pair.Native,pair.Instance,id);var repeated=build(source);Verify(repeated.Native,repeated.Instance,id);
+            if(alphaOutput==null || Directory.Exists(alphaOutput) || File.Exists(alphaOutput))throw new InvalidDataException("Fresh Conscript alpha output required.");
+            var settings=new XmlReaderSettings{DtdProcessing=DtdProcessing.Prohibit,XmlResolver=null,MaxCharactersInDocument=1048576};
+            using var reader=XmlReader.Create(alphaSource,settings);var input=new XmlDocument{PreserveWhitespace=true,XmlResolver=null};input.Load(reader);
+            selected=new XmlDocument{PreserveWhitespace=true,XmlResolver=null};selected.LoadXml(input.DocumentElement?.OuterXml??throw new InvalidDataException("Conscript root absent."));
+            if(selected.DocumentElement!.GetAttribute("id")!="SovietAntiInfantryInfantry")throw new InvalidDataException("Studio Conscript route requires the original identity.");
+        }
+        string sourceSnapshot=baseline.OuterXml;var originalDependencies=original.ReferencedInstances.Select(h=>new AssetId(h.TypeId,h.InstanceId)).ToArray();string root=alphaOutput??Path.Combine(Path.GetTempPath(),"Reborn-ConscriptTrials-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(root);int refusals=0;
+        foreach(string id in selected==null?new[]{"SovietAntiInfantryInfantry","RebornConscriptTrial"}:new[]{"SovietAntiInfantryInfantry"})
+        {
+            var source=selected??(XmlDocument)baseline.CloneNode(true);if(selected==null){source.DocumentElement!.SetAttribute("id",id);source.DocumentElement.SetAttribute("BuildTime","1");}Admit(source);var pair=build(source);Verify(pair.Native,pair.Instance,id);var repeated=build(source);Verify(repeated.Native,repeated.Instance,id);
             var projected=Ep1GameObjectEmptyRootProjection.ComposeOriginal(pair.Native,schemas);var expected=Clone(tokens);Put(expected.InstanceBuffer,88824+140,0x3F800000u);if(!Equal(projected,expected) || !Equal(projected,Ep1GameObjectEmptyRootProjection.ComposeOriginal(repeated.Native,schemas)))throw new InvalidDataException("Authored Conscript metadata/native edit differs.");
             var bad=Clone(pair.Native);bad.InstanceBuffer[192]^=1;Refuse(()=>Verify(bad,pair.Instance,id));refusals++;bad=Clone(pair.Native);Put(bad.InstanceBuffer,140,0x40800000u);Refuse(()=>Verify(bad,pair.Instance,id));refusals++;
             var streams=GameObjectOriginalStreamSmokeTest.Run(projected,pair.Instance,manifest,globalManifest,true);Package(Path.Combine(root,id=="RebornConscriptTrial"?"new-id":"override"),source,streams,id);
         }
         foreach(var change in new[]{("id","UnreviewedConscript"),("BuildTime","2"),("Scale","2")}){var bad=(XmlDocument)baseline.CloneNode(true);bad.DocumentElement!.SetAttribute("BuildTime","1");bad.DocumentElement.SetAttribute(change.Item1,change.Item2);Refuse(()=>Admit(bad));refusals++;}
         var added=(XmlDocument)baseline.CloneNode(true);added.DocumentElement!.SetAttribute("BuildTime","1");added.DocumentElement.AppendChild(added.CreateElement("UnreviewedChild",baseline.DocumentElement!.NamespaceURI));Refuse(()=>Admit(added));refusals++;
-        if(baseline.OuterXml!=sourceSnapshot)throw new InvalidDataException("Authored trial mutated original source.");Console.WriteLine($"Conscript authored trials: PASS (two source-compiled identities, BuildTime 4 -> 1, 49 modules/six owners/geometry unchanged, 275 references, exact edited metadata/native graphs, {refusals} source/native refusals; candidates={root}; no install, launch, recruitable new-ID or gameplay proof).");
+        if(baseline.OuterXml!=sourceSnapshot)throw new InvalidDataException("Authored trial mutated original source.");Console.WriteLine($"Conscript authored trials: PASS (source-compiled identities={(selected==null?2:1)}, BuildTime 4 -> 1, 49 modules/six owners/geometry unchanged, 275 references, exact edited metadata/native graphs, {refusals} source/native refusals; candidates={root}; no install, launch, recruitable new-ID or gameplay proof).");
         //-------------------------------------------------------------------------------------------------
         /** Reborn: only the two literal identities and BuildTime=1 may differ from this already qualified captured source; unknown changes are never silently compiled. */
         //-------------------------------------------------------------------------------------------------

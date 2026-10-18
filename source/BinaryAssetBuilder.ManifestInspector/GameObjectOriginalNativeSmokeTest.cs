@@ -18,7 +18,7 @@ internal static class GameObjectOriginalNativeSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: replace every synthetic root attribute/child with the captured three-object source chain, retaining the complete already reviewed original module sources. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(SchemaSet schemas,XmlDocument modules,XmlElement[] objects,XmlDocument definitions,string manifest,ManifestAsset[] catalog,string globalManifest)
+    internal static void Run(SchemaSet schemas,XmlDocument modules,XmlElement[] objects,XmlDocument definitions,string manifest,ManifestAsset[] catalog,string globalManifest,string? alphaSource=null,string? alphaOutput=null)
     {
         GameObjectRootDefaultSmokeTest.Run(schemas.Schemas);
         var stock=GameObjectStockReview.Capture(manifest,"GameObject:SovietAntiInfantryInfantry");var topology=GameObjectModuleReview.Inspect(manifest,stock.Asset.Name);var source=Assemble();var pair=Build(source);var snapshot=Clone(pair.Native);var proof=Verify(pair.Native,pair.Instance);var repeat=Build(source);if(!Equal(snapshot,pair.Native) || !Equal(pair.Native,repeat.Native))throw new InvalidDataException("Original native repeat/input isolation differs.");int refusals=0;
@@ -34,7 +34,8 @@ internal static class GameObjectOriginalNativeSmokeTest
         // Reborn: publish only a fresh diagnostic stream after complete native and metadata qualification; game packaging remains closed.
         GameObjectOriginalStreamSmokeTest.Run(tokens,pair.Instance,manifest,globalManifest);
         // Reborn: separately qualify explicit source edits/new identity and offline trial packages without changing the original-stock oracle or launching the game.
-        GameObjectConscriptTrialSmokeTest.Run(source,pair.Native,pair.Instance,tokens,schemas.Schemas,catalog,manifest,globalManifest,Build,(value,instance)=>{Verify(value,instance);});
+        // Reborn: compile the selected alpha XML through actual Core rather than copying a previously built trial package.
+        GameObjectConscriptTrialSmokeTest.Run(source,pair.Native,pair.Instance,tokens,schemas.Schemas,catalog,manifest,globalManifest,Build,(value,instance)=>{Verify(value,instance);},alphaSource,alphaOutput);
         //-------------------------------------------------------------------------------------------------
         /** Reborn: explicit attribute override, additive ArmorSet/LocomotorSet and last direct singleton selection are qualified only for this captured chain by independent native stock equality. */
         //-------------------------------------------------------------------------------------------------

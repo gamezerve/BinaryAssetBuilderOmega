@@ -35,20 +35,47 @@ Backend intermediates stay under a fresh `alpha/.work/<id>` and are removed
 afterward; latest failure/validation logs remain. Embedded backend receipts
 retain historical temporary paths for provenance, not usable live file links.
 
-Supported input remains the existing fixed-yard, combined-yard, AK47 and
-experimental armor-source profiles. An up-to-date compiler does **not** make
-every developer diagnostic an alpha build capability. General GameObject,
+Studio lists only `Reborn` (user-owned) and `RebornTest` (developer-owned).
+Developer checks neither mutate nor build the user's mod. Old samples moved to
+`tests/fixtures/live-alpha/`; tests stage them one at a time in RebornTest and
+restore its full original data directory. No GUID-named mods are added to the UI.
+
+Supported input includes the existing fixed-yard, combined-yard, AK47 and
+experimental armor-source profiles, plus the exact complete original-ID
+Conscript BuildTime=1 source profile. RebornTest defaults to that Conscript.
+Its dedicated backend recompiles the selected XML through actual Core and the
+existing complete native/metadata/reference/stream controls; it does not copy
+a cached BIG. Canonical source hash admission rejects any unreviewed changes.
+The optional sixth paths setting `UprisingXmlRoot` is required for this route.
+Temporary diagnostic files stay within the owned work generation. ALPHA005
+reports the bounded limitation. General GameObject,
 art, FX/audio/map compilation and new-ID recruitment are not silently enabled.
 
 ## Validation of this integration
 
-Both direct ManifestInspector and direct BinaryAssetBuilder Release/x86 builds
+The initial single-workspace integration's direct ManifestInspector and BinaryAssetBuilder builds
 passed with zero warnings/errors, including automatic synchronization. The
-12-case development SDK check covers all six supplied samples, deterministic
+initial 12-case development SDK check covered all six supplied samples, deterministic
 repeat output, a real XML edit changing the BIG, malformed XML preserving the
 last good package, and refusal while the shared SDK lock is held. Final outputs
 are checked for the exact SKUDef bytes, receipt/package hash agreement and no
 CFG counterpart. This is offline integration evidence, not new gameplay proof.
+
+The later two-slot integration adds a real complete Conscript source-build path.
+The rebuilt compiler passed with zero errors (the first dependency rebuild
+reported 111 existing dependency/analyzer warnings). A fresh RebornTest build
+reproduced the game-observed BIG SHA-256
+`3FCDFFB9909B39E9C3A6B75AC50791A19D3EFBAE5A83D6169C174197C50C8FB2`.
+All 49 native modules, 126 metadata fields, the 88,824-byte prefix, 275 reference
+occurrences and both original/authored stream refusal controls remain checked.
+No game launch was performed for this integration.
+
+The updated two-slot regression passed all 15 cases: seven fixture profiles,
+Conscript BuildTime/Scale refusals with last-good output preservation,
+deterministic armor repeats, a real armor edit, malformed XML, shared-lock
+refusal and rebuilding the restored developer source. The user's Reborn XML
+and existing build receipt hashes remained unchanged; no Reborn build was
+invoked. Only Reborn/RebornTest exist under alpha/mods at completion.
 
 The existing exact-reference CLR4 CodeDOM loader harness passed against the
 stable alpha root: adapter compilation, interface, configuration, three option

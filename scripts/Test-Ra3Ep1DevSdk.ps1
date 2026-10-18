@@ -1,24 +1,48 @@
-# Reborn: verify the one live SDK's sample builds, repeat publication, failure preservation and cooperative tool lock without launching Studio or a game.
+# Reborn: exercise preserved fixtures only in RebornTest; never compile or modify the user's Reborn mod.
 [CmdletBinding()]
 param()
 $ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$runtime=(Get-Process -Id $PID).Path;$driver=Join-Path $PSScriptRoot 'Invoke-Ra3Ep1DevAlphaBuild.ps1'
-$rows=[Collections.Generic.List[object]]::new()
+$fixtures=Join-Path $repo 'tests/fixtures/live-alpha';$data=Join-Path $sdk 'mods/RebornTest/data';$output=Join-Path $sdk 'builtmods/RebornTest';$input=Join-Path $data 'mod.xml';$package=Join-Path $output 'RebornTest.big'
+$rows=[Collections.Generic.List[object]]::new();$userSource=Join-Path $sdk 'mods/Reborn/data/mod.xml';$userHash=(Get-FileHash -LiteralPath $userSource).Hash
+$userReceipt=Join-Path $sdk 'builtmods/Reborn/build.json';$userOutputHash=if(Test-Path -LiteralPath $userReceipt){(Get-FileHash -LiteralPath $userReceipt).Hash}else{$null}
 #-------------------------------------------------------------------------------------------------
-<# Reborn: capture each backend invocation to a bounded latest log while checking its explicit exit status and stable final output contract. #>
+<# Reborn: remove only temporary developer data after preserving the original directory and refusing redirected ancestors or children. #>
 #-------------------------------------------------------------------------------------------------
-function Invoke-DevSdkCase([string]$Name,[bool]$ExpectedSuccess){$log=Join-Path $sdk ('.work/test-'+$Name+'.log');& $runtime -NoProfile -File $driver -ModName $Name *> $log;$ok=$LASTEXITCODE-eq 0;if($ok-ne $ExpectedSuccess){throw ('Unexpected build result: '+$log)};if($ok){$output=Join-Path $sdk ('builtmods/'+$Name);$receipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json;if($receipt.Format-cne 'RebornLiveAlpha1' -or (Get-FileHash -LiteralPath $receipt.BigPath -Algorithm SHA256).Hash-cne $receipt.PackageSha256 -or (Test-Path -LiteralPath (Join-Path $output 'mod_1.0.cfg')) -or (Get-Content -LiteralPath $receipt.SkuDefPath -Raw)-cne ('add-big '+$Name+".big`n")){throw 'Live output contract differs.'}};$rows.Add([pscustomobject]@{Name=$Name;Passed=$true;ExpectedSuccess=$ExpectedSuccess})}
-foreach($name in @('Reborn','ArmorCannon','CombinedArmor','CombinedArmorStrong','ConscriptAK47','ArmorSource')){Invoke-DevSdkCase $name $true}
-$first=(Get-FileHash -LiteralPath (Join-Path $sdk 'builtmods/Reborn/Reborn.big') -Algorithm SHA256).Hash;Invoke-DevSdkCase 'Reborn' $true;if((Get-FileHash -LiteralPath (Join-Path $sdk 'builtmods/Reborn/Reborn.big') -Algorithm SHA256).Hash-cne $first){throw 'Repeat package differs.'}
-$probe='DevProbe'+[guid]::NewGuid().ToString('N').Substring(0,8);$probeRoot=Join-Path $sdk ('mods/'+$probe);$null=New-Item -ItemType Directory -Path (Join-Path $probeRoot 'data');$input=Join-Path $probeRoot 'data/mod.xml'
-try{
-    Copy-Item -LiteralPath (Join-Path $sdk 'mods/Reborn/data/mod.xml') -Destination $input;Invoke-DevSdkCase $probe $true;$package=Join-Path $sdk ('builtmods/'+$probe+'/'+$probe+'.big');$before=(Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash
-    # Reborn: edit only this test's fresh source, never a user sample; a genuinely changed selected value must change the output.
-    $xml=[Xml.XmlDocument]::new();$xml.Load($input);$entry=@($xml.GetElementsByTagName('Armor')|Where-Object {$_.GetAttribute('Damage')-ceq 'GUN'});if($entry.Count-ne 1){throw 'Probe GUN source differs.'};$entry[0].SetAttribute('Percent','250');$xml.Save($input);Invoke-DevSdkCase $probe $true;$changed=(Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash;if($changed-ceq $before){throw 'Authored edit retained the old BIG.'}
-    [IO.File]::WriteAllText($input,'<broken');Invoke-DevSdkCase $probe $false;if((Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash-cne $changed){throw 'Failed build replaced the last good package.'}
-    $lock=[IO.File]::Open((Join-Path $sdk '.sdk.lock'),[IO.FileMode]::Open,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None);try{Invoke-DevSdkCase 'Reborn' $false}finally{$lock.Dispose()}
-    $rows.Add([pscustomobject]@{Name='SourceEditFailurePreservationAndLock';Passed=$true})
-}finally{
-    # Reborn: remove only this invocation's GUID-named source/output fixtures after resolving their exact direct-child parents.
-    foreach($pair in @(@($probeRoot,(Join-Path $sdk 'mods')),@((Join-Path $sdk ('builtmods/'+$probe)),(Join-Path $sdk 'builtmods')))){if((Split-Path -Parent $pair[0])-ine $pair[1]){throw 'Probe cleanup escaped its parent.'};if(Test-Path -LiteralPath $pair[0]){foreach($item in Get-ChildItem -LiteralPath $pair[0] -Force -Recurse){if(($item.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0){throw 'Redirected probe retained.'}};Remove-Item -LiteralPath $pair[0] -Recurse -Force}}
+function Remove-TestData {
+    if([IO.Path]::GetFullPath($data)-ine (Join-Path $sdk 'mods/RebornTest/data')){throw 'Unexpected cleanup target.'}
+    if(Test-Path -LiteralPath $data){foreach($item in @(Get-Item -LiteralPath $data)+@(Get-ChildItem -LiteralPath $data -Recurse -Force)){if(($item.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0){throw 'Redirected data retained.'}};Remove-Item -LiteralPath $data -Recurse -Force}
 }
-$report=[pscustomobject]@{Passed=$true;Cases=$rows;GameExecuted=$false;UserSamplesModified=$false};[IO.File]::WriteAllText((Join-Path $sdk '.work/dev-sdk-test.json'),($report|ConvertTo-Json -Depth 6));$report
+#-------------------------------------------------------------------------------------------------
+<# Reborn: reuse the developer slot instead of adding temporary mods to Studio's list. #>
+#-------------------------------------------------------------------------------------------------
+function Set-TestFixture([string]$Name){Remove-TestData;Copy-Item -LiteralPath (Join-Path $fixtures ($Name+'/data')) -Destination $data -Recurse}
+#-------------------------------------------------------------------------------------------------
+<# Reborn: verify exit status, four final files, exact SKUDef bytes and package/receipt agreement for the developer slot. #>
+#-------------------------------------------------------------------------------------------------
+function Invoke-TestCase([string]$Label,[bool]$ExpectedSuccess){
+    $log=Join-Path $sdk ('.work/test-'+$Label+'.log');& $runtime -NoProfile -File $driver -ModName RebornTest *> $log
+    if(($LASTEXITCODE-eq 0)-ne $ExpectedSuccess){throw ('Unexpected test result: '+$log)}
+    if($ExpectedSuccess){$receipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json;if($receipt.Format-cne 'RebornLiveAlpha1' -or (Get-FileHash -LiteralPath $package).Hash-cne $receipt.PackageSha256 -or @(Get-ChildItem -LiteralPath $output -File).Count-ne 4 -or (Get-Content -LiteralPath $receipt.SkuDefPath -Raw)-cne "add-big RebornTest.big`n" -or @(Get-ChildItem -LiteralPath $output -Filter *.cfg).Count){throw 'Output contract differs.'}}
+    $rows.Add([pscustomobject]@{Name=$Label;Passed=$true;ExpectedSuccess=$ExpectedSuccess})
+}
+$saved=Join-Path $sdk ('.work/RebornTest-original-'+[guid]::NewGuid().ToString('N'))
+foreach($path in @($data,(Join-Path $sdk '.work'))){for($item=Get-Item -LiteralPath $path;$null-ne $item;$item=$item.Parent){if(($item.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0){throw 'Redirected test root refused.'}}}
+$testLock=[IO.File]::Open((Join-Path $sdk '.work/regression.lock'),[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
+[IO.Directory]::Move($data,$saved)
+try {
+    foreach($name in @('Reborn','ArmorCannon','CombinedArmor','CombinedArmorStrong','ConscriptAK47','ArmorSource','ConscriptBuildTime1')){Set-TestFixture $name;Invoke-TestCase $name $true}
+    # Reborn: newly source-compiled Conscript must reproduce the game-observed archive, not just a success label.
+    $conscriptHash=(Get-FileHash -LiteralPath $package).Hash;if($conscriptHash-cne '3FCDFFB9909B39E9C3A6B75AC50791A19D3EFBAE5A83D6169C174197C50C8FB2'){throw 'Conscript golden differs.'}
+    foreach($edit in @(@('BuildTime','2'),@('Scale','2'))){Set-TestFixture ConscriptBuildTime1;$xml=[Xml.XmlDocument]::new();$xml.PreserveWhitespace=$true;$xml.Load($input);$xml.DocumentElement.SetAttribute($edit[0],$edit[1]);$xml.Save($input);Invoke-TestCase ('ConscriptReject'+$edit[0]) $false;if((Get-FileHash -LiteralPath $package).Hash-cne $conscriptHash){throw 'Rejected Conscript replaced output.'}}
+    Set-TestFixture Reborn;Invoke-TestCase ArmorRepeat1 $true;$first=(Get-FileHash -LiteralPath $package).Hash;Invoke-TestCase ArmorRepeat2 $true;if((Get-FileHash -LiteralPath $package).Hash-cne $first){throw 'Repeat differs.'}
+    $xml=[Xml.XmlDocument]::new();$xml.Load($input);$gun=@($xml.GetElementsByTagName('Armor')|Where-Object {$_.GetAttribute('Damage')-ceq 'GUN'});$gun[0].SetAttribute('Percent','250');$xml.Save($input);Invoke-TestCase ArmorEdit $true;$changed=(Get-FileHash -LiteralPath $package).Hash;if($changed-ceq $first){throw 'Edit did not change BIG.'}
+    [IO.File]::WriteAllText($input,'<broken');Invoke-TestCase InvalidXml $false;if((Get-FileHash -LiteralPath $package).Hash-cne $changed){throw 'Failed build replaced output.'}
+    # Reborn: use valid input so rejection isolates the shared lock rather than the preceding malformed XML.
+    Set-TestFixture Reborn;$lock=[IO.File]::Open((Join-Path $sdk '.sdk.lock'),[IO.FileMode]::Open,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None);try{Invoke-TestCase SdkLock $false}finally{$lock.Dispose()}
+} finally {
+    # Reborn: restore every original developer file, including auxiliary experiments; the user's mod and output remain untouched.
+    try{Remove-TestData;[IO.Directory]::Move($saved,$data)}finally{$testLock.Dispose()}
+}
+Invoke-TestCase RestoredDeveloperSource $true
+if((Get-FileHash -LiteralPath $userSource).Hash-cne $userHash -or ($userOutputHash -and (Get-FileHash -LiteralPath $userReceipt).Hash-cne $userOutputHash) -or (-not $userOutputHash -and (Test-Path -LiteralPath $userReceipt))){throw 'User Reborn changed.'}
+$report=[pscustomobject]@{Passed=$true;Cases=$rows;GameExecuted=$false;UserSamplesModified=$false;UserRebornBuilt=$false;DeveloperSourceRestored=$true};[IO.File]::WriteAllText((Join-Path $sdk '.work/dev-sdk-test.json'),($report|ConvertTo-Json -Depth 6));$report

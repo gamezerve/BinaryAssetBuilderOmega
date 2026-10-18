@@ -2,6 +2,15 @@
 
 ## Outcome — October 18, 2026
 
+The complete original-ID BuildTime=1 source is now available in
+`alpha/mods/RebornTest/data/mod.xml`. Select RebornTest in the alpha's existing
+EALAModStudio.exe to recompile it into the stable BIG/SKUDef output directory.
+The bounded `conscript-alpha-build` route consumes the selected XML through
+Core and the same native/metadata/reference/stream qualification; it does not
+export cached trial bytes. Only the exact reviewed source is enabled. General
+GameObjects and new-ID recruitment remain separate gates. The user's Reborn
+mod is excluded from developer regression builds.
+
 Two complete Conscript candidates now pass source -> native -> metadata ->
 linked streams -> BIG/config qualification without installing or launching:
 

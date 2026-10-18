@@ -20,7 +20,7 @@ internal static class Ep1ScriptedDrawNativeSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: retain every source child/script and compare complete typed native graphs, exact auxiliary ownership and semantic stock import identities. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string sourceRoot, string manifest, string globalManifest, bool includeTokens = false, bool includeContainer = false, bool includeRoot = false, bool includeClients = false,bool includeAllModules=false,bool includeRootOwners=false,bool includeEmptyRoots=false,bool includeOriginalRoot=false)
+    internal static void Run(string sourceRoot, string manifest, string globalManifest, bool includeTokens = false, bool includeContainer = false, bool includeRoot = false, bool includeClients = false,bool includeAllModules=false,bool includeRootOwners=false,bool includeEmptyRoots=false,bool includeOriginalRoot=false,string? alphaSource=null,string? alphaOutput=null)
     {
         var saved = Settings.Current;
         try
@@ -130,7 +130,8 @@ internal static class Ep1ScriptedDrawNativeSmokeTest
             Console.WriteLine($"EP1 complete scripted Draw native graphs: PASS (two stock graphs, 10 model/84 animation states, {totalRecords} visited native records/{totalStrings} string allocations/{totalImports} typed import slots, {particleBindings} complete particle token/native bindings, 288 authored particle/3 flag-default controls and existing combined record fixture, 22 detached/3 source-dependency refusals; one explicitly bounded Script CRLF/LF equivalence; generated metadata checked={includeTokens}; no complete GameObject publication, XInclude execution or LUA execution claim).");
             // Reborn: compile both full scripted leaves and both source tracers together after the independent component gates.
             // Reborn: only the original-root route consumes the real global stream mapping in its subsequent scoped serialization gate.
-            if (includeContainer || includeRoot) Ep1DrawsCompositionSmokeTest.Run(schemas, sourceRoot, manifest, catalog, scriptedSources.ToArray(),includeRoot,includeClients,includeAllModules,includeRootOwners,includeEmptyRoots,includeOriginalRoot,includeOriginalRoot?globalManifest:null);
+            // Reborn: carry an explicit bounded Studio source request through the same complete original-Conscript qualification path.
+            if (includeContainer || includeRoot) Ep1DrawsCompositionSmokeTest.Run(schemas, sourceRoot, manifest, catalog, scriptedSources.ToArray(),includeRoot,includeClients,includeAllModules,includeRootOwners,includeEmptyRoots,includeOriginalRoot,includeOriginalRoot?globalManifest:null,alphaSource,alphaOutput);
         }
         finally { Settings.Current = saved; }
     }

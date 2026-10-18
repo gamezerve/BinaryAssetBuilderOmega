@@ -80,6 +80,10 @@ internal static class Program
             if(args.Length==4 && args[0]=="gameobject-original-native-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeOriginalRoot:true);return 0;}
 
+            // Reborn: expose only the complete original-ID BuildTime=1 Conscript source build, retaining native/metadata/reference qualification before publication.
+            if(args.Length==6 && args[0]=="conscript-alpha-build")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeOriginalRoot:true,alphaSource:args[4],alphaOutput:args[5]);return 0;}
+
             if(args.Length==4 && args[0]=="gameobject-root-fields-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeRootOwners:true,includeEmptyRoots:true);return 0;}
 

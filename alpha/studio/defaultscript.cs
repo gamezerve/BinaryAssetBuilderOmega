@@ -50,7 +50,8 @@ namespace EALABuild
             string input = Path.Combine(Path.Combine(Path.Combine(StaticPaths.CurrentDirectory, "mods"), name), "data\\mod.xml");
             CheckPath(input);
             BuildHelper.CurrentBuildSteps = 1;
-            BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha; fixed yard/AK47 samples or experimental armor source declarations. Unsupported/mixed assets fail; new source packages need runtime testing.");
+            // Reborn: separate the user's Reborn workspace from developer tests, including the strictly bounded complete Conscript build.
+            BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha; yard/AK47/armor-source profiles or complete original-ID Conscript BuildTime=1. Unsupported edits fail; new builds need runtime testing.");
             RunExecutableArguments request = new RunExecutableArguments(runtime);
             // Reborn: bind every Studio build to the configured read-only stock baseline.
             request.Arguments = "-NoProfile -File \"" + driver + "\" -ModXml \"" + input + "\" -StaticManifest \"" + staticManifest
@@ -87,7 +88,7 @@ namespace EALABuild
             List<GUIElementData> options = new List<GUIElementData>();
             options.Add(new GUIElementData("alpha", "Uprising Alpha: Validate XML / Build Data / Make BIG", GUIElementData.LabelType, ScriptIndex.ModScript));
             options.Add(new GUIElementData("scope", "Fixed yard samples or 1..32 source armors with Includes/Defines/inheritFrom (experimental)", GUIElementData.LabelType, ScriptIndex.ModScript));
-            options.Add(new GUIElementData("weapon", "Or 1 Conscript AK47: Damage 0..10000 only; no mixed armor/weapon stream", GUIElementData.LabelType, ScriptIndex.ModScript));
+            options.Add(new GUIElementData("weapon", "Or Conscript AK47 Damage; RebornTest: complete Conscript BuildTime=1 only", GUIElementData.LabelType, ScriptIndex.ModScript));
             return options;
         }
 
@@ -110,7 +111,7 @@ namespace EALABuild
         }
 
         //-------------------------------------------------------------------------------------------------
-        /** Reborn: require four legacy path keys and optionally GlobalManifest, without implicit dependency defaults. */
+        /** Reborn: require four legacy keys; optionally accept GlobalManifest and the official Conscript source root without implicit dependency defaults. */
         //-------------------------------------------------------------------------------------------------
         private static Dictionary<string, string> ReadPaths(string path)
         {
@@ -122,7 +123,8 @@ namespace EALABuild
                 int separator = line.IndexOf('=');
                 if (separator <= 0) throw new InvalidDataException("Reborn: invalid alpha path setting.");
                 string key = line.Substring(0, separator);
-                if ((key != "PowerShell7" && key != "Driver" && key != "StaticManifest" && key != "CompilerDirectory" && key != "GlobalManifest") || settings.ContainsKey(key))
+                // Reborn: official source root is used only by the bounded Conscript build driver; legacy configurations remain valid.
+                if ((key != "PowerShell7" && key != "Driver" && key != "StaticManifest" && key != "CompilerDirectory" && key != "GlobalManifest" && key != "UprisingXmlRoot") || settings.ContainsKey(key))
                     throw new InvalidDataException("Reborn: unknown or duplicate alpha path setting.");
                 settings.Add(key, line.Substring(separator + 1));
             }

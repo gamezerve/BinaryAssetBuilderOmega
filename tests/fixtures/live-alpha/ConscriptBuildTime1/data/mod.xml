@@ -1,0 +1,781 @@
+<!-- Reborn: immutable regression input for the bounded complete Conscript alpha build. -->
+<GameObject RadarPriority="UNIT" TransportSlotCount="1" ProductionQueueType="INFANTRY" HealthBoxHeightOffset="30" UnitCategory="INFANTRY" CommandPoints="1" EvaEventSecondDamageFarFromFirstScanRange="600" VoiceSelectUnderFireTimeout="10s" VoiceSelectUnderFireDamageTime="3s" SelectPortrait="Portrait_SovietAntiInfantryInfantry_big" ButtonImage="Button_SovietAntiInfantryInfantry_small" Side="Soviet" SubGroupPriority="505" EditorSorting="UNIT" BuildTime="1" CommandSet="SovietAntiInfantryInfantryCommandSet" KindOf="SELECTABLE CAN_ATTACK CAN_CAST_REFLECTIONS INFANTRY SCORE" ThreatLevel="10" WeaponCategory="GUN" VoicePriority="104" EditorName="SovietAntiInfantryInfantry" Description="Desc:SovietAntiInfantryInfantry" TypeDescription="Type:SovietAntiInfantryInfantry" UnitTypeIcon="RiflemenIcon" UnitIntro="Soviet_Conscript_UnitIntro" id="SovietAntiInfantryInfantry" xmlns="uri:ea.com:eala:asset"><DisplayName xmlns:xai="uri:ea.com:eala:asset:instance">Name:SovietAntiInfantryInfantry</DisplayName><ObjectResourceInfo>
+			<BuildCost Account="0" Amount="100" />
+		</ObjectResourceInfo><ArmorSet Armor="CryoBeamFrozenArmor" DamageFX="VehicleDamageFX" Conditions="SECONDARY_DAMAGE" /><ArmorSet Armor="ShrinkRayEffectArmor" DamageFX="VehicleDamageFX" Conditions="SHRINK_EFFECT" /><ArmorSet Armor="SovietAntiInfantryInfantryArmor" DamageFX="InfantryDamageFX" /><LocomotorSet Locomotor="TestReactiveLocomotorHUMAN" Condition="NORMAL" Speed="50" /><SkirmishAIInformation UnitBuilderStandardCombatUnit="true" /><Draws><ScriptedModelDraw id="ModuleTag_Draw" OkToChangeModelColor="true" InitialRecoilSpeed="0.1" MaxRecoilDistance="0.1" RecoilDamping="2.0" RecoilSettleSpeed="3.0" ExtraPublicBone="FXMUZZLE RIGHTHAND">
+				<ModelConditionState ParseCondStateType="PARSE_DEFAULT">
+					
+					
+					
+		<!--		<WeaponMuzzleFlash
+						WeaponSlotType="PRIMARY_WEAPON"
+						BoneName="FXMUZZLE" />	-->
+					
+					
+					
+				<Model Name="W3DContainer:SUANTIINFANTRYINFANTRY_SKN" /><WeaponFireFXBone WeaponSlotID="1" WeaponSlotType="PRIMARY_WEAPON" BoneName="FXMUZZLE" /><WeaponFireFXBone WeaponSlotID="1" WeaponSlotType="SECONDARY_WEAPON" BoneName="RIGHTHAND" /><WeaponRecoilBone WeaponSlotID="1" WeaponSlotType="PRIMARY_WEAPON" BoneName="FXMUZZLE" /><WeaponLaunchBone WeaponSlotID="1" WeaponSlotType="PRIMARY_WEAPON" BoneName="FXMUZZLE" /><WeaponLaunchBone WeaponSlotID="1" WeaponSlotType="SECONDARY_WEAPON" BoneName="RIGHTHAND" /></ModelConditionState>
+				<ModelConditionState ParseCondStateType="PARSE_NORMAL" ConditionsYes="INSIDE_GARRISON">
+					<Model Name="" />
+				</ModelConditionState>
+				
+				<ModelConditionState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING DEATH_1">
+					<Model Name="W3DContainer:NPSKELETON_SKN" />
+				</ModelConditionState>
+				
+				<ModelConditionState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING DEATH_5">
+					<Model Name="W3DContainer:NPRADIATION" />
+          <ParticleSysBone BoneName="None" FXParticleSystemTemplate="RadiationPuddle" FollowBone="true" />
+          <ParticleSysBone BoneName="None" FXParticleSystemTemplate="RadiationSplash" FollowBone="true" />
+          <ParticleSysBone BoneName="None" FXParticleSystemTemplate="RadiationLightSmall" FollowBone="true" />          
+				</ModelConditionState>
+				
+				<ModelConditionState ParseCondStateType="PARSE_NORMAL" ConditionsYes="USER_5">
+					<Model Name="W3DContainer:SUANTIINFANTRYINFANTRY_SKN" />
+					<ParticleSysBone BoneName="Molotov" FXParticleSystemTemplate="Soviet_Mol_PropFX" FollowBone="true" />
+				</ModelConditionState>
+
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="INSIDE_GARRISON">
+				</AnimationState>
+
+<!-- Start Molotov Mode -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="FRONTCRUSHED USER_5">
+					<Animation AnimationName="SUAntiInfantryInfantry_MCDTA" AnimationMode="ONCE" />
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="BACKCRUSHED USER_5">
+					<Animation AnimationName="SUAntiInfantryInfantry_MCDTB" AnimationMode="ONCE" />
+				</AnimationState>
+				<!-- Molotov Mauling -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="BEING_MAULED USER_5" Flags="MAINTAIN_FRAME_ACROSS_STATES">
+					<Animation AnimationName="SUAntiInfantryInfantry_MBITD" AnimationMode="ONCE" />
+				</AnimationState>
+				<!-- Regular Mauling -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="BEING_MAULED" Flags="MAINTAIN_FRAME_ACROSS_STATES2">
+					<Animation AnimationName="SUAntiInfantryInfantry_BITD" AnimationMode="ONCE" />
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="SUPPRESSED DYING">
+					<Animation AnimationName="SUAntiInfantryInfantry_SDIA" AnimationMode="ONCE" />
+				</AnimationState>
+				
+				<!-- meta impact anims -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="STUNNED_FLAILING USER_5" StateName="STATE_stunned_flailing">
+					<Animation AnimationName="SUAntiInfantryInfantry_MFLYA" AnimationMode="LOOP" />
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING SPLATTED USER_5">
+					<Animation AnimationName="SUAntiInfantryInfantry_MLNDA" AnimationMode="ONCE" AnimationBlendTime="15" />
+				</AnimationState>
+				<!-- Molotov bitten death -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING DEATH_9 USER_5" Flags="MAINTAIN_FRAME_ACROSS_STATES">
+					<Animation AnimationName="SUAntiInfantryInfantry_MBITD" AnimationMode="ONCE" />
+				</AnimationState>
+				
+				<!-- other deaths -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING STUNNED_STANDING_UP USER_5">
+					<Animation AnimationName="SUAntiInfantryInfantry_MLNDA" AnimationMode="ONCE" />
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING STUNNED USER_5">
+					<Animation AnimationName="SUAntiInfantryInfantry_MLNDA" AnimationMode="ONCE" />
+				</AnimationState>
+				
+				<!-- radiation death -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING DEATH_5 USER_5">
+					<Animation AnimationName="NPRadiation_DIEA" AnimationMode="ONCE" />
+        </AnimationState>
+				
+				<!-- sword death -->
+
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING DEATH_4 USER_5">
+					<Animation AnimationName="SUAntiInfantryInfantry_MDTKA" AnimationMode="ONCE" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MDTKB" AnimationMode="ONCE" />
+				</AnimationState>		
+						
+				<!-- burning death. -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING DEATH_3 USER_5">
+					<Animation AnimationName="SUAntiInfantryInfantry_MDTFA" AnimationMode="ONCE" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MDTFB" AnimationMode="ONCE" />
+					<ParticleSysBone BoneName="HIPS" FXParticleSystemTemplate="InfantryFireDeath" FollowBone="true" />
+				</AnimationState>
+				
+				<!-- prism/laser death -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING DEATH_2 USER_5">
+					<Animation AnimationName="SUAntiInfantryInfantry_MDTPA" AnimationMode="ONCE" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MDTPB" AnimationMode="ONCE" />
+				</AnimationState>
+
+				<!-- tesla death -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING DEATH_1 USER_5">
+					<Animation AnimationName="NPSkeleton_DIEA" AnimationMode="ONCE" />
+          <ParticleSysBone BoneName="HIPS" FXParticleSystemTemplate="Soviet_TeslaDeath_Spark" FollowBone="true" />
+				</AnimationState>
+
+				<!-- dying when running -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING_WASMOVING USER_5">
+					<Animation AnimationName="SUAntiInfantryInfantry_MRNDA" AnimationMode="ONCE" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MRNDA" AnimationMode="ONCE" />
+				</AnimationState>
+				
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING USER_5">
+					<Animation AnimationName="SUAntiInfantryInfantry_MDTBA" AnimationMode="ONCE" AnimationBlendTime="15" />
+					<Animation AnimationName="SUAntiInfantryInfantry_MDTBB" AnimationMode="ONCE" AnimationBlendTime="15" />
+				</AnimationState>
+
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="STUNNED_STANDING_UP USER_5">
+					<Animation AnimationName="SUAntiInfantryInfantry_MGTPA" AnimationMode="ONCE" />
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="STUNNED USER_5">
+					<Animation AnimationName="SUAntiInfantryInfantry_MLNDA" AnimationMode="ONCE" />
+				</AnimationState>
+				
+				<!-- parachuting anims -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="LAUNCHED USER_5" StateName="STATE_ShieldParachuteLaunch">
+					<Animation AnimationName="SUAntiInfantryInfantry_MMCNA" AnimationMode="LOOP" />
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="PARACHUTING USER_5" StateName="STATE_ShieldParachuting">
+					<Animation AnimationName="SUAntiInfantryInfantry_MMCNC" AnimationMode="LOOP" />
+					<Script>
+						Prev = CurDrawablePrevAnimationState()
+						if Prev == "STATE_ShieldParachuteLaunch" then
+						CurDrawableSetTransitionAnimState("TRANS_ShieldtoParachuting")
+						end
+					</Script>
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_TRANSITION" StateName="TRANS_ShieldtoParachuting">
+					<Animation AnimationName="SUAntiInfantryInfantry_MMCNB" AnimationMode="ONCE" />
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_TRANSITION" StateName="TRANS_ShieldfromParachuting">
+					<Animation AnimationName="SUAntiInfantryInfantry_MMCND" AnimationMode="ONCE" />
+				</AnimationState>
+				
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="AFFECTED_BY_EMP USER_5">
+					<Animation AnimationName="SUAntiInfantryInfantry_MCWRY" AnimationMode="LOOP" />
+					<Animation AnimationName="SUAntiInfantryInfantry_MCWRZ" AnimationMode="LOOP" />
+					<ParticleSysBone BoneName="NONE" FXParticleSystemTemplate="Allied_DogStun01" FollowBone="true" />
+					<ParticleSysBone BoneName="NONE" FXParticleSystemTemplate="Allied_DogStunGlows01" FollowBone="true" />
+				</AnimationState>
+
+				<!-- swapping to gun -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="PACKING USER_5">
+					<Animation AnimationName="SUAntiInfantryInfantry_SWPA" AnimationMode="ONCE" AnimationBlendTime="1" />
+				</AnimationState>
+				
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="MOVING FIRING_B USER_5" Flags="RANDOMSTART">
+					<Animation AnimationName="SUAntiInfantryInfantry_MATRA" AnimationMode="LOOP" Distance="75" />
+					<Animation AnimationName="SUAntiInfantryInfantry_MATRB" AnimationMode="LOOP" Distance="75" />
+				</AnimationState>
+
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="MOVING USER_5" Flags="RANDOMSTART">
+					<Animation AnimationName="SUAntiInfantryInfantry_MRUNA" AnimationMode="LOOP" AnimationBlendTime="10" Distance="40" />
+					<Animation AnimationName="SUAntiInfantryInfantry_MRUNB" AnimationMode="LOOP" AnimationBlendTime="10" Distance="40" />
+					<Animation AnimationName="SUAntiInfantryInfantry_MRUNC" AnimationMode="LOOP" AnimationBlendTime="10" Distance="40" />
+				</AnimationState>
+
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="RELOADING_B USER_5">
+					<Animation AnimationName="SUAntiInfantryInfantry_MATKA" AnimationMode="MANUAL" />
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="FIRING_OR_PREATTACK_B USER_5" FrameForPristineBonePositions="4">
+					<Animation AnimationName="SUAntiInfantryInfantry_MATKA" AnimationMode="ONCE" AnimationSpeedFactorMin="4.0" AnimationSpeedFactorMax="4.0" />
+					<Animation AnimationName="SUAntiInfantryInfantry_MATKB" AnimationMode="ONCE" AnimationSpeedFactorMin="4.0" AnimationSpeedFactorMax="4.0" />
+				</AnimationState>
+
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="EMOTION_CELEBRATING USER_5" Flags="RESTART_ANIM_WHEN_COMPLETE">
+					<Animation AnimationName="SUAntiInfantryInfantry_MCHRA" AnimationMode="ONCE" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" />
+				</AnimationState>
+
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="SELECTED USER_5" StateName="STATE_ShieldSelectedPose" Flags="RESTART_ANIM_WHEN_COMPLETE">
+					<Animation AnimationName="SUAntiInfantryInfantry_MAIDA" AnimationMode="ONCE" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="100" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MAIFA" AnimationMode="ONCE" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="10" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MAIFB" AnimationMode="ONCE" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="10" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MAIFC" AnimationMode="ONCE" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="10" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MAIFD" AnimationMode="ONCE" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="10" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MAIDB" AnimationMode="ONCE" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="100" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MAIFW" AnimationMode="ONCE" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="10" />
+					  <Animation AnimationName="SUAntiInfantryInfantry_MAIFX" AnimationMode="ONCE" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="10" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MAIFY" AnimationMode="ONCE" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="10" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MAIFZ" AnimationMode="ONCE" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="10" />
+						
+					<Script>
+						Prev = CurDrawablePrevAnimationState()
+						if Prev == "STATE_ShieldBored" then
+						CurDrawableSetTransitionAnimState("TRANS_ShieldIdleToSelected")
+						end
+						if Prev == "STATE_Parachuting" then
+						CurDrawableSetTransitionAnimState("TRANS_ShieldfromParachuting")
+						end
+					</Script>
+				</AnimationState>
+
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="USER_5" StateName="STATE_ShieldBored">
+					<Animation AnimationName="SUAntiInfantryInfantry_MBIDA" AnimationMode="LOOP" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="10" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MBIDB" AnimationMode="LOOP" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="10" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MBIDC" AnimationMode="LOOP" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="10" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MBIFA" AnimationMode="LOOP" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="1" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MBIFB" AnimationMode="LOOP" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="1" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MBIFC" AnimationMode="LOOP" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="1" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MBIFD" AnimationMode="LOOP" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="1" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MBIFW" AnimationMode="LOOP" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="1" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MBIFX" AnimationMode="LOOP" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="1" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MBIFY" AnimationMode="LOOP" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="1" />
+						<Animation AnimationName="SUAntiInfantryInfantry_MBIFZ" AnimationMode="LOOP" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" AnimationPriority="1" />
+					<Script>
+						Prev = CurDrawablePrevAnimationState()
+						if Prev == "STATE_ShieldSuppressed" then
+						CurDrawableSetTransitionAnimState("TRANS_ShieldfromSuppressed")
+						elseif Prev == "STATE_ShieldParachuting" then
+						CurDrawableSetTransitionAnimState("TRANS_ShieldfromParachuting")
+						elseif Prev == "STATE_ShieldSelectedPose" then
+						CurDrawableSetTransitionAnimState("TRANS_ShieldSelectedToIdle")
+						end
+					</Script>
+				</AnimationState>
+
+				<AnimationState ParseCondStateType="PARSE_TRANSITION" StateName="TRANS_ShieldIdleToSelected">
+					<Animation AnimationName="SUAntiInfantryInfantry_MBATA" AnimationMode="ONCE" AnimationBlendTime="15" AnimationSpeedFactorMin="0.9" AnimationSpeedFactorMax="1.1" />
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_TRANSITION" StateName="TRANS_ShieldSelectedToIdle" Flags="START_FRAME_LAST">
+					<Animation AnimationName="SUAntiInfantryInfantry_MBATA" AnimationMode="ONCE_BACKWARDS" AnimationBlendTime="15" AnimationSpeedFactorMin="0.9" AnimationSpeedFactorMax="1.1" />
+				</AnimationState>
+				
+				<!-- End Molotov Cocktail Mode -->		
+				
+
+				<AnimationState ParseCondStateType="PARSE_DEFAULT" Flags="RESTART_ANIM_WHEN_COMPLETE" AllowRepeatInRandomPick="true" StateName="STATE_bored">
+					<Animation AnimationName="SUAntiInfantryInfantry_BIDA" AnimationMode="ONCE" AnimationBlendTime="15" AnimationPriority="100" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" />
+					
+					<Animation AnimationName="SUAntiInfantryInfantry_BIDB" AnimationMode="ONCE" AnimationPriority="100" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" />
+					<Animation AnimationName="SUAntiInfantryInfantry_BIDC" AnimationMode="ONCE" AnimationPriority="100" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" />
+					<Animation AnimationName="SUAntiInfantryInfantry_BIFA" AnimationMode="ONCE" AnimationBlendTime="15" AnimationPriority="10" />
+					<Animation AnimationName="SUAntiInfantryInfantry_BIFB" AnimationMode="ONCE" AnimationBlendTime="15" AnimationPriority="10" />
+					<Animation AnimationName="SUAntiInfantryInfantry_BIFC" AnimationMode="ONCE" AnimationBlendTime="15" AnimationPriority="10" />
+					<Animation AnimationName="SUAntiInfantryInfantry_BIFD" AnimationMode="ONCE" AnimationBlendTime="15" AnimationPriority="10" />
+					<Animation AnimationName="SUAntiInfantryInfantry_BIFW" AnimationMode="ONCE" AnimationBlendTime="15" AnimationPriority="10" />
+					<Animation AnimationName="SUAntiInfantryInfantry_BIFX" AnimationMode="ONCE" AnimationBlendTime="15" AnimationPriority="10" />
+					<Animation AnimationName="SUAntiInfantryInfantry_BIFY" AnimationMode="ONCE" AnimationBlendTime="15" AnimationPriority="10" />
+					<Animation AnimationName="SUAntiInfantryInfantry_BIFZ" AnimationMode="ONCE" AnimationBlendTime="15" AnimationPriority="10" />
+					
+					<Script>
+						Prev = CurDrawablePrevAnimationState()
+						if Prev == "STATE_Saluting" then
+						CurDrawableSetTransitionAnimState("TRANS_FromSaluting")
+						elseif Prev == "STATE_Suppressed" then
+						CurDrawableSetTransitionAnimState("TRANS_fromSuppressed")
+						elseif Prev == "STATE_Parachuting" then
+						CurDrawableSetTransitionAnimState("TRANS_fromParachuting")
+						elseif Prev == "STATE_SelectedPose" then
+						CurDrawableSetTransitionAnimState("TRANS_SelectedToIdle")
+						elseif Prev == "STATE_stunned_flailing" then
+						CurDrawableSetTransitionAnimState("STATE_stunned_landing")
+						end
+					</Script>
+				</AnimationState>
+
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="STUNNED_FLAILING" StateName="STATE_stunned_flailing">
+					<Animation AnimationName="SUAntiInfantryInfantry_FLYA" AnimationMode="LOOP" />
+				</AnimationState>
+						
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING SPLATTED">
+					<Animation AnimationName="SUAntiInfantryInfantry_LNDA" AnimationMode="ONCE" AnimationBlendTime="15" />
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="FRONTCRUSHED">
+					<Animation AnimationName="SUAntiInfantryInfantry_CDTA" AnimationMode="ONCE" />
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="BACKCRUSHED">
+					<Animation AnimationName="SUAntiInfantryInfantry_CDTB" AnimationMode="ONCE" />
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING STUNNED_STANDING_UP">
+					<Animation AnimationName="SUAntiInfantryInfantry_LNDA" AnimationMode="ONCE" />
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING STUNNED">
+					<Animation AnimationName="SUAntiInfantryInfantry_LNDA" AnimationMode="ONCE" />
+				</AnimationState>
+				<!-- all other deaths -->
+				
+				<!-- Bitten death -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING DEATH_9 " Flags="MAINTAIN_FRAME_ACROSS_STATES2">
+					<Animation AnimationName="SUAntiInfantryInfantry_BITD" AnimationMode="ONCE" />
+				</AnimationState>
+				
+				<!-- radiation death -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING DEATH_5">
+					<Animation AnimationName="NPRadiation_DIEA" AnimationMode="ONCE" />
+				</AnimationState>
+				
+				<!-- sword death -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING DEATH_4">
+					<Animation AnimationName="SUAntiInfantryInfantry_DTKA" AnimationMode="ONCE" />
+						<Animation AnimationName="SUAntiInfantryInfantry_DTKB" AnimationMode="ONCE" />
+				</AnimationState>
+				
+				<!-- burning death. -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING DEATH_3">
+					<Animation AnimationName="SUAntiInfantryInfantry_DTFA" AnimationMode="ONCE" />
+					<Animation AnimationName="SUAntiInfantryInfantry_DTFB" AnimationMode="ONCE" />
+					<ParticleSysBone BoneName="HIPS" FXParticleSystemTemplate="InfantryFireDeath" FollowBone="true" />
+				</AnimationState>
+				
+				<!-- prism/laser death -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING DEATH_2">
+					<Animation AnimationName="SUAntiInfantryInfantry_DTPA" AnimationMode="ONCE" />
+						<Animation AnimationName="SUAntiInfantryInfantry_DTPB" AnimationMode="ONCE" />
+				</AnimationState>
+
+				<!-- tesla death -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING DEATH_1">
+					<Animation AnimationName="NPSkeleton_DIEA" AnimationMode="ONCE" />
+          <ParticleSysBone BoneName="HIPS" FXParticleSystemTemplate="Soviet_TeslaDeath_Spark" FollowBone="true" />
+				</AnimationState>
+
+				<!-- dying when running -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING_WASMOVING">
+					<Animation AnimationName="SUAntiInfantryInfantry_RNDA" AnimationMode="ONCE" />
+						<Animation AnimationName="SUAntiInfantryInfantry_RNDB" AnimationMode="ONCE" />
+				</AnimationState>
+				
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="DYING">
+					<Animation AnimationName="SUAntiInfantryInfantry_DTBA" AnimationMode="ONCE" />
+
+					<Animation AnimationName="SUAntiInfantryInfantry_DTBB" AnimationMode="ONCE" />
+				</AnimationState>
+				
+				<!-- saluting -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="USER_2" StateName="STATE_Saluting">
+					<Animation AnimationName="SUAntiInfantryInfantry_SLTB" AnimationMode="ONCE" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" />
+					<Script>
+						Prev = CurDrawablePrevAnimationState()
+						if Prev ~= "STATE_Saluting" and Prev ~= "TRANS_ToSaluting" then
+						CurDrawableSetTransitionAnimState("TRANS_ToSaluting")
+						end
+					</Script>
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_TRANSITION" StateName="TRANS_ToSaluting">
+					<Animation AnimationName="SUAntiInfantryInfantry_SLTA" AnimationMode="ONCE" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" />
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_TRANSITION" StateName="TRANS_FromSaluting">
+					<Animation AnimationName="SUAntiInfantryInfantry_SLTC" AnimationMode="ONCE" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" />
+				</AnimationState>
+				<!-- end saluting -->
+
+
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="STUNNED_STANDING_UP">
+					<Animation AnimationName="SUAntiInfantryInfantry_GTPA" AnimationMode="ONCE" />
+				</AnimationState>
+				
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="STUNNED">
+					<Animation AnimationName="SUAntiInfantryInfantry_LNDA" AnimationMode="ONCE" />
+				</AnimationState>
+				
+				<!-- parachuting anims -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="LAUNCHED" StateName="STATE_ParachuteLaunch">
+					<Animation AnimationName="SUAntiInfantryInfantry_MCNA" AnimationMode="LOOP" />
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="PARACHUTING" StateName="STATE_Parachuting">
+					<Animation AnimationName="SUAntiInfantryInfantry_MCNC" AnimationMode="LOOP" />
+					<Script>
+						Prev = CurDrawablePrevAnimationState()
+						if Prev == "STATE_ParachuteLaunch" then
+						CurDrawableSetTransitionAnimState("TRANS_toParachuting")
+						end
+					</Script>
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_TRANSITION" StateName="TRANS_toParachuting">
+					<Animation AnimationName="SUAntiInfantryInfantry_MCNB" AnimationMode="ONCE" />
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_TRANSITION" StateName="TRANS_fromParachuting">
+					<Animation AnimationName="SUAntiInfantryInfantry_MCND" AnimationMode="ONCE" />
+				</AnimationState>
+						
+					
+				
+				<AnimationState ParseCondStateType="PARSE_NORMAL" StateName="STATE_stunned_landing">
+					<Animation AnimationName="SUAntiInfantryInfantry_DTSA" AnimationMode="ONCE" />
+				</AnimationState>
+					
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="AFFECTED_BY_EMP">
+					<Animation AnimationName="SUAntiInfantryInfantry_CWRZ" AnimationMode="LOOP" />
+					<Animation AnimationName="SUAntiInfantryInfantry_CWRY" AnimationMode="LOOP" />
+					<ParticleSysBone BoneName="NONE" FXParticleSystemTemplate="Allied_DogStun01" FollowBone="true" />
+					<ParticleSysBone BoneName="NONE" FXParticleSystemTemplate="Allied_DogStunGlows01" FollowBone="true" />
+				</AnimationState>
+
+				<!-- swapping to molotov -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="PACKING">
+					<Animation AnimationName="SUAntiInfantryInfantry_SWPB" AnimationMode="ONCE" AnimationBlendTime="1" />
+					<Script>
+						CurDrawablePlaySound("SOV_Conscript_ArmGunMS")
+					</Script>
+				</AnimationState>		
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="SUPPRESSED MOVING" StateName="STATE_Suppressed" Flags="RANDOMSTART">
+					<Animation AnimationName="SUAntiInfantryInfantry_SMVA" AnimationMode="LOOP" />
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="SUPPRESSED USING_WEAPON_A" StateName="STATE_Suppressed">
+					<Animation AnimationName="SUAntiInfantryInfantry_SATA" AnimationMode="LOOP" />
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="SUPPRESSED" Flags="RESTART_ANIM_WHEN_COMPLETE" StateName="STATE_Suppressed">
+					<Animation AnimationName="SUAntiInfantryInfantry_SIDA" AnimationMode="ONCE" />
+					
+					<Script>
+						Prev = CurDrawablePrevAnimationState()
+						if Prev ~= "STATE_Suppressed" and Prev ~= "TRANS_toSuppressed" then
+							CurDrawableSetTransitionAnimState("TRANS_toSuppressed")
+						end
+					</Script>
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_TRANSITION" StateName="TRANS_toSuppressed">
+					<Animation AnimationName="SUAntiInfantryInfantry_SDVA" AnimationMode="ONCE" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" />
+					
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_TRANSITION" StateName="TRANS_fromSuppressed" Flags="RESTART_ANIM_WHEN_COMPLETE">
+					<Animation AnimationName="SUAntiInfantryInfantry_SGTA" AnimationMode="ONCE" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" />
+					
+				</AnimationState>
+				
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="MOVING OVER_WATER" StateName="STATE_OverWater">
+					
+					          
+					
+				<Animation AnimationName="SUAntiInfantryInfantry_SWMB" AnimationMode="LOOP" /><Script>
+						Prev = CurDrawablePrevAnimationState()
+						if Prev ~= "STATE_OverWater" and Prev ~= "TRANS_ToWater" then
+						CurDrawableSetTransitionAnimState("TRANS_ToWater")
+						end
+					</Script><ParticleSysBone BoneName="None" FXParticleSystemTemplate="InfantryWaterWake" FollowBone="false" /></AnimationState>
+<!--
+				<AnimationState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="MOVING USING_WEAPON_A">
+					<Animation
+						AnimationName="SUAntiInfantryInfantry_ATRA"
+						AnimationMode="LOOP" />
+				</AnimationState>
+-->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="MOVING ATTACKING">
+					<Animation AnimationName="SUAntiInfantryInfantry_ATRA" AnimationMode="LOOP" Distance="75" />
+					<Animation AnimationName="SUAntiInfantryInfantry_ATRB" AnimationMode="LOOP" Distance="75" />
+				</AnimationState>
+
+				<!-- idle in water -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="OVER_WATER" Flags="RESTART_ANIM_WHEN_COMPLETE" StateName="STATE_OverWater">
+					<Animation AnimationName="SUAntiInfantryInfantry_WADA" AnimationMode="ONCE" AnimationBlendTime="15" />
+					 <ParticleSysBone BoneName="None" FXParticleSystemTemplate="SmallShipWakeIdle" FollowBone="false" />          
+				</AnimationState>
+
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="MOVING" Flags="RANDOMSTART">
+					<Animation AnimationName="SUAntiInfantryInfantry_RUNA" AnimationMode="LOOP" AnimationBlendTime="15" Distance="40" />
+					<Animation AnimationName="SUAntiInfantryInfantry_RUNB" AnimationMode="LOOP" AnimationBlendTime="15" Distance="80" />
+					<Animation AnimationName="SUAntiInfantryInfantry_RUNC" AnimationMode="LOOP" AnimationBlendTime="15" Distance="40" />
+					<Script>
+						Prev = CurDrawablePrevAnimationState()
+						if Prev == "STATE_OverWater" or Prev == "TRANS_ToWater" then
+						CurDrawableSetTransitionAnimState("TRANS_FromWater")
+						end
+					</Script>					
+				</AnimationState>
+
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="FIRING_OR_PREATTACK_A" FrameForPristineBonePositions="4">
+					<Animation AnimationName="SUAntiInfantryInfantry_ATKA" AnimationMode="ONCE" />
+					<!-- 
+					<Animation
+						AnimationName="SUAntiInfantryInfantry_ATKB"
+						AnimationMode="ONCE" />
+					<Animation
+						AnimationName="SUAntiInfantryInfantry_ATKC"
+						AnimationMode="ONCE" />
+					<Animation
+						AnimationName="SUAntiInfantryInfantry_ATKD"
+						AnimationMode="ONCE" />
+-->
+				</AnimationState>
+
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="ATTACKING" StateName="STATE_SelectedPose">
+                    <Animation AnimationName="SUAntiInfantryInfantry_ATKA" AnimationMode="MANUAL" />
+                </AnimationState>
+                <AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="ENGAGED">
+					<Animation AnimationName="SUAntiInfantryInfantry_AIDA" AnimationMode="LOOP" />
+				</AnimationState>
+			
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="EMOTION_CELEBRATING" Flags="RESTART_ANIM_WHEN_COMPLETE">
+					<Animation AnimationName="SUAntiInfantryInfantry_CHRA" AnimationMode="ONCE" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" />
+					<Animation AnimationName="SUAntiInfantryInfantry_CHRB" AnimationMode="ONCE" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" />
+					<Animation AnimationName="SUAntiInfantryInfantry_CHRC" AnimationMode="ONCE" AnimationBlendTime="15" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" />
+				</AnimationState>
+		
+				<!-- SELECTED -->
+				<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="SELECTED" StateName="STATE_SelectedPose" Flags="RESTART_ANIM_WHEN_COMPLETE">
+					<Animation AnimationName="SUAntiInfantryInfantry_AIDA" AnimationMode="ONCE" AnimationBlendTime="15" AnimationPriority="10" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" />
+					
+					<Animation AnimationName="SUAntiInfantryInfantry_AIDB" AnimationMode="ONCE" AnimationBlendTime="15" AnimationPriority="10" AnimationSpeedFactorMin="0.8" AnimationSpeedFactorMax="1.2" />
+					<Animation AnimationName="SUAntiInfantryInfantry_AIFA" AnimationMode="ONCE" AnimationBlendTime="15" AnimationPriority="1" />
+					<Animation AnimationName="SUAntiInfantryInfantry_AIFB" AnimationMode="ONCE" AnimationBlendTime="15" AnimationPriority="1" />
+					<Animation AnimationName="SUAntiInfantryInfantry_AIFC" AnimationMode="ONCE" AnimationBlendTime="15" AnimationPriority="1" />
+					<Animation AnimationName="SUAntiInfantryInfantry_AIFD" AnimationMode="ONCE" AnimationBlendTime="15" AnimationPriority="1" />
+					<Animation AnimationName="SUAntiInfantryInfantry_AIFW" AnimationMode="ONCE" AnimationBlendTime="15" AnimationPriority="1" />
+					<Animation AnimationName="SUAntiInfantryInfantry_AIFX" AnimationMode="ONCE" AnimationBlendTime="15" AnimationPriority="1" />
+					<Animation AnimationName="SUAntiInfantryInfantry_AIFY" AnimationMode="ONCE" AnimationBlendTime="5" AnimationPriority="1" />
+					<Animation AnimationName="SUAntiInfantryInfantry_AIFZ" AnimationMode="ONCE" AnimationBlendTime="5" AnimationPriority="1" />
+					
+					<Script>
+						Prev = CurDrawablePrevAnimationState()
+						if Prev == "STATE_bored" then
+						CurDrawableSetTransitionAnimState("TRANS_IdleToSelected")
+						end
+						if Prev == "STATE_Parachuting" then
+            CurDrawableSetTransitionAnimState("TRANS_fromParachuting")
+            end
+					</Script>
+				</AnimationState>
+				<!-- TRANSITIONS -->
+				<AnimationState ParseCondStateType="PARSE_TRANSITION" StateName="TRANS_IdleToSelected">
+					<Animation AnimationName="SUAntiInfantryInfantry_BATA" AnimationMode="ONCE" AnimationBlendTime="5" AnimationSpeedFactorMin="0.9" AnimationSpeedFactorMax="1.1" />
+					
+					<Animation AnimationName="SUAntiInfantryInfantry_BATB" AnimationMode="ONCE" AnimationBlendTime="5" AnimationSpeedFactorMin="0.9" AnimationSpeedFactorMax="1.1" />
+					
+				</AnimationState>
+				<AnimationState ParseCondStateType="PARSE_TRANSITION" StateName="TRANS_SelectedToIdle">
+					<Animation AnimationName="SUAntiInfantryInfantry_ABTA" AnimationMode="ONCE" AnimationBlendTime="15" AnimationSpeedFactorMin="0.9" AnimationSpeedFactorMax="1.1" />
+						<Animation AnimationName="SUAntiInfantryInfantry_ABTB" AnimationMode="ONCE" AnimationBlendTime="15" AnimationSpeedFactorMin="0.9" AnimationSpeedFactorMax="1.1" />
+				</AnimationState>
+				
+				<AnimationState ParseCondStateType="PARSE_TRANSITION" StateName="TRANS_ToWater">
+					<Animation AnimationName="SUAntiInfantryInfantry_SWMA" AnimationMode="ONCE" />
+					<Script>
+						CurDrawablePlaySound("SOV_Commando_WaterSplash")
+					</Script>
+				</AnimationState>
+
+				<AnimationState ParseCondStateType="PARSE_TRANSITION" StateName="TRANS_FromWater">
+					<Animation AnimationName="SUAntiInfantryInfantry_SWMC" AnimationMode="ONCE" />
+				</AnimationState>
+			</ScriptedModelDraw><ScriptedModelDraw id="ModuleTag_ParachuteDraw" OkToChangeModelColor="true">
+		<ModelConditionState ParseCondStateType="PARSE_DEFAULT">
+			<Model Name="" />
+		</ModelConditionState>
+		<ModelConditionState ParseCondStateType="PARSE_NORMAL" ConditionsYes="LAUNCHED">
+			<Model Name="" />
+		</ModelConditionState>
+
+				<ModelConditionState ParseCondStateType="PARSE_NORMAL" ConditionsYes="PARACHUTING USER_8">
+					<Model Name="W3DContainer:NPPARACHUTESOVIET_SKN" />
+					<Texture Original="NPParachuteSoviet" New="NPParachuteJapan" />
+					<Texture Original="HC_NPParachuteSoviet" New="HC_NPParachuteJapan" />													
+				</ModelConditionState>					
+				<ModelConditionState ParseCondStateType="PARSE_NORMAL" ConditionsYes="PARACHUTING USER_9">
+					<Model Name="W3DContainer:NPPARACHUTESOVIET_SKN" />
+					<Texture Original="NPParachuteSoviet" New="NPParachuteAllied" />
+					<Texture Original="HC_NPParachuteSoviet" New="HC_NPParachuteAllied" />													
+				</ModelConditionState>	
+						
+		<ModelConditionState ParseCondStateType="PARSE_NORMAL" ConditionsYes="PARACHUTING">
+			<Model Name="W3DContainer:NPPARACHUTESOVIET_SKN" />
+		</ModelConditionState>
+		<AnimationState ParseCondStateType="PARSE_DEFAULT" StateName="STATE_Idle">
+		</AnimationState>
+		<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="LAUNCHED" StateName="STATE_Launched">
+		</AnimationState>
+		<AnimationState ParseCondStateType="PARSE_NORMAL" ConditionsYes="PARACHUTING" StateName="STATE_Parachuting">
+			<Animation AnimationName="NPParachute_FALL" AnimationMode="LOOP" />
+			<Script>	
+				Prev = CurDrawablePrevAnimationState()
+				if Prev ~= "STATE_Parachuting" and Prev ~= "TRANS_toOpen" then
+				CurDrawableSetTransitionAnimState("TRANS_toOpen")
+				end
+			</Script>
+		</AnimationState>
+		<AnimationState ParseCondStateType="PARSE_TRANSITION" StateName="TRANS_toOpen">
+			<Animation AnimationName="NPParachute_OPEN" AnimationMode="ONCE" AnimationBlendTime="0" />
+		</AnimationState>	
+			
+	</ScriptedModelDraw><TracerModelDraw id="ModuleTag_TracerModelDraw" MinLength="25.0" MaxLength="50.0" Width="8.0" MinSpeed="25" MaxSpeed="35" SweepSpeed="2.0" SpreadAngle="5.0" MinTracersPerFrame=".1" MaxTracersPerFrame=".1" FrameLifeTime="25" WeaponSlotType="PRIMARY_WEAPON" Texture="FXTracer" UseAdditiveBlending="true">
+				<HeadColor r="1.0" g="1.0" b="1.0" a="1.0" />
+				<TailColor r="1.0" g="1.0" b="1.0" a="1.0" />
+				<ObjectStatusValidation ForbiddenStatus="WEAPON_UPGRADED_01 GENERIC_TOGGLE_STATE" />
+			</TracerModelDraw><TracerModelDraw id="ModuleTag_TracerModelDrawVeterancy" MinLength="50.0" MaxLength="50.0" Width="8.0" MinSpeed="30" MaxSpeed="30" SweepSpeed="1.0" SpreadAngle="2.0" MinTracersPerFrame="0.5" MaxTracersPerFrame="0.5" FrameLifeTime="35" WeaponSlotType="PRIMARY_WEAPON" Texture="FXTracerHeroic" UseAdditiveBlending="true">
+				<HeadColor r="1.0" g="0.0" b="0.0" a="1.0" />
+				<TailColor r="0.0" g="0.0" b="0.0" a="0.0" />
+				<ObjectStatusValidation RequiredStatus="WEAPON_UPGRADED_01" ForbiddenStatus="GENERIC_TOGGLE_STATE" />
+			</TracerModelDraw></Draws><Behaviors><ObjectSMCHelper id="ObjectSMCHelper" /><ObjectDefectionHelper id="ObjectDefectionHelper" /><AttributeModifierPoolUpdate id="DefaultAttributeModifierPoolUpdate" /><SquishCollide id="DefaultSquishCollide" /><CrushDie id="ModuleTAg_CrushDie">
+				<DieMuxData DeathTypes="CRUSHED" />
+			</CrushDie><StancesBehavior id="ModuleTag_Stance" StanceTemplate="Generic" /><DestroyDie id="ModuleTag_FrozenDie">
+				<DieMuxData DeathTypes="ALL" RequiredStatus="UNDER_FROZEN" />
+			</DestroyDie><CreateObjectDie id="ModuleTag_CreateFrozenObjectDie" CreationList="InfantryShatter_OCL">
+				<DieMuxData DeathTypes="ALL" RequiredStatus="UNDER_FROZEN" />
+			</CreateObjectDie><DestroyDie id="ModuleTag_PsycicDie">
+				<DieMuxData DeathTypes="SLAUGHTERED" />
+			</DestroyDie><FXListBehavior id="ModuleTag_FXPsycicDeath">
+				<DieMuxData DeathTypes="SLAUGHTERED" RequiredStatus="LIFTED_INTO_AIR" />
+				<Event Index="onDeath" FX="FX_JapanInfantryPsyonicDeath" />
+			</FXListBehavior><FXListBehavior id="ModuleTag_FXPsycicBlastDeath">
+				<DieMuxData DeathTypes="SLAUGHTERED" ExemptStatus="LIFTED_INTO_AIR" />
+				<Event Index="onDeath" FX="FX_JapanInfantryPsyonicBlastDeath" />
+			</FXListBehavior><FXListBehavior id="SquishedFXPlayer">
+				<DieMuxData DeathTypes="CRUSHED" />
+				<Event Index="onDeath" FX="FX_InfantrySquished" />
+			</FXListBehavior><FireWeaponWhenDead id="ModuleTag_CatalystDeathWeapon" InitiallyActive="true" DeathWeapon="CatalystInfantryDeathWeapon" ContinueToBezierDestination="false" UseMyKillerAsWeaponSource="true">
+				<DieMuxData DeathTypes="CATALYST" />
+			</FireWeaponWhenDead><AutoHealBehavior id="Upgrade_HeroicHeal" InitiallyActive="false" HealOnlyIfNotInCombat="false" HealOnlyIfNotUnderAttack="false" StartHealingDelay="1s" HealingAmount="1" HealingDelay=".5s">
+				<TriggeredBy>Upgrade_Veterancy_HEROIC</TriggeredBy>
+			</AutoHealBehavior><SecondaryDamageTracker id="ModuleTag_SecondaryDamageTracker" UpdateDuration="1s" DissipateAmount="25" MaxDamageClampScaler="200%">
+				<Color R="1.0" G="1.0" B="1.75" />
+				<EffectInfo Fraction="0.2" AttributeModifier="AttributeModifer_CryoBeam_02" />
+				<EffectInfo Fraction="0.4" AttributeModifier="AttributeModifer_CryoBeam_04" />
+				<EffectInfo Fraction="0.6" AttributeModifier="AttributeModifer_CryoBeam_06" />
+				<EffectInfo Fraction="0.8" AttributeModifier="AttributeModifer_CryoBeam_08" />
+				<EffectInfo Fraction="1.0" SetUpgradedArmor="true" OnEnterDisable="true" OnEnterCancelSpecialAbilities="true" AttributeModifier="AttributeModifer_CryoBeam_10" Options="CRASH_IF_AIRBORNE" />
+			</SecondaryDamageTracker><RunOffMapBehavior id="ModuleTag_RunOffMapBehavior" RequiresSpecificTrigger="true" RunOffMapWaypointName="RunOffMap" /><LevelUpUpgrade id="ModuleTag_LevelUpUpgrade_Veteran" LevelCap="4" LevelsToGain="1">
+				<TriggeredBy>Upgrade_CreationVeterancy_VETERAN</TriggeredBy>
+			</LevelUpUpgrade><LevelUpUpgrade id="ModuleTag_LevelUpUpgrade_Elite" LevelCap="4" LevelsToGain="1">
+				<TriggeredBy>Upgrade_CreationVeterancy_ELITE</TriggeredBy>
+			</LevelUpUpgrade><LevelUpUpgrade id="ModuleTag_LevelUpUpgrade_Heroic" LevelCap="4" LevelsToGain="1">
+				<TriggeredBy>Upgrade_CreationVeterancy_HEROIC</TriggeredBy>
+			</LevelUpUpgrade><SuppressionUpdate id="ModuleTag_SuppressionUpdate" UpdateDelay="1s" Suppressability="50" SuppressionDuration="5s" AttributeModifierSuppressed="Modifier_Test_Suppression" AttributeModifierForceMove="Modifier_Test_Suppression_ForceMove" /><FreefallUpdate id="ModuleTag_FreefallUpdate" ModelConditionsToSet="STUNNED_FLAILING" InitialVelocity="5" Acceleration="1" TerminalVelocity="15" /><WeaponSetUpdate id="ModuleTag_WeaponSetUpdate">
+				<WeaponSlotHardpoint ID="1">
+					<Weapon Ordering="PRIMARY_WEAPON" Template="SovietAntiInfantryInfantryAK47" ForbiddenObjectStatus="GENERIC_TOGGLE_STATE" />
+					<Weapon Ordering="SECONDARY_WEAPON" Template="SovietAntiInfantryInfantryMolotovCocktail" ObjectStatus="GENERIC_TOGGLE_STATE" />
+				</WeaponSlotHardpoint>			
+			</WeaponSetUpdate><Physics id="ModuleTag_Physics" /><SlowDeath id="ModuleTag_Death" SinkDelay="7s" SinkRate="2.4" DestructionDelay="8.5s">
+				
+				
+			<Sound Type="INITIAL" List="SOV_Conscript_VoiceDie" /><DieMuxData DeathTypes="ALL" DeathTypesForbidden="BITTEN ELECTROCUTED LASERED BURNED STABBED IRRADIATED" /></SlowDeath><SlowDeath id="ModuleTag_BittenDeath" DeathFlags="DEATH_9" SinkDelay="3s" SinkRate="2.4" DestructionDelay="4s">
+				
+				
+			<Sound Type="INITIAL" List="SOV_Conscript_VoiceDie" /><DieMuxData DeathTypes="BITTEN" DeathTypesForbidden="ELECTROCUTED LASERED BURNED STABBED IRRADIATED" /></SlowDeath><SlowDeath id="ModuleTag_TeslaDeath" DeathFlags="DEATH_1" SinkDelay="7s" SinkRate="2.4" DestructionDelay="8.5s">
+                
+				
+			<Sound Type="INITIAL" List="SOV_Conscript_VoiceDieShock" /><DieMuxData DeathTypes="ELECTROCUTED" DeathTypesForbidden="BITTEN LASERED BURNED STABBED IRRADIATED" /></SlowDeath><SlowDeath id="ModuleTag_LaserDeath" DeathFlags="DEATH_2" SinkDelay="7s" SinkRate="2.4" DestructionDelay="8.5s">
+				
+				
+			<Sound Type="INITIAL" List="SOV_Conscript_VoiceDie" /><DieMuxData DeathTypes="LASERED" DeathTypesForbidden="BITTEN ELECTROCUTED BURNED STABBED IRRADIATED" /></SlowDeath><SlowDeath id="ModuleTag_FireDeath" DeathFlags="DEATH_3" SinkDelay="7s" SinkRate="2.4" DestructionDelay="8.5s">
+				
+                
+            <Sound Type="INITIAL" List="SOV_Conscript_VoiceDieFire" /><DieMuxData DeathTypes="BURNED" DeathTypesForbidden="BITTEN ELECTROCUTED LASERED STABBED IRRADIATED" /></SlowDeath><SlowDeath id="ModuleTag_SwordDeath" DeathFlags="DEATH_4" SinkDelay="7s" SinkRate="2.4" DestructionDelay="8.5s">
+                
+				
+			<Sound Type="INITIAL" List="SOV_Conscript_VoiceDie" /><DieMuxData DeathTypes="STABBED" DeathTypesForbidden="BITTEN ELECTROCUTED LASERED BURNED IRRADIATED" /></SlowDeath><SlowDeath id="ModuleTag_RadiationDeath" DeathFlags="DEATH_5" SinkDelay="7s" SinkRate="2.4" DestructionDelay="8.5s">
+				
+				
+			<Sound Type="INITIAL" List="SOV_Conscript_VoiceDie" /><DieMuxData DeathTypes="IRRADIATED" DeathTypesForbidden="BITTEN ELECTROCUTED LASERED BURNED STABBED" ExemptStatus="OVER_WATER" /></SlowDeath><SpecialPower id="ModuleTag_MolotovCocktail" SpecialPowerTemplate="SpecialPower_MolotovCocktail" UpdateModuleStartsAttack="true" /><ToggleStatusSpecialAbilityUpdate id="ModuleTag_ToggleMolotovCocktail" SpecialPowerTemplate="SpecialPower_MolotovCocktail" Options="RECONSTITUTE_STORED_COMMAND" PackTime="1s">
+				<ToggleState>
+					<SkirmishAiInfo ToggleHint="TOGGLE_DEFAULT">
+						<StateWeapon Weapon="SovietAntiInfantryInfantryAK47" />
+					</SkirmishAiInfo>
+				</ToggleState>
+
+				<ToggleState ObjectStatus="GENERIC_TOGGLE_STATE ANTI_GARRISON" ModelConditions="USER_5" EnterStateSound="SOV_Conscript_ArmMolotovCocktailMS">
+					<SkirmishAiInfo ToggleHint="TOGGLE_WEAPON">
+						<StateWeapon Weapon="SovietAntiInfantryInfantryMolotovCocktail" />
+					</SkirmishAiInfo>
+				</ToggleState>
+
+			</ToggleStatusSpecialAbilityUpdate><StatusBitsUpgrade id="ModuleTag_VeterancyUpgrade" StatusToSet="WEAPON_UPGRADED_01">
+				<TriggeredBy>Upgrade_Veterancy_HEROIC</TriggeredBy>
+			</StatusBitsUpgrade><HitReactionBehavior id="ModuleTag_HitReaction" HeavyDamageHitReactionLifeTimer="2s" RotateToSourceWhenDamaged="true" RotateToSourceIgnoreIdleCheck="true" GoIdleWhenDamaged="true" RequiredDeathTypes="BITTEN" /><ModelConditionUpgrade id="ModuleTag_JapanFaction" AddConditionFlags="USER_8">
+				<TriggeredBy>Upgrade_JapanFaction</TriggeredBy>
+			</ModelConditionUpgrade><ModelConditionUpgrade id="ModuleTag_AlliesFaction" AddConditionFlags="USER_9">
+				<TriggeredBy>Upgrade_AlliesFaction</TriggeredBy>
+			</ModelConditionUpgrade></Behaviors><AI><AIUpdate id="ModuleTag_AI" AutoAcquireEnemiesWhenIdle="YES" StateMachine="UnitAIStateMachine">
+				<UnitAITargetChooserData TargetingCompareList="DefaultTargetingCompareList" />
+			</AIUpdate></AI><Body><ActiveBody id="ModuleTag_Body" MaxHealth="100.0" /></Body><ClientUpdates><LargeGroupAudioClientUpdate id="LargeGroupKey">
+				<Key>HumanInfantryWithGearThatRuns</Key>
+			</LargeGroupAudioClientUpdate></ClientUpdates><ClientBehaviors><ModelConditionAudioLoopClientBehavior id="ModuleTag_ShockDeathOverLand">
+				<ModelConditionSound Sound="Electro_BoneRattle_Death" RequiredFlags="DYING DEATH_1" ExcludedFlags="OVER_WATER" />
+			</ModelConditionAudioLoopClientBehavior><ModelConditionSoundSelectorClientBehavior id="Frozen">
+				<Override RequiredFlags="FROZEN">
+					<AudioArrayVoice>
+						<AudioEntry Sound="" AudioType="voiceAttack" />
+						<AudioEntry Sound="" AudioType="voiceAttackAir" />
+						<AudioEntry Sound="" AudioType="voiceAttackAfterMoving" />
+						<AudioEntry Sound="" AudioType="voiceAttackGarrisonedStructure" />
+						<AudioEntry Sound="" AudioType="voiceAttackStructure" />
+						<AudioEntry Sound="" AudioType="voiceCreated" />
+						<AudioEntry Sound="" AudioType="voiceDock" />
+						<AudioEntry Sound="" AudioType="voiceFear" />
+						<AudioEntry Sound="" AudioType="voiceGarrison" />
+						<AudioEntry Sound="" AudioType="voiceMove" />
+						<AudioEntry Sound="" AudioType="voiceAttackAfterMoving" />
+						<AudioEntry Sound="" AudioType="voiceMoveWaterToLand" />
+						<AudioEntry Sound="" AudioType="voiceMoveLandToWater" />
+						<AudioEntry Sound="" AudioType="voiceRepair" />
+						<AudioEntry Sound="" AudioType="voiceRetreatToCastle" />
+						<AudioEntry Sound="UnitSelectFrozen" AudioType="voiceSelect" />
+						<AudioEntry Sound="UnitSelectFrozen" AudioType="voiceSelectBattle" />
+						<AudioEntry Sound="UnitSelectFrozen" AudioType="voiceSelectUnderFire" /> 
+						<AudioEntry Sound="UnitSelectFrozen" AudioType="voiceSupply" />
+					</AudioArrayVoice>
+				</Override>
+			</ModelConditionSoundSelectorClientBehavior><ModelConditionAudioLoopClientBehavior id="ModuleTag_YurikoVoiceDieFall">
+				<ModelConditionSound Sound="SOV_Conscript_VoiceDieYurikoFall" RequiredFlags="IMPENDING_DOOM" />
+			</ModelConditionAudioLoopClientBehavior><ModelConditionAudioLoopClientBehavior id="ModuleTag_YurikoVoiceUp">
+				<ModelConditionSound Sound="SOV_Conscript_VoiceDieYurikoUp" RequiredFlags="STUNNED_FLAILING" />
+			</ModelConditionAudioLoopClientBehavior><AnimationSoundClientBehavior id="ModuleTag_ASCB">
+				<Sound Sound="SOV_Bear_ParachuteOpen" Animation="SUAntiInfantryInfantry_MMCNB" Frame="3" />
+				<Sound Sound="SOV_Bear_ParachuteOpen" Animation="SUAntiInfantryInfantry_MCNB" Frame="3" />
+				<Sound Sound="FootstepDirt" Animation="SUAntiInfantryInfantry_RUNA" Frame="1 14" />
+				<Sound Sound="FootstepDirt" Animation="SUAntiInfantryInfantry_RUNB" Frame="1 14" />
+				<Sound Sound="FootstepDirt" Animation="SUAntiInfantryInfantry_RUNC" Frame="1 14" />
+				<Sound Sound="FootstepDirt" Animation="SUAntiInfantryInfantry_MRUNA" Frame="1 13" />
+				<Sound Sound="FootstepDirt" Animation="SUAntiInfantryInfantry_MRUNB" Frame="1 13" />
+				<Sound Sound="FootstepDirt" Animation="SUAntiInfantryInfantry_MRUNC" Frame="1 13" />
+				
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_BITD" Frame="32" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_CDTA" Frame="6" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_CDTB" Frame="6" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_DTBA" Frame="33" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_DTBB" Frame="59" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_DTFA" Frame="118" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_DTFB" Frame="31" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_DTKA" Frame="39" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_DTKB" Frame="45" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_DTPA" Frame="76" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_DTPB" Frame="84" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_DTSA" Frame="19" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_LNDA" Frame="6" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_MBITD" Frame="23" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_MCDTA" Frame="7" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_MCDTB" Frame="5" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_MCND" Frame="4" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_MDTBA" Frame="24" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_MDTBB" Frame="30" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_MDTFA" Frame="36" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_MDTFB" Frame="92" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_MDTKA" Frame="36" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_MDTKB" Frame="46" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_MDTPA" Frame="68" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_MDTPB" Frame="62" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_MDTSA" Frame="19" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_MLNDA" Frame="9" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_MMCND" Frame="3" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_MRNDA" Frame="25" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_MRNDB" Frame="28" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_RNDA" Frame="24" />
+				<Sound Sound="BodyfallGenericDirt" ExcludedMC="OVER_WATER" Animation="SUAntiInfantryInfantry_RNDB" Frame="33" />
+			</AnimationSoundClientBehavior><ModelConditionSoundSelectorClientBehavior id="ModuleTag_MolotatovCocktail">
+				<Override RequiredFlags="USER_5">
+					<AudioArrayVoice>
+						<AudioEntry Sound="SOV_Conscript_VoiceAttackMolatov" AudioType="voiceAttack" />
+					</AudioArrayVoice>
+				</Override>
+			</ModelConditionSoundSelectorClientBehavior></ClientBehaviors><Geometry IsSmall="true">
+			<Shape Type="CYLINDER" MajorRadius="5.0" MinorRadius="5.0" Height="18.0" ContactPointGeneration="SQUAD_MEMBER">
+				<Offset x="0.0" y="0.0" z="0.0" />
+			</Shape>
+		</Geometry><AudioArrayVoice>
+			<AudioEntry Sound="SOV_Conscript_VoiceAttack" AudioType="voiceAttack" />
+			<AudioEntry Sound="SOV_Conscript_VoiceAttackClear" AudioType="voiceAttackGarrisonedStructure" />
+			<AudioEntry Sound="SOV_Conscript_VoiceCreate" AudioType="voiceCreated" />
+			<AudioEntry Sound="SOV_Conscript_VoiceGarrison" AudioType="voiceGarrison" />
+			<AudioEntry Sound="SOV_Conscript_VoiceMove" AudioType="voiceMove" />
+			<AudioEntry Sound="SOV_Conscript_VoiceMoveAttack" AudioType="voiceAttackAfterMoving" />
+			<AudioEntry Sound="SOV_Conscript_VoiceSelectMS" AudioType="voiceSelect" />
+			<AudioEntry Sound="SOV_Conscript_VoiceSelectBattleMS" AudioType="voiceSelectBattle" />
+			<AudioEntry Sound="SOV_Conscript_VoiceSelectUnderFire" AudioType="voiceSelectUnderFire" />
+		</AudioArrayVoice><EvaEventArray>
+			<EvaEntry EvaEvent="UnitLost" EvaType="dieOwner" />
+			<EvaEntry EvaEvent="UnitConstructionStarted" EvaType="productionStarted" />
+			<EvaEntry EvaEvent="UnitUnderAttack" EvaType="damagedOwner" />
+			<EvaEntry EvaEvent="UnitUnderAttackFromShroudedUnit" EvaType="damagedFromShroudedSourceOwner" />
+			<EvaEntry EvaEvent="GenericUnitBeingBurned" EvaType="damagedByFireOwner" />
+			<EvaEntry EvaEvent="AllyUnitUnderAttack" EvaType="damagedAlly" />
+			<EvaEntry EvaEvent="UnitAmbushed" EvaType="ambushed" />
+			<EvaEntry EvaEvent="GenericEnemyUnitSighted" EvaType="enemyObjectSighted" />
+			<EvaEntry EvaEvent="EnemyStealthUnitDiscovered" EvaType="detectedEnemy" />
+			<EvaEntry EvaEvent="NewConstructionOptions" EvaType="availableForProduction" />
+			<EvaEntry EvaEvent="BuildOnHold" EvaType="buildOnHold" />
+			<EvaEntry EvaEvent="BuildCancelled" EvaType="buildCancelled" />
+			<EvaEntry EvaEvent="UnitPromoted" EvaType="promotedOwner" />
+		</EvaEventArray><ShadowInfo Type="DECAL" SizeX="14" SizeY="14" Texture="ShadowI" /><VisionInfo VisionRange="200" ShroudClearingRange="500.0" /><CrusherInfo id="id_CrusherInfo" CrushableLevel="10" /></GameObject>
