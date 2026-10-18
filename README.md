@@ -8,6 +8,29 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 18, 2026
 
+Two [source-authored Conscript trial candidates](docs/RA3EP1_CONSCRIPT_AUTHORED_TRIALS.md)
+now pass offline qualification: the original identity with **BuildTime 4 -> 1**,
+and **RebornConscriptTrial** with the same edit. Both are genuinely recompiled
+from the captured source, retaining all 49 modules, six populated owners,
+geometry, 126 metadata fields and 275 reference occurrences. Each produces a
+separately read-back **15-entry BIG / config / mod-SKU fragment / source snapshot /
+receipt**. Source admission is explicitly limited to those two identities and
+that one edit; arbitrary GameObjects are not enabled in the alpha.
+
+The new identity has **no CommandButton/CommandSet/spawn integration**, so it is
+not yet recruitable from the menu. Neither candidate has been installed or
+launched. Batch candidate config paths are **256 / 258 characters**; export to
+a shorter validated path and runtime preflight are required before a controlled
+game test. Receipts correctly retain `RuntimeReady=false`.
+
+Authored-trial Focused regression: **74/74** in **225.049 seconds**, four
+isolated workers. The actual-original/native/metadata/three-stream/two-package
+group took **75.403 seconds**. Each stream profile passed **580** refusals;
+the authored gate adds **8** source/native refusals and each package rejects
+**5** file corruptions plus an occupied output. Eight runtime hashes stayed
+stable; batch build had zero warnings/errors. No Full run, game/installation
+change or alpha capability expansion.
+
 The [actual original Conscript diagnostic stream](docs/RA3EP1_CONSCRIPT_ORIGINAL_STREAM.md)
 now writes and independently reads back **one tokenized v7 GameObject**, its
 complete qualified metadata/native graph and **275 ordered external reference
@@ -17,8 +40,9 @@ checksum packing, Manifest/Utility readers, deterministic fresh output and
 serialization remains blocked; this is a separate original-identity diagnostic.
 The instance hash is explicitly an experimental normalized-source hash, not a
 full EA processed-document identity. External native closure, arbitrary/new-ID
-authoring, BIG/config packaging and gameplay are not proved by this milestone.
-Next: the authored identity/edit profile and a controlled playable trial package.
+authoring, BIG/config packaging and gameplay are not proved by that stream-only
+milestone. The separate authored profile and offline package gate now pass
+above; shorter-path/runtime preparation and gameplay remain open.
 
 Original-stream Focused regression: **74/74** in **409.014 seconds**, four
 isolated workers. The actual-original native/metadata/stream group took

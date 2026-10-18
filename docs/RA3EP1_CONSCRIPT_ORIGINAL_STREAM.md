@@ -101,9 +101,11 @@ batch is the verification evidence, not that failed build attempt.
 
 ## Next boundary
 
-Add the separately qualified authored identity/edit profile and connect a
-controlled trial to the previously observed BIG/default-reader variant route.
-This diagnostic does not enable arbitrary GameObjects in the exported alpha,
-implement general includes/inheritance/expressions, run LUA, validate new art,
-create a BIG/config trial package, or launch the game. A visible/new-ID gameplay
-claim still requires an actual separately controlled game test.
+The subsequent [authored-trial gate](RA3EP1_CONSCRIPT_AUTHORED_TRIALS.md) now
+qualifies two fixed source identities, BuildTime=1 and offline BIG/config
+candidates through the previously observed default-reader variant route.
+The stream-only diagnostic does not itself qualify those authored changes or
+packages. General GameObjects in the exported alpha, includes/inheritance/
+expressions, LUA, new art and gameplay remain separate. The new identity still
+needs recruitment/spawn integration; both candidates need shorter-path runtime
+preparation before an actual separately controlled game test.

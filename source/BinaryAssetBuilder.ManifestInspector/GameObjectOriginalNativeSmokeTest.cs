@@ -33,6 +33,8 @@ internal static class GameObjectOriginalNativeSmokeTest
         var tokens=GameObjectOriginalMetadataSmokeTest.Run(schemas.Schemas,pair.Native,pair.Instance,manifest);
         // Reborn: publish only a fresh diagnostic stream after complete native and metadata qualification; game packaging remains closed.
         GameObjectOriginalStreamSmokeTest.Run(tokens,pair.Instance,manifest,globalManifest);
+        // Reborn: separately qualify explicit source edits/new identity and offline trial packages without changing the original-stock oracle or launching the game.
+        GameObjectConscriptTrialSmokeTest.Run(source,pair.Native,pair.Instance,tokens,schemas.Schemas,catalog,manifest,globalManifest,Build,(value,instance)=>{Verify(value,instance);});
         //-------------------------------------------------------------------------------------------------
         /** Reborn: explicit attribute override, additive ArmorSet/LocomotorSet and last direct singleton selection are qualified only for this captured chain by independent native stock equality. */
         //-------------------------------------------------------------------------------------------------
