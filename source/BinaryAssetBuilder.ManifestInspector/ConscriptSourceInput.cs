@@ -28,8 +28,11 @@ internal static class ConscriptSourceInput
         var source=Load(entry);var schemas=Schemas();string fixture=Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"live-alpha","ConscriptBuildTime1","data","mod.xml");
         var variant=Parse(Encoding.UTF8.GetBytes(source.Game.DocumentElement!.OuterXml));var attributes=variant.DocumentElement!.Attributes.OfType<XmlAttribute>().Reverse().ToArray();foreach(var a in attributes)variant.DocumentElement.RemoveAttributeNode(a);foreach(var a in attributes)variant.DocumentElement.Attributes.Append(a);
         Admit(variant,Read(fixture),schemas);variant.DocumentElement.RemoveAttribute("FenceWidth");Admit(variant,Read(fixture),schemas);
-        // Reborn: a changed default is a real unsupported edit, unlike omitting that same default; no silent stock substitution is allowed.
-        variant.DocumentElement.SetAttribute("FenceWidth","1");bool refused=false;try{Admit(variant,Read(fixture),schemas);}catch(InvalidDataException){refused=true;}if(!refused)throw new InvalidDataException("Changed default was silently accepted.");
+        // Reborn: supported primitive defaults are editable through the schema/ABI contract, not compared to a stock-only scalar whitelist.
+        variant.DocumentElement.SetAttribute("FenceWidth","1");Admit(variant,Read(fixture),schemas);bool refused=false;
+        // Reborn: official boolean lexical forms/default omissions are semantic input, while bad primitive types and overflow still fail.
+        variant.DocumentElement.SetAttribute("IsTrainable","1");variant.DocumentElement.RemoveAttribute("BuildTime");Admit(variant,Read(fixture),schemas);if(variant.DocumentElement.GetAttribute("IsTrainable")!="true")throw new InvalidDataException("XML boolean was not canonicalized.");
+        foreach(var badValue in new[]{("Scale","NaN"),("TransportSlotCount","256"),("IsTrainable","2"),("EnergyProduction","2147483648")}){var invalid=(XmlDocument)source.Game.CloneNode(true);invalid.DocumentElement!.SetAttribute(badValue.Item1,badValue.Item2);refused=false;try{Admit(invalid,Read(fixture),schemas);}catch(InvalidDataException){refused=true;}if(!refused)throw new InvalidDataException("Invalid scalar accepted: "+badValue.Item1);}
         Directory.CreateDirectory(output);string single=Path.Combine(output,"object-only.xml");File.WriteAllText(single,"<?xml version='1.0'?><!-- Reborn: explicit object-only source must not acquire a generated command. --><AssetDeclaration xmlns='"+Ea+"'><Tags/><Includes/>"+source.Game.DocumentElement.OuterXml+"</AssetDeclaration>");
         var objectOnly=Load(single);if(objectOnly.Command!=null || objectOnly.Sources.Length!=1)throw new InvalidDataException("A hidden command was generated.");
         string cycle=Path.Combine(output,"cycle.xml");File.WriteAllText(cycle,"<!-- Reborn: confined include-cycle refusal control. --><AssetDeclaration xmlns='"+Ea+"'><Includes><Include type='all' source='cycle.xml'/></Includes></AssetDeclaration>");refused=false;try{Load(cycle);}catch(InvalidDataException){refused=true;}if(!refused)throw new InvalidDataException("Include cycle accepted.");
@@ -100,10 +103,14 @@ internal static class ConscriptSourceInput
         var qualified=Parse(Encoding.UTF8.GetBytes(input.DocumentElement!.OuterXml));var model=Parse(Encoding.UTF8.GetBytes(baseline.DocumentElement!.OuterXml));
         foreach(var doc in new[]{qualified,model}){doc.Schemas.Add(schemas);doc.Validate((_,e)=>throw new InvalidDataException(e.Message));foreach(XmlAttribute attribute in doc.SelectNodes("//@*")!)attribute.Value=attribute.Value;}
         if(!Identity(input.DocumentElement!.GetAttribute("id")))throw new InvalidDataException("GameObject ID must be an ASCII identifier of 1..128 characters.");
+        // Reborn: schema/native primitive capabilities validate all supported root values before structural masking; no gameplay-specific numeric caps are introduced.
+        GameObjectScalarContract.Validate(input);
+        foreach(var field in ConscriptEditableScalars.Fields)ConscriptEditableScalars.Read(qualified,field);
         // Reborn: materialize schema-added default attributes before cloning; XmlDocument.CloneNode can lose their default value children.
         var copy=Parse(Encoding.UTF8.GetBytes(qualified.DocumentElement!.OuterXml));copy.DocumentElement!.SetAttribute("id",model.DocumentElement!.GetAttribute("id"));
-        foreach(var field in ConscriptEditableScalars.Fields){ConscriptEditableScalars.Read(copy,field);ConscriptEditableScalars.Element(copy,field).SetAttribute(field.Attribute,ConscriptEditableScalars.Element(model,field).GetAttribute(field.Attribute));}
-        if(Signature(copy.DocumentElement)!=Signature(model.DocumentElement))throw new InvalidDataException("GameObject differs outside the six enabled scalars/ID: "+Difference(copy.DocumentElement,model.DocumentElement,"GameObject")+". Attribute order is flexible; arbitrary module changes are not enabled yet.");
+        foreach(var field in ConscriptEditableScalars.Fields)ConscriptEditableScalars.Element(copy,field).SetAttribute(field.Attribute,ConscriptEditableScalars.Element(model,field).GetAttribute(field.Attribute));
+        GameObjectScalarContract.Mask(copy,model);
+        if(Signature(copy.DocumentElement)!=Signature(model.DocumentElement))throw new InvalidDataException("GameObject requires an unsupported structural/reference/module capability: "+Difference(copy.DocumentElement,model.DocumentElement,"GameObject")+". Schema-valid primitive edits are enabled; general graph changes are not enabled yet.");
         // Reborn: make attribute traversal deterministic before Core assigns strong-reference occurrence indices; caller formatting must not reorder imports.
         Align(input.DocumentElement,baseline.DocumentElement);
         //-------------------------------------------------------------------------------------------------

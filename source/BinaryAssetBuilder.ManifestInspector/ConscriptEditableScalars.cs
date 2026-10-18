@@ -5,10 +5,10 @@ using SageBinaryData;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: one explicit scalar contract bounds source admission and independent native word checks; it does not admit arbitrary GameObjects.
+// Reborn: retain the original six-value regression vectors and existing nested-owner ABI bindings; root primitive authoring uses GameObjectScalarContract.
 internal static class ConscriptEditableScalars
 {
-    // Reborn: retain the captured hierarchy and dependencies while allowing six finite, bounded numeric values.
+    // Reborn: Min/Max are historical test vectors only, not schema/native authoring limits.
     internal sealed record Field(string Path, string Attribute, float Min, float Max, bool Integer = false);
     internal static readonly Field[] Fields = {
         new(".", "BuildTime", 0.1f, 600),
@@ -24,11 +24,12 @@ internal static class ConscriptEditableScalars
     //-------------------------------------------------------------------------------------------------
     internal static float Read(XmlDocument source, Field field)
     {
-        string text = Element(source, field).GetAttribute(field.Attribute);
+        string text = field.Path=="."?GameObjectScalarContract.Literal(source,field.Attribute):Element(source, field).GetAttribute(field.Attribute);
+        // Reborn: Min/Max remain historical regression vectors, not authoring limits; the schema and concrete native type define representability.
         if (!float.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out float value)
-            || !float.IsFinite(value) || value < field.Min || value > field.Max
-            || field.Integer && !uint.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out _))
-            throw new InvalidDataException($"Conscript {field.Attribute} must be {(field.Integer ? "an integer" : "finite numeric")} in {field.Min}..{field.Max}.");
+            || !float.IsFinite(value)
+            || field.Integer && !uint.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out _))
+            throw new InvalidDataException($"Conscript {field.Attribute} must be {(field.Integer ? "an unsigned 32-bit integer" : "a finite 32-bit real")} allowed by its schema.");
         return value;
     }
 

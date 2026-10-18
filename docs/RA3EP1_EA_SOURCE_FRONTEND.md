@@ -37,7 +37,7 @@ command IDs can be compiled but do not acquire consumers automatically.
 | Schema defaults / optional attributes | Compared after default expansion; omission works only if it retains the admitted Conscript semantics/native graph |
 | Child element order | Must satisfy the official XSD; list/module order is not arbitrarily rearranged |
 | Custom GameObject/command IDs | ASCII identifiers, 1–128 characters; stock GameObject collisions other than the explicit Conscript override refuse |
-| GameObject edits | Still only the six scalar fields plus ID, on the complete Conscript shape |
+| GameObject edits | Schema/native-backed root primitive registry (63 descriptors), plus existing nested numeric owners and ID, on the complete Conscript topology; see scalar capability contract |
 | LogicCommand | Explicit UNIT_BUILD with one Object targeting the same local GameObject; no options/special payloads |
 | inheritFrom / instance includes | Actual Core inheritance, including captured base chains; derived Conscript must be attribute-only and resolved output must retain the admitted complete shape |
 | reference includes | Not enabled; explicit error |

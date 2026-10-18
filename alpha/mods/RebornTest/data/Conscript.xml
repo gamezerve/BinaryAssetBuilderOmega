@@ -10,5 +10,7 @@
     </Includes>
     <GameObject id="RebornConscriptTrial"
                 inheritFrom="BaseConscriptTemplate"
-                BuildTime="=$REBORN_CONSCRIPT_BUILD_TIME" />
+                BuildTime="=$REBORN_CONSCRIPT_BUILD_TIME"
+                Scale="1.2"
+                ThreatLevel="15" />
 </AssetDeclaration>

@@ -225,7 +225,8 @@ internal static class BoundedDiagnosticBuild
         // Reborn: check each authored scalar again at serialization; source/native ownership was qualified before this explicit route.
         var source=new System.Xml.XmlDocument{PreserveWhitespace=true,XmlResolver=null};source.LoadXml(instance.XmlNode.OuterXml);
         int[] offsets=ConscriptEditableScalars.Offsets(chunk.InstanceData.AsSpan(88824).ToArray(),88824);
-        for(int i=0;i<offsets.Length;i++)
+        GameObjectScalarContract.Verify(source,chunk.InstanceData,88824);
+        for(int i=1;i<offsets.Length;i++)
         {
             ConscriptEditableScalars.Read(source,ConscriptEditableScalars.Fields[i]);
             if(BinaryPrimitives.ReadUInt32LittleEndian(chunk.InstanceData.AsSpan(88824+offsets[i],4))!=ConscriptEditableScalars.Bits(source,ConscriptEditableScalars.Fields[i]))

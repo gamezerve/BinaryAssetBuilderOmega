@@ -1,5 +1,10 @@
 # Conscript scalar authoring — grouped alpha step
 
+Historical qualification record: the six-field admission whitelist and practical
+ranges below have been superseded by the
+[schema/native primitive capability contract](RA3EP1_GAMEOBJECT_SCALAR_CAPABILITIES.md).
+The recorded earlier gameplay observations remain historical evidence only.
+
 The Studio route now admits six numeric attributes of the supplied complete
 `SovietAntiInfantryInfantry` XML. It is not an arbitrary GameObject compiler.
 Use only `alpha/EALAModStudio.exe`; select **RebornTest**, then **Build Mod**.

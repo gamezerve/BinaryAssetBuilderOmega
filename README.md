@@ -31,9 +31,11 @@ This remains a repository-linked local alpha, not a portable public release.
 See [supported alpha input](alpha/README.md) and
 [maintenance / retained lessons](docs/RA3EP1_LIVE_ALPHA_AND_RETENTION.md).
 Studio now lists only the user's **Reborn** and the developer's **RebornTest**.
-RebornTest contains complete Conscript XML with six editable
-scalars: BuildTime, cost Amount, MaxHealth, VisionRange, ShroudClearingRange and
-LocomotorSet Speed. See [ranges and grouped trial](docs/RA3EP1_CONSCRIPT_SCALARS.md).
+RebornTest now uses a schema/native primitive capability contract instead of
+the six-field authoring whitelist: all 63 existing root scalar ABI descriptors,
+plus the existing nested numeric owners. Scale=1.2 and ThreatLevel=15 demonstrate
+the new route. Former gameplay caps are removed; module/reference topology is
+still restricted. See [current capability contract](docs/RA3EP1_GAMEOBJECT_SCALAR_CAPABILITIES.md).
 The original-ID six-scalar trial now has qualitative user gameplay confirmation.
 The bounded `RebornConscriptTrial` (cost=15, time=2) has user-reported gameplay
 success: a new GameObject plus an overridden existing UNIT_BUILD command. It reuses the

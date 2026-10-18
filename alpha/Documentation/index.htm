@@ -27,16 +27,17 @@ Restart an already-open Studio once to enable this update; earlier uncontained b
 <h2>Your mod and developer tests</h2>
 <p><b>Reborn</b> belongs to the user. Automated developer tests do not modify or build it.
 <b>RebornTest</b> is the reusable developer slot. Previous sample mods are now regression fixtures outside this list.</p>
-<h2>Conscript: six editable scalars</h2>
+<h2>GameObject: schema/native primitive capabilities</h2>
 <p>Select <b>RebornTest</b> and click <b>Build Mod</b>. Its data/mod.xml is an EA AssetDeclaration including
 Conscript.xml (derived unit) and CommandData.xml (explicit command). ConscriptBase.xml is its source-only instance base;
 DATA:Defines.xml supplies REBORN_CONSCRIPT_BUILD_TIME (currently 2). The selected XML is compiled through Core, native ownership,
 metadata and reference/stream checks before a fresh BIG is published. This is not a cached BIG export.</p>
 <!-- Reborn: distinguish editable source fields from unchanged identity/dependency/graph restrictions and unproven new gameplay values. -->
-<p>Editable attributes: GameObject BuildTime (0.1–600), ObjectResourceInfo/BuildCost Amount (integer 0–100000),
-Body/ActiveBody MaxHealth (1–100000), VisionInfo VisionRange and ShroudClearingRange (1–5000),
-LocomotorSet Speed (1–500). Keep the rest of the supplied XML unchanged.
-RebornTest new-ID trial: time=2, cost=15, health=750, vision=400, shroud=700, speed=100.</p>
+<p>Root primitive edits now follow the official schema intersected with the existing scalar processor ABI registry (63 attributes),
+not a six-field gameplay whitelist. This includes Scale, ThreatLevel, BountyValue, root booleans and Time/Angle/duration fields.
+Existing nested Amount, MaxHealth, VisionRange, ShroudClearingRange and Speed remain editable. No former practical alpha caps apply;
+values must satisfy the schema and concrete native type, and real values must be finite. Module/reference/string topology remains unchanged.
+RebornTest: time=2, cost=15, health=750, vision=400, shroud=700, speed=100, Scale=1.2, ThreatLevel=15.</p>
 <p>Custom ASCII IDs are accepted on this same Conscript shape; stock object collisions are refused except the explicit Conscript override.
 Other edits, arbitrary GameObjects and mixed arbitrary assets
 are not enabled. ALPHA005 reports this limitation. UprisingXmlRoot in uprising-alpha.paths must point to matching official Uprising XML.
@@ -59,7 +60,7 @@ Optional/default omissions work only when they retain the currently admitted uni
 <p>Attribute-only derived Conscript inheritance, instance Includes, bounded imported Defines/=$NAME expressions and mod-root DATA: XML work.
 Untouched official Conscript source is not yet directly buildable: general derived child merges, reference Includes,
 W3X/audio processing and xi:include execution are not connected to this GameObject frontend.
-Those produce explicit errors, not hidden stock substitutions. Arbitrary modules/field edits remain outside the six-scalar profile.</p>
+Those produce explicit errors, not hidden stock substitutions. Arbitrary module/reference/string edits remain outside the current primitive capability.</p>
 <!-- Reborn: ordered path search does not imply successful resource compilation. -->
 <p>DATA/ART/AUDIO search the selected mod before the SDK stock library. DATA defaults to adjacent SageXML;
 this local SDK contains the original Uprising source copy there, without an external SdkDataRoot override. Short ART names search direct mod Art,
@@ -97,7 +98,7 @@ Child replacement by Damage, same-ID source shadowing, definition overrides,
 arbitrary expressions/all Includes, reference Includes and nonempty Tags are rejected.
 Read README.md for supported source forms. Old sample routes remain unchanged.</p>
 <h2>Not supported by this alpha</h2>
-<p>General GameObject edits beyond the six Conscript scalars, other asset types, mixed armor/weapon streams, models, textures, music, maps,
+<p>General GameObject topology/reference/module/string changes beyond current capabilities, other asset types, mixed armor/weapon streams, models, textures, music, maps,
 LOD selection, STR processing, automatic installation and game launch are not build-enabled here.</p>
 <h2>Configuration and prerequisites</h2>
 <p>uprising-alpha.paths contains literal absolute paths: PowerShell7, Driver, StaticManifest, GlobalManifest, CompilerDirectory and UprisingXmlRoot.

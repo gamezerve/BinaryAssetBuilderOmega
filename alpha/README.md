@@ -68,28 +68,31 @@ must still reproduce the previous game-observed candidate. New scalar values are
 offline-qualified, not new gameplay observations.
 
 This Conscript route accepts the original identity or a custom collision-free
-ASCII ID and six scalar edits on the same complete Conscript shape. An explicit
+ASCII ID, schema/ABI-backed root primitive edits and the existing nested numeric
+owners on the same complete Conscript shape. An explicit
 UNIT_BUILD command may target that local object. Other GameObject/module changes
 and arbitrary asset mixes still fail; this is not a general unit compiler.
 It additionally needs `UprisingXmlRoot` in the local paths file, pointing to the
 matching official Uprising XML directory. Preserve the supplied complete XML;
 unreviewed changes are rejected, not silently ignored. ALPHA005 marks this scope.
 
-| XML location | Editable attribute | Alpha range |
+| XML location | Editable capability | Validation |
 | --- | --- | --- |
-| GameObject | BuildTime | 0.1–600 |
-| ObjectResourceInfo/BuildCost | Amount | integer 0–100000 |
-| Body/ActiveBody | MaxHealth | 1–100000 |
-| VisionInfo | VisionRange | 1–5000 |
-| VisionInfo | ShroudClearingRange | 1–5000 |
-| LocomotorSet | Speed | 1–500 |
+| GameObject | Current scalar processor registry (63 attributes), including Scale, ThreatLevel, BountyValue, root booleans, Time/Angle/duration values | Official schema + concrete finite/native type; no six-field gameplay caps |
+| ObjectResourceInfo/BuildCost | Amount | Schema-valid unsigned 32-bit integer |
+| Body/ActiveBody | MaxHealth | Schema-valid finite real |
+| VisionInfo | VisionRange / ShroudClearingRange | Schema-valid finite real |
+| LocomotorSet | Speed | Schema-valid finite real |
 
-Keep all other XML, identities and linked references as supplied. The current
+Keep structural/module/reference/string fields unchanged. The current
 RebornTest new-ID trial uses time=2, cost=15, health=750, vision=400, shroud=700
-and speed=100 (stock: 4, 100, 100, 200, 500 and 50 respectively).
+and speed=100, plus Scale=1.2 and ThreatLevel=15 (the latter two are new offline
+tests, not a new gameplay confirmation).
 Speed is the existing GameObject LocomotorSet speed; the referenced locomotor
 asset is not replaced. Decimal/scientific finite values are accepted except cost.
-These are conservative alpha admission ranges, not assertions of engine limits.
+Former conservative alpha ranges no longer gate these values. Schema-valid
+numbers are not a guarantee of sensible or safe gameplay tuning.
+See [schema/native capability contract](../docs/RA3EP1_GAMEOBJECT_SCALAR_CAPABILITIES.md).
 See [qualification and gameplay checklist](../docs/RA3EP1_CONSCRIPT_SCALARS.md).
 
 The earlier original-ID grouped scalar trial has qualitative user confirmation.
