@@ -218,12 +218,13 @@ internal static class BoundedDiagnosticBuild
         string id=instance.XmlNode.Attributes?["id"]?.Value??"";
         if(!ConscriptSourceInput.Identity(id) || (approvedIdentity==null?id is not ("SovietAntiInfantryInfantry" or "RebornConscriptTrial"):id!=approvedIdentity) || instance.Handle.Name!="GameObject:"+id || instance.Handle.InstanceId!=InstanceHandle.GetInstanceId(id)
             || instance.Handle.TypeId!=0x942FFF2Du || instance.Handle.TypeHash!=0xCEB9FE36u || instance.Handle.InstanceHash==0
-            || instance.ValidatedReferencedInstances?.Count!=275 || !instance.ValidatedReferencedInstances.SequenceEqual(instance.ReferencedInstances)
-            || chunk.ImportsData.Length!=1104
+            || instance.ValidatedReferencedInstances==null || !instance.ValidatedReferencedInstances.SequenceEqual(instance.ReferencedInstances)
             )
             throw new InvalidDataException("Conscript authored trial profile differs.");
         // Reborn: check each authored scalar again at serialization; source/native ownership was qualified before this explicit route.
         var source=new System.Xml.XmlDocument{PreserveWhitespace=true,XmlResolver=null};source.LoadXml(instance.XmlNode.OuterXml);
+        // Reborn: 273 non-root occurrences remain pinned; the authored root reference count determines dependency and sentinel-framed IMP extents.
+        int dependencyCount=GameObjectStrongReferenceContract.ExpectedCount(source);if(instance.ValidatedReferencedInstances.Count!=dependencyCount || chunk.ImportsData.Length!=(dependencyCount+1)*4)throw new InvalidDataException("Conscript authored root reference stream extent differs.");
         // Reborn: the stock Conscript owns 39,268 non-string native bytes after its 88,824-byte metadata prefix; root string blocks add exact aligned extents and relocation slots.
         int stringBytes=GameObjectRootStringContract.AllocationSize(source),stringCount=GameObjectRootStringContract.PresentCount(source);
         if(chunk.InstanceData.Length!=88824+39268+stringBytes || chunk.RelocationData.Length!=1800+(stringCount-3)*4)throw new InvalidDataException("Conscript dynamic root string stream extent differs.");

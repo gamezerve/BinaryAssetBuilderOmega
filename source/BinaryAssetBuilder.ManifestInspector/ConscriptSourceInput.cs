@@ -107,9 +107,9 @@ internal static class ConscriptSourceInput
         GameObjectScalarContract.Validate(input);
         // Reborn: fixed EP1 enums, KindOf masks and weak IDs use their schema/native contract rather than remaining trial-shape differences.
         GameObjectRootAttributeContract.Validate(input);
-        // Reborn: existing root imports may retarget assets without changing dependency count or traversal topology.
+        // Reborn: root imports may retarget, disappear or return; complete native proof independently checks the resulting dependency reindex.
         GameObjectStrongReferenceContract.Validate(input,baseline);
-        // Reborn: existing root string allocations may edit bounded ASCII content without moving graph owners.
+        // Reborn: bounded root string allocations may change presence/length with independently checked native/token/auxiliary rebasing.
         GameObjectRootStringContract.Validate(input,baseline);
         foreach(var field in ConscriptEditableScalars.Fields)ConscriptEditableScalars.Read(qualified,field);
         // Reborn: materialize schema-added default attributes before cloning; XmlDocument.CloneNode can lose their default value children.

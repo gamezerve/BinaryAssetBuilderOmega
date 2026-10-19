@@ -6,7 +6,11 @@ asset IDs, instance includes, inheritance, `$` definitions/expressions,
 TGA/DDS textures and W3X models. Current fixed-identity alpha restrictions are
 temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
-## Current outcome — October 18, 2026
+## Current outcome — October 19, 2026
+
+Active development branch: `main` in `gamezerve/BinaryAssetBuilderOmega`.
+It contains the Uprising SDK work previously developed on
+`feature/ra3ep1-manifest-inspector`; the original `master` history is retained.
 
 **Explicit EA XML frontend:** RebornTest now uses an AssetDeclaration `mod.xml`
 including `Conscript.xml` and `CommandData.xml`. No LogicCommand is generated
@@ -33,11 +37,14 @@ See [supported alpha input](alpha/README.md) and
 Studio now lists only the user's **Reborn** and the developer's **RebornTest**.
 RebornTest now uses schema/native capability contracts instead of the six-field
 authoring whitelist: all 63 root primitive ABI descriptors, 15 fixed root
-enum/KindOf/weak-ID descriptors, one-for-one retargeting of already-present root
-strong references, independent bounded allocation of all six root ASCII strings, plus
+enum/KindOf/weak-ID descriptors, optional stock-target root strong references
+with dependency reindexing, independent bounded allocation of all six root ASCII strings, plus
 the existing nested numeric owners. Scale=1.2 and
 ThreatLevel=15 demonstrate the primitive route. Former gameplay caps are removed;
-new strong-reference import presence/count and module topology are still restricted.
+module topology and reference changes outside the three reviewed root slots remain restricted.
+UnitTypeIcon/UnitIntro may now be removed, restored or retargeted independently;
+all four presence combinations pass with resized strings and 273..275 real dependencies.
+CrowdResponse requires a real catalog target; none is available in the current stock catalogs.
 See [current capability contract](docs/RA3EP1_GAMEOBJECT_SCALAR_CAPABILITIES.md).
 The original-ID six-scalar trial now has qualitative user gameplay confirmation.
 The bounded `RebornConscriptTrial` (cost=15, time=2) has user-reported gameplay
@@ -1341,7 +1348,8 @@ main menu opened. No debugger, mod package or `-modconfig` was used. Config
 consumption and authored-mod loading remain unproved. Overall estimate stays
 approximately **52% / 48%**; this closes launch-selection uncertainty only.
 
-Active branch: `feature/ra3ep1-manifest-inspector`. This is not yet a usable
+Historical development branch: `feature/ra3ep1-manifest-inspector` (now continued
+on `main`). This earlier snapshot was not yet a usable
 Uprising Mod SDK release. Replacing XML/XSD files alone is insufficient:
 native layouts, type hashes, dependencies and in-game loading must also pass validation.
 

@@ -69,7 +69,7 @@ offline-qualified, not new gameplay observations.
 
 This Conscript route accepts the original identity or a custom collision-free
 ASCII ID, schema/ABI-backed root primitive and fixed enum/KindOf/weak-ID edits,
-one-for-one retargeting of already-present root strong references, and the
+optional stock-target root strong references with dependency reindexing, and the
 existing nested numeric owners on the same complete Conscript shape. An explicit
 UNIT_BUILD command may target that local object. Other GameObject/module changes
 and arbitrary asset mixes still fail; this is not a general unit compiler.
@@ -81,7 +81,7 @@ unreviewed changes are rejected, not silently ignored. ALPHA005 marks this scope
 | --- | --- | --- |
 | GameObject | Current scalar processor registry (63 attributes), including Scale, ThreatLevel, BountyValue, root booleans, Time/Angle/duration values | Official schema + concrete finite/native type; no six-field gameplay caps |
 | GameObject | 15 fixed root values: KindOf masks, six enums and seven weak IDs | Official schema + concrete EP1 enum/bit/hash ABI; grouped native/metadata checks |
-| GameObject | Existing nonempty root strong references (currently UnitTypeIcon and UnitIntro in the Conscript profile) | One-for-one stock-target retargeting; import presence/count/order cannot change yet |
+| GameObject | Optional root strong references: UnitTypeIcon, UnitIntro, CrowdResponse | Real stock target of the correct family required; removing/emptying/restoring icon and intro reindexes all later imports. CrowdResponse has no available stock catalog target |
 | GameObject | Six root ASCII strings: Description, DescriptionTransformed, TypeDescription, TypeDescriptionTransformed, EditorName and ExperienceScalarTable | Each may be added, removed, emptied or resized independently up to 4096 bytes; native pointers, token targets, RELO and IMP coordinates are rebased |
 | ObjectResourceInfo/BuildCost | Amount | Schema-valid unsigned 32-bit integer |
 | Body/ActiveBody | MaxHealth | Schema-valid finite real |
@@ -89,8 +89,8 @@ unreviewed changes are rejected, not silently ignored. ALPHA005 marks this scope
 | LocomotorSet | Speed | Schema-valid finite real |
 
 Keep structural/module topology unchanged. Root strings use bounded dynamic
-allocation, but remain non-NUL ASCII. Empty strong-reference
-slots cannot be populated and populated slots cannot be removed yet. The current
+allocation, but remain non-NUL ASCII. Root strong-reference presence is editable;
+module/list imports outside these three root slots retain their existing topology. The current
 RebornTest new-ID trial uses time=2, cost=15, health=750, vision=400, shroud=700
 and speed=100, plus Scale=1.2 and ThreatLevel=15 (the latter two are new offline
 tests, not a new gameplay confirmation).

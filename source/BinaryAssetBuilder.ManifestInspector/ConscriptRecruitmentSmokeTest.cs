@@ -110,7 +110,7 @@ internal static class ConscriptRecruitmentSmokeTest
         Refuse(()=>BoundedDiagnosticBuild.SerializeConscriptRecruitment(new[]{command.Instance},new[]{command.Chunk},checksum,runtime));
         byte[] saved=command.Chunk.InstanceData;try{command.Chunk.InstanceData=saved[..^1];Refuse(()=>BoundedDiagnosticBuild.SerializeConscriptRecruitment(ordered,chunks,checksum,runtime));}finally{command.Chunk.InstanceData=saved;}
         try{command.Chunk.InstanceData=saved.ToArray();command.Chunk.InstanceData[28]=2;Refuse(()=>BoundedDiagnosticBuild.SerializeConscriptRecruitment(ordered,chunks,checksum,runtime));}finally{command.Chunk.InstanceData=saved;}
-        Console.WriteLine("Conscript recruitment stream: PASS (new GameObject + overridden stock UNIT_BUILD command; tokenized/native flags, 275 external + one local dependency, deterministic Core checksum and independent Manifest/Utility byte readback; four two-asset refusals; no game execution).");
+        Console.WriteLine($"Conscript recruitment stream: PASS (new GameObject + overridden stock UNIT_BUILD command; tokenized/native flags, {game.ReferencedInstances.Count} external + one local dependency, deterministic Core checksum and independent Manifest/Utility byte readback; four two-asset refusals; no game execution).");
         return streams;
     }
 
