@@ -113,6 +113,8 @@ internal static class ConscriptSourceInput
         GameObjectRootStringContract.Validate(input,baseline);
         // Reborn: reviewed existing modules expose schema/native fixed-width primitives while their structural/reference graph remains independently checked.
         ConscriptModuleScalarContract.Validate(input);
+        // Reborn: local module IDs are validated as a whole scope rather than pinned to the captured stock tags.
+        ConscriptModuleIdentityContract.Validate(input);
         foreach(var field in ConscriptEditableScalars.Fields)ConscriptEditableScalars.Read(qualified,field);
         // Reborn: materialize schema-added default attributes before cloning; XmlDocument.CloneNode can lose their default value children.
         var copy=Parse(Encoding.UTF8.GetBytes(qualified.DocumentElement!.OuterXml));copy.DocumentElement!.SetAttribute("id",model.DocumentElement!.GetAttribute("id"));
@@ -121,6 +123,7 @@ internal static class ConscriptSourceInput
         GameObjectRootAttributeContract.Mask(copy,model);
         GameObjectStrongReferenceContract.Mask(copy,model);
         GameObjectRootStringContract.Mask(copy,model);
+        ConscriptModuleIdentityContract.Mask(copy,model);
         ConscriptModuleScalarContract.Mask(copy,model);
         // Reborn: official source often uses bare mixed-case names while the captured graph stores qualified canonical references.
         // Reborn: already-canonical source keeps the old fast comparison path; only actual spelling/structure differences require extra schema typing.

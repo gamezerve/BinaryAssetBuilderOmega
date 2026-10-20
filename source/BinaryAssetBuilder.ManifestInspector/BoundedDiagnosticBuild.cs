@@ -236,6 +236,8 @@ internal static class BoundedDiagnosticBuild
         GameObjectRootStringContract.Verify(source,chunk.InstanceData,88824);
         // Reborn: publication rechecks the same official-schema module primitives at dynamically located native owner addresses.
         ConscriptModuleScalarContract.Verify(source,chunk.InstanceData,88824);
+        // Reborn: publication must retain every authored local module identity after final metadata/native rebasing.
+        ConscriptModuleIdentityContract.Verify(source,chunk.InstanceData,88824);
         for(int i=1;i<offsets.Length;i++)
         {
             ConscriptEditableScalars.Read(source,ConscriptEditableScalars.Fields[i]);

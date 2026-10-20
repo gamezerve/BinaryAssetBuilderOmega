@@ -1,6 +1,6 @@
 # Reborn: exercise preserved fixtures only in RebornTest; never compile or modify the user's Reborn mod.
 [CmdletBinding()]
-param([switch]$IncludeRebornSourceMirror,[switch]$ReferenceRetargetingOnly)
+param([switch]$IncludeRebornSourceMirror,[switch]$ReferenceRetargetingOnly,[switch]$ModuleValuesOnly)
 $ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$runtime=(Get-Process -Id $PID).Path;$driver=Join-Path $PSScriptRoot 'Invoke-Ra3Ep1DevAlphaBuild.ps1'
 $fixtures=Join-Path $repo 'tests/fixtures/live-alpha';$data=Join-Path $sdk 'mods/RebornTest/data';$output=Join-Path $sdk 'builtmods/RebornTest';$input=Join-Path $data 'mod.xml';$package=Join-Path $output 'RebornTest.big'
 $rows=[Collections.Generic.List[object]]::new();$userSource=Join-Path $sdk 'mods/Reborn/data/mod.xml';$userHash=(Get-FileHash -LiteralPath $userSource).Hash
@@ -48,15 +48,25 @@ try {
         foreach($file in $sourceHashes.Keys){if((Get-FileHash -LiteralPath $file).Hash-cne $sourceHashes[$file]){throw 'User source changed during read-only reproduction.'}}
     }
     # Reborn: qualify reference freedom with combined native-layout edits and publication-preserving refusals without replaying unrelated armor matrices.
-    if($ReferenceRetargetingOnly){
+    if($ReferenceRetargetingOnly -or $ModuleValuesOnly){
         # Reborn: preserve the fixture's significant script/mixed-content whitespace while editing attributes, as in the full regression path.
         Set-TestFixture ConscriptBuildTime1;$xml=[Xml.XmlDocument]::new();$xml.PreserveWhitespace=$true;$xml.Load($input);$ns=[Xml.XmlNamespaceManager]::new($xml.NameTable);$ns.AddNamespace('a','uri:ea.com:eala:asset')
         $weapons=@($xml.SelectNodes('//a:WeaponSlotHardpoint/a:Weapon',$ns));if($weapons.Count-ne 2){throw 'Weapon fixture topology differs.'}
         foreach($weapon in $weapons){$weapon.SetAttribute('Template','JapanArcherInfantryEnergyBow')}
         $xml.DocumentElement.RemoveAttribute('UnitTypeIcon');$xml.DocumentElement.SetAttribute('UnitIntro','');$xml.DocumentElement.SetAttribute('EditorName','RebornReferenceRetargetingCombined')
-        $xml.DocumentElement.SelectSingleNode('a:Behaviors/a:Physics',$ns).SetAttribute('GravityMultiplier','1.25');$xml.DocumentElement.SelectSingleNode('a:AI/a:AIUpdate',$ns).SetAttribute('StopChaseDistance','42.5');$xml.Save($input)
-        Invoke-TestCase ConscriptReferenceCombined $true;$referenceHash=(Get-FileHash -LiteralPath $package).Hash
+        $xml.DocumentElement.SelectSingleNode('a:Behaviors/a:Physics',$ns).SetAttribute('GravityMultiplier','1.25');$xml.DocumentElement.SelectSingleNode('a:AI/a:AIUpdate',$ns).SetAttribute('StopChaseDistance','42.5')
+        # Reborn: combine renamed local scope, reviewed enum/flag edits, reference retargeting, root import removal and resized strings in one published package.
+        if($ModuleValuesOnly){
+            $modules=@($xml.SelectNodes('//a:Draws/* | //a:Behaviors/* | //a:AI/* | //a:Body/* | //a:ClientUpdates/* | //a:ClientBehaviors/*',$ns));if($modules.Count-ne 49){throw 'Module fixture topology differs.'}
+            $names=@{};for($i=0;$i-lt $modules.Count;$i++){$old=$modules[$i].GetAttribute('id');$names[$old]='RebornSdkLocal_'+$i;$modules[$i].SetAttribute('id',$names[$old])}
+            foreach($module in $modules){if($module.HasAttribute('AssociatedModule')){$module.SetAttribute('AssociatedModule',$names[$module.GetAttribute('AssociatedModule')])}}
+            foreach($draw in $xml.SelectNodes('//a:TracerModelDraw',$ns)){$draw.SetAttribute('WeaponSlotType','SECONDARY_WEAPON')}
+            $xml.SelectSingleNode('//a:SpecialPower',$ns).SetAttribute('ChangeWeather','SNOWY');$xml.SelectSingleNode('//a:FreefallUpdate',$ns).SetAttribute('ModelConditionsToSet','FREEFALL DYING');$xml.SelectSingleNode('//a:HitReactionBehavior',$ns).SetAttribute('RequiredDeathTypes','ALL')
+        }
+        $xml.Save($input);Invoke-TestCase $(if($ModuleValuesOnly){'ConscriptModuleValuesCombined'}else{'ConscriptReferenceCombined'}) $true;$referenceHash=(Get-FileHash -LiteralPath $package).Hash
         $referenceReceipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json;if($referenceReceipt.Core.ReferenceOccurrences-ne 273){throw 'Combined reference presence count differs.'}
+        # Reborn: every failed module edit must leave the complete last-good package untouched, including hash-colliding local IDs.
+        if($ModuleValuesOnly){foreach($kind in @('Enum','Flags','Identity')){$badXml=$xml.CloneNode($true);$badNs=[Xml.XmlNamespaceManager]::new($badXml.NameTable);$badNs.AddNamespace('a','uri:ea.com:eala:asset');switch($kind){Enum{$badXml.SelectSingleNode('//a:TracerModelDraw',$badNs).SetAttribute('WeaponSlotType','RebornBadEnum')}Flags{$badXml.SelectSingleNode('//a:FreefallUpdate',$badNs).SetAttribute('ModelConditionsToSet','RebornBadFlag')}Identity{$nodes=$badXml.SelectNodes('//a:Draws/*',$badNs);$nodes[1].SetAttribute('id',$nodes[0].GetAttribute('id').ToUpperInvariant())}};$badXml.Save($input);Invoke-TestCase ('ConscriptModuleReject'+$kind) $false;if((Get-FileHash -LiteralPath $package).Hash-cne $referenceHash){throw 'Rejected module edit replaced good output.'}}}
         foreach($bad in @('RebornMissingWeapon','GameObject:SovietAntiInfantryInfantry','JapanArcherInfantryEnergyBow\1')){
             $weapons[0].SetAttribute('Template',$bad);$xml.Save($input);Invoke-TestCase ('ConscriptReferenceReject'+$rows.Count) $false
             if((Get-FileHash -LiteralPath $package).Hash-cne $referenceHash){throw 'Rejected reference replaced the last good package.'}

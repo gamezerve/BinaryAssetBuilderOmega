@@ -50,6 +50,14 @@ wrong types, ambiguous identities and authored compiler indices still fail;
 native import slots and emitted target occurrences remain verified. This does
 not enable new module/list topology or arbitrary new asset compilation.
 
+<!-- Reborn: derive editable module value categories from schema/native descriptors instead of captured Conscript literals. -->
+Reviewed module values now include **412 fixed-width attribute slots** across
+the existing 49-module Conscript graph: the previous 384 primitive slots plus
+8 enum and 20 fixed-flag slots. Local module IDs may also be renamed, with
+hash-collision checks and independently verified native headers. This is not
+module addition/removal/reordering. See [module value capabilities and remaining
+limits](docs/RA3EP1_MODULE_VALUE_CAPABILITIES.md).
+
 **SDK source lookup:** DATA/ART/AUDIO now use explicit mod-first, stock-SDK
 fallback search. This local SDK contains the original Uprising source copy under
 `alpha/SageXML`, using adjacent stock DATA lookup without an external override. Resource lookup

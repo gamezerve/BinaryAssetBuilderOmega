@@ -230,6 +230,10 @@ public static class Ep1BehaviorMetadataTokenizer
     //-------------------------------------------------------------------------------------------------
     /** Reborn: these independently stock-reviewed schema signature constants contain no asset offsets, native payloads or token templates; unfamiliar signatures fail closed. */
     //-------------------------------------------------------------------------------------------------
+    // Reborn: schema/native attribute contracts reuse only signatures already qualified by this tokenizer, without guessing new enum or flag wire IDs.
+    public static bool TryReviewedScalarSignature(string key,out uint signature)
+    {try{signature=Signature(key);return true;}catch(InvalidDataException){signature=0;return false;}}
+
     private static uint Signature(string key) => key switch
     {
         // Reborn: independently observed root-record signatures contain no native offsets or per-asset metadata templates.

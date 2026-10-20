@@ -11,7 +11,7 @@ using SageBinaryData;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: reviewed complete module models expose fixed-width primitive attributes through official schemas, concrete ABI fields and independently qualified token coordinates.
+// Reborn: reviewed complete module models expose fixed-width primitive/enum/flag attributes through official schemas, concrete ABI fields and independently qualified token coordinates.
 internal static class ConscriptModuleScalarContract
 {
     internal sealed record Binding(string Name,int Offset,int Width,string Codec,string? Default,uint Wire);
@@ -48,7 +48,7 @@ internal static class ConscriptModuleScalarContract
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: intersect inherited official attributes with primitive native members; strings, enums, flags, references, pointers and list structure stay separately gated. */
+    /** Reborn: intersect inherited official attributes with fixed native members; strings, references, pointers and dynamic list structure stay separately gated. */
     //-------------------------------------------------------------------------------------------------
     internal static Binding[] Bindings(Type type)=>registry.GetOrAdd(type,model=>
     {
@@ -60,9 +60,10 @@ internal static class ConscriptModuleScalarContract
             string name=attribute.QualifiedName.Name;if(name is "id" or "TypeId" || attribute.FixedValue!=null)continue;
             Type current=model;int offset=0;FieldInfo? field=null;
             for(int depth=0;depth<16;depth++){field=current.GetField(name);if(field!=null){offset+=Marshal.OffsetOf(current,name).ToInt32();break;}var parent=current.GetField("Base");if(parent==null)break;offset+=Marshal.OffsetOf(current,"Base").ToInt32();current=parent.FieldType;}
-            if(field==null)continue;string codec=field.FieldType.Name;var contract=Codec(attribute.AttributeSchemaType!,codec);if(contract==null)continue;
-            int width=Marshal.SizeOf(field.FieldType);if(width!=contract.Value.Width || offset<8 || offset>Marshal.SizeOf(model)-width)throw new InvalidDataException("Module scalar ABI width/bounds differs: "+schemaName+"."+name);
-            result.Add(new(name,offset,width,codec,attribute.DefaultValue,contract.Value.Wire));
+            // Reborn: extend the descriptor intersection with schema-matched enums and fixed flags, never pointers or dynamic lists.
+            if(field==null)continue;var extended=ExtendedCodec(attribute.AttributeSchemaType!,field.FieldType);string codec=extended?.Codec??field.FieldType.Name;var contract=extended.HasValue?(extended.Value.Width,extended.Value.Wire):Codec(attribute.AttributeSchemaType!,codec);if(contract==null)continue;
+            int width=field.FieldType.IsEnum?4:Marshal.SizeOf(field.FieldType);if(width!=contract.Value.Item1 || offset<8 || offset>Marshal.SizeOf(model)-width)throw new InvalidDataException("Module scalar ABI width/bounds differs: "+schemaName+"."+name);
+            result.Add(new(name,offset,width,codec,attribute.DefaultValue,contract.Value.Item2));
         }
         return result.OrderBy(b=>b.Offset).ToArray();
     });
@@ -93,6 +94,19 @@ internal static class ConscriptModuleScalarContract
             "Velocity" when names.Contains("Velocity")=>(4,0x7A76C60Eu),
             _=>null
         };
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: bind only exact enum schema/native names or explicit fixed uint bit buffers with a schema-declared enum item type and reviewed wire identity. */
+    //-------------------------------------------------------------------------------------------------
+    private static (int Width,uint Wire,string Codec)? ExtendedCodec(XmlSchemaType schema,Type native)
+    {
+        if(!Ep1BehaviorMetadataTokenizer.TryReviewedScalarSignature(schema.Name??string.Empty,out uint wire))return null;
+        if(native.IsEnum&&native.Name==schema.Name&&Enum.GetUnderlyingType(native)==typeof(int))return (4,wire,"Enum:"+native.FullName);
+        if(schema is not XmlSchemaSimpleType {Content:XmlSchemaSimpleTypeList list}||!native.Name.EndsWith("BitFlags",StringComparison.Ordinal)||native.Name!=schema.Name)return null;
+        var buffer=native.GetField("Value")?.GetCustomAttribute<System.Runtime.CompilerServices.FixedBufferAttribute>();var item=typeof(GameObject).Assembly.GetType("SageBinaryData."+list.BaseItemType?.Name);
+        if(buffer==null||buffer.ElementType!=typeof(uint)||buffer.Length<1||buffer.Length>64||item==null||!item.IsEnum)return null;
+        return (checked(buffer.Length*4),wire,"Flags:"+item.FullName);
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -160,13 +174,13 @@ internal static class ConscriptModuleScalarContract
     //-------------------------------------------------------------------------------------------------
     internal static void AuthorProbe(XmlDocument source)
     {
-        int index=0;foreach(var owner in Owners(source))foreach(var binding in Bindings(owner.NativeType)){index++;string value=binding.Codec switch{"SageBool"=>Boolean(Literal(owner.Element,binding))?"false":"true","Time"=>(1000+index*13).ToString(CultureInfo.InvariantCulture)+"ms","Angle"=>"45d","Percentage"=>"37%","Duration"=>"1001",_=>binding.Codec is "Single" or "Velocity"?(index+0.125f).ToString("R",CultureInfo.InvariantCulture):(index%127+1).ToString(CultureInfo.InvariantCulture)};owner.Element.SetAttribute(binding.Name,value);}
+        int index=0;foreach(var owner in Owners(source))foreach(var binding in Bindings(owner.NativeType)){index++;string value=binding.Codec switch{"SageBool"=>Boolean(Literal(owner.Element,binding))?"false":"true","Time"=>(1000+index*13).ToString(CultureInfo.InvariantCulture)+"ms","Angle"=>"45d","Percentage"=>"37%","Duration"=>"1001",_=>binding.Codec is "Single" or "Velocity"?(index+0.125f).ToString("R",CultureInfo.InvariantCulture):(index%127+1).ToString(CultureInfo.InvariantCulture)};if(binding.Codec.StartsWith("Enum:",StringComparison.Ordinal))value=(ProbeNames(binding).FirstOrDefault(n=>n!=Literal(owner.Element,binding))??ProbeNames(binding)[0]);else if(binding.Codec.StartsWith("Flags:",StringComparison.Ordinal))value=string.Join(" ",ProbeNames(binding).Where(n=>Convert.ToInt32(Enum.Parse(ValueType(binding),n),CultureInfo.InvariantCulture)>=0).TakeLast(2));owner.Element.SetAttribute(binding.Name,value);}
     }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: missing optional primitive attributes use their official default or native zero while preserving authored omission in XML. */
     //-------------------------------------------------------------------------------------------------
-    private static string Literal(XmlElement source,Binding binding)=>source.HasAttribute(binding.Name)?source.GetAttribute(binding.Name):binding.Default??(binding.Codec=="SageBool"?"false":"0");
+    private static string Literal(XmlElement source,Binding binding)=>source.HasAttribute(binding.Name)?source.GetAttribute(binding.Name):binding.Default??(binding.Codec.StartsWith("Flags:",StringComparison.Ordinal)?string.Empty:binding.Codec=="SageBool"?"false":"0");
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: historical MaxHealth numeric regression vectors share the same official module default as the generic capability route. */
@@ -181,6 +195,19 @@ internal static class ConscriptModuleScalarContract
         string text=Literal(source,binding).Trim();var bytes=new byte[binding.Width];
         try
         {
+            // Reborn: enum ordinals and fixed flag bit positions come from concrete native enum definitions, with no arbitrary numeric or field-specific whitelist.
+            if(binding.Codec.StartsWith("Enum:",StringComparison.Ordinal)){var type=ValueType(binding);var enumValue=Enum.Parse(type,text,false);if(!Enum.IsDefined(type,enumValue))throw new FormatException();BinaryPrimitives.WriteInt32LittleEndian(bytes,Convert.ToInt32(enumValue,CultureInfo.InvariantCulture));return bytes;}
+            if(binding.Codec.StartsWith("Flags:",StringComparison.Ordinal))
+            {
+                var type=ValueType(binding);
+                foreach(string token in text.Split((char[]?)null,StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if(token=="ALL"){Array.Fill(bytes,(byte)255);continue;}
+                    if(token[0] is '+' or '-')throw new InvalidDataException("Prefixed module flag operations require the corresponding legacy marshaler repair: "+source.LocalName+"."+binding.Name);
+                    var enumValue=Enum.Parse(type,token,false);if(!Enum.IsDefined(type,enumValue))throw new FormatException();int bit=Convert.ToInt32(enumValue,CultureInfo.InvariantCulture);if(bit==-1)continue;if(bit<0||bit>=bytes.Length*8)throw new OverflowException();int at=bit/32*4;uint current=BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(at,4));BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(at,4),current|1u<<(bit%32));
+                }
+                return bytes;
+            }
             // Reborn: unsigned source spellings retain official hexadecimal and zero-decimal compatibility before width checks.
             uint Unsigned()=>text=="0.0"?0:text.StartsWith("0x",StringComparison.OrdinalIgnoreCase)?uint.Parse(text[2..],NumberStyles.AllowHexSpecifier,CultureInfo.InvariantCulture):uint.Parse(text,NumberStyles.Integer,CultureInfo.InvariantCulture);
             switch(binding.Codec)
@@ -199,7 +226,18 @@ internal static class ConscriptModuleScalarContract
             else if(binding.Codec=="Velocity")multiplier=Marshaler.SECONDS_PER_LOGICFRAME_REAL;
             float value=float.Parse(text,NumberStyles.Float,CultureInfo.InvariantCulture)*multiplier;if(!float.IsFinite(value))throw new OverflowException();BinaryPrimitives.WriteSingleLittleEndian(bytes,value);return bytes;
         }
-        catch(Exception error)when(error is FormatException or OverflowException){throw new InvalidDataException("Invalid module scalar "+source.LocalName+"."+binding.Name+": "+text,error);}
+        catch(Exception error)when(error is FormatException or OverflowException or ArgumentException){throw new InvalidDataException("Invalid module value "+source.LocalName+"."+binding.Name+": "+text,error);}
+    }
+
+    // Reborn: enum codec identities are resolved only from this compiler's concrete native-model assembly.
+    private static Type ValueType(Binding binding)=>typeof(GameObject).Assembly.GetType(binding.Codec[(binding.Codec.IndexOf(':')+1)..])??throw new InvalidDataException("Native enum codec type missing.");
+
+    // Reborn: grouped probes use only named values shared by the concrete enum and its official schema, not numeric test ordinals.
+    private static string[] ProbeNames(Binding binding)
+    {
+        var type=ValueType(binding);var schema=schemas.Value.GlobalTypes[new XmlQualifiedName(type.Name,"uri:ea.com:eala:asset")] as XmlSchemaSimpleType;
+        var allowed=(schema?.Content as XmlSchemaSimpleTypeRestriction)?.Facets.OfType<XmlSchemaEnumerationFacet>().Select(f=>f.Value).ToHashSet(StringComparer.Ordinal)??throw new InvalidDataException("Enum probe schema facets unavailable: "+type.Name);
+        return Enum.GetNames(type).Where(allowed.Contains).ToArray();
     }
 
     //-------------------------------------------------------------------------------------------------

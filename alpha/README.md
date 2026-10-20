@@ -40,6 +40,13 @@ existence/uniqueness, emitted target identities and native import ownership are
 still checked. New module/list topology and non-root reference removal/addition
 are separate capabilities, not enabled by this change.
 
+<!-- Reborn: module values and local IDs are source authoring inputs, not captured-name constants. -->
+Existing reviewed modules now expose 412 primitive/enum/fixed-flag attribute slots
+and editable local module IDs. Duplicate ID hashes and invalid values fail the
+build. Fixed flags support named values and `ALL`; signed flag operations are
+not enabled by this contract. Module topology remains fixed. See the
+[exact capability scope](../docs/RA3EP1_MODULE_VALUE_CAPABILITIES.md).
+
 DATA/ART/AUDIO use mod-first, then stock SDK lookup; DATA defaults to adjacent
 SageXML. This local SDK now contains an exact original Uprising source copy there;
 the external SdkDataRoot override is removed, and UprisingXmlRoot uses the same

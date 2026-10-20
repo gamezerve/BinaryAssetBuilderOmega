@@ -37,7 +37,7 @@ command IDs can be compiled but do not acquire consumers automatically.
 | Schema defaults / optional attributes | Compared after default expansion; omission works only if it retains the admitted Conscript semantics/native graph |
 | Child element order | Must satisfy the official XSD; list/module order is not arbitrarily rearranged |
 | Custom GameObject/command IDs | ASCII identifiers, 1–128 characters; stock GameObject collisions other than the explicit Conscript override refuse |
-| GameObject edits | 63 root primitives, 15 fixed enum/KindOf/weak-ID values, optional stock-target root strong references with complete dependency reindexing, six dynamic root ASCII strings, 384 direct module primitive slots, existing nested numeric owners and ID, on the complete Conscript topology |
+| GameObject edits | 63 root primitives, 15 fixed enum/KindOf/weak-ID values, optional stock-target root strong references with complete dependency reindexing, six dynamic root ASCII strings, 412 direct module primitive/enum/fixed-flag slots, editable local module IDs, existing nested numeric owners and object ID, on the complete Conscript topology |
 | LogicCommand | Explicit UNIT_BUILD with one Object targeting the same local GameObject; no options/special payloads |
 | inheritFrom / instance includes | Actual Core merging of schema-valid partial GameObject bases, nested keyed children and derived bodies; final output must retain the admitted complete native graph |
 | reference includes | Not enabled; explicit error |
@@ -49,7 +49,7 @@ command IDs can be compiled but do not acquire consumers automatically.
 | Nonempty Tags | Not enabled; explicit error |
 | Existing module primitive attributes | Enabled through the schema/native/token contract; [complete inventory](RA3EP1_MODULE_PRIMITIVE_CAPABILITIES.md) |
 | Existing nonempty schema-typed strong-reference targets | May retarget to compatible, uniquely resolved stock assets; emitted occurrence identities are checked independently against authored source and catalog |
-| Arbitrary module additions/removals/child-list-enum edits or non-root reference presence changes | Not enabled by accepting an EA document envelope or target retargeting |
+| Arbitrary module additions/removals/reordering, nested child/list/enum edits or non-root reference presence changes | Not enabled by accepting an EA envelope, direct module attribute values or local ID changes |
 
 The existing experimental armor frontend has its own bounded preprocessing
 support. That does not automatically extend to this GameObject frontend.
