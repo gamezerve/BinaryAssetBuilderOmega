@@ -22,7 +22,11 @@ function Set-TestFixture([string]$Name){Remove-TestData;Copy-Item -LiteralPath (
 function Invoke-TestCase([string]$Label,[bool]$ExpectedSuccess){
     $log=Join-Path $sdk ('.work/test-'+$Label+'.log');& $runtime -NoProfile -File $driver -ModName RebornTest *> $log
     if(($LASTEXITCODE-eq 0)-ne $ExpectedSuccess){throw ('Unexpected test result: '+$log)}
-    if($ExpectedSuccess){$receipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json;if($receipt.Format-cne 'RebornLiveAlpha1' -or (Get-FileHash -LiteralPath $package).Hash-cne $receipt.PackageSha256 -or @(Get-ChildItem -LiteralPath $output -File).Count-ne 4 -or (Get-Content -LiteralPath $receipt.SkuDefPath -Raw)-cne "add-big RebornTest.big`n" -or @(Get-ChildItem -LiteralPath $output -Filter *.cfg).Count){throw 'Output contract differs.'}}
+    # Reborn: every real build needs readable phases and an explicit failure/success result, not replayed JSON receipts.
+    $display=Get-Content -LiteralPath $log -Raw
+    if($display-notmatch 'Step 1: Clearing build cache' -or $display-notmatch 'Step time taken:' -or $display-match '(?m)^\s*"(?:RequestedArguments|CompilerFiles|WorkingDirectoryMustBeInstallation)"\s*:'){throw ('Readable build log contract differs: '+$log)}
+    if($ExpectedSuccess){if($display-notmatch 'Step 11: Creating skudef file' -or $display-notmatch 'Publication completed;'){throw ('Successful phase summary absent: '+$log)}}elseif($display-notmatch 'Build Failed during Step '){throw ('Failure phase absent: '+$log)}
+    if($ExpectedSuccess){$receipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json;if($receipt.Format-cne 'RebornLiveAlpha1' -or (Get-FileHash -LiteralPath $package).Hash-cne $receipt.PackageSha256 -or @(Get-ChildItem -LiteralPath $output -File).Count-ne 4 -or (Get-Content -LiteralPath $receipt.SkuDefPath -Raw)-cne "add-big RebornTest.big`n" -or @(Get-ChildItem -LiteralPath $output -Filter *.cfg).Count){throw 'Output contract differs.'};if((Get-Content -LiteralPath (Join-Path $output 'last-build.log') -Raw)-notmatch '(?m)^Build Completed\r?$'){throw 'Saved successful log has no completion marker.'}}
     $rows.Add([pscustomobject]@{Name=$Label;Passed=$true;ExpectedSuccess=$ExpectedSuccess})
 }
 $saved=Join-Path $sdk ('.work/RebornTest-original-'+[guid]::NewGuid().ToString('N'))

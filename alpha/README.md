@@ -2,6 +2,16 @@
 
 ## Build your mod
 
+<!-- Reborn: explain the readable Studio log and full diagnostic location without changing the user's entry point. -->
+Studio now shows the official-style numbered build phases, durations and source
+errors/warnings. Unsupported or unused phases are explicitly skipped, not
+reported as compiled. JSON receipts and internal stack traces are retained in
+`alpha/.work/last-detail.log` (success) or `last-failure-detail.log` (backend
+failure), rather than filling the Build Log pane. Successful output keeps a
+readable `builtmods/<name>/last-build.log`; current failures are recorded in
+`.work/last-failure.log`. This presentation change does not enable new asset
+types or resolve existing inheritance restrictions.
+
 Current RebornTest uses five EA-shaped XML files: `data/mod.xml` (Includes),
 `data/Conscript.xml` (derived unit), `data/ConscriptBase.xml` (complete instance base),
 `data/Defines.xml` (BuildTime definition), `data/CommandData.xml` (explicit command).

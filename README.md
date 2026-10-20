@@ -12,6 +12,16 @@ Active development branch: `main` in `gamezerve/BinaryAssetBuilderOmega`.
 It contains the Uprising SDK work previously developed on
 `feature/ra3ep1-manifest-inspector`; the original `master` history is retained.
 
+<!-- Reborn: track the user's official RA3 Studio transcript as a required output contract, separate from implemented alpha capabilities. -->
+The [build log compatibility contract](docs/RA3EP1_BUILD_LOG_CONTRACT.md) records
+the official RA3 SDK's eleven phases, timestamped compiler details, diagnostics,
+postprocessor counts and timing as the target Uprising build output. This is a
+requirement, not a claim that the current alpha already implements those stages.
+The live driver now shows numbered phases/timings and explicit skips, streams
+diagnostics without JSON receipts, and saves readable success/failure logs.
+Full backend diagnostics remain separately under `alpha/.work/last-detail.log`
+or `last-failure-detail.log`; package/source support is unchanged.
+
 **Explicit EA XML frontend:** RebornTest now uses an AssetDeclaration `mod.xml`
 including `Conscript.xml` and `CommandData.xml`. No LogicCommand is generated
 implicitly. XML headers/namespaces/local all-XML includes and attribute order

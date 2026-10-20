@@ -60,7 +60,8 @@ namespace EALABuild
             CheckPath(input);
             BuildHelper.CurrentBuildSteps = 1;
             // Reborn: separate the user's Reborn workspace from developer tests, including the strictly bounded complete Conscript build.
-            BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha; root and reviewed module primitives, fixed root enums/KindOf/weak IDs, optional root references, six dynamic root strings, explicit commands and instance/definitions. Module structure, nested child/list edits and resources are not enabled yet.");
+            // Reborn: keep the build header short; backend warnings describe the selected profile and detailed receipts stay on disk.
+            BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha. Unsupported requested features fail the build; previous successful output is retained on failure.");
             // Reborn: session resources exist before EA starts the host; the suspended worker cannot escape its own job.
             string session = (string)Lifecycle("Begin");
             RunExecutableArguments request = new RunExecutableArguments(buildHost);
