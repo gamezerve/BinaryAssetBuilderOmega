@@ -24,6 +24,11 @@ Current RebornTest uses five EA-shaped XML files: `data/mod.xml` (Includes),
 `data/Defines.xml` (BuildTime definition), `data/CommandData.xml` (explicit command).
 Change `REBORN_CONSCRIPT_BUILD_TIME` in Defines.xml to edit the inherited unit's
 BuildTime. Actual Core inheritance runs; the instance base is not emitted.
+Schema-valid partial GameObject bases and nested inherited children now merge
+through Core before final complete-object admission. The literal EA
+`xmlns(prefix=...) xpointer(/prefix:Root/child::*)` XML-fragment form used by the
+stock parachute draw is supported with source/hash/search witnesses. This does
+not enable arbitrary XPointer/network inclusion or new native module graphs.
 There is **no automatic LogicCommand generation**. Read the
 [source frontend support table](../docs/RA3EP1_EA_SOURCE_FRONTEND.md) before using
 inheritance, source aliases, omission rules or arbitrary modules.

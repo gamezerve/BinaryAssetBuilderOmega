@@ -1,6 +1,6 @@
 # Reborn: exercise preserved fixtures only in RebornTest; never compile or modify the user's Reborn mod.
 [CmdletBinding()]
-param()
+param([switch]$IncludeRebornSourceMirror)
 $ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$runtime=(Get-Process -Id $PID).Path;$driver=Join-Path $PSScriptRoot 'Invoke-Ra3Ep1DevAlphaBuild.ps1'
 $fixtures=Join-Path $repo 'tests/fixtures/live-alpha';$data=Join-Path $sdk 'mods/RebornTest/data';$output=Join-Path $sdk 'builtmods/RebornTest';$input=Join-Path $data 'mod.xml';$package=Join-Path $output 'RebornTest.big'
 $rows=[Collections.Generic.List[object]]::new();$userSource=Join-Path $sdk 'mods/Reborn/data/mod.xml';$userHash=(Get-FileHash -LiteralPath $userSource).Hash
@@ -34,6 +34,19 @@ foreach($path in @($data,(Join-Path $sdk '.work'))){for($item=Get-Item -LiteralP
 $testLock=[IO.File]::Open((Join-Path $sdk '.work/regression.lock'),[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
 [IO.Directory]::Move($data,$saved)
 try {
+    # Reborn: an explicitly requested reproduction copies user source read-only into the developer slot; it never builds or replaces the user's output.
+    if($IncludeRebornSourceMirror){
+        $userData=Join-Path $sdk 'mods/Reborn/data'
+        # Reborn: refuse redirected source ancestry before any recursive listing/copy of the user's data.
+        for($item=Get-Item -LiteralPath $userData;$null-ne $item;$item=$item.Parent){if(($item.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0){throw 'User source mirror refuses redirected ancestry.'}}
+        $userFiles=@(Get-ChildItem -LiteralPath $userData -Recurse -Force)
+        if(($userFiles|Where-Object {($_.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0}) -or ($userFiles|Where-Object {-not $_.PSIsContainer}|Measure-Object Length -Sum).Sum-gt 16MB){throw 'User source mirror refuses redirected or oversized data.'}
+        $sourceHashes=@{};foreach($file in $userFiles|Where-Object {-not $_.PSIsContainer}){$sourceHashes[$file.FullName]=(Get-FileHash -LiteralPath $file.FullName).Hash}
+        Remove-TestData;Copy-Item -LiteralPath $userData -Destination $data -Recurse;Invoke-TestCase RebornSourceMirror $true
+        $mirror=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json
+        if($mirror.Backend.AutomaticCommandGenerated -or $mirror.Core.AssetCount-ne 1 -or -not @($mirror.Backend.AuthoredSources|Where-Object {$_.Path.EndsWith('ParachuteDrawSoviet.xml')})){throw 'Reborn source/fragment reproduction receipt differs.'}
+        foreach($file in $sourceHashes.Keys){if((Get-FileHash -LiteralPath $file).Hash-cne $sourceHashes[$file]){throw 'User source changed during read-only reproduction.'}}
+    }
     foreach($name in @('Reborn','ArmorCannon','CombinedArmor','CombinedArmorStrong','ConscriptAK47','ArmorSource','ConscriptBuildTime1')){Set-TestFixture $name;Invoke-TestCase $name $true}
     # Reborn: newly source-compiled Conscript must reproduce the game-observed archive, not just a success label.
     $conscriptHash=(Get-FileHash -LiteralPath $package).Hash;if($conscriptHash-cne '3FCDFFB9909B39E9C3A6B75AC50791A19D3EFBAE5A83D6169C174197C50C8FB2'){throw 'Conscript golden differs.'}

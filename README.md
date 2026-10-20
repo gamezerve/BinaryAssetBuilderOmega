@@ -35,8 +35,12 @@ including `Conscript.xml` and `CommandData.xml`. No LogicCommand is generated
 implicitly. XML headers/namespaces/local all-XML includes and attribute order
 are accepted. RebornTest now also uses actual instance inheritance from
 `ConscriptBase.xml` and a `DATA:Defines.xml` BuildTime definition. The base is not
-emitted. General derived child merges and official ART/W3X resource closure remain
-disabled. See [precise source support and omission/order rules](docs/RA3EP1_EA_SOURCE_FRONTEND.md).
+emitted. The GameObject source route now merges schema-valid partial bases and
+nested derived bodies through Core, expands literal EA root/child XInclude
+fragments, and compares bare/qualified reference spellings by compatible identity.
+Final reviewed graph/native checks remain mandatory; arbitrary new module graphs
+and ART/W3X resource compilation are still disabled. See
+[precise source support and omission/order rules](docs/RA3EP1_EA_SOURCE_FRONTEND.md).
 
 **SDK source lookup:** DATA/ART/AUDIO now use explicit mod-first, stock-SDK
 fallback search. This local SDK contains the original Uprising source copy under

@@ -48,6 +48,10 @@ internal sealed class SdkInstanceInheritanceProfile
     private readonly bool soundSingletons;
     // Reborn: complete Conscript copying is explicit and does not relax any existing generic tree profile.
     private readonly bool conscriptCopy;
+    // Reborn: partial/full GameObject source merging is independent of the earlier complete-copy diagnostic gate.
+    private readonly bool gameObjectTrees;
+    // Reborn: fragment reads retain independent raw-file and alias precedence witnesses in the owning source preparation session.
+    private readonly SdkGameObjectFragments? fragments;
     private const string Ea = "uri:ea.com:eala:asset";
     // Reborn: source and processed-document hashes identify imported XML witnesses, never native streams or cache identities.
     internal sealed record ImportedBase(string Type,string BaseId,string SourcePath,string RawSha256,string ProcessedSha256)
@@ -103,9 +107,11 @@ internal sealed class SdkInstanceInheritanceProfile
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate the complete captured source inventory before any imported read; caller-supplied graph records cannot authorize escaped files. */
     //-------------------------------------------------------------------------------------------------
-    internal SdkInstanceInheritanceProfile(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool rootFiles = false,bool chains = false,bool removals = false,bool choices = false,bool markers = false,bool bitflags = false,bool filters = false,bool upgrades = false,bool metadata = false,bool expressions = false,bool identicalStates = false,bool stateReadds = false,bool crossStateRemovals = false,bool musicOffsets = false,bool audioTrees = false,bool soundOffsets = false,bool soundSingletons = false,bool conscriptCopy = false)
+    internal SdkInstanceInheritanceProfile(XmlSchemaSet schemas,SdkSourcePathAudit.Report paths,bool rootFiles = false,bool chains = false,bool removals = false,bool choices = false,bool markers = false,bool bitflags = false,bool filters = false,bool upgrades = false,bool metadata = false,bool expressions = false,bool identicalStates = false,bool stateReadds = false,bool crossStateRemovals = false,bool musicOffsets = false,bool audioTrees = false,bool soundOffsets = false,bool soundSingletons = false,bool conscriptCopy = false,bool gameObjectTrees = false,SdkGameObjectFragments? fragments = null)
     {
         this.schemas = schemas; this.paths = paths; this.conscriptCopy = conscriptCopy;
+        this.gameObjectTrees=gameObjectTrees;
+        this.fragments=fragments;
         // Reborn: choice admission includes the tested chain/removal subsets without changing any earlier constructor defaults.
         // Reborn: explicitly selecting markers includes earlier choices/chains without changing their constructor defaults.
         // Reborn: modifier admission implies markers/choices/chains, but all earlier constructor defaults remain unchanged.
@@ -118,7 +124,8 @@ internal sealed class SdkInstanceInheritanceProfile
         crossStateRemovals |= musicOffsets; this.musicOffsets = musicOffsets;
         stateReadds |= crossStateRemovals; this.crossStateRemovals = crossStateRemovals;
         identicalStates |= stateReadds; this.stateReadds = stateReadds;
-        expressions |= identicalStates; this.identicalStates = identicalStates;
+        // Reborn: GameObject trees carry the existing child-first definition/instance authority through every partial base.
+        expressions |= identicalStates || gameObjectTrees; this.identicalStates = identicalStates;
         metadata |= expressions; this.expressions = expressions;
         upgrades |= metadata; this.metadata = metadata;
         filters |= upgrades; this.upgrades = upgrades;
@@ -274,8 +281,10 @@ internal sealed class SdkInstanceInheritanceProfile
             // Reborn: the new chain profile includes only the independently tested empty-complex-child merge subset; older imported flags remain one-sided.
             // Reborn: only this separately selected stage also consumes the reviewed local ObjectCreationList marker; imported eligibility remains unchanged.
             // Reborn: normalize only proved full literal owner bodies, retaining separate plans for final actual-output verification.
+            // Reborn: source fragments are expanded only for the explicit GameObject route, with the owning source's confinement and search roots.
+            if(gameObjectTrees && fragments!=null)fragments.Expand(owner,path,inventory[path].Root);
             var soundPlans = soundSingletons ? SdkSoundSingletons.Normalize(schemas,owner) : Array.Empty<SdkSoundSingletons.Plan>();
-            var merged = SdkSelfAttributeInheritance.Apply(schemas,Serialize(owner),treeCopy:true,childMerge:chains,childRemoval:removals,choiceCopy:choices,consumeMarkers:markers,bitflags:bitflags,filters:filters,upgrades:upgrades,objectCreationMarkers:expressions,identicalStates:identicalStates,stateReadds:stateReadds,crossStateRemovals:crossStateRemovals,audioTrees:audioTrees,conscriptCopy:conscriptCopy);
+            var merged = gameObjectTrees ? SdkGameObjectInheritance.Apply(schemas,Serialize(owner)) : SdkSelfAttributeInheritance.Apply(schemas,Serialize(owner),treeCopy:true,childMerge:chains,childRemoval:removals,choiceCopy:choices,consumeMarkers:markers,bitflags:bitflags,filters:filters,upgrades:upgrades,objectCreationMarkers:expressions,identicalStates:identicalStates,stateReadds:stateReadds,crossStateRemovals:crossStateRemovals,audioTrees:audioTrees,conscriptCopy:conscriptCopy);
             if (merged.Bytes == null) throw new InvalidDataException((chains ? "Instance overlay exceeds chain merge scope: " : "Instance overlay exceeds copy-only scope: ")+string.Join("; ",merged.Evidence.Diagnostics));
             XmlDocument output = Parse(merged.Bytes);
             foreach (var asset in Assets(output).Where(asset => injected.Contains(asset.LocalName+":"+asset.GetAttribute("id"))).ToArray()) output.DocumentElement!.RemoveChild(asset);

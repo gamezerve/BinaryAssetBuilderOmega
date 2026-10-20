@@ -13,6 +13,9 @@ internal static class Program
     {
         try
         {
+            // Reborn: verify source-only GameObject inheritance/fragments independently of complete native publication.
+            if(args.Length==2 && args[0]=="gameobject-source-inheritance-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();SdkGameObjectInheritanceSmokeTest.Run(args[1]);return 0;}
             // Reborn: aggregate named definition/asset failures against emitted mod sources and explicit stock manifests before compilation.
             if(args.Length is 6 or 7 && args[0]=="sdk-missing-dependencies")
             {CompilerSmokeTest.InitializeHashProvider();return SdkMissingDependencyAudit.Run(args[1],args[2],args[3],args[4],args[5],args.ElementAtOrDefault(6));}

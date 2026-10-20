@@ -39,13 +39,13 @@ command IDs can be compiled but do not acquire consumers automatically.
 | Custom GameObject/command IDs | ASCII identifiers, 1–128 characters; stock GameObject collisions other than the explicit Conscript override refuse |
 | GameObject edits | 63 root primitives, 15 fixed enum/KindOf/weak-ID values, optional stock-target root strong references with complete dependency reindexing, six dynamic root ASCII strings, 384 direct module primitive slots, existing nested numeric owners and ID, on the complete Conscript topology |
 | LogicCommand | Explicit UNIT_BUILD with one Object targeting the same local GameObject; no options/special payloads |
-| inheritFrom / instance includes | Actual Core inheritance, including captured base chains; derived Conscript must be attribute-only and resolved output must retain the admitted complete shape |
+| inheritFrom / instance includes | Actual Core merging of schema-valid partial GameObject bases, nested keyed children and derived bodies; final output must retain the admitted complete native graph |
 | reference includes | Not enabled; explicit error |
 | Defines / $ expressions | Existing bounded definition engine, including imported metadata definitions and `=$NAME` substitutions before inheritance; not arbitrary expression execution |
 | DATA: XML alias | Mod Data first, then SDK SageXML (or explicit local SdkDataRoot) |
 | ART:/AUDIO: aliases | Mod-first/SDK-fallback path resolution; ART basename two-character fanout; see source-search contract |
 | W3X/audio resource processing | Still not connected to this frontend; explicit error after path resolution, no skipped model sources |
-| xi:include execution | Not connected; explicit error |
+| xi:include execution | Literal XML fragments using EA `xmlns(prefix=...) xpointer(/prefix:Root/child::*)`, confined relative/DATA lookup, captured hashes/search precedence; not arbitrary XPointer, network, text or fallback execution |
 | Nonempty Tags | Not enabled; explicit error |
 | Existing module primitive attributes | Enabled through the schema/native/token contract; [complete inventory](RA3EP1_MODULE_PRIMITIVE_CAPABILITIES.md) |
 | Arbitrary module additions/removals/child-list-enum-reference edits | Not enabled by accepting an EA document envelope or direct primitive attributes |
@@ -55,11 +55,13 @@ support. That does not automatically extend to this GameObject frontend.
 
 ## Can the untouched official Conscript XML compile?
 
-**Not yet.** It inherits BaseInfantry/BaseObject, includes GlobalDefines and
-many DATA:/ART: resources, and contains nested source composition. Those require
-the actual preprocessing/resource pipeline, not merely a namespace/header or a
-schema validator. This frontend deliberately refuses that unprocessed graph;
-it does not silently substitute the captured flattened Conscript for it.
+**Not with every original resource Include unchanged.** ART/W3X source processing
+is still not connected. However, the user's current Reborn source (with those
+resource Includes commented out) now passes real BaseObject/BaseInfantry merging,
+GlobalDefines substitution and its ParachuteDrawSoviet XInclude expansion.
+The source is not replaced with a captured flattened fixture. Bare mixed-case
+reference names compare semantically with the captured qualified names; actual
+authored references still pass independent Core/catalog/native import checks.
 
 All attribute order is irrelevant to XML meaning. Child order is different:
 an XSD sequence constrains it, while choices/repeated lists have their own rules.
@@ -71,11 +73,14 @@ These distinctions also apply inside modules.
 ## Implementation
 
 `ConscriptSourceInput` reads bounded secure XML (no DTD/network entity resolution),
-captures at most 32 source files/four MiB, detects cycles and refuses filesystem
+captures an ordinary Include graph of at most 32 source files/four MiB, detects cycles and refuses filesystem
 escape/reparse paths. It compares expanded element/attribute names rather than
 prefix placement or raw OuterXml strings. Script/leaf text remains significant.
 Attributes are aligned before Core assigns strong-reference occurrence indices;
 element/list order is preserved.
+The fragment session additionally bounds reads to 32 XML files/four MiB and
+16 inclusion levels, and exports their hashes/search witnesses into the final
+source receipt. These are current alpha resource budgets, not claimed EA limits.
 
 Defaults are materialized **only in comparison copies**. Emitting every optional
 empty-string default would create additional allocations in existing marshalers;
@@ -90,13 +95,17 @@ Final build receipts expose `AutomaticCommandGenerated=false` and AuthoredSource
 Temporary frontend paths, like other backend paths, remain provenance only.
 
 The source bridge uses `SdkSourcePathAudit`, `SdkIncludeDefineProfile` and
-`SdkInstanceInheritanceProfile`, not a second inheritance implementation. A new
-opt-in complete-Conscript copy gate schema/structure-checks the actual authored
-base before allowing the existing Core NodeJoiner to copy it. Earlier generic
-tree profiles retain their previous limits. Meaningful Lua/leaf text is preserved;
-only structural indentation is removed for the Core joiner's node handling.
-Populated derived child merges remain explicitly closed. The final resolved object
-still passes complete native/metadata/reference/stream checks.
+`SdkInstanceInheritanceProfile`. Its explicit GameObject source route delegates
+partial/nested merging to the existing Core NodeJoiner through
+`SdkGameObjectInheritance`; intermediate schema-valid bases are not required to
+contain a complete Conscript cost/module graph. Defaults are checked on a clone,
+not injected into inherited source. Earlier generic diagnostic profiles keep
+their original limits. Meaningful Lua/leaf text is preserved; only structural
+indentation is removed for Core node handling. `SdkGameObjectFragments` captures
+literal fragment sources and precedence witnesses alongside ordinary Includes.
+The final resolved object still passes the complete reviewed shape, native,
+metadata, reference and stream checks. This does not enable arbitrary new module
+topologies or unreviewed resource processors.
 
 Next major frontend work: official source-root/resource closure and actual W3X,
 then broader child/module edits. Full arbitrary GameObject authoring is not complete.
@@ -122,6 +131,8 @@ these generated logs are not shipped as source assets.
 
 ## Verification — October 18, 2026
 
+<!-- Reborn: this historical checkpoint remains for traceability; current source/inheritance verification is recorded below. -->
+
 - Grouped frontend checks passed: three-file source graph, reversed attributes,
   matching omitted default, changed-default refusal, object-only/no hidden
   command, and include-cycle refusal.
@@ -142,3 +153,23 @@ these generated logs are not shipped as source assets.
   `ea-source-final-build.log`, `ea-source-studio-loader.log`, and
   `official-conscript-source-check.log`. Final source hashes match the receipt.
 - No game/installation changes or new runtime test were performed in this step.
+
+## Reborn source compilation checkpoint — October 20, 2026
+
+- The user's actual Reborn data was copied read-only into the reusable developer
+  slot for reproduction. Its BaseObject/BaseInfantry chain, GlobalDefines,
+  nested derived body and EA parachute XInclude now prepare five real source
+  files without substituting a pre-flattened unit.
+- That reproduction successfully generated the one-asset existing-ID Conscript
+  BIG/SKUDef through full Core/native/metadata/import/archive checks. No command
+  was generated. User Reborn sources and its published output were not changed.
+- **27/27 live regression cases passed**, including the reproduction, earlier
+  armor/weapon/source variants, grouped missing-name refusal and restoration of
+  the ordinary five-file developer sample. The restored sample retains SHA256
+  `87241958D0EC4CDB3A133FFC837E023A01B51716924F6B532A30BCBDE7EDF918`.
+- Separate source tests passed: partial bases, nested keyed merges, Replace,
+  no explicit-default leakage, alias spelling equivalence, wrong-name/type
+  refusal, final incomplete-object refusal and fragment confinement/cycles.
+- Current evidence is `alpha/.work/test-RebornSourceMirror.log` and
+  `alpha/.work/dev-sdk-test.json`. No game was launched; this is compilation
+  evidence, not a new gameplay result or general resource-processor support.

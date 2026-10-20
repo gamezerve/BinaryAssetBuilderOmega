@@ -122,7 +122,11 @@ internal static class ConscriptSourceInput
         GameObjectStrongReferenceContract.Mask(copy,model);
         GameObjectRootStringContract.Mask(copy,model);
         ConscriptModuleScalarContract.Mask(copy,model);
-        if(Signature(copy.DocumentElement)!=Signature(model.DocumentElement))throw new InvalidDataException("GameObject requires an unsupported structural/reference/module capability: "+Difference(copy.DocumentElement,model.DocumentElement,"GameObject")+". Schema-valid primitive edits are enabled; general graph changes are not enabled yet.");
+        // Reborn: official source often uses bare mixed-case names while the captured graph stores qualified canonical references.
+        // Reborn: already-canonical source keeps the old fast comparison path; only actual spelling/structure differences require extra schema typing.
+        string actualSignature=Signature(copy.DocumentElement),modelSignature=Signature(model.DocumentElement);
+        if(actualSignature!=modelSignature){ConscriptReferenceSpellings.Compare(copy,model,schemas);actualSignature=Signature(copy.DocumentElement);modelSignature=Signature(model.DocumentElement);}
+        if(actualSignature!=modelSignature)throw new InvalidDataException("GameObject requires an unsupported structural/reference/module capability: "+Difference(copy.DocumentElement,model.DocumentElement,"GameObject")+". Schema-valid primitive edits are enabled; general graph changes are not enabled yet.");
         // Reborn: make attribute traversal deterministic before Core assigns strong-reference occurrence indices; caller formatting must not reorder imports.
         Align(input.DocumentElement,baseline.DocumentElement);
         //-------------------------------------------------------------------------------------------------

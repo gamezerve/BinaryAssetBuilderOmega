@@ -31,14 +31,17 @@ internal static class ConscriptSourcePreparation
         foreach(var source in paths.Sources)if(Hash(snapshots[source.PhysicalPath])!=source.Sha256)throw new InvalidDataException("Source changed during graph capture.");
         // Reborn: path inventory is not language admission; reject ignored metadata throughout the graph before emitting anything.
         foreach(var snapshot in snapshots.Values)ValidateEnvelope(Parse(snapshot).DocumentElement!);
-        var schemas=ConscriptSourceInput.Schemas();var profile=new SdkInstanceInheritanceProfile(schemas,paths,expressions:true,conscriptCopy:true);
+        // Reborn: merge schema-valid partial bases first; final source/native admission still applies to the emitted complete object only.
+        var schemas=ConscriptSourceInput.Schemas();var fragments=new SdkGameObjectFragments(paths);var profile=new SdkInstanceInheritanceProfile(schemas,paths,expressions:true,conscriptCopy:true,gameObjectTrees:true,fragments:fragments);
         var assets=new List<XmlElement>();var emitted=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         Emit(entry);
         var games=assets.Where(a=>a.LocalName=="GameObject").ToArray();var commands=assets.Where(a=>a.LocalName=="LogicCommand").ToArray();
         if(games.Length!=1 || commands.Length>1)throw new InvalidDataException("Source output requires one GameObject and zero/one explicit LogicCommand; imported bases must use type=instance.");
         foreach(var source in paths.Sources)if(Hash(SdkEnvironmentPreflight.Read(source.PhysicalPath,1048576))!=source.Sha256)throw new InvalidDataException("Source changed during inheritance/definition preparation.");
-        SdkSourceSearch.Verify(paths.Searches);
-        return new(Detach(games[0]),commands.Length==0?null:Detach(commands[0]),paths.Sources.Select(s=>new ConscriptSourceInput.SourceFile(s.PhysicalPath,s.Sha256)).ToArray()){Searches=paths.Searches};
+        // Reborn: XInclude fragments are real source dependencies, including hash and higher-priority mod-shadow checks before publication.
+        foreach(var source in fragments.Sources)if(Hash(SdkEnvironmentPreflight.Read(source.Path,1048576))!=source.Sha256)throw new InvalidDataException("XInclude source changed during preparation: "+source.Path);
+        var searches=paths.Searches.Concat(fragments.Searches).ToArray();SdkSourceSearch.Verify(searches);
+        return new(Detach(games[0]),commands.Length==0?null:Detach(commands[0]),paths.Sources.Select(s=>new ConscriptSourceInput.SourceFile(s.PhysicalPath,s.Sha256)).Concat(fragments.Sources).DistinctBy(s=>s.Path,StringComparer.OrdinalIgnoreCase).ToArray()){Searches=searches};
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: all Includes contribute emitted owner assets; instance Includes are read by the existing engine but never emitted by this traversal. */
@@ -51,7 +54,7 @@ internal static class ConscriptSourcePreparation
             if(owners.Any(a=>a.LocalName is not ("GameObject" or "LogicCommand")))throw new InvalidDataException("Unsupported emitted asset type; no silent skipping.");
             // Reborn: source-only definition leaves must still validate, even if no emitted owner happens to consume them.
             if(owners.Length==0){if(document.ChildNodes.OfType<XmlElement>().Any(e=>e.LocalName=="Defines"))SdkMetadataDefinitions.Prove(schemas,xml,path,snapshots[path]);return;}
-            bool needsPreparation=document.GetElementsByTagName("Define",Ea).Count!=0 || owners.Any(a=>a.HasAttribute("inheritFrom") || a.SelectNodes(".//@* | .//text()")!.Cast<XmlNode>().Any(n=>(n.Value??"").StartsWith('=')));
+            bool needsPreparation=document.GetElementsByTagName("Define",Ea).Count!=0 || document.GetElementsByTagName("include","http://www.w3.org/2001/XInclude").Count!=0 || owners.Any(a=>a.HasAttribute("inheritFrom") || a.SelectNodes(".//@* | .//text()")!.Cast<XmlNode>().Any(n=>(n.Value??"").StartsWith('=')));
             if(needsPreparation)
             {
                 var prepared=profile.Apply(path,snapshots[path]);if(prepared.Bytes==null)throw new InvalidDataException("GameObject source preparation: "+string.Join("; ",prepared.Evidence.Diagnostics));
