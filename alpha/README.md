@@ -70,7 +70,8 @@ offline-qualified, not new gameplay observations.
 This Conscript route accepts the original identity or a custom collision-free
 ASCII ID, schema/ABI-backed root primitive and fixed enum/KindOf/weak-ID edits,
 optional stock-target root strong references with dependency reindexing, and the
-existing nested numeric owners on the same complete Conscript shape. An explicit
+384 direct primitive slots in the existing 49 modules and the existing nested
+numeric owners on the same complete Conscript shape. An explicit
 UNIT_BUILD command may target that local object. Other GameObject/module changes
 and arbitrary asset mixes still fail; this is not a general unit compiler.
 It additionally needs `UprisingXmlRoot` in the local paths file, pointing to the
@@ -85,6 +86,7 @@ unreviewed changes are rejected, not silently ignored. ALPHA005 marks this scope
 | GameObject | Six root ASCII strings: Description, DescriptionTransformed, TypeDescription, TypeDescriptionTransformed, EditorName and ExperienceScalarTable | Each may be added, removed, emptied or resized independently up to 4096 bytes; native pointers, token targets, RELO and IMP coordinates are rebased |
 | ObjectResourceInfo/BuildCost | Amount | Schema-valid unsigned 32-bit integer |
 | Body/ActiveBody | MaxHealth | Schema-valid finite real |
+| Existing Draws/Behaviors/AI/Body/Client modules | 384 direct primitive slots across the current 49 module instances | Official schema/default + concrete fixed-width native codec + independently qualified token offset/type; [full field inventory](../docs/RA3EP1_MODULE_PRIMITIVE_CAPABILITIES.md) |
 | VisionInfo | VisionRange / ShroudClearingRange | Schema-valid finite real |
 | LocomotorSet | Speed | Schema-valid finite real |
 

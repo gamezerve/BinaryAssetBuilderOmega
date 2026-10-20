@@ -77,7 +77,10 @@ support bounded dynamic presence and length. Changing non-root strong imports, m
 resource bodies and arbitrary nested fields still need their own
 typed processor/ownership/dependency contracts, not removal of safety checks.
 The six-field **business whitelist** is gone; full schema-driven GameObject
-coverage is still in progress.
+coverage is still in progress. The separate [module primitive contract](RA3EP1_MODULE_PRIMITIVE_CAPABILITIES.md)
+now also opens 384 direct primitive slots in the existing 49 modules, with the
+same complete graph checks. Module child/list structure and other nested fields
+remain separate capabilities.
 
 RebornTest now demonstrates Scale=1.2 and ThreatLevel=15 in Conscript.xml while
 retaining the explicit construction command and instance/definition layout.

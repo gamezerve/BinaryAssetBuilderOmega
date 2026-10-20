@@ -111,6 +111,8 @@ internal static class ConscriptSourceInput
         GameObjectStrongReferenceContract.Validate(input,baseline);
         // Reborn: bounded root string allocations may change presence/length with independently checked native/token/auxiliary rebasing.
         GameObjectRootStringContract.Validate(input,baseline);
+        // Reborn: reviewed existing modules expose schema/native fixed-width primitives while their structural/reference graph remains independently checked.
+        ConscriptModuleScalarContract.Validate(input);
         foreach(var field in ConscriptEditableScalars.Fields)ConscriptEditableScalars.Read(qualified,field);
         // Reborn: materialize schema-added default attributes before cloning; XmlDocument.CloneNode can lose their default value children.
         var copy=Parse(Encoding.UTF8.GetBytes(qualified.DocumentElement!.OuterXml));copy.DocumentElement!.SetAttribute("id",model.DocumentElement!.GetAttribute("id"));
@@ -119,6 +121,7 @@ internal static class ConscriptSourceInput
         GameObjectRootAttributeContract.Mask(copy,model);
         GameObjectStrongReferenceContract.Mask(copy,model);
         GameObjectRootStringContract.Mask(copy,model);
+        ConscriptModuleScalarContract.Mask(copy,model);
         if(Signature(copy.DocumentElement)!=Signature(model.DocumentElement))throw new InvalidDataException("GameObject requires an unsupported structural/reference/module capability: "+Difference(copy.DocumentElement,model.DocumentElement,"GameObject")+". Schema-valid primitive edits are enabled; general graph changes are not enabled yet.");
         // Reborn: make attribute traversal deterministic before Core assigns strong-reference occurrence indices; caller formatting must not reorder imports.
         Align(input.DocumentElement,baseline.DocumentElement);

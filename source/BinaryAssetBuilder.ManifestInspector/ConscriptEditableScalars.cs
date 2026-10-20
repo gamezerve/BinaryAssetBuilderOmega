@@ -24,7 +24,8 @@ internal static class ConscriptEditableScalars
     //-------------------------------------------------------------------------------------------------
     internal static float Read(XmlDocument source, Field field)
     {
-        string text = field.Path=="."?GameObjectScalarContract.Literal(source,field.Attribute):Element(source, field).GetAttribute(field.Attribute);
+        // Reborn: optional MaxHealth follows its official module default rather than requiring an explicit historical six-value trial attribute.
+        string text = field.Path=="."?GameObjectScalarContract.Literal(source,field.Attribute):field.Attribute=="MaxHealth"?ConscriptModuleScalarContract.Literal(Element(source,field),field.Attribute,typeof(Ep1ActiveBodyModuleData)):Element(source, field).GetAttribute(field.Attribute);
         // Reborn: Min/Max remain historical regression vectors, not authoring limits; the schema and concrete native type define representability.
         if (!float.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out float value)
             || !float.IsFinite(value)
@@ -40,7 +41,7 @@ internal static class ConscriptEditableScalars
     {
         var ns = new XmlNamespaceManager(source.NameTable); ns.AddNamespace("a", "uri:ea.com:eala:asset");
         var nodes = source.DocumentElement!.SelectNodes(field.Path, ns)!;
-        if (nodes.Count != 1 || nodes[0] is not XmlElement element || !element.HasAttribute(field.Attribute))
+        if (nodes.Count != 1 || nodes[0] is not XmlElement element || !element.HasAttribute(field.Attribute) && field.Attribute!="MaxHealth")
             throw new InvalidDataException("Conscript scalar owner absent/ambiguous: " + field.Attribute);
         return element;
     }

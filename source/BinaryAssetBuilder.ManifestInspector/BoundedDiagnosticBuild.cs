@@ -234,6 +234,8 @@ internal static class BoundedDiagnosticBuild
         GameObjectRootAttributeContract.Verify(source,chunk.InstanceData,88824);
         // Reborn: dynamic authored root strings are checked again after metadata/native/auxiliary rebasing and before stream publication.
         GameObjectRootStringContract.Verify(source,chunk.InstanceData,88824);
+        // Reborn: publication rechecks the same official-schema module primitives at dynamically located native owner addresses.
+        ConscriptModuleScalarContract.Verify(source,chunk.InstanceData,88824);
         for(int i=1;i<offsets.Length;i++)
         {
             ConscriptEditableScalars.Read(source,ConscriptEditableScalars.Fields[i]);

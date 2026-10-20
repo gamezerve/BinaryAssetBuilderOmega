@@ -6,7 +6,7 @@ asset IDs, instance includes, inheritance, `$` definitions/expressions,
 TGA/DDS textures and W3X models. Current fixed-identity alpha restrictions are
 temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
-## Current outcome — October 19, 2026
+## Current outcome — October 20, 2026
 
 Active development branch: `main` in `gamezerve/BinaryAssetBuilderOmega`.
 It contains the Uprising SDK work previously developed on
@@ -39,7 +39,16 @@ RebornTest now uses schema/native capability contracts instead of the six-field
 authoring whitelist: all 63 root primitive ABI descriptors, 15 fixed root
 enum/KindOf/weak-ID descriptors, optional stock-target root strong references
 with dependency reindexing, independent bounded allocation of all six root ASCII strings, plus
-the existing nested numeric owners. Scale=1.2 and
+384 schema/native/token-qualified primitive slots across the 49 existing modules,
+and the existing nested numeric owners. The module registry is derived from the
+official schema and reviewed native models. It supports direct numeric/boolean,
+Time/Angle/Duration/Percentage/Velocity fields while retaining each module's
+identity and child/list/reference structure. See the
+[complete per-family field inventory](docs/RA3EP1_MODULE_PRIMITIVE_CAPABILITIES.md).
+The full module primitive graph passes native/metadata/stream verification and
+384 per-slot corruption controls; Studio backend regression passes **25/25**,
+including a combined draw/physics/death/AI/body package and last-good-output preservation.
+Scale=1.2 and
 ThreatLevel=15 demonstrate the primitive route. Former gameplay caps are removed;
 module topology and reference changes outside the three reviewed root slots remain restricted.
 UnitTypeIcon/UnitIntro may now be removed, restored or retargeted independently;
