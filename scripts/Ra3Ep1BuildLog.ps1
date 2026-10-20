@@ -30,7 +30,7 @@ function Write-SdkCompilerLine([string]$Line,[string]$DetailPath){
     }elseif($trim -match '^(.+?: PASS)\b'){
         # Reborn: keep qualification progress readable; coverage counters, internal paths and caveats remain intact in the raw log.
         Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] '+$Matches[1])
-    }elseif($trim -match '^Reborn: source path ' -or $trim -match '^Reborn: authored asset count:' -or $trim -match '^(?:Compiling |Resolving references:|Generating stream:|.* Stream complete$)'){
+    }elseif($trim -match '^Reborn: source path ' -or $trim -match '^Reborn: authored asset count:' -or $trim -match '^Reborn: dependency audit:' -or $trim -match '^(?:Compiling |Resolving references:|Generating stream:|.* Stream complete$)'){
         Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] '+$trim)
     }
 }

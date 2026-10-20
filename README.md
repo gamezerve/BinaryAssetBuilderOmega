@@ -22,6 +22,14 @@ diagnostics without JSON receipts, and saves readable success/failure logs.
 Full backend diagnostics remain separately under `alpha/.work/last-detail.log`
 or `last-failure-detail.log`; package/source support is unchanged.
 
+<!-- Reborn: aggregate missing names against emitted mod assets plus configured original-game manifests before fail-fast compilation. -->
+Step 6 now lists [missing assets and definitions](docs/RA3EP1_MISSING_DEPENDENCIES.md)
+with source/owner/line details, including definition-to-definition dependencies.
+Availability uses mod-produced identities plus stock static/global manifests;
+instance-only witnesses do not count as produced assets. The latest list is
+`alpha/.work/last-dependencies.json`. Weak/dynamic and arbitrary inherited/default
+reference coverage is not claimed by this source preflight.
+
 **Explicit EA XML frontend:** RebornTest now uses an AssetDeclaration `mod.xml`
 including `Conscript.xml` and `CommandData.xml`. No LogicCommand is generated
 implicitly. XML headers/namespaces/local all-XML includes and attribute order

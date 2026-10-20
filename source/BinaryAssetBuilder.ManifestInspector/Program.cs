@@ -13,6 +13,12 @@ internal static class Program
     {
         try
         {
+            // Reborn: aggregate named definition/asset failures against emitted mod sources and explicit stock manifests before compilation.
+            if(args.Length is 6 or 7 && args[0]=="sdk-missing-dependencies")
+            {CompilerSmokeTest.InitializeHashProvider();return SdkMissingDependencyAudit.Run(args[1],args[2],args[3],args[4],args[5],args.ElementAtOrDefault(6));}
+            // Reborn: dependency-list tests never replace the user's or developer's live mod files.
+            if(args.Length==2 && args[0]=="sdk-missing-dependencies-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();SdkMissingDependencyAuditSmokeTest.Run(args[1]);return 0;}
             // Reborn: nested damage/motion graphs and real modifier imports remain diagnostic, not GameObject publication.
             // Reborn: recover toggle layout before admitting a new native family or claiming source/compiler support.
             // Reborn: standalone AI payload/reference gates do not admit the enclosing toggle/GameObject family.

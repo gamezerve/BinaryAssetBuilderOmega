@@ -2,6 +2,13 @@
 
 ## Build your mod
 
+<!-- Reborn: missing-name reports are part of the normal Studio build, not a separate user workflow. -->
+Step 6 lists missing definitions and schema-typed asset references with their
+owner, source file and line. Availability checks mod-produced asset identities
+plus configured stock manifests; a definition referring to another missing
+definition is reported too. The latest structured list is
+`.work/last-dependencies.json`. See the [exact reporting scope](../docs/RA3EP1_MISSING_DEPENDENCIES.md).
+
 <!-- Reborn: explain the readable Studio log and full diagnostic location without changing the user's entry point. -->
 Studio now shows the official-style numbered build phases, durations and source
 errors/warnings. Unsupported or unused phases are explicitly skipped, not

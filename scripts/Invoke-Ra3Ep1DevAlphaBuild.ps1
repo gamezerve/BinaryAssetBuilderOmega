@@ -42,6 +42,13 @@ try{
     Start-SdkBuildPhase 5 'Building global data';Stop-SdkBuildPhase 'Using configured precompiled stock dependencies; no global source rebuild.'
     Start-SdkBuildPhase 6 'Building static data'
     Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] Loading '+$ModXml)
+    # Reborn: list independent missing definitions/assets before the normal compiler stops at its first unsupported or invalid owner.
+    $dependencyReport=Join-Path $run 'dependencies.json'
+    $dependencyArguments=@('sdk-missing-dependencies',$ModXml,$sdk,$StaticManifest,$GlobalManifest,$dependencyReport)
+    if($settings.SdkDataRoot){$dependencyArguments+=$settings.SdkDataRoot}
+    & (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') @dependencyArguments 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail};$dependencyCode=$LASTEXITCODE
+    if(Test-Path -LiteralPath $dependencyReport){Copy-Item -LiteralPath $dependencyReport -Destination (Join-Path $sdk '.work/last-dependencies.json') -Force;Write-SdkBuildLine ('Dependency report: '+(Join-Path $sdk '.work/last-dependencies.json'))}
+    if($dependencyCode-ne 0){throw 'Dependency preflight failed. Review the complete missing asset/definition list above.'}
     # Reborn: standalone GameObject XML uses the explicit complete-Conscript route; other assets retain their original admission and compiler path.
     $xmlSettings=[Xml.XmlReaderSettings]::new();$xmlSettings.DtdProcessing=[Xml.DtdProcessing]::Prohibit;$xmlSettings.XmlResolver=$null;$xmlSettings.MaxCharactersInDocument=1048576
     $reader=[Xml.XmlReader]::Create($ModXml,$xmlSettings);try{$null=$reader.MoveToContent();$isConscript=$reader.LocalName-ceq 'GameObject';$isDeclaration=$reader.LocalName-ceq 'AssetDeclaration'}finally{$reader.Dispose()}
