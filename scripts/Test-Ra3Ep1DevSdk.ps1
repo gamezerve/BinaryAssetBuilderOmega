@@ -1,6 +1,6 @@
 # Reborn: exercise preserved fixtures only in RebornTest; never compile or modify the user's Reborn mod.
 [CmdletBinding()]
-param([switch]$IncludeRebornSourceMirror)
+param([switch]$IncludeRebornSourceMirror,[switch]$ReferenceRetargetingOnly)
 $ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$runtime=(Get-Process -Id $PID).Path;$driver=Join-Path $PSScriptRoot 'Invoke-Ra3Ep1DevAlphaBuild.ps1'
 $fixtures=Join-Path $repo 'tests/fixtures/live-alpha';$data=Join-Path $sdk 'mods/RebornTest/data';$output=Join-Path $sdk 'builtmods/RebornTest';$input=Join-Path $data 'mod.xml';$package=Join-Path $output 'RebornTest.big'
 $rows=[Collections.Generic.List[object]]::new();$userSource=Join-Path $sdk 'mods/Reborn/data/mod.xml';$userHash=(Get-FileHash -LiteralPath $userSource).Hash
@@ -47,6 +47,21 @@ try {
         if($mirror.Backend.AutomaticCommandGenerated -or $mirror.Core.AssetCount-ne 1 -or -not @($mirror.Backend.AuthoredSources|Where-Object {$_.Path.EndsWith('ParachuteDrawSoviet.xml')})){throw 'Reborn source/fragment reproduction receipt differs.'}
         foreach($file in $sourceHashes.Keys){if((Get-FileHash -LiteralPath $file).Hash-cne $sourceHashes[$file]){throw 'User source changed during read-only reproduction.'}}
     }
+    # Reborn: qualify reference freedom with combined native-layout edits and publication-preserving refusals without replaying unrelated armor matrices.
+    if($ReferenceRetargetingOnly){
+        # Reborn: preserve the fixture's significant script/mixed-content whitespace while editing attributes, as in the full regression path.
+        Set-TestFixture ConscriptBuildTime1;$xml=[Xml.XmlDocument]::new();$xml.PreserveWhitespace=$true;$xml.Load($input);$ns=[Xml.XmlNamespaceManager]::new($xml.NameTable);$ns.AddNamespace('a','uri:ea.com:eala:asset')
+        $weapons=@($xml.SelectNodes('//a:WeaponSlotHardpoint/a:Weapon',$ns));if($weapons.Count-ne 2){throw 'Weapon fixture topology differs.'}
+        foreach($weapon in $weapons){$weapon.SetAttribute('Template','JapanArcherInfantryEnergyBow')}
+        $xml.DocumentElement.RemoveAttribute('UnitTypeIcon');$xml.DocumentElement.SetAttribute('UnitIntro','');$xml.DocumentElement.SetAttribute('EditorName','RebornReferenceRetargetingCombined')
+        $xml.DocumentElement.SelectSingleNode('a:Behaviors/a:Physics',$ns).SetAttribute('GravityMultiplier','1.25');$xml.DocumentElement.SelectSingleNode('a:AI/a:AIUpdate',$ns).SetAttribute('StopChaseDistance','42.5');$xml.Save($input)
+        Invoke-TestCase ConscriptReferenceCombined $true;$referenceHash=(Get-FileHash -LiteralPath $package).Hash
+        $referenceReceipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json;if($referenceReceipt.Core.ReferenceOccurrences-ne 273){throw 'Combined reference presence count differs.'}
+        foreach($bad in @('RebornMissingWeapon','GameObject:SovietAntiInfantryInfantry','JapanArcherInfantryEnergyBow\1')){
+            $weapons[0].SetAttribute('Template',$bad);$xml.Save($input);Invoke-TestCase ('ConscriptReferenceReject'+$rows.Count) $false
+            if((Get-FileHash -LiteralPath $package).Hash-cne $referenceHash){throw 'Rejected reference replaced the last good package.'}
+        }
+    }else{
     foreach($name in @('Reborn','ArmorCannon','CombinedArmor','CombinedArmorStrong','ConscriptAK47','ArmorSource','ConscriptBuildTime1')){Set-TestFixture $name;Invoke-TestCase $name $true}
     # Reborn: newly source-compiled Conscript must reproduce the game-observed archive, not just a success label.
     $conscriptHash=(Get-FileHash -LiteralPath $package).Hash;if($conscriptHash-cne '3FCDFFB9909B39E9C3A6B75AC50791A19D3EFBAE5A83D6169C174197C50C8FB2'){throw 'Conscript golden differs.'}
@@ -73,6 +88,7 @@ try {
     [IO.File]::WriteAllText($input,'<broken');Invoke-TestCase InvalidXml $false;if((Get-FileHash -LiteralPath $package).Hash-cne $changed){throw 'Failed build replaced output.'}
     # Reborn: use valid input so rejection isolates the shared lock rather than the preceding malformed XML.
     Set-TestFixture Reborn;$lock=[IO.File]::Open((Join-Path $sdk '.sdk.lock'),[IO.FileMode]::Open,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None);try{Invoke-TestCase SdkLock $false}finally{$lock.Dispose()}
+    }
 } finally {
     # Reborn: restore every original developer file, including auxiliary experiments; the user's mod and output remain untouched.
     try{Remove-TestData;[IO.Directory]::Move($saved,$data)}finally{$testLock.Dispose()}

@@ -33,6 +33,13 @@ There is **no automatic LogicCommand generation**. Read the
 [source frontend support table](../docs/RA3EP1_EA_SOURCE_FRONTEND.md) before using
 inheritance, source aliases, omission rules or arbitrary modules.
 
+<!-- Reborn: existing typed targets are authorable rather than frozen to the captured Conscript's asset names. -->
+Existing nonempty strong-reference fields may now point to different compatible
+stock assets, including the Conscript weapon `Template`. Schema type, catalog
+existence/uniqueness, emitted target identities and native import ownership are
+still checked. New module/list topology and non-root reference removal/addition
+are separate capabilities, not enabled by this change.
+
 DATA/ART/AUDIO use mod-first, then stock SDK lookup; DATA defaults to adjacent
 SageXML. This local SDK now contains an exact original Uprising source copy there;
 the external SdkDataRoot override is removed, and UprisingXmlRoot uses the same

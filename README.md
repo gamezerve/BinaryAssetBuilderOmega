@@ -42,6 +42,14 @@ Final reviewed graph/native checks remain mandatory; arbitrary new module graphs
 and ART/W3X resource compilation are still disabled. See
 [precise source support and omission/order rules](docs/RA3EP1_EA_SOURCE_FRONTEND.md).
 
+<!-- Reborn: replace captured-name restrictions with schema/catalog/native dependency validation on existing strong-reference slots. -->
+Existing nonempty schema-typed strong references inside the Conscript graph can
+now select other compatible stock assets, including `Weapon/@Template`.
+Targets are no longer pinned to the original Conscript names. Missing targets,
+wrong types, ambiguous identities and authored compiler indices still fail;
+native import slots and emitted target occurrences remain verified. This does
+not enable new module/list topology or arbitrary new asset compilation.
+
 **SDK source lookup:** DATA/ART/AUDIO now use explicit mod-first, stock-SDK
 fallback search. This local SDK contains the original Uprising source copy under
 `alpha/SageXML`, using adjacent stock DATA lookup without an external override. Resource lookup

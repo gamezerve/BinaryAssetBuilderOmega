@@ -1,6 +1,6 @@
 # Reborn: maintain one repository-local SDK and replace its compiler generation only while no cooperative mod build is using it.
 [CmdletBinding()]
-param([string]$CompilerDirectory,[switch]$Initialize,[string]$PowerShell7)
+param([string]$CompilerDirectory,[switch]$Initialize,[string]$PowerShell7,[ValidateRange(1,600)][int]$WaitSeconds=15)
 $ErrorActionPreference='Stop'
 # Reborn: MSBuild may inherit PowerShell 7's module path while invoking Windows PowerShell; load this host's own modules explicitly.
 Import-Module (Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Utility/Microsoft.PowerShell.Utility.psd1') -ErrorAction Stop
@@ -14,7 +14,8 @@ $names=@('BinaryAssetBuilder.ManifestInspector.exe','BinaryAssetBuilder.Manifest
 function Assert-DevSdkPath([string]$Path){$current=[IO.Path]::GetFullPath($Path);while(-not(Test-Path -LiteralPath $current)){$current=Split-Path -Parent $current};for($item=Get-Item -LiteralPath $current;$null-ne $item;$item=if($item.PSIsContainer){$item.Parent}else{$item.Directory}){if(($item.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0){throw 'Redirected SDK path refused.'}}}
 foreach($path in @($sdk,$CompilerDirectory)){Assert-DevSdkPath $path}
 $lock=$null;$timer=[Diagnostics.Stopwatch]::StartNew()
-while($null-eq $lock){try{$lock=[IO.File]::Open((Join-Path $sdk '.sdk.lock'),[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)}catch [IO.IOException]{if($timer.Elapsed.TotalSeconds-ge 15){throw 'SDK is in use; compiler build is complete but SDK sync must be retried after the mod build finishes.'};Start-Sleep -Milliseconds 100}}
+# Reborn: maintenance may wait through a bounded developer regression build without replacing an actively used compiler generation; normal callers retain the short default.
+while($null-eq $lock){try{$lock=[IO.File]::Open((Join-Path $sdk '.sdk.lock'),[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)}catch [IO.IOException]{if($timer.Elapsed.TotalSeconds-ge $WaitSeconds){throw 'SDK is in use; compiler build is complete but SDK sync must be retried after the mod build finishes.'};Start-Sleep -Milliseconds 100}}
 try{
     $inventory=@();foreach($name in $names){$path=Join-Path $CompilerDirectory $name;Assert-DevSdkPath $path;if(-not(Test-Path -LiteralPath $path -PathType Leaf)){throw ('Compiler generation is incomplete: '+$name)};$inventory+= [pscustomobject]@{Name=$name;Sha256=(Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash}}
     $tools=Join-Path $sdk 'tools';$null=New-Item -ItemType Directory -Path $tools -Force;$destination=Join-Path $tools 'compiler'

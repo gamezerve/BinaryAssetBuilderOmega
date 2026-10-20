@@ -11,7 +11,8 @@ try {
     & $exe conscript-source-prepare $ModXml $prepared @searchArgs;if($LASTEXITCODE-ne 0){throw 'EA source preparation failed; see the XML/include/schema diagnostic above.'}
     $inputReceipt=Get-Content -LiteralPath (Join-Path $prepared 'source-input.json') -Raw|ConvertFrom-Json
     $identity=$inputReceipt.Identity;$hasCommand=[bool]$inputReceipt.CommandPath;$newIdentity=$identity-cne 'SovietAntiInfantryInfantry'
-    Write-Output 'Warning: ALPHA005 Partial GameObject capabilities: root and reviewed module primitive attributes, fixed root enums/KindOf/weak IDs, optional stock-target root references, six dynamic root strings and existing nested numeric owners. Module structure, non-root reference changes, nested child/list edits and resources remain disabled.'
+    # Reborn: target retargeting is now schema/catalog checked; distinguish it from still unsupported reference presence or module topology edits.
+    Write-Output 'Warning: ALPHA005 Partial GameObject capabilities: root and reviewed module primitives, fixed root enums/KindOf/weak IDs, optional root imports, existing nonempty typed strong-reference retargeting, six dynamic root strings and existing nested numeric owners. New module structure, non-root reference presence changes, nested child/list edits and resource compilation remain disabled.'
     Write-Output ('Reborn: authored asset count: '+$(if($hasCommand){2}else{1})+'; no automatic LogicCommand generation.')
     $scratch=Join-Path $OutputRoot 'temp';$null=New-Item -ItemType Directory -Path $scratch;$previousTemp=$env:TEMP;$previousTmp=$env:TMP
     try {

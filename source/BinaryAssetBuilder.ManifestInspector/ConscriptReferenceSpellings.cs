@@ -4,13 +4,13 @@ using BinaryAssetBuilder.Core;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: bare EA source references and qualified captured references can name the same asset; compare identity without enabling non-root retargeting.
+// Reborn: compare typed reference spellings or admit retargeting in existing slots; actual targets remain subject to catalog and emitted dependency-table verification.
 internal static class ConscriptReferenceSpellings
 {
     //-------------------------------------------------------------------------------------------------
     /** Reborn: normalize comparison copies only; actual authored names still pass independent Core/catalog/import resolution during compilation. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Compare(XmlDocument candidate,XmlDocument model,XmlSchemaSet schemas)
+    internal static void Compare(XmlDocument candidate,XmlDocument model,XmlSchemaSet schemas,bool allowRetarget=false)
     {
         foreach(var document in new[]{candidate,model}){document.Schemas.Add(schemas);document.Validate((_,e)=>throw new InvalidDataException(e.Message));}
         var strong=schemas.GlobalTypes[new XmlQualifiedName("AssetReference","uri:ea.com:eala:asset")] as XmlSchemaType;
@@ -31,7 +31,7 @@ internal static class ConscriptReferenceSpellings
         }
 
         //-------------------------------------------------------------------------------------------------
-        /** Reborn: require matching hashed instance identity and compatible declared/concrete schema types before ignoring a spelling difference. */
+        /** Reborn: keep compatible declared/concrete types and nonempty slot presence; optional retarget admission never changes the actual authored source. */
         //-------------------------------------------------------------------------------------------------
         void Canonicalize(XmlNode actual,XmlNode expected)
         {
@@ -42,11 +42,13 @@ internal static class ConscriptReferenceSpellings
             for(XmlSchemaType? current=type;required==null&&current!=null;){required=Annotation(current.UnhandledAttributes);var next=current.BaseXmlSchemaType;if(ReferenceEquals(next,current))break;current=next;}
             if(required==null)return;
             int ac=a.IndexOf(':'),bc=b.IndexOf(':');string an=ac<0?a:a[(ac+1)..],bn=bc<0?b:b[(bc+1)..];
-            if(InstanceHandle.GetInstanceId(an)!=InstanceHandle.GetInstanceId(bn))return;
+            // Reborn: existing nonempty strong-reference slots may retarget; catalog existence is checked before native compilation/publication, not inferred from this comparison mask.
+            if(!allowRetarget && InstanceHandle.GetInstanceId(an)!=InstanceHandle.GetInstanceId(bn))return;
+            if(string.IsNullOrWhiteSpace(an)||an.Any(char.IsWhiteSpace)||an.Contains(':'))return;
             var selected=schemas.GlobalTypes[new XmlQualifiedName(ac<0?required:a[..ac],"uri:ea.com:eala:asset")] as XmlSchemaType;
             var concrete=schemas.GlobalTypes[new XmlQualifiedName(bc<0?required:b[..bc],"uri:ea.com:eala:asset")] as XmlSchemaType;
             var constraint=schemas.GlobalTypes[new XmlQualifiedName(required,"uri:ea.com:eala:asset")] as XmlSchemaType;
-            if(selected==null||concrete==null||constraint==null||!XmlSchemaType.IsDerivedFrom(concrete,selected,XmlSchemaDerivationMethod.None)||!XmlSchemaType.IsDerivedFrom(concrete,constraint,XmlSchemaDerivationMethod.None))return;
+            if(selected==null||concrete==null||constraint==null||!XmlSchemaType.IsDerivedFrom(selected,constraint,XmlSchemaDerivationMethod.None)||!XmlSchemaType.IsDerivedFrom(concrete,constraint,XmlSchemaDerivationMethod.None)||!allowRetarget&&!XmlSchemaType.IsDerivedFrom(concrete,selected,XmlSchemaDerivationMethod.None))return;
             if(actual is XmlAttribute attribute)attribute.Value=b;else actual.InnerText=b;
         }
     }

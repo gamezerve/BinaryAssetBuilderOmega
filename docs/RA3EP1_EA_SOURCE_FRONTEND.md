@@ -48,7 +48,8 @@ command IDs can be compiled but do not acquire consumers automatically.
 | xi:include execution | Literal XML fragments using EA `xmlns(prefix=...) xpointer(/prefix:Root/child::*)`, confined relative/DATA lookup, captured hashes/search precedence; not arbitrary XPointer, network, text or fallback execution |
 | Nonempty Tags | Not enabled; explicit error |
 | Existing module primitive attributes | Enabled through the schema/native/token contract; [complete inventory](RA3EP1_MODULE_PRIMITIVE_CAPABILITIES.md) |
-| Arbitrary module additions/removals/child-list-enum-reference edits | Not enabled by accepting an EA document envelope or direct primitive attributes |
+| Existing nonempty schema-typed strong-reference targets | May retarget to compatible, uniquely resolved stock assets; emitted occurrence identities are checked independently against authored source and catalog |
+| Arbitrary module additions/removals/child-list-enum edits or non-root reference presence changes | Not enabled by accepting an EA document envelope or target retargeting |
 
 The existing experimental armor frontend has its own bounded preprocessing
 support. That does not automatically extend to this GameObject frontend.
@@ -169,7 +170,49 @@ these generated logs are not shipped as source assets.
   `87241958D0EC4CDB3A133FFC837E023A01B51716924F6B532A30BCBDE7EDF918`.
 - Separate source tests passed: partial bases, nested keyed merges, Replace,
   no explicit-default leakage, alias spelling equivalence, wrong-name/type
-  refusal, final incomplete-object refusal and fragment confinement/cycles.
+  refusal (historical pre-retarget source gate), final incomplete-object refusal
+  and fragment confinement/cycles.
 - Current evidence is `alpha/.work/test-RebornSourceMirror.log` and
   `alpha/.work/dev-sdk-test.json`. No game was launched; this is compilation
   evidence, not a new gameplay result or general resource-processor support.
+
+## Existing strong-reference target freedom — October 20, 2026
+
+<!-- Reborn: replace captured-name pinning with typed target and native occurrence validation, without advertising new native topology. -->
+
+The completed Conscript graph no longer pins its existing nonempty strong
+references to the original asset names. This includes nested `Weapon/@Template`,
+not just root UnitIntro/UnitTypeIcon. A source-comparison mask validates the
+declared target type; it does not rewrite the real authored source. Native
+compilation resolves the real target against the configured stock catalog.
+An independent schema-typed source traversal derives every expected target
+identity, first anchored against the captured original occurrence table. The
+emitted table must match it in full, including repeated target occurrences.
+Whole BIN/RELO/IMP ownership and metadata/stream/archive checks remain active.
+
+The actual Reborn source with primary weapon `JapanArcherInfantryEnergyBow`
+successfully produced BIG/SKUDef from a read-only copy in RebornTest. A grouped
+native test also retargeted both existing weapon slots to that same real EP1
+weapon, round-tripped the resulting stream and rejected missing targets, wrong
+types, authored numeric indices and a forged dependency table. These are offline
+compile/package results; no new gameplay observation is claimed.
+
+This capability does not add/remove non-root reference slots, add/reorder native
+modules, compile a newly declared WeaponTemplate alongside the unit, or compile
+ART resources. Those require their own processor/layout or emitted-source graph
+support. Weak IDs and ordinary strings are not reinterpreted as strong imports.
+
+Final focused live regression: **6/6 passed** (combined weapon targets + dynamic
+EditorName + physics/AI primitives + both root imports removed; three invalid
+reference builds retaining the good package; restored developer source build;
+explicit local recruitment consumer). The actual read-only Reborn reproduction
+also passed separately on the final compiler. User sources/output were unchanged,
+and developer sources were restored. Compiler build: zero warnings/errors;
+source inheritance/fragment tests passed; live compiler matches rebuilt output.
+
+The earlier full regression attempt was interrupted by a maintenance sync
+contending for the SDK lock; it is not claimed as a completed new 27-case run.
+The focused harness preserves script/mixed-content whitespace and uses a
+supported root string, not the still-unenabled DisplayName edit. Evidence:
+`alpha/.work/dev-sdk-test.json`, `test-RebornSourceMirror.log` and
+`test-ConscriptReferenceCombined.log`.
