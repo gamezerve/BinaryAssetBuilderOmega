@@ -2,6 +2,20 @@
 
 ## Build your mod
 
+<!-- Reborn: the Studio GUI is the only user build workflow; final publication follows the selected version. -->
+Select your mod in `EALAModStudio.exe`, enter **Mod Version** (for example
+`1.00`) and click **Build Mod**. Final files are in your Windows Documents
+folder under `Red Alert 3 Uprising/Mods/<name>/`:
+`<name>_<version>_Streams.big`, `<name>_<version>_Misc.big` and
+`<name>_<version>.skudef`. The SKUDef references both archives; no CFG is required.
+Put loose distributable files in `mods/<name>/Misc/`, retaining their intended
+in-game paths (for example `Misc/Data/Scripts/...`). `.asset` files are excluded.
+Misc does not compile XML/art/audio; it packages files as-is. Missing/empty Misc
+produces an empty archive. Other versions/notes are preserved. A modified or
+unmanaged same-version output is refused rather than overwritten.
+Internal receipts/logs and compatibility copies remain under `builtmods/<name>/`.
+Restart an already-open Studio to load the new version field.
+
 <!-- Reborn: missing-name reports are part of the normal Studio build, not a separate user workflow. -->
 Step 6 lists missing definitions and schema-typed asset references with their
 owner, source file and line. Availability checks mod-produced asset identities
@@ -60,16 +74,16 @@ Open **`alpha/EALAModStudio.exe`**. This is the user-facing entry point.
 Select `Reborn` or `RebornTest`, edit its `alpha/mods/<name>/data/mod.xml`, then click
 **Build Mod** in Studio. Read Build Log / Error Log for the result.
 
-Successful builds publish these files in the same SDK:
+Successful builds publish these files under Windows Documents/Red Alert 3 Uprising/Mods/&lt;name&gt;:
 
-- `alpha/builtmods/<name>/<name>.big`
-- `alpha/builtmods/<name>/mod_1.0.skudef`
-- `alpha/builtmods/<name>/build.json` and `last-build.log`
+- `<name>_<version>_Streams.big`
+- `<name>_<version>_Misc.big`
+- `<name>_<version>.skudef`
 
-No CFG counterpart is required by this workflow. This temporary output directory
-is reused per mod, not multiplied into dated SDK copies. A failed build leaves
+No CFG counterpart is required by this workflow. Internal `builtmods/<name>`
+keeps compatibility copies, `build.json` and `last-build.log`, not dated SDK copies. A failed build leaves
 the last successful output intact; it is not evidence of a new successful build.
-No automatic installation or game launch occurs.
+The Documents mod library is updated; game installation files are not changed and no game is launched.
 
 Closing Studio while its own build is active asks whether to cancel that build.
 **Yes** stops its worker process tree, releases the SDK lock and closes Studio;
@@ -98,7 +112,8 @@ Only two mod folders belong in the Studio list:
 
 Select **RebornTest → Build Mod** to compile that Conscript from the selected
 XML through Core, including complete native/metadata/reference/stream checks.
-The output is `alpha/builtmods/RebornTest/RebornTest.big` and `mod_1.0.skudef`.
+For version 1.00, the final output is `RebornTest_1.00_Streams.big`,
+`RebornTest_1.00_Misc.big` and `RebornTest_1.00.skudef` in the Documents mod library.
 This is not a cached trial-BIG export. The unchanged BuildTime=1 regression fixture
 must still reproduce the previous game-observed candidate. New scalar values are
 offline-qualified, not new gameplay observations.
@@ -248,8 +263,8 @@ private `alpha/.work/<id>` directory and are removed after the build. The final
 `alpha/builtmods/<name>/build.json` embeds the verified backend receipts;
 their temporary paths are historical provenance, not current file links.
 Intermediate/admission reports alone do not mean the build succeeded.
-The SKU is a mod fragment, not a replacement stock SKU. No automatic install
-or launch is provided. The armor observations above and the earlier diagnostic
+The SKU is a mod fragment, not a replacement stock SKU. Final files are published
+to the Documents mod library; no game installation changes or launch are provided. The armor observations above and the earlier diagnostic
 AK47 Damage=50 trial are behavioral evidence for those specific candidates;
 newly authored values/packages are initially offline validated.
 

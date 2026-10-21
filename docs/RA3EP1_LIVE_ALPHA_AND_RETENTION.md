@@ -24,10 +24,15 @@ in ignored `alpha/uprising-alpha.paths`. Existing settings and mod XML are not
 silently replaced. Studio references the live repository driver, not a copied
 stale script. This repository development SDK is not a standalone portable ZIP.
 
-`Invoke-Ra3Ep1DevAlphaBuild.ps1` wraps the already qualified alpha backend. It
-publishes `alpha/builtmods/<name>/<name>.big`, `mod_1.0.skudef`, `build.json` and
-`last-build.log`. No CFG is emitted in that final directory. The short fixed
-SKUDef basename avoids the observed Uprising identity-length restriction.
+`Invoke-Ra3Ep1DevAlphaBuild.ps1` wraps the already qualified alpha backend. The
+user-requested final publication now uses the Windows Documents known folder:
+`Red Alert 3 Uprising/Mods/<name>/<name>_<version>_Streams.big`,
+`<name>_<version>_Misc.big` and `<name>_<version>.skudef`. Studio supplies the
+editable version field. `alpha/builtmods/<name>/<name>.big`, `mod_1.0.skudef`,
+`build.json` and `last-build.log` remain private compatibility/cache output.
+No final CFG is emitted. The earlier short-basename experiment remains historical
+evidence, not gameplay proof for every new versioned filename; the new public
+SKUDef naming needs its own launch check. See [final packaging](RA3EP1_FINAL_PACKAGING.md).
 Each successful build replaces only the previous complete managed output for
 that mod; failures leave the last good package intact. Unknown output files
 cause refusal, not deletion. Sources and game installations are not modified.

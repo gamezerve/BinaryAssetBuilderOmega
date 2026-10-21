@@ -20,13 +20,20 @@ function Set-TestFixture([string]$Name){Remove-TestData;Copy-Item -LiteralPath (
 <# Reborn: verify exit status, four final files, exact SKUDef bytes and package/receipt agreement for the developer slot. #>
 #-------------------------------------------------------------------------------------------------
 function Invoke-TestCase([string]$Label,[bool]$ExpectedSuccess){
-    $log=Join-Path $sdk ('.work/test-'+$Label+'.log');& $runtime -NoProfile -File $driver -ModName RebornTest *> $log
+    # Reborn: final Documents-style output must also remain unchanged when a later fixture is rejected.
+    $finalDirectory=Join-Path $sdk '.work/test-final-mods/RebornTest';$priorFinal=@{}
+    if(-not $ExpectedSuccess -and (Test-Path -LiteralPath $finalDirectory)){foreach($file in Get-ChildItem -LiteralPath $finalDirectory -File -Force | Where-Object Name -NE '.reborn-publish.lock'){$priorFinal[$file.FullName]=(Get-FileHash -LiteralPath $file.FullName).Hash}}
+    # Reborn: automated fixtures publish only to isolated SDK work space, never the user's Documents mod library.
+    $log=Join-Path $sdk ('.work/test-'+$Label+'.log');& $runtime -NoProfile -File $driver -ModName RebornTest -FinalModsRoot (Join-Path $sdk '.work/test-final-mods') *> $log
     if(($LASTEXITCODE-eq 0)-ne $ExpectedSuccess){throw ('Unexpected test result: '+$log)}
     # Reborn: every real build needs readable phases and an explicit failure/success result, not replayed JSON receipts.
     $display=Get-Content -LiteralPath $log -Raw
     if($display-notmatch 'Step 1: Clearing build cache' -or $display-notmatch 'Step time taken:' -or $display-match '(?m)^\s*"(?:RequestedArguments|CompilerFiles|WorkingDirectoryMustBeInstallation)"\s*:'){throw ('Readable build log contract differs: '+$log)}
     if($ExpectedSuccess){if($display-notmatch 'Step 11: Creating skudef file' -or $display-notmatch 'Publication completed;'){throw ('Successful phase summary absent: '+$log)}}elseif($display-notmatch 'Build Failed during Step '){throw ('Failure phase absent: '+$log)}
     if($ExpectedSuccess){$receipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json;if($receipt.Format-cne 'RebornLiveAlpha1' -or (Get-FileHash -LiteralPath $package).Hash-cne $receipt.PackageSha256 -or @(Get-ChildItem -LiteralPath $output -File).Count-ne 4 -or (Get-Content -LiteralPath $receipt.SkuDefPath -Raw)-cne "add-big RebornTest.big`n" -or @(Get-ChildItem -LiteralPath $output -Filter *.cfg).Count){throw 'Output contract differs.'};if((Get-Content -LiteralPath (Join-Path $output 'last-build.log') -Raw)-notmatch '(?m)^Build Completed\r?$'){throw 'Saved successful log has no completion marker.'}}
+    # Reborn: verify the actual final archives/SKU instead of treating the internal compatibility cache as publication proof.
+    if($ExpectedSuccess){$final=$receipt.FinalPackage;if(-not $final -or $final.Version -cne '1.00' -or $final.Directory -ine $finalDirectory -or (Get-FileHash -LiteralPath $final.StreamsPath).Hash -cne $receipt.PackageSha256 -or -not(Test-Path -LiteralPath $final.MiscPath) -or (Get-Content -LiteralPath $final.SkuDefPath -Raw) -cne "add-big RebornTest_1.00_Streams.big`r`nadd-big RebornTest_1.00_Misc.big`r`n"){throw 'Versioned final publication contract differs.'}}
+    else{foreach($path in $priorFinal.Keys){if(-not(Test-Path -LiteralPath $path) -or (Get-FileHash -LiteralPath $path).Hash -cne $priorFinal[$path]){throw 'Rejected fixture changed the final published package.'}}}
     $rows.Add([pscustomobject]@{Name=$Label;Passed=$true;ExpectedSuccess=$ExpectedSuccess})
 }
 $saved=Join-Path $sdk ('.work/RebornTest-original-'+[guid]::NewGuid().ToString('N'))

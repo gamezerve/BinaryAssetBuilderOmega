@@ -1,9 +1,11 @@
-# Reborn: stable local SDK front end; keep editable mod sources, publish only BIG/SKUDef plus receipts, never install or launch.
+# Reborn: stable SDK front end; preserve editable sources, publish versioned Documents mods, never change game installation files or launch a game.
 [CmdletBinding()]
-param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot,[string]$StudioSession)
+param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot,[string]$StudioSession,[string]$ModVersion='1.00',[string]$FinalModsRoot)
 $ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$lock=$null;$run=$null;$publishMutex=$null;$cancelEvent=$null;$publishHeld=$false;$runOwned=$false;$stageOwned=$false
 # Reborn: retain the original Studio envelope while adding truthful numbered backend phases and separate detailed output.
 . (Join-Path $PSScriptRoot 'Ra3Ep1BuildLog.ps1')
+# Reborn: the final user package targets Documents; OutputRoot remains the private compatibility receipt/cache location.
+. (Join-Path $PSScriptRoot 'Ra3Ep1FinalPackage.ps1')
 #-------------------------------------------------------------------------------------------------
 <# Reborn: delete only a newly owned work/output generation after proving containment and refusing every redirected descendant. #>
 #-------------------------------------------------------------------------------------------------
@@ -14,6 +16,8 @@ try{
     Start-SdkBuildPhase 3 'Clearing built mod'
     Write-SdkBuildLine 'Preparing private build workspace; previous successful output will be retained until publication.'
     if($PSVersionTable.PSVersion.Major-lt 7){throw 'PowerShell 7 is required.'}
+    # Reborn: validate before compilation, retain formatting such as 1.00, and reject filename/argument injection.
+    if($ModVersion -cnotmatch '\A[0-9]{1,4}(\.[0-9]{1,4}){1,3}\z'){throw 'Mod Version must be numeric, for example 1.00 or 1.2.3.'}
     # Reborn: only a Studio-created session supplies cancellation/publication synchronization; unrelated CLI builds remain independent.
     if($StudioSession){if($StudioSession-cnotmatch '^[a-f0-9]{32}$'){throw 'Invalid Studio session.'};$publishMutex=[Threading.Mutex]::OpenExisting('Local\RebornStudio-'+$StudioSession+'-Publish');$cancelEvent=[Threading.EventWaitHandle]::OpenExisting('Local\RebornStudio-'+$StudioSession+'-Cancel');if($cancelEvent.WaitOne(0)){throw 'Studio build cancelled before starting.'}}
     if(-not $ModXml){$ModXml=Join-Path $sdk ('mods/'+$ModName+'/data/mod.xml')};$ModXml=[IO.Path]::GetFullPath($ModXml)
@@ -89,7 +93,7 @@ try{
     $stage=Join-Path $expectedOutput ('.stage-'+[guid]::NewGuid().ToString('N'));$null=New-Item -ItemType Directory -Path $stage;$stageOwned=$true
     $big=$ModName+'.big';Copy-Item -LiteralPath $package -Destination (Join-Path $stage $big);$hash=(Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash
     if((Get-FileHash -LiteralPath (Join-Path $stage $big) -Algorithm SHA256).Hash-cne $hash){throw 'Published BIG differs from the verified backend package.'}
-    Write-SdkBuildLine ('BIG prepared and SHA256 verified: '+$big+' (archive generated during static-data compilation).')
+    Write-SdkBuildLine ('Streams BIG prepared and SHA256 verified: '+$ModName+'_'+$ModVersion+'_Streams.big (archive generated during static-data compilation).')
     if($null-ne $core.ArchiveEntryCount){Write-SdkBuildLine ($core.ArchiveEntryCount.ToString()+' Files added (verified backend archive).')}
     Stop-SdkBuildPhase
     Start-SdkBuildPhase 11 'Creating skudef file'
@@ -99,19 +103,29 @@ try{
     [IO.File]::WriteAllText((Join-Path $stage 'build.json'),($result|ConvertTo-Json -Depth 20))
     # Reborn: retain full compiler evidence outside the four-file public package contract before private cleanup.
     Copy-Item -LiteralPath $detail -Destination (Join-Path $sdk '.work/last-detail.log') -Force
-    Write-SdkBuildLine ('BIG: '+$result.BigPath);Write-SdkBuildLine ('SKUDef: '+$sku)
-    Write-SdkBuildLine ('Build receipt: '+(Join-Path $output 'build.json'))
+    Write-SdkBuildLine ('Internal build receipt: '+(Join-Path $output 'build.json'))
     Write-SdkBuildLine ('Detailed compiler log: '+(Join-Path $sdk '.work/last-detail.log'))
     # Reborn: replace only a complete managed output directory; custom notes/files cause refusal instead of deletion.
     if(Test-Path -LiteralPath $output){$old=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json;if($old.Format-cne 'RebornLiveAlpha1'){throw 'Unmanaged output directory retained.'};foreach($file in Get-ChildItem -LiteralPath $output -Force){if($file.PSIsContainer -or $file.Name-notin @($big,'mod_1.0.skudef','build.json','last-build.log')){throw 'Unmanaged output file retained.'}}}
+    # Reborn: publish only qualified streams plus Misc; final SKUDef uses the selected version and Windows Documents known folder.
+    $final=Publish-RebornFinalPackage $ModName $ModVersion $package (Join-Path (Split-Path -Parent (Split-Path -Parent $ModXml)) 'Misc') $FinalModsRoot
+    # Reborn: Documents is authoritative after commit; a later internal cache failure must not falsely report that no package was published.
+    try {
+    $result | Add-Member -NotePropertyName FinalPackage -NotePropertyValue $final
+    [IO.File]::WriteAllText((Join-Path $stage 'build.json'),($result|ConvertTo-Json -Depth 20))
+    Write-SdkBuildLine ('Mod Version: '+$ModVersion)
+    Write-SdkBuildLine ('Final Streams BIG: '+$final.StreamsPath)
+    Write-SdkBuildLine ('Final Misc BIG: '+$final.MiscPath+' ('+$final.MiscEntries+' files)')
+    Write-SdkBuildLine ('Final SKUDef: '+$final.SkuDefPath)
     Stop-SdkBuildPhase
     # Reborn: finish the saved log inside staging so a log write failure cannot replace the last good public package.
-    $savedLines=@($script:BuildLogLines)+@('Publication completed; no installation or game launch was attempted.','Build Completed',('Build time taken: '+$script:BuildClock.Elapsed.ToString('c')))
+    $savedLines=@($script:BuildLogLines)+@('Publication completed; game installation files were not modified; no game was launched.','Build Completed',('Build time taken: '+$script:BuildClock.Elapsed.ToString('c')))
     [IO.File]::WriteAllLines((Join-Path $stage 'last-build.log'),[string[]]$savedLines)
     $previous=Join-Path $expectedOutput ('.previous-'+[guid]::NewGuid().ToString('N'));if(Test-Path -LiteralPath $output){[IO.Directory]::Move($output,$previous)}
     try{[IO.Directory]::Move($stage,$output)}catch{if(Test-Path -LiteralPath $previous){[IO.Directory]::Move($previous,$output)};throw}
     if(Test-Path -LiteralPath $previous){Remove-DevAlphaOwned $previous $expectedOutput}
-    Write-SdkBuildLine 'Publication completed; no installation or game launch was attempted.'
+    } catch {Write-SdkBuildLine ('Warning: ALPHA112 Final package published at '+$final.SkuDefPath+'; internal cache/log refresh failed: '+$_.Exception.Message)}
+    Write-SdkBuildLine 'Publication completed; game installation files were not modified; no game was launched.'
 }catch{
     Write-SdkBuildLine ('Error: ALPHA110 '+$_.Exception.Message)
     Write-SdkBuildLine ('Critical: ALPHA111 Build Failed during '+$script:PhaseLabel+'. No successful new publication.')

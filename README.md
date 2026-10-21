@@ -12,6 +12,16 @@ Active development branch: `main` in `gamezerve/BinaryAssetBuilderOmega`.
 It contains the Uprising SDK work previously developed on
 `feature/ra3ep1-manifest-inspector`; the original `master` history is retained.
 
+<!-- Reborn: versioned final publication follows the user's requested RA3 SDK workflow. -->
+Studio now has a **Mod Version** field (default `1.00`). Final builds publish
+`<name>_<version>_Streams.big`, `<name>_<version>_Misc.big` and
+`<name>_<version>.skudef` to the Windows Documents known folder under
+`Red Alert 3 Uprising/Mods/<name>/`. The SKUDef includes both archives.
+`alpha/mods/<name>/Misc/` is packaged root-relative, excluding `.asset`
+intermediates like the official SDK. Missing/empty Misc creates a valid empty
+archive. Other versions and unrelated user files are preserved; modified or
+unmanaged same-version collisions fail visibly. See [packaging details](docs/RA3EP1_FINAL_PACKAGING.md).
+
 <!-- Reborn: source diagnostics must refer to authored files, never misleading generated-XML coordinates. -->
 [XML diagnostics](docs/RA3EP1_XML_DIAGNOSTICS.md) now carry physical source
 file/line/column information through schema validation, inheritance and fragment
@@ -91,8 +101,9 @@ does not enable resource compilation. See [exact search order](docs/RA3EP1_SOURC
 
 **One live alpha SDK:** open `alpha/EALAModStudio.exe`, edit the selected mod's
 `alpha/mods/<name>/data/mod.xml`, then use **Build Mod**. Successful builds reuse
-`alpha/builtmods/<name>/` for `<name>.big`, `mod_1.0.skudef`, `build.json` and
-`last-build.log`; no CFG is published. Failed builds preserve the last good
+the Documents mod folder for versioned final archives/SKUDef. Internal
+`alpha/builtmods/<name>/` keeps compatibility copies, `build.json` and
+`last-build.log`; no final CFG is published. Failed builds preserve the last good
 output. Successful Release/x86 compiler builds refresh the tools in this same
 SDK without replacing editable mod sources. No new dated SDK copy is needed.
 This remains a repository-linked local alpha, not a portable public release.

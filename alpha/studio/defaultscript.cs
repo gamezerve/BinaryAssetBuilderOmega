@@ -1,4 +1,4 @@
-// Reborn: prototype adapter for the existing EA Mod BuildStudio interface; preserve reference SDK files and never install or launch a game.
+// Reborn: adapter for EA Mod BuildStudio; publish Documents mods while preserving reference SDK/game installation files and never launching a game.
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -53,11 +53,15 @@ namespace EALABuild
         public void buildMod(string modName, Dictionary<string, Object> gui)
         {
             string name = BuildHelper.BuildTarget;
-            // Reborn: the stable SDK uses a short fixed SKUDef basename, independent of the editable mod folder name.
+            // Reborn: the selected mod folder determines the validated source path and final package basename.
             if (String.IsNullOrEmpty(name) || name.Length > 48 || name.IndexOfAny(new char[] { '\\', '/', '"', ':', ';', '\r', '\n' }) >= 0 || name == "." || name == "..")
                 throw new InvalidDataException("Reborn: invalid alpha mod name.");
             string input = Path.Combine(Path.Combine(Path.Combine(StaticPaths.CurrentDirectory, "mods"), name), "data\\mod.xml");
             CheckPath(input);
+            // Reborn: preserve the entered numeric version verbatim in final archive and SKUDef filenames.
+            string version = gui.ContainsKey("modversion") ? (string)gui["modversion"] : "1.00";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(version ?? "", @"\A[0-9]{1,4}(\.[0-9]{1,4}){1,3}\z"))
+                throw new InvalidDataException("Reborn: Mod Version must be numeric, for example 1.00 or 1.2.3.");
             BuildHelper.CurrentBuildSteps = 1;
             // Reborn: separate the user's Reborn workspace from developer tests, including the strictly bounded complete Conscript build.
             // Reborn: keep the build header short; backend warnings describe the selected profile and detailed receipts stay on disk.
@@ -67,7 +71,7 @@ namespace EALABuild
             RunExecutableArguments request = new RunExecutableArguments(buildHost);
             // Reborn: bind every Studio build to the configured read-only stock baseline.
             request.Arguments = "--run " + session + " \"" + runtime + "\" -NoProfile -File \"" + driver + "\" -StudioSession " + session + " -ModXml \"" + input + "\" -StaticManifest \"" + staticManifest
-                + "\" -CompilerDirectory \"" + compilerDirectory + "\" -OutputRoot \"" + outputRoot + "\"";
+                + "\" -CompilerDirectory \"" + compilerDirectory + "\" -OutputRoot \"" + outputRoot + "\" -ModVersion \"" + version + "\"";
             // Reborn: preserve four-key armor workspaces without inferring a weapon dependency path.
             if (globalManifest != null) request.Arguments += " -GlobalManifest \"" + globalManifest + "\"";
             request.RedirectOutput = true; request.CreateWindow = false;
@@ -111,6 +115,9 @@ namespace EALABuild
             options.Add(new GUIElementData("scope", "Fixed yard samples or 1..32 source armors with Includes/Defines/inheritFrom (experimental)", GUIElementData.LabelType, ScriptIndex.ModScript));
             // Reborn: distinguish reviewed variable behavior shapes from unrestricted nested GameObject/resource authoring.
             options.Add(new GUIElementData("weapon", "Conscript: reviewed variable Behaviors + fixed fields; unsupported layouts fail", GUIElementData.LabelType, ScriptIndex.ModScript));
+            // Reborn: use EA's own persisted text-input control rather than a separate settings interface.
+            options.Add(new GUIElementData("mv", "Mod Version:", GUIElementData.LabelType, ScriptIndex.ModScript));
+            options.Add(new GUIElementData("modversion", "1.00", GUIElementData.InputBoxType, ScriptIndex.ModScript));
             return options;
         }
 
