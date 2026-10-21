@@ -17,6 +17,8 @@ internal static class ConscriptSourceInput
     {
         // Reborn: source hashes and alias-precedence witnesses are independent publication requirements.
         public SdkSourceSearch.Selection[] Searches { get; init; }=Array.Empty<SdkSourceSearch.Selection>();
+        // Reborn: captured source coordinates survive detachment without adding metadata to user XML or build receipts.
+        internal SdkXmlDiagnostics.SourceMap? Locations {get;init;}
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -85,8 +87,8 @@ internal static class ConscriptSourceInput
         if(Directory.Exists(output) || File.Exists(output))throw new InvalidDataException("Fresh source-preparation output required.");
         var input=ConscriptSourcePreparation.Load(entry,sdk==null?null:SdkSourceSearch.ForMod(entry,sdk,stockData));var schemas=Schemas();
         var baseline=Read(Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"live-alpha","ConscriptBuildTime1","data","mod.xml"));
-        Admit(input.Game,baseline,schemas);
-        if(input.Command!=null){input.Command.Schemas.Add(schemas);input.Command.Validate((_,e)=>throw new InvalidDataException(e.Message));}
+        try{Admit(input.Game,baseline,schemas);if(input.Command!=null){input.Command.Schemas.Add(schemas);input.Command.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));}}
+        catch(Exception error)when(error is InvalidDataException or XmlException or XmlSchemaException){input.Locations?.Enrich(error,entry,SdkXmlDiagnostics.Node(error)?.OwnerDocument??input.Game);throw;}
         Directory.CreateDirectory(output);string game=Path.Combine(output,"game.xml"),command=Path.Combine(output,"command.xml");
         File.WriteAllText(game,input.Game.DocumentElement!.OuterXml,new UTF8Encoding(false));if(input.Command!=null)File.WriteAllText(command,input.Command.DocumentElement!.OuterXml,new UTF8Encoding(false));
         foreach(var source in input.Sources)if(Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(source.Path,1048576)))!=source.Sha256)throw new InvalidDataException("Source changed during preparation: "+source.Path);
@@ -101,7 +103,7 @@ internal static class ConscriptSourceInput
     {
         // Reborn: materialize defaults only in comparison copies; emitting optional empty-string defaults would create extra native allocations in legacy marshalers.
         var qualified=Parse(Encoding.UTF8.GetBytes(input.DocumentElement!.OuterXml));var model=Parse(Encoding.UTF8.GetBytes(baseline.DocumentElement!.OuterXml));
-        foreach(var doc in new[]{qualified,model}){doc.Schemas.Add(schemas);doc.Validate((_,e)=>throw new InvalidDataException(e.Message));foreach(XmlAttribute attribute in doc.SelectNodes("//@*")!)attribute.Value=attribute.Value;}
+        foreach(var doc in new[]{qualified,model}){doc.Schemas.Add(schemas);doc.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));foreach(XmlAttribute attribute in doc.SelectNodes("//@*")!)attribute.Value=attribute.Value;}
         if(!Identity(input.DocumentElement!.GetAttribute("id")))throw new InvalidDataException("GameObject ID must be an ASCII identifier of 1..128 characters.");
         // Reborn: schema/native primitive capabilities validate all supported root values before structural masking; no gameplay-specific numeric caps are introduced.
         GameObjectScalarContract.Validate(input);
@@ -130,7 +132,7 @@ internal static class ConscriptSourceInput
         string actualSignature=Signature(copy.DocumentElement),modelSignature=Signature(model.DocumentElement);
         // Reborn: target names in existing typed slots are authorable; native occurrence ownership and catalog validation remain mandatory downstream.
         if(actualSignature!=modelSignature){ConscriptReferenceSpellings.Compare(copy,model,schemas,allowRetarget:true);actualSignature=Signature(copy.DocumentElement);modelSignature=Signature(model.DocumentElement);}
-        if(actualSignature!=modelSignature)throw new InvalidDataException("GameObject requires an unsupported structural/reference/module capability: "+Difference(copy.DocumentElement,model.DocumentElement,"GameObject")+". Schema-valid primitive edits are enabled; general graph changes are not enabled yet.");
+        if(actualSignature!=modelSignature){string difference=Difference(copy.DocumentElement,model.DocumentElement,"GameObject",out var offending);throw SdkXmlDiagnostics.At(new InvalidDataException("GameObject requires an unsupported structural/reference/module capability: "+difference+". Schema-valid fixed values and existing references/local IDs are enabled; general graph changes are not enabled yet."),SdkXmlDiagnostics.Unmasked(offending,input));}
         // Reborn: make attribute traversal deterministic before Core assigns strong-reference occurrence indices; caller formatting must not reorder imports.
         Align(input.DocumentElement,baseline.DocumentElement);
         //-------------------------------------------------------------------------------------------------
@@ -147,12 +149,13 @@ internal static class ConscriptSourceInput
     //-------------------------------------------------------------------------------------------------
     /** Reborn: name the first unsupported source difference without dumping the full object/script or hiding it behind a fingerprint error. */
     //-------------------------------------------------------------------------------------------------
-    private static string Difference(XmlElement actual,XmlElement model,string path)
+    private static string Difference(XmlElement actual,XmlElement model,string path,out XmlNode? offending)
     {
-        foreach(var a in actual.Attributes.OfType<XmlAttribute>().Concat(model.Attributes.OfType<XmlAttribute>()).Where(a=>a.NamespaceURI!="http://www.w3.org/2000/xmlns/").DistinctBy(a=>(a.NamespaceURI,a.LocalName)))if(actual.GetAttribute(a.LocalName,a.NamespaceURI)!=model.GetAttribute(a.LocalName,a.NamespaceURI))return path+"/@"+a.LocalName+" (authored="+actual.GetAttribute(a.LocalName,a.NamespaceURI)+", baseline="+model.GetAttribute(a.LocalName,a.NamespaceURI)+")";
-        var children=actual.ChildNodes.OfType<XmlElement>().ToArray();var models=model.ChildNodes.OfType<XmlElement>().ToArray();if(children.Length!=models.Length)return path+" child count";
+        offending=actual;
+        foreach(var a in actual.Attributes.OfType<XmlAttribute>().Concat(model.Attributes.OfType<XmlAttribute>()).Where(a=>a.NamespaceURI!="http://www.w3.org/2000/xmlns/").DistinctBy(a=>(a.NamespaceURI,a.LocalName)))if(actual.GetAttribute(a.LocalName,a.NamespaceURI)!=model.GetAttribute(a.LocalName,a.NamespaceURI)){offending=(XmlNode?)actual.GetAttributeNode(a.LocalName,a.NamespaceURI)??actual;return path+"/@"+a.LocalName+" (authored="+actual.GetAttribute(a.LocalName,a.NamespaceURI)+", baseline="+model.GetAttribute(a.LocalName,a.NamespaceURI)+")";}
+        var children=actual.ChildNodes.OfType<XmlElement>().ToArray();var models=model.ChildNodes.OfType<XmlElement>().ToArray();if(children.Length!=models.Length){offending=children.FirstOrDefault(c=>!models.Any(m=>m.LocalName==c.LocalName&&m.NamespaceURI==c.NamespaceURI&&m.GetAttribute("id")==c.GetAttribute("id")))??actual;return path+" child count";}
         if(children.Length==0 && actual.InnerText!=model.InnerText)return path+" text (length "+actual.InnerText.Length+" versus "+model.InnerText.Length+")";
-        for(int i=0;i<children.Length;i++){if(children[i].LocalName!=models[i].LocalName || children[i].NamespaceURI!=models[i].NamespaceURI)return path+" child order at "+i;if(Signature(children[i])!=Signature(models[i]))return Difference(children[i],models[i],path+"/"+children[i].LocalName+"["+i+"]");}
+        for(int i=0;i<children.Length;i++){if(children[i].LocalName!=models[i].LocalName || children[i].NamespaceURI!=models[i].NamespaceURI){offending=children[i];return path+" child order at "+i;}if(Signature(children[i])!=Signature(models[i]))return Difference(children[i],models[i],path+"/"+children[i].LocalName+"["+i+"]",out offending);}
         return path+" attribute/text shape";
     }
 
@@ -214,10 +217,10 @@ internal static class ConscriptSourceInput
     //-------------------------------------------------------------------------------------------------
     /** Reborn: bounded source reads reject DTD/entities, preserve scripts and accept normal XML declarations/comments. */
     //-------------------------------------------------------------------------------------------------
-    private static XmlDocument Read(string path)=>Parse(SdkEnvironmentPreflight.Read(path,1048576));
+    private static XmlDocument Read(string path)=>SdkXmlDiagnostics.Parse(SdkEnvironmentPreflight.Read(path,1048576),path);
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: xsi/xi namespace declarations alone do not execute remote schema fetching or XInclude. */
     //-------------------------------------------------------------------------------------------------
-    private static XmlDocument Parse(byte[] bytes){using var stream=new MemoryStream(bytes,false);using var reader=XmlReader.Create(stream,new XmlReaderSettings{DtdProcessing=DtdProcessing.Prohibit,XmlResolver=null,MaxCharactersInDocument=1048576});var doc=new XmlDocument{PreserveWhitespace=true,XmlResolver=null};doc.Load(reader);return doc;}
+    private static XmlDocument Parse(byte[] bytes)=>SdkXmlDiagnostics.Parse(bytes);
 }

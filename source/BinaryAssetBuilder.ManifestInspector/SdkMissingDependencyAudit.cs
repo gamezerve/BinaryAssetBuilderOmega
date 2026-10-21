@@ -31,7 +31,7 @@ internal static class SdkMissingDependencyAudit
     {
         entry=SdkEnvironmentPreflight.Absolute(entry);output=SdkEnvironmentPreflight.Absolute(output);
         var search=SdkSourceSearch.ForMod(entry,sdk,stockData);byte[] initial=SdkEnvironmentPreflight.Read(entry,4*1048576);
-        var first=Parse(initial);var root=Path.GetDirectoryName(entry)!;string hash=Convert.ToHexString(SHA256.HashData(initial));
+        var first=Parse(initial,entry);var root=Path.GetDirectoryName(entry)!;string hash=Convert.ToHexString(SHA256.HashData(initial));
         SdkSourcePathAudit.Report paths;
         if(first.Root?.Name==XName.Get("AssetDeclaration",Ea))
         {
@@ -69,10 +69,10 @@ internal static class SdkMissingDependencyAudit
         {
             byte[] bytes=SdkEnvironmentPreflight.Read(source.PhysicalPath,4*1048576);
             if(Convert.ToHexString(SHA256.HashData(bytes))!=source.Sha256)throw new InvalidDataException("Dependency source snapshot changed: "+source.PhysicalPath);
-            documents.Add(source.PhysicalPath,Parse(bytes));
+            documents.Add(source.PhysicalPath,Parse(bytes,source.PhysicalPath));
         }
         var findings=new List<Finding>();var tables=new Dictionary<string,Dictionary<string,Definition>>(StringComparer.OrdinalIgnoreCase);var active=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        foreach(var issue in paths.Issues)findings.Add(new("DEPENDENCYPATH","Error",issue.LogicalPath,"Include/source",issue.Document,0,0,"Include",issue.Code+": "+issue.Detail));
+        foreach(var issue in paths.Issues)findings.Add(new("DEPENDENCYPATH","Error",issue.LogicalPath,"Include/source",issue.Location?.File??issue.Document,issue.Location?.Line??0,issue.Location?.Column??0,"Include",issue.Code+": "+issue.Detail+(issue.Location?.Context==true?" [source context; exact field origin unavailable]":"")));
         foreach(string path in documents.Keys)Definitions(path);
         // Reborn: only the entry and its all-Include emission closure count as mod-produced assets; instance witnesses do not satisfy runtime references.
         var emitted=new HashSet<string>(StringComparer.OrdinalIgnoreCase);Emit(entry);
@@ -217,5 +217,5 @@ internal static class SdkMissingDependencyAudit
     // Reborn: only official reference annotations define typed dependency targets.
     private static string? Annotation(XmlAttribute[]? attributes)=>attributes?.FirstOrDefault(a=>a.LocalName=="refType"&&a.NamespaceURI==AnnotationNamespace)?.Value;
     // Reborn: disable external entities and preserve source coordinates without modifying source XML.
-    private static XDocument Parse(byte[] bytes){using var stream=new MemoryStream(bytes,false);using var reader=XmlReader.Create(stream,new XmlReaderSettings{DtdProcessing=DtdProcessing.Prohibit,XmlResolver=null,MaxCharactersInDocument=4*1048576});return XDocument.Load(reader,LoadOptions.PreserveWhitespace|LoadOptions.SetLineInfo);}
+    private static XDocument Parse(byte[] bytes,string? path=null)=>SdkXmlDiagnostics.Lines(bytes,path);
 }

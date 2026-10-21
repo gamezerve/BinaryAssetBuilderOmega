@@ -6,11 +6,18 @@ asset IDs, instance includes, inheritance, `$` definitions/expressions,
 TGA/DDS textures and W3X models. Current fixed-identity alpha restrictions are
 temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
-## Current outcome — October 20, 2026
+## Current outcome — October 21, 2026
 
 Active development branch: `main` in `gamezerve/BinaryAssetBuilderOmega`.
 It contains the Uprising SDK work previously developed on
 `feature/ra3ep1-manifest-inspector`; the original `master` history is retained.
+
+<!-- Reborn: source diagnostics must refer to authored files, never misleading generated-XML coordinates. -->
+[XML diagnostics](docs/RA3EP1_XML_DIAGNOSTICS.md) now carry physical source
+file/line/column information through schema validation, inheritance and fragment
+preparation. Uncertain origins are explicitly labelled source context rather
+than presented as exact field locations. This does not expand the supported
+GameObject topology.
 
 <!-- Reborn: track the user's official RA3 Studio transcript as a required output contract, separate from implemented alpha capabilities. -->
 The [build log compatibility contract](docs/RA3EP1_BUILD_LOG_CONTRACT.md) records

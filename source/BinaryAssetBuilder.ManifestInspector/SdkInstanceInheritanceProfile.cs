@@ -150,7 +150,7 @@ internal sealed class SdkInstanceInheritanceProfile
         snapshots.Clear(); capturedBytes = 0; prepared.Clear(); active.Clear(); preparedBytes = 0;
         try { return Prepare(path,bytes,0).Result; }
         catch (Exception error) when (error is IOException or InvalidDataException or XmlException or ArgumentException or UnauthorizedAccessException or NotSupportedException or BinaryAssetBuilderException)
-        { return new(null,new(Profile,Convert.ToHexString(SHA256.HashData(bytes)),null,Array.Empty<SdkSelfAttributeInheritance.Overlay>(),new[] { error.Message[..Math.Min(error.Message.Length,512)] })); }
+        { return new(null,new(Profile,Convert.ToHexString(SHA256.HashData(bytes)),null,Array.Empty<SdkSelfAttributeInheritance.Overlay>(),new[] { error.Message[..Math.Min(error.Message.Length,512)] })){DiagnosticNode=SdkXmlDiagnostics.Node(error),DiagnosticLocation=SdkXmlDiagnostics.Origin(error)}; }
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -170,7 +170,7 @@ internal sealed class SdkInstanceInheritanceProfile
         {
             var result = ApplyDocument(path,bytes,depth,out int height);
             // Reborn: propagate the leaf diagnostic once so deep failures cannot hide their actual reason behind repeated prefixes and the bounded report length.
-            if (result.Bytes == null) throw new InvalidDataException(string.Join("; ",result.Evidence.Diagnostics));
+            if (result.Bytes == null) throw SdkXmlDiagnostics.Carry(new InvalidDataException(string.Join("; ",result.Evidence.Diagnostics)),result);
             preparedBytes += result.Bytes.Length;
             if (preparedBytes > 32*1048576 || prepared.Count >= 512) throw new InvalidDataException("32 MiB/512-document prepared instance closure bound exceeded.");
             // Reborn: closure hashes use final owner-only XML after temporary injected bases were removed; coalesce shared origins without inventing live-disk proof.
@@ -285,7 +285,7 @@ internal sealed class SdkInstanceInheritanceProfile
             if(gameObjectTrees && fragments!=null)fragments.Expand(owner,path,inventory[path].Root);
             var soundPlans = soundSingletons ? SdkSoundSingletons.Normalize(schemas,owner) : Array.Empty<SdkSoundSingletons.Plan>();
             var merged = gameObjectTrees ? SdkGameObjectInheritance.Apply(schemas,Serialize(owner)) : SdkSelfAttributeInheritance.Apply(schemas,Serialize(owner),treeCopy:true,childMerge:chains,childRemoval:removals,choiceCopy:choices,consumeMarkers:markers,bitflags:bitflags,filters:filters,upgrades:upgrades,objectCreationMarkers:expressions,identicalStates:identicalStates,stateReadds:stateReadds,crossStateRemovals:crossStateRemovals,audioTrees:audioTrees,conscriptCopy:conscriptCopy);
-            if (merged.Bytes == null) throw new InvalidDataException((chains ? "Instance overlay exceeds chain merge scope: " : "Instance overlay exceeds copy-only scope: ")+string.Join("; ",merged.Evidence.Diagnostics));
+            if (merged.Bytes == null) throw SdkXmlDiagnostics.Carry(new InvalidDataException((chains ? "Instance overlay exceeds chain merge scope: " : "Instance overlay exceeds copy-only scope: ")+string.Join("; ",merged.Evidence.Diagnostics)),merged);
             XmlDocument output = Parse(merged.Bytes);
             foreach (var asset in Assets(output).Where(asset => injected.Contains(asset.LocalName+":"+asset.GetAttribute("id"))).ToArray()) output.DocumentElement!.RemoveChild(asset);
             // Reborn: verify the actual owner Volume after Core merging and temporary-base removal, not just the expression-stage substitution.
@@ -299,7 +299,7 @@ internal sealed class SdkInstanceInheritanceProfile
             return new(processed,new(Profile,raw,Convert.ToHexString(SHA256.HashData(processed)),merged.Evidence.Overlays,Array.Empty<string>()) { ImportedBases = witnesses.ToArray(),PreparedSources = closure.DistinctBy(source => source.SourcePath,StringComparer.OrdinalIgnoreCase).ToArray(),Removals = merged.Evidence.Removals,ConsumedMarkers = merged.Evidence.ConsumedMarkers,Bitflags = merged.Evidence.Bitflags,Filters = merged.Evidence.Filters,UpgradeNormalizations = merged.Evidence.UpgradeNormalizations,MetadataDefinitionIncludes = metadataWitnesses.ToArray(),ExpressionPreparation = expressionEvidence,IdenticalStates = merged.Evidence.IdenticalStates,StateReadds = merged.Evidence.StateReadds,CrossStateRemovals = merged.Evidence.CrossStateRemovals,AudioTree = merged.Evidence.AudioTree,SoundSingletons = soundPlans.Select(plan => plan.Witness).ToArray() });
         }
         catch (Exception error) when (error is IOException or InvalidDataException or XmlException or ArgumentException or UnauthorizedAccessException or NotSupportedException or BinaryAssetBuilderException)
-        { return new(null,new(Profile,raw,null,Array.Empty<SdkSelfAttributeInheritance.Overlay>(),new[] { error.Message[..Math.Min(error.Message.Length,512)] })); }
+        { return new(null,new(Profile,raw,null,Array.Empty<SdkSelfAttributeInheritance.Overlay>(),new[] { error.Message[..Math.Min(error.Message.Length,512)] })){DiagnosticNode=SdkXmlDiagnostics.Node(error),DiagnosticLocation=SdkXmlDiagnostics.Origin(error)}; }
     }
 
     //-------------------------------------------------------------------------------------------------

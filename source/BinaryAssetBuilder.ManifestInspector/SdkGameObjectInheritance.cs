@@ -36,7 +36,7 @@ internal static class SdkGameObjectInheritance
             }
             foreach(var asset in assets)root.ReplaceChild(Resolve(asset.LocalName+":"+asset.GetAttribute("id"),0),asset);
             // Reborn: validate a disposable clone so schema defaults never leak into the authored/merged source as explicit overriding values.
-            var check=new XmlDocument{XmlResolver=null};check.LoadXml(xml.OuterXml);check.Schemas.Add(schemas);check.Validate((_,e)=>throw new InvalidDataException(e.Message));
+            var check=new XmlDocument{XmlResolver=null};check.LoadXml(xml.OuterXml);check.Schemas.Add(schemas);check.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));
             byte[] bytes=Encoding.UTF8.GetBytes(xml.OuterXml);if(bytes.Length>4*1048576)throw new InvalidDataException("Merged GameObject source exceeds 4 MiB.");
             return new(bytes,new(Profile,raw,Convert.ToHexString(SHA256.HashData(bytes)),overlays.ToArray(),Array.Empty<string>()));
 
@@ -85,6 +85,6 @@ internal static class SdkGameObjectInheritance
             }
         }
         catch(Exception error) when(error is IOException or InvalidDataException or XmlException or XmlSchemaException or ArgumentException or BinaryAssetBuilderException)
-        {return new(null,new(Profile,raw,null,Array.Empty<SdkSelfAttributeInheritance.Overlay>(),new[]{error.Message}));}
+        {return new(null,new(Profile,raw,null,Array.Empty<SdkSelfAttributeInheritance.Overlay>(),new[]{error.Message})){DiagnosticNode=SdkXmlDiagnostics.Node(error),DiagnosticLocation=SdkXmlDiagnostics.Origin(error)};}
     }
 }

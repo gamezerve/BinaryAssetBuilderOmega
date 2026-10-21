@@ -11,6 +11,9 @@ internal sealed class SdkGameObjectFragments
     private static readonly Regex Pointer=new("\\A\\s*xmlns\\((?<prefix>[A-Za-z_][A-Za-z0-9_]*)=uri:ea\\.com:eala:asset\\)\\s+xpointer\\(/\\k<prefix>:(?<root>[A-Za-z_][A-Za-z0-9_]*)/child::\\*\\)\\s*\\z",RegexOptions.CultureInvariant,TimeSpan.FromSeconds(1));
     private readonly SdkSourcePathAudit.Report paths;
     private readonly Dictionary<string,ConscriptSourceInput.SourceFile> sources=new(StringComparer.OrdinalIgnoreCase);
+    // Reborn: raw captured fragment bytes retain original coordinates after imports and inheritance detach their DOM nodes.
+    private readonly Dictionary<string,byte[]> snapshots=new(StringComparer.OrdinalIgnoreCase);
+    internal IEnumerable<SdkXmlDiagnostics.Snapshot> Snapshots=>snapshots.Select(s=>new SdkXmlDiagnostics.Snapshot(s.Key,s.Value));
     private readonly List<SdkSourceSearch.Selection> searches=new();
     private readonly HashSet<string> active=new(StringComparer.OrdinalIgnoreCase);
     private long bytesRead;
@@ -30,6 +33,8 @@ internal sealed class SdkGameObjectFragments
         {
             foreach(var include in document.GetElementsByTagName("include",Xi).OfType<XmlElement>().ToArray())
             {
+                // Reborn: rejected fragment directives retain the actual including node through the preparation result wrapper.
+                try{
                 if(include.Attributes.OfType<XmlAttribute>().Any(a=>a.NamespaceURI!="http://www.w3.org/2000/xmlns/"&&(a.NamespaceURI.Length!=0||a.Name is not ("href" or "xpointer")))||include.ChildNodes.Cast<XmlNode>().Any(n=>n is XmlElement||!string.IsNullOrWhiteSpace(n.InnerText)))throw new InvalidDataException("Unsupported XInclude attributes/fallback: "+path);
                 var pointer=Pointer.Match(include.GetAttribute("xpointer"));string href=include.GetAttribute("href");
                 if(!pointer.Success||string.IsNullOrWhiteSpace(href))throw new InvalidDataException("Only EA xmlns(prefix=asset) xpointer(/prefix:Root/child::*) fragments are enabled: "+path);
@@ -42,8 +47,8 @@ internal sealed class SdkGameObjectFragments
                 string hash=Convert.ToHexString(SHA256.HashData(bytes));
                 if(sources.TryGetValue(selected,out var old)&&old.Sha256!=hash)throw new InvalidDataException("XInclude fragment changed during preparation: "+selected);
                 sources[selected]=new(selected,hash);
-                var fragment=new XmlDocument{PreserveWhitespace=true,XmlResolver=null};
-                using(var input=new MemoryStream(bytes,false))using(var reader=XmlReader.Create(input,new XmlReaderSettings{DtdProcessing=DtdProcessing.Prohibit,XmlResolver=null,MaxCharactersInDocument=1048576}))fragment.Load(reader);
+                snapshots[selected]=bytes;
+                var fragment=SdkXmlDiagnostics.Parse(bytes,selected);
                 if(fragment.DocumentElement?.LocalName!=pointer.Groups["root"].Value||fragment.DocumentElement.NamespaceURI!=Ea)throw new InvalidDataException("XInclude XPointer root does not match fragment: "+selected);
                 Expand(fragment,selected,authority,depth+1);
                 var children=fragment.DocumentElement.ChildNodes.OfType<XmlElement>().ToArray();
@@ -56,6 +61,7 @@ internal sealed class SdkGameObjectFragments
                 include.ParentNode!.RemoveChild(include);
                 if(document.SelectNodes("//*")!.Count>8192||document.OuterXml.Length>4*1048576)throw new InvalidDataException("Expanded XInclude document budget exceeded.");
                 Console.WriteLine("Reborn: source path [fragment] "+href+" -> "+selected);
+                }catch(Exception error)when(error is IOException or InvalidDataException or XmlException or ArgumentException){SdkXmlDiagnostics.At(error,include);throw;}
             }
         }
         finally{active.Remove(path);}

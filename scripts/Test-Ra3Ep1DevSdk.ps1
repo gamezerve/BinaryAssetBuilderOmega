@@ -1,6 +1,6 @@
 # Reborn: exercise preserved fixtures only in RebornTest; never compile or modify the user's Reborn mod.
 [CmdletBinding()]
-param([switch]$IncludeRebornSourceMirror,[switch]$ReferenceRetargetingOnly,[switch]$ModuleValuesOnly)
+param([switch]$IncludeRebornSourceMirror,[switch]$ReferenceRetargetingOnly,[switch]$ModuleValuesOnly,[switch]$DiagnosticsOnly)
 $ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$runtime=(Get-Process -Id $PID).Path;$driver=Join-Path $PSScriptRoot 'Invoke-Ra3Ep1DevAlphaBuild.ps1'
 $fixtures=Join-Path $repo 'tests/fixtures/live-alpha';$data=Join-Path $sdk 'mods/RebornTest/data';$output=Join-Path $sdk 'builtmods/RebornTest';$input=Join-Path $data 'mod.xml';$package=Join-Path $output 'RebornTest.big'
 $rows=[Collections.Generic.List[object]]::new();$userSource=Join-Path $sdk 'mods/Reborn/data/mod.xml';$userHash=(Get-FileHash -LiteralPath $userSource).Hash
@@ -48,7 +48,24 @@ try {
         foreach($file in $sourceHashes.Keys){if((Get-FileHash -LiteralPath $file).Hash-cne $sourceHashes[$file]){throw 'User source changed during read-only reproduction.'}}
     }
     # Reborn: qualify reference freedom with combined native-layout edits and publication-preserving refusals without replaying unrelated armor matrices.
-    if($ReferenceRetargetingOnly -or $ModuleValuesOnly){
+    if($DiagnosticsOnly){
+        # Reborn: failed XML builds must expose the actual physical source coordinate in Studio-readable output and retain the last successful package.
+        $prior=if(Test-Path -LiteralPath $package){(Get-FileHash -LiteralPath $package).Hash}else{$null}
+        foreach($kind in @('Schema','Scalar','Module','Structure','Syntax')){
+            Set-TestFixture ConscriptBuildTime1;$xml=[Xml.XmlDocument]::new();$xml.PreserveWhitespace=$true;$xml.Load($input)
+            switch($kind){
+                Schema{$xml.DocumentElement.SetAttribute('UnknownRootField','1')}
+                Scalar{$xml.DocumentElement.SetAttribute('Scale','NaN')}
+                Module{$xml.SelectSingleNode('//*[local-name()="Physics"]').SetAttribute('GravityMultiplier','NaN')}
+                Structure{$xml.SelectSingleNode('//*[local-name()="DisplayName"]').InnerText='Name:UnsupportedChange'}
+            }
+            $xml.Save($input);if($kind-eq 'Syntax'){[IO.File]::WriteAllText($input,"<?xml version=`"1.0`"?>`n`n<GameObject>`n</Wrong>")}
+            $label='XmlDiagnostics'+$kind;Invoke-TestCase $label $false
+            $text=Get-Content -LiteralPath (Join-Path $sdk ('.work/test-'+$label+'.log')) -Raw
+            if($text-notmatch ([regex]::Escape($input)+'\([1-9][0-9]*,[1-9][0-9]*\):') -or $text-match 'source context;'){throw ('Exact XML source coordinate missing: '+$label)}
+            if($prior -and (Get-FileHash -LiteralPath $package).Hash-cne $prior){throw 'Rejected XML replaced the last successful package.'}
+        }
+    }elseif($ReferenceRetargetingOnly -or $ModuleValuesOnly){
         # Reborn: preserve the fixture's significant script/mixed-content whitespace while editing attributes, as in the full regression path.
         Set-TestFixture ConscriptBuildTime1;$xml=[Xml.XmlDocument]::new();$xml.PreserveWhitespace=$true;$xml.Load($input);$ns=[Xml.XmlNamespaceManager]::new($xml.NameTable);$ns.AddNamespace('a','uri:ea.com:eala:asset')
         $weapons=@($xml.SelectNodes('//a:WeaponSlotHardpoint/a:Weapon',$ns));if($weapons.Count-ne 2){throw 'Weapon fixture topology differs.'}

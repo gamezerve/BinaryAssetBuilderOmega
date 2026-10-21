@@ -110,7 +110,7 @@ internal static class GameObjectScalarContract
                 default:throw new InvalidDataException("Unknown scalar codec.");
             }
         }
-        catch(Exception error)when(error is FormatException or OverflowException){throw new InvalidDataException("Invalid schema/native scalar "+field.Name+": "+text,error);}
+        catch(Exception error)when(error is FormatException or OverflowException){throw SdkXmlDiagnostics.At(new InvalidDataException("Invalid schema/native scalar "+field.Name+": "+text,error),(XmlNode?)source.DocumentElement!.GetAttributeNode(field.Name)??source.DocumentElement);}
         return bytes;
     }
 

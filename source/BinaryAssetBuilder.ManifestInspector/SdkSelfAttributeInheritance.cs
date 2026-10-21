@@ -80,7 +80,8 @@ internal static class SdkSelfAttributeInheritance
         // Reborn: cross-removal witnesses name both schema reference types and are atomic with other owner events.
         public SdkCrossStateRemovals.Witness[] CrossStateRemovals { get; init; } = Array.Empty<SdkCrossStateRemovals.Witness>();
     }
-    internal sealed record Result(byte[]? Bytes,Evidence Evidence);
+    // Reborn: preserve an offending processed DOM node across preparation stages for original-source coordinate recovery; it is never serialized into authored XML.
+    internal sealed record Result(byte[]? Bytes,Evidence Evidence){internal XmlNode? DiagnosticNode {get;init;} internal SdkXmlDiagnostics.Location? DiagnosticLocation {get;init;}}
     // Reborn: broad shallow audio documents require independent resource proof, not a global tree-limit increase.
     internal const string AudioTreeName = "diagnostic-self-audio-trees-v1";
     private const string Ea = "uri:ea.com:eala:asset";

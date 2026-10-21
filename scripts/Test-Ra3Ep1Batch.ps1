@@ -67,6 +67,8 @@ if($SchedulerControl){
         @('dependency-resolution','dependency-resolution-self-test'),
         @('dependency-hash','dependency-hash-self-test'),
         @('checksum','checksum-self-test'))){Add-BatchCase $case[0] 'DiagnosticOnly' @($case[1])}
+    # Reborn: original-file diagnostics are a repeatable offline batch gate, not a reason to launch another one-field gameplay trial.
+    Add-BatchCase 'xml-source-diagnostics' 'OriginalXmlSourceCoordinates' @('sdk-xml-diagnostics-self-test',(Join-Path $OutputDirectory 'xml-source-diagnostics'))
     Add-BatchCase 'weapon-authored-values' 'BoundedScopedPackage' @('weapon-authored-build-self-test',(Join-Path $OutputDirectory 'weapon-builds'),$StaticManifest,$GlobalManifest)
     # Reborn: independently pin stock GameObject armor-consumer links before permitting a source/compiler/publication path.
     Add-BatchCase 'gameobject-stock' 'BoundedStockNativeProjection' @('gameobject-stock-self-test',$StaticManifest)

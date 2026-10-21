@@ -13,6 +13,9 @@ internal static class Program
     {
         try
         {
+            // Reborn: source coordinate regression never edits either live mod or executes the game.
+            if(args.Length==2 && args[0]=="sdk-xml-diagnostics-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();SdkXmlDiagnosticsSmokeTest.Run(args[1]);return 0;}
             // Reborn: verify source-only GameObject inheritance/fragments independently of complete native publication.
             if(args.Length==2 && args[0]=="gameobject-source-inheritance-self-test")
             {CompilerSmokeTest.InitializeHashProvider();SdkGameObjectInheritanceSmokeTest.Run(args[1]);return 0;}
@@ -1235,7 +1238,9 @@ internal static class Program
         }
         catch (Exception exception)
         {
-            Console.Error.WriteLine($"ERROR: {exception}");
+            // Reborn: Studio receives a concise located diagnostic; the original exception/stack remains in the raw detail stream.
+            string? located=SdkXmlDiagnostics.Format(exception,args);
+            if(located!=null){Console.Error.WriteLine("ERROR: "+located);Console.Error.WriteLine(exception);}else Console.Error.WriteLine($"ERROR: {exception}");
             return 1;
         }
     }
@@ -1633,6 +1638,7 @@ internal static class Program
         Console.WriteLine("  diagnostic-build <source.xml> <new-output-directory> [physical.manifest=runtime.manifest ...]");
         // Reborn: SDK planning is explicitly target-aware/read-only and separate from diagnostic or production compilation.
         Console.WriteLine("  sdk-preflight ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [absolute.manifest=runtime.manifest ...]");
+        Console.WriteLine("  sdk-xml-diagnostics-self-test <fresh-output-directory>");
         Console.WriteLine("  sdk-preflight-self-test");
         // Reborn: expose optional explicit ART/AUDIO roots and incomplete graph exit status separately from environment readiness.
         Console.WriteLine("  sdk-source-preflight ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");

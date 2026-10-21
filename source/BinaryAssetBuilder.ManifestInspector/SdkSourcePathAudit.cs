@@ -10,7 +10,8 @@ internal static class SdkSourcePathAudit
     internal sealed record Source(string PhysicalPath,string Root,string Sha256,long Bytes);
     internal sealed record Edge(string Document,string Kind,string LogicalPath,string? PhysicalPath);
     internal sealed record Resource(string Document,string Field,string LogicalPath,string PhysicalPath,long Bytes);
-    internal sealed record Issue(string Code,string Document,string LogicalPath,string Detail);
+    // Reborn: coordinates describe the actual caller/source snapshot, not an assumed line in a missing target file.
+    internal sealed record Issue(string Code,string Document,string LogicalPath,string Detail){public SdkXmlDiagnostics.Location? Location {get;init;}}
     internal sealed record Report(string SourceRoot,string? ArtRoot,string? AudioRoot,Source[] Sources,Edge[] Includes,Resource[] Resources,
         Issue[] Issues,bool ScopedPathAuditComplete,bool StoppedAtLimit,bool SnapshotOnly,bool FullDependencyCoverage,bool ProductionBuildReady,string[] Limitations)
     {
@@ -43,6 +44,8 @@ internal static class SdkSourcePathAudit
                     throw new InvalidDataException("SDK source/art/audio roots must be distinct and non-overlapping for this attribution profile.");
         }
         List<Source> sources = new(); List<Edge> edges = new(); List<Resource> resources = new(); List<Issue> issues = new();
+        // Reborn: retain only already bounded source reads for locating path/parse diagnostics; no later read can silently change their coordinates.
+        var rawSnapshots=new Dictionary<string,byte[]>(StringComparer.OrdinalIgnoreCase);
         // Reborn: every resolved include/resource records its search winner and earlier candidates for later replay.
         List<SdkSourceSearch.Selection> searches = new();
         // Reborn: cache at most two exact recipe proofs; repeated edges do not multiply source reads.
@@ -66,16 +69,30 @@ internal static class SdkSourcePathAudit
         //-------------------------------------------------------------------------------------------------
         /** Reborn: cap retained diagnostics and stop traversal instead of silently treating a partial graph as complete. */
         //-------------------------------------------------------------------------------------------------
-        void Add(string code,string document,string logical,string detail)
+        void Add(string code,string document,string logical,string detail,SdkXmlDiagnostics.Location? location=null)
         {
             if (issues.Count >= 127) { if (!stopped) issues.Add(new("IssueLimit",document,"","128-issue cap reached; traversal stopped.")); stopped = true; return; }
-            issues.Add(new(code,document,logical.Length > 512 ? logical[..512] : logical,detail));
+            location??=Locate(document,logical);
+            issues.Add(new(code,document,logical.Length > 512 ? logical[..512] : logical,detail){Location=location});
+        }
+
+        // Reborn: an absent/unreadable target has no XML line; preserve its caller's captured Include coordinate instead.
+        SdkXmlDiagnostics.Location? Locate(string document,string logical)
+        {
+            SdkXmlDiagnostics.Location? location=null;
+            // Reborn: identify a unique authored literal where possible; ambiguous path literals retain an explicitly labelled document context.
+            if(rawSnapshots.TryGetValue(document,out var raw))
+            {
+                try{var captured=SdkXmlDiagnostics.Lines(raw,document);var matches=captured.Descendants().SelectMany(e=>e.Attributes().Cast<System.Xml.Linq.XObject>().Concat(!e.HasElements?new[]{(System.Xml.Linq.XObject)e}:Array.Empty<System.Xml.Linq.XObject>())).Where(n=>(n is System.Xml.Linq.XAttribute a?a.Value:((System.Xml.Linq.XElement)n).Value)==logical&&logical.Length!=0).ToArray();if(matches.Length==1)location=SdkXmlDiagnostics.Point(document,matches[0]);else if(captured.Root!=null)location=SdkXmlDiagnostics.Point(document,captured.Root,true);}
+                catch(XmlException syntax){location=SdkXmlDiagnostics.Origin(syntax);}
+            }
+            return location;
         }
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: read each reachable XML once, preserve all edge roles/order and detect active cycles before shared-node reuse. */
         //-------------------------------------------------------------------------------------------------
-        void Visit(string path,string confinement,int depth)
+        void Visit(string path,string confinement,int depth,Func<SdkXmlDiagnostics.Location?>? caller=null)
         {
             if (stopped) return;
             if (active.Contains(path)) { Add("IncludeCycle",path,"","Active source Include cycle; this planning profile does not compile reference-cycle semantics."); return; }
@@ -86,11 +103,11 @@ internal static class SdkSourcePathAudit
             {
                 bytes = SdkEnvironmentPreflight.Read(path,4*1048576); total += bytes.Length;
                 if (total > 32*1048576) { Add("GraphLimit",path,"","32 MiB source-byte cap reached."); stopped = true; return; }
-                using MemoryStream input = new(bytes,false); using XmlReader reader = XmlReader.Create(input,new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit,XmlResolver = null,MaxCharactersInDocument = 4*1048576 }); xml.Load(reader);
+                rawSnapshots[path]=bytes;xml=SdkXmlDiagnostics.Parse(bytes,path);
                 if (xml.DocumentElement?.LocalName != "AssetDeclaration" || xml.DocumentElement.NamespaceURI != "uri:ea.com:eala:asset") throw new InvalidDataException("EA AssetDeclaration required for Include documents.");
             }
             catch (Exception error) when (error is IOException or InvalidDataException or XmlException or ArgumentException)
-            { Add("SourceRead",path,"","Missing, oversized, redirected or malformed source XML; no external entity processing."); return; }
+            { Add("SourceRead",path,"","Missing, oversized, redirected or malformed source XML; no external entity processing. "+error.Message,SdkXmlDiagnostics.Origin(error)??caller?.Invoke()); return; }
             visited.Add(path); active.Add(path); sources.Add(new(path,confinement,Convert.ToHexString(SHA256.HashData(bytes)),bytes.Length));
             XmlElement root = xml.DocumentElement!;
             foreach (XmlElement container in root.ChildNodes.OfType<XmlElement>().Where(node => node.LocalName == "Includes"))
@@ -115,7 +132,7 @@ internal static class SdkSourcePathAudit
                         // Reborn: W3X is a resolved resource dependency, not an EA AssetDeclaration; no processor support is implied by locating it.
                         if(search!=null && child.Path.EndsWith(".w3x",StringComparison.OrdinalIgnoreCase))
                         {if(resources.Count>=2048){Add("ResourceLimit",path,logical,"2048-resource cap reached.");stopped=true;}else resources.Add(new(path,"Include",logical,child.Path,new FileInfo(child.Path).Length));}
-                        else Visit(child.Path,child.Root,depth+1);
+                        else Visit(child.Path,child.Root,depth+1,()=>Locate(path,logical));
                     }
                     catch (Exception error) when (error is IOException or InvalidDataException or ArgumentException or NotSupportedException)
                     { edges.Add(new(path,kind,logical,null)); Add("IncludePath",path,logical,search==null?"Unsupported/missing alias root, unsafe path or non-XML Include; no fallback attempted.":error.Message[..Math.Min(error.Message.Length,2048)]); }

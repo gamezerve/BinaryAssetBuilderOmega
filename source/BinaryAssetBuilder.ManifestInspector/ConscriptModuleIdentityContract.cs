@@ -11,7 +11,12 @@ internal static class ConscriptModuleIdentityContract
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate the complete local scope before masking names; duplicate hashes and dangling supported local links remain errors. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Validate(XmlDocument source)=>Ep1SelectedModuleIdentity.ValidateSource(source.DocumentElement!,true);
+    internal static void Validate(XmlDocument source)
+    {
+        // Reborn: point duplicate/empty identity errors at the actual later declaration, not only the merged GameObject root.
+        var seen=new HashSet<uint>();foreach(var owner in ConscriptModuleScalarContract.Owners(source))if(string.IsNullOrWhiteSpace(owner.Element.GetAttribute("id"))||!seen.Add(Hash(owner.Element)))throw SdkXmlDiagnostics.At(new InvalidDataException("Empty or hash-colliding local module ID: "+owner.Element.GetAttribute("id")),(XmlNode?)owner.Element.GetAttributeNode("id")??owner.Element);
+        Ep1SelectedModuleIdentity.ValidateSource(source.DocumentElement!,true);
+    }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: rename every existing module together and update the explicitly supported local association when present. */

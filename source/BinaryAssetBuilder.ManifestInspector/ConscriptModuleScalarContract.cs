@@ -31,7 +31,7 @@ internal static class ConscriptModuleScalarContract
         {
             int index=0;foreach(var element in container.ChildNodes.OfType<XmlElement>())
             {
-                Type type=container.LocalName switch
+                Type type;try{type=container.LocalName switch
                 {
                     "Behaviors"=>Ep1BehaviorMetadataTokenizer.ReviewedNativeType(FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(element.LocalName))),
                     "Draws"=>element.LocalName switch{"ScriptedModelDraw"=>typeof(W3DScriptedModelDrawModuleData),"TracerModelDraw"=>typeof(W3DTracerDrawModuleData),_=>throw new InvalidDataException("Unreviewed scalar draw family.")},
@@ -40,7 +40,7 @@ internal static class ConscriptModuleScalarContract
                     "ClientUpdates" when element.LocalName=="LargeGroupAudioClientUpdate"=>typeof(LargeGroupAudioClientUpdateModuleData),
                     "ClientBehaviors"=>element.LocalName switch{"ModelConditionSoundSelectorClientBehavior"=>typeof(Ep1ModelConditionSoundSelectorClientBehaviorModuleData),"AnimationSoundClientBehavior"=>typeof(AnimationSoundClientBehaviorModuleData),"ModelConditionAudioLoopClientBehavior"=>typeof(ModelConditionAudioLoopClientBehaviorModuleData),_=>throw new InvalidDataException("Unreviewed scalar client family.")},
                     _=>throw new InvalidDataException("Unreviewed module scalar owner.")
-                };
+                };}catch(InvalidDataException error){throw SdkXmlDiagnostics.At(error,element);}
                 result.Add(new(container.LocalName,index++,element,type));
             }
         }
@@ -203,7 +203,7 @@ internal static class ConscriptModuleScalarContract
                 foreach(string token in text.Split((char[]?)null,StringSplitOptions.RemoveEmptyEntries))
                 {
                     if(token=="ALL"){Array.Fill(bytes,(byte)255);continue;}
-                    if(token[0] is '+' or '-')throw new InvalidDataException("Prefixed module flag operations require the corresponding legacy marshaler repair: "+source.LocalName+"."+binding.Name);
+                    if(token[0] is '+' or '-')throw SdkXmlDiagnostics.At(new InvalidDataException("Prefixed module flag operations require the corresponding legacy marshaler repair: "+source.LocalName+"."+binding.Name),(XmlNode?)source.GetAttributeNode(binding.Name)??source);
                     var enumValue=Enum.Parse(type,token,false);if(!Enum.IsDefined(type,enumValue))throw new FormatException();int bit=Convert.ToInt32(enumValue,CultureInfo.InvariantCulture);if(bit==-1)continue;if(bit<0||bit>=bytes.Length*8)throw new OverflowException();int at=bit/32*4;uint current=BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(at,4));BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(at,4),current|1u<<(bit%32));
                 }
                 return bytes;
@@ -226,7 +226,7 @@ internal static class ConscriptModuleScalarContract
             else if(binding.Codec=="Velocity")multiplier=Marshaler.SECONDS_PER_LOGICFRAME_REAL;
             float value=float.Parse(text,NumberStyles.Float,CultureInfo.InvariantCulture)*multiplier;if(!float.IsFinite(value))throw new OverflowException();BinaryPrimitives.WriteSingleLittleEndian(bytes,value);return bytes;
         }
-        catch(Exception error)when(error is FormatException or OverflowException or ArgumentException){throw new InvalidDataException("Invalid module value "+source.LocalName+"."+binding.Name+": "+text,error);}
+        catch(Exception error)when(error is FormatException or OverflowException or ArgumentException){throw SdkXmlDiagnostics.At(new InvalidDataException("Invalid module value "+source.LocalName+"."+binding.Name+": "+text,error),(XmlNode?)source.GetAttributeNode(binding.Name)??source);}
     }
 
     // Reborn: enum codec identities are resolved only from this compiler's concrete native-model assembly.
