@@ -1,6 +1,6 @@
 # Reborn: exercise preserved fixtures only in RebornTest; never compile or modify the user's Reborn mod.
 [CmdletBinding()]
-param([switch]$IncludeRebornSourceMirror,[switch]$ReferenceRetargetingOnly,[switch]$ModuleValuesOnly,[switch]$DiagnosticsOnly,[switch]$VariableBehaviorsOnly,[switch]$UpgradeStructuresOnly)
+param([switch]$IncludeRebornSourceMirror,[switch]$ReferenceRetargetingOnly,[switch]$ModuleValuesOnly,[switch]$DiagnosticsOnly,[switch]$VariableBehaviorsOnly,[switch]$UpgradeStructuresOnly,[switch]$RootTextOnly)
 $ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$runtime=(Get-Process -Id $PID).Path;$driver=Join-Path $PSScriptRoot 'Invoke-Ra3Ep1DevAlphaBuild.ps1'
 $fixtures=Join-Path $repo 'tests/fixtures/live-alpha';$data=Join-Path $sdk 'mods/RebornTest/data';$output=Join-Path $sdk 'builtmods/RebornTest';$input=Join-Path $data 'mod.xml';$package=Join-Path $output 'RebornTest.big'
 $rows=[Collections.Generic.List[object]]::new();$userSource=Join-Path $sdk 'mods/Reborn/data/mod.xml';$userHash=(Get-FileHash -LiteralPath $userSource).Hash
@@ -60,11 +60,13 @@ try {
         foreach($file in $sourceHashes.Keys){if((Get-FileHash -LiteralPath $file).Hash-cne $sourceHashes[$file]){throw 'User source changed during read-only reproduction.'}}
     }
     # Reborn: qualify reference freedom with combined native-layout edits and publication-preserving refusals without replaying unrelated armor matrices.
-    if($VariableBehaviorsOnly -or $UpgradeStructuresOnly){
+    if($VariableBehaviorsOnly -or $UpgradeStructuresOnly -or $RootTextOnly){
         # Reborn: one combined Studio source changes behavior count/order/local IDs, fixed root/module values and an explicit new-object consumer.
         Set-TestFixture ConscriptBuildTime1;$xml=[Xml.XmlDocument]::new();$xml.PreserveWhitespace=$true;$xml.Load($input)
         $xml.DocumentElement.SetAttribute('id','RebornConscriptTrial');$xml.DocumentElement.SetAttribute('Scale','1.25');$xml.DocumentElement.SetAttribute('ThreatLevel','15')
         $xml.SelectSingleNode('//*[local-name()="ActiveBody"]').SetAttribute('MaxHealth','500');$xml.SelectSingleNode('//*[local-name()="AIUpdate"]').SetAttribute('StopChaseDistance','42.5')
+        # Reborn: combine localization-key freedom with real variable modules, retargeted weapons, a custom object and an explicit consumer.
+        if($RootTextOnly){$xml.SelectSingleNode('//*[local-name()="DisplayName"]').InnerText='Name:RebornCustomConscript';$xml.DocumentElement.SetAttribute('Description','Desc:RebornCustomDescription');$xml.DocumentElement.SetAttribute('TypeDescription','Type:RebornCustomType');$child=$xml.CreateElement('DisplayNameTransformed','uri:ea.com:eala:asset');$child.InnerText='Name:RebornCustomTransformed';$null=$xml.DocumentElement.InsertAfter($child,$xml.SelectSingleNode('//*[local-name()="DisplayName"]'))}
         $behaviors=$xml.SelectSingleNode('/*/*[local-name()="Behaviors"]');$original=@($behaviors.ChildNodes|Where-Object {$_ -is [Xml.XmlElement]})
         for($i=0;$i-lt $original.Count;$i+=2){$null=$behaviors.RemoveChild($original[$i])}
         for($i=0;$i-lt 12;$i++){$clone=$original[$i].CloneNode($true);$clone.SetAttribute('id',('RebornVariableClone_'+$i));$null=$behaviors.AppendChild($clone)}
@@ -117,7 +119,8 @@ try {
                 Schema{$xml.DocumentElement.SetAttribute('UnknownRootField','1')}
                 Scalar{$xml.DocumentElement.SetAttribute('Scale','NaN')}
                 Module{$xml.SelectSingleNode('//*[local-name()="Physics"]').SetAttribute('GravityMultiplier','NaN')}
-                Structure{$xml.SelectSingleNode('//*[local-name()="DisplayName"]').InnerText='Name:UnsupportedChange'}
+                # Reborn: valid replacement keys are supported; only an actual wire-encoding error should fail this case.
+                Structure{$xml.SelectSingleNode('//*[local-name()="DisplayName"]').InnerText='Name:Invalidé'}
             }
             $xml.Save($input);if($kind-eq 'Syntax'){[IO.File]::WriteAllText($input,"<?xml version=`"1.0`"?>`n`n<GameObject>`n</Wrong>")}
             $label='XmlDiagnostics'+$kind;Invoke-TestCase $label $false

@@ -56,8 +56,10 @@ plus reviewed direct module fixed fields/local IDs and fixed root primitive/
 enum/flag/weak-ID attributes. The same templates can be inherited/imported using
 normal `AssetDeclaration`, `Includes`, `Defines` and `inheritFrom` source.
 Other module containers keep their reviewed count/order and nested shape.
-Dynamic root strings, root strong-reference presence edits, existing
-nonmodule nested scalar edits and other nested lists/families are not yet
+<!-- Reborn: root text is no longer a mutually exclusive fixed-topology feature. -->
+Dynamic root strings and optional display-name keys now compose with this route;
+see [root text authoring](RA3EP1_ROOT_TEXT_AUTHORING.md). Root strong-reference
+presence edits, existing nonmodule nested scalar edits and other nested lists/families are not yet
 combinable with this variable profile. Existing fixed-topology capabilities
 remain available on their established route.
 

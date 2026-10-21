@@ -49,7 +49,8 @@ internal sealed class ConscriptVariableGraphVerifier
         var originalStock=stock.Bytes.ToArray();foreach(int at in Detached){Put(cleared,at,0);Put(originalStock,stock.Projection.NativeRoot+at,0);}
         var root=new Chunk{InstanceBuffer=cleared,RelocationBuffer=Pack(relos.Where(s=>!Detached.Contains((int)s))),ImportsBuffer=native.ImportsBuffer.ToArray()};
         var rootReferences=ReferenceTable(source,null);
-        var rootComparer=new SelectedNativeGraphComparer(originalStock,rootReferences,root,instance,requireAllReferences:false);
+        // Reborn: inline descriptions and optional pointed names use the same authored-text contract on variable graphs.
+        var rootComparer=new SelectedNativeGraphComparer(originalStock,rootReferences,root,instance,requireAllReferences:false,rootText:GameObjectRootTextContract.Read(source));
         var selection=rootComparer.CompareRootSelection(stock.Projection.NativeRoot);
         var covered=selection.Covered;var ownedRelos=new HashSet<uint>(selection.Relocations);var ownedImports=new HashSet<uint>(selection.Imports);
         var baseBytes=b.AsSpan(0,cut).ToArray();foreach(var field in Ep1GameObjectRootOwnersProjection.Fields)Put(baseBytes,field.Slot,0);
@@ -105,6 +106,9 @@ internal sealed class ConscriptVariableGraphVerifier
         foreach(var pair in stockRows)
         {
             int old=pair.Value.Offset,at=rows[pair.Key].Offset;
+            // Reborn: display-name metadata directly targets its optional header, not a stock text identity or a separate table.
+            string? pointed=GameObjectRootTextContract.Pointed.SingleOrDefault(n=>FastHash.GetHashCode(n)==pair.Key);
+            if(pointed!=null){int slot=pointed=="DisplayName"?404:408;uint target=Word(b,slot);if(at!=(target==0?0:prefix+target))throw new InvalidDataException("Pointed root name metadata target differs: "+pointed);continue;}
             if(old==0){if(at!=0)throw new InvalidDataException("Absent root metadata target differs.");continue;}
             if(old>=stock.Projection.NativeRoot){if(!rootComparer.NativeOffsets.TryGetValue(old,out int coordinate)||at!=prefix+coordinate)throw new InvalidDataException("Direct root metadata coordinate differs.");continue;}
             int index=Array.IndexOf(oldTables,old),end=index+1<oldTables.Length?oldTables[index+1]:stock.Projection.NativeRoot;

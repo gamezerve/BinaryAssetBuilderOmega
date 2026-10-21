@@ -36,7 +36,7 @@ public static class Ep1GameObjectEmptyRootProjection
     public static Chunk Compose(Chunk native,XmlSchemaSet schemas)
         =>ComposeCore(native,schemas,false);
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: the original Conscript profile also retains three absent pointer declarations; this opt-in does not change the selected-root producer or admit populated variants. */
+    /** Reborn: original objects retain absent name declarations; populated name headers are already emitted by the reviewed pointed-root producer. */
     //-------------------------------------------------------------------------------------------------
     public static Chunk ComposeOriginal(Chunk native,XmlSchemaSet schemas)
         =>ComposeCore(native,schemas,true);
@@ -46,7 +46,9 @@ public static class Ep1GameObjectEmptyRootProjection
     private static Chunk ComposeCore(Chunk native,XmlSchemaSet schemas,bool original)
     {
         if(native?.InstanceBuffer==null || native.InstanceBuffer.Length<600)throw new InvalidDataException("Bounded empty-root native input required.");
-        var fields=original?Fields.Concat(new[]{new Field("DisplayNameTransformed",408,0x1A2933AA,false),new Field("Flammability",464,0x10444D6C,false),new Field("LiveCameraOffset",528,0x29368077,false)}).ToArray():Fields.ToArray();
+        // Reborn: emit null metadata for omitted names only, never reject or duplicate a populated name already owned by the lower producer.
+        var absentNames=new[]{new Field("DisplayName",404,0x1A2933AA,false),new Field("DisplayNameTransformed",408,0x1A2933AA,false)}.Where(f=>Word(native.InstanceBuffer,f.Slot)==0);
+        var fields=original?Fields.Concat(absentNames).Concat(new[]{new Field("Flammability",464,0x10444D6C,false),new Field("LiveCameraOffset",528,0x29368077,false)}).ToArray():Fields.ToArray();
         foreach(var field in fields)for(int at=field.Slot;at<field.Slot+(field.List?8:4);at+=4)if(Word(native.InstanceBuffer,at)!=0)throw new InvalidDataException("Populated empty-profile native storage: "+field.Name);
         var old=Ep1GameObjectRootOwnersProjection.Compose(native,schemas);int oldPrefix=old.InstanceBuffer.Length-native.InstanceBuffer.Length,insert=0;
         for(;insert<oldPrefix;insert+=12)if(Word(old.InstanceBuffer,insert)==0 && Word(old.InstanceBuffer,insert+4)==0 && Word(old.InstanceBuffer,insert+8)==0)break;

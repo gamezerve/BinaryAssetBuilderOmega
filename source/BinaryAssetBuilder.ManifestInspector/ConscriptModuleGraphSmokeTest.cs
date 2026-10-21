@@ -39,11 +39,16 @@ internal static class ConscriptModuleGraphSmokeTest
             try{ConscriptVariableBehaviorSource.Admit(overflow,baseline,official);}catch(InvalidDataException error){overflowRejected=SdkXmlDiagnostics.Node(error)?.LocalName=="Frames";}
             if(!overflowRejected)throw new InvalidDataException("Nested unsigned overflow/source coordinate control failed.");
             // Reborn: allow a focused proof run when extending one capability without replaying unrelated expensive native matrices.
-            string[] modes={"original","reverse","remove-half","clone-twelve","combined","new-id-combined","retarget-combined","beyond-former-budget","upgrade-lists-expanded","upgrade-lists-empty","upgrade-animation","upgrade-animation-defaults","upgrade-list-large","upgrade-animation-lexical"};
+            string[] modes={"original","reverse","remove-half","clone-twelve","combined","new-id-combined","retarget-combined","beyond-former-budget","upgrade-lists-expanded","upgrade-lists-empty","upgrade-animation","upgrade-animation-defaults","upgrade-list-large","upgrade-animation-lexical","root-text-edited","root-text-empty","root-text-omitted"};
             if(caseFilter!=null&&!modes.Contains(caseFilter,StringComparer.Ordinal))throw new InvalidDataException("Unknown module graph proof case.");
             foreach(string mode in caseFilter==null?modes:new[]{caseFilter})
             {
                 var source=(XmlDocument)baseline.CloneNode(true);var origins=templates.Keys.ToDictionary(id=>id,id=>id,StringComparer.Ordinal);var behaviors=(XmlElement)source.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]!;var original=behaviors.ChildNodes.OfType<XmlElement>().ToArray();
+                // Reborn: display keys change independently of stock text, including absent/empty/transformed forms and combined description edits.
+                if(mode.StartsWith("root-text-",StringComparison.Ordinal)){
+                    foreach(string name in GameObjectRootTextContract.Pointed){var child=source.DocumentElement!.ChildNodes.OfType<XmlElement>().SingleOrDefault(e=>e.LocalName==name);if(child!=null)source.DocumentElement.RemoveChild(child);if(mode=="root-text-omitted")continue;child=source.CreateElement(name,SchemaSet.XmlNamespace);child.InnerText=mode=="root-text-empty"?string.Empty:"Name:Reborn & <Custom> "+name+new string('R',300);source.DocumentElement.InsertBefore(child,source.DocumentElement.ChildNodes.OfType<XmlElement>().First(e=>!GameObjectRootTextContract.Pointed.Contains(e.LocalName)));}
+                    GameObjectRootStringContract.AuthorProbe(source,baseline);
+                }
                 if(mode is "remove-half" or "combined" or "new-id-combined" or "retarget-combined")foreach(var node in original.Where((_,i)=>i%2==0))behaviors.RemoveChild(node);
                 if(mode is "clone-twelve" or "combined" or "new-id-combined" or "retarget-combined")foreach(var node in original.Take(12)){var copy=(XmlElement)node.CloneNode(true);string id="RebornGraphClone_"+origins.Count;origins.Add(id,node.GetAttribute("id"));copy.SetAttribute("id",id);behaviors.AppendChild(copy);}
                 if(mode is "reverse" or "combined" or "new-id-combined" or "retarget-combined")foreach(var node in behaviors.ChildNodes.OfType<XmlElement>().Reverse().ToArray())behaviors.AppendChild(node);
@@ -90,6 +95,11 @@ internal static class ConscriptModuleGraphSmokeTest
                 int address=ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,ConscriptModuleScalarContract.Owners(source).First(o=>o.Container=="Behaviors"));
                 foreach(int at in new[]{address,address+4,(int)Word(pair.Native.InstanceBuffer,476)}){var bad=Clone(pair.Native);bad.InstanceBuffer[at]^=1;Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;}
                 foreach(bool relocations in new[]{true,false}){var bad=Clone(pair.Native);if(relocations)bad.RelocationBuffer=Array.Empty<byte>();else bad.ImportsBuffer=Array.Empty<byte>();Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;}
+                // Reborn: independent source-bound string checks reject both content/length corruption and wrong root metadata targets.
+                if(mode.StartsWith("root-text-",StringComparison.Ordinal))foreach(int slot in new[]{404,408}){
+                    int header=(int)Word(pair.Native.InstanceBuffer,slot);if(header!=0){foreach(int at in new[]{header,header+4,(int)Word(pair.Native.InstanceBuffer,header+4)}){var bad=Clone(pair.Native);bad.InstanceBuffer[at]^=1;Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;}}
+                    string name=slot==404?"DisplayName":"DisplayNameTransformed";int row=Enumerable.Range(0,prefix/12).Select(i=>i*12).Single(at=>Word(tokens.InstanceBuffer,at)==FastHash.GetHashCode(name));var metadata=Clone(tokens);metadata.InstanceBuffer[row+8]^=4;Refuse(()=>Verify(source,pair.Native,pair.Instance,origins,metadata));metadataFaults++;
+                }
                 // Reborn: valid-range count/hash/nested-scalar corruption must fail source-aware checking, not merely native bounds validation.
                 if(mode.StartsWith("upgrade-",StringComparison.Ordinal)){
                     var owner=ConscriptModuleScalarContract.Owners(source).First(o=>o.Element.LocalName=="ModelConditionUpgrade");int module=ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,owner),baseOffset=0;Type current=owner.NativeType;

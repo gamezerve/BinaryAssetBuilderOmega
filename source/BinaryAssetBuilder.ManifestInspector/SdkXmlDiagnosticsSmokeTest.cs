@@ -65,7 +65,8 @@ internal static class SdkXmlDiagnosticsSmokeTest
             var authored=SdkXmlDiagnostics.Parse(complete);authored.DocumentElement!.SetAttribute(edit.Item1,edit.Item2);authored.Save(entry);Refuse(entry,entry,edit.Item1);
         }
         var nested=SdkXmlDiagnostics.Parse(complete);((XmlElement)nested.SelectSingleNode("//*[local-name()='Physics']")!).SetAttribute("GravityMultiplier","NaN");nested.Save(entry);Refuse(entry,entry,"GravityMultiplier");
-        nested=SdkXmlDiagnostics.Parse(complete);nested.SelectSingleNode("//*[local-name()='DisplayName']")!.InnerText="Name:UnsupportedTextChange";nested.Save(entry);Refuse(entry,entry,"DisplayName",attribute:false);
+        // Reborn: changing a valid key is supported; a non-ASCII wire key remains a genuine encoding error with its original location.
+        nested=SdkXmlDiagnostics.Parse(complete);nested.SelectSingleNode("//*[local-name()='DisplayName']")!.InnerText="Name:Invalidé";nested.Save(entry);Refuse(entry,entry,"DisplayName",attribute:false);
         var baseOwner=SdkXmlDiagnostics.Parse(complete);File.WriteAllText(basis,"<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\">"+baseOwner.DocumentElement!.OuterXml+"</AssetDeclaration>");
         File.WriteAllText(entry,"<?xml version=\"1.0\"?>\n<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\">\n<Includes><Include type=\"instance\" source=\"base.xml\"/></Includes>\n<GameObject id=\"RebornConscriptTrial\" inheritFrom=\"SovietAntiInfantryInfantry\"\n BuildTime=\"bad\"/>\n</AssetDeclaration>");Refuse(entry,entry,"BuildTime");
         // Reborn: invalid inherited values must point to the instance base rather than the entry that merely Includes it.

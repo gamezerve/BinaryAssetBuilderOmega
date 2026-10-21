@@ -27,6 +27,8 @@ internal sealed class SelectedNativeGraphComparer
     private readonly bool captureNativePaths;
     // Reborn: only explicitly source-validated UpgradeModuleData fields may change list counts or optional pointer presence.
     private readonly ConscriptUpgradeStructure.Plan? upgrade;
+    // Reborn: only source-bound root localization fields may differ from stock string contents or presence.
+    private readonly IReadOnlyDictionary<string,string?>? rootText;
     internal Dictionary<string,(int Stock,int Compiled,int Size)> NativeRecords { get; } = new(StringComparer.Ordinal);
     private int scriptLineEndingEquivalences;
     private int records, strings;
@@ -39,8 +41,8 @@ internal sealed class SelectedNativeGraphComparer
     //-------------------------------------------------------------------------------------------------
     /** Reborn: stock and compiled graphs keep separate origins and semantic reference occurrence tables. */
     //-------------------------------------------------------------------------------------------------
-    internal SelectedNativeGraphComparer(byte[] stock, AssetId[] references, Chunk compiled, InstanceDeclaration instance, bool allowScriptCrLfEquivalent = false, bool requireAllReferences = true, bool captureNativeCoordinates = true, bool captureNativePaths = false,ConscriptUpgradeStructure.Plan? upgrade=null)
-    { this.stock = stock; stockReferences = references; this.compiled = compiled; this.instance = instance; this.allowScriptCrLfEquivalent = allowScriptCrLfEquivalent; this.requireAllReferences = requireAllReferences; this.captureNativeCoordinates = captureNativeCoordinates; this.captureNativePaths=captureNativePaths;this.upgrade=upgrade; covered = new bool[compiled.InstanceBuffer.Length]; }
+    internal SelectedNativeGraphComparer(byte[] stock, AssetId[] references, Chunk compiled, InstanceDeclaration instance, bool allowScriptCrLfEquivalent = false, bool requireAllReferences = true, bool captureNativeCoordinates = true, bool captureNativePaths = false,ConscriptUpgradeStructure.Plan? upgrade=null,IReadOnlyDictionary<string,string?>? rootText=null)
+    { this.stock = stock; stockReferences = references; this.compiled = compiled; this.instance = instance; this.allowScriptCrLfEquivalent = allowScriptCrLfEquivalent; this.requireAllReferences = requireAllReferences; this.captureNativeCoordinates = captureNativeCoordinates; this.captureNativePaths=captureNativePaths;this.upgrade=upgrade;this.rootText=rootText; covered = new bool[compiled.InstanceBuffer.Length]; }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: complete selected graph equality requires every native field, exact auxiliary ownership and no hidden nonzero/orphan heap allocations. */
@@ -107,6 +109,8 @@ internal sealed class SelectedNativeGraphComparer
                 if (generic == "Relo.String`1")
                 {
                     if (element != typeof(sbyte)) throw new InvalidDataException("Unreviewed selected string encoding.");
+                    // Reborn: source text replaces equality to the captured stock key, not native bounds or exact content checking.
+                    if(rootText!=null&&rootText.TryGetValue(path,out var authored)){Text(b,authored,path);return;}
                     uint oldLength = Word(stock, a), newLength = Word(compiled.InstanceBuffer, b); if (oldLength > 65536 || newLength > 65536) throw new InvalidDataException("Selected string exceeds bound.");
                     int length = (int)oldLength, compiledLength = (int)newLength;
                     var pointers = Pointer(a + 4, b + 4, path); if (pointers.A == 0) { if (length != 0 || compiledLength != 0) throw new InvalidDataException("Null selected string has length."); return; }
@@ -152,6 +156,13 @@ internal sealed class SelectedNativeGraphComparer
                 if (fixedBuffer != null) Equal(a + offset, b + offset, fieldSize, child);
                 else if (field.FieldType.IsPointer)
                 {
+                    // Reborn: optional display names have an eight-byte ASCII header, independently owned text and no strong import.
+                    if(rootText!=null&&rootText.TryGetValue(child,out var text)){
+                        if(field.FieldType.GetElementType()!=typeof(Relo.String<sbyte>))throw new InvalidDataException("Pointed root text ABI differs.");
+                        uint pointer=Word(compiled.InstanceBuffer,b+offset);if((text==null)!=(pointer==0))throw new InvalidDataException("Pointed root text presence differs: "+child);
+                        if(pointer!=0){int at=checked((int)pointer);Range(compiled.InstanceBuffer,at,8);if(at%4!=0||covered.AsSpan(at,8).Contains(true))throw new InvalidDataException("Pointed root text header overlaps another owner.");Array.Fill(covered,true,at,8);relos.Add((uint)(b+offset));Text(at,text,child);uint old=Word(stock,a+offset);if(old!=0&&captureNativeCoordinates)for(int i=0;i<8;i++)NativeOffsets[checked((int)old+i)]=at+i;}
+                        continue;
+                    }
                     // Reborn: optional animation structs use independent source words and exact ownership, including the omitted/null case.
                     if(upgrade!=null&&upgrade.Optional.TryGetValue(child,out var expected)){
                         if(field.FieldType.GetElementType()!=typeof(SageBinaryData.AnimAndDuration))throw new InvalidDataException("Optional upgrade record ABI differs.");
@@ -177,6 +188,17 @@ internal sealed class SelectedNativeGraphComparer
         uint x = Word(stock, a), y = Word(compiled.InstanceBuffer, b);
         if ((x == 0) != (y == 0) || x >= stock.Length || y >= compiled.InstanceBuffer.Length) throw new InvalidDataException("Selected native pointer presence/bounds differs at " + path);
         if (y != 0) relos.Add((uint)b); return ((int)x, (int)y);
+    }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: source-authored text owns exact ASCII bytes, a terminator and its relocation; absent and explicit-empty allocations remain distinct. */
+    //-------------------------------------------------------------------------------------------------
+    private void Text(int header,string? expected,string path)
+    {
+        uint length=Word(compiled.InstanceBuffer,header),pointer=Word(compiled.InstanceBuffer,header+4);
+        if(expected==null){if(length!=0||pointer!=0)throw new InvalidDataException("Absent root text has storage: "+path);return;}
+        var bytes=System.Text.Encoding.ASCII.GetBytes(expected);int at=checked((int)pointer);Range(compiled.InstanceBuffer,at,checked(bytes.Length+1));
+        if(pointer==0||pointer%4!=0||length!=bytes.Length||covered.AsSpan(at,bytes.Length+1).Contains(true)||!compiled.InstanceBuffer.AsSpan(at,bytes.Length).SequenceEqual(bytes)||compiled.InstanceBuffer[at+bytes.Length]!=0)throw new InvalidDataException("Root text differs from authored source: "+path);
+        Array.Fill(covered,true,at,bytes.Length+1);relos.Add((uint)(header+4));strings++;
     }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: a short path/offset diagnostic identifies differences without dumping binary payloads or scripts. */

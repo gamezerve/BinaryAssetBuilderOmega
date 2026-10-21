@@ -2,6 +2,13 @@
 
 ## Build your mod
 
+<!-- Reborn: pointed display-name keys share source-driven authoring with existing description attributes. -->
+`DisplayName` and `DisplayNameTransformed` are editable optional child elements;
+changing `Name:SovietAntiInfantryInfantry` to another ASCII key is supported.
+They can also be omitted or explicitly empty, including with variable Behaviors
+and edited Description/TypeDescription attributes. This does not generate the
+translated localization-table entry. See [root text details](../docs/RA3EP1_ROOT_TEXT_AUTHORING.md).
+
 <!-- Reborn: covered upgrade modules can resize nested lists and omit optional records through the same Studio workflow. -->
 Upgrade-based Behaviors now accept source-sized `TriggeredBy`/`ConflictsWith`
 lists, including omission, and an optional `CustomAnimAndDuration` with editable
@@ -151,7 +158,7 @@ unreviewed changes are rejected, not silently ignored. ALPHA005 marks this scope
 | GameObject | Current scalar processor registry (63 attributes), including Scale, ThreatLevel, BountyValue, root booleans, Time/Angle/duration values | Official schema + concrete finite/native type; no six-field gameplay caps |
 | GameObject | 15 fixed root values: KindOf masks, six enums and seven weak IDs | Official schema + concrete EP1 enum/bit/hash ABI; grouped native/metadata checks |
 | GameObject | Optional root strong references: UnitTypeIcon, UnitIntro, CrowdResponse | Real stock target of the correct family required; removing/emptying/restoring icon and intro reindexes all later imports. CrowdResponse has no available stock catalog target |
-| GameObject | Six root ASCII strings: Description, DescriptionTransformed, TypeDescription, TypeDescriptionTransformed, EditorName and ExperienceScalarTable | Each may be added, removed, emptied or resized independently up to 4096 bytes; native pointers, token targets, RELO and IMP coordinates are rebased |
+| GameObject | Six root ASCII strings: Description, DescriptionTransformed, TypeDescription, TypeDescriptionTransformed, EditorName and ExperienceScalarTable | Each may be added, removed, emptied or resized independently; no 4096-byte per-key quota. Native pointers, token targets, RELO and IMP coordinates are rebased; overall checked source/graph bounds remain |
 | ObjectResourceInfo/BuildCost | Amount | Schema-valid unsigned 32-bit integer |
 | Body/ActiveBody | MaxHealth | Schema-valid finite real |
 | Existing Draws/Behaviors/AI/Body/Client modules | 384 direct primitive slots across the current 49 module instances | Official schema/default + concrete fixed-width native codec + independently qualified token offset/type; [full field inventory](../docs/RA3EP1_MODULE_PRIMITIVE_CAPABILITIES.md) |

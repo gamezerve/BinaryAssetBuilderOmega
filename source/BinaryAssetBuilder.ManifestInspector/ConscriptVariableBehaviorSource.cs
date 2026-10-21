@@ -17,6 +17,8 @@ internal static class ConscriptVariableBehaviorSource
         GameObjectScalarContract.Validate(source);GameObjectRootAttributeContract.Validate(source);ConscriptModuleScalarContract.Validate(source);ConscriptModuleIdentityContract.Validate(source);
         if(!ConscriptSourceInput.Identity(source.DocumentElement!.GetAttribute("id")))throw SdkXmlDiagnostics.At(new InvalidDataException("Invalid GameObject identity."),source.DocumentElement);
         var actual=Qualified(source);var model=Qualified(baseline);
+        // Reborn: root localization keys are source values, including optional pointed names, rather than frozen stock text.
+        _=GameObjectRootTextContract.Read(source);
         // Reborn: nested numeric overflow must identify its authored attribute instead of failing later inside the native marshaler.
         foreach(var owner in ConscriptModuleScalarContract.Owners(source))ConscriptUpgradeStructure.ValidateSource(owner);
         var owners=ConscriptModuleScalarContract.Owners(actual);var originals=ConscriptModuleScalarContract.Owners(model);
@@ -36,6 +38,8 @@ internal static class ConscriptVariableBehaviorSource
         var copy=Clone(actual);var comparison=Clone(model);var oldBehaviors=Container(copy);
         oldBehaviors.ParentNode!.ReplaceChild(copy.ImportNode(Container(comparison),true),oldBehaviors);
         copy.DocumentElement!.SetAttribute("id",comparison.DocumentElement!.GetAttribute("id"));GameObjectScalarContract.Mask(copy,comparison);GameObjectRootAttributeContract.Mask(copy,comparison);
+        // Reborn: the native comparer checks text bytes and allocations independently after structural admission.
+        GameObjectRootTextContract.Mask(copy,comparison);
         // Reborn: existing strong slots retain schema types/presence, but their target names are authored values on both compilation routes.
         ConscriptModuleIdentityContract.Mask(copy,comparison);ConscriptModuleScalarContract.Mask(copy,comparison);ConscriptReferenceSpellings.Compare(copy,comparison,schemas,allowRetarget:true,allowUpgradeWeak:true);
         if(ConscriptSourceInput.Signature(copy.DocumentElement)!=ConscriptSourceInput.Signature(comparison.DocumentElement!))
@@ -80,7 +84,9 @@ internal static class ConscriptVariableBehaviorSource
         var order=model.Attributes.OfType<XmlAttribute>().Select((a,i)=>(Key:(a.NamespaceURI,a.LocalName),Index:i)).ToDictionary(p=>p.Key,p=>p.Index);
         var attributes=actual.Attributes.OfType<XmlAttribute>().OrderBy(a=>order.GetValueOrDefault((a.NamespaceURI,a.LocalName),int.MaxValue)).ToArray();foreach(var a in attributes)actual.RemoveAttributeNode(a);foreach(var a in attributes)actual.Attributes.Append(a);
         bool flexible=upgradeIds.Contains(actual.GetAttribute("id"));
-        var children=actual.ChildNodes.OfType<XmlElement>().Where(e=>!flexible||!ConscriptUpgradeStructure.Fields.Contains(e.LocalName)).ToArray();var models=model.ChildNodes.OfType<XmlElement>().Where(e=>!flexible||!ConscriptUpgradeStructure.Fields.Contains(e.LocalName)).ToArray();if(children.Length!=models.Length)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported variable source child structure."),actual);
+        // Reborn: optional display-name children contain text only and cannot alter Core asset-reference occurrence ordering.
+        bool Skip(XmlElement e)=>(flexible&&ConscriptUpgradeStructure.Fields.Contains(e.LocalName))||(actual.LocalName=="GameObject"&&GameObjectRootTextContract.Pointed.Contains(e.LocalName));
+        var children=actual.ChildNodes.OfType<XmlElement>().Where(e=>!Skip(e)).ToArray();var models=model.ChildNodes.OfType<XmlElement>().Where(e=>!Skip(e)).ToArray();if(children.Length!=models.Length)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported variable source child structure."),actual);
         for(int i=0;i<children.Length;i++){if(children[i].LocalName!=models[i].LocalName)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported variable source child order."),children[i]);Align(children[i],models[i],upgradeIds);}
     }
 }

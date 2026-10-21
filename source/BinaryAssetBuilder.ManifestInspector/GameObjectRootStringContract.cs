@@ -10,7 +10,6 @@ namespace BinaryAssetBuilder.ManifestInspector;
 internal static class GameObjectRootStringContract
 {
     private const int NativeRootSize=600;
-    private const int MaximumBytesPerString=4096;
     internal static IReadOnlyList<Ep1GameObjectScalarTokens.Field> Fields=>Ep1GameObjectStringTokens.Fields;
     internal static int AllocationSize(XmlDocument source)=>Values(source).Sum(v=>v.Allocation);
     internal static int PresentCount(XmlDocument source)=>Values(source).Count(v=>v.Present);
@@ -21,7 +20,7 @@ internal static class GameObjectRootStringContract
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: accept bounded non-NUL ASCII independently of the old allocation extent; schema validation still owns lexical source rules. */
+    /** Reborn: accept non-NUL ASCII independently of the old allocation extent; checked buffer/source limits replace per-key trial quotas. */
     //-------------------------------------------------------------------------------------------------
     internal static void Validate(XmlDocument source,XmlDocument baseline){_=Values(source);_=Values(baseline);}
 
@@ -121,7 +120,8 @@ internal static class GameObjectRootStringContract
     //-------------------------------------------------------------------------------------------------
     private static Value[] Values(XmlDocument source)=>Fields.Select(field=>
     {
-        bool present=source.DocumentElement!.HasAttribute(field.Name);string text=present?source.DocumentElement.GetAttribute(field.Name):string.Empty;if(text.Any(c=>c==0 || c>127))throw new InvalidDataException("Root string currently requires non-NUL ASCII: "+field.Name);byte[] bytes=Encoding.ASCII.GetBytes(text);if(bytes.Length>MaximumBytesPerString)throw new InvalidDataException("Root string exceeds the reviewed 4096-byte allocation bound: "+field.Name);return new Value(field,present,bytes);
+        // Reborn: root keys have no stock-example length ceiling; existing checked graph/source allocation bounds still apply.
+        bool present=source.DocumentElement!.HasAttribute(field.Name);string text=present?source.DocumentElement.GetAttribute(field.Name):string.Empty;if(text.Any(c=>c==0 || c>127))throw new InvalidDataException("Root string currently requires non-NUL ASCII: "+field.Name);return new Value(field,present,Encoding.ASCII.GetBytes(text));
     }).ToArray();
 
     //-------------------------------------------------------------------------------------------------

@@ -12,6 +12,14 @@ Active development branch: `main` in `gamezerve/BinaryAssetBuilderOmega`.
 It contains the Uprising SDK work previously developed on
 `feature/ra3ep1-manifest-inspector`; the original `master` history is retained.
 
+<!-- Reborn: source text keys are editable values, not fixed stock example identities. -->
+`DisplayName` and `DisplayNameTransformed` can now be changed, added, omitted or
+explicitly emptied, together with root descriptions and variable Behaviors.
+Both the source gate and final metadata producer use authored presence/content,
+not equality to `Name:SovietAntiInfantryInfantry`. These are ASCII localization
+keys, not a localization-table compiler; a key's translated text remains a
+separate resource. See [root text authoring](docs/RA3EP1_ROOT_TEXT_AUTHORING.md).
+
 <!-- Reborn: nested upgrade fields are source-driven ABI structures, not stock-sized examples. -->
 [Nested upgrade authoring](docs/RA3EP1_UPGRADE_NESTED_FIELDS.md) now supports
 adding/removing/omitting `TriggeredBy` and `ConflictsWith` entries, plus an optional
