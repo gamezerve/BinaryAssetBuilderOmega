@@ -19,21 +19,23 @@ internal static class ConscriptVariableBehaviorSource
         var actual=Qualified(source);var model=Qualified(baseline);
         var owners=ConscriptModuleScalarContract.Owners(actual);var originals=ConscriptModuleScalarContract.Owners(model);
         var behaviors=owners.Where(o=>o.Container=="Behaviors").ToArray();var templates=originals.Where(o=>o.Container=="Behaviors").ToArray();
-        if(behaviors.Length<1||behaviors.Length>64)throw SdkXmlDiagnostics.At(new InvalidDataException("Reviewed behavior resource policy requires 1..64 modules; this is not an EA engine limit."),source.GetElementsByTagName("Behaviors", "uri:ea.com:eala:asset")[0]);
+        // Reborn: module count is source-driven, not capped at the old trial budget; existing checked buffer/depth bounds protect compilation.
+        if(behaviors.Length<1)throw SdkXmlDiagnostics.At(new InvalidDataException("Empty Behaviors container serialization is not implemented on this variable graph path."),source.GetElementsByTagName("Behaviors", "uri:ea.com:eala:asset")[0]);
         var origins=new Dictionary<string,string>(StringComparer.Ordinal);var selected=new List<ConscriptModuleScalarContract.Owner>();
         foreach(var owner in behaviors)
         {
             // Reborn: exact existing identity breaks equivalent-template ties; new IDs may use any otherwise identical complete reviewed shape.
             var candidates=templates.Where(t=>t.Element.LocalName==owner.Element.LocalName).OrderByDescending(t=>t.Element.GetAttribute("id")==owner.Element.GetAttribute("id"));
             var matched=candidates.FirstOrDefault(t=>Matches(owner,t));
-            if(matched==null)throw SdkXmlDiagnostics.At(new InvalidDataException("Variable behavior '"+owner.Element.LocalName+"' has no reviewed complete payload template. Fixed attributes are editable; new nested lists, reference targets/presence and module families need additional graph support."),SdkXmlDiagnostics.Unmasked(owner.Element,source));
+            if(matched==null)throw SdkXmlDiagnostics.At(new InvalidDataException("Behavior '"+owner.Element.LocalName+"' has an unsupported nested layout or value field. Existing typed reference targets and fixed attributes are editable; changed reference presence, nested list shapes and unimplemented module families need compiler support."),SdkXmlDiagnostics.Unmasked(owner.Element,source));
             origins.Add(owner.Element.GetAttribute("id"),matched.Element.GetAttribute("id"));selected.Add(matched);
         }
         // Reborn: every other root/container retains the existing shape, but reviewed root and direct module fixed fields remain authorable.
         var copy=Clone(actual);var comparison=Clone(model);var oldBehaviors=Container(copy);
         oldBehaviors.ParentNode!.ReplaceChild(copy.ImportNode(Container(comparison),true),oldBehaviors);
         copy.DocumentElement!.SetAttribute("id",comparison.DocumentElement!.GetAttribute("id"));GameObjectScalarContract.Mask(copy,comparison);GameObjectRootAttributeContract.Mask(copy,comparison);
-        ConscriptModuleIdentityContract.Mask(copy,comparison);ConscriptModuleScalarContract.Mask(copy,comparison);ConscriptReferenceSpellings.Compare(copy,comparison,schemas);
+        // Reborn: existing strong slots retain schema types/presence, but their target names are authored values on both compilation routes.
+        ConscriptModuleIdentityContract.Mask(copy,comparison);ConscriptModuleScalarContract.Mask(copy,comparison);ConscriptReferenceSpellings.Compare(copy,comparison,schemas,allowRetarget:true,allowUpgradeWeak:true);
         if(ConscriptSourceInput.Signature(copy.DocumentElement)!=ConscriptSourceInput.Signature(comparison.DocumentElement!))
         {
             string difference=ConscriptSourceInput.Difference(copy.DocumentElement,comparison.DocumentElement!,"GameObject",out var offending);
@@ -56,7 +58,7 @@ internal static class ConscriptVariableBehaviorSource
             var a=Clone(model);var b=Clone(model);var left=Container(a);var right=Container(b);left.RemoveAll();right.RemoveAll();
             var node=(XmlElement)a.ImportNode(owner.Element,true);var basis=(XmlElement)b.ImportNode(template.Element,true);left.AppendChild(node);right.AppendChild(basis);node.SetAttribute("id",basis.GetAttribute("id"));
             foreach(var field in ConscriptModuleScalarContract.Bindings(template.NativeType)){node.RemoveAttribute(field.Name);if(basis.HasAttribute(field.Name))node.SetAttribute(field.Name,basis.GetAttribute(field.Name));}
-            ConscriptReferenceSpellings.Compare(a,b,schemas);
+            ConscriptReferenceSpellings.Compare(a,b,schemas,allowRetarget:true,allowUpgradeWeak:true);
             return ConscriptSourceInput.Signature(node)==ConscriptSourceInput.Signature(basis);
         }
     }

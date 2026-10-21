@@ -20,7 +20,7 @@ internal static class SdkMissingDependencyAudit
         public bool FullDependencyCoverage=>false;
         public bool GameExecuted=>false;
         // Reborn: distinguish captured source evidence from post-inheritance/default expansion and dynamic game-name lookup.
-        public string[] Limitations=>new[]{"Explicit source expression uses and schema-typed strong references only.","Instance-only owners are not mod-produced assets; inherited/default fields absent from emitted raw owners require subsequent compiler checks.","Weak IDs, arbitrary strings, dynamically loaded names and unsupported expression values are not proved present.","Stock catalog contains only the explicitly supplied manifests, not a recursive scan of game archives."};
+        public string[] Limitations=>new[]{"Explicit source expression uses, schema-typed strong references and UpgradeTemplate weak references only.","Instance-only owners are not mod-produced assets; inherited/default fields absent from emitted raw owners require subsequent compiler checks.","Other weak IDs, arbitrary strings, dynamically loaded names and unsupported expression values are not proved present.","Stock catalog contains only the explicitly supplied manifests, not a recursive scan of game archives."};
     }
     private sealed record Definition(string Value,string Source,bool Usable,bool Broken);
 
@@ -102,8 +102,10 @@ internal static class SdkMissingDependencyAudit
             {
                 var type=info?.SchemaType;if(type==null)return;
                 // Reborn: weak IDs may derive directly from string rather than AssetReference, so count their unproved uses before the strong-type gate.
-                if(weakType!=null && XmlSchemaType.IsDerivedFrom(type,weakType,XmlSchemaDerivationMethod.None)){if(!string.IsNullOrWhiteSpace(value))deferred++;return;}
-                if(referenceType==null || !XmlSchemaType.IsDerivedFrom(type,referenceType,XmlSchemaDerivationMethod.None))return;
+                // Reborn: UpgradeTemplate weak IDs have explicit asset semantics and must report genuine missing upgrades, not an unsupported module shape.
+                bool upgradeWeak=type.QualifiedName.Name=="UpgradeTemplateWeakRef";
+                if(!upgradeWeak && weakType!=null && XmlSchemaType.IsDerivedFrom(type,weakType,XmlSchemaDerivationMethod.None)){if(!string.IsNullOrWhiteSpace(value))deferred++;return;}
+                if(!upgradeWeak && (referenceType==null || !XmlSchemaType.IsDerivedFrom(type,referenceType,XmlSchemaDerivationMethod.None)))return;
                 // Reborn: list-valued/custom reference encodings require their own tokenization rather than hashing the whole list as one missing name.
                 if(type.Datatype?.Variety==XmlSchemaDatatypeVariety.List){deferred++;return;}
                 string? required=Annotation(info?.SchemaAttribute?.UnhandledAttributes)??Annotation(info?.SchemaElement?.UnhandledAttributes);

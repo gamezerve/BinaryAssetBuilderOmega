@@ -13,7 +13,8 @@ try {
     $identity=$inputReceipt.Identity;$hasCommand=[bool]$inputReceipt.CommandPath;$newIdentity=$identity-cne 'SovietAntiInfantryInfantry'
     # Reborn: report the fixed and variable source profiles separately so variable Behaviors do not imply arbitrary nested GameObject support.
     Write-Output 'Warning: ALPHA005 Partial GameObject support. Fixed graph: reviewed root/module fields, local IDs, optional root imports, existing typed reference retargeting, six dynamic root strings and existing nested numeric owners.'
-    Write-Output 'Warning: ALPHA006 Variable Behaviors: add/remove/reorder/clone reviewed payload shapes and edit their fixed fields. Resource policy: 1..64 behaviors, not an EA limit. New nested layouts/families, changed strong targets or dynamic root strings in this profile, and resource compilation are not enabled.'
+    # Reborn: reference retargeting is shared with variable Behaviors; only actual unimplemented layouts/resources remain restricted.
+    Write-Output 'Warning: ALPHA006 Partial native layout support: variable Behaviors, fixed fields and existing typed reference retargeting are supported together. New nested layouts/families, reference presence changes, dynamic root strings in this profile and resource compilation still require implementation.'
     Write-Output ('Reborn: authored asset count: '+$(if($hasCommand){2}else{1})+'; no automatic LogicCommand generation.')
     $scratch=Join-Path $OutputRoot 'temp';$null=New-Item -ItemType Directory -Path $scratch;$previousTemp=$env:TEMP;$previousTmp=$env:TMP
     try {

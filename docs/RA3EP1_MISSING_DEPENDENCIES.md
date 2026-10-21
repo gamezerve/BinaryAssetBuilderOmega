@@ -27,6 +27,13 @@ scope an exact type wins before derived-type fallback, following Core resolution
 source path and line/column. `AMBIGUOUSASSET` identifies multiple compatible
 concrete targets rather than choosing one silently.
 
+<!-- Reborn: explicit upgrade weak-reference semantics must identify real missing upgrades before native-layout admission. -->
+`UpgradeTemplateWeakRef` fields, including `TriggeredBy` and `ConflictsWith`, now
+use the same mod-produced/stock union lookup. For example, the missing spelling
+`Upgrade_AlliesFactaon` is reported as `UpgradeTemplate:Upgrade_AlliesFactaon`
+at its XML text location, not as an unsupported ModelConditionUpgrade or weapon
+layout. This does not claim generic validation of all other weak/dynamic names.
+
 ## Definition visibility and chains
 
 Definitions follow captured all/instance Include visibility and the existing

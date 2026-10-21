@@ -10,7 +10,7 @@ internal static class ConscriptReferenceSpellings
     //-------------------------------------------------------------------------------------------------
     /** Reborn: normalize comparison copies only; actual authored names still pass independent Core/catalog/import resolution during compilation. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Compare(XmlDocument candidate,XmlDocument model,XmlSchemaSet schemas,bool allowRetarget=false)
+    internal static void Compare(XmlDocument candidate,XmlDocument model,XmlSchemaSet schemas,bool allowRetarget=false,bool allowUpgradeWeak=false)
     {
         foreach(var document in new[]{candidate,model}){document.Schemas.Add(schemas);document.Validate((_,e)=>throw new InvalidDataException(e.Message));}
         var strong=schemas.GlobalTypes[new XmlQualifiedName("AssetReference","uri:ea.com:eala:asset")] as XmlSchemaType;
@@ -35,6 +35,14 @@ internal static class ConscriptReferenceSpellings
         //-------------------------------------------------------------------------------------------------
         void Canonicalize(XmlNode actual,XmlNode expected)
         {
+            // Reborn: variable UpgradeModuleData lists already serialize typed weak hashes; source/native/catalog checks own their values, not stock spelling.
+            if(allowUpgradeWeak && actual.SchemaInfo?.SchemaType?.QualifiedName.Name=="UpgradeTemplateWeakRef"){
+                string value=actual is XmlAttribute wa?wa.Value:actual.InnerText,original=expected is XmlAttribute wb?wb.Value:expected.InnerText;
+                if(value.Length>0&&original.Length>0&&System.Text.RegularExpressions.Regex.IsMatch(value,@"\A[A-Za-z_][A-Za-z0-9_]*\z")){
+                    if(actual is XmlAttribute weakAttribute)weakAttribute.Value=original;else actual.InnerText=original;
+                }
+                return;
+            }
             var type=actual.SchemaInfo?.SchemaType;if(type==null||strong==null||!XmlSchemaType.IsDerivedFrom(type,strong,XmlSchemaDerivationMethod.None))return;
             string a=actual is XmlAttribute aa?aa.Value:actual.InnerText,b=expected is XmlAttribute bb?bb.Value:expected.InnerText;
             if(a==b||a.Length==0||b.Length==0||a.Contains('\\')||b.Contains('\\'))return;

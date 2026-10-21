@@ -69,17 +69,19 @@ try {
         for($i=0;$i-lt $original.Count;$i+=2){$null=$behaviors.RemoveChild($original[$i])}
         for($i=0;$i-lt 12;$i++){$clone=$original[$i].CloneNode($true);$clone.SetAttribute('id',('RebornVariableClone_'+$i));$null=$behaviors.AppendChild($clone)}
         $ordered=@($behaviors.ChildNodes|Where-Object {$_ -is [Xml.XmlElement]});[array]::Reverse($ordered);foreach($node in $ordered){$null=$behaviors.AppendChild($node)}
+        # Reborn: a real Studio package must combine graph edits with authored strong and typed weak asset targets.
+        $weapon=$xml.SelectSingleNode('//*[local-name()="Weapon" and contains(@Template,"SovietAntiInfantryInfantryAK47")]');if(-not $weapon){throw 'Combined weapon control is missing.'};$weapon.SetAttribute('Template','JapanArcherInfantryEnergyBow')
+        $weakEdits=0;foreach($trigger in $xml.SelectNodes('//*[local-name()="TriggeredBy"]')){if($trigger.InnerText.Trim() -cin @('Upgrade_JapanFaction','Upgrade_AlliesFaction')){$trigger.InnerText=if($trigger.InnerText.Trim() -ceq 'Upgrade_JapanFaction'){'Upgrade_AlliesFaction'}else{'Upgrade_JapanFaction'};$weakEdits++}};if(-not $weakEdits){throw 'Combined upgrade control is missing.'}
         $declaration=[Xml.XmlDocument]::new();$declaration.PreserveWhitespace=$true;$declaration.LoadXml('<!-- Reborn: developer-only variable Behaviors and explicit production command. --><AssetDeclaration xmlns="uri:ea.com:eala:asset"><Tags/><Includes/></AssetDeclaration>');$null=$declaration.DocumentElement.AppendChild($declaration.ImportNode($xml.DocumentElement,$true))
         $command=[Xml.XmlDocument]::new();$command.LoadXml('<LogicCommand xmlns="uri:ea.com:eala:asset" id="Command_ConstructSovietAntiInfantryInfantry" Type="UNIT_BUILD"><Object>RebornConscriptTrial</Object></LogicCommand>');$null=$declaration.DocumentElement.AppendChild($declaration.ImportNode($command.DocumentElement,$true));$declaration.Save($input)
         Invoke-TestCase VariableBehaviorsCombined $true;$good=(Get-FileHash -LiteralPath $package).Hash
         $receipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json
         if($receipt.Core.MetadataPrefix-ne 84120 -or $receipt.Core.ReferenceOccurrences-ne 271 -or $receipt.Core.AssetCount-ne 2 -or $receipt.Backend.AutomaticCommandGenerated){throw 'Variable source package evidence differs.'}
-        foreach($kind in @('Nested','Collision','Oversize')){
+        foreach($kind in @('Nested','Collision')){
             $bad=$declaration.CloneNode($true);$list=$bad.SelectSingleNode('//*[local-name()="GameObject"]/*[local-name()="Behaviors"]');$nodes=@($list.ChildNodes|Where-Object {$_ -is [Xml.XmlElement]})
             switch($kind){
                 Nested{$bad.SelectSingleNode('//*[local-name()="DieMuxData"]').SetAttribute('DeathTypes','CRUSHED ELECTROCUTED')}
                 Collision{$nodes[1].SetAttribute('id',$nodes[0].GetAttribute('id'))}
-                Oversize{for($i=$nodes.Count;$i-lt 65;$i++){$copy=$nodes[0].CloneNode($true);$copy.SetAttribute('id',('RebornOverBudget_'+$i));$null=$list.AppendChild($copy)}}
             }
             $bad.Save($input);Invoke-TestCase ('VariableBehaviorsReject'+$kind) $false;if((Get-FileHash -LiteralPath $package).Hash-cne $good){throw 'Rejected variable graph replaced the successful package.'}
         }

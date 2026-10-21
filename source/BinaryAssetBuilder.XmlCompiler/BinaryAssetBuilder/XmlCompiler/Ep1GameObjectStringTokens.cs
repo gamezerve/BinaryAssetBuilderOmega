@@ -32,7 +32,8 @@ public static class Ep1GameObjectStringTokens
         if (list < 600 || list % 4 != 0 || list > b.Length - 8)throw new InvalidDataException("Projection requires a bounded behavior envelope after root allocations.");
         uint count=Word((int)list);
         // Reborn: only the explicit all-reviewed-family composer raises the existing three-module envelope bound.
-        if(count<1 || count>(reviewedBehaviors?64:3) || list>b.Length-8-count*4 || Word((int)list+4)!=list+8)throw new InvalidDataException("Projection behavior count/canonical pointers differ.");
+        // Reborn: complete behavior composition is bounded by its allocated buffer, not the former 64-module sample quota.
+        if(count<1 || (!reviewedBehaviors&&count>3) || count>b.Length/4 || list>b.Length-8-count*4 || Word((int)list+4)!=list+8)throw new InvalidDataException("Projection behavior count/canonical pointers differ.");
         var modules=new int[count];var owners=new List<uint>{476,list+4};
         for(int i=0;i<count;i++)
         {

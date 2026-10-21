@@ -17,7 +17,7 @@ internal static class ConscriptModuleGraphSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compile removed/reordered/cloned behavior graphs on one Core/Tracker and independently verify every native owner against stock. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string manifest,string globalManifest,string output)
+    internal static void Run(string manifest,string globalManifest,string output,string? caseFilter=null)
     {
         output=SdkEnvironmentPreflight.Absolute(output);SdkEnvironmentPreflight.CheckPath(output);
         if(Directory.Exists(output)||File.Exists(output))throw new InvalidDataException("Fresh module-graph output required.");
@@ -32,14 +32,27 @@ internal static class ConscriptModuleGraphSmokeTest
             var stock=GameObjectStockReview.Capture(manifest,"GameObject:SovietAntiInfantryInfantry");var topology=GameObjectModuleReview.Inspect(manifest,stock.Asset.Name);
             var baseline=SdkXmlDiagnostics.Parse(File.ReadAllBytes(Path.Combine(fixtureRoot,"live-alpha","ConscriptBuildTime1","data","mod.xml")));baseline.DocumentElement!.SetAttribute("BuildTime","4");
             var templates=ConscriptModuleScalarContract.Owners(baseline).ToDictionary(o=>o.Element.GetAttribute("id"),o=>topology.Containers.Single(c=>c.Name==o.Container).Modules[o.Index],StringComparer.Ordinal);
-            var verifier=new ConscriptVariableGraphVerifier(official,manifest,baseline);
+            var verifier=new ConscriptVariableGraphVerifier(official,manifest,baseline,schemas,catalog);
             string snapshot=baseline.OuterXml;var results=new List<object>();int faults=0,metadataFaults=0;
-            foreach(string mode in new[]{"original","reverse","remove-half","clone-twelve","combined","new-id-combined"})
+            // Reborn: allow a focused proof run when extending one capability without replaying unrelated expensive native matrices.
+            string[] modes={"original","reverse","remove-half","clone-twelve","combined","new-id-combined","retarget-combined","beyond-former-budget"};
+            if(caseFilter!=null&&!modes.Contains(caseFilter,StringComparer.Ordinal))throw new InvalidDataException("Unknown module graph proof case.");
+            foreach(string mode in caseFilter==null?modes:new[]{caseFilter})
             {
                 var source=(XmlDocument)baseline.CloneNode(true);var origins=templates.Keys.ToDictionary(id=>id,id=>id,StringComparer.Ordinal);var behaviors=(XmlElement)source.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]!;var original=behaviors.ChildNodes.OfType<XmlElement>().ToArray();
-                if(mode is "remove-half" or "combined" or "new-id-combined")foreach(var node in original.Where((_,i)=>i%2==0))behaviors.RemoveChild(node);
-                if(mode is "clone-twelve" or "combined" or "new-id-combined")foreach(var node in original.Take(12)){var copy=(XmlElement)node.CloneNode(true);string id="RebornGraphClone_"+origins.Count;origins.Add(id,node.GetAttribute("id"));copy.SetAttribute("id",id);behaviors.AppendChild(copy);}
-                if(mode is "reverse" or "combined" or "new-id-combined")foreach(var node in behaviors.ChildNodes.OfType<XmlElement>().Reverse().ToArray())behaviors.AppendChild(node);
+                if(mode is "remove-half" or "combined" or "new-id-combined" or "retarget-combined")foreach(var node in original.Where((_,i)=>i%2==0))behaviors.RemoveChild(node);
+                if(mode is "clone-twelve" or "combined" or "new-id-combined" or "retarget-combined")foreach(var node in original.Take(12)){var copy=(XmlElement)node.CloneNode(true);string id="RebornGraphClone_"+origins.Count;origins.Add(id,node.GetAttribute("id"));copy.SetAttribute("id",id);behaviors.AppendChild(copy);}
+                if(mode is "reverse" or "combined" or "new-id-combined" or "retarget-combined")foreach(var node in behaviors.ChildNodes.OfType<XmlElement>().Reverse().ToArray())behaviors.AppendChild(node);
+                // Reborn: combined composition must preserve authored compatible targets instead of comparing them to stock asset names.
+                if(mode=="retarget-combined"){
+                    int edits=0;foreach(XmlElement weapon in source.GetElementsByTagName("Weapon",SchemaSet.XmlNamespace))if(weapon.GetAttribute("Template").Contains("SovietAntiInfantryInfantryAK47",StringComparison.Ordinal)){weapon.SetAttribute("Template","JapanArcherInfantryEnergyBow");edits++;}
+                    if(edits==0)throw new InvalidDataException("Combined reference control did not edit a real weapon slot.");
+                    // Reborn: typed weak upgrade triggers must also remain editable together with structural composition and strong references.
+                    int weakEdits=0;foreach(XmlElement trigger in source.GetElementsByTagName("TriggeredBy",SchemaSet.XmlNamespace))if(trigger.InnerText.Trim() is "Upgrade_JapanFaction" or "Upgrade_AlliesFaction"){trigger.InnerText=trigger.InnerText.Trim()=="Upgrade_JapanFaction"?"Upgrade_AlliesFaction":"Upgrade_JapanFaction";weakEdits++;}
+                    if(weakEdits==0)throw new InvalidDataException("Combined upgrade control did not edit a real weak-reference slot.");
+                }
+                if(mode=="beyond-former-budget"){var physics=original.Single(e=>e.LocalName=="Physics");while(behaviors.ChildNodes.OfType<XmlElement>().Count()<65){var copy=(XmlElement)physics.CloneNode(true);string id="RebornUncapped_"+origins.Count;origins.Add(id,physics.GetAttribute("id"));copy.SetAttribute("id",id);behaviors.AppendChild(copy);}}
+                ConscriptVariableBehaviorSource.Admit(source,baseline,official);
                 // Reborn: a new object identity receives a command only from an explicit authored declaration, never from its ID alone.
                 if(mode=="new-id-combined"){if(catalog.Any(a=>a.TypeId==0x942FFF2D&&a.InstanceId==InstanceHandle.GetInstanceId("RebornConscriptTrial")))throw new InvalidDataException("Variable trial ID collides with stock.");source.DocumentElement!.SetAttribute("id","RebornConscriptTrial");}
                 var pair=Build(source);var tokens=Verify(source,pair.Native,pair.Instance,origins);var repeat=Build(source);
@@ -60,6 +73,14 @@ internal static class ConscriptModuleGraphSmokeTest
                 int address=ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,ConscriptModuleScalarContract.Owners(source).First(o=>o.Container=="Behaviors"));
                 foreach(int at in new[]{address,address+4,(int)Word(pair.Native.InstanceBuffer,476)}){var bad=Clone(pair.Native);bad.InstanceBuffer[at]^=1;Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;}
                 foreach(bool relocations in new[]{true,false}){var bad=Clone(pair.Native);if(relocations)bad.RelocationBuffer=Array.Empty<byte>();else bad.ImportsBuffer=Array.Empty<byte>();Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;}
+                // Reborn: a valid but wrong same-type target must still fail after retarget support is enabled.
+                if(mode=="retarget-combined"){
+                    uint target=InstanceHandle.GetInstanceId("JapanArcherInfantryEnergyBow");
+                    uint slot=Slots(pair.Native.ImportsBuffer).First(s=>pair.Instance.ReferencedInstances[(int)Word(pair.Native.InstanceBuffer,(int)s)-1].InstanceId==target);
+                    var expected=pair.Instance.ReferencedInstances[(int)Word(pair.Native.InstanceBuffer,(int)slot)-1];
+                    int wrong=Enumerable.Range(0,pair.Instance.ReferencedInstances.Count).First(i=>pair.Instance.ReferencedInstances[i].TypeId==expected.TypeId&&pair.Instance.ReferencedInstances[i].InstanceId!=expected.InstanceId);
+                    var bad=Clone(pair.Native);Put(bad.InstanceBuffer,(int)slot,(uint)(wrong+1));Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;
+                }
                 // Reborn: changed root links, list markers, class tables and native-tail words must fail independent metadata validation.
                 int table=GameObjectStockReview.Tokens(tokens.InstanceBuffer,0)[FastHash.GetHashCode("Behaviors")].Offset;
                 int firstModule=(int)Word(tokens.InstanceBuffer,table+20);

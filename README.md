@@ -12,6 +12,16 @@ Active development branch: `main` in `gamezerve/BinaryAssetBuilderOmega`.
 It contains the Uprising SDK work previously developed on
 `feature/ra3ep1-manifest-inspector`; the original `master` history is retained.
 
+<!-- Reborn: existing authoring features must compose rather than becoming mutually exclusive trial profiles. -->
+Variable `Behaviors` now combines with compatible existing strong-reference
+retargeting and typed upgrade trigger edits. Reference identities come from the
+authored source and stock catalog, not frozen module-template names. The former
+64-behavior quota is removed across source admission, marshaling and metadata;
+actual buffer/ownership checks remain. Eight complete graph/package cases pass,
+including 65 behaviors, combined weapon/upgrade edits and wrong-target corruption
+rejection. Upgrade weak references now report genuinely missing assets with
+source coordinates. This does not enable unimplemented module layouts/resources.
+
 <!-- Reborn: versioned final publication follows the user's requested RA3 SDK workflow. -->
 Studio now has a **Mod Version** field (default `1.00`). Final builds publish
 `<name>_<version>_Streams.big`, `<name>_<version>_Misc.big` and
@@ -41,10 +51,11 @@ all three buffers; 30 native, 60 metadata and 3480 stream/reference controls pas
 The live Studio build now admits reviewed variable `Behaviors`: add/remove,
 reorder and clone known complete payload shapes with new local IDs, while editing
 their fixed fields and reviewed fixed root values. Normal EA includes/definitions/
-inheritance and explicit production commands work on this route. Seven live-driver
-controls pass; unsupported nested shapes, colliding IDs and resource-budget
-violations retain the last successful package. Other containers/root dynamic
-strings/strong-target changes are not yet combinable with variable topology.
+inheritance and explicit production commands work on this route. Unsupported
+nested shapes and colliding IDs retain the last successful package. Existing
+compatible strong targets and upgrade trigger names now compose with variable
+topology; other containers/root dynamic strings and changed reference presence
+still require additional implementation.
 User Reborn sources/output remain untouched; this is compile/package support,
 not new gameplay validation or general GameObject support.
 

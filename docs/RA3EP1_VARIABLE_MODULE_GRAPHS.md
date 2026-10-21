@@ -17,6 +17,8 @@ independently captured stock module instead.
 | Twelve behaviors cloned with new IDs | 48 | 61 | 92052 | 40092 | 280 |
 | Removal, cloning and reverse order combined | 30 | 43 | 84120 | 37572 | 271 |
 | Same combined graph, new object ID + explicit command | 30 | 43 | 84120 | 37572 | 271 + one local command import |
+| Combined graph with a different weapon and compatible upgrade trigger | 30 | 43 | 84120 | 37572 | 271 |
+| Source-authored count beyond the former quota | 65 | 78 | 102744 | 42492 | 275 |
 
 All six cases passed repeat builds, complete native owner/relocation/import
 coverage, semantic stock reference comparison, complete metadata ownership,
@@ -43,15 +45,18 @@ prefix, alternate SDK directory or separate user build command is required.
 `ConscriptVariableBehaviorSource` derives the template-origin map from official
 schema-qualified type and complete nested payload/reference shape; the module
 ID alone never selects a native template. Matching ignores only reviewed fixed
-attributes and the own local ID. Typed reference spelling equivalence retains
-the same actual asset identity; it is not an arbitrary target-retarget mask.
+attributes and the own local ID. Existing compatible typed reference slots may
+retarget: source/catalog-derived semantic tables bind each original ABI slot to
+the authored target. Typed upgrade trigger hashes are independently checked
+against source text and the UpgradeTemplate catalog before comparison-only
+restoration. No output values or occurrence checks are skipped.
 
 The source route admits add/remove/reorder/clone operations within `Behaviors`,
 plus reviewed direct module fixed fields/local IDs and fixed root primitive/
 enum/flag/weak-ID attributes. The same templates can be inherited/imported using
 normal `AssetDeclaration`, `Includes`, `Defines` and `inheritFrom` source.
 Other module containers keep their reviewed count/order and nested shape.
-Dynamic root strings, root strong-reference presence/target edits, existing
+Dynamic root strings, root strong-reference presence edits, existing
 nonmodule nested scalar edits and arbitrary nested lists/families are not yet
 combinable with this variable profile. Existing fixed-topology capabilities
 remain available on their established route.
@@ -64,13 +69,48 @@ checks catalog identity collisions, repeats complete native/metadata compilation
 then uses graph-qualified stream/package production. It reads only an explicitly
 authored adjacent command; no LogicCommand is synthesized from an object ID.
 
-Seven live-driver controls passed: a combined 30-behavior/new-ID/explicit-command
+The original seven live-driver controls passed: a combined 30-behavior/new-ID/explicit-command
 build with BuildTime=1, Scale=1.25, ThreatLevel=15, MaxHealth=500 and AI
 StopChaseDistance=42.5; nested DieMuxData change refusal; colliding-ID refusal;
-65-behavior budget refusal; the same variable graph through DATA includes,
+the former 65-behavior budget refusal (now superseded); the same variable graph through DATA includes,
 imported definitions and real instance inheritance; restored original developer
 source compilation; and its explicit recruitment consumer. Failed inputs kept
 the good package. Original user/developer source ownership was preserved.
+
+<!-- Reborn: remove sample quotas only after qualifying real larger native and metadata graphs. -->
+The later composition suite passes eight complete stream/BIG cases, including
+compatible weapon and upgrade edits together with removal/reordering/cloning,
+and a 65-behavior graph. The arbitrary 64-module ceiling is removed at all four
+admission/identity/marshaling/tokenization layers. Counts now validate their actual
+allocated item-table bounds. Empty Behaviors serialization is still not implemented;
+other resource/depth/buffer safety checks remain. Forty-one native and 80 metadata
+corruptions are rejected, including a wrong but valid same-type weapon target.
+The live-driver combined case now includes weapon/typed-upgrade retargets as well;
+the obsolete oversize-negative case was removed, not silently treated as a failure.
+The final focused strong/weak composition run additionally passes six native
+and ten metadata corruption checks. All six updated live-driver cases pass:
+combined package, two real unsupported/invalid input refusals, inherited
+composition, restored developer source and explicit recruitment consumer.
+All 22 source-coordinate diagnostic checks and the aggregate dependency suite
+pass. The alpha compiler generation is synchronized; no game was launched.
+
+## Reborn source diagnosis
+
+<!-- Reborn: preserve the user's authored XML while distinguishing a real missing name from a misleading fallback profile error. -->
+The unchanged Reborn source now passes source preparation, including its weapon
+change and EA instance/fragment closure. Dependency preflight finds the actual
+missing name `UpgradeTemplate:Upgrade_AlliesFactaon` at `mod.xml(1967,6)`;
+stock source declares `Upgrade_AlliesFaction`. The earlier fallback discarded
+the original fixed-layout rejection and then blamed the first unsupported
+comparison on WeaponSetUpdate, obscuring the underlying upgrade typo.
+
+A private prepared-source copy with only that spelling corrected compiled into
+a real 15-entry BIG: one explicit GameObject, 275 reference occurrences, metadata
+prefix 88824, archive SHA-256
+`91C10FC21A79CA2BE261C1CFB8D64ED73CF3A5ED7C4C8E6929C1F7C867E1D272`.
+Neither user Reborn sources nor its published package were edited/rebuilt.
+This is offline compilation evidence, not a new game launch or blanket support
+for arbitrary GameObject/module layouts.
 
 ## Publication safeguards and remaining work
 

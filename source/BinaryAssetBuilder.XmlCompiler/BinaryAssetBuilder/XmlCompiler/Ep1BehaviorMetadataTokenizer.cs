@@ -57,7 +57,8 @@ public static class Ep1BehaviorMetadataTokenizer
     public static Chunk TokenizeContainer(Chunk native, XmlSchemaSet schemas)
     {
         if(native?.InstanceBuffer==null || native.RelocationBuffer==null || native.ImportsBuffer==null || schemas==null || native.InstanceBuffer.Length<16 || native.InstanceBuffer.Length>2*1048576)throw new InvalidDataException("Bounded shared behavior graph required.");
-        byte[] bytes=native.InstanceBuffer;uint count=Word(bytes,0);if(count==0 || count>64 || Word(bytes,4)!=8)throw new InvalidDataException("Reviewed nonempty canonical behavior list required.");
+        // Reborn: validate the actual item-table extent rather than a sample-specific module count.
+        byte[] bytes=native.InstanceBuffer;uint count=Word(bytes,0);if(count==0 || count>(uint)Math.Max(0,(bytes.Length-8)/4) || Word(bytes,4)!=8)throw new InvalidDataException("Nonempty canonical behavior item table is outside its native buffer.");
         int first=checked(8+(int)count*4);if(first>bytes.Length-8 || Word(bytes,8)!=first)throw new InvalidDataException("Behavior item array ownership differs.");
         uint[] relos=Slots(native.RelocationBuffer),imports=Slots(native.ImportsBuffer);var parent=new[]{4u}.Concat(Enumerable.Range(0,(int)count).Select(i=>(uint)(8+i*4))).ToArray();
         if(relos.Concat(imports).Any(s=>s>bytes.Length-4) || relos.Intersect(imports).Any() || !relos.Where(s=>s<first).OrderBy(s=>s).SequenceEqual(parent) || imports.Any(s=>s<first))throw new InvalidDataException("Shared behavior auxiliary parent/range ownership differs.");

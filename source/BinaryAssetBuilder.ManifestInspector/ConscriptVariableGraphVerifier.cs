@@ -3,6 +3,7 @@ using System.Xml;
 using System.Xml.Schema;
 using BinaryAssetBuilder.Core;
 using BinaryAssetBuilder.Core.Hashing;
+using BinaryAssetBuilder.Core.SageXml;
 using BinaryAssetBuilder.XmlCompiler;
 using SageBinaryData;
 using Chunk=Relo.Chunk;
@@ -17,14 +18,21 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly (byte[] Metadata,ManifestDocument Document,ManifestAsset Asset,long Offset,byte[] Bytes,GameObjectStockReview.Projection Projection) stock;
     private readonly GameObjectModuleReview.Proof topology;
     private readonly Dictionary<string,GameObjectModuleReview.Module> templates;
+    // Reborn: source/catalog expectations remain independent of Core indices and emitted native buffers.
+    private readonly SchemaSet referenceSchemas;
+    private readonly ManifestAsset[] catalog;
+    private readonly XmlDocument baseline;
+    private readonly Dictionary<string,AssetId[]> referenceTables=new(StringComparer.Ordinal);
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: bind source templates to independently captured stock identities once per build. */
     //-------------------------------------------------------------------------------------------------
-    internal ConscriptVariableGraphVerifier(XmlSchemaSet schemas,string manifest,XmlDocument baseline)
+    internal ConscriptVariableGraphVerifier(XmlSchemaSet schemas,string manifest,XmlDocument baseline,SchemaSet referenceSchemas,ManifestAsset[] catalog)
     {
         official=schemas;stock=GameObjectStockReview.Capture(manifest,"GameObject:SovietAntiInfantryInfantry");topology=GameObjectModuleReview.Inspect(manifest,stock.Asset.Name);
         templates=ConscriptModuleScalarContract.Owners(baseline).ToDictionary(o=>o.Element.GetAttribute("id"),o=>topology.Containers.Single(c=>c.Name==o.Container).Modules[o.Index],StringComparer.Ordinal);
+        this.referenceSchemas=referenceSchemas;this.catalog=catalog;this.baseline=CopySource(baseline);
+        if(!ConscriptReferenceTargets.Read(this.baseline,referenceSchemas,catalog).SequenceEqual(stock.Asset.References))throw new InvalidDataException("Reference source traversal differs from captured stock occurrence slots.");
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -40,7 +48,8 @@ internal sealed class ConscriptVariableGraphVerifier
         ConscriptModuleScalarContract.Verify(source,b,0);
         var originalStock=stock.Bytes.ToArray();foreach(int at in Detached){Put(cleared,at,0);Put(originalStock,stock.Projection.NativeRoot+at,0);}
         var root=new Chunk{InstanceBuffer=cleared,RelocationBuffer=Pack(relos.Where(s=>!Detached.Contains((int)s))),ImportsBuffer=native.ImportsBuffer.ToArray()};
-        var rootComparer=new SelectedNativeGraphComparer(originalStock,stock.Asset.References.ToArray(),root,instance,requireAllReferences:false);
+        var rootReferences=ReferenceTable(source,null);
+        var rootComparer=new SelectedNativeGraphComparer(originalStock,rootReferences,root,instance,requireAllReferences:false);
         var selection=rootComparer.CompareRootSelection(stock.Projection.NativeRoot);
         var covered=selection.Covered;var ownedRelos=new HashSet<uint>(selection.Relocations);var ownedImports=new HashSet<uint>(selection.Imports);
         var baseBytes=b.AsSpan(0,cut).ToArray();foreach(var field in Ep1GameObjectRootOwnersProjection.Fields)Put(baseBytes,field.Slot,0);
@@ -67,7 +76,10 @@ internal sealed class ConscriptVariableGraphVerifier
                 var leaf=Extract(native,start,stop);var compared=Clone(leaf);Put(compared.InstanceBuffer,4,Word(stock.Bytes,model.Native+4));
                 // Reborn: fixed source/native values were independently checked; nested graphs and padding remain compared in full.
                 foreach(var binding in ConscriptModuleScalarContract.Bindings(owner.NativeType))stock.Bytes.AsSpan(model.Native+binding.Offset,binding.Width).CopyTo(compared.InstanceBuffer.AsSpan(binding.Offset,binding.Width));
-                var comparer=new SelectedNativeGraphComparer(stock.Bytes,stock.Asset.References.ToArray(),compared,instance,allowScriptCrLfEquivalent:group.Key=="Draws",requireAllReferences:false,captureNativeCoordinates:group.Key!="Behaviors",captureNativePaths:group.Key=="Behaviors");comparer.Compare(owner.NativeType,model.Native);Own(leaf,start,stop);
+                VerifyUpgradeTriggers(owner,origins[owner.Element.GetAttribute("id")],compared);
+                // Reborn: the template supplies ABI/ownership, not a frozen referenced asset identity; source supplies checked semantic targets.
+                var expectedReferences=group.Key=="Behaviors"&&leaf.ImportsBuffer.Length>0?ReferenceTable(owner.Element,origins[owner.Element.GetAttribute("id")]):rootReferences;
+                var comparer=new SelectedNativeGraphComparer(stock.Bytes,expectedReferences,compared,instance,allowScriptCrLfEquivalent:group.Key=="Draws",requireAllReferences:false,captureNativeCoordinates:group.Key!="Behaviors",captureNativePaths:group.Key=="Behaviors");comparer.Compare(owner.NativeType,model.Native);Own(leaf,start,stop);
                 foreach(var coordinate in comparer.NativeOffsets)map.Add(coordinate.Key,start+coordinate.Value);
                 if(group.Key=="Behaviors")
                 {
@@ -108,12 +120,60 @@ internal sealed class ConscriptVariableGraphVerifier
         if(metadataOwned.Contains(false))throw new InvalidDataException("Unowned variable graph metadata.");return tokens;
 
         // Reborn: unchanged nonmodule owners retain independent complete stock payload comparison despite shifted addresses/reference indices.
-        void Fixed(Type type,int old,int start,int end){var leaf=Extract(native,start,end);var comparer=new SelectedNativeGraphComparer(stock.Bytes,stock.Asset.References.ToArray(),leaf,instance,requireAllReferences:false,captureNativeCoordinates:false,captureNativePaths:true);comparer.Compare(type,old);fixedGraphs.Add(type==typeof(Ep1Geometry)?500:Ep1GameObjectRootOwnersProjection.Fields.Single(f=>f.NativeType==type).Slot,(start,end,type,comparer));Own(leaf,start,end);}
+        void Fixed(Type type,int old,int start,int end){var leaf=Extract(native,start,end);var comparer=new SelectedNativeGraphComparer(stock.Bytes,rootReferences,leaf,instance,requireAllReferences:false,captureNativeCoordinates:false,captureNativePaths:true);comparer.Compare(type,old);fixedGraphs.Add(type==typeof(Ep1Geometry)?500:Ep1GameObjectRootOwnersProjection.Fields.Single(f=>f.NativeType==type).Slot,(start,end,type,comparer));Own(leaf,start,end);}
         // Reborn: whole-graph ownership is the disjoint union of exact leaf allocations and their auxiliary sources.
         void Own(Chunk leaf,int start,int end){Cover(start,end-start);foreach(uint s in Slots(leaf.RelocationBuffer))Add(ownedRelos,s+(uint)start);foreach(uint s in Slots(leaf.ImportsBuffer))Add(ownedImports,s+(uint)start);}
         // Reborn: only the inline AI header may overlap the typed root's already verified bytes.
         void Cover(int start,int size,bool inline=false){if(start<0||size<0||start>b.Length-size||!inline&&covered.AsSpan(start,size).Contains(true))throw new InvalidDataException("Variable graph owner overlap/bounds.");Array.Fill(covered,true,start,size);}
     }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: bind original native occurrence slots to independently read authored targets on an unchanged comparison-source layout. */
+    //-------------------------------------------------------------------------------------------------
+    private AssetId[] ReferenceTable(XmlNode source,string? templateId)
+    {
+        string key=(templateId??"root")+"\n"+source.OuterXml;if(referenceTables.TryGetValue(key,out var existing))return existing;
+        var document=CopySource(baseline);
+        if(templateId==null){
+            document=CopySource((XmlDocument)source);
+            var actual=document.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName=="Behaviors");
+            actual.ParentNode!.ReplaceChild(document.ImportNode(baseline.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName=="Behaviors"),true),actual);
+        }else{
+            var original=ConscriptModuleScalarContract.Owners(document).Single(o=>o.Element.GetAttribute("id")==templateId).Element;
+            var replacement=(XmlElement)document.ImportNode(source,true);replacement.SetAttribute("id",templateId);original.ParentNode!.ReplaceChild(replacement,original);
+        }
+        var expected=ConscriptReferenceTargets.Read(document,referenceSchemas,catalog);
+        if(expected.Length!=stock.Asset.References.Count)throw new InvalidDataException("Authored reference presence requires an unsupported native slot layout.");
+        referenceTables.Add(key,expected);return expected;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: validate typed upgrade-list hashes against authored text and the catalog before restoring only comparison bytes to stock values. */
+    //-------------------------------------------------------------------------------------------------
+    private void VerifyUpgradeTriggers(ConscriptModuleScalarContract.Owner owner,string templateId,Chunk comparison)
+    {
+        var original=ConscriptModuleScalarContract.Owners(baseline).Single(o=>o.Element.GetAttribute("id")==templateId).Element;
+        foreach(string name in new[]{"TriggeredBy","ConflictsWith"}){
+            var authored=owner.Element.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName==name).ToArray();var defaults=original.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName==name).ToArray();
+            if(authored.Length==0&&defaults.Length==0)continue;
+            if(authored.Length!=defaults.Length)throw new InvalidDataException("Upgrade trigger list allocation changes require additional native layout support.");
+            Type current=owner.NativeType;int offset=0;
+            while(current.GetField(name)==null){var parent=current.GetField("Base")??throw new InvalidDataException("Upgrade trigger ABI field is not implemented.");offset+=System.Runtime.InteropServices.Marshal.OffsetOf(current,"Base").ToInt32();current=parent.FieldType;}
+            var field=current.GetField(name)!;if(field.FieldType!=typeof(Relo.List<TypedAssetId<UpgradeTemplate>>))throw new InvalidDataException("Upgrade trigger ABI type differs.");
+            offset+=System.Runtime.InteropServices.Marshal.OffsetOf(current,name).ToInt32();
+            if(Word(comparison.InstanceBuffer,offset)!=authored.Length)throw new InvalidDataException("Upgrade trigger source/native count differs.");
+            int list=(int)Word(comparison.InstanceBuffer,offset+4);
+            for(int i=0;i<authored.Length;i++){
+                string value=authored[i].InnerText.Trim();uint expected=InstanceHandle.GetInstanceId(value);
+                if(catalog.Count(a=>a.TypeId==FastHash.GetHashCode("UpgradeTemplate")&&a.InstanceId==expected)!=1)throw SdkXmlDiagnostics.At(new InvalidDataException("Missing or ambiguous upgrade asset: UpgradeTemplate:"+value),authored[i]);
+                if(Word(comparison.InstanceBuffer,list+i*4)!=expected)throw new InvalidDataException("Upgrade trigger native hash differs from authored source.");
+                Put(comparison.InstanceBuffer,list+i*4,InstanceHandle.GetInstanceId(defaults[i].InnerText.Trim()));
+            }
+        }
+    }
+
+    // Reborn: materialize comparison XML without mutating captured baseline or authored source provenance.
+    private static XmlDocument CopySource(XmlDocument source)=>SdkXmlDiagnostics.Parse(System.Text.Encoding.UTF8.GetBytes(source.DocumentElement!.OuterXml));
 
     // Reborn: rebase a combined metadata owner and its native tail into a standalone stock-proof input without changing any occurrence index.
     private static Chunk Detach(Chunk output,int prefix,int table,int length,int start,int end){var leaf=Extract(output,prefix+start,prefix+end);var result=new Chunk{InstanceBuffer=new byte[length+leaf.InstanceBuffer.Length],RelocationBuffer=Pack(Slots(leaf.RelocationBuffer).Select(s=>s+(uint)length)),ImportsBuffer=Pack(Slots(leaf.ImportsBuffer).Select(s=>s+(uint)length))};output.InstanceBuffer.AsSpan(table,length).CopyTo(result.InstanceBuffer);leaf.InstanceBuffer.CopyTo(result.InstanceBuffer,length);foreach(uint slot in Slots(leaf.RelocationBuffer))Put(result.InstanceBuffer,length+(int)slot,Word(leaf.InstanceBuffer,(int)slot)+(uint)length);for(int at=8;at<length;at+=12){uint target=Word(result.InstanceBuffer,at);if(target!=0)Put(result.InstanceBuffer,at,target>=table&&target<table+length?target-(uint)table:target>=prefix+start&&target<prefix+end?target-(uint)(prefix+start)+(uint)length:throw new InvalidDataException("Variable metadata detachment crosses owners."));}return result;}

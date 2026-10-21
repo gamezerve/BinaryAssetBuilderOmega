@@ -11,7 +11,8 @@ public static partial class Marshaler
     //-------------------------------------------------------------------------------------------------
     public static unsafe void MarshalEp1ReviewedBehaviors(Node node,PolymorphicList<BehaviorModuleData>** objT,Tracker state)
     {
-        var children=node?.GetChildNodes(null);int count=children?.GetCount()??0;if(count<1 || count>64)throw new System.IO.InvalidDataException("Reviewed EP1 behavior list must be bounded/nonempty.");var ids=new HashSet<uint>();
+        // Reborn: source count drives checked Tracker allocations; do not reintroduce the former 64-module trial quota.
+        var children=node?.GetChildNodes(null);int count=children?.GetCount()??0;if(count<1)throw new System.IO.InvalidDataException("Empty EP1 behavior list serialization is not implemented.");var ids=new HashSet<uint>();
         using var header=state.Push((void**)objT,(uint)sizeof(PolymorphicList<BehaviorModuleData>),1u);(*objT)->Count=(uint)count;state.InplaceEndianToPlatform(&(*objT)->Count);using var items=state.Push((void**)&(*objT)->Items,(uint)sizeof(BehaviorModuleData*),(uint)count);
         for(int i=0;i<count;i++){var child=children.GetNextNode();string id=child.GetAttributeValue("id",null)?.GetText();if(string.IsNullOrWhiteSpace(id) || !ids.Add(FastHash.GetHashCode(id.ToLowerInvariant())) || !uint.TryParse(child.GetAttributeValue("TypeId",null)?.GetText(),out uint type))throw new System.IO.InvalidDataException("Reviewed behavior class/identity required.");BinaryAssetBuilder.XmlCompiler.Ep1BehaviorMetadataTokenizer.ReviewedNativeType(type);if(type==0x431722A9)MarshalEp1WeaponSet(child,&(*objT)->Items[i],state);else if(type is 0xB5EB41ED or 0x79BFEDCB or 0x59D12990 or 0x786C9458 or 0x3B68B768 or 0x90CEB49C)MarshalEp1InfantryBehavior(child,&(*objT)->Items[i],state,type);else Marshal(child,&(*objT)->Items[i],state);}
     }

@@ -2,6 +2,14 @@
 
 ## Build your mod
 
+<!-- Reborn: compatible authoring features are composable; keep real schema/processor failures distinct from old profile quotas. -->
+Variable Behaviors can now be combined with existing compatible strong-reference
+targets (including weapon Template) and UpgradeTemplate trigger IDs. The former
+64-behavior quota is removed; actual allocated-buffer/depth and ownership checks
+remain. Missing upgrade names are listed with source file/line/column. Unimplemented
+nested/native layouts and resource processors still produce errors; this is not
+unrestricted GameObject authoring yet.
+
 <!-- Reborn: the Studio GUI is the only user build workflow; final publication follows the selected version. -->
 Select your mod in `EALAModStudio.exe`, enter **Mod Version** (for example
 `1.00`) and click **Build Mod**. Final files are in your Windows Documents
