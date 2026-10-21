@@ -63,6 +63,11 @@ presence edits, existing nonmodule nested scalar edits and other nested lists/fa
 combinable with this variable profile. Existing fixed-topology capabilities
 remain available on their established route.
 
+<!-- Reborn: working armor/hardpoint layouts are now source-driven rather than counted as unsupported nested shape changes. -->
+ArmorSet and WeaponSetUpdate hardpoint/Weapon list counts and their covered optional
+imports now also compose with the variable route. See [combat list authoring](RA3EP1_COMBAT_LIST_AUTHORING.md)
+for exact field scope and remaining unimplemented turret/contained layouts.
+
 `ConscriptVariableGraphVerifier` is shared by the diagnostic suite and Studio.
 It verifies actual fixed-field encodings before restoring only comparison bytes
 for independent stock ownership checks; actual output values are never reset.

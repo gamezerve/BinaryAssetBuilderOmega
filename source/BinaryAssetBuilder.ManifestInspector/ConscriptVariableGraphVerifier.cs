@@ -13,7 +13,7 @@ namespace BinaryAssetBuilder.ManifestInspector;
 // Reborn: reusable full native/metadata proof; authored identities select reviewed owners instead of fixed sizes or new list ordinals.
 internal sealed class ConscriptVariableGraphVerifier
 {
-    private static readonly int[] Detached={416,468,472,476,480,484,488,492,496,500,532,540,552,564};
+    private static readonly int[] Detached={416,420,424,468,472,476,480,484,488,492,496,500,532,540,552,564};
     private readonly XmlSchemaSet official;
     private readonly (byte[] Metadata,ManifestDocument Document,ManifestAsset Asset,long Offset,byte[] Bytes,GameObjectStockReview.Projection Projection) stock;
     private readonly GameObjectModuleReview.Proof topology;
@@ -53,6 +53,8 @@ internal sealed class ConscriptVariableGraphVerifier
         var rootComparer=new SelectedNativeGraphComparer(originalStock,rootReferences,root,instance,requireAllReferences:false,rootText:GameObjectRootTextContract.Read(source));
         var selection=rootComparer.CompareRootSelection(stock.Projection.NativeRoot);
         var covered=selection.Covered;var ownedRelos=new HashSet<uint>(selection.Relocations);var ownedImports=new HashSet<uint>(selection.Imports);
+        // Reborn: source-sized armor storage owns its actual array/imports separately from the detached typed root.
+        var armor=ConscriptArmorSetContract.VerifyNative(source,b,instance);if(armor.Length>0)Cover(armor.Start,armor.Length);foreach(uint slot in armor.Relocations)Add(ownedRelos,slot);foreach(uint slot in armor.Imports)Add(ownedImports,slot);
         var baseBytes=b.AsSpan(0,cut).ToArray();foreach(var field in Ep1GameObjectRootOwnersProjection.Fields)Put(baseBytes,field.Slot,0);
         var layout=Ep1GameObjectStringTokens.Inspect(baseBytes,relos.Where(s=>s<cut&&!Ep1GameObjectRootOwnersProjection.Fields.Any(f=>f.Slot==s)).ToArray(),imports.Where(s=>s<cut).ToArray(),true);
         var tokens=supplied??Ep1GameObjectEmptyRootProjection.ComposeOriginal(native,official);int prefix=tokens.InstanceBuffer.Length-b.Length;BehaviorContainerStockProof.VerifyTail(tokens,native,prefix);
@@ -79,15 +81,22 @@ internal sealed class ConscriptVariableGraphVerifier
                 foreach(var binding in ConscriptModuleScalarContract.Bindings(owner.NativeType))stock.Bytes.AsSpan(model.Native+binding.Offset,binding.Width).CopyTo(compared.InstanceBuffer.AsSpan(binding.Offset,binding.Width));
                 // Reborn: source-sized weak arrays and optional nested animation records have explicit semantic and allocation contracts.
                 var upgrade=group.Key=="Behaviors"?ConscriptUpgradeStructure.Read(owner,catalog):null;
-                if(upgrade==null)VerifyUpgradeTriggers(owner,origins[owner.Element.GetAttribute("id")],compared);
+                bool weapon=group.Key=="Behaviors"&&ConscriptWeaponSetContract.Supports(owner.NativeType);
+                if(upgrade==null&&!weapon)VerifyUpgradeTriggers(owner,origins[owner.Element.GetAttribute("id")],compared);
                 // Reborn: the template supplies ABI/ownership, not a frozen referenced asset identity; source supplies checked semantic targets.
-                var expectedReferences=group.Key=="Behaviors"&&leaf.ImportsBuffer.Length>0?ReferenceTable(owner.Element,origins[owner.Element.GetAttribute("id")]):rootReferences;
-                var comparer=new SelectedNativeGraphComparer(stock.Bytes,expectedReferences,compared,instance,allowScriptCrLfEquivalent:group.Key=="Draws",requireAllReferences:false,captureNativeCoordinates:group.Key!="Behaviors",captureNativePaths:group.Key=="Behaviors",upgrade:upgrade);comparer.Compare(owner.NativeType,model.Native);Own(leaf,start,stop);
-                foreach(var coordinate in comparer.NativeOffsets)map.Add(coordinate.Key,start+coordinate.Value);
+                // Reborn: implemented hardpoints have a complete source/native contract, so arbitrary new rows need no stock-shaped reference table.
+                SelectedNativeGraphComparer? comparer=null;
+                if(weapon)ConscriptWeaponSetContract.VerifyNative(owner.Element,leaf,instance);
+                else{var expectedReferences=group.Key=="Behaviors"&&leaf.ImportsBuffer.Length>0?ReferenceTable(owner.Element,origins[owner.Element.GetAttribute("id")]):rootReferences;comparer=new SelectedNativeGraphComparer(stock.Bytes,expectedReferences,compared,instance,allowScriptCrLfEquivalent:group.Key=="Draws",requireAllReferences:false,captureNativeCoordinates:group.Key!="Behaviors",captureNativePaths:group.Key=="Behaviors",upgrade:upgrade);comparer.Compare(owner.NativeType,model.Native);foreach(var coordinate in comparer.NativeOffsets)map.Add(coordinate.Key,start+coordinate.Value);}
+                Own(leaf,start,stop);
                 if(group.Key=="Behaviors")
                 {
                     var standalone=Ep1BehaviorMetadataTokenizer.Tokenize(leaf,official,model.Type,owner.NativeType);var stockModules=topology.Containers.Single(c=>c.Name=="Behaviors").Modules;int index=Array.IndexOf(stockModules,model);int stockEnd=index+1<stockModules.Length?stockModules[index+1].Wrapper:stockRows[FastHash.GetHashCode("AI")].Offset;
-                    int localPrefix=upgrade==null?BehaviorMetadataStockProof.Compare(standalone,leaf,stock.Bytes,model.Wrapper,stockEnd,owner.NativeType,comparer.NativeRecords):UpgradeStructureMetadataProof.Compare(standalone,leaf,stock.Bytes,model.Wrapper,stockEnd,owner.NativeType,comparer.NativeRecords,upgrade);
+                    int localPrefix;
+                    if(weapon){
+                        // Reborn: the independent literal stock-qualified hardpoint writer cross-checks generic schema metadata at source-sized extents.
+                        var literal=Ep1WeaponSetTokenizer.Tokenize(leaf);if(!Equal(standalone,literal))throw new InvalidDataException("Generic/literal EP1 weapon metadata disagree.");Ep1WeaponSetSmokeTest.Verify(standalone,leaf,instance,catalog,false);localPrefix=standalone.InstanceBuffer.Length-leaf.InstanceBuffer.Length;
+                    }else localPrefix=upgrade==null?BehaviorMetadataStockProof.Compare(standalone,leaf,stock.Bytes,model.Wrapper,stockEnd,owner.NativeType,comparer!.NativeRecords):UpgradeStructureMetadataProof.Compare(standalone,leaf,stock.Bytes,model.Wrapper,stockEnd,owner.NativeType,comparer!.NativeRecords,upgrade);
                     int list=rows[FastHash.GetHashCode("Behaviors")].Offset;if(Word(tokens.InstanceBuffer,list)!=0x6C827073||Word(tokens.InstanceBuffer,list+4)!=0x5D448FD8||Word(tokens.InstanceBuffer,list+8)!=prefix+layout.List)throw new InvalidDataException("Variable behavior count metadata differs.");
                     int row=list+12+owner.Index*12,at=(int)Word(tokens.InstanceBuffer,row+8);if(Word(tokens.InstanceBuffer,row)!=0xB151A0EB||Word(tokens.InstanceBuffer,row+4)!=0||at!=behaviorNext)throw new InvalidDataException("Variable behavior wrapper/order differs.");
                     for(int offset=0;offset<localPrefix;offset+=12){uint target=Word(standalone.InstanceBuffer,offset+8);uint expected=target==0?0:target<localPrefix?target+(uint)at:target-(uint)localPrefix+(uint)(prefix+start);if(Word(tokens.InstanceBuffer,at+offset)!=Word(standalone.InstanceBuffer,offset)||Word(tokens.InstanceBuffer,at+offset+4)!=Word(standalone.InstanceBuffer,offset+4)||Word(tokens.InstanceBuffer,at+offset+8)!=expected)throw new InvalidDataException("Variable behavior metadata splice differs.");}
@@ -106,6 +115,8 @@ internal sealed class ConscriptVariableGraphVerifier
         foreach(var pair in stockRows)
         {
             int old=pair.Value.Offset,at=rows[pair.Key].Offset;
+            // Reborn: changed ArmorSet cardinality changes metadata extent, not its field grammar or source/native reference contract.
+            if(pair.Key==FastHash.GetHashCode("ArmorSet")){int size=ConscriptArmorSetContract.VerifyMetadata(source,b,tokens.InstanceBuffer,prefix,at);if(at<rootLength||at>prefix-size||metadataOwned.AsSpan(at,size).Contains(true))throw new InvalidDataException("ArmorSet metadata owner overlaps another table.");Array.Fill(metadataOwned,true,at,size);continue;}
             // Reborn: display-name metadata directly targets its optional header, not a stock text identity or a separate table.
             string? pointed=GameObjectRootTextContract.Pointed.SingleOrDefault(n=>FastHash.GetHashCode(n)==pair.Key);
             if(pointed!=null){int slot=pointed=="DisplayName"?404:408;uint target=Word(b,slot);if(at!=(target==0?0:prefix+target))throw new InvalidDataException("Pointed root name metadata target differs: "+pointed);continue;}
@@ -144,6 +155,8 @@ internal sealed class ConscriptVariableGraphVerifier
             document=CopySource((XmlDocument)source);
             var actual=document.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName=="Behaviors");
             actual.ParentNode!.ReplaceChild(document.ImportNode(baseline.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName=="Behaviors"),true),actual);
+            // Reborn: untouched owners still use stock occurrence coordinates; the separate armor proof resolves actual authored rows.
+            ConscriptArmorSetContract.Mask(document,baseline);
         }else{
             var original=ConscriptModuleScalarContract.Owners(document).Single(o=>o.Element.GetAttribute("id")==templateId).Element;
             var replacement=(XmlElement)document.ImportNode(source,true);replacement.SetAttribute("id",templateId);original.ParentNode!.ReplaceChild(replacement,original);

@@ -48,7 +48,9 @@ public static class Ep1GameObjectEmptyRootProjection
         if(native?.InstanceBuffer==null || native.InstanceBuffer.Length<600)throw new InvalidDataException("Bounded empty-root native input required.");
         // Reborn: emit null metadata for omitted names only, never reject or duplicate a populated name already owned by the lower producer.
         var absentNames=new[]{new Field("DisplayName",404,0x1A2933AA,false),new Field("DisplayNameTransformed",408,0x1A2933AA,false)}.Where(f=>Word(native.InstanceBuffer,f.Slot)==0);
-        var fields=original?Fields.Concat(absentNames).Concat(new[]{new Field("Flammability",464,0x10444D6C,false),new Field("LiveCameraOffset",528,0x29368077,false)}).ToArray():Fields.ToArray();
+        // Reborn: an omitted ArmorSet still has a zero-count list declaration in a complete original-object metadata table.
+        var absentArmor=Word(native.InstanceBuffer,420)==0?new[]{new Field("ArmorSet",420,0x5E5AF575,true)}:Array.Empty<Field>();
+        var fields=original?Fields.Concat(absentNames).Concat(absentArmor).Concat(new[]{new Field("Flammability",464,0x10444D6C,false),new Field("LiveCameraOffset",528,0x29368077,false)}).ToArray():Fields.ToArray();
         foreach(var field in fields)for(int at=field.Slot;at<field.Slot+(field.List?8:4);at+=4)if(Word(native.InstanceBuffer,at)!=0)throw new InvalidDataException("Populated empty-profile native storage: "+field.Name);
         var old=Ep1GameObjectRootOwnersProjection.Compose(native,schemas);int oldPrefix=old.InstanceBuffer.Length-native.InstanceBuffer.Length,insert=0;
         for(;insert<oldPrefix;insert+=12)if(Word(old.InstanceBuffer,insert)==0 && Word(old.InstanceBuffer,insert+4)==0 && Word(old.InstanceBuffer,insert+8)==0)break;

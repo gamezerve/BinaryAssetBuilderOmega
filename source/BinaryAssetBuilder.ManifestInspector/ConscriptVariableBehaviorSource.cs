@@ -16,6 +16,8 @@ internal static class ConscriptVariableBehaviorSource
     {
         GameObjectScalarContract.Validate(source);GameObjectRootAttributeContract.Validate(source);ConscriptModuleScalarContract.Validate(source);ConscriptModuleIdentityContract.Validate(source);
         if(!ConscriptSourceInput.Identity(source.DocumentElement!.GetAttribute("id")))throw SdkXmlDiagnostics.At(new InvalidDataException("Invalid GameObject identity."),source.DocumentElement);
+        // Reborn: honor official weapon sortBy/boolean semantics before assigning common reference occurrences.
+        ConscriptWeaponSetContract.Normalize(source);
         var actual=Qualified(source);var model=Qualified(baseline);
         // Reborn: root localization keys are source values, including optional pointed names, rather than frozen stock text.
         _=GameObjectRootTextContract.Read(source);
@@ -31,7 +33,7 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: exact existing identity breaks equivalent-template ties; new IDs may use any otherwise identical complete reviewed shape.
             var candidates=templates.Where(t=>t.Element.LocalName==owner.Element.LocalName).OrderByDescending(t=>t.Element.GetAttribute("id")==owner.Element.GetAttribute("id"));
             var matched=candidates.FirstOrDefault(t=>Matches(owner,t));
-            if(matched==null)throw SdkXmlDiagnostics.At(new InvalidDataException("Behavior '"+owner.Element.LocalName+"' has an unsupported nested layout or value field. Existing typed reference targets and fixed attributes are editable; changed reference presence, nested list shapes and unimplemented module families need compiler support."),SdkXmlDiagnostics.Unmasked(owner.Element,source));
+            if(matched==null)throw SdkXmlDiagnostics.At(new InvalidDataException("Behavior '"+owner.Element.LocalName+"' contains an unimplemented native layout or nested field. Covered hardpoint/Weapon and upgrade lists, compatible targets and fixed attributes are editable; other families/structures still require their EP1 processor support."),SdkXmlDiagnostics.Unmasked(owner.Element,source));
             origins.Add(owner.Element.GetAttribute("id"),matched.Element.GetAttribute("id"));selected.Add(matched);
         }
         // Reborn: every other root/container retains the existing shape, but reviewed root and direct module fixed fields remain authorable.
@@ -40,12 +42,14 @@ internal static class ConscriptVariableBehaviorSource
         copy.DocumentElement!.SetAttribute("id",comparison.DocumentElement!.GetAttribute("id"));GameObjectScalarContract.Mask(copy,comparison);GameObjectRootAttributeContract.Mask(copy,comparison);
         // Reborn: the native comparer checks text bytes and allocations independently after structural admission.
         GameObjectRootTextContract.Mask(copy,comparison);
+        // Reborn: schema-valid ArmorSet lists are independently compiled, not pinned to the stock row count/presence.
+        ConscriptArmorSetContract.Mask(copy,comparison);
         // Reborn: existing strong slots retain schema types/presence, but their target names are authored values on both compilation routes.
         ConscriptModuleIdentityContract.Mask(copy,comparison);ConscriptModuleScalarContract.Mask(copy,comparison);ConscriptReferenceSpellings.Compare(copy,comparison,schemas,allowRetarget:true,allowUpgradeWeak:true);
         if(ConscriptSourceInput.Signature(copy.DocumentElement)!=ConscriptSourceInput.Signature(comparison.DocumentElement!))
         {
             string difference=ConscriptSourceInput.Difference(copy.DocumentElement,comparison.DocumentElement!,"GameObject",out var offending);
-            throw SdkXmlDiagnostics.At(new InvalidDataException("Variable Behaviors require the reviewed remaining object graph: "+difference+". Root fixed values and direct module fixed fields are enabled; other structural/string/reference edits remain on the fixed-topology route."),SdkXmlDiagnostics.Unmasked(offending,source));
+            throw SdkXmlDiagnostics.At(new InvalidDataException("GameObject contains an unsupported owner/layout: "+difference+". Root text, fixed values, source-sized ArmorSet and covered module lists are enabled; other structures still require EP1 processor support."),SdkXmlDiagnostics.Unmasked(offending,source));
         }
         foreach(var owner in owners.Where(o=>o.Container!="Behaviors"))
         {
@@ -69,6 +73,8 @@ internal static class ConscriptVariableBehaviorSource
             foreach(var field in ConscriptModuleScalarContract.Bindings(template.NativeType)){node.RemoveAttribute(field.Name);if(basis.HasAttribute(field.Name))node.SetAttribute(field.Name,basis.GetAttribute(field.Name));}
             // Reborn: list counts and optional animation presence are validated from source/native contracts, not frozen to this stock example.
             if(ConscriptUpgradeStructure.Supports(template.NativeType))ConscriptUpgradeStructure.Mask(node,basis);
+            // Reborn: the implemented EP1 hardpoint processor accepts source-sized weapon records, not only the captured two-weapon example.
+            if(ConscriptWeaponSetContract.Supports(template.NativeType))ConscriptWeaponSetContract.Mask(node,basis);
             ConscriptReferenceSpellings.Compare(a,b,schemas,allowRetarget:true,allowUpgradeWeak:true);
             return ConscriptSourceInput.Signature(node)==ConscriptSourceInput.Signature(basis);
         }
@@ -85,7 +91,7 @@ internal static class ConscriptVariableBehaviorSource
         var attributes=actual.Attributes.OfType<XmlAttribute>().OrderBy(a=>order.GetValueOrDefault((a.NamespaceURI,a.LocalName),int.MaxValue)).ToArray();foreach(var a in attributes)actual.RemoveAttributeNode(a);foreach(var a in attributes)actual.Attributes.Append(a);
         bool flexible=upgradeIds.Contains(actual.GetAttribute("id"));
         // Reborn: optional display-name children contain text only and cannot alter Core asset-reference occurrence ordering.
-        bool Skip(XmlElement e)=>(flexible&&ConscriptUpgradeStructure.Fields.Contains(e.LocalName))||(actual.LocalName=="GameObject"&&GameObjectRootTextContract.Pointed.Contains(e.LocalName));
+        bool Skip(XmlElement e)=>(flexible&&ConscriptUpgradeStructure.Fields.Contains(e.LocalName))||(actual.LocalName=="GameObject"&&(GameObjectRootTextContract.Pointed.Contains(e.LocalName)||e.LocalName=="ArmorSet"))||(actual.LocalName=="WeaponSetUpdate"&&e.LocalName=="WeaponSlotHardpoint");
         var children=actual.ChildNodes.OfType<XmlElement>().Where(e=>!Skip(e)).ToArray();var models=model.ChildNodes.OfType<XmlElement>().Where(e=>!Skip(e)).ToArray();if(children.Length!=models.Length)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported variable source child structure."),actual);
         for(int i=0;i<children.Length;i++){if(children[i].LocalName!=models[i].LocalName)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported variable source child order."),children[i]);Align(children[i],models[i],upgradeIds);}
     }

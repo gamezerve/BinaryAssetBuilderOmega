@@ -2,6 +2,13 @@
 
 ## Build your mod
 
+<!-- Reborn: source-sized armor and hardpoint arrays reuse existing native processors without stock example cardinalities. -->
+ArmorSet and WeaponSetUpdate hardpoint/Weapon lists can now grow, shrink or be
+omitted, with optional DamageFX/Template/Upgrade references and editable nested
+fields/defaults. The old 32/8/16 trial quotas are removed. Weapons follow official
+Ordering sorting. Turret/contained weapon slots are not implemented yet.
+See [combat list authoring](../docs/RA3EP1_COMBAT_LIST_AUTHORING.md).
+
 <!-- Reborn: pointed display-name keys share source-driven authoring with existing description attributes. -->
 `DisplayName` and `DisplayNameTransformed` are editable optional child elements;
 changing `Name:SovietAntiInfantryInfantry` to another ASCII key is supported.

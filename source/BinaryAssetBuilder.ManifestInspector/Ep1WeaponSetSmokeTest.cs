@@ -111,7 +111,7 @@ internal static class Ep1WeaponSetSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: fresh output validation must also reject metadata mutations without calling the writer to repair them. */
     //-------------------------------------------------------------------------------------------------
-    private static void Verify(Chunk output,Chunk native,InstanceDeclaration instance,ManifestAsset[] catalog)
+    internal static void Verify(Chunk output,Chunk native,InstanceDeclaration instance,ManifestAsset[] catalog,bool requireAllReferences=true)
     {
         var b=output.InstanceBuffer;int prefix=b.Length-native.InstanceBuffer.Length,h=(int)Word(native.InstanceBuffer,12),weapons=44+h*28;var imports=new List<uint>();
         var own=GameObjectStockReview.Tokens(b,12);int list=own[FastHash.GetHashCode("WeaponSlotHardpoint")].Offset;
@@ -139,7 +139,8 @@ internal static class Ep1WeaponSetSmokeTest
             weapons+=count*80;
         }
         var recovered=b.AsSpan(prefix).ToArray();foreach(uint s in Slots(output.RelocationBuffer))Put(recovered,(int)s-prefix,Word(b,(int)s)-(uint)prefix);
-        if(!recovered.SequenceEqual(native.InstanceBuffer) || !Slots(output.RelocationBuffer).Select(s=>s-(uint)prefix).SequenceEqual(Slots(native.RelocationBuffer)) || !Slots(output.ImportsBuffer).Select(s=>s-(uint)prefix).SequenceEqual(imports) || instance.ReferencedInstances.Count!=imports.Count)throw new InvalidDataException("Weapon fragment native/auxiliary occurrence round trip differs.");
+        // Reborn: complete objects share one occurrence table across siblings; standalone controls retain full-table consumption by default.
+        if(!recovered.SequenceEqual(native.InstanceBuffer) || !Slots(output.RelocationBuffer).Select(s=>s-(uint)prefix).SequenceEqual(Slots(native.RelocationBuffer)) || !Slots(output.ImportsBuffer).Select(s=>s-(uint)prefix).SequenceEqual(imports) || requireAllReferences&&instance.ReferencedInstances.Count!=imports.Count)throw new InvalidDataException("Weapon fragment native/auxiliary occurrence round trip differs.");
     }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: negative fixtures own their buffers. */

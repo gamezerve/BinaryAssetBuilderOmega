@@ -155,7 +155,9 @@ internal static class GameObjectConscriptTrialSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: explicit refusal controls never count a successful corrupt candidate as rejection. */
     //-------------------------------------------------------------------------------------------------
-    private static void Refuse(Action action){try{action();}catch(InvalidDataException){return;}throw new InvalidDataException("Conscript trial corruption accepted.");}
+    private static void Refuse(Action action){try{action();}catch(InvalidDataException){return;}
+        // Reborn: covered weapon references now reach Core's real type checker instead of being rejected by stock-shape admission first.
+        catch(BinaryAssetBuilderException error)when(error.ErrorCode==ErrorCode.ReferencingError){return;}throw new InvalidDataException("Conscript trial corruption accepted.");}
     //-------------------------------------------------------------------------------------------------
     /** Reborn: complete comparisons include native and auxiliary bytes/order. */
     //-------------------------------------------------------------------------------------------------

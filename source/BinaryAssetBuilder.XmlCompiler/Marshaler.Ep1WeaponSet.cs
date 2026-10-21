@@ -23,7 +23,8 @@ public static partial class Marshaler
     public static unsafe void Marshal(Node node,Ep1WeaponSlotHardpoint* objT,Tracker state)
     {
         if(node is null)return;
-        var weapons=node.GetChildNodes("Weapon");if(weapons?.GetCount()>16)throw new BinaryAssetBuilderException(ErrorCode.InternalError,"EP1 hardpoint admits at most sixteen weapons.");
+        // Reborn: Tracker sizes the actual authored list; the former sixteen-row diagnostic quota is not an engine/schema limit.
+        var weapons=node.GetChildNodes("Weapon");
         Marshal(node.GetAttributeValue("ID",null),&objT->ID,state);
         Marshal(node.GetAttributeValue("InterleavedStyle","INTERLEAVE_RANDOM"),&objT->InterleavedStyle,state);
         Marshal(node.GetAttributeValue("WeaponChoiceCriteria","PREFER_MOST_DAMAGE"),&objT->WeaponChoiceCriteria,state);
@@ -41,7 +42,8 @@ public static partial class Marshaler
     {
         if(node is null)return;
         foreach(string name in new[]{"WeaponSlotTurret","WeaponSlotHierarchicalTurret","WeaponSlotContained"})if(node.GetChildNodes(name)?.GetCount()>0)throw new BinaryAssetBuilderException(ErrorCode.InternalError,"EP1 diagnostic weapon slot {0} is not admitted.",name);
-        var slots=node.GetChildNodes("WeaponSlotHardpoint");if(slots?.GetCount()>8)throw new BinaryAssetBuilderException(ErrorCode.InternalError,"EP1 diagnostic admits at most eight hardpoints.");
+        // Reborn: source-sized hardpoint arrays reuse the implemented ABI without the former eight-hardpoint trial quota.
+        var slots=node.GetChildNodes("WeaponSlotHardpoint");
         Marshal(node.GetAttributeValue("ActiveWhenDisabledBy","HELD"),&objT->ActiveWhenDisabledBy,state);
         Marshal(slots,&objT->WeaponSlotHardpoint,state);Marshal(node,(UpdateModuleData*)objT,state);
     }

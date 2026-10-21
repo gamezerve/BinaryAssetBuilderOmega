@@ -16,15 +16,16 @@ public static class Ep1WeaponSetTokenizer
     //-------------------------------------------------------------------------------------------------
     public static Chunk Tokenize(Chunk native)
     {
-        if(native==null || native.InstanceBuffer==null || native.InstanceBuffer.Length<44 || native.InstanceBuffer.Length>16384)throw new InvalidDataException("Bounded EP1 weapon set required.");
+        if(native==null || native.InstanceBuffer==null || native.InstanceBuffer.Length<44)throw new InvalidDataException("Bounded EP1 weapon set required.");
         var b=native.InstanceBuffer;uint h=Word(b,12);
-        if(Word(b,0)!=0x431722A9 || h>8 || 44+h*28>b.Length || Word(b,16)!=(h==0?0:44) || Enumerable.Range(0,6).Any(i=>Word(b,20+i*4)!=0))throw new InvalidDataException("Unsupported EP1 weapon set class/list family.");
+        // Reborn: actual stride/buffer bounds replace the former hardpoint and fragment-size trial quotas.
+        if(Word(b,0)!=0x431722A9 || h>(b.Length-44)/28 || Word(b,16)!=(h==0?0:44) || Enumerable.Range(0,6).Any(i=>Word(b,20+i*4)!=0))throw new InvalidDataException("Unsupported EP1 weapon set class/list family.");
         var relos=new List<uint>();var imports=new List<uint>();if(h!=0)relos.Add(16);
         var counts=new List<int>();int weaponsAt=44+(int)h*28,total=0;
         for(int i=0;i<h;i++)
         {
             int at=44+i*28;uint count=Word(b,at+16);
-            if(Word(b,at)!=0 || Word(b,at+8)>1 || Word(b,at+12)>5 || count>16 || Word(b,at+20)!=(count==0?0:weaponsAt) || b[at+24]>1 || b[at+25]>1 || b[at+26]!=0 || b[at+27]!=0)throw new InvalidDataException("EP1 hardpoint layout differs.");
+            if(Word(b,at)!=0 || Word(b,at+8)>1 || Word(b,at+12)>5 || count>(b.Length-weaponsAt)/80 || Word(b,at+20)!=(count==0?0:weaponsAt) || b[at+24]>1 || b[at+25]>1 || b[at+26]!=0 || b[at+27]!=0)throw new InvalidDataException("EP1 hardpoint layout differs.");
             if(count!=0)relos.Add((uint)(at+20));counts.Add((int)count);
             for(int j=0;j<count;j++)
             {

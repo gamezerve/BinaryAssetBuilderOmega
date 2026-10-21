@@ -59,7 +59,8 @@ public static class Ep1GameObjectStringTokens
         var ranges = new List<(uint Start, uint End)>();
         // Reborn: inline ArmorSet count/items own a disjoint pre-behavior allocation; absent lists cannot retain a dangling pointer.
         uint armorCount=Word(420),armor=Word(424);
-        if(armorCount>32 || (armorCount==0 ? armor!=0 : armor<600 || armor%4!=0 || armor>list || armorCount*12>list-armor))
+        // Reborn: native allocation stride/bounds replace the former 32-row diagnostic quota.
+        if(armorCount>b.Length/12 || (armorCount==0 ? armor!=0 : armor<600 || armor%4!=0 || armor>list || armorCount*12>list-armor))
             throw new InvalidDataException("ArmorSet count/allocation ownership differs.");
         if(armorCount!=0)owners.Add(424);
         // Reborn: movement records own a separate bounded pre-behavior allocation and cannot alias armor or root strings.
@@ -97,6 +98,7 @@ public static class Ep1GameObjectStringTokens
         for(int i=0;i<armorCount;i++)
         {
             int member=(int)armor+i*12;
+            // Reborn: the official ArmorSetType enum owns 23 bits; this checks real wire validity, not stock condition combinations.
             if((Word(member+8)>>23)!=0)throw new InvalidDataException("Unsupported ArmorSet condition bits.");
             foreach(int offset in new[]{0,4})if(Word(member+offset)!=0)rootImports.Add((uint)(member+offset));
         }

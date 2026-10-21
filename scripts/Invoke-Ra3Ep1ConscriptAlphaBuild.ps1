@@ -15,7 +15,7 @@ try {
     Write-Output 'Warning: ALPHA005 Partial GameObject support. Fixed graph: reviewed root/module fields, local IDs, optional root imports, existing typed reference retargeting, six dynamic root strings and existing nested numeric owners.'
     # Reborn: reference retargeting is shared with variable Behaviors; only actual unimplemented layouts/resources remain restricted.
     # Reborn: do not advertise already implemented text editing as an unsupported capability.
-    Write-Output 'Warning: ALPHA006 Partial native layout support: variable Behaviors, root strings including optional DisplayName/DisplayNameTransformed, fixed fields, typed reference retargeting, source-sized upgrade lists and optional CustomAnimAndDuration are supported together. Other new nested layouts/families, strong-reference presence changes in variable graphs and resource compilation still require implementation.'
+    Write-Output 'Warning: ALPHA006 Partial native layout support: variable Behaviors, root text, ArmorSet lists, hardpoint/Weapon lists with optional imports, fixed fields, compatible targets and source-sized upgrade lists/animation are supported together. Turret/contained weapon slots, other unimplemented native layouts and resource compilation still require implementation.'
     Write-Output ('Reborn: authored asset count: '+$(if($hasCommand){2}else{1})+'; no automatic LogicCommand generation.')
     $scratch=Join-Path $OutputRoot 'temp';$null=New-Item -ItemType Directory -Path $scratch;$previousTemp=$env:TEMP;$previousTmp=$env:TMP
     try {
