@@ -2,6 +2,12 @@
 
 ## Build your mod
 
+<!-- Reborn: covered upgrade modules can resize nested lists and omit optional records through the same Studio workflow. -->
+Upgrade-based Behaviors now accept source-sized `TriggeredBy`/`ConflictsWith`
+lists, including omission, and an optional `CustomAnimAndDuration` with editable
+AnimState/Frames/Trigger. Numeric defaults and official SageUnsignedInt lexical
+forms apply. See [nested field examples and exact scope](../docs/RA3EP1_UPGRADE_NESTED_FIELDS.md).
+
 <!-- Reborn: compatible authoring features are composable; keep real schema/processor failures distinct from old profile quotas. -->
 Variable Behaviors can now be combined with existing compatible strong-reference
 targets (including weapon Template) and UpgradeTemplate trigger IDs. The former

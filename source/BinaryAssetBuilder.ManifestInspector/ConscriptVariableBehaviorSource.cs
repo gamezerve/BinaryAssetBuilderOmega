@@ -17,6 +17,8 @@ internal static class ConscriptVariableBehaviorSource
         GameObjectScalarContract.Validate(source);GameObjectRootAttributeContract.Validate(source);ConscriptModuleScalarContract.Validate(source);ConscriptModuleIdentityContract.Validate(source);
         if(!ConscriptSourceInput.Identity(source.DocumentElement!.GetAttribute("id")))throw SdkXmlDiagnostics.At(new InvalidDataException("Invalid GameObject identity."),source.DocumentElement);
         var actual=Qualified(source);var model=Qualified(baseline);
+        // Reborn: nested numeric overflow must identify its authored attribute instead of failing later inside the native marshaler.
+        foreach(var owner in ConscriptModuleScalarContract.Owners(source))ConscriptUpgradeStructure.ValidateSource(owner);
         var owners=ConscriptModuleScalarContract.Owners(actual);var originals=ConscriptModuleScalarContract.Owners(model);
         var behaviors=owners.Where(o=>o.Container=="Behaviors").ToArray();var templates=originals.Where(o=>o.Container=="Behaviors").ToArray();
         // Reborn: module count is source-driven, not capped at the old trial budget; existing checked buffer/depth bounds protect compilation.
@@ -47,7 +49,10 @@ internal static class ConscriptVariableBehaviorSource
         }
         // Reborn: source-order reference occurrences must be stable across attribute formatting and added/cloned behavior identities.
         var aligned=Clone(model);var list=Container(aligned);list.RemoveAll();
-        foreach(var template in selected)list.AppendChild(aligned.ImportNode(template.Element,true));Align(source.DocumentElement!,aligned.DocumentElement!);
+        foreach(var template in selected)list.AppendChild(aligned.ImportNode(template.Element,true));
+        // Reborn: flexible upgrade children do not have to match the template's occurrence count during source-order alignment.
+        var upgradeIds=owners.Where(o=>ConscriptUpgradeStructure.Supports(o.NativeType)).Select(o=>o.Element.GetAttribute("id")).ToHashSet(StringComparer.Ordinal);
+        Align(source.DocumentElement!,aligned.DocumentElement!,upgradeIds);
         return new(origins,behaviors.Length);
 
         // Reborn: comparison copies materialize official defaults without introducing allocations into the user's authored source.
@@ -58,6 +63,8 @@ internal static class ConscriptVariableBehaviorSource
             var a=Clone(model);var b=Clone(model);var left=Container(a);var right=Container(b);left.RemoveAll();right.RemoveAll();
             var node=(XmlElement)a.ImportNode(owner.Element,true);var basis=(XmlElement)b.ImportNode(template.Element,true);left.AppendChild(node);right.AppendChild(basis);node.SetAttribute("id",basis.GetAttribute("id"));
             foreach(var field in ConscriptModuleScalarContract.Bindings(template.NativeType)){node.RemoveAttribute(field.Name);if(basis.HasAttribute(field.Name))node.SetAttribute(field.Name,basis.GetAttribute(field.Name));}
+            // Reborn: list counts and optional animation presence are validated from source/native contracts, not frozen to this stock example.
+            if(ConscriptUpgradeStructure.Supports(template.NativeType))ConscriptUpgradeStructure.Mask(node,basis);
             ConscriptReferenceSpellings.Compare(a,b,schemas,allowRetarget:true,allowUpgradeWeak:true);
             return ConscriptSourceInput.Signature(node)==ConscriptSourceInput.Signature(basis);
         }
@@ -68,11 +75,12 @@ internal static class ConscriptVariableBehaviorSource
     // Reborn: schema admission requires exactly one direct Behaviors container; missing/duplicate topology is never inferred.
     private static XmlElement Container(XmlDocument source)=>source.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName=="Behaviors");
     // Reborn: keep authored child order and values while using reviewed template attribute order for Core occurrence assignment.
-    private static void Align(XmlElement actual,XmlElement model)
+    private static void Align(XmlElement actual,XmlElement model,HashSet<string> upgradeIds)
     {
         var order=model.Attributes.OfType<XmlAttribute>().Select((a,i)=>(Key:(a.NamespaceURI,a.LocalName),Index:i)).ToDictionary(p=>p.Key,p=>p.Index);
         var attributes=actual.Attributes.OfType<XmlAttribute>().OrderBy(a=>order.GetValueOrDefault((a.NamespaceURI,a.LocalName),int.MaxValue)).ToArray();foreach(var a in attributes)actual.RemoveAttributeNode(a);foreach(var a in attributes)actual.Attributes.Append(a);
-        var children=actual.ChildNodes.OfType<XmlElement>().ToArray();var models=model.ChildNodes.OfType<XmlElement>().ToArray();if(children.Length!=models.Length)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported variable source child structure."),actual);
-        for(int i=0;i<children.Length;i++){if(children[i].LocalName!=models[i].LocalName)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported variable source child order."),children[i]);Align(children[i],models[i]);}
+        bool flexible=upgradeIds.Contains(actual.GetAttribute("id"));
+        var children=actual.ChildNodes.OfType<XmlElement>().Where(e=>!flexible||!ConscriptUpgradeStructure.Fields.Contains(e.LocalName)).ToArray();var models=model.ChildNodes.OfType<XmlElement>().Where(e=>!flexible||!ConscriptUpgradeStructure.Fields.Contains(e.LocalName)).ToArray();if(children.Length!=models.Length)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported variable source child structure."),actual);
+        for(int i=0;i<children.Length;i++){if(children[i].LocalName!=models[i].LocalName)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported variable source child order."),children[i]);Align(children[i],models[i],upgradeIds);}
     }
 }

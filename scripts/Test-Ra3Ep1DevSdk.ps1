@@ -1,6 +1,6 @@
 # Reborn: exercise preserved fixtures only in RebornTest; never compile or modify the user's Reborn mod.
 [CmdletBinding()]
-param([switch]$IncludeRebornSourceMirror,[switch]$ReferenceRetargetingOnly,[switch]$ModuleValuesOnly,[switch]$DiagnosticsOnly,[switch]$VariableBehaviorsOnly)
+param([switch]$IncludeRebornSourceMirror,[switch]$ReferenceRetargetingOnly,[switch]$ModuleValuesOnly,[switch]$DiagnosticsOnly,[switch]$VariableBehaviorsOnly,[switch]$UpgradeStructuresOnly)
 $ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$runtime=(Get-Process -Id $PID).Path;$driver=Join-Path $PSScriptRoot 'Invoke-Ra3Ep1DevAlphaBuild.ps1'
 $fixtures=Join-Path $repo 'tests/fixtures/live-alpha';$data=Join-Path $sdk 'mods/RebornTest/data';$output=Join-Path $sdk 'builtmods/RebornTest';$input=Join-Path $data 'mod.xml';$package=Join-Path $output 'RebornTest.big'
 $rows=[Collections.Generic.List[object]]::new();$userSource=Join-Path $sdk 'mods/Reborn/data/mod.xml';$userHash=(Get-FileHash -LiteralPath $userSource).Hash
@@ -60,7 +60,7 @@ try {
         foreach($file in $sourceHashes.Keys){if((Get-FileHash -LiteralPath $file).Hash-cne $sourceHashes[$file]){throw 'User source changed during read-only reproduction.'}}
     }
     # Reborn: qualify reference freedom with combined native-layout edits and publication-preserving refusals without replaying unrelated armor matrices.
-    if($VariableBehaviorsOnly){
+    if($VariableBehaviorsOnly -or $UpgradeStructuresOnly){
         # Reborn: one combined Studio source changes behavior count/order/local IDs, fixed root/module values and an explicit new-object consumer.
         Set-TestFixture ConscriptBuildTime1;$xml=[Xml.XmlDocument]::new();$xml.PreserveWhitespace=$true;$xml.Load($input)
         $xml.DocumentElement.SetAttribute('id','RebornConscriptTrial');$xml.DocumentElement.SetAttribute('Scale','1.25');$xml.DocumentElement.SetAttribute('ThreatLevel','15')
@@ -72,16 +72,33 @@ try {
         # Reborn: a real Studio package must combine graph edits with authored strong and typed weak asset targets.
         $weapon=$xml.SelectSingleNode('//*[local-name()="Weapon" and contains(@Template,"SovietAntiInfantryInfantryAK47")]');if(-not $weapon){throw 'Combined weapon control is missing.'};$weapon.SetAttribute('Template','JapanArcherInfantryEnergyBow')
         $weakEdits=0;foreach($trigger in $xml.SelectNodes('//*[local-name()="TriggeredBy"]')){if($trigger.InnerText.Trim() -cin @('Upgrade_JapanFaction','Upgrade_AlliesFaction')){$trigger.InnerText=if($trigger.InnerText.Trim() -ceq 'Upgrade_JapanFaction'){'Upgrade_AlliesFaction'}else{'Upgrade_JapanFaction'};$weakEdits++}};if(-not $weakEdits){throw 'Combined upgrade control is missing.'}
+        # Reborn: test list growth and a newly present optional nested record together with the existing composed graph.
+        if($UpgradeStructuresOnly){
+            $module=$xml.SelectSingleNode('//*[local-name()="ModelConditionUpgrade"]')
+            foreach($child in @($module.ChildNodes|Where-Object {$_ -is [Xml.XmlElement] -and $_.LocalName -cin @('TriggeredBy','ConflictsWith','CustomAnimAndDuration')})){$null=$module.RemoveChild($child)}
+            $animation=$xml.CreateElement('CustomAnimAndDuration','uri:ea.com:eala:asset');$animation.SetAttribute('AnimState','USER_8');$animation.SetAttribute('Frames','12');$animation.SetAttribute('Trigger','3');$null=$module.AppendChild($animation)
+            foreach($entry in @(@('TriggeredBy','Upgrade_JapanFaction'),@('TriggeredBy','Upgrade_AlliesFaction'),@('TriggeredBy','Upgrade_Veterancy_HEROIC'),@('ConflictsWith','Upgrade_AlliesFaction'),@('ConflictsWith','Upgrade_JapanFaction'))){$child=$xml.CreateElement($entry[0],'uri:ea.com:eala:asset');$child.InnerText=$entry[1];$null=$module.AppendChild($child)}
+        }
         $declaration=[Xml.XmlDocument]::new();$declaration.PreserveWhitespace=$true;$declaration.LoadXml('<!-- Reborn: developer-only variable Behaviors and explicit production command. --><AssetDeclaration xmlns="uri:ea.com:eala:asset"><Tags/><Includes/></AssetDeclaration>');$null=$declaration.DocumentElement.AppendChild($declaration.ImportNode($xml.DocumentElement,$true))
         $command=[Xml.XmlDocument]::new();$command.LoadXml('<LogicCommand xmlns="uri:ea.com:eala:asset" id="Command_ConstructSovietAntiInfantryInfantry" Type="UNIT_BUILD"><Object>RebornConscriptTrial</Object></LogicCommand>');$null=$declaration.DocumentElement.AppendChild($declaration.ImportNode($command.DocumentElement,$true));$declaration.Save($input)
         Invoke-TestCase VariableBehaviorsCombined $true;$good=(Get-FileHash -LiteralPath $package).Hash
         $receipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json
-        if($receipt.Core.MetadataPrefix-ne 84120 -or $receipt.Core.ReferenceOccurrences-ne 271 -or $receipt.Core.AssetCount-ne 2 -or $receipt.Backend.AutomaticCommandGenerated){throw 'Variable source package evidence differs.'}
-        foreach($kind in @('Nested','Collision')){
+        $expectedPrefix=if($UpgradeStructuresOnly){84216}else{84120}
+        if($receipt.Core.MetadataPrefix-ne $expectedPrefix -or $receipt.Core.ReferenceOccurrences-ne 271 -or $receipt.Core.AssetCount-ne 2 -or $receipt.Backend.AutomaticCommandGenerated){throw 'Variable source package evidence differs.'}
+        # Reborn: successful omission must remove both weak-list arrays and the optional nested allocation, not leave stale package bytes.
+        if($UpgradeStructuresOnly){
+            $empty=$declaration.CloneNode($true);$module=$empty.SelectSingleNode('//*[local-name()="ModelConditionUpgrade"]');foreach($child in @($module.ChildNodes|Where-Object {$_ -is [Xml.XmlElement] -and $_.LocalName -cin @('TriggeredBy','ConflictsWith','CustomAnimAndDuration')})){$null=$module.RemoveChild($child)};$empty.Save($input)
+            Invoke-TestCase UpgradeNestedOmitted $true;$good=(Get-FileHash -LiteralPath $package).Hash
+            $emptyReceipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json;if($emptyReceipt.Core.MetadataPrefix-ne 84108){throw 'Omitted upgrade metadata extent differs.'}
+        }
+        $negativeCases=if($UpgradeStructuresOnly){@('Nested','Collision','UpgradeMissing','UpgradeSchema')}else{@('Nested','Collision')}
+        foreach($kind in $negativeCases){
             $bad=$declaration.CloneNode($true);$list=$bad.SelectSingleNode('//*[local-name()="GameObject"]/*[local-name()="Behaviors"]');$nodes=@($list.ChildNodes|Where-Object {$_ -is [Xml.XmlElement]})
             switch($kind){
                 Nested{$bad.SelectSingleNode('//*[local-name()="DieMuxData"]').SetAttribute('DeathTypes','CRUSHED ELECTROCUTED')}
                 Collision{$nodes[1].SetAttribute('id',$nodes[0].GetAttribute('id'))}
+                UpgradeMissing{$bad.SelectSingleNode('//*[local-name()="ModelConditionUpgrade"]/*[local-name()="TriggeredBy"]').InnerText='RebornMissingUpgrade'}
+                UpgradeSchema{$bad.SelectSingleNode('//*[local-name()="CustomAnimAndDuration"]').SetAttribute('Frames','-1')}
             }
             $bad.Save($input);Invoke-TestCase ('VariableBehaviorsReject'+$kind) $false;if((Get-FileHash -LiteralPath $package).Hash-cne $good){throw 'Rejected variable graph replaced the successful package.'}
         }
@@ -90,7 +107,7 @@ try {
         [IO.File]::WriteAllText((Join-Path $data 'variable-defines.xml'),'<!-- Reborn: imported developer build-time definition. --><AssetDeclaration xmlns="uri:ea.com:eala:asset"><Defines><Define name="VARIABLE_BUILD" value="1"/></Defines></AssetDeclaration>')
         $inherited=[Xml.XmlDocument]::new();$inherited.PreserveWhitespace=$true;$inherited.LoadXml('<!-- Reborn: variable behavior graph through the normal EA source pipeline. --><AssetDeclaration xmlns="uri:ea.com:eala:asset"><Includes><Include type="all" source="DATA:variable-defines.xml"/><Include type="instance" source="DATA:variable-base.xml"/></Includes><GameObject id="RebornConscriptTrial" inheritFrom="VariableBehaviorBase" BuildTime="=$VARIABLE_BUILD"/></AssetDeclaration>');$null=$inherited.DocumentElement.AppendChild($inherited.ImportNode($command.DocumentElement,$true));$inherited.Save($input)
         Invoke-TestCase VariableBehaviorsInherited $true
-        $receipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json;if($receipt.Core.MetadataPrefix-ne 84120 -or $receipt.Core.ReferenceOccurrences-ne 271 -or @($receipt.Backend.AuthoredSources).Count-ne 3){throw 'Variable inherited source proof differs.'}
+        $receipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json;if($receipt.Core.MetadataPrefix-ne $expectedPrefix -or $receipt.Core.ReferenceOccurrences-ne 271 -or @($receipt.Backend.AuthoredSources).Count-ne 3){throw 'Variable inherited source proof differs.'}
     }elseif($DiagnosticsOnly){
         # Reborn: failed XML builds must expose the actual physical source coordinate in Studio-readable output and retain the last successful package.
         $prior=if(Test-Path -LiteralPath $package){(Get-FileHash -LiteralPath $package).Hash}else{$null}

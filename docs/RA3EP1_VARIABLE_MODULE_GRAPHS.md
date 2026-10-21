@@ -57,7 +57,7 @@ enum/flag/weak-ID attributes. The same templates can be inherited/imported using
 normal `AssetDeclaration`, `Includes`, `Defines` and `inheritFrom` source.
 Other module containers keep their reviewed count/order and nested shape.
 Dynamic root strings, root strong-reference presence edits, existing
-nonmodule nested scalar edits and arbitrary nested lists/families are not yet
+nonmodule nested scalar edits and other nested lists/families are not yet
 combinable with this variable profile. Existing fixed-topology capabilities
 remain available on their established route.
 
@@ -113,6 +113,12 @@ This is offline compilation evidence, not a new game launch or blanket support
 for arbitrary GameObject/module layouts.
 
 ## Publication safeguards and remaining work
+
+<!-- Reborn: a source-sized nested contract supersedes only the corresponding stock-shape restrictions. -->
+UpgradeModuleData-based Behaviors additionally support variable/omitted
+TriggeredBy/ConflictsWith lists and optional CustomAnimAndDuration. Native
+ownership is source-checked; metadata uses independent captured field/tag grammar
+with dynamic list rows and optional records. See [exact nested field scope](RA3EP1_UPGRADE_NESTED_FIELDS.md).
 
 <!-- Reborn: widening the serializer requires exact verified bytes, not dropping the source guard. -->
 The serializer now has an explicit graph-qualified route: `ConscriptGraphQualification`

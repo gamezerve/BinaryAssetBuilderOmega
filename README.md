@@ -12,6 +12,16 @@ Active development branch: `main` in `gamezerve/BinaryAssetBuilderOmega`.
 It contains the Uprising SDK work previously developed on
 `feature/ra3ep1-manifest-inspector`; the original `master` history is retained.
 
+<!-- Reborn: nested upgrade fields are source-driven ABI structures, not stock-sized examples. -->
+[Nested upgrade authoring](docs/RA3EP1_UPGRADE_NESTED_FIELDS.md) now supports
+adding/removing/omitting `TriggeredBy` and `ConflictsWith` entries, plus an optional
+`CustomAnimAndDuration` record with editable/defaulted attributes. Native arrays,
+optional pointer presence and metadata extents follow source. The old 4096-item
+tokenizer quota is replaced with actual buffer bounds; a 5000-entry package passes.
+Nine live-driver controls pass, including inheritance, real invalid input errors
+and last-good output retention. This is scoped structure support, not all nested
+fields or general GameObject authoring.
+
 <!-- Reborn: existing authoring features must compose rather than becoming mutually exclusive trial profiles. -->
 Variable `Behaviors` now combines with compatible existing strong-reference
 retargeting and typed upgrade trigger edits. Reference identities come from the

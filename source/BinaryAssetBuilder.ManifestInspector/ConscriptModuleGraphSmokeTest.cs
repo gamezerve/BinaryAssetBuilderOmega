@@ -34,8 +34,12 @@ internal static class ConscriptModuleGraphSmokeTest
             var templates=ConscriptModuleScalarContract.Owners(baseline).ToDictionary(o=>o.Element.GetAttribute("id"),o=>topology.Containers.Single(c=>c.Name==o.Container).Modules[o.Index],StringComparer.Ordinal);
             var verifier=new ConscriptVariableGraphVerifier(official,manifest,baseline,schemas,catalog);
             string snapshot=baseline.OuterXml;var results=new List<object>();int faults=0,metadataFaults=0;
+            // Reborn: string-based SageUnsignedInt schema syntax can admit ten decimal digits; native overflow must still reject at the real source attribute.
+            var overflow=(XmlDocument)baseline.CloneNode(true);var overflowOwner=(XmlElement)overflow.GetElementsByTagName("ModelConditionUpgrade",SchemaSet.XmlNamespace)[0]!;var overflowAnimation=overflow.CreateElement("CustomAnimAndDuration",SchemaSet.XmlNamespace);overflowAnimation.SetAttribute("Frames","4294967296");overflowOwner.PrependChild(overflowAnimation);bool overflowRejected=false;
+            try{ConscriptVariableBehaviorSource.Admit(overflow,baseline,official);}catch(InvalidDataException error){overflowRejected=SdkXmlDiagnostics.Node(error)?.LocalName=="Frames";}
+            if(!overflowRejected)throw new InvalidDataException("Nested unsigned overflow/source coordinate control failed.");
             // Reborn: allow a focused proof run when extending one capability without replaying unrelated expensive native matrices.
-            string[] modes={"original","reverse","remove-half","clone-twelve","combined","new-id-combined","retarget-combined","beyond-former-budget"};
+            string[] modes={"original","reverse","remove-half","clone-twelve","combined","new-id-combined","retarget-combined","beyond-former-budget","upgrade-lists-expanded","upgrade-lists-empty","upgrade-animation","upgrade-animation-defaults","upgrade-list-large","upgrade-animation-lexical"};
             if(caseFilter!=null&&!modes.Contains(caseFilter,StringComparer.Ordinal))throw new InvalidDataException("Unknown module graph proof case.");
             foreach(string mode in caseFilter==null?modes:new[]{caseFilter})
             {
@@ -52,6 +56,19 @@ internal static class ConscriptModuleGraphSmokeTest
                     if(weakEdits==0)throw new InvalidDataException("Combined upgrade control did not edit a real weak-reference slot.");
                 }
                 if(mode=="beyond-former-budget"){var physics=original.Single(e=>e.LocalName=="Physics");while(behaviors.ChildNodes.OfType<XmlElement>().Count()<65){var copy=(XmlElement)physics.CloneNode(true);string id="RebornUncapped_"+origins.Count;origins.Add(id,physics.GetAttribute("id"));copy.SetAttribute("id",id);behaviors.AppendChild(copy);}}
+                // Reborn: upgrade nesting is authored independently of stock list cardinality and optional-pointer presence.
+                if(mode.StartsWith("upgrade-",StringComparison.Ordinal)){
+                    var module=behaviors.ChildNodes.OfType<XmlElement>().First(e=>e.LocalName=="ModelConditionUpgrade");
+                    if(mode is "upgrade-lists-expanded" or "upgrade-lists-empty")foreach(var child in module.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is "TriggeredBy" or "ConflictsWith").ToArray())module.RemoveChild(child);
+                    if(mode!="upgrade-lists-empty"){
+                        var animation=source.CreateElement("CustomAnimAndDuration",SchemaSet.XmlNamespace);if(mode!="upgrade-animation-defaults"){animation.SetAttribute("AnimState","USER_8");animation.SetAttribute("Frames","12");animation.SetAttribute("Trigger","3");}module.PrependChild(animation);
+                        if(mode=="upgrade-animation-lexical"){animation.SetAttribute("Frames","0xC");animation.SetAttribute("Trigger","0.0");}
+                    }
+                    if(mode=="upgrade-lists-expanded")foreach(var entry in new[]{("TriggeredBy","Upgrade_JapanFaction"),("TriggeredBy","Upgrade_AlliesFaction"),("TriggeredBy","Upgrade_Veterancy_HEROIC"),("ConflictsWith","Upgrade_AlliesFaction"),("ConflictsWith","Upgrade_JapanFaction")}){var child=source.CreateElement(entry.Item1,SchemaSet.XmlNamespace);child.InnerText=entry.Item2;module.AppendChild(child);}
+                    // Reborn: a real 5000-entry source list must use allocation bounds instead of the old tokenizer quota.
+                    if(mode=="upgrade-list-large")for(int i=1;i<5000;i++){var child=source.CreateElement("TriggeredBy",SchemaSet.XmlNamespace);child.InnerText="Upgrade_AlliesFaction";module.AppendChild(child);}
+                    module.RemoveAttribute("RequiresAllTriggers");module.RemoveAttribute("RequiresAllConflictingTriggers");
+                }
                 ConscriptVariableBehaviorSource.Admit(source,baseline,official);
                 // Reborn: a new object identity receives a command only from an explicit authored declaration, never from its ID alone.
                 if(mode=="new-id-combined"){if(catalog.Any(a=>a.TypeId==0x942FFF2D&&a.InstanceId==InstanceHandle.GetInstanceId("RebornConscriptTrial")))throw new InvalidDataException("Variable trial ID collides with stock.");source.DocumentElement!.SetAttribute("id","RebornConscriptTrial");}
@@ -73,6 +90,25 @@ internal static class ConscriptModuleGraphSmokeTest
                 int address=ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,ConscriptModuleScalarContract.Owners(source).First(o=>o.Container=="Behaviors"));
                 foreach(int at in new[]{address,address+4,(int)Word(pair.Native.InstanceBuffer,476)}){var bad=Clone(pair.Native);bad.InstanceBuffer[at]^=1;Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;}
                 foreach(bool relocations in new[]{true,false}){var bad=Clone(pair.Native);if(relocations)bad.RelocationBuffer=Array.Empty<byte>();else bad.ImportsBuffer=Array.Empty<byte>();Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;}
+                // Reborn: valid-range count/hash/nested-scalar corruption must fail source-aware checking, not merely native bounds validation.
+                if(mode.StartsWith("upgrade-",StringComparison.Ordinal)){
+                    var owner=ConscriptModuleScalarContract.Owners(source).First(o=>o.Element.LocalName=="ModelConditionUpgrade");int module=ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,owner),baseOffset=0;Type current=owner.NativeType;
+                    while(current!=typeof(UpgradeModuleData)){baseOffset+=System.Runtime.InteropServices.Marshal.OffsetOf(current,"Base").ToInt32();current=current.GetField("Base")!.FieldType;}
+                    int list=module+baseOffset+System.Runtime.InteropServices.Marshal.OffsetOf(typeof(UpgradeModuleData),"TriggeredBy").ToInt32();var badCount=Clone(pair.Native);Put(badCount.InstanceBuffer,list,Word(badCount.InstanceBuffer,list)+1);Refuse(()=>Verify(source,badCount,pair.Instance,origins));faults++;
+                    if(Word(pair.Native.InstanceBuffer,list)>0){int item=(int)Word(pair.Native.InstanceBuffer,list+4);var badHash=Clone(pair.Native);Put(badHash.InstanceBuffer,item,InstanceHandle.GetInstanceId("RebornMissingUpgrade"));Refuse(()=>Verify(source,badHash,pair.Instance,origins));faults++;}
+                    int pointer=module+baseOffset+System.Runtime.InteropServices.Marshal.OffsetOf(typeof(UpgradeModuleData),"CustomAnimAndDuration").ToInt32();if(Word(pair.Native.InstanceBuffer,pointer)!=0){var badScalar=Clone(pair.Native);badScalar.InstanceBuffer[(int)Word(badScalar.InstanceBuffer,pointer)+4]^=1;Refuse(()=>Verify(source,badScalar,pair.Instance,origins));faults++;}
+                    // Reborn: directly corrupt the independent flexible metadata proof, not only the enclosing serializer's splice comparison.
+                    var siblings=ConscriptModuleScalarContract.Owners(source).Where(o=>o.Container=="Behaviors").ToArray();int stop=owner.Index+1<siblings.Length?ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,siblings[owner.Index+1]):ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,ConscriptModuleScalarContract.Owners(source).Single(o=>o.Container=="Body"));
+                    var leaf=Extract(pair.Native,module,stop);var model=templates[owner.Element.GetAttribute("id")];var plan=ConscriptUpgradeStructure.Read(owner,catalog)!;
+                    var comparator=new SelectedNativeGraphComparer(stock.Bytes,stock.Asset.References.ToArray(),leaf,pair.Instance,requireAllReferences:false,captureNativeCoordinates:false,captureNativePaths:true,upgrade:plan);comparator.Compare(owner.NativeType,model.Native);
+                    var standalone=Ep1BehaviorMetadataTokenizer.Tokenize(leaf,official,model.Type,owner.NativeType);int ownPrefix=standalone.InstanceBuffer.Length-leaf.InstanceBuffer.Length;var models=topology.Containers.Single(c=>c.Name=="Behaviors").Modules;int position=Array.IndexOf(models,model),stockEnd=position+1<models.Length?models[position+1].Wrapper:GameObjectStockReview.Tokens(stock.Bytes,0)[FastHash.GetHashCode("AI")].Offset;
+                    UpgradeStructureMetadataProof.Compare(standalone,leaf,stock.Bytes,model.Wrapper,stockEnd,owner.NativeType,comparator.NativeRecords,plan);
+                    var fields=Enumerable.Range(0,ownPrefix/12).Select(i=>i*12).ToArray();int triggerRow=fields.Single(i=>Word(standalone.InstanceBuffer,i)==FastHash.GetHashCode("TriggeredBy")),triggerTable=(int)Word(standalone.InstanceBuffer,triggerRow+8),animationRow=fields.Single(i=>Word(standalone.InstanceBuffer,i)==FastHash.GetHashCode("CustomAnimAndDuration"));
+                    var mutations=new List<int>{triggerRow+4,triggerTable,triggerTable+4,triggerTable+8,animationRow+4,animationRow+8};
+                    if(Word(leaf.InstanceBuffer,baseOffset+System.Runtime.InteropServices.Marshal.OffsetOf(typeof(UpgradeModuleData),"TriggeredBy").ToInt32())>0)mutations.AddRange(new[]{triggerTable+12,triggerTable+16,triggerTable+20});
+                    int animationTable=(int)Word(standalone.InstanceBuffer,animationRow+8);if(animationTable!=0)mutations.AddRange(new[]{animationTable,animationTable+4,animationTable+8,animationTable+12,animationTable+16,animationTable+20,animationTable+36});
+                    foreach(int at in mutations){var bad=Clone(standalone);bad.InstanceBuffer[at]^=1;Refuse(()=>UpgradeStructureMetadataProof.Compare(bad,leaf,stock.Bytes,model.Wrapper,stockEnd,owner.NativeType,comparator.NativeRecords,plan));metadataFaults++;}
+                }
                 // Reborn: a valid but wrong same-type target must still fail after retarget support is enabled.
                 if(mode=="retarget-combined"){
                     uint target=InstanceHandle.GetInstanceId("JapanArcherInfantryEnergyBow");

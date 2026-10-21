@@ -25,6 +25,8 @@ internal sealed class SelectedNativeGraphComparer
     private readonly bool captureNativeCoordinates;
     // Reborn: field-context records preserve shared-stock aliases without weakening the existing one-to-one metadata-coordinate default.
     private readonly bool captureNativePaths;
+    // Reborn: only explicitly source-validated UpgradeModuleData fields may change list counts or optional pointer presence.
+    private readonly ConscriptUpgradeStructure.Plan? upgrade;
     internal Dictionary<string,(int Stock,int Compiled,int Size)> NativeRecords { get; } = new(StringComparer.Ordinal);
     private int scriptLineEndingEquivalences;
     private int records, strings;
@@ -37,8 +39,8 @@ internal sealed class SelectedNativeGraphComparer
     //-------------------------------------------------------------------------------------------------
     /** Reborn: stock and compiled graphs keep separate origins and semantic reference occurrence tables. */
     //-------------------------------------------------------------------------------------------------
-    internal SelectedNativeGraphComparer(byte[] stock, AssetId[] references, Chunk compiled, InstanceDeclaration instance, bool allowScriptCrLfEquivalent = false, bool requireAllReferences = true, bool captureNativeCoordinates = true, bool captureNativePaths = false)
-    { this.stock = stock; stockReferences = references; this.compiled = compiled; this.instance = instance; this.allowScriptCrLfEquivalent = allowScriptCrLfEquivalent; this.requireAllReferences = requireAllReferences; this.captureNativeCoordinates = captureNativeCoordinates; this.captureNativePaths=captureNativePaths; covered = new bool[compiled.InstanceBuffer.Length]; }
+    internal SelectedNativeGraphComparer(byte[] stock, AssetId[] references, Chunk compiled, InstanceDeclaration instance, bool allowScriptCrLfEquivalent = false, bool requireAllReferences = true, bool captureNativeCoordinates = true, bool captureNativePaths = false,ConscriptUpgradeStructure.Plan? upgrade=null)
+    { this.stock = stock; stockReferences = references; this.compiled = compiled; this.instance = instance; this.allowScriptCrLfEquivalent = allowScriptCrLfEquivalent; this.requireAllReferences = requireAllReferences; this.captureNativeCoordinates = captureNativeCoordinates; this.captureNativePaths=captureNativePaths;this.upgrade=upgrade; covered = new bool[compiled.InstanceBuffer.Length]; }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: complete selected graph equality requires every native field, exact auxiliary ownership and no hidden nonzero/orphan heap allocations. */
@@ -123,6 +125,15 @@ internal sealed class SelectedNativeGraphComparer
                 }
                 if (generic == "Relo.List`1")
                 {
+                    // Reborn: typed upgrade arrays are source-sized; independently check every hash and all allocation/relocation ownership.
+                    if(upgrade!=null&&upgrade.Lists.TryGetValue(path,out var values)){
+                        if(element!=typeof(global::TypedAssetId<SageBinaryData.UpgradeTemplate>)||Word(compiled.InstanceBuffer,b)!=values.Length)throw new InvalidDataException("Upgrade list source/native count or ABI differs at "+path);
+                        uint pointer=Word(compiled.InstanceBuffer,b+4);if((values.Length==0)!=(pointer==0))throw new InvalidDataException("Upgrade list empty/pointer invariant differs at "+path);
+                        if(values.Length>0){Range(compiled.InstanceBuffer,checked((int)pointer),checked(values.Length*4));if(pointer%4!=0||covered.AsSpan((int)pointer,values.Length*4).Contains(true))throw new InvalidDataException("Upgrade list allocation overlaps another owner.");relos.Add((uint)(b+4));Array.Fill(covered,true,(int)pointer,values.Length*4);}
+                        uint original=Word(stock,a+4);
+                        for(int i=0;i<values.Length;i++){int item=checked((int)pointer+i*4);if(Word(compiled.InstanceBuffer,item)!=values[i])throw new InvalidDataException("Upgrade list hash differs from authored source at "+path+"["+i+"]");if(captureNativePaths&&!NativeRecords.TryAdd(path+"["+i+"]",((int)original,item,4)))throw new InvalidDataException("Duplicate authored upgrade list context.");}
+                        return;
+                    }
                     Equal(a, b, 4, path + ".Count"); uint count = Word(stock, a); if (count > 10000) throw new InvalidDataException("Selected native list exceeds bound.");
                     var pointers = Pointer(a + 4, b + 4, path); if ((count == 0) != (pointers.A == 0)) throw new InvalidDataException("Selected list empty/storage invariant differs at " + path);
                     int stride = Size(element);
@@ -140,7 +151,15 @@ internal sealed class SelectedNativeGraphComparer
                 string child = path + "." + field.Name;
                 if (fixedBuffer != null) Equal(a + offset, b + offset, fieldSize, child);
                 else if (field.FieldType.IsPointer)
-                { var pointers = Pointer(a + offset, b + offset, child); if (pointers.A != 0) Visit(field.FieldType.GetElementType()!, pointers.A, pointers.B, child, depth + 1);
+                {
+                    // Reborn: optional animation structs use independent source words and exact ownership, including the omitted/null case.
+                    if(upgrade!=null&&upgrade.Optional.TryGetValue(child,out var expected)){
+                        if(field.FieldType.GetElementType()!=typeof(SageBinaryData.AnimAndDuration))throw new InvalidDataException("Optional upgrade record ABI differs.");
+                        uint pointer=Word(compiled.InstanceBuffer,b+offset);if((expected==null)!=(pointer==0))throw new InvalidDataException("Optional animation source/native presence differs.");
+                        if(expected!=null){Range(compiled.InstanceBuffer,checked((int)pointer),expected.Length);if(pointer%4!=0||covered.AsSpan((int)pointer,expected.Length).Contains(true)||!compiled.InstanceBuffer.AsSpan((int)pointer,expected.Length).SequenceEqual(expected))throw new InvalidDataException("Optional animation source words/allocation differ.");Array.Fill(covered,true,(int)pointer,expected.Length);relos.Add((uint)(b+offset));if(captureNativePaths&&!NativeRecords.TryAdd(child,((int)Word(stock,a+offset),(int)pointer,expected.Length)))throw new InvalidDataException("Duplicate optional animation context.");}
+                        continue;
+                    }
+                    var pointers = Pointer(a + offset, b + offset, child); if (pointers.A != 0) Visit(field.FieldType.GetElementType()!, pointers.A, pointers.B, child, depth + 1);
                     // Reborn: an independently proven null word can itself be a metadata reference target, as with EP1's empty voice EVA handle; nonnull paths still describe only their real pointees.
                     else if(captureNativePaths && !NativeRecords.TryAdd(child,(a+offset,b+offset,4)))throw new InvalidDataException("Duplicate contextual null native field path."); }
                 else Visit(field.FieldType, a + offset, b + offset, child, depth + 1);

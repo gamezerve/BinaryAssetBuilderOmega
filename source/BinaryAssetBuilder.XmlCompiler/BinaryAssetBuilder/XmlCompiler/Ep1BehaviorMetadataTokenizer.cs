@@ -165,11 +165,13 @@ public static class Ep1BehaviorMetadataTokenizer
             }
             if (type.IsGenericType && type.GetGenericTypeDefinition().FullName == "Relo.List`1")
             {
-                uint count = Word(bytes, slot), pointer = Word(bytes, slot + 4); if (count > 4096 || (count == 0) != (pointer == 0)) throw new InvalidDataException("Behavior metadata list invariant differs.");
+                // Reborn: list cardinality is bounded by its real native item extent, not the former 4096-entry sample quota.
+                Type child = type.GetGenericArguments()[0]; int stride = Size(child);
+                uint count = Word(bytes, slot), pointer = Word(bytes, slot + 4); if (count > bytes.Length/stride || (count == 0) != (pointer == 0)) throw new InvalidDataException("Behavior metadata list invariant differs.");
                 int list = Allocate(1 + (int)count); Row(list, 0x6C827073, 0x5D448FD8, 0); Native(list + 8, slot); Target(targetAt, list);
                 if (count != 0)
                 {
-                    Type child = type.GetGenericArguments()[0]; int stride = Size(child), items = Pointer(pointer); Claim(items, checked((int)count * stride)); relos.Add((uint)(slot + 4));
+                    int items = Pointer(pointer); Claim(items, checked((int)count * stride)); relos.Add((uint)(slot + 4));
                     XmlSchemaType itemSchema = schema is XmlSchemaSimpleType simple && simple.Content is XmlSchemaSimpleTypeList listType ? listType.BaseItemType : schema;
                     for (int i = 0; i < count; i++) { int marker = list + 12 + i * 12; Row(marker, 0xB151A0EB, 0, 0); Field(itemSchema, child, items + i * stride, marker + 8, depth + 1); }
                 }

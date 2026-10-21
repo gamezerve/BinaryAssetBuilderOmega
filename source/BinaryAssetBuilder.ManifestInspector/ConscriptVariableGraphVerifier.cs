@@ -76,15 +76,17 @@ internal sealed class ConscriptVariableGraphVerifier
                 var leaf=Extract(native,start,stop);var compared=Clone(leaf);Put(compared.InstanceBuffer,4,Word(stock.Bytes,model.Native+4));
                 // Reborn: fixed source/native values were independently checked; nested graphs and padding remain compared in full.
                 foreach(var binding in ConscriptModuleScalarContract.Bindings(owner.NativeType))stock.Bytes.AsSpan(model.Native+binding.Offset,binding.Width).CopyTo(compared.InstanceBuffer.AsSpan(binding.Offset,binding.Width));
-                VerifyUpgradeTriggers(owner,origins[owner.Element.GetAttribute("id")],compared);
+                // Reborn: source-sized weak arrays and optional nested animation records have explicit semantic and allocation contracts.
+                var upgrade=group.Key=="Behaviors"?ConscriptUpgradeStructure.Read(owner,catalog):null;
+                if(upgrade==null)VerifyUpgradeTriggers(owner,origins[owner.Element.GetAttribute("id")],compared);
                 // Reborn: the template supplies ABI/ownership, not a frozen referenced asset identity; source supplies checked semantic targets.
                 var expectedReferences=group.Key=="Behaviors"&&leaf.ImportsBuffer.Length>0?ReferenceTable(owner.Element,origins[owner.Element.GetAttribute("id")]):rootReferences;
-                var comparer=new SelectedNativeGraphComparer(stock.Bytes,expectedReferences,compared,instance,allowScriptCrLfEquivalent:group.Key=="Draws",requireAllReferences:false,captureNativeCoordinates:group.Key!="Behaviors",captureNativePaths:group.Key=="Behaviors");comparer.Compare(owner.NativeType,model.Native);Own(leaf,start,stop);
+                var comparer=new SelectedNativeGraphComparer(stock.Bytes,expectedReferences,compared,instance,allowScriptCrLfEquivalent:group.Key=="Draws",requireAllReferences:false,captureNativeCoordinates:group.Key!="Behaviors",captureNativePaths:group.Key=="Behaviors",upgrade:upgrade);comparer.Compare(owner.NativeType,model.Native);Own(leaf,start,stop);
                 foreach(var coordinate in comparer.NativeOffsets)map.Add(coordinate.Key,start+coordinate.Value);
                 if(group.Key=="Behaviors")
                 {
                     var standalone=Ep1BehaviorMetadataTokenizer.Tokenize(leaf,official,model.Type,owner.NativeType);var stockModules=topology.Containers.Single(c=>c.Name=="Behaviors").Modules;int index=Array.IndexOf(stockModules,model);int stockEnd=index+1<stockModules.Length?stockModules[index+1].Wrapper:stockRows[FastHash.GetHashCode("AI")].Offset;
-                    int localPrefix=BehaviorMetadataStockProof.Compare(standalone,leaf,stock.Bytes,model.Wrapper,stockEnd,owner.NativeType,comparer.NativeRecords);
+                    int localPrefix=upgrade==null?BehaviorMetadataStockProof.Compare(standalone,leaf,stock.Bytes,model.Wrapper,stockEnd,owner.NativeType,comparer.NativeRecords):UpgradeStructureMetadataProof.Compare(standalone,leaf,stock.Bytes,model.Wrapper,stockEnd,owner.NativeType,comparer.NativeRecords,upgrade);
                     int list=rows[FastHash.GetHashCode("Behaviors")].Offset;if(Word(tokens.InstanceBuffer,list)!=0x6C827073||Word(tokens.InstanceBuffer,list+4)!=0x5D448FD8||Word(tokens.InstanceBuffer,list+8)!=prefix+layout.List)throw new InvalidDataException("Variable behavior count metadata differs.");
                     int row=list+12+owner.Index*12,at=(int)Word(tokens.InstanceBuffer,row+8);if(Word(tokens.InstanceBuffer,row)!=0xB151A0EB||Word(tokens.InstanceBuffer,row+4)!=0||at!=behaviorNext)throw new InvalidDataException("Variable behavior wrapper/order differs.");
                     for(int offset=0;offset<localPrefix;offset+=12){uint target=Word(standalone.InstanceBuffer,offset+8);uint expected=target==0?0:target<localPrefix?target+(uint)at:target-(uint)localPrefix+(uint)(prefix+start);if(Word(tokens.InstanceBuffer,at+offset)!=Word(standalone.InstanceBuffer,offset)||Word(tokens.InstanceBuffer,at+offset+4)!=Word(standalone.InstanceBuffer,offset+4)||Word(tokens.InstanceBuffer,at+offset+8)!=expected)throw new InvalidDataException("Variable behavior metadata splice differs.");}

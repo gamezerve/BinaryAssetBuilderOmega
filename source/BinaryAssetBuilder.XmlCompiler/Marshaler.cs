@@ -101,7 +101,8 @@ public static partial class Marshaler
             return;
         }
         uint result;
-        if (text.Length == 10 && text[0] == '0' && text[1] == 'x')
+        // Reborn: official SageUnsignedInt accepts one to eight hexadecimal digits, including nested fields that do not pass root-only normalization.
+        if (text.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
         {
             result = uint.Parse(text.Substring(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
         }
