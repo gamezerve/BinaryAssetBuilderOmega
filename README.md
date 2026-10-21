@@ -19,6 +19,14 @@ preparation. Uncertain origins are explicitly labelled source context rather
 than presented as exact field locations. This does not expand the supported
 GameObject topology.
 
+<!-- Reborn: variable behavior composition has independent full-object evidence before its separate Studio publication gate is widened. -->
+[Variable module graph qualification](docs/RA3EP1_VARIABLE_MODULE_GRAPHS.md) now
+passes complete Conscript cases with 18/30/36/48 behaviors, including removal,
+reordering and new-ID clones. Native allocations, reference occurrence counts
+and metadata extents are derived from each graph; 25 native and 50 metadata
+faults are rejected. This is an offline compiler/proof milestone, not yet an
+expansion of Studio's supported module topology.
+
 <!-- Reborn: track the user's official RA3 Studio transcript as a required output contract, separate from implemented alpha capabilities. -->
 The [build log compatibility contract](docs/RA3EP1_BUILD_LOG_CONTRACT.md) records
 the official RA3 SDK's eleven phases, timestamped compiler details, diagnostics,

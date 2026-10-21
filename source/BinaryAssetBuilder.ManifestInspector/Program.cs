@@ -13,6 +13,9 @@ internal static class Program
     {
         try
         {
+            // Reborn: variable module topology is independently qualified before changing the live alpha publication profile.
+            if(args.Length==4 && args[0]=="conscript-module-graph-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();ConscriptModuleGraphSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             // Reborn: source coordinate regression never edits either live mod or executes the game.
             if(args.Length==2 && args[0]=="sdk-xml-diagnostics-self-test")
             {CompilerSmokeTest.InitializeHashProvider();SdkXmlDiagnosticsSmokeTest.Run(args[1]);return 0;}
@@ -1638,6 +1641,7 @@ internal static class Program
         Console.WriteLine("  diagnostic-build <source.xml> <new-output-directory> [physical.manifest=runtime.manifest ...]");
         // Reborn: SDK planning is explicitly target-aware/read-only and separate from diagnostic or production compilation.
         Console.WriteLine("  sdk-preflight ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [absolute.manifest=runtime.manifest ...]");
+        Console.WriteLine("  conscript-module-graph-self-test <static.manifest> <global.manifest> <fresh-output-directory>");
         Console.WriteLine("  sdk-xml-diagnostics-self-test <fresh-output-directory>");
         Console.WriteLine("  sdk-preflight-self-test");
         // Reborn: expose optional explicit ART/AUDIO roots and incomplete graph exit status separately from environment readiness.
