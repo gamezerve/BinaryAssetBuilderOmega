@@ -11,8 +11,9 @@ try {
     & $exe conscript-source-prepare $ModXml $prepared @searchArgs;if($LASTEXITCODE-ne 0){throw 'EA source preparation failed; see the XML/include/schema diagnostic above.'}
     $inputReceipt=Get-Content -LiteralPath (Join-Path $prepared 'source-input.json') -Raw|ConvertFrom-Json
     $identity=$inputReceipt.Identity;$hasCommand=[bool]$inputReceipt.CommandPath;$newIdentity=$identity-cne 'SovietAntiInfantryInfantry'
-    # Reborn: target retargeting is now schema/catalog checked; distinguish it from still unsupported reference presence or module topology edits.
-    Write-Output 'Warning: ALPHA005 Partial GameObject capabilities: root values; reviewed module primitives/enums/fixed flags and local IDs; optional root imports; existing nonempty typed strong-reference retargeting; six dynamic root strings and existing nested numeric owners. New module structure, non-root reference presence changes, nested child/list edits and resource compilation remain disabled.'
+    # Reborn: report the fixed and variable source profiles separately so variable Behaviors do not imply arbitrary nested GameObject support.
+    Write-Output 'Warning: ALPHA005 Partial GameObject support. Fixed graph: reviewed root/module fields, local IDs, optional root imports, existing typed reference retargeting, six dynamic root strings and existing nested numeric owners.'
+    Write-Output 'Warning: ALPHA006 Variable Behaviors: add/remove/reorder/clone reviewed payload shapes and edit their fixed fields. Resource policy: 1..64 behaviors, not an EA limit. New nested layouts/families, changed strong targets or dynamic root strings in this profile, and resource compilation are not enabled.'
     Write-Output ('Reborn: authored asset count: '+$(if($hasCommand){2}else{1})+'; no automatic LogicCommand generation.')
     $scratch=Join-Path $OutputRoot 'temp';$null=New-Item -ItemType Directory -Path $scratch;$previousTemp=$env:TEMP;$previousTmp=$env:TMP
     try {

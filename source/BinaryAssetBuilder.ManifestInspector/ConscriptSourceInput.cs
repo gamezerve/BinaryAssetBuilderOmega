@@ -101,6 +101,27 @@ internal static class ConscriptSourceInput
     //-------------------------------------------------------------------------------------------------
     internal static void Admit(XmlDocument input,XmlDocument baseline,XmlSchemaSet schemas)
     {
+        // Reborn: preserve the established broad fixed-topology route; only independently matched variable behavior graphs use the new route.
+        try{AdmitFixed(input,baseline,schemas);}
+        // Reborn: schema failures are final; routing them through native capability checks can erase the exact offending schema node.
+        catch(InvalidDataException original)when(original.InnerException is not XmlSchemaException)
+        {
+            try{ConscriptVariableBehaviorSource.Admit(input,baseline,schemas);}
+            catch(InvalidDataException variable){if(SdkXmlDiagnostics.Node(variable)==null)SdkXmlDiagnostics.At(variable,SdkXmlDiagnostics.Node(original));throw;}
+        }
+    }
+
+    // Reborn: routing probes operate on copies and cannot alter authored values or source-reference occurrence order.
+    internal static bool FixedAccepted(XmlDocument source,XmlDocument baseline,XmlSchemaSet schemas)
+    {
+        try{AdmitFixed(Parse(Encoding.UTF8.GetBytes(source.DocumentElement!.OuterXml)),Parse(Encoding.UTF8.GetBytes(baseline.DocumentElement!.OuterXml)),schemas);return true;}catch(InvalidDataException){return false;}
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: retain all original fixed-topology proof gates independently of variable Behaviors admission. */
+    //-------------------------------------------------------------------------------------------------
+    private static void AdmitFixed(XmlDocument input,XmlDocument baseline,XmlSchemaSet schemas)
+    {
         // Reborn: materialize defaults only in comparison copies; emitting optional empty-string defaults would create extra native allocations in legacy marshalers.
         var qualified=Parse(Encoding.UTF8.GetBytes(input.DocumentElement!.OuterXml));var model=Parse(Encoding.UTF8.GetBytes(baseline.DocumentElement!.OuterXml));
         foreach(var doc in new[]{qualified,model}){doc.Schemas.Add(schemas);doc.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));foreach(XmlAttribute attribute in doc.SelectNodes("//@*")!)attribute.Value=attribute.Value;}
@@ -149,7 +170,7 @@ internal static class ConscriptSourceInput
     //-------------------------------------------------------------------------------------------------
     /** Reborn: name the first unsupported source difference without dumping the full object/script or hiding it behind a fingerprint error. */
     //-------------------------------------------------------------------------------------------------
-    private static string Difference(XmlElement actual,XmlElement model,string path,out XmlNode? offending)
+    internal static string Difference(XmlElement actual,XmlElement model,string path,out XmlNode? offending)
     {
         offending=actual;
         foreach(var a in actual.Attributes.OfType<XmlAttribute>().Concat(model.Attributes.OfType<XmlAttribute>()).Where(a=>a.NamespaceURI!="http://www.w3.org/2000/xmlns/").DistinctBy(a=>(a.NamespaceURI,a.LocalName)))if(actual.GetAttribute(a.LocalName,a.NamespaceURI)!=model.GetAttribute(a.LocalName,a.NamespaceURI)){offending=(XmlNode?)actual.GetAttributeNode(a.LocalName,a.NamespaceURI)??actual;return path+"/@"+a.LocalName+" (authored="+actual.GetAttribute(a.LocalName,a.NamespaceURI)+", baseline="+model.GetAttribute(a.LocalName,a.NamespaceURI)+")";}
@@ -177,7 +198,7 @@ internal static class ConscriptSourceInput
     //-------------------------------------------------------------------------------------------------
     /** Reborn: namespaces are compared by expanded names; retain element order and leaf/script text rather than inventing commutative module/list semantics. */
     //-------------------------------------------------------------------------------------------------
-    private static string Signature(XmlElement root)
+    internal static string Signature(XmlElement root)
     {
         var output=new StringBuilder();Append(root);return output.ToString();
         //-------------------------------------------------------------------------------------------------

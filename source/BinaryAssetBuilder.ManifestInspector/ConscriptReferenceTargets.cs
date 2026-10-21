@@ -23,7 +23,7 @@ internal static class ConscriptReferenceTargets
     //-------------------------------------------------------------------------------------------------
     /** Reborn: schema annotations and the explicit stock catalog determine concrete IDs; no normalization result or authored numeric suffix is trusted as expected evidence. */
     //-------------------------------------------------------------------------------------------------
-    private static AssetId[] Read(XmlDocument source,SchemaSet schemas,ManifestAsset[] catalog)
+    internal static AssetId[] Read(XmlDocument source,SchemaSet schemas,ManifestAsset[] catalog)
     {
         var document=new XmlDocument{XmlResolver=null};document.LoadXml(source.DocumentElement!.OuterXml);document.Schemas.Add(schemas.Schemas);document.Validate((_,e)=>throw new InvalidDataException(e.Message));
         ConscriptBehaviorSurvey.ResolveStrong(document,schemas,catalog);

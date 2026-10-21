@@ -3,7 +3,7 @@ A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 Final target: RA3-SDK-style general Uprising authoring, including user-defined
 asset IDs, instance includes, inheritance, `$` definitions/expressions,
-TGA/DDS textures and W3X models. Current fixed-identity alpha restrictions are
+TGA/DDS textures and W3X models. Current alpha capability restrictions are
 temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 21, 2026
@@ -28,8 +28,15 @@ independently read back real manifest/BIN/RELO/IMP and BIG/SKUDef packages,
 including a new-ID variable object plus an explicitly authored production
 command. The graph-qualified serializer binds exact source, ordered targets and
 all three buffers; 30 native, 60 metadata and 3480 stream/reference controls pass.
-This remains an offline compiler/package milestone, not yet an expansion of
-Studio's supported module topology.
+The live Studio build now admits reviewed variable `Behaviors`: add/remove,
+reorder and clone known complete payload shapes with new local IDs, while editing
+their fixed fields and reviewed fixed root values. Normal EA includes/definitions/
+inheritance and explicit production commands work on this route. Seven live-driver
+controls pass; unsupported nested shapes, colliding IDs and resource-budget
+violations retain the last successful package. Other containers/root dynamic
+strings/strong-target changes are not yet combinable with variable topology.
+User Reborn sources/output remain untouched; this is compile/package support,
+not new gameplay validation or general GameObject support.
 
 <!-- Reborn: track the user's official RA3 Studio transcript as a required output contract, separate from implemented alpha capabilities. -->
 The [build log compatibility contract](docs/RA3EP1_BUILD_LOG_CONTRACT.md) records

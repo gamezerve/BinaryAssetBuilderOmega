@@ -110,7 +110,7 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();ConscriptRecruitmentSmokeTest.Run(args[1]);return 0;}
             // Reborn: expose complete Conscript scalar/source builds, retaining native/metadata/reference qualification before publication.
             if(args.Length==6 && args[0]=="conscript-alpha-build")
-            {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeOriginalRoot:true,alphaSource:args[4],alphaOutput:args[5]);return 0;}
+            {CompilerSmokeTest.InitializeHashProvider();if(!ConscriptVariableBehaviorBuild.TryRun(args[4],args[2],args[3],args[5]))Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeOriginalRoot:true,alphaSource:args[4],alphaOutput:args[5]);return 0;}
 
             if(args.Length==4 && args[0]=="gameobject-root-fields-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeRootOwners:true,includeEmptyRoots:true);return 0;}

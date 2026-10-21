@@ -109,7 +109,8 @@ namespace EALABuild
             List<GUIElementData> options = new List<GUIElementData>();
             options.Add(new GUIElementData("alpha", "Uprising Alpha: Validate XML / Build Data / Make BIG", GUIElementData.LabelType, ScriptIndex.ModScript));
             options.Add(new GUIElementData("scope", "Fixed yard samples or 1..32 source armors with Includes/Defines/inheritFrom (experimental)", GUIElementData.LabelType, ScriptIndex.ModScript));
-            options.Add(new GUIElementData("weapon", "RebornTest: mod.xml includes Conscript.xml and explicit CommandData.xml", GUIElementData.LabelType, ScriptIndex.ModScript));
+            // Reborn: distinguish reviewed variable behavior shapes from unrestricted nested GameObject/resource authoring.
+            options.Add(new GUIElementData("weapon", "Conscript: reviewed variable Behaviors + fixed fields; unsupported layouts fail", GUIElementData.LabelType, ScriptIndex.ModScript));
             return options;
         }
 
