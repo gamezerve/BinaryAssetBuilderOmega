@@ -115,7 +115,8 @@ try{
     [IO.File]::WriteAllText((Join-Path $stage 'build.json'),($result|ConvertTo-Json -Depth 20))
     Write-SdkBuildLine ('Mod Version: '+$ModVersion)
     Write-SdkBuildLine ('Final Streams BIG: '+$final.StreamsPath)
-    Write-SdkBuildLine ('Final Misc BIG: '+$final.MiscPath+' ('+$final.MiscEntries+' files)')
+    # Reborn: skipped Misc must not look like a published archive in the Studio log.
+    if($final.MiscEntries -gt 0){Write-SdkBuildLine ('Final Misc BIG: '+$final.MiscPath+' ('+$final.MiscEntries+' files)')}else{Write-SdkBuildLine 'Misc skipped: no packageable files; no Misc BIG or SKUDef entry.'}
     Write-SdkBuildLine ('Final SKUDef: '+$final.SkuDefPath)
     Stop-SdkBuildPhase
     # Reborn: finish the saved log inside staging so a log write failure cannot replace the last good public package.

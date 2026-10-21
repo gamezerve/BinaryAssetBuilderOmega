@@ -10,8 +10,8 @@ Windows/OneDrive redirection, followed by `Red Alert 3 Uprising/Mods/<name>/`.
 RebornTest version 1.00 yields:
 
 - `RebornTest_1.00_Streams.big`: unchanged qualified backend stream archive.
-- `RebornTest_1.00_Misc.big`: files under `alpha/mods/RebornTest/Misc/`.
-- `RebornTest_1.00.skudef`: `add-big` Streams then Misc, CRLF, relative filenames.
+- `RebornTest_1.00_Misc.big`: only when `alpha/mods/RebornTest/Misc/` has packageable files.
+- `RebornTest_1.00.skudef`: `add-big` Streams then optional Misc, CRLF, relative filenames.
 
 This is a mod SKUDef fragment, not a replacement game SKU. No game version,
 game installation configuration or launch command is changed. Different versions
@@ -28,8 +28,10 @@ exclusion. For example `Misc/Data/Scripts/example.lua` becomes
 All other loose content is copied as-is, not compiled. Unsupported XML, models
 or audio do not gain compiler support by being placed here.
 
-Missing/empty Misc deliberately produces a valid empty 16-byte BIG, so the
-SKUDef always includes a deterministic pair. Names must be printable ASCII;
+Missing/empty Misc, nested directories without files and excluded-only `.asset`
+content produce no Misc BIG and no Misc SKUDef line. A zero-byte distributable
+file still counts as a file and is packaged. Successful same-version rebuilds
+remove an earlier owned Misc BIG when Misc is now absent/empty. Names must be printable ASCII;
 duplicate case-insensitive names and redirected paths fail. The actual Windows
 reparse tag distinguishes OneDrive cloud placeholders (accepted) from junctions,
 symbolic links and unknown reparse tags (refused); the ReparsePoint attribute
@@ -42,7 +44,9 @@ are checked before publication.
 
 The target directory keeps a `.reborn-publish.lock` coordination file and a
 per-version `.<name>_<version>.package.json` ownership/hash receipt. A matching
-same-version rebuild replaces only its verified three files and receipt.
+same-version rebuild replaces only its verified two or three files and receipt.
+Earlier three-file receipts, including the old empty Misc BIG, are accepted for
+safe migration; unknown or modified Misc files are never silently removed.
 Changed/unmanaged collisions fail; unrelated files and other versions remain.
 Exclusive locks serialize publishers across SDK copies. Staging resides on the
 destination volume; handled replacement failures restore previous files. If
@@ -63,13 +67,14 @@ covers names/SKU, nested Misc paths, `.asset` exclusion, deterministic rebuild,
 other versions/notes, empty Misc, invalid versions, modified/unmanaged collisions,
 partial-move rollback and concurrent-publication refusal. A real RebornTest
 source build also verifies integration with the unchanged qualified stream bytes.
-The Windows run passed 12 checks, including a real junction refusal and a
+The optional-Misc Windows run passed 17 checks, including a real junction refusal and a
 read-only check of this machine's OneDrive cloud-tagged Documents path. Studio's
 adapter compiles against the shipped EALABuild API, and the readable-log
 regression passes. The stream archive still hashes to
 `87241958D0EC4CDB3A133FFC837E023A01B51716924F6B532A30BCBDE7EDF918`.
 The full source-to-final build also completed at the actual known-folder location
 `D:\OneDrive\Documents\Red Alert 3 Uprising\Mods\RebornTest` with version 1.00.
-Its current Misc source is empty, so that candidate includes an empty Misc BIG;
+The first candidate had an empty Misc BIG; that earlier policy is superseded by
+the optional-Misc behavior above, which removes that owned archive on rebuild;
 nonempty nested/binary Misc payloads were verified in the isolated helper tests.
 No game was launched for these packaging changes.

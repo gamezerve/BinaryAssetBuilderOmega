@@ -7,11 +7,14 @@ Select your mod in `EALAModStudio.exe`, enter **Mod Version** (for example
 `1.00`) and click **Build Mod**. Final files are in your Windows Documents
 folder under `Red Alert 3 Uprising/Mods/<name>/`:
 `<name>_<version>_Streams.big`, `<name>_<version>_Misc.big` and
-`<name>_<version>.skudef`. The SKUDef references both archives; no CFG is required.
+`<name>_<version>.skudef`. The SKUDef references Streams and, only when nonempty,
+Misc; no CFG is required.
 Put loose distributable files in `mods/<name>/Misc/`, retaining their intended
 in-game paths (for example `Misc/Data/Scripts/...`). `.asset` files are excluded.
 Misc does not compile XML/art/audio; it packages files as-is. Missing/empty Misc
-produces an empty archive. Other versions/notes are preserved. A modified or
+(including directories containing only excluded `.asset` files) produces no archive
+or SKUDef entry. A previous same-version owned Misc archive is removed on a
+successful rebuild without Misc. Other versions/notes are preserved. A modified or
 unmanaged same-version output is refused rather than overwritten.
 Internal receipts/logs and compatibility copies remain under `builtmods/<name>/`.
 Restart an already-open Studio to load the new version field.
@@ -77,7 +80,7 @@ Select `Reborn` or `RebornTest`, edit its `alpha/mods/<name>/data/mod.xml`, then
 Successful builds publish these files under Windows Documents/Red Alert 3 Uprising/Mods/&lt;name&gt;:
 
 - `<name>_<version>_Streams.big`
-- `<name>_<version>_Misc.big`
+- `<name>_<version>_Misc.big` (only when Misc has packageable files)
 - `<name>_<version>.skudef`
 
 No CFG counterpart is required by this workflow. Internal `builtmods/<name>`

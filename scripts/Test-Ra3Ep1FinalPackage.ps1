@@ -28,14 +28,30 @@ $again=Publish-RebornFinalPackage RebornTest 1.00 $streams $misc $mods
 if((Get-FileHash -LiteralPath $again.MiscPath).Hash -cne $hash){throw 'Misc output is not deterministic.'};$checks.Add('SameVersionRebuild')
 $note=Join-Path $first.Directory 'user-note.txt';[IO.File]::WriteAllText($note,'Reborn: retain me.')
 $second=Publish-RebornFinalPackage RebornTest 2.00 $streams (Join-Path $root 'MissingMisc') $mods
-if(-not(Test-Path -LiteralPath $first.SkuDefPath) -or -not(Test-Path -LiteralPath $note) -or (Get-Item -LiteralPath $second.MiscPath).Length -ne 16){throw 'Other versions/notes or absent Misc differ.'};$checks.Add('OtherVersionsNotesAndEmptyMisc')
+if(-not(Test-Path -LiteralPath $first.SkuDefPath) -or -not(Test-Path -LiteralPath $note) -or $second.MiscPath -or (Test-Path -LiteralPath (Join-Path $second.Directory 'RebornTest_2.00_Misc.big')) -or (Get-Content -LiteralPath $second.SkuDefPath -Raw) -cne "add-big RebornTest_2.00_Streams.big`r`n"){throw 'Other versions/notes or absent Misc differ.'};$checks.Add('OtherVersionsNotesAndMissingMisc')
+# Reborn: remove the previous same-version owned archive when Misc disappears, and allow it to return later.
+$without=Publish-RebornFinalPackage RebornTest 1.00 $streams (Join-Path $root 'MissingMisc') $mods
+if($without.MiscPath -or (Test-Path -LiteralPath $first.MiscPath) -or (Get-Content -LiteralPath $without.SkuDefPath -Raw) -cne "add-big RebornTest_1.00_Streams.big`r`n"){throw 'Stale same-version Misc was not removed.'};$checks.Add('OwnedMiscRemoved')
+$empty=Join-Path $root 'EmptyMisc';$null=New-Item -ItemType Directory -Path (Join-Path $empty 'EmptySubfolder') -Force
+$emptyResult=Publish-RebornFinalPackage RebornTest 1.00 $streams $empty $mods
+if($emptyResult.MiscPath -or $emptyResult.MiscEntries -ne 0 -or (Test-Path -LiteralPath $first.MiscPath)){throw 'Empty Misc produced an archive.'};$checks.Add('EmptyDirectorySkipped')
+[IO.File]::WriteAllText((Join-Path $empty 'excluded.ASSET'),'Reborn: excluded intermediate.')
+$excluded=Publish-RebornFinalPackage RebornTest 1.00 $streams $empty $mods
+if($excluded.MiscPath -or (Get-Content -LiteralPath $excluded.SkuDefPath -Raw) -match '_Misc.big'){throw 'Excluded-only Misc produced an archive or SKU entry.'};$checks.Add('ExcludedOnlyMiscSkipped')
+$restored=Publish-RebornFinalPackage RebornTest 1.00 $streams $misc $mods
+if($restored.MiscEntries -ne 3 -or (Get-FileHash -LiteralPath $restored.MiscPath).Hash -cne $hash){throw 'Misc did not return after adding files.'};$checks.Add('MiscAddedBack')
 Expect-PackageFailure {Publish-RebornFinalPackage RebornTest '../bad' $streams $misc $mods} 'InvalidVersion'
 Expect-PackageFailure {Publish-RebornFinalPackage RebornTest "1.00`n" $streams $misc $mods} 'VersionTrailingNewline'
 # Reborn: force a failure after the first two previous files moved and require a complete rollback.
-$prior=@{};foreach($path in @($second.StreamsPath,$second.MiscPath,$second.SkuDefPath)){$prior[$path]=(Get-FileHash -LiteralPath $path).Hash}
+$prior=@{};foreach($path in @($second.StreamsPath,$second.SkuDefPath)){$prior[$path]=(Get-FileHash -LiteralPath $path).Hash}
 $blocked=[IO.File]::Open($second.SkuDefPath,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::Read)
 try{Expect-PackageFailure {Publish-RebornFinalPackage RebornTest 2.00 $streams $misc $mods} 'RollbackAfterPartialMove'}finally{$blocked.Dispose()}
 foreach($path in $prior.Keys){if((Get-FileHash -LiteralPath $path).Hash -cne $prior[$path]){throw 'Rollback did not restore all previous files.'}}
+# Reborn: rollback also restores a removed old Misc when a streams-only replacement cannot move its locked SKU.
+$priorMiscHash=(Get-FileHash -LiteralPath $first.MiscPath).Hash
+$blocked=[IO.File]::Open($first.SkuDefPath,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::Read)
+try{Expect-PackageFailure {Publish-RebornFinalPackage RebornTest 1.00 $streams $empty $mods} 'RollbackRestoresRemovedMisc'}finally{$blocked.Dispose()}
+if((Get-FileHash -LiteralPath $first.MiscPath).Hash -cne $priorMiscHash){throw 'Rollback lost the old Misc archive.'}
 [IO.File]::WriteAllText($first.SkuDefPath,'Reborn: user edited this.')
 Expect-PackageFailure {Publish-RebornFinalPackage RebornTest 1.00 $streams $misc $mods} 'ModifiedOwnedFile'
 if((Get-Content -LiteralPath $first.SkuDefPath -Raw) -cne 'Reborn: user edited this.'){throw 'User-edited SKU was overwritten.'}

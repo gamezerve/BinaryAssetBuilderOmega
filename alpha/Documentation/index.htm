@@ -9,9 +9,10 @@ The same SDK receives updated compiler tools after successful Release/x86 compil
 <!-- Reborn: final archives follow the Studio version field; internal compiler receipts stay SDK-local. -->
 <p>Enter <b>Mod Version</b> (default 1.00), then click Build Mod. Successful builds publish
 &lt;name&gt;_&lt;version&gt;_Streams.big, &lt;name&gt;_&lt;version&gt;_Misc.big and &lt;name&gt;_&lt;version&gt;.skudef
-under your Windows Documents/Red Alert 3 Uprising/Mods/&lt;name&gt; folder. The SKUDef includes both BIGs.
+under your Windows Documents/Red Alert 3 Uprising/Mods/&lt;name&gt; folder. Misc BIG and its SKUDef entry exist only when there are packageable Misc files.
 Put loose distributable files under alpha/mods/&lt;name&gt;/Misc using their intended game-relative paths.
-Files are packaged unchanged; .asset intermediates are excluded. Missing/empty Misc creates an empty BIG.
+Files are packaged unchanged; .asset intermediates are excluded. Missing/empty or excluded-only Misc creates no BIG or SKUDef entry.
+A previously owned same-version Misc BIG is removed on a successful rebuild without Misc.
 Other versions and user notes are preserved; modified/unmanaged same-version collisions fail safely.
 Internal compatibility copies, build.json and last-build.log remain in alpha/builtmods/&lt;name&gt;.
 No CFG counterpart is published. Restart an already-open Studio to load the new version field.

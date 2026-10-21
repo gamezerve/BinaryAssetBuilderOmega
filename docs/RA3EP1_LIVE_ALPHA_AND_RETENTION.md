@@ -28,7 +28,10 @@ stale script. This repository development SDK is not a standalone portable ZIP.
 user-requested final publication now uses the Windows Documents known folder:
 `Red Alert 3 Uprising/Mods/<name>/<name>_<version>_Streams.big`,
 `<name>_<version>_Misc.big` and `<name>_<version>.skudef`. Studio supplies the
-editable version field. `alpha/builtmods/<name>/<name>.big`, `mod_1.0.skudef`,
+editable version field. Misc BIG and its SKUDef entry are omitted when Misc is
+missing, empty or contains only excluded `.asset` files. A successful rebuild
+removes a previous same-version owned Misc BIG if it is no longer needed.
+`alpha/builtmods/<name>/<name>.big`, `mod_1.0.skudef`,
 `build.json` and `last-build.log` remain private compatibility/cache output.
 No final CFG is emitted. The earlier short-basename experiment remains historical
 evidence, not gameplay proof for every new versioned filename; the new public

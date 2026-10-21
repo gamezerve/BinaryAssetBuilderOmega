@@ -16,10 +16,10 @@ It contains the Uprising SDK work previously developed on
 Studio now has a **Mod Version** field (default `1.00`). Final builds publish
 `<name>_<version>_Streams.big`, `<name>_<version>_Misc.big` and
 `<name>_<version>.skudef` to the Windows Documents known folder under
-`Red Alert 3 Uprising/Mods/<name>/`. The SKUDef includes both archives.
+`Red Alert 3 Uprising/Mods/<name>/`. The SKUDef includes Streams and optional nonempty Misc.
 `alpha/mods/<name>/Misc/` is packaged root-relative, excluding `.asset`
-intermediates like the official SDK. Missing/empty Misc creates a valid empty
-archive. Other versions and unrelated user files are preserved; modified or
+intermediates like the official SDK. Missing/empty or excluded-only Misc produces
+no Misc archive or SKUDef entry. Other versions and unrelated user files are preserved; modified or
 unmanaged same-version collisions fail visibly. See [packaging details](docs/RA3EP1_FINAL_PACKAGING.md).
 
 <!-- Reborn: source diagnostics must refer to authored files, never misleading generated-XML coordinates. -->
