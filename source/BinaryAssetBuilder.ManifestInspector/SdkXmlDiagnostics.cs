@@ -96,9 +96,10 @@ internal static class SdkXmlDiagnostics
             if(Origin(error)!=null)return;
             var documents=snapshots.Select(s=>(s.Path,Xml:Lines(s.Bytes,s.Path))).ToArray();
             XmlNode? node=Node(error);XmlElement? element=node as XmlElement??(node as XmlAttribute)?.OwnerElement;
-            var owner=element?.SelectSingleNode("ancestor-or-self::*[local-name()='GameObject' or local-name()='LogicCommand'][1]") as XmlElement;
-            if(owner==null&&final?.DocumentElement is XmlElement finalOwner&&finalOwner.LocalName is "GameObject" or "LogicCommand")owner=finalOwner;
-            var frames=documents.SelectMany(d=>d.Xml.Root==null?Array.Empty<(string Path,XElement Root)>():d.Xml.Root.Name.LocalName=="AssetDeclaration"?d.Xml.Root.Elements().Where(e=>e.Name.LocalName is "GameObject" or "LogicCommand").Select(e=>(d.Path,Root:e)):new[]{(d.Path,Root:d.Xml.Root)}).ToArray();
+            // Reborn: support assets are real diagnostic owners too; an included weapon error must not fall back to the entry's Includes line.
+            var owner=element;while(owner!=null&&!IsAsset(owner.LocalName))owner=owner.ParentNode as XmlElement;
+            if(owner==null&&final?.DocumentElement is XmlElement finalOwner&&IsAsset(finalOwner.LocalName))owner=finalOwner;
+            var frames=documents.SelectMany(d=>d.Xml.Root==null?Array.Empty<(string Path,XElement Root)>():d.Xml.Root.Name.LocalName=="AssetDeclaration"?d.Xml.Root.Elements().Where(e=>IsAsset(e.Name.LocalName)).Select(e=>(d.Path,Root:e)):new[]{(d.Path,Root:d.Xml.Root)}).ToArray();
             var ranks=new Dictionary<XElement,int>();
             if(owner!=null)
             {
@@ -113,12 +114,12 @@ internal static class SdkXmlDiagnostics
             if(element!=null)
             {
                 // Reborn: module IDs survive merge/fragment detachment and are stronger evidence than generated sibling indices.
-                var module=element.SelectSingleNode("ancestor-or-self::*[@id][not(local-name()='GameObject' or local-name()='LogicCommand')][1]") as XmlElement;
+                var module=element.SelectSingleNode("ancestor-or-self::*[@id][not(local-name()='GameObject' or local-name()='LogicCommand' or local-name()='ArmorTemplate' or local-name()='WeaponTemplate' or local-name()='LogicCommandSet')][1]") as XmlElement;
                 string selector=Relative(element,module??owner);string? attribute=node is XmlAttribute a?a.LocalName:null;string attributeNs=node is XmlAttribute an?an.NamespaceURI:string.Empty;
                 var candidates=new List<(string File,XObject Value,int Rank)>();
                 foreach(var frame in frames)
                 {
-                    bool fragment=frame.Root.Name.LocalName is not ("GameObject" or "LogicCommand");
+                    bool fragment=!IsAsset(frame.Root.Name.LocalName);
                     if(!fragment&&!ranks.ContainsKey(frame.Root))continue;
                     var anchors=module==null?new[]{frame.Root}:frame.Root.DescendantsAndSelf().Where(e=>e.Name.LocalName==module.LocalName&&e.Name.NamespaceName==module.NamespaceURI&&(string?)e.Attribute("id")==module.GetAttribute("id"));
                     foreach(var anchor in anchors)
@@ -153,6 +154,9 @@ internal static class SdkXmlDiagnostics
             if(root.Xml?.Root!=null)Attach(error,Point(root.Path,root.Xml.Root,true));
         }
     }
+
+    // Reborn: all emitted mixed-route types share identity-based source provenance, including inherited support declarations.
+    private static bool IsAsset(string name)=>name is "GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate";
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: relative expanded-name paths preserve unkeyed sibling indices; keyed children use stable authored identity instead. */

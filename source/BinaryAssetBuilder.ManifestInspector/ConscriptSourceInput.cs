@@ -15,6 +15,8 @@ internal static class ConscriptSourceInput
     internal sealed record SourceFile(string Path,string Sha256);
     internal sealed record Input(XmlDocument Game,XmlDocument? Command,SourceFile[] Sources)
     {
+        // Reborn: emitted support assets retain their own typed XML; instance bases are never added to this collection.
+        internal XmlDocument[] AdditionalAssets {get;init;}=Array.Empty<XmlDocument>();
         // Reborn: source hashes and alias-precedence witnesses are independent publication requirements.
         public SdkSourceSearch.Selection[] Searches { get; init; }=Array.Empty<SdkSourceSearch.Selection>();
         // Reborn: captured source coordinates survive detachment without adding metadata to user XML or build receipts.
@@ -87,12 +89,14 @@ internal static class ConscriptSourceInput
         if(Directory.Exists(output) || File.Exists(output))throw new InvalidDataException("Fresh source-preparation output required.");
         var input=ConscriptSourcePreparation.Load(entry,sdk==null?null:SdkSourceSearch.ForMod(entry,sdk,stockData));var schemas=Schemas();
         var baseline=Read(Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"live-alpha","ConscriptBuildTime1","data","mod.xml"));
-        try{Admit(input.Game,baseline,schemas);if(input.Command!=null){input.Command.Schemas.Add(schemas);input.Command.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));}}
+        try{Admit(input.Game,baseline,schemas);foreach(var asset in input.AdditionalAssets.Concat(input.Command==null?Array.Empty<XmlDocument>():new[]{input.Command})){var check=Parse(Encoding.UTF8.GetBytes(asset.DocumentElement!.OuterXml));check.Schemas.Add(schemas);check.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));if(asset.DocumentElement.LocalName=="WeaponTemplate")ConscriptMultiAssetBuild.AdmitWeapon(asset,schemas,Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!);}}
         catch(Exception error)when(error is InvalidDataException or XmlException or XmlSchemaException){input.Locations?.Enrich(error,entry,SdkXmlDiagnostics.Node(error)?.OwnerDocument??input.Game);throw;}
         Directory.CreateDirectory(output);string game=Path.Combine(output,"game.xml"),command=Path.Combine(output,"command.xml");
         File.WriteAllText(game,input.Game.DocumentElement!.OuterXml,new UTF8Encoding(false));if(input.Command!=null)File.WriteAllText(command,input.Command.DocumentElement!.OuterXml,new UTF8Encoding(false));
+        // Reborn: serialize explicit supporting declarations beside the prepared object, without inventing asset IDs or command edges.
+        if(input.AdditionalAssets.Length>0){var additional=new XmlDocument{XmlResolver=null};additional.LoadXml("<AssetDeclaration xmlns='"+Ea+"'/>");foreach(var asset in input.AdditionalAssets)additional.DocumentElement!.AppendChild(additional.ImportNode(asset.DocumentElement!,true));File.WriteAllText(Path.Combine(output,"additional.xml"),additional.OuterXml,new UTF8Encoding(false));}
         foreach(var source in input.Sources)if(Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(source.Path,1048576)))!=source.Sha256)throw new InvalidDataException("Source changed during preparation: "+source.Path);
-        File.WriteAllText(Path.Combine(output,"source-input.json"),JsonSerializer.Serialize(new{GamePath=game,CommandPath=input.Command==null?null:command,Identity=input.Game.DocumentElement.GetAttribute("id"),PreparedSourceSha256=Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(input.Game.DocumentElement.OuterXml))),Sources=input.Sources,Searches=input.Searches,AutomaticCommandGenerated=false},new JsonSerializerOptions{WriteIndented=true}));
+        File.WriteAllText(Path.Combine(output,"source-input.json"),JsonSerializer.Serialize(new{GamePath=game,CommandPath=input.Command==null?null:command,AssetCount=1+(input.Command==null?0:1)+input.AdditionalAssets.Length,Identity=input.Game.DocumentElement.GetAttribute("id"),PreparedSourceSha256=Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(input.Game.DocumentElement.OuterXml))),Sources=input.Sources,Searches=input.Searches,AutomaticCommandGenerated=false},new JsonSerializerOptions{WriteIndented=true}));
         Console.WriteLine("Reborn: explicit EA XML prepared; "+input.Sources.Length+" source file(s), "+(input.Command==null?"one GameObject; no command generated.":"GameObject + authored LogicCommand; no hidden asset generation."));
     }
 
@@ -217,7 +221,8 @@ internal static class ConscriptSourceInput
     internal static XmlSchemaSet Schemas()
     {
         XmlSchemaSet? official=null;SdkEffectiveSchema.Inspect(shieldCandidate:true,reviewHooks:true,onAdmitted:s=>official=s);if(official==null)throw new InvalidDataException("Reviewed EP1 schemas unavailable.");
-        var aliases=new XmlSchema{TargetNamespace=Ea,ElementFormDefault=XmlSchemaForm.Qualified};foreach(string name in new[]{"GameObject","LogicCommand"})aliases.Items.Add(new XmlSchemaElement{Name=name,SchemaTypeName=new XmlQualifiedName(name,Ea)});official.Add(aliases);official.Compile();return official;
+        // Reborn: detached support assets use unchanged official types, just like the existing standalone GameObject/command aliases.
+        var aliases=new XmlSchema{TargetNamespace=Ea,ElementFormDefault=XmlSchemaForm.Qualified};foreach(string name in new[]{"GameObject","LogicCommand","LogicCommandSet","ArmorTemplate","WeaponTemplate"})if(!official.GlobalElements.Contains(new XmlQualifiedName(name,Ea)))aliases.Items.Add(new XmlSchemaElement{Name=name,SchemaTypeName=new XmlQualifiedName(name,Ea)});official.Add(aliases);official.Compile();return official;
     }
 
     //-------------------------------------------------------------------------------------------------

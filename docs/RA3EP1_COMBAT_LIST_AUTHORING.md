@@ -55,8 +55,9 @@ common reference occurrences are reindexed consistently across the entire object
 
 The current EP1 WeaponSet processor has no implemented turret/hierarchical-turret/
 contained layout; those still fail explicitly. Newly defining ArmorTemplate or
-WeaponTemplate assets alongside a custom GameObject is separate multi-asset
-frontend/package work. The examples above use existing catalog assets. This does
+WeaponTemplate assets alongside a custom GameObject is now supported by the
+[mixed asset route](RA3EP1_MIXED_ASSET_AUTHORING.md), within its implemented weapon
+topology. The examples above use existing catalog assets. This does
 not unlock every other GameObject owner, arbitrary nested module structure,
 models, textures or audio.
 

@@ -271,12 +271,12 @@ internal static class BoundedDiagnosticBuild
     //-------------------------------------------------------------------------------------------------
     /** Reborn: share byte serialization without broadening default tokenized admission; explicit Conscript routes remain bounded. */
     //-------------------------------------------------------------------------------------------------
-    private static Dictionary<string,byte[]> SerializeCore(InstanceDeclaration[] ordered,AssetBuffer[] chunks,uint checksum,ReferencedFileBuffer runtime,bool[]? tokenized,bool originalConscript,bool recruitment=false)
+    private static Dictionary<string,byte[]> SerializeCore(InstanceDeclaration[] ordered,AssetBuffer[] chunks,uint checksum,ReferencedFileBuffer runtime,bool[]? tokenized,bool originalConscript,bool recruitment=false,bool mixedAssets=false)
     {
         // Reborn: preserve non-tokenized defaults; only the independently characterized armor fingerprint may opt into tokenized diagnostic writing.
         tokenized ??= new bool[ordered.Length];
         if (tokenized.Length != ordered.Length || chunks.Length != ordered.Length
-            || ordered.Where((instance, index) => tokenized[index] && (instance.Handle.TypeId != 0x3A6C5E8Eu || instance.Handle.TypeHash != 0xA0E237D8u)
+            || !mixedAssets&&ordered.Where((instance, index) => tokenized[index] && (instance.Handle.TypeId != 0x3A6C5E8Eu || instance.Handle.TypeHash != 0xA0E237D8u)
                 && !((originalConscript && ordered.Length==1 || recruitment && ordered.Length==2 && index==0) && instance.Handle.TypeId==0x942FFF2Du && instance.Handle.TypeHash==0xCEB9FE36u)).Any())
             throw new InvalidDataException("Diagnostic tokenized profile differs.");
         using MemoryStream names = new(), sources = new(), references = new(), entries = new();
@@ -323,6 +323,16 @@ internal static class BoundedDiagnosticBuild
                 ? "Local AudioEvent is experimental; AudioFile codecs, production output and game loading remain unproven.\n" : "")
             + "Filter GameObject weak IDs do not prove target presence and do not become strong imports.\n"));
         return result;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: serialize a qualified mixed graph with each real EP1 type fingerprint, preserving local dependencies and per-asset tokenization. */
+    //-------------------------------------------------------------------------------------------------
+    internal static Dictionary<string,byte[]> SerializeAssetGraph(InstanceDeclaration[] ordered,AssetBuffer[] chunks,uint checksum,ReferencedFileBuffer runtime,bool[] flags,IReadOnlyDictionary<uint,(uint Hash,bool Tokenized)> fingerprints)
+    {
+        if(ordered.Length==0||ordered.Length!=chunks.Length||ordered.Length!=flags.Length||ordered.Select(i=>new AssetId(i.Handle.TypeId,i.Handle.InstanceId)).Distinct().Count()!=ordered.Length)throw new InvalidDataException("Mixed asset graph identity/count differs.");
+        foreach(var item in ordered.Select((instance,index)=>(instance,index))){if(!fingerprints.TryGetValue(item.instance.Handle.TypeId,out var expected)||item.instance.Handle.TypeHash!=expected.Hash||flags[item.index]!=expected.Tokenized||item.instance.ValidatedReferencedInstances==null)throw new InvalidDataException("Mixed asset type fingerprint/prepared references differ.");}
+        return SerializeCore(ordered,chunks,checksum,runtime,flags,false,mixedAssets:true);
     }
 
     //-------------------------------------------------------------------------------------------------

@@ -29,6 +29,13 @@ internal static class SdkXmlDiagnosticsSmokeTest
         Check(final.SelectSingleNode("//*[local-name()='Test']/@Value")!,entry,7,false);
         Check(final.SelectSingleNode("//*[local-name()='Parachute']/@Rate")!,fragment,4,false);
 
+        // Reborn: included support assets retain their own exact field origin instead of blaming the GameObject entry file.
+        foreach(string type in new[]{"ArmorTemplate","WeaponTemplate","LogicCommandSet"}){
+            string supportPath=Path.Combine(output,type+".xml");string text="<AssetDeclaration xmlns='uri:ea.com:eala:asset'>\n<"+type+" id='Support'>\n<Value Bad='broken'/>\n</"+type+"></AssetDeclaration>";
+            var support=SdkXmlDiagnostics.Parse(Bytes("<"+type+" xmlns='uri:ea.com:eala:asset' id='Support'><Value Bad='broken'/></"+type+">"));
+            var supportMap=new SdkXmlDiagnostics.SourceMap(snapshots.Concat(new[]{new SdkXmlDiagnostics.Snapshot(supportPath,Bytes(text))}));var failure=SdkXmlDiagnostics.At(new InvalidDataException("Support field"),support.SelectSingleNode("//@Bad"));supportMap.Enrich(failure,entry,support);Expect(failure,supportPath,3,false);
+        }
+
         // Reborn: validators see a compact generated document; their offending DOM node must map back to multiline authored input.
         const string xsd="<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" targetNamespace=\"uri:ea.com:eala:asset\" elementFormDefault=\"qualified\"><xs:element name=\"GameObject\"><xs:complexType><xs:sequence><xs:any minOccurs=\"0\" maxOccurs=\"unbounded\" processContents=\"skip\" /></xs:sequence><xs:attribute name=\"id\" type=\"xs:string\"/><xs:attribute name=\"BuildTime\" type=\"xs:float\"/><xs:attribute name=\"Scale\" type=\"xs:float\"/></xs:complexType></xs:element></xs:schema>";
         using(var reader=XmlReader.Create(new StringReader(xsd)))final.Schemas.Add(null,reader);

@@ -16,7 +16,8 @@ try {
     # Reborn: reference retargeting is shared with variable Behaviors; only actual unimplemented layouts/resources remain restricted.
     # Reborn: do not advertise already implemented text editing as an unsupported capability.
     Write-Output 'Warning: ALPHA006 Partial native layout support: variable Behaviors, root text, ArmorSet lists, hardpoint/Weapon lists with optional imports, fixed fields, compatible targets and source-sized upgrade lists/animation are supported together. Turret/contained weapon slots, other unimplemented native layouts and resource compilation still require implementation.'
-    Write-Output ('Reborn: authored asset count: '+$(if($hasCommand){2}else{1})+'; no automatic LogicCommand generation.')
+    $assetCount=if($null-ne $inputReceipt.AssetCount){[int]$inputReceipt.AssetCount}else{if($hasCommand){2}else{1}}
+    Write-Output ('Reborn: authored asset count: '+$assetCount+'; no automatic LogicCommand generation.')
     $scratch=Join-Path $OutputRoot 'temp';$null=New-Item -ItemType Directory -Path $scratch;$previousTemp=$env:TEMP;$previousTmp=$env:TMP
     try {
         # Reborn: contain all qualification intermediates in this invocation's owned work generation.
@@ -26,7 +27,7 @@ try {
     } finally {$env:TEMP=$previousTemp;$env:TMP=$previousTmp}
     $trial=if($newIdentity){'new-id'}else{'override'};$receiptPath=Join-Path $OutputRoot ('conscript/'+$trial+'/trial-plan.json');$receipt=Get-Content -LiteralPath $receiptPath -Raw|ConvertFrom-Json
     $package=Join-Path $OutputRoot ('conscript/'+$trial+'/RebornConscriptProbe.big')
-    if($receipt.NewIdentity-ne $newIdentity -or $receipt.Asset-cne ('GameObject:'+$identity) -or $receipt.AssetCount-ne $(if($hasCommand){2}else{1}) -or -not $receipt.OfflineValidated -or (Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash-cne $receipt.ArchiveSha256 -or $receipt.SourceSha256-cne $inputReceipt.PreparedSourceSha256){throw 'Fresh explicit-source package/readback receipt differs.'}
+    if($receipt.NewIdentity-ne $newIdentity -or $receipt.Asset-cne ('GameObject:'+$identity) -or $receipt.AssetCount-ne $assetCount -or -not $receipt.OfflineValidated -or (Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash-cne $receipt.ArchiveSha256 -or $receipt.SourceSha256-cne $inputReceipt.PreparedSourceSha256){throw 'Fresh explicit-source package/readback receipt differs.'}
     # Reborn: recheck every source, including included command XML, before publication rather than trusting only prepared-source hashes.
     foreach($source in $inputReceipt.Sources){if((Get-FileHash -LiteralPath $source.Path -Algorithm SHA256).Hash-cne $source.Sha256){throw ('Authored source changed during compilation: '+$source.Path)}}
     if($ValidateOnly){Write-Output 'Reborn: explicit source qualification passed; validation-only, no publication.';return}

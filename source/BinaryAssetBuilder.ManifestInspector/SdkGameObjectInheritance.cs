@@ -31,7 +31,8 @@ internal static class SdkGameObjectInheritance
             long expandedBytes=source.Length;
             foreach(var asset in assets)
             {
-                if(asset.LocalName is not ("GameObject" or "LogicCommand")||!ConscriptSourceInput.Identity(asset.GetAttribute("id"))||!originals.TryAdd(asset.LocalName+":"+asset.GetAttribute("id"),asset))throw new InvalidDataException("GameObject source contains unsupported or duplicate asset identities.");
+                // Reborn: the shared Core source overlay also prepares explicit support assets for the mixed GameObject stream.
+                if(asset.LocalName is not ("GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate")||!ConscriptSourceInput.Identity(asset.GetAttribute("id"))||!originals.TryAdd(asset.LocalName+":"+asset.GetAttribute("id"),asset))throw new InvalidDataException("GameObject source contains unsupported or duplicate asset identities.");
                 Inspect(asset,0);
             }
             foreach(var asset in assets)root.ReplaceChild(Resolve(asset.LocalName+":"+asset.GetAttribute("id"),0),asset);
@@ -51,14 +52,15 @@ internal static class SdkGameObjectInheritance
                 active.Add(handle);var derived=(XmlElement)original.CloneNode(true);XmlElement result=derived;
                 if(derived.HasAttribute("inheritFrom"))
                 {
-                    if(derived.LocalName!="GameObject")throw new InvalidDataException("Only GameObject tree inheritance is enabled by this source route.");
+                    // Reborn: each supported inheritable asset keeps its own QName while reusing the actual Core overlay semantics.
+                    string assetType=derived.LocalName;
                     string target=derived.GetAttribute("inheritFrom"),id=target;
-                    if(target.Contains(':')){var parts=target.Split(':');if(parts.Length!=2||parts[0]!="GameObject")throw new InvalidDataException("Cross-type GameObject inheritance refused.");id=parts[1];}
+                    if(target.Contains(':')){var parts=target.Split(':');if(parts.Length!=2||parts[0]!=assetType)throw new InvalidDataException("Cross-type asset inheritance refused.");id=parts[1];}
                     if(!ConscriptSourceInput.Identity(id))throw new InvalidDataException("Invalid GameObject base identity.");
-                    var basis=Resolve("GameObject:"+id,depth+1);derived.RemoveAttribute("inheritFrom");
+                    var basis=Resolve(assetType+":"+id,depth+1);derived.RemoveAttribute("inheritFrom");
                     if(Encoding.UTF8.GetByteCount(basis.OuterXml)+Encoding.UTF8.GetByteCount(derived.OuterXml)>4*1048576)throw new InvalidDataException("GameObject merge input amplification exceeds 4 MiB.");
                     result=(XmlElement)NodeJoiner.Override(schemas,xml,basis,derived);
-                    overlays.Add(new("GameObject",derived.GetAttribute("id"),id));
+                    overlays.Add(new(assetType,derived.GetAttribute("id"),id));
                 }
                 expandedBytes+=Encoding.UTF8.GetByteCount(result.OuterXml);if(expandedBytes>32*1048576)throw new InvalidDataException("GameObject resolved tree budget exceeds 32 MiB.");
                 active.Remove(handle);resolved.Add(handle,(XmlElement)result.CloneNode(true));return result;
@@ -73,7 +75,7 @@ internal static class SdkGameObjectInheritance
                 foreach(XmlAttribute attribute in element.Attributes)
                 {
                     if(attribute.NamespaceURI=="http://www.w3.org/2000/xmlns/")continue;
-                    if(attribute.LocalName=="TypeId"||attribute.Value.StartsWith('='))throw new InvalidDataException("Unevaluated expression or authored TypeId in GameObject source: "+attribute.Name);
+                    if(attribute.LocalName=="TypeId"||attribute.Value.StartsWith('='))throw SdkXmlDiagnostics.At(new InvalidDataException("Unevaluated expression or authored TypeId in asset source: "+attribute.Name),attribute);
                     if(attribute.NamespaceURI.Length!=0 && !(attribute.NamespaceURI=="uri:ea.com:eala:asset:instance"&&attribute.LocalName is "joinAction" or "insertPosition"))throw new InvalidDataException("Unsupported GameObject directive: "+attribute.Name);
                 }
                 bool structured=element.ChildNodes.OfType<XmlElement>().Any()||element.LocalName=="GameObject";

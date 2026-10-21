@@ -1,6 +1,6 @@
 # Reborn: exercise preserved fixtures only in RebornTest; never compile or modify the user's Reborn mod.
 [CmdletBinding()]
-param([switch]$IncludeRebornSourceMirror,[switch]$ReferenceRetargetingOnly,[switch]$ModuleValuesOnly,[switch]$DiagnosticsOnly,[switch]$VariableBehaviorsOnly,[switch]$UpgradeStructuresOnly,[switch]$RootTextOnly,[switch]$CombatListsOnly)
+param([switch]$IncludeRebornSourceMirror,[switch]$ReferenceRetargetingOnly,[switch]$ModuleValuesOnly,[switch]$DiagnosticsOnly,[switch]$VariableBehaviorsOnly,[switch]$UpgradeStructuresOnly,[switch]$RootTextOnly,[switch]$CombatListsOnly,[switch]$MultiAssetOnly)
 $ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$runtime=(Get-Process -Id $PID).Path;$driver=Join-Path $PSScriptRoot 'Invoke-Ra3Ep1DevAlphaBuild.ps1'
 $fixtures=Join-Path $repo 'tests/fixtures/live-alpha';$data=Join-Path $sdk 'mods/RebornTest/data';$output=Join-Path $sdk 'builtmods/RebornTest';$input=Join-Path $data 'mod.xml';$package=Join-Path $output 'RebornTest.big'
 $rows=[Collections.Generic.List[object]]::new();$userSource=Join-Path $sdk 'mods/Reborn/data/mod.xml';$userHash=(Get-FileHash -LiteralPath $userSource).Hash
@@ -60,7 +60,37 @@ try {
         foreach($file in $sourceHashes.Keys){if((Get-FileHash -LiteralPath $file).Hash-cne $sourceHashes[$file]){throw 'User source changed during read-only reproduction.'}}
     }
     # Reborn: qualify reference freedom with combined native-layout edits and publication-preserving refusals without replaying unrelated armor matrices.
-    if($VariableBehaviorsOnly -or $UpgradeStructuresOnly -or $RootTextOnly -or $CombatListsOnly){
+    if($MultiAssetOnly){
+        # Reborn: explicitly authored local graph, deliberately declared in consumer-first order, with real DATA includes/definitions/inheritance.
+        Set-TestFixture ConscriptBuildTime1;$game=[Xml.XmlDocument]::new();$game.PreserveWhitespace=$true;$game.Load($input);$game.DocumentElement.SetAttribute('id','RebornMixedConscript');$game.SelectSingleNode('//*[local-name()="DisplayName"]').InnerText='Name:RebornMixedConscript'
+        $armors=@($game.SelectNodes('/*/*[local-name()="ArmorSet"]'));$armors[0].SetAttribute('Armor','RebornMixedVeteranArmor');$armors[-1].SetAttribute('Armor','RebornMixedArmor')
+        $weapons=@($game.SelectNodes('//*[local-name()="WeaponSlotHardpoint"]/*[local-name()="Weapon"]'));$weapons[0].SetAttribute('Template','RebornMixedRifle');$weapons[1].SetAttribute('Template','RebornMixedAlternateRifle')
+        $assets=[Xml.XmlDocument]::new();$assets.PreserveWhitespace=$true;$assets.LoadXml('<AssetDeclaration xmlns="uri:ea.com:eala:asset"><Includes><Include type="all" source="DATA:MixedDefines.xml"/></Includes></AssetDeclaration>');$null=$assets.DocumentElement.AppendChild($assets.ImportNode($game.DocumentElement,$true))
+        $stockSets=[Xml.XmlDocument]::new();$stockSets.Load((Join-Path $sdk 'SageXML/GlobalData/LogicCommandSet.xml'));$set=$stockSets.SelectSingleNode('//*[local-name()="LogicCommandSet"][@id="SovietBarracksCommandSet"]');if(-not $set){throw 'Stock command-set source is missing.'};$set=$assets.ImportNode($set,$true);$cmd=$assets.CreateElement('Cmd','uri:ea.com:eala:asset');$cmd.InnerText='Command_ConstructRebornMixedConscript';$null=$set.AppendChild($cmd);$null=$assets.DocumentElement.AppendChild($set)
+        $support=[Xml.XmlDocument]::new();$support.LoadXml('<AssetDeclaration xmlns="uri:ea.com:eala:asset"><LogicCommand id="Command_ConstructRebornMixedConscript" Type="UNIT_BUILD"><Object>RebornMixedConscript</Object></LogicCommand><ArmorTemplate id="RebornMixedArmor" Default="100"><Armor Damage="GUN" Percent="50"/><Armor Damage="CANNON" Percent="25"/></ArmorTemplate><ArmorTemplate id="RebornMixedVeteranArmor" inheritFrom="RebornMixedArmor" Default="50"/></AssetDeclaration>');foreach($node in @($support.DocumentElement.ChildNodes|Where-Object {$_ -is [Xml.XmlElement]})){$null=$assets.DocumentElement.AppendChild($assets.ImportNode($node,$true))}
+        $rifle=[Xml.XmlDocument]::new();$rifle.Load((Join-Path $repo 'tests/fixtures/WeaponAuthoringProbe.xml'));$rifle.DocumentElement.SetAttribute('id','RebornMixedRifle');$rifle.DocumentElement.SetAttribute('AttackRange','175');$rifle.DocumentElement.SetAttribute('ClipSize','5');$rifle.SelectSingleNode('//*[local-name()="DamageNugget"]').SetAttribute('Damage','=$MIXED_DAMAGE');$null=$assets.DocumentElement.AppendChild($assets.ImportNode($rifle.DocumentElement,$true))
+        $derived=[Xml.XmlDocument]::new();$derived.LoadXml('<WeaponTemplate xmlns="uri:ea.com:eala:asset" id="RebornMixedAlternateRifle" inheritFrom="RebornMixedRifle" AttackRange="225"/>');$null=$assets.DocumentElement.AppendChild($assets.ImportNode($derived.DocumentElement,$true))
+        $assetsPath=Join-Path $data 'MixedAssets.xml';$assets.Save($assetsPath)
+        [IO.File]::WriteAllText((Join-Path $data 'MixedDefines.xml'),'<!-- Reborn: the weapon uses an imported real definition. --><AssetDeclaration xmlns="uri:ea.com:eala:asset"><Defines><Define name="MIXED_DAMAGE" value="50"/></Defines></AssetDeclaration>')
+        [IO.File]::WriteAllText($input,'<!-- Reborn: all seven assets are explicit included declarations. --><AssetDeclaration xmlns="uri:ea.com:eala:asset"><Includes><Include type="all" source="DATA:MixedAssets.xml"/></Includes></AssetDeclaration>')
+        Invoke-TestCase MultiAssetGraph $true;$good=(Get-FileHash -LiteralPath $package).Hash
+        $receipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json;if($receipt.Core.AssetCount-ne 7 -or -not $receipt.Core.MultiAsset -or -not $receipt.Core.DeclaredBarracksRecruitmentChain -or -not $receipt.Core.RecruitableNewIdentity -or @($receipt.Core.Assets).Count-ne 7 -or @($receipt.Core.LocalEdges).Count-lt 5 -or $receipt.Backend.AutomaticCommandGenerated){throw 'Mixed graph receipt differs.'}
+        # Reborn: local publication roles and dependency ordering must not depend on textual declaration order.
+        $reordered=$assets.CloneNode($true);$nodes=@($reordered.DocumentElement.ChildNodes|Where-Object {$_ -is [Xml.XmlElement] -and $_.LocalName -cne 'Includes'});[array]::Reverse($nodes);foreach($node in $nodes){$null=$reordered.DocumentElement.AppendChild($node)};$reordered.Save($assetsPath);Invoke-TestCase MultiAssetReordered $true;$good=(Get-FileHash -LiteralPath $package).Hash
+        foreach($kind in @('MissingWeapon','MissingCommand','Duplicate','WeaponShape','NonfiniteWeapon','AuthoredTypeId')){
+            $bad=$assets.CloneNode($true)
+            switch($kind){
+                MissingWeapon{$node=$bad.SelectSingleNode('//*[local-name()="WeaponTemplate"][@id="RebornMixedAlternateRifle"]');$null=$node.ParentNode.RemoveChild($node)}
+                MissingCommand{$bad.SelectSingleNode('//*[local-name()="Cmd" and text()="Command_ConstructRebornMixedConscript"]').InnerText='Command_RebornMissing'}
+                Duplicate{$node=$bad.SelectSingleNode('//*[local-name()="ArmorTemplate"][@id="RebornMixedArmor"]');$null=$bad.DocumentElement.AppendChild($node.CloneNode($true))}
+                # Reborn: genuinely unsupported topology and invalid scalar/discriminator data must fail without replacing the previous package.
+                WeaponShape{$node=$bad.SelectSingleNode('//*[local-name()="DamageNugget"]');$extra=$node.CloneNode($true);$extra.SetAttribute('id','ExtraDamage');$null=$node.ParentNode.AppendChild($extra)}
+                NonfiniteWeapon{$bad.SelectSingleNode('//*[local-name()="WeaponTemplate"][@id="RebornMixedRifle"]').SetAttribute('AttackRange','NaN')}
+                AuthoredTypeId{$bad.SelectSingleNode('//*[local-name()="DamageNugget"]').SetAttribute('TypeId','1')}
+            }
+            $bad.Save($assetsPath);Invoke-TestCase ('MultiAssetReject'+$kind) $false;if((Get-FileHash -LiteralPath $package).Hash-cne $good){throw 'Invalid mixed source replaced the successful package.'}
+        }
+    }elseif($VariableBehaviorsOnly -or $UpgradeStructuresOnly -or $RootTextOnly -or $CombatListsOnly){
         # Reborn: one combined Studio source changes behavior count/order/local IDs, fixed root/module values and an explicit new-object consumer.
         Set-TestFixture ConscriptBuildTime1;$xml=[Xml.XmlDocument]::new();$xml.PreserveWhitespace=$true;$xml.Load($input)
         $xml.DocumentElement.SetAttribute('id','RebornConscriptTrial');$xml.DocumentElement.SetAttribute('Scale','1.25');$xml.DocumentElement.SetAttribute('ThreatLevel','15')

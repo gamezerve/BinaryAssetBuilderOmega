@@ -12,13 +12,22 @@ Active development branch: `main` in `gamezerve/BinaryAssetBuilderOmega`.
 It contains the Uprising SDK work previously developed on
 `feature/ra3ep1-manifest-inspector`; the original `master` history is retained.
 
+<!-- Reborn: explicit support declarations now compile with the complete object instead of requiring pre-existing stock identities. -->
+The GameObject build route now accepts **one complete supported GameObject plus
+multiple ArmorTemplate, WeaponTemplate, LogicCommand and LogicCommandSet assets**
+in the same mod. New local IDs resolve before stock assets; declarations are
+dependency-sorted rather than relying on textual order. DATA includes, definitions
+and same-type inheritance compose with this route. Nothing generates hidden
+recruitment commands: declare the command and Barracks command-set override.
+See [mixed asset authoring and remaining processor scope](docs/RA3EP1_MIXED_ASSET_AUTHORING.md).
+
 <!-- Reborn: reuse working EP1 list processors rather than treating stock cardinality as an authoring capability limit. -->
 [ArmorSet and hardpoint/Weapon lists](docs/RA3EP1_COMBAT_LIST_AUTHORING.md) now
 follow source count and optional reference presence. The 32-armor/8-hardpoint/
 16-weapon trial quotas are removed. Weapon Ordering is normalized using the
 official sortBy semantics; omitted/default nested attributes remain supported.
 This is implemented EP1 hardpoint support, not unimplemented turret/contained
-layouts or a general multi-asset GameObject frontend.
+layouts or unrestricted support for every GameObject/module topology.
 
 <!-- Reborn: source text keys are editable values, not fixed stock example identities. -->
 `DisplayName` and `DisplayNameTransformed` can now be changed, added, omitted or

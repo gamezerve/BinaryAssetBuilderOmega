@@ -4,7 +4,7 @@ using Relo;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: fixed AK47 layout reproduction is diagnostic only, never a general weapon processor or publication gate.
+// Reborn: the recovered fixed single-DamageNugget layout serves stock diagnostics and source-qualified mixed builds, not arbitrary weapon topologies.
 internal static class WeaponTokenReproduction
 {
     // Reborn: descriptors encode reviewed field/tag/offset relationships, not a copied stock prefix buffer.
@@ -204,17 +204,26 @@ internal static class WeaponTokenReproduction
     //-------------------------------------------------------------------------------------------------
     /** Reborn: reconstruct the observed fixed token graph from actual native compilation; admit only a Damage scalar difference. */
     //-------------------------------------------------------------------------------------------------
-    internal static Chunk Encode(Chunk native)
+    internal static Chunk Encode(Chunk native)=>EncodeCore(native,false);
+
+    // Reborn: source-qualified fixed topology may use new identities and supported scalar values without the legacy stock-value hash quota.
+    internal static Chunk EncodeAuthored(Chunk native)=>EncodeCore(native,true);
+
+    // Reborn: native shape, fixed pointer layout and explicit metadata descriptors remain shared between diagnostic and authored routes.
+    private static Chunk EncodeCore(Chunk native,bool authored)
     {
         const int prefix = 1980;
         if (native.InstanceBuffer.Length != 528 || native.RelocationBuffer.Length != 28 || native.ImportsBuffer.Length != 16)
             throw new InvalidDataException($"AK47 diagnostic native shape differs: BIN={native.InstanceBuffer.Length}, RELO={native.RelocationBuffer.Length}, IMP={native.ImportsBuffer.Length}.");
         var canonical = native.InstanceBuffer.ToArray();
+        // Reborn: supported numeric values are unrestricted by stock examples, but nonfinite engine floats are invalid authoring data.
+        if(authored)foreach(var descriptor in Descriptors.Where(d=>d.NativeOffset>=0&&d.Tag is 0x645864F3u or 0x4E16EA4Du or 0x998669E8u))
+            if(!float.IsFinite(BinaryPrimitives.ReadSingleLittleEndian(canonical.AsSpan(descriptor.NativeOffset,4))))throw new InvalidDataException("WeaponTemplate contains a nonfinite numeric field at native offset "+descriptor.NativeOffset+".");
         float damage = BinaryPrimitives.ReadSingleLittleEndian(canonical.AsSpan(412, 4));
-        if (!float.IsFinite(damage) || damage < 0 || damage > 10000)
+        if (!float.IsFinite(damage) || !authored&&(damage < 0 || damage > 10000))
             throw new InvalidDataException("AK47 diagnostic damage outside admitted finite range.");
         BinaryPrimitives.WriteSingleLittleEndian(canonical.AsSpan(412, 4), 5f);
-        if (Convert.ToHexString(SHA256.HashData(canonical)) != "3DA83658B59755C6F5FDFDA98E2AE740E51798CC33CB85CBB7CB28BE8D70A841")
+        if (!authored&&Convert.ToHexString(SHA256.HashData(canonical)) != "3DA83658B59755C6F5FDFDA98E2AE740E51798CC33CB85CBB7CB28BE8D70A841")
             throw new InvalidDataException("AK47 diagnostic native fields outside Damage changed.");
         // Reborn: enforce the independently recovered pointer and import locations before changing their representation.
         uint[] locations = { 88, 244, 248, 256, 268, 368, uint.MaxValue };
@@ -247,6 +256,9 @@ internal static class WeaponTokenReproduction
         // Reborn: this observed tokenized profile has zero IMP bytes but retains all three encoded dependency indices in BIN.
         return result;
     }
+
+    // Reborn: the authored source gate exposes only actual native-targeted descriptors; absent/structural fields do not become editable by accident.
+    internal static bool HasNativeField(string name)=>Descriptors.Any(d=>d.NativeOffset>=0&&d.Name==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(name));
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: write only owned diagnostic output buffers in explicit little-endian form. */

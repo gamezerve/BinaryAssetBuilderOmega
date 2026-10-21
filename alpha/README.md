@@ -2,6 +2,16 @@
 
 ## Build your mod
 
+<!-- Reborn: combine explicit custom support assets with the supported complete object in the normal Studio build. -->
+The GameObject route now compiles one complete supported GameObject together with
+multiple explicitly declared ArmorTemplate, WeaponTemplate, LogicCommand and
+LogicCommandSet assets. New local IDs take precedence over stock lookup. Include
+order does not determine dependency order; same-type inheritance and `$`
+definitions work together. New recruitment needs your explicit UNIT_BUILD command
+and command-set declaration; no command is generated. Weapons currently use the
+implemented single-DamageNugget layout, not arbitrary weapon/nugget structures.
+See [mixed asset authoring](../docs/RA3EP1_MIXED_ASSET_AUTHORING.md).
+
 <!-- Reborn: source-sized armor and hardpoint arrays reuse existing native processors without stock example cardinalities. -->
 ArmorSet and WeaponSetUpdate hardpoint/Weapon lists can now grow, shrink or be
 omitted, with optional DamageFX/Template/Upgrade references and editable nested

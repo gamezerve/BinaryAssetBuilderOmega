@@ -122,7 +122,7 @@ internal static class ConscriptRecruitmentSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: the source profile deliberately supports one construction command only; all unreviewed attributes and children fail before marshaling. */
     //-------------------------------------------------------------------------------------------------
-    private static unsafe (InstanceDeclaration Instance,AssetBuffer Chunk) CompileXml(SchemaSet schemas,string text)
+    internal static unsafe (InstanceDeclaration Instance,AssetBuffer Chunk) CompileXml(SchemaSet schemas,string text)
     {
         var xml=new XmlDocument{PreserveWhitespace=true,XmlResolver=null};xml.LoadXml(text);xml.Schemas.Add(schemas.Schemas);xml.Validate((_,e)=>throw new InvalidDataException(e.Message));
         var root=xml.DocumentElement!;var children=root.ChildNodes.OfType<XmlElement>().ToArray();

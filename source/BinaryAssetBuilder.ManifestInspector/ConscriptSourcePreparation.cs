@@ -47,12 +47,14 @@ internal static class ConscriptSourcePreparation
         var assets=new List<XmlElement>();var emitted=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         Emit(entry);
         var games=assets.Where(a=>a.LocalName=="GameObject").ToArray();var commands=assets.Where(a=>a.LocalName=="LogicCommand").ToArray();
-        if(games.Length!=1 || commands.Length>1)throw new InvalidDataException("Source output requires one GameObject and zero/one explicit LogicCommand; imported bases must use type=instance.");
+        // Reborn: support assets are explicit emitted declarations, not unwanted instance-base leakage or hidden generated data.
+        if(games.Length!=1)throw new InvalidDataException("This GameObject build route requires one emitted GameObject; imported bases must use type=instance.");
+        var identities=assets.GroupBy(a=>a.LocalName+":"+a.GetAttribute("id"),StringComparer.OrdinalIgnoreCase);if(identities.Any(g=>g.Count()!=1))throw new InvalidDataException("Duplicate emitted asset identity.");
         foreach(var source in paths.Sources)if(Hash(SdkEnvironmentPreflight.Read(source.PhysicalPath,1048576))!=source.Sha256)throw new InvalidDataException("Source changed during inheritance/definition preparation.");
         // Reborn: XInclude fragments are real source dependencies, including hash and higher-priority mod-shadow checks before publication.
         foreach(var source in fragments.Sources)if(Hash(SdkEnvironmentPreflight.Read(source.Path,1048576))!=source.Sha256)throw new InvalidDataException("XInclude source changed during preparation: "+source.Path);
         var searches=paths.Searches.Concat(fragments.Searches).ToArray();SdkSourceSearch.Verify(searches);
-        return new(Detach(games[0]),commands.Length==0?null:Detach(commands[0]),paths.Sources.Select(s=>new ConscriptSourceInput.SourceFile(s.PhysicalPath,s.Sha256)).Concat(fragments.Sources).DistinctBy(s=>s.Path,StringComparer.OrdinalIgnoreCase).ToArray()){Searches=searches,Locations=new(snapshots.Select(s=>new SdkXmlDiagnostics.Snapshot(s.Key,s.Value)).Concat(fragments.Snapshots))};
+        return new(Detach(games[0]),commands.Length==0?null:Detach(commands[0]),paths.Sources.Select(s=>new ConscriptSourceInput.SourceFile(s.PhysicalPath,s.Sha256)).Concat(fragments.Sources).DistinctBy(s=>s.Path,StringComparer.OrdinalIgnoreCase).ToArray()){AdditionalAssets=assets.Where(a=>a!=games[0]&&(commands.Length==0||a!=commands[0])).Select(Detach).ToArray(),Searches=searches,Locations=new(snapshots.Select(s=>new SdkXmlDiagnostics.Snapshot(s.Key,s.Value)).Concat(fragments.Snapshots))};
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: all Includes contribute emitted owner assets; instance Includes are read by the existing engine but never emitted by this traversal. */
@@ -64,7 +66,7 @@ internal static class ConscriptSourcePreparation
             xml=Parse(snapshots[path],path);var document=xml.DocumentElement!;
             foreach(var edge in paths.Includes.Where(e=>e.Document.Equals(path,StringComparison.OrdinalIgnoreCase) && e.Kind=="all"))Emit(edge.PhysicalPath??throw new InvalidDataException("Unresolved all Include."));
             var owners=document.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is not ("Tags" or "Includes" or "Defines")).ToArray();
-            if(owners.FirstOrDefault(a=>a.LocalName is not ("GameObject" or "LogicCommand")) is XmlElement unsupported)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported emitted asset type '"+unsupported.LocalName+"'; no silent skipping."),unsupported);
+            if(owners.FirstOrDefault(a=>a.LocalName is not ("GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate")) is XmlElement unsupported)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported emitted asset type '"+unsupported.LocalName+"'; no silent skipping."),unsupported);
             // Reborn: source-only definition leaves must still validate, even if no emitted owner happens to consume them.
             if(owners.Length==0){if(document.ChildNodes.OfType<XmlElement>().Any(e=>e.LocalName=="Defines"))SdkMetadataDefinitions.Prove(schemas,xml,path,snapshots[path]);return;}
             bool needsPreparation=document.GetElementsByTagName("Define",Ea).Count!=0 || document.GetElementsByTagName("include","http://www.w3.org/2001/XInclude").Count!=0 || owners.Any(a=>a.HasAttribute("inheritFrom") || a.SelectNodes(".//@* | .//text()")!.Cast<XmlNode>().Any(n=>(n.Value??"").StartsWith('=')));
