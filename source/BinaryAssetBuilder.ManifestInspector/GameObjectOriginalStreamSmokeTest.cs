@@ -16,13 +16,15 @@ internal static class GameObjectOriginalStreamSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: real catalog identities retain every normalized occurrence, a diagnostic source hash, actual Core checksum packing and independent stream/selector readback. */
     //-------------------------------------------------------------------------------------------------
-    internal static Dictionary<string,byte[]> Run(Chunk qualified,InstanceDeclaration original,string staticManifest,string globalManifest,bool authoredTrial=false)
+    internal static Dictionary<string,byte[]> Run(Chunk qualified,InstanceDeclaration original,string staticManifest,string globalManifest,bool authoredTrial=false,ConscriptGraphQualification? graph=null)
     {
         string[] paths={Path.GetFullPath(staticManifest),Path.GetFullPath(globalManifest)},runtimeNames={"data\\static.manifest","data\\global.manifest"};var snapshots=paths.Select(p=>SdkEnvironmentPreflight.Read(p,64*1048576)).ToArray();var catalogs=snapshots.Select(b=>ManifestReader.Read(b)).ToArray();
         foreach(var catalog in catalogs){TypeRegistryAudit.ValidateTarget(catalog.Header.Version,catalog.Header.AllTypesHash);if(!catalog.Header.IsLinked || catalog.Validate().Count!=0 || catalog.ReferencedManifests.Any(r=>r.IsPatch))throw new InvalidDataException("Original stream external catalog is not a plain valid EP1 stream.");}
         var dependencies=original.ReferencedInstances.Select(h=>new AssetId(h.TypeId,h.InstanceId)).ToArray();ValidateDependencies(dependencies,catalogs);
         // Reborn: authored root presence changes occurrence count; the original-stock diagnostic keeps its exact 275-occurrence anchor.
-        var source=new System.Xml.XmlDocument{XmlResolver=null};source.LoadXml(original.XmlNode.OuterXml);if(dependencies.Length!=(authoredTrial?GameObjectStrongReferenceContract.ExpectedCount(source):275))throw new InvalidDataException("Original/authored stream occurrence count differs.");
+        // Reborn: only the authored route may consume independent variable-graph evidence.
+        if(graph!=null&&!authoredTrial)throw new InvalidDataException("Variable graph evidence requires the explicit authored route.");
+        var source=new System.Xml.XmlDocument{XmlResolver=null};source.LoadXml(original.XmlNode.OuterXml);if(dependencies.Length!=(authoredTrial?graph?.ReferenceCount??GameObjectStrongReferenceContract.ExpectedCount(source):275))throw new InvalidDataException("Original/authored stream occurrence count differs.");
         // Reborn: the normalization-only source has no processed document context; attach an explicitly diagnostic source identity, not an invented full EA processed-document receipt.
         var document=new AssetDeclarationDocument();Type stateType=typeof(AssetDeclarationDocument).GetNestedType("CurrentState",BindingFlags.NonPublic)!;object state=Activator.CreateInstance(stateType,true)!;stateType.GetField("SourcePath")!.SetValue(state,"OriginalConscript.normalized.xml");typeof(AssetDeclarationDocument).GetField("_current",BindingFlags.NonPublic|BindingFlags.Instance)!.SetValue(document,state);
         var instance=new InstanceDeclaration(document){XmlNode=original.XmlNode.CloneNode(true)};instance.ReferencedInstances.AddRange(original.ReferencedInstances);instance.ValidatedReferencedInstances=new(original.ReferencedInstances);instance.Handle.TypeHash=0xCEB9FE36u;instance.Handle.InstanceHash=FastHash.GetHashCode(Encoding.UTF8.GetBytes(original.XmlNode.OuterXml));if(instance.Handle.InstanceHash==0)throw new InvalidDataException("Diagnostic original source hash is zero.");
@@ -48,6 +50,12 @@ internal static class GameObjectOriginalStreamSmokeTest
         byte[] savedData=chunk.InstanceData;try{chunk.InstanceData=savedData[..^1];Refuse(()=>Serialize(instance,chunk));refusals++;}finally{chunk.InstanceData=savedData;}
         var savedReferences=instance.ValidatedReferencedInstances;try{instance.ValidatedReferencedInstances=savedReferences.AsEnumerable().Reverse().ToList();Refuse(()=>Serialize(instance,chunk));refusals++;}finally{instance.ValidatedReferencedInstances=savedReferences;}
         foreach(uint hash in new[]{0u,0xCEB9FE37u}){uint saved=instance.Handle.TypeHash;try{instance.Handle.TypeHash=hash;Refuse(()=>Serialize(instance,chunk));refusals++;}finally{instance.Handle.TypeHash=saved;}}
+        // Reborn: build-local variable evidence must reject post-qualification mutations in each stream and in a same-ID source.
+        if(graph!=null)
+        {
+            foreach(var bytes in new[]{chunk.InstanceData,chunk.RelocationData,chunk.ImportsData}){byte savedByte=bytes[0];try{bytes[0]^=1;Refuse(()=>Serialize(instance,chunk));refusals++;}finally{bytes[0]=savedByte;}}
+            var field=instance.XmlNode.Attributes!["BuildTime"]!;string saved=field.Value;try{field.Value=saved=="4"?"5":"4";Refuse(()=>Serialize(instance,chunk));refusals++;}finally{field.Value=saved;}
+        }
         for(int i=0;i<paths.Length;i++)if(!SHA256.HashData(snapshots[i]).SequenceEqual(SHA256.HashData(SdkEnvironmentPreflight.Read(paths[i],64*1048576))))throw new InvalidDataException("Original external manifest changed during stream proof.");Verify(first,payloads);
         Console.WriteLine($"Conscript {(authoredTrial?"authored":"original")} stream: PASS ({instance.Handle.Name}; one tokenized GameObject, {dependencies.Length} ordered external reference occurrences, two real metadata/runtime mappings, independent Core checksum and Manifest/Utility readback; {refusals} stream/dependency/profile refusals; deterministic fresh outputs; diagnostic={Path.Combine(first,"diagnostic.manifest")}; no external native closure, full processed-document identity or game execution).");
         // Reborn: expose only stream bytes that have completed every readback and refusal control, so the separate trial packager cannot bypass this gate.
@@ -55,7 +63,7 @@ internal static class GameObjectOriginalStreamSmokeTest
         //-------------------------------------------------------------------------------------------------
         /** Reborn: preserve original-stock serializer admission while explicitly selecting the separate two-identity authored profile. */
         //-------------------------------------------------------------------------------------------------
-        Dictionary<string,byte[]> Serialize(InstanceDeclaration declaration,AssetBuffer buffer)=>authoredTrial?BoundedDiagnosticBuild.SerializeConscriptTrial(declaration,buffer,checksum,runtime,original.XmlNode.Attributes?["id"]?.Value):BoundedDiagnosticBuild.SerializeOriginalConscript(declaration,buffer,checksum,runtime);
+        Dictionary<string,byte[]> Serialize(InstanceDeclaration declaration,AssetBuffer buffer)=>authoredTrial?BoundedDiagnosticBuild.SerializeConscriptTrial(declaration,buffer,checksum,runtime,original.XmlNode.Attributes?["id"]?.Value,graph):BoundedDiagnosticBuild.SerializeOriginalConscript(declaration,buffer,checksum,runtime);
         //-------------------------------------------------------------------------------------------------
         /** Reborn: independent source selectors, stock root directory shape and native payload readback precede trusting a serialized diagnostic. */
         //-------------------------------------------------------------------------------------------------

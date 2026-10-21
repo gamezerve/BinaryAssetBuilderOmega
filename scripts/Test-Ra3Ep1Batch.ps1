@@ -70,7 +70,7 @@ if($SchedulerControl){
     # Reborn: original-file diagnostics are a repeatable offline batch gate, not a reason to launch another one-field gameplay trial.
     Add-BatchCase 'xml-source-diagnostics' 'OriginalXmlSourceCoordinates' @('sdk-xml-diagnostics-self-test',(Join-Path $OutputDirectory 'xml-source-diagnostics'))
     # Reborn: qualify variable complete-object modules independently before widening Studio's fixed publication profile.
-    Add-BatchCase 'conscript-variable-modules' 'VariableConscriptNativeAndMetadataGraphs' @('conscript-module-graph-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'variable-module-graphs'))
+    Add-BatchCase 'conscript-variable-modules' 'VariableConscriptQualifiedStreamsAndPackages' @('conscript-module-graph-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'variable-module-graphs'))
     Add-BatchCase 'weapon-authored-values' 'BoundedScopedPackage' @('weapon-authored-build-self-test',(Join-Path $OutputDirectory 'weapon-builds'),$StaticManifest,$GlobalManifest)
     # Reborn: independently pin stock GameObject armor-consumer links before permitting a source/compiler/publication path.
     Add-BatchCase 'gameobject-stock' 'BoundedStockNativeProjection' @('gameobject-stock-self-test',$StaticManifest)

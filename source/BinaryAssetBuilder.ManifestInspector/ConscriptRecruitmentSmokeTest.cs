@@ -87,7 +87,7 @@ internal static class ConscriptRecruitmentSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: combine a fully qualified new GameObject with a freshly compiled command; prove the command import selects the unique local new identity. */
     //-------------------------------------------------------------------------------------------------
-    internal static Dictionary<string,byte[]> Compose(Dictionary<string,byte[]> objectStreams, InstanceDeclaration original, SchemaSet schemas, string manifest, string globalManifest,XmlDocument commandSource)
+    internal static Dictionary<string,byte[]> Compose(Dictionary<string,byte[]> objectStreams, InstanceDeclaration original, SchemaSet schemas, string manifest, string globalManifest,XmlDocument commandSource,ConscriptGraphQualification? graph=null)
     {
         var objectMetadata=ManifestReader.Read(objectStreams["diagnostic.manifest"]);var objectAsset=objectMetadata.Assets.Single();
         if(objectAsset.Name!=original.Handle.Name)throw new InvalidDataException("Authored GameObject identity differs from its qualified stream.");
@@ -97,8 +97,8 @@ internal static class ConscriptRecruitmentSmokeTest
         var command=CompileXml(schemas,commandSource.DocumentElement!.OuterXml);var ordered=new[]{game,command.Instance};var chunks=new[]{objectBuffer,command.Chunk};
         uint checksum=(uint)typeof(AssetDeclarationDocument).GetMethod("ComputeOutputChecksum",BindingFlags.NonPublic|BindingFlags.Static)!.Invoke(null,new object[]{ordered})!;
         var runtime=new ReferencedFileBuffer();typeof(OutputManager).GetMethod("AddExternalManifestReferences",BindingFlags.NonPublic|BindingFlags.Static)!.Invoke(null,new object[]{runtime,new[]{Path.GetFullPath(manifest),Path.GetFullPath(globalManifest)},"data\\static.manifest;data\\global.manifest"});
-        var streams=BoundedDiagnosticBuild.SerializeConscriptRecruitment(ordered,chunks,checksum,runtime);
-        var repeat=BoundedDiagnosticBuild.SerializeConscriptRecruitment(ordered,chunks,checksum,runtime);
+        var streams=BoundedDiagnosticBuild.SerializeConscriptRecruitment(ordered,chunks,checksum,runtime,graph);
+        var repeat=BoundedDiagnosticBuild.SerializeConscriptRecruitment(ordered,chunks,checksum,runtime,graph);
         if(streams.Any(p=>!p.Value.SequenceEqual(repeat[p.Key])))throw new InvalidDataException("Recruitment serialization not deterministic.");
         string directory=Path.Combine(Path.GetTempPath(),"Reborn-Recruitment-"+Guid.NewGuid().ToString("N"));ModifierFXStreamSmokeTest.WriteNew(directory,streams);
         BoundedDiagnosticBuild.Verify(directory,ordered,chunks,streams,checksum,new[]{"data\\static.manifest","data\\global.manifest"},new[]{true,false});
@@ -106,10 +106,10 @@ internal static class ConscriptRecruitmentSmokeTest
         if(target!=new AssetId(parsed.Assets[0].TypeId,parsed.Assets[0].InstanceId)
             || Word(chunks[1].InstanceData,28)!=1 || parsed.Assets[0].Name!=original.Handle.Name)throw new InvalidDataException("Authored command must select the local GameObject identity.");
         // Reborn: missing/reversed local targets, wrong command import and truncation must fail the explicit two-asset publication gate.
-        Refuse(()=>BoundedDiagnosticBuild.SerializeConscriptRecruitment(ordered.Reverse().ToArray(),chunks.Reverse().ToArray(),checksum,runtime));
-        Refuse(()=>BoundedDiagnosticBuild.SerializeConscriptRecruitment(new[]{command.Instance},new[]{command.Chunk},checksum,runtime));
-        byte[] saved=command.Chunk.InstanceData;try{command.Chunk.InstanceData=saved[..^1];Refuse(()=>BoundedDiagnosticBuild.SerializeConscriptRecruitment(ordered,chunks,checksum,runtime));}finally{command.Chunk.InstanceData=saved;}
-        try{command.Chunk.InstanceData=saved.ToArray();command.Chunk.InstanceData[28]=2;Refuse(()=>BoundedDiagnosticBuild.SerializeConscriptRecruitment(ordered,chunks,checksum,runtime));}finally{command.Chunk.InstanceData=saved;}
+        Refuse(()=>BoundedDiagnosticBuild.SerializeConscriptRecruitment(ordered.Reverse().ToArray(),chunks.Reverse().ToArray(),checksum,runtime,graph));
+        Refuse(()=>BoundedDiagnosticBuild.SerializeConscriptRecruitment(new[]{command.Instance},new[]{command.Chunk},checksum,runtime,graph));
+        byte[] saved=command.Chunk.InstanceData;try{command.Chunk.InstanceData=saved[..^1];Refuse(()=>BoundedDiagnosticBuild.SerializeConscriptRecruitment(ordered,chunks,checksum,runtime,graph));}finally{command.Chunk.InstanceData=saved;}
+        try{command.Chunk.InstanceData=saved.ToArray();command.Chunk.InstanceData[28]=2;Refuse(()=>BoundedDiagnosticBuild.SerializeConscriptRecruitment(ordered,chunks,checksum,runtime,graph));}finally{command.Chunk.InstanceData=saved;}
         Console.WriteLine($"Conscript recruitment stream: PASS (new GameObject + overridden stock UNIT_BUILD command; tokenized/native flags, {game.ReferencedInstances.Count} external + one local dependency, deterministic Core checksum and independent Manifest/Utility byte readback; four two-asset refusals; no game execution).");
         return streams;
     }

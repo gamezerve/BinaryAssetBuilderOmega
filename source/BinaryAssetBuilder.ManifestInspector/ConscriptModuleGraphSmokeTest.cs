@@ -35,15 +35,28 @@ internal static class ConscriptModuleGraphSmokeTest
             var baseline=SdkXmlDiagnostics.Parse(File.ReadAllBytes(Path.Combine(fixtureRoot,"live-alpha","ConscriptBuildTime1","data","mod.xml")));baseline.DocumentElement!.SetAttribute("BuildTime","4");
             var templates=ConscriptModuleScalarContract.Owners(baseline).ToDictionary(o=>o.Element.GetAttribute("id"),o=>topology.Containers.Single(c=>c.Name==o.Container).Modules[o.Index],StringComparer.Ordinal);
             string snapshot=baseline.OuterXml;var results=new List<object>();int faults=0,metadataFaults=0;
-            foreach(string mode in new[]{"original","reverse","remove-half","clone-twelve","combined"})
+            foreach(string mode in new[]{"original","reverse","remove-half","clone-twelve","combined","new-id-combined"})
             {
                 var source=(XmlDocument)baseline.CloneNode(true);var origins=templates.Keys.ToDictionary(id=>id,id=>id,StringComparer.Ordinal);var behaviors=(XmlElement)source.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]!;var original=behaviors.ChildNodes.OfType<XmlElement>().ToArray();
-                if(mode is "remove-half" or "combined")foreach(var node in original.Where((_,i)=>i%2==0))behaviors.RemoveChild(node);
-                if(mode is "clone-twelve" or "combined")foreach(var node in original.Take(12)){var copy=(XmlElement)node.CloneNode(true);string id="RebornGraphClone_"+origins.Count;origins.Add(id,node.GetAttribute("id"));copy.SetAttribute("id",id);behaviors.AppendChild(copy);}
-                if(mode is "reverse" or "combined")foreach(var node in behaviors.ChildNodes.OfType<XmlElement>().Reverse().ToArray())behaviors.AppendChild(node);
+                if(mode is "remove-half" or "combined" or "new-id-combined")foreach(var node in original.Where((_,i)=>i%2==0))behaviors.RemoveChild(node);
+                if(mode is "clone-twelve" or "combined" or "new-id-combined")foreach(var node in original.Take(12)){var copy=(XmlElement)node.CloneNode(true);string id="RebornGraphClone_"+origins.Count;origins.Add(id,node.GetAttribute("id"));copy.SetAttribute("id",id);behaviors.AppendChild(copy);}
+                if(mode is "reverse" or "combined" or "new-id-combined")foreach(var node in behaviors.ChildNodes.OfType<XmlElement>().Reverse().ToArray())behaviors.AppendChild(node);
+                // Reborn: a new object identity receives a command only from an explicit authored declaration, never from its ID alone.
+                if(mode=="new-id-combined"){if(catalog.Any(a=>a.TypeId==0x942FFF2D&&a.InstanceId==InstanceHandle.GetInstanceId("RebornConscriptTrial")))throw new InvalidDataException("Variable trial ID collides with stock.");source.DocumentElement!.SetAttribute("id","RebornConscriptTrial");}
                 var pair=Build(source);var tokens=Verify(source,pair.Native,pair.Instance,origins);var repeat=Build(source);
                 if(!Equal(pair.Native,repeat.Native)||!Equal(tokens,Verify(source,repeat.Native,repeat.Instance,origins)))throw new InvalidDataException("Variable graph repeated build differs.");
                 int prefix=tokens.InstanceBuffer.Length-pair.Native.InstanceBuffer.Length;
+                // Reborn: serialize/package only after complete independent ownership proof; later stages are bound to these exact graph bytes.
+                var qualification=new ConscriptGraphQualification(pair.Instance,tokens,prefix);
+                var streams=GameObjectOriginalStreamSmokeTest.Run(tokens,pair.Instance,manifest,globalManifest,true,qualification);
+                if(mode=="new-id-combined")
+                {
+                    ConscriptRecruitmentSmokeTest.Qualify(schemas,manifest);
+                    var command=SdkXmlDiagnostics.Parse(System.Text.Encoding.UTF8.GetBytes("<!-- Reborn: explicit existing Barracks command override for the variable graph trial. --><LogicCommand xmlns=\"uri:ea.com:eala:asset\" id=\"Command_ConstructSovietAntiInfantryInfantry\" Type=\"UNIT_BUILD\"><Object>RebornConscriptTrial</Object></LogicCommand>"));
+                    streams=ConscriptRecruitmentSmokeTest.Compose(streams,pair.Instance,schemas,manifest,globalManifest,command,qualification);
+                    File.WriteAllText(Path.Combine(output,"new-id-command.xml"),command.OuterXml);
+                }
+                GameObjectConscriptTrialSmokeTest.Package(Path.Combine(output,mode+"-package"),source,streams,source.DocumentElement!.GetAttribute("id"),prefix);
                 // Reborn: corruption controls target independently owned module identity, container count and auxiliary tables, not just a repeated producer.
                 int address=ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,ConscriptModuleScalarContract.Owners(source).First(o=>o.Container=="Behaviors"));
                 foreach(int at in new[]{address,address+4,(int)Word(pair.Native.InstanceBuffer,476)}){var bad=Clone(pair.Native);bad.InstanceBuffer[at]^=1;Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;}
@@ -57,8 +70,8 @@ internal static class ConscriptModuleGraphSmokeTest
                 Console.WriteLine($"Variable Conscript graph: {mode}: behaviors={count}, prefix={prefix}, native={pair.Native.InstanceBuffer.Length}, references={pair.Instance.ReferencedInstances.Count}: PASS");
             }
             if(baseline.OuterXml!=snapshot)throw new InvalidDataException("Module graph mutated its baseline.");
-            File.WriteAllText(Path.Combine(output,"module-graph-report.json"),JsonSerializer.Serialize(new{Passed=true,Cases=results,NativeCorruptionsRejected=faults,MetadataCorruptionsRejected=metadataFaults,CompleteNativeOwnership=true,BehaviorMetadataStockVerified=true,FullMetadataStockVerified=true,AlphaPublicationEnabled=false,GameExecuted=false},new JsonSerializerOptions{WriteIndented=true}));
-            Console.WriteLine($"Variable Conscript module graphs: PASS ({results.Count} complete-object cases; {faults} native/{metadataFaults} metadata faults rejected; complete native + source-composed stock metadata; no alpha publication/package/game).");
+            File.WriteAllText(Path.Combine(output,"module-graph-report.json"),JsonSerializer.Serialize(new{Passed=true,Cases=results,NativeCorruptionsRejected=faults,MetadataCorruptionsRejected=metadataFaults,CompleteNativeOwnership=true,BehaviorMetadataStockVerified=true,FullMetadataStockVerified=true,VariableStreamPackagesBuilt=true,AlphaPublicationEnabled=false,GameExecuted=false},new JsonSerializerOptions{WriteIndented=true}));
+            Console.WriteLine($"Variable Conscript module graphs: PASS ({results.Count} complete-object stream/package cases; {faults} native/{metadataFaults} metadata faults rejected; complete native + source-composed stock metadata; no alpha publication/game).");
 
             //-------------------------------------------------------------------------------------------------
             /** Reborn: normalize all references once and compile through the real reviewed complete-object allocation path. */

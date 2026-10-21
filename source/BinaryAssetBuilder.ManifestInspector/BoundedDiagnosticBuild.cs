@@ -213,7 +213,7 @@ internal static class BoundedDiagnosticBuild
     //-------------------------------------------------------------------------------------------------
     /** Reborn: admit only reviewed Conscript identities with contracted root/nested values and bounded dynamic root strings, separately from ordinary serializer routes. */
     //-------------------------------------------------------------------------------------------------
-    internal static Dictionary<string,byte[]> SerializeConscriptTrial(InstanceDeclaration instance,AssetBuffer chunk,uint checksum,ReferencedFileBuffer runtime,string? approvedIdentity=null)
+    internal static Dictionary<string,byte[]> SerializeConscriptTrial(InstanceDeclaration instance,AssetBuffer chunk,uint checksum,ReferencedFileBuffer runtime,string? approvedIdentity=null,ConscriptGraphQualification? graph=null)
     {
         string id=instance.XmlNode.Attributes?["id"]?.Value??"";
         if(!ConscriptSourceInput.Identity(id) || (approvedIdentity==null?id is not ("SovietAntiInfantryInfantry" or "RebornConscriptTrial"):id!=approvedIdentity) || instance.Handle.Name!="GameObject:"+id || instance.Handle.InstanceId!=InstanceHandle.GetInstanceId(id)
@@ -224,24 +224,27 @@ internal static class BoundedDiagnosticBuild
         // Reborn: check each authored scalar again at serialization; source/native ownership was qualified before this explicit route.
         var source=new System.Xml.XmlDocument{PreserveWhitespace=true,XmlResolver=null};source.LoadXml(instance.XmlNode.OuterXml);
         // Reborn: 273 non-root occurrences remain pinned; the authored root reference count determines dependency and sentinel-framed IMP extents.
-        int dependencyCount=GameObjectStrongReferenceContract.ExpectedCount(source);if(instance.ValidatedReferencedInstances.Count!=dependencyCount || chunk.ImportsData.Length!=(dependencyCount+1)*4)throw new InvalidDataException("Conscript authored root reference stream extent differs.");
+        // Reborn: variable graphs require exact build-local proof; ordinary trials retain their original topology admission.
+        graph?.Verify(instance,chunk);
+        int prefix=graph?.MetadataPrefix??88824;
+        int dependencyCount=graph?.ReferenceCount??GameObjectStrongReferenceContract.ExpectedCount(source);if(instance.ValidatedReferencedInstances.Count!=dependencyCount || chunk.ImportsData.Length!=(dependencyCount+1)*4)throw new InvalidDataException("Conscript authored root reference stream extent differs.");
         // Reborn: the stock Conscript owns 39,268 non-string native bytes after its 88,824-byte metadata prefix; root string blocks add exact aligned extents and relocation slots.
         int stringBytes=GameObjectRootStringContract.AllocationSize(source),stringCount=GameObjectRootStringContract.PresentCount(source);
-        if(chunk.InstanceData.Length!=88824+39268+stringBytes || chunk.RelocationData.Length!=1800+(stringCount-3)*4)throw new InvalidDataException("Conscript dynamic root string stream extent differs.");
-        int[] offsets=ConscriptEditableScalars.Offsets(chunk.InstanceData.AsSpan(88824).ToArray(),88824);
-        GameObjectScalarContract.Verify(source,chunk.InstanceData,88824);
+        if(graph==null&&(chunk.InstanceData.Length!=88824+39268+stringBytes || chunk.RelocationData.Length!=1800+(stringCount-3)*4))throw new InvalidDataException("Conscript dynamic root string stream extent differs.");
+        int[] offsets=ConscriptEditableScalars.Offsets(chunk.InstanceData.AsSpan(prefix).ToArray(),prefix);
+        GameObjectScalarContract.Verify(source,chunk.InstanceData,prefix);
         // Reborn: package publication independently rechecks enabled fixed root enums, masks and weak IDs.
-        GameObjectRootAttributeContract.Verify(source,chunk.InstanceData,88824);
+        GameObjectRootAttributeContract.Verify(source,chunk.InstanceData,prefix);
         // Reborn: dynamic authored root strings are checked again after metadata/native/auxiliary rebasing and before stream publication.
-        GameObjectRootStringContract.Verify(source,chunk.InstanceData,88824);
+        GameObjectRootStringContract.Verify(source,chunk.InstanceData,prefix);
         // Reborn: publication rechecks the same official-schema module primitives at dynamically located native owner addresses.
-        ConscriptModuleScalarContract.Verify(source,chunk.InstanceData,88824);
+        ConscriptModuleScalarContract.Verify(source,chunk.InstanceData,prefix);
         // Reborn: publication must retain every authored local module identity after final metadata/native rebasing.
-        ConscriptModuleIdentityContract.Verify(source,chunk.InstanceData,88824);
+        ConscriptModuleIdentityContract.Verify(source,chunk.InstanceData,prefix);
         for(int i=1;i<offsets.Length;i++)
         {
             ConscriptEditableScalars.Read(source,ConscriptEditableScalars.Fields[i]);
-            if(BinaryPrimitives.ReadUInt32LittleEndian(chunk.InstanceData.AsSpan(88824+offsets[i],4))!=ConscriptEditableScalars.Bits(source,ConscriptEditableScalars.Fields[i]))
+            if(BinaryPrimitives.ReadUInt32LittleEndian(chunk.InstanceData.AsSpan(prefix+offsets[i],4))!=ConscriptEditableScalars.Bits(source,ConscriptEditableScalars.Fields[i]))
                 throw new InvalidDataException("Serialized Conscript scalar differs.");
         }
         return SerializeCore(new[]{instance},new[]{chunk},checksum,runtime,new[]{true},true);
@@ -249,11 +252,11 @@ internal static class BoundedDiagnosticBuild
     //-------------------------------------------------------------------------------------------------
     /** Reborn: opt in exactly one qualified new Conscript and one stock construction-command override, with a uniquely resolved local object import. */
     //-------------------------------------------------------------------------------------------------
-    internal static Dictionary<string,byte[]> SerializeConscriptRecruitment(InstanceDeclaration[] ordered,AssetBuffer[] chunks,uint checksum,ReferencedFileBuffer runtime)
+    internal static Dictionary<string,byte[]> SerializeConscriptRecruitment(InstanceDeclaration[] ordered,AssetBuffer[] chunks,uint checksum,ReferencedFileBuffer runtime,ConscriptGraphQualification? graph=null)
     {
         if(ordered.Length!=2 || chunks.Length!=2 || ordered[0].Handle.TypeId!=0x942FFF2D)throw new InvalidDataException("Recruitment requires the ordered object/command pair.");
         // Reborn: retain every existing new-object graph/scalar gate before admitting its second local consumer.
-        SerializeConscriptTrial(ordered[0],chunks[0],checksum,runtime,ordered[0].XmlNode.Attributes?["id"]?.Value);
+        SerializeConscriptTrial(ordered[0],chunks[0],checksum,runtime,ordered[0].XmlNode.Attributes?["id"]?.Value,graph);
         var command=ordered[1];var chunk=chunks[1];var target=ordered[0].Handle;
         uint[] words={0,6,0,0,0,28,0,1};var expected=new byte[32];for(int i=0;i<words.Length;i++)BinaryPrimitives.WriteUInt32LittleEndian(expected.AsSpan(i*4,4),words[i]);
         string commandId=command.XmlNode.Attributes?["id"]?.Value??"";
