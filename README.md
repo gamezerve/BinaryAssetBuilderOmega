@@ -19,6 +19,8 @@ keys and mod-added keys both satisfy lookup. Supported effective XML includes
 inheritance/definition expansion, with original source coordinates. The selected
 language BIG is read directly (RefPack CSF supported), excluding `_temp` tables.
 See [missing-string checks and scope](docs/RA3EP1_MISSING_STRINGS.md).
+The Studio configuration parser also accepts the optional `StockStrings` setting;
+its exact CLR4 loader regression passes. Restart Studio after this adapter update.
 
 <!-- Reborn: explicit support declarations now compile with the complete object instead of requiring pre-existing stock identities. -->
 <!-- Reborn: command-set-only builds and typed weak asset diagnostics use the same Studio workflow. -->

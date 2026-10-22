@@ -5,6 +5,14 @@ missing assets and definitions. A use missing from **both** catalogs produces a
 `Warning: MISSINGSTRING` with its key, XML owner, field, file, line and column.
 The warning alone does not stop compilation or alter the authored key.
 
+<!-- Reborn: the EA GUI parser and backend parser must both accept optional localization configuration. -->
+The Studio adapter now accepts `StockStrings` during initialization. A failed
+initialization is retried explicitly before a build callback so its original
+configuration error cannot be masked by an uninitialized lifecycle reference.
+The exact CLR4/EA CodeDOM loader regression checks initialization with the current
+configuration and optional-key acceptance while still rejecting duplicates and
+unknown keys. Restart an already-open Studio after this adapter update.
+
 ## Catalogs
 
 - Stock: `StockStrings` in local `alpha/uprising-alpha.paths` selects the active

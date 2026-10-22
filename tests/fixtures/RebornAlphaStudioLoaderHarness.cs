@@ -4,6 +4,8 @@ using System.CodeDom.Compiler;
 using System.IO;
 using Microsoft.CSharp;
 using EALABuild;
+using System.Reflection;
+using System.Collections.Generic;
 
 class RebornAlphaStudioLoaderHarness
 {
@@ -28,8 +30,25 @@ class RebornAlphaStudioLoaderHarness
                     if (typeof(EALABuildScript).IsAssignableFrom(type)) adapter = (EALABuildScript)type.GetConstructor(Type.EmptyTypes).Invoke(new object[0]);
                 if (adapter == null) throw new InvalidDataException("EA loader interface discovery failed.");
                 adapter.initialize();
-                if (adapter.GetModBuildGUIData().Count != 3 || !adapter.shouldExecuteStep(1) || adapter.shouldExecuteStep(2))
+                if (adapter.GetModBuildGUIData().Count != 5 || !adapter.shouldExecuteStep(1) || adapter.shouldExecuteStep(2))
                     throw new InvalidDataException("Adapter options/step scope differs.");
+                // Reborn: test the exact GUI parser with optional localization config, not only the newer backend parser.
+                MethodInfo readPaths = adapter.GetType().GetMethod("ReadPaths", BindingFlags.NonPublic | BindingFlags.Static);
+                string actual = File.ReadAllText("uprising-alpha.paths");
+                string probe = Path.Combine(".work", "studio-config-check-" + Guid.NewGuid().ToString("N"));
+                Directory.CreateDirectory(probe);
+                string optional = actual.Contains("StockStrings=") ? actual : actual + Environment.NewLine + "StockStrings=";
+                string accepted = Path.Combine(probe, "accepted.paths"); File.WriteAllText(accepted, optional);
+                Dictionary<string, string> values = (Dictionary<string, string>)readPaths.Invoke(null, new object[] { accepted });
+                if (!values.ContainsKey("StockStrings")) throw new InvalidDataException("GUI lost optional localization configuration.");
+                foreach (string extra in new string[] { "StockStrings=duplicate", "RebornUnknownKey=invalid" })
+                {
+                    string rejected = Path.Combine(probe, "rejected.paths"); File.WriteAllText(rejected, optional + Environment.NewLine + extra);
+                    bool refused = false;
+                    try { readPaths.Invoke(null, new object[] { rejected }); }
+                    catch (TargetInvocationException error) { refused = error.InnerException is InvalidDataException; }
+                    if (!refused) throw new InvalidDataException("GUI configuration duplicate/unknown key was not rejected.");
+                }
                 Console.WriteLine("Reborn: exact-reference CLR4 CodeDOM/interface/config/options PASS; no Studio window or build/game execution.");
             }
             return 0;

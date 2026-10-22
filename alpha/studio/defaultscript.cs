@@ -20,12 +20,16 @@ namespace EALABuild
         // Reborn: the isolated CLR4 helper adds close protection without changing EA's executable or CodeDOM reference list.
         private Type lifecycle;
         private string buildHost;
+        // Reborn: configuration failure must not leave the build callback using partially initialized adapter state.
+        private bool initialized;
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: load explicit local adapter configuration instead of RA3 registry paths or inherited destructive cleanup stages. */
         //-------------------------------------------------------------------------------------------------
         public void initialize()
         {
+            // Reborn: retry initialization explicitly after a prior failure; Install is idempotent in the lifecycle helper.
+            initialized = false;
             BuildHelper.AutomaticallyResetBuildHelper = true;
             BuildHelper.EnableBenchmarking = true;
             // Reborn: EA's actual CodeDOM loader references only System.dll/EALABuild.dll, not System.Xml.dll.
@@ -45,6 +49,7 @@ namespace EALABuild
             CheckPath(buildHost);
             lifecycle = System.Reflection.Assembly.LoadFrom(buildHost).GetType("Reborn.StudioLifecycle", true);
             Lifecycle("Install");
+            initialized = true;
         }
 
         //-------------------------------------------------------------------------------------------------
@@ -52,6 +57,8 @@ namespace EALABuild
         //-------------------------------------------------------------------------------------------------
         public void buildMod(string modName, Dictionary<string, Object> gui)
         {
+            // Reborn: surface the original initialization error instead of dereferencing a missing lifecycle/runtime later.
+            if (!initialized) initialize();
             string name = BuildHelper.BuildTarget;
             // Reborn: the selected mod folder determines the validated source path and final package basename.
             if (String.IsNullOrEmpty(name) || name.Length > 48 || name.IndexOfAny(new char[] { '\\', '/', '"', ':', ';', '\r', '\n' }) >= 0 || name == "." || name == "..")
@@ -153,7 +160,8 @@ namespace EALABuild
                 if (separator <= 0) throw new InvalidDataException("Reborn: invalid alpha path setting.");
                 string key = line.Substring(0, separator);
                 // Reborn: official source root is used only by the bounded Conscript build driver; legacy configurations remain valid.
-                if ((key != "PowerShell7" && key != "Driver" && key != "StaticManifest" && key != "CompilerDirectory" && key != "GlobalManifest" && key != "UprisingXmlRoot" && key != "SdkDataRoot") || settings.ContainsKey(key))
+                // Reborn: backend localization availability is optional; accept its setting without making the CSF a startup dependency.
+                if ((key != "PowerShell7" && key != "Driver" && key != "StaticManifest" && key != "CompilerDirectory" && key != "GlobalManifest" && key != "UprisingXmlRoot" && key != "SdkDataRoot" && key != "StockStrings") || settings.ContainsKey(key))
                     throw new InvalidDataException("Reborn: unknown or duplicate alpha path setting.");
                 settings.Add(key, line.Substring(separator + 1));
             }
