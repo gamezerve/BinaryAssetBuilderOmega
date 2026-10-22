@@ -2,6 +2,15 @@
 
 ## Build your mod
 
+<!-- Reborn: the normal Studio build audits original and mod-added localization keys alongside missing assets. -->
+`MISSINGSTRING` warnings now identify XML localization keys missing from both
+the original game table and `mods/<name>/Misc/Data/mod.str`, including file,
+line, column, owner and field. Stock keys and your STR additions are both valid;
+empty optional fields are ignored. This does not compile/change STR or CSF files.
+The local `StockStrings` setting selects the active language BIG/CSF; an unavailable
+or malformed catalog gives an explicit `STRINGCATALOG` coverage warning instead
+of incorrectly declaring every key missing. See [details](../docs/RA3EP1_MISSING_STRINGS.md).
+
 <!-- Reborn: remove the dummy-unit requirement for command-set mods and expose weak UI/command-set typos. -->
 LogicCommandSet declarations can build alone, in all-included files or beside a
 GameObject. New IDs, stock overrides, zero or more Cmd entries and same-type

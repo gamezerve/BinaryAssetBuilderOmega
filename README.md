@@ -12,6 +12,14 @@ Active development branch: `main` in `gamezerve/BinaryAssetBuilderOmega`.
 It contains the Uprising SDK work previously developed on
 `feature/ra3ep1-manifest-inspector`; the original `master` history is retained.
 
+<!-- Reborn: localization lookup joins asset/definition diagnostics without compiling or redistributing the game's translations. -->
+Build preflight now reports **MISSINGSTRING** warnings for localization keys
+absent from both the selected stock CSF and `Misc/Data/mod.str`. Existing stock
+keys and mod-added keys both satisfy lookup. Supported effective XML includes
+inheritance/definition expansion, with original source coordinates. The selected
+language BIG is read directly (RefPack CSF supported), excluding `_temp` tables.
+See [missing-string checks and scope](docs/RA3EP1_MISSING_STRINGS.md).
+
 <!-- Reborn: explicit support declarations now compile with the complete object instead of requiring pre-existing stock identities. -->
 <!-- Reborn: command-set-only builds and typed weak asset diagnostics use the same Studio workflow. -->
 LogicCommandSet mods now also build **without a GameObject**. Declare new IDs or

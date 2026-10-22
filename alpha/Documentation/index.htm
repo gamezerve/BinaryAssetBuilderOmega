@@ -3,6 +3,16 @@
 <html lang="en"><head><meta charset="utf-8"><title>Uprising Mod SDK Alpha</title></head>
 <body>
 <h1>Uprising Mod SDK Alpha — live repository workspace</h1>
+<!-- Reborn: localized display keys resolve against stock CSF plus the mod's packaged STR, independently of asset identities. -->
+<p>The same build preflight now reports MISSINGSTRING warnings when an XML localization
+key exists in neither the selected original game CSF nor your Misc/Data/mod.str.
+Warnings include the owner, field, source file, line and column; they do not stop the build.
+DisplayName, descriptions and recognized key-shaped string fields are checked.
+Supported source inheritance/definitions are expanded before lookup. Empty optional
+values, asset IDs, paths and script bodies are not treated as missing strings.
+StockStrings in the local SDK configuration selects a language BIG or CSF; only the active
+data/gamestrings.csf is used, never gamestrings_temp.csf. Missing/broken catalogs generate
+an incomplete-check warning rather than false missing-key claims. No translations are rewritten.</p>
 <!-- Reborn: command-set primary graphs do not require a placeholder unit; weak IDs receive explicit availability diagnostics. -->
 <p>LogicCommandSet mods may now build without any GameObject. New IDs, stock overrides,
 source-sized Cmd lists and normal includes/inheritance are supported. Missing Cmd targets

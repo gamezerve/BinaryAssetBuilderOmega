@@ -26,6 +26,8 @@ internal static class Program
             if(args.Length is 6 or 7 && args[0]=="sdk-missing-dependencies")
             {CompilerSmokeTest.InitializeHashProvider();return SdkMissingDependencyAudit.Run(args[1],args[2],args[3],args[4],args[5],args.ElementAtOrDefault(6));}
             // Reborn: dependency-list tests never replace the user's or developer's live mod files.
+            if(args.Length==2 && args[0]=="sdk-missing-strings-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();SdkMissingStringAuditSmokeTest.Run(args[1]);return 0;}
             if(args.Length==2 && args[0]=="sdk-missing-dependencies-self-test")
             {CompilerSmokeTest.InitializeHashProvider();SdkMissingDependencyAuditSmokeTest.Run(args[1]);return 0;}
             // Reborn: nested damage/motion graphs and real modifier imports remain diagnostic, not GameObject publication.
@@ -1643,6 +1645,8 @@ internal static class Program
         Console.WriteLine("  sdk-preflight ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [absolute.manifest=runtime.manifest ...]");
         Console.WriteLine("  conscript-module-graph-self-test <static.manifest> <global.manifest> <fresh-output-directory> [case-name]");
         Console.WriteLine("  sdk-xml-diagnostics-self-test <fresh-output-directory>");
+        // Reborn: localization parser/source regression is independent of game launches and editable mod workspaces.
+        Console.WriteLine("  sdk-missing-strings-self-test <fresh-output-directory>");
         Console.WriteLine("  sdk-preflight-self-test");
         // Reborn: expose optional explicit ART/AUDIO roots and incomplete graph exit status separately from environment readiness.
         Console.WriteLine("  sdk-source-preflight ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [--art-root absolute-directory] [--audio-root absolute-directory] [absolute.manifest=runtime.manifest ...]");

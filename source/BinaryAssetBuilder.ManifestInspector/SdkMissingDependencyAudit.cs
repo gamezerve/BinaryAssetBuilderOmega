@@ -14,8 +14,12 @@ internal static class SdkMissingDependencyAudit
     private const string Ea="uri:ea.com:eala:asset",AnnotationNamespace="uri:ea.com:eala:asset:schema";
     internal sealed record Asset(string Type,string Name,uint TypeId,uint InstanceId);
     internal sealed record Finding(string Code,string Severity,string Target,string Owner,string Source,int Line,int Column,string Field,string Detail);
+    // Reborn: retain localization catalog/coverage evidence separately from asset reference counts and translated text.
+    internal sealed record StringStatus(int CheckedKeys,int StockKeys,int ModKeys,bool CatalogComplete,bool PreparedSourceUsed,string? StockSource,string ModSource);
     internal sealed record Report(Finding[] Findings,int ModAssets,int StockAssets,int CheckedAssetReferences,int UncheckedAssetReferences,bool SourceGraphComplete)
     {
+        // Reborn: synthetic asset-only tests need no installed language archive; live builds populate this localization summary.
+        public StringStatus? Strings {get;init;}
         // Reborn: a clean bounded preflight is not proof of complete runtime dependency coverage or compiler support.
         public bool FullDependencyCoverage=>false;
         public bool GameExecuted=>false;
@@ -48,6 +52,9 @@ internal static class SdkMissingDependencyAudit
             stock.AddRange(document.Assets.Select(a=>new Asset(a.TypeName,a.Name.Contains(':')?a.Name[(a.Name.IndexOf(':')+1)..]:a.Name,a.TypeId,a.InstanceId)));
         }
         var report=Analyze(entry,paths,ConscriptSourceInput.Schemas(),stock);
+        // Reborn: missing strings join the same readable preflight/report as missing assets and definitions; warnings do not become false native dependency errors.
+        var strings=SdkMissingStringAudit.Run(entry,sdk,paths,ConscriptSourceInput.Schemas());
+        report=report with{Findings=report.Findings.Concat(strings.Findings).ToArray(),Strings=new(strings.CheckedKeys,strings.StockKeys,strings.ModKeys,strings.CatalogComplete,strings.PreparedSourceUsed,strings.StockSource,strings.ModSource)};
         // Reborn: reports may only be written into an existing non-redirected work directory, never over a source or stock manifest.
         SdkEnvironmentPreflight.CheckPath(output);SdkEnvironmentPreflight.DirectoryPath(Path.GetDirectoryName(output)!);
         if(File.Exists(output) || Directory.Exists(output) || paths.AllowedRoots.Any(r=>SdkEnvironmentPreflight.Inside(r,output)) || output.Equals(staticManifest,StringComparison.OrdinalIgnoreCase) || output.Equals(globalManifest,StringComparison.OrdinalIgnoreCase))throw new InvalidDataException("Fresh dependency-report path outside source roots required.");
@@ -55,6 +62,7 @@ internal static class SdkMissingDependencyAudit
         foreach(var finding in report.Findings)
             Console.WriteLine($"{finding.Severity}: {finding.Code} {finding.Detail} Target='{finding.Target}', owner='{finding.Owner}', field='{finding.Field}', source='{finding.Source}' ({finding.Line},{finding.Column}).");
         Console.WriteLine($"Reborn: dependency audit: {report.Findings.Count(f=>f.Code=="MISSINGDEF")} missing definition uses, {report.Findings.Count(f=>f.Code=="MISSINGASSET")} missing asset uses; {report.ModAssets} mod assets + {report.StockAssets} stock identities; {report.CheckedAssetReferences} typed references checked, {report.UncheckedAssetReferences} deferred. Full runtime coverage: false.");
+        Console.WriteLine($"Reborn: string audit: {strings.CheckedKeys} key uses checked; {strings.StockKeys} stock keys + {strings.ModKeys} mod.str keys; {strings.Findings.Count(f=>f.Code=="MISSINGSTRING")} missing string uses; catalog complete={strings.CatalogComplete}; prepared source={strings.PreparedSourceUsed}.");
         Console.WriteLine("Reborn: dependency report: "+output);
         return report.Findings.Any(f=>f.Severity=="Error")?1:0;
     }
