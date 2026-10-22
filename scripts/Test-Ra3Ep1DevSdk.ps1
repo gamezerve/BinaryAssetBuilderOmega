@@ -1,6 +1,6 @@
 # Reborn: exercise preserved fixtures only in RebornTest; never compile or modify the user's Reborn mod.
 [CmdletBinding()]
-param([switch]$IncludeRebornSourceMirror,[switch]$ReferenceRetargetingOnly,[switch]$ModuleValuesOnly,[switch]$DiagnosticsOnly,[switch]$VariableBehaviorsOnly,[switch]$UpgradeStructuresOnly,[switch]$RootTextOnly,[switch]$CombatListsOnly,[switch]$MultiAssetOnly,[switch]$CommandSetsOnly)
+param([switch]$IncludeRebornSourceMirror,[switch]$ReferenceRetargetingOnly,[switch]$ModuleValuesOnly,[switch]$DiagnosticsOnly,[switch]$VariableBehaviorsOnly,[switch]$UpgradeStructuresOnly,[switch]$RootTextOnly,[switch]$CombatListsOnly,[switch]$MultiAssetOnly,[switch]$CommandSetsOnly,[switch]$SharedValuesOnly)
 $ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$runtime=(Get-Process -Id $PID).Path;$driver=Join-Path $PSScriptRoot 'Invoke-Ra3Ep1DevAlphaBuild.ps1'
 $fixtures=Join-Path $repo 'tests/fixtures/live-alpha';$data=Join-Path $sdk 'mods/RebornTest/data';$output=Join-Path $sdk 'builtmods/RebornTest';$input=Join-Path $data 'mod.xml';$package=Join-Path $output 'RebornTest.big'
 $rows=[Collections.Generic.List[object]]::new();$userSource=Join-Path $sdk 'mods/Reborn/data/mod.xml';$userHash=(Get-FileHash -LiteralPath $userSource).Hash
@@ -71,9 +71,15 @@ try {
         $good=(Get-FileHash -LiteralPath $package).Hash
         [IO.File]::WriteAllText($setsPath,$sets.Replace('Command_ConstructSovietAntiInfantryInfantry','Command_RebornMissing'));Invoke-TestCase CommandSetMissingCmd $false
         if((Get-FileHash -LiteralPath $package).Hash-cne $good){throw 'Missing command replaced a successful command-set package.'}
-    }elseif($MultiAssetOnly){
+    }elseif($MultiAssetOnly -or $SharedValuesOnly){
         # Reborn: explicitly authored local graph, deliberately declared in consumer-first order, with real DATA includes/definitions/inheritance.
         Set-TestFixture ConscriptBuildTime1;$game=[Xml.XmlDocument]::new();$game.PreserveWhitespace=$true;$game.Load($input);$game.DocumentElement.SetAttribute('id','RebornMixedConscript');$game.SelectSingleNode('//*[local-name()="DisplayName"]').InnerText='Name:RebornMixedConscript'
+        # Reborn: one mixed-asset Studio build combines all historical nested values with genuinely changed modules and absent root imports.
+        if($SharedValuesOnly){
+            $game.DocumentElement.SetAttribute('BuildTime','1.25');$game.DocumentElement.SetAttribute('Scale','2');$game.DocumentElement.RemoveAttribute('UnitTypeIcon');$game.DocumentElement.RemoveAttribute('UnitIntro')
+            foreach($edit in @(@('BuildCost','Amount','111'),@('ActiveBody','MaxHealth','543.25'),@('VisionInfo','VisionRange','777.5'),@('VisionInfo','ShroudClearingRange','654.25'),@('LocomotorSet','Speed','88.5'))){$game.SelectSingleNode(('//*[local-name()="'+$edit[0]+'"]')).SetAttribute($edit[1],$edit[2])}
+            $behaviors=$game.SelectSingleNode('/*/*[local-name()="Behaviors"]');$copy=$game.SelectSingleNode('//*[local-name()="Physics"]').CloneNode($true);$copy.SetAttribute('id','RebornMixedParityPhysics');$null=$behaviors.AppendChild($copy);$nodes=@($behaviors.ChildNodes|Where-Object {$_ -is [Xml.XmlElement]});[array]::Reverse($nodes);foreach($node in $nodes){$null=$behaviors.AppendChild($node)}
+        }
         $armors=@($game.SelectNodes('/*/*[local-name()="ArmorSet"]'));$armors[0].SetAttribute('Armor','RebornMixedVeteranArmor');$armors[-1].SetAttribute('Armor','RebornMixedArmor')
         $weapons=@($game.SelectNodes('//*[local-name()="WeaponSlotHardpoint"]/*[local-name()="Weapon"]'));$weapons[0].SetAttribute('Template','RebornMixedRifle');$weapons[1].SetAttribute('Template','RebornMixedAlternateRifle')
         $assets=[Xml.XmlDocument]::new();$assets.PreserveWhitespace=$true;$assets.LoadXml('<AssetDeclaration xmlns="uri:ea.com:eala:asset"><Includes><Include type="all" source="DATA:MixedDefines.xml"/></Includes></AssetDeclaration>');$null=$assets.DocumentElement.AppendChild($assets.ImportNode($game.DocumentElement,$true))
@@ -86,6 +92,8 @@ try {
         [IO.File]::WriteAllText($input,'<!-- Reborn: all seven assets are explicit included declarations. --><AssetDeclaration xmlns="uri:ea.com:eala:asset"><Includes><Include type="all" source="DATA:MixedAssets.xml"/></Includes></AssetDeclaration>')
         Invoke-TestCase MultiAssetGraph $true;$good=(Get-FileHash -LiteralPath $package).Hash
         $receipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json;if($receipt.Core.AssetCount-ne 7 -or -not $receipt.Core.MultiAsset -or -not $receipt.Core.DeclaredBarracksRecruitmentChain -or -not $receipt.Core.RecruitableNewIdentity -or @($receipt.Core.Assets).Count-ne 7 -or @($receipt.Core.LocalEdges).Count-lt 5 -or $receipt.Backend.AutomaticCommandGenerated){throw 'Mixed graph receipt differs.'}
+        if($SharedValuesOnly){if($receipt.Core.EditableValues.Amount-ne 111 -or $receipt.Core.EditableValues.MaxHealth-ne 543.25 -or $receipt.Core.EditableValues.VisionRange-ne 777.5 -or $receipt.Core.EditableValues.ShroudClearingRange-ne 654.25 -or $receipt.Core.EditableValues.Speed-ne 88.5){throw 'Mixed route lost supported nested source values.'}}
+        if(-not $SharedValuesOnly){
         # Reborn: local publication roles and dependency ordering must not depend on textual declaration order.
         $reordered=$assets.CloneNode($true);$nodes=@($reordered.DocumentElement.ChildNodes|Where-Object {$_ -is [Xml.XmlElement] -and $_.LocalName -cne 'Includes'});[array]::Reverse($nodes);foreach($node in $nodes){$null=$reordered.DocumentElement.AppendChild($node)};$reordered.Save($assetsPath);Invoke-TestCase MultiAssetReordered $true;$good=(Get-FileHash -LiteralPath $package).Hash
         foreach($kind in @('MissingWeapon','MissingCommand','Duplicate','WeaponShape','NonfiniteWeapon','AuthoredTypeId')){
@@ -100,6 +108,7 @@ try {
                 AuthoredTypeId{$bad.SelectSingleNode('//*[local-name()="DamageNugget"]').SetAttribute('TypeId','1')}
             }
             $bad.Save($assetsPath);Invoke-TestCase ('MultiAssetReject'+$kind) $false;if((Get-FileHash -LiteralPath $package).Hash-cne $good){throw 'Invalid mixed source replaced the successful package.'}
+        }
         }
     }elseif($VariableBehaviorsOnly -or $UpgradeStructuresOnly -or $RootTextOnly -or $CombatListsOnly){
         # Reborn: one combined Studio source changes behavior count/order/local IDs, fixed root/module values and an explicit new-object consumer.

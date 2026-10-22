@@ -3,6 +3,13 @@
 <html lang="en"><head><meta charset="utf-8"><title>Uprising Mod SDK Alpha</title></head>
 <body>
 <h1>Uprising Mod SDK Alpha — live repository workspace</h1>
+<!-- Reborn: common gameplay values and optional root references are not tied to the historical fixed graph. -->
+<p>Already-supported value edits now use a shared contract on fixed, variable-module
+and mixed-asset GameObject builds. BuildCost Amount, MaxHealth, VisionRange,
+ShroudClearingRange and Locomotor Speed can change together with variable Behaviors,
+root text and local support assets. Optional UnitTypeIcon/UnitIntro presence is
+source-driven on these routes too. The compiler still verifies actual serialized
+values and reference identities; genuinely unimplemented layouts remain errors.</p>
 <!-- Reborn: localized display keys resolve against stock CSF plus the mod's packaged STR, independently of asset identities. -->
 <p>The same build preflight now reports MISSINGSTRING warnings when an XML localization
 key exists in neither the selected original game CSF nor your Misc/Data/mod.str.

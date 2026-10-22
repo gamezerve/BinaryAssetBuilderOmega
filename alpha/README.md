@@ -2,6 +2,13 @@
 
 ## Build your mod
 
+<!-- Reborn: common value support is shared by every GameObject build path, including variable modules and local support assets. -->
+BuildCost Amount, MaxHealth, VisionRange, ShroudClearingRange and Locomotor Speed
+edits now compose with variable Behaviors and mixed local assets. Fixed and
+variable source paths share validation/masking instead of retaining separate
+value whitelists. Optional UnitTypeIcon/UnitIntro presence also works across these
+paths. Unchanged processor/layout scope still applies; see [route parity](../docs/RA3EP1_GAMEOBJECT_ROUTE_PARITY.md).
+
 <!-- Reborn: the normal Studio build audits original and mod-added localization keys alongside missing assets. -->
 `MISSINGSTRING` warnings now identify XML localization keys missing from both
 the original game table and `mods/<name>/Misc/Data/mod.str`, including file,

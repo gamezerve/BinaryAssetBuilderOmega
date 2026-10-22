@@ -39,11 +39,22 @@ internal static class ConscriptModuleGraphSmokeTest
             try{ConscriptVariableBehaviorSource.Admit(overflow,baseline,official);}catch(InvalidDataException error){overflowRejected=SdkXmlDiagnostics.Node(error)?.LocalName=="Frames";}
             if(!overflowRejected)throw new InvalidDataException("Nested unsigned overflow/source coordinate control failed.");
             // Reborn: allow a focused proof run when extending one capability without replaying unrelated expensive native matrices.
-            string[] modes={"original","reverse","remove-half","clone-twelve","combined","new-id-combined","retarget-combined","beyond-former-budget","upgrade-lists-expanded","upgrade-lists-empty","upgrade-animation","upgrade-animation-defaults","upgrade-list-large","upgrade-animation-lexical","root-text-edited","root-text-empty","root-text-omitted","combat-combined","combat-omitted","combat-single"};
+            string[] modes={"original","reverse","remove-half","clone-twelve","combined","new-id-combined","retarget-combined","beyond-former-budget","upgrade-lists-expanded","upgrade-lists-empty","upgrade-animation","upgrade-animation-defaults","upgrade-list-large","upgrade-animation-lexical","root-text-edited","root-text-empty","root-text-omitted","combat-combined","combat-omitted","combat-single","shared-parity","shared-defaults"};
             if(caseFilter!=null&&caseFilter!="combat"&&!modes.Contains(caseFilter,StringComparer.Ordinal))throw new InvalidDataException("Unknown module graph proof case.");
             foreach(string mode in caseFilter==null?modes:caseFilter=="combat"?modes.Where(m=>m.StartsWith("combat-",StringComparison.Ordinal)):new[]{caseFilter})
             {
                 var source=(XmlDocument)baseline.CloneNode(true);var origins=templates.Keys.ToDictionary(id=>id,id=>id,StringComparer.Ordinal);var behaviors=(XmlElement)source.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]!;var original=behaviors.ChildNodes.OfType<XmlElement>().ToArray();
+                // Reborn: every already-supported fixed primitive category must compose with variable modules and changed root-reference presence in one package.
+                if(mode.StartsWith("shared-",StringComparison.Ordinal)){
+                    GameObjectScalarContract.AuthorProbe(source);GameObjectRootAttributeContract.AuthorProbe(source);GameObjectRootStringContract.AuthorProbe(source,baseline);ConscriptModuleScalarContract.AuthorProbe(source);
+                    foreach(var field in ConscriptEditableScalars.Fields.Skip(1))ConscriptEditableScalars.Element(source,field).SetAttribute(field.Attribute,field.Attribute switch{"Amount"=>"111","MaxHealth"=>"543.25","VisionRange"=>"777.5","ShroudClearingRange"=>"654.25",_=>"88.5"});
+                    source.DocumentElement!.RemoveAttribute("UnitTypeIcon");source.DocumentElement.RemoveAttribute("UnitIntro");
+                    if(mode=="shared-defaults"){var icon=catalog.First(a=>a.TypeId==FastHash.GetHashCode("UnitTypeIcon"));source.DocumentElement.SetAttribute("UnitTypeIcon",icon.Name[(icon.Name.IndexOf(':')+1)..]);}
+                    if(mode=="shared-defaults")foreach(var field in ConscriptEditableScalars.Fields.Where(f=>f.Attribute is "MaxHealth" or "VisionRange" or "ShroudClearingRange" or "Speed"))ConscriptEditableScalars.Element(source,field).RemoveAttribute(field.Attribute);
+                    if(!ConscriptSourceInput.FixedAccepted(source,baseline,official))throw new InvalidDataException("Shared supported values were not accepted by the fixed source route.");
+                    // Reborn: after proving the unchanged topology accepts the same values, force genuinely different behavior topology through the shared native verifier.
+                    var clone=(XmlElement)original.First(e=>e.LocalName=="Physics").CloneNode(true);string id="RebornParityPhysics";origins.Add(id,clone.GetAttribute("id"));clone.SetAttribute("id",id);behaviors.AppendChild(clone);foreach(var child in behaviors.ChildNodes.OfType<XmlElement>().Reverse().ToArray())behaviors.AppendChild(child);
+                }
                 // Reborn: one batch exercises real source-sized armor/hardpoint/weapon lists, optional imports, defaults, flags and official weapon sorting.
                 if(mode.StartsWith("combat-",StringComparison.Ordinal)){
                     foreach(var entry in ConscriptArmorSetContract.Entries(source))source.DocumentElement!.RemoveChild(entry);
@@ -102,6 +113,8 @@ internal static class ConscriptModuleGraphSmokeTest
                 GameObjectConscriptTrialSmokeTest.Package(Path.Combine(output,mode+"-package"),source,streams,source.DocumentElement!.GetAttribute("id"),prefix);
                 // Reborn: corruption controls target independently owned module identity, container count and auxiliary tables, not just a repeated producer.
                 int address=ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,ConscriptModuleScalarContract.Owners(source).First(o=>o.Container=="Behaviors"));
+                // Reborn: permitting value edits never means accepting changed output bytes that disagree with the source, including optional root-import selectors.
+                if(mode.StartsWith("shared-",StringComparison.Ordinal))foreach(int at in ConscriptEditableScalars.Offsets(pair.Native.InstanceBuffer).Concat(GameObjectStrongReferenceContract.Fields.Select(f=>f.Offset))){var bad=Clone(pair.Native);bad.InstanceBuffer[at]^=1;Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;}
                 foreach(int at in new[]{address,address+4,(int)Word(pair.Native.InstanceBuffer,476)}){var bad=Clone(pair.Native);bad.InstanceBuffer[at]^=1;Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;}
                 foreach(bool relocations in new[]{true,false}){var bad=Clone(pair.Native);if(relocations)bad.RelocationBuffer=Array.Empty<byte>();else bad.ImportsBuffer=Array.Empty<byte>();Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;}
                 // Reborn: valid-range content changes and count/metadata corruption must still disagree with their actual authored combat data.

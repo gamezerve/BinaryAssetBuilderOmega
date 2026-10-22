@@ -134,27 +134,10 @@ internal static class ConscriptSourceInput
         foreach(var doc in new[]{qualified,model}){doc.Schemas.Add(schemas);doc.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));foreach(XmlAttribute attribute in doc.SelectNodes("//@*")!)attribute.Value=attribute.Value;}
         if(!Identity(input.DocumentElement!.GetAttribute("id")))throw new InvalidDataException("GameObject ID must be an ASCII identifier of 1..128 characters.");
         // Reborn: schema/native primitive capabilities validate all supported root values before structural masking; no gameplay-specific numeric caps are introduced.
-        GameObjectScalarContract.Validate(input);
-        // Reborn: fixed EP1 enums, KindOf masks and weak IDs use their schema/native contract rather than remaining trial-shape differences.
-        GameObjectRootAttributeContract.Validate(input);
-        // Reborn: root imports may retarget, disappear or return; complete native proof independently checks the resulting dependency reindex.
-        GameObjectStrongReferenceContract.Validate(input,baseline);
-        // Reborn: bounded root string allocations may change presence/length with independently checked native/token/auxiliary rebasing.
-        GameObjectRootStringContract.Validate(input,baseline);
-        // Reborn: reviewed existing modules expose schema/native fixed-width primitives while their structural/reference graph remains independently checked.
-        ConscriptModuleScalarContract.Validate(input);
-        // Reborn: local module IDs are validated as a whole scope rather than pinned to the captured stock tags.
-        ConscriptModuleIdentityContract.Validate(input);
-        foreach(var field in ConscriptEditableScalars.Fields)ConscriptEditableScalars.Read(qualified,field);
+        ConscriptSharedSourceContract.Validate(input,baseline,schemas);
         // Reborn: materialize schema-added default attributes before cloning; XmlDocument.CloneNode can lose their default value children.
         var copy=Parse(Encoding.UTF8.GetBytes(qualified.DocumentElement!.OuterXml));copy.DocumentElement!.SetAttribute("id",model.DocumentElement!.GetAttribute("id"));
-        foreach(var field in ConscriptEditableScalars.Fields)ConscriptEditableScalars.Element(copy,field).SetAttribute(field.Attribute,ConscriptEditableScalars.Element(model,field).GetAttribute(field.Attribute));
-        GameObjectScalarContract.Mask(copy,model);
-        GameObjectRootAttributeContract.Mask(copy,model);
-        GameObjectStrongReferenceContract.Mask(copy,model);
-        GameObjectRootStringContract.Mask(copy,model);
-        ConscriptModuleIdentityContract.Mask(copy,model);
-        ConscriptModuleScalarContract.Mask(copy,model);
+        ConscriptSharedSourceContract.Mask(copy,model);
         // Reborn: official source often uses bare mixed-case names while the captured graph stores qualified canonical references.
         // Reborn: already-canonical source keeps the old fast comparison path; only actual spelling/structure differences require extra schema typing.
         string actualSignature=Signature(copy.DocumentElement),modelSignature=Signature(model.DocumentElement);

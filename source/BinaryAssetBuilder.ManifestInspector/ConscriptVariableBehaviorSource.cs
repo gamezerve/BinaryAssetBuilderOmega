@@ -14,13 +14,11 @@ internal static class ConscriptVariableBehaviorSource
     //-------------------------------------------------------------------------------------------------
     internal static Plan Admit(XmlDocument source,XmlDocument baseline,XmlSchemaSet schemas)
     {
-        GameObjectScalarContract.Validate(source);GameObjectRootAttributeContract.Validate(source);ConscriptModuleScalarContract.Validate(source);ConscriptModuleIdentityContract.Validate(source);
+        ConscriptSharedSourceContract.Validate(source,baseline,schemas);
         if(!ConscriptSourceInput.Identity(source.DocumentElement!.GetAttribute("id")))throw SdkXmlDiagnostics.At(new InvalidDataException("Invalid GameObject identity."),source.DocumentElement);
         // Reborn: honor official weapon sortBy/boolean semantics before assigning common reference occurrences.
         ConscriptWeaponSetContract.Normalize(source);
         var actual=Qualified(source);var model=Qualified(baseline);
-        // Reborn: root localization keys are source values, including optional pointed names, rather than frozen stock text.
-        _=GameObjectRootTextContract.Read(source);
         // Reborn: nested numeric overflow must identify its authored attribute instead of failing later inside the native marshaler.
         foreach(var owner in ConscriptModuleScalarContract.Owners(source))ConscriptUpgradeStructure.ValidateSource(owner);
         var owners=ConscriptModuleScalarContract.Owners(actual);var originals=ConscriptModuleScalarContract.Owners(model);
@@ -39,13 +37,13 @@ internal static class ConscriptVariableBehaviorSource
         // Reborn: every other root/container retains the existing shape, but reviewed root and direct module fixed fields remain authorable.
         var copy=Clone(actual);var comparison=Clone(model);var oldBehaviors=Container(copy);
         oldBehaviors.ParentNode!.ReplaceChild(copy.ImportNode(Container(comparison),true),oldBehaviors);
-        copy.DocumentElement!.SetAttribute("id",comparison.DocumentElement!.GetAttribute("id"));GameObjectScalarContract.Mask(copy,comparison);GameObjectRootAttributeContract.Mask(copy,comparison);
+        copy.DocumentElement!.SetAttribute("id",comparison.DocumentElement!.GetAttribute("id"));ConscriptSharedSourceContract.Mask(copy,comparison);
         // Reborn: the native comparer checks text bytes and allocations independently after structural admission.
         GameObjectRootTextContract.Mask(copy,comparison);
         // Reborn: schema-valid ArmorSet lists are independently compiled, not pinned to the stock row count/presence.
         ConscriptArmorSetContract.Mask(copy,comparison);
         // Reborn: existing strong slots retain schema types/presence, but their target names are authored values on both compilation routes.
-        ConscriptModuleIdentityContract.Mask(copy,comparison);ConscriptModuleScalarContract.Mask(copy,comparison);ConscriptReferenceSpellings.Compare(copy,comparison,schemas,allowRetarget:true,allowUpgradeWeak:true);
+        ConscriptReferenceSpellings.Compare(copy,comparison,schemas,allowRetarget:true,allowUpgradeWeak:true);
         if(ConscriptSourceInput.Signature(copy.DocumentElement)!=ConscriptSourceInput.Signature(comparison.DocumentElement!))
         {
             string difference=ConscriptSourceInput.Difference(copy.DocumentElement,comparison.DocumentElement!,"GameObject",out var offending);

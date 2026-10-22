@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Xml;
+using System.Xml.Schema;
 using SageBinaryData;
 
 namespace BinaryAssetBuilder.ManifestInspector;
@@ -18,19 +19,38 @@ internal static class ConscriptEditableScalars
         new("a:VisionInfo", "ShroudClearingRange", 1, 5000),
         new("a:LocomotorSet", "Speed", 1, 500)
     };
+    // Reborn: optional nested primitive defaults come from the same official schema on every build/receipt path.
+    private static readonly Lazy<Dictionary<string,(string? Default,bool Required)>> defaults=new(()=>{
+        var schemas=ConscriptSourceInput.Schemas();var result=new Dictionary<string,(string?,bool)>();foreach(var field in Fields.Where(f=>f.Path!="."&&f.Attribute!="MaxHealth")){
+            string name=field.Path.Contains("BuildCost",StringComparison.Ordinal)?"MoneyTransaction":field.Path.Contains("VisionInfo",StringComparison.Ordinal)?"VisionInfo":"LocomotorSet";
+            var type=(XmlSchemaComplexType)schemas.GlobalTypes[new XmlQualifiedName(name,"uri:ea.com:eala:asset")]!;var attribute=(XmlSchemaAttribute)type.AttributeUses[new XmlQualifiedName(field.Attribute)]!;
+            result.Add(field.Attribute,(attribute.FixedValue??attribute.DefaultValue,attribute.Use==XmlSchemaUse.Required));
+        }return result;
+    });
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: require one existing selected attribute, invariant finite numbers and an explicit practical alpha range. */
+    /** Reborn: use authored values or actual schema/native defaults without inventing stock-value equality or gameplay-specific bounds. */
+    //-------------------------------------------------------------------------------------------------
+    internal static string Literal(XmlDocument source,Field field)
+    {
+        if(field.Path==".")return GameObjectScalarContract.Literal(source,field.Attribute);var element=Element(source,field);
+        if(field.Attribute=="MaxHealth")return ConscriptModuleScalarContract.Literal(element,field.Attribute,typeof(Ep1ActiveBodyModuleData));
+        if(element.HasAttribute(field.Attribute))return element.GetAttribute(field.Attribute);var rule=defaults.Value[field.Attribute];
+        if(rule.Required)throw SdkXmlDiagnostics.At(new InvalidDataException("Required scalar attribute is absent: "+field.Attribute),element);return rule.Default??"0";
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: read actual authored/default finite scalars using the concrete native type, not historical gameplay trial ranges. */
     //-------------------------------------------------------------------------------------------------
     internal static float Read(XmlDocument source, Field field)
     {
         // Reborn: optional MaxHealth follows its official module default rather than requiring an explicit historical six-value trial attribute.
-        string text = field.Path=="."?GameObjectScalarContract.Literal(source,field.Attribute):field.Attribute=="MaxHealth"?ConscriptModuleScalarContract.Literal(Element(source,field),field.Attribute,typeof(Ep1ActiveBodyModuleData)):Element(source, field).GetAttribute(field.Attribute);
+        string text = Literal(source,field);
         // Reborn: Min/Max remain historical regression vectors, not authoring limits; the schema and concrete native type define representability.
         if (!float.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out float value)
             || !float.IsFinite(value)
             || field.Integer && !uint.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out _))
-            throw new InvalidDataException($"Conscript {field.Attribute} must be {(field.Integer ? "an unsigned 32-bit integer" : "a finite 32-bit real")} allowed by its schema.");
+            throw SdkXmlDiagnostics.At(new InvalidDataException($"Conscript {field.Attribute} must be {(field.Integer ? "an unsigned 32-bit integer" : "a finite 32-bit real")} allowed by its schema."),Element(source,field).GetAttributeNode(field.Attribute)??(XmlNode)Element(source,field));
         return value;
     }
 
@@ -41,7 +61,7 @@ internal static class ConscriptEditableScalars
     {
         var ns = new XmlNamespaceManager(source.NameTable); ns.AddNamespace("a", "uri:ea.com:eala:asset");
         var nodes = source.DocumentElement!.SelectNodes(field.Path, ns)!;
-        if (nodes.Count != 1 || nodes[0] is not XmlElement element || !element.HasAttribute(field.Attribute) && field.Attribute!="MaxHealth")
+        if (nodes.Count != 1 || nodes[0] is not XmlElement element)
             throw new InvalidDataException("Conscript scalar owner absent/ambiguous: " + field.Attribute);
         return element;
     }
@@ -65,6 +85,6 @@ internal static class ConscriptEditableScalars
     /** Reborn: native floats and the unsigned cost field use their actual binary encodings rather than numeric byte searches. */
     //-------------------------------------------------------------------------------------------------
     internal static uint Bits(XmlDocument source, Field field) => field.Integer
-        ? uint.Parse(Element(source, field).GetAttribute(field.Attribute), CultureInfo.InvariantCulture)
+        ? uint.Parse(Literal(source,field), CultureInfo.InvariantCulture)
         : BitConverter.SingleToUInt32Bits(Read(source, field));
 }

@@ -12,6 +12,14 @@ Active development branch: `main` in `gamezerve/BinaryAssetBuilderOmega`.
 It contains the Uprising SDK work previously developed on
 `feature/ra3ep1-manifest-inspector`; the original `master` history is retained.
 
+<!-- Reborn: existing primitive/reference capabilities must not depend on the selected fixed, variable or mixed GameObject route. -->
+GameObject value admission now uses one shared source contract across fixed,
+variable-module and mixed-asset builds. Existing BuildCost Amount, MaxHealth,
+VisionRange, ShroudClearingRange and Locomotor Speed edits compose with variable
+Behaviors, text, other fixed values and changed root import presence. No stock
+`Amount=100` equality gate remains on the variable route. Supported defaults also
+follow the same contract. See [route parity](docs/RA3EP1_GAMEOBJECT_ROUTE_PARITY.md).
+
 <!-- Reborn: localization lookup joins asset/definition diagnostics without compiling or redistributing the game's translations. -->
 Build preflight now reports **MISSINGSTRING** warnings for localization keys
 absent from both the selected stock CSF and `Misc/Data/mod.str`. Existing stock

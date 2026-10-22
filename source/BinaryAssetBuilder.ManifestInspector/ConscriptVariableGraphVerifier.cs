@@ -46,11 +46,15 @@ internal sealed class ConscriptVariableGraphVerifier
         GameObjectScalarContract.VerifyAndRestore(source,b,cleared,stockNative);
         GameObjectRootAttributeContract.VerifyAndRestore(source,b,cleared,stockNative);
         ConscriptModuleScalarContract.Verify(source,b,0);
+        // Reborn: historical nested gameplay values are supported on fixed, variable and mixed graphs alike, with independent source-to-native checks.
+        var authoredValues=new Dictionary<int,uint>();var scalarOffsets=ConscriptEditableScalars.Offsets(b);
+        for(int i=1;i<scalarOffsets.Length;i++){uint expected=ConscriptEditableScalars.Bits(source,ConscriptEditableScalars.Fields[i]);if(Word(b,scalarOffsets[i])!=expected)throw new InvalidDataException("Authored nested value differs: "+ConscriptEditableScalars.Fields[i].Attribute);authoredValues.Add(scalarOffsets[i],expected);}
+        var rootImports=GameObjectStrongReferenceContract.Fields.ToDictionary(f=>"GameObject."+f.Name,f=>string.IsNullOrWhiteSpace(source.DocumentElement!.GetAttribute(f.Name))?(AssetId?)null:new AssetId(FastHash.GetHashCode(f.Name),InstanceHandle.GetInstanceId(source.DocumentElement.GetAttribute(f.Name))));
         var originalStock=stock.Bytes.ToArray();foreach(int at in Detached){Put(cleared,at,0);Put(originalStock,stock.Projection.NativeRoot+at,0);}
         var root=new Chunk{InstanceBuffer=cleared,RelocationBuffer=Pack(relos.Where(s=>!Detached.Contains((int)s))),ImportsBuffer=native.ImportsBuffer.ToArray()};
         var rootReferences=ReferenceTable(source,null);
         // Reborn: inline descriptions and optional pointed names use the same authored-text contract on variable graphs.
-        var rootComparer=new SelectedNativeGraphComparer(originalStock,rootReferences,root,instance,requireAllReferences:false,rootText:GameObjectRootTextContract.Read(source));
+        var rootComparer=new SelectedNativeGraphComparer(originalStock,rootReferences,root,instance,requireAllReferences:false,rootText:GameObjectRootTextContract.Read(source),authoredValues:authoredValues,rootImports:rootImports);
         var selection=rootComparer.CompareRootSelection(stock.Projection.NativeRoot);
         var covered=selection.Covered;var ownedRelos=new HashSet<uint>(selection.Relocations);var ownedImports=new HashSet<uint>(selection.Imports);
         // Reborn: source-sized armor storage owns its actual array/imports separately from the detached typed root.
@@ -137,7 +141,7 @@ internal sealed class ConscriptVariableGraphVerifier
         if(metadataOwned.Contains(false))throw new InvalidDataException("Unowned variable graph metadata.");return tokens;
 
         // Reborn: unchanged nonmodule owners retain independent complete stock payload comparison despite shifted addresses/reference indices.
-        void Fixed(Type type,int old,int start,int end){var leaf=Extract(native,start,end);var comparer=new SelectedNativeGraphComparer(stock.Bytes,rootReferences,leaf,instance,requireAllReferences:false,captureNativeCoordinates:false,captureNativePaths:true);comparer.Compare(type,old);fixedGraphs.Add(type==typeof(Ep1Geometry)?500:Ep1GameObjectRootOwnersProjection.Fields.Single(f=>f.NativeType==type).Slot,(start,end,type,comparer));Own(leaf,start,end);}
+        void Fixed(Type type,int old,int start,int end){var leaf=Extract(native,start,end);var values=authoredValues.Where(p=>p.Key>=start&&p.Key<end).ToDictionary(p=>p.Key-start,p=>p.Value);var comparer=new SelectedNativeGraphComparer(stock.Bytes,rootReferences,leaf,instance,requireAllReferences:false,captureNativeCoordinates:false,captureNativePaths:true,authoredValues:values);comparer.Compare(type,old);fixedGraphs.Add(type==typeof(Ep1Geometry)?500:Ep1GameObjectRootOwnersProjection.Fields.Single(f=>f.NativeType==type).Slot,(start,end,type,comparer));Own(leaf,start,end);}
         // Reborn: whole-graph ownership is the disjoint union of exact leaf allocations and their auxiliary sources.
         void Own(Chunk leaf,int start,int end){Cover(start,end-start);foreach(uint s in Slots(leaf.RelocationBuffer))Add(ownedRelos,s+(uint)start);foreach(uint s in Slots(leaf.ImportsBuffer))Add(ownedImports,s+(uint)start);}
         // Reborn: only the inline AI header may overlap the typed root's already verified bytes.
@@ -157,6 +161,8 @@ internal sealed class ConscriptVariableGraphVerifier
             actual.ParentNode!.ReplaceChild(document.ImportNode(baseline.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName=="Behaviors"),true),actual);
             // Reborn: untouched owners still use stock occurrence coordinates; the separate armor proof resolves actual authored rows.
             ConscriptArmorSetContract.Mask(document,baseline);
+            // Reborn: stock occurrence coordinates for other owners keep their baseline root prefix; the actual root import contract independently checks authored presence/targets.
+            GameObjectStrongReferenceContract.Mask(document,baseline);
         }else{
             var original=ConscriptModuleScalarContract.Owners(document).Single(o=>o.Element.GetAttribute("id")==templateId).Element;
             var replacement=(XmlElement)document.ImportNode(source,true);replacement.SetAttribute("id",templateId);original.ParentNode!.ReplaceChild(replacement,original);

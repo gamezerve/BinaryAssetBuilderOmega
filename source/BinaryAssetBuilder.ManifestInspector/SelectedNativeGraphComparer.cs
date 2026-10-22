@@ -29,6 +29,9 @@ internal sealed class SelectedNativeGraphComparer
     private readonly ConscriptUpgradeStructure.Plan? upgrade;
     // Reborn: only source-bound root localization fields may differ from stock string contents or presence.
     private readonly IReadOnlyDictionary<string,string?>? rootText;
+    // Reborn: source-checked nested primitive values and optional root imports are semantic expectations, not skipped bytes or frozen stock presence.
+    private readonly IReadOnlyDictionary<int,uint>? authoredValues;
+    private readonly IReadOnlyDictionary<string,AssetId?>? rootImports;
     internal Dictionary<string,(int Stock,int Compiled,int Size)> NativeRecords { get; } = new(StringComparer.Ordinal);
     private int scriptLineEndingEquivalences;
     private int records, strings;
@@ -41,8 +44,8 @@ internal sealed class SelectedNativeGraphComparer
     //-------------------------------------------------------------------------------------------------
     /** Reborn: stock and compiled graphs keep separate origins and semantic reference occurrence tables. */
     //-------------------------------------------------------------------------------------------------
-    internal SelectedNativeGraphComparer(byte[] stock, AssetId[] references, Chunk compiled, InstanceDeclaration instance, bool allowScriptCrLfEquivalent = false, bool requireAllReferences = true, bool captureNativeCoordinates = true, bool captureNativePaths = false,ConscriptUpgradeStructure.Plan? upgrade=null,IReadOnlyDictionary<string,string?>? rootText=null)
-    { this.stock = stock; stockReferences = references; this.compiled = compiled; this.instance = instance; this.allowScriptCrLfEquivalent = allowScriptCrLfEquivalent; this.requireAllReferences = requireAllReferences; this.captureNativeCoordinates = captureNativeCoordinates; this.captureNativePaths=captureNativePaths;this.upgrade=upgrade;this.rootText=rootText; covered = new bool[compiled.InstanceBuffer.Length]; }
+    internal SelectedNativeGraphComparer(byte[] stock, AssetId[] references, Chunk compiled, InstanceDeclaration instance, bool allowScriptCrLfEquivalent = false, bool requireAllReferences = true, bool captureNativeCoordinates = true, bool captureNativePaths = false,ConscriptUpgradeStructure.Plan? upgrade=null,IReadOnlyDictionary<string,string?>? rootText=null,IReadOnlyDictionary<int,uint>? authoredValues=null,IReadOnlyDictionary<string,AssetId?>? rootImports=null)
+    { this.stock = stock; stockReferences = references; this.compiled = compiled; this.instance = instance; this.allowScriptCrLfEquivalent = allowScriptCrLfEquivalent; this.requireAllReferences = requireAllReferences; this.captureNativeCoordinates = captureNativeCoordinates; this.captureNativePaths=captureNativePaths;this.upgrade=upgrade;this.rootText=rootText;this.authoredValues=authoredValues;this.rootImports=rootImports; covered = new bool[compiled.InstanceBuffer.Length]; }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: complete selected graph equality requires every native field, exact auxiliary ownership and no hidden nonzero/orphan heap allocations. */
@@ -96,6 +99,11 @@ internal sealed class SelectedNativeGraphComparer
                 if (generic == "Relo.AssetReference`1" || generic == "Relo.AssetReference`2")
                 {
                     uint oldIndex = Word(stock, a), newIndex = Word(compiled.InstanceBuffer, b);
+                    // Reborn: optional root fields can be absent or newly populated; exact authored identity and IMP ownership still have to match.
+                    if(rootImports!=null&&rootImports.TryGetValue(path,out var target)){
+                        if(target==null){if(newIndex!=0)throw new InvalidDataException("Absent authored root reference has an index at "+path);}
+                        else{if(newIndex==0||newIndex>instance.ReferencedInstances.Count)throw new InvalidDataException("Authored root reference index bounds at "+path);var handle=instance.ReferencedInstances[(int)newIndex-1];if(handle.TypeId!=target.TypeId||handle.InstanceId!=target.InstanceId)throw new InvalidDataException("Authored root reference identity differs at "+path);imports.Add((uint)b);}return;
+                    }
                     if ((oldIndex == 0) != (newIndex == 0)) throw new InvalidDataException("Reference presence differs at " + path);
                     if (oldIndex != 0)
                     {
@@ -206,6 +214,8 @@ internal sealed class SelectedNativeGraphComparer
     private void Equal(int a, int b, int length, string path)
     {
         Range(stock, a, length); Range(compiled.InstanceBuffer, b, length);
+        // Reborn: this address map is independently derived from source values and anchored native owners; every other field/padding byte retains exact stock comparison.
+        if(length==4&&authoredValues!=null&&authoredValues.TryGetValue(b,out uint expected)){if(Word(compiled.InstanceBuffer,b)!=expected)throw new InvalidDataException("Authored native value differs at "+path);return;}
         for (int i = 0; i < length; i++) if (stock[a + i] != compiled.InstanceBuffer[b + i]) throw new InvalidDataException($"Selected native mismatch {path}+{i}: stock={stock[a + i]:X2}, compiled={compiled.InstanceBuffer[b + i]:X2} (native {a + i}/{b + i}).");
     }
     //-------------------------------------------------------------------------------------------------
