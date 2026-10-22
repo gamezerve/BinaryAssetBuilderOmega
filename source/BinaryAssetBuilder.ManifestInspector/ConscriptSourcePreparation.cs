@@ -18,7 +18,7 @@ internal static class ConscriptSourcePreparation
         entry=SdkEnvironmentPreflight.Absolute(entry);string root=SdkEnvironmentPreflight.DirectoryPath(Path.GetDirectoryName(entry)!);
         byte[] initial=SdkEnvironmentPreflight.Read(entry,1048576);var first=Parse(initial,entry);
         // Reborn: preserve the previous standalone complete-object input without claiming it has an AssetDeclaration preprocessing context.
-        if(first.DocumentElement?.LocalName=="GameObject")return new(first,null,new[]{new ConscriptSourceInput.SourceFile(entry,Hash(initial))}){Locations=new(new[]{new SdkXmlDiagnostics.Snapshot(entry,initial)})};
+        if(first.DocumentElement?.LocalName is "GameObject" or "LogicCommandSet")return new(first,null,new[]{new ConscriptSourceInput.SourceFile(entry,Hash(initial))}){Locations=new(new[]{new SdkXmlDiagnostics.Snapshot(entry,initial)})};
         string fixture=ReferencePipelineSmokeTest.FindFixture();string output=Path.Combine(Path.GetTempPath(),"Reborn-SourcePlan-"+Guid.NewGuid().ToString("N"));
         var environment=new SdkEnvironmentPreflight.Report("ra3ep1",Path.GetDirectoryName(fixture)!,fixture,0,"",root,entry,Hash(initial),output,Array.Empty<SdkEnvironmentPreflight.Mapping>(),true,true,false,false,false,"0x5454A8E9",Array.Empty<string>());
         var paths=SdkSourcePathAudit.Inspect(environment,search:search);
@@ -48,13 +48,15 @@ internal static class ConscriptSourcePreparation
         Emit(entry);
         var games=assets.Where(a=>a.LocalName=="GameObject").ToArray();var commands=assets.Where(a=>a.LocalName=="LogicCommand").ToArray();
         // Reborn: support assets are explicit emitted declarations, not unwanted instance-base leakage or hidden generated data.
-        if(games.Length!=1)throw new InvalidDataException("This GameObject build route requires one emitted GameObject; imported bases must use type=instance.");
+        // Reborn: command-set-only mods use the same native graph without inventing a placeholder GameObject.
+        if(games.Length>1 || games.Length==0&&!assets.Any(a=>a.LocalName=="LogicCommandSet"))throw new InvalidDataException("This route requires one GameObject or explicit LogicCommandSet assets; imported bases must use type=instance.");
+        var primary=games.SingleOrDefault()??assets.First(a=>a.LocalName=="LogicCommandSet");
         var identities=assets.GroupBy(a=>a.LocalName+":"+a.GetAttribute("id"),StringComparer.OrdinalIgnoreCase);if(identities.Any(g=>g.Count()!=1))throw new InvalidDataException("Duplicate emitted asset identity.");
         foreach(var source in paths.Sources)if(Hash(SdkEnvironmentPreflight.Read(source.PhysicalPath,1048576))!=source.Sha256)throw new InvalidDataException("Source changed during inheritance/definition preparation.");
         // Reborn: XInclude fragments are real source dependencies, including hash and higher-priority mod-shadow checks before publication.
         foreach(var source in fragments.Sources)if(Hash(SdkEnvironmentPreflight.Read(source.Path,1048576))!=source.Sha256)throw new InvalidDataException("XInclude source changed during preparation: "+source.Path);
         var searches=paths.Searches.Concat(fragments.Searches).ToArray();SdkSourceSearch.Verify(searches);
-        return new(Detach(games[0]),commands.Length==0?null:Detach(commands[0]),paths.Sources.Select(s=>new ConscriptSourceInput.SourceFile(s.PhysicalPath,s.Sha256)).Concat(fragments.Sources).DistinctBy(s=>s.Path,StringComparer.OrdinalIgnoreCase).ToArray()){AdditionalAssets=assets.Where(a=>a!=games[0]&&(commands.Length==0||a!=commands[0])).Select(Detach).ToArray(),Searches=searches,Locations=new(snapshots.Select(s=>new SdkXmlDiagnostics.Snapshot(s.Key,s.Value)).Concat(fragments.Snapshots))};
+        return new(Detach(primary),commands.Length==0?null:Detach(commands[0]),paths.Sources.Select(s=>new ConscriptSourceInput.SourceFile(s.PhysicalPath,s.Sha256)).Concat(fragments.Sources).DistinctBy(s=>s.Path,StringComparer.OrdinalIgnoreCase).ToArray()){AdditionalAssets=assets.Where(a=>a!=primary&&(commands.Length==0||a!=commands[0])).Select(Detach).ToArray(),Searches=searches,Locations=new(snapshots.Select(s=>new SdkXmlDiagnostics.Snapshot(s.Key,s.Value)).Concat(fragments.Snapshots))};
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: all Includes contribute emitted owner assets; instance Includes are read by the existing engine but never emitted by this traversal. */

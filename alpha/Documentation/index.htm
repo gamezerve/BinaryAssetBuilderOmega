@@ -3,6 +3,14 @@
 <html lang="en"><head><meta charset="utf-8"><title>Uprising Mod SDK Alpha</title></head>
 <body>
 <h1>Uprising Mod SDK Alpha — live repository workspace</h1>
+<!-- Reborn: command-set primary graphs do not require a placeholder unit; weak IDs receive explicit availability diagnostics. -->
+<p>LogicCommandSet mods may now build without any GameObject. New IDs, stock overrides,
+source-sized Cmd lists and normal includes/inheritance are supported. Missing Cmd targets
+are errors. Missing SelectPortrait, ButtonImage (including transformed variants) and
+CommandSet weak asset names generate MISSINGASSET warnings with the source file, line,
+column and owner. Lookup checks both emitted mod assets and configured stock manifests;
+existing image lookup does not require compiling a new image. These weak warnings do not
+stop the build by themselves.</p>
 <!-- Reborn: report the new explicit mixed graph without implying unrestricted native processor coverage. -->
 <p>One complete supported GameObject can now compile alongside multiple ArmorTemplate,
 WeaponTemplate, LogicCommand and LogicCommandSet declarations in the same mod.

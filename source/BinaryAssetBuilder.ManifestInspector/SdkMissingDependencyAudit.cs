@@ -20,7 +20,7 @@ internal static class SdkMissingDependencyAudit
         public bool FullDependencyCoverage=>false;
         public bool GameExecuted=>false;
         // Reborn: distinguish captured source evidence from post-inheritance/default expansion and dynamic game-name lookup.
-        public string[] Limitations=>new[]{"Explicit source expression uses, schema-typed strong references and UpgradeTemplate weak references only.","Instance-only owners are not mod-produced assets; inherited/default fields absent from emitted raw owners require subsequent compiler checks.","Other weak IDs, arbitrary strings, dynamically loaded names and unsupported expression values are not proved present.","Stock catalog contains only the explicitly supplied manifests, not a recursive scan of game archives."};
+        public string[] Limitations=>new[]{"Explicit source expressions, schema-typed strong references, UpgradeTemplate, Image and LogicCommandSet weak references are checked.","Instance-only owners are not mod-produced assets; inherited/default fields absent from emitted raw owners require subsequent compiler checks.","Other weak IDs, arbitrary strings, dynamically loaded names and unsupported expression values are not proved present.","Stock catalog contains only the explicitly supplied manifests, not a recursive scan of game archives."};
     }
     private sealed record Definition(string Value,string Source,bool Usable,bool Broken);
 
@@ -96,7 +96,7 @@ internal static class SdkMissingDependencyAudit
                 }
 
             //-------------------------------------------------------------------------------------------------
-            /** Reborn: check only schema-declared strong asset references against compatible emitted/stock identities, never guess from ordinary strings. */
+            /** Reborn: check schema-declared strong and covered typed weak references against emitted/stock identities, never guess from ordinary strings. */
             //-------------------------------------------------------------------------------------------------
             void Check(XObject node,IXmlSchemaInfo? info,string value,string field)
             {
@@ -104,8 +104,10 @@ internal static class SdkMissingDependencyAudit
                 // Reborn: weak IDs may derive directly from string rather than AssetReference, so count their unproved uses before the strong-type gate.
                 // Reborn: UpgradeTemplate weak IDs have explicit asset semantics and must report genuine missing upgrades, not an unsupported module shape.
                 bool upgradeWeak=type.QualifiedName.Name=="UpgradeTemplateWeakRef";
-                if(!upgradeWeak && weakType!=null && XmlSchemaType.IsDerivedFrom(type,weakType,XmlSchemaDerivationMethod.None)){if(!string.IsNullOrWhiteSpace(value))deferred++;return;}
-                if(!upgradeWeak && (referenceType==null || !XmlSchemaType.IsDerivedFrom(type,referenceType,XmlSchemaDerivationMethod.None)))return;
+                // Reborn: UI images and command sets are schema-typed asset IDs too; weak lookup failures warn without manufacturing native imports.
+                bool diagnosticWeak=type.QualifiedName.Name is "ImageWeakRef" or "LogicCommandSetWeakRef";
+                if(!upgradeWeak && !diagnosticWeak && weakType!=null && XmlSchemaType.IsDerivedFrom(type,weakType,XmlSchemaDerivationMethod.None)){if(!string.IsNullOrWhiteSpace(value))deferred++;return;}
+                if(!upgradeWeak && !diagnosticWeak && (referenceType==null || !XmlSchemaType.IsDerivedFrom(type,referenceType,XmlSchemaDerivationMethod.None)))return;
                 // Reborn: list-valued/custom reference encodings require their own tokenization rather than hashing the whole list as one missing name.
                 if(type.Datatype?.Variety==XmlSchemaDatatypeVariety.List){deferred++;return;}
                 string? required=Annotation(info?.SchemaAttribute?.UnhandledAttributes)??Annotation(info?.SchemaElement?.UnhandledAttributes);
@@ -127,8 +129,8 @@ internal static class SdkMissingDependencyAudit
                 var local=matches.Where(a=>modIdentities.Contains((a.TypeId,a.InstanceId))).ToArray();if(local.Length!=0)matches=local;
                 uint selectedId=BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(selector);var exact=matches.Where(a=>a.TypeId==selectedId).ToArray();if(exact.Length!=0)matches=exact;
                 checkedReferences++;
-                if(matches.Length==0)Add("MISSINGASSET",selector+":"+name,node,path,field,"Unknown asset referenced from emitted source; not found in mod-produced assets or configured stock manifests.");
-                else if(matches.Length>1)Add("AMBIGUOUSASSET",selector+":"+name,node,path,field,"Multiple compatible concrete asset identities match this reference.");
+                if(matches.Length==0)Add("MISSINGASSET",selector+":"+name,node,path,field,"Unknown asset referenced from emitted source; not found in mod-produced assets or configured stock manifests.",diagnosticWeak?"Warning":"Error");
+                else if(matches.Length>1)Add("AMBIGUOUSASSET",selector+":"+name,node,path,field,"Multiple compatible concrete asset identities match this reference.",diagnosticWeak?"Warning":"Error");
             }
         }
         SdkSourceSearch.Verify(paths.Searches);
@@ -182,13 +184,13 @@ internal static class SdkMissingDependencyAudit
         //-------------------------------------------------------------------------------------------------
         /** Reborn: retain every use site with original XML line information, not only a deduplicated target name. */
         //-------------------------------------------------------------------------------------------------
-        void Add(string code,string target,XObject node,string path,string field,string detail)
+        void Add(string code,string target,XObject node,string path,string field,string detail,string severity="Error")
         {
             if(findings.Count>=4096)throw new InvalidDataException("Dependency finding limit reached; incomplete audit refused.");
             var line=(IXmlLineInfo)node;var element=node as XElement??(node as XAttribute)?.Parent;
             var owner=element?.AncestorsAndSelf().FirstOrDefault(e=>e.Name==XName.Get("Define",Ea))??element?.AncestorsAndSelf().LastOrDefault(e=>e.Attribute("id")!=null);
             string label=owner==null?"AssetDeclaration":owner.Name.LocalName+":"+(string?)(owner.Attribute("name")??owner.Attribute("id"));
-            findings.Add(new(code,"Error",target,label,path,line.HasLineInfo()?line.LineNumber:0,line.HasLineInfo()?line.LinePosition:0,field,detail));
+            findings.Add(new(code,severity,target,label,path,line.HasLineInfo()?line.LineNumber:0,line.HasLineInfo()?line.LinePosition:0,field,detail));
         }
     }
 

@@ -13,6 +13,14 @@ It contains the Uprising SDK work previously developed on
 `feature/ra3ep1-manifest-inspector`; the original `master` history is retained.
 
 <!-- Reborn: explicit support declarations now compile with the complete object instead of requiring pre-existing stock identities. -->
+<!-- Reborn: command-set-only builds and typed weak asset diagnostics use the same Studio workflow. -->
+LogicCommandSet mods now also build **without a GameObject**. Declare new IDs or
+stock overrides, source-sized Cmd lists and normal same-type inheritance/includes.
+SelectPortrait/ButtonImage (including transformed variants) and CommandSet IDs
+are now checked against emitted mod assets plus stock manifests. Missing names
+produce source-positioned `Warning: MISSINGASSET`; missing strong Cmd targets
+remain build errors. Existing image lookup does not require a new image compiler.
+
 The GameObject build route now accepts **one complete supported GameObject plus
 multiple ArmorTemplate, WeaponTemplate, LogicCommand and LogicCommandSet assets**
 in the same mod. New local IDs resolve before stock assets; declarations are

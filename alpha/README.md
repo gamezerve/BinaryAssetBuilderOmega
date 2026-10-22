@@ -2,6 +2,14 @@
 
 ## Build your mod
 
+<!-- Reborn: remove the dummy-unit requirement for command-set mods and expose weak UI/command-set typos. -->
+LogicCommandSet declarations can build alone, in all-included files or beside a
+GameObject. New IDs, stock overrides, zero or more Cmd entries and same-type
+inheritance are supported. Missing Cmd targets are errors. Missing SelectPortrait,
+ButtonImage, transformed image variants and CommandSet weak IDs now issue
+`MISSINGASSET` warnings with owner, file, line and column, using mod and stock
+identities. Weak warnings do not themselves stop compilation.
+
 <!-- Reborn: combine explicit custom support assets with the supported complete object in the normal Studio build. -->
 The GameObject route now compiles one complete supported GameObject together with
 multiple explicitly declared ArmorTemplate, WeaponTemplate, LogicCommand and

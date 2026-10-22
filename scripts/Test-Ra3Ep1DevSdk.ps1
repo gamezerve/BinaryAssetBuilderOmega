@@ -1,6 +1,6 @@
 # Reborn: exercise preserved fixtures only in RebornTest; never compile or modify the user's Reborn mod.
 [CmdletBinding()]
-param([switch]$IncludeRebornSourceMirror,[switch]$ReferenceRetargetingOnly,[switch]$ModuleValuesOnly,[switch]$DiagnosticsOnly,[switch]$VariableBehaviorsOnly,[switch]$UpgradeStructuresOnly,[switch]$RootTextOnly,[switch]$CombatListsOnly,[switch]$MultiAssetOnly)
+param([switch]$IncludeRebornSourceMirror,[switch]$ReferenceRetargetingOnly,[switch]$ModuleValuesOnly,[switch]$DiagnosticsOnly,[switch]$VariableBehaviorsOnly,[switch]$UpgradeStructuresOnly,[switch]$RootTextOnly,[switch]$CombatListsOnly,[switch]$MultiAssetOnly,[switch]$CommandSetsOnly)
 $ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$runtime=(Get-Process -Id $PID).Path;$driver=Join-Path $PSScriptRoot 'Invoke-Ra3Ep1DevAlphaBuild.ps1'
 $fixtures=Join-Path $repo 'tests/fixtures/live-alpha';$data=Join-Path $sdk 'mods/RebornTest/data';$output=Join-Path $sdk 'builtmods/RebornTest';$input=Join-Path $data 'mod.xml';$package=Join-Path $output 'RebornTest.big'
 $rows=[Collections.Generic.List[object]]::new();$userSource=Join-Path $sdk 'mods/Reborn/data/mod.xml';$userHash=(Get-FileHash -LiteralPath $userSource).Hash
@@ -60,7 +60,18 @@ try {
         foreach($file in $sourceHashes.Keys){if((Get-FileHash -LiteralPath $file).Hash-cne $sourceHashes[$file]){throw 'User source changed during read-only reproduction.'}}
     }
     # Reborn: qualify reference freedom with combined native-layout edits and publication-preserving refusals without replaying unrelated armor matrices.
-    if($MultiAssetOnly){
+    if($CommandSetsOnly){
+        # Reborn: compile stock override and inherited new-ID sets without a GameObject; one missing strong Cmd must preserve the successful package.
+        Set-TestFixture ConscriptBuildTime1
+        [IO.File]::WriteAllText($input,'<!-- Reborn: standalone command-set mod. --><AssetDeclaration xmlns="uri:ea.com:eala:asset"><Includes><Include type="all" source="DATA:CommandSets.xml"/></Includes></AssetDeclaration>')
+        $setsPath=Join-Path $data 'CommandSets.xml';$sets='<!-- Reborn: explicit stock and new command-set identities, no dummy unit. --><AssetDeclaration xmlns="uri:ea.com:eala:asset"><LogicCommandSet id="SovietBarracksCommandSet"><Cmd>Command_ConstructSovietAntiInfantryInfantry</Cmd></LogicCommandSet><LogicCommandSet id="RebornStandaloneSet" inheritFrom="SovietBarracksCommandSet"/></AssetDeclaration>'
+        [IO.File]::WriteAllText($setsPath,$sets);Invoke-TestCase CommandSetsWithoutGameObject $true
+        $receipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json
+        if($receipt.Core.AssetCount-ne 2 -or $receipt.Core.Asset-cne 'LogicCommandSet:SovietBarracksCommandSet' -or @($receipt.Core.Assets|Where-Object {$_ -like 'GameObject:*'}).Count){throw 'Standalone command-set graph receipt differs.'}
+        $good=(Get-FileHash -LiteralPath $package).Hash
+        [IO.File]::WriteAllText($setsPath,$sets.Replace('Command_ConstructSovietAntiInfantryInfantry','Command_RebornMissing'));Invoke-TestCase CommandSetMissingCmd $false
+        if((Get-FileHash -LiteralPath $package).Hash-cne $good){throw 'Missing command replaced a successful command-set package.'}
+    }elseif($MultiAssetOnly){
         # Reborn: explicitly authored local graph, deliberately declared in consumer-first order, with real DATA includes/definitions/inheritance.
         Set-TestFixture ConscriptBuildTime1;$game=[Xml.XmlDocument]::new();$game.PreserveWhitespace=$true;$game.Load($input);$game.DocumentElement.SetAttribute('id','RebornMixedConscript');$game.SelectSingleNode('//*[local-name()="DisplayName"]').InnerText='Name:RebornMixedConscript'
         $armors=@($game.SelectNodes('/*/*[local-name()="ArmorSet"]'));$armors[0].SetAttribute('Armor','RebornMixedVeteranArmor');$armors[-1].SetAttribute('Armor','RebornMixedArmor')

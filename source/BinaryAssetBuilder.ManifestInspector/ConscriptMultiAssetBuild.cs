@@ -26,15 +26,15 @@ internal static class ConscriptMultiAssetBuild
     //-------------------------------------------------------------------------------------------------
     internal static bool TryRun(string entry,string manifest,string global,string output)
     {
-        string additional=Path.Combine(Path.GetDirectoryName(entry)!,"additional.xml");if(!File.Exists(additional))return false;
+        string additional=Path.Combine(Path.GetDirectoryName(entry)!,"additional.xml");var source=Read(entry);bool hasGame=source.DocumentElement!.LocalName=="GameObject";if(!File.Exists(additional)&&hasGame)return false;
         var saved=Settings.Current;
         try{
             var official=ConscriptSourceInput.Schemas();string fixtures=Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!;
             Settings.Current=new Settings{SchemaPath=Path.Combine(fixtures,"TracerDrawPipeline.xsd"),BuildCache=false,StringHashBinDescriptors=Array.Empty<StringHashBinDescriptor>()};
             var schemas=new SchemaSet(false);foreach(var seed in schemas.Schemas.Schemas().Cast<System.Xml.Schema.XmlSchema>().ToArray())schemas.Schemas.Remove(seed);schemas.Schemas.Add(official);schemas.Schemas.Compile();typeof(SchemaSet).GetMethod("SetupHelperSchemaTypes",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(schemas,null);
             var catalogs=new[]{manifest,global}.Select(p=>ManifestReader.Read(SdkEnvironmentPreflight.Read(p,64*1048576))).ToArray();foreach(var d in catalogs){TypeRegistryAudit.ValidateTarget(d.Header.Version,d.Header.AllTypesHash);if(!d.Header.IsLinked||d.Validate().Count!=0)throw new InvalidDataException("Mixed build requires valid EP1 stock catalogs.");}
-            var stock=catalogs.SelectMany(d=>d.Assets).ToArray();var source=Read(entry);var sources=new List<XmlDocument>{source};
-            sources.AddRange(Read(additional).DocumentElement!.ChildNodes.OfType<XmlElement>().Select(e=>Xml(e.OuterXml)));
+            var stock=catalogs.SelectMany(d=>d.Assets).ToArray();var sources=new List<XmlDocument>{source};
+            if(File.Exists(additional))sources.AddRange(Read(additional).DocumentElement!.ChildNodes.OfType<XmlElement>().Select(e=>Xml(e.OuterXml)));
             string command=Path.Combine(Path.GetDirectoryName(entry)!,"command.xml");if(File.Exists(command))sources.Add(Read(command));
             var fingerprints=new Dictionary<uint,(uint Hash,bool Tokenized)>();var locals=new Dictionary<AssetId,XmlDocument>();
             foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet")||!ConscriptSourceInput.Identity(id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
@@ -43,14 +43,13 @@ internal static class ConscriptMultiAssetBuild
             // Reborn: source-only catalog entries resolve local names before native data exists; payloads are freshly compiled below, never copied from stock.
             var localEntries=locals.Select(p=>new ManifestAsset(p.Key.TypeId,p.Key.InstanceId,fingerprints[p.Key.TypeId].Hash,0,0,0,0,0,0,0,0,fingerprints[p.Key.TypeId].Tokenized?1u:0u,p.Value.DocumentElement!.LocalName+":"+p.Value.DocumentElement.GetAttribute("id"),"authored.xml",Array.Empty<AssetId>())).ToArray();
             var available=stock.Where(a=>!locals.ContainsKey(new(a.TypeId,a.InstanceId))).Concat(localEntries).ToArray();
-            var baseline=Read(Path.Combine(fixtures,"live-alpha/ConscriptBuildTime1/data/mod.xml"));baseline.DocumentElement!.SetAttribute("BuildTime","4");var plan=ConscriptVariableBehaviorSource.Admit(source,baseline,official);
+            var baseline=Read(Path.Combine(fixtures,"live-alpha/ConscriptBuildTime1/data/mod.xml"));baseline.DocumentElement!.SetAttribute("BuildTime","4");var plan=hasGame?ConscriptVariableBehaviorSource.Admit(source,baseline,official):null;
             var built=new Dictionary<AssetId,Built>();int prefix=0;
             foreach(var xml in sources){
                 string type=xml.DocumentElement!.LocalName;InstanceDeclaration instance;AssetBuffer buffer;
                 if(type=="GameObject"){
-                    instance=Normalize(xml);var native=GameObjectBodyProjectionSmokeTest.Compile(Xml(instance.XmlNode.OuterXml),true,true,true);var verifier=new ConscriptVariableGraphVerifier(official,manifest,baseline,schemas,available);var tokens=verifier.Verify(xml,native,instance,plan.Origins);prefix=tokens.InstanceBuffer.Length-native.InstanceBuffer.Length;buffer=Buffer(tokens);
-                    // Reborn: weak CommandSet names are not imports, but an explicitly authored set must resolve in the same local/stock namespace.
-                    string set=xml.DocumentElement.GetAttribute("CommandSet");if(set.Length>0&&available.Count(a=>a.TypeId==FastHash.GetHashCode("LogicCommandSet")&&a.InstanceId==InstanceHandle.GetInstanceId(set))!=1)throw SdkXmlDiagnostics.At(new InvalidDataException("Missing LogicCommandSet: "+set),xml.DocumentElement.GetAttributeNode("CommandSet"));
+                    instance=Normalize(xml);var native=GameObjectBodyProjectionSmokeTest.Compile(Xml(instance.XmlNode.OuterXml),true,true,true);var verifier=new ConscriptVariableGraphVerifier(official,manifest,baseline,schemas,available);var tokens=verifier.Verify(xml,native,instance,plan!.Origins);prefix=tokens.InstanceBuffer.Length-native.InstanceBuffer.Length;buffer=Buffer(tokens);
+                    // Reborn: weak CommandSet availability is reported consistently by the common mod/stock audit, without pretending it is a native import.
                 }else if(type=="ArmorTemplate"){
                     instance=Normalize(xml);var plugin=new Ra3Ep1ArmorPlugin();plugin.Initialize(TargetPlatform.Win32);buffer=plugin.ProcessInstance(instance);
                 }else if(type=="WeaponTemplate"){
@@ -71,6 +70,8 @@ internal static class ConscriptMultiAssetBuild
             var runtime=new ReferencedFileBuffer();typeof(OutputManager).GetMethod("AddExternalManifestReferences",BindingFlags.NonPublic|BindingFlags.Static)!.Invoke(null,new object[]{runtime,new[]{Path.GetFullPath(manifest),Path.GetFullPath(global)},"data\\static.manifest;data\\global.manifest"});
             var streams=BoundedDiagnosticBuild.SerializeAssetGraph(instances,chunks,checksum,runtime,flags,fingerprints);var repeated=BoundedDiagnosticBuild.SerializeAssetGraph(instances,chunks,checksum,runtime,flags,fingerprints);if(streams.Any(p=>!p.Value.SequenceEqual(repeated[p.Key])))throw new InvalidDataException("Mixed stream serialization is not deterministic.");
             Directory.CreateDirectory(output);string verification=Path.Combine(output,"stream-readback");ModifierFXStreamSmokeTest.WriteNew(verification,streams);BoundedDiagnosticBuild.Verify(verification,instances,chunks,streams,checksum,new[]{"data\\static.manifest","data\\global.manifest"},flags);
+            // Reborn: pure command-set graphs publish through the same verified stream/archive contract without a dummy unit.
+            if(!hasGame){PackageSupport(output,source,streams,instances,stock);return true;}
             string gameId=source.DocumentElement!.GetAttribute("id"),package=Path.Combine(output,gameId=="SovietAntiInfantryInfantry"?"override":"new-id");GameObjectConscriptTrialSmokeTest.Package(package,source,streams,gameId,prefix);
             // Reborn: the legacy package receipt keeps its primary-object contract, while explicitly reporting the complete mixed declaration graph.
             string receiptPath=Path.Combine(package,"trial-plan.json");var receipt=JsonNode.Parse(File.ReadAllText(receiptPath))!;receipt["ReferenceOccurrences"]=built[new(FastHash.GetHashCode("GameObject"),InstanceHandle.GetInstanceId(gameId))].Instance.ReferencedInstances.Count;receipt["CommandOverride"]=ordered.FirstOrDefault(b=>b.Source.DocumentElement!.LocalName=="LogicCommand")?.Instance.Handle.Name;receipt["MultiAsset"]=true;receipt["Assets"]=JsonSerializer.SerializeToNode(instances.Select(i=>i.Handle.Name));receipt["LocalEdges"]=JsonSerializer.SerializeToNode(ordered.SelectMany(b=>b.Instance.ReferencedInstances.Where(r=>locals.ContainsKey(new(r.TypeId,r.InstanceId))).Select(r=>new{Owner=b.Instance.Handle.Name,Target=r.Name})));
@@ -86,6 +87,18 @@ internal static class ConscriptMultiAssetBuild
             // Reborn: cycles in strong local dependencies cannot be silently emitted in an arbitrary guessed order.
             void Visit(AssetId id){if(done.Contains(id))return;if(!active.Add(id))throw new InvalidDataException("Cyclic local strong asset dependency: "+built[id].Instance.Handle.Name);foreach(var r in built[id].Instance.ReferencedInstances){var target=new AssetId(r.TypeId,r.InstanceId);if(built.ContainsKey(target))Visit(target);}active.Remove(id);done.Add(id);ordered.Add(built[id]);}
         }finally{Settings.Current=saved;}
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: package an explicit command-set primary and its authored dependencies, with exact BIG entry readback and no runtime claims. */
+    //-------------------------------------------------------------------------------------------------
+    private static void PackageSupport(string output,XmlDocument source,Dictionary<string,byte[]> streams,InstanceDeclaration[] instances,ManifestAsset[] stock)
+    {
+        string directory=Path.Combine(output,"support");Directory.CreateDirectory(directory);string[] extensions={".manifest",".bin",".relo",".imp"};var payloads=extensions.Select(e=>streams["diagnostic"+e]).ToArray();byte[] bytes=ArmorDiagnosticPackage.Serialize(payloads,true,true);string path=Path.Combine(directory,"RebornConscriptProbe.big");File.WriteAllBytes(path,bytes);
+        using(var archive=BigArchive.Open(path,15,4096)){if(archive.Entries.Count!=15)throw new InvalidDataException("Command-set package entry count differs.");foreach(string suffix in new[]{"","_l","_m"})foreach(string extension in extensions.Concat(new[]{".version"})){var entry=archive.Entries.Single(e=>e.Name=="data\\mod"+suffix+extension);byte[] expected=extension==".version"?Encoding.ASCII.GetBytes("\r\n"):streams["diagnostic"+extension];if(!archive.ReadEntry(entry,1048576).SequenceEqual(expected))throw new InvalidDataException("Command-set package readback differs.");}}
+        string name=source.DocumentElement!.LocalName+":"+source.DocumentElement.GetAttribute("id");var primary=instances.Single(i=>i.Handle.Name==name);
+        var receipt=new{Asset=name,AssetCount=instances.Length,Assets=instances.Select(i=>i.Handle.Name),MultiAsset=true,ReferenceOccurrences=primary.ReferencedInstances.Count,AutomaticCommandGenerated=false,ArchiveEntryCount=15,ArchiveSha256=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes)),SourceSha256=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(source.DocumentElement.OuterXml))),OfflineValidated=true,NewIdentity=!stock.Any(a=>a.Name==name),GameExecuted=false,InstalledFilesModified=false,RuntimeReady=false,InstanceHashPolicy="experimental-normalized-source"};
+        File.WriteAllText(Path.Combine(directory,"trial-plan.json"),JsonSerializer.Serialize(receipt,new JsonSerializerOptions{WriteIndented=true}));Console.WriteLine("Reborn: command-set graph compiled: "+instances.Length+" explicit asset(s); no placeholder GameObject, generated commands or game launch.");
     }
 
     //-------------------------------------------------------------------------------------------------

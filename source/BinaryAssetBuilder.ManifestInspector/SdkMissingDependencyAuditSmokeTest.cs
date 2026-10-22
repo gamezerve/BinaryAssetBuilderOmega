@@ -28,17 +28,24 @@ internal static class SdkMissingDependencyAuditSmokeTest
           <xs:simpleType name="ThingRef" xas:refType="Thing"><xs:restriction base="AssetReference"/></xs:simpleType>
           <!-- Reborn: upgrade trigger IDs are typed weak asset references, unlike unconstrained dynamic-name strings. -->
           <xs:simpleType name="UpgradeTemplateWeakRef" xas:refType="UpgradeTemplate"><xs:restriction base="WeakReference"/></xs:simpleType>
+          <!-- Reborn: missing portraits/buttons and command-set IDs need typed weak-reference diagnostics too. -->
+          <xs:simpleType name="ImageWeakRef" xas:refType="PackedTextureImage"><xs:restriction base="WeakReference"/></xs:simpleType>
+          <xs:simpleType name="LogicCommandSetWeakRef" xas:refType="LogicCommandSet"><xs:restriction base="WeakReference"/></xs:simpleType>
           <xs:complexType name="Base"><xs:attribute name="id" type="xs:string"/></xs:complexType>
           <xs:complexType name="Thing"><xs:complexContent><xs:extension base="Base"/></xs:complexContent></xs:complexType>
           <xs:complexType name="SpecificThing"><xs:complexContent><xs:extension base="Thing"/></xs:complexContent></xs:complexType>
           <xs:complexType name="OtherSpecificThing"><xs:complexContent><xs:extension base="Thing"/></xs:complexContent></xs:complexType>
           <xs:complexType name="OtherThing"><xs:complexContent><xs:extension base="Base"/></xs:complexContent></xs:complexType>
           <xs:complexType name="UpgradeTemplate"><xs:complexContent><xs:extension base="Base"/></xs:complexContent></xs:complexType>
+          <xs:complexType name="PackedTextureImage"><xs:complexContent><xs:extension base="Base"/></xs:complexContent></xs:complexType>
+          <xs:complexType name="LogicCommandSet"><xs:complexContent><xs:extension base="Base"/></xs:complexContent></xs:complexType>
           <xs:complexType name="User"><xs:complexContent><xs:extension base="Base">
             <xs:attribute name="Target" type="ThingRef"/><xs:attribute name="Number" type="xs:string"/>
             <xs:attribute name="Note" type="xs:string"/>
             <xs:attribute name="Weak" type="WeakReference"/>
             <xs:attribute name="Upgrade" type="UpgradeTemplateWeakRef"/>
+            <xs:attribute name="SelectPortrait" type="ImageWeakRef"/><xs:attribute name="ButtonImage" type="ImageWeakRef"/>
+            <xs:attribute name="CommandSet" type="LogicCommandSetWeakRef"/>
           </xs:extension></xs:complexContent></xs:complexType>
           <xs:element name="Thing" type="Thing"/><xs:element name="SpecificThing" type="SpecificThing"/><xs:element name="User" type="User"/>
           <xs:element name="AssetDeclaration"><xs:complexType><xs:sequence>
@@ -99,6 +106,11 @@ internal static class SdkMissingDependencyAuditSmokeTest
         var upgradePaths=paths with{Sources=new[]{sources.Last()},Includes=Array.Empty<SdkSourcePathAudit.Edge>()};
         var upgradeReport=SdkMissingDependencyAudit.Analyze(upgradeEntry,upgradePaths,schemas,new[]{SdkMissingDependencyAudit.Identity("UpgradeTemplate","Upgrade_AlliesFaction")});
         Require(upgradeReport.Findings.Length==1&&upgradeReport.Findings[0].Code=="MISSINGASSET"&&upgradeReport.Findings[0].Target=="UpgradeTemplate:Upgrade_AlliesFactaon"&&upgradeReport.Findings[0].Line>0,"Typed upgrade weak dependency validation differs.");
+        // Reborn: intentional typos report all three use sites; local and stock identities satisfy weak references without requiring a resource compiler.
+        string weakEntry=Store("ui-command-weak.xml","<User id='Bad' SelectPortrait='MissingPortrait' ButtonImage='MissingButton' CommandSet='MissingSet'/><User id='Good' SelectPortrait='StockPortrait' ButtonImage='LocalButton' CommandSet='LocalSet'/><PackedTextureImage id='LocalButton'/><LogicCommandSet id='LocalSet'/><User id='Empty' SelectPortrait='' ButtonImage='' CommandSet=''/>");
+        var weakPaths=paths with{Sources=new[]{sources.Last()},Includes=Array.Empty<SdkSourcePathAudit.Edge>()};var weakStock=new[]{SdkMissingDependencyAudit.Identity("PackedTextureImage","StockPortrait")};
+        var weakReport=SdkMissingDependencyAudit.Analyze(weakEntry,weakPaths,schemas,weakStock);
+        Require(weakReport.Findings.Length==3&&weakReport.Findings.All(f=>f.Code=="MISSINGASSET"&&f.Severity=="Warning"&&f.Owner=="User:Bad"&&f.Line>0&&f.Column>0)&&weakReport.Findings.Select(f=>f.Field).Distinct().Count()==3,"Portrait/button/command-set weak warnings or local/stock resolution differ.");
         File.WriteAllText(Path.Combine(output,"report.json"),System.Text.Json.JsonSerializer.Serialize(report,new System.Text.Json.JsonSerializerOptions{WriteIndented=true}));
         Console.WriteLine("Reborn: missing dependency audit: PASS (aggregate missing assets/definitions, chain owners, mod+stock union, wrong types, instance-only exclusion, forward/private scope, diamond/quoted controls, positions and stale-source refusal).");
 
