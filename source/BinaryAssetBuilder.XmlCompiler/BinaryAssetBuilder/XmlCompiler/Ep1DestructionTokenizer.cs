@@ -20,7 +20,8 @@ public static class Ep1DestructionTokenizer
             throw new InvalidDataException("Destruction tokenizer requires a bounded native module.");
         byte[] b = native.InstanceBuffer;
         uint count = Word(b, 64);
-        if (Word(b, 0) != 0x0D96A2F4u || count < 1 || count > 256 || Word(b, 68) != 72 ||
+        // Reborn: item cardinality is bounded by the actual native buffer, not the former experiment's 256-row quota.
+        if (Word(b, 0) != 0x0D96A2F4u || count < 1 || count > (b.Length-72)/20 || Word(b, 68) != 72 ||
             Word(b, 8) != 0 || Word(b, 12) != 0 || Word(b, 16) != 0 || Word(b, 20) != 0 || 72 + count * 20 > b.Length)
             throw new InvalidDataException("Destruction tokenizer requires canonical items and reviewed empty/absent DieMux storage.");
         var relos = new List<uint> { 68 }; var imports = new List<uint>();

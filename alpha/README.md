@@ -2,6 +2,26 @@
 
 ## Build your mod
 
+<!-- Reborn: optional resource information does not imply a synthetic free-production transaction. -->
+ObjectResourceInfo may be absent or empty, and BuildCost may contain multiple
+rows. Each row requires Account and Amount within uint32. The compiler preserves
+absence versus an explicit zero-cost row. See [resource rules](../docs/RA3EP1_RESOURCE_INFO.md).
+
+<!-- Reborn: multiple emitted objects retain independent native proofs and explicit commands; implemented nested attributes are no longer stock constants. -->
+You may now declare multiple supported GameObjects in the same mod. Each needs
+its own ID; recruitment still requires explicit LogicCommand/LogicCommandSet
+entries. Implemented fixed values in BuildCost, EP1 VisionInfo, LocomotorSet,
+Geometry and its existing Shape records are editable. This does not yet enable
+arbitrary whole-record allocation or every list topology. Geometry Shape/ContactPoint
+lists and optional placement/rotation records are now supported separately; see
+[Geometry coverage](../docs/RA3EP1_VARIABLE_GEOMETRY.md). See
+[current coverage](../docs/RA3EP1_NESTED_VALUES_AND_MULTIPLE_OBJECTS.md).
+
+<!-- Reborn: implemented movement arrays are no longer pinned to one Conscript row or a 32-entry experiment quota. -->
+LocomotorSet is now source-sized: omit it or declare multiple rows, including
+EP1 Condition values, default scalar fields and optional Locomotor references.
+The former one/32-row constraints are removed. See [details](../docs/RA3EP1_LOCOMOTOR_LISTS.md).
+
 <!-- Reborn: common value support is shared by every GameObject build path, including variable modules and local support assets. -->
 BuildCost Amount, MaxHealth, VisionRange, ShroudClearingRange and Locomotor Speed
 edits now compose with variable Behaviors and mixed local assets. Fixed and
@@ -26,9 +46,20 @@ ButtonImage, transformed image variants and CommandSet weak IDs now issue
 `MISSINGASSET` warnings with owner, file, line and column, using mod and stock
 identities. Weak warnings do not themselves stop compilation.
 
+<!-- Reborn: upgrades are explicit standalone or mixed assets; weak references never manufacture their definitions. -->
+UpgradeTemplate authoring is enabled for new IDs and stock overrides, including
+all official existing fields and optional GameDependency. Upgrade-only mods,
+all/instance includes, same-type inheritance and definitions use the same Studio
+build. Five complete source/stream/BIG cases pass, including mixed objects and
+real audio/EVA/FX imports. No research button or command is generated implicitly.
+See [UpgradeTemplate support and example](../docs/RA3EP1_UPGRADE_TEMPLATE.md).
+The complete original EA `GlobalData/upgrade.xml` passes as a DATA all-Include:
+97 explicit upgrades compile together and pass stream/BIG validation, including
+their original inheritance and split GameDependency source declarations.
+
 <!-- Reborn: combine explicit custom support assets with the supported complete object in the normal Studio build. -->
-The GameObject route now compiles one complete supported GameObject together with
-multiple explicitly declared ArmorTemplate, WeaponTemplate, LogicCommand and
+The GameObject route now compiles multiple complete supported GameObjects together with
+multiple explicitly declared ArmorTemplate, WeaponTemplate, UpgradeTemplate, LogicCommand and
 LogicCommandSet assets. New local IDs take precedence over stock lookup. Include
 order does not determine dependency order; same-type inheritance and `$`
 definitions work together. New recruitment needs your explicit UNIT_BUILD command
@@ -98,7 +129,7 @@ readable `builtmods/<name>/last-build.log`; current failures are recorded in
 `.work/last-failure.log`. This presentation change does not enable new asset
 types or resolve existing inheritance restrictions.
 
-Current RebornTest uses five EA-shaped XML files: `data/mod.xml` (Includes),
+Current RebornTest uses five EA-shaped XML files: `data/Static_Mod.xml` (Includes),
 `data/Conscript.xml` (derived unit), `data/ConscriptBase.xml` (complete instance base),
 `data/Defines.xml` (BuildTime definition), `data/CommandData.xml` (explicit command).
 Change `REBORN_CONSCRIPT_BUILD_TIME` in Defines.xml to edit the inherited unit's
@@ -123,7 +154,8 @@ are separate capabilities, not enabled by this change.
 Existing reviewed modules now expose 412 primitive/enum/fixed-flag attribute slots
 and editable local module IDs. Duplicate ID hashes and invalid values fail the
 build. Fixed flags support named values and `ALL`; signed flag operations are
-not enabled by this contract. Module topology remains fixed. See the
+not enabled by this scalar-only contract. Reviewed variable module containers
+are now covered separately below. See the
 [exact capability scope](../docs/RA3EP1_MODULE_VALUE_CAPABILITIES.md).
 
 DATA/ART/AUDIO use mod-first, then stock SDK lookup; DATA defaults to adjacent
@@ -136,8 +168,130 @@ See [source search details](../docs/RA3EP1_SOURCE_SEARCH.md). Locating resources
 does not yet enable W3X/audio compilation.
 
 Open **`alpha/EALAModStudio.exe`**. This is the user-facing entry point.
-Select `Reborn` or `RebornTest`, edit its `alpha/mods/<name>/data/mod.xml`, then click
+Select `Reborn` or `RebornTest`, edit its `alpha/mods/<name>/data/Static_Mod.xml`, then click
 **Build Mod** in Studio. Read Build Log / Error Log for the result.
+
+The live entry filename is `Static_Mod.xml` (formerly `mod.xml`). This is a source
+entry rename only: it does not rename the packaged stream or shadow the stock
+`DATA:static.xml`. Historical regression fixtures retain their original names.
+
+`StructureSellUpdate` now supports source-authored `SellTime`,
+`ActiveModelCondition`, local IDs and repeated instances on the qualified
+GameObject composition path. This does not yet enable complete refinery graphs;
+`BuildingDestructionBehavior` now supports source-sized destruction items,
+bone strings, FX imports, weak debris IDs and scalar DieMux data. Three complete
+stream/BIG cases pass, including 257 Items; variable DieMux status/veterancy
+storage is still unsupported. See [destruction support](../docs/RA3EP1_BUILDING_DESTRUCTION.md).
+`QueueDockBehavior` now compiles its five authored bone names, optional docking
+condition and multiple local instances with independent stock/native/metadata
+proof. Three full stream/BIG cases pass; model-bone existence and runtime docking
+are not certified. See [QueueDock support](../docs/RA3EP1_QUEUE_DOCK.md).
+`QueueProductionExitUpdate` now supports authored angle, delay, burst, packed
+flags and both required position vectors, including defaults and multiple local
+instances. Three complete stream/BIG cases and the original Conscript regression
+pass. See [queue-exit support](../docs/RA3EP1_QUEUE_PRODUCTION_EXIT.md).
+`SpawnBehavior` now supports its EP1 status-validation pointer, all sixteen own
+flags, source-sized weak spawn/upgrade lists and optional animation/Die/status
+records. The legacy KW layout remains separate.
+See [SpawnBehavior support](../docs/RA3EP1_SPAWN_BEHAVIOR.md).
+`StructureUnpackUpdate` now supports its actual GenericUnpack inheritance,
+authored time/water-height offset and optional retargeted audio import.
+`ProductionUpdate` now supports every EP1 scalar (including WATERCRAFT and
+NewObjectFadeInTime), defaults and multiple local instances. GiveUpgradeToProduced
+now supports source-sized upgrade translation pairs and independently optional
+RequiredUpgrade/ProvidedUpgrade references, qualified against stock Barracks data.
+Three complete stream/BIG cases pass (375 native/98 metadata faults), including
+five-row and multiple-module graphs; the empty-profile regression also passes.
+BonusForType and populated QuantityModifier/ProductionModifier remain unsupported.
+Reborn Barracks + refinery source preparation passes; the next full-build stop is
+the Barracks frozen draw Material/shader constants. Sources were not changed to
+skip this remaining unsupported draw layout.
+See [ProductionUpdate support](../docs/RA3EP1_PRODUCTION_UPDATE.md).
+`RepairUpdate` supports its own scalars and inline percent records, defaults and
+multiple instances; populated SelfAudio is still refused.
+See [RepairUpdate support](../docs/RA3EP1_REPAIR_UPDATE.md).
+`EngineerContain` supports every attribute, retargeted FX/EVA references and a
+source-sized CanEnterFilter; an authored filter id is still refused.
+See [EngineerContain support](../docs/RA3EP1_ENGINEER_CONTAIN.md).
+`AssistedPlacementBehavior` supports hint masks, snapping distance and an optional
+requirement filter. See [AssistedPlacement support](../docs/RA3EP1_ASSISTED_PLACEMENT.md).
+`InfiltratorContain` supports every attribute, including schema-default references.
+See [InfiltratorContain support](../docs/RA3EP1_INFILTRATOR_CONTAIN.md).
+`StructurePlacementBehavior` supports the full restricted-area shape. See
+[StructurePlacement support](../docs/RA3EP1_STRUCTURE_PLACEMENT.md).
+`LUAEventList` supports `EventListName`. See [LUAEventList support](../docs/RA3EP1_LUA_EVENT_LIST.md).
+`FXListBehavior` supports authored DieMuxData masks/thresholds/status/veterancy,
+source-sized Event lists, optional FX imports, all fourteen EP1 event kinds and
+multiple local instances. The building ALL-death case and expanded/multiple
+stream/BIG cases pass, as does the original Conscript regression.
+See [FXListBehavior support](../docs/RA3EP1_FX_LIST_BEHAVIOR.md).
+`SecondaryDamageTracker` now supports source-sized/empty EffectInfo lists,
+optional HDR color and status records, modifier retargeting/omission, both
+options and multiple instances. The three package cases and unchanged Conscript
+regression pass. See [tracker support](../docs/RA3EP1_SECONDARY_DAMAGE_TRACKER.md).
+`CreateObjectDie` and `DestroyDie` now support authored death/status/veterancy
+conditions; creation additionally supports optional OCL and strong upgrade lists.
+Normal/water/default/expanded combined packages and the original regression pass.
+See [death behavior support](../docs/RA3EP1_DEATH_BEHAVIORS.md).
+<!-- Reborn: distinguish source-driven container topology from unsupported nested draw/state authoring. -->
+Draws, ClientUpdates and ClientBehaviors now allow source-sized/reordered/repeated
+reviewed leaves, omissions and allocated-empty lists. Complete stream/BIG proof
+passes for reversed/expanded/omitted/empty cases and 129 ClientUpdates (five cases;
+64 native and 86 metadata corruption controls). See
+[variable containers](../docs/RA3EP1_VARIABLE_MODULE_CONTAINERS.md).
+<!-- Reborn: source-sized Geometry and optional placement/rotation/contact records retain complete native/metadata proof. -->
+Geometry now supports authored Shape/ContactPoint lists, optional placement,
+rotation, offsets and strings. Three package cases pass, including four original
+refinery Shapes and 33 Shapes plus 129 ContactPoints; 48 native and 63 metadata
+corruption controls pass. See [variable Geometry](../docs/RA3EP1_VARIABLE_GEOMETRY.md).
+<!-- Reborn: optional build prerequisites are real authored weak-ID records, not a generated dependency/asset replacement. -->
+GameDependency now supports absent/empty/populated records, weak object/upgrade
+lists, optional masks and independently supported ObjectFilter fields. Four
+stream/BIG cases pass (191 native/84 metadata corruption controls). See
+[build prerequisites](../docs/RA3EP1_GAME_DEPENDENCY.md).
+<!-- Reborn: source-sized optional root owners retain independent native/metadata checks. -->
+AudioArraySound, optional ShadowInfo and repeated ProjectedBuildabilityInfo now
+follow authored presence/counts. Three complete package cases pass, rejecting
+51 native/48 metadata corruptions; original Conscript and expanded Geometry
+also pass. See [extended root coverage](../docs/RA3EP1_EXTENDED_GAMEOBJECT_ROOTS.md).
+<!-- Reborn: optional building AI roots and existing AIUpdate enum/mask values are no longer fixed to Conscript. -->
+SkirmishAIInformation now supports omission/defaults, optional metrics/masks,
+both base-selection criteria and DodgeWithUnits. AIUpdate mask/state values
+are also editable. Four stream/package cases pass (111 native/75 metadata
+faults rejected), alongside original Conscript and three extended-root regressions;
+see [AI coverage](../docs/RA3EP1_SKIRMISH_AI_ROOT.md).
+<!-- Reborn: optional chooser storage and imports are source-owned rather than stock-shaped. -->
+AIUpdate supports absent/default/edited UnitAITargetChooserData and editable
+chooser fields/imports. Three stream/package cases pass (92 native/78 metadata
+faults rejected), plus original Conscript; see [chooser coverage](../docs/RA3EP1_AIUPDATE_CHOOSER.md).
+<!-- Reborn: optional root voice/EVA arrays retain their authored list lengths and typed reference occurrences. -->
+AudioArrayVoice/AudioEntry and EvaEventArray/EvaEntry now support source-sized
+lists, empty owners and omission. Populated voice EVA references use their real
+EP1 asset word, not a string pointer. Four package cases pass (46 native/56
+metadata faults), plus original Conscript and expanded client regressions; see
+[voice/EVA coverage](../docs/RA3EP1_ROOT_VOICE_EVA.md).
+<!-- Reborn: full refinery snapshot compilation is a proved offline milestone, not a claim of gameplay validation. -->
+CrusherInfo's existing fields and optional record presence are now source-owned.
+Four package cases pass (180 native/64 metadata faults). Reborn's 15-file source
+preparation completes, and its SovietRefinery snapshot passes the full
+native/metadata/stream/BIG path (27 Behaviors, 124 references). Explicit stock IDs
+are overrides; Studio receipt selection no longer treats all non-Conscript IDs
+as new. See [crusher/refinery evidence](../docs/RA3EP1_CRUSHER_INFO.md).
+Gameplay and final Studio publication remain unverified for this snapshot.
+<!-- Reborn: distinguish the newly admitted BuildingBehavior family from the next unresolved Power Plant upgrade reference. -->
+BuildingBehavior supports optional/empty authored window names and repeated
+modules, qualified against both stock Power Plant modules. Power Plant plus
+refinery source preparation passes (17 files, two GameObjects). The previous
+`UpgradeTemplate:Upgrade_PowerPlantTurbine` hard stop is corrected to a located
+missing-asset warning, consistent with schema/Core weak-reference semantics.
+No upgrade is generated. Three complete PowerUpgrade package cases including
+unresolved trigger hashes pass (219 native/58 metadata faults).
+The actual Studio backend now passes complete offline stream/BIG validation for
+both authored objects together, with sources unchanged. This check does not
+publish a Documents package or establish gameplay behavior.
+See [BuildingBehavior coverage](../docs/RA3EP1_BUILDING_BEHAVIOR.md).
+See [StructureUnpack support](../docs/RA3EP1_STRUCTURE_UNPACK.md).
+See [module support and verification](../docs/RA3EP1_STRUCTURE_SELL.md).
 
 Successful builds publish these files under Windows Documents/Red Alert 3 Uprising/Mods/&lt;name&gt;:
 
@@ -170,7 +324,7 @@ additional user workflow.
 Only two mod folders belong in the Studio list:
 
 - `Reborn`: the user's mod. Developer tests do not change its sources or build its outputs.
-- `RebornTest`: the developer's reusable test mod. Its `data/mod.xml` includes
+- `RebornTest`: the developer's reusable test mod. Its `data/Static_Mod.xml` includes
   the derived unit in `Conscript.xml` and explicit command in `CommandData.xml`.
   `ConscriptBase.xml` supplies the actual instance base; `DATA:Defines.xml` supplies
   the owner-visible BuildTime definition. General derived child merges remain closed.

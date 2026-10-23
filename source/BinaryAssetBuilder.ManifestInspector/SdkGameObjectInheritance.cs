@@ -29,15 +29,23 @@ internal static class SdkGameObjectInheritance
             var originals=new Dictionary<string,XmlElement>(StringComparer.Ordinal);var resolved=new Dictionary<string,XmlElement>(StringComparer.Ordinal);var active=new HashSet<string>(StringComparer.Ordinal);var overlays=new List<SdkSelfAttributeInheritance.Overlay>();
             // Reborn: cap aggregate memoized trees as well as each individual merge to prevent repeated-base amplification.
             long expandedBytes=source.Length;
-            foreach(var asset in assets)
+            for(int assetIndex=0;assetIndex<assets.Length;assetIndex++)
             {
+                var asset=assets[assetIndex];
                 // Reborn: the shared Core source overlay also prepares explicit support assets for the mixed GameObject stream.
-                if(asset.LocalName is not ("GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate")||!ConscriptSourceInput.Identity(asset.GetAttribute("id"))||!originals.TryAdd(asset.LocalName+":"+asset.GetAttribute("id"),asset))throw new InvalidDataException("GameObject source contains unsupported or duplicate asset identities.");
+                if(asset.LocalName is not ("GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate")||!ConscriptSourceInput.Identity(asset.GetAttribute("id"))||!originals.TryAdd(asset.LocalName+":"+asset.GetAttribute("id"),asset))throw new InvalidDataException("GameObject source contains unsupported or duplicate asset identities.");
                 Inspect(asset,0);
+                // Reborn: normalize official complementary upgrade dependencies only after removing structured formatting whitespace for Core's joiner.
+                if(asset.LocalName=="UpgradeTemplate"&&SdkUpgradeNormalization.Normalize(schemas,asset)!=null){
+                    // Reborn: Core normalization replaces the owner node; all later inheritance and output references must use that replacement.
+                    var normalizedOwner=root.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName==asset.LocalName&&e.GetAttribute("id")==asset.GetAttribute("id"));assets[assetIndex]=normalizedOwner;originals[asset.LocalName+":"+asset.GetAttribute("id")]=normalizedOwner;
+                }
             }
             foreach(var asset in assets)root.ReplaceChild(Resolve(asset.LocalName+":"+asset.GetAttribute("id"),0),asset);
             // Reborn: validate a disposable clone so schema defaults never leak into the authored/merged source as explicit overriding values.
             var check=new XmlDocument{XmlResolver=null};check.LoadXml(xml.OuterXml);check.Schemas.Add(schemas);check.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));
+            // Reborn: whitespace-only empty modules are formatting, not text payload; remove it only where the compiled schema proves empty/element-only content.
+            NormalizeStructuralWhitespace(xml.DocumentElement!,check.DocumentElement!);
             byte[] bytes=Encoding.UTF8.GetBytes(xml.OuterXml);if(bytes.Length>4*1048576)throw new InvalidDataException("Merged GameObject source exceeds 4 MiB.");
             return new(bytes,new(Profile,raw,Convert.ToHexString(SHA256.HashData(bytes)),overlays.ToArray(),Array.Empty<string>()));
 
@@ -78,7 +86,8 @@ internal static class SdkGameObjectInheritance
                     if(attribute.LocalName=="TypeId"||attribute.Value.StartsWith('='))throw SdkXmlDiagnostics.At(new InvalidDataException("Unevaluated expression or authored TypeId in asset source: "+attribute.Name),attribute);
                     if(attribute.NamespaceURI.Length!=0 && !(attribute.NamespaceURI=="uri:ea.com:eala:asset:instance"&&attribute.LocalName is "joinAction" or "insertPosition"))throw new InvalidDataException("Unsupported GameObject directive: "+attribute.Name);
                 }
-                bool structured=element.ChildNodes.OfType<XmlElement>().Any()||element.LocalName=="GameObject";
+                // Reborn: empty paired upgrade tags have formatting whitespace, not a string payload; Core inheritance receives structured XML.
+                bool structured=element.ChildNodes.OfType<XmlElement>().Any()||element.LocalName is "GameObject" or "UpgradeTemplate";
                 foreach(XmlNode node in element.ChildNodes.Cast<XmlNode>().ToArray())
                     if(node.NodeType is XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace){if(structured)element.RemoveChild(node);else element.ReplaceChild(xml.CreateTextNode(node.Value??""),node);}
                     else if(node is XmlCDataSection)element.ReplaceChild(xml.CreateTextNode(node.Value??""),node);
@@ -88,5 +97,18 @@ internal static class SdkGameObjectInheritance
         }
         catch(Exception error) when(error is IOException or InvalidDataException or XmlException or XmlSchemaException or ArgumentException or BinaryAssetBuilderException)
         {return new(null,new(Profile,raw,null,Array.Empty<SdkSelfAttributeInheritance.Overlay>(),new[]{error.Message})){DiagnosticNode=SdkXmlDiagnostics.Node(error),DiagnosticLocation=SdkXmlDiagnostics.Origin(error)};}
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: use a validated disposable tree for content typing without copying schema defaults or trimming string/script data. */
+    //-------------------------------------------------------------------------------------------------
+    private static void NormalizeStructuralWhitespace(XmlElement source,XmlElement typed)
+    {
+        if(typed.SchemaInfo.SchemaType is XmlSchemaComplexType type&&type.ContentType is XmlSchemaContentType.Empty or XmlSchemaContentType.ElementOnly)
+            foreach(var node in source.ChildNodes.Cast<XmlNode>().Where(n=>(n is XmlText or XmlWhitespace or XmlSignificantWhitespace)&&string.IsNullOrWhiteSpace(n.Value)).ToArray())
+                source.RemoveChild(node);
+        var children=source.ChildNodes.OfType<XmlElement>().ToArray();var typedChildren=typed.ChildNodes.OfType<XmlElement>().ToArray();
+        if(children.Length!=typedChildren.Length)throw new InvalidDataException("Schema typing changed the source element topology.");
+        for(int index=0;index<children.Length;index++)NormalizeStructuralWhitespace(children[index],typedChildren[index]);
     }
 }

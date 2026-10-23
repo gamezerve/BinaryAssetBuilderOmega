@@ -120,6 +120,8 @@ internal static class GameObjectBodyProjectionSmokeTest
         if(selectedBehaviors)foreach(XmlElement ai in d.GetElementsByTagName("AI",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>())){if(ai.LocalName!="AIUpdate")throw new InvalidDataException("Unreviewed selected AI class.");ai.SetAttribute("TypeId","148619278");}
         // Reborn: selected Draw classes use the actual dispatcher on the same root Tracker after source validation; no separate compiled fragment is appended.
         if(selectedBehaviors)foreach(XmlElement draw in d.GetElementsByTagName("Draws",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>()))draw.SetAttribute("TypeId",(draw.LocalName switch{"ScriptedModelDraw"=>0x4ECF2A4Bu,"TracerModelDraw"=>0x54018E60u,_=>throw new InvalidDataException("Unreviewed selected Draw dispatch class.")}).ToString(System.Globalization.CultureInfo.InvariantCulture));
+        // Reborn: the selected allocator must supply nested shader discriminators too; official author XML never needs synthetic TypeId attributes.
+        if(selectedBehaviors)foreach(var constant in d.GetElementsByTagName("Material",SchemaSet.XmlNamespace).OfType<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>().Where(c=>c.LocalName=="Constants")).SelectMany(e=>e.ChildNodes.OfType<XmlElement>()))constant.SetAttribute("TypeId",(constant.LocalName switch{"Texture"=>0xA59096A6u,"Float"=>0xDF08DF25u,"Int"=>0x89181982u,"Bool"=>0xA3F84C3Du,_=>throw new InvalidDataException("Unknown shader constant source class.")}).ToString(System.Globalization.CultureInfo.InvariantCulture));
         // Reborn: detach client behaviors from legacy KW enum dispatch; updates retain actual root dispatch on this same Tracker, never copied separately compiled bytes.
         XmlElement? clientBehaviors=null;
         if(selectedBehaviors)
@@ -130,7 +132,8 @@ internal static class GameObjectBodyProjectionSmokeTest
         // Reborn: the explicit six-owner route bypasses incompatible legacy root dispatch and allocates those original sources on this same Tracker at the end.
         if(remainingRoots && !reviewedBehaviors)throw new InvalidDataException("Remaining roots require the reviewed full-module route.");
         var remaining=d.CreateElement("Remaining",SchemaSet.XmlNamespace);
-        if(remainingRoots)foreach(var field in Ep1GameObjectRootOwnersProjection.Fields){var child=d.DocumentElement.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName==field.Name && e.NamespaceURI==SchemaSet.XmlNamespace);d.DocumentElement.RemoveChild(child);remaining.AppendChild(child);}
+        // Reborn: detach only an authored resource owner; its absence must survive to the native optional-pointer writer.
+        if(remainingRoots)foreach(var field in Ep1GameObjectRootOwnersProjection.Fields){var children=d.DocumentElement.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName==field.Name && e.NamespaceURI==SchemaSet.XmlNamespace).ToArray();if(children.Length==0){if(field.Optional)continue;throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported absent native root owner: "+field.Name),source.DocumentElement);}if(!field.InlineList&&children.Length!=1)throw SdkXmlDiagnostics.At(new InvalidDataException("Duplicate root record: "+field.Name),children[1]);foreach(var child in children){d.DocumentElement.RemoveChild(child);remaining.AppendChild(child);}}
         var ns=new XmlNamespaceManager(d.NameTable);ns.AddNamespace("ea",SchemaSet.XmlNamespace);
         GameObject* root;using var tracker=new Tracker((void**)&root,(uint)sizeof(GameObject),false);
         Marshaler.Marshal(new Node(d.DocumentElement.CreateNavigator()!,ns),root,tracker);

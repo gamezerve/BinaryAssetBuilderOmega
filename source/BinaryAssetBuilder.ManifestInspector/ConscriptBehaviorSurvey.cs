@@ -107,7 +107,7 @@ internal static class ConscriptBehaviorSurvey
     //-------------------------------------------------------------------------------------------------
     /** Reborn: isolate one complete concrete dispatch on a diagnostic root Tracker; the reviewed EP1 weapon route avoids its known incompatible KW layout. */
     //-------------------------------------------------------------------------------------------------
-    private static unsafe Chunk Compile(XmlNode source,uint type)
+    internal static unsafe Chunk Compile(XmlNode source,uint type)
     {
         var document=Xml(source.OuterXml);document.DocumentElement!.SetAttribute("TypeId",type.ToString(CultureInfo.InvariantCulture));var ns=new XmlNamespaceManager(document.NameTable);ns.AddNamespace("ea",SchemaSet.XmlNamespace);var node=new Node(document.DocumentElement.CreateNavigator()!,ns);GameObject* root;using var tracker=new Tracker((void**)&root,(uint)sizeof(GameObject),false);
         Dispatch(node,(BehaviorModuleData**)&root->Body,tracker,type);

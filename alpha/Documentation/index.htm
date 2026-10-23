@@ -3,6 +3,23 @@
 <html lang="en"><head><meta charset="utf-8"><title>Uprising Mod SDK Alpha</title></head>
 <body>
 <h1>Uprising Mod SDK Alpha — live repository workspace</h1>
+<!-- Reborn: expose the actual official resource grammar and distinguish missing records from an explicit zero transaction. -->
+<p>ObjectResourceInfo is optional (at most one). Its BuildCost list may be empty
+or contain multiple rows; every row requires Account and Amount within uint32.
+Absent, present-empty and explicit-zero costs retain different native/metadata
+representations. No automatic zero-cost row is created.</p>
+<!-- Reborn: expose the actual new authoring scope in the user's existing Studio pane. -->
+<p>Multiple supported GameObjects can now be emitted in the same mod. Each object
+has its own ID, values, native verification and explicitly authored recruitment
+commands. Implemented fixed attributes in BuildCost, EP1 VisionInfo, LocomotorSet,
+Geometry and its existing Shape records are editable beyond stock values.
+Whole-record optional presence and new list topology remain separate capabilities;
+this is not unrestricted support for every EA GameObject or resource type.</p>
+<!-- Reborn: plain movement list allocation is implemented separately from still unsupported nested structures. -->
+<p>LocomotorSet lists may be omitted or contain multiple rows. The old one-row
+source restriction and 32-row tokenizer quota are removed. Each row supports
+EP1 Condition values, scalar defaults and optional typed Locomotor references;
+native bytes, metadata and imports are independently checked against source.</p>
 <!-- Reborn: common gameplay values and optional root references are not tied to the historical fixed graph. -->
 <p>Already-supported value edits now use a shared contract on fixed, variable-module
 and mixed-asset GameObject builds. BuildCost Amount, MaxHealth, VisionRange,
@@ -28,9 +45,30 @@ CommandSet weak asset names generate MISSINGASSET warnings with the source file,
 column and owner. Lookup checks both emitted mod assets and configured stock manifests;
 existing image lookup does not require compiling a new image. These weak warnings do not
 stop the build by themselves.</p>
+<!-- Reborn: explicit upgrade declarations use native EP1 streams and the ordinary Studio build/publication path. -->
+<h2>Production upgrade translations</h2>
+<!-- Reborn: supported translation graphs remain distinct from the next unimplemented frozen-material draw. -->
+<p>ProductionUpdate now supports optional GiveUpgradeToProduced with source-sized
+UpgradeTranslate rows and independently optional RequiredUpgrade/ProvidedUpgrade
+references. The native layout and metadata are qualified against the original
+SovietBarracks and SovietRefinery. BonusForType and populated quantity/production
+modifiers remain unsupported. Reborn Barracks source preparation now passes;
+its next complete-build stop is the frozen ModelConditionState Material and
+polymorphic shader constants. The source is not silently skipped or changed.</p>
+<h2>UpgradeTemplate authoring</h2>
+<p>New upgrade IDs and stock overrides are supported, including upgrade-only mods,
+all/instance XML includes, same-type inheritFrom and definitions. All official existing
+fields and optional GameDependency use a separate 140-byte EP1 native layout with real
+audio/EVA/FX imports. Five complete source/stream/BIG tests pass, including a mixed
+GameObject/upgrade graph. TriggeredBy does not declare an upgrade or create research
+commands/buttons. Missing upgrade weak names remain located warnings; missing strong
+targets remain errors. See <a href="../../docs/RA3EP1_UPGRADE_TEMPLATE.md">support and example</a>.
+The complete original GlobalData/upgrade.xml also compiles through a DATA all-Include:
+97 explicit upgrades pass stream/BIG validation in one build.
+Offline package validation is not gameplay validation.</p>
 <!-- Reborn: report the new explicit mixed graph without implying unrestricted native processor coverage. -->
 <p>One complete supported GameObject can now compile alongside multiple ArmorTemplate,
-WeaponTemplate, LogicCommand and LogicCommandSet declarations in the same mod.
+WeaponTemplate, UpgradeTemplate, LogicCommand and LogicCommandSet declarations in the same mod.
 Local IDs resolve before stock assets; dependency order is computed from the actual references.
 DATA includes, definitions and same-type inheritance compose with this route.
 Declare your UNIT_BUILD command and Barracks command-set override explicitly: no hidden command is generated.
@@ -54,7 +92,7 @@ The former 4096-entry tokenizer quota is replaced by actual allocation bounds; o
 The former 64-behavior quota is removed; real buffer/depth/ownership checks remain.
 Missing UpgradeTemplate names are reported with source coordinates. New native layouts and resource processors still need implementation.</p>
 <!-- Reborn: keep Studio as the sole user entry and document stable output instead of dated workspace copies. -->
-<p>Open alpha/EALAModStudio.exe, select your mod, edit alpha/mods/&lt;name&gt;/data/mod.xml and click Build Mod.
+<p>Open alpha/EALAModStudio.exe, select your mod, edit alpha/mods/&lt;name&gt;/data/Static_Mod.xml and click Build Mod.
 The same SDK receives updated compiler tools after successful Release/x86 compiler builds. Editable mod sources are preserved.</p>
 <!-- Reborn: final archives follow the Studio version field; internal compiler receipts stay SDK-local. -->
 <p>Enter <b>Mod Version</b> (default 1.00), then click Build Mod. Successful builds publish
@@ -86,7 +124,7 @@ Restart an already-open Studio once to enable this update; earlier uncontained b
 <p><b>Reborn</b> belongs to the user. Automated developer tests do not modify or build it.
 <b>RebornTest</b> is the reusable developer slot. Previous sample mods are now regression fixtures outside this list.</p>
 <h2>GameObject: schema/native root capabilities</h2>
-<p>Select <b>RebornTest</b> and click <b>Build Mod</b>. Its data/mod.xml is an EA AssetDeclaration including
+<p>Select <b>RebornTest</b> and click <b>Build Mod</b>. Its data/Static_Mod.xml is an EA AssetDeclaration including
 Conscript.xml (derived unit) and CommandData.xml (explicit command). ConscriptBase.xml is its source-only instance base;
 DATA:Defines.xml supplies REBORN_CONSCRIPT_BUILD_TIME (currently 2). The selected XML is compiled through Core, native ownership,
 metadata and reference/stream checks before a fresh BIG is published. This is not a cached BIG export.</p>
@@ -132,7 +170,7 @@ mod two-character fanout, then SDK Art fanout. AUDIO searches mod Audio then SDK
 The archived CombinedArmor fixture contains Allied GUN=250 and Soviet GUN=5000 together.
 <!-- Reborn: preserve both sample revisions and report their separate qualitative gameplay observations. -->
 CombinedArmorStrong contains Allied and Soviet GUN=5000 together.
-Edit mods/&lt;name&gt;/data/mod.xml. One AlliedConYardArmor or SovietConYardArmor, or one of each together, is accepted per build. All thirteen Percent values
+Edit mods/&lt;name&gt;/data/Static_Mod.xml. One AlliedConYardArmor or SovietConYardArmor, or one of each together, is accepted per build. All thirteen Percent values
 and five optional root scalars (Default, DamageScalar, SideDamageScalar, RearDamageScalar,
 FlankedPenalty) accept canonical integers from 0 to 10000; omitted scalars default to 100.
 Keep the identity and thirteen ordered armor entries. Unsupported input fails; it is not silently skipped.

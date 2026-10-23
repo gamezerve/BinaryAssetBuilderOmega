@@ -20,8 +20,9 @@ internal static class ConscriptArmorSetContract
     {
         foreach(var node in Entries(source))source.DocumentElement!.RemoveChild(node);
         var model=Entries(baseline);if(model.Length==0)return;
-        int ordinal=baseline.DocumentElement!.ChildNodes.OfType<XmlElement>().TakeWhile(e=>e!=model[0]).Count();
-        var before=source.DocumentElement!.ChildNodes.OfType<XmlElement>().ElementAtOrDefault(ordinal);
+        // Reborn: nullable resource/text owners must not move armor behind later schema families in comparison/reference documents.
+        var following=baseline.DocumentElement!.ChildNodes.OfType<XmlElement>().SkipWhile(e=>e!=model[0]).Skip(1).Select(e=>e.LocalName).Where(n=>n!="ArmorSet").ToHashSet(StringComparer.Ordinal);
+        var before=source.DocumentElement!.ChildNodes.OfType<XmlElement>().FirstOrDefault(e=>following.Contains(e.LocalName));
         foreach(var node in model)source.DocumentElement.InsertBefore(source.ImportNode(node,true),before);
     }
 

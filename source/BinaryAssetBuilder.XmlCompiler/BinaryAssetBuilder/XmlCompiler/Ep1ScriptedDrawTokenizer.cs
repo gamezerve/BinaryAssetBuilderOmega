@@ -11,7 +11,7 @@ namespace BinaryAssetBuilder.XmlCompiler;
 // Reborn: generate reviewed scripted-draw metadata recursively from owned native records, never from a captured stock template or hard-coded unit identity.
 public static class Ep1ScriptedDrawTokenizer
 {
-    private enum Kind { Int, UInt, Real, Bool, Enum, Flags, String, Ref, List, Strings, EmptyList, StringPointer, NullPointer }
+    private enum Kind { Int, UInt, Real, Bool, Enum, Flags, String, Ref, List, Strings, EmptyList, StringPointer, NullPointer, Pointer, Polymorphic, Reals }
     private sealed record Field(string Name, uint Tag, int Offset, Kind Kind, int Width = 4, int Limit = 0, Record Child = null);
     private sealed record Record(string Name, int Size, Field[] Fields, int PaddingAt = 0, int PaddingLength = 0, Record Parent = null, uint ParentTag = 0);
     // Reborn: literal wire tags/order are independently stock-reviewed; CLR type names are not used as guessed type IDs.
@@ -29,10 +29,17 @@ public static class Ep1ScriptedDrawTokenizer
         F("Distance",0x645864F3,24,Kind.Real), F("AnimationBlendTime",0x645864F3,28,Kind.Real), F("AnimationMustCompleteBlend",0x77E3F4F7,56,Kind.Bool,1),
         F("AnimationSpeedFactorMin",0x645864F3,32,Kind.Real), F("AnimationSpeedFactorMax",0x645864F3,36,Kind.Real), F("AnimationAbsoluteTime",0x998669E8,40,Kind.Real),
         F("UseWeaponTiming",0x77E3F4F7,57,Kind.Bool,1), F("WeaponTimingOrdering",0x1848C549,44,Kind.Enum,limit:6), F("WeaponTimingSlotID",0x23E650B8,48), F("AnimationPriority",0x23E650B8,52) }, 58, 2);
+    // Reborn: shader constant wrappers carry their actual class ID and share the original FXShaderConstant base table.
+    private static readonly Record Constant = new("FXShaderConstant", 12, new[] { F("TypeId",0x23E650B8,0,Kind.UInt),F("Name",0x1A2933AA,4,Kind.String,8) });
+    private static readonly Record ConstantTexture = new("FXShaderConstantTexture",16,new[]{F("Value",0xBDB63F16,12,Kind.Ref)},Parent:Constant,ParentTag:0x1724BB05);
+    private static readonly Record ConstantFloat = new("FXShaderConstantFloat",20,new[]{F("Value",0x645864F3,12,Kind.Reals,8)},Parent:Constant,ParentTag:0x1724BB05);
+    private static readonly Record ConstantInt = new("FXShaderConstantInt",16,new[]{F("Value",0x23E650B8,12)},Parent:Constant,ParentTag:0x1724BB05);
+    private static readonly Record ConstantBool = new("FXShaderConstantBool",16,new[]{F("Value",0x77E3F4F7,12,Kind.Bool,1)},13,3,Constant,0x1724BB05);
+    private static readonly Record Material = new("FXShaderMaterial",28,new[]{F("ShaderName",0x1A2933AA,0,Kind.String,8),F("TechniqueName",0x1A2933AA,8,Kind.String,8),F("TechniqueIndex",0x30916B96,24,Kind.UInt,1),F("Constants",0x19842B2F,16,Kind.Polymorphic,8)},25,3);
     private static readonly Record ModelState = new("ModelConditionState", 196, new[] {
         F("ParseCondStateType",0x1323B870,0,Kind.Enum,limit:3), F("Name",0x1A2933AA,4,Kind.String,8), F("ConditionsYes",0x67DBBFC9,12,Kind.Flags,60,463), F("Skeleton",0x805D25F4,72,Kind.String,8),
         F("PortraitImage",0x0108BD1E,80,Kind.Ref), F("ButtonImage",0x0108BD1E,84,Kind.Ref), F("OverrideTooltip",0x1A2933AA,88,Kind.String,8), F("RetainSubObjects",0x77E3F4F7,192,Kind.Bool,1), F("id",0x805D25F4,96,Kind.String,8),
-        F("Model",0xCD8EC40B,104,Kind.List,8,child:Model), F("Material",0xC7EA3CF4,112,Kind.NullPointer), F("Texture",0x6E5D40FB,116,Kind.List,8,child:Texture),
+        F("Model",0xCD8EC40B,104,Kind.List,8,child:Model), F("Material",0xC7EA3CF4,112,Kind.Pointer,child:Material), F("Texture",0x6E5D40FB,116,Kind.List,8,child:Texture),
         F("WeaponFireFXBone",0xBD39D1A1,124,Kind.List,8,child:Bone), F("WeaponRecoilBone",0xBD39D1A1,132,Kind.List,8,child:Bone), F("WeaponMuzzleFlash",0xBD39D1A1,140,Kind.List,8,child:Bone), F("WeaponLaunchBone",0xBD39D1A1,148,Kind.List,8,child:Bone),
         F("ParticleSysBone",0x98C53FE6,156,Kind.List,8,child:Particle), F("FXEvent",0x75991AD3,164,Kind.EmptyList,8), F("ShadowInfo",0x82FE7E88,172,Kind.NullPointer), F("Turret",0xF3095903,176,Kind.EmptyList,8), F("SubObject",0x03A28C40,184,Kind.EmptyList,8) }, 193, 3);
     private static readonly Record AnimationState = new("AnimationState", 140, new[] {
@@ -108,19 +115,29 @@ public static class Ep1ScriptedDrawTokenizer
                 int slot = checked(native + field.Offset); Range(slot, field.Width); Row(next, FastHash.GetHashCode(field.Name), field.Tag, 0);
                 switch (field.Kind)
                 {
-                    case Kind.List: case Kind.Strings: case Kind.EmptyList:
+                    case Kind.List: case Kind.Strings: case Kind.EmptyList: case Kind.Polymorphic: case Kind.Reals:
                         uint count = Word(slot), pointer = Word(slot + 4); if (count > 4096 || (count == 0) != (pointer == 0)) throw new InvalidDataException("Scripted list count/pointer differs: " + field.Name);
                         if (field.Kind == Kind.EmptyList && count != 0) throw new InvalidDataException("Scripted nonempty child family is not token-enabled: " + field.Name);
                         int list = Allocate(checked(1 + (int)count)); Row(list, 0x6C827073, 0x5D448FD8, 0); Native(list + 8, slot); metadata[(next + 8) / 4] = (uint)list;
                         if (count != 0)
                         {
-                            int stride = field.Kind == Kind.Strings ? 8 : field.Child.Size; int items = Offset(pointer); Claim(items, checked((int)count * stride)); relos.Add((uint)(slot + 4));
-                            for (int i = 0; i < count; i++) { int item = items + i * stride, marker = list + 12 + i * 12; Row(marker, 0xB151A0EB, 0, 0); if (field.Kind == Kind.Strings) { Text(item); Native(marker + 8, item); } else metadata[(marker + 8) / 4] = (uint)Emit(field.Child, item, depth + 1); }
+                            int stride = field.Kind == Kind.Strings ? 8 : field.Kind is Kind.Polymorphic or Kind.Reals ? 4 : field.Child.Size; int items = Offset(pointer); Claim(items, checked((int)count * stride)); relos.Add((uint)(slot + 4));
+                            for (int i = 0; i < count; i++) {
+                                int item = items + i * stride, marker = list + 12 + i * 12; Row(marker, 0xB151A0EB, 0, 0);
+                                if (field.Kind == Kind.Strings) { Text(item); Native(marker + 8, item); }
+                                // Reborn: polymorphic slots own pointers to separate concrete records; float vector items own direct scalar targets.
+                                else if(field.Kind==Kind.Polymorphic){int target=Offset(Word(item));uint id=Word(target);Record concrete=id switch{0xA59096A6=>ConstantTexture,0xDF08DF25=>ConstantFloat,0x89181982=>ConstantInt,0xA3F84C3D=>ConstantBool,_=>throw new InvalidDataException("Unknown shader constant class ID.")};Claim(target,concrete.Size);relos.Add((uint)item);int wrapper=Allocate(1);Row(wrapper,2,id,(uint)Emit(concrete,target,depth+1));metadata[(marker+8)/4]=(uint)wrapper;}
+                                else if(field.Kind==Kind.Reals){if(!float.IsFinite(BitConverter.Int32BitsToSingle(unchecked((int)Word(item)))))throw new InvalidDataException("Shader float constant must be finite.");Native(marker+8,item);}
+                                else metadata[(marker + 8) / 4] = (uint)Emit(field.Child, item, depth + 1);
+                            }
                         }
                         break;
                     case Kind.String: Text(slot); Native(next + 8, slot); break;
                     case Kind.StringPointer:
                         if (Word(slot) != 0) { int target = Offset(Word(slot)); Claim(target, 8); relos.Add((uint)slot); Text(target); Native(next + 8, target); } break;
+                    // Reborn: optional material ownership is source-driven and does not reuse a captured stock allocation.
+                    case Kind.Pointer:
+                        if(Word(slot)!=0){int target=Offset(Word(slot));Claim(target,field.Child.Size);relos.Add((uint)slot);metadata[(next+8)/4]=(uint)Emit(field.Child,target,depth+1);}break;
                     case Kind.NullPointer: if (Word(slot) != 0) throw new InvalidDataException("Scripted optional child family is not token-enabled: " + field.Name); break;
                     default:
                         if (field.Kind == Kind.Bool && bytes[slot] > 1 || field.Kind == Kind.Enum && Word(slot) >= field.Limit) throw new InvalidDataException("Scripted enum/bool differs: " + field.Name);

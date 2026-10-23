@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<BinaryAssetBuilderProject xmlns="urn:xmlns:ea.com:babproject">
+  <Stream Source="C:\Users\drknt\.codex\.chatgpt-projects\g-p-6aa6a9d9e7f48191931d3f26b6511794\BinaryAssetBuilderOmega2-uprising\alpha\Mods\RebornTest\data\Static_Mod.xml">
+    <Configuration Name="" Default="true">
+      <StreamReference ReferenceName="audio.xml" ReferenceManifest="C:\Users\drknt\.codex\.chatgpt-projects\g-p-6aa6a9d9e7f48191931d3f26b6511794\BinaryAssetBuilderOmega2-uprising\alpha\BuiltMods\sagexml\audio.manifest" ReferenceConfiguration="" />
+      <StreamReference ReferenceName="global.xml" ReferenceManifest="C:\Users\drknt\.codex\.chatgpt-projects\g-p-6aa6a9d9e7f48191931d3f26b6511794\BinaryAssetBuilderOmega2-uprising\alpha\BuiltMods\sagexml\global.manifest" ReferenceConfiguration="" />
+      <StreamReference ReferenceName="static.xml" ReferenceManifest="C:\Users\drknt\.codex\.chatgpt-projects\g-p-6aa6a9d9e7f48191931d3f26b6511794\BinaryAssetBuilderOmega2-uprising\alpha\BuiltMods\sagexml\static.manifest" ReferenceConfiguration="" />
+    </Configuration>
+  </Stream>
+</BinaryAssetBuilderProject>

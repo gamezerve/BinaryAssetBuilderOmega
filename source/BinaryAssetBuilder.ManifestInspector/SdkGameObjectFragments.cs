@@ -4,7 +4,7 @@ using System.Xml;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: resolve the EA namespace/root/child::* XPointer fragment form with confined source lookup, not arbitrary network XInclude execution.
+// Reborn: resolve EA whole-root and child::* XInclude forms with confined source lookup, not arbitrary network execution.
 internal sealed class SdkGameObjectFragments
 {
     private const string Ea="uri:ea.com:eala:asset",Xi="http://www.w3.org/2001/XInclude";
@@ -35,9 +35,12 @@ internal sealed class SdkGameObjectFragments
             {
                 // Reborn: rejected fragment directives retain the actual including node through the preparation result wrapper.
                 try{
-                if(include.Attributes.OfType<XmlAttribute>().Any(a=>a.NamespaceURI!="http://www.w3.org/2000/xmlns/"&&(a.NamespaceURI.Length!=0||a.Name is not ("href" or "xpointer")))||include.ChildNodes.Cast<XmlNode>().Any(n=>n is XmlElement||!string.IsNullOrWhiteSpace(n.InnerText)))throw new InvalidDataException("Unsupported XInclude attributes/fallback: "+path);
+                if(include.Attributes.OfType<XmlAttribute>().Any(a=>a.NamespaceURI!="http://www.w3.org/2000/xmlns/"&&(a.NamespaceURI.Length!=0||a.Name is not ("href" or "xpointer" or "parse")))||include.ChildNodes.Cast<XmlNode>().Any(n=>n is XmlElement||!string.IsNullOrWhiteSpace(n.InnerText)))throw new InvalidDataException("Unsupported XInclude attributes/fallback: "+path);
+                // Reborn: an absent XPointer inserts the document element itself, not its children; explicit pointers retain their existing grammar.
+                bool wholeRoot=!include.HasAttribute("xpointer");
                 var pointer=Pointer.Match(include.GetAttribute("xpointer"));string href=include.GetAttribute("href");
-                if(!pointer.Success||string.IsNullOrWhiteSpace(href))throw new InvalidDataException("Only EA xmlns(prefix=asset) xpointer(/prefix:Root/child::*) fragments are enabled: "+path);
+                if(include.HasAttribute("parse")&&include.GetAttribute("parse")!="xml")throw new InvalidDataException("Only parse=xml XInclude is supported: "+path);
+                if((!wholeRoot&&!pointer.Success)||string.IsNullOrWhiteSpace(href))throw new InvalidDataException("XInclude requires href and either no xpointer or EA xmlns(prefix=asset) xpointer(/prefix:Root/child::*) syntax: "+path);
                 string selected,authority;
                 if(paths.Search!=null){var selection=paths.Search.Select(path,href,root);searches.Add(selection);selected=selection.PhysicalPath;authority=selection.Root;}
                 else{var selection=SdkSourcePathAudit.Resolve(href,Path.GetDirectoryName(path)!,root,paths.SourceRoot,paths.ArtRoot,paths.AudioRoot);selected=selection.Path;authority=selection.Root;}
@@ -49,9 +52,10 @@ internal sealed class SdkGameObjectFragments
                 sources[selected]=new(selected,hash);
                 snapshots[selected]=bytes;
                 var fragment=SdkXmlDiagnostics.Parse(bytes,selected);
-                if(fragment.DocumentElement?.LocalName!=pointer.Groups["root"].Value||fragment.DocumentElement.NamespaceURI!=Ea)throw new InvalidDataException("XInclude XPointer root does not match fragment: "+selected);
+                if(fragment.DocumentElement==null||fragment.DocumentElement.NamespaceURI!=Ea||(!wholeRoot&&fragment.DocumentElement.LocalName!=pointer.Groups["root"].Value))throw new InvalidDataException("XInclude root namespace or XPointer root does not match fragment: "+selected);
                 Expand(fragment,selected,authority,depth+1);
-                var children=fragment.DocumentElement.ChildNodes.OfType<XmlElement>().ToArray();
+                // Reborn: preserve module attributes and empty root modules for the whole-document EA include form.
+                var children=wholeRoot?new[]{fragment.DocumentElement}:fragment.DocumentElement.ChildNodes.OfType<XmlElement>().ToArray();
                 if(children.Length==0)throw new InvalidDataException("XInclude fragment selects no child elements: "+selected);
                 foreach(var child in children)
                 {

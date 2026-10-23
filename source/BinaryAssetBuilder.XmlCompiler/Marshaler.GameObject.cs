@@ -14,6 +14,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: stock EP1 QueueDock has its own create-module identity and five owned bone strings.
+            case 0xAF4C1F21u:
+                MarshalPolymorphicType<QueueDockModuleData,BehaviorModuleData>(node,objT,state);
+                break;
             // Reborn: EP1 damage/motion classes preserve their real concrete IDs and nested import/mask layouts.
             case 0xB21C7E67u:
                 MarshalPolymorphicType<SecondaryDamageTrackerModuleData, BehaviorModuleData>(node, objT, state);
@@ -145,7 +149,12 @@ public static partial class Marshaler
                 MarshalPolymorphicType<EmotionTrackerUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x0FF760E0u:
-                MarshalPolymorphicType<EngineerContainModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: EP1 engineer uses the stock-qualified 92-byte record with inline status/EVA storage, not the KW pointer layout.
+                using (var context = state.Push((void**)objT, (uint)sizeof(Ep1EngineerContainModuleData), 1u))
+                    Marshal(node, (Ep1EngineerContainModuleData*)*objT, state);
+                uint engineerTypeId = 0x0FF760E0u;
+                state.InplaceEndianToPlatform(&engineerTypeId);
+                *(uint*)*objT = engineerTypeId;
                 break;
             case 0x5047272Eu:
                 MarshalPolymorphicType<InfiltratorContainModuleData, BehaviorModuleData>(node, objT, state);
@@ -289,13 +298,24 @@ public static partial class Marshaler
                 MarshalPolymorphicType<PlayerUpgradeSpecialPowerModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x6EC75439u:
-                MarshalPolymorphicType<ProductionUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: EP1 production uses the stock-qualified 84-byte record, not the KW layout with DoorOpeningTimeMetaUnit and speed-bonus fields.
+                using (var context = state.Push((void**)objT, (uint)sizeof(Ep1ProductionUpdateModuleData), 1u))
+                    Marshal(node, (Ep1ProductionUpdateModuleData*)*objT, state);
+                uint productionTypeId = 0x6EC75439u;
+                state.InplaceEndianToPlatform(&productionTypeId);
+                *(uint*)*objT = productionTypeId;
                 break;
             case 0x1B337783u:
                 MarshalPolymorphicType<ProductionUpdateInfoModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x9063FB6Cu:
-                MarshalPolymorphicType<QueueProductionExitUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: use the EP1 schema-compatible time field without changing the separate legacy KW model/marshaler.
+                // Reborn: the isolated managed model name is not the engine wire name; retain the concrete EP1 type identity.
+                using (var context = state.Push((void**)objT, (uint)sizeof(Ep1QueueProductionExitUpdateModuleData), 1u))
+                    Marshal(node, (Ep1QueueProductionExitUpdateModuleData*)*objT, state);
+                uint exitTypeId = 0x9063FB6Cu;
+                state.InplaceEndianToPlatform(&exitTypeId);
+                *(uint*)*objT = exitTypeId;
                 break;
             case 0x599F60D5u:
                 MarshalPolymorphicType<CombineSpecialPowerModuleData, BehaviorModuleData>(node, objT, state);
@@ -352,7 +372,12 @@ public static partial class Marshaler
                 MarshalPolymorphicType<SlowDeathBehaviorModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x0D916ADFu:
-                MarshalPolymorphicType<SpawnBehaviorModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: the isolated EP1 model preserves the engine identity rather than hashing the managed Ep1 prefix.
+                using (var context = state.Push((void**)objT, (uint)sizeof(Ep1SpawnBehaviorModuleData), 1u))
+                    Marshal(node, (Ep1SpawnBehaviorModuleData*)*objT, state);
+                uint spawnTypeId = 0x0D916ADFu;
+                state.InplaceEndianToPlatform(&spawnTypeId);
+                *(uint*)*objT = spawnTypeId;
                 break;
             case 0xAC598F82u:
                 MarshalPolymorphicType<SpecialAbilityUpdateModuleData, BehaviorModuleData>(node, objT, state);
@@ -461,7 +486,12 @@ public static partial class Marshaler
                 MarshalPolymorphicType<DockUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x0A2B8743u:
-                MarshalPolymorphicType<RepairUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: EP1 repair keeps the shared layout but uses its own HealAmountPerSecond default.
+                using (var context = state.Push((void**)objT, (uint)sizeof(Ep1RepairUpdateModuleData), 1u))
+                    Marshal(node, (Ep1RepairUpdateModuleData*)*objT, state);
+                uint repairTypeId = 0x0A2B8743u;
+                state.InplaceEndianToPlatform(&repairTypeId);
+                *(uint*)*objT = repairTypeId;
                 break;
             case 0xC2F1EC20u:
                 MarshalPolymorphicType<SupplyCenterDockUpdateModuleData, BehaviorModuleData>(node, objT, state);
@@ -713,8 +743,29 @@ public static partial class Marshaler
             case 0xF3F8ADFAu:
                 MarshalPolymorphicType<WallHubBehaviorModuleData, BehaviorModuleData>(node, objT, state);
                 break;
+            case 0xE9D1B7EBu:
+                // Reborn: EP1 StructurePlacementBehavior (stock-qualified 56-byte record with inline EP1 Shape).
+                using (var context = state.Push((void**)objT, (uint)sizeof(StructurePlacementBehaviorModuleData), 1u))
+                    Marshal(node, (StructurePlacementBehaviorModuleData*)*objT, state);
+                uint structurePlacementTypeId = 0xE9D1B7EBu;
+                state.InplaceEndianToPlatform(&structurePlacementTypeId);
+                *(uint*)*objT = structurePlacementTypeId;
+                break;
+            case 0xAE0EE9A0u:
+                // Reborn: EP1 AssistedPlacementBehavior (stock-qualified 20-byte record with optional requirement filter).
+                using (var context = state.Push((void**)objT, (uint)sizeof(AssistedPlacementBehaviorModuleData), 1u))
+                    Marshal(node, (AssistedPlacementBehaviorModuleData*)*objT, state);
+                uint placementTypeId = 0xAE0EE9A0u;
+                state.InplaceEndianToPlatform(&placementTypeId);
+                *(uint*)*objT = placementTypeId;
+                break;
             case 0x977F8391u:
-                MarshalPolymorphicType<StructureUnpackUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: use the full EP1 GenericUnpack base while retaining the real StructureUnpack wire identity.
+                using (var context = state.Push((void**)objT, (uint)sizeof(Ep1StructureUnpackUpdateModuleData), 1u))
+                    Marshal(node, (Ep1StructureUnpackUpdateModuleData*)*objT, state);
+                uint unpackTypeId = 0x977F8391u;
+                state.InplaceEndianToPlatform(&unpackTypeId);
+                *(uint*)*objT = unpackTypeId;
                 break;
             case 0x6083010Au:
                 MarshalPolymorphicType<GenericUnpackUpdateModuleData, BehaviorModuleData>(node, objT, state);

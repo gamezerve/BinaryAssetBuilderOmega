@@ -65,7 +65,8 @@ public static class Ep1GameObjectStringTokens
         if(armorCount!=0)owners.Add(424);
         // Reborn: movement records own a separate bounded pre-behavior allocation and cannot alias armor or root strings.
         uint locomotorCount=Word(428),locomotor=Word(432);
-        if(locomotorCount>32 || (locomotorCount==0 ? locomotor!=0 : locomotor<600 || locomotor%4!=0 || locomotor>list || locomotorCount*12>list-locomotor))
+        // Reborn: the real buffer/stride bounds movement cardinality; the old 32-row proof quota is not an engine limit.
+        if(locomotorCount>b.Length/12 || (locomotorCount==0 ? locomotor!=0 : locomotor<600 || locomotor%4!=0 || locomotor>list || locomotorCount*12>list-locomotor))
             throw new InvalidDataException("LocomotorSet count/allocation ownership differs.");
         if(locomotorCount!=0)
         {

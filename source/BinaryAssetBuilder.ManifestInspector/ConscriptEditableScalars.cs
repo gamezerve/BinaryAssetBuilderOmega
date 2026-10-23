@@ -62,7 +62,7 @@ internal static class ConscriptEditableScalars
         var ns = new XmlNamespaceManager(source.NameTable); ns.AddNamespace("a", "uri:ea.com:eala:asset");
         var nodes = source.DocumentElement!.SelectNodes(field.Path, ns)!;
         if (nodes.Count != 1 || nodes[0] is not XmlElement element)
-            throw new InvalidDataException("Conscript scalar owner absent/ambiguous: " + field.Attribute);
+            throw SdkXmlDiagnostics.At(new InvalidDataException("Conscript scalar owner absent/ambiguous: " + field.Attribute),source.DocumentElement);
         return element;
     }
 
@@ -87,4 +87,7 @@ internal static class ConscriptEditableScalars
     internal static uint Bits(XmlDocument source, Field field) => field.Integer
         ? uint.Parse(Literal(source,field), CultureInfo.InvariantCulture)
         : BitConverter.SingleToUInt32Bits(Read(source, field));
+
+    // Reborn: legacy receipt values remain available for singular owners; an omitted or multi-row movement list has no single meaningful Speed.
+    internal static Dictionary<string,object?> ReceiptValues(XmlDocument source)=>Fields.ToDictionary(f=>f.Attribute,f=>f.Attribute=="Amount"?(GameObjectResourceContract.Entries(source).Length==1?(object)GameObjectResourceContract.Value(GameObjectResourceContract.Entries(source)[0],"Amount"):null):f.Attribute=="Speed"&&ConscriptLocomotorSetContract.Entries(source).Length!=1?null:(object)Read(source,f));
 }

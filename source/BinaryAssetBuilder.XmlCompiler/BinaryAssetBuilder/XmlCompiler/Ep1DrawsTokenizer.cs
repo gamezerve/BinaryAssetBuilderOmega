@@ -21,7 +21,8 @@ public static class Ep1DrawsTokenizer
     internal static Chunk TokenizeSelected(Chunk native, Func<Chunk, Chunk> tokenize)
     {
         if (native?.InstanceBuffer == null || native.RelocationBuffer == null || native.ImportsBuffer == null || native.InstanceBuffer.Length < 8 || native.InstanceBuffer.Length > 4 * 1048576) throw new InvalidDataException("Bounded Draws native list required.");
-        var bytes = native.InstanceBuffer; uint serializedCount = Word(bytes, 0); if (serializedCount > 64) throw new InvalidDataException("Draws module count exceeds bound."); int count = (int)serializedCount;
+        // Reborn: the actual allocated pointer array bounds the count; 64 was a diagnostic quota, not an engine limit.
+        var bytes = native.InstanceBuffer; uint serializedCount = Word(bytes, 0); if (serializedCount > (bytes.Length-8)/4) throw new InvalidDataException("Draws module count exceeds allocated buffer."); int count = (int)serializedCount;
         if (Word(bytes, 4) != (count == 0 ? 0u : 8u) || bytes.Length < 8 + count * 4 || count == 0 && bytes.Length != 8) throw new InvalidDataException("Draws canonical header differs.");
         uint[] relos = Slots(native.RelocationBuffer), imports = Slots(native.ImportsBuffer);
         var expectedRelos = new HashSet<uint>(); var expectedImports = new HashSet<uint>(); var ids = new HashSet<uint>();

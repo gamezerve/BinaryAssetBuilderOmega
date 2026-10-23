@@ -1,0 +1,59 @@
+// GUI
+
+	GUI:FULLGAMENAME
+		"Command & Conquer Red Alert 3: Uprising - Reborn"
+	End	
+	
+// Version
+	
+	Version:Format2
+		"Version %d.%02d Reborn 1.00"
+	End
+	
+	APT:EXIT_MENUBUTTON
+		"Quit Reborn"
+	End
+
+	Type:Deneme
+	 "Reborn Unit"
+	End
+
+	Name:Deneme
+	 "Reborn Unit Name"
+	End
+	
+// Soviet Reactor	
+
+	TYPE:SOVIETPOWERPLANT
+		"Power Structure \n> Provides +100 Power \n> Health = 1000 \n> Shroud Clearing Range = 300"
+	End
+	
+// Soviet Barracks	
+
+	TYPE:SOVIETBARRACKS
+		"Infantry Production \n> Health = 1250 \n> Shroud Clearing Range = 300"
+	End
+ 
+// Soviet Refinery
+
+	TYPE:SOVIETREFINERY
+		"Resource Structure \n> Health = 2500 \n> Shroud Clearing Range = 500"
+	End
+	
+// Soviet War Factory
+
+	TYPE:SOVIETWARFACTORY
+		"Vehicle Production \n> Health = 3200 \n> Shroud Clearing Range = 500"
+	End
+
+// Soviet Naval Yard
+
+	TYPE:SOVIETNAVALYARD
+		"Navy Production \n> Health = 3200 \n> Shroud Clearing Range = 500"
+	End
+
+// Soviet Airfiled
+
+	TYPE:SOVIETAIRFIELD
+		"Aircraft Production \n> Health = 1800 \n> Shroud Clearing Range = 500"
+	End

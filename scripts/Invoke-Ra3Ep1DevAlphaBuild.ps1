@@ -20,9 +20,10 @@ try{
     if($ModVersion -cnotmatch '\A[0-9]{1,4}(\.[0-9]{1,4}){1,3}\z'){throw 'Mod Version must be numeric, for example 1.00 or 1.2.3.'}
     # Reborn: only a Studio-created session supplies cancellation/publication synchronization; unrelated CLI builds remain independent.
     if($StudioSession){if($StudioSession-cnotmatch '^[a-f0-9]{32}$'){throw 'Invalid Studio session.'};$publishMutex=[Threading.Mutex]::OpenExisting('Local\RebornStudio-'+$StudioSession+'-Publish');$cancelEvent=[Threading.EventWaitHandle]::OpenExisting('Local\RebornStudio-'+$StudioSession+'-Cancel');if($cancelEvent.WaitOne(0)){throw 'Studio build cancelled before starting.'}}
-    if(-not $ModXml){$ModXml=Join-Path $sdk ('mods/'+$ModName+'/data/mod.xml')};$ModXml=[IO.Path]::GetFullPath($ModXml)
+    # Reborn: use a separate static mod entry without shadowing the original DATA:static.xml.
+    if(-not $ModXml){$ModXml=Join-Path $sdk ('mods/'+$ModName+'/data/Static_Mod.xml')};$ModXml=[IO.Path]::GetFullPath($ModXml)
     $ModName=Split-Path -Leaf (Split-Path -Parent (Split-Path -Parent $ModXml))
-    if($ModName-notmatch '^[A-Za-z0-9_-]{1,48}$' -or $ModXml-ine (Join-Path $sdk ('mods/'+$ModName+'/data/mod.xml'))){throw 'Select alpha/mods/<name>/data/mod.xml; paths cannot escape the live SDK.'}
+    if($ModName-notmatch '^[A-Za-z0-9_-]{1,48}$' -or $ModXml-ine (Join-Path $sdk ('mods/'+$ModName+'/data/Static_Mod.xml'))){throw 'Select alpha/mods/<name>/data/Static_Mod.xml; paths cannot escape the live SDK.'}
     # Reborn: Studio already displays this header; include it once in the saved standalone transcript only.
     $script:BuildLogLines.Insert(0,('Building Mod '+$ModName))
     $settings=@{};foreach($line in Get-Content -LiteralPath (Join-Path $sdk 'uprising-alpha.paths')){if($line -and -not $line.StartsWith('#')){$pair=$line.Split('=',2);$settings[$pair[0]]=$pair[1]}}
@@ -55,7 +56,8 @@ try{
     if($dependencyCode-ne 0){throw 'Dependency preflight failed. Review the complete missing asset/definition list above.'}
     # Reborn: standalone GameObject XML uses the explicit complete-Conscript route; other assets retain their original admission and compiler path.
     $xmlSettings=[Xml.XmlReaderSettings]::new();$xmlSettings.DtdProcessing=[Xml.DtdProcessing]::Prohibit;$xmlSettings.XmlResolver=$null;$xmlSettings.MaxCharactersInDocument=1048576
-    $reader=[Xml.XmlReader]::Create($ModXml,$xmlSettings);try{$null=$reader.MoveToContent();$isConscript=$reader.LocalName-cin @('GameObject','LogicCommandSet');$isDeclaration=$reader.LocalName-ceq 'AssetDeclaration'}finally{$reader.Dispose()}
+    # Reborn: upgrade-only XML uses the same verified support stream route as command sets, including ordinary Studio publication.
+    $reader=[Xml.XmlReader]::Create($ModXml,$xmlSettings);try{$null=$reader.MoveToContent();$isConscript=$reader.LocalName-cin @('GameObject','LogicCommandSet','UpgradeTemplate');$isDeclaration=$reader.LocalName-ceq 'AssetDeclaration'}finally{$reader.Dispose()}
     # Reborn: detect GameObject declarations in a real local XML closure without an automatic production command.
     $searchArgs=@($sdk);if($settings.SdkDataRoot){$searchArgs+=$settings.SdkDataRoot}
     if($isDeclaration){$kind=@(& (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') conscript-source-kind $ModXml @searchArgs);if($LASTEXITCODE-ne 0){throw ($kind -join [Environment]::NewLine)};$isConscript=($kind -join '').Trim()-ceq 'conscript'}
@@ -68,7 +70,7 @@ try{
     & $settings.PowerShell7 @arguments 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail};$code=$LASTEXITCODE
     if($code-ne 0){throw 'Alpha backend failed; previous successful output is unchanged.'}
     Stop-SdkBuildPhase
-    if($ValidateOnly){Write-SdkBuildLine 'Validation Completed (no publication).';[IO.File]::WriteAllLines((Join-Path $sdk '.work/last-validation.log'),$script:BuildLogLines);Copy-Item -LiteralPath $detail -Destination (Join-Path $sdk '.work/last-detail.log') -Force;return}
+    if($ValidateOnly){Write-SdkBuildLine 'Validation Completed (no publication).';Write-SdkBuildLine ('Build time taken: '+$script:BuildClock.Elapsed.ToString('c'));[IO.File]::WriteAllLines((Join-Path $sdk '.work/last-validation.log'),$script:BuildLogLines);Copy-Item -LiteralPath $detail -Destination (Join-Path $sdk '.work/last-detail.log') -Force;return}
     Start-SdkBuildPhase 7 'Merging assets';Stop-SdkBuildPhase 'Skipped: no separate post-build asset merge is enabled.'
     Start-SdkBuildPhase 8 'Fixing assets'
     $receipts=@(Get-ChildItem -LiteralPath $run -Filter alpha-build.json -Recurse);if($receipts.Count-ne 1){throw 'Expected one successful alpha backend receipt.'}

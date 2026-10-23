@@ -37,13 +37,14 @@ public static class Ep1SelectedModuleIdentity
         // Reborn: selected complete scripted/tracer Draws share the same local scope, including cross-class Body/AI/behavior collisions and forward links.
         var drawContainers=root.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="Draws" && e.NamespaceURI==ns).ToArray();
         var draws=drawContainers.SelectMany(e=>e.ChildNodes.OfType<XmlElement>()).ToArray();
-        if(drawContainers.Length>1 || draws.Length>64 || draws.Any(e=>e.NamespaceURI!=ns || e.LocalName is not ("ScriptedModelDraw" or "TracerModelDraw")))throw new InvalidDataException("Unreviewed selected Draw identity class/count.");
-        // Reborn: both reviewed client containers join the same local module scope; unknown namespaces/classes, repeated containers and excessive counts fail before allocation.
+        // Reborn: complete source-sized composition drops the historical sample quota; the legacy selected profile remains unchanged.
+        if(drawContainers.Length>1 || (!reviewedBehaviors&&draws.Length>64) || draws.Any(e=>e.NamespaceURI!=ns || e.LocalName is not ("ScriptedModelDraw" or "TracerModelDraw")))throw new InvalidDataException("Unreviewed selected Draw identity class/count.");
+        // Reborn: both reviewed client containers join the same local scope; class/namespace/duplicate-container checks do not impose a complete-path sample count.
         var clients=new List<XmlElement>();
         foreach(string name in new[]{"ClientUpdates","ClientBehaviors"})
         {
             var containers=root.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName==name).ToArray();var selected=containers.SelectMany(e=>e.ChildNodes.OfType<XmlElement>()).ToArray();
-            if(containers.Length>1 || containers.Any(e=>e.NamespaceURI!=ns) || selected.Length>64 || selected.Any(e=>e.NamespaceURI!=ns || (name=="ClientUpdates"?e.LocalName!="LargeGroupAudioClientUpdate":e.LocalName is not ("ModelConditionAudioLoopClientBehavior" or "ModelConditionSoundSelectorClientBehavior" or "AnimationSoundClientBehavior"))))throw new InvalidDataException("Unreviewed selected client identity class/container/count.");clients.AddRange(selected);
+            if(containers.Length>1 || containers.Any(e=>e.NamespaceURI!=ns) || (!reviewedBehaviors&&selected.Length>64) || selected.Any(e=>e.NamespaceURI!=ns || (name=="ClientUpdates"?e.LocalName!="LargeGroupAudioClientUpdate":e.LocalName is not ("ModelConditionAudioLoopClientBehavior" or "ModelConditionSoundSelectorClientBehavior" or "AnimationSoundClientBehavior"))))throw new InvalidDataException("Unreviewed selected client identity class/container/count.");clients.AddRange(selected);
         }
         var ids=new HashSet<uint>();
         foreach(var module in modules.Concat(body).Concat(ai).Concat(draws).Concat(clients))

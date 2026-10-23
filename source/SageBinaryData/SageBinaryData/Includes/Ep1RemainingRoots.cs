@@ -6,7 +6,20 @@ namespace SageBinaryData;
 // Reborn: preserve the four literal EP1 schema economy ordinals without reusing unrelated legacy economy enums.
 public enum Ep1EconomyResourceType { TIBERIUM,ORE,SIGMA,ENERGY }
 
-// Reborn: stock own-field metadata anchors this 92-byte EP1 record; opaque child pointers and the contextual-power header are admitted only null/empty, not guessed child ABIs.
+// Reborn: AI base flag aliases follow the official forceValue rule; PRIMARY_TYPE_MAX shares CAPTURED rather than consuming a bit.
+public enum AIBaseType { MAIN_BASE,EXPANSION,CAPTURED,PRIMARY_TYPE_MAX=CAPTURED,POINT_CENTERED,LAND_CENTERED,UNDER_ATTACK,ENEMIES_IN_BASE,OLDEST_OF_TYPE,MOST_RECENT_OF_TYPE,NO_BUILD_RADIUS }
+public enum AIBaseSortingOrder { PREFER_OLDEST,PREFER_NEWEST,PREFER_SMALLEST,PREFER_LARGEST,PREFER_MOST_RECENTLY_ATTACKED,PREFER_LEAST_RECENTLY_ATTACKED,PREFER_CLOSEST }
+// Reborn: ten AI base flags fit one native span, including the schema alias above.
+[StructLayout(LayoutKind.Sequential)]
+public unsafe struct AIBaseTypeBitFlags { public fixed uint Value[1]; }
+// Reborn: stock criteria metadata qualifies four flag spans followed by the sort ordinal.
+[StructLayout(LayoutKind.Sequential)]
+public struct AIBaseSelectionCriteria
+{
+    public AIBaseTypeBitFlags RequiredBaseTypes,ExcludedBaseTypes,PreferredBaseTypes,PreferredNotBaseTypes;
+    public AIBaseSortingOrder SortOrder;
+}
+// Reborn: stock own-field metadata anchors this 92-byte EP1 record; contextual-power entries remain a separate unsupported family.
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct Ep1SkirmishAIInformation
 {
@@ -25,9 +38,9 @@ public unsafe struct Ep1SkirmishAIInformation
     public float* OverrideOuterDistanceToTarget;
     public ObjectStatusBitFlags* DodgingRequiredObjectStatus;
     public List<uint> AIContextualPower;
-    public void* ConstructionBaseSelectionCriteria;
-    public void* ResourceNodeBaseClosenessTestSelectionCriteria;
-    public void* DodgeWithUnits;
+    public AIBaseSelectionCriteria* ConstructionBaseSelectionCriteria;
+    public AIBaseSelectionCriteria* ResourceNodeBaseClosenessTestSelectionCriteria;
+    public ObjectFilter* DodgeWithUnits;
     public SageBool BlockIfUnpackTargetBuildingCannotBeRebuilt,UnitBuilderStandardCombatUnit,TargetDuringCrush,ContainedMembersProvideWeapon,CanFireUpCliffs,DoesSecondaryDamage;
 }
 

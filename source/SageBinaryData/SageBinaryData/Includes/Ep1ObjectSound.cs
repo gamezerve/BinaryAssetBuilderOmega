@@ -119,9 +119,12 @@ namespace SageBinaryData
         soundPrepositioned = 38
     }
 
+    // Reborn: EP1 voice Sound is an optional reference pointee; EvaEvent is an inline strong occurrence, not a legacy string pointer.
+    [StructLayout(LayoutKind.Sequential)]
+    public unsafe struct Ep1SoundOrEvaEvent { public AssetReference<BaseAudioEventInfo, AudioEventInfo>* Sound; public AssetReference<BaseAssetType> EvaEvent; }
     // Reborn: EP1 voice/sound ordinals differ from KW while the twelve/eight-byte native entry layouts remain unchanged.
     [StructLayout(LayoutKind.Sequential)]
-    public struct Ep1AudioVoiceEntry { public SoundOrEvaEvent Base; public Ep1ThingTemplateVoiceType AudioType; }
+    public struct Ep1AudioVoiceEntry { public Ep1SoundOrEvaEvent Base; public Ep1ThingTemplateVoiceType AudioType; }
     [StructLayout(LayoutKind.Sequential)]
     public struct Ep1AudioSoundEntry { public AssetReference<BaseAudioEventInfo, AudioEventInfo> Sound; public Ep1ThingTemplateSoundType AudioType; }
     [StructLayout(LayoutKind.Sequential)]

@@ -8,7 +8,8 @@ namespace BinaryAssetBuilder.ManifestInspector;
 internal static class SdkMissingStringAudit
 {
     internal sealed record Result(SdkMissingDependencyAudit.Finding[] Findings,int CheckedKeys,int StockKeys,int ModKeys,bool CatalogComplete,string? StockSource,string ModSource,bool PreparedSourceUsed);
-    private static readonly HashSet<string> KeyFields=new(StringComparer.Ordinal){"DisplayName","DisplayNameTransformed","Description","DescriptionTransformed","TypeDescription","TypeDescriptionTransformed","TextLabel","StringLabel","RandomStringLabel"};
+    // Reborn: upgrade AcquireHint is a localization key even when its spelling does not include a category colon.
+    private static readonly HashSet<string> KeyFields=new(StringComparer.Ordinal){"DisplayName","DisplayNameTransformed","Description","DescriptionTransformed","TypeDescription","TypeDescriptionTransformed","AcquireHint","TextLabel","StringLabel","RandomStringLabel"};
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: the selected language table is explicit local configuration; unavailable or broken tables produce coverage warnings, never a false clean check or false missing-key flood. */

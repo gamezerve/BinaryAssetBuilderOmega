@@ -50,7 +50,13 @@ internal static class ConscriptModuleScalarContract
     //-------------------------------------------------------------------------------------------------
     /** Reborn: intersect inherited official attributes with fixed native members; strings, references, pointers and dynamic list structure stay separately gated. */
     //-------------------------------------------------------------------------------------------------
-    internal static Binding[] Bindings(Type type)=>registry.GetOrAdd(type,model=>
+    internal static Binding[] Bindings(Type type)=>registry.GetOrAdd(type,model=>BuildBindings(model,8));
+
+    // Reborn: nonmodule records have no module TypeId/id prefix; reuse the exact schema/native codec intersection from offset zero.
+    internal static Binding[] RecordBindings(Type type)=>BuildBindings(type,0);
+
+    // Reborn: share attribute discovery while preserving the different module and plain-record ABI prefixes.
+    private static Binding[] BuildBindings(Type model,int minimumOffset)
     {
         string schemaName=model.Name.StartsWith("Ep1",StringComparison.Ordinal)?model.Name[3..]:model.Name;
         var schema=schemas.Value.GlobalTypes[new XmlQualifiedName(schemaName,"uri:ea.com:eala:asset")] as XmlSchemaComplexType??throw new InvalidDataException("Module scalar schema absent: "+schemaName);
@@ -62,11 +68,11 @@ internal static class ConscriptModuleScalarContract
             for(int depth=0;depth<16;depth++){field=current.GetField(name);if(field!=null){offset+=Marshal.OffsetOf(current,name).ToInt32();break;}var parent=current.GetField("Base");if(parent==null)break;offset+=Marshal.OffsetOf(current,"Base").ToInt32();current=parent.FieldType;}
             // Reborn: extend the descriptor intersection with schema-matched enums and fixed flags, never pointers or dynamic lists.
             if(field==null)continue;var extended=ExtendedCodec(attribute.AttributeSchemaType!,field.FieldType);string codec=extended?.Codec??field.FieldType.Name;var contract=extended.HasValue?(extended.Value.Width,extended.Value.Wire):Codec(attribute.AttributeSchemaType!,codec);if(contract==null)continue;
-            int width=field.FieldType.IsEnum?4:Marshal.SizeOf(field.FieldType);if(width!=contract.Value.Item1 || offset<8 || offset>Marshal.SizeOf(model)-width)throw new InvalidDataException("Module scalar ABI width/bounds differs: "+schemaName+"."+name);
+            int width=field.FieldType.IsEnum?4:Marshal.SizeOf(field.FieldType);if(width!=contract.Value.Item1 || offset<minimumOffset || offset>Marshal.SizeOf(model)-width)throw new InvalidDataException("Module scalar ABI width/bounds differs: "+schemaName+"."+name);
             result.Add(new(name,offset,width,codec,attribute.DefaultValue,contract.Value.Item2));
         }
         return result.OrderBy(b=>b.Offset).ToArray();
-    });
+    }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: expose the effective per-family capability inventory for build evidence and user documentation without exporting EA source or resource bodies. */
@@ -102,7 +108,10 @@ internal static class ConscriptModuleScalarContract
     private static (int Width,uint Wire,string Codec)? ExtendedCodec(XmlSchemaType schema,Type native)
     {
         if(!Ep1BehaviorMetadataTokenizer.TryReviewedScalarSignature(schema.Name??string.Empty,out uint wire))return null;
-        if(native.IsEnum&&native.Name==schema.Name&&Enum.GetUnderlyingType(native)==typeof(int))return (4,wire,"Enum:"+native.FullName);
+        // Reborn: the existing EP1 AI writer stores this schema flag list in a uint, not a fixed-buffer wrapper.
+        if(native==typeof(uint)&&schema.Name=="AutoAcquireEnemiesBitFlags")return (4,wire,"Flags:"+typeof(AutoAcquireEnemiesType).FullName);
+        // Reborn: EP1 root movement uses the reviewed EP1 enum, whose additional literals must not be encoded through the legacy KW enum.
+        if(native.IsEnum&&(native.Name==schema.Name||native==typeof(Ep1RootLocomotorSetType)&&schema.Name=="LocomotorSetType"||native==typeof(Ep1ProductionQueueType)&&schema.Name=="ProductionQueueType"||native==typeof(Ep1AIStateMachineType)&&schema.Name=="StateMachineType")&&Enum.GetUnderlyingType(native)==typeof(int))return (4,wire,"Enum:"+native.FullName);
         if(schema is not XmlSchemaSimpleType {Content:XmlSchemaSimpleTypeList list}||!native.Name.EndsWith("BitFlags",StringComparison.Ordinal)||native.Name!=schema.Name)return null;
         var buffer=native.GetField("Value")?.GetCustomAttribute<System.Runtime.CompilerServices.FixedBufferAttribute>();var item=typeof(GameObject).Assembly.GetType("SageBinaryData."+list.BaseItemType?.Name);
         if(buffer==null||buffer.ElementType!=typeof(uint)||buffer.Length<1||buffer.Length>64||item==null||!item.IsEnum)return null;
@@ -112,7 +121,31 @@ internal static class ConscriptModuleScalarContract
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate representability and canonicalize schema-legal boolean spellings before the legacy marshaler reads authored module attributes. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Validate(XmlDocument source){foreach(var owner in Owners(source))foreach(var binding in Bindings(owner.NativeType)){_=Bytes(owner.Element,binding);if(binding.Codec=="SageBool" && owner.Element.HasAttribute(binding.Name))owner.Element.SetAttribute(binding.Name,Boolean(Literal(owner.Element,binding))?"true":"false");}}
+    internal static void Validate(XmlDocument source)
+    {
+        foreach(var owner in Owners(source)){
+            if(owner.NativeType==typeof(BuildingDestructionModuleData))BuildingDestructionContract.Validate(owner.Element);
+            if(owner.NativeType==typeof(QueueDockModuleData))QueueDockContract.Validate(owner.Element);
+            if(owner.NativeType==typeof(Ep1QueueProductionExitUpdateModuleData))QueueProductionExitContract.Validate(owner.Element);
+            if(owner.NativeType==typeof(Ep1SpawnBehaviorModuleData))SpawnBehaviorContract.Validate(owner.Element);
+            if(owner.NativeType==typeof(Ep1ProductionUpdateModuleData))ProductionUpdateContract.Validate(owner.Element);
+            if(owner.NativeType==typeof(Ep1RepairUpdateModuleData))RepairUpdateContract.Validate(owner.Element);
+            if(owner.NativeType==typeof(Ep1EngineerContainModuleData))EngineerContainContract.Validate(owner.Element);
+            if(owner.NativeType==typeof(AssistedPlacementBehaviorModuleData))AssistedPlacementContract.Validate(owner.Element);
+            if(owner.NativeType==typeof(InfiltratorContainModuleData))InfiltratorContainContract.Validate(owner.Element);
+            if(owner.NativeType==typeof(StructurePlacementBehaviorModuleData))StructurePlacementContract.Validate(owner.Element);
+            if(owner.NativeType==typeof(LUAEventListBehaviorModuleData))LUAEventListContract.Validate(owner.Element);
+            // Reborn: model subobject text has a separate complete string/ownership contract rather than stock name equality.
+            if(owner.NativeType==typeof(BuildingBehaviorModuleData))BuildingBehaviorContract.Validate(owner.Element);
+            // Reborn: FX nested event booleans and complete death-condition values need the same early source-located validation.
+            if(owner.NativeType==typeof(FXListBehaviorModuleData))FXListBehaviorContract.Validate(owner.Element);
+            // Reborn: nested tracker records are validated independently of the original Conscript shape.
+            if(owner.NativeType==typeof(SecondaryDamageTrackerModuleData))SecondaryDamageTrackerContract.Validate(owner.Element);
+            // Reborn: creation and destroy families share full authored death-condition validation.
+            if(DeathBehaviorContract.Supports(owner.NativeType))DeathBehaviorContract.Validate(owner.Element);
+            foreach(var binding in Bindings(owner.NativeType)){_=Bytes(owner.Element,binding);if(binding.Codec=="SageBool"&&owner.Element.HasAttribute(binding.Name))owner.Element.SetAttribute(binding.Name,Boolean(Literal(owner.Element,binding))?"true":"false");}
+        }
+    }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: only admitted fixed-width attributes are normalized for structure comparison; owners, IDs, module order and children remain visible. */
@@ -128,7 +161,13 @@ internal static class ConscriptModuleScalarContract
     //-------------------------------------------------------------------------------------------------
     internal static int Address(byte[] bytes,int prefix,Owner owner)
     {
-        int slot=prefix+slots[owner.Container];if(owner.Container=="Body")return checked((int)Word(bytes,slot));int header=owner.Container=="AI"?slot:checked((int)Word(bytes,slot));int count=checked((int)Word(bytes,header));if(owner.Index<0 || owner.Index>=count || count>128)throw new InvalidDataException("Module scalar container count differs.");int items=checked((int)Word(bytes,header+4));return checked((int)Word(bytes,items+owner.Index*4));
+        // Reborn: bound serialized pointers/counts before narrowing, without the historical 128-module test quota or incidental overflow exceptions.
+        int slot=prefix+slots[owner.Container];uint pointer=owner.Container=="AI"?(uint)slot:Word(bytes,slot);
+        if(pointer>=bytes.Length||pointer%4!=0)throw new InvalidDataException("Module scalar owner pointer bounds/alignment differ.");
+        int header=(int)pointer;if(owner.Container=="Body")return header;
+        uint count=Word(bytes,header),items=Word(bytes,header+4);
+        if(owner.Index<0||owner.Index>=count||items>=bytes.Length||items%4!=0||count>(bytes.Length-items)/4)throw new InvalidDataException("Module scalar container count/items differ.");
+        uint target=Word(bytes,(int)items+owner.Index*4);if(target>=bytes.Length||target%4!=0)throw new InvalidDataException("Module scalar leaf pointer bounds/alignment differ.");return (int)target;
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -187,10 +226,13 @@ internal static class ConscriptModuleScalarContract
     //-------------------------------------------------------------------------------------------------
     internal static string Literal(XmlElement source,string name,Type type)=>Literal(source,Bindings(type).Single(b=>b.Name==name));
 
+    // Reborn: plain-record receipts use the same actual native descriptor/defaults as source verification, without a module prefix requirement.
+    internal static string RecordLiteral(XmlElement source,string name,Type type)=>Literal(source,RecordBindings(type).Single(b=>b.Name==name));
+
     //-------------------------------------------------------------------------------------------------
     /** Reborn: independent scalar encodings preserve signed/unsigned hex, engine units and finite float32 bounds. */
     //-------------------------------------------------------------------------------------------------
-    private static byte[] Bytes(XmlElement source,Binding binding)
+    internal static byte[] Bytes(XmlElement source,Binding binding)
     {
         string text=Literal(source,binding).Trim();var bytes=new byte[binding.Width];
         try
@@ -217,6 +259,8 @@ internal static class ConscriptModuleScalarContract
                 case "UInt32":BinaryPrimitives.WriteUInt32LittleEndian(bytes,Unsigned());return bytes;
                 case "UInt16":BinaryPrimitives.WriteUInt16LittleEndian(bytes,checked((ushort)Unsigned()));return bytes;
                 case "Byte":bytes[0]=checked((byte)Unsigned());return bytes;
+                // Reborn: official xs:byte crusher levels are signed -128..127, not unsigned bytes or float encodings.
+                case "SByte":bytes[0]=unchecked((byte)sbyte.Parse(text,NumberStyles.Integer,CultureInfo.InvariantCulture));return bytes;
                 case "Duration":BinaryPrimitives.WriteUInt32LittleEndian(bytes,checked((uint)Math.Ceiling(Unsigned()*Marshaler.LOGICFRAMES_PER_MSEC_REAL)));return bytes;
             }
             float multiplier=1;
@@ -235,7 +279,8 @@ internal static class ConscriptModuleScalarContract
     // Reborn: grouped probes use only named values shared by the concrete enum and its official schema, not numeric test ordinals.
     private static string[] ProbeNames(Binding binding)
     {
-        var type=ValueType(binding);var schema=schemas.Value.GlobalTypes[new XmlQualifiedName(type.Name,"uri:ea.com:eala:asset")] as XmlSchemaSimpleType;
+        // Reborn: the concrete EP1 enum alias shares the official LocomotorSetType schema, including AI default-movement probes.
+        var type=ValueType(binding);string schemaName=type==typeof(Ep1RootLocomotorSetType)?"LocomotorSetType":type==typeof(Ep1ProductionQueueType)?"ProductionQueueType":type.Name;var schema=schemas.Value.GlobalTypes[new XmlQualifiedName(schemaName,"uri:ea.com:eala:asset")] as XmlSchemaSimpleType;
         var allowed=(schema?.Content as XmlSchemaSimpleTypeRestriction)?.Facets.OfType<XmlSchemaEnumerationFacet>().Select(f=>f.Value).ToHashSet(StringComparer.Ordinal)??throw new InvalidDataException("Enum probe schema facets unavailable: "+type.Name);
         return Enum.GetNames(type).Where(allowed.Contains).ToArray();
     }

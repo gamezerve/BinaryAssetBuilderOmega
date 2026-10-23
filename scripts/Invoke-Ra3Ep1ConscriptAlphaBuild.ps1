@@ -10,7 +10,7 @@ try {
     $searchArgs=@($sdk);if($settings.SdkDataRoot){$searchArgs+=$settings.SdkDataRoot}
     & $exe conscript-source-prepare $ModXml $prepared @searchArgs;if($LASTEXITCODE-ne 0){throw 'EA source preparation failed; see the XML/include/schema diagnostic above.'}
     $inputReceipt=Get-Content -LiteralPath (Join-Path $prepared 'source-input.json') -Raw|ConvertFrom-Json
-    $identity=$inputReceipt.Identity;$hasCommand=[bool]$inputReceipt.CommandPath;$newIdentity=$identity-cne 'SovietAntiInfantryInfantry'
+    $identity=$inputReceipt.Identity;$hasCommand=[bool]$inputReceipt.CommandPath
     # Reborn: preserve the legacy receipt shape while routing an explicit command-set primary without a fabricated unit.
     $primaryType=if($inputReceipt.PrimaryType){$inputReceipt.PrimaryType}else{'GameObject'};$supportOnly=$primaryType-cne 'GameObject'
     # Reborn: report the fixed and variable source profiles separately so variable Behaviors do not imply arbitrary nested GameObject support.
@@ -19,7 +19,7 @@ try {
     # Reborn: reference retargeting is shared with variable Behaviors; only actual unimplemented layouts/resources remain restricted.
     # Reborn: do not advertise already implemented text editing as an unsupported capability.
     Write-Output 'Warning: ALPHA006 Partial native layout support: variable Behaviors, root text, ArmorSet lists, hardpoint/Weapon lists with optional imports, fixed fields, compatible targets and source-sized upgrade lists/animation are supported together. Turret/contained weapon slots, other unimplemented native layouts and resource compilation still require implementation.'
-    }else{Write-Output 'Reborn: building explicit LogicCommandSet assets; no GameObject is required or generated.'}
+    }else{Write-Output ('Reborn: building explicit '+$primaryType+' support assets; no GameObject is required or generated.')}
     $assetCount=if($null-ne $inputReceipt.AssetCount){[int]$inputReceipt.AssetCount}else{if($hasCommand){2}else{1}}
     Write-Output ('Reborn: authored asset count: '+$assetCount+'; no automatic LogicCommand generation.')
     $scratch=Join-Path $OutputRoot 'temp';$null=New-Item -ItemType Directory -Path $scratch;$previousTemp=$env:TEMP;$previousTmp=$env:TMP
@@ -29,7 +29,10 @@ try {
         & $exe conscript-alpha-build $settings.UprisingXmlRoot $StaticManifest $GlobalManifest $inputReceipt.GamePath (Join-Path $OutputRoot 'conscript')
         if($LASTEXITCODE-ne 0){throw 'Conscript source/native/metadata/stream qualification failed.'}
     } finally {$env:TEMP=$previousTemp;$env:TMP=$previousTmp}
-    $trial=if($supportOnly){'support'}elseif($newIdentity){'new-id'}else{'override'};$receiptPath=Join-Path $OutputRoot ('conscript/'+$trial+'/trial-plan.json');$receipt=Get-Content -LiteralPath $receiptPath -Raw|ConvertFrom-Json
+    # Reborn: the native compiler classifies actual catalog-backed stock overrides; Conscript is not the only legal override identity.
+    $trials=@(foreach($candidate in $(if($supportOnly){@('support')}else{@('override','new-id')})){if(Test-Path -LiteralPath (Join-Path $OutputRoot ('conscript/'+$candidate+'/trial-plan.json')) -PathType Leaf){$candidate}})
+    if($trials.Count-ne 1){throw 'Expected exactly one fresh native package receipt.'}
+    $trial=$trials[0];$newIdentity=(-not $supportOnly -and $trial-ceq 'new-id');$receiptPath=Join-Path $OutputRoot ('conscript/'+$trial+'/trial-plan.json');$receipt=Get-Content -LiteralPath $receiptPath -Raw|ConvertFrom-Json
     $package=Join-Path $OutputRoot ('conscript/'+$trial+'/RebornConscriptProbe.big')
     if((-not $supportOnly -and $receipt.NewIdentity-ne $newIdentity) -or $receipt.Asset-cne ($primaryType+':'+$identity) -or $receipt.AssetCount-ne $assetCount -or -not $receipt.OfflineValidated -or (Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash-cne $receipt.ArchiveSha256 -or $receipt.SourceSha256-cne $inputReceipt.PreparedSourceSha256){throw 'Fresh explicit-source package/readback receipt differs.'}
     # Reborn: recheck every source, including included command XML, before publication rather than trusting only prepared-source hashes.

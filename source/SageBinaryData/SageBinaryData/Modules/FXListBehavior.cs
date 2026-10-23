@@ -15,6 +15,11 @@ public enum FXListBehaviorType
     onBecomingTemporaryOwner,
     onEndingTemporarySlave,
     onEndingTemporaryOwner,
+    // Reborn: preserve the original ten ordinals and append all four additional official EP1 event kinds in schema order.
+    onTerrainCollision,
+    onShieldSphereCollision,
+    onSurfacing,
+    onSubmerging,
 }
 
 public enum FXListBehaviorDirection

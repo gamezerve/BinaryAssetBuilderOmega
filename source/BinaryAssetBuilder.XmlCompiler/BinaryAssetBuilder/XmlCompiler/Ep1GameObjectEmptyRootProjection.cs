@@ -16,11 +16,13 @@ public static class Ep1GameObjectEmptyRootProjection
     // Reborn: literal root wire signatures are independently observed stock type identities, not per-asset offsets or metadata templates.
     public readonly record struct Field(string Name,int Slot,uint Wire,bool List);
     public static IReadOnlyList<Field> Fields { get; }=Array.AsReadOnly(new[]{
-        new Field("Browser",44,0x6D66AE18,true),new Field("GameDependency",412,0x6D7966DE,false),
+        // Reborn: GameDependency's optional null/populated declaration is now owned by the complete root-record composer.
+        new Field("Browser",44,0x6D66AE18,true),
         new Field("BuildFadeInOnCreateList",444,0x6D66AE18,false),new Field("BuildVariations",448,0x6D66AE18,false),new Field("EquivalentTo",452,0x148ED75D,true),
         new Field("ReplaceModule",504,0x57B786DD,false),new Field("InheritableModule",508,0xE1B75970,false),new Field("AutoResolveArmor",512,0x75987CAA,false),new Field("AutoResolveWeapon",516,0x8EA82C97,false),
-        new Field("FormationPreviewDecal",520,0xD753F0C3,false),new Field("FormationPreviewItemDecal",524,0xD753F0C3,false),new Field("AudioArraySound",536,0x59867D0B,false),new Field("UpgradeCameo",544,0x1A2933AA,true),
-        new Field("AutoResolveInfo",556,0x8546AC4F,false),new Field("ProjectedBuildabilityInfo",568,0x52BD0121,true),new Field("DisplayUpgrade",576,0x26FACFC7,true)});
+        // Reborn: AudioArraySound and ProjectedBuildabilityInfo are now complete root owners, including their empty declarations.
+        new Field("FormationPreviewDecal",520,0xD753F0C3,false),new Field("FormationPreviewItemDecal",524,0xD753F0C3,false),new Field("UpgradeCameo",544,0x1A2933AA,true),
+        new Field("AutoResolveInfo",556,0x8546AC4F,false),new Field("DisplayUpgrade",576,0x26FACFC7,true)});
     //-------------------------------------------------------------------------------------------------
     /** Reborn: explicitly refuse source variants whose populated ABI has not been reviewed; absent direct children and empty Browser are the only admitted source profile. */
     //-------------------------------------------------------------------------------------------------
@@ -50,7 +52,11 @@ public static class Ep1GameObjectEmptyRootProjection
         var absentNames=new[]{new Field("DisplayName",404,0x1A2933AA,false),new Field("DisplayNameTransformed",408,0x1A2933AA,false)}.Where(f=>Word(native.InstanceBuffer,f.Slot)==0);
         // Reborn: an omitted ArmorSet still has a zero-count list declaration in a complete original-object metadata table.
         var absentArmor=Word(native.InstanceBuffer,420)==0?new[]{new Field("ArmorSet",420,0x5E5AF575,true)}:Array.Empty<Field>();
-        var fields=original?Fields.Concat(absentNames).Concat(absentArmor).Concat(new[]{new Field("Flammability",464,0x10444D6C,false),new Field("LiveCameraOffset",528,0x29368077,false)}).ToArray():Fields.ToArray();
+        // Reborn: omitted movement rows retain the same complete zero-count metadata declaration as other original-object lists.
+        var absentLocomotor=Word(native.InstanceBuffer,428)==0?new[]{new Field("LocomotorSet",428,0x6E6BF482,true)}:Array.Empty<Field>();
+        // Reborn: complete original-object metadata keeps null declarations for omitted pointer-list containers instead of dropping root fields.
+        var absentContainers=new[]{new Field("Draws",472,0xEFBBA791,false),new Field("ClientUpdates",492,FastHash.GetHashCode("ClientUpdateModules"),false),new Field("ClientBehaviors",496,FastHash.GetHashCode("ClientBehaviorModules"),false)}.Where(f=>Word(native.InstanceBuffer,f.Slot)==0);
+        var fields=original?Fields.Concat(absentNames).Concat(absentArmor).Concat(absentLocomotor).Concat(absentContainers).Concat(new[]{new Field("Flammability",464,0x10444D6C,false),new Field("LiveCameraOffset",528,0x29368077,false)}).ToArray():Fields.ToArray();
         foreach(var field in fields)for(int at=field.Slot;at<field.Slot+(field.List?8:4);at+=4)if(Word(native.InstanceBuffer,at)!=0)throw new InvalidDataException("Populated empty-profile native storage: "+field.Name);
         var old=Ep1GameObjectRootOwnersProjection.Compose(native,schemas);int oldPrefix=old.InstanceBuffer.Length-native.InstanceBuffer.Length,insert=0;
         for(;insert<oldPrefix;insert+=12)if(Word(old.InstanceBuffer,insert)==0 && Word(old.InstanceBuffer,insert+4)==0 && Word(old.InstanceBuffer,insert+8)==0)break;

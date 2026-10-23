@@ -11,7 +11,7 @@ namespace BinaryAssetBuilder.XmlCompiler;
 // Reborn: generate the three reviewed EP1 client families recursively from native ownership, without accepting stock metadata or asset identities as input.
 public static class Ep1ClientBehaviorsTokenizer
 {
-    private enum Kind { Word, Ref, Flags, Enum, RefPointer, MaskPointer, IntPointer, RealPointer, RecordPointer, List, Frames, EmptyList, NullPointer, EmptyEva }
+    private enum Kind { Word, Ref, Flags, Enum, RefPointer, MaskPointer, IntPointer, RealPointer, RecordPointer, List, Frames, EmptyList, NullPointer }
     private sealed record Field(string Name, uint Tag, int Offset, Kind Kind = Kind.Word, Record Child = null, int Limit = 0);
     private sealed record Record(int Size, Field[] Fields, Record Parent = null, uint ParentTag = 0);
     // Reborn: these literal tags and field order are independently checked against the complete six-leaf stock prefix.
@@ -19,7 +19,8 @@ public static class Ep1ClientBehaviorsTokenizer
     private static readonly Record Client = new(8, Array.Empty<Field>(), Module, 0xD75D93A2);
     private static readonly Record LoopItem = new(124, new[] { new Field("Sound", 0x63D7B468, 0, Kind.RefPointer), new Field("RequiredFlags", 0x67DBBFC9, 4, Kind.Flags), new Field("ExcludedFlags", 0x67DBBFC9, 64, Kind.Flags) });
     private static readonly Record Loop = new(16, new[] { new Field("ModelConditionSound", 0xD8326DDD, 8, Kind.List, LoopItem) }, Client, 0x7B8C5772);
-    private static readonly Record SoundOrEva = new(8, new[] { new Field("Sound", 0x63D7B468, 0, Kind.RefPointer), new Field("EvaEvent", 0xC4EC43B1, 4, Kind.EmptyEva) });
+    // Reborn: root and client EP1 voices share the stock-qualified inline strong EVA word; no separate empty-only client gate remains.
+    private static readonly Record SoundOrEva = new(8, new[] { new Field("Sound", 0x63D7B468, 0, Kind.RefPointer), new Field("EvaEvent", 0xC4EC43B1, 4, Kind.Ref) });
     private static readonly Record Voice = new(12, new[] { new Field("AudioType", 0x4DA708B0, 8, Kind.Enum, Limit: 67) }, SoundOrEva, 0x1AE6B6B7);
     private static readonly Record Voices = new(24, new[] { new Field("AudioEntry", 0x8AA9CB14, 0, Kind.List, Voice), new Field("ObjectSpecificEntry", 0xAEDFC4CD, 8, Kind.EmptyList), new Field("NamedEntry", 0xF8ED487B, 16, Kind.EmptyList) });
     private static readonly Record Override = new(132, new[] { new Field("RequiredFlags", 0x67DBBFC9, 0, Kind.Flags), new Field("ExcludedFlags", 0x67DBBFC9, 60, Kind.Flags), new Field("VoicePriorityOverride", 0x23E650B8, 120, Kind.IntPointer), new Field("AudioArrayVoice", 0x09D18241, 124, Kind.RecordPointer, Voices), new Field("AudioArraySound", 0x59867D0B, 128, Kind.NullPointer) });
@@ -56,7 +57,8 @@ public static class Ep1ClientBehaviorsTokenizer
         //-------------------------------------------------------------------------------------------------
         internal Chunk Build(Chunk native)
         {
-            uint count = Word(0); if (count > 64 || Word(4) != (count == 0 ? 0u : 8u) || count == 0 && bytes.Length != 8) throw new InvalidDataException("Client canonical list differs.");
+            // Reborn: source-sized lists are bounded by their real pointer storage, not the former 64-client test quota.
+            uint count = Word(0); if (count > (bytes.Length-8)/4 || Word(4) != (count == 0 ? 0u : 8u) || count == 0 && bytes.Length != 8) throw new InvalidDataException("Client canonical list differs.");
             Claim(0, checked(8 + (int)count * 4)); int list = Allocate(1 + (int)count); Row(list, 0x6C827073, 0x5D448FD8, 0); Native(list + 8, 0);
             if (count != 0) relos.Add(4); var ids = new HashSet<uint>();
             for (int i = 0; i < count; i++)
@@ -109,7 +111,6 @@ public static class Ep1ClientBehaviorsTokenizer
                         break;
                     case Kind.NullPointer: if (value != 0) throw new InvalidDataException("Client populated child is not token-enabled: " + field.Name); break;
                     default:
-                        if (field.Kind == Kind.EmptyEva && value != 0) throw new InvalidDataException("Client populated EvaEvent ABI is not reviewed.");
                         if (field.Kind == Kind.Enum && value >= field.Limit) throw new InvalidDataException("Client EP1 audio ordinal differs.");
                         if (field.Kind == Kind.Flags) Mask(slot); if (field.Kind == Kind.Ref && value != 0) imports.Add((uint)slot); Native(next + 8, slot); break;
                 }

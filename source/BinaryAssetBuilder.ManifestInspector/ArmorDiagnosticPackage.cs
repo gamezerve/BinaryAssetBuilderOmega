@@ -104,7 +104,7 @@ internal static class ArmorDiagnosticPackage
         int directorySize = 16 + names.Sum(name => 8 + name.Length);
         int headerSize = (directorySize + 7) & ~7;
         int size = checked(headerSize + contents.Sum(payload => payload.Length));
-        if (size > Limit) throw new InvalidDataException("Armor package exceeds one MiB.");
+        // Reborn: shared mixed-object packaging uses checked BIG4/int32 allocation bounds, not the original single-armor experiment's one-MiB quota.
         byte[] bytes = new byte[size];
         Encoding.ASCII.GetBytes("BIG4").CopyTo(bytes, 0);
         BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(4), (uint)size);

@@ -5,17 +5,40 @@ using System.IO;
 public static partial class Marshaler
 {
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: retain all official SkirmishAI scalars, masks and optional scalar pointers; unreviewed contextual/base-selection/filter child payloads fail closed. */
+    /** Reborn: compile base-selection masks using actual enum values, preserving the official PRIMARY_TYPE_MAX alias. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node,AIBaseSelectionCriteria* objT,Tracker state)
+    {
+        if(node==null)return;
+        foreach(string name in new[]{"RequiredBaseTypes","ExcludedBaseTypes","PreferredBaseTypes","PreferredNotBaseTypes"}){
+            uint bits=0;foreach(string token in node.GetAttributeValue(name,"").GetText().Split(WhiteSpaces,System.StringSplitOptions.RemoveEmptyEntries)){
+                if(!System.Enum.TryParse(token,false,out AIBaseType value)||!System.Enum.IsDefined(typeof(AIBaseType),value))throw new InvalidDataException("Unknown AI base flag: "+token);
+                bits|=1u<<(int)value;
+            }
+            state.InplaceEndianToPlatform(&bits);*((uint*)objT+System.Array.IndexOf(new[]{"RequiredBaseTypes","ExcludedBaseTypes","PreferredBaseTypes","PreferredNotBaseTypes"},name))=bits;
+        }
+        Ep1ToggleEnum(node.GetAttributeValue("SortOrder","PREFER_NEWEST"),(uint*)&objT->SortOrder,state,typeof(AIBaseSortingOrder),false);
+    }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: allocate an optional criteria record only when the source authors it. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node,AIBaseSelectionCriteria** objT,Tracker state)
+    {
+        if(node==null)return;state.Push((void**)objT,(uint)sizeof(AIBaseSelectionCriteria),1);Marshal(node,*objT,state);state.Pop();
+    }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: compile SkirmishAI scalars, optional masks, base criteria and dodge filters; contextual-power entries need their separate native model. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node,Ep1SkirmishAIInformation* objT,Tracker state)
     {
-        if(node==null)return;foreach(string child in new[]{"AIContextualPower","ConstructionBaseSelectionCriteria","ResourceNodeBaseClosenessTestSelectionCriteria","DodgeWithUnits"})if((node.GetChildNodes(child)?.GetCount()??0)!=0)throw new InvalidDataException("EP1 SkirmishAI populated child not reviewed: "+child);
+        if(node==null)return;if((node.GetChildNodes("AIContextualPower")?.GetCount()??0)!=0)throw new InvalidDataException("EP1 SkirmishAI AIContextualPower native model is not implemented.");
         Marshal(node.GetAttributeValue("BaseBuildingLocation","FRONT"),&objT->BaseBuildingLocation,state);Marshal(node.GetAttributeValue("AdditionalRotation","0r"),&objT->AdditionalRotation,state);Marshal(node.GetAttributeValue("BaseBuildingMaxNudges","3"),&objT->BaseBuildingMaxNudges,state);Marshal(node.GetAttributeValue("CrushSpeedBonus","0.0"),&objT->CrushSpeedBonus,state);Marshal(node.GetAttributeValue("OutOfRangePenalty","1.3"),&objT->OutOfRangePenalty,state);
         Marshal(node.GetAttributeValue("ConquerMetricsOverrideDPS",null),&objT->ConquerMetricsOverrideDPS,state);Marshal(node.GetAttributeValue("ConquerMetricsOverrideDamageType","UNDEFINED"),&objT->ConquerMetricsOverrideDamageType,state);Marshal(node.GetAttributeValue("ConquerMetricsOverrideAntiMask","ANTI_GROUND ANTI_WATER"),&objT->ConquerMetricsOverrideAntiMask,state);Marshal(node.GetAttributeValue("ConquerMetricsOverrideForbiddenAntiMask",""),&objT->ConquerMetricsOverrideForbiddenAntiMask,state);
-        // Reborn: optional defending-mask storage is refused until its independent pointer/mask marshal path is qualified, rather than silently becoming an inline mask.
-        if(node.GetAttributeValue("ConquerMetricsOverrideDefendingAntiMask",null)!=null)throw new InvalidDataException("EP1 SkirmishAI optional defending mask is not yet reviewed.");
+        // Reborn: optional masks allocate a pointee, distinct from the inline attack/forbidden masks.
+        var defending=node.GetAttributeValue("ConquerMetricsOverrideDefendingAntiMask",null);if(defending!=null){state.Push((void**)&objT->ConquerMetricsOverrideDefendingAntiMask,(uint)sizeof(WeaponAntiBitFlags),1);Marshal(defending,objT->ConquerMetricsOverrideDefendingAntiMask,state);state.Pop();}
         Marshal(node.GetAttributeValue("ConquerMetricsDpsBonusAgainstDefenses","1.0"),&objT->ConquerMetricsDpsBonusAgainstDefenses,state);Ep1ToggleEnum(node.GetAttributeValue("NearResourceNodeType","ORE"),(uint*)&objT->NearResourceNodeType,state,typeof(Ep1EconomyResourceType),false);Marshal(node.GetAttributeValue("DodgeSafetyDistance","300.0"),&objT->DodgeSafetyDistance,state);Marshal(node.GetAttributeValue("OverrideInnerDistanceToTarget",null),&objT->OverrideInnerDistanceToTarget,state);Marshal(node.GetAttributeValue("OverrideOuterDistanceToTarget",null),&objT->OverrideOuterDistanceToTarget,state);Marshal(node.GetAttributeValue("DodgingRequiredObjectStatus",null),&objT->DodgingRequiredObjectStatus,state);
         Marshal(node.GetAttributeValue("BlockIfUnpackTargetBuildingCannotBeRebuilt","true"),&objT->BlockIfUnpackTargetBuildingCannotBeRebuilt,state);Marshal(node.GetAttributeValue("UnitBuilderStandardCombatUnit","false"),&objT->UnitBuilderStandardCombatUnit,state);Marshal(node.GetAttributeValue("TargetDuringCrush","false"),&objT->TargetDuringCrush,state);Marshal(node.GetAttributeValue("ContainedMembersProvideWeapon","false"),&objT->ContainedMembersProvideWeapon,state);Marshal(node.GetAttributeValue("CanFireUpCliffs","false"),&objT->CanFireUpCliffs,state);Marshal(node.GetAttributeValue("DoesSecondaryDamage","false"),&objT->DoesSecondaryDamage,state);
+        Marshal(node.GetChildNode("ConstructionBaseSelectionCriteria",null),&objT->ConstructionBaseSelectionCriteria,state);Marshal(node.GetChildNode("ResourceNodeBaseClosenessTestSelectionCriteria",null),&objT->ResourceNodeBaseClosenessTestSelectionCriteria,state);Marshal(node.GetChildNode("DodgeWithUnits",null),&objT->DodgeWithUnits,state);
     }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: use EP1 crusher internal offsets and complete scalar/reference/flag source semantics; nonempty extra-crush payload families stay explicitly closed. */

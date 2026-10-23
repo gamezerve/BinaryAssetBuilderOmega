@@ -33,13 +33,13 @@ internal static class ConscriptUpgradeStructure
     {
         if(!Supports(owner.NativeType))return null;
         Type type=owner.NativeType;string path=type.Name;while(type!=typeof(UpgradeModuleData)){type=type.GetField("Base")!.FieldType;path+=".Base";}
-        // Reborn: list validation is linear in authored entries, not a full stock-catalog scan for every repeated trigger.
+        // Reborn: weak upgrade names serialize hashes even without a catalog target; only ambiguous known identities are rejected here.
         var available=catalog.Where(a=>a.TypeId==FastHash.GetHashCode("UpgradeTemplate")).GroupBy(a=>a.InstanceId).ToDictionary(g=>g.Key,g=>g.Count());
         var lists=new Dictionary<string,uint[]>(StringComparer.Ordinal);
         foreach(string name in new[]{"TriggeredBy","ConflictsWith"}){
             var values=new List<uint>();foreach(var child in owner.Element.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName==name)){
                 string value=child.InnerText.Trim();uint id=InstanceHandle.GetInstanceId(value);
-                if(available.GetValueOrDefault(id)!=1)throw SdkXmlDiagnostics.At(new InvalidDataException("Missing or ambiguous upgrade asset: UpgradeTemplate:"+value),child);
+                if(available.GetValueOrDefault(id)>1)throw SdkXmlDiagnostics.At(new InvalidDataException("Ambiguous upgrade asset: UpgradeTemplate:"+value),child);
                 values.Add(id);
             }
             lists.Add(path+"."+name,values.ToArray());

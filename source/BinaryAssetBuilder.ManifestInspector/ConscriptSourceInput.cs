@@ -13,10 +13,13 @@ internal static class ConscriptSourceInput
 {
     private const string Ea="uri:ea.com:eala:asset";
     internal sealed record SourceFile(string Path,string Sha256);
+    // Reborn: the physical document that declared each emitted asset, in emission order; recorded in source-input.json for the readable compile log.
+    internal sealed record AssetOrigin(string Type,string Id,string Path);
     internal sealed record Input(XmlDocument Game,XmlDocument? Command,SourceFile[] Sources)
     {
         // Reborn: emitted support assets retain their own typed XML; instance bases are never added to this collection.
         internal XmlDocument[] AdditionalAssets {get;init;}=Array.Empty<XmlDocument>();
+        internal AssetOrigin[] Origins {get;init;}=Array.Empty<AssetOrigin>();
         // Reborn: source hashes and alias-precedence witnesses are independent publication requirements.
         public SdkSourceSearch.Selection[] Searches { get; init; }=Array.Empty<SdkSourceSearch.Selection>();
         // Reborn: captured source coordinates survive detachment without adding metadata to user XML or build receipts.
@@ -69,7 +72,8 @@ internal static class ConscriptSourceInput
             if(!seen.Add(path))return false;if(seen.Count>32)throw new InvalidDataException("Source routing exceeds 32 XML files.");
             var xml=Read(path);var element=xml.DocumentElement!;
             if(element.NamespaceURI!=Ea)return false;
-            if(element.LocalName is "GameObject" or "LogicCommandSet" || element.ChildNodes.OfType<XmlElement>().Any(e=>e.NamespaceURI==Ea && e.LocalName is "GameObject" or "LogicCommandSet"))return true;
+            // Reborn: explicit upgrade declarations select the complete mixed/support stream backend, including upgrade-only mods.
+            if(element.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate" || element.ChildNodes.OfType<XmlElement>().Any(e=>e.NamespaceURI==Ea && e.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate"))return true;
             foreach(XmlElement include in element.GetElementsByTagName("Include",Ea))
             {
                 string source=include.GetAttribute("source");if(!source.EndsWith(".xml",StringComparison.OrdinalIgnoreCase))continue;
@@ -90,16 +94,19 @@ internal static class ConscriptSourceInput
         var input=ConscriptSourcePreparation.Load(entry,sdk==null?null:SdkSourceSearch.ForMod(entry,sdk,stockData));var schemas=Schemas();
         var baseline=Read(Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"live-alpha","ConscriptBuildTime1","data","mod.xml"));
         // Reborn: a bare command-set document has no Include/base context; never silently discard an unprocessed inheritance marker.
-        if(input.Game.DocumentElement!.LocalName=="LogicCommandSet"&&input.Game.DocumentElement.HasAttribute("inheritFrom"))throw SdkXmlDiagnostics.At(new InvalidDataException("Use an AssetDeclaration with visible instance/all sources for LogicCommandSet inheritance."),input.Game.DocumentElement.GetAttributeNode("inheritFrom"));
+        if(input.Game.DocumentElement!.LocalName is "LogicCommandSet" or "UpgradeTemplate"&&input.Game.DocumentElement.HasAttribute("inheritFrom"))throw SdkXmlDiagnostics.At(new InvalidDataException("Use an AssetDeclaration with visible instance/all sources for asset inheritance."),input.Game.DocumentElement.GetAttributeNode("inheritFrom"));
         // Reborn: a standalone command-set primary needs schema admission, not the unrelated complete-GameObject topology gate.
-        try{if(input.Game.DocumentElement!.LocalName=="GameObject")Admit(input.Game,baseline,schemas);foreach(var asset in new[]{input.Game}.Concat(input.AdditionalAssets).Concat(input.Command==null?Array.Empty<XmlDocument>():new[]{input.Command})){var check=Parse(Encoding.UTF8.GetBytes(asset.DocumentElement!.OuterXml));check.Schemas.Add(schemas);check.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));if(asset.DocumentElement.LocalName=="WeaponTemplate")ConscriptMultiAssetBuild.AdmitWeapon(asset,schemas,Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!);}}
+        // Reborn: validate every emitted GameObject before detaching source maps, so errors in secondary objects retain original file/line diagnostics.
+        try{foreach(var asset in new[]{input.Game}.Concat(input.AdditionalAssets).Concat(input.Command==null?Array.Empty<XmlDocument>():new[]{input.Command})){if(asset.DocumentElement!.LocalName=="GameObject")Admit(asset,baseline,schemas);var check=Parse(Encoding.UTF8.GetBytes(asset.DocumentElement!.OuterXml));check.Schemas.Add(schemas);check.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));if(asset.DocumentElement.LocalName=="WeaponTemplate")ConscriptMultiAssetBuild.AdmitWeapon(asset,schemas,Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!);}}
         catch(Exception error)when(error is InvalidDataException or XmlException or XmlSchemaException){input.Locations?.Enrich(error,entry,SdkXmlDiagnostics.Node(error)?.OwnerDocument??input.Game);throw;}
         Directory.CreateDirectory(output);string game=Path.Combine(output,"game.xml"),command=Path.Combine(output,"command.xml");
         File.WriteAllText(game,input.Game.DocumentElement!.OuterXml,new UTF8Encoding(false));if(input.Command!=null)File.WriteAllText(command,input.Command.DocumentElement!.OuterXml,new UTF8Encoding(false));
         // Reborn: serialize explicit supporting declarations beside the prepared object, without inventing asset IDs or command edges.
         if(input.AdditionalAssets.Length>0){var additional=new XmlDocument{XmlResolver=null};additional.LoadXml("<AssetDeclaration xmlns='"+Ea+"'/>");foreach(var asset in input.AdditionalAssets)additional.DocumentElement!.AppendChild(additional.ImportNode(asset.DocumentElement!,true));File.WriteAllText(Path.Combine(output,"additional.xml"),additional.OuterXml,new UTF8Encoding(false));}
         foreach(var source in input.Sources)if(Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(source.Path,1048576)))!=source.Sha256)throw new InvalidDataException("Source changed during preparation: "+source.Path);
-        File.WriteAllText(Path.Combine(output,"source-input.json"),JsonSerializer.Serialize(new{GamePath=game,PrimaryType=input.Game.DocumentElement.LocalName,CommandPath=input.Command==null?null:command,AssetCount=1+(input.Command==null?0:1)+input.AdditionalAssets.Length,Identity=input.Game.DocumentElement.GetAttribute("id"),PreparedSourceSha256=Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(input.Game.DocumentElement.OuterXml))),Sources=input.Sources,Searches=input.Searches,AutomaticCommandGenerated=false},new JsonSerializerOptions{WriteIndented=true}));
+        File.WriteAllText(Path.Combine(output,"source-input.json"),JsonSerializer.Serialize(new{GamePath=game,PrimaryType=input.Game.DocumentElement.LocalName,CommandPath=input.Command==null?null:command,AssetCount=1+(input.Command==null?0:1)+input.AdditionalAssets.Length,Identity=input.Game.DocumentElement.GetAttribute("id"),PreparedSourceSha256=Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(input.Game.DocumentElement.OuterXml))),Sources=input.Sources,Searches=input.Searches,Origins=input.Origins,AutomaticCommandGenerated=false},new JsonSerializerOptions{WriteIndented=true}));
+        // Reborn: EA-style source lines are emitted only by this single preparation pass, never by the dependency preflight; assets are announced by the compiler.
+        ConscriptCompileLog.Sources(input);
         Console.WriteLine("Reborn: explicit EA XML prepared; "+input.Sources.Length+" source file(s), primary="+input.Game.DocumentElement.LocalName+"; no hidden asset generation.");
     }
 
@@ -164,7 +171,13 @@ internal static class ConscriptSourceInput
     {
         offending=actual;
         foreach(var a in actual.Attributes.OfType<XmlAttribute>().Concat(model.Attributes.OfType<XmlAttribute>()).Where(a=>a.NamespaceURI!="http://www.w3.org/2000/xmlns/").DistinctBy(a=>(a.NamespaceURI,a.LocalName)))if(actual.GetAttribute(a.LocalName,a.NamespaceURI)!=model.GetAttribute(a.LocalName,a.NamespaceURI)){offending=(XmlNode?)actual.GetAttributeNode(a.LocalName,a.NamespaceURI)??actual;return path+"/@"+a.LocalName+" (authored="+actual.GetAttribute(a.LocalName,a.NamespaceURI)+", baseline="+model.GetAttribute(a.LocalName,a.NamespaceURI)+")";}
-        var children=actual.ChildNodes.OfType<XmlElement>().ToArray();var models=model.ChildNodes.OfType<XmlElement>().ToArray();if(children.Length!=models.Length){offending=children.FirstOrDefault(c=>!models.Any(m=>m.LocalName==c.LocalName&&m.NamespaceURI==c.NamespaceURI&&m.GetAttribute("id")==c.GetAttribute("id")))??actual;return path+" child count";}
+        var children=actual.ChildNodes.OfType<XmlElement>().ToArray();var models=model.ChildNodes.OfType<XmlElement>().ToArray();
+        if(children.Length!=models.Length){
+            // Reborn: count differences identify added/missing owner names before local IDs, which may legitimately differ on unrelated root records.
+            var counts=children.Concat(models).Select(e=>(e.NamespaceURI,e.LocalName)).Distinct().Select(key=>(key.NamespaceURI,key.LocalName,Source:children.Count(e=>e.NamespaceURI==key.NamespaceURI&&e.LocalName==key.LocalName),Baseline:models.Count(e=>e.NamespaceURI==key.NamespaceURI&&e.LocalName==key.LocalName))).Where(row=>row.Source!=row.Baseline).ToArray();
+            var extra=counts.FirstOrDefault(row=>row.Source>row.Baseline);offending=children.FirstOrDefault(e=>e.NamespaceURI==extra.NamespaceURI&&e.LocalName==extra.LocalName)??actual;
+            return path+" child count: "+string.Join("; ",counts.Select(row=>row.LocalName+" source="+row.Source+", baseline="+row.Baseline));
+        }
         if(children.Length==0 && actual.InnerText!=model.InnerText)return path+" text (length "+actual.InnerText.Length+" versus "+model.InnerText.Length+")";
         for(int i=0;i<children.Length;i++){if(children[i].LocalName!=models[i].LocalName || children[i].NamespaceURI!=models[i].NamespaceURI){offending=children[i];return path+" child order at "+i;}if(Signature(children[i])!=Signature(models[i]))return Difference(children[i],models[i],path+"/"+children[i].LocalName+"["+i+"]",out offending);}
         return path+" attribute/text shape";
@@ -208,7 +221,7 @@ internal static class ConscriptSourceInput
     {
         XmlSchemaSet? official=null;SdkEffectiveSchema.Inspect(shieldCandidate:true,reviewHooks:true,onAdmitted:s=>official=s);if(official==null)throw new InvalidDataException("Reviewed EP1 schemas unavailable.");
         // Reborn: detached support assets use unchanged official types, just like the existing standalone GameObject/command aliases.
-        var aliases=new XmlSchema{TargetNamespace=Ea,ElementFormDefault=XmlSchemaForm.Qualified};foreach(string name in new[]{"GameObject","LogicCommand","LogicCommandSet","ArmorTemplate","WeaponTemplate"})if(!official.GlobalElements.Contains(new XmlQualifiedName(name,Ea)))aliases.Items.Add(new XmlSchemaElement{Name=name,SchemaTypeName=new XmlQualifiedName(name,Ea)});official.Add(aliases);official.Compile();return official;
+        var aliases=new XmlSchema{TargetNamespace=Ea,ElementFormDefault=XmlSchemaForm.Qualified};foreach(string name in new[]{"GameObject","LogicCommand","LogicCommandSet","ArmorTemplate","WeaponTemplate","UpgradeTemplate"})if(!official.GlobalElements.Contains(new XmlQualifiedName(name,Ea)))aliases.Items.Add(new XmlSchemaElement{Name=name,SchemaTypeName=new XmlQualifiedName(name,Ea)});official.Add(aliases);official.Compile();return official;
     }
 
     //-------------------------------------------------------------------------------------------------

@@ -231,7 +231,8 @@ internal static class BoundedDiagnosticBuild
         // Reborn: the stock Conscript owns 39,268 non-string native bytes after its 88,824-byte metadata prefix; root string blocks add exact aligned extents and relocation slots.
         int stringBytes=GameObjectRootStringContract.AllocationSize(source),stringCount=GameObjectRootStringContract.PresentCount(source);
         if(graph==null&&(chunk.InstanceData.Length!=88824+39268+stringBytes || chunk.RelocationData.Length!=1800+(stringCount-3)*4))throw new InvalidDataException("Conscript dynamic root string stream extent differs.");
-        int[] offsets=ConscriptEditableScalars.Offsets(chunk.InstanceData.AsSpan(prefix).ToArray(),prefix);
+        // Reborn: qualified source-sized graphs already bind every native byte to their independent source proof; only legacy fixed trials use the six-slot snapshot oracle.
+        int[] offsets=graph==null?ConscriptEditableScalars.Offsets(chunk.InstanceData.AsSpan(prefix).ToArray(),prefix):Array.Empty<int>();
         GameObjectScalarContract.Verify(source,chunk.InstanceData,prefix);
         // Reborn: package publication independently rechecks enabled fixed root enums, masks and weak IDs.
         GameObjectRootAttributeContract.Verify(source,chunk.InstanceData,prefix);

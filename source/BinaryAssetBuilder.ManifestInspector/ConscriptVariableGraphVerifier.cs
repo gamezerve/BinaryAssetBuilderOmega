@@ -13,11 +13,55 @@ namespace BinaryAssetBuilder.ManifestInspector;
 // Reborn: reusable full native/metadata proof; authored identities select reviewed owners instead of fixed sizes or new list ordinals.
 internal sealed class ConscriptVariableGraphVerifier
 {
-    private static readonly int[] Detached={416,420,424,468,472,476,480,484,488,492,496,500,532,540,552,564};
+    private static readonly int[] Detached={412,416,420,424,428,432,468,472,476,480,484,488,492,496,500,532,536,540,552,564,568,572};
     private readonly XmlSchemaSet official;
     private readonly (byte[] Metadata,ManifestDocument Document,ManifestAsset Asset,long Offset,byte[] Bytes,GameObjectStockReview.Projection Projection) stock;
     private readonly GameObjectModuleReview.Proof topology;
     private readonly Dictionary<string,GameObjectModuleReview.Module> templates;
+    // Reborn: sell modules use their actual building stock witness, independent of Conscript's original module list.
+    private readonly Lazy<(byte[] Bytes,GameObjectModuleReview.Module Module,int End)> sell;
+    // Reborn: QueueDock's new native model must first match independently read stock field/inheritance metadata.
+    private readonly Lazy<bool> queueDock;
+    // Reborn: queue exit binds the new EP1 Time/vector model to independent stock metadata before composition.
+    private readonly Lazy<bool> queueExit;
+    // Reborn: qualify the entire EP1 Spawn header and stock metadata independently of Conscript's original families.
+    private readonly Lazy<bool> spawn;
+    // Reborn: the unpack model must match the refinery's full independent Generic/Update/Contain stock chain before composition.
+    private readonly Lazy<bool> unpack;
+    // Reborn: EP1 production matches the refinery empty header and Barracks translation graph before source-sized composition.
+    private readonly Lazy<StockMetadataGrammar> production;
+    // Reborn: EP1 repair must match the refinery's 44-byte record and 312-byte literal metadata before composition.
+    private readonly Lazy<bool> repair;
+    // Reborn: EP1 engineer must reproduce the refinery's full payload, imports and metadata before composition.
+    private readonly Lazy<bool> engineer;
+    // Reborn: EP1 assisted placement must reproduce the refinery payload and metadata before composition.
+    private readonly Lazy<bool> placement;
+    // Reborn: the recovered infiltrator record must reproduce the refinery payload, default imports and metadata.
+    private readonly Lazy<bool> infiltrator;
+    // Reborn: EP1 structure placement must reproduce the refinery shape payload and metadata before composition.
+    private readonly Lazy<bool> structurePlacement;
+    // Reborn: LUAEventList stock qualification is lazy and runs only when the source authors that family.
+    private readonly Lazy<bool> luaEventList;
+    // Reborn: BuildingBehavior's existing native writer is qualified against both Power Plant stock modules before source-owned strings are admitted.
+    private readonly Lazy<StockMetadataGrammar> buildingBehavior;
+    // Reborn: legacy PowerUpgrade borrows a stock-qualified UpgradeModuleData base witness (EP1 ships no PowerUpgrade instance).
+    private readonly Lazy<PowerUpgradeContract.Witness> powerUpgrade;
+    // Reborn: schema-proved draw leaves need the generic proof qualified on stock Conscript draws and a metadata grammar from stock draws.
+    private readonly Dictionary<Type,Lazy<StockMetadataGrammar>> schemaFamilies=new();
+    // Reborn: Geometry is a nonmodule owner with independently qualified source/native and stock metadata grammar.
+    private readonly Lazy<StockMetadataGrammar> geometryGrammar;
+    // Reborn: dependency weak IDs and optional record/list ownership have a separate stock-qualified proof.
+    private readonly Lazy<StockMetadataGrammar> dependencyGrammar;
+    // Reborn: optional chooser ownership is qualified on independent infantry/building AI witnesses, not fixed Conscript child presence.
+    private readonly Lazy<StockMetadataGrammar> aiGrammar;
+    // Reborn: optional root records and inline list items each retain their own independently stock-qualified grammar.
+    private readonly Dictionary<string,Lazy<StockMetadataGrammar>> extendedRoots=new(StringComparer.Ordinal);
+    // Reborn: verify all three original FX graphs against stock before accepting source-sized death/event layouts.
+    private readonly Lazy<bool> fxList;
+    // Reborn: both infantry and building tracker layouts retain independent stock qualification before flexible source admission.
+    private readonly Lazy<bool> secondaryDamage;
+    // Reborn: creation/destroy native records and literal metadata must match all original stock witnesses before flexible authoring.
+    private readonly Lazy<bool> deathBehaviors;
     // Reborn: source/catalog expectations remain independent of Core indices and emitted native buffers.
     private readonly SchemaSet referenceSchemas;
     private readonly ManifestAsset[] catalog;
@@ -30,7 +74,34 @@ internal sealed class ConscriptVariableGraphVerifier
     internal ConscriptVariableGraphVerifier(XmlSchemaSet schemas,string manifest,XmlDocument baseline,SchemaSet referenceSchemas,ManifestAsset[] catalog)
     {
         official=schemas;stock=GameObjectStockReview.Capture(manifest,"GameObject:SovietAntiInfantryInfantry");topology=GameObjectModuleReview.Inspect(manifest,stock.Asset.Name);
+        queueDock=new(()=>QueueDockContract.QualifyStock(manifest));
+        queueExit=new(()=>QueueProductionExitContract.QualifyStock(manifest));
+        spawn=new(()=>SpawnBehaviorContract.QualifyStock(manifest,official,catalog));
+        unpack=new(()=>StructureUnpackContract.QualifyStock(manifest,official,catalog));
+        production=new(()=>ProductionUpdateContract.QualifyGraph(manifest,baseline,referenceSchemas,catalog));
+        repair=new(()=>RepairUpdateContract.QualifyStock(manifest));
+        engineer=new(()=>EngineerContainContract.QualifyStock(manifest,official,catalog));
+        placement=new(()=>AssistedPlacementContract.QualifyStock(manifest,official));
+        infiltrator=new(()=>InfiltratorContainContract.QualifyStock(manifest,official,catalog));
+        structurePlacement=new(()=>StructurePlacementContract.QualifyStock(manifest,official));
+        luaEventList=new(()=>LUAEventListContract.QualifyStock(manifest,official));
+        buildingBehavior=new(()=>BuildingBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        foreach(var family in SchemaNativeContract.Families)schemaFamilies.Add(family.Type,new(()=>QualifySchemaFamily(manifest,family)));
+        geometryGrammar=new(()=>GameObjectGeometryContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        dependencyGrammar=new(()=>GameObjectDependencyContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        aiGrammar=new(()=>AIUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        foreach(string name in GameObjectExtendedRootContract.Names)extendedRoots.Add(name,new(()=>GameObjectExtendedRootContract.Qualify(name,manifest,baseline,referenceSchemas,catalog)));
+        powerUpgrade=new(()=>PowerUpgradeContract.Create(stock.Bytes,topology.Containers.Single(c=>c.Name=="Behaviors").Modules,GameObjectStockReview.Tokens(stock.Bytes,0)[FastHash.GetHashCode("AI")].Offset));
+        fxList=new(()=>FXListBehaviorContract.QualifyStock(manifest,official,referenceSchemas,baseline,catalog));
+        secondaryDamage=new(()=>SecondaryDamageTrackerContract.QualifyStock(manifest,official,referenceSchemas,baseline,catalog));
+        deathBehaviors=new(()=>DeathBehaviorContract.QualifyStock(manifest,official,referenceSchemas,baseline,catalog));
         templates=ConscriptModuleScalarContract.Owners(baseline).ToDictionary(o=>o.Element.GetAttribute("id"),o=>topology.Containers.Single(c=>c.Name==o.Container).Modules[o.Index],StringComparer.Ordinal);
+        sell=new(()=>{
+            var captured=GameObjectStockReview.Capture(manifest,"GameObject:AlliedConstructionYard");var modules=GameObjectModuleReview.Inspect(manifest,captured.Asset.Name).Containers.Single(c=>c.Name=="Behaviors").Modules;
+            var module=modules.Single(m=>m.Type=="StructureSellUpdateModuleData");int index=Array.IndexOf(modules,module);
+            int end=index+1<modules.Length?modules[index+1].Wrapper:GameObjectStockReview.Tokens(captured.Bytes,0)[FastHash.GetHashCode("AI")].Offset;
+            return(captured.Bytes,module,end);
+        });
         this.referenceSchemas=referenceSchemas;this.catalog=catalog;this.baseline=CopySource(baseline);
         if(!ConscriptReferenceTargets.Read(this.baseline,referenceSchemas,catalog).SequenceEqual(stock.Asset.References))throw new InvalidDataException("Reference source traversal differs from captured stock occurrence slots.");
     }
@@ -40,32 +111,45 @@ internal sealed class ConscriptVariableGraphVerifier
     //-------------------------------------------------------------------------------------------------
     internal Chunk Verify(XmlDocument source,Chunk native,InstanceDeclaration instance,Dictionary<string,string> origins,Chunk? supplied=null)
     {
-        byte[] b=native.InstanceBuffer;var relos=Slots(native.RelocationBuffer);var imports=Slots(native.ImportsBuffer);int cut=(int)Word(b,416);
+        byte[] b=native.InstanceBuffer;var relos=Slots(native.RelocationBuffer);var imports=Slots(native.ImportsBuffer);int cut=Ep1GameObjectRootOwnersProjection.NativeTailStart(b);
         // Reborn: verify authored fixed fields and restore only comparison bytes, never the actual output.
         var cleared=b.ToArray();var stockNative=stock.Bytes.AsSpan(stock.Projection.NativeRoot).ToArray();
         GameObjectScalarContract.VerifyAndRestore(source,b,cleared,stockNative);
         GameObjectRootAttributeContract.VerifyAndRestore(source,b,cleared,stockNative);
         ConscriptModuleScalarContract.Verify(source,b,0);
-        // Reborn: historical nested gameplay values are supported on fixed, variable and mixed graphs alike, with independent source-to-native checks.
-        var authoredValues=new Dictionary<int,uint>();var scalarOffsets=ConscriptEditableScalars.Offsets(b);
-        for(int i=1;i<scalarOffsets.Length;i++){uint expected=ConscriptEditableScalars.Bits(source,ConscriptEditableScalars.Fields[i]);if(Word(b,scalarOffsets[i])!=expected)throw new InvalidDataException("Authored nested value differs: "+ConscriptEditableScalars.Fields[i].Attribute);authoredValues.Add(scalarOffsets[i],expected);}
+        // Reborn: independent plain-record expectations cover all implemented scalar attributes, including defaults and packed values.
+        var recordValues=GameObjectNestedValueContract.Expected(source,b);
+        // Reborn: nested record/module contracts already verify every historical scalar; the obsolete six-slot oracle cannot require exactly one movement row.
+        var authoredValues=new Dictionary<int,uint>();
         var rootImports=GameObjectStrongReferenceContract.Fields.ToDictionary(f=>"GameObject."+f.Name,f=>string.IsNullOrWhiteSpace(source.DocumentElement!.GetAttribute(f.Name))?(AssetId?)null:new AssetId(FastHash.GetHashCode(f.Name),InstanceHandle.GetInstanceId(source.DocumentElement.GetAttribute(f.Name))));
         var originalStock=stock.Bytes.ToArray();foreach(int at in Detached){Put(cleared,at,0);Put(originalStock,stock.Projection.NativeRoot+at,0);}
         var root=new Chunk{InstanceBuffer=cleared,RelocationBuffer=Pack(relos.Where(s=>!Detached.Contains((int)s))),ImportsBuffer=native.ImportsBuffer.ToArray()};
         var rootReferences=ReferenceTable(source,null);
         // Reborn: inline descriptions and optional pointed names use the same authored-text contract on variable graphs.
-        var rootComparer=new SelectedNativeGraphComparer(originalStock,rootReferences,root,instance,requireAllReferences:false,rootText:GameObjectRootTextContract.Read(source),authoredValues:authoredValues,rootImports:rootImports);
+        var rootComparer=new SelectedNativeGraphComparer(originalStock,rootReferences,root,instance,requireAllReferences:false,rootText:GameObjectRootTextContract.Read(source),authoredValues:authoredValues,rootImports:rootImports){AuthoredRecordValues=recordValues};
         var selection=rootComparer.CompareRootSelection(stock.Projection.NativeRoot);
         var covered=selection.Covered;var ownedRelos=new HashSet<uint>(selection.Relocations);var ownedImports=new HashSet<uint>(selection.Imports);
         // Reborn: source-sized armor storage owns its actual array/imports separately from the detached typed root.
         var armor=ConscriptArmorSetContract.VerifyNative(source,b,instance);if(armor.Length>0)Cover(armor.Start,armor.Length);foreach(uint slot in armor.Relocations)Add(ownedRelos,slot);foreach(uint slot in armor.Imports)Add(ownedImports,slot);
-        var baseBytes=b.AsSpan(0,cut).ToArray();foreach(var field in Ep1GameObjectRootOwnersProjection.Fields)Put(baseBytes,field.Slot,0);
-        var layout=Ep1GameObjectStringTokens.Inspect(baseBytes,relos.Where(s=>s<cut&&!Ep1GameObjectRootOwnersProjection.Fields.Any(f=>f.Slot==s)).ToArray(),imports.Where(s=>s<cut).ToArray(),true);
+        // Reborn: variable movement arrays separately own their real bytes, relocations and source-bound import occurrences.
+        var movement=ConscriptLocomotorSetContract.VerifyNative(source,b,instance);if(movement.Length>0)Cover(movement.Start,movement.Length);foreach(uint slot in movement.Relocations)Add(ownedRelos,slot);foreach(uint slot in movement.Imports)Add(ownedImports,slot);
+        var baseBytes=b.AsSpan(0,cut).ToArray();foreach(var field in Ep1GameObjectRootOwnersProjection.Fields)Ep1GameObjectRootOwnersProjection.ClearSlot(baseBytes,field);
+        var layout=Ep1GameObjectStringTokens.Inspect(baseBytes,relos.Where(s=>s<cut&&!Ep1GameObjectRootOwnersProjection.Fields.Any(f=>f.PointerSlot==s)).ToArray(),imports.Where(s=>s<cut).ToArray(),true);
         var tokens=supplied??Ep1GameObjectEmptyRootProjection.ComposeOriginal(native,official);int prefix=tokens.InstanceBuffer.Length-b.Length;BehaviorContainerStockProof.VerifyTail(tokens,native,prefix);
         var rows=GameObjectStockReview.Tokens(tokens.InstanceBuffer,0);var stockRows=GameObjectStockReview.Tokens(stock.Bytes,0);
         if(!rows.Keys.Order().SequenceEqual(stockRows.Keys.Order())||rows.Any(p=>p.Value.Type!=stockRows[p.Key].Type))throw new InvalidDataException("Variable graph root metadata fields differ.");
         var maps=new Dictionary<string,Dictionary<int,int>>(StringComparer.Ordinal);
-        var fixedGraphs=new Dictionary<int,(int Start,int End,Type Type,SelectedNativeGraphComparer Comparer)>();int behaviorLength=0;
+        // Reborn: variable pointer-list metadata is verified leaf-by-leaf against independent stock tables, even for repeated templates.
+        var containerLengths=new Dictionary<string,int>(StringComparer.Ordinal);
+        foreach(string name in ConscriptVariableContainers.Names){
+            int slot=name=="Draws"?472:name=="ClientUpdates"?492:496;uint pointer=Word(b,slot);var owner=ConscriptVariableContainers.Find(source,name);
+            if(owner==null){if(pointer!=0)throw new InvalidDataException("Omitted module container retains native allocation: "+name);containerLengths.Add(name,0);continue;}
+            // Reborn: source presence/count binds native storage before any narrowing or dictionary lookup, including malformed empty-list pointers.
+            if(pointer<600||pointer>b.Length-8||pointer%4!=0)throw new InvalidDataException("Module container native pointer bounds/alignment differ: "+name);
+            int header=(int)pointer,expectedCount=owner.ChildNodes.OfType<XmlElement>().Count();if(Word(b,header)!=expectedCount)throw new InvalidDataException("Source/native module container count differs: "+name);
+            if(expectedCount==0){if(Word(b,header+4)!=0)throw new InvalidDataException("Empty module container native header differs: "+name);Cover(header,8);Add(ownedRelos,(uint)slot);VerifyContainerHeader(name,header,0);containerLengths.Add(name,12);}
+        }
+        var fixedGraphs=new Dictionary<int,(int Start,int End,Type Type,SelectedNativeGraphComparer Comparer)>();int behaviorLength=0,aiLength=0;XmlDocument? resolved=null;
         foreach(var group in ConscriptModuleScalarContract.Owners(source).GroupBy(o=>o.Container))
         {
             var owners=group.ToArray();int header=group.Key=="Body"?-1:group.Key=="AI"?480:(int)Word(b,group.Key switch{"Draws"=>472,"Behaviors"=>476,"ClientUpdates"=>492,"ClientBehaviors"=>496,_=>throw new InvalidDataException("Unknown module container.")});
@@ -73,44 +157,194 @@ internal sealed class ConscriptVariableGraphVerifier
             if(header>=0){if(Word(b,header)!=owners.Length)throw new InvalidDataException("Source/native module count differs.");Cover(header,8,group.Key=="AI");int items=(int)Word(b,header+4);Cover(items,owners.Length*4);Add(ownedRelos,(uint)(header+4));for(int i=0;i<owners.Length;i++)Add(ownedRelos,(uint)(items+i*4));}
             if(group.Key!="AI")Add(ownedRelos,(uint)(group.Key switch{"Body"=>488,"Draws"=>472,"Behaviors"=>476,"ClientUpdates"=>492,_=>496}));
             var map=new Dictionary<int,int>();var stockContainer=topology.Containers.Single(c=>c.Name==group.Key);
-            if(group.Key!="Behaviors"&&header>=0){for(int i=0;i<8;i++)map.Add(stockContainer.CountAt+i,header+i);int items=(int)Word(b,header+4);for(int i=0;i<owners.Length*4;i++)map.Add(stockContainer.Items+i,items+i);}
+            bool variableContainer=ConscriptVariableContainers.Supports(group.Key);
+            if(group.Key!="Behaviors"&&!variableContainer&&header>=0){for(int i=0;i<8;i++)map.Add(stockContainer.CountAt+i,header+i);int items=(int)Word(b,header+4);for(int i=0;i<owners.Length*4;i++)map.Add(stockContainer.Items+i,items+i);}
+            int containerAt=variableContainer?rows[FastHash.GetHashCode(group.Key)].Offset:0;
+            int containerNext=variableContainer?containerAt+12+owners.Length*12:0;
+            if(variableContainer)VerifyContainerHeader(group.Key,header,owners.Length);
             int behaviorAt=group.Key=="Behaviors"?rows[FastHash.GetHashCode("Behaviors")].Offset:0;
             int behaviorNext=behaviorAt+12+owners.Length*12;
+            int aiAt=group.Key=="AI"?rows[FastHash.GetHashCode("AI")].Offset:0,aiNext=aiAt+12+owners.Length*12;
+            if(group.Key=="AI")VerifyContainerHeader("AI",480,owners.Length);
             foreach(var owner in owners)
             {
-                int start=ConscriptModuleScalarContract.Address(b,0,owner),stop=owner.Index+1<owners.Length?ConscriptModuleScalarContract.Address(b,0,owners[owner.Index+1]):end;var model=templates[origins[owner.Element.GetAttribute("id")]];
+                int start=ConscriptModuleScalarContract.Address(b,0,owner),stop=owner.Index+1<owners.Length?ConscriptModuleScalarContract.Address(b,0,owners[owner.Index+1]):end;
+                // Reborn: chooser presence and all source-bound native fields/imports own a source-sized AI metadata fragment.
+                if(group.Key=="AI"){
+                    var aiNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container=="AI"&&o.Index==owner.Index).Element;
+                    var proof=AIUpdateContract.Verify(element,aiNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var aiTokens=Ep1AIUpdateTokenizer.Tokenize(aiNative);int size=aiGrammar.Value.Verify(aiTokens,aiNative,typeof(AIUpdateContract.Native),proof.Records);Own(aiNative,start,stop);
+                    int marker=aiAt+12+owner.Index*12;if(Word(tokens.InstanceBuffer,marker)!=0xB151A0EB||Word(tokens.InstanceBuffer,marker+4)!=0||Word(tokens.InstanceBuffer,marker+8)!=aiNext)throw new InvalidDataException("AI metadata source order differs.");
+                    for(int offset=0;offset<size;offset+=12){uint target=Word(aiTokens.InstanceBuffer,offset+8);uint expected=target==0?0:target<size?target+(uint)aiNext:target-(uint)size+(uint)(prefix+start);if(Word(tokens.InstanceBuffer,aiNext+offset)!=Word(aiTokens.InstanceBuffer,offset)||Word(tokens.InstanceBuffer,aiNext+offset+4)!=Word(aiTokens.InstanceBuffer,offset+4)||Word(tokens.InstanceBuffer,aiNext+offset+8)!=expected)throw new InvalidDataException("AI metadata splice differs.");}aiNext+=size;continue;
+                }
+                // Reborn: creation/destroy share source-bound death storage, with explicit OCL and strong upgrade list imports where applicable.
+                if(DeathBehaviorContract.Supports(owner.NativeType)){
+                    _=deathBehaviors.Value;var deathNative=Extract(native,start,stop);string wire=owner.Element.LocalName+"ModuleData";var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(deathNative,official,wire,owner.NativeType);
+                    DeathBehaviorContract.Verify(owner.Element,deathNative,metadata,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray(),catalog);Own(deathNative,start,stop);Splice(owner,metadata,start,metadata.InstanceBuffer.Length-deathNative.InstanceBuffer.Length);continue;
+                }
+                // Reborn: source-sized secondary damage effects own optional RGB/status records and exact modifier imports.
+                if(owner.NativeType==typeof(SecondaryDamageTrackerModuleData)){
+                    _=secondaryDamage.Value;var trackerNative=Extract(native,start,stop);var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(trackerNative,official,"SecondaryDamageTrackerModuleData",owner.NativeType);
+                    SecondaryDamageTrackerContract.Verify(owner.Element,trackerNative,metadata,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray(),catalog);Own(trackerNative,start,stop);Splice(owner,metadata,start,metadata.InstanceBuffer.Length-trackerNative.InstanceBuffer.Length);continue;
+                }
+                // Reborn: variable FX events and complete death conditions own their actual lists, masks, strings and semantic imports.
+                if(owner.NativeType==typeof(FXListBehaviorModuleData)){
+                    _=fxList.Value;var fxNative=Extract(native,start,stop);var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(fxNative,official,"FXListBehaviorModuleData",owner.NativeType);
+                    FXListBehaviorContract.Verify(owner.Element,fxNative,metadata,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray(),catalog);Own(fxNative,start,stop);Splice(owner,metadata,start,metadata.InstanceBuffer.Length-fxNative.InstanceBuffer.Length);continue;
+                }
+                // Reborn: unpack owns a fixed header and an optional concrete audio pointee with exact Core/import identity.
+                if(owner.NativeType==typeof(Ep1StructureUnpackUpdateModuleData)){
+                    _=unpack.Value;var unpackedNative=Extract(native,start,stop);var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(unpackedNative,official,"StructureUnpackUpdateModuleData",owner.NativeType);
+                    StructureUnpackContract.Verify(owner.Element,unpackedNative,metadata,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray(),official,catalog);Own(unpackedNative,start,stop);Splice(owner,metadata,start,204);continue;
+                }
+                // Reborn: production upgrade translations use source-sized optional/list allocations, real imports and stock-learned nested metadata.
+                if(owner.NativeType==typeof(Ep1ProductionUpdateModuleData)){
+                    var grammar=production.Value;var produced=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,0x6EC75439u,produced,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(produced,official,"ProductionUpdateModuleData",owner.NativeType);int size=grammar.Verify(metadata,produced,owner.NativeType,proof.Records);Own(produced,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: BuildingBehavior owns four independent optional strings and their exact relocations; these are subobject names, not asset imports.
+                if(owner.NativeType==typeof(BuildingBehaviorModuleData)){
+                    var buildingNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;var proof=SchemaNativeContract.Verify(element,owner.NativeType,FastHash.GetHashCode("BuildingBehaviorModuleData"),buildingNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());
+                    var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(buildingNative,official,"BuildingBehaviorModuleData",owner.NativeType);int size=buildingBehavior.Value.Verify(metadata,buildingNative,owner.NativeType,proof.Records);Own(buildingNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: LUAEventList owns exactly one name string; no imports.
+                if(owner.NativeType==typeof(LUAEventListBehaviorModuleData)){
+                    _=luaEventList.Value;var listed=Extract(native,start,stop);var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(listed,official,"LUAEventListBehaviorModuleData",owner.NativeType);
+                    LUAEventListContract.Verify(owner.Element,listed,metadata);Own(listed,start,stop);Splice(owner,metadata,start,LUAEventListContract.MetadataSize);continue;
+                }
+                // Reborn: structure placement owns its optional shape strings and Offset vector; no imports.
+                if(owner.NativeType==typeof(StructurePlacementBehaviorModuleData)){
+                    _=structurePlacement.Value;var placedShape=Extract(native,start,stop);var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(placedShape,official,"StructurePlacementBehaviorModuleData",owner.NativeType);
+                    StructurePlacementContract.Verify(owner.Element,placedShape,metadata);Own(placedShape,start,stop);Splice(owner,metadata,start,StructurePlacementContract.MetadataSize);continue;
+                }
+                // Reborn: infiltrator owns inline strong imports plus two optional filter-reference pointees.
+                if(owner.NativeType==typeof(InfiltratorContainModuleData)){
+                    _=infiltrator.Value;var infiltrated=Extract(native,start,stop);var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(infiltrated,official,"InfiltratorContainModuleData",owner.NativeType);
+                    InfiltratorContainContract.Verify(owner.Element,infiltrated,metadata,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray(),official,catalog);Own(infiltrated,start,stop);Splice(owner,metadata,start,InfiltratorContainContract.MetadataSize);continue;
+                }
+                // Reborn: assisted placement owns only its optional filter allocation; no imports.
+                if(owner.NativeType==typeof(AssistedPlacementBehaviorModuleData)){
+                    _=placement.Value;var placed=Extract(native,start,stop);var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(placed,official,"AssistedPlacementBehaviorModuleData",owner.NativeType);
+                    AssistedPlacementContract.Verify(owner.Element,placed,metadata);Own(placed,start,stop);Splice(owner,metadata,start,metadata.InstanceBuffer.Length-placed.InstanceBuffer.Length);continue;
+                }
+                // Reborn: engineer owns optional voice/FX/filter allocations and strong FX/EVA/OCL imports with exact Core indices.
+                if(owner.NativeType==typeof(Ep1EngineerContainModuleData)){
+                    _=engineer.Value;var engineered=Extract(native,start,stop);var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(engineered,official,"EngineerContainModuleData",owner.NativeType);
+                    EngineerContainContract.Verify(owner.Element,engineered,metadata,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray(),official,catalog);Own(engineered,start,stop);Splice(owner,metadata,start,metadata.InstanceBuffer.Length-engineered.InstanceBuffer.Length);continue;
+                }
+                // Reborn: repair is wholly inline; scalars, inline percents, empty audio and literal metadata are independently proved.
+                if(owner.NativeType==typeof(Ep1RepairUpdateModuleData)){
+                    _=repair.Value;var repaired=Extract(native,start,stop);var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(repaired,official,"RepairUpdateModuleData",owner.NativeType);RepairUpdateContract.Verify(owner.Element,repaired,metadata);Own(repaired,start,stop);Splice(owner,metadata,start,RepairUpdateContract.MetadataSize);continue;
+                }
+                // Reborn: Spawn's full source-bound graph includes weak lists, Die/status allocations and inherited upgrade storage.
+                if(owner.NativeType==typeof(Ep1SpawnBehaviorModuleData)){
+                    _=spawn.Value;var spawnedNative=Extract(native,start,stop);SpawnBehaviorContract.Verify(owner.Element,spawnedNative,catalog);Own(spawnedNative,start,stop);
+                    var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(spawnedNative,official,"SpawnBehaviorModuleData",owner.NativeType);Splice(owner,metadata,start,metadata.InstanceBuffer.Length-spawnedNative.InstanceBuffer.Length);continue;
+                }
+                // Reborn: queue-exit has no heap/imports; each scalar, vector, packed bool and metadata target is independently proved.
+                if(owner.NativeType==typeof(Ep1QueueProductionExitUpdateModuleData)){
+                    _=queueExit.Value;var exit=Extract(native,start,stop);var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(exit,official,"QueueProductionExitUpdateModuleData",owner.NativeType);QueueProductionExitContract.Verify(owner.Element,exit,metadata);Own(exit,start,stop);Splice(owner,metadata,start,252);continue;
+                }
+                // Reborn: docking has a stock-qualified 52-byte header and independently owned source-bound strings, not a Conscript template dependency.
+                if(owner.NativeType==typeof(QueueDockModuleData)){
+                    _=queueDock.Value;var docking=Extract(native,start,stop);var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(docking,official,"QueueDockModuleData",owner.NativeType);QueueDockContract.Verify(owner.Element,docking,metadata);Own(docking,start,stop);Splice(owner,metadata,start,192);continue;
+                }
+                // Reborn: variable destruction items have a complete source-bound native proof and an independent literal metadata writer already compared to stock.
+                if(owner.NativeType==typeof(BuildingDestructionModuleData)){
+                    var destruction=Extract(native,start,stop);BuildingDestructionContract.Verify(owner.Element,destruction,instance,catalog);Own(destruction,start,stop);
+                    var generated=Ep1BehaviorMetadataTokenizer.Tokenize(destruction,official,"BuildingDestructionModuleData",owner.NativeType);var literal=Ep1DestructionTokenizer.Tokenize(destruction);
+                    if(!Equal(generated,literal))throw new InvalidDataException("Generic/literal destruction metadata differ.");
+                    Splice(owner,generated,start,generated.InstanceBuffer.Length-destruction.InstanceBuffer.Length);continue;
+                }
+                // Reborn: fixed sell values remain source-verified; only layout/metadata/padding come from the independent building witness.
+                // Reborn: a schema-proved leaf owns its exact native graph and its source-sized metadata through independent stock-qualified proofs.
+                if(variableContainer&&origins[owner.Element.GetAttribute("id")]==SchemaNativeContract.Origin){
+                    if(!SchemaNativeContract.Supports(owner.NativeType))throw new InvalidDataException("Schema-proved origin for an unsupported family.");
+                    var family=SchemaNativeContract.For(owner.NativeType);var grammar=schemaFamilies[owner.NativeType].Value;var leafNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);
+                    var element=ConscriptVariableContainers.Find(resolved,group.Key)!.ChildNodes.OfType<XmlElement>().ElementAt(owner.Index);if(element.GetAttribute("id")!=owner.Element.GetAttribute("id"))throw new InvalidDataException("Schema-proved source identity/order differs.");
+                    var proved=SchemaNativeContract.Verify(element,owner.NativeType,family.TypeId,leafNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());Own(leafNative,start,stop);
+                    var leafTokens=family.Leaf(leafNative);int leafPrefix=grammar.Verify(leafTokens,leafNative,owner.NativeType,proved.Records);
+                    int leafRow=containerAt+12+owner.Index*12;
+                    if(Word(tokens.InstanceBuffer,leafRow)!=0xB151A0EB||Word(tokens.InstanceBuffer,leafRow+4)!=0||Word(tokens.InstanceBuffer,leafRow+8)!=containerNext)throw new InvalidDataException("Variable module container wrapper/order differs: "+group.Key);
+                    for(int at=0;at<leafPrefix;at+=12){uint target=Word(leafTokens.InstanceBuffer,at+8);uint expected=target==0?0:target<leafPrefix?target+(uint)containerNext:target-(uint)leafPrefix+(uint)(prefix+start);
+                        if(Word(tokens.InstanceBuffer,containerNext+at)!=Word(leafTokens.InstanceBuffer,at)||Word(tokens.InstanceBuffer,containerNext+at+4)!=Word(leafTokens.InstanceBuffer,at+4)||Word(tokens.InstanceBuffer,containerNext+at+8)!=expected)throw new InvalidDataException("Schema-proved metadata splice differs: "+group.Key);}
+                    containerNext+=leafPrefix;continue;
+                }
+                bool selling=owner.NativeType==typeof(StructureSellUpdateModuleData);bool powered=owner.NativeType==typeof(PowerUpgradeModuleData);var moduleStock=selling?sell.Value.Bytes:powered?powerUpgrade.Value.Bytes:stock.Bytes;
+                var model=selling?sell.Value.Module:powered?powerUpgrade.Value.Module:templates[origins[owner.Element.GetAttribute("id")]];
                 if(Word(b,start)!=model.TypeId||Word(b,start+4)!=FastHash.GetHashCode(owner.Element.GetAttribute("id").ToLowerInvariant()))throw new InvalidDataException("Source module type/local identity differs.");
-                var leaf=Extract(native,start,stop);var compared=Clone(leaf);Put(compared.InstanceBuffer,4,Word(stock.Bytes,model.Native+4));
+                var leaf=Extract(native,start,stop);var compared=Clone(leaf);Put(compared.InstanceBuffer,4,Word(moduleStock,model.Native+4));
                 // Reborn: fixed source/native values were independently checked; nested graphs and padding remain compared in full.
-                foreach(var binding in ConscriptModuleScalarContract.Bindings(owner.NativeType))stock.Bytes.AsSpan(model.Native+binding.Offset,binding.Width).CopyTo(compared.InstanceBuffer.AsSpan(binding.Offset,binding.Width));
+                foreach(var binding in ConscriptModuleScalarContract.Bindings(owner.NativeType))moduleStock.AsSpan(model.Native+binding.Offset,binding.Width).CopyTo(compared.InstanceBuffer.AsSpan(binding.Offset,binding.Width));
                 // Reborn: source-sized weak arrays and optional nested animation records have explicit semantic and allocation contracts.
                 var upgrade=group.Key=="Behaviors"?ConscriptUpgradeStructure.Read(owner,catalog):null;
                 bool weapon=group.Key=="Behaviors"&&ConscriptWeaponSetContract.Supports(owner.NativeType);
-                if(upgrade==null&&!weapon)VerifyUpgradeTriggers(owner,origins[owner.Element.GetAttribute("id")],compared);
+                if(upgrade==null&&!weapon&&!selling)VerifyUpgradeTriggers(owner,origins[owner.Element.GetAttribute("id")],compared);
                 // Reborn: the template supplies ABI/ownership, not a frozen referenced asset identity; source supplies checked semantic targets.
                 // Reborn: implemented hardpoints have a complete source/native contract, so arbitrary new rows need no stock-shaped reference table.
                 SelectedNativeGraphComparer? comparer=null;
                 if(weapon)ConscriptWeaponSetContract.VerifyNative(owner.Element,leaf,instance);
-                else{var expectedReferences=group.Key=="Behaviors"&&leaf.ImportsBuffer.Length>0?ReferenceTable(owner.Element,origins[owner.Element.GetAttribute("id")]):rootReferences;comparer=new SelectedNativeGraphComparer(stock.Bytes,expectedReferences,compared,instance,allowScriptCrLfEquivalent:group.Key=="Draws",requireAllReferences:false,captureNativeCoordinates:group.Key!="Behaviors",captureNativePaths:group.Key=="Behaviors",upgrade:upgrade);comparer.Compare(owner.NativeType,model.Native);foreach(var coordinate in comparer.NativeOffsets)map.Add(coordinate.Key,start+coordinate.Value);}
+                else{var expectedReferences=(group.Key=="Behaviors"||variableContainer)&&leaf.ImportsBuffer.Length>0?ReferenceTable(owner.Element,origins[owner.Element.GetAttribute("id")]):rootReferences;comparer=new SelectedNativeGraphComparer(moduleStock,expectedReferences,compared,instance,allowScriptCrLfEquivalent:group.Key=="Draws",requireAllReferences:false,captureNativeCoordinates:group.Key!="Behaviors",captureNativePaths:group.Key=="Behaviors",upgrade:upgrade);comparer.Compare(owner.NativeType,model.Native);if(!variableContainer)foreach(var coordinate in comparer.NativeOffsets)map.Add(coordinate.Key,start+coordinate.Value);}
                 Own(leaf,start,stop);
+                if(variableContainer){
+                    // Reborn: repeated source instances get separate wrapper/table/native coordinates, not duplicate keys in a whole-stock map.
+                    int stockIndex=Array.IndexOf(stockContainer.Modules,model);int stockEnd=stockIndex+1<stockContainer.Modules.Length?stockContainer.Modules[stockIndex+1].Wrapper:stockRows.Values.Select(v=>v.Offset).Where(at=>at>stockRows[FastHash.GetHashCode(group.Key)].Offset&&at<stock.Projection.NativeRoot).DefaultIfEmpty(stock.Projection.NativeRoot).Min();
+                    int length=stockEnd-model.Wrapper,row=containerAt+12+owner.Index*12;
+                    if(Word(tokens.InstanceBuffer,row)!=0xB151A0EB||Word(tokens.InstanceBuffer,row+4)!=0||Word(tokens.InstanceBuffer,row+8)!=containerNext)throw new InvalidDataException("Variable module container wrapper/order differs: "+group.Key);
+                    var expected=stock.Bytes.AsSpan(model.Wrapper,length).ToArray();
+                    for(int at=8;at<length;at+=12){uint target=Word(expected,at);if(target!=0)Put(expected,at,target>=model.Wrapper&&target<stockEnd?target-(uint)model.Wrapper+(uint)containerNext:comparer!.NativeOffsets.TryGetValue((int)target,out int coordinate)?(uint)(prefix+start+coordinate):throw new InvalidDataException("Variable module metadata target is not independently native-bound: "+group.Key));}
+                    if(!tokens.InstanceBuffer.AsSpan(containerNext,length).SequenceEqual(expected))throw new InvalidDataException("Variable module stock metadata differs: "+group.Key);containerNext+=length;
+                }
                 if(group.Key=="Behaviors")
                 {
-                    var standalone=Ep1BehaviorMetadataTokenizer.Tokenize(leaf,official,model.Type,owner.NativeType);var stockModules=topology.Containers.Single(c=>c.Name=="Behaviors").Modules;int index=Array.IndexOf(stockModules,model);int stockEnd=index+1<stockModules.Length?stockModules[index+1].Wrapper:stockRows[FastHash.GetHashCode("AI")].Offset;
+                    var standalone=Ep1BehaviorMetadataTokenizer.Tokenize(leaf,official,model.Type,owner.NativeType);var stockModules=topology.Containers.Single(c=>c.Name=="Behaviors").Modules;int index=Array.IndexOf(stockModules,model);int stockEnd=selling?sell.Value.End:powered?powerUpgrade.Value.End:index+1<stockModules.Length?stockModules[index+1].Wrapper:stockRows[FastHash.GetHashCode("AI")].Offset;
                     int localPrefix;
                     if(weapon){
                         // Reborn: the independent literal stock-qualified hardpoint writer cross-checks generic schema metadata at source-sized extents.
                         var literal=Ep1WeaponSetTokenizer.Tokenize(leaf);if(!Equal(standalone,literal))throw new InvalidDataException("Generic/literal EP1 weapon metadata disagree.");Ep1WeaponSetSmokeTest.Verify(standalone,leaf,instance,catalog,false);localPrefix=standalone.InstanceBuffer.Length-leaf.InstanceBuffer.Length;
-                    }else localPrefix=upgrade==null?BehaviorMetadataStockProof.Compare(standalone,leaf,stock.Bytes,model.Wrapper,stockEnd,owner.NativeType,comparer!.NativeRecords):UpgradeStructureMetadataProof.Compare(standalone,leaf,stock.Bytes,model.Wrapper,stockEnd,owner.NativeType,comparer!.NativeRecords,upgrade);
-                    int list=rows[FastHash.GetHashCode("Behaviors")].Offset;if(Word(tokens.InstanceBuffer,list)!=0x6C827073||Word(tokens.InstanceBuffer,list+4)!=0x5D448FD8||Word(tokens.InstanceBuffer,list+8)!=prefix+layout.List)throw new InvalidDataException("Variable behavior count metadata differs.");
-                    int row=list+12+owner.Index*12,at=(int)Word(tokens.InstanceBuffer,row+8);if(Word(tokens.InstanceBuffer,row)!=0xB151A0EB||Word(tokens.InstanceBuffer,row+4)!=0||at!=behaviorNext)throw new InvalidDataException("Variable behavior wrapper/order differs.");
-                    for(int offset=0;offset<localPrefix;offset+=12){uint target=Word(standalone.InstanceBuffer,offset+8);uint expected=target==0?0:target<localPrefix?target+(uint)at:target-(uint)localPrefix+(uint)(prefix+start);if(Word(tokens.InstanceBuffer,at+offset)!=Word(standalone.InstanceBuffer,offset)||Word(tokens.InstanceBuffer,at+offset+4)!=Word(standalone.InstanceBuffer,offset+4)||Word(tokens.InstanceBuffer,at+offset+8)!=expected)throw new InvalidDataException("Variable behavior metadata splice differs.");}
-                    behaviorNext+=localPrefix;
+                    }else localPrefix=upgrade==null?BehaviorMetadataStockProof.Compare(standalone,leaf,moduleStock,model.Wrapper,stockEnd,owner.NativeType,comparer!.NativeRecords):UpgradeStructureMetadataProof.Compare(standalone,leaf,moduleStock,model.Wrapper,stockEnd,owner.NativeType,comparer!.NativeRecords,upgrade);
+                    Splice(owner,standalone,start,localPrefix);
                 }
             }
-            if(group.Key=="Behaviors")behaviorLength=behaviorNext-behaviorAt;else maps.Add(group.Key,map);
+            //-------------------------------------------------------------------------------------------------
+            /** Reborn: verify each source-ordered module wrapper and every metadata target without borrowing offsets from another family. */
+            //-------------------------------------------------------------------------------------------------
+            void Splice(ConscriptModuleScalarContract.Owner owner,Chunk standalone,int start,int localPrefix){
+                int list=rows[FastHash.GetHashCode("Behaviors")].Offset;if(Word(tokens.InstanceBuffer,list)!=0x6C827073||Word(tokens.InstanceBuffer,list+4)!=0x5D448FD8||Word(tokens.InstanceBuffer,list+8)!=prefix+layout.List)throw new InvalidDataException("Variable behavior count metadata differs.");
+                int row=list+12+owner.Index*12,at=(int)Word(tokens.InstanceBuffer,row+8);if(Word(tokens.InstanceBuffer,row)!=0xB151A0EB||Word(tokens.InstanceBuffer,row+4)!=0||at!=behaviorNext)throw new InvalidDataException("Variable behavior wrapper/order differs.");
+                for(int offset=0;offset<localPrefix;offset+=12){uint target=Word(standalone.InstanceBuffer,offset+8);uint expected=target==0?0:target<localPrefix?target+(uint)at:target-(uint)localPrefix+(uint)(prefix+start);if(Word(tokens.InstanceBuffer,at+offset)!=Word(standalone.InstanceBuffer,offset)||Word(tokens.InstanceBuffer,at+offset+4)!=Word(standalone.InstanceBuffer,offset+4)||Word(tokens.InstanceBuffer,at+offset+8)!=expected)throw new InvalidDataException("Variable behavior metadata splice differs.");}
+                behaviorNext+=localPrefix;
+            }
+            if(group.Key=="AI")aiLength=aiNext-aiAt;else if(group.Key=="Behaviors")behaviorLength=behaviorNext-behaviorAt;else if(variableContainer)containerLengths.Add(group.Key,containerNext-containerAt);else maps.Add(group.Key,map);
         }
-        Add(ownedRelos,500);Fixed(typeof(Ep1Geometry),(int)Word(stock.Bytes,stock.Projection.NativeRoot+500),layout.Geometry,cut);
-        for(int i=0;i<Ep1GameObjectRootOwnersProjection.Fields.Count;i++){var field=Ep1GameObjectRootOwnersProjection.Fields[i];int start=(int)Word(b,field.Slot),end=i+1<Ep1GameObjectRootOwnersProjection.Fields.Count?(int)Word(b,Ep1GameObjectRootOwnersProjection.Fields[i+1].Slot):b.Length;Add(ownedRelos,(uint)field.Slot);Fixed(field.NativeType,(int)Word(stock.Bytes,stock.Projection.NativeRoot+field.Slot),start,end);}
+        // Reborn: source-sized shape/contact arrays and optional placement/vector records own the actual Geometry allocation.
+        Add(ownedRelos,500);var geometryNative=Extract(native,layout.Geometry,cut);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);
+        var geometryProof=SchemaNativeContract.Verify(GameObjectGeometryContract.Owner(resolved)!,typeof(Ep1Geometry),0,geometryNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());
+        var geometryTokens=Ep1GeometryTokenizer.Tokenize(geometryNative);int geometryLength=geometryGrammar.Value.Verify(geometryTokens,geometryNative,typeof(Ep1Geometry),geometryProof.Records);Own(geometryNative,layout.Geometry,cut);
+        // Reborn: retain independently proved optional dependency metadata for the enclosing root splice check.
+        Chunk? dependencyNative=null,dependencyTokens=null;int dependencyStart=0,dependencyEnd=0,dependencyLength=0;
+        var rootPieces=new Dictionary<string,(int Start,int End,int Prefix,Chunk Tokens)>(StringComparer.Ordinal);
+        for(int i=0;i<Ep1GameObjectRootOwnersProjection.Fields.Count;i++)
+        {
+            var field=Ep1GameObjectRootOwnersProjection.Fields[i];int start=Ep1GameObjectRootOwnersProjection.NativeStart(b,field),end=Ep1GameObjectRootOwnersProjection.Fields.Skip(i+1).Select(f=>Ep1GameObjectRootOwnersProjection.NativeStart(b,f)).FirstOrDefault(at=>at!=0);if(end==0)end=b.Length;
+            // Reborn: source presence/cardinality, every native field/import and complete variable root metadata are independently bound.
+            if(extendedRoots.TryGetValue(field.Name,out var grammar)){
+                var elements=GameObjectExtendedRootContract.Owners(resolved,field.Name);if(!field.InlineList&&elements.Length==0){if(start!=0)throw new InvalidDataException("Omitted root owner has native allocation: "+field.Name);continue;}
+                if(!field.InlineList&&start==0)throw new InvalidDataException("Authored root owner has no allocation: "+field.Name);
+                var leaf=field.InlineList?Ep1GameObjectRootOwnersProjection.WrapInlineList(native,field,start,end):Extract(native,start,end);
+                var references=instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray();var proof=field.InlineList?SchemaNativeContract.VerifyInlineList(resolved.DocumentElement!,field.Name,field.NativeType,leaf,references):SchemaNativeContract.Verify(elements.Single(),field.NativeType,0,leaf,references);
+                var metadata=field.InlineList?Ep1BehaviorMetadataTokenizer.TokenizeRootList(leaf,official,field.Name):Ep1BehaviorMetadataTokenizer.TokenizeRootRecord(leaf,official,field.Name);int size=grammar.Value.Verify(metadata,leaf,field.NativeType,proof.Records,field.InlineList);rootPieces.Add(field.Name,(start,end,size,metadata));
+                if(start!=0){Add(ownedRelos,(uint)field.PointerSlot);Own(Extract(native,start,end),start,end);}continue;
+            }
+            // Reborn: an omitted dependency retains null storage; authored empty/populated records own complete source-sized tails.
+            if(field.Name=="GameDependency"){
+                var element=GameObjectDependencyContract.Owner(resolved);if(element==null){if(start!=0)throw new InvalidDataException("Omitted GameDependency has native storage.");continue;}if(start==0)throw new InvalidDataException("Authored GameDependency has no native storage.");
+                dependencyStart=start;dependencyEnd=end;dependencyNative=Extract(native,start,end);var proof=SchemaNativeContract.Verify(element,typeof(GameDependencyType),0,dependencyNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());
+                dependencyTokens=Ep1BehaviorMetadataTokenizer.TokenizeRootRecord(dependencyNative,official,"GameDependency");dependencyLength=dependencyGrammar.Value.Verify(dependencyTokens,dependencyNative,typeof(GameDependencyType),proof.Records);Add(ownedRelos,412);Own(dependencyNative,start,end);continue;
+            }
+            // Reborn: resource presence and transaction cardinality have a dedicated source/native contract instead of complete equality to the stock one-row record.
+            if(field.Name=="ObjectResourceInfo"){var resource=GameObjectResourceContract.VerifyNative(source,b,end);if(resource.Length>0)Cover(resource.Start,resource.Length);foreach(uint slot in resource.Relocations)Add(ownedRelos,slot);continue;}
+            Add(ownedRelos,(uint)field.Slot);Fixed(field.NativeType,(int)Word(stock.Bytes,stock.Projection.NativeRoot+field.Slot),start,end);
+        }
         if(!ownedRelos.Order().SequenceEqual(relos.Order())||!ownedImports.Order().SequenceEqual(imports.Order())||!imports.Select(s=>Word(b,(int)s)).Order().SequenceEqual(Enumerable.Range(1,instance.ReferencedInstances.Count).Select(i=>(uint)i)))throw new InvalidDataException("Variable graph auxiliary/reference ownership differs.");
         int gap=0;for(int i=0;i<b.Length;i++){if(covered[i])gap=0;else if(b[i]!=0||++gap>3)throw new InvalidDataException("Unowned variable graph native allocation.");}
         // Reborn: every non-behavior metadata owner retains its independent stock field map; changed behavior extents are source-composed, not fixed at 88824.
@@ -119,8 +353,27 @@ internal sealed class ConscriptVariableGraphVerifier
         foreach(var pair in stockRows)
         {
             int old=pair.Value.Offset,at=rows[pair.Key].Offset;
+            // Reborn: complete AI leaf fragments were independently proved above; their metadata extent follows chooser presence.
+            if(pair.Key==FastHash.GetHashCode("AI")){if(aiLength<12||at<rootLength||at>prefix-aiLength||metadataOwned.AsSpan(at,aiLength).Contains(true))throw new InvalidDataException("AI metadata ownership differs.");Array.Fill(metadataOwned,true,at,aiLength);continue;}
+            // Reborn: repeated root count markers bind inline headers; item/native targets bind independently proved tail records.
+            string? extendedName=GameObjectExtendedRootContract.Names.SingleOrDefault(name=>FastHash.GetHashCode(name)==pair.Key);
+            if(extendedName!=null){if(!rootPieces.TryGetValue(extendedName,out var piece)){if(at!=0)throw new InvalidDataException("Omitted root metadata has a target: "+extendedName);continue;}if(at<rootLength||at>prefix-piece.Prefix||metadataOwned.AsSpan(at,piece.Prefix).Contains(true))throw new InvalidDataException("Extended root metadata ownership differs: "+extendedName);
+                var field=Ep1GameObjectRootOwnersProjection.Fields.Single(f=>f.Name==extendedName);
+                for(int offset=0;offset<piece.Prefix;offset+=12){uint target=Word(piece.Tokens.InstanceBuffer,offset+8);uint expected=target==0?0:target<piece.Prefix?target+(uint)at:field.InlineList&&target==piece.Prefix?(uint)(prefix+field.Slot):checked(target-(uint)piece.Prefix+(uint)(prefix+piece.Start)-(field.InlineList?8u:0u));if(Word(tokens.InstanceBuffer,at+offset)!=Word(piece.Tokens.InstanceBuffer,offset)||Word(tokens.InstanceBuffer,at+offset+4)!=Word(piece.Tokens.InstanceBuffer,offset+4)||Word(tokens.InstanceBuffer,at+offset+8)!=expected)throw new InvalidDataException("Extended root metadata splice differs: "+extendedName);}
+                Array.Fill(metadataOwned,true,at,piece.Prefix);continue;}
+            // Reborn: dependency presence and its complete standalone table bind the actual root target independently of stock absence.
+            if(pair.Key==FastHash.GetHashCode("GameDependency")){if(dependencyTokens==null){if(at!=0)throw new InvalidDataException("Absent GameDependency metadata has a target.");}else{if(at<rootLength||at>prefix-dependencyLength||metadataOwned.AsSpan(at,dependencyLength).Contains(true))throw new InvalidDataException("GameDependency metadata ownership differs.");if(!Equal(Detach(tokens,prefix,at,dependencyLength,dependencyStart,dependencyEnd),dependencyTokens))throw new InvalidDataException("GameDependency metadata root splice differs.");Array.Fill(metadataOwned,true,at,dependencyLength);}continue;}
+            // Reborn: full Geometry metadata is source-sized and checked independently before comparing its enclosing root splice.
+            if(pair.Key==FastHash.GetHashCode("Geometry")){if(at<rootLength||at>prefix-geometryLength||metadataOwned.AsSpan(at,geometryLength).Contains(true))throw new InvalidDataException("Geometry metadata ownership differs.");if(!Equal(Detach(tokens,prefix,at,geometryLength,layout.Geometry,cut),geometryTokens))throw new InvalidDataException("Geometry metadata root splice differs.");Array.Fill(metadataOwned,true,at,geometryLength);continue;}
+            // Reborn: omitted lists are null declarations; present/empty/repeated lists own the exact prefix verified above.
+            string? containerName=ConscriptVariableContainers.Names.SingleOrDefault(n=>FastHash.GetHashCode(n)==pair.Key);
+            if(containerName!=null){int size=containerLengths[containerName];if(size==0){if(at!=0)throw new InvalidDataException("Omitted container metadata target differs: "+containerName);}else{if(at<rootLength||at>prefix-size||metadataOwned.AsSpan(at,size).Contains(true))throw new InvalidDataException("Variable container metadata ownership differs: "+containerName);Array.Fill(metadataOwned,true,at,size);}continue;}
+            // Reborn: an absent owner has a null metadata target; an empty/present owner has its own exact source-sized transaction grammar.
+            if(pair.Key==FastHash.GetHashCode("ObjectResourceInfo")){int size=GameObjectResourceContract.VerifyMetadata(source,b,tokens.InstanceBuffer,prefix,at);if(size>0){if(at<rootLength||at>prefix-size||metadataOwned.AsSpan(at,size).Contains(true))throw new InvalidDataException("ObjectResourceInfo metadata ownership differs.");Array.Fill(metadataOwned,true,at,size);}continue;}
             // Reborn: changed ArmorSet cardinality changes metadata extent, not its field grammar or source/native reference contract.
             if(pair.Key==FastHash.GetHashCode("ArmorSet")){int size=ConscriptArmorSetContract.VerifyMetadata(source,b,tokens.InstanceBuffer,prefix,at);if(at<rootLength||at>prefix-size||metadataOwned.AsSpan(at,size).Contains(true))throw new InvalidDataException("ArmorSet metadata owner overlaps another table.");Array.Fill(metadataOwned,true,at,size);continue;}
+            // Reborn: movement metadata has independently checked source-sized extent, including the omitted-list count marker.
+            if(pair.Key==FastHash.GetHashCode("LocomotorSet")){int size=ConscriptLocomotorSetContract.VerifyMetadata(source,b,tokens.InstanceBuffer,prefix,at);if(at<rootLength||at>prefix-size||metadataOwned.AsSpan(at,size).Contains(true))throw new InvalidDataException("LocomotorSet metadata owner overlaps another table.");Array.Fill(metadataOwned,true,at,size);continue;}
             // Reborn: display-name metadata directly targets its optional header, not a stock text identity or a separate table.
             string? pointed=GameObjectRootTextContract.Pointed.SingleOrDefault(n=>FastHash.GetHashCode(n)==pair.Key);
             if(pointed!=null){int slot=pointed=="DisplayName"?404:408;uint target=Word(b,slot);if(at!=(target==0?0:prefix+target))throw new InvalidDataException("Pointed root name metadata target differs: "+pointed);continue;}
@@ -141,7 +394,11 @@ internal sealed class ConscriptVariableGraphVerifier
         if(metadataOwned.Contains(false))throw new InvalidDataException("Unowned variable graph metadata.");return tokens;
 
         // Reborn: unchanged nonmodule owners retain independent complete stock payload comparison despite shifted addresses/reference indices.
-        void Fixed(Type type,int old,int start,int end){var leaf=Extract(native,start,end);var values=authoredValues.Where(p=>p.Key>=start&&p.Key<end).ToDictionary(p=>p.Key-start,p=>p.Value);var comparer=new SelectedNativeGraphComparer(stock.Bytes,rootReferences,leaf,instance,requireAllReferences:false,captureNativeCoordinates:false,captureNativePaths:true,authoredValues:values);comparer.Compare(type,old);fixedGraphs.Add(type==typeof(Ep1Geometry)?500:Ep1GameObjectRootOwnersProjection.Fields.Single(f=>f.NativeType==type).Slot,(start,end,type,comparer));Own(leaf,start,end);}
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: source-sized list metadata always binds the actual native count word, including an allocated-empty list. */
+        //-------------------------------------------------------------------------------------------------
+        void VerifyContainerHeader(string name,int header,int count){int at=rows[FastHash.GetHashCode(name)].Offset;if(at<0||at>prefix-12-count*12||Word(tokens.InstanceBuffer,at)!=0x6C827073||Word(tokens.InstanceBuffer,at+4)!=0x5D448FD8||Word(tokens.InstanceBuffer,at+8)!=prefix+header)throw new InvalidDataException("Variable module container count metadata differs: "+name);}
+        void Fixed(Type type,int old,int start,int end){var leaf=Extract(native,start,end);var values=authoredValues.Where(p=>p.Key>=start&&p.Key<end).ToDictionary(p=>p.Key-start,p=>p.Value);var records=recordValues.Where(p=>p.Key>=start&&p.Key<end).ToDictionary(p=>p.Key-start,p=>p.Value);var comparer=new SelectedNativeGraphComparer(stock.Bytes,rootReferences,leaf,instance,requireAllReferences:false,captureNativeCoordinates:false,captureNativePaths:true,authoredValues:values){AuthoredRecordValues=records};comparer.Compare(type,old);fixedGraphs.Add(type==typeof(Ep1Geometry)?500:Ep1GameObjectRootOwnersProjection.Fields.Single(f=>f.NativeType==type).Slot,(start,end,type,comparer));Own(leaf,start,end);}
         // Reborn: whole-graph ownership is the disjoint union of exact leaf allocations and their auxiliary sources.
         void Own(Chunk leaf,int start,int end){Cover(start,end-start);foreach(uint s in Slots(leaf.RelocationBuffer))Add(ownedRelos,s+(uint)start);foreach(uint s in Slots(leaf.ImportsBuffer))Add(ownedImports,s+(uint)start);}
         // Reborn: only the inline AI header may overlap the typed root's already verified bytes.
@@ -149,8 +406,30 @@ internal sealed class ConscriptVariableGraphVerifier
     }
 
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: qualify the schema proof on every stock Conscript leaf of the family (with its stock source) and learn the metadata grammar
+        from the stock Conscript and SovietRefinery leaves of that family. */
+    //-------------------------------------------------------------------------------------------------
+    private StockMetadataGrammar QualifySchemaFamily(string manifest,SchemaNativeContract.Family family)
+    {
+        var grammar=new StockMetadataGrammar();
+        var resolvedBaseline=SchemaNativeContract.Resolve(baseline,referenceSchemas,catalog);var leaves=ConscriptVariableContainers.Find(resolvedBaseline,family.Container)?.ChildNodes.OfType<XmlElement>().ToArray()??Array.Empty<XmlElement>();int qualified=0;
+        foreach(var module in topology.Containers.Single(c=>c.Name==family.Container).Modules.Where(m=>m.TypeId==family.TypeId)){
+            grammar.Learn(stock.Bytes,module.Wrapper,stock.Projection.NativeRoot,family.Type);
+            var element=leaves.Single(e=>FastHash.GetHashCode(e.GetAttribute("id").ToLowerInvariant())==Word(stock.Bytes,module.Native+4));
+            SchemaNativeContract.VerifyStock(element,family.Type,family.TypeId,stock.Bytes,module.Native,stock.Asset.References.ToArray());qualified++;
+        }
+        if(qualified==0)throw new InvalidDataException("No stock leaf qualified the schema proof for "+family.Type.Name+".");
+        var refinery=GameObjectStockReview.Capture(manifest,"GameObject:SovietRefinery");
+        foreach(var module in GameObjectModuleReview.Inspect(manifest,refinery.Asset.Name).Containers.Single(c=>c.Name==family.Container).Modules.Where(m=>m.TypeId==family.TypeId))grammar.Learn(refinery.Bytes,module.Wrapper,refinery.Projection.NativeRoot,family.Type);
+        // Reborn: optional draw materials use independently qualified original shader/native witnesses, including all polymorphic constant kinds.
+        if(family.Type==typeof(W3DScriptedModelDrawModuleData))ShaderMaterialContract.Qualify(grammar,manifest,baseline,referenceSchemas,catalog);
+        return grammar;
+    }
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: bind original native occurrence slots to independently read authored targets on an unchanged comparison-source layout. */
     //-------------------------------------------------------------------------------------------------
+
     private AssetId[] ReferenceTable(XmlNode source,string? templateId)
     {
         string key=(templateId??"root")+"\n"+source.OuterXml;if(referenceTables.TryGetValue(key,out var existing))return existing;
@@ -159,8 +438,16 @@ internal sealed class ConscriptVariableGraphVerifier
             document=CopySource((XmlDocument)source);
             var actual=document.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName=="Behaviors");
             actual.ParentNode!.ReplaceChild(document.ImportNode(baseline.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName=="Behaviors"),true),actual);
+            // Reborn: unrelated root/fixed owners retain baseline occurrence coordinates while variable leaf imports use their own source table.
+            ConscriptVariableContainers.Restore(document,baseline);
+            // Reborn: new root strong references have their own source/native proof; untouched stock owners keep stock occurrence coordinates.
+            GameObjectExtendedRootContract.Mask(document,baseline);
+            // Reborn: actual chooser imports are independently source-bound; untouched owners retain baseline occurrence coordinates.
+            AIUpdateContract.Mask(document,baseline);
             // Reborn: untouched owners still use stock occurrence coordinates; the separate armor proof resolves actual authored rows.
             ConscriptArmorSetContract.Mask(document,baseline);
+            // Reborn: other owners retain original occurrence coordinates; actual movement imports are independently checked from source.
+            ConscriptLocomotorSetContract.Mask(document,baseline);
             // Reborn: stock occurrence coordinates for other owners keep their baseline root prefix; the actual root import contract independently checks authored presence/targets.
             GameObjectStrongReferenceContract.Mask(document,baseline);
         }else{

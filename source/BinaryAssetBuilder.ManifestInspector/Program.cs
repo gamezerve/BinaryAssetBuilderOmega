@@ -13,6 +13,15 @@ internal static class Program
     {
         try
         {
+            // Reborn: material recovery reads bounded stock field/type coordinates before authored shader support is admitted.
+            if(args.Length==2&&args[0]=="shader-material-review")
+            {CompilerSmokeTest.InitializeHashProvider();ShaderMaterialContract.Review(args[1]);return 0;}
+            // Reborn: bounded original upgrade field evidence is separate from authored package publication.
+            if(args.Length==2&&args[0]=="upgrade-template-review")
+            {CompilerSmokeTest.InitializeHashProvider();UpgradeTemplateCompiler.Review(args[1]);return 0;}
+            // Reborn: complete upgrade authoring checks use only fresh private sources and packages.
+            if(args.Length==4&&args[0]=="upgrade-template-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();UpgradeTemplateSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             // Reborn: variable module topology is independently qualified before changing the live alpha publication profile.
             if(args.Length is 4 or 5 && args[0]=="conscript-module-graph-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ConscriptModuleGraphSmokeTest.Run(args[1],args[2],args[3],args.Length==5?args[4]:null);return 0;}
@@ -112,7 +121,7 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();ConscriptRecruitmentSmokeTest.Run(args[1]);return 0;}
             // Reborn: expose complete Conscript scalar/source builds, retaining native/metadata/reference qualification before publication.
             if(args.Length==6 && args[0]=="conscript-alpha-build")
-            {CompilerSmokeTest.InitializeHashProvider();if(!ConscriptMultiAssetBuild.TryRun(args[4],args[2],args[3],args[5])&&!ConscriptVariableBehaviorBuild.TryRun(args[4],args[2],args[3],args[5]))Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeOriginalRoot:true,alphaSource:args[4],alphaOutput:args[5]);return 0;}
+            {CompilerSmokeTest.InitializeHashProvider();if(!ConscriptMultiAssetBuild.TryRun(args[4],args[2],args[3],args[5])){var single=ConscriptCompileLog.ForPrepared(args[4]);var root=new System.Xml.XmlDocument{XmlResolver=null};root.Load(args[4]);var progress=single.Begin(root.DocumentElement!.LocalName,root.DocumentElement.GetAttribute("id"));if(!ConscriptVariableBehaviorBuild.TryRun(args[4],args[2],args[3],args[5]))Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeOriginalRoot:true,alphaSource:args[4],alphaOutput:args[5]);single.End(progress);single.Statistics();}return 0;}
 
             if(args.Length==4 && args[0]=="gameobject-root-fields-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeRootOwners:true,includeEmptyRoots:true);return 0;}
@@ -1644,6 +1653,9 @@ internal static class Program
         // Reborn: SDK planning is explicitly target-aware/read-only and separate from diagnostic or production compilation.
         Console.WriteLine("  sdk-preflight ra3ep1 <schema-root> <source-root> <source-entry.xml> <new-output-directory> [absolute.manifest=runtime.manifest ...]");
         Console.WriteLine("  conscript-module-graph-self-test <static.manifest> <global.manifest> <fresh-output-directory> [case-name]");
+        // Reborn: native upgrade qualification and complete authoring regression do not publish into live mod output.
+        Console.WriteLine("  upgrade-template-review <global.manifest>");
+        Console.WriteLine("  upgrade-template-self-test <static.manifest> <global.manifest> <fresh-output-directory>");
         Console.WriteLine("  sdk-xml-diagnostics-self-test <fresh-output-directory>");
         // Reborn: localization parser/source regression is independent of game launches and editable mod workspaces.
         Console.WriteLine("  sdk-missing-strings-self-test <fresh-output-directory>");

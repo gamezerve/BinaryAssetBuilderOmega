@@ -15,8 +15,12 @@ internal static class ConscriptSharedSourceContract
         GameObjectScalarContract.Validate(source);GameObjectRootAttributeContract.Validate(source);GameObjectStrongReferenceContract.Validate(source,baseline);
         GameObjectRootStringContract.Validate(source,baseline);_=GameObjectRootTextContract.Read(source);
         ConscriptModuleScalarContract.Validate(source);ConscriptModuleIdentityContract.Validate(source);
+        // Reborn: nonmodule scalar codecs share admission across all routes; structural changes continue through the variable graph path.
+        GameObjectNestedValueContract.Validate(source);
+        GameObjectResourceContract.Validate(source);
         var qualified=SdkXmlDiagnostics.Parse(Encoding.UTF8.GetBytes(source.DocumentElement!.OuterXml));qualified.Schemas.Add(schemas);qualified.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));
-        foreach(var field in ConscriptEditableScalars.Fields)ConscriptEditableScalars.Read(qualified,field);
+        // Reborn: the historical single Speed receipt is not an admission requirement for source-sized movement lists.
+        foreach(var field in ConscriptEditableScalars.Fields)if(field.Attribute!="Amount"&&(field.Attribute!="Speed"||ConscriptLocomotorSetContract.Entries(qualified).Length==1))ConscriptEditableScalars.Read(qualified,field);
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -24,7 +28,7 @@ internal static class ConscriptSharedSourceContract
     //-------------------------------------------------------------------------------------------------
     internal static void Mask(XmlDocument candidate,XmlDocument model)
     {
-        foreach(var field in ConscriptEditableScalars.Fields)ConscriptEditableScalars.Element(candidate,field).SetAttribute(field.Attribute,ConscriptEditableScalars.Literal(model,field));
+        foreach(var field in ConscriptEditableScalars.Fields)if((field.Attribute!="Amount"||GameObjectResourceContract.Entries(candidate).Length==1)&&(field.Attribute!="Speed"||ConscriptLocomotorSetContract.Entries(candidate).Length==1))ConscriptEditableScalars.Element(candidate,field).SetAttribute(field.Attribute,ConscriptEditableScalars.Literal(model,field));
         GameObjectScalarContract.Mask(candidate,model);GameObjectRootAttributeContract.Mask(candidate,model);GameObjectStrongReferenceContract.Mask(candidate,model);GameObjectRootStringContract.Mask(candidate,model);
         ConscriptModuleIdentityContract.Mask(candidate,model);ConscriptModuleScalarContract.Mask(candidate,model);
     }

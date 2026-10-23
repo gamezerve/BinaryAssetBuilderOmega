@@ -6,7 +6,25 @@ asset IDs, instance includes, inheritance, `$` definitions/expressions,
 TGA/DDS textures and W3X models. Current alpha capability restrictions are
 temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
-## Current outcome — October 21, 2026
+## Current outcome — October 23, 2026
+
+<!-- Reborn: resource optionality and transaction cardinality follow the official schema without synthesizing zero-cost rows. -->
+ObjectResourceInfo now follows its optional 0..1 rule, with zero or more
+BuildCost rows. Each present transaction requires Account and Amount and must
+fit uint32. Absent, empty and explicit-zero records remain distinct in native
+data, metadata and receipts. See [resource authoring](docs/RA3EP1_RESOURCE_INFO.md).
+
+<!-- Reborn: enable existing nested native capabilities and multiple explicitly authored objects without pretending every GameObject topology is implemented. -->
+Multiple GameObjects can now be emitted in one mod, each with its own source,
+native verification and explicit command links. Implemented fixed attributes in
+BuildCost, EP1 VisionInfo, LocomotorSet, Geometry and its existing Shape records
+are editable beyond stock sample values. Optional whole-record presence and
+unimplemented list topology remain separate work. Geometry Shape/ContactPoint
+lists and optional placement/rotation records are now source-sized and independently
+verified; see [Geometry coverage](docs/RA3EP1_VARIABLE_GEOMETRY.md). LocomotorSet lists can now be
+omitted or expanded beyond the former 32-row diagnostic quota, with EP1 enum
+values, defaults and optional imports. See [movement lists](docs/RA3EP1_LOCOMOTOR_LISTS.md) and
+[nested values and multiple objects](docs/RA3EP1_NESTED_VALUES_AND_MULTIPLE_OBJECTS.md).
 
 Active development branch: `main` in `gamezerve/BinaryAssetBuilderOmega`.
 It contains the Uprising SDK work previously developed on
@@ -39,13 +57,26 @@ are now checked against emitted mod assets plus stock manifests. Missing names
 produce source-positioned `Warning: MISSINGASSET`; missing strong Cmd targets
 remain build errors. Existing image lookup does not require a new image compiler.
 
-The GameObject build route now accepts **one complete supported GameObject plus
-multiple ArmorTemplate, WeaponTemplate, LogicCommand and LogicCommandSet assets**
+The GameObject build route now accepts **multiple complete supported GameObjects plus
+multiple ArmorTemplate, WeaponTemplate, UpgradeTemplate, LogicCommand and LogicCommandSet assets**
 in the same mod. New local IDs resolve before stock assets; declarations are
 dependency-sorted rather than relying on textual order. DATA includes, definitions
 and same-type inheritance compose with this route. Nothing generates hidden
 recruitment commands: declare the command and Barracks command-set override.
 See [mixed asset authoring and remaining processor scope](docs/RA3EP1_MIXED_ASSET_AUTHORING.md).
+
+<!-- Reborn: explicit new/override upgrades now use the same Studio workflow and native-only EP1 stream ABI. -->
+UpgradeTemplate authoring is enabled, including upgrade-only mods, new IDs,
+stock overrides, all official existing fields, optional GameDependency,
+all/instance includes, same-type inheritance and definitions. A separate EP1
+140-byte model fixes legacy KW EVA string/pointer layouts and the projected
+upgrade option; stock upgrades are not tokenized. Four real stock witnesses and
+five complete source/stream/BIG cases pass, including a mixed GameObject/upgrade
+graph; 31 native corruption controls pass. No upgrade or research command is
+generated from a weak trigger. See [UpgradeTemplate authoring](docs/RA3EP1_UPGRADE_TEMPLATE.md).
+The complete original EA `GlobalData/upgrade.xml` also passes the ordinary DATA
+include/Studio-backend path: **97 upgrades in one verified stream/BIG build**,
+including original inheritance and complementary GameDependency declarations.
 
 <!-- Reborn: reuse working EP1 list processors rather than treating stock cardinality as an authoring capability limit. -->
 [ArmorSet and hardpoint/Weapon lists](docs/RA3EP1_COMBAT_LIST_AUTHORING.md) now
@@ -138,7 +169,7 @@ instance-only witnesses do not count as produced assets. The latest list is
 `alpha/.work/last-dependencies.json`. Weak/dynamic and arbitrary inherited/default
 reference coverage is not claimed by this source preflight.
 
-**Explicit EA XML frontend:** RebornTest now uses an AssetDeclaration `mod.xml`
+**Explicit EA XML frontend:** RebornTest now uses an AssetDeclaration `Static_Mod.xml`
 including `Conscript.xml` and `CommandData.xml`. No LogicCommand is generated
 implicitly. XML headers/namespaces/local all-XML includes and attribute order
 are accepted. RebornTest now also uses actual instance inheritance from
@@ -146,6 +177,158 @@ are accepted. RebornTest now also uses actual instance inheritance from
 emitted. The GameObject source route now merges schema-valid partial bases and
 nested derived bodies through Core, expands literal EA root/child XInclude
 fragments, and compares bare/qualified reference spellings by compatible identity.
+Ordinary `xi:include href="DATA:Includes/GenericBuildingRepair.xml"` now inserts
+the complete target root module, including its attributes and empty children.
+Nested relative includes and explicit `parse="xml"` are supported; existing
+child-XPointer behavior and fragment source file/line diagnostics are preserved.
+This source-language support does not imply complete native compilation of every
+building/module graph.
+Verification: the source-inheritance suite and all 26 XML diagnostic checks pass.
+The current Reborn refinery opens all seven ordinary includes. Schema-typed
+normalization now removes formatting whitespace from empty/element-only merged
+nodes without trimming strings/scripts or copying schema defaults. Preparation
+passes the earlier empty-content schema failure. The existing native
+`StructureSellUpdate` processor is now connected to complete-object source,
+metadata and stock verification: three stream/BIG cases pass, with 31 native and
+34 metadata faults rejected. See [StructureSellUpdate support](docs/RA3EP1_STRUCTURE_SELL.md).
+`BuildingDestructionBehavior` now also composes source-sized Item lists, ASCII
+bone strings, source-bound FX imports, weak debris IDs and scalar DieMux fields.
+Three full stream/BIG cases (including 257 Items) pass; 63 native and 48 metadata
+faults are rejected. See [destruction support and remaining DieMux limits](docs/RA3EP1_BUILDING_DESTRUCTION.md).
+`QueueDockBehavior` now has a real stock-qualified EP1 native model/writer plus
+source-bound bone strings, docking enum, metadata and complete ownership proof.
+Three full stream/BIG cases pass, rejecting 87 native and 62 metadata faults;
+the unchanged Conscript regression also passes. See [QueueDock support](docs/RA3EP1_QUEUE_DOCK.md).
+`QueueProductionExitUpdate` now reads the actual EP1 `ExitDelaySeconds` Time field,
+two inline vectors and every packed flag. Three edited/default/multiple-instance
+stream/BIG cases pass, rejecting 207 native and 70 metadata faults; the unchanged
+Conscript regression also passes. See [queue-exit support](docs/RA3EP1_QUEUE_PRODUCTION_EXIT.md).
+`SpawnBehavior` now uses an isolated 96-byte EP1 model with the missing status
+pointer and three EP1 flags, source-sized weak spawn/upgrade lists, optional
+animation, Die conditions/veterancy/status storage and schema-defaulted values.
+See [SpawnBehavior implementation and verification](docs/RA3EP1_SPAWN_BEHAVIOR.md).
+`StructureUnpackUpdate` now uses its complete EP1 GenericUnpack base, including
+authored time/height and optional concrete audio imports. Its stock-qualified
+204-byte metadata has an independent literal writer for sound-present/omitted
+forms. See [StructureUnpack support](docs/RA3EP1_STRUCTURE_UNPACK.md).
+`ProductionUpdate` now uses an isolated 84-byte EP1 model taken from the stock
+SovietRefinery record and its 408-byte metadata: all 16 scalar fields, EP1
+`WATERCRAFT`/`NewObjectFadeInTime`, defaults and multiple local instances.
+`GiveUpgradeToProduced` now supports source-sized upgrade translation pairs,
+qualified against real Barracks native bytes/imports/metadata, including optional
+RequiredUpgrade/ProvidedUpgrade targets. `BonusForType` and populated
+QuantityModifier/ProductionModifier remain refused at their source position.
+Three extended stream/BIG cases pass (omitted, three edited pairs, five-plus-one
+pairs across two modules), rejecting 375 native and 98 metadata faults; the
+separate empty-profile regression also passes.
+See [ProductionUpdate support](docs/RA3EP1_PRODUCTION_UPDATE.md).
+Reborn's enabled Barracks and refinery now pass source preparation (17 files);
+the next complete-build stop is the Barracks frozen draw Material/shader constants,
+not production XML. Neither source was edited to skip that unsupported material.
+`RepairUpdate` now uses an isolated EP1 model (EP1 HealAmountPerSecond default 10)
+with authored own scalars and inline percent records; populated SelfAudio is refused.
+The tokenizer emits EP1's `Owner::Element` signature for anonymous inline records.
+Three stream/BIG cases pass, rejecting 191 native and 102 metadata faults; the
+production batch and Conscript regression still pass. See [RepairUpdate support](docs/RA3EP1_REPAIR_UPDATE.md).
+`EngineerContain` now uses an isolated 92-byte EP1 model with inline status/EVA
+storage, voice hashes, strong FX/EVA/OCL imports resolved through the catalog and
+a full source-sized CanEnterFilter. Three stream/BIG cases pass, rejecting 409
+native and 96 metadata faults. See [EngineerContain support](docs/RA3EP1_ENGINEER_CONTAIN.md).
+`AssistedPlacementBehavior` now has a new 20-byte EP1 model (hint mask, snapping
+distance, optional requirement filter); three stream/BIG cases pass, rejecting
+115 native and 86 metadata faults. See [AssistedPlacement support](docs/RA3EP1_ASSISTED_PLACEMENT.md).
+`InfiltratorContain` (recovered 136-byte model, now admitted) proves scalars, status
+masks, voice hashes, weak/strong references including schema-default imports and
+optional filter pointees; three stream/BIG cases pass, rejecting 561 native and 106
+metadata faults. See [InfiltratorContain support](docs/RA3EP1_INFILTRATOR_CONTAIN.md).
+`StructurePlacementBehavior` proves the inline restricted-area shape, its optional
+strings and Offset vector; three stream/BIG cases pass, rejecting 252 native and 102
+metadata faults. See [StructurePlacement support](docs/RA3EP1_STRUCTURE_PLACEMENT.md).
+`LUAEventList` serializes its owned event-list name string (no LUA execution). See
+[LUAEventList support](docs/RA3EP1_LUA_EVENT_LIST.md).
+Three stream/BIG cases pass, rejecting 141 native and 82 metadata faults.
+`FXListBehavior` now accepts complete authored death conditions and source-sized
+Event lists, optional status/veterancy storage, retargeted FX imports and all
+fourteen EP1 event kinds. Three stream/BIG cases pass, rejecting 121 native and
+90 metadata faults; the original Conscript regression also passes.
+See [FXListBehavior support](docs/RA3EP1_FX_LIST_BEHAVIOR.md).
+`SecondaryDamageTracker` now supports optional HDR color/status records,
+source-sized EffectInfo lists, both option bits, retargeted/omitted modifier
+imports and multiple instances. Three stream/BIG cases and the original
+Conscript regression pass; five invalid-source controls and 199 native/90
+metadata corruption checks pass. See [tracker support](docs/RA3EP1_SECONDARY_DAMAGE_TRACKER.md).
+`CreateObjectDie` and `DestroyDie` now accept complete authored death conditions,
+optional status/veterancy storage and (for creation) optional OCL plus source-sized
+strong upgrade arrays. Three combined stream/BIG cases and the original Conscript
+regression pass; 174 native and 210 metadata faults are rejected.
+See [death behavior support](docs/RA3EP1_DEATH_BEHAVIORS.md).
+<!-- Reborn: source-sized module containers replace captured Conscript counts without claiming arbitrary nested draw support. -->
+Draws, ClientUpdates and ClientBehaviors now support source-sized/reordered/repeated
+reviewed leaves, omitted containers and allocated-empty containers. Independent
+per-leaf native/stock metadata proof replaces the original whole-container count
+comparison. Reversed/expanded/omitted/empty stream/BIG tests pass, including 593
+reference occurrences in the expanded graph. All five final cases pass, including
+129 ClientUpdates; 64 native and 86 metadata corruptions are rejected. See
+[variable module containers](docs/RA3EP1_VARIABLE_MODULE_CONTAINERS.md).
+<!-- Reborn: Geometry cardinality follows source and independently proved native records, not the captured infantry collision shape. -->
+Geometry now supports authored Shape/ContactPoint lists and optional placement,
+rotation, offsets and strings. Three complete stream/BIG cases pass, including
+the original four refinery Shapes and 33 Shapes plus 129 ContactPoints; 48 native
+and 63 metadata corruptions are rejected. Original Conscript and edited draw
+regressions pass. See [variable Geometry](docs/RA3EP1_VARIABLE_GEOMETRY.md).
+<!-- Reborn: optional build dependencies preserve authored weak lists, masks and filters on the normal root/native pipeline. -->
+GameDependency now supports absent/empty/populated records, source-sized weak
+object/upgrade lists, optional masks and independently supported ObjectFilter
+fields. Four complete stream/BIG cases pass; 191 native and 84 metadata faults
+are rejected. See [build prerequisites](docs/RA3EP1_GAME_DEPENDENCY.md).
+<!-- Reborn: sound/shadow/projected owners follow authored presence/counts instead of captured infantry root shapes. -->
+AudioArraySound, optional ShadowInfo and source-sized ProjectedBuildabilityInfo
+now pass three complete stream/package cases (51 native/48 metadata corruption
+controls), with original Conscript and expanded Geometry regressions passing.
+See [extended root coverage](docs/RA3EP1_EXTENDED_GAMEOBJECT_ROOTS.md).
+<!-- Reborn: building AI roots and already implemented AIUpdate scalar codecs are authored capabilities, not infantry constants. -->
+SkirmishAIInformation now supports omission/defaults, optional scalar/mask
+pointers, both base-selection criteria and DodgeWithUnits. Existing AIUpdate
+AutoAcquireEnemiesWhenIdle and StateMachine values also pass normal scalar
+admission. Four complete stream/package cases pass (111 native/75 metadata
+faults rejected), with original Conscript and all three extended-root regressions
+passing. See [Skirmish AI coverage](docs/RA3EP1_SKIRMISH_AI_ROOT.md).
+<!-- Reborn: AI chooser presence/defaults/imports follow the authored leaf instead of the captured infantry child shape. -->
+AIUpdate now supports absent/default/edited UnitAITargetChooserData, including
+typed compare-list imports, chooser flags/timing and optional AttackPriority text.
+Three complete stream/package cases pass (92 native/78 metadata faults rejected),
+alongside the original Conscript regression. See [AI chooser coverage](docs/RA3EP1_AIUPDATE_CHOOSER.md).
+<!-- Reborn: voice and EVA list sizes, presence and real strong occurrences follow source instead of infantry sample counts. -->
+AudioArrayVoice/AudioEntry and EvaEventArray/EvaEntry are now source-sized,
+including omission/empty owners and populated voice EVA references. The EP1
+voice model no longer routes EVA through a legacy string pointer. Four complete
+stream/package cases pass (46 native/56 metadata faults), including 18 voice and
+20 EVA entries; original Conscript and expanded client regressions also pass.
+See [root voice/EVA coverage](docs/RA3EP1_ROOT_VOICE_EVA.md).
+<!-- Reborn: the actual Reborn refinery now passes complete offline compilation, not only individual module/source gates. -->
+CrusherInfo now supports authored existing scalars/imports, omission/defaults,
+signed byte levels and pipeline-only inheritance IDs. Four package cases pass
+(180 native/64 metadata faults). Reborn preparation completes across 15 XML files,
+and its SovietRefinery snapshot passes full native/metadata/stream/BIG validation:
+27 Behaviors, 124 references, metadata prefix 46116. Existing stock GameObject
+names are valid overrides, not Conscript-only exceptions; receipts and Studio
+routing distinguish them from new IDs. See [crusher/refinery evidence](docs/RA3EP1_CRUSHER_INFO.md).
+Gameplay and full Studio publication of this snapshot have not been verified.
+The user's sources and published package were not modified by this diagnostic.
+<!-- Reborn: BuildingBehavior reuses the native writer with source-owned optional window names and original Power Plant witnesses. -->
+BuildingBehavior now accepts all four optional window/subobject-name attributes,
+including empty values and independently named repeated modules. Both original
+SovietPowerPlant modules qualify the native/metadata contract against stock.
+Reborn's enabled Power Plant plus refinery prepare across 17 source files.
+The previous stop at unresolved `UpgradeTemplate:Upgrade_PowerPlantTurbine`
+is corrected: upgrade triggers are typed weak hashes, so missing targets produce
+located warnings, not a fabricated asset or fatal dependency. The mod/stock audit
+passes with one warning at Power Plant line 481; three complete PowerUpgrade
+package cases including unresolved hashes pass (219 native/58 metadata faults).
+The actual Studio backend also passes complete two-object stream/BIG validation
+for Power Plant and refinery together, without changing authored XML or publishing
+to Documents. See [weak-upgrade correction and receipt](docs/RA3EP1_POWER_UPGRADE.md).
+See [BuildingBehavior support and evidence](docs/RA3EP1_BUILDING_BEHAVIOR.md).
 Final reviewed graph/native checks remain mandatory; arbitrary new module graphs
 and ART/W3X resource compilation are still disabled. See
 [precise source support and omission/order rules](docs/RA3EP1_EA_SOURCE_FRONTEND.md).
@@ -172,7 +355,7 @@ fallback search. This local SDK contains the original Uprising source copy under
 does not enable resource compilation. See [exact search order](docs/RA3EP1_SOURCE_SEARCH.md).
 
 **One live alpha SDK:** open `alpha/EALAModStudio.exe`, edit the selected mod's
-`alpha/mods/<name>/data/mod.xml`, then use **Build Mod**. Successful builds reuse
+`alpha/mods/<name>/data/Static_Mod.xml`, then use **Build Mod**. Successful builds reuse
 the Documents mod folder for versioned final archives/SKUDef. Internal
 `alpha/builtmods/<name>/` keeps compatibility copies, `build.json` and
 `last-build.log`; no final CFG is published. Failed builds preserve the last good

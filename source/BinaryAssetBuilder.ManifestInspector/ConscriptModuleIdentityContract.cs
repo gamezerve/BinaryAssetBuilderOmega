@@ -34,10 +34,17 @@ internal static class ConscriptModuleIdentityContract
     internal static void Mask(XmlDocument source,XmlDocument baseline)
     {
         var owners=ConscriptModuleScalarContract.Owners(source);var models=ConscriptModuleScalarContract.Owners(baseline);
-        if(owners.Length!=models.Length)throw new InvalidDataException("Module topology changes require separate native layout support.");
+        // Reborn: identify the actual container/count difference instead of presenting an unexplained whole-GameObject topology failure.
+        var differences=owners.Select(o=>o.Container).Concat(models.Select(o=>o.Container)).Distinct(StringComparer.Ordinal)
+            .Select(name=>(Name:name,Source:owners.Count(o=>o.Container==name),Baseline:models.Count(o=>o.Container==name)))
+            .Where(row=>row.Source!=row.Baseline).ToArray();
+        if(differences.Length!=0){
+            var node=source.DocumentElement!.ChildNodes.OfType<XmlElement>().FirstOrDefault(e=>e.LocalName==differences[0].Name)??source.DocumentElement;
+            throw SdkXmlDiagnostics.At(new InvalidDataException("Module topology changes require separate native layout support. Current verification baseline differs: "+string.Join("; ",differences.Select(d=>d.Name+" source="+d.Source+", baseline="+d.Baseline))+". These are verification-baseline counts, not engine module limits."),node);
+        }
         for(int i=0;i<owners.Length;i++)
         {
-            if(owners[i].Container!=models[i].Container||owners[i].Index!=models[i].Index||owners[i].NativeType!=models[i].NativeType)throw new InvalidDataException("Module kind/order changes require separate native layout support.");
+            if(owners[i].Container!=models[i].Container||owners[i].Index!=models[i].Index||owners[i].NativeType!=models[i].NativeType)throw SdkXmlDiagnostics.At(new InvalidDataException("Module kind/order changes require separate native layout support: "+owners[i].Container+"["+owners[i].Index+"] source="+owners[i].Element.LocalName+", current baseline="+models[i].Element.LocalName+"."),owners[i].Element);
             owners[i].Element.SetAttribute("id",models[i].Element.GetAttribute("id"));
         }
     }

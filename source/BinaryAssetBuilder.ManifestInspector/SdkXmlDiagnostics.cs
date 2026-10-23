@@ -46,13 +46,15 @@ internal static class SdkXmlDiagnostics
     internal static T Carry<T>(T error,SdkSelfAttributeInheritance.Result result) where T:Exception {At(error,result.DiagnosticNode);if(result.DiagnosticLocation!=null)Attach(error,result.DiagnosticLocation);return error;}
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: comparison-only masks can rename IDs; rebind their node by unchanged element position to the real authored processed tree. */
+    /** Reborn: comparison masks can rename IDs or remove other owner families; bind matching expanded names and same-family ordinals instead of shifted absolute positions. */
     //-------------------------------------------------------------------------------------------------
     internal static XmlNode? Unmasked(XmlNode? masked,XmlDocument original)
     {
         var element=masked as XmlElement??(masked as XmlAttribute)?.OwnerElement;if(element==null)return original.DocumentElement;
-        var indices=new List<int>();for(var current=element;current.ParentNode is XmlElement parent;current=parent)indices.Add(parent.ChildNodes.OfType<XmlElement>().TakeWhile(e=>!ReferenceEquals(e,current)).Count());
-        indices.Reverse();XmlElement? target=original.DocumentElement;foreach(int index in indices)target=target?.ChildNodes.OfType<XmlElement>().ElementAtOrDefault(index);
+        var steps=new List<(string Namespace,string Name,string Id,int Index)>();
+        for(var current=element;current.ParentNode is XmlElement parent;current=parent)steps.Add((current.NamespaceURI,current.LocalName,current.GetAttribute("id"),parent.ChildNodes.OfType<XmlElement>().Where(e=>e.NamespaceURI==current.NamespaceURI&&e.LocalName==current.LocalName).TakeWhile(e=>!ReferenceEquals(e,current)).Count()));
+        steps.Reverse();XmlElement? target=original.DocumentElement;
+        foreach(var step in steps){var candidates=target?.ChildNodes.OfType<XmlElement>().Where(e=>e.NamespaceURI==step.Namespace&&e.LocalName==step.Name).ToArray()??Array.Empty<XmlElement>();var ids=step.Id.Length==0?Array.Empty<XmlElement>():candidates.Where(e=>e.GetAttribute("id")==step.Id).ToArray();target=ids.Length==1?ids[0]:candidates.ElementAtOrDefault(step.Index);}
         return masked is XmlAttribute attribute?(XmlNode?)target?.GetAttributeNode(attribute.LocalName,attribute.NamespaceURI)??target:target;
     }
 
@@ -114,7 +116,7 @@ internal static class SdkXmlDiagnostics
             if(element!=null)
             {
                 // Reborn: module IDs survive merge/fragment detachment and are stronger evidence than generated sibling indices.
-                var module=element.SelectSingleNode("ancestor-or-self::*[@id][not(local-name()='GameObject' or local-name()='LogicCommand' or local-name()='ArmorTemplate' or local-name()='WeaponTemplate' or local-name()='LogicCommandSet')][1]") as XmlElement;
+                var module=element.SelectSingleNode("ancestor-or-self::*[@id][not(local-name()='GameObject' or local-name()='LogicCommand' or local-name()='ArmorTemplate' or local-name()='WeaponTemplate' or local-name()='LogicCommandSet' or local-name()='UpgradeTemplate')][1]") as XmlElement;
                 string selector=Relative(element,module??owner);string? attribute=node is XmlAttribute a?a.LocalName:null;string attributeNs=node is XmlAttribute an?an.NamespaceURI:string.Empty;
                 var candidates=new List<(string File,XObject Value,int Rank)>();
                 foreach(var frame in frames)
@@ -155,8 +157,8 @@ internal static class SdkXmlDiagnostics
         }
     }
 
-    // Reborn: all emitted mixed-route types share identity-based source provenance, including inherited support declarations.
-    private static bool IsAsset(string name)=>name is "GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate";
+    // Reborn: all emitted mixed-route types, including upgrades, share identity-based source provenance through their actual inherited source files.
+    private static bool IsAsset(string name)=>name is "GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate";
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: relative expanded-name paths preserve unkeyed sibling indices; keyed children use stable authored identity instead. */

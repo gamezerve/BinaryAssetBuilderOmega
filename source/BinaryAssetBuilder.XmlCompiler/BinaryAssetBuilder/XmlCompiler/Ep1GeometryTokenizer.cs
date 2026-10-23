@@ -19,7 +19,8 @@ public static class Ep1GeometryTokenizer
         if(native?.InstanceBuffer==null || native.InstanceBuffer.Length<76 || native.InstanceBuffer.Length>1048576 || native.ImportsBuffer==null || native.ImportsBuffer.Length!=0)throw new InvalidDataException("Geometry requires a bounded EP1 native graph without imports.");
         var b=native.InstanceBuffer;var relos=Slots(native.RelocationBuffer);var expected=new HashSet<uint>();var owners=new List<(int Start,int End,bool Text)>();
         Own(0,28,false);int shapes=(int)Word(b,8),contacts=(int)Word(b,16);
-        if(shapes<1 || shapes>32 || contacts<0 || contacts>128 || b[24]>1 || b.AsSpan(25,3).ToArray().Any(v=>v!=0))throw new InvalidDataException("Geometry count/flag/padding exceeds the reviewed profile.");
+        // Reborn: actual record storage bounds source-sized lists; 32 shapes and 128 contacts were diagnostic quotas, not engine limits.
+        if(shapes<1 || shapes>(b.Length-28)/48 || contacts<0 || contacts>(b.Length-28)/20 || b[24]>1 || b.AsSpan(25,3).ToArray().Any(v=>v!=0))throw new InvalidDataException("Geometry count/flag/padding exceeds its allocated buffer.");
         int rotation=Pointer(0,8),placement=Pointer(4,48),shapeItems=Pointer(12,checked(shapes*48)),contactItems=Pointer(20,checked(contacts*20));
         if(shapeItems==0 || (contacts==0)!=(contactItems==0))throw new InvalidDataException("Geometry count/items presence differs.");
         if(rotation!=0)Reals(rotation,2);if(placement!=0)Shape(placement);

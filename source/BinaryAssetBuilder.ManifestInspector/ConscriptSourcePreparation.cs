@@ -18,7 +18,7 @@ internal static class ConscriptSourcePreparation
         entry=SdkEnvironmentPreflight.Absolute(entry);string root=SdkEnvironmentPreflight.DirectoryPath(Path.GetDirectoryName(entry)!);
         byte[] initial=SdkEnvironmentPreflight.Read(entry,1048576);var first=Parse(initial,entry);
         // Reborn: preserve the previous standalone complete-object input without claiming it has an AssetDeclaration preprocessing context.
-        if(first.DocumentElement?.LocalName is "GameObject" or "LogicCommandSet")return new(first,null,new[]{new ConscriptSourceInput.SourceFile(entry,Hash(initial))}){Locations=new(new[]{new SdkXmlDiagnostics.Snapshot(entry,initial)})};
+        if(first.DocumentElement?.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate")return new(first,null,new[]{new ConscriptSourceInput.SourceFile(entry,Hash(initial))}){Origins=new[]{new ConscriptSourceInput.AssetOrigin(first.DocumentElement!.LocalName,first.DocumentElement!.GetAttribute("id"),entry)},Locations=new(new[]{new SdkXmlDiagnostics.Snapshot(entry,initial)})};
         string fixture=ReferencePipelineSmokeTest.FindFixture();string output=Path.Combine(Path.GetTempPath(),"Reborn-SourcePlan-"+Guid.NewGuid().ToString("N"));
         var environment=new SdkEnvironmentPreflight.Report("ra3ep1",Path.GetDirectoryName(fixture)!,fixture,0,"",root,entry,Hash(initial),output,Array.Empty<SdkEnvironmentPreflight.Mapping>(),true,true,false,false,false,"0x5454A8E9",Array.Empty<string>());
         var paths=SdkSourcePathAudit.Inspect(environment,search:search);
@@ -44,19 +44,21 @@ internal static class ConscriptSourcePreparation
         foreach(var snapshot in snapshots){var source=Parse(snapshot.Value,snapshot.Key);try{ValidateEnvelope(source.DocumentElement!);}catch(InvalidDataException error){new SdkXmlDiagnostics.SourceMap(new[]{new SdkXmlDiagnostics.Snapshot(snapshot.Key,snapshot.Value)}).Enrich(error,snapshot.Key,source);throw;}}
         // Reborn: merge schema-valid partial bases first; final source/native admission still applies to the emitted complete object only.
         var schemas=ConscriptSourceInput.Schemas();var fragments=new SdkGameObjectFragments(paths);var profile=new SdkInstanceInheritanceProfile(schemas,paths,expressions:true,conscriptCopy:true,gameObjectTrees:true,fragments:fragments);
-        var assets=new List<XmlElement>();var emitted=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var assets=new List<XmlElement>();var origins=new Dictionary<XmlElement,string>();var emitted=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         Emit(entry);
         var games=assets.Where(a=>a.LocalName=="GameObject").ToArray();var commands=assets.Where(a=>a.LocalName=="LogicCommand").ToArray();
         // Reborn: support assets are explicit emitted declarations, not unwanted instance-base leakage or hidden generated data.
         // Reborn: command-set-only mods use the same native graph without inventing a placeholder GameObject.
-        if(games.Length>1 || games.Length==0&&!assets.Any(a=>a.LocalName=="LogicCommandSet"))throw new InvalidDataException("This route requires one GameObject or explicit LogicCommandSet assets; imported bases must use type=instance.");
-        var primary=games.SingleOrDefault()??assets.First(a=>a.LocalName=="LogicCommandSet");
+        // Reborn: every explicit GameObject is emitted; only instance imports stay source-only. The first object is a receipt anchor, not an asset-count restriction.
+        // Reborn: an upgrade-only graph is a real standalone stream; never invent a GameObject just to select the backend.
+        if(games.Length==0&&!assets.Any(a=>a.LocalName is "LogicCommandSet" or "UpgradeTemplate"))throw new InvalidDataException("This route requires GameObject, LogicCommandSet or UpgradeTemplate assets; imported bases must use type=instance.");
+        var primary=games.FirstOrDefault()??assets.First(a=>a.LocalName is "LogicCommandSet" or "UpgradeTemplate");
         var identities=assets.GroupBy(a=>a.LocalName+":"+a.GetAttribute("id"),StringComparer.OrdinalIgnoreCase);if(identities.Any(g=>g.Count()!=1))throw new InvalidDataException("Duplicate emitted asset identity.");
         foreach(var source in paths.Sources)if(Hash(SdkEnvironmentPreflight.Read(source.PhysicalPath,1048576))!=source.Sha256)throw new InvalidDataException("Source changed during inheritance/definition preparation.");
         // Reborn: XInclude fragments are real source dependencies, including hash and higher-priority mod-shadow checks before publication.
         foreach(var source in fragments.Sources)if(Hash(SdkEnvironmentPreflight.Read(source.Path,1048576))!=source.Sha256)throw new InvalidDataException("XInclude source changed during preparation: "+source.Path);
         var searches=paths.Searches.Concat(fragments.Searches).ToArray();SdkSourceSearch.Verify(searches);
-        return new(Detach(primary),commands.Length==0?null:Detach(commands[0]),paths.Sources.Select(s=>new ConscriptSourceInput.SourceFile(s.PhysicalPath,s.Sha256)).Concat(fragments.Sources).DistinctBy(s=>s.Path,StringComparer.OrdinalIgnoreCase).ToArray()){AdditionalAssets=assets.Where(a=>a!=primary&&(commands.Length==0||a!=commands[0])).Select(Detach).ToArray(),Searches=searches,Locations=new(snapshots.Select(s=>new SdkXmlDiagnostics.Snapshot(s.Key,s.Value)).Concat(fragments.Snapshots))};
+        return new(Detach(primary),commands.Length==0?null:Detach(commands[0]),paths.Sources.Select(s=>new ConscriptSourceInput.SourceFile(s.PhysicalPath,s.Sha256)).Concat(fragments.Sources).DistinctBy(s=>s.Path,StringComparer.OrdinalIgnoreCase).ToArray()){AdditionalAssets=assets.Where(a=>a!=primary&&(commands.Length==0||a!=commands[0])).Select(Detach).ToArray(),Origins=assets.Select(a=>new ConscriptSourceInput.AssetOrigin(a.LocalName,a.GetAttribute("id"),origins[a])).ToArray(),Searches=searches,Locations=new(snapshots.Select(s=>new SdkXmlDiagnostics.Snapshot(s.Key,s.Value)).Concat(fragments.Snapshots))};
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: all Includes contribute emitted owner assets; instance Includes are read by the existing engine but never emitted by this traversal. */
@@ -68,7 +70,7 @@ internal static class ConscriptSourcePreparation
             xml=Parse(snapshots[path],path);var document=xml.DocumentElement!;
             foreach(var edge in paths.Includes.Where(e=>e.Document.Equals(path,StringComparison.OrdinalIgnoreCase) && e.Kind=="all"))Emit(edge.PhysicalPath??throw new InvalidDataException("Unresolved all Include."));
             var owners=document.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is not ("Tags" or "Includes" or "Defines")).ToArray();
-            if(owners.FirstOrDefault(a=>a.LocalName is not ("GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate")) is XmlElement unsupported)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported emitted asset type '"+unsupported.LocalName+"'; no silent skipping."),unsupported);
+            if(owners.FirstOrDefault(a=>a.LocalName is not ("GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate")) is XmlElement unsupported)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported emitted asset type '"+unsupported.LocalName+"'; no silent skipping."),unsupported);
             // Reborn: source-only definition leaves must still validate, even if no emitted owner happens to consume them.
             if(owners.Length==0){if(document.ChildNodes.OfType<XmlElement>().Any(e=>e.LocalName=="Defines"))SdkMetadataDefinitions.Prove(schemas,xml,path,snapshots[path]);return;}
             bool needsPreparation=document.GetElementsByTagName("Define",Ea).Count!=0 || document.GetElementsByTagName("include","http://www.w3.org/2001/XInclude").Count!=0 || owners.Any(a=>a.HasAttribute("inheritFrom") || a.SelectNodes(".//@* | .//text()")!.Cast<XmlNode>().Any(n=>(n.Value??"").StartsWith('=')));
@@ -79,7 +81,7 @@ internal static class ConscriptSourcePreparation
                 // Reborn: only this successful Core overlay authorizes consuming the diagnostic marker; no raw inherited document is flattened by substitution.
                 foreach(var owner in owners)owner.RemoveAttribute("inheritFrom");
             }
-            foreach(var owner in owners){if(owner.HasAttribute("inheritFrom"))throw new InvalidDataException("Unprocessed inheritance marker.");assets.Add(owner);}
+            foreach(var owner in owners){if(owner.HasAttribute("inheritFrom"))throw new InvalidDataException("Unprocessed inheritance marker.");assets.Add(owner);origins.Add(owner,path);}
             }catch(Exception error)when(error is InvalidDataException or XmlException){new SdkXmlDiagnostics.SourceMap(snapshots.Select(s=>new SdkXmlDiagnostics.Snapshot(s.Key,s.Value)).Concat(fragments.Snapshots)).Enrich(error,path,xml);throw;}
         }
     }

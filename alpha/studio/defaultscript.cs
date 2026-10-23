@@ -63,7 +63,8 @@ namespace EALABuild
             // Reborn: the selected mod folder determines the validated source path and final package basename.
             if (String.IsNullOrEmpty(name) || name.Length > 48 || name.IndexOfAny(new char[] { '\\', '/', '"', ':', ';', '\r', '\n' }) >= 0 || name == "." || name == "..")
                 throw new InvalidDataException("Reborn: invalid alpha mod name.");
-            string input = Path.Combine(Path.Combine(Path.Combine(StaticPaths.CurrentDirectory, "mods"), name), "data\\mod.xml");
+            // Reborn: the static mod entry remains distinct from the stock DATA:static.xml library.
+            string input = Path.Combine(Path.Combine(Path.Combine(StaticPaths.CurrentDirectory, "mods"), name), "data\\Static_Mod.xml");
             CheckPath(input);
             // Reborn: preserve the entered numeric version verbatim in final archive and SKUDef filenames.
             string version = gui.ContainsKey("modversion") ? (string)gui["modversion"] : "1.00";

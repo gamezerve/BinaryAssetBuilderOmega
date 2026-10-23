@@ -31,6 +31,8 @@ internal sealed class SelectedNativeGraphComparer
     private readonly IReadOnlyDictionary<string,string?>? rootText;
     // Reborn: source-checked nested primitive values and optional root imports are semantic expectations, not skipped bytes or frozen stock presence.
     private readonly IReadOnlyDictionary<int,uint>? authoredValues;
+    // Reborn: plain-record attributes include packed booleans and flags, so preserve exact authored byte widths rather than assuming four-byte words.
+    internal IReadOnlyDictionary<int,byte[]>? AuthoredRecordValues { get; init; }
     private readonly IReadOnlyDictionary<string,AssetId?>? rootImports;
     internal Dictionary<string,(int Stock,int Compiled,int Size)> NativeRecords { get; } = new(StringComparer.Ordinal);
     private int scriptLineEndingEquivalences;
@@ -214,6 +216,8 @@ internal sealed class SelectedNativeGraphComparer
     private void Equal(int a, int b, int length, string path)
     {
         Range(stock, a, length); Range(compiled.InstanceBuffer, b, length);
+        // Reborn: a source-anchored value must occupy this exact semantic field and match its complete native representation.
+        if(AuthoredRecordValues!=null&&AuthoredRecordValues.TryGetValue(b,out var value)&&value.Length==length){if(!compiled.InstanceBuffer.AsSpan(b,length).SequenceEqual(value))throw new InvalidDataException("Authored record value differs at "+path);return;}
         // Reborn: this address map is independently derived from source values and anchored native owners; every other field/padding byte retains exact stock comparison.
         if(length==4&&authoredValues!=null&&authoredValues.TryGetValue(b,out uint expected)){if(Word(compiled.InstanceBuffer,b)!=expected)throw new InvalidDataException("Authored native value differs at "+path);return;}
         for (int i = 0; i < length; i++) if (stock[a + i] != compiled.InstanceBuffer[b + i]) throw new InvalidDataException($"Selected native mismatch {path}+{i}: stock={stock[a + i]:X2}, compiled={compiled.InstanceBuffer[b + i]:X2} (native {a + i}/{b + i}).");

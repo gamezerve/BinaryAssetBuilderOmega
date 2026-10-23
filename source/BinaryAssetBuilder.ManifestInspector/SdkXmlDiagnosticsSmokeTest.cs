@@ -45,6 +45,14 @@ internal static class SdkXmlDiagnosticsSmokeTest
         // Reborn: comparison masks can rename both asset and module IDs without corrupting the original offending field locator.
         var masked=(XmlDocument)final.CloneNode(true);masked.DocumentElement!.SetAttribute("id","Masked");((XmlElement)masked.SelectSingleNode("//*[local-name()='Test']")!).SetAttribute("id","MaskedModule");
         Check(SdkXmlDiagnostics.Unmasked(masked.SelectSingleNode("//*[local-name()='Test']/@Value"),final)!,entry,7,false);
+        // Reborn: an unrelated changed local ID must not hide the actual extra root owner behind a generic child-count error.
+        var comparison=SdkXmlDiagnostics.Parse(Bytes("<GameObject xmlns='uri:ea.com:eala:asset'><VisionInfo id='Baseline'/></GameObject>"));
+        var expanded=SdkXmlDiagnostics.Parse(Bytes("<GameObject xmlns='uri:ea.com:eala:asset'><VisionInfo id='Authored'/><ProjectedBuildabilityInfo/></GameObject>"));
+        string ownerDifference=ConscriptSourceInput.Difference(expanded.DocumentElement!,comparison.DocumentElement!,"GameObject",out var ownerNode);
+        if(ownerNode?.LocalName!="ProjectedBuildabilityInfo"||!ownerDifference.Contains("ProjectedBuildabilityInfo source=1, baseline=0",StringComparison.Ordinal))throw new InvalidDataException("Extra root-owner diagnostic selected an unrelated local ID.");checks++;
+        // Reborn: removing an earlier comparison-only owner cannot redirect an AudioArraySound diagnostic to the following VisionInfo.
+        var shifted=SdkXmlDiagnostics.Parse(Bytes("<GameObject xmlns='uri:ea.com:eala:asset'><GameDependency/><AudioArraySound/><VisionInfo/></GameObject>"));var shiftedCopy=(XmlDocument)shifted.CloneNode(true);shiftedCopy.DocumentElement!.RemoveChild(shiftedCopy.DocumentElement.FirstChild!);
+        if(SdkXmlDiagnostics.Unmasked(shiftedCopy.DocumentElement.FirstChild,shifted)?.LocalName!="AudioArraySound")throw new InvalidDataException("Removed comparison owner shifted the original source locator.");checks++;
 
         // Reborn: unavailable provenance must be labelled context; a generated line or guessed field must never be advertised as exact.
         var generic=new InvalidDataException("Unavailable field");map.Enrich(generic,entry,final);Expect(generic,entry,5,true);
@@ -83,6 +91,9 @@ internal static class SdkXmlDiagnosticsSmokeTest
         var fragmented=SdkXmlDiagnostics.Parse(complete);var physics=(XmlElement)fragmented.SelectSingleNode("//*[local-name()='Physics']")!;physics.SetAttribute("GravityMultiplier","NaN");
         File.WriteAllText(fragment,"<?xml version=\"1.0\"?>\n<Behaviors xmlns=\"uri:ea.com:eala:asset\">\n"+physics.OuterXml+"\n</Behaviors>");
         var xi=fragmented.CreateElement("xi","include","http://www.w3.org/2001/XInclude");xi.SetAttribute("href","fragment.xml");xi.SetAttribute("xpointer","xmlns(a=uri:ea.com:eala:asset) xpointer(/a:Behaviors/child::*)");physics.ParentNode!.ReplaceChild(xi,physics);
+        File.WriteAllText(entry,"<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\">\n"+fragmented.DocumentElement!.OuterXml+"</AssetDeclaration>");Refuse(entry,fragment,"GravityMultiplier");
+        // Reborn: whole-root includes must retain the actual failing module's source coordinates just like child-XPointer includes.
+        File.WriteAllText(fragment,"<?xml version=\"1.0\"?>\n"+physics.OuterXml);xi.RemoveAttribute("xpointer");
         File.WriteAllText(entry,"<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\">\n"+fragmented.DocumentElement!.OuterXml+"</AssetDeclaration>");Refuse(entry,fragment,"GravityMultiplier");
         File.WriteAllText(entry,"<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\">\n<Includes>\n<Include type=\"all\" source=\"missing.xml\"/>\n</Includes>\n</AssetDeclaration>");Refuse(entry,entry,"source");
         Console.WriteLine($"XML source diagnostics: PASS ({checks} checks; syntax/schema/derived/base/fragment/mask/ambiguity/snapshot/context/real frontend).");

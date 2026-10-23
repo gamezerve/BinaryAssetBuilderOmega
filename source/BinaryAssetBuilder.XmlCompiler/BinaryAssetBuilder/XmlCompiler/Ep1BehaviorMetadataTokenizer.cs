@@ -20,13 +20,16 @@ public static class Ep1BehaviorMetadataTokenizer
     //-------------------------------------------------------------------------------------------------
     /** Reborn: raw source class admission uses only the already stock-qualified behavior family set; three EA leaf aliases differ from their native class names. */
     //-------------------------------------------------------------------------------------------------
+    // Reborn: the existing stock-qualified sell ABI also participates in composed behavior metadata and scalar discovery.
+    static Ep1BehaviorMetadataTokenizer(){Families.Add("StructureSellUpdateModuleData");Families.Add("BuildingDestructionModuleData");Families.Add("QueueDockModuleData");Families.Add("QueueProductionExitUpdateModuleData");Families.Add("SpawnBehaviorModuleData");Families.Add("StructureUnpackUpdateModuleData");Families.Add("ProductionUpdateModuleData");Families.Add("RepairUpdateModuleData");Families.Add("EngineerContainModuleData");Families.Add("AssistedPlacementBehaviorModuleData");Families.Add("InfiltratorContainModuleData");Families.Add("StructurePlacementBehaviorModuleData");Families.Add("LUAEventListBehaviorModuleData");Families.Add("PowerUpgradeModuleData");Families.Add("BuildingBehaviorModuleData");}
+
     public static string ReviewedWireName(string sourceName)
-    {string wire=sourceName switch{"FireWeaponWhenDead"=>"FireWeaponWhenDeadBehaviorModuleData","Physics"=>"PhysicsBehaviorModuleData","SlowDeath"=>"SlowDeathBehaviorModuleData",_=>sourceName+"ModuleData"};if(!Families.Contains(wire))throw new InvalidDataException("Behavior source family not reviewed: "+sourceName);return wire;}
+    {string wire=sourceName switch{"QueueDockBehavior"=>"QueueDockModuleData","BuildingDestructionBehavior"=>"BuildingDestructionModuleData","FireWeaponWhenDead"=>"FireWeaponWhenDeadBehaviorModuleData","Physics"=>"PhysicsBehaviorModuleData","SlowDeath"=>"SlowDeathBehaviorModuleData","LUAEventList"=>"LUAEventListBehaviorModuleData",_=>sourceName+"ModuleData"};if(!Families.Contains(wire))throw new InvalidDataException("Behavior source family not reviewed: "+sourceName);return wire;}
     //-------------------------------------------------------------------------------------------------
     /** Reborn: shared compilation/composition uses one explicit wire-to-native-model mapping, including all seven isolated EP1 records. */
     //-------------------------------------------------------------------------------------------------
     public static Type ReviewedNativeType(uint wire)
-    {var names=Families.Where(n=>FastHash.GetHashCode(n)==wire).ToArray();if(names.Length!=1)throw new InvalidDataException("Behavior wire family not reviewed.");string name=names[0];string model=name is "WeaponSetUpdateModuleData" or "SquishCollideModuleData" or "PhysicsBehaviorModuleData" or "HitReactionBehaviorModuleData" or "StatusBitsUpgradeModuleData" or "CreateObjectDieModuleData" or "FireWeaponWhenDeadBehaviorModuleData"?"Ep1"+name:name;return typeof(SageBinaryData.GameObject).Assembly.GetType("SageBinaryData."+model)??throw new InvalidDataException("Reviewed behavior native model absent.");}
+    {var names=Families.Where(n=>FastHash.GetHashCode(n)==wire).ToArray();if(names.Length!=1)throw new InvalidDataException("Behavior wire family not reviewed.");string name=names[0];string model=name is "EngineerContainModuleData" or "RepairUpdateModuleData" or "ProductionUpdateModuleData" or "StructureUnpackUpdateModuleData" or "SpawnBehaviorModuleData" or "QueueProductionExitUpdateModuleData" or "WeaponSetUpdateModuleData" or "SquishCollideModuleData" or "PhysicsBehaviorModuleData" or "HitReactionBehaviorModuleData" or "StatusBitsUpgradeModuleData" or "CreateObjectDieModuleData" or "FireWeaponWhenDeadBehaviorModuleData"?"Ep1"+name:name;return typeof(SageBinaryData.GameObject).Assembly.GetType("SageBinaryData."+model)??throw new InvalidDataException("Reviewed behavior native model absent.");}
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: select a bounded concrete family by its original wire identity; callers cannot submit unreviewed classes through the reflection/schema seam. */
@@ -43,12 +46,22 @@ public static class Ep1BehaviorMetadataTokenizer
     //-------------------------------------------------------------------------------------------------
     public static Chunk TokenizeRootRecord(Chunk native,XmlSchemaSet schemas,string name)
     {
-        Type type=name switch{"ObjectResourceInfo"=>typeof(SageBinaryData.ObjectResourceInfo),"SkirmishAIInformation"=>typeof(SageBinaryData.Ep1SkirmishAIInformation),"AudioArrayVoice"=>typeof(SageBinaryData.Ep1AudioArrayVoice),"EvaEventArray"=>typeof(SageBinaryData.Ep1EvaEventArray),"ShadowInfo"=>typeof(SageBinaryData.ShadowInfo),"CrusherInfo"=>typeof(SageBinaryData.Ep1CrusherInfo),_=>throw new InvalidDataException("Root record family not reviewed.")};
+        // Reborn: GameDependency is an optional root record with named GameDependencyType schema/native ABI.
+        Type type=name switch{"GameDependency"=>typeof(SageBinaryData.GameDependencyType),"ObjectResourceInfo"=>typeof(SageBinaryData.ObjectResourceInfo),"SkirmishAIInformation"=>typeof(SageBinaryData.Ep1SkirmishAIInformation),"AudioArrayVoice"=>typeof(SageBinaryData.Ep1AudioArrayVoice),"AudioArraySound"=>typeof(SageBinaryData.Ep1AudioArraySound),"EvaEventArray"=>typeof(SageBinaryData.Ep1EvaEventArray),"ShadowInfo"=>typeof(SageBinaryData.ShadowInfo),"CrusherInfo"=>typeof(SageBinaryData.Ep1CrusherInfo),_=>throw new InvalidDataException("Root record family not reviewed.")};
         if(native?.InstanceBuffer==null || native.RelocationBuffer==null || native.ImportsBuffer==null || native.InstanceBuffer.Length<Size(type) || native.InstanceBuffer.Length>2*1048576 || schemas==null)throw new InvalidDataException("Bounded root record required.");
         // Reborn: inactive child headers/pointers are not guessed native ABIs; caller-authored raw buffers cannot bypass source-side refusal.
-        int[] inactive=name switch{"SkirmishAIInformation"=>new[]{36,64,68,72,76,80},"CrusherInfo"=>new[]{24,28,32,36},"AudioArrayVoice"=>new[]{8,12,16,20},_=>Array.Empty<int>()};if(inactive.Any(at=>Word(native.InstanceBuffer,at)!=0))throw new InvalidDataException("Unreviewed populated root child/storage.");
-        if(name=="AudioArrayVoice"){uint count=Word(native.InstanceBuffer,0),items=Word(native.InstanceBuffer,4);if(count>4096 || items>native.InstanceBuffer.Length || count*12>native.InstanceBuffer.Length-items)throw new InvalidDataException("Root voice entries exceed bounds.");for(int i=0;i<count;i++)if(Word(native.InstanceBuffer,(int)items+i*12+4)!=0)throw new InvalidDataException("Root voice populated EvaEvent ABI not reviewed.");}
-        return new Builder(native.InstanceBuffer,schemas).BuildRecord(native,name,type);
+        int[] inactive=name switch{"SkirmishAIInformation"=>new[]{64,68},"CrusherInfo"=>new[]{24,28,32,36},"AudioArrayVoice"=>new[]{8,12,16,20},_=>Array.Empty<int>()};if(inactive.Any(at=>Word(native.InstanceBuffer,at)!=0))throw new InvalidDataException("Unreviewed populated root child/storage.");
+        // Reborn: source-sized voice arrays are bounded by actual twelve-byte items, not a diagnostic row quota; typed EVA words are imports.
+        if(name=="AudioArrayVoice"){uint count=Word(native.InstanceBuffer,0),items=Word(native.InstanceBuffer,4);if(count>native.InstanceBuffer.Length/12 || items>native.InstanceBuffer.Length || count*12>native.InstanceBuffer.Length-items)throw new InvalidDataException("Root voice entries exceed bounds.");}
+        return new Builder(native.InstanceBuffer,schemas).BuildRecord(native,name=="GameDependency"?"GameDependencyType":name,type);
+    }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: serialize the reviewed root inline list through the same schema/native record writer, with a canonical standalone count/items header. */
+    //-------------------------------------------------------------------------------------------------
+    public static Chunk TokenizeRootList(Chunk native,XmlSchemaSet schemas,string name)
+    {
+        if(name!="ProjectedBuildabilityInfo"||native?.InstanceBuffer==null||native.InstanceBuffer.Length<8||native.InstanceBuffer.Length>2*1048576||schemas==null)throw new InvalidDataException("Reviewed root inline-list input required.");
+        return new Builder(native.InstanceBuffer,schemas).BuildInlineList(native,name,typeof(SageBinaryData.ProjectedBuildabilityInfo));
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -109,6 +122,17 @@ public static class Ep1BehaviorMetadataTokenizer
         //-------------------------------------------------------------------------------------------------
         internal Chunk BuildRecord(Chunk native,string schemaName,Type type){Claim(0,Size(type));if(Emit(schemaName,type,0,0)!=0)throw new InvalidDataException("Root metadata own table origin differs.");return Finish(native);}
         //-------------------------------------------------------------------------------------------------
+        /** Reborn: repeated root records retain source cardinality, complete nested record tables and exact list relocation ownership. */
+        //-------------------------------------------------------------------------------------------------
+        internal Chunk BuildInlineList(Chunk native,string schemaName,Type type)
+        {
+            Claim(0,8);uint count=Word(bytes,0),items=Word(bytes,4);int stride=Size(type);
+            if(count>bytes.Length/stride||(count==0)!=(items==0))throw new InvalidDataException("Root inline-list count/items differ.");
+            int list=Allocate(checked(1+(int)count));Row(list,0x6C827073,0x5D448FD8,0);Native(list+8,0);
+            if(count!=0){int start=Pointer(items);Claim(start,checked((int)count*stride));relos.Add(4);for(int i=0;i<count;i++){int row=list+12+i*12;Row(row,0xB151A0EB,0,(uint)Emit(schemaName,type,start+i*stride,0));}}
+            return Finish(native);
+        }
+        //-------------------------------------------------------------------------------------------------
         /** Reborn: both reviewed envelope forms share the exact ownership, native-tail and auxiliary transformation. */
         //-------------------------------------------------------------------------------------------------
         private Chunk Finish(Chunk native)
@@ -123,10 +147,10 @@ public static class Ep1BehaviorMetadataTokenizer
         //-------------------------------------------------------------------------------------------------
         /** Reborn: own attributes precede own elements, with one explicit inherited table; unresolved native members are rejected rather than silently omitted. */
         //-------------------------------------------------------------------------------------------------
-        private int Emit(string schemaName, Type type, int native, int depth)
+        private int Emit(string schemaName, Type type, int native, int depth, XmlSchemaComplexType resolved = null)
         {
             if (depth > 32 || ++visits > 100000) throw new InvalidDataException("Behavior metadata traversal bound exceeded."); Range(native, Size(type));
-            var schema = schemas.GlobalTypes[new XmlQualifiedName(schemaName, Ns)] as XmlSchemaComplexType ?? throw new InvalidDataException("Behavior complex schema missing: " + schemaName);
+            var schema = resolved ?? schemas.GlobalTypes[new XmlQualifiedName(schemaName, Ns)] as XmlSchemaComplexType ?? throw new InvalidDataException("Behavior complex schema missing: " + schemaName);
             var extension = (schema.ContentModel as XmlSchemaComplexContent)?.Content as XmlSchemaComplexContentExtension;
             if (schema.ContentModel != null && extension == null) throw new InvalidDataException("Unreviewed behavior schema content: " + schemaName);
             var fields = new List<(string Name, XmlSchemaType Schema, string Reference, bool Repeated)>(); var attributes = extension?.Attributes ?? schema.Attributes;
@@ -142,14 +166,17 @@ public static class Ep1BehaviorMetadataTokenizer
             foreach (var field in fields)
             {
                 var info = type.GetField(field.Name) ?? throw new InvalidDataException("Behavior native field missing: " + schemaName + "." + field.Name); int offset = Offset(type, info); Mark(used, offset, Size(info.FieldType));
-                string wire = field.Schema?.QualifiedName.Name; if (field.Name != "TypeId" && string.IsNullOrEmpty(wire)) throw new InvalidDataException("Behavior anonymous field wire type: " + schemaName + "." + field.Name);
+                string wire = field.Schema?.QualifiedName.Name;
+                // Reborn: EP1 names an inline anonymous element record "Owner::Element" (stock RepairUpdate witness); named types keep their reviewed signatures.
+                string anonymous = field.Schema is XmlSchemaComplexType && string.IsNullOrEmpty(wire) ? schemaName + "::" + field.Name : null;
+                if (field.Name != "TypeId" && anonymous == null && string.IsNullOrEmpty(wire)) throw new InvalidDataException("Behavior anonymous field wire type: " + schemaName + "." + field.Name);
                 // Reborn: field signatures use reviewed type/reference/list identities, not plain concrete-class name hashing.
                 if (field.Schema?.QualifiedName.Namespace == XmlSchema.Namespace) wire = "xs:" + wire;
                 if (field.Reference.Length != 0) wire += ":" + field.Reference;
                 if (field.Repeated) wire += "[]";
-                Row(next, FastHash.GetHashCode(field.Name), field.Name == "TypeId" ? 0x23E650B8 : Signature(wire), 0);
+                Row(next, FastHash.GetHashCode(field.Name), field.Name == "TypeId" ? 0x23E650B8 : anonymous != null ? FastHash.GetHashCode(anonymous) : Signature(wire), 0);
                 // Reborn: empty SoundOrEvaEvent.EvaEvent is a strong-reference zero word in EP1 metadata, not a missing String pointee; populated legacy pointer storage stays refused.
-                if(schemaName=="SoundOrEvaEvent" && field.Name=="EvaEvent"){if(Word(bytes,native+offset)!=0)throw new InvalidDataException("Populated voice EvaEvent ABI not reviewed.");Native(next+8,native+offset);}else Field(field.Schema, info.FieldType, checked(native + offset), next + 8, depth + 1);next += 12;
+                if(schemaName=="SoundOrEvaEvent" && field.Name=="EvaEvent"&&info.FieldType.IsPointer){if(Word(bytes,native+offset)!=0)throw new InvalidDataException("Populated legacy voice EvaEvent ABI is not implemented.");Native(next+8,native+offset);}else Field(field.Schema, info.FieldType, checked(native + offset), next + 8, depth + 1, anonymous);next += 12;
             }
             foreach (var info in type.GetFields(BindingFlags.Public | BindingFlags.Instance)) { int at = Offset(type, info); if (Enumerable.Range(at, Size(info.FieldType)).Any(i => !used[i])) throw new InvalidDataException("Behavior native member is not schema-enabled: " + schemaName + "." + info.Name); }
             for (int i = 0; i < used.Length; i++) if (!used[i] && bytes[native + i] != 0) throw new InvalidDataException("Behavior nonzero native padding."); return table;
@@ -157,8 +184,12 @@ public static class Ep1BehaviorMetadataTokenizer
         //-------------------------------------------------------------------------------------------------
         /** Reborn: pointer, list, string and reference representations are derived from actual native types; schemas supply field order and wire tags only. */
         //-------------------------------------------------------------------------------------------------
-        private void Field(XmlSchemaType schema, Type type, int slot, int targetAt, int depth)
+        private void Field(XmlSchemaType schema, Type type, int slot, int targetAt, int depth, string anonymous = null)
         {
+            // Reborn: EP1 VectorHack metadata points straight to three inline float words; the stock queue-exit witness proves this is not a child token table.
+            if(schema?.Name=="Vector3"&&type==typeof(SageBinaryData.Coord3D)){
+                Range(slot,12);for(int axis=0;axis<3;axis++)if(!float.IsFinite(BitConverter.Int32BitsToSingle(unchecked((int)Word(bytes,slot+axis*4)))))throw new InvalidDataException("Behavior inline vector is not finite.");Native(targetAt,slot);return;
+            }
             if (type.IsPointer)
             {
                 uint pointer = Word(bytes, slot); if (pointer == 0) return; int target = Pointer(pointer), size = Size(type.GetElementType()); Claim(target, size); relos.Add((uint)slot); Field(schema, type.GetElementType(), target, targetAt, depth + 1); return;
@@ -177,7 +208,7 @@ public static class Ep1BehaviorMetadataTokenizer
                 }
                 return;
             }
-            if (schema is XmlSchemaComplexType complex) { Target(targetAt, Emit(complex.Name, type, slot, depth + 1)); return; }
+            if (schema is XmlSchemaComplexType complex) { Target(targetAt, Emit(string.IsNullOrEmpty(complex.Name) ? anonymous ?? throw new InvalidDataException("Behavior anonymous record has no owner.") : complex.Name, type, slot, depth + 1, complex)); return; }
             Scalar(schema, type, slot); Native(targetAt, slot);
         }
         //-------------------------------------------------------------------------------------------------
@@ -239,10 +270,29 @@ public static class Ep1BehaviorMetadataTokenizer
 
     private static uint Signature(string key) => key switch
     {
+        // Reborn: stock Spawn metadata uses the same weak GameObject element signature for source-sized arrays.
+        "GameObjectWeakRef[]"=>0x148ED75D,"DamageBitFlags"=>0x07FAAEA4,
+        // Reborn: EP1 ProductionUpdate signatures observed in stock GameObject:SovietRefinery metadata.
+        // Reborn: the real SovietBarracks translation list supplies its EP1 wire signature; emitted rows remain source-sized.
+        "ProductionQueueType"=>0xBC88486A,"QuantityModifier[]"=>0x249DFB83,"ProductionModifier[]"=>0xEF83869A,"GiveUpgradeToProduced"=>0xB290DB31,"UpgradeTranslation[]"=>0xB38AB380,
+        // Reborn: stock EngineerContain voice names use the plain StringHash signature.
+        "StringHash"=>0x58BEC727,
+        // Reborn: stock AssistedPlacementBehavior hint mask signature.
+        "AssistanceHintBitFlags"=>0xFA98DE4D,
+        // Reborn: stock InfiltratorContain effect enum signature.
+        "InfiltratorEffectType"=>0xD0CE7F56,
+        // Reborn: stock StructurePlacementBehavior inline Shape signatures.
+        "Shape"=>0xE7210555,"GeometryType"=>0xB0D49164,"ContactPointGenerationType"=>0x465508CE,
         // Reborn: independently observed root-record signatures contain no native offsets or per-asset metadata templates.
         "MoneyTransaction[]"=>0xB706334D,"SkirmishAIBaseLocation"=>0xCE5B5436,"DamageType"=>0x46486FF1,
         "WeaponAntiBitFlags"=>0xC8C69390,"EconomyResourceType"=>0x071B12C5,"AISpecialPowerInfo[]"=>0xCBA6C0C2,
         "AIBaseSelectionCriteria"=>0xC153D5E0,"AudioVoiceEntry[]"=>0x8AA9CB14,"AudioObjectSpecificVoiceEntry[]"=>0xAEDFC4CD,
+        // Reborn: stock SovietRefinery criteria contain four D7431325 flag fields and a B0E66C4E sort ordinal.
+        "AIBaseTypeBitFlags"=>0xD7431325,"AIBaseSortingOrder"=>0xB0E66C4E,
+        // Reborn: existing independently stock-qualified EP1 AIUpdate metadata already uses these scalar/mask wire identities.
+        "AutoAcquireEnemiesBitFlags"=>0x8B0FB9DA,"StateMachineType"=>0xAC6E35E0,
+        // Reborn: exact root sound/buildability signatures independently captured from power-plant/refinery stock metadata.
+        "AudioSoundEntry[]"=>0x87D0686C,"ThingTemplateSoundType"=>0xD50DC497,"BuildPlacementTypeBitFlags"=>0xF446CF6F,
         "AudioVoiceReferentialEntry[]"=>0xF8ED487B,"ThingTemplateVoiceType"=>0x4DA708B0,"EvaEventEntry[]"=>0xD7B4DEDB,
         "EvaEventRef"=>0xC4EC43B1,"ThingTemplateEvaEventType"=>0xC053B716,"ShadowType"=>0x3B581951,
         "TextureRef"=>0x4C3E3938,"xs:boolean"=>0x77E3F4F7,"xs:byte"=>0x371E5DC2,
@@ -263,6 +313,8 @@ public static class Ep1BehaviorMetadataTokenizer
         "ObjectFilterAssetRef" => 0x1E592B76, "ObjectFilterRelationshipBitMask" => 0x5C8981A9, "ObjectFilterRule" => 0x0027BB58,
         "ObjectStatusBitFlags" => 0xA7BD811E, "ObjectStatusValidationDataType" => 0x3E8F938C,
         "PartitionManagerDistTestType" => 0x9F0DA607, "Percentage" or "SageReal" or "xs:float" => 0x645864F3,
+        // Reborn: destruction mesh/item signatures match the independently captured stock tokens and literal writer.
+        "Poid:SubObject"=>0x03A28C40,"BuildingDestructionItem[]"=>0xFFDDEC52,
         "PlayerTechRef" => 0xDBBF0FDF, "Poid:ModuleData" => 0xBDF07965, "Poid:ObjectFilter" => 0x4D3B3F19,
         "RGBColor" => 0xAEE762A5, "SageBool" => 0x77E3F4F7, "SageInt" => 0x23E650B8, "SageUnsignedInt" => 0x763177A4,
         "SlowDeathFXListType[]" => 0x33D0DFAE, "SlowDeathOCLType[]" => 0x97474300, "SlowDeathPhaseType" => 0x350A89A5,

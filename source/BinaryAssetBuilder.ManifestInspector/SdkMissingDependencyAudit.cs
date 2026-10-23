@@ -113,7 +113,8 @@ internal static class SdkMissingDependencyAudit
                 // Reborn: UpgradeTemplate weak IDs have explicit asset semantics and must report genuine missing upgrades, not an unsupported module shape.
                 bool upgradeWeak=type.QualifiedName.Name=="UpgradeTemplateWeakRef";
                 // Reborn: UI images and command sets are schema-typed asset IDs too; weak lookup failures warn without manufacturing native imports.
-                bool diagnosticWeak=type.QualifiedName.Name is "ImageWeakRef" or "LogicCommandSetWeakRef";
+                // Reborn: absent upgrade weak targets warn like UI weak targets; Core preserves their hashes without manufacturing imports or assets.
+                bool diagnosticWeak=upgradeWeak || type.QualifiedName.Name is "ImageWeakRef" or "LogicCommandSetWeakRef";
                 if(!upgradeWeak && !diagnosticWeak && weakType!=null && XmlSchemaType.IsDerivedFrom(type,weakType,XmlSchemaDerivationMethod.None)){if(!string.IsNullOrWhiteSpace(value))deferred++;return;}
                 if(!upgradeWeak && !diagnosticWeak && (referenceType==null || !XmlSchemaType.IsDerivedFrom(type,referenceType,XmlSchemaDerivationMethod.None)))return;
                 // Reborn: list-valued/custom reference encodings require their own tokenization rather than hashing the whole list as one missing name.
