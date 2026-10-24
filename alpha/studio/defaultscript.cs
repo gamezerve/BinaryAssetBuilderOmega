@@ -82,6 +82,9 @@ namespace EALABuild
                 + "\" -CompilerDirectory \"" + compilerDirectory + "\" -OutputRoot \"" + outputRoot + "\" -ModVersion \"" + version + "\"";
             // Reborn: preserve four-key armor workspaces without inferring a weapon dependency path.
             if (globalManifest != null) request.Arguments += " -GlobalManifest \"" + globalManifest + "\"";
+            // Reborn: EA persists this native checkbox; pass an explicit numeric value so unchecked is never lost in switch binding.
+            bool buildGlobal = !gui.ContainsKey("buildglobal") || Convert.ToBoolean(gui["buildglobal"]);
+            request.Arguments += " -BuildGlobalData " + (buildGlobal ? "1" : "0");
             request.RedirectOutput = true; request.CreateWindow = false;
             // Reborn: retain the SDK's step-counter protocol before RunStep advances it for the callback.
             try
@@ -123,6 +126,8 @@ namespace EALABuild
             options.Add(new GUIElementData("scope", "Fixed yard samples or 1..32 source armors with Includes/Defines/inheritFrom (experimental)", GUIElementData.LabelType, ScriptIndex.ModScript));
             // Reborn: distinguish reviewed variable behavior shapes from unrestricted nested GameObject/resource authoring.
             options.Add(new GUIElementData("weapon", "Conscript: reviewed variable Behaviors + fixed fields; unsupported layouts fail", GUIElementData.LabelType, ScriptIndex.ModScript));
+            // Reborn: compile AdditionalMaps/MapMetaData_*.xml before static data, using EA's familiar persisted toggle.
+            options.Add(new GUIElementData("buildglobal", "Build Global Data", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
             // Reborn: use EA's own persisted text-input control rather than a separate settings interface.
             options.Add(new GUIElementData("mv", "Mod Version:", GUIElementData.LabelType, ScriptIndex.ModScript));
             options.Add(new GUIElementData("modversion", "1.00", GUIElementData.InputBoxType, ScriptIndex.ModScript));

@@ -19,6 +19,10 @@ $null=[Reflection.Assembly]::LoadFrom((Join-Path $sdk 'EALABuild.dll'))
 try{
     $result=$provider.CompileAssemblyFromFile($parameters,[string[]]@((Join-Path $sdk 'studio/defaultscript.cs')))
     if($result.Errors.HasErrors){throw ($result.Errors | Out-String)}
+    # Reborn: the global stage uses EA's actual persisted checkbox rather than a label or a separate launcher option.
+    $adapter=[Activator]::CreateInstance($result.CompiledAssembly.GetType('EALABuild.BuildScript'))
+    $options=$adapter.GetModBuildGUIData();$global=@($options|Where-Object DataKey -CEQ 'buildglobal')
+    if($global.Count-ne 1 -or $global[0].LabelString-cne 'Build Global Data' -or $global[0].ControlType-ne [EALABuild.GUIElementData]::CheckBoxType){throw 'Studio Build Global Data checkbox differs.'}
     $method=$result.CompiledAssembly.GetType('EALABuild.BuildScript').GetMethod('ReadPaths',[Reflection.BindingFlags]'Static,NonPublic')
     # Reborn: a typed delegate avoids PowerShell wrapping reflection arguments as PSObject instead of CLR strings.
     $readPaths=[Delegate]::CreateDelegate([Func[string,object]],$method)

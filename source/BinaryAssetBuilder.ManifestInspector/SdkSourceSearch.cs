@@ -26,6 +26,9 @@ internal sealed record SdkSourceSearch(string ModData,string ModArt,string ModAu
     internal static SdkSourceSearch ForMod(string entry,string sdk,string? stockData=null)
     {
         string data=SdkEnvironmentPreflight.DirectoryPath(Path.GetDirectoryName(SdkEnvironmentPreflight.Absolute(entry))!);
+        // Reborn: AdditionalMaps entries retain the enclosing mod Data authority; relative includes still start at their declaring file.
+        for(var parent=new DirectoryInfo(data);parent!=null;parent=parent.Parent)
+            if(parent.Name.Equals("Data",StringComparison.OrdinalIgnoreCase)){data=parent.FullName;break;}
         string mod=Path.GetDirectoryName(data)!;sdk=SdkEnvironmentPreflight.DirectoryPath(sdk);
         var search=new SdkSourceSearch(data,Path.Combine(mod,"Art"),Path.Combine(mod,"Audio"),stockData==null?Path.Combine(sdk,"SageXML"):SdkEnvironmentPreflight.DirectoryPath(stockData),Path.Combine(sdk,"Art"),Path.Combine(sdk,"Audio"));
         foreach(string root in search.Roots)SdkEnvironmentPreflight.CheckPath(root);
@@ -40,7 +43,15 @@ internal sealed record SdkSourceSearch(string ModData,string ModArt,string ModAu
     internal Selection Select(string document,string logical,string confinement)
     {
         int colon=logical.IndexOf(':');
-        if(colon<0){var relative=SdkSourcePathAudit.Resolve(logical,Path.GetDirectoryName(document)!,confinement,ModData,ModArt,ModAudio);return Choose(new[]{(relative.Path,relative.Root,"relative")});}
+        if(colon<0){
+            var relative=SdkSourcePathAudit.Resolve(logical,Path.GetDirectoryName(document)!,confinement,ModData,ModArt,ModAudio);
+            // Reborn: copied EA XML may keep sibling base includes; search the corresponding SageXML folder after the mod-local candidate.
+            if(confinement.Equals(ModData,StringComparison.OrdinalIgnoreCase)){
+                string fallback=Path.Combine(SdkData,Path.GetRelativePath(ModData,relative.Path));
+                return Choose(new[]{(relative.Path,relative.Root,"relative"),(fallback,SdkData,"sdk-relative")});
+            }
+            return Choose(new[]{(relative.Path,relative.Root,"relative")});
+        }
         string alias=logical[..colon].ToLowerInvariant(),tail=logical[(colon+1)..];
         string mod=alias switch{"data"=>ModData,"art"=>ModArt,"audio"=>ModAudio,_=>throw new InvalidDataException("Unsupported SDK alias: "+alias)};
         string stock=alias switch{"data"=>SdkData,"art"=>SdkArt,_=>SdkAudio};

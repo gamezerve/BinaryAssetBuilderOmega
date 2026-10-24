@@ -15,7 +15,8 @@ internal static class ConscriptSourcePreparation
     //-------------------------------------------------------------------------------------------------
     internal static ConscriptSourceInput.Input Load(string entry,SdkSourceSearch? search=null)
     {
-        entry=SdkEnvironmentPreflight.Absolute(entry);string root=SdkEnvironmentPreflight.DirectoryPath(Path.GetDirectoryName(entry)!);
+        // Reborn: nested global entry points share the mod's DATA alias root rather than inventing an AdditionalMaps/Data tree.
+        entry=SdkEnvironmentPreflight.Absolute(entry);string root=search?.ModData??SdkEnvironmentPreflight.DirectoryPath(Path.GetDirectoryName(entry)!);
         // Reborn: W3X vertex sources share the path audit's 4 MiB/file and 32 MiB/graph budget, not the old small-object fixture cap.
         byte[] initial=SdkEnvironmentPreflight.Read(entry,4*1048576);var first=Parse(initial,entry);
         // Reborn: preserve the previous standalone complete-object input without claiming it has an AssetDeclaration preprocessing context.

@@ -1,11 +1,13 @@
 # Reborn: stable SDK front end; preserve editable sources, publish versioned Documents mods, never change game installation files or launch a game.
 [CmdletBinding()]
-param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot,[string]$StudioSession,[string]$ModVersion='1.00',[string]$FinalModsRoot)
+param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot,[string]$StudioSession,[string]$ModVersion='1.00',[string]$FinalModsRoot,[ValidateSet(0,1)][int]$BuildGlobalData=1)
 $ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$lock=$null;$run=$null;$publishMutex=$null;$cancelEvent=$null;$publishHeld=$false;$runOwned=$false;$stageOwned=$false
 # Reborn: retain the original Studio envelope while adding truthful numbered backend phases and separate detailed output.
 . (Join-Path $PSScriptRoot 'Ra3Ep1BuildLog.ps1')
 # Reborn: the final user package targets Documents; OutputRoot remains the private compatibility receipt/cache location.
 . (Join-Path $PSScriptRoot 'Ra3Ep1FinalPackage.ps1')
+# Reborn: compile early AdditionalMaps streams independently of static data, then include both in the same final Streams BIG.
+. (Join-Path $PSScriptRoot 'Ra3Ep1GlobalData.ps1')
 #-------------------------------------------------------------------------------------------------
 <# Reborn: delete only a newly owned work/output generation after proving containment and refusing every redirected descendant. #>
 #-------------------------------------------------------------------------------------------------
@@ -44,7 +46,10 @@ try{
     $detail=Join-Path $run 'compiler-detail.log'
     Stop-SdkBuildPhase
     Start-SdkBuildPhase 4 'Building AptUI';Stop-SdkBuildPhase 'Skipped: no separate AptUI compiler stage is enabled in this alpha; unsupported requested assets fail validation.'
-    Start-SdkBuildPhase 5 'Building global data';Stop-SdkBuildPhase 'Using configured precompiled stock dependencies; no global source rebuild.'
+    Start-SdkBuildPhase 5 'Building global data'
+    # Reborn: an unchecked toggle omits global sources from this fresh package; never silently reuse an older source generation.
+    $globalBuild=$null
+    if($BuildGlobalData){Build-RebornGlobalData (Split-Path -Parent $ModXml) $sdk $settings $StaticManifest $GlobalManifest $expectedCompiler $run $detail ([ref]$globalBuild);Stop-SdkBuildPhase ('Global streams compiled: '+$globalBuild.Streams.Count)}else{Stop-SdkBuildPhase 'Skipped: Build Global Data is unchecked; no AdditionalMaps streams will be packaged.'}
     Start-SdkBuildPhase 6 'Building static data'
     Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] Loading '+$ModXml)
     # Reborn: list independent missing definitions/assets before the normal compiler stops at its first unsupported or invalid owner.
@@ -52,7 +57,7 @@ try{
     # Reborn: validation spans the dependency audit and the backend's source/schema admission; the backend reports its completion.
     Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] Validation started: dependency audit, source graph and schema admission.')
     $dependencyArguments=@('sdk-missing-dependencies',$ModXml,$sdk,$StaticManifest,$GlobalManifest,$dependencyReport)
-    if($settings.SdkDataRoot){$dependencyArguments+=$settings.SdkDataRoot}
+    if($globalBuild){$dependencyArguments+=@($(if($settings.SdkDataRoot){$settings.SdkDataRoot}else{Join-Path $sdk 'SageXML'}),$globalBuild.Context)}elseif($settings.SdkDataRoot){$dependencyArguments+=$settings.SdkDataRoot}
     & (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') @dependencyArguments 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail};$dependencyCode=$LASTEXITCODE
     if(Test-Path -LiteralPath $dependencyReport){Copy-Item -LiteralPath $dependencyReport -Destination (Join-Path $sdk '.work/last-dependencies.json') -Force;Write-SdkBuildLine ('Dependency report: '+(Join-Path $sdk '.work/last-dependencies.json'))}
     if($dependencyCode-ne 0){throw 'Dependency preflight failed. Review the complete missing asset/definition list above.'}
@@ -67,6 +72,8 @@ try{
     $backend=if($isConscript){'Invoke-Ra3Ep1ConscriptAlphaBuild.ps1'}else{'Invoke-Ra3Ep1AlphaBuild.ps1'}
     $arguments=@('-NoProfile','-File',(Join-Path $PSScriptRoot $backend),'-ModXml',$ModXml,'-StaticManifest',$StaticManifest,'-GlobalManifest',$GlobalManifest,'-CompilerDirectory',$expectedCompiler,'-OutputRoot',$run)
     if($ValidateOnly){$arguments+='-ValidateOnly'}
+    # Reborn: static strong/weak reference lookup includes only globals actually built in this invocation.
+    if($isConscript -and $globalBuild){$arguments+=@('-GlobalStreamContext',$globalBuild.Context)}
     # Reborn: the armor source backend uses the same explicit SDK search roots as GameObject routing/preparation.
     if(-not $isConscript){$arguments+=@('-SdkRoot',$sdk);if($settings.SdkDataRoot){$arguments+=@('-SdkDataRoot',$settings.SdkDataRoot)}}
     # Reborn: stream complete lines immediately; JSON/readback diagnostics remain in the full detail log.
@@ -96,15 +103,19 @@ try{
         if($winner-ine $selection.PhysicalPath){throw ('Alias precedence changed: '+$selection.LogicalPath)}
     }
     $stage=Join-Path $expectedOutput ('.stage-'+[guid]::NewGuid().ToString('N'));$null=New-Item -ItemType Directory -Path $stage;$stageOwned=$true
+    # Reborn: recheck global sources, then append their qualified five-file stream families without changing static payloads.
+    if($globalBuild){Assert-RebornGlobalSources $globalBuild;if($globalBuild.Streams.Count){$combined=Join-Path $run 'combined-streams.big';& (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') sdk-package-global-streams $package $globalBuild.Context $combined 2>&1 | ForEach-Object {Write-SdkBuildLine ([string]$_)};if($LASTEXITCODE-ne 0){throw 'Global/static Streams BIG assembly failed.'};$package=$combined}}
     $big=$ModName+'.big';Copy-Item -LiteralPath $package -Destination (Join-Path $stage $big);$hash=(Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash
     if((Get-FileHash -LiteralPath (Join-Path $stage $big) -Algorithm SHA256).Hash-cne $hash){throw 'Published BIG differs from the verified backend package.'}
-    Write-SdkBuildLine ('Streams BIG prepared and SHA256 verified: '+$ModName+'_'+$ModVersion+'_Streams.big (archive generated during static-data compilation).')
-    if($null-ne $core.ArchiveEntryCount){Write-SdkBuildLine ($core.ArchiveEntryCount.ToString()+' Files added (verified backend archive).')}
+    Write-SdkBuildLine ('Streams BIG prepared and SHA256 verified: '+$ModName+'_'+$ModVersion+'_Streams.big (compiled static/global stream families).')
+    if($null-ne $core.ArchiveEntryCount){Write-SdkBuildLine (([int]$core.ArchiveEntryCount+$(if($globalBuild){5*$globalBuild.Streams.Count}else{0})).ToString()+' Files added (verified stream archives).')}
     Stop-SdkBuildPhase
     Start-SdkBuildPhase 11 'Creating skudef file'
     [IO.File]::WriteAllText((Join-Path $stage 'mod_1.0.skudef'),("add-big "+$big+"`n"),[Text.Encoding]::ASCII)
     $output=Join-Path $expectedOutput $ModName;$sku=Join-Path $output 'mod_1.0.skudef';if($sku.Length-gt 240){throw 'Choose a shorter mod directory for the conservative game path bound.'}
     $result=[pscustomobject]@{Format='RebornLiveAlpha1';ModName=$ModName;Source=$ModXml;SourceSha256=(Get-FileHash -LiteralPath $ModXml -Algorithm SHA256).Hash;BigPath=(Join-Path $output $big);SkuDefPath=$sku;PackageSha256=$hash;CompilerFiles=$toolchain.Files;Backend=$receipt;Core=$core;GameExecuted=$false;InstalledFilesModified=$false}
+    # Reborn: retain global source provenance separately from the static backend's receipt after private work cleanup.
+    $result | Add-Member -NotePropertyName GlobalData -NotePropertyValue ([pscustomobject]@{Enabled=[bool]$BuildGlobalData;Streams=@($(if($globalBuild){$globalBuild.Evidence}))})
     [IO.File]::WriteAllText((Join-Path $stage 'build.json'),($result|ConvertTo-Json -Depth 20))
     # Reborn: retain full compiler evidence outside the four-file public package contract before private cleanup.
     Copy-Item -LiteralPath $detail -Destination (Join-Path $sdk '.work/last-detail.log') -Force

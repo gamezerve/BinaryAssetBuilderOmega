@@ -67,6 +67,8 @@ internal static class ConscriptSourceInput
     {
         var seen=new HashSet<string>(StringComparer.OrdinalIgnoreCase);string root=Path.GetDirectoryName(Path.GetFullPath(entry))!;
         var search=sdk==null?null:SdkSourceSearch.ForMod(entry,sdk,stockData);
+        // Reborn: routing nested global entries uses the same enclosing DATA authority as source preparation.
+        root=search?.ModData??root;
         return Visit(Path.GetFullPath(entry),root);
         //-------------------------------------------------------------------------------------------------
         /** Reborn: inspect only confined XML include candidates; actual admission still validates every directive in Prepare. */

@@ -8,6 +8,15 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: global authoring uses EA's early AdditionalMaps discovery path and a separate compiler/linker phase. -->
+Studio now offers **Build Global Data**. When checked, each
+`mods/<name>/Data/AdditionalMaps/MapMetaData_*.xml` is compiled before
+`Static_Mod.xml` into its own early-load stream. Both stages share dependency
+checking, source preparation and native/readback validation. Their outputs are
+packed together into the existing versioned `_Streams.big`; no extra SKUDef
+command is needed. Static assets can reference newly compiled global IDs without
+including their source again. See [global data workflow](docs/RA3EP1_GLOBAL_DATA.md).
+
 <!-- Reborn: authored events reuse retail audio samples through SDK-local metadata and the normal verified stream path. -->
 AudioEvent source authoring is connected to alpha builds, including AMBIENT
 events and start/kill fades, with original Soviet reactor native qualification.

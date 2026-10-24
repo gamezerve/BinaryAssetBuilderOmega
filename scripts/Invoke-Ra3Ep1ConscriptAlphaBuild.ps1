@@ -1,6 +1,6 @@
 # Reborn: prepare explicit EA XML sources before bounded native compilation; never invent a LogicCommand from the GameObject ID.
 [CmdletBinding()]
-param([Parameter(Mandatory)][string]$ModXml,[Parameter(Mandatory)][string]$StaticManifest,[Parameter(Mandatory)][string]$GlobalManifest,[Parameter(Mandatory)][string]$CompilerDirectory,[Parameter(Mandatory)][string]$OutputRoot,[switch]$ValidateOnly)
+param([Parameter(Mandatory)][string]$ModXml,[Parameter(Mandatory)][string]$StaticManifest,[Parameter(Mandatory)][string]$GlobalManifest,[Parameter(Mandatory)][string]$CompilerDirectory,[Parameter(Mandatory)][string]$OutputRoot,[switch]$ValidateOnly,[string]$GlobalStreamContext)
 $ErrorActionPreference='Stop';$sdk=Join-Path (Split-Path -Parent $PSScriptRoot) 'alpha'
 try {
     $settings=@{};foreach($line in Get-Content -LiteralPath (Join-Path $sdk 'uprising-alpha.paths')){if($line -and -not $line.StartsWith('#')){$pair=$line.Split('=',2);$settings[$pair[0]]=$pair[1]}}
@@ -29,7 +29,9 @@ try {
     try {
         # Reborn: contain all qualification intermediates in this invocation's owned work generation.
         $env:TEMP=$scratch;$env:TMP=$scratch
-        & $exe conscript-alpha-build $settings.UprisingXmlRoot $StaticManifest $GlobalManifest $inputReceipt.GamePath (Join-Path $OutputRoot 'conscript')
+        # Reborn: static assets import freshly compiled global mod definitions instead of requiring duplicate XML includes.
+        $compileArgs=@('conscript-alpha-build',$settings.UprisingXmlRoot,$StaticManifest,$GlobalManifest,$inputReceipt.GamePath,(Join-Path $OutputRoot 'conscript'));if($GlobalStreamContext){$compileArgs+=$GlobalStreamContext}
+        & $exe @compileArgs
         if($LASTEXITCODE-ne 0){throw 'Conscript source/native/metadata/stream qualification failed.'}
     } finally {$env:TEMP=$previousTemp;$env:TMP=$previousTmp}
     # Reborn: the native compiler classifies actual catalog-backed stock overrides; Conscript is not the only legal override identity.

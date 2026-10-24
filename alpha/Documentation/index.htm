@@ -3,6 +3,20 @@
 <html lang="en"><head><meta charset="utf-8"><title>Uprising Mod SDK Alpha</title></head>
 <body>
 <h1>Uprising Mod SDK Alpha — live repository workspace</h1>
+<!-- Reborn: global source is compiled separately and discovered through the game's existing AdditionalMaps loader. -->
+<h2>Build Global Data</h2>
+<p>Check <strong>Build Global Data</strong> to compile your
+mods/&lt;name&gt;/Data/AdditionalMaps/MapMetaData_*.xml files before Static_Mod.xml.
+Each file produces its own manifest/bin/relo/imp/version family under
+data/additionalmaps inside the final versioned Streams BIG. Use this for supported
+global assets such as AudioEvent and UpgradeTemplate. You do not need an actual
+MapMetaData asset or an extra SKUDef line. Do not include these files again in
+Static_Mod.xml; static assets can reference their compiled IDs.</p>
+<p>DATA: paths still search your mod's Data folder first, then SageXML.
+When the checkbox is unchecked, global sources are omitted from the new package;
+older compiled globals are not silently reused. Missing or empty AdditionalMaps
+directories are valid static-only builds. Unsupported asset types still report
+errors; enabling this stage does not enable every original Global.xml type.</p>
 <!-- Reborn: the assign-slaves leaf now uses normal source-owned SpecialPower compilation rather than a fixed building identity. -->
 <p>AssignSlavesTargetObjectSpecialPower is supported with authored module IDs,
 compatible SpecialPowerTemplate targets and supported inherited SpecialPower

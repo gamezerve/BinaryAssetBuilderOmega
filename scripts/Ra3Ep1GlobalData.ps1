@@ -1,0 +1,40 @@
+# Reborn: EA's AdditionalMaps discovery path loads separately compiled MapMetaData_* streams; the stock global stream is never rebuilt.
+
+#-------------------------------------------------------------------------------------------------
+<# Reborn: compile each selected global source into an independently verified stream and retain its source/search evidence for publication. #>
+#-------------------------------------------------------------------------------------------------
+function Build-RebornGlobalData([string]$DataRoot,[string]$Sdk,[hashtable]$Settings,[string]$StaticManifest,[string]$GlobalManifest,[string]$Compiler,[string]$Work,[string]$Detail,[ref]$Result) {
+    $exe=Join-Path $Compiler 'BinaryAssetBuilder.ManifestInspector.exe'
+    $directory=Join-Path $DataRoot 'AdditionalMaps';$streams=@();$evidence=@();$context=Join-Path $Work 'global-streams.json'
+    # Reborn: absence is an ordinary static-only mod, matching the reference SDK's wildcard build stage.
+    $entries=if(Test-Path -LiteralPath $directory -PathType Container){@(Get-ChildItem -LiteralPath $directory -File -Filter 'MapMetaData_*.xml' | Sort-Object Name)}else{@()}
+    foreach($entry in $entries){
+        if($entry.BaseName -cnotmatch '(?i)\AMapMetaData_[a-z0-9_-]+\z'){throw ('Invalid global stream name: '+$entry.FullName)}
+        $target=Join-Path $Work ('global/'+$entry.BaseName);$null=New-Item -ItemType Directory -Path $target
+        Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] Global source: '+$entry.FullName)
+        [IO.File]::WriteAllText($context,(ConvertTo-Json -InputObject @($streams) -Depth 8))
+        $stockData=if($Settings.SdkDataRoot){$Settings.SdkDataRoot}else{Join-Path $Sdk 'SageXML'}
+        $auditArgs=@('sdk-missing-dependencies',$entry.FullName,$Sdk,$StaticManifest,$GlobalManifest,(Join-Path $target 'dependencies.json'),$stockData,$context)
+        & $exe @auditArgs 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $Detail};if($LASTEXITCODE-ne 0){throw ('Global dependency preflight failed: '+$entry.FullName)}
+        & $exe conscript-source-prepare $entry.FullName (Join-Path $target 'source') $Sdk $stockData 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $Detail};if($LASTEXITCODE-ne 0){throw ('Global source preparation failed: '+$entry.FullName)}
+        $inputReceipt=Get-Content -LiteralPath (Join-Path $target 'source/source-input.json') -Raw | ConvertFrom-Json
+        # Reborn: the early-global mode emits only actual runtime dependency manifests, never an automatic static-stream dependency.
+        & $exe conscript-alpha-build $Settings.UprisingXmlRoot $StaticManifest $GlobalManifest $inputReceipt.GamePath (Join-Path $target 'compiled') $context global 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $Detail};if($LASTEXITCODE-ne 0){throw ('Global stream compilation failed: '+$entry.FullName)}
+        $manifest=Join-Path $target 'compiled/stream-readback/diagnostic.manifest'
+        $streams+= [pscustomobject]@{Manifest=$manifest;Runtime=('data\additionalmaps\'+$entry.BaseName+'.manifest');Sha256=(Get-FileHash -LiteralPath $manifest -Algorithm SHA256).Hash}
+        $evidence+= [pscustomobject]@{Entry=$entry.FullName;Runtime=$streams[-1].Runtime;AssetCount=$inputReceipt.AssetCount;Sources=$inputReceipt.Sources;Searches=$inputReceipt.Searches}
+        Write-SdkBuildLine ('Global stream complete: data\additionalmaps\'+$entry.BaseName+' ('+$inputReceipt.AssetCount+' assets).')
+    }
+    [IO.File]::WriteAllText($context,(ConvertTo-Json -InputObject @($streams) -Depth 8))
+    $Result.Value=[pscustomobject]@{Context=$context;Streams=@($streams);Evidence=@($evidence)}
+}
+
+#-------------------------------------------------------------------------------------------------
+<# Reborn: global sources and their alias selections must still match the qualified snapshot when the static build finishes. #>
+#-------------------------------------------------------------------------------------------------
+function Assert-RebornGlobalSources($GlobalBuild) {
+    foreach($entry in $GlobalBuild.Evidence){
+        foreach($source in $entry.Sources){if((Get-FileHash -LiteralPath $source.Path -Algorithm SHA256).Hash -cne $source.Sha256){throw ('Global source changed during compilation: '+$source.Path)}}
+        foreach($search in $entry.Searches){$winner=@($search.Candidates | Where-Object {Test-Path -LiteralPath $_ -PathType Leaf} | Select-Object -First 1);if($winner.Count-ne 1 -or $winner[0]-ine $search.PhysicalPath){throw ('Global alias precedence changed: '+$search.LogicalPath)}}
+    }
+}

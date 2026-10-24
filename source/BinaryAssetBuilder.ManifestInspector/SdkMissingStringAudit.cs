@@ -17,7 +17,9 @@ internal static class SdkMissingStringAudit
     internal static Result Run(string entry,string sdk,SdkSourcePathAudit.Report paths,XmlSchemaSet schemas)
     {
         string stockSource=StockCatalogPath(sdk);
-        string modSource=Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(entry)!)!,"Misc","Data","mod.str");
+        // Reborn: nested AdditionalMaps entries use the same mod localization table as Static_Mod.xml.
+        string modData=paths.Search?.ModData??Path.GetDirectoryName(entry)!;
+        string modSource=Path.Combine(Path.GetDirectoryName(modData)!,"Misc","Data","mod.str");
         try{
             stockSource=SdkEnvironmentPreflight.Absolute(stockSource);var stock=SdkStringCatalog.Stock(stockSource);SdkEnvironmentPreflight.CheckPath(modSource);var mod=File.Exists(modSource)?SdkStringCatalog.Str(SdkEnvironmentPreflight.Read(modSource,SdkStringCatalog.MaximumBytes)):new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             return Analyze(entry,paths,schemas,stock,mod) with{StockSource=stockSource,ModSource=modSource};

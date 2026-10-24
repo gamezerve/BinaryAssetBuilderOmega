@@ -24,9 +24,11 @@ internal static class ConscriptMultiAssetBuild
     //-------------------------------------------------------------------------------------------------
     /** Reborn: existing single-object routes remain unchanged; additional.xml selects the actual multi-asset frontend output. */
     //-------------------------------------------------------------------------------------------------
-    internal static bool TryRun(string entry,string manifest,string global,string output)
+    internal static bool TryRun(string entry,string manifest,string global,string output,string? streamContext=null,bool earlyGlobal=false)
     {
-        string additional=Path.Combine(Path.GetDirectoryName(entry)!,"additional.xml");var source=ReadPrepared(entry);bool hasGame=source.DocumentElement!.LocalName=="GameObject";if(!File.Exists(additional)&&hasGame)return false;
+        // Reborn: an explicit global dependency context selects the mixed linker even for a single GameObject consumer.
+        var external=SdkGlobalStreams.Load(streamContext);
+        string additional=Path.Combine(Path.GetDirectoryName(entry)!,"additional.xml");var source=ReadPrepared(entry);bool hasGame=source.DocumentElement!.LocalName=="GameObject";if(!File.Exists(additional)&&hasGame&&external.Length==0&&!earlyGlobal)return false;
         var saved=Settings.Current;
         try{
             var official=ConscriptSourceInput.Schemas();string fixtures=Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!;
@@ -34,6 +36,8 @@ internal static class ConscriptMultiAssetBuild
             var schemas=new SchemaSet(false);foreach(var seed in schemas.Schemas.Schemas().Cast<System.Xml.Schema.XmlSchema>().ToArray())schemas.Schemas.Remove(seed);schemas.Schemas.Add(official);schemas.Schemas.Compile();typeof(SchemaSet).GetMethod("SetupHelperSchemaTypes",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(schemas,null);
             var catalogs=new[]{manifest,global}.Select(p=>ManifestReader.Read(SdkEnvironmentPreflight.Read(p,64*1048576))).ToArray();foreach(var d in catalogs){TypeRegistryAudit.ValidateTarget(d.Header.Version,d.Header.AllTypesHash);if(!d.Header.IsLinked||d.Validate().Count!=0)throw new InvalidDataException("Mixed build requires valid EP1 stock catalogs.");}
             var stock=catalogs.SelectMany(d=>d.Assets).ToArray();var sources=new List<XmlDocument>{source};
+            // Reborn: global mod definitions override retail identities for name lookup, while their payloads remain in their own streams.
+            foreach(var stream in external){var assets=ManifestReader.Read(SdkEnvironmentPreflight.Read(stream.Manifest,64*1048576)).Assets;var ids=assets.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();stock=stock.Where(a=>!ids.Contains(new(a.TypeId,a.InstanceId))).Concat(assets).ToArray();}
             if(File.Exists(additional))sources.AddRange(ReadPrepared(additional).DocumentElement!.ChildNodes.OfType<XmlElement>().Select(e=>Xml(e.OuterXml)));
             string command=Path.Combine(Path.GetDirectoryName(entry)!,"command.xml");if(File.Exists(command))sources.Add(ReadPrepared(command));
             // Reborn: retail AudioFile metadata stays SDK-local; authored events reference the loaded audio stream without repacking its samples.
@@ -120,6 +124,15 @@ internal static class ConscriptMultiAssetBuild
             var instances=ordered.Select(b=>b.Instance).ToArray();var chunks=ordered.Select(b=>b.Buffer).ToArray();var flags=ordered.Select(b=>b.Tokenized).ToArray();uint checksum=(uint)typeof(AssetDeclarationDocument).GetMethod("ComputeOutputChecksum",BindingFlags.NonPublic|BindingFlags.Static)!.Invoke(null,new object[]{instances})!;
             // Reborn: emitted AudioEvents import original AudioFiles from the runtime audio stream, in addition to existing static/global references.
             var physical=new[]{Path.GetFullPath(manifest),Path.GetFullPath(global)}.Concat(audioManifest==null?Array.Empty<string>():new[]{audioManifest}).ToArray();var runtimeNames=new[]{"data\\static.manifest","data\\global.manifest"}.Concat(audioManifest==null?Array.Empty<string>():new[]{"data\\audio.manifest"}).ToArray();
+            // Reborn: publish actual global manifest references rather than merging early-load assets into mod.manifest.
+            physical=physical.Concat(external.Select(s=>s.Manifest)).ToArray();runtimeNames=runtimeNames.Concat(external.Select(s=>s.Runtime.ToLowerInvariant())).ToArray();
+            // Reborn: early globals must not pull the entire static stream into startup just because the compiler used its lookup catalog.
+            if(earlyGlobal){
+                var needed=instances.SelectMany(i=>i.ValidatedReferencedInstances!).Select(r=>new AssetId(r.TypeId,r.InstanceId)).Where(id=>!locals.ContainsKey(id)).ToHashSet();
+                var providers=physical.Select(p=>ManifestReader.Read(SdkEnvironmentPreflight.Read(p,64*1048576)).Assets.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet()).ToArray();var used=new HashSet<int>();
+                foreach(var id in needed){int provider=Array.FindLastIndex(providers,p=>p.Contains(id));if(provider<0)throw new InvalidDataException("Global import has no runtime manifest provider: "+id);if(runtimeNames[provider]=="data\\static.manifest")throw new InvalidDataException("Global source imports a static-only asset before static subsystems are loaded: "+available.Single(a=>a.TypeId==id.TypeId&&a.InstanceId==id.InstanceId).Name);used.Add(provider);}
+                runtimeNames=runtimeNames.Where((_,i)=>used.Contains(i)).ToArray();physical=physical.Where((_,i)=>used.Contains(i)).ToArray();
+            }
             var runtime=new ReferencedFileBuffer();typeof(OutputManager).GetMethod("AddExternalManifestReferences",BindingFlags.NonPublic|BindingFlags.Static)!.Invoke(null,new object[]{runtime,physical,string.Join(";",runtimeNames)});
             Console.WriteLine("Generating stream: "+instances.Length+" assets, output checksum "+checksum.ToString("x8")+".");
             var streams=BoundedDiagnosticBuild.SerializeAssetGraph(instances,chunks,checksum,runtime,flags,fingerprints);var repeated=BoundedDiagnosticBuild.SerializeAssetGraph(instances,chunks,checksum,runtime,flags,fingerprints);if(streams.Any(p=>!p.Value.SequenceEqual(repeated[p.Key])))throw new InvalidDataException("Mixed stream serialization is not deterministic.");

@@ -35,11 +35,11 @@ internal static class SdkMissingDependencyAudit
     //-------------------------------------------------------------------------------------------------
     /** Reborn: use the same confined Include graph and explicit stock manifests as the live SDK, without rebuilding any mod. */
     //-------------------------------------------------------------------------------------------------
-    internal static int Run(string entry,string sdk,string staticManifest,string globalManifest,string output,string? stockData=null)
+    internal static int Run(string entry,string sdk,string staticManifest,string globalManifest,string output,string? stockData=null,string? streamContext=null)
     {
         entry=SdkEnvironmentPreflight.Absolute(entry);output=SdkEnvironmentPreflight.Absolute(output);
         var search=SdkSourceSearch.ForMod(entry,sdk,stockData);byte[] initial=SdkEnvironmentPreflight.Read(entry,4*1048576);
-        var first=Parse(initial,entry);var root=Path.GetDirectoryName(entry)!;string hash=Convert.ToHexString(SHA256.HashData(initial));
+        var first=Parse(initial,entry);var root=search.ModData;string hash=Convert.ToHexString(SHA256.HashData(initial));
         SdkSourcePathAudit.Report paths;
         if(first.Root?.Name==XName.Get("AssetDeclaration",Ea))
         {
@@ -49,7 +49,8 @@ internal static class SdkMissingDependencyAudit
         }
         else paths=new(root,null,null,new[]{new SdkSourcePathAudit.Source(entry,root,hash,initial.Length)},Array.Empty<SdkSourcePathAudit.Edge>(),Array.Empty<SdkSourcePathAudit.Resource>(),Array.Empty<SdkSourcePathAudit.Issue>(),true,false,true,false,false,Array.Empty<string>()){Search=search};
         // Reborn: availability uses SDK-local metadata, independently of registry, installed archives and native compiler development inputs.
-        var stock=LoadStockCatalogs(CatalogManifestPaths(sdk));
+        // Reborn: newly compiled global assets satisfy static references without being copied into the static stream.
+        var stock=LoadStockCatalogs(CatalogManifestPaths(sdk).Concat(SdkGlobalStreams.Load(streamContext).Select(s=>s.Manifest)));
         var report=Analyze(entry,paths,ConscriptSourceInput.Schemas(),stock.Assets) with{StockCatalogs=stock.Catalogs};
         // Reborn: missing strings join the same readable preflight/report as missing assets and definitions; warnings do not become false native dependency errors.
         var strings=SdkMissingStringAudit.Run(entry,sdk,paths,ConscriptSourceInput.Schemas());
