@@ -71,7 +71,7 @@ internal static class SdkMissingDependencyAudit
     //-------------------------------------------------------------------------------------------------
     /** Reborn: locate the three catalog copies relative to Studio, without developer-specific paths or installation discovery. */
     //-------------------------------------------------------------------------------------------------
-    internal static string[] CatalogManifestPaths(string sdk)=>new[]{"static.manifest","global.manifest","worldbuilder.manifest"}.Select(name=>Path.Combine(SdkEnvironmentPreflight.Absolute(sdk),"catalogs","ra3ep1",name)).ToArray();
+    internal static string[] CatalogManifestPaths(string sdk)=>new[]{"static.manifest","global.manifest","worldbuilder.manifest"}.Select(name=>Path.Combine(SdkEnvironmentPreflight.Absolute(sdk),"catalogs","ra3ep1",name)).Concat(File.Exists(Path.Combine(sdk,"catalogs/ra3ep1/audio.manifest"))?new[]{Path.Combine(sdk,"catalogs/ra3ep1/audio.manifest")}:Array.Empty<string>()).ToArray();
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: retain the explicit WorldBuilder configuration reader for legacy diagnostic callers. */

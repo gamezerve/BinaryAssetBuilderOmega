@@ -77,7 +77,8 @@ internal static class ConscriptSourceInput
             var xml=Read(path);var element=xml.DocumentElement!;
             if(element.NamespaceURI!=Ea)return false;
             // Reborn: explicit upgrade declarations select the complete mixed/support stream backend, including upgrade-only mods.
-            if(element.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" || element.ChildNodes.OfType<XmlElement>().Any(e=>e.NamespaceURI==Ea && e.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "Texture" or "PackedTextureImage"))return true;
+            // Reborn: audio-only AssetDeclarations use the normal alpha authoring and publication route.
+            if(element.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" || element.ChildNodes.OfType<XmlElement>().Any(e=>e.NamespaceURI==Ea && e.LocalName is "AudioEvent" or "GameObject" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "Texture" or "PackedTextureImage"))return true;
             foreach(XmlElement include in element.GetElementsByTagName("Include",Ea))
             {
                 // Reborn: W3X includes contain ordinary EA declarations and can select the container-only build route.
@@ -247,7 +248,8 @@ internal static class ConscriptSourceInput
         XmlSchemaSet? official=null;SdkEffectiveSchema.Inspect(shieldCandidate:true,reviewHooks:true,onAdmitted:s=>official=s);if(official==null)throw new InvalidDataException("Reviewed EP1 schemas unavailable.");
         // Reborn: detached support assets use unchanged official types, just like the existing standalone GameObject/command aliases.
         // Reborn: standalone container elements use the unchanged official W3DContainer type, just like other emitted asset roots.
-        var aliases=new XmlSchema{TargetNamespace=Ea,ElementFormDefault=XmlSchemaForm.Qualified};foreach(string name in new[]{"GameObject","LogicCommand","LogicCommandSet","ArmorTemplate","WeaponTemplate","UpgradeTemplate","ObjectCreationList","Texture","PackedTextureImage","W3DContainer","W3DHierarchy","W3DCollisionBox","W3DMesh"})if(!official.GlobalElements.Contains(new XmlQualifiedName(name,Ea)))aliases.Items.Add(new XmlSchemaElement{Name=name,SchemaTypeName=new XmlQualifiedName(name,Ea)});official.Add(aliases);official.Compile();return official;
+        // Reborn: detached AudioEvent roots retain the unchanged official audio type, matching all other standalone asset aliases.
+        var aliases=new XmlSchema{TargetNamespace=Ea,ElementFormDefault=XmlSchemaForm.Qualified};foreach(string name in new[]{"AudioEvent","GameObject","LogicCommand","LogicCommandSet","ArmorTemplate","WeaponTemplate","UpgradeTemplate","ObjectCreationList","Texture","PackedTextureImage","W3DContainer","W3DHierarchy","W3DCollisionBox","W3DMesh"})if(!official.GlobalElements.Contains(new XmlQualifiedName(name,Ea)))aliases.Items.Add(new XmlSchemaElement{Name=name,SchemaTypeName=new XmlQualifiedName(name,Ea)});official.Add(aliases);official.Compile();return official;
     }
 
     //-------------------------------------------------------------------------------------------------

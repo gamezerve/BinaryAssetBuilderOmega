@@ -8,3 +8,9 @@ from the active table in English.big, not gamestrings_temp.csf. String checks
 combine it with each mod's Misc/Data/mod.str without reading the game directory.
 The original manifest/CSF copies are excluded from Git pending redistribution review.
 Native compiler development inputs remain separate.
+
+<!-- Reborn: AudioEvent authoring references retail sample identities through an optional metadata-only audio catalog. -->
+`audio.manifest` is an additional local copy from the unpacked English audio
+stream. It enables AudioFile lookup for authored AudioEvents and is also
+excluded from Git. The mod references `data/audio.manifest`; retail encoded
+samples are not copied into its BIG.

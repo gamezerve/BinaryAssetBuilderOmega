@@ -36,8 +36,10 @@ internal static class ConscriptMultiAssetBuild
             var stock=catalogs.SelectMany(d=>d.Assets).ToArray();var sources=new List<XmlDocument>{source};
             if(File.Exists(additional))sources.AddRange(ReadPrepared(additional).DocumentElement!.ChildNodes.OfType<XmlElement>().Select(e=>Xml(e.OuterXml)));
             string command=Path.Combine(Path.GetDirectoryName(entry)!,"command.xml");if(File.Exists(command))sources.Add(ReadPrepared(command));
+            // Reborn: retail AudioFile metadata stays SDK-local; authored events reference the loaded audio stream without repacking its samples.
+            string? audioManifest=null;if(sources.Any(s=>s.DocumentElement!.LocalName=="AudioEvent")){audioManifest=AuthoredAmbientCompiler.CatalogPath();var audio=ManifestReader.Read(SdkEnvironmentPreflight.Read(audioManifest,64*1048576));TypeRegistryAudit.ValidateTarget(audio.Header.Version,audio.Header.AllTypesHash);if(!audio.Header.IsLinked||audio.Validate().Count!=0)throw new InvalidDataException("Valid linked EP1 audio catalog required.");var known=stock.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();stock=stock.Concat(audio.Assets.Where(a=>a.TypeName=="AudioFile"&&!known.Contains(new(a.TypeId,a.InstanceId)))).ToArray();}
             var fingerprints=new Dictionary<uint,(uint Hash,bool Tokenized)>();var locals=new Dictionary<AssetId,XmlDocument>();
-            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
+            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
                 uint typeId=FastHash.GetHashCode(type);var examples=stock.Where(a=>a.TypeId==typeId).Select(a=>(a.TypeHash,Tokenized:a.Tokenized==1)).Distinct().ToArray();if(examples.Length!=1)throw new InvalidDataException("EP1 asset fingerprint is absent/ambiguous: "+type);fingerprints[typeId]=examples[0];if(!locals.TryAdd(new(typeId,InstanceHandle.GetInstanceId(id)),xml))throw SdkXmlDiagnostics.At(new InvalidDataException("Duplicate local asset/hash identity: "+type+":"+id),xml.DocumentElement);
             }
             // Reborn: source-only catalog entries resolve local names before native data exists; payloads are freshly compiled below, never copied from stock.
@@ -58,6 +60,8 @@ internal static class ConscriptMultiAssetBuild
             // Reborn: use the existing W3DContainer marshaler only after its untokenized EP1 stock layout matches.
             if(sources.Any(s=>s.DocumentElement!.LocalName=="W3DContainer"))W3DContainerCompiler.Qualify(manifest,schemas,available);
             if(sources.Any(s=>s.DocumentElement!.LocalName=="PackedTextureImage"))PackedTextureImageCompiler.Qualify(manifest,schemas,stock);
+            // Reborn: ambient/control extensions are qualified on original native data before any authored audio enters a package.
+            if(audioManifest!=null)AuthoredAmbientCompiler.Qualify(global,Normalize);
             foreach(var xml in sources){
                 string type=xml.DocumentElement!.LocalName;InstanceDeclaration instance;AssetBuffer buffer;
                 // Reborn: announce and time the asset around its actual processor/verifier, as EA BuildMod does per instance.
@@ -65,6 +69,8 @@ internal static class ConscriptMultiAssetBuild
                 if(type=="GameObject"){
                     instance=Normalize(xml);var native=GameObjectBodyProjectionSmokeTest.Compile(Xml(instance.XmlNode.OuterXml),true,true,true);var verifier=new ConscriptVariableGraphVerifier(official,manifest,baseline,schemas,available);var tokens=verifier.Verify(xml,native,instance,plans[xml].Origins);if(ReferenceEquals(xml,source))prefix=tokens.InstanceBuffer.Length-native.InstanceBuffer.Length;buffer=Buffer(tokens);
                     // Reborn: weak CommandSet availability is reported consistently by the common mod/stock audit, without pretending it is a native import.
+                }else if(type=="AudioEvent"){
+                    instance=Normalize(xml);buffer=AuthoredAmbientCompiler.Compile(instance);
                 }else if(type=="ArmorTemplate"){
                     instance=Normalize(xml);var plugin=new Ra3Ep1ArmorPlugin();plugin.Initialize(TargetPlatform.Win32);buffer=plugin.ProcessInstance(instance);
                 }else if(type=="WeaponTemplate"){
@@ -112,10 +118,12 @@ internal static class ConscriptMultiAssetBuild
             int localReferences=ordered.Sum(b=>b.Instance.ReferencedInstances.Count(r=>built.ContainsKey(new(r.TypeId,r.InstanceId))));int stockReferences=ordered.Sum(b=>b.Instance.ReferencedInstances.Count)-localReferences;
             Console.WriteLine("Resolving references: "+ordered.Count+" assets dependency-sorted; "+localReferences+" local and "+stockReferences+" stock reference occurrences resolved.");
             var instances=ordered.Select(b=>b.Instance).ToArray();var chunks=ordered.Select(b=>b.Buffer).ToArray();var flags=ordered.Select(b=>b.Tokenized).ToArray();uint checksum=(uint)typeof(AssetDeclarationDocument).GetMethod("ComputeOutputChecksum",BindingFlags.NonPublic|BindingFlags.Static)!.Invoke(null,new object[]{instances})!;
-            var runtime=new ReferencedFileBuffer();typeof(OutputManager).GetMethod("AddExternalManifestReferences",BindingFlags.NonPublic|BindingFlags.Static)!.Invoke(null,new object[]{runtime,new[]{Path.GetFullPath(manifest),Path.GetFullPath(global)},"data\\static.manifest;data\\global.manifest"});
+            // Reborn: emitted AudioEvents import original AudioFiles from the runtime audio stream, in addition to existing static/global references.
+            var physical=new[]{Path.GetFullPath(manifest),Path.GetFullPath(global)}.Concat(audioManifest==null?Array.Empty<string>():new[]{audioManifest}).ToArray();var runtimeNames=new[]{"data\\static.manifest","data\\global.manifest"}.Concat(audioManifest==null?Array.Empty<string>():new[]{"data\\audio.manifest"}).ToArray();
+            var runtime=new ReferencedFileBuffer();typeof(OutputManager).GetMethod("AddExternalManifestReferences",BindingFlags.NonPublic|BindingFlags.Static)!.Invoke(null,new object[]{runtime,physical,string.Join(";",runtimeNames)});
             Console.WriteLine("Generating stream: "+instances.Length+" assets, output checksum "+checksum.ToString("x8")+".");
             var streams=BoundedDiagnosticBuild.SerializeAssetGraph(instances,chunks,checksum,runtime,flags,fingerprints);var repeated=BoundedDiagnosticBuild.SerializeAssetGraph(instances,chunks,checksum,runtime,flags,fingerprints);if(streams.Any(p=>!p.Value.SequenceEqual(repeated[p.Key])))throw new InvalidDataException("Mixed stream serialization is not deterministic.");
-            Directory.CreateDirectory(output);string verification=Path.Combine(output,"stream-readback");ModifierFXStreamSmokeTest.WriteNew(verification,streams);BoundedDiagnosticBuild.Verify(verification,instances,chunks,streams,checksum,new[]{"data\\static.manifest","data\\global.manifest"},flags);
+            Directory.CreateDirectory(output);string verification=Path.Combine(output,"stream-readback");ModifierFXStreamSmokeTest.WriteNew(verification,streams);BoundedDiagnosticBuild.Verify(verification,instances,chunks,streams,checksum,runtimeNames,flags);
             // Reborn: reported only after deterministic re-serialization and binary/relocation/import readback both passed.
             Console.WriteLine("Linking binary, relocation and import data verified by readback; mod Stream complete");compileLog.Statistics();
             // Reborn: pure command-set graphs publish through the same verified stream/archive contract without a dummy unit.

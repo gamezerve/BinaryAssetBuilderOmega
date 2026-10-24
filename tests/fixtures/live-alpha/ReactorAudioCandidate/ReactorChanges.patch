@@ -1,0 +1,31 @@
+--- a/alpha/mods/Reborn/Data/Soviet/Structures/SovietPowerPlantAdvanced.xml
++++ b/alpha/mods/Reborn/Data/Soviet/Structures/SovietPowerPlantAdvanced.xml
+@@ -29,6 +29,8 @@
+ 		<Include
+ 			type="instance"
+ 			source="DATA:BaseObjects/BaseSovietStructure.xml" />
++		<!-- Reborn: custom ambient and frame-synchronized electrical accents reuse retail Soviet audio samples. -->
++		<Include type="all" source="DATA:Sounds/RebornReactorAudio.xml" />
+ 	</Includes>
+ 	<GameObject
+ 		id="SovietPowerPlantAdvanced"
+@@ -661,11 +663,18 @@
+ 					z = "0.0" />
+ 			</Shape>
+ 		</Geometry>
++		<!-- Reborn: match the six existing idle-animation spark FX frames; other animation clips do not trigger these accents. -->
++		<ClientBehaviors>
++			<AnimationSoundClientBehavior id="RebornSuperReactorSparkAudio">
++				<Sound Sound="SOV_RebornSuperReactor_Sparks" Animation="SBPowerPlantAdvanced_IDLA" Frame="50 100 150 200 250 300" />
++			</AnimationSoundClientBehavior>
++		</ClientBehaviors>
+ 		<AudioArrayVoice>
+ 			<AudioEntry Sound="SOV_SuperReactor_Select" AudioType="voiceSelect" />
+ 		</AudioArrayVoice>
+ 		<AudioArraySound>
+-			<AudioEntry Sound="ALL_PowerPlant_AmbientLoop" AudioType="soundAmbient" />
++			<!-- Reborn: the deeper Soviet reactor loop replaces the shared Allied turbine event. -->
++			<AudioEntry Sound="SOV_RebornSuperReactor_AmbientLoop" AudioType="soundAmbient" />
+ <!--
+ 			<AudioEntry Sound="HumanFaction_MediumBuilding_LightDamageMS" AudioType="soundOnDamaged" />
+ 			<AudioEntry Sound="HumanFaction_MediumBuilding_HeavyDamageMS" AudioType="soundOnReallyDamaged" />

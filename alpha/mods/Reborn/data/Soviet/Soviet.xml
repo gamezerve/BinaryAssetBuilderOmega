@@ -72,7 +72,7 @@
 		<!-- <Include type="all" source="structures/SovietNavalYard.xml" /> -->
 		<!-- Reborn: include the authored Power Plant alongside the refinery for the next compiler coverage check. -->
 		<!-- <Include type="all" source="structures/SovietPowerPlant.xml" /> -->
-		<!-- <Include type="all" source="structures/SovietPowerPlantAdvanced.xml" /> -->
+		<Include type="all" source="structures/SovietPowerPlantAdvanced.xml" />
 		<Include type="all" source="structures/SovietRefinery.xml" />
 		<!-- <Include type="all" source="structures/SovietSuperWeapon.xml" /> -->
 		<!-- <Include type="all" source="DATA:Soviet/structures/SovietSuperWeaponAdvanced.xml" /> -->

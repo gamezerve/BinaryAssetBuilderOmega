@@ -3,27 +3,27 @@
 	<Tags></Tags>
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
-		<Include
-			type="all"
-			source="ART:SBPowerPlantAdvanced_SKN.w3x" />				
-		<Include
-			type="all"
-			source="ART:SBPowerPlantAdvanced_BLD.w3x" />				
-		<Include
-			type="all"
-			source="ART:SBPowerPlantAdvanced_FX.w3x" />
-		<Include
-			type="all"
-			source="ART:SBPowerPlantAdvanced_Platform.w3x" />
-		<Include
-			type="all"
-			source="ART:SBPowerPlantAdvanced_Platform_BLD.w3x" />
-		<Include
-			type="all"
-			source="ART:SBPowerPlantAdvanced_IDLA.w3x" />		
-		<Include
-			type="all"
-			source="ART:SBPowerPlantAdvanced_Scaffold.w3x" />					
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBPowerPlantAdvanced_SKN.w3x" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBPowerPlantAdvanced_BLD.w3x" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBPowerPlantAdvanced_FX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBPowerPlantAdvanced_Platform.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBPowerPlantAdvanced_Platform_BLD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBPowerPlantAdvanced_IDLA.w3x" />		 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBPowerPlantAdvanced_Scaffold.w3x" />					 -->
 			
 		<!-- Base Object -->
 		<Include
@@ -60,9 +60,9 @@
 		<ArmorSet
 			Armor="SovietAdvancedPowerPlantArmor"
 			DamageFX="FactionStructureDamageFX" />
-		<GameDependency>			
-			<RequiredObject>SovietRefinery</RequiredObject>
-		</GameDependency>
+		<!-- <GameDependency>			 -->
+			<!-- <RequiredObject>SovietRefinery</RequiredObject> -->
+		<!-- </GameDependency> -->
 		<SkirmishAIInformation
 			BaseBuildingLocation="SPREAD">
       <ConstructionBaseSelectionCriteria
@@ -665,12 +665,21 @@
 			<AudioEntry Sound="SOV_SuperReactor_Select" AudioType="voiceSelect" />
 		</AudioArrayVoice>
 		<AudioArraySound>
-			<AudioEntry Sound="ALL_PowerPlant_AmbientLoop" AudioType="soundAmbient" />
+			<AudioEntry Sound="SOV_RebornSuperReactor_AmbientLoop" AudioType="soundAmbient" />
 <!--
 			<AudioEntry Sound="HumanFaction_MediumBuilding_LightDamageMS" AudioType="soundOnDamaged" />
 			<AudioEntry Sound="HumanFaction_MediumBuilding_HeavyDamageMS" AudioType="soundOnReallyDamaged" />
 -->
 		</AudioArraySound>
+		<!-- Reborn: synchronize electrical accents with the six existing idle-animation spark frames. -->
+		<ClientBehaviors>
+			<AnimationSoundClientBehavior id="RebornSuperReactorSparkAudio">
+				<Sound
+					Sound="SOV_RebornSuperReactor_Sparks"
+					Animation="SBPowerPlantAdvanced_IDLA"
+					Frame="50 100 150 200 250 300" />
+			</AnimationSoundClientBehavior>
+		</ClientBehaviors>
 		<VisionInfo
 			VisionRange="150"
 			ShroudClearingRange="500" />

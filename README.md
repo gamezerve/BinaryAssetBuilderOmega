@@ -8,6 +8,12 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: authored events reuse retail audio samples through SDK-local metadata and the normal verified stream path. -->
+AudioEvent source authoring is connected to alpha builds, including AMBIENT
+events and start/kill fades, with original Soviet reactor native qualification.
+See [authored ambient events](docs/RA3EP1_AUTHORED_AMBIENT.md) for the optional
+audio catalog and the pending Super Reactor sound candidate.
+
 <!-- Reborn: scripted state FX events use their real EP1 event records, not an empty-list placeholder. -->
 `ScriptedModelDraw` now emits populated `FXEvent` lists in animation and model
 states, including frame controls, FXList references, bone names and the skipped-frame

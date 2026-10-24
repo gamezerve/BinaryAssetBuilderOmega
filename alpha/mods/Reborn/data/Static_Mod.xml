@@ -111,4 +111,64 @@
 		<Include type="all" source="W3X.xml"/>	
 		
 	</Includes>
+	
+	
+	
+	    <!-- Reborn: reuse Soviet reactor samples at a lower pitch for a distinct Super Reactor ambient. -->
+    <AudioEvent
+        id="SOV_RebornSuperReactor_AmbientLoop"
+        Volume="58"
+        PerFileVolumeShift="-10"
+        MinRange="200"
+        MaxRange="550"
+        ShrunkenPitchModifier="2"
+        ShrunkenVolumeModifier="85"
+        ReverbEffectLevel="100"
+        Limit="3"
+        Priority="LOWEST"
+        Type="WORLD SHROUDED EVERYONE"
+        Control="FADE_ON_START FADE_ON_KILL LOOP"
+        SubmixSlider="AMBIENT">
+
+        <PerFilePitchShift Low="-14" High="-10" />
+
+        <Sound>SBReact_ambLoopa</Sound>
+        <Sound>SBReact_ambLoopb</Sound>
+        <Sound>SBReact_ambLoopc</Sound>
+        <Sound>SBReact_ambLoopd</Sound>
+        <Sound>SBReact_ambLoope</Sound>
+        <Sound>SBReact_ambLoopf</Sound>
+        <Sound>SBReact_ambLoopg</Sound>
+        <Sound>SBReact_ambLooph</Sound>
+        <Sound>SBReact_ambLoopi</Sound>
+        <Sound>SBReact_ambLoopj</Sound>
+        <Sound>SBReact_ambLoopk</Sound>
+        <Sound>SBReact_ambLoopl</Sound>
+        <Sound>SBReact_ambLoopm</Sound>
+        <Sound>SBReact_ambLoopn</Sound>
+    </AudioEvent>
+
+    <!-- Reborn: quiet electrical accents triggered at the idle animation's spark frames; this event does not loop independently. -->
+    <AudioEvent
+        id="SOV_RebornSuperReactor_Sparks"
+        Volume="20"
+        VolumeShift="-5"
+        MinRange="100"
+        MaxRange="400"
+        ShrunkenPitchModifier="2"
+        ShrunkenVolumeModifier="85"
+        ReverbEffectLevel="100"
+        Limit="3"
+        Priority="LOWEST"
+        Type="WORLD SHROUDED EVERYONE"
+        SubmixSlider="AMBIENT">
+
+        <PitchShift Low="-10" High="0" />
+
+        <Sound>WBRepair_droneSparka</Sound>
+        <Sound>WBRepair_droneSparkb</Sound>
+        <Sound>WBRepair_droneSparkc</Sound>
+    </AudioEvent>
+	
+	
 </AssetDeclaration>
