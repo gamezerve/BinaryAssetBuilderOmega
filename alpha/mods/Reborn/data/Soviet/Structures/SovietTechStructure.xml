@@ -4,24 +4,24 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:SBTechStructure_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:SBTechStructure_BLD.w3x" />
-		<Include
-			type="all"
-			source="ART:SBPowerPlantAdvanced_Platform.w3x" />
-		<Include
-			type="all"
-			source="ART:SBPowerPlantAdvanced_Platform_BLD.w3x" />			
-		<Include
-			type="all"
-			source="ART:SBTechStructure_FX.w3x" />
-		<Include
-			type="all"
-			source="ART:SBTechStructure_Scaffold.w3x" />				
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBTechStructure_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBTechStructure_BLD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBPowerPlantAdvanced_Platform.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBPowerPlantAdvanced_Platform_BLD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBTechStructure_FX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBTechStructure_Scaffold.w3x" /> -->
 		<!-- Base Object -->
 		<Include
 			type="instance"
@@ -422,10 +422,11 @@
 				id="ModuleTag_StructureUnpackUpdate"
 				UnpackTime="=$SOVIET_TECHSTRUCTURE_LOCAL_UNPACK_TIME" />
 
-			<ProductionUpdate
-				id="ModuleTag_ProductionUpdate"
-				Type="UPGRADE" 
-				GiveNoXP="true" />
+            <!-- Reborn: There is nothing to upgrade or build here. It just creates an unnecessary production bar under the health bar -->
+			<!-- <ProductionUpdate -->
+				<!-- id="ModuleTag_ProductionUpdate" -->
+				<!-- Type="UPGRADE"  -->
+				<!-- GiveNoXP="true" /> -->
 			<xi:include
 				href="../../Includes/GenericBuildingRepair.xml" />
 			<xi:include

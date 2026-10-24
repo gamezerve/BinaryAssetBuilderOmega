@@ -81,3 +81,15 @@
 	TYPE:SOVIETAIRFIELD
 		"Aircraft Production \n> Health = 1800 \n> Shroud Clearing Range = 500"
 	End
+	
+// Soviet Super Reactor
+
+	TYPE:SOVIETPOWERPLANTADVANCED
+		"Advanced Power Structure \n> Power Generation = +350 \n> Death Weapon Damage = 1500 \n> Death Weapon Radius = 250 \n> Health = 4000 \n> Shroud Clearing Range = 500"
+	End
+	
+// Soviet Battle Lab
+	
+	TYPE:SOVIETTECHSTRUCTURE
+		"Technology Structure \n> Health = 2000 \n> Shroud Clearing Range = 500"
+	End
