@@ -8,6 +8,11 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: death weapons use their actual source conditions rather than a fixed inherited-building sample. -->
+`FireWeaponWhenDead` supports authored death conditions, weapon references,
+optional offsets and probability lists through the existing EP1 writer and
+independent source/native/metadata verification. See [death weapon support](docs/RA3EP1_FIRE_WEAPON_DEATH.md).
+
 <!-- Reborn: original airfields require EP1-specific recall and parking records, not the older KW layouts. -->
 `RecallUnitsSpecialPower` and `ParkingPlaceBehavior` now use their full EP1
 layouts, including aircraft recall limits, parking/production limits, helipad

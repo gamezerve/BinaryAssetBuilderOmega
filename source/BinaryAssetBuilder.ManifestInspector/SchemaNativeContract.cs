@@ -288,8 +288,10 @@ internal sealed class SchemaNativeContract
             foreach(string token in attribute.Value.Split((char[]?)null,StringSplitOptions.RemoveEmptyEntries))
             {
                 if(token[0] is '+' or '-')throw new InvalidDataException("Schema-proved prefixed flag operations are not reviewed: "+path);
+                // Reborn: SAGE ALL fills the entire mask even when an XSD enumeration includes ALL as a sentinel literal rather than an ordinary bit.
+                if(token=="ALL"){Array.Fill(bytes,(byte)255);continue;}
                 int bit=TryOrdinal(item,token);
-                if(bit==int.MinValue){if(token=="ALL"){Array.Fill(bytes,(byte)255);continue;}throw new InvalidDataException("Schema-proved flag is not an official enumeration value: "+path+" = "+token);}
+                if(bit==int.MinValue)throw new InvalidDataException("Schema-proved flag is not an official enumeration value: "+path+" = "+token);
                 if(bit<0)continue;
                 if(bit>=width*8)throw new InvalidDataException("Schema-proved flag exceeds native width: "+path+" = "+token);bytes[bit/8]|=(byte)(1<<(bit%8));
             }

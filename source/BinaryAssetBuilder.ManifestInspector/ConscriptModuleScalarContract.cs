@@ -143,6 +143,8 @@ internal static class ConscriptModuleScalarContract
             if(owner.NativeType==typeof(SecondaryDamageTrackerModuleData))SecondaryDamageTrackerContract.Validate(owner.Element);
             // Reborn: creation and destroy families share full authored death-condition validation.
             if(DeathBehaviorContract.Supports(owner.NativeType))DeathBehaviorContract.Validate(owner.Element);
+            // Reborn: nested death conditions retain source-located validation on death weapons as well as Die-module families.
+            if(owner.NativeType==typeof(Ep1FireWeaponWhenDeadBehaviorModuleData))DeathBehaviorContract.Validate(owner.Element);
             foreach(var binding in Bindings(owner.NativeType)){_=Bytes(owner.Element,binding);if(binding.Codec=="SageBool"&&owner.Element.HasAttribute(binding.Name))owner.Element.SetAttribute(binding.Name,Boolean(Literal(owner.Element,binding))?"true":"false");}
         }
     }

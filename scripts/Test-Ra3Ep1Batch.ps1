@@ -71,6 +71,8 @@ if($SchedulerControl){
     Add-BatchCase 'xml-source-diagnostics' 'OriginalXmlSourceCoordinates' @('sdk-xml-diagnostics-self-test',(Join-Path $OutputDirectory 'xml-source-diagnostics'))
     # Reborn: original/edit/default airfield modules retain their real EP1 native layouts and stock metadata grammar.
     Add-BatchCase 'airfield-behaviors' 'StockQualifiedAirfieldModules' @('airfield-behaviors-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: reactor explosion conditions, retargeted weapons and probability rows retain independent native/import/metadata checks.
+    Add-BatchCase 'fire-weapon-death' 'StockQualifiedDeathWeapons' @('fire-weapon-death-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: qualify variable complete-object modules independently before widening Studio's fixed publication profile.
     Add-BatchCase 'conscript-variable-modules' 'VariableConscriptQualifiedStreamsAndPackages' @('conscript-module-graph-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'variable-module-graphs'))
     Add-BatchCase 'weapon-authored-values' 'BoundedScopedPackage' @('weapon-authored-build-self-test',(Join-Path $OutputDirectory 'weapon-builds'),$StaticManifest,$GlobalManifest)

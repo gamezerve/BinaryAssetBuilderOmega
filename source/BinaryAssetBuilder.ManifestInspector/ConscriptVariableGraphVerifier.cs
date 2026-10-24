@@ -50,6 +50,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> assignSlaves;
     // Reborn: recall and parking each retain an independent lazily qualified EP1 metadata grammar.
     private readonly Dictionary<Type,Lazy<StockMetadataGrammar>> airfield=new();
+    // Reborn: reactor death weapons have independently qualified native and inherited upgrade/death metadata.
+    private readonly Lazy<StockMetadataGrammar> fireWeaponDeath;
     // Reborn: schema-proved draw leaves need the generic proof qualified on stock Conscript draws and a metadata grammar from stock draws.
     private readonly Dictionary<Type,Lazy<StockMetadataGrammar>> schemaFamilies=new();
     // Reborn: Geometry is a nonmodule owner with independently qualified source/native and stock metadata grammar.
@@ -94,6 +96,7 @@ internal sealed class ConscriptVariableGraphVerifier
         luaEventList=new(()=>LUAEventListContract.QualifyStock(manifest,official));
         buildingBehavior=new(()=>BuildingBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        fireWeaponDeath=new(()=>FireWeaponDeathContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         // Reborn: both source families use their own native layout, independently witnessed on retail airfields.
         foreach(var type in new[]{typeof(Ep1RecallUnitsSpecialPowerModuleData),typeof(Ep1ParkingPlaceBehaviorModuleData)})airfield.Add(type,new(()=>AirfieldBehaviorContract.Qualify(type,manifest,baseline,referenceSchemas,catalog)));
         foreach(var family in SchemaNativeContract.Families)schemaFamilies.Add(family.Type,new(()=>QualifySchemaFamily(manifest,family)));
@@ -194,6 +197,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 if(AirfieldBehaviorContract.Supports(owner.NativeType)){
                     var grammar=airfield[owner.NativeType].Value;var airfieldNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;string wire=AirfieldBehaviorContract.Wire(owner.NativeType);
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,FastHash.GetHashCode(wire),airfieldNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(airfieldNative,official,wire,owner.NativeType);int size=grammar.Verify(metadata,airfieldNative,owner.NativeType,proof.Records);Own(airfieldNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: variable death masks, optional offsets, probability rows and weapon/upgrade imports are checked against the actual authored source.
+                if(owner.NativeType==typeof(Ep1FireWeaponWhenDeadBehaviorModuleData)){
+                    var grammar=fireWeaponDeath.Value;var deathWeaponNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,FireWeaponDeathContract.TypeId,deathWeaponNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(deathWeaponNative,official,FireWeaponDeathContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,deathWeaponNative,owner.NativeType,proof.Records);Own(deathWeaponNative,start,stop);Splice(owner,metadata,start,size);continue;
                 }
                 // Reborn: chooser presence and all source-bound native fields/imports own a source-sized AI metadata fragment.
                 if(group.Key=="AI"){
