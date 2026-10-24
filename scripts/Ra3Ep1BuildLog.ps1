@@ -14,9 +14,9 @@ function Write-SdkBuildLine([string]$Message){$script:BuildLogLines.Add($Message
 #-------------------------------------------------------------------------------------------------
 function Start-SdkBuildPhase([int]$Number,[string]$Label){$script:PhaseLabel="Step ${Number}: $Label";$script:PhaseClock=[Diagnostics.Stopwatch]::StartNew();Write-SdkBuildLine $script:PhaseLabel}
 #-------------------------------------------------------------------------------------------------
-<# Reborn: do not label skipped or failed work as a successful compiler operation. #>
+<# Reborn: append the local completion clock to each phase duration without labelling skipped or failed work as successful. #>
 #-------------------------------------------------------------------------------------------------
-function Stop-SdkBuildPhase([string]$Note){if($Note){Write-SdkBuildLine $Note};if($script:PhaseClock){$script:PhaseClock.Stop();Write-SdkBuildLine ('Step time taken: '+$script:PhaseClock.Elapsed.ToString('c'));$script:PhaseClock=$null}}
+function Stop-SdkBuildPhase([string]$Note){if($Note){Write-SdkBuildLine $Note};if($script:PhaseClock){$script:PhaseClock.Stop();Write-SdkBuildLine ('Step time taken: '+$script:PhaseClock.Elapsed.ToString('c')+' ['+[DateTime]::Now.ToString('HH:mm:ss',[Globalization.CultureInfo]::InvariantCulture)+']');$script:PhaseClock=$null}}
 #-------------------------------------------------------------------------------------------------
 <# Reborn: preserve raw lines on disk and show diagnostics/progress without JSON receipts or stack-trace noise. #>
 #-------------------------------------------------------------------------------------------------
