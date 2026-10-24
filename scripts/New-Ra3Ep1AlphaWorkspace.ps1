@@ -44,7 +44,7 @@ if($LASTEXITCODE-ne 0){throw ('Workspace compiler build failed; see '+$buildLog)
 $files=[Collections.Generic.List[object]]::new()
 foreach($name in @('BinaryAssetBuilder.ManifestInspector.exe','BinaryAssetBuilder.ManifestInspector.dll',
     'BinaryAssetBuilder.ManifestInspector.deps.json','BinaryAssetBuilder.ManifestInspector.runtimeconfig.json',
-    'BinaryAssetBuilder.Core.dll','BinaryAssetBuilder.Utility.dll','BinaryAssetBuilder.XmlCompiler.dll','SageBinaryData.dll')){
+    'BinaryAssetBuilder.Core.dll','BinaryAssetBuilder.Utility.dll','BinaryAssetBuilder.XmlCompiler.dll','BinaryAssetBuilder.W3XCompiler.dll','SageBinaryData.dll')){
     $files.Add([pscustomobject]@{Source=(Join-Path $compiler $name);Relative=('tools/compiler/'+$name);Origin='project-build'})
 }
 foreach($relative in @('scripts/Invoke-Ra3Ep1AlphaBuild.ps1','LICENSE','alpha/README.md',

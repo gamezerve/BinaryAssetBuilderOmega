@@ -8,13 +8,20 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: enable the three geometry processors with the actual EP1 hierarchy and PC vertex formats. -->
+`W3DHierarchy`, `W3DCollisionBox` and `W3DMesh` authoring is now connected to
+W3X includes and normal stream/BIG packaging. Hierarchy pivot names use EP1
+Poid hashes, model coordinates retain uppercase X/Y/Z, and mesh declarations
+use the retail EP1 ASCII layout rather than legacy D3D9 binary declarations.
+See [model support and validation](docs/RA3EP1_W3D_GEOMETRY.md).
+
 <!-- Reborn: W3X container declarations use the existing XML writer and normal dependency-sorted stream packaging. -->
 `W3DContainer` authoring is enabled, including `ART:` W3X includes, custom IDs,
 optional Hierarchy, and any schema-valid SubObject list with Mesh/CollisionBox
 references. Existing referenced assets stay external; WorldBuilder hierarchy
-and render identities are available for lookup. Mesh, hierarchy, collision-box
-and animation **compilation** are separate processors and are not enabled by
-container support. See [W3DContainer scope](docs/RA3EP1_W3D_CONTAINER.md).
+and render identities are available for lookup. Related mesh/hierarchy/collision
+processors are now enabled separately; animation compilation remains a separate
+step. See [W3DContainer scope](docs/RA3EP1_W3D_CONTAINER.md).
 
 <!-- Reborn: enable the existing assign-slaves SpecialPower ABI through independent source/native/metadata verification. -->
 `AssignSlavesTargetObjectSpecialPower` is enabled with authored IDs, compatible

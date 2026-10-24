@@ -10,7 +10,7 @@ foreach($path in @($CompilerDirectory,(Split-Path -Parent $OutputPath))){
 }
 $rows=[Collections.Generic.List[object]]::new()
 foreach($name in @('BinaryAssetBuilder.ManifestInspector.exe','BinaryAssetBuilder.ManifestInspector.dll',
-    'BinaryAssetBuilder.Core.dll','BinaryAssetBuilder.Utility.dll','BinaryAssetBuilder.XmlCompiler.dll','SageBinaryData.dll',
+    'BinaryAssetBuilder.Core.dll','BinaryAssetBuilder.Utility.dll','BinaryAssetBuilder.XmlCompiler.dll','BinaryAssetBuilder.W3XCompiler.dll','SageBinaryData.dll',
     'BinaryAssetBuilder.ManifestInspector.deps.json','BinaryAssetBuilder.ManifestInspector.runtimeconfig.json')){
     $path=Join-Path $CompilerDirectory $name;$file=Get-Item -LiteralPath $path
     if($file.Length-gt 16MB -or ($file.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0){throw 'Audit file oversized or redirected.'}

@@ -13,6 +13,8 @@
     <ProjectReference Include="..\BinaryAssetBuilder.Utility\BinaryAssetBuilder.Utility.csproj" />
     <ProjectReference Include="..\SageBinaryData\SageBinaryData.csproj" />
     <ProjectReference Include="..\BinaryAssetBuilder.XmlCompiler\BinaryAssetBuilder.XmlCompiler.csproj" />
+    <!-- Reborn: keep the W3X marshaler assembly distinct from the XML marshaler's global type. -->
+    <ProjectReference Include="..\BinaryAssetBuilder.W3XCompiler\BinaryAssetBuilder.W3XCompiler.csproj" Aliases="W3x" />
   </ItemGroup>
 
   <!-- Reborn: the successful complete alpha toolchain build refreshes one stable development SDK; failed builds never publish tools. -->

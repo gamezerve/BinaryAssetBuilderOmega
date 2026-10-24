@@ -389,7 +389,8 @@ public static partial class Marshaler
         Marshal(node, *objT, state);
     }
 
-    private static unsafe void Marshal(Node node, W3DMeshMarshalerHelper* objT, Tracker state)
+    // Reborn: carry an explicit EP1 layout option without changing legacy mesh callers or using shared mutable mode flags.
+    private static unsafe void MarshalMeshVertexData(Node node, W3DMeshMarshalerHelper* objT, Tracker state, bool ep1)
     {
         if (node is null)
         {
@@ -407,13 +408,29 @@ public static partial class Marshaler
         Marshal(node.GetChildNode(nameof(W3DMeshPipelineVertexData.ShadeIndices), null), &pipelineData->ShadeIndices, helperTracker);
         using (Tracker.Context context = state.Push(&objT->VertexData, (uint)sizeof(W3DMeshVertexData), 1u))
         {
-            using W3DMeshProcessor processor = new W3DMeshProcessor();
+            using W3DMeshProcessor processor = new W3DMeshProcessor{UseEp1VertexDeclaration=ep1};
             processor.BuildVertexData(pipelineData, (W3DMeshVertexData*)objT->VertexData, state);
         }
         Marshal(node, (BaseRenderAssetType*)objT, state);
     }
 
     public static unsafe void Marshal(Node node, W3DMesh* objT, Tracker state)
+    {
+        MarshalMesh(node,objT,state,false);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: compile the same source mesh using the separately witnessed EP1 vertex declaration format. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void MarshalEp1Mesh(Node node, W3DMesh* objT, Tracker state)
+    {
+        MarshalMesh(node,objT,state,true);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: mesh native fields and imports share their writer; only the vertex declaration format depends on the selected target. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void MarshalMesh(Node node, W3DMesh* objT, Tracker state, bool ep1)
     {
         if (node is null)
         {
@@ -428,7 +445,7 @@ public static partial class Marshaler
         Marshal(node.GetChildNode(nameof(W3DMesh.Triangles), null), &objT->Triangles, state);
         Marshal(node.GetChildNode(nameof(W3DMesh.FXShader), null), &objT->FXShader, state);
         Marshal(node.GetChildNode(nameof(W3DMesh.AABTree), null), &objT->AABTree, state);
-        Marshal(node, (W3DMeshMarshalerHelper*)objT, state);
+        MarshalMeshVertexData(node, (W3DMeshMarshalerHelper*)objT, state, ep1);
     }
 
     public static unsafe void Marshal(Node node, W3DAnimation.CompressionSetting* objT, Tracker state)

@@ -73,11 +73,11 @@ internal static class ConscriptSourceInput
         //-------------------------------------------------------------------------------------------------
         bool Visit(string path,string confinement)
         {
-            if(!seen.Add(path))return false;if(seen.Count>32)throw new InvalidDataException("Source routing exceeds 32 XML files.");
+            if(!seen.Add(path))return false;if(seen.Count>512)throw new InvalidDataException("Source routing exceeds 512 XML/W3X files.");
             var xml=Read(path);var element=xml.DocumentElement!;
             if(element.NamespaceURI!=Ea)return false;
             // Reborn: explicit upgrade declarations select the complete mixed/support stream backend, including upgrade-only mods.
-            if(element.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" || element.ChildNodes.OfType<XmlElement>().Any(e=>e.NamespaceURI==Ea && e.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer"))return true;
+            if(element.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" || element.ChildNodes.OfType<XmlElement>().Any(e=>e.NamespaceURI==Ea && e.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh"))return true;
             foreach(XmlElement include in element.GetElementsByTagName("Include",Ea))
             {
                 // Reborn: W3X includes contain ordinary EA declarations and can select the container-only build route.
@@ -99,10 +99,11 @@ internal static class ConscriptSourceInput
         var input=ConscriptSourcePreparation.Load(entry,sdk==null?null:SdkSourceSearch.ForMod(entry,sdk,stockData));var schemas=Schemas();
         var baseline=Read(Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"live-alpha","ConscriptBuildTime1","data","mod.xml"));
         // Reborn: a bare command-set document has no Include/base context; never silently discard an unprocessed inheritance marker.
-        if(input.Game.DocumentElement!.LocalName is "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer"&&input.Game.DocumentElement.HasAttribute("inheritFrom"))throw SdkXmlDiagnostics.At(new InvalidDataException("Use an AssetDeclaration with visible instance/all sources for asset inheritance."),input.Game.DocumentElement.GetAttributeNode("inheritFrom"));
+        if(input.Game.DocumentElement!.LocalName is "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh"&&input.Game.DocumentElement.HasAttribute("inheritFrom"))throw SdkXmlDiagnostics.At(new InvalidDataException("Use an AssetDeclaration with visible instance/all sources for asset inheritance."),input.Game.DocumentElement.GetAttributeNode("inheritFrom"));
         // Reborn: a standalone command-set primary needs schema admission, not the unrelated complete-GameObject topology gate.
         // Reborn: validate every emitted GameObject before detaching source maps, so errors in secondary objects retain original file/line diagnostics.
-        try{foreach(var asset in new[]{input.Game}.Concat(input.AdditionalAssets).Concat(input.Command==null?Array.Empty<XmlDocument>():new[]{input.Command})){if(asset.DocumentElement!.LocalName=="GameObject")Admit(asset,baseline,schemas);var check=Parse(Encoding.UTF8.GetBytes(asset.DocumentElement!.OuterXml));check.Schemas.Add(schemas);check.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));if(asset.DocumentElement.LocalName=="WeaponTemplate")ConscriptMultiAssetBuild.AdmitWeapon(asset,schemas,Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!);}}
+        // Reborn: malformed mesh channels fail while original W3X source coordinates are still available, before any native conversion.
+        try{foreach(var asset in new[]{input.Game}.Concat(input.AdditionalAssets).Concat(input.Command==null?Array.Empty<XmlDocument>():new[]{input.Command})){if(asset.DocumentElement!.LocalName=="GameObject")Admit(asset,baseline,schemas);var check=Parse(Encoding.UTF8.GetBytes(asset.DocumentElement!.OuterXml));check.Schemas.Add(schemas);check.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));if(asset.DocumentElement.LocalName=="WeaponTemplate")ConscriptMultiAssetBuild.AdmitWeapon(asset,schemas,Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!);if(asset.DocumentElement.LocalName=="W3DMesh")W3DGeometryCompiler.AdmitMesh(asset.DocumentElement);}}
         catch(Exception error)when(error is InvalidDataException or XmlException or XmlSchemaException){input.Locations?.Enrich(error,entry,SdkXmlDiagnostics.Node(error)?.OwnerDocument??input.Game);throw;}
         Directory.CreateDirectory(output);string game=Path.Combine(output,"game.xml"),command=Path.Combine(output,"command.xml");
         File.WriteAllText(game,input.Game.DocumentElement!.OuterXml,new UTF8Encoding(false));if(input.Command!=null)File.WriteAllText(command,input.Command.DocumentElement!.OuterXml,new UTF8Encoding(false));
@@ -113,7 +114,7 @@ internal static class ConscriptSourceInput
         }
         // Reborn: serialize explicit supporting declarations beside the prepared object, without inventing asset IDs or command edges.
         if(input.AdditionalAssets.Length>0){var additional=new XmlDocument{XmlResolver=null};additional.LoadXml("<AssetDeclaration xmlns='"+Ea+"'/>");foreach(var asset in input.AdditionalAssets)additional.DocumentElement!.AppendChild(additional.ImportNode(asset.DocumentElement!,true));File.WriteAllText(Path.Combine(output,"additional.xml"),additional.OuterXml,new UTF8Encoding(false));}
-        foreach(var source in input.Sources)if(Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(source.Path,1048576)))!=source.Sha256)throw new InvalidDataException("Source changed during preparation: "+source.Path);
+        foreach(var source in input.Sources)if(Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(source.Path,4*1048576)))!=source.Sha256)throw new InvalidDataException("Source changed during preparation: "+source.Path);
         foreach(var resource in input.Resources)if(Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(resource.Path,64*1048576)))!=resource.Sha256)throw new InvalidDataException("Texture resource changed during preparation: "+resource.Path);
         File.WriteAllText(Path.Combine(output,"source-input.json"),JsonSerializer.Serialize(new{GamePath=game,PrimaryType=input.Game.DocumentElement.LocalName,CommandPath=input.Command==null?null:command,AssetCount=1+(input.Command==null?0:1)+input.AdditionalAssets.Length,Identity=input.Game.DocumentElement.GetAttribute("id"),PreparedSourceSha256=Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(input.Game.DocumentElement.OuterXml))),Sources=input.Sources,Searches=input.Searches,Origins=input.Origins,AutomaticCommandGenerated=false},new JsonSerializerOptions{WriteIndented=true}));
         // Reborn: EA-style source lines are emitted only by this single preparation pass, never by the dependency preflight; assets are announced by the compiler.
@@ -174,6 +175,8 @@ internal static class ConscriptSourceInput
     /** Reborn: custom IDs are source-authored rather than a magic trial name; runtime catalog collisions are checked before compiling them. */
     //-------------------------------------------------------------------------------------------------
     internal static bool Identity(string id)=>Regex.IsMatch(id,"^[A-Za-z_][A-Za-z0-9_]{0,127}$",RegexOptions.CultureInvariant);
+    // Reborn: model IDs commonly contain dots; XSD validates their content while these separators retain unambiguous Core Type:Name/index syntax.
+    internal static bool Identity(string type,string id)=>type is "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" ? id.Length>0&&id==id.Trim()&&!id.Any(c=>char.IsControl(c)||c is ':' or '\\' or '/') : Identity(id);
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: name the first unsupported source difference without dumping the full object/script or hiding it behind a fingerprint error. */
@@ -233,7 +236,7 @@ internal static class ConscriptSourceInput
         XmlSchemaSet? official=null;SdkEffectiveSchema.Inspect(shieldCandidate:true,reviewHooks:true,onAdmitted:s=>official=s);if(official==null)throw new InvalidDataException("Reviewed EP1 schemas unavailable.");
         // Reborn: detached support assets use unchanged official types, just like the existing standalone GameObject/command aliases.
         // Reborn: standalone container elements use the unchanged official W3DContainer type, just like other emitted asset roots.
-        var aliases=new XmlSchema{TargetNamespace=Ea,ElementFormDefault=XmlSchemaForm.Qualified};foreach(string name in new[]{"GameObject","LogicCommand","LogicCommandSet","ArmorTemplate","WeaponTemplate","UpgradeTemplate","ObjectCreationList","Texture","PackedTextureImage","W3DContainer"})if(!official.GlobalElements.Contains(new XmlQualifiedName(name,Ea)))aliases.Items.Add(new XmlSchemaElement{Name=name,SchemaTypeName=new XmlQualifiedName(name,Ea)});official.Add(aliases);official.Compile();return official;
+        var aliases=new XmlSchema{TargetNamespace=Ea,ElementFormDefault=XmlSchemaForm.Qualified};foreach(string name in new[]{"GameObject","LogicCommand","LogicCommandSet","ArmorTemplate","WeaponTemplate","UpgradeTemplate","ObjectCreationList","Texture","PackedTextureImage","W3DContainer","W3DHierarchy","W3DCollisionBox","W3DMesh"})if(!official.GlobalElements.Contains(new XmlQualifiedName(name,Ea)))aliases.Items.Add(new XmlSchemaElement{Name=name,SchemaTypeName=new XmlQualifiedName(name,Ea)});official.Add(aliases);official.Compile();return official;
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -254,7 +257,7 @@ internal static class ConscriptSourceInput
     //-------------------------------------------------------------------------------------------------
     /** Reborn: bounded source reads reject DTD/entities, preserve scripts and accept normal XML declarations/comments. */
     //-------------------------------------------------------------------------------------------------
-    private static XmlDocument Read(string path)=>SdkXmlDiagnostics.Parse(SdkEnvironmentPreflight.Read(path,1048576),path);
+    private static XmlDocument Read(string path)=>SdkXmlDiagnostics.Parse(SdkEnvironmentPreflight.Read(path,4*1048576),path);
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: xsi/xi namespace declarations alone do not execute remote schema fetching or XInclude. */

@@ -112,6 +112,8 @@ public struct D3DVertexElement9
 
 internal class W3DMeshProcessor : IDisposable
 {
+    // Reborn: EP1 stores ASCII vertex declarations; old callers retain the binary D3D9 declaration by default.
+    internal bool UseEp1VertexDeclaration { get; set; }
     private unsafe RGBAColor* _defaultColor;
 
     public unsafe W3DMeshProcessor()
@@ -363,7 +365,8 @@ internal class W3DMeshProcessor : IDisposable
                 Offset = 0
             });
         }
-        int num = (int)(pipelineData->Vertices.Count >= pipelineData->BoneInfluences.Count ? pipelineData->BoneInfluences.Count : pipelineData->Vertices.Count);
+        // Reborn: skin influence streams belong to each vertex, independently of the number of position/morph streams.
+        int num = (int)pipelineData->BoneInfluences.Count;
         for (int idx = 0; idx < num; ++idx)
         {
             mappings.Add(new DataMapping
@@ -392,7 +395,7 @@ internal class W3DMeshProcessor : IDisposable
         }
     }
 
-    private static unsafe int DetermineVertexDataLayout(System.Collections.Generic.List<DataMapping> mappings, Tracker state)
+    private static unsafe int DetermineVertexDataLayout(System.Collections.Generic.List<DataMapping> mappings, Tracker state, bool ep1)
     {
         int result = 0;
         foreach (DataMapping mapping in mappings)
@@ -423,7 +426,10 @@ internal class W3DMeshProcessor : IDisposable
                     }
                     break;
                 case UsageType.BlendWeight:
-                    result += sizeof(float);
+                    // Reborn: EP1 skin weights share one normalized four-byte channel, unlike the legacy float-per-influence layout.
+                    if(!ep1)result += sizeof(float);
+                    else if(mapping.UsageIndex==0)result+=4;
+                    else mapping.Offset-=4-mapping.UsageIndex;
                     break;
             }
         }
@@ -465,7 +471,8 @@ internal class W3DMeshProcessor : IDisposable
             if (mapping.UsageType == UsageType.BlendWeight && mapping.UsageIndex >= 1)
             {
                 D3DVertexElement9 last = elements[^1];
-                last.Usage = (VertexElementUsage)((byte)last.Usage + 1);
+                // Reborn: a multi-component weight declaration grows FLOAT1..FLOAT4; its BLENDWEIGHT semantic stays unchanged.
+                last.Type = (VertexElementType)((byte)last.Type + 1);
                 elements[^1] = last;
                 continue;
             }
@@ -514,9 +521,39 @@ internal class W3DMeshProcessor : IDisposable
         }
     }
 
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: EP1 PC declarations match stock ASCII descriptors such as p0:00:3f32 t0:34:2f32 i0:44:4u8. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void BuildVertexDeclaration_Ep1(System.Collections.Generic.List<DataMapping> mappings, List<byte>* declaration, Tracker state)
+    {
+        var fields=new System.Collections.Generic.List<string>();
+        foreach(var mapping in mappings){
+            if((mapping.UsageType==UsageType.BlendIndex||mapping.UsageType==UsageType.BlendWeight)&&mapping.UsageIndex>0)continue;
+            string semantic=mapping.UsageType switch{UsageType.Vertex=>"p",UsageType.Normal=>"n",UsageType.Tangent=>"g",UsageType.Binormal=>"b",UsageType.TexCoord=>"t",UsageType.VertexColor=>"c",UsageType.BlendIndex=>"i",UsageType.BlendWeight=>"w",_=>throw new InvalidOperationException("Unknown EP1 vertex channel.")};
+            string format=mapping.UsageType switch{UsageType.Vertex or UsageType.Normal or UsageType.Tangent or UsageType.Binormal=>"3f32",UsageType.TexCoord=>"2f32",UsageType.VertexColor=>"4u8n",UsageType.BlendIndex=>"4u8",UsageType.BlendWeight=>"4u8n",_=>throw new InvalidOperationException("Unknown EP1 vertex format.")};
+            fields.Add(semantic+mapping.UsageIndex.ToString(System.Globalization.CultureInfo.InvariantCulture)+":"+mapping.Offset.ToString("X2",System.Globalization.CultureInfo.InvariantCulture)+":"+format);
+        }
+        byte[] bytes=System.Text.Encoding.ASCII.GetBytes(string.Join(" ",fields));declaration->Count=(uint)bytes.Length;
+        using Tracker.Context context=state.Push((void**)&declaration->Items,1u,(uint)bytes.Length);for(int i=0;i<bytes.Length;i++)declaration->Items[i]=bytes[i];
+    }
+
     private static unsafe void BuildVertexDeclaration_Xenon(System.Collections.Generic.List<DataMapping> mappings, List<byte>* declaration, Tracker state)
     {
         throw new NotImplementedException();
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: quantize up to four normalized skin influences to EP1's 4u8n channel, distributing rounding remainder deterministically. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void WriteEp1Weights(W3DMeshPipelineVertexData* input,int vertices,byte* target,int stride)
+    {
+        int count=(int)input->BoneInfluences.Count;var fractions=new double[4];var values=new int[4];
+        for(int vertex=0;vertex<vertices;vertex++){
+            double sum=0;for(int j=0;j<count;j++){float value=input->BoneInfluences.Items[j].I.Items[vertex].Weight;if(!float.IsFinite(value)||value<0)throw new InvalidOperationException("Invalid skin weight.");sum+=value;}if(sum<=0)throw new InvalidOperationException("Skin weights have zero total.");
+            int total=0;for(int j=0;j<count;j++){double exact=input->BoneInfluences.Items[j].I.Items[vertex].Weight/sum*255;values[j]=(int)Math.Floor(exact);fractions[j]=exact-values[j];total+=values[j];}
+            while(total<255){int selected=0;for(int j=1;j<count;j++)if(fractions[j]>fractions[selected])selected=j;values[selected]++;fractions[selected]=-1;total++;}
+            for(int j=0;j<4;j++)target[vertex*stride+j]=j<count?(byte)values[j]:(byte)0;
+        }
     }
 
     public unsafe void BuildVertexData(W3DMeshPipelineVertexData* pipelineData, W3DMeshVertexData* outputData, Tracker state)
@@ -528,7 +565,7 @@ internal class W3DMeshProcessor : IDisposable
             InverseBoneMappingTable = new ShortDict(),
             Tracker = state
         };
-        int vertexDataSize = DetermineVertexDataLayout(mappings, state);
+        int vertexDataSize = DetermineVertexDataLayout(mappings, state, UseEp1VertexDeclaration);
         ShortList boneMap = new ShortList();
         ComputeBoneMappingTable(pipelineData, boneMap, converterData.InverseBoneMappingTable);
         int numVertices = (int)pipelineData->Vertices.Items->V.Count;
@@ -583,6 +620,8 @@ internal class W3DMeshProcessor : IDisposable
                                           converterData);
                         break;
                     case UsageType.BlendWeight:
+                        // Reborn: the first EP1 mapping writes all normalized influences together, preserving a byte sum of 255.
+                        if(UseEp1VertexDeclaration){if(mapping.UsageIndex==0)WriteEp1Weights(pipelineData,numVertices,outputData->VertexElementData.Items+mapping.Offset,vertexDataSize);break;}
                         CopyDirect<float>(numVertices,
                                           (sbyte*)mapping.SrcData,
                                           mapping.SrcDeltaToNextElement,
@@ -599,7 +638,8 @@ internal class W3DMeshProcessor : IDisposable
         }
         else
         {
-            BuildVertexDeclaration_Windows(mappings, &outputData->VertexDeclaration, state);
+            if(UseEp1VertexDeclaration)BuildVertexDeclaration_Ep1(mappings, &outputData->VertexDeclaration, state);
+            else BuildVertexDeclaration_Windows(mappings, &outputData->VertexDeclaration, state);
         }
         uint boneMapCount = (uint)boneMap.Count;
         if (state.IsBigEndian)

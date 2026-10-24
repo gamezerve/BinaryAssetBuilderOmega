@@ -21,11 +21,11 @@ and typed imports. Authored output has independent field/auxiliary checks and
 the normal stream/BIG readback. W3X files are hash-tracked source dependencies,
 including their declaring path in diagnostics and compile progress.
 
-W3DMesh, W3DHierarchy, W3DCollisionBox and W3DAnimation declarations still need
-their own compiler integration; requesting them produces an unsupported-type
-error at the W3X source. Referencing an existing asset of those types does not
-require compiling it. Audio processing and texture formats beyond the existing
-TGA profile are unchanged.
+W3DMesh, W3DHierarchy and W3DCollisionBox now have their own
+[compiler integration](RA3EP1_W3D_GEOMETRY.md). W3DAnimation remains a separate
+processor and still produces an unsupported-type error. Referencing an existing
+asset does not require compiling it. Audio processing and texture formats beyond
+the existing TGA profile are unchanged.
 
 Developer regression: `scripts/Test-Ra3Ep1W3DContainer.ps1` uses an isolated
 output directory and original static/global manifests to exercise shared W3X

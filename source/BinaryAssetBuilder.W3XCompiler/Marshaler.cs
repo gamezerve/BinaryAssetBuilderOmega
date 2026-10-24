@@ -691,7 +691,8 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(RGBColor.B), null), &objT->B, state);
     }
 
-    private static unsafe void Marshal(Node node, RGBAColor* objT, Tracker state)
+    // Reborn: vertex-color arrays discover their item marshaler through the public typed-list dispatch.
+    public static unsafe void Marshal(Node node, RGBAColor* objT, Tracker state)
     {
         if (node is null)
         {

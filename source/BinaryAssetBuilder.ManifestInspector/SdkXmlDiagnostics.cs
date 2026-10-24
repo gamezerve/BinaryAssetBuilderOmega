@@ -99,7 +99,8 @@ internal static class SdkXmlDiagnostics
             var documents=snapshots.Select(s=>(s.Path,Xml:Lines(s.Bytes,s.Path))).ToArray();
             XmlNode? node=Node(error);XmlElement? element=node as XmlElement??(node as XmlAttribute)?.OwnerElement;
             // Reborn: support assets are real diagnostic owners too; an included weapon error must not fall back to the entry's Includes line.
-            var owner=element;while(owner!=null&&!IsAsset(owner.LocalName))owner=owner.ParentNode as XmlElement;
+            // Reborn: a shader's nested Texture constant is not a declared Texture asset; real owners carry an asset id.
+            var owner=element;while(owner!=null&&(!IsAsset(owner.LocalName)||!owner.HasAttribute("id")))owner=owner.ParentNode as XmlElement;
             if(owner==null&&final?.DocumentElement is XmlElement finalOwner&&IsAsset(finalOwner.LocalName))owner=finalOwner;
             var frames=documents.SelectMany(d=>d.Xml.Root==null?Array.Empty<(string Path,XElement Root)>():d.Xml.Root.Name.LocalName=="AssetDeclaration"?d.Xml.Root.Elements().Where(e=>IsAsset(e.Name.LocalName)).Select(e=>(d.Path,Root:e)):new[]{(d.Path,Root:d.Xml.Root)}).ToArray();
             var ranks=new Dictionary<XElement,int>();
@@ -121,7 +122,7 @@ internal static class SdkXmlDiagnostics
                 var candidates=new List<(string File,XObject Value,int Rank)>();
                 foreach(var frame in frames)
                 {
-                    bool fragment=!IsAsset(frame.Root.Name.LocalName);
+                    bool fragment=!IsAsset(frame.Root.Name.LocalName)||frame.Root.Attribute("id")==null;
                     if(!fragment&&!ranks.ContainsKey(frame.Root))continue;
                     var anchors=module==null?new[]{frame.Root}:frame.Root.DescendantsAndSelf().Where(e=>e.Name.LocalName==module.LocalName&&e.Name.NamespaceName==module.NamespaceURI&&(string?)e.Attribute("id")==module.GetAttribute("id"));
                     foreach(var anchor in anchors)
@@ -158,7 +159,8 @@ internal static class SdkXmlDiagnostics
     }
 
     // Reborn: all emitted mixed-route types, including upgrades, share identity-based source provenance through their actual inherited source files.
-    private static bool IsAsset(string name)=>name is "GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate";
+    // Reborn: models and other emitted support assets own their W3X/XML coordinates, just like GameObjects and commands.
+    private static bool IsAsset(string name)=>name is "GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate" or "ObjectCreationList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh";
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: relative expanded-name paths preserve unkeyed sibling indices; keyed children use stable authored identity instead. */

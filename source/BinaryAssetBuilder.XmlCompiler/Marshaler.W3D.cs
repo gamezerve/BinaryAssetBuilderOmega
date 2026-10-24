@@ -265,8 +265,20 @@ public static partial class Marshaler
             return;
         }
         Marshal(node.GetAttributeValue(nameof(W3DCollisionBox.JoypadPickingOnly), "false"), &objT->JoypadPickingOnly, state);
-        Marshal(node.GetChildNode(nameof(W3DCollisionBox.Center), null), &objT->Center, state);
-        Marshal(node.GetChildNode(nameof(W3DCollisionBox.Extent), null), &objT->Extent, state);
+        // Reborn: W3DVector3 has uppercase X/Y/Z; the shared gameplay Vector3 marshaler intentionally reads lowercase fields.
+        MarshalW3DVector3(node.GetChildNode(nameof(W3DCollisionBox.Center), null), &objT->Center, state);
+        MarshalW3DVector3(node.GetChildNode(nameof(W3DCollisionBox.Extent), null), &objT->Extent, state);
         Marshal(node, (BaseRenderAssetType*)objT, state);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: preserve model coordinate casing without changing gameplay Vector3 fields or their defaults. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void MarshalW3DVector3(Node node, Vector3* value, Tracker state)
+    {
+        if(node is null)return;
+        Marshal(node.GetAttributeValue("X","0"), &value->X, state);
+        Marshal(node.GetAttributeValue("Y","0"), &value->Y, state);
+        Marshal(node.GetAttributeValue("Z","0"), &value->Z, state);
     }
 }

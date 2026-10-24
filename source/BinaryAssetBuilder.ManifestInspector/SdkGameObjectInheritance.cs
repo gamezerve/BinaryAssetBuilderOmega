@@ -25,7 +25,9 @@ internal static class SdkGameObjectInheritance
             using(var input=new MemoryStream(source,false))using(var reader=XmlReader.Create(input,new XmlReaderSettings{DtdProcessing=DtdProcessing.Prohibit,XmlResolver=null,MaxCharactersInDocument=4*1048576}))xml.Load(reader);
             var root=xml.DocumentElement;if(root?.LocalName!="AssetDeclaration"||root.NamespaceURI!=Ea)throw new InvalidDataException("EA AssetDeclaration required for GameObject inheritance.");
             var assets=root.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is not ("Tags" or "Defines" or "Includes")).ToArray();
-            if(assets.Length>4096||root.SelectNodes(".//*")!.Count>8192)throw new InvalidDataException("GameObject source element/asset bound exceeded.");
+            // Reborn: vertex-heavy W3X leaves use the same byte budget but need more source elements than GameObject module trees.
+            bool modelSource=assets.Any(a=>a.LocalName is "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh");
+            if(assets.Length>4096||root.SelectNodes(".//*")!.Count>(modelSource?262144:8192))throw new InvalidDataException("Source element/asset bound exceeded.");
             var originals=new Dictionary<string,XmlElement>(StringComparer.Ordinal);var resolved=new Dictionary<string,XmlElement>(StringComparer.Ordinal);var active=new HashSet<string>(StringComparer.Ordinal);var overlays=new List<SdkSelfAttributeInheritance.Overlay>();
             // Reborn: cap aggregate memoized trees as well as each individual merge to prevent repeated-base amplification.
             long expandedBytes=source.Length;
@@ -33,7 +35,7 @@ internal static class SdkGameObjectInheritance
             {
                 var asset=assets[assetIndex];
                 // Reborn: the shared Core source overlay also prepares explicit support assets for the mixed GameObject stream (including EP1 ObjectCreationLists, Textures and PackedTextureImages).
-                if(asset.LocalName is not ("GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate" or "ObjectCreationList" or "Texture" or "PackedTextureImage" or "W3DContainer")||!ConscriptSourceInput.Identity(asset.GetAttribute("id"))||!originals.TryAdd(asset.LocalName+":"+asset.GetAttribute("id"),asset))throw new InvalidDataException("GameObject source contains unsupported or duplicate asset identities.");
+                if(asset.LocalName is not ("GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate" or "ObjectCreationList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")||!ConscriptSourceInput.Identity(asset.LocalName,asset.GetAttribute("id"))||!originals.TryAdd(asset.LocalName+":"+asset.GetAttribute("id"),asset))throw new InvalidDataException("GameObject source contains unsupported or duplicate asset identities.");
                 Inspect(asset,0);
                 // Reborn: normalize official complementary upgrade dependencies only after removing structured formatting whitespace for Core's joiner.
                 if(asset.LocalName=="UpgradeTemplate"&&SdkUpgradeNormalization.Normalize(schemas,asset)!=null){

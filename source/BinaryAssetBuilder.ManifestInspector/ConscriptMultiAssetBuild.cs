@@ -37,7 +37,7 @@ internal static class ConscriptMultiAssetBuild
             if(File.Exists(additional))sources.AddRange(Read(additional).DocumentElement!.ChildNodes.OfType<XmlElement>().Select(e=>Xml(e.OuterXml)));
             string command=Path.Combine(Path.GetDirectoryName(entry)!,"command.xml");if(File.Exists(command))sources.Add(Read(command));
             var fingerprints=new Dictionary<uint,(uint Hash,bool Tokenized)>();var locals=new Dictionary<AssetId,XmlDocument>();
-            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "Texture" or "PackedTextureImage" or "W3DContainer")||!ConscriptSourceInput.Identity(id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
+            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
                 uint typeId=FastHash.GetHashCode(type);var examples=stock.Where(a=>a.TypeId==typeId).Select(a=>(a.TypeHash,Tokenized:a.Tokenized==1)).Distinct().ToArray();if(examples.Length!=1)throw new InvalidDataException("EP1 asset fingerprint is absent/ambiguous: "+type);fingerprints[typeId]=examples[0];if(!locals.TryAdd(new(typeId,InstanceHandle.GetInstanceId(id)),xml))throw SdkXmlDiagnostics.At(new InvalidDataException("Duplicate local asset/hash identity: "+type+":"+id),xml.DocumentElement);
             }
             // Reborn: source-only catalog entries resolve local names before native data exists; payloads are freshly compiled below, never copied from stock.
@@ -83,6 +83,9 @@ internal static class ConscriptMultiAssetBuild
                     instance=Normalize(xml);string resource=TextureResource(entry,xml.DocumentElement.GetAttribute("File"));var payload=SdkEnvironmentPreflight.Read(resource,64*1048576);
                     if(!string.Equals(Path.GetFileNameWithoutExtension(resource),Ep1TextureCompiler.Sha256(payload),StringComparison.OrdinalIgnoreCase))throw new InvalidDataException("Captured texture payload changed: "+resource);
                     var native=Ep1TextureCompiler.Compile(xml.DocumentElement,payload,resource);Console.WriteLine("Texture "+xml.DocumentElement.GetAttribute("id")+": "+Ep1TextureCompiler.Describe(native)+".");buffer=Buffer(native);
+                }else if(type is "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh"){
+                    // Reborn: mesh shader/texture references retain normal Core indices; EP1 hierarchy pivots use Poid hashes rather than KW strings.
+                    instance=Normalize(xml);var native=W3DGeometryCompiler.Compile(instance,schemas);buffer=Buffer(native);
                 }else if(type=="W3DContainer"){
                     // Reborn: hierarchy/mesh/collision imports are normalized by Core; authoring a container never copies their stock payloads.
                     instance=Normalize(xml);var native=W3DContainerCompiler.Compile(instance.XmlNode);W3DContainerCompiler.Verify(instance,native);buffer=Buffer(native);
@@ -150,10 +153,10 @@ internal static class ConscriptMultiAssetBuild
         var required=schemas.GetXmlType("BaseRenderAssetType")??throw new InvalidDataException("BaseRenderAssetType schema missing.");
         var render=schemas.Schemas.GlobalTypes.Values.Cast<System.Xml.Schema.XmlSchemaType>().Where(t=>System.Xml.Schema.XmlSchemaType.IsDerivedFrom(t,required,System.Xml.Schema.XmlSchemaDerivationMethod.None)).Select(t=>FastHash.GetHashCode(t.Name!)).ToHashSet();
         var resolved=known.Where(a=>render.Contains(a.TypeId)).Select(a=>a.InstanceId).ToHashSet();
-        // Reborn: hierarchy and container commonly share a name; hierarchy lookup uses the full typed identity, not render-name exclusion.
-        uint hierarchy=FastHash.GetHashCode("W3DHierarchy");var knownIds=known.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();
+        // Reborn: hierarchy/texture/shader dependencies use complete typed identities, so a container sharing the hierarchy's name does not hide it.
+        var knownIds=known.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();
         return document.Assets.Where(a=>render.Contains(a.TypeId)&&!resolved.Contains(a.InstanceId)).GroupBy(a=>a.InstanceId).Where(g=>g.Count()==1).Select(g=>g.Single())
-            .Concat(document.Assets.Where(a=>a.TypeId==hierarchy&&!knownIds.Contains(new(a.TypeId,a.InstanceId)))).ToArray();
+            .Concat(document.Assets.Where(a=>!render.Contains(a.TypeId)&&!knownIds.Contains(new(a.TypeId,a.InstanceId)))).ToArray();
     }
 
     private static void PackageSupport(string output,XmlDocument source,Dictionary<string,byte[]> streams,InstanceDeclaration[] instances,ManifestAsset[] stock)
@@ -207,7 +210,7 @@ internal static class ConscriptMultiAssetBuild
 
     private static AssetBuffer Buffer(Chunk chunk)=>new(){InstanceData=chunk.InstanceBuffer,RelocationData=chunk.RelocationBuffer,ImportsData=chunk.ImportsBuffer};
     // Reborn: all source reads retain existing bounded XML parsing and no entity/network resolution.
-    private static XmlDocument Read(string path)=>SdkXmlDiagnostics.Parse(SdkEnvironmentPreflight.Read(path,1048576),path);
+    private static XmlDocument Read(string path)=>SdkXmlDiagnostics.Parse(SdkEnvironmentPreflight.Read(path,4*1048576),path);
     // Reborn: comparison and native inputs are independent detached XML copies.
     private static XmlDocument Xml(string text)=>SdkXmlDiagnostics.Parse(Encoding.UTF8.GetBytes(text));
     // Reborn: typed native reads remain bounded to the actual emitted asset chunk.

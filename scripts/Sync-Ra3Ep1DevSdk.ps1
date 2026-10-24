@@ -7,7 +7,8 @@ Import-Module (Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Utility/Microsoft
 Import-Module (Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Management/Microsoft.PowerShell.Management.psd1') -ErrorAction Stop
 $repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha'
 if(-not $CompilerDirectory){$CompilerDirectory=Join-Path $repo 'source/BinaryAssetBuilder.ManifestInspector/bin/x86/Release/net8.0'}
-$names=@('BinaryAssetBuilder.ManifestInspector.exe','BinaryAssetBuilder.ManifestInspector.dll','BinaryAssetBuilder.ManifestInspector.deps.json','BinaryAssetBuilder.ManifestInspector.runtimeconfig.json','BinaryAssetBuilder.Core.dll','BinaryAssetBuilder.Utility.dll','BinaryAssetBuilder.XmlCompiler.dll','SageBinaryData.dll')
+# Reborn: model authoring uses the rebuilt W3X processor in the same synchronized compiler generation.
+$names=@('BinaryAssetBuilder.ManifestInspector.exe','BinaryAssetBuilder.ManifestInspector.dll','BinaryAssetBuilder.ManifestInspector.deps.json','BinaryAssetBuilder.ManifestInspector.runtimeconfig.json','BinaryAssetBuilder.Core.dll','BinaryAssetBuilder.Utility.dll','BinaryAssetBuilder.XmlCompiler.dll','BinaryAssetBuilder.W3XCompiler.dll','SageBinaryData.dll')
 #-------------------------------------------------------------------------------------------------
 <# Reborn: refuse reparse ancestry for both dependency sources and managed SDK destinations. #>
 #-------------------------------------------------------------------------------------------------

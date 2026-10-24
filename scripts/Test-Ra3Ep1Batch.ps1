@@ -50,7 +50,7 @@ if($SchedulerControl){
     # Reborn: the apphost alone does not identify managed compiler code; freeze the complete runtime/assembly dependency set.
     $compilerFiles=@(foreach($name in @('BinaryAssetBuilder.ManifestInspector.exe','BinaryAssetBuilder.ManifestInspector.dll',
         'BinaryAssetBuilder.ManifestInspector.deps.json','BinaryAssetBuilder.ManifestInspector.runtimeconfig.json',
-        'BinaryAssetBuilder.Core.dll','BinaryAssetBuilder.Utility.dll','BinaryAssetBuilder.XmlCompiler.dll','SageBinaryData.dll')){
+        'BinaryAssetBuilder.Core.dll','BinaryAssetBuilder.Utility.dll','BinaryAssetBuilder.XmlCompiler.dll','BinaryAssetBuilder.W3XCompiler.dll','SageBinaryData.dll')){
         $path=Join-Path (Split-Path -Parent $exe) $name
         [pscustomobject]@{Name=$name;Path=$path;Sha256=(Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash}
     })

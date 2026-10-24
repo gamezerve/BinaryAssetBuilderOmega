@@ -13,6 +13,9 @@ internal static class Program
     {
         try
         {
+            // Reborn: compare privately compiled model streams to original EP1 without reading or dumping a whole stock BIN.
+            if(args.Length==3&&args[0]=="w3d-geometry-stock-self-test")
+            {W3DGeometryStockSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: copy a validated active string table into a selected local catalog without running the game or replacing differing files.
             if(args.Length==3&&args[0]=="sdk-copy-string-catalog")
             {SdkStringCatalog.CopyStock(args[1],args[2]);return 0;}
