@@ -65,7 +65,7 @@
 
 		<!-- Structures -->
 
-		<!-- <Include type="all" source="structures/SovietAirfield.xml" /> -->
+		<Include type="all" source="structures/SovietAirfield.xml" />
 		<!-- <Include type="all" source="structures/SovietBarracks.xml" /> -->
 		<!-- <Include type="all" source="structures/SovietConstructionYard.xml" /> -->
 		<!-- <Include type="all" source="structures/SovietCrane.xml" /> -->
