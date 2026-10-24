@@ -1,5 +1,24 @@
 # Reactor audio runtime paths — October 25, 2026
 
+<!-- Reborn: user gameplay feedback overrides the earlier path-based diagnosis; withdraw the experiment without discarding its evidence. -->
+## Current status: path change rolled back, custom audio unresolved
+
+After commit `3d1591ea`, the user reported that all match sounds disappeared,
+while menu music remained. The game's saved Ambient, SFX, Voice, Music and
+Movie volume settings were all 100. This is a regression relative to the first
+test, where ordinary damage-effect sounds still played.
+
+The compiler now restores the exact pre-experiment reference spelling on mixed,
+standalone GameObject and recruitment routes. The global-data checkbox and
+subsequent log/color changes remain. No user Reborn source, published Reborn BIG,
+game installation or audio setting was modified during rollback. The user must
+rebuild and restart the game to test restoration; it has not yet been confirmed.
+
+The earlier claim that removing `data/` fixed the audio was premature. The
+observed factory prefix and matching offline metadata did not prove the runtime
+loading, cache, registration or ownership behavior. Those remain investigation
+areas, not established causes. Custom Reactor playback is still unresolved.
+
 <!-- Reborn: retain the first listening-test failure and distinguish valid native imports from correctly located runtime streams. -->
 The user reported silence from the new Super Reactor ambient and spark events
 after building a new structure in a new match, including with Volume=100.
@@ -21,9 +40,9 @@ reading waveform payloads. It matched `alpha/catalogs/ra3ep1/audio.manifest`
 byte-for-byte after decoding. All 17 required AudioFile identities were present;
 none of the Sound entries was empty or silently replaced with a null import.
 
-The actual defect was the runtime manifest reference table:
+The attempted path change, now withdrawn, was:
 
-| Reference | Broken output | Correct output |
+| Reference | Pre-experiment output (restored) | Attempted output (regressed match audio) |
 | --- | --- | --- |
 | Global event → retail samples | `data\audio.manifest` | `audio.manifest` |
 | Static → global mod stream | `data\additionalmaps\mapmetadata_global.manifest` | `additionalmaps\mapmetadata_global.manifest` |
@@ -37,18 +56,17 @@ block `004AAA01`–`004AAA2F`. Both initialized prefix strings are `Data\`.
 The initial comparison literal is `:\`, distinguishing the absolute-path branch.
 No native game code was executed during this review.
 
-Consequently the broken references requested `Data\data\audio.manifest` and
-`Data\data\additionalmaps\mapmetadata_global.manifest`. The installed audio BIG
+The reviewed concatenation suggested `Data\data\audio.manifest` and
+`Data\data\additionalmaps\mapmetadata_global.manifest`. This was a static path
+projection, not an observed successful/failed live load. The installed audio BIG
 contains `data\audio.manifest`; it has no `data\data\audio.manifest` entry.
 Retail global/static metadata and the user's EA-compiled RA3 mod also store
 bare `audio.manifest`, `global.manifest` and `static.manifest` references.
 
 The mixed compiler, standalone GameObject stream and explicit recruitment
-composition now use Data-root-relative reference names. Global archive/context
-names still include `data/`; only their serialized reference-table spelling is
-converted. The actual BIG family names and SKUDef contract remain unchanged.
-Regression checks now inspect marker-delimited reference strings and reject
-the double-prefixed form instead of expecting the old spelling.
+composition now restore their pre-experiment `data/` names. The BIG family names
+and SKUDef contract remain unchanged. Offline checks pin this compatibility
+baseline and stream integrity; they do not certify runtime audio behavior.
 
 ## When to listen
 
@@ -63,7 +81,8 @@ the double-prefixed form instead of expecting the old spelling.
 - Both events use the AMBIENT mixer slider. With the current source, both
   volumes are 100; the compiler preserves those values.
 
-Rebuild Reborn in EALAModStudio with Build Global Data checked before repeating
-the listening test in a new match. Existing published packages retain their old
-reference strings until rebuilt. Corrected offline output is not itself proof
-of audible playback; in-game confirmation remains the final check.
+Rebuild Reborn in EALAModStudio with Build Global Data checked and restart the
+game before testing restoration of ordinary match audio first. Existing
+published packages retain the experimental references until rebuilt. Check
+custom Reactor playback separately afterward. Offline output is not itself
+proof of audible playback; in-game confirmation remains the final check.

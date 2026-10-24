@@ -96,13 +96,13 @@ internal static class ConscriptRecruitmentSmokeTest
         // Reborn: compile exactly the authored command, never Source(target) or an ID-triggered synthetic command.
         var command=CompileXml(schemas,commandSource.DocumentElement!.OuterXml);var ordered=new[]{game,command.Instance};var chunks=new[]{objectBuffer,command.Chunk};
         uint checksum=(uint)typeof(AssetDeclarationDocument).GetMethod("ComputeOutputChecksum",BindingFlags.NonPublic|BindingFlags.Static)!.Invoke(null,new object[]{ordered})!;
-        // Reborn: the explicit recruitment route shares EP1's Data-root-relative runtime reference contract.
-        var runtime=new ReferencedFileBuffer();typeof(OutputManager).GetMethod("AddExternalManifestReferences",BindingFlags.NonPublic|BindingFlags.Static)!.Invoke(null,new object[]{runtime,new[]{Path.GetFullPath(manifest),Path.GetFullPath(globalManifest)},"static.manifest;global.manifest"});
+        // Reborn: restore explicit recruitment's pre-regression runtime reference spelling too.
+        var runtime=new ReferencedFileBuffer();typeof(OutputManager).GetMethod("AddExternalManifestReferences",BindingFlags.NonPublic|BindingFlags.Static)!.Invoke(null,new object[]{runtime,new[]{Path.GetFullPath(manifest),Path.GetFullPath(globalManifest)},"data\\static.manifest;data\\global.manifest"});
         var streams=BoundedDiagnosticBuild.SerializeConscriptRecruitment(ordered,chunks,checksum,runtime,graph);
         var repeat=BoundedDiagnosticBuild.SerializeConscriptRecruitment(ordered,chunks,checksum,runtime,graph);
         if(streams.Any(p=>!p.Value.SequenceEqual(repeat[p.Key])))throw new InvalidDataException("Recruitment serialization not deterministic.");
         string directory=Path.Combine(Path.GetTempPath(),"Reborn-Recruitment-"+Guid.NewGuid().ToString("N"));ModifierFXStreamSmokeTest.WriteNew(directory,streams);
-        BoundedDiagnosticBuild.Verify(directory,ordered,chunks,streams,checksum,new[]{"static.manifest","global.manifest"},new[]{true,false});
+        BoundedDiagnosticBuild.Verify(directory,ordered,chunks,streams,checksum,new[]{"data\\static.manifest","data\\global.manifest"},new[]{true,false});
         var parsed=ManifestReader.Read(streams["diagnostic.manifest"]);var target=parsed.Assets[1].References.Single();
         if(target!=new AssetId(parsed.Assets[0].TypeId,parsed.Assets[0].InstanceId)
             || Word(chunks[1].InstanceData,28)!=1 || parsed.Assets[0].Name!=original.Handle.Name)throw new InvalidDataException("Authored command must select the local GameObject identity.");
