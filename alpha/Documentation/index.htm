@@ -8,10 +8,16 @@
 <p>Check <strong>Build Global Data</strong> to compile your
 mods/&lt;name&gt;/Data/AdditionalMaps/MapMetaData_*.xml files before Static_Mod.xml.
 Each file produces its own manifest/bin/relo/imp/version family under
-data/additionalmaps inside the final versioned Streams BIG. Use this for supported
-global assets such as AudioEvent and UpgradeTemplate. You do not need an actual
+data/additionalmaps inside the final versioned Streams BIG. Global builds remain
+experimental. You do not need an actual
 MapMetaData asset or an extra SKUDef line. Do not include these files again in
 Static_Mod.xml; static assets can reference their compiled IDs.</p>
+<!-- Reborn: retain the user's working AudioEvent placement without presenting retail stream layout as a mod-build requirement. -->
+<p><strong>AudioEvent placement:</strong> Although the original game stores its
+AudioEvents in the global stream, keep mod AudioEvents in Static_Mod.xml or files
+included by it for now. Do not include them through MapMetaData_*.xml; this caused
+missing match audio in testing. Moving them back to Static_Mod.xml restored sound.
+Global builds will be tested again with other asset types later.</p>
 <p>DATA: paths still search your mod's Data folder first, then SageXML.
 When the checkbox is unchecked, global sources are omitted from the new package;
 older compiled globals are not silently reused. Missing or empty AdditionalMaps

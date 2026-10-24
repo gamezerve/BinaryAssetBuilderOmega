@@ -12,9 +12,11 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 October 25 audio regression: changing runtime manifest references to bare names
 caused the user to lose match sounds while menu music remained. That experiment
 has been rolled back in the compiler; log/UI improvements remain. Restoring
-ordinary sound after rebuilding still needs in-game confirmation. New Reactor
-AudioEvent playback is unresolved despite valid native data and all 17 installed
-sample identities. See [diagnosis and playback triggers](docs/RA3EP1_REACTOR_AUDIO_RUNTIME.md).
+ordinary sound was not confirmed by rollback alone. The user subsequently
+restored sound by moving AudioEvents back to `Static_Mod.xml`. Keep mod
+AudioEvents in that static include graph for now, despite the original game's
+global layout. Global builds will be revisited with other asset types.
+See [diagnosis and playback triggers](docs/RA3EP1_REACTOR_AUDIO_RUNTIME.md).
 
 <!-- Reborn: global authoring uses EA's early AdditionalMaps discovery path and a separate compiler/linker phase. -->
 Studio now offers **Build Global Data**. When checked, each

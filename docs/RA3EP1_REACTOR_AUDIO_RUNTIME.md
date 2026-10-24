@@ -1,7 +1,17 @@
 # Reactor audio runtime paths — October 25, 2026
 
 <!-- Reborn: user gameplay feedback overrides the earlier path-based diagnosis; withdraw the experiment without discarding its evidence. -->
-## Current status: path change rolled back, custom audio unresolved
+## Current status: keep mod AudioEvents in the static build
+
+<!-- Reborn: record the user's actual recovery instead of treating the path rollback as a successful audio fix. -->
+Rollback alone did not restore sound. The user then moved AudioEvents back to
+`Static_Mod.xml` and reported that sound returned. Although retail AudioEvents
+live in the global stream, mod AudioEvents must currently be declared in
+`Static_Mod.xml` or files included by it, not `AdditionalMaps/MapMetaData_*.xml`.
+Global builds will be tested again with other asset types later. The exact
+runtime cause of the global-audio failure is not established.
+
+## Earlier investigation
 
 After commit `3d1591ea`, the user reported that all match sounds disappeared,
 while menu music remained. The game's saved Ambient, SFX, Voice, Music and
@@ -11,13 +21,13 @@ test, where ordinary damage-effect sounds still played.
 The compiler now restores the exact pre-experiment reference spelling on mixed,
 standalone GameObject and recruitment routes. The global-data checkbox and
 subsequent log/color changes remain. No user Reborn source, published Reborn BIG,
-game installation or audio setting was modified during rollback. The user must
-rebuild and restart the game to test restoration; it has not yet been confirmed.
+game installation or audio setting was modified during rollback. The subsequent
+user test showed that rollback alone was insufficient.
 
 The earlier claim that removing `data/` fixed the audio was premature. The
 observed factory prefix and matching offline metadata did not prove the runtime
 loading, cache, registration or ownership behavior. Those remain investigation
-areas, not established causes. Custom Reactor playback is still unresolved.
+areas, not established causes. The user's working placement is the static build.
 
 <!-- Reborn: retain the first listening-test failure and distinguish valid native imports from correctly located runtime streams. -->
 The user reported silence from the new Super Reactor ambient and spark events
@@ -81,8 +91,7 @@ baseline and stream integrity; they do not certify runtime audio behavior.
 - Both events use the AMBIENT mixer slider. With the current source, both
   volumes are 100; the compiler preserves those values.
 
-Rebuild Reborn in EALAModStudio with Build Global Data checked and restart the
-game before testing restoration of ordinary match audio first. Existing
-published packages retain the experimental references until rebuilt. Check
-custom Reactor playback separately afterward. Offline output is not itself
-proof of audible playback; in-game confirmation remains the final check.
+Compile the AudioEvents through `Static_Mod.xml`, excluding them from global
+entry points, and rebuild in EALAModStudio. The user has confirmed restored
+sound with this placement. Offline output alone remains insufficient proof
+of audible playback for future global-stream experiments.

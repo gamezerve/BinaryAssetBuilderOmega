@@ -5,6 +5,13 @@ Use `alpha/EALAModStudio.exe`, select your mod, check **Build Global Data**,
 enter the mod version and build normally. The checkbox is EA's native persisted
 build option. The existing static entry remains `Data/Static_Mod.xml`.
 
+<!-- Reborn: the retail global layout is not the current working mod layout for AudioEvents. -->
+**Keep mod AudioEvents in `Static_Mod.xml` or files included by it for now.**
+Although the original game stores AudioEvents globally, the mod global route
+caused missing match audio; moving the events back to the static build restored
+sound in the user's test. Global builds will be tested again with other asset
+types later.
+
 Global entry points live in your mod's `Data/AdditionalMaps` directory and must
 be named `MapMetaData_<name>.xml`, for example `MapMetaData_Global.xml` or
 `MapMetaData_Music.xml`. This follows the reference RA3 SDK/Bibber build script:
@@ -57,8 +64,8 @@ selections separately from the static receipt.
 
 ## Current scope
 
-The stage uses existing alpha processors. AudioEvent and UpgradeTemplate are
-offline compilation examples; AudioEvent playback remains unresolved. Other original global types still require their actual
+The stage uses existing alpha processors. UpgradeTemplate is an offline
+compilation example; AudioEvents must currently use the static build. Other original global types still require their actual
 processors. Music, actual MapMetaData authoring and arbitrary global settings
 are not enabled merely by adding this checkbox.
 

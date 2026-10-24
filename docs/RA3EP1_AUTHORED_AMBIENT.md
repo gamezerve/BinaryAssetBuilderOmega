@@ -1,5 +1,12 @@
 # Authored ambient events
 
+<!-- Reborn: the user restored in-game audio by compiling events through the static mod entry. -->
+Although the original game stores AudioEvents in its global stream, keep mod
+AudioEvents in `Static_Mod.xml` or files included by it for now. Do not include
+them through `AdditionalMaps/MapMetaData_*.xml`: moving them back to the static
+build restored sound in the user's test. Global builds will be tested again
+with other asset types later.
+
 <!-- Reborn: bridge the checked EP1 audio writer into alpha authoring while keeping retail sample payloads external. -->
 Normal alpha preparation and mixed streams now admit AudioEvent declarations.
 The existing checked AudioEvent writer explicitly opts into AMBIENT and
