@@ -39,6 +39,15 @@ These families accompany the static stream in
 Documents output directory are unchanged. The SKUDef still lists the Streams
 BIG and, when nonempty, the Misc BIG; it needs no per-manifest commands.
 
+<!-- Reborn: archive entry paths and the runtime reference table have different roots; EP1 prepends Data\\ when opening references. -->
+Archive entries retain `data/`, but manifest reference strings omit it:
+`audio.manifest`, `static.manifest`, `global.manifest`, or
+`additionalmaps/mapmetadata_global.manifest`. Both EP1 1.0 and 1.1 reader
+factories prepend `Data\` to relative reference strings. A reference written
+as `data/audio.manifest` therefore targets the nonexistent
+`Data/data/audio.manifest`. This was corrected after the first in-game audio
+trial; see [runtime audio diagnosis](RA3EP1_REACTOR_AUDIO_RUNTIME.md).
+
 The checkbox controls fresh compilation **and inclusion**. If unchecked, the
 new package contains no additional global streams. Previous globals are not
 implicitly reused. A missing/empty AdditionalMaps directory compiles no globals.

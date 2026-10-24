@@ -18,7 +18,8 @@ internal static class GameObjectOriginalStreamSmokeTest
     //-------------------------------------------------------------------------------------------------
     internal static Dictionary<string,byte[]> Run(Chunk qualified,InstanceDeclaration original,string staticManifest,string globalManifest,bool authoredTrial=false,ConscriptGraphQualification? graph=null)
     {
-        string[] paths={Path.GetFullPath(staticManifest),Path.GetFullPath(globalManifest)},runtimeNames={"data\\static.manifest","data\\global.manifest"};var snapshots=paths.Select(p=>SdkEnvironmentPreflight.Read(p,64*1048576)).ToArray();var catalogs=snapshots.Select(b=>ManifestReader.Read(b)).ToArray();
+        // Reborn: the same standalone alpha route must use reader-root-relative names, matching stock EP1 and EA-compiled mod manifests.
+        string[] paths={Path.GetFullPath(staticManifest),Path.GetFullPath(globalManifest)},runtimeNames={"static.manifest","global.manifest"};var snapshots=paths.Select(p=>SdkEnvironmentPreflight.Read(p,64*1048576)).ToArray();var catalogs=snapshots.Select(b=>ManifestReader.Read(b)).ToArray();
         foreach(var catalog in catalogs){TypeRegistryAudit.ValidateTarget(catalog.Header.Version,catalog.Header.AllTypesHash);if(!catalog.Header.IsLinked || catalog.Validate().Count!=0 || catalog.ReferencedManifests.Any(r=>r.IsPatch))throw new InvalidDataException("Original stream external catalog is not a plain valid EP1 stream.");}
         var dependencies=original.ReferencedInstances.Select(h=>new AssetId(h.TypeId,h.InstanceId)).ToArray();ValidateDependencies(dependencies,catalogs);
         // Reborn: authored root presence changes occurrence count; the original-stock diagnostic keeps its exact 275-occurrence anchor.

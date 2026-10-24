@@ -8,6 +8,13 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: first global audio gameplay feedback exposed archive-root paths incorrectly stored in runtime reference tables. -->
+October 25 audio fix: runtime references now omit the archive's `data/` prefix,
+which EP1's reader already supplies. This fixes erroneous `Data/data/...` targets
+for retail audio and additional global streams. The published Reactor test had
+two valid events, full volume and all 17 installed sample identities; missing
+sample data was not the fault. See [diagnosis and playback triggers](docs/RA3EP1_REACTOR_AUDIO_RUNTIME.md).
+
 <!-- Reborn: global authoring uses EA's early AdditionalMaps discovery path and a separate compiler/linker phase. -->
 Studio now offers **Build Global Data**. When checked, each
 `mods/<name>/Data/AdditionalMaps/MapMetaData_*.xml` is compiled before

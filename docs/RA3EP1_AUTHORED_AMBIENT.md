@@ -13,8 +13,9 @@ slider and start/kill fade flags. Source metadata is revalidated after Core
 normalization and attachment; current schema types and imports remain required.
 
 `alpha/catalogs/ra3ep1/audio.manifest` supplies local sample lookup. New events
-add the original `data/audio.manifest` runtime reference to the generated mod
-stream. No retail waveform, encoder or game-directory access is required.
+add the original `audio.manifest` runtime reference to the generated mod
+stream. The game's reader supplies the `Data/` prefix; only the BIG entry path
+includes it explicitly. No retail waveform, encoder or game-directory access is required.
 The optional audio catalog also participates in missing-asset checks.
 
 The reviewable [Reactor candidate](../tests/fixtures/live-alpha/ReactorAudioCandidate/README.md)

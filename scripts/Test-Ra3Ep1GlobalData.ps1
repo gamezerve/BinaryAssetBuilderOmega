@@ -63,8 +63,9 @@ try{
     $staticManifest=[Text.Encoding]::ASCII.GetString($big['data\mod.manifest'])
     # Reborn: the loader discovers globals before static subsystems; an audio-only global must depend on audio, never force static loading.
     $audioManifest=[Text.Encoding]::ASCII.GetString($big['data\additionalmaps\MapMetaData_Audio.manifest'])
-    if($audioManifest-match 'data\\static.manifest' -or $audioManifest-notmatch 'data\\audio.manifest'){throw 'Global audio has an incorrect early-load dependency.'}
-    if($staticManifest-notmatch 'data\\additionalmaps\\MapMetaData_Upgrades.manifest' -or $staticManifest-match 'AudioEvent:SOV_RebornSuperReactor'){throw 'Static manifest must reference globals without duplicating their assets.'}
+    # Reborn: EP1 prepends Data\\, so reference-table strings must not repeat the BIG entry's data/ prefix.
+    if($audioManifest-match 'static.manifest' -or $audioManifest-notmatch "`u{0001}audio\.manifest`0" -or $audioManifest-match "`u{0001}data\\"){throw 'Global audio has an incorrect early-load dependency.'}
+    if($staticManifest-notmatch "`u{0001}additionalmaps\\MapMetaData_Upgrades\.manifest`0" -or $staticManifest-match "`u{0001}data\\" -or $staticManifest-match 'AudioEvent:SOV_RebornSuperReactor'){throw 'Static manifest must reference globals relative to Data without duplicating their assets.'}
     $good=(Get-FileHash -LiteralPath $built.FinalPackage.StreamsPath).Hash
     Invoke-GlobalCase ValidateOnly 1 $true -Validate
     if((Get-FileHash -LiteralPath $built.FinalPackage.StreamsPath).Hash-cne $good){throw 'Validation-only changed published output.'}
