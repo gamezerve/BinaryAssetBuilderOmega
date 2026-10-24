@@ -3,18 +3,21 @@ using System.Runtime.InteropServices;
 
 namespace SageBinaryData
 {
+    // Reborn: RA3/EP1 values follow the official 7-entry ShadowType map (EP1 Decal.xsd order; ADDITIVE_DECAL=3 is proved on the stock
+    // SovietCrane decal). The former order was the KW enum with VOLUME at 2, which shifted every later value by one.
+    // KW-only names stay at the end so nothing that names them stops compiling; the EP1 schema never admits them.
     public enum ShadowType
     {
-        NONE,
-        DECAL,
-        VOLUME,
-        ALPHA_DECAL,
-        ADDITIVE_DECAL,
-        ALPHA_DECAL_DYNAMIC,
-        ADDITIVE_DECAL_DYNAMIC,
-        MERGE_DECAL,
-        VOLUME_OR_DECAL,
-        TIBERIUM_ROOT
+        NONE = 0,
+        DECAL = 1,
+        ALPHA_DECAL = 2,
+        ADDITIVE_DECAL = 3,
+        ALPHA_DECAL_DYNAMIC = 4,
+        ADDITIVE_DECAL_DYNAMIC = 5,
+        MERGE_DECAL = 6,
+        VOLUME = 7,
+        VOLUME_OR_DECAL = 8,
+        TIBERIUM_ROOT = 9
     }
 
     [StructLayout(LayoutKind.Sequential)]

@@ -45,8 +45,8 @@
 		<!-- <Include type="all" source="DATA:GlobalData/Weather.xml" /> -->
 		<!-- <Include type="all" source="DATA:GlobalData/FXParticleSystem.xml" /> -->
 		<!-- <Include type="all" source="DATA:GlobalData/Environment.xml" /> -->
-		<!-- <Include type="all" source="DATA:GlobalData/LogicCommand.xml"/> -->
-		<!-- <Include type="all" source="DATA:GlobalData/LogicCommandSet.xml"/> -->
+		<Include type="all" source="DATA:GlobalData/LogicCommand.xml"/>
+		<Include type="all" source="DATA:GlobalData/LogicCommandSet.xml"/>
 		<!-- <Include type="all" source="DATA:GlobalData/AttributeModifier.xml" /> -->
 		<!-- <Include type="all" source="DATA:GlobalData/Locomotor.xml" /> -->
 		<!-- <Include type="all" source="DATA:GlobalData/SpecialPowerTemplates.xml" /> -->
@@ -105,5 +105,9 @@
 		<!-- <Include type="all" source="DATA:EP1/GlobalData/AttributeModifiers_EP1.xml"/> -->
 		<!-- <Include type="all" source="DATA:EP1/GlobalData/SinglePlayerUnits_EP1.xml" /> -->
 		<!-- <Include type="all" source="DATA:EP1/System/PlayerSpellBook_EP1.xml" /> -->
+				
+		<!-- Reborn Packed Images -->
+		<Include type="all" source="ART:Images/RebornPackedImages.xml"/>	
+		
 	</Includes>
 </AssetDeclaration>

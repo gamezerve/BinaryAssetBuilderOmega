@@ -37,12 +37,14 @@ internal static class ConscriptMultiAssetBuild
             if(File.Exists(additional))sources.AddRange(Read(additional).DocumentElement!.ChildNodes.OfType<XmlElement>().Select(e=>Xml(e.OuterXml)));
             string command=Path.Combine(Path.GetDirectoryName(entry)!,"command.xml");if(File.Exists(command))sources.Add(Read(command));
             var fingerprints=new Dictionary<uint,(uint Hash,bool Tokenized)>();var locals=new Dictionary<AssetId,XmlDocument>();
-            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList")||!ConscriptSourceInput.Identity(id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
+            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "Texture" or "PackedTextureImage")||!ConscriptSourceInput.Identity(id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
                 uint typeId=FastHash.GetHashCode(type);var examples=stock.Where(a=>a.TypeId==typeId).Select(a=>(a.TypeHash,Tokenized:a.Tokenized==1)).Distinct().ToArray();if(examples.Length!=1)throw new InvalidDataException("EP1 asset fingerprint is absent/ambiguous: "+type);fingerprints[typeId]=examples[0];if(!locals.TryAdd(new(typeId,InstanceHandle.GetInstanceId(id)),xml))throw SdkXmlDiagnostics.At(new InvalidDataException("Duplicate local asset/hash identity: "+type+":"+id),xml.DocumentElement);
             }
             // Reborn: source-only catalog entries resolve local names before native data exists; payloads are freshly compiled below, never copied from stock.
             var localEntries=locals.Select(p=>new ManifestAsset(p.Key.TypeId,p.Key.InstanceId,fingerprints[p.Key.TypeId].Hash,0,0,0,0,0,0,0,0,fingerprints[p.Key.TypeId].Tokenized?1u:0u,p.Value.DocumentElement!.LocalName+":"+p.Value.DocumentElement.GetAttribute("id"),"authored.xml",Array.Empty<AssetId>())).ToArray();
-            var available=stock.Where(a=>!locals.ContainsKey(new(a.TypeId,a.InstanceId))).Concat(localEntries).ToArray();
+            // Reborn: map/WorldBuilder-only models (e.g. VL_RussianPortBuilding) are referenced, not compiled into the mod; the original WorldBuilder manifest only supplies their concrete render type.
+            var worldBuilderRender=WorldBuilderRenderAssets(manifest,schemas,stock.Concat(localEntries).ToArray());
+            var available=stock.Where(a=>!locals.ContainsKey(new(a.TypeId,a.InstanceId))).Concat(localEntries).Concat(worldBuilderRender).ToArray();var worldBuilderIds=worldBuilderRender.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();var worldBuilderReported=new HashSet<AssetId>();
             var baseline=Read(Path.Combine(fixtures,"live-alpha/ConscriptBuildTime1/data/mod.xml"));baseline.DocumentElement!.SetAttribute("BuildTime","4");
             // Reborn: each emitted object owns its source admission/template map; never reuse the primary object's modules for another object.
             var plans=sources.Where(s=>s.DocumentElement!.LocalName=="GameObject").ToDictionary(s=>s,s=>ConscriptVariableBehaviorSource.Admit(s,baseline,official));
@@ -51,6 +53,9 @@ internal static class ConscriptMultiAssetBuild
             if(sources.Any(s=>s.DocumentElement!.LocalName=="UpgradeTemplate"))UpgradeTemplateCompiler.Qualify(global,schemas,stock);
             // Reborn: ObjectCreationList families/fields are enabled only after original EP1 OCLs exhibiting them pass the same proof.
             var lists=sources.Where(s=>s.DocumentElement!.LocalName=="ObjectCreationList").ToArray();if(lists.Length!=0)ObjectCreationListCompiler.Qualify(manifest,global,schemas,stock,lists);
+            // Reborn: authored textures/packed images are emitted only after the writers are proved on original EP1 static data.
+            if(sources.Any(s=>s.DocumentElement!.LocalName=="Texture"))Ep1TextureCompiler.Qualify(manifest);
+            if(sources.Any(s=>s.DocumentElement!.LocalName=="PackedTextureImage"))PackedTextureImageCompiler.Qualify(manifest,schemas,stock);
             foreach(var xml in sources){
                 string type=xml.DocumentElement!.LocalName;InstanceDeclaration instance;AssetBuffer buffer;
                 // Reborn: announce and time the asset around its actual processor/verifier, as EA BuildMod does per instance.
@@ -71,13 +76,27 @@ internal static class ConscriptMultiAssetBuild
                     // Reborn: untokenized EP1 OCL native stream; Core still owns strong-reference occurrence indices.
                     instance=Normalize(xml);var native=ObjectCreationListCompiler.Compile(instance.XmlNode);
                     SchemaNativeContract.Verify(ObjectCreationListCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(Ep1ObjectCreationList),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
-                }else if(type=="LogicCommand"){
+                }else if(type=="Texture"){
+                    // Reborn: PC texture = 12-byte root + DDS; the TGA is the content-addressed copy captured during preparation.
+                    instance=Normalize(xml);string resource=TextureResource(entry,xml.DocumentElement.GetAttribute("File"));var payload=SdkEnvironmentPreflight.Read(resource,64*1048576);
+                    if(!string.Equals(Path.GetFileNameWithoutExtension(resource),Ep1TextureCompiler.Sha256(payload),StringComparison.OrdinalIgnoreCase))throw new InvalidDataException("Captured texture payload changed: "+resource);
+                    var native=Ep1TextureCompiler.Compile(xml.DocumentElement,payload,resource);Console.WriteLine("Texture "+xml.DocumentElement.GetAttribute("id")+": "+Ep1TextureCompiler.Describe(native)+".");buffer=Buffer(native);
+                }else if(type=="PackedTextureImage"){
+                    // Reborn: untokenized 36-byte record; Core owns the Texture reference occurrence index.
+                    instance=Normalize(xml);var native=PackedTextureImageCompiler.Compile(instance.XmlNode);
+                    SchemaNativeContract.Verify(PackedTextureImageCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(PackedTextureImage),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
+                }else if(type=="LogicCommand"&&LogicCommandCompiler.IsRecruitment(xml)){
                     var result=ConscriptRecruitmentSmokeTest.CompileXml(schemas,xml.OuterXml);instance=Attach(result.Instance,xml.DocumentElement.GetAttribute("id")+".xml");buffer=result.Chunk;
+                }else if(type=="LogicCommand"){
+                    // Reborn: every other EP1 command shape uses the general route, proved first on the original static commands.
+                    LogicCommandCompiler.Admit(xml);LogicCommandCompiler.Qualify(manifest,schemas,stock);LogicCommandCompiler.ReportUnwitnessed(xml);instance=Normalize(xml);var native=LogicCommandCompiler.Compile(instance.XmlNode);
+                    SchemaNativeContract.Verify(LogicCommandCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(Ep1LogicCommand),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
                 }else{
                     QualifySet(stock,manifest,schemas);instance=Normalize(xml);buffer=CompileSet(instance);
                 }
                 var id=new AssetId(instance.Handle.TypeId,instance.Handle.InstanceId);instance.Handle.TypeHash=fingerprints[id.TypeId].Hash;instance.Handle.InstanceHash=FastHash.GetHashCode(Encoding.UTF8.GetBytes(instance.XmlNode.OuterXml));instance.ValidatedReferencedInstances=new(instance.ReferencedInstances);
                 foreach(var reference in instance.ReferencedInstances)if(available.Count(a=>a.TypeId==reference.TypeId&&a.InstanceId==reference.InstanceId)!=1)throw SdkXmlDiagnostics.At(new InvalidDataException("Missing or ambiguous asset: "+reference.Name),xml.DocumentElement);
+                foreach(var reference in instance.ReferencedInstances){var target=new AssetId(reference.TypeId,reference.InstanceId);if(worldBuilderIds.Contains(target)&&worldBuilderReported.Add(target))Console.WriteLine("Warning: WORLDBUILDERASSET '"+available.Single(a=>a.TypeId==target.TypeId&&a.InstanceId==target.InstanceId).Name+"' (referenced by "+type+":"+xml.DocumentElement.GetAttribute("id")+") exists only in the original WorldBuilder stream; it is referenced, not compiled into the mod.");}
                 built.Add(id,new(xml,instance,buffer,fingerprints[id.TypeId].Tokenized));compileLog.End(progress);
             }
             // Reborn: stable dependency order is determined by actual local strong edges, not declaration order; stock references stay external.
@@ -115,6 +134,20 @@ internal static class ConscriptMultiAssetBuild
     //-------------------------------------------------------------------------------------------------
     /** Reborn: package an explicit command-set primary and its authored dependencies, with exact BIG entry readback and no runtime claims. */
     //-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: render assets (BaseRenderAssetType family) present only in the original EP1 WorldBuilder stream, for type resolution of authored model references.
+        Entries whose instance already resolves as a render asset in stock/local data are excluded, so stock and mod targets always win and nothing becomes ambiguous. */
+    //-------------------------------------------------------------------------------------------------
+    private static ManifestAsset[] WorldBuilderRenderAssets(string staticManifest,SchemaSet schemas,ManifestAsset[] known)
+    {
+        string path=Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(staticManifest))!,"..","..","WorldBuilder","data","worldbuilder.manifest"));if(!File.Exists(path))return Array.Empty<ManifestAsset>();
+        var document=ManifestReader.Read(SdkEnvironmentPreflight.Read(path,64*1048576));TypeRegistryAudit.ValidateTarget(document.Header.Version,document.Header.AllTypesHash);if(!document.Header.IsLinked||document.Validate().Count!=0)throw new InvalidDataException("Valid linked EP1 WorldBuilder stream required: "+path);
+        var required=schemas.GetXmlType("BaseRenderAssetType")??throw new InvalidDataException("BaseRenderAssetType schema missing.");
+        var render=schemas.Schemas.GlobalTypes.Values.Cast<System.Xml.Schema.XmlSchemaType>().Where(t=>System.Xml.Schema.XmlSchemaType.IsDerivedFrom(t,required,System.Xml.Schema.XmlSchemaDerivationMethod.None)).Select(t=>FastHash.GetHashCode(t.Name!)).ToHashSet();
+        var resolved=known.Where(a=>render.Contains(a.TypeId)).Select(a=>a.InstanceId).ToHashSet();
+        return document.Assets.Where(a=>render.Contains(a.TypeId)&&!resolved.Contains(a.InstanceId)).GroupBy(a=>a.InstanceId).Where(g=>g.Count()==1).Select(g=>g.Single()).ToArray();
+    }
+
     private static void PackageSupport(string output,XmlDocument source,Dictionary<string,byte[]> streams,InstanceDeclaration[] instances,ManifestAsset[] stock)
     {
         string directory=Path.Combine(output,"support");Directory.CreateDirectory(directory);string[] extensions={".manifest",".bin",".relo",".imp"};var payloads=extensions.Select(e=>streams["diagnostic"+e]).ToArray();byte[] bytes=ArmorDiagnosticPackage.Serialize(payloads,true,true);string path=Path.Combine(directory,"RebornConscriptProbe.big");File.WriteAllBytes(path,bytes);
@@ -157,6 +190,13 @@ internal static class ConscriptMultiAssetBuild
     // Reborn: standalone normalization documents acquire a real source name for the shared manifest writer without mutating caller instances.
     private static InstanceDeclaration Attach(InstanceDeclaration source,string path){var document=new AssetDeclarationDocument();var type=typeof(AssetDeclarationDocument).GetNestedType("CurrentState",BindingFlags.NonPublic)!;var state=Activator.CreateInstance(type,true)!;type.GetField("SourcePath")!.SetValue(state,path);typeof(AssetDeclarationDocument).GetField("_current",BindingFlags.NonPublic|BindingFlags.Instance)!.SetValue(document,state);var instance=new InstanceDeclaration(document){XmlNode=Xml(source.XmlNode.OuterXml).DocumentElement!};instance.ReferencedInstances.AddRange(source.ReferencedInstances);instance.ValidatedReferencedInstances=new(instance.ReferencedInstances);return instance;}
     // Reborn: stream buffers own exact freshly compiled native/tokenized arrays.
+    // Reborn: prepared Texture/@File values are exactly resources/<sha256>.tga beside the prepared entry; nothing else is opened.
+    private static string TextureResource(string entry,string file)
+    {
+        var match=System.Text.RegularExpressions.Regex.Match(file,"^resources/([0-9A-F]{64})\\.tga$");if(!match.Success)throw new InvalidDataException("Texture File was not captured by source preparation: "+file);
+        return Path.Combine(Path.GetDirectoryName(Path.GetFullPath(entry))!,"resources",match.Groups[1].Value+".tga");
+    }
+
     private static AssetBuffer Buffer(Chunk chunk)=>new(){InstanceData=chunk.InstanceBuffer,RelocationData=chunk.RelocationBuffer,ImportsData=chunk.ImportsBuffer};
     // Reborn: all source reads retain existing bounded XML parsing and no entity/network resolution.
     private static XmlDocument Read(string path)=>SdkXmlDiagnostics.Parse(SdkEnvironmentPreflight.Read(path,1048576),path);

@@ -18,6 +18,8 @@ internal static class GameObjectRootTextContract
             Add(field.Name, source.DocumentElement!.GetAttributeNode(field.Name));
         foreach (string name in Pointed)
             Add(name, source.DocumentElement!.ChildNodes.OfType<XmlElement>().SingleOrDefault(e => e.LocalName == name));
+        // Reborn: Browser is a separately proved string list; validate its tokens with source diagnostics here.
+        _ = GameObjectBrowserContract.Tokens(source);
         return values;
 
         // Reborn: these wire fields are ASCII localization keys; translated display text belongs in a separate localization table.
@@ -36,6 +38,7 @@ internal static class GameObjectRootTextContract
     internal static void Mask(XmlDocument candidate, XmlDocument model)
     {
         GameObjectRootStringContract.Mask(candidate, model);
+        GameObjectBrowserContract.Mask(candidate, model);
         foreach (string name in Pointed)
         {
             foreach (var node in candidate.DocumentElement!.ChildNodes.OfType<XmlElement>().Where(e => e.LocalName == name).ToArray())

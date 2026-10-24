@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<!-- Reborn -->
+
+<!-- Soviet Port Building S03-->
+
+	<Texture id="Button_SovietPortBuilding_big" File="ART:Images/Button_SovietPortBuilding_big.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Button_SovietPortBuilding_big" Texture="Button_SovietPortBuilding_big" Rotated="false">
+		<Dimensions x="535" y="535"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="535" y="535"/>
+	</PackedTextureImage>
+
+	<Texture id="Button_SovietPortBuilding_small" File="ART:Images/Button_SovietPortBuilding_small.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Button_SovietPortBuilding_small" Texture="Button_SovietPortBuilding_small" Rotated="false">
+		<Dimensions x="530" y="530"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="530" y="530"/>
+	</PackedTextureImage>
+
+
+<!-- Reborn Ends -->
+
+	
+
+</AssetDeclaration>

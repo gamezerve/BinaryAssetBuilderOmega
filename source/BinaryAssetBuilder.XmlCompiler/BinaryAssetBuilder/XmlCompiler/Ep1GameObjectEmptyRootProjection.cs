@@ -24,12 +24,12 @@ public static class Ep1GameObjectEmptyRootProjection
         new Field("FormationPreviewDecal",520,0xD753F0C3,false),new Field("FormationPreviewItemDecal",524,0xD753F0C3,false),new Field("UpgradeCameo",544,0x1A2933AA,true),
         new Field("AutoResolveInfo",556,0x8546AC4F,false),new Field("DisplayUpgrade",576,0x26FACFC7,true)});
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: explicitly refuse source variants whose populated ABI has not been reviewed; absent direct children and empty Browser are the only admitted source profile. */
+    /** Reborn: explicitly refuse source variants whose populated ABI has not been reviewed; absent direct children are the only admitted source profile (Browser text is a separately proved list). */
     //-------------------------------------------------------------------------------------------------
     public static void ValidateSource(XmlElement root)
     {
         if(root==null || root.LocalName!="GameObject" || root.NamespaceURI!="uri:ea.com:eala:asset")throw new InvalidDataException("Empty root admission requires a GameObject source.");
-        if(!string.IsNullOrWhiteSpace(root.GetAttribute("Browser")))throw new InvalidDataException("Populated Browser is not admitted by the empty-root route.");
+        // Reborn: populated Browser is admitted; its tokens are validated by the source contract and the native list is proved separately.
         foreach(var field in Fields)if(root.ChildNodes.OfType<XmlElement>().Any(e=>e.LocalName==field.Name))throw new InvalidDataException("Present empty-profile child is not admitted: "+field.Name);
     }
     //-------------------------------------------------------------------------------------------------
@@ -48,6 +48,8 @@ public static class Ep1GameObjectEmptyRootProjection
     private static Chunk ComposeCore(Chunk native,XmlSchemaSet schemas,bool original)
     {
         if(native?.InstanceBuffer==null || native.InstanceBuffer.Length<600)throw new InvalidDataException("Bounded empty-root native input required.");
+        // Reborn: a populated Browser list is detached from the lower composers and restored with item rows below (stock WorldBuilder layout).
+        var browser=Ep1GameObjectBrowser.Inspect(native.InstanceBuffer,Ep1GameObjectBrowser.Slots(native.RelocationBuffer));native=Ep1GameObjectBrowser.Detach(native,browser);
         // Reborn: emit null metadata for omitted names only, never reject or duplicate a populated name already owned by the lower producer.
         var absentNames=new[]{new Field("DisplayName",404,0x1A2933AA,false),new Field("DisplayNameTransformed",408,0x1A2933AA,false)}.Where(f=>Word(native.InstanceBuffer,f.Slot)==0);
         // Reborn: an omitted ArmorSet still has a zero-count list declaration in a complete original-object metadata table.
@@ -60,18 +62,20 @@ public static class Ep1GameObjectEmptyRootProjection
         foreach(var field in fields)for(int at=field.Slot;at<field.Slot+(field.List?8:4);at+=4)if(Word(native.InstanceBuffer,at)!=0)throw new InvalidDataException("Populated empty-profile native storage: "+field.Name);
         var old=Ep1GameObjectRootOwnersProjection.Compose(native,schemas);int oldPrefix=old.InstanceBuffer.Length-native.InstanceBuffer.Length,insert=0;
         for(;insert<oldPrefix;insert+=12)if(Word(old.InstanceBuffer,insert)==0 && Word(old.InstanceBuffer,insert+4)==0 && Word(old.InstanceBuffer,insert+8)==0)break;
-        if(insert>=oldPrefix)throw new InvalidDataException("Empty-root base sentinel absent.");int extra=fields.Length*12,prefix=oldPrefix+extra+fields.Count(f=>f.List)*12;var result=new Chunk{InstanceBuffer=new byte[prefix+native.InstanceBuffer.Length]};
+        if(insert>=oldPrefix)throw new InvalidDataException("Empty-root base sentinel absent.");int extra=fields.Length*12,prefix=oldPrefix+extra+fields.Count(f=>f.List)*12+browser.Count*12;var result=new Chunk{InstanceBuffer=new byte[prefix+native.InstanceBuffer.Length]};
         old.InstanceBuffer.AsSpan(0,insert).CopyTo(result.InstanceBuffer);old.InstanceBuffer.AsSpan(insert,oldPrefix-insert).CopyTo(result.InstanceBuffer.AsSpan(insert+extra));
         for(int at=8;at<oldPrefix;at+=12){uint target=Word(old.InstanceBuffer,at);if(target!=0)Put(result.InstanceBuffer,at+(at<insert?0:extra),target<oldPrefix?target+(uint)(target>=insert?extra:0):target-(uint)oldPrefix+(uint)prefix);}
         int table=oldPrefix+extra;
         for(int i=0;i<fields.Length;i++)
         {
             var field=fields[i];int row=insert+i*12;Put(result.InstanceBuffer,row,FastHash.GetHashCode(field.Name));Put(result.InstanceBuffer,row+4,field.Wire);
-            if(field.List){Put(result.InstanceBuffer,row+8,(uint)table);Put(result.InstanceBuffer,table,0x6C827073);Put(result.InstanceBuffer,table+4,0x5D448FD8);Put(result.InstanceBuffer,table+8,(uint)(prefix+field.Slot));table+=12;}
+            if(field.List){Put(result.InstanceBuffer,row+8,(uint)table);Put(result.InstanceBuffer,table,0x6C827073);Put(result.InstanceBuffer,table+4,0x5D448FD8);Put(result.InstanceBuffer,table+8,(uint)(prefix+field.Slot));table+=12;
+                // Reborn: each populated Browser item row targets its 8-byte native string record, as in the stock WorldBuilder table.
+                if(field.Name=="Browser")for(int item=0;item<browser.Count;item++){Put(result.InstanceBuffer,table,0xB151A0EB);Put(result.InstanceBuffer,table+4,0);Put(result.InstanceBuffer,table+8,(uint)(prefix+browser.Items+item*8));table+=12;}}
         }
         // Reborn: the prior producer already proves exact native/auxiliary ownership; reuse its transformed tail once and shift its native pointer words by only the additional prefix delta.
         old.InstanceBuffer.AsSpan(oldPrefix).CopyTo(result.InstanceBuffer.AsSpan(prefix));int delta=prefix-oldPrefix;
-        result.RelocationBuffer=Shift(old.RelocationBuffer,true);result.ImportsBuffer=Shift(old.ImportsBuffer,false);return result;
+        result.RelocationBuffer=Shift(old.RelocationBuffer,true);result.ImportsBuffer=Shift(old.ImportsBuffer,false);Ep1GameObjectBrowser.Restore(result,prefix,browser);return result;
         //-------------------------------------------------------------------------------------------------
         /** Reborn: metadata insertion changes pointer addresses and auxiliary sources, never occurrence values or slot ordering. */
         //-------------------------------------------------------------------------------------------------

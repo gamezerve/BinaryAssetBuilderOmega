@@ -24,7 +24,11 @@ internal static class ConscriptSourceInput
         public SdkSourceSearch.Selection[] Searches { get; init; }=Array.Empty<SdkSourceSearch.Selection>();
         // Reborn: captured source coordinates survive detachment without adding metadata to user XML or build receipts.
         internal SdkXmlDiagnostics.SourceMap? Locations {get;init;}
+        // Reborn: admitted ART resources (Texture/@File TGA payloads) captured with their hash during preparation.
+        internal ResourceFile[] Resources {get;init;}=Array.Empty<ResourceFile>();
     }
+    // Reborn: one captured ART payload referenced by an emitted asset field.
+    internal sealed record ResourceFile(string Document,string Field,string LogicalPath,string Path,string Sha256,byte[] Bytes);
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: group source-language checks without launching the game or building another ladder of one-field runtime trials. */
@@ -101,9 +105,15 @@ internal static class ConscriptSourceInput
         catch(Exception error)when(error is InvalidDataException or XmlException or XmlSchemaException){input.Locations?.Enrich(error,entry,SdkXmlDiagnostics.Node(error)?.OwnerDocument??input.Game);throw;}
         Directory.CreateDirectory(output);string game=Path.Combine(output,"game.xml"),command=Path.Combine(output,"command.xml");
         File.WriteAllText(game,input.Game.DocumentElement!.OuterXml,new UTF8Encoding(false));if(input.Command!=null)File.WriteAllText(command,input.Command.DocumentElement!.OuterXml,new UTF8Encoding(false));
+        // Reborn: texture payloads travel content-addressed beside the prepared XML; File is rewritten to that captured copy, never re-resolved later.
+        foreach(var texture in input.AdditionalAssets.Select(a=>a.DocumentElement!).Where(e=>e.LocalName=="Texture")){
+            string logical=texture.GetAttribute("File");var resource=input.Resources.FirstOrDefault(r=>string.Equals(r.LogicalPath,logical,StringComparison.OrdinalIgnoreCase))??throw new InvalidDataException("Texture '"+texture.GetAttribute("id")+"' has no captured TGA resource for File='"+logical+"'.");
+            string folder=Path.Combine(output,"resources");Directory.CreateDirectory(folder);File.WriteAllBytes(Path.Combine(folder,resource.Sha256+".tga"),resource.Bytes);texture.SetAttribute("File","resources/"+resource.Sha256+".tga");
+        }
         // Reborn: serialize explicit supporting declarations beside the prepared object, without inventing asset IDs or command edges.
         if(input.AdditionalAssets.Length>0){var additional=new XmlDocument{XmlResolver=null};additional.LoadXml("<AssetDeclaration xmlns='"+Ea+"'/>");foreach(var asset in input.AdditionalAssets)additional.DocumentElement!.AppendChild(additional.ImportNode(asset.DocumentElement!,true));File.WriteAllText(Path.Combine(output,"additional.xml"),additional.OuterXml,new UTF8Encoding(false));}
         foreach(var source in input.Sources)if(Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(source.Path,1048576)))!=source.Sha256)throw new InvalidDataException("Source changed during preparation: "+source.Path);
+        foreach(var resource in input.Resources)if(Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(resource.Path,64*1048576)))!=resource.Sha256)throw new InvalidDataException("Texture resource changed during preparation: "+resource.Path);
         File.WriteAllText(Path.Combine(output,"source-input.json"),JsonSerializer.Serialize(new{GamePath=game,PrimaryType=input.Game.DocumentElement.LocalName,CommandPath=input.Command==null?null:command,AssetCount=1+(input.Command==null?0:1)+input.AdditionalAssets.Length,Identity=input.Game.DocumentElement.GetAttribute("id"),PreparedSourceSha256=Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(input.Game.DocumentElement.OuterXml))),Sources=input.Sources,Searches=input.Searches,Origins=input.Origins,AutomaticCommandGenerated=false},new JsonSerializerOptions{WriteIndented=true}));
         // Reborn: EA-style source lines are emitted only by this single preparation pass, never by the dependency preflight; assets are announced by the compiler.
         ConscriptCompileLog.Sources(input);
@@ -221,7 +231,7 @@ internal static class ConscriptSourceInput
     {
         XmlSchemaSet? official=null;SdkEffectiveSchema.Inspect(shieldCandidate:true,reviewHooks:true,onAdmitted:s=>official=s);if(official==null)throw new InvalidDataException("Reviewed EP1 schemas unavailable.");
         // Reborn: detached support assets use unchanged official types, just like the existing standalone GameObject/command aliases.
-        var aliases=new XmlSchema{TargetNamespace=Ea,ElementFormDefault=XmlSchemaForm.Qualified};foreach(string name in new[]{"GameObject","LogicCommand","LogicCommandSet","ArmorTemplate","WeaponTemplate","UpgradeTemplate"})if(!official.GlobalElements.Contains(new XmlQualifiedName(name,Ea)))aliases.Items.Add(new XmlSchemaElement{Name=name,SchemaTypeName=new XmlQualifiedName(name,Ea)});official.Add(aliases);official.Compile();return official;
+        var aliases=new XmlSchema{TargetNamespace=Ea,ElementFormDefault=XmlSchemaForm.Qualified};foreach(string name in new[]{"GameObject","LogicCommand","LogicCommandSet","ArmorTemplate","WeaponTemplate","UpgradeTemplate","ObjectCreationList","Texture","PackedTextureImage"})if(!official.GlobalElements.Contains(new XmlQualifiedName(name,Ea)))aliases.Items.Add(new XmlSchemaElement{Name=name,SchemaTypeName=new XmlQualifiedName(name,Ea)});official.Add(aliases);official.Compile();return official;
     }
 
     //-------------------------------------------------------------------------------------------------

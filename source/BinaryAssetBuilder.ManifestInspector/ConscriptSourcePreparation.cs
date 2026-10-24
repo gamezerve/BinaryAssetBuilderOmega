@@ -32,14 +32,18 @@ internal static class ConscriptSourcePreparation
         var snapshots=paths.Sources.ToDictionary(s=>s.PhysicalPath,s=>SdkEnvironmentPreflight.Read(s.PhysicalPath,1048576),StringComparer.OrdinalIgnoreCase);
         foreach(var source in paths.Sources)if(Hash(snapshots[source.PhysicalPath])!=source.Sha256)throw new InvalidDataException("Source changed during graph capture.");
         // Reborn: locating a real resource does not enable its processor; report the unique referring literal or an explicitly labelled document context.
-        if(paths.Resources.Length!=0 || paths.Sources.Any(s=>!s.PhysicalPath.EndsWith(".xml",StringComparison.OrdinalIgnoreCase)))
+        // Reborn: Texture/@File TGA payloads now have a reviewed processor (Ep1TextureCompiler); every other resource kind is still refused.
+        var textures=paths.Resources.Where(r=>r.Field=="Texture/@File"&&r.PhysicalPath.EndsWith(".tga",StringComparison.OrdinalIgnoreCase)).ToArray();
+        var unsupported=paths.Resources.Except(textures).ToArray();
+        if(unsupported.Length!=0 || paths.Sources.Any(s=>!s.PhysicalPath.EndsWith(".xml",StringComparison.OrdinalIgnoreCase)))
         {
-            var failure=new InvalidDataException("ART/audio/W3X source processors are not connected; no resources are silently skipped.");
-            var resource=paths.Resources.FirstOrDefault();string owner=resource?.Document??entry;
+            var failure=new InvalidDataException("ART/audio/W3X source processors are not connected for this resource (only Texture TGA files are); no resources are silently skipped.");
+            var resource=unsupported.FirstOrDefault();string owner=resource?.Document??entry;
             var source=Parse(snapshots[owner],owner);
             if(resource!=null){var matches=source.SelectNodes("//@* | //*[not(*)]")!.Cast<XmlNode>().Where(n=>(n is XmlAttribute?n.Value:n.InnerText)==resource.LogicalPath).ToArray();if(matches.Length==1)SdkXmlDiagnostics.At(failure,matches[0]);}
             new SdkXmlDiagnostics.SourceMap(snapshots.Select(s=>new SdkXmlDiagnostics.Snapshot(s.Key,s.Value))).Enrich(failure,owner,source);throw failure;
         }
+        var resources=textures.Select(r=>{var bytes=SdkEnvironmentPreflight.Read(r.PhysicalPath,64*1048576);if(bytes.Length!=r.Bytes)throw new InvalidDataException("Texture resource changed during graph capture: "+r.PhysicalPath);return new ConscriptSourceInput.ResourceFile(r.Document,r.Field,r.LogicalPath,r.PhysicalPath,Hash(bytes),bytes);}).ToArray();
         // Reborn: path inventory is not language admission; reject ignored metadata throughout the graph before emitting anything.
         foreach(var snapshot in snapshots){var source=Parse(snapshot.Value,snapshot.Key);try{ValidateEnvelope(source.DocumentElement!);}catch(InvalidDataException error){new SdkXmlDiagnostics.SourceMap(new[]{new SdkXmlDiagnostics.Snapshot(snapshot.Key,snapshot.Value)}).Enrich(error,snapshot.Key,source);throw;}}
         // Reborn: merge schema-valid partial bases first; final source/native admission still applies to the emitted complete object only.
@@ -58,7 +62,7 @@ internal static class ConscriptSourcePreparation
         // Reborn: XInclude fragments are real source dependencies, including hash and higher-priority mod-shadow checks before publication.
         foreach(var source in fragments.Sources)if(Hash(SdkEnvironmentPreflight.Read(source.Path,1048576))!=source.Sha256)throw new InvalidDataException("XInclude source changed during preparation: "+source.Path);
         var searches=paths.Searches.Concat(fragments.Searches).ToArray();SdkSourceSearch.Verify(searches);
-        return new(Detach(primary),commands.Length==0?null:Detach(commands[0]),paths.Sources.Select(s=>new ConscriptSourceInput.SourceFile(s.PhysicalPath,s.Sha256)).Concat(fragments.Sources).DistinctBy(s=>s.Path,StringComparer.OrdinalIgnoreCase).ToArray()){AdditionalAssets=assets.Where(a=>a!=primary&&(commands.Length==0||a!=commands[0])).Select(Detach).ToArray(),Origins=assets.Select(a=>new ConscriptSourceInput.AssetOrigin(a.LocalName,a.GetAttribute("id"),origins[a])).ToArray(),Searches=searches,Locations=new(snapshots.Select(s=>new SdkXmlDiagnostics.Snapshot(s.Key,s.Value)).Concat(fragments.Snapshots))};
+        return new(Detach(primary),commands.Length==0?null:Detach(commands[0]),paths.Sources.Select(s=>new ConscriptSourceInput.SourceFile(s.PhysicalPath,s.Sha256)).Concat(fragments.Sources).DistinctBy(s=>s.Path,StringComparer.OrdinalIgnoreCase).ToArray()){AdditionalAssets=assets.Where(a=>a!=primary&&(commands.Length==0||a!=commands[0])).Select(Detach).ToArray(),Origins=assets.Select(a=>new ConscriptSourceInput.AssetOrigin(a.LocalName,a.GetAttribute("id"),origins[a])).ToArray(),Searches=searches,Locations=new(snapshots.Select(s=>new SdkXmlDiagnostics.Snapshot(s.Key,s.Value)).Concat(fragments.Snapshots)),Resources=resources};
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: all Includes contribute emitted owner assets; instance Includes are read by the existing engine but never emitted by this traversal. */
@@ -70,7 +74,7 @@ internal static class ConscriptSourcePreparation
             xml=Parse(snapshots[path],path);var document=xml.DocumentElement!;
             foreach(var edge in paths.Includes.Where(e=>e.Document.Equals(path,StringComparison.OrdinalIgnoreCase) && e.Kind=="all"))Emit(edge.PhysicalPath??throw new InvalidDataException("Unresolved all Include."));
             var owners=document.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is not ("Tags" or "Includes" or "Defines")).ToArray();
-            if(owners.FirstOrDefault(a=>a.LocalName is not ("GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate" or "ObjectCreationList")) is XmlElement unsupported)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported emitted asset type '"+unsupported.LocalName+"'; no silent skipping."),unsupported);
+            if(owners.FirstOrDefault(a=>a.LocalName is not ("GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate" or "ObjectCreationList" or "Texture" or "PackedTextureImage")) is XmlElement unsupported)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported emitted asset type '"+unsupported.LocalName+"'; no silent skipping."),unsupported);
             // Reborn: source-only definition leaves must still validate, even if no emitted owner happens to consume them.
             if(owners.Length==0){if(document.ChildNodes.OfType<XmlElement>().Any(e=>e.LocalName=="Defines"))SdkMetadataDefinitions.Prove(schemas,xml,path,snapshots[path]);return;}
             bool needsPreparation=document.GetElementsByTagName("Define",Ea).Count!=0 || document.GetElementsByTagName("include","http://www.w3.org/2001/XInclude").Count!=0 || owners.Any(a=>a.HasAttribute("inheritFrom") || a.SelectNodes(".//@* | .//text()")!.Cast<XmlNode>().Any(n=>(n.Value??"").StartsWith('=')));

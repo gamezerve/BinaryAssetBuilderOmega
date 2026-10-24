@@ -13,7 +13,7 @@ namespace BinaryAssetBuilder.ManifestInspector;
 // Reborn: reusable full native/metadata proof; authored identities select reviewed owners instead of fixed sizes or new list ordinals.
 internal sealed class ConscriptVariableGraphVerifier
 {
-    private static readonly int[] Detached={412,416,420,424,428,432,468,472,476,480,484,488,492,496,500,532,536,540,552,564,568,572};
+    private static readonly int[] Detached={44,48,412,416,420,424,428,432,468,472,476,480,484,488,492,496,500,532,536,540,552,564,568,572};
     private readonly XmlSchemaSet official;
     private readonly (byte[] Metadata,ManifestDocument Document,ManifestAsset Asset,long Offset,byte[] Bytes,GameObjectStockReview.Projection Projection) stock;
     private readonly GameObjectModuleReview.Proof topology;
@@ -64,6 +64,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<bool> secondaryDamage;
     // Reborn: creation/destroy native records and literal metadata must match all original stock witnesses before flexible authoring.
     private readonly Lazy<bool> deathBehaviors;
+    // Reborn: a populated Browser list is enabled only after the original WorldBuilder VL_RussianPortBuilding list/metadata witness passes.
+    private readonly Lazy<bool> browserWitness;
     // Reborn: source/catalog expectations remain independent of Core indices and emitted native buffers.
     private readonly SchemaSet referenceSchemas;
     private readonly ManifestAsset[] catalog;
@@ -97,6 +99,7 @@ internal sealed class ConscriptVariableGraphVerifier
         powerUpgrade=new(()=>PowerUpgradeContract.Create(stock.Bytes,topology.Containers.Single(c=>c.Name=="Behaviors").Modules,GameObjectStockReview.Tokens(stock.Bytes,0)[FastHash.GetHashCode("AI")].Offset));
         fxList=new(()=>FXListBehaviorContract.QualifyStock(manifest,official,referenceSchemas,baseline,catalog));
         secondaryDamage=new(()=>SecondaryDamageTrackerContract.QualifyStock(manifest,official,referenceSchemas,baseline,catalog));
+        browserWitness=new(()=>GameObjectBrowserContract.Qualify(manifest));
         deathBehaviors=new(()=>DeathBehaviorContract.QualifyStock(manifest,official,referenceSchemas,baseline,catalog));
         templates=ConscriptModuleScalarContract.Owners(baseline).ToDictionary(o=>o.Element.GetAttribute("id"),o=>topology.Containers.Single(c=>c.Name==o.Container).Modules[o.Index],StringComparer.Ordinal);
         sell=new(()=>{
@@ -115,6 +118,8 @@ internal sealed class ConscriptVariableGraphVerifier
     internal Chunk Verify(XmlDocument source,Chunk native,InstanceDeclaration instance,Dictionary<string,string> origins,Chunk? supplied=null)
     {
         byte[] b=native.InstanceBuffer;var relos=Slots(native.RelocationBuffer);var imports=Slots(native.ImportsBuffer);int cut=Ep1GameObjectRootOwnersProjection.NativeTailStart(b);
+        // Reborn: Browser owns its canonical item/text allocation, proved against authored tokens (and, when populated, the stock WorldBuilder witness).
+        var browser=Ep1GameObjectBrowser.Inspect(b,relos);if(browser.Count!=0)_=browserWitness.Value;GameObjectBrowserContract.Verify(source,b,browser);var browserSlots=browser.Relocations.ToHashSet();
         // Reborn: verify authored fixed fields and restore only comparison bytes, never the actual output.
         var cleared=b.ToArray();var stockNative=stock.Bytes.AsSpan(stock.Projection.NativeRoot).ToArray();
         GameObjectScalarContract.VerifyAndRestore(source,b,cleared,stockNative);
@@ -126,7 +131,7 @@ internal sealed class ConscriptVariableGraphVerifier
         var authoredValues=new Dictionary<int,uint>();
         var rootImports=GameObjectStrongReferenceContract.Fields.ToDictionary(f=>"GameObject."+f.Name,f=>string.IsNullOrWhiteSpace(source.DocumentElement!.GetAttribute(f.Name))?(AssetId?)null:new AssetId(FastHash.GetHashCode(f.Name),InstanceHandle.GetInstanceId(source.DocumentElement.GetAttribute(f.Name))));
         var originalStock=stock.Bytes.ToArray();foreach(int at in Detached){Put(cleared,at,0);Put(originalStock,stock.Projection.NativeRoot+at,0);}
-        var root=new Chunk{InstanceBuffer=cleared,RelocationBuffer=Pack(relos.Where(s=>!Detached.Contains((int)s))),ImportsBuffer=native.ImportsBuffer.ToArray()};
+        var root=new Chunk{InstanceBuffer=cleared,RelocationBuffer=Pack(relos.Where(s=>!Detached.Contains((int)s)&&!browserSlots.Contains(s))),ImportsBuffer=native.ImportsBuffer.ToArray()};
         var rootReferences=ReferenceTable(source,null);
         // Reborn: inline descriptions and optional pointed names use the same authored-text contract on variable graphs.
         var rootComparer=new SelectedNativeGraphComparer(originalStock,rootReferences,root,instance,requireAllReferences:false,rootText:GameObjectRootTextContract.Read(source),authoredValues:authoredValues,rootImports:rootImports){AuthoredRecordValues=recordValues};
@@ -136,8 +141,10 @@ internal sealed class ConscriptVariableGraphVerifier
         var armor=ConscriptArmorSetContract.VerifyNative(source,b,instance);if(armor.Length>0)Cover(armor.Start,armor.Length);foreach(uint slot in armor.Relocations)Add(ownedRelos,slot);foreach(uint slot in armor.Imports)Add(ownedImports,slot);
         // Reborn: variable movement arrays separately own their real bytes, relocations and source-bound import occurrences.
         var movement=ConscriptLocomotorSetContract.VerifyNative(source,b,instance);if(movement.Length>0)Cover(movement.Start,movement.Length);foreach(uint slot in movement.Relocations)Add(ownedRelos,slot);foreach(uint slot in movement.Imports)Add(ownedImports,slot);
+        if(browser.Count!=0){Cover(browser.Items,browser.End-browser.Items);foreach(uint slot in browser.Relocations)Add(ownedRelos,slot);}
         var baseBytes=b.AsSpan(0,cut).ToArray();foreach(var field in Ep1GameObjectRootOwnersProjection.Fields)Ep1GameObjectRootOwnersProjection.ClearSlot(baseBytes,field);
-        var layout=Ep1GameObjectStringTokens.Inspect(baseBytes,relos.Where(s=>s<cut&&!Ep1GameObjectRootOwnersProjection.Fields.Any(f=>f.PointerSlot==s)).ToArray(),imports.Where(s=>s<cut).ToArray(),true);
+        Put(baseBytes,Ep1GameObjectBrowser.CountSlot,0);Put(baseBytes,Ep1GameObjectBrowser.ItemsSlot,0);
+        var layout=Ep1GameObjectStringTokens.Inspect(baseBytes,relos.Where(s=>s<cut&&!browserSlots.Contains(s)&&!Ep1GameObjectRootOwnersProjection.Fields.Any(f=>f.PointerSlot==s)).ToArray(),imports.Where(s=>s<cut).ToArray(),true);
         var tokens=supplied??Ep1GameObjectEmptyRootProjection.ComposeOriginal(native,official);int prefix=tokens.InstanceBuffer.Length-b.Length;BehaviorContainerStockProof.VerifyTail(tokens,native,prefix);
         var rows=GameObjectStockReview.Tokens(tokens.InstanceBuffer,0);var stockRows=GameObjectStockReview.Tokens(stock.Bytes,0);
         if(!rows.Keys.Order().SequenceEqual(stockRows.Keys.Order())||rows.Any(p=>p.Value.Type!=stockRows[p.Key].Type))throw new InvalidDataException("Variable graph root metadata fields differ.");
@@ -385,6 +392,10 @@ internal sealed class ConscriptVariableGraphVerifier
             // Reborn: display-name metadata directly targets its optional header, not a stock text identity or a separate table.
             string? pointed=GameObjectRootTextContract.Pointed.SingleOrDefault(n=>FastHash.GetHashCode(n)==pair.Key);
             if(pointed!=null){int slot=pointed=="DisplayName"?404:408;uint target=Word(b,slot);if(at!=(target==0?0:prefix+target))throw new InvalidDataException("Pointed root name metadata target differs: "+pointed);continue;}
+            // Reborn: Browser always declares its count table; populated items target their native string records (stock WorldBuilder grammar).
+            if(pair.Key==FastHash.GetHashCode("Browser")){int size=12+browser.Count*12;if(at<rootLength||at>prefix-size||metadataOwned.AsSpan(at,size).Contains(true)||Word(tokens.InstanceBuffer,at)!=0x6C827073||Word(tokens.InstanceBuffer,at+4)!=0x5D448FD8||Word(tokens.InstanceBuffer,at+8)!=prefix+Ep1GameObjectBrowser.CountSlot)throw new InvalidDataException("Browser metadata table differs.");
+                for(int item=0;item<browser.Count;item++){int row=at+12+item*12;if(Word(tokens.InstanceBuffer,row)!=0xB151A0EB||Word(tokens.InstanceBuffer,row+4)!=0||Word(tokens.InstanceBuffer,row+8)!=prefix+browser.Items+item*8)throw new InvalidDataException("Browser metadata item row differs.");}
+                Array.Fill(metadataOwned,true,at,size);continue;}
             if(old==0){if(at!=0)throw new InvalidDataException("Absent root metadata target differs.");continue;}
             if(old>=stock.Projection.NativeRoot){if(!rootComparer.NativeOffsets.TryGetValue(old,out int coordinate)||at!=prefix+coordinate)throw new InvalidDataException("Direct root metadata coordinate differs.");continue;}
             int index=Array.IndexOf(oldTables,old),end=index+1<oldTables.Length?oldTables[index+1]:stock.Projection.NativeRoot;
@@ -431,6 +442,8 @@ internal sealed class ConscriptVariableGraphVerifier
         foreach(var module in GameObjectModuleReview.Inspect(manifest,refinery.Asset.Name).Containers.Single(c=>c.Name==family.Container).Modules.Where(m=>m.TypeId==family.TypeId))grammar.Learn(refinery.Bytes,module.Wrapper,refinery.Projection.NativeRoot,family.Type);
         // Reborn: optional draw materials use independently qualified original shader/native witnesses, including all polymorphic constant kinds.
         if(family.Type==typeof(W3DScriptedModelDrawModuleData))ShaderMaterialContract.Qualify(grammar,manifest,baseline,referenceSchemas,catalog);
+        // Reborn: optional draw-state ShadowInfo decals use the original SovietCrane repair-decal witness (native + metadata grammar).
+        if(family.Type==typeof(W3DScriptedModelDrawModuleData))ScriptedShadowInfoContract.Qualify(grammar,manifest,baseline,referenceSchemas,catalog);
         return grammar;
     }
 

@@ -36,12 +36,19 @@ public static class Ep1ScriptedDrawTokenizer
     private static readonly Record ConstantInt = new("FXShaderConstantInt",16,new[]{F("Value",0x23E650B8,12)},Parent:Constant,ParentTag:0x1724BB05);
     private static readonly Record ConstantBool = new("FXShaderConstantBool",16,new[]{F("Value",0x77E3F4F7,12,Kind.Bool,1)},13,3,Constant,0x1724BB05);
     private static readonly Record Material = new("FXShaderMaterial",28,new[]{F("ShaderName",0x1A2933AA,0,Kind.String,8),F("TechniqueName",0x1A2933AA,8,Kind.String,8),F("TechniqueIndex",0x30916B96,24,Kind.UInt,1),F("Constants",0x19842B2F,16,Kind.Polymorphic,8)},25,3);
+    // Reborn: optional draw-state decal record; rows/tags/offsets follow the official RA3 Tokenize<ShadowInfo> and are stock-qualified on SovietCrane.
+    private static readonly Record Shadow = new("ShadowInfo", 60, new[] {
+        F("Type",0x3B581951,0,Kind.Enum,limit:7), F("Texture",0x4C3E3938,4,Kind.Ref), F("AdditionalTexture",0x4C3E3938,8,Kind.Ref),
+        F("SizeX",0x645864F3,12,Kind.Real), F("SizeY",0x645864F3,16,Kind.Real), F("OffsetX",0x645864F3,20,Kind.Real), F("OffsetY",0x645864F3,24,Kind.Real),
+        F("OpacityStart",0x645864F3,28,Kind.Real), F("OpacityFadeInTime",0x998669E8,32,Kind.Real), F("OpacityPeak",0x645864F3,36,Kind.Real), F("OpacityFadeOutTime",0x998669E8,40,Kind.Real),
+        F("OpacityEnd",0x645864F3,44,Kind.Real), F("MaxHeight",0x645864F3,48,Kind.Real), F("OverrideLODVisibility",0x77E3F4F7,56,Kind.Bool,1), F("UseHouseColor",0x77E3F4F7,57,Kind.Bool,1),
+        F("IsRotatingWithObject",0x77E3F4F7,58,Kind.Bool,1), F("LocalPlayerOnly",0x77E3F4F7,59,Kind.Bool,1), F("SunAngle",0x645864F3,52,Kind.Real) });
     private static readonly Record ModelState = new("ModelConditionState", 196, new[] {
         F("ParseCondStateType",0x1323B870,0,Kind.Enum,limit:3), F("Name",0x1A2933AA,4,Kind.String,8), F("ConditionsYes",0x67DBBFC9,12,Kind.Flags,60,463), F("Skeleton",0x805D25F4,72,Kind.String,8),
         F("PortraitImage",0x0108BD1E,80,Kind.Ref), F("ButtonImage",0x0108BD1E,84,Kind.Ref), F("OverrideTooltip",0x1A2933AA,88,Kind.String,8), F("RetainSubObjects",0x77E3F4F7,192,Kind.Bool,1), F("id",0x805D25F4,96,Kind.String,8),
         F("Model",0xCD8EC40B,104,Kind.List,8,child:Model), F("Material",0xC7EA3CF4,112,Kind.Pointer,child:Material), F("Texture",0x6E5D40FB,116,Kind.List,8,child:Texture),
         F("WeaponFireFXBone",0xBD39D1A1,124,Kind.List,8,child:Bone), F("WeaponRecoilBone",0xBD39D1A1,132,Kind.List,8,child:Bone), F("WeaponMuzzleFlash",0xBD39D1A1,140,Kind.List,8,child:Bone), F("WeaponLaunchBone",0xBD39D1A1,148,Kind.List,8,child:Bone),
-        F("ParticleSysBone",0x98C53FE6,156,Kind.List,8,child:Particle), F("FXEvent",0x75991AD3,164,Kind.EmptyList,8), F("ShadowInfo",0x82FE7E88,172,Kind.NullPointer), F("Turret",0xF3095903,176,Kind.EmptyList,8), F("SubObject",0x03A28C40,184,Kind.EmptyList,8) }, 193, 3);
+        F("ParticleSysBone",0x98C53FE6,156,Kind.List,8,child:Particle), F("FXEvent",0x75991AD3,164,Kind.EmptyList,8), F("ShadowInfo",0x82FE7E88,172,Kind.Pointer,child:Shadow), F("Turret",0xF3095903,176,Kind.EmptyList,8), F("SubObject",0x03A28C40,184,Kind.EmptyList,8) }, 193, 3);
     private static readonly Record AnimationState = new("AnimationState", 140, new[] {
         F("ParseCondStateType",0x1323B870,0,Kind.Enum,limit:3), F("AnimNickName",0x1A2933AA,4,Kind.String,8), F("ConditionsYes",0x67DBBFC9,12,Kind.Flags,60,463), F("Name",0x1A2933AA,72,Kind.String,8), F("StateName",0x1A2933AA,80,Kind.String,8),
         F("Flags",0x5EC2B352,88,Kind.Flags,4,12), F("ShareAnimation",0x77E3F4F7,136,Kind.Bool,1), F("EnteringStateFX",0x0D1C8E83,92,Kind.Ref), F("FrameForPristineBonePositions",0x23E650B8,96),
