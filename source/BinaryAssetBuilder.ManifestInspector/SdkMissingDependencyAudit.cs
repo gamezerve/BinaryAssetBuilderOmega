@@ -20,6 +20,8 @@ internal static class SdkMissingDependencyAudit
     internal sealed record StringStatus(int CheckedKeys,int StockKeys,int ModKeys,bool CatalogComplete,bool PreparedSourceUsed,string? StockSource,string ModSource);
     internal sealed record Report(Finding[] Findings,int ModAssets,int StockAssets,int CheckedAssetReferences,int UncheckedAssetReferences,bool SourceGraphComplete)
     {
+        // Reborn: invalid/missing-ID and foreign declarations are content too; an empty global skip must never hide their compiler diagnostics.
+        public bool HasEmittedContent {get;init;}=true;
         // Reborn: synthetic asset-only tests need no installed language archive; live builds populate this localization summary.
         public StringStatus? Strings {get;init;}
         // Reborn: catalog provenance describes availability checks, not runtime stream loading or packaged assets.
@@ -174,7 +176,9 @@ internal static class SdkMissingDependencyAudit
             }
         }
         SdkSourceSearch.Verify(paths.Searches);
-        return new(findings.Distinct().ToArray(),mod.Length,stock.Length,checkedReferences,deferred,paths.ScopedPathAuditComplete&&!paths.StoppedAtLimit);
+        // Reborn: all-Include closures with only metadata are empty; instance-only bases never count as emitted content.
+        bool hasContent=emitted.Any(p=>documents[p].Root is not XElement root || root.Name!=XName.Get("AssetDeclaration",Ea) || root.Elements().Any(e=>e.Name.NamespaceName!=Ea||e.Name.LocalName is not ("Includes" or "Defines" or "Tags")||e.Name.LocalName=="Tags"&&(e.HasElements||!string.IsNullOrWhiteSpace(e.Value))));
+        return new(findings.Distinct().ToArray(),mod.Length,stock.Length,checkedReferences,deferred,paths.ScopedPathAuditComplete&&!paths.StoppedAtLimit){HasEmittedContent=hasContent};
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: preserve imported/earlier-local definition visibility while reporting missing, forward and blocked uses independently. */

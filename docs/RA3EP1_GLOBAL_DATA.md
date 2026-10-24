@@ -58,6 +58,13 @@ The checkbox controls fresh compilation **and inclusion**. If unchecked, the
 new package contains no additional global streams. Previous globals are not
 implicitly reused. A missing/empty AdditionalMaps directory compiles no globals.
 Validation-only builds qualify both stages without publishing either.
+<!-- Reborn: a skip reports why nothing was produced, without disguising invalid authored content. -->
+Studio displays yellow `Skipped: [Optional]` when the global toggle is off,
+and yellow `Skipped: [No input]` for a missing AdditionalMaps directory, no
+matching XML files, blank files, or a complete include graph with no emitted
+assets. Empty entries produce no stream or archive entries. Unsupported stages
+retain red Skipped lines. Malformed XML, missing explicitly included files,
+invalid asset IDs and unsupported declarations remain errors.
 Global failure aborts the build before publication, preserving the previous
 successful package. Receipts retain global entries, source hashes and alias
 selections separately from the static receipt.

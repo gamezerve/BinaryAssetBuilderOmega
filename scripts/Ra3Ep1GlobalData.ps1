@@ -8,14 +8,22 @@ function Build-RebornGlobalData([string]$DataRoot,[string]$Sdk,[hashtable]$Setti
     $directory=Join-Path $DataRoot 'AdditionalMaps';$streams=@();$evidence=@();$context=Join-Path $Work 'global-streams.json'
     # Reborn: absence is an ordinary static-only mod, matching the reference SDK's wildcard build stage.
     $entries=if(Test-Path -LiteralPath $directory -PathType Container){@(Get-ChildItem -LiteralPath $directory -File -Filter 'MapMetaData_*.xml' | Sort-Object Name)}else{@()}
+    # Reborn: missing optional inputs are yellow skips, distinct from unsupported compiler stages.
+    if(-not(Test-Path -LiteralPath $directory -PathType Container)){Write-SdkBuildLine ('Skipped: [No input] AdditionalMaps directory not found: '+$directory)}
+    elseif(-not $entries){Write-SdkBuildLine ('Skipped: [No input] No MapMetaData_*.xml files found in '+$directory)}
     foreach($entry in $entries){
         if($entry.BaseName -cnotmatch '(?i)\AMapMetaData_[a-z0-9_-]+\z'){throw ('Invalid global stream name: '+$entry.FullName)}
+        # Reborn: a genuinely blank optional entry has no XML to compile; malformed nonblank XML still reaches normal diagnostics.
+        if($entry.Length-le 4MB -and [string]::IsNullOrWhiteSpace([IO.File]::ReadAllText($entry.FullName))){Write-SdkBuildLine ('Skipped: [No input] Empty global source: '+$entry.FullName);continue}
         $target=Join-Path $Work ('global/'+$entry.BaseName);$null=New-Item -ItemType Directory -Path $target
         Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] Global source: '+$entry.FullName)
         [IO.File]::WriteAllText($context,(ConvertTo-Json -InputObject @($streams) -Depth 8))
         $stockData=if($Settings.SdkDataRoot){$Settings.SdkDataRoot}else{Join-Path $Sdk 'SageXML'}
         $auditArgs=@('sdk-missing-dependencies',$entry.FullName,$Sdk,$StaticManifest,$GlobalManifest,(Join-Path $target 'dependencies.json'),$stockData,$context)
         & $exe @auditArgs 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $Detail};if($LASTEXITCODE-ne 0){throw ('Global dependency preflight failed: '+$entry.FullName)}
+        # Reborn: count the complete all-Include emission graph; empty wrappers, definitions and instance-only bases produce no stream.
+        $audit=Get-Content -LiteralPath (Join-Path $target 'dependencies.json') -Raw | ConvertFrom-Json
+        if($audit.SourceGraphComplete -and $audit.HasEmittedContent-eq $false){Write-SdkBuildLine ('Skipped: [No input] No assets to compile in global source or its includes: '+$entry.FullName);continue}
         & $exe conscript-source-prepare $entry.FullName (Join-Path $target 'source') $Sdk $stockData 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $Detail};if($LASTEXITCODE-ne 0){throw ('Global source preparation failed: '+$entry.FullName)}
         $inputReceipt=Get-Content -LiteralPath (Join-Path $target 'source/source-input.json') -Raw | ConvertFrom-Json
         # Reborn: the early-global mode emits only actual runtime dependency manifests, never an automatic static-stream dependency.

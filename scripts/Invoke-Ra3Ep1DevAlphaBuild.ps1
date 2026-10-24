@@ -49,7 +49,7 @@ try{
     Start-SdkBuildPhase 5 'Building global data'
     # Reborn: an unchecked toggle omits global sources from this fresh package; never silently reuse an older source generation.
     $globalBuild=$null
-    if($BuildGlobalData){Build-RebornGlobalData (Split-Path -Parent $ModXml) $sdk $settings $StaticManifest $GlobalManifest $expectedCompiler $run $detail ([ref]$globalBuild);Stop-SdkBuildPhase ('Global streams compiled: '+$globalBuild.Streams.Count)}else{Stop-SdkBuildPhase 'Skipped: Build Global Data is unchecked; no AdditionalMaps streams will be packaged.'}
+    if($BuildGlobalData){Build-RebornGlobalData (Split-Path -Parent $ModXml) $sdk $settings $StaticManifest $GlobalManifest $expectedCompiler $run $detail ([ref]$globalBuild);if($globalBuild.Streams.Count){Stop-SdkBuildPhase ('Global streams compiled: '+$globalBuild.Streams.Count)}else{Stop-SdkBuildPhase}}else{Stop-SdkBuildPhase 'Skipped: [Optional] Build Global Data is unchecked; no AdditionalMaps streams will be packaged.'}
     Start-SdkBuildPhase 6 'Building static data'
     # Reborn: announce validation before reporting its entry-point load, so progress follows the actual phase order.
     Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] Validation started: dependency audit, source graph and schema admission.')

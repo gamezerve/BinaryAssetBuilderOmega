@@ -23,6 +23,11 @@ When the checkbox is unchecked, global sources are omitted from the new package;
 older compiled globals are not silently reused. Missing or empty AdditionalMaps
 directories are valid static-only builds. Unsupported asset types still report
 errors; enabling this stage does not enable every original Global.xml type.</p>
+<!-- Reborn: optional/no-input skips are distinct from unimplemented stages and actual source errors. -->
+<p>Yellow <strong>Skipped</strong> lines mean a user-disabled global build or
+missing/empty global inputs, including include graphs with no emitted assets.
+Red <strong>Skipped</strong> lines identify unimplemented build stages.
+Malformed XML and missing explicitly included files still report errors.</p>
 <!-- Reborn: the assign-slaves leaf now uses normal source-owned SpecialPower compilation rather than a fixed building identity. -->
 <p>AssignSlavesTargetObjectSpecialPower is supported with authored module IDs,
 compatible SpecialPowerTemplate targets and supported inherited SpecialPower
