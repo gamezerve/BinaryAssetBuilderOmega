@@ -1,0 +1,654 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<Includes>
+
+		<!-- <Include type="all"	source="ART:YU_HOTEL_GIB_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:YU_HOTEL_GIB.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:YU_HOTEL_GIB_CTR.w3x" /> -->
+
+		<!-- <Include type="all"	source="ART:YU_Hotel.xml" /> -->
+		<!-- <Include type="all"	source="ART:YU_Hotel_Holes_Middle.xml" /> -->
+		<!-- <Include type="all"	source="ART:YU_Hotel_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:YU_Hotel_SPM.xml" /> -->
+		
+		<!-- <Include type="all" source="ART:JUMECHAKING_ABTA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_AIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_ATKB.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_BATA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_BIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_DTHA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMechaKing.xml" /> -->
+		<!-- <Include type="all" source="ART:JUMechaKing_NRM.xml" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_SKL.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_SKN.MECH_BASE.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_SKN.OBBOX01.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_SKN.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_SPCB.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMechaKing_SPM.xml" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TORSO_ABTA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TORSO_AIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TORSO_ATKA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TORSO_ATKB.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TORSO_BATA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TORSO_BIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TORSO_FP0.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TORSO_FP1.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TORSO_FP2.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TORSO_SKL.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TORSO_SKN.FX_SWORD.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TORSO_SKN.TORSO.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TORSO_SKN.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TORSO_SPCB.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TORSO_TRNL.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TORSO_TRNR.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TORSO_WLKA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TRNL.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_TRNR.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUMECHAKING_WLKA.w3x" /> -->
+		
+		<!-- <Include type="all"	source="ART:ST_PilotStatue_01.xml" /> -->
+		<!-- <Include type="all"	source="ART:ST_PilotStatue_01_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:ST_PilotStatue_01_SPM.xml" /> -->
+		
+		<!-- <Include type="all"	source="ART:subomberaircraftM.xml" /> -->
+		<!-- <Include type="all"	source="ART:subomberaircraftM_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:subomberaircraftM_SPM.xml" /> -->
+		
+		<!-- <Include type="all"	source="ART:AUAntiVehicleVehicleTech3Fake.xml" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiVehicleVehicleTech3Fake_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiVehicleVehicleTech3Fake_SPM.xml" /> -->
+		
+		<Include type="all"	source="ART:CBBuilding_Filler.xml" />
+		<Include type="all"	source="ART:CBBuilding_Holes.xml" />
+		<Include type="all"	source="ART:CBBuilding_Metal.xml" />
+		<Include type="all"	source="ART:CBBuilding_Metal_NRM.xml" />
+		<Include type="all"	source="ART:CBBuilding_Metal_SPM.xml" />
+		<!-- <Include type="all"	source="ART:CBBuilding_Wood.xml" /> -->
+		<!-- <Include type="all"	source="ART:CBBuilding_Wood_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:CBBuilding_Wood_SPM.xml" /> -->
+		
+		<!-- <Include type="all"	source="ART:FI_Ramp02.xml" /> -->
+		<!-- <Include type="all"	source="ART:FI_Ramp02_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:FI_Ramp02_SPM.xml" /> -->
+		
+		<!-- <Include type="all"	source="ART:FXRedNBlueLight.xml" /> -->
+		
+		<!-- <Include type="all"	source="ART:JURADARSHIP_SKL.w3x" /> -->
+
+		<!-- <Include type="all"	source="ART:AUSALVAGESHIP_SKL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUSALVAGESHIP_SKN.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUSALVAGESHIP_SKN.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUSALVAGESHIP_SKN.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUSALVAGESHIP_SKN.OBBOX03.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUSALVAGESHIP_SKN.w3x" /> -->
+		
+		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE.NEWSKIN_FILL01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE_HRC.w3x" /> -->
+
+		<!-- <Include type="all"	source="ART:BB_EuropeCoastalGun.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:BB_EuropeCoastalGun.NEWSKIN_FILL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:BB_EuropeCoastalGun.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:BB_EuropeCoastalGun.w3x" /> -->
+
+		<!-- <Include type="all"	source="ART:BB_EuropeCoastalGun_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:BB_EuropeCoastalGun_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:BB_EuropeCoastalGun_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:BB_EuropeCoastalGun_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:BB_EuropeCoastalGun_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:BB_EuropeCoastalGun_HRC.w3x" /> -->
+
+		<!-- <Include type="all"	source="ART:BB_EuropeCoastalGun.xml" /> -->
+		<!-- <Include type="all"	source="ART:BB_EuropeCoastalGun_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:BB_EuropeCoastalGun_SPM.xml" /> -->
+
+		<!-- <Include type="all"	source="ART:NY_FortWatchtower.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortWatchtower.NEWSKIN_FILL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortWatchtower.OBBOX01.w3x" /> -->
+
+
+		<!-- <Include type="all"	source="ART:NY_FortWatchtower_COL.NEWSKIN.w3x" /> -->
+
+
+		<!-- <Include type="all"	source="ART:NY_FortWatchtower_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortWatchtower_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortWatchtower_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortWatchtower_HRC.w3x" /> -->
+
+		<!-- <Include type="all"	source="ART:NY_FortWatchtower.xml" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortWatchtower_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortWatchtower_SPM.xml" /> -->
+		
+		<!-- <Include type="all"	source="ART:AU_GARRISON_FLAG.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AU_GARRISON_FLAG_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AU_GARRISON_FLAG_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AU_GARRISON_FLAG.ALLIED.w3x" /> -->
+		
+		<!-- <Include type="all"	source="ART:SU_GARRISON_FLAG.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SU_GARRISON_FLAG_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SU_GARRISON_FLAG_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SU_GARRISON_FLAG.SOVIET.w3x" /> -->
+
+		<!-- <Include type="all"	source="ART:JU_GARRISON_FLAG.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JU_GARRISON_FLAG_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JU_GARRISON_FLAG_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JU_GARRISON_FLAG.JAPAN.w3x" /> -->
+		
+		<!-- <Include type="all"	source="ART:GARRISON_WALL_SMALL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GARRISON_WALL_SMALL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GARRISON_WALL_SMALL.GARRISON_WALL.w3x" /> -->
+		
+		<!-- <Include type="all" source="ART:NY_Fort.xml" /> -->
+		<!-- <Include type="all" source="ART:NY_Fort_SPM.xml" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTBRADLEY_01_CTR.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTBRADLEY_01_HRC.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FortBradley_01.xml" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTBRADLEY_02_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTBRADLEY_02_CTR.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTBRADLEY_02_HRC.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FortBradley_02.xml" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTBRADLEY_03_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTBRADLEY_03_CTR.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTBRADLEY_03_HRC.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FortBradley_03_SPM.xml" /> -->
+
+		<!-- <Include type="all" source="ART:NY_FORTBRADLEY_04_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTCORNER_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTCORNER_CTR.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTCORNER_HRC.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTCORNER.NEWSKIN_FILL.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTCORNER.OBBOX01.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTCORNER.OBBOX02.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTCORNER_COL_CTR.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTCORNER_COL_HRC.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTCORNER_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTCORNER_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTCORNER_COL.OBBOX02.w3x" /> -->
+
+		<!-- <Include type="all" source="ART:NY_FORTHUB_COL_CTR.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTHUB_COL_HRC.w3x" /> -->
+
+		<!-- <Include type="all" source="ART:NY_FORTHUB.NEWSKIN_FILL.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTMIDDLE.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTMIDDLE_COL.NEWSKIN.w3x" /> -->
+
+		<!-- <Include type="all" source="ART:NY_FORTWALL01_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTWALL01_CTR.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTWALL01_HRC.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTWALL01.OBBOX01.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTWALL02_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTWALL02_CTR.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTWALL02_HRC.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTWALL02.OBBOX01.w3x" /> -->
+
+		<!-- <Include type="all" source="ART:CA_SovietOpenTopHarborBuilding.xml" /> -->
+		<!-- <Include type="all" source="ART:CA_SovietOpenTopHarborBuilding_NRM.xml" /> -->
+		<!-- <Include type="all" source="ART:CA_SovietOpenTopHarborBuilding_SPM.xml" /> -->
+		
+		<!-- <Include type="all" source="ART:NY_FORTWALL02.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTWALL02.NEWSKIN_FILL.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTWALL01.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTWALL01.NEWSKIN_FILL.w3x" />		 -->
+		
+		<!-- <Include type="all" source="ART:NY_FORTWALL02_COL_CTR.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTWALL02_COL_HRC.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTWALL02_COL.NEWSKIN.w3x" /> -->
+		
+		<!-- <Include type="all" source="ART:NY_Fort_NRM.xml" /> -->
+		
+		<!-- <Include type="all" source="ART:NY_FORTWALL01_COL_CTR.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTWALL01_COL_HRC.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTWALL01_COL.NEWSKIN.w3x" /> -->
+		
+		<!-- <Include type="all" source="ART:NY_FORTMIDDLE.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTMIDDLE.NEWSKIN_FILL.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTMIDDLE.OBBOX01.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTMIDDLE_COL_CTR.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTMIDDLE_COL_HRC.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTMIDDLE_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTMIDDLE_CTR.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTMIDDLE_HRC.w3x" /> -->
+		
+		<!-- <Include type="all" source="ART:NY_FORTENDCAP.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTENDCAP.NEWSKIN_FILL.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTENDCAP.OBBOX01.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTENDCAP_COL_CTR.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTENDCAP_COL_HRC.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTENDCAP_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTENDCAP_CTR.w3x" /> -->
+		<!-- <Include type="all" source="ART:NY_FORTENDCAP_HRC.w3x" /> -->
+		
+		<!-- <Include type="all" source="ART:NY_FORTCORNER.NEWSKIN.w3x" /> -->
+		
+		<!-- <Include type="all"	source="ART:NY_FortBradley_04.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_04.NEWSKIN_FILL01.w3x" /> -->
+
+
+		<!-- <Include type="all"	source="ART:NY_FortBradley_04_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_04_COL.OBBOX01.w3x" /> -->
+
+
+		<!-- <Include type="all"	source="ART:NY_FortBradley_04_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_04_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_04_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_04_HRC.w3x" /> -->
+
+		<!-- <Include type="all"	source="ART:NY_FortBradley_04.xml" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_04_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_04_SPM.xml" /> -->
+
+		<!-- <Include type="all"	source="ART:NY_FORTHUB.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FORTHUB.NEWSKIN_FILL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FORTHUB.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FORTHUB_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FORTHUB_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FORTHUB_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FORTHUB_HRC.w3x" /> -->
+		
+		<!-- <Include type="all"	source="ART:NY_FortBradley_03.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_03.NEWSKIN_FILL01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_03.OBBOX01.w3x" /> -->
+
+
+		<!-- <Include type="all"	source="ART:NY_FortBradley_03_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_03_COL.OBBOX01.w3x" /> -->
+
+
+		<!-- <Include type="all"	source="ART:NY_FortBradley_03_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_03_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_03_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_03_HRC.w3x" /> -->
+
+		<!-- <Include type="all"	source="ART:NY_FortBradley_03.xml" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_03_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_03_SPM.xml" /> -->
+		
+		<!-- <Include type="all"	source="ART:NY_FortBradley_02.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_02.NEWSKIN_FILL01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_02.OBBOX01.w3x" /> -->
+
+
+		<!-- <Include type="all"	source="ART:NY_FortBradley_02_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_02_COL.OBBOX01.w3x" /> -->
+
+
+		<!-- <Include type="all"	source="ART:NY_FortBradley_02_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_02_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_02_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_02_HRC.w3x" /> -->
+
+		<!-- <Include type="all"	source="ART:NY_FortBradley_02.xml" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_02_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_02_SPM.xml" /> -->
+
+		<!-- <Include type="all"	source="ART:NY_FortBradley_01.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_01.NEWSKIN_FILL01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_01.OBBOX01.w3x" /> -->
+
+
+		<!-- <Include type="all"	source="ART:NY_FortBradley_01_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_01_COL.OBBOX01.w3x" /> -->
+
+
+		<!-- <Include type="all"	source="ART:NY_FortBradley_01_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_01_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_01_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_01_HRC.w3x" /> -->
+
+		<!-- <Include type="all"	source="ART:NY_FortBradley_01.xml" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_01_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:NY_FortBradley_01_SPM.xml" /> -->
+		
+		<!-- <Include type="all"	source="ART:EI_EASTERISLANDHEADDEFENSEB_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_EASTERISLANDHEADDEFENSEB_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_EASTERISLANDHEADDEFENSEB_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_EASTERISLANDHEADDEFENSEB_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_EASTERISLANDHEADDEFENSEB_GAG.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_EASTERISLANDHEADDEFENSEB_SKL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_EASTERISLANDHEADDEFENSEB_SKN.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_EASTERISLANDHEADDEFENSEB_SKN.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_EASTERISLANDHEADDEFENSEB_SKN.w3x" /> -->
+	
+		<!-- <Include type="all"	source="ART:EI_EasterIslandHeadDefense.xml" /> -->
+		<!-- <Include type="all"	source="ART:EI_EasterIslandHeadDefense_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:EI_EasterIslandHeadDefense_SPM.xml" /> -->
+
+		<!-- <Include type="all"	source="ART:EI_EASTERISLANDHEADDEFENSE_SKN.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_EASTERISLANDHEADDEFENSE_SKN.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_EASTERISLANDHEADDEFENSE_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_EASTERISLANDHEADDEFENSE_GAG.w3x" /> -->
+		
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS.NEW_SKIN_FILL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS.OBBOX03.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS.OBBOX04.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS02.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS02.NEW_SKIN_FILL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS02.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS02.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS02_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS02_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS02_COL.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS02_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS02_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS02_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS02_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS03.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS03.NEW_SKIN_FILL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS03.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS03.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS03_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS03_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS03_COL.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS03_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS03_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS03_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS03_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS04.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS04.NEW_SKIN_FILL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS04.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS04.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS04.OBBOX03.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS04.OBBOX04.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS04_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS04_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS04_COL.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS04_COL.OBBOX03.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS04_COL.OBBOX04.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS04_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS04_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS04_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS04_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SovietVolcanoFortress1.xml" /> -->
+		<!-- <Include type="all"	source="ART:EI_SovietVolcanoFortress1_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:EI_SovietVolcanoFortress1_SPM.xml" /> -->
+		<!-- <Include type="all"	source="ART:EI_SovietVolcanoFortress2.xml" /> -->
+		<!-- <Include type="all"	source="ART:EI_SovietVolcanoFortress2_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:EI_SovietVolcanoFortress2_SPM.xml" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE01.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE01.NEW_SKIN_FILL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE01.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE01_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE01_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE01_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE01_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE01_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE02.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE02.NEW_SKIN_FILL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE02.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE02_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE02_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE02_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE02_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE02_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE03.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE03.NEW_SKIN_FILL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE03.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE03_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE03_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE03_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE03_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESSPIPE03_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS_COL.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS_COL.OBBOX03.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS_COL.OBBOX04.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_SOVIETVOLCANOFORTRESS_HRC.w3x" /> -->
+
+		<!-- <Include type="all"	source="ART:AM_ALLIEDVIPBUNKERSUBSTRUCTURE.NEWSKIN_CIV02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AM_ALLIEDVIPBUNKERSUBSTRUCTURE.NEWSKIN_FILL01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AM_ALLIEDVIPBUNKERSUBSTRUCTURE.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AM_ALLIEDVIPBUNKERSUBSTRUCTURE.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AM_AlliedVIPBunkerSubStructure.xml" /> -->
+		<!-- <Include type="all"	source="ART:AM_ALLIEDVIPBUNKERSUBSTRUCTURE_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AM_ALLIEDVIPBUNKERSUBSTRUCTURE_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AM_ALLIEDVIPBUNKERSUBSTRUCTURE_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AM_ALLIEDVIPBUNKERSUBSTRUCTURE_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AM_ALLIEDVIPBUNKERSUBSTRUCTURE_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AM_ALLIEDVIPBUNKERSUBSTRUCTURE_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AM_AlliedVIPBunkerSubStructure_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:AM_AlliedVIPBunkerSubStructure_SPM.xml" /> -->
+		<!-- <Include type="all"	source="ART:CCLIGHTHOUSE_02_GAR.GARRISON_WALL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:EI_EASTERISLANDHEADDEFENSE_SKL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GARRISON_WALL.GARRISON_WALL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GARRISON_WALL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GARRISON_WALL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GARRISON_WALL_LARGE.GARRISON_WALL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GARRISON_WALL_LARGE_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GARRISON_WALL_LARGE_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GARRISON_WALL_SMALL.GARRISON_WALL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GARRISON_WALL_SMALL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GARRISON_WALL_SMALL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GARRISON_WALL_TINY.GARRISON_WALL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GARRISON_WALL_TINY_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GARRISON_WALL_TINY_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GARRISON_WALL_XLARGE.GARRISON_WALL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GARRISON_WALL_XLARGE_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GARRISON_WALL_XLARGE_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_ALLIEDSUPPLYPORTBUILDING.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_ALLIEDSUPPLYPORTBUILDING.NEWSKIN_FILL01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_ALLIEDSUPPLYPORTBUILDING.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_ALLIEDSUPPLYPORTBUILDING.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_ALLIEDSUPPLYPORTBUILDING.OBBOX03.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_AlliedSupplyPortBuilding.xml" /> -->
+		<!-- <Include type="all"	source="ART:GE_ALLIEDSUPPLYPORTBUILDING_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_ALLIEDSUPPLYPORTBUILDING_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_ALLIEDSUPPLYPORTBUILDING_COL.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_ALLIEDSUPPLYPORTBUILDING_COL.OBBOX03.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_ALLIEDSUPPLYPORTBUILDING_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_ALLIEDSUPPLYPORTBUILDING_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_ALLIEDSUPPLYPORTBUILDING_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_ALLIEDSUPPLYPORTBUILDING_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_AlliedSupplyPortBuilding_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:GE_AlliedSupplyPortBuilding_SPM.xml" /> -->
+		<!-- <Include type="all"	source="ART:GE_SOVIETVIPBUNKERSUBSTRUCTURE.FLAG.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_SOVIETVIPBUNKERSUBSTRUCTURE.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_SOVIETVIPBUNKERSUBSTRUCTURE.NEW_SKIN_FILL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_SOVIETVIPBUNKERSUBSTRUCTURE.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_SOVIETVIPBUNKERSUBSTRUCTURE.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_SovietVIPBunkerSubStructure.xml" /> -->
+		<!-- <Include type="all"	source="ART:GE_SOVIETVIPBUNKERSUBSTRUCTURE_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_SOVIETVIPBUNKERSUBSTRUCTURE_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_SOVIETVIPBUNKERSUBSTRUCTURE_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_SOVIETVIPBUNKERSUBSTRUCTURE_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_SOVIETVIPBUNKERSUBSTRUCTURE_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_SOVIETVIPBUNKERSUBSTRUCTURE_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GE_SovietVIPBunkerSubStructure_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:GE_SovietVIPBunkerSubStructure_SPM.xml" /> -->
+		<!-- <Include type="all"	source="ART:GV_SOVIETSATELLITEFACILITY.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GV_SOVIETSATELLITEFACILITY.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GV_SOVIETSATELLITEFACILITY.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GV_SovietSatelliteFacility.xml" /> -->
+		<!-- <Include type="all"	source="ART:GV_SOVIETSATELLITEFACILITY_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GV_SOVIETSATELLITEFACILITY_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GV_SOVIETSATELLITEFACILITY_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GV_SOVIETSATELLITEFACILITY_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GV_SOVIETSATELLITEFACILITY_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GV_SOVIETSATELLITEFACILITY_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:GV_SovietSatelliteFacility_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:GV_SovietSatelliteFacility_SPM.xml" /> -->
+		<!-- <Include type="all"	source="ART:JUEMPERORMECHA_DIE_SKN.JAPANEMPERORMECHA01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUEMPERORMECHA_DIE_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUTRANSPORTVEHICLE2.BACKDOOR1.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUTRANSPORTVEHICLE2.BACKDOOR2.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUTRANSPORTVEHICLE2.FRONTDOOR1.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUTRANSPORTVEHICLE2.FRONTDOOR2.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUTRANSPORTVEHICLE2.JUTRANSPORTVEHICLE2.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUTRANSPORTVEHICLE2.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUTRANSPORTVEHICLE2.PLANE01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUTRANSPORTVEHICLE2.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUTransportVehicle2.xml" /> -->
+		<!-- <Include type="all"	source="ART:JUTRANSPORTVEHICLE2_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUTRANSPORTVEHICLE2_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUTransportVehicle2_SPM.xml" /> -->
+		<!-- <Include type="all"	source="ART:MJ_MTFUJIVIEWINGTOWER.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MJ_MTFUJIVIEWINGTOWER.NEWSKIN_FILL01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MJ_MTFUJIVIEWINGTOWER.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MJ_MtFujiViewingTower.xml" /> -->
+		<!-- <Include type="all"	source="ART:MJ_MTFUJIVIEWINGTOWER_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MJ_MTFUJIVIEWINGTOWER_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MJ_MTFUJIVIEWINGTOWER_COL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MJ_MTFUJIVIEWINGTOWER_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MJ_MTFUJIVIEWINGTOWER_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MJ_MTFUJIVIEWINGTOWER_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MJ_MTFUJIVIEWINGTOWER_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MJ_MtFujiViewingTower_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:MJ_MtFujiViewingTower_SPM.xml" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDSCIENCELAB.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDSCIENCELAB.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDSCIENCELAB.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDSCIENCELAB.OBBOX03.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_AlliedScienceLab.xml" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDSCIENCELAB_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDSCIENCELAB_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDSCIENCELAB_COL.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDSCIENCELAB_COL.OBBOX03.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDSCIENCELAB_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDSCIENCELAB_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDSCIENCELAB_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDSCIENCELAB_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_AlliedScienceLab_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:MY_AlliedScienceLab_SPM.xml" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDTECHSCRAMBLER.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDTECHSCRAMBLER.NEWSKIN_FILL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDTECHSCRAMBLER.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDTECHSCRAMBLER.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDTECHSCRAMBLER.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_AlliedTechScrambler.xml" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDTECHSCRAMBLER_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDTECHSCRAMBLER_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDTECHSCRAMBLER_COL.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDTECHSCRAMBLER_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDTECHSCRAMBLER_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDTECHSCRAMBLER_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_ALLIEDTECHSCRAMBLER_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MY_AlliedTechScrambler_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:MY_AlliedTechScrambler_SPM.xml" /> -->
+		<!-- <Include type="all"	source="ART:SBTESLAWALLHUB_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SBTESLAWALLHUB_COL.NEWSKIN2.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SBTESLAWALLHUB_COL.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SBTESLAWALLHUB_COL.OBBOX03.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SBTESLAWALLHUB_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SBTESLAWALLHUB_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SBTESLAWALLHUB_SKL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SBTESLAWALLHUB_SKN.FX_LIGHTNINGCHARGE.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SBTESLAWALLHUB_SKN.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SBTESLAWALLHUB_SKN.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SBTESLAWALLHUB_SKN.OBBOX03.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SBTESLAWALLHUB_SKN.SKIN_BASE.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SBTESLAWALLHUB_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUBOMBERAIRCRAFT_SPECIAL_COL.D_B_01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUBOMBERAIRCRAFT_SPECIAL_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUBOMBERAIRCRAFT_SPECIAL_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUBOMBERAIRCRAFT_SPECIAL_COL.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUBOMBERAIRCRAFT_SPECIAL_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUBOMBERAIRCRAFT_SPECIAL_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUBOMBERAIRCRAFT_SPECIAL_DYING_SKN.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUBOMBERAIRCRAFT_SPECIAL_DYING_SKN.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUBOMBERAIRCRAFT_SPECIAL_DYING_SKN.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUBOMBERAIRCRAFT_SPECIAL_DYING_SKN.RVKIROV_BIGBOMB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUBOMBERAIRCRAFT_SPECIAL_DYING_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUBOMBERAIRCRAFT_SPECIAL_SKN.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUBOMBERAIRCRAFT_SPECIAL_SKN.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUBOMBERAIRCRAFT_SPECIAL_SKN.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUBOMBERAIRCRAFT_SPECIAL_SKN.RVKIROV_BIGBOMB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUBOMBERAIRCRAFT_SPECIAL_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:TH_JAPANVIPBUNKERSUBSTRUCTURE.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:TH_JAPANVIPBUNKERSUBSTRUCTURE.NEWSKIN_FILL01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:TH_JAPANVIPBUNKERSUBSTRUCTURE.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:TH_JapanVIPBunkerSubStructure.xml" /> -->
+		<!-- <Include type="all"	source="ART:TH_JAPANVIPBUNKERSUBSTRUCTURE_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:TH_JAPANVIPBUNKERSUBSTRUCTURE_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:TH_JAPANVIPBUNKERSUBSTRUCTURE_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:TH_JAPANVIPBUNKERSUBSTRUCTURE_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:TH_JAPANVIPBUNKERSUBSTRUCTURE_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:TH_JAPANVIPBUNKERSUBSTRUCTURE_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:TH_JapanVIPBunkerSubStructure_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:TH_JapanVIPBunkerSubStructure_SPM.xml" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_01.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_01.NEWSKIN_FILL01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_01.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_ImperialAdminBuilding_01.xml" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_01_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_01_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_01_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_01_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_01_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_01_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_ImperialAdminBuilding_01_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:VL_ImperialAdminBuilding_01_SPM.xml" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_02.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_02.NEWSKIN_FILL01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_02.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_02.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_ImperialAdminBuilding_02.xml" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_02_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_02_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_02_COL.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_02_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_02_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_02_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_02_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_ImperialAdminBuilding_02_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:VL_ImperialAdminBuilding_02_SPM.xml" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03.NEWSKIN_FILL01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL.BONE_D_01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL.BONE_D_02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL.BONE_D_03.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL.BONE_D_04.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL.BONE_D_05.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL.BONE_D_06.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL.BONE_D_07.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL.BONE_D_08.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL.BONE_D_09.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL.BONE_D_10.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL.BONE_D_11.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL.BONE_D_12.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL.BONE_D_13.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL.BONE_D_14.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL.BONE_D_15.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_HRC.w3x" /> -->
+		<Include type="all"	source="ART:VL_RUSSIANPORTBUILDING.NEWSKIN_CIV01.w3x" />
+		<Include type="all"	source="ART:VL_RUSSIANPORTBUILDING.NEWSKIN_FILL01.w3x" />
+		<Include type="all"	source="ART:VL_RUSSIANPORTBUILDING.OBBOX01.w3x" />
+		<Include type="all"	source="ART:VL_RUSSIANPORTBUILDING.OBBOX02.w3x" />
+		<Include type="all"	source="ART:VL_RussianPortBuilding.xml" />
+		<Include type="all"	source="ART:VL_RussianPortBuilding_NRM.xml" />
+		<Include type="all"	source="ART:VL_RussianPortBuilding_SPM.xml" />
+		<!-- <Include type="all"	source="ART:VL_RUSSIANPORTBUILDING_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_RUSSIANPORTBUILDING_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_RUSSIANPORTBUILDING_COL.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_RUSSIANPORTBUILDING_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_RUSSIANPORTBUILDING_COL_HRC.w3x" /> -->
+		<Include type="all"	source="ART:VL_RUSSIANPORTBUILDING_CTR.w3x" />
+		<Include type="all"	source="ART:VL_RUSSIANPORTBUILDING_HRC.w3x" />
+		<!-- <Include type="all"	source="ART:YU_HOTEL01_GAR.GARRISON_WALL.w3x" /> -->
+
+		<!-- <Include type="all"	source="ART:JUEMPERORMECHA_SKN.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUEMPERORMECHA_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUEMPERORMECHA_SKN.JAPANEMPERORMECHA01.w3x" /> -->
+
+	</Includes>
+
+</AssetDeclaration>

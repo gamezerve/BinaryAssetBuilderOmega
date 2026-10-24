@@ -108,6 +108,7 @@
 				
 		<!-- Reborn Packed Images -->
 		<Include type="all" source="ART:Images/RebornPackedImages.xml"/>	
+		<Include type="all" source="W3X.xml"/>	
 		
 	</Includes>
 </AssetDeclaration>
