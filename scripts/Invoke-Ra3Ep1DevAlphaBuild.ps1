@@ -51,11 +51,11 @@ try{
     $globalBuild=$null
     if($BuildGlobalData){Build-RebornGlobalData (Split-Path -Parent $ModXml) $sdk $settings $StaticManifest $GlobalManifest $expectedCompiler $run $detail ([ref]$globalBuild);Stop-SdkBuildPhase ('Global streams compiled: '+$globalBuild.Streams.Count)}else{Stop-SdkBuildPhase 'Skipped: Build Global Data is unchecked; no AdditionalMaps streams will be packaged.'}
     Start-SdkBuildPhase 6 'Building static data'
+    # Reborn: announce validation before reporting its entry-point load, so progress follows the actual phase order.
+    Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] Validation started: dependency audit, source graph and schema admission.')
     Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] Loading '+$ModXml)
     # Reborn: list independent missing definitions/assets before the normal compiler stops at its first unsupported or invalid owner.
     $dependencyReport=Join-Path $run 'dependencies.json'
-    # Reborn: validation spans the dependency audit and the backend's source/schema admission; the backend reports its completion.
-    Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] Validation started: dependency audit, source graph and schema admission.')
     $dependencyArguments=@('sdk-missing-dependencies',$ModXml,$sdk,$StaticManifest,$GlobalManifest,$dependencyReport)
     if($globalBuild){$dependencyArguments+=@($(if($settings.SdkDataRoot){$settings.SdkDataRoot}else{Join-Path $sdk 'SageXML'}),$globalBuild.Context)}elseif($settings.SdkDataRoot){$dependencyArguments+=$settings.SdkDataRoot}
     & (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') @dependencyArguments 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail};$dependencyCode=$LASTEXITCODE

@@ -22,6 +22,8 @@ namespace Reborn
         internal static Func<DialogResult> Confirmation = null;
         // Reborn: EA Studio colors only its own step/build summary lines green; redirected backend lines with the same meaning are recolored here.
         private static readonly Regex GreenLine = new Regex(@"^(?:\[\d\d:\d\d:\d\d(?:\.\d+)?\] )?(?:Step time taken: |(?:Validation|Compilation) (?:started|completed): |Validation Completed \(no publication\)\.$)", RegexOptions.CultureInvariant);
+        // Reborn: skipped phases are visually red without changing their text or classifying them as build errors.
+        private static readonly Regex SkippedLine = new Regex(@"^(?:\[\d\d:\d\d:\d\d(?:\.\d+)?\] )?Skipped:", RegexOptions.CultureInvariant);
         private static RichTextBox output;
         private static int colored;
         private static bool recoloring;
@@ -94,6 +96,7 @@ namespace Reborn
                     int next = text.IndexOf('\n', at);
                     string line = text.Substring(at, next - at).TrimEnd('\r');
                     if (GreenLine.IsMatch(line)) { output.Select(at, line.Length); output.SelectionColor = Color.Green; }
+                    else if (SkippedLine.IsMatch(line)) { output.Select(at, line.Length); output.SelectionColor = Color.Red; }
                     at = next + 1;
                 }
                 colored = end + 1;
