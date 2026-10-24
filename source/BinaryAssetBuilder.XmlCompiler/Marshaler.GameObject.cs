@@ -567,7 +567,10 @@ public static partial class Marshaler
                 MarshalPolymorphicType<AutoHealBehaviorModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0xE9BBF43Bu:
-                MarshalPolymorphicType<ParkingPlaceBehaviorModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: EP1 parking has its own sixty-byte layout, distinct from the legacy KW record.
+                using(var context=state.Push((void**)objT,(uint)sizeof(Ep1ParkingPlaceBehaviorModuleData),1u))
+                    Marshal(node,(Ep1ParkingPlaceBehaviorModuleData*)*objT,state);
+                uint parkingTypeId=0xE9BBF43Bu;state.InplaceEndianToPlatform(&parkingTypeId);*(uint*)*objT=parkingTypeId;
                 break;
             case 0xE06AB787u:
                 MarshalPolymorphicType<ExperienceScalarUpgradeModuleData, BehaviorModuleData>(node, objT, state);
@@ -634,7 +637,10 @@ public static partial class Marshaler
                 MarshalPolymorphicType<CloneStoredObjectsSpecialPowerUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x4E2D96C9u:
-                MarshalPolymorphicType<RecallUnitsSpecialPowerModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: Uprising adds MaxAircraftToRecall before the return-voice flag.
+                using(var context=state.Push((void**)objT,(uint)sizeof(Ep1RecallUnitsSpecialPowerModuleData),1u))
+                    Marshal(node,(Ep1RecallUnitsSpecialPowerModuleData*)*objT,state);
+                uint recallTypeId=0x4E2D96C9u;state.InplaceEndianToPlatform(&recallTypeId);*(uint*)*objT=recallTypeId;
                 break;
             case 0x28004AB1u:
                 MarshalPolymorphicType<ReturnToProducerSpecialPowerModuleData, BehaviorModuleData>(node, objT, state);

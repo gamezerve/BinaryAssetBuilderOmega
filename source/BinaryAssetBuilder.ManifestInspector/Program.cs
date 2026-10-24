@@ -120,6 +120,9 @@ internal static class Program
             // Reborn: EA source envelopes/includes are prepared explicitly before bounded native compilation; no hidden command is generated.
             if(args.Length is >=2 and <=4 && args[0]=="conscript-source-kind")
             {Console.WriteLine(ConscriptSourceInput.Detect(args[1],args.ElementAtOrDefault(2),args.ElementAtOrDefault(3))?"conscript":"other");return 0;}
+            // Reborn: isolate original/edit/default airfield processor checks from user mod publication.
+            if(args.Length==3 && args[0]=="airfield-behaviors-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();AirfieldBehaviorSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length is >=3 and <=5 && args[0]=="conscript-source-prepare")
             {CompilerSmokeTest.InitializeHashProvider();ConscriptSourceInput.Prepare(args[1],args[2],args.ElementAtOrDefault(3),args.ElementAtOrDefault(4));return 0;}
             // Reborn: group frontend structure/default/no-hidden-command checks independently of full GameObject compilation.

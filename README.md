@@ -8,6 +8,11 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: original airfields require EP1-specific recall and parking records, not the older KW layouts. -->
+`RecallUnitsSpecialPower` and `ParkingPlaceBehavior` now use their full EP1
+layouts, including aircraft recall limits, parking/production limits, helipad
+names and optional filter/rally-point records. See [airfield behaviors](docs/RA3EP1_AIRFIELD_BEHAVIORS.md).
+
 <!-- Reborn: merged model XML scales with the captured graph instead of an individual source-file quota. -->
 Generated multi-asset XML no longer inherits the four-MiB individual source
 read limit. Large combined W3X graphs retain all assets; XML DTD/entity

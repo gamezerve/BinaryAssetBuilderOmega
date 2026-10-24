@@ -48,6 +48,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<PowerUpgradeContract.Witness> powerUpgrade;
     // Reborn: assign-slaves inherits the existing SpecialPower ABI but has its own independently qualified concrete wrapper.
     private readonly Lazy<StockMetadataGrammar> assignSlaves;
+    // Reborn: recall and parking each retain an independent lazily qualified EP1 metadata grammar.
+    private readonly Dictionary<Type,Lazy<StockMetadataGrammar>> airfield=new();
     // Reborn: schema-proved draw leaves need the generic proof qualified on stock Conscript draws and a metadata grammar from stock draws.
     private readonly Dictionary<Type,Lazy<StockMetadataGrammar>> schemaFamilies=new();
     // Reborn: Geometry is a nonmodule owner with independently qualified source/native and stock metadata grammar.
@@ -92,6 +94,8 @@ internal sealed class ConscriptVariableGraphVerifier
         luaEventList=new(()=>LUAEventListContract.QualifyStock(manifest,official));
         buildingBehavior=new(()=>BuildingBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        // Reborn: both source families use their own native layout, independently witnessed on retail airfields.
+        foreach(var type in new[]{typeof(Ep1RecallUnitsSpecialPowerModuleData),typeof(Ep1ParkingPlaceBehaviorModuleData)})airfield.Add(type,new(()=>AirfieldBehaviorContract.Qualify(type,manifest,baseline,referenceSchemas,catalog)));
         foreach(var family in SchemaNativeContract.Families)schemaFamilies.Add(family.Type,new(()=>QualifySchemaFamily(manifest,family)));
         geometryGrammar=new(()=>GameObjectGeometryContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         dependencyGrammar=new(()=>GameObjectDependencyContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -185,6 +189,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 if(owner.NativeType==typeof(AssignSlavesTargetObjectSpecialPowerModuleData)){
                     var grammar=assignSlaves.Value;var assignNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,AssignSlavesSpecialPowerContract.TypeId,assignNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(assignNative,official,AssignSlavesSpecialPowerContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,assignNative,owner.NativeType,proof.Records);Own(assignNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: every airfield scalar, optional filter/vector, string and import is source-owned; generated metadata follows retail class tables.
+                if(AirfieldBehaviorContract.Supports(owner.NativeType)){
+                    var grammar=airfield[owner.NativeType].Value;var airfieldNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;string wire=AirfieldBehaviorContract.Wire(owner.NativeType);
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,FastHash.GetHashCode(wire),airfieldNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(airfieldNative,official,wire,owner.NativeType);int size=grammar.Verify(metadata,airfieldNative,owner.NativeType,proof.Records);Own(airfieldNative,start,stop);Splice(owner,metadata,start,size);continue;
                 }
                 // Reborn: chooser presence and all source-bound native fields/imports own a source-sized AI metadata fragment.
                 if(group.Key=="AI"){
