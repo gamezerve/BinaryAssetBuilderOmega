@@ -26,3 +26,11 @@ Validation: three original native/metadata witnesses and six
 reactor/edit/default/optional/probability/corruption checks passed. This also
 corrected the generic flag verifier: SAGE `ALL` fills the complete mask even
 when an XSD explicitly lists `ALL` as a sentinel enumeration literal.
+
+The current Reborn source preparation passes (58 source files, 38 assets).
+An isolated compile of its complete `SovietPowerPlantAdvanced` reached the next
+separate blocker: nonempty scripted-model `FXEvent` metadata is not enabled in
+`Ep1ScriptedDrawTokenizer`. No successful complete reactor or 38-asset package
+build is claimed. The broader private regression was stopped after the first
+building passed, and the reactor was checked directly to avoid rebuilding
+unrelated buildings. User XML and published mod packages were left unchanged.
