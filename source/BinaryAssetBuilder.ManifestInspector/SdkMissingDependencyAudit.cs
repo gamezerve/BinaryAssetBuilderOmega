@@ -12,7 +12,12 @@ namespace BinaryAssetBuilder.ManifestInspector;
 internal static class SdkMissingDependencyAudit
 {
     private const string Ea="uri:ea.com:eala:asset",AnnotationNamespace="uri:ea.com:eala:asset:schema";
-    internal sealed record Asset(string Type,string Name,uint TypeId,uint InstanceId);
+    // Reborn: retain lookup origin and immediate stock dependencies for warnings about non-emitted WorldBuilder objects.
+    internal sealed record Asset(string Type,string Name,uint TypeId,uint InstanceId)
+    {
+        public string? CatalogPath {get;init;}
+        public AssetId[] Dependencies {get;init;}=Array.Empty<AssetId>();
+    }
     // Reborn: retain the exact lookup-only manifest generation in the audit without emitting any of its assets.
     internal sealed record StockCatalog(string Manifest,string Sha256,int Assets);
     internal sealed record Finding(string Code,string Severity,string Target,string Owner,string Source,int Line,int Column,string Field,string Detail);
@@ -30,7 +35,7 @@ internal static class SdkMissingDependencyAudit
         public bool FullDependencyCoverage=>false;
         public bool GameExecuted=>false;
         // Reborn: distinguish captured source evidence from post-inheritance/default expansion and dynamic game-name lookup.
-        public string[] Limitations=>new[]{"Explicit source expressions, schema-typed strong references, UpgradeTemplate, Image and LogicCommandSet weak references are checked.","Instance-only owners are not mod-produced assets; inherited/default fields absent from emitted raw owners require subsequent compiler checks.","Other weak IDs, arbitrary strings, dynamically loaded names and unsupported expression values are not proved present.","Stock catalog contains only the explicitly supplied manifests, not a recursive scan of game archives."};
+        public string[] Limitations=>new[]{"Explicit source expressions, schema-typed strong references, UpgradeTemplate, Image, LogicCommandSet and GameObject weak references are checked.","Instance-only owners are not mod-produced assets; inherited/default fields absent from emitted raw owners require subsequent compiler checks.","Other weak IDs, arbitrary strings, dynamically loaded names and unsupported expression values are not proved present.","Stock catalog contains only the explicitly supplied manifests, not a recursive scan of game archives."};
     }
     private sealed record Definition(string Value,string Source,bool Usable,bool Broken);
 
@@ -95,7 +100,7 @@ internal static class SdkMissingDependencyAudit
             byte[] bytes=SdkEnvironmentPreflight.Read(manifest,64*1048576);var document=ManifestReader.Read(bytes);
             if(document.Validate().Count!=0)throw new InvalidDataException("Dependency audit stock manifest is invalid: "+manifest);
             catalogs.Add(new(manifest,Convert.ToHexString(SHA256.HashData(bytes)),document.Assets.Count));
-            assets.AddRange(document.Assets.Select(a=>new Asset(a.TypeName,a.Name.Contains(':')?a.Name[(a.Name.IndexOf(':')+1)..]:a.Name,a.TypeId,a.InstanceId)));
+            assets.AddRange(document.Assets.Select(a=>new Asset(a.TypeName,a.Name.Contains(':')?a.Name[(a.Name.IndexOf(':')+1)..]:a.Name,a.TypeId,a.InstanceId){CatalogPath=manifest,Dependencies=a.References.ToArray()}));
         }
         return(assets.ToArray(),catalogs.ToArray());
     }
@@ -118,9 +123,11 @@ internal static class SdkMissingDependencyAudit
         // Reborn: only the entry and its all-Include emission closure count as mod-produced assets; instance witnesses do not satisfy runtime references.
         var emitted=new HashSet<string>(StringComparer.OrdinalIgnoreCase);Emit(entry);
         var mod=emitted.SelectMany(p=>Owners(documents[p])).Where(e=>e.Attribute("id")!=null).Select(e=>Identity(e.Name.LocalName,(string)e.Attribute("id")!)).DistinctBy(a=>(a.TypeId,a.InstanceId)).ToArray();
-        var stock=stockAssets.DistinctBy(a=>(a.TypeId,a.InstanceId)).ToArray();
+        // Reborn: a copy in Static/Global/audio takes precedence over a WorldBuilder duplicate, regardless of catalog enumeration order.
+        var stock=stockAssets.GroupBy(a=>(a.TypeId,a.InstanceId)).Select(g=>g.OrderBy(a=>WorldBuilderOnly(a)?1:0).First()).ToArray();
         var modIdentities=mod.Select(a=>(a.TypeId,a.InstanceId)).ToHashSet();
         var catalog=mod.Concat(stock).DistinctBy(a=>(a.TypeId,a.InstanceId)).GroupBy(a=>a.InstanceId).ToDictionary(g=>g.Key,g=>g.ToArray());
+        var byIdentity=catalog.Values.SelectMany(a=>a).ToDictionary(a=>new AssetId(a.TypeId,a.InstanceId));
         int checkedReferences=0,deferred=0;
         var referenceType=schemas.GlobalTypes[new XmlQualifiedName("AssetReference",Ea)] as XmlSchemaType;
         var weakType=schemas.GlobalTypes[new XmlQualifiedName("WeakReference",Ea)] as XmlSchemaType;
@@ -147,7 +154,9 @@ internal static class SdkMissingDependencyAudit
                 bool upgradeWeak=type.QualifiedName.Name=="UpgradeTemplateWeakRef";
                 // Reborn: UI images and command sets are schema-typed asset IDs too; weak lookup failures warn without manufacturing native imports.
                 // Reborn: absent upgrade weak targets warn like UI weak targets; Core preserves their hashes without manufacturing imports or assets.
-                bool diagnosticWeak=upgradeWeak || type.QualifiedName.Name is "ImageWeakRef" or "LogicCommandSetWeakRef";
+                // Reborn: OCL CreateObject and other schema-typed GameObject weak IDs need availability checks even though they create no native import.
+                bool objectWeak=type.QualifiedName.Name=="GameObjectWeakRef";
+                bool diagnosticWeak=upgradeWeak || objectWeak || type.QualifiedName.Name is "ImageWeakRef" or "LogicCommandSetWeakRef";
                 if(!upgradeWeak && !diagnosticWeak && weakType!=null && XmlSchemaType.IsDerivedFrom(type,weakType,XmlSchemaDerivationMethod.None)){if(!string.IsNullOrWhiteSpace(value))deferred++;return;}
                 if(!upgradeWeak && !diagnosticWeak && (referenceType==null || !XmlSchemaType.IsDerivedFrom(type,referenceType,XmlSchemaDerivationMethod.None)))return;
                 // Reborn: list-valued/custom reference encodings require their own tokenization rather than hashing the whole list as one missing name.
@@ -173,6 +182,13 @@ internal static class SdkMissingDependencyAudit
                 checkedReferences++;
                 if(matches.Length==0)Add("MISSINGASSET",selector+":"+name,node,path,field,"Unknown asset referenced from emitted source; not found in mod-produced assets or configured stock manifests.",diagnosticWeak?"Warning":"Error");
                 else if(matches.Length>1)Add("AMBIGUOUSASSET",selector+":"+name,node,path,field,"Multiple compatible concrete asset identities match this reference.",diagnosticWeak?"Warning":"Error");
+                else if(objectWeak&&WorldBuilderOnly(matches[0])){
+                    // Reborn: warn at the actual spawn/reference site; inspecting an instance base does not compile its object or model into the mod.
+                    var target=matches[0];var models=target.Dependencies.Select(id=>byIdentity.GetValueOrDefault(id)).Where(a=>a!=null&&WorldBuilderOnly(a)&&a.Type is "W3DContainer" or "W3DMesh").Select(a=>a!.Type+":"+a.Name).Distinct().ToArray();
+                    string detail="Referenced GameObject exists only in the WorldBuilder catalog and is not emitted by this mod; runtime availability is map/stream dependent. An instance Include does not compile it.";
+                    if(models.Length!=0)detail+=" WorldBuilder-only model dependencies: "+string.Join(", ",models)+".";
+                    Add("WORLDBUILDERASSET",target.Type+":"+target.Name,node,path,field,detail,"Warning");
+                }
             }
         }
         SdkSourceSearch.Verify(paths.Searches);
@@ -262,6 +278,11 @@ internal static class SdkMissingDependencyAudit
 
     // Reborn: standalone assets and declaration-owned assets share one metadata exclusion rule.
     private static IEnumerable<XElement> Owners(XDocument document)=>document.Root?.Name==XName.Get("AssetDeclaration",Ea)?document.Root.Elements().Where(e=>e.Name.NamespaceName==Ea&&e.Name.LocalName is not ("Includes" or "Defines" or "Tags")):document.Root==null?Array.Empty<XElement>():new[]{document.Root};
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: this predicate is applied after preferring non-WorldBuilder/local identities; catalog presence is never a runtime loading guarantee. */
+    //-------------------------------------------------------------------------------------------------
+    private static bool WorldBuilderOnly(Asset asset)=>string.Equals(Path.GetFileName(asset.CatalogPath),"worldbuilder.manifest",StringComparison.OrdinalIgnoreCase);
     // Reborn: only official reference annotations define typed dependency targets.
     private static string? Annotation(XmlAttribute[]? attributes)=>attributes?.FirstOrDefault(a=>a.LocalName=="refType"&&a.NamespaceURI==AnnotationNamespace)?.Value;
     // Reborn: disable external entities and preserve source coordinates without modifying source XML.

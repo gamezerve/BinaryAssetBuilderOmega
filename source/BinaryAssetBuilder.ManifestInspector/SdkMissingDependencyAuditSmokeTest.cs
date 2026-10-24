@@ -33,6 +33,8 @@ internal static class SdkMissingDependencyAuditSmokeTest
           <!-- Reborn: missing portraits/buttons and command-set IDs need typed weak-reference diagnostics too. -->
           <xs:simpleType name="ImageWeakRef" xas:refType="PackedTextureImage"><xs:restriction base="WeakReference"/></xs:simpleType>
           <xs:simpleType name="LogicCommandSetWeakRef" xas:refType="LogicCommandSet"><xs:restriction base="WeakReference"/></xs:simpleType>
+          <!-- Reborn: spawn IDs are weak runtime asset identities, not strong imports or unconstrained strings. -->
+          <xs:simpleType name="GameObjectWeakRef" xas:refType="GameObject"><xs:restriction base="WeakReference"/></xs:simpleType>
           <xs:complexType name="Base"><xs:attribute name="id" type="xs:string"/></xs:complexType>
           <xs:complexType name="Thing"><xs:complexContent><xs:extension base="Base"/></xs:complexContent></xs:complexType>
           <xs:complexType name="SpecificThing"><xs:complexContent><xs:extension base="Thing"/></xs:complexContent></xs:complexType>
@@ -41,6 +43,7 @@ internal static class SdkMissingDependencyAuditSmokeTest
           <xs:complexType name="UpgradeTemplate"><xs:complexContent><xs:extension base="Base"/></xs:complexContent></xs:complexType>
           <xs:complexType name="PackedTextureImage"><xs:complexContent><xs:extension base="Base"/></xs:complexContent></xs:complexType>
           <xs:complexType name="LogicCommandSet"><xs:complexContent><xs:extension base="Base"/></xs:complexContent></xs:complexType>
+          <xs:complexType name="GameObject"><xs:complexContent><xs:extension base="Base"/></xs:complexContent></xs:complexType>
           <xs:complexType name="User"><xs:complexContent><xs:extension base="Base">
             <xs:attribute name="Target" type="ThingRef"/><xs:attribute name="Number" type="xs:string"/>
             <xs:attribute name="Note" type="xs:string"/>
@@ -48,6 +51,7 @@ internal static class SdkMissingDependencyAuditSmokeTest
             <xs:attribute name="Upgrade" type="UpgradeTemplateWeakRef"/>
             <xs:attribute name="SelectPortrait" type="ImageWeakRef"/><xs:attribute name="ButtonImage" type="ImageWeakRef"/>
             <xs:attribute name="CommandSet" type="LogicCommandSetWeakRef"/>
+            <xs:attribute name="Spawn" type="GameObjectWeakRef"/>
           </xs:extension></xs:complexContent></xs:complexType>
           <xs:element name="Thing" type="Thing"/><xs:element name="SpecificThing" type="SpecificThing"/><xs:element name="User" type="User"/>
           <xs:element name="AssetDeclaration"><xs:complexType><xs:sequence>
@@ -114,6 +118,19 @@ internal static class SdkMissingDependencyAuditSmokeTest
         var weakPaths=paths with{Sources=new[]{sources.Last()},Includes=Array.Empty<SdkSourcePathAudit.Edge>()};var weakStock=new[]{SdkMissingDependencyAudit.Identity("PackedTextureImage","StockPortrait")};
         var weakReport=SdkMissingDependencyAudit.Analyze(weakEntry,weakPaths,schemas,weakStock);
         Require(weakReport.Findings.Length==3&&weakReport.Findings.All(f=>f.Code=="MISSINGASSET"&&f.Severity=="Warning"&&f.Owner=="User:Bad"&&f.Line>0&&f.Column>0)&&weakReport.Findings.Select(f=>f.Field).Distinct().Count()==3,"Portrait/button/command-set weak warnings or local/stock resolution differ.");
+        // Reborn: a weak stock spawn must warn about WorldBuilder-only object/model data, while real local/static overrides suppress that warning.
+        string spawnEntry=Store("worldbuilder-spawn.xml","<User id='Spawner' Spawn='WorldBuilderCollapse'/><User id='Typo' Spawn='MissingCollapse'/>");
+        var spawnPaths=paths with{Sources=new[]{sources.Last()},Includes=Array.Empty<SdkSourcePathAudit.Edge>()};
+        var model=SdkMissingDependencyAudit.Identity("W3DContainer","CollapseModel") with{CatalogPath=Path.Combine(output,"worldbuilder.manifest")};
+        var collapse=SdkMissingDependencyAudit.Identity("GameObject","WorldBuilderCollapse") with{CatalogPath=model.CatalogPath,Dependencies=new[]{new AssetId(model.TypeId,model.InstanceId)}};
+        var spawnStock=new[]{collapse,model};var spawnReport=SdkMissingDependencyAudit.Analyze(spawnEntry,spawnPaths,schemas,spawnStock);
+        Require(spawnReport.Findings.Count(f=>f.Code=="WORLDBUILDERASSET"&&f.Owner=="User:Spawner"&&f.Field=="User/@Spawn"&&f.Detail.Contains("W3DContainer:CollapseModel")&&f.Line>0&&f.Column>0)==1&&spawnReport.Findings.Count(f=>f.Code=="MISSINGASSET"&&f.Target=="GameObject:MissingCollapse"&&f.Severity=="Warning")==1,"WorldBuilder weak-spawn/model warning or missing-object diagnostic differs.");
+        var shared=collapse with{CatalogPath=Path.Combine(output,"static.manifest")};var sharedReport=SdkMissingDependencyAudit.Analyze(spawnEntry,spawnPaths,schemas,spawnStock.Append(shared));
+        Require(!sharedReport.Findings.Any(f=>f.Code=="WORLDBUILDERASSET"),"WorldBuilder duplicate hid an available static object.");
+        string localSpawn=Store("local-spawn.xml","<GameObject id='WorldBuilderCollapse'/><User id='Spawner' Spawn='WorldBuilderCollapse'/>");
+        var localSpawnPaths=paths with{Sources=new[]{sources.Last()},Includes=Array.Empty<SdkSourcePathAudit.Edge>()};
+        Require(!SdkMissingDependencyAudit.Analyze(localSpawn,localSpawnPaths,schemas,spawnStock).Findings.Any(),"An emitted local object was incorrectly classified as WorldBuilder-only.");
+        File.WriteAllText(Path.Combine(output,"worldbuilder-spawn-report.json"),System.Text.Json.JsonSerializer.Serialize(spawnReport,new System.Text.Json.JsonSerializerOptions{WriteIndented=true}));
         // Reborn: the production catalog loader admits WorldBuilder-only identities without declaring them as emitted mod assets or hiding real typos.
         string staticFixture=Path.Combine(output,"static.manifest"),worldBuilderFixture=Path.Combine(output,"worldbuilder.manifest");
         ExternalLinkSmokeTest.WriteFixture(staticFixture,new InstanceHandle("Thing:Stock"),new ReferencedFileBuffer());
