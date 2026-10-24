@@ -33,12 +33,12 @@ internal static class ConscriptSourcePreparation
         var snapshots=paths.Sources.ToDictionary(s=>s.PhysicalPath,s=>SdkEnvironmentPreflight.Read(s.PhysicalPath,4*1048576),StringComparer.OrdinalIgnoreCase);
         foreach(var source in paths.Sources)if(Hash(snapshots[source.PhysicalPath])!=source.Sha256)throw new InvalidDataException("Source changed during graph capture.");
         // Reborn: locating a real resource does not enable its processor; report the unique referring literal or an explicitly labelled document context.
-        // Reborn: Texture/@File TGA payloads now have a reviewed processor (Ep1TextureCompiler); every other resource kind is still refused.
-        var textures=paths.Resources.Where(r=>r.Field=="Texture/@File"&&r.PhysicalPath.EndsWith(".tga",StringComparison.OrdinalIgnoreCase)).ToArray();
+        // Reborn: Texture/@File captures TGA raster inputs and precompiled DDS; other payload kinds still need their own processor.
+        var textures=paths.Resources.Where(r=>r.Field=="Texture/@File"&&(r.PhysicalPath.EndsWith(".tga",StringComparison.OrdinalIgnoreCase)||r.PhysicalPath.EndsWith(".dds",StringComparison.OrdinalIgnoreCase))).ToArray();
         var unsupported=paths.Resources.Except(textures).ToArray();
         if(unsupported.Length!=0)
         {
-            var failure=new InvalidDataException("Resource processor is not connected for this resource (Texture TGA files and W3X container/hierarchy/collision/mesh declarations are supported); no resources are silently skipped.");
+            var failure=new InvalidDataException("Resource processor is not connected for this resource (Texture TGA/DDS files and W3X container/hierarchy/collision/mesh declarations are supported); no resources are silently skipped.");
             var resource=unsupported.FirstOrDefault();string owner=resource?.Document??entry;
             var source=Parse(snapshots[owner],owner);
             if(resource!=null){var matches=source.SelectNodes("//@* | //*[not(*)]")!.Cast<XmlNode>().Where(n=>(n is XmlAttribute?n.Value:n.InnerText)==resource.LogicalPath).ToArray();if(matches.Length==1)SdkXmlDiagnostics.At(failure,matches[0]);}
@@ -57,8 +57,8 @@ internal static class ConscriptSourcePreparation
         // Reborn: every explicit GameObject is emitted; only instance imports stay source-only. The first object is a receipt anchor, not an asset-count restriction.
         // Reborn: an upgrade-only graph is a real standalone stream; never invent a GameObject just to select the backend.
         // Reborn: W3DContainer is also a real standalone asset stream, not an implicit GameObject.
-        if(games.Length==0&&!assets.Any(a=>a.LocalName is "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh"))throw new InvalidDataException("This route requires a supported emitted asset; imported bases must use type=instance.");
-        var primary=games.FirstOrDefault()??assets.First(a=>a.LocalName is "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh");
+        if(games.Length==0&&!assets.Any(a=>a.LocalName is "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "Texture" or "PackedTextureImage"))throw new InvalidDataException("This route requires a supported emitted asset; imported bases must use type=instance.");
+        var primary=games.FirstOrDefault()??assets.First(a=>a.LocalName is "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "Texture" or "PackedTextureImage");
         var identities=assets.GroupBy(a=>a.LocalName+":"+a.GetAttribute("id"),StringComparer.OrdinalIgnoreCase);if(identities.Any(g=>g.Count()!=1))throw new InvalidDataException("Duplicate emitted asset identity.");
         foreach(var source in paths.Sources)if(Hash(SdkEnvironmentPreflight.Read(source.PhysicalPath,4*1048576))!=source.Sha256)throw new InvalidDataException("Source changed during inheritance/definition preparation.");
         // Reborn: XInclude fragments are real source dependencies, including hash and higher-priority mod-shadow checks before publication.

@@ -24,8 +24,8 @@ including their declaring path in diagnostics and compile progress.
 W3DMesh, W3DHierarchy and W3DCollisionBox now have their own
 [compiler integration](RA3EP1_W3D_GEOMETRY.md). W3DAnimation remains a separate
 processor and still produces an unsupported-type error. Referencing an existing
-asset does not require compiling it. Audio processing and texture formats beyond
-the existing TGA profile are unchanged.
+asset does not require compiling it. [Precompiled DDS textures](RA3EP1_DDS_TEXTURE.md)
+are also supported; audio processing and the raster TGA encoder are unchanged.
 
 Developer regression: `scripts/Test-Ra3Ep1W3DContainer.ps1` uses an isolated
 output directory and original static/global manifests to exercise shared W3X

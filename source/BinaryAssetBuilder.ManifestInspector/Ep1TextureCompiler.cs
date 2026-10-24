@@ -9,7 +9,8 @@ namespace BinaryAssetBuilder.ManifestInspector;
 // Reborn: EP1 PC Texture assets, as written by the official RA3 SDK TextureCompiler (EmbedPCTexture): a 12-byte root
 // {0, relocated pointer to +12, byte length} followed by the complete nvDXT DDS file. This first route covers the uncompressed
 // profile only: OutputFormat=A8R8G8B8, GenerateMipMaps=false, StandardTexture, from an uncompressed or RLE 32-bit TGA with 8 alpha bits.
-// DXT compression, mipmaps, volume/cube textures and other formats are refused explicitly instead of being approximated.
+// Reborn: DDS inputs bypass raster conversion and preserve their validated DXT/RGB format, mip chain and resource kind.
+// TGA encoding still uses the uncompressed profile; this does not add a DXT encoder or mip generator.
 internal static class Ep1TextureCompiler
 {
     internal const uint TypeHash=0x9F5FF8DA;
@@ -69,13 +70,18 @@ internal static class Ep1TextureCompiler
     //-------------------------------------------------------------------------------------------------
     internal static Chunk Compile(XmlElement texture,byte[] tga,string path)
     {
+        // Reborn: DDS is already compiled; validate and embed its complete unchanged header/surface/mip bytes in the same EP1 root.
+        if(path.EndsWith(".dds",StringComparison.OrdinalIgnoreCase)){
+            var info=Ep1DdsTexture.Inspect(tga,path);if(texture.GetAttribute("Type")!=info.Kind||texture.GetAttribute("OutputFormat")!=info.Format)throw new InvalidDataException("Prepared DDS metadata differs from its captured payload: "+path);
+            var embedded=new byte[checked(RootSize+tga.Length)];Put(embedded,4,RootSize);Put(embedded,8,(uint)tga.Length);tga.CopyTo(embedded,RootSize);return new Chunk{InstanceBuffer=embedded,RelocationBuffer=Pack(4),ImportsBuffer=Array.Empty<byte>()};
+        }
         Admit(texture);var image=ReadTga(tga,path);int length=checked(HeaderSize+image.Bgra.Length);
         var bytes=new byte[checked(RootSize+length)];Put(bytes,0,0);Put(bytes,4,RootSize);Put(bytes,8,(uint)length);Header(image.Width,image.Height).CopyTo(bytes,RootSize);image.Bgra.CopyTo(bytes,RootSize+HeaderSize);
         return new Chunk{InstanceBuffer=bytes,RelocationBuffer=Pack(4),ImportsBuffer=Array.Empty<byte>()};
     }
 
     // Reborn: the reported texture size accompanies the EA-style compile line.
-    internal static string Describe(Chunk chunk)=>U32(chunk.InstanceBuffer,RootSize+16)+"x"+U32(chunk.InstanceBuffer,RootSize+12)+" A8R8G8B8, no mipmaps";
+    internal static string Describe(Chunk chunk){var dds=Ep1DdsTexture.Inspect(chunk.InstanceBuffer.AsSpan(RootSize).ToArray(),"compiled Texture");return dds.Width+"x"+dds.Height+" "+dds.Format+", "+dds.Mips+" mip level(s), "+dds.Kind;}
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: prove the writer on original EP1 data before any authored texture is emitted:

@@ -77,7 +77,7 @@ internal static class ConscriptSourceInput
             var xml=Read(path);var element=xml.DocumentElement!;
             if(element.NamespaceURI!=Ea)return false;
             // Reborn: explicit upgrade declarations select the complete mixed/support stream backend, including upgrade-only mods.
-            if(element.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" || element.ChildNodes.OfType<XmlElement>().Any(e=>e.NamespaceURI==Ea && e.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh"))return true;
+            if(element.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" || element.ChildNodes.OfType<XmlElement>().Any(e=>e.NamespaceURI==Ea && e.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "Texture" or "PackedTextureImage"))return true;
             foreach(XmlElement include in element.GetElementsByTagName("Include",Ea))
             {
                 // Reborn: W3X includes contain ordinary EA declarations and can select the container-only build route.
@@ -106,12 +106,23 @@ internal static class ConscriptSourceInput
         try{foreach(var asset in new[]{input.Game}.Concat(input.AdditionalAssets).Concat(input.Command==null?Array.Empty<XmlDocument>():new[]{input.Command})){if(asset.DocumentElement!.LocalName=="GameObject")Admit(asset,baseline,schemas);var check=Parse(Encoding.UTF8.GetBytes(asset.DocumentElement!.OuterXml));check.Schemas.Add(schemas);check.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));if(asset.DocumentElement.LocalName=="WeaponTemplate")ConscriptMultiAssetBuild.AdmitWeapon(asset,schemas,Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!);if(asset.DocumentElement.LocalName=="W3DMesh")W3DGeometryCompiler.AdmitMesh(asset.DocumentElement);}}
         catch(Exception error)when(error is InvalidDataException or XmlException or XmlSchemaException){input.Locations?.Enrich(error,entry,SdkXmlDiagnostics.Node(error)?.OwnerDocument??input.Game);throw;}
         Directory.CreateDirectory(output);string game=Path.Combine(output,"game.xml"),command=Path.Combine(output,"command.xml");
-        File.WriteAllText(game,input.Game.DocumentElement!.OuterXml,new UTF8Encoding(false));if(input.Command!=null)File.WriteAllText(command,input.Command.DocumentElement!.OuterXml,new UTF8Encoding(false));
         // Reborn: texture payloads travel content-addressed beside the prepared XML; File is rewritten to that captured copy, never re-resolved later.
-        foreach(var texture in input.AdditionalAssets.Select(a=>a.DocumentElement!).Where(e=>e.LocalName=="Texture")){
-            string logical=texture.GetAttribute("File");var resource=input.Resources.FirstOrDefault(r=>string.Equals(r.LogicalPath,logical,StringComparison.OrdinalIgnoreCase))??throw new InvalidDataException("Texture '"+texture.GetAttribute("id")+"' has no captured TGA resource for File='"+logical+"'.");
-            string folder=Path.Combine(output,"resources");Directory.CreateDirectory(folder);File.WriteAllBytes(Path.Combine(folder,resource.Sha256+".tga"),resource.Bytes);texture.SetAttribute("File","resources/"+resource.Sha256+".tga");
+        foreach(var texture in new[]{input.Game}.Concat(input.AdditionalAssets).Select(a=>a.DocumentElement!).Where(e=>e.LocalName=="Texture")){
+            try{
+            string logical=texture.GetAttribute("File"),id=texture.GetAttribute("id");string origin=input.Origins.Single(o=>o.Type=="Texture"&&o.Id==id).Path;
+            // Reborn: identical relative filenames in different ART folders refer to different captured payloads.
+            var resource=input.Resources.FirstOrDefault(r=>r.Document.Equals(origin,StringComparison.OrdinalIgnoreCase)&&string.Equals(r.LogicalPath,logical,StringComparison.OrdinalIgnoreCase))??throw SdkXmlDiagnostics.At(new InvalidDataException("Texture '"+id+"' has no captured TGA/DDS resource for File='"+logical+"'."),texture.GetAttributeNode("File"));
+            string extension=Path.GetExtension(resource.Path).ToLowerInvariant();
+            if(extension==".dds"){
+                byte[] raw=SdkEnvironmentPreflight.Read(origin,4*1048576);if(Convert.ToHexString(SHA256.HashData(raw))!=input.Sources.Single(s=>s.Path.Equals(origin,StringComparison.OrdinalIgnoreCase)).Sha256)throw new InvalidDataException("Texture source changed during DDS admission.");
+                var original=Parse(raw).GetElementsByTagName("Texture",Ea).OfType<XmlElement>().Single(e=>e.GetAttribute("id")==id);
+                Ep1DdsTexture.Prepare(texture,resource.Bytes,resource.Path,original.Attributes.OfType<XmlAttribute>().Select(a=>a.LocalName).ToHashSet(StringComparer.Ordinal));
+            }
+            string folder=Path.Combine(output,"resources");Directory.CreateDirectory(folder);File.WriteAllBytes(Path.Combine(folder,resource.Sha256+extension),resource.Bytes);texture.SetAttribute("File","resources/"+resource.Sha256+extension);
+            }catch(InvalidDataException error){SdkXmlDiagnostics.At(error,texture.GetAttributeNode("File"));input.Locations?.Enrich(error,entry,texture.OwnerDocument);throw;}
         }
+        // Reborn: write the primary after resource rewriting too, so texture-only mods receive the same immutable payload path.
+        File.WriteAllText(game,input.Game.DocumentElement!.OuterXml,new UTF8Encoding(false));if(input.Command!=null)File.WriteAllText(command,input.Command.DocumentElement!.OuterXml,new UTF8Encoding(false));
         // Reborn: serialize explicit supporting declarations beside the prepared object, without inventing asset IDs or command edges.
         if(input.AdditionalAssets.Length>0){var additional=new XmlDocument{XmlResolver=null};additional.LoadXml("<AssetDeclaration xmlns='"+Ea+"'/>");foreach(var asset in input.AdditionalAssets)additional.DocumentElement!.AppendChild(additional.ImportNode(asset.DocumentElement!,true));File.WriteAllText(Path.Combine(output,"additional.xml"),additional.OuterXml,new UTF8Encoding(false));}
         foreach(var source in input.Sources)if(Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(source.Path,4*1048576)))!=source.Sha256)throw new InvalidDataException("Source changed during preparation: "+source.Path);

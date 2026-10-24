@@ -143,7 +143,8 @@ internal static class SdkSourcePathAudit
                 if (stopped) break;
                 if (element.NamespaceURI != root.NamespaceURI || element.LocalName == "Include") continue;
                 foreach (XmlAttribute attribute in element.Attributes)
-                    if (attribute.NamespaceURI.Length == 0 && (Alias(attribute.Value) || element.LocalName == "AudioFile" && attribute.Name == "File")) ResourcePath(path,element.LocalName+"/@"+attribute.Name,attribute.Value,confinement);
+                    // Reborn: Texture File is a real file reference even without ART:, relative to its declaring XML like AudioFile File.
+                    if (attribute.NamespaceURI.Length == 0 && (Alias(attribute.Value) || (element.LocalName is "AudioFile" or "Texture") && attribute.Name == "File")) ResourcePath(path,element.LocalName+"/@"+attribute.Name,attribute.Value,confinement);
                 if (!element.ChildNodes.OfType<XmlElement>().Any() && Alias(element.InnerText)) ResourcePath(path,element.LocalName+"/text()",element.InnerText,confinement);
             }
             active.Remove(path);

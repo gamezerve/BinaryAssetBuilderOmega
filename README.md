@@ -8,6 +8,12 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: DDS inputs are already compiled textures; preserve their validated format and complete mip chain. -->
+DDS texture input is enabled, including relative `File` paths next to the
+declaring XML, `ART:` aliases and texture-only mods. Existing DXT/RGB payloads
+and mip levels are embedded unchanged; explicit requests requiring recompression
+or mip generation/removal still fail clearly. See [DDS support](docs/RA3EP1_DDS_TEXTURE.md).
+
 <!-- Reborn: enable the three geometry processors with the actual EP1 hierarchy and PC vertex formats. -->
 `W3DHierarchy`, `W3DCollisionBox` and `W3DMesh` authoring is now connected to
 W3X includes and normal stream/BIG packaging. Hierarchy pivot names use EP1

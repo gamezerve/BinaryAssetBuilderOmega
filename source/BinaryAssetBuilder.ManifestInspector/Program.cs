@@ -13,6 +13,11 @@ internal static class Program
     {
         try
         {
+            // Reborn: DDS format/preservation and stock comparisons are offline, separately from game launches or package publication.
+            if(args.Length==1&&args[0]=="dds-texture-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1DdsTextureSmokeTest.Run();return 0;}
+            if(args.Length==3&&args[0]=="dds-texture-stock-self-test")
+            {Ep1DdsTextureSmokeTest.CompareStock(args[1],args[2]);return 0;}
             // Reborn: compare privately compiled model streams to original EP1 without reading or dumping a whole stock BIN.
             if(args.Length==3&&args[0]=="w3d-geometry-stock-self-test")
             {W3DGeometryStockSmokeTest.Run(args[1],args[2]);return 0;}
