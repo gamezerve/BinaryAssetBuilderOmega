@@ -12,21 +12,25 @@ internal static class SdkMissingStringAudit
     private static readonly HashSet<string> KeyFields=new(StringComparer.Ordinal){"DisplayName","DisplayNameTransformed","Description","DescriptionTransformed","TypeDescription","TypeDescriptionTransformed","AcquireHint","TextLabel","StringLabel","RandomStringLabel"};
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: the selected language table is explicit local configuration; unavailable or broken tables produce coverage warnings, never a false clean check or false missing-key flood. */
+    /** Reborn: read the SDK-local stock table; unavailable or broken tables produce coverage warnings rather than false missing-key claims. */
     //-------------------------------------------------------------------------------------------------
     internal static Result Run(string entry,string sdk,SdkSourcePathAudit.Report paths,XmlSchemaSet schemas)
     {
-        string config=Path.Combine(sdk,"uprising-alpha.paths");string? stockSource=File.Exists(config)?File.ReadLines(config).Where(l=>l.StartsWith("StockStrings=",StringComparison.OrdinalIgnoreCase)).Select(l=>l[(l.IndexOf('=')+1)..]).LastOrDefault():null;
+        string stockSource=StockCatalogPath(sdk);
         string modSource=Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(entry)!)!,"Misc","Data","mod.str");
         try{
-            if(string.IsNullOrWhiteSpace(stockSource))throw new InvalidDataException("StockStrings is not configured in uprising-alpha.paths; select the game's active language BIG or CSF.");
             stockSource=SdkEnvironmentPreflight.Absolute(stockSource);var stock=SdkStringCatalog.Stock(stockSource);SdkEnvironmentPreflight.CheckPath(modSource);var mod=File.Exists(modSource)?SdkStringCatalog.Str(SdkEnvironmentPreflight.Read(modSource,SdkStringCatalog.MaximumBytes)):new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             return Analyze(entry,paths,schemas,stock,mod) with{StockSource=stockSource,ModSource=modSource};
         }catch(Exception error)when(error is IOException or InvalidDataException or UnauthorizedAccessException or ArgumentException){
-            var finding=new SdkMissingDependencyAudit.Finding("STRINGCATALOG","Warning","localization catalogs","Localization",entry,0,0,"StockStrings / Misc/Data/mod.str","Missing-string checking is incomplete: "+error.Message);
+            var finding=new SdkMissingDependencyAudit.Finding("STRINGCATALOG","Warning","localization catalogs","Localization",entry,0,0,"catalogs/ra3ep1/gamestrings.csf / Misc/Data/mod.str","Missing-string checking is incomplete: "+error.Message);
             return new(new[]{finding},0,0,0,false,stockSource,modSource,false);
         }
     }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: resolve the original string table relative to Studio so catalog lookup survives SDK relocation without a game install. */
+    //-------------------------------------------------------------------------------------------------
+    internal static string StockCatalogPath(string sdk)=>Path.Combine(SdkEnvironmentPreflight.Absolute(sdk),"catalogs","ra3ep1","gamestrings.csf");
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: check effective supported source when available, preserving inheritance/definition expansion and original source locations; raw fallback remains explicitly scoped. */

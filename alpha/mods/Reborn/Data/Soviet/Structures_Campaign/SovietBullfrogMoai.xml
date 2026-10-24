@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<!-- aka Tesla Moai -->
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
+
+		<Include type="all"	source="ART:EI_EasterIslandHeadDefenseB_SKN.W3X" />
+		<Include type="all"	source="ART:EI_EasterIslandHeadDefenseB_GAG.W3X" />
+		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
+		<Include type="instance" source="DATA:Civilian/Easter_Island_EI/Props/EI_EasterIslandHeadDefenseB_Collapse.xml" />
+		
+		<!-- Base Object -->
+		<Include
+			type="instance"
+			source="DATA:BaseObjects/BaseSovietStructure.xml" />
+			
+	</Includes>
+
+	<GameObject
+		id="SovietBullfrogMoai"
+		inheritFrom="BaseSovietStructure"
+		SelectPortrait="Portrait_Special_EasterIslandDefense"
+		ButtonImage="Button_Special_EasterIslandDefense"
+		Side="Soviet"
+		EditorSorting="STRUCTURE"
+		TransportSlotCount="1"
+		BuildTime="0.0"
+		EnergyProduction="-50"
+		CommandSet="SovietBullfrogMoaiCommandSet"
+		KindOf="-CAN_BUILD_ON_WATER -CAN_BUILD_ON_DEEP_WATER -NOT_AUTOACQUIRABLE +CAN_ATTACK +FS_BASE_DEFENSE +POWERED +CAN_SEE_THROUGH_STRUCTURE +LINE_OF_SIGHT_IGNORES_BUILDINGS"
+		RadarPriority="STRUCTURE"
+		PlacementViewAngle="315d"
+		ProductionQueueType="OTHER_STRUCTURE"
+		BuildPlacementTypeFlag="OTHER_STRUCTURE"
+		EditorName="SovietBullfrogMoai"
+		TypeDescription="Type:SovietTeslaMoai"
+		Description="Desc:EasterIslandDefense">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:EasterIslandDefense</DisplayName>
+		<GameDependency>
+			<RequiredObject>SovietPowerPlantAdvanced</RequiredObject>
+		</GameDependency>
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="1250"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="SovietBaseDefenseAdvanced"
+			DamageFX="FactionStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="DEFENSE" >
+			<ConstructionBaseSelectionCriteria
+				ExcludedBaseTypes="NO_BUILD_RADIUS"
+				PreferredBaseTypes="ENEMIES_IN_BASE UNDER_ATTACK"
+				SortOrder="PREFER_MOST_RECENTLY_ATTACKED" />
+		</SkirmishAIInformation>
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="true"
+				ExtraPublicBone="FX_WEAPON_01">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="EI_EasterIslandHeadDefenseB_SKN" />
+					<WeaponFireFXBone
+						WeaponSlotID="1"
+						WeaponSlotType="PRIMARY_WEAPON"
+						BoneName="FX_WEAPON_01" />
+				</ModelConditionState>				
+				<AnimationState
+					ParseCondStateType="PARSE_DEFAULT"
+					StateName="State_Idle">
+					<Script>
+						Prev = CurDrawablePrevAnimationState();
+						if Prev == "State_PowerActive" then
+							CurDrawableSetTransitionAnimState("TRANS_EndPower")
+						end
+					</Script>						
+				</AnimationState>				
+				<AnimationState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="USER_1"
+					StateName="State_PowerActive"
+					Flags="START_FRAME_LAST">
+					<Animation
+						AnimationName="EI_EasterIslandHeadDefenseB_GAG"
+						AnimationBlendTime="0"
+						AnimationMode="MANUAL"/>
+					<Script>
+						Prev = CurDrawablePrevAnimationState();
+						if Prev == "State_Idle" then
+							CurDrawableSetTransitionAnimState("TRANS_StartPower")
+						end
+					</Script>
+				</AnimationState>
+				<AnimationState
+					ParseCondStateType="PARSE_TRANSITION"
+					StateName="TRANS_StartPower">
+					<Animation
+						AnimationName="EI_EasterIslandHeadDefenseB_GAG"
+						AnimationBlendTime="0"
+						AnimationMode="ONCE"/>
+				</AnimationState>
+				<AnimationState
+					ParseCondStateType="PARSE_TRANSITION"
+					StateName="TRANS_EndPower"
+					Flags="START_FRAME_LAST">
+					<Animation
+						AnimationName="EI_EasterIslandHeadDefenseB_GAG"
+						AnimationBlendTime="0"
+						AnimationMode="ONCE_BACKWARDS"/>
+				</AnimationState>
+			</ScriptedModelDraw>
+		</Draws>
+		
+
+		<Behaviors>
+		
+
+			<Physics
+				id="ModuleTag_Physics"/>
+			
+			
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_BuildingDebrisExplosion"
+					CreationObject="YU_HotelDebris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_FXList">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Event
+					Index="onDeath"
+					FX="FX_CIV_EasterIslandHead_Die" />
+			</FXListBehavior>
+			
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="EI_EasterIslandHeadDefenseB_Die_OCL">
+				<DieMuxData
+					DeathTypes="ALL"
+					DeathTypesForbidden="SUICIDED" />
+			</CreateObjectDie>
+		
+			<DestroyDie
+				id="ModuleTag_Die">
+				<DieMuxData
+					DeathTypes="ALL"
+					DeathTypesForbidden="SUICIDED" />
+			</DestroyDie>
+
+			<!-- Man Cannon functionality -->
+			<TransportContain
+				id="ModuleTag_Contain"
+				ObjectStatusOfContained="UNSELECTABLE ENCLOSED"
+				ContainMax="10"
+				AllowEnemiesInside="false"
+				AllowAlliesInside="true"
+				AllowNeutralInside="false"
+				AllowOwnPlayerInsideOverride="true"
+				ShowPips="true"
+				EnterSound="VehicleEnter"
+				ExitSound="SOV_BullFrog_ManCannonLaunch"
+				KillPassengersOnDeath="true"
+				ConditionForEntry="INVALID">
+				<PassengerFilter
+					Rule="ANY"
+					Include="INFANTRY" />
+				<DieMuxData
+					DeathTypes="ALL" />
+				<PassengerData
+					BonePrefix="NONE">
+					<Filter
+						Rule="NONE"
+						Include="INFANTRY" />
+				</PassengerData>
+			</TransportContain>
+			<SpecialPower
+				id="ModuleTag_ManCannon"
+				SpecialPowerTemplate="SpecialPower_EjectPassengersMoai"
+				UpdateModuleStartsAttack="true"/>
+			<EjectPassengersSpecialAbilityUpdate
+				id="ModuleTag_ManCannonUpdate"
+				SpecialPowerTemplate="SpecialPower_EjectPassengersMoai"
+				ActiveModelCondition="USER_1" 
+				TimePerPassenger="0.5s"
+				Radius="50.0" 
+				UnpackTime="3s"				
+				Height="150.0"
+				ApexHeight="20.0"
+				EjectionFX="FX_SovietManCannon"
+				EjectionBoneName="FX_WEAPON_01">				
+			</EjectPassengersSpecialAbilityUpdate>
+			<!-- End Man Cannon functionality -->
+
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpack"
+				UnpackTime="30s" />
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+			<xi:include
+				href="DATA:Includes/RepairAlliesEngineerContain.xml" />
+			<xi:include
+				href="DATA:Includes/GenericSovietBuildingSuicideNoSpawn.xml" />
+		</Behaviors>
+		<AI>
+			<AIUpdate
+				id="ModuleTag_AI"
+				AutoAcquireEnemiesWhenIdle="YES"
+				StateMachine="OffensiveStructureAIStateMachine">
+				<UnitAITargetChooserData />
+			</AIUpdate>
+		</AI>
+
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="2000" />
+		</Body>
+		<Geometry
+			IsSmall="false">
+      <Shape
+           Type= "BOX"
+           MajorRadius = "30.0"
+           MinorRadius = "30.0"
+           Height = "70.724"
+           ContactPointGeneration = "STRUCTURE" >
+        <Offset
+            x = "-0.254629"
+            y = "-0.922922"
+            z = "0.0" />   
+      </Shape>
+		</Geometry>
+
+
+		<AudioArraySound>
+			<AudioEntry Sound="S08_SOV_EasterIslandHead_Damage" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="S08_SOV_EasterIslandHead_Damage" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound>
+
+		<VisionInfo
+			VisionRange="310"
+			ShroudClearingRange="350" />
+	</GameObject>
+	
+	<ObjectCreationList
+		id="EI_EasterIslandHeadDefenseB_Die_OCL">
+		<CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="5"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+			<CreateObject>EI_EasterIslandHeadDefenseB_Collapse</CreateObject>
+		</CreateObject>
+	</ObjectCreationList>	
+	
+</AssetDeclaration>

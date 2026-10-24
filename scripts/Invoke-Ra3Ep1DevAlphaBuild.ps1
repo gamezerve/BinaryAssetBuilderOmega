@@ -49,6 +49,8 @@ try{
     Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] Loading '+$ModXml)
     # Reborn: list independent missing definitions/assets before the normal compiler stops at its first unsupported or invalid owner.
     $dependencyReport=Join-Path $run 'dependencies.json'
+    # Reborn: validation spans the dependency audit and the backend's source/schema admission; the backend reports its completion.
+    Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] Validation started: dependency audit, source graph and schema admission.')
     $dependencyArguments=@('sdk-missing-dependencies',$ModXml,$sdk,$StaticManifest,$GlobalManifest,$dependencyReport)
     if($settings.SdkDataRoot){$dependencyArguments+=$settings.SdkDataRoot}
     & (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') @dependencyArguments 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail};$dependencyCode=$LASTEXITCODE

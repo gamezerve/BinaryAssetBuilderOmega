@@ -11,6 +11,24 @@ internal static class SdkStringCatalog
     /** Reborn: read the active gamestrings table only, not gamestrings_temp or unrelated CSFs that could hide missing runtime keys. */
     //-------------------------------------------------------------------------------------------------
     internal static HashSet<string> Stock(string path)
+        =>Csf(StockBytes(path));
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: materialize only the validated active CSF for the SDK's local catalog, never overwrite a differing user file. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void CopyStock(string source,string destination)
+    {
+        source=SdkEnvironmentPreflight.Absolute(source);destination=SdkEnvironmentPreflight.Absolute(destination);SdkEnvironmentPreflight.CheckPath(destination);SdkEnvironmentPreflight.DirectoryPath(Path.GetDirectoryName(destination)!);
+        byte[] bytes=StockBytes(source);int keys=Csf(bytes).Count;
+        if(File.Exists(destination)){if(!SdkEnvironmentPreflight.Read(destination,MaximumBytes).SequenceEqual(bytes))throw new InvalidDataException("Different existing string catalog preserved: "+destination);}
+        else{using var file=new FileStream(destination,FileMode.CreateNew,FileAccess.Write,FileShare.None);file.Write(bytes);}
+        Console.WriteLine("Reborn: local string catalog: "+destination+"; "+keys+" keys; source="+source+".");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: share bounded extraction of the one active CSF; translations are never dumped into diagnostics. */
+    //-------------------------------------------------------------------------------------------------
+    private static byte[] StockBytes(string path)
     {
         SdkEnvironmentPreflight.CheckPath(path);byte[] bytes;
         if(Path.GetExtension(path).Equals(".big",StringComparison.OrdinalIgnoreCase)){
@@ -19,7 +37,7 @@ internal static class SdkStringCatalog
             bytes=archive.ReadEntry(entries[0],MaximumBytes);
         }else if(Path.GetExtension(path).Equals(".csf",StringComparison.OrdinalIgnoreCase))bytes=SdkEnvironmentPreflight.Read(path,MaximumBytes);
         else throw new InvalidDataException("StockStrings must name a CSF or its language BIG archive.");
-        return Csf(RefPack.IsCompressed(bytes)?RefPack.Decompress(bytes,MaximumBytes):bytes);
+        return RefPack.IsCompressed(bytes)?RefPack.Decompress(bytes,MaximumBytes):bytes;
     }
 
     //-------------------------------------------------------------------------------------------------

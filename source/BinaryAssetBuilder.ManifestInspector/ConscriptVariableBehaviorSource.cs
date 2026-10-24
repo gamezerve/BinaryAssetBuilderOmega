@@ -74,6 +74,8 @@ internal static class ConscriptVariableBehaviorSource
         var origins=new Dictionary<string,string>(StringComparer.Ordinal);var selected=new List<ConscriptModuleScalarContract.Owner>();
         foreach(var owner in behaviors)
         {
+            // Reborn: the assign-slaves leaf is source/schema-proved, not restricted to the original building's values, local ID or nested shape.
+            if(owner.NativeType==typeof(SageBinaryData.AssignSlavesTargetObjectSpecialPowerModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             // Reborn: exact existing identity breaks equivalent-template ties; new IDs may use any otherwise identical complete reviewed shape.
             var candidates=templates.Where(t=>t.Element.LocalName==owner.Element.LocalName).OrderByDescending(t=>t.Element.GetAttribute("id")==owner.Element.GetAttribute("id"));
             var matched=candidates.FirstOrDefault(t=>Matches(owner,t));

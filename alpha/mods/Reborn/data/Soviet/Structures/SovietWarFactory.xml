@@ -4,75 +4,75 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="DATA:GlobalData/GlobalDefines.xml" />
-		<Include
-			type="all"
-			source="ART:SBWarFactory.w3x" />
-		<Include
-			type="all"
-			source="ART:SBWarFactory_GAG.w3x" />
-		<Include
-			type="all"
-			source="ART:SBWarFactory_particles.w3x" />	
-		<Include
-			type="all"
-			source="ART:SBWarFactory_Platform.w3x" />	
-		<Include
-			type="all"
-			source="ART:SBWarFactory_Scaffold.w3x" />		
-		<Include
-			type="all"
-			source="ART:SBWarFactory_DOOR.w3x" />
-		<Include
-			type="all"
-			source="ART:FXInvisBone.w3x" />
-		<Include
-			type="all"	
-			source="ART:Decal_Rig_CO.xml" />
-		<Include
-			type="all"	
-			source="ART:SBWarFactory_SKN.w3x" />
-		<Include
-			type="all"	
-			source="ART:SBWarFactory_BLD.w3x" />
-		<Include
-			type="all"	
-			source="ART:SBWarFactory_IDLA.w3x" />
-		<Include
-			type="all"	
-			source="ART:SBWarFactory_GAG_SKN.w3x" />
-		<Include
-			type="all"	
-			source="ART:SBWarFactory_GAG_BLD.w3x" />
-		<Include
-			type="all"	
-			source="ART:SBWarFactory_GAG_IDLA.w3x" />
-		<Include
-			type="all"	
-			source="ART:SBWarFactory_Platform_SKN.w3x" />
-		<Include
-			type="all"	
-			source="ART:SBWarFactory_Platform_BLD.w3x" />
-		<Include
-			type="all"	
-			source="ART:SBWarFactory_Platform_IDLA.w3x" />
-		<Include
-			type="all"	
-			source="ART:SBWarFactory_Door_SKN.w3x" />
-		<Include
-			type="all"	
-			source="ART:SBWarFactory_Door_BLD.w3x" />
-		<Include
-			type="all"	
-			source="ART:SBWarFactory_Door_OPEN.w3x" />
-			<Include
-			type="all"	
-			source="ART:SBWarFactory_LIGHTS.w3x" />
-		<Include
-			type="all"	
-			source="ART:SBBuilding_FP.xml" />			
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="DATA:GlobalData/GlobalDefines.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBWarFactory.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBWarFactory_GAG.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBWarFactory_particles.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBWarFactory_Platform.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBWarFactory_Scaffold.w3x" />		 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBWarFactory_DOOR.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXInvisBone.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all"	 -->
+			<!-- source="ART:Decal_Rig_CO.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all"	 -->
+			<!-- source="ART:SBWarFactory_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all"	 -->
+			<!-- source="ART:SBWarFactory_BLD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all"	 -->
+			<!-- source="ART:SBWarFactory_IDLA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all"	 -->
+			<!-- source="ART:SBWarFactory_GAG_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all"	 -->
+			<!-- source="ART:SBWarFactory_GAG_BLD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all"	 -->
+			<!-- source="ART:SBWarFactory_GAG_IDLA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all"	 -->
+			<!-- source="ART:SBWarFactory_Platform_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all"	 -->
+			<!-- source="ART:SBWarFactory_Platform_BLD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all"	 -->
+			<!-- source="ART:SBWarFactory_Platform_IDLA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all"	 -->
+			<!-- source="ART:SBWarFactory_Door_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all"	 -->
+			<!-- source="ART:SBWarFactory_Door_BLD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all"	 -->
+			<!-- source="ART:SBWarFactory_Door_OPEN.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all"	 -->
+			<!-- source="ART:SBWarFactory_LIGHTS.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all"	 -->
+			<!-- source="ART:SBBuilding_FP.xml" />			 -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

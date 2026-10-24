@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+
+		<Include type="all"	source="ART:ST_RussianFought2DeathStatue.W3X" />
+		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
+		<Include type="instance" source="DATA:Civilian/StPetersburg_ST/Props/ST_RussianFought2DeathStatue_Collapse.xml" />			
+
+		<Include type="all"	source="ART:Reborn/Art/Debug/ST_RussianFought2DeathStatue.NEWSKIN_CIV.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/ST_RussianFought2DeathStatue.NEWSKIN_FILL.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/ST_RussianFought2DeathStatue.OBBOX01.w3x" />
+
+		<Include type="all"	source="ART:Reborn/Art/Debug/ST_RussianFought2DeathStatue_COL.NEW_SKIN.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/ST_RussianFought2DeathStatue_COL.OBBOX01.w3x" />
+
+		<Include type="all"	source="ART:Reborn/Art/Debug/ST_RussianFought2DeathStatue_COL_CTR.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/ST_RussianFought2DeathStatue_COL_HRC.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/ST_RussianFought2DeathStatue_CTR.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/ST_RussianFought2DeathStatue_HRC.w3x" />
+
+		<Include type="all"	source="ART:Reborn/Art/Debug/ST_RussianFought2DeathStatue.xml" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/ST_RussianFought2DeathStatue_NRM.xml" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/ST_RussianFought2DeathStatue_SPM.xml" />
+
+		<!-- Base Object -->
+		<Include
+			type="instance"
+			source="DATA:BaseObjects/BaseSovietStructure.xml" />
+	</Includes>
+
+	<GameObject
+		id="SovietFought2DeathStatue"
+		inheritFrom="BaseSovietStructure"
+		SelectPortrait="Portrait_Fought2DeathStatue"
+		ButtonImage="Button_Fought2DeathStatue"
+		Side="Soviet"
+		EditorSorting="STRUCTURE"
+		TransportSlotCount="1"
+		BuildTime="20.0"
+		EnergyProduction="0"
+		CommandSet="SovietFought2DeathStatueCommandSet"
+		KindOf="-CAN_BUILD_ON_WATER -CAN_BUILD_ON_DEEP_WATER"
+		RadarPriority="STRUCTURE"
+		PlacementViewAngle="315d"
+		ProductionQueueType="OTHER_STRUCTURE"
+		BuildPlacementTypeFlag="OTHER_STRUCTURE"
+		EditorName="SovietFought2DeathStatue"
+		Description="Desc:SovietStatue"
+		TypeDescription="Type:SovietFought2DeathStatue">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:SovietStatue</DisplayName>
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="2000"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="BaseFactionStructureArmor"
+			DamageFX="FactionStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="SPREAD">
+      <ConstructionBaseSelectionCriteria
+        ExcludedBaseTypes="NO_BUILD_RADIUS CAPTURED"
+        PreferredBaseTypes="MAIN_BASE"
+        SortOrder="PREFER_OLDEST" />
+    </SkirmishAIInformation>
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="true"
+				ExtraPublicBone="BONE_CONTACT_POINT_01 BONE_CONTACT_POINT_02 BONE_CONTACT_POINT_03 BONE_CONTACT_POINT_04 BONE_CONTACT_POINT_05 BONE_CONTACT_POINT_06 BONE_CONTACT_POINT_07 BONE_CONTACT_POINT_08 BONE_CONTACT_POINT_09 BONE_CONTACT_POINT_10 BONE_CONTACT_POINT_11 BONE_CONTACT_POINT_12 BONE_CONTACT_POINT_13 BONE_CONTACT_POINT_14 BONE_CONTACT_POINT_15 BONE_CONTACT_POINT_16 BONE_CONTACT_POINT_17 BONE_CONTACT_POINT_18 BONE_CONTACT_POINT_19 BONE_CONTACT_POINT_20">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="ST_RussianFought2DeathStatue" />
+				</ModelConditionState>
+			</ScriptedModelDraw>
+		</Draws>
+		<Behaviors>
+		
+			<AttributeModifierAuraUpdate
+				id="ModuleTag_AttributeModifierAuraUpdate_EmpResolve"
+				AttributeModifierName="AttributeModifer_GenericStatueAura"
+				RefreshDelay="0.75s"
+				Range="400"
+				InitiallyActive="true">
+				<ObjectFilter
+					Rule="ANY"
+					Include="INFANTRY AIRCRAFT VEHICLE"
+					Relationship="ALLIES"
+					StatusBitFlagsExclude="SUBMERGED">
+				</ObjectFilter>
+			</AttributeModifierAuraUpdate>
+			
+			<Physics
+				id="ModuleTag_Physics"/>
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction"
+				FillerMesh="NEWSKIN_FILL">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_J01_StatueDamageExplosion"
+					CreationObject="YU_HotelDebris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+			
+
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" 
+				id="ModuleTag_FXList">
+				<DieMuxData
+					DeathTypes="ALL"/>
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Tiny" />
+				<Event
+					Index="onDeath"
+					FX="FX_SpecialDebrisExplosionShake" />
+				<Event Index="onDeath" FX="FX_J02_StatueDieAudio" />					
+			</FXListBehavior>
+
+			
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="ST_RussianFought2DeathStatue_Die_OCL">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</CreateObjectDie>
+
+			<DestroyDie
+				id="ModuleTag_Die">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</DestroyDie>	
+			
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpackUpdate"
+				UnpackTime="2s" />
+
+
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+				
+
+		</Behaviors>
+		
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="4000.0" />
+		</Body>
+		<Geometry
+			IsSmall="false">
+<Shape 
+     Type= "BOX"
+     MajorRadius = "29.5333"
+     MinorRadius = "27.6973"
+     Height = "153.042"
+     ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "-0.124796"
+        y = "-0.271235"
+        z = "0.0" />
+</Shape>
+
+		</Geometry>
+
+		<AudioArraySound>
+			<AudioEntry Sound="" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound>
+		<VisionInfo
+			VisionRange="50"
+			ShroudClearingRange="50" />
+
+	</GameObject>
+
+	<ObjectCreationList
+		id="ST_RussianFought2DeathStatue_Die_OCL">
+		<CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="1"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+			<CreateObject>ST_RussianFought2DeathStatue_Collapse</CreateObject>
+		</CreateObject>
+	</ObjectCreationList>
+
+</AssetDeclaration>

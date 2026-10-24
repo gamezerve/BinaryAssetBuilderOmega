@@ -37,7 +37,7 @@ internal static class ConscriptMultiAssetBuild
             if(File.Exists(additional))sources.AddRange(Read(additional).DocumentElement!.ChildNodes.OfType<XmlElement>().Select(e=>Xml(e.OuterXml)));
             string command=Path.Combine(Path.GetDirectoryName(entry)!,"command.xml");if(File.Exists(command))sources.Add(Read(command));
             var fingerprints=new Dictionary<uint,(uint Hash,bool Tokenized)>();var locals=new Dictionary<AssetId,XmlDocument>();
-            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate")||!ConscriptSourceInput.Identity(id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
+            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList")||!ConscriptSourceInput.Identity(id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
                 uint typeId=FastHash.GetHashCode(type);var examples=stock.Where(a=>a.TypeId==typeId).Select(a=>(a.TypeHash,Tokenized:a.Tokenized==1)).Distinct().ToArray();if(examples.Length!=1)throw new InvalidDataException("EP1 asset fingerprint is absent/ambiguous: "+type);fingerprints[typeId]=examples[0];if(!locals.TryAdd(new(typeId,InstanceHandle.GetInstanceId(id)),xml))throw SdkXmlDiagnostics.At(new InvalidDataException("Duplicate local asset/hash identity: "+type+":"+id),xml.DocumentElement);
             }
             // Reborn: source-only catalog entries resolve local names before native data exists; payloads are freshly compiled below, never copied from stock.
@@ -49,6 +49,8 @@ internal static class ConscriptMultiAssetBuild
             var built=new Dictionary<AssetId,Built>();int prefix=0;var compileLog=ConscriptCompileLog.ForPrepared(entry);
             // Reborn: validate the isolated EP1 upgrade ABI against original stock before emitting any authored upgrades.
             if(sources.Any(s=>s.DocumentElement!.LocalName=="UpgradeTemplate"))UpgradeTemplateCompiler.Qualify(global,schemas,stock);
+            // Reborn: ObjectCreationList families/fields are enabled only after original EP1 OCLs exhibiting them pass the same proof.
+            var lists=sources.Where(s=>s.DocumentElement!.LocalName=="ObjectCreationList").ToArray();if(lists.Length!=0)ObjectCreationListCompiler.Qualify(manifest,global,schemas,stock,lists);
             foreach(var xml in sources){
                 string type=xml.DocumentElement!.LocalName;InstanceDeclaration instance;AssetBuffer buffer;
                 // Reborn: announce and time the asset around its actual processor/verifier, as EA BuildMod does per instance.
@@ -65,6 +67,10 @@ internal static class ConscriptMultiAssetBuild
                     // Reborn: stock upgrades use native-only streams; Core still owns real strong-reference occurrence indices.
                     instance=Normalize(xml);var native=UpgradeTemplateCompiler.Compile(instance.XmlNode);
                     SchemaNativeContract.Verify(UpgradeTemplateCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(Ep1UpgradeTemplate),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
+                }else if(type=="ObjectCreationList"){
+                    // Reborn: untokenized EP1 OCL native stream; Core still owns strong-reference occurrence indices.
+                    instance=Normalize(xml);var native=ObjectCreationListCompiler.Compile(instance.XmlNode);
+                    SchemaNativeContract.Verify(ObjectCreationListCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(Ep1ObjectCreationList),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
                 }else if(type=="LogicCommand"){
                     var result=ConscriptRecruitmentSmokeTest.CompileXml(schemas,xml.OuterXml);instance=Attach(result.Instance,xml.DocumentElement.GetAttribute("id")+".xml");buffer=result.Chunk;
                 }else{

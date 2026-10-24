@@ -3,6 +3,21 @@
 <html lang="en"><head><meta charset="utf-8"><title>Uprising Mod SDK Alpha</title></head>
 <body>
 <h1>Uprising Mod SDK Alpha — live repository workspace</h1>
+<!-- Reborn: the assign-slaves leaf now uses normal source-owned SpecialPower compilation rather than a fixed building identity. -->
+<p>AssignSlavesTargetObjectSpecialPower is supported with authored module IDs,
+compatible SpecialPowerTemplate targets and supported inherited SpecialPower
+fields/lists. Defaults follow the official XSD; no automatic repair-drone or
+command definition is generated.</p>
+<!-- Reborn: distinguish reusing retail art assets from rebuilding their source files when copying original EA XML. -->
+<h2>Reusing art assets already in the game</h2>
+<!-- Reborn: WorldBuilder availability is checked without copying its assets or changing runtime loading. -->
+<p>Missing asset checks use the Static, Global and WorldBuilder manifest copies
+under catalogs/ra3ep1 inside the SDK. No registry lookup or large BIN files are
+needed for this check; stock assets are not copied into your mod package.</p>
+<p>If an art asset already exists in Uprising and you are not rebuilding it,
+remove or comment out its ART: Include when copying original SageXML files into
+your mod. These includes are unnecessary for reusing existing game assets and
+may cause missing source path warnings.</p>
 <!-- Reborn: expose the actual official resource grammar and distinguish missing records from an explicit zero transaction. -->
 <p>ObjectResourceInfo is optional (at most one). Its BuildCost list may be empty
 or contain multiple rows; every row requires Account and Amount within uint32.
@@ -34,8 +49,8 @@ Warnings include the owner, field, source file, line and column; they do not sto
 DisplayName, descriptions and recognized key-shaped string fields are checked.
 Supported source inheritance/definitions are expanded before lookup. Empty optional
 values, asset IDs, paths and script bodies are not treated as missing strings.
-StockStrings in the local SDK configuration selects a language BIG or CSF; only the active
-data/gamestrings.csf is used, never gamestrings_temp.csf. Missing/broken catalogs generate
+The original table is read from catalogs/ra3ep1/gamestrings.csf inside the SDK,
+not the game directory or gamestrings_temp.csf. Missing/broken catalogs generate
 an incomplete-check warning rather than false missing-key claims. No translations are rewritten.</p>
 <!-- Reborn: command-set primary graphs do not require a placeholder unit; weak IDs receive explicit availability diagnostics. -->
 <p>LogicCommandSet mods may now build without any GameObject. New IDs, stock overrides,

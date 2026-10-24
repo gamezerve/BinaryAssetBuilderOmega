@@ -51,6 +51,20 @@
 	TYPE:SOVIETNAVALYARD
 		"Navy Production \n> Health = 3200 \n> Shroud Clearing Range = 500"
 	End
+	
+// Soviet Port Building
+
+	DESC:SOVIETPORTBUILDING
+		"These structures are authorized to build and maintain small class of vessel in the Soviet navy. It contains a single repair drone and can be constructed on land."
+	End
+
+	TYPE:SOVIETPORTBUILDING
+		"Navy Production \n> Health = 2400 \n> Shroud Clearing Range = 500"
+	End
+
+	NAME:SOVIETPORTBUILDING
+		"Port Building"
+	End
 
 // Soviet Airfiled
 

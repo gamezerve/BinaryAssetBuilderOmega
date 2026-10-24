@@ -3,6 +3,8 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
+using BinaryAssetBuilder.Core;
+using BinaryAssetBuilder.Utility;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
@@ -112,6 +114,26 @@ internal static class SdkMissingDependencyAuditSmokeTest
         var weakPaths=paths with{Sources=new[]{sources.Last()},Includes=Array.Empty<SdkSourcePathAudit.Edge>()};var weakStock=new[]{SdkMissingDependencyAudit.Identity("PackedTextureImage","StockPortrait")};
         var weakReport=SdkMissingDependencyAudit.Analyze(weakEntry,weakPaths,schemas,weakStock);
         Require(weakReport.Findings.Length==3&&weakReport.Findings.All(f=>f.Code=="MISSINGASSET"&&f.Severity=="Warning"&&f.Owner=="User:Bad"&&f.Line>0&&f.Column>0)&&weakReport.Findings.Select(f=>f.Field).Distinct().Count()==3,"Portrait/button/command-set weak warnings or local/stock resolution differ.");
+        // Reborn: the production catalog loader admits WorldBuilder-only identities without declaring them as emitted mod assets or hiding real typos.
+        string staticFixture=Path.Combine(output,"static.manifest"),worldBuilderFixture=Path.Combine(output,"worldbuilder.manifest");
+        ExternalLinkSmokeTest.WriteFixture(staticFixture,new InstanceHandle("Thing:Stock"),new ReferencedFileBuffer());
+        ExternalLinkSmokeTest.WriteFixture(worldBuilderFixture,new InstanceHandle("Thing:WorldBuilderOnly"),new ReferencedFileBuffer());
+        Require(SdkMissingDependencyAudit.ConfiguredWorldBuilderManifest(output)==null,"Unconfigured WorldBuilder lookup was invented.");
+        File.WriteAllText(Path.Combine(output,"uprising-alpha.paths"),"# Reborn: private lookup-only configuration fixture.\nWorldBuilderManifest="+worldBuilderFixture+"\n");
+        string wbEntry=Store("worldbuilder-reference.xml","<User id='Existing' Target='WorldBuilderOnly'/><User id='Typo' Target='WorldBuilderOnyl'/>");
+        var wbPaths=paths with{Sources=new[]{sources.Last()},Includes=Array.Empty<SdkSourcePathAudit.Edge>()};
+        var withoutWb=SdkMissingDependencyAudit.LoadStockCatalogs(new[]{staticFixture});
+        var withWb=SdkMissingDependencyAudit.LoadStockCatalogs(new[]{staticFixture,staticFixture,SdkMissingDependencyAudit.ConfiguredWorldBuilderManifest(output)!});
+        var absentWb=SdkMissingDependencyAudit.Analyze(wbEntry,wbPaths,schemas,withoutWb.Assets);var presentWb=SdkMissingDependencyAudit.Analyze(wbEntry,wbPaths,schemas,withWb.Assets) with{StockCatalogs=withWb.Catalogs};
+        Require(absentWb.Findings.Count(f=>f.Code=="MISSINGASSET")==2&&presentWb.Findings.Length==1&&presentWb.Findings[0].Target=="Thing:WorldBuilderOnyl","WorldBuilder lookup failed or suppressed a genuinely missing asset.");
+        Require(presentWb.ModAssets==absentWb.ModAssets&&presentWb.StockAssets==2&&presentWb.StockCatalogs.Length==2&&presentWb.StockCatalogs.All(c=>c.Sha256.Length==64)&&!presentWb.FullDependencyCoverage,"WorldBuilder lookup changed emission counts, lost provenance or claimed full runtime coverage.");
+        bool missingCatalogRejected=false;try{SdkMissingDependencyAudit.LoadStockCatalogs(new[]{Path.Combine(output,"missing-worldbuilder.manifest")});}catch(IOException){missingCatalogRejected=true;}Require(missingCatalogRejected,"An explicitly configured missing manifest was silently ignored.");
+        File.WriteAllText(Path.Combine(output,"worldbuilder-report.json"),System.Text.Json.JsonSerializer.Serialize(presentWb,new System.Text.Json.JsonSerializerOptions{WriteIndented=true}));
+        // Reborn: relocating an SDK keeps its three lookup catalogs relative to Studio and independent of the developer's original paths.
+        string relocated=Path.Combine(output,"relocated-sdk");string[] localCatalogs=SdkMissingDependencyAudit.CatalogManifestPaths(relocated);Directory.CreateDirectory(Path.GetDirectoryName(localCatalogs[0])!);
+        File.Copy(staticFixture,localCatalogs[0]);File.Copy(staticFixture,localCatalogs[1]);File.Copy(worldBuilderFixture,localCatalogs[2]);
+        var localStock=SdkMissingDependencyAudit.LoadStockCatalogs(localCatalogs);var localReport=SdkMissingDependencyAudit.Analyze(wbEntry,wbPaths,schemas,localStock.Assets);
+        Require(localStock.Catalogs.Length==3&&localStock.Catalogs.All(c=>c.Manifest.StartsWith(relocated+Path.DirectorySeparatorChar,StringComparison.OrdinalIgnoreCase))&&localReport.StockAssets==2&&localReport.Findings.Length==1&&localReport.Findings[0].Target=="Thing:WorldBuilderOnyl","SDK-relative catalogs were not used or duplicate stock identities changed resolution.");
         File.WriteAllText(Path.Combine(output,"report.json"),System.Text.Json.JsonSerializer.Serialize(report,new System.Text.Json.JsonSerializerOptions{WriteIndented=true}));
         Console.WriteLine("Reborn: missing dependency audit: PASS (aggregate missing assets/definitions, chain owners, mod+stock union, wrong types, instance-only exclusion, forward/private scope, diamond/quoted controls, positions and stale-source refusal).");
 

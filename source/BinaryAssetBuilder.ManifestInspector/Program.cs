@@ -13,6 +13,9 @@ internal static class Program
     {
         try
         {
+            // Reborn: copy a validated active string table into a selected local catalog without running the game or replacing differing files.
+            if(args.Length==3&&args[0]=="sdk-copy-string-catalog")
+            {SdkStringCatalog.CopyStock(args[1],args[2]);return 0;}
             // Reborn: material recovery reads bounded stock field/type coordinates before authored shader support is admitted.
             if(args.Length==2&&args[0]=="shader-material-review")
             {CompilerSmokeTest.InitializeHashProvider();ShaderMaterialContract.Review(args[1]);return 0;}

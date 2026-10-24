@@ -4,51 +4,51 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="DATA:GlobalData/GlobalDefines.xml" />
-		<Include
-			type="all"
-			source="ART:SBNavalYard_FX.w3x" />				
-		<Include
-			type="all"
-			source="ART:SBNavalYardFX.w3x" />				
-		<Include
-			type="all"
-			source="ART:SBNavalYard_DOOR.w3x" />				
-		<Include
-			type="all"
-			source="ART:SBNavalYard_GAG.w3x" />
-		<Include
-			type="all"
-			source="ART:SBNavalYard_GAG_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:SBNavalYard_GAG_BLD.w3x" />
-		<Include
-			type="all"
-			source="ART:SBNavalYard_GAG_IDLA.w3x" />
-		<Include
-			type="all"
-			source="ART:SBNavalYard_Scaffold_BLD.w3x" />
-		<Include
-			type="all"
-			source="ART:SBNavalYard_SKN.w3x" />				
-		<Include
-			type="all"
-			source="ART:SBNavalYard_BLD.w3x" />				
-		<Include
-			type="all"
-			source="ART:SBNavalYard_IDLA.w3x" />
-			<Include
-			type="all"
-			source="ART:SBNavalYard_LIGHTS.w3x" />
-		<Include
-			type="all"
-			source="ART:FXInvisBone.w3x" />
-		<Include
-			type="all"
-			source="ART:Decal_Rig_CO.xml" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="DATA:GlobalData/GlobalDefines.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBNavalYard_FX.w3x" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBNavalYardFX.w3x" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBNavalYard_DOOR.w3x" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBNavalYard_GAG.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBNavalYard_GAG_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBNavalYard_GAG_BLD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBNavalYard_GAG_IDLA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBNavalYard_Scaffold_BLD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBNavalYard_SKN.w3x" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBNavalYard_BLD.w3x" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBNavalYard_IDLA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBNavalYard_LIGHTS.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXInvisBone.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Decal_Rig_CO.xml" /> -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

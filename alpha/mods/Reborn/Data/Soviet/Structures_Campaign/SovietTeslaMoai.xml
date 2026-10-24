@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<!-- aka Tesla Moai -->
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
+
+
+		<!-- Base Object -->
+		<Include
+			type="instance"
+			source="DATA:BaseObjects/BaseSovietStructure.xml" />
+		<Include
+			type="all"
+			source="ART:SBBaseDefenseAir_Platform_SKL.w3x" />
+		<Include
+			type="all"
+			source="ART:SBBaseDefenseAir_Platform_BLD.w3x" />						
+		<Include
+			type="all"
+			source="ART:SBBaseDefenseAir_Platform_BLD_SKN.w3x" />			
+	</Includes>
+
+	<GameObject
+		id="SovietTeslaMoai"
+		inheritFrom="BaseSovietStructure"
+		SelectPortrait="Portrait_Special_EasterIslandDefense"
+		ButtonImage="Button_Special_EasterIslandDefense"
+		Side="Soviet"
+		EditorSorting="STRUCTURE"
+		TransportSlotCount="1"
+		BuildTime="0.0"
+		EnergyProduction="-75"
+		CommandSet="EI_EasterIslandHeadDefense"
+		KindOf="-CAN_BUILD_ON_WATER -CAN_BUILD_ON_DEEP_WATER -NOT_AUTOACQUIRABLE +CAN_ATTACK +FS_BASE_DEFENSE +POWERED +CAN_SEE_THROUGH_STRUCTURE +LINE_OF_SIGHT_IGNORES_BUILDINGS"
+		RadarPriority="STRUCTURE"
+		PlacementViewAngle="315d"
+		ProductionQueueType="OTHER_STRUCTURE"
+		BuildPlacementTypeFlag="OTHER_STRUCTURE"
+		EditorName="SovietTeslaMoai"
+		WeaponCategory="CANNON"
+		CampnessValue="=$CAMPNESS_DEFENSIVE_STRUCTURE"
+		TypeDescription="Type:SovietTeslaMoai"
+		Description="Desc:EasterIslandDefense">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:EasterIslandDefense</DisplayName>
+		<GameDependency>
+			<RequiredObject>SovietPowerPlantAdvanced</RequiredObject>
+		</GameDependency>
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="1500"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="SovietBaseDefenseAdvanced"
+			DamageFX="FactionStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="DEFENSE" >
+			<ConstructionBaseSelectionCriteria
+				ExcludedBaseTypes="NO_BUILD_RADIUS"
+				PreferredBaseTypes="ENEMIES_IN_BASE UNDER_ATTACK"
+				SortOrder="PREFER_MOST_RECENTLY_ATTACKED" />
+		</SkirmishAIInformation>
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="true"
+				ExtraPublicBone="FX_Weapon_01 FX_WEAPON_02 FX_WEAPON_03">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="EI_EasterIslandHeadDefense_SKN" />
+						<WeaponFireFXBone
+							WeaponSlotID="1"
+							WeaponSlotType="PRIMARY_WEAPON"
+							BoneName="FX_WEAPON_02" />
+						<Turret
+							TurretNameKey="BONE_Rotate_Control"							
+							TurretID="1" />
+				</ModelConditionState>
+				<AnimationState
+					ParseCondStateType="PARSE_DEFAULT"
+					StateName="State_Idle">
+					<Script>
+						Prev = CurDrawablePrevAnimationState();
+						if Prev == "State_Attacking" then
+						CurDrawableSetTransitionAnimState("TRANS_EndAttack")
+						end
+					</Script>
+				</AnimationState>
+				<AnimationState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="ENGAGED"
+					StateName="State_Attacking"
+					Flags="START_FRAME_LAST">
+					<Animation
+						AnimationName="EI_EasterIslandHeadDefense_GAG"						
+						AnimationBlendTime="0"
+						AnimationMode="MANUAL"/>
+					<Script>
+						Prev = CurDrawablePrevAnimationState();
+						if Prev == "State_Idle" then
+						CurDrawableSetTransitionAnimState("TRANS_StartAttack")
+						end
+					</Script>
+				</AnimationState>
+				<AnimationState
+					ParseCondStateType="PARSE_TRANSITION"
+					StateName="TRANS_StartAttack">
+					<Animation
+						AnimationName="EI_EasterIslandHeadDefense_GAG"
+						AnimationBlendTime="0"
+						AnimationMode="ONCE"/>
+				</AnimationState>
+				<AnimationState
+					ParseCondStateType="PARSE_TRANSITION"
+					StateName="TRANS_EndAttack"
+					Flags="START_FRAME_LAST">
+					<Animation
+						AnimationName="EI_EasterIslandHeadDefense_GAG"
+						AnimationBlendTime="0"
+						AnimationMode="ONCE_BACKWARDS"/>
+				</AnimationState>        
+			</ScriptedModelDraw>
+		</Draws>
+		
+
+		<Behaviors>
+		
+			<!-- Lightning Weapon functionality -->
+			<WeaponSetUpdate
+				id="ModuleTag_Weapon01SetUpdate">
+				<WeaponSlotTurret
+					ID="1">
+					<Weapon
+						Ordering="PRIMARY_WEAPON"
+						Template="SovietTeslaMoaiDefenseTeslaGun"/>
+					<TurretSettings
+						TurretTurnRate="180"
+						AllowsPitch="false"						
+						MinIdleScanTime="0.0s"
+						MaxIdleScanTime="0.0s"
+						MinIdleScanAngle="30.0"
+						MaxIdleScanAngle="50.0"
+						ComeToHaltJiggle="3d">
+						<TurretAITargetChooserData
+							CanAcquireDynamicIfAssignedOutOfRange="true" />
+					</TurretSettings>
+				</WeaponSlotTurret>
+			</WeaponSetUpdate>	
+
+			<AttackAssistResponseBehavior
+				id="ModuleTag_AttackAssistResponse"
+				ObjectStatus="GENERIC_TOGGLE_STATE"
+				WeaponSlotID="1"
+				WeaponSlotType="SECONDARY_WEAPON"/>
+
+			<Physics
+				id="ModuleTag_Physics"/>
+			
+			<StancesBehavior
+				id="ModuleTag_Stance"
+				StanceTemplate="OffensiveStructures" />
+			
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_BuildingDebrisExplosion"
+					CreationObject="YU_HotelDebris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_FXList">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Event
+					Index="onDeath"
+					FX="FX_CIV_EasterIslandHead_Die" />
+			</FXListBehavior>
+			
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="EI_EasterIslandHeadDefense_Die_OCL">
+				<DieMuxData
+					DeathTypes="ALL"
+					DeathTypesForbidden="SUICIDED" />
+			</CreateObjectDie>
+		
+			<DestroyDie
+				id="ModuleTag_Die">
+				<DieMuxData
+					DeathTypes="ALL"
+					DeathTypesForbidden="SUICIDED" />
+			</DestroyDie>
+
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpack"
+				UnpackTime="30s" />
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+			<xi:include
+				href="DATA:Includes/RepairAlliesEngineerContain.xml" />
+			<xi:include
+				href="DATA:Includes/GenericSovietBuildingSuicideNoSpawn.xml" />
+		</Behaviors>
+		<AI>
+			<AIUpdate
+				id="ModuleTag_AI"
+				AutoAcquireEnemiesWhenIdle="YES"
+				StateMachine="OffensiveStructureAIStateMachine">
+				<UnitAITargetChooserData />
+			</AIUpdate>
+		</AI>
+
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="2000" />
+		</Body>
+		<Geometry
+			IsSmall="false">
+      <Shape
+           Type= "BOX"
+           MajorRadius = "30.0"
+           MinorRadius = "30.0"
+           Height = "70.724"
+           ContactPointGeneration = "STRUCTURE" >
+        <Offset
+            x = "-0.254629"
+            y = "-0.922922"
+            z = "0.0" />   
+      </Shape>
+		</Geometry>
+		<AudioArrayVoice>
+			<AudioEntry
+				Sound="SOV_TeslaCoil_Select"
+				AudioType="voiceSelect" />
+		</AudioArrayVoice>
+
+		<AudioArraySound>
+			<AudioEntry Sound="S08_SOV_EasterIslandHead_Damage" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="S08_SOV_EasterIslandHead_Damage" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound>
+
+		<VisionInfo
+			VisionRange="310"
+			ShroudClearingRange="350" />
+	</GameObject>
+	
+	<ObjectCreationList
+		id="EI_EasterIslandHeadDefense_Die_OCL">
+		<CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="5"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+			<CreateObject>EI_EasterIslandHeadDefense_Collapse</CreateObject>
+		</CreateObject>
+	</ObjectCreationList>	
+	
+</AssetDeclaration>

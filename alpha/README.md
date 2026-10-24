@@ -2,6 +2,12 @@
 
 ## Build your mod
 
+<!-- Reborn: asset lookup uses local metadata, not game-installation discovery. -->
+Asset checks read the three manifest copies under `catalogs/ra3ep1`, relative
+to Studio. String checks use gamestrings.csf in that same folder plus the mod's
+Misc/Data/mod.str. Neither check needs registry/game-directory access. Native
+compiler development inputs remain separate.
+
 <!-- Reborn: optional resource information does not imply a synthetic free-production transaction. -->
 ObjectResourceInfo may be absent or empty, and BuildCost may contain multiple
 rows. Each row requires Account and Amount within uint32. The compiler preserves

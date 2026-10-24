@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+		<Include type="all" source="ART:EXSovietShell.w3x" />	
+		
+    <Include type="all"	source="ART:Reborn/Art/Debug/EXSovietShell_CTR.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Debug/EXSovietShell_HRC.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Debug/EXSOVIETSHELL.SPHERE01.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Debug/EXSOVIETSHELL.SPHERE02.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Debug/EXLavaFlow.xml" />
+	
+	</Includes>
+
+	<!-- Artillery Weapon Projectile -->
+	<GameObject
+		id="KremlinArtilleryDomeMissleProjectile"
+		Side="Soviet"
+		EditorSorting="SYSTEM"
+		KindOf="PROJECTILE NO_COLLIDE HIDE_IF_FOGGED"
+		EditorName="KremlinArtilleryDomeMissleProjectile">
+		<ArmorSet Armor="NoArmor" />
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_ScriptedModelDraw">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="EXSovietShell" />
+				</ModelConditionState>
+			</ScriptedModelDraw>
+		</Draws>
+		<Behaviors>
+			<DestroyDie
+				id="ModuleTag_Die">
+				<DieMuxData DeathTypes="ALL" />
+			</DestroyDie>
+			<BezierProjectile
+				id="ModuleTag_BezierProjectileBehavior"
+				Flags="ORIENT_TO_FLIGHT_PATH DETONATE_CALLS_KILL"
+				FirstHeightMin="50"
+				FirstHeightMax="50"
+				SecondHeightMin="50"
+				SecondHeightMax="50"
+				FirstPercentIndent="33"
+				SecondPercentIndent="66"
+				GroundHitFX="FX_KremlinArtilleryExplosion"/>
+		</Behaviors>
+		<Body>
+			<ActiveBody
+				id="ModuleTag_ActiveBody"
+				MaxHealth="100.0" />
+		</Body>
+		<Geometry
+			IsSmall="true">
+			<Shape
+				Type="SPHERE"
+				MajorRadius="0.8"></Shape>
+		</Geometry>
+		<VisionInfo
+			VisionRange="0" />
+	</GameObject>
+	
+	<WeaponTemplate
+		id="SovietArtilleryDomeMissile"
+		AttackRange="600.0"
+		MinimumAttackRange="300.0"
+		WeaponSpeed="550"
+		ScatterRadius="50"
+		FireFX="FX_Kremlin_ArtilleryDomeBlast"
+		RadiusDamageAffects="ENEMIES NEUTRALS"
+		CanFireWhileMoving="false"
+		ClipSize="1"
+		ReAcquireDetailType="PER_CLIP"
+		Flags="RELOAD_WHEN_ATTACK_STOPS"
+		ShotsPerBarrel="1"
+		AcceptableAimDelta="180d"
+		RequiredAntiMask="ANTI_GROUND ANTI_STRUCTURE ANTI_WATER"
+		ProjectileCollidesWith="ALLIES ENEMIES NEUTRAL STRUCTURES WALLS">
+		<FiringDuration
+			MinSeconds="1.0s"
+			MaxSeconds="1.0s" />
+		<ClipReloadTime
+			MinSeconds="2.5s"
+			MaxSeconds="2.5s" />
+		<Nuggets>
+			<ProjectileNugget
+				ProjectileTemplate="KremlinArtilleryDomeMissleProjectile"
+				WarheadTemplate="SovietArtilleryDomeMissleWarhead">
+			</ProjectileNugget>
+			<SuppressionNugget
+				Radius="100.0"
+				Suppression="100"
+				DurationSeconds="5s" />
+		</Nuggets>
+	</WeaponTemplate>
+
+	<WeaponTemplate
+		id="SovietArtilleryDomeMissleWarhead"
+		ProjectileCollidesWith = "ALLIES ENEMIES NEUTRAL STRUCTURES WALLS"
+		RadiusDamageAffects="ALLIES ENEMIES NEUTRALS"
+		RequiredAntiMask="ANTI_STRUCTURE ANTI_WATER ANTI_GROUND"
+		Flags="">
+		<Nuggets>
+			<DamageNugget
+				Damage="750.0"
+				DamageTaperOff="25"
+				Radius="100.0"
+				DamageType="EXPLOSIVE"
+				DeathType="NORMAL" />
+			<MetaImpactNugget
+				ShockWaveAmount="100.0"
+				ShockWaveRadius="100.0"
+				ShockWaveZMult="1.50" />
+		</Nuggets>
+	</WeaponTemplate>
+
+	<FXList id="FX_Kremlin_ArtilleryDomeBlast">
+		<NuggetList>
+			<Sound Value="J03_KremlinArtilleryDome_Fire" />
+			<ParticleSystem
+				Particle="Soviet_SPC_Dome_Fire_Flash"
+				OrientToObject="true" />
+			<ParticleSystem
+				Particle="Soviet_SPC_Dome_Fire_Light2"
+				OrientToObject="true" />
+			<ParticleSystem
+				Particle="Soviet_SPC_Dome_Fire_Spike"
+				OrientToObject="true" />
+			<CameraShakerVolume
+				Radius="300"
+				Duration="2.0s"
+				Amplitude="90d"/>
+		</NuggetList>
+	</FXList>
+	
+	<!-- GroundHitFX with CameraShake -->
+	<FXList id="FX_KremlinArtilleryExplosion">
+		<NuggetList>
+			<Sound Value="J03_KremlinArtilleryDome_ImpactExplosion" />
+		<ParticleSystem
+			Particle="Soviet_SPC_Artillery_XP_Add"
+			OrientToObject="false" />
+		<ParticleSystem
+			Particle="Soviet_SPC_Artillery_XP_Add2"
+			OrientToObject="false" />
+		<ParticleSystem
+			Particle="Soviet_SPC_Dome_Fire_Light2"
+			OrientToObject="false" />
+		<ParticleSystem
+			Particle="Soviet_SPC_Artillery_XP_Flash"
+			OrientToObject="false" />
+		<ParticleSystem
+			Particle="Soviet_SPC_Artillery_XP_Smoke"
+			OrientToObject="false" />
+		<ParticleSystem
+			Particle="Soviet_SPC_Artillery_XP_Embers"
+			OrientToObject="false" />
+		<ParticleSystem
+			Particle="Soviet_SPC_Artilery_XP_Burst"
+			OrientToObject="false" />
+			<ViewShake Type = "SEVERE" />
+		</NuggetList>
+	</FXList>
+	
+</AssetDeclaration>

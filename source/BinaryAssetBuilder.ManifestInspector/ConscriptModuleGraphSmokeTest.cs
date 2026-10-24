@@ -96,6 +96,9 @@ internal static class ConscriptModuleGraphSmokeTest
             modes=modes.Concat(new[]{"crusher-building","crusher-defaults","crusher-omitted","crusher-edited"}).ToArray();
             // Reborn: real Power Plant window modules, absent optional strings and all four authored strings share complete-object package proof.
             modes=modes.Concat(new[]{"windows-stock","windows-defaults","windows-edited"}).ToArray();
+            // Reborn: one focused batch exercises original defaults, edited SpecialPower values/list storage, and repeated assign-slaves modules.
+            modes=modes.Concat(new[]{"assign-defaults","assign-edited","assign-multiple"}).ToArray();
+            if(caseFilter=="assign"){modes=modes.Where(m=>m.StartsWith("assign-",StringComparison.Ordinal)).ToArray();caseFilter=null;}
             if(caseFilter=="skirmish"){
                 var captured=GameObjectStockReview.Capture(manifest,"GameObject:SovietRefinery");int rootTable=GameObjectStockReview.Tokens(captured.Bytes,0)[FastHash.GetHashCode("SkirmishAIInformation")].Offset;
                 var criteria=GameObjectStockReview.Tokens(captured.Bytes,rootTable)[FastHash.GetHashCode("ResourceNodeBaseClosenessTestSelectionCriteria")];int criteriaNative=(int)Word(captured.Bytes,captured.Projection.NativeRoot+468+0);criteriaNative=(int)Word(captured.Bytes,criteriaNative+76);
@@ -403,6 +406,12 @@ internal static class ConscriptModuleGraphSmokeTest
                         behaviors.PrependChild(module);origins.Add(id,origin);
                     }
                 }
+                // Reborn: new IDs, original repair-power defaults, compatible retargets and source-sized inherited lists are authorable.
+                if(mode.StartsWith("assign-",StringComparison.Ordinal))for(int i=0;i<(mode=="assign-multiple"?2:1);i++){
+                    var module=source.CreateElement("AssignSlavesTargetObjectSpecialPower",SchemaSet.XmlNamespace);module.SetAttribute("id","RebornAssignSlaves"+i);module.SetAttribute("SpecialPowerTemplate",mode=="assign-defaults"?"SpecialPower_TargetedRepairVehicle":"SpecialPower_MolotovCocktail");
+                    if(mode!="assign-defaults"){module.SetAttribute("UpdateModuleStartsAttack","true");module.SetAttribute("StartsPaused","true");module.SetAttribute("AttributeModifierRange","37.5");module.SetAttribute("GiveLevels","3");module.SetAttribute("SetModelConditionTime","2s");module.SetAttribute("WeatherDuration","1200");module.SetAttribute("RequirementsFilterMPSkirmish","RebornFirst RebornSecond");module.SetAttribute("AffectAllies","false");module.SetAttribute("AvailableAtStart","false");}
+                    behaviors.AppendChild(module);origins.Add(module.GetAttribute("id"),SchemaNativeContract.Origin);
+                }
                 // Reborn: add the six real refinery draws (new local ids), or an edited Conscript draw with a new nested animation state.
                 if(mode.StartsWith("draws-",StringComparison.Ordinal)){
                     var draws=ConscriptVariableContainers.Find(source,"Draws")!;
@@ -654,6 +663,11 @@ internal static class ConscriptModuleGraphSmokeTest
                 var pair=Build(source);var tokens=Verify(source,pair.Native,pair.Instance,origins);var repeat=Build(source);
                 if(!Equal(pair.Native,repeat.Native)||!Equal(tokens,Verify(source,repeat.Native,repeat.Instance,origins)))throw new InvalidDataException("Variable graph repeated build differs.");
                 int prefix=tokens.InstanceBuffer.Length-pair.Native.InstanceBuffer.Length;
+                // Reborn: corrupt every assign-slaves header byte plus its concrete/base metadata; accepted authoring is still independently source-verified.
+                if(mode.StartsWith("assign-",StringComparison.Ordinal))foreach(var owner in ConscriptModuleScalarContract.Owners(source).Where(o=>o.NativeType==typeof(AssignSlavesTargetObjectSpecialPowerModuleData))){
+                    int nativeAt=ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,owner);for(int offset=0;offset<System.Runtime.InteropServices.Marshal.SizeOf<AssignSlavesTargetObjectSpecialPowerModuleData>();offset++){var bad=Clone(pair.Native);bad.InstanceBuffer[nativeAt+offset]^=1;Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;}
+                    int listAt=GameObjectStockReview.Tokens(tokens.InstanceBuffer,0)[FastHash.GetHashCode("Behaviors")].Offset,wrapper=(int)Word(tokens.InstanceBuffer,listAt+12+owner.Index*12+8);foreach(int offset in new[]{0,4,8,12,16,20,24,28,32,36,40,44,48,52,56}){var bad=Clone(tokens);bad.InstanceBuffer[wrapper+offset]^=1;Refuse(()=>Verify(source,pair.Native,pair.Instance,origins,bad));metadataFaults++;}
+                }
                 // Reborn: window string lengths/pointers/text and class/inheritance metadata must fail independently when corrupted.
                 if(mode.StartsWith("windows-",StringComparison.Ordinal))foreach(var window in ConscriptModuleScalarContract.Owners(source).Where(o=>o.NativeType==typeof(BuildingBehaviorModuleData))){
                     int nativeAt=ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,window);var positions=new HashSet<int>(Enumerable.Range(0,40).Select(i=>nativeAt+i));foreach(int o in new[]{12,20,28,36}){int target=(int)Word(pair.Native.InstanceBuffer,nativeAt+o);if(target!=0)positions.Add(target);}foreach(int at in positions){var bad=Clone(pair.Native);

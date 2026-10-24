@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+
+		<Include type="all"	source="ART:EI_SovietVolcanoFortress.W3X" />
+		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
+		<Include type="instance" source="DATA:Civilian/Easter_Island_EI/Props/EI_SovietVolcanoFortress_Collapse.xml" />			
+		<!-- Base Object -->
+		<Include
+			type="instance"
+			source="DATA:BaseObjects/BaseSovietStructure.xml" />
+	</Includes>
+
+	<GameObject
+		id="SovietVolcanoFortress"
+		inheritFrom="BaseSovietStructure"
+		SelectPortrait="Portrait_VolcanoFortress"
+		ButtonImage="Button_VolcanoFortress"
+		Side="Soviet"
+		EditorSorting="STRUCTURE"
+		TransportSlotCount="1"
+		BuildTime="0.0"
+		EnergyProduction="-75"
+		CommandSet="SovietVolcanoFortressCommandSet"
+		KindOf="+FS_TECHNOLOGY +POWERED +FS_TECH_CENTER"
+		RadarPriority="STRUCTURE"
+		PlacementViewAngle="135d"
+		ProductionQueueType="MAIN_STRUCTURE"
+		BuildPlacementTypeFlag="MAIN_STRUCTURE"
+		EditorName="SovietVolcanoFortress"
+		Description="Desc:VolcanoFortress"
+		TypeDescription="Type:SovietVolcanoFortress">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:VolcanoFortress</DisplayName>
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="1500"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="BaseFactionStructureArmor"
+			DamageFX="FactionStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="SPREAD">
+      <ConstructionBaseSelectionCriteria
+        ExcludedBaseTypes="NO_BUILD_RADIUS CAPTURED"
+        PreferredBaseTypes="MAIN_BASE"
+        SortOrder="PREFER_OLDEST" />
+    </SkirmishAIInformation>
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="true"
+				ExtraPublicBone="BONE_CONTACT_POINT_01 BONE_CONTACT_POINT_02 BONE_CONTACT_POINT_03 BONE_CONTACT_POINT_04 BONE_CONTACT_POINT_05 BONE_CONTACT_POINT_06 BONE_CONTACT_POINT_07 BONE_CONTACT_POINT_08 BONE_CONTACT_POINT_09 BONE_CONTACT_POINT_10 BONE_CONTACT_POINT_11 BONE_CONTACT_POINT_12 BONE_CONTACT_POINT_13 BONE_CONTACT_POINT_14 BONE_CONTACT_POINT_15 BONE_CONTACT_POINT_16 BONE_CONTACT_POINT_17 BONE_CONTACT_POINT_18 BONE_CONTACT_POINT_19 BONE_CONTACT_POINT_20">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="EI_SovietVolcanoFortress" />
+				</ModelConditionState>
+			</ScriptedModelDraw>
+		</Draws>
+		<Behaviors>
+			<Physics
+				id="ModuleTag_Physics"/>
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction"
+				FillerMesh="NEWSKIN_FILL">
+				<DieMuxData
+					DeathTypes="ALL"
+					DeathTypesForbidden="SUICIDED"/>
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_BuildingDebrisExplosion"
+					CreationObject="AlliedBarracks_Debris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+			
+
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" 
+				id="ModuleTag_FXList">
+				<DieMuxData
+					DeathTypes="ALL"/>
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Medium" />					
+			</FXListBehavior>
+
+			
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="EI_SovietVolcanoFortress_Die_OCL">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</CreateObjectDie>
+
+			<DestroyDie
+				id="ModuleTag_Die">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</DestroyDie>	
+			
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpackUpdate"
+				UnpackTime="30s" />
+
+
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+			<xi:include
+				href="DATA:Includes/GenericEngineerContain.xml" />
+			<xi:include
+				href="DATA:Includes/GenericSovietBuildingDestruction.xml" />
+			<xi:include
+				href="DATA:Includes/GenericSovietBuildingSuicide.xml" />
+			<xi:include
+				href="DATA:Includes/InfiltratorContainParalyze.xml" />								
+
+		</Behaviors>
+		
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="3000.0" />
+		</Body>
+		<Geometry
+			IsSmall="false">
+<Shape 
+     Type= "BOX"
+     MajorRadius = "44.1809"
+     MinorRadius = "57.671"
+     Height = "34.9514"
+     ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "-6.8961"
+        y = "0.0"
+        z = "0.0" />
+</Shape>
+<Shape 
+     Type= "BOX"
+     MajorRadius = "11.9289"
+     MinorRadius = "25.7443"
+     Height = "13.6485"
+     ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "50.3105"
+        y = "0.0"
+        z = "0.0" />
+</Shape>
+<Shape 
+     Type= "BOX"
+     MajorRadius = "14.7638"
+     MinorRadius = "14.7638"
+     Height = "24.8403"
+     ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "9.48432"
+        y = "44.7842"
+        z = "35.4109" />
+</Shape>
+<Shape 
+     Type= "BOX"
+     MajorRadius = "14.7638"
+     MinorRadius = "14.7638"
+     Height = "24.8403"
+     ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "9.48432"
+        y = "-34.393"
+        z = "35.4109" />
+</Shape>
+
+
+
+
+
+		</Geometry>
+
+		<AudioArraySound>
+			<AudioEntry Sound="HumanFaction_MediumBuilding_LightDamageMS" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="HumanFaction_MediumBuilding_HeavyDamageMS" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound> 
+		<VisionInfo
+			VisionRange="150"
+			ShroudClearingRange="500" />
+		<ProjectedBuildabilityInfo
+			Radius="210"
+			BuildPlacementTypes="MAIN_STRUCTURE OTHER_STRUCTURE" />
+	</GameObject>
+
+	<ObjectCreationList
+		id="EI_SovietVolcanoFortress_Die_OCL">
+		<CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="1"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+			<CreateObject>EI_SovietVolcanoFortress_Collapse</CreateObject>
+		</CreateObject>
+	</ObjectCreationList>
+
+</AssetDeclaration>

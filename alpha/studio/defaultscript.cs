@@ -62,18 +62,18 @@ namespace EALABuild
             string name = BuildHelper.BuildTarget;
             // Reborn: the selected mod folder determines the validated source path and final package basename.
             if (String.IsNullOrEmpty(name) || name.Length > 48 || name.IndexOfAny(new char[] { '\\', '/', '"', ':', ';', '\r', '\n' }) >= 0 || name == "." || name == "..")
-                throw new InvalidDataException("Reborn: invalid alpha mod name.");
+                throw new InvalidDataException("Invalid alpha mod name.");
             // Reborn: the static mod entry remains distinct from the stock DATA:static.xml library.
             string input = Path.Combine(Path.Combine(Path.Combine(StaticPaths.CurrentDirectory, "mods"), name), "data\\Static_Mod.xml");
             CheckPath(input);
             // Reborn: preserve the entered numeric version verbatim in final archive and SKUDef filenames.
             string version = gui.ContainsKey("modversion") ? (string)gui["modversion"] : "1.00";
             if (!System.Text.RegularExpressions.Regex.IsMatch(version ?? "", @"\A[0-9]{1,4}(\.[0-9]{1,4}){1,3}\z"))
-                throw new InvalidDataException("Reborn: Mod Version must be numeric, for example 1.00 or 1.2.3.");
+                throw new InvalidDataException("Mod Version must be numeric, for example 1.00 or 1.2.3.");
             BuildHelper.CurrentBuildSteps = 1;
             // Reborn: separate the user's Reborn workspace from developer tests, including the strictly bounded complete Conscript build.
             // Reborn: keep the build header short; backend warnings describe the selected profile and detailed receipts stay on disk.
-            BuildHelper.DisplayLine("Reborn: Uprising SDK Alpha. Unsupported requested features fail the build; previous successful output is retained on failure.");
+            BuildHelper.DisplayLine("Uprising SDK Alpha. Unsupported requested features fail the build; previous successful output is retained on failure.");
             // Reborn: session resources exist before EA starts the host; the suspended worker cannot escape its own job.
             string session = (string)Lifecycle("Begin");
             RunExecutableArguments request = new RunExecutableArguments(buildHost);
@@ -87,7 +87,7 @@ namespace EALABuild
             try
             {
                 if (BuildHelper.GetNextExecutableStep() != 1)
-                    throw new InvalidDataException("Reborn: unexpected alpha build step state.");
+                    throw new InvalidDataException("Unexpected alpha build step state.");
                 BuildHelper.RunStep(StepType.RunExecutable, request);
             }
             catch { Lifecycle("Complete"); throw; }
@@ -101,7 +101,7 @@ namespace EALABuild
         //-------------------------------------------------------------------------------------------------
         /** Reborn: make an unsuccessful backend visible and retain diagnostic output without automatic retry or cleanup. */
         //-------------------------------------------------------------------------------------------------
-        public void onStepFailure(int stepId) { Lifecycle("Complete"); BuildHelper.DisplayLine("Reborn: alpha build failed; no install or launch was attempted. Review the build output."); }
+        public void onStepFailure(int stepId) { Lifecycle("Complete"); BuildHelper.DisplayLine("Alpha build failed; no install or launch was attempted. Review the build output."); }
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: keep Windows Forms types in the separately compiled helper, preserving EA's exact two-reference CodeDOM contract. */
@@ -135,7 +135,7 @@ namespace EALABuild
         private static void CheckPath(string path)
         {
             if (String.IsNullOrEmpty(path) || !Path.IsPathRooted(path) || path.IndexOf('"') >= 0 || path.IndexOf('\r') >= 0 || path.IndexOf('\n') >= 0 || !File.Exists(path))
-                throw new InvalidDataException("Reborn: adapter requires existing absolute file paths.");
+                throw new InvalidDataException("Adapter requires existing absolute file paths.");
         }
 
         //-------------------------------------------------------------------------------------------------
@@ -144,30 +144,31 @@ namespace EALABuild
         private static void CheckDirectory(string path)
         {
             if (String.IsNullOrEmpty(path) || !Path.IsPathRooted(path) || path.IndexOf('"') >= 0 || path.IndexOf('\r') >= 0 || path.IndexOf('\n') >= 0 || !Directory.Exists(path))
-                throw new InvalidDataException("Reborn: adapter requires existing absolute directory paths.");
+                throw new InvalidDataException("Adapter requires existing absolute directory paths.");
         }
 
         //-------------------------------------------------------------------------------------------------
-        /** Reborn: require four legacy keys; optionally accept GlobalManifest and the official Conscript source root without implicit dependency defaults. */
+        /** Reborn: require four legacy keys and accept optional backend source, localization and WorldBuilder lookup settings. */
         //-------------------------------------------------------------------------------------------------
         private static Dictionary<string, string> ReadPaths(string path)
         {
-            if (new FileInfo(path).Length > 16384) throw new InvalidDataException("Reborn: alpha path configuration exceeds bound.");
+            if (new FileInfo(path).Length > 16384) throw new InvalidDataException("Alpha path configuration exceeds bound.");
             Dictionary<string, string> settings = new Dictionary<string, string>(StringComparer.Ordinal);
             foreach (string line in File.ReadAllLines(path))
             {
                 if (line.Length == 0 || line.StartsWith("#", StringComparison.Ordinal)) continue;
                 int separator = line.IndexOf('=');
-                if (separator <= 0) throw new InvalidDataException("Reborn: invalid alpha path setting.");
+                if (separator <= 0) throw new InvalidDataException("Invalid alpha path setting.");
                 string key = line.Substring(0, separator);
                 // Reborn: official source root is used only by the bounded Conscript build driver; legacy configurations remain valid.
                 // Reborn: backend localization availability is optional; accept its setting without making the CSF a startup dependency.
-                if ((key != "PowerShell7" && key != "Driver" && key != "StaticManifest" && key != "CompilerDirectory" && key != "GlobalManifest" && key != "UprisingXmlRoot" && key != "SdkDataRoot" && key != "StockStrings") || settings.ContainsKey(key))
-                    throw new InvalidDataException("Reborn: unknown or duplicate alpha path setting.");
+                // Reborn: WorldBuilderManifest is consumed by dependency diagnostics, not passed as a runtime stream or copied into packages.
+                if ((key != "PowerShell7" && key != "Driver" && key != "StaticManifest" && key != "CompilerDirectory" && key != "GlobalManifest" && key != "WorldBuilderManifest" && key != "UprisingXmlRoot" && key != "SdkDataRoot" && key != "StockStrings") || settings.ContainsKey(key))
+                    throw new InvalidDataException("Unknown or duplicate alpha path setting.");
                 settings.Add(key, line.Substring(separator + 1));
             }
             if (!settings.ContainsKey("PowerShell7") || !settings.ContainsKey("Driver") || !settings.ContainsKey("StaticManifest") || !settings.ContainsKey("CompilerDirectory"))
-                throw new InvalidDataException("Reborn: alpha requires all four base path settings; GlobalManifest enables weapon builds.");
+                throw new InvalidDataException("Alpha requires all four base path settings; GlobalManifest enables weapon builds.");
             return settings;
         }
     }

@@ -6,7 +6,21 @@ asset IDs, instance includes, inheritance, `$` definitions/expressions,
 TGA/DDS textures and W3X models. Current alpha capability restrictions are
 temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
-## Current outcome — October 23, 2026
+## Current outcome — October 24, 2026
+
+<!-- Reborn: enable the existing assign-slaves SpecialPower ABI through independent source/native/metadata verification. -->
+`AssignSlavesTargetObjectSpecialPower` is enabled with authored IDs, compatible
+template targets and inherited supported SpecialPower fields/lists. See
+[scope and verification](docs/RA3EP1_ASSIGN_SLAVES_SPECIAL_POWER.md).
+
+<!-- Reborn: dependency diagnostics include WorldBuilder availability without changing emitted assets or runtime loading. -->
+Missing-asset checks read `static.manifest`, `global.manifest` and
+`worldbuilder.manifest` from `alpha/catalogs/ra3ep1`, relative to Studio.
+No registry discovery, installed-game lookup or BIN copies are needed for this
+asset catalog. String checks use `gamestrings.csf` in the same folder together
+with the mod's `Misc/Data/mod.str`, without reading the game directory. Native
+compiler inputs remain separate. Catalog copies are local-only pending
+redistribution review.
 
 <!-- Reborn: resource optionality and transaction cardinality follow the official schema without synthesizing zero-cost rows. -->
 ObjectResourceInfo now follows its optional 0..1 rule, with zero or more

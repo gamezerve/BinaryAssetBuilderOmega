@@ -19,9 +19,12 @@ try {
     # Reborn: reference retargeting is shared with variable Behaviors; only actual unimplemented layouts/resources remain restricted.
     # Reborn: do not advertise already implemented text editing as an unsupported capability.
     Write-Output 'Warning: ALPHA006 Partial native layout support: variable Behaviors, root text, ArmorSet lists, hardpoint/Weapon lists with optional imports, fixed fields, compatible targets and source-sized upgrade lists/animation are supported together. Turret/contained weapon slots, other unimplemented native layouts and resource compilation still require implementation.'
-    }else{Write-Output ('Reborn: building explicit '+$primaryType+' support assets; no GameObject is required or generated.')}
+    }else{Write-Output ('Building explicit '+$primaryType+' support assets; no GameObject is required or generated.')}
     $assetCount=if($null-ne $inputReceipt.AssetCount){[int]$inputReceipt.AssetCount}else{if($hasCommand){2}else{1}}
-    Write-Output ('Reborn: authored asset count: '+$assetCount+'; no automatic LogicCommand generation.')
+    Write-Output ('Authored asset count: '+$assetCount+'; no automatic LogicCommand generation.')
+    # Reborn: reached only after the dependency audit, include/inheritance preparation and schema/source admission all passed.
+    Write-Output ('Validation completed: '+@($inputReceipt.Sources).Count+' source file(s), '+$assetCount+' asset(s) admitted.')
+    Write-Output ('Compilation started: '+$assetCount+' asset(s).')
     $scratch=Join-Path $OutputRoot 'temp';$null=New-Item -ItemType Directory -Path $scratch;$previousTemp=$env:TEMP;$previousTmp=$env:TMP
     try {
         # Reborn: contain all qualification intermediates in this invocation's owned work generation.
@@ -37,6 +40,8 @@ try {
     if((-not $supportOnly -and $receipt.NewIdentity-ne $newIdentity) -or $receipt.Asset-cne ($primaryType+':'+$identity) -or $receipt.AssetCount-ne $assetCount -or -not $receipt.OfflineValidated -or (Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash-cne $receipt.ArchiveSha256 -or $receipt.SourceSha256-cne $inputReceipt.PreparedSourceSha256){throw 'Fresh explicit-source package/readback receipt differs.'}
     # Reborn: recheck every source, including included command XML, before publication rather than trusting only prepared-source hashes.
     foreach($source in $inputReceipt.Sources){if((Get-FileHash -LiteralPath $source.Path -Algorithm SHA256).Hash-cne $source.Sha256){throw ('Authored source changed during compilation: '+$source.Path)}}
-    if($ValidateOnly){Write-Output 'Reborn: explicit source qualification passed; validation-only, no publication.';return}
+    # Reborn: completion requires the native/metadata/stream qualification exit, receipt/package readback and unchanged authored sources.
+    Write-Output ('Compilation completed: '+$assetCount+' asset(s); native, metadata and stream qualification passed.')
+    if($ValidateOnly){Write-Output 'Explicit source qualification passed; validation-only, no publication.';return}
     [IO.File]::WriteAllText((Join-Path $OutputRoot 'alpha-build.json'),([pscustomobject]@{BuildReceipt=$receiptPath;PackagePath=$package;Profile='conscript-explicit-source';AuthoredSources=$inputReceipt.Sources;PathSearches=$inputReceipt.Searches;AutomaticCommandGenerated=$false;GameExecuted=$false;InstalledFilesModified=$false}|ConvertTo-Json -Depth 8))
 } catch {Write-Output ('Error: ALPHA120 '+$_.Exception.Message);Write-Output 'Critical: ALPHA121 Conscript alpha build failed.';exit 1}

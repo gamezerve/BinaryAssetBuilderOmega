@@ -46,6 +46,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> buildingBehavior;
     // Reborn: legacy PowerUpgrade borrows a stock-qualified UpgradeModuleData base witness (EP1 ships no PowerUpgrade instance).
     private readonly Lazy<PowerUpgradeContract.Witness> powerUpgrade;
+    // Reborn: assign-slaves inherits the existing SpecialPower ABI but has its own independently qualified concrete wrapper.
+    private readonly Lazy<StockMetadataGrammar> assignSlaves;
     // Reborn: schema-proved draw leaves need the generic proof qualified on stock Conscript draws and a metadata grammar from stock draws.
     private readonly Dictionary<Type,Lazy<StockMetadataGrammar>> schemaFamilies=new();
     // Reborn: Geometry is a nonmodule owner with independently qualified source/native and stock metadata grammar.
@@ -86,6 +88,7 @@ internal sealed class ConscriptVariableGraphVerifier
         structurePlacement=new(()=>StructurePlacementContract.QualifyStock(manifest,official));
         luaEventList=new(()=>LUAEventListContract.QualifyStock(manifest,official));
         buildingBehavior=new(()=>BuildingBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         foreach(var family in SchemaNativeContract.Families)schemaFamilies.Add(family.Type,new(()=>QualifySchemaFamily(manifest,family)));
         geometryGrammar=new(()=>GameObjectGeometryContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         dependencyGrammar=new(()=>GameObjectDependencyContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -169,6 +172,11 @@ internal sealed class ConscriptVariableGraphVerifier
             foreach(var owner in owners)
             {
                 int start=ConscriptModuleScalarContract.Address(b,0,owner),stop=owner.Index+1<owners.Length?ConscriptModuleScalarContract.Address(b,0,owners[owner.Index+1]):end;
+                // Reborn: own every authored assign-slaves field, import and allocation through the shared schema proof, then check metadata against stock.
+                if(owner.NativeType==typeof(AssignSlavesTargetObjectSpecialPowerModuleData)){
+                    var grammar=assignSlaves.Value;var assignNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,AssignSlavesSpecialPowerContract.TypeId,assignNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(assignNative,official,AssignSlavesSpecialPowerContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,assignNative,owner.NativeType,proof.Records);Own(assignNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 // Reborn: chooser presence and all source-bound native fields/imports own a source-sized AI metadata fragment.
                 if(group.Key=="AI"){
                     var aiNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container=="AI"&&o.Index==owner.Index).Element;

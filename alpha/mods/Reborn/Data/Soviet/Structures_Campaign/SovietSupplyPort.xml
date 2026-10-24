@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+
+		<Include type="all"	source="ART:CA_PortStructure.w3x" />
+		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
+		<Include type="instance" source="DATA:Civilian/Cannes_CA/Props/CA_PortStructure_Collapse.xml" />			
+		<!-- Base Object -->
+		<Include
+			type="instance"
+			source="DATA:BaseObjects/BaseSovietStructure.xml" />
+	</Includes>
+
+	<GameObject
+		id="SovietSupplyPort"
+		inheritFrom="BaseSovietStructure"
+		SelectPortrait="Portrait_Special_PortStructure"
+		ButtonImage="Button_Special_PortStructure"
+		Side="Soviet"
+		EditorSorting="STRUCTURE"
+		TransportSlotCount="1"
+		BuildTime="0.0"
+		EnergyProduction="-25"
+		CommandSet="SovietSupplyPortCommandSet"
+		KindOf="+FS_TECHNOLOGY +POWERED +FS_TECH_CENTER"
+		RadarPriority="STRUCTURE"
+		PlacementViewAngle="45d"
+		ProductionQueueType="MAIN_STRUCTURE"
+		BuildPlacementTypeFlag="MAIN_STRUCTURE"
+		EditorName="SovietSupplyPort"
+		Description="Desc:SovietSupplyPort"
+		TypeDescription="Type:SovietSupplyPort">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:PortStructure</DisplayName>
+			
+		<GameDependency>
+			<RequiredObject>SovietPortBuilding</RequiredObject>
+		</GameDependency>
+
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="500"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="BaseFactionStructureArmor"
+			DamageFX="FactionStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="SPREAD">
+      <ConstructionBaseSelectionCriteria
+        ExcludedBaseTypes="NO_BUILD_RADIUS CAPTURED"
+        PreferredBaseTypes="MAIN_BASE"
+        SortOrder="PREFER_OLDEST" />
+    </SkirmishAIInformation>
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="false"
+			ExtraPublicBone="BONE_CONTACT_POINT_01 BONE_CONTACT_POINT_02 BONE_CONTACT_POINT_03 BONE_CONTACT_POINT_04 BONE_CONTACT_POINT_05 BONE_CONTACT_POINT_06 BONE_CONTACT_POINT_07 BONE_CONTACT_POINT_08 BONE_CONTACT_POINT_09 BONE_CONTACT_POINT_10 BONE_CONTACT_POINT_11 BONE_CONTACT_POINT_12 BONE_CONTACT_POINT_13 BONE_CONTACT_POINT_14 BONE_CONTACT_POINT_15 BONE_CONTACT_POINT_16 BONE_CONTACT_POINT_17 BONE_CONTACT_POINT_18 BONE_CONTACT_POINT_19 BONE_CONTACT_POINT_20"
+				AffectedByStealth="false">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="CA_PortStructure" />
+				</ModelConditionState>
+				<ModelConditionState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="RUBBLE">
+					<Model
+						Name="" />
+				</ModelConditionState>
+
+				<AnimationState
+					ParseCondStateType="PARSE_DEFAULT">
+					<!-- no anim -->
+				</AnimationState>
+			
+			</ScriptedModelDraw>
+			
+			<ScriptedModelDraw
+				id="ModuleTag_Draw_Selected_Repair_Decal"
+				OkToChangeModelColor="true">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model Name="" />
+				</ModelConditionState>
+				<ModelConditionState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="SELECTED">
+					<Model Name="FXInvisBone" /> 
+					<ShadowInfo
+						Type="ADDITIVE_DECAL"
+						SizeX="=$SOVIET_REPAIR_DRONE_HOME_DECAL_SIZE"
+						SizeY="=$SOVIET_REPAIR_DRONE_HOME_DECAL_SIZE"
+						OverrideLODVisibility="true"
+						MaxHeight="200"
+						UseHouseColor="true"
+						Texture="Decal_Rig_CO"
+						LocalPlayerOnly="true"/>
+				</ModelConditionState>
+			</ScriptedModelDraw>
+			
+			
+		</Draws>
+		<Behaviors>
+			<Physics
+				id="ModuleTag_Physics"/>
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction"
+				FillerMesh="NEWSKIN_FILL">
+				<DieMuxData
+					DeathTypes="ALL"/>
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_BuildingDebrisExplosion"
+					CreationObject="YU_HotelDebris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+			
+
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" 
+				id="ModuleTag_FXList">
+				<DieMuxData
+					DeathTypes="ALL"/>
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Medium" />					
+			</FXListBehavior>
+
+			
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="CA_PortStructure_Die_OCL">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</CreateObjectDie>
+
+			<DestroyDie
+				id="ModuleTag_Die">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</DestroyDie>	
+
+		<AssignSlavesTargetObjectSpecialPower
+				id="ModuleTag_SpecialPowerRepairVehicle"
+				SpecialPowerTemplate="SpecialPower_TargetedRepairVehicle" />
+			<SpawnBehavior
+				id="ModuleTag_SpawnRepairDrones"
+				SpawnNumberData="1"
+				InitialBurst="1"
+				SpawnReplaceDelayData="10s"
+				SpawnedRequireSpawner="true"
+				KillSpawnsOnCaptured="true"
+				SpawnInsideBuilding="true"
+				KillSpawnsOnDisabled="true"
+                SpawnOnUnpack="true">
+				<Die
+					DeathTypes="ALL" />
+				<SpawnTemplate>SovietRepairDrone</SpawnTemplate>
+			</SpawnBehavior>
+			
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpackUpdate"
+				UnpackTime="15s" />
+
+
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+			<xi:include
+				href="DATA:Includes/GenericEngineerContain.xml" />
+			<xi:include
+				href="DATA:Includes/GenericSovietBuildingDestruction.xml" />
+			<xi:include
+				href="DATA:Includes/GenericSovietBuildingSuicide.xml" />
+			<xi:include
+				href="DATA:Includes/InfiltratorContainParalyze.xml" />								
+
+		</Behaviors>
+		
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="2000.0" />
+		</Body>
+		<Geometry
+			IsSmall="false">
+<Shape 
+     Type= "BOX"
+     MajorRadius = "74.2338"
+     MinorRadius = "58.0226"
+     Height = "60.1377"
+     ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "0.0"
+        y = "0.0"
+        z = "0.0" />
+</Shape>		
+
+
+
+
+
+		</Geometry>
+
+		<AudioArraySound>
+			<AudioEntry Sound="HumanFaction_MediumBuilding_LightDamageMS" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="HumanFaction_MediumBuilding_HeavyDamageMS" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound> 
+		<VisionInfo
+			VisionRange="150"
+			ShroudClearingRange="500" />
+		<ProjectedBuildabilityInfo
+			Radius="210"
+			BuildPlacementTypes="MAIN_STRUCTURE OTHER_STRUCTURE" />
+	</GameObject>
+
+	<ObjectCreationList
+		id="CA_PortStructure_Die_OCL">
+		<CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="1"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+			<CreateObject>CA_PortStructure_Collapse</CreateObject>
+		</CreateObject>
+	</ObjectCreationList>
+
+</AssetDeclaration>

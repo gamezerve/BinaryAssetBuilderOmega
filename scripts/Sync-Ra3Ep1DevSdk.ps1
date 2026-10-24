@@ -51,7 +51,8 @@ try{
         foreach($name in @('builtmods','.work')){$null=New-Item -ItemType Directory -Path (Join-Path $sdk $name) -Force}
         $config=Join-Path $sdk 'uprising-alpha.paths'
         # Reborn: new workspaces use the SDK-local original XML copy; preserve existing personal settings and never copy proprietary assets implicitly.
-        if(-not(Test-Path -LiteralPath $config)){[IO.File]::WriteAllLines($config,@('# Reborn: local development SDK paths; not a redistributable configuration.',('PowerShell7='+$PowerShell7),'StaticManifest=D:\TEMP\Red Alert 3 Uprising Source Data\Static Data\data\static.manifest','GlobalManifest=D:\TEMP\Red Alert 3 Uprising Source Data\Global Data\data\global.manifest',('UprisingXmlRoot='+(Join-Path $sdk 'SageXML')),('Driver='+(Join-Path $repo 'scripts/Invoke-Ra3Ep1DevAlphaBuild.ps1')),('CompilerDirectory='+$destination)))}
+        # Reborn: availability uses SDK-local catalog copies; these separate legacy paths remain native compiler development inputs.
+        if(-not(Test-Path -LiteralPath $config)){[IO.File]::WriteAllLines($config,@('# Reborn: local development SDK paths; not a redistributable configuration.',('PowerShell7='+$PowerShell7),'StaticManifest=D:\TEMP\Red Alert 3 Uprising Source Data\Static Data\data\static.manifest','GlobalManifest=D:\TEMP\Red Alert 3 Uprising Source Data\Global Data\data\global.manifest',('WorldBuilderManifest='+(Join-Path $sdk 'catalogs/ra3ep1/worldbuilder.manifest')),('UprisingXmlRoot='+(Join-Path $sdk 'SageXML')),('Driver='+(Join-Path $repo 'scripts/Invoke-Ra3Ep1DevAlphaBuild.ps1')),('CompilerDirectory='+$destination)))}
     }
     [IO.File]::WriteAllText((Join-Path $sdk 'toolchain.json'),([pscustomobject]@{Format='RebornDevSdk1';CompilerSource=[IO.Path]::GetFullPath($CompilerDirectory);UpdatedUtc=[DateTime]::UtcNow.ToString('o');Files=$inventory}|ConvertTo-Json -Depth 5))
     Write-Output ('Reborn: stable alpha toolchain synchronized; changed='+$different+'; '+$destination)

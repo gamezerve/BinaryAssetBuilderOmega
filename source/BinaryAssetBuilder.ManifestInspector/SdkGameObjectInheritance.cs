@@ -32,8 +32,8 @@ internal static class SdkGameObjectInheritance
             for(int assetIndex=0;assetIndex<assets.Length;assetIndex++)
             {
                 var asset=assets[assetIndex];
-                // Reborn: the shared Core source overlay also prepares explicit support assets for the mixed GameObject stream.
-                if(asset.LocalName is not ("GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate")||!ConscriptSourceInput.Identity(asset.GetAttribute("id"))||!originals.TryAdd(asset.LocalName+":"+asset.GetAttribute("id"),asset))throw new InvalidDataException("GameObject source contains unsupported or duplicate asset identities.");
+                // Reborn: the shared Core source overlay also prepares explicit support assets for the mixed GameObject stream (including EP1 ObjectCreationLists).
+                if(asset.LocalName is not ("GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate" or "ObjectCreationList")||!ConscriptSourceInput.Identity(asset.GetAttribute("id"))||!originals.TryAdd(asset.LocalName+":"+asset.GetAttribute("id"),asset))throw new InvalidDataException("GameObject source contains unsupported or duplicate asset identities.");
                 Inspect(asset,0);
                 // Reborn: normalize official complementary upgrade dependencies only after removing structured formatting whitespace for Core's joiner.
                 if(asset.LocalName=="UpgradeTemplate"&&SdkUpgradeNormalization.Normalize(schemas,asset)!=null){

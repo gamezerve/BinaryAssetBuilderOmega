@@ -2,10 +2,12 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -18,6 +20,11 @@ namespace Reborn
         private static bool installed;
         // Reborn: injectable confirmation is internal to the assembly's offline harness; production always uses a real Yes/No dialog.
         internal static Func<DialogResult> Confirmation = null;
+        // Reborn: EA Studio colors only its own step/build summary lines green; redirected backend lines with the same meaning are recolored here.
+        private static readonly Regex GreenLine = new Regex(@"^(?:\[\d\d:\d\d:\d\d(?:\.\d+)?\] )?(?:Step time taken: |(?:Validation|Compilation) (?:started|completed): |Validation Completed \(no publication\)\.$)", RegexOptions.CultureInvariant);
+        private static RichTextBox output;
+        private static int colored;
+        private static bool recoloring;
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: defer main-form attachment until EA has completed its constructor and entered the message loop. */
@@ -48,6 +55,56 @@ namespace Reborn
             if (studio != null) return;
             studio = form;
             studio.FormClosing += OnClosing;
+            AttachOutput(form);
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: find EA's build log box by its designer field; a missing or changed control leaves the log uncolored, never broken. */
+        //-------------------------------------------------------------------------------------------------
+        private static void AttachOutput(Form form)
+        {
+            try
+            {
+                FieldInfo field = form.GetType().GetField("rtbGUIOutput", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+                output = field == null ? null : field.GetValue(form) as RichTextBox;
+                if (output == null) return;
+                colored = 0;
+                output.TextChanged += OnOutputChanged;
+            }
+            catch (Exception) { output = null; }
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: recolor only newly completed lines; restore caret and insertion color so EA's next AppendText keeps its own colors. */
+        //-------------------------------------------------------------------------------------------------
+        private static void OnOutputChanged(object sender, EventArgs args)
+        {
+            if (recoloring || output == null || output.IsDisposed) return;
+            string text = output.Text;
+            // Reborn: "Clear Build Log" shortens the text; restart from the beginning.
+            if (text.Length < colored) colored = 0;
+            int end = text.LastIndexOf('\n');
+            if (end < colored) return;
+            recoloring = true;
+            int start = output.SelectionStart, length = output.SelectionLength; Color insertion = output.SelectionColor;
+            try
+            {
+                for (int at = colored; at <= end; )
+                {
+                    int next = text.IndexOf('\n', at);
+                    string line = text.Substring(at, next - at).TrimEnd('\r');
+                    if (GreenLine.IsMatch(line)) { output.Select(at, line.Length); output.SelectionColor = Color.Green; }
+                    at = next + 1;
+                }
+                colored = end + 1;
+            }
+            catch (Exception) { }
+            finally
+            {
+                // Reborn: never repaint a user's selected range; an empty caret carries the insertion color for EA's next line.
+                output.Select(start, length); if (length == 0) output.SelectionColor = insertion;
+                recoloring = false;
+            }
         }
 
         //-------------------------------------------------------------------------------------------------
@@ -55,7 +112,7 @@ namespace Reborn
         //-------------------------------------------------------------------------------------------------
         public static string Begin()
         {
-            if (current != null && current.Running) throw new InvalidOperationException("Reborn: this Studio already owns an active build.");
+            if (current != null && current.Running) throw new InvalidOperationException("This Studio already owns an active build.");
             if (current != null) current.Dispose();
             current = new BuildSession();
             return current.Token;
@@ -86,7 +143,7 @@ namespace Reborn
             if (session == null || !session.Running) { Complete(); return; }
             args.Cancel = true;
             DialogResult answer = Confirmation == null
-                ? MessageBox.Show(studio, "Derleme hâlâ devam ediyor. Derlemeyi iptal edip SDK'yı kapatmak istiyor musunuz?", "Uprising Mod SDK", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2)
+                ? MessageBox.Show(studio, "A build is still running. Cancel the build and close the SDK?", "Uprising Mod SDK", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2)
                 : Confirmation();
             if (answer != DialogResult.Yes) return;
             // Reborn: a build can finish while the confirmation dialog is open; do not cancel an already disposed session.
@@ -100,7 +157,7 @@ namespace Reborn
             catch (Exception error)
             {
                 if (Confirmation != null) throw;
-                MessageBox.Show(studio, "Derleme güvenle durdurulamadı; SDK açık bırakıldı.\n" + error.Message, "Uprising Mod SDK", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(studio, "The build could not be stopped safely; the SDK was left open.\n" + error.Message, "Uprising Mod SDK", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
