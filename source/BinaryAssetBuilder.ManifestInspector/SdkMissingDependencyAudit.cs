@@ -45,7 +45,7 @@ internal static class SdkMissingDependencyAudit
         {
             string fixture=ReferencePipelineSmokeTest.FindFixture();
             var environment=new SdkEnvironmentPreflight.Report("ra3ep1",Path.GetDirectoryName(fixture)!,fixture,0,"",root,entry,hash,Path.GetDirectoryName(output)!,Array.Empty<SdkEnvironmentPreflight.Mapping>(),true,true,false,false,false,"0x5454A8E9",Array.Empty<string>());
-            paths=SdkSourcePathAudit.Inspect(environment,search:search);
+            paths=SdkSourcePathAudit.Inspect(environment,search:search,w3xSources:true);
         }
         else paths=new(root,null,null,new[]{new SdkSourcePathAudit.Source(entry,root,hash,initial.Length)},Array.Empty<SdkSourcePathAudit.Edge>(),Array.Empty<SdkSourcePathAudit.Resource>(),Array.Empty<SdkSourcePathAudit.Issue>(),true,false,true,false,false,Array.Empty<string>()){Search=search};
         // Reborn: availability uses SDK-local metadata, independently of registry, installed archives and native compiler development inputs.

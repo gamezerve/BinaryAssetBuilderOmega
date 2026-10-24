@@ -219,6 +219,9 @@ internal sealed class SdkInstanceInheritanceProfile
                 if (!resolved.Path.Equals(edge.PhysicalPath,StringComparison.OrdinalIgnoreCase) || !inventory.TryGetValue(resolved.Path,out var source)
                     || !resolved.Root.Equals(source.Root,StringComparison.OrdinalIgnoreCase) || resolved.Path.Equals(path,StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Instance target differs from captured confined inventory or is cyclic.");
                 byte[] baseBytes = Capture(resolved.Path); XmlDocument baseXml = Parse(baseBytes);
+                // Reborn: production all-imports may contain real assets (including W3X containers), not just definitions.
+                // Reborn: prepare their handles in the defining source context; the frontend independently controls all-versus-instance publication.
+                if(metadataEdge && gameObjectTrees && Assets(baseXml).Length!=0)metadataEdge=false;
                 if (metadataEdge)
                 {
                     // Reborn: metadata leaves consume one source edge and cannot bypass depth bounds or mix duplicate role witnesses.

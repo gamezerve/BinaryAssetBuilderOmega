@@ -18,10 +18,10 @@ internal static class ConscriptSourcePreparation
         entry=SdkEnvironmentPreflight.Absolute(entry);string root=SdkEnvironmentPreflight.DirectoryPath(Path.GetDirectoryName(entry)!);
         byte[] initial=SdkEnvironmentPreflight.Read(entry,1048576);var first=Parse(initial,entry);
         // Reborn: preserve the previous standalone complete-object input without claiming it has an AssetDeclaration preprocessing context.
-        if(first.DocumentElement?.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate")return new(first,null,new[]{new ConscriptSourceInput.SourceFile(entry,Hash(initial))}){Origins=new[]{new ConscriptSourceInput.AssetOrigin(first.DocumentElement!.LocalName,first.DocumentElement!.GetAttribute("id"),entry)},Locations=new(new[]{new SdkXmlDiagnostics.Snapshot(entry,initial)})};
+        if(first.DocumentElement?.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer")return new(first,null,new[]{new ConscriptSourceInput.SourceFile(entry,Hash(initial))}){Origins=new[]{new ConscriptSourceInput.AssetOrigin(first.DocumentElement!.LocalName,first.DocumentElement!.GetAttribute("id"),entry)},Locations=new(new[]{new SdkXmlDiagnostics.Snapshot(entry,initial)})};
         string fixture=ReferencePipelineSmokeTest.FindFixture();string output=Path.Combine(Path.GetTempPath(),"Reborn-SourcePlan-"+Guid.NewGuid().ToString("N"));
         var environment=new SdkEnvironmentPreflight.Report("ra3ep1",Path.GetDirectoryName(fixture)!,fixture,0,"",root,entry,Hash(initial),output,Array.Empty<SdkEnvironmentPreflight.Mapping>(),true,true,false,false,false,"0x5454A8E9",Array.Empty<string>());
-        var paths=SdkSourcePathAudit.Inspect(environment,search:search);
+        var paths=SdkSourcePathAudit.Inspect(environment,search:search,w3xSources:true);
         // Reborn: report the actual physical winner before resource/processor admission; finding a W3X never means it was compiled.
         foreach(var selection in paths.Searches.Where(s=>s.LogicalPath.Contains(':')))Console.WriteLine("Reborn: source path ["+selection.Layer+"] "+selection.LogicalPath+" -> "+selection.PhysicalPath);
         if(!paths.ScopedPathAuditComplete || paths.StoppedAtLimit || paths.Sources.Length>32 || paths.Sources.Sum(s=>s.Bytes)>4*1048576)
@@ -35,9 +35,9 @@ internal static class ConscriptSourcePreparation
         // Reborn: Texture/@File TGA payloads now have a reviewed processor (Ep1TextureCompiler); every other resource kind is still refused.
         var textures=paths.Resources.Where(r=>r.Field=="Texture/@File"&&r.PhysicalPath.EndsWith(".tga",StringComparison.OrdinalIgnoreCase)).ToArray();
         var unsupported=paths.Resources.Except(textures).ToArray();
-        if(unsupported.Length!=0 || paths.Sources.Any(s=>!s.PhysicalPath.EndsWith(".xml",StringComparison.OrdinalIgnoreCase)))
+        if(unsupported.Length!=0)
         {
-            var failure=new InvalidDataException("ART/audio/W3X source processors are not connected for this resource (only Texture TGA files are); no resources are silently skipped.");
+            var failure=new InvalidDataException("Resource processor is not connected for this resource (Texture TGA files and W3DContainer W3X declarations are supported); no resources are silently skipped.");
             var resource=unsupported.FirstOrDefault();string owner=resource?.Document??entry;
             var source=Parse(snapshots[owner],owner);
             if(resource!=null){var matches=source.SelectNodes("//@* | //*[not(*)]")!.Cast<XmlNode>().Where(n=>(n is XmlAttribute?n.Value:n.InnerText)==resource.LogicalPath).ToArray();if(matches.Length==1)SdkXmlDiagnostics.At(failure,matches[0]);}
@@ -55,8 +55,9 @@ internal static class ConscriptSourcePreparation
         // Reborn: command-set-only mods use the same native graph without inventing a placeholder GameObject.
         // Reborn: every explicit GameObject is emitted; only instance imports stay source-only. The first object is a receipt anchor, not an asset-count restriction.
         // Reborn: an upgrade-only graph is a real standalone stream; never invent a GameObject just to select the backend.
-        if(games.Length==0&&!assets.Any(a=>a.LocalName is "LogicCommandSet" or "UpgradeTemplate"))throw new InvalidDataException("This route requires GameObject, LogicCommandSet or UpgradeTemplate assets; imported bases must use type=instance.");
-        var primary=games.FirstOrDefault()??assets.First(a=>a.LocalName is "LogicCommandSet" or "UpgradeTemplate");
+        // Reborn: W3DContainer is also a real standalone asset stream, not an implicit GameObject.
+        if(games.Length==0&&!assets.Any(a=>a.LocalName is "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer"))throw new InvalidDataException("This route requires GameObject, LogicCommandSet, UpgradeTemplate or W3DContainer assets; imported bases must use type=instance.");
+        var primary=games.FirstOrDefault()??assets.First(a=>a.LocalName is "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer");
         var identities=assets.GroupBy(a=>a.LocalName+":"+a.GetAttribute("id"),StringComparer.OrdinalIgnoreCase);if(identities.Any(g=>g.Count()!=1))throw new InvalidDataException("Duplicate emitted asset identity.");
         foreach(var source in paths.Sources)if(Hash(SdkEnvironmentPreflight.Read(source.PhysicalPath,1048576))!=source.Sha256)throw new InvalidDataException("Source changed during inheritance/definition preparation.");
         // Reborn: XInclude fragments are real source dependencies, including hash and higher-priority mod-shadow checks before publication.
@@ -74,7 +75,7 @@ internal static class ConscriptSourcePreparation
             xml=Parse(snapshots[path],path);var document=xml.DocumentElement!;
             foreach(var edge in paths.Includes.Where(e=>e.Document.Equals(path,StringComparison.OrdinalIgnoreCase) && e.Kind=="all"))Emit(edge.PhysicalPath??throw new InvalidDataException("Unresolved all Include."));
             var owners=document.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is not ("Tags" or "Includes" or "Defines")).ToArray();
-            if(owners.FirstOrDefault(a=>a.LocalName is not ("GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate" or "ObjectCreationList" or "Texture" or "PackedTextureImage")) is XmlElement unsupported)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported emitted asset type '"+unsupported.LocalName+"'; no silent skipping."),unsupported);
+            if(owners.FirstOrDefault(a=>a.LocalName is not ("GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate" or "ObjectCreationList" or "Texture" or "PackedTextureImage" or "W3DContainer")) is XmlElement unsupported)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported emitted asset type '"+unsupported.LocalName+"'; no silent skipping."),unsupported);
             // Reborn: source-only definition leaves must still validate, even if no emitted owner happens to consume them.
             if(owners.Length==0){if(document.ChildNodes.OfType<XmlElement>().Any(e=>e.LocalName=="Defines"))SdkMetadataDefinitions.Prove(schemas,xml,path,snapshots[path]);return;}
             bool needsPreparation=document.GetElementsByTagName("Define",Ea).Count!=0 || document.GetElementsByTagName("include","http://www.w3.org/2001/XInclude").Count!=0 || owners.Any(a=>a.HasAttribute("inheritFrom") || a.SelectNodes(".//@* | .//text()")!.Cast<XmlNode>().Any(n=>(n.Value??"").StartsWith('=')));

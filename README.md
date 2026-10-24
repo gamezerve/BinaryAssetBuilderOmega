@@ -8,6 +8,14 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: W3X container declarations use the existing XML writer and normal dependency-sorted stream packaging. -->
+`W3DContainer` authoring is enabled, including `ART:` W3X includes, custom IDs,
+optional Hierarchy, and any schema-valid SubObject list with Mesh/CollisionBox
+references. Existing referenced assets stay external; WorldBuilder hierarchy
+and render identities are available for lookup. Mesh, hierarchy, collision-box
+and animation **compilation** are separate processors and are not enabled by
+container support. See [W3DContainer scope](docs/RA3EP1_W3D_CONTAINER.md).
+
 <!-- Reborn: enable the existing assign-slaves SpecialPower ABI through independent source/native/metadata verification. -->
 `AssignSlavesTargetObjectSpecialPower` is enabled with authored IDs, compatible
 template targets and inherited supported SpecialPower fields/lists. See

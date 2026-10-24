@@ -37,7 +37,7 @@ internal static class ConscriptMultiAssetBuild
             if(File.Exists(additional))sources.AddRange(Read(additional).DocumentElement!.ChildNodes.OfType<XmlElement>().Select(e=>Xml(e.OuterXml)));
             string command=Path.Combine(Path.GetDirectoryName(entry)!,"command.xml");if(File.Exists(command))sources.Add(Read(command));
             var fingerprints=new Dictionary<uint,(uint Hash,bool Tokenized)>();var locals=new Dictionary<AssetId,XmlDocument>();
-            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "Texture" or "PackedTextureImage")||!ConscriptSourceInput.Identity(id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
+            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "Texture" or "PackedTextureImage" or "W3DContainer")||!ConscriptSourceInput.Identity(id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
                 uint typeId=FastHash.GetHashCode(type);var examples=stock.Where(a=>a.TypeId==typeId).Select(a=>(a.TypeHash,Tokenized:a.Tokenized==1)).Distinct().ToArray();if(examples.Length!=1)throw new InvalidDataException("EP1 asset fingerprint is absent/ambiguous: "+type);fingerprints[typeId]=examples[0];if(!locals.TryAdd(new(typeId,InstanceHandle.GetInstanceId(id)),xml))throw SdkXmlDiagnostics.At(new InvalidDataException("Duplicate local asset/hash identity: "+type+":"+id),xml.DocumentElement);
             }
             // Reborn: source-only catalog entries resolve local names before native data exists; payloads are freshly compiled below, never copied from stock.
@@ -55,6 +55,8 @@ internal static class ConscriptMultiAssetBuild
             var lists=sources.Where(s=>s.DocumentElement!.LocalName=="ObjectCreationList").ToArray();if(lists.Length!=0)ObjectCreationListCompiler.Qualify(manifest,global,schemas,stock,lists);
             // Reborn: authored textures/packed images are emitted only after the writers are proved on original EP1 static data.
             if(sources.Any(s=>s.DocumentElement!.LocalName=="Texture"))Ep1TextureCompiler.Qualify(manifest);
+            // Reborn: use the existing W3DContainer marshaler only after its untokenized EP1 stock layout matches.
+            if(sources.Any(s=>s.DocumentElement!.LocalName=="W3DContainer"))W3DContainerCompiler.Qualify(manifest,schemas,available);
             if(sources.Any(s=>s.DocumentElement!.LocalName=="PackedTextureImage"))PackedTextureImageCompiler.Qualify(manifest,schemas,stock);
             foreach(var xml in sources){
                 string type=xml.DocumentElement!.LocalName;InstanceDeclaration instance;AssetBuffer buffer;
@@ -81,6 +83,9 @@ internal static class ConscriptMultiAssetBuild
                     instance=Normalize(xml);string resource=TextureResource(entry,xml.DocumentElement.GetAttribute("File"));var payload=SdkEnvironmentPreflight.Read(resource,64*1048576);
                     if(!string.Equals(Path.GetFileNameWithoutExtension(resource),Ep1TextureCompiler.Sha256(payload),StringComparison.OrdinalIgnoreCase))throw new InvalidDataException("Captured texture payload changed: "+resource);
                     var native=Ep1TextureCompiler.Compile(xml.DocumentElement,payload,resource);Console.WriteLine("Texture "+xml.DocumentElement.GetAttribute("id")+": "+Ep1TextureCompiler.Describe(native)+".");buffer=Buffer(native);
+                }else if(type=="W3DContainer"){
+                    // Reborn: hierarchy/mesh/collision imports are normalized by Core; authoring a container never copies their stock payloads.
+                    instance=Normalize(xml);var native=W3DContainerCompiler.Compile(instance.XmlNode);W3DContainerCompiler.Verify(instance,native);buffer=Buffer(native);
                 }else if(type=="PackedTextureImage"){
                     // Reborn: untokenized 36-byte record; Core owns the Texture reference occurrence index.
                     instance=Normalize(xml);var native=PackedTextureImageCompiler.Compile(instance.XmlNode);
@@ -145,7 +150,10 @@ internal static class ConscriptMultiAssetBuild
         var required=schemas.GetXmlType("BaseRenderAssetType")??throw new InvalidDataException("BaseRenderAssetType schema missing.");
         var render=schemas.Schemas.GlobalTypes.Values.Cast<System.Xml.Schema.XmlSchemaType>().Where(t=>System.Xml.Schema.XmlSchemaType.IsDerivedFrom(t,required,System.Xml.Schema.XmlSchemaDerivationMethod.None)).Select(t=>FastHash.GetHashCode(t.Name!)).ToHashSet();
         var resolved=known.Where(a=>render.Contains(a.TypeId)).Select(a=>a.InstanceId).ToHashSet();
-        return document.Assets.Where(a=>render.Contains(a.TypeId)&&!resolved.Contains(a.InstanceId)).GroupBy(a=>a.InstanceId).Where(g=>g.Count()==1).Select(g=>g.Single()).ToArray();
+        // Reborn: hierarchy and container commonly share a name; hierarchy lookup uses the full typed identity, not render-name exclusion.
+        uint hierarchy=FastHash.GetHashCode("W3DHierarchy");var knownIds=known.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();
+        return document.Assets.Where(a=>render.Contains(a.TypeId)&&!resolved.Contains(a.InstanceId)).GroupBy(a=>a.InstanceId).Where(g=>g.Count()==1).Select(g=>g.Single())
+            .Concat(document.Assets.Where(a=>a.TypeId==hierarchy&&!knownIds.Contains(new(a.TypeId,a.InstanceId)))).ToArray();
     }
 
     private static void PackageSupport(string output,XmlDocument source,Dictionary<string,byte[]> streams,InstanceDeclaration[] instances,ManifestAsset[] stock)

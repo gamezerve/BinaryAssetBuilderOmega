@@ -29,7 +29,7 @@ internal static class SdkSourcePathAudit
     //-------------------------------------------------------------------------------------------------
     /** Reborn: inspect a bounded reachable path graph from explicit environment evidence without recursive directory scans or source writes. */
     //-------------------------------------------------------------------------------------------------
-    internal static Report Inspect(SdkEnvironmentPreflight.Report environment,string? artRoot = null,string? audioRoot = null,bool knownMapAliases = false,SdkSourceSearch? search = null)
+    internal static Report Inspect(SdkEnvironmentPreflight.Report environment,string? artRoot = null,string? audioRoot = null,bool knownMapAliases = false,SdkSourceSearch? search = null,bool w3xSources = false)
     {
         string data = SdkEnvironmentPreflight.DirectoryPath(environment.SourceRoot);
         artRoot = search?.ModArt ?? (artRoot == null ? null : SdkEnvironmentPreflight.DirectoryPath(artRoot));
@@ -129,8 +129,8 @@ internal static class SdkSourcePathAudit
                         Resolved child = alias == null ? ResolveSelected(path,logical,confinement) : new(alias.PhysicalPath,data);
                         if (!child.Path.EndsWith(".xml",StringComparison.OrdinalIgnoreCase) && !child.Path.EndsWith(".w3x",StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Include must name XML/W3X source.");
                         edges.Add(new(path,kind,logical,child.Path));
-                        // Reborn: W3X is a resolved resource dependency, not an EA AssetDeclaration; no processor support is implied by locating it.
-                        if(search!=null && child.Path.EndsWith(".w3x",StringComparison.OrdinalIgnoreCase))
+                        // Reborn: production W3X declarations join the captured XML graph; legacy path-only audits retain metadata-only resource reads.
+                        if(!w3xSources && search!=null && child.Path.EndsWith(".w3x",StringComparison.OrdinalIgnoreCase))
                         {if(resources.Count>=2048){Add("ResourceLimit",path,logical,"2048-resource cap reached.");stopped=true;}else resources.Add(new(path,"Include",logical,child.Path,new FileInfo(child.Path).Length));}
                         else Visit(child.Path,child.Root,depth+1,()=>Locate(path,logical));
                     }

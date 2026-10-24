@@ -77,10 +77,11 @@ internal static class ConscriptSourceInput
             var xml=Read(path);var element=xml.DocumentElement!;
             if(element.NamespaceURI!=Ea)return false;
             // Reborn: explicit upgrade declarations select the complete mixed/support stream backend, including upgrade-only mods.
-            if(element.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate" || element.ChildNodes.OfType<XmlElement>().Any(e=>e.NamespaceURI==Ea && e.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate"))return true;
+            if(element.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" || element.ChildNodes.OfType<XmlElement>().Any(e=>e.NamespaceURI==Ea && e.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer"))return true;
             foreach(XmlElement include in element.GetElementsByTagName("Include",Ea))
             {
-                string source=include.GetAttribute("source");if(!source.EndsWith(".xml",StringComparison.OrdinalIgnoreCase))continue;
+                // Reborn: W3X includes contain ordinary EA declarations and can select the container-only build route.
+                string source=include.GetAttribute("source");if(!source.EndsWith(".xml",StringComparison.OrdinalIgnoreCase)&&!source.EndsWith(".w3x",StringComparison.OrdinalIgnoreCase))continue;
                 if(search!=null){var selected=search.Select(path,source,confinement);if(Visit(selected.PhysicalPath,selected.Root))return true;}
                 else if(source.StartsWith("DATA:",StringComparison.OrdinalIgnoreCase)){if(Visit(Resolve(root,Path.Combine(root,"mod.xml"),source[5..]),root))return true;}
                 else if(!source.Contains(':') && Visit(Resolve(root,path,source),root))return true;
@@ -98,7 +99,7 @@ internal static class ConscriptSourceInput
         var input=ConscriptSourcePreparation.Load(entry,sdk==null?null:SdkSourceSearch.ForMod(entry,sdk,stockData));var schemas=Schemas();
         var baseline=Read(Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"live-alpha","ConscriptBuildTime1","data","mod.xml"));
         // Reborn: a bare command-set document has no Include/base context; never silently discard an unprocessed inheritance marker.
-        if(input.Game.DocumentElement!.LocalName is "LogicCommandSet" or "UpgradeTemplate"&&input.Game.DocumentElement.HasAttribute("inheritFrom"))throw SdkXmlDiagnostics.At(new InvalidDataException("Use an AssetDeclaration with visible instance/all sources for asset inheritance."),input.Game.DocumentElement.GetAttributeNode("inheritFrom"));
+        if(input.Game.DocumentElement!.LocalName is "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer"&&input.Game.DocumentElement.HasAttribute("inheritFrom"))throw SdkXmlDiagnostics.At(new InvalidDataException("Use an AssetDeclaration with visible instance/all sources for asset inheritance."),input.Game.DocumentElement.GetAttributeNode("inheritFrom"));
         // Reborn: a standalone command-set primary needs schema admission, not the unrelated complete-GameObject topology gate.
         // Reborn: validate every emitted GameObject before detaching source maps, so errors in secondary objects retain original file/line diagnostics.
         try{foreach(var asset in new[]{input.Game}.Concat(input.AdditionalAssets).Concat(input.Command==null?Array.Empty<XmlDocument>():new[]{input.Command})){if(asset.DocumentElement!.LocalName=="GameObject")Admit(asset,baseline,schemas);var check=Parse(Encoding.UTF8.GetBytes(asset.DocumentElement!.OuterXml));check.Schemas.Add(schemas);check.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));if(asset.DocumentElement.LocalName=="WeaponTemplate")ConscriptMultiAssetBuild.AdmitWeapon(asset,schemas,Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!);}}
@@ -231,7 +232,8 @@ internal static class ConscriptSourceInput
     {
         XmlSchemaSet? official=null;SdkEffectiveSchema.Inspect(shieldCandidate:true,reviewHooks:true,onAdmitted:s=>official=s);if(official==null)throw new InvalidDataException("Reviewed EP1 schemas unavailable.");
         // Reborn: detached support assets use unchanged official types, just like the existing standalone GameObject/command aliases.
-        var aliases=new XmlSchema{TargetNamespace=Ea,ElementFormDefault=XmlSchemaForm.Qualified};foreach(string name in new[]{"GameObject","LogicCommand","LogicCommandSet","ArmorTemplate","WeaponTemplate","UpgradeTemplate","ObjectCreationList","Texture","PackedTextureImage"})if(!official.GlobalElements.Contains(new XmlQualifiedName(name,Ea)))aliases.Items.Add(new XmlSchemaElement{Name=name,SchemaTypeName=new XmlQualifiedName(name,Ea)});official.Add(aliases);official.Compile();return official;
+        // Reborn: standalone container elements use the unchanged official W3DContainer type, just like other emitted asset roots.
+        var aliases=new XmlSchema{TargetNamespace=Ea,ElementFormDefault=XmlSchemaForm.Qualified};foreach(string name in new[]{"GameObject","LogicCommand","LogicCommandSet","ArmorTemplate","WeaponTemplate","UpgradeTemplate","ObjectCreationList","Texture","PackedTextureImage","W3DContainer"})if(!official.GlobalElements.Contains(new XmlQualifiedName(name,Ea)))aliases.Items.Add(new XmlSchemaElement{Name=name,SchemaTypeName=new XmlQualifiedName(name,Ea)});official.Add(aliases);official.Compile();return official;
     }
 
     //-------------------------------------------------------------------------------------------------

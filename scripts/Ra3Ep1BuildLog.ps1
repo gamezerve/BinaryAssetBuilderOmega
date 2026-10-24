@@ -1,5 +1,7 @@
 # Reborn: shared readable Studio reporting; raw compiler output is retained separately, never discarded.
 $script:BuildLogLines=[Collections.Generic.List[string]]::new()
+# Reborn: each build owns its displayed source selections; all repeated checks remain in the raw detail log.
+$script:BuildSourceSelections=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
 $script:BuildClock=[Diagnostics.Stopwatch]::StartNew()
 $script:PhaseClock=$null
 $script:PhaseLabel='Initializing'
@@ -24,6 +26,8 @@ function Write-SdkCompilerLine([string]$Line,[string]$DetailPath){
     # Reborn: "Reborn:" is this toolchain's internal source tag, not the selected mod's name; the raw detail log keeps it, the display drops it.
     if($trim -cmatch '^Reborn:\s*(.+)$'){$rest=$Matches[1];$trim=[string][char]::ToUpperInvariant($rest[0])+$rest.Substring(1)}
     $trim=$trim -creplace '^((?:ERROR|Error|Warning|Critical):\s*)Reborn:\s*','$1'
+    # Reborn: suppress only identical source-selection progress, across audit/preparation passes and shared includes.
+    if($trim -cmatch '^Source path \[' -and -not $script:BuildSourceSelections.Add($trim)){return}
     if($trim -match '^(?:ERROR|Error|Warning|Critical):'){
         # Reborn: severity must remain at the beginning for EA Studio's Error Log classifier.
         Write-SdkBuildLine ($trim -creplace '^ERROR:','Error:')
@@ -33,7 +37,8 @@ function Write-SdkCompilerLine([string]$Line,[string]$DetailPath){
     }elseif($trim -match '^(.+?: PASS)\b'){
         # Reborn: keep qualification progress readable; coverage counters, internal paths and caveats remain intact in the raw log.
         Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] '+$Matches[1])
-    }elseif($trim -cmatch '^Source path \[' -or $trim -cmatch '^Authored asset count:' -or $trim -cmatch '^Dependency audit:' -or $trim -match '^(?:Compiling |Resolving references:|Generating stream:|.* Stream complete$)' -or $trim -match "^Loading 'file://" -or $trim -match '^Statistics [A-Za-z]+: Instances Processed \d+,' -or $trim -match '^(?:Validation|Compilation) (?:started|completed): ' -or $trim -match '^[^\\/:\[\]]+\.xml: Compiling [A-Za-z]+:\S+ \[[0-9a-f]{8}:[0-9a-f]{8}\]$'){
+    # Reborn: W3X is an EA XML source too; its real per-asset compilation line belongs in Studio's readable log.
+    }elseif($trim -cmatch '^Source path \[' -or $trim -cmatch '^Authored asset count:' -or $trim -cmatch '^Dependency audit:' -or $trim -match '^(?:Compiling |Resolving references:|Generating stream:|.* Stream complete$)' -or $trim -match "^Loading 'file://" -or $trim -match '^Statistics [A-Za-z][A-Za-z0-9]*: Instances Processed \d+,' -or $trim -match '^(?:Validation|Compilation) (?:started|completed): ' -or $trim -match '^[^\\/:\[\]]+\.(?:xml|w3x): Compiling [A-Za-z][A-Za-z0-9]*:\S+ \[[0-9a-f]{8}:[0-9a-f]{8}\]$'){
         Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] '+$trim)
     }
 }
