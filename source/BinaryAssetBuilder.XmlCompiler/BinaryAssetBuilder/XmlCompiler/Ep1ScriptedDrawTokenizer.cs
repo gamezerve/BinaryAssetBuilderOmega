@@ -43,17 +43,21 @@ public static class Ep1ScriptedDrawTokenizer
         F("OpacityStart",0x645864F3,28,Kind.Real), F("OpacityFadeInTime",0x998669E8,32,Kind.Real), F("OpacityPeak",0x645864F3,36,Kind.Real), F("OpacityFadeOutTime",0x998669E8,40,Kind.Real),
         F("OpacityEnd",0x645864F3,44,Kind.Real), F("MaxHeight",0x645864F3,48,Kind.Real), F("OverrideLODVisibility",0x77E3F4F7,56,Kind.Bool,1), F("UseHouseColor",0x77E3F4F7,57,Kind.Bool,1),
         F("IsRotatingWithObject",0x77E3F4F7,58,Kind.Bool,1), F("LocalPlayerOnly",0x77E3F4F7,59,Kind.Bool,1), F("SunAngle",0x645864F3,52,Kind.Real) });
+    // Reborn: animation/model-state FX events own frame controls, a real FXList import and a bone string; the stock EP1 record is 28 bytes.
+    private static readonly Record FxEvent = new("FXEvent",28,new[]{
+        F("Frame",0x23E650B8,0),F("FrameStep",0x23E650B8,4),F("FrameStop",0x23E650B8,8),
+        F("FireWhenSkipped",0x77E3F4F7,24,Kind.Bool,1),F("Effect",0x0D1C8E83,12,Kind.Ref),F("Bone",0x1A2933AA,16,Kind.String,8)},25,3);
     private static readonly Record ModelState = new("ModelConditionState", 196, new[] {
         F("ParseCondStateType",0x1323B870,0,Kind.Enum,limit:3), F("Name",0x1A2933AA,4,Kind.String,8), F("ConditionsYes",0x67DBBFC9,12,Kind.Flags,60,463), F("Skeleton",0x805D25F4,72,Kind.String,8),
         F("PortraitImage",0x0108BD1E,80,Kind.Ref), F("ButtonImage",0x0108BD1E,84,Kind.Ref), F("OverrideTooltip",0x1A2933AA,88,Kind.String,8), F("RetainSubObjects",0x77E3F4F7,192,Kind.Bool,1), F("id",0x805D25F4,96,Kind.String,8),
         F("Model",0xCD8EC40B,104,Kind.List,8,child:Model), F("Material",0xC7EA3CF4,112,Kind.Pointer,child:Material), F("Texture",0x6E5D40FB,116,Kind.List,8,child:Texture),
         F("WeaponFireFXBone",0xBD39D1A1,124,Kind.List,8,child:Bone), F("WeaponRecoilBone",0xBD39D1A1,132,Kind.List,8,child:Bone), F("WeaponMuzzleFlash",0xBD39D1A1,140,Kind.List,8,child:Bone), F("WeaponLaunchBone",0xBD39D1A1,148,Kind.List,8,child:Bone),
-        F("ParticleSysBone",0x98C53FE6,156,Kind.List,8,child:Particle), F("FXEvent",0x75991AD3,164,Kind.EmptyList,8), F("ShadowInfo",0x82FE7E88,172,Kind.Pointer,child:Shadow), F("Turret",0xF3095903,176,Kind.EmptyList,8), F("SubObject",0x03A28C40,184,Kind.EmptyList,8) }, 193, 3);
+        F("ParticleSysBone",0x98C53FE6,156,Kind.List,8,child:Particle), F("FXEvent",0x75991AD3,164,Kind.List,8,child:FxEvent), F("ShadowInfo",0x82FE7E88,172,Kind.Pointer,child:Shadow), F("Turret",0xF3095903,176,Kind.EmptyList,8), F("SubObject",0x03A28C40,184,Kind.EmptyList,8) }, 193, 3);
     private static readonly Record AnimationState = new("AnimationState", 140, new[] {
         F("ParseCondStateType",0x1323B870,0,Kind.Enum,limit:3), F("AnimNickName",0x1A2933AA,4,Kind.String,8), F("ConditionsYes",0x67DBBFC9,12,Kind.Flags,60,463), F("Name",0x1A2933AA,72,Kind.String,8), F("StateName",0x1A2933AA,80,Kind.String,8),
         F("Flags",0x5EC2B352,88,Kind.Flags,4,12), F("ShareAnimation",0x77E3F4F7,136,Kind.Bool,1), F("EnteringStateFX",0x0D1C8E83,92,Kind.Ref), F("FrameForPristineBonePositions",0x23E650B8,96),
         F("AllowRepeatInRandomPick",0x77E3F4F7,137,Kind.Bool,1), F("SimilarRestart",0x77E3F4F7,138,Kind.Bool,1), F("Animation",0x58A175D9,100,Kind.List,8,child:Animation), F("Script",0x1847C490,108,Kind.StringPointer),
-        F("FXEvent",0x75991AD3,112,Kind.EmptyList,8), F("LuaEvent",0xDA05EB72,120,Kind.EmptyList,8), F("ParticleSysBone",0x98C53FE6,128,Kind.List,8,child:Particle) }, 139, 1);
+        F("FXEvent",0x75991AD3,112,Kind.List,8,child:FxEvent), F("LuaEvent",0xDA05EB72,120,Kind.EmptyList,8), F("ParticleSysBone",0x98C53FE6,128,Kind.List,8,child:Particle) }, 139, 1);
     private static readonly Record Root = new("W3DScriptedModelDrawModuleData", 216, new[] {
         F("Name",0x1A2933AA,8,Kind.String,8), F("InitialRecoilSpeed",0x7A76C60E,16,Kind.Real), F("MaxRecoilDistance",0x645864F3,20,Kind.Real), F("RecoilDamping",0x645864F3,24,Kind.Real), F("RecoilSettleSpeed",0x7A76C60E,28,Kind.Real),
         F("OkToChangeModelColor",0x77E3F4F7,196,Kind.Bool,1), F("AnimationsRequirePower",0x77E3F4F7,197,Kind.Bool,1), F("UseYAxisForTurretRotation",0x77E3F4F7,198,Kind.Bool,1), F("MinLODRequired",0xA80D9F50,32,Kind.Enum,limit:2),

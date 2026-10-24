@@ -467,6 +467,8 @@ internal sealed class ConscriptVariableGraphVerifier
         if(family.Type==typeof(W3DScriptedModelDrawModuleData))ShaderMaterialContract.Qualify(grammar,manifest,baseline,referenceSchemas,catalog);
         // Reborn: optional draw-state ShadowInfo decals use the original SovietCrane repair-decal witness (native + metadata grammar).
         if(family.Type==typeof(W3DScriptedModelDrawModuleData))ScriptedShadowInfoContract.Qualify(grammar,manifest,baseline,referenceSchemas,catalog);
+        // Reborn: frame-triggered draw FX events use original reactor spark records for native/import and nested metadata qualification.
+        if(family.Type==typeof(W3DScriptedModelDrawModuleData))ScriptedFXEventContract.Qualify(grammar,manifest,baseline,referenceSchemas,catalog);
         return grammar;
     }
 

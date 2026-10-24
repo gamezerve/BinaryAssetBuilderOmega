@@ -8,6 +8,11 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: scripted state FX events use their real EP1 event records, not an empty-list placeholder. -->
+`ScriptedModelDraw` now emits populated `FXEvent` lists in animation and model
+states, including frame controls, FXList references, bone names and the skipped-frame
+flag. Original Super Reactor spark records anchor the native and metadata checks.
+
 <!-- Reborn: death weapons use their actual source conditions rather than a fixed inherited-building sample. -->
 `FireWeaponWhenDead` supports authored death conditions, weapon references,
 optional offsets and probability lists through the existing EP1 writer and
