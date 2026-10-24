@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Tags />
+	<Includes>
+		<Include
+	type="instance"
+	source="BaseSoundEffect.xml" />
+	</Includes>
+
+<!--
+voiceAlert
+voiceAttack
+voiceAttackAfterMoving 				//Attack an target which is not in range of your weapons
+voiceAttackAir
+voiceAttackCharge
+voiceAttackGarrisonedStructure
+voiceAttackMachine
+voiceAttackStructure
+voiceBombard
+voiceBuildResponse					//"It'll look real nice when it's done"
+voiceCaptureBuildingComplete		//"We have their building"
+voiceCombatDrop
+voiceCombineWithHorde
+voiceCreated
+voiceDefectingAway					//I am ceasing to be owned by you now
+voiceDefectingTowards				//I am now being owned by you
+voiceDeliverRing
+voiceDesperateAttack
+voiceDock
+voiceEnter
+voiceEnterHostile
+voiceFear
+voiceFullyCreated
+voiceGarrison
+voiceGetHealed
+voiceGuard
+voiceLowFuel						//Airplane can't find an airport to refuel at
+voiceMove
+voiceMoveOverWalls  				//Currently broken, never plays
+voiceMoveToCamp
+voiceMoveToHigherGround
+voiceMoveWhileAttacking
+voiceNoBuild						//"Can't do that, sir"
+voicePrimaryWeaponMode
+voiceRapidFire
+voiceRepair							//"Could use a little touchup"
+voiceRetreatToCastle
+voiceSalvage
+voiceSecondaryWeaponMode			//"Grabbing a flashbang"
+voiceSelect
+voiceSelectBattle
+voiceSelectIdleWorker
+voiceSelectUnderConstruction
+voiceSendToSlaughterhouse
+voiceStartCharging					//Mumakil trumpet
+voiceSupply							//"Resuming supply chain"
+voiceTaskComplete
+voiceTertiaryWeaponMode
+voiceUnload							//"Everybody out"
+
+voiceEnterStateAttack
+voiceEnterStateAttackAfterMoving		
+voiceEnterStateAttackAir
+voiceEnterStateAttackCharge
+voiceEnterStateAttackGarrisonedStructure
+voiceEnterStateAttackMachine
+voiceEnterStateAttackStructure
+voiceEnterStateMove
+voiceEnterStateMoveOverWalls
+voiceEnterStateMoveToCamp
+voiceEnterStateMoveToHigherGround
+voiceEnterStateMoveWhileAttacking
+voiceEnterStateRetreatToCastle
+
+		//Special voices which must only work when targetting or interacting with a specific type of object
+voiceAttackUnit						//Special voice for attacking a specific type of unit e.g. attacking an Orca
+voiceCreatedFrom					//Special voice for being created from a specific type of production building e.g. being created from Inn
+voiceEnterStateAttackUnit
+voiceEnterStateEnterUnit
+voiceEnterUnit						//Special voice for entering a specific type of unit e.g. entering an Ox
+voiceFullyCreatedFrom
+
+soundAfterburner
+soundAmbient
+soundAmbientBattle
+soundAmbientDamaged
+soundAmbientReallyDamaged
+soundAmbientRubble
+soundCreated
+soundCrushing
+soundDeploy
+soundDisabled 						//Overrides MiscAudio's BuildingDisabled/VehicleDisabled if present
+soundDisabledOnCreation				//Overrides soundDisabled on the first frame of an object's life
+soundDisguiseRevealedFailure
+soundDisguiseRevealedSuccess
+soundDisguiseStarted
+soundEnter
+soundExit
+soundFalling
+soundImpact
+soundImpactCyclonic
+soundMoveLoop
+soundMoveLoopDamaged
+soundMoveStart
+soundMoveStartDamaged
+soundOnDamaged
+soundOnReallyDamaged
+soundPrepositioned 					//For Nod turrets - GUI sound when the hub & first 2 ghost turrets are put down, before anything actually builds
+soundPromotedElite
+soundPromotedHero
+soundPromotedVeteran
+soundReenabled						//Overrides MiscAudio's BuildingReenabled/VehicleReenabled if present
+soundStealthOff 					//Not completely functional with InvisibilitySystem; use sounds in InvisibilityNuggets instead
+soundStealthOn  					//Not completely functional with InvisibilitySystem; use sounds in InvisibilityNuggets instead
+soundTurretMoveLoop
+soundUndeploy
+soundUnderConstruction
+soundUnderRepairFromDamage
+soundUnderRepairFromRubble
+-->
+
+	<Defines>
+			<!-- === CNC3 DEFINITIONS BEGIN === -->
+		<Define
+	name="AMBIENT_VOLUME"
+	value="70" />
+			<!-- === CNC3 DEFINITIONS END === -->
+			<!-- === RA3 DEFINITIONS BEGIN === -->
+		<Define
+	name="ALL_UNITRESPONSE_VOLUME"
+	value="100" />
+		<Define
+	name="ALL_UNITRESPONSE_MINVOLUME"
+	value="90" />
+		<Define
+	name="ALL_UNITRESPONSE_PITCHSHIFT_LOW"
+	value="-1" />
+		<Define
+	name="ALL_UNITRESPONSE_PITCHSHIFT_HIGH"
+	value="1" />
+		<Define
+	name="ALL_VOICEDIE_VOLUME"
+	value="70" />
+		<Define
+	name="ALL_VOICEDIE_VOLUMESHIFT"
+	value="-10" />
+		<Define
+	name="ALL_VOICEDIE_PITCHSHIFT_LOW"
+	value="-1" />
+		<Define
+	name="ALL_VOICEDIE_PITCHSHIFT_HIGH"
+	value="1" />
+		<Define
+	name="ALL_VOICEHELP_VOLUME"
+	value="70" />
+		<Define
+	name="ALL_VOICEHELP_VOLUMESHIFT"
+	value="-10" />
+		<Define
+	name="ALL_VOICEHELP_PITCHSHIFT_LOW"
+	value="-1" />
+		<Define
+	name="ALL_VOICEHELP_PITCHSHIFT_HIGH"
+	value="1" />
+			<!-- === RA3 DEFINITIONS END === -->
+	</Defines>
+
+
+	<!-- ; This file is the main list of sound effects in the game. Sounds in here are loaded,
+		; not streamed. Some additional sounds are listed in Music.xml (music tracks), 
+		; Speech.xml (stream voices), Voice.xml (non-streamed voices), and AmbientStream.xml
+		; (streamed ambients)
+		;
+		; The format of a sound entry is as follows:
+		; <SoundKeyword> <Name>
+		;    <Key> = <value>
+		;    <Key> = <value>
+		;    <Key> = <value>
+		; Endwhere: 
+		;  <SoundKeyword> introduces a new sound definition. There are 4 keywords; the choice of 
+		;   keyword determines the general type of sound and where the sound files are located. They are:
+		;    "AudioEvent":    This introduces a general use, non-streamed sound. Its sound is made from
+		;                     one or more WAVE format files located in Data/Audio/Sounds (and its localized
+		;                     subdirectories.
+		;    "MusicTrack":    This introduces a streamed piece of music. Music is located in Data/Audio/Tracks.
+		;                     Music is special in that playing one music track will (in most cases) cause any
+		;				      other music tracks to stop playing.
+		;    "DialogEvent":   This introduces a streamed piece of dialog. Streamed dialog is located in 
+		;                     Data/Audio/Speech. Streamed dialog is special in that the script commands used
+		;                     to play streamed dialog can prevent any other voices from playing until the 
+		;					  streamed dialog completes.
+		;    "AmbientStream": This introduces a streamed sound effect. These are located in 
+		;                     Data/Audio/AmbientStreams. AmbientStreams are special in that a request to
+		;                     play an ambient stream actually just produces an "ambient stream marker",
+		;                     and then the system uses the two loudest markers to choose which two ambient
+		;                     streams to play (so you cannot have more than 2 ambient streams playing at a time).
+		;    "StreamedSound": Acts much like a 2D sound, only it is streamed in. You set it to looped or unlooped,
+		;                     but you cannot have s between the loops. Only 1 filename allowed
+		;
+		;  <Name> is the name of the sound. This is the name used to reference the sound in the other INI files,
+		;   the name which appear in WorldBuilder's sound lists, and the name which appears in error messages.
+		;   All names must be unique between all sounds (of any type).
+		;
+		;  <Key> is one of a number of keys defining how the sound is played. The list of legal keys 
+		;   and their possible values are:
+		;		"Filename": Name of (single) sound file to play. It should include the file extension, which can be 
+		;                   .wav for an uncompressed or IMA ADPCM-compressed WAVE file, or
+		;                   .mp3 for an MP3-compressed file. This key does NOT apply to AudioEvents.
+		;       "Sounds": List of WAVE files to play. This key applies ONLY to AudioEvents. You can include
+		;                 zero or more sounds on this list; the sound will usually (without the SEQUENTIAL flag) choose
+		;                 one randomly from the list. You do NOT include the file extension, which must be
+		;                 .wav. (Uncompressed or IMA ADPCM-compressed WAVE files accepted.) By default,
+		;                 all the sounds are equally likely to be chosen. This can be altered by adding a
+		;                 ':weight' after the sound file name. This changes the weight of the sound.
+		;                 The total weight of all sound files in the list is added up, and the chance of 
+		;                 any given sound file playing is (file's weight divided by total weight). The
+		;                 default weight is 1000. So a sound line like "Sounds = sound1 sound2:2000 sound3:200"
+		;                 means sound1.wav will play 1000/3200 = 31% of the time, sound2.wav will play 2000/3200 = 62%
+		;                 of the time, and sound3.wav will play 200/3200 = 6% of the time when the sound tries to play.
+		;                 (or on each loop, for looping sounds).
+		;
+		;					Weight = PlayPercentForThatSound*(TotalOtherWeights) / (1-PlayPercentForThatSound)
+		;
+		;					- Evan
+		;
+		;		"Attack": A list of WAVE files to play when starting up the sound. This key applies ONLY to 
+		;				  AudioEvents. If this key is not empty, one of the WAVE files listed here will be
+		;                 played when the sound is started up, before the sounds in the "Sounds" list. The
+		;				  format is exactly the same as the "Sounds" list. Note that if the sound starts 
+		;                 when it can't actually be heard (for instance, a 3D looping sound which is out of range),
+		;                 the "Attack" sound will be skipped when it finally becomes audible.
+		;		"Decay": A list of WAVE files to play when killing the sound. This key applies ONLY to 
+		;		 	     AudioEvents. If this key is present and not empty, one of the WAVE files listed
+		;                here will be played when the sound is killed. The format is exactly the same as
+		;				 the "Sounds" list.
+		;	    "Volume": The volume of the sound, as a percentage. This (multiplied by a host of global
+		;                 factors) gives the final output volume of the sound. 100 means play at full volume.
+		;				  Note that sounds never actually play above 100% volume. Giving a number above 100
+		;                 can be useful, though, since the default volumes of the volume sliders is generally
+		;                 around 70%, meaning at sound with Volume = 120 will actually play at 84% of recorded
+		;                 volume, louder than a sound with Volume = 100.
+		;		"VolumeShift": Specified as a negative percentage. If present, each time the sound is played, the
+		;                      volume will be randomly chosen between (volume + volumeshift) and (volume). E.g.
+		;                      if Volume = 70 and VolumeShift = -20, the volume will be between 56 (70 * 0.8) and 70.
+		;                      (0.8 = 100% - 20%)
+		;       "PerFileVolumeShift": Same as VolumeShift, but 'rolled' (re-randomized) each time a new .wav is 
+		;                             started. Note: DOES NOT WORK for sounds with no delay in between the 
+		;                             wavs. 
+		;		"MinVolume" (For 3D AudioEvents and AmbientStreams only): If this is non-zero, the sound's volume 
+		;                   will never drop below this volume, regardless of how far away the microphone gets from
+		;                   the source of the sound. This clamping does not affect global volume controls (e.g.
+		;                   if the script has faded all sounds to zero or the user has selected a zero volume on
+		;                   the options window, the sound will still be silent.) Defaults to zero.
+		;		"PitchShift"
+		;       "PerFilePitchShift": Same as PitchShift, but 'rolled' (re-randomized) each time a new .wav is 
+		;                            started. Note: DOES NOT WORK for sounds with no delay in between the 
+		;                            wavs. 
+		;		"PlayPercent"
+		;		"Delay"
+		;		"Limit"
+		;		"":  lowest, low, normal, high, critical
+		;		"Type": One or more of the following flags. You can use the syntax +flag to add another
+		;               flag on a later line, and -flag to remove an existing flag (e.g. one listed in the 
+		;               default sound effect). Flags with no + or - override the existing list of 
+		;               flags.
+		;			"UI" (AudioEvents only): Sound is intended to be part of the UI. The only real effect of 
+		;                 this flag is that many sounds are sent to the audio manager by other pieces of code 
+		;                 without have a 'player which owns this sound' specified. If this flag is present, and 
+		;                 the "Player" flag is present, then if the owning play is not specified, the game 
+		;                 will assume the sound is supposed to be heard by the local player and play it.
+		;                 Without this flag, you get an assert, and the sound won't play. It has no effect
+		;                 at all unless combined with "Player".
+		;			"World" (AudioEvents only): Sound is 'in the world' - that is, it is meant to be a 3D sound.
+		;                    Sounds without this flag are *always* played as 2D sounds, even if given a
+		;                    position. Sounds with this flag will play as 3D sounds if possible, but will
+		;                    play as 2D sounds if no position is given. Note that MusicTracks and DialogEvents
+		;                    are always 2D streams, and AmbientStreams always look at their position if any.
+		;			"Shrouded" (For 3D AudioEvents and AmbientStreams only): If this flag is present, the sound
+		;                      will not play if its position is inside the shroud or fog of war. 
+		;			"Voice" (AudioEvents only): If this sound is attached to an object, the sound will not play if
+		;                   another sound with the "voice" flag is already playing on it, unless the sound also has
+		;                   the interrupting control flag set. As a secondary effect, this flag defaults SubmixSlider
+		;                   to "Voice" if no SubmixSlider is given.
+		;			"Player" (AudioEvents only): In some cases, when a sound is played, the code gives it a owning
+		;                    player. (If the sound is attached to an object, the owner of the object is usually the 
+		;					 owner of the sound.) In these cases, the flags Player, Allies, Enemies, and Everyone are
+		;                    used to determine who can hear the sound. If the "Player" flag is present, the owning
+		;					 player will be able to hear the sound; if neither "Player" nor "Everyone" is present,
+		;                    the owner of the sound will not be able to hear it. 
+		;                      AudioEvents should *always* have one or more of "Player", "Allies", "Enemies", or 
+		;                    "Everyone", otherwise you will get an assert when you try to play the sound.
+		;			"Allies" (AudioEvents only): If the sound is owned by a player, this flag indicates that the
+		;                    allies of that player can hear the sound.
+		;			"Enemies" (AudioEvents only): If the sound is owned by a player, this flag indicates that the
+		;                     enemies of that player can hear the sound.
+		;			"Everyone" (AudioEvents only): This flag indicates that all players can hear a sound, regardless
+		;                      of the sound's owner. Note that if a sound isn't given an owner (true of many UI sounds,
+		;                      and all Large Group Audio sounds), "Everyone" is the only acceptable flag of the four -
+		;                      you will get an assert if you don't list the sound as "Everyone", and the sound will 
+		;                      play as if the "everyone" flag was present anyway.
+		;			"Fake":
+		;			"Default":
+		;		"Control": More flags. Again, the +/- flag syntax can be used to modify existing lists of flags.
+		;			"Loop" (AudioEvents and DialogEvents only): If this flag is present, the sound will loop forever -
+		;                  or at least until killed. With this flag, the sound will play an Attack sound, and then 
+		;                  play one of the sounds from the Sounds lists forever until something kills the sound, at
+		;                  which point it will play a Decay sound. Without this flag, the sound would just play 
+		;                  1 Attack, 1 Sound, and 1 Decay sound. 
+		;                    Sounds with this flag are sometimes known as "permanent" sound, while sounds without
+		;				   this flag are known as "one-shot" sounds. In general, you can use a one-shot sound
+		;                  where a permanent sound is expected; for instance, as the sound for a Large Group Audio
+		;                  map, or as a move loop. However, you should NOT use permanent sounds where one-shot 
+		;                  sounds are expected; the code will not kill the sound and it will last until the level is
+		;                  exited. 
+		;                    AmbientStreams are always looping. Music is looping or not depending on the script command
+		;                  used to start it.
+		;			"Sequential": (AudioEvents only) For loops, run through each of the sounds in the Sounds list
+		;                  in order, instead of the normal randomly choosing one on each loop. After the last wav
+		;                  is played, the first wav is played again.
+		;			"Randomstart": Currently only for streaming sounds only.
+		;			"Interrupt":
+		;			"Fade_on_kill":
+		;			"Fade_on_start":
+		;		"MinRange" (For 3D AudioEvents and AmbientStreams only): If the source of the sound is closer than 
+		;                  this distance (in WorldBuilder distance units), the sound will play at full volume.
+		;                  Beyond this, the volume will fall off linearly until it reaches zero volume at MaxRange.
+		;		"MaxRange" (For 3D AudioEvents and AmbientStreams only): The maximum distance at which the 
+		;                  sound can be heard. If the 3D distance between the microphone and the sound is greater
+		;                  than this, the sound will not play - unless tha MinVolume is greater than zero, in which
+		;                  case the sound will still play outside the MaxRange. In the latter case, MaxRange only 
+		;                  helps determine the volume rolloff line (which is a straight line from full volume at
+		;                  MinRange to zero at MaxRange).
+		;		"LowPassCutoff" (For 3D AudioEvents only): This field is used to cause off-screen sounds to
+		;                       become occluded. This is a percentage from 0 to 100%. If it is greater than zero,
+		;                       sounds whose location is off-screen will be set to be (100 - LowPassCutoff) percent
+		;                       occluded. On the sound providers we currently use, this causes the sounds to be both
+		;                       muted overall and to have a low-pass filter applied to them (see the Miles function
+		;                       AIL_set_3D_sample_occlusion). 
+		;                         Note that the sense of this number is backwards. A LowPassCutoff of 0 is hard-coded
+		;                       to mean "no occlusion"; however, a LowPassCutoff of 1 will cause the maximum possible
+		;                       occlusion (99% occluded). Higher LowPassCutoffs will decrease the occlusion until, at
+		;                       LowPassCutoff = 100, there will be no occlusion. (But the system will still waste time
+		;                       checking if the sound is off-screen, so use LowPassCutoff of 0, not 100!) 
+		;		"DryLevel" (For 2D sounds and Ambient Streams only): When reverb is on, this is the per-sample 
+		;                  level of the dry sound signal (the non-reverbed sound), as a percent. 0 - 100%
+		;		"ReverbEffectLevel": For 2D sounds and Ambient Streams, when reverb is on, this is the per-sample 
+		;                            level of the wet sound signal (the reverberations), as a percent. 0 - 100% 
+		;							 For 3D AudioEvents only, when reverb is on, this is the % amount the reverb 
+		;							 affects the sound. 0 - 100%
+		;		"SubmixSlider": Determines which of the five volume sliders on the options page controls this 
+		;                       sound's volume, and which script commands. The choices are:
+		;						"SoundFX", "Voice",	"Music", "Ambient", and	"Movie". If no SubmixSlider
+		;                       key is given, the Voice slider is used if the VOICE type flag is used,
+		;                       otherwise AudioEvents use "SoundFX", MusicTracks use "Music", DialogEvents
+		;						use "Voice", and "AmbientStreams" use "Ambient".
+		;		"VolumeSliderMultiplier": While this sound is playing, cause all other sounds which use a
+		;								  specified SubmixSlider to change volume (usually, become quieter).
+		;								  The format is "VolumeSliderMultiplier = Slider:<Name> Multiplier:<Percent>"
+		;								  The slider name is one of the SubmixSliders listed above; multiplier is 
+		;								  a percentage multiplier to slider volume. For instance, the line
+		;								  VolumeSliderMultiplier = Slider:Voice Multiplier:70 means that any other
+		;								  sounds which use the Voice slider have their volumes multiplied by 0.7 while
+		;								  this sound plays. A sound may have more than 1 VolumeSliderMultiplier entry,
+		;								  and all sounds with a VolumeSliderMultiplier entry are immune to all 
+		;								  VolumeSliderMultipliers. If it is "None", NO volume adjustments will be
+		;                                 made, ever.
+		;		"ZoomedInOffscreenVolumePercent":  When zoomed in completely, multiply far-offscreen sounds' Volumes 
+		;                                          by this (lower = more effect)
+		;       "ZoomedInOffscreenMinVolumePercent": When zoomed in, multiply far-offscreen sounds' MinVolumes by 
+		;                                            this (lower = more effect)
+		;       "ZoomedInOffscreenOcclusionPercent": When zoomed in, set far-offscreen sounds' occlusion to this 
+		;                                            (higher = more effect)
+		;
+		;
+		;
+		; Also in this file are Multisounds. Format is:
+		;  Multisound <name>
+		;      Subsounds = <subsound> <subsound> <subsound>
+		;      [Control = PLAY_ONE]
+		;  End
+		; A multisound can be used almost anywhere a normal sound is used. When a multisound is played, all of the 
+		; listed subsounds will be played instead. (Multisounds can even be listed as subsounds in another multisound!)
+		; The subsounds can be completely different from each other - they can have different priorities, type flags,
+		; control flags, ranges, etc. You can even list several different types of flags (Music, Sound Effects, 
+		; Ambient Streams, etc) in a single Multisound. 
+		; If the optional "Control = PLAY_ONE" flag is given, then only ONE of the subsounds will be played when
+		; the multisound is requested. The PLAY_ONE flag applies only to Multisounds. None of the other flags apply
+		; to Multisounds. -->
+
+	<!-- === EXAMPLE === -->
+	<!-- This is just an example sound effect, which uses every possible attribute available to an audio event,
+	     for copy & paste purpose. Cut out any elements or attributes which don't apply to you EXCEPT 
+	     THE FIRST TWO (id and inheritFrom). -->
+	     
+	<!--
+	<AudioEvent id="ACompleteExampleSoundEffect" inheritFrom="AudioEvent:BaseSoundEffect"
+		Volume = "90"
+		VolumeShift = "-11"
+		PerFileVolumeShift = "-3"
+		MinVolume = "20"
+		PlayPercent = "50"
+		Limit = "2"
+		Priority = "CRITICAL"
+		Type = "UI WORLD SHROUDED VOICE PLAYER ALLIES ENEMIES EVERYONE"
+		Control = "LOOP SEQUENTIAL INTERRUPT FADE_ON_KILL FADE_ON_START"
+		MinRange = "200"
+		MaxRange = "500"
+		LowPassCutoff = "50"
+		ZoomedInOffscreenVolumePercent = "50"
+		ZoomedInOffscreenMinVolumePercent = "50"
+		ZoomedInOffscreenOcclusionPercent = "50"
+		ReverbEffectLevel = "100"
+		DryLevel = "100"
+		SubmixSlider = "SOUNDFX" >
+	<PitchShift Low = "-5" High = "5" />
+		<PerFilePitchShift Low = "-5" High = "5" />
+		<Delay Low = "200" High = "1000" />
+		<VolumeSliderMultiplier Slider="VOICE" Multiplier="0.7" /> 
+		<VolumeSliderMultiplier Slider="SOUNDFX" Multiplier="0.5" /> 
+		<VolumeSliderMultiplier Slider="MUSIC" Multiplier="0.5" /> 
+		<VolumeSliderMultiplier Slider="AMBIENT" Multiplier="0.5" /> 
+		<Attack>Example_Attack1</Attack>	<Attack>Example_Attack2</Attack>	<Attack Weight="100">Example_Attack_which_plays_one_tenth_as_much</Attack>
+		<Sound>Example_Sound1</Sound>	 	<Sound>Example_Sound2</Sound>		<Sound>Example_Sound3</Sound>
+		<Sound>Example_Sound4</Sound>		<Sound>Example_Sound5</Sound>		<Sound Weight="100">Example_Sound_which_plays_one_tenth_as_much</Sound>
+		<Decay>Example_Decay1</Decay>		<Decay>Example_Decay2</Decay>		<Decay>Example_Decay3</Decay>
+		<Decay>Example_Decay4</Decay>		<Decay>Example_Decay5</Decay>		<Decay Weight="100">Example_Decay_which_plays_one_tenth_as_much</Decay> 
+	</AudioEvent>
+	-->
+
+	    <!-- Reborn: reuse Soviet reactor samples at a lower pitch for a distinct Super Reactor ambient. -->
+    <AudioEvent
+        id="SOV_RebornSuperReactor_AmbientLoop"
+        Volume="58"
+        PerFileVolumeShift="-10"
+        MinRange="200"
+        MaxRange="550"
+        ShrunkenPitchModifier="2"
+        ShrunkenVolumeModifier="85"
+        ReverbEffectLevel="100"
+        Limit="3"
+        Priority="LOWEST"
+        Type="WORLD SHROUDED EVERYONE"
+        Control="FADE_ON_START FADE_ON_KILL LOOP"
+        SubmixSlider="AMBIENT">
+
+        <PerFilePitchShift Low="-14" High="-10" />
+
+        <Sound>SBReact_ambLoopa</Sound>
+        <Sound>SBReact_ambLoopb</Sound>
+        <Sound>SBReact_ambLoopc</Sound>
+        <Sound>SBReact_ambLoopd</Sound>
+        <Sound>SBReact_ambLoope</Sound>
+        <Sound>SBReact_ambLoopf</Sound>
+        <Sound>SBReact_ambLoopg</Sound>
+        <Sound>SBReact_ambLooph</Sound>
+        <Sound>SBReact_ambLoopi</Sound>
+        <Sound>SBReact_ambLoopj</Sound>
+        <Sound>SBReact_ambLoopk</Sound>
+        <Sound>SBReact_ambLoopl</Sound>
+        <Sound>SBReact_ambLoopm</Sound>
+        <Sound>SBReact_ambLoopn</Sound>
+    </AudioEvent>
+
+    <!-- Reborn: quiet electrical accents triggered at the idle animation's spark frames; this event does not loop independently. -->
+    <AudioEvent
+        id="SOV_RebornSuperReactor_Sparks"
+        Volume="20"
+        VolumeShift="-5"
+        MinRange="100"
+        MaxRange="400"
+        ShrunkenPitchModifier="2"
+        ShrunkenVolumeModifier="85"
+        ReverbEffectLevel="100"
+        Limit="3"
+        Priority="LOWEST"
+        Type="WORLD SHROUDED EVERYONE"
+        SubmixSlider="AMBIENT">
+
+        <PitchShift Low="-10" High="0" />
+
+        <Sound>WBRepair_droneSparka</Sound>
+        <Sound>WBRepair_droneSparkb</Sound>
+        <Sound>WBRepair_droneSparkc</Sound>
+    </AudioEvent>
+	
+</AssetDeclaration>

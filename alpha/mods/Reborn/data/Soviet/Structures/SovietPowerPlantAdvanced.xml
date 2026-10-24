@@ -60,9 +60,9 @@
 		<ArmorSet
 			Armor="SovietAdvancedPowerPlantArmor"
 			DamageFX="FactionStructureDamageFX" />
-		<!-- <GameDependency>			 -->
-			<!-- <RequiredObject>SovietRefinery</RequiredObject> -->
-		<!-- </GameDependency> -->
+		<GameDependency>			
+			<RequiredObject>SovietRefinery</RequiredObject>
+		</GameDependency>
 		<SkirmishAIInformation
 			BaseBuildingLocation="SPREAD">
       <ConstructionBaseSelectionCriteria
@@ -547,7 +547,8 @@
 				GiveNoXP="true" />
 			<PowerUpgrade
 				id="ModuleTag_Turbines">
-				<TriggeredBy>Upgrade_PowerPlantTurbine</TriggeredBy>
+				<!-- Reborn: Missing Asset in EP1 -->
+				<!-- <TriggeredBy>Upgrade_PowerPlantTurbine</TriggeredBy> -->
 			</PowerUpgrade>
 			
 			<!-- Soviet Advanced Power Plant Explosion -->
