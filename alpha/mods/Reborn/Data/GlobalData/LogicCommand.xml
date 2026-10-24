@@ -3,8 +3,14 @@
 
 	<LogicCommand
 		Type="CONSTRUCTION_YARD_CONSTRUCT"
-		id="Command_ConstructSovietPortBuilding">
+		id="Command_ConstructModTest">
 		<Object>SovietPortBuilding</Object>
+	</LogicCommand>
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructModTest2">
+		<Object>SovietSupplyPort</Object>
 	</LogicCommand>
 
 </AssetDeclaration>

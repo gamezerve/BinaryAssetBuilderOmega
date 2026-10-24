@@ -4,7 +4,7 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:CA_PortStructure.w3x" />
+		<!-- <Include type="all"	source="ART:CA_PortStructure.w3x" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
 		<Include type="instance" source="DATA:Civilian/Cannes_CA/Props/CA_PortStructure_Collapse.xml" />			
 		<!-- Base Object -->

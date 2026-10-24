@@ -66,6 +66,7 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<bool> deathBehaviors;
     // Reborn: a populated Browser list is enabled only after the original WorldBuilder VL_RussianPortBuilding list/metadata witness passes.
     private readonly Lazy<bool> browserWitness;
+    private readonly Lazy<bool> aiAbsentWitness;
     // Reborn: source/catalog expectations remain independent of Core indices and emitted native buffers.
     private readonly SchemaSet referenceSchemas;
     private readonly ManifestAsset[] catalog;
@@ -100,6 +101,7 @@ internal sealed class ConscriptVariableGraphVerifier
         fxList=new(()=>FXListBehaviorContract.QualifyStock(manifest,official,referenceSchemas,baseline,catalog));
         secondaryDamage=new(()=>SecondaryDamageTrackerContract.QualifyStock(manifest,official,referenceSchemas,baseline,catalog));
         browserWitness=new(()=>GameObjectBrowserContract.Qualify(manifest));
+        aiAbsentWitness=new(()=>AIAbsenceContract.Qualify(manifest));
         deathBehaviors=new(()=>DeathBehaviorContract.QualifyStock(manifest,official,referenceSchemas,baseline,catalog));
         templates=ConscriptModuleScalarContract.Owners(baseline).ToDictionary(o=>o.Element.GetAttribute("id"),o=>topology.Containers.Single(c=>c.Name==o.Container).Modules[o.Index],StringComparer.Ordinal);
         sell=new(()=>{
@@ -369,6 +371,10 @@ internal sealed class ConscriptVariableGraphVerifier
         {
             int old=pair.Value.Offset,at=rows[pair.Key].Offset;
             // Reborn: complete AI leaf fragments were independently proved above; their metadata extent follows chooser presence.
+            // Reborn: an AI-less object owns exactly the stock zero-count declaration targeting the inline +480 count word.
+            if(pair.Key==FastHash.GetHashCode("AI")&&!ConscriptModuleScalarContract.Owners(source).Any(o=>o.Container=="AI")){_=aiAbsentWitness.Value;
+                if(at<rootLength||at>prefix-12||metadataOwned.AsSpan(at,12).Contains(true)||Word(tokens.InstanceBuffer,at)!=0x6C827073||Word(tokens.InstanceBuffer,at+4)!=0x5D448FD8||Word(tokens.InstanceBuffer,at+8)!=(uint)(prefix+480)||Word(b,480)!=0||Word(b,484)!=0)throw new InvalidDataException("Absent AI declaration/native storage differs.");
+                Array.Fill(metadataOwned,true,at,12);continue;}
             if(pair.Key==FastHash.GetHashCode("AI")){if(aiLength<12||at<rootLength||at>prefix-aiLength||metadataOwned.AsSpan(at,aiLength).Contains(true))throw new InvalidDataException("AI metadata ownership differs.");Array.Fill(metadataOwned,true,at,aiLength);continue;}
             // Reborn: repeated root count markers bind inline headers; item/native targets bind independently proved tail records.
             string? extendedName=GameObjectExtendedRootContract.Names.SingleOrDefault(name=>FastHash.GetHashCode(name)==pair.Key);
@@ -463,6 +469,8 @@ internal sealed class ConscriptVariableGraphVerifier
             ConscriptVariableContainers.Restore(document,baseline);
             // Reborn: new root strong references have their own source/native proof; untouched stock owners keep stock occurrence coordinates.
             GameObjectExtendedRootContract.Mask(document,baseline);
+            // Reborn: an AI-less object still reads the root reference table in stock occurrence coordinates, so the baseline AI owner is restored here only.
+            AIAbsenceContract.RestoreForReferences(document,baseline);
             // Reborn: actual chooser imports are independently source-bound; untouched owners retain baseline occurrence coordinates.
             AIUpdateContract.Mask(document,baseline);
             // Reborn: untouched owners still use stock occurrence coordinates; the separate armor proof resolves actual authored rows.

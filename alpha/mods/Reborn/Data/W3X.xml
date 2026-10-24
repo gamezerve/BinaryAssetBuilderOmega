@@ -83,15 +83,15 @@
 		<!-- <Include type="all"	source="ART:AUSALVAGESHIP_SKN.OBBOX03.w3x" /> -->
 		<!-- <Include type="all"	source="ART:AUSALVAGESHIP_SKN.w3x" /> -->
 		
-		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE.NEWSKIN_CIV01.w3x" /> -->
-		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE.NEWSKIN_FILL01.w3x" /> -->
-		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE.OBBOX01.w3x" /> -->
+		<Include type="all"	source="ART:CA_PORTSTRUCTURE_CTR.w3x" />
+		<Include type="all"	source="ART:CA_PORTSTRUCTURE_HRC.w3x" />
+		<Include type="all"	source="ART:CA_PORTSTRUCTURE.NEWSKIN_CIV01.w3x" />
+		<Include type="all"	source="ART:CA_PORTSTRUCTURE.NEWSKIN_FILL01.w3x" />
+		<Include type="all"	source="ART:CA_PORTSTRUCTURE.OBBOX01.w3x" />
 		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE_COL.NEWSKIN.w3x" /> -->
 		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE_COL.OBBOX01.w3x" /> -->
 		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE_COL_CTR.w3x" /> -->
 		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE_COL_HRC.w3x" /> -->
-		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE_CTR.w3x" /> -->
-		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE_HRC.w3x" /> -->
 
 		<!-- <Include type="all"	source="ART:BB_EuropeCoastalGun.NEWSKIN.w3x" /> -->
 		<!-- <Include type="all"	source="ART:BB_EuropeCoastalGun.NEWSKIN_FILL.w3x" /> -->
@@ -188,9 +188,9 @@
 		<!-- <Include type="all" source="ART:NY_FORTWALL02_HRC.w3x" /> -->
 		<!-- <Include type="all" source="ART:NY_FORTWALL02.OBBOX01.w3x" /> -->
 
-		<!-- <Include type="all" source="ART:CA_SovietOpenTopHarborBuilding.xml" /> -->
-		<!-- <Include type="all" source="ART:CA_SovietOpenTopHarborBuilding_NRM.xml" /> -->
-		<!-- <Include type="all" source="ART:CA_SovietOpenTopHarborBuilding_SPM.xml" /> -->
+		<Include type="all" source="ART:CA_SovietOpenTopHarborBuilding.xml" />
+		<Include type="all" source="ART:CA_SovietOpenTopHarborBuilding_NRM.xml" />
+		<Include type="all" source="ART:CA_SovietOpenTopHarborBuilding_SPM.xml" />
 		
 		<!-- <Include type="all" source="ART:NY_FORTWALL02.NEWSKIN.w3x" /> -->
 		<!-- <Include type="all" source="ART:NY_FORTWALL02.NEWSKIN_FILL.w3x" /> -->

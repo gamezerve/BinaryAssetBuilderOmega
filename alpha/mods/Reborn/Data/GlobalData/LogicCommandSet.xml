@@ -12,7 +12,8 @@
 		<Cmd>Command_ConstructSovietAirfield</Cmd>
 		<Cmd>Command_ConstructSovietPowerPlantAdvanced</Cmd>
 		<Cmd>Command_ConstructSovietTechStructure</Cmd>
-		<Cmd>Command_ConstructSovietPortBuilding</Cmd> 		
+		<Cmd>Command_ConstructModTest</Cmd> 		
+		<Cmd>Command_ConstructModTest2</Cmd> 		
 		<Cmd>Command_ConstructSovietBaseDefenseGround</Cmd>
 		<Cmd>Command_ConstructSovietBaseDefenseAir</Cmd>
 		<Cmd>Command_ConstructSovietBaseDefenseAdvanced</Cmd>		
@@ -25,6 +26,10 @@
 		<Cmd>Command_UpgradeSovietRadarDish</Cmd>
 		<Cmd>Command_UpgradeSovietConstructionYardSalvageYard</Cmd>
 -->		
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="SovietSupplyPortCommandSet">
 	</LogicCommandSet>
 
 	<LogicCommandSet

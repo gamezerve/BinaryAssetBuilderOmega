@@ -58,7 +58,9 @@ public static class Ep1GameObjectEmptyRootProjection
         var absentLocomotor=Word(native.InstanceBuffer,428)==0?new[]{new Field("LocomotorSet",428,0x6E6BF482,true)}:Array.Empty<Field>();
         // Reborn: complete original-object metadata keeps null declarations for omitted pointer-list containers instead of dropping root fields.
         var absentContainers=new[]{new Field("Draws",472,0xEFBBA791,false),new Field("ClientUpdates",492,FastHash.GetHashCode("ClientUpdateModules"),false),new Field("ClientBehaviors",496,FastHash.GetHashCode("ClientBehaviorModules"),false)}.Where(f=>Word(native.InstanceBuffer,f.Slot)==0);
-        var fields=original?Fields.Concat(absentNames).Concat(absentArmor).Concat(absentLocomotor).Concat(absentContainers).Concat(new[]{new Field("Flammability",464,0x10444D6C,false),new Field("LiveCameraOffset",528,0x29368077,false)}).ToArray():Fields.ToArray();
+        // Reborn: an object without AI keeps the inline zero-count AI declaration (count +480, items +484), as on stock SovietCrane.
+        var absentAi=Word(native.InstanceBuffer,480)==0&&Word(native.InstanceBuffer,484)==0?new[]{new Field("AI",480,0x5FD8691D,true)}:Array.Empty<Field>();
+        var fields=original?Fields.Concat(absentNames).Concat(absentAi).Concat(absentArmor).Concat(absentLocomotor).Concat(absentContainers).Concat(new[]{new Field("Flammability",464,0x10444D6C,false),new Field("LiveCameraOffset",528,0x29368077,false)}).ToArray():Fields.ToArray();
         foreach(var field in fields)for(int at=field.Slot;at<field.Slot+(field.List?8:4);at+=4)if(Word(native.InstanceBuffer,at)!=0)throw new InvalidDataException("Populated empty-profile native storage: "+field.Name);
         var old=Ep1GameObjectRootOwnersProjection.Compose(native,schemas);int oldPrefix=old.InstanceBuffer.Length-native.InstanceBuffer.Length,insert=0;
         for(;insert<oldPrefix;insert+=12)if(Word(old.InstanceBuffer,insert)==0 && Word(old.InstanceBuffer,insert+4)==0 && Word(old.InstanceBuffer,insert+8)==0)break;

@@ -15,7 +15,7 @@
 		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietVolcanoFortress04.xml" />	 -->
 		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietTeslaMoai.xml" />	 -->
 		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietBullfrogMoai.xml" />	 -->
-		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietSupplyPort.xml" />	 -->
+		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietSupplyPort.xml" />	
 		<!-- <Include type="all" source="DATA:Soviet/Units/SovietHeavyKirov.xml" />	 -->
 		<!-- <Include type="all" source="DATA:Soviet/Units/SovietHeavyKirov_Dying.xml" />	 -->
 		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietCavalryStatue01.xml" /> -->

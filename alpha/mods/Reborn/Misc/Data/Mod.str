@@ -66,6 +66,16 @@
 		"Port Building"
 	End
 
+// Soviet Supply Port
+
+	TYPE:SovietSupplyPort
+		"Supply Port \n> Health = 2000 \n> Shroud Clearing Range = 500"
+	End
+
+	DESC:SovietSupplyPort
+		"A logistical facility used for receiving, storing, and distributing supplies via maritime transport, equipped with a single repair drone for servicing nearby units."
+	End
+
 // Soviet Airfiled
 
 	TYPE:SOVIETAIRFIELD

@@ -94,6 +94,8 @@ internal static class ConscriptVariableBehaviorSource
         }
         // Reborn: every other root/container retains the existing shape, but reviewed root and direct module fixed fields remain authorable.
         var copy=Clone(actual);var comparison=Clone(model);var oldBehaviors=Container(copy);
+        // Reborn: an object without AI compares against the baseline without its AI container; native/metadata absence is proved separately.
+        AIAbsenceContract.Mask(copy,comparison);
         oldBehaviors.ParentNode!.ReplaceChild(copy.ImportNode(Container(comparison),true),oldBehaviors);
         // Reborn: only the comparison copy restores baseline containers; actual source/native proof retains every authored module.
         ConscriptVariableContainers.Restore(copy,comparison);
