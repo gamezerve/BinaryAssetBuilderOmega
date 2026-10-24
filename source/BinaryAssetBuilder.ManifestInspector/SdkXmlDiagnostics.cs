@@ -20,7 +20,7 @@ internal static class SdkXmlDiagnostics
     //-------------------------------------------------------------------------------------------------
     internal static XmlDocument Parse(byte[] bytes,string? path=null)
     {
-        try{using var input=new MemoryStream(bytes,false);using var reader=XmlReader.Create(input,Settings(),path??string.Empty);var xml=new XmlDocument{PreserveWhitespace=true,XmlResolver=null};xml.Load(reader);return xml;}
+        try{using var input=new MemoryStream(bytes,false);using var reader=XmlReader.Create(input,Settings(bytes.LongLength),path??string.Empty);var xml=new XmlDocument{PreserveWhitespace=true,XmlResolver=null};xml.Load(reader);return xml;}
         catch(XmlException error){if(path!=null)Attach(error,new(path,error.LineNumber,error.LinePosition,error.LineNumber<=0));throw;}
     }
 
@@ -29,12 +29,13 @@ internal static class SdkXmlDiagnostics
     //-------------------------------------------------------------------------------------------------
     internal static XDocument Lines(byte[] bytes,string? path=null)
     {
-        try{using var input=new MemoryStream(bytes,false);using var reader=XmlReader.Create(input,Settings(),path??string.Empty);return XDocument.Load(reader,LoadOptions.PreserveWhitespace|LoadOptions.SetLineInfo);}
+        try{using var input=new MemoryStream(bytes,false);using var reader=XmlReader.Create(input,Settings(bytes.LongLength),path??string.Empty);return XDocument.Load(reader,LoadOptions.PreserveWhitespace|LoadOptions.SetLineInfo);}
         catch(XmlException error){if(path!=null)Attach(error,new(path,error.LineNumber,error.LinePosition,error.LineNumber<=0));throw;}
     }
 
     // Reborn: source readers share one explicit size/entity policy and never trust xsi schema locations.
-    private static XmlReaderSettings Settings()=>new(){DtdProcessing=DtdProcessing.Prohibit,XmlResolver=null,MaxCharactersInDocument=4*1048576};
+    // Reborn: callers bound captured bytes; expanded generated XML uses its actual input length, with no DTD/entity expansion.
+    private static XmlReaderSettings Settings(long bytes)=>new(){DtdProcessing=DtdProcessing.Prohibit,XmlResolver=null,MaxCharactersInDocument=Math.Max(1,bytes)};
 
     // Reborn: enrich existing exception types so existing refusal controls and API contracts remain intact.
     internal static T At<T>(T error,XmlNode? node) where T:Exception {if(node!=null&&!error.Data.Contains(NodeKey))error.Data[NodeKey]=node;return error;}

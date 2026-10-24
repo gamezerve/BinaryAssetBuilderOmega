@@ -8,6 +8,12 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: merged model XML scales with the captured graph instead of an individual source-file quota. -->
+Generated multi-asset XML no longer inherits the four-MiB individual source
+read limit. Large combined W3X graphs retain all assets; XML DTD/entity
+processing stays disabled. File-size failures identify the actual file,
+observed byte count and reader limit.
+
 <!-- Reborn: DDS inputs are already compiled textures; preserve their validated format and complete mip chain. -->
 DDS texture input is enabled, including relative `File` paths next to the
 declaring XML, `ART:` aliases and texture-only mods. Existing DXT/RGB payloads

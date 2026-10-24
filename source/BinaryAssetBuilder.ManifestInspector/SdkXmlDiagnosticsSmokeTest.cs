@@ -101,7 +101,17 @@ internal static class SdkXmlDiagnosticsSmokeTest
         File.WriteAllText(fragment,"<?xml version=\"1.0\"?>\n"+physics.OuterXml);xi.RemoveAttribute("xpointer");
         File.WriteAllText(entry,"<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\">\n"+fragmented.DocumentElement!.OuterXml+"</AssetDeclaration>");Refuse(entry,fragment,"GravityMultiplier");
         File.WriteAllText(entry,"<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\">\n<Includes>\n<Include type=\"all\" source=\"missing.xml\"/>\n</Includes>\n</AssetDeclaration>");Refuse(entry,entry,"source");
-        Console.WriteLine($"XML source diagnostics: PASS ({checks} checks; syntax/schema/derived/base/fragment/mask/ambiguity/snapshot/context/real frontend).");
+        // Reborn: generated model graphs can exceed the individual source quota without losing assets or reopening DTD/entity expansion.
+        string merged=Path.Combine(output,"additional.xml");string payload=new('1',5*1048576);
+        File.WriteAllText(merged,"<AssetDeclaration><W3DMesh id='Large'><Vertices>"+payload+"</Vertices></W3DMesh><W3DCollisionBox id='Last'/></AssetDeclaration>");
+        var large=ConscriptMultiAssetBuild.ReadPrepared(merged);
+        if(large.DocumentElement!.ChildNodes.Count!=2||large.DocumentElement.FirstChild!.FirstChild!.InnerText!=payload||SdkXmlDiagnostics.Parse(Bytes(large.DocumentElement.FirstChild.OuterXml)).DocumentElement!.GetAttribute("id")!="Large")throw new InvalidDataException("Large prepared model XML was truncated or rejected.");checks++;
+        if(SdkXmlDiagnostics.Lines(File.ReadAllBytes(merged),merged).Root!.Elements().Count()!=2)throw new InvalidDataException("Large XML diagnostics lost assets.");checks++;
+        try{SdkEnvironmentPreflight.Read(merged,4*1048576);throw new InvalidOperationException("Individual reader quota was ignored.");}
+        catch(InvalidDataException error){if(SdkXmlDiagnostics.Origin(error)?.File!=merged||!error.Message.Contains("4194304")||!error.Message.Contains(new FileInfo(merged).Length.ToString()))throw new InvalidDataException("File quota diagnostic omitted actual path/size/limit.");checks++;}
+        File.WriteAllText(merged,"<!DOCTYPE AssetDeclaration [<!ENTITY x 'expanded'>]><AssetDeclaration>&x;</AssetDeclaration>");
+        try{ConscriptMultiAssetBuild.ReadPrepared(merged);throw new InvalidOperationException("Prepared XML accepted a DTD.");}catch(XmlException){checks++;}
+        Console.WriteLine($"XML source diagnostics: PASS ({checks} checks; syntax/schema/derived/base/fragment/mask/ambiguity/snapshot/context/real frontend/large merged XML).");
 
         // Reborn: all checks compare physical source coordinates and the explicit exact-versus-context contract.
         void Check(XmlNode node,string file,int line,bool context){var error=SdkXmlDiagnostics.At(new InvalidDataException("Probe"),node);map.Enrich(error,entry,final);Expect(error,file,line,context);}
