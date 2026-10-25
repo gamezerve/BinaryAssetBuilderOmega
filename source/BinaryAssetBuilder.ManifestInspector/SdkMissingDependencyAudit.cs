@@ -289,8 +289,8 @@ internal static class SdkMissingDependencyAudit
     /** Reborn: every dependency diagnostic leads with its code and target, retaining readable owner/field/source evidence and structured JSON details. */
     //-------------------------------------------------------------------------------------------------
     internal static string FormatFinding(Finding finding)=>finding.Code=="WORLDBUILDERASSET"
-        ? $"{(finding.Severity=="Info"?"WorldBuilder asset pending":finding.Severity+": "+finding.Code)} '{finding.Target}' (referenced by {finding.Owner}) {finding.Detail} Source: {finding.Source}({finding.Line},{finding.Column})."
-        : $"{finding.Severity}: {finding.Code} '{finding.Target}' (referenced by {finding.Owner}) {finding.Detail} Source: {finding.Source}({finding.Line},{finding.Column}). Field: {finding.Field}.";
+        ? $"{(finding.Severity=="Info"?"WorldBuilder asset pending":finding.Severity+": "+finding.Code)} ' {finding.Target} ' (referenced by {finding.Owner}) {finding.Detail} Source: {finding.Source}({finding.Line},{finding.Column})."
+        : $"{finding.Severity}: {finding.Code} ' {finding.Target} ' (referenced by {finding.Owner}) {finding.Detail} Source: {finding.Source}({finding.Line},{finding.Column}). Field: {finding.Field}.";
     // Reborn: only official reference annotations define typed dependency targets.
     private static string? Annotation(XmlAttribute[]? attributes)=>attributes?.FirstOrDefault(a=>a.LocalName=="refType"&&a.NamespaceURI==AnnotationNamespace)?.Value;
     // Reborn: disable external entities and preserve source coordinates without modifying source XML.

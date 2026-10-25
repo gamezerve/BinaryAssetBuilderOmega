@@ -57,7 +57,7 @@ internal static class SdkInstanceInheritanceSmokeTest
             var diagnosticPaths=Fixture(bases,includes+declarations);
             var diagnostic=new SdkInstanceInheritanceProfile(schemas.Schemas,diagnosticPaths).Apply(entry,File.ReadAllBytes(entry));
             string message=string.Join("; ",diagnostic.Evidence.Diagnostics);
-            Require(diagnostic.Bytes==null && message.Contains("Asset:RebornDuplicate",StringComparison.Ordinal) && message.Contains(foreign?"Foreign instance declaration":"Duplicate instance declaration",StringComparison.Ordinal) && diagnostic.DiagnosticNode!=null,"Duplicate/foreign instance diagnostic lost type, ID or source node.");
+            Require(diagnostic.Bytes==null && message.Contains("Asset:RebornDuplicate",StringComparison.Ordinal) && message.Contains(foreign?"Foreign instance declaration":"DUPLICATEASSET ' Asset:RebornDuplicate '",StringComparison.Ordinal) && diagnostic.DiagnosticNode!=null,"Duplicate/foreign instance diagnostic lost type, ID or source node.");
         }
         var duplicatePaths = Fixture(bases,includes.Replace("</Includes>","<Include type='instance' source='Other.xml'/></Includes>",StringComparison.Ordinal)+owner);
         Require(new SdkInstanceInheritanceProfile(schemas.Schemas,duplicatePaths).Apply(entry,File.ReadAllBytes(entry)).Bytes == null,"Duplicate imported origin accepted.");

@@ -79,7 +79,10 @@ internal static class SdkXmlDiagnostics
                 if(location!=null)break;
             }
         }
-        return location==null?null:location+": "+error.Message.Replace('\r',' ').Replace('\n',' ');
+        // Reborn: coded duplicate-asset diagnostics lead with their code even after source-preparation wrappers add context.
+        string message=error.Message.Replace('\r',' ').Replace('\n',' ');int duplicate=message.IndexOf("DUPLICATEASSET ",StringComparison.Ordinal);
+        if(duplicate>=0)return message[duplicate..]+(location==null?string.Empty:" Source: "+location+".");
+        return location==null?null:location+": "+message;
     }
 
     // Reborn: XObject coordinates refer to the captured original bytes, including XML declarations, comments and blank lines.

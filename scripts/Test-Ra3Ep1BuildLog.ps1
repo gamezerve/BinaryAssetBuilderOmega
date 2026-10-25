@@ -39,9 +39,9 @@ try{
     # Reborn: final cross-stream usage summaries remain visible as ordinary progress.
     if(@(Write-SdkCompilerLine 'Asset usage audit: 19 packaged assets; 0 without static references.' $detail).Count-ne 1){throw 'Asset usage summary was hidden.'}
     # Reborn: validation progress stays ordinary text; only a post-resolution failure uses the warning classifier.
-    $pending=@(Write-SdkCompilerLine "WorldBuilder asset pending 'W3DContainer:Fixture' (referenced by GameObject:Owner) Source: Fixture.xml(7,3)." $detail)
+    $pending=@(Write-SdkCompilerLine "WorldBuilder asset pending ' W3DContainer:Fixture ' (referenced by GameObject:Owner) Source: Fixture.xml(7,3)." $detail)
     if($pending.Count-ne 1 -or $pending[0]-match 'Warning:'){throw 'Pending WorldBuilder progress was hidden or classified as a warning.'}
-    if(@(Write-SdkCompilerLine "Warning: WORLDBUILDERASSET 'W3DContainer:Missing' remains unresolved after WorldBuilder resolution." $detail).Count-ne 1){throw 'Post-resolution warning was hidden.'}
+    if(@(Write-SdkCompilerLine "Warning: WORLDBUILDERASSET ' W3DContainer:Missing ' remains unresolved after WorldBuilder resolution." $detail).Count-ne 1){throw 'Post-resolution warning was hidden.'}
     Write-Output 'Reborn: build log presentation: PASS (phases, timings, severity, source, EA-style loading/compiling lines, JSON/stack separation, raw evidence).'
 }finally{
     # Reborn: remove only the one explicitly owned file and empty temporary directory, without recursive deletion.

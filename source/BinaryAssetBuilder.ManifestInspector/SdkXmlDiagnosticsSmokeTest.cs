@@ -23,6 +23,11 @@ internal static class SdkXmlDiagnosticsSmokeTest
         const string piece="<?xml version=\"1.0\"?>\n<Draws xmlns=\"uri:ea.com:eala:asset\">\n  <Parachute id=\"Draw\"\n    Rate=\"invalid\" />\n</Draws>";
         var snapshots=new[]{new SdkXmlDiagnostics.Snapshot(entry,Bytes(derived)),new SdkXmlDiagnostics.Snapshot(basis,Bytes(parent)),new SdkXmlDiagnostics.Snapshot(fragment,Bytes(piece))};
         var map=new SdkXmlDiagnostics.SourceMap(snapshots);
+        // Reborn: preserve code-first duplicate diagnostics through wrappers, with and without available source coordinates.
+        var duplicateError=new InvalidDataException("GameObject source preparation: DUPLICATEASSET ' SpecialPowerTemplate:RepeatedPower ' Duplicate declaration.");
+        RequireDuplicate(duplicateError,false);SdkXmlDiagnostics.Attach(duplicateError,new(entry,12,5));RequireDuplicate(duplicateError,true);
+        // Reborn: the exact copyable label remains unchanged when a source-preparation context is stripped.
+        void RequireDuplicate(Exception error,bool hasSource){string? line=SdkXmlDiagnostics.Format(error);if(line==null||!line.StartsWith("DUPLICATEASSET ' SpecialPowerTemplate:RepeatedPower '",StringComparison.Ordinal)||line.Contains("GameObject source preparation:")||hasSource&&!line.Contains("Source: "+entry+"(12,5).",StringComparison.Ordinal))throw new InvalidDataException("Code-first duplicate diagnostic lost label or source evidence.");}
         var final=SdkXmlDiagnostics.Parse(Bytes("<GameObject xmlns=\"uri:ea.com:eala:asset\" id=\"Derived\" BuildTime=\"bad\" Scale=\"1.5\"><Behaviors><Test id=\"Module\" Value=\"changed\" /></Behaviors><Draws><Parachute id=\"Draw\" Rate=\"invalid\" /></Draws></GameObject>"));
         Check(final.DocumentElement!.GetAttributeNode("BuildTime")!,entry,6,false);
         Check(final.DocumentElement.GetAttributeNode("Scale")!,basis,4,false);

@@ -26,7 +26,7 @@ try{
         # Reborn: fast metadata messages must not masquerade as stock test PASS; the same stock grammar is initialized once across both objects.
         if($mode-eq 0 -and ($text.Contains('stock qualification: PASS') -or $text.Contains('native/metadata qualification: PASS'))){throw 'Fast build still reports developer qualification PASS.'}
         if($mode-eq 0 -and @([regex]::Matches($text,'Native metadata ready: Scripted FXEvent')).Count-ne 1){throw 'Stock metadata was not shared across emitted objects.'}
-        if($text.Contains('UNWITNESSEDCOMMAND') -or $text.Contains('UNUSEDCOMMAND') -or $text.Contains("UNUSEDASSET 'LogicCommand:RebornBuildModeUsed'") -or $text.Contains("UNUSEDASSET 'LogicCommandSet:RebornBuildModeCommands'") -or -not $text.Contains("UNUSEDASSET 'LogicCommand:RebornBuildModeUnused'") -or -not $text.Contains("UNUSEDASSET 'W3DContainer:RebornBuildModeEmpty'")){throw 'Generic asset warning did not follow strong/weak stock/mod usage.'}
+        if($text.Contains('UNWITNESSEDCOMMAND') -or $text.Contains('UNUSEDCOMMAND') -or $text.Contains("UNUSEDASSET ' LogicCommand:RebornBuildModeUsed '") -or $text.Contains("UNUSEDASSET ' LogicCommandSet:RebornBuildModeCommands '") -or -not $text.Contains("UNUSEDASSET ' LogicCommand:RebornBuildModeUnused '") -or -not $text.Contains("UNUSEDASSET ' W3DContainer:RebornBuildModeEmpty '")){throw 'Generic asset warning did not follow strong/weak stock/mod usage.'}
         $evidence+=[pscustomobject]@{DeveloperBuildTests=[bool]$mode;ElapsedMs=$clock.ElapsedMilliseconds;ArchiveSha256=$receipt.ArchiveSha256;Corruptions=$receipt.PackageCorruptionsRejected}
     }
     if($evidence[0].ArchiveSha256-cne $evidence[1].ArchiveSha256){throw 'Fast and developer builds produced different BIG payloads.'}

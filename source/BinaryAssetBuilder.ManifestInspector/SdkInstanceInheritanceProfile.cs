@@ -372,8 +372,8 @@ internal sealed class SdkInstanceInheritanceProfile
         foreach (var asset in assets)
         {
             string handle = asset.LocalName+":"+asset.GetAttribute("id");
-            if (asset.NamespaceURI != Ea) throw SdkXmlDiagnostics.At(new InvalidDataException($"Foreign instance declaration '{handle}': namespace '{asset.NamespaceURI}'; expected '{Ea}'."),asset);
-            if (!result.TryAdd(handle,asset)) throw SdkXmlDiagnostics.At(new InvalidDataException($"Duplicate instance declaration '{handle}': the same asset type and ID are declared more than once in this source document."),asset.GetAttributeNode("id"));
+            if (asset.NamespaceURI != Ea) throw SdkXmlDiagnostics.At(new InvalidDataException($"Foreign instance declaration ' {handle} ': namespace '{asset.NamespaceURI}'; expected '{Ea}'."),asset);
+            if (!result.TryAdd(handle,asset)) throw SdkXmlDiagnostics.At(new InvalidDataException($"DUPLICATEASSET ' {handle} ' The same asset type and ID are declared more than once in this source document."),asset.GetAttributeNode("id"));
         }
         return result;
     }
