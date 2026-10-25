@@ -3,14 +3,26 @@
 
 	<LogicCommand
 		Type="CONSTRUCTION_YARD_CONSTRUCT"
-		id="Command_ConstructModTest">
-		<Object>SovietPortBuilding</Object>
-	</LogicCommand>
-	
+		id="Command_ConstructSovietVolcanoFortress">
+		<Object>SovietVolcanoFortress</Object>
+	</LogicCommand>	
+
 	<LogicCommand
 		Type="CONSTRUCTION_YARD_CONSTRUCT"
-		id="Command_ConstructModTest2">
+		id="Command_ConstructSovietCommandCenter">
+		<Object>SovietCommandCenter</Object>
+	</LogicCommand>
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructSovietSupplyPort">
 		<Object>SovietSupplyPort</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructSovietPortBuilding">
+		<Object>SovietPortBuilding</Object>
 	</LogicCommand>
 
 </AssetDeclaration>

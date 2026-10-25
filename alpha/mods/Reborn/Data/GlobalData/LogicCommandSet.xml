@@ -12,20 +12,45 @@
 		<Cmd>Command_ConstructSovietAirfield</Cmd>
 		<Cmd>Command_ConstructSovietPowerPlantAdvanced</Cmd>
 		<Cmd>Command_ConstructSovietTechStructure</Cmd>
-		<Cmd>Command_ConstructModTest</Cmd> 		
-		<Cmd>Command_ConstructModTest2</Cmd> 		
+		<Cmd>Command_ConstructSovietCommandCenter</Cmd>	
+		<Cmd>Command_ConstructSovietCrane</Cmd>	
 		<Cmd>Command_ConstructSovietBaseDefenseGround</Cmd>
 		<Cmd>Command_ConstructSovietBaseDefenseAir</Cmd>
 		<Cmd>Command_ConstructSovietBaseDefenseAdvanced</Cmd>		
 		<Cmd>Command_ConstructSovietSuperWeapon</Cmd>
 		<Cmd>Command_ConstructSovietSuperWeaponAdvanced</Cmd>	
-		<Cmd>Command_ConstructSovietCrane</Cmd>	
+		
 		<Cmd>Command_PackSovietMCV</Cmd>
 <!--
 		<Cmd>Command_UpgradeSovietCrane</Cmd>
 		<Cmd>Command_UpgradeSovietRadarDish</Cmd>
 		<Cmd>Command_UpgradeSovietConstructionYardSalvageYard</Cmd>
 -->		
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="SovietCommandCenterCommandSet">
+		<Cmd>Command_ConstructSovietPortBuilding</Cmd> 
+		<Cmd>Command_ConstructSovietSupplyPort</Cmd>
+		<Cmd>Command_ConstructSovietVolcanoFortress</Cmd>
+		<!-- <Cmd>Command_ConstructSovietVolcanoFortress02</Cmd> -->
+		<!-- <Cmd>Command_ConstructSovietVolcanoFortress03</Cmd> -->
+		<!-- <Cmd>Command_ConstructSovietVolcanoFortress04</Cmd> -->
+		
+		<!-- <Cmd>Command_ConstructSovietTeslaWallHub</Cmd> -->
+		<!-- <Cmd>Command_ConstructSovietTeslaMoai</Cmd> -->
+		<!-- <Cmd>Command_ConstructSovietBullfrogMoai</Cmd> -->
+		<!-- <Cmd>Command_ConstructSovietArtilleryDome</Cmd> -->
+		<!-- <Cmd>Command_ConstructSovietCavalryStatue01</Cmd> -->
+		<!-- <Cmd>Command_ConstructSovietSwordStatue01</Cmd> -->
+		<!-- <Cmd>Command_ConstructSovietPilotStatue01</Cmd> -->
+		<!-- <Cmd>Command_ConstructSovietMotorCycleStatue01</Cmd> -->
+		<!-- <Cmd>Command_ConstructSovietFought2DeathStatue</Cmd> -->
+		<!-- <Cmd>Command_ConstructSovietBigMamaStatue</Cmd> -->
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="SovietVolcanoFortressCommandSet">
 	</LogicCommandSet>
 	
 	<LogicCommandSet

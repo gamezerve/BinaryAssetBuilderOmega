@@ -5,11 +5,11 @@
 
 
 	<!-- from Campaign to Skirmish -->
-		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietCommandCenter.xml" />	 -->
+		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietCommandCenter.xml" />	
 		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietKrasna45.xml" />	 -->
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietPortBuilding.xml" />	
 		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietTeslaWallHub.xml" />	 -->
-		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietVolcanoFortress.xml" />	 -->
+		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietVolcanoFortress.xml" />	
 		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietVolcanoFortress02.xml" />	 -->
 		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietVolcanoFortress03.xml" />	 -->
 		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietVolcanoFortress04.xml" />	 -->

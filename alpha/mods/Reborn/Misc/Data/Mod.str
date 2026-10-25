@@ -103,3 +103,21 @@
 	DESC:SOVIETCOMMANDCENTER
 		"A high-ranking Soviet commander is inside this facility, personally supervising the mission and authorising the construction of rare soviet structures."
 	End
+
+// Soviet Volcano Fortress
+
+	TYPE:SovietVolcanoFortress
+		"Volcano Structure (V1) \n> Health = 3000 \n> Shroud Clearing Range = 500"
+	End
+
+	TYPE:SovietVolcanoFortress02
+		"Volcano Structure (V2) \n> Health = 3000 \n> Shroud Clearing Range = 500 \n> Income = 60 in 6 sec \n> Build Limit = 1"
+	End
+
+	TYPE:SovietVolcanoFortress03
+		"Volcano Structure (V3) \n> Health = 3000 \n> Shroud Clearing Range = 500"
+	End
+
+	TYPE:SovietVolcanoFortress04
+		"Volcano Structure (V4) \n> Health = 3000 \n> Shroud Clearing Range = 500"
+	End
