@@ -25,6 +25,8 @@ internal sealed class SchemaNativeContract
     // Reborn: explicitly opted-in leaf families (container, wire class, production leaf metadata writer); each is qualified against stock before use.
     internal sealed record Family(Type Type,string Container,uint TypeId,Func<Chunk,Chunk> Leaf);
     internal static readonly Family[] Families={
+        // Reborn: the existing tracer writer supports both optional-status shapes without freezing the Conscript template.
+        new(typeof(W3DTracerDrawModuleData),"Draws",0x54018E60u,BinaryAssetBuilder.XmlCompiler.Ep1TracerDrawTokenizer.Tokenize),
         new(typeof(W3DScriptedModelDrawModuleData),"Draws",0x4ECF2A4Bu,BinaryAssetBuilder.XmlCompiler.Ep1ScriptedDrawTokenizer.Tokenize),
         new(typeof(ModelConditionAudioLoopClientBehaviorModuleData),"ClientBehaviors",0x5A3EDBF4u,leaf=>FromList(leaf,BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize)),
         new(typeof(Ep1ModelConditionSoundSelectorClientBehaviorModuleData),"ClientBehaviors",0x327CFB76u,leaf=>FromList(leaf,BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize)),

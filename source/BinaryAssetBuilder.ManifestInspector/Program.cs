@@ -164,6 +164,9 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();FXListCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             // Reborn: particle templates have a private native and linked-stream regression.
             // Reborn: privately qualify source-sized turret weapon lists and complete GameObject composition.
+            // Reborn: tracer optional-status shapes use a private complete-object regression.
+            if(args.Length==3 && args[0]=="tracer-source-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();TracerSourceSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="weapon-turret-self-test")
             {CompilerSmokeTest.InitializeHashProvider();WeaponTurretSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==4 && args[0]=="particle-template-self-test")

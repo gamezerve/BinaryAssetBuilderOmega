@@ -8,6 +8,12 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: tracer shape admission follows the existing complete source/native writer instead of requiring Conscript status masks. -->
+`TracerModelDraw` accepts schema-valid authored values and both presence/absence
+of optional `ObjectStatusValidation`. Sentry Gun's original no-status tracer,
+edited colors/FX/texture references and multiple tracer instances use the
+existing EP1 writer with independent source/native and metadata verification.
+
 <!-- Reborn: source-driven WeaponSlotTurret compilation now complements existing infantry hardpoints. -->
 `WeaponSetUpdate/WeaponSlotTurret` is build-enabled, including nested
 `TurretSettings`, the optional turret target chooser, comparison-list imports,
