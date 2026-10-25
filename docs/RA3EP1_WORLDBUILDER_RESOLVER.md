@@ -5,6 +5,11 @@ Studio resolves WorldBuilder references after native compilation and before fina
 package publication. The resolver reads `alpha/catalogs/ra3ep1/worldbuilder`
 `.manifest`, `.bin`, `.relo` and `.imp` as one matching linked EP1 generation.
 
+Validation reports pending references as informational progress, not warnings.
+After resolution and final stream assembly, the package and static/global/audio
+catalogs are checked together. Only still-unresolved WorldBuilder use sites
+produce warnings, retaining their original owner, XML path and line/column.
+
 Selection starts from emitted strong references and schema-typed GameObject weak
 references in prepared authored XML, including OCL `CreateObject`. It recursively
 collects manifest dependencies. Mod definitions and loaded static/global/audio

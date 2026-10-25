@@ -16,6 +16,24 @@ internal static class WorldBuilderAssetResolver
     private static readonly string[] Extensions={".manifest",".bin",".relo",".imp"};
 
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: warn only about pending WorldBuilder use sites absent from both the completed package and loaded retail catalogs. */
+    //-------------------------------------------------------------------------------------------------
+    internal static SdkMissingDependencyAudit.Finding[] Unresolved(IEnumerable<SdkMissingDependencyAudit.Finding> findings,IEnumerable<AssetId> available)
+    {
+        var present=available.ToHashSet();return findings.Where(f=>f.Code=="WORLDBUILDERASSET").Where(f=>{int colon=f.Target.IndexOf(':');if(colon<=0)throw new InvalidDataException("Invalid WorldBuilder diagnostic identity: "+f.Target);var asset=SdkMissingDependencyAudit.Identity(f.Target[..colon],f.Target[(colon+1)..]);return !present.Contains(new(asset.TypeId,asset.InstanceId));}).Select(f=>f with{Severity="Warning",Detail="remains unresolved after WorldBuilder resolution; it is absent from the compiled mod and loaded stock streams."}).ToArray();
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: the final assembled BIG is authoritative, including earlier mod-global streams; WorldBuilder metadata itself is not a runtime provider. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void CheckPending(string package,string dependencyReport,string catalogs)
+    {
+        var report=System.Text.Json.JsonSerializer.Deserialize<SdkMissingDependencyAudit.Report>(File.ReadAllText(dependencyReport))??throw new InvalidDataException("Dependency report is missing.");if(!report.Findings.Any(f=>f.Code=="WORLDBUILDERASSET"))return;
+        var available=new HashSet<AssetId>();foreach(string name in new[]{"static.manifest","global.manifest","audio.manifest"}){string path=Path.Combine(catalogs,name);if(File.Exists(path))foreach(var asset in ManifestReader.Read(File.ReadAllBytes(path)).Assets)available.Add(Id(asset));}
+        using var archive=BigArchive.Open(package);foreach(var entry in archive.Entries.Where(e=>e.Name.EndsWith(".manifest",StringComparison.OrdinalIgnoreCase)))foreach(var asset in ManifestReader.Read(archive.ReadEntry(entry,checked((int)entry.StoredSize))).Assets)available.Add(Id(asset));foreach(var finding in Unresolved(report.Findings,available))Console.WriteLine(SdkMissingDependencyAudit.FormatFinding(finding));
+    }
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: locate WorldBuilder metadata independently of whether an optional AudioFile lookup catalog exists. */
     //-------------------------------------------------------------------------------------------------
     internal static string CatalogPath()

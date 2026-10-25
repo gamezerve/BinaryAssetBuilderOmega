@@ -187,7 +187,8 @@ internal static class SdkMissingDependencyAudit
                     var target=matches[0];var models=target.Dependencies.Select(id=>byIdentity.GetValueOrDefault(id)).Where(a=>a!=null&&WorldBuilderOnly(a)&&a.Type is "W3DContainer" or "W3DMesh").Select(a=>a!.Type+":"+a.Name).Distinct().ToArray();
                     string detail="exists only in the original WorldBuilder stream; the packaging resolver will copy it and its required dependencies into the mod.";
                     if(models.Length!=0)detail+=" WorldBuilder-only model dependencies: "+string.Join(", ",models)+".";
-                    Add("WORLDBUILDERASSET",target.Type+":"+target.Name,node,path,field,detail,"Warning");
+                    // Reborn: a catalog-backed asset awaiting the packaging resolver is ordinary progress, not a missing-asset warning.
+                    Add("WORLDBUILDERASSET",target.Type+":"+target.Name,node,path,field,detail,"Info");
                 }
             }
         }
@@ -288,7 +289,7 @@ internal static class SdkMissingDependencyAudit
     /** Reborn: one validation formatter shares the concise compiler-style wording while retaining original file/line information and JSON field details. */
     //-------------------------------------------------------------------------------------------------
     internal static string FormatFinding(Finding finding)=>finding.Code=="WORLDBUILDERASSET"
-        ? $"{finding.Severity}: {finding.Code} '{finding.Target}' (referenced by {finding.Owner}) {finding.Detail} Source: {finding.Source}({finding.Line},{finding.Column})."
+        ? $"{(finding.Severity=="Info"?"WorldBuilder asset pending":finding.Severity+": "+finding.Code)} '{finding.Target}' (referenced by {finding.Owner}) {finding.Detail} Source: {finding.Source}({finding.Line},{finding.Column})."
         : $"{finding.Severity}: {finding.Code} {finding.Detail} Target='{finding.Target}', owner='{finding.Owner}', field='{finding.Field}', source='{finding.Source}' ({finding.Line},{finding.Column}).";
     // Reborn: only official reference annotations define typed dependency targets.
     private static string? Annotation(XmlAttribute[]? attributes)=>attributes?.FirstOrDefault(a=>a.LocalName=="refType"&&a.NamespaceURI==AnnotationNamespace)?.Value;

@@ -42,10 +42,10 @@ needed for this check. Static/global/audio assets remain external; referenced
 WorldBuilder-only assets and their strong dependencies are copied into the mod
 from catalogs/ra3ep1/worldbuilder.manifest, .bin, .relo and .imp.</p>
 <!-- Reborn: weak spawn references must expose WorldBuilder provenance even when their source was only inspected as an instance base. -->
-<p>Validation reports WORLDBUILDERASSET warnings for both direct asset references
+<p>Validation logs pending WorldBuilder references as ordinary progress for both direct asset references
 and weak GameObject IDs, including OCL CreateObject, with immediate WorldBuilder-only
-model dependencies where applicable. Compilation does not repeat these warnings;
-packaging reports each WorldBuilder asset actually added.
+model dependencies where applicable. Packaging reports each WorldBuilder asset
+actually added; only references still absent after resolution are warnings.
 An instance Include does not compile that object or its art.
 Authored OCL CreateObject weak references also seed extraction. Hash-named external
 custom resources must be present under catalogs/ra3ep1/cdata when required.</p>

@@ -13,6 +13,9 @@ internal static class Program
     {
         try
         {
+            // Reborn: defer WorldBuilder warnings until the final package has been checked against the pending validation use sites.
+            if(args.Length==4&&args[0]=="sdk-check-worldbuilder-resolution")
+            {CompilerSmokeTest.InitializeHashProvider();WorldBuilderAssetResolver.CheckPending(args[1],args[2],args[3]);return 0;}
             // Reborn: resolve retail WorldBuilder references in a private package before Studio publishes it.
             if(args.Length is 6 or 7 && args[0]=="sdk-resolve-worldbuilder")
             {CompilerSmokeTest.InitializeHashProvider();WorldBuilderAssetResolver.Run(args[1],args[2],args[3],args[4],args[5],args.Length==7?args[6]:null);return 0;}

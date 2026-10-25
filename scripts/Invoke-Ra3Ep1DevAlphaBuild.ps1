@@ -105,6 +105,9 @@ try{
     $stage=Join-Path $expectedOutput ('.stage-'+[guid]::NewGuid().ToString('N'));$null=New-Item -ItemType Directory -Path $stage;$stageOwned=$true
     # Reborn: recheck global sources, then append their qualified five-file stream families without changing static payloads.
     if($globalBuild){Assert-RebornGlobalSources $globalBuild;if($globalBuild.Streams.Count){$combined=Join-Path $run 'combined-streams.big';& (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') sdk-package-global-streams $package $globalBuild.Context $combined 2>&1 | ForEach-Object {Write-SdkBuildLine ([string]$_)};if($LASTEXITCODE-ne 0){throw 'Global/static Streams BIG assembly failed.'};$package=$combined}}
+    # Reborn: only unresolved WorldBuilder use sites become warnings, after extraction and global/static package assembly have finished.
+    & (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') sdk-check-worldbuilder-resolution $package $dependencyReport (Join-Path $sdk 'catalogs/ra3ep1') 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail}
+    if($LASTEXITCODE-ne 0){throw 'Post-resolution WorldBuilder dependency check failed.'}
     $big=$ModName+'.big';Copy-Item -LiteralPath $package -Destination (Join-Path $stage $big);$hash=(Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash
     if((Get-FileHash -LiteralPath (Join-Path $stage $big) -Algorithm SHA256).Hash-cne $hash){throw 'Published BIG differs from the verified backend package.'}
     Write-SdkBuildLine ('Streams BIG prepared and SHA256 verified: '+$ModName+'_'+$ModVersion+'_Streams.big (compiled static/global stream families).')
