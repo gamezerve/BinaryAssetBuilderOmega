@@ -368,7 +368,14 @@ internal sealed class SdkInstanceInheritanceProfile
     {
         Dictionary<string,XmlElement> result = new(StringComparer.Ordinal);
         if (assets.Length > 4096) throw new InvalidDataException("4096 instance asset bound exceeded.");
-        foreach (var asset in assets) if (asset.NamespaceURI != Ea || !result.TryAdd(asset.LocalName+":"+asset.GetAttribute("id"),asset)) throw new InvalidDataException("Duplicate or foreign instance declaration."); return result;
+        // Reborn: identify the actual offending asset and distinguish duplicate handles from a foreign XML namespace.
+        foreach (var asset in assets)
+        {
+            string handle = asset.LocalName+":"+asset.GetAttribute("id");
+            if (asset.NamespaceURI != Ea) throw SdkXmlDiagnostics.At(new InvalidDataException($"Foreign instance declaration '{handle}': namespace '{asset.NamespaceURI}'; expected '{Ea}'."),asset);
+            if (!result.TryAdd(handle,asset)) throw SdkXmlDiagnostics.At(new InvalidDataException($"Duplicate instance declaration '{handle}': the same asset type and ID are declared more than once in this source document."),asset.GetAttributeNode("id"));
+        }
+        return result;
     }
 
     //-------------------------------------------------------------------------------------------------
