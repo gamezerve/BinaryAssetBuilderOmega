@@ -168,6 +168,9 @@ internal static class Program
             // Reborn: scripted model-state turrets have a private native/metadata composition regression.
             // Reborn: source-only XInclude expressions retain defining context and original fragment coordinates.
             // Reborn: experience assets have a private original-native and authored-stream regression.
+            // Reborn: special powers have a private EP1 native and authored-command/stream regression.
+            if(args.Length==4 && args[0]=="special-power-template-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();SpecialPowerTemplateCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==4 && args[0]=="experience-level-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ExperienceLevelCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==2 && args[0]=="fragment-definitions-self-test")

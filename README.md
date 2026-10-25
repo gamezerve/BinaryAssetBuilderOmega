@@ -8,6 +8,14 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: special-power templates now use their own EP1 target/flag/reference layout. -->
+`SpecialPowerTemplate` is build-enabled with the 584-byte EP1 header, all five
+target types and 32 flag bits, target count, filters, GameDependency, voice hashes,
+EVA/audio/image references and required/forbidden player-tech selectors.
+Instance inheritance and definitions share ordinary source preparation; newly
+authored powers can be referenced by mod LogicCommands. Original Orbital Refuse
+ranks and other retail powers anchor native verification and private stream tests.
+
 <!-- Reborn: experience levels use a separate EP1 native writer and normal authored dependency linking. -->
 `ExperienceLevelTemplate` is build-enabled with source-sized target/upgrade/FX/
 attribute-modifier lists, awards, ranks, tint fields, OCL imports and optional

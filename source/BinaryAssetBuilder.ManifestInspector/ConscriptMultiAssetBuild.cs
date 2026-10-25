@@ -1,3 +1,4 @@
+// Reborn: authored special-power templates participate in shared source, inheritance and native stream publication.
 // Reborn: experience templates share ordinary source preparation, inheritance and explicit asset emission.
 // Reborn: particle templates participate in the shared source, inheritance and native asset pipeline.
 using System.Buffers.Binary;
@@ -45,7 +46,7 @@ internal static class ConscriptMultiAssetBuild
             // Reborn: retail AudioFile metadata stays SDK-local; authored events reference the loaded audio stream without repacking its samples.
             string? audioManifest=null;if(sources.Any(s=>s.DocumentElement!.LocalName=="AudioEvent")){audioManifest=AuthoredAmbientCompiler.CatalogPath();var audio=ManifestReader.Read(SdkEnvironmentPreflight.Read(audioManifest,64*1048576));TypeRegistryAudit.ValidateTarget(audio.Header.Version,audio.Header.AllTypesHash);if(!audio.Header.IsLinked||audio.Validate().Count!=0)throw new InvalidDataException("Valid linked EP1 audio catalog required.");var known=stock.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();stock=stock.Concat(audio.Assets.Where(a=>a.TypeName=="AudioFile"&&!known.Contains(new(a.TypeId,a.InstanceId)))).ToArray();}
             var fingerprints=new Dictionary<uint,(uint Hash,bool Tokenized)>();var locals=new Dictionary<AssetId,XmlDocument>();
-            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "ExperienceLevelTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
+            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "SpecialPowerTemplate" or "ExperienceLevelTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
                 uint typeId=FastHash.GetHashCode(type);var examples=stock.Where(a=>a.TypeId==typeId).Select(a=>(a.TypeHash,Tokenized:a.Tokenized==1)).Distinct().ToArray();if(examples.Length!=1)throw new InvalidDataException("EP1 asset fingerprint is absent/ambiguous: "+type);fingerprints[typeId]=examples[0];if(!locals.TryAdd(new(typeId,InstanceHandle.GetInstanceId(id)),xml))throw SdkXmlDiagnostics.At(new InvalidDataException("Duplicate local asset/hash identity: "+type+":"+id),xml.DocumentElement);
             }
             // Reborn: source-only catalog entries resolve local names before native data exists; payloads are freshly compiled below, never copied from stock.
@@ -66,6 +67,8 @@ internal static class ConscriptMultiAssetBuild
             var built=new Dictionary<AssetId,Built>();int prefix=0;var compileLog=ConscriptCompileLog.ForPrepared(entry);
             // Reborn: validate the isolated EP1 upgrade ABI against original stock before emitting any authored upgrades.
             // Reborn: developer mode independently checks the actual EP1 experience layout; source/native proof is mandatory in both build modes.
+            // Reborn: original special powers independently qualify EP1 target/flag ordinals and EVA/tech imports in developer mode.
+            if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="SpecialPowerTemplate"))SpecialPowerTemplateCompiler.Qualify(manifest,schemas,stock);
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="ExperienceLevelTemplate"))ExperienceLevelCompiler.Qualify(manifest,schemas,stock);
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="UpgradeTemplate"))UpgradeTemplateCompiler.Qualify(global,schemas,stock);
             // Reborn: ObjectCreationList families/fields are enabled only after original EP1 OCLs exhibiting them pass the same proof.
@@ -91,6 +94,9 @@ internal static class ConscriptMultiAssetBuild
                 }else if(type=="WeaponTemplate"){
                     AdmitWeapon(xml,official,fixtures);instance=Normalize(xml);var copy=Xml(instance.XmlNode.OuterXml);foreach(XmlElement nugget in copy.GetElementsByTagName("DamageNugget",SchemaSet.XmlNamespace))nugget.SetAttribute("TypeId",FastHash.GetHashCode("DamageNuggetType").ToString(System.Globalization.CultureInfo.InvariantCulture));
                     var native=WeaponNativeProbe.Compile(copy);VerifyWeaponReferences(xml,native,instance);buffer=Buffer(WeaponTokenReproduction.EncodeAuthored(native));
+                }else if(type=="SpecialPowerTemplate"){
+                    // Reborn: fresh EP1 special-power native data carries source-owned filters, dependency arrays and Core import selectors.
+                    instance=Normalize(xml);var native=SpecialPowerTemplateCompiler.Compile(instance.XmlNode);SchemaNativeContract.Verify(SpecialPowerTemplateCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(Ep1SpecialPowerTemplate),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
                 }else if(type=="ExperienceLevelTemplate"){
                     // Reborn: experience targets/upgrades are weak handles; prerequisite, FX, modifiers and OCL retain real Core strong imports.
                     instance=Normalize(xml);var native=ExperienceLevelCompiler.Compile(instance.XmlNode);SchemaNativeContract.Verify(ExperienceLevelCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(Ep1ExperienceLevelTemplate),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
