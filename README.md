@@ -15,9 +15,13 @@ stock/repeat/corruption regressions. Both modes retain source/schema/dependency
 validation and actual native/stream/package checks. The setting covers static and
 enabled global builds and is recorded in the successful build receipt.
 Fast builds label required row-grammar loading as `Native metadata ready` and
-share it across GameObjects in the same build. Command usage checks combine
+share it across GameObjects in the same build. Asset usage checks combine
 stock and emitted mod references; valid custom enum values no longer produce
-`UNWITNESSEDCOMMAND`. An unreferenced authored command reports `UNUSEDCOMMAND`.
+`UNWITNESSEDCOMMAND`. Final-package `UNUSEDASSET` checks cover all asset types,
+including typed weak image/command-set/spawn handles and static/global consumers.
+Retail identities remain runtime roots; unused messages are advisory for new IDs
+because dynamic/script use cannot always be inferred statically.
+The successful build receipt retains the usage summary and source locations.
 
 <!-- Reborn: retail WorldBuilder references are now packaged instead of relying on map-specific runtime availability. -->
 WorldBuilder resolver (October 25): Studio copies referenced WorldBuilder-only

@@ -13,6 +13,12 @@ internal static class Program
     {
         try
         {
+            // Reborn: standalone unused-audit regressions use private synthetic metadata and the SDK's real reference schemas.
+            if(args.Length==3&&args[0]=="sdk-unused-assets-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();SdkUnusedAssetAuditSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: unused detection runs after all static/global streams are assembled and includes schema-typed weak references.
+            if(args.Length==5&&args[0]=="sdk-unused-assets")
+            {CompilerSmokeTest.InitializeHashProvider();SdkUnusedAssetAudit.Run(args[1],args[2],args[3],args[4]);return 0;}
             // Reborn: defer WorldBuilder warnings until the final package has been checked against the pending validation use sites.
             if(args.Length==4&&args[0]=="sdk-check-worldbuilder-resolution")
             {CompilerSmokeTest.InitializeHashProvider();WorldBuilderAssetResolver.CheckPending(args[1],args[2],args[3]);return 0;}

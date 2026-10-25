@@ -1,0 +1,41 @@
+using System.Reflection;
+using System.Text;
+using System.Text.Json;
+using System.Xml;
+using BinaryAssetBuilder.Core;
+using BinaryAssetBuilder.Core.SageXml;
+
+namespace BinaryAssetBuilder.ManifestInspector;
+
+// Reborn: test usage semantics on private metadata fixtures and real EP1 schema types without compiling or publishing a user's mod.
+internal static class SdkUnusedAssetAuditSmokeTest
+{
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: every supported family is checked; stock/mod strong edges, weak aliases, overrides and cross-stream consumers prevent false unused reports. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void Run(string output,string sdk)
+    {
+        if(Directory.Exists(output))throw new InvalidDataException("Fresh unused-audit evidence directory required.");Directory.CreateDirectory(output);
+        string[] names={"GameObject","ArmorTemplate","WeaponTemplate","LogicCommand","LogicCommandSet","UpgradeTemplate","ObjectCreationList","AudioEvent","Texture","PackedTextureImage","W3DContainer","W3DHierarchy","W3DMesh","W3DCollisionBox"};var candidates=names.Select(n=>Asset(n,"Unused"+n)).ToArray();Require(SdkUnusedAssetAudit.FindUnused(candidates,Array.Empty<ManifestAsset>(),Array.Empty<SdkUnusedAssetAudit.WeakUse>()).Length==names.Length,"Some asset types escaped unused detection.");
+        var stockOwner=Asset("GameObject","StockOwner",WorldBuilderAssetResolver.Id(candidates[8]));var modOwner=Asset("GameObject","ModOwner",WorldBuilderAssetResolver.Id(candidates[1]));var weak=new SdkUnusedAssetAudit.WeakUse(WorldBuilderAssetResolver.Id(modOwner),new[]{WorldBuilderAssetResolver.Id(candidates[0]),WorldBuilderAssetResolver.Id(candidates[4]),WorldBuilderAssetResolver.Id(candidates[9])});var used=SdkUnusedAssetAudit.FindUnused(candidates.Append(modOwner),new[]{stockOwner},new[]{weak});foreach(int index in new[]{0,1,4,8,9})Require(!used.Any(a=>a.Name==candidates[index].Name),"Stock/mod strong or weak use was ignored: "+candidates[index].Name);
+        var replaced=stockOwner with{References=Array.Empty<AssetId>(),AssetReferenceCount=0};Require(SdkUnusedAssetAudit.FindUnused(candidates.Append(replaced),new[]{stockOwner},Array.Empty<SdkUnusedAssetAudit.WeakUse>()).Any(a=>a.Name==candidates[8].Name),"Replaced stock owner kept an obsolete reference alive.");Require(!SdkUnusedAssetAudit.FindUnused(new[]{replaced},new[]{stockOwner},Array.Empty<SdkUnusedAssetAudit.WeakUse>()).Any(),"Retail override was mistaken for an unused runtime entry.");
+        var saved=Settings.Current;SdkUnusedAssetAudit.WeakUse[] schemaUses;
+        try{
+            Settings.Current=new Settings{SchemaPath=Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"TracerDrawPipeline.xsd"),BuildCache=false,StringHashBinDescriptors=Array.Empty<StringHashBinDescriptor>()};var schemas=new SchemaSet(false);foreach(var seed in schemas.Schemas.Schemas().Cast<System.Xml.Schema.XmlSchema>().ToArray())schemas.Schemas.Remove(seed);schemas.Schemas.Add(ConscriptSourceInput.Schemas());schemas.Schemas.Compile();typeof(SchemaSet).GetMethod("SetupHelperSchemaTypes",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(schemas,null);
+            var source=new XmlDocument{XmlResolver=null};source.Load(Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"live-alpha/ConscriptBuildTime1/data/mod.xml"));source.DocumentElement!.SetAttribute("id","ModOwner");source.DocumentElement.SetAttribute("CommandSet","UnusedLogicCommandSet");source.DocumentElement.SetAttribute("SelectPortrait","UnusedPackedTextureImage");source.DocumentElement.SetAttribute("ButtonImage","UnusedPackedTextureImage");var refs=SdkUnusedAssetAudit.WeakReferences(source.DocumentElement,source,schemas,candidates.Append(modOwner).ToArray());Require(refs.Contains(WorldBuilderAssetResolver.Id(candidates[4]))&&refs.Contains(WorldBuilderAssetResolver.Id(candidates[9])),"GameObject weak CommandSet/portrait references were lost.");
+            var ocl=new XmlDocument{XmlResolver=null};ocl.LoadXml("<ObjectCreationList xmlns='uri:ea.com:eala:asset' id='Spawner'><CreateObject><CreateObject>UnusedGameObject</CreateObject></CreateObject></ObjectCreationList>");var spawns=SdkUnusedAssetAudit.WeakReferences(ocl.DocumentElement!,ocl,schemas,candidates);Require(spawns.Contains(WorldBuilderAssetResolver.Id(candidates[0])),"OCL weak spawn was lost.");schemaUses=new[]{new SdkUnusedAssetAudit.WeakUse(WorldBuilderAssetResolver.Id(modOwner),refs.Concat(spawns).Distinct().ToArray())};
+        }finally{Settings.Current=saved;}
+        // Reborn: a completed package containing separate static/global manifests is audited as one graph, never as isolated compiler invocations.
+        byte[] templateBytes=File.ReadAllBytes(Path.Combine(sdk,"catalogs/ra3ep1/static.manifest"));var template=ManifestReader.Read(templateBytes);string fakeSdk=Path.Combine(output,"sdk"),catalogs=Path.Combine(fakeSdk,"catalogs/ra3ep1");Directory.CreateDirectory(catalogs);foreach(string file in new[]{"static.manifest","global.manifest","worldbuilder.manifest"})File.WriteAllBytes(Path.Combine(catalogs,file),Serialize(new[]{stockOwner})["diagnostic.manifest"]);
+        var globals=new[]{candidates[1]};var staticAssets=candidates.Where(a=>a.Name!=candidates[1].Name).Append(modOwner).ToArray();var entries=new Dictionary<string,byte[]>{{"data\\mod.manifest",Serialize(staticAssets)["diagnostic.manifest"]},{"data\\additionalmaps\\mapmetadata_global.manifest",Serialize(globals)["diagnostic.manifest"]}};string package=Path.Combine(output,"fixture.big");File.WriteAllBytes(package,WorldBuilderAssetResolver.Pack(entries));
+        string entry=Path.Combine(output,"Static_Mod.xml");File.WriteAllText(entry,"<!-- Reborn: declaration locations only; this is a metadata audit fixture, not playable compiled data. --><AssetDeclaration xmlns='uri:ea.com:eala:asset'>"+string.Concat(candidates.Append(modOwner).Select(a=>"<"+a.TypeName+" id='"+a.Name[(a.Name.IndexOf(':')+1)..]+"'/>"))+"</AssetDeclaration>");File.WriteAllText(Path.Combine(output,"source-input.json"),JsonSerializer.Serialize(new{GamePath=entry,Origins=candidates.Append(modOwner).Select(a=>new{Type=a.TypeName,Id=a.Name[(a.Name.IndexOf(':')+1)..],Path=entry})}));File.WriteAllText(Path.Combine(output,"asset-usage.json"),JsonSerializer.Serialize(schemaUses));
+        var original=Console.Out;using var text=new StringWriter();try{Console.SetOut(text);SdkUnusedAssetAudit.Run(package,fakeSdk,output,entry);}finally{Console.SetOut(original);}string log=text.ToString();Require(log.Contains("Warning: UNUSEDASSET 'W3DMesh:UnusedW3DMesh'")&&log.Contains("Source: "+entry+"(")&&!log.Contains("UNUSEDASSET 'ArmorTemplate:UnusedArmorTemplate'")&&!log.Contains("UNUSEDASSET 'LogicCommandSet:UnusedLogicCommandSet'")&&!log.Contains("UNUSEDASSET 'PackedTextureImage:UnusedPackedTextureImage'")&&!log.Contains("UNUSEDASSET 'GameObject:UnusedGameObject'"),"Final package audit missed cross-stream/weak use or source locations.");File.WriteAllText(Path.Combine(output,"audit.log"),log);Console.WriteLine("Reborn: unused asset audit: PASS (14 families, stock/mod strong and schema-typed weak refs, override precedence, runtime roots, cross-stream package union and source positions; no game/publication).");
+
+        // Reborn: synthetic payloads exist only to supply valid linked metadata to the audit; no native-layout or gameplay claim is made.
+        Dictionary<string,byte[]> Serialize(ManifestAsset[] assets)=>WorldBuilderAssetResolver.Serialize(assets.Select(a=>new WorldBuilderAssetResolver.Native(a,new byte[4],Array.Empty<byte>(),Array.Empty<byte>())).ToArray(),template,templateBytes);
+    }
+
+    // Reborn: fixtures retain the same typed hash identities used by the real compiler and final manifests.
+    private static ManifestAsset Asset(string type,string name,params AssetId[] references){var id=SdkMissingDependencyAudit.Identity(type,name);return new(id.TypeId,id.InstanceId,1,2,0,references.Length,0,0,4,0,0,0,type+":"+name,"fixture.xml",references);}
+    private static void Require(bool condition,string message){if(!condition)throw new InvalidDataException(message);}
+}

@@ -119,9 +119,6 @@ internal static class ConscriptMultiAssetBuild
                 foreach(var reference in instance.ReferencedInstances)if(available.Count(a=>a.TypeId==reference.TypeId&&a.InstanceId==reference.InstanceId)!=1)throw SdkXmlDiagnostics.At(new InvalidDataException("Missing or ambiguous asset: "+reference.Name),xml.DocumentElement);
                 built.Add(id,new(xml,instance,buffer,fingerprints[id.TypeId].Tokenized));compileLog.End(progress);
             }
-            // Reborn: command usage includes all emitted mod references and stock references, regardless of declaration order or command enum provenance.
-            var commandUses=available.Where(a=>!locals.ContainsKey(new(a.TypeId,a.InstanceId))).SelectMany(a=>a.References).Concat(built.Values.SelectMany(b=>b.Instance.ReferencedInstances).Select(r=>new AssetId(r.TypeId,r.InstanceId))).ToHashSet();
-            foreach(var commandSource in sources.Where(s=>s.DocumentElement!.LocalName=="LogicCommand")){if(LogicCommandCompiler.IsUsed(commandSource,commandUses))continue;string id=commandSource.DocumentElement!.GetAttribute("id");Console.WriteLine("Warning: UNUSEDCOMMAND 'LogicCommand:"+id+"' has no references in emitted mod assets or stock catalogs. Source: "+compileLog.Location("LogicCommand",id)+".");}
             // Reborn: stable dependency order is determined by actual local strong edges, not declaration order; stock references stay external.
             var ordered=new List<Built>();var active=new HashSet<AssetId>();var done=new HashSet<AssetId>();foreach(var id in built.Keys)Visit(id);
             int localReferences=ordered.Sum(b=>b.Instance.ReferencedInstances.Count(r=>built.ContainsKey(new(r.TypeId,r.InstanceId))));int stockReferences=ordered.Sum(b=>b.Instance.ReferencedInstances.Count)-localReferences;
@@ -144,6 +141,8 @@ internal static class ConscriptMultiAssetBuild
             // Reborn: one serialization/readback is mandatory; only developer builds repeat it to test determinism.
             var streams=BoundedDiagnosticBuild.SerializeAssetGraph(instances,chunks,checksum,runtime,flags,fingerprints);if(SdkBuildTests.Enabled){var repeated=BoundedDiagnosticBuild.SerializeAssetGraph(instances,chunks,checksum,runtime,flags,fingerprints);if(streams.Any(p=>!p.Value.SequenceEqual(repeated[p.Key])))throw new InvalidDataException("Mixed stream serialization is not deterministic.");}
             Directory.CreateDirectory(output);string verification=Path.Combine(output,"stream-readback");ModifierFXStreamSmokeTest.WriteNew(verification,streams);BoundedDiagnosticBuild.Verify(verification,instances,chunks,streams,checksum,runtimeNames,flags);
+            // Reborn: final static/global usage auditing also needs weak handles, which are intentionally absent from native import tables.
+            SdkUnusedAssetAudit.WriteUsage(output,built.Values.Select(b=>(b.Instance,b.Source)),schemas,available);
             // Reborn: reported only after deterministic re-serialization and binary/relocation/import readback both passed.
             Console.WriteLine("Linking binary, relocation and import data verified by readback; mod Stream complete");compileLog.Statistics();
             // Reborn: pure command-set graphs publish through the same verified stream/archive contract without a dummy unit.

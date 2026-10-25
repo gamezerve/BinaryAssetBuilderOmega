@@ -1,0 +1,63 @@
+using System.Text.Json;
+using System.Xml;
+using System.Xml.Schema;
+using BinaryAssetBuilder.Core;
+using BinaryAssetBuilder.Core.SageXml;
+
+namespace BinaryAssetBuilder.ManifestInspector;
+
+// Reborn: advisory unused detection joins final static/global assets, retail graphs and schema-typed weak uses; it never deletes assets.
+internal static class SdkUnusedAssetAudit
+{
+    internal sealed record WeakUse(AssetId Owner,AssetId[] Targets);
+    private const string Ea="uri:ea.com:eala:asset";
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: weak IDs are valid use sites even though they do not become native IMP records; resolve concrete targets using the same schema inheritance as Core. */
+    //-------------------------------------------------------------------------------------------------
+    internal static AssetId[] WeakReferences(XmlNode node,XmlDocument fallback,SchemaSet schemas,ManifestAsset[] available)
+    {
+        if(node.SchemaInfo?.SchemaType==null){var copy=new XmlDocument{XmlResolver=null};copy.LoadXml(fallback.DocumentElement!.OuterXml);copy.Schemas.Add(schemas.Schemas);copy.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));node=copy.DocumentElement!;}
+        var weak=schemas.Schemas.GlobalTypes[new XmlQualifiedName("WeakReference",Ea)] as XmlSchemaType;if(weak==null)throw new InvalidDataException("WeakReference schema is missing.");
+        var catalog=available.GroupBy(a=>a.InstanceId).ToDictionary(g=>g.Key,g=>g.ToArray());var targets=new HashSet<AssetId>();
+        foreach(XmlNode field in node.SelectNodes("descendant-or-self::*|descendant-or-self::*/@*")!){var info=field.SchemaInfo;var type=info?.SchemaType;if(type==null||!XmlSchemaType.IsDerivedFrom(type,weak,XmlSchemaDerivationMethod.None))continue;
+            string? required=Annotation(info?.SchemaAttribute?.UnhandledAttributes)??Annotation(info?.SchemaElement?.UnhandledAttributes);for(var current=type;required==null&&current!=null;){required=Annotation(current.UnhandledAttributes);var next=current.BaseXmlSchemaType;if(ReferenceEquals(next,current))break;current=next;}
+            if(required==null||schemas.GetXmlType(required) is not XmlSchemaType expected)continue;string raw=(field is XmlAttribute attribute?attribute.Value:field.InnerText).Trim();
+            foreach(string value in type.Datatype?.Variety==XmlSchemaDatatypeVariety.List?raw.Split((char[]?)null,StringSplitOptions.RemoveEmptyEntries):new[]{raw}){if(value.Length==0||value.StartsWith('='))continue;int colon=value.IndexOf(':');string name=colon<0?value:value[(colon+1)..];var selected=colon<0?expected:schemas.GetXmlType(value[..colon]);if(selected==null)continue;
+                foreach(var asset in catalog.GetValueOrDefault(InstanceHandle.GetInstanceId(name),Array.Empty<ManifestAsset>()))if(schemas.GetXmlType(asset.TypeName) is XmlSchemaType actual&&XmlSchemaType.IsDerivedFrom(actual,expected,XmlSchemaDerivationMethod.None)&&XmlSchemaType.IsDerivedFrom(actual,selected,XmlSchemaDerivationMethod.None))targets.Add(new(asset.TypeId,asset.InstanceId));
+            }
+        }return targets.ToArray();
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: capture effective normalized weak references while schemas/catalogs are already available; final-package auditing needs no second source build. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void WriteUsage(string output,IEnumerable<(InstanceDeclaration Instance,XmlDocument Source)> built,SchemaSet schemas,ManifestAsset[] available)
+    {
+        var uses=built.Select(b=>new WeakUse(new(b.Instance.Handle.TypeId,b.Instance.Handle.InstanceId),WeakReferences(b.Instance.XmlNode,b.Source,schemas,available))).ToArray();Directory.CreateDirectory(output);using var file=new FileStream(Path.Combine(output,"asset-usage.json"),FileMode.CreateNew,FileAccess.Write,FileShare.None);JsonSerializer.Serialize(file,uses);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: all types use the same incoming-reference rule; existing retail identities remain runtime entry points, and replaced stock owners cannot keep obsolete edges alive. */
+    //-------------------------------------------------------------------------------------------------
+    internal static ManifestAsset[] FindUnused(IEnumerable<ManifestAsset> mod,IEnumerable<ManifestAsset> stock,IEnumerable<WeakUse> weak)
+    {
+        var emitted=mod.ToArray();var originals=stock.ToArray();var local=emitted.Select(WorldBuilderAssetResolver.Id).ToHashSet();var retail=originals.Select(WorldBuilderAssetResolver.Id).ToHashSet();var used=emitted.SelectMany(a=>a.References).Concat(originals.Where(a=>!local.Contains(WorldBuilderAssetResolver.Id(a))).SelectMany(a=>a.References)).Concat(weak.Where(w=>local.Contains(w.Owner)).SelectMany(w=>w.Targets)).ToHashSet();
+        return emitted.DistinctBy(WorldBuilderAssetResolver.Id).Where(a=>!retail.Contains(WorldBuilderAssetResolver.Id(a))&&!used.Contains(WorldBuilderAssetResolver.Id(a))).OrderBy(a=>a.Name,StringComparer.Ordinal).ToArray();
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: audit the final assembled package once so later static consumers can use early globals; report original source coordinates where provenance exists. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void Run(string package,string sdk,string buildRoot,string entry)
+    {
+        var mod=new List<ManifestAsset>();using(var archive=BigArchive.Open(package))foreach(var member in archive.Entries.Where(e=>e.Name.EndsWith(".manifest",StringComparison.OrdinalIgnoreCase))){var document=ManifestReader.Read(archive.ReadEntry(member,checked((int)member.StoredSize)));TypeRegistryAudit.ValidateTarget(document.Header.Version,document.Header.AllTypesHash);if(document.Validate().Count!=0)throw new InvalidDataException("Invalid final package manifest: "+member.Name);mod.AddRange(document.Assets);}
+        var stock=SdkMissingDependencyAudit.CatalogManifestPaths(sdk).SelectMany(path=>ManifestReader.Read(File.ReadAllBytes(path)).Assets).ToArray();var weak=Directory.GetFiles(buildRoot,"asset-usage.json",SearchOption.AllDirectories).SelectMany(path=>JsonSerializer.Deserialize<WeakUse[]>(File.ReadAllBytes(path))??throw new InvalidDataException("Invalid asset usage receipt: "+path)).ToArray();
+        var origins=new List<ConscriptCompileLog>();foreach(string receipt in Directory.GetFiles(buildRoot,"source-input.json",SearchOption.AllDirectories).OrderBy(p=>p,StringComparer.Ordinal)){using var json=JsonDocument.Parse(File.ReadAllBytes(receipt));origins.Add(ConscriptCompileLog.ForPrepared(json.RootElement.GetProperty("GamePath").GetString()!));}var fallback=ConscriptCompileLog.ForPrepared(entry);var findings=new List<object>();
+        foreach(var asset in FindUnused(mod,stock,weak)){int colon=asset.Name.IndexOf(':');string id=colon<0?asset.Name:asset.Name[(colon+1)..];var origin=(origins.LastOrDefault(o=>o.HasOrigin(asset.TypeName,id))??fallback).Location(asset.TypeName,id);Console.WriteLine("Warning: UNUSEDASSET '"+asset.Name+"' has no static reference in emitted mod assets or stock catalogs; dynamic/script use may exist. Source: "+origin+".");findings.Add(new{asset.Name,origin.File,origin.Line,origin.Column,origin.Context});}
+        File.WriteAllText(Path.Combine(buildRoot,"unused-assets.json"),JsonSerializer.Serialize(new{ModAssets=mod.Select(WorldBuilderAssetResolver.Id).Distinct().Count(),WeakEdges=weak.Sum(w=>w.Targets.Length),Findings=findings,Advisory=true,GameExecuted=false},new JsonSerializerOptions{WriteIndented=true}));Console.WriteLine("Asset usage audit: "+mod.Select(WorldBuilderAssetResolver.Id).Distinct().Count()+" packaged assets; "+findings.Count+" without static references.");
+    }
+
+    // Reborn: only the official schema reference annotation supplies the required target family.
+    private static string? Annotation(XmlAttribute[]? attributes)=>attributes?.FirstOrDefault(a=>a.LocalName=="refType"&&a.NamespaceURI=="uri:ea.com:eala:asset:schema")?.Value;
+}

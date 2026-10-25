@@ -112,6 +112,9 @@ try{
     # Reborn: only unresolved WorldBuilder use sites become warnings, after extraction and global/static package assembly have finished.
     & (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') sdk-check-worldbuilder-resolution $package $dependencyReport (Join-Path $sdk 'catalogs/ra3ep1') 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail}
     if($LASTEXITCODE-ne 0){throw 'Post-resolution WorldBuilder dependency check failed.'}
+    # Reborn: audit every final asset type after global/static assembly, using weak-use receipts as well as native reference tables.
+    & (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') sdk-unused-assets $package $sdk $run $ModXml 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail}
+    if($LASTEXITCODE-ne 0){throw 'Final asset usage audit failed.'}
     $big=$ModName+'.big';Copy-Item -LiteralPath $package -Destination (Join-Path $stage $big);$hash=(Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash
     if((Get-FileHash -LiteralPath (Join-Path $stage $big) -Algorithm SHA256).Hash-cne $hash){throw 'Published BIG differs from the verified backend package.'}
     Write-SdkBuildLine ('Streams BIG prepared and SHA256 verified: '+$ModName+'_'+$ModVersion+'_Streams.big (compiled static/global stream families).')
@@ -125,6 +128,8 @@ try{
     $result | Add-Member -NotePropertyName GlobalData -NotePropertyValue ([pscustomobject]@{Enabled=[bool]$BuildGlobalData;Streams=@($(if($globalBuild){$globalBuild.Evidence}))})
     # Reborn: successful receipts distinguish source validation from optional developer regression execution.
     $result | Add-Member -NotePropertyName DeveloperBuildTests -NotePropertyValue ([bool]$DeveloperBuildTests)
+    # Reborn: keep unused findings and their source locations in the successful receipt after the private work generation is cleaned.
+    $result | Add-Member -NotePropertyName UnusedAssets -NotePropertyValue (Get-Content -LiteralPath (Join-Path $run 'unused-assets.json') -Raw|ConvertFrom-Json)
     [IO.File]::WriteAllText((Join-Path $stage 'build.json'),($result|ConvertTo-Json -Depth 20))
     # Reborn: retain full compiler evidence outside the four-file public package contract before private cleanup.
     Copy-Item -LiteralPath $detail -Destination (Join-Path $sdk '.work/last-detail.log') -Force

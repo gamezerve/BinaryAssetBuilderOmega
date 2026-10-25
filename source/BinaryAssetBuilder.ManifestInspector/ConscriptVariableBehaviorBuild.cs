@@ -39,7 +39,7 @@ internal static class ConscriptVariableBehaviorBuild
             int prefix=tokens.InstanceBuffer.Length-pair.Native.InstanceBuffer.Length;var graph=new ConscriptGraphQualification(pair.Instance,tokens,prefix);
             var streams=GameObjectOriginalStreamSmokeTest.Run(tokens,pair.Instance,manifest,globalManifest,true,graph);
             string command=Path.Combine(Path.GetDirectoryName(entry)!,"command.xml");if(File.Exists(command)){ConscriptRecruitmentSmokeTest.Qualify(schemas,manifest);streams=ConscriptRecruitmentSmokeTest.Compose(streams,pair.Instance,schemas,manifest,globalManifest,SdkXmlDiagnostics.Parse(SdkEnvironmentPreflight.Read(command,1048576),command),graph);}
-            Directory.CreateDirectory(output);GameObjectConscriptTrialSmokeTest.Package(Path.Combine(output,stockOverride?"override":"new-id"),source,streams,id,prefix,stockOverride:stockOverride);
+            Directory.CreateDirectory(output);SdkUnusedAssetAudit.WriteUsage(output,new[]{(pair.Instance,source)},schemas,assets);GameObjectConscriptTrialSmokeTest.Package(Path.Combine(output,stockOverride?"override":"new-id"),source,streams,id,prefix,stockOverride:stockOverride);
             Console.WriteLine($"Variable behavior source build: PASS ({plan.BehaviorCount} authored behaviors; {expected.Length} stock reference occurrences; prefix={prefix}; complete native/metadata/stream/BIG proof; no automatic command, install or game launch).");return true;
 
             // Reborn: actual Core resolves every source occurrence before one complete native Tracker; expected target identities are derived separately.

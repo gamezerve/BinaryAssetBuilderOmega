@@ -42,6 +42,9 @@ internal sealed class ConscriptCompileLog
         string path=files.GetValueOrDefault(type+":"+id,context);var document=SdkXmlDiagnostics.Lines(File.ReadAllBytes(path),path);var owner=document.Descendants().FirstOrDefault(e=>e.Name.LocalName==type&&(string?)e.Attribute("id")==id);return owner==null?SdkXmlDiagnostics.Point(path,document.Root!,true):SdkXmlDiagnostics.Point(path,(System.Xml.Linq.XObject?)owner.Attribute("id")??owner);
     }
 
+    // Reborn: final audits prefer the prepared stream which actually owns this declaration's original source path.
+    internal bool HasOrigin(string type,string id)=>files.ContainsKey(type+":"+id);
+
     //-------------------------------------------------------------------------------------------------
     /** Reborn: announce one asset immediately before its real processor runs and start its processing clock. */
     //-------------------------------------------------------------------------------------------------

@@ -24,7 +24,7 @@ namespace Reborn
         private static readonly Regex GreenLine = new Regex(@"^(?:\[\d\d:\d\d:\d\d(?:\.\d+)?\] )?(?:Step time taken: |(?:Validation|Compilation) (?:started|completed): |Validation Completed \(no publication\)\.$)", RegexOptions.CultureInvariant);
         // Reborn: skipped phases are visually red without changing their text or classifying them as build errors.
         private static readonly Regex SkippedLine = new Regex(@"^(?:\[\d\d:\d\d:\d\d(?:\.\d+)?\] )?Skipped:", RegexOptions.CultureInvariant);
-        // Reborn: user choice and absent/empty sources are yellow skips; unimplemented stages retain red.
+        // Reborn: user choice and absent/empty sources use EA's warning text color; unimplemented stages retain red.
         private static readonly Regex OptionalSkippedLine = new Regex(@"^(?:\[\d\d:\d\d:\d\d(?:\.\d+)?\] )?Skipped: \[(?:Optional|No input)\]", RegexOptions.CultureInvariant);
         private static RichTextBox output;
         private static int colored;
@@ -79,7 +79,21 @@ namespace Reborn
         }
 
         //-------------------------------------------------------------------------------------------------
-        /** Reborn: recolor only newly completed lines; restore caret and insertion color so EA's next AppendText keeps its own colors. */
+        /** Reborn: use the actual configured EA warning palette, with its original warning color as fallback. */
+        //-------------------------------------------------------------------------------------------------
+        private static Color WarningTextColor()
+        {
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                Type helper = assembly.GetType("EALABuild.BuildHelper", false);
+                FieldInfo field = helper == null ? null : helper.GetField("warningColor", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                if (field != null && field.FieldType == typeof(Color)) return (Color)field.GetValue(null);
+            }
+            return Color.DarkGoldenrod;
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: recolor completed lines and preserve the caret/insertion color for EA's next AppendText. */
         //-------------------------------------------------------------------------------------------------
         private static void OnOutputChanged(object sender, EventArgs args)
         {
@@ -98,7 +112,7 @@ namespace Reborn
                     int next = text.IndexOf('\n', at);
                     string line = text.Substring(at, next - at).TrimEnd('\r');
                     if (GreenLine.IsMatch(line)) { output.Select(at, line.Length); output.SelectionColor = Color.Green; }
-                    else if (OptionalSkippedLine.IsMatch(line)) { output.Select(at, line.Length); output.SelectionColor = Color.Yellow; }
+                    else if (OptionalSkippedLine.IsMatch(line)) { output.Select(at, line.Length); output.SelectionColor = WarningTextColor(); }
                     else if (SkippedLine.IsMatch(line)) { output.Select(at, line.Length); output.SelectionColor = Color.Red; }
                     at = next + 1;
                 }
