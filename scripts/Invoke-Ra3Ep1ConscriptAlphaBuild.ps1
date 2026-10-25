@@ -38,6 +38,11 @@ try {
     if($trials.Count-ne 1){throw 'Expected exactly one fresh native package receipt.'}
     $trial=$trials[0];$newIdentity=(-not $supportOnly -and $trial-ceq 'new-id');$receiptPath=Join-Path $OutputRoot ('conscript/'+$trial+'/trial-plan.json');$receipt=Get-Content -LiteralPath $receiptPath -Raw|ConvertFrom-Json
     $package=Join-Path $OutputRoot ('conscript/'+$trial+'/RebornConscriptProbe.big')
+    # Reborn: resolve referenced WorldBuilder assets in the private package before receipt validation and publication.
+    $resolveArgs=@('sdk-resolve-worldbuilder',$package,(Join-Path $sdk 'catalogs/ra3ep1'),$StaticManifest,$GlobalManifest,$inputReceipt.GamePath)
+    if($GlobalStreamContext){$resolveArgs+=$GlobalStreamContext}
+    & $exe @resolveArgs;if($LASTEXITCODE-ne 0){throw 'WorldBuilder asset resolution failed; no new package was published.'}
+    $receipt=Get-Content -LiteralPath $receiptPath -Raw|ConvertFrom-Json
     if((-not $supportOnly -and $receipt.NewIdentity-ne $newIdentity) -or $receipt.Asset-cne ($primaryType+':'+$identity) -or $receipt.AssetCount-ne $assetCount -or -not $receipt.OfflineValidated -or (Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash-cne $receipt.ArchiveSha256 -or $receipt.SourceSha256-cne $inputReceipt.PreparedSourceSha256){throw 'Fresh explicit-source package/readback receipt differs.'}
     # Reborn: recheck every source, including included command XML, before publication rather than trusting only prepared-source hashes.
     foreach($source in $inputReceipt.Sources){if((Get-FileHash -LiteralPath $source.Path -Algorithm SHA256).Hash-cne $source.Sha256){throw ('Authored source changed during compilation: '+$source.Path)}}

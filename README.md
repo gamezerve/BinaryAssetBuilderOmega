@@ -8,6 +8,15 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: retail WorldBuilder references are now packaged instead of relying on map-specific runtime availability. -->
+WorldBuilder resolver (October 25): Studio copies referenced WorldBuilder-only
+assets and their strong dependency closure into the mod's three stream variants.
+Authored schema-typed GameObject weak references (including OCL CreateObject)
+also seed extraction. Mod definitions and loaded static/global/audio assets take
+precedence. Matching WorldBuilder sidecars live in `alpha/catalogs/ra3ep1`;
+external custom resources, when required, belong in its `cdata` subdirectory.
+No full WorldBuilder BIN dump or game launch is needed for extraction.
+
 <!-- Reborn: withdraw the failed runtime-path experiment instead of describing offline evidence as a gameplay fix. -->
 October 25 audio regression: changing runtime manifest references to bare names
 caused the user to lose match sounds while menu music remained. That experiment

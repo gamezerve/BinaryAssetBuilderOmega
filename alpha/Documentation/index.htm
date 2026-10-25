@@ -35,16 +35,20 @@ fields/lists. Defaults follow the official XSD; no automatic repair-drone or
 command definition is generated.</p>
 <!-- Reborn: distinguish reusing retail art assets from rebuilding their source files when copying original EA XML. -->
 <h2>Reusing art assets already in the game</h2>
-<!-- Reborn: WorldBuilder availability is checked without copying its assets or changing runtime loading. -->
+<!-- Reborn: WorldBuilder-only runtime references are resolved from local linked payloads during packaging. -->
 <p>Missing asset checks use the Static, Global and WorldBuilder manifest copies
 under catalogs/ra3ep1 inside the SDK. No registry lookup or large BIN files are
-needed for this check; stock assets are not copied into your mod package.</p>
+needed for this check. Static/global/audio assets remain external; referenced
+WorldBuilder-only assets and their strong dependencies are copied into the mod
+from catalogs/ra3ep1/worldbuilder.manifest, .bin, .relo and .imp.</p>
 <!-- Reborn: weak spawn references must expose WorldBuilder provenance even when their source was only inspected as an instance base. -->
 <p>Validation reports WORLDBUILDERASSET warnings for both direct asset references
 and weak GameObject IDs, including OCL CreateObject, with immediate WorldBuilder-only
-model dependencies where applicable. Compilation does not repeat these warnings.
+model dependencies where applicable. Compilation does not repeat these warnings;
+packaging reports each WorldBuilder asset actually added.
 An instance Include does not compile that object or its art.
-Catalog presence does not guarantee the object/model is loaded on the current map.</p>
+Authored OCL CreateObject weak references also seed extraction. Hash-named external
+custom resources must be present under catalogs/ra3ep1/cdata when required.</p>
 <p>If an art asset already exists in Uprising and you are not rebuilding it,
 remove or comment out its ART: Include when copying original SageXML files into
 your mod. These includes are unnecessary for reusing existing game assets and

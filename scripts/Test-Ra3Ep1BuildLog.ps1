@@ -32,6 +32,8 @@ try{
     # Reborn: a new build in the same PowerShell session must show its first source selection again.
     . (Join-Path $PSScriptRoot 'Ra3Ep1BuildLog.ps1')
     if(@(Write-SdkCompilerLine 'Reborn: source path [mod] DATA:Test.xml -> Test.xml' $detail).Count-ne 1){throw 'Source selection display was not reset for the next build.'}
+    # Reborn: copying retail dependencies must remain visible in Studio, without turning successful resolution into another warning.
+    if(@(Write-SdkCompilerLine 'Resolving WorldBuilder assets: 20 added with dependencies.' $detail;Write-SdkCompilerLine 'WorldBuilder asset added: W3DContainer:Fixture' $detail).Count-ne 2){throw 'WorldBuilder resolution progress was hidden.'}
     Write-Output 'Reborn: build log presentation: PASS (phases, timings, severity, source, EA-style loading/compiling lines, JSON/stack separation, raw evidence).'
 }finally{
     # Reborn: remove only the one explicitly owned file and empty temporary directory, without recursive deletion.

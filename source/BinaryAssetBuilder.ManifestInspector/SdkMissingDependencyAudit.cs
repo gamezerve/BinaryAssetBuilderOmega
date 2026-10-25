@@ -185,7 +185,7 @@ internal static class SdkMissingDependencyAudit
                 else if(WorldBuilderOnly(matches[0])){
                     // Reborn: validation covers both direct strong references and weak spawn sites; compilation no longer emits a competing warning set.
                     var target=matches[0];var models=target.Dependencies.Select(id=>byIdentity.GetValueOrDefault(id)).Where(a=>a!=null&&WorldBuilderOnly(a)&&a.Type is "W3DContainer" or "W3DMesh").Select(a=>a!.Type+":"+a.Name).Distinct().ToArray();
-                    string detail="exists only in the original WorldBuilder stream; it is referenced, not compiled into the mod.";
+                    string detail="exists only in the original WorldBuilder stream; the packaging resolver will copy it and its required dependencies into the mod.";
                     if(models.Length!=0)detail+=" WorldBuilder-only model dependencies: "+string.Join(", ",models)+".";
                     Add("WORLDBUILDERASSET",target.Type+":"+target.Name,node,path,field,detail,"Warning");
                 }

@@ -13,6 +13,12 @@ internal static class Program
     {
         try
         {
+            // Reborn: resolve retail WorldBuilder references in a private package before Studio publishes it.
+            if(args.Length is 6 or 7 && args[0]=="sdk-resolve-worldbuilder")
+            {CompilerSmokeTest.InitializeHashProvider();WorldBuilderAssetResolver.Run(args[1],args[2],args[3],args[4],args[5],args.Length==7?args[6]:null);return 0;}
+            // Reborn: exercise native extraction and package repair without rebuilding the user's mod or starting the game.
+            if(args.Length==3&&args[0]=="sdk-worldbuilder-resolver-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();WorldBuilderAssetResolverSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: DDS format/preservation and stock comparisons are offline, separately from game launches or package publication.
             if(args.Length==1&&args[0]=="dds-texture-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1DdsTextureSmokeTest.Run();return 0;}

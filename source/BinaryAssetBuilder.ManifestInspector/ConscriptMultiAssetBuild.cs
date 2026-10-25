@@ -170,7 +170,8 @@ internal static class ConscriptMultiAssetBuild
     //-------------------------------------------------------------------------------------------------
     private static ManifestAsset[] WorldBuilderRenderAssets(string staticManifest,SchemaSet schemas,ManifestAsset[] known)
     {
-        string path=Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(staticManifest))!,"..","..","WorldBuilder","data","worldbuilder.manifest"));if(!File.Exists(path))return Array.Empty<ManifestAsset>();
+        // Reborn: use the same SDK-local catalog as the resolver, so type lookup and copied native payloads cannot select different WorldBuilder generations.
+        string path=WorldBuilderAssetResolver.CatalogPath();
         var document=ManifestReader.Read(SdkEnvironmentPreflight.Read(path,64*1048576));TypeRegistryAudit.ValidateTarget(document.Header.Version,document.Header.AllTypesHash);if(!document.Header.IsLinked||document.Validate().Count!=0)throw new InvalidDataException("Valid linked EP1 WorldBuilder stream required: "+path);
         var required=schemas.GetXmlType("BaseRenderAssetType")??throw new InvalidDataException("BaseRenderAssetType schema missing.");
         var render=schemas.Schemas.GlobalTypes.Values.Cast<System.Xml.Schema.XmlSchemaType>().Where(t=>System.Xml.Schema.XmlSchemaType.IsDerivedFrom(t,required,System.Xml.Schema.XmlSchemaDerivationMethod.None)).Select(t=>FastHash.GetHashCode(t.Name!)).ToHashSet();

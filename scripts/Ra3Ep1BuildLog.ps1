@@ -34,6 +34,9 @@ function Write-SdkCompilerLine([string]$Line,[string]$DetailPath){
     }elseif($trim -match '^\[\d\d:\d\d:\d\d'){
         # Reborn: retain an existing compiler clock instead of double-prefixing it with the wrapper clock.
         Write-SdkBuildLine $trim
+    # Reborn: WorldBuilder extraction is a visible compilation phase, with one informational line per imported asset.
+    }elseif($trim -match '^(?:Resolving WorldBuilder assets:|WorldBuilder asset added:)'){
+        Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] '+$trim)
     }elseif($trim -match '^(.+?: PASS)\b'){
         # Reborn: keep qualification progress readable; coverage counters, internal paths and caveats remain intact in the raw log.
         Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] '+$Matches[1])
