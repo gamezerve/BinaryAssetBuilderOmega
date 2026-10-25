@@ -8,6 +8,13 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: original EA Construction Yard repeats GlobalDefines.xml; repeated metadata Includes are valid authoring input. -->
+Repeated definition-only `type="all"` Includes of the same captured source are
+accepted and contribute one definition/source witness. This includes the two
+`GlobalDefines.xml` Includes in the original `SovietConstructionYard.xml`;
+authors do not need to remove either. Definition expressions still resolve
+before inheritance, and conflicting definitions from different sources remain errors.
+
 <!-- Reborn: slaughter containers now participate in source-driven Uprising GameObject compilation. -->
 `SlaughterHordeContain` is build-enabled with its existing EP1 native writer,
 refund percentage, status mask, optional slaughter FX, entrance filter and

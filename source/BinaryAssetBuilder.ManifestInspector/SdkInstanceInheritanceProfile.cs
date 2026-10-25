@@ -224,9 +224,10 @@ internal sealed class SdkInstanceInheritanceProfile
                 if(metadataEdge && gameObjectTrees && Assets(baseXml).Length!=0)metadataEdge=false;
                 if (metadataEdge)
                 {
-                    // Reborn: metadata leaves consume one source edge and cannot bypass depth bounds or mix duplicate role witnesses.
-                    if (depth >= 32 || expected.Count(candidate => string.Equals(candidate.PhysicalPath,resolved.Path,StringComparison.OrdinalIgnoreCase)) != 1) throw new InvalidDataException("Metadata-only depth/duplicate-role bound exceeded.");
-                    if (metadataWitnesses.Any(witness => witness.SourcePath.Equals(resolved.Path,StringComparison.OrdinalIgnoreCase))) throw new InvalidDataException("Duplicate metadata-only Include remains closed.");
+                    // Reborn: EA sources may repeat the same definition-only all Include; every edge is validated above, while its source contributes one definition/closure witness.
+                    if (depth >= 32) throw SdkXmlDiagnostics.At(new InvalidDataException("Metadata-only Include depth exceeds 32: "+logical),include);
+                    if (expected.Any(candidate => string.Equals(candidate.PhysicalPath,resolved.Path,StringComparison.OrdinalIgnoreCase) && candidate.Kind != "all")) throw SdkXmlDiagnostics.At(new InvalidDataException("Definition-only source uses conflicting Include roles: "+logical),include);
+                    if (metadataWitnesses.Any(witness => witness.SourcePath.Equals(resolved.Path,StringComparison.OrdinalIgnoreCase))) continue;
                     int count = SdkMetadataDefinitions.Prove(schemas,baseXml,resolved.Path,baseBytes);
                     metadataWitnesses.Add(new(resolved.Path,source.Sha256,count));
                     // Reborn: the validated leaf is unchanged, captured and Include-free; it adds closure evidence but no prepared asset handles.

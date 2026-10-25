@@ -41,7 +41,18 @@ internal static class SdkInstanceMetadataSmokeTest
             "<Defines>"+string.Concat(Enumerable.Range(0,513).Select(index => "<Define name='N"+index+"' value='7'/>"))+"</Defines>" })
             Reject(Fixture(body,bad));
         Reject(Fixture(body.Replace("type='all'","type='reference'",StringComparison.Ordinal),definitions));
-        Reject(Fixture(body.Replace(edge,edge+edge,StringComparison.Ordinal),definitions));
+        // Reborn: original EA Construction Yard repeats GlobalDefines; exact and case-alias repeats retain all source edges but contribute one captured definition witness.
+        foreach(string repeated in new[]{edge+edge,edge+edge.Replace("DATA:Definitions.xml","DATA:definitions.xml",StringComparison.Ordinal)}){
+            var repeatedPaths=Fixture(body.Replace(edge,repeated,StringComparison.Ordinal),definitions);byte[] repeatedRaw=File.ReadAllBytes(entry);
+            var repeatedResult=new SdkInstanceInheritanceProfile(schemas,repeatedPaths,metadata:true).Apply(entry,repeatedRaw);
+            Require(repeatedResult.Bytes!=null&&repeatedPaths.Includes.Length==2&&repeatedResult.Evidence.MetadataDefinitionIncludes.Length==1&&repeatedResult.Evidence.PreparedSources.Length==2&&File.ReadAllBytes(entry).SequenceEqual(repeatedRaw),"Repeated definition Include was rejected or replayed duplicate witnesses: "+string.Join(";",repeatedResult.Evidence.Diagnostics));
+            var repeatedGraph=SdkTypedSourceGraph.BindGraph(schemas,repeatedPaths,instanceMetadata:true);Require(repeatedGraph.ScopedGraphComplete,"Repeated definition Include did not survive final graph binding.");
+        }
+        // Reborn: production expression preparation resolves a repeated source's definitions once before inheritance.
+        var expressionPaths=Fixture(body.Replace(edge,edge+edge,StringComparison.Ordinal).Replace("Value='7'","Value='=$A'",StringComparison.Ordinal),definitions);
+        var expressionResult=new SdkInstanceInheritanceProfile(schemas,expressionPaths,expressions:true).Apply(entry,File.ReadAllBytes(entry));
+        Require(expressionResult.Bytes!=null&&expressionResult.Evidence.MetadataDefinitionIncludes.Length==1,"Repeated definition Include broke inherited expressions: "+string.Join(";",expressionResult.Evidence.Diagnostics));
+        var expressionXml=SdkXmlDiagnostics.Parse(expressionResult.Bytes!);Require(expressionXml.GetElementsByTagName("Asset","uri:ea.com:eala:asset").OfType<XmlElement>().Single(e=>e.GetAttribute("id")=="Owner").GetAttribute("Value")=="7","Repeated include expression did not reach the inherited owner.");
         Reject(Fixture(body.Replace(edge,edge+edge.Replace("type='all'","type='instance'",StringComparison.Ordinal),StringComparison.Ordinal),definitions));
         // Reborn: definition-only leaves provide no asset handles even if a caller attempts to inherit a definition name.
         Reject(Fixture(body.Replace("inheritFrom='Base'","inheritFrom='A'",StringComparison.Ordinal),definitions));
@@ -55,7 +66,7 @@ internal static class SdkInstanceMetadataSmokeTest
         var invalid = SdkTypedSourceGraph.BindGraph(schemas,invalidPaths,instanceMetadata:true).Documents.Single(document => document.SourcePath == entry);
         Require(invalid.Status == "SchemaInvalid" && invalid.Dependencies.Length == 0,"Metadata proof bypassed final owner schema validation.");
         bool conflict = false; try { SdkTypedSourceGraph.BindGraph(schemas,paths,instanceMetadata:true,instanceUpgrades:true); } catch (ArgumentException) { conflict = true; } Require(conflict,"Conflicting metadata/upgrade profiles admitted.");
-        Console.WriteLine("SDK instance metadata self-test: OK (reviewed definition leaf/closure/zero exports, unchanged older profile, hidden assets/nested Includes/Tags/directives/duplicate/forward/override/unsupported/oversized/stale/forged/role rejection, inherited expressions remain closed, final no-fields/source/output isolation)");
+        Console.WriteLine("SDK instance metadata self-test: OK (reviewed definition leaf/closure/zero exports, unchanged older profile, repeated/case-alias definition Includes and expressions, hidden assets/nested Includes/Tags/directives/duplicate declarations/forward/override/unsupported/oversized/stale/forged/role rejection, inherited expressions remain closed, final no-fields/source/output isolation)");
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: capture owned metadata leaf fixtures without touching external game sources. */
