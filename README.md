@@ -3719,3 +3719,9 @@ fields and complete GameObject composition are covered by offline checks.
 State/cursor/power imports, optional tint, outline, weak target markers and
 additional cursor/power lists are source-driven. Original EP1 records and
 a private package binding buttons to a new special power are checked offline.
+
+<!-- Reborn: log selection follows asset-name boundaries without automatic drag expansion. -->
+Studio log dragging uses character selection. Double-click selects a component
+between colons or whitespace, keeping underscores and dots inside asset names
+and excluding the padding around diagnostic labels. Restart Studio after updating
+the lifecycle helper to load this behavior.

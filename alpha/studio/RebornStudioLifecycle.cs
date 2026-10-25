@@ -27,6 +27,8 @@ namespace Reborn
         // Reborn: user choice and absent/empty sources use EA's warning text color; unimplemented stages retain red.
         private static readonly Regex OptionalSkippedLine = new Regex(@"^(?:\[\d\d:\d\d:\d\d(?:\.\d+)?\] )?Skipped: \[(?:Optional|No input)\]", RegexOptions.CultureInvariant);
         private static RichTextBox output;
+        // Reborn: keep the native selection hook alive for the lifetime of EA's log control.
+        private static LogSelectionWindow outputSelection;
         private static int colored;
         private static bool recoloring;
 
@@ -74,9 +76,72 @@ namespace Reborn
                 if (output == null) return;
                 colored = 0;
                 output.TextChanged += OnOutputChanged;
+                // Reborn: character-precise dragging must not expand into the padding around asset labels.
+                output.AutoWordSelection = false;
+                output.HandleCreated += OnOutputHandleCreated;
+                outputSelection = new LogSelectionWindow(output);
             }
             catch (Exception) { output = null; }
         }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: preserve precise dragging after WinForms recreates the log control's native handle. */
+        //-------------------------------------------------------------------------------------------------
+        private static void OnOutputHandleCreated(object sender, EventArgs args)
+        { ((RichTextBox)sender).AutoWordSelection = false; if (outputSelection != null) outputSelection.AttachHandle(); }
+
+        // Reborn: run after RichEdit's default handling, which otherwise re-expands a managed double-click selection on button-up.
+        private sealed class LogSelectionWindow : NativeWindow
+        {
+            private readonly RichTextBox box;
+            private bool finishWord;
+            private int start, length;
+            // Reborn: subclass only the owned log control; no application-wide mouse hook is installed.
+            internal LogSelectionWindow(RichTextBox control) { box = control; AttachHandle(); }
+            // Reborn: reconnect after control-handle recreation without retaining a stale native handle.
+            internal void AttachHandle() { if (Handle != IntPtr.Zero) ReleaseHandle(); AssignHandle(box.Handle); }
+            //-------------------------------------------------------------------------------------------------
+            /** Reborn: finalize colon/whitespace word bounds after native double-click and button-up processing. */
+            //-------------------------------------------------------------------------------------------------
+            protected override void WndProc(ref Message message)
+            {
+                int kind = message.Msg;
+                if (kind == 0x0201) finishWord = false;
+                base.WndProc(ref message);
+                if (kind == 0x0203)
+                {
+                    long point = message.LParam.ToInt64();
+                    OnOutputDoubleClick(box,new MouseEventArgs(MouseButtons.Left,2,(short)(point & 0xffff),(short)((point >> 16) & 0xffff),0));
+                    start = box.SelectionStart; length = box.SelectionLength; finishWord = true;
+                }
+                else if (kind == 0x0202 && finishWord)
+                { box.Select(start,length); finishWord = false; }
+            }
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: double-click selects a complete asset-name component, stopping at colons or whitespace without selecting padding. */
+        //-------------------------------------------------------------------------------------------------
+        private static void OnOutputDoubleClick(object sender, MouseEventArgs args)
+        {
+            if (args.Button != MouseButtons.Left) return;
+            var box = (RichTextBox)sender; string text = box.Text;
+            int index = box.GetCharIndexFromPosition(args.Location);
+            if (index < 0 || index >= text.Length) return;
+            int start = index, end = index;
+            if (!OutputWordBoundary(text[index]))
+            {
+                while (start > 0 && !OutputWordBoundary(text[start - 1])) start--;
+                while (end < text.Length && !OutputWordBoundary(text[end])) end++;
+            }
+            box.Select(start, end - start);
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: punctuation within an asset ID stays selectable; colons, spaces, tabs and line endings delimit components. */
+        //-------------------------------------------------------------------------------------------------
+        private static bool OutputWordBoundary(char character)
+        { return character == ':' || char.IsWhiteSpace(character); }
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: use the actual configured EA warning palette, with its original warning color as fallback. */
