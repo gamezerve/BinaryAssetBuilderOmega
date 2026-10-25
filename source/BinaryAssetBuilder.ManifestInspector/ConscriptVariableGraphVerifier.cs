@@ -518,6 +518,8 @@ internal sealed class ConscriptVariableGraphVerifier
         if(family.Type==typeof(W3DScriptedModelDrawModuleData))ScriptedShadowInfoContract.Qualify(grammar,manifest,baseline,referenceSchemas,catalog);
         // Reborn: frame-triggered draw FX events use original reactor spark records for native/import and nested metadata qualification.
         if(family.Type==typeof(W3DScriptedModelDrawModuleData))ScriptedFXEventContract.Qualify(grammar,manifest,baseline,referenceSchemas,catalog);
+        // Reborn: model-state turret lists learn their native and metadata grammar from the original Sentry Gun.
+        if(family.Type==typeof(W3DScriptedModelDrawModuleData))ScriptedTurretContract.Qualify(grammar,manifest,baseline,referenceSchemas,catalog);
         return grammar;
     }
 

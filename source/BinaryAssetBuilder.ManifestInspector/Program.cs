@@ -165,6 +165,9 @@ internal static class Program
             // Reborn: particle templates have a private native and linked-stream regression.
             // Reborn: privately qualify source-sized turret weapon lists and complete GameObject composition.
             // Reborn: tracer optional-status shapes use a private complete-object regression.
+            // Reborn: scripted model-state turrets have a private native/metadata composition regression.
+            if(args.Length==3 && args[0]=="scripted-turret-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();ScriptedTurretSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="tracer-source-self-test")
             {CompilerSmokeTest.InitializeHashProvider();TracerSourceSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="weapon-turret-self-test")

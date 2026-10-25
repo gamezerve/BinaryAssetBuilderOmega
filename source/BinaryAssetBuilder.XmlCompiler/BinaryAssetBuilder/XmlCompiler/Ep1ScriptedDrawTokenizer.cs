@@ -47,12 +47,16 @@ public static class Ep1ScriptedDrawTokenizer
     private static readonly Record FxEvent = new("FXEvent",28,new[]{
         F("Frame",0x23E650B8,0),F("FrameStep",0x23E650B8,4),F("FrameStop",0x23E650B8,8),
         F("FireWhenSkipped",0x77E3F4F7,24,Kind.Bool,1),F("Effect",0x0D1C8E83,12,Kind.Ref),F("Bone",0x1A2933AA,16,Kind.String,8)},25,3);
+    // Reborn: the original Sentry Gun model-state turret is a 28-byte record with two strings, two angles and one ID.
+    private static readonly Record Turret = new("ModelConditionStateTurret",28,new[]{
+        F("TurretNameKey",0x1A2933AA,0,Kind.String,8),F("TurretArtAngle",0x4E16EA4D,8,Kind.Real),
+        F("TurretPitch",0x1A2933AA,12,Kind.String,8),F("TurretArtPitch",0x4E16EA4D,20,Kind.Real),F("TurretID",0x23E650B8,24)});
     private static readonly Record ModelState = new("ModelConditionState", 196, new[] {
         F("ParseCondStateType",0x1323B870,0,Kind.Enum,limit:3), F("Name",0x1A2933AA,4,Kind.String,8), F("ConditionsYes",0x67DBBFC9,12,Kind.Flags,60,463), F("Skeleton",0x805D25F4,72,Kind.String,8),
         F("PortraitImage",0x0108BD1E,80,Kind.Ref), F("ButtonImage",0x0108BD1E,84,Kind.Ref), F("OverrideTooltip",0x1A2933AA,88,Kind.String,8), F("RetainSubObjects",0x77E3F4F7,192,Kind.Bool,1), F("id",0x805D25F4,96,Kind.String,8),
         F("Model",0xCD8EC40B,104,Kind.List,8,child:Model), F("Material",0xC7EA3CF4,112,Kind.Pointer,child:Material), F("Texture",0x6E5D40FB,116,Kind.List,8,child:Texture),
         F("WeaponFireFXBone",0xBD39D1A1,124,Kind.List,8,child:Bone), F("WeaponRecoilBone",0xBD39D1A1,132,Kind.List,8,child:Bone), F("WeaponMuzzleFlash",0xBD39D1A1,140,Kind.List,8,child:Bone), F("WeaponLaunchBone",0xBD39D1A1,148,Kind.List,8,child:Bone),
-        F("ParticleSysBone",0x98C53FE6,156,Kind.List,8,child:Particle), F("FXEvent",0x75991AD3,164,Kind.List,8,child:FxEvent), F("ShadowInfo",0x82FE7E88,172,Kind.Pointer,child:Shadow), F("Turret",0xF3095903,176,Kind.EmptyList,8), F("SubObject",0x03A28C40,184,Kind.EmptyList,8) }, 193, 3);
+        F("ParticleSysBone",0x98C53FE6,156,Kind.List,8,child:Particle), F("FXEvent",0x75991AD3,164,Kind.List,8,child:FxEvent), F("ShadowInfo",0x82FE7E88,172,Kind.Pointer,child:Shadow), F("Turret",0xF3095903,176,Kind.List,8,child:Turret), F("SubObject",0x03A28C40,184,Kind.EmptyList,8) }, 193, 3);
     private static readonly Record AnimationState = new("AnimationState", 140, new[] {
         F("ParseCondStateType",0x1323B870,0,Kind.Enum,limit:3), F("AnimNickName",0x1A2933AA,4,Kind.String,8), F("ConditionsYes",0x67DBBFC9,12,Kind.Flags,60,463), F("Name",0x1A2933AA,72,Kind.String,8), F("StateName",0x1A2933AA,80,Kind.String,8),
         F("Flags",0x5EC2B352,88,Kind.Flags,4,12), F("ShareAnimation",0x77E3F4F7,136,Kind.Bool,1), F("EnteringStateFX",0x0D1C8E83,92,Kind.Ref), F("FrameForPristineBonePositions",0x23E650B8,96),

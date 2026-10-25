@@ -8,6 +8,13 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: model-state turret records now emit their real metadata and source-sized strings. -->
+`ScriptedModelDraw/ModelConditionState/Turret` is build-enabled with source-sized
+lists, `TurretNameKey`, `TurretPitch`, both art angles and `TurretID` (default -1).
+Native records and generated metadata are checked against the original Uprising
+Sentry Gun; edited names, multiple entries and omitted attributes retain full
+source/native ownership in complete GameObject composition.
+
 <!-- Reborn: tracer shape admission follows the existing complete source/native writer instead of requiring Conscript status masks. -->
 `TracerModelDraw` accepts schema-valid authored values and both presence/absence
 of optional `ObjectStatusValidation`. Sentry Gun's original no-status tracer,

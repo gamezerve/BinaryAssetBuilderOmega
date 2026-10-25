@@ -152,6 +152,8 @@ if($SchedulerControl){
     Add-BatchCase 'weapon-turret' 'WeaponTurretNativeAndComposition' @('weapon-turret-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: source-driven tracers cover absent/present optional status, multiple draws and real imports.
     Add-BatchCase 'tracer-source' 'SourceDrivenTracerComposition' @('tracer-source-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: scripted turret names, angles, IDs and list counts retain independent retail-qualified metadata.
+    Add-BatchCase 'scripted-turret' 'ScriptedTurretComposition' @('scripted-turret-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: selected destruction/weapon modules share armor/body/root references, with optional newly built armor proof.
     Add-BatchCase 'gameobject-combat-composition' 'BoundedCombatNativeTokenProjection' @('gameobject-combat-composition-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'gameobject-authored-combat-composition' 'BoundedAuthoredArmorCombatConsumer' @('gameobject-authored-combat-composition-self-test',(Join-Path $OutputDirectory 'combat-consumer'),$StaticManifest,$GlobalManifest)
