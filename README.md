@@ -8,6 +8,13 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: normal mod authors can omit compiler regressions without omitting source and output validation. -->
+Studio now has an unchecked-by-default **Developer Build Tests** checkbox directly
+under **Build Global Data**. Off selects fast builds; on restores build-time
+stock/repeat/corruption regressions. Both modes retain source/schema/dependency
+validation and actual native/stream/package checks. The setting covers static and
+enabled global builds and is recorded in the successful build receipt.
+
 <!-- Reborn: retail WorldBuilder references are now packaged instead of relying on map-specific runtime availability. -->
 WorldBuilder resolver (October 25): Studio copies referenced WorldBuilder-only
 assets and their strong dependency closure into the mod's three stream variants.

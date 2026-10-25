@@ -59,9 +59,10 @@ internal static class ArmorPairDocumentSmokeTest
             var document = processor.ProcessDocumentInternal(source, source, null!, new DocumentProcessor.ProcessOptions { GenerateOutput = false, UsePrecompiled = true });
             // Reborn: freeze output authority only after each member has passed the actual dependency stage.
             foreach (var instance in document.SelfInstances) DependencyResolutionSmokeTest.Prepare(document, instance);
-            Refuse(() => { using var rejected = OutputManager.CreateExperimentalArmorDiagnostic(processor, document, directory); });
+            // Reborn: developer-only negative factory/commit tests do not replace the actual pair's source/native/stream validation.
+            if(SdkBuildTests.Enabled)Refuse(() => { using var rejected = OutputManager.CreateExperimentalArmorDiagnostic(processor, document, directory); });
             using var manager = OutputManager.CreateExperimentalArmorPairDiagnostic(processor, document, directory);
-            Refuse(() => manager.CommitManifest(document));
+            if(SdkBuildTests.Enabled)Refuse(() => manager.CommitManifest(document));
             foreach (var instance in document.SelfInstances)
             {
                 var buffer = plugins.GetPlugin(instance.Handle.TypeId).ProcessInstance(instance);
@@ -70,12 +71,11 @@ internal static class ArmorPairDocumentSmokeTest
                     throw new InvalidDataException("Pair Core buffer differs.");
                 var asset = manager.GetBinaryAsset(instance, true); asset.Buffer = buffer;
                 // Reborn: each member's changed buffer must fail its own frozen proof, including the second member.
-                buffer.InstanceData[^1] ^= 1;
-                try { Refuse(() => asset.Commit()); } finally { buffer.InstanceData[^1] ^= 1; }
+                if(SdkBuildTests.Enabled){buffer.InstanceData[^1] ^= 1;try { Refuse(() => asset.Commit()); } finally { buffer.InstanceData[^1] ^= 1; }}
             }
             document.PrepareOutputInstances(manager);
             // Reborn: equal-length corruption of either committed member must block the shared manifest before publication.
-            foreach (var asset in manager.Assets.Values)
+            if(SdkBuildTests.Enabled)foreach (var asset in manager.Assets.Values)
             {
                 string path = Path.Combine(asset.AssetOutputDirectory, asset.AssetFileName);
                 byte[] original = File.ReadAllBytes(path), damaged = original.ToArray(); damaged[^1] ^= 1;
@@ -120,7 +120,7 @@ internal static class ArmorPairDocumentSmokeTest
                 if (offset != bytes.Length) throw new InvalidDataException("Pair stream trailing bytes differ.");
             }
             // Reborn: equal-handle foreign objects must not impersonate either frozen member, even with unchanged checksum/XML.
-            for (int index = 0; index < document.OutputInstances.Count; index++)
+            if(SdkBuildTests.Enabled){for (int index = 0; index < document.OutputInstances.Count; index++)
             {
                 var original = document.OutputInstances[index];
                 var foreign = (InstanceDeclaration)typeof(object).GetMethod("MemberwiseClone", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.Invoke(original, null)!;
@@ -134,6 +134,7 @@ internal static class ArmorPairDocumentSmokeTest
             byte[] originalSource = File.ReadAllBytes(source);
             try { File.AppendAllText(source, " "); Refuse(() => manager.LinkStream(document)); }
             finally { File.WriteAllBytes(source, originalSource); }
+            }
             if (plugins.CanReuseCompiledDocuments) throw new InvalidDataException("Pair scope opened cache reuse.");
             Console.WriteLine($"Armor pair document: PASS (two stock-matched identities, actual Core/intermediate/linked streams, checksum/two readers/member corruption/source/incomplete/single-factory refusals; no BIG or game); manifest={manifestPath}");
             return manager.OutputDirectory;

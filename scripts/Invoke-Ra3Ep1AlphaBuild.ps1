@@ -119,7 +119,8 @@ try {
             if($LASTEXITCODE-ne 0){throw 'Authored AK47 Core/package build failed.'}
             $buildReceipt=Join-Path $output 'authored-weapon-build.json'
             $build=Get-Content -LiteralPath $buildReceipt -Raw|ConvertFrom-Json
-            if($admission.WeaponId-cne $root.GetAttribute('id') -or $build.WeaponId-cne $admission.WeaponId -or $admission.Damage-ne $build.Damage -or $build.EditableFieldCount-ne 1 -or -not $build.ActualCoreOutputUsed -or -not $build.StockBaselineCompared -or -not $build.AuthoredPayloadVerified -or -not $build.RepeatDeterministic -or $build.GameExecuted -or $build.InstalledFilesModified){throw 'Authored AK47 receipt differs from admitted selected input.'}
+            # Reborn: determinism evidence is required only when developer tests were requested; native/source/package proof remains mandatory in both modes.
+            if($admission.WeaponId-cne $root.GetAttribute('id') -or $build.WeaponId-cne $admission.WeaponId -or $admission.Damage-ne $build.Damage -or $build.EditableFieldCount-ne 1 -or -not $build.ActualCoreOutputUsed -or -not $build.StockBaselineCompared -or -not $build.AuthoredPayloadVerified -or ($env:REBORN_DEVELOPER_BUILD_TESTS-ne '0' -and -not $build.RepeatDeterministic) -or $build.GameExecuted -or $build.InstalledFilesModified){throw 'Authored AK47 receipt differs from admitted selected input.'}
             $receipt=[pscustomobject]@{WeaponId=$build.WeaponId;Damage=$build.Damage;EditableFieldCount=1;SelectedModXml=$ModXml;SelectedModXmlSha256=([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)));BuildReceipt=$buildReceipt;CompilerPath=$exe;PrebuiltCompilerUsed=[bool]$CompilerDirectory;InstalledFilesModified=$false;GameExecuted=$false}
             [IO.File]::WriteAllText((Join-Path $directory 'alpha-build.json'),($receipt|ConvertTo-Json))
             Write-Output ('Reborn: build succeeded. BIG: '+$build.PackagePath)

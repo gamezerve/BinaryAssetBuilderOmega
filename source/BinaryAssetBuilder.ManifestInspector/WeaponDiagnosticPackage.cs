@@ -24,6 +24,8 @@ internal static class WeaponDiagnosticPackage
         string archive = Path.Combine(directory, "RebornWeaponProbe.big");
         byte[] original = ReadBounded(archive);
         int controls = 0;
+        // Reborn: keep initial/final package verification in fast mode; reserve intentional mutations for developer builds.
+        if(SdkBuildTests.Enabled){
         Refuse(() => Prepare(directory, payloads));
         Require(ReadBounded(archive).SequenceEqual(original), "Occupied weapon package was overwritten.");
         // Reborn: pre-publication stream validation must reject equal-length corruption without accepting it as compiler output.
@@ -52,6 +54,7 @@ internal static class WeaponDiagnosticPackage
             string path = Path.Combine(directory, file); byte[] originalText = ReadBounded(path);
             try { File.WriteAllText(path, "add-big Wrong.big\n"); Refuse(() => Verify(directory, payloads)); }
             finally { File.WriteAllBytes(path, originalText); }
+        }
         }
         Verify(directory, payloads);
         var receipt = new { Asset = instance.Handle.Name, Damage = BinaryPrimitives.ReadSingleLittleEndian(buffer.InstanceData.AsSpan(2392, 4)),

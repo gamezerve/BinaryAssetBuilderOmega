@@ -43,6 +43,8 @@ internal static class ConscriptRecruitmentSmokeTest
     //-------------------------------------------------------------------------------------------------
     internal static void Qualify(SchemaSet schemas, string manifest)
     {
+        // Reborn: optional stock consumer-chain regression is separate from the real command's source/native validation.
+        if(!SdkBuildTests.Enabled)return;
         var catalog=ManifestReader.Read(SdkEnvironmentPreflight.Read(manifest,64*1048576));
         TypeRegistryAudit.ValidateTarget(catalog.Header.Version,catalog.Header.AllTypesHash);
         if(!catalog.Header.IsLinked || catalog.Validate().Count!=0)throw new InvalidDataException("Recruitment stock metadata invalid.");

@@ -258,17 +258,22 @@ internal static class Ep1ArmorDocumentSmokeTest
             using var manager = OutputManager.CreateExperimentalArmorDiagnostic(processor, document, parent);
             var asset = manager.GetBinaryAsset(instance, true);
             asset.Buffer = buffer;
+            // Reborn: negative commit controls are optional; the normal frozen output selection and linked-byte checks remain mandatory.
+            if(SdkBuildTests.Enabled){
             byte original = buffer.InstanceData[0];
             buffer.InstanceData[0] ^= 1;
             try { ExpectScope(() => asset.Commit()); }
             finally { buffer.InstanceData[0] = original; }
             document.PrepareOutputInstances(manager);
+            }else document.PrepareOutputInstances(manager);
+            if(SdkBuildTests.Enabled){
             string intermediate = Path.Combine(asset.AssetOutputDirectory, asset.AssetFileName);
             byte[] committed = File.ReadAllBytes(intermediate);
             byte[] damaged = (byte[])committed.Clone(); damaged[^1] ^= 1;
             try { File.WriteAllBytes(intermediate, damaged); ExpectScope(() => manager.CommitManifest(document)); }
             finally { File.WriteAllBytes(intermediate, committed); }
             Require(!File.Exists(manager.OutputDirectory + ".manifest"), "Rejected intermediate emitted manifest.");
+            }
             manager.CommitManifest(document);
             manager.LinkStream(document);
             string path = manager.OutputDirectory + ".manifest";
@@ -296,6 +301,7 @@ internal static class Ep1ArmorDocumentSmokeTest
             string xml = instance.XmlNode.OuterXml;
             // Reborn: build a fresh four-entry diagnostic BIG only after actual intermediate/linked payload verification.
             ArmorDiagnosticPackage.Exercise(manager.OutputDirectory, instance, buffer, document.OutputChecksum);
+            if(SdkBuildTests.Enabled){
             string typeIdValue = instance.XmlNode.Attributes!["TypeId"]!.Value;
             try { instance.XmlNode.Attributes["TypeId"]!.Value = "0"; ExpectScope(() => manager.LinkStream(document)); }
             finally { instance.XmlNode.Attributes["TypeId"]!.Value = typeIdValue; }
@@ -309,6 +315,7 @@ internal static class Ep1ArmorDocumentSmokeTest
             ExpectScope(() => manager.LinkStream(null!));
             ExpectScope(() => manager.CleanOutput());
             ExpectPolicy(() => manager.CreateVersionFile(document, "_mod"));
+            }
             Require(!processor.Plugins.CanReuseCompiledDocuments, "Diagnostic scope enabled compiled reuse.");
             Console.WriteLine($"  Actual OutputManager: committed .asset + manifest/bin/relo/imp verified; diagnostic={manager.OutputDirectory}");
             // Reborn: return only the package produced and independently verified in this exact scoped output directory.

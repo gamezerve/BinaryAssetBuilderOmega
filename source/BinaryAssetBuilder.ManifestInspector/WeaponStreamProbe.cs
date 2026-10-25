@@ -62,6 +62,8 @@ internal static class WeaponStreamProbe
                 && bytes.AsSpan(8).SequenceEqual(stream.Item3), "Weapon linked payload differs.");
         }
         // Reborn: changed document/source/settings/snapshots must not reuse an already valid output capability.
+        // Reborn: the actual linked output was checked above; mutation/recovery and repeat-link experiments are developer-only.
+        if(SdkBuildTests.Enabled){
         string xmlTypeId = instance.XmlNode.Attributes!["TypeId"]!.Value;
         try { instance.XmlNode.Attributes["TypeId"]!.Value = "0"; ExpectScope(() => manager.LinkStream(document)); }
         finally { instance.XmlNode.Attributes["TypeId"]!.Value = xmlTypeId; }
@@ -82,7 +84,8 @@ internal static class WeaponStreamProbe
             extension => File.ReadAllBytes(manager.OutputDirectory + extension));
         manager.LinkStream(document);
         foreach (var item in before) Require(File.ReadAllBytes(manager.OutputDirectory + item.Key).SequenceEqual(item.Value), "Weapon refusal/recovery changed streams.");
-        Console.WriteLine("Weapon scoped streams: PASS (two readers, ordered references, nine refusal controls, recovery; stream step only, no game).");
+        }
+        Console.WriteLine(SdkBuildTests.Enabled?"Weapon scoped streams: PASS (two readers, ordered references, nine refusal controls, recovery; stream step only, no game).":"Weapon scoped streams: PASS (two readers and ordered references; developer tests disabled; no game).");
         // Reborn: a separate explicit command may prepare offline candidates only after all scoped stream controls recover.
         if (buildPackage) WeaponDiagnosticPackage.Exercise(manager.OutputDirectory, instance, buffer, document.OutputChecksum);
         return path;

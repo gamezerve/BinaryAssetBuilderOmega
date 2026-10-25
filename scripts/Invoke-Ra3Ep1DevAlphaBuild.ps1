@@ -1,6 +1,6 @@
 # Reborn: stable SDK front end; preserve editable sources, publish versioned Documents mods, never change game installation files or launch a game.
 [CmdletBinding()]
-param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot,[string]$StudioSession,[string]$ModVersion='1.00',[string]$FinalModsRoot,[ValidateSet(0,1)][int]$BuildGlobalData=1)
+param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot,[string]$StudioSession,[string]$ModVersion='1.00',[string]$FinalModsRoot,[ValidateSet(0,1)][int]$BuildGlobalData=1,[ValidateSet(0,1)][int]$DeveloperBuildTests=0)
 $ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$lock=$null;$run=$null;$publishMutex=$null;$cancelEvent=$null;$publishHeld=$false;$runOwned=$false;$stageOwned=$false
 # Reborn: retain the original Studio envelope while adding truthful numbered backend phases and separate detailed output.
 . (Join-Path $PSScriptRoot 'Ra3Ep1BuildLog.ps1')
@@ -8,11 +8,15 @@ $ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-P
 . (Join-Path $PSScriptRoot 'Ra3Ep1FinalPackage.ps1')
 # Reborn: compile early AdditionalMaps streams independently of static data, then include both in the same final Streams BIG.
 . (Join-Path $PSScriptRoot 'Ra3Ep1GlobalData.ps1')
+# Reborn: every native/global/backend child inherits this build's mode; restore the caller's environment even on cancellation or failure.
+$previousDeveloperTests=$env:REBORN_DEVELOPER_BUILD_TESTS
 #-------------------------------------------------------------------------------------------------
 <# Reborn: delete only a newly owned work/output generation after proving containment and refusing every redirected descendant. #>
 #-------------------------------------------------------------------------------------------------
 function Remove-DevAlphaOwned([string]$Path,[string]$Parent){$resolved=[IO.Path]::GetFullPath($Path);if([IO.Path]::GetDirectoryName($resolved)-ine [IO.Path]::GetFullPath($Parent)){throw 'Cleanup target is not a direct owned child.'};foreach($item in @(Get-Item -LiteralPath $resolved -Force)+@(Get-ChildItem -LiteralPath $resolved -Force -Recurse)){if(($item.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0){throw 'Redirected cleanup target retained.'}};Remove-Item -LiteralPath $resolved -Recurse -Force}
 try{
+    $env:REBORN_DEVELOPER_BUILD_TESTS=[string]$DeveloperBuildTests
+    Write-SdkBuildLine $(if($DeveloperBuildTests){'Build mode: Developer (build tests enabled).'}else{'Build mode: Fast (developer tests disabled; source/reference/output validation remains enabled).'})
     Start-SdkBuildPhase 1 'Clearing build cache';Stop-SdkBuildPhase 'Skipped: this alpha does not use a persistent asset cache.'
     Start-SdkBuildPhase 2 'Clearing session cache';Stop-SdkBuildPhase 'Skipped: this alpha does not use a persistent compiler session cache.'
     Start-SdkBuildPhase 3 'Clearing built mod'
@@ -119,6 +123,8 @@ try{
     $result=[pscustomobject]@{Format='RebornLiveAlpha1';ModName=$ModName;Source=$ModXml;SourceSha256=(Get-FileHash -LiteralPath $ModXml -Algorithm SHA256).Hash;BigPath=(Join-Path $output $big);SkuDefPath=$sku;PackageSha256=$hash;CompilerFiles=$toolchain.Files;Backend=$receipt;Core=$core;GameExecuted=$false;InstalledFilesModified=$false}
     # Reborn: retain global source provenance separately from the static backend's receipt after private work cleanup.
     $result | Add-Member -NotePropertyName GlobalData -NotePropertyValue ([pscustomobject]@{Enabled=[bool]$BuildGlobalData;Streams=@($(if($globalBuild){$globalBuild.Evidence}))})
+    # Reborn: successful receipts distinguish source validation from optional developer regression execution.
+    $result | Add-Member -NotePropertyName DeveloperBuildTests -NotePropertyValue ([bool]$DeveloperBuildTests)
     [IO.File]::WriteAllText((Join-Path $stage 'build.json'),($result|ConvertTo-Json -Depth 20))
     # Reborn: retain full compiler evidence outside the four-file public package contract before private cleanup.
     Copy-Item -LiteralPath $detail -Destination (Join-Path $sdk '.work/last-detail.log') -Force
@@ -155,4 +161,4 @@ try{
     if($runOwned){if($detail -and (Test-Path -LiteralPath $detail)){Copy-Item -LiteralPath $detail -Destination (Join-Path $sdk '.work/last-failure-detail.log') -Force;Write-SdkBuildLine ('Detailed failure log: '+(Join-Path $sdk '.work/last-failure-detail.log'))}else{Write-SdkBuildLine 'No backend compiler log was generated for this failure.'};Write-SdkBuildLine ('Failure log: '+(Join-Path $sdk '.work/last-failure.log'));[IO.File]::WriteAllLines((Join-Path $sdk '.work/last-failure.log'),$script:BuildLogLines)}
     exit 1
 }
-finally{try{if($stageOwned -and (Test-Path -LiteralPath $stage)){Remove-DevAlphaOwned $stage (Join-Path $sdk 'builtmods')};if($runOwned -and (Test-Path -LiteralPath $run)){Remove-DevAlphaOwned $run (Join-Path $sdk '.work')}}finally{if($lock){$lock.Dispose()};if($publishHeld){$publishMutex.ReleaseMutex()};if($publishMutex){$publishMutex.Dispose()};if($cancelEvent){$cancelEvent.Dispose()}}}
+finally{try{if($stageOwned -and (Test-Path -LiteralPath $stage)){Remove-DevAlphaOwned $stage (Join-Path $sdk 'builtmods')};if($runOwned -and (Test-Path -LiteralPath $run)){Remove-DevAlphaOwned $run (Join-Path $sdk '.work')}}finally{$env:REBORN_DEVELOPER_BUILD_TESTS=$previousDeveloperTests;if($lock){$lock.Dispose()};if($publishHeld){$publishMutex.ReleaseMutex()};if($publishMutex){$publishMutex.Dispose()};if($cancelEvent){$cancelEvent.Dispose()}}}

@@ -3,6 +3,16 @@
 <html lang="en"><head><meta charset="utf-8"><title>Uprising Mod SDK Alpha</title></head>
 <body>
 <h1>Uprising Mod SDK Alpha — live repository workspace</h1>
+<!-- Reborn: distinguish optional developer regressions from validation of the user's real source and generated output. -->
+<h2>Developer Build Tests</h2>
+<p>The checkbox directly below <strong>Build Global Data</strong> defaults off.
+Unchecked selects a fast build; checked enables build-time stock comparisons,
+deterministic repeats and deliberate corruption/overwrite tests. The selection
+applies to static data and any enabled global builds.</p>
+<p>Both modes keep XML/schema and dependency checks, supported-layout admission,
+required native metadata loading, actual source/native verification and final
+stream/package readback. Fast mode does not enable unsupported features or hide
+missing assets, strings or definitions. The build log shows the selected mode.</p>
 <!-- Reborn: global source is compiled separately and discovered through the game's existing AdditionalMaps loader. -->
 <h2>Build Global Data</h2>
 <p>Check <strong>Build Global Data</strong> to compile your

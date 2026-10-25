@@ -144,6 +144,7 @@ internal static class ArmorAuthoredBuild
         ArmorTrialPreparation.Prepare(diagnostic, package, true, admitted.Xml);
         ArmorTrialPreparation.Controls(diagnostic, package, true, admitted.Xml);
         // Reborn: mismatched admitted XML must not relabel an existing compiled package or create a candidate directory.
+        if(SdkBuildTests.Enabled){
         var wrong = ArmorAuthoringAdmission.Admit(System.Text.Encoding.UTF8.GetBytes(
             admitted.Xml.Replace($"Damage=\"GUN\" Percent=\"{admitted.GunPercent}\"", $"Damage=\"GUN\" Percent=\"{(admitted.GunPercent == 100 ? 250 : 100)}\"")));
         bool refused = false;
@@ -151,6 +152,7 @@ internal static class ArmorAuthoredBuild
         try { ArmorTrialPreparation.Prepare(diagnostic, rejected, true, wrong.Xml); }
         catch (InvalidDataException) { refused = true; }
         if (!refused || Directory.Exists(rejected)) throw new InvalidDataException("Authored package/source mismatch accepted.");
+        }
         string archive = Path.Combine(package, "RebornArmorProbe.big");
         var receipt = new { ArmorId = ArmorAuthoringAdmission.Identity(admitted.Xml), admitted.GunPercent, Snapshot = snapshot,
             EditableFloatCount = 18, Percentages = ArmorAuthoringAdmission.Values(admitted.Xml).ToDictionary(item => item.Key, item => item.Value.Percent),
@@ -160,7 +162,7 @@ internal static class ArmorAuthoredBuild
             ArchiveSha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(archive))),
             StockBaselineCompared = true, ActualCoreOutputUsed = true, AuthoredPayloadVerified = true,
             CanonicalFixedRecipeUsed = false, ArchiveEntryCount = 15, DefaultReaderLayout = true,
-            CorruptionControlsPassed = true, WrongSourceRefused = true,
+            CorruptionControlsPassed = SdkBuildTests.Enabled, WrongSourceRefused = SdkBuildTests.Enabled,
             InstalledFilesModified = false, GameExecuted = false, RuntimeOverrideProven = false };
         File.WriteAllText(Path.Combine(directory, "authored-build.json"), JsonSerializer.Serialize(receipt, new JsonSerializerOptions { WriteIndented = true }));
         Console.WriteLine($"Authored armor build: PASS (GUN={admitted.GunPercent}; real Core + verified default package; no game): {archive}");

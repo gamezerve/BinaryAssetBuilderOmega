@@ -192,6 +192,8 @@ internal static class ArmorTrialPreparation
     internal static void Controls(string source, string directory, bool defaultRoute = false, string? authoredXml = null)
     {
         byte[][] expected = ReadSource(source, authoredXml); Verify(directory, expected, defaultRoute);
+        // Reborn: normal builds verify the real candidate above; deliberate overwrite/corruption cases are developer-only.
+        if(!SdkBuildTests.Enabled)return;
         bool refused = false;
         try { Prepare(source, directory, defaultRoute, authoredXml); } catch (InvalidDataException) { refused = true; }
         if (!refused) throw new InvalidDataException("Trial occupied output accepted.");

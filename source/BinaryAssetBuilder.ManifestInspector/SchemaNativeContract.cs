@@ -88,6 +88,8 @@ internal sealed class SchemaNativeContract
     //-------------------------------------------------------------------------------------------------
     internal static void VerifyStock(XmlElement resolved,Type type,uint typeId,byte[] stock,int native,IReadOnlyList<AssetId> stockReferences)
     {
+        // Reborn: stock witness comparisons are developer regressions; Verify above still checks every current source/native output in fast builds.
+        if(!SdkBuildTests.Enabled)return;
         var proof=new SchemaNativeContract(stock,true,typeId,stockReferences);proof.Struct(type,resolved,native,type.Name,0);proof.Consumed(resolved);
     }
 

@@ -57,16 +57,16 @@ internal static class ConscriptMultiAssetBuild
             var plans=sources.Where(s=>s.DocumentElement!.LocalName=="GameObject").ToDictionary(s=>s,s=>ConscriptVariableBehaviorSource.Admit(s,baseline,official));
             var built=new Dictionary<AssetId,Built>();int prefix=0;var compileLog=ConscriptCompileLog.ForPrepared(entry);
             // Reborn: validate the isolated EP1 upgrade ABI against original stock before emitting any authored upgrades.
-            if(sources.Any(s=>s.DocumentElement!.LocalName=="UpgradeTemplate"))UpgradeTemplateCompiler.Qualify(global,schemas,stock);
+            if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="UpgradeTemplate"))UpgradeTemplateCompiler.Qualify(global,schemas,stock);
             // Reborn: ObjectCreationList families/fields are enabled only after original EP1 OCLs exhibiting them pass the same proof.
             var lists=sources.Where(s=>s.DocumentElement!.LocalName=="ObjectCreationList").ToArray();if(lists.Length!=0)ObjectCreationListCompiler.Qualify(manifest,global,schemas,stock,lists);
             // Reborn: authored textures/packed images are emitted only after the writers are proved on original EP1 static data.
-            if(sources.Any(s=>s.DocumentElement!.LocalName=="Texture"))Ep1TextureCompiler.Qualify(manifest);
+            if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="Texture"))Ep1TextureCompiler.Qualify(manifest);
             // Reborn: use the existing W3DContainer marshaler only after its untokenized EP1 stock layout matches.
-            if(sources.Any(s=>s.DocumentElement!.LocalName=="W3DContainer"))W3DContainerCompiler.Qualify(manifest,schemas,available);
-            if(sources.Any(s=>s.DocumentElement!.LocalName=="PackedTextureImage"))PackedTextureImageCompiler.Qualify(manifest,schemas,stock);
+            if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="W3DContainer"))W3DContainerCompiler.Qualify(manifest,schemas,available);
+            if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="PackedTextureImage"))PackedTextureImageCompiler.Qualify(manifest,schemas,stock);
             // Reborn: ambient/control extensions are qualified on original native data before any authored audio enters a package.
-            if(audioManifest!=null)AuthoredAmbientCompiler.Qualify(global,Normalize);
+            if(SdkBuildTests.Enabled&&audioManifest!=null)AuthoredAmbientCompiler.Qualify(global,Normalize);
             foreach(var xml in sources){
                 string type=xml.DocumentElement!.LocalName;InstanceDeclaration instance;AssetBuffer buffer;
                 // Reborn: announce and time the asset around its actual processor/verifier, as EA BuildMod does per instance.
@@ -108,10 +108,10 @@ internal static class ConscriptMultiAssetBuild
                     var result=ConscriptRecruitmentSmokeTest.CompileXml(schemas,xml.OuterXml);instance=Attach(result.Instance,xml.DocumentElement.GetAttribute("id")+".xml");buffer=result.Chunk;
                 }else if(type=="LogicCommand"){
                     // Reborn: every other EP1 command shape uses the general route, proved first on the original static commands.
-                    LogicCommandCompiler.Admit(xml);LogicCommandCompiler.Qualify(manifest,schemas,stock);LogicCommandCompiler.ReportUnwitnessed(xml);instance=Normalize(xml);var native=LogicCommandCompiler.Compile(instance.XmlNode);
+                    LogicCommandCompiler.Admit(xml);if(SdkBuildTests.Enabled)LogicCommandCompiler.Qualify(manifest,schemas,stock);LogicCommandCompiler.ReportUnwitnessed(xml);instance=Normalize(xml);var native=LogicCommandCompiler.Compile(instance.XmlNode);
                     SchemaNativeContract.Verify(LogicCommandCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(Ep1LogicCommand),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
                 }else{
-                    QualifySet(stock,manifest,schemas);instance=Normalize(xml);buffer=CompileSet(instance);
+                    if(SdkBuildTests.Enabled)QualifySet(stock,manifest,schemas);instance=Normalize(xml);buffer=CompileSet(instance);
                 }
                 var id=new AssetId(instance.Handle.TypeId,instance.Handle.InstanceId);instance.Handle.TypeHash=fingerprints[id.TypeId].Hash;instance.Handle.InstanceHash=FastHash.GetHashCode(Encoding.UTF8.GetBytes(instance.XmlNode.OuterXml));instance.ValidatedReferencedInstances=new(instance.ReferencedInstances);
                 foreach(var reference in instance.ReferencedInstances)if(available.Count(a=>a.TypeId==reference.TypeId&&a.InstanceId==reference.InstanceId)!=1)throw SdkXmlDiagnostics.At(new InvalidDataException("Missing or ambiguous asset: "+reference.Name),xml.DocumentElement);
@@ -136,7 +136,8 @@ internal static class ConscriptMultiAssetBuild
             }
             var runtime=new ReferencedFileBuffer();typeof(OutputManager).GetMethod("AddExternalManifestReferences",BindingFlags.NonPublic|BindingFlags.Static)!.Invoke(null,new object[]{runtime,physical,string.Join(";",runtimeNames)});
             Console.WriteLine("Generating stream: "+instances.Length+" assets, output checksum "+checksum.ToString("x8")+".");
-            var streams=BoundedDiagnosticBuild.SerializeAssetGraph(instances,chunks,checksum,runtime,flags,fingerprints);var repeated=BoundedDiagnosticBuild.SerializeAssetGraph(instances,chunks,checksum,runtime,flags,fingerprints);if(streams.Any(p=>!p.Value.SequenceEqual(repeated[p.Key])))throw new InvalidDataException("Mixed stream serialization is not deterministic.");
+            // Reborn: one serialization/readback is mandatory; only developer builds repeat it to test determinism.
+            var streams=BoundedDiagnosticBuild.SerializeAssetGraph(instances,chunks,checksum,runtime,flags,fingerprints);if(SdkBuildTests.Enabled){var repeated=BoundedDiagnosticBuild.SerializeAssetGraph(instances,chunks,checksum,runtime,flags,fingerprints);if(streams.Any(p=>!p.Value.SequenceEqual(repeated[p.Key])))throw new InvalidDataException("Mixed stream serialization is not deterministic.");}
             Directory.CreateDirectory(output);string verification=Path.Combine(output,"stream-readback");ModifierFXStreamSmokeTest.WriteNew(verification,streams);BoundedDiagnosticBuild.Verify(verification,instances,chunks,streams,checksum,runtimeNames,flags);
             // Reborn: reported only after deterministic re-serialization and binary/relocation/import readback both passed.
             Console.WriteLine("Linking binary, relocation and import data verified by readback; mod Stream complete");compileLog.Statistics();

@@ -75,7 +75,7 @@ internal static class ArmorPairAuthoredBuild
         ArmorTrialPreparation.Prepare(diagnostic, package, true, declaration);
         ArmorTrialPreparation.Controls(diagnostic, package, true, declaration);
         // Reborn: changing either member's value must reject reuse of this compiled pair before creating a new package.
-        foreach (int index in new[] { 0, 1 })
+        if(SdkBuildTests.Enabled)foreach (int index in new[] { 0, 1 })
         {
             var xml = new XmlDocument { XmlResolver = null }; xml.LoadXml(pair[index]);
             var gun = xml.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(item => item.GetAttribute("Damage") == "GUN");
@@ -87,8 +87,8 @@ internal static class ArmorPairAuthoredBuild
         }
         string archive = Path.Combine(package, "RebornArmorProbe.big");
         var receipt = new { ArmorCount = 2, Assets = Values(pair), ActualCoreOutputUsed = true, StockBaselineCompared = true,
-            AuthoredPayloadVerified = true, DefaultReaderLayout = true, ArchiveEntryCount = 15, CorruptionControlsPassed = true,
-            WrongMemberSourceRefused = true, PackagePath = archive, ConfigPath = Path.Combine(package, "reborn_1.0.cfg"),
+            AuthoredPayloadVerified = true, DefaultReaderLayout = true, ArchiveEntryCount = 15, CorruptionControlsPassed = SdkBuildTests.Enabled,
+            WrongMemberSourceRefused = SdkBuildTests.Enabled, PackagePath = archive, ConfigPath = Path.Combine(package, "reborn_1.0.cfg"),
             ArchiveSha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(archive))),
             InstalledFilesModified = false, GameExecuted = false, RuntimeOverrideProven = false };
         File.WriteAllText(Path.Combine(directory, "pair-build.json"), JsonSerializer.Serialize(receipt, new JsonSerializerOptions { WriteIndented = true }));

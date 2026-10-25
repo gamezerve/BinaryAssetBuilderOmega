@@ -88,7 +88,8 @@ internal static class WeaponAuthoredBuild
             if (Convert.ToHexString(SHA256.HashData(baseline.Buffer.InstanceData)) != "2B0C3AABB5521C7C8315A1A5EA22DFCF8D681C6546E9AC58DBF0D0495B2A8C6B")
                 throw new InvalidDataException("Authored weapon baseline differs from reviewed stock.");
             File.WriteAllText(sourcePath, Declaration(admitted.Xml));
-            var selected = Process(); var repeat = Process();
+            // Reborn: keep the independent baseline/source comparison, but compile the selected source twice only for developer determinism tests.
+            var selected = Process(); var repeat = SdkBuildTests.Enabled?Process():selected;
             byte[] expected = baseline.Buffer.InstanceData.ToArray();
             BinaryPrimitives.WriteSingleLittleEndian(expected.AsSpan(2392, 4), admitted.Damage);
             if (!expected.SequenceEqual(selected.Buffer.InstanceData) || !selected.Buffer.InstanceData.SequenceEqual(repeat.Buffer.InstanceData)
@@ -101,7 +102,7 @@ internal static class WeaponAuthoredBuild
             string package = WeaponDiagnosticPackage.PathFor(manifest);
             var receipt = new { WeaponId = selected.Instance.Handle.InstanceName, admitted.Damage, EditableFieldCount = 1,
                 SelectedInputSha256 = Convert.ToHexString(SHA256.HashData(bytes)), ActualCoreOutputUsed = true,
-                StockBaselineCompared = true, AuthoredPayloadVerified = true, RepeatDeterministic = true,
+                StockBaselineCompared = true, AuthoredPayloadVerified = true, RepeatDeterministic = SdkBuildTests.Enabled,
                 SelectedInstanceHash = selected.Instance.Handle.InstanceHash, BaselineInstanceHash = baseline.Instance.Handle.InstanceHash,
                 PackagePath = package, PackageSha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(package))),
                 ConfigPath = Path.Combine(Path.GetDirectoryName(package)!, "weaponprobe_1.0.cfg"),

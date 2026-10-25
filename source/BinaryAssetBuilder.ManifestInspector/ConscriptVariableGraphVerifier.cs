@@ -83,17 +83,18 @@ internal sealed class ConscriptVariableGraphVerifier
     internal ConscriptVariableGraphVerifier(XmlSchemaSet schemas,string manifest,XmlDocument baseline,SchemaSet referenceSchemas,ManifestAsset[] catalog)
     {
         official=schemas;stock=GameObjectStockReview.Capture(manifest,"GameObject:SovietAntiInfantryInfantry");topology=GameObjectModuleReview.Inspect(manifest,stock.Asset.Name);
-        queueDock=new(()=>QueueDockContract.QualifyStock(manifest));
-        queueExit=new(()=>QueueProductionExitContract.QualifyStock(manifest));
-        spawn=new(()=>SpawnBehaviorContract.QualifyStock(manifest,official,catalog));
-        unpack=new(()=>StructureUnpackContract.QualifyStock(manifest,official,catalog));
+        // Reborn: bool-only stock witnesses run in developer mode; source verification and metadata-producing grammar loads remain active in both modes.
+        queueDock=new(()=>!SdkBuildTests.Enabled||QueueDockContract.QualifyStock(manifest));
+        queueExit=new(()=>!SdkBuildTests.Enabled||QueueProductionExitContract.QualifyStock(manifest));
+        spawn=new(()=>!SdkBuildTests.Enabled||SpawnBehaviorContract.QualifyStock(manifest,official,catalog));
+        unpack=new(()=>!SdkBuildTests.Enabled||StructureUnpackContract.QualifyStock(manifest,official,catalog));
         production=new(()=>ProductionUpdateContract.QualifyGraph(manifest,baseline,referenceSchemas,catalog));
-        repair=new(()=>RepairUpdateContract.QualifyStock(manifest));
-        engineer=new(()=>EngineerContainContract.QualifyStock(manifest,official,catalog));
-        placement=new(()=>AssistedPlacementContract.QualifyStock(manifest,official));
-        infiltrator=new(()=>InfiltratorContainContract.QualifyStock(manifest,official,catalog));
-        structurePlacement=new(()=>StructurePlacementContract.QualifyStock(manifest,official));
-        luaEventList=new(()=>LUAEventListContract.QualifyStock(manifest,official));
+        repair=new(()=>!SdkBuildTests.Enabled||RepairUpdateContract.QualifyStock(manifest));
+        engineer=new(()=>!SdkBuildTests.Enabled||EngineerContainContract.QualifyStock(manifest,official,catalog));
+        placement=new(()=>!SdkBuildTests.Enabled||AssistedPlacementContract.QualifyStock(manifest,official));
+        infiltrator=new(()=>!SdkBuildTests.Enabled||InfiltratorContainContract.QualifyStock(manifest,official,catalog));
+        structurePlacement=new(()=>!SdkBuildTests.Enabled||StructurePlacementContract.QualifyStock(manifest,official));
+        luaEventList=new(()=>!SdkBuildTests.Enabled||LUAEventListContract.QualifyStock(manifest,official));
         buildingBehavior=new(()=>BuildingBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         fireWeaponDeath=new(()=>FireWeaponDeathContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -105,11 +106,11 @@ internal sealed class ConscriptVariableGraphVerifier
         aiGrammar=new(()=>AIUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         foreach(string name in GameObjectExtendedRootContract.Names)extendedRoots.Add(name,new(()=>GameObjectExtendedRootContract.Qualify(name,manifest,baseline,referenceSchemas,catalog)));
         powerUpgrade=new(()=>PowerUpgradeContract.Create(stock.Bytes,topology.Containers.Single(c=>c.Name=="Behaviors").Modules,GameObjectStockReview.Tokens(stock.Bytes,0)[FastHash.GetHashCode("AI")].Offset));
-        fxList=new(()=>FXListBehaviorContract.QualifyStock(manifest,official,referenceSchemas,baseline,catalog));
-        secondaryDamage=new(()=>SecondaryDamageTrackerContract.QualifyStock(manifest,official,referenceSchemas,baseline,catalog));
-        browserWitness=new(()=>GameObjectBrowserContract.Qualify(manifest));
-        aiAbsentWitness=new(()=>AIAbsenceContract.Qualify(manifest));
-        deathBehaviors=new(()=>DeathBehaviorContract.QualifyStock(manifest,official,referenceSchemas,baseline,catalog));
+        fxList=new(()=>!SdkBuildTests.Enabled||FXListBehaviorContract.QualifyStock(manifest,official,referenceSchemas,baseline,catalog));
+        secondaryDamage=new(()=>!SdkBuildTests.Enabled||SecondaryDamageTrackerContract.QualifyStock(manifest,official,referenceSchemas,baseline,catalog));
+        browserWitness=new(()=>!SdkBuildTests.Enabled||GameObjectBrowserContract.Qualify(manifest));
+        aiAbsentWitness=new(()=>!SdkBuildTests.Enabled||AIAbsenceContract.Qualify(manifest));
+        deathBehaviors=new(()=>!SdkBuildTests.Enabled||DeathBehaviorContract.QualifyStock(manifest,official,referenceSchemas,baseline,catalog));
         templates=ConscriptModuleScalarContract.Owners(baseline).ToDictionary(o=>o.Element.GetAttribute("id"),o=>topology.Containers.Single(c=>c.Name==o.Container).Modules[o.Index],StringComparer.Ordinal);
         sell=new(()=>{
             var captured=GameObjectStockReview.Capture(manifest,"GameObject:AlliedConstructionYard");var modules=GameObjectModuleReview.Inspect(manifest,captured.Asset.Name).Containers.Single(c=>c.Name=="Behaviors").Modules;

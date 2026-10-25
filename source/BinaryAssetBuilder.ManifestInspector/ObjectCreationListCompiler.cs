@@ -73,7 +73,8 @@ internal static class ObjectCreationListCompiler
     {
         ReviewAbi();string sage=SageXml();var covered=new HashSet<string>(StringComparer.Ordinal);int globals=0;
         var cache=new Dictionary<string,XmlDocument>(StringComparer.OrdinalIgnoreCase);
-        foreach(var (file,id) in StaticWitnesses){var source=Owner(Load(Path.Combine(sage,file)),id,file);Verify(source,manifest,schemas,catalog);covered.UnionWith(Features(source.DocumentElement!));}
+        // Reborn: keep source feature admission in both modes; stock binary comparisons are optional developer tests.
+        foreach(var (file,id) in StaticWitnesses){var source=Owner(Load(Path.Combine(sage,file)),id,file);if(SdkBuildTests.Enabled)Verify(source,manifest,schemas,catalog);covered.UnionWith(Features(source.DocumentElement!));}
         var pool=Load(Path.Combine(sage,"GlobalData/ObjectCreationLists.xml")).DocumentElement!.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="ObjectCreationList"&&Eligible(e)).ToArray();
         foreach(var document in authored)
             foreach(string feature in Features(document.DocumentElement!).OrderBy(f=>f,StringComparer.Ordinal))
@@ -81,9 +82,9 @@ internal static class ObjectCreationListCompiler
                 if(covered.Contains(feature))continue;
                 var witness=pool.FirstOrDefault(e=>Features(e).Contains(feature))
                     ??throw SdkXmlDiagnostics.At(new InvalidDataException("ObjectCreationList "+feature+" has no original EP1 stock witness; this nugget family/field is not enabled."),Node(document.DocumentElement!,feature)??document.DocumentElement!);
-                var source=Xml(witness.OuterXml);Verify(source,global,schemas,catalog);covered.UnionWith(Features(source.DocumentElement!));globals++;
+                var source=Xml(witness.OuterXml);if(SdkBuildTests.Enabled)Verify(source,global,schemas,catalog);covered.UnionWith(Features(source.DocumentElement!));globals++;
             }
-        Console.WriteLine("Reborn: EP1 ObjectCreationList stock qualification: PASS ("+StaticWitnesses.Length+" static + "+globals+" global witness(es); untokenized native).");
+        Console.WriteLine(SdkBuildTests.Enabled?"Reborn: EP1 ObjectCreationList stock qualification: PASS ("+StaticWitnesses.Length+" static + "+globals+" global witness(es); untokenized native).":"Reborn: ObjectCreationList source admission completed; developer stock comparisons skipped.");
 
         XmlDocument Load(string path){if(!cache.TryGetValue(path,out var xml))cache[path]=xml=SdkXmlDiagnostics.Parse(SdkEnvironmentPreflight.Read(path,4*1048576),path);return xml;}
     }

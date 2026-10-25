@@ -17,6 +17,8 @@ internal static class ArmorDiagnosticPackage
     {
         string archivePath = Path.Combine(Path.GetDirectoryName(prefix)!, "RebornArmorProbe.big");
         string result = Write(prefix, archivePath, instance, buffer, checksum);
+        // Reborn: Write already verifies the real archive; occupied/corrupt input scenarios belong only to developer builds.
+        if(!SdkBuildTests.Enabled)return result;
         byte[] original = ReadBounded(result);
         byte[][] expected = Extensions.Select(extension => ReadBounded(prefix + extension)).ToArray();
         ExpectRefusal(() => Write(prefix, archivePath, instance, buffer, checksum));

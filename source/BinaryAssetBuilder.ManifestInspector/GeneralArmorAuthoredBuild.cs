@@ -228,6 +228,8 @@ internal static class GeneralArmorAuthoredBuild
             var asset = manager.GetBinaryAsset(instance, true);
             document.PrepareOutputInstances(manager);
             // Reborn: the generalized identity/list path retains source, normalized XML and committed-buffer immutability controls.
+            // Reborn: deliberate source/XML/intermediate mutations are developer regressions; normal commit/link checks remain below in both modes.
+            if(SdkBuildTests.Enabled){
             byte[] snapshot = File.ReadAllBytes(authored);
             try { File.AppendAllText(authored, " "); ExpectScope(() => manager.CommitManifest(document)); }
             finally { File.WriteAllBytes(authored, snapshot); }
@@ -246,6 +248,7 @@ internal static class GeneralArmorAuthoredBuild
                 finally { document.OutputInstances[last] = original; }
                 try { document.OutputInstances.RemoveAt(last); ExpectScope(() => manager.CommitManifest(document)); }
                 finally { document.OutputInstances.Add(original); }
+            }
             }
             manager.CommitManifest(document); manager.LinkStream(document);
             string manifestPath = manager.OutputDirectory + ".manifest";
@@ -303,7 +306,7 @@ internal static class GeneralArmorAuthoredBuild
                 InstanceHash = instances.Length == 1 ? (uint?)instance.Handle.InstanceHash : null, DefaultReaderPackage = true, DefaultReaderPackagePath = candidate,
                 DefaultReaderPackageSha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(candidate))),
                 ConfigPath = Path.Combine(Path.GetDirectoryName(candidate)!, "general_1.0.cfg"), AlphaCapabilitiesExpanded = false,
-                ScopeCorruptionControlsPassed = generalSet && instances.Length > 1 ? 5 : 3, CandidateCorruptionControlsPassed = 3,
+                ScopeCorruptionControlsPassed = SdkBuildTests.Enabled?(generalSet && instances.Length > 1 ? 5 : 3):0, CandidateCorruptionControlsPassed = SdkBuildTests.Enabled?3:0,
                 ArmorCount = instances.Length, ArmorIds = instances.Select(item => item.Handle.InstanceName).ToArray(),
                 GameExecuted = false, RuntimeOverrideProven = false };
             string json = JsonSerializer.Serialize(receipt, new JsonSerializerOptions { WriteIndented = true });
@@ -339,6 +342,8 @@ internal static class GeneralArmorAuthoredBuild
         File.WriteAllText(config, fragment, Encoding.ASCII);
         string sku = Path.Combine(package, "general_1.0.skudef"); File.WriteAllText(sku, fragment, Encoding.ASCII);
         Verify();
+        // Reborn: the fast candidate has already passed exact archive/config readback; omit developer-only corruption injection.
+        if(!SdkBuildTests.Enabled)return archivePath;
         // Reborn: equal-length payload corruption must fail full entry readback; restore only this owned candidate afterward.
         try { var damaged = bytes.ToArray(); damaged[^1] ^= 1; File.WriteAllBytes(archivePath, damaged); Refuse(Verify); }
         finally { File.WriteAllBytes(archivePath, bytes); }
