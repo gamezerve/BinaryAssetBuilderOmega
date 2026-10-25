@@ -184,7 +184,10 @@ public static partial class Marshaler
                 MarshalPolymorphicType<FlammableUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x4D834921u:
-                MarshalPolymorphicType<AutoDepositUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: Uprising transactions have a distinct native layout; retain the retail class identity.
+                using(var context=state.Push((void**)objT,(uint)sizeof(Ep1AutoDepositUpdateModuleData),1u))
+                    Marshal(node,(Ep1AutoDepositUpdateModuleData*)*objT,state);
+                uint depositTypeId=0x4D834921u;state.InplaceEndianToPlatform(&depositTypeId);*(uint*)*objT=depositTypeId;
                 break;
             case 0xB07119E4u:
                 MarshalPolymorphicType<FXListBehaviorModuleData, BehaviorModuleData>(node, objT, state);

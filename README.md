@@ -8,6 +8,15 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: EP1 automatic income uses retail transaction lists rather than the incompatible legacy KW scalar record. -->
+`AutoDepositUpdate` now supports all Uprising XSD fields: `DepositInterval`,
+`GiveNoXP`, `OnlyWhenGarrisoned`, `Flags`, `TransactionCategory`, and repeated
+`InitialCaptureBonus`, `Deposit`, and `ResourceCap` transactions (`Account`/`Amount`).
+The 48-byte EP1 header and inherited metadata are anchored to the local retail
+WorldBuilder OilDerrick and NY stock-exchange records. Private tests cover
+original values, edits, defaults, populated/empty lists and full GameObject
+composition. This is offline compiler validation; gameplay has not been tested.
+
 <!-- Reborn: normal mod authors can omit compiler regressions without omitting source and output validation. -->
 Studio now has an unchecked-by-default **Developer Build Tests** checkbox directly
 under **Build Global Data**. Off selects fast builds; on restores build-time

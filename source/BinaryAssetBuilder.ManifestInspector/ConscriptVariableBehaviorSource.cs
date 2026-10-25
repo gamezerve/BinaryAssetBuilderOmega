@@ -79,6 +79,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: recall and parking accept schema-valid authored values and optional records, with independent EP1 source/native proofs.
             if(AirfieldBehaviorContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             // Reborn: death weapon references, death conditions and optional/list records are source-driven, not frozen to the inherited building sample.
+            // Reborn: automatic-deposit source uses schema-sized lists and the independently captured EP1 native layout.
+            if(owner.NativeType==typeof(SageBinaryData.Ep1AutoDepositUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1FireWeaponWhenDeadBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             // Reborn: exact existing identity breaks equivalent-template ties; new IDs may use any otherwise identical complete reviewed shape.
             var candidates=templates.Where(t=>t.Element.LocalName==owner.Element.LocalName).OrderByDescending(t=>t.Element.GetAttribute("id")==owner.Element.GetAttribute("id"));
