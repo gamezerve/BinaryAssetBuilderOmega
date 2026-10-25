@@ -120,7 +120,7 @@ namespace Reborn
         }
 
         //-------------------------------------------------------------------------------------------------
-        /** Reborn: double-click selects a complete asset-name component, stopping at colons or whitespace without selecting padding. */
+        /** Reborn: double-click selects a complete asset-name component, stopping at colons, path separators or whitespace without selecting padding. */
         //-------------------------------------------------------------------------------------------------
         private static void OnOutputDoubleClick(object sender, MouseEventArgs args)
         {
@@ -138,10 +138,10 @@ namespace Reborn
         }
 
         //-------------------------------------------------------------------------------------------------
-        /** Reborn: punctuation within an asset ID stays selectable; colons, spaces, tabs and line endings delimit components. */
+        /** Reborn: punctuation within an asset ID stays selectable; colons, both path separators and whitespace delimit components. */
         //-------------------------------------------------------------------------------------------------
         private static bool OutputWordBoundary(char character)
-        { return character == ':' || char.IsWhiteSpace(character); }
+        { return character == ':' || character == '/' || character == '\\' || char.IsWhiteSpace(character); }
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: use the actual configured EA warning palette, with its original warning color as fallback. */

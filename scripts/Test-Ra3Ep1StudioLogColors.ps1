@@ -25,8 +25,11 @@ class RebornColorCheck {
             box.ReadOnly=true;box.DetectUrls=false;box.WordWrap=false;box.Size=new Size(1200,180);box.Text="Warning: MISSINGASSET ' GameObject:CAMP_AlliedBomberAircraft_Infantry_2 ' Model.Mesh_02";
             if(box.AutoWordSelection)throw new Exception("Automatic drag expansion was enabled.");
             ClickWord(box,"GameObject","GameObject");ClickWord(box,"CAMP_AlliedBomberAircraft_Infantry_2","CAMP_AlliedBomberAircraft_Infantry_2");ClickWord(box,"Model.Mesh_02","Model.Mesh_02");ClickAt(box,box.Text.IndexOf(":CAMP",StringComparison.Ordinal),"");ClickAt(box,box.Text.IndexOf(" ' ",StringComparison.Ordinal),"");
+            // Reborn: both slash styles separate directory components from filenames.
+            box.Text="folder_one/file.name folder_two\\other_file.xml";ClickWord(box,"folder_one","folder_one");ClickWord(box,"file.name","file.name");ClickWord(box,"folder_two","folder_two");ClickWord(box,"other_file.xml","other_file.xml");ClickAt(box,box.Text.IndexOf('/'),"");ClickAt(box,box.Text.IndexOf('\\'),"");
+            box.Text="CAMP_AlliedBomberAircraft_Infantry_2";
             typeof(Control).GetMethod("RecreateHandle",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(box,null);if(box.AutoWordSelection)throw new Exception("Handle recreation enabled automatic drag expansion.");ClickWord(box,"CAMP_AlliedBomberAircraft_Infantry_2","CAMP_AlliedBomberAircraft_Infantry_2");
-        }Console.WriteLine("Reborn: Studio colors: PASS (optional/no-input skips match EA warning color and palette changes; unsupported red, timings green; real double-click colon/space boundaries, asset punctuation and handle recreation; no visible window).");return 0;
+        }Console.WriteLine("Reborn: Studio colors: PASS (optional/no-input skips match EA warning color and palette changes; unsupported red, timings green; real double-click colon/space/path-separator boundaries, asset punctuation and handle recreation; no visible window).");return 0;
         }catch(Exception error){Console.Error.WriteLine(error);return 1;}
     }
     // Reborn: native mouse messages exercise the production selection handler after RichEdit's own selection logic.
