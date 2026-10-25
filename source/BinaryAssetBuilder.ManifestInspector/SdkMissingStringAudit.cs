@@ -68,7 +68,8 @@ internal static class SdkMissingStringAudit
                 if(type?.Datatype?.TypeCode!=XmlTypeCode.String)return;
                 foreach(string reference in new[]{"AssetReference","WeakReference"})if(schemas.GlobalTypes[new XmlQualifiedName(reference,"uri:ea.com:eala:asset")] is XmlSchemaType basis&&XmlSchemaType.IsDerivedFrom(type,basis,XmlSchemaDerivationMethod.None))return;
                 value=value.Trim();if(value.Length==0)return;int colon=value.IndexOf(':');bool shaped=colon>0&&colon<value.Length-1&&!value.Any(char.IsWhiteSpace)&&prefixes.Contains(value[..colon]);
-                if(!KeyFields.Contains(name)&&!shaped)return;checkedKeys++;if(known.Contains(value))return;
+                // Reborn: ButtonSingleStateData Title is always a localization key, even without a recognized colon prefix.
+                if(!KeyFields.Contains(name)&&!(owner.LocalName=="ButtonSingleStateData"&&name=="Title")&&!shaped)return;checkedKeys++;if(known.Contains(value))return;
                 var error=SdkXmlDiagnostics.At(new InvalidDataException("Unknown localization key."),node);locations.Enrich(error,context,document);var origin=SdkXmlDiagnostics.Origin(error);
                 findings.Add(new("MISSINGSTRING","Warning",value,owner.LocalName+":"+owner.GetAttribute("id"),origin?.File??context,origin?.Line??0,origin?.Column??0,field,"String key is absent from both the selected stock CSF and Misc/Data/mod.str."+(origin?.Context==true?" [source context; exact field origin unavailable]":"")));
             }

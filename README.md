@@ -3734,3 +3734,11 @@ Offline qualification covers the 26 alternatives represented in original EP1
 records; the other three are exercised as authored variants through the same
 source/native checks and final package linker. No gameplay/controller validation
 is implied by these offline checks.
+
+<!-- Reborn: standalone button states feed player-power and joypad button templates. -->
+`ButtonSingleStateData` is build-enabled with its required `State` element and
+optional `Image`, `Title`, `Description` and `TypeDescription` attributes.
+Images use the ordinary mod/stock asset lookup. All three localization keys
+participate in the stock-CSF plus mod-STR missing-string audit, including
+unprefixed `Title` keys. Optional omissions, explicit empty strings, original
+EP1 states and local button-consumer imports are covered offline.

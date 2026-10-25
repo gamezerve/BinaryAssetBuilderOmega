@@ -174,6 +174,9 @@ internal static class Program
             // Reborn: special powers have a private EP1 native and authored-command/stream regression.
             // Reborn: power-button variants are verified offline through the ordinary source and package path.
             // Reborn: validate every joypad button alternative through the normal source/compiler/package path.
+            // Reborn: verify standalone state text/image data, consumer imports and localization warnings privately.
+            if(args.Length==4 && args[0]=="button-state-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();ButtonStateCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==4 && args[0]=="joypad-button-self-test")
             {CompilerSmokeTest.InitializeHashProvider();JoypadButtonCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==4 && args[0]=="player-power-button-self-test")
