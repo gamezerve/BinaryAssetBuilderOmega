@@ -55,6 +55,8 @@ internal static class ConscriptMultiAssetBuild
             var baseline=Read(Path.Combine(fixtures,"live-alpha/ConscriptBuildTime1/data/mod.xml"));baseline.DocumentElement!.SetAttribute("BuildTime","4");
             // Reborn: each emitted object owns its source admission/template map; never reuse the primary object's modules for another object.
             var plans=sources.Where(s=>s.DocumentElement!.LocalName=="GameObject").ToDictionary(s=>s,s=>ConscriptVariableBehaviorSource.Admit(s,baseline,official));
+            // Reborn: immutable stock grammar and source-keyed reference tables belong to this build/catalog generation; every object still owns its own source plan and native verification.
+            var graphVerifier=plans.Count==0?null:new ConscriptVariableGraphVerifier(official,manifest,baseline,schemas,available);
             var built=new Dictionary<AssetId,Built>();int prefix=0;var compileLog=ConscriptCompileLog.ForPrepared(entry);
             // Reborn: validate the isolated EP1 upgrade ABI against original stock before emitting any authored upgrades.
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="UpgradeTemplate"))UpgradeTemplateCompiler.Qualify(global,schemas,stock);
@@ -72,7 +74,7 @@ internal static class ConscriptMultiAssetBuild
                 // Reborn: announce and time the asset around its actual processor/verifier, as EA BuildMod does per instance.
                 var progress=compileLog.Begin(type,xml.DocumentElement.GetAttribute("id"));
                 if(type=="GameObject"){
-                    instance=Normalize(xml);var native=GameObjectBodyProjectionSmokeTest.Compile(Xml(instance.XmlNode.OuterXml),true,true,true);var verifier=new ConscriptVariableGraphVerifier(official,manifest,baseline,schemas,available);var tokens=verifier.Verify(xml,native,instance,plans[xml].Origins);if(ReferenceEquals(xml,source))prefix=tokens.InstanceBuffer.Length-native.InstanceBuffer.Length;buffer=Buffer(tokens);
+                    instance=Normalize(xml);var native=GameObjectBodyProjectionSmokeTest.Compile(Xml(instance.XmlNode.OuterXml),true,true,true);var tokens=graphVerifier!.Verify(xml,native,instance,plans[xml].Origins);if(ReferenceEquals(xml,source))prefix=tokens.InstanceBuffer.Length-native.InstanceBuffer.Length;buffer=Buffer(tokens);
                     // Reborn: weak CommandSet availability is reported consistently by the common mod/stock audit, without pretending it is a native import.
                 }else if(type=="AudioEvent"){
                     instance=Normalize(xml);buffer=AuthoredAmbientCompiler.Compile(instance);
@@ -108,7 +110,7 @@ internal static class ConscriptMultiAssetBuild
                     var result=ConscriptRecruitmentSmokeTest.CompileXml(schemas,xml.OuterXml);instance=Attach(result.Instance,xml.DocumentElement.GetAttribute("id")+".xml");buffer=result.Chunk;
                 }else if(type=="LogicCommand"){
                     // Reborn: every other EP1 command shape uses the general route, proved first on the original static commands.
-                    LogicCommandCompiler.Admit(xml);if(SdkBuildTests.Enabled)LogicCommandCompiler.Qualify(manifest,schemas,stock);LogicCommandCompiler.ReportUnwitnessed(xml);instance=Normalize(xml);var native=LogicCommandCompiler.Compile(instance.XmlNode);
+                    LogicCommandCompiler.Admit(xml);if(SdkBuildTests.Enabled)LogicCommandCompiler.Qualify(manifest,schemas,stock);instance=Normalize(xml);var native=LogicCommandCompiler.Compile(instance.XmlNode);
                     SchemaNativeContract.Verify(LogicCommandCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(Ep1LogicCommand),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
                 }else{
                     if(SdkBuildTests.Enabled)QualifySet(stock,manifest,schemas);instance=Normalize(xml);buffer=CompileSet(instance);
@@ -117,6 +119,9 @@ internal static class ConscriptMultiAssetBuild
                 foreach(var reference in instance.ReferencedInstances)if(available.Count(a=>a.TypeId==reference.TypeId&&a.InstanceId==reference.InstanceId)!=1)throw SdkXmlDiagnostics.At(new InvalidDataException("Missing or ambiguous asset: "+reference.Name),xml.DocumentElement);
                 built.Add(id,new(xml,instance,buffer,fingerprints[id.TypeId].Tokenized));compileLog.End(progress);
             }
+            // Reborn: command usage includes all emitted mod references and stock references, regardless of declaration order or command enum provenance.
+            var commandUses=available.Where(a=>!locals.ContainsKey(new(a.TypeId,a.InstanceId))).SelectMany(a=>a.References).Concat(built.Values.SelectMany(b=>b.Instance.ReferencedInstances).Select(r=>new AssetId(r.TypeId,r.InstanceId))).ToHashSet();
+            foreach(var commandSource in sources.Where(s=>s.DocumentElement!.LocalName=="LogicCommand")){if(LogicCommandCompiler.IsUsed(commandSource,commandUses))continue;string id=commandSource.DocumentElement!.GetAttribute("id");Console.WriteLine("Warning: UNUSEDCOMMAND 'LogicCommand:"+id+"' has no references in emitted mod assets or stock catalogs. Source: "+compileLog.Location("LogicCommand",id)+".");}
             // Reborn: stable dependency order is determined by actual local strong edges, not declaration order; stock references stay external.
             var ordered=new List<Built>();var active=new HashSet<AssetId>();var done=new HashSet<AssetId>();foreach(var id in built.Keys)Visit(id);
             int localReferences=ordered.Sum(b=>b.Instance.ReferencedInstances.Count(r=>built.ContainsKey(new(r.TypeId,r.InstanceId))));int stockReferences=ordered.Sum(b=>b.Instance.ReferencedInstances.Count)-localReferences;

@@ -13,6 +13,8 @@ internal sealed class ConscriptCompileLog
     internal sealed class Entry{internal string Type="",Name="";internal Stopwatch Clock=new();}
     private readonly Dictionary<string,string> files=new(StringComparer.OrdinalIgnoreCase);
     private readonly List<Entry> processed=new();
+    // Reborn: a fixture without declaration provenance can still report its honest prepared-input context.
+    private string context="";
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: list every captured source file once, at the moment the source graph has actually been read and hash-verified. */
@@ -24,12 +26,20 @@ internal sealed class ConscriptCompileLog
     //-------------------------------------------------------------------------------------------------
     internal static ConscriptCompileLog ForPrepared(string entry)
     {
-        var log=new ConscriptCompileLog();string receipt=System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(entry))!,"source-input.json");
+        var log=new ConscriptCompileLog{context=System.IO.Path.GetFullPath(entry)};string receipt=System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(entry))!,"source-input.json");
         if(!File.Exists(receipt))return log;
         using var json=JsonDocument.Parse(File.ReadAllText(receipt));
         if(json.RootElement.TryGetProperty("Origins",out var origins)&&origins.ValueKind==JsonValueKind.Array)
             foreach(var origin in origins.EnumerateArray())log.files[origin.GetProperty("Type").GetString()+":"+origin.GetProperty("Id").GetString()]=origin.GetProperty("Path").GetString()!;
         return log;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: locate a declaration warning in the captured original file, using its id attribute rather than a generated XML line. */
+    //-------------------------------------------------------------------------------------------------
+    internal SdkXmlDiagnostics.Location Location(string type,string id)
+    {
+        string path=files.GetValueOrDefault(type+":"+id,context);var document=SdkXmlDiagnostics.Lines(File.ReadAllBytes(path),path);var owner=document.Descendants().FirstOrDefault(e=>e.Name.LocalName==type&&(string?)e.Attribute("id")==id);return owner==null?SdkXmlDiagnostics.Point(path,document.Root!,true):SdkXmlDiagnostics.Point(path,(System.Xml.Linq.XObject?)owner.Attribute("id")??owner);
     }
 
     //-------------------------------------------------------------------------------------------------

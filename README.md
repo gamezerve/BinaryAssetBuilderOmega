@@ -14,6 +14,10 @@ under **Build Global Data**. Off selects fast builds; on restores build-time
 stock/repeat/corruption regressions. Both modes retain source/schema/dependency
 validation and actual native/stream/package checks. The setting covers static and
 enabled global builds and is recorded in the successful build receipt.
+Fast builds label required row-grammar loading as `Native metadata ready` and
+share it across GameObjects in the same build. Command usage checks combine
+stock and emitted mod references; valid custom enum values no longer produce
+`UNWITNESSEDCOMMAND`. An unreferenced authored command reports `UNUSEDCOMMAND`.
 
 <!-- Reborn: retail WorldBuilder references are now packaged instead of relying on map-specific runtime availability. -->
 WorldBuilder resolver (October 25): Studio copies referenced WorldBuilder-only

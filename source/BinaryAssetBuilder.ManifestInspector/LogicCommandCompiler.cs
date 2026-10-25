@@ -13,8 +13,6 @@ internal static class LogicCommandCompiler
 {
     private const uint TypeHash=0x751AB28F;
     private static bool qualified;
-    // Reborn: Types and Options tokens exhibited by the proved stock commands; authored values outside these sets are reported, not hidden.
-    private static readonly SortedSet<string> witnessedTypes=new(StringComparer.Ordinal),witnessedOptions=new(StringComparer.Ordinal);
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: the earlier bounded route (UNIT_BUILD with exactly one Object, no Options) keeps its own established compiler. */
@@ -52,22 +50,18 @@ internal static class LogicCommandCompiler
             if(stock.Asset.TypeHash!=TypeHash||stock.Asset.Tokenized!=0||stock.Asset.InstanceDataSize>4096)throw new InvalidDataException("Stock LogicCommand fingerprint differs: "+id);
             var bytes=AssetStreamProbe.ReadRange(bin,null,stock.Offset,stock.Asset.InstanceDataSize);
             SchemaNativeContract.VerifyStock(ProofSource(Xml(original.OuterXml),schemas,catalog).DocumentElement!,typeof(Ep1LogicCommand),0,bytes,0,stock.Asset.References.ToArray());
-            types.Add(original.HasAttribute("Type")?original.GetAttribute("Type"):"NONE");var tokens=original.GetAttribute("Options").Split((char[]?)null,StringSplitOptions.RemoveEmptyEntries);if(tokens.Length!=0)options++;witnessedOptions.UnionWith(tokens);proved++;
+            types.Add(original.HasAttribute("Type")?original.GetAttribute("Type"):"NONE");var tokens=original.GetAttribute("Options").Split((char[]?)null,StringSplitOptions.RemoveEmptyEntries);if(tokens.Length!=0)options++;proved++;
         }
         if(proved<100||options==0)throw new InvalidDataException("Too few original EP1 LogicCommand witnesses were proved ("+proved+").");
-        witnessedTypes.UnionWith(types);qualified=true;Console.WriteLine("Reborn: EP1 LogicCommand stock qualification: PASS ("+proved+" static commands, "+options+" with Options; types: "+string.Join(", ",types)+").");
+        qualified=true;Console.WriteLine("Reborn: EP1 LogicCommand stock qualification: PASS ("+proved+" static commands, "+options+" with Options; types: "+string.Join(", ",types)+").");
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: a Type or Options value with no proved stock command is compiled from its schema ordinal/bit, but reported as a warning
-        because the game behaviour of that combination has no original EP1 witness. */
+    /** Reborn: command usage follows typed references from the stock/mod union; a valid schema enum does not require a retail example. */
     //-------------------------------------------------------------------------------------------------
-    internal static void ReportUnwitnessed(XmlDocument source)
+    internal static bool IsUsed(XmlDocument source,IReadOnlySet<AssetId> references)
     {
-        var root=source.DocumentElement!;string id=root.GetAttribute("id"),type=root.HasAttribute("Type")?root.GetAttribute("Type").Trim():"NONE";
-        if(!witnessedTypes.Contains(type))Console.WriteLine("Warning: UNWITNESSEDCOMMAND LogicCommand:"+id+" uses Type="+type+", which no original EP1 static command uses; it is compiled from the schema ordinal ("+(Enum.TryParse(type,false,out Ep1LogicCommandType t)?((int)t).ToString():"?")+") but has no stock witness.");
-        foreach(string token in root.GetAttribute("Options").Split((char[]?)null,StringSplitOptions.RemoveEmptyEntries).Where(t=>!witnessedOptions.Contains(t)).Distinct())
-            Console.WriteLine("Warning: UNWITNESSEDCOMMAND LogicCommand:"+id+" uses Options="+token+", which no original EP1 static command uses; it is compiled from the schema bit ("+(Enum.TryParse(token,false,out Ep1LogicCommandOptions o)?((int)o).ToString():"?")+") but has no stock witness.");
+        var identity=SdkMissingDependencyAudit.Identity("LogicCommand",source.DocumentElement!.GetAttribute("id"));return references.Contains(new(identity.TypeId,identity.InstanceId));
     }
 
     //-------------------------------------------------------------------------------------------------

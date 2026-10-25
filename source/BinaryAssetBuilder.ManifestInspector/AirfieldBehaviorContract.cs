@@ -27,12 +27,14 @@ internal static class AirfieldBehaviorContract
             if(modules.Length!=originals.Length)throw new InvalidDataException("Airfield stock/source module count differs: "+name+":"+elementName);
             foreach(var original in originals){
                 uint local=FastHash.GetHashCode(original.GetAttribute("id").ToLowerInvariant());var module=modules.Single(m=>BinaryPrimitives.ReadUInt32LittleEndian(captured.Bytes.AsSpan(m.Native+4,4))==local);
+                // Reborn: retain the real airfield grammar in fast mode; stock source/native comparison probes run only in developer mode.
+                if(!SdkBuildTests.Enabled){grammar.Learn(captured.Bytes,module.Wrapper,captured.Projection.NativeRoot,type);count++;continue;}
                 var document=(XmlDocument)baseline.CloneNode(true);var behaviors=document.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace).OfType<XmlElement>().Single();behaviors.RemoveAll();behaviors.AppendChild(document.ImportNode(original,true));
                 var resolved=SchemaNativeContract.Resolve(document,schemas,catalog).GetElementsByTagName(elementName,SchemaSet.XmlNamespace).OfType<XmlElement>().Single();
                 SchemaNativeContract.VerifyStock(resolved,type,typeId,captured.Bytes,module.Native,captured.Asset.References.ToArray());grammar.Learn(captured.Bytes,module.Wrapper,captured.Projection.NativeRoot,type);count++;
             }
         }
         if(count==0)throw new InvalidDataException("Airfield stock module witness absent: "+elementName);
-        Console.WriteLine($"Reborn: {elementName} EP1 native/metadata qualification: PASS ({count} original airfield module(s)).");return grammar;
+        SdkBuildTests.MetadataProgress(elementName,$"Reborn: {elementName} EP1 native/metadata qualification: PASS ({count} original airfield module(s)).",count+" stock records");return grammar;
     }
 }

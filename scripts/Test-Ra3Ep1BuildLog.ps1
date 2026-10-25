@@ -34,6 +34,8 @@ try{
     if(@(Write-SdkCompilerLine 'Reborn: source path [mod] DATA:Test.xml -> Test.xml' $detail).Count-ne 1){throw 'Source selection display was not reset for the next build.'}
     # Reborn: copying retail dependencies must remain visible in Studio, without turning successful resolution into another warning.
     if(@(Write-SdkCompilerLine 'Resolving WorldBuilder assets: 20 added with dependencies.' $detail;Write-SdkCompilerLine 'WorldBuilder asset added: W3DContainer:Fixture' $detail).Count-ne 2){throw 'WorldBuilder resolution progress was hidden.'}
+    # Reborn: loading native row grammar is ordinary fast-build progress, never a successful developer test claim.
+    $metadata=@(Write-SdkCompilerLine 'Native metadata ready: Scripted FXEvent (6 stock records).' $detail);if($metadata.Count-ne 1 -or $metadata[0]-match 'PASS|Warning:'){throw 'Fast metadata progress was hidden or mislabeled.'}
     # Reborn: validation progress stays ordinary text; only a post-resolution failure uses the warning classifier.
     $pending=@(Write-SdkCompilerLine "WorldBuilder asset pending 'W3DContainer:Fixture' (referenced by GameObject:Owner) Source: Fixture.xml(7,3)." $detail)
     if($pending.Count-ne 1 -or $pending[0]-match 'Warning:'){throw 'Pending WorldBuilder progress was hidden or classified as a warning.'}

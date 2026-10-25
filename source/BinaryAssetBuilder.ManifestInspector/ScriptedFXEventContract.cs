@@ -27,6 +27,8 @@ internal static class ScriptedFXEventContract
                 for(int i=0;i<count;i++){
                     var events=states[i].ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="FXEvent").ToArray();int state=(int)W(bytes,table+12+i*12+8);int eventTable=GameObjectStockReview.Tokens(bytes,state)[FastHash.GetHashCode("FXEvent")].Offset;int eventCount=(int)W(bytes,(int)W(bytes,eventTable+8));
                     if(eventCount!=events.Length)throw new InvalidDataException("FXEvent stock/source event cardinality differs.");if(eventCount==0)continue;
+                    // Reborn: learn required event metadata directly in fast mode, without constructing a stock-source comparison probe.
+                    if(!SdkBuildTests.Enabled){for(int j=0;j<eventCount;j++){int eventTokens=(int)W(bytes,eventTable+12+j*12+8);grammar.Learn(bytes,eventTokens,captured.Projection.NativeRoot,typeof(FXEvent));witnesses++;}continue;}
                     var probe=(XmlDocument)baseline.CloneNode(true);var owner=probe.GetElementsByTagName(stateName,SchemaSet.XmlNamespace).OfType<XmlElement>().First();foreach(XmlNode child in owner.ChildNodes.Cast<XmlNode>().ToArray())owner.RemoveChild(child);foreach(var fx in events)owner.AppendChild(probe.ImportNode(fx,true));
                     var resolved=SchemaNativeContract.Resolve(probe,schemas,catalog).GetElementsByTagName(stateName,SchemaSet.XmlNamespace).OfType<XmlElement>().First().ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="FXEvent").ToArray();
                     for(int j=0;j<eventCount;j++){int eventTokens=(int)W(bytes,eventTable+12+j*12+8);int native=GameObjectStockReview.Tokens(bytes,eventTokens)[FastHash.GetHashCode("Frame")].Offset;SchemaNativeContract.VerifyStock(resolved[j],typeof(FXEvent),0,bytes,native,captured.Asset.References.ToArray());grammar.Learn(bytes,eventTokens,captured.Projection.NativeRoot,typeof(FXEvent));witnesses++;}
@@ -34,7 +36,7 @@ internal static class ScriptedFXEventContract
             }
         }
         if(witnesses==0)throw new InvalidDataException("No original scripted FXEvent stock witness found.");
-        Console.WriteLine($"Reborn: scripted FXEvent stock qualification: PASS ({witnesses} original reactor spark event(s)).");
+        SdkBuildTests.MetadataProgress("Scripted FXEvent",$"Reborn: scripted FXEvent stock qualification: PASS ({witnesses} original reactor spark event(s)).",witnesses+" stock records");
     }
 
     // Reborn: targeted evidence reads remain inside the already captured GameObject slice.

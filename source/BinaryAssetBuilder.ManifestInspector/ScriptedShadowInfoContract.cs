@@ -29,6 +29,8 @@ internal static class ScriptedShadowInfoContract
                 var source=sourceStates[i].ChildNodes.OfType<XmlElement>().SingleOrDefault(e=>e.LocalName=="ShadowInfo");int state=(int)W(bytes,table+12+i*12+8);int shadow=GameObjectStockReview.Tokens(bytes,state)[FastHash.GetHashCode("ShadowInfo")].Offset;
                 if(source==null){if(shadow!=0)throw new InvalidDataException("ShadowInfo witness optional presence differs.");continue;}
                 if(shadow==0)throw new InvalidDataException("ShadowInfo witness target is missing.");
+                // Reborn: the fast path needs the real row grammar, while the original-source/native comparison is developer-only.
+                if(!SdkBuildTests.Enabled){grammar.Learn(bytes,shadow,captured.Projection.NativeRoot,typeof(ShadowInfo));witnesses++;continue;}
                 // Reborn: resolve the original decal (GlobalDefines sizes) under a valid baseline draw state, exactly like the material witness.
                 var probe=(XmlDocument)baseline.CloneNode(true);var owner=probe.GetElementsByTagName("ModelConditionState",SchemaSet.XmlNamespace).OfType<XmlElement>().First();foreach(XmlNode child in owner.ChildNodes.Cast<XmlNode>().ToArray())owner.RemoveChild(child);var decal=(XmlElement)owner.AppendChild(probe.ImportNode(source,true))!;Evaluate(decal);
                 var resolved=SchemaNativeContract.Resolve(probe,schemas,catalog).GetElementsByTagName("ShadowInfo",SchemaSet.XmlNamespace).OfType<XmlElement>().Single(e=>e.ParentNode is XmlElement parent&&parent.LocalName=="ModelConditionState");
@@ -38,7 +40,7 @@ internal static class ScriptedShadowInfoContract
             }
         }
         if(witnesses==0)throw new InvalidDataException("No original draw-state ShadowInfo witness found on "+Witness+".");
-        Console.WriteLine("Reborn: EP1 scripted draw ShadowInfo stock qualification: PASS ("+Witness+", "+witnesses+" witness(es)).");
+        SdkBuildTests.MetadataProgress("Scripted draw ShadowInfo","Reborn: EP1 scripted draw ShadowInfo stock qualification: PASS ("+Witness+", "+witnesses+" witness(es)).",witnesses+" stock records");
     }
 
     //-------------------------------------------------------------------------------------------------
