@@ -8,6 +8,14 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: experience levels use a separate EP1 native writer and normal authored dependency linking. -->
+`ExperienceLevelTemplate` is build-enabled with source-sized target/upgrade/FX/
+attribute-modifier lists, awards, ranks, tint fields, OCL imports and optional
+prerequisite/condition-mask pointers. The 108-byte EP1 header differs from KW.
+Explicit instance bases, definitions and local prerequisite linking use the normal
+source pipeline; stock binary presence does not replace a missing XML base.
+`Decal` components still require their separate EP1 processor and fail explicitly.
+
 <!-- Reborn: XInclude fragments resolve expressions in the document that includes them before source inheritance. -->
 XInclude fragment fields can use the including document's visible `$` definitions.
 Expansion precedes expression substitution; imported bases keep their own defining

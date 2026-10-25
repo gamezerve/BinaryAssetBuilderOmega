@@ -167,6 +167,9 @@ internal static class Program
             // Reborn: tracer optional-status shapes use a private complete-object regression.
             // Reborn: scripted model-state turrets have a private native/metadata composition regression.
             // Reborn: source-only XInclude expressions retain defining context and original fragment coordinates.
+            // Reborn: experience assets have a private original-native and authored-stream regression.
+            if(args.Length==4 && args[0]=="experience-level-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();ExperienceLevelCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==2 && args[0]=="fragment-definitions-self-test")
             {CompilerSmokeTest.InitializeHashProvider();FragmentDefinitionSmokeTest.Run(args[1]);return 0;}
             if(args.Length==3 && args[0]=="scripted-turret-self-test")
