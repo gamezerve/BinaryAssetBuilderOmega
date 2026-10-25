@@ -56,6 +56,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> autoDeposit;
     // Reborn: reuse the full retail-qualified slaughter/container metadata chain once per build.
     private readonly Lazy<StockMetadataGrammar> slaughter;
+    // Reborn: retain the production-info marker's stock-qualified identity-only metadata chain.
+    private readonly Lazy<StockMetadataGrammar> productionInfo;
     // Reborn: schema-proved draw leaves need the generic proof qualified on stock Conscript draws and a metadata grammar from stock draws.
     private readonly Dictionary<Type,Lazy<StockMetadataGrammar>> schemaFamilies=new();
     // Reborn: Geometry is a nonmodule owner with independently qualified source/native and stock metadata grammar.
@@ -101,6 +103,7 @@ internal sealed class ConscriptVariableGraphVerifier
         luaEventList=new(()=>!SdkBuildTests.Enabled||LUAEventListContract.QualifyStock(manifest,official));
         buildingBehavior=new(()=>BuildingBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        productionInfo=new(()=>ProductionUpdateInfoContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         slaughter=new(()=>SlaughterContainContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         autoDeposit=new(()=>AutoDepositContract.Qualify(WorldBuilderAssetResolver.CatalogPath(),baseline,referenceSchemas,catalog));
         fireWeaponDeath=new(()=>FireWeaponDeathContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -208,6 +211,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: variable death masks, optional offsets, probability rows and weapon/upgrade imports are checked against the actual authored source.
                 // Reborn: preserve source-sized money lists and their independent inherited retail metadata during GameObject composition.
                 // Reborn: composed slaughter leaves retain source-owned inherited fields, filters, refund amounts and real FX imports.
+                // Reborn: production-info markers are source-owned module identities, including authored IDs and multiple instances.
+                if(owner.NativeType==typeof(ProductionUpdateInfoModuleData)){
+                    var grammar=productionInfo.Value;var infoNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,ProductionUpdateInfoContract.TypeId,infoNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(infoNative,official,ProductionUpdateInfoContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,infoNative,owner.NativeType,proof.Records);Own(infoNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(SlaughterHordeContainModuleData)){
                     var grammar=slaughter.Value;var slaughterNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,SlaughterContainContract.TypeId,slaughterNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(slaughterNative,official,SlaughterContainContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,slaughterNative,owner.NativeType,proof.Records);Own(slaughterNative,start,stop);Splice(owner,metadata,start,size);continue;

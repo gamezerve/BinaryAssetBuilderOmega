@@ -8,6 +8,12 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: the construction-yard production-info marker uses the existing eight-byte native behavior record. -->
+`ProductionUpdateInfo` is build-enabled with authored local IDs and source-sized
+module lists. The Uprising XSD defines no own fields beyond inherited module
+identity. Original Soviet/Allied construction-yard records anchor its metadata;
+private tests cover renamed/multiple markers and full GameObject composition.
+
 <!-- Reborn: original EA Construction Yard repeats GlobalDefines.xml; repeated metadata Includes are valid authoring input. -->
 Repeated definition-only `type="all"` Includes of the same captured source are
 accepted and contribute one definition/source witness. This includes the two
