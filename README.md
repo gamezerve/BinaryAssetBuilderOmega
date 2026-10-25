@@ -3706,3 +3706,9 @@ They are not a Uprising compatibility checklist or a verified EP1 type table.
 * [ ] UIJoypadCommandBarStances
 * [ ] UIJoypadCommandBarTopMenu
 * [ ] UIJoypadCommandBarMgTopMenu
+
+<!-- Reborn: timer-monitor module support follows the official Uprising schema. -->
+`MonitorSpecialPowerTimerUpdate` is build-enabled with editable
+`SpecialPowerTemplate` references and `ReadyCondition` model-condition flags.
+Original EP1 native/metadata records, retargeted references, omitted optional
+fields and complete GameObject composition are covered by offline checks.

@@ -82,6 +82,8 @@ if($SchedulerControl){
     # Reborn: replacement targets, options and inherited ability fields retain retail-qualified metadata.
     Add-BatchCase 'replace-self' 'StockQualifiedReplaceSelf' @('replace-self-special-ability-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: wall length, filter lists and both secondary masks use the new retail-qualified wall-builder writer.
+    # Reborn: include the source-driven timer-monitor regression without touching user mod outputs.
+    Add-BatchCase 'monitor-special-power-timer' 'StockQualifiedMonitorSpecialPowerTimer' @('monitor-special-power-timer-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'wall-builder' 'StockQualifiedWallBuilder' @('wall-builder-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: all FXList nugget kinds, inheritance and real local/stock dependencies use an isolated output root.
     Add-BatchCase 'fxlist-general' 'GeneralFXListNativeAndStream' @('fxlist-general-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'fxlist-general'))

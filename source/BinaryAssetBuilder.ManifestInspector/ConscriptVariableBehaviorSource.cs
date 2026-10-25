@@ -86,6 +86,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: the production-info marker has no own fields; its local identity is authored normally.
             // Reborn: replacement targets, timing and inherited ability settings follow the official schema instead of fixed MCV sample values.
             // Reborn: wall length and connection filters use the full schema instead of stock-only values or names.
+            // Reborn: timer-monitor power references and ready-condition flags follow the official schema.
+            if(owner.NativeType==typeof(SageBinaryData.MonitorSpecialPowerTimerUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.WallBuilderBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.ReplaceSelfSpecialAbilityModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.ProductionUpdateInfoModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
