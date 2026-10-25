@@ -286,11 +286,11 @@ internal static class SdkMissingDependencyAudit
     private static bool WorldBuilderOnly(Asset asset)=>string.Equals(Path.GetFileName(asset.CatalogPath),"worldbuilder.manifest",StringComparison.OrdinalIgnoreCase);
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: one validation formatter shares the concise compiler-style wording while retaining original file/line information and JSON field details. */
+    /** Reborn: every dependency diagnostic leads with its code and target, retaining readable owner/field/source evidence and structured JSON details. */
     //-------------------------------------------------------------------------------------------------
     internal static string FormatFinding(Finding finding)=>finding.Code=="WORLDBUILDERASSET"
         ? $"{(finding.Severity=="Info"?"WorldBuilder asset pending":finding.Severity+": "+finding.Code)} '{finding.Target}' (referenced by {finding.Owner}) {finding.Detail} Source: {finding.Source}({finding.Line},{finding.Column})."
-        : $"{finding.Severity}: {finding.Code} {finding.Detail} Target='{finding.Target}', owner='{finding.Owner}', field='{finding.Field}', source='{finding.Source}' ({finding.Line},{finding.Column}).";
+        : $"{finding.Severity}: {finding.Code} '{finding.Target}' (referenced by {finding.Owner}) {finding.Detail} Source: {finding.Source}({finding.Line},{finding.Column}). Field: {finding.Field}.";
     // Reborn: only official reference annotations define typed dependency targets.
     private static string? Annotation(XmlAttribute[]? attributes)=>attributes?.FirstOrDefault(a=>a.LocalName=="refType"&&a.NamespaceURI==AnnotationNamespace)?.Value;
     // Reborn: disable external entities and preserve source coordinates without modifying source XML.
