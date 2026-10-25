@@ -1,0 +1,227 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- XML: E:\depot\CnC\RA3_EP1\production\Data\AptBuildXML\0.0-dev\pc\Output\fe_shared_mainMenuLib\art\textures\apt_fe_shared_mainMenuLib.xml
+ Directories:
+    E:\depot\CnC\RA3_EP1\production\Data\AptBuildXML\0.0-dev\pc\Output\fe_shared_mainMenuLib\fe_shared_mainMenuLib_textures\
+ Extend RGB   : Yes
+ Gutter (1)   : No
+ Alpha Channel: Yes
+ Compressed   : No
+ Image Size   : 1024 x 1024
+ Keep Dirs Seperate: Yes
+-->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<!-- Packed Texture: apt_fe_shared_mainMenuLib_1.tga -->
+	<Texture id="apt_fe_shared_mainMenuLib_1" File="apt_fe_shared_mainMenuLib_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="123" Texture="apt_fe_shared_mainMenuLib_1" Rotated="false">
+		<Dimensions x="32" y="32"/>
+		<Coords x="526" y="983"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="126" Texture="apt_fe_shared_mainMenuLib_1" Rotated="false">
+		<Dimensions x="32" y="32"/>
+		<Coords x="492" y="983"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="3" Texture="apt_fe_shared_mainMenuLib_1" Rotated="false">
+		<Dimensions x="489" y="489"/>
+		<Coords x="1" y="514"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="2" Texture="apt_fe_shared_mainMenuLib_1" Rotated="false">
+		<Dimensions x="489" y="489"/>
+		<Coords x="514" y="492"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="1" Texture="apt_fe_shared_mainMenuLib_1" Rotated="false">
+		<Dimensions x="489" y="489"/>
+		<Coords x="514" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="5" Texture="apt_fe_shared_mainMenuLib_1" Rotated="false">
+		<Dimensions x="512" y="512"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+
+	<!-- Packed Texture: apt_fe_shared_mainMenuLib_2.tga -->
+	<Texture id="apt_fe_shared_mainMenuLib_2" File="apt_fe_shared_mainMenuLib_2.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="16" Texture="apt_fe_shared_mainMenuLib_2" Rotated="false">
+		<Dimensions x="64" y="362"/>
+		<Coords x="959" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="17" Texture="apt_fe_shared_mainMenuLib_2" Rotated="false">
+		<Dimensions x="365" y="65"/>
+		<Coords x="432" y="941"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="20" Texture="apt_fe_shared_mainMenuLib_2" Rotated="false">
+		<Dimensions x="365" y="65"/>
+		<Coords x="499" y="874"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="19" Texture="apt_fe_shared_mainMenuLib_2" Rotated="false">
+		<Dimensions x="65" y="365"/>
+		<Coords x="432" y="514"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="14" Texture="apt_fe_shared_mainMenuLib_2" Rotated="false">
+		<Dimensions x="76" y="512"/>
+		<Coords x="945" y="443"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="25" Texture="apt_fe_shared_mainMenuLib_2" Rotated="false">
+		<Dimensions x="429" y="429"/>
+		<Coords x="1" y="514"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="24" Texture="apt_fe_shared_mainMenuLib_2" Rotated="false">
+		<Dimensions x="429" y="429"/>
+		<Coords x="514" y="443"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="22" Texture="apt_fe_shared_mainMenuLib_2" Rotated="false">
+		<Dimensions x="443" y="440"/>
+		<Coords x="514" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="4" Texture="apt_fe_shared_mainMenuLib_2" Rotated="false">
+		<Dimensions x="512" y="512"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+
+	<!-- Packed Texture: apt_fe_shared_mainMenuLib_3.tga -->
+	<Texture id="apt_fe_shared_mainMenuLib_3" File="apt_fe_shared_mainMenuLib_3.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="94" Texture="apt_fe_shared_mainMenuLib_3" Rotated="false">
+		<Dimensions x="140" y="132"/>
+		<Coords x="515" y="817"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="88" Texture="apt_fe_shared_mainMenuLib_3" Rotated="false">
+		<Dimensions x="140" y="132"/>
+		<Coords x="799" y="683"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="83" Texture="apt_fe_shared_mainMenuLib_3" Rotated="false">
+		<Dimensions x="140" y="132"/>
+		<Coords x="657" y="683"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="81" Texture="apt_fe_shared_mainMenuLib_3" Rotated="false">
+		<Dimensions x="140" y="132"/>
+		<Coords x="515" y="683"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="8" Texture="apt_fe_shared_mainMenuLib_3" Rotated="false">
+		<Dimensions x="43" y="513"/>
+		<Coords x="965" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="63" Texture="apt_fe_shared_mainMenuLib_3" Rotated="false">
+		<Dimensions x="448" y="310"/>
+		<Coords x="515" y="371"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="23" Texture="apt_fe_shared_mainMenuLib_3" Rotated="false">
+		<Dimensions x="395" y="368"/>
+		<Coords x="514" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="65" Texture="apt_fe_shared_mainMenuLib_3" Rotated="false">
+		<Dimensions x="512" y="310"/>
+		<Coords x="1" y="514"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="15" Texture="apt_fe_shared_mainMenuLib_3" Rotated="false">
+		<Dimensions x="512" y="512"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+
+	<!-- Packed Texture: apt_fe_shared_mainMenuLib_4.tga -->
+	<Texture id="apt_fe_shared_mainMenuLib_4" File="apt_fe_shared_mainMenuLib_4.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="12" Texture="apt_fe_shared_mainMenuLib_4" Rotated="false">
+		<Dimensions x="59" y="514"/>
+		<Coords x="609" y="508"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="10" Texture="apt_fe_shared_mainMenuLib_4" Rotated="false">
+		<Dimensions x="61" y="512"/>
+		<Coords x="932" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="6" Texture="apt_fe_shared_mainMenuLib_4" Rotated="false">
+		<Dimensions x="92" y="388"/>
+		<Coords x="515" y="438"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="7" Texture="apt_fe_shared_mainMenuLib_4" Rotated="false">
+		<Dimensions x="72" y="512"/>
+		<Coords x="858" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="9" Texture="apt_fe_shared_mainMenuLib_4" Rotated="false">
+		<Dimensions x="105" y="507"/>
+		<Coords x="751" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="11" Texture="apt_fe_shared_mainMenuLib_4" Rotated="false">
+		<Dimensions x="107" y="505"/>
+		<Coords x="642" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="13" Texture="apt_fe_shared_mainMenuLib_4" Rotated="false">
+		<Dimensions x="126" y="435"/>
+		<Coords x="514" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="67" Texture="apt_fe_shared_mainMenuLib_4" Rotated="false">
+		<Dimensions x="512" y="310"/>
+		<Coords x="1" y="513"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="18" Texture="apt_fe_shared_mainMenuLib_4" Rotated="false">
+		<Dimensions x="512" y="511"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+
+	<!-- Packed Texture: apt_fe_shared_mainMenuLib_5.tga -->
+	<Texture id="apt_fe_shared_mainMenuLib_5" File="apt_fe_shared_mainMenuLib_5.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="64" Texture="apt_fe_shared_mainMenuLib_5" Rotated="false">
+		<Dimensions x="512" y="310"/>
+		<Coords x="1" y="513"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="21" Texture="apt_fe_shared_mainMenuLib_5" Rotated="false">
+		<Dimensions x="511" y="511"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+
+	<!-- Packed Texture: apt_fe_shared_mainMenuLib_6.tga -->
+	<Texture id="apt_fe_shared_mainMenuLib_6" File="apt_fe_shared_mainMenuLib_6.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="66" Texture="apt_fe_shared_mainMenuLib_6" Rotated="false">
+		<Dimensions x="512" y="310"/>
+		<Coords x="0" y="1"/>
+		<TextureDimensions x="512" y="512"/>
+	</PackedTextureImage>
+
+	<!-- Packed Texture: apt_fe_shared_mainMenuLib_7.tga -->
+	<Texture id="apt_fe_shared_mainMenuLib_7" File="apt_fe_shared_mainMenuLib_7.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="26" Texture="apt_fe_shared_mainMenuLib_7" Rotated="false">
+		<Dimensions x="2456" y="14"/>
+		<Coords x="1" y="1"/>
+		<TextureDimensions x="4096" y="16"/>
+	</PackedTextureImage>
+
+</AssetDeclaration>

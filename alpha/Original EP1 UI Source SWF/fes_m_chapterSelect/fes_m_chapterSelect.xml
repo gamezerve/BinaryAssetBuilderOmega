@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<AptAptData id="fes_m_chapterSelect_apt" File="fes_m_chapterSelect.apt" />
+	<AptConstData id="fes_m_chapterSelect_const" File="fes_m_chapterSelect.const" />
+	<AptDatData id="fes_m_chapterSelect_dat" File="fes_m_chapterSelect.dat" />
+	<AptGeometryData id="fes_m_chapterSelect_10" File="fes_m_chapterSelect_geometry\10.ru" AptID="10"/>
+	<AptGeometryData id="fes_m_chapterSelect_4" File="fes_m_chapterSelect_geometry\4.ru" AptID="4"/>
+	<Texture id="apt_fes_m_chapterSelect_1" File="art\Textures\apt_fes_m_chapterSelect_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+</AssetDeclaration>

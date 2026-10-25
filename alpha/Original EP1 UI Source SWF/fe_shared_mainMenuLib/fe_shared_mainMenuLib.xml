@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<AptAptData id="fe_shared_mainMenuLib_apt" File="fe_shared_mainMenuLib.apt" />
+	<AptConstData id="fe_shared_mainMenuLib_const" File="fe_shared_mainMenuLib.const" />
+	<AptDatData id="fe_shared_mainMenuLib_dat" File="fe_shared_mainMenuLib.dat" />
+	<AptGeometryData id="fe_shared_mainMenuLib_100" File="fe_shared_mainMenuLib_geometry\100.ru" AptID="100"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_103" File="fe_shared_mainMenuLib_geometry\103.ru" AptID="103"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_105" File="fe_shared_mainMenuLib_geometry\105.ru" AptID="105"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_108" File="fe_shared_mainMenuLib_geometry\108.ru" AptID="108"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_112" File="fe_shared_mainMenuLib_geometry\112.ru" AptID="112"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_115" File="fe_shared_mainMenuLib_geometry\115.ru" AptID="115"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_117" File="fe_shared_mainMenuLib_geometry\117.ru" AptID="117"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_119" File="fe_shared_mainMenuLib_geometry\119.ru" AptID="119"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_27" File="fe_shared_mainMenuLib_geometry\27.ru" AptID="27"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_29" File="fe_shared_mainMenuLib_geometry\29.ru" AptID="29"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_30" File="fe_shared_mainMenuLib_geometry\30.ru" AptID="30"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_35" File="fe_shared_mainMenuLib_geometry\35.ru" AptID="35"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_37" File="fe_shared_mainMenuLib_geometry\37.ru" AptID="37"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_39" File="fe_shared_mainMenuLib_geometry\39.ru" AptID="39"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_42" File="fe_shared_mainMenuLib_geometry\42.ru" AptID="42"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_44" File="fe_shared_mainMenuLib_geometry\44.ru" AptID="44"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_45" File="fe_shared_mainMenuLib_geometry\45.ru" AptID="45"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_49" File="fe_shared_mainMenuLib_geometry\49.ru" AptID="49"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_50" File="fe_shared_mainMenuLib_geometry\50.ru" AptID="50"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_52" File="fe_shared_mainMenuLib_geometry\52.ru" AptID="52"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_55" File="fe_shared_mainMenuLib_geometry\55.ru" AptID="55"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_60" File="fe_shared_mainMenuLib_geometry\60.ru" AptID="60"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_68" File="fe_shared_mainMenuLib_geometry\68.ru" AptID="68"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_70" File="fe_shared_mainMenuLib_geometry\70.ru" AptID="70"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_74" File="fe_shared_mainMenuLib_geometry\74.ru" AptID="74"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_78" File="fe_shared_mainMenuLib_geometry\78.ru" AptID="78"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_82" File="fe_shared_mainMenuLib_geometry\82.ru" AptID="82"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_84" File="fe_shared_mainMenuLib_geometry\84.ru" AptID="84"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_89" File="fe_shared_mainMenuLib_geometry\89.ru" AptID="89"/>
+	<AptGeometryData id="fe_shared_mainMenuLib_95" File="fe_shared_mainMenuLib_geometry\95.ru" AptID="95"/>
+	<Texture id="apt_fe_shared_mainMenuLib_1" File="art\Textures\apt_fe_shared_mainMenuLib_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fe_shared_mainMenuLib_121" File="art\Textures\apt_fe_shared_mainMenuLib_121.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fe_shared_mainMenuLib_122" File="art\Textures\apt_fe_shared_mainMenuLib_122.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fe_shared_mainMenuLib_124" File="art\Textures\apt_fe_shared_mainMenuLib_124.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fe_shared_mainMenuLib_125" File="art\Textures\apt_fe_shared_mainMenuLib_125.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fe_shared_mainMenuLib_127" File="art\Textures\apt_fe_shared_mainMenuLib_127.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fe_shared_mainMenuLib_2" File="art\Textures\apt_fe_shared_mainMenuLib_2.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fe_shared_mainMenuLib_3" File="art\Textures\apt_fe_shared_mainMenuLib_3.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fe_shared_mainMenuLib_4" File="art\Textures\apt_fe_shared_mainMenuLib_4.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fe_shared_mainMenuLib_5" File="art\Textures\apt_fe_shared_mainMenuLib_5.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fe_shared_mainMenuLib_6" File="art\Textures\apt_fe_shared_mainMenuLib_6.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fe_shared_mainMenuLib_7" File="art\Textures\apt_fe_shared_mainMenuLib_7.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fe_shared_mainMenuLib_73" File="art\Textures\apt_fe_shared_mainMenuLib_73.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fe_shared_mainMenuLib_77" File="art\Textures\apt_fe_shared_mainMenuLib_77.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+</AssetDeclaration>

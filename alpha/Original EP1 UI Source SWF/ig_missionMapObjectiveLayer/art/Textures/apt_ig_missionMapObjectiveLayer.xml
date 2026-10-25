@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- XML: E:\depot\CnC\RA3_EP1\production\Data\AptBuildXML\0.0-dev\pc\Output\ig_missionMapObjectiveLayer\art\textures\apt_ig_missionMapObjectiveLayer.xml
+ Directories:
+    E:\depot\CnC\RA3_EP1\production\Data\AptBuildXML\0.0-dev\pc\Output\ig_missionMapObjectiveLayer\ig_missionMapObjectiveLayer_textures\
+ Extend RGB   : Yes
+ Gutter (1)   : No
+ Alpha Channel: Yes
+ Compressed   : No
+ Image Size   : 1024 x 1024
+ Keep Dirs Seperate: Yes
+-->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<!-- Packed Texture: apt_ig_missionMapObjectiveLayer_1.tga -->
+	<Texture id="apt_ig_missionMapObjectiveLayer_1" File="apt_ig_missionMapObjectiveLayer_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="9" Texture="apt_ig_missionMapObjectiveLayer_1" Rotated="false">
+		<Dimensions x="44" y="66"/>
+		<Coords x="93" y="137"/>
+		<TextureDimensions x="256" y="256"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="32" Texture="apt_ig_missionMapObjectiveLayer_1" Rotated="false">
+		<Dimensions x="44" y="66"/>
+		<Coords x="47" y="137"/>
+		<TextureDimensions x="256" y="256"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="30" Texture="apt_ig_missionMapObjectiveLayer_1" Rotated="false">
+		<Dimensions x="44" y="66"/>
+		<Coords x="1" y="134"/>
+		<TextureDimensions x="256" y="256"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="28" Texture="apt_ig_missionMapObjectiveLayer_1" Rotated="false">
+		<Dimensions x="44" y="66"/>
+		<Coords x="185" y="69"/>
+		<TextureDimensions x="256" y="256"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="26" Texture="apt_ig_missionMapObjectiveLayer_1" Rotated="false">
+		<Dimensions x="44" y="66"/>
+		<Coords x="139" y="69"/>
+		<TextureDimensions x="256" y="256"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="24" Texture="apt_ig_missionMapObjectiveLayer_1" Rotated="false">
+		<Dimensions x="44" y="66"/>
+		<Coords x="93" y="69"/>
+		<TextureDimensions x="256" y="256"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="22" Texture="apt_ig_missionMapObjectiveLayer_1" Rotated="false">
+		<Dimensions x="44" y="66"/>
+		<Coords x="47" y="69"/>
+		<TextureDimensions x="256" y="256"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="19" Texture="apt_ig_missionMapObjectiveLayer_1" Rotated="false">
+		<Dimensions x="44" y="66"/>
+		<Coords x="1" y="66"/>
+		<TextureDimensions x="256" y="256"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="17" Texture="apt_ig_missionMapObjectiveLayer_1" Rotated="false">
+		<Dimensions x="44" y="66"/>
+		<Coords x="204" y="1"/>
+		<TextureDimensions x="256" y="256"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="15" Texture="apt_ig_missionMapObjectiveLayer_1" Rotated="false">
+		<Dimensions x="44" y="66"/>
+		<Coords x="158" y="1"/>
+		<TextureDimensions x="256" y="256"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="13" Texture="apt_ig_missionMapObjectiveLayer_1" Rotated="false">
+		<Dimensions x="44" y="66"/>
+		<Coords x="112" y="1"/>
+		<TextureDimensions x="256" y="256"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="11" Texture="apt_ig_missionMapObjectiveLayer_1" Rotated="false">
+		<Dimensions x="44" y="66"/>
+		<Coords x="66" y="1"/>
+		<TextureDimensions x="256" y="256"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="1" Texture="apt_ig_missionMapObjectiveLayer_1" Rotated="false">
+		<Dimensions x="64" y="64"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="256" y="256"/>
+	</PackedTextureImage>
+
+</AssetDeclaration>

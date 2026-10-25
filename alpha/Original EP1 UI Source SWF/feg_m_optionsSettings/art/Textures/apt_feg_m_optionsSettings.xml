@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- XML: E:\depot\CnC\RA3_EP1\production\Data\AptBuildXML\0.0-dev\pc\Output\feg_m_optionsSettings\art\textures\apt_feg_m_optionsSettings.xml
+ Directories:
+    E:\depot\CnC\RA3_EP1\production\Data\AptBuildXML\0.0-dev\pc\Output\feg_m_optionsSettings\feg_m_optionsSettings_textures\
+ Extend RGB   : Yes
+ Gutter (1)   : No
+ Alpha Channel: Yes
+ Compressed   : No
+ Image Size   : 1024 x 1024
+ Keep Dirs Seperate: Yes
+-->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<!-- Packed Texture: apt_feg_m_optionsSettings_1.tga -->
+	<Texture id="apt_feg_m_optionsSettings_1" File="apt_feg_m_optionsSettings_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="7" Texture="apt_feg_m_optionsSettings_1" Rotated="false">
+		<Dimensions x="32" y="32"/>
+		<Coords x="847" y="614"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="57" Texture="apt_feg_m_optionsSettings_1" Rotated="false">
+		<Dimensions x="237" y="31"/>
+		<Coords x="1" y="957"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="44" Texture="apt_feg_m_optionsSettings_1" Rotated="false">
+		<Dimensions x="237" y="31"/>
+		<Coords x="579" y="956"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="54" Texture="apt_feg_m_optionsSettings_1" Rotated="false">
+		<Dimensions x="237" y="36"/>
+		<Coords x="579" y="918"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="19" Texture="apt_feg_m_optionsSettings_1" Rotated="false">
+		<Dimensions x="287" y="37"/>
+		<Coords x="290" y="918"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="29" Texture="apt_feg_m_optionsSettings_1" Rotated="false">
+		<Dimensions x="287" y="37"/>
+		<Coords x="1" y="918"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="17" Texture="apt_feg_m_optionsSettings_1" Rotated="false">
+		<Dimensions x="287" y="37"/>
+		<Coords x="579" y="879"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="37" Texture="apt_feg_m_optionsSettings_1" Rotated="false">
+		<Dimensions x="287" y="37"/>
+		<Coords x="290" y="879"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="40" Texture="apt_feg_m_optionsSettings_1" Rotated="false">
+		<Dimensions x="287" y="37"/>
+		<Coords x="1" y="879"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="93" Texture="apt_feg_m_optionsSettings_1" Rotated="false">
+		<Dimensions x="844" y="263"/>
+		<Coords x="1" y="614"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="64" Texture="apt_feg_m_optionsSettings_1" Rotated="false">
+		<Dimensions x="999" y="611"/>
+		<Coords x="1" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+
+	<!-- Packed Texture: apt_feg_m_optionsSettings_2.tga -->
+	<Texture id="apt_feg_m_optionsSettings_2" File="apt_feg_m_optionsSettings_2.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="75" Texture="apt_feg_m_optionsSettings_2" Rotated="false">
+		<Dimensions x="844" y="528"/>
+		<Coords x="1" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+
+</AssetDeclaration>

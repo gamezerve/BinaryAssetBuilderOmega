@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- XML: E:\depot\CnC\RA3_EP1\production\Data\AptBuildXML\0.0-dev\pc\Output\fes_m_scenarioMap\art\textures\apt_fes_m_scenarioMap.xml
+ Directories:
+    E:\depot\CnC\RA3_EP1\production\Data\AptBuildXML\0.0-dev\pc\Output\fes_m_scenarioMap\fes_m_scenarioMap_textures\
+ Extend RGB   : Yes
+ Gutter (1)   : No
+ Alpha Channel: Yes
+ Compressed   : No
+ Image Size   : 1024 x 1024
+ Keep Dirs Seperate: Yes
+-->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<!-- Packed Texture: apt_fes_m_scenarioMap_1.tga -->
+	<Texture id="apt_fes_m_scenarioMap_1" File="apt_fes_m_scenarioMap_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="100" Texture="apt_fes_m_scenarioMap_1" Rotated="false">
+		<Dimensions x="23" y="22"/>
+		<Coords x="2009" y="1"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="98" Texture="apt_fes_m_scenarioMap_1" Rotated="false">
+		<Dimensions x="23" y="22"/>
+		<Coords x="1984" y="1"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="96" Texture="apt_fes_m_scenarioMap_1" Rotated="false">
+		<Dimensions x="28" y="25"/>
+		<Coords x="1954" y="1"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="94" Texture="apt_fes_m_scenarioMap_1" Rotated="false">
+		<Dimensions x="34" y="34"/>
+		<Coords x="1918" y="1"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="15" Texture="apt_fes_m_scenarioMap_1" Rotated="false">
+		<Dimensions x="46" y="45"/>
+		<Coords x="1870" y="1"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="18" Texture="apt_fes_m_scenarioMap_1" Rotated="false">
+		<Dimensions x="62" y="61"/>
+		<Coords x="1806" y="1"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="77" Texture="apt_fes_m_scenarioMap_1" Rotated="false">
+		<Dimensions x="360" y="13"/>
+		<Coords x="1444" y="1"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="57" Texture="apt_fes_m_scenarioMap_1" Rotated="false">
+		<Dimensions x="74" y="130"/>
+		<Coords x="1368" y="1"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="38" Texture="apt_fes_m_scenarioMap_1" Rotated="false">
+		<Dimensions x="682" y="84"/>
+		<Coords x="1342" y="867"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="32" Texture="apt_fes_m_scenarioMap_1" Rotated="false">
+		<Dimensions x="692" y="94"/>
+		<Coords x="1342" y="771"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="5" Texture="apt_fes_m_scenarioMap_1" Rotated="false">
+		<Dimensions x="1339" y="216"/>
+		<Coords x="1" y="771"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="84" Texture="apt_fes_m_scenarioMap_1" Rotated="false">
+		<Dimensions x="1365" y="768"/>
+		<Coords x="1" y="1"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+
+	<!-- Packed Texture: apt_fes_m_scenarioMap_2.tga -->
+	<Texture id="apt_fes_m_scenarioMap_2" File="apt_fes_m_scenarioMap_2.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="62" Texture="apt_fes_m_scenarioMap_2" Rotated="false">
+		<Dimensions x="1001" y="53"/>
+		<Coords x="980" y="771"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="51" Texture="apt_fes_m_scenarioMap_2" Rotated="false">
+		<Dimensions x="977" y="236"/>
+		<Coords x="1" y="771"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="1" Texture="apt_fes_m_scenarioMap_2" Rotated="false">
+		<Dimensions x="1365" y="768"/>
+		<Coords x="1" y="1"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+
+	<!-- Packed Texture: apt_fes_m_scenarioMap_3.tga -->
+	<Texture id="apt_fes_m_scenarioMap_3" File="apt_fes_m_scenarioMap_3.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="87" Texture="apt_fes_m_scenarioMap_3" Rotated="false">
+		<Dimensions x="736" y="561"/>
+		<Coords x="1" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+
+	<!-- Packed Texture: apt_fes_m_scenarioMap_4.tga -->
+	<Texture id="apt_fes_m_scenarioMap_4" File="apt_fes_m_scenarioMap_4.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="70" Texture="apt_fes_m_scenarioMap_4" Rotated="false">
+		<Dimensions x="1069" y="64"/>
+		<Coords x="1" y="161"/>
+		<TextureDimensions x="2048" y="256"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="73" Texture="apt_fes_m_scenarioMap_4" Rotated="false">
+		<Dimensions x="1069" y="64"/>
+		<Coords x="1" y="95"/>
+		<TextureDimensions x="2048" y="256"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="54" Texture="apt_fes_m_scenarioMap_4" Rotated="false">
+		<Dimensions x="1069" y="92"/>
+		<Coords x="1" y="1"/>
+		<TextureDimensions x="2048" y="256"/>
+	</PackedTextureImage>
+
+</AssetDeclaration>

@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<AptAptData id="fes_m_factionMenu_apt" File="fes_m_factionMenu.apt" />
+	<AptConstData id="fes_m_factionMenu_const" File="fes_m_factionMenu.const" />
+	<AptDatData id="fes_m_factionMenu_dat" File="fes_m_factionMenu.dat" />
+	<AptGeometryData id="fes_m_factionMenu_101" File="fes_m_factionMenu_geometry\101.ru" AptID="101"/>
+	<AptGeometryData id="fes_m_factionMenu_104" File="fes_m_factionMenu_geometry\104.ru" AptID="104"/>
+	<AptGeometryData id="fes_m_factionMenu_11" File="fes_m_factionMenu_geometry\11.ru" AptID="11"/>
+	<AptGeometryData id="fes_m_factionMenu_113" File="fes_m_factionMenu_geometry\113.ru" AptID="113"/>
+	<AptGeometryData id="fes_m_factionMenu_120" File="fes_m_factionMenu_geometry\120.ru" AptID="120"/>
+	<AptGeometryData id="fes_m_factionMenu_125" File="fes_m_factionMenu_geometry\125.ru" AptID="125"/>
+	<AptGeometryData id="fes_m_factionMenu_126" File="fes_m_factionMenu_geometry\126.ru" AptID="126"/>
+	<AptGeometryData id="fes_m_factionMenu_128" File="fes_m_factionMenu_geometry\128.ru" AptID="128"/>
+	<AptGeometryData id="fes_m_factionMenu_131" File="fes_m_factionMenu_geometry\131.ru" AptID="131"/>
+	<AptGeometryData id="fes_m_factionMenu_14" File="fes_m_factionMenu_geometry\14.ru" AptID="14"/>
+	<AptGeometryData id="fes_m_factionMenu_18" File="fes_m_factionMenu_geometry\18.ru" AptID="18"/>
+	<AptGeometryData id="fes_m_factionMenu_2" File="fes_m_factionMenu_geometry\2.ru" AptID="2"/>
+	<AptGeometryData id="fes_m_factionMenu_21" File="fes_m_factionMenu_geometry\21.ru" AptID="21"/>
+	<AptGeometryData id="fes_m_factionMenu_25" File="fes_m_factionMenu_geometry\25.ru" AptID="25"/>
+	<AptGeometryData id="fes_m_factionMenu_28" File="fes_m_factionMenu_geometry\28.ru" AptID="28"/>
+	<AptGeometryData id="fes_m_factionMenu_31" File="fes_m_factionMenu_geometry\31.ru" AptID="31"/>
+	<AptGeometryData id="fes_m_factionMenu_35" File="fes_m_factionMenu_geometry\35.ru" AptID="35"/>
+	<AptGeometryData id="fes_m_factionMenu_38" File="fes_m_factionMenu_geometry\38.ru" AptID="38"/>
+	<AptGeometryData id="fes_m_factionMenu_41" File="fes_m_factionMenu_geometry\41.ru" AptID="41"/>
+	<AptGeometryData id="fes_m_factionMenu_44" File="fes_m_factionMenu_geometry\44.ru" AptID="44"/>
+	<AptGeometryData id="fes_m_factionMenu_47" File="fes_m_factionMenu_geometry\47.ru" AptID="47"/>
+	<AptGeometryData id="fes_m_factionMenu_5" File="fes_m_factionMenu_geometry\5.ru" AptID="5"/>
+	<AptGeometryData id="fes_m_factionMenu_50" File="fes_m_factionMenu_geometry\50.ru" AptID="50"/>
+	<AptGeometryData id="fes_m_factionMenu_53" File="fes_m_factionMenu_geometry\53.ru" AptID="53"/>
+	<AptGeometryData id="fes_m_factionMenu_57" File="fes_m_factionMenu_geometry\57.ru" AptID="57"/>
+	<AptGeometryData id="fes_m_factionMenu_59" File="fes_m_factionMenu_geometry\59.ru" AptID="59"/>
+	<AptGeometryData id="fes_m_factionMenu_62" File="fes_m_factionMenu_geometry\62.ru" AptID="62"/>
+	<AptGeometryData id="fes_m_factionMenu_65" File="fes_m_factionMenu_geometry\65.ru" AptID="65"/>
+	<AptGeometryData id="fes_m_factionMenu_67" File="fes_m_factionMenu_geometry\67.ru" AptID="67"/>
+	<AptGeometryData id="fes_m_factionMenu_68" File="fes_m_factionMenu_geometry\68.ru" AptID="68"/>
+	<AptGeometryData id="fes_m_factionMenu_69" File="fes_m_factionMenu_geometry\69.ru" AptID="69"/>
+	<AptGeometryData id="fes_m_factionMenu_70" File="fes_m_factionMenu_geometry\70.ru" AptID="70"/>
+	<AptGeometryData id="fes_m_factionMenu_71" File="fes_m_factionMenu_geometry\71.ru" AptID="71"/>
+	<AptGeometryData id="fes_m_factionMenu_72" File="fes_m_factionMenu_geometry\72.ru" AptID="72"/>
+	<AptGeometryData id="fes_m_factionMenu_73" File="fes_m_factionMenu_geometry\73.ru" AptID="73"/>
+	<AptGeometryData id="fes_m_factionMenu_74" File="fes_m_factionMenu_geometry\74.ru" AptID="74"/>
+	<AptGeometryData id="fes_m_factionMenu_75" File="fes_m_factionMenu_geometry\75.ru" AptID="75"/>
+	<AptGeometryData id="fes_m_factionMenu_76" File="fes_m_factionMenu_geometry\76.ru" AptID="76"/>
+	<AptGeometryData id="fes_m_factionMenu_77" File="fes_m_factionMenu_geometry\77.ru" AptID="77"/>
+	<AptGeometryData id="fes_m_factionMenu_78" File="fes_m_factionMenu_geometry\78.ru" AptID="78"/>
+	<AptGeometryData id="fes_m_factionMenu_79" File="fes_m_factionMenu_geometry\79.ru" AptID="79"/>
+	<AptGeometryData id="fes_m_factionMenu_8" File="fes_m_factionMenu_geometry\8.ru" AptID="8"/>
+	<AptGeometryData id="fes_m_factionMenu_80" File="fes_m_factionMenu_geometry\80.ru" AptID="80"/>
+	<AptGeometryData id="fes_m_factionMenu_81" File="fes_m_factionMenu_geometry\81.ru" AptID="81"/>
+	<AptGeometryData id="fes_m_factionMenu_82" File="fes_m_factionMenu_geometry\82.ru" AptID="82"/>
+	<AptGeometryData id="fes_m_factionMenu_83" File="fes_m_factionMenu_geometry\83.ru" AptID="83"/>
+	<AptGeometryData id="fes_m_factionMenu_84" File="fes_m_factionMenu_geometry\84.ru" AptID="84"/>
+	<AptGeometryData id="fes_m_factionMenu_85" File="fes_m_factionMenu_geometry\85.ru" AptID="85"/>
+	<AptGeometryData id="fes_m_factionMenu_86" File="fes_m_factionMenu_geometry\86.ru" AptID="86"/>
+	<AptGeometryData id="fes_m_factionMenu_87" File="fes_m_factionMenu_geometry\87.ru" AptID="87"/>
+	<AptGeometryData id="fes_m_factionMenu_88" File="fes_m_factionMenu_geometry\88.ru" AptID="88"/>
+	<AptGeometryData id="fes_m_factionMenu_89" File="fes_m_factionMenu_geometry\89.ru" AptID="89"/>
+	<AptGeometryData id="fes_m_factionMenu_90" File="fes_m_factionMenu_geometry\90.ru" AptID="90"/>
+	<AptGeometryData id="fes_m_factionMenu_92" File="fes_m_factionMenu_geometry\92.ru" AptID="92"/>
+	<AptGeometryData id="fes_m_factionMenu_94" File="fes_m_factionMenu_geometry\94.ru" AptID="94"/>
+	<AptGeometryData id="fes_m_factionMenu_96" File="fes_m_factionMenu_geometry\96.ru" AptID="96"/>
+	<AptGeometryData id="fes_m_factionMenu_98" File="fes_m_factionMenu_geometry\98.ru" AptID="98"/>
+	<AptGeometryData id="fes_m_factionMenu_99" File="fes_m_factionMenu_geometry\99.ru" AptID="99"/>
+	<Texture id="apt_fes_m_factionMenu_1" File="art\Textures\apt_fes_m_factionMenu_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fes_m_factionMenu_2" File="art\Textures\apt_fes_m_factionMenu_2.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fes_m_factionMenu_3" File="art\Textures\apt_fes_m_factionMenu_3.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+</AssetDeclaration>

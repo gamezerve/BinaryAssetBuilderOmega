@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- XML: E:\depot\CnC\RA3_EP1\production\Data\AptBuildXML\0.0-dev\pc\Output\fem_m_postgameRoundup\art\textures\apt_fem_m_postgameRoundup.xml
+ Directories:
+    E:\depot\CnC\RA3_EP1\production\Data\AptBuildXML\0.0-dev\pc\Output\fem_m_postgameRoundup\fem_m_postgameRoundup_textures\
+ Extend RGB   : Yes
+ Gutter (1)   : No
+ Alpha Channel: Yes
+ Compressed   : No
+ Image Size   : 1024 x 1024
+ Keep Dirs Seperate: Yes
+-->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<!-- Packed Texture: apt_fem_m_postgameRoundup_1.tga -->
+	<Texture id="apt_fem_m_postgameRoundup_1" File="apt_fem_m_postgameRoundup_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="54" Texture="apt_fem_m_postgameRoundup_1" Rotated="false">
+		<Dimensions x="11" y="56"/>
+		<Coords x="1002" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="87" Texture="apt_fem_m_postgameRoundup_1" Rotated="false">
+		<Dimensions x="25" y="26"/>
+		<Coords x="915" y="614"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="15" Texture="apt_fem_m_postgameRoundup_1" Rotated="false">
+		<Dimensions x="237" y="31"/>
+		<Coords x="1" y="879"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="1" Texture="apt_fem_m_postgameRoundup_1" Rotated="false">
+		<Dimensions x="237" y="31"/>
+		<Coords x="609" y="788"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="4" Texture="apt_fem_m_postgameRoundup_1" Rotated="false">
+		<Dimensions x="237" y="34"/>
+		<Coords x="609" y="752"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="36" Texture="apt_fem_m_postgameRoundup_1" Rotated="false">
+		<Dimensions x="277" y="56"/>
+		<Coords x="609" y="694"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="18" Texture="apt_fem_m_postgameRoundup_1" Rotated="false">
+		<Dimensions x="304" y="78"/>
+		<Coords x="609" y="614"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="51" Texture="apt_fem_m_postgameRoundup_1" Rotated="false">
+		<Dimensions x="908" y="31"/>
+		<Coords x="1" y="846"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="33" Texture="apt_fem_m_postgameRoundup_1" Rotated="false">
+		<Dimensions x="606" y="230"/>
+		<Coords x="1" y="614"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="83" Texture="apt_fem_m_postgameRoundup_1" Rotated="false">
+		<Dimensions x="999" y="611"/>
+		<Coords x="1" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+
+</AssetDeclaration>

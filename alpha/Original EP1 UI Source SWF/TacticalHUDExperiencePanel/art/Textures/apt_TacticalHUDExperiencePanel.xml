@@ -1,0 +1,338 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- XML: E:\depot\CnC\RA3_EP1\production\Data\AptBuildXML\0.0-dev\pc\Output\TacticalHUDExperiencePanel\art\textures\apt_TacticalHUDExperiencePanel.xml
+ Directories:
+    E:\depot\CnC\RA3_EP1\production\Data\AptBuildXML\0.0-dev\pc\Output\TacticalHUDExperiencePanel\TacticalHUDExperiencePanel_textures\
+ Extend RGB   : Yes
+ Gutter (1)   : No
+ Alpha Channel: Yes
+ Compressed   : No
+ Image Size   : 1024 x 1024
+ Keep Dirs Seperate: Yes
+-->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<!-- Packed Texture: apt_TacticalHUDExperiencePanel_1.tga -->
+	<Texture id="apt_TacticalHUDExperiencePanel_1" File="apt_TacticalHUDExperiencePanel_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="93" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="11" y="6"/>
+		<Coords x="648" y="60"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="129" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="6" y="11"/>
+		<Coords x="640" y="60"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="117" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="11" y="6"/>
+		<Coords x="627" y="60"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="105" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="6" y="11"/>
+		<Coords x="619" y="60"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="83" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="7" y="11"/>
+		<Coords x="610" y="59"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="107" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="7" y="11"/>
+		<Coords x="601" y="59"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="95" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="11" y="7"/>
+		<Coords x="588" y="59"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="119" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="11" y="8"/>
+		<Coords x="575" y="59"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="103" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="9" y="12"/>
+		<Coords x="564" y="59"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="127" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="9" y="12"/>
+		<Coords x="948" y="54"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="91" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="12" y="9"/>
+		<Coords x="987" y="53"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="85" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="10" y="12"/>
+		<Coords x="975" y="53"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="109" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="10" y="13"/>
+		<Coords x="963" y="53"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="99" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="12" y="11"/>
+		<Coords x="934" y="53"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="89" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="12" y="11"/>
+		<Coords x="1005" y="47"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="115" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="12" y="11"/>
+		<Coords x="650" y="47"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="97" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="12" y="11"/>
+		<Coords x="636" y="47"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="101" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="11" y="12"/>
+		<Coords x="454" y="47"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="121" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="12" y="11"/>
+		<Coords x="622" y="47"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="123" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="12" y="12"/>
+		<Coords x="991" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="111" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="12" y="12"/>
+		<Coords x="977" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="113" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="12" y="12"/>
+		<Coords x="963" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="87" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="12" y="13"/>
+		<Coords x="949" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="125" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="13" y="12"/>
+		<Coords x="934" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="76" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="8" y="21"/>
+		<Coords x="924" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="64" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="9" y="21"/>
+		<Coords x="913" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="67" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="9" y="21"/>
+		<Coords x="902" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="40" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="9" y="21"/>
+		<Coords x="891" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="43" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="9" y="21"/>
+		<Coords x="880" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="46" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="9" y="21"/>
+		<Coords x="869" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="49" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="9" y="21"/>
+		<Coords x="858" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="52" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="9" y="21"/>
+		<Coords x="847" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="73" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="9" y="21"/>
+		<Coords x="836" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="55" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="9" y="21"/>
+		<Coords x="1013" y="24"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="58" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="9" y="21"/>
+		<Coords x="454" y="24"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="61" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="9" y="21"/>
+		<Coords x="1013" y="1"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="70" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="9" y="21"/>
+		<Coords x="454" y="1"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="37" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="13" y="21"/>
+		<Coords x="821" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="152" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="36" y="36"/>
+		<Coords x="783" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="150" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="36" y="36"/>
+		<Coords x="745" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="138" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="36" y="36"/>
+		<Coords x="707" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="148" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="36" y="36"/>
+		<Coords x="669" y="39"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="146" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="36" y="36"/>
+		<Coords x="975" y="1"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="144" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="36" y="36"/>
+		<Coords x="937" y="1"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="142" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="36" y="36"/>
+		<Coords x="899" y="1"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="140" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="36" y="36"/>
+		<Coords x="861" y="1"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="158" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="36" y="36"/>
+		<Coords x="823" y="1"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="156" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="36" y="36"/>
+		<Coords x="785" y="1"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="154" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="36" y="36"/>
+		<Coords x="747" y="1"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="176" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="37" y="36"/>
+		<Coords x="708" y="1"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="170" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="37" y="36"/>
+		<Coords x="669" y="1"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="173" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="45" y="44"/>
+		<Coords x="622" y="1"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="134" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="56" y="56"/>
+		<Coords x="564" y="1"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="162" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="95" y="95"/>
+		<Coords x="467" y="1"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="17" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="134" y="84"/>
+		<Coords x="139" y="363"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="11" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="134" y="84"/>
+		<Coords x="295" y="359"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="9" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="136" y="84"/>
+		<Coords x="1" y="338"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="3" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="136" y="94"/>
+		<Coords x="295" y="263"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="5" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="146" y="98"/>
+		<Coords x="147" y="263"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="15" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="144" y="102"/>
+		<Coords x="1" y="234"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="25" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="212" y="78"/>
+		<Coords x="234" y="183"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="29" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="231" y="86"/>
+		<Coords x="234" y="95"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="33" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="218" y="92"/>
+		<Coords x="234" y="1"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="166" Texture="apt_TacticalHUDExperiencePanel_1" Rotated="false">
+		<Dimensions x="231" y="231"/>
+		<Coords x="1" y="1"/>
+		<TextureDimensions x="1024" y="512"/>
+	</PackedTextureImage>
+
+</AssetDeclaration>

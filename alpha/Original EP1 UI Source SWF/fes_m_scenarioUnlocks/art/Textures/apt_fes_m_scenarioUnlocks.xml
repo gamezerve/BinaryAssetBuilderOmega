@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- XML: E:\depot\CnC\RA3_EP1\production\Data\AptBuildXML\0.0-dev\pc\Output\fes_m_scenarioUnlocks\art\textures\apt_fes_m_scenarioUnlocks.xml
+ Directories:
+    E:\depot\CnC\RA3_EP1\production\Data\AptBuildXML\0.0-dev\pc\Output\fes_m_scenarioUnlocks\fes_m_scenarioUnlocks_textures\
+ Extend RGB   : Yes
+ Gutter (1)   : No
+ Alpha Channel: Yes
+ Compressed   : No
+ Image Size   : 1024 x 1024
+ Keep Dirs Seperate: Yes
+-->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<!-- Packed Texture: apt_fes_m_scenarioUnlocks_1.tga -->
+	<Texture id="apt_fes_m_scenarioUnlocks_1" File="apt_fes_m_scenarioUnlocks_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="47" Texture="apt_fes_m_scenarioUnlocks_1" Rotated="false">
+		<Dimensions x="29" y="27"/>
+		<Coords x="2016" y="1"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="22" Texture="apt_fes_m_scenarioUnlocks_1" Rotated="false">
+		<Dimensions x="64" y="64"/>
+		<Coords x="1368" y="223"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="19" Texture="apt_fes_m_scenarioUnlocks_1" Rotated="false">
+		<Dimensions x="88" y="88"/>
+		<Coords x="1940" y="133"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="51" Texture="apt_fes_m_scenarioUnlocks_1" Rotated="false">
+		<Dimensions x="74" y="130"/>
+		<Coords x="1940" y="1"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="1" Texture="apt_fes_m_scenarioUnlocks_1" Rotated="false">
+		<Dimensions x="252" y="100"/>
+		<Coords x="1622" y="205"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="26" Texture="apt_fes_m_scenarioUnlocks_1" Rotated="false">
+		<Dimensions x="252" y="100"/>
+		<Coords x="1368" y="121"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="3" Texture="apt_fes_m_scenarioUnlocks_1" Rotated="false">
+		<Dimensions x="252" y="100"/>
+		<Coords x="1686" y="103"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="14" Texture="apt_fes_m_scenarioUnlocks_1" Rotated="false">
+		<Dimensions x="252" y="100"/>
+		<Coords x="1686" y="1"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="5" Texture="apt_fes_m_scenarioUnlocks_1" Rotated="false">
+		<Dimensions x="316" y="118"/>
+		<Coords x="1368" y="1"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="44" Texture="apt_fes_m_scenarioUnlocks_1" Rotated="false">
+		<Dimensions x="977" y="236"/>
+		<Coords x="1" y="771"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="30" Texture="apt_fes_m_scenarioUnlocks_1" Rotated="false">
+		<Dimensions x="1365" y="768"/>
+		<Coords x="1" y="1"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</PackedTextureImage>
+
+	<!-- Packed Texture: apt_fes_m_scenarioUnlocks_2.tga -->
+	<Texture id="apt_fes_m_scenarioUnlocks_2" File="apt_fes_m_scenarioUnlocks_2.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="29" Texture="apt_fes_m_scenarioUnlocks_2" Rotated="false">
+		<Dimensions x="998" y="611"/>
+		<Coords x="1" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+
+	<!-- Packed Texture: apt_fes_m_scenarioUnlocks_3.tga -->
+	<Texture id="apt_fes_m_scenarioUnlocks_3" File="apt_fes_m_scenarioUnlocks_3.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="66" Texture="apt_fes_m_scenarioUnlocks_3" Rotated="false">
+		<Dimensions x="968" y="581"/>
+		<Coords x="1" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+
+	<!-- Packed Texture: apt_fes_m_scenarioUnlocks_4.tga -->
+	<Texture id="apt_fes_m_scenarioUnlocks_4" File="apt_fes_m_scenarioUnlocks_4.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="69" Texture="apt_fes_m_scenarioUnlocks_4" Rotated="false">
+		<Dimensions x="968" y="581"/>
+		<Coords x="1" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+
+	<!-- Packed Texture: apt_fes_m_scenarioUnlocks_5.tga -->
+	<Texture id="apt_fes_m_scenarioUnlocks_5" File="apt_fes_m_scenarioUnlocks_5.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="48" Texture="apt_fes_m_scenarioUnlocks_5" Rotated="false">
+		<Dimensions x="1069" y="64"/>
+		<Coords x="1" y="66"/>
+		<TextureDimensions x="2048" y="256"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="54" Texture="apt_fes_m_scenarioUnlocks_5" Rotated="false">
+		<Dimensions x="1069" y="64"/>
+		<Coords x="1" y="0"/>
+		<TextureDimensions x="2048" y="256"/>
+	</PackedTextureImage>
+
+</AssetDeclaration>

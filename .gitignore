@@ -394,6 +394,9 @@ MigrationBackup/
 /alpha/SageXML/
 # Reborn: local EA catalog metadata is not published before redistribution review; the catalog README remains tracked.
 /alpha/catalogs/ra3ep1/*.manifest
+/alpha/catalogs/ra3ep1/*.bin
+/alpha/catalogs/ra3ep1/*.imp
+/alpha/catalogs/ra3ep1/*.relo
 # Reborn: the copied original string table stays local until redistribution review.
 /alpha/catalogs/ra3ep1/*.csf
 /.maintenance/

@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- XML: E:\depot\CnC\RA3_EP1\production\Data\AptBuildXML\0.0-dev\pc\Output\igm_pauseMenu\art\textures\apt_igm_pauseMenu.xml
+ Directories:
+    E:\depot\CnC\RA3_EP1\production\Data\AptBuildXML\0.0-dev\pc\Output\igm_pauseMenu\igm_pauseMenu_textures\
+ Extend RGB   : Yes
+ Gutter (1)   : No
+ Alpha Channel: Yes
+ Compressed   : No
+ Image Size   : 1024 x 1024
+ Keep Dirs Seperate: Yes
+-->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<!-- Packed Texture: apt_igm_pauseMenu_1.tga -->
+	<Texture id="apt_igm_pauseMenu_1" File="apt_igm_pauseMenu_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="14" Texture="apt_igm_pauseMenu_1" Rotated="false">
+		<Dimensions x="16" y="15"/>
+		<Coords x="347" y="55"/>
+		<TextureDimensions x="512" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="11" Texture="apt_igm_pauseMenu_1" Rotated="false">
+		<Dimensions x="24" y="25"/>
+		<Coords x="321" y="55"/>
+		<TextureDimensions x="512" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="71" Texture="apt_igm_pauseMenu_1" Rotated="false">
+		<Dimensions x="11" y="56"/>
+		<Coords x="489" y="1"/>
+		<TextureDimensions x="512" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="63" Texture="apt_igm_pauseMenu_1" Rotated="false">
+		<Dimensions x="46" y="46"/>
+		<Coords x="273" y="55"/>
+		<TextureDimensions x="512" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="61" Texture="apt_igm_pauseMenu_1" Rotated="false">
+		<Dimensions x="46" y="46"/>
+		<Coords x="225" y="55"/>
+		<TextureDimensions x="512" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="59" Texture="apt_igm_pauseMenu_1" Rotated="false">
+		<Dimensions x="46" y="46"/>
+		<Coords x="441" y="49"/>
+		<TextureDimensions x="512" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="53" Texture="apt_igm_pauseMenu_1" Rotated="false">
+		<Dimensions x="46" y="46"/>
+		<Coords x="441" y="1"/>
+		<TextureDimensions x="512" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="55" Texture="apt_igm_pauseMenu_1" Rotated="false">
+		<Dimensions x="52" y="52"/>
+		<Coords x="387" y="1"/>
+		<TextureDimensions x="512" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="49" Texture="apt_igm_pauseMenu_1" Rotated="false">
+		<Dimensions x="52" y="52"/>
+		<Coords x="333" y="1"/>
+		<TextureDimensions x="512" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="47" Texture="apt_igm_pauseMenu_1" Rotated="false">
+		<Dimensions x="52" y="52"/>
+		<Coords x="279" y="1"/>
+		<TextureDimensions x="512" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="45" Texture="apt_igm_pauseMenu_1" Rotated="false">
+		<Dimensions x="52" y="52"/>
+		<Coords x="225" y="1"/>
+		<TextureDimensions x="512" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="19" Texture="apt_igm_pauseMenu_1" Rotated="false">
+		<Dimensions x="495" y="8"/>
+		<Coords x="1" y="318"/>
+		<TextureDimensions x="512" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="22" Texture="apt_igm_pauseMenu_1" Rotated="false">
+		<Dimensions x="496" y="15"/>
+		<Coords x="1" y="301"/>
+		<TextureDimensions x="512" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="73" Texture="apt_igm_pauseMenu_1" Rotated="false">
+		<Dimensions x="465" y="31"/>
+		<Coords x="1" y="268"/>
+		<TextureDimensions x="512" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="25" Texture="apt_igm_pauseMenu_1" Rotated="false">
+		<Dimensions x="472" y="31"/>
+		<Coords x="1" y="235"/>
+		<TextureDimensions x="512" y="512"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="69" Texture="apt_igm_pauseMenu_1" Rotated="false">
+		<Dimensions x="222" y="232"/>
+		<Coords x="1" y="1"/>
+		<TextureDimensions x="512" y="512"/>
+	</PackedTextureImage>
+
+</AssetDeclaration>

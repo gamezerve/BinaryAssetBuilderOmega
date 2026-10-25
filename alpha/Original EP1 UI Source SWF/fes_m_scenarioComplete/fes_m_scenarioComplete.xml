@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<AptAptData id="fes_m_scenarioComplete_apt" File="fes_m_scenarioComplete.apt" />
+	<AptConstData id="fes_m_scenarioComplete_const" File="fes_m_scenarioComplete.const" />
+	<AptDatData id="fes_m_scenarioComplete_dat" File="fes_m_scenarioComplete.dat" />
+	<AptGeometryData id="fes_m_scenarioComplete_10" File="fes_m_scenarioComplete_geometry\10.ru" AptID="10"/>
+	<AptGeometryData id="fes_m_scenarioComplete_16" File="fes_m_scenarioComplete_geometry\16.ru" AptID="16"/>
+	<AptGeometryData id="fes_m_scenarioComplete_21" File="fes_m_scenarioComplete_geometry\21.ru" AptID="21"/>
+	<AptGeometryData id="fes_m_scenarioComplete_25" File="fes_m_scenarioComplete_geometry\25.ru" AptID="25"/>
+	<AptGeometryData id="fes_m_scenarioComplete_27" File="fes_m_scenarioComplete_geometry\27.ru" AptID="27"/>
+	<AptGeometryData id="fes_m_scenarioComplete_29" File="fes_m_scenarioComplete_geometry\29.ru" AptID="29"/>
+	<AptGeometryData id="fes_m_scenarioComplete_3" File="fes_m_scenarioComplete_geometry\3.ru" AptID="3"/>
+	<AptGeometryData id="fes_m_scenarioComplete_34" File="fes_m_scenarioComplete_geometry\34.ru" AptID="34"/>
+	<AptGeometryData id="fes_m_scenarioComplete_36" File="fes_m_scenarioComplete_geometry\36.ru" AptID="36"/>
+	<AptGeometryData id="fes_m_scenarioComplete_39" File="fes_m_scenarioComplete_geometry\39.ru" AptID="39"/>
+	<AptGeometryData id="fes_m_scenarioComplete_43" File="fes_m_scenarioComplete_geometry\43.ru" AptID="43"/>
+	<AptGeometryData id="fes_m_scenarioComplete_48" File="fes_m_scenarioComplete_geometry\48.ru" AptID="48"/>
+	<AptGeometryData id="fes_m_scenarioComplete_51" File="fes_m_scenarioComplete_geometry\51.ru" AptID="51"/>
+	<AptGeometryData id="fes_m_scenarioComplete_54" File="fes_m_scenarioComplete_geometry\54.ru" AptID="54"/>
+	<AptGeometryData id="fes_m_scenarioComplete_57" File="fes_m_scenarioComplete_geometry\57.ru" AptID="57"/>
+	<AptGeometryData id="fes_m_scenarioComplete_58" File="fes_m_scenarioComplete_geometry\58.ru" AptID="58"/>
+	<AptGeometryData id="fes_m_scenarioComplete_60" File="fes_m_scenarioComplete_geometry\60.ru" AptID="60"/>
+	<AptGeometryData id="fes_m_scenarioComplete_64" File="fes_m_scenarioComplete_geometry\64.ru" AptID="64"/>
+	<AptGeometryData id="fes_m_scenarioComplete_67" File="fes_m_scenarioComplete_geometry\67.ru" AptID="67"/>
+	<AptGeometryData id="fes_m_scenarioComplete_70" File="fes_m_scenarioComplete_geometry\70.ru" AptID="70"/>
+	<AptGeometryData id="fes_m_scenarioComplete_74" File="fes_m_scenarioComplete_geometry\74.ru" AptID="74"/>
+	<AptGeometryData id="fes_m_scenarioComplete_76" File="fes_m_scenarioComplete_geometry\76.ru" AptID="76"/>
+	<AptGeometryData id="fes_m_scenarioComplete_77" File="fes_m_scenarioComplete_geometry\77.ru" AptID="77"/>
+	<AptGeometryData id="fes_m_scenarioComplete_79" File="fes_m_scenarioComplete_geometry\79.ru" AptID="79"/>
+	<Texture id="apt_fes_m_scenarioComplete_1" File="art\Textures\apt_fes_m_scenarioComplete_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fes_m_scenarioComplete_2" File="art\Textures\apt_fes_m_scenarioComplete_2.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fes_m_scenarioComplete_3" File="art\Textures\apt_fes_m_scenarioComplete_3.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fes_m_scenarioComplete_4" File="art\Textures\apt_fes_m_scenarioComplete_4.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fes_m_scenarioComplete_75" File="art\Textures\apt_fes_m_scenarioComplete_75.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+</AssetDeclaration>

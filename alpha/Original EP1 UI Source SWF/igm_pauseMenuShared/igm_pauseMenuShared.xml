@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<AptAptData id="igm_pauseMenuShared_apt" File="igm_pauseMenuShared.apt" />
+	<AptConstData id="igm_pauseMenuShared_const" File="igm_pauseMenuShared.const" />
+	<AptDatData id="igm_pauseMenuShared_dat" File="igm_pauseMenuShared.dat" />
+	<AptGeometryData id="igm_pauseMenuShared_3" File="igm_pauseMenuShared_geometry\3.ru" AptID="3"/>
+	<Texture id="apt_igm_pauseMenuShared_1" File="art\Textures\apt_igm_pauseMenuShared_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+</AssetDeclaration>

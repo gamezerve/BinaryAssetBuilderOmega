@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<AptAptData id="igm_PlayerTechStoreDialog_apt" File="igm_PlayerTechStoreDialog.apt" />
+	<AptConstData id="igm_PlayerTechStoreDialog_const" File="igm_PlayerTechStoreDialog.const" />
+	<AptDatData id="igm_PlayerTechStoreDialog_dat" File="igm_PlayerTechStoreDialog.dat" />
+	<AptGeometryData id="igm_PlayerTechStoreDialog_10" File="igm_PlayerTechStoreDialog_geometry\10.ru" AptID="10"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_100" File="igm_PlayerTechStoreDialog_geometry\100.ru" AptID="100"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_102" File="igm_PlayerTechStoreDialog_geometry\102.ru" AptID="102"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_104" File="igm_PlayerTechStoreDialog_geometry\104.ru" AptID="104"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_106" File="igm_PlayerTechStoreDialog_geometry\106.ru" AptID="106"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_108" File="igm_PlayerTechStoreDialog_geometry\108.ru" AptID="108"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_110" File="igm_PlayerTechStoreDialog_geometry\110.ru" AptID="110"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_112" File="igm_PlayerTechStoreDialog_geometry\112.ru" AptID="112"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_114" File="igm_PlayerTechStoreDialog_geometry\114.ru" AptID="114"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_116" File="igm_PlayerTechStoreDialog_geometry\116.ru" AptID="116"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_118" File="igm_PlayerTechStoreDialog_geometry\118.ru" AptID="118"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_120" File="igm_PlayerTechStoreDialog_geometry\120.ru" AptID="120"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_122" File="igm_PlayerTechStoreDialog_geometry\122.ru" AptID="122"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_124" File="igm_PlayerTechStoreDialog_geometry\124.ru" AptID="124"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_126" File="igm_PlayerTechStoreDialog_geometry\126.ru" AptID="126"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_128" File="igm_PlayerTechStoreDialog_geometry\128.ru" AptID="128"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_13" File="igm_PlayerTechStoreDialog_geometry\13.ru" AptID="13"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_131" File="igm_PlayerTechStoreDialog_geometry\131.ru" AptID="131"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_133" File="igm_PlayerTechStoreDialog_geometry\133.ru" AptID="133"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_135" File="igm_PlayerTechStoreDialog_geometry\135.ru" AptID="135"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_137" File="igm_PlayerTechStoreDialog_geometry\137.ru" AptID="137"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_139" File="igm_PlayerTechStoreDialog_geometry\139.ru" AptID="139"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_141" File="igm_PlayerTechStoreDialog_geometry\141.ru" AptID="141"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_143" File="igm_PlayerTechStoreDialog_geometry\143.ru" AptID="143"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_145" File="igm_PlayerTechStoreDialog_geometry\145.ru" AptID="145"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_147" File="igm_PlayerTechStoreDialog_geometry\147.ru" AptID="147"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_149" File="igm_PlayerTechStoreDialog_geometry\149.ru" AptID="149"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_15" File="igm_PlayerTechStoreDialog_geometry\15.ru" AptID="15"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_151" File="igm_PlayerTechStoreDialog_geometry\151.ru" AptID="151"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_17" File="igm_PlayerTechStoreDialog_geometry\17.ru" AptID="17"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_19" File="igm_PlayerTechStoreDialog_geometry\19.ru" AptID="19"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_2" File="igm_PlayerTechStoreDialog_geometry\2.ru" AptID="2"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_27" File="igm_PlayerTechStoreDialog_geometry\27.ru" AptID="27"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_29" File="igm_PlayerTechStoreDialog_geometry\29.ru" AptID="29"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_31" File="igm_PlayerTechStoreDialog_geometry\31.ru" AptID="31"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_33" File="igm_PlayerTechStoreDialog_geometry\33.ru" AptID="33"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_36" File="igm_PlayerTechStoreDialog_geometry\36.ru" AptID="36"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_38" File="igm_PlayerTechStoreDialog_geometry\38.ru" AptID="38"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_4" File="igm_PlayerTechStoreDialog_geometry\4.ru" AptID="4"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_40" File="igm_PlayerTechStoreDialog_geometry\40.ru" AptID="40"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_42" File="igm_PlayerTechStoreDialog_geometry\42.ru" AptID="42"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_56" File="igm_PlayerTechStoreDialog_geometry\56.ru" AptID="56"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_58" File="igm_PlayerTechStoreDialog_geometry\58.ru" AptID="58"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_6" File="igm_PlayerTechStoreDialog_geometry\6.ru" AptID="6"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_61" File="igm_PlayerTechStoreDialog_geometry\61.ru" AptID="61"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_63" File="igm_PlayerTechStoreDialog_geometry\63.ru" AptID="63"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_67" File="igm_PlayerTechStoreDialog_geometry\67.ru" AptID="67"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_71" File="igm_PlayerTechStoreDialog_geometry\71.ru" AptID="71"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_74" File="igm_PlayerTechStoreDialog_geometry\74.ru" AptID="74"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_8" File="igm_PlayerTechStoreDialog_geometry\8.ru" AptID="8"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_82" File="igm_PlayerTechStoreDialog_geometry\82.ru" AptID="82"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_84" File="igm_PlayerTechStoreDialog_geometry\84.ru" AptID="84"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_86" File="igm_PlayerTechStoreDialog_geometry\86.ru" AptID="86"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_88" File="igm_PlayerTechStoreDialog_geometry\88.ru" AptID="88"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_90" File="igm_PlayerTechStoreDialog_geometry\90.ru" AptID="90"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_92" File="igm_PlayerTechStoreDialog_geometry\92.ru" AptID="92"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_94" File="igm_PlayerTechStoreDialog_geometry\94.ru" AptID="94"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_96" File="igm_PlayerTechStoreDialog_geometry\96.ru" AptID="96"/>
+	<AptGeometryData id="igm_PlayerTechStoreDialog_98" File="igm_PlayerTechStoreDialog_geometry\98.ru" AptID="98"/>
+	<Texture id="apt_igm_PlayerTechStoreDialog_1" File="art\Textures\apt_igm_PlayerTechStoreDialog_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_igm_PlayerTechStoreDialog_2" File="art\Textures\apt_igm_PlayerTechStoreDialog_2.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+</AssetDeclaration>

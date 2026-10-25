@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<AptAptData id="fes_m_scenarioUnlocks_apt" File="fes_m_scenarioUnlocks.apt" />
+	<AptConstData id="fes_m_scenarioUnlocks_const" File="fes_m_scenarioUnlocks.const" />
+	<AptDatData id="fes_m_scenarioUnlocks_dat" File="fes_m_scenarioUnlocks.dat" />
+	<AptGeometryData id="fes_m_scenarioUnlocks_11" File="fes_m_scenarioUnlocks_geometry\11.ru" AptID="11"/>
+	<AptGeometryData id="fes_m_scenarioUnlocks_15" File="fes_m_scenarioUnlocks_geometry\15.ru" AptID="15"/>
+	<AptGeometryData id="fes_m_scenarioUnlocks_17" File="fes_m_scenarioUnlocks_geometry\17.ru" AptID="17"/>
+	<AptGeometryData id="fes_m_scenarioUnlocks_2" File="fes_m_scenarioUnlocks_geometry\2.ru" AptID="2"/>
+	<AptGeometryData id="fes_m_scenarioUnlocks_20" File="fes_m_scenarioUnlocks_geometry\20.ru" AptID="20"/>
+	<AptGeometryData id="fes_m_scenarioUnlocks_23" File="fes_m_scenarioUnlocks_geometry\23.ru" AptID="23"/>
+	<AptGeometryData id="fes_m_scenarioUnlocks_27" File="fes_m_scenarioUnlocks_geometry\27.ru" AptID="27"/>
+	<AptGeometryData id="fes_m_scenarioUnlocks_31" File="fes_m_scenarioUnlocks_geometry\31.ru" AptID="31"/>
+	<AptGeometryData id="fes_m_scenarioUnlocks_33" File="fes_m_scenarioUnlocks_geometry\33.ru" AptID="33"/>
+	<AptGeometryData id="fes_m_scenarioUnlocks_4" File="fes_m_scenarioUnlocks_geometry\4.ru" AptID="4"/>
+	<AptGeometryData id="fes_m_scenarioUnlocks_45" File="fes_m_scenarioUnlocks_geometry\45.ru" AptID="45"/>
+	<AptGeometryData id="fes_m_scenarioUnlocks_49" File="fes_m_scenarioUnlocks_geometry\49.ru" AptID="49"/>
+	<AptGeometryData id="fes_m_scenarioUnlocks_52" File="fes_m_scenarioUnlocks_geometry\52.ru" AptID="52"/>
+	<AptGeometryData id="fes_m_scenarioUnlocks_55" File="fes_m_scenarioUnlocks_geometry\55.ru" AptID="55"/>
+	<AptGeometryData id="fes_m_scenarioUnlocks_6" File="fes_m_scenarioUnlocks_geometry\6.ru" AptID="6"/>
+	<AptGeometryData id="fes_m_scenarioUnlocks_67" File="fes_m_scenarioUnlocks_geometry\67.ru" AptID="67"/>
+	<AptGeometryData id="fes_m_scenarioUnlocks_70" File="fes_m_scenarioUnlocks_geometry\70.ru" AptID="70"/>
+	<AptGeometryData id="fes_m_scenarioUnlocks_76" File="fes_m_scenarioUnlocks_geometry\76.ru" AptID="76"/>
+	<Texture id="apt_fes_m_scenarioUnlocks_1" File="art\Textures\apt_fes_m_scenarioUnlocks_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fes_m_scenarioUnlocks_2" File="art\Textures\apt_fes_m_scenarioUnlocks_2.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fes_m_scenarioUnlocks_3" File="art\Textures\apt_fes_m_scenarioUnlocks_3.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fes_m_scenarioUnlocks_4" File="art\Textures\apt_fes_m_scenarioUnlocks_4.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fes_m_scenarioUnlocks_5" File="art\Textures\apt_fes_m_scenarioUnlocks_5.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+</AssetDeclaration>

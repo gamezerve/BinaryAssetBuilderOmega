@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<AptAptData id="ig_scenarioMissionMap_apt" File="ig_scenarioMissionMap.apt" />
+	<AptConstData id="ig_scenarioMissionMap_const" File="ig_scenarioMissionMap.const" />
+	<AptDatData id="ig_scenarioMissionMap_dat" File="ig_scenarioMissionMap.dat" />
+	<AptGeometryData id="ig_scenarioMissionMap_10" File="ig_scenarioMissionMap_geometry\10.ru" AptID="10"/>
+	<AptGeometryData id="ig_scenarioMissionMap_12" File="ig_scenarioMissionMap_geometry\12.ru" AptID="12"/>
+	<AptGeometryData id="ig_scenarioMissionMap_14" File="ig_scenarioMissionMap_geometry\14.ru" AptID="14"/>
+	<AptGeometryData id="ig_scenarioMissionMap_2" File="ig_scenarioMissionMap_geometry\2.ru" AptID="2"/>
+	<AptGeometryData id="ig_scenarioMissionMap_3" File="ig_scenarioMissionMap_geometry\3.ru" AptID="3"/>
+	<AptGeometryData id="ig_scenarioMissionMap_6" File="ig_scenarioMissionMap_geometry\6.ru" AptID="6"/>
+	<AptGeometryData id="ig_scenarioMissionMap_8" File="ig_scenarioMissionMap_geometry\8.ru" AptID="8"/>
+	<Texture id="apt_ig_scenarioMissionMap_1" File="art\Textures\apt_ig_scenarioMissionMap_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+</AssetDeclaration>

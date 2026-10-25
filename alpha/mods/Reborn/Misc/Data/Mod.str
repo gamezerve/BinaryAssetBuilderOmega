@@ -93,3 +93,13 @@
 	TYPE:SOVIETTECHSTRUCTURE
 		"Technology Structure \n> Health = 2000 \n> Shroud Clearing Range = 500"
 	End
+
+// Soviet V.I.P. Bunker
+
+	TYPE:SOVIETCOMMANDCENTER
+		"Tactical Structure \n> Health = 4000 \n> Shroud Clearing Range = 600 \n> Buildability Radius = 600"
+	End
+
+	DESC:SOVIETCOMMANDCENTER
+		"A high-ranking Soviet commander is inside this facility, personally supervising the mission and authorising the construction of rare soviet structures."
+	End

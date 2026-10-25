@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<AptAptData id="mouse_scenarioComponents_apt" File="mouse_scenarioComponents.apt" />
+	<AptConstData id="mouse_scenarioComponents_const" File="mouse_scenarioComponents.const" />
+	<AptDatData id="mouse_scenarioComponents_dat" File="mouse_scenarioComponents.dat" />
+	<AptGeometryData id="mouse_scenarioComponents_1" File="mouse_scenarioComponents_geometry\1.ru" AptID="1"/>
+	<AptGeometryData id="mouse_scenarioComponents_10" File="mouse_scenarioComponents_geometry\10.ru" AptID="10"/>
+	<AptGeometryData id="mouse_scenarioComponents_13" File="mouse_scenarioComponents_geometry\13.ru" AptID="13"/>
+	<AptGeometryData id="mouse_scenarioComponents_16" File="mouse_scenarioComponents_geometry\16.ru" AptID="16"/>
+	<AptGeometryData id="mouse_scenarioComponents_2" File="mouse_scenarioComponents_geometry\2.ru" AptID="2"/>
+	<AptGeometryData id="mouse_scenarioComponents_21" File="mouse_scenarioComponents_geometry\21.ru" AptID="21"/>
+	<AptGeometryData id="mouse_scenarioComponents_24" File="mouse_scenarioComponents_geometry\24.ru" AptID="24"/>
+	<AptGeometryData id="mouse_scenarioComponents_29" File="mouse_scenarioComponents_geometry\29.ru" AptID="29"/>
+	<AptGeometryData id="mouse_scenarioComponents_32" File="mouse_scenarioComponents_geometry\32.ru" AptID="32"/>
+	<AptGeometryData id="mouse_scenarioComponents_36" File="mouse_scenarioComponents_geometry\36.ru" AptID="36"/>
+	<AptGeometryData id="mouse_scenarioComponents_4" File="mouse_scenarioComponents_geometry\4.ru" AptID="4"/>
+	<AptGeometryData id="mouse_scenarioComponents_41" File="mouse_scenarioComponents_geometry\41.ru" AptID="41"/>
+	<AptGeometryData id="mouse_scenarioComponents_44" File="mouse_scenarioComponents_geometry\44.ru" AptID="44"/>
+	<AptGeometryData id="mouse_scenarioComponents_7" File="mouse_scenarioComponents_geometry\7.ru" AptID="7"/>
+	<Texture id="apt_mouse_scenarioComponents_1" File="art\Textures\apt_mouse_scenarioComponents_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+</AssetDeclaration>

@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<AptAptData id="fes_m_scenarioGameSetup_apt" File="fes_m_scenarioGameSetup.apt" />
+	<AptConstData id="fes_m_scenarioGameSetup_const" File="fes_m_scenarioGameSetup.const" />
+	<AptDatData id="fes_m_scenarioGameSetup_dat" File="fes_m_scenarioGameSetup.dat" />
+	<AptGeometryData id="fes_m_scenarioGameSetup_12" File="fes_m_scenarioGameSetup_geometry\12.ru" AptID="12"/>
+	<AptGeometryData id="fes_m_scenarioGameSetup_16" File="fes_m_scenarioGameSetup_geometry\16.ru" AptID="16"/>
+	<AptGeometryData id="fes_m_scenarioGameSetup_17" File="fes_m_scenarioGameSetup_geometry\17.ru" AptID="17"/>
+	<AptGeometryData id="fes_m_scenarioGameSetup_2" File="fes_m_scenarioGameSetup_geometry\2.ru" AptID="2"/>
+	<AptGeometryData id="fes_m_scenarioGameSetup_20" File="fes_m_scenarioGameSetup_geometry\20.ru" AptID="20"/>
+	<AptGeometryData id="fes_m_scenarioGameSetup_27" File="fes_m_scenarioGameSetup_geometry\27.ru" AptID="27"/>
+	<AptGeometryData id="fes_m_scenarioGameSetup_33" File="fes_m_scenarioGameSetup_geometry\33.ru" AptID="33"/>
+	<AptGeometryData id="fes_m_scenarioGameSetup_35" File="fes_m_scenarioGameSetup_geometry\35.ru" AptID="35"/>
+	<AptGeometryData id="fes_m_scenarioGameSetup_38" File="fes_m_scenarioGameSetup_geometry\38.ru" AptID="38"/>
+	<AptGeometryData id="fes_m_scenarioGameSetup_41" File="fes_m_scenarioGameSetup_geometry\41.ru" AptID="41"/>
+	<AptGeometryData id="fes_m_scenarioGameSetup_48" File="fes_m_scenarioGameSetup_geometry\48.ru" AptID="48"/>
+	<AptGeometryData id="fes_m_scenarioGameSetup_52" File="fes_m_scenarioGameSetup_geometry\52.ru" AptID="52"/>
+	<AptGeometryData id="fes_m_scenarioGameSetup_6" File="fes_m_scenarioGameSetup_geometry\6.ru" AptID="6"/>
+	<AptGeometryData id="fes_m_scenarioGameSetup_62" File="fes_m_scenarioGameSetup_geometry\62.ru" AptID="62"/>
+	<AptGeometryData id="fes_m_scenarioGameSetup_63" File="fes_m_scenarioGameSetup_geometry\63.ru" AptID="63"/>
+	<AptGeometryData id="fes_m_scenarioGameSetup_66" File="fes_m_scenarioGameSetup_geometry\66.ru" AptID="66"/>
+	<AptGeometryData id="fes_m_scenarioGameSetup_70" File="fes_m_scenarioGameSetup_geometry\70.ru" AptID="70"/>
+	<AptGeometryData id="fes_m_scenarioGameSetup_8" File="fes_m_scenarioGameSetup_geometry\8.ru" AptID="8"/>
+	<Texture id="apt_fes_m_scenarioGameSetup_1" File="art\Textures\apt_fes_m_scenarioGameSetup_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fes_m_scenarioGameSetup_2" File="art\Textures\apt_fes_m_scenarioGameSetup_2.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+</AssetDeclaration>

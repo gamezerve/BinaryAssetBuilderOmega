@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<AptAptData id="mouse_chapterSelectComponent_apt" File="mouse_chapterSelectComponent.apt" />
+	<AptConstData id="mouse_chapterSelectComponent_const" File="mouse_chapterSelectComponent.const" />
+	<AptDatData id="mouse_chapterSelectComponent_dat" File="mouse_chapterSelectComponent.dat" />
+	<AptGeometryData id="mouse_chapterSelectComponent_13" File="mouse_chapterSelectComponent_geometry\13.ru" AptID="13"/>
+	<AptGeometryData id="mouse_chapterSelectComponent_16" File="mouse_chapterSelectComponent_geometry\16.ru" AptID="16"/>
+	<AptGeometryData id="mouse_chapterSelectComponent_2" File="mouse_chapterSelectComponent_geometry\2.ru" AptID="2"/>
+	<AptGeometryData id="mouse_chapterSelectComponent_20" File="mouse_chapterSelectComponent_geometry\20.ru" AptID="20"/>
+	<AptGeometryData id="mouse_chapterSelectComponent_23" File="mouse_chapterSelectComponent_geometry\23.ru" AptID="23"/>
+	<AptGeometryData id="mouse_chapterSelectComponent_30" File="mouse_chapterSelectComponent_geometry\30.ru" AptID="30"/>
+	<AptGeometryData id="mouse_chapterSelectComponent_6" File="mouse_chapterSelectComponent_geometry\6.ru" AptID="6"/>
+	<AptGeometryData id="mouse_chapterSelectComponent_9" File="mouse_chapterSelectComponent_geometry\9.ru" AptID="9"/>
+	<Texture id="apt_mouse_chapterSelectComponent_1" File="art\Textures\apt_mouse_chapterSelectComponent_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+</AssetDeclaration>

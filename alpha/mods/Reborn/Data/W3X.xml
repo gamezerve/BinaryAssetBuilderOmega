@@ -59,11 +59,11 @@
 		<!-- <Include type="all"	source="ART:AUAntiVehicleVehicleTech3Fake_NRM.xml" /> -->
 		<!-- <Include type="all"	source="ART:AUAntiVehicleVehicleTech3Fake_SPM.xml" /> -->
 		
-		<Include type="all"	source="ART:CBBuilding_Filler.xml" />
-		<Include type="all"	source="ART:CBBuilding_Holes.xml" />
-		<Include type="all"	source="ART:CBBuilding_Metal.xml" />
-		<Include type="all"	source="ART:CBBuilding_Metal_NRM.xml" />
-		<Include type="all"	source="ART:CBBuilding_Metal_SPM.xml" />
+		<!-- <Include type="all"	source="ART:CBBuilding_Filler.xml" /> -->
+		<!-- <Include type="all"	source="ART:CBBuilding_Holes.xml" /> -->
+		<!-- <Include type="all"	source="ART:CBBuilding_Metal.xml" /> -->
+		<!-- <Include type="all"	source="ART:CBBuilding_Metal_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:CBBuilding_Metal_SPM.xml" /> -->
 		<!-- <Include type="all"	source="ART:CBBuilding_Wood.xml" /> -->
 		<!-- <Include type="all"	source="ART:CBBuilding_Wood_NRM.xml" /> -->
 		<!-- <Include type="all"	source="ART:CBBuilding_Wood_SPM.xml" /> -->
@@ -83,11 +83,11 @@
 		<!-- <Include type="all"	source="ART:AUSALVAGESHIP_SKN.OBBOX03.w3x" /> -->
 		<!-- <Include type="all"	source="ART:AUSALVAGESHIP_SKN.w3x" /> -->
 		
-		<Include type="all"	source="ART:CA_PORTSTRUCTURE_CTR.w3x" />
-		<Include type="all"	source="ART:CA_PORTSTRUCTURE_HRC.w3x" />
-		<Include type="all"	source="ART:CA_PORTSTRUCTURE.NEWSKIN_CIV01.w3x" />
-		<Include type="all"	source="ART:CA_PORTSTRUCTURE.NEWSKIN_FILL01.w3x" />
-		<Include type="all"	source="ART:CA_PORTSTRUCTURE.OBBOX01.w3x" />
+		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE.NEWSKIN_FILL01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE.OBBOX01.w3x" /> -->
 		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE_COL.NEWSKIN.w3x" /> -->
 		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE_COL.OBBOX01.w3x" /> -->
 		<!-- <Include type="all"	source="ART:CA_PORTSTRUCTURE_COL_CTR.w3x" /> -->
@@ -188,9 +188,9 @@
 		<!-- <Include type="all" source="ART:NY_FORTWALL02_HRC.w3x" /> -->
 		<!-- <Include type="all" source="ART:NY_FORTWALL02.OBBOX01.w3x" /> -->
 
-		<Include type="all" source="ART:CA_SovietOpenTopHarborBuilding.xml" />
-		<Include type="all" source="ART:CA_SovietOpenTopHarborBuilding_NRM.xml" />
-		<Include type="all" source="ART:CA_SovietOpenTopHarborBuilding_SPM.xml" />
+		<!-- <Include type="all" source="ART:CA_SovietOpenTopHarborBuilding.xml" /> -->
+		<!-- <Include type="all" source="ART:CA_SovietOpenTopHarborBuilding_NRM.xml" /> -->
+		<!-- <Include type="all" source="ART:CA_SovietOpenTopHarborBuilding_SPM.xml" /> -->
 		
 		<!-- <Include type="all" source="ART:NY_FORTWALL02.NEWSKIN.w3x" /> -->
 		<!-- <Include type="all" source="ART:NY_FORTWALL02.NEWSKIN_FILL.w3x" /> -->
@@ -629,20 +629,20 @@
 		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_COL_HRC.w3x" /> -->
 		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_CTR.w3x" /> -->
 		<!-- <Include type="all"	source="ART:VL_IMPERIALADMINBUILDING_03_HRC.w3x" /> -->
-		<Include type="all"	source="ART:VL_RUSSIANPORTBUILDING.NEWSKIN_CIV01.w3x" />
-		<Include type="all"	source="ART:VL_RUSSIANPORTBUILDING.NEWSKIN_FILL01.w3x" />
-		<Include type="all"	source="ART:VL_RUSSIANPORTBUILDING.OBBOX01.w3x" />
-		<Include type="all"	source="ART:VL_RUSSIANPORTBUILDING.OBBOX02.w3x" />
-		<Include type="all"	source="ART:VL_RussianPortBuilding.xml" />
-		<Include type="all"	source="ART:VL_RussianPortBuilding_NRM.xml" />
-		<Include type="all"	source="ART:VL_RussianPortBuilding_SPM.xml" />
+		<!-- <Include type="all"	source="ART:VL_RUSSIANPORTBUILDING.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_RUSSIANPORTBUILDING.NEWSKIN_FILL01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_RUSSIANPORTBUILDING.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_RUSSIANPORTBUILDING.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_RussianPortBuilding.xml" /> -->
+		<!-- <Include type="all"	source="ART:VL_RussianPortBuilding_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:VL_RussianPortBuilding_SPM.xml" /> -->
 		<!-- <Include type="all"	source="ART:VL_RUSSIANPORTBUILDING_COL.NEW_SKIN.w3x" /> -->
 		<!-- <Include type="all"	source="ART:VL_RUSSIANPORTBUILDING_COL.OBBOX01.w3x" /> -->
 		<!-- <Include type="all"	source="ART:VL_RUSSIANPORTBUILDING_COL.OBBOX02.w3x" /> -->
 		<!-- <Include type="all"	source="ART:VL_RUSSIANPORTBUILDING_COL_CTR.w3x" /> -->
 		<!-- <Include type="all"	source="ART:VL_RUSSIANPORTBUILDING_COL_HRC.w3x" /> -->
-		<Include type="all"	source="ART:VL_RUSSIANPORTBUILDING_CTR.w3x" />
-		<Include type="all"	source="ART:VL_RUSSIANPORTBUILDING_HRC.w3x" />
+		<!-- <Include type="all"	source="ART:VL_RUSSIANPORTBUILDING_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:VL_RUSSIANPORTBUILDING_HRC.w3x" /> -->
 		<!-- <Include type="all"	source="ART:YU_HOTEL01_GAR.GARRISON_WALL.w3x" /> -->
 
 		<!-- <Include type="all"	source="ART:JUEMPERORMECHA_SKN.OBBOX01.w3x" /> -->

@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<AptAptData id="fes_m_objectivesBriefing_apt" File="fes_m_objectivesBriefing.apt" />
+	<AptConstData id="fes_m_objectivesBriefing_const" File="fes_m_objectivesBriefing.const" />
+	<AptDatData id="fes_m_objectivesBriefing_dat" File="fes_m_objectivesBriefing.dat" />
+	<AptGeometryData id="fes_m_objectivesBriefing_10" File="fes_m_objectivesBriefing_geometry\10.ru" AptID="10"/>
+	<AptGeometryData id="fes_m_objectivesBriefing_2" File="fes_m_objectivesBriefing_geometry\2.ru" AptID="2"/>
+	<AptGeometryData id="fes_m_objectivesBriefing_20" File="fes_m_objectivesBriefing_geometry\20.ru" AptID="20"/>
+	<AptGeometryData id="fes_m_objectivesBriefing_33" File="fes_m_objectivesBriefing_geometry\33.ru" AptID="33"/>
+	<AptGeometryData id="fes_m_objectivesBriefing_7" File="fes_m_objectivesBriefing_geometry\7.ru" AptID="7"/>
+	<Texture id="apt_fes_m_objectivesBriefing_1" File="art\Textures\apt_fes_m_objectivesBriefing_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+</AssetDeclaration>

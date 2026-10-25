@@ -1,0 +1,372 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Includes>
+		<Include type="instance" source="DATA:SageXml/GlobalData/MappableKeys.xml" />
+	</Includes>
+	
+	
+	
+	<UIMouseTacticalMainCommandBarHotKeys
+		id="UIMouseTacticalMainCommandBarHotKeys"
+		SelectionRefinementPageSlot="SideBarSelectionRefinementPage">
+		<BuildQueuePage QueueType="MAIN_STRUCTURE" Slot="SideBarMainStructurePage"/>
+		<BuildQueuePage QueueType="OTHER_STRUCTURE" Slot="SideBarOtherStructurePage"/>
+		<BuildQueuePage QueueType="INFANTRY" Slot="SideBarInfantryPage"/>
+		<BuildQueuePage QueueType="VEHICLE" Slot="SideBarVehiclePage"/>
+		<BuildQueuePage QueueType="AIRCRAFT" Slot="SideBarAircraftPage"/>
+		<BuildQueuePage QueueType="WATERCRAFT" Slot="SideBarWatercraftPage"/>
+		<ButtonSlot>SideBarButtonSlot1_15BuildSlots</ButtonSlot>
+		<ButtonSlot>SideBarButtonSlot2_15BuildSlots</ButtonSlot>
+		<ButtonSlot>SideBarButtonSlot3_15BuildSlots</ButtonSlot>
+		<ButtonSlot>SideBarButtonSlot4_15BuildSlots</ButtonSlot>
+		<ButtonSlot>SideBarButtonSlot5_15BuildSlots</ButtonSlot>
+		<ButtonSlot>SideBarButtonSlot6_15BuildSlots</ButtonSlot>
+		<ButtonSlot>SideBarButtonSlot7_15BuildSlots</ButtonSlot>
+		<ButtonSlot>SideBarButtonSlot8_15BuildSlots</ButtonSlot>
+		<ButtonSlot>SideBarButtonSlot9_15BuildSlots</ButtonSlot>
+		<ButtonSlot>SideBarButtonSlot10_15BuildSlots</ButtonSlot>
+		<ButtonSlot>SideBarButtonSlot11_15BuildSlots</ButtonSlot>
+		<ButtonSlot>SideBarButtonSlot12_15BuildSlots</ButtonSlot>
+		<ButtonSlot>SideBarButtonSlot13</ButtonSlot>
+		<ButtonSlot>SideBarButtonSlot14</ButtonSlot>
+		<ButtonSlot>SideBarButtonSlot15</ButtonSlot>
+	</UIMouseTacticalMainCommandBarHotKeys>
+	
+	
+	
+	<!-- Compiling all hotkeys to get the new ones sorted in the menu -->
+	
+	<!-- New Hotkeys -->
+	<HotKeySlot id="SideBarButtonSlot1_15BuildSlots" Name="SideBarButtonSlot1" Group="SideBar" Index="50"/>
+	<HotKeySlot id="SideBarButtonSlot2_15BuildSlots" Name="SideBarButtonSlot2" Group="SideBar" Index="51"/>
+	<HotKeySlot id="SideBarButtonSlot3_15BuildSlots" Name="SideBarButtonSlot3" Group="SideBar" Index="52"/>
+	<HotKeySlot id="SideBarButtonSlot4_15BuildSlots" Name="SideBarButtonSlot4" Group="SideBar" Index="53"/>
+	<HotKeySlot id="SideBarButtonSlot5_15BuildSlots" Name="SideBarButtonSlot5" Group="SideBar" Index="54"/>
+	<HotKeySlot id="SideBarButtonSlot6_15BuildSlots" Name="SideBarButtonSlot6" Group="SideBar" Index="55"/>
+	<HotKeySlot id="SideBarButtonSlot7_15BuildSlots" Name="SideBarButtonSlot7" Group="SideBar" Index="56"/>
+	<HotKeySlot id="SideBarButtonSlot8_15BuildSlots" Name="SideBarButtonSlot8" Group="SideBar" Index="57"/>
+	<HotKeySlot id="SideBarButtonSlot9_15BuildSlots" Name="SideBarButtonSlot9" Group="SideBar" Index="58"/>
+	<HotKeySlot id="SideBarButtonSlot10_15BuildSlots" Name="SideBarButtonSlot10" Group="SideBar" Index="59"/>
+	<HotKeySlot id="SideBarButtonSlot11_15BuildSlots" Name="SideBarButtonSlot11" Group="SideBar" Index="60"/>
+	<HotKeySlot id="SideBarButtonSlot12_15BuildSlots" Name="SideBarButtonSlot12" Group="SideBar" Index="61"/>
+	<HotKeySlot id="SideBarButtonSlot13" Name="SideBarButtonSlot13" Group="SideBar" Index="62"/>
+	<HotKeySlot id="SideBarButtonSlot14" Name="SideBarButtonSlot14" Group="SideBar" Index="63"/>
+	<HotKeySlot id="SideBarButtonSlot15" Name="SideBarButtonSlot15" Group="SideBar" Index="64"/>
+	
+	<!-- Old Hotkeys -->
+	<!-- NonConfigurable group -->
+	<HotKeySlot id="CreateGroup0" Name="CreateGroup0" Group="NonConfigurable"/>
+	<HotKeySlot id="CreateGroup1" Name="CreateGroup1" Group="NonConfigurable"/>
+	<HotKeySlot id="CreateGroup2" Name="CreateGroup2" Group="NonConfigurable"/>
+	<HotKeySlot id="CreateGroup3" Name="CreateGroup3" Group="NonConfigurable"/>
+	<HotKeySlot id="CreateGroup4" Name="CreateGroup4" Group="NonConfigurable"/>
+	<HotKeySlot id="CreateGroup5" Name="CreateGroup5" Group="NonConfigurable"/>
+	<HotKeySlot id="CreateGroup6" Name="CreateGroup6" Group="NonConfigurable"/>
+	<HotKeySlot id="CreateGroup7" Name="CreateGroup7" Group="NonConfigurable"/>
+	<HotKeySlot id="CreateGroup8" Name="CreateGroup8" Group="NonConfigurable"/>
+	<HotKeySlot id="CreateGroup9" Name="CreateGroup9" Group="NonConfigurable"/>
+	<HotKeySlot id="SelectGroup0" Name="SelectGroup0" Group="NonConfigurable"/>
+	<HotKeySlot id="SelectGroup1" Name="SelectGroup1" Group="NonConfigurable"/>
+	<HotKeySlot id="SelectGroup2" Name="SelectGroup2" Group="NonConfigurable"/>
+	<HotKeySlot id="SelectGroup3" Name="SelectGroup3" Group="NonConfigurable"/>
+	<HotKeySlot id="SelectGroup4" Name="SelectGroup4" Group="NonConfigurable"/>
+	<HotKeySlot id="SelectGroup5" Name="SelectGroup5" Group="NonConfigurable"/>
+	<HotKeySlot id="SelectGroup6" Name="SelectGroup6" Group="NonConfigurable"/>
+	<HotKeySlot id="SelectGroup7" Name="SelectGroup7" Group="NonConfigurable"/>
+	<HotKeySlot id="SelectGroup8" Name="SelectGroup8" Group="NonConfigurable"/>
+	<HotKeySlot id="SelectGroup9" Name="SelectGroup9" Group="NonConfigurable"/>
+	<HotKeySlot id="ViewGroup0" Name="ViewGroup0" Group="NonConfigurable"/>
+	<HotKeySlot id="ViewGroup1" Name="ViewGroup1" Group="NonConfigurable"/>
+	<HotKeySlot id="ViewGroup2" Name="ViewGroup2" Group="NonConfigurable"/>
+	<HotKeySlot id="ViewGroup3" Name="ViewGroup3" Group="NonConfigurable"/>
+	<HotKeySlot id="ViewGroup4" Name="ViewGroup4" Group="NonConfigurable"/>
+	<HotKeySlot id="ViewGroup5" Name="ViewGroup5" Group="NonConfigurable"/>
+	<HotKeySlot id="ViewGroup6" Name="ViewGroup6" Group="NonConfigurable"/>
+	<HotKeySlot id="ViewGroup7" Name="ViewGroup7" Group="NonConfigurable"/>
+	<HotKeySlot id="ViewGroup8" Name="ViewGroup8" Group="NonConfigurable"/>
+	<HotKeySlot id="ViewGroup9" Name="ViewGroup9" Group="NonConfigurable"/>
+	<HotKeySlot id="AddToGroup0" Name="AddToGroup0" Group="NonConfigurable"/>
+	<HotKeySlot id="AddToGroup1" Name="AddToGroup1" Group="NonConfigurable"/>
+	<HotKeySlot id="AddToGroup2" Name="AddToGroup2" Group="NonConfigurable"/>
+	<HotKeySlot id="AddToGroup3" Name="AddToGroup3" Group="NonConfigurable"/>
+	<HotKeySlot id="AddToGroup4" Name="AddToGroup4" Group="NonConfigurable"/>
+	<HotKeySlot id="AddToGroup5" Name="AddToGroup5" Group="NonConfigurable"/>
+	<HotKeySlot id="AddToGroup6" Name="AddToGroup6" Group="NonConfigurable"/>
+	<HotKeySlot id="AddToGroup7" Name="AddToGroup7" Group="NonConfigurable"/>
+	<HotKeySlot id="AddToGroup8" Name="AddToGroup8" Group="NonConfigurable"/>
+	<HotKeySlot id="AddToGroup9" Name="AddToGroup9" Group="NonConfigurable"/>
+	<HotKeySlot id="ReloadRapidIterationFeature" Name="ReloadRapidIterationFeature" Group="NonConfigurable"/>
+	<HotKeySlot id="TakeUnitsFromAlly" Name="TakeUnitsFromAlly" Group="NonConfigurable"/>
+	<HotKeySlot id="GiveUnitsToAlly" Name="GiveUnitsToAlly" Group="NonConfigurable"/>
+	
+	<!-- These items are not supported for RA3 -->
+	<HotKeySlot id="UnitAbilityButtonSlot2" Name="UnitAbilityButtonSlot2" Group="NonConfigurable"/>
+	<HotKeySlot id="UnitAbilityButtonSlot3" Name="UnitAbilityButtonSlot3" Group="NonConfigurable"/>
+	<HotKeySlot id="UnitAbilityButtonSlot4" Name="UnitAbilityButtonSlot4" Group="NonConfigurable"/>
+	<HotKeySlot id="UnitAbilityButtonSlot5" Name="UnitAbilityButtonSlot5" Group="NonConfigurable"/>
+	<HotKeySlot id="UnitAbilityButtonSlot6" Name="UnitAbilityButtonSlot6" Group="NonConfigurable"/>
+	<HotKeySlot id="PlayerPowerButtonSlot11" Name="PlayerPowerButtonSlot11" Group="NonConfigurable"/>
+	<HotKeySlot id="PlayerPowerButtonSlot12" Name="PlayerPowerButtonSlot12" Group="NonConfigurable"/>
+	<HotKeySlot id="PlayerPowerButtonSlot13" Name="PlayerPowerButtonSlot13" Group="NonConfigurable"/>
+	<HotKeySlot id="PlayerPowerButtonSlot14" Name="PlayerPowerButtonSlot14" Group="NonConfigurable"/>
+	<HotKeySlot id="PlayerPowerButtonSlot15" Name="PlayerPowerButtonSlot15" Group="NonConfigurable"/>
+	
+	<!-- SideBar group -->
+	<HotKeySlot id="SellMode" Name="SellMode" Group="SideBar" Index= "0"/>
+	<HotKeySlot id="ToggleRepairMode" Name="ToggleRepairMode" Group="SideBar" Index= "1"/>
+	<HotKeySlot id="OpenPauseScreen" Name="OpenPauseScreen" Group="SideBar" Index= "2"/>
+	<HotKeySlot id="SideBarSelectionRefinementPage" Name="SideBarSelectionRefinementPage" Group="SideBar" Index= "3"/>
+	<HotKeySlot id="SideBarMainStructurePage" Name="SideBarMainStructurePage" Group="SideBar" Index= "4"/>
+	<HotKeySlot id="SideBarOtherStructurePage" Name="SideBarOtherStructurePage" Group="SideBar" Index= "5"/>
+	<HotKeySlot id="SideBarInfantryPage" Name="SideBarInfantryPage" Group="SideBar" Index= "6"/>
+	<HotKeySlot id="SideBarVehiclePage" Name="SideBarVehiclePage" Group="SideBar" Index= "7"/>
+	<HotKeySlot id="SideBarAircraftPage" Name="SideBarAircraftPage" Group="SideBar" Index= "8"/>
+	<HotKeySlot id="SideBarWatercraftPage" Name="SideBarWatercraftPage" Group="SideBar" Index= "9"/>
+	<HotKeySlot id="GoToNextSubGroup" Name="GoToNextSubGroup" Group="SideBar" Index="10"/>
+	<HotKeySlot id="GoToPriorSubGroup" Name="GoToPriorSubGroup" Group="SideBar" Index="11"/>
+	<HotKeySlot id="GoToNextBuildQueue" Name="GoToNextBuildQueue" Group="SideBar" Index="12"/>
+	<HotKeySlot id="GoToPriorBuildQueue" Name="GoToPriorBuildQueue" Group="SideBar" Index="13"/>
+	<HotKeySlot id="OpenAdvancedCommands" Name="OpenAdvancedCommands" Group="SideBar" Index="29"/>
+	
+	<!-- UnitCommands group -->
+	<HotKeySlot id="UnitAbilityButtonSlot1" Name="UnitAbilityButtonSlot1" Group="UnitCommands" Index= "1"/>
+	<HotKeySlot id="AttackMove" Name="AttackMove" Group="UnitCommands" Index= "2"/>
+	<HotKeySlot id="ReverseMove" Name="ReverseMove" Group="UnitCommands" Index= "3"/>
+	<HotKeySlot id="ForceMove" Name="ForceMove" Group="UnitCommands" Index= "4"/>
+	<HotKeySlot id="Stop" Name="Stop" Group="UnitCommands" Index= "5"/>
+	<HotKeySlot id="ForceAttack" Name="ForceAttack" Group="UnitCommands" Index= "6"/>
+	<HotKeySlot id="Scatter" Name="Scatter" Group="Misc" Index= "7"/>
+	<HotKeySlot id="WaypointMode" Name="WaypointMode" Group="UnitCommands" Index= "8"/>
+	<HotKeySlot id="PlanningMode" Name="PlanningMode" Group="UnitCommands" Index= "9"/>
+	<HotKeySlot id="StanceAggressive" Name="StanceAggressive" Group="UnitCommands" Index="10"/>
+	<HotKeySlot id="StanceGuard" Name="StanceGuard" Group="UnitCommands" Index="11"/>
+	<HotKeySlot id="StanceHoldPosition" Name="StanceHoldPosition" Group="UnitCommands" Index="12"/>
+	<HotKeySlot id="StanceHoldFire" Name="StanceHoldFire" Group="UnitCommands" Index="13"/>
+	
+	<!-- PlayerPowersBar group -->
+	<HotKeySlot id="OpenPlayerTechStore" Name="OpenPlayerTechStore" Group="PlayerPowersBar" Index= "1"/>
+	<HotKeySlot id="PlayerPowerButtonSlot1" Name="PlayerPowerButtonSlot1" Group="PlayerPowersBar" Index= "2"/>
+	<HotKeySlot id="PlayerPowerButtonSlot2" Name="PlayerPowerButtonSlot2" Group="PlayerPowersBar" Index= "3"/>
+	<HotKeySlot id="PlayerPowerButtonSlot3" Name="PlayerPowerButtonSlot3" Group="PlayerPowersBar" Index= "4"/>
+	<HotKeySlot id="PlayerPowerButtonSlot4" Name="PlayerPowerButtonSlot4" Group="PlayerPowersBar" Index= "5"/>
+	<HotKeySlot id="PlayerPowerButtonSlot5" Name="PlayerPowerButtonSlot5" Group="PlayerPowersBar" Index= "6"/>
+	<HotKeySlot id="PlayerPowerButtonSlot6" Name="PlayerPowerButtonSlot6" Group="PlayerPowersBar" Index= "7"/>
+	<HotKeySlot id="PlayerPowerButtonSlot7" Name="PlayerPowerButtonSlot7" Group="PlayerPowersBar" Index= "8"/>
+	<HotKeySlot id="PlayerPowerButtonSlot8" Name="PlayerPowerButtonSlot8" Group="PlayerPowersBar" Index= "9"/>
+	<HotKeySlot id="PlayerPowerButtonSlot9" Name="PlayerPowerButtonSlot9" Group="PlayerPowersBar" Index= "10"/>
+	<HotKeySlot id="PlayerPowerButtonSlot10" Name="PlayerPowerButtonSlot10" Group="PlayerPowersBar" Index= "11"/>
+	
+	<!-- Bookmarks group -->
+	<HotKeySlot id="ChatWithEveryone" Name="ChatWithEveryone" Group="Bookmarks" Index="0"/>
+	<HotKeySlot id="ChatWithAllies" Name="ChatWithAllies" Group="Bookmarks" Index="1"/>
+	<HotKeySlot id="VoiceChat" Name="VoiceChat" Group="Bookmarks" Index="2"/>
+	<HotKeySlot id="ToggleVoiceChatMode" Name="ToggleVoiceChatMode" Group="Bookmarks" Index="3"/>
+	<HotKeySlot id="CommunicateWithAlliesMode" Name="CommunicateWithAlliesMode" Group="Bookmarks" Index="4"/>
+	<HotKeySlot id="QuickChatMenu" Name="QuickChatMenu" Group="Bookmarks" Index="5"/>
+	<HotKeySlot id="ToggleFastForwardMode" Name="ToggleFastForwardMode" Group="Bookmarks" Index="6"/>
+	<HotKeySlot id="TelestratorToggle" Name="TelestratorToggle" Group="Bookmarks" Index="7"/>
+	<HotKeySlot id="TelestratorErase" Name="TelestratorErase" Group="Bookmarks" Index="8"/>
+	<HotKeySlot id="TelestratorNextLineWidth" Name="TelestratorNextLineWidth" Group="Bookmarks" Index="9"/>
+	<HotKeySlot id="TelestratorNextColor" Name="TelestratorNextColor" Group="Bookmarks" Index="10"/>
+	<HotKeySlot id="TelestratorPriorColor" Name="TelestratorPriorColor" Group="Bookmarks" Index="11"/>
+	
+	<!-- Camera group -->
+	<HotKeySlot id="CameraReset" Name="CameraReset" Group="Camera" Index="0"/>
+	<HotKeySlot id="CameraScrollLeft" Name="CameraScrollLeft" Group="Camera" Index="1"/>
+	<HotKeySlot id="CameraScrollRight" Name="CameraScrollRight" Group="Camera" Index="2"/>
+	<HotKeySlot id="CameraScrollUp" Name="CameraScrollUp" Group="Camera" Index="3"/>
+	<HotKeySlot id="CameraScrollDown" Name="CameraScrollDown" Group="Camera" Index="4"/>
+	<HotKeySlot id="CameraRotateLeft" Name="CameraRotateLeft" Group="Camera" Index="5"/>
+	<HotKeySlot id="CameraRotateRight" Name="CameraRotateRight" Group="Camera" Index="6"/>
+	<HotKeySlot id="CameraZoomIn" Name="CameraZoomIn" Group="Camera" Index="7"/>
+	<HotKeySlot id="CameraZoomOut" Name="CameraZoomOut" Group="Camera" Index="8"/>
+	<HotKeySlot id="GoToViewBookmark1" Name="GoToViewBookmark1" Group="Camera" Index="9"/>
+	<HotKeySlot id="GoToViewBookmark2" Name="GoToViewBookmark2" Group="Camera" Index="10"/>
+	<HotKeySlot id="GoToViewBookmark3" Name="GoToViewBookmark3" Group="Camera" Index="11"/>
+	<HotKeySlot id="GoToViewBookmark4" Name="GoToViewBookmark4" Group="Camera" Index="12"/>
+	<HotKeySlot id="GoToViewBookmark5" Name="GoToViewBookmark5" Group="Camera" Index="13"/>
+	<HotKeySlot id="GoToViewBookmark6" Name="GoToViewBookmark6" Group="Camera" Index="14"/>
+	<HotKeySlot id="GoToViewBookmark7" Name="GoToViewBookmark7" Group="Camera" Index="15"/>
+	<HotKeySlot id="GoToViewBookmark8" Name="GoToViewBookmark8" Group="Camera" Index="16"/>
+	<HotKeySlot id="SaveViewBookmark1" Name="SaveViewBookmark1" Group="Camera" Index="17"/>
+	<HotKeySlot id="SaveViewBookmark2" Name="SaveViewBookmark2" Group="Camera" Index="18"/>
+	<HotKeySlot id="SaveViewBookmark3" Name="SaveViewBookmark3" Group="Camera" Index="19"/>
+	<HotKeySlot id="SaveViewBookmark4" Name="SaveViewBookmark4" Group="Camera" Index="20"/>
+	<HotKeySlot id="SaveViewBookmark5" Name="SaveViewBookmark5" Group="Camera" Index="21"/>
+	<HotKeySlot id="SaveViewBookmark6" Name="SaveViewBookmark6" Group="Camera" Index="22"/>
+	<HotKeySlot id="SaveViewBookmark7" Name="SaveViewBookmark7" Group="Camera" Index="23"/>
+	<HotKeySlot id="SaveViewBookmark8" Name="SaveViewBookmark8" Group="Camera" Index="24"/>
+	
+	<!-- Misc group -->
+	<HotKeySlot id="SelectAll" Name="SelectAll" Group="Misc" Index= "1"/>
+	<HotKeySlot id="SelectMatchingUnits" Name="SelectMatchingUnits" Group="Misc" Index= "2"/>
+	<HotKeySlot id="ShowAllHealthBars" Name="ShowAllHealthBars" Group="Misc" Index= "3"/>
+	<HotKeySlot id="PlaceRallyPoint" Name="PlaceRallyPoint" Group="Misc" Index= "4"/>
+	<HotKeySlot id="CycleHarvesters" Name="CycleHarvesters" Group="Misc" Index= "5"/>
+	<HotKeySlot id="ViewLastEvaEvent" Name="ViewLastEvaEvent" Group="Misc" Index="6"/>
+	<HotKeySlot id="ViewHomeBase" Name="ViewHomeBase" Group="Misc" Index="7"/>
+	<HotKeySlot id="PreferSelection" Name="PreferSelection" Group="Misc" Index="8"/>
+	<HotKeySlot id="ToggleHUD" Name="ToggleHUD" Group="Misc" Index="9"/>
+	<HotKeySlot id="OpenSaveGameScreen" Name="OpenSaveGameScreen" Group="Misc" Index="10"/>
+	<HotKeySlot id="OpenLoadGameScreen" Name="OpenLoadGameScreen" Group="Misc" Index="11"/>
+	<HotKeySlot id="TakeScreenShot" Name="TakeScreenShot" Group="Misc" Index="12"/>
+	
+	
+	
+	<DefaultHotKeys id="DefaultHotKeys">
+		<Map>
+			<!-- New Hotkeys -->
+			<HotKey Slot="SideBarButtonSlot1_15BuildSlots" Key="KEY_F1"/>
+			<HotKey Slot="SideBarButtonSlot2_15BuildSlots" Key="KEY_F2"/>
+			<HotKey Slot="SideBarButtonSlot3_15BuildSlots" Key="KEY_F3"/>
+			<HotKey Slot="SideBarButtonSlot4_15BuildSlots" Key="KEY_F4"/>
+			<HotKey Slot="SideBarButtonSlot5_15BuildSlots" Key="KEY_F5"/>
+			<HotKey Slot="SideBarButtonSlot6_15BuildSlots" Key="KEY_F6"/>
+			<HotKey Slot="SideBarButtonSlot7_15BuildSlots" Key="KEY_F7"/>
+			<HotKey Slot="SideBarButtonSlot8_15BuildSlots" Key="KEY_F8"/>
+			<HotKey Slot="SideBarButtonSlot9_15BuildSlots" Key="KEY_F9"/>
+			<HotKey Slot="SideBarButtonSlot10_15BuildSlots" Key="KEY_F10"/>
+			<HotKey Slot="SideBarButtonSlot11_15BuildSlots" Key="KEY_F1" Modifiers="ALT"/>
+			<HotKey Slot="SideBarButtonSlot12_15BuildSlots" Key="KEY_F2" Modifiers="ALT"/>
+			<HotKey Slot="SideBarButtonSlot13" Key="KEY_F3" Modifiers="ALT"/>
+			<HotKey Slot="SideBarButtonSlot14" Key="KEY_F4" Modifiers="ALT"/>
+			<HotKey Slot="SideBarButtonSlot15" Key="KEY_F5" Modifiers="ALT"/>
+			
+			<!-- Old Hotkeys -->
+			<HotKey Slot="ForceAttack" Key="KEY_NONE" Modifiers="CTRL"/>
+			<HotKey Slot="AttackMove" Key="KEY_A"/>
+			<HotKey Slot="Stop" Key="KEY_S"/>
+			<HotKey Slot="WaypointMode" Key="KEY_NONE" Modifiers="ALT"/>
+			<HotKey Slot="PlanningMode" Key="KEY_Z" Modifiers="CTRL"/>
+			<HotKey Slot="ReverseMove" Key="KEY_D"/>
+			<HotKey Slot="ForceMove" Key="KEY_G"/>
+			<HotKey Slot="Scatter" Key="KEY_X"/>
+			<HotKey Slot="SelectAll" Key="KEY_Q"/>
+			<HotKey Slot="SelectMatchingUnits" Key="KEY_W"/>
+			<HotKey Slot="PreferSelection" Key="KEY_NONE" Modifiers="SHIFT"/>
+			<HotKey Slot="ViewHomeBase" Key="KEY_H"/>
+			
+			<HotKey Slot="StanceAggressive" Key="KEY_A" Modifiers="ALT"/>
+			<HotKey Slot="StanceGuard" Key="KEY_S" Modifiers="ALT"/>
+			<HotKey Slot="StanceHoldPosition" Key="KEY_D" Modifiers="ALT"/>
+			<HotKey Slot="StanceHoldFire" Key="KEY_G" Modifiers="ALT"/>
+			
+			<HotKey Slot="ChatWithAllies" Key="KEY_BACKSPACE"/>
+			<HotKey Slot="ChatWithEveryone" Key="KEY_ENTER"/>
+			<HotKey Slot="VoiceChat" Key="KEY_V"/>
+			<HotKey Slot="ToggleVoiceChatMode" Key="KEY_V" Modifiers="CTRL"/>
+			<HotKey Slot="CommunicateWithAlliesMode" Key="KEY_B"/>
+			
+			<HotKey Slot="QuickChatMenu" Key="KEY_M"/>
+						   
+			<HotKey Slot="CycleHarvesters" Key="KEY_N"/>
+			<HotKey Slot="ShowAllHealthBars" Key="KEY_SPACE" Modifiers="SHIFT"/>
+			<HotKey Slot="PlaceRallyPoint" Key="KEY_R" Modifiers="CTRL"/>
+			
+			<HotKey Slot="SellMode" Key="KEY_Z"/>
+			<HotKey Slot="ToggleRepairMode" Key="KEY_C"/>
+			<HotKey Slot="GoToNextSubGroup" Key="KEY_TAB"/>
+			<HotKey Slot="GoToPriorSubGroup" Key="KEY_TAB" Modifiers="SHIFT"/>
+			<HotKey Slot="SideBarMainStructurePage" Key="KEY_E"/>
+			<HotKey Slot="SideBarOtherStructurePage" Key="KEY_R"/>
+			<HotKey Slot="SideBarInfantryPage" Key="KEY_T"/>
+			<HotKey Slot="SideBarVehiclePage" Key="KEY_Y"/>
+			<HotKey Slot="SideBarAircraftPage" Key="KEY_U"/>
+			<HotKey Slot="SideBarWatercraftPage" Key="KEY_I"/>
+			
+			<HotKey Slot="UnitAbilityButtonSlot1" Key="KEY_F"/>
+
+			<HotKey Slot="PlayerPowerButtonSlot1" Key="KEY_Q" Modifiers="ALT"/>
+			<HotKey Slot="PlayerPowerButtonSlot2" Key="KEY_W" Modifiers="ALT"/>
+			<HotKey Slot="PlayerPowerButtonSlot3" Key="KEY_E" Modifiers="ALT"/>
+			<HotKey Slot="PlayerPowerButtonSlot4" Key="KEY_R" Modifiers="ALT"/>
+			<HotKey Slot="PlayerPowerButtonSlot5" Key="KEY_T" Modifiers="ALT"/>
+			<HotKey Slot="PlayerPowerButtonSlot6" Key="KEY_Y" Modifiers="ALT"/>
+			<HotKey Slot="PlayerPowerButtonSlot7" Key="KEY_U" Modifiers="ALT"/>
+			<HotKey Slot="PlayerPowerButtonSlot8" Key="KEY_I" Modifiers="ALT"/>
+			<HotKey Slot="PlayerPowerButtonSlot9" Key="KEY_O" Modifiers="ALT"/>
+			<HotKey Slot="PlayerPowerButtonSlot10" Key="KEY_P" Modifiers="ALT"/>
+	
+			<HotKey Slot="SaveViewBookmark1" Key="KEY_J" Modifiers="CTRL"/>
+			<HotKey Slot="SaveViewBookmark2" Key="KEY_K" Modifiers="CTRL"/>
+			<HotKey Slot="SaveViewBookmark3" Key="KEY_L" Modifiers="CTRL"/>
+			<HotKey Slot="SaveViewBookmark4" Key="KEY_SEMICOLON" Modifiers="CTRL"/>
+		
+			<HotKey Slot="GoToViewBookmark1" Key="KEY_J"/>
+			<HotKey Slot="GoToViewBookmark2" Key="KEY_K"/>
+			<HotKey Slot="GoToViewBookmark3" Key="KEY_L"/>
+			<HotKey Slot="GoToViewBookmark4" Key="KEY_SEMICOLON"/>
+			
+			<HotKey Slot="CameraReset" Key="KEY_KP5"/>
+			<HotKey Slot="CameraScrollLeft" Key="KEY_LEFT"/>
+			<HotKey Slot="CameraScrollRight" Key="KEY_RIGHT"/>
+			<HotKey Slot="CameraScrollUp" Key="KEY_UP"/>
+			<HotKey Slot="CameraScrollDown" Key="KEY_DOWN"/>
+			<HotKey Slot="CameraRotateLeft" Key="KEY_KP4"/>
+			<HotKey Slot="CameraRotateRight" Key="KEY_KP6"/>
+			<HotKey Slot="CameraZoomIn" Key="KEY_KP8"/>
+			<HotKey Slot="CameraZoomOut" Key="KEY_KP2"/>
+
+			<HotKey Slot="ToggleFastForwardMode" Key="KEY_PERIOD"/>
+			<HotKey Slot="ToggleHUD" Key="KEY_END"/>
+			<HotKey Slot="ViewLastEvaEvent" Key="KEY_SPACE"/>
+				
+			<HotKey Slot="OpenPauseScreen" Key="KEY_ESC"/>
+			<HotKey Slot="SelectGroup0" Key="KEY_0"/>
+			<HotKey Slot="SelectGroup1" Key="KEY_1"/>
+			<HotKey Slot="SelectGroup2" Key="KEY_2"/>
+			<HotKey Slot="SelectGroup3" Key="KEY_3"/>
+			<HotKey Slot="SelectGroup4" Key="KEY_4"/>
+			<HotKey Slot="SelectGroup5" Key="KEY_5"/>
+			<HotKey Slot="SelectGroup6" Key="KEY_6"/>
+			<HotKey Slot="SelectGroup7" Key="KEY_7"/>
+			<HotKey Slot="SelectGroup8" Key="KEY_8"/>
+			<HotKey Slot="SelectGroup9" Key="KEY_9"/>
+			<HotKey Slot="ViewGroup0" Key="KEY_0" Modifiers="ALT"/>
+			<HotKey Slot="ViewGroup1" Key="KEY_1" Modifiers="ALT"/>
+			<HotKey Slot="ViewGroup2" Key="KEY_2" Modifiers="ALT"/>
+			<HotKey Slot="ViewGroup3" Key="KEY_3" Modifiers="ALT"/>
+			<HotKey Slot="ViewGroup4" Key="KEY_4" Modifiers="ALT"/>
+			<HotKey Slot="ViewGroup5" Key="KEY_5" Modifiers="ALT"/>
+			<HotKey Slot="ViewGroup6" Key="KEY_6" Modifiers="ALT"/>
+			<HotKey Slot="ViewGroup7" Key="KEY_7" Modifiers="ALT"/>
+			<HotKey Slot="ViewGroup8" Key="KEY_8" Modifiers="ALT"/>
+			<HotKey Slot="ViewGroup9" Key="KEY_9" Modifiers="ALT"/>
+			<HotKey Slot="CreateGroup0" Key="KEY_0" Modifiers="CTRL"/>
+			<HotKey Slot="CreateGroup1" Key="KEY_1" Modifiers="CTRL"/>
+			<HotKey Slot="CreateGroup2" Key="KEY_2" Modifiers="CTRL"/>
+			<HotKey Slot="CreateGroup3" Key="KEY_3" Modifiers="CTRL"/>
+			<HotKey Slot="CreateGroup4" Key="KEY_4" Modifiers="CTRL"/>
+			<HotKey Slot="CreateGroup5" Key="KEY_5" Modifiers="CTRL"/>
+			<HotKey Slot="CreateGroup6" Key="KEY_6" Modifiers="CTRL"/>
+			<HotKey Slot="CreateGroup7" Key="KEY_7" Modifiers="CTRL"/>
+			<HotKey Slot="CreateGroup8" Key="KEY_8" Modifiers="CTRL"/>
+			<HotKey Slot="CreateGroup9" Key="KEY_9" Modifiers="CTRL"/>
+			<HotKey Slot="AddToGroup0" Key="KEY_0" Modifiers="SHIFT"/>
+			<HotKey Slot="AddToGroup1" Key="KEY_1" Modifiers="SHIFT"/>
+			<HotKey Slot="AddToGroup2" Key="KEY_2" Modifiers="SHIFT"/>
+			<HotKey Slot="AddToGroup3" Key="KEY_3" Modifiers="SHIFT"/>
+			<HotKey Slot="AddToGroup4" Key="KEY_4" Modifiers="SHIFT"/>
+			<HotKey Slot="AddToGroup5" Key="KEY_5" Modifiers="SHIFT"/>
+			<HotKey Slot="AddToGroup6" Key="KEY_6" Modifiers="SHIFT"/>
+			<HotKey Slot="AddToGroup7" Key="KEY_7" Modifiers="SHIFT"/>
+			<HotKey Slot="AddToGroup8" Key="KEY_8" Modifiers="SHIFT"/>
+			<HotKey Slot="AddToGroup9" Key="KEY_9" Modifiers="SHIFT"/>
+
+			<HotKey Slot="TelestratorToggle" Key="KEY_HOME"/>
+			<HotKey Slot="TelestratorErase" Key="KEY_DEL"/>
+			<HotKey Slot="TelestratorNextLineWidth" Key="KEY_INS"/>
+			<HotKey Slot="TelestratorNextColor" Key="KEY_PGUP"/>
+			<HotKey Slot="TelestratorPriorColor" Key="KEY_PGDN"/>
+
+			<HotKey Slot="TakeScreenShot" Key="KEY_F12"/>
+			<HotKey Slot="ReloadRapidIterationFeature" Key="KEY_ESC" Modifiers="SHIFT"/>
+			<HotKey Slot="TakeUnitsFromAlly" Key="KEY_SLASH"/>
+			<HotKey Slot="GiveUnitsToAlly" Key="KEY_P"/>
+			<HotKey Slot="OpenPlayerTechStore" Key="KEY_TICK"/>
+
+			<HotKey Slot="OpenSaveGameScreen" Key="KEY_S" Modifiers="SHIFT"/>
+			<HotKey Slot="OpenLoadGameScreen" Key="KEY_L" Modifiers="SHIFT"/>
+		</Map>
+	</DefaultHotKeys>
+</AssetDeclaration>

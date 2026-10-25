@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<AptAptData id="fes_m_scenarioMap_apt" File="fes_m_scenarioMap.apt" />
+	<AptConstData id="fes_m_scenarioMap_const" File="fes_m_scenarioMap.const" />
+	<AptDatData id="fes_m_scenarioMap_dat" File="fes_m_scenarioMap.dat" />
+	<AptGeometryData id="fes_m_scenarioMap_101" File="fes_m_scenarioMap_geometry\101.ru" AptID="101"/>
+	<AptGeometryData id="fes_m_scenarioMap_16" File="fes_m_scenarioMap_geometry\16.ru" AptID="16"/>
+	<AptGeometryData id="fes_m_scenarioMap_19" File="fes_m_scenarioMap_geometry\19.ru" AptID="19"/>
+	<AptGeometryData id="fes_m_scenarioMap_2" File="fes_m_scenarioMap_geometry\2.ru" AptID="2"/>
+	<AptGeometryData id="fes_m_scenarioMap_33" File="fes_m_scenarioMap_geometry\33.ru" AptID="33"/>
+	<AptGeometryData id="fes_m_scenarioMap_34" File="fes_m_scenarioMap_geometry\34.ru" AptID="34"/>
+	<AptGeometryData id="fes_m_scenarioMap_39" File="fes_m_scenarioMap_geometry\39.ru" AptID="39"/>
+	<AptGeometryData id="fes_m_scenarioMap_4" File="fes_m_scenarioMap_geometry\4.ru" AptID="4"/>
+	<AptGeometryData id="fes_m_scenarioMap_52" File="fes_m_scenarioMap_geometry\52.ru" AptID="52"/>
+	<AptGeometryData id="fes_m_scenarioMap_55" File="fes_m_scenarioMap_geometry\55.ru" AptID="55"/>
+	<AptGeometryData id="fes_m_scenarioMap_58" File="fes_m_scenarioMap_geometry\58.ru" AptID="58"/>
+	<AptGeometryData id="fes_m_scenarioMap_6" File="fes_m_scenarioMap_geometry\6.ru" AptID="6"/>
+	<AptGeometryData id="fes_m_scenarioMap_63" File="fes_m_scenarioMap_geometry\63.ru" AptID="63"/>
+	<AptGeometryData id="fes_m_scenarioMap_71" File="fes_m_scenarioMap_geometry\71.ru" AptID="71"/>
+	<AptGeometryData id="fes_m_scenarioMap_74" File="fes_m_scenarioMap_geometry\74.ru" AptID="74"/>
+	<AptGeometryData id="fes_m_scenarioMap_78" File="fes_m_scenarioMap_geometry\78.ru" AptID="78"/>
+	<AptGeometryData id="fes_m_scenarioMap_82" File="fes_m_scenarioMap_geometry\82.ru" AptID="82"/>
+	<AptGeometryData id="fes_m_scenarioMap_85" File="fes_m_scenarioMap_geometry\85.ru" AptID="85"/>
+	<AptGeometryData id="fes_m_scenarioMap_88" File="fes_m_scenarioMap_geometry\88.ru" AptID="88"/>
+	<AptGeometryData id="fes_m_scenarioMap_9" File="fes_m_scenarioMap_geometry\9.ru" AptID="9"/>
+	<AptGeometryData id="fes_m_scenarioMap_95" File="fes_m_scenarioMap_geometry\95.ru" AptID="95"/>
+	<AptGeometryData id="fes_m_scenarioMap_97" File="fes_m_scenarioMap_geometry\97.ru" AptID="97"/>
+	<AptGeometryData id="fes_m_scenarioMap_99" File="fes_m_scenarioMap_geometry\99.ru" AptID="99"/>
+	<Texture id="apt_fes_m_scenarioMap_1" File="art\Textures\apt_fes_m_scenarioMap_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fes_m_scenarioMap_2" File="art\Textures\apt_fes_m_scenarioMap_2.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fes_m_scenarioMap_3" File="art\Textures\apt_fes_m_scenarioMap_3.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fes_m_scenarioMap_4" File="art\Textures\apt_fes_m_scenarioMap_4.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+</AssetDeclaration>

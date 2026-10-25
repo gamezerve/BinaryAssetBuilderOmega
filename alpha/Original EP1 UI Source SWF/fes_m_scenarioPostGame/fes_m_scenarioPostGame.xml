@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<AptAptData id="fes_m_scenarioPostGame_apt" File="fes_m_scenarioPostGame.apt" />
+	<AptConstData id="fes_m_scenarioPostGame_const" File="fes_m_scenarioPostGame.const" />
+	<AptDatData id="fes_m_scenarioPostGame_dat" File="fes_m_scenarioPostGame.dat" />
+	<AptGeometryData id="fes_m_scenarioPostGame_11" File="fes_m_scenarioPostGame_geometry\11.ru" AptID="11"/>
+	<AptGeometryData id="fes_m_scenarioPostGame_15" File="fes_m_scenarioPostGame_geometry\15.ru" AptID="15"/>
+	<AptGeometryData id="fes_m_scenarioPostGame_17" File="fes_m_scenarioPostGame_geometry\17.ru" AptID="17"/>
+	<AptGeometryData id="fes_m_scenarioPostGame_19" File="fes_m_scenarioPostGame_geometry\19.ru" AptID="19"/>
+	<AptGeometryData id="fes_m_scenarioPostGame_2" File="fes_m_scenarioPostGame_geometry\2.ru" AptID="2"/>
+	<AptGeometryData id="fes_m_scenarioPostGame_24" File="fes_m_scenarioPostGame_geometry\24.ru" AptID="24"/>
+	<AptGeometryData id="fes_m_scenarioPostGame_26" File="fes_m_scenarioPostGame_geometry\26.ru" AptID="26"/>
+	<AptGeometryData id="fes_m_scenarioPostGame_29" File="fes_m_scenarioPostGame_geometry\29.ru" AptID="29"/>
+	<AptGeometryData id="fes_m_scenarioPostGame_33" File="fes_m_scenarioPostGame_geometry\33.ru" AptID="33"/>
+	<AptGeometryData id="fes_m_scenarioPostGame_38" File="fes_m_scenarioPostGame_geometry\38.ru" AptID="38"/>
+	<AptGeometryData id="fes_m_scenarioPostGame_45" File="fes_m_scenarioPostGame_geometry\45.ru" AptID="45"/>
+	<AptGeometryData id="fes_m_scenarioPostGame_48" File="fes_m_scenarioPostGame_geometry\48.ru" AptID="48"/>
+	<AptGeometryData id="fes_m_scenarioPostGame_6" File="fes_m_scenarioPostGame_geometry\6.ru" AptID="6"/>
+	<Texture id="apt_fes_m_scenarioPostGame_1" File="art\Textures\apt_fes_m_scenarioPostGame_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fes_m_scenarioPostGame_2" File="art\Textures\apt_fes_m_scenarioPostGame_2.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="apt_fes_m_scenarioPostGame_3" File="art\Textures\apt_fes_m_scenarioPostGame_3.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+</AssetDeclaration>
