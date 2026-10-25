@@ -72,7 +72,8 @@ internal static class Ep1WeaponSetSmokeTest
             var truncated=Clone(populated!);truncated.InstanceBuffer=truncated.InstanceBuffer.AsSpan(0,68).ToArray();Refuse(()=>Ep1WeaponSetTokenizer.Tokenize(truncated));failures++;
             var missing=Clone(populated!);missing.ImportsBuffer=Array.Empty<byte>();Refuse(()=>Ep1WeaponSetTokenizer.Tokenize(missing));failures++;
             var noRelo=Clone(populated!);noRelo.RelocationBuffer=Array.Empty<byte>();Refuse(()=>Ep1WeaponSetTokenizer.Tokenize(noRelo));failures++;
-            string unsupported="<WeaponSetUpdate xmlns='uri:ea.com:eala:asset' id='Unsupported'><WeaponSlotTurret ID='1'><TurretSettings/></WeaponSlotTurret></WeaponSetUpdate>";
+            // Reborn: ordinary turrets are implemented; hierarchical turret payloads remain an explicit unsupported control.
+            string unsupported="<WeaponSetUpdate xmlns='uri:ea.com:eala:asset' id='Unsupported'><WeaponSlotHierarchicalTurret ID='1'><TurretSettings/></WeaponSlotHierarchicalTurret></WeaponSetUpdate>";
             Refuse(()=>Compile(ReferencePipelineSmokeTest.Normalize(schemas,unsupported).XmlNode));failures++;
             Refuse(()=>Normalize(schemas,"<WeaponSetUpdate xmlns='uri:ea.com:eala:asset' id='Bad'><WeaponSlotHardpoint><Weapon Template='MissingRebornWeapon'/></WeaponSlotHardpoint></WeaponSetUpdate>",catalog));failures++;
             // Reborn: detached metadata mutations exercise the independent verifier, not only producer-side native admission.

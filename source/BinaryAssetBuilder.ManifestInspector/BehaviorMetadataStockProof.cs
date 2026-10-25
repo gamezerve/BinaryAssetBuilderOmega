@@ -34,12 +34,6 @@ internal static class BehaviorMetadataStockProof
             {
                 if(rows>1024 || table<wrapper || table>end-12)throw new InvalidDataException("Behavior stock record bounds differ.");uint name=Word(stock,table),tag=Word(stock,table+4),target=Word(stock,table+8);if(name==0 && tag==0 && target==0)break;
                 if(name==1){var parent=current.GetField("Base")??throw new InvalidDataException("Behavior stock base model missing.");Record(parent.FieldType,path+".Base",(int)target,depth+1);continue;}
-                // Reborn: the separately reviewed weapon writer has three intentionally empty synthetic list headers, not invented hardpoint-compatible members.
-                if(current==typeof(SageBinaryData.Ep1WeaponSetUpdateModuleData))
-                {
-                    string? countName=new[]{("WeaponSlotTurret","TurretCount"),("WeaponSlotHierarchicalTurret","HierarchicalTurretCount"),("WeaponSlotContained","ContainedCount")}.Where(p=>FastHash.GetHashCode(p.Item1)==name).Select(p=>p.Item2).SingleOrDefault();
-                    if(countName!=null){int list=checked((int)target);if(list<wrapper || list>end-12 || Word(stock,list)!=0x6C827073 || Word(stock,list+4)!=0x5D448FD8 || !records.TryGetValue(path+"."+countName,out var count) || Word(native.InstanceBuffer,count.Compiled)!=0)throw new InvalidDataException("Behavior stock synthetic weapon list must be empty.");Native(list+8,path+"."+countName);continue;}
-                }
                 var fields=current.GetFields(BindingFlags.Public|BindingFlags.Instance).Where(f=>FastHash.GetHashCode(f.Name)==name).ToArray();if(fields.Length!=1)throw new InvalidDataException("Behavior stock field name has no unique native member: "+current.Name+"/"+name.ToString("X8"));var field=fields[0];string child=path+"."+field.Name;Type member=field.FieldType;
                 if(target==0)continue;if(target>=wrapper && target<end)
                 {

@@ -131,6 +131,8 @@ internal sealed class SchemaNativeContract
         // Reborn: each concrete particle module carries the hash of its validated schema class, independent of its enclosing asset.
         if(owner==typeof(FXParticleBaseModule)&&name=="TypeId"){Type concrete=FXParticleSystemCompiler.ModuleType(e!);Expect(at,BitConverter.GetBytes(FastHash.GetHashCode(concrete.Name)),path);return;}
         if(owner==typeof(FXNugget)&&name=="TypeId"){uint id=FastHash.GetHashCode(e?.SchemaInfo.SchemaType?.QualifiedName.Name??throw new InvalidDataException("FX nugget schema type missing."));_=FXListCompiler.NuggetType(e!);Expect(at,BitConverter.GetBytes(id),path);return;}
+        // Reborn: statically typed EP1 weapon slot records carry a zero class word in retail native arrays.
+        if(owner==typeof(Ep1WeaponSlotHardpoint)&&name=="TypeId"){Expect(at,new byte[4],path);return;}
         if(owner==typeof(ModuleData))
         {
             if(name=="TypeId"){Expect(at,BitConverter.GetBytes(typeId),path);return;}

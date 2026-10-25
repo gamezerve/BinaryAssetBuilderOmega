@@ -62,6 +62,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> replaceSelf;
     // Reborn: qualify the new wall-builder ABI and metadata once per mixed build.
     private readonly Lazy<StockMetadataGrammar> wallBuilder;
+    // Reborn: turret weapon slots use a retail-derived metadata grammar and independent source proof.
+    private readonly Lazy<StockMetadataGrammar> weaponTurret;
     // Reborn: schema-proved draw leaves need the generic proof qualified on stock Conscript draws and a metadata grammar from stock draws.
     private readonly Dictionary<Type,Lazy<StockMetadataGrammar>> schemaFamilies=new();
     // Reborn: Geometry is a nonmodule owner with independently qualified source/native and stock metadata grammar.
@@ -107,6 +109,7 @@ internal sealed class ConscriptVariableGraphVerifier
         luaEventList=new(()=>!SdkBuildTests.Enabled||LUAEventListContract.QualifyStock(manifest,official));
         buildingBehavior=new(()=>BuildingBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        weaponTurret=new(()=>WeaponTurretContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         wallBuilder=new(()=>WallBuilderContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         replaceSelf=new(()=>ReplaceSelfContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         productionInfo=new(()=>ProductionUpdateInfoContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -220,6 +223,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: production-info markers are source-owned module identities, including authored IDs and multiple instances.
                 // Reborn: self-replacement preserves authored target lists, flags, timing and inherited ability fields through complete-object composition.
                 // Reborn: wall builders preserve all source-owned fields, filter lists and relocated status masks during complete-object composition.
+                // Reborn: source-sized turret weapons retain every nested AI, selector and strong import during object composition.
+                if(owner.NativeType==typeof(Ep1WeaponSetUpdateModuleData)&&owner.Element.ChildNodes.OfType<XmlElement>().Any(e=>e.LocalName=="WeaponSlotTurret")){
+                    var grammar=weaponTurret.Value;var turretNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,WeaponTurretContract.TypeId,turretNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(turretNative,official,WeaponTurretContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,turretNative,owner.NativeType,proof.Records);Own(turretNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(WallBuilderBehaviorModuleData)){
                     var grammar=wallBuilder.Value;var wallNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,WallBuilderContract.TypeId,wallNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(wallNative,official,WallBuilderContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,wallNative,owner.NativeType,proof.Records);Own(wallNative,start,stop);Splice(owner,metadata,start,size);continue;

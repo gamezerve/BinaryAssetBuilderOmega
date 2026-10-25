@@ -163,6 +163,9 @@ internal static class Program
             if(args.Length==4 && args[0]=="fxlist-general-self-test")
             {CompilerSmokeTest.InitializeHashProvider();FXListCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             // Reborn: particle templates have a private native and linked-stream regression.
+            // Reborn: privately qualify source-sized turret weapon lists and complete GameObject composition.
+            if(args.Length==3 && args[0]=="weapon-turret-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();WeaponTurretSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==4 && args[0]=="particle-template-self-test")
             {CompilerSmokeTest.InitializeHashProvider();FXParticleSystemCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length is >=3 and <=5 && args[0]=="conscript-source-prepare")

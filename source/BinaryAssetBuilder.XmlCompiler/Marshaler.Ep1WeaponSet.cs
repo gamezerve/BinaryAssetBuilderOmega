@@ -36,15 +36,17 @@ public static partial class Marshaler
         objT->TypeId=0;
     }
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: isolated EP1 root rejects unsupported turrets/contained slots rather than silently leaving them empty. */
+    /** Reborn: EP1 root compiles hardpoints/turrets and rejects unsupported hierarchical/contained slots rather than silently leaving them empty. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node,Ep1WeaponSetUpdateModuleData* objT,Tracker state)
     {
         if(node is null)return;
-        foreach(string name in new[]{"WeaponSlotTurret","WeaponSlotHierarchicalTurret","WeaponSlotContained"})if(node.GetChildNodes(name)?.GetCount()>0)throw new BinaryAssetBuilderException(ErrorCode.InternalError,"EP1 diagnostic weapon slot {0} is not admitted.",name);
+        foreach(string name in new[]{"WeaponSlotHierarchicalTurret","WeaponSlotContained"})if(node.GetChildNodes(name)?.GetCount()>0)throw new BinaryAssetBuilderException(ErrorCode.InternalError,"EP1 diagnostic weapon slot {0} is not admitted.",name);
         // Reborn: source-sized hardpoint arrays reuse the implemented ABI without the former eight-hardpoint trial quota.
         var slots=node.GetChildNodes("WeaponSlotHardpoint");
         Marshal(node.GetAttributeValue("ActiveWhenDisabledBy","HELD"),&objT->ActiveWhenDisabledBy,state);
-        Marshal(slots,&objT->WeaponSlotHardpoint,state);Marshal(node,(UpdateModuleData*)objT,state);
+        Marshal(slots,&objT->WeaponSlotHardpoint,state);
+        // Reborn: turret records have their own source-sized list and nested EP1 allocations.
+        Marshal(node.GetChildNodes("WeaponSlotTurret"),&objT->WeaponSlotTurret,state);Marshal(node,(UpdateModuleData*)objT,state);
     }
 }

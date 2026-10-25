@@ -75,6 +75,8 @@ internal static class ConscriptVariableBehaviorSource
         foreach(var owner in behaviors)
         {
             // Reborn: the assign-slaves leaf is source/schema-proved, not restricted to the original building's values, local ID or nested shape.
+            // Reborn: populated turret lists use the complete source/native EP1 turret contract rather than infantry hardpoint shape matching.
+            if(owner.NativeType==typeof(SageBinaryData.Ep1WeaponSetUpdateModuleData)&&owner.Element.ChildNodes.OfType<XmlElement>().Any(e=>e.LocalName=="WeaponSlotTurret")){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.AssignSlavesTargetObjectSpecialPowerModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             // Reborn: recall and parking accept schema-valid authored values and optional records, with independent EP1 source/native proofs.
             if(AirfieldBehaviorContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

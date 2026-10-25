@@ -148,6 +148,8 @@ if($SchedulerControl){
     Add-BatchCase 'gameobject-authored-armor-composition' 'BoundedAuthoredArmorConsumerProjection' @('gameobject-authored-armor-composition-self-test',(Join-Path $OutputDirectory 'armor-consumer'),$StaticManifest,$GlobalManifest)
     # Reborn: separate EP1 hardpoint ABI/token writer must match real stock graphs before any enclosing object integration.
     Add-BatchCase 'ep1-weapon-set' 'BoundedCoreWeaponSetNativeTokenFragment' @('ep1-weapon-set-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: original Sentry Gun, edited turret arrays and complete object composition use isolated native checks.
+    Add-BatchCase 'weapon-turret' 'WeaponTurretNativeAndComposition' @('weapon-turret-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: selected destruction/weapon modules share armor/body/root references, with optional newly built armor proof.
     Add-BatchCase 'gameobject-combat-composition' 'BoundedCombatNativeTokenProjection' @('gameobject-combat-composition-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'gameobject-authored-combat-composition' 'BoundedAuthoredArmorCombatConsumer' @('gameobject-authored-combat-composition-self-test',(Join-Path $OutputDirectory 'combat-consumer'),$StaticManifest,$GlobalManifest)

@@ -8,6 +8,15 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: source-driven WeaponSlotTurret compilation now complements existing infantry hardpoints. -->
+`WeaponSetUpdate/WeaponSlotTurret` is build-enabled, including nested
+`TurretSettings`, the optional turret target chooser, comparison-list imports,
+weapon/upgrade references and source-sized turret/weapon lists. The 132-byte
+turret, 100-byte AI and 44-byte chooser match original Uprising Sentry Gun
+native data and metadata. Edited multi-turret records and complete GameObject
+composition are checked privately. Hierarchical/contained slots and nonempty
+chooser `ObjectVisionRange` records still require their own processors.
+
 <!-- Reborn: authored particle templates now produce native data and participate in normal mod dependency linking. -->
 `FXParticleSystemTemplate` is build-enabled through Studio, including the
 `Civ_Destruction_Weeny` GPU/default-physics/box/ortho/default-update combination.

@@ -9,7 +9,7 @@ using Chunk=Relo.Chunk;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: reuse the implemented EP1 hardpoint ABI with source-sized lists and independently named optional weapon/upgrade imports.
+// Reborn: reuse the implemented EP1 hardpoint/turret ABI with source-sized lists and independently named optional weapon/upgrade imports.
 internal static class ConscriptWeaponSetContract
 {
     internal static bool Supports(Type type)=>type==typeof(Ep1WeaponSetUpdateModuleData);
@@ -20,21 +20,21 @@ internal static class ConscriptWeaponSetContract
     internal static void Normalize(XmlDocument source)
     {
         foreach(XmlElement module in source.GetElementsByTagName("WeaponSetUpdate","uri:ea.com:eala:asset"))
-        foreach(var hp in module.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="WeaponSlotHardpoint")){
+        foreach(var hp in module.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is "WeaponSlotHardpoint" or "WeaponSlotTurret")){
             // Reborn: report unsigned overflow at the authored hardpoint ID before native allocation loses its source coordinate.
             _=Unsigned(hp,"ID");
             foreach(var node in new[]{hp}.Concat(hp.ChildNodes.OfType<XmlElement>()))foreach(string name in new[]{"AllowInterleavedFiring","AutoChooseWeapon","IsPlayerUpgradePermanent","ConquerMetricsAlwaysCount"})if(node.HasAttribute(name))node.SetAttribute(name,Boolean(node,name,false)?"true":"false");
-            foreach(var row in hp.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="Weapon").OrderBy(e=>Enumeration<WeaponSlotType>(e,"Ordering",0)).ToArray())hp.AppendChild(row);
+            foreach(var row in hp.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="Weapon").OrderBy(e=>Enumeration<WeaponSlotType>(e,"Ordering",0)).ToArray())hp.InsertBefore(row,hp.ChildNodes.OfType<XmlElement>().FirstOrDefault(e=>e.LocalName=="TurretSettings"));
         }
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: mask only hardpoint records already backed by the EP1 processor; unimplemented turret/contained families remain visible. */
+    /** Reborn: mask implemented hardpoint/turret records only; hierarchical/contained families remain visible. */
     //-------------------------------------------------------------------------------------------------
     internal static void Mask(XmlElement actual,XmlElement model)
     {
-        foreach(var child in actual.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="WeaponSlotHardpoint").ToArray())actual.RemoveChild(child);
-        XmlNode? before=actual.FirstChild;foreach(var child in model.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="WeaponSlotHardpoint"))actual.InsertBefore(actual.OwnerDocument!.ImportNode(child,true),before);
+        foreach(var child in actual.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is "WeaponSlotHardpoint" or "WeaponSlotTurret").ToArray())actual.RemoveChild(child);
+        XmlNode? before=actual.FirstChild;foreach(var child in model.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is "WeaponSlotHardpoint" or "WeaponSlotTurret"))actual.InsertBefore(actual.OwnerDocument!.ImportNode(child,true),before);
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ internal static class ConscriptWeaponSetContract
     //-------------------------------------------------------------------------------------------------
     internal static void VerifyNative(XmlElement module,Chunk native,InstanceDeclaration instance)
     {
-        byte[] bytes=native.InstanceBuffer;var hardpoints=module.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="WeaponSlotHardpoint").ToArray();
+        byte[] bytes=native.InstanceBuffer;var hardpoints=module.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is "WeaponSlotHardpoint" or "WeaponSlotTurret").ToArray();
         if(Word(bytes,12)!=hardpoints.Length||Word(bytes,16)!=(hardpoints.Length==0?0:44)||hardpoints.Length>(bytes.Length-44)/28)throw new InvalidDataException("WeaponSet source/native hardpoint allocation differs.");
         int next=checked(44+hardpoints.Length*28);var imports=new List<uint>();var relos=new List<uint>();if(hardpoints.Length>0)relos.Add(16);
         for(int i=0;i<hardpoints.Length;i++){

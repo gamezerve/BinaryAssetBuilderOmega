@@ -46,7 +46,8 @@ public static class Ep1BehaviorMetadataTokenizer
     {
         if (native?.InstanceBuffer == null || native.RelocationBuffer == null || native.ImportsBuffer == null || native.InstanceBuffer.Length < 8 || native.InstanceBuffer.Length > 2 * 1048576 || schemas == null || !Families.Contains(wireName) || Word(native.InstanceBuffer, 0) != FastHash.GetHashCode(wireName) || Word(native.InstanceBuffer, 4) == 0) throw new InvalidDataException("Reviewed bounded behavior native graph required.");
         if (nativeType == null || nativeType.Assembly != typeof(SageBinaryData.GameObject).Assembly || (nativeType.Name.StartsWith("Ep1", StringComparison.Ordinal) ? nativeType.Name.Substring(3) : nativeType.Name) != wireName) throw new InvalidDataException("Behavior native model/wire identity differs.");
-        if (wireName == "WeaponSetUpdateModuleData") return Ep1WeaponSetTokenizer.Tokenize(native);
+        // Reborn: populated turrets use schema-sized typed metadata; retain the qualified literal hardpoint-only route.
+        if (wireName == "WeaponSetUpdateModuleData" && Word(native.InstanceBuffer,20)==0) return Ep1WeaponSetTokenizer.Tokenize(native);
         return new Builder(native.InstanceBuffer, schemas).Build(native, wireName, nativeType);
     }
     //-------------------------------------------------------------------------------------------------
@@ -162,7 +163,7 @@ public static class Ep1BehaviorMetadataTokenizer
             var extension = (schema.ContentModel as XmlSchemaComplexContent)?.Content as XmlSchemaComplexContentExtension;
             if (schema.ContentModel != null && extension == null) throw new InvalidDataException("Unreviewed behavior schema content: " + schemaName);
             var fields = new List<(string Name, XmlSchemaType Schema, string Reference, bool Repeated)>(); var attributes = extension?.Attributes ?? schema.Attributes;
-            if (schemaName == "ModuleData") fields.Add(("TypeId", null, "", false));
+            if (schemaName is "ModuleData" or "WeaponSlot_Hardpoint") fields.Add(("TypeId", null, "", false));
             foreach (XmlSchemaObject item in attributes) { if (item is not XmlSchemaAttribute a || a.Name == null || a.AttributeSchemaType == null) throw new InvalidDataException("Unreviewed behavior attribute declaration.");if(a.UnhandledAttributes?.Any(x=>x.LocalName=="pipelineOnly" && x.NamespaceURI=="uri:ea.com:eala:asset:schema" && x.Value=="true")==true)continue; fields.Add((a.Name, a.AttributeSchemaType, Reference(a.UnhandledAttributes), false)); }
             Elements(extension?.Particle ?? schema.Particle, fields);
             bool parent = extension != null; int table = Allocate(fields.Count + (parent ? 1 : 0) + 1), next = table; var used = new bool[Size(type)];
@@ -335,6 +336,8 @@ public static class Ep1BehaviorMetadataTokenizer
         "ToggleStatusAiHint" => 0x018DD8B9, "ToggleStatusNugget[]" => 0xFC294B1D,
         "UpgradeTemplateRef" or "UpgradeTemplateRef[]" => 0x4ABA1F29, "UpgradeTemplateWeakRef[]" => 0x26FACFC7,
         "Vector3" => 0x29368077, "Velocity" => 0x7A76C60E, "WeakReference:GameObject[]" => 0x9B19049F,
+        // Reborn: these turret signatures were read from the original Soviet Sentry Gun metadata.
+        "TurretAIData"=>0xF6753063,"TurretAITargetChooserData"=>0x08CF34B0,"TargetingCompareListRef"=>0x1B85B469,"TargetChooserDynamicTargetFlags"=>0x344E0F38,"ObjectVisionRangeItem[]"=>0x2E11FC54,"WeaponSlotBitFlags"=>0x28AEDB15,
         "WeaponChoiceCriteria" => 0x1D110792, "WeaponFireProbabilityType[]" => 0x080BE21F, "WeaponRef" => 0xD046DD22,
         "WeaponSlotInterleavedStyleType" => 0xBE669829, "WeaponSlotType" => 0x1848C549,
         "WeaponSlot_Contained[]" => 0xBA2D72E2, "WeaponSlot_Hardpoint[]" => 0xCE5853D7,
