@@ -161,6 +161,8 @@ if($SchedulerControl){
     # Reborn: experience levels retain stock-qualified EP1 pointer/list layout and ordinary authored stream publication.
     Add-BatchCase 'experience-level' 'ExperienceNativeAndStream' @('experience-level-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'experience-level'))
     # Reborn: special-power flags, tech/EVA selectors and local authored commands use stock-qualified EP1 data.
+    # Reborn: standalone player power buttons exercise all four data alternatives privately.
+    Add-BatchCase 'player-power-button' 'PlayerPowerButton' @('player-power-button-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'player-power-button-output'))
     Add-BatchCase 'special-power-template' 'SpecialPowerNativeAndStream' @('special-power-template-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'special-power-template'))
     # Reborn: selected destruction/weapon modules share armor/body/root references, with optional newly built armor proof.
     Add-BatchCase 'gameobject-combat-composition' 'BoundedCombatNativeTokenProjection' @('gameobject-combat-composition-self-test',$StaticManifest,$GlobalManifest)

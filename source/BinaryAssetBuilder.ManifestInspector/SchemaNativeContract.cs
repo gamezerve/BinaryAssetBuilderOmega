@@ -124,6 +124,8 @@ internal sealed class SchemaNativeContract
     {
         Type type=field.FieldType;string name=field.Name;records[path]=at;
         // Reborn: shader constant class IDs come from the validated concrete schema type, not authored TypeId text or the enclosing draw class.
+        // Reborn: button class identities derive from the validated schema; the unextended retail Power record has a zero class word.
+        if(owner==typeof(Ep1PlayerPowerButtonTemplateData)&&name=="TypeId"){Type concrete=PlayerPowerButtonCompiler.DataType(e!);Expect(at,BitConverter.GetBytes(concrete==typeof(Ep1PlayerPowerButtonTemplateData)?0u:FastHash.GetHashCode(concrete.Name[3..])),path);return;}
         if(owner==typeof(FXShaderConstant)&&name=="TypeId"){string wire=e?.SchemaInfo.SchemaType?.QualifiedName.Name??throw new InvalidDataException("Shader constant schema type missing.");uint id=FastHash.GetHashCode(wire);_=ShaderConstantType(id);Expect(at,BitConverter.GetBytes(id),path);return;}
         // Reborn: scalar shader Values are child elements, unlike the attribute-only scalar owners admitted earlier.
         if((owner==typeof(FXShaderConstantInt)||owner==typeof(FXShaderConstantBool))&&name=="Value"){var value=Child(e,name)??throw new InvalidDataException("Shader constant Value is required.");var carrier=value.OwnerDocument.CreateElement("Scalar");carrier.SetAttribute("Value",value.InnerText);Expect(at,ConscriptModuleScalarContract.Bytes(carrier,new("Value",0,Size(type),Scalar(type)!,null,0)),path);return;}
@@ -147,6 +149,8 @@ internal sealed class SchemaNativeContract
         if(type.IsPointer){
             // Reborn: particle role wrappers contain zero or one concrete polymorphic module, not a record of the abstract pointer type.
             if(FXParticleSystemCompiler.IsModule(type.GetElementType()!)){ParticleModule(e,name,at,path,depth);return;}
+            // Reborn: one required Data wrapper owns exactly one concrete EP1 button record.
+            if(type.GetElementType()==typeof(Ep1PlayerPowerButtonTemplateData)){var wrapper=Child(e,name)??throw new InvalidDataException("Button Data is required.");var child=wrapper.ChildNodes.OfType<XmlElement>().Single();consumed.Add(child);Type concrete=PlayerPowerButtonCompiler.DataType(child);uint target=Word(at);Link(at,target,Size(concrete),path);Struct(concrete,child,(int)target,path+"*",depth+1);return;}
             Pointer(type.GetElementType()!,e,name,at,path,depth);return;
         }
         if(type.IsGenericType)
@@ -417,7 +421,7 @@ internal sealed class SchemaNativeContract
                 // Reborn: a leading official INVALID sentinel is ordinal -1 (not stored), shifting every other value down by one.
                 // Reborn: stock BuildPlacementType and AIUpgradeHeuristicType keep INVALID at ordinal zero; stock upgrade IGNORE is 5, not 4.
                 // Reborn: schema forceValue aliases reuse an earlier ordinal and do not consume a new native flag bit.
-                if(values.Count>0){int index=values.IndexOf(token);if(index<0)return int.MinValue;int next=(values[0]=="INVALID"&&type.QualifiedName.Name is not ("BuildPlacementType" or "AIUpgradeHeuristicType" or "FXParticleSystem_GeometryType")||type.QualifiedName.Name=="TerrainScorchType"&&values[0]=="RANDOM")?-1:0;var ordinals=new Dictionary<string,int>(StringComparer.Ordinal);for(int i=0;i<=index;i++){string? alias=facets[i].UnhandledAttributes?.FirstOrDefault(a=>a.LocalName=="forceValue")?.Value;if(alias!=null){if(!ordinals.TryGetValue(alias,out next))throw new InvalidDataException("Schema enum alias target is not earlier: "+alias);}ordinals[values[i]!]=next;if(i==index)return next;next++;}}
+                if(values.Count>0){int index=values.IndexOf(token);if(index<0)return int.MinValue;int next=(values[0]=="INVALID"&&type.QualifiedName.Name is not ("BuildPlacementType" or "AIUpgradeHeuristicType" or "FXParticleSystem_GeometryType")||type.QualifiedName.Name=="TerrainScorchType"&&values[0]=="RANDOM")?-1:0;var ordinals=new Dictionary<string,int>(StringComparer.Ordinal);for(int i=0;i<=index;i++){string? alias=facets[i].UnhandledAttributes?.FirstOrDefault(a=>a.LocalName=="forceValue")?.Value;if(alias!=null){if(!int.TryParse(alias,System.Globalization.NumberStyles.Integer,System.Globalization.CultureInfo.InvariantCulture,out next)&&!ordinals.TryGetValue(alias,out next))throw new InvalidDataException("Schema enum alias target is not earlier: "+alias);}ordinals[values[i]!]=next;if(i==index)return next;next++;}}
             }
             type=type.BaseXmlSchemaType as XmlSchemaSimpleType;
         }

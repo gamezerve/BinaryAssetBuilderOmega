@@ -3712,3 +3712,10 @@ They are not a Uprising compatibility checklist or a verified EP1 type table.
 `SpecialPowerTemplate` references and `ReadyCondition` model-condition flags.
 Original EP1 native/metadata records, retargeted references, omitted optional
 fields and complete GameObject composition are covered by offline checks.
+
+<!-- Reborn: standalone power buttons use the EP1 layout rather than the legacy KW store. -->
+`PlayerPowerButtonTemplate` supports all four `Data` alternatives: `Power`,
+`TargetedPower`, `MultipleTargetsTargetedPower` and `MultiplePowersTargetedPower`.
+State/cursor/power imports, optional tint, outline, weak target markers and
+additional cursor/power lists are source-driven. Original EP1 records and
+a private package binding buttons to a new special power are checked offline.
