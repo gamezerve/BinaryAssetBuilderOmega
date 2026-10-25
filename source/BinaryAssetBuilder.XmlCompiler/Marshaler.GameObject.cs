@@ -14,6 +14,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: wall builders have their own EP1 behavior identity, separate from KW WallHubBehavior.
+            case 0x9590538Au:
+                MarshalPolymorphicType<WallBuilderBehaviorModuleData,BehaviorModuleData>(node,objT,state);
+                break;
             // Reborn: stock EP1 QueueDock has its own create-module identity and five owned bone strings.
             case 0xAF4C1F21u:
                 MarshalPolymorphicType<QueueDockModuleData,BehaviorModuleData>(node,objT,state);

@@ -8,6 +8,14 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: WallBuilderBehavior has a new EP1-native writer, distinct from legacy WallHubBehavior. -->
+`WallBuilderBehavior` is build-enabled with `MaxNumSegments`,
+`SecondaryModelConditions`, `SecondaryObjectStatus`, `StartInSecondaryModel`
+and source-sized `ConnectingObjectFilter` lists. The 228-byte native record is
+anchored to original Soviet/Allied walls. Private checks cover 39 segments,
+custom connection names, masks, defaults and full GameObject composition;
+no fixed limit of 10 segments or two stock connection targets is imposed.
+
 <!-- Reborn: self-replacement joins the source-driven Uprising behavior pipeline without changing user XML. -->
 `ReplaceSelfSpecialAbility` is build-enabled with repeated `ReplacementTemplate`
 weak targets, `NewObjectUnpackTime`, `ReplaceOptions`, `ClearTriggerDistance`

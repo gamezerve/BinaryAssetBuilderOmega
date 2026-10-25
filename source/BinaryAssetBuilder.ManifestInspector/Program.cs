@@ -156,6 +156,9 @@ internal static class Program
             // Reborn: qualify self-replacement privately with original retail payloads and complete-object composition.
             if(args.Length==3 && args[0]=="replace-self-special-ability-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ReplaceSelfSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: qualify the new wall-builder processor without changing either live mod or launching the game.
+            if(args.Length==3 && args[0]=="wall-builder-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();WallBuilderSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length is >=3 and <=5 && args[0]=="conscript-source-prepare")
             {CompilerSmokeTest.InitializeHashProvider();ConscriptSourceInput.Prepare(args[1],args[2],args.ElementAtOrDefault(3),args.ElementAtOrDefault(4));return 0;}
             // Reborn: group frontend structure/default/no-hidden-command checks independently of full GameObject compilation.
