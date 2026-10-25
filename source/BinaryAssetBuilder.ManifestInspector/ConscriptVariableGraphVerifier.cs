@@ -54,6 +54,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> fireWeaponDeath;
     // Reborn: load automatic-deposit inherited metadata once per build from the local retail WorldBuilder catalog.
     private readonly Lazy<StockMetadataGrammar> autoDeposit;
+    // Reborn: reuse the full retail-qualified slaughter/container metadata chain once per build.
+    private readonly Lazy<StockMetadataGrammar> slaughter;
     // Reborn: schema-proved draw leaves need the generic proof qualified on stock Conscript draws and a metadata grammar from stock draws.
     private readonly Dictionary<Type,Lazy<StockMetadataGrammar>> schemaFamilies=new();
     // Reborn: Geometry is a nonmodule owner with independently qualified source/native and stock metadata grammar.
@@ -99,6 +101,7 @@ internal sealed class ConscriptVariableGraphVerifier
         luaEventList=new(()=>!SdkBuildTests.Enabled||LUAEventListContract.QualifyStock(manifest,official));
         buildingBehavior=new(()=>BuildingBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        slaughter=new(()=>SlaughterContainContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         autoDeposit=new(()=>AutoDepositContract.Qualify(WorldBuilderAssetResolver.CatalogPath(),baseline,referenceSchemas,catalog));
         fireWeaponDeath=new(()=>FireWeaponDeathContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         // Reborn: both source families use their own native layout, independently witnessed on retail airfields.
@@ -204,6 +207,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 }
                 // Reborn: variable death masks, optional offsets, probability rows and weapon/upgrade imports are checked against the actual authored source.
                 // Reborn: preserve source-sized money lists and their independent inherited retail metadata during GameObject composition.
+                // Reborn: composed slaughter leaves retain source-owned inherited fields, filters, refund amounts and real FX imports.
+                if(owner.NativeType==typeof(SlaughterHordeContainModuleData)){
+                    var grammar=slaughter.Value;var slaughterNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,SlaughterContainContract.TypeId,slaughterNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(slaughterNative,official,SlaughterContainContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,slaughterNative,owner.NativeType,proof.Records);Own(slaughterNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(Ep1AutoDepositUpdateModuleData)){
                     var grammar=autoDeposit.Value;var depositNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,AutoDepositContract.TypeId,depositNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(depositNative,official,AutoDepositContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,depositNative,owner.NativeType,proof.Records);Own(depositNative,start,stop);Splice(owner,metadata,start,size);continue;

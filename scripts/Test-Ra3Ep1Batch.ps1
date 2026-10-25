@@ -75,6 +75,8 @@ if($SchedulerControl){
     Add-BatchCase 'fire-weapon-death' 'StockQualifiedDeathWeapons' @('fire-weapon-death-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: automatic income exercises the EP1 transaction lists and full GameObject composition.
     Add-BatchCase 'auto-deposit' 'StockQualifiedAutoDeposit' @('auto-deposit-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: slaughter refunds and inherited container data are checked against the real Crane/carrier records.
+    Add-BatchCase 'slaughter-contain' 'StockQualifiedSlaughterContain' @('slaughter-contain-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: qualify variable complete-object modules independently before widening Studio's fixed publication profile.
     Add-BatchCase 'conscript-variable-modules' 'VariableConscriptQualifiedStreamsAndPackages' @('conscript-module-graph-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'variable-module-graphs'))
     Add-BatchCase 'weapon-authored-values' 'BoundedScopedPackage' @('weapon-authored-build-self-test',(Join-Path $OutputDirectory 'weapon-builds'),$StaticManifest,$GlobalManifest)

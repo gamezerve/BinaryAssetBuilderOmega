@@ -24,7 +24,8 @@ public static class Ep1BehaviorMetadataTokenizer
     //-------------------------------------------------------------------------------------------------
     // Reborn: the existing stock-qualified sell ABI also participates in composed behavior metadata and scalar discovery.
     // Reborn: EP1 automatic deposits use the captured transaction-list ABI and metadata signatures.
-    static Ep1BehaviorMetadataTokenizer(){Families.Add("AutoDepositUpdateModuleData");Families.Add("StructureSellUpdateModuleData");Families.Add("BuildingDestructionModuleData");Families.Add("QueueDockModuleData");Families.Add("QueueProductionExitUpdateModuleData");Families.Add("SpawnBehaviorModuleData");Families.Add("StructureUnpackUpdateModuleData");Families.Add("ProductionUpdateModuleData");Families.Add("RepairUpdateModuleData");Families.Add("EngineerContainModuleData");Families.Add("AssistedPlacementBehaviorModuleData");Families.Add("InfiltratorContainModuleData");Families.Add("StructurePlacementBehaviorModuleData");Families.Add("LUAEventListBehaviorModuleData");Families.Add("PowerUpgradeModuleData");Families.Add("BuildingBehaviorModuleData");Families.Add("AssignSlavesTargetObjectSpecialPowerModuleData");}
+    // Reborn: the slaughter container retains its existing reviewed native inheritance and gains source-sized metadata.
+    static Ep1BehaviorMetadataTokenizer(){Families.Add("SlaughterHordeContainModuleData");Families.Add("AutoDepositUpdateModuleData");Families.Add("StructureSellUpdateModuleData");Families.Add("BuildingDestructionModuleData");Families.Add("QueueDockModuleData");Families.Add("QueueProductionExitUpdateModuleData");Families.Add("SpawnBehaviorModuleData");Families.Add("StructureUnpackUpdateModuleData");Families.Add("ProductionUpdateModuleData");Families.Add("RepairUpdateModuleData");Families.Add("EngineerContainModuleData");Families.Add("AssistedPlacementBehaviorModuleData");Families.Add("InfiltratorContainModuleData");Families.Add("StructurePlacementBehaviorModuleData");Families.Add("LUAEventListBehaviorModuleData");Families.Add("PowerUpgradeModuleData");Families.Add("BuildingBehaviorModuleData");Families.Add("AssignSlavesTargetObjectSpecialPowerModuleData");}
 
     // Reborn: assign-slaves uses the existing native SpecialPower writer and independent stock-qualified metadata proof.
     public static string ReviewedWireName(string sourceName)
@@ -288,6 +289,8 @@ public static class Ep1BehaviorMetadataTokenizer
         // Reborn: stock StructurePlacementBehavior inline Shape signatures.
         "Shape"=>0xE7210555,"GeometryType"=>0xB0D49164,"ContactPointGenerationType"=>0x465508CE,
         // Reborn: independently observed root-record signatures contain no native offsets or per-asset metadata templates.
+        // Reborn: original Crane OpenContain/Garrison metadata signatures; these identify types, not asset-specific offsets.
+        "InitialRoster"=>0x201C212B,"PassengerDataType[]"=>0x5CB5DD8B,"MemberTemplateStatusData[]"=>0xB774AECB,
         "AutoDepositBitFlags"=>0xE5828841,"MoneyTransactionCategory"=>0x9E55F778,"MoneyTransaction[]"=>0xB706334D,"SkirmishAIBaseLocation"=>0xCE5B5436,"DamageType"=>0x46486FF1,
         "WeaponAntiBitFlags"=>0xC8C69390,"EconomyResourceType"=>0x071B12C5,"AISpecialPowerInfo[]"=>0xCBA6C0C2,
         "AIBaseSelectionCriteria"=>0xC153D5E0,"AudioVoiceEntry[]"=>0x8AA9CB14,"AudioObjectSpecificVoiceEntry[]"=>0xAEDFC4CD,
@@ -304,7 +307,7 @@ public static class Ep1BehaviorMetadataTokenizer
         "AIAoeAttackPowerEmanationLocation" => 0x33433965, "AIAoeAttackPowerLocationPreference" => 0x0B3BCAE4,
         "AISpecialPowerWeaponData" => 0x43DBA49D, "AITargetLocationBitFlags" => 0x73B8B420, "AIToggleSpecialPowerInfo" => 0xFE374CCD,
         "Angle" => 0x4E16EA4D, "AnimAndDuration" => 0x6B746AF6, "ArmorSetType" => 0x2037048F, "AssetId" => 0x805D25F4,
-        "AttributeModifierRef" => 0x09DDCFF3, "AudioEventInfoRef" => 0x63D7B468, "AudioEventInfoRefList" => 0xE1117F93,
+        "AttributeModifierRef" or "AttributeModifierRef[]" => 0x09DDCFF3, "AudioEventInfoRef" => 0x63D7B468, "AudioEventInfoRefList" => 0xE1117F93,
         "ConditionsBitFlags" => 0x041F5A89, "DeathBitFlags" => 0x034DF1A1, "DieMuxDataType" => 0x0084001B,
         "DisabledBitFlags" => 0x196570C9, "DisabledType" => 0xBDE95B5A, "DurationUnsignedInt" => 0x6F6D1AE7,
         "EffectInfoBitFlags" => 0xA2F37A52, "EffectInfoType[]" => 0x25F5379F,

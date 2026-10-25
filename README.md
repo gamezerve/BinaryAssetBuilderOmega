@@ -8,6 +8,14 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: slaughter containers now participate in source-driven Uprising GameObject compilation. -->
+`SlaughterHordeContain` is build-enabled with its existing EP1 native writer,
+refund percentage, status mask, optional slaughter FX, entrance filter and
+inherited container fields. Metadata is qualified against the original Soviet
+Crane and Allied carrier. Private regression coverage includes edited/default
+values, expanded filters, optional entry/exit vectors, roster and complete
+GameObject composition; no user mod output or game installation is changed.
+
 <!-- Reborn: EP1 automatic income uses retail transaction lists rather than the incompatible legacy KW scalar record. -->
 `AutoDepositUpdate` now supports all Uprising XSD fields: `DepositInterval`,
 `GiveNoXP`, `OnlyWhenGarrisoned`, `Flags`, `TransactionCategory`, and repeated

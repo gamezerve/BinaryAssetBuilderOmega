@@ -80,6 +80,8 @@ internal static class ConscriptVariableBehaviorSource
             if(AirfieldBehaviorContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             // Reborn: death weapon references, death conditions and optional/list records are source-driven, not frozen to the inherited building sample.
             // Reborn: automatic-deposit source uses schema-sized lists and the independently captured EP1 native layout.
+            // Reborn: slaughter filters, inherited container records and refund amounts follow the official schema.
+            if(owner.NativeType==typeof(SageBinaryData.SlaughterHordeContainModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1AutoDepositUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1FireWeaponWhenDeadBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             // Reborn: exact existing identity breaks equivalent-template ties; new IDs may use any otherwise identical complete reviewed shape.

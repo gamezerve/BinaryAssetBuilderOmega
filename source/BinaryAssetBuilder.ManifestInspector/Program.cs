@@ -147,6 +147,9 @@ internal static class Program
             // Reborn: test automatic money deposits against retail EP1 records without building a user mod.
             if(args.Length==3 && args[0]=="auto-deposit-self-test")
             {CompilerSmokeTest.InitializeHashProvider();AutoDepositSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: qualify slaughter containers privately against real Uprising native records and full GameObject composition.
+            if(args.Length==3 && args[0]=="slaughter-contain-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();SlaughterContainSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length is >=3 and <=5 && args[0]=="conscript-source-prepare")
             {CompilerSmokeTest.InitializeHashProvider();ConscriptSourceInput.Prepare(args[1],args[2],args.ElementAtOrDefault(3),args.ElementAtOrDefault(4));return 0;}
             // Reborn: group frontend structure/default/no-hidden-command checks independently of full GameObject compilation.
