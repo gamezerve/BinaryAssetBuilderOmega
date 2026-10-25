@@ -4,29 +4,29 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:SBConstructionYard.w3x" />
-		<Include
-			type="all"
-			source="ART:SBConstructionYard_FX.w3x" />
-		<Include
-			type="all"
-			source="ART:SBConstructionYard_particles.w3x" />							
-		<Include
-			type="all"
-			source="ART:SBConstructionYard_GAG.w3x" />				
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBConstructionYard.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBConstructionYard_FX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBConstructionYard_particles.w3x" />							 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBConstructionYard_GAG.w3x" />				 -->
 
-		<Include
-			type="all"
-			source="ART:SBSuperweaponAdvanced_Platform.w3x" />
-		<Include
-			type="all"
-			source="ART:SBSuperweaponAdvanced_Platform_BLD.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBSuperweaponAdvanced_Platform.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBSuperweaponAdvanced_Platform_BLD.w3x" /> -->
 
-		<Include
-			type="all"
-			source="ART:SUMCV_TRANS.w3x" />				
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUMCV_TRANS.w3x" />				 -->
 		<Include
 			type="all"
 			source="DATA:GlobalData/GlobalDefines.xml" />

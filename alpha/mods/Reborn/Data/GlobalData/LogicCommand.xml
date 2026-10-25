@@ -3,6 +3,24 @@
 
 	<LogicCommand
 		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructSovietVolcanoFortress04">
+		<Object>SovietVolcanoFortress04</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructSovietVolcanoFortress03">
+		<Object>SovietVolcanoFortress03</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructSovietVolcanoFortress02">
+		<Object>SovietVolcanoFortress02</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
 		id="Command_ConstructSovietVolcanoFortress">
 		<Object>SovietVolcanoFortress</Object>
 	</LogicCommand>	

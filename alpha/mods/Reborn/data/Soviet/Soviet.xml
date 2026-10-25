@@ -10,9 +10,9 @@
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietPortBuilding.xml" />	
 		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietTeslaWallHub.xml" />	 -->
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietVolcanoFortress.xml" />	
-		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietVolcanoFortress02.xml" />	 -->
-		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietVolcanoFortress03.xml" />	 -->
-		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietVolcanoFortress04.xml" />	 -->
+		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietVolcanoFortress02.xml" />	
+		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietVolcanoFortress03.xml" />	
+		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietVolcanoFortress04.xml" />	
 		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietTeslaMoai.xml" />	 -->
 		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietBullfrogMoai.xml" />	 -->
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietSupplyPort.xml" />	
@@ -82,8 +82,8 @@
 		<!-- <Include type="all" source="structures/SovietBaseDefenseAir.xml" /> -->
 		<!-- <Include type="all" source="structures/SovietBaseDefenseGround.xml" /> -->
 		<!-- <Include type="all" source="structures/SovietOutpost.xml" /> -->
-		<!-- <Include type="all" source="structures/SovietWallPiece.xml" /> -->
-		<!-- <Include type="all" source="structures/SovietWallSegmentPiece.xml" /> -->
+		<Include type="all" source="structures/SovietWallPiece.xml" />
+		<Include type="all" source="structures/SovietWallSegmentPiece.xml" />
 		<!-- <Include type="all" source="structures/SovietBunker.xml" /> -->
 
 		<!-- Props -->

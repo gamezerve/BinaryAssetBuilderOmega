@@ -4,7 +4,7 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:EI_SovietVolcanoFortress03.W3X" />
+		<!-- <Include type="all"	source="ART:EI_SovietVolcanoFortress03.W3X" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
 		<Include type="instance" source="DATA:Civilian/Easter_Island_EI/Props/EI_SovietVolcanoFortress03_Collapse.xml" />			
 		<!-- Base Object -->

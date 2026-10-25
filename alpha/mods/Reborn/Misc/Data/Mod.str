@@ -121,3 +121,21 @@
 	TYPE:SovietVolcanoFortress04
 		"Volcano Structure (V4) \n> Health = 3000 \n> Shroud Clearing Range = 500"
 	End
+	
+// Soviet Crane
+
+	TYPE:SOVIETCRANE
+		"Production Structure \n> Health = 1500 \n> Shroud Clearing Range = 500"
+	End
+	
+// Soviet Construction Yard	
+
+	TYPE:SOVIETCONSTRUCTIONYARD
+		"Production Center \n> Power Generation = +50 \n> Buildability Radius = 600 \n> Health = 5000 \n> Shroud Clearing Range = 1000"
+	End
+
+// Soviet Wall Hub
+
+	TYPE:SOVIETWALLPIECE
+		"Defensive Perimeter \n> Health = 300 \n> Shroud Clearing Range = 50"
+	End

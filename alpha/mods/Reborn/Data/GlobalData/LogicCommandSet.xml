@@ -33,9 +33,9 @@
 		<Cmd>Command_ConstructSovietPortBuilding</Cmd> 
 		<Cmd>Command_ConstructSovietSupplyPort</Cmd>
 		<Cmd>Command_ConstructSovietVolcanoFortress</Cmd>
-		<!-- <Cmd>Command_ConstructSovietVolcanoFortress02</Cmd> -->
-		<!-- <Cmd>Command_ConstructSovietVolcanoFortress03</Cmd> -->
-		<!-- <Cmd>Command_ConstructSovietVolcanoFortress04</Cmd> -->
+		<Cmd>Command_ConstructSovietVolcanoFortress02</Cmd>
+		<Cmd>Command_ConstructSovietVolcanoFortress03</Cmd>
+		<Cmd>Command_ConstructSovietVolcanoFortress04</Cmd>
 		
 		<!-- <Cmd>Command_ConstructSovietTeslaWallHub</Cmd> -->
 		<!-- <Cmd>Command_ConstructSovietTeslaMoai</Cmd> -->

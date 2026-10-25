@@ -4,30 +4,30 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:SBCrane_SKN.W3X" />				
-		<Include
-			type="all"
-			source="ART:SBCrane_BLD.W3X" />				
-		<Include
-			type="all"
-			source="ART:SBCrane_IDLA.W3X" />				
-		<Include
-			type="all"
-			source="ART:SBCrane_Scaffold.W3X" />				
-		<Include
-			type="all"
-			source="ART:SBPowerPlant_Platform_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:SBPowerPlant_Platform_BLD.w3x" />
-		<Include
-			type="all"
-			source="ART:SBPowerPlant_Platform_PAK.w3x" />	
-		<Include
-			type="all"
-			source="ART:SBCrane_FX.W3X" />				
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBCrane_SKN.W3X" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBCrane_BLD.W3X" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBCrane_IDLA.W3X" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBCrane_Scaffold.W3X" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBPowerPlant_Platform_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBPowerPlant_Platform_BLD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBPowerPlant_Platform_PAK.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBCrane_FX.W3X" />				 -->
 			
 		<!-- Base Object -->
 		<Include

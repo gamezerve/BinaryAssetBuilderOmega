@@ -3,22 +3,22 @@
 	<Tags></Tags>
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
-		<Include
-			type="all"
-			source="ART:SBWallHub.w3x" />
-		<Include
-			type="all"
-			source="ART:SBWall_SKN.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBWallHub.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBWall_SKN.w3x" /> -->
 		<!-- Base Object -->
 		<Include
 			type="instance"
 			source="DATA:BaseObjects/BaseWallPiece.xml" />
-		<Include
-			type="all"
-			source="ART:SBWallHub_BLD.w3x" />
-		<Include
-			type="all"
-			source="ART:SBWall_BLD.w3x" />		
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBWallHub_BLD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBWall_BLD.w3x" />		 -->
 	</Includes>
 	<!-- Wall Piece (these alternate between Wall hubs and Wall segments on a case by case basis) -->
 	<GameObject
@@ -143,7 +143,7 @@
 					DeathTypesForbidden="SUICIDED"/>
 				<Item
 					BonePrefix="BONE_CONTACT_POINT_"
-					FX="SovietRefineryHit"
+					FX="FX_Civ_Explosion_Weeny"
 					FlingVelocity="100.0"/>
 			</BuildingDestructionBehavior>
 			<FXListBehavior
@@ -153,10 +153,7 @@
 					DeathTypes="ALL" />
 				<Event 
 					Index="onDeath" 
-					FX="FX_Civ_Explosion_Tiny" />
-				<Event
-					Index="onDeath"
-					FX="FX_YU_Hotel02_Explode" />					
+					FX="FX_Civ_Explosion_Weeny" />
 			</FXListBehavior>
 			<CreateObjectDie
 				id="ModuleTag_CreateObjectDieHub"
@@ -183,11 +180,12 @@
 			</DestroyDie>	
 			<WallBuilderBehavior
 				id="ModuleTag_WallBuilder"
-				MaxNumSegments="10">
+				MaxNumSegments="39">
 				<ConnectingObjectFilter
 					Rule="NONE" >
 					<IncludeThing>SovietWallPiece</IncludeThing>
 					<IncludeThing>SovietWallSegmentPiece</IncludeThing>
+					<IncludeThing>SovietTeslaWallHub</IncludeThing>
 				</ConnectingObjectFilter>
 			</WallBuilderBehavior>
 			<StructureUnpackUpdate
