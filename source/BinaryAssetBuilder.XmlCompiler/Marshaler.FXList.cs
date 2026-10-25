@@ -30,9 +30,9 @@ public static partial class Marshaler
         {
             return;
         }
-        Marshal(node.GetAttributeValue(nameof(EvaEventFXNugget.EvaEventOwner), "EVA_INVALID"), &objT->EvaEventOwner, state);
-        Marshal(node.GetAttributeValue(nameof(EvaEventFXNugget.EvaEventAlly), "EVA_INVALID"), &objT->EvaEventAlly, state);
-        Marshal(node.GetAttributeValue(nameof(EvaEventFXNugget.EvaEventEnemy), "EVA_INVALID"), &objT->EvaEventEnemy, state);
+        Marshal(node.GetAttributeValue(nameof(EvaEventFXNugget.EvaEventOwner), null), &objT->EvaEventOwner, state);
+        Marshal(node.GetAttributeValue(nameof(EvaEventFXNugget.EvaEventAlly), null), &objT->EvaEventAlly, state);
+        Marshal(node.GetAttributeValue(nameof(EvaEventFXNugget.EvaEventEnemy), null), &objT->EvaEventEnemy, state);
         Marshal(node, (FXNugget*)objT, state);
     }
 
@@ -82,6 +82,8 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(DynamicDecalFXNugget.Shader), "ALPHA"), &objT->Shader, state);
         Marshal(node.GetAttributeValue(nameof(DynamicDecalFXNugget.Size), null), &objT->Size, state);
         Marshal(node.GetAttributeValue(nameof(DynamicDecalFXNugget.OrientToObject), "true"), &objT->OrientToObject, state);
+        // Reborn: retain the official terrain/object decal default instead of silently omitting it.
+        Marshal(node.GetAttributeValue(nameof(DynamicDecalFXNugget.AllowOnObjects), "true"), &objT->AllowOnObjects, state);
         Marshal(node.GetAttributeValue(nameof(DynamicDecalFXNugget.OpacityStart), null), &objT->OpacityStart, state);
         Marshal(node.GetAttributeValue(nameof(DynamicDecalFXNugget.OpacityPeak), "1.0"), &objT->OpacityPeak, state);
         Marshal(node.GetAttributeValue(nameof(DynamicDecalFXNugget.OpacityEnd), null), &objT->OpacityEnd, state);
@@ -260,8 +262,6 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(ParticleSystemFXNugget.Count), "1"), &objT->Count, state);
         Marshal(node.GetAttributeValue(nameof(ParticleSystemFXNugget.OrientToObject), null), &objT->OrientToObject, state);
         Marshal(node.GetAttributeValue(nameof(ParticleSystemFXNugget.Ricochet), null), &objT->Ricochet, state);
-        Marshal(node.GetAttributeValue(nameof(ParticleSystemFXNugget.AttachToObject), null), &objT->AttachToObject, state);
-        Marshal(node.GetAttributeValue(nameof(ParticleSystemFXNugget.AttachToBone), null), &objT->AttachToBone, state);
         Marshal(node.GetAttributeValue(nameof(ParticleSystemFXNugget.CreateAtGroundHeight), null), &objT->CreateAtGroundHeight, state);
         Marshal(node.GetAttributeValue(nameof(ParticleSystemFXNugget.CreateOverrideBone), null), &objT->CreateOverrideBone, state);
         Marshal(node.GetAttributeValue(nameof(ParticleSystemFXNugget.UseTarget), null), &objT->UseTarget, state);
@@ -280,6 +280,16 @@ public static partial class Marshaler
         Marshal(node, (FXNugget*)objT, state);
     }
 
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: marshal the official ForceFeedback event reference through normal Core import indices. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node, ForceFeedbackFXNugget* objT, Tracker state)
+    {
+        if(node is null)return;
+        Marshal(node.GetAttributeValue(nameof(ForceFeedbackFXNugget.Event), null), &objT->Event, state);
+        Marshal(node, (FXNugget*)objT, state);
+    }
+
     public static unsafe void Marshal(Node node, FXNugget** objT, Tracker state)
     {
         if (node is null)
@@ -288,6 +298,8 @@ public static partial class Marshaler
         }
         uint typeId = 0;
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
+        // Reborn: the previously missing ForceFeedback class uses its actual concrete wire hash.
+        if(typeId==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(nameof(ForceFeedbackFXNugget))){MarshalPolymorphicType<ForceFeedbackFXNugget, FXNugget>(node,objT,state);return;}
         switch (typeId)
         {
             case 0x2CCC1572u:

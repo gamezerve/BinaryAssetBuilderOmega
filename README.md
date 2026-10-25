@@ -8,6 +8,17 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: general FXList assets now participate in the same Studio source and stream pipeline as other authored assets. -->
+`FXList` authoring is build-enabled: all 15 Uprising nugget kinds, arbitrary
+source-sized nugget lists, instance/all includes, definitions, Core inheritance,
+stock/mod references, native BIN/RELO/IMP and ordinary package publication.
+Source/native verification covers every emitted field and import in both build
+modes. Developer mode additionally checks eight original retail FX records.
+The particle nugget layout, EVA import selectors, dynamic-decal object flag,
+ForceFeedback writer and terrain-mapped scorch enum now match the EP1 schema
+and selected retail payloads. ParticleSystem nuggets reference particle-template
+assets through ordinary mod/stock dependency resolution.
+
 <!-- Reborn: WallBuilderBehavior has a new EP1-native writer, distinct from legacy WallHubBehavior. -->
 `WallBuilderBehavior` is build-enabled with `MaxNumSegments`,
 `SecondaryModelConditions`, `SecondaryObjectStatus`, `StartInSecondaryModel`

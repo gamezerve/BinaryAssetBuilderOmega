@@ -83,6 +83,8 @@ if($SchedulerControl){
     Add-BatchCase 'replace-self' 'StockQualifiedReplaceSelf' @('replace-self-special-ability-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: wall length, filter lists and both secondary masks use the new retail-qualified wall-builder writer.
     Add-BatchCase 'wall-builder' 'StockQualifiedWallBuilder' @('wall-builder-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: all FXList nugget kinds, inheritance and real local/stock dependencies use an isolated output root.
+    Add-BatchCase 'fxlist-general' 'GeneralFXListNativeAndStream' @('fxlist-general-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'fxlist-general'))
     # Reborn: qualify variable complete-object modules independently before widening Studio's fixed publication profile.
     Add-BatchCase 'conscript-variable-modules' 'VariableConscriptQualifiedStreamsAndPackages' @('conscript-module-graph-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'variable-module-graphs'))
     Add-BatchCase 'weapon-authored-values' 'BoundedScopedPackage' @('weapon-authored-build-self-test',(Join-Path $OutputDirectory 'weapon-builds'),$StaticManifest,$GlobalManifest)

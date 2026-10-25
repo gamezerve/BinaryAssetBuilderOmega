@@ -318,6 +318,8 @@ public enum TerrainScorchType
     SCORCH_14,
     SCORCH_15,
     SCORCH_16,
+    // Reborn: Uprising declares terrain-mapped scorch after the sixteen indexed textures.
+    TERRAIN_MAPPED,
 }
 
 public enum LivingWorldObjectType

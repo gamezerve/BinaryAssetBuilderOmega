@@ -125,6 +125,10 @@ internal sealed class SchemaNativeContract
         if(owner==typeof(FXShaderConstant)&&name=="TypeId"){string wire=e?.SchemaInfo.SchemaType?.QualifiedName.Name??throw new InvalidDataException("Shader constant schema type missing.");uint id=FastHash.GetHashCode(wire);_=ShaderConstantType(id);Expect(at,BitConverter.GetBytes(id),path);return;}
         // Reborn: scalar shader Values are child elements, unlike the attribute-only scalar owners admitted earlier.
         if((owner==typeof(FXShaderConstantInt)||owner==typeof(FXShaderConstantBool))&&name=="Value"){var value=Child(e,name)??throw new InvalidDataException("Shader constant Value is required.");var carrier=value.OwnerDocument.CreateElement("Scalar");carrier.SetAttribute("Value",value.InnerText);Expect(at,ConscriptModuleScalarContract.Bytes(carrier,new("Value",0,Size(type),Scalar(type)!,null,0)),path);return;}
+        // Reborn: FX nugget class IDs are defined by each concrete validated source schema, not the enclosing FXList asset identity.
+        // Reborn: Color3/Color4 runtime storage is packed BGRA; an existing color node defaults its unauthored alpha to 255.
+        if(owner==typeof(Color)&&name=="A"&&e!=null&&!e.HasAttribute("A")){Expect(at,new byte[]{255},path);return;}
+        if(owner==typeof(FXNugget)&&name=="TypeId"){uint id=FastHash.GetHashCode(e?.SchemaInfo.SchemaType?.QualifiedName.Name??throw new InvalidDataException("FX nugget schema type missing."));_=FXListCompiler.NuggetType(e!);Expect(at,BitConverter.GetBytes(id),path);return;}
         if(owner==typeof(ModuleData))
         {
             if(name=="TypeId"){Expect(at,BitConverter.GetBytes(typeId),path);return;}
@@ -146,6 +150,8 @@ internal sealed class SchemaNativeContract
                 case "TypedAssetId`1":Weak(Source(e,name).Text,at,path);return;
                 case "Relo.List`1":List(type.GetGenericArguments()[0],e,name,at,path,depth);return;
                 case "Relo.PolymorphicList`1":
+                    // Reborn: FXList owns a normal pointer array of schema-selected concrete FX nuggets.
+                    if(type.GetGenericArguments()[0]==typeof(FXNugget)){FXNuggets(e,name,at,path,depth);return;}
                     if(type.GetGenericArguments()[0]==typeof(FXShaderConstant)){ShaderConstants(e,name,at,path,depth);return;}
                     if(Children(e,name).Length!=0||Word(at)!=0||Word(at+4)!=0)throw new InvalidDataException("Schema-proved polymorphic list is not supported: "+path);return;
             }
@@ -168,6 +174,18 @@ internal sealed class SchemaNativeContract
         for(int i=0;i<children.Length;i++){
             var child=children[i];consumed.Add(child);uint id=FastHash.GetHashCode(child.SchemaInfo.SchemaType?.QualifiedName.Name??"");Type concrete=ShaderConstantType(id);int slot=checked((int)items+i*4);uint target=Word(slot);Link(slot,target,Size(concrete),path+"["+i+"]");Struct(concrete,child,(int)target,path+"["+i+"]",depth+1);
         }
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify every authored FX nugget pointer, concrete payload and source-owned byte without limiting nugget count or order to a sample. */
+    //-------------------------------------------------------------------------------------------------
+    private void FXNuggets(XmlElement? owner,string name,int at,string path,int depth)
+    {
+        var wrapper=Child(owner,name);var children=wrapper?.ChildNodes.OfType<XmlElement>().ToArray()??Array.Empty<XmlElement>();
+        if(Word(at)!=children.Length)throw new InvalidDataException("FX nugget source/native count differs: "+path);uint items=Word(at+4);
+        if(children.Length==0){if(items!=0)throw new InvalidDataException("Empty FX nugget list has storage.");return;}
+        Link(at+4,items,checked(children.Length*4),path);
+        for(int i=0;i<children.Length;i++){var child=children[i];consumed.Add(child);Type concrete=FXListCompiler.NuggetType(child);int slot=checked((int)items+i*4);uint target=Word(slot);Link(slot,target,Size(concrete),path+"["+i+"]");Struct(concrete,child,(int)target,path+"["+i+"]",depth+1);}
     }
 
     // Reborn: only the four official FXShaderConstant concrete families share this polymorphic ABI; unrelated polymorphic lists remain explicit unsupported layouts.
@@ -356,6 +374,7 @@ internal sealed class SchemaNativeContract
     private uint Word(int at){Range(at,4);return BinaryPrimitives.ReadUInt32LittleEndian(b.AsSpan(at,4));}
 
     private static int Ordinal(XmlSchemaSimpleType? type,string token,string path){int value=TryOrdinal(type,token);if(value==int.MinValue)throw new InvalidDataException("Schema-proved enum value is not an official enumeration: "+path+" = "+token);return value;}
+    // Reborn: retail TerrainScorch starts RANDOM at -1, so SCORCH_1..16 and TERRAIN_MAPPED follow the sentinel rather than zero-based XSD positions.
     private static int TryOrdinal(XmlSchemaSimpleType? type,string token)
     {
         for(int depth=0;type!=null&&depth<16;depth++)
@@ -366,7 +385,7 @@ internal sealed class SchemaNativeContract
                 // Reborn: a leading official INVALID sentinel is ordinal -1 (not stored), shifting every other value down by one.
                 // Reborn: stock BuildPlacementType and AIUpgradeHeuristicType keep INVALID at ordinal zero; stock upgrade IGNORE is 5, not 4.
                 // Reborn: schema forceValue aliases reuse an earlier ordinal and do not consume a new native flag bit.
-                if(values.Count>0){int index=values.IndexOf(token);if(index<0)return int.MinValue;int next=values[0]=="INVALID"&&type.QualifiedName.Name is not ("BuildPlacementType" or "AIUpgradeHeuristicType")?-1:0;var ordinals=new Dictionary<string,int>(StringComparer.Ordinal);for(int i=0;i<=index;i++){string? alias=facets[i].UnhandledAttributes?.FirstOrDefault(a=>a.LocalName=="forceValue")?.Value;if(alias!=null){if(!ordinals.TryGetValue(alias,out next))throw new InvalidDataException("Schema enum alias target is not earlier: "+alias);}ordinals[values[i]!]=next;if(i==index)return next;next++;}}
+                if(values.Count>0){int index=values.IndexOf(token);if(index<0)return int.MinValue;int next=(values[0]=="INVALID"&&type.QualifiedName.Name is not ("BuildPlacementType" or "AIUpgradeHeuristicType")||type.QualifiedName.Name=="TerrainScorchType"&&values[0]=="RANDOM")?-1:0;var ordinals=new Dictionary<string,int>(StringComparer.Ordinal);for(int i=0;i<=index;i++){string? alias=facets[i].UnhandledAttributes?.FirstOrDefault(a=>a.LocalName=="forceValue")?.Value;if(alias!=null){if(!ordinals.TryGetValue(alias,out next))throw new InvalidDataException("Schema enum alias target is not earlier: "+alias);}ordinals[values[i]!]=next;if(i==index)return next;next++;}}
             }
             type=type.BaseXmlSchemaType as XmlSchemaSimpleType;
         }

@@ -1,3 +1,4 @@
+// Reborn: authored FXList assets use the same include/inheritance/source-location pipeline as other supported assets.
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
@@ -20,7 +21,7 @@ internal static class ConscriptSourcePreparation
         // Reborn: W3X vertex sources share the path audit's 4 MiB/file and 32 MiB/graph budget, not the old small-object fixture cap.
         byte[] initial=SdkEnvironmentPreflight.Read(entry,4*1048576);var first=Parse(initial,entry);
         // Reborn: preserve the previous standalone complete-object input without claiming it has an AssetDeclaration preprocessing context.
-        if(first.DocumentElement?.LocalName is "GameObject" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")return new(first,null,new[]{new ConscriptSourceInput.SourceFile(entry,Hash(initial))}){Origins=new[]{new ConscriptSourceInput.AssetOrigin(first.DocumentElement!.LocalName,first.DocumentElement!.GetAttribute("id"),entry)},Locations=new(new[]{new SdkXmlDiagnostics.Snapshot(entry,initial)})};
+        if(first.DocumentElement?.LocalName is "GameObject" or "FXList" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")return new(first,null,new[]{new ConscriptSourceInput.SourceFile(entry,Hash(initial))}){Origins=new[]{new ConscriptSourceInput.AssetOrigin(first.DocumentElement!.LocalName,first.DocumentElement!.GetAttribute("id"),entry)},Locations=new(new[]{new SdkXmlDiagnostics.Snapshot(entry,initial)})};
         string fixture=ReferencePipelineSmokeTest.FindFixture();string output=Path.Combine(Path.GetTempPath(),"Reborn-SourcePlan-"+Guid.NewGuid().ToString("N"));
         var environment=new SdkEnvironmentPreflight.Report("ra3ep1",Path.GetDirectoryName(fixture)!,fixture,0,"",root,entry,Hash(initial),output,Array.Empty<SdkEnvironmentPreflight.Mapping>(),true,true,false,false,false,"0x5454A8E9",Array.Empty<string>());
         var paths=SdkSourcePathAudit.Inspect(environment,search:search,w3xSources:true);
@@ -59,8 +60,8 @@ internal static class ConscriptSourcePreparation
         // Reborn: an upgrade-only graph is a real standalone stream; never invent a GameObject just to select the backend.
         // Reborn: W3DContainer is also a real standalone asset stream, not an implicit GameObject.
         // Reborn: authored audio events may form a standalone stream or accompany actual GameObjects without dummy assets.
-        if(games.Length==0&&!assets.Any(a=>a.LocalName is "AudioEvent" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "Texture" or "PackedTextureImage"))throw new InvalidDataException("This route requires a supported emitted asset; imported bases must use type=instance.");
-        var primary=games.FirstOrDefault()??assets.First(a=>a.LocalName is "AudioEvent" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "Texture" or "PackedTextureImage");
+        if(games.Length==0&&!assets.Any(a=>a.LocalName is "AudioEvent" or "FXList" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "Texture" or "PackedTextureImage"))throw new InvalidDataException("This route requires a supported emitted asset; imported bases must use type=instance.");
+        var primary=games.FirstOrDefault()??assets.First(a=>a.LocalName is "AudioEvent" or "FXList" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "Texture" or "PackedTextureImage");
         var identities=assets.GroupBy(a=>a.LocalName+":"+a.GetAttribute("id"),StringComparer.OrdinalIgnoreCase);if(identities.Any(g=>g.Count()!=1))throw new InvalidDataException("Duplicate emitted asset identity.");
         foreach(var source in paths.Sources)if(Hash(SdkEnvironmentPreflight.Read(source.PhysicalPath,4*1048576))!=source.Sha256)throw new InvalidDataException("Source changed during inheritance/definition preparation.");
         // Reborn: XInclude fragments are real source dependencies, including hash and higher-priority mod-shadow checks before publication.
@@ -79,7 +80,7 @@ internal static class ConscriptSourcePreparation
             foreach(var edge in paths.Includes.Where(e=>e.Document.Equals(path,StringComparison.OrdinalIgnoreCase) && e.Kind=="all"))Emit(edge.PhysicalPath??throw new InvalidDataException("Unresolved all Include."));
             var owners=document.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is not ("Tags" or "Includes" or "Defines")).ToArray();
             // Reborn: AudioEvent uses the same explicit source/include/schema path as other supported assets.
-            if(owners.FirstOrDefault(a=>a.LocalName is not ("AudioEvent" or "GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate" or "ObjectCreationList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")) is XmlElement unsupported)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported emitted asset type '"+unsupported.LocalName+"'; no silent skipping."),unsupported);
+            if(owners.FirstOrDefault(a=>a.LocalName is not ("AudioEvent" or "GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate" or "ObjectCreationList" or "FXList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")) is XmlElement unsupported)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported emitted asset type '"+unsupported.LocalName+"'; no silent skipping."),unsupported);
             // Reborn: source-only definition leaves must still validate, even if no emitted owner happens to consume them.
             if(owners.Length==0){if(document.ChildNodes.OfType<XmlElement>().Any(e=>e.LocalName=="Defines"))SdkMetadataDefinitions.Prove(schemas,xml,path,snapshots[path]);return;}
             bool needsPreparation=document.GetElementsByTagName("Define",Ea).Count!=0 || document.GetElementsByTagName("include","http://www.w3.org/2001/XInclude").Count!=0 || owners.Any(a=>a.HasAttribute("inheritFrom") || a.SelectNodes(".//@* | .//text()")!.Cast<XmlNode>().Any(n=>(n.Value??"").StartsWith('=')));

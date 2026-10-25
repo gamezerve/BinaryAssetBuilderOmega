@@ -26,9 +26,10 @@ namespace SageBinaryData
     public struct EvaEventFXNugget
     {
         public FXNugget Base;
-        public AnsiString EvaEventOwner;
-        public AnsiString EvaEventAlly;
-        public AnsiString EvaEventEnemy;
+        // Reborn: EVA fields are Core-resolved imports, not legacy allocated strings.
+        public AssetReference<BaseAssetType> EvaEventOwner;
+        public AssetReference<BaseAssetType> EvaEventAlly;
+        public AssetReference<BaseAssetType> EvaEventEnemy;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -82,6 +83,8 @@ namespace SageBinaryData
         public Color Color;
         public Coord2D Offset;
         public SageBool OrientToObject;
+        // Reborn: the official dynamic-decal writer stores this trailing terrain/object selection flag.
+        public SageBool AllowOnObjects;
     }
 
     public enum BuffNuggetBuffType
@@ -214,7 +217,7 @@ namespace SageBinaryData
         public FXNugget Base;
         public AssetReference<FXParticleSystemTemplate> Particle;
         public int Count;
-        public AnsiString AttachToBone;
+        // Reborn: EP1 ParticleSystem has no KW AttachToBone string; its removal aligns the remaining fields to the retail 148-byte record.
         public AnsiString CreateOverrideBone;
         public AnsiString TargetOverrideBone;
         public float TargetCoeff;
@@ -227,11 +230,18 @@ namespace SageBinaryData
         public ClientRandomVariable InitialDelay;
         public SageBool OrientToObject;
         public SageBool Ricochet;
-        public SageBool AttachToObject;
         public SageBool CreateAtGroundHeight;
         public SageBool UseTarget;
         public SageBool SetTargetMatrix;
         public SageBool OnlyIfOnWater;
+    }
+
+    // Reborn: ForceFeedback is an ordinary FX nugget with one Core-resolved external event selector.
+    [StructLayout(LayoutKind.Sequential)]
+    public struct ForceFeedbackFXNugget
+    {
+        public FXNugget Base;
+        public AssetReference<BaseAssetType> Event;
     }
 
     [StructLayout(LayoutKind.Sequential)]
