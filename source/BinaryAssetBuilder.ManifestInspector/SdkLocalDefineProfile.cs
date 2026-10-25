@@ -24,7 +24,11 @@ internal static class SdkLocalDefineProfile
         public SdkDefinitionSubset.Evaluation[] EvaluatedDefinitions { get; init; } = Array.Empty<SdkDefinitionSubset.Evaluation>();
     }
     // Reborn: transformed bytes and computation witnesses are published atomically.
-    internal sealed record Result(byte[]? Bytes,Evidence Evidence);
+    internal sealed record Result(byte[]? Bytes,Evidence Evidence)
+    {
+        // Reborn: expression errors carry the expanded source node so fragment diagnostics can recover the original file/line.
+        internal XmlNode? DiagnosticNode {get;init;}
+    }
     private const string Ea = "uri:ea.com:eala:asset";
     private static readonly Regex Identifier = new("\\A[A-Za-z_][A-Za-z0-9_]{0,127}\\z",RegexOptions.CultureInvariant,TimeSpan.FromSeconds(1));
 
@@ -90,7 +94,7 @@ internal static class SdkLocalDefineProfile
             string expression = slot.Value!;
             if (expression.StartsWith("=$",StringComparison.Ordinal) && Identifier.IsMatch(expression[2..]) && defines.TryGetValue(expression[2..],out string? value))
             { slot.Value = value; continue; }
-            if (musicSchemas == null) return Reject(raw,"Only exact =$NAME references to case-sensitive local literal definitions are admitted.");
+            if (musicSchemas == null) return Reject(raw,"Only exact =$NAME references to visible case-sensitive definitions are supported; unresolved expression: "+expression,slot);
             try
             {
                 if (soundOffsets && slot is not XmlAttribute { OwnerElement.LocalName:"MusicTrack" })
@@ -103,7 +107,7 @@ internal static class SdkLocalDefineProfile
                 var witness = SdkMusicVolumeOffsets.Evaluate(slot,defines,musicSchemas);
                 offsets.Add(witness); slot.Value = witness.Result;
             }
-            catch (InvalidDataException error) { return Reject(raw,error.Message); }
+            catch (InvalidDataException error) { return Reject(raw,error.Message,slot); }
         }
         using MemoryStream output = new();
         using (XmlWriter writer = XmlWriter.Create(output,new XmlWriterSettings { Encoding = new UTF8Encoding(false),Indent = false,NewLineHandling = NewLineHandling.None })) xml.Save(writer);
@@ -149,5 +153,5 @@ internal static class SdkLocalDefineProfile
     //-------------------------------------------------------------------------------------------------
     /** Reborn: rejected diagnostic preprocessing retains raw identity only and never exposes partial transformed content. */
     //-------------------------------------------------------------------------------------------------
-    private static Result Reject(string raw,string reason) => new(null,new(Name,raw,null,0,new[] { reason }));
+    private static Result Reject(string raw,string reason,XmlNode? node=null) => new(null,new(Name,raw,null,0,new[] { reason })){DiagnosticNode=node};
 }

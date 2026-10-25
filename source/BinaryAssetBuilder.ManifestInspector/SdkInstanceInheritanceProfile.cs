@@ -259,11 +259,14 @@ internal sealed class SdkInstanceInheritanceProfile
                     foreach (var group in asset.ChildNodes.OfType<XmlElement>().Where(child => child.HasAttribute("id")).GroupBy(child => child.GetAttribute("id"),StringComparer.Ordinal).Where(group => group.Count() > 1))
                         if (group.Any(child => child.Attributes.OfType<XmlAttribute>().Any(attribute => attribute.Value.StartsWith('='))))
                             throw new InvalidDataException("Expression-valued repeated state fields remain closed before identical-state preparation.");
+            // Reborn: XInclude content is part of this defining document; resolve it before expressions and before injecting already-prepared bases.
+            byte[] expressionSource=bytes;
+            if(gameObjectTrees&&fragments!=null){fragments.Expand(owner,path,inventory[path].Root);expressionSource=Serialize(owner);}
             if (expressions)
             {
                 // Reborn: music offsets resolve in the defining document before overlays; imported bases never use the consumer's local values.
-                var evaluated = new SdkIncludeDefineProfile(paths,definitionExpressions:true,musicSchemas:musicOffsets ? schemas : null,soundOffsets:soundOffsets).Apply(path,bytes,beforeInheritance:true);
-                if (evaluated.Bytes == null) throw new InvalidDataException("Pre-inheritance expressions rejected: "+string.Join("; ",evaluated.Evidence.Diagnostics));
+                var evaluated = new SdkIncludeDefineProfile(paths,definitionExpressions:true,musicSchemas:musicOffsets ? schemas : null,soundOffsets:soundOffsets).Apply(path,bytes,beforeInheritance:true,expandedOwner:expressionSource);
+                if (evaluated.Bytes == null) throw SdkXmlDiagnostics.At(new InvalidDataException("Pre-inheritance expressions rejected: "+string.Join("; ",evaluated.Evidence.Diagnostics)),evaluated.DiagnosticNode);
                 owner = Parse(evaluated.Bytes); expressionEvidence = evaluated.Evidence;
                 expandedSize = evaluated.Bytes.Length+1024L;
             }
@@ -285,8 +288,7 @@ internal sealed class SdkInstanceInheritanceProfile
             // Reborn: the new chain profile includes only the independently tested empty-complex-child merge subset; older imported flags remain one-sided.
             // Reborn: only this separately selected stage also consumes the reviewed local ObjectCreationList marker; imported eligibility remains unchanged.
             // Reborn: normalize only proved full literal owner bodies, retaining separate plans for final actual-output verification.
-            // Reborn: source fragments are expanded only for the explicit GameObject route, with the owning source's confinement and search roots.
-            if(gameObjectTrees && fragments!=null)fragments.Expand(owner,path,inventory[path].Root);
+            // Reborn: own fragments and expressions were resolved together above; imported bases retain their independently prepared defining context.
             var soundPlans = soundSingletons ? SdkSoundSingletons.Normalize(schemas,owner) : Array.Empty<SdkSoundSingletons.Plan>();
             var merged = gameObjectTrees ? SdkGameObjectInheritance.Apply(schemas,Serialize(owner)) : SdkSelfAttributeInheritance.Apply(schemas,Serialize(owner),treeCopy:true,childMerge:chains,childRemoval:removals,choiceCopy:choices,consumeMarkers:markers,bitflags:bitflags,filters:filters,upgrades:upgrades,objectCreationMarkers:expressions,identicalStates:identicalStates,stateReadds:stateReadds,crossStateRemovals:crossStateRemovals,audioTrees:audioTrees,conscriptCopy:conscriptCopy);
             if (merged.Bytes == null) throw SdkXmlDiagnostics.Carry(new InvalidDataException((chains ? "Instance overlay exceeds chain merge scope: " : "Instance overlay exceeds copy-only scope: ")+string.Join("; ",merged.Evidence.Diagnostics)),merged);

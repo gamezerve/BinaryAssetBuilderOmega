@@ -154,6 +154,8 @@ if($SchedulerControl){
     Add-BatchCase 'tracer-source' 'SourceDrivenTracerComposition' @('tracer-source-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: scripted turret names, angles, IDs and list counts retain independent retail-qualified metadata.
     Add-BatchCase 'scripted-turret' 'ScriptedTurretComposition' @('scripted-turret-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: original Heavy Walker XInclude expressions resolve per declaring document with physical diagnostics.
+    Add-BatchCase 'fragment-definitions' 'FragmentDefinitionContexts' @('fragment-definitions-self-test',(Join-Path $OutputDirectory 'fragment-definitions'))
     # Reborn: selected destruction/weapon modules share armor/body/root references, with optional newly built armor proof.
     Add-BatchCase 'gameobject-combat-composition' 'BoundedCombatNativeTokenProjection' @('gameobject-combat-composition-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'gameobject-authored-combat-composition' 'BoundedAuthoredArmorCombatConsumer' @('gameobject-authored-combat-composition-self-test',(Join-Path $OutputDirectory 'combat-consumer'),$StaticManifest,$GlobalManifest)

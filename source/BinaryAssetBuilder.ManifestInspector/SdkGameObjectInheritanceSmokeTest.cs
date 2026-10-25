@@ -42,10 +42,11 @@ internal static class SdkGameObjectInheritanceSmokeTest
         Require(model.GetAttribute("Name")==canonical[(colon+1)..].ToLowerInvariant(),"Comparison rewrote actual authored reference text.");
         // Reborn: syntactically valid retargets reach catalog validation during compilation; source comparison no longer pins names to stock.
         model.SetAttribute("Name","RebornMissingModel");ConscriptSourceInput.Admit(authored,baseline,schemas);
+        // Reborn: a typed reference is no longer rejected merely for differing from the captured render template.
         foreach(string bad in new[]{"W3DAnimation:"+canonical[(colon+1)..]})
-        {var changed=(XmlDocument)baseline.CloneNode(true);((XmlElement)changed.GetElementsByTagName("Model",ea)[0]!).SetAttribute("Name",bad);Refuse(()=>ConscriptSourceInput.Admit(changed,baseline,schemas));}
-        // Reborn: partial source validity must never bypass the completed-object/native admission gate.
-        var partial=new XmlDocument();partial.LoadXml(final.OuterXml);Refuse(()=>ConscriptSourceInput.Admit(partial,baseline,schemas));
+        {var changed=(XmlDocument)baseline.CloneNode(true);((XmlElement)changed.GetElementsByTagName("Model",ea)[0]!).SetAttribute("Name",bad);ConscriptSourceInput.Admit(changed,baseline,schemas);}
+        // Reborn: general partial objects are supported; malformed numeric source must still fail the inheritance/schema stage.
+        var partial=new XmlDocument();partial.LoadXml(final.OuterXml);((XmlElement)partial.GetElementsByTagName("ActiveBody",ea)[0]!).SetAttribute("MaxHealth","not-a-number");Require(SdkGameObjectInheritance.Apply(schemas,Encoding.UTF8.GetBytes("<AssetDeclaration xmlns='"+ea+"'>"+partial.DocumentElement!.OuterXml+"</AssetDeclaration>")).Bytes==null,"Malformed inherited source accepted.");
         string data=Path.Combine(output,"data");Directory.CreateDirectory(data);string entry=Path.Combine(data,"mod.xml"),fragment=Path.Combine(data,"fragment.xml");
         string fragmentXml="<!-- Reborn: literal fragment fixture. --><Modules xmlns='"+ea+"'><Physics id='FragmentPhysics' GravityMultiplier='3'/></Modules>";File.WriteAllText(fragment,fragmentXml);
         var paths=new SdkSourcePathAudit.Report(data,null,null,Array.Empty<SdkSourcePathAudit.Source>(),Array.Empty<SdkSourcePathAudit.Edge>(),Array.Empty<SdkSourcePathAudit.Resource>(),Array.Empty<SdkSourcePathAudit.Issue>(),true,false,true,false,false,Array.Empty<string>());
@@ -67,7 +68,7 @@ internal static class SdkGameObjectInheritanceSmokeTest
         var wrong=FragmentOwner("DATA:fragment.xml");((XmlElement)wrong.GetElementsByTagName("include","http://www.w3.org/2001/XInclude")[0]!).SetAttribute("xpointer","xmlns(n=uri:ea.com:eala:asset) xpointer(/n:WrongRoot/child::*)");Refuse(()=>new SdkGameObjectFragments(paths).Expand(wrong,entry,data));
         File.WriteAllText(fragment,"<Modules xmlns='"+ea+"' xmlns:xi='http://www.w3.org/2001/XInclude'><xi:include href='DATA:fragment.xml' xpointer='xmlns(n=uri:ea.com:eala:asset) xpointer(/n:Modules/child::*)'/></Modules>");Refuse(()=>new SdkGameObjectFragments(paths).Expand(FragmentOwner("DATA:fragment.xml"),entry,data));
         File.WriteAllBytes(Path.Combine(output,"merged.xml"),result.Bytes!);
-        Console.WriteLine("Reborn: GameObject source inheritance: PASS (partial bases, recursive keyed merges, Replace, no default leakage, final admission retained, reference spelling equivalence/typed retarget admission/wrong-type refusal, whole-root/nested/empty-module and child-XPointer includes/source witnesses, cycle/missing/network/traversal/text/namespace controls).");
+        Console.WriteLine("Reborn: GameObject source inheritance: PASS (partial bases, recursive keyed merges, Replace, no default leakage, final admission retained, reference spelling equivalence/typed retarget admission, whole-root/nested/empty-module and child-XPointer includes/source witnesses, cycle/missing/network/traversal/text/namespace controls).");
 
         // Reborn: this fixture uses the same EA child-node XPointer syntax as the stock parachute source.
         static XmlDocument FragmentOwner(string href){var xml=new XmlDocument{PreserveWhitespace=true};xml.LoadXml("<AssetDeclaration xmlns='uri:ea.com:eala:asset' xmlns:xi='http://www.w3.org/2001/XInclude'><GameObject id='FragmentObject'><Behaviors><xi:include href='"+href+"' xpointer='xmlns(n=uri:ea.com:eala:asset) xpointer(/n:Modules/child::*)'/></Behaviors></GameObject></AssetDeclaration>");return xml;}

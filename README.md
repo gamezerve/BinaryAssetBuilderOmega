@@ -8,6 +8,14 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: XInclude fragments resolve expressions in the document that includes them before source inheritance. -->
+XInclude fragment fields can use the including document's visible `$` definitions.
+Expansion precedes expression substitution; imported bases keep their own defining
+context. Whole-root and nested child-XPointer fragments retain captured raw hashes
+and mod-first source lookup. Missing expressions retain the fragment's physical
+file/line. The original Heavy Walker weapon fragment resolves its fast/medium
+scan delays through the same definition pipeline as ordinary source fields.
+
 <!-- Reborn: model-state turret records now emit their real metadata and source-sized strings. -->
 `ScriptedModelDraw/ModelConditionState/Turret` is build-enabled with source-sized
 lists, `TurretNameKey`, `TurretPitch`, both art angles and `TurretID` (default -1).

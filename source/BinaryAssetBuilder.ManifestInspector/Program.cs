@@ -166,6 +166,9 @@ internal static class Program
             // Reborn: privately qualify source-sized turret weapon lists and complete GameObject composition.
             // Reborn: tracer optional-status shapes use a private complete-object regression.
             // Reborn: scripted model-state turrets have a private native/metadata composition regression.
+            // Reborn: source-only XInclude expressions retain defining context and original fragment coordinates.
+            if(args.Length==2 && args[0]=="fragment-definitions-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();FragmentDefinitionSmokeTest.Run(args[1]);return 0;}
             if(args.Length==3 && args[0]=="scripted-turret-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ScriptedTurretSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="tracer-source-self-test")

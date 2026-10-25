@@ -48,7 +48,7 @@ internal sealed class SdkIncludeDefineProfile
     //-------------------------------------------------------------------------------------------------
     /** Reborn: build an atomic child-first literal table from the existing graph only, then substitute the owner's captured XML without source writes. */
     //-------------------------------------------------------------------------------------------------
-    internal SdkLocalDefineProfile.Result Apply(string path,byte[] bytes,bool beforeInheritance = false)
+    internal SdkLocalDefineProfile.Result Apply(string path,byte[] bytes,bool beforeInheritance = false,byte[]? expandedOwner = null)
     {
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
         // Reborn: preserve explicit pipeline-stage identity even for owners with no substitution slots.
@@ -57,9 +57,12 @@ internal sealed class SdkIncludeDefineProfile
         {
             if (paths.StoppedAtLimit) throw new InvalidDataException("Incomplete path inventory cannot authorize imported definitions.");
             Capture(path,bytes);
-            var local = soundOffsets ? SdkLocalDefineProfile.ApplySoundOffsets(bytes,null,musicSchemas!,beforeInheritance) : musicSchemas != null ? SdkLocalDefineProfile.ApplyMusicOffsets(bytes,null,musicSchemas,beforeInheritance) : beforeInheritance ? SdkLocalDefineProfile.ApplyBeforeInheritance(bytes) : SdkLocalDefineProfile.Apply(bytes);
+            // Reborn: expansion changes substitution slots only; definitions and include authority still come from rechecked raw owner/closure bytes.
+            byte[] target=expandedOwner??bytes;
+            if(expandedOwner!=null&&!beforeInheritance)throw new InvalidDataException("Expanded owner expressions require the pre-inheritance stage.");
+            var local = soundOffsets ? SdkLocalDefineProfile.ApplySoundOffsets(target,null,musicSchemas!,beforeInheritance) : musicSchemas != null ? SdkLocalDefineProfile.ApplyMusicOffsets(target,null,musicSchemas,beforeInheritance) : beforeInheritance ? SdkLocalDefineProfile.ApplyBeforeInheritance(target) : SdkLocalDefineProfile.Apply(target);
             // Reborn: an asset with no expressions requires no definition-closure claim and keeps its original bytes.
-            if (local.Bytes != null && local.Evidence.Substitutions == 0) return local with { Evidence = local.Evidence with { Profile = selectedProfile } };
+            if (local.Bytes != null && local.Evidence.Substitutions == 0) return local with { Evidence = local.Evidence with { Profile = selectedProfile,RawSha256=raw } };
             Dictionary<string,Dictionary<string,Literal>> tables = new(StringComparer.OrdinalIgnoreCase);
             HashSet<string> active = new(StringComparer.OrdinalIgnoreCase);
             Dictionary<string,SourceIdentity> witnesses = new(StringComparer.OrdinalIgnoreCase);
@@ -68,9 +71,9 @@ internal sealed class SdkIncludeDefineProfile
             Dictionary<string,SdkDefinitionSubset.Evaluation> evaluations = new(StringComparer.Ordinal);
             var table = Visit(path,0);
             var literals = table.ToDictionary(pair => pair.Key,pair => pair.Value.Value,StringComparer.Ordinal);
-            var result = soundOffsets ? SdkLocalDefineProfile.ApplySoundOffsets(bytes,literals,musicSchemas!,beforeInheritance) : musicSchemas != null ? SdkLocalDefineProfile.ApplyMusicOffsets(bytes,literals,musicSchemas,beforeInheritance) : beforeInheritance ? SdkLocalDefineProfile.ApplyBeforeInheritance(bytes,literals) : SdkLocalDefineProfile.ApplyImported(bytes,literals);
+            var result = soundOffsets ? SdkLocalDefineProfile.ApplySoundOffsets(target,literals,musicSchemas!,beforeInheritance) : musicSchemas != null ? SdkLocalDefineProfile.ApplyMusicOffsets(target,literals,musicSchemas,beforeInheritance) : beforeInheritance ? SdkLocalDefineProfile.ApplyBeforeInheritance(target,literals) : SdkLocalDefineProfile.ApplyImported(target,literals);
             // Reborn: rejected transformations never publish origins or a partial closure as trusted preprocessing evidence.
-            return result with { Evidence = result.Evidence with { Profile = selectedProfile,
+            return result with { Evidence = result.Evidence with { Profile = selectedProfile,RawSha256=raw,
                 EvaluatedDefinitions = result.Bytes == null ? Array.Empty<SdkDefinitionSubset.Evaluation>() : evaluations.Values.OrderBy(item => item.SourcePath,StringComparer.OrdinalIgnoreCase).ThenBy(item => item.Name,StringComparer.Ordinal).ToArray(),
                 DefinitionSources = result.Bytes == null ? Array.Empty<SourceIdentity>() : witnesses.Values.OrderBy(item => item.SourcePath,StringComparer.OrdinalIgnoreCase).ToArray(),
                 DefinitionOrigins = result.Bytes == null ? Array.Empty<Origin>() : table.OrderBy(pair => pair.Key,StringComparer.Ordinal).Select(pair => new Origin(pair.Key,pair.Value.SourcePath)).ToArray() } };

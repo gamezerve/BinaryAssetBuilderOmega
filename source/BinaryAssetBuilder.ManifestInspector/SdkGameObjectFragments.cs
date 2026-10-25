@@ -59,7 +59,7 @@ internal sealed class SdkGameObjectFragments
                 if(children.Length==0)throw new InvalidDataException("XInclude fragment selects no child elements: "+selected);
                 foreach(var child in children)
                 {
-                    if(child.SelectNodes("descendant-or-self::*/@*")!.OfType<XmlAttribute>().Any(a=>a.Value.StartsWith('=')))throw new InvalidDataException("Definition expressions inside XInclude fragments require additional defining-context support: "+selected);
+                    // Reborn: retain expression text until the expanded owner is evaluated in its own visible definition context.
                     include.ParentNode!.InsertBefore(document.ImportNode(child,true),include);
                 }
                 include.ParentNode!.RemoveChild(include);
