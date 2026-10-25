@@ -26,7 +26,8 @@ public static class Ep1BehaviorMetadataTokenizer
     // Reborn: EP1 automatic deposits use the captured transaction-list ABI and metadata signatures.
     // Reborn: the slaughter container retains its existing reviewed native inheritance and gains source-sized metadata.
     // Reborn: ProductionUpdateInfo is an eight-byte identity-only behavior in the Uprising schema.
-    static Ep1BehaviorMetadataTokenizer(){Families.Add("ProductionUpdateInfoModuleData");Families.Add("SlaughterHordeContainModuleData");Families.Add("AutoDepositUpdateModuleData");Families.Add("StructureSellUpdateModuleData");Families.Add("BuildingDestructionModuleData");Families.Add("QueueDockModuleData");Families.Add("QueueProductionExitUpdateModuleData");Families.Add("SpawnBehaviorModuleData");Families.Add("StructureUnpackUpdateModuleData");Families.Add("ProductionUpdateModuleData");Families.Add("RepairUpdateModuleData");Families.Add("EngineerContainModuleData");Families.Add("AssistedPlacementBehaviorModuleData");Families.Add("InfiltratorContainModuleData");Families.Add("StructurePlacementBehaviorModuleData");Families.Add("LUAEventListBehaviorModuleData");Families.Add("PowerUpgradeModuleData");Families.Add("BuildingBehaviorModuleData");Families.Add("AssignSlavesTargetObjectSpecialPowerModuleData");}
+    // Reborn: self-replacement retains its existing Uprising writer and concrete wire identity.
+    static Ep1BehaviorMetadataTokenizer(){Families.Add("ReplaceSelfSpecialAbilityModuleData");Families.Add("ProductionUpdateInfoModuleData");Families.Add("SlaughterHordeContainModuleData");Families.Add("AutoDepositUpdateModuleData");Families.Add("StructureSellUpdateModuleData");Families.Add("BuildingDestructionModuleData");Families.Add("QueueDockModuleData");Families.Add("QueueProductionExitUpdateModuleData");Families.Add("SpawnBehaviorModuleData");Families.Add("StructureUnpackUpdateModuleData");Families.Add("ProductionUpdateModuleData");Families.Add("RepairUpdateModuleData");Families.Add("EngineerContainModuleData");Families.Add("AssistedPlacementBehaviorModuleData");Families.Add("InfiltratorContainModuleData");Families.Add("StructurePlacementBehaviorModuleData");Families.Add("LUAEventListBehaviorModuleData");Families.Add("PowerUpgradeModuleData");Families.Add("BuildingBehaviorModuleData");Families.Add("AssignSlavesTargetObjectSpecialPowerModuleData");}
 
     // Reborn: assign-slaves uses the existing native SpecialPower writer and independent stock-qualified metadata proof.
     public static string ReviewedWireName(string sourceName)
@@ -291,7 +292,7 @@ public static class Ep1BehaviorMetadataTokenizer
         "Shape"=>0xE7210555,"GeometryType"=>0xB0D49164,"ContactPointGenerationType"=>0x465508CE,
         // Reborn: independently observed root-record signatures contain no native offsets or per-asset metadata templates.
         // Reborn: original Crane OpenContain/Garrison metadata signatures; these identify types, not asset-specific offsets.
-        "InitialRoster"=>0x201C212B,"PassengerDataType[]"=>0x5CB5DD8B,"MemberTemplateStatusData[]"=>0xB774AECB,
+        "ReplaceSelfOptionsBitFlags"=>0x63591CBA,"InitialRoster"=>0x201C212B,"PassengerDataType[]"=>0x5CB5DD8B,"MemberTemplateStatusData[]"=>0xB774AECB,
         "AutoDepositBitFlags"=>0xE5828841,"MoneyTransactionCategory"=>0x9E55F778,"MoneyTransaction[]"=>0xB706334D,"SkirmishAIBaseLocation"=>0xCE5B5436,"DamageType"=>0x46486FF1,
         "WeaponAntiBitFlags"=>0xC8C69390,"EconomyResourceType"=>0x071B12C5,"AISpecialPowerInfo[]"=>0xCBA6C0C2,
         "AIBaseSelectionCriteria"=>0xC153D5E0,"AudioVoiceEntry[]"=>0x8AA9CB14,"AudioObjectSpecificVoiceEntry[]"=>0xAEDFC4CD,

@@ -8,6 +8,13 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: self-replacement joins the source-driven Uprising behavior pipeline without changing user XML. -->
+`ReplaceSelfSpecialAbility` is build-enabled with repeated `ReplacementTemplate`
+weak targets, `NewObjectUnpackTime`, `ReplaceOptions`, `ClearTriggerDistance`
+and inherited `SpecialAbilityUpdate` settings. Original Soviet/Allied construction
+yards anchor its native and metadata layout. Private checks cover edited/default
+values, multiple/empty targets and full GameObject composition; gameplay is untested.
+
 <!-- Reborn: the construction-yard production-info marker uses the existing eight-byte native behavior record. -->
 `ProductionUpdateInfo` is build-enabled with authored local IDs and source-sized
 module lists. The Uprising XSD defines no own fields beyond inherited module

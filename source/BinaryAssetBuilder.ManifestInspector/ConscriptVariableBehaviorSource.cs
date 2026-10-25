@@ -82,6 +82,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: automatic-deposit source uses schema-sized lists and the independently captured EP1 native layout.
             // Reborn: slaughter filters, inherited container records and refund amounts follow the official schema.
             // Reborn: the production-info marker has no own fields; its local identity is authored normally.
+            // Reborn: replacement targets, timing and inherited ability settings follow the official schema instead of fixed MCV sample values.
+            if(owner.NativeType==typeof(SageBinaryData.ReplaceSelfSpecialAbilityModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.ProductionUpdateInfoModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.SlaughterHordeContainModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1AutoDepositUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
