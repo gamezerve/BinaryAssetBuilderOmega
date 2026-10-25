@@ -1,3 +1,4 @@
+// Reborn: particle templates participate in the shared source, inheritance and native asset pipeline.
 using System.Buffers.Binary;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -43,7 +44,7 @@ internal static class ConscriptMultiAssetBuild
             // Reborn: retail AudioFile metadata stays SDK-local; authored events reference the loaded audio stream without repacking its samples.
             string? audioManifest=null;if(sources.Any(s=>s.DocumentElement!.LocalName=="AudioEvent")){audioManifest=AuthoredAmbientCompiler.CatalogPath();var audio=ManifestReader.Read(SdkEnvironmentPreflight.Read(audioManifest,64*1048576));TypeRegistryAudit.ValidateTarget(audio.Header.Version,audio.Header.AllTypesHash);if(!audio.Header.IsLinked||audio.Validate().Count!=0)throw new InvalidDataException("Valid linked EP1 audio catalog required.");var known=stock.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();stock=stock.Concat(audio.Assets.Where(a=>a.TypeName=="AudioFile"&&!known.Contains(new(a.TypeId,a.InstanceId)))).ToArray();}
             var fingerprints=new Dictionary<uint,(uint Hash,bool Tokenized)>();var locals=new Dictionary<AssetId,XmlDocument>();
-            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "FXList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
+            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
                 uint typeId=FastHash.GetHashCode(type);var examples=stock.Where(a=>a.TypeId==typeId).Select(a=>(a.TypeHash,Tokenized:a.Tokenized==1)).Distinct().ToArray();if(examples.Length!=1)throw new InvalidDataException("EP1 asset fingerprint is absent/ambiguous: "+type);fingerprints[typeId]=examples[0];if(!locals.TryAdd(new(typeId,InstanceHandle.GetInstanceId(id)),xml))throw SdkXmlDiagnostics.At(new InvalidDataException("Duplicate local asset/hash identity: "+type+":"+id),xml.DocumentElement);
             }
             // Reborn: source-only catalog entries resolve local names before native data exists; payloads are freshly compiled below, never copied from stock.
@@ -59,6 +60,8 @@ internal static class ConscriptMultiAssetBuild
             var graphVerifier=plans.Count==0?null:new ConscriptVariableGraphVerifier(official,manifest,baseline,schemas,available);
             // Reborn: optional developer mode compares original FX payloads; current-source native ownership remains mandatory in both modes.
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="FXList"))FXListCompiler.Qualify(manifest,schemas,stock);
+            // Reborn: developer qualification reads selected original particle payloads only; actual authored payload proof stays enabled in both modes.
+            if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="FXParticleSystemTemplate"))FXParticleSystemCompiler.Qualify(manifest,schemas,stock);
             var built=new Dictionary<AssetId,Built>();int prefix=0;var compileLog=ConscriptCompileLog.ForPrepared(entry);
             // Reborn: validate the isolated EP1 upgrade ABI against original stock before emitting any authored upgrades.
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="UpgradeTemplate"))UpgradeTemplateCompiler.Qualify(global,schemas,stock);
@@ -93,6 +96,9 @@ internal static class ConscriptMultiAssetBuild
                     // Reborn: untokenized EP1 OCL native stream; Core still owns strong-reference occurrence indices.
                     instance=Normalize(xml);var native=ObjectCreationListCompiler.Compile(instance.XmlNode);
                     SchemaNativeContract.Verify(ObjectCreationListCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(Ep1ObjectCreationList),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
+                }else if(type=="FXParticleSystemTemplate"){
+                    // Reborn: compile particle templates with real texture/FX/audio imports and schema-selected native modules.
+                    instance=Normalize(xml);var native=FXParticleSystemCompiler.Compile(instance.XmlNode,official);SchemaNativeContract.Verify(FXParticleSystemCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(FXParticleSystemTemplate),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
                 }else if(type=="FXList"){
                     // Reborn: general untokenized FXList compilation preserves real Core reference indices and source-sized polymorphic nugget order.
                     instance=Normalize(xml);var native=FXListCompiler.Compile(instance.XmlNode);SchemaNativeContract.Verify(FXListCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(FXList),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);

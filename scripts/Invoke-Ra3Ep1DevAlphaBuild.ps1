@@ -70,7 +70,7 @@ try{
     # Reborn: upgrade-only XML uses the same verified support stream route as command sets, including ordinary Studio publication.
     # Reborn: a bare FXList selects the same general support-asset backend as an included FXList.
     # Reborn: a bare W3DContainer uses the same support-asset compiler as a W3X included in an AssetDeclaration.
-    $reader=[Xml.XmlReader]::Create($ModXml,$xmlSettings);try{$null=$reader.MoveToContent();$isConscript=$reader.LocalName-cin @('GameObject','FXList','LogicCommandSet','UpgradeTemplate','W3DContainer','W3DHierarchy','W3DCollisionBox','W3DMesh');$isDeclaration=$reader.LocalName-ceq 'AssetDeclaration'}finally{$reader.Dispose()}
+    $reader=[Xml.XmlReader]::Create($ModXml,$xmlSettings);try{$null=$reader.MoveToContent();$isConscript=$reader.LocalName-cin @('GameObject','FXParticleSystemTemplate','FXList','LogicCommandSet','UpgradeTemplate','W3DContainer','W3DHierarchy','W3DCollisionBox','W3DMesh');$isDeclaration=$reader.LocalName-ceq 'AssetDeclaration'}finally{$reader.Dispose()}
     # Reborn: detect GameObject declarations in a real local XML closure without an automatic production command.
     $searchArgs=@($sdk);if($settings.SdkDataRoot){$searchArgs+=$settings.SdkDataRoot}
     if($isDeclaration){$kind=@(& (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') conscript-source-kind $ModXml @searchArgs);if($LASTEXITCODE-ne 0){throw ($kind -join [Environment]::NewLine)};$isConscript=($kind -join '').Trim()-ceq 'conscript'}

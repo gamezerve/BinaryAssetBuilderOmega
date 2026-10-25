@@ -128,6 +128,8 @@ internal sealed class SchemaNativeContract
         // Reborn: FX nugget class IDs are defined by each concrete validated source schema, not the enclosing FXList asset identity.
         // Reborn: Color3/Color4 runtime storage is packed BGRA; an existing color node defaults its unauthored alpha to 255.
         if(owner==typeof(Color)&&name=="A"&&e!=null&&!e.HasAttribute("A")){Expect(at,new byte[]{255},path);return;}
+        // Reborn: each concrete particle module carries the hash of its validated schema class, independent of its enclosing asset.
+        if(owner==typeof(FXParticleBaseModule)&&name=="TypeId"){Type concrete=FXParticleSystemCompiler.ModuleType(e!);Expect(at,BitConverter.GetBytes(FastHash.GetHashCode(concrete.Name)),path);return;}
         if(owner==typeof(FXNugget)&&name=="TypeId"){uint id=FastHash.GetHashCode(e?.SchemaInfo.SchemaType?.QualifiedName.Name??throw new InvalidDataException("FX nugget schema type missing."));_=FXListCompiler.NuggetType(e!);Expect(at,BitConverter.GetBytes(id),path);return;}
         if(owner==typeof(ModuleData))
         {
@@ -138,7 +140,11 @@ internal sealed class SchemaNativeContract
         if(IsFlags(type)){Flags(e,name,at,Size(type),path);return;}
         if(type.IsEnum){Enumeration(e,name,at,path);return;}
         if(Scalar(type) is string codec){ScalarValue(e,name,at,codec,Size(type),path);return;}
-        if(type.IsPointer){Pointer(type.GetElementType()!,e,name,at,path,depth);return;}
+        if(type.IsPointer){
+            // Reborn: particle role wrappers contain zero or one concrete polymorphic module, not a record of the abstract pointer type.
+            if(FXParticleSystemCompiler.IsModule(type.GetElementType()!)){ParticleModule(e,name,at,path,depth);return;}
+            Pointer(type.GetElementType()!,e,name,at,path,depth);return;
+        }
         if(type.IsGenericType)
         {
             string generic=type.GetGenericTypeDefinition().FullName!;
@@ -151,6 +157,8 @@ internal sealed class SchemaNativeContract
                 case "Relo.List`1":List(type.GetGenericArguments()[0],e,name,at,path,depth);return;
                 case "Relo.PolymorphicList`1":
                     // Reborn: FXList owns a normal pointer array of schema-selected concrete FX nuggets.
+                    // Reborn: particle events are an ordinary source-sized polymorphic pointer array.
+                    if(type.GetGenericArguments()[0]==typeof(FXParticleEventBase)){ParticleEvents(e,name,at,path,depth);return;}
                     if(type.GetGenericArguments()[0]==typeof(FXNugget)){FXNuggets(e,name,at,path,depth);return;}
                     if(type.GetGenericArguments()[0]==typeof(FXShaderConstant)){ShaderConstants(e,name,at,path,depth);return;}
                     if(Children(e,name).Length!=0||Word(at)!=0||Word(at+4)!=0)throw new InvalidDataException("Schema-proved polymorphic list is not supported: "+path);return;
@@ -186,6 +194,26 @@ internal sealed class SchemaNativeContract
         if(children.Length==0){if(items!=0)throw new InvalidDataException("Empty FX nugget list has storage.");return;}
         Link(at+4,items,checked(children.Length*4),path);
         for(int i=0;i<children.Length;i++){var child=children[i];consumed.Add(child);Type concrete=FXListCompiler.NuggetType(child);int slot=checked((int)items+i*4);uint target=Word(slot);Link(slot,target,Size(concrete),path+"["+i+"]");Struct(concrete,child,(int)target,path+"["+i+"]",depth+1);}
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: bind an optional particle role to its concrete source class and prove the complete pointed-to native allocation. */
+    //-------------------------------------------------------------------------------------------------
+    private void ParticleModule(XmlElement? owner,string name,int at,string path,int depth)
+    {
+        var wrapper=Child(owner,name);var children=wrapper?.ChildNodes.OfType<XmlElement>().ToArray()??Array.Empty<XmlElement>();if(children.Length>1)throw new InvalidDataException("Particle role has multiple concrete modules: "+path);uint target=Word(at);
+        if(children.Length==0){if(target!=0)throw new InvalidDataException("Empty particle role has native storage: "+path);return;}
+        var child=children[0];consumed.Add(child);Type concrete=FXParticleSystemCompiler.ModuleType(child);Link(at,target,Size(concrete),path);Struct(concrete,child,(int)target,path+"*",depth+1);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: particle events retain authored order, concrete class IDs and all independent import/relocation ownership. */
+    //-------------------------------------------------------------------------------------------------
+    private void ParticleEvents(XmlElement? owner,string name,int at,string path,int depth)
+    {
+        var wrapper=Child(owner,name);var children=wrapper?.ChildNodes.OfType<XmlElement>().ToArray()??Array.Empty<XmlElement>();if(Word(at)!=children.Length)throw new InvalidDataException("Particle event count differs: "+path);uint items=Word(at+4);
+        if(children.Length==0){if(items!=0)throw new InvalidDataException("Empty particle event list has storage.");return;}Link(at+4,items,checked(children.Length*4),path);
+        for(int i=0;i<children.Length;i++){var child=children[i];consumed.Add(child);Type concrete=FXParticleSystemCompiler.ModuleType(child);int slot=(int)items+i*4;uint target=Word(slot);Link(slot,target,Size(concrete),path);Struct(concrete,child,(int)target,path+"["+i+"]",depth+1);}
     }
 
     // Reborn: only the four official FXShaderConstant concrete families share this polymorphic ABI; unrelated polymorphic lists remain explicit unsupported layouts.
@@ -385,7 +413,7 @@ internal sealed class SchemaNativeContract
                 // Reborn: a leading official INVALID sentinel is ordinal -1 (not stored), shifting every other value down by one.
                 // Reborn: stock BuildPlacementType and AIUpgradeHeuristicType keep INVALID at ordinal zero; stock upgrade IGNORE is 5, not 4.
                 // Reborn: schema forceValue aliases reuse an earlier ordinal and do not consume a new native flag bit.
-                if(values.Count>0){int index=values.IndexOf(token);if(index<0)return int.MinValue;int next=(values[0]=="INVALID"&&type.QualifiedName.Name is not ("BuildPlacementType" or "AIUpgradeHeuristicType")||type.QualifiedName.Name=="TerrainScorchType"&&values[0]=="RANDOM")?-1:0;var ordinals=new Dictionary<string,int>(StringComparer.Ordinal);for(int i=0;i<=index;i++){string? alias=facets[i].UnhandledAttributes?.FirstOrDefault(a=>a.LocalName=="forceValue")?.Value;if(alias!=null){if(!ordinals.TryGetValue(alias,out next))throw new InvalidDataException("Schema enum alias target is not earlier: "+alias);}ordinals[values[i]!]=next;if(i==index)return next;next++;}}
+                if(values.Count>0){int index=values.IndexOf(token);if(index<0)return int.MinValue;int next=(values[0]=="INVALID"&&type.QualifiedName.Name is not ("BuildPlacementType" or "AIUpgradeHeuristicType" or "FXParticleSystem_GeometryType")||type.QualifiedName.Name=="TerrainScorchType"&&values[0]=="RANDOM")?-1:0;var ordinals=new Dictionary<string,int>(StringComparer.Ordinal);for(int i=0;i<=index;i++){string? alias=facets[i].UnhandledAttributes?.FirstOrDefault(a=>a.LocalName=="forceValue")?.Value;if(alias!=null){if(!ordinals.TryGetValue(alias,out next))throw new InvalidDataException("Schema enum alias target is not earlier: "+alias);}ordinals[values[i]!]=next;if(i==index)return next;next++;}}
             }
             type=type.BaseXmlSchemaType as XmlSchemaSimpleType;
         }

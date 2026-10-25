@@ -1,4 +1,4 @@
-﻿using Relo;
+using Relo;
 using SageBinaryData;
 
 public static partial class Marshaler
@@ -21,6 +21,14 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(FXParticleDrawGpu.Shader), "GPUParticle.fx"), &objT->Shader, state);
         Marshal(node.GetAttributeValue(nameof(FXParticleDrawGpu.FramesPerRow), "1"), &objT->FramesPerRow, state);
         Marshal(node.GetAttributeValue(nameof(FXParticleDrawGpu.TotalFrames), "1"), &objT->TotalFrames, state);
+        // Reborn: compile the Uprising GPU shader controls omitted by the original KW writer.
+        Marshal(node.GetAttributeValue(nameof(FXParticleDrawGpu.SingleRow), "0"), &objT->SingleRow, state);
+        Marshal(node.GetAttributeValue(nameof(FXParticleDrawGpu.RandTex), "0"), &objT->RandTex, state);
+        Marshal(node.GetAttributeValue(nameof(FXParticleDrawGpu.MiscValue1), "0"), &objT->MiscValue1, state);
+        Marshal(node.GetAttributeValue(nameof(FXParticleDrawGpu.MiscValue2), "0"), &objT->MiscValue2, state);
+        Marshal(node.GetAttributeValue(nameof(FXParticleDrawGpu.MiscValue3), "0"), &objT->MiscValue3, state);
+        Marshal(node.GetAttributeValue(nameof(FXParticleDrawGpu.MiscValue4), "0"), &objT->MiscValue4, state);
+        Marshal(node.GetAttributeValue(nameof(FXParticleDrawGpu.EnableSoftParticles), "true"), &objT->EnableSoftParticles, state);
         Marshal(node.GetAttributeValue(nameof(FXParticleDrawGpu.DetailTexture), null), &objT->DetailTexture, state);
         Marshal(node.GetAttributeValue(nameof(FXParticleDrawGpu.SpeedMultiplier), "1.0"), &objT->SpeedMultiplier, state);
         Marshal(node.GetAttributeValue(nameof(FXParticleDrawGpu.GeometryType), "SIMPLE_QUAD"), &objT->GeometryType, state);

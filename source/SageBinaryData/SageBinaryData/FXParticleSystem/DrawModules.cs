@@ -1,4 +1,4 @@
-﻿using Relo;
+using Relo;
 using System.Runtime.InteropServices;
 using AnsiString = Relo.String<sbyte>;
 
@@ -17,10 +17,19 @@ namespace SageBinaryData
         public AnsiString Shader;
         public int FramesPerRow;
         public int TotalFrames;
+        // Reborn: EP1 adds row/random selectors before the detail-texture import.
+        public int SingleRow;
+        public int RandTex;
         public AssetReference<Texture> DetailTexture;
         public float SpeedMultiplier;
         public FXParticleSystem_GeometryType GeometryType;
+        // Reborn: the four shader parameters precede the two trailing flags in the retail sixty-byte GPU record.
+        public float MiscValue1;
+        public float MiscValue2;
+        public float MiscValue3;
+        public float MiscValue4;
         public SageBool SortParticles;
+        public SageBool EnableSoftParticles;
     }
 
     [StructLayout(LayoutKind.Sequential)]

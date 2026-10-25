@@ -335,8 +335,8 @@ internal sealed class SdkInstanceInheritanceProfile
     //-------------------------------------------------------------------------------------------------
     private bool Inheritable(string name)
     {
-        // Reborn: FXList is an official inheritable source asset despite not deriving from the older diagnostic BaseInheritableAsset class.
-        if(gameObjectTrees&&name=="FXList")return true;
+        // Reborn: FXList and particle templates support EA source inheritance despite their older BaseAssetType ancestry.
+        if(gameObjectTrees&&name is "FXList" or "FXParticleSystemTemplate")return true;
         var type = schemas.GlobalTypes[new XmlQualifiedName(name,Ea)] as XmlSchemaComplexType;
         for (int depth = 0; type != null && depth < 128; depth++,type = type.BaseXmlSchemaType as XmlSchemaComplexType)
         { if (type.QualifiedName == new XmlQualifiedName("BaseInheritableAsset",Ea)) return depth > 0; if (ReferenceEquals(type,type.BaseXmlSchemaType)) break; }

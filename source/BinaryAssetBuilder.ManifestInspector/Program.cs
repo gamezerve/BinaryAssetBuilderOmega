@@ -162,6 +162,9 @@ internal static class Program
             // Reborn: general FX assets have a private native/stream regression independent of live mod builds.
             if(args.Length==4 && args[0]=="fxlist-general-self-test")
             {CompilerSmokeTest.InitializeHashProvider();FXListCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
+            // Reborn: particle templates have a private native and linked-stream regression.
+            if(args.Length==4 && args[0]=="particle-template-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();FXParticleSystemCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length is >=3 and <=5 && args[0]=="conscript-source-prepare")
             {CompilerSmokeTest.InitializeHashProvider();ConscriptSourceInput.Prepare(args[1],args[2],args.ElementAtOrDefault(3),args.ElementAtOrDefault(4));return 0;}
             // Reborn: group frontend structure/default/no-hidden-command checks independently of full GameObject compilation.

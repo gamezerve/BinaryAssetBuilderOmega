@@ -8,6 +8,17 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: authored particle templates now produce native data and participate in normal mod dependency linking. -->
+`FXParticleSystemTemplate` is build-enabled through Studio, including the
+`Civ_Destruction_Weeny` GPU/default-physics/box/ortho/default-update combination.
+The EP1 GPU layout includes SingleRow, RandTex, soft particles and all four
+MiscValue fields. Particle and texture references use ordinary stock/mod
+resolution; FXList particles can target newly authored templates. Source/native
+verification rejects unimplemented module writers or unconsumed fields rather
+than dropping them. Private regression covers original stock bytes, edited
+values, optional modules, both event kinds, instance inheritance, definitions,
+and final BIN/RELO/IMP/package readback. Gameplay still needs user validation.
+
 <!-- Reborn: general FXList assets now participate in the same Studio source and stream pipeline as other authored assets. -->
 `FXList` authoring is build-enabled: all 15 Uprising nugget kinds, arbitrary
 source-sized nugget lists, instance/all includes, definitions, Core inheritance,

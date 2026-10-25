@@ -1,4 +1,4 @@
-﻿using Relo;
+using Relo;
 using SageBinaryData;
 
 public static partial class Marshaler
@@ -19,6 +19,9 @@ public static partial class Marshaler
             return;
         }
         Marshal(node.GetAttributeValue(nameof(FXParticleUpdateDefault.Rotation), "ROTATION_OFF"), &objT->Rotation, state);
+        // Reborn: honor the two Uprising by-value initialization annotations when damping children are omitted.
+        Initialize((RandomVariable*)&objT->SizeRateDamping, state, 1f, 1f, DistributionType.UNIFORM);
+        Initialize((RandomVariable*)&objT->AngularDampingXY, state, 1f, 1f, DistributionType.UNIFORM);
         Marshal(node.GetChildNode(nameof(FXParticleUpdateDefault.SizeRate), null), &objT->SizeRate, state);
         Marshal(node.GetChildNode(nameof(FXParticleUpdateDefault.SizeRateDamping), null), &objT->SizeRateDamping, state);
         Marshal(node.GetChildNode(nameof(FXParticleUpdateDefault.AngleZ), null), &objT->AngleZ, state);
