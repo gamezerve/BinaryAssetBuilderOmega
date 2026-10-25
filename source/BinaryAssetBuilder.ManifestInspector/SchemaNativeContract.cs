@@ -125,6 +125,8 @@ internal sealed class SchemaNativeContract
         Type type=field.FieldType;string name=field.Name;records[path]=at;
         // Reborn: shader constant class IDs come from the validated concrete schema type, not authored TypeId text or the enclosing draw class.
         // Reborn: button class identities derive from the validated schema; the unextended retail Power record has a zero class word.
+        // Reborn: joypad concrete class IDs come from the validated source choice rather than caller-authored metadata.
+        if(owner==typeof(Ep1JoypadCommandBarButtonTemplateData)&&name=="TypeId"){Type concrete=JoypadButtonCompiler.DataType(e!);Expect(at,BitConverter.GetBytes(FastHash.GetHashCode(concrete.Name[3..])),path);return;}
         if(owner==typeof(Ep1PlayerPowerButtonTemplateData)&&name=="TypeId"){Type concrete=PlayerPowerButtonCompiler.DataType(e!);Expect(at,BitConverter.GetBytes(concrete==typeof(Ep1PlayerPowerButtonTemplateData)?0u:FastHash.GetHashCode(concrete.Name[3..])),path);return;}
         if(owner==typeof(FXShaderConstant)&&name=="TypeId"){string wire=e?.SchemaInfo.SchemaType?.QualifiedName.Name??throw new InvalidDataException("Shader constant schema type missing.");uint id=FastHash.GetHashCode(wire);_=ShaderConstantType(id);Expect(at,BitConverter.GetBytes(id),path);return;}
         // Reborn: scalar shader Values are child elements, unlike the attribute-only scalar owners admitted earlier.
@@ -150,6 +152,8 @@ internal sealed class SchemaNativeContract
             // Reborn: particle role wrappers contain zero or one concrete polymorphic module, not a record of the abstract pointer type.
             if(FXParticleSystemCompiler.IsModule(type.GetElementType()!)){ParticleModule(e,name,at,path,depth);return;}
             // Reborn: one required Data wrapper owns exactly one concrete EP1 button record.
+            // Reborn: the joypad root points directly at one concrete Data variant, not a KW template collection.
+            if(type.GetElementType()==typeof(Ep1JoypadCommandBarButtonTemplateData)){var wrapper=Child(e,name)??throw new InvalidDataException("Joypad Data is required.");var child=wrapper.ChildNodes.OfType<XmlElement>().Single();consumed.Add(child);Type concrete=JoypadButtonCompiler.DataType(child);uint target=Word(at);Link(at,target,Size(concrete),path);Struct(concrete,child,(int)target,path+"*",depth+1);return;}
             if(type.GetElementType()==typeof(Ep1PlayerPowerButtonTemplateData)){var wrapper=Child(e,name)??throw new InvalidDataException("Button Data is required.");var child=wrapper.ChildNodes.OfType<XmlElement>().Single();consumed.Add(child);Type concrete=PlayerPowerButtonCompiler.DataType(child);uint target=Word(at);Link(at,target,Size(concrete),path);Struct(concrete,child,(int)target,path+"*",depth+1);return;}
             Pointer(type.GetElementType()!,e,name,at,path,depth);return;
         }

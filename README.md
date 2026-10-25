@@ -3725,3 +3725,12 @@ Studio log dragging uses character selection. Double-click selects a component
 between colons, `/`, `\` or whitespace, keeping underscores and dots inside asset names
 and excluding the padding around diagnostic labels. Restart Studio after updating
 the lifecycle helper to load this behavior.
+
+<!-- Reborn: joypad command-bar buttons use standalone EP1 native records. -->
+`JoypadCommandBarButtonTemplate` supports all 29 official `Data` alternatives,
+including `PlayerTargetedPower`, chained/multiple-target powers, command and
+state imports, stance lists, object filters, markers, tint and cursor lists.
+Offline qualification covers the 26 alternatives represented in original EP1
+records; the other three are exercised as authored variants through the same
+source/native checks and final package linker. No gameplay/controller validation
+is implied by these offline checks.
