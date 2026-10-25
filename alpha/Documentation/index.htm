@@ -40,9 +40,10 @@ command definition is generated.</p>
 under catalogs/ra3ep1 inside the SDK. No registry lookup or large BIN files are
 needed for this check; stock assets are not copied into your mod package.</p>
 <!-- Reborn: weak spawn references must expose WorldBuilder provenance even when their source was only inspected as an instance base. -->
-<p>WorldBuilder-only GameObjects referenced by weak IDs, including OCL CreateObject,
-now produce a WORLDBUILDERASSET warning with their immediate WorldBuilder-only
-model dependencies. An instance Include does not compile that object or its art.
+<p>Validation reports WORLDBUILDERASSET warnings for both direct asset references
+and weak GameObject IDs, including OCL CreateObject, with immediate WorldBuilder-only
+model dependencies where applicable. Compilation does not repeat these warnings.
+An instance Include does not compile that object or its art.
 Catalog presence does not guarantee the object/model is loaded on the current map.</p>
 <p>If an art asset already exists in Uprising and you are not rebuilding it,
 remove or comment out its ART: Include when copying original SageXML files into

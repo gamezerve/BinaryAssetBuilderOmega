@@ -50,7 +50,8 @@ internal static class ConscriptMultiAssetBuild
             var localEntries=locals.Select(p=>new ManifestAsset(p.Key.TypeId,p.Key.InstanceId,fingerprints[p.Key.TypeId].Hash,0,0,0,0,0,0,0,0,fingerprints[p.Key.TypeId].Tokenized?1u:0u,p.Value.DocumentElement!.LocalName+":"+p.Value.DocumentElement.GetAttribute("id"),"authored.xml",Array.Empty<AssetId>())).ToArray();
             // Reborn: map/WorldBuilder-only models (e.g. VL_RussianPortBuilding) are referenced, not compiled into the mod; the original WorldBuilder manifest only supplies their concrete render type.
             var worldBuilderRender=WorldBuilderRenderAssets(manifest,schemas,stock.Concat(localEntries).ToArray());
-            var available=stock.Where(a=>!locals.ContainsKey(new(a.TypeId,a.InstanceId))).Concat(localEntries).Concat(worldBuilderRender).ToArray();var worldBuilderIds=worldBuilderRender.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();var worldBuilderReported=new HashSet<AssetId>();
+            // Reborn: validation owns WorldBuilder diagnostics; compilation retains the same catalog-backed native resolution without repeating warnings.
+            var available=stock.Where(a=>!locals.ContainsKey(new(a.TypeId,a.InstanceId))).Concat(localEntries).Concat(worldBuilderRender).ToArray();
             var baseline=Read(Path.Combine(fixtures,"live-alpha/ConscriptBuildTime1/data/mod.xml"));baseline.DocumentElement!.SetAttribute("BuildTime","4");
             // Reborn: each emitted object owns its source admission/template map; never reuse the primary object's modules for another object.
             var plans=sources.Where(s=>s.DocumentElement!.LocalName=="GameObject").ToDictionary(s=>s,s=>ConscriptVariableBehaviorSource.Admit(s,baseline,official));
@@ -114,7 +115,6 @@ internal static class ConscriptMultiAssetBuild
                 }
                 var id=new AssetId(instance.Handle.TypeId,instance.Handle.InstanceId);instance.Handle.TypeHash=fingerprints[id.TypeId].Hash;instance.Handle.InstanceHash=FastHash.GetHashCode(Encoding.UTF8.GetBytes(instance.XmlNode.OuterXml));instance.ValidatedReferencedInstances=new(instance.ReferencedInstances);
                 foreach(var reference in instance.ReferencedInstances)if(available.Count(a=>a.TypeId==reference.TypeId&&a.InstanceId==reference.InstanceId)!=1)throw SdkXmlDiagnostics.At(new InvalidDataException("Missing or ambiguous asset: "+reference.Name),xml.DocumentElement);
-                foreach(var reference in instance.ReferencedInstances){var target=new AssetId(reference.TypeId,reference.InstanceId);if(worldBuilderIds.Contains(target)&&worldBuilderReported.Add(target))Console.WriteLine("Warning: WORLDBUILDERASSET '"+available.Single(a=>a.TypeId==target.TypeId&&a.InstanceId==target.InstanceId).Name+"' (referenced by "+type+":"+xml.DocumentElement.GetAttribute("id")+") exists only in the original WorldBuilder stream; it is referenced, not compiled into the mod.");}
                 built.Add(id,new(xml,instance,buffer,fingerprints[id.TypeId].Tokenized));compileLog.End(progress);
             }
             // Reborn: stable dependency order is determined by actual local strong edges, not declaration order; stock references stay external.

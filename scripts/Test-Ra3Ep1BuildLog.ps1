@@ -10,6 +10,8 @@ try{
     $shown+=Write-SdkCompilerLine 'ERROR: C:\Mod Files\base.xml(17,9): Unsupported field.' $detail
     # Reborn: W3X asset compilation uses the same readable EA-style source line as XML compilation.
     $shown+=Write-SdkCompilerLine 'port_ctr.w3x: Compiling W3DContainer:RebornPort [942fff2d:0123abcd]' $detail
+    # Reborn: retired authored-count/no-auto-command chatter must stay out of the readable log even if an older backend still sends it.
+    if(@(Write-SdkCompilerLine 'Authored asset count: 19; no automatic LogicCommand generation.' $detail).Count-ne 0){throw 'Retired authored asset count reached the readable log.'}
     $text=$shown -join "`n";$raw=Get-Content -LiteralPath $detail -Raw
     if($text-notmatch '(?m)^Error: C:\\Mod Files\\base\.xml\(17,9\): Unsupported field\.' -or $raw-notmatch 'ERROR: C:\\Mod Files\\base\.xml\(17,9\):'){throw 'Original XML source coordinates lost in build log.'}
     if($text-notmatch '\] port_ctr\.w3x: Compiling W3DContainer:RebornPort'){throw 'W3X compilation progress was hidden.'}

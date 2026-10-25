@@ -21,7 +21,6 @@ try {
     Write-Output 'Warning: ALPHA006 Partial native layout support: variable Behaviors, root text, ArmorSet lists, hardpoint/Weapon lists with optional imports, fixed fields, compatible targets and source-sized upgrade lists/animation are supported together. Turret/contained weapon slots, other unimplemented native layouts and resource compilation still require implementation.'
     }else{Write-Output ('Building explicit '+$primaryType+' support assets; no GameObject is required or generated.')}
     $assetCount=if($null-ne $inputReceipt.AssetCount){[int]$inputReceipt.AssetCount}else{if($hasCommand){2}else{1}}
-    Write-Output ('Authored asset count: '+$assetCount+'; no automatic LogicCommand generation.')
     # Reborn: reached only after the dependency audit, include/inheritance preparation and schema/source admission all passed.
     Write-Output ('Validation completed: '+@($inputReceipt.Sources).Count+' source file(s), '+$assetCount+' asset(s) admitted.')
     Write-Output ('Compilation started: '+$assetCount+' asset(s).')

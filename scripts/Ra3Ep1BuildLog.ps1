@@ -38,7 +38,7 @@ function Write-SdkCompilerLine([string]$Line,[string]$DetailPath){
         # Reborn: keep qualification progress readable; coverage counters, internal paths and caveats remain intact in the raw log.
         Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] '+$Matches[1])
     # Reborn: W3X is an EA XML source too; its real per-asset compilation line belongs in Studio's readable log.
-    }elseif($trim -cmatch '^Source path \[' -or $trim -cmatch '^Authored asset count:' -or $trim -cmatch '^Dependency audit:' -or $trim -match '^(?:Compiling |Resolving references:|Generating stream:|.* Stream complete$)' -or $trim -match "^Loading 'file://" -or $trim -match '^Statistics [A-Za-z][A-Za-z0-9]*: Instances Processed \d+,' -or $trim -match '^(?:Validation|Compilation) (?:started|completed): ' -or $trim -match '^[^\\/:\[\]]+\.(?:xml|w3x): Compiling [A-Za-z][A-Za-z0-9]*:\S+ \[[0-9a-f]{8}:[0-9a-f]{8}\]$'){
+    }elseif($trim -cmatch '^Source path \[' -or $trim -cmatch '^Dependency audit:' -or $trim -match '^(?:Compiling |Resolving references:|Generating stream:|.* Stream complete$)' -or $trim -match "^Loading 'file://" -or $trim -match '^Statistics [A-Za-z][A-Za-z0-9]*: Instances Processed \d+,' -or $trim -match '^(?:Validation|Compilation) (?:started|completed): ' -or $trim -match '^[^\\/:\[\]]+\.(?:xml|w3x): Compiling [A-Za-z][A-Za-z0-9]*:\S+ \[[0-9a-f]{8}:[0-9a-f]{8}\]$'){
         Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] '+$trim)
     }
 }

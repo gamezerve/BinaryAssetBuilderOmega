@@ -69,7 +69,7 @@ internal static class SdkMissingDependencyAudit
         // Reborn: record catalog origins in diagnostic detail without claiming their streams were loaded by the game.
         foreach(var catalog in stock.Catalogs)Console.WriteLine($"Reborn: dependency lookup catalog: {catalog.Manifest}; {catalog.Assets} assets; lookup only (not copied or loaded).");
         foreach(var finding in report.Findings)
-            Console.WriteLine($"{finding.Severity}: {finding.Code} {finding.Detail} Target='{finding.Target}', owner='{finding.Owner}', field='{finding.Field}', source='{finding.Source}' ({finding.Line},{finding.Column}).");
+            Console.WriteLine(FormatFinding(finding));
         Console.WriteLine($"Reborn: dependency audit: {report.Findings.Count(f=>f.Code=="MISSINGDEF")} missing definition uses, {report.Findings.Count(f=>f.Code=="MISSINGASSET")} missing asset uses; {report.ModAssets} mod assets + {report.StockAssets} stock identities; {report.CheckedAssetReferences} typed references checked, {report.UncheckedAssetReferences} deferred. Full runtime coverage: false.");
         Console.WriteLine($"Reborn: string audit: {strings.CheckedKeys} key uses checked; {strings.StockKeys} stock keys + {strings.ModKeys} mod.str keys; {strings.Findings.Count(f=>f.Code=="MISSINGSTRING")} missing string uses; catalog complete={strings.CatalogComplete}; prepared source={strings.PreparedSourceUsed}.");
         Console.WriteLine("Reborn: dependency report: "+output);
@@ -182,10 +182,10 @@ internal static class SdkMissingDependencyAudit
                 checkedReferences++;
                 if(matches.Length==0)Add("MISSINGASSET",selector+":"+name,node,path,field,"Unknown asset referenced from emitted source; not found in mod-produced assets or configured stock manifests.",diagnosticWeak?"Warning":"Error");
                 else if(matches.Length>1)Add("AMBIGUOUSASSET",selector+":"+name,node,path,field,"Multiple compatible concrete asset identities match this reference.",diagnosticWeak?"Warning":"Error");
-                else if(objectWeak&&WorldBuilderOnly(matches[0])){
-                    // Reborn: warn at the actual spawn/reference site; inspecting an instance base does not compile its object or model into the mod.
+                else if(WorldBuilderOnly(matches[0])){
+                    // Reborn: validation covers both direct strong references and weak spawn sites; compilation no longer emits a competing warning set.
                     var target=matches[0];var models=target.Dependencies.Select(id=>byIdentity.GetValueOrDefault(id)).Where(a=>a!=null&&WorldBuilderOnly(a)&&a.Type is "W3DContainer" or "W3DMesh").Select(a=>a!.Type+":"+a.Name).Distinct().ToArray();
-                    string detail="Referenced GameObject exists only in the WorldBuilder catalog and is not emitted by this mod; runtime availability is map/stream dependent. An instance Include does not compile it.";
+                    string detail="exists only in the original WorldBuilder stream; it is referenced, not compiled into the mod.";
                     if(models.Length!=0)detail+=" WorldBuilder-only model dependencies: "+string.Join(", ",models)+".";
                     Add("WORLDBUILDERASSET",target.Type+":"+target.Name,node,path,field,detail,"Warning");
                 }
@@ -283,6 +283,13 @@ internal static class SdkMissingDependencyAudit
     /** Reborn: this predicate is applied after preferring non-WorldBuilder/local identities; catalog presence is never a runtime loading guarantee. */
     //-------------------------------------------------------------------------------------------------
     private static bool WorldBuilderOnly(Asset asset)=>string.Equals(Path.GetFileName(asset.CatalogPath),"worldbuilder.manifest",StringComparison.OrdinalIgnoreCase);
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: one validation formatter shares the concise compiler-style wording while retaining original file/line information and JSON field details. */
+    //-------------------------------------------------------------------------------------------------
+    internal static string FormatFinding(Finding finding)=>finding.Code=="WORLDBUILDERASSET"
+        ? $"{finding.Severity}: {finding.Code} '{finding.Target}' (referenced by {finding.Owner}) {finding.Detail} Source: {finding.Source}({finding.Line},{finding.Column})."
+        : $"{finding.Severity}: {finding.Code} {finding.Detail} Target='{finding.Target}', owner='{finding.Owner}', field='{finding.Field}', source='{finding.Source}' ({finding.Line},{finding.Column}).";
     // Reborn: only official reference annotations define typed dependency targets.
     private static string? Annotation(XmlAttribute[]? attributes)=>attributes?.FirstOrDefault(a=>a.LocalName=="refType"&&a.NamespaceURI==AnnotationNamespace)?.Value;
     // Reborn: disable external entities and preserve source coordinates without modifying source XML.
