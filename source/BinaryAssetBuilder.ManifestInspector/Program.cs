@@ -178,6 +178,9 @@ internal static class Program
             // Reborn: prove same-ID imported inheritance through actual source/native/package paths.
             if(args.Length==4 && args[0]=="same-id-instance-self-test")
             {CompilerSmokeTest.InitializeHashProvider();SdkSameIdInstanceSmokeTest.Run(args[1],args[2],args[3]);return 0;}
+            // Reborn: exercise native technology defaults/dependencies and local power consumers in private streams.
+            if(args.Length==4 && args[0]=="player-tech-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();PlayerTechCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==4 && args[0]=="button-state-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ButtonStateCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==4 && args[0]=="joypad-button-self-test")

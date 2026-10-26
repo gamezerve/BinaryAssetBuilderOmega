@@ -3752,3 +3752,12 @@ local asset is emitted. Local children inherit that resulting override. Missing
 or ambiguous imported bases, reference/all-only visibility and real inheritance
 or source-file cycles still fail. Temporary merge IDs are excluded from output
 and inheritance evidence; mod and inherited field diagnostics retain their source.
+
+<!-- Reborn: PlayerTech authoring uses the original global-native layout in either supported build stream. -->
+`PlayerTech` is build-enabled with `TechPointsRequired`, weak `GrantFX` and
+source-sized strong `TechDependency` lists. Both retail catalogs and locally
+emitted technologies participate in dependency resolution. Source definitions,
+instance inheritance (including same-ID overrides) and special-power
+`RequiredPlayerTech`/`ForbiddenPlayerTech` consumers are supported. Offline
+checks cover original global EP1 records and private global/static stream output;
+new gameplay behavior still needs an in-game check.
