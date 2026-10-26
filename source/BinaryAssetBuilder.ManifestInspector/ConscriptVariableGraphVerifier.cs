@@ -70,6 +70,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: teleport-update native fields, filters and shader metadata are qualified against original spellbook records.
     // Reborn: OCL powers qualify their EP1 offset, enum and reference metadata once per build.
     // Reborn: player upgrade metadata is qualified independently against both original spellbooks.
+    // Reborn: template-ID storage metadata is qualified lazily against its retail module.
+    private readonly Lazy<StockMetadataGrammar> storeTemplate;
     private readonly Lazy<StockMetadataGrammar> playerUpgrade;
     private readonly Lazy<StockMetadataGrammar> oclPower;
     private readonly Lazy<StockMetadataGrammar> teleportUpdate;
@@ -128,6 +130,7 @@ internal sealed class ConscriptVariableGraphVerifier
         buildingBehavior=new(()=>BuildingBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         weaponTurret=new(()=>WeaponTurretContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        storeTemplate=new(()=>StoreTemplateIDContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         playerUpgrade=new(()=>PlayerUpgradePowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         oclPower=new(()=>OclSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         teleportUpdate=new(()=>TeleportStoredUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -264,6 +267,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: compose the complete teleport-update payload with both optional filter graphs and shader import.
                 // Reborn: compose source-owned OCL powers with complete EP1 location and upgrade/filter graphs.
                 // Reborn: preserve the complete player upgrade list and inherited power values during GameObject composition.
+                // Reborn: preserve the template-ID store identity through complete GameObject native and metadata composition.
+                if(owner.NativeType==typeof(StoreTemplateIDBehaviorModuleData)){
+                    var grammar=storeTemplate.Value;var storeNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,StoreTemplateIDContract.TypeId,storeNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(storeNative,official,StoreTemplateIDContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,storeNative,owner.NativeType,proof.Records);Own(storeNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(PlayerUpgradeSpecialPowerModuleData)){
                     var grammar=playerUpgrade.Value;var upgradeNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,PlayerUpgradePowerContract.TypeId,upgradeNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(upgradeNative,official,PlayerUpgradePowerContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,upgradeNative,owner.NativeType,proof.Records);Own(upgradeNative,start,stop);Splice(owner,metadata,start,size);continue;

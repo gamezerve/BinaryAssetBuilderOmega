@@ -166,6 +166,9 @@ internal static class Program
             // Reborn: verify complete teleport-update timing, enums, filters and optional shader data.
             // Reborn: verify the complete EP1 OCL power layout, enum values and source-driven child lists.
             // Reborn: verify player-upgrade SpecialPower inheritance and source-owned strong upgrade lists.
+            // Reborn: verify template-ID store source identity, retail metadata and complete-object composition.
+            if(args.Length==3 && args[0]=="store-template-id-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();StoreTemplateIDSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="player-upgrade-power-self-test")
             {CompilerSmokeTest.InitializeHashProvider();PlayerUpgradePowerSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="ocl-special-power-self-test")

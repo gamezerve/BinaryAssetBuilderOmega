@@ -95,6 +95,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: teleport-update source fields and filter graphs use the complete retail-qualified native contract.
             // Reborn: OCL powers accept complete EP1 location, filter and upgrade-list source graphs.
             // Reborn: player upgrade lists are authored freely under the official SpecialPower schema.
+            // Reborn: template-ID store identities are authored normally under the official field-free module schema.
+            if(owner.NativeType==typeof(SageBinaryData.StoreTemplateIDBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.PlayerUpgradeSpecialPowerModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1OCLSpecialPowerModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.TeleportStoredObjectsUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

@@ -14,6 +14,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: template-ID stores use their real concrete identity and inherited behavior header.
+            case 0x50B8001Cu:
+                MarshalPolymorphicType<StoreTemplateIDBehaviorModuleData,BehaviorModuleData>(node,objT,state);
+                break;
             // Reborn: EP1 teleport updates retain their own native layout and concrete wire identity.
             case 0x1C8BE51Du:
                 MarshalPolymorphicType<TeleportStoredObjectsUpdateModuleData,BehaviorModuleData>(node,objT,state);

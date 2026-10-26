@@ -3879,3 +3879,14 @@ base and EP1 PlayerSpellBook records qualify the native layout, list anchor and
 token metadata. `player-upgrade-power-self-test` covers both spellbooks,
 retargeting, multiple upgrades, an empty list, full object composition and
 corrupted-count refusal. New configurations have not been tested in gameplay.
+
+
+### StoreTemplateIDBehavior
+
+`StoreTemplateIDBehavior` is build-enabled with its authored local module `id`.
+The official XSD adds no fields to BehaviorModuleData; its native header is eight
+bytes. The original PlayerSpellBook magnetic-satellite store qualifies its
+concrete wire identity, native data and metadata inheritance.
+`store-template-id-self-test` covers original/renamed IDs, complete GameObject
+composition and corrupted-ID refusal. Gameplay behavior has not been tested
+independently for new configurations.
