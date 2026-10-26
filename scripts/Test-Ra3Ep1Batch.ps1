@@ -164,6 +164,8 @@ if($SchedulerControl){
     # Reborn: standalone player power buttons exercise all four data alternatives privately.
     # Reborn: exercise every joypad Data alternative using private package output.
     # Reborn: standalone button-state data is validated with both button consumer families.
+    # Reborn: same-ID imported bases retain the authored identity through the complete package path.
+    Add-BatchCase 'same-id-instance' 'SameIdInstance' @('same-id-instance-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'same-id-instance-output'))
     Add-BatchCase 'button-state' 'ButtonState' @('button-state-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'button-state-output'))
     Add-BatchCase 'joypad-button' 'JoypadButton' @('joypad-button-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'joypad-button-output'))
     Add-BatchCase 'player-power-button' 'PlayerPowerButton' @('player-power-button-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'player-power-button-output'))

@@ -3742,3 +3742,13 @@ Images use the ordinary mod/stock asset lookup. All three localization keys
 participate in the stock-CSF plus mod-STR missing-string audit, including
 unprefixed `Title` keys. Optional omissions, explicit empty strings, original
 EP1 states and local button-consumer imports are covered offline.
+
+<!-- Reborn: same-ID instance overrides preserve the existing runtime identity. -->
+An asset may use the same `id` and `inheritFrom` when its base is supplied by
+a unique direct `Include type="instance"` source. For example, an included
+original `PlayerSpellBook` can be overridden by `id="PlayerSpellBook"` and
+`inheritFrom="PlayerSpellBook"`. The base stays source-only; only the resulting
+local asset is emitted. Local children inherit that resulting override. Missing
+or ambiguous imported bases, reference/all-only visibility and real inheritance
+or source-file cycles still fail. Temporary merge IDs are excluded from output
+and inheritance evidence; mod and inherited field diagnostics retain their source.

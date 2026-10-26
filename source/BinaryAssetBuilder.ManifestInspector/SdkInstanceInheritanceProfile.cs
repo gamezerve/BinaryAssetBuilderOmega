@@ -194,7 +194,8 @@ internal sealed class SdkInstanceInheritanceProfile
             Capture(path,bytes); XmlDocument owner = Parse(bytes);
             var ownAssets = Assets(owner); var local = Handles(ownAssets);
             // Reborn: preserve the earlier local tree path when no external handle is needed; malformed handles still fail the tree profile.
-            var needed = ownAssets.Where(asset => asset.HasAttribute("inheritFrom")).Select(Target).Where(handle => !local.ContainsKey(handle)).Distinct(StringComparer.Ordinal).ToArray();
+            // Reborn: a self-named target refers to direct instance visibility, while ordinary targets keep local-first lookup.
+            var needed = ownAssets.Where(asset => asset.HasAttribute("inheritFrom")).Select(asset => (Asset:asset,Handle:Target(asset))).Where(item => item.Handle==item.Asset.LocalName+":"+item.Asset.GetAttribute("id") || !local.ContainsKey(item.Handle)).Select(item=>item.Handle).Distinct(StringComparer.Ordinal).ToArray();
             if (needed.Length == 0 && !chains)
             { var localResult = SdkSelfAttributeInheritance.Apply(schemas,bytes,treeCopy:true,conscriptCopy:conscriptCopy); return localResult with { Evidence = localResult.Evidence with { Profile = Profile } }; }
             var includes = Includes(owner); var expected = paths.Includes.Where(edge => edge.Document.Equals(path,StringComparison.OrdinalIgnoreCase)).ToArray();
@@ -270,6 +271,9 @@ internal sealed class SdkInstanceInheritanceProfile
                 owner = Parse(evaluated.Bytes); expressionEvidence = evaluated.Evidence;
                 expandedSize = evaluated.Bytes.Length+1024L;
             }
+            // Reborn: temporary base IDs are deterministic, collision-free across visible roots and never survive output/evidence.
+            var reservedIds=local.Values.Select(a=>a.GetAttribute("id")).Concat(external.Values.Select(e=>e.Asset.GetAttribute("id"))).ToHashSet(StringComparer.Ordinal);
+            var originalBaseIds=new Dictionary<string,string>(StringComparer.Ordinal);var originalMarkers=new Dictionary<string,string>(StringComparer.Ordinal);
             foreach (string handle in needed)
             {
                 if (!external.TryGetValue(handle,out var entry)) throw new InvalidDataException("Inherited handle is absent from direct-instance source assets.");
@@ -282,8 +286,19 @@ internal sealed class SdkInstanceInheritanceProfile
                 expandedSize += Encoding.UTF8.GetByteCount(entry.Asset.OuterXml)+1L;
                 if (expandedSize > 4*1048576) throw new InvalidDataException("Injected instance bases exceed 4 MiB before merge.");
                 // Reborn: imported source-local chains were already expanded/validated; remove only their retained diagnostic inheritFrom marker before local delegation.
-                var imported = (XmlElement)owner.ImportNode(entry.Asset,true); imported.RemoveAttribute("inheritFrom"); owner.DocumentElement!.AppendChild(imported);
-                injected.Add(handle); witnesses.Add(entry.Witness with { RootQualifiedFields = baseBinding.Fields });
+                var imported = (XmlElement)owner.ImportNode(entry.Asset,true); imported.RemoveAttribute("inheritFrom");
+                string injectedHandle=handle;
+                var sameOwner=Assets(owner).SingleOrDefault(a=>a.LocalName+":"+a.GetAttribute("id")==handle && a.HasAttribute("inheritFrom") && Target(a)==handle);
+                if(sameOwner!=null)
+                {
+                    // Reborn: same-ID overlays require one real direct instance source, not an emitted all/reference declaration.
+                    if(!expected.Any(edge=>edge.Kind=="instance" && string.Equals(edge.PhysicalPath,entry.Witness.SourcePath,StringComparison.OrdinalIgnoreCase)))throw SdkXmlDiagnostics.At(new InvalidDataException("Same-ID inheritance requires a direct type=instance source for ' "+handle+" '."),sameOwner.GetAttributeNode("inheritFrom"));
+                    int suffix=0;string alias;do{alias="__RebornInstanceBase_"+(suffix++).ToString(System.Globalization.CultureInfo.InvariantCulture);}while(!reservedIds.Add(alias));
+                    originalBaseIds.Add(alias,imported.GetAttribute("id"));originalMarkers.Add(handle,sameOwner.GetAttribute("inheritFrom"));
+                    imported.SetAttribute("id",alias);sameOwner.SetAttribute("inheritFrom",alias);injectedHandle=imported.LocalName+":"+alias;
+                }
+                owner.DocumentElement!.AppendChild(imported);
+                injected.Add(injectedHandle); witnesses.Add(entry.Witness with { RootQualifiedFields = baseBinding.Fields });
             }
             // Reborn: the new chain profile includes only the independently tested empty-complex-child merge subset; older imported flags remain one-sided.
             // Reborn: only this separately selected stage also consumes the reviewed local ObjectCreationList marker; imported eligibility remains unchanged.
@@ -294,6 +309,18 @@ internal sealed class SdkInstanceInheritanceProfile
             if (merged.Bytes == null) throw SdkXmlDiagnostics.Carry(new InvalidDataException((chains ? "Instance overlay exceeds chain merge scope: " : "Instance overlay exceeds copy-only scope: ")+string.Join("; ",merged.Evidence.Diagnostics)),merged);
             XmlDocument output = Parse(merged.Bytes);
             foreach (var asset in Assets(output).Where(asset => injected.Contains(asset.LocalName+":"+asset.GetAttribute("id"))).ToArray()) output.DocumentElement!.RemoveChild(asset);
+            // Reborn: older diagnostic profiles may retain inheritFrom markers; restore their authored spelling after private-base removal.
+            foreach(var asset in Assets(output))if(originalMarkers.TryGetValue(asset.LocalName+":"+asset.GetAttribute("id"),out var marker)&&originalBaseIds.ContainsKey(asset.GetAttribute("inheritFrom")))asset.SetAttribute("inheritFrom",marker);
+            // Reborn: report logical source IDs rather than private merge aliases in every inherited-operation witness.
+            string LogicalBase(string id)=>originalBaseIds.TryGetValue(id,out var original)?original:id;
+            merged=merged with{Evidence=merged.Evidence with{
+                Overlays=merged.Evidence.Overlays.Select(e=>e with{BaseId=LogicalBase(e.BaseId)}).ToArray(),
+                Removals=merged.Evidence.Removals.Select(e=>e with{BaseId=LogicalBase(e.BaseId)}).ToArray(),
+                ConsumedMarkers=merged.Evidence.ConsumedMarkers.Select(e=>e with{BaseId=LogicalBase(e.BaseId)}).ToArray(),
+                Bitflags=merged.Evidence.Bitflags.Select(e=>e with{BaseId=LogicalBase(e.BaseId)}).ToArray(),
+                Filters=merged.Evidence.Filters.Select(e=>e with{BaseId=LogicalBase(e.BaseId)}).ToArray(),
+                StateReadds=merged.Evidence.StateReadds.Select(e=>e with{BaseId=LogicalBase(e.BaseId)}).ToArray(),
+                CrossStateRemovals=merged.Evidence.CrossStateRemovals.Select(e=>e with{BaseId=LogicalBase(e.BaseId)}).ToArray()}};
             // Reborn: verify the actual owner Volume after Core merging and temporary-base removal, not just the expression-stage substitution.
             if (musicOffsets && expressionEvidence != null) SdkMusicVolumeOffsets.Verify(output,expressionEvidence.MusicVolumeOffsets);
             // Reborn: calculated root and singleton pitch fields must survive actual Core merging before owner evidence is trusted.
@@ -379,13 +406,13 @@ internal sealed class SdkInstanceInheritanceProfile
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: allow only exact same-type literal target handles; same-handle imported overrides require a separate visibility proof. */
+    /** Reborn: parse same-type literal targets; the caller resolves self-named targets exclusively through direct instance sources. */
     //-------------------------------------------------------------------------------------------------
     private static string Target(XmlElement asset)
     {
         string target = asset.GetAttribute("inheritFrom"); var parts = target.Split(':');
         string id = parts.Length == 1 ? target : parts.Length == 2 && parts[0] == asset.LocalName ? parts[1] : throw new InvalidDataException("Cross-type instance inheritance remains closed.");
-        if (id.Length is 0 or >128 || !id.All(character => char.IsAsciiLetterOrDigit(character) || character is '_' or '-' or '.') || id == asset.GetAttribute("id")) throw new InvalidDataException("Unsafe or same-handle instance override remains closed."); return asset.LocalName+":"+id;
+        if (id.Length is 0 or >128 || !id.All(character => char.IsAsciiLetterOrDigit(character) || character is '_' or '-' or '.')) throw new InvalidDataException("Empty, invalid or overlong instance base identity."); return asset.LocalName+":"+id;
     }
 
     //-------------------------------------------------------------------------------------------------

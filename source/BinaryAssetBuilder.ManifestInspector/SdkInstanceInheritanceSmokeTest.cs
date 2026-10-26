@@ -38,7 +38,7 @@ internal static class SdkInstanceInheritanceSmokeTest
             ("<Asset id='Base'><Filename>local.bin</Filename></Asset>",includes+"<Asset id='Child' inheritFrom='Base'/>"),
             ("<Asset id='Base'><Tag>A</Tag></Asset>",includes+"<Asset id='Child' inheritFrom='Base'><Tag>B</Tag></Asset>"),
             ("<Asset id='Base' Value='bad'/>",includes+owner),
-            (bases,includes+"<Asset id='Base' inheritFrom='Base'/>"),
+            (bases,"<Asset id='Base' inheritFrom='Base'/>"),
             (bases,includes+"<Asset id='Child' inheritFrom='Missing'/>"),
             (bases,includes+"<Asset id='Child' inheritFrom='Non:Base'/>"),
             (bases,includes+"<Asset id='Child' inheritFrom='Base' Value='=1+2'/>"),
@@ -47,6 +47,13 @@ internal static class SdkInstanceInheritanceSmokeTest
             var invalidPaths = Fixture(invalid.Item1,invalid.Item2);
             var rejected = new SdkInstanceInheritanceProfile(schemas.Schemas,invalidPaths).Apply(entry,File.ReadAllBytes(entry));
             Require(rejected.Bytes == null && rejected.Evidence.ProcessedSha256 == null && rejected.Evidence.Overlays.Length == 0 && rejected.Evidence.ImportedBases.Length == 0,"Rejected import published partial evidence.");
+        }
+        // Reborn: same-ID bases come from the included source, preserve authored output IDs/children and never leak private merge handles.
+        foreach(string target in new[]{"Base","Asset:Base"}){
+            var samePaths=Fixture(bases,includes+"<Asset id='Base' inheritFrom='"+target+"'><Tag>overlay</Tag></Asset><Asset id='Follower' inheritFrom='Base'/>");
+            byte[] sameRaw=File.ReadAllBytes(entry),sameBase=File.ReadAllBytes(basePath);var sameProfile=new SdkInstanceInheritanceProfile(schemas.Schemas,samePaths);var same=sameProfile.Apply(entry,sameRaw);Require(same.Bytes!=null,"Same-ID imported base was rejected: "+string.Join("; ",same.Evidence.Diagnostics));
+            var sameXml=new XmlDocument();sameXml.LoadXml(Encoding.UTF8.GetString(same.Bytes!));var owners=sameXml.DocumentElement!.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="Asset").ToArray();Require(owners.Length==2 && owners.Select(e=>e.GetAttribute("id")).SequenceEqual(new[]{"Base","Follower"}) && owners.All(e=>e.GetAttribute("Value")=="7"&&e.InnerText=="overlay") && same.Evidence.ImportedBases.Single().BaseId=="Base" && same.Evidence.Overlays.All(e=>!e.BaseId.StartsWith("__RebornInstanceBase_",StringComparison.Ordinal)) && !Encoding.UTF8.GetString(same.Bytes!).Contains("__RebornInstanceBase_",StringComparison.Ordinal),"Same-ID output/source evidence leaked or lost inherited data.");
+            Require(sameProfile.Apply(entry,sameRaw).Bytes!.SequenceEqual(same.Bytes!)&&File.ReadAllBytes(entry).SequenceEqual(sameRaw)&&File.ReadAllBytes(basePath).SequenceEqual(sameBase),"Same-ID preparation is nondeterministic or changed sources.");
         }
         // Reborn: different direct source documents with the same handle cannot silently choose the first origin.
         File.WriteAllBytes(otherPath,Source("<Asset id='Base' Value='3'/>") );

@@ -114,7 +114,9 @@ internal static class SdkXmlDiagnostics
                 var visited=new HashSet<string>(StringComparer.Ordinal);
                 for(int rank=0;rank<33&&visited.Add(type+":"+id);rank++)
                 {
-                    var matches=frames.Where(f=>f.Root.Name.LocalName==type&&(string?)f.Root.Attribute("id")==id).ToArray();if(matches.Length!=1)break;
+                    var matches=frames.Where(f=>f.Root.Name.LocalName==type&&(string?)f.Root.Attribute("id")==id).ToArray();
+                    // Reborn: prefer an explicit field in the current source; inherited-only fields may have a unique same-ID instance-source origin.
+                    if(matches.Length!=1){var local=matches.Where(f=>string.Equals(f.Path,contextFile,StringComparison.OrdinalIgnoreCase)).ToArray();if(rank==0&&local.Length==1&&((string?)local[0].Root.Attribute("inheritFrom")==id||(string?)local[0].Root.Attribute("inheritFrom")==type+":"+id)){ranks[local[0].Root]=0;foreach(var candidate in matches.Where(f=>!ReferenceEquals(f.Root,local[0].Root)))ranks[candidate.Root]=1;}break;}
                     ranks[matches[0].Root]=rank;string? parent=(string?)matches[0].Root.Attribute("inheritFrom");if(string.IsNullOrEmpty(parent))break;id=parent.Contains(':')?parent[(parent.IndexOf(':')+1)..]:parent;
                 }
             }
