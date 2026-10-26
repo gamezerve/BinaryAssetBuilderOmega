@@ -171,6 +171,26 @@
 	DESC:SOVIETKRASNA45
 		"This old satellite launch facility brings orbital defenses back online."
 	End
+	
+// Soviet Orbital Refuse
+
+	TYPE:PLAYERPOWERORBITALREFUSE_RANK1
+		"Improvised Bomb \nRequires K-45 Launch Facility"
+	End
+
+	TYPE:PLAYERPOWERORBITALREFUSE_RANK2
+		"Improvised Bomb \nRequires K-45 Launch Facility"
+	End
+
+	TYPE:PLAYERPOWERORBITALREFUSE_RANK3
+		"Improvised Bomb \nRequires K-45 Launch Facility"
+	End
+
+// Soviet Tesla Coil
+
+	TYPE:SOVIETBASEDEFENSEADVANCED
+		"Advanced Base Defense \n> Health = 2000 \n> Shroud Clearing Range = 500 \n> Weapon DPS = 145 \n> Weapon Range = 350 \n> Assisted Weapon DPS = 290 \n> Assisted Weapon Range = 367.5"
+	End
 
 // Allied Paradrop
 	

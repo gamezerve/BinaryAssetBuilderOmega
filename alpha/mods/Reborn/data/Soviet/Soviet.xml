@@ -78,7 +78,7 @@
 		<!-- <Include type="all" source="DATA:Soviet/structures/SovietSuperWeaponAdvanced.xml" /> -->
 		<Include type="all" source="structures/SovietTechStructure.xml" />
 		<!-- <Include type="all" source="structures/SovietWarFactory.xml" /> -->
-		<!-- <Include type="all" source="structures/SovietBaseDefenseAdvanced.xml" /> -->
+		<Include type="all" source="structures/SovietBaseDefenseAdvanced.xml" />
 		<!-- <Include type="all" source="structures/SovietBaseDefenseAir.xml" /> -->
 		<!-- <Include type="all" source="structures/SovietBaseDefenseGround.xml" /> -->
 		<!-- <Include type="all" source="structures/SovietOutpost.xml" /> -->
