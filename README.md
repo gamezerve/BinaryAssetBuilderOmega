@@ -3961,3 +3961,20 @@ Stock qualification resolves witness aliases from the bundled GlobalDefines;
 authored sources continue through normal include/definition processing.
 `special-power-self-test` exercises the six retail sources, authored filters,
 defaults, optional records and complete GameObject composition offline.
+
+### OCL FireSpecialPowerTemplate and campaign witnesses
+
+`ObjectCreationList/CreateObject/@FireSpecialPowerTemplate` is enabled through
+the original `OCL_CAMPAlliedBomberDrop1` and `OCL_CAMPAlliedBomberDrop2` sources
+and bundled WorldBuilder stream. These examples are absent from the old
+static/global-only witness pool. Developer builds compare their real native
+payloads; fast builds retain source admission and current-source native/import
+validation. The field is a strong SpecialPowerTemplate reference at CreateObject
+native offset +208, supporting retail targets and templates authored by the mod.
+WorldBuilder payloads are used for qualification, not copied as authored OCL output.
+
+`ocl-fire-special-power-self-test` checks both retail examples, custom power
+identities, exact import slots, corrupt reference rejection, ordinary source
+preparation/linking and private final stream/package readback. Late OCL
+qualification diagnostics now map their retained field node to the original
+source file and line instead of a temporary `game.xml` context.

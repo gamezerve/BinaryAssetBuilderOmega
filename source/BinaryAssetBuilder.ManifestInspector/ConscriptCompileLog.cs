@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Xml;
 using System.Text.Json;
 using BinaryAssetBuilder.Core;
 using BinaryAssetBuilder.Core.Hashing;
@@ -40,6 +41,17 @@ internal sealed class ConscriptCompileLog
     internal SdkXmlDiagnostics.Location Location(string type,string id)
     {
         string path=files.GetValueOrDefault(type+":"+id,context);var document=SdkXmlDiagnostics.Lines(File.ReadAllBytes(path),path);var owner=document.Descendants().FirstOrDefault(e=>e.Name.LocalName==type&&(string?)e.Attribute("id")==id);return owner==null?SdkXmlDiagnostics.Point(path,document.Root!,true):SdkXmlDiagnostics.Point(path,(System.Xml.Linq.XObject?)owner.Attribute("id")??owner);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: map late native/qualification errors back to the original declaration and field instead of reporting temporary game.xml coordinates. */
+    //-------------------------------------------------------------------------------------------------
+    internal void Enrich(Exception error)
+    {
+        var node=SdkXmlDiagnostics.Node(error);var document=node as XmlDocument??node?.OwnerDocument;var root=document?.DocumentElement;if(root==null)return;
+        if(!files.TryGetValue(root.LocalName+":"+root.GetAttribute("id"),out var path))return;
+        var snapshot=new SdkXmlDiagnostics.Snapshot(path,SdkEnvironmentPreflight.Read(path,int.MaxValue));
+        new SdkXmlDiagnostics.SourceMap(new[]{snapshot}).Enrich(error,path,document);
     }
 
     // Reborn: final audits prefer the prepared stream which actually owns this declaration's original source path.

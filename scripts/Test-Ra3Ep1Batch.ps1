@@ -106,6 +106,8 @@ if($SchedulerControl){
     Add-BatchCase 'teleport-stored-update' 'StockQualifiedTeleportStoredUpdate' @('teleport-stored-update-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'teleport-stored-objects' 'StockQualifiedTeleportStoredObjects' @('teleport-stored-objects-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: qualify base SpecialPower filters, defaults and complete object composition.
+    # Reborn: campaign WorldBuilder OCL fields and authored local power imports share normal native/link proof.
+    Add-BatchCase 'ocl-fire-special-power' 'OclFireSpecialPower' @('ocl-fire-special-power-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'ocl-fire-special-power'))
     Add-BatchCase 'special-power' 'SpecialPower' @('special-power-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'store-objects' 'StockQualifiedStoreObjects' @('store-objects-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'production-bonus' 'StockQualifiedProductionBonus' @('production-bonus-self-test',$StaticManifest,$GlobalManifest)

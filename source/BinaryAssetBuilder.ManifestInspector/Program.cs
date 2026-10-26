@@ -190,6 +190,9 @@ internal static class Program
             if(args.Length==3 && args[0]=="teleport-stored-objects-self-test")
             {CompilerSmokeTest.InitializeHashProvider();TeleportStoredObjectsSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: expose the base-power source/native/metadata regression without touching user mods.
+            // Reborn: validate campaign OCL power imports and local power linkage using private evidence output.
+            if(args.Length==4 && args[0]=="ocl-fire-special-power-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();OclFireSpecialPowerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==3 && args[0]=="special-power-self-test")
             {CompilerSmokeTest.InitializeHashProvider();SpecialPowerSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="store-objects-self-test")

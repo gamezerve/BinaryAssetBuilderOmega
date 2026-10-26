@@ -84,7 +84,9 @@ internal static class ConscriptMultiAssetBuild
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="ExperienceLevelTemplate"))ExperienceLevelCompiler.Qualify(manifest,schemas,stock);
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="UpgradeTemplate"))UpgradeTemplateCompiler.Qualify(global,schemas,stock);
             // Reborn: ObjectCreationList families/fields are enabled only after original EP1 OCLs exhibiting them pass the same proof.
-            var lists=sources.Where(s=>s.DocumentElement!.LocalName=="ObjectCreationList").ToArray();if(lists.Length!=0)ObjectCreationListCompiler.Qualify(manifest,global,schemas,stock,lists);
+            var lists=sources.Where(s=>s.DocumentElement!.LocalName=="ObjectCreationList").ToArray();
+            // Reborn: qualification retains its actual authored nugget node; enrich failures before temporary prepared-input fallback can replace the source location.
+            if(lists.Length!=0)try{ObjectCreationListCompiler.Qualify(manifest,global,schemas,stock,lists);}catch(InvalidDataException error){compileLog.Enrich(error);throw;}
             // Reborn: authored textures/packed images are emitted only after the writers are proved on original EP1 static data.
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="Texture"))Ep1TextureCompiler.Qualify(manifest);
             // Reborn: use the existing W3DContainer marshaler only after its untokenized EP1 stock layout matches.

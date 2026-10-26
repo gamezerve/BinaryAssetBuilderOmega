@@ -13,7 +13,8 @@ namespace BinaryAssetBuilder.ManifestInspector;
 // Reborn: EP1 ObjectCreationList authoring. The native layout is the official marshaler's (see Ep1ObjectCreationList), the stream is
 // untokenized like stock, and every build first re-qualifies the derivation against original EP1 OCLs: a fixed static witness set for
 // the root/CreateObject family, plus one global stock witness for every nugget family or nugget field the authored lists use that the
-// fixed set does not exhibit. A family or field with no stock witness is refused instead of being emitted on trust.
+// fixed set does not exhibit. Campaign FireSpecialPowerTemplate is qualified by the bundled WorldBuilder paradrops.
+// A family or field with no selected stock witness remains refused instead of being emitted on trust.
 internal static class ObjectCreationListCompiler
 {
     internal const uint TypeId=0xE86E4D61u;
@@ -67,16 +68,24 @@ internal static class ObjectCreationListCompiler
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: qualify the static witness set, then one global witness for each authored nugget family/field not yet exhibited. */
+    /** Reborn: qualify static and selected campaign WorldBuilder witnesses, then global witnesses for remaining authored nugget families/fields. */
     //-------------------------------------------------------------------------------------------------
     internal static void Qualify(string manifest,string global,SchemaSet schemas,ManifestAsset[] catalog,IEnumerable<XmlDocument> authored)
     {
-        ReviewAbi();string sage=SageXml();var covered=new HashSet<string>(StringComparer.Ordinal);int globals=0;
+        ReviewAbi();string sage=SageXml();var covered=new HashSet<string>(StringComparer.Ordinal);int globals=0,worlds=0;var documents=authored.ToArray();
         var cache=new Dictionary<string,XmlDocument>(StringComparer.OrdinalIgnoreCase);
         // Reborn: keep source feature admission in both modes; stock binary comparisons are optional developer tests.
         foreach(var (file,id) in StaticWitnesses){var source=Owner(Load(Path.Combine(sage,file)),id,file);if(SdkBuildTests.Enabled)Verify(source,manifest,schemas,catalog);covered.UnionWith(Features(source.DocumentElement!));}
+        // Reborn: campaign paradrop OCLs live in WorldBuilder, not global; their real +208 imports qualify FireSpecialPowerTemplate without copying retail payloads.
+        if(documents.Any(d=>Features(d.DocumentElement!).Contains("CreateObject/@FireSpecialPowerTemplate"))){
+            string world=WorldBuilderAssetResolver.CatalogPath();
+            foreach(string id in new[]{"OCL_CAMPAlliedBomberDrop1","OCL_CAMPAlliedBomberDrop2"}){
+                var source=Owner(Load(Path.Combine(sage,"Allied/Units_Campaign/CAMP_AlliedBomberAircraft_Infantry_1.xml")),id,"campaign paradrop source");
+                if(SdkBuildTests.Enabled)Verify(source,world,schemas,catalog);covered.UnionWith(Features(source.DocumentElement!));worlds++;
+            }
+        }
         var pool=Load(Path.Combine(sage,"GlobalData/ObjectCreationLists.xml")).DocumentElement!.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="ObjectCreationList"&&Eligible(e)).ToArray();
-        foreach(var document in authored)
+        foreach(var document in documents)
             foreach(string feature in Features(document.DocumentElement!).OrderBy(f=>f,StringComparer.Ordinal))
             {
                 if(covered.Contains(feature))continue;
@@ -84,7 +93,7 @@ internal static class ObjectCreationListCompiler
                     ??throw SdkXmlDiagnostics.At(new InvalidDataException("ObjectCreationList "+feature+" has no original EP1 stock witness; this nugget family/field is not enabled."),Node(document.DocumentElement!,feature)??document.DocumentElement!);
                 var source=Xml(witness.OuterXml);if(SdkBuildTests.Enabled)Verify(source,global,schemas,catalog);covered.UnionWith(Features(source.DocumentElement!));globals++;
             }
-        Console.WriteLine(SdkBuildTests.Enabled?"Reborn: EP1 ObjectCreationList stock qualification: PASS ("+StaticWitnesses.Length+" static + "+globals+" global witness(es); untokenized native).":"Reborn: ObjectCreationList source admission completed; developer stock comparisons skipped.");
+        Console.WriteLine(SdkBuildTests.Enabled?"Reborn: EP1 ObjectCreationList stock qualification: PASS ("+StaticWitnesses.Length+" static + "+globals+" global + "+worlds+" WorldBuilder witness(es); untokenized native).":"Reborn: ObjectCreationList source admission completed; developer stock comparisons skipped.");
 
         XmlDocument Load(string path){if(!cache.TryGetValue(path,out var xml))cache[path]=xml=SdkXmlDiagnostics.Parse(SdkEnvironmentPreflight.Read(path,4*1048576),path);return xml;}
     }
