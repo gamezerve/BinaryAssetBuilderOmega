@@ -14,6 +14,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: EP1 attack-assist responses preserve their real wire identity and complete status/slot record.
+            case 0xEC308E0Eu:
+                MarshalPolymorphicType<AttackAssistResponseBehaviorModuleData,BehaviorModuleData>(node,objT,state);
+                break;
             // Reborn: EP1 passenger ejection uses its real concrete identity, inherited ability fields and optional bone offset.
             case 0x34E5D5B5u:
                 MarshalPolymorphicType<EjectPassengersSpecialAbilityUpdateModuleData,BehaviorModuleData>(node,objT,state);

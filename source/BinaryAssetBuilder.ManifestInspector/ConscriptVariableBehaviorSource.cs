@@ -118,6 +118,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: attribute modifier upgrades are source-driven under the complete EP1 upgrade/reference proof.
             // Reborn: passenger ejection is admitted by complete EP1 ability/native proof.
             // Reborn: run-off-map waypoint names and flags are source-driven under the complete 20-byte EP1 contract.
+            // Reborn: attack assistance accepts complete source-driven status masks and weapon-slot fields.
+            if(owner.NativeType==typeof(SageBinaryData.AttackAssistResponseBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.RunOffMapBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.EjectPassengersSpecialAbilityUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.AttributeModifierUpgradeModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

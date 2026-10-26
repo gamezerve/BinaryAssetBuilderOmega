@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: attack-assist responses use a new retail-qualified EP1 native writer and complete source-driven metadata. -->
+`AttackAssistResponseBehavior` is build-enabled with its 48-byte EP1 header:
+full 32-byte `ObjectStatus` mask, unsigned `WeaponSlotID` and `WeaponSlotType`.
+Values and local module IDs are editable; omitted attributes retain schema
+semantics. Original Tesla Coil, Mirage Tower and Tesla Trooper records qualify
+the field offsets and native/metadata output. Offline tests also cover a renamed
+response paired with `NotifyWhenAttackingBehavior`, combined status bits,
+32-bit slot values, defaults, full GameObject composition and corrupt output.
+Developer regression: `attack-assist-response-self-test <static.manifest> <global.manifest>`.
+
 <!-- Reborn: run-off-map behavior is source-driven rather than constrained to historical sample-module shapes. -->
 `RunOffMapBehavior` is build-enabled with its existing 20-byte native writer,
 all three trigger/death/flight flags and optional `RunOffMapWaypointName` text.

@@ -122,6 +122,8 @@ if($SchedulerControl){
     # Reborn: cover new EP1 passenger-ejection native fields, defaults, offsets and full object composition.
     # Reborn: exercise concrete jet AI fields, EVA/weapon imports and inline metadata composition.
     # Reborn: cover run-off-map waypoint strings, flags, defaults and full object composition.
+    # Reborn: cover attack-assist responses, authored masks/slots and linked notification behavior composition.
+    Add-BatchCase 'attack-assist-response' 'AttackAssistResponseBehavior' @('attack-assist-response-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'run-off-map' 'RunOffMapBehavior' @('run-off-map-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'jet-ai' 'JetAIUpdate' @('jet-ai-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'eject-passengers' 'EjectPassengersSpecialAbilityUpdate' @('eject-passengers-self-test',$StaticManifest,$GlobalManifest)

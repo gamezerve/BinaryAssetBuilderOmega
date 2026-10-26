@@ -99,6 +99,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> ejectPassengers;
     // Reborn: run-off-map flags and waypoint strings use their own retail-qualified graph.
     private readonly Lazy<StockMetadataGrammar> runOffMap;
+    // Reborn: assistance responses retain their independent EP1 native/status and metadata qualification.
+    private readonly Lazy<StockMetadataGrammar> attackAssistResponse;
     // Reborn: subobject upgrade nuggets have a separate retail-qualified EP1 layout and metadata grammar.
     private readonly Lazy<StockMetadataGrammar> subObjectsUpgrade;
     private readonly Lazy<StockMetadataGrammar> wallBuilder;
@@ -166,6 +168,7 @@ internal sealed class ConscriptVariableGraphVerifier
         playerPowerManager=new(()=>PlayerPowerManagerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         radar=new(()=>RadarBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         subObjectsUpgrade=new(()=>SubObjectsUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        attackAssistResponse=new(()=>AttackAssistResponseContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         runOffMap=new(()=>RunOffMapContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         ejectPassengers=new(()=>EjectPassengersContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         attributeModifierUpgrade=new(()=>AttributeModifierUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -364,6 +367,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: compose the actual authored modifier upgrade through the full source/native proof.
                 // Reborn: compose each source-sized passenger-ejection graph with independent inherited/own field proof.
                 // Reborn: preserve all authored waypoint and flight/death/trigger fields during object composition.
+                // Reborn: independently prove authored assistance masks and slots before whole-object metadata composition.
+                if(owner.NativeType==typeof(AttackAssistResponseBehaviorModuleData)){
+                    var grammar=attackAssistResponse.Value;var assistNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,AttackAssistResponseContract.TypeId,assistNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(assistNative,official,AttackAssistResponseContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,assistNative,owner.NativeType,proof.Records);Own(assistNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(RunOffMapBehaviorModuleData)){
                     var grammar=runOffMap.Value;var runoffNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,RunOffMapContract.TypeId,runoffNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(runoffNative,official,RunOffMapContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,runoffNative,owner.NativeType,proof.Records);Own(runoffNative,start,stop);Splice(owner,metadata,start,size);continue;
