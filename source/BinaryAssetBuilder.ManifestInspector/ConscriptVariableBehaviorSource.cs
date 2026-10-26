@@ -92,6 +92,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: production bonuses are schema-driven values rather than fixed FreeTrade/MassProduction samples.
             // Reborn: object storage uses schema-owned radius/link values and authored strong/weak references.
             // Reborn: teleport storage accepts schema-defined link IDs, OCL references and the second-click selection flag.
+            // Reborn: teleport-update source fields and filter graphs use the complete retail-qualified native contract.
+            if(owner.NativeType==typeof(SageBinaryData.TeleportStoredObjectsUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.TeleportStoredObjectsSpecialPowerModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.StoreObjectsSpecialPowerModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.GiveProductionBonusSpecialPowerModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

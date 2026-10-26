@@ -3839,3 +3839,17 @@ The original Chrono Swap and three Chrono Rift teleport powers qualify its
 native layout and metadata. `teleport-stored-objects-self-test` covers those
 records, edited flag/link/OCL values, defaults, complete GameObject composition
 and corrupted-output refusal.
+
+
+### TeleportStoredObjectsUpdate
+
+`TeleportStoredObjectsUpdate` is build-enabled with all official timing,
+Telefrag, distance scaling, second-click selection and disabled-state fields;
+FX/power references; an optional Shader import; and both `InstaKillObjectFilter`
+and `CollidesWithOnTeleport`, including their weak object lists and status masks.
+Its 60-byte header and scalar field offsets come from retail metadata. Original
+Chrono Swap and three Chrono Rift records qualify native data and token metadata.
+`teleport-stored-update-self-test` covers original records, edited attributes,
+both populated filters, omitted defaults, full GameObject composition and
+corrupted-output refusal. This enables compilation; gameplay behavior has not
+been independently tested for new settings.

@@ -67,6 +67,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: learn production-bonus inheritance and percentages from retail spellbook records.
     // Reborn: object-storage metadata is qualified independently against the original chronosphere powers.
     // Reborn: teleport storage uses independently qualified native and metadata records.
+    // Reborn: teleport-update native fields, filters and shader metadata are qualified against original spellbook records.
+    private readonly Lazy<StockMetadataGrammar> teleportUpdate;
     private readonly Lazy<StockMetadataGrammar> teleportStored;
     private readonly Lazy<StockMetadataGrammar> storeObjects;
     private readonly Lazy<StockMetadataGrammar> productionBonus;
@@ -122,6 +124,7 @@ internal sealed class ConscriptVariableGraphVerifier
         buildingBehavior=new(()=>BuildingBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         weaponTurret=new(()=>WeaponTurretContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        teleportUpdate=new(()=>TeleportStoredUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         teleportStored=new(()=>TeleportStoredObjectsContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         storeObjects=new(()=>StoreObjectsContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         productionBonus=new(()=>ProductionBonusContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -252,6 +255,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: preserve complete production-bonus source values and inherited special-power references.
                 // Reborn: retain radius, pair ID, OCL import and weak target marker during full-object composition.
                 // Reborn: preserve the teleport flag, paired storage ID, OCL and inherited power data through object composition.
+                // Reborn: compose the complete teleport-update payload with both optional filter graphs and shader import.
+                if(owner.NativeType==typeof(TeleportStoredObjectsUpdateModuleData)){
+                    var grammar=teleportUpdate.Value;var updateNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,TeleportStoredUpdateContract.TypeId,updateNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(updateNative,official,TeleportStoredUpdateContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,updateNative,owner.NativeType,proof.Records);Own(updateNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(TeleportStoredObjectsSpecialPowerModuleData)){
                     var grammar=teleportStored.Value;var teleportNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,TeleportStoredObjectsContract.TypeId,teleportNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(teleportNative,official,TeleportStoredObjectsContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,teleportNative,owner.NativeType,proof.Records);Own(teleportNative,start,stop);Splice(owner,metadata,start,size);continue;

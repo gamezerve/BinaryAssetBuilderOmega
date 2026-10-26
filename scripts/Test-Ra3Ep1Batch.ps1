@@ -88,6 +88,8 @@ if($SchedulerControl){
     # Reborn: verify original and authored production bonuses through full object composition.
     # Reborn: exercise schema-driven StoreObjectsSpecialPower fields and original chronosphere records.
     # Reborn: qualify teleport stored objects and source-driven GameObject composition.
+    # Reborn: cover full EP1 teleport-update source/native and nested filter composition.
+    Add-BatchCase 'teleport-stored-update' 'StockQualifiedTeleportStoredUpdate' @('teleport-stored-update-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'teleport-stored-objects' 'StockQualifiedTeleportStoredObjects' @('teleport-stored-objects-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'store-objects' 'StockQualifiedStoreObjects' @('store-objects-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'production-bonus' 'StockQualifiedProductionBonus' @('production-bonus-self-test',$StaticManifest,$GlobalManifest)

@@ -163,6 +163,9 @@ internal static class Program
             // Reborn: cover all production-bonus source percentages and inherited power metadata.
             // Reborn: verify object-storage fields, imports, marker IDs and full GameObject composition.
             // Reborn: verify teleport storage flags, linking and OCL imports against original EP1 records.
+            // Reborn: verify complete teleport-update timing, enums, filters and optional shader data.
+            if(args.Length==3 && args[0]=="teleport-stored-update-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();TeleportStoredUpdateSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="teleport-stored-objects-self-test")
             {CompilerSmokeTest.InitializeHashProvider();TeleportStoredObjectsSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="store-objects-self-test")
