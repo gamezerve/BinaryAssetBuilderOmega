@@ -34,6 +34,10 @@ internal static class SdkXmlDiagnosticsSmokeTest
         Check(final.SelectSingleNode("//*[local-name()='Test']/@Value")!,entry,7,false);
         Check(final.SelectSingleNode("//*[local-name()='Parachute']/@Rate")!,fragment,4,false);
 
+        // Reborn: empty paired module tags and self-closing normalized nodes share an exact origin despite removed indentation.
+        var spacedMap=new SdkXmlDiagnostics.SourceMap(new[]{new SdkXmlDiagnostics.Snapshot(entry,Bytes(derived.Replace("<Test id=\"Module\" Value=\"changed\" />","<Test id=\"Module\" Value=\"changed\">\n    </Test>"))),snapshots[1]});
+        var emptyModule=SdkXmlDiagnostics.At(new InvalidDataException("Unsupported module"),final.SelectSingleNode("//*[local-name()='Test']"));spacedMap.Enrich(emptyModule,entry,final);Expect(emptyModule,entry,7,false);
+
         // Reborn: included support assets retain their own exact field origin instead of blaming the GameObject entry file.
         foreach(string type in new[]{"ArmorTemplate","WeaponTemplate","LogicCommandSet","Texture","PackedTextureImage","ObjectCreationList","W3DContainer","W3DHierarchy","W3DCollisionBox","W3DMesh"}){
             string supportPath=Path.Combine(output,type+".xml");string text="<AssetDeclaration xmlns='uri:ea.com:eala:asset'>\n<"+type+" id='Support'>\n<Value Bad='broken'/>\n</"+type+"></AssetDeclaration>";
@@ -108,7 +112,7 @@ internal static class SdkXmlDiagnosticsSmokeTest
         File.WriteAllText(entry,"<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\">\n<Includes>\n<Include type=\"all\" source=\"missing.xml\"/>\n</Includes>\n</AssetDeclaration>");Refuse(entry,entry,"source");
         // Reborn: an Includes-only entry and same-ID overlay must report an unsupported inherited module in its real base file.
         var unreviewed=SdkXmlDiagnostics.Parse(complete);var unreviewedBehaviors=(XmlElement)unreviewed.SelectSingleNode("//*[local-name()='Behaviors']")!;
-        unreviewedBehaviors.RemoveAll();unreviewedBehaviors.InnerXml="<LineSegmentDamageUpdate xmlns='uri:ea.com:eala:asset' id='ModuleTag_Unreviewed' NodeLifetime='1s' DamageInterval='0.1s' Distance='25'/>";
+        unreviewedBehaviors.RemoveAll();unreviewedBehaviors.InnerXml="<LineSegmentDamageUpdate xmlns='uri:ea.com:eala:asset' id='ModuleTag_Unreviewed' NodeLifetime='1s' DamageInterval='0.1s' Distance='25'>\n    </LineSegmentDamageUpdate>";
         File.WriteAllText(basis,"<AssetDeclaration xmlns='uri:ea.com:eala:asset'>\n"+unreviewed.DocumentElement!.OuterXml+"</AssetDeclaration>");
         string overlay=Path.Combine(output,"overlay.xml");string sameId=unreviewed.DocumentElement.GetAttribute("id");
         File.WriteAllText(overlay,"<AssetDeclaration xmlns='uri:ea.com:eala:asset'><Includes><Include type='instance' source='base.xml'/></Includes><GameObject id='"+sameId+"' inheritFrom='"+sameId+"' BuildTime='2'/></AssetDeclaration>");

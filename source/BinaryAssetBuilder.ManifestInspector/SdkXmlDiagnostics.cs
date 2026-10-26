@@ -136,7 +136,8 @@ internal static class SdkXmlDiagnostics
                     {
                         XObject? value=attribute==null?candidate:candidate.Attribute(XName.Get(attribute,attributeNs));if(value==null)continue;
                         // Reborn: appended leaf/script text can have several contributors; require literal equality before claiming a unique leaf-text origin.
-                        if(attribute==null&&!element.ChildNodes.OfType<XmlElement>().Any()&&candidate.Value!=element.InnerText)continue;
+                        // Reborn: Core can remove formatting-only whitespace from empty module bodies; meaningful leaf/script text still requires exact equality.
+                        if(attribute==null&&!element.ChildNodes.OfType<XmlElement>().Any()&&candidate.Value!=element.InnerText&&!(string.IsNullOrWhiteSpace(candidate.Value)&&string.IsNullOrWhiteSpace(element.InnerText)))continue;
                         candidates.Add((frame.Path,value,fragment?100:ranks[frame.Root]));
                     }
                 }

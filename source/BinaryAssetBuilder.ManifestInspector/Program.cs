@@ -160,6 +160,9 @@ internal static class Program
             // Reborn: exercise timer-monitor native references, metadata and complete-object composition offline.
             // Reborn: independently exercise radar source, stock metadata and full object composition.
             // Reborn: verify the complete power-manager EP1 native, imports and composition.
+            // Reborn: cover all production-bonus source percentages and inherited power metadata.
+            if(args.Length==3 && args[0]=="production-bonus-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();ProductionBonusSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="player-power-manager-self-test")
             {CompilerSmokeTest.InitializeHashProvider();PlayerPowerManagerSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="radar-behavior-self-test")

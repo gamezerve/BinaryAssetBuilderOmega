@@ -3802,3 +3802,19 @@ base/EP1 spellbook records qualify both populated and omitted EVA fields.
 `player-power-manager-self-test` covers original records, retargeting, defaults,
 full GameObject composition and corrupted-import refusal. User mod sources are
 preserved during compiler synchronization.
+
+
+### GiveProductionBonusSpecialPower
+
+`GiveProductionBonusSpecialPower` is build-enabled with the complete inherited
+SpecialPower fields and all six percentage bonuses: `BuildCostBonus`,
+`BuildCostBonusAllies`, `BuildTimeBonus`, `BuildTimeBonusAllies`, `HarvesterBonus`
+and `HarvesterBonusAllies`. Omitted bonuses default to zero. Retail Free Trade,
+Mass Production and Robotic Assembly records qualify the native layout and
+metadata. `production-bonus-self-test` covers original values, all six edits,
+defaults, full object composition and corrupted-output refusal.
+
+Source diagnostics treat formatting-only whitespace in otherwise empty paired
+module tags like their normalized self-closing form. Meaningful text still
+requires an exact match; an unsupported inherited module keeps its real source
+file and line rather than falling back to its overlay's GameObject line.

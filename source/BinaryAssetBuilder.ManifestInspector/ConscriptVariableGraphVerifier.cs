@@ -64,6 +64,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: timer-monitor metadata is qualified lazily when the source actually requests the module.
     // Reborn: qualify radar metadata only when authored by the source graph.
     // Reborn: power-manager metadata is learned independently from retail spellbooks.
+    // Reborn: learn production-bonus inheritance and percentages from retail spellbook records.
+    private readonly Lazy<StockMetadataGrammar> productionBonus;
     private readonly Lazy<StockMetadataGrammar> playerPowerManager;
     private readonly Lazy<StockMetadataGrammar> radar;
     private readonly Lazy<StockMetadataGrammar> monitorSpecialPowerTimer;
@@ -116,6 +118,7 @@ internal sealed class ConscriptVariableGraphVerifier
         buildingBehavior=new(()=>BuildingBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         weaponTurret=new(()=>WeaponTurretContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        productionBonus=new(()=>ProductionBonusContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         playerPowerManager=new(()=>PlayerPowerManagerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         radar=new(()=>RadarBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         monitorSpecialPowerTimer=new(()=>MonitorSpecialPowerTimerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -240,6 +243,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: preserve authored timer-monitor imports and flags through complete GameObject composition.
                 // Reborn: preserve authored radar identity through the full object allocator and token metadata.
                 // Reborn: compose complete power-manager records including both strong reference slots.
+                // Reborn: preserve complete production-bonus source values and inherited special-power references.
+                if(owner.NativeType==typeof(GiveProductionBonusSpecialPowerModuleData)){
+                    var grammar=productionBonus.Value;var bonusNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,ProductionBonusContract.TypeId,bonusNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(bonusNative,official,ProductionBonusContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,bonusNative,owner.NativeType,proof.Records);Own(bonusNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(Ep1PlayerPowerManagerBehaviorModuleData)){
                     var grammar=playerPowerManager.Value;var managerNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,PlayerPowerManagerContract.TypeId,managerNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(managerNative,official,PlayerPowerManagerContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,managerNative,owner.NativeType,proof.Records);Own(managerNative,start,stop);Splice(owner,metadata,start,size);continue;

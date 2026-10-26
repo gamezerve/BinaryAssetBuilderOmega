@@ -89,6 +89,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: timer-monitor power references and ready-condition flags follow the official schema.
             // Reborn: radar markers admit their schema-defined inherited identity without a fixed stock module ID.
             // Reborn: power managers accept authored power/EVA references and local module identities through the official schema.
+            // Reborn: production bonuses are schema-driven values rather than fixed FreeTrade/MassProduction samples.
+            if(owner.NativeType==typeof(SageBinaryData.GiveProductionBonusSpecialPowerModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1PlayerPowerManagerBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.RadarBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.MonitorSpecialPowerTimerUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

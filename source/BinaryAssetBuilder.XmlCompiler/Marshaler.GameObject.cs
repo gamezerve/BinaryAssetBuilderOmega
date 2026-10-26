@@ -14,6 +14,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: retain the concrete EP1 production-bonus identity and complete SpecialPower allocation.
+            case 0x8ED33E53u:
+                MarshalPolymorphicType<GiveProductionBonusSpecialPowerModuleData,BehaviorModuleData>(node,objT,state);
+                break;
             // Reborn: wall builders have their own EP1 behavior identity, separate from KW WallHubBehavior.
             case 0x9590538Au:
                 MarshalPolymorphicType<WallBuilderBehaviorModuleData,BehaviorModuleData>(node,objT,state);

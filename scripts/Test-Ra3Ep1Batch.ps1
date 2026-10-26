@@ -85,6 +85,8 @@ if($SchedulerControl){
     # Reborn: include the source-driven timer-monitor regression without touching user mod outputs.
     # Reborn: include the identity-only radar module in the offline regression batch.
     # Reborn: cover power-manager required power and optional EVA imports.
+    # Reborn: verify original and authored production bonuses through full object composition.
+    Add-BatchCase 'production-bonus' 'StockQualifiedProductionBonus' @('production-bonus-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'player-power-manager' 'StockQualifiedPlayerPowerManager' @('player-power-manager-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'radar-behavior' 'StockQualifiedRadarBehavior' @('radar-behavior-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'monitor-special-power-timer' 'StockQualifiedMonitorSpecialPowerTimer' @('monitor-special-power-timer-self-test',$StaticManifest,$GlobalManifest)
