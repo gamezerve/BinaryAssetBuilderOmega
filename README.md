@@ -3868,3 +3868,14 @@ single-OCL item schema and the independently captured OCL reference signature.
 `ocl-special-power-self-test` checks original powers, all fifteen enum ordinals,
 edited fields, populated upgrade lists/filter, defaults and whole-object
 composition. New settings and populated upgrade lists have no gameplay test yet.
+
+
+### PlayerUpgradeSpecialPower
+
+`PlayerUpgradeSpecialPower` is build-enabled with its complete inherited
+SpecialPower fields and a source-sized strong `Upgrade` list. Empty, single and
+multiple upgrade lists are accepted according to the official XSD. Original
+base and EP1 PlayerSpellBook records qualify the native layout, list anchor and
+token metadata. `player-upgrade-power-self-test` covers both spellbooks,
+retargeting, multiple upgrades, an empty list, full object composition and
+corrupted-count refusal. New configurations have not been tested in gameplay.

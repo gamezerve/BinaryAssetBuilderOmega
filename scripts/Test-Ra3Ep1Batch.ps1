@@ -90,6 +90,8 @@ if($SchedulerControl){
     # Reborn: qualify teleport stored objects and source-driven GameObject composition.
     # Reborn: cover full EP1 teleport-update source/native and nested filter composition.
     # Reborn: cover OCL power EP1 fields, all location ordinals, filter and upgrade lists.
+    # Reborn: cover player upgrade power stock records, retargeting and empty/multiple strong upgrade lists.
+    Add-BatchCase 'player-upgrade-power' 'StockQualifiedPlayerUpgradePower' @('player-upgrade-power-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'ocl-special-power' 'StockQualifiedOclSpecialPower' @('ocl-special-power-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'teleport-stored-update' 'StockQualifiedTeleportStoredUpdate' @('teleport-stored-update-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'teleport-stored-objects' 'StockQualifiedTeleportStoredObjects' @('teleport-stored-objects-self-test',$StaticManifest,$GlobalManifest)
