@@ -119,6 +119,8 @@ if($SchedulerControl){
     # Reborn: preserve per-upgrade visibility, animation and texture-pair imports in source-sized nugget lists.
     # Reborn: cover complete transport passenger/default/filter/upgrade graphs without user mod builds.
     # Reborn: cover source-driven attribute modifier upgrades and inherited animation/trigger graphs.
+    # Reborn: cover new EP1 passenger-ejection native fields, defaults, offsets and full object composition.
+    Add-BatchCase 'eject-passengers' 'EjectPassengersSpecialAbilityUpdate' @('eject-passengers-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'attribute-modifier-upgrade' 'AttributeModifierUpgrade' @('attribute-modifier-upgrade-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'transport-contain' 'TransportContain' @('transport-contain-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'subobjects-upgrade' 'SubObjectsUpgrade' @('subobjects-upgrade-self-test',$StaticManifest,$GlobalManifest)

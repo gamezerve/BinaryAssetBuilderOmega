@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: passenger ejection has a new retail-qualified EP1 writer and source-sized ability metadata. -->
+`EjectPassengersSpecialAbilityUpdate` is build-enabled with a new 292-byte EP1
+native writer: passenger interval, speed/radius/height/apex, ejection FX,
+bone name/optional vector offset, run-off-map/target-location flags and the full
+inherited SpecialAbility fields. Original Century Bomber and Bullfrog records
+anchor native storage and metadata, including Bullfrog's populated bone offset.
+Offline tests also compile the campaign bomber replacement and support-bomber
+source, edited values, optional animation/vector defaults and full GameObjects.
+Developer regression: `eject-passengers-self-test <static.manifest> <global.manifest>`.
+
 <!-- Reborn: modifier upgrades use the original EP1 strong modifier reference and complete inherited upgrade graph. -->
 `AttributeModifierUpgrade` is build-enabled with its 40-byte EP1 record, strong
 `AttributeModifier` reference, source-sized `TriggeredBy`/`ConflictsWith` lists,

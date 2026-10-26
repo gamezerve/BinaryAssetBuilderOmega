@@ -14,6 +14,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: EP1 passenger ejection uses its real concrete identity, inherited ability fields and optional bone offset.
+            case 0x34E5D5B5u:
+                MarshalPolymorphicType<EjectPassengersSpecialAbilityUpdateModuleData,BehaviorModuleData>(node,objT,state);
+                break;
             // Reborn: Tesla attack notifications use their concrete EP1 identity and complete optional friend filter.
             case 0x02FDF9E4u:
                 MarshalPolymorphicType<NotifyWhenAttackingBehaviorModuleData,BehaviorModuleData>(node,objT,state);

@@ -95,6 +95,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> transportContain;
     // Reborn: attribute modifier upgrades retain their complete inherited upgrade graph and strong modifier reference.
     private readonly Lazy<StockMetadataGrammar> attributeModifierUpgrade;
+    // Reborn: passenger ejection has its own retail-qualified EP1 native and metadata graph.
+    private readonly Lazy<StockMetadataGrammar> ejectPassengers;
     // Reborn: subobject upgrade nuggets have a separate retail-qualified EP1 layout and metadata grammar.
     private readonly Lazy<StockMetadataGrammar> subObjectsUpgrade;
     private readonly Lazy<StockMetadataGrammar> wallBuilder;
@@ -160,6 +162,7 @@ internal sealed class ConscriptVariableGraphVerifier
         playerPowerManager=new(()=>PlayerPowerManagerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         radar=new(()=>RadarBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         subObjectsUpgrade=new(()=>SubObjectsUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        ejectPassengers=new(()=>EjectPassengersContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         attributeModifierUpgrade=new(()=>AttributeModifierUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         transportContain=new(()=>TransportContainContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         notifyWhenAttacking=new(()=>NotifyWhenAttackingContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -353,6 +356,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 }
                 // Reborn: source-sized transport graphs retain every inherited and own passenger field.
                 // Reborn: compose the actual authored modifier upgrade through the full source/native proof.
+                // Reborn: compose each source-sized passenger-ejection graph with independent inherited/own field proof.
+                if(owner.NativeType==typeof(EjectPassengersSpecialAbilityUpdateModuleData)){
+                    var grammar=ejectPassengers.Value;var ejectionNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,EjectPassengersContract.TypeId,ejectionNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(ejectionNative,official,EjectPassengersContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,ejectionNative,owner.NativeType,proof.Records);Own(ejectionNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(AttributeModifierUpgradeModuleData)){
                     var grammar=attributeModifierUpgrade.Value;var upgradeNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,AttributeModifierUpgradeContract.TypeId,upgradeNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(upgradeNative,official,AttributeModifierUpgradeContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,upgradeNative,owner.NativeType,proof.Records);Own(upgradeNative,start,stop);Splice(owner,metadata,start,size);continue;

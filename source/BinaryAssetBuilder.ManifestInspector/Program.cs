@@ -210,6 +210,9 @@ internal static class Program
             // Reborn: cover complete EP1 subobject upgrade graphs through real native/metadata dispatch.
             // Reborn: exercise EP1 transport passengers, inherited filters, defaults and extended upgrade lists offline.
             // Reborn: exercise modifier references and complete inherited upgrade graphs offline.
+            // Reborn: cover complete passenger-ejection native/metadata graphs through the real EP1 dispatcher.
+            if(args.Length==3 && args[0]=="eject-passengers-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();EjectPassengersSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="attribute-modifier-upgrade-self-test")
             {CompilerSmokeTest.InitializeHashProvider();AttributeModifierUpgradeSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="transport-contain-self-test")
