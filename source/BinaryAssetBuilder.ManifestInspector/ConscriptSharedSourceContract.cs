@@ -19,8 +19,9 @@ internal static class ConscriptSharedSourceContract
         GameObjectNestedValueContract.Validate(source);
         GameObjectResourceContract.Validate(source);
         var qualified=SdkXmlDiagnostics.Parse(Encoding.UTF8.GetBytes(source.DocumentElement!.OuterXml));qualified.Schemas.Add(schemas);qualified.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));
+        // Reborn: PropBody has no MaxHealth; type-specific legacy receipts cannot require ActiveBody storage.
         // Reborn: the historical single Speed receipt is not an admission requirement for source-sized movement lists.
-        foreach(var field in ConscriptEditableScalars.Fields)if(field.Attribute!="Amount"&&(field.Attribute!="Speed"||ConscriptLocomotorSetContract.Entries(qualified).Length==1))ConscriptEditableScalars.Read(qualified,field);
+        foreach(var field in ConscriptEditableScalars.Fields)if(ConscriptEditableScalars.Applies(qualified,field)&&field.Attribute!="Amount"&&(field.Attribute!="Speed"||ConscriptLocomotorSetContract.Entries(qualified).Length==1))ConscriptEditableScalars.Read(qualified,field);
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -28,7 +29,7 @@ internal static class ConscriptSharedSourceContract
     //-------------------------------------------------------------------------------------------------
     internal static void Mask(XmlDocument candidate,XmlDocument model)
     {
-        foreach(var field in ConscriptEditableScalars.Fields)if((field.Attribute!="Amount"||GameObjectResourceContract.Entries(candidate).Length==1)&&(field.Attribute!="Speed"||ConscriptLocomotorSetContract.Entries(candidate).Length==1))ConscriptEditableScalars.Element(candidate,field).SetAttribute(field.Attribute,ConscriptEditableScalars.Literal(model,field));
+        foreach(var field in ConscriptEditableScalars.Fields)if(ConscriptEditableScalars.Applies(candidate,field)&&(field.Attribute!="Amount"||GameObjectResourceContract.Entries(candidate).Length==1)&&(field.Attribute!="Speed"||ConscriptLocomotorSetContract.Entries(candidate).Length==1))ConscriptEditableScalars.Element(candidate,field).SetAttribute(field.Attribute,ConscriptEditableScalars.Literal(model,field));
         GameObjectScalarContract.Mask(candidate,model);GameObjectRootAttributeContract.Mask(candidate,model);GameObjectStrongReferenceContract.Mask(candidate,model);GameObjectRootStringContract.Mask(candidate,model);
         ConscriptModuleIdentityContract.Mask(candidate,model);ConscriptModuleScalarContract.Mask(candidate,model);
     }

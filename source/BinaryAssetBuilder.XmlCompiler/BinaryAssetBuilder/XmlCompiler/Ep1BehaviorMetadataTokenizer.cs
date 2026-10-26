@@ -62,6 +62,14 @@ public static class Ep1BehaviorMetadataTokenizer
         return new Builder(native.InstanceBuffer, schemas).Build(native, wireName, nativeType);
     }
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: serialize only the independently qualified PropBody class through the shared schema writer; it is not admitted as a Behaviors leaf. */
+    //-------------------------------------------------------------------------------------------------
+    public static Chunk TokenizePropBody(Chunk native,XmlSchemaSet schemas)
+    {
+        if(native?.InstanceBuffer==null||native.InstanceBuffer.Length!=8||native.RelocationBuffer==null||native.RelocationBuffer.Length!=0||native.ImportsBuffer==null||native.ImportsBuffer.Length!=0||schemas==null||Word(native.InstanceBuffer,0)!=FastHash.GetHashCode("PropBodyModuleData")||Word(native.InstanceBuffer,4)==0)throw new InvalidDataException("Complete identity-only PropBody input required.");
+        return new Builder(native.InstanceBuffer,schemas).Build(native,"PropBodyModuleData",typeof(SageBinaryData.PropBodyModuleData));
+    }
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: reuse schema/native traversal for six explicitly selected non-polymorphic root records; no stock coordinates or arbitrary class admission enter this API. */
     //-------------------------------------------------------------------------------------------------
     public static Chunk TokenizeRootRecord(Chunk native,XmlSchemaSet schemas,string name)

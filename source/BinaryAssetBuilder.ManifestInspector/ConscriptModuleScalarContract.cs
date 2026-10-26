@@ -36,10 +36,12 @@ internal static class ConscriptModuleScalarContract
                     "Behaviors"=>Ep1BehaviorMetadataTokenizer.ReviewedNativeType(FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(element.LocalName))),
                     "Draws"=>element.LocalName switch{"ScriptedModelDraw"=>typeof(W3DScriptedModelDrawModuleData),"TracerModelDraw"=>typeof(W3DTracerDrawModuleData),_=>throw new InvalidDataException("Unreviewed scalar draw family.")},
                     "AI" when element.LocalName=="AIUpdate"=>typeof(Ep1AIUpdateModuleData),
+                    // Reborn: PropBody has no own scalars but participates in source identities and whole-object validation.
+                    "Body" when element.LocalName=="PropBody"=>typeof(PropBodyModuleData),
                     "Body" when element.LocalName=="ActiveBody"=>typeof(Ep1ActiveBodyModuleData),
                     "ClientUpdates" when element.LocalName=="LargeGroupAudioClientUpdate"=>typeof(LargeGroupAudioClientUpdateModuleData),
                     "ClientBehaviors"=>element.LocalName switch{"ModelConditionSoundSelectorClientBehavior"=>typeof(Ep1ModelConditionSoundSelectorClientBehaviorModuleData),"AnimationSoundClientBehavior"=>typeof(AnimationSoundClientBehaviorModuleData),"ModelConditionAudioLoopClientBehavior"=>typeof(ModelConditionAudioLoopClientBehaviorModuleData),_=>throw new InvalidDataException("Unreviewed scalar client family.")},
-                    _=>throw new InvalidDataException("Unreviewed module scalar owner.")
+                    _=>throw new InvalidDataException("Unreviewed module scalar owner: "+container.LocalName+"/"+element.LocalName+".")
                 };}catch(InvalidDataException error){throw SdkXmlDiagnostics.At(error,element);}
                 result.Add(new(container.LocalName,index++,element,type));
             }

@@ -73,6 +73,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: template-ID storage metadata is qualified lazily against its retail module.
     // Reborn: weapon-fire abilities use the independently qualified EP1 field and metadata layout.
     private readonly Lazy<StockMetadataGrammar> weaponFireAbility;
+    // Reborn: PropBody owns an independent retail-qualified body fragment rather than an ActiveBody snapshot.
+    private readonly Lazy<StockMetadataGrammar> propBody;
     private readonly Lazy<StockMetadataGrammar> storeTemplate;
     private readonly Lazy<StockMetadataGrammar> playerUpgrade;
     private readonly Lazy<StockMetadataGrammar> oclPower;
@@ -133,6 +135,7 @@ internal sealed class ConscriptVariableGraphVerifier
         assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         weaponTurret=new(()=>WeaponTurretContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         weaponFireAbility=new(()=>WeaponFireAbilityContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        propBody=new(()=>PropBodyContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         storeTemplate=new(()=>StoreTemplateIDContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         playerUpgrade=new(()=>PlayerUpgradePowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         oclPower=new(()=>OclSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -220,6 +223,8 @@ internal sealed class ConscriptVariableGraphVerifier
             int header=(int)pointer,expectedCount=owner.ChildNodes.OfType<XmlElement>().Count();if(Word(b,header)!=expectedCount)throw new InvalidDataException("Source/native module container count differs: "+name);
             if(expectedCount==0){if(Word(b,header+4)!=0)throw new InvalidDataException("Empty module container native header differs: "+name);Cover(header,8);Add(ownedRelos,(uint)slot);VerifyContainerHeader(name,header,0);containerLengths.Add(name,12);}
         }
+        // Reborn: retain the separately proved PropBody fragment for the direct root Body metadata row.
+        (Chunk Tokens,int Prefix,int Start,int End)? propBodyPiece=null;
         var fixedGraphs=new Dictionary<int,(int Start,int End,Type Type,SelectedNativeGraphComparer Comparer)>();int behaviorLength=0,aiLength=0;XmlDocument? resolved=null;
         foreach(var group in ConscriptModuleScalarContract.Owners(source).GroupBy(o=>o.Container))
         {
@@ -240,6 +245,11 @@ internal sealed class ConscriptVariableGraphVerifier
             foreach(var owner in owners)
             {
                 int start=ConscriptModuleScalarContract.Address(b,0,owner),stop=owner.Index+1<owners.Length?ConscriptModuleScalarContract.Address(b,0,owners[owner.Index+1]):end;
+                // Reborn: PropBody is an eight-byte Body leaf with source/native proof and a complete root metadata splice.
+                if(owner.NativeType==typeof(PropBodyModuleData)){
+                    var grammar=propBody.Value;var bodyNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container=="Body").Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,PropBodyContract.TypeId,bodyNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.TokenizePropBody(bodyNative,official);int size=grammar.Verify(metadata,bodyNative,owner.NativeType,proof.Records);Own(bodyNative,start,stop);propBodyPiece=(metadata,size,start,stop);continue;
+                }
                 // Reborn: own every authored assign-slaves field, import and allocation through the shared schema proof, then check metadata against stock.
                 if(owner.NativeType==typeof(AssignSlavesTargetObjectSpecialPowerModuleData)){
                     var grammar=assignSlaves.Value;var assignNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
@@ -524,6 +534,11 @@ internal sealed class ConscriptVariableGraphVerifier
         foreach(var pair in stockRows)
         {
             int old=pair.Value.Offset,at=rows[pair.Key].Offset;
+            // Reborn: PropBody owns its complete metadata fragment independently of ActiveBody's longer stock tables.
+            if(pair.Key==FastHash.GetHashCode("Body")&&propBodyPiece is { } prop){
+                if(at<rootLength||at>prefix-prop.Prefix||metadataOwned.AsSpan(at,prop.Prefix).Contains(true)||!Equal(Detach(tokens,prefix,at,prop.Prefix,prop.Start,prop.End),prop.Tokens))throw new InvalidDataException("PropBody root metadata splice/ownership differs.");
+                Array.Fill(metadataOwned,true,at,prop.Prefix);continue;
+            }
             // Reborn: complete AI leaf fragments were independently proved above; their metadata extent follows chooser presence.
             // Reborn: an AI-less object owns exactly the stock zero-count declaration targeting the inline +480 count word.
             if(pair.Key==FastHash.GetHashCode("AI")&&!ConscriptModuleScalarContract.Owners(source).Any(o=>o.Container=="AI")){_=aiAbsentWitness.Value;

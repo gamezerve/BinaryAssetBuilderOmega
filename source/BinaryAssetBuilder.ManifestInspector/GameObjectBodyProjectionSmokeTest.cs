@@ -115,7 +115,8 @@ internal static class GameObjectBodyProjectionSmokeTest
             foreach(XmlElement child in behaviors.ChildNodes.OfType<XmlElement>())child.SetAttribute("TypeId",reviewedBehaviors?FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(child.LocalName)).ToString(System.Globalization.CultureInfo.InvariantCulture):child.LocalName switch {"BuildingDestructionBehavior"=>"227975924","WeaponSetUpdate"=>"1125589673","ObjectSMCHelper"=>"2138239554",_=>throw new InvalidDataException("Unsupported selected source module.")});
         }
         else ((XmlElement)behaviors.FirstChild!).SetAttribute("TypeId","227975924");
-        body.SetAttribute("TypeId","1510882715");
+        // Reborn: the internal body identity follows the admitted concrete source type, not the historical ActiveBody probe.
+        body.SetAttribute("TypeId",reviewedBehaviors&&body.LocalName=="PropBody"?FastHash.GetHashCode("PropBodyModuleData").ToString(System.Globalization.CultureInfo.InvariantCulture):"1510882715");
         // Reborn: selected common AI receives only the reviewed internal class identity after raw validation, on the same root Tracker.
         if(selectedBehaviors)foreach(XmlElement ai in d.GetElementsByTagName("AI",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>())){if(ai.LocalName!="AIUpdate")throw new InvalidDataException("Unreviewed selected AI class.");ai.SetAttribute("TypeId","148619278");}
         // Reborn: selected Draw classes use the actual dispatcher on the same root Tracker after source validation; no separate compiled fragment is appended.
@@ -141,7 +142,9 @@ internal static class GameObjectBodyProjectionSmokeTest
         if(clientBehaviors!=null)Marshaler.MarshalEp1ClientBehaviors(new Node(clientBehaviors.CreateNavigator()!,ns),&root->ClientBehaviors,tracker);
         if(reviewedBehaviors)Marshaler.MarshalEp1ReviewedBehaviors(new Node(behaviors.CreateNavigator()!,ns),&root->Behaviors,tracker);
         else if(selectedBehaviors)Marshaler.MarshalEp1SelectedBehaviors(new Node(behaviors.CreateNavigator()!,ns),&root->Behaviors,tracker);
-        Marshaler.MarshalEp1ActiveBody(new Node(body.CreateNavigator()!,ns),&root->Body,tracker);
+        // Reborn: the complete source route dispatches PropBody without allocating or fabricating ActiveBody health fields.
+        if(reviewedBehaviors&&body.LocalName=="PropBody")Marshaler.Marshal(new Node(body.CreateNavigator()!,ns),&root->Body,tracker);
+        else Marshaler.MarshalEp1ActiveBody(new Node(body.CreateNavigator()!,ns),&root->Body,tracker);
         // Reborn: no copied native bytes or second Tracker are appended to compose the geometry tail.
         if(geometry!=null)Marshaler.MarshalEp1Geometry(new Node(geometry.CreateNavigator()!,ns),&root->Geometry,tracker);
         // Reborn: all six new native owners share the enclosing root allocation and normalized occurrence table, not separately compiled bytes.

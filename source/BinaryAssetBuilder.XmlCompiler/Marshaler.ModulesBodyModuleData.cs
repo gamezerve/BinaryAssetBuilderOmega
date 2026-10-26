@@ -13,6 +13,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: PropBody has its own concrete type and eight-byte body header.
+            case 0xFF88404Bu:
+                MarshalPolymorphicType<PropBodyModuleData,BodyModuleData>(node,objT,state);
+                break;
             case 0x6F0F9F52u:
                 MarshalPolymorphicType<HighlanderBodyModuleData, BodyModuleData>(node, objT, state);
                 break;

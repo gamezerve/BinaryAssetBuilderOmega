@@ -45,7 +45,8 @@ public static class Ep1GameObjectDestructionProjection
             fragments.Add((piece,piece.InstanceBuffer.Length-module.InstanceBuffer.Length,start));
         }
         var body = layout.Body == 0 ? null : Extract(layout.Body,layout.Geometry==0?b.Length:layout.Geometry);
-        var bodyFragment = body == null ? null : Ep1ActiveBodyTokenizer.Tokenize(body);
+        // Reborn: complete body composition selects its real class and resulting metadata extent.
+        var bodyFragment = body == null ? null : Word(body.InstanceBuffer,0)==0xFF88404Bu&&behaviorSchemas!=null?Ep1BehaviorMetadataTokenizer.TokenizePropBody(body,behaviorSchemas):Ep1ActiveBodyTokenizer.Tokenize(body);
         // Reborn: geometry is a non-polymorphic final owner with a separately validated generated prefix.
         var geometry=layout.Geometry==0?null:Extract(layout.Geometry,b.Length);
         var geometryFragment=geometry==null?null:Ep1GeometryTokenizer.Tokenize(geometry);
@@ -53,7 +54,7 @@ public static class Ep1GameObjectDestructionProjection
         int armorFields=(layout.ArmorCount==0?0:1)+(layout.LocomotorCount==0?0:1)+(geometry==null?0:1)+layout.PointerRoots.Count+(layout.Ai.Modules.Count==0?0:1)+(layout.Draws.Start==0?0:1)+layout.Clients.Count(c=>c.Start!=0);
         int container = checked((Ep1GameObjectRootValueTokens.AllFields.Count + (body == null ? 2 : 3) + armorFields) * 12), fragmentStart = checked(container + 12 + fragments.Count*12);
         int bodyStart=allBehaviors==null?checked(fragmentStart+fragments.Sum(f=>f.Prefix)):checked(container+allBehaviorPrefix);
-        int bodyPrefix = body == null ? 0 : checked(324 + (int)Word(body.InstanceBuffer,64) * 60),armorStart=checked(bodyStart+bodyPrefix);
+        int bodyPrefix = bodyFragment == null ? 0 : bodyFragment.InstanceBuffer.Length-body!.InstanceBuffer.Length,armorStart=checked(bodyStart+bodyPrefix);
         int armorPrefix=layout.ArmorCount==0?0:checked(12+layout.ArmorCount*60),locomotorStart=checked(armorStart+armorPrefix);
         // Reborn: movement count/marker/member tables follow the other reviewed fragments without altering absent-list output.
         int locomotorPrefix=layout.LocomotorCount==0?0:checked(12+layout.LocomotorCount*60),geometryStart=checked(locomotorStart+locomotorPrefix);

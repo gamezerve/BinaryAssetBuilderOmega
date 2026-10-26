@@ -94,6 +94,8 @@ if($SchedulerControl){
     # Reborn: cover the identity-only template-ID store through the normal EP1 behavior pipeline.
     # Reborn: cover restored EP1 weapon-fire fields, retargeting, defaults and whole-object composition.
     Add-BatchCase 'weapon-fire-ability' 'StockQualifiedWeaponFireAbility' @('weapon-fire-ability-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: cover PropBody allocation, identity and complete root metadata.
+    Add-BatchCase 'prop-body' 'StockQualifiedPropBody' @('prop-body-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'store-template-id' 'StockQualifiedStoreTemplateID' @('store-template-id-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'player-upgrade-power' 'StockQualifiedPlayerUpgradePower' @('player-upgrade-power-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'ocl-special-power' 'StockQualifiedOclSpecialPower' @('ocl-special-power-self-test',$StaticManifest,$GlobalManifest)

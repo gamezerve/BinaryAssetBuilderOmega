@@ -137,6 +137,8 @@ internal static class ConscriptVariableBehaviorSource
         oldBehaviors.ParentNode!.ReplaceChild(copy.ImportNode(Container(comparison),true),oldBehaviors);
         // Reborn: only the comparison copy restores baseline containers; actual source/native proof retains every authored module.
         ConscriptVariableContainers.Restore(copy,comparison);
+        // Reborn: restore only the comparison body; authored PropBody is independently proved during native composition.
+        if(ConscriptVariableContainers.Find(source,"Body")?.ChildNodes.OfType<XmlElement>().SingleOrDefault()?.LocalName=="PropBody"){var body=ConscriptVariableContainers.Find(copy,"Body")!;body.RemoveAll();foreach(XmlNode child in ConscriptVariableContainers.Find(comparison,"Body")!.ChildNodes)body.AppendChild(copy.ImportNode(child,true));}
         copy.DocumentElement!.SetAttribute("id",comparison.DocumentElement!.GetAttribute("id"));
         // Reborn: comparison-only IDs must not redirect topology diagnostics to an unrelated baseline asset or the entry document.
         try{ConscriptSharedSourceContract.Mask(copy,comparison);}
@@ -166,6 +168,8 @@ internal static class ConscriptVariableBehaviorSource
         }
         foreach(var owner in owners.Where(o=>o.Container!="Behaviors"&&!ConscriptVariableContainers.Supports(o.Container)))
         {
+            // Reborn: PropBody has an independent source/schema contract rather than the Conscript ActiveBody template.
+            if(owner.NativeType==typeof(SageBinaryData.PropBodyModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);continue;}
             var original=originals.Single(o=>o.Container==owner.Container&&o.Index==owner.Index);origins.Add(owner.Element.GetAttribute("id"),original.Element.GetAttribute("id"));
         }
         // Reborn: source-order reference occurrences must be stable across attribute formatting and added/cloned behavior identities.
@@ -175,6 +179,8 @@ internal static class ConscriptVariableBehaviorSource
         foreach(string name in ConscriptVariableContainers.Names){var container=ConscriptVariableContainers.Find(aligned,name);var authored=ConscriptVariableContainers.Find(source,name);if(authored==null){container?.ParentNode!.RemoveChild(container);continue;}container!.RemoveAll();foreach(var owner in variableOwners.Where(o=>o.Container==name))container.AppendChild(aligned.ImportNode(variableTemplates[owner.Element.GetAttribute("id")].Element,true));}
         // Reborn: flexible upgrade children do not have to match the template's occurrence count during source-order alignment.
         var upgradeIds=owners.Where(o=>ConscriptUpgradeStructure.Supports(o.NativeType)).Select(o=>o.Element.GetAttribute("id")).ToHashSet(StringComparer.Ordinal);
+        // Reborn: a prop body has no strong references to align with the ActiveBody comparison template.
+        if(owners.Any(o=>o.NativeType==typeof(SageBinaryData.PropBodyModuleData))){var body=ConscriptVariableContainers.Find(aligned,"Body")!;body.RemoveAll();foreach(XmlNode child in ConscriptVariableContainers.Find(source,"Body")!.ChildNodes)body.AppendChild(aligned.ImportNode(child,true));}
         Align(source.DocumentElement!,aligned.DocumentElement!,upgradeIds);
         return new(origins,behaviors.Length);
 

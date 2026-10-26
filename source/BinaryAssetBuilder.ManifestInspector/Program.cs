@@ -170,6 +170,9 @@ internal static class Program
             // Reborn: qualify complete EP1 weapon-fire ability attributes and their inherited graph.
             if(args.Length==3 && args[0]=="weapon-fire-ability-self-test")
             {CompilerSmokeTest.InitializeHashProvider();WeaponFireAbilitySmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: prove PropBody allocation and direct root metadata alongside ordinary GameObject graphs.
+            if(args.Length==3 && args[0]=="prop-body-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();PropBodySmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="store-template-id-self-test")
             {CompilerSmokeTest.InitializeHashProvider();StoreTemplateIDSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="player-upgrade-power-self-test")

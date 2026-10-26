@@ -44,16 +44,20 @@ public static class Ep1GameObjectStringTokens
         int module=modules[0];
         // Reborn: the explicit EP1 body path owns a separate tail after destruction; no alias into the root/list/module is admissible.
         uint body = Word(488);
+        // Reborn: concrete bodies own different header sizes; PropBody does not allocate ActiveBody health storage.
+        int bodySize=0;
         if(body != 0)
         {
-            if(body % 4 != 0 || body < modules[^1] + 8 || body > b.Length - 76)throw new InvalidDataException("Body tail ownership/bounds differ.");
+            if(body % 4 != 0 || body < modules[^1] + 8 || body > b.Length - 8)throw new InvalidDataException("Body tail ownership/bounds differ.");
+            bodySize=Word((int)body)==0x5A0E3D9Bu?76:reviewedBehaviors&&Word((int)body)==0xFF88404Bu?8:throw new InvalidDataException("Unreviewed concrete Body native class.");
+            if(body>b.Length-bodySize)throw new InvalidDataException("Concrete Body header is truncated.");
             owners.Add(488);
         }
         // Reborn: geometry owns a separate final native graph after Body/behaviors; its nested owners are checked by the geometry tokenizer.
         uint geometry=Word(500);
         if(geometry!=0)
         {
-            if(geometry%4!=0 || geometry<(body==0?modules[^1]+8:body+76) || geometry>b.Length-76)throw new InvalidDataException("Geometry tail ownership/bounds differ.");
+            if(geometry%4!=0 || geometry<(body==0?modules[^1]+8:body+bodySize) || geometry>b.Length-76)throw new InvalidDataException("Geometry tail ownership/bounds differ.");
             owners.Add(500);
         }
         var ranges = new List<(uint Start, uint End)>();

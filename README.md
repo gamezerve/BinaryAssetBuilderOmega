@@ -3903,3 +3903,18 @@ field offset, native payload and metadata inheritance.
 weapon/power retargeting, defaults, inherited timing, full GameObject composition
 and corruption of the weapon import and both restored fields. New settings have
 not been independently tested in gameplay.
+
+
+### PropBody and concrete body diagnostics
+
+`PropBody` is build-enabled as the official identity-only eight-byte Body class.
+It uses a separate allocator/metadata path; it does not acquire ActiveBody health
+fields or an invented MaxHealth receipt. The complete route accepts either body
+class, while native bounds and metadata sizes follow the actual concrete type.
+The original PlayerSpellBook PropBody qualifies its native and metadata layout.
+`prop-body-self-test` covers IDs, complete GameObject composition, health-field
+refusal and owner diagnostics. Existing ActiveBody composition remains covered
+by `gameobject-body-projection-self-test`.
+
+Unsupported module-owner errors now include `Container/ModuleName` and retain
+the source node, instead of reporting only “Unreviewed module scalar owner.”
