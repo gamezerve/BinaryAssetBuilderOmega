@@ -1,0 +1,39 @@
+using System.Reflection;
+using System.Text;
+using System.Xml;
+using System.Xml.Schema;
+using BinaryAssetBuilder.Core;
+using BinaryAssetBuilder.Core.SageXml;
+using SageBinaryData;
+using Chunk=Relo.Chunk;
+namespace BinaryAssetBuilder.ManifestInspector;
+
+// Reborn: exercise all four unit-button variants with independent native proofs and private final package output.
+internal static class UnitAbilityButtonCompilerSmokeTest
+{
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: qualify original unit buttons, edit all concrete alternatives and link local command/state/power assets. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void Run(string manifest,string global,string output)
+    {
+        output=SdkEnvironmentPreflight.Absolute(output);if(Directory.Exists(output)||File.Exists(output))throw new InvalidDataException("Fresh unit-button output required.");Directory.CreateDirectory(output);var saved=Settings.Current;
+        try{
+            string fixtures=Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!;var official=ConscriptSourceInput.Schemas();Settings.Current=new Settings{SchemaPath=Path.Combine(fixtures,"TracerDrawPipeline.xsd"),BuildCache=false,StringHashBinDescriptors=Array.Empty<StringHashBinDescriptor>()};var schemas=new SchemaSet(false);foreach(var seed in schemas.Schemas.Schemas().Cast<XmlSchema>().ToArray())schemas.Schemas.Remove(seed);schemas.Schemas.Add(official);schemas.Schemas.Compile();typeof(SchemaSet).GetMethod("SetupHelperSchemaTypes",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(schemas,null);
+            var catalog=new[]{manifest,global}.SelectMany(p=>ManifestReader.Read(SdkEnvironmentPreflight.Read(p,64*1048576)).Assets).ToArray();UnitAbilityButtonCompiler.Qualify(manifest,schemas,catalog);int checks=0;var assets=new List<string>();
+            var templates=GameObjectExtendedRootContract.Original("UI/Mouse/UnitAbilityButtonTemplates.xml","UnitAbilityButtonTemplate").Where(e=>catalog.Any(a=>a.Name=="UnitAbilityButtonTemplate:"+e.GetAttribute("id"))).GroupBy(e=>e.GetElementsByTagName("Data",SchemaSet.XmlNamespace).OfType<XmlElement>().Single().ChildNodes.OfType<XmlElement>().Single().LocalName).ToDictionary(g=>g.Key,g=>SdkXmlDiagnostics.Parse(Encoding.UTF8.GetBytes(g.First().OuterXml)));
+            // Reborn: the three schema-only alternatives share independently qualified base layouts and are checked as authored records.
+            foreach(var pair in new[]{("BuildWall","Evacuate"),("PlayerUpgrade","ObjectUpgrade"),("MultiplePowersTargetedSpecialPower","TargetedSpecialPower")}){var xml=(XmlDocument)templates[pair.Item2].CloneNode(true);var wrapper=xml.GetElementsByTagName("Data",SchemaSet.XmlNamespace).OfType<XmlElement>().Single();var old=wrapper.ChildNodes.OfType<XmlElement>().Single();var replacement=xml.CreateElement(pair.Item1,SchemaSet.XmlNamespace);foreach(XmlAttribute attribute in old.Attributes)replacement.SetAttribute(attribute.Name,attribute.Value);wrapper.ReplaceChild(replacement,old);if(pair.Item1=="MultiplePowersTargetedSpecialPower")foreach(string field in new[]{"AdditionalSpecialPowerTemplate","AdditionalRadiusCursor","AdditionalValidTargetCursor"}){var child=xml.CreateElement(field,SchemaSet.XmlNamespace);child.InnerText=field=="AdditionalSpecialPowerTemplate"?"SpecialPowerIronCurtain":field=="AdditionalRadiusCursor"?"Target_Allied_Chronosphere_1":"Arrow";replacement.AppendChild(child);}templates.Add(pair.Item1,xml);}
+            if(templates.Count!=11)throw new InvalidDataException("All eleven unit-button Data alternatives must be exercised.");
+            foreach(var pair in templates){var source=(XmlDocument)pair.Value.CloneNode(true);Check(source);source.DocumentElement!.SetAttribute("id","RebornUnitButton"+pair.Key);var data=source.GetElementsByTagName("Data",SchemaSet.XmlNamespace).OfType<XmlElement>().Single().ChildNodes.OfType<XmlElement>().Single();if(pair.Key.Contains("Targeted",StringComparison.Ordinal)){data.SetAttribute("ValidTargetOutline","NONE");var tint=source.CreateElement("ValidTargetTintColor",SchemaSet.XmlNamespace);tint.SetAttribute("R","0.25");tint.SetAttribute("G","0.5");tint.SetAttribute("B","1");data.PrependChild(tint);}foreach(string field in new[]{"StateData","AdditionalSpecialPowerTemplate","AdditionalRadiusCursor","AdditionalValidTargetCursor"}){var first=data.ChildNodes.OfType<XmlElement>().FirstOrDefault(e=>e.LocalName==field);if(first!=null)data.InsertAfter(first.CloneNode(true),first);}Check(source);
+                // Reborn: link new state data and special-power commands without inventing commands during compilation.
+                if(data.HasAttribute("StateData"))data.SetAttribute("StateData","RebornUnitButtonState");foreach(var state in data.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="StateData"))state.InnerText="RebornUnitButtonState";if(pair.Key.Contains("SpecialPower",StringComparison.Ordinal))source.DocumentElement.SetAttribute("LogicCommand","RebornUnitButtonCommand");assets.Add(source.DocumentElement.OuterXml);
+            }
+            // Reborn: toggle-state arrays are source-sized, beyond the two-entry retail examples.
+            var longToggle=(XmlDocument)templates["ToggleSpecialPower"].CloneNode(true);var toggle=longToggle.GetElementsByTagName("ToggleSpecialPower",SchemaSet.XmlNamespace).OfType<XmlElement>().Single();toggle.RemoveAll();for(int i=0;i<37;i++){var child=longToggle.CreateElement("StateData",SchemaSet.XmlNamespace);child.InnerText="ButtonStatePlayerPowerAirPower";toggle.AppendChild(child);}Check(longToggle);
+            assets.Add("<ButtonSingleStateData id='RebornUnitButtonState'><State Title='NAME:RebornUnitButton' Description='DESC:RebornUnitButton'/></ButtonSingleStateData>");assets.Add("<LogicCommand id='RebornUnitButtonCommand' Type='SPECIAL_POWER'><SpecialPower>RebornUnitButtonPower</SpecialPower></LogicCommand>");assets.Add("<SpecialPowerTemplate id='RebornUnitButtonPower' TargetType='LOCATION' ReloadTime='15s'/>");string entry=Path.Combine(output,"mod.xml");File.WriteAllText(entry,"<AssetDeclaration xmlns='uri:ea.com:eala:asset'>"+string.Join("",assets)+"</AssetDeclaration>");string prepared=Path.Combine(output,"prepared");ConscriptSourceInput.Prepare(entry,prepared);if(!ConscriptMultiAssetBuild.TryRun(Path.Combine(prepared,"game.xml"),manifest,global,Path.Combine(output,"built")))throw new InvalidDataException("Unit-button route not selected.");Console.WriteLine($"Reborn: UnitAbilityButtonTemplate: PASS (8 original EP1 variants, all 11 schema alternatives, {checks} native controls, tint/outline/cursor/state/power lists and 37-state toggle, local command/state/power linkage and final stream/package readback; no user output or game launch).");
+
+            // Reborn: independent validation must reject a corrupted concrete Data class identity.
+            void Check(XmlDocument source){var proof=UnitAbilityButtonCompiler.ProofSource(source,schemas,catalog);var resolved=SchemaNativeContract.Resolve(source,schemas,catalog);var instance=ReferencePipelineSmokeTest.Normalize(schemas,resolved.OuterXml);var native=UnitAbilityButtonCompiler.Compile(instance.XmlNode);var refs=instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray();SchemaNativeContract.Verify(proof.DocumentElement!,typeof(Ep1UnitAbilityButtonTemplate),0,native,refs);var bad=new Chunk{InstanceBuffer=native.InstanceBuffer.ToArray(),RelocationBuffer=native.RelocationBuffer,ImportsBuffer=native.ImportsBuffer};bad.InstanceBuffer[12]^=1;try{SchemaNativeContract.Verify(proof.DocumentElement!,typeof(Ep1UnitAbilityButtonTemplate),0,bad,refs);throw new InvalidOperationException("Corrupt unit-button class accepted.");}catch(InvalidDataException){}checks++;}
+        }finally{Settings.Current=saved;}
+    }
+}

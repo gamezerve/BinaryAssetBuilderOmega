@@ -3761,3 +3761,12 @@ instance inheritance (including same-ID overrides) and special-power
 `RequiredPlayerTech`/`ForbiddenPlayerTech` consumers are supported. Offline
 checks cover original global EP1 records and private global/static stream output;
 new gameplay behavior still needs an in-game check.
+
+<!-- Reborn: unit-ability buttons use standalone EP1 assets rather than the legacy KW store. -->
+`UnitAbilityButtonTemplate` supports all 11 official `Data` alternatives,
+including build, evacuation, upgrade, unpack, special-power and toggle buttons.
+`LogicCommand`, state/cursor imports, optional target tint/outline and additional
+power/cursor/state lists are source-owned. Offline checks cover the eight
+alternatives represented in original EP1 records, the other three as authored
+variants, a 37-state toggle and a private package with local state/command/power
+assets. Editable mod files are preserved.

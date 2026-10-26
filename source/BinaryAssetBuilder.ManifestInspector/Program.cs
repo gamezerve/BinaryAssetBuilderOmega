@@ -179,6 +179,9 @@ internal static class Program
             if(args.Length==4 && args[0]=="same-id-instance-self-test")
             {CompilerSmokeTest.InitializeHashProvider();SdkSameIdInstanceSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             // Reborn: exercise native technology defaults/dependencies and local power consumers in private streams.
+            // Reborn: exercise all unit-button native alternatives and local consumers in a private package.
+            if(args.Length==4 && args[0]=="unit-ability-button-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();UnitAbilityButtonCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==4 && args[0]=="player-tech-self-test")
             {CompilerSmokeTest.InitializeHashProvider();PlayerTechCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==4 && args[0]=="button-state-self-test")

@@ -167,6 +167,8 @@ if($SchedulerControl){
     # Reborn: same-ID imported bases retain the authored identity through the complete package path.
     Add-BatchCase 'same-id-instance' 'SameIdInstance' @('same-id-instance-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'same-id-instance-output'))
     # Reborn: verify PlayerTech nodes in global/static private streams and their power dependencies.
+    # Reborn: unit-ability button tests cover all data alternatives and real local state/command bindings.
+    Add-BatchCase 'unit-ability-button' 'UnitAbilityButton' @('unit-ability-button-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'unit-ability-button-output'))
     Add-BatchCase 'player-tech' 'PlayerTech' @('player-tech-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'player-tech-output'))
     Add-BatchCase 'button-state' 'ButtonState' @('button-state-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'button-state-output'))
     Add-BatchCase 'joypad-button' 'JoypadButton' @('joypad-button-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'joypad-button-output'))
