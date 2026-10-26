@@ -39,6 +39,8 @@ internal static class ConscriptModuleScalarContract
                     // Reborn: PropBody has no own scalars but participates in source identities and whole-object validation.
                     "Body" when element.LocalName=="PropBody"=>typeof(PropBodyModuleData),
                     "Body" when element.LocalName=="ActiveBody"=>typeof(Ep1ActiveBodyModuleData),
+                    // Reborn: use the EP1 strong-EVA record for readiness announcements.
+                    "ClientUpdates" when element.LocalName=="EvaAnnounceSpecialPowerReadyClientUpdate"=>typeof(Ep1EvaAnnounceSpecialPowerReadyClientUpdateModuleData),
                     "ClientUpdates" when element.LocalName=="LargeGroupAudioClientUpdate"=>typeof(LargeGroupAudioClientUpdateModuleData),
                     "ClientBehaviors"=>element.LocalName switch{"ModelConditionSoundSelectorClientBehavior"=>typeof(Ep1ModelConditionSoundSelectorClientBehaviorModuleData),"AnimationSoundClientBehavior"=>typeof(AnimationSoundClientBehaviorModuleData),"ModelConditionAudioLoopClientBehavior"=>typeof(ModelConditionAudioLoopClientBehaviorModuleData),_=>throw new InvalidDataException("Unreviewed scalar client family.")},
                     _=>throw new InvalidDataException("Unreviewed module scalar owner: "+container.LocalName+"/"+element.LocalName+".")

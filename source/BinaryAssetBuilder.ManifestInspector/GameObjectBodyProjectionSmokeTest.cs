@@ -128,7 +128,8 @@ internal static class GameObjectBodyProjectionSmokeTest
         if(selectedBehaviors)
         {
             clientBehaviors=d.DocumentElement.ChildNodes.OfType<XmlElement>().SingleOrDefault(e=>e.LocalName=="ClientBehaviors" && e.NamespaceURI==SchemaSet.XmlNamespace);if(clientBehaviors!=null){d.DocumentElement.RemoveChild(clientBehaviors);foreach(XmlElement child in clientBehaviors.ChildNodes.OfType<XmlElement>())child.SetAttribute("TypeId",FastHash.GetHashCode(child.LocalName+"ModuleData").ToString(System.Globalization.CultureInfo.InvariantCulture));}
-            foreach(XmlElement update in d.GetElementsByTagName("ClientUpdates",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>()))update.SetAttribute("TypeId","2552668823");
+            // Reborn: EVA-ready clients retain their concrete class identity instead of the old group-audio-only probe.
+            foreach(XmlElement update in d.GetElementsByTagName("ClientUpdates",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>()))update.SetAttribute("TypeId",reviewedBehaviors&&update.LocalName=="EvaAnnounceSpecialPowerReadyClientUpdate"?"2720065494":"2552668823");
         }
         // Reborn: the explicit six-owner route bypasses incompatible legacy root dispatch and allocates those original sources on this same Tracker at the end.
         if(remainingRoots && !reviewedBehaviors)throw new InvalidDataException("Remaining roots require the reviewed full-module route.");

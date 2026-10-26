@@ -25,6 +25,8 @@ internal sealed class SchemaNativeContract
     // Reborn: explicitly opted-in leaf families (container, wire class, production leaf metadata writer); each is qualified against stock before use.
     internal sealed record Family(Type Type,string Container,uint TypeId,Func<Chunk,Chunk> Leaf);
     internal static readonly Family[] Families={
+        // Reborn: EVA readiness clients have their own complete native/source proof and literal retail-qualified metadata.
+        new(typeof(Ep1EvaAnnounceSpecialPowerReadyClientUpdateModuleData),"ClientUpdates",0xA220E7D6u,BinaryAssetBuilder.XmlCompiler.Ep1EvaReadyClientTokenizer.Tokenize),
         // Reborn: the existing tracer writer supports both optional-status shapes without freezing the Conscript template.
         new(typeof(W3DTracerDrawModuleData),"Draws",0x54018E60u,BinaryAssetBuilder.XmlCompiler.Ep1TracerDrawTokenizer.Tokenize),
         new(typeof(W3DScriptedModelDrawModuleData),"Draws",0x4ECF2A4Bu,BinaryAssetBuilder.XmlCompiler.Ep1ScriptedDrawTokenizer.Tokenize),

@@ -605,6 +605,8 @@ internal sealed class ConscriptVariableGraphVerifier
     //-------------------------------------------------------------------------------------------------
     private StockMetadataGrammar QualifySchemaFamily(string manifest,SchemaNativeContract.Family family)
     {
+        // Reborn: the Conscript baseline has no EVA-ready leaf; qualify it from the actual PlayerSpellBook source and native records.
+        if(family.Type==typeof(Ep1EvaAnnounceSpecialPowerReadyClientUpdateModuleData))return EvaReadyClientContract.Qualify(manifest,baseline,referenceSchemas,catalog);
         var grammar=new StockMetadataGrammar();
         // Reborn: only developer comparisons need a resolved stock-source probe; fast builds still learn and validate the native grammar.
         var resolvedBaseline=SdkBuildTests.Enabled?SchemaNativeContract.Resolve(baseline,referenceSchemas,catalog):baseline;var leaves=ConscriptVariableContainers.Find(resolvedBaseline,family.Container)?.ChildNodes.OfType<XmlElement>().ToArray()??Array.Empty<XmlElement>();int qualified=0;

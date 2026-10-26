@@ -3918,3 +3918,16 @@ by `gameobject-body-projection-self-test`.
 
 Unsupported module-owner errors now include `Container/ModuleName` and retain
 the source node, instead of reporting only “Unreviewed module scalar owner.”
+
+
+### EvaAnnounceSpecialPowerReadyClientUpdate
+
+`EvaAnnounceSpecialPowerReadyClientUpdate` is build-enabled in ClientUpdates.
+Its separate 28-byte EP1 record preserves strong enemy/ally/owner EVA references,
+the power reference, `JustMonitorPercentReady` and `CheckPlayerPowerVisibility`.
+The legacy KW string-pointer record is preserved. Client update metadata now
+selects each leaf's actual class, allowing EVA announcements and group-audio
+modules in the same list. Retail PlayerSpellBook records qualify field offsets,
+imports and metadata. `eva-ready-client-self-test` covers reference/flag edits,
+defaults and mixed-list GameObject composition; new settings have no gameplay
+test yet.

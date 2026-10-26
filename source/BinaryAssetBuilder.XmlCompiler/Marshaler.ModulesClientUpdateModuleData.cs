@@ -27,7 +27,10 @@ public static partial class Marshaler
                 MarshalPolymorphicType<LaserUpdateModuleData, ClientUpdateModuleData>(node, objT, state);
                 break;
             case 0xA220E7D6u:
-                MarshalPolymorphicType<EvaAnnounceSpecialPowerReadyClientUpdateModuleData, ClientUpdateModuleData>(node, objT, state);
+                // Reborn: EP1 EVA announcements use strong imports and the additional visibility flag.
+                using(var context=state.Push((void**)objT,(uint)sizeof(Ep1EvaAnnounceSpecialPowerReadyClientUpdateModuleData),1u))
+                    Marshal(node,(Ep1EvaAnnounceSpecialPowerReadyClientUpdateModuleData*)*objT,state);
+                uint evaReadyTypeId=0xA220E7D6u;state.InplaceEndianToPlatform(&evaReadyTypeId);*(uint*)*objT=evaReadyTypeId;
                 break;
             case 0xD0EEFDDDu:
                 MarshalPolymorphicType<EvaAnnounceClientCreateModuleData, ClientUpdateModuleData>(node, objT, state);

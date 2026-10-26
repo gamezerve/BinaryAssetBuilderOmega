@@ -41,11 +41,12 @@ public static class Ep1SelectedModuleIdentity
         // Reborn: complete source-sized composition drops the historical sample quota; the legacy selected profile remains unchanged.
         if(drawContainers.Length>1 || (!reviewedBehaviors&&draws.Length>64) || draws.Any(e=>e.NamespaceURI!=ns || e.LocalName is not ("ScriptedModelDraw" or "TracerModelDraw")))throw new InvalidDataException("Unreviewed selected Draw identity class/count.");
         // Reborn: both reviewed client containers join the same local scope; class/namespace/duplicate-container checks do not impose a complete-path sample count.
+        // Reborn: the complete route admits EVA-ready clients in the same local identity scope as existing client classes.
         var clients=new List<XmlElement>();
         foreach(string name in new[]{"ClientUpdates","ClientBehaviors"})
         {
             var containers=root.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName==name).ToArray();var selected=containers.SelectMany(e=>e.ChildNodes.OfType<XmlElement>()).ToArray();
-            if(containers.Length>1 || containers.Any(e=>e.NamespaceURI!=ns) || (!reviewedBehaviors&&selected.Length>64) || selected.Any(e=>e.NamespaceURI!=ns || (name=="ClientUpdates"?e.LocalName!="LargeGroupAudioClientUpdate":e.LocalName is not ("ModelConditionAudioLoopClientBehavior" or "ModelConditionSoundSelectorClientBehavior" or "AnimationSoundClientBehavior"))))throw new InvalidDataException("Unreviewed selected client identity class/container/count.");clients.AddRange(selected);
+            if(containers.Length>1 || containers.Any(e=>e.NamespaceURI!=ns) || (!reviewedBehaviors&&selected.Length>64) || selected.Any(e=>e.NamespaceURI!=ns || (name=="ClientUpdates"?(e.LocalName!="LargeGroupAudioClientUpdate"&&(!reviewedBehaviors||e.LocalName!="EvaAnnounceSpecialPowerReadyClientUpdate")):e.LocalName is not ("ModelConditionAudioLoopClientBehavior" or "ModelConditionSoundSelectorClientBehavior" or "AnimationSoundClientBehavior"))))throw new InvalidDataException("Unreviewed selected client identity class/container/count.");clients.AddRange(selected);
         }
         var ids=new HashSet<uint>();
         foreach(var module in modules.Concat(body).Concat(ai).Concat(draws).Concat(clients))

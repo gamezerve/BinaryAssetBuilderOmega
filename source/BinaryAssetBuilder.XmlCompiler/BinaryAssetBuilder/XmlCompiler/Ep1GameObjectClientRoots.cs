@@ -43,7 +43,8 @@ public static class Ep1GameObjectClientRoots
             if (localRelos.Concat(localImports).Any(s => s % 4 != 0 || s > end - 4)) throw new InvalidDataException("Client root auxiliary word straddles owner.");
             var native = new Chunk { InstanceBuffer = data.AsSpan(start, end - start).ToArray(), RelocationBuffer = Pack(localRelos.Select(s => s - (uint)start)), ImportsBuffer = Pack(localImports.Select(s => s - (uint)start)) };
             foreach (uint at in localRelos) { uint target = Word((int)at); if (target < start || target >= end) throw new InvalidDataException("Client root pointer crosses owners."); Put(native.InstanceBuffer, (int)at - start, target - (uint)start); }
-            var tokens = slot == 496 ? Ep1ClientBehaviorsTokenizer.Tokenize(native) : Ep1DrawsTokenizer.TokenizeSelected(native, Ep1GroupAudioClientTokenizer.Tokenize);
+            // Reborn: client updates choose their real reviewed class, including mixed group-audio/EVA lists.
+            var tokens = slot == 496 ? Ep1ClientBehaviorsTokenizer.Tokenize(native) : Ep1ClientUpdatesTokenizer.Tokenize(native);
             int count = (int)Word(start); var modules = new int[count]; for (int i = 0; i < count; i++) modules[i] = (int)Word(start + 8 + i * 4);
             expectedRelos.Add((uint)slot); expectedRelos.AddRange(localRelos); expectedImports.AddRange(localImports); outer.Add((start, end));
             result.Add(new(slot, start, end, Array.AsReadOnly(modules), tokens));
