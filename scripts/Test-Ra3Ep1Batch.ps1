@@ -118,6 +118,8 @@ if($SchedulerControl){
     # Reborn: qualify Tesla notification fields, optional filters and complete module composition.
     # Reborn: preserve per-upgrade visibility, animation and texture-pair imports in source-sized nugget lists.
     # Reborn: cover complete transport passenger/default/filter/upgrade graphs without user mod builds.
+    # Reborn: cover source-driven attribute modifier upgrades and inherited animation/trigger graphs.
+    Add-BatchCase 'attribute-modifier-upgrade' 'AttributeModifierUpgrade' @('attribute-modifier-upgrade-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'transport-contain' 'TransportContain' @('transport-contain-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'subobjects-upgrade' 'SubObjectsUpgrade' @('subobjects-upgrade-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'notify-when-attacking' 'NotifyWhenAttacking' @('notify-when-attacking-self-test',$StaticManifest,$GlobalManifest)

@@ -93,6 +93,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> notifyWhenAttacking;
     // Reborn: transports use independent EP1 containment and passenger-list metadata qualification.
     private readonly Lazy<StockMetadataGrammar> transportContain;
+    // Reborn: attribute modifier upgrades retain their complete inherited upgrade graph and strong modifier reference.
+    private readonly Lazy<StockMetadataGrammar> attributeModifierUpgrade;
     // Reborn: subobject upgrade nuggets have a separate retail-qualified EP1 layout and metadata grammar.
     private readonly Lazy<StockMetadataGrammar> subObjectsUpgrade;
     private readonly Lazy<StockMetadataGrammar> wallBuilder;
@@ -158,6 +160,7 @@ internal sealed class ConscriptVariableGraphVerifier
         playerPowerManager=new(()=>PlayerPowerManagerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         radar=new(()=>RadarBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         subObjectsUpgrade=new(()=>SubObjectsUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        attributeModifierUpgrade=new(()=>AttributeModifierUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         transportContain=new(()=>TransportContainContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         notifyWhenAttacking=new(()=>NotifyWhenAttackingContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         monitorSpecialPowerTimer=new(()=>MonitorSpecialPowerTimerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -349,6 +352,11 @@ internal sealed class ConscriptVariableGraphVerifier
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,SubObjectsUpgradeContract.TypeId,subobjectsNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(subobjectsNative,official,SubObjectsUpgradeContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,subobjectsNative,owner.NativeType,proof.Records);Own(subobjectsNative,start,stop);Splice(owner,metadata,start,size);continue;
                 }
                 // Reborn: source-sized transport graphs retain every inherited and own passenger field.
+                // Reborn: compose the actual authored modifier upgrade through the full source/native proof.
+                if(owner.NativeType==typeof(AttributeModifierUpgradeModuleData)){
+                    var grammar=attributeModifierUpgrade.Value;var upgradeNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,AttributeModifierUpgradeContract.TypeId,upgradeNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(upgradeNative,official,AttributeModifierUpgradeContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,upgradeNative,owner.NativeType,proof.Records);Own(upgradeNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(TransportContainModuleData)){
                     var grammar=transportContain.Value;var transportNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,TransportContainContract.TypeId,transportNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(transportNative,official,TransportContainContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,transportNative,owner.NativeType,proof.Records);Own(transportNative,start,stop);Splice(owner,metadata,start,size);continue;

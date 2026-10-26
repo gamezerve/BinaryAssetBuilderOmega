@@ -8,6 +8,15 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: modifier upgrades use the original EP1 strong modifier reference and complete inherited upgrade graph. -->
+`AttributeModifierUpgrade` is build-enabled with its 40-byte EP1 record, strong
+`AttributeModifier` reference, source-sized `TriggeredBy`/`ConflictsWith` lists,
+all inherited upgrade flags and optional `CustomAnimAndDuration`. Three original
+retail records qualify native storage and metadata, including the original
+`Includes/AlliedAirPowerUpgrade.xml`. Offline checks cover edited modifiers,
+animations, defaults, full GameObject composition and corrupt-output refusal.
+Developer regression: `attribute-modifier-upgrade-self-test <static.manifest> <global.manifest>`.
+
 <!-- Reborn: transport containers use the existing EP1 native writer with complete source-sized metadata composition. -->
 `TransportContain` is build-enabled, including inherited OpenContain fields,
 passenger filters/bones/statuses, exit modifiers, initial payloads, throwing/fade

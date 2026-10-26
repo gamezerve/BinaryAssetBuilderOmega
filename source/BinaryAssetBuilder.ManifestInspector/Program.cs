@@ -209,6 +209,9 @@ internal static class Program
             // Reborn: exercise complete attack notification source/native/metadata graphs offline.
             // Reborn: cover complete EP1 subobject upgrade graphs through real native/metadata dispatch.
             // Reborn: exercise EP1 transport passengers, inherited filters, defaults and extended upgrade lists offline.
+            // Reborn: exercise modifier references and complete inherited upgrade graphs offline.
+            if(args.Length==3 && args[0]=="attribute-modifier-upgrade-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();AttributeModifierUpgradeSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="transport-contain-self-test")
             {CompilerSmokeTest.InitializeHashProvider();TransportContainSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="subobjects-upgrade-self-test")

@@ -115,6 +115,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: subobject upgrade nuggets use their complete EP1 source/native proof, including inherited upgrade conditions.
             if(owner.NativeType==typeof(SageBinaryData.Ep1SubObjectsUpgradeModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             // Reborn: transport containment is admitted by full schema/native proof, not a fixed stock shape.
+            // Reborn: attribute modifier upgrades are source-driven under the complete EP1 upgrade/reference proof.
+            if(owner.NativeType==typeof(SageBinaryData.AttributeModifierUpgradeModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.TransportContainModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.NotifyWhenAttackingBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.MonitorSpecialPowerTimerUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
