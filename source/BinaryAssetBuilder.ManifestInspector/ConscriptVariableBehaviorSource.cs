@@ -96,6 +96,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: OCL powers accept complete EP1 location, filter and upgrade-list source graphs.
             // Reborn: player upgrade lists are authored freely under the official SpecialPower schema.
             // Reborn: template-ID store identities are authored normally under the official field-free module schema.
+            // Reborn: weapon-fire abilities accept schema-valid own fields and inherited SpecialAbility graphs.
+            if(owner.NativeType==typeof(SageBinaryData.Ep1WeaponFireSpecialAbilityUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.StoreTemplateIDBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.PlayerUpgradeSpecialPowerModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1OCLSpecialPowerModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

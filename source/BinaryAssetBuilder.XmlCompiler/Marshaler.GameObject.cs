@@ -481,7 +481,10 @@ public static partial class Marshaler
                 MarshalPolymorphicType<CaptureSpecialAbilityUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x1E45A393u:
-                MarshalPolymorphicType<WeaponFireSpecialAbilityUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: use the complete EP1 record while retaining the real weapon-fire concrete class identity.
+                using(var context=state.Push((void**)objT,(uint)sizeof(Ep1WeaponFireSpecialAbilityUpdateModuleData),1u))
+                    Marshal(node,(Ep1WeaponFireSpecialAbilityUpdateModuleData*)*objT,state);
+                uint weaponFireAbilityTypeId=0x1E45A393u;state.InplaceEndianToPlatform(&weaponFireAbilityTypeId);*(uint*)*objT=weaponFireAbilityTypeId;
                 break;
             case 0xF4568855u:
                 MarshalPolymorphicType<TiberiumThiefSpecialAbilityUpdateModuleData, BehaviorModuleData>(node, objT, state);

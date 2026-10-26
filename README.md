@@ -3890,3 +3890,16 @@ concrete wire identity, native data and metadata inheritance.
 `store-template-id-self-test` covers original/renamed IDs, complete GameObject
 composition and corrupted-ID refusal. Gameplay behavior has not been tested
 independently for new configurations.
+
+
+### WeaponFireSpecialAbilityUpdate
+
+`WeaponFireSpecialAbilityUpdate` is build-enabled with all twelve official own
+attributes and inherited SpecialAbility fields. A separate 284-byte EP1 native
+record restores `CanTriggerWhileDead` and `ModelConditionsOnUnpack`, preserving
+the legacy KW record. Retail spellbook weapon-fire powers qualify every own
+field offset, native payload and metadata inheritance.
+`weapon-fire-ability-self-test` covers original powers, all own attributes,
+weapon/power retargeting, defaults, inherited timing, full GameObject composition
+and corruption of the weapon import and both restored fields. New settings have
+not been independently tested in gameplay.

@@ -71,6 +71,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: OCL powers qualify their EP1 offset, enum and reference metadata once per build.
     // Reborn: player upgrade metadata is qualified independently against both original spellbooks.
     // Reborn: template-ID storage metadata is qualified lazily against its retail module.
+    // Reborn: weapon-fire abilities use the independently qualified EP1 field and metadata layout.
+    private readonly Lazy<StockMetadataGrammar> weaponFireAbility;
     private readonly Lazy<StockMetadataGrammar> storeTemplate;
     private readonly Lazy<StockMetadataGrammar> playerUpgrade;
     private readonly Lazy<StockMetadataGrammar> oclPower;
@@ -130,6 +132,7 @@ internal sealed class ConscriptVariableGraphVerifier
         buildingBehavior=new(()=>BuildingBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         weaponTurret=new(()=>WeaponTurretContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        weaponFireAbility=new(()=>WeaponFireAbilityContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         storeTemplate=new(()=>StoreTemplateIDContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         playerUpgrade=new(()=>PlayerUpgradePowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         oclPower=new(()=>OclSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -268,6 +271,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: compose source-owned OCL powers with complete EP1 location and upgrade/filter graphs.
                 // Reborn: preserve the complete player upgrade list and inherited power values during GameObject composition.
                 // Reborn: preserve the template-ID store identity through complete GameObject native and metadata composition.
+                // Reborn: preserve all EP1 weapon-fire fields and the inherited ability payload in complete-object composition.
+                if(owner.NativeType==typeof(Ep1WeaponFireSpecialAbilityUpdateModuleData)){
+                    var grammar=weaponFireAbility.Value;var abilityNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,WeaponFireAbilityContract.TypeId,abilityNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(abilityNative,official,WeaponFireAbilityContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,abilityNative,owner.NativeType,proof.Records);Own(abilityNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(StoreTemplateIDBehaviorModuleData)){
                     var grammar=storeTemplate.Value;var storeNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,StoreTemplateIDContract.TypeId,storeNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(storeNative,official,StoreTemplateIDContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,storeNative,owner.NativeType,proof.Records);Own(storeNative,start,stop);Splice(owner,metadata,start,size);continue;

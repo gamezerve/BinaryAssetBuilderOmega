@@ -92,6 +92,8 @@ if($SchedulerControl){
     # Reborn: cover OCL power EP1 fields, all location ordinals, filter and upgrade lists.
     # Reborn: cover player upgrade power stock records, retargeting and empty/multiple strong upgrade lists.
     # Reborn: cover the identity-only template-ID store through the normal EP1 behavior pipeline.
+    # Reborn: cover restored EP1 weapon-fire fields, retargeting, defaults and whole-object composition.
+    Add-BatchCase 'weapon-fire-ability' 'StockQualifiedWeaponFireAbility' @('weapon-fire-ability-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'store-template-id' 'StockQualifiedStoreTemplateID' @('store-template-id-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'player-upgrade-power' 'StockQualifiedPlayerUpgradePower' @('player-upgrade-power-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'ocl-special-power' 'StockQualifiedOclSpecialPower' @('ocl-special-power-self-test',$StaticManifest,$GlobalManifest)
