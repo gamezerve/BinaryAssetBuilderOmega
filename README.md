@@ -3818,3 +3818,13 @@ Source diagnostics treat formatting-only whitespace in otherwise empty paired
 module tags like their normalized self-closing form. Meaningful text still
 requires an exact match; an unsupported inherited module keeps its real source
 file and line rather than falling back to its overlay's GameObject line.
+
+
+### StoreObjectsSpecialPower
+
+`StoreObjectsSpecialPower` is build-enabled with editable `Radius`,
+`TeleportLinkID`, strong `OCL` reference, weak `TargetMarkerObjectRef`, and the
+inherited SpecialPower fields. Optional fields retain official defaults.
+Original Chrono Swap and all three Chrono Rift storage modules qualify its native
+layout and metadata. `store-objects-self-test` covers original records, all four
+storage fields, defaults, full-object composition and corruption refusal.

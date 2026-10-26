@@ -161,6 +161,9 @@ internal static class Program
             // Reborn: independently exercise radar source, stock metadata and full object composition.
             // Reborn: verify the complete power-manager EP1 native, imports and composition.
             // Reborn: cover all production-bonus source percentages and inherited power metadata.
+            // Reborn: verify object-storage fields, imports, marker IDs and full GameObject composition.
+            if(args.Length==3 && args[0]=="store-objects-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();StoreObjectsSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="production-bonus-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ProductionBonusSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="player-power-manager-self-test")

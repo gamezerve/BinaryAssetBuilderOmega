@@ -86,6 +86,8 @@ if($SchedulerControl){
     # Reborn: include the identity-only radar module in the offline regression batch.
     # Reborn: cover power-manager required power and optional EVA imports.
     # Reborn: verify original and authored production bonuses through full object composition.
+    # Reborn: exercise schema-driven StoreObjectsSpecialPower fields and original chronosphere records.
+    Add-BatchCase 'store-objects' 'StockQualifiedStoreObjects' @('store-objects-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'production-bonus' 'StockQualifiedProductionBonus' @('production-bonus-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'player-power-manager' 'StockQualifiedPlayerPowerManager' @('player-power-manager-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'radar-behavior' 'StockQualifiedRadarBehavior' @('radar-behavior-self-test',$StaticManifest,$GlobalManifest)

@@ -65,6 +65,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: qualify radar metadata only when authored by the source graph.
     // Reborn: power-manager metadata is learned independently from retail spellbooks.
     // Reborn: learn production-bonus inheritance and percentages from retail spellbook records.
+    // Reborn: object-storage metadata is qualified independently against the original chronosphere powers.
+    private readonly Lazy<StockMetadataGrammar> storeObjects;
     private readonly Lazy<StockMetadataGrammar> productionBonus;
     private readonly Lazy<StockMetadataGrammar> playerPowerManager;
     private readonly Lazy<StockMetadataGrammar> radar;
@@ -118,6 +120,7 @@ internal sealed class ConscriptVariableGraphVerifier
         buildingBehavior=new(()=>BuildingBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         weaponTurret=new(()=>WeaponTurretContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        storeObjects=new(()=>StoreObjectsContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         productionBonus=new(()=>ProductionBonusContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         playerPowerManager=new(()=>PlayerPowerManagerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         radar=new(()=>RadarBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -244,6 +247,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: preserve authored radar identity through the full object allocator and token metadata.
                 // Reborn: compose complete power-manager records including both strong reference slots.
                 // Reborn: preserve complete production-bonus source values and inherited special-power references.
+                // Reborn: retain radius, pair ID, OCL import and weak target marker during full-object composition.
+                if(owner.NativeType==typeof(StoreObjectsSpecialPowerModuleData)){
+                    var grammar=storeObjects.Value;var storeNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,StoreObjectsContract.TypeId,storeNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(storeNative,official,StoreObjectsContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,storeNative,owner.NativeType,proof.Records);Own(storeNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(GiveProductionBonusSpecialPowerModuleData)){
                     var grammar=productionBonus.Value;var bonusNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,ProductionBonusContract.TypeId,bonusNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(bonusNative,official,ProductionBonusContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,bonusNative,owner.NativeType,proof.Records);Own(bonusNative,start,stop);Splice(owner,metadata,start,size);continue;

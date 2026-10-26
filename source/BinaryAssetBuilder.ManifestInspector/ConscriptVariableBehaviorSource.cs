@@ -90,6 +90,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: radar markers admit their schema-defined inherited identity without a fixed stock module ID.
             // Reborn: power managers accept authored power/EVA references and local module identities through the official schema.
             // Reborn: production bonuses are schema-driven values rather than fixed FreeTrade/MassProduction samples.
+            // Reborn: object storage uses schema-owned radius/link values and authored strong/weak references.
+            if(owner.NativeType==typeof(SageBinaryData.StoreObjectsSpecialPowerModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.GiveProductionBonusSpecialPowerModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1PlayerPowerManagerBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.RadarBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
