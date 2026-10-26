@@ -8,6 +8,17 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: jet AI uses separate retail-qualified EP1 storage and concrete inline metadata rather than KW takeoff/lockon fields. -->
+`AI/JetAIUpdate` is build-enabled through a separate 100-byte EP1 writer and
+inline metadata compositor. All nine jet attributes are editable, including
+strong weapon/EVA references, ammo damage/delay, parking and flight flags. The
+shared EP1 AI state/locomotor enums, optional chooser and inherited scalars retain
+independent source/native validation. Original Century Bomber and Kirov records
+qualify offsets and metadata; tests cover defaults, imports, chooser presence,
+full GameObject composition and corrupt output. Existing inherited nonempty
+`SpecialContactPoints` and `ObjectVisionRange` lists remain unsupported explicitly.
+Developer regression: `jet-ai-self-test <static.manifest> <global.manifest>`.
+
 <!-- Reborn: passenger ejection has a new retail-qualified EP1 writer and source-sized ability metadata. -->
 `EjectPassengersSpecialAbilityUpdate` is build-enabled with a new 292-byte EP1
 native writer: passenger interval, speed/radius/height/apex, ejection FX,

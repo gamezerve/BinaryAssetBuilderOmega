@@ -34,7 +34,8 @@ public static class Ep1SelectedModuleIdentity
         // Reborn: selected common AI shares the same local identity scope; client/other concrete AI families remain unadmitted.
         var aiContainers=root.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="AI" && e.NamespaceURI==ns).ToArray();
         if(aiContainers.Length>1)throw new InvalidDataException("Selected identity permits at most one AI container.");var ai=aiContainers.SelectMany(e=>e.ChildNodes.OfType<XmlElement>()).ToArray();
-        if(ai.Length>2 || ai.Any(e=>e.NamespaceURI!=ns || e.LocalName!="AIUpdate"))throw new InvalidDataException("Unreviewed selected AI identity class/count.");
+        // Reborn: the complete route accepts independently reviewed EP1 jets in the same local identity scope.
+        if(ai.Length>2 || ai.Any(e=>e.NamespaceURI!=ns || (e.LocalName!="AIUpdate"&&(!reviewedBehaviors||e.LocalName!="JetAIUpdate"))))throw new InvalidDataException("Unreviewed selected AI identity class/count.");
         // Reborn: selected complete scripted/tracer Draws share the same local scope, including cross-class Body/AI/behavior collisions and forward links.
         var drawContainers=root.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="Draws" && e.NamespaceURI==ns).ToArray();
         var draws=drawContainers.SelectMany(e=>e.ChildNodes.OfType<XmlElement>()).ToArray();

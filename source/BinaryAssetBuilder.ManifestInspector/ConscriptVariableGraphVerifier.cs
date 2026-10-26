@@ -110,6 +110,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> dependencyGrammar;
     // Reborn: optional chooser ownership is qualified on independent infantry/building AI witnesses, not fixed Conscript child presence.
     private readonly Lazy<StockMetadataGrammar> aiGrammar;
+    // Reborn: jet AI carries a separate retail-qualified derived record and strong EVA/weapon imports.
+    private readonly Lazy<StockMetadataGrammar> jetAiGrammar;
     // Reborn: optional root records and inline list items each retain their own independently stock-qualified grammar.
     private readonly Dictionary<string,Lazy<StockMetadataGrammar>> extendedRoots=new(StringComparer.Ordinal);
     // Reborn: verify all three original FX graphs against stock before accepting source-sized death/event layouts.
@@ -178,6 +180,7 @@ internal sealed class ConscriptVariableGraphVerifier
         foreach(var family in SchemaNativeContract.Families)schemaFamilies.Add(family.Type,new(()=>QualifySchemaFamily(manifest,family)));
         geometryGrammar=new(()=>GameObjectGeometryContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         dependencyGrammar=new(()=>GameObjectDependencyContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        jetAiGrammar=new(()=>JetAIUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         aiGrammar=new(()=>AIUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         foreach(string name in GameObjectExtendedRootContract.Names)extendedRoots.Add(name,new(()=>GameObjectExtendedRootContract.Qualify(name,manifest,baseline,referenceSchemas,catalog)));
         powerUpgrade=new(()=>PowerUpgradeContract.Create(stock.Bytes,topology.Containers.Single(c=>c.Name=="Behaviors").Modules,GameObjectStockReview.Tokens(stock.Bytes,0)[FastHash.GetHashCode("AI")].Offset));
@@ -404,7 +407,8 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: chooser presence and all source-bound native fields/imports own a source-sized AI metadata fragment.
                 if(group.Key=="AI"){
                     var aiNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container=="AI"&&o.Index==owner.Index).Element;
-                    var proof=AIUpdateContract.Verify(element,aiNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var aiTokens=Ep1AIUpdateTokenizer.Tokenize(aiNative);int size=aiGrammar.Value.Verify(aiTokens,aiNative,typeof(AIUpdateContract.Native),proof.Records);Own(aiNative,start,stop);
+                    // Reborn: preserve the concrete AI class while the existing inline list splice remains shared.
+                    bool jet=owner.NativeType==typeof(Ep1JetAIUpdateModuleData);var references=instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray();var proof=jet?JetAIUpdateContract.Verify(element,aiNative,references):AIUpdateContract.Verify(element,aiNative,references);var aiTokens=jet?Ep1JetAIUpdateTokenizer.Tokenize(aiNative):Ep1AIUpdateTokenizer.Tokenize(aiNative);int size=(jet?jetAiGrammar:aiGrammar).Value.Verify(aiTokens,aiNative,jet?typeof(JetAIUpdateContract.Native):typeof(AIUpdateContract.Native),proof.Records);Own(aiNative,start,stop);
                     int marker=aiAt+12+owner.Index*12;if(Word(tokens.InstanceBuffer,marker)!=0xB151A0EB||Word(tokens.InstanceBuffer,marker+4)!=0||Word(tokens.InstanceBuffer,marker+8)!=aiNext)throw new InvalidDataException("AI metadata source order differs.");
                     for(int offset=0;offset<size;offset+=12){uint target=Word(aiTokens.InstanceBuffer,offset+8);uint expected=target==0?0:target<size?target+(uint)aiNext:target-(uint)size+(uint)(prefix+start);if(Word(tokens.InstanceBuffer,aiNext+offset)!=Word(aiTokens.InstanceBuffer,offset)||Word(tokens.InstanceBuffer,aiNext+offset+4)!=Word(aiTokens.InstanceBuffer,offset+4)||Word(tokens.InstanceBuffer,aiNext+offset+8)!=expected)throw new InvalidDataException("AI metadata splice differs.");}aiNext+=size;continue;
                 }

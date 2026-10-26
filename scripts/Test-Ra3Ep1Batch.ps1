@@ -120,6 +120,8 @@ if($SchedulerControl){
     # Reborn: cover complete transport passenger/default/filter/upgrade graphs without user mod builds.
     # Reborn: cover source-driven attribute modifier upgrades and inherited animation/trigger graphs.
     # Reborn: cover new EP1 passenger-ejection native fields, defaults, offsets and full object composition.
+    # Reborn: exercise concrete jet AI fields, EVA/weapon imports and inline metadata composition.
+    Add-BatchCase 'jet-ai' 'JetAIUpdate' @('jet-ai-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'eject-passengers' 'EjectPassengersSpecialAbilityUpdate' @('eject-passengers-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'attribute-modifier-upgrade' 'AttributeModifierUpgrade' @('attribute-modifier-upgrade-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'transport-contain' 'TransportContain' @('transport-contain-self-test',$StaticManifest,$GlobalManifest)

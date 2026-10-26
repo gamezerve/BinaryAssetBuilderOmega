@@ -1,4 +1,4 @@
-﻿using Relo;
+using Relo;
 using SageBinaryData;
 
 public static partial class Marshaler
@@ -29,7 +29,8 @@ public static partial class Marshaler
                 MarshalPolymorphicType<SupplyTruckAIUpdateModuleData, UpdateModuleData>(node, objT, state);
                 break;
             case 0x4486CF48u:
-                MarshalPolymorphicType<JetAIUpdateModuleData, UpdateModuleData>(node, objT, state);
+                // Reborn: this port retains legacy build symbols, but the active jet wire route must use the separately qualified EP1 model.
+                MarshalEp1JetAIUpdate(node,objT,state);
                 break;
             case 0x55D77703u:
                 MarshalPolymorphicType<HordeAIUpdateModuleData, UpdateModuleData>(node, objT, state);

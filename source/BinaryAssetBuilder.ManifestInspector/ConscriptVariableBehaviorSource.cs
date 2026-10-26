@@ -157,6 +157,8 @@ internal static class ConscriptVariableBehaviorSource
         VisionInfoContract.MaskComparison(copy,comparison);
         copy.DocumentElement!.SetAttribute("id",comparison.DocumentElement!.GetAttribute("id"));
         // Reborn: comparison-only IDs must not redirect topology diagnostics to an unrelated baseline asset or the entry document.
+        // Reborn: independently proved AI classes may differ from the comparison infantry; restore comparison AI before identity/scalar masking.
+        AIUpdateContract.Mask(copy,comparison);
         try{ConscriptSharedSourceContract.Mask(copy,comparison);}
         catch(InvalidDataException error)when(SdkXmlDiagnostics.Node(error)!=null){throw SdkXmlDiagnostics.At(new InvalidDataException(error.Message,error),SdkXmlDiagnostics.Unmasked(SdkXmlDiagnostics.Node(error),source));}
         // Reborn: existing plain-record scalar edits use the full variable graph verifier rather than the historical fixed snapshot oracle.
@@ -167,7 +169,7 @@ internal static class ConscriptVariableBehaviorSource
         // Reborn: optional audio/shadow records and repeated projected records use independent full-root proofs.
         GameObjectExtendedRootContract.Mask(copy,comparison);
         // Reborn: the complete AI leaf contract owns chooser presence, nested defaults and optional imports independently of stock shape.
-        AIUpdateContract.Mask(copy,comparison);
+
         // Reborn: source-sized Geometry has a complete independent native/metadata proof instead of a one-Shape comparison quota.
         GameObjectGeometryContract.Mask(copy,comparison);
         GameObjectNestedValueContract.Mask(copy,comparison);

@@ -35,6 +35,8 @@ internal static class ConscriptModuleScalarContract
                 {
                     "Behaviors"=>Ep1BehaviorMetadataTokenizer.ReviewedNativeType(FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(element.LocalName))),
                     "Draws"=>element.LocalName switch{"ScriptedModelDraw"=>typeof(W3DScriptedModelDrawModuleData),"TracerModelDraw"=>typeof(W3DTracerDrawModuleData),_=>throw new InvalidDataException("Unreviewed scalar draw family.")},
+                    // Reborn: jet AI owns a separate EP1 record instead of inheriting legacy KW offsets.
+                    "AI" when element.LocalName=="JetAIUpdate"=>typeof(Ep1JetAIUpdateModuleData),
                     "AI" when element.LocalName=="AIUpdate"=>typeof(Ep1AIUpdateModuleData),
                     // Reborn: PropBody has no own scalars but participates in source identities and whole-object validation.
                     "Body" when element.LocalName=="PropBody"=>typeof(PropBodyModuleData),
