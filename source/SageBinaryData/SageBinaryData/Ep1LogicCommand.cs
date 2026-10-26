@@ -36,5 +36,6 @@ public unsafe struct Ep1LogicCommand
     public AssetReference<SpecialPowerTemplate>* SpecialPower;
     public AssetReference<UpgradeTemplate>* Upgrade;
     public AssetReference<GameObject>* Object;
-    public void* AISpecialPowerInfo;
+    // Reborn: the optional EP1 AI record is fully typed, including its own nested references.
+    public Ep1AiSpecialPowerInfo* AISpecialPowerInfo;
 }

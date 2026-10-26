@@ -3978,3 +3978,19 @@ identities, exact import slots, corrupt reference rejection, ordinary source
 preparation/linking and private final stream/package readback. Late OCL
 qualification diagnostics now map their retained field node to the original
 source file and line instead of a temporary `game.xml` context.
+
+### LogicCommand AISpecialPowerInfo
+
+`LogicCommand/AISpecialPowerInfo` supports the complete Uprising XSD: all
+heuristics/managers, scalar values, KindOf/status masks, optional values,
+NextLogicCommand/UpdateObject imports, ObjectFilter and SpecialPowerWeapon.
+Its EP1 record is 188 bytes; the command root stays 28 bytes. The two optional
+status pointers are at +164/+168 and DontUseIfOutRangeTarget is at +185.
+Legacy RA3/KW native types are unchanged. Fast builds retain current-source
+BIN/RELO/IMP proof; developer builds additionally qualify all 339 original
+static commands, including base-game and EP1 AI declarations.
+
+`ai-special-power-info-self-test` covers 143 original AI command graphs,
+every official AI attribute, nested filters/weapons, defaults, invalid enums,
+corrupt native/relocation data and private command/command-set package readback.
+This is compiler validation; it does not claim a new gameplay AI test.

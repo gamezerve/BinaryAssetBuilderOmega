@@ -191,6 +191,9 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();TeleportStoredObjectsSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: expose the base-power source/native/metadata regression without touching user mods.
             // Reborn: validate campaign OCL power imports and local power linkage using private evidence output.
+            // Reborn: qualify complete Uprising command AI records and private package output.
+            if(args.Length==4 && args[0]=="ai-special-power-info-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();AiSpecialPowerInfoSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==4 && args[0]=="ocl-fire-special-power-self-test")
             {CompilerSmokeTest.InitializeHashProvider();OclFireSpecialPowerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==3 && args[0]=="special-power-self-test")

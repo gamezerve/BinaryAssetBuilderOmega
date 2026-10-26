@@ -107,6 +107,8 @@ if($SchedulerControl){
     Add-BatchCase 'teleport-stored-objects' 'StockQualifiedTeleportStoredObjects' @('teleport-stored-objects-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: qualify base SpecialPower filters, defaults and complete object composition.
     # Reborn: campaign WorldBuilder OCL fields and authored local power imports share normal native/link proof.
+    # Reborn: exercise complete LogicCommand AI source graphs and private linked publication.
+    Add-BatchCase 'ai-special-power-info' 'AiSpecialPowerInfo' @('ai-special-power-info-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'ai-special-power-info'))
     Add-BatchCase 'ocl-fire-special-power' 'OclFireSpecialPower' @('ocl-fire-special-power-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'ocl-fire-special-power'))
     Add-BatchCase 'special-power' 'SpecialPower' @('special-power-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'store-objects' 'StockQualifiedStoreObjects' @('store-objects-self-test',$StaticManifest,$GlobalManifest)

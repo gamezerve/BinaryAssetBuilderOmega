@@ -4,14 +4,11 @@ using SageBinaryData;
 public static partial class Marshaler
 {
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: EP1 LogicCommand in the official allocation order (SpecialPower, Upgrade, Object). AISpecialPowerInfo has a different EP1
-        record size than RA3 and is not reviewed yet, so it is refused rather than written with a guessed layout. */
+    /** Reborn: EP1 LogicCommand in the official allocation order (SpecialPower, Upgrade, Object). the optional AI graph uses its separate EP1 record. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node, Ep1LogicCommand* value, Tracker state)
     {
         if (node is null) return;
-        if (node.GetChildNode("AISpecialPowerInfo", null) != null)
-            throw new System.NotSupportedException("EP1 LogicCommand AISpecialPowerInfo is not supported yet (its EP1 record layout is not reviewed).");
         string type = node.GetAttributeValue("Type", "NONE")?.GetText() ?? "NONE";
         if (!System.Enum.TryParse(type, false, out Ep1LogicCommandType parsed) || !System.Enum.IsDefined(parsed) || type != parsed.ToString())
             throw new System.NotSupportedException("Unknown EP1 LogicCommand Type: " + type);
@@ -27,6 +24,9 @@ public static partial class Marshaler
         Marshal(node.GetChildNode("SpecialPower", null), &value->SpecialPower, state);
         Marshal(node.GetChildNode("Upgrade", null), &value->Upgrade, state);
         Marshal(node.GetChildNode("Object", null), &value->Object, state);
+        // Reborn: append the optional AI record after the three command-reference pointees, preserving official allocation order.
+        var ai=node.GetChildNode("AISpecialPowerInfo",null);
+        if(ai!=null){using Tracker.Context allocation=state.Push((void**)&value->AISpecialPowerInfo,(uint)sizeof(Ep1AiSpecialPowerInfo),1);Marshal(ai,value->AISpecialPowerInfo,state);}
         Marshal(node, (BaseAssetType*)value, state);
     }
 }

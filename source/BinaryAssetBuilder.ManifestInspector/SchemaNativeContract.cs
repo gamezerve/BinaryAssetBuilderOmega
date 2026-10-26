@@ -148,6 +148,9 @@ internal sealed class SchemaNativeContract
             if(name=="TypeId"){Expect(at,BitConverter.GetBytes(typeId),path);return;}
             if(name=="id"){var id=e?.GetAttributeNode("id")??throw new InvalidDataException("Schema-proved module requires an id.");consumed.Add(id);Expect(at,BitConverter.GetBytes(FastHash.GetHashCode(id.Value.ToLowerInvariant())),path);return;}
         }
+        // Reborn: EP1 AI structs store named schema enums/lists in uint words; verify their actual schema ordinals/bits rather than parsing names as integers.
+        if(owner==typeof(Ep1AiSpecialPowerInfo)&&name is "Heuristic" or "Manager"||owner==typeof(AISpecialPowerWeaponData)&&name is "AoeAttackPowerLocationPreference" or "AoeAttackEmanationLocation"){Enumeration(e,name,at,path);return;}
+        if(owner==typeof(Ep1AiSpecialPowerInfo)&&name is "UseInMicroManagerState" or "Location"){Flags(e,name,at,4,path);return;}
         if(name=="Base"&&!type.IsPrimitive&&!type.IsEnum&&!type.IsGenericType){Struct(type,e,at,path,depth+1);return;}
         if(IsFlags(type)){Flags(e,name,at,Size(type),path);return;}
         if(type.IsEnum){Enumeration(e,name,at,path);return;}
