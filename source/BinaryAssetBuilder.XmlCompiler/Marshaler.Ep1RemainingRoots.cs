@@ -41,11 +41,14 @@ public static partial class Marshaler
         Marshal(node.GetChildNode("ConstructionBaseSelectionCriteria",null),&objT->ConstructionBaseSelectionCriteria,state);Marshal(node.GetChildNode("ResourceNodeBaseClosenessTestSelectionCriteria",null),&objT->ResourceNodeBaseClosenessTestSelectionCriteria,state);Marshal(node.GetChildNode("DodgeWithUnits",null),&objT->DodgeWithUnits,state);
     }
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: use EP1 crusher internal offsets and complete scalar/reference/flag source semantics; nonempty extra-crush payload families stay explicitly closed. */
+    /** Reborn: use EP1 crusher internal offsets and complete scalar/reference/flag source semantics; extra-crush level and kill-delay lists are source-sized and retain nested filters and conditions. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node,Ep1CrusherInfo* objT,Tracker state)
     {
-        if(node==null)return;if((node.GetChildNodes("ExtraCrushLevels")?.GetCount()??0)!=0 || (node.GetChildNodes("ExtraCrushKillDelays")?.GetCount()??0)!=0)throw new InvalidDataException("EP1 populated extra-crush child ABI not reviewed.");
+        if(node==null)return;
+        // Reborn: both EP1 list headers own repeated native child records and all nested condition/filter allocations.
+        Marshal(node.GetChildNodes("ExtraCrushLevels"),&objT->ExtraCrushLevels,state);
+        Marshal(node.GetChildNodes("ExtraCrushKillDelays"),&objT->ExtraCrushKillDelays,state);
         Marshal(node.GetAttributeValue("CrusherLevel","0"),&objT->CrusherLevel,state);Marshal(node.GetAttributeValue("CrushableLevel","127"),&objT->CrushableLevel,state);Marshal(node.GetAttributeValue("CrushKnockback","0"),&objT->CrushKnockback,state);Marshal(node.GetAttributeValue("CrushZFactor","1"),&objT->CrushZFactor,state);Marshal(node.GetAttributeValue("MinCrushVelocityPercent","1"),&objT->MinCrushVelocityPercent,state);Marshal(node.GetAttributeValue("CrushDecelerationPercent","0"),&objT->CrushDecelerationPercent,state);Marshal(node.GetAttributeValue("CrushWeapon",null),&objT->CrushWeapon,state);Marshal(node.GetAttributeValue("DefaultCrushKillDelay",".5s"),&objT->DefaultCrushKillDelay,state);
         Marshal(node.GetAttributeValue("CrushEqualLevelProps","false"),&objT->CrushEqualLevelProps,state);Marshal(node.GetAttributeValue("UseCrushAttack","true"),&objT->UseCrushAttack,state);Marshal(node.GetAttributeValue("CrushOnlyWhileCharging","false"),&objT->CrushOnlyWhileCharging,state);Marshal(node.GetAttributeValue("CrushAllies","false"),&objT->CrushAllies,state);Marshal(node.GetAttributeValue("CrushAircraftWhileStationary","false"),&objT->CrushAircraftWhileStationary,state);Marshal(node.GetAttributeValue("UseDirectionCheck","true"),&objT->UseDirectionCheck,state);Marshal(node.GetAttributeValue("ShouldSquishOnCollide","true"),&objT->ShouldSquishOnCollide,state);Marshal(node.GetAttributeValue("DecelerateForAllCollides","false"),&objT->DecelerateForAllCollides,state);Marshal(node.GetAttributeValue("CannotCrushTarget","false"),&objT->CannotCrushTarget,state);
     }

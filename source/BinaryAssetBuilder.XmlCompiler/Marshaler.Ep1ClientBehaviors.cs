@@ -42,7 +42,12 @@ public static partial class Marshaler
     public static unsafe void Marshal(Node node,Ep1AudioSoundEntry* objT,Tracker state)
     {if(node==null)return;Marshal(node.GetAttributeValue(nameof(Ep1AudioSoundEntry.Sound),null),&objT->Sound,state);Marshal(node.GetAttributeValue(nameof(Ep1AudioSoundEntry.AudioType),null),&objT->AudioType,state);}
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: retain all voice entry families and ordering; unchanged object-specific/named entry semantics remain on their original record types. */
+    /** Reborn: named voice entries (e.g. ReturnToProducer) use the twelve-byte EP1 Sound/EvaEvent base followed by the Name hash. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node,Ep1AudioVoiceReferentialEntry* objT,Tracker state)
+    {if(node==null)return;Marshal(node.GetAttributeValue(nameof(Ep1AudioVoiceReferentialEntry.Name),null),&objT->Name,state);Marshal(node.GetAttributeValue("Sound",null),&objT->Base.Sound,state);Marshal(node.GetAttributeValue("EvaEvent",null),&objT->Base.EvaEvent,state);}
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: retain all voice entry families and ordering; object-specific entries keep their original record type and stay refused by the root tokenizer. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node,Ep1AudioArrayVoice* objT,Tracker state)
     {if(node==null)return;Marshal(node.GetChildNodes(nameof(Ep1AudioArrayVoice.AudioEntry)),&objT->AudioEntry,state);Marshal(node.GetChildNodes(nameof(Ep1AudioArrayVoice.ObjectSpecificEntry)),&objT->ObjectSpecificEntry,state);Marshal(node.GetChildNodes(nameof(Ep1AudioArrayVoice.NamedEntry)),&objT->NamedEntry,state);}

@@ -54,6 +54,23 @@ internal sealed class ConscriptCompileLog
         new SdkXmlDiagnostics.SourceMap(new[]{snapshot}).Enrich(error,path,document);
     }
 
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: attach late native failures to their authored declaration and crusher field before using the original-file source map. */
+    //-------------------------------------------------------------------------------------------------
+    internal void NativeError(Exception error,XmlDocument source)
+    {
+        if(SdkXmlDiagnostics.Node(error)==null){XmlNode context=source.DocumentElement!;
+            if(error.Message.Contains("crush",StringComparison.OrdinalIgnoreCase)){
+                var crusher=GameObjectExtendedRootContract.Owners(source,"CrusherInfo").FirstOrDefault();if(crusher!=null){context=crusher;
+                    string? child=error.Message.Contains("ExtraCrushKillDelays",StringComparison.OrdinalIgnoreCase)?"ExtraCrushKillDelays":error.Message.Contains("ExtraCrushLevels",StringComparison.OrdinalIgnoreCase)||error.Message.Contains("extra-crush",StringComparison.OrdinalIgnoreCase)?"ExtraCrushLevels":null;
+                    if(child!=null)context=crusher.ChildNodes.OfType<XmlElement>().FirstOrDefault(e=>e.LocalName==child)??crusher;
+                }
+            }
+            SdkXmlDiagnostics.At(error,context);
+        }
+        Enrich(error);
+    }
+
     // Reborn: final audits prefer the prepared stream which actually owns this declaration's original source path.
     internal bool HasOrigin(string type,string id)=>files.ContainsKey(type+":"+id);
 

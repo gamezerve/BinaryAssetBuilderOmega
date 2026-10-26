@@ -123,6 +123,8 @@ if($SchedulerControl){
     # Reborn: exercise concrete jet AI fields, EVA/weapon imports and inline metadata composition.
     # Reborn: cover run-off-map waypoint strings, flags, defaults and full object composition.
     # Reborn: cover attack-assist responses, authored masks/slots and linked notification behavior composition.
+    # Reborn: cover populated EP1 crusher lists and authored-source native diagnostics.
+    Add-BatchCase 'crusher-children' 'CrusherInfo children' @('crusher-children-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'attack-assist-response' 'AttackAssistResponseBehavior' @('attack-assist-response-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'run-off-map' 'RunOffMapBehavior' @('run-off-map-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'jet-ai' 'JetAIUpdate' @('jet-ai-self-test',$StaticManifest,$GlobalManifest)
