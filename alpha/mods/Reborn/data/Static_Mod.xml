@@ -41,7 +41,7 @@
 		<!-- <Include type="all" source="DATA:GlobalData/DamageFX.xml" /> -->
 		<!-- <Include type="all" source="DATA:GlobalData/Armor.xml" /> -->
 		<!-- <Include type="all" source="DATA:GlobalData/Weapon.xml" /> -->
-		<!-- <Include type="all" source="DATA:GlobalData/ExperienceLevels.xml" /> -->
+		<Include type="all" source="DATA:GlobalData/ExperienceLevels.xml" />
 		<!-- <Include type="all" source="DATA:GlobalData/MultiplayerSettings.xml" /> -->
 		<!-- <Include type="all" source="DATA:GlobalData/OnlineChatColors.xml" /> -->
 		<!-- <Include type="all" source="DATA:GlobalData/Stances.xml" /> -->
@@ -102,12 +102,24 @@
 		<!-- <Include type="all" source="DATA:EP1/GlobalData/Weapon_EP1.xml" /> -->
 		<!-- <Include type="all" source="DATA:EP1/GlobalData/ExperienceLevels_EP1.xml" /> -->
 		<!-- <Include type="all" source="DATA:EP1/GlobalData/ButtonStateDataCommon_EP1.xml" /> -->
-		<!-- <Include type="all" source="DATA:EP1/GlobalData/SpecialPowerTemplates_EP1.xml"/> -->
+		<Include type="all" source="DATA:EP1/GlobalData/SpecialPowerTemplates_EP1.xml"/>
 		<!-- <Include type="all" source="DATA:EP1/GlobalData/LogicCommand_EP1.xml"/> -->
 		<!-- <Include type="all" source="DATA:EP1/GlobalData/LogicCommandSet_EP1.xml"/> -->
 		<!-- <Include type="all" source="DATA:EP1/GlobalData/AttributeModifiers_EP1.xml"/> -->
-		<!-- <Include type="all" source="DATA:EP1/GlobalData/SinglePlayerUnits_EP1.xml" /> -->
+		<Include type="all" source="DATA:EP1/GlobalData/SinglePlayerUnits_EP1.xml" />
 		<!-- <Include type="all" source="DATA:EP1/System/PlayerSpellBook_EP1.xml" /> -->
+		<Include type="all" source="GlobalData/Paradrop.xml" />
+		<Include type="all" source="GlobalData/ObjectCreationLists.xml" />
+				
+		<!-- System -->
+		<Include type="all" source="System/PlayerTechs.xml" />
+				
+		<!-- UI -->
+		<!-- <Include type="all" source="UI/Joypad/CommandBar/ButtonTemplates.xml"/> -->
+		<Include type="all" source="UI/Mouse/UnitAbilityButtonTemplates.xml"/>
+		<!-- <Include type="all" source="UI/Mouse/PlayerPowerButtonTemplates.xml"/> -->
+		<Include type="all" source="UI/ButtonStateDataCommon.xml"/>
+		<Include type="all" source="UI/PlayerTechStoreTemplates.xml"/>		
 				
 		<!-- Reborn Packed Images -->
 		<Include type="all" source="ART:Images/RebornPackedImages.xml"/>	

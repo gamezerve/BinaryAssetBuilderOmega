@@ -4,9 +4,9 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:GV_SovietSatelliteFacility.W3X" />				
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:GV_SovietSatelliteFacility.W3X" />				 -->
 			
 			
 		<!-- Base Object -->

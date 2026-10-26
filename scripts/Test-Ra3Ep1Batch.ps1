@@ -96,6 +96,8 @@ if($SchedulerControl){
     Add-BatchCase 'weapon-fire-ability' 'StockQualifiedWeaponFireAbility' @('weapon-fire-ability-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: cover PropBody allocation, identity and complete root metadata.
     # Reborn: qualify EVA-ready announcements and mixed source-sized client lists.
+    # Reborn: cover omitted and present VisionInfo without Conscript-only scalar assumptions.
+    Add-BatchCase 'optional-vision-info' 'OptionalVisionInfo' @('optional-vision-info-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'eva-ready-client' 'StockQualifiedEvaReadyClient' @('eva-ready-client-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'prop-body' 'StockQualifiedPropBody' @('prop-body-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'store-template-id' 'StockQualifiedStoreTemplateID' @('store-template-id-self-test',$StaticManifest,$GlobalManifest)

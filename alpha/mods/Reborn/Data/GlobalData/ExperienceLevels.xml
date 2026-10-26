@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+	<Tags />
+	<Includes>
+	</Includes>
+	
+		<!-- all levels inherit from this -->
+	<ExperienceLevelTemplate
+		id="ExperienceLevel_Base">
+		<LevelUpTintColor
+			r="1.0"
+			g="1.0"
+			b="1.0"
+		/>
+	</ExperienceLevelTemplate>
+	
+	<!-- Generic Rank 1 -->
+	<ExperienceLevelTemplate
+		id="ExperienceLevel_Rank1"
+		inheritFrom="ExperienceLevel_Base"
+		Rank="1" />
+		
+		
+	<ExperienceLevelTemplate
+		id="ExperienceLevel_StructuresLarge"
+		inheritFrom="ExperienceLevel_Rank1"
+		RequiredExperience="1"
+		ExperienceAward="4500">
+		<Target>SovietWarFactory</Target>
+		<Target>SovietRefinery</Target>
+		<Target>SovietAirField</Target>
+		<Target>SovietNavalYard</Target>
+		<Target>SovietPortBuilding</Target>
+		<Target>SovietSupplyPort</Target>
+		<Target>SovietTechStructure</Target>
+		<Target>SovietCommandCenter</Target>
+		<Target>SovietVolcanoFortress</Target>
+		<Target>SovietVolcanoFortress02</Target>
+		<Target>SovietVolcanoFortress03</Target>
+		<Target>SovietVolcanoFortress04</Target>
+
+		<Target>AlliedRefinery</Target>
+		<Target>AlliedWarFactory</Target>
+		<Target>AlliedAirField</Target>
+		<Target>AlliedNavalYard</Target>
+		<Target>AlliedTechStructure</Target>
+		
+		<Target>JapanNavalYard</Target>
+		<Target>JapanRefinery</Target>
+		<Target>JapanWarFactory</Target>
+		<Target>JapanTechStructure</Target>
+		
+		<Target>JapanNavalYardEgg</Target>
+		<Target>JapanRefineryEgg</Target>
+		<Target>JapanWarFactoryEgg</Target>
+		<Target>JapanTechStructureEgg</Target>
+	</ExperienceLevelTemplate>	
+	
+	<ExperienceLevelTemplate
+		id="ExperienceLevel_StructuresMedium"
+		inheritFrom="ExperienceLevel_Rank1"
+		RequiredExperience="1"
+		ExperienceAward="1500">
+		<Target>AlliedBarracks</Target>
+		<Target>AlliedPowerPlant</Target>
+		<Target>AlliedOutPost</Target>
+		<Target>SovietOutPost</Target>
+		<Target>SovietPowerPlant</Target>
+		<Target>SovietBarracks</Target>
+		<Target>JapanBarracks</Target>
+		<Target>JapanBarracksEgg</Target>
+		<Target>JapanPowerPlant</Target>
+		<Target>JapanPowerPlantEgg</Target>
+		<Target>SovietBaseDefenseAdvanced</Target>
+		<Target>AlliedBaseDefenseAdvanced</Target>
+		<Target>JapanBaseDefenseAdvanced</Target>
+		<Target>SovietKrasna45</Target>
+	</ExperienceLevelTemplate>
+	
+</AssetDeclaration>
+

@@ -139,6 +139,8 @@ internal static class ConscriptVariableBehaviorSource
         ConscriptVariableContainers.Restore(copy,comparison);
         // Reborn: restore only the comparison body; authored PropBody is independently proved during native composition.
         if(ConscriptVariableContainers.Find(source,"Body")?.ChildNodes.OfType<XmlElement>().SingleOrDefault()?.LocalName=="PropBody"){var body=ConscriptVariableContainers.Find(copy,"Body")!;body.RemoveAll();foreach(XmlNode child in ConscriptVariableContainers.Find(comparison,"Body")!.ChildNodes)body.AppendChild(copy.ImportNode(child,true));}
+        // Reborn: VisionInfo presence is source-owned; only the structural comparison restores the baseline record.
+        VisionInfoContract.MaskComparison(copy,comparison);
         copy.DocumentElement!.SetAttribute("id",comparison.DocumentElement!.GetAttribute("id"));
         // Reborn: comparison-only IDs must not redirect topology diagnostics to an unrelated baseline asset or the entry document.
         try{ConscriptSharedSourceContract.Mask(copy,comparison);}
@@ -337,7 +339,7 @@ internal static class ConscriptVariableBehaviorSource
         // Reborn: optional display-name children contain text only and cannot alter Core asset-reference occurrence ordering.
         // Reborn: each source-sized movement row has one strong field, so stock row-count alignment cannot determine its occurrence order.
         // Reborn: Geometry contains no strong reference occurrences and its source-sized children must not align to a one-shape stock sample.
-        bool Skip(XmlElement e)=>(flexible&&ConscriptUpgradeStructure.Fields.Contains(e.LocalName))||(actual.LocalName=="GameObject"&&(GameObjectRootTextContract.Pointed.Contains(e.LocalName)||GameObjectExtendedRootContract.Names.Contains(e.LocalName,StringComparer.Ordinal)||e.LocalName is "ArmorSet" or "LocomotorSet" or "ObjectResourceInfo" or "Geometry" or "GameDependency" or "AI"))||(actual.LocalName=="WeaponSetUpdate"&&e.LocalName=="WeaponSlotHardpoint")||(actual.LocalName=="BuildingDestructionBehavior"&&e.LocalName is "Item" or "DieMuxData");
+        bool Skip(XmlElement e)=>(flexible&&ConscriptUpgradeStructure.Fields.Contains(e.LocalName))||(actual.LocalName=="GameObject"&&(GameObjectRootTextContract.Pointed.Contains(e.LocalName)||GameObjectExtendedRootContract.Names.Contains(e.LocalName,StringComparer.Ordinal)||e.LocalName is "ArmorSet" or "LocomotorSet" or "ObjectResourceInfo" or "Geometry" or "VisionInfo" or "GameDependency" or "AI"))||(actual.LocalName=="WeaponSetUpdate"&&e.LocalName=="WeaponSlotHardpoint")||(actual.LocalName=="BuildingDestructionBehavior"&&e.LocalName is "Item" or "DieMuxData");
         // Reborn: Spawn weak rows and optional records contain no strong-reference occurrences requiring stock attribute-order alignment.
         bool SpawnSkip(XmlElement e)=>actual.LocalName=="SpawnBehavior"&&SpawnBehaviorContract.OwnChildren.Contains(e.LocalName)||actual.LocalName=="EngineerContain"&&e.LocalName=="CanEnterFilter"||actual.LocalName=="AssistedPlacementBehavior"&&e.LocalName=="RequirementObjectFilter"||actual.LocalName=="StructurePlacementBehavior"&&e.LocalName=="RestrictedAreaShape";
         // Reborn: the optional engineer filter holds only weak names and enum/flag values, never strong-reference occurrences.

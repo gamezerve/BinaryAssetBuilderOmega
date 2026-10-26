@@ -13,7 +13,7 @@ namespace BinaryAssetBuilder.ManifestInspector;
 // Reborn: reusable full native/metadata proof; authored identities select reviewed owners instead of fixed sizes or new list ordinals.
 internal sealed class ConscriptVariableGraphVerifier
 {
-    private static readonly int[] Detached={44,48,412,416,420,424,428,432,468,472,476,480,484,488,492,496,500,532,536,540,552,564,568,572};
+    private static readonly int[] Detached={44,48,412,416,420,424,428,432,468,472,476,480,484,488,492,496,500,532,536,540,552,560,564,568,572};
     private readonly XmlSchemaSet official;
     private readonly (byte[] Metadata,ManifestDocument Document,ManifestAsset Asset,long Offset,byte[] Bytes,GameObjectStockReview.Projection Projection) stock;
     private readonly GameObjectModuleReview.Proof topology;
@@ -74,6 +74,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: weapon-fire abilities use the independently qualified EP1 field and metadata layout.
     private readonly Lazy<StockMetadataGrammar> weaponFireAbility;
     // Reborn: PropBody owns an independent retail-qualified body fragment rather than an ActiveBody snapshot.
+    // Reborn: optional vision has a separately proved native record and root metadata owner.
+    private readonly Lazy<StockMetadataGrammar> visionInfo;
     private readonly Lazy<StockMetadataGrammar> propBody;
     private readonly Lazy<StockMetadataGrammar> storeTemplate;
     private readonly Lazy<StockMetadataGrammar> playerUpgrade;
@@ -135,6 +137,7 @@ internal sealed class ConscriptVariableGraphVerifier
         assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         weaponTurret=new(()=>WeaponTurretContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         weaponFireAbility=new(()=>WeaponFireAbilityContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        visionInfo=new(()=>VisionInfoContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         propBody=new(()=>PropBodyContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         storeTemplate=new(()=>StoreTemplateIDContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         playerUpgrade=new(()=>PlayerUpgradePowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -501,6 +504,12 @@ internal sealed class ConscriptVariableGraphVerifier
         Add(ownedRelos,500);var geometryNative=Extract(native,layout.Geometry,cut);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);
         var geometryProof=SchemaNativeContract.Verify(GameObjectGeometryContract.Owner(resolved)!,typeof(Ep1Geometry),0,geometryNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());
         var geometryTokens=Ep1GeometryTokenizer.Tokenize(geometryNative);int geometryLength=geometryGrammar.Value.Verify(geometryTokens,geometryNative,typeof(Ep1Geometry),geometryProof.Records);Own(geometryNative,layout.Geometry,cut);
+        // Reborn: VisionInfo is optional; its absence owns a null word, while presence owns exactly forty source-bound native bytes.
+        (Chunk Tokens,int Start,int End)? visionPiece=null;var visionOwner=ConscriptVariableContainers.Find(source,"VisionInfo");int visionAt=(int)Word(b,560);
+        if((visionOwner==null)!=(visionAt==0))throw new InvalidDataException("VisionInfo source/native presence differs.");
+        if(visionOwner!=null){
+            if(visionAt<600||visionAt%4!=0||visionAt>b.Length-40)throw new InvalidDataException("VisionInfo native pointer bounds differ.");resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var visionNative=new Chunk{InstanceBuffer=b.AsSpan(visionAt,40).ToArray(),RelocationBuffer=Array.Empty<byte>(),ImportsBuffer=Array.Empty<byte>()};var proof=SchemaNativeContract.Verify(ConscriptVariableContainers.Find(resolved,"VisionInfo")!,typeof(Ep1VisionInfo),0,visionNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var visionTokens=Ep1VisionInfoTokenizer.Tokenize(visionNative);int size=visionInfo.Value.Verify(visionTokens,visionNative,typeof(Ep1VisionInfo),proof.Records);if(size!=132)throw new InvalidDataException("VisionInfo metadata extent differs.");Add(ownedRelos,560);Own(visionNative,visionAt,visionAt+40);visionPiece=(visionTokens,visionAt,visionAt+40);
+        }
         // Reborn: retain independently proved optional dependency metadata for the enclosing root splice check.
         Chunk? dependencyNative=null,dependencyTokens=null;int dependencyStart=0,dependencyEnd=0,dependencyLength=0;
         var rootPieces=new Dictionary<string,(int Start,int End,int Prefix,Chunk Tokens)>(StringComparer.Ordinal);
@@ -534,6 +543,11 @@ internal sealed class ConscriptVariableGraphVerifier
         foreach(var pair in stockRows)
         {
             int old=pair.Value.Offset,at=rows[pair.Key].Offset;
+            // Reborn: VisionInfo metadata follows source presence, not the populated verification baseline.
+            if(pair.Key==FastHash.GetHashCode("VisionInfo")){
+                if(visionPiece is not { } vision){if(at!=0)throw new InvalidDataException("Omitted VisionInfo metadata must be null.");}
+                else{const int length=132;if(at<rootLength||at>prefix-length||metadataOwned.AsSpan(at,length).Contains(true)||!Equal(Detach(tokens,prefix,at,length,vision.Start,vision.End),vision.Tokens))throw new InvalidDataException("VisionInfo metadata splice/ownership differs.");Array.Fill(metadataOwned,true,at,length);}continue;
+            }
             // Reborn: PropBody owns its complete metadata fragment independently of ActiveBody's longer stock tables.
             if(pair.Key==FastHash.GetHashCode("Body")&&propBodyPiece is { } prop){
                 if(at<rootLength||at>prefix-prop.Prefix||metadataOwned.AsSpan(at,prop.Prefix).Contains(true)||!Equal(Detach(tokens,prefix,at,prop.Prefix,prop.Start,prop.End),prop.Tokens))throw new InvalidDataException("PropBody root metadata splice/ownership differs.");

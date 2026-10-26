@@ -5,30 +5,30 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:SBBaseDefenseAir_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:SBBaseDefenseAir_BLD.w3x" />			
-		<Include
-			type="all"
-			source="ART:SBBaseDefenseAir_Platform.w3x" />
-		<Include
-			type="all"
-			source="ART:SBBaseDefenseAir_FX.w3x" />
-		<Include
-			type="all"
-			source="ART:SSBaseDefenseAdvanced_Scaffold.w3x" />	
-		<Include
-			type="all"
-			source="ART:SBBaseDefenseAir_Platform_SKL.w3x" />
-		<Include
-			type="all"
-			source="ART:SBBaseDefenseAir_Platform_BLD.w3x" />						
-		<Include
-			type="all"
-			source="ART:SBBaseDefenseAir_Platform_BLD_SKN.w3x" />				
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBaseDefenseAir_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBaseDefenseAir_BLD.w3x" />			 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBaseDefenseAir_Platform.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBaseDefenseAir_FX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SSBaseDefenseAdvanced_Scaffold.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBaseDefenseAir_Platform_SKL.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBaseDefenseAir_Platform_BLD.w3x" />						 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBaseDefenseAir_Platform_BLD_SKN.w3x" />				 -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

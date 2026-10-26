@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+	<Includes>
+		<Include
+			type="all"
+			source="DATA:GlobalData/GlobalDefines.xml" />
+	</Includes>
+
+	<Defines>
+		<Define name="YURIKO_PSYCHIC_SLAM_MAX_RANGE" value="250.0" />
+		<Define name="YURIKO_LURE_MAX_RANGE" value="250.0" />
+	</Defines>
+
+	<SpecialPowerTemplate
+		id="SpecialPower_EjectPassengersMoai"
+		ReloadTime="10s"
+		TargetType="LOCATION"
+		RadiusCursorRadius="60"
+		NameOfVoiceNameToUseAsInitiateIntendToDoVoice="VoiceEject"
+		Flags="LIMIT_DISTANCE FOGGED_SHROUDED_CELLS_OK CANNOT_LEAVE_ENCLOSURE NOT_ON_OBSTACLES CAN_NOT_BE_SCRAMBLED"
+		MinCastRange="15"
+		MaxCastRange="1000"
+		WaypointModeTerminal="false"/>
+
+	<SpecialPowerTemplate
+		id="SpecialPower_TriggerEmperorKingOniRushAttack"
+		ReloadTime="80s"
+		TargetType="OBJECT_OR_LOCATION"
+		NameOfVoiceNameToUseAsInitiateIntendToDoVoice="VoiceBullRush"
+		Flags="PATHABLE_ONLY NEEDS_OBJECT_FILTER CANNOT_LEAVE_ENCLOSURE CANNOT_TARGET_SELF TREAT_BRIDGES_AS_LOCATIONS"
+		MaxCastRange="300"
+		MinCastRange="50"
+		WaypointModeTerminal="false" >
+		<ObjectFilter
+			Rule="ANY"
+			Relationship="ALLIES ENEMIES NEUTRAL"
+			Include="INFANTRY VEHICLE HUGE_VEHICLE STRUCTURE"
+			Exclude="SHIP AIRCRAFT ORE_NODE BRIDGE BRIDGE_SEGMENT BRIDGE_ENDCAP BRIDGE_GATEHOUSE"
+			StatusBitFlagsExclude="AIRBORNE_TARGET OVER_WATER WATER_LOCOMOTOR_ACTIVE NOT_IN_WORLD UNDER_IRON_CURTAIN"/>
+	</SpecialPowerTemplate>
+
+	<SpecialPowerTemplate
+		id="SpecialPowerOrbitalRefuse_Rank1"
+		ReloadTime="180s"
+		TargetType="LOCATION"
+		RadiusCursorRadius="75"
+		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTarget"
+		Flags="IS_PLAYER_POWER WATER_OK NOT_IN_NANOSWARM IGNORE_MAP_EXTENTS"
+		RequiredPlayerTech="PlayerTech_Soviet_OrbitalRefuse_Rank1">
+		<GameDependency
+			id="Soviet_OrbitalRefuseRank1_GameDependency">
+			<RequiredObject>SovietKrasna45</RequiredObject>
+		</GameDependency>
+		<ForbiddenPlayerTech>PlayerTech_Soviet_OrbitalRefuse_Rank2</ForbiddenPlayerTech>
+		<ForbiddenPlayerTech>PlayerTech_Soviet_OrbitalRefuse_Rank3</ForbiddenPlayerTech>
+	</SpecialPowerTemplate>
+	<SpecialPowerTemplate
+		id="SpecialPowerOrbitalRefuse_Rank2"
+		ReloadTime="240s"
+		TargetType="LOCATION"
+		RadiusCursorRadius="125"
+		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTarget"
+		Flags="IS_PLAYER_POWER WATER_OK NOT_IN_NANOSWARM IGNORE_MAP_EXTENTS"
+		RequiredPlayerTech="PlayerTech_Soviet_OrbitalRefuse_Rank2">
+		<GameDependency
+			id="Soviet_OrbitalRefuseRank2_GameDependency">
+			<RequiredObject>SovietKrasna45</RequiredObject>
+		</GameDependency>
+		<ForbiddenPlayerTech>PlayerTech_Soviet_OrbitalRefuse_Rank3</ForbiddenPlayerTech>
+	</SpecialPowerTemplate>
+	<SpecialPowerTemplate
+		id="SpecialPowerOrbitalRefuse_Rank3"
+		ReloadTime="300s"
+		TargetType="LOCATION"
+		RadiusCursorRadius="175"
+		Flags="IS_PLAYER_POWER WATER_OK NOT_IN_NANOSWARM IGNORE_MAP_EXTENTS"
+		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTarget"
+		RequiredPlayerTech="PlayerTech_Soviet_OrbitalRefuse_Rank3">
+		<GameDependency
+			id="Soviet_OrbitalRefuseRank3_GameDependency">
+			<RequiredObject>SovietKrasna45</RequiredObject>
+		</GameDependency>
+	</SpecialPowerTemplate>
+
+
+
+</AssetDeclaration>

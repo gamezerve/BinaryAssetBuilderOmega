@@ -3931,3 +3931,19 @@ modules in the same list. Retail PlayerSpellBook records qualify field offsets,
 imports and metadata. `eva-ready-client-self-test` covers reference/flag edits,
 defaults and mixed-list GameObject composition; new settings have no gameplay
 test yet.
+
+
+### Optional VisionInfo and scalar receipts
+
+`VisionInfo` follows the official `minOccurs="0"` rule. Omitted vision has a null
+native pointer and a null root metadata declaration; `<VisionInfo/>` allocates
+the standard 40-byte record with XSD defaults. Authored values remain source-bound.
+Legacy scalar receipts now apply only to a unique actual owner, so omitted vision,
+PropBody health, absent costs and absent/multiple movement rows have null receipt
+values instead of fabricated Conscript values. Schema validation still rejects
+illegal duplicates and invalid scalar values.
+
+`optional-vision-info-self-test` covers omitted/default/edited vision, a prop body
+without resource or locomotor owners, full native/metadata output, corrupt null
+metadata and invalid/duplicate source refusals. Present and absent retail records
+independently qualify the metadata rules.

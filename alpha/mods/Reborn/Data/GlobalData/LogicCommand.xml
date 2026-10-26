@@ -2,6 +2,33 @@
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
 
 	<LogicCommand
+		Type="SPECIAL_POWER"
+		id="Command_TriggerEmperorKingOniRushAttackSpecialPower">
+		<SpecialPower>SpecialPower_TriggerEmperorKingOniRushAttack</SpecialPower>
+		<AISpecialPowerInfo 
+			Heuristic="RUSH_ATTACK" 
+			Manager="MICRO_MANAGER"
+			TargetObjectInclude="VEHICLE"
+			HealthFraction="1.0"
+			Distance="9999.0"
+     />
+	</LogicCommand>
+
+	<LogicCommand
+    Options="NEED_TARGET_POS"
+		Type="SPECIAL_POWER"
+		id="Command_ActivateEjectPassengersMoaiSpecialPower">
+		<SpecialPower>SpecialPower_EjectPassengersMoai</SpecialPower>
+		<AISpecialPowerInfo Heuristic="DEPLOY" Manager="TACTIC"/>
+	</LogicCommand>
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructSovietKrasna45">
+		<Object>SovietKrasna45</Object>
+	</LogicCommand>
+
+	<LogicCommand
 		Type="CONSTRUCTION_YARD_CONSTRUCT"
 		id="Command_ConstructSovietVolcanoFortress04">
 		<Object>SovietVolcanoFortress04</Object>

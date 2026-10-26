@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+	<Tags />
+	<Includes>
+	</Includes>
+
+	<ButtonSingleStateData
+		id="ButtonStateAbilityEjectPassengersMoai">
+		<State
+			Image="SUA_Evacuate"
+			Title="NAME:EjectPassengersSpecialPower"
+			Description="DESC:EjectPassengersSpecialPower" />
+	</ButtonSingleStateData>
+
+	<ButtonSingleStateData
+		id="ButtonStateSpecialPowerTriggerEmperorKingOniRushAttack">
+		<State
+			Image="JUA_KingOni_BullRush"
+			Title="NAME:JapanAntiVehicleVehicleTech3RushAttack"
+			Description="DESC:JAPANEMPERORKINGONIRUSHATTACK" />
+	</ButtonSingleStateData>
+	
+  <ButtonSingleStateData
+    id="ButtonStateCampaignPlayerPowerParadropLvl1">
+    <State
+			Image="Button_PlayerPower_Paradrop1"
+			Title="NAME:CampaignPlayerPowerParadropLvl1"
+			TypeDescription="TYPE:CampaignPlayerPowerParadropLvl1"
+			Description="DESC:CampaignPlayerPowerParadropLvl1" />
+  </ButtonSingleStateData>
+  <ButtonSingleStateData
+    id="ButtonStateCampaignPlayerPowerParadropLvl2">
+    <State
+			Image="Button_PlayerPower_Paradrop2"
+			Title="NAME:CampaignPlayerPowerParadropLvl2"
+			TypeDescription="TYPE:CampaignPlayerPowerParadropLvl2"
+			Description="DESC:CampaignPlayerPowerParadropLvl2" />
+  </ButtonSingleStateData>
+  <ButtonSingleStateData
+    id="ButtonStateCampaignPlayerPowerParadropLvl3">
+    <State
+			Image="Button_PlayerPower_Paradrop3"
+			Title="NAME:CampaignPlayerPowerParadropLvl3"
+			TypeDescription="TYPE:CampaignPlayerPowerParadropLvl3"
+			Description="DESC:CampaignPlayerPowerParadropLvl3" />
+  </ButtonSingleStateData>
+  
+</AssetDeclaration>

@@ -172,6 +172,9 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();WeaponFireAbilitySmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: prove PropBody allocation and direct root metadata alongside ordinary GameObject graphs.
             // Reborn: cover complete readiness announcements, strong EVA imports and mixed client-update lists.
+            // Reborn: verify optional vision across source admission, receipts, complete native output and null metadata.
+            if(args.Length==3 && args[0]=="optional-vision-info-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();OptionalVisionInfoSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="eva-ready-client-self-test")
             {CompilerSmokeTest.InitializeHashProvider();EvaReadyClientSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="prop-body-self-test")

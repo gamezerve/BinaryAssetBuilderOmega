@@ -34,9 +34,9 @@
 		<DisplayName
 			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:SovietVIPBunker</DisplayName>
 
-		<!-- <GameDependency> -->
-			<!-- <RequiredObject>SovietTechStructure</RequiredObject> -->
-		<!-- </GameDependency> -->
+		<GameDependency>
+			<RequiredObject>SovietTechStructure</RequiredObject>
+		</GameDependency>
 
 		<ObjectResourceInfo>
 			<BuildCost Account="=$ACCOUNT_ORE" Amount="2500"/>

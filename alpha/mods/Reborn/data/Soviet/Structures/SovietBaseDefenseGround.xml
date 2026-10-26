@@ -4,49 +4,49 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:SBBaseDefenseGround_SKN.w3x" />	
-		<Include
-			type="all"
-			source="ART:SBBaseDefenseGround_ABTA.w3x" />
-		<Include
-			type="all"
-			source="ART:SBBaseDefenseGround_AIDA.w3x" />
-		<Include
-			type="all"
-			source="ART:SBBaseDefenseGround_BATA.w3x" />
-		<Include
-			type="all"
-			source="ART:SBBaseDefenseGround_BIDA.w3x" />
-		<Include
-			type="all"
-			source="ART:SBBaseDefenseGround_BLD.w3x" />	
-		<Include
-			type="all"
-			source="ART:SBBaseDefenseGround_ATKA.w3x" />
-		<Include
-			type="all"
-			source="ART:SBBaseDefenseGround_FX.w3x" />
-		<Include
-			type="all"
-			source="ART:SSBaseDefenseAdvanced_Scaffold.w3x" />							
-		<Include
-			type="all"
-			source="ART:FXTracer.xml" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBaseDefenseGround_SKN.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBaseDefenseGround_ABTA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBaseDefenseGround_AIDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBaseDefenseGround_BATA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBaseDefenseGround_BIDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBaseDefenseGround_BLD.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBaseDefenseGround_ATKA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBaseDefenseGround_FX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SSBaseDefenseAdvanced_Scaffold.w3x" />							 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXTracer.xml" /> -->
 		<!-- Base Object -->
 		<Include
 			type="instance"
 			source="DATA:BaseObjects/BaseSovietStructure.xml" />
-		<Include
-			type="all"
-			source="ART:SBBaseDefenseAir_Platform_SKL.w3x" />
-		<Include
-			type="all"
-			source="ART:SBBaseDefenseAir_Platform_BLD.w3x" />						
-		<Include
-			type="all"
-			source="ART:SBBaseDefenseAir_Platform_BLD_SKN.w3x" />			
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBaseDefenseAir_Platform_SKL.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBaseDefenseAir_Platform_BLD.w3x" />						 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBaseDefenseAir_Platform_BLD_SKN.w3x" />			 -->
 	</Includes>
 	<Defines>
 		<Define name="SOVIET_BASE_DEFENSE_GROUND_LOCAL_UNPACK_TIME" value="20s" />

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+
+	<!-- Allied Paradrop -->	
+  <PlayerTech
+		id="PlayerTech_Allied_Paradrop_Rank1"
+		TechPointsRequired="1">
+		<TechDependency>PlayerTech_Allied_PrecisionStrike</TechDependency>
+		<TechDependency>PlayerTech_Generic_Rank_3</TechDependency>
+  </PlayerTech>
+  <PlayerTech
+		id="PlayerTech_Allied_Paradrop_Rank2"
+		TechPointsRequired="1">
+		<TechDependency>PlayerTech_Allied_Paradrop_Rank1</TechDependency>
+		<TechDependency>PlayerTech_Generic_Rank_4</TechDependency>
+  </PlayerTech>
+  <PlayerTech
+		id="PlayerTech_Allied_Paradrop_Rank3"
+		TechPointsRequired="1">
+		<TechDependency>PlayerTech_Allied_Paradrop_Rank2</TechDependency>
+		<TechDependency>PlayerTech_Generic_Rank_5</TechDependency>
+  </PlayerTech>
+
+
+</AssetDeclaration>

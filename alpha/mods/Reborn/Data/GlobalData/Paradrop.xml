@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xai="uri:ea.com:eala:asset:instance">
+	<Includes>
+		<Include type="instance" source="DATA:BaseObjects/BaseObject.xml" />
+		<Include type="instance" source="DATA:BaseObjects/BaseProjectile.xml"/>
+		<Include type="instance" source="DATA:System/PlayerSpellBook.xml"/>
+    <Include type="instance" source="DATA:Allied\Units_Campaign\CAMP_AlliedBomberAircraft_Infantry_2.xml" />
+	</Includes>
+	
+	<GameObject
+		id="PlayerSpellBook"
+		inheritFrom="PlayerSpellBook">
+		<Behaviors>
+            <TeleportStoredObjectsSpecialPower
+				id="ModuleTag_ChronoRiftTeleportSpecialPowerLvl1"
+				xai:joinAction="Replace"
+				SpecialPowerTemplate="SpecialPowerChronoRiftTeleportLvl1"
+				CanAffectObjectFilter="AlliedChronoRiftSpecialPowerObjectFilter"
+				StoreObjectsLinkID="1"				
+                OCL="OCL_ChronoRiftBeaconLvl1" />
+			<TeleportStoredObjectsSpecialPower
+				id="ModuleTag_ChronoRiftTeleportSpecialPowerLvl2"
+				xai:joinAction="Replace"
+				SpecialPowerTemplate="SpecialPowerChronoRiftTeleportLvl2"
+				CanAffectObjectFilter="AlliedChronoRiftSpecialPowerObjectFilter"
+				LeechRechargePercentPlayerTechTrigger="PlayerTech_Allied_ChronoRift_Rank2"
+				LeechRechargePercentFromSpecialPower="SpecialPowerChronoRiftTeleportLvl1"
+				StoreObjectsLinkID="2"
+				OCL="OCL_ChronoRiftBeaconLvl2" />
+			<TeleportStoredObjectsSpecialPower
+                id="ModuleTag_ChronoRiftTeleportSpecialPowerLvl3"
+				xai:joinAction="Replace"
+                SpecialPowerTemplate="SpecialPowerChronoRiftTeleportLvl3"
+				CanAffectObjectFilter="AlliedChronoRiftSpecialPowerObjectFilter"
+				LeechRechargePercentPlayerTechTrigger="PlayerTech_Allied_ChronoRift_Rank3"
+				LeechRechargePercentFromSpecialPower="SpecialPowerChronoRiftTeleportLvl2"
+                StoreObjectsLinkID="3"
+				OCL="OCL_ChronoRiftBeaconLvl3" />
+				
+      <!-- Paradrop -->
+      <PlayerPowerManager
+				id="ModuleTag_PlayerPowerManager_ParadropLvl1"
+				SpecialPowerTemplate="SpecialPowerParadropLvl1"
+			/>
+      <OCLSpecialPower
+				id="ModuleTag_ParadropLvl1"
+				SpecialPowerTemplate="SpecialPowerParadropLvl1"
+				UpdateModuleStartsAttack="false"
+				AvailableAtStart="true"
+				OCL="OCL_ParaDropLvl1"
+				DestinationOCL="OCL_PrecisionStrikeBeacon"
+				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
+				CreateLocationOffset="1000.0">
+        <NearestSecondaryObjectFilter
+					Relationship="SAME_PLAYER">
+          <IncludeThing>AlliedConstructionYard</IncludeThing>
+        </NearestSecondaryObjectFilter>
+      </OCLSpecialPower>
+
+
+      <PlayerPowerManager
+        id="ModuleTag_PlayerPowerManager_ParadropLvl2"
+        SpecialPowerTemplate="SpecialPowerParadropLvl2"
+			/>
+      <OCLSpecialPower
+				id="ModuleTag_ParadropLvl2"
+				SpecialPowerTemplate="SpecialPowerParadropLvl2"
+				UpdateModuleStartsAttack="false"
+				AvailableAtStart="true"
+				OCL="OCL_ParaDropLvl2"
+        DestinationOCL="OCL_PrecisionStrikeBeacon"
+				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
+				LeechRechargePercentPlayerTechTrigger="PlayerTech_Allied_CryoSatellite_Rank2"
+				LeechRechargePercentFromSpecialPower="SpecialPowerParadropLvl1"
+			  CreateLocationOffset="1000.0">
+        <NearestSecondaryObjectFilter
+					Relationship="SAME_PLAYER">
+          <IncludeThing>AlliedConstructionYard</IncludeThing>
+        </NearestSecondaryObjectFilter>
+      </OCLSpecialPower>
+
+      <PlayerPowerManager
+        id="ModuleTag_PlayerPowerManager_ParadropLvl3"
+        SpecialPowerTemplate="SpecialPowerParadropLvl3"
+			/>
+      <OCLSpecialPower
+				id="ModuleTag_ParadropLvl3"
+				SpecialPowerTemplate="SpecialPowerParadropLvl3"
+				UpdateModuleStartsAttack="false"
+				AvailableAtStart="true"
+				OCL="OCL_ParaDropLvl3"
+        DestinationOCL="OCL_PrecisionStrikeBeacon"
+				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
+				LeechRechargePercentPlayerTechTrigger="PlayerTech_ProductionBonus_Allies"
+				LeechRechargePercentFromSpecialPower="SpecialPowerParadropLvl2"
+			  CreateLocationOffset="1000.0">
+        <NearestSecondaryObjectFilter
+					Relationship="SAME_PLAYER">
+          <IncludeThing>AlliedConstructionYard</IncludeThing>
+        </NearestSecondaryObjectFilter>
+      </OCLSpecialPower>
+	  
+		</Behaviors>
+	</GameObject>
+	
+  <LogicCommand
+    Options="NEED_TARGET_POS"
+    Type="SPECIAL_POWER"
+    id="Command_ParadropLvl1">
+    <SpecialPower>SpecialPowerParadropLvl1</SpecialPower>
+    <AISpecialPowerInfo
+       Heuristic="PLAYER_AOE_BUFF"
+       Manager="SKIRMISH_AI"
+       TargetObjectInclude="CAN_ATTACK"
+       MinTargetsHit="1"
+       MinEnemiesNearby="5">
+    </AISpecialPowerInfo>
+  </LogicCommand>
+  <LogicCommand
+		Options="NEED_TARGET_POS"
+		Type="SPECIAL_POWER"
+		id="Command_ParadropLvl2">
+    <SpecialPower>SpecialPowerParadropLvl2</SpecialPower>
+    <AISpecialPowerInfo
+       Heuristic="PLAYER_AOE_BUFF"
+       Manager="SKIRMISH_AI"
+       TargetObjectInclude="CAN_ATTACK"
+       MinTargetsHit="1"
+       MinEnemiesNearby="5">
+    </AISpecialPowerInfo>
+  </LogicCommand>
+  <LogicCommand
+		Options="NEED_TARGET_POS"
+		Type="SPECIAL_POWER"
+		id="Command_ParadropLvl3">
+    <SpecialPower>SpecialPowerParadropLvl3</SpecialPower>
+    <AISpecialPowerInfo
+       Heuristic="PLAYER_AOE_BUFF"
+       Manager="SKIRMISH_AI"
+       TargetObjectInclude="CAN_ATTACK"
+       MinTargetsHit="1"
+       MinEnemiesNearby="5">
+    </AISpecialPowerInfo>
+  </LogicCommand>
+  
+	<!-- ParaDrop Power -->
+	<SpecialPowerTemplate
+		id="SpecialPowerParadropLvl1"
+		ReloadTime="300s"
+		TargetType="LOCATION"
+		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea"
+		RadiusCursorRadius="100"
+		Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS"
+		RequiredPlayerTech="PlayerTech_Allied_AirPower"
+		WaypointModeTerminal="false" >
+		<ForbiddenObjectFilter
+			Rule="ANY"
+			Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT"
+			Exclude="BRIDGE_ENDCAP BRIDGE_SEGMENT">
+			<ExcludeThing>NanoSwarmHiveEffect</ExcludeThing>
+		</ForbiddenObjectFilter>
+		<GameDependency
+			id="Allied_Paradrop_Rank1_GameDependency">
+			<RequiredObject>AlliedAirportControlTower</RequiredObject>
+		</GameDependency>
+		<ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank2</ForbiddenPlayerTech>
+		<ForbiddenPlayerTech>PlayerTech_ProductionBonus_Allies</ForbiddenPlayerTech>		
+	</SpecialPowerTemplate>
+  
+	<SpecialPowerTemplate
+		id="SpecialPowerParadropLvl2"
+		ReloadTime="330s"
+		TargetType="LOCATION"
+		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea"
+		RadiusCursorRadius="120"
+		Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS"
+		RequiredPlayerTech="PlayerTech_Allied_CryoSatellite_Rank2"
+		WaypointModeTerminal="false" >
+		<ForbiddenObjectFilter
+			Rule="ANY"
+			Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT"
+			Exclude="BRIDGE_ENDCAP BRIDGE_SEGMENT">
+			<ExcludeThing>NanoSwarmHiveEffect</ExcludeThing>
+		</ForbiddenObjectFilter>
+		<GameDependency
+			id="Allied_Paradrop_Rank2_GameDependency">
+			<RequiredObject>AlliedAirportControlTower</RequiredObject>
+		</GameDependency>
+		<ForbiddenPlayerTech>PlayerTech_ProductionBonus_Allies</ForbiddenPlayerTech>
+	</SpecialPowerTemplate>
+	
+	<SpecialPowerTemplate
+		id="SpecialPowerParadropLvl3"
+		ReloadTime="360s"
+		TargetType="LOCATION"
+		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea"
+		RadiusCursorRadius="140"
+		Flags="IS_PLAYER_POWER NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS"
+		RequiredPlayerTech="PlayerTech_ProductionBonus_Allies"
+		WaypointModeTerminal="false" >
+		<ForbiddenObjectFilter
+			Rule="ANY"
+			Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT"
+			Exclude="BRIDGE_ENDCAP BRIDGE_SEGMENT">
+			<ExcludeThing>NanoSwarmHiveEffect</ExcludeThing>
+		</ForbiddenObjectFilter>
+		<GameDependency
+			id="Allied_Paradrop_Rank3_GameDependency">
+			<RequiredObject>AlliedAirportControlTower</RequiredObject>
+		</GameDependency>
+	</SpecialPowerTemplate>
+
+  <ObjectCreationList
+    id="OCL_ParaDropLvl1">
+    <CreateObject
+				Options="IGNORE_ALL_OBJECTS DONT_SET_PRODUCER ISSUE_MOVE_AFTER_CREATION FIRE_SPECIAL_POWER MOVE_TARGET_USES_OFFSET ORIENT_TOWARD_MOVE_DESTINATION CREATE_AT_TARGET"
+				Disposition="LIKE_EXISTING"
+				FireSpecialPowerTemplate="SpecialPower_EjectPassengers">
+      <Offset x="0" y="0" z="190"/>
+      <CreateObject>CAMP_AlliedBomberAircraft_Infantry_2</CreateObject>
+    </CreateObject>
+  </ObjectCreationList>
+  <ObjectCreationList
+    id="OCL_ParaDropLvl2">
+    <CreateObject
+				Options="IGNORE_ALL_OBJECTS DONT_SET_PRODUCER ISSUE_MOVE_AFTER_CREATION FIRE_SPECIAL_POWER MOVE_TARGET_USES_OFFSET ORIENT_TOWARD_MOVE_DESTINATION CREATE_AT_TARGET"
+				Disposition="LIKE_EXISTING"
+				FireSpecialPowerTemplate="SpecialPower_EjectPassengers">
+      <Offset x="-70" y="70" z="190"/>
+      <CreateObject>CAMP_AlliedBomberAircraft_Infantry_2</CreateObject>
+    </CreateObject>
+    <CreateObject
+				Options="IGNORE_ALL_OBJECTS DONT_SET_PRODUCER ISSUE_MOVE_AFTER_CREATION FIRE_SPECIAL_POWER MOVE_TARGET_USES_OFFSET ORIENT_TOWARD_MOVE_DESTINATION CREATE_AT_TARGET"
+				Disposition="LIKE_EXISTING"
+				FireSpecialPowerTemplate="SpecialPower_EjectPassengers">
+      <Offset x="70" y="-70" z="190"/>
+      <CreateObject>CAMP_AlliedBomberAircraft_Infantry_2</CreateObject>
+    </CreateObject>
+  </ObjectCreationList>
+  <ObjectCreationList
+    id="OCL_ParaDropLvl3">
+    <CreateObject
+				Options="IGNORE_ALL_OBJECTS DONT_SET_PRODUCER ISSUE_MOVE_AFTER_CREATION FIRE_SPECIAL_POWER MOVE_TARGET_USES_OFFSET ORIENT_TOWARD_MOVE_DESTINATION CREATE_AT_TARGET"
+				Disposition="LIKE_EXISTING"
+				FireSpecialPowerTemplate="SpecialPower_EjectPassengers">
+      <Offset x="70" y="70" z="190"/>
+      <CreateObject>CAMP_AlliedBomberAircraft_Infantry_2</CreateObject>
+    </CreateObject>
+    <CreateObject
+				Options="IGNORE_ALL_OBJECTS DONT_SET_PRODUCER ISSUE_MOVE_AFTER_CREATION FIRE_SPECIAL_POWER MOVE_TARGET_USES_OFFSET ORIENT_TOWARD_MOVE_DESTINATION CREATE_AT_TARGET"
+				Disposition="LIKE_EXISTING"
+				FireSpecialPowerTemplate="SpecialPower_EjectPassengers">
+      <Offset x="-70" y="70" z="190"/>
+      <CreateObject>CAMP_AlliedBomberAircraft_Infantry_2</CreateObject>
+    </CreateObject>
+    <CreateObject
+				Options="IGNORE_ALL_OBJECTS DONT_SET_PRODUCER ISSUE_MOVE_AFTER_CREATION FIRE_SPECIAL_POWER MOVE_TARGET_USES_OFFSET ORIENT_TOWARD_MOVE_DESTINATION CREATE_AT_TARGET"
+				Disposition="LIKE_EXISTING"
+				FireSpecialPowerTemplate="SpecialPower_EjectPassengers">
+      <Offset x="70" y="-70" z="190"/>
+      <CreateObject>CAMP_AlliedBomberAircraft_Infantry_2</CreateObject>
+    </CreateObject>
+  </ObjectCreationList>
+
+  <PlayerPowerButtonTemplate
+    id="ButtonCampaignPlayerPoweParadrop_Rank1"
+    SpecialPower="SpecialPowerParadropLvl1">
+    <Data>
+      <TargetedPower
+				RadiusCursor="Target_Allied_Paradrop"
+				StateData="ButtonStateCampaignPlayerPowerParadropLvl1"/>
+    </Data>
+  </PlayerPowerButtonTemplate>
+  <PlayerPowerButtonTemplate
+      id="ButtonCampaignPlayerPoweParadrop_Rank2"
+      SpecialPower="SpecialPowerParadropLvl2">
+    <Data>
+      <TargetedPower
+				RadiusCursor="Target_Allied_Paradrop"
+				StateData="ButtonStateCampaignPlayerPowerParadropLvl2"/>
+    </Data>
+  </PlayerPowerButtonTemplate>
+  <PlayerPowerButtonTemplate
+      id="ButtonCampaignPlayerPoweParadrop_Rank3"
+      SpecialPower="SpecialPowerParadropLvl3">
+    <Data>
+      <TargetedPower
+				RadiusCursor="Target_Allied_Paradrop"
+				StateData="ButtonStateCampaignPlayerPowerParadropLvl3"/>
+    </Data>
+  </PlayerPowerButtonTemplate>
+
+  <JoypadCommandBarButtonTemplate
+  id="ButtonCampaignPlayerPoweParadrop_Rank1">
+    <Data>
+      <PlayerTargetedPower
+				StateData="ButtonStateCampaignPlayerPowerParadropLvl1"
+        SpecialPower="SpecialPowerParadropLvl1"
+				RadiusCursor="Target_Allied_Paradrop"/>
+    </Data>
+  </JoypadCommandBarButtonTemplate>
+  <JoypadCommandBarButtonTemplate
+      id="ButtonCampaignPlayerPoweParadrop_Rank2">
+    <Data>
+      <PlayerTargetedPower
+				StateData="ButtonStateCampaignPlayerPowerParadropLvl2"
+        SpecialPower="SpecialPowerParadropLvl2"
+				RadiusCursor="Target_Allied_Paradrop"/>
+    </Data>
+  </JoypadCommandBarButtonTemplate>
+  <JoypadCommandBarButtonTemplate
+      id="ButtonCampaignPlayerPoweParadrop_Rank3">
+    <Data>
+      <PlayerTargetedPower
+				StateData="ButtonStateCampaignPlayerPowerParadropLvl3"
+        SpecialPower="SpecialPowerParadropLvl3"
+				RadiusCursor="Target_Allied_Paradrop"/>
+    </Data>
+  </JoypadCommandBarButtonTemplate>
+
+</AssetDeclaration>

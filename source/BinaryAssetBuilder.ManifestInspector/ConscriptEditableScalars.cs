@@ -90,9 +90,13 @@ internal static class ConscriptEditableScalars
 
     // Reborn: legacy receipt values remain available for singular owners; an omitted or multi-row movement list has no single meaningful Speed.
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: health belongs to ActiveBody; PropBody has no health scalar or fabricated receipt value. */
+    /** Reborn: optional owners have no fabricated legacy scalar receipt; health still belongs only to ActiveBody. */
     //-------------------------------------------------------------------------------------------------
-    internal static bool Applies(XmlDocument source,Field field)=>field.Attribute!="MaxHealth"||source.GetElementsByTagName("ActiveBody","uri:ea.com:eala:asset").Count==1;
+    internal static bool Applies(XmlDocument source,Field field)
+    {
+        // Reborn: receipts describe a unique authored owner; XSD validation independently rejects illegal duplicates and permits optional absence.
+        var ns=new XmlNamespaceManager(source.NameTable);ns.AddNamespace("a","uri:ea.com:eala:asset");return source.DocumentElement!.SelectNodes(field.Path,ns)!.Count==1;
+    }
 
     internal static Dictionary<string,object?> ReceiptValues(XmlDocument source)=>Fields.ToDictionary(f=>f.Attribute,f=>!Applies(source,f)?null:f.Attribute=="Amount"?(GameObjectResourceContract.Entries(source).Length==1?(object)GameObjectResourceContract.Value(GameObjectResourceContract.Entries(source)[0],"Amount"):null):f.Attribute=="Speed"&&ConscriptLocomotorSetContract.Entries(source).Length!=1?null:(object)Read(source,f));
 }

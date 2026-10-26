@@ -139,3 +139,85 @@
 	TYPE:SOVIETWALLPIECE
 		"Defensive Perimeter \n> Health = 300 \n> Shroud Clearing Range = 50"
 	End
+
+// Soviet Sentry Gun
+
+	TYPE:SOVIETBASEDEFENSEGROUND
+		"Anti-Infantry Base Defense \n> Health = 625 \n> Shroud Clearing Range = 500 \n> Weapon DPS = 133 \n> Weapon Range = 300"
+	End
+
+// Soviet Flak Cannon
+
+	TYPE:SOVIETBASEDEFENSEAIR
+		"Anti-Air Base Defense \n> Health = 2000 \n> Shroud Clearing Range = 500 \n> Weapon DPS = 100 \n> Weapon Range = 300"
+	End
+	
+// Soviet Reaper
+	
+	Type:SovietHeavyWalkerVehicle
+		"Anti-Surface / Anti-Air Walker \n> Health = 600 \n> Shroud Clearing Range = 500 \n> Movement Speed = 80 \n> Rocket Weapon DPS = 8 \n> Rocket Weapon Range = 225 \n> Grenade Weapon DPS = 14.5 \n> Grenade Weapon Range = 225 \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+	
+	Type:SovietHeavyWalkerDeployedTurret
+		"Advanced Base Defense \n> Health = 900 \n> Shroud Clearing Range = 500 \n> Rocket Weapon DPS = 8 \n> Rocket Weapon Range = 225 \n> Grenade Weapon DPS = 14.5 \n> Grenade Weapon Range = 225"
+	End
+
+// Soviet K-45 Launch Facility
+
+	TYPE:SOVIETKRASNA45
+		"Technology Structure \n> Health = 3000 \n> Shroud Clearing Range = 500"
+	End
+
+	DESC:SOVIETKRASNA45
+		"This old satellite launch facility brings orbital defenses back online."
+	End
+
+// Allied Paradrop
+	
+	TYPE:CampaignPlayerPowerParadropLvl1Reborn
+		"Airborne Reinforcements \nRequires Airport Control Tower"
+	End
+
+	TYPE:CampaignPlayerPowerParadropLvl2Reborn
+		"Airborne Reinforcements \nRequires Airport Control Tower"
+	End
+
+	TYPE:CampaignPlayerPowerParadropLvl2Reborn
+		"Airborne Reinforcements \nRequires Airport Control Tower"
+	End
+	
+// Imperial Greater King Oni
+
+	Name:JapanEmperorKingOni
+		"Greater King Oni"
+	End
+
+	TYPE:JapanEmperorKingOni
+		"Advanced Anti-Armor Robot \n> Build Limit = 3 \n> Health = 8000 \n> Shroud Clearing Range = 500 \n> Movement Speed (Default/Rush) = 97.5/195 \n> Weapon DPS (AG/AA) = 160/595 \n> Rush Damage (Infantry/Other) = 50/500 \n> Weapon Range (Default/Rush/AA) = 150/300/400 \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+	DESC:JapanEmperorKingOni
+		"The original King Oni was too costly to mass-produce, yet it was superior to the later model."
+	End
+	
+	DESC:JAPANEMPERORKINGONIRUSHATTACK
+		"> Ability Cooldown = 80 sec \n> Movement Speed = 195 \n> Rush Damage (Infantry/Other) = 50/500 \n> Weapon Range = 300 \nCharges the enemy head-on, smashing into or simply crushing any foes along the way."
+	End
+	
+// Debug
+
+	IrradiatedTargetDamageDealer
+		""
+	End
+
+	BaseMagneticSatelliteEffect
+		""
+	End
+
+	MagneticSingularityEffect
+		""
+	End
+
+	VacuumBombEffect
+		""
+	End
