@@ -546,7 +546,7 @@ internal sealed class ConscriptVariableGraphVerifier
             // Reborn: VisionInfo metadata follows source presence, not the populated verification baseline.
             if(pair.Key==FastHash.GetHashCode("VisionInfo")){
                 if(visionPiece is not { } vision){if(at!=0)throw new InvalidDataException("Omitted VisionInfo metadata must be null.");}
-                else{const int length=132;if(at<rootLength||at>prefix-length||metadataOwned.AsSpan(at,length).Contains(true)||!Equal(Detach(tokens,prefix,at,length,vision.Start,vision.End),vision.Tokens))throw new InvalidDataException("VisionInfo metadata splice/ownership differs.");Array.Fill(metadataOwned,true,at,length);}continue;
+                else{const int visionLength=132;if(at<rootLength||at>prefix-visionLength||metadataOwned.AsSpan(at,visionLength).Contains(true)||!Equal(Detach(tokens,prefix,at,visionLength,vision.Start,vision.End),vision.Tokens))throw new InvalidDataException("VisionInfo metadata splice/ownership differs.");Array.Fill(metadataOwned,true,at,visionLength);}continue;
             }
             // Reborn: PropBody owns its complete metadata fragment independently of ActiveBody's longer stock tables.
             if(pair.Key==FastHash.GetHashCode("Body")&&propBodyPiece is { } prop){
