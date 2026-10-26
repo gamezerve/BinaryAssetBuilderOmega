@@ -123,7 +123,7 @@ internal static class SdkXmlDiagnostics
             if(element!=null)
             {
                 // Reborn: module IDs survive merge/fragment detachment and are stronger evidence than generated sibling indices.
-                var module=element.SelectSingleNode("ancestor-or-self::*[@id][not(local-name()='GameObject' or local-name()='LogicCommand' or local-name()='ArmorTemplate' or local-name()='WeaponTemplate' or local-name()='LogicCommandSet' or local-name()='UpgradeTemplate' or local-name()='ExperienceLevelTemplate' or local-name()='SpecialPowerTemplate' or local-name()='PlayerPowerButtonTemplate' or local-name()='JoypadCommandBarButtonTemplate' or local-name()='ButtonSingleStateData' or local-name()='PlayerTech' or local-name()='UnitAbilityButtonTemplate')][1]") as XmlElement;
+                var module=element.SelectSingleNode("ancestor-or-self::*[@id][not(local-name()='GameObject' or local-name()='LogicCommand' or local-name()='ArmorTemplate' or local-name()='WeaponTemplate' or local-name()='LogicCommandSet' or local-name()='UpgradeTemplate' or local-name()='ExperienceLevelTemplate' or local-name()='SpecialPowerTemplate' or local-name()='PlayerPowerButtonTemplate' or local-name()='JoypadCommandBarButtonTemplate' or local-name()='ButtonSingleStateData' or local-name()='PlayerTech' or local-name()='UnitAbilityButtonTemplate' or local-name()='PurchasePlayerTechButtonTemplate')][1]") as XmlElement;
                 string selector=Relative(element,module??owner);string? attribute=node is XmlAttribute a?a.LocalName:null;string attributeNs=node is XmlAttribute an?an.NamespaceURI:string.Empty;
                 var candidates=new List<(string File,XObject Value,int Rank)>();
                 foreach(var frame in frames)
@@ -166,7 +166,7 @@ internal static class SdkXmlDiagnostics
 
     // Reborn: all emitted mixed-route types, including upgrades, share identity-based source provenance through their actual inherited source files.
     // Reborn: models and other emitted support assets own their W3X/XML coordinates, just like GameObjects and commands.
-    private static bool IsAsset(string name)=>name is "GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "ExperienceLevelTemplate" or "ObjectCreationList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh";
+    private static bool IsAsset(string name)=>name is "GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "ExperienceLevelTemplate" or "ObjectCreationList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh";
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: relative expanded-name paths preserve unkeyed sibling indices; keyed children use stable authored identity instead. */

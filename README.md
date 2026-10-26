@@ -3770,3 +3770,10 @@ power/cursor/state lists are source-owned. Offline checks cover the eight
 alternatives represented in original EP1 records, the other three as authored
 variants, a 37-state toggle and a private package with local state/command/power
 assets. Editable mod files are preserved.
+
+<!-- Reborn: player-tech purchase buttons participate in ordinary source and stream compilation. -->
+`PurchasePlayerTechButtonTemplate` is build-enabled with required `PlayerTech`
+and `StateData` references. Targets resolve against mod-produced assets plus
+retail catalogs. Original EP1 records, reference retargeting, invalid/missing
+reference refusals and a private three-rank purchase/state/technology package
+are covered offline. Editable mod files are preserved.

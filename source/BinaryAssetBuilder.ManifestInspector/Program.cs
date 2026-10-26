@@ -180,6 +180,9 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();SdkSameIdInstanceSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             // Reborn: exercise native technology defaults/dependencies and local power consumers in private streams.
             // Reborn: exercise all unit-button native alternatives and local consumers in a private package.
+            // Reborn: purchase-button imports are verified against original data and a private local tech/state chain.
+            if(args.Length==4 && args[0]=="purchase-tech-button-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();PurchaseTechButtonCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==4 && args[0]=="unit-ability-button-self-test")
             {CompilerSmokeTest.InitializeHashProvider();UnitAbilityButtonCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==4 && args[0]=="player-tech-self-test")
