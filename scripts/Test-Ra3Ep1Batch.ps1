@@ -117,6 +117,8 @@ if($SchedulerControl){
     Add-BatchCase 'radar-behavior' 'StockQualifiedRadarBehavior' @('radar-behavior-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: qualify Tesla notification fields, optional filters and complete module composition.
     # Reborn: preserve per-upgrade visibility, animation and texture-pair imports in source-sized nugget lists.
+    # Reborn: cover complete transport passenger/default/filter/upgrade graphs without user mod builds.
+    Add-BatchCase 'transport-contain' 'TransportContain' @('transport-contain-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'subobjects-upgrade' 'SubObjectsUpgrade' @('subobjects-upgrade-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'notify-when-attacking' 'NotifyWhenAttacking' @('notify-when-attacking-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'monitor-special-power-timer' 'StockQualifiedMonitorSpecialPowerTimer' @('monitor-special-power-timer-self-test',$StaticManifest,$GlobalManifest)

@@ -208,6 +208,9 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();RadarBehaviorSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: exercise complete attack notification source/native/metadata graphs offline.
             // Reborn: cover complete EP1 subobject upgrade graphs through real native/metadata dispatch.
+            // Reborn: exercise EP1 transport passengers, inherited filters, defaults and extended upgrade lists offline.
+            if(args.Length==3 && args[0]=="transport-contain-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();TransportContainSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="subobjects-upgrade-self-test")
             {CompilerSmokeTest.InitializeHashProvider();SubObjectsUpgradeSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="notify-when-attacking-self-test")

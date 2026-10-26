@@ -6,7 +6,7 @@ using Chunk=Relo.Chunk;
 namespace BinaryAssetBuilder.ManifestInspector;
 
 // Reborn: source-sized metadata proof. Each record type's row grammar (names, wire tags, class rows and whether a row targets a table or a
-// native field) is learned only from real stock leaves of the same family. Generated metadata must reproduce that grammar for every
+// native field) is learned from real stock leaves; explicitly qualified scalar-only optional items use their original schema and wire identities. Generated metadata must reproduce that grammar for every
 // record actually present, with list/item cardinality from the independently proved native graph and every native target bound to the
 // exact proved field coordinate. The producer writer's own code is never used as the oracle.
 internal sealed class StockMetadataGrammar
@@ -148,6 +148,25 @@ internal sealed class StockMetadataGrammar
         if(textureSignature!=0x4C3E3938u||System.Runtime.InteropServices.Marshal.SizeOf<SageBinaryData.ReplaceTexture>()!=8||shape.AttributeUses.Count!=2)throw new InvalidDataException("ReplaceTexture requires exactly two stock-typed TextureRef words.");
         foreach(string name in new[]{"Original","New"})if(shape.AttributeUses[new System.Xml.XmlQualifiedName(name)] is not System.Xml.Schema.XmlSchemaAttribute attribute||attribute.AttributeSchemaType?.QualifiedName.Name!="TextureRef")throw new InvalidDataException("ReplaceTexture schema reference differs: "+name);
         var rows=Get(typeof(SageBinaryData.ReplaceTexture));rows.Fields=new[]{(FastHash.GetHashCode("Original"),textureSignature),(FastHash.GetHashCode("New"),textureSignature)};rows.Kinds=new[]{new HashSet<Kind>{Kind.Native},new HashSet<Kind>{Kind.Native}};
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: selected retail transports have empty extended lists; their exact scalar-only item grammars follow the original XSD and already retail-qualified reference/integer wire identities. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifyTransportItems(System.Xml.Schema.XmlSchemaSet schemas)
+    {
+        // Reborn: OpenContain member-status items are also scalar-only; the enum wire is the hash of its original named schema type.
+        Qualify(typeof(SageBinaryData.MemberTemplateStatusData),8,new[]{("ThingTemplate","GameObjectWeakRef",0x148ED75Du),("ObjectStatus","ObjectStatusType",FastHash.GetHashCode("ObjectStatusType"))});
+        Qualify(typeof(SageBinaryData.InitialPayload),8,new[]{("Name","GameObjectWeakRef",0x148ED75Du),("Count","SageInt",0x23E650B8u)});
+        Qualify(typeof(SageBinaryData.UpgradeCreation),12,new[]{("Upgrade","UpgradeTemplateRef",0x4ABA1F29u),("Template","GameObjectWeakRef",0x148ED75Du),("Num","SageUnsignedInt",0x763177A4u)});
+        // Reborn: no populated retail payload/upgrade witness is claimed; every emitted coordinate is still checked against the independently proved source graph.
+        void Qualify(Type type,int size,(string Name,string Wire,uint Tag)[] fields)
+        {
+            var shape=(System.Xml.Schema.XmlSchemaComplexType)schemas.GlobalTypes[new System.Xml.XmlQualifiedName(type.Name,"uri:ea.com:eala:asset")]!;
+            if(System.Runtime.InteropServices.Marshal.SizeOf(type)!=size||shape.AttributeUses.Count!=fields.Length||shape.ContentType!=System.Xml.Schema.XmlSchemaContentType.Empty)throw new InvalidDataException("Transport item schema/native shape differs: "+type.Name);
+            foreach(var field in fields)if(shape.AttributeUses[new System.Xml.XmlQualifiedName(field.Name)] is not System.Xml.Schema.XmlSchemaAttribute attribute||attribute.AttributeSchemaType?.QualifiedName.Name!=field.Wire)throw new InvalidDataException("Transport item schema field differs: "+type.Name+"."+field.Name);
+            var rows=Get(type);rows.Fields=fields.Select(f=>(FastHash.GetHashCode(f.Name),f.Tag)).ToArray();rows.Kinds=fields.Select(_=>new HashSet<Kind>{Kind.Native}).ToArray();
+        }
     }
 
     private Rows Get(Type type){if(!grammar.TryGetValue(type,out var rows))grammar[type]=rows=new Rows();return rows;}

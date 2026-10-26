@@ -8,6 +8,18 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: transport containers use the existing EP1 native writer with complete source-sized metadata composition. -->
+`TransportContain` is build-enabled, including inherited OpenContain fields,
+passenger filters/bones/statuses, exit modifiers, initial payloads, throwing/fade
+settings and upgrade-triggered passenger creation. Four retail vehicle records
+qualify the 352-byte native header and inherited metadata. Empty optional payload,
+upgrade and member-status item grammars are derived from the official scalar-only
+schemas; no populated retail witness is claimed for those items. Offline checks
+cover the campaign bomber's three payloads, all own/inherited fields, full object
+composition, defaults and corrupt output. The original XSD permits up to four
+`InitialPayload` and four `UpgradeCreationTrigger` rows. No gameplay test was run.
+Developer regression: `transport-contain-self-test <static.manifest> <global.manifest>`.
+
 <!-- Reborn: special-power templates now use their own EP1 target/flag/reference layout. -->
 `SpecialPowerTemplate` is build-enabled with the 584-byte EP1 header, all five
 target types and 32 flag bits, target count, filters, GameDependency, voice hashes,
