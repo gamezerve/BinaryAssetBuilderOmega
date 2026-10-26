@@ -117,6 +117,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: transport containment is admitted by full schema/native proof, not a fixed stock shape.
             // Reborn: attribute modifier upgrades are source-driven under the complete EP1 upgrade/reference proof.
             // Reborn: passenger ejection is admitted by complete EP1 ability/native proof.
+            // Reborn: run-off-map waypoint names and flags are source-driven under the complete 20-byte EP1 contract.
+            if(owner.NativeType==typeof(SageBinaryData.RunOffMapBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.EjectPassengersSpecialAbilityUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.AttributeModifierUpgradeModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.TransportContainModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

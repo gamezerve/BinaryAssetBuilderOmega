@@ -212,6 +212,9 @@ internal static class Program
             // Reborn: exercise modifier references and complete inherited upgrade graphs offline.
             // Reborn: cover complete passenger-ejection native/metadata graphs through the real EP1 dispatcher.
             // Reborn: exercise concrete EP1 jet AI storage, imports and inline full-object metadata offline.
+            // Reborn: verify source-driven waypoint names and complete EP1 run-off-map flag graphs offline.
+            if(args.Length==3 && args[0]=="run-off-map-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();RunOffMapSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="jet-ai-self-test")
             {CompilerSmokeTest.InitializeHashProvider();JetAIUpdateSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="eject-passengers-self-test")

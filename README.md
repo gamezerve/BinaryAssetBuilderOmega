@@ -8,6 +8,17 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: run-off-map behavior is source-driven rather than constrained to historical sample-module shapes. -->
+`RunOffMapBehavior` is build-enabled with its existing 20-byte native writer,
+all three trigger/death/flight flags and optional `RunOffMapWaypointName` text.
+Named, omitted and explicitly empty waypoint values are compiled from source;
+no universal waypoint name is imposed. Retail support-bomber and satellite
+records anchor the field layout and metadata. The support bomber's retail name
+`RunOffMap` differs from its published base XML and is an explicit comparison-only
+witness override, not an authored default. Offline checks cover the campaign
+replacement, all flags, waypoint variants, full GameObjects and corrupt output.
+Developer regression: `run-off-map-self-test <static.manifest> <global.manifest>`.
+
 <!-- Reborn: jet AI uses separate retail-qualified EP1 storage and concrete inline metadata rather than KW takeoff/lockon fields. -->
 `AI/JetAIUpdate` is build-enabled through a separate 100-byte EP1 writer and
 inline metadata compositor. All nine jet attributes are editable, including
