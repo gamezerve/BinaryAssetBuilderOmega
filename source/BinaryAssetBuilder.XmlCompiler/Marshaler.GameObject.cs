@@ -829,7 +829,10 @@ public static partial class Marshaler
                 MarshalPolymorphicType<DestroyObjectsUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x2E021907u:
-                MarshalPolymorphicType<PlayerPowerManagerBehaviorModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: EP1 player-power managers include the optional EVA event import.
+                using(var context=state.Push((void**)objT,(uint)sizeof(Ep1PlayerPowerManagerBehaviorModuleData),1u))
+                    Marshal(node,(Ep1PlayerPowerManagerBehaviorModuleData*)*objT,state);
+                uint playerPowerManagerTypeId=0x2E021907u;state.InplaceEndianToPlatform(&playerPowerManagerTypeId);*(uint*)*objT=playerPowerManagerTypeId;
                 break;
 #if TIBERIUMWARS
             case 0x9E322E47u: // actually present in KW, enable?

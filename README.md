@@ -3791,3 +3791,14 @@ Preparation diagnostics now use each emitted asset's declaring source as their
 context. An unsupported module inherited through a same-ID instance overlay
 reports its original file and line, including when `Static_Mod.xml` contains only
 Includes. The XML diagnostics regression covers this case.
+
+
+### PlayerPowerManager
+
+`PlayerPowerManager` is build-enabled with editable module IDs, required
+`SpecialPowerTemplate` and optional `OnAvailableEvaEvent`. Its EP1 native header
+is 16 bytes, including the EVA import missing from the older KW model. Retail
+base/EP1 spellbook records qualify both populated and omitted EVA fields.
+`player-power-manager-self-test` covers original records, retargeting, defaults,
+full GameObject composition and corrupted-import refusal. User mod sources are
+preserved during compiler synchronization.
