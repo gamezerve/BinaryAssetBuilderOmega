@@ -189,6 +189,9 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();TeleportStoredUpdateSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="teleport-stored-objects-self-test")
             {CompilerSmokeTest.InitializeHashProvider();TeleportStoredObjectsSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: expose the base-power source/native/metadata regression without touching user mods.
+            if(args.Length==3 && args[0]=="special-power-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();SpecialPowerSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="store-objects-self-test")
             {CompilerSmokeTest.InitializeHashProvider();StoreObjectsSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="production-bonus-self-test")

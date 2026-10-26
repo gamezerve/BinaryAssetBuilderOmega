@@ -3947,3 +3947,17 @@ illegal duplicates and invalid scalar values.
 without resource or locomotor owners, full native/metadata output, corrupt null
 metadata and invalid/duplicate source refusals. Present and absent retail records
 independently qualify the metadata rules.
+
+### Base SpecialPower source graphs
+
+`SpecialPower` now uses the same complete source/native/metadata proof as its
+supported subclasses, rather than requiring the old Conscript module shape.
+The original PlayerSpellBook powers, including Emperor's Resolve and its
+`AttributeModifierAffects` filter, are accepted. The official schema controls
+attributes, filter children and skirmish requirement strings. Populated
+`InitiateSound` remains unqualified: the bundled original source occurrences
+are comments, not retail sound witnesses.
+Stock qualification resolves witness aliases from the bundled GlobalDefines;
+authored sources continue through normal include/definition processing.
+`special-power-self-test` exercises the six retail sources, authored filters,
+defaults, optional records and complete GameObject composition offline.

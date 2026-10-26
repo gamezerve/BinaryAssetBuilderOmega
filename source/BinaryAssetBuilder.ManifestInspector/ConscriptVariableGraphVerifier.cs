@@ -48,6 +48,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<PowerUpgradeContract.Witness> powerUpgrade;
     // Reborn: assign-slaves inherits the existing SpecialPower ABI but has its own independently qualified concrete wrapper.
     private readonly Lazy<StockMetadataGrammar> assignSlaves;
+    // Reborn: qualify base SpecialPower independently of its previously supported subclasses.
+    private readonly Lazy<StockMetadataGrammar> specialPower;
     // Reborn: recall and parking each retain an independent lazily qualified EP1 metadata grammar.
     private readonly Dictionary<Type,Lazy<StockMetadataGrammar>> airfield=new();
     // Reborn: reactor death weapons have independently qualified native and inherited upgrade/death metadata.
@@ -134,6 +136,7 @@ internal sealed class ConscriptVariableGraphVerifier
         structurePlacement=new(()=>!SdkBuildTests.Enabled||StructurePlacementContract.QualifyStock(manifest,official));
         luaEventList=new(()=>!SdkBuildTests.Enabled||LUAEventListContract.QualifyStock(manifest,official));
         buildingBehavior=new(()=>BuildingBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        specialPower=new(()=>SpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         weaponTurret=new(()=>WeaponTurretContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         weaponFireAbility=new(()=>WeaponFireAbilityContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -308,6 +311,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 if(owner.NativeType==typeof(TeleportStoredObjectsSpecialPowerModuleData)){
                     var grammar=teleportStored.Value;var teleportNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,TeleportStoredObjectsContract.TypeId,teleportNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(teleportNative,official,TeleportStoredObjectsContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,teleportNative,owner.NativeType,proof.Records);Own(teleportNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: complete base-power filters and optional records use the same source-sized graph composer as derived powers.
+                if(owner.NativeType==typeof(SpecialPowerModuleData)){
+                    var grammar=specialPower.Value;var powerNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,SpecialPowerContract.TypeId,powerNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(powerNative,official,SpecialPowerContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,powerNative,owner.NativeType,proof.Records);Own(powerNative,start,stop);Splice(owner,metadata,start,size);continue;
                 }
                 if(owner.NativeType==typeof(StoreObjectsSpecialPowerModuleData)){
                     var grammar=storeObjects.Value;var storeNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;

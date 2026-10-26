@@ -105,6 +105,8 @@ if($SchedulerControl){
     Add-BatchCase 'ocl-special-power' 'StockQualifiedOclSpecialPower' @('ocl-special-power-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'teleport-stored-update' 'StockQualifiedTeleportStoredUpdate' @('teleport-stored-update-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'teleport-stored-objects' 'StockQualifiedTeleportStoredObjects' @('teleport-stored-objects-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: qualify base SpecialPower filters, defaults and complete object composition.
+    Add-BatchCase 'special-power' 'SpecialPower' @('special-power-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'store-objects' 'StockQualifiedStoreObjects' @('store-objects-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'production-bonus' 'StockQualifiedProductionBonus' @('production-bonus-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'player-power-manager' 'StockQualifiedPlayerPowerManager' @('player-power-manager-self-test',$StaticManifest,$GlobalManifest)
