@@ -277,7 +277,10 @@ public static partial class Marshaler
                 MarshalPolymorphicType<ObjectCreationUpgradeModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x8999C6A4u:
-                MarshalPolymorphicType<OCLSpecialPowerModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: retain the retail class identity while using the complete EP1 offset/enum/upgrade-pair layout.
+                using(var context=state.Push((void**)objT,(uint)sizeof(Ep1OCLSpecialPowerModuleData),1u))
+                    Marshal(node,(Ep1OCLSpecialPowerModuleData*)*objT,state);
+                uint oclPowerTypeId=0x8999C6A4u;state.InplaceEndianToPlatform(&oclPowerTypeId);*(uint*)*objT=oclPowerTypeId;
                 break;
 #if KANESWRATH
             case 0xA9778E00u:

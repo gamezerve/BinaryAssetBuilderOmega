@@ -164,6 +164,9 @@ internal static class Program
             // Reborn: verify object-storage fields, imports, marker IDs and full GameObject composition.
             // Reborn: verify teleport storage flags, linking and OCL imports against original EP1 records.
             // Reborn: verify complete teleport-update timing, enums, filters and optional shader data.
+            // Reborn: verify the complete EP1 OCL power layout, enum values and source-driven child lists.
+            if(args.Length==3 && args[0]=="ocl-special-power-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();OclSpecialPowerSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="teleport-stored-update-self-test")
             {CompilerSmokeTest.InitializeHashProvider();TeleportStoredUpdateSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="teleport-stored-objects-self-test")

@@ -111,7 +111,8 @@ internal static class ConscriptModuleScalarContract
         // Reborn: the existing EP1 AI writer stores this schema flag list in a uint, not a fixed-buffer wrapper.
         if(native==typeof(uint)&&schema.Name=="AutoAcquireEnemiesBitFlags")return (4,wire,"Flags:"+typeof(AutoAcquireEnemiesType).FullName);
         // Reborn: EP1 root movement uses the reviewed EP1 enum, whose additional literals must not be encoded through the legacy KW enum.
-        if(native.IsEnum&&(native.Name==schema.Name||native==typeof(Ep1RootLocomotorSetType)&&schema.Name=="LocomotorSetType"||native==typeof(Ep1ProductionQueueType)&&schema.Name=="ProductionQueueType"||native==typeof(Ep1AIStateMachineType)&&schema.Name=="StateMachineType")&&Enum.GetUnderlyingType(native)==typeof(int))return (4,wire,"Enum:"+native.FullName);
+        // Reborn: OCL source locations use EP1 ordinals rather than the shorter legacy KW enum.
+        if(native.IsEnum&&(native.Name==schema.Name||native==typeof(Ep1OCLCreateLocType)&&schema.Name=="OCLCreateLocType"||native==typeof(Ep1RootLocomotorSetType)&&schema.Name=="LocomotorSetType"||native==typeof(Ep1ProductionQueueType)&&schema.Name=="ProductionQueueType"||native==typeof(Ep1AIStateMachineType)&&schema.Name=="StateMachineType")&&Enum.GetUnderlyingType(native)==typeof(int))return (4,wire,"Enum:"+native.FullName);
         if(schema is not XmlSchemaSimpleType {Content:XmlSchemaSimpleTypeList list}||!native.Name.EndsWith("BitFlags",StringComparison.Ordinal)||native.Name!=schema.Name)return null;
         var buffer=native.GetField("Value")?.GetCustomAttribute<System.Runtime.CompilerServices.FixedBufferAttribute>();var item=typeof(GameObject).Assembly.GetType("SageBinaryData."+list.BaseItemType?.Name);
         if(buffer==null||buffer.ElementType!=typeof(uint)||buffer.Length<1||buffer.Length>64||item==null||!item.IsEnum)return null;

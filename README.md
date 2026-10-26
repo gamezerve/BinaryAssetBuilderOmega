@@ -3853,3 +3853,18 @@ Chrono Swap and three Chrono Rift records qualify native data and token metadata
 both populated filters, omitted defaults, full GameObject composition and
 corrupted-output refusal. This enables compilation; gameplay behavior has not
 been independently tested for new settings.
+
+
+### OCLSpecialPower
+
+`OCLSpecialPower` is build-enabled using a separate EP1 native record: the
+524-byte header includes `CreateLocationOffset`, all fifteen official location
+ordinals, OCL/destination references, counts, registration flag, secondary filter
+and source-sized `UpgradeOCL`/`Upgrade` lists. The older KW record is preserved.
+
+Retail PlayerSpellBook records qualify the header, field offsets and metadata.
+Their upgrade OCL lists are empty; populated item metadata follows the official
+single-OCL item schema and the independently captured OCL reference signature.
+`ocl-special-power-self-test` checks original powers, all fifteen enum ordinals,
+edited fields, populated upgrade lists/filter, defaults and whole-object
+composition. New settings and populated upgrade lists have no gameplay test yet.

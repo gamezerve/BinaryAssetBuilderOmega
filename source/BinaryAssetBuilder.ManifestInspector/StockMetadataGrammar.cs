@@ -130,6 +130,15 @@ internal sealed class StockMetadataGrammar
         uint Native(string path,int offset){int at=records.TryGetValue(path,out int value)?value:throw new InvalidDataException("Generated metadata field has no proved native coordinate: "+path);return Word(native.InstanceBuffer,at+offset);}
     }
 
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: stock OCL power lists are empty; their official EP1 item schema is a single four-byte OCL reference, whose wire tag is independently captured on the parent power. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifyOclUpgradePair(uint capturedOclSignature)
+    {
+        if(capturedOclSignature!=0x42E4E9D1u||System.Runtime.InteropServices.Marshal.SizeOf<SageBinaryData.Ep1OCLUpgradePair>()!=4)throw new InvalidDataException("EP1 OCL upgrade pair must contain exactly one stock-typed strong OCL word.");
+        var rows=Get(typeof(SageBinaryData.Ep1OCLUpgradePair));rows.Fields=new[]{(FastHash.GetHashCode("OCL"),capturedOclSignature)};rows.Kinds=new[]{new HashSet<Kind>{Kind.Native}};
+    }
+
     private Rows Get(Type type){if(!grammar.TryGetValue(type,out var rows))grammar[type]=rows=new Rows();return rows;}
     private static Type Base(Type type)=>type.GetField("Base")?.FieldType??throw new InvalidDataException("Stock grammar base model missing: "+type.Name);
     private static FieldInfo Member(Type type,uint name){var fields=type.GetFields(BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Instance).Where(f=>FastHash.GetHashCode(f.Name)==name).ToArray();if(fields.Length!=1)throw new InvalidDataException("Stock grammar field has no unique native member: "+type.Name+"/"+name.ToString("X8"));return fields[0];}
