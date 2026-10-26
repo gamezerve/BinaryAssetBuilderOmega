@@ -102,7 +102,9 @@ internal sealed class SchemaNativeContract
     //-------------------------------------------------------------------------------------------------
     internal static XmlDocument Resolve(XmlDocument source,SchemaSet schemas,ManifestAsset[] catalog)
     {
-        var document=new XmlDocument{XmlResolver=null,PreserveWhitespace=true};document.LoadXml(source.DocumentElement!.OuterXml);document.Schemas.Add(schemas.Schemas);
+        var document=new XmlDocument{XmlResolver=null,PreserveWhitespace=true};document.LoadXml(source.DocumentElement!.OuterXml);
+        // Reborn: EA subobject source may place inherited animation after nuggets; validation copies use the original XSD family order.
+        SubObjectsUpgradeContract.Normalize(document,schemas.Schemas);document.Schemas.Add(schemas.Schemas);
         document.Validate((_,e)=>throw new InvalidDataException(e.Message));ConscriptBehaviorSurvey.ResolveStrong(document,schemas,catalog);return document;
     }
 

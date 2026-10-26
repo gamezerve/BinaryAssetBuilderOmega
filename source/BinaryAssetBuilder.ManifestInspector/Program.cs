@@ -207,6 +207,9 @@ internal static class Program
             if(args.Length==3 && args[0]=="radar-behavior-self-test")
             {CompilerSmokeTest.InitializeHashProvider();RadarBehaviorSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: exercise complete attack notification source/native/metadata graphs offline.
+            // Reborn: cover complete EP1 subobject upgrade graphs through real native/metadata dispatch.
+            if(args.Length==3 && args[0]=="subobjects-upgrade-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();SubObjectsUpgradeSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="notify-when-attacking-self-test")
             {CompilerSmokeTest.InitializeHashProvider();NotifyWhenAttackingSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="monitor-special-power-timer-self-test")

@@ -4010,3 +4010,26 @@ Retail Tesla Coil metadata independently anchors all eight primitive offsets.
 custom friend filters, omitted/empty filters, default values, native corruption
 rejection and full GameObject native/metadata composition without user-mod edits
 or game launch.
+
+### EP1 SubObjectsUpgrade nuggets
+
+`SubObjectsUpgrade` uses the Uprising 44-byte root and source-sized list of
+44-byte nuggets, preserving the legacy KW root-level model separately. The
+inherited upgrade conditions and animation, per-nugget upgrade identity,
+show/hide string lists, fade/wait times, removal flags, texture replacement
+lists and optional nugget animation are supported under the official schema.
+
+Original EA sources can place inherited CustomAnimAndDuration after Nugget.
+Expanded in-memory XML normalizes disjoint field families to the original XSD
+order; authored files, nugget order, repeated list order and values are preserved.
+Unknown fields, duplicate singleton fields, missing required Upgrade and an empty
+nugget list still fail schema validation.
+
+Four original aircraft/construction-yard records qualify the native layout and
+metadata. Retail replacement lists are empty: the two-word ReplaceTexture item
+is derived from the original schema and an independently captured stock TextureRef
+signature; actual source/native imports and every generated metadata coordinate
+remain checked. No populated retail texture-swap witness is claimed.
+`subobjects-upgrade-self-test` covers the original graphs, multiple nuggets,
+texture imports, both animation levels, defaults, corruption and complete object
+composition without changing user mods or launching the game.

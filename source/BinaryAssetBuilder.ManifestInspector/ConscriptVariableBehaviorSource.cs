@@ -59,6 +59,8 @@ internal static class ConscriptVariableBehaviorSource
     //-------------------------------------------------------------------------------------------------
     internal static Plan Admit(XmlDocument source,XmlDocument baseline,XmlSchemaSet schemas)
     {
+        // Reborn: field-family ordering is normalized in memory before source admission, retaining the authored nugget sequence.
+        SubObjectsUpgradeContract.Normalize(source,schemas);
         ConscriptSharedSourceContract.Validate(source,baseline,schemas);
         if(!ConscriptSourceInput.Identity(source.DocumentElement!.GetAttribute("id")))throw SdkXmlDiagnostics.At(new InvalidDataException("Invalid GameObject identity."),source.DocumentElement);
         // Reborn: honor official weapon sortBy/boolean semantics before assigning common reference occurrences.
@@ -110,6 +112,8 @@ internal static class ConscriptVariableBehaviorSource
             if(owner.NativeType==typeof(SageBinaryData.Ep1PlayerPowerManagerBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.RadarBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             // Reborn: attack notification values and friend filters are source-driven under the complete EP1 proof.
+            // Reborn: subobject upgrade nuggets use their complete EP1 source/native proof, including inherited upgrade conditions.
+            if(owner.NativeType==typeof(SageBinaryData.Ep1SubObjectsUpgradeModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.NotifyWhenAttackingBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.MonitorSpecialPowerTimerUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.WallBuilderBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

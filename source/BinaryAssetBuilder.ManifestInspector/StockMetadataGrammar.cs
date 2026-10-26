@@ -139,6 +139,17 @@ internal sealed class StockMetadataGrammar
         var rows=Get(typeof(SageBinaryData.Ep1OCLUpgradePair));rows.Fields=new[]{(FastHash.GetHashCode("OCL"),capturedOclSignature)};rows.Kinds=new[]{new HashSet<Kind>{Kind.Native}};
     }
 
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: retail SubObjectsUpgrade texture lists are empty; qualify the exact two-reference item from its official schema and an independently captured stock TextureRef wire tag. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifyReplaceTexturePair(uint textureSignature,System.Xml.Schema.XmlSchemaSet schemas)
+    {
+        var shape=(System.Xml.Schema.XmlSchemaComplexType)schemas.GlobalTypes[new System.Xml.XmlQualifiedName("ReplaceTexture","uri:ea.com:eala:asset")]!;
+        if(textureSignature!=0x4C3E3938u||System.Runtime.InteropServices.Marshal.SizeOf<SageBinaryData.ReplaceTexture>()!=8||shape.AttributeUses.Count!=2)throw new InvalidDataException("ReplaceTexture requires exactly two stock-typed TextureRef words.");
+        foreach(string name in new[]{"Original","New"})if(shape.AttributeUses[new System.Xml.XmlQualifiedName(name)] is not System.Xml.Schema.XmlSchemaAttribute attribute||attribute.AttributeSchemaType?.QualifiedName.Name!="TextureRef")throw new InvalidDataException("ReplaceTexture schema reference differs: "+name);
+        var rows=Get(typeof(SageBinaryData.ReplaceTexture));rows.Fields=new[]{(FastHash.GetHashCode("Original"),textureSignature),(FastHash.GetHashCode("New"),textureSignature)};rows.Kinds=new[]{new HashSet<Kind>{Kind.Native},new HashSet<Kind>{Kind.Native}};
+    }
+
     private Rows Get(Type type){if(!grammar.TryGetValue(type,out var rows))grammar[type]=rows=new Rows();return rows;}
     private static Type Base(Type type)=>type.GetField("Base")?.FieldType??throw new InvalidDataException("Stock grammar base model missing: "+type.Name);
     private static FieldInfo Member(Type type,uint name){var fields=type.GetFields(BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Instance).Where(f=>FastHash.GetHashCode(f.Name)==name).ToArray();if(fields.Length!=1)throw new InvalidDataException("Stock grammar field has no unique native member: "+type.Name+"/"+name.ToString("X8"));return fields[0];}

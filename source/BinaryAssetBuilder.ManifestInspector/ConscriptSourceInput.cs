@@ -146,6 +146,8 @@ internal static class ConscriptSourceInput
     //-------------------------------------------------------------------------------------------------
     internal static void Admit(XmlDocument input,XmlDocument baseline,XmlSchemaSet schemas)
     {
+        // Reborn: the original EA subobject animation order is accepted before either admission route validates its private expanded XML.
+        SubObjectsUpgradeContract.Normalize(input,schemas);
         // Reborn: preserve the established broad fixed-topology route; only independently matched variable behavior graphs use the new route.
         try{AdmitFixed(input,baseline,schemas);}
         // Reborn: schema failures are final; routing them through native capability checks can erase the exact offending schema node.

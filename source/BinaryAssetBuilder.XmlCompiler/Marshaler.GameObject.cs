@@ -452,7 +452,9 @@ public static partial class Marshaler
                 MarshalPolymorphicType<ShieldBodyUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x5F06BA81u:
-                MarshalPolymorphicType<SubObjectsUpgradeModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: retain the actual wire identity while allocating the separate EP1 nugget-based model.
+                using(var context=state.Push((void**)objT,(uint)sizeof(Ep1SubObjectsUpgradeModuleData),1u))Marshal(node,(Ep1SubObjectsUpgradeModuleData*)*objT,state);
+                uint subobjectsType=0x5F06BA81u;state.InplaceEndianToPlatform(&subobjectsType);*(uint*)*objT=subobjectsType;
                 break;
             case 0x5A0E7D7Bu:
                 MarshalPolymorphicType<TerrainResourceBehaviorModuleData, BehaviorModuleData>(node, objT, state);

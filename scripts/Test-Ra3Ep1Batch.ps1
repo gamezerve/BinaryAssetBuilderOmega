@@ -116,6 +116,8 @@ if($SchedulerControl){
     Add-BatchCase 'player-power-manager' 'StockQualifiedPlayerPowerManager' @('player-power-manager-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'radar-behavior' 'StockQualifiedRadarBehavior' @('radar-behavior-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: qualify Tesla notification fields, optional filters and complete module composition.
+    # Reborn: preserve per-upgrade visibility, animation and texture-pair imports in source-sized nugget lists.
+    Add-BatchCase 'subobjects-upgrade' 'SubObjectsUpgrade' @('subobjects-upgrade-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'notify-when-attacking' 'NotifyWhenAttacking' @('notify-when-attacking-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'monitor-special-power-timer' 'StockQualifiedMonitorSpecialPowerTimer' @('monitor-special-power-timer-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'wall-builder' 'StockQualifiedWallBuilder' @('wall-builder-self-test',$StaticManifest,$GlobalManifest)
