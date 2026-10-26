@@ -87,6 +87,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: replacement targets, timing and inherited ability settings follow the official schema instead of fixed MCV sample values.
             // Reborn: wall length and connection filters use the full schema instead of stock-only values or names.
             // Reborn: timer-monitor power references and ready-condition flags follow the official schema.
+            // Reborn: radar markers admit their schema-defined inherited identity without a fixed stock module ID.
+            if(owner.NativeType==typeof(SageBinaryData.RadarBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.MonitorSpecialPowerTimerUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.WallBuilderBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.ReplaceSelfSpecialAbilityModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

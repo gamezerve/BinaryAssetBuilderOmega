@@ -83,6 +83,8 @@ if($SchedulerControl){
     Add-BatchCase 'replace-self' 'StockQualifiedReplaceSelf' @('replace-self-special-ability-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: wall length, filter lists and both secondary masks use the new retail-qualified wall-builder writer.
     # Reborn: include the source-driven timer-monitor regression without touching user mod outputs.
+    # Reborn: include the identity-only radar module in the offline regression batch.
+    Add-BatchCase 'radar-behavior' 'StockQualifiedRadarBehavior' @('radar-behavior-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'monitor-special-power-timer' 'StockQualifiedMonitorSpecialPowerTimer' @('monitor-special-power-timer-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'wall-builder' 'StockQualifiedWallBuilder' @('wall-builder-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: all FXList nugget kinds, inheritance and real local/stock dependencies use an isolated output root.

@@ -62,6 +62,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> replaceSelf;
     // Reborn: qualify the new wall-builder ABI and metadata once per mixed build.
     // Reborn: timer-monitor metadata is qualified lazily when the source actually requests the module.
+    // Reborn: qualify radar metadata only when authored by the source graph.
+    private readonly Lazy<StockMetadataGrammar> radar;
     private readonly Lazy<StockMetadataGrammar> monitorSpecialPowerTimer;
     private readonly Lazy<StockMetadataGrammar> wallBuilder;
     // Reborn: turret weapon slots use a retail-derived metadata grammar and independent source proof.
@@ -112,6 +114,7 @@ internal sealed class ConscriptVariableGraphVerifier
         buildingBehavior=new(()=>BuildingBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         weaponTurret=new(()=>WeaponTurretContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        radar=new(()=>RadarBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         monitorSpecialPowerTimer=new(()=>MonitorSpecialPowerTimerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         wallBuilder=new(()=>WallBuilderContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         replaceSelf=new(()=>ReplaceSelfContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -232,6 +235,11 @@ internal sealed class ConscriptVariableGraphVerifier
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,WeaponTurretContract.TypeId,turretNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(turretNative,official,WeaponTurretContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,turretNative,owner.NativeType,proof.Records);Own(turretNative,start,stop);Splice(owner,metadata,start,size);continue;
                 }
                 // Reborn: preserve authored timer-monitor imports and flags through complete GameObject composition.
+                // Reborn: preserve authored radar identity through the full object allocator and token metadata.
+                if(owner.NativeType==typeof(RadarBehaviorModuleData)){
+                    var grammar=radar.Value;var radarNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,RadarBehaviorContract.TypeId,radarNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(radarNative,official,RadarBehaviorContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,radarNative,owner.NativeType,proof.Records);Own(radarNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(MonitorSpecialPowerTimerUpdateModuleData)){
                     var grammar=monitorSpecialPowerTimer.Value;var monitorNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,MonitorSpecialPowerTimerContract.TypeId,monitorNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(monitorNative,official,MonitorSpecialPowerTimerContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,monitorNative,owner.NativeType,proof.Records);Own(monitorNative,start,stop);Splice(owner,metadata,start,size);continue;

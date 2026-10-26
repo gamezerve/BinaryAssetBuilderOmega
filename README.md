@@ -3777,3 +3777,17 @@ and `StateData` references. Targets resolve against mod-produced assets plus
 retail catalogs. Original EP1 records, reference retargeting, invalid/missing
 reference refusals and a private three-rank purchase/state/technology package
 are covered offline. Editable mod files are preserved.
+
+
+### RadarBehavior and inherited-source diagnostics
+
+`RadarBehavior` is build-enabled with its official inherited module `id` and
+8-byte `CreateModuleData` native layout. Native fields and token metadata are
+qualified against the retail `PlayerSpellBook` and `PlayerSpellBook_EP1` records;
+module IDs are editable. `radar-behavior-self-test` covers real dispatch,
+whole-object composition and corruption refusal.
+
+Preparation diagnostics now use each emitted asset's declaring source as their
+context. An unsupported module inherited through a same-ID instance overlay
+reports its original file and line, including when `Static_Mod.xml` contains only
+Includes. The XML diagnostics regression covers this case.

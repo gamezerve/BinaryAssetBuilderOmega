@@ -52,7 +52,7 @@ internal static class GameObjectStockReview
     //-------------------------------------------------------------------------------------------------
     /** Reborn: share the bounded fingerprint/header/root capture with follow-up inspectors without sharing compiler/publication authority. */
     //-------------------------------------------------------------------------------------------------
-    internal static (byte[] Metadata, ManifestDocument Document, ManifestAsset Asset, long Offset, byte[] Bytes, Projection Projection) Capture(string path, string name)
+    internal static (byte[] Metadata, ManifestDocument Document, ManifestAsset Asset, long Offset, byte[] Bytes, Projection Projection) Capture(string path, string name, bool allowNullArmorReferences=false)
     {
         path = Path.GetFullPath(path);
         byte[] metadata = SdkEnvironmentPreflight.Read(path, 64 * 1048576);
@@ -71,7 +71,7 @@ internal static class GameObjectStockReview
         if (Word(header, 0) != 0xBABB0000u || Word(header, 4) != document.Header.StreamChecksum)
             throw new InvalidDataException("GameObject stream header does not match its manifest.");
         byte[] bytes = AssetStreamProbe.ReadRange(bin, null, offset, asset.InstanceDataSize);
-        var projection = Decode(bytes, asset.References.ToArray());
+        var projection = Decode(bytes, asset.References.ToArray(),allowNullArmorReferences);
         return (metadata, document, asset, offset, bytes, projection);
     }
 
@@ -121,7 +121,7 @@ internal static class GameObjectStockReview
     //-------------------------------------------------------------------------------------------------
     /** Reborn: require three independent root anchors and ordered list-token/native/reference agreement without guessing a Damage-key join. */
     //-------------------------------------------------------------------------------------------------
-    private static Projection Decode(byte[] bytes, AssetId[] references)
+    private static Projection Decode(byte[] bytes, AssetId[] references,bool allowNullArmorReferences=false)
     {
         var root = Tokens(bytes, 0);
         int native = Field(root, "KindOf", 0x9AFC9193, bytes.Length, 40) - 4;
@@ -156,9 +156,10 @@ internal static class GameObjectStockReview
                 || Field(fields, "Conditions", 0xED8BC8E9, bytes.Length, 4) != member + 8)
                 throw new InvalidDataException("ArmorSet token fields do not match their ordered native member.");
             uint armor = Word(bytes, member), damageFx = Word(bytes, member + 4), conditions = Word(bytes, member + 8);
-            if (armor == 0 || armor > references.Length || damageFx == 0 || damageFx > references.Length
-                || references[checked((int)armor - 1)].TypeId != ArmorType
-                || references[checked((int)damageFx - 1)].TypeId != DamageFxType
+            // Reborn: noncombat spellbooks can use null armor references; explicitly selected module reviews still validate every non-null reference.
+            if ((!allowNullArmorReferences && (armor == 0 || damageFx == 0)) || armor > references.Length || damageFx > references.Length
+                || (armor != 0 && references[checked((int)armor - 1)].TypeId != ArmorType)
+                || (damageFx != 0 && references[checked((int)damageFx - 1)].TypeId != DamageFxType)
                 || (conditions >> 23) != 0)
                 throw new InvalidDataException("ArmorSet reference index/type or condition mask differs.");
             armors[index] = new(table, member, conditions, armor, damageFx);

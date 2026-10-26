@@ -106,6 +106,13 @@ internal static class SdkXmlDiagnosticsSmokeTest
         File.WriteAllText(fragment,"<?xml version=\"1.0\"?>\n"+physics.OuterXml);xi.RemoveAttribute("xpointer");
         File.WriteAllText(entry,"<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\">\n"+fragmented.DocumentElement!.OuterXml+"</AssetDeclaration>");Refuse(entry,fragment,"GravityMultiplier");
         File.WriteAllText(entry,"<AssetDeclaration xmlns=\"uri:ea.com:eala:asset\">\n<Includes>\n<Include type=\"all\" source=\"missing.xml\"/>\n</Includes>\n</AssetDeclaration>");Refuse(entry,entry,"source");
+        // Reborn: an Includes-only entry and same-ID overlay must report an unsupported inherited module in its real base file.
+        var unreviewed=SdkXmlDiagnostics.Parse(complete);var unreviewedBehaviors=(XmlElement)unreviewed.SelectSingleNode("//*[local-name()='Behaviors']")!;
+        unreviewedBehaviors.RemoveAll();unreviewedBehaviors.InnerXml="<LineSegmentDamageUpdate xmlns='uri:ea.com:eala:asset' id='ModuleTag_Unreviewed' NodeLifetime='1s' DamageInterval='0.1s' Distance='25'/>";
+        File.WriteAllText(basis,"<AssetDeclaration xmlns='uri:ea.com:eala:asset'>\n"+unreviewed.DocumentElement!.OuterXml+"</AssetDeclaration>");
+        string overlay=Path.Combine(output,"overlay.xml");string sameId=unreviewed.DocumentElement.GetAttribute("id");
+        File.WriteAllText(overlay,"<AssetDeclaration xmlns='uri:ea.com:eala:asset'><Includes><Include type='instance' source='base.xml'/></Includes><GameObject id='"+sameId+"' inheritFrom='"+sameId+"' BuildTime='2'/></AssetDeclaration>");
+        File.WriteAllText(entry,"<AssetDeclaration xmlns='uri:ea.com:eala:asset'><Includes><Include type='all' source='overlay.xml'/></Includes></AssetDeclaration>");Refuse(entry,basis,"LineSegmentDamageUpdate",attribute:false);
         // Reborn: generated model graphs can exceed the individual source quota without losing assets or reopening DTD/entity expansion.
         string merged=Path.Combine(output,"additional.xml");string payload=new('1',5*1048576);
         File.WriteAllText(merged,"<AssetDeclaration><W3DMesh id='Large'><Vertices>"+payload+"</Vertices></W3DMesh><W3DCollisionBox id='Last'/></AssetDeclaration>");

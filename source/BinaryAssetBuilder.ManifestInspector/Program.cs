@@ -158,6 +158,9 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();ReplaceSelfSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: qualify the new wall-builder processor without changing either live mod or launching the game.
             // Reborn: exercise timer-monitor native references, metadata and complete-object composition offline.
+            // Reborn: independently exercise radar source, stock metadata and full object composition.
+            if(args.Length==3 && args[0]=="radar-behavior-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();RadarBehaviorSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="monitor-special-power-timer-self-test")
             {CompilerSmokeTest.InitializeHashProvider();MonitorSpecialPowerTimerSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="wall-builder-self-test")

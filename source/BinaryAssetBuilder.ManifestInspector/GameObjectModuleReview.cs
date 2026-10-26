@@ -27,9 +27,9 @@ internal static class GameObjectModuleReview
     //-------------------------------------------------------------------------------------------------
     /** Reborn: capture only the previously fingerprint-admitted slice, then inspect six named module containers. */
     //-------------------------------------------------------------------------------------------------
-    internal static Proof Inspect(string path, string name)
+    internal static Proof Inspect(string path, string name,bool allowNullArmorReferences=false)
     {
-        var c = GameObjectStockReview.Capture(path, name);
+        var c = GameObjectStockReview.Capture(path, name,allowNullArmorReferences);
         return Decode(name, c.Bytes, c.Projection.NativeRoot, SchemaNames());
     }
 
