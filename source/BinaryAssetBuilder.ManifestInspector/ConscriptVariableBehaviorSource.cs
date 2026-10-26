@@ -91,6 +91,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: power managers accept authored power/EVA references and local module identities through the official schema.
             // Reborn: production bonuses are schema-driven values rather than fixed FreeTrade/MassProduction samples.
             // Reborn: object storage uses schema-owned radius/link values and authored strong/weak references.
+            // Reborn: teleport storage accepts schema-defined link IDs, OCL references and the second-click selection flag.
+            if(owner.NativeType==typeof(SageBinaryData.TeleportStoredObjectsSpecialPowerModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.StoreObjectsSpecialPowerModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.GiveProductionBonusSpecialPowerModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1PlayerPowerManagerBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

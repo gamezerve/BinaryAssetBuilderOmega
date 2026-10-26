@@ -162,6 +162,9 @@ internal static class Program
             // Reborn: verify the complete power-manager EP1 native, imports and composition.
             // Reborn: cover all production-bonus source percentages and inherited power metadata.
             // Reborn: verify object-storage fields, imports, marker IDs and full GameObject composition.
+            // Reborn: verify teleport storage flags, linking and OCL imports against original EP1 records.
+            if(args.Length==3 && args[0]=="teleport-stored-objects-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();TeleportStoredObjectsSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="store-objects-self-test")
             {CompilerSmokeTest.InitializeHashProvider();StoreObjectsSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="production-bonus-self-test")

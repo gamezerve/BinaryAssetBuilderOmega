@@ -3828,3 +3828,14 @@ inherited SpecialPower fields. Optional fields retain official defaults.
 Original Chrono Swap and all three Chrono Rift storage modules qualify its native
 layout and metadata. `store-objects-self-test` covers original records, all four
 storage fields, defaults, full-object composition and corruption refusal.
+
+
+### TeleportStoredObjectsSpecialPower
+
+`TeleportStoredObjectsSpecialPower` is build-enabled with editable
+`GetObjectsCurrentlyAtStorePosition`, `StoreObjectsLinkID`, optional strong `OCL`
+reference, and inherited SpecialPower fields. Defaults follow the official XSD.
+The original Chrono Swap and three Chrono Rift teleport powers qualify its
+native layout and metadata. `teleport-stored-objects-self-test` covers those
+records, edited flag/link/OCL values, defaults, complete GameObject composition
+and corrupted-output refusal.

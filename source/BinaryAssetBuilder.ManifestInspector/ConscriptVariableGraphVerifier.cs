@@ -66,6 +66,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: power-manager metadata is learned independently from retail spellbooks.
     // Reborn: learn production-bonus inheritance and percentages from retail spellbook records.
     // Reborn: object-storage metadata is qualified independently against the original chronosphere powers.
+    // Reborn: teleport storage uses independently qualified native and metadata records.
+    private readonly Lazy<StockMetadataGrammar> teleportStored;
     private readonly Lazy<StockMetadataGrammar> storeObjects;
     private readonly Lazy<StockMetadataGrammar> productionBonus;
     private readonly Lazy<StockMetadataGrammar> playerPowerManager;
@@ -120,6 +122,7 @@ internal sealed class ConscriptVariableGraphVerifier
         buildingBehavior=new(()=>BuildingBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         weaponTurret=new(()=>WeaponTurretContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        teleportStored=new(()=>TeleportStoredObjectsContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         storeObjects=new(()=>StoreObjectsContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         productionBonus=new(()=>ProductionBonusContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         playerPowerManager=new(()=>PlayerPowerManagerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -248,6 +251,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: compose complete power-manager records including both strong reference slots.
                 // Reborn: preserve complete production-bonus source values and inherited special-power references.
                 // Reborn: retain radius, pair ID, OCL import and weak target marker during full-object composition.
+                // Reborn: preserve the teleport flag, paired storage ID, OCL and inherited power data through object composition.
+                if(owner.NativeType==typeof(TeleportStoredObjectsSpecialPowerModuleData)){
+                    var grammar=teleportStored.Value;var teleportNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,TeleportStoredObjectsContract.TypeId,teleportNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(teleportNative,official,TeleportStoredObjectsContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,teleportNative,owner.NativeType,proof.Records);Own(teleportNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(StoreObjectsSpecialPowerModuleData)){
                     var grammar=storeObjects.Value;var storeNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,StoreObjectsContract.TypeId,storeNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(storeNative,official,StoreObjectsContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,storeNative,owner.NativeType,proof.Records);Own(storeNative,start,stop);Splice(owner,metadata,start,size);continue;

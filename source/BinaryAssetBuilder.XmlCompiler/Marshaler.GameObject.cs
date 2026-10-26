@@ -14,6 +14,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: teleport stored objects has its own native record and concrete EP1 wire identity.
+            case 0x318DC4D6u:
+                MarshalPolymorphicType<TeleportStoredObjectsSpecialPowerModuleData,BehaviorModuleData>(node,objT,state);
+                break;
             // Reborn: retain the concrete EP1 production-bonus identity and complete SpecialPower allocation.
             case 0x8ED33E53u:
                 MarshalPolymorphicType<GiveProductionBonusSpecialPowerModuleData,BehaviorModuleData>(node,objT,state);
