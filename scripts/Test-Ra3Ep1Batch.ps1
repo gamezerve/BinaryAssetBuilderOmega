@@ -115,6 +115,8 @@ if($SchedulerControl){
     Add-BatchCase 'production-bonus' 'StockQualifiedProductionBonus' @('production-bonus-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'player-power-manager' 'StockQualifiedPlayerPowerManager' @('player-power-manager-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'radar-behavior' 'StockQualifiedRadarBehavior' @('radar-behavior-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: qualify Tesla notification fields, optional filters and complete module composition.
+    Add-BatchCase 'notify-when-attacking' 'NotifyWhenAttacking' @('notify-when-attacking-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'monitor-special-power-timer' 'StockQualifiedMonitorSpecialPowerTimer' @('monitor-special-power-timer-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'wall-builder' 'StockQualifiedWallBuilder' @('wall-builder-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: all FXList nugget kinds, inheritance and real local/stock dependencies use an isolated output root.

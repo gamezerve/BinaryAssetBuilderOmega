@@ -1,4 +1,4 @@
-﻿using BinaryAssetBuilder.Core.Diagnostics;
+using BinaryAssetBuilder.Core.Diagnostics;
 using Relo;
 using SageBinaryData;
 
@@ -14,6 +14,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: Tesla attack notifications use their concrete EP1 identity and complete optional friend filter.
+            case 0x02FDF9E4u:
+                MarshalPolymorphicType<NotifyWhenAttackingBehaviorModuleData,BehaviorModuleData>(node,objT,state);
+                break;
             // Reborn: template-ID stores use their real concrete identity and inherited behavior header.
             case 0x50B8001Cu:
                 MarshalPolymorphicType<StoreTemplateIDBehaviorModuleData,BehaviorModuleData>(node,objT,state);

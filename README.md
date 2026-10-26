@@ -3994,3 +3994,19 @@ static commands, including base-game and EP1 AI declarations.
 every official AI attribute, nested filters/weapons, defaults, invalid enums,
 corrupt native/relocation data and private command/command-set package readback.
 This is compiler validation; it does not claim a new gameplay AI test.
+
+### NotifyWhenAttackingBehavior
+
+The complete 40-byte EP1 attack-notification module is supported, including
+NotifyRadius, AssistResponseModuleId, SleepTime, MaxFriendsToNotify,
+WeaponSlotID/WeaponSlotType, HasMobileFriends, IgnoreDisabledStatus and the
+optional AcceptableFriends ObjectFilter. Values, module identities and friend
+lists are authored normally under the official schema; they are not fixed to
+the retail Tesla Coil. An omitted filter has a null pointer; an explicit empty
+filter retains the schema defaults in an allocated record.
+
+Retail Tesla Coil metadata independently anchors all eight primitive offsets.
+`notify-when-attacking-self-test` checks the original record, all-field edits,
+custom friend filters, omitted/empty filters, default values, native corruption
+rejection and full GameObject native/metadata composition without user-mod edits
+or game launch.

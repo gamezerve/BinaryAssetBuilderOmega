@@ -206,6 +206,9 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();PlayerPowerManagerSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="radar-behavior-self-test")
             {CompilerSmokeTest.InitializeHashProvider();RadarBehaviorSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: exercise complete attack notification source/native/metadata graphs offline.
+            if(args.Length==3 && args[0]=="notify-when-attacking-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();NotifyWhenAttackingSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="monitor-special-power-timer-self-test")
             {CompilerSmokeTest.InitializeHashProvider();MonitorSpecialPowerTimerSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="wall-builder-self-test")

@@ -89,6 +89,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> playerPowerManager;
     private readonly Lazy<StockMetadataGrammar> radar;
     private readonly Lazy<StockMetadataGrammar> monitorSpecialPowerTimer;
+    // Reborn: notification metadata and native storage are qualified independently of any Conscript shape.
+    private readonly Lazy<StockMetadataGrammar> notifyWhenAttacking;
     private readonly Lazy<StockMetadataGrammar> wallBuilder;
     // Reborn: turret weapon slots use a retail-derived metadata grammar and independent source proof.
     private readonly Lazy<StockMetadataGrammar> weaponTurret;
@@ -151,6 +153,7 @@ internal sealed class ConscriptVariableGraphVerifier
         productionBonus=new(()=>ProductionBonusContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         playerPowerManager=new(()=>PlayerPowerManagerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         radar=new(()=>RadarBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        notifyWhenAttacking=new(()=>NotifyWhenAttackingContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         monitorSpecialPowerTimer=new(()=>MonitorSpecialPowerTimerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         wallBuilder=new(()=>WallBuilderContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         replaceSelf=new(()=>ReplaceSelfContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -332,6 +335,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 if(owner.NativeType==typeof(RadarBehaviorModuleData)){
                     var grammar=radar.Value;var radarNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,RadarBehaviorContract.TypeId,radarNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(radarNative,official,RadarBehaviorContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,radarNative,owner.NativeType,proof.Records);Own(radarNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: splice only independently proved notification bytes and metadata into the actual authored module order.
+                if(owner.NativeType==typeof(NotifyWhenAttackingBehaviorModuleData)){
+                    var grammar=notifyWhenAttacking.Value;var notificationNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,NotifyWhenAttackingContract.TypeId,notificationNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(notificationNative,official,NotifyWhenAttackingContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,notificationNative,owner.NativeType,proof.Records);Own(notificationNative,start,stop);Splice(owner,metadata,start,size);continue;
                 }
                 if(owner.NativeType==typeof(MonitorSpecialPowerTimerUpdateModuleData)){
                     var grammar=monitorSpecialPowerTimer.Value;var monitorNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
