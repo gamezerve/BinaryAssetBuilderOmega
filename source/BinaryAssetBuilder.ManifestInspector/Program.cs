@@ -223,6 +223,9 @@ internal static class Program
             // Reborn: test full death phase/native graphs and multiple authored death modules offline.
             // Reborn: test populated selector sound arrays and complete object metadata offline.
             // Reborn: test original and authored aiming values through real behavior dispatch and object composition.
+            // Reborn: expose complete EP1 collision regression without user mod or installation writes.
+            if(args.Length==3 && args[0]=="fire-weapon-collide-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();FireWeaponCollideSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="aim-weapon-self-test")
             {CompilerSmokeTest.InitializeHashProvider();AimWeaponSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="client-sound-array-self-test")

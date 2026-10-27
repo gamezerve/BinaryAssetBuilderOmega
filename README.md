@@ -6,7 +6,19 @@ asset IDs, instance includes, inheritance, `$` definitions/expressions,
 TGA/DDS textures and W3X models. Current alpha capability restrictions are
 temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
-## Current outcome — October 24, 2026
+## Current outcome — October 27, 2026
+
+<!-- Reborn: FireWeaponCollide uses the independently qualified Uprising collision layout and flag ordinals. -->
+`FireWeaponCollide` is build-enabled with its complete 112-byte EP1 record:
+`CollideWeapon`, `FireOnce`, all eleven collision flags, required/forbidden status
+masks, firing location, disabled-type masks, disable type/duration, firing interval,
+optional `ForbiddenStance`, and `TargetObjectFilter` with include/exclude lists.
+The EP1 writer preserves the legacy KW record separately; collision flags use
+Uprising ordinals. Omitted stance/filter pointers remain absent, while an authored
+`GUARD` stance retains its allocated zero ordinal. Five original Flak Trooper and
+Grinder Tank modules independently qualify the native fields and metadata.
+The focused regression passes 20 checks in both developer and fast modes,
+including full GameObject composition and deliberate native corruption rejection.
 
 <!-- Reborn: AimWeapon maps to its actual Behavior wire class and keeps Uprising threshold defaults separate from KW. -->
 `AimWeapon` is build-enabled with its 24-byte EP1 record. `AimLowThreshold`,

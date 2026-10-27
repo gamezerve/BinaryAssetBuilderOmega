@@ -127,6 +127,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: detector fields and Upgrade inheritance use independent EP1 native/metadata proof.
             // Reborn: all SlowDeath phase, mask and condition fields are proved against current source rather than a stock template.
             // Reborn: all four aiming values are source-owned under independent EP1 native/metadata proof.
+            // Reborn: collision weapons support the complete official schema and source-driven optional children.
+            if(owner.NativeType==typeof(SageBinaryData.Ep1FireWeaponCollideModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.AimWeaponBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.SlowDeathBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1StealthDetectorUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

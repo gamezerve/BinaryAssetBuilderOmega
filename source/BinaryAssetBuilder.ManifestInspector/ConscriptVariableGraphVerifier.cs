@@ -108,6 +108,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: load detector grammar only for authored detector modules.
     // Reborn: complete SlowDeath phase records have stock-qualified native and metadata ownership.
     // Reborn: aiming metadata is qualified only when an aiming behavior is authored.
+    // Reborn: independently qualify collision metadata before composing authored modules.
+    private readonly Lazy<StockMetadataGrammar> fireWeaponCollide;
     private readonly Lazy<StockMetadataGrammar> aimWeapon;
     private readonly Lazy<StockMetadataGrammar> slowDeath;
     private readonly Lazy<StockMetadataGrammar> stealthDetector;
@@ -180,6 +182,7 @@ internal sealed class ConscriptVariableGraphVerifier
         playerPowerManager=new(()=>PlayerPowerManagerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         radar=new(()=>RadarBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         subObjectsUpgrade=new(()=>SubObjectsUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        fireWeaponCollide=new(()=>FireWeaponCollideContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         aimWeapon=new(()=>AimWeaponContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         slowDeath=new(()=>SlowDeathContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         stealthDetector=new(()=>StealthDetectorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -392,6 +395,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: compose each independently proved detector in its actual authored module position.
                 // Reborn: compose source-sized death phases and optional masks after complete independent source/native proof.
                 // Reborn: compose independently proved aiming defaults and edited values in actual source order.
+                // Reborn: prove collision fields, references, optional records and retail metadata before splicing.
+                if(owner.NativeType==typeof(Ep1FireWeaponCollideModuleData)){
+                    var grammar=fireWeaponCollide.Value;var collideNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,FireWeaponCollideContract.TypeId,collideNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(collideNative,official,FireWeaponCollideContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,collideNative,owner.NativeType,proof.Records);Own(collideNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(AimWeaponBehaviorModuleData)){
                     var grammar=aimWeapon.Value;var aimNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,AimWeaponContract.TypeId,aimNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(aimNative,official,AimWeaponContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,aimNative,owner.NativeType,proof.Records);Own(aimNative,start,stop);Splice(owner,metadata,start,size);continue;

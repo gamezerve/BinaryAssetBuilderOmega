@@ -199,7 +199,9 @@ public static partial class Marshaler
                 MarshalPolymorphicType<InvalidTargetsDeathUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0xAE4A97B0u:
-                MarshalPolymorphicType<FireWeaponCollideModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: select the independently qualified Uprising collision record, retaining its original wire identity.
+                using(var context=state.Push((void**)objT,(uint)sizeof(Ep1FireWeaponCollideModuleData),1u))Marshal(node,(Ep1FireWeaponCollideModuleData*)*objT,state);
+                *(uint*)*objT=0xAE4A97B0u;
                 break;
             case 0xB28C3D52u:
                 MarshalPolymorphicType<FireWeaponUpdateModuleData, BehaviorModuleData>(node, objT, state);
