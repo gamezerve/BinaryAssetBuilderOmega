@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 27, 2026
 
+<!-- Reborn: toggle ability graphs are source-owned instead of compared to a frozen Conscript sample. -->
+`ToggleStatusSpecialAbilityUpdate` uses schema-driven GameObject admission and
+complete native/metadata validation instead of requiring the Conscript toggle
+shape. State count, state audio, weapon AI (including `TOGGLE_SHORT_RANGE_WEAPON`),
+optional AI values, Module activations and ActiveGeometry lists are authored from
+XML. The official schema still requires at least one ToggleState, one
+SkirmishAiInfo per state and at most four Module children per state. The existing
+EP1 writer and its defaults are retained; the allocated empty Lua-event default,
+unsigned enum words and AI masks now have independent source/native proofs.
+
 <!-- Reborn: FireWeaponCollide uses the independently qualified Uprising collision layout and flag ordinals. -->
 `FireWeaponCollide` is build-enabled with its complete 112-byte EP1 record:
 `CollideWeapon`, `FireOnce`, all eleven collision flags, required/forbidden status

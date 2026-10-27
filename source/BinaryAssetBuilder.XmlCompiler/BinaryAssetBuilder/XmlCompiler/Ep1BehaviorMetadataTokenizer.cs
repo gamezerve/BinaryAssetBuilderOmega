@@ -415,6 +415,8 @@ public static class Ep1BehaviorMetadataTokenizer
         // Reborn: death-phase containers retain their own list signatures; repeated typed references use the same stock element wire as scalar references.
         "SlowDeathFXListType[]" => 0x33D0DFAE, "SlowDeathOCLType[]" => 0x97474300, "SlowDeathPhaseType" => 0x350A89A5,
         "SlowDeathSoundType[]" => 0xB8E87C25, "SlowDeathWeaponType[]" => 0x908107EC, "SoundOrEvaEvent" => 0x1AE6B6B7,
+        // Reborn: Dreadnought activation-module rows independently capture the TriggerType enum wire identity.
+        "TriggerType" => 0x01C3A3A2,
         "SpecialAbilityUpdateOptionsTypeBitFlags" => 0x982F7738, "SpecialPowerModuleInfo[]" => 0xADA54D29,
         "SpecialPowerRef" => 0x96311B79, "SpecialPowerTemplateRef" => 0xAEE83888, "SpecialPowerWeakRef" => 0x40BBFFB2,
         "StanceTemplateRef" => 0x0D8218FB, "StringList" => 0x6D66AE18, "Time" => 0x998669E8,

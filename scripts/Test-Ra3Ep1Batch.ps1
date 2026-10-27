@@ -133,6 +133,8 @@ if($SchedulerControl){
     # Reborn: nested selector sound arrays, real audio references and all Uprising sound ordinals.
     # Reborn: aiming thresholds, distances, official defaults and complete object output.
     # Reborn: collision flags, optional records and stock ABI are tested in isolation.
+    # Reborn: source-driven toggle states include full native/metadata GameObject composition.
+    Add-BatchCase 'toggle-status-composition' 'ToggleStatusComposition' @('toggle-status-composition-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'fire-weapon-collide' 'FireWeaponCollide' @('fire-weapon-collide-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'aim-weapon' 'AimWeapon' @('aim-weapon-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'client-sound-array' 'ClientSoundArray' @('client-sound-array-self-test',$StaticManifest,$GlobalManifest)

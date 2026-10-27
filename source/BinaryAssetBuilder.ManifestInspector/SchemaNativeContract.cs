@@ -159,6 +159,11 @@ internal sealed class SchemaNativeContract
         // Reborn: EP1 AI structs store named schema enums/lists in uint words; verify their actual schema ordinals/bits rather than parsing names as integers.
         if(owner==typeof(Ep1AiSpecialPowerInfo)&&name is "Heuristic" or "Manager"||owner==typeof(AISpecialPowerWeaponData)&&name is "AoeAttackPowerLocationPreference" or "AoeAttackEmanationLocation"){Enumeration(e,name,at,path);return;}
         if(owner==typeof(Ep1AiSpecialPowerInfo)&&name is "UseInMicroManagerState" or "Location"){Flags(e,name,at,4,path);return;}
+        // Reborn: toggle records store schema enums/masks in uint words; their XSD values, not integer parsing, define the independent expected bytes.
+        if(owner==typeof(ToggleStatusNugget)&&name is "ArmorSet" or "LocomotorSet" or "DisabledType"||owner==typeof(AIToggleSpecialPowerInfo)&&name=="ToggleHint"){Enumeration(e,name,at,path);return;}
+        if(owner==typeof(AIToggleSpecialPowerInfo)&&name is "NeverUseInState" or "NeverUseDuringTask" or "Location"){Flags(e,name,at,4,path);return;}
+        // Reborn: toggle Lua-event defaults deliberately retain an allocated empty string, matching retail and the existing EP1 writer.
+        if(owner==typeof(ToggleStatusNugget)&&name=="GenericLuaEventParameter"){var attribute=e?.GetAttributeNode(name);if(attribute!=null)consumed.Add(attribute);Text(attribute?.Value??"",at,path,false);return;}
         if(name=="Base"&&!type.IsPrimitive&&!type.IsEnum&&!type.IsGenericType){Struct(type,e,at,path,depth+1);return;}
         if(IsFlags(type)){Flags(e,name,at,Size(type),path);return;}
         if(type.IsEnum){Enumeration(e,name,at,path);return;}
