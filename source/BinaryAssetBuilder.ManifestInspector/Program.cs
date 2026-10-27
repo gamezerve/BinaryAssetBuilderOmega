@@ -222,6 +222,9 @@ internal static class Program
             // Reborn: test full detector native/metadata graphs and authored GameObject composition offline.
             // Reborn: test full death phase/native graphs and multiple authored death modules offline.
             // Reborn: test populated selector sound arrays and complete object metadata offline.
+            // Reborn: test original and authored aiming values through real behavior dispatch and object composition.
+            if(args.Length==3 && args[0]=="aim-weapon-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();AimWeaponSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="client-sound-array-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ClientSoundArraySmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="slow-death-self-test")

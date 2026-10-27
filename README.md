@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: AimWeapon maps to its actual Behavior wire class and keeps Uprising threshold defaults separate from KW. -->
+`AimWeapon` is build-enabled with its 24-byte EP1 record. `AimLowThreshold`,
+`AimHighThreshold`, `AimNearDistance` and `AimFarDistance` are editable.
+Omitted thresholds default to `-0.4` and `0.4`; explicit zeros remain zero.
+The separate EP1 writer preserves the original KW writer and its zero defaults.
+Original Flak Trooper and Javelin Soldier records qualify the native fields,
+inheritance chain and metadata. Regression:
+`aim-weapon-self-test <static.manifest> <global.manifest>` covers edited values,
+custom module IDs, defaults, explicit zeros, full objects and corrupt output.
+
 <!-- Reborn: model-condition sound selectors now retain populated nested sound overrides instead of allowing null pointers only. -->
 `ModelConditionSoundSelectorClientBehavior/Override/AudioArraySound` is
 build-enabled. Sound entries preserve actual Core references and all 39 Uprising

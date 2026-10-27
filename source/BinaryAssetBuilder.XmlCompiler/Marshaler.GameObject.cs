@@ -551,7 +551,9 @@ public static partial class Marshaler
                 MarshalPolymorphicType<SupplyWarehouseDockUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0xE42D5618u:
-                MarshalPolymorphicType<AimWeaponBehaviorModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: retain the original aiming wire identity while applying Uprising-specific schema defaults.
+                using(var context=state.Push((void**)objT,(uint)sizeof(AimWeaponBehaviorModuleData),1u))MarshalEp1AimWeapon(node,(AimWeaponBehaviorModuleData*)*objT,state);
+                uint aimType=0xE42D5618u;state.InplaceEndianToPlatform(&aimType);*(uint*)*objT=aimType;
                 break;
             case 0x3CFBDE26u:
                 MarshalPolymorphicType<DistributedMoneyBehaviorModuleData, BehaviorModuleData>(node, objT, state);

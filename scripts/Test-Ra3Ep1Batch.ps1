@@ -131,6 +131,8 @@ if($SchedulerControl){
     # Reborn: detector imports, KindOf masks, bone storage and inherited upgrades.
     # Reborn: full death phases, masks, typed imports, audio lists and multi-module composition.
     # Reborn: nested selector sound arrays, real audio references and all Uprising sound ordinals.
+    # Reborn: aiming thresholds, distances, official defaults and complete object output.
+    Add-BatchCase 'aim-weapon' 'AimWeapon' @('aim-weapon-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'client-sound-array' 'ClientSoundArray' @('client-sound-array-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'slow-death' 'SlowDeath' @('slow-death-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'stealth-detector' 'StealthDetectorUpdate' @('stealth-detector-self-test',$StaticManifest,$GlobalManifest)
