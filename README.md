@@ -8,6 +8,15 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: incoming static references are not a reliable unused test for runtime-selected ability-button registries. -->
+`UNUSEDASSET` excludes `UnitAbilityButtonTemplate` and
+`JoypadCommandBarButtonTemplate`. Unit-ability templates select a LogicCommand;
+joypad ability/power variants also carry command/power selectors, while general
+joypad layouts can still reference buttons directly via Slot/GeneralButton/HomeButton.
+An absent incoming asset edge therefore does not prove these UI templates unused.
+Their outgoing references still contribute to usage analysis, and missing
+command/power/image/state references remain subject to the normal missing-asset audit.
+
 <!-- Reborn: create announcements retain raw logic-frame words and the exact retail unsigned metadata signature. -->
 `EvaAnnounceClientCreate` uses a 28-byte EP1 record with three strong EVA imports,
 four flags and a raw unsigned `DelayBeforeAnnouncementLogicFrames` word. Its

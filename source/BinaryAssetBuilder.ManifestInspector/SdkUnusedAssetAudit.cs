@@ -10,6 +10,9 @@ namespace BinaryAssetBuilder.ManifestInspector;
 internal static class SdkUnusedAssetAudit
 {
     internal sealed record WeakUse(AssetId Owner,AssetId[] Targets);
+    // Reborn: UI templates selected through command/power registries cannot be judged unused solely by missing incoming asset edges.
+    // UnitAbilityButtonTemplate has a required LogicCommand selector; Joypad templates also have direct layout refs, but ability/power variants need not have an incoming one.
+    private static readonly HashSet<string> RuntimeSelectedUiTypes=new(StringComparer.Ordinal){"UnitAbilityButtonTemplate","JoypadCommandBarButtonTemplate"};
     private const string Ea="uri:ea.com:eala:asset";
 
     //-------------------------------------------------------------------------------------------------
@@ -38,12 +41,12 @@ internal static class SdkUnusedAssetAudit
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: all types use the same incoming-reference rule; existing retail identities remain runtime entry points, and replaced stock owners cannot keep obsolete edges alive. */
+    /** Reborn: statically classifiable types use the incoming-reference rule; runtime-selected UI templates and existing retail identities remain entry points, and replaced stock owners cannot keep obsolete edges alive. */
     //-------------------------------------------------------------------------------------------------
     internal static ManifestAsset[] FindUnused(IEnumerable<ManifestAsset> mod,IEnumerable<ManifestAsset> stock,IEnumerable<WeakUse> weak)
     {
         var emitted=mod.ToArray();var originals=stock.ToArray();var local=emitted.Select(WorldBuilderAssetResolver.Id).ToHashSet();var retail=originals.Select(WorldBuilderAssetResolver.Id).ToHashSet();var used=emitted.SelectMany(a=>a.References).Concat(originals.Where(a=>!local.Contains(WorldBuilderAssetResolver.Id(a))).SelectMany(a=>a.References)).Concat(weak.Where(w=>local.Contains(w.Owner)).SelectMany(w=>w.Targets)).ToHashSet();
-        return emitted.DistinctBy(WorldBuilderAssetResolver.Id).Where(a=>!retail.Contains(WorldBuilderAssetResolver.Id(a))&&!used.Contains(WorldBuilderAssetResolver.Id(a))).OrderBy(a=>a.Name,StringComparer.Ordinal).ToArray();
+        return emitted.DistinctBy(WorldBuilderAssetResolver.Id).Where(a=>!RuntimeSelectedUiTypes.Contains(a.TypeName)&&!retail.Contains(WorldBuilderAssetResolver.Id(a))&&!used.Contains(WorldBuilderAssetResolver.Id(a))).OrderBy(a=>a.Name,StringComparer.Ordinal).ToArray();
     }
 
     //-------------------------------------------------------------------------------------------------
