@@ -53,7 +53,7 @@ internal static class ConscriptModuleGraphSmokeTest
             // Reborn: exercise populated/default/duplicate Spawn graphs as one combined module-family batch.
             modes=modes.Concat(new[]{"spawn-edited","spawn-defaults","spawn-multiple"}).ToArray();
             // Reborn: unpack tests combine authored timing/height, optional sound presence and repeated independently named instances.
-            modes=modes.Concat(new[]{"unpack-edited","unpack-defaults","unpack-multiple"}).ToArray();
+            modes=modes.Concat(new[]{"unpack-edited","unpack-defaults","unpack-multiple","unpack-empty"}).ToArray();
             // Reborn: production proves every EP1 scalar with edited values, schema defaults and two independently named instances.
             modes=modes.Concat(new[]{"production-edited","production-defaults","production-multiple"}).ToArray();
             // Reborn: repair proves own scalars and inline percent records with edits, defaults and two instances.
@@ -538,6 +538,10 @@ internal static class ConscriptModuleGraphSmokeTest
                 if(mode.StartsWith("unpack-",StringComparison.Ordinal))for(int i=0;i<(mode=="unpack-multiple"?2:1);i++){
                     var module=source.CreateElement("StructureUnpackUpdate",SchemaSet.XmlNamespace);string id="RebornUnpack"+i;module.SetAttribute("id",id);
                     if(mode!="unpack-defaults"){module.SetAttribute("UnpackTime",i==0?"1250ms":"0.25s");module.SetAttribute("OffsetHeightAboveWater",i==0?"17.5":"-2.25");if(i==0)module.SetAttribute("UnpackCompleteSound","SOV_Conscript_VoiceAttack");}
+                    // Reborn: an explicit empty sound is an allocated null reference, not a missing audio asset.
+                    if(mode=="unpack-empty")module.SetAttribute("UnpackCompleteSound","");
+                    // Reborn: the official reference pattern permits empty text but rejects whitespace-only identities.
+                    if(mode=="unpack-empty"){var whitespace=Copy(source);var bad=whitespace.CreateElement("StructureUnpackUpdate",SchemaSet.XmlNamespace);bad.SetAttribute("id","RebornWhitespaceSound");bad.SetAttribute("UnpackCompleteSound","   ");((XmlElement)whitespace.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]!).AppendChild(bad);Refuse(()=>ConscriptVariableBehaviorSource.Admit(whitespace,baseline,official));faults++;}
                     behaviors.PrependChild(module);origins.Add(id,"RebornUnpackTemplate");
                 }
                 // Reborn: populate all Spawn storage families together, including the three EP1 flags and nested status/Die/upgrade records.
@@ -741,6 +745,8 @@ internal static class ConscriptModuleGraphSmokeTest
                 }
                 // Reborn: corrupt each unpack field, optional pointer/import index and base metadata target after a complete package build.
                 if(mode.StartsWith("unpack-",StringComparison.Ordinal))foreach(var owner in ConscriptModuleScalarContract.Owners(source).Where(o=>o.Element.LocalName=="StructureUnpackUpdate")){
+                    // Reborn: accepting an intentional empty sound must not allow a nonexistent named sound to pass.
+                    var missing=Copy(source);var missingOwner=ConscriptModuleScalarContract.Owners(missing).Single(o=>o.Element.GetAttribute("id")==owner.Element.GetAttribute("id")).Element;missingOwner.SetAttribute("UnpackCompleteSound","RebornMissingUnpackSound");Refuse(()=>Verify(missing,pair.Native,pair.Instance,origins));faults++;
                     int at=ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,owner);
                     foreach(int offset in owner.Element.HasAttribute("UnpackCompleteSound")?new[]{0,4,8,12,16,20}:new[]{0,4,8,12,16}){var bad=Clone(pair.Native);bad.InstanceBuffer[at+offset]^=1;Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;}
                     int list=GameObjectStockReview.Tokens(tokens.InstanceBuffer,0)[FastHash.GetHashCode("Behaviors")].Offset;int wrapper=(int)Word(tokens.InstanceBuffer,list+12+owner.Index*12+8);foreach(int offset in new[]{8,16,20,40,56,64,68,80,104,128,152,176,188}){var bad=Clone(tokens);bad.InstanceBuffer[wrapper+offset]^=1;Refuse(()=>Verify(source,pair.Native,pair.Instance,origins,bad));metadataFaults++;}

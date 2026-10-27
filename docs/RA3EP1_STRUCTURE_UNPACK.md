@@ -12,7 +12,7 @@ GenericUnpack native record, preserving all inherited fields.
 | 8 | UnpackTime, Time, default `0s` |
 | 12 | Optional pointer to UnpackCompleteSound import word |
 | 16 | OffsetHeightAboveWater, SageReal, default `5.0` |
-| 20 | Audio import selector, present only when sound is authored |
+| 20 | Present sound word: Core import selector, or zero for an explicit empty sound |
 
 The header is 20 bytes (24 bytes including a present sound word). The complete
 204-byte metadata prefix includes Structure/Generic/Update/Contain/Behavior/
@@ -20,6 +20,13 @@ Module tables. A separate literal metadata writer checks generated tags and
 targets, with both sound-present and sound-omitted forms. Its entire layout and
 the nondefault 20-second stock delay are qualified against
 `GameObject:SovietRefinery` before complete-object composition is accepted.
+
+<!-- Reborn: an explicit empty optional sound retains a null pointee without creating an import. -->
+The original `GameObject:SovietOutpost` additionally qualifies
+`UnpackCompleteSound=""`: its pointer is allocated, its sound word is zero,
+and it has no sound import. Empty values are accepted as intentional
+silence. Omitting the attribute keeps the pointer null. Nonempty sound names
+still require a compatible target and matching Core index.
 
 The sound is an `AudioEventInfoRef` constrained to `BaseAudioEventInfo`.
 The source/catalog determine concrete asset identity independently of the

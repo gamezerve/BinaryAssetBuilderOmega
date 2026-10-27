@@ -8,6 +8,15 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: explicit empty unpack audio is a valid null reference, as used by the original Soviet Outpost. -->
+`StructureUnpackUpdate/@UnpackCompleteSound=""` now compiles as an intentional
+silent completion. An omitted attribute keeps its null pointer; an explicit
+empty value retains the allocated null reference without an import.
+Nonempty sound names still require a compatible catalog target and matching Core
+reference. Original Soviet Refinery and Outpost records qualify both forms;
+the `unpack` regression batch covers empty values and rejects corrupt
+selectors, metadata and nonexistent named sounds.
+
 <!-- Reborn: aura compilation uses the Uprising record rather than the older Kane's Wrath field arrangement. -->
 `AttributeModifierAuraUpdate` is build-enabled with its 112-byte EP1 record,
 all official aura attributes, optional `ObjectFilter` and inherited Upgrade fields.

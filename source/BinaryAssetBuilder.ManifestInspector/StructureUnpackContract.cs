@@ -26,21 +26,24 @@ internal static class StructureUnpackContract
     //-------------------------------------------------------------------------------------------------
     internal static bool QualifyStock(string manifest,XmlSchemaSet schemas,ManifestAsset[] catalog)
     {
-        var captured=GameObjectStockReview.Capture(manifest,"GameObject:SovietRefinery");var modules=GameObjectModuleReview.Inspect(manifest,captured.Asset.Name).Containers.Single(c=>c.Name=="Behaviors").Modules;
-        var module=modules.Single(m=>m.Type=="StructureUnpackUpdateModuleData");var next=modules[Array.IndexOf(modules,module)+1];
-        if(Marshal.SizeOf<Ep1StructureUnpackUpdateModuleData>()!=20||module.TypeId!=0x977F8391u||next.Native-module.Native!=24||next.Wrapper-module.Wrapper!=204||!module.ClassChain.SequenceEqual(new[]{"StructureUnpackUpdateModuleData","GenericUnpackUpdateModuleData","UpdateModuleData","ContainModuleData","BehaviorModuleData","ModuleData"}))throw new InvalidDataException("EP1 StructureUnpack stock ABI differs.");
-        var b=captured.Bytes.AsSpan(module.Native,24).ToArray();Put(b,12,Word(b,12)-(uint)module.Native);
-        var native=new Chunk{InstanceBuffer=b,RelocationBuffer=Pack(12),ImportsBuffer=Pack(20)};
-        var sample=new XmlDocument();sample.LoadXml("<StructureUnpackUpdate id='ModuleTag_StructureUnpackUpdate' UnpackTime='20s' UnpackCompleteSound='SOV_OreCollector_VoiceCreateFromRefinery'/>");
-        CheckValues(sample.DocumentElement!,native,captured.Asset.References.ToArray(),schemas,catalog);
-        byte[] expected=Metadata(true);for(int at=0;at<204;at+=12){uint target=Word(captured.Bytes,module.Wrapper+at+8);if(target!=0)target=target>=module.Native?target-(uint)module.Native+204:target-(uint)module.Wrapper;
-            if(Word(expected,at)!=Word(captured.Bytes,module.Wrapper+at)||Word(expected,at+4)!=Word(captured.Bytes,module.Wrapper+at+4)||Word(expected,at+8)!=target)throw new InvalidDataException("Unpack stock metadata field/target differs at +"+at);
+        // Reborn: the original Outpost explicitly allocates an empty sound reference with selector zero and no import.
+        foreach(var witness in new[]{("SovietRefinery","ModuleTag_StructureUnpackUpdate","20s","SOV_OreCollector_VoiceCreateFromRefinery"),("SovietOutpost","StructureUnpackUpdate","5s","")}){
+            var captured=GameObjectStockReview.Capture(manifest,"GameObject:"+witness.Item1);var modules=GameObjectModuleReview.Inspect(manifest,captured.Asset.Name).Containers.Single(c=>c.Name=="Behaviors").Modules;
+            var module=modules.Single(m=>m.Type=="StructureUnpackUpdateModuleData");var next=modules[Array.IndexOf(modules,module)+1];
+            if(Marshal.SizeOf<Ep1StructureUnpackUpdateModuleData>()!=20||module.TypeId!=0x977F8391u||next.Native-module.Native!=24||next.Wrapper-module.Wrapper!=204||!module.ClassChain.SequenceEqual(new[]{"StructureUnpackUpdateModuleData","GenericUnpackUpdateModuleData","UpdateModuleData","ContainModuleData","BehaviorModuleData","ModuleData"}))throw new InvalidDataException("EP1 StructureUnpack stock ABI differs.");
+            var b=captured.Bytes.AsSpan(module.Native,24).ToArray();Put(b,12,Word(b,12)-(uint)module.Native);
+            var native=new Chunk{InstanceBuffer=b,RelocationBuffer=Pack(12),ImportsBuffer=witness.Item4.Length==0?Array.Empty<byte>():Pack(20)};
+            var sample=new XmlDocument();sample.LoadXml($"<StructureUnpackUpdate id='{witness.Item2}' UnpackTime='{witness.Item3}' UnpackCompleteSound='{witness.Item4}'/>");
+            CheckValues(sample.DocumentElement!,native,captured.Asset.References.ToArray(),schemas,catalog);
+            byte[] expected=Metadata(true);for(int at=0;at<204;at+=12){uint target=Word(captured.Bytes,module.Wrapper+at+8);if(target!=0)target=target>=module.Native?target-(uint)module.Native+204:target-(uint)module.Wrapper;
+                if(Word(expected,at)!=Word(captured.Bytes,module.Wrapper+at)||Word(expected,at+4)!=Word(captured.Bytes,module.Wrapper+at+4)||Word(expected,at+8)!=target)throw new InvalidDataException("Unpack stock metadata field/target differs at +"+at);
+            }
         }
         return true;
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: prove exact native and metadata ownership for both sound-present and sound-omitted authored modules. */
+    /** Reborn: prove exact native and metadata ownership for sound-present, empty and omitted authored modules. */
     //-------------------------------------------------------------------------------------------------
     internal static void Verify(XmlElement owner,Chunk native,Chunk metadata,AssetId[] references,XmlSchemaSet schemas,ManifestAsset[] catalog)
     {
@@ -55,7 +58,10 @@ internal static class StructureUnpackContract
     {
         var b=native.InstanceBuffer;bool sound=owner.HasAttribute("UnpackCompleteSound");if(b.Length!=(sound?24:20)||Word(b,0)!=0x977F8391u||Word(b,4)!=FastHash.GetHashCode(owner.GetAttribute("id").ToLowerInvariant())||Word(b,12)!=(sound?20u:0u))throw new InvalidDataException("Unpack native identity/optional audio framing differs.");
         foreach(var field in ConscriptModuleScalarContract.Bindings(typeof(Ep1StructureUnpackUpdateModuleData)))if(!b.AsSpan(field.Offset,field.Width).SequenceEqual(ConscriptModuleScalarContract.Bytes(owner,field)))throw new InvalidDataException("Unpack authored field differs: "+field.Name);
-        if(sound){
+        // Reborn: presence owns a pointee; only a nonempty name owns an actual Core import. Empty values intentionally disable the sound.
+        bool target=sound&&owner.GetAttribute("UnpackCompleteSound").Length!=0;
+        if(sound&&!target&&Word(b,20)!=0)throw SdkXmlDiagnostics.At(new InvalidDataException("Empty unpack sound must have a null audio reference."),owner.GetAttributeNode("UnpackCompleteSound"));
+        if(target){
             string name=owner.GetAttribute("UnpackCompleteSound");int colon=name.IndexOf(':');string? explicitType=colon<0?null:name[..colon];string identity=colon<0?name:name[(colon+1)..];uint id=InstanceHandle.GetInstanceId(identity);
             var required=schemas.GlobalTypes[new XmlQualifiedName("BaseAudioEventInfo",SchemaSet.XmlNamespace)] as XmlSchemaType;
             var candidates=catalog.Where(a=>a.InstanceId==id).Where(a=>{
@@ -64,7 +70,7 @@ internal static class StructureUnpackContract
             }).ToArray();
             uint selector=Word(b,20);if(candidates.Length!=1||selector==0||selector>references.Length||references[(int)selector-1].TypeId!=candidates[0].TypeId||references[(int)selector-1].InstanceId!=id)throw SdkXmlDiagnostics.At(new InvalidDataException("Unpack audio target is missing/ambiguous/incompatible or has a different Core index: "+name),owner.GetAttributeNode("UnpackCompleteSound"));
         }
-        if(!native.RelocationBuffer.SequenceEqual(sound?Pack(12):Array.Empty<byte>())||!native.ImportsBuffer.SequenceEqual(sound?Pack(20):Array.Empty<byte>()))throw new InvalidDataException("Unpack exact relocation/import inventory differs.");
+        if(!native.RelocationBuffer.SequenceEqual(sound?Pack(12):Array.Empty<byte>())||!native.ImportsBuffer.SequenceEqual(target?Pack(20):Array.Empty<byte>()))throw new InvalidDataException("Unpack exact relocation/import inventory differs.");
     }
 
     //-------------------------------------------------------------------------------------------------
