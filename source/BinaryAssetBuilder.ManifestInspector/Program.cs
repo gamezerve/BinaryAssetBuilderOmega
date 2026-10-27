@@ -337,6 +337,9 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();FragmentDefinitionSmokeTest.Run(args[1]);return 0;}
             if(args.Length==3 && args[0]=="scripted-turret-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ScriptedTurretSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: stream draws are tested on original and authored complete GameObject graphs.
+            if(args.Length==3 && args[0]=="stream-draw-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();StreamDrawSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="tracer-source-self-test")
             {CompilerSmokeTest.InitializeHashProvider();TracerSourceSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="weapon-turret-self-test")

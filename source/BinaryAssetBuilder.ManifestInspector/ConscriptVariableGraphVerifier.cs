@@ -795,6 +795,8 @@ internal sealed class ConscriptVariableGraphVerifier
         if(family.Type==typeof(Ep1EvaAnnounceSpecialPowerReadyClientUpdateModuleData))return EvaReadyClientContract.Qualify(manifest,baseline,referenceSchemas,catalog);
         // Reborn: the Conscript baseline has no EVA-create leaf; qualify it from the actual SovietSuperWeapon source and native record.
         if(family.Type==typeof(Ep1EvaAnnounceClientCreateModuleData))return EvaCreateClientContract.Qualify(manifest,baseline,referenceSchemas,catalog);
+        // Reborn: the baseline infantry has no stream draw; qualify it from original Desolator source and retail records.
+        if(family.Type==typeof(Ep1W3DStreamDrawModuleData))return StreamDrawContract.Qualify(manifest,baseline,referenceSchemas,catalog);
         var grammar=new StockMetadataGrammar();
         // Reborn: only developer comparisons need a resolved stock-source probe; fast builds still learn and validate the native grammar.
         var resolvedBaseline=SdkBuildTests.Enabled?SchemaNativeContract.Resolve(baseline,referenceSchemas,catalog):baseline;var leaves=ConscriptVariableContainers.Find(resolvedBaseline,family.Container)?.ChildNodes.OfType<XmlElement>().ToArray()??Array.Empty<XmlElement>();int qualified=0;

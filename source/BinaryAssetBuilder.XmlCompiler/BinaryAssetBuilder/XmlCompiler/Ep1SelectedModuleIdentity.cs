@@ -36,11 +36,11 @@ public static class Ep1SelectedModuleIdentity
         if(aiContainers.Length>1)throw new InvalidDataException("Selected identity permits at most one AI container.");var ai=aiContainers.SelectMany(e=>e.ChildNodes.OfType<XmlElement>()).ToArray();
         // Reborn: the complete route accepts independently reviewed EP1 jets in the same local identity scope.
         if(ai.Length>2 || ai.Any(e=>e.NamespaceURI!=ns || (e.LocalName!="AIUpdate"&&(!reviewedBehaviors||e.LocalName!="JetAIUpdate"))))throw new InvalidDataException("Unreviewed selected AI identity class/count.");
-        // Reborn: selected complete scripted/tracer Draws share the same local scope, including cross-class Body/AI/behavior collisions and forward links.
+        // Reborn: selected complete scripted/tracer/stream Draws share the same local scope, including cross-class Body/AI/behavior collisions and forward links.
         var drawContainers=root.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="Draws" && e.NamespaceURI==ns).ToArray();
         var draws=drawContainers.SelectMany(e=>e.ChildNodes.OfType<XmlElement>()).ToArray();
         // Reborn: complete source-sized composition drops the historical sample quota; the legacy selected profile remains unchanged.
-        if(drawContainers.Length>1 || (!reviewedBehaviors&&draws.Length>64) || draws.Any(e=>e.NamespaceURI!=ns || e.LocalName is not ("ScriptedModelDraw" or "TracerModelDraw")))throw new InvalidDataException("Unreviewed selected Draw identity class/count.");
+        if(drawContainers.Length>1 || (!reviewedBehaviors&&draws.Length>64) || draws.Any(e=>e.NamespaceURI!=ns || (e.LocalName is not ("ScriptedModelDraw" or "TracerModelDraw")&&(!reviewedBehaviors||e.LocalName!="StreamDraw"))))throw new InvalidDataException("Unreviewed selected Draw identity class/count.");
         // Reborn: both reviewed client containers join the same local scope; class/namespace/duplicate-container checks do not impose a complete-path sample count.
         // Reborn: the complete route admits EVA-ready clients in the same local identity scope as existing client classes.
         var clients=new List<XmlElement>();

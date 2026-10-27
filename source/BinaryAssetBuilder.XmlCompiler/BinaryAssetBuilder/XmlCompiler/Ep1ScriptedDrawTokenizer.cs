@@ -11,7 +11,7 @@ namespace BinaryAssetBuilder.XmlCompiler;
 // Reborn: generate reviewed scripted-draw metadata recursively from owned native records, never from a captured stock template or hard-coded unit identity.
 public static class Ep1ScriptedDrawTokenizer
 {
-    private enum Kind { Int, UInt, Real, Bool, Enum, Flags, String, Ref, List, Strings, EmptyList, StringPointer, NullPointer, Pointer, Polymorphic, Reals }
+    private enum Kind { Int, UInt, Real, Bool, Enum, Flags, String, Ref, List, Strings, EmptyList, StringPointer, NullPointer, Pointer, Polymorphic, Reals, Inline, Refs }
     private sealed record Field(string Name, uint Tag, int Offset, Kind Kind, int Width = 4, int Limit = 0, Record Child = null);
     private sealed record Record(string Name, int Size, Field[] Fields, int PaddingAt = 0, int PaddingLength = 0, Record Parent = null, uint ParentTag = 0);
     // Reborn: literal wire tags/order are independently stock-reviewed; CLR type names are not used as guessed type IDs.
@@ -74,6 +74,22 @@ public static class Ep1ScriptedDrawTokenizer
         F("MultiPlayerOnly",0x77E3F4F7,210,Kind.Bool,1), F("AffectedByStealth",0x77E3F4F7,211,Kind.Bool,1), F("InvertStealthOpacity",0x77E3F4F7,212,Kind.Bool,1), F("HighDetailOnly",0x77E3F4F7,213,Kind.Bool,1),
         F("ModelConditionState",0x953CF093,164,Kind.List,8,child:ModelState), F("AnimationState",0x99B342C4,172,Kind.List,8,child:AnimationState), F("AttachModel",0xB4E523BF,180,Kind.EmptyList,8), F("EmbedPortal",0xAFC5E3E3,188,Kind.EmptyList,8) }, 214, 2, Draw, 0x17F61728);
 
+    // Reborn: Desolator retail metadata qualifies this full EP1 stream root, inline shader and optional particle-reference array.
+    private static readonly Record StreamParticles = new("ParticleSystemList",8,new[]{F("ParticleSys",0x43F1CE36,0,Kind.Refs,8)});
+    private static readonly Record StreamRoot = new("W3DStreamDrawModuleData",80,new[]{
+        F("UseDistortionShader",0x77E3F4F7,76,Kind.Bool,1),F("Velocity",0x645864F3,8,Kind.Real),F("OffsetMult",0x645864F3,12,Kind.Real),F("ArcHeightFactor",0x645864F3,16,Kind.Real),
+        F("UVWorldSize",0x645864F3,20,Kind.Real),F("NumTubeSides",0x23E650B8,24),F("TubeRadius",0x645864F3,28,Kind.Real),F("HitFx",0x0D1C8E83,32,Kind.Ref),
+        F("WeaponSlotID",0x23E650B8,36),F("StreamStateID",0x23E650B8,40),F("FXShader",0xC7EA3CF4,44,Kind.Inline,28,child:Material),F("ParticleSystems",0xB26F4CD7,72,Kind.Pointer,child:StreamParticles)
+    },77,3,Draw,0x17F61728);
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: reuse the stock-qualified shader descriptor graph for an independently bounded EP1 stream-draw root. */
+    //-------------------------------------------------------------------------------------------------
+    public static Chunk TokenizeStream(Chunk native)
+    {
+        if(native?.InstanceBuffer==null||native.RelocationBuffer==null||native.ImportsBuffer==null||native.InstanceBuffer.Length<80||native.InstanceBuffer.Length>2*1048576)throw new InvalidDataException("Bounded EP1 StreamDraw native graph required.");
+        return new Builder(native.InstanceBuffer).Build(native,StreamRoot,0x60020441u);
+    }
+
     //-------------------------------------------------------------------------------------------------
     /** Reborn: reject malformed/unreviewed graphs before producing any metadata, then rebase native pointers/slots once while preserving import occurrence values. */
     //-------------------------------------------------------------------------------------------------
@@ -104,10 +120,11 @@ public static class Ep1ScriptedDrawTokenizer
         //-------------------------------------------------------------------------------------------------
         /** Reborn: finalize only after full native ownership/auxiliary validation; metadata native-target words and pointer payloads use distinct patch lists. */
         //-------------------------------------------------------------------------------------------------
-        internal Chunk Build(Chunk native)
+        internal Chunk Build(Chunk native,Record descriptor=null,uint typeId=0x4ECF2A4B)
         {
-            if (Word(0) != 0x4ECF2A4B || Word(4) == 0) throw new InvalidDataException("Scripted module type/local identity differs.");
-            Claim(0, 216); int wrapper = Allocate(1); Row(wrapper, 2, 0x4ECF2A4B, 12); int root = Emit(Root, 0, 0); if (root != 12) throw new InvalidDataException("Scripted root metadata origin differs.");
+            descriptor ??= Root;
+            if (Word(0) != typeId || Word(4) == 0) throw new InvalidDataException("Scripted module type/local identity differs.");
+            Claim(0, descriptor.Size); int wrapper = Allocate(1); Row(wrapper, 2, typeId, 12); int root = Emit(descriptor, 0, 0); if (root != 12) throw new InvalidDataException("Scripted root metadata origin differs.");
             var suppliedRelos = Slots(native.RelocationBuffer); var suppliedImports = Slots(native.ImportsBuffer);
             if (!suppliedRelos.Order().SequenceEqual(relos) || !suppliedImports.Order().SequenceEqual(imports)) throw new InvalidDataException("Scripted auxiliary ownership differs.");
             int gap = 0; for (int i = 0; i < bytes.Length; i++) { if (covered[i]) { gap = 0; continue; } if (bytes[i] != 0 || ++gap > 3) throw new InvalidDataException("Scripted unowned storage at " + i); }
@@ -130,23 +147,26 @@ public static class Ep1ScriptedDrawTokenizer
                 int slot = checked(native + field.Offset); Range(slot, field.Width); Row(next, FastHash.GetHashCode(field.Name), field.Tag, 0);
                 switch (field.Kind)
                 {
-                    case Kind.List: case Kind.Strings: case Kind.EmptyList: case Kind.Polymorphic: case Kind.Reals:
+                    case Kind.List: case Kind.Strings: case Kind.EmptyList: case Kind.Polymorphic: case Kind.Reals: case Kind.Refs:
                         uint count = Word(slot), pointer = Word(slot + 4); if (count > 4096 || (count == 0) != (pointer == 0)) throw new InvalidDataException("Scripted list count/pointer differs: " + field.Name);
                         if (field.Kind == Kind.EmptyList && count != 0) throw new InvalidDataException("Scripted nonempty child family is not token-enabled: " + field.Name);
                         int list = Allocate(checked(1 + (int)count)); Row(list, 0x6C827073, 0x5D448FD8, 0); Native(list + 8, slot); metadata[(next + 8) / 4] = (uint)list;
                         if (count != 0)
                         {
-                            int stride = field.Kind == Kind.Strings ? 8 : field.Kind is Kind.Polymorphic or Kind.Reals ? 4 : field.Child.Size; int items = Offset(pointer); Claim(items, checked((int)count * stride)); relos.Add((uint)(slot + 4));
+                            int stride = field.Kind == Kind.Strings ? 8 : field.Kind is Kind.Polymorphic or Kind.Reals or Kind.Refs ? 4 : field.Child.Size; int items = Offset(pointer); Claim(items, checked((int)count * stride)); relos.Add((uint)(slot + 4));
                             for (int i = 0; i < count; i++) {
                                 int item = items + i * stride, marker = list + 12 + i * 12; Row(marker, 0xB151A0EB, 0, 0);
                                 if (field.Kind == Kind.Strings) { Text(item); Native(marker + 8, item); }
                                 // Reborn: polymorphic slots own pointers to separate concrete records; float vector items own direct scalar targets.
                                 else if(field.Kind==Kind.Polymorphic){int target=Offset(Word(item));uint id=Word(target);Record concrete=id switch{0xA59096A6=>ConstantTexture,0xDF08DF25=>ConstantFloat,0x89181982=>ConstantInt,0xA3F84C3D=>ConstantBool,_=>throw new InvalidDataException("Unknown shader constant class ID.")};Claim(target,concrete.Size);relos.Add((uint)item);int wrapper=Allocate(1);Row(wrapper,2,id,(uint)Emit(concrete,target,depth+1));metadata[(marker+8)/4]=(uint)wrapper;}
+                                else if(field.Kind==Kind.Refs){if(Word(item)!=0)imports.Add((uint)item);Native(marker+8,item);}
                                 else if(field.Kind==Kind.Reals){if(!float.IsFinite(BitConverter.Int32BitsToSingle(unchecked((int)Word(item)))))throw new InvalidDataException("Shader float constant must be finite.");Native(marker+8,item);}
                                 else metadata[(marker + 8) / 4] = (uint)Emit(field.Child, item, depth + 1);
                             }
                         }
                         break;
+                    // Reborn: an inline material shares root storage, so emitting its child table must not claim a second allocation.
+                    case Kind.Inline: metadata[(next+8)/4]=(uint)Emit(field.Child,slot,depth+1);break;
                     case Kind.String: Text(slot); Native(next + 8, slot); break;
                     case Kind.StringPointer:
                         if (Word(slot) != 0) { int target = Offset(Word(slot)); Claim(target, 8); relos.Add((uint)slot); Text(target); Native(next + 8, target); } break;

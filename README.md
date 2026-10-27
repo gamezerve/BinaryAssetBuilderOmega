@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: Desolator stream drawing uses the complete EP1 native record and shader-aware metadata composition. -->
+`StreamDraw` is build-enabled with its 80-byte EP1 root, including `OffsetMult`
+(the older KW record lacks this field). All official scalar attributes, inline
+FXShader material, texture/float/int/bool constants, optional particle-system
+lists and FX/texture/particle imports are source-driven. The original Desolator
+qualifies native fields and metadata; four full-object regression cases cover
+edited/default values, missing/empty particle lists and multiple stream draws.
+The separate legacy KW writer and existing ScriptedModelDraw route are preserved.
+
+
 <!-- Reborn: populated root object-specific voices use the independently stock-qualified EP1 layout. -->
 Root `AudioArrayVoice/ObjectSpecificEntry` is build-enabled. Its 16-byte EP1
 record preserves Sound/EvaEvent, all six AudioType values and the weak

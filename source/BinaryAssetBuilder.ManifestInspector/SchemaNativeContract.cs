@@ -30,6 +30,8 @@ internal sealed class SchemaNativeContract
         // Reborn: EVA create announcements are qualified from the original Iron Curtain record.
         new(typeof(Ep1EvaAnnounceClientCreateModuleData),"ClientUpdates",0xD0EEFDDDu,BinaryAssetBuilder.XmlCompiler.Ep1EvaCreateClientTokenizer.Tokenize),
         // Reborn: the existing tracer writer supports both optional-status shapes without freezing the Conscript template.
+        // Reborn: stream draws use the complete EP1 layout and the shared shader-aware metadata writer.
+        new(typeof(Ep1W3DStreamDrawModuleData),"Draws",0x60020441u,BinaryAssetBuilder.XmlCompiler.Ep1ScriptedDrawTokenizer.TokenizeStream),
         new(typeof(W3DTracerDrawModuleData),"Draws",0x54018E60u,BinaryAssetBuilder.XmlCompiler.Ep1TracerDrawTokenizer.Tokenize),
         new(typeof(W3DScriptedModelDrawModuleData),"Draws",0x4ECF2A4Bu,BinaryAssetBuilder.XmlCompiler.Ep1ScriptedDrawTokenizer.Tokenize),
         new(typeof(ModelConditionAudioLoopClientBehaviorModuleData),"ClientBehaviors",0x5A3EDBF4u,leaf=>FromList(leaf,BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize)),
