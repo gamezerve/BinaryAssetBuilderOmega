@@ -2,6 +2,20 @@
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
 
 	<LogicCommand
+    Options="NEED_TARGET_POS"
+		Type="SPECIAL_POWER"
+		id="Command_ActivateEjectPassengersMoaiSpecialPower">
+		<SpecialPower>SpecialPower_EjectPassengersMoai</SpecialPower>
+		<AISpecialPowerInfo Heuristic="DEPLOY" Manager="TACTIC"/>
+	</LogicCommand>
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructSovietBullfrogMoai">
+		<Object>SovietBullfrogMoai</Object>
+	</LogicCommand>	
+
+	<LogicCommand
 		Type="CONSTRUCTION_YARD_CONSTRUCT"
 		id="Command_ConstructSovietTeslaMoai">
 		<Object>SovietTeslaMoai</Object>
@@ -24,14 +38,6 @@
 			HealthFraction="1.0"
 			Distance="9999.0"
      />
-	</LogicCommand>
-
-	<LogicCommand
-    Options="NEED_TARGET_POS"
-		Type="SPECIAL_POWER"
-		id="Command_ActivateEjectPassengersMoaiSpecialPower">
-		<SpecialPower>SpecialPower_EjectPassengersMoai</SpecialPower>
-		<AISpecialPowerInfo Heuristic="DEPLOY" Manager="TACTIC"/>
 	</LogicCommand>
 
 	<LogicCommand

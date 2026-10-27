@@ -5,8 +5,8 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
 
-		<Include type="all"	source="ART:EI_EasterIslandHeadDefenseB_SKN.W3X" />
-		<Include type="all"	source="ART:EI_EasterIslandHeadDefenseB_GAG.W3X" />
+		<!-- <Include type="all"	source="ART:EI_EasterIslandHeadDefenseB_SKN.W3X" /> -->
+		<!-- <Include type="all"	source="ART:EI_EasterIslandHeadDefenseB_GAG.W3X" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
 		<Include type="instance" source="DATA:Civilian/Easter_Island_EI/Props/EI_EasterIslandHeadDefenseB_Collapse.xml" />
 		
