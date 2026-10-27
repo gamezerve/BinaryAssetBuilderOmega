@@ -191,6 +191,20 @@
 	TYPE:SOVIETBASEDEFENSEADVANCED
 		"Advanced Base Defense \n> Health = 2000 \n> Shroud Clearing Range = 500 \n> Weapon DPS = 145 \n> Weapon Range = 350 \n> Assisted Weapon DPS = 290 \n> Assisted Weapon Range = 367.5"
 	End
+	
+// Soviet Tesla Wall Hub
+
+	Type:SovietTeslaWallHub
+		"Advanced Defensive Perimeter \n> Health = 2000 \n> Shroud Clearing Range = 350 \n> Weapon DPS = 145 \n> Weapon Range = 350 \n> Assisted Weapon DPS = 290 \n> Assisted Weapon Range = 367.5"
+	End
+
+	Desc:SovietTeslaWallHub
+		"Upgraded wall hub with tesla coil."
+	End
+
+	Name:SovietTeslaWallHub
+		"Tesla Wall Hub"
+	End
 
 // Allied Paradrop
 	

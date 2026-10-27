@@ -5,34 +5,34 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
 
-		<Include
-			type="all"
-			source="DATA:GlobalData/GlobalDefines.xml" />
-		<Include
-			type="all"
-			source="ART:SBTeslaWallHub_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:SBTeslaWallHub_COL.w3x" /> 
-		<Include
-			type="all"
-			source="ART:SSBaseDefenseAdvanced_FX.w3x" />
-		<Include
-			type="all"
-			source="ART:FXRailGunCoreDistortion.xml" />
-		<Include
-			type="all"
-			source="ART:FXRailGunCore.xml" />
-		<Include
-			type="all"
-			source="ART:FXRailGunCoreMask.xml" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="DATA:GlobalData/GlobalDefines.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBTeslaWallHub_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBTeslaWallHub_COL.w3x" />  -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SSBaseDefenseAdvanced_FX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXRailGunCoreDistortion.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXRailGunCore.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXRailGunCoreMask.xml" /> -->
 		<!-- Base Object -->
 		<Include
 			type="instance"
 			source="DATA:BaseObjects/BaseSovietStructure.xml" />
 	</Includes>
 	<Defines>
-		<Define name="SOVIET_TESLA_WALL_HUB_UNPACK_TIME" value="2s" />
+		<Define name="SOVIET_TESLA_WALL_HUB_UNPACK_TIME" value="30s" />
 	</Defines>
 	<GameObject
 		id="SovietTeslaWallHub"
@@ -50,12 +50,12 @@
 		BuildPlacementTypeFlag="OTHER_STRUCTURE"
 		EditorName="SovietTeslaWallHub"
 		WeaponCategory="CANNON"
-		ButtonImage="Button_SovietBaseDefenseAdv_small"
-		SelectPortrait="Portrait_SovietBaseDefenseAdv_big"
-		TypeDescription="Type:SovietBaseDefenseAdvanced"
-		Description="Desc:SovietBaseDefenseAdvanced">
+		ButtonImage="Button_TeslaWallHub_big"
+		SelectPortrait="Portrait_SovietTeslaWallHub_big"
+		TypeDescription="Type:SovietTeslaWallHub"
+		Description="Desc:SovietTeslaWallHub">
 		<DisplayName
-			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:SovietBaseDefenseAdvanced</DisplayName>
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:SovietTeslaWallHub</DisplayName>
 		<GameDependency>
 			<RequiredObject>SovietPowerPlantAdvanced</RequiredObject>
 		</GameDependency>
@@ -245,5 +245,8 @@
 		<VisionInfo
 			VisionRange="310"
 			ShroudClearingRange="350" />
+		<ProjectedBuildabilityInfo
+			Radius="0"
+			BuildPlacementTypes="MAIN_STRUCTURE OTHER_STRUCTURE" />
 	</GameObject>
 </AssetDeclaration>

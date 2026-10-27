@@ -3,6 +3,24 @@
 
 <!-- Reborn -->
 
+<!-- Soviet Tesla Wall Hub -->
+
+	<Texture id="Portrait_SovietTeslaWallHub_big" File="ART:Images/Portrait_SovietTeslaWallHub_big.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Portrait_SovietTeslaWallHub_big" Texture="Portrait_SovietTeslaWallHub_big" Rotated="false">
+		<Dimensions x="300" y="225"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="300" y="225"/>
+	</PackedTextureImage>
+
+	<Texture id="Button_TeslaWallHub_big" File="ART:Images/Button_TeslaWallHub_big.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Button_TeslaWallHub_big" Texture="Button_TeslaWallHub_big" Rotated="false">
+		<Dimensions x="250" y="250"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="250" y="250"/>
+	</PackedTextureImage>
+
 <!-- Soviet Volcano Fortress V2 -->
 
 	<Texture id="Portrait_SovietVolcanoFortress02" File="ART:Images/Portrait_SovietVolcanoFortress02.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>

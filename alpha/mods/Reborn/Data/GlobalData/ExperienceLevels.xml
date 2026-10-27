@@ -75,6 +75,7 @@
 		<Target>AlliedBaseDefenseAdvanced</Target>
 		<Target>JapanBaseDefenseAdvanced</Target>
 		<Target>SovietKrasna45</Target>
+		<Target>SovietTeslaWallHub</Target>
 	</ExperienceLevelTemplate>
 	
 </AssetDeclaration>

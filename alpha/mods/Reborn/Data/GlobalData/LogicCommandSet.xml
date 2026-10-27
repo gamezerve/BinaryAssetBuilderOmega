@@ -39,7 +39,7 @@
 		<Cmd>Command_ConstructSovietVolcanoFortress03</Cmd>
 		<Cmd>Command_ConstructSovietVolcanoFortress04</Cmd>
 		
-		<!-- <Cmd>Command_ConstructSovietTeslaWallHub</Cmd> -->
+		<Cmd>Command_ConstructSovietTeslaWallHub</Cmd>
 		<!-- <Cmd>Command_ConstructSovietTeslaMoai</Cmd> -->
 		<!-- <Cmd>Command_ConstructSovietBullfrogMoai</Cmd> -->
 		<!-- <Cmd>Command_ConstructSovietArtilleryDome</Cmd> -->

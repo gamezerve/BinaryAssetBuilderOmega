@@ -112,7 +112,8 @@ internal static class WorldBuilderAssetResolver
     //-------------------------------------------------------------------------------------------------
     internal static void ValidateNative(ManifestAsset asset,byte[] bin,byte[] relo,byte[] imp)
     {
-        foreach(var pair in new[]{(Data:relo,Import:false),(Data:imp,Import:true)}){if(pair.Data.Length==0)continue;if(pair.Data.Length%4!=0||Word(pair.Data,pair.Data.Length-4)!=uint.MaxValue)throw new InvalidDataException("WorldBuilder auxiliary sentinel differs: "+asset.Name);for(int i=0;i<pair.Data.Length-4;i+=4){uint offset=Word(pair.Data,i);if(offset>bin.Length-4)throw new InvalidDataException("WorldBuilder auxiliary slot exceeds native asset: "+asset.Name);uint value=Word(bin,(int)offset);if(pair.Import?value>asset.References.Count:value>=bin.Length&&value!=0)throw new InvalidDataException("WorldBuilder pointer/import index exceeds asset: "+asset.Name);}}
+        // Reborn: an empty list allocated last keeps its items pointer at the asset end (e.g. a zero-count mesh array at +bin.Length), so the end offset is valid.
+        foreach(var pair in new[]{(Data:relo,Import:false),(Data:imp,Import:true)}){if(pair.Data.Length==0)continue;if(pair.Data.Length%4!=0||Word(pair.Data,pair.Data.Length-4)!=uint.MaxValue)throw new InvalidDataException("WorldBuilder auxiliary sentinel differs: "+asset.Name);for(int i=0;i<pair.Data.Length-4;i+=4){uint offset=Word(pair.Data,i);if(offset>bin.Length-4)throw new InvalidDataException("WorldBuilder auxiliary slot exceeds native asset: "+asset.Name);uint value=Word(bin,(int)offset);if(pair.Import?value>asset.References.Count:value>bin.Length)throw new InvalidDataException("WorldBuilder pointer/import index exceeds asset: "+asset.Name);}}
     }
 
     //-------------------------------------------------------------------------------------------------

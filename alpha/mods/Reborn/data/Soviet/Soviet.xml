@@ -8,7 +8,7 @@
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietCommandCenter.xml" />	
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietKrasna45.xml" />	
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietPortBuilding.xml" />	
-		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietTeslaWallHub.xml" />	 -->
+		<Include type="all" source="DATA:Soviet/Units_Campaign/SovietTeslaWallHub.xml" />	
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietVolcanoFortress.xml" />	
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietVolcanoFortress02.xml" />	
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietVolcanoFortress03.xml" />	
@@ -70,7 +70,6 @@
 		<!-- <Include type="all" source="structures/SovietConstructionYard.xml" /> -->
 		<!-- <Include type="all" source="structures/SovietCrane.xml" /> -->
 		<!-- <Include type="all" source="structures/SovietNavalYard.xml" /> -->
-		<!-- Reborn: include the authored Power Plant alongside the refinery for the next compiler coverage check. -->
 		<!-- <Include type="all" source="structures/SovietPowerPlant.xml" /> -->
 		<Include type="all" source="structures/SovietPowerPlantAdvanced.xml" />
 		<Include type="all" source="structures/SovietRefinery.xml" />
@@ -78,7 +77,7 @@
 		<!-- <Include type="all" source="DATA:Soviet/structures/SovietSuperWeaponAdvanced.xml" /> -->
 		<Include type="all" source="structures/SovietTechStructure.xml" />
 		<!-- <Include type="all" source="structures/SovietWarFactory.xml" /> -->
-		<Include type="all" source="structures/SovietBaseDefenseAdvanced.xml" />
+		<!-- <Include type="all" source="structures/SovietBaseDefenseAdvanced.xml" /> -->
 		<!-- <Include type="all" source="structures/SovietBaseDefenseAir.xml" /> -->
 		<!-- <Include type="all" source="structures/SovietBaseDefenseGround.xml" /> -->
 		<!-- <Include type="all" source="structures/SovietOutpost.xml" /> -->

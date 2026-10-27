@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructSovietTeslaWallHub">
+		<Object>SovietTeslaWallHub</Object>
+	</LogicCommand>	
 
 	<LogicCommand
 		Type="SPECIAL_POWER"
