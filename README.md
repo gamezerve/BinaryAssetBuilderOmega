@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: model-condition sound selectors now retain populated nested sound overrides instead of allowing null pointers only. -->
+`ModelConditionSoundSelectorClientBehavior/Override/AudioArraySound` is
+build-enabled. Sound entries preserve actual Core references and all 39 Uprising
+sound-type ordinals. Voice/sound siblings, absent arrays, allocated-empty arrays
+and explicit empty sound overrides retain their distinct native storage.
+The original Soviet Bear water selector qualifies the complete native/metadata
+layout. Client list lengths use actual item-storage bounds instead of the former
+4096-entry sample quota. Regression:
+`client-sound-array-self-test <static.manifest> <global.manifest>`.
+
 <!-- Reborn: SlowDeath authoring follows complete source/native ownership rather than Conscript template shapes. -->
 `SlowDeath` now accepts source-driven timing, sinking/flinging/fading settings,
 optional death masks, full `DieMuxData` and FX/OCL/weapon/sound phase lists.

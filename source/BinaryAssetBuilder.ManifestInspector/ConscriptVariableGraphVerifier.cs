@@ -749,6 +749,8 @@ internal sealed class ConscriptVariableGraphVerifier
         if(family.Type==typeof(W3DScriptedModelDrawModuleData))ScriptedFXEventContract.Qualify(grammar,manifest,baseline,referenceSchemas,catalog);
         // Reborn: model-state turret lists learn their native and metadata grammar from the original Sentry Gun.
         if(family.Type==typeof(W3DScriptedModelDrawModuleData))ScriptedTurretContract.Qualify(grammar,manifest,baseline,referenceSchemas,catalog);
+        // Reborn: original Bear selectors qualify populated nested sound arrays beyond the Conscript voice-only shape.
+        if(family.Type==typeof(Ep1ModelConditionSoundSelectorClientBehaviorModuleData))ClientSoundArrayContract.Qualify(grammar,manifest,baseline,referenceSchemas,catalog);
         return grammar;
     }
 

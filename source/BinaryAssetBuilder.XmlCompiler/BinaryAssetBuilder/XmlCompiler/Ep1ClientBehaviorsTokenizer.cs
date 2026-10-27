@@ -23,7 +23,10 @@ public static class Ep1ClientBehaviorsTokenizer
     private static readonly Record SoundOrEva = new(8, new[] { new Field("Sound", 0x63D7B468, 0, Kind.RefPointer), new Field("EvaEvent", 0xC4EC43B1, 4, Kind.Ref) });
     private static readonly Record Voice = new(12, new[] { new Field("AudioType", 0x4DA708B0, 8, Kind.Enum, Limit: 67) }, SoundOrEva, 0x1AE6B6B7);
     private static readonly Record Voices = new(24, new[] { new Field("AudioEntry", 0x8AA9CB14, 0, Kind.List, Voice), new Field("ObjectSpecificEntry", 0xAEDFC4CD, 8, Kind.EmptyList), new Field("NamedEntry", 0xF8ED487B, 16, Kind.EmptyList) });
-    private static readonly Record Override = new(132, new[] { new Field("RequiredFlags", 0x67DBBFC9, 0, Kind.Flags), new Field("ExcludedFlags", 0x67DBBFC9, 60, Kind.Flags), new Field("VoicePriorityOverride", 0x23E650B8, 120, Kind.IntPointer), new Field("AudioArrayVoice", 0x09D18241, 124, Kind.RecordPointer, Voices), new Field("AudioArraySound", 0x59867D0B, 128, Kind.NullPointer) });
+    // Reborn: selector sound overrides share the stock eight-byte sound entry/header and all 39 Uprising sound ordinals with root AudioArraySound.
+    private static readonly Record SoundEntry = new(8, new[] { new Field("Sound", 0x63D7B468, 0, Kind.Ref), new Field("AudioType", 0xD50DC497, 4, Kind.Enum, Limit: 39) });
+    private static readonly Record Sounds = new(8, new[] { new Field("AudioEntry", 0x87D0686C, 0, Kind.List, SoundEntry) });
+    private static readonly Record Override = new(132, new[] { new Field("RequiredFlags", 0x67DBBFC9, 0, Kind.Flags), new Field("ExcludedFlags", 0x67DBBFC9, 60, Kind.Flags), new Field("VoicePriorityOverride", 0x23E650B8, 120, Kind.IntPointer), new Field("AudioArrayVoice", 0x09D18241, 124, Kind.RecordPointer, Voices), new Field("AudioArraySound", 0x59867D0B, 128, Kind.RecordPointer, Sounds) });
     private static readonly Record Selector = new(16, new[] { new Field("Override", 0xBFA5BEBA, 8, Kind.List, Override) }, Client, 0x7B8C5772);
     private static readonly Record AnimationItem = new(24, new[] { new Field("Sound", 0x63D7B468, 0, Kind.Ref), new Field("RequiredMC", 0x67DBBFC9, 4, Kind.MaskPointer), new Field("ExcludedMC", 0x67DBBFC9, 8, Kind.MaskPointer), new Field("Animation", 0x26480425, 12), new Field("Frame", 0x49EF147D, 16, Kind.Frames) });
     private static readonly Record Animation = new(20, new[] { new Field("MaxUpdateRangeCap", 0xBC2F1CBF, 8, Kind.RealPointer), new Field("Sound", 0xEB6C6024, 12, Kind.List, AnimationItem) }, Client, 0x7B8C5772);
@@ -91,7 +94,9 @@ public static class Ep1ClientBehaviorsTokenizer
                 switch (field.Kind)
                 {
                     case Kind.List: case Kind.Frames: case Kind.EmptyList:
-                        uint pointer = Word(slot + 4); if (value > 4096 || (value == 0) != (pointer == 0) || field.Kind == Kind.EmptyList && value != 0 || field.Kind == Kind.Frames && value == 0) throw new InvalidDataException("Client list count/pointer/admission differs: " + field.Name);
+                        // Reborn: XSD-unbounded arrays use the real native item extent instead of a 4096-row sample quota.
+                        int itemStride=field.Kind==Kind.Frames?4:field.Child?.Size??1;
+                        uint pointer = Word(slot + 4); if (value > bytes.Length/itemStride || (value == 0) != (pointer == 0) || field.Kind == Kind.EmptyList && value != 0 || field.Kind == Kind.Frames && value == 0) throw new InvalidDataException("Client list count/pointer/admission differs: " + field.Name);
                         int list = Allocate(1 + (int)value); Row(list, 0x6C827073, 0x5D448FD8, 0); Native(list + 8, slot); Target(next + 8, list);
                         if (value != 0)
                         {
