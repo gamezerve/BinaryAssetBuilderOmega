@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:xai="uri:ea.com:eala:asset:instance">
+	<Tags />
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
+		<Include type="instance" source="DATA:GlobalData/Weapon.xml" />
+	</Includes>
+	
+	<!-- Campaign Mission S8 -->
+	<WeaponTemplate
+		id="SovietTeslaMoaiDefenseTeslaGun"
+		inheritFrom="SovietBaseDefenseAdvancedTeslaGun"
+		RequiredAntiMask="ANTI_GROUND ANTI_STRUCTURE ANTI_WATER"
+		ClipSize="6">
+		<PreAttackDelay
+			MinSeconds="3.0s"
+			MaxSeconds="3.0s" />
+		<Nuggets xai:joinAction="Replace">
+			<DamageNugget
+				Damage="300.0"
+				DamageType="TESLA"
+				DamageFXType="SOVIET_TESLA"
+				DeathType="ELECTROCUTED"
+				DelayTimeSeconds="0.2s"/>
+		</Nuggets>
+	</WeaponTemplate>
+	
+	
+</AssetDeclaration>

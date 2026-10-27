@@ -276,7 +276,12 @@ internal sealed class SdkInstanceInheritanceProfile
             var originalBaseIds=new Dictionary<string,string>(StringComparer.Ordinal);var originalMarkers=new Dictionary<string,string>(StringComparer.Ordinal);
             foreach (string handle in needed)
             {
-                if (!external.TryGetValue(handle,out var entry)) throw new InvalidDataException("Inherited handle is absent from direct-instance source assets.");
+                // Reborn: name the missing base and point at the consumer's own inheritFrom attribute, not at the generated envelope.
+                if (!external.TryGetValue(handle,out var entry))
+                {
+                    var consumer = ownAssets.FirstOrDefault(asset => asset.HasAttribute("inheritFrom") && Target(asset) == handle);
+                    throw SdkXmlDiagnostics.At(new InvalidDataException("Inherited asset not found: "+handle),(XmlNode?)consumer?.GetAttributeNode("inheritFrom") ?? consumer);
+                }
                 if (!Inheritable(entry.Asset.LocalName)) throw new InvalidDataException("Imported base type is not derived from BaseInheritableAsset.");
                 // Reborn: inspect selected imported fields before overlay; defining-document relative paths cannot be guessed from the consuming document.
                 XmlDocument single = Parse(Encoding.UTF8.GetBytes("<AssetDeclaration xmlns='"+Ea+"'/>")); single.DocumentElement!.AppendChild(single.ImportNode(entry.Asset,true));

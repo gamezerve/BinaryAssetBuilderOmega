@@ -206,6 +206,12 @@
 		"Tesla Wall Hub"
 	End
 
+// Soviet Tesla Moai
+
+	TYPE:SovietTeslaMoai
+		"Landmark Statue \n> Health = 3000 \n> Shroud Clearing Range = 350 \n> Tesla Weapon DPS = 295 \n> Tesla Weapon Range = 350 \n> Bullfrog Capacity = 10 \n> Bullfrog Range = 1000"
+	End
+
 // Allied Paradrop
 	
 	TYPE:CampaignPlayerPowerParadropLvl1Reborn

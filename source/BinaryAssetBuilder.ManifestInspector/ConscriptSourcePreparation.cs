@@ -90,7 +90,7 @@ internal static class ConscriptSourcePreparation
             bool needsPreparation=document.GetElementsByTagName("Define",Ea).Count!=0 || document.GetElementsByTagName("include","http://www.w3.org/2001/XInclude").Count!=0 || owners.Any(a=>a.HasAttribute("inheritFrom") || a.SelectNodes(".//@* | .//text()")!.Cast<XmlNode>().Any(n=>(n.Value??"").StartsWith('=')));
             if(needsPreparation)
             {
-                var prepared=profile.Apply(path,snapshots[path]);if(prepared.Bytes==null)throw SdkXmlDiagnostics.Carry(new InvalidDataException("GameObject source preparation: "+string.Join("; ",prepared.Evidence.Diagnostics)),prepared);
+                var prepared=profile.Apply(path,snapshots[path]);if(prepared.Bytes==null)throw SdkXmlDiagnostics.Carry(new InvalidDataException(string.Join("; ",prepared.Evidence.Diagnostics)),prepared);
                 xml=Parse(prepared.Bytes);owners=xml.DocumentElement!.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is not ("Tags" or "Includes" or "Defines")).ToArray();
                 // Reborn: only this successful Core overlay authorizes consuming the diagnostic marker; no raw inherited document is flattened by substitution.
                 foreach(var owner in owners)owner.RemoveAttribute("inheritFrom");
