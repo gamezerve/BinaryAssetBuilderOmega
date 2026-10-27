@@ -215,6 +215,9 @@ internal static class Program
             // Reborn: verify source-driven waypoint names and complete EP1 run-off-map flag graphs offline.
             // Reborn: exercise full EP1 attack-assistance masks/slots and notification-pair composition offline.
             // Reborn: verify populated extra-crush lists, nested filters/conditions and original-file native diagnostics offline.
+            // Reborn: verify raw EVA-create logic-frame words, retail uint metadata and strong announcement references offline.
+            if(args.Length==3 && args[0]=="eva-create-client-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();EvaCreateClientSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="crusher-children-self-test")
             {CompilerSmokeTest.InitializeHashProvider();CrusherChildrenSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="attack-assist-response-self-test")

@@ -115,11 +115,10 @@ internal static class GameObjectBodyProjectionSmokeTest
             foreach(XmlElement child in behaviors.ChildNodes.OfType<XmlElement>())child.SetAttribute("TypeId",reviewedBehaviors?FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(child.LocalName)).ToString(System.Globalization.CultureInfo.InvariantCulture):child.LocalName switch {"BuildingDestructionBehavior"=>"227975924","WeaponSetUpdate"=>"1125589673","ObjectSMCHelper"=>"2138239554",_=>throw new InvalidDataException("Unsupported selected source module.")});
         }
         else ((XmlElement)behaviors.FirstChild!).SetAttribute("TypeId","227975924");
-        // Reborn: the internal body identity follows the admitted concrete source type, not the historical ActiveBody probe.
+        // Reborn: preserve the admitted concrete body identity while extending client-update dispatch.
         body.SetAttribute("TypeId",reviewedBehaviors&&body.LocalName=="PropBody"?FastHash.GetHashCode("PropBodyModuleData").ToString(System.Globalization.CultureInfo.InvariantCulture):"1510882715");
         // Reborn: selected common AI receives only the reviewed internal class identity after raw validation, on the same root Tracker.
-        if(selectedBehaviors)foreach(XmlElement ai in d.GetElementsByTagName("AI",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>())){// Reborn: concrete AI identities select their own reviewed native record.
-            uint id=ai.LocalName switch{"AIUpdate"=>0x08DBC00Eu,"JetAIUpdate"=>0x4486CF48u,_=>throw new InvalidDataException("Unreviewed selected AI class.")};ai.SetAttribute("TypeId",id.ToString(System.Globalization.CultureInfo.InvariantCulture));}
+        if(selectedBehaviors)foreach(XmlElement ai in d.GetElementsByTagName("AI",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>())){ai.SetAttribute("TypeId",(ai.LocalName switch{"AIUpdate"=>0x08DBC00Eu,"JetAIUpdate"=>0x4486CF48u,_=>throw SdkXmlDiagnostics.At(new InvalidDataException("Unreviewed AI class: "+ai.LocalName),ai)}).ToString(System.Globalization.CultureInfo.InvariantCulture));}
         // Reborn: selected Draw classes use the actual dispatcher on the same root Tracker after source validation; no separate compiled fragment is appended.
         if(selectedBehaviors)foreach(XmlElement draw in d.GetElementsByTagName("Draws",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>()))draw.SetAttribute("TypeId",(draw.LocalName switch{"ScriptedModelDraw"=>0x4ECF2A4Bu,"TracerModelDraw"=>0x54018E60u,_=>throw new InvalidDataException("Unreviewed selected Draw dispatch class.")}).ToString(System.Globalization.CultureInfo.InvariantCulture));
         // Reborn: the selected allocator must supply nested shader discriminators too; official author XML never needs synthetic TypeId attributes.
@@ -129,8 +128,8 @@ internal static class GameObjectBodyProjectionSmokeTest
         if(selectedBehaviors)
         {
             clientBehaviors=d.DocumentElement.ChildNodes.OfType<XmlElement>().SingleOrDefault(e=>e.LocalName=="ClientBehaviors" && e.NamespaceURI==SchemaSet.XmlNamespace);if(clientBehaviors!=null){d.DocumentElement.RemoveChild(clientBehaviors);foreach(XmlElement child in clientBehaviors.ChildNodes.OfType<XmlElement>())child.SetAttribute("TypeId",FastHash.GetHashCode(child.LocalName+"ModuleData").ToString(System.Globalization.CultureInfo.InvariantCulture));}
-            // Reborn: EVA-ready clients retain their concrete class identity instead of the old group-audio-only probe.
-            foreach(XmlElement update in d.GetElementsByTagName("ClientUpdates",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>()))update.SetAttribute("TypeId",reviewedBehaviors&&update.LocalName=="EvaAnnounceSpecialPowerReadyClientUpdate"?"2720065494":"2552668823");
+            // Reborn: each reviewed client update keeps its own EP1 class; forcing group audio compiled EVA announcements with the wrong record layout.
+            foreach(XmlElement update in d.GetElementsByTagName("ClientUpdates",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>()))update.SetAttribute("TypeId",(update.LocalName switch{"LargeGroupAudioClientUpdate"=>0x9826A297u,"EvaAnnounceSpecialPowerReadyClientUpdate"=>0xA220E7D6u,"EvaAnnounceClientCreate"=>0xD0EEFDDDu,_=>throw SdkXmlDiagnostics.At(new InvalidDataException("Unreviewed client update class: "+update.LocalName),update)}).ToString(System.Globalization.CultureInfo.InvariantCulture));
         }
         // Reborn: the explicit six-owner route bypasses incompatible legacy root dispatch and allocates those original sources on this same Tracker at the end.
         if(remainingRoots && !reviewedBehaviors)throw new InvalidDataException("Remaining roots require the reviewed full-module route.");
@@ -144,7 +143,7 @@ internal static class GameObjectBodyProjectionSmokeTest
         if(clientBehaviors!=null)Marshaler.MarshalEp1ClientBehaviors(new Node(clientBehaviors.CreateNavigator()!,ns),&root->ClientBehaviors,tracker);
         if(reviewedBehaviors)Marshaler.MarshalEp1ReviewedBehaviors(new Node(behaviors.CreateNavigator()!,ns),&root->Behaviors,tracker);
         else if(selectedBehaviors)Marshaler.MarshalEp1SelectedBehaviors(new Node(behaviors.CreateNavigator()!,ns),&root->Behaviors,tracker);
-        // Reborn: the complete source route dispatches PropBody without allocating or fabricating ActiveBody health fields.
+        // Reborn: EVA-create support must not allocate ActiveBody health fields for an existing PropBody source.
         if(reviewedBehaviors&&body.LocalName=="PropBody")Marshaler.Marshal(new Node(body.CreateNavigator()!,ns),&root->Body,tracker);
         else Marshaler.MarshalEp1ActiveBody(new Node(body.CreateNavigator()!,ns),&root->Body,tracker);
         // Reborn: no copied native bytes or second Tracker are appended to compose the geometry tail.

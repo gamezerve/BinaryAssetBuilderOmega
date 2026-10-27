@@ -124,6 +124,8 @@ if($SchedulerControl){
     # Reborn: cover run-off-map waypoint strings, flags, defaults and full object composition.
     # Reborn: cover attack-assist responses, authored masks/slots and linked notification behavior composition.
     # Reborn: cover populated EP1 crusher lists and authored-source native diagnostics.
+    # Reborn: verify raw EVA-create frame counters and their retail uint wire tag.
+    Add-BatchCase 'eva-create-client' 'EvaAnnounceClientCreate' @('eva-create-client-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'crusher-children' 'CrusherInfo children' @('crusher-children-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'attack-assist-response' 'AttackAssistResponseBehavior' @('attack-assist-response-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'run-off-map' 'RunOffMapBehavior' @('run-off-map-self-test',$StaticManifest,$GlobalManifest)

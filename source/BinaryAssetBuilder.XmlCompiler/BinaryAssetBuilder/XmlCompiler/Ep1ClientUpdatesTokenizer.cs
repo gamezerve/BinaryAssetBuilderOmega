@@ -18,6 +18,6 @@ public static class Ep1ClientUpdatesTokenizer
     private static Chunk Leaf(Chunk native)
     {
         if(native?.InstanceBuffer==null||native.InstanceBuffer.Length<8)throw new InvalidDataException("Complete client update leaf required.");
-        return BinaryPrimitives.ReadUInt32LittleEndian(native.InstanceBuffer) switch{0x9826A297u=>Ep1GroupAudioClientTokenizer.Tokenize(native),0xA220E7D6u=>Ep1EvaReadyClientTokenizer.Tokenize(native),_=>throw new InvalidDataException("Unreviewed client update native class.")};
+        return BinaryPrimitives.ReadUInt32LittleEndian(native.InstanceBuffer) switch{0x9826A297u=>Ep1GroupAudioClientTokenizer.Tokenize(native),0xA220E7D6u=>Ep1EvaReadyClientTokenizer.Tokenize(native),0xD0EEFDDDu=>Ep1EvaCreateClientTokenizer.Tokenize(native),_=>throw new InvalidDataException("Unreviewed client update native class.")};
     }
 }

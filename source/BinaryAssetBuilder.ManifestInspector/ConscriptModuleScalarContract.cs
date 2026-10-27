@@ -43,6 +43,7 @@ internal static class ConscriptModuleScalarContract
                     "Body" when element.LocalName=="ActiveBody"=>typeof(Ep1ActiveBodyModuleData),
                     // Reborn: use the EP1 strong-EVA record for readiness announcements.
                     "ClientUpdates" when element.LocalName=="EvaAnnounceSpecialPowerReadyClientUpdate"=>typeof(Ep1EvaAnnounceSpecialPowerReadyClientUpdateModuleData),
+                    "ClientUpdates" when element.LocalName=="EvaAnnounceClientCreate"=>typeof(Ep1EvaAnnounceClientCreateModuleData),
                     "ClientUpdates" when element.LocalName=="LargeGroupAudioClientUpdate"=>typeof(LargeGroupAudioClientUpdateModuleData),
                     "ClientBehaviors"=>element.LocalName switch{"ModelConditionSoundSelectorClientBehavior"=>typeof(Ep1ModelConditionSoundSelectorClientBehaviorModuleData),"AnimationSoundClientBehavior"=>typeof(AnimationSoundClientBehaviorModuleData),"ModelConditionAudioLoopClientBehavior"=>typeof(ModelConditionAudioLoopClientBehaviorModuleData),_=>throw new InvalidDataException("Unreviewed scalar client family.")},
                     _=>throw new InvalidDataException("Unreviewed module scalar owner: "+container.LocalName+"/"+element.LocalName+".")
@@ -95,7 +96,7 @@ internal static class ConscriptModuleScalarContract
         {
             "Single" when names.Contains("SageReal") || schema.QualifiedName==new XmlQualifiedName("float",XmlSchema.Namespace)=>(4,0x645864F3u),
             "Int32" when names.Contains("SageInt")=>(4,0x23E650B8u),
-            "UInt32" when names.Contains("SageUnsignedInt")=>(4,0x763177A4u),
+            "UInt32" when names.Contains("SageUnsignedInt")||names.Contains("SageDurationUnsignedInt")=>(4,0x763177A4u),
             "UInt16" when names.Contains("SageUnsignedShort")=>(2,0x43501092u),
             "Byte" when schema.Datatype?.TypeCode==XmlTypeCode.UnsignedByte=>(1,0x30916B96u),
             "SageBool" when names.Contains("SageBool")=>(1,0x77E3F4F7u),
@@ -182,7 +183,7 @@ internal static class ConscriptModuleScalarContract
     //-------------------------------------------------------------------------------------------------
     /** Reborn: exact source-to-native bytes are checked again at serialization, including packed booleans, percentages and converted time/angle/velocity units. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Verify(XmlDocument source,byte[] native,int prefix){foreach(var owner in Owners(source)){int start=Address(native,prefix,owner);foreach(var binding in Bindings(owner.NativeType)){int at=start+binding.Offset;if(at<0 || at>native.Length-binding.Width || !native.AsSpan(at,binding.Width).SequenceEqual(Bytes(owner.Element,binding)))throw new InvalidDataException("Module scalar native value differs: "+owner.Container+"/"+owner.Element.GetAttribute("id")+"/@"+binding.Name);}}}
+    internal static void Verify(XmlDocument source,byte[] native,int prefix){foreach(var owner in Owners(source)){int start=Address(native,prefix,owner);foreach(var binding in Bindings(owner.NativeType)){int at=start+binding.Offset;var expected=Bytes(owner.Element,binding);if(at<0 || at>native.Length-binding.Width || !native.AsSpan(at,binding.Width).SequenceEqual(expected))throw new InvalidDataException("Module scalar native value differs: "+owner.Container+"/"+owner.Element.GetAttribute("id")+"/@"+binding.Name+" expected="+Convert.ToHexString(expected)+" actual="+(at<0||at>native.Length-binding.Width?"<out of bounds>":Convert.ToHexString(native.AsSpan(at,binding.Width)))+" record="+Convert.ToHexString(native.AsSpan(start,Math.Min(Math.Max(0,native.Length-start),Marshal.SizeOf(owner.NativeType))))+" index="+owner.Index);}}}
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: restore only already-verified owned bytes before the complete stock graph oracle, retaining every pointer, dependency, list and non-scalar byte. */

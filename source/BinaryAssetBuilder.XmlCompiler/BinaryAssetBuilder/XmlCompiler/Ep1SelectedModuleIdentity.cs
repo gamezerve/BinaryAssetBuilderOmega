@@ -47,7 +47,7 @@ public static class Ep1SelectedModuleIdentity
         foreach(string name in new[]{"ClientUpdates","ClientBehaviors"})
         {
             var containers=root.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName==name).ToArray();var selected=containers.SelectMany(e=>e.ChildNodes.OfType<XmlElement>()).ToArray();
-            if(containers.Length>1 || containers.Any(e=>e.NamespaceURI!=ns) || (!reviewedBehaviors&&selected.Length>64) || selected.Any(e=>e.NamespaceURI!=ns || (name=="ClientUpdates"?(e.LocalName!="LargeGroupAudioClientUpdate"&&(!reviewedBehaviors||e.LocalName!="EvaAnnounceSpecialPowerReadyClientUpdate")):e.LocalName is not ("ModelConditionAudioLoopClientBehavior" or "ModelConditionSoundSelectorClientBehavior" or "AnimationSoundClientBehavior"))))throw new InvalidDataException("Unreviewed selected client identity class/container/count.");clients.AddRange(selected);
+            if(containers.Length>1 || containers.Any(e=>e.NamespaceURI!=ns) || (!reviewedBehaviors&&selected.Length>64) || selected.Any(e=>e.NamespaceURI!=ns || (name=="ClientUpdates"?(e.LocalName!="LargeGroupAudioClientUpdate"&&(!reviewedBehaviors||e.LocalName is not ("EvaAnnounceSpecialPowerReadyClientUpdate" or "EvaAnnounceClientCreate"))):e.LocalName is not ("ModelConditionAudioLoopClientBehavior" or "ModelConditionSoundSelectorClientBehavior" or "AnimationSoundClientBehavior"))))throw new InvalidDataException("Unreviewed selected client identity class/container/count.");clients.AddRange(selected);
         }
         var ids=new HashSet<uint>();
         foreach(var module in modules.Concat(body).Concat(ai).Concat(draws).Concat(clients))

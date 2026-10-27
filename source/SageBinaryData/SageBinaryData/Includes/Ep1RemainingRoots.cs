@@ -53,8 +53,27 @@ public struct Ep1CrusherInfo
     public Percentage MinCrushVelocityPercent,CrushDecelerationPercent;
     public AssetReference<WeaponTemplate> CrushWeapon;
     public Time DefaultCrushKillDelay;
-    public List<CrusherLevelModelConditionInfo> ExtraCrushLevels;
-    public List<CrushKillDelayForObjectFilter> ExtraCrushKillDelays;
+    public List<Ep1CrusherLevelModelConditionInfo> ExtraCrushLevels;
+    public List<Ep1CrushKillDelayForObjectFilter> ExtraCrushKillDelays;
     public sbyte CrusherLevel,CrushableLevel;
     public SageBool CrushEqualLevelProps,UseCrushAttack,CrushOnlyWhileCharging,CrushAllies,CrushAircraftWhileStationary,UseDirectionCheck,ShouldSquishOnCollide,DecelerateForAllCollides,CannotCrushTarget;
+}
+
+// Reborn: retail SovietMiner/SovietGrinderVehicle items are 68 bytes: the 15-span model-condition mask is inline at 0, the optional filter pointer at 60, then both levels and the flag.
+[StructLayout(LayoutKind.Sequential)]
+public unsafe struct Ep1CrusherLevelModelConditionInfo
+{
+    public ModelConditionBitFlags ModelConditionMatch;
+    public ObjectFilter* ObjectFilter;
+    public sbyte CrusherLevel,CrushableLevel;
+    public SageBool CrushEqualLevelProps;
+}
+
+// Reborn: retail kill-delay items are 128 bytes with the ObjectFilter stored inline at 8, not KW's 12-byte pointer record.
+[StructLayout(LayoutKind.Sequential)]
+public struct Ep1CrushKillDelayForObjectFilter
+{
+    public Time CrushKillDelay;
+    public Percentage CrushDecelerationPercent;
+    public ObjectFilter ObjectFilter;
 }

@@ -33,7 +33,10 @@ public static partial class Marshaler
                 uint evaReadyTypeId=0xA220E7D6u;state.InplaceEndianToPlatform(&evaReadyTypeId);*(uint*)*objT=evaReadyTypeId;
                 break;
             case 0xD0EEFDDDu:
-                MarshalPolymorphicType<EvaAnnounceClientCreateModuleData, ClientUpdateModuleData>(node, objT, state);
+                // Reborn: EP1 create announcements use strong EVA imports instead of legacy string pointers.
+                using(var context=state.Push((void**)objT,(uint)sizeof(Ep1EvaAnnounceClientCreateModuleData),1u))
+                    Marshal(node,(Ep1EvaAnnounceClientCreateModuleData*)*objT,state);
+                uint evaCreateTypeId=0xD0EEFDDDu;state.InplaceEndianToPlatform(&evaCreateTypeId);*(uint*)*objT=evaCreateTypeId;
                 break;
             case 0xF95B7D41u:
                 MarshalPolymorphicType<BeaconClientUpdateModuleData, ClientUpdateModuleData>(node, objT, state);

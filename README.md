@@ -8,6 +8,22 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: create announcements retain raw logic-frame words and the exact retail unsigned metadata signature. -->
+`EvaAnnounceClientCreate` uses a 28-byte EP1 record with three strong EVA imports,
+four flags and a raw unsigned `DelayBeforeAnnouncementLogicFrames` word. Its
+`SageDurationUnsignedInt` field has retail tag `763177A4`, not the tagged duration
+wire `6F6D1AE7`; values are preserved as frame counts. Retail Iron Curtain data,
+nonzero/uint-boundary edits, imports, defaults and full object composition are
+covered by `eva-create-client-self-test <static.manifest> <global.manifest>`.
+The existing PropBody route is preserved alongside the new client dispatcher.
+
+<!-- Reborn: EP1 crusher children use inline layouts rather than the legacy KW pointer records. -->
+`CrusherInfo` extra-level and kill-delay entries use their EP1 68-byte and 128-byte
+records, including inline model-condition masks and the inline kill-delay filter.
+Retail qualification uses effective BaseVehicle inheritance for Miner/Grinder
+records. Repeated lists, nested filters, omitted/default conditions and original
+XML locations for late crusher errors are covered by `crusher-children-self-test`.
+
 <!-- Reborn: attack-assist responses use a new retail-qualified EP1 native writer and complete source-driven metadata. -->
 `AttackAssistResponseBehavior` is build-enabled with its 48-byte EP1 header:
 full 32-byte `ObjectStatus` mask, unsigned `WeaponSlotID` and `WeaponSlotType`.

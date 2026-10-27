@@ -27,6 +27,8 @@ internal sealed class SchemaNativeContract
     internal static readonly Family[] Families={
         // Reborn: EVA readiness clients have their own complete native/source proof and literal retail-qualified metadata.
         new(typeof(Ep1EvaAnnounceSpecialPowerReadyClientUpdateModuleData),"ClientUpdates",0xA220E7D6u,BinaryAssetBuilder.XmlCompiler.Ep1EvaReadyClientTokenizer.Tokenize),
+        // Reborn: EVA create announcements are qualified from the original Iron Curtain record.
+        new(typeof(Ep1EvaAnnounceClientCreateModuleData),"ClientUpdates",0xD0EEFDDDu,BinaryAssetBuilder.XmlCompiler.Ep1EvaCreateClientTokenizer.Tokenize),
         // Reborn: the existing tracer writer supports both optional-status shapes without freezing the Conscript template.
         new(typeof(W3DTracerDrawModuleData),"Draws",0x54018E60u,BinaryAssetBuilder.XmlCompiler.Ep1TracerDrawTokenizer.Tokenize),
         new(typeof(W3DScriptedModelDrawModuleData),"Draws",0x4ECF2A4Bu,BinaryAssetBuilder.XmlCompiler.Ep1ScriptedDrawTokenizer.Tokenize),

@@ -43,6 +43,24 @@ public static partial class Marshaler
     //-------------------------------------------------------------------------------------------------
     /** Reborn: use EP1 crusher internal offsets and complete scalar/reference/flag source semantics; extra-crush level and kill-delay lists are source-sized and retain nested filters and conditions. */
     //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node,Ep1CrusherLevelModelConditionInfo* objT,Tracker state)
+    {
+        if(node==null)return;
+        // Reborn: EP1 stores the condition mask inline; an omitted/empty mask leaves the zero span words.
+        Marshal(node.GetAttributeValue("ModelConditionMatch",""),&objT->ModelConditionMatch,state);Marshal(node.GetChildNode("ObjectFilter",null),&objT->ObjectFilter,state);
+        Marshal(node.GetAttributeValue("CrusherLevel","0"),&objT->CrusherLevel,state);Marshal(node.GetAttributeValue("CrushableLevel","127"),&objT->CrushableLevel,state);Marshal(node.GetAttributeValue("CrushEqualLevelProps","false"),&objT->CrushEqualLevelProps,state);
+    }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: EP1 kill-delay records own their ObjectFilter inline. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node,Ep1CrushKillDelayForObjectFilter* objT,Tracker state)
+    {
+        if(node==null)return;
+        Marshal(node.GetAttributeValue("CrushKillDelay",".5s"),&objT->CrushKillDelay,state);Marshal(node.GetAttributeValue("CrushDecelerationPercent","0"),&objT->CrushDecelerationPercent,state);Marshal(node.GetChildNode("ObjectFilter",null),&objT->ObjectFilter,state);
+    }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: EP1 crusher root record. */
+    //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node,Ep1CrusherInfo* objT,Tracker state)
     {
         if(node==null)return;
