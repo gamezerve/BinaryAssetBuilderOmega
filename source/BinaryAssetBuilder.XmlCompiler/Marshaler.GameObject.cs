@@ -458,7 +458,9 @@ public static partial class Marshaler
                 MarshalPolymorphicType<InitiateRepairDieModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x5E1CAFDBu:
-                MarshalPolymorphicType<AttributeModifierAuraUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: allocate the Uprising aura layout while retaining its original wire identity.
+                using(var context=state.Push((void**)objT,(uint)sizeof(Ep1AttributeModifierAuraUpdateModuleData),1u))Marshal(node,(Ep1AttributeModifierAuraUpdateModuleData*)*objT,state);
+                uint auraType=0x5E1CAFDBu;state.InplaceEndianToPlatform(&auraType);*(uint*)*objT=auraType;
                 break;
             case 0x643A2AC3u:
                 MarshalPolymorphicType<ShieldBodyUpdateModuleData, BehaviorModuleData>(node, objT, state);

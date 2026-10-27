@@ -127,6 +127,8 @@ if($SchedulerControl){
     # Reborn: verify raw EVA-create frame counters and their retail uint wire tag.
     # Reborn: cover garrison flags, inline roster and inherited containment graphs.
     # Reborn: cover invisibility-template imports and bunker garrison composition.
+    # Reborn: include aura fields and inherited upgrade graphs in offline regression.
+    Add-BatchCase 'attribute-modifier-aura' 'AttributeModifierAuraUpdate' @('attribute-modifier-aura-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'invisibility-behavior' 'InvisibilityBehavior' @('invisibility-behavior-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'garrison-contain' 'GarrisonContain' @('garrison-contain-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'eva-create-client' 'EvaAnnounceClientCreate' @('eva-create-client-self-test',$StaticManifest,$GlobalManifest)

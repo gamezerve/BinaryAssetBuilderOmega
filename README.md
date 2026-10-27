@@ -8,6 +8,20 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: aura compilation uses the Uprising record rather than the older Kane's Wrath field arrangement. -->
+`AttributeModifierAuraUpdate` is build-enabled with its 112-byte EP1 record,
+all official aura attributes, optional `ObjectFilter` and inherited Upgrade fields.
+Modifier/FX references, refresh/range/rank settings, condition/category/status and
+disabled masks, target flags, trigger/conflict lists and custom animation are
+source-driven. `AntiCategory` retains the official `SHRINK` bit. Omitted fields
+follow the schema defaults, including `DisabledTypesToProcess="HELD"`.
+Original Soviet Bunker, Tesla Trooper and Burst Drone records qualify offsets,
+imports, defaults and filter graphs. Developer regression:
+`attribute-modifier-aura-self-test <static.manifest> <global.manifest>` covers
+all own attributes, nested filters, inherited upgrades, absent/empty filters,
+full GameObject composition and corrupt-output refusal without user output or
+launching a game.
+
 <!-- Reborn: bunker invisibility uses a real strong template import and its original EP1 concrete behavior identity. -->
 `InvisibilityBehavior` is build-enabled with its 12-byte EP1 record and required
 strong `InvisibilityTemplate` reference. Local IDs and compatible catalog targets

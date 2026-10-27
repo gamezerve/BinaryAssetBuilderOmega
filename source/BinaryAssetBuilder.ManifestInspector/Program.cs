@@ -218,6 +218,9 @@ internal static class Program
             // Reborn: verify raw EVA-create logic-frame words, retail uint metadata and strong announcement references offline.
             // Reborn: test complete garrison and inherited passenger graphs through actual native and metadata dispatch offline.
             // Reborn: verify strong invisibility-template imports, retargets, garrison composition and missing-reference diagnostics offline.
+            // Reborn: verify full aura source/native graphs without user output or a game launch.
+            if(args.Length==3 && args[0]=="attribute-modifier-aura-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();AttributeModifierAuraSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="invisibility-behavior-self-test")
             {CompilerSmokeTest.InitializeHashProvider();InvisibilityBehaviorSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="garrison-contain-self-test")
