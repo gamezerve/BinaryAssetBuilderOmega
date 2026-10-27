@@ -217,6 +217,8 @@ if($SchedulerControl){
     # Reborn: original Heavy Walker XInclude expressions resolve per declaring document with physical diagnostics.
     Add-BatchCase 'fragment-definitions' 'FragmentDefinitionContexts' @('fragment-definitions-self-test',(Join-Path $OutputDirectory 'fragment-definitions'))
     # Reborn: experience levels retain stock-qualified EP1 pointer/list layout and ordinary authored stream publication.
+    # Reborn: normal modifier roots, inheritance, local imports and package readback.
+    Add-BatchCase 'attribute-modifier-compiler' 'AttributeModifierCompiler' @('attribute-modifier-compiler-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'attribute-modifier-compiler'))
     Add-BatchCase 'experience-level' 'ExperienceNativeAndStream' @('experience-level-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'experience-level'))
     # Reborn: special-power flags, tech/EVA selectors and local authored commands use stock-qualified EP1 data.
     # Reborn: standalone player power buttons exercise all four data alternatives privately.

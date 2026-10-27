@@ -8,6 +8,21 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: AttributeModifier is enabled in normal alpha builds, beyond the historical standalone diagnostic profiles. -->
+`AttributeModifier` is build-enabled with its 56-byte untokenized EP1 header.
+Custom IDs, ordinary includes, instance bases, inheritance and definitions share
+the normal source pipeline. All official category/modifier types, percentages,
+duration/stacking/armor settings, booleans, optional model/status masks and
+FX/shader references are editable. Lists follow the XSD cardinality; empty and
+omitted masks retain their distinct storage. Local modifiers can be referenced
+by GameObject modules in the same dependency-sorted mod stream.
+Six original Uprising records qualify lists, masks, FX/shader imports and the
+armor-set enum (`SHRINK_EFFECT=14`). Regression:
+`attribute-modifier-compiler-self-test <static.manifest> <global.manifest> <fresh-output>`.
+It covers all category/armor/modifier enum values, empty/default fields,
+invalid sources, corrupt output and normal inheritance/local-reference/package
+readback without rebuilding the user's mod or launching the game.
+
 <!-- Reborn: explicit empty unpack audio is a valid null reference, as used by the original Soviet Outpost. -->
 `StructureUnpackUpdate/@UnpackCompleteSound=""` now compiles as an intentional
 silent completion. An omitted attribute keeps its null pointer; an explicit
