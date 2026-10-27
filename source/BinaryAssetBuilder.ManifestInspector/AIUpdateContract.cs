@@ -19,7 +19,7 @@ internal static class AIUpdateContract
         public Time IdleScanDelay,ReacquireDelay,StartupDelay;
         public float SympathyRange;
         public DynamicBitFlags CanPickDynamicTargetType;
-        public Relo.List<uint> ObjectVisionRange;
+        public Relo.List<Ep1ObjectVisionRangeItem> ObjectVisionRange;
         public SageBool CheckVisionRange,CanPickDynamicTargets,RotateToTargetWhenAiming,CanAutoAcquireNonAutoAcquirable,CanChaseAttack,CanOnlyAttackTargetsInFront;
     }
     [StructLayout(LayoutKind.Sequential)]
@@ -61,20 +61,22 @@ internal static class AIUpdateContract
     internal static SchemaNativeContract.Result Verify(XmlElement source,Relo.Chunk native,IReadOnlyList<AssetId> references)
     {
         if(source.HasAttribute("SpecialContactPoints")&&!string.IsNullOrWhiteSpace(source.GetAttribute("SpecialContactPoints")))throw SdkXmlDiagnostics.At(new InvalidDataException("AIUpdate SpecialContactPoints item metadata is not implemented."),source.GetAttributeNode("SpecialContactPoints"));
-        if(source.GetElementsByTagName("ObjectVisionRange",SchemaSet.XmlNamespace).Count!=0)throw SdkXmlDiagnostics.At(new InvalidDataException("AIUpdate ObjectVisionRange item native layout is not implemented."),source);
         return SchemaNativeContract.Verify(source,typeof(Native),0x08DBC00Eu,native,references);
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: independent stock Conscript and refinery witnesses qualify chooser-present and chooser-absent graphs before authored composition. */
+    /** Reborn: independent stock Conscript, refinery and flak-trooper witnesses qualify chooser-present, chooser-absent and one-vision-item graphs before authored composition. */
     //-------------------------------------------------------------------------------------------------
     internal static StockMetadataGrammar Qualify(string manifest,XmlDocument baseline,SchemaSet schemas,ManifestAsset[] catalog)
     {
         if(Marshal.SizeOf<Native>()!=76||Marshal.SizeOf<Chooser>()!=40||Marshal.SizeOf<BaseChooser>()!=36)throw new InvalidDataException("AIUpdate proof/native ABI size differs.");
         var grammar=new StockMetadataGrammar();
-        foreach(string name in new[]{"SovietAntiInfantryInfantry","SovietRefinery"}){
+        foreach(string name in new[]{"SovietAntiInfantryInfantry","SovietRefinery","SovietAntiVehicleInfantry"}){
             var captured=GameObjectStockReview.Capture(manifest,"GameObject:"+name);var module=GameObjectModuleReview.Inspect(manifest,captured.Asset.Name).Containers.Single(c=>c.Name=="AI").Modules.Single();var document=(XmlDocument)baseline.CloneNode(true);
-            if(name=="SovietRefinery"){var original=GameObjectExtendedRootContract.Original("Soviet/Structures/SovietRefinery.xml","AI").Single();var previous=document.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName=="AI");previous.ParentNode!.ReplaceChild(document.ImportNode(original,true),previous);}
+            if(name!="SovietAntiInfantryInfantry"){var original=(XmlElement)document.ImportNode(GameObjectExtendedRootContract.Original(name=="SovietRefinery"?"Soviet/Structures/SovietRefinery.xml":"Soviet/Units/SovietAntiVehicleInfantry.xml","AI").Single(),true);
+                // Reborn: the vision witness (one ObjectVisionRange item) uses a GlobalDefines idle-scan delay; resolve it from the original defines.
+                foreach(var attribute in original.SelectNodes(".//@*")!.OfType<XmlAttribute>().Where(a=>a.Value.StartsWith("=$",StringComparison.Ordinal)).ToArray())attribute.Value=GameObjectExtendedRootContract.Original("GlobalData/GlobalDefines.xml","Define").Single(e=>e.GetAttribute("name")==attribute.Value[2..]).GetAttribute("value");
+                var previous=document.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName=="AI");previous.ParentNode!.ReplaceChild(original,previous);}
             var resolved=SchemaNativeContract.Resolve(document,schemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container=="AI").Element;
             SchemaNativeContract.VerifyStock(element,typeof(Native),0x08DBC00Eu,captured.Bytes,module.Native,captured.Asset.References.ToArray());grammar.Learn(captured.Bytes,module.Wrapper,captured.Projection.NativeRoot,typeof(Native));
         }

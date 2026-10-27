@@ -14,12 +14,15 @@ internal static class Ep1AIUpdateTokenSmokeTest
     internal static void Stock(Chunk native,byte[] stock,int wrapper,int original)
     {
         var output=Check(native);int prefix=Prefix(native),chooser=(int)Word(native.InstanceBuffer,68),stockChooser=(int)Word(stock,original+68);var expected=stock.AsSpan(wrapper,prefix).ToArray();
+        // Reborn: retail vision item and its status-flag allocations are independent stock owners rebased onto the generated native coordinates.
+        var owners=new List<(int Stock,int Native,int Size)>();if(stockChooser!=0 && Word(stock,stockChooser+20)!=0){int stockVision=(int)Word(stock,stockChooser+24),vision=(int)Word(native.InstanceBuffer,chooser+24);owners.Add((stockVision,vision,128));foreach(int at in new[]{104,108})if(Word(stock,stockVision+at)!=0)owners.Add(((int)Word(stock,stockVision+at),(int)Word(native.InstanceBuffer,vision+at),32));}
         for(int at=8;at<prefix;at+=12)
         {
             int target=(int)Word(expected,at);if(target==0)continue;uint rebased;
             if(target>=wrapper && target<wrapper+prefix)rebased=(uint)(target-wrapper);
             else if(target>=original && target<original+76)rebased=(uint)(prefix+target-original);
             else if(stockChooser!=0 && target>=stockChooser && target<stockChooser+40)rebased=(uint)(prefix+chooser+target-stockChooser);
+            else if(owners.Any(o=>target>=o.Stock && target<o.Stock+o.Size)){var owner=owners.First(o=>target>=o.Stock && target<o.Stock+o.Size);rebased=(uint)(prefix+owner.Native+target-owner.Stock);}
             else throw new InvalidDataException("Independent stock AI metadata target crosses the selected fragment.");Put(expected,at,rebased);
         }
         if(!expected.AsSpan().SequenceEqual(output.InstanceBuffer.AsSpan(0,prefix)))throw new InvalidDataException("Complete independent stock AI prefix differs.");
@@ -46,6 +49,14 @@ internal static class Ep1AIUpdateTokenSmokeTest
             Row(348,1,0xAA42EB9C,384);Row(360,0xBE06A9E5,0x1B85B469,(uint)(prefix+chooser+36));
             var child=new[]{(0xFA7B2809u,0x998669E8u,0),(0x75881E10u,0x998669E8u,4),(0xEE67F9FDu,0x998669E8u,8),(0x913BF59Au,0x645864F3u,12),(0xFEE97B77u,0x77E3F4F7u,28),(0x9EC5DD15u,0x77E3F4F7u,29),(0x4513F0A2u,0x344E0F38u,16),(0x57CF8D55u,0x77E3F4F7u,30),(0x87C92B38u,0x77E3F4F7u,31),(0x653CDF52u,0x77E3F4F7u,32),(0xE4022CC3u,0x77E3F4F7u,33),(0x799997EAu,0x2E11FC54u,-1)};
             for(int i=0;i<child.Length;i++){var f=child[i];Row(384+i*12,f.Item1,f.Item2,f.Item3<0?540u:(uint)(prefix+chooser+f.Item3));}Row(540,0x6C827073,0x5D448FD8,(uint)(prefix+chooser+20));
+            // Reborn: one retail vision item: list item row, Range/Filter item table, inline filter table and empty thing lists, with literal stock hashes.
+            if(Word(native.InstanceBuffer,chooser+20)!=0)
+            {
+                int vision=(int)Word(native.InstanceBuffer,chooser+24);uint Flags(int at)=>Word(native.InstanceBuffer,vision+at)==0?0u:(uint)prefix+Word(native.InstanceBuffer,vision+at);
+                Row(552,0xB151A0EB,0,564);Row(564,0xCC37CEA6,0x645864F3,(uint)(prefix+vision+4));Row(576,0x8579AC26,0xE46EA3B2,600);
+                var filter=new[]{(0x8CDC9898u,0x4D3B3F19u,(uint)(prefix+vision+8)),(0xC9C22AA2u,0x0027BB58u,(uint)(prefix+vision+12)),(0xA037DC14u,0x5C8981A9u,(uint)(prefix+vision+16)),(0x27AF1102u,0x9FFD43EBu,(uint)(prefix+vision+20)),(0x1AF86941u,0x9AFC9193u,(uint)(prefix+vision+24)),(0x87D26051u,0x9AFC9193u,(uint)(prefix+vision+64)),(0xF2FC1F81u,0xA7BD811Eu,Flags(104)),(0x5C5EB235u,0xA7BD811Eu,Flags(108)),(0xC8801D7Eu,0x9B19049Fu,732u),(0xD6A24C87u,0x9B19049Fu,744u)};
+                for(int i=0;i<filter.Length;i++)Row(600+i*12,filter[i].Item1,filter[i].Item2,filter[i].Item3);Row(732,0x6C827073,0x5D448FD8,(uint)(prefix+vision+112));Row(744,0x6C827073,0x5D448FD8,(uint)(prefix+vision+120));
+            }
         }
         if(!expected.AsSpan().SequenceEqual(output.InstanceBuffer.AsSpan(0,prefix)))throw new InvalidDataException("AI detached metadata prefix differs.");
         var recovered=output.InstanceBuffer.AsSpan(prefix).ToArray();var relocations=Slots(native.RelocationBuffer);var imports=Slots(native.ImportsBuffer);
@@ -73,12 +84,12 @@ internal static class Ep1AIUpdateTokenSmokeTest
         var payload=Clone(output);payload.InstanceBuffer[Prefix(native)+72]^=1;Refuse(()=>Verify(payload,native));metadataFailures++;
         // Reborn: detached pointer/auxiliary output corruption cannot hide behind an otherwise matching generated metadata prefix.
         var pointer=Clone(output);Put(pointer.InstanceBuffer,Prefix(native)+12,0);Refuse(()=>Verify(pointer,native));metadataFailures++;var outputRelo=Clone(output);outputRelo.RelocationBuffer=Pack(Slots(outputRelo.RelocationBuffer).Skip(1));Refuse(()=>Verify(outputRelo,native));metadataFailures++;var outputImport=Clone(output);outputImport.ImportsBuffer=Array.Empty<byte>();Refuse(()=>Verify(outputImport,native));metadataFailures++;
-        Console.WriteLine($"EP1 AI tokens: PASS (two complete independent stock prefixes; 680 explicitly empty-contact source variants; {nativeFailures} native/{metadataFailures} detached metadata/payload refusals; nonempty contacts/vision lists not token-enabled, no shared GameObject publication).");
+        Console.WriteLine($"EP1 AI tokens: PASS (three complete independent stock prefixes, one with a retail vision item; 680 explicitly empty-contact source variants; {nativeFailures} native/{metadataFailures} detached metadata/payload refusals; nonempty contacts and multi-item vision lists not token-enabled, no shared GameObject publication).");
     }
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: independent expected extents depend only on optional chooser presence, not on producer metadata offsets. */
+    /** Reborn: independent expected extents depend only on optional chooser presence and vision count, not on producer metadata offsets. */
     //-------------------------------------------------------------------------------------------------
-    private static int Prefix(Chunk native)=>Word(native.InstanceBuffer,68)==0?348:552;
+    private static int Prefix(Chunk native){int chooser=(int)Word(native.InstanceBuffer,68);return chooser==0?348:Word(native.InstanceBuffer,chooser+20)==0?552:756;}
     //-------------------------------------------------------------------------------------------------
     /** Reborn: refusals cannot become a repaired or partially successful output. */
     //-------------------------------------------------------------------------------------------------

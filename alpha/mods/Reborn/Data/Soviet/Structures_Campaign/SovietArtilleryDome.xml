@@ -49,7 +49,7 @@
 		CampnessValue="=$CAMPNESS_DEFENSIVE_STRUCTURE"
 		EditorName="SovietArtilleryDome"	
 		Description="Desc:KR_ArtilleryDome"
-		TypeDescription="Type:KR_ArtilleryDome">
+		TypeDescription="Type:SovietArtilleryDome">
 		<DisplayName
 			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:KR_ArtilleryDome</DisplayName>
 		<GameDependency>

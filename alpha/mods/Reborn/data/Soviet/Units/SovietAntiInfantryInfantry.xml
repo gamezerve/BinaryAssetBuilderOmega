@@ -5,397 +5,397 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_BIDA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_DTBA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_RUNA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_AIDA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_ATKA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_BATA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_ABTB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_ABTA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_AIDB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_AIFA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_AIFB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_AIFC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_AIFD.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_BATB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_BIDB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_BIDC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_BIFA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_BIFB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_BIFC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_BIFD.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_CHRA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_CHRB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_CHRC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_DTBB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_DTFA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_DTFB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_DTKA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_DTKB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_DTPA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_DTPB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_DTSA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_GTPA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_RUNB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_RUNC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_SATA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_SDVA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_SGTA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_SIDA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_SMVA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MAIDA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MAIDB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MAIFA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MAIFB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MAIFC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MAIFD.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MATKA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MBATA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MBIDA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MBIDB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MBIDC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MBIFA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MBIFB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MBIFC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MBIFD.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MCHRA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MDTBA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MDTBB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MDTFA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MDTFB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MDTKA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MDTKB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MDTPA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MDTPB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MGTPA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MRUNA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MRUNB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MRUNC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_SWPA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_SWPB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MCDTA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MCDTB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MFLYA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MLNDA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_CDTA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_CDTB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_FLYA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_LNDA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_SDIA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MCNA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MCNB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MCNC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MCND.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MMCNA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MMCNB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MMCNC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MMCND.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_BITD.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_SLTA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_SLTB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_SLTC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MBITD.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_AIFW.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_AIFX.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_AIFY.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_AIFZ.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_ATKB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_ATKC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_ATKD.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_BIFW.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_BIFX.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_BIFY.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_BIFZ.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_CWRY.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_CWRZ.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MAIFW.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MAIFX.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MAIFY.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MAIFZ.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MATKB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MBIFW.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MBIFX.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MBIFY.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MBIFZ.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MCWRY.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MCWRZ.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_ATRA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_ATRB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MATRA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MATRB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_MRNDA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_RNDA.w3x" />
-			<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_SWMA.w3x" />
-						<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_SWMB.w3x" />
-						<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_SWMC.w3x" />
-						<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_WADA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryInfantry_RNDB.w3x" />
-			<Include type="all"	source="ART:NPSkeleton_SKN.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_DIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiation.w3x" />
-		<Include type="all"	source="ART:NPRadiation_DIEA.w3x" />
-		<Include
-			type="all"
-			source="ART:FXTracerHeroic.xml" />
-		<Include
-			type="all"
-			source="ART:FXTracer.xml" />			
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_BIDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_DTBA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_RUNA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_AIDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_ATKA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_BATA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_ABTB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_ABTA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_AIDB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_AIFA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_AIFB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_AIFC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_AIFD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_BATB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_BIDB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_BIDC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_BIFA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_BIFB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_BIFC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_BIFD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_CHRA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_CHRB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_CHRC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_DTBB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_DTFA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_DTFB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_DTKA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_DTKB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_DTPA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_DTPB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_DTSA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_GTPA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_RUNB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_RUNC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_SATA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_SDVA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_SGTA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_SIDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_SMVA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MAIDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MAIDB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MAIFA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MAIFB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MAIFC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MAIFD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MATKA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MBATA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MBIDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MBIDB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MBIDC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MBIFA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MBIFB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MBIFC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MBIFD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MCHRA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MDTBA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MDTBB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MDTFA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MDTFB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MDTKA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MDTKB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MDTPA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MDTPB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MGTPA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MRUNA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MRUNB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MRUNC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_SWPA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_SWPB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MCDTA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MCDTB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MFLYA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MLNDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_CDTA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_CDTB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_FLYA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_LNDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_SDIA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MCNA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MCNB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MCNC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MCND.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MMCNA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MMCNB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MMCNC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MMCND.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_BITD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_SLTA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_SLTB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_SLTC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MBITD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_AIFW.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_AIFX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_AIFY.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_AIFZ.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_ATKB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_ATKC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_ATKD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_BIFW.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_BIFX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_BIFY.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_BIFZ.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_CWRY.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_CWRZ.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MAIFW.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MAIFX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MAIFY.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MAIFZ.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MATKB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MBIFW.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MBIFX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MBIFY.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MBIFZ.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MCWRY.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MCWRZ.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_ATRA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_ATRB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MATRA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MATRB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_MRNDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_RNDA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_SWMA.w3x" /> -->
+						<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_SWMB.w3x" /> -->
+						<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_SWMC.w3x" /> -->
+						<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_WADA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryInfantry_RNDB.w3x" /> -->
+			<!-- <Include type="all"	source="ART:NPSkeleton_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation_DIEA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXTracerHeroic.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXTracer.xml" />			 -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

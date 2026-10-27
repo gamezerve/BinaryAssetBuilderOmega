@@ -262,6 +262,8 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();AttackAssistResponseSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="run-off-map-self-test")
             {CompilerSmokeTest.InitializeHashProvider();RunOffMapSmokeTest.Run(args[1],args[2]);return 0;}
+            if(args.Length==3 && args[0]=="ai-vision-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();AIVisionSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="jet-ai-self-test")
             {CompilerSmokeTest.InitializeHashProvider();JetAIUpdateSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="eject-passengers-self-test")
@@ -1771,10 +1773,12 @@ internal static class Program
         Console.WriteLine("  gameobject-root-layout-review <static.manifest> <GameObject:Name>");
         // Reborn: vision source/native/token diagnostics remain separate from alpha or GameObject publication.
         Console.WriteLine("  ep1-vision-info-self-test <static.manifest> <global.manifest>");
-        // Reborn: this AI native gate refuses nonempty ObjectVisionRange and does not publish a GameObject.
+        // Reborn: this AI native gate admits zero or one ObjectVisionRange item and does not publish a GameObject.
         Console.WriteLine("  ep1-ai-update-self-test <static.manifest> <global.manifest>");
-        // Reborn: nonempty contact/vision list tokens and shared object publication are separate unfinished gates.
+        // Reborn: nonempty contact lists, multi-item vision lists and shared object publication are separate unfinished gates.
         Console.WriteLine("  ep1-ai-update-token-self-test <static.manifest> <global.manifest>");
+        // Reborn: one-item AIUpdate ObjectVisionRange through the production object compile and stock-learned grammar.
+        Console.WriteLine("  ai-vision-self-test <static.manifest> <global.manifest>");
         // Reborn: selected combined AI graphs do not authorize general GameObject stream publication.
         Console.WriteLine("  gameobject-ai-composition-self-test <static.manifest> <global.manifest>");
         Console.WriteLine("  gameobject-authored-ai-composition-self-test <fresh-output> <static.manifest> <global.manifest>");

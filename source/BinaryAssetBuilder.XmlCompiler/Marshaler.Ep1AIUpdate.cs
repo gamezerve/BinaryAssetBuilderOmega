@@ -41,12 +41,13 @@ public static partial class Marshaler
         Marshal(node,(UpdateModuleData*)objT,state);uint type=0x08DBC00E;state.InplaceEndianToPlatform(&type);*(uint*)objT=type;
     }
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: the first chooser profile covers all primitive/default/reference fields but explicitly refuses nonempty ObjectVisionRange graphs. */
+    /** Reborn: the chooser profile covers all primitive/default/reference fields and source-sized ObjectVisionRange items. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node,Ep1UnitAITargetChooserData* objT,Tracker state)
     {
         if(node is null)return;
-        if(node.GetChildNodes("ObjectVisionRange")?.GetCount()>0)throw new BinaryAssetBuilderException(ErrorCode.InternalError,"EP1 AI ObjectVisionRange payload is not yet admitted; refusing instead of skipping.");
+        // Reborn: source-sized vision items are allocated directly after the chooser, as in retail SovietAntiVehicleInfantry.
+        Marshal(node.GetChildNodes("ObjectVisionRange"),&objT->ObjectVisionRange,state);
         Marshal(node.GetAttributeValue("IdleScanDelay","0.8s"),&objT->IdleScanDelay,state);
         Marshal(node.GetAttributeValue("ReacquireDelay","60s"),&objT->ReacquireDelay,state);
         Marshal(node.GetAttributeValue("StartupDelay","0s"),&objT->StartupDelay,state);
@@ -61,6 +62,15 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TargetingCompareList","DefaultTargetingCompareList"),&objT->TargetingCompareList,state);
         // Reborn: chooser time/scalar exponent overflow cannot become a successful native record.
         foreach(float value in new[]{objT->IdleScanDelay.Value,objT->ReacquireDelay.Value,objT->StartupDelay.Value,objT->SympathyRange})if(!float.IsFinite(value))throw new BinaryAssetBuilderException(ErrorCode.InternalError,"EP1 AI chooser real/time fields must be finite.");
+    }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: one EP1 vision item: official Range percentage default and its inline filter. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node,Ep1ObjectVisionRangeItem* objT,Tracker state)
+    {
+        if(node is null)return;
+        Marshal(node.GetAttributeValue("Range","100"),&objT->Range,state);Marshal(node.GetChildNode("Filter",null),&objT->Filter,state);
+        if(!float.IsFinite(objT->Range.Value))throw new BinaryAssetBuilderException(ErrorCode.InternalError,"EP1 AI vision range must be finite.");
     }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: optional chooser records allocate forty bytes without reusing the shorter legacy base structure. */

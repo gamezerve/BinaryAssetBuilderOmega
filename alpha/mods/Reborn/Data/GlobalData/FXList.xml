@@ -7,6 +7,7 @@
 	<!-- <Include type="all" source="FXListAudio.xml"/> -->
     <Include type="all" source="FXListCivilian.xml"/>
 	<!-- <Include type="all" source="FXListForceFeedback.xml"/> -->
+	<Include type="all" source="FXListReborn.xml"/>
 	
 	<!-- <Include type="all"	source="ART:FXDepthLUTMono.xml" /> -->
 	</Includes>

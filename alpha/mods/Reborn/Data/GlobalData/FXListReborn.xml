@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+
+  
+  	<!-- ++++++++++++++++++++++++++++++++++++++++++++ -->
+	<!-- FireFX with CameraShake -->
+	<FXList id="FX_Kremlin_ArtilleryDomeBlastReborn">
+		<NuggetList>
+			<Sound Value="J03_KremlinArtilleryDome_Fire" />
+			<ParticleSystem
+					  Particle="Soviet_SPC_Dome_Fire_Flash"
+			  OrientToObject="true" />
+			<ParticleSystem
+					  Particle="Soviet_SPC_Dome_Fire_Light2"
+			  OrientToObject="true" />
+			<ParticleSystem
+					  Particle="Soviet_SPC_Dome_Fire_Spike"
+					  OrientToObject="true" />
+			<!--ViewShake
+				Type = "CINE_INSANE" /-->
+			<CameraShakerVolume
+				Radius="150"
+				Duration="1.0s"
+				Amplitude="2d"/>
+		</NuggetList>
+	</FXList>
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++ -->
+
+
+
+</AssetDeclaration>

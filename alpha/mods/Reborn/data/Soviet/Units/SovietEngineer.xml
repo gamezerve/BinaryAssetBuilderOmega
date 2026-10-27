@@ -5,70 +5,70 @@
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
 <!--		<Include type="all"	source="ART:Soviet_Place_Holder.xml" />	  -->
-		<Include type="all"	source="ART:SUEngineer_SKN.w3x" />
-		<Include type="all"	source="ART:SUEngineer_BIDA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_ATKA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_BIFA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_BIFB.w3x" />
-		<Include type="all"	source="ART:SUEngineer_BIFC.w3x" />
-		<Include type="all"	source="ART:SUEngineer_BIFD.w3x" />
-		<Include type="all"	source="ART:SUEngineer_RUNA.w3x" />
-		<Include type="all" source="ART:SUEngineer_DTBA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_SMVA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_SIDA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_SDIA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_DTPA.w3x" />
-		<Include type="all" source="ART:SUEngineer_GTPA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_DTKA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_DTKA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_AIDA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_AIFA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_AIFB.w3x" />
-		<Include type="all"	source="ART:SUEngineer_AIFC.w3x" />
-		<Include type="all"	source="ART:SUEngineer_CHRA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_BATA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_ABTA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_SDVA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_SATA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_SGTA.w3x" />
-		<Include type="all" source="ART:SUEngineer_DTFA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_FLYA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_LNDA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_CDTA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_CDTB.w3x" />
-		<Include type="all"	source="ART:SUEngineer_MCNA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_MCNB.w3x" />
-		<Include type="all"	source="ART:SUEngineer_MCNC.w3x" />
-		<Include type="all"	source="ART:SUEngineer_MCND.w3x" />
-		<Include type="all"	source="ART:SUEngineer_BIFZ.w3x" />
-		<Include type="all"	source="ART:SUEngineer_AIFX.w3x" />
-		<Include type="all"	source="ART:SUEngineer_AIFY.w3x" />
-		<Include type="all"	source="ART:SUEngineer_AIFZ.w3x" />
-		<Include type="all"	source="ART:SUEngineer_BIFW.w3x" />
-		<Include type="all"	source="ART:SUEngineer_BIFX.w3x" />
-		<Include type="all"	source="ART:SUEngineer_BIFY.w3x" />
-		<Include type="all"	source="ART:SUEngineer_RNDA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_AIFW.w3x" />
-		<Include type="all"	source="ART:SUEngineer_CWRZ.w3x" />
-		<Include type="all"	source="ART:SUEngineer_ATRA.w3x" />
-		<Include type="all"	source="ART:SUEngineer_BUILD.w3x" />
-		<Include type="all"	source="ART:SUEngineerBoat_SKN.w3x" />
-		<Include type="all"	source="ART:SUEngineerBoat_AIDA.w3x" />
-		<Include type="all"	source="ART:SUEngineerBoat_MOVA.w3x" />
-		<Include type="all"	source="ART:SUEngineerBoat_ABTA.w3x" />
-		<Include type="all"	source="ART:SUEngineerBoat_BATA.w3x" />
-		<Include type="all"	source="ART:SUEngineerBoat_BIDA.w3x" />
-		<Include type="all"	source="ART:SUEngineerBoat_DIEA.w3x" />
-		<Include type="all"	source="ART:SUEngineerBoat_ATKA.w3x" />
-		<Include type="all"	source="ART:SUEngineerBoat_ATKB.w3x" />
-		<Include type="all"	source="ART:SUEngineerBoat_CWRA.w3x" />
-		<Include type="all"	source="ART:SUEngineerBoat_WFLYA.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_SKN.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_DIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiation.w3x" />
-		<Include type="all"	source="ART:NPRadiation_DIEA.w3x" />
-		<Include type="all"	source="ART:FXEngineer_FP.w3x" />
-		<Include type="all"	source="ART:FXTracerGDISniper.xml" />
+		<!-- <Include type="all"	source="ART:SUEngineer_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_BIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_ATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_BIFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_BIFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_BIFC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_BIFD.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_RUNA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUEngineer_DTBA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_SMVA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_SIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_SDIA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_DTPA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUEngineer_GTPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_DTKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_DTKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_AIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_AIFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_AIFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_AIFC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_CHRA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_BATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_ABTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_SDVA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_SATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_SGTA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUEngineer_DTFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_FLYA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_LNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_CDTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_CDTB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_MCNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_MCNB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_MCNC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_MCND.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_BIFZ.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_AIFX.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_AIFY.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_AIFZ.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_BIFW.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_BIFX.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_BIFY.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_RNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_AIFW.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_CWRZ.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_ATRA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineer_BUILD.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineerBoat_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineerBoat_AIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineerBoat_MOVA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineerBoat_ABTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineerBoat_BATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineerBoat_BIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineerBoat_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineerBoat_ATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineerBoat_ATKB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineerBoat_CWRA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUEngineerBoat_WFLYA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:FXEngineer_FP.w3x" /> -->
+		<!-- <Include type="all"	source="ART:FXTracerGDISniper.xml" /> -->
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseInfantry.xml" />
 	</Includes>

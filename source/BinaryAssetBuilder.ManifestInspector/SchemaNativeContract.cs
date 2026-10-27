@@ -151,6 +151,8 @@ internal sealed class SchemaNativeContract
         if(owner==typeof(FXNugget)&&name=="TypeId"){uint id=FastHash.GetHashCode(e?.SchemaInfo.SchemaType?.QualifiedName.Name??throw new InvalidDataException("FX nugget schema type missing."));_=FXListCompiler.NuggetType(e!);Expect(at,BitConverter.GetBytes(id),path);return;}
         // Reborn: statically typed EP1 weapon slot records carry a zero class word in retail native arrays.
         if(owner==typeof(Ep1WeaponSlotHardpoint)&&name=="TypeId"){Expect(at,new byte[4],path);return;}
+        // Reborn: inline AI vision items inherit BaseAssetType; retail keeps its runtime id-info word zero and does not store the source id.
+        if(owner==typeof(Ep1ObjectVisionRangeItem)&&name=="IdInfo"){var id=e?.GetAttributeNode("id");if(id!=null)consumed.Add(id);Expect(at,new byte[4],path);return;}
         if(owner==typeof(ModuleData))
         {
             if(name=="TypeId"){Expect(at,BitConverter.GetBytes(typeId),path);return;}

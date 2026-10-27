@@ -12,7 +12,7 @@
 		MinimumAttackRange="300.0"
 		WeaponSpeed="550"
 		ScatterRadius="50"
-		FireFX="FX_Kremlin_ArtilleryDomeBlast"
+		FireFX="FX_Kremlin_ArtilleryDomeBlastReborn"
 		RadiusDamageAffects="ENEMIES NEUTRALS"
 		CanFireWhileMoving="false"
 		ClipSize="1"

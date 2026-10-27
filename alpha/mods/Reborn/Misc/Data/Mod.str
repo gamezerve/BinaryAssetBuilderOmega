@@ -250,6 +250,44 @@
 		"Landmark Structure \n> Health = 4000 \n> Shroud Clearing Range = 50 \n> Influence Range = 400 \n> Speed Bonus = 20% \n> Rate of Fire Bonus = 25% \n> Damage Bonus = 50% \n> XP Bonus = 50% \n> Health Bonus = 10%"
 	End
 
+// Soviet Statues
+	
+	Type:SovietArtilleryDome
+		"Defensive Structure \n> Health = 12500 \n> Shroud Clearing Range = 800 \n> Weapon DPS = 215 \n> Weapon Range = 600"
+	End
+
+// Soviet War Bear
+
+	TYPE:SOVIETSCOUTINFANTRY
+		"Anti-Infantry Scout \n> Health = 150 \n> Shroud Clearing Range = 750 \n> Movement Speed (Land/Sea) = 85 \n> Weapon DPS = 66 \n> Weapon Range = Melee"
+	End
+
+	DESC:ROARSPECIALPOWER
+		"Paralyzes nearby enemy infantry with a deafening war cry. Also tenderizes meat."
+	End
+
+// Soviet Conscript
+
+	TYPE:SOVIETANTIINFANTRYINFANTRY
+		"Anti-Infantry / Anti-Garrison \n> Health = 100 \n> Shroud Clearing Range = 500 \n> Movement Speed = 50 \n> ADK-47 Weapon DPS = 21.5 \n> ADK-47 Weapon Range = 150 \n> Molotof Coctail Weapon DPS = 28.5 \n> Molotof Coctail Weapon Range = 200"
+	End
+
+// Soviet Flak Trooper
+
+	TYPE:SOVIETANTIVEHICLEINFANTRY
+		"Anti-Aircraft / Anti-Armor \n> Health = 100 \n> Shroud Clearing Range = 500 \n> Movement Speed = 50 \n> Flak Cannon Weapon DPS = 25 \n> Flak Cannon Weapon Range (Ground/Air) = 175/300 \n> Magnetic Mine Weapon DPS = 100 \n> Magnetic Mine Weapon Range = 20"
+	End
+
+// Soviet Combat Engineer
+
+	TYPE:SOVIETENGINEER
+		"Field Support \n> Health = 50 \n> Shroud Clearing Range = 100 \n> Movement Speed (Land/Sea) = 40 \n> Mushkin SA Revolver Weapon DPS = 16.5 \n> Mushkin SA Revolver Weapon Range = 100"
+	End
+	
+	DESC:CONSTRUCTSOVIETBUNKERSPECIALPOWER
+		"» Build Time = 10 sec \n> Health = 1500 \n> Shroud Clearing Range = 300 \n> Garrison Capacity = 5 \nErects a formidable bunker for a nominal fee, which infantry can garrison for protection."
+	End
+
 // Allied Paradrop
 	
 	TYPE:CampaignPlayerPowerParadropLvl1Reborn

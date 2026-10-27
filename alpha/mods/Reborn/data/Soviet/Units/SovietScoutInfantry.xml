@@ -5,55 +5,55 @@
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
 			
-		<Include type="all"	source="ART:SUScoutInfantry_SKN.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_ABTA.w3x" />
-		<Include type="all" source="ART:SUScoutInfantry_BATA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_BIFA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_BIFB.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_BIFC.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_CDTA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_CDTB.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_AIDA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_AIFA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_AIFB.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_AIFC.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_AIFD.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_ATKA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_ATKB.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_BIDA.w3x" />
-		<Include type="all" source="ART:SUScoutInfantry_DIEA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_DIEB.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_RUNA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_MCNA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_MCNB.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_MCNC.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_MCND.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_SWMA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_SWMB.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_SWMC.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_RORA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_WAIDA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_WATKA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_WDIA.w3x" />
-		<Include type="all" source="ART:SUScoutInfantry_WRORA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_FLYA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_LNDA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_GTPA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_DTPA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_DTFA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_CWRA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_RUNDA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_WLNDA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_Elec_SKN.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_Elec_DIEA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_Elec_WDIEA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_WCWRA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_BIFA.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_BIFB.w3x" />
-		<Include type="all"	source="ART:SUScoutInfantry_BIFC.w3x" />
-		<Include type="all"	source="ART:NPRadiationBear.w3x" />
-		<Include type="all"	source="ART:NPRadiationBear_DIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiationBear_WDIEA.w3x" />
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_ABTA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUScoutInfantry_BATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_BIFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_BIFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_BIFC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_CDTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_CDTB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_AIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_AIFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_AIFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_AIFC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_AIFD.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_ATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_ATKB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_BIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUScoutInfantry_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_DIEB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_RUNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_MCNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_MCNB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_MCNC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_MCND.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_SWMA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_SWMB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_SWMC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_RORA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_WAIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_WATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_WDIA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUScoutInfantry_WRORA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_FLYA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_LNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_GTPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_DTPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_DTFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_CWRA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_RUNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_WLNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_Elec_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_Elec_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_Elec_WDIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_WCWRA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_BIFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_BIFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutInfantry_BIFC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiationBear.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiationBear_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiationBear_WDIEA.w3x" /> -->
 			
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseInfantry.xml" />

@@ -17,6 +17,15 @@ public enum Ep1AIStateMachineType
 // Reborn: these four literal positions encode independent flag bits, not their ordinal values as a scalar.
 public enum Ep1DynamicTargetFlag { NEVER, ATTACK_MOVE, AGGRESSIVE_STANCE, ALWAYS }
 
+// Reborn: retail SovietAntiVehicleInfantry vision items are 128 bytes: zero runtime AssetIdInfo* word (BaseAssetType id is not stored), Range at +4, ObjectFilter inline at +8.
+[StructLayout(LayoutKind.Sequential)]
+public struct Ep1ObjectVisionRangeItem
+{
+    public uint IdInfo;
+    public Percentage Range;
+    public ObjectFilter Filter;
+}
+
 // Reborn: EP1 chooser adds a dynamic-target mask, vision-list storage and two booleans before its strong reference at +36.
 [StructLayout(LayoutKind.Sequential)]
 public struct Ep1UnitAITargetChooserData
@@ -26,8 +35,7 @@ public struct Ep1UnitAITargetChooserData
     public Time StartupDelay;
     public float SympathyRange;
     public uint CanPickDynamicTargetType;
-    public uint ObjectVisionRangeCount;
-    public unsafe void* ObjectVisionRangeItems;
+    public List<Ep1ObjectVisionRangeItem> ObjectVisionRange;
     public SageBool CheckVisionRange;
     public SageBool CanPickDynamicTargets;
     public SageBool RotateToTargetWhenAiming;
