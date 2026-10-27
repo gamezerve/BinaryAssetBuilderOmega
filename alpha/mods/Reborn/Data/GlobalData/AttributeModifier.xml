@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+	
+	<Tags />
+	<Includes>
+		<Include
+			type="all"
+			source="DATA:GlobalData/GlobalDefines.xml" />
+	</Includes>
+	
+	<AttributeModifier
+		id="AttributeModifer_GenericStatueAura"
+		Category="NONE"
+		Duration="2s">
+		<Modifier Type="SPEED" Value="120%"/>
+		<Modifier Type="RATE_OF_FIRE" Value="125%"/>
+		<Modifier Type="DAMAGE_MULT" Value="50%"/>
+		<Modifier Type="EXPERIENCE" Value="150%"/>
+		<Modifier Type="HEALTH_MULT" Value="110%"/>
+	</AttributeModifier>
+
+</AssetDeclaration>

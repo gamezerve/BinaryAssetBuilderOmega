@@ -51,7 +51,7 @@
 		<!-- <Include type="all" source="DATA:GlobalData/Environment.xml" /> -->
 		<Include type="all" source="DATA:GlobalData/LogicCommand.xml"/>
 		<Include type="all" source="DATA:GlobalData/LogicCommandSet.xml"/>
-		<!-- <Include type="all" source="DATA:GlobalData/AttributeModifier.xml" /> -->
+		<Include type="all" source="DATA:GlobalData/AttributeModifier.xml" />
 		<!-- <Include type="all" source="DATA:GlobalData/Locomotor.xml" /> -->
 		<!-- <Include type="all" source="DATA:GlobalData/SpecialPowerTemplates.xml" /> -->
 		<!-- <Include type="all" source="DATA:GlobalData/InvisibilityTemplates.xml" /> -->

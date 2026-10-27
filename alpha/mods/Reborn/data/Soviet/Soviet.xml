@@ -18,12 +18,12 @@
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietSupplyPort.xml" />	
 		<!-- <Include type="all" source="DATA:Soviet/Units/SovietHeavyKirov.xml" />	 -->
 		<!-- <Include type="all" source="DATA:Soviet/Units/SovietHeavyKirov_Dying.xml" />	 -->
-		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietCavalryStatue01.xml" /> -->
-		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietSwordStatue01.xml" /> -->
-		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietPilotStatue01.xml" /> -->
-		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietMotorCycleStatue01.xml" /> -->
-		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietFought2DeathStatue.xml" /> -->
-		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietBigMamaStatue.xml" /> -->
+		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietCavalryStatue01.xml" />
+		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietSwordStatue01.xml" />
+		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietPilotStatue01.xml" />
+		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietMotorCycleStatue01.xml" />
+		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietFought2DeathStatue.xml" />
+		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietBigMamaStatue.xml" />
 		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietArtilleryDome.xml" />	 -->
 		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/ArtilleryDomeMissileProjectile.xml" />		 -->
 

@@ -4,18 +4,18 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:SBBunker_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:SBBunker_BLD.w3x" />
-		<Include
-			type="all"
-			source="ART:SSBaseDefenseAdvanced_Scaffold.w3x" />				
-		<Include
-			type="all"
-			source="ART:SBBarracks_FX.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBunker_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBunker_BLD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SSBaseDefenseAdvanced_Scaffold.w3x" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBBarracks_FX.w3x" /> -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

@@ -4,20 +4,20 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:SBOutpost.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBOutpost.w3x" /> -->
 
-		<Include
-			type="all"
-			source="ART:SUSurveyor_Unpack.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUSurveyor_Unpack.w3x" /> -->
 		
-		<Include
-			type="all"
-			source="ART:SBOutpost_Platform.w3x" />
-		<Include
-			type="all"
-			source="ART:SBOutpost_Platform_BLD.w3x" />			
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBOutpost_Platform.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBOutpost_Platform_BLD.w3x" />			 -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

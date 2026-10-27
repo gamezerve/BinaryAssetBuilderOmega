@@ -4,24 +4,24 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01.xml" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01_NRM.xml" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01_SPM.xml" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01_SPM.xml" /> -->
 
-		<Include type="all"	source="ART:ST_PilotStatue_01.W3X" />
+		<!-- <Include type="all"	source="ART:ST_PilotStatue_01.W3X" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
 		<Include type="instance" source="DATA:Civilian/StPetersburg_ST/Props/ST_PilotStatue_01_Collapse.xml" />
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01.NEWSKIN.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01.OBBOX01.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01.OBBOX01.w3x" /> -->
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01_COL.NEWSKIN.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01_COL.OBBOX01.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01_COL.OBBOX01.w3x" /> -->
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01_COL_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01_COL_HRC.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01_HRC.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/ST_PilotStatue_01_HRC.w3x" /> -->
 		
 
 	

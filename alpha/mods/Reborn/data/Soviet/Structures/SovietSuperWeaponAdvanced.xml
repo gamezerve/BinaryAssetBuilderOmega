@@ -5,18 +5,18 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:SBSuperweaponAdvanced_SKN.w3x" />
-		<Include type="all"	source="ART:SBSuperweaponAdvanced_BLD.w3x" />				
-		<Include type="all"	source="ART:SBSuperweaponAdvanced_OPN.w3x" />			
-		<Include type="all"	source="ART:SBSuperweaponAdvanced_IDLA.w3x" />
-		<Include type="all"	source="ART:SBSuperweaponAdvanced_IDLB.w3x" />			
-		<Include type="all"	source="ART:SBSuperweaponAdvanced_CLS.w3x" />			
-		<Include type="all"	source="ART:SBSuperweaponAdvanced_Missle_SKN.w3x" />
-		<Include type="all"	source="ART:SBSuperweaponAdvanced_Missle_BLD.w3x" />						
-		<Include type="all"	source="ART:SBSuperweaponAdvanced_Missle_FIRE.w3x" />			
-		<Include type="all"	source="ART:SBSuperweaponAdvanced_Platform.w3x" />
-		<Include type="all"	source="ART:SBSuperweaponAdvanced_Scaffold.w3x" />
-		<Include type="all"	source="ART:SBSuperweaponAdvanced_FX.w3x" />	
+		<!-- <Include type="all"	source="ART:SBSuperweaponAdvanced_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SBSuperweaponAdvanced_BLD.w3x" />				 -->
+		<!-- <Include type="all"	source="ART:SBSuperweaponAdvanced_OPN.w3x" />			 -->
+		<!-- <Include type="all"	source="ART:SBSuperweaponAdvanced_IDLA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SBSuperweaponAdvanced_IDLB.w3x" />			 -->
+		<!-- <Include type="all"	source="ART:SBSuperweaponAdvanced_CLS.w3x" />			 -->
+		<!-- <Include type="all"	source="ART:SBSuperweaponAdvanced_Missle_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SBSuperweaponAdvanced_Missle_BLD.w3x" />						 -->
+		<!-- <Include type="all"	source="ART:SBSuperweaponAdvanced_Missle_FIRE.w3x" />			 -->
+		<!-- <Include type="all"	source="ART:SBSuperweaponAdvanced_Platform.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SBSuperweaponAdvanced_Scaffold.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SBSuperweaponAdvanced_FX.w3x" />	 -->
 
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseSovietStructure.xml" />

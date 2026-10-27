@@ -3,42 +3,42 @@
 	<Tags></Tags>
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
-		<Include
-			type="all"
-			source="ART:Soviet_Place_Holder.xml" />
-		<Include
-			type="all"
-			source="ART:SBSuperweapon_SKN.w3x" />		
-			<Include
-			type="all"
-			source="ART:SBSuperweapon_IDLA.w3x" />		
-		<Include
-			type="all"
-			source="ART:SBSuperweapon_BLD.w3x" />				
-		<Include
-			type="all"
-			source="ART:SBSuperweapon_FX.w3x" />
-		<Include
-			type="all"
-			source="ART:SBSuperweapon_FXFire_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:SBSuperweapon_FXFire_IDLA.w3x" />
-		<Include
-			type="all"
-			source="ART:SBSuperweapon_FXFire_RDYA.w3x" />
-		<Include
-			type="all"
-			source="ART:SBSuperweapon_FXFire_FIRA.w3x" />
-		<Include
-			type="all"
-			source="ART:SBSuperweaponAdvanced_Platform.w3x" />
-		<Include
-			type="all"
-			source="ART:SBSuperweaponAdvanced_Platform_BLD.w3x" />
-		<Include
-			type="all"
-			source="ART:SBSuperweapon_Scaffold.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Soviet_Place_Holder.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBSuperweapon_SKN.w3x" />		 -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBSuperweapon_IDLA.w3x" />		 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBSuperweapon_BLD.w3x" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBSuperweapon_FX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBSuperweapon_FXFire_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBSuperweapon_FXFire_IDLA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBSuperweapon_FXFire_RDYA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBSuperweapon_FXFire_FIRA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBSuperweaponAdvanced_Platform.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBSuperweaponAdvanced_Platform_BLD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SBSuperweapon_Scaffold.w3x" /> -->
 										
 		<!-- Base Object -->
 		<Include

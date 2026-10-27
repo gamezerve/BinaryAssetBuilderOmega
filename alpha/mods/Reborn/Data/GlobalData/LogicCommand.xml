@@ -1,5 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructSovietBigMamaStatue">
+		<Object>SovietBigMamaStatue</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructSovietFought2DeathStatue">
+		<Object>SovietFought2DeathStatue</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructSovietMotorCycleStatue01">
+		<Object>SovietMotorCycleStatue01</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructSovietPilotStatue01">
+		<Object>SovietPilotStatue01</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructSovietSwordStatue01">
+		<Object>SovietSwordStatue01</Object>
+	</LogicCommand>		
+		
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructSovietCavalryStatue01">
+		<Object>SovietCavalryStatue01</Object>
+	</LogicCommand>	
 
 	<LogicCommand
     Options="NEED_TARGET_POS"

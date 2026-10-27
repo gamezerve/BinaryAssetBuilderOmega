@@ -212,6 +212,44 @@
 		"Landmark Statue \n> Health = 3000 \n> Shroud Clearing Range = 350 \n> Tesla Weapon DPS = 295 \n> Tesla Weapon Range = 350 \n> Bullfrog Capacity = 10 \n> Bullfrog Range = 1000"
 	End
 
+// Soviet Iron Curtain
+
+	TYPE:SOVIETSUPERWEAPON
+		"Superweapon \n> Superweapon Timer = 3 min \n> Health = 5000 \n> Shroud Clearing Range = 100"
+	End
+
+// Soviet Vakuum Imploder
+
+	TYPE:SOVIETSUPERWEAPONADVANCED
+		"Ultimate Weapon \n> Superweapon Timer = 6 min \n> Health = 5000 \n> Shroud Clearing Range = 100"
+	End
+
+// Soviet Bunker
+
+	TYPE:SOVIETBUNKER
+		"Defensive Structure \n> Health = 1500 \n> Shroud Clearing Range = 300 \n> Garrison Capacity = 5"
+	End
+
+// Soviet Outpost
+
+	TYPE:SOVIETOUTPOST
+		"Expansion Structure \n> Health = 500 \n> Shroud Clearing Range = 750"
+	End
+
+// Soviet Statues
+
+	TYPE:SovietStatue01
+		"Landmark Structure \n> Health = 3000 \n> Shroud Clearing Range = 50 \n> Influence Range = 400 \n> Speed Bonus = 20% \n> Rate of Fire Bonus = 25% \n> Damage Bonus = 50% \n> XP Bonus = 50% \n> Health Bonus = 10%"
+	End
+
+	TYPE:SovietFought2DeathStatue
+		"Landmark Structure \n> Health = 4000 \n> Shroud Clearing Range = 50 \n> Influence Range = 400 \n> Speed Bonus = 20% \n> Rate of Fire Bonus = 25% \n> Damage Bonus = 50% \n> XP Bonus = 50% \n> Health Bonus = 10%"
+	End
+
+	TYPE:SovietBigMamaStatue
+		"Landmark Structure \n> Health = 4000 \n> Shroud Clearing Range = 50 \n> Influence Range = 400 \n> Speed Bonus = 20% \n> Rate of Fire Bonus = 25% \n> Damage Bonus = 50% \n> XP Bonus = 50% \n> Health Bonus = 10%"
+	End
+
 // Allied Paradrop
 	
 	TYPE:CampaignPlayerPowerParadropLvl1Reborn
