@@ -20,6 +20,7 @@ using SageBinaryData;
 namespace BinaryAssetBuilder.ManifestInspector;
 
 // Reborn: compile explicitly declared support assets and the complete object into one dependency-sorted EP1 stream, with local targets overriding stock lookup.
+// Reborn: UnitTypeIcon participates in normal source routing, inheritance, identity and diagnostic context.
 internal static class ConscriptMultiAssetBuild
 {
     private sealed record Built(XmlDocument Source,InstanceDeclaration Instance,AssetBuffer Buffer,bool Tokenized);
@@ -46,7 +47,7 @@ internal static class ConscriptMultiAssetBuild
             // Reborn: retail AudioFile metadata stays SDK-local; authored events reference the loaded audio stream without repacking its samples.
             string? audioManifest=null;if(sources.Any(s=>s.DocumentElement!.LocalName=="AudioEvent")){audioManifest=AuthoredAmbientCompiler.CatalogPath();var audio=ManifestReader.Read(SdkEnvironmentPreflight.Read(audioManifest,64*1048576));TypeRegistryAudit.ValidateTarget(audio.Header.Version,audio.Header.AllTypesHash);if(!audio.Header.IsLinked||audio.Validate().Count!=0)throw new InvalidDataException("Valid linked EP1 audio catalog required.");var known=stock.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();stock=stock.Concat(audio.Assets.Where(a=>a.TypeName=="AudioFile"&&!known.Contains(new(a.TypeId,a.InstanceId)))).ToArray();}
             var fingerprints=new Dictionary<uint,(uint Hash,bool Tokenized)>();var locals=new Dictionary<AssetId,XmlDocument>();
-            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "ExperienceLevelTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
+            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
                 uint typeId=FastHash.GetHashCode(type);var examples=stock.Where(a=>a.TypeId==typeId).Select(a=>(a.TypeHash,Tokenized:a.Tokenized==1)).Distinct().ToArray();if(examples.Length!=1)throw new InvalidDataException("EP1 asset fingerprint is absent/ambiguous: "+type);fingerprints[typeId]=examples[0];if(!locals.TryAdd(new(typeId,InstanceHandle.GetInstanceId(id)),xml))throw SdkXmlDiagnostics.At(new InvalidDataException("DUPLICATEASSET ' "+type+":"+id+" ' Duplicate local asset/hash identity."),xml.DocumentElement);
             }
             // Reborn: source-only catalog entries resolve local names before native data exists; payloads are freshly compiled below, never copied from stock.
@@ -83,6 +84,8 @@ internal static class ConscriptMultiAssetBuild
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="SpecialPowerTemplate"))SpecialPowerTemplateCompiler.Qualify(manifest,schemas,stock);
             // Reborn: developer mode compares original modifier roots; authored native ownership remains checked in fast builds too.
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="AttributeModifier"))AttributeModifierCompiler.Qualify(manifest,schemas,stock);
+            // Reborn: icon developer qualification uses retail native records; fast builds retain current-source native/import proof.
+            if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="UnitTypeIcon"))UnitTypeIconCompiler.Qualify(manifest,schemas,stock);
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="ExperienceLevelTemplate"))ExperienceLevelCompiler.Qualify(manifest,schemas,stock);
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="UpgradeTemplate"))UpgradeTemplateCompiler.Qualify(global,schemas,stock);
             // Reborn: ObjectCreationList families/fields are enabled only after original EP1 OCLs exhibiting them pass the same proof.
@@ -138,6 +141,9 @@ internal static class ConscriptMultiAssetBuild
                 }else if(type=="AttributeModifier"){
                     // Reborn: modifiers use the existing native EP1 writer, with source-sized lists/masks and real local/stock FX and shader imports.
                     instance=Normalize(xml);var native=AttributeModifierCompiler.Compile(instance.XmlNode);SchemaNativeContract.Verify(AttributeModifierCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(AttributeModifier),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
+                }else if(type=="UnitTypeIcon"){
+                    // Reborn: image references remain real imports, and optional offsets own their relocation-backed vector bytes.
+                    instance=Normalize(xml);var native=UnitTypeIconCompiler.Compile(instance.XmlNode);SchemaNativeContract.Verify(UnitTypeIconCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(UnitTypeIcon),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
                 }else if(type=="ExperienceLevelTemplate"){
                     // Reborn: experience targets/upgrades are weak handles; prerequisite, FX, modifiers and OCL retain real Core strong imports.
                     instance=Normalize(xml);var native=ExperienceLevelCompiler.Compile(instance.XmlNode);SchemaNativeContract.Verify(ExperienceLevelCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(Ep1ExperienceLevelTemplate),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);

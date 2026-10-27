@@ -239,6 +239,8 @@ if($SchedulerControl){
     # Reborn: optional weapon audio/FX reference shapes and normal linked package readback.
     Add-BatchCase 'weapon-optional-references' 'WeaponOptionalReferences' @('weapon-optional-references-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'weapon-optional-references'))
     Add-BatchCase 'attribute-modifier-compiler' 'AttributeModifierCompiler' @('attribute-modifier-compiler-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'attribute-modifier-compiler'))
+    # Reborn: icon authoring covers local images, inherited source and final stream/package readback.
+    Add-BatchCase 'unit-type-icon' 'UnitTypeIconNativeAndStream' @('unit-type-icon-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'unit-type-icon'))
     Add-BatchCase 'experience-level' 'ExperienceNativeAndStream' @('experience-level-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'experience-level'))
     # Reborn: special-power flags, tech/EVA selectors and local authored commands use stock-qualified EP1 data.
     # Reborn: standalone player power buttons exercise all four data alternatives privately.

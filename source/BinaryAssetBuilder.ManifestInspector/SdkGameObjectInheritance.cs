@@ -11,6 +11,7 @@ using BinaryAssetBuilder.Core.SageXml;
 namespace BinaryAssetBuilder.ManifestInspector;
 
 // Reborn: merge source-level GameObject bases with actual Core semantics, deferring complete Conscript/native admission until the final emitted object.
+// Reborn: UnitTypeIcon participates in normal source routing, inheritance, identity and diagnostic context.
 internal static class SdkGameObjectInheritance
 {
     internal const string Profile="gameobject-core-source-inheritance-v1";
@@ -42,7 +43,7 @@ internal static class SdkGameObjectInheritance
                 // Reborn: FXList owners retain ordinary include/definition/Core inheritance semantics.
                 // Reborn: explicit audio companions survive the same GameObject overlay closure instead of being rejected as unknown roots.
                 // Reborn: the original BaseSoundEffect instance file also contains overridable source-only bases; this does not enable their native emission.
-                if(asset.LocalName is not ("AudioEvent" or "AudioEventOverridable" or "GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "ExperienceLevelTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")||!ConscriptSourceInput.Identity(asset.LocalName,asset.GetAttribute("id"))||!originals.TryAdd(asset.LocalName+":"+asset.GetAttribute("id"),asset))throw new InvalidDataException("GameObject source contains unsupported or duplicate asset identities.");
+                if(asset.LocalName is not ("AudioEvent" or "AudioEventOverridable" or "GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")||!ConscriptSourceInput.Identity(asset.LocalName,asset.GetAttribute("id"))||!originals.TryAdd(asset.LocalName+":"+asset.GetAttribute("id"),asset))throw new InvalidDataException("GameObject source contains unsupported or duplicate asset identities.");
                 Inspect(asset,0);
                 // Reborn: normalize official complementary upgrade dependencies only after removing structured formatting whitespace for Core's joiner.
                 if(asset.LocalName=="UpgradeTemplate"&&SdkUpgradeNormalization.Normalize(schemas,asset)!=null){

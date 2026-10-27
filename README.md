@@ -8,6 +8,17 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: icon assets use the normal source/inheritance and native stream routes, including mod-produced packed images. -->
+`UnitTypeIcon` is build-enabled as an emitted asset. New IDs, stock-ID overrides,
+`Image` references, optional signed/fractional `Offset` values, source-only
+instance bases, inheritance and definitions use the ordinary build pipeline.
+Images may come from retail catalogs or mod-produced PackedTextureImage assets;
+local dependencies are linked in dependency order. Icons retain the retail
+untokenized 12-byte root and allocate eight offset bytes only when authored.
+Original Riflemen, Engineer and Bear icons independently qualify the writer.
+Developer and fast regressions both pass native checks and a linked three-asset
+icon/image package with source inheritance, definitions and stream readback.
+
 <!-- Reborn: capture abilities use the shared EA include and their original inherited EP1 layout. -->
 `CaptureSpecialAbilityUpdate` is build-enabled through complete source/native and
 metadata validation. Its official schema adds no own fields to the 252-byte

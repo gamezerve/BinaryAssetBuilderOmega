@@ -319,6 +319,9 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();WeaponOptionalReferencesSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==4 && args[0]=="attribute-modifier-compiler-self-test")
             {CompilerSmokeTest.InitializeHashProvider();AttributeModifierCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
+            // Reborn: icons use ordinary source inheritance, image references and final stream/package output.
+            if(args.Length==4 && args[0]=="unit-type-icon-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();UnitTypeIconCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==4 && args[0]=="experience-level-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ExperienceLevelCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==2 && args[0]=="fragment-definitions-self-test")
