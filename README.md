@@ -202,6 +202,14 @@ and metadata. Defaults, empty/populated rosters, authored inherited lists, full
 GameObjects and corrupt output are covered by
 `garrison-contain-self-test <static.manifest> <global.manifest>`.
 
+<!-- Reborn: experience tables with a real GameObject target are runtime-selected roots, including the terminal rank. -->
+`ExperienceLevelTemplate` avoids `UNUSEDASSET` when its schema-typed Target
+resolves to a GameObject in the final mod or stock catalogs. Runtime target/rank
+selection does not require an incoming Prerequisite reference; terminal ranks
+and standalone targeted levels are valid. This is not a blanket type exemption:
+untargeted templates or unresolved/non-GameObject targets remain eligible for
+unused warnings. Missing target/prerequisite dependency checks are unchanged.
+
 <!-- Reborn: incoming static references are not a reliable unused test for runtime-selected ability-button registries. -->
 `UNUSEDASSET` excludes `UnitAbilityButtonTemplate` and
 `JoypadCommandBarButtonTemplate`. Unit-ability templates select a LogicCommand;
