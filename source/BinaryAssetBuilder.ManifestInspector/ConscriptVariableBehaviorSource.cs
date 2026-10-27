@@ -131,6 +131,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: toggle states and AI/weapon/module/geometry children are source-owned rather than constrained to the Conscript sample.
             // Reborn: assembly times, conditions and structure lists follow the official schema rather than an infantry template.
             // Reborn: tracker filters, scalar values and strong emotion lists follow the official EP1 schema.
+            // Reborn: capture abilities accept official inherited fields rather than requiring a Conscript behavior sample.
+            if(owner.NativeType==typeof(SageBinaryData.CaptureSpecialAbilityUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1EmotionTrackerUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.AssembleStructureSpecialAbilityUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.ToggleStatusSpecialAbilityUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

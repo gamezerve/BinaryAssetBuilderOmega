@@ -227,6 +227,9 @@ internal static class Program
             // Reborn: verify complete source-driven toggle modules through the GameObject production route.
             // Reborn: exercise the full Engineer assembly ability through its production GameObject route.
             // Reborn: cover original and authored EP1 emotion trackers through full GameObject composition.
+            // Reborn: exercise shared-include capture abilities and authored inherited fields through full GameObject composition.
+            if(args.Length==3 && args[0]=="capture-ability-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();CaptureAbilitySmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="emotion-tracker-self-test")
             {CompilerSmokeTest.InitializeHashProvider();EmotionTrackerSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="assemble-structure-self-test")

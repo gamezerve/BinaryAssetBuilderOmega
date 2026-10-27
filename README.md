@@ -8,6 +8,17 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: capture abilities use the shared EA include and their original inherited EP1 layout. -->
+`CaptureSpecialAbilityUpdate` is build-enabled through complete source/native and
+metadata validation. Its official schema adds no own fields to the 252-byte
+SpecialAbility record; authored power references, ranges, timings, options and
+contact-point text use the inherited fields. Optional CustomAnimAndDuration
+reuses independently qualified retail animation metadata. The shared
+`Includes/CaptureBehavior.xml` declaration is qualified against all three
+faction Engineers; custom IDs and schema defaults are permitted.
+Developer and fast regressions each pass 10 checks, including full GameObject
+composition, retargeted power references and populated optional animation data.
+
 <!-- Reborn: emotion tracking uses the Uprising record and strong EmotionTemplate imports, preserving the separate KW implementation. -->
 `EmotionTrackerUpdate` is build-enabled with its 56-byte EP1 record. All six
 attributes, four optional ObjectFilters and the source-sized `AddEmotion` list

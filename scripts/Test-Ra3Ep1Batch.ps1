@@ -136,6 +136,8 @@ if($SchedulerControl){
     # Reborn: source-driven toggle states include full native/metadata GameObject composition.
     # Reborn: assembly abilities cover original/default/variable structure lists and complete object composition.
     # Reborn: tracker regressions cover EP1 emotion imports, filters, defaults and complete object composition.
+    # Reborn: capture abilities use the original include and complete inherited source/native contracts.
+    Add-BatchCase 'capture-ability' 'CaptureAbility' @('capture-ability-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'emotion-tracker' 'EmotionTracker' @('emotion-tracker-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'assemble-structure' 'AssembleStructure' @('assemble-structure-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'toggle-status-composition' 'ToggleStatusComposition' @('toggle-status-composition-self-test',$StaticManifest,$GlobalManifest)
