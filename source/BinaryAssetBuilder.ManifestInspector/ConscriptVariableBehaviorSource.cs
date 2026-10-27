@@ -129,6 +129,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: all four aiming values are source-owned under independent EP1 native/metadata proof.
             // Reborn: collision weapons support the complete official schema and source-driven optional children.
             // Reborn: toggle states and AI/weapon/module/geometry children are source-owned rather than constrained to the Conscript sample.
+            // Reborn: assembly times, conditions and structure lists follow the official schema rather than an infantry template.
+            if(owner.NativeType==typeof(SageBinaryData.AssembleStructureSpecialAbilityUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.ToggleStatusSpecialAbilityUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1FireWeaponCollideModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.AimWeaponBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

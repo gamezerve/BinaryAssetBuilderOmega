@@ -225,6 +225,9 @@ internal static class Program
             // Reborn: test original and authored aiming values through real behavior dispatch and object composition.
             // Reborn: expose complete EP1 collision regression without user mod or installation writes.
             // Reborn: verify complete source-driven toggle modules through the GameObject production route.
+            // Reborn: exercise the full Engineer assembly ability through its production GameObject route.
+            if(args.Length==3 && args[0]=="assemble-structure-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();AssembleStructureSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="toggle-status-composition-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ToggleStatusCompositionSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="fire-weapon-collide-self-test")

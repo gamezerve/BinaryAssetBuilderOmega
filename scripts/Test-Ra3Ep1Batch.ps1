@@ -134,6 +134,8 @@ if($SchedulerControl){
     # Reborn: aiming thresholds, distances, official defaults and complete object output.
     # Reborn: collision flags, optional records and stock ABI are tested in isolation.
     # Reborn: source-driven toggle states include full native/metadata GameObject composition.
+    # Reborn: assembly abilities cover original/default/variable structure lists and complete object composition.
+    Add-BatchCase 'assemble-structure' 'AssembleStructure' @('assemble-structure-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'toggle-status-composition' 'ToggleStatusComposition' @('toggle-status-composition-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'fire-weapon-collide' 'FireWeaponCollide' @('fire-weapon-collide-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'aim-weapon' 'AimWeapon' @('aim-weapon-self-test',$StaticManifest,$GlobalManifest)

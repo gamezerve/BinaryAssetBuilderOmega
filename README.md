@@ -8,6 +8,17 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 27, 2026
 
+<!-- Reborn: Engineer assembly is a complete source-driven EP1 ability rather than an unsupported family. -->
+`AssembleStructureSpecialAbilityUpdate` is build-enabled with its original
+272-byte EP1 record and inherited SpecialAbility fields. `NewObjectAssemblyTime`,
+`BusyDuringAssembly`, `ModelConditionsOnAssembly` and the ordered, source-sized
+`StructureTemplate` list are editable. Template entries are weak GameObject IDs,
+not copied stock assets or strong imports. The official schema permits an empty
+list; omitted own attributes default to `0s`, `false` and `INVALID` respectively.
+The original Soviet Engineer record qualifies the native fields and metadata.
+Focused developer and fast regressions each pass 12 checks, including complete
+GameObject composition, empty/eight-entry lists and invalid-source rejection.
+
 <!-- Reborn: toggle ability graphs are source-owned instead of compared to a frozen Conscript sample. -->
 `ToggleStatusSpecialAbilityUpdate` uses schema-driven GameObject admission and
 complete native/metadata validation instead of requiring the Conscript toggle
