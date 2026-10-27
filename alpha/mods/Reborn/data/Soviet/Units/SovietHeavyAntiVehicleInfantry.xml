@@ -4,50 +4,50 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_SKN.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_ABTA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_ACCL.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_AIDA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_AIFA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_AIFC.w3x" />		
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_AIFD.w3x" />	
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_AIFE.w3x" />	
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_ATKB1.w3x" />					
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_ATKB2.w3x" />					
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_ATKB3.w3x" />					
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_BATA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_BIDA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_BIFA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_BIFB.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_BIFC.w3x" />
-		<Include type="all" source="ART:SUHeavyAntiVehicleInfantry_CDTA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_CDTB.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_DECL.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_WLKA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_MCNA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_MCNB.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_MCNC.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_MCND.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_FLYA.w3x" />
-		<Include type="all" source="ART:SUHeavyAntiVehicleInfantry_LNDA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_GTPA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_DIEE.w3x" />
-		<Include type="all" source="ART:SUHeavyAntiVehicleInfantry_DIEF.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_SLTA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_SLTB.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_SLTC.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_TGLA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_TAIDA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_TABTA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_TBIDA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_TBATA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_TWLKA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_SWMA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_SWMB.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_SWMC.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_WADA.w3x" />
-		<Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_CWRA.w3x" />
-		<Include type="all"	source="ART:FXInvisBone.w3x" />
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_ABTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_ACCL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_AIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_AIFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_AIFC.w3x" />		 -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_AIFD.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_AIFE.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_ATKB1.w3x" />					 -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_ATKB2.w3x" />					 -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_ATKB3.w3x" />					 -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_BATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_BIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_BIFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_BIFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_BIFC.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUHeavyAntiVehicleInfantry_CDTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_CDTB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_DECL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_WLKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_MCNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_MCNB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_MCNC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_MCND.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_FLYA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUHeavyAntiVehicleInfantry_LNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_GTPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_DIEE.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUHeavyAntiVehicleInfantry_DIEF.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_SLTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_SLTB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_SLTC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_TGLA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_TAIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_TABTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_TBIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_TBATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_TWLKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_SWMA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_SWMB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_SWMC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_WADA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUHeavyAntiVehicleInfantry_CWRA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:FXInvisBone.w3x" /> -->
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseInfantry.xml" />
 	</Includes>

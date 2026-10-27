@@ -294,6 +294,18 @@
 		"Know-It-All / Field Medic \n> Health = 1000 \n> Shroud Clearing Range = 100 \n> Movement Speed = 55 \n> Heal Range = 100 \n> Heal Percentage = 5%/sec "
 	End
 
+// Soviet Tesla Trooper
+
+	TYPE:SOVIETHEAVYANTIVEHICLEINFANTRY
+		"Advanced Anti-Surface \n> Health = 200 \n> Shroud Clearing Range = 500 \n> Movement Speed = 50 \n> Tesla Coilgun Weapon DPS = 47.5 \n> Tesla Coilgun Weapon Range = 125"
+	End
+	
+// Soviet Desolator
+	
+	Type:SovietDesolatorInfantry
+		"Advanced Anti-Infantry \n> Health = 900 \n> Shroud Clearing Range = 500 \n> Movement Speed = 50 \n> Spray Weapon DPS = 29 \n> Spray Weapon Range = 225 \n> Blat Weapon DPS = 100 \n> Blat Weapon Range = 250"
+	End
+
 // Allied Paradrop
 	
 	TYPE:CampaignPlayerPowerParadropLvl1Reborn

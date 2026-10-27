@@ -28,7 +28,7 @@
 		<!-- <Include type="all" source="DATA:EP1/Soviet/Units/SovietHeavyWalkerVehicle.xml"/> -->
 		<Include type="all" source="DATA:EP1/Soviet/Units/SovietHeavyWalkerDeployedTurret.xml"/>
 		<!-- <Include type="all" source="DATA:EP1/Soviet/Units/SovietGrinderVehicle.xml"/> -->
-		<!-- <Include type="all" source="DATA:EP1/Soviet/Units/SovietDesolatorInfantry.xml"/> -->
+		<Include type="all" source="DATA:EP1/Soviet/Units/SovietDesolatorInfantry.xml"/>
 		<!-- <Include type="all" source="DATA:EP1/Soviet/Units/SovietMortarcycle.xml"/> -->
 
 		<!--Props-->

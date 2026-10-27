@@ -11,57 +11,57 @@
 		<Include type="instance" source="DATA:BaseObjects/BaseInfantry.xml" />
 		
 		<!--Art Includes-->
-		<Include type="all" source="ART:SUDesolator_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:FXCorrupterStream.xml" />
-		<Include type="all" source="ART:SUDesolator_ABTA.w3x" />
-		<Include type="all" source="ART:SUDesolator_AIDA.w3x" />
-		<Include type="all" source="ART:SUDesolator_ATKA.w3x" />
-		<Include type="all" source="ART:SUDesolator_ATKB.w3x" />
-		<Include type="all" source="ART:SUDesolator_BATA.w3x" />
-		<Include type="all" source="ART:SUDesolator_BIDA.w3x" />
-		<Include type="all" source="ART:SUDesolator_BIFA.w3x" />
-		<Include type="all" source="ART:SUDesolator_BIFB.w3x" />
-		<Include type="all" source="ART:SUDesolator_BIFC.w3x" />
-		<Include type="all" source="ART:SUDesolator_CDTA.w3x" />
-		<Include type="all" source="ART:SUDesolator_CDTB.w3x" />
-		<Include type="all" source="ART:SUDesolator_CWRA.w3x" />
-		<Include type="all" source="ART:SUDesolator_DTBA.w3x" />
-		<Include type="all" source="ART:SUDesolator_FLYA.w3x" />
-		<Include type="all" source="ART:SUDesolator_LNDA.w3x" />
-		<Include type="all" source="ART:SUDesolator_GTPA.w3x" />
-		<Include type="all" source="ART:SUDesolator_MCNA.w3x" />
-		<Include type="all" source="ART:SUDesolator_MCNB.w3x" />
-		<Include type="all" source="ART:SUDesolator_MCNC.w3x" />
-		<Include type="all" source="ART:SUDesolator_MCND.w3x" />
-		<Include type="all" source="ART:SUDesolator_RNDA.w3x" />
-		<Include type="all" source="ART:SUDesolator_SWPA.w3x" />
-		<Include type="all" source="ART:SUDesolator_SWMA.w3x" />
-		<Include type="all" source="ART:SUDesolator_SWMB.w3x" />
-		<Include type="all" source="ART:SUDesolator_SWMC.w3x" />
-		<Include type="all" source="ART:SUDesolator_WADA.w3x" />
-		<Include type="all" source="ART:SUDesolator_WLKA.w3x" />
+		<!-- <Include type="all" source="ART:SUDesolator_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXCorrupterStream.xml" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_ABTA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_AIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_ATKA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_ATKB.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_BATA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_BIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_BIFA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_BIFB.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_BIFC.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_CDTA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_CDTB.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_CWRA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_DTBA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_FLYA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_LNDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_GTPA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_MCNA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_MCNB.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_MCNC.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_MCND.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_RNDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SWPA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SWMA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SWMB.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SWMC.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_WADA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_WLKA.w3x" /> -->
 		
-		<Include type="all" source="ART:SUDesolator_SABTA.w3x" />
-		<Include type="all" source="ART:SUDesolator_SAIDA.w3x" />
-		<Include type="all" source="ART:SUDesolator_SATKA.w3x" />
-		<Include type="all" source="ART:SUDesolator_SBATA.w3x" />
-		<Include type="all" source="ART:SUDesolator_SBIDA.w3x" />
-		<Include type="all" source="ART:SUDesolator_SCDTA.w3x" />
-		<Include type="all" source="ART:SUDesolator_SCWRA.w3x" />
-		<Include type="all" source="ART:SUDesolator_SCDTB.w3x" />
-		<Include type="all" source="ART:SUDesolator_SFLYA.w3x" />
-		<Include type="all" source="ART:SUDesolator_SLNDA.w3x" />
-		<Include type="all" source="ART:SUDesolator_SGTPA.w3x" />
-		<Include type="all" source="ART:SUDesolator_SMCNA.w3x" />
-		<Include type="all" source="ART:SUDesolator_SMCNB.w3x" />
-		<Include type="all" source="ART:SUDesolator_SMCNC.w3x" />
-		<Include type="all" source="ART:SUDesolator_SMCND.w3x" />	
-		<Include type="all" source="ART:SUDesolator_SRNDA.w3x" />
-		<Include type="all" source="ART:SUDesolator_SWLKA.w3x" />
-		<Include type="all" source="ART:SUDesolator_STRANS.w3x" />
-		<Include type="all" source="ART:SUDesolator_SDIEA.w3x" />
+		<!-- <Include type="all" source="ART:SUDesolator_SABTA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SAIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SATKA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SBATA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SBIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SCDTA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SCWRA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SCDTB.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SFLYA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SLNDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SGTPA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SMCNA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SMCNB.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SMCNC.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SMCND.w3x" />	 -->
+		<!-- <Include type="all" source="ART:SUDesolator_SRNDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SWLKA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_STRANS.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUDesolator_SDIEA.w3x" /> -->
 
 	</Includes>
 	
