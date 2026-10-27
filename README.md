@@ -8,6 +8,20 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: optional weapon references retain actual null/present storage instead of requiring the Conscript sound and three imports. -->
+Single-`DamageNugget` weapon builds now accept omitted, empty and populated
+`FireSoundPerClip`, `FireFX` and `FireVeteranFX`. Inline `FireFlankFX`,
+`PreAttackFX`, `SingleAmmoReloadedNotFullSound` and `ClipReloadedSound`
+references are also checked against actual typed Core selectors; no fixed
+three-reference count remains. Removing the optional sound rebases subsequent
+native allocations and token targets. Weapon-only declarations use the normal
+linked stream/package route without a placeholder GameObject.
+The populated AK-47 token golden stays unchanged. Regression:
+`weapon-optional-references-self-test <static.manifest> <global.manifest> <fresh-output>`
+covers all 27 primary reference combinations and a 28-weapon package.
+Other nugget families remain unsupported by this processor: the diagnostic now
+points directly to the unsupported nugget, rather than an unrelated sound field.
+
 <!-- Reborn: AttributeModifier is enabled in normal alpha builds, beyond the historical standalone diagnostic profiles. -->
 `AttributeModifier` is build-enabled with its 56-byte untokenized EP1 header.
 Custom IDs, ordinary includes, instance bases, inheritance and definitions share

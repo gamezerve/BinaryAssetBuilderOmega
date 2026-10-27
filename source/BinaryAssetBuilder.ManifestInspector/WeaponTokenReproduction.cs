@@ -206,8 +206,42 @@ internal static class WeaponTokenReproduction
     //-------------------------------------------------------------------------------------------------
     internal static Chunk Encode(Chunk native)=>EncodeCore(native,false);
 
-    // Reborn: source-qualified fixed topology may use new identities and supported scalar values without the legacy stock-value hash quota.
-    internal static Chunk EncodeAuthored(Chunk native)=>EncodeCore(native,true);
+    // Reborn: source-qualified single-DamageNugget weapons retain editable identities/values and optional sound/FX import shapes.
+    internal static Chunk EncodeAuthored(Chunk native)
+    {
+        const int prefix=1980;
+        if(native.InstanceBuffer.Length<340)throw new InvalidDataException("Weapon native header is truncated.");
+        bool sound=Word(native.InstanceBuffer,88)!=0;int shift=sound?0:4;
+        if(native.InstanceBuffer.Length!=528-shift)throw new InvalidDataException("Weapon single-DamageNugget native extent differs.");
+        // Reborn: an omitted sound removes its four-byte allocation; every following range, list and nugget address moves with it.
+        uint[] locations=(sound?new uint[]{88}:Array.Empty<uint>()).Concat(new uint[]{244,248,256,268,(uint)(368-shift)}).ToArray();
+        uint[] targets=(sound?new uint[]{340}:Array.Empty<uint>()).Concat(new uint[]{(uint)(344-shift),(uint)(352-shift),(uint)(360-shift),(uint)(368-shift),(uint)(372-shift)}).ToArray();
+        if(!native.RelocationBuffer.SequenceEqual(Pack(locations))||Word(native.InstanceBuffer,264)!=1||Word(native.InstanceBuffer,372-shift)!=0xC0F53E99u)throw new InvalidDataException("Weapon single-DamageNugget pointer/class framing differs.");
+        for(int i=0;i<locations.Length;i++)if(Word(native.InstanceBuffer,(int)locations[i])!=targets[i])throw new InvalidDataException("Weapon authored allocation target differs.");
+        // Reborn: inline FX/audio words and the optional sound pointee own imports only when their actual selector is nonzero.
+        var slots=new uint[]{104,108,112,116,196,200}.Concat(sound?new uint[]{340}:Array.Empty<uint>()).Where(at=>Word(native.InstanceBuffer,(int)at)!=0).ToArray();
+        if(!Slots(native.ImportsBuffer).Order().SequenceEqual(slots.Order()))throw new InvalidDataException("Weapon authored import inventory differs.");
+        var result=new Chunk{InstanceBuffer=new byte[prefix+native.InstanceBuffer.Length],RelocationBuffer=Pack(locations.Select(at=>at+prefix))};native.InstanceBuffer.CopyTo(result.InstanceBuffer,prefix);
+        foreach(var descriptor in Descriptors){
+            int offset=descriptor.NativeOffset>=340?descriptor.NativeOffset-shift:descriptor.NativeOffset;
+            if(descriptor.At==336&&!sound)offset=-1;
+            if(offset>=0&&descriptor.Tag is 0x645864F3u or 0x4E16EA4Du or 0x998669E8u&&!float.IsFinite(BinaryPrimitives.ReadSingleLittleEndian(native.InstanceBuffer.AsSpan(offset,4))))throw new InvalidDataException("WeaponTemplate contains a nonfinite numeric field.");
+            Put(result.InstanceBuffer,descriptor.At,descriptor.Name);Put(result.InstanceBuffer,descriptor.At+4,descriptor.Tag);Put(result.InstanceBuffer,descriptor.At+8,checked((uint)(offset>=0?prefix+offset:descriptor.TableTarget)));
+        }
+        for(int i=0;i<locations.Length;i++)Put(result.InstanceBuffer,prefix+(int)locations[i],targets[i]+prefix);
+        // Reborn: EP1 tokenized weapon imports remain represented by typed metadata and BIN selectors, without an IMP inventory.
+        return result;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: pack exactly the owned auxiliary slots; an empty inventory has no sentinel-only allocation. */
+    //-------------------------------------------------------------------------------------------------
+    private static byte[] Pack(IEnumerable<uint> slots){var values=slots.ToArray();if(values.Length==0)return Array.Empty<byte>();var bytes=new byte[(values.Length+1)*4];for(int i=0;i<values.Length;i++)Put(bytes,i*4,values[i]);Put(bytes,values.Length*4,uint.MaxValue);return bytes;}
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: decode a complete auxiliary inventory without accepting a truncated or missing terminator. */
+    //-------------------------------------------------------------------------------------------------
+    private static uint[] Slots(byte[] bytes){if(bytes.Length==0)return Array.Empty<uint>();if(bytes.Length<8||bytes.Length%4!=0||Word(bytes,bytes.Length-4)!=uint.MaxValue)throw new InvalidDataException("Weapon auxiliary inventory framing differs.");return Enumerable.Range(0,bytes.Length/4-1).Select(i=>Word(bytes,i*4)).ToArray();}
 
     // Reborn: native shape, fixed pointer layout and explicit metadata descriptors remain shared between diagnostic and authored routes.
     private static Chunk EncodeCore(Chunk native,bool authored)

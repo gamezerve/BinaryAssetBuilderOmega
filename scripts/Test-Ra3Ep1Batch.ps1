@@ -218,6 +218,8 @@ if($SchedulerControl){
     Add-BatchCase 'fragment-definitions' 'FragmentDefinitionContexts' @('fragment-definitions-self-test',(Join-Path $OutputDirectory 'fragment-definitions'))
     # Reborn: experience levels retain stock-qualified EP1 pointer/list layout and ordinary authored stream publication.
     # Reborn: normal modifier roots, inheritance, local imports and package readback.
+    # Reborn: optional weapon audio/FX reference shapes and normal linked package readback.
+    Add-BatchCase 'weapon-optional-references' 'WeaponOptionalReferences' @('weapon-optional-references-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'weapon-optional-references'))
     Add-BatchCase 'attribute-modifier-compiler' 'AttributeModifierCompiler' @('attribute-modifier-compiler-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'attribute-modifier-compiler'))
     Add-BatchCase 'experience-level' 'ExperienceNativeAndStream' @('experience-level-self-test',$StaticManifest,$GlobalManifest,(Join-Path $OutputDirectory 'experience-level'))
     # Reborn: special-power flags, tech/EVA selectors and local authored commands use stock-qualified EP1 data.

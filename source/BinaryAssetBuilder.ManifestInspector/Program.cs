@@ -283,6 +283,9 @@ internal static class Program
             if(args.Length==4 && args[0]=="special-power-template-self-test")
             {CompilerSmokeTest.InitializeHashProvider();SpecialPowerTemplateCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             // Reborn: test normal modifier authoring and linked streams without publishing user mods.
+            // Reborn: test optional weapon sound/FX slots through normal source and package output offline.
+            if(args.Length==4 && args[0]=="weapon-optional-references-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();WeaponOptionalReferencesSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==4 && args[0]=="attribute-modifier-compiler-self-test")
             {CompilerSmokeTest.InitializeHashProvider();AttributeModifierCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==4 && args[0]=="experience-level-self-test")
