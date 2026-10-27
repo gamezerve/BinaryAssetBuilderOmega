@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
+	
+	<LogicCommand
+		Type="UNIT_BUILD"
+		id="Command_ConstructSovietChiefEngineer">
+		<Object>SovietChiefEngineerReborn</Object>
+	</LogicCommand>
 
 	<LogicCommand
 		Type="CONSTRUCTION_YARD_CONSTRUCT"

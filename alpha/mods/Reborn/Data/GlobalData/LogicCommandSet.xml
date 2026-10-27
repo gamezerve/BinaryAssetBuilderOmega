@@ -50,6 +50,19 @@
 		<Cmd>Command_ConstructSovietFought2DeathStatue</Cmd>
 		<Cmd>Command_ConstructSovietBigMamaStatue</Cmd>
 	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="SovietBarracksCommandSet">
+		<Cmd>Command_ConstructSovietScoutInfantry</Cmd>
+		<Cmd>Command_ConstructSovietAntiInfantryInfantry</Cmd>
+		<Cmd>Command_ConstructSovietAntiVehicleInfantry</Cmd>
+		<Cmd>Command_ConstructSovietEngineer</Cmd>
+		<Cmd>Command_ConstructSovietChiefEngineer</Cmd>
+		<Cmd>Command_ConstructSovietMortarcycle</Cmd>
+		<Cmd>Command_ConstructSovietHeavyAntiVehicleInfantry</Cmd>
+		<Cmd>Command_ConstructSovietDesolatorInfantry</Cmd>
+		<Cmd>Command_ConstructSovietCommandoTech1</Cmd>
+	</LogicCommandSet>	
 	
 	<LogicCommandSet
 		id="KR_ArtilleryDomeCommandSet">

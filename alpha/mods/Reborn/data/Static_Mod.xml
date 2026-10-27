@@ -42,7 +42,7 @@
 		<!-- <Include type="all" source="DATA:GlobalData/Armor.xml" /> -->
 		<!-- <Include type="all" source="DATA:GlobalData/Weapon.xml" /> -->
 		<Include type="all" source="DATA:GlobalData/Weapon_Mod.xml" />
-		<Include type="all" source="DATA:GlobalData/ExperienceLevels.xml" />
+		<Include type="all" source="DATA:GlobalData/ExperienceLevels_Mod.xml" />
 		<!-- <Include type="all" source="DATA:GlobalData/MultiplayerSettings.xml" /> -->
 		<!-- <Include type="all" source="DATA:GlobalData/OnlineChatColors.xml" /> -->
 		<!-- <Include type="all" source="DATA:GlobalData/Stances.xml" /> -->
@@ -56,7 +56,7 @@
 		<!-- <Include type="all" source="DATA:GlobalData/SpecialPowerTemplates.xml" /> -->
 		<!-- <Include type="all" source="DATA:GlobalData/InvisibilityTemplates.xml" /> -->
 		<!-- <Include type="all" source="DATA:GlobalData/EmotionTemplates.xml" /> -->
-		<!-- <Include type="all" source="DATA:GlobalData/UnitTypeIcons.xml" /> -->
+		<Include type="all" source="DATA:GlobalData/UnitTypeIcons.xml" />
 		<!-- <Include type="all" source="DATA:GlobalData/ImageSequences.xml" /> -->
 		<!-- <Include type="all" source="DATA:GlobalData/FormationPreviewModels.xml"/> -->
 		<!-- <Include type="all" source="DATA:GlobalData/WaterModels.xml"/> -->

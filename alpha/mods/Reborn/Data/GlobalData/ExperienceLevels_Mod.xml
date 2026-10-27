@@ -2,24 +2,9 @@
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
 	<Tags />
 	<Includes>
+		<Include type="instance" source="DATA:GlobalData/ExperienceLevels.xml" />
 	</Includes>
 	
-		<!-- all levels inherit from this -->
-	<ExperienceLevelTemplate
-		id="ExperienceLevel_Base">
-		<LevelUpTintColor
-			r="1.0"
-			g="1.0"
-			b="1.0"
-		/>
-	</ExperienceLevelTemplate>
-	
-	<!-- Generic Rank 1 -->
-	<ExperienceLevelTemplate
-		id="ExperienceLevel_Rank1"
-		inheritFrom="ExperienceLevel_Base"
-		Rank="1" />
-		
 		
 	<ExperienceLevelTemplate
 		id="ExperienceLevel_StructuresLarge"
@@ -84,6 +69,40 @@
 		<Target>SovietMotorCycleStatue01</Target>
 		<Target>SovietFought2DeathStatue</Target>
 		<Target>SovietBigMamaStatue</Target>
+		<Target>SovietArtilleryDome</Target>
+	</ExperienceLevelTemplate>
+	
+	<!-- Soviet Chief Scientist ____________________________________ -->
+	<ExperienceLevelTemplate
+		id="SovietChiefEngineerExperienceLevel_1"
+		inheritFrom="ExperienceLevel_SovietRank1"
+		RequiredExperience="1"
+		ExperienceAward="1000">
+		<Target>SovietChiefEngineerReborn</Target>
+	</ExperienceLevelTemplate>
+		<ExperienceLevelTemplate
+		id="SovietChiefEngineerExperienceLevel_2"
+		inheritFrom="ExperienceLevel_SovietRank2"
+		Prerequisite="SovietChiefEngineerExperienceLevel_1"
+		RequiredExperience="3000"
+		ExperienceAward="2000">
+		<Target>SovietChiefEngineerReborn</Target>
+	</ExperienceLevelTemplate>
+	<ExperienceLevelTemplate
+		id="SovietChiefEngineerExperienceLevel_3"
+		inheritFrom="ExperienceLevel_SovietRank3"
+		Prerequisite="SovietChiefEngineerExperienceLevel_2"
+		RequiredExperience="6000"
+		ExperienceAward="3000">
+		<Target>SovietChiefEngineerReborn</Target>
+	</ExperienceLevelTemplate>
+	<ExperienceLevelTemplate
+		id="SovietChiefEngineerExperienceLevel_4"
+		inheritFrom="ExperienceLevel_SovietRank4"
+		Prerequisite="SovietChiefEngineerExperienceLevel_3"
+		RequiredExperience="9000"
+		ExperienceAward="4000">
+		<Target>SovietChiefEngineerReborn</Target>
 	</ExperienceLevelTemplate>
 	
 </AssetDeclaration>

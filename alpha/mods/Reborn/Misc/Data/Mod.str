@@ -288,6 +288,12 @@
 		"» Build Time = 10 sec \n> Health = 1500 \n> Shroud Clearing Range = 300 \n> Garrison Capacity = 5 \nErects a formidable bunker for a nominal fee, which infantry can garrison for protection."
 	End
 
+// Soviet Chief Scientist
+		
+	TYPE:SovietChiefEngineerReborn
+		"Know-It-All / Field Medic \n> Health = 1000 \n> Shroud Clearing Range = 100 \n> Movement Speed = 55 \n> Heal Range = 100 \n> Heal Percentage = 5%/sec "
+	End
+
 // Allied Paradrop
 	
 	TYPE:CampaignPlayerPowerParadropLvl1Reborn

@@ -6,6 +6,7 @@
 
 	<!-- from Campaign to Skirmish -->
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietCommandCenter.xml" />	
+		<Include type="all" source="DATA:Soviet/Units_Campaign/SovietChiefEngineerReborn.xml" />	
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietKrasna45.xml" />	
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietPortBuilding.xml" />	
 		<Include type="all" source="DATA:Soviet/Units_Campaign/SovietTeslaWallHub.xml" />	

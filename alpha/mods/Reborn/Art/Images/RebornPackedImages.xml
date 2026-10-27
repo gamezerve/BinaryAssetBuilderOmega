@@ -3,6 +3,17 @@
 
 <!-- Reborn -->
 
+
+<!-- Soviet Chief Scientist -->
+
+	<Texture id="UnitTypeIcon_ChiefScientist" File="ART:Images/UnitTypeIcon_ChiefScientist.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="UnitTypeIcon_ChiefScientist" Texture="UnitTypeIcon_ChiefScientist" Rotated="false">
+		<Dimensions x="25" y="32"/>
+		<Coords x="109" y="35"/>
+		<TextureDimensions x="256" y="128"/>
+	</PackedTextureImage>
+
 <!-- Soviet Tesla Wall Hub -->
 
 	<Texture id="Portrait_SovietTeslaWallHub_big" File="ART:Images/Portrait_SovietTeslaWallHub_big.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>

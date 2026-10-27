@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+
+	<UnitTypeIcon id="ChiefScientistIcon" Image="UnitTypeIcon_ChiefScientist">
+		<Offset x="0" y="0"/>
+	</UnitTypeIcon>
+	
+</AssetDeclaration>
