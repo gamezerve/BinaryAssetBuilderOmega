@@ -78,6 +78,14 @@ public static class Ep1BehaviorMetadataTokenizer
         return new Builder(native.InstanceBuffer,schemas).Build(native,"PropBodyModuleData",typeof(SageBinaryData.PropBodyModuleData));
     }
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: EP1 WeaponTemplate own table (no asset base row) with a polymorphic Nuggets pointer list; the caller maps each native TypeId to its reviewed schema class and native model. */
+    //-------------------------------------------------------------------------------------------------
+    public static Chunk TokenizeWeapon(Chunk native,XmlSchemaSet schemas,Func<uint,(string Schema,Type Native)> nugget)
+    {
+        if(native?.InstanceBuffer==null||native.RelocationBuffer==null||native.ImportsBuffer==null||native.InstanceBuffer.Length<Size(typeof(SageBinaryData.WeaponTemplate))||native.InstanceBuffer.Length>2*1048576||schemas==null||nugget==null)throw new InvalidDataException("Bounded weapon native graph required.");
+        return new Builder(native.InstanceBuffer,schemas){Polymorphic=nugget}.BuildRecord(native,"WeaponTemplate",typeof(SageBinaryData.WeaponTemplate));
+    }
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: reuse schema/native traversal for six explicitly selected non-polymorphic root records; no stock coordinates or arbitrary class admission enter this API. */
     //-------------------------------------------------------------------------------------------------
     public static Chunk TokenizeRootRecord(Chunk native,XmlSchemaSet schemas,string name)
@@ -141,6 +149,19 @@ public static class Ep1BehaviorMetadataTokenizer
         private readonly List<(int At, int Target)> targets = new();
         private readonly HashSet<uint> relos = new(), imports = new();
         private int visits;
+        // Reborn: optional polymorphic pointer-list class resolver (weapon nuggets); absent resolvers keep such lists refused.
+        internal Func<uint,(string Schema,Type Native)> Polymorphic;
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: weapon tables use the reviewed signature table first; any other named schema type uses its EA type-name hash, and the result is
+            accepted only after the caller's stock-learned weapon grammar matches every emitted name/tag row. */
+        //-------------------------------------------------------------------------------------------------
+        private static uint WeaponSignature(string key)
+        {
+            if (TryReviewedScalarSignature(key, out uint reviewed)) return reviewed;
+            string name = key.EndsWith("[]", StringComparison.Ordinal) ? key[..^2] : key; int colon = name.IndexOf(':'); if (colon > 0 && !name.StartsWith("xs:", StringComparison.Ordinal)) name = name[..colon];
+            if (name.Length == 0 || name.StartsWith("xs:", StringComparison.Ordinal)) throw new InvalidDataException("Weapon schema signature not reviewed: " + key);
+            return FastHash.GetHashCode(name);
+        }
         //-------------------------------------------------------------------------------------------------
         /** Reborn: schemas and native bytes are read-only; all mutable ownership state is local. */
         //-------------------------------------------------------------------------------------------------
@@ -190,10 +211,13 @@ public static class Ep1BehaviorMetadataTokenizer
             var extension = (schema.ContentModel as XmlSchemaComplexContent)?.Content as XmlSchemaComplexContentExtension;
             if (schema.ContentModel != null && extension == null) throw new InvalidDataException("Unreviewed behavior schema content: " + schemaName);
             var fields = new List<(string Name, XmlSchemaType Schema, string Reference, bool Repeated)>(); var attributes = extension?.Attributes ?? schema.Attributes;
-            if (schemaName is "ModuleData" or "WeaponSlot_Hardpoint") fields.Add(("TypeId", null, "", false));
+            if (schemaName is "ModuleData" or "WeaponSlot_Hardpoint" or "WeaponEffectNugget") fields.Add(("TypeId", null, "", false));
             foreach (XmlSchemaObject item in attributes) { if (item is not XmlSchemaAttribute a || a.Name == null || a.AttributeSchemaType == null) throw new InvalidDataException("Unreviewed behavior attribute declaration.");if(a.UnhandledAttributes?.Any(x=>x.LocalName=="pipelineOnly" && x.NamespaceURI=="uri:ea.com:eala:asset:schema" && x.Value=="true")==true)continue; fields.Add((a.Name, a.AttributeSchemaType, Reference(a.UnhandledAttributes), false)); }
             Elements(extension?.Particle ?? schema.Particle, fields);
-            bool parent = extension != null; int table = Allocate(fields.Count + (parent ? 1 : 0) + 1), next = table; var used = new bool[Size(type)];
+            // Reborn: stock EP1 weapon roots have no BaseInheritableAsset row; the 4-byte asset base word stays zero and is owned here.
+            bool assetRoot = depth == 0 && schemaName == "WeaponTemplate" && Polymorphic != null;
+            bool parent = extension != null && !assetRoot; int table = Allocate(fields.Count + (parent ? 1 : 0) + 1), next = table; var used = new bool[Size(type)];
+            if (assetRoot) { var assetBase = type.GetField("Base") ?? throw new InvalidDataException("Weapon native base missing."); if (Offset(type, assetBase) != 0 || Size(assetBase.FieldType) != 4 || Word(bytes, native) != 0) throw new InvalidDataException("Weapon asset base word differs."); Mark(used, 0, 4); }
             if (parent)
             {
                 var baseField = type.GetField("Base") ?? throw new InvalidDataException("Behavior native base missing: " + type.Name); if (Offset(type, baseField) != 0) throw new InvalidDataException("Behavior native base is not first.");
@@ -210,7 +234,7 @@ public static class Ep1BehaviorMetadataTokenizer
                 if (field.Schema?.QualifiedName.Namespace == XmlSchema.Namespace) wire = "xs:" + wire;
                 if (field.Reference.Length != 0) wire += ":" + field.Reference;
                 if (field.Repeated) wire += "[]";
-                Row(next, FastHash.GetHashCode(field.Name), field.Name == "TypeId" ? 0x23E650B8 : anonymous != null ? FastHash.GetHashCode(anonymous) : Signature(wire), 0);
+                Row(next, FastHash.GetHashCode(field.Name), field.Name == "TypeId" ? 0x23E650B8 : anonymous != null ? FastHash.GetHashCode(anonymous) : Polymorphic != null ? WeaponSignature(wire) : Signature(wire), 0);
                 // Reborn: empty SoundOrEvaEvent.EvaEvent is a strong-reference zero word in EP1 metadata, not a missing String pointee; populated legacy pointer storage stays refused.
                 if(schemaName=="SoundOrEvaEvent" && field.Name=="EvaEvent"&&info.FieldType.IsPointer){if(Word(bytes,native+offset)!=0)throw new InvalidDataException("Populated legacy voice EvaEvent ABI is not implemented.");Native(next+8,native+offset);}else Field(field.Schema, info.FieldType, checked(native + offset), next + 8, depth + 1, anonymous);next += 12;
             }
@@ -229,6 +253,24 @@ public static class Ep1BehaviorMetadataTokenizer
             if (type.IsPointer)
             {
                 uint pointer = Word(bytes, slot); if (pointer == 0) return; int target = Pointer(pointer), size = Size(type.GetElementType()); Claim(target, size); relos.Add((uint)slot); Field(schema, type.GetElementType(), target, targetAt, depth + 1); return;
+            }
+            if (type.IsGenericType && type.GetGenericTypeDefinition().FullName == "Relo.PolymorphicList`1" && Polymorphic != null)
+            {
+                // Reborn: each pointer item is wrapped by its concrete class row; the class comes from the native TypeId word, never from position.
+                uint count = Word(bytes, slot), pointer = Word(bytes, slot + 4); if (count > bytes.Length / 4 || (count == 0) != (pointer == 0)) throw new InvalidDataException("Polymorphic metadata list invariant differs.");
+                int list = Allocate(1 + (int)count); Row(list, 0x6C827073, 0x5D448FD8, 0); Native(list + 8, slot); Target(targetAt, list);
+                if (count != 0)
+                {
+                    int items = Pointer(pointer); Claim(items, checked((int)count * 4)); relos.Add((uint)(slot + 4));
+                    for (int i = 0; i < count; i++)
+                    {
+                        int itemSlot = items + i * 4; uint value = Word(bytes, itemSlot); if (value == 0) throw new InvalidDataException("Polymorphic metadata item is null.");
+                        int target = Pointer(value); Range(target, 4); var concrete = Polymorphic(Word(bytes, target)); Claim(target, Size(concrete.Native)); relos.Add((uint)itemSlot);
+                        int marker = list + 12 + i * 12, wrapper = Allocate(1); Row(marker, 0xB151A0EB, 0, (uint)wrapper);
+                        Row(wrapper, 2, FastHash.GetHashCode(concrete.Schema), (uint)Emit(concrete.Schema, concrete.Native, target, depth + 1));
+                    }
+                }
+                return;
             }
             if (type.IsGenericType && type.GetGenericTypeDefinition().FullName == "Relo.List`1")
             {
@@ -402,7 +444,7 @@ public static class Ep1BehaviorMetadataTokenizer
     //-------------------------------------------------------------------------------------------------
     /** Reborn: explicit wire sizes cover closed generic primitives rejected by Marshal.SizeOf. */
     //-------------------------------------------------------------------------------------------------
-    private static int Size(Type type) => type.IsPointer ? 4 : type.IsEnum ? 4 : type.IsGenericType ? type.GetGenericTypeDefinition().FullName switch { "Relo.List`1" or "Relo.String`1" => 8, "Relo.AssetReference`1" or "Relo.AssetReference`2" or "TypedAssetId`1" => 4, _ => throw new InvalidDataException("Behavior generic native type unreviewed.") } : Marshal.SizeOf(type);
+    private static int Size(Type type) => type.IsPointer ? 4 : type.IsEnum ? 4 : type.IsGenericType ? type.GetGenericTypeDefinition().FullName switch { "Relo.List`1" or "Relo.String`1" or "Relo.PolymorphicList`1" => 8, "Relo.AssetReference`1" or "Relo.AssetReference`2" or "TypedAssetId`1" => 4, _ => throw new InvalidDataException("Behavior generic native type unreviewed.") } : Marshal.SizeOf(type);
     //-------------------------------------------------------------------------------------------------
     /** Reborn: auxiliary arrays require bounded unique aligned slots and a complete nonempty sentinel. */
     //-------------------------------------------------------------------------------------------------

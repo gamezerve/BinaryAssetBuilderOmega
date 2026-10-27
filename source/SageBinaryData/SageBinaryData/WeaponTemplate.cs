@@ -314,7 +314,8 @@ public struct DamageNuggetType
     public DamageSubType DamageSubType;
     public float DrainLifeMultiplier;
     public float DamageSpeed;
-    public unsafe AnsiString* UnderAttackOverrideEvaEvent;
+    // Reborn: EP1 metadata types this as a strong EvaEventRef word (tag C4EC43B1) that always targets its slot, not a KW string pointer.
+    public AssetReference<BaseAssetType> UnderAttackOverrideEvaEvent;
     public AssetReference<GameObject> VictimShroudRevealer;
     // Reborn: EP1 stock tokens place the status mask at +108, then the scalar list at +140; the former order shifts both by eight bytes.
     public ObjectStatusBitFlags InvalidTargetStatus;
@@ -565,6 +566,8 @@ public struct ScatterProjectileNuggetType
 public struct ScatterRadiusType
 {
     public float Radius;
+    // Reborn: EP1 stores the official RequiredModelConditions mask inline at +4 and the filter inline at +64 (retail JapanAntiVehicleInfantryTech3ProjectileWarhead).
+    public ModelConditionBitFlags RequiredModelConditions;
     public ObjectFilter Filter;
 }
 
@@ -661,7 +664,8 @@ public struct WeaponTemplate
     public WeaponAntiBitFlags ForbiddenAntiMask;
     public TypedAssetId<BaseAssetType> ProjectileStreamName; // should be TypedAssetId<GameObject> but .net thinks it might be a circular reference
     public VirtualDamageType VirtualDamage;
-    public AssetReference<WeaponTemplate> PreAttackWeapon;
+    // Reborn: EP1 retail metadata targets a separate reference allocation (0 when absent), so the slot is a pointer like the sound references.
+    public unsafe AssetReference<WeaponTemplate>* PreAttackWeapon;
     public unsafe SoundOrEvaEvent* OverrideVoiceAttackSound;
     public unsafe SoundOrEvaEvent* OverrideVoiceEnterStateAttackSound;
     public unsafe RangeDuration* PreAttackDelay;

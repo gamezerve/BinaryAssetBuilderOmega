@@ -24,7 +24,7 @@
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietMotorCycleStatue01.xml" />
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietFought2DeathStatue.xml" />
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietBigMamaStatue.xml" />
-		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/SovietArtilleryDome.xml" />	 -->
+		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietArtilleryDome.xml" />	
 		<!-- <Include type="all" source="DATA:Soviet/Structures_Campaign/ArtilleryDomeMissileProjectile.xml" />		 -->
 
 		<!-- Infantry -->

@@ -227,6 +227,8 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();GarrisonContainSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="eva-create-client-self-test")
             {CompilerSmokeTest.InitializeHashProvider();EvaCreateClientSmokeTest.Run(args[1],args[2]);return 0;}
+            if(args.Length==3 && args[0]=="weapon-template-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();WeaponTemplateSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="crusher-children-self-test")
             {CompilerSmokeTest.InitializeHashProvider();CrusherChildrenSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="attack-assist-response-self-test")

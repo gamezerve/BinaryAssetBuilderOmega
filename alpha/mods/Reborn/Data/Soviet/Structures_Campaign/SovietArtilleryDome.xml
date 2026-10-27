@@ -4,29 +4,29 @@
 	<Includes>
 		<Include type="instance" source="DATA:BaseObjects/BaseSovietStructure.xml" />
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
-		<Include type="all" source="ART:KR_ArtilleryDome.W3X" />
+		<!-- <Include type="all" source="ART:KR_ArtilleryDome.W3X" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
 		<Include type="instance" source="DATA:Civilian/Kremlin_KR/Props/KR_ArtilleryDome_Collapse.xml" />
-		<Include type="all" source="ART:EXSovietShell.w3x" />	
+		<!-- <Include type="all" source="ART:EXSovietShell.w3x" />	 -->
 		
-    <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome.NEWSKIN_CIV01.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome.NEWSKIN_FILL01.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome.OBBOX01.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome.OBBOX02.w3x" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome.NEWSKIN_CIV01.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome.NEWSKIN_FILL01.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome.OBBOX01.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome.OBBOX02.w3x" /> -->
 
-    <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome_COL.NEWSKIN.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome_COL.OBBOX01.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome_COL.OBBOX02.w3x" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome_COL.NEWSKIN.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome_COL.OBBOX01.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome_COL.OBBOX02.w3x" /> -->
 
 
-    <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome_COL_CTR.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome_COL_HRC.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome_CTR.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome_HRC.w3x" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome_COL_CTR.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome_COL_HRC.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome_CTR.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome_HRC.w3x" /> -->
 
-    <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome.xml" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome_NRM.xml" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome_SPM.xml" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome.xml" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome_NRM.xml" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/KR_ArtilleryDome_SPM.xml" /> -->
 	
 	</Includes>
 	<GameObject

@@ -458,6 +458,7 @@ public static partial class Marshaler
             return;
         }
         Marshal(node.GetAttributeValue(nameof(ScatterRadiusType.Radius), "0.0"), &objT->Radius, state);
+        Marshal(node.GetAttributeValue(nameof(ScatterRadiusType.RequiredModelConditions), ""), &objT->RequiredModelConditions, state);
         Marshal(node.GetChildNode(nameof(ScatterRadiusType.Filter), null), &objT->Filter, state);
     }
 
@@ -505,10 +506,10 @@ public static partial class Marshaler
                 MarshalPolymorphicType<DamageFieldNuggetType, WeaponEffectNugget>(node, objT, state);
                 break;
             case 0x87C7BDCCu:
-                MarshalPolymorphicType<ProjectileNuggetType, WeaponEffectNugget>(node, objT, state);
+                MarshalEp1Nugget<Ep1ProjectileNuggetType>(node, objT, state, 0x87C7BDCCu); // Reborn: EP1 68-byte projectile record.
                 break;
             case 0xF4A6ADA7u:
-                MarshalPolymorphicType<SuppressionNuggetType, WeaponEffectNugget>(node, objT, state);
+                MarshalEp1Nugget<Ep1SuppressionNuggetType>(node, objT, state, 0xF4A6ADA7u); // Reborn: EP1 60-byte suppression record.
                 break;
             case 0xC6067C3Fu:
                 MarshalPolymorphicType<WeaponOCLNuggetType, WeaponEffectNugget>(node, objT, state);
@@ -526,7 +527,7 @@ public static partial class Marshaler
                 MarshalPolymorphicType<SlavesAttackNuggetType, WeaponEffectNugget>(node, objT, state);
                 break;
             case 0xAF4289FBu:
-                MarshalPolymorphicType<MetaImpactNuggetType, WeaponEffectNugget>(node, objT, state);
+                MarshalEp1Nugget<Ep1MetaImpactNuggetType>(node, objT, state, 0xAF4289FBu); // Reborn: EP1 96-byte meta-impact record.
                 break;
             case 0x5BE957A9u:
                 MarshalPolymorphicType<SpecialPowerNuggetType, WeaponEffectNugget>(node, objT, state);

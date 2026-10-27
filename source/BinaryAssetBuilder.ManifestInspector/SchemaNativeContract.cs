@@ -144,6 +144,8 @@ internal sealed class SchemaNativeContract
         if(owner==typeof(Color)&&name=="A"&&e!=null&&!e.HasAttribute("A")){Expect(at,new byte[]{255},path);return;}
         // Reborn: each concrete particle module carries the hash of its validated schema class, independent of its enclosing asset.
         if(owner==typeof(FXParticleBaseModule)&&name=="TypeId"){Type concrete=FXParticleSystemCompiler.ModuleType(e!);Expect(at,BitConverter.GetBytes(FastHash.GetHashCode(concrete.Name)),path);return;}
+        // Reborn: weapon nugget class words come from the reviewed concrete element class, never authored TypeId text.
+        if(owner==typeof(WeaponEffectNugget)&&name=="TypeId"){Expect(at,BitConverter.GetBytes(WeaponTemplateCompiler.Nugget(e!).TypeId),path);return;}
         if(owner==typeof(FXNugget)&&name=="TypeId"){uint id=FastHash.GetHashCode(e?.SchemaInfo.SchemaType?.QualifiedName.Name??throw new InvalidDataException("FX nugget schema type missing."));_=FXListCompiler.NuggetType(e!);Expect(at,BitConverter.GetBytes(id),path);return;}
         // Reborn: statically typed EP1 weapon slot records carry a zero class word in retail native arrays.
         if(owner==typeof(Ep1WeaponSlotHardpoint)&&name=="TypeId"){Expect(at,new byte[4],path);return;}
@@ -185,6 +187,8 @@ internal sealed class SchemaNativeContract
                     // Reborn: particle events are an ordinary source-sized polymorphic pointer array.
                     if(type.GetGenericArguments()[0]==typeof(FXParticleEventBase)){ParticleEvents(e,name,at,path,depth);return;}
                     if(type.GetGenericArguments()[0]==typeof(FXNugget)){FXNuggets(e,name,at,path,depth);return;}
+                    // Reborn: weapon Nuggets are a source-sized pointer array of reviewed concrete EP1 nugget records.
+                    if(type.GetGenericArguments()[0]==typeof(WeaponEffectNugget)){WeaponNuggets(e,name,at,path,depth);return;}
                     if(type.GetGenericArguments()[0]==typeof(FXShaderConstant)){ShaderConstants(e,name,at,path,depth);return;}
                     if(Children(e,name).Length!=0||Word(at)!=0||Word(at+4)!=0)throw new InvalidDataException("Schema-proved polymorphic list is not supported: "+path);return;
             }
@@ -207,6 +211,18 @@ internal sealed class SchemaNativeContract
         for(int i=0;i<children.Length;i++){
             var child=children[i];consumed.Add(child);uint id=FastHash.GetHashCode(child.SchemaInfo.SchemaType?.QualifiedName.Name??"");Type concrete=ShaderConstantType(id);int slot=checked((int)items+i*4);uint target=Word(slot);Link(slot,target,Size(concrete),path+"["+i+"]");Struct(concrete,child,(int)target,path+"["+i+"]",depth+1);
         }
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify every authored weapon nugget pointer, concrete EP1 record and source-owned byte in authored order. */
+    //-------------------------------------------------------------------------------------------------
+    private void WeaponNuggets(XmlElement? owner,string name,int at,string path,int depth)
+    {
+        var wrapper=Child(owner,name);var children=wrapper?.ChildNodes.OfType<XmlElement>().ToArray()??Array.Empty<XmlElement>();
+        if(Word(at)!=children.Length)throw new InvalidDataException("Weapon nugget source/native count differs: "+path);uint items=Word(at+4);
+        if(children.Length==0){if(items!=0)throw new InvalidDataException("Empty weapon nugget list has storage.");return;}
+        Link(at+4,items,checked(children.Length*4),path);
+        for(int i=0;i<children.Length;i++){var child=children[i];consumed.Add(child);Type concrete=WeaponTemplateCompiler.Nugget(child).Native;int slot=checked((int)items+i*4);uint target=Word(slot);Link(slot,target,Size(concrete),path+"["+i+"]");Struct(concrete,child,(int)target,path+"["+i+"]",depth+1);}
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -428,6 +444,7 @@ internal sealed class SchemaNativeContract
 
     private static int Ordinal(XmlSchemaSimpleType? type,string token,string path){int value=TryOrdinal(type,token);if(value==int.MinValue)throw new InvalidDataException("Schema-proved enum value is not an official enumeration: "+path+" = "+token);return value;}
     // Reborn: retail TerrainScorch starts RANDOM at -1, so SCORCH_1..16 and TERRAIN_MAPPED follow the sentinel rather than zero-based XSD positions.
+    // Reborn: retail weapon DamageFXType likewise starts DEFAULT at -1 (AlliedTimeBomb_Level1 ALLIED_BOMBLVL1 = 77, XSD position 78).
     private static int TryOrdinal(XmlSchemaSimpleType? type,string token)
     {
         for(int depth=0;type!=null&&depth<16;depth++)
@@ -438,7 +455,7 @@ internal sealed class SchemaNativeContract
                 // Reborn: a leading official INVALID sentinel is ordinal -1 (not stored), shifting every other value down by one.
                 // Reborn: stock ArmorSetType (shrink modifier=14), BuildPlacementType and AIUpgradeHeuristicType retain INVALID at ordinal zero.
                 // Reborn: schema forceValue aliases reuse an earlier ordinal and do not consume a new native flag bit.
-                if(values.Count>0){int index=values.IndexOf(token);if(index<0)return int.MinValue;int next=(values[0]=="INVALID"&&type.QualifiedName.Name is not ("ArmorSetType" or "BuildPlacementType" or "AIUpgradeHeuristicType" or "FXParticleSystem_GeometryType")||type.QualifiedName.Name=="TerrainScorchType"&&values[0]=="RANDOM")?-1:0;var ordinals=new Dictionary<string,int>(StringComparer.Ordinal);for(int i=0;i<=index;i++){string? alias=facets[i].UnhandledAttributes?.FirstOrDefault(a=>a.LocalName=="forceValue")?.Value;if(alias!=null){if(!int.TryParse(alias,System.Globalization.NumberStyles.Integer,System.Globalization.CultureInfo.InvariantCulture,out next)&&!ordinals.TryGetValue(alias,out next))throw new InvalidDataException("Schema enum alias target is not earlier: "+alias);}ordinals[values[i]!]=next;if(i==index)return next;next++;}}
+                if(values.Count>0){int index=values.IndexOf(token);if(index<0)return int.MinValue;int next=(values[0]=="INVALID"&&type.QualifiedName.Name is not ("ArmorSetType" or "BuildPlacementType" or "AIUpgradeHeuristicType" or "FXParticleSystem_GeometryType")||type.QualifiedName.Name=="TerrainScorchType"&&values[0]=="RANDOM"||type.QualifiedName.Name=="DamageFXType"&&values[0]=="DEFAULT")?-1:0;var ordinals=new Dictionary<string,int>(StringComparer.Ordinal);for(int i=0;i<=index;i++){string? alias=facets[i].UnhandledAttributes?.FirstOrDefault(a=>a.LocalName=="forceValue")?.Value;if(alias!=null){if(!int.TryParse(alias,System.Globalization.NumberStyles.Integer,System.Globalization.CultureInfo.InvariantCulture,out next)&&!ordinals.TryGetValue(alias,out next))throw new InvalidDataException("Schema enum alias target is not earlier: "+alias);}ordinals[values[i]!]=next;if(i==index)return next;next++;}}
             }
             type=type.BaseXmlSchemaType as XmlSchemaSimpleType;
         }

@@ -6,6 +6,60 @@
 		<Include type="instance" source="DATA:GlobalData/Weapon.xml" />
 	</Includes>
 	
+	<WeaponTemplate
+		id="SovietArtilleryDomeMissile"
+		AttackRange="600.0"
+		MinimumAttackRange="300.0"
+		WeaponSpeed="550"
+		ScatterRadius="50"
+		FireFX="FX_Kremlin_ArtilleryDomeBlast"
+		RadiusDamageAffects="ENEMIES NEUTRALS"
+		CanFireWhileMoving="false"
+		ClipSize="1"
+		ReAcquireDetailType="PER_CLIP"
+		Flags="RELOAD_WHEN_ATTACK_STOPS"
+		ShotsPerBarrel="1"
+		AcceptableAimDelta="180d"
+		RequiredAntiMask="ANTI_GROUND ANTI_STRUCTURE ANTI_WATER"
+		ProjectileCollidesWith="ALLIES ENEMIES NEUTRAL STRUCTURES WALLS">
+		<FiringDuration
+			MinSeconds="1.0s"
+			MaxSeconds="1.0s" />
+		<ClipReloadTime
+			MinSeconds="2.5s"
+			MaxSeconds="2.5s" />
+		<Nuggets>
+			<ProjectileNugget
+				ProjectileTemplate="KremlinArtilleryDomeMissleProjectile"
+				WarheadTemplate="SovietArtilleryDomeMissleWarhead">
+			</ProjectileNugget>
+			<SuppressionNugget
+				Radius="100.0"
+				Suppression="100"
+				DurationSeconds="5s" />
+		</Nuggets>
+	</WeaponTemplate>
+
+	<WeaponTemplate
+		id="SovietArtilleryDomeMissleWarhead"
+		ProjectileCollidesWith = "ALLIES ENEMIES NEUTRAL STRUCTURES WALLS"
+		RadiusDamageAffects="ALLIES ENEMIES NEUTRALS"
+		RequiredAntiMask="ANTI_STRUCTURE ANTI_WATER ANTI_GROUND"
+		Flags="">
+		<Nuggets>
+			<DamageNugget
+				Damage="750.0"
+				DamageTaperOff="25"
+				Radius="100.0"
+				DamageType="EXPLOSIVE"
+				DeathType="NORMAL" />
+			<MetaImpactNugget
+				ShockWaveAmount="100.0"
+				ShockWaveRadius="100.0"
+				ShockWaveZMult="1.50" />
+		</Nuggets>
+	</WeaponTemplate>
+	
 	<!-- Campaign Mission S8 -->
 	<WeaponTemplate
 		id="SovietTeslaMoaiDefenseTeslaGun"

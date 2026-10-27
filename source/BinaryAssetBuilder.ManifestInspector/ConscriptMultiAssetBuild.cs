@@ -64,7 +64,7 @@ internal static class ConscriptMultiAssetBuild
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="FXList"))FXListCompiler.Qualify(manifest,schemas,stock);
             // Reborn: developer qualification reads selected original particle payloads only; actual authored payload proof stays enabled in both modes.
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="FXParticleSystemTemplate"))FXParticleSystemCompiler.Qualify(manifest,schemas,stock);
-            var built=new Dictionary<AssetId,Built>();int prefix=0;var compileLog=ConscriptCompileLog.ForPrepared(entry);
+            var built=new Dictionary<AssetId,Built>();int prefix=0;StockMetadataGrammar? weaponGrammar=null;var compileLog=ConscriptCompileLog.ForPrepared(entry);
             // Reborn: validate the isolated EP1 upgrade ABI against original stock before emitting any authored upgrades.
             // Reborn: developer mode independently checks the actual EP1 experience layout; source/native proof is mandatory in both build modes.
             // Reborn: original special powers independently qualify EP1 target/flag ordinals and EVA/tech imports in developer mode.
@@ -110,8 +110,10 @@ internal static class ConscriptMultiAssetBuild
                 }else if(type=="ArmorTemplate"){
                     instance=Normalize(xml);var plugin=new Ra3Ep1ArmorPlugin();plugin.Initialize(TargetPlatform.Win32);buffer=plugin.ProcessInstance(instance);
                 }else if(type=="WeaponTemplate"){
-                    AdmitWeapon(xml,official,fixtures);instance=Normalize(xml);var copy=Xml(instance.XmlNode.OuterXml);foreach(XmlElement nugget in copy.GetElementsByTagName("DamageNugget",SchemaSet.XmlNamespace))nugget.SetAttribute("TypeId",FastHash.GetHashCode("DamageNuggetType").ToString(System.Globalization.CultureInfo.InvariantCulture));
-                    var native=WeaponNativeProbe.Compile(copy);VerifyWeaponReferences(xml,native,instance,schemas);buffer=Buffer(WeaponTokenReproduction.EncodeAuthored(native));
+                    // Reborn: general weapon route: reviewed nugget classes, schema-derived metadata, source/native proof and stock-learned metadata grammar.
+                    WeaponTemplateCompiler.Admit(xml);instance=Normalize(xml);weaponGrammar??=WeaponTemplateCompiler.Qualify(manifest,schemas,stock);
+                    var proofSource=SchemaNativeContract.Resolve(Xml(xml.DocumentElement!.OuterXml),schemas,available);proofSource.DocumentElement!.RemoveAttribute("id");
+                    try{buffer=Buffer(WeaponTemplateCompiler.Build(proofSource,instance,official,weaponGrammar));}catch(Exception error)when(error is InvalidDataException or FormatException or OverflowException){compileLog.NativeError(error,xml);throw;}
                 }else if(type=="PurchasePlayerTechButtonTemplate"){
                     // Reborn: local/stock technology and state imports use the same typed resolution as other UI assets.
                     instance=Normalize(xml);var native=PurchaseTechButtonCompiler.Compile(instance.XmlNode);SchemaNativeContract.Verify(PurchaseTechButtonCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(Ep1PurchasePlayerTechButtonTemplate),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);

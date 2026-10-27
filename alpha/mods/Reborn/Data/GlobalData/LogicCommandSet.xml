@@ -42,13 +42,17 @@
 		<Cmd>Command_ConstructSovietTeslaWallHub</Cmd>
 		<Cmd>Command_ConstructSovietTeslaMoai</Cmd>
 		<Cmd>Command_ConstructSovietBullfrogMoai</Cmd>
-		<!-- <Cmd>Command_ConstructSovietArtilleryDome</Cmd> -->
+		<Cmd>Command_ConstructSovietArtilleryDome</Cmd>
 		<Cmd>Command_ConstructSovietCavalryStatue01</Cmd>
 		<Cmd>Command_ConstructSovietSwordStatue01</Cmd>
 		<Cmd>Command_ConstructSovietPilotStatue01</Cmd>
 		<Cmd>Command_ConstructSovietMotorCycleStatue01</Cmd>
 		<Cmd>Command_ConstructSovietFought2DeathStatue</Cmd>
 		<Cmd>Command_ConstructSovietBigMamaStatue</Cmd>
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="KR_ArtilleryDomeCommandSet">
 	</LogicCommandSet>
 	
 	<LogicCommandSet

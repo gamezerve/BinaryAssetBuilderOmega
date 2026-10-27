@@ -47,7 +47,8 @@ internal sealed class StockMetadataGrammar
             uint count=Word(stock,(int)Word(stock,table+8));if(count>4096)throw new InvalidDataException("Stock grammar list bound differs.");
             for(int i=0;i<count;i++){int item=table+12+i*12;if(Word(stock,item)!=0xB151A0EB||Word(stock,item+4)!=0)throw new InvalidDataException("Stock grammar item marker differs.");uint target=Word(stock,item+8);if(target!=0&&target<nativeRoot){
                 // Reborn: FX constant list wrappers select their real concrete stock class before learning its own/base row grammar.
-                Type concrete=element==typeof(SageBinaryData.FXShaderConstant)?SchemaNativeContract.ShaderConstantType(Word(stock,(int)target+4)):element;Record(concrete,(int)target,depth);
+                // Reborn: weapon nugget wrappers likewise name their concrete class in the wrapper tag.
+                Type concrete=element==typeof(SageBinaryData.FXShaderConstant)?SchemaNativeContract.ShaderConstantType(Word(stock,(int)target+4)):element==typeof(SageBinaryData.WeaponEffectNugget)?WeaponTemplateCompiler.Class(Word(stock,(int)target+4)).Native:element;Record(concrete,(int)target,depth);
             }}
         }
     }
@@ -123,6 +124,7 @@ internal sealed class StockMetadataGrammar
                 int item=table+12+i*12;Own(item);string itemPath=path+"["+i+"]";if(W(item)!=0xB151A0EB||W(item+4)!=0)throw new InvalidDataException("Generated metadata item marker differs: "+itemPath);
                 // Reborn: independently proved source/native records select the shader class; metadata must reproduce the stock-qualified class wrapper.
                 if(element==typeof(SageBinaryData.FXShaderConstant))Record(SchemaNativeContract.ShaderConstantType(Native(itemPath,0)),itemPath,Table(item,itemPath),depth+1);
+                else if(element==typeof(SageBinaryData.WeaponEffectNugget))Record(WeaponTemplateCompiler.Class(Native(itemPath,0)).Native,itemPath,Table(item,itemPath),depth+1);
                 else if(grammar.ContainsKey(element))Record(element,itemPath,Table(item,itemPath),depth+1);
                 else if(W(item+8)!=Coordinate(itemPath))throw new InvalidDataException("Generated metadata list item target differs: "+itemPath);
             }
@@ -172,7 +174,7 @@ internal sealed class StockMetadataGrammar
     private Rows Get(Type type){if(!grammar.TryGetValue(type,out var rows))grammar[type]=rows=new Rows();return rows;}
     private static Type Base(Type type)=>type.GetField("Base")?.FieldType??throw new InvalidDataException("Stock grammar base model missing: "+type.Name);
     private static FieldInfo Member(Type type,uint name){var fields=type.GetFields(BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Instance).Where(f=>FastHash.GetHashCode(f.Name)==name).ToArray();if(fields.Length!=1)throw new InvalidDataException("Stock grammar field has no unique native member: "+type.Name+"/"+name.ToString("X8"));return fields[0];}
-    private static bool IsList(Type type)=>type.IsGenericType&&(type.GetGenericTypeDefinition().FullName=="Relo.List`1"||type.GetGenericTypeDefinition().FullName=="Relo.PolymorphicList`1"&&type.GetGenericArguments()[0]==typeof(SageBinaryData.FXShaderConstant));
+    private static bool IsList(Type type)=>type.IsGenericType&&(type.GetGenericTypeDefinition().FullName=="Relo.List`1"||type.GetGenericTypeDefinition().FullName=="Relo.PolymorphicList`1"&&(type.GetGenericArguments()[0]==typeof(SageBinaryData.FXShaderConstant)||type.GetGenericArguments()[0]==typeof(SageBinaryData.WeaponEffectNugget)));
     private static uint Word(byte[] b,int at){if(at<0||at>b.Length-4)throw new InvalidDataException("Metadata grammar word bounds differ.");return BinaryPrimitives.ReadUInt32LittleEndian(b.AsSpan(at,4));}
     private static uint[] Slots(byte[] b){if(b.Length==0)return Array.Empty<uint>();if(b.Length<8||b.Length%4!=0||Word(b,b.Length-4)!=uint.MaxValue)throw new InvalidDataException("Metadata grammar auxiliary framing.");return Enumerable.Range(0,b.Length/4-1).Select(i=>Word(b,i*4)).ToArray();}
 }
