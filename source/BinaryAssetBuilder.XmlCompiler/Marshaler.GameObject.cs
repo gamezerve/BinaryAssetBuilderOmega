@@ -210,7 +210,9 @@ public static partial class Marshaler
                 *(uint*)*objT=0xAE4A97B0u;
                 break;
             case 0xB28C3D52u:
-                MarshalPolymorphicType<FireWeaponUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: EP1 owns the interval/status at the root and uses smaller firing nuggets than KW.
+                using(var context=state.Push((void**)objT,(uint)sizeof(Ep1FireWeaponUpdateModuleData),1u))Marshal(node,(Ep1FireWeaponUpdateModuleData*)*objT,state);
+                *(uint*)*objT=0xB28C3D52u;
                 break;
             case 0xF5D17C70u:
                 MarshalPolymorphicType<StructureToppleUpdateModuleData, BehaviorModuleData>(node, objT, state);

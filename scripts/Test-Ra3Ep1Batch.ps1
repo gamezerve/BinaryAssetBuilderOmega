@@ -138,6 +138,8 @@ if($SchedulerControl){
     # Reborn: tracker regressions cover EP1 emotion imports, filters, defaults and complete object composition.
     # Reborn: capture abilities use the original include and complete inherited source/native contracts.
     # Reborn: passive effects cover healing, modifiers, both filters, status validation and optional attachment.
+    # Reborn: repeated firing uses a root interval, source-sized nuggets and optional status/offset records.
+    Add-BatchCase 'fire-weapon-update' 'FireWeaponUpdate' @('fire-weapon-update-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'passive-area-effect' 'PassiveAreaEffect' @('passive-area-effect-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'capture-ability' 'CaptureAbility' @('capture-ability-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'emotion-tracker' 'EmotionTracker' @('emotion-tracker-self-test',$StaticManifest,$GlobalManifest)

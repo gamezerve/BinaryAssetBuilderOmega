@@ -8,6 +8,18 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: repeated firing uses the EP1 root interval and smaller nuggets, preserving the separate KW implementation. -->
+`FireWeaponUpdate` is build-enabled with its 32-byte EP1 root and 16-byte firing
+nuggets. `FireInterval` belongs to the root; each source-sized FireWeaponNugget
+owns a weapon reference, optional initial FireDelay, OneShot flag and optional
+3D Offset. AliveOnly, ActiveWhenDisabled and optional ObjectStatusValidation
+are editable. Empty/expanded nugget lists and omitted status/offset records
+follow the official XSD. KW-only HeroModeTrigger/ChargingModeTrigger and a
+per-nugget FireInterval are not EP1 schema fields. Original Tesla Trooper and
+Tesla Tank records independently qualify the native fields and metadata.
+Developer and fast regressions each pass 15 checks, including full object
+composition, eight-nugget lists, vector offsets and legacy-field rejection.
+
 <!-- Reborn: passive effects use the complete Uprising layout rather than the shorter legacy KW record. -->
 `PassiveAreaEffectBehavior` is build-enabled with its 80-byte EP1 record.
 Healing percentages/points, beneficiary limits, radius, survey interval, upgrade,

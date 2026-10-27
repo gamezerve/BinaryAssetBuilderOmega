@@ -229,6 +229,9 @@ internal static class Program
             // Reborn: cover original and authored EP1 emotion trackers through full GameObject composition.
             // Reborn: exercise shared-include capture abilities and authored inherited fields through full GameObject composition.
             // Reborn: exercise full EP1 passive healing and modifier graphs through the production GameObject path.
+            // Reborn: validate EP1 repeated weapon firing through full source/native/metadata object composition.
+            if(args.Length==3 && args[0]=="fire-weapon-update-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();FireWeaponUpdateSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="passive-area-effect-self-test")
             {CompilerSmokeTest.InitializeHashProvider();PassiveAreaEffectSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="capture-ability-self-test")
