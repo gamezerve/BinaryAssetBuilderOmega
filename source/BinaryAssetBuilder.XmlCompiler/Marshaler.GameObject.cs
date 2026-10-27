@@ -186,7 +186,9 @@ public static partial class Marshaler
                 MarshalPolymorphicType<DynamicShroudClearingRangeUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0xA966196Eu:
-                MarshalPolymorphicType<EmotionTrackerUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: retain the emotion tracker wire ID while allocating the distinct Uprising native layout.
+                using(var context=state.Push((void**)objT,(uint)sizeof(Ep1EmotionTrackerUpdateModuleData),1u))Marshal(node,(Ep1EmotionTrackerUpdateModuleData*)*objT,state);
+                *(uint*)*objT=0xA966196Eu;
                 break;
             case 0x0FF760E0u:
                 // Reborn: EP1 engineer uses the stock-qualified 92-byte record with inline status/EVA storage, not the KW pointer layout.

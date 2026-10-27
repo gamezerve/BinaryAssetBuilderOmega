@@ -111,6 +111,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: independently qualify collision metadata before composing authored modules.
     // Reborn: qualify the complete toggle state and inherited ability grammar on demand.
     // Reborn: qualify Engineer assembly metadata only when an assembly module is authored.
+    // Reborn: qualify emotion tracker metadata only for authored tracker modules.
+    private readonly Lazy<StockMetadataGrammar> emotionTracker;
     private readonly Lazy<StockMetadataGrammar> assembleStructure;
     private readonly Lazy<StockMetadataGrammar> toggleStatus;
     private readonly Lazy<StockMetadataGrammar> fireWeaponCollide;
@@ -186,6 +188,7 @@ internal sealed class ConscriptVariableGraphVerifier
         playerPowerManager=new(()=>PlayerPowerManagerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         radar=new(()=>RadarBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         subObjectsUpgrade=new(()=>SubObjectsUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        emotionTracker=new(()=>EmotionTrackerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         assembleStructure=new(()=>AssembleStructureContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         toggleStatus=new(()=>ToggleStatusContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         fireWeaponCollide=new(()=>FireWeaponCollideContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -404,6 +407,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: prove collision fields, references, optional records and retail metadata before splicing.
                 // Reborn: verify complete authored toggle graphs and source-sized states before metadata composition.
                 // Reborn: assembly lists and inherited ability fields have full source/native and stock metadata proof.
+                // Reborn: independently prove tracker values, filter graphs and exact emotion import identities before splicing.
+                if(owner.NativeType==typeof(Ep1EmotionTrackerUpdateModuleData)){
+                    var grammar=emotionTracker.Value;var emotionNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,EmotionTrackerContract.TypeId,emotionNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(emotionNative,official,EmotionTrackerContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,emotionNative,owner.NativeType,proof.Records);Own(emotionNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(AssembleStructureSpecialAbilityUpdateModuleData)){
                     var grammar=assembleStructure.Value;var assemblyNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,AssembleStructureContract.TypeId,assemblyNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(assemblyNative,official,AssembleStructureContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,assemblyNative,owner.NativeType,proof.Records);Own(assemblyNative,start,stop);Splice(owner,metadata,start,size);continue;

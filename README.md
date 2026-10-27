@@ -6,7 +6,18 @@ asset IDs, instance includes, inheritance, `$` definitions/expressions,
 TGA/DDS textures and W3X models. Current alpha capability restrictions are
 temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
-## Current outcome — October 27, 2026
+## Current outcome — October 28, 2026
+
+<!-- Reborn: emotion tracking uses the Uprising record and strong EmotionTemplate imports, preserving the separate KW implementation. -->
+`EmotionTrackerUpdate` is build-enabled with its 56-byte EP1 record. All six
+attributes, four optional ObjectFilters and the source-sized `AddEmotion` list
+are editable. Emotion entries are strong EmotionTemplate references, rather than
+KW's string list; the KW-only QuarrelProbability field is absent from the official
+EP1 schema. Omitted values retain the official defaults (notably a `2s` update
+delay and fear immunity level `5`). Soviet, Allied and Imperial Engineer records
+independently qualify the native fields and metadata.
+Developer and fast regressions each pass 16 checks, including full GameObject
+composition, strong import identities, all filters and empty/eight-entry lists.
 
 <!-- Reborn: Engineer assembly is a complete source-driven EP1 ability rather than an unsupported family. -->
 `AssembleStructureSpecialAbilityUpdate` is build-enabled with its original

@@ -135,6 +135,8 @@ if($SchedulerControl){
     # Reborn: collision flags, optional records and stock ABI are tested in isolation.
     # Reborn: source-driven toggle states include full native/metadata GameObject composition.
     # Reborn: assembly abilities cover original/default/variable structure lists and complete object composition.
+    # Reborn: tracker regressions cover EP1 emotion imports, filters, defaults and complete object composition.
+    Add-BatchCase 'emotion-tracker' 'EmotionTracker' @('emotion-tracker-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'assemble-structure' 'AssembleStructure' @('assemble-structure-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'toggle-status-composition' 'ToggleStatusComposition' @('toggle-status-composition-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'fire-weapon-collide' 'FireWeaponCollide' @('fire-weapon-collide-self-test',$StaticManifest,$GlobalManifest)
