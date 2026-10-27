@@ -106,6 +106,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: bunker invisibility has its own retail-qualified strong-reference metadata contract.
     // Reborn: qualify aura grammar only when this family is authored.
     // Reborn: load detector grammar only for authored detector modules.
+    // Reborn: complete SlowDeath phase records have stock-qualified native and metadata ownership.
+    private readonly Lazy<StockMetadataGrammar> slowDeath;
     private readonly Lazy<StockMetadataGrammar> stealthDetector;
     private readonly Lazy<StockMetadataGrammar> attributeModifierAura;
     private readonly Lazy<StockMetadataGrammar> invisibilityBehavior;
@@ -176,6 +178,7 @@ internal sealed class ConscriptVariableGraphVerifier
         playerPowerManager=new(()=>PlayerPowerManagerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         radar=new(()=>RadarBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         subObjectsUpgrade=new(()=>SubObjectsUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        slowDeath=new(()=>SlowDeathContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         stealthDetector=new(()=>StealthDetectorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         attributeModifierAura=new(()=>AttributeModifierAuraContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         invisibilityBehavior=new(()=>InvisibilityBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -384,6 +387,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: prove the actual template identity and import occurrence before composing invisibility behavior metadata.
                 // Reborn: compose the complete authored aura graph after independent source and metadata verification.
                 // Reborn: compose each independently proved detector in its actual authored module position.
+                // Reborn: compose source-sized death phases and optional masks after complete independent source/native proof.
+                if(owner.NativeType==typeof(SlowDeathBehaviorModuleData)){
+                    var grammar=slowDeath.Value;var deathNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,SlowDeathContract.TypeId,deathNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(deathNative,official,SlowDeathContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,deathNative,owner.NativeType,proof.Records);Own(deathNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(Ep1StealthDetectorUpdateModuleData)){
                     var grammar=stealthDetector.Value;var detectorNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,StealthDetectorContract.TypeId,detectorNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(detectorNative,official,StealthDetectorContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,detectorNative,owner.NativeType,proof.Records);Own(detectorNative,start,stop);Splice(owner,metadata,start,size);continue;

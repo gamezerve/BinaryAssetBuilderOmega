@@ -129,6 +129,8 @@ if($SchedulerControl){
     # Reborn: cover invisibility-template imports and bunker garrison composition.
     # Reborn: include aura fields and inherited upgrade graphs in offline regression.
     # Reborn: detector imports, KindOf masks, bone storage and inherited upgrades.
+    # Reborn: full death phases, masks, typed imports, audio lists and multi-module composition.
+    Add-BatchCase 'slow-death' 'SlowDeath' @('slow-death-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'stealth-detector' 'StealthDetectorUpdate' @('stealth-detector-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'attribute-modifier-aura' 'AttributeModifierAuraUpdate' @('attribute-modifier-aura-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'invisibility-behavior' 'InvisibilityBehavior' @('invisibility-behavior-self-test',$StaticManifest,$GlobalManifest)

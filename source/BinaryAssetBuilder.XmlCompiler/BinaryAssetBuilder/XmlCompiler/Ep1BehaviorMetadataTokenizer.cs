@@ -395,13 +395,13 @@ public static class Ep1BehaviorMetadataTokenizer
         "DisabledBitFlags" => 0x196570C9, "DisabledType" => 0xBDE95B5A, "DurationUnsignedInt" => 0x6F6D1AE7,
         "EffectInfoBitFlags" => 0xA2F37A52, "EffectInfoType[]" => 0x25F5379F,
         "FXListBehaviorDirection" => 0x5E151008, "FXListBehaviorEvent[]" => 0x65BE8011, "FXListBehaviorType" => 0x03AF8D2F,
-        "FXListRef" => 0x0D1C8E83, "FXParticleSystemRef" => 0x43F1CE36, "GameObjectWeakRef" => 0x148ED75D,
+        "FXListRef" or "FXListRef[]" => 0x0D1C8E83, "FXParticleSystemRef" => 0x43F1CE36, "GameObjectWeakRef" => 0x148ED75D,
         "KindOfBitFlags" => 0x9AFC9193, "LocomotorSetType" => 0x845D12B2, "LogicCommandRef" => 0xE0E2A81A,
         "MicroManagerStateList" => 0xD7620AAA, "MicroManagerUnitTaskList" => 0x74BAC2ED,
         "ModelConditionBitFlags" => 0x67DBBFC9, "ModelConditionFlagType" => 0x15723E0B,
         // Reborn: OCL enum/list wire signatures are captured from retail PlayerSpellBook metadata.
         "OCLCreateLocType" => 0xE5C09280, "OCLUpgradePair[]" => 0xA8B856F2,
-        "ObjectCreationListRef" => 0x42E4E9D1, "ObjectFilter" => 0xE46EA3B2, "ObjectFilterAlignment" => 0x9FFD43EB,
+        "ObjectCreationListRef" or "ObjectCreationListRef[]" => 0x42E4E9D1, "ObjectFilter" => 0xE46EA3B2, "ObjectFilterAlignment" => 0x9FFD43EB,
         "ObjectFilterAssetRef" => 0x1E592B76, "ObjectFilterRelationshipBitMask" => 0x5C8981A9, "ObjectFilterRule" => 0x0027BB58,
         "ObjectStatusBitFlags" => 0xA7BD811E, "ObjectStatusValidationDataType" => 0x3E8F938C,
         "PartitionManagerDistTestType" => 0x9F0DA607, "Percentage" or "SageReal" or "xs:float" => 0x645864F3,
@@ -409,6 +409,7 @@ public static class Ep1BehaviorMetadataTokenizer
         "Poid:SubObject"=>0x03A28C40,"BuildingDestructionItem[]"=>0xFFDDEC52,
         "PlayerTechRef" => 0xDBBF0FDF, "Poid:ModuleData" => 0xBDF07965, "Poid:ObjectFilter" => 0x4D3B3F19,
         "RGBColor" => 0xAEE762A5, "SageBool" => 0x77E3F4F7, "SageInt" => 0x23E650B8, "SageUnsignedInt" => 0x763177A4,
+        // Reborn: death-phase containers retain their own list signatures; repeated typed references use the same stock element wire as scalar references.
         "SlowDeathFXListType[]" => 0x33D0DFAE, "SlowDeathOCLType[]" => 0x97474300, "SlowDeathPhaseType" => 0x350A89A5,
         "SlowDeathSoundType[]" => 0xB8E87C25, "SlowDeathWeaponType[]" => 0x908107EC, "SoundOrEvaEvent" => 0x1AE6B6B7,
         "SpecialAbilityUpdateOptionsTypeBitFlags" => 0x982F7738, "SpecialPowerModuleInfo[]" => 0xADA54D29,
@@ -421,7 +422,7 @@ public static class Ep1BehaviorMetadataTokenizer
         "Vector3" => 0x29368077, "Velocity" => 0x7A76C60E, "WeakReference:GameObject[]" => 0x9B19049F,
         // Reborn: these turret signatures were read from the original Soviet Sentry Gun metadata.
         "TurretAIData"=>0xF6753063,"TurretAITargetChooserData"=>0x08CF34B0,"TargetingCompareListRef"=>0x1B85B469,"TargetChooserDynamicTargetFlags"=>0x344E0F38,"ObjectVisionRangeItem[]"=>0x2E11FC54,"WeaponSlotBitFlags"=>0x28AEDB15,
-        "WeaponChoiceCriteria" => 0x1D110792, "WeaponFireProbabilityType[]" => 0x080BE21F, "WeaponRef" => 0xD046DD22,
+        "WeaponChoiceCriteria" => 0x1D110792, "WeaponFireProbabilityType[]" => 0x080BE21F, "WeaponRef" or "WeaponRef[]" => 0xD046DD22,
         "WeaponSlotInterleavedStyleType" => 0xBE669829, "WeaponSlotType" => 0x1848C549,
         "WeaponSlot_Contained[]" => 0xBA2D72E2, "WeaponSlot_Hardpoint[]" => 0xCE5853D7,
         "WeaponSlot_HierarchicalTurret[]" => 0xC4884051, "WeaponSlot_Turret[]" => 0x4F14A301,

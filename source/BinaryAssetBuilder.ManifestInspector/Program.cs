@@ -220,6 +220,9 @@ internal static class Program
             // Reborn: verify strong invisibility-template imports, retargets, garrison composition and missing-reference diagnostics offline.
             // Reborn: verify full aura source/native graphs without user output or a game launch.
             // Reborn: test full detector native/metadata graphs and authored GameObject composition offline.
+            // Reborn: test full death phase/native graphs and multiple authored death modules offline.
+            if(args.Length==3 && args[0]=="slow-death-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();SlowDeathSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="stealth-detector-self-test")
             {CompilerSmokeTest.InitializeHashProvider();StealthDetectorSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="attribute-modifier-aura-self-test")

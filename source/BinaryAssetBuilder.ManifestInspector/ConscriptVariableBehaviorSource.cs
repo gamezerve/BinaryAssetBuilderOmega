@@ -60,6 +60,8 @@ internal static class ConscriptVariableBehaviorSource
     internal static Plan Admit(XmlDocument source,XmlDocument baseline,XmlSchemaSet schemas)
     {
         // Reborn: field-family ordering is normalized in memory before source admission, retaining the authored nugget sequence.
+        // Reborn: SlowDeath keeps phase/list order while normalizing independent source field families.
+        SlowDeathContract.Normalize(source);
         SubObjectsUpgradeContract.Normalize(source,schemas);
         ConscriptSharedSourceContract.Validate(source,baseline,schemas);
         if(!ConscriptSourceInput.Identity(source.DocumentElement!.GetAttribute("id")))throw SdkXmlDiagnostics.At(new InvalidDataException("Invalid GameObject identity."),source.DocumentElement);
@@ -123,6 +125,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: invisibility-template identity is a source-driven strong asset reference under the complete EP1 proof.
             // Reborn: aura graphs use independent schema/native and stock metadata proof.
             // Reborn: detector fields and Upgrade inheritance use independent EP1 native/metadata proof.
+            // Reborn: all SlowDeath phase, mask and condition fields are proved against current source rather than a stock template.
+            if(owner.NativeType==typeof(SageBinaryData.SlowDeathBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1StealthDetectorUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1AttributeModifierAuraUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.InvisibilityBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

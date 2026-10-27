@@ -106,6 +106,8 @@ internal sealed class SchemaNativeContract
     {
         var document=new XmlDocument{XmlResolver=null,PreserveWhitespace=true};document.LoadXml(source.DocumentElement!.OuterXml);
         // Reborn: EA subobject source may place inherited animation after nuggets; validation copies use the original XSD family order.
+        // Reborn: stock and authored SlowDeath records share stable independent field-family normalization.
+        SlowDeathContract.Normalize(document);
         SubObjectsUpgradeContract.Normalize(document,schemas.Schemas);document.Schemas.Add(schemas.Schemas);
         document.Validate((_,e)=>throw new InvalidDataException(e.Message));ConscriptBehaviorSurvey.ResolveStrong(document,schemas,catalog);return document;
     }

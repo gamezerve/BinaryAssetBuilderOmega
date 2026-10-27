@@ -8,6 +8,18 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: SlowDeath authoring follows complete source/native ownership rather than Conscript template shapes. -->
+`SlowDeath` now accepts source-driven timing, sinking/flinging/fading settings,
+optional death masks, full `DieMuxData` and FX/OCL/weapon/sound phase lists.
+Each phase family keeps the official XSD maximum of four records; nested lists
+follow their declared cardinality. `Sound/@List` remains literal audio names,
+as specified by the original string-list schema. Independent field-family order
+is normalized without changing within-family phase or item order.
+Regression: `slow-death-self-test <static.manifest> <global.manifest>` covers
+original scout/conscript records, populated retail phase metadata, every own
+field, defaults/empty lists, all seven Bear death modules and genuine
+schema/missing-reference/corrupt-output failures.
+
 <!-- Reborn: Uprising stealth detection uses a separate 164-byte record without the KW-only UseMetaAOI field. -->
 `StealthDetectorUpdate` is build-enabled with its complete 164-byte EP1 record.
 Detection rate/range, disabled/garrisoned/contained flags, both KindOf masks,
