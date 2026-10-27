@@ -217,6 +217,9 @@ internal static class Program
             // Reborn: verify populated extra-crush lists, nested filters/conditions and original-file native diagnostics offline.
             // Reborn: verify raw EVA-create logic-frame words, retail uint metadata and strong announcement references offline.
             // Reborn: test complete garrison and inherited passenger graphs through actual native and metadata dispatch offline.
+            // Reborn: verify strong invisibility-template imports, retargets, garrison composition and missing-reference diagnostics offline.
+            if(args.Length==3 && args[0]=="invisibility-behavior-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();InvisibilityBehaviorSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="garrison-contain-self-test")
             {CompilerSmokeTest.InitializeHashProvider();GarrisonContainSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="eva-create-client-self-test")

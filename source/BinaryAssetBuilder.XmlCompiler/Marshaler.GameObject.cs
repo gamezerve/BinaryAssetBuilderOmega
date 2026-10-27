@@ -14,6 +14,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: EP1 bunker invisibility uses a strong template import and its real concrete behavior identity.
+            case 0x054B09C4u:
+                MarshalPolymorphicType<InvisibilityBehaviorModuleData,BehaviorModuleData>(node,objT,state);
+                break;
             // Reborn: EP1 attack-assist responses preserve their real wire identity and complete status/slot record.
             case 0xEC308E0Eu:
                 MarshalPolymorphicType<AttackAssistResponseBehaviorModuleData,BehaviorModuleData>(node,objT,state);

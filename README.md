@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: bunker invisibility uses a real strong template import and its original EP1 concrete behavior identity. -->
+`InvisibilityBehavior` is build-enabled with its 12-byte EP1 record and required
+strong `InvisibilityTemplate` reference. Local IDs and compatible catalog targets
+are editable; qualified references are accepted. Original Soviet Bunker data
+qualifies the import slot and `914CA765` reference wire. Tests cover retargeting,
+full-object garrison/invisibility composition, corrupt output and missing/omitted
+required references. This enables the behavior referencing a template; it does
+not add a new top-level InvisibilityTemplate asset compiler.
+Developer regression: `invisibility-behavior-self-test <static.manifest> <global.manifest>`.
+
 <!-- Reborn: garrisons are source-driven through the full inline-roster/OpenContain EP1 record rather than a stock-shaped template gate. -->
 `GarrisonContain` is build-enabled with its 168-byte EP1 header, inline
 `InitialRoster`, all three garrison flags and inherited OpenContain fields.

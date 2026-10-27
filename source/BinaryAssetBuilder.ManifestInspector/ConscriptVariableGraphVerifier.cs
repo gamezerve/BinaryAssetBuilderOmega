@@ -103,6 +103,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> attackAssistResponse;
     // Reborn: garrisons use the retail-qualified inline roster and OpenContain metadata chain.
     private readonly Lazy<StockMetadataGrammar> garrisonContain;
+    // Reborn: bunker invisibility has its own retail-qualified strong-reference metadata contract.
+    private readonly Lazy<StockMetadataGrammar> invisibilityBehavior;
     // Reborn: subobject upgrade nuggets have a separate retail-qualified EP1 layout and metadata grammar.
     private readonly Lazy<StockMetadataGrammar> subObjectsUpgrade;
     private readonly Lazy<StockMetadataGrammar> wallBuilder;
@@ -170,6 +172,7 @@ internal sealed class ConscriptVariableGraphVerifier
         playerPowerManager=new(()=>PlayerPowerManagerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         radar=new(()=>RadarBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         subObjectsUpgrade=new(()=>SubObjectsUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        invisibilityBehavior=new(()=>InvisibilityBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         garrisonContain=new(()=>GarrisonContainContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         attackAssistResponse=new(()=>AttackAssistResponseContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         runOffMap=new(()=>RunOffMapContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -372,6 +375,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: preserve all authored waypoint and flight/death/trigger fields during object composition.
                 // Reborn: independently prove authored assistance masks and slots before whole-object metadata composition.
                 // Reborn: compose independently proved garrison and inherited passenger graphs in actual authored module order.
+                // Reborn: prove the actual template identity and import occurrence before composing invisibility behavior metadata.
+                if(owner.NativeType==typeof(InvisibilityBehaviorModuleData)){
+                    var grammar=invisibilityBehavior.Value;var invisibilityNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,InvisibilityBehaviorContract.TypeId,invisibilityNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(invisibilityNative,official,InvisibilityBehaviorContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,invisibilityNative,owner.NativeType,proof.Records);Own(invisibilityNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(GarrisonContainModuleData)){
                     var grammar=garrisonContain.Value;var garrisonNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,GarrisonContainContract.TypeId,garrisonNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(garrisonNative,official,GarrisonContainContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,garrisonNative,owner.NativeType,proof.Records);Own(garrisonNative,start,stop);Splice(owner,metadata,start,size);continue;
