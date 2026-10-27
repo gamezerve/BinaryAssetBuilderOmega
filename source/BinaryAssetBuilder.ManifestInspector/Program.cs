@@ -216,6 +216,9 @@ internal static class Program
             // Reborn: exercise full EP1 attack-assistance masks/slots and notification-pair composition offline.
             // Reborn: verify populated extra-crush lists, nested filters/conditions and original-file native diagnostics offline.
             // Reborn: verify raw EVA-create logic-frame words, retail uint metadata and strong announcement references offline.
+            // Reborn: test complete garrison and inherited passenger graphs through actual native and metadata dispatch offline.
+            if(args.Length==3 && args[0]=="garrison-contain-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();GarrisonContainSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="eva-create-client-self-test")
             {CompilerSmokeTest.InitializeHashProvider();EvaCreateClientSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="crusher-children-self-test")

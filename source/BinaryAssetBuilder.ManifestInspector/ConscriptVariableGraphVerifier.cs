@@ -101,6 +101,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> runOffMap;
     // Reborn: assistance responses retain their independent EP1 native/status and metadata qualification.
     private readonly Lazy<StockMetadataGrammar> attackAssistResponse;
+    // Reborn: garrisons use the retail-qualified inline roster and OpenContain metadata chain.
+    private readonly Lazy<StockMetadataGrammar> garrisonContain;
     // Reborn: subobject upgrade nuggets have a separate retail-qualified EP1 layout and metadata grammar.
     private readonly Lazy<StockMetadataGrammar> subObjectsUpgrade;
     private readonly Lazy<StockMetadataGrammar> wallBuilder;
@@ -168,6 +170,7 @@ internal sealed class ConscriptVariableGraphVerifier
         playerPowerManager=new(()=>PlayerPowerManagerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         radar=new(()=>RadarBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         subObjectsUpgrade=new(()=>SubObjectsUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        garrisonContain=new(()=>GarrisonContainContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         attackAssistResponse=new(()=>AttackAssistResponseContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         runOffMap=new(()=>RunOffMapContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         ejectPassengers=new(()=>EjectPassengersContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -368,6 +371,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: compose each source-sized passenger-ejection graph with independent inherited/own field proof.
                 // Reborn: preserve all authored waypoint and flight/death/trigger fields during object composition.
                 // Reborn: independently prove authored assistance masks and slots before whole-object metadata composition.
+                // Reborn: compose independently proved garrison and inherited passenger graphs in actual authored module order.
+                if(owner.NativeType==typeof(GarrisonContainModuleData)){
+                    var grammar=garrisonContain.Value;var garrisonNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,GarrisonContainContract.TypeId,garrisonNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(garrisonNative,official,GarrisonContainContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,garrisonNative,owner.NativeType,proof.Records);Own(garrisonNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(AttackAssistResponseBehaviorModuleData)){
                     var grammar=attackAssistResponse.Value;var assistNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,AttackAssistResponseContract.TypeId,assistNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(assistNative,official,AttackAssistResponseContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,assistNative,owner.NativeType,proof.Records);Own(assistNative,start,stop);Splice(owner,metadata,start,size);continue;

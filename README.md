@@ -8,6 +8,17 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: garrisons are source-driven through the full inline-roster/OpenContain EP1 record rather than a stock-shaped template gate. -->
+`GarrisonContain` is build-enabled with its 168-byte EP1 header, inline
+`InitialRoster`, all three garrison flags and inherited OpenContain fields.
+Passenger filters/bones, occupancy/disability flags, exit modifiers, member
+statuses and roster identities/counts are editable. The optional roster keeps
+its official single-record cardinality; no roster leaves its inline words zero.
+Original Soviet Bunker and Allied Base Defense records qualify the native layout
+and metadata. Defaults, empty/populated rosters, authored inherited lists, full
+GameObjects and corrupt output are covered by
+`garrison-contain-self-test <static.manifest> <global.manifest>`.
+
 <!-- Reborn: incoming static references are not a reliable unused test for runtime-selected ability-button registries. -->
 `UNUSEDASSET` excludes `UnitAbilityButtonTemplate` and
 `JoypadCommandBarButtonTemplate`. Unit-ability templates select a LogicCommand;
