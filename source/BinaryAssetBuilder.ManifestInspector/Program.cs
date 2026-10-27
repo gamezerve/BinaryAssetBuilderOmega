@@ -230,6 +230,9 @@ internal static class Program
             // Reborn: exercise shared-include capture abilities and authored inherited fields through full GameObject composition.
             // Reborn: exercise full EP1 passive healing and modifier graphs through the production GameObject path.
             // Reborn: validate EP1 repeated weapon firing through full source/native/metadata object composition.
+            // Reborn: object-specific root voices have an isolated full-object regression entry point.
+            if(args.Length==3 && args[0]=="object-specific-voice-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();ObjectSpecificVoiceSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="fire-weapon-update-self-test")
             {CompilerSmokeTest.InitializeHashProvider();FireWeaponUpdateSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="passive-area-effect-self-test")

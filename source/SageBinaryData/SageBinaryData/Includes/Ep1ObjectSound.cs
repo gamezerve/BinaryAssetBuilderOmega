@@ -130,8 +130,11 @@ namespace SageBinaryData
     // Reborn: EP1 named voices use the EP1 sound/EVA base (Sound pointer + inline typed EvaEvent) before the Name hash; KW's string EvaEvent base differs.
     [StructLayout(LayoutKind.Sequential)]
     public struct Ep1AudioVoiceReferentialEntry { public Ep1SoundOrEvaEvent Base; public StringHash Name; }
+    // Reborn: object-specific EP1 voices store inline EVA, a six-value voice ordinal and a weak target hash in sixteen bytes.
     [StructLayout(LayoutKind.Sequential)]
-    public struct Ep1AudioArrayVoice { public List<Ep1AudioVoiceEntry> AudioEntry; public List<AudioObjectSpecificVoiceEntry> ObjectSpecificEntry; public List<Ep1AudioVoiceReferentialEntry> NamedEntry; }
+    public struct Ep1AudioObjectSpecificVoiceEntry { public Ep1SoundOrEvaEvent Base; public ThingTemplateObjectSpecificVoiceType AudioType; public TypedAssetId<BaseAssetType> TargetObject; }
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Ep1AudioArrayVoice { public List<Ep1AudioVoiceEntry> AudioEntry; public List<Ep1AudioObjectSpecificVoiceEntry> ObjectSpecificEntry; public List<Ep1AudioVoiceReferentialEntry> NamedEntry; }
     [StructLayout(LayoutKind.Sequential)]
     public struct Ep1AudioArraySound { public List<Ep1AudioSoundEntry> AudioEntry; }
     // Reborn: a separate selected selector graph prevents EP1 enum ordinals from leaking into legacy KW client/root audio dispatch.

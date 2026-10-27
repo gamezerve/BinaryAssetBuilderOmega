@@ -47,7 +47,12 @@ public static partial class Marshaler
     public static unsafe void Marshal(Node node,Ep1AudioVoiceReferentialEntry* objT,Tracker state)
     {if(node==null)return;Marshal(node.GetAttributeValue(nameof(Ep1AudioVoiceReferentialEntry.Name),null),&objT->Name,state);Marshal(node.GetAttributeValue("Sound",null),&objT->Base.Sound,state);Marshal(node.GetAttributeValue("EvaEvent",null),&objT->Base.EvaEvent,state);}
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: retain all voice entry families and ordering; object-specific entries keep their original record type and stay refused by the root tokenizer. */
+    /** Reborn: object-specific voices preserve EP1 Sound/EVA storage, the declared voice ordinal and weak GameObject target identity. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node,Ep1AudioObjectSpecificVoiceEntry* objT,Tracker state)
+    {if(node==null)return;Marshal(node.GetAttributeValue("Sound",null),&objT->Base.Sound,state);Marshal(node.GetAttributeValue("EvaEvent",null),&objT->Base.EvaEvent,state);Marshal(node.GetAttributeValue("AudioType",null),&objT->AudioType,state);Marshal(node.GetAttributeValue("TargetObject",null),&objT->TargetObject,state);}
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: retain all voice entry families and ordering; object-specific entries use the stock-qualified EP1 Sound/EVA base. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node,Ep1AudioArrayVoice* objT,Tracker state)
     {if(node==null)return;Marshal(node.GetChildNodes(nameof(Ep1AudioArrayVoice.AudioEntry)),&objT->AudioEntry,state);Marshal(node.GetChildNodes(nameof(Ep1AudioArrayVoice.ObjectSpecificEntry)),&objT->ObjectSpecificEntry,state);Marshal(node.GetChildNodes(nameof(Ep1AudioArrayVoice.NamedEntry)),&objT->NamedEntry,state);}

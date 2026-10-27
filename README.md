@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: populated root object-specific voices use the independently stock-qualified EP1 layout. -->
+Root `AudioArrayVoice/ObjectSpecificEntry` is build-enabled. Its 16-byte EP1
+record preserves Sound/EvaEvent, all six AudioType values and the weak
+TargetObject identity. The original Tesla Trooper voice qualifies the native
+record and metadata. Regression covers four complete GameObjects with original,
+retargeted, repeated, omitted and empty voice entries. KW audio layouts remain
+separate. Unsupported SkirmishAIInformation/AIContextualPower now identifies the
+specific child instead of reporting a generic root-storage error.
+
+
 <!-- Reborn: repeated firing uses the EP1 root interval and smaller nuggets, preserving the separate KW implementation. -->
 `FireWeaponUpdate` is build-enabled with its 32-byte EP1 root and 16-byte firing
 nuggets. `FireInterval` belongs to the root; each source-sized FireWeaponNugget

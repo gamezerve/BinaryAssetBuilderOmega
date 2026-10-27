@@ -139,6 +139,8 @@ if($SchedulerControl){
     # Reborn: capture abilities use the original include and complete inherited source/native contracts.
     # Reborn: passive effects cover healing, modifiers, both filters, status validation and optional attachment.
     # Reborn: repeated firing uses a root interval, source-sized nuggets and optional status/offset records.
+    # Reborn: root object-specific voices include complete GameObject composition and stock qualification.
+    Add-BatchCase 'object-specific-voice' 'ObjectSpecificVoice' @('object-specific-voice-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'fire-weapon-update' 'FireWeaponUpdate' @('fire-weapon-update-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'passive-area-effect' 'PassiveAreaEffect' @('passive-area-effect-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'capture-ability' 'CaptureAbility' @('capture-ability-self-test',$StaticManifest,$GlobalManifest)

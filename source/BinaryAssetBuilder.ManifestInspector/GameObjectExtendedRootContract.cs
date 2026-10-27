@@ -54,6 +54,14 @@ internal static class GameObjectExtendedRootContract
             if(named.Length==0||Word(bomber.Bytes,voice+8)!=0||Word(bomber.Bytes,voice+16)!=named.Length)throw new InvalidDataException("Original named-voice witness cardinality differs: AlliedBomberAircraft.");
             int namedItems=(int)Word(bomber.Bytes,voice+20);for(int i=0;i<named.Length;i++)SchemaNativeContract.VerifyStock(named[i],typeof(Ep1AudioVoiceReferentialEntry),0,bomber.Bytes,namedItems+i*12,bomber.Asset.References.ToArray());
             grammar.Learn(bomber.Bytes,GameObjectStockReview.Tokens(bomber.Bytes,0)[FastHash.GetHashCode(name)].Offset,bomber.Projection.NativeRoot,field.NativeType);}
+            // Reborn: Tesla Trooper's root object-specific voice independently qualifies the EP1 sixteen-byte row, inline EVA word and target hash.
+            {var trooper=GameObjectStockReview.Capture(manifest,"GameObject:SovietHeavyAntiVehicleInfantry");var document=(XmlDocument)baseline.CloneNode(true);foreach(var existing in Owners(document,name))document.DocumentElement!.RemoveChild(existing);
+            var original=Original("Soviet/Units/SovietHeavyAntiVehicleInfantry.xml",name).Single(e=>e.ParentNode is XmlElement parent&&parent.LocalName=="GameObject");
+            document.DocumentElement!.InsertBefore(document.ImportNode(original,true),document.DocumentElement.ChildNodes.OfType<XmlElement>().First(e=>e.LocalName is "AudioArraySound" or "EvaEventArray"));
+            var entriesSpecific=Owners(SchemaNativeContract.Resolve(document,schemas,catalog),name).Single().ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="ObjectSpecificEntry").ToArray();int voice=(int)Word(trooper.Bytes,trooper.Projection.NativeRoot+field.Slot);
+            if(entriesSpecific.Length==0||Word(trooper.Bytes,voice+8)!=entriesSpecific.Length)throw new InvalidDataException("Original object-specific voice witness cardinality differs: SovietHeavyAntiVehicleInfantry.");
+            int objectItems=(int)Word(trooper.Bytes,voice+12);for(int i=0;i<entriesSpecific.Length;i++)SchemaNativeContract.VerifyStock(entriesSpecific[i],typeof(Ep1AudioObjectSpecificVoiceEntry),0,trooper.Bytes,objectItems+i*16,trooper.Asset.References.ToArray());
+            grammar.Learn(trooper.Bytes,GameObjectStockReview.Tokens(trooper.Bytes,0)[FastHash.GetHashCode(name)].Offset,trooper.Projection.NativeRoot,field.NativeType);}
         }else if(name=="SkirmishAIInformation"){
             SchemaNativeContract.VerifyStock(Owners(resolved,name).Single(),field.NativeType,0,stock.Bytes,native,stock.Asset.References.ToArray());grammar.Learn(stock.Bytes,rows[FastHash.GetHashCode(name)].Offset,stock.Projection.NativeRoot,field.NativeType);
             // Reborn: actual optional float/mask witnesses supplement the refinery's absent optional pointers.

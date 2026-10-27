@@ -100,7 +100,7 @@ public static class Ep1BehaviorMetadataTokenizer
         Type type=name switch{"GameDependency"=>typeof(SageBinaryData.GameDependencyType),"ObjectResourceInfo"=>typeof(SageBinaryData.ObjectResourceInfo),"SkirmishAIInformation"=>typeof(SageBinaryData.Ep1SkirmishAIInformation),"AudioArrayVoice"=>typeof(SageBinaryData.Ep1AudioArrayVoice),"AudioArraySound"=>typeof(SageBinaryData.Ep1AudioArraySound),"EvaEventArray"=>typeof(SageBinaryData.Ep1EvaEventArray),"ShadowInfo"=>typeof(SageBinaryData.ShadowInfo),"CrusherInfo"=>typeof(SageBinaryData.Ep1CrusherInfo),_=>throw new InvalidDataException("Root record family not reviewed.")};
         if(native?.InstanceBuffer==null || native.RelocationBuffer==null || native.ImportsBuffer==null || native.InstanceBuffer.Length<Size(type) || native.InstanceBuffer.Length>2*1048576 || schemas==null)throw new InvalidDataException("Bounded root record required.");
         // Reborn: inactive child headers/pointers are not guessed native ABIs; caller-authored raw buffers cannot bypass source-side refusal.
-        int[] inactive=name switch{"SkirmishAIInformation"=>new[]{64,68},"AudioArrayVoice"=>new[]{8,12},_=>Array.Empty<int>()};if(inactive.Any(at=>Word(native.InstanceBuffer,at)!=0))throw new InvalidDataException("Unreviewed populated root child/storage.");
+        if(name=="SkirmishAIInformation" && new[]{64,68}.Any(at=>Word(native.InstanceBuffer,at)!=0))throw new InvalidDataException("SkirmishAIInformation/AIContextualPower native storage is not implemented.");
         // Reborn: source-sized voice arrays are bounded by actual twelve-byte items, not a diagnostic row quota; typed EVA words are imports.
         if(name=="AudioArrayVoice"){uint count=Word(native.InstanceBuffer,0),items=Word(native.InstanceBuffer,4);if(count>native.InstanceBuffer.Length/12 || items>native.InstanceBuffer.Length || count*12>native.InstanceBuffer.Length-items)throw new InvalidDataException("Root voice entries exceed bounds.");}
         return new Builder(native.InstanceBuffer,schemas).BuildRecord(native,name=="GameDependency"?"GameDependencyType":name,type);
@@ -390,7 +390,7 @@ public static class Ep1BehaviorMetadataTokenizer
         "AutoAcquireEnemiesBitFlags"=>0x8B0FB9DA,"StateMachineType"=>0xAC6E35E0,
         // Reborn: exact root sound/buildability signatures independently captured from power-plant/refinery stock metadata.
         "AudioSoundEntry[]"=>0x87D0686C,"ThingTemplateSoundType"=>0xD50DC497,"BuildPlacementTypeBitFlags"=>0xF446CF6F,
-        "AudioVoiceReferentialEntry[]"=>0xF8ED487B,"ThingTemplateVoiceType"=>0x4DA708B0,"EvaEventEntry[]"=>0xD7B4DEDB,
+        "AudioVoiceReferentialEntry[]"=>0xF8ED487B,"ThingTemplateObjectSpecificVoiceType"=>0x94A69CB3,"ThingTemplateVoiceType"=>0x4DA708B0,"EvaEventEntry[]"=>0xD7B4DEDB,
         "EvaEventRef"=>0xC4EC43B1,"ThingTemplateEvaEventType"=>0xC053B716,"ShadowType"=>0x3B581951,
         "TextureRef"=>0x4C3E3938,"xs:boolean"=>0x77E3F4F7,"xs:byte"=>0x371E5DC2,
         "CrusherLevelModelConditionInfo[]"=>0x9091F97B,"CrushKillDelayForObjectFilter[]"=>0x038D6BB2,
