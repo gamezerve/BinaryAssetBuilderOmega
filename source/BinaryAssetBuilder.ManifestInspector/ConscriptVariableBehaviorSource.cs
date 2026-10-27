@@ -132,6 +132,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: assembly times, conditions and structure lists follow the official schema rather than an infantry template.
             // Reborn: tracker filters, scalar values and strong emotion lists follow the official EP1 schema.
             // Reborn: capture abilities accept official inherited fields rather than requiring a Conscript behavior sample.
+            // Reborn: passive effects use complete source-driven EP1 fields and nested filter/status records.
+            if(owner.NativeType==typeof(SageBinaryData.Ep1PassiveAreaEffectBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.CaptureSpecialAbilityUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1EmotionTrackerUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.AssembleStructureSpecialAbilityUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

@@ -113,6 +113,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: qualify Engineer assembly metadata only when an assembly module is authored.
     // Reborn: qualify emotion tracker metadata only for authored tracker modules.
     // Reborn: capture class/base metadata is qualified independently of the comparison infantry.
+    // Reborn: passive effect metadata is qualified only for authored modules.
+    private readonly Lazy<StockMetadataGrammar> passiveAreaEffect;
     private readonly Lazy<StockMetadataGrammar> captureAbility;
     private readonly Lazy<StockMetadataGrammar> emotionTracker;
     private readonly Lazy<StockMetadataGrammar> assembleStructure;
@@ -190,6 +192,7 @@ internal sealed class ConscriptVariableGraphVerifier
         playerPowerManager=new(()=>PlayerPowerManagerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         radar=new(()=>RadarBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         subObjectsUpgrade=new(()=>SubObjectsUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        passiveAreaEffect=new(()=>PassiveAreaEffectContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         captureAbility=new(()=>CaptureAbilityContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         emotionTracker=new(()=>EmotionTrackerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         assembleStructure=new(()=>AssembleStructureContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -412,6 +415,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: assembly lists and inherited ability fields have full source/native and stock metadata proof.
                 // Reborn: independently prove tracker values, filter graphs and exact emotion import identities before splicing.
                 // Reborn: capture inherited values, dependencies and concrete/base token chains have complete independent proof.
+                // Reborn: independently prove passive healing, modifier imports, filters and status storage before metadata composition.
+                if(owner.NativeType==typeof(Ep1PassiveAreaEffectBehaviorModuleData)){
+                    var grammar=passiveAreaEffect.Value;var passiveNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,PassiveAreaEffectContract.TypeId,passiveNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(passiveNative,official,PassiveAreaEffectContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,passiveNative,owner.NativeType,proof.Records);Own(passiveNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(CaptureSpecialAbilityUpdateModuleData)){
                     var grammar=captureAbility.Value;var captureNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,CaptureAbilityContract.TypeId,captureNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(captureNative,official,CaptureAbilityContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,captureNative,owner.NativeType,proof.Records);Own(captureNative,start,stop);Splice(owner,metadata,start,size);continue;

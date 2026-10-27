@@ -784,7 +784,9 @@ public static partial class Marshaler
                 MarshalPolymorphicType<BridgeBuilderModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x08E25591u:
-                MarshalPolymorphicType<PassiveAreaEffectBehaviorModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: select the complete EP1 passive-effect layout while retaining the original concrete wire ID.
+                using(var context=state.Push((void**)objT,(uint)sizeof(Ep1PassiveAreaEffectBehaviorModuleData),1u))Marshal(node,(Ep1PassiveAreaEffectBehaviorModuleData*)*objT,state);
+                *(uint*)*objT=0x08E25591u;
                 break;
             case 0xC3A62C68u:
                 MarshalPolymorphicType<PowerUpgradeModuleData, BehaviorModuleData>(node, objT, state);

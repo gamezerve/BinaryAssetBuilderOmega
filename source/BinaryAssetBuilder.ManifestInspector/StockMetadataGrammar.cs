@@ -100,7 +100,9 @@ internal sealed class StockMetadataGrammar
                     bool directFlags=SchemaNativeContract.IsFlags(element)&&typedRecord;
                     // Reborn: schema-proved optional float pointees use the same independently stock-observed native real wire, not a nested table.
                     bool directReal=element==typeof(float)&&rows.Fields[i].Tag==0x645864F3u;
-                    if((!kinds.Contains(Kind.Native)&&!directVector&&!directFlags&&!directReal)||target!=Coordinate(pointee))throw new InvalidDataException("Generated metadata optional field target differs: "+child);continue;
+                    // Reborn: this EP1 optional scalar Poid has a captured Poid tag; its module hash and pointee coordinate are independently source-proved.
+                    bool directPassiveModule=current==typeof(SageBinaryData.Ep1PassiveAreaEffectBehaviorModuleData)&&field.Name=="AttachModuleId"&&element==typeof(TypedAssetId<SageBinaryData.ModuleData>)&&rows.Fields[i].Tag==0xBDF07965u;
+                    if((!kinds.Contains(Kind.Native)&&!directVector&&!directFlags&&!directReal&&!directPassiveModule)||target!=Coordinate(pointee))throw new InvalidDataException("Generated metadata optional field target differs: "+child);continue;
                 }
                 if(IsList(member))
                 {

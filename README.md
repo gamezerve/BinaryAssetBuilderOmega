@@ -8,6 +8,18 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: passive effects use the complete Uprising layout rather than the shorter legacy KW record. -->
+`PassiveAreaEffectBehavior` is build-enabled with its 80-byte EP1 record.
+Healing percentages/points, beneficiary limits, radius, survey interval, upgrade,
+FX and modifier imports, category masks (including SHRINK), disabled-type flags,
+both filters, optional status validation and attachment module ID are editable.
+All six behavior flags are serialized, including AffectContained and ShowDebugCircle.
+Defaults follow the official XSD; negative radius and zero beneficiary count
+retain their documented unlimited meanings. Native/metadata witnesses are the
+static Allied Engineer and SDK-local WorldBuilder Chief Engineer/Hospital records.
+Developer and fast regressions each pass 16 checks, including all own fields,
+SHRINK, optional attachment, empty/eight-modifier lists and full object composition.
+
 <!-- Reborn: icon assets use the normal source/inheritance and native stream routes, including mod-produced packed images. -->
 `UnitTypeIcon` is build-enabled as an emitted asset. New IDs, stock-ID overrides,
 `Image` references, optional signed/fractional `Offset` values, source-only
