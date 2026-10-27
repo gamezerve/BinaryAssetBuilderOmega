@@ -449,7 +449,9 @@ public static partial class Marshaler
                 MarshalPolymorphicType<SpecialPowerUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x74569AAAu:
-                MarshalPolymorphicType<StealthDetectorUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: preserve the original wire ID while allocating the separate Uprising detector record.
+                using(var context=state.Push((void**)objT,(uint)sizeof(Ep1StealthDetectorUpdateModuleData),1u))Marshal(node,(Ep1StealthDetectorUpdateModuleData*)*objT,state);
+                uint detectorType=0x74569AAAu;state.InplaceEndianToPlatform(&detectorType);*(uint*)*objT=detectorType;
                 break;
             case 0x8CE2210Cu:
                 MarshalPolymorphicType<StructureCollapseUpdateModuleData, BehaviorModuleData>(node, objT, state);

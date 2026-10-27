@@ -105,6 +105,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> garrisonContain;
     // Reborn: bunker invisibility has its own retail-qualified strong-reference metadata contract.
     // Reborn: qualify aura grammar only when this family is authored.
+    // Reborn: load detector grammar only for authored detector modules.
+    private readonly Lazy<StockMetadataGrammar> stealthDetector;
     private readonly Lazy<StockMetadataGrammar> attributeModifierAura;
     private readonly Lazy<StockMetadataGrammar> invisibilityBehavior;
     // Reborn: subobject upgrade nuggets have a separate retail-qualified EP1 layout and metadata grammar.
@@ -174,6 +176,7 @@ internal sealed class ConscriptVariableGraphVerifier
         playerPowerManager=new(()=>PlayerPowerManagerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         radar=new(()=>RadarBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         subObjectsUpgrade=new(()=>SubObjectsUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        stealthDetector=new(()=>StealthDetectorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         attributeModifierAura=new(()=>AttributeModifierAuraContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         invisibilityBehavior=new(()=>InvisibilityBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         garrisonContain=new(()=>GarrisonContainContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -380,6 +383,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: compose independently proved garrison and inherited passenger graphs in actual authored module order.
                 // Reborn: prove the actual template identity and import occurrence before composing invisibility behavior metadata.
                 // Reborn: compose the complete authored aura graph after independent source and metadata verification.
+                // Reborn: compose each independently proved detector in its actual authored module position.
+                if(owner.NativeType==typeof(Ep1StealthDetectorUpdateModuleData)){
+                    var grammar=stealthDetector.Value;var detectorNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,StealthDetectorContract.TypeId,detectorNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(detectorNative,official,StealthDetectorContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,detectorNative,owner.NativeType,proof.Records);Own(detectorNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(Ep1AttributeModifierAuraUpdateModuleData)){
                     var grammar=attributeModifierAura.Value;var auraNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,AttributeModifierAuraContract.TypeId,auraNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(auraNative,official,AttributeModifierAuraContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,auraNative,owner.NativeType,proof.Records);Own(auraNative,start,stop);Splice(owner,metadata,start,size);continue;

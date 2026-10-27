@@ -122,6 +122,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: garrison flags, inline initial roster and all inherited containment fields are independently source/native proved.
             // Reborn: invisibility-template identity is a source-driven strong asset reference under the complete EP1 proof.
             // Reborn: aura graphs use independent schema/native and stock metadata proof.
+            // Reborn: detector fields and Upgrade inheritance use independent EP1 native/metadata proof.
+            if(owner.NativeType==typeof(SageBinaryData.Ep1StealthDetectorUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1AttributeModifierAuraUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.InvisibilityBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.GarrisonContainModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

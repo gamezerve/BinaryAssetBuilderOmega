@@ -128,6 +128,8 @@ if($SchedulerControl){
     # Reborn: cover garrison flags, inline roster and inherited containment graphs.
     # Reborn: cover invisibility-template imports and bunker garrison composition.
     # Reborn: include aura fields and inherited upgrade graphs in offline regression.
+    # Reborn: detector imports, KindOf masks, bone storage and inherited upgrades.
+    Add-BatchCase 'stealth-detector' 'StealthDetectorUpdate' @('stealth-detector-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'attribute-modifier-aura' 'AttributeModifierAuraUpdate' @('attribute-modifier-aura-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'invisibility-behavior' 'InvisibilityBehavior' @('invisibility-behavior-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'garrison-contain' 'GarrisonContain' @('garrison-contain-self-test',$StaticManifest,$GlobalManifest)

@@ -8,6 +8,17 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 24, 2026
 
+<!-- Reborn: Uprising stealth detection uses a separate 164-byte record without the KW-only UseMetaAOI field. -->
+`StealthDetectorUpdate` is build-enabled with its complete 164-byte EP1 record.
+Detection rate/range, disabled/garrisoned/contained flags, both KindOf masks,
+particle bone, two audio references, four particle references, required upgrade
+and inherited Upgrade fields are editable. Defaults and explicit empty fields
+retain their actual native storage. The three original faction scouts qualify
+the offsets, default values and metadata. Regression:
+`stealth-detector-self-test <static.manifest> <global.manifest>` covers all own
+fields, typed imports, high KindOf bits, bone storage, inherited animation and
+trigger lists, full GameObject composition and corrupt-output refusal.
+
 <!-- Reborn: optional weapon references retain actual null/present storage instead of requiring the Conscript sound and three imports. -->
 Single-`DamageNugget` weapon builds now accept omitted, empty and populated
 `FireSoundPerClip`, `FireFX` and `FireVeteranFX`. Inline `FireFlankFX`,
