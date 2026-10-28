@@ -8,6 +8,34 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: five-vehicle authoring opens EP1 tank rendering, Grinder abilities, Apocalypse grappling and MCV substructure storage. -->
+`TankDraw`, `SpecialAbilityUpdate`, `GrapplingHookUpdate` and
+`SubStructureStorageBehavior` are build-enabled. The isolated 228-byte EP1 tank
+draw retains its optional terrain reference and ordered articulation list while
+preserving the legacy KW writer separately. Grappling owns its complete
+52-byte Update record, required PullRate, bounce controls, three weapon imports
+and optional status/filter pointers; substructure storage is an 8-byte identity
+module. The existing 252-byte ability writer now participates in ordinary
+source admission and metadata composition.
+
+Original Tesla Tank, Grinder, Apocalypse and MCV payloads independently qualify
+their native layouts and metadata. Retail tank articulation lists are empty:
+the two-AssetId item grammar is explicitly schema-derived using captured string
+wire identities; no populated retail articulation witness is claimed. Twelve
+original/default/edited native/metadata and full-object checks cover the newly
+opened families, including populated articulation lists and grappling filters.
+
+A private combined build of `SovietAntiVehicleVehicleTech2.xml`,
+`SovietGrinderVehicle.xml`, `SovietAntiStructureVehicle.xml`,
+`SovietAntiVehicleVehicleTech3.xml` and `SovietMCV.xml` passed complete stream
+compilation and BIN/RELO/IMP readback. The 15-file source graph emitted **9
+assets: 6 GameObjects (including SovietMCV_Naval), Grinder armor and two Grinder
+locomotors**; 3 local and 615 stock reference occurrences resolved. Each requested
+object traversed the normal source/native/metadata composition path in the same
+dependency-sorted stream. ART includes were excluded only in the private test
+snapshot as requested; user Reborn files and published outputs were untouched.
+No game was launched.
+
 <!-- Reborn: Hammer leech notifications, converging beams and creation/audio upgrades use retail-qualified EP1 native and metadata graphs. -->
 `SecondaryObjectListenerModule`, `ConvergingLaserState`, `ObjectCreationUpgrade`
 and `AudioLoopUpgrade` are build-enabled. The new listener writer retains its

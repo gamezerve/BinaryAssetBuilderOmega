@@ -1,4 +1,4 @@
-﻿using Relo;
+using Relo;
 using SageBinaryData;
 
 public static partial class Marshaler
@@ -72,7 +72,11 @@ public static partial class Marshaler
                 else MarshalPolymorphicType<W3DTruckDrawModuleData, DrawModuleData>(node, objT, state);
                 break;
             case 0x8A811D3Eu:
-                MarshalPolymorphicType<W3DTankDrawModuleData, DrawModuleData>(node, objT, state);
+                // Reborn: select EP1 tank storage only on validated EP1 frontend copies; keep legacy KW dispatch unchanged.
+                if(node.GetAttributeValue("RebornEp1TankDraw",null)?.GetText()=="true"){
+                    using(var context=state.Push((void**)objT,(uint)sizeof(Ep1W3DTankDrawModuleData),1u))Marshal(node,(Ep1W3DTankDrawModuleData*)*objT,state);
+                    uint wire=0x8A811D3Eu;state.InplaceEndianToPlatform(&wire);*(uint*)*objT=wire;
+                }else MarshalPolymorphicType<W3DTankDrawModuleData, DrawModuleData>(node, objT, state);
                 break;
             case 0x4ECF2A4Bu:
                 MarshalPolymorphicType<W3DScriptedModelDrawModuleData, DrawModuleData>(node, objT, state);

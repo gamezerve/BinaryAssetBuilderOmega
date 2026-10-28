@@ -9,6 +9,8 @@ internal static class SourceFamilyOrder
     private static readonly (string Element,string[] Order)[] Families={
         ("LaserState",new[]{"LaserEndParticleSystem","LaserStartParticleSystem","EndOffset","ObjectStatusValidation"}),
         // Reborn: retail TruckDraw sources often put terrain records before their inherited model states; keep order within each family.
+        // Reborn: preserve order within each TankDraw child family while normalizing inherited/schema groups.
+        ("TankDraw",new[]{"ModelConditionState","AnimationState","AttachModel","EmbedPortal","TreadTerrainParticles","ArticulationBone"}),
         ("TruckDraw",new[]{"ModelConditionState","AnimationState","AttachModel","EmbedPortal","TreadTerrainParticles","TreadScrollingMap"}),
         ("ScriptedModelDraw",new[]{"ModelConditionState","AnimationState","AttachModel","EmbedPortal"}),
         ("ModelConditionState",new[]{"Model","Material","Texture","WeaponFireFXBone","WeaponRecoilBone","WeaponMuzzleFlash","WeaponLaunchBone","ParticleSysBone","FXEvent","ShadowInfo","Turret","SubObject"}),

@@ -105,6 +105,17 @@ public static class Ep1ScriptedDrawTokenizer
         if(native?.InstanceBuffer==null||native.RelocationBuffer==null||native.ImportsBuffer==null||native.InstanceBuffer.Length<396||native.InstanceBuffer.Length>2*1048576)throw new InvalidDataException("Bounded EP1 TruckDraw native graph required.");
         return new Builder(native.InstanceBuffer).Build(native,TruckRoot,0xA44C2999u);
     }
+    // Reborn: Tesla Tank retail metadata qualifies the terrain pointer/list tags; the optional articulation item has two schema-qualified AssetId strings.
+    private static readonly Record TankArticulation = new("ArticulationBone",16,new[]{F("ArticulationBoneName",0x1A2933AA,0,Kind.String,8),F("ArticulationHelperBoneName",0x1A2933AA,8,Kind.String,8)});
+    private static readonly Record TankRoot = new("W3DTankDrawModuleData",228,new[]{F("TreadTerrainParticles",0xA6FF4551,216,Kind.RefPointer),F("ArticulationBone",0xC4037FCB,220,Kind.List,8,child:TankArticulation)},Parent:Root,ParentTag:0x4ECF2A4B);
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: compose the complete EP1 tank extension on the same owned scripted-model native graph. */
+    //-------------------------------------------------------------------------------------------------
+    public static Chunk TokenizeTank(Chunk native)
+    {
+        if(native?.InstanceBuffer==null||native.RelocationBuffer==null||native.ImportsBuffer==null||native.InstanceBuffer.Length<228||native.InstanceBuffer.Length>2*1048576)throw new InvalidDataException("Bounded EP1 TankDraw native graph required.");
+        return new Builder(native.InstanceBuffer).Build(native,TankRoot,0x8A811D3Eu);
+    }
     // Reborn: Desolator retail metadata qualifies this full EP1 stream root, inline shader and optional particle-reference array.
     private static readonly Record StreamParticles = new("ParticleSystemList",8,new[]{F("ParticleSys",0x43F1CE36,0,Kind.Refs,8)});
     private static readonly Record StreamRoot = new("W3DStreamDrawModuleData",80,new[]{

@@ -32,6 +32,8 @@ internal sealed class SchemaNativeContract
         // Reborn: the existing tracer writer supports both optional-status shapes without freezing the Conscript template.
         // Reborn: stream draws use the complete EP1 layout and the shared shader-aware metadata writer.
         // Reborn: truck draws share scripted children but own their EP1 wheels, optional terrain reference and scrolling lists.
+        // Reborn: TankDraw uses its distinct EP1 terrain/articulation layout and the shared scripted native proof.
+        new(typeof(Ep1W3DTankDrawModuleData),"Draws",0x8A811D3Eu,BinaryAssetBuilder.XmlCompiler.Ep1ScriptedDrawTokenizer.TokenizeTank),
         new(typeof(Ep1W3DTruckDrawModuleData),"Draws",0xA44C2999u,BinaryAssetBuilder.XmlCompiler.Ep1ScriptedDrawTokenizer.TokenizeTruck),
         new(typeof(Ep1W3DStreamDrawModuleData),"Draws",0x60020441u,BinaryAssetBuilder.XmlCompiler.Ep1ScriptedDrawTokenizer.TokenizeStream),
         // Reborn: laser draws use the complete EP1 layout (fade times, optional status validation) and the shared shader-aware writer.

@@ -85,6 +85,8 @@ if($SchedulerControl){
     Add-BatchCase 'projectile-replace-self' 'StockQualifiedProjectileReplaceSelf' @('projectile-replace-self-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: qualify Hammer filter/upgrade tuples, converging lasers, creation upgrades and audio upgrades together.
     Add-BatchCase 'hammer-behaviors' 'StockQualifiedHammerBehaviors' @('hammer-behavior-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: qualify Grinder abilities, Apocalypse grappling, MCV storage and EP1 tank articulation together.
+    Add-BatchCase 'vehicle-batch-abilities' 'StockQualifiedVehicleBatchAbilities' @('vehicle-batch-ability-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: wall length, filter lists and both secondary masks use the new retail-qualified wall-builder writer.
     # Reborn: include the source-driven timer-monitor regression without touching user mod outputs.
     # Reborn: include the identity-only radar module in the offline regression batch.

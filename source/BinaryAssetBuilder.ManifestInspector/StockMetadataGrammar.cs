@@ -156,6 +156,18 @@ internal sealed class StockMetadataGrammar
     }
 
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: original TankDraw articulation arrays are empty; derive only the exact two-AssetId item from its schema and captured string wire signature. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifyTankArticulation(System.Xml.Schema.XmlSchemaSet schemas)
+    {
+        var shape=(System.Xml.Schema.XmlSchemaComplexType)schemas.GlobalTypes[new System.Xml.XmlQualifiedName("ArticulationBone","uri:ea.com:eala:asset")]!;
+        if(System.Runtime.InteropServices.Marshal.SizeOf<SageBinaryData.ArticulationBone>()!=16||shape.AttributeUses.Count!=2)throw new InvalidDataException("Tank articulation schema/native extent differs.");
+        string[] names={"ArticulationBoneName","ArticulationHelperBoneName"};
+        foreach(string name in names)if(shape.AttributeUses[new System.Xml.XmlQualifiedName(name)] is not System.Xml.Schema.XmlSchemaAttribute attribute||attribute.AttributeSchemaType?.QualifiedName.Name!="AssetId")throw new InvalidDataException("Tank articulation field differs: "+name);
+        var rows=Get(typeof(SageBinaryData.ArticulationBone));rows.Fields=names.Select(name=>(FastHash.GetHashCode(name),0x1A2933AAu)).ToArray();rows.Kinds=names.Select(_=>new HashSet<Kind>{Kind.Native}).ToArray();
+    }
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: cylinder/triangle own fields are scalar-only schema extensions of the retail-proved transform base; no populated stock witness is claimed. */
     //-------------------------------------------------------------------------------------------------
     internal void QualifyDynamicsScalarShapes(System.Xml.Schema.XmlSchemaSet schemas)

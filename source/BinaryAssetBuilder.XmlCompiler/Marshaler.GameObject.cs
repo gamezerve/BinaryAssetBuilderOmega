@@ -14,6 +14,13 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: compile the actual EP1 Apocalypse grapple and identity-only MCV storage module.
+            case 0x196FC7E8u:
+                MarshalPolymorphicType<GrapplingHookUpdateModuleData,BehaviorModuleData>(node,objT,state);
+                break;
+            case 0x64B1001Au:
+                MarshalPolymorphicType<SubStructureStorageBehaviorModuleData,BehaviorModuleData>(node,objT,state);
+                break;
             // Reborn: secondary listeners keep their original unsuffixed EP1 class hash.
             case 0x9D88BC91u:
                 MarshalPolymorphicType<SecondaryObjectListenerModule,BehaviorModuleData>(node,objT,state);
