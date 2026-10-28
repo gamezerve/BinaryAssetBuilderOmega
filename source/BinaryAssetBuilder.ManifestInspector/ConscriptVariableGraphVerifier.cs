@@ -131,6 +131,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: qualify the four remaining Hammer behavior families lazily from original game records.
     // Reborn: lazily qualify the three new vehicle ability families for the current build/catalog.
     // Reborn: qualify naval pulse and health-drain metadata only for authored naval update modules.
+    // Reborn: qualify aircraft return/switch metadata only when authored by the current graph.
+    private readonly Lazy<StockMetadataGrammar> aircraftUpdates;
     private readonly Lazy<StockMetadataGrammar> navalUpdates;
     private readonly Lazy<StockMetadataGrammar> vehicleBatchAbilities;
     private readonly Lazy<StockMetadataGrammar> hammerBehaviors;
@@ -232,6 +234,8 @@ internal sealed class ConscriptVariableGraphVerifier
         // Reborn: only authored Hammer module families require this original metadata grammar.
         // Reborn: original Grinder, Apocalypse and MCV payloads qualify their independent native graph.
         // Reborn: real Stingray and Dreadnought records independently qualify these naval leaves.
+        // Reborn: original MiG/Kirov records independently qualify aircraft update storage and references.
+        aircraftUpdates=new(()=>AircraftUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         navalUpdates=new(()=>NavalUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         vehicleBatchAbilities=new(()=>VehicleBatchAbilityContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         hammerBehaviors=new(()=>HammerBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -520,6 +524,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: independently prove and compose each authored Hammer behavior graph.
                 // Reborn: independently prove and compose each new source-driven vehicle ability leaf.
                 // Reborn: source-prove and compose both complete naval update graphs.
+                // Reborn: prove and compose both complete aircraft update graphs against their original wire classes.
+                if(AircraftUpdateContract.Supports(owner.NativeType)){
+                    var grammar=aircraftUpdates.Value;var aircraftNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName)),aircraftNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(aircraftNative,official,Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName),owner.NativeType);int size=grammar.Verify(metadata,aircraftNative,owner.NativeType,proof.Records);Own(aircraftNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(NavalUpdateContract.Supports(owner.NativeType)){
                     var grammar=navalUpdates.Value;var navalNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName)),navalNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(navalNative,official,Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName),owner.NativeType);int size=grammar.Verify(metadata,navalNative,owner.NativeType,proof.Records);Own(navalNative,start,stop);Splice(owner,metadata,start,size);continue;

@@ -158,6 +158,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: author complete Hammer listener, converging beam and creation/audio upgrade graphs.
             // Reborn: retain full source-driven ability/grappling/storage records in the variable behavior graph.
             // Reborn: naval updates retain editable filters, damage and status gates in the full variable graph.
+            // Reborn: aircraft return and locomotor switching are source-authored rather than frozen to original IDs/values.
+            if(AircraftUpdateContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(NavalUpdateContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(VehicleBatchAbilityContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(HammerBehaviorContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

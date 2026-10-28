@@ -14,6 +14,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: the original unsuffixed locomotor-switch wire selects the complete EP1 update record.
+            case 0x4EDFB24Bu:
+                MarshalPolymorphicType<SwitchLocomotorUpdate,BehaviorModuleData>(node,objT,state);
+                break;
             // Reborn: naval update writers preserve the original Stingray and Dreadnought class hashes.
             case 0x829F7876u:
                 MarshalPolymorphicType<CircularDamageUpdateModuleData,BehaviorModuleData>(node,objT,state);

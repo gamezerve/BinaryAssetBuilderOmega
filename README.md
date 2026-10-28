@@ -8,6 +8,33 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: MiG return-to-producer and Kirov locomotor switching use original EP1 source/native/metadata contracts. -->
+`ReturnToProducerSpecialPower` and `SwitchLocomotorUpdate` are build-enabled.
+Return-to-producer retains the existing 476-byte inherited special-power writer,
+including authored power/modifier/FX references and model-condition settings.
+The new locomotor-switch writer preserves its original unsuffixed class identity
+and complete 116-byte layout: locomotor set, update period, reveal radius,
+minimum health, inline object-status and model-condition masks.
+Locomotor selections use the complete EP1 enum, including ATTACKING,
+EXITING_PRODUCTION_STRUCTURE and SPECIALABILITY_ACTIVE with their EP1 ordinals.
+
+Original MiG/Kirov payloads independently qualify both native and metadata
+graphs; six original special-power records additionally qualify inherited
+return-power fields. Both families use ordinary source admission and whole-object
+composition, with no fixed asset IDs or captured-value restrictions.
+Fifteen original/default/edited native/metadata, whole-object and corrupt-native
+checks pass, including SPECIALABILITY_ACTIVE, both active masks and inherited
+return-power references. Default probes retain the schema-required
+SpecialPowerTemplate. The offline regression batch includes these checks.
+
+A private combined build of `SovietAntiGroundAircraft.xml`,
+`SovietFighterAircraft.xml` and `SovietBomberAircraft.xml` passed complete stream
+compilation and BIN/RELO/IMP readback: **3 GameObjects and 241 resolved stock
+reference occurrences** from a seven-file source graph. Existing transport,
+JetAI, tracking, toggle and health-drain processors covered the remaining
+aircraft fields. ART includes were excluded only in the private test snapshot;
+user Reborn sources and published outputs were untouched. No game was launched.
+
 <!-- Reborn: naval pulse damage and health-drain modules retain complete original EP1 storage and source-driven settings. -->
 `CircularDamageUpdate` and `LoseHealthUpdate` are build-enabled. Circular damage
 uses the original 152-byte layout: water-only option, radius/arc controls, typed
