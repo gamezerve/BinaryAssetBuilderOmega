@@ -154,6 +154,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: stream IDs are schema-authored signed integers, independent of the original two Desolator records.
             // Reborn: DynamicsUpdate keeps authored motion/collision settings and its optional source-driven volume.
             // Reborn: delivery and damage/fire trackers retain source-sized optional state without stock-only value restrictions.
+            // Reborn: attachment, Bezier movement and sweep state retain their authored EP1 fields, masks and optional references.
+            if(ScoutVehicleBehaviorContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(MinerBehaviorContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.DynamicsUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.StreamStateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

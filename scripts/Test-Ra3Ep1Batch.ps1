@@ -239,6 +239,8 @@ if($SchedulerControl){
     # Reborn: qualify both retail stream states and edited/default/multiple-module graphs.
     # Reborn: dynamics updates retain their original scalar, optional volume and complete-object contracts.
     # Reborn: ore delivery and both armor-mode trackers are tested together with authored/default values.
+    # Reborn: attachment, EP1 projectile movement and sweep states retain complete source/native regression coverage.
+    Add-BatchCase 'scout-behaviors' 'ScoutVehicleBehaviors' @('scout-behavior-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'miner-behaviors' 'MinerBehaviors' @('miner-behavior-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'dynamics-update' 'DynamicsUpdate' @('dynamics-update-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'stream-state' 'StreamState' @('stream-state-self-test',$StaticManifest,$GlobalManifest)

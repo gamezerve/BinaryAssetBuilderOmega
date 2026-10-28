@@ -194,8 +194,8 @@ internal sealed class SchemaNativeContract
             string generic=type.GetGenericTypeDefinition().FullName!;
             switch(generic)
             {
-                // Reborn: FX materials serialize the official empty TechniqueName default as an allocated empty string, selecting TechniqueIndex.
-                case "Relo.String`1":var text=Source(e,name).Text;Text(owner==typeof(FXShaderMaterial)&&name=="TechniqueName"?text??string.Empty:text,at,path,false);return;
+                // Reborn: FX TechniqueName and EP1 AttachBoneName retain their stock-allocated empty-string schema defaults.
+                case "Relo.String`1":var text=Source(e,name).Text;Text((owner==typeof(FXShaderMaterial)&&name=="TechniqueName"||owner==typeof(Ep1AttachUpdateModuleData)&&name=="AttachBoneName")?text??string.Empty:text,at,path,false);return;
                 case "Relo.AssetReference`1":case "Relo.AssetReference`2":Reference(Source(e,name).Text,at,path);return;
                 case "TypedAssetId`1":Weak(Source(e,name).Text,at,path);return;
                 case "Relo.List`1":List(type.GetGenericArguments()[0],e,name,at,path,depth);return;

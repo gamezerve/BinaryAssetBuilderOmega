@@ -353,6 +353,9 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();SlaveWatcherSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: dynamics updates cover original records and source-driven optional physics volumes.
             // Reborn: ore delivery and both Miner armor-mode trackers have combined native/metadata regression coverage.
+            // Reborn: all three Terror Drone behavior contracts are covered together before the full source snapshot build.
+            if(args.Length==3 && args[0]=="scout-behavior-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();ScoutVehicleBehaviorSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="miner-behavior-self-test")
             {CompilerSmokeTest.InitializeHashProvider();MinerBehaviorSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="dynamics-update-self-test")

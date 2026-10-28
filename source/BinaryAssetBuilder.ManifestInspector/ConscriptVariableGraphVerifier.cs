@@ -125,6 +125,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: stream-state updates have their own original Desolator native/metadata witnesses.
     // Reborn: physics updates qualify their fixed fields and optional volume against actual retail records.
     // Reborn: ore delivery and both armor trackers are independently qualified on the original Soviet Miner.
+    // Reborn: qualify all three Terror Drone families independently against their complete retail records.
+    private readonly Lazy<StockMetadataGrammar> scoutBehaviors;
     private readonly Lazy<StockMetadataGrammar> minerBehaviors;
     private readonly Lazy<StockMetadataGrammar> dynamicsUpdate;
     private readonly Lazy<StockMetadataGrammar> streamState;
@@ -218,6 +220,8 @@ internal sealed class ConscriptVariableGraphVerifier
         // Reborn: qualify the existing StreamState writer before composing authored stream IDs.
         // Reborn: dynamics source/native grammar is independent of the Conscript baseline.
         // Reborn: one stock grammar qualifies the three complete miner-specific modules.
+        // Reborn: one shared grammar covers full attachment, curve movement and sweeping laser state.
+        scoutBehaviors=new(()=>ScoutVehicleBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         minerBehaviors=new(()=>MinerBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         dynamicsUpdate=new(()=>DynamicsUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         streamState=new(()=>StreamStateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -496,6 +500,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: independently prove and splice each source-sized stream-state module.
                 // Reborn: compose the complete authored physics update and prove its native/metadata ownership.
                 // Reborn: compose and independently source-prove every authored miner module.
+                // Reborn: prove and compose all source-driven Terror Drone behaviors on the original root Tracker.
+                if(ScoutVehicleBehaviorContract.Supports(owner.NativeType)){
+                    var grammar=scoutBehaviors.Value;var scoutNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName)),scoutNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(scoutNative,official,Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName),owner.NativeType);int size=grammar.Verify(metadata,scoutNative,owner.NativeType,proof.Records);Own(scoutNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(MinerBehaviorContract.Supports(owner.NativeType)){
                     var grammar=minerBehaviors.Value;var minerNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName)),minerNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(minerNative,official,Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName),owner.NativeType);int size=grammar.Verify(metadata,minerNative,owner.NativeType,proof.Records);Own(minerNative,start,stop);Splice(owner,metadata,start,size);continue;

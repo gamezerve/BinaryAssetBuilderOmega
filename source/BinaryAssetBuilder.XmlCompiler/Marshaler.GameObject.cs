@@ -129,7 +129,9 @@ public static partial class Marshaler
                 MarshalPolymorphicType<ProjectileReplaceSelfSpecialAbilityModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x0BBF2A39u:
-                MarshalPolymorphicType<BezierProjectileBehaviorModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: select the complete EP1 layout and retain the original runtime class ID.
+                using(var context=state.Push((void**)objT,(uint)sizeof(Ep1BezierProjectileBehaviorModuleData),1u))Marshal(node,(Ep1BezierProjectileBehaviorModuleData*)*objT,state);
+                *(uint*)*objT=0x0BBF2A39u;
                 break;
             case 0x815A9161u:
                 MarshalPolymorphicType<BuildingBehaviorModuleData, BehaviorModuleData>(node, objT, state);
@@ -776,7 +778,9 @@ public static partial class Marshaler
                 MarshalPolymorphicType<ClearanceTestingSlowDeathBehaviorModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0xE9FD14C9u:
-                MarshalPolymorphicType<AttachUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: select the complete EP1 layout and retain the original runtime class ID.
+                using(var context=state.Push((void**)objT,(uint)sizeof(Ep1AttachUpdateModuleData),1u))Marshal(node,(Ep1AttachUpdateModuleData*)*objT,state);
+                *(uint*)*objT=0xE9FD14C9u;
                 break;
             case 0xE502295Eu:
                 MarshalPolymorphicType<BoobyTrapUpdateModuleData, BehaviorModuleData>(node, objT, state);

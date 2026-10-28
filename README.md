@@ -8,6 +8,26 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: full Terror Drone authoring uses independently qualified EP1 attachment, curve movement and sweep behavior layouts. -->
+`AttachUpdate`, `BezierProjectile` and `SweepingLaserState` are build-enabled.
+The 368-byte EP1 attach record places AttachBoneName at +348 before its filter
+and modifier list, preserves the allocated-empty bone-name default, typed EVA/FX
+imports, optional status/damage/death masks and modifier references. Bezier uses
+its complete 256-byte EP1 record (19 flags, projectile type, straight-flight
+prefix, acceleration and disabled-type tail), preserving the legacy KW model
+separately. Sweeping laser state retains its 76-byte inherited laser layout,
+angle/options, FX and weapon references and optional inherited laser children.
+Original Terror Drone records qualify all three native/metadata layouts;
+additional original laser records qualify populated inherited status/offset
+capabilities. Combined regressions exercise original, default and edited graphs.
+
+A private snapshot of the user's `SovietScoutVehicle.xml`, inherited bases and
+includes compiled in full: **29 authored behaviors, 136 stock reference
+occurrences**, complete native/metadata/stream/BIG proof. No additional unsupported
+module remained in this object. Reborn sources and Documents output were not
+modified, and the game was not launched.
+
+
 <!-- Reborn: Soviet Miner delivery, reactive-armor tracking and naval equivalence compile together through the ordinary source pipeline. -->
 `OreMinerBehavior` (native `OreMinerModuleData`, 20 bytes),
 `TrackIncomingWeaponFireBehavior` (8 bytes) and `TrackDamage` (16 bytes) are
