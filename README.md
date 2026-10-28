@@ -8,6 +8,17 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: complete Bullfrog gameplay-object compilation includes both authored amphibious and ground identities. -->
+A private snapshot of `SovietAntiAirShip.xml` (Bullfrog), its inherited bases
+and include chain compiled **SovietAntiAirShip and SovietAntiAirShip_Ground**
+together: 2 explicit GameObjects, 178 resolved stock reference occurrences,
+dependency-sorted stream and verified BIN/RELO/IMP readback. Existing TruckDraw,
+TransportContain, passenger-ejection, client sound-selector and other processors
+covered the complete objects; no new support was needed. ART includes were
+excluded in the private snapshot as requested, so this checks gameplay objects
+using existing game art, not recompilation of the art sources. Reborn files,
+published mod outputs and the game installation were untouched; no game launch.
+
 <!-- Reborn: Sickle gameplay source compiles with existing processors; missing retail ART source includes remain an explicit source issue. -->
 A private snapshot of `SovietAntiInfantryVehicle.xml` (Sickle), including its
 inheritance and include chain, compiled with **23 authored behaviors and 115
