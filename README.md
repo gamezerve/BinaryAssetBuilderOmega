@@ -8,6 +8,18 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: Sickle gameplay source compiles with existing processors; missing retail ART source includes remain an explicit source issue. -->
+A private snapshot of `SovietAntiInfantryVehicle.xml` (Sickle), including its
+inheritance and include chain, compiled with **23 authored behaviors and 115
+stock reference occurrences**, passing complete native/metadata/stream/BIG
+proof. No additional module processor was needed. The source as supplied has
+23 active ART includes whose files are absent from both mod and SDK Art roots.
+All corresponding texture/container/animation identities were confirmed in the
+Uprising static catalog; only the private test copy commented those includes
+and used existing game assets. This validates gameplay-object compilation,
+not rebuilding those missing art sources. User sources and published mod
+outputs were untouched; no game was launched.
+
 <!-- Reborn: full Terror Drone authoring uses independently qualified EP1 attachment, curve movement and sweep behavior layouts. -->
 `AttachUpdate`, `BezierProjectile` and `SweepingLaserState` are build-enabled.
 The 368-byte EP1 attach record places AttachBoneName at +348 before its filter
