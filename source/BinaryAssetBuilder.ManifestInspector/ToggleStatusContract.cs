@@ -5,18 +5,20 @@ using SageBinaryData;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: qualify the complete toggle layout against six original Uprising infantry, vehicle and naval records.
+// Reborn: qualify the complete toggle layout against original Uprising infantry, vehicle and naval records, including Hammer leech AI.
 internal static class ToggleStatusContract
 {
     internal const string Wire="ToggleStatusSpecialAbilityUpdateModuleData";
     internal static readonly uint TypeId=BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Wire);
 
-    // Reborn: the six retail owners cover weapons, optional AI values, module activation and active geometry lists.
+    // Reborn: retail owners cover weapons, optional AI/module references, module activation and active geometry lists.
     internal static readonly (string,string)[] Witnesses={
         ("SovietAntiInfantryInfantry","Soviet/Units/SovietAntiInfantryInfantry.xml"),
         ("SovietAntiVehicleInfantry","Soviet/Units/SovietAntiVehicleInfantry.xml"),
         ("SovietMiner","Soviet/Units/SovietMiner.xml"),
         ("SovietScoutVehicle","Soviet/Units/SovietScoutVehicle.xml"),
+        // Reborn: Hammer supplies the populated LeechWeaponSOLModuleId pointer absent from the other toggle witnesses.
+        ("SovietAntiVehicleVehicleTech1","Soviet/Units/SovietAntiVehicleVehicleTech1.xml"),
         ("SovietAntiStructureShip","Soviet/Units/SovietAntiStructureShip.xml"),
         ("JapanFortressShip","EP1/Japan/Units/JapanFortressShip.xml")};
 
@@ -35,7 +37,7 @@ internal static class ToggleStatusContract
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: independently qualify the toggle fields, their offsets and the SpecialAbility/Update inheritance chain against six original infantry, vehicle and naval records. */
+    /** Reborn: independently qualify toggle fields, populated leech-AI references and the SpecialAbility/Update inheritance chain against original infantry, vehicle and naval records. */
     //-------------------------------------------------------------------------------------------------
     internal static StockMetadataGrammar Qualify(string manifest,XmlDocument baseline,SchemaSet schemas,ManifestAsset[] catalog)
     {

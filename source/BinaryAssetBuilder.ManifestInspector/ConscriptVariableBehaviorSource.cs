@@ -155,6 +155,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: DynamicsUpdate keeps authored motion/collision settings and its optional source-driven volume.
             // Reborn: delivery and damage/fire trackers retain source-sized optional state without stock-only value restrictions.
             // Reborn: attachment, Bezier movement and sweep state retain their authored EP1 fields, masks and optional references.
+            // Reborn: author complete Hammer listener, converging beam and creation/audio upgrade graphs.
+            if(HammerBehaviorContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(ScoutVehicleBehaviorContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(MinerBehaviorContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.DynamicsUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

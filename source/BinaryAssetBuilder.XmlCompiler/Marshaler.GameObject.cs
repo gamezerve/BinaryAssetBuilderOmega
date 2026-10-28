@@ -14,6 +14,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: secondary listeners keep their original unsuffixed EP1 class hash.
+            case 0x9D88BC91u:
+                MarshalPolymorphicType<SecondaryObjectListenerModule,BehaviorModuleData>(node,objT,state);
+                break;
             // Reborn: EP1 bunker invisibility uses a strong template import and its real concrete behavior identity.
             case 0x054B09C4u:
                 MarshalPolymorphicType<InvisibilityBehaviorModuleData,BehaviorModuleData>(node,objT,state);

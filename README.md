@@ -8,6 +8,31 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: Hammer leech notifications, converging beams and creation/audio upgrades use retail-qualified EP1 native and metadata graphs. -->
+`SecondaryObjectListenerModule`, `ConvergingLaserState`, `ObjectCreationUpgrade`
+and `AudioLoopUpgrade` are build-enabled. The new listener writer retains its
+original unsuffixed wire identity and 24-byte header: two notification bits,
+optional status validation and ordered 128-byte effect tuples. Each tuple
+embeds the required 120-byte ObjectFilter followed by a strong UpgradeSelf list.
+The existing converging/creation/audio writers use their original 140/72/48-byte
+EP1 records. Seven original Hammer module records independently qualify their
+native fields, references and metadata; additional plain laser records qualify
+populated inherited particles/offsets/status graphs for converging states.
+
+Fifteen original/default/edited native/metadata and complete-object checks cover
+these four families. Toggle qualification also includes the original Hammer's
+populated `SkirmishAiInfo/LeechWeaponSOLModuleId`; the existing optional native
+module-ID pointer now has an independent retail metadata witness. The toggle
+regression automatically covers every configured original owner and passes 26
+source/native/metadata, composition, default and corruption checks.
+
+A private snapshot of `SovietAntiVehicleVehicleTech1.xml` and its seven-file
+inheritance/include graph compiled in full: **40 authored behaviors and 189
+stock reference occurrences**, complete native/metadata/stream/BIG proof.
+ART includes were excluded only in the private snapshot as requested; existing
+game art was referenced rather than rebuilt. User Reborn sources and published
+mod outputs were untouched, and the game was not launched.
+
 <!-- Reborn: Reaper projectile transformation uses the original EP1 native writer with independently qualified source and metadata support. -->
 `ProjectileReplaceSelfSpecialAbility` is build-enabled with its complete
 280-byte EP1 record, inherited replacement/ability fields, ordered weak

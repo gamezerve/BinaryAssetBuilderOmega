@@ -153,6 +153,9 @@ internal static class Program
             // Reborn: qualify production-info markers privately before authoring them through Studio.
             if(args.Length==3 && args[0]=="production-update-info-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ProductionUpdateInfoSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: qualify all Hammer leech/upgrade module families through original and authored whole-object graphs.
+            if(args.Length==3 && args[0]=="hammer-behavior-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();HammerBehaviorSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: exercise complete Reaper projectile transformation and reference/default edits offline.
             if(args.Length==3 && args[0]=="projectile-replace-self-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ProjectileReplaceSelfSmokeTest.Run(args[1],args[2]);return 0;}
