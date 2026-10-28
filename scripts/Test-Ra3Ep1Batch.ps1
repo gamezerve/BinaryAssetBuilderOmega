@@ -81,6 +81,8 @@ if($SchedulerControl){
     Add-BatchCase 'production-update-info' 'StockQualifiedProductionInfo' @('production-update-info-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: replacement targets, options and inherited ability fields retain retail-qualified metadata.
     Add-BatchCase 'replace-self' 'StockQualifiedReplaceSelf' @('replace-self-special-ability-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: projectile replacement retains original Reaper metadata, edited weapon/OCL references and complete object composition.
+    Add-BatchCase 'projectile-replace-self' 'StockQualifiedProjectileReplaceSelf' @('projectile-replace-self-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: wall length, filter lists and both secondary masks use the new retail-qualified wall-builder writer.
     # Reborn: include the source-driven timer-monitor regression without touching user mod outputs.
     # Reborn: include the identity-only radar module in the offline regression batch.

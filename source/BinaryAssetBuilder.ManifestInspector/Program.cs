@@ -153,6 +153,9 @@ internal static class Program
             // Reborn: qualify production-info markers privately before authoring them through Studio.
             if(args.Length==3 && args[0]=="production-update-info-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ProductionUpdateInfoSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: exercise complete Reaper projectile transformation and reference/default edits offline.
+            if(args.Length==3 && args[0]=="projectile-replace-self-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();ProjectileReplaceSelfSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: qualify self-replacement privately with original retail payloads and complete-object composition.
             if(args.Length==3 && args[0]=="replace-self-special-ability-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ReplaceSelfSmokeTest.Run(args[1],args[2]);return 0;}

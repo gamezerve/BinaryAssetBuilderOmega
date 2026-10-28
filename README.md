@@ -8,6 +8,26 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: Reaper projectile transformation uses the original EP1 native writer with independently qualified source and metadata support. -->
+`ProjectileReplaceSelfSpecialAbility` is build-enabled with its complete
+280-byte EP1 record, inherited replacement/ability fields, ordered weak
+ReplacementTemplate list, inline LaunchingWeapon reference at +272 and optional
+OtherObjectCreationList pointer at +276. The original Reaper record independently
+qualifies the extension; original Soviet/Allied construction yards qualify the
+inherited replacement metadata. The existing native writer required no layout
+change. Nine regression checks cover original/edit/default graphs, different
+weapon/OCL targets, omitted references, replacement lists, complete GameObject
+composition and corrupt-output rejection. The offline batch includes this test.
+
+A private snapshot of `SovietHeavyWalkerVehicle.xml`, including its 13-file
+inheritance/include graph, compiled all four emitted assets: the Reaper
+GameObject, `SUHeavyWalkerVehicle_Legs_OCL`, `SovietHeavyWalkerVehicleArmor`
+and `SovietHeavyWalkerLocomotor`. Three local and 98 stock reference occurrences
+resolved; linked BIN/RELO/IMP readback passed. Instance-only sources, including
+the deployed turret, were consumed as inheritance context rather than silently
+emitted. ART includes were excluded only in the private snapshot as requested;
+Reborn sources and published mod outputs were untouched, with no game launch.
+
 <!-- Reborn: complete Bullfrog gameplay-object compilation includes both authored amphibious and ground identities. -->
 A private snapshot of `SovietAntiAirShip.xml` (Bullfrog), its inherited bases
 and include chain compiled **SovietAntiAirShip and SovietAntiAirShip_Ground**

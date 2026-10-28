@@ -62,6 +62,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> productionInfo;
     // Reborn: self-replacement shares an independently captured SpecialAbility metadata chain across the build.
     private readonly Lazy<StockMetadataGrammar> replaceSelf;
+    // Reborn: projectile replacement owns its retail-qualified reference tail and inherited ability metadata.
+    private readonly Lazy<StockMetadataGrammar> projectileReplaceSelf;
     // Reborn: qualify the new wall-builder ABI and metadata once per mixed build.
     // Reborn: timer-monitor metadata is qualified lazily when the source actually requests the module.
     // Reborn: qualify radar metadata only when authored by the source graph.
@@ -243,6 +245,8 @@ internal sealed class ConscriptVariableGraphVerifier
         monitorSpecialPowerTimer=new(()=>MonitorSpecialPowerTimerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         wallBuilder=new(()=>WallBuilderContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         replaceSelf=new(()=>ReplaceSelfContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        // Reborn: qualify the Reaper extension only when the source graph authors this module.
+        projectileReplaceSelf=new(()=>ProjectileReplaceSelfContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         productionInfo=new(()=>ProductionUpdateInfoContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         slaughter=new(()=>SlaughterContainContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         autoDeposit=new(()=>AutoDepositContract.Qualify(WorldBuilderAssetResolver.CatalogPath(),baseline,referenceSchemas,catalog));
@@ -572,6 +576,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 if(owner.NativeType==typeof(WallBuilderBehaviorModuleData)){
                     var grammar=wallBuilder.Value;var wallNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,WallBuilderContract.TypeId,wallNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(wallNative,official,WallBuilderContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,wallNative,owner.NativeType,proof.Records);Own(wallNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: preserve all authored projectile references and inherited ability fields through normal composition.
+                if(owner.NativeType==typeof(ProjectileReplaceSelfSpecialAbilityModuleData)){
+                    var grammar=projectileReplaceSelf.Value;var replaceNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,ProjectileReplaceSelfContract.TypeId,replaceNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(replaceNative,official,ProjectileReplaceSelfContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,replaceNative,owner.NativeType,proof.Records);Own(replaceNative,start,stop);Splice(owner,metadata,start,size);continue;
                 }
                 if(owner.NativeType==typeof(ReplaceSelfSpecialAbilityModuleData)){
                     var grammar=replaceSelf.Value;var replaceNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
