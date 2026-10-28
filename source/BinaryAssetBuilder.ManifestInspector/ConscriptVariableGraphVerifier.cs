@@ -130,6 +130,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: qualify all three Terror Drone families independently against their complete retail records.
     // Reborn: qualify the four remaining Hammer behavior families lazily from original game records.
     // Reborn: lazily qualify the three new vehicle ability families for the current build/catalog.
+    // Reborn: qualify naval pulse and health-drain metadata only for authored naval update modules.
+    private readonly Lazy<StockMetadataGrammar> navalUpdates;
     private readonly Lazy<StockMetadataGrammar> vehicleBatchAbilities;
     private readonly Lazy<StockMetadataGrammar> hammerBehaviors;
     private readonly Lazy<StockMetadataGrammar> scoutBehaviors;
@@ -229,6 +231,8 @@ internal sealed class ConscriptVariableGraphVerifier
         // Reborn: one shared grammar covers full attachment, curve movement and sweeping laser state.
         // Reborn: only authored Hammer module families require this original metadata grammar.
         // Reborn: original Grinder, Apocalypse and MCV payloads qualify their independent native graph.
+        // Reborn: real Stingray and Dreadnought records independently qualify these naval leaves.
+        navalUpdates=new(()=>NavalUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         vehicleBatchAbilities=new(()=>VehicleBatchAbilityContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         hammerBehaviors=new(()=>HammerBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         scoutBehaviors=new(()=>ScoutVehicleBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -515,6 +519,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: prove and compose all source-driven Terror Drone behaviors on the original root Tracker.
                 // Reborn: independently prove and compose each authored Hammer behavior graph.
                 // Reborn: independently prove and compose each new source-driven vehicle ability leaf.
+                // Reborn: source-prove and compose both complete naval update graphs.
+                if(NavalUpdateContract.Supports(owner.NativeType)){
+                    var grammar=navalUpdates.Value;var navalNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName)),navalNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(navalNative,official,Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName),owner.NativeType);int size=grammar.Verify(metadata,navalNative,owner.NativeType,proof.Records);Own(navalNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(VehicleBatchAbilityContract.Supports(owner.NativeType)){
                     var grammar=vehicleBatchAbilities.Value;var vehicleNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName)),vehicleNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(vehicleNative,official,Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName),owner.NativeType);int size=grammar.Verify(metadata,vehicleNative,owner.NativeType,proof.Records);Own(vehicleNative,start,stop);Splice(owner,metadata,start,size);continue;

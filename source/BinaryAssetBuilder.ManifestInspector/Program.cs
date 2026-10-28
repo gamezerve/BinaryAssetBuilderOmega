@@ -153,6 +153,9 @@ internal static class Program
             // Reborn: qualify production-info markers privately before authoring them through Studio.
             if(args.Length==3 && args[0]=="production-update-info-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ProductionUpdateInfoSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: qualify Stingray circular damage and Dreadnought health drain in private whole-object regressions.
+            if(args.Length==3 && args[0]=="naval-update-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();NavalUpdateSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: qualify the five-vehicle batch ability and TankDraw extensions offline.
             if(args.Length==3 && args[0]=="vehicle-batch-ability-self-test")
             {CompilerSmokeTest.InitializeHashProvider();VehicleBatchAbilitySmokeTest.Run(args[1],args[2]);return 0;}

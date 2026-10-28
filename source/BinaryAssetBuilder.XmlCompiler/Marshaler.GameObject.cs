@@ -14,6 +14,13 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: naval update writers preserve the original Stingray and Dreadnought class hashes.
+            case 0x829F7876u:
+                MarshalPolymorphicType<CircularDamageUpdateModuleData,BehaviorModuleData>(node,objT,state);
+                break;
+            case 0xB14A0525u:
+                MarshalPolymorphicType<LoseHealthUpdateModuleData,BehaviorModuleData>(node,objT,state);
+                break;
             // Reborn: compile the actual EP1 Apocalypse grapple and identity-only MCV storage module.
             case 0x196FC7E8u:
                 MarshalPolymorphicType<GrapplingHookUpdateModuleData,BehaviorModuleData>(node,objT,state);

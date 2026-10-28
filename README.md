@@ -8,6 +8,28 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: naval pulse damage and health-drain modules retain complete original EP1 storage and source-driven settings. -->
+`CircularDamageUpdate` and `LoseHealthUpdate` are build-enabled. Circular damage
+uses the original 152-byte layout: water-only option, radius/arc controls, typed
+FX/weapon imports, FX timeout and required inline ObjectFilter. Health drain uses
+its 24-byte Update layout: percentage threshold, damage per second, death mode
+and optional status validation. Thresholds above 100% remain valid, including
+the original Dreadnought's 101% value; no artificial percentage cap is introduced.
+
+Original Stingray/Dreadnought source and native records independently qualify
+both layouts and their metadata. Fifteen original/default/edited native/metadata,
+complete-object and corrupt-native rejection checks pass, covering custom
+filters, typed targets, omitted status gates and health thresholds above 100%.
+The offline regression batch includes the combined naval update test.
+
+A private combined build of `SovietAntiNavyShipTech1.xml`,
+`SovietAntiNavyShipTech2.xml` and `SovietAntiStructureShip.xml` passed complete
+stream compilation and BIN/RELO/IMP readback. The seven-file source graph
+emitted **3 GameObjects with 293 resolved stock reference occurrences**. Each
+ship traversed normal source/native/metadata composition in the same linked
+stream. ART includes were excluded only in the private snapshot as requested;
+user Reborn files and published mod outputs were untouched. No game was launched.
+
 <!-- Reborn: five-vehicle authoring opens EP1 tank rendering, Grinder abilities, Apocalypse grappling and MCV substructure storage. -->
 `TankDraw`, `SpecialAbilityUpdate`, `GrapplingHookUpdate` and
 `SubStructureStorageBehavior` are build-enabled. The isolated 228-byte EP1 tank
