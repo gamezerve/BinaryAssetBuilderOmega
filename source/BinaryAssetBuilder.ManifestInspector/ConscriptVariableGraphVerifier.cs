@@ -132,6 +132,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: lazily qualify the three new vehicle ability families for the current build/catalog.
     // Reborn: qualify naval pulse and health-drain metadata only for authored naval update modules.
     // Reborn: qualify aircraft return/switch metadata only when authored by the current graph.
+    // Reborn: receiver metadata is qualified lazily from original Allied tech-level payloads.
+    private readonly Lazy<StockMetadataGrammar> techUpgradeReceiver;
     private readonly Lazy<StockMetadataGrammar> aircraftUpdates;
     private readonly Lazy<StockMetadataGrammar> navalUpdates;
     private readonly Lazy<StockMetadataGrammar> vehicleBatchAbilities;
@@ -235,6 +237,8 @@ internal sealed class ConscriptVariableGraphVerifier
         // Reborn: original Grinder, Apocalypse and MCV payloads qualify their independent native graph.
         // Reborn: real Stingray and Dreadnought records independently qualify these naval leaves.
         // Reborn: original MiG/Kirov records independently qualify aircraft update storage and references.
+        // Reborn: Barracks receiver records qualify the entire inherited upgrade/filter graph.
+        techUpgradeReceiver=new(()=>TechUpgradeReceiverContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         aircraftUpdates=new(()=>AircraftUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         navalUpdates=new(()=>NavalUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         vehicleBatchAbilities=new(()=>VehicleBatchAbilityContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -525,6 +529,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: independently prove and compose each new source-driven vehicle ability leaf.
                 // Reborn: source-prove and compose both complete naval update graphs.
                 // Reborn: prove and compose both complete aircraft update graphs against their original wire classes.
+                // Reborn: independently prove and compose the authored Allied receiver graph.
+                if(owner.NativeType==typeof(TechUpgradeReceiverModuleData)){
+                    var grammar=techUpgradeReceiver.Value;var receiverNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName)),receiverNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(receiverNative,official,Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName),owner.NativeType);int size=grammar.Verify(metadata,receiverNative,owner.NativeType,proof.Records);Own(receiverNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(AircraftUpdateContract.Supports(owner.NativeType)){
                     var grammar=aircraftUpdates.Value;var aircraftNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName)),aircraftNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(aircraftNative,official,Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName),owner.NativeType);int size=grammar.Verify(metadata,aircraftNative,owner.NativeType,proof.Records);Own(aircraftNative,start,stop);Splice(owner,metadata,start,size);continue;

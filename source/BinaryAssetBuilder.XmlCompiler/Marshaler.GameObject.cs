@@ -14,6 +14,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: compile the Allied receiver with its actual EP1 identity and full native upgrade/filter graph.
+            case 0x1773BB2Eu:
+                MarshalPolymorphicType<TechUpgradeReceiverModuleData,BehaviorModuleData>(node,objT,state);
+                break;
             // Reborn: the original unsuffixed locomotor-switch wire selects the complete EP1 update record.
             case 0x4EDFB24Bu:
                 MarshalPolymorphicType<SwitchLocomotorUpdate,BehaviorModuleData>(node,objT,state);

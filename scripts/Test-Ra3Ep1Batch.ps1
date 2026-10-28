@@ -91,6 +91,8 @@ if($SchedulerControl){
     Add-BatchCase 'naval-updates' 'StockQualifiedNavalUpdates' @('naval-update-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: qualify MiG return-to-producer and Kirov locomotor switching with default/edit/full-object/corruption controls.
     Add-BatchCase 'aircraft-updates' 'StockQualifiedAircraftUpdates' @('aircraft-update-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: qualify Allied tech receiver levels, optional radius storage, inherited upgrade controls and radar/filter settings.
+    Add-BatchCase 'tech-upgrade-receiver' 'StockQualifiedTechUpgradeReceiver' @('tech-upgrade-receiver-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: wall length, filter lists and both secondary masks use the new retail-qualified wall-builder writer.
     # Reborn: include the source-driven timer-monitor regression without touching user mod outputs.
     # Reborn: include the identity-only radar module in the offline regression batch.

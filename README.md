@@ -8,6 +8,30 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: Allied technology receivers use complete EP1 upgrade/filter storage and source-driven radar/radius settings. -->
+`TechUpgradeReceiver` is build-enabled with its original 188-byte EP1 layout:
+Radius, optional RadiusY pointer, circular/rectangular distance mode, FX bone
+string, weak radar-module ID, radar rotation angles and inline ObjectFilter.
+Inherited trigger/conflict lists, flags and optional upgrade animation remain
+authored normally. Omitted RadiusY and explicitly authored zero retain distinct
+pointer storage as required by the original schema/native layout.
+
+Both original Barracks tech-level records independently qualify native values
+and metadata. Original subobject upgrade records additionally supply the shared
+optional animation grammar. Thirteen original-Tech2/Tech3/default/edited,
+optional-radius, upgrade, full-object and corrupt-native checks pass; the
+offline regression batch includes this receiver test.
+
+A private combined build of `AlliedPowerPlant.xml`, `AlliedBarracks.xml`,
+`AlliedRefinery.xml`, `AlliedWarFactory.xml`, `AlliedNavalYard.xml`,
+`AlliedAirfield.xml` and `AlliedTechStructure.xml` passed full stream compilation
+and BIN/RELO/IMP readback: **7 GameObjects and 741 resolved stock reference
+occurrences** from a 30-file source/include graph. Existing production, dock,
+spawn, repair, destruction, infiltration, parking and recall processors covered
+the remaining building paths. ART includes were excluded only in the private
+snapshot; user Reborn sources and published outputs were untouched. No game
+was launched.
+
 <!-- Reborn: MiG return-to-producer and Kirov locomotor switching use original EP1 source/native/metadata contracts. -->
 `ReturnToProducerSpecialPower` and `SwitchLocomotorUpdate` are build-enabled.
 Return-to-producer retains the existing 476-byte inherited special-power writer,

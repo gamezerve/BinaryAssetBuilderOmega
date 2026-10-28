@@ -153,6 +153,9 @@ internal static class Program
             // Reborn: qualify production-info markers privately before authoring them through Studio.
             if(args.Length==3 && args[0]=="production-update-info-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ProductionUpdateInfoSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: qualify both Allied receiver levels, authored filters/radii/radar values and inherited upgrade controls offline.
+            if(args.Length==3 && args[0]=="tech-upgrade-receiver-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();TechUpgradeReceiverSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: qualify MiG return and Kirov switch updates through whole-object offline regressions.
             if(args.Length==3 && args[0]=="aircraft-update-self-test")
             {CompilerSmokeTest.InitializeHashProvider();AircraftUpdateSmokeTest.Run(args[1],args[2]);return 0;}

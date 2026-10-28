@@ -159,6 +159,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: retain full source-driven ability/grappling/storage records in the variable behavior graph.
             // Reborn: naval updates retain editable filters, damage and status gates in the full variable graph.
             // Reborn: aircraft return and locomotor switching are source-authored rather than frozen to original IDs/values.
+            // Reborn: Allied receiver radii, filters, radar settings and upgrade conditions remain source-driven.
+            if(owner.NativeType==typeof(SageBinaryData.TechUpgradeReceiverModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(AircraftUpdateContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(NavalUpdateContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(VehicleBatchAbilityContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
