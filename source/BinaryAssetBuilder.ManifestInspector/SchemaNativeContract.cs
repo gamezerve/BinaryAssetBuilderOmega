@@ -31,6 +31,8 @@ internal sealed class SchemaNativeContract
         new(typeof(Ep1EvaAnnounceClientCreateModuleData),"ClientUpdates",0xD0EEFDDDu,BinaryAssetBuilder.XmlCompiler.Ep1EvaCreateClientTokenizer.Tokenize),
         // Reborn: the existing tracer writer supports both optional-status shapes without freezing the Conscript template.
         // Reborn: stream draws use the complete EP1 layout and the shared shader-aware metadata writer.
+        // Reborn: truck draws share scripted children but own their EP1 wheels, optional terrain reference and scrolling lists.
+        new(typeof(Ep1W3DTruckDrawModuleData),"Draws",0xA44C2999u,BinaryAssetBuilder.XmlCompiler.Ep1ScriptedDrawTokenizer.TokenizeTruck),
         new(typeof(Ep1W3DStreamDrawModuleData),"Draws",0x60020441u,BinaryAssetBuilder.XmlCompiler.Ep1ScriptedDrawTokenizer.TokenizeStream),
         // Reborn: laser draws use the complete EP1 layout (fade times, optional status validation) and the shared shader-aware writer.
         new(typeof(Ep1W3DLaserDrawModuleData),"Draws",0x2FDDEC4Du,BinaryAssetBuilder.XmlCompiler.Ep1ScriptedDrawTokenizer.TokenizeLaser),

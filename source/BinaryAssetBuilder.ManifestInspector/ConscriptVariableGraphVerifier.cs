@@ -829,6 +829,8 @@ internal sealed class ConscriptVariableGraphVerifier
         // Reborn: the Conscript baseline has no EVA-create leaf; qualify it from the actual SovietSuperWeapon source and native record.
         if(family.Type==typeof(Ep1EvaAnnounceClientCreateModuleData))return EvaCreateClientContract.Qualify(manifest,baseline,referenceSchemas,catalog);
         // Reborn: the baseline infantry has no stream draw; qualify it from original Desolator source and retail records.
+        // Reborn: independently qualify the EP1 truck extension before accepting complete authored truck graphs.
+        if(family.Type==typeof(Ep1W3DTruckDrawModuleData))return TruckDrawContract.Qualify(manifest,baseline,referenceSchemas,catalog);
         if(family.Type==typeof(Ep1W3DStreamDrawModuleData))return StreamDrawContract.Qualify(manifest,baseline,referenceSchemas,catalog);
         // Reborn: the baseline infantry has no laser draw; qualify it from original laser units and retail records.
         if(family.Type==typeof(Ep1W3DLaserDrawModuleData))return LaserDrawContract.Qualify(manifest,baseline,referenceSchemas,catalog);

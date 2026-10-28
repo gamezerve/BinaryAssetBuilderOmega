@@ -11,7 +11,7 @@ namespace BinaryAssetBuilder.XmlCompiler;
 // Reborn: generate reviewed scripted-draw metadata recursively from owned native records, never from a captured stock template or hard-coded unit identity.
 public static class Ep1ScriptedDrawTokenizer
 {
-    private enum Kind { Int, UInt, Real, Bool, Enum, Flags, String, Ref, List, Strings, EmptyList, StringPointer, NullPointer, Pointer, Polymorphic, Reals, Inline, Refs }
+    private enum Kind { Int, UInt, Real, Bool, Enum, Flags, String, Ref, List, Strings, EmptyList, StringPointer, NullPointer, Pointer, Polymorphic, Reals, Inline, Refs, RefPointer }
     private sealed record Field(string Name, uint Tag, int Offset, Kind Kind, int Width = 4, int Limit = 0, Record Child = null);
     private sealed record Record(string Name, int Size, Field[] Fields, int PaddingAt = 0, int PaddingLength = 0, Record Parent = null, uint ParentTag = 0);
     // Reborn: literal wire tags/order are independently stock-reviewed; CLR type names are not used as guessed type IDs.
@@ -74,6 +74,37 @@ public static class Ep1ScriptedDrawTokenizer
         F("MultiPlayerOnly",0x77E3F4F7,210,Kind.Bool,1), F("AffectedByStealth",0x77E3F4F7,211,Kind.Bool,1), F("InvertStealthOpacity",0x77E3F4F7,212,Kind.Bool,1), F("HighDetailOnly",0x77E3F4F7,213,Kind.Bool,1),
         F("ModelConditionState",0x953CF093,164,Kind.List,8,child:ModelState), F("AnimationState",0x99B342C4,172,Kind.List,8,child:AnimationState), F("AttachModel",0xB4E523BF,180,Kind.EmptyList,8), F("EmbedPortal",0xAFC5E3E3,188,Kind.EmptyList,8) }, 214, 2, Draw, 0x17F61728);
 
+    // Reborn: original Mortarcycle and Athena Cannon metadata qualify the truck extension and populated tread scrolling records.
+    private static readonly Record TruckScrolling = new("TreadScrollingMapping",28,new[]{F("LeftTrack",0x1A2933AA,0,Kind.String,8),F("RightTrack",0x1A2933AA,8,Kind.String,8),F("SpeedMultiplier",0x645864F3,16,Kind.Real),F("TreadPivotSpeedFraction",0x645864F3,20,Kind.Real),F("TreadDriveSpeedFraction",0x645864F3,24,Kind.Real)});
+    private static readonly Record TruckRoot = new("W3DTruckDrawModuleData",396,new[]{
+        F("LeftFrontTireBone",0x1A2933AA,216,Kind.String,8),
+        F("RightFrontTireBone",0x1A2933AA,224,Kind.String,8),
+        F("LeftRearTireBone",0x1A2933AA,232,Kind.String,8),
+        F("RightRearTireBone",0x1A2933AA,240,Kind.String,8),
+        F("MidLeftFrontTireBone",0x1A2933AA,248,Kind.String,8),
+        F("MidRightFrontTireBone",0x1A2933AA,256,Kind.String,8),
+        F("MidLeftRearTireBone",0x1A2933AA,264,Kind.String,8),
+        F("MidRightRearTireBone",0x1A2933AA,272,Kind.String,8),
+        F("MidLeftMidTireBone",0x1A2933AA,280,Kind.String,8),
+        F("MidRightMidTireBone",0x1A2933AA,288,Kind.String,8),
+        F("LeftFrontTireBone2",0x1A2933AA,296,Kind.String,8),
+        F("RightFrontTireBone2",0x1A2933AA,304,Kind.String,8),
+        F("LeftRearTireBone2",0x1A2933AA,312,Kind.String,8),
+        F("RightRearTireBone2",0x1A2933AA,320,Kind.String,8),
+        F("MidLeftMidTireBone2",0x1A2933AA,328,Kind.String,8),
+        F("MidRightMidTireBone2",0x1A2933AA,336,Kind.String,8),
+        F("TireRotationMultiplier",0x645864F3,344,Kind.Real),F("TireRotationMultiplierFront",0x645864F3,348,Kind.Real),F("PowerslideRotationAddition",0x645864F3,352,Kind.Real),
+        F("CabBone",0x1A2933AA,356,Kind.String,8),F("TrailerBone",0x1A2933AA,364,Kind.String,8),F("CabRotationMultiplier",0x645864F3,372,Kind.Real),F("TrailerRotationMultiplier",0x645864F3,376,Kind.Real),F("RotationDamping",0x645864F3,380,Kind.Real),
+        F("TreadTerrainParticles",0xA6FF4551,384,Kind.RefPointer),F("TreadScrollingMap",0xD1D3E8E0,388,Kind.List,8,child:TruckScrolling)
+    },Parent:Root,ParentTag:0x4ECF2A4B);
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: compose the EP1 truck extension and existing scripted-model graph on one owned native allocation. */
+    //-------------------------------------------------------------------------------------------------
+    public static Chunk TokenizeTruck(Chunk native)
+    {
+        if(native?.InstanceBuffer==null||native.RelocationBuffer==null||native.ImportsBuffer==null||native.InstanceBuffer.Length<396||native.InstanceBuffer.Length>2*1048576)throw new InvalidDataException("Bounded EP1 TruckDraw native graph required.");
+        return new Builder(native.InstanceBuffer).Build(native,TruckRoot,0xA44C2999u);
+    }
     // Reborn: Desolator retail metadata qualifies this full EP1 stream root, inline shader and optional particle-reference array.
     private static readonly Record StreamParticles = new("ParticleSystemList",8,new[]{F("ParticleSys",0x43F1CE36,0,Kind.Refs,8)});
     private static readonly Record StreamRoot = new("W3DStreamDrawModuleData",80,new[]{
@@ -190,6 +221,9 @@ public static class Ep1ScriptedDrawTokenizer
                     // Reborn: optional material ownership is source-driven and does not reuse a captured stock allocation.
                     case Kind.Pointer:
                         if(Word(slot)!=0){int target=Offset(Word(slot));Claim(target,field.Child.Size);relos.Add((uint)slot);metadata[(next+8)/4]=(uint)Emit(field.Child,target,depth+1);}break;
+                    // Reborn: an optional terrain reference points directly at an owned import word, with no nested metadata table.
+                    case Kind.RefPointer:
+                        if(Word(slot)!=0){int target=Offset(Word(slot));Claim(target,4);relos.Add((uint)slot);if(Word(target)!=0)imports.Add((uint)target);Native(next+8,target);}break;
                     case Kind.NullPointer: if (Word(slot) != 0) throw new InvalidDataException("Scripted optional child family is not token-enabled: " + field.Name); break;
                     default:
                         if (field.Kind == Kind.Bool && bytes[slot] > 1 || field.Kind == Kind.Enum && Word(slot) >= field.Limit) throw new InvalidDataException("Scripted enum/bool differs: " + field.Name);

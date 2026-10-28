@@ -63,7 +63,13 @@ public static partial class Marshaler
                 MarshalPolymorphicType<W3DPropDrawModuleData, DrawModuleData>(node, objT, state);
                 break;
             case 0xA44C2999u:
-                MarshalPolymorphicType<W3DTruckDrawModuleData, DrawModuleData>(node, objT, state);
+                // Reborn: the validated EP1 frontend selects truck storage without changing the legacy KW writer.
+                if(node.GetAttributeValue("RebornEp1TruckDraw",null)?.GetText()=="true")
+                {
+                    using(var context=state.Push((void**)objT,(uint)sizeof(Ep1W3DTruckDrawModuleData),1u))Marshal(node,(Ep1W3DTruckDrawModuleData*)*objT,state);
+                    uint wire=0xA44C2999u;state.InplaceEndianToPlatform(&wire);*(uint*)*objT=wire;
+                }
+                else MarshalPolymorphicType<W3DTruckDrawModuleData, DrawModuleData>(node, objT, state);
                 break;
             case 0x8A811D3Eu:
                 MarshalPolymorphicType<W3DTankDrawModuleData, DrawModuleData>(node, objT, state);

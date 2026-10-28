@@ -14,7 +14,7 @@ public static class Ep1DrawsTokenizer
     /** Reborn: verify canonical list/leaf ownership before rebasing metadata and the shared native graph exactly once; unknown classes and duplicate local identities fail. */
     //-------------------------------------------------------------------------------------------------
     public static Chunk Tokenize(Chunk native)
-        => TokenizeSelected(native, leaf => Word(leaf.InstanceBuffer, 0) switch { 0x4ECF2A4B => Ep1ScriptedDrawTokenizer.Tokenize(leaf), 0x54018E60 => Ep1TracerDrawTokenizer.Tokenize(leaf), 0x60020441 => Ep1ScriptedDrawTokenizer.TokenizeStream(leaf), 0x2FDDEC4D => Ep1ScriptedDrawTokenizer.TokenizeLaser(leaf), _ => throw new InvalidDataException("Draws class is not token-enabled.") });
+        => TokenizeSelected(native, leaf => Word(leaf.InstanceBuffer, 0) switch { 0x4ECF2A4B => Ep1ScriptedDrawTokenizer.Tokenize(leaf), 0x54018E60 => Ep1TracerDrawTokenizer.Tokenize(leaf), 0x60020441 => Ep1ScriptedDrawTokenizer.TokenizeStream(leaf), 0xA44C2999 => Ep1ScriptedDrawTokenizer.TokenizeTruck(leaf), 0x2FDDEC4D => Ep1ScriptedDrawTokenizer.TokenizeLaser(leaf), _ => throw new InvalidDataException("Draws class is not token-enabled.") });
     //-------------------------------------------------------------------------------------------------
     /** Reborn: selected pointer-list families share canonical ownership and coordinate composition, while the caller supplies an explicit fail-closed leaf tokenizer. */
     //-------------------------------------------------------------------------------------------------

@@ -8,6 +8,18 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: TruckDraw uses its EP1 extension while retaining the stock-qualified scripted-model graph. -->
+`TruckDraw` is build-enabled with its 396-byte EP1 record. All wheel/cab/trailer
+names and rotation controls, optional `TreadTerrainParticles` import and
+source-sized `TreadScrollingMap` records are editable, alongside the existing
+scripted model/animation/material capabilities. The original Mortarcycle and
+Athena Cannon qualify the native fields and metadata, including populated
+scrolling. Regression covers four complete original/edit/default/multiple-draw
+graphs, all wheel/cab fields, scrolling names/percentages and terrain presence or
+absence. The separate KW writer is preserved; official out-of-order TruckDraw
+child families are normalized stably before schema validation.
+
+
 <!-- Reborn: instance source libraries keep schema-declared companion records without enabling their native emission implicitly. -->
 The source-inheritance route accepts the original `GlobalData/Locomotor.xml`
 instance library, including its `BounceKickTerrainMapping` companion. Regression

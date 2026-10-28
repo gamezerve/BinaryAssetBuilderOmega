@@ -353,6 +353,9 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();SlaveWatcherSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="stream-state-self-test")
             {CompilerSmokeTest.InitializeHashProvider();StreamStateSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: EP1 truck draws have original native/metadata and edited complete-object coverage.
+            if(args.Length==3 && args[0]=="truck-draw-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();TruckDrawSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="stream-draw-self-test")
             {CompilerSmokeTest.InitializeHashProvider();StreamDrawSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="tracer-source-self-test")
