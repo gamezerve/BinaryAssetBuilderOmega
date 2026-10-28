@@ -81,6 +81,23 @@ public static class Ep1ScriptedDrawTokenizer
         F("UVWorldSize",0x645864F3,20,Kind.Real),F("NumTubeSides",0x23E650B8,24),F("TubeRadius",0x645864F3,28,Kind.Real),F("HitFx",0x0D1C8E83,32,Kind.Ref),
         F("WeaponSlotID",0x23E650B8,36),F("StreamStateID",0x23E650B8,40),F("FXShader",0xC7EA3CF4,44,Kind.Inline,28,child:Material),F("ParticleSystems",0xB26F4CD7,72,Kind.Pointer,child:StreamParticles)
     },77,3,Draw,0x17F61728);
+    // Reborn: retail laser draws (Natasha, Mirage, Future Tank) qualify this 112-byte EP1 root, its inline shader and the optional status-validation record.
+    private static readonly Record LaserValidation = new("ObjectStatusValidationDataType",64,new[]{F("ForbiddenStatus",0xA7BD811E,0,Kind.Flags,32,230),F("RequiredStatus",0xA7BD811E,32,Kind.Flags,32,230)});
+    private static readonly Record LaserRoot = new("W3DLaserDrawModuleData",112,new[]{
+        F("UseDistortionShader",0x77E3F4F7,108,Kind.Bool,1),F("Texture1_UTile",0x645864F3,8,Kind.Real),F("Texture1_VTile",0x645864F3,12,Kind.Real),F("Texture2_UTile",0x645864F3,16,Kind.Real),F("Texture2_VTile",0x645864F3,20,Kind.Real),
+        F("Texture1_UScrollRate",0x645864F3,24,Kind.Real),F("Texture1_VScrollRate",0x645864F3,28,Kind.Real),F("Texture2_UScrollRate",0x645864F3,32,Kind.Real),F("Texture2_VScrollRate",0x645864F3,36,Kind.Real),
+        F("Texture1_NumFrames",0x23E650B8,40),F("Texture1_FrameRate",0x645864F3,44,Kind.Real),F("Texture2_NumFrames",0x23E650B8,48),F("Texture2_FrameRate",0x645864F3,52,Kind.Real),F("LaserWidth",0x645864F3,56,Kind.Real),
+        F("FadeInTime",0x998669E8,60,Kind.Real),F("FadeOutTime",0x998669E8,64,Kind.Real),F("WeaponSlotID",0x23E650B8,68),F("LaserStateID",0x23E650B8,72),F("FXShader",0xC7EA3CF4,76,Kind.Inline,28,child:Material),
+        F("ObjectStatusValidation",0x3E8F938C,104,Kind.Pointer,child:LaserValidation)
+    },109,3,Draw,0x17F61728);
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: reuse the stock-qualified shader descriptor graph for an independently bounded EP1 laser-draw root. */
+    //-------------------------------------------------------------------------------------------------
+    public static Chunk TokenizeLaser(Chunk native)
+    {
+        if(native?.InstanceBuffer==null||native.RelocationBuffer==null||native.ImportsBuffer==null||native.InstanceBuffer.Length<112||native.InstanceBuffer.Length>2*1048576)throw new InvalidDataException("Bounded EP1 LaserDraw native graph required.");
+        return new Builder(native.InstanceBuffer).Build(native,LaserRoot,0x2FDDEC4Du);
+    }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: reuse the stock-qualified shader descriptor graph for an independently bounded EP1 stream-draw root. */
     //-------------------------------------------------------------------------------------------------

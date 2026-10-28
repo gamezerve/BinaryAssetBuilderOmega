@@ -32,6 +32,8 @@ internal sealed class SchemaNativeContract
         // Reborn: the existing tracer writer supports both optional-status shapes without freezing the Conscript template.
         // Reborn: stream draws use the complete EP1 layout and the shared shader-aware metadata writer.
         new(typeof(Ep1W3DStreamDrawModuleData),"Draws",0x60020441u,BinaryAssetBuilder.XmlCompiler.Ep1ScriptedDrawTokenizer.TokenizeStream),
+        // Reborn: laser draws use the complete EP1 layout (fade times, optional status validation) and the shared shader-aware writer.
+        new(typeof(Ep1W3DLaserDrawModuleData),"Draws",0x2FDDEC4Du,BinaryAssetBuilder.XmlCompiler.Ep1ScriptedDrawTokenizer.TokenizeLaser),
         new(typeof(W3DTracerDrawModuleData),"Draws",0x54018E60u,BinaryAssetBuilder.XmlCompiler.Ep1TracerDrawTokenizer.Tokenize),
         new(typeof(W3DScriptedModelDrawModuleData),"Draws",0x4ECF2A4Bu,BinaryAssetBuilder.XmlCompiler.Ep1ScriptedDrawTokenizer.Tokenize),
         new(typeof(ModelConditionAudioLoopClientBehaviorModuleData),"ClientBehaviors",0x5A3EDBF4u,leaf=>FromList(leaf,BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize)),
@@ -110,6 +112,8 @@ internal sealed class SchemaNativeContract
         // Reborn: EA subobject source may place inherited animation after nuggets; validation copies use the original XSD family order.
         // Reborn: stock and authored SlowDeath records share stable independent field-family normalization.
         SlowDeathContract.Normalize(document);
+        // Reborn: original laser states and scripted draws may list their element families out of XSD order.
+        SourceFamilyOrder.Normalize(document);
         SubObjectsUpgradeContract.Normalize(document,schemas.Schemas);document.Schemas.Add(schemas.Schemas);
         document.Validate((_,e)=>throw new InvalidDataException(e.Message));ConscriptBehaviorSurvey.ResolveStrong(document,schemas,catalog);return document;
     }

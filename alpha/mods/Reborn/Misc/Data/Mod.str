@@ -306,6 +306,16 @@
 		"Advanced Anti-Infantry \n> Health = 900 \n> Shroud Clearing Range = 500 \n> Movement Speed = 50 \n> Spray Weapon DPS = 29 \n> Spray Weapon Range = 225 \n> Blat Weapon DPS = 100 \n> Blat Weapon Range = 250"
 	End
 
+// Soviet Natasha Valkova
+
+	TYPE:SOVIETCOMMANDOTECH1
+		"Commando \n> Health = 300 \n> Shroud Clearing Range = 500 \n> Movement Speed (Land/Sea) = 60 \n> Build Limit = 1 \n> Korshunov SV Sniper Rifle Weapon DPS = 500 \n> Korshunov SV Sniper Rifle Weapon Range = 300 \n> Bombing Run Weapon DPS = 18181.5 \n> Bombing Run Weapon Range = 300"
+	End
+
+	DESC:PILOTSNIPESPECIALPOWER
+		"> Pilot Snipe Weapon Range = 500 \n> Pilot Snipe Weapon Cooldown = 1 Min \nCleanly dispatches the operator of an enemy vehicle. Infantry may recover the vehicle."
+	End
+
 // Allied Paradrop
 	
 	TYPE:CampaignPlayerPowerParadropLvl1Reborn

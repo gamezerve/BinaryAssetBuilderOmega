@@ -339,6 +339,12 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();ScriptedTurretSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: stream draws are tested on original and authored complete GameObject graphs.
             // Reborn: stream-state IDs have original native/metadata and complete object regression coverage.
+            // Reborn: OCL monitors have an original Natasha witness plus edited/default/composition coverage.
+            if(args.Length==3 && args[0]=="ocl-monitor-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();OCLMonitorSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: laser draws and laser states share original Natasha/Mirage/Future Tank witnesses plus edited/default graphs.
+            if(args.Length==3 && args[0]=="laser-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();LaserSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: slave watchers have four original witnesses plus edited/default/composition coverage.
             if(args.Length==3 && args[0]=="slave-watcher-self-test")
             {CompilerSmokeTest.InitializeHashProvider();SlaveWatcherSmokeTest.Run(args[1],args[2]);return 0;}

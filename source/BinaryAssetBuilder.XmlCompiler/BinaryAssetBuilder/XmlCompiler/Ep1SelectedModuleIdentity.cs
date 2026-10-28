@@ -40,7 +40,7 @@ public static class Ep1SelectedModuleIdentity
         var drawContainers=root.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="Draws" && e.NamespaceURI==ns).ToArray();
         var draws=drawContainers.SelectMany(e=>e.ChildNodes.OfType<XmlElement>()).ToArray();
         // Reborn: complete source-sized composition drops the historical sample quota; the legacy selected profile remains unchanged.
-        if(drawContainers.Length>1 || (!reviewedBehaviors&&draws.Length>64) || draws.Any(e=>e.NamespaceURI!=ns || (e.LocalName is not ("ScriptedModelDraw" or "TracerModelDraw")&&(!reviewedBehaviors||e.LocalName!="StreamDraw"))))throw new InvalidDataException("Unreviewed selected Draw identity class/count.");
+        if(drawContainers.Length>1 || (!reviewedBehaviors&&draws.Length>64) || draws.Any(e=>e.NamespaceURI!=ns || (e.LocalName is not ("ScriptedModelDraw" or "TracerModelDraw")&&(!reviewedBehaviors||e.LocalName is not ("StreamDraw" or "LaserDraw")))))throw new InvalidDataException("Unreviewed selected Draw identity class/count.");
         // Reborn: both reviewed client containers join the same local scope; class/namespace/duplicate-container checks do not impose a complete-path sample count.
         // Reborn: the complete route admits EVA-ready clients in the same local identity scope as existing client classes.
         var clients=new List<XmlElement>();

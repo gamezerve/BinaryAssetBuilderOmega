@@ -32,7 +32,7 @@
 
 		<!-- <Include type="all" source="units/SovietAntiInfantryInfantry.xml" /> -->
 		<Include type="all" source="units/SovietAntiVehicleInfantry.xml" />
-		<!-- <Include type="all" source="units/SovietCommandoTech1.xml" /> -->
+		<Include type="all" source="units/SovietCommandoTech1.xml" />
 		<!-- <Include type="all" source="units/SovietEngineer.xml" /> -->
 		<!-- <Include type="all" source="units/SovietScoutInfantry.xml" /> -->
 		<!-- <Include type="all" source="units/SovietHeavyAntiVehicleInfantry.xml" /> -->

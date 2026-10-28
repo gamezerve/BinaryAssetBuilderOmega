@@ -42,7 +42,13 @@ public static partial class Marshaler
                 else MarshalPolymorphicType<W3DStreamDrawModuleData, DrawModuleData>(node, objT, state);
                 break;
             case 0x2FDDEC4Du:
-                MarshalPolymorphicType<W3DLaserDrawModuleData, DrawModuleData>(node, objT, state);
+                // Reborn: only the selected EP1 frontend supplies this internal marker; KW retains its shorter native layout.
+                if(node.GetAttributeValue("RebornEp1LaserDraw",null)?.GetText()=="true")
+                {
+                    using(var context=state.Push((void**)objT,(uint)sizeof(Ep1W3DLaserDrawModuleData),1u))Marshal(node,(Ep1W3DLaserDrawModuleData*)*objT,state);
+                    uint wire=0x2FDDEC4Du;state.InplaceEndianToPlatform(&wire);*(uint*)*objT=wire;
+                }
+                else MarshalPolymorphicType<W3DLaserDrawModuleData, DrawModuleData>(node, objT, state);
                 break;
             case 0xC579B39Bu:
                 MarshalPolymorphicType<W3DBuffDrawModuleData, DrawModuleData>(node, objT, state);

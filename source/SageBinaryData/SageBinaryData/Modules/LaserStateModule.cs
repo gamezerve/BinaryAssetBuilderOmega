@@ -11,7 +11,8 @@ public struct LaserStateModuleData
     public Relo.String<sbyte> OriginBoneName;
     public Relo.List<Relo.AssetReference<FXParticleSystemTemplate>> LaserEndParticleSystem;
     public Relo.List<Relo.AssetReference<FXParticleSystemTemplate>> LaserStartParticleSystem;
-    public unsafe Vector3* EndOffset;
+    // Reborn: schema Vector3 uses lowercase x/y/z attributes; Coord3D has the same 12-byte layout with matching field names.
+    public unsafe Coord3D* EndOffset;
     public unsafe ObjectStatusValidationDataType* ObjectStatusValidation;
     public SageBool RequiresWeapon;
 }

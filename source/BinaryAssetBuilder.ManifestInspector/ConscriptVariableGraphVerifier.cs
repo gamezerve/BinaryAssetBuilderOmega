@@ -126,6 +126,10 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> streamState;
     // Reborn: slave watchers have their own four original retail witnesses.
     private readonly Lazy<StockMetadataGrammar> slaveWatcher;
+    // Reborn: laser states have their own original laser-unit witnesses.
+    private readonly Lazy<StockMetadataGrammar> laserState;
+    // Reborn: OCL monitors are qualified from original retail records.
+    private readonly Lazy<StockMetadataGrammar> oclMonitor;
     private readonly Lazy<StockMetadataGrammar> aimWeapon;
     private readonly Lazy<StockMetadataGrammar> slowDeath;
     private readonly Lazy<StockMetadataGrammar> stealthDetector;
@@ -208,6 +212,8 @@ internal sealed class ConscriptVariableGraphVerifier
         // Reborn: qualify the existing StreamState writer before composing authored stream IDs.
         streamState=new(()=>StreamStateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         slaveWatcher=new(()=>SlaveWatcherContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        laserState=new(()=>LaserStateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        oclMonitor=new(()=>OCLMonitorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         aimWeapon=new(()=>AimWeaponContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         slowDeath=new(()=>SlowDeathContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         stealthDetector=new(()=>StealthDetectorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -454,6 +460,16 @@ internal sealed class ConscriptVariableGraphVerifier
                 if(owner.NativeType==typeof(Ep1FireWeaponCollideModuleData)){
                     var grammar=fireWeaponCollide.Value;var collideNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,FireWeaponCollideContract.TypeId,collideNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(collideNative,official,FireWeaponCollideContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,collideNative,owner.NativeType,proof.Records);Own(collideNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: independently prove option and status masks before splicing each OCL monitor.
+                if(owner.NativeType==typeof(OCLMonitorUpdateModuleData)){
+                    var grammar=oclMonitor.Value;var monitorNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,OCLMonitorContract.TypeId,monitorNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(monitorNative,official,OCLMonitorContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,monitorNative,owner.NativeType,proof.Records);Own(monitorNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: independently prove laser particle imports, bone text, offsets and status validation before splicing each laser state.
+                if(owner.NativeType==typeof(LaserStateModuleData)){
+                    var grammar=laserState.Value;var laserNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,LaserStateContract.TypeId,laserNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(laserNative,official,LaserStateContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,laserNative,owner.NativeType,proof.Records);Own(laserNative,start,stop);Splice(owner,metadata,start,size);continue;
                 }
                 // Reborn: independently prove upgrade imports, status validation and flags before splicing each slave watcher.
                 if(owner.NativeType==typeof(SlaveWatcherBehaviorModuleData)){
@@ -814,6 +830,8 @@ internal sealed class ConscriptVariableGraphVerifier
         if(family.Type==typeof(Ep1EvaAnnounceClientCreateModuleData))return EvaCreateClientContract.Qualify(manifest,baseline,referenceSchemas,catalog);
         // Reborn: the baseline infantry has no stream draw; qualify it from original Desolator source and retail records.
         if(family.Type==typeof(Ep1W3DStreamDrawModuleData))return StreamDrawContract.Qualify(manifest,baseline,referenceSchemas,catalog);
+        // Reborn: the baseline infantry has no laser draw; qualify it from original laser units and retail records.
+        if(family.Type==typeof(Ep1W3DLaserDrawModuleData))return LaserDrawContract.Qualify(manifest,baseline,referenceSchemas,catalog);
         var grammar=new StockMetadataGrammar();
         // Reborn: only developer comparisons need a resolved stock-source probe; fast builds still learn and validate the native grammar.
         var resolvedBaseline=SdkBuildTests.Enabled?SchemaNativeContract.Resolve(baseline,referenceSchemas,catalog):baseline;var leaves=ConscriptVariableContainers.Find(resolvedBaseline,family.Container)?.ChildNodes.OfType<XmlElement>().ToArray()??Array.Empty<XmlElement>();int qualified=0;

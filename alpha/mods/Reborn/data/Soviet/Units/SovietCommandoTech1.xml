@@ -4,204 +4,204 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:SUCommando_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_ABTA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_AIDA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_AIFA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_AIFB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_AIFC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_ATKA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_ATKB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_ATKC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_ATKD.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_BATA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_BIDA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_BIFA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_BIFB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_BIFC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_BIFD.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_CHRA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_DTBA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_DTFA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_DTKA.w3x" />
-			<Include
-			type="all"
-			source="ART:SUCommando_DTPA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_FLYA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_LNDA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_GTPA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_PNTA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_RUNA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_SATA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_SDIA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_SDVA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_SGTA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_SIDA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_SMVA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_CDTA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_CDTB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_MCNA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_MCNB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_MCNC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_MCND.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_SWMA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_SWMB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_SWMC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_WAIDA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_CWRZ.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_AIFX.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_AIFY.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_AIFZ.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_BIFW.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_BIFX.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_BIFY.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_BIFZ.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_WDIEA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_WPNTA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_WATKA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_RNDA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUCommando_CINA.w3x" />
-			<Include
-			type="all"
-			source="ART:SUCommando_WLNDA.w3x" />
-			<Include
-			type="all"
-			source="ART:SUCommando_WCWRA.w3x" />
-		<Include
-			type="all"
-			source="ART:FXRailGunCoreMask.xml" />
-		<Include
-			type="all"
-			source="ART:FXRailGunCoreDistortion.xml" />
-		<Include
-			type="all"
-			source="ART:FXTracer.xml" />
-		<Include
-			type="all"
-			source="ART:FXTracerHeroic.xml" />
-		<Include
-			type="all"
-			source="ART:Decal_Natasha.xml" />
-		<Include
-			type="all"
-			source="ART:FXInvisBone.w3x" />
-			<Include type="all"	source="ART:NPSkeleton_SKN.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_DIEA.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_WDIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiation.w3x" />
-		<Include type="all"	source="ART:NPRadiation_DIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiation_WDIEA.w3x" />
-    <Include type="all"	source="ART:FXObeliskLaser.xml" />
-    <Include type="all"	source="ART:FXLaserOverlay.xml" />
-    <Include type="all"	source="ART:FXJapanOverlay_Vet.xml" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_ABTA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_AIDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_AIFA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_AIFB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_AIFC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_ATKA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_ATKB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_ATKC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_ATKD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_BATA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_BIDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_BIFA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_BIFB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_BIFC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_BIFD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_CHRA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_DTBA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_DTFA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_DTKA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_DTPA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_FLYA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_LNDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_GTPA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_PNTA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_RUNA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_SATA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_SDIA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_SDVA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_SGTA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_SIDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_SMVA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_CDTA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_CDTB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_MCNA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_MCNB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_MCNC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_MCND.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_SWMA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_SWMB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_SWMC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_WAIDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_CWRZ.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_AIFX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_AIFY.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_AIFZ.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_BIFW.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_BIFX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_BIFY.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_BIFZ.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_WDIEA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_WPNTA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_WATKA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_RNDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_CINA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_WLNDA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUCommando_WCWRA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXRailGunCoreMask.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXRailGunCoreDistortion.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXTracer.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXTracerHeroic.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Decal_Natasha.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXInvisBone.w3x" /> -->
+			<!-- <Include type="all"	source="ART:NPSkeleton_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_WDIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation_WDIEA.w3x" /> -->
+    <!-- <Include type="all"	source="ART:FXObeliskLaser.xml" /> -->
+    <!-- <Include type="all"	source="ART:FXLaserOverlay.xml" /> -->
+    <!-- <Include type="all"	source="ART:FXJapanOverlay_Vet.xml" /> -->
 			
 		<!-- Base Object -->
 		<Include

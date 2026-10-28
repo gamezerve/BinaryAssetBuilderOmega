@@ -64,6 +64,8 @@ internal static class ConscriptVariableBehaviorSource
         // Reborn: empty modules such as original StreamState may hold only indentation; Core ignores it, but XSD empty content rejects it.
         DropLeafFormatting(source.DocumentElement!);
         SlowDeathContract.Normalize(source);
+        // Reborn: original laser states and scripted draws may list their element families out of XSD order.
+        SourceFamilyOrder.Normalize(source);
         SubObjectsUpgradeContract.Normalize(source,schemas);
         ConscriptSharedSourceContract.Validate(source,baseline,schemas);
         if(!ConscriptSourceInput.Identity(source.DocumentElement!.GetAttribute("id")))throw SdkXmlDiagnostics.At(new InvalidDataException("Invalid GameObject identity."),source.DocumentElement);
@@ -143,6 +145,10 @@ internal static class ConscriptVariableBehaviorSource
             if(owner.NativeType==typeof(SageBinaryData.AssembleStructureSpecialAbilityUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.ToggleStatusSpecialAbilityUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1FireWeaponCollideModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
+            // Reborn: OCL monitor options and required master status are source-driven under complete EP1 proof.
+            if(owner.NativeType==typeof(SageBinaryData.OCLMonitorUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
+            // Reborn: laser IDs, bones, particle lists, end offsets and status validation are source-driven under complete EP1 proof.
+            if(owner.NativeType==typeof(SageBinaryData.LaserStateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             // Reborn: slave-watcher flags, upgrade references and status validation are source-driven under complete EP1 proof.
             if(owner.NativeType==typeof(SageBinaryData.SlaveWatcherBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             // Reborn: stream IDs are schema-authored signed integers, independent of the original two Desolator records.
