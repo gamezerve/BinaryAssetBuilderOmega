@@ -931,6 +931,10 @@ public static partial class Marshaler
                 MarshalPolymorphicType<SalvagerInfoModuleData, BehaviorModuleData>(node, objT, state);
                 break;
 #endif
+            // Reborn: ore delivery and its armor-mode trackers each use their concrete retail module identity and layout.
+            case 0x90F997EFu: MarshalPolymorphicType<OreMinerModuleData,BehaviorModuleData>(node,objT,state);break;
+            case 0x15E9B3E0u: MarshalPolymorphicType<TrackIncomingWeaponFireBehaviorModuleData,BehaviorModuleData>(node,objT,state);break;
+            case 0xD554889Du: MarshalPolymorphicType<TrackDamageModuleData,BehaviorModuleData>(node,objT,state);break;
             // Reborn: the EP1 dynamics update retains its own complete layout rather than unknown-module fallback.
             case 0x155A87BBu:
                 MarshalPolymorphicType<DynamicsUpdateModuleData,BehaviorModuleData>(node,objT,state);

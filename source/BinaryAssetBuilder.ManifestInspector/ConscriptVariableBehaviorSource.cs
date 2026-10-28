@@ -153,6 +153,8 @@ internal static class ConscriptVariableBehaviorSource
             if(owner.NativeType==typeof(SageBinaryData.SlaveWatcherBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             // Reborn: stream IDs are schema-authored signed integers, independent of the original two Desolator records.
             // Reborn: DynamicsUpdate keeps authored motion/collision settings and its optional source-driven volume.
+            // Reborn: delivery and damage/fire trackers retain source-sized optional state without stock-only value restrictions.
+            if(MinerBehaviorContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.DynamicsUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.StreamStateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.AimWeaponBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
@@ -222,6 +224,8 @@ internal static class ConscriptVariableBehaviorSource
         // Reborn: the native comparer checks text bytes and allocations independently after structural admission.
         GameObjectRootTextContract.Mask(copy,comparison);
         // Reborn: schema-valid ArmorSet lists are independently compiled, not pinned to the stock row count/presence.
+        // Reborn: root equivalence lists have independent source/native proof and cannot reorder stock comparison armor rows.
+        GameObjectEquivalentToContract.Mask(copy);GameObjectEquivalentToContract.Mask(comparison);
         ConscriptArmorSetContract.Mask(copy,comparison);
         // Reborn: existing strong slots retain schema types/presence, but their target names are authored values on both compilation routes.
         ConscriptReferenceSpellings.Compare(copy,comparison,schemas,allowRetarget:true,allowUpgradeWeak:true);
@@ -410,7 +414,7 @@ internal static class ConscriptVariableBehaviorSource
         // Reborn: optional display-name children contain text only and cannot alter Core asset-reference occurrence ordering.
         // Reborn: each source-sized movement row has one strong field, so stock row-count alignment cannot determine its occurrence order.
         // Reborn: Geometry contains no strong reference occurrences and its source-sized children must not align to a one-shape stock sample.
-        bool Skip(XmlElement e)=>(flexible&&ConscriptUpgradeStructure.Fields.Contains(e.LocalName))||(actual.LocalName=="GameObject"&&(GameObjectRootTextContract.Pointed.Contains(e.LocalName)||GameObjectExtendedRootContract.Names.Contains(e.LocalName,StringComparer.Ordinal)||e.LocalName is "ArmorSet" or "LocomotorSet" or "ObjectResourceInfo" or "Geometry" or "VisionInfo" or "GameDependency" or "AI"))||(actual.LocalName=="WeaponSetUpdate"&&e.LocalName=="WeaponSlotHardpoint")||(actual.LocalName=="BuildingDestructionBehavior"&&e.LocalName is "Item" or "DieMuxData");
+        bool Skip(XmlElement e)=>(flexible&&ConscriptUpgradeStructure.Fields.Contains(e.LocalName))||(actual.LocalName=="GameObject"&&(GameObjectRootTextContract.Pointed.Contains(e.LocalName)||GameObjectExtendedRootContract.Names.Contains(e.LocalName,StringComparer.Ordinal)||e.LocalName is "EquivalentTo" or "ArmorSet" or "LocomotorSet" or "ObjectResourceInfo" or "Geometry" or "VisionInfo" or "GameDependency" or "AI"))||(actual.LocalName=="WeaponSetUpdate"&&e.LocalName=="WeaponSlotHardpoint")||(actual.LocalName=="BuildingDestructionBehavior"&&e.LocalName is "Item" or "DieMuxData");
         // Reborn: Spawn weak rows and optional records contain no strong-reference occurrences requiring stock attribute-order alignment.
         bool SpawnSkip(XmlElement e)=>actual.LocalName=="SpawnBehavior"&&SpawnBehaviorContract.OwnChildren.Contains(e.LocalName)||actual.LocalName=="EngineerContain"&&e.LocalName=="CanEnterFilter"||actual.LocalName=="AssistedPlacementBehavior"&&e.LocalName=="RequirementObjectFilter"||actual.LocalName=="StructurePlacementBehavior"&&e.LocalName=="RestrictedAreaShape";
         // Reborn: the optional engineer filter holds only weak names and enum/flag values, never strong-reference occurrences.

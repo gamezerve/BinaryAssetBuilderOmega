@@ -8,6 +8,25 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: Soviet Miner delivery, reactive-armor tracking and naval equivalence compile together through the ordinary source pipeline. -->
+`OreMinerBehavior` (native `OreMinerModuleData`, 20 bytes),
+`TrackIncomingWeaponFireBehavior` (8 bytes) and `TrackDamage` (16 bytes) are
+build-enabled. DeliveryCapacity, DeliveryTime, optional ObjectStatusValidation,
+TimeToTrack and InstantWeaponsOnly follow their official schema/defaults.
+Original Soviet Miner records independently qualify their native fields and
+metadata; combined authored/default regressions cover all three modules.
+
+Populated root `EquivalentTo` lists now retain ordered weak GameObject IDs,
+source-sized item metadata and the single list relocation. The original
+`SovietMiner_Naval` provides the retail witness; regressions include empty and
+two-item lists. Comparison masks no longer move ArmorSet behind EquivalentTo.
+A private snapshot of the user's SovietMiner.xml, its inherited bases and
+includes successfully compiled **both SovietMiner and SovietMiner_Naval** into
+one linked stream: 2 explicit assets, 202 stock reference occurrences, verified
+binary/relocation/import readback. The original Reborn sources and Documents
+outputs were untouched; no game was launched.
+
+
 <!-- Reborn: DynamicsUpdate uses the actual EP1 physics-volume layout and explicit native/source/metadata ownership. -->
 `DynamicsUpdate` is build-enabled with its 36-byte root: Motion, Collision,
 IntuitiveCollision, ContactTag, DrawPriority, FreezeDistanceFromCamera and an
