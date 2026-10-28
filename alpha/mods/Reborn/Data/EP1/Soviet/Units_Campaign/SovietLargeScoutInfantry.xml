@@ -5,47 +5,47 @@
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
 			
-		<Include type="all"	source="ART:SULargeScoutInfantry_SKN.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_ABTA.w3x" />
-		<Include type="all" source="ART:SULargeScoutInfantry_BATA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_BIFA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_BIFB.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_BIFC.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_CDTA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_CDTB.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_AIDA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_ATKA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_BIDA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_RUNA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_MCNA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_MCNB.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_MCNC.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_MCND.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_SWMA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_SWMB.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_SWMC.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_RORA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_WAIDA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_WATKA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_WDIA.w3x" />
-		<Include type="all" source="ART:SULargeScoutInfantry_WRORA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_FLYA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_LNDA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_GTPA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_DTPA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_CWRA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_RUNDA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_WLNDA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_Elec_SKN.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_Elec_DIEA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_Elec_WDIEA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_WCWRA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_BIFA.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_BIFB.w3x" />
-		<Include type="all"	source="ART:SULargeScoutInfantry_BIFC.w3x" />
-		<Include type="all"	source="ART:NPRadiationLargeBear_SKN.w3x" />
-		<Include type="all"	source="ART:NPRadiationLargeBear_DIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiationLargeBear_WDIEA.w3x" />
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_ABTA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SULargeScoutInfantry_BATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_BIFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_BIFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_BIFC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_CDTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_CDTB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_AIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_ATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_BIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_RUNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_MCNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_MCNB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_MCNC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_MCND.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_SWMA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_SWMB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_SWMC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_RORA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_WAIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_WATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_WDIA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SULargeScoutInfantry_WRORA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_FLYA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_LNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_GTPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_DTPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_CWRA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_RUNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_WLNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_Elec_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_Elec_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_Elec_WDIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_WCWRA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_BIFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_BIFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SULargeScoutInfantry_BIFC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiationLargeBear_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiationLargeBear_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiationLargeBear_WDIEA.w3x" /> -->
 			
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseInfantry.xml" />
@@ -60,7 +60,7 @@
 		SubGroupPriority="320"
 		EditorSorting="CAMPAIGN_UNITS"		
 		ShockwaveResistance="90"
-		BuildTime="2"
+		BuildTime="30"
 		CommandSet="SovietScoutInfantryCommandSet"
 		KindOf="SELECTABLE CAN_ATTACK CAN_CAST_REFLECTIONS INFANTRY SCORE SKIRMISH_AI_DONT_GARRISON AMPHIBIOUS CANNOT_HIJACK NO_GARRISON PATH_THROUGH_INFANTRY"
 		ThreatLevel="10"
@@ -69,12 +69,18 @@
 		EditorName="SovietLargeScoutInfantry"
 		Description="Desc:SovietLargeScoutInfantry"
 		TypeDescription="Type:SovietLargeScoutInfantry"
+		UnitTypeIcon="UrsaMajorIcon"
+		MaxSimultaneousOfType="3"
 		HealthBoxHeightOffset="20">
 		<DisplayName
 			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:SovietLargeScoutInfantry</DisplayName>
 		<ObjectResourceInfo>
-			<BuildCost Account="=$ACCOUNT_ORE" Amount="10000"/>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="2250"/>
 		</ObjectResourceInfo>
+		<GameDependency
+			id="ModuleTag_GameDependency">
+			<RequiredObject>SovietCommandCenter</RequiredObject>
+		</GameDependency>
 		<ArmorSet
 			Armor="NoArmor" 
 			DamageFX="InfantryDamageFX" />

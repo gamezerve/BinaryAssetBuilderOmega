@@ -222,7 +222,8 @@ public struct LocomotorTemplate
     public Relo.AssetReference<FXList> WaterToAirTransitionFX;
     public float WaterSurfaceHeightOffset;
     public unsafe ObjectStatusBitFlags* ForbiddenObjectStatus;
-    public Relo.AssetReference<BounceKickTerrainMapping> BounceKickTerrainMap;
+    // Reborn: the optional BounceKickTerrainMap element is a pointed-to strong reference (retail AlliedAntiInfantryVehicleLocomotor owns it after the 396-byte root).
+    public unsafe Relo.AssetReference<BounceKickTerrainMapping>* BounceKickTerrainMap;
     public unsafe JetLocomotorData* JetLocomotorData;
     public SageBool MakeTransformNonDirty;
     public SageBool IsCloseEnoughDist3D;
@@ -248,6 +249,7 @@ public struct LocomotorTemplate
     public SageBool ClampOrientationToPathTangent;
     public SageBool ReorientIfTurnTooSharp;
     public SageBool BrakeBeforeReorienting;
-    public SageBool EasingTakeOffAndLanding;
+    // Reborn: retail Uprising locomotors store IgnoreLowSpeedAngleMultiplier at +392 and EasingTakeOffAndLanding at +393 (e.g. JapanAntiAirShipAirLocomotor).
     public SageBool IgnoreLowSpeedAngleMultiplier;
+    public SageBool EasingTakeOffAndLanding;
 }

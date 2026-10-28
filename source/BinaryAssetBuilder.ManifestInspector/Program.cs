@@ -340,6 +340,9 @@ internal static class Program
             // Reborn: stream draws are tested on original and authored complete GameObject graphs.
             // Reborn: stream-state IDs have original native/metadata and complete object regression coverage.
             // Reborn: OCL monitors have an original Natasha witness plus edited/default/composition coverage.
+            // Reborn: locomotors use original native witnesses plus inherited/edited/default proofs.
+            if(args.Length==3 && args[0]=="locomotor-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();LocomotorTemplateSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="ocl-monitor-self-test")
             {CompilerSmokeTest.InitializeHashProvider();OCLMonitorSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: laser draws and laser states share original Natasha/Mirage/Future Tank witnesses plus edited/default graphs.

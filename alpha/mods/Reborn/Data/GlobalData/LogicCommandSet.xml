@@ -62,6 +62,7 @@
 		<Cmd>Command_ConstructSovietHeavyAntiVehicleInfantry</Cmd>
 		<Cmd>Command_ConstructSovietDesolatorInfantry</Cmd>
 		<Cmd>Command_ConstructSovietCommandoTech1</Cmd>
+		<Cmd>Command_ConstructSovietLargeScoutInfantry</Cmd>
 	</LogicCommandSet>	
 	
 	<LogicCommandSet

@@ -35,6 +35,7 @@ public static partial class Marshaler
         Marshal(node, *objT, state);
     }
 
+    // Reborn: MaxOverlappedHeight (1e+37) and AirborneTargetingHeight (30) use the official Uprising schema defaults.
     public static unsafe void Marshal(Node node, LocomotorTemplate* objT, Tracker state)
     {
         if (node is null)
@@ -84,14 +85,14 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.PitchByZVelCoef), "0"), &objT->PitchByZVelCoef, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.YawStiffness), "0.0"), &objT->YawStiffness, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.YawDamping), "0.0"), &objT->YawDamping, state);
-        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.MaxOverlappedHeight), "99e99"), &objT->MaxOverlappedHeight, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.MaxOverlappedHeight), "1e+37"), &objT->MaxOverlappedHeight, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.ForwardVelocityPitchFactor), "0.0"), &objT->ForwardVelocityPitchFactor, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.LateralVelocityRollFactor), "0.0"), &objT->LateralVelocityRollFactor, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.ForwardAccelerationPitchFactor), "0.0"), &objT->ForwardAccelerationPitchFactor, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.LateralAccelerationRollFactor), "0.0"), &objT->LateralAccelerationRollFactor, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.UniformAxialDamping), "1.0"), &objT->UniformAxialDamping, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.TurnPivotOffset), "0.0"), &objT->TurnPivotOffset, state);
-        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.AirborneTargetingHeight), "99999"), &objT->AirborneTargetingHeight, state);
+        Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.AirborneTargetingHeight), "30"), &objT->AirborneTargetingHeight, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.CloseEnoughDist), "1.0"), &objT->CloseEnoughDist, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.ReverseMoveSpeed), "75%"), &objT->ReverseMoveSpeed, state);
         Marshal(node.GetAttributeValue(nameof(LocomotorTemplate.IsCloseEnoughDist3D), "false"), &objT->IsCloseEnoughDist3D, state);

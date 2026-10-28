@@ -316,6 +316,12 @@
 		"> Pilot Snipe Weapon Range = 500 \n> Pilot Snipe Weapon Cooldown = 1 Min \nCleanly dispatches the operator of an enemy vehicle. Infantry may recover the vehicle."
 	End
 
+// Soviet Ursa Major
+			
+	TYPE:SovietLargeScoutInfantry
+		"Advanced Anti-Surface Scout \n> Build Limit = 3 \n> Health = 500 \n> Shroud Clearing Range = 750 \n> Movement Speed = 120 \n> Weapon DPS = 150 \n> Weapon Range = Melee"
+	End
+
 // Allied Paradrop
 	
 	TYPE:CampaignPlayerPowerParadropLvl1Reborn
