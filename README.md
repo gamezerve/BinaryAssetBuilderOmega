@@ -8,6 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: instance source libraries keep schema-declared companion records without enabling their native emission implicitly. -->
+The source-inheritance route accepts the original `GlobalData/Locomotor.xml`
+instance library, including its `BounceKickTerrainMapping` companion. Regression
+covers all 122 original locomotors and the terrain mapping. Unsupported source
+asset types, invalid IDs and duplicate handles now produce distinct
+`UNSUPPORTEDASSET`, `INVALIDASSETID` and `DUPLICATEASSET` diagnostics with the
+actual Type:ID and offending source node, rather than a combined generic error.
+Native asset publication remains a separate compiler capability check.
+
+
 <!-- Reborn: Desolator stream drawing uses the complete EP1 native record and shader-aware metadata composition. -->
 `StreamDraw` is build-enabled with its 80-byte EP1 root, including `OffsetMult`
 (the older KW record lacks this field). All official scalar attributes, inline

@@ -67,6 +67,19 @@ internal static class SdkGameObjectInheritanceSmokeTest
         foreach(string href in new[]{"DATA:missing.xml","../outside.xml","https://invalid.example/fragment.xml"})Refuse(()=>new SdkGameObjectFragments(paths).Expand(FragmentOwner(href),entry,data));
         var wrong=FragmentOwner("DATA:fragment.xml");((XmlElement)wrong.GetElementsByTagName("include","http://www.w3.org/2001/XInclude")[0]!).SetAttribute("xpointer","xmlns(n=uri:ea.com:eala:asset) xpointer(/n:WrongRoot/child::*)");Refuse(()=>new SdkGameObjectFragments(paths).Expand(wrong,entry,data));
         File.WriteAllText(fragment,"<Modules xmlns='"+ea+"' xmlns:xi='http://www.w3.org/2001/XInclude'><xi:include href='DATA:fragment.xml' xpointer='xmlns(n=uri:ea.com:eala:asset) xpointer(/n:Modules/child::*)'/></Modules>");Refuse(()=>new SdkGameObjectFragments(paths).Expand(FragmentOwner("DATA:fragment.xml"),entry,data));
+        // Reborn: the original instance locomotor library includes both locomotors and its schema-declared terrain mapping helper.
+        var library=new XmlDocument();library.LoadXml("<AssetDeclaration xmlns='"+ea+"'/>");
+        foreach(string type in new[]{"BounceKickTerrainMapping","LocomotorTemplate"})foreach(var asset in GameObjectExtendedRootContract.Original("GlobalData/Locomotor.xml",type))library.DocumentElement!.AppendChild(library.ImportNode(asset,true));
+        var locomotors=SdkGameObjectInheritance.Apply(schemas,Encoding.UTF8.GetBytes(library.OuterXml));
+        Require(locomotors.Bytes!=null,"Original instance locomotor library failed: "+string.Join("; ",locomotors.Evidence.Diagnostics));
+        var resolvedLibrary=new XmlDocument();resolvedLibrary.LoadXml(Encoding.UTF8.GetString(locomotors.Bytes!));
+        Require(resolvedLibrary.GetElementsByTagName("BounceKickTerrainMapping",ea).Count==1&&resolvedLibrary.GetElementsByTagName("LocomotorTemplate",ea).Count==122,"Original locomotor/helper source inventory differs.");
+        // Reborn: identity failures identify both the failure kind and exact offending asset node for later source path/line mapping.
+        foreach(var sample in new[]{("<UnknownAsset id='Unknown'/>","UNSUPPORTEDASSET","UnknownAsset:Unknown"),("<GameObject id='Invalid ID'/>","INVALIDASSETID","GameObject:Invalid ID"),("<GameObject id='Duplicate'/><GameObject id='Duplicate'/>","DUPLICATEASSET","GameObject:Duplicate")}){
+            var rejected=SdkGameObjectInheritance.Apply(schemas,Encoding.UTF8.GetBytes("<AssetDeclaration xmlns='"+ea+"'>"+sample.Item1+"</AssetDeclaration>"));
+            Require(rejected.Bytes==null&&rejected.DiagnosticNode!=null&&rejected.Evidence.Diagnostics.Any(d=>d.Contains(sample.Item2,StringComparison.Ordinal)&&d.Contains(sample.Item3,StringComparison.Ordinal)),"Source identity diagnostic lost its kind, handle or offending node.");
+        }
+        Console.WriteLine("Reborn: source identity diagnostics and complete original locomotor instance library: PASS (122 locomotors, one terrain mapping helper; unsupported/invalid/duplicate diagnostics retain asset handles and offending nodes).");
         File.WriteAllBytes(Path.Combine(output,"merged.xml"),result.Bytes!);
         Console.WriteLine("Reborn: GameObject source inheritance: PASS (partial bases, recursive keyed merges, Replace, no default leakage, final admission retained, reference spelling equivalence/typed retarget admission, whole-root/nested/empty-module and child-XPointer includes/source witnesses, cycle/missing/network/traversal/text/namespace controls).");
 
