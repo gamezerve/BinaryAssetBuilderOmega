@@ -8,6 +8,20 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 28, 2026
 
+<!-- Reborn: DynamicsUpdate uses the actual EP1 physics-volume layout and explicit native/source/metadata ownership. -->
+`DynamicsUpdate` is build-enabled with its 36-byte root: Motion, Collision,
+IntuitiveCollision, ContactTag, DrawPriority, FreezeDistanceFromCamera and an
+optional Volume. The EP1 volume is 76 bytes with ReportContacts at offset 72;
+its five source-sized shape lists support sphere/capsule/box/cylinder/triangle
+records and optional lowercase-component translation/quaternion transforms.
+Four retail static/WorldBuilder records qualify absent/present volumes, sphere,
+capsule, box and transforms. Cylinder/triangle own scalar tables are checked
+against their exact XSD/native extension over the retail-qualified transform
+base; no populated retail witness is claimed for those two shapes. Regression
+covers 15 original/default/edit/composition/corruption checks, including five
+complete objects. The earlier draw-only dynamics model remains separate.
+
+
 <!-- Reborn: TruckDraw uses its EP1 extension while retaining the stock-qualified scripted-model graph. -->
 `TruckDraw` is build-enabled with its 396-byte EP1 record. All wheel/cab/trailer
 names and rotation controls, optional `TreadTerrainParticles` import and

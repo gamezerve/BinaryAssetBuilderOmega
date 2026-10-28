@@ -152,6 +152,8 @@ internal static class ConscriptVariableBehaviorSource
             // Reborn: slave-watcher flags, upgrade references and status validation are source-driven under complete EP1 proof.
             if(owner.NativeType==typeof(SageBinaryData.SlaveWatcherBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             // Reborn: stream IDs are schema-authored signed integers, independent of the original two Desolator records.
+            // Reborn: DynamicsUpdate keeps authored motion/collision settings and its optional source-driven volume.
+            if(owner.NativeType==typeof(SageBinaryData.DynamicsUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.StreamStateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.AimWeaponBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.SlowDeathBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

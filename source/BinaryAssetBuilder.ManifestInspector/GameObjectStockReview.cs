@@ -135,6 +135,8 @@ internal static class GameObjectStockReview
             || Word(bytes, list + 8) != native + 420)
             throw new InvalidDataException("GameObject ArmorSet/native list anchor differs.");
         uint rawCount = Word(bytes, native + 420);
+        // Reborn: explicitly opted-in inert props legitimately have no armor; their zero count/pointer must agree before module-only review.
+        if(rawCount==0&&allowNullArmorReferences){if(Word(bytes,native+424)!=0)throw new InvalidDataException("Empty prop ArmorSet has storage.");return new(root.Count,native,buildTime,list,Array.Empty<ArmorBinding>());}
         if (rawCount < 1 || rawCount > 32) throw new InvalidDataException("ArmorSet list must contain 1..32 reviewed members.");
         int count = (int)rawCount;
         int items = Pointer(bytes, native + 424, checked(count * 12));

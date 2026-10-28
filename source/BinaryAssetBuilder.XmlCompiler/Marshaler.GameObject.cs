@@ -931,6 +931,10 @@ public static partial class Marshaler
                 MarshalPolymorphicType<SalvagerInfoModuleData, BehaviorModuleData>(node, objT, state);
                 break;
 #endif
+            // Reborn: the EP1 dynamics update retains its own complete layout rather than unknown-module fallback.
+            case 0x155A87BBu:
+                MarshalPolymorphicType<DynamicsUpdateModuleData,BehaviorModuleData>(node,objT,state);
+                break;
             default:
                 Tracer.GetTracer("Marshaler", "Marshalling").TraceWarning("Marshalling unknown type {0} from {1}.", typeId, nameof(PolymorphicList<BehaviorModuleData>));
                 MarshalUnknownPolymorphicType(node, objT, state);

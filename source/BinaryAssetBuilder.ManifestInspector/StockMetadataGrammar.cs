@@ -95,6 +95,7 @@ internal sealed class StockMetadataGrammar
                     if((kinds.Contains(Kind.Table)||typedRecord)&&grammar.ContainsKey(element)){Record(element,pointee,Table(at,child),depth+1);continue;}
                     if(kinds.Contains(Kind.Table)&&IsList(element)){List(element.GetGenericArguments()[0],pointee,Table(at,child),depth+1);continue;}
                     // Reborn: EA vector-hack wire tags directly target proved coordinate bytes even when all selected stock witnesses omit the optional vector.
+                    bool directQuaternion=element==typeof(SageBinaryData.Ep1DynamicsQuaternion)&&rows.Fields[i].Tag==0x854985C7u;
                     bool directVector=element==typeof(SageBinaryData.Coord2D)&&rows.Fields[i].Tag==0x4AE31F24u||element==typeof(SageBinaryData.Coord3D)&&rows.Fields[i].Tag==0x29368077u;
                     // Reborn: native mask pointers bind independently proved bits under their exact stock flag wire tag, including previously absent masks.
                     bool directFlags=SchemaNativeContract.IsFlags(element)&&typedRecord;
@@ -102,7 +103,7 @@ internal sealed class StockMetadataGrammar
                     bool directReal=element==typeof(float)&&rows.Fields[i].Tag==0x645864F3u;
                     // Reborn: this EP1 optional scalar Poid has a captured Poid tag; its module hash and pointee coordinate are independently source-proved.
                     bool directPassiveModule=current==typeof(SageBinaryData.Ep1PassiveAreaEffectBehaviorModuleData)&&field.Name=="AttachModuleId"&&element==typeof(TypedAssetId<SageBinaryData.ModuleData>)&&rows.Fields[i].Tag==0xBDF07965u;
-                    if((!kinds.Contains(Kind.Native)&&!directVector&&!directFlags&&!directReal&&!directPassiveModule)||target!=Coordinate(pointee))throw new InvalidDataException("Generated metadata optional field target differs: "+child);continue;
+                    if((!kinds.Contains(Kind.Native)&&!directVector&&!directQuaternion&&!directFlags&&!directReal&&!directPassiveModule)||target!=Coordinate(pointee))throw new InvalidDataException("Generated metadata optional field target differs: "+child);continue;
                 }
                 if(IsList(member))
                 {
@@ -152,6 +153,20 @@ internal sealed class StockMetadataGrammar
         if(textureSignature!=0x4C3E3938u||System.Runtime.InteropServices.Marshal.SizeOf<SageBinaryData.ReplaceTexture>()!=8||shape.AttributeUses.Count!=2)throw new InvalidDataException("ReplaceTexture requires exactly two stock-typed TextureRef words.");
         foreach(string name in new[]{"Original","New"})if(shape.AttributeUses[new System.Xml.XmlQualifiedName(name)] is not System.Xml.Schema.XmlSchemaAttribute attribute||attribute.AttributeSchemaType?.QualifiedName.Name!="TextureRef")throw new InvalidDataException("ReplaceTexture schema reference differs: "+name);
         var rows=Get(typeof(SageBinaryData.ReplaceTexture));rows.Fields=new[]{(FastHash.GetHashCode("Original"),textureSignature),(FastHash.GetHashCode("New"),textureSignature)};rows.Kinds=new[]{new HashSet<Kind>{Kind.Native},new HashSet<Kind>{Kind.Native}};
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: cylinder/triangle own fields are scalar-only schema extensions of the retail-proved transform base; no populated stock witness is claimed. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifyDynamicsScalarShapes(System.Xml.Schema.XmlSchemaSet schemas)
+    {
+        Qualify(typeof(SageBinaryData.Ep1DynamicsCylinderShapeType),"DynamicsCylinderShapeType",new[]{"Radius","HalfLength","EdgeRadius"});
+        Qualify(typeof(SageBinaryData.Ep1DynamicsTriangleShapeType),"DynamicsTriangleShapeType",new[]{"X1","Y1","Z1","X2","Y2","Z2","X3","Y3","Z3","EdgeRadius"});
+        // Reborn: require exact native extents, inherited schema identity and every own real attribute before deriving its metadata rows.
+        void Qualify(Type type,string name,string[] names){var schema=(System.Xml.Schema.XmlSchemaComplexType)schemas.GlobalTypes[new System.Xml.XmlQualifiedName(name,"uri:ea.com:eala:asset")]!;var extension=(System.Xml.Schema.XmlSchemaComplexContentExtension)((System.Xml.Schema.XmlSchemaComplexContent)schema.ContentModel!).Content!;
+            if(extension.BaseTypeName.Name!="DynamicsShapeType"||System.Runtime.InteropServices.Marshal.SizeOf(type)!=8+names.Length*4||schema.AttributeUses.Count!=names.Length)throw new InvalidDataException("Dynamics scalar shape schema/native extent differs: "+name);
+            var fields=new List<(uint,uint)>{(1,0x3A44308Au)};foreach(string field in names){if(schema.AttributeUses[new System.Xml.XmlQualifiedName(field)] is not System.Xml.Schema.XmlSchemaAttribute attribute||attribute.AttributeSchemaType?.QualifiedName.Name!="SageReal")throw new InvalidDataException("Dynamics shape scalar schema differs: "+name+"."+field);fields.Add((FastHash.GetHashCode(field),0x645864F3u));}
+            var rows=Get(type);rows.Fields=fields.ToArray();rows.Kinds=fields.Select((_,index)=>new HashSet<Kind>{index==0?Kind.Table:Kind.Native}).ToArray();}
     }
 
     //-------------------------------------------------------------------------------------------------

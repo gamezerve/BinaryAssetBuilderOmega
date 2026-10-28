@@ -351,6 +351,9 @@ internal static class Program
             // Reborn: slave watchers have four original witnesses plus edited/default/composition coverage.
             if(args.Length==3 && args[0]=="slave-watcher-self-test")
             {CompilerSmokeTest.InitializeHashProvider();SlaveWatcherSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: dynamics updates cover original records and source-driven optional physics volumes.
+            if(args.Length==3 && args[0]=="dynamics-update-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();DynamicsUpdateSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="stream-state-self-test")
             {CompilerSmokeTest.InitializeHashProvider();StreamStateSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: EP1 truck draws have original native/metadata and edited complete-object coverage.

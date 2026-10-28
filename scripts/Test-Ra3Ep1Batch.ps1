@@ -237,6 +237,8 @@ if($SchedulerControl){
     # Reborn: source-driven tracers cover absent/present optional status, multiple draws and real imports.
     # Reborn: verify the complete EP1 stream-draw root, inline shader and particle imports.
     # Reborn: qualify both retail stream states and edited/default/multiple-module graphs.
+    # Reborn: dynamics updates retain their original scalar, optional volume and complete-object contracts.
+    Add-BatchCase 'dynamics-update' 'DynamicsUpdate' @('dynamics-update-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'stream-state' 'StreamState' @('stream-state-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: truck draw extensions and inherited scripted fields share complete-object regression coverage.
     Add-BatchCase 'truck-draw' 'TruckDraw' @('truck-draw-self-test',$StaticManifest,$GlobalManifest)
