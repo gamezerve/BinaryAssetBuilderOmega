@@ -236,6 +236,8 @@ if($SchedulerControl){
     Add-BatchCase 'weapon-turret' 'WeaponTurretNativeAndComposition' @('weapon-turret-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: source-driven tracers cover absent/present optional status, multiple draws and real imports.
     # Reborn: verify the complete EP1 stream-draw root, inline shader and particle imports.
+    # Reborn: qualify both retail stream states and edited/default/multiple-module graphs.
+    Add-BatchCase 'stream-state' 'StreamState' @('stream-state-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'stream-draw' 'StreamDraw' @('stream-draw-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'tracer-source' 'SourceDrivenTracerComposition' @('tracer-source-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: scripted turret names, angles, IDs and list counts retain independent retail-qualified metadata.

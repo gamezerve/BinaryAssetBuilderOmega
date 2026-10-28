@@ -338,6 +338,12 @@ internal static class Program
             if(args.Length==3 && args[0]=="scripted-turret-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ScriptedTurretSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: stream draws are tested on original and authored complete GameObject graphs.
+            // Reborn: stream-state IDs have original native/metadata and complete object regression coverage.
+            // Reborn: slave watchers have four original witnesses plus edited/default/composition coverage.
+            if(args.Length==3 && args[0]=="slave-watcher-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();SlaveWatcherSmokeTest.Run(args[1],args[2]);return 0;}
+            if(args.Length==3 && args[0]=="stream-state-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();StreamStateSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="stream-draw-self-test")
             {CompilerSmokeTest.InitializeHashProvider();StreamDrawSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="tracer-source-self-test")

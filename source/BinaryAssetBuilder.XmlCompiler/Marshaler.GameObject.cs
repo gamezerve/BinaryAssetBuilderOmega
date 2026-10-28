@@ -209,6 +209,11 @@ public static partial class Marshaler
                 using(var context=state.Push((void**)objT,(uint)sizeof(Ep1FireWeaponCollideModuleData),1u))Marshal(node,(Ep1FireWeaponCollideModuleData*)*objT,state);
                 *(uint*)*objT=0xAE4A97B0u;
                 break;
+            case 0xBBAC8C1Cu:
+                // Reborn: EP1 slave watchers use the independently qualified 24-byte record, retaining the original wire identity.
+                using(var context=state.Push((void**)objT,(uint)sizeof(SlaveWatcherBehaviorModuleData),1u))Marshal(node,(SlaveWatcherBehaviorModuleData*)*objT,state);
+                *(uint*)*objT=0xBBAC8C1Cu;
+                break;
             case 0xB28C3D52u:
                 // Reborn: EP1 owns the interval/status at the root and uses smaller firing nuggets than KW.
                 using(var context=state.Push((void**)objT,(uint)sizeof(Ep1FireWeaponUpdateModuleData),1u))Marshal(node,(Ep1FireWeaponUpdateModuleData*)*objT,state);

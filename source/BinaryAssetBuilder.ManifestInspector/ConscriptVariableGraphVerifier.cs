@@ -122,6 +122,10 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> assembleStructure;
     private readonly Lazy<StockMetadataGrammar> toggleStatus;
     private readonly Lazy<StockMetadataGrammar> fireWeaponCollide;
+    // Reborn: stream-state updates have their own original Desolator native/metadata witnesses.
+    private readonly Lazy<StockMetadataGrammar> streamState;
+    // Reborn: slave watchers have their own four original retail witnesses.
+    private readonly Lazy<StockMetadataGrammar> slaveWatcher;
     private readonly Lazy<StockMetadataGrammar> aimWeapon;
     private readonly Lazy<StockMetadataGrammar> slowDeath;
     private readonly Lazy<StockMetadataGrammar> stealthDetector;
@@ -201,6 +205,9 @@ internal sealed class ConscriptVariableGraphVerifier
         assembleStructure=new(()=>AssembleStructureContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         toggleStatus=new(()=>ToggleStatusContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         fireWeaponCollide=new(()=>FireWeaponCollideContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        // Reborn: qualify the existing StreamState writer before composing authored stream IDs.
+        streamState=new(()=>StreamStateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        slaveWatcher=new(()=>SlaveWatcherContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         aimWeapon=new(()=>AimWeaponContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         slowDeath=new(()=>SlowDeathContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         stealthDetector=new(()=>StealthDetectorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -447,6 +454,16 @@ internal sealed class ConscriptVariableGraphVerifier
                 if(owner.NativeType==typeof(Ep1FireWeaponCollideModuleData)){
                     var grammar=fireWeaponCollide.Value;var collideNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,FireWeaponCollideContract.TypeId,collideNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(collideNative,official,FireWeaponCollideContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,collideNative,owner.NativeType,proof.Records);Own(collideNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: independently prove upgrade imports, status validation and flags before splicing each slave watcher.
+                if(owner.NativeType==typeof(SlaveWatcherBehaviorModuleData)){
+                    var grammar=slaveWatcher.Value;var watcherNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,SlaveWatcherContract.TypeId,watcherNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(watcherNative,official,SlaveWatcherContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,watcherNative,owner.NativeType,proof.Records);Own(watcherNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: independently prove and splice each source-sized stream-state module.
+                if(owner.NativeType==typeof(StreamStateModuleData)){
+                    var grammar=streamState.Value;var streamNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,StreamStateContract.TypeId,streamNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(streamNative,official,StreamStateContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,streamNative,owner.NativeType,proof.Records);Own(streamNative,start,stop);Splice(owner,metadata,start,size);continue;
                 }
                 if(owner.NativeType==typeof(AimWeaponBehaviorModuleData)){
                     var grammar=aimWeapon.Value;var aimNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;

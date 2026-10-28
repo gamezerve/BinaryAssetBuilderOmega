@@ -61,6 +61,8 @@ internal static class ConscriptVariableBehaviorSource
     {
         // Reborn: field-family ordering is normalized in memory before source admission, retaining the authored nugget sequence.
         // Reborn: SlowDeath keeps phase/list order while normalizing independent source field families.
+        // Reborn: empty modules such as original StreamState may hold only indentation; Core ignores it, but XSD empty content rejects it.
+        DropLeafFormatting(source.DocumentElement!);
         SlowDeathContract.Normalize(source);
         SubObjectsUpgradeContract.Normalize(source,schemas);
         ConscriptSharedSourceContract.Validate(source,baseline,schemas);
@@ -141,6 +143,10 @@ internal static class ConscriptVariableBehaviorSource
             if(owner.NativeType==typeof(SageBinaryData.AssembleStructureSpecialAbilityUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.ToggleStatusSpecialAbilityUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1FireWeaponCollideModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
+            // Reborn: slave-watcher flags, upgrade references and status validation are source-driven under complete EP1 proof.
+            if(owner.NativeType==typeof(SageBinaryData.SlaveWatcherBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
+            // Reborn: stream IDs are schema-authored signed integers, independent of the original two Desolator records.
+            if(owner.NativeType==typeof(SageBinaryData.StreamStateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.AimWeaponBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.SlowDeathBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.Ep1StealthDetectorUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
@@ -375,6 +381,15 @@ internal static class ConscriptVariableBehaviorSource
     }
 
     // Reborn: clone serialized values so XmlDocument does not lose default attribute value children during comparison.
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: remove formatting-only whitespace from elements without element or text children; authored text is never changed. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void DropLeafFormatting(XmlElement root)
+    {
+        foreach(var element in root.SelectNodes("descendant-or-self::*")!.OfType<XmlElement>().ToArray())
+            if(element.HasChildNodes&&element.ChildNodes.OfType<XmlNode>().All(n=>n.NodeType is XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace or XmlNodeType.Comment))
+                foreach(var blank in element.ChildNodes.OfType<XmlNode>().Where(n=>n.NodeType is XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace).ToArray())element.RemoveChild(blank);
+    }
     private static XmlDocument Clone(XmlDocument source)=>SdkXmlDiagnostics.Parse(Encoding.UTF8.GetBytes(source.DocumentElement!.OuterXml));
     // Reborn: schema admission requires exactly one direct Behaviors container; missing/duplicate topology is never inferred.
     private static XmlElement Container(XmlDocument source)=>source.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName=="Behaviors");
