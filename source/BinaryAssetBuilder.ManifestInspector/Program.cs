@@ -153,6 +153,15 @@ internal static class Program
             // Reborn: qualify production-info markers privately before authoring them through Studio.
             if(args.Length==3 && args[0]=="production-update-info-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ProductionUpdateInfoSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: exercise authored command-set swaps and complete inherited upgrade payloads.
+            if(args.Length==3 && args[0]=="command-set-upgrade-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();CommandSetUpgradeSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: exercise full tech-transmitter inheritance, defaults, optional radius and filters.
+            if(args.Length==3 && args[0]=="tech-upgrade-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();TechUpgradeSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: exercise lift defaults, edits, nested state filters and complete object composition.
+            if(args.Length==3 && args[0]=="lift-object-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();LiftObjectSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: qualify both Allied receiver levels, authored filters/radii/radar values and inherited upgrade controls offline.
             if(args.Length==3 && args[0]=="tech-upgrade-receiver-self-test")
             {CompilerSmokeTest.InitializeHashProvider();TechUpgradeReceiverSmokeTest.Run(args[1],args[2]);return 0;}

@@ -6,7 +6,41 @@ asset IDs, instance includes, inheritance, `$` definitions/expressions,
 TGA/DDS textures and W3X models. Current alpha capability restrictions are
 temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
-## Current outcome — October 28, 2026
+## Current outcome — October 29, 2026
+
+<!-- Reborn: Allied defensive buildings and Outpost gain complete lift/transmitter/command-set upgrade composition. -->
+`LiftObjectUpdate`, `TechUpgrade` and `CommandSetUpgrade` are build-enabled with
+source-driven fields and complete inherited metadata. Lift uses an isolated
+76-byte EP1 header with an optional shader-import pointer, weapon imports,
+physics/shake/timing settings and repeated model-state/filter records. Its
+omitted `MaxTimeLifted` now correctly defaults to **1s**, as the official XSD
+requires. The legacy direct-import lift model remains separate.
+
+Tech transmitters retain their original 176-byte layout, optional RadiusY,
+circular/rectangular distance mode, FX bone and inline ObjectFilter. Command-set
+upgrades retain their original 40-byte layout and weak LogicCommandSet identity.
+Both preserve inherited trigger/conflict lists, flags and optional animation.
+Native/metadata qualification uses three original lift records, four original
+tech transmitters and two original command-set upgrades; shared named filters
+and upgrade-animation grammar come from independently captured retail records.
+
+**32 targeted checks pass** across original/default/edited sources, optional
+shader/radius storage, multiple model-state filters, weak command-set changes,
+inherited upgrades, complete lift/tech object composition and corrupt-native
+rejection. All three regressions are registered in the offline batch. Lift
+composition also exercises the ordinary fast-build path after its original
+native records have been qualified.
+
+A private combined build of `AlliedWallSegmentPiece.xml`, `AlliedWallPiece.xml`,
+`AlliedBaseDefense.xml`, `AlliedBaseDefenseAdvanced.xml`, `AlliedSuperWeapon.xml`,
+`AlliedSuperWeaponAdvanced.xml` and `AlliedOutPost.xml` passed from a **24-file
+source/include graph**: **7 GameObjects, 664 resolved stock reference occurrences,
+checksum `3b2d75b3`**, and complete BIN/RELO/IMP readback. Existing wall, garrison,
+laser/stream draw, IFV upgrade, attack-assist, storage/teleport, special-power,
+production and EVA paths covered the remaining fields. ART includes were
+excluded only in the private snapshot; user Reborn sources, installed mod
+outputs and game files were untouched. This is compiler/package evidence;
+no game was launched.
 
 <!-- Reborn: Allied technology receivers use complete EP1 upgrade/filter storage and source-driven radar/radius settings. -->
 `TechUpgradeReceiver` is build-enabled with its original 188-byte EP1 layout:

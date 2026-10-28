@@ -169,6 +169,8 @@ internal sealed class SchemaNativeContract
             if(name=="id"){var id=e?.GetAttributeNode("id")??throw new InvalidDataException("Schema-proved module requires an id.");consumed.Add(id);Expect(at,BitConverter.GetBytes(FastHash.GetHashCode(id.Value.ToLowerInvariant())),path);return;}
         }
         // Reborn: EP1 AI structs store named schema enums/lists in uint words; verify their actual schema ordinals/bits rather than parsing names as integers.
+        // Reborn: tech-upgrade distance modes are schema ordinals stored in an unsigned native word.
+        if(owner==typeof(TechUpgradeModuleData)&&name=="DistanceType"){Enumeration(e,name,at,path);return;}
         if(owner==typeof(Ep1AiSpecialPowerInfo)&&name is "Heuristic" or "Manager"||owner==typeof(AISpecialPowerWeaponData)&&name is "AoeAttackPowerLocationPreference" or "AoeAttackEmanationLocation"){Enumeration(e,name,at,path);return;}
         if(owner==typeof(Ep1AiSpecialPowerInfo)&&name is "UseInMicroManagerState" or "Location"){Flags(e,name,at,4,path);return;}
         // Reborn: toggle records store schema enums/masks in uint words; their XSD values, not integer parsing, define the independent expected bytes.

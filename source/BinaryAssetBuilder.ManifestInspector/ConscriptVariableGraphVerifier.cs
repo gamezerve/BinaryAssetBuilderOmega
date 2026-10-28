@@ -133,6 +133,12 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: qualify naval pulse and health-drain metadata only for authored naval update modules.
     // Reborn: qualify aircraft return/switch metadata only when authored by the current graph.
     // Reborn: receiver metadata is qualified lazily from original Allied tech-level payloads.
+    // Reborn: qualify original lift records only when requested by the source graph.
+    private readonly Lazy<StockMetadataGrammar> liftObject;
+    // Reborn: tech transmitters qualify both original Outpost and Construction Yard records lazily.
+    private readonly Lazy<StockMetadataGrammar> techUpgrade;
+    // Reborn: command-set upgrades learn their concrete weak-ID and inherited metadata lazily.
+    private readonly Lazy<StockMetadataGrammar> commandSetUpgrade;
     private readonly Lazy<StockMetadataGrammar> techUpgradeReceiver;
     private readonly Lazy<StockMetadataGrammar> aircraftUpdates;
     private readonly Lazy<StockMetadataGrammar> navalUpdates;
@@ -238,6 +244,12 @@ internal sealed class ConscriptVariableGraphVerifier
         // Reborn: real Stingray and Dreadnought records independently qualify these naval leaves.
         // Reborn: original MiG/Kirov records independently qualify aircraft update storage and references.
         // Reborn: Barracks receiver records qualify the entire inherited upgrade/filter graph.
+        // Reborn: original defense, IFV and commando records supply the complete lift grammar.
+        // Reborn: qualify the original transmitter inheritance and optional-radius/filter metadata.
+        // Reborn: qualify the command-set swap against original Outpost/Construction Yard payloads.
+        commandSetUpgrade=new(()=>CommandSetUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        techUpgrade=new(()=>TechUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        liftObject=new(()=>LiftObjectContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         techUpgradeReceiver=new(()=>TechUpgradeReceiverContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         aircraftUpdates=new(()=>AircraftUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         navalUpdates=new(()=>NavalUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -530,6 +542,21 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: source-prove and compose both complete naval update graphs.
                 // Reborn: prove and compose both complete aircraft update graphs against their original wire classes.
                 // Reborn: independently prove and compose the authored Allied receiver graph.
+                // Reborn: source-prove every authored lift field and its nested filters before composition.
+                if(owner.NativeType==typeof(Ep1LiftObjectUpdateModuleData)){
+                    var grammar=liftObject.Value;var liftNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName)),liftNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(liftNative,official,Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName),owner.NativeType);int size=grammar.Verify(metadata,liftNative,owner.NativeType,proof.Records);Own(liftNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: source-prove every transmitter field before composing its metadata/native graph.
+                // Reborn: source-prove weak command-set identities and all inherited upgrade fields.
+                if(owner.NativeType==typeof(CommandSetUpgradeModuleData)){
+                    var grammar=commandSetUpgrade.Value;var commandNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName)),commandNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(commandNative,official,Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName),owner.NativeType);int size=grammar.Verify(metadata,commandNative,owner.NativeType,proof.Records);Own(commandNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                if(owner.NativeType==typeof(TechUpgradeModuleData)){
+                    var grammar=techUpgrade.Value;var techNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName)),techNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(techNative,official,Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName),owner.NativeType);int size=grammar.Verify(metadata,techNative,owner.NativeType,proof.Records);Own(techNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(TechUpgradeReceiverModuleData)){
                     var grammar=techUpgradeReceiver.Value;var receiverNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName)),receiverNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(receiverNative,official,Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName),owner.NativeType);int size=grammar.Verify(metadata,receiverNative,owner.NativeType,proof.Records);Own(receiverNative,start,stop);Splice(owner,metadata,start,size);continue;

@@ -146,7 +146,9 @@ public static partial class Marshaler
                 MarshalPolymorphicType<FlingStoredObjectsSpecialPowerModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0xBF91BFCDu:
-                MarshalPolymorphicType<LiftObjectUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: EP1 uses an optional shader import while retaining the original wire class identity.
+                MarshalPolymorphicType<Ep1LiftObjectUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                ((ModuleData*)*objT)->TypeId = 0xBF91BFCDu;
                 break;
             case 0x91222181u:
                 MarshalPolymorphicType<ReplaceSelfSpecialAbilityModuleData, BehaviorModuleData>(node, objT, state);

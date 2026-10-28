@@ -46,4 +46,31 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(LiftObjectUpdateModuleData.CrusherModifiesVelocity), "false"), &objT->CrusherModifiesVelocity, state);
         Marshal(node, (UpdateModuleData*)objT, state);
     }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: marshal the complete EP1 lift record with an optional shader reference allocation. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node, Ep1LiftObjectUpdateModuleData* objT, Tracker state)
+    {
+        if (node is null)
+        {
+            return;
+        }
+        Marshal(node.GetAttributeValue(nameof(Ep1LiftObjectUpdateModuleData.LiftObjectLinkID), "0"), &objT->LiftObjectLinkID, state);
+        Marshal(node.GetAttributeValue(nameof(Ep1LiftObjectUpdateModuleData.LiftVelocity), null), &objT->LiftVelocity, state);
+        Marshal(node.GetAttributeValue(nameof(Ep1LiftObjectUpdateModuleData.MaxElevationFromGround), null), &objT->MaxElevationFromGround, state);
+        Marshal(node.GetAttributeValue(nameof(Ep1LiftObjectUpdateModuleData.TimeIncrement), "0s"), &objT->TimeIncrement, state);
+        Marshal(node.GetAttributeValue(nameof(Ep1LiftObjectUpdateModuleData.MaxTimeLifted), "1s"), &objT->MaxTimeLifted, state);
+        Marshal(node.GetAttributeValue(nameof(Ep1LiftObjectUpdateModuleData.MaxStructureShakeVelocity), "0"), &objT->MaxStructureShakeVelocity, state);
+        Marshal(node.GetAttributeValue(nameof(Ep1LiftObjectUpdateModuleData.AirplaneCrashWeapon), null), &objT->AirplaneCrashWeapon, state);
+        Marshal(node.GetAttributeValue(nameof(Ep1LiftObjectUpdateModuleData.SoftLandingWeapon), null), &objT->SoftLandingWeapon, state);
+        Marshal(node.GetAttributeValue(nameof(Ep1LiftObjectUpdateModuleData.RotationSpeed), "1.0"), &objT->RotationSpeed, state);
+        Marshal(node.GetAttributeValue(nameof(Ep1LiftObjectUpdateModuleData.Shader), null), &objT->Shader, state);
+        Marshal(node.GetAttributeValue(nameof(Ep1LiftObjectUpdateModuleData.ShakeIntensity), "0.0"), &objT->ShakeIntensity, state);
+        Marshal(node.GetAttributeValue(nameof(Ep1LiftObjectUpdateModuleData.ShakeRadius), "0.0"), &objT->ShakeRadius, state);
+        Marshal(node.GetAttributeValue(nameof(Ep1LiftObjectUpdateModuleData.ShakeFade), "1.0"), &objT->ShakeFade, state);
+        Marshal(node.GetAttributeValue(nameof(Ep1LiftObjectUpdateModuleData.DisabledTypesToProcess), "HELD PARALYZED EMP"), &objT->DisabledTypesToProcess, state);
+        Marshal(node.GetChildNode(nameof(Ep1LiftObjectUpdateModuleData.ModelStateObjectFilters), null), &objT->ModelStateObjectFilters, state);
+        Marshal(node.GetAttributeValue(nameof(Ep1LiftObjectUpdateModuleData.CrusherModifiesVelocity), "false"), &objT->CrusherModifiesVelocity, state);
+        Marshal(node, (UpdateModuleData*)objT, state);
+    }
 }

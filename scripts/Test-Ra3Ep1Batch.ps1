@@ -91,6 +91,12 @@ if($SchedulerControl){
     Add-BatchCase 'naval-updates' 'StockQualifiedNavalUpdates' @('naval-update-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: qualify MiG return-to-producer and Kirov locomotor switching with default/edit/full-object/corruption controls.
     Add-BatchCase 'aircraft-updates' 'StockQualifiedAircraftUpdates' @('aircraft-update-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: qualify authored weak command-set upgrades and inherited upgrade lists.
+    Add-BatchCase 'command-set-upgrade' 'StockQualifiedCommandSetUpgrade' @('command-set-upgrade-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: qualify the complete original tech-transmitter graph and authored optional fields.
+    Add-BatchCase 'tech-upgrade' 'StockQualifiedTechUpgrade' @('tech-upgrade-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: qualify full lift-update source, nested filters and metadata composition.
+    Add-BatchCase 'lift-object' 'StockQualifiedLiftObject' @('lift-object-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: qualify Allied tech receiver levels, optional radius storage, inherited upgrade controls and radar/filter settings.
     Add-BatchCase 'tech-upgrade-receiver' 'StockQualifiedTechUpgradeReceiver' @('tech-upgrade-receiver-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: wall length, filter lists and both secondary masks use the new retail-qualified wall-builder writer.

@@ -103,7 +103,9 @@ internal sealed class StockMetadataGrammar
                     bool directReal=element==typeof(float)&&rows.Fields[i].Tag==0x645864F3u;
                     // Reborn: this EP1 optional scalar Poid has a captured Poid tag; its module hash and pointee coordinate are independently source-proved.
                     bool directPassiveModule=current==typeof(SageBinaryData.Ep1PassiveAreaEffectBehaviorModuleData)&&field.Name=="AttachModuleId"&&element==typeof(TypedAssetId<SageBinaryData.ModuleData>)&&rows.Fields[i].Tag==0xBDF07965u;
-                    if((!kinds.Contains(Kind.Native)&&!directVector&&!directQuaternion&&!directFlags&&!directReal&&!directPassiveModule)||target!=Coordinate(pointee))throw new InvalidDataException("Generated metadata optional field target differs: "+child);continue;
+                    // Reborn: the lift shader uses the captured optional ShaderOverrideRef tag; independent proof binds its pointee and IMP slot.
+                    bool directLiftShader=current==typeof(SageBinaryData.Ep1LiftObjectUpdateModuleData)&&field.Name=="Shader"&&element==typeof(Relo.AssetReference<SageBinaryData.ShaderOverride>)&&rows.Fields[i].Tag==0x8A16C611u;
+                    if((!kinds.Contains(Kind.Native)&&!directLiftShader&&!directVector&&!directQuaternion&&!directFlags&&!directReal&&!directPassiveModule)||target!=Coordinate(pointee))throw new InvalidDataException("Generated metadata optional field target differs: "+child);continue;
                 }
                 if(IsList(member))
                 {

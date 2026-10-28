@@ -116,6 +116,8 @@ internal static class ConscriptModuleScalarContract
     {
         if(!Ep1BehaviorMetadataTokenizer.TryReviewedScalarSignature(schema.Name??string.Empty,out uint wire))return null;
         // Reborn: the existing EP1 AI writer stores this schema flag list in a uint, not a fixed-buffer wrapper.
+        // Reborn: tech-upgrade distance mode occupies a uint but follows the original EP1 named enum.
+        if(native==typeof(uint)&&schema.Name=="DistanceCheckType")return (4,wire,"Enum:"+typeof(Ep1DistanceCheckType).FullName);
         if(native==typeof(uint)&&schema.Name=="AutoAcquireEnemiesBitFlags")return (4,wire,"Flags:"+typeof(AutoAcquireEnemiesType).FullName);
         // Reborn: EP1 root movement uses the reviewed EP1 enum, whose additional literals must not be encoded through the legacy KW enum.
         // Reborn: OCL source locations use EP1 ordinals rather than the shorter legacy KW enum.
@@ -292,7 +294,7 @@ internal static class ConscriptModuleScalarContract
     private static string[] ProbeNames(Binding binding)
     {
         // Reborn: the concrete EP1 enum alias shares the official LocomotorSetType schema, including AI default-movement probes.
-        var type=ValueType(binding);string schemaName=type==typeof(Ep1RootLocomotorSetType)?"LocomotorSetType":type==typeof(Ep1ProductionQueueType)?"ProductionQueueType":type.Name;var schema=schemas.Value.GlobalTypes[new XmlQualifiedName(schemaName,"uri:ea.com:eala:asset")] as XmlSchemaSimpleType;
+        var type=ValueType(binding);string schemaName=type==typeof(Ep1DistanceCheckType)?"DistanceCheckType":type==typeof(Ep1RootLocomotorSetType)?"LocomotorSetType":type==typeof(Ep1ProductionQueueType)?"ProductionQueueType":type.Name;var schema=schemas.Value.GlobalTypes[new XmlQualifiedName(schemaName,"uri:ea.com:eala:asset")] as XmlSchemaSimpleType;
         var allowed=(schema?.Content as XmlSchemaSimpleTypeRestriction)?.Facets.OfType<XmlSchemaEnumerationFacet>().Select(f=>f.Value).ToHashSet(StringComparer.Ordinal)??throw new InvalidDataException("Enum probe schema facets unavailable: "+type.Name);
         return Enum.GetNames(type).Where(allowed.Contains).ToArray();
     }
