@@ -59,6 +59,10 @@ internal static class SdkGameObjectInheritanceSmokeTest
         var rootOwner=FragmentOwner("DATA:nested/repair.xml");((XmlElement)rootOwner.GetElementsByTagName("include","http://www.w3.org/2001/XInclude")[0]!).RemoveAttribute("xpointer");
         var roots=new SdkGameObjectFragments(paths);roots.Expand(rootOwner,entry,data);
         Require(rootOwner.SelectSingleNode("//*[local-name()='Behaviors']/*[local-name()='RepairUpdate'][@id='Repair']/*[local-name()='SelfAudio']")!=null&&roots.Sources.Count()==2&&roots.Snapshots.Count()==2,"Whole-root/nested/empty-element include or source witnesses differ.");
+        // Reborn: a reused template must still expand its nested includes in a fresh independent owner.
+        var secondRoot=FragmentOwner("DATA:nested/repair.xml");((XmlElement)secondRoot.GetElementsByTagName("include","http://www.w3.org/2001/XInclude")[0]!).RemoveAttribute("xpointer");roots.Expand(secondRoot,entry,data);
+        Require(secondRoot.GetElementsByTagName("SelfAudio",ea).Count==1&&secondRoot.GetElementsByTagName("include","http://www.w3.org/2001/XInclude").Count==0&&roots.Sources.Count()==2,"Cached nested template was mutated or counted twice.");roots.VerifySources();
+        FragmentBudgetControls(paths,data,entry);
         // Reborn: an explicitly empty pointer is malformed, while text mode, wrong namespaces and ordinary-root cycles remain errors.
         var emptyPointer=FragmentOwner("DATA:fragment.xml");((XmlElement)emptyPointer.GetElementsByTagName("include","http://www.w3.org/2001/XInclude")[0]!).SetAttribute("xpointer","");Refuse(()=>new SdkGameObjectFragments(paths).Expand(emptyPointer,entry,data));
         var textOwner=FragmentOwner("DATA:nested/repair.xml");var textInclude=(XmlElement)textOwner.GetElementsByTagName("include","http://www.w3.org/2001/XInclude")[0]!;textInclude.RemoveAttribute("xpointer");textInclude.SetAttribute("parse","text");Refuse(()=>new SdkGameObjectFragments(paths).Expand(textOwner,entry,data));
@@ -85,6 +89,28 @@ internal static class SdkGameObjectInheritanceSmokeTest
 
         // Reborn: this fixture uses the same EA child-node XPointer syntax as the stock parachute source.
         static XmlDocument FragmentOwner(string href){var xml=new XmlDocument{PreserveWhitespace=true};xml.LoadXml("<AssetDeclaration xmlns='uri:ea.com:eala:asset' xmlns:xi='http://www.w3.org/2001/XInclude'><GameObject id='FragmentObject'><Behaviors><xi:include href='"+href+"' xpointer='xmlns(n=uri:ea.com:eala:asset) xpointer(/n:Modules/child::*)'/></Behaviors></GameObject></AssetDeclaration>");return xml;}
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: exceed the old 32-file/four-MB session caps, reuse captured files, and detect stale sources after cached expansion. */
+    //-------------------------------------------------------------------------------------------------
+    private static void FragmentBudgetControls(SdkSourcePathAudit.Report paths,string data,string entry)
+    {
+        const string ea="uri:ea.com:eala:asset",xi="http://www.w3.org/2001/XInclude";
+        var session=new SdkGameObjectFragments(paths);var owner=new XmlDocument();owner.LoadXml("<AssetDeclaration xmlns='"+ea+"' xmlns:xi='"+xi+"'><GameObject id='Batch'><Behaviors/></GameObject></AssetDeclaration>");
+        var behaviors=(XmlElement)owner.GetElementsByTagName("Behaviors",ea)[0]!;
+        for(int i=0;i<40;i++){
+            File.WriteAllText(Path.Combine(data,$"budget-{i}.xml"),"<Modules xmlns='"+ea+"'><!-- Reborn: "+new string('x',120000)+" --><Physics id='Physics"+i+"'/></Modules>");
+            var include=owner.CreateElement("xi","include",xi);include.SetAttribute("href",$"DATA:budget-{i}.xml");include.SetAttribute("xpointer","xmlns(n=uri:ea.com:eala:asset) xpointer(/n:Modules/child::*)");behaviors.AppendChild(include);
+        }
+        var repeated=(XmlDocument)owner.CloneNode(true);session.Expand(owner,entry,data);session.Expand(repeated,entry,data);session.VerifySources();
+        Require(owner.GetElementsByTagName("Physics",ea).Count==40&&repeated.GetElementsByTagName("Physics",ea).Count==40&&session.Sources.Count()==40&&session.Snapshots.Sum(s=>s.Bytes.LongLength)>4*1048576,"Large/repeated fragment graph failed or duplicated witnesses.");
+        File.WriteAllText(Path.Combine(data,"budget-0.xml"),"<Modules xmlns='"+ea+"'><Physics id='Changed'/></Modules>");
+        // Reborn: cached expansion retains its original snapshot, while the final source check rejects the changed physical file by path.
+        var cached=new XmlDocument();cached.LoadXml("<Modules xmlns='"+ea+"' xmlns:xi='"+xi+"'><xi:include href='DATA:budget-0.xml' xpointer='xmlns(n=uri:ea.com:eala:asset) xpointer(/n:Modules/child::*)'/></Modules>");session.Expand(cached,entry,data);
+        Require(((XmlElement)cached.GetElementsByTagName("Physics",ea)[0]!).GetAttribute("id")=="Physics0","Cached fragment did not retain its original snapshot.");
+        bool stale=false;try{session.VerifySources();}catch(InvalidDataException error){stale=error.Message.Contains("XInclude source changed during preparation:",StringComparison.Ordinal)&&error.Message.Contains("budget-0.xml",StringComparison.Ordinal);}Require(stale,"Changed cached fragment was not rejected with its physical path.");
+        Console.WriteLine("Reborn: XInclude cache/budgets: PASS (40 unique files, >4 MB unique source, repeated independent owners, immutable nested templates and final stale-source rejection).");
     }
 
     // Reborn: refusals are test successes only for explicit source/schema/path errors, never arbitrary programming failures.

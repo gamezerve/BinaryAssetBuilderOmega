@@ -13,10 +13,14 @@ internal sealed class SdkGameObjectFragments
     private readonly Dictionary<string,ConscriptSourceInput.SourceFile> sources=new(StringComparer.OrdinalIgnoreCase);
     // Reborn: raw captured fragment bytes retain original coordinates after imports and inheritance detach their DOM nodes.
     private readonly Dictionary<string,byte[]> snapshots=new(StringComparer.OrdinalIgnoreCase);
+    // Reborn: one immutable parsed template per physical fragment avoids repeated reads/parses across the complete mod graph.
+    private readonly Dictionary<string,XmlDocument> templates=new(StringComparer.OrdinalIgnoreCase);
+    private const int MaxFragmentBytes=1048576,MaxSources=4096;
+    private const long MaxUniqueBytes=64L*1048576;
     internal IEnumerable<SdkXmlDiagnostics.Snapshot> Snapshots=>snapshots.Select(s=>new SdkXmlDiagnostics.Snapshot(s.Key,s.Value));
     private readonly List<SdkSourceSearch.Selection> searches=new();
     private readonly HashSet<string> active=new(StringComparer.OrdinalIgnoreCase);
-    private long bytesRead;
+    private long uniqueBytes;
     internal IEnumerable<ConscriptSourceInput.SourceFile> Sources=>sources.Values;
     internal IEnumerable<SdkSourceSearch.Selection> Searches=>searches;
 
@@ -45,13 +49,8 @@ internal sealed class SdkGameObjectFragments
                 if(paths.Search!=null){var selection=paths.Search.Select(path,href,root);searches.Add(selection);selected=selection.PhysicalPath;authority=selection.Root;}
                 else{var selection=SdkSourcePathAudit.Resolve(href,Path.GetDirectoryName(path)!,root,paths.SourceRoot,paths.ArtRoot,paths.AudioRoot);selected=selection.Path;authority=selection.Root;}
                 if(!selected.EndsWith(".xml",StringComparison.OrdinalIgnoreCase))throw new InvalidDataException("XInclude fragment must be XML: "+selected);
-                byte[] bytes=SdkEnvironmentPreflight.Read(selected,1048576);bytesRead+=bytes.Length;
-                if(bytesRead>4*1048576||sources.Count>=32&&!sources.ContainsKey(selected))throw new InvalidDataException("XInclude fragment source budget exceeded.");
-                string hash=Convert.ToHexString(SHA256.HashData(bytes));
-                if(sources.TryGetValue(selected,out var old)&&old.Sha256!=hash)throw new InvalidDataException("XInclude fragment changed during preparation: "+selected);
-                sources[selected]=new(selected,hash);
-                snapshots[selected]=bytes;
-                var fragment=SdkXmlDiagnostics.Parse(bytes,selected);
+                // Reborn: expansion mutates only a fresh DOM clone; repeated imports never consume another source/byte allowance.
+                var fragment=LoadFragment(selected);
                 if(fragment.DocumentElement==null||fragment.DocumentElement.NamespaceURI!=Ea||(!wholeRoot&&fragment.DocumentElement.LocalName!=pointer.Groups["root"].Value))throw new InvalidDataException("XInclude root namespace or XPointer root does not match fragment: "+selected);
                 Expand(fragment,selected,authority,depth+1);
                 // Reborn: preserve module attributes and empty root modules for the whole-document EA include form.
@@ -69,5 +68,28 @@ internal sealed class SdkGameObjectFragments
             }
         }
         finally{active.Remove(path);}
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: cache each distinct raw fragment and parsed template once, with mod-sized aggregate limits and actionable diagnostics. */
+    //-------------------------------------------------------------------------------------------------
+    private XmlDocument LoadFragment(string path)
+    {
+        if(!templates.TryGetValue(path,out var template)){
+            if(sources.Count>=MaxSources)throw new InvalidDataException($"XInclude unique fragment count exceeded: {sources.Count+1} files, limit {MaxSources}. Fragment: {path}");
+            byte[] bytes=SdkEnvironmentPreflight.Read(path,MaxFragmentBytes);
+            if(uniqueBytes+bytes.Length>MaxUniqueBytes)throw new InvalidDataException($"XInclude unique fragment bytes exceeded: {uniqueBytes+bytes.Length} bytes, limit {MaxUniqueBytes}. Fragment: {path}");
+            template=SdkXmlDiagnostics.Parse(bytes,path);
+            sources.Add(path,new(path,Convert.ToHexString(SHA256.HashData(bytes))));snapshots.Add(path,bytes);templates.Add(path,template);uniqueBytes+=bytes.Length;
+        }
+        return (XmlDocument)template.CloneNode(true);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: revalidate captured physical files once after preparation so caching cannot hide changed or deleted source inputs. */
+    //-------------------------------------------------------------------------------------------------
+    internal void VerifySources()
+    {
+        foreach(var source in sources.Values)if(Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(source.Path,MaxFragmentBytes)))!=source.Sha256)throw new InvalidDataException("XInclude source changed during preparation: "+source.Path);
     }
 }

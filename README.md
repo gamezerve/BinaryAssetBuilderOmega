@@ -8,6 +8,21 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 29, 2026
 
+<!-- Reborn: shared XInclude fragments are captured once across a complete mod instead of consuming the former tiny trial allowance repeatedly. -->
+XInclude expansion now caches each physical fragment's original bytes and parsed
+template for one preparation session. Repeated imports expand independent DOM
+copies and retain their source/search witnesses. The former **32-file / 4 MB**
+aggregate cap is now **4096 distinct files / 64 MB of unique source bytes**;
+repeated imports do not consume that allowance again. Final source hashes still
+reject files changed during preparation. Cycle/depth, per-file and expanded-owner
+limits remain separate. Aggregate-limit diagnostics identify the actual count or
+byte total, configured limit and fragment path.
+Regression checks pass for **40 unique files / over 4 MB of unique source**,
+repeated owners, nested template isolation, stale-source rejection, inheritance
+and fragment definitions. A read-only Reborn preparation reached **247 fragment
+uses across 37 paths**, passing the old cap; it then stopped at a separate
+duplicate `AudioEvent:BaseSoundEffect` declaration. No mod output was published.
+
 <!-- Reborn: qualify the complete requested Japan batch, including Egg expressions and hierarchical weapon turrets. -->
 **All 46 distinct requested Japan XMLs now compile** in a private source snapshot:
 **54 GameObjects and 14 supporting assets**, 68 total across 86 captured files.
