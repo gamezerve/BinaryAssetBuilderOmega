@@ -8,6 +8,15 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 29, 2026
 
+<!-- Reborn: definition collection honors captured missing ART includes throughout inherited source closures. -->
+Missing `ART:` all/instance Includes are now skipped during **imported definition
+collection** too, including nested instance bases. Their `MISSINGART` warnings
+remain visible; existing sources still contribute definitions and undefined
+symbols still fail. **23 missing-ART controls** and the existing Include-definition
+suite pass. A private `AlliedCommandCenter.xml` source preparation passed across
+14 files, resolving `$ACCOUNT_ORE` to `0`. Alpha tools are synchronized; user
+sources and published mods were untouched.
+
 <!-- Reborn: compile the requested Allied unit batch with complete EP1 module layouts and one schema-name catalog per build. -->
 **All 25 requested Allied unit XMLs now compile** in a private Reborn snapshot:
 **28 GameObjects + 4 ArmorTemplates + 4 ObjectCreationLists + 5 LocomotorTemplates**,

@@ -34,6 +34,17 @@ internal static class MissingArtIncludeSmokeTest
         Put(Path.Combine(data,"base.xml"),Declaration("","<UpgradeTemplate id='BaseUpgrade' Type='OBJECT' BuildCost='17'/>"));
         Put(Path.Combine(data,"asset.xml"),Declaration(Include("ART:InheritedMissing.w3x")+Include("DATA:base.xml","instance"),"<UpgradeTemplate id='RebornMissingArtOwner' inheritFrom='BaseUpgrade'/>"));
         var inherited=ConscriptSourcePreparation.Load(entry,search);if(inherited.Game.DocumentElement!.GetAttribute("BuildCost")!="17"||inherited.Warnings.Length!=3||inherited.AdditionalAssets.Length!=0)throw new InvalidDataException("Skipped ART disrupted instance inheritance.");checks++;
+        // Reborn: imported literal definitions must survive skipped ART all/instance includes inside an inherited source closure.
+        Put(Path.Combine(data,"prices.xml"),"<AssetDeclaration xmlns='"+ea+"'><Defines><Define name='PRICE' value='23'/></Defines></AssetDeclaration>");
+        string defineBase=Path.Combine(data,"define-base.xml");
+        Put(defineBase,Declaration(Include("ART:MissingDefineAll.w3x")+Include("ART:MissingDefineInstance.w3x","instance")+Include("DATA:prices.xml"),"<UpgradeTemplate id='DefineBase' Type='OBJECT' BuildCost='=$PRICE'/>"));
+        Put(Path.Combine(data,"asset.xml"),Declaration(Include("DATA:define-base.xml","instance"),"<UpgradeTemplate id='RebornMissingArtOwner' inheritFrom='DefineBase' BuildCost='=$PRICE'/>"));
+        var defined=ConscriptSourcePreparation.Load(entry,search);
+        if(defined.Game.DocumentElement!.GetAttribute("BuildCost")!="23"||defined.Warnings.Length!=4||defined.AdditionalAssets.Length!=0||defined.Searches.Count(s=>s.ExpectedMissing)!=4)throw new InvalidDataException("Skipped nested ART blocked imported definition resolution.");checks++;
+        ConscriptSourceInput.Prepare(entry,Path.Combine(output,"defined-prepared"),sdk);checks++;
+        SdkSourceSearch.Verify(defined.Searches);checks++;
+        Put(defineBase,Declaration(Include("ART:MissingDefineAll.w3x")+Include("DATA:prices.xml"),"<UpgradeTemplate id='DefineBase' Type='OBJECT' BuildCost='=$UNKNOWN'/>"));
+        Refuse(()=>ConscriptSourcePreparation.Load(entry,search),"undefined definition behind skipped ART");
         Put(Path.Combine(data,"asset.xml"),Declaration("",Asset("RebornMissingArtOwner")));
         File.WriteAllText(Path.Combine(search.ModArt,"Missing.w3x"),Declaration("",Asset("AppearedLate")));Refuse(()=>SdkSourceSearch.Verify(input.Searches),"late ART source appearance");File.Delete(Path.Combine(search.ModArt,"Missing.w3x"));
         string existing=Path.Combine(search.SdkArt,"Ex/Existing.xml");Put(existing,Declaration("",Asset("ExistingArtOwner")));Put(entry,Declaration(Include("ART:Existing.xml"),Asset("LocalOwner")));

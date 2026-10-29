@@ -112,7 +112,13 @@ internal sealed class SdkIncludeDefineProfile
                     string kind = include.GetAttribute("type").ToLowerInvariant(),logical = include.GetAttribute("source");
                     if (include.LocalName != "Include" || include.NamespaceURI != Ea || kind is not ("all" or "instance")
                         || include.HasChildNodes || include.Attributes.OfType<XmlAttribute>().Any(attribute => attribute.Name is not ("source" or "type"))
-                        || edge.Kind != kind || edge.LogicalPath != logical || edge.PhysicalPath == null) throw new InvalidDataException("Only captured source-backed all/instance definition Includes are admitted; reference/precompiled paths remain closed.");
+                        || edge.Kind != kind || edge.LogicalPath != logical) throw new InvalidDataException("Only captured source-backed all/instance definition Includes are admitted; reference/precompiled paths remain closed.");
+                    // Reborn: a path-audited missing ART all/instance include contributes no definitions, matching source emission and inheritance.
+                    if(edge.SkippedMissingArt){
+                        if(edge.PhysicalPath!=null||!logical.StartsWith("ART:",StringComparison.OrdinalIgnoreCase))throw new InvalidDataException("Invalid skipped ART definition include.");
+                        continue;
+                    }
+                    if(edge.PhysicalPath==null)throw new InvalidDataException("Definition Include has no captured source: "+logical);
                     // Reborn: replay only captured exact alias context/role/source proof; all other paths stay strict.
                     var resolved = SdkKnownMapAliases.ResolveCaptured(paths,current,kind,logical,inventory[current].Root);
                     if (!resolved.Path.Equals(edge.PhysicalPath,StringComparison.OrdinalIgnoreCase) || !inventory.TryGetValue(resolved.Path,out var child)
