@@ -290,10 +290,11 @@ public static class Ep1BehaviorMetadataTokenizer
                 Range(slot,12);for(int axis=0;axis<3;axis++)if(!float.IsFinite(BitConverter.Int32BitsToSingle(unchecked((int)Word(bytes,slot+axis*4)))))throw new InvalidDataException("Behavior inline vector is not finite.");Native(targetAt,slot);return;
             }
             // Reborn: Movement is an XML choice but points directly to a wrapped concrete native movement record.
-            if(schema?.Name=="ProjectileMoveData"&&type==typeof(SageBinaryData.ProjectileMoveToGroundData).MakePointerType()){
-                uint pointer=Word(bytes,slot);if(pointer==0)throw new InvalidDataException("Projectile Movement is required.");int target=Pointer(pointer);Claim(target,Size(typeof(SageBinaryData.ProjectileMoveToGroundData)));relos.Add((uint)slot);
-                if(Word(bytes,target)!=0x87767DF6u)throw new InvalidDataException("Unsupported projectile movement class.");
-                int wrapper=Allocate(1);Row(wrapper,2,0x87767DF6u,(uint)Emit("ProjectileMoveToGroundData",typeof(SageBinaryData.ProjectileMoveToGroundData),target,depth+1));Target(targetAt,wrapper);return;
+            if(schema?.Name=="ProjectileMoveData"&&type==typeof(SageBinaryData.ProjectileMoveBase).MakePointerType()){
+                uint pointer=Word(bytes,slot);if(pointer==0)throw new InvalidDataException("Projectile Movement is required.");int target=Pointer(pointer);uint wire=Word(bytes,target);
+                // Reborn: the original concrete class selects both metadata schema and allocation extent.
+                Type concrete=wire switch{0x87767DF6u=>typeof(SageBinaryData.ProjectileMoveToGroundData),0x858CBFDCu=>typeof(SageBinaryData.ProjectileMoveInStraightLineData),_=>throw new InvalidDataException("Unsupported projectile movement class.")};Claim(target,Size(concrete));relos.Add((uint)slot);
+                int wrapper=Allocate(1);Row(wrapper,2,wire,(uint)Emit(concrete.Name,concrete,target,depth+1));Target(targetAt,wrapper);return;
             }
             if (type.IsPointer)
             {

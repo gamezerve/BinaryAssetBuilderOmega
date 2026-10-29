@@ -19,6 +19,8 @@ internal static class DyingProjectileSmokeTest
     //-------------------------------------------------------------------------------------------------
     internal static void Run(string manifest,string global)
     {
+        // Reborn: share immutable schema class names during this multi-witness check, with no cross-build mutable cache.
+        using var names=GameObjectModuleReview.ReuseNameCatalog();
         var saved=Settings.Current;string? savedDeveloper=System.Environment.GetEnvironmentVariable(SdkBuildTests.EnvironmentKey);
         try{
             string fixtures=Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!;var official=ConscriptSourceInput.Schemas();
@@ -27,19 +29,24 @@ internal static class DyingProjectileSmokeTest
             var catalog=new[]{manifest,global}.SelectMany(p=>ManifestReader.Read(SdkEnvironmentPreflight.Read(p,64*1048576)).Assets).ToArray();var baseline=SdkXmlDiagnostics.Parse(File.ReadAllBytes(Path.Combine(fixtures,"live-alpha/ConscriptBuildTime1/data/mod.xml")));
             baseline.DocumentElement!.SetAttribute("BuildTime","4");
             var grammar=DyingProjectileContract.Qualify(manifest,baseline,schemas,catalog);int checks=0;
-            for(int variant=0;variant<3;variant++){
+            for(int variant=0;variant<6;variant++){
                 var source=(XmlDocument)baseline.CloneNode(true);var behaviors=source.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace).OfType<XmlElement>().Single();behaviors.RemoveAll();
                 foreach(var family in DyingProjectileContract.Families){var owner=(XmlElement)source.ImportNode(GameObjectExtendedRootContract.Original("Soviet/Props/SovietBomberAircraft_Dying.xml",family.Source).Single(),true);ConscriptVariableBehaviorSource.DropLeafFormatting(owner);behaviors.AppendChild(owner);
                     // Reborn: authored/default records are independent of the captured original IDs and values.
                     if(variant>0){owner.RemoveAll();owner.SetAttribute("id","Reborn"+family.Source+variant);}
                     // Reborn: the projectile always owns its schema-required movement; omitted movement scalars retain official defaults.
-                    if(variant>0&&family.Source=="ProjectileUpdate")owner.InnerXml="<Movement xmlns='uri:ea.com:eala:asset'><MoveToGround/></Movement>";
+                    if(variant is 1 or 2&&family.Source=="ProjectileUpdate")owner.InnerXml="<Movement xmlns='uri:ea.com:eala:asset'><MoveToGround/></Movement>";
                     if(variant==2&&family.Source=="ProjectileUpdate"){
                         owner.SetAttribute("StateMachine","BombProjectile");owner.SetAttribute("MinDetonationHeight","25");owner.SetAttribute("MinTargetDistance","8");owner.SetAttribute("Flags","LAUNCH_AT_TARGET_POS TRACK_TARGET");
                         owner.InnerXml="<Movement xmlns='uri:ea.com:eala:asset'><MoveToGround InitialSpeed='3' Acceleration='0.2' TerminalVelocity='7' RotationSpeedPerSecond='30d' TerminalRotation='75d' ForwardVelocityDamping='20%'/></Movement>";
                     }
                     if(variant==2&&family.Source=="ShipSlowDeath"){
                         owner.SetAttribute("DestructionDelay","15s");owner.SetAttribute("Fade","true");owner.SetAttribute("FadeTime","2s");owner.InnerXml="<FX xmlns='uri:ea.com:eala:asset' Type='FINAL'><FX>FX_NONE</FX></FX><DieMuxData xmlns='uri:ea.com:eala:asset' DeathTypes='ALL'/>";
+                    }
+                    // Reborn: original-equivalent, omitted-default and freely edited straight-line fields use the same real dispatcher and metadata proof.
+                    if(variant>=3&&family.Source=="ProjectileUpdate"){
+                        owner.SetAttribute("StateMachine","StraightLineProjectile");if(variant==3)owner.SetAttribute("MinTargetDistance","5");
+                        owner.InnerXml="<Movement xmlns='uri:ea.com:eala:asset'><MoveInStraightLine "+(variant==3?"MuzzleVelocity='40'":variant==5?"MuzzleVelocity='50' Acceleration='0.25' TerminalVelocity='100'":"")+"/></Movement>";
                     }
 
                 }
@@ -49,9 +56,17 @@ internal static class DyingProjectileSmokeTest
                     // Reborn: changing a proved flag/threshold word must fail without relying on the producer writer.
                     var corrupt=new Chunk{InstanceBuffer=native.InstanceBuffer.ToArray(),RelocationBuffer=native.RelocationBuffer,ImportsBuffer=native.ImportsBuffer};corrupt.InstanceBuffer[8]^=1;
                     try{SchemaNativeContract.Verify(element,family.Type,typeId,corrupt,refs);throw new InvalidOperationException("Corrupt dying-projectile update accepted.");}catch(InvalidDataException){checks++;}
+                    // Reborn: the concrete movement class is checked independently of the update header and its source-edited scalar values.
+                    if(family.Source=="ProjectileUpdate"){
+                        int movement=(int)System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(native.InstanceBuffer.AsSpan(24));var wrongClass=new Chunk{InstanceBuffer=native.InstanceBuffer.ToArray(),RelocationBuffer=native.RelocationBuffer,ImportsBuffer=native.ImportsBuffer};wrongClass.InstanceBuffer[movement]^=1;
+                        try{SchemaNativeContract.Verify(element,family.Type,typeId,wrongClass,refs);throw new InvalidOperationException("Corrupt movement class accepted.");}catch(InvalidDataException){checks++;}
+                    }
                 }
 
             }
+            // Reborn: a valid choice name paired with the wrong state machine is still a real source error.
+            var mismatch=SdkXmlDiagnostics.Parse(Encoding.UTF8.GetBytes("<ProjectileUpdate xmlns='uri:ea.com:eala:asset' StateMachine='StraightLineProjectile'><Movement><MoveToGround/></Movement></ProjectileUpdate>"));
+            try{DyingProjectileContract.Validate(mismatch.DocumentElement!);throw new InvalidOperationException("Mismatched projectile state/movement accepted.");}catch(InvalidDataException){checks++;}
             // Reborn: test optional geometry on a complete object; source/native ownership checks remain mandatory in the fast path.
             System.Environment.SetEnvironmentVariable(SdkBuildTests.EnvironmentKey,"0");
             var absent=(XmlDocument)baseline.CloneNode(true);var geometry=GameObjectGeometryContract.Owner(absent)!;geometry.ParentNode!.RemoveChild(geometry);
@@ -59,7 +74,7 @@ internal static class DyingProjectileSmokeTest
             var verifier=new ConscriptVariableGraphVerifier(official,manifest,baseline,schemas,catalog);_=verifier.Verify(absent,full,instanceAbsent,plan.Origins);checks++;
             var dangling=new Chunk{InstanceBuffer=full.InstanceBuffer.ToArray(),RelocationBuffer=full.RelocationBuffer,ImportsBuffer=full.ImportsBuffer};System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(dangling.InstanceBuffer.AsSpan(500),600u);
             try{_=verifier.Verify(absent,dangling,instanceAbsent,plan.Origins);throw new InvalidOperationException("Dangling omitted Geometry accepted.");}catch(InvalidDataException){checks++;}
-            Console.WriteLine($"Reborn: dying projectiles: PASS ({checks} original/default/edit native/metadata and leaf checks; falling movement, timing, angles, damping, option bits and inherited ship-death phases omitted Geometry and corrupt-native rejection; no game launch).");
+            Console.WriteLine($"Reborn: projectiles: PASS ({checks} original/default/edit native/metadata and leaf checks; falling and straight-line movement, timing, angles, damping, velocity/acceleration, option bits, state/movement pairing, inherited ship-death phases, omitted Geometry and corrupt-native/class rejection; no game launch).");
         }finally{Settings.Current=saved;System.Environment.SetEnvironmentVariable(SdkBuildTests.EnvironmentKey,savedDeveloper);}
     }
 }

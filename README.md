@@ -8,6 +8,19 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 30, 2026
 
+<!-- Reborn: straight-line projectile movement uses its real EP1 concrete record instead of the falling movement allocation. -->
+`ProjectileUpdate` now supports **StraightLineProjectile / MoveInStraightLine**:
+MuzzleVelocity, Acceleration and TerminalVelocity use the original **16-byte**
+movement record behind the 28-byte update header. Concrete class identity,
+metadata wrappers and relocations are qualified against the original Guardian
+projectile. **33 original/default/edit/corruption checks pass**, preserving
+falling movement and rejecting mismatched state-machine/movement pairs.
+The exact authored `FXCostalGunProjectile` also passes an isolated mixed-linker
+stream build and BIN/RELO/IMP readback (checksum `7d80a1ce`, four stock references).
+The full `AlliedCoastalGun.xml` source check passes this former gate and now
+reaches a separate unsupported `InformTargetNugget` at line 322. User XML is
+unchanged by these compiler tests.
+
 <!-- Reborn: actual inheritance usage survives XML flattening and participates in the final unused-asset audit. -->
 `UNUSEDASSET` now accounts for **source inheritance**, including typed/untyped
 local bases and chains through instance-only intermediate assets. Successful
@@ -101,7 +114,7 @@ its original 28-byte header and separate 28-byte concrete movement allocation.
 Initial speed, acceleration, terminal speed, rotation speed/angle, forward
 damping, detonation height/distance and option bits are source-driven. The
 movement runtime class word and concrete metadata wrapper follow the original
-retail Kirov. Other movement processors (straight-line, balloon and spline)
+retail Kirov. Other movement processors (balloon and spline)
 remain explicitly unimplemented rather than being emitted as falling movement.
 `ShipSlowDeath` retains its original class identity and complete 116-byte
 SlowDeath inheritance, including editable phases, timing, flags and references.

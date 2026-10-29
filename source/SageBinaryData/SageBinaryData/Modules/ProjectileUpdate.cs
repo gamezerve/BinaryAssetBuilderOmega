@@ -18,6 +18,15 @@ public struct ProjectileMoveToGroundData
     public Angle TerminalRotation;
     public Percentage ForwardVelocityDamping;
 }
+// Reborn: the original EP1 straight-line movement stores its concrete class followed by three real-valued velocity fields.
+[StructLayout(LayoutKind.Sequential)]
+public struct ProjectileMoveInStraightLineData
+{
+    public ProjectileMoveBase Base;
+    public float MuzzleVelocity;
+    public float Acceleration;
+    public float TerminalVelocity;
+}
 // Reborn: the required Movement points directly at its concrete record, with no native XML-choice wrapper.
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct ProjectileUpdateModuleData
@@ -27,7 +36,7 @@ public unsafe struct ProjectileUpdateModuleData
     public float MinDetonationHeight;
     public float MinTargetDistance;
     public uint Flags;
-    public ProjectileMoveToGroundData* Movement;
+    public ProjectileMoveBase* Movement;
 }
 // Reborn: the original ship slow-death class adds no bytes to the complete 116-byte SlowDeath record.
 [StructLayout(LayoutKind.Sequential)]

@@ -26,6 +26,8 @@ internal sealed class StockMetadataGrammar
         void Record(Type current,int table,int depth)
         {
             if(depth>48)throw new InvalidDataException("Stock grammar depth exceeded.");
+            // Reborn: a projectile movement pointer learns its concrete class wrapper before the common base's own rows.
+            if(current==typeof(SageBinaryData.ProjectileMoveBase)&&Word(stock,table)==2)current=MovementType(Word(stock,table+4));
             if(Word(stock,table)==2){uint tag=Word(stock,table+4);var rows=Get(current);if(rows.Class!=null&&rows.Class!=tag)throw new InvalidDataException("Stock grammar class tag differs: "+current.Name);rows.Class=tag;table=checked((int)Word(stock,table+8));}
             var found=new List<(uint,uint,uint)>();
             for(int at=table;;at+=12){if(found.Count>1024||at>=nativeRoot)throw new InvalidDataException("Stock grammar record bounds differ.");uint n=Word(stock,at),t=Word(stock,at+4),x=Word(stock,at+8);if(n==0&&t==0&&x==0)break;found.Add((n,t,x));}
@@ -76,6 +78,8 @@ internal sealed class StockMetadataGrammar
         void Record(Type current,string path,int table,int depth)
         {
             if(depth>48)throw new InvalidDataException("Generated metadata depth exceeded.");
+            // Reborn: generated movement wrappers must select a real independently stock-qualified concrete class.
+            if(current==typeof(SageBinaryData.ProjectileMoveBase)&&W(table)==2)current=MovementType(W(table+4));
             var rows=grammar.TryGetValue(current,out var r)?r:throw new InvalidDataException("No stock metadata grammar for record "+current.Name+" ("+path+"); this nested shape has no stock witness.");
             if(W(table)==2){Own(table);if(rows.Class==null||W(table+4)!=rows.Class)throw new InvalidDataException("Generated metadata class row differs: "+path);table=Table(table,path);}
             else if(rows.Class!=null&&depth==0)throw new InvalidDataException("Generated metadata class row missing: "+path);
@@ -202,6 +206,8 @@ internal sealed class StockMetadataGrammar
         }
     }
 
+    // Reborn: only the implemented original falling and straight-line movement classes select concrete metadata grammar.
+    private static Type MovementType(uint wire)=>wire switch{0x87767DF6u=>typeof(SageBinaryData.ProjectileMoveToGroundData),0x858CBFDCu=>typeof(SageBinaryData.ProjectileMoveInStraightLineData),_=>throw new InvalidDataException("Unsupported projectile movement metadata class: "+wire.ToString("X8"))};
     private Rows Get(Type type){if(!grammar.TryGetValue(type,out var rows))grammar[type]=rows=new Rows();return rows;}
     private static Type Base(Type type)=>type.GetField("Base")?.FieldType??throw new InvalidDataException("Stock grammar base model missing: "+type.Name);
     // Reborn: the movement-base runtime class word has a captured metadata name distinct from its managed TypeId field.
