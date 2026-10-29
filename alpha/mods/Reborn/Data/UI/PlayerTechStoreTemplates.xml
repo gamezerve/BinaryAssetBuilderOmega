@@ -5,18 +5,18 @@
 
 		
 	<!-- Allied Paradrop -->
-	<PurchasePlayerTechButtonTemplate
-		id="Purchase_PlayerTech_Allied_Paradrop_Rank1"
-		PlayerTech="PlayerTech_Allied_Paradrop_Rank1"
-		StateData="ButtonStateCampaignPlayerPowerParadropLvl1"/>
-	<PurchasePlayerTechButtonTemplate
-		id="Purchase_PlayerTech_Allied_Paradrop_Rank2"
-		PlayerTech="PlayerTech_Allied_Paradrop_Rank2"
-		StateData="ButtonStateCampaignPlayerPowerParadropLvl2"/>
-	<PurchasePlayerTechButtonTemplate
-		id="Purchase_PlayerTech_Allied_Paradrop_Rank3"
-		PlayerTech="PlayerTech_Allied_Paradrop_Rank3"
-		StateData="ButtonStateCampaignPlayerPowerParadropLvl3"/>
+	<!-- <PurchasePlayerTechButtonTemplate -->
+		<!-- id="Purchase_PlayerTech_Allied_Paradrop_Rank1" -->
+		<!-- PlayerTech="PlayerTech_Allied_Paradrop_Rank1" -->
+		<!-- StateData="ButtonStateCampaignPlayerPowerParadropLvl1"/> -->
+	<!-- <PurchasePlayerTechButtonTemplate -->
+		<!-- id="Purchase_PlayerTech_Allied_Paradrop_Rank2" -->
+		<!-- PlayerTech="PlayerTech_Allied_Paradrop_Rank2" -->
+		<!-- StateData="ButtonStateCampaignPlayerPowerParadropLvl2"/> -->
+	<!-- <PurchasePlayerTechButtonTemplate -->
+		<!-- id="Purchase_PlayerTech_Allied_Paradrop_Rank3" -->
+		<!-- PlayerTech="PlayerTech_Allied_Paradrop_Rank3" -->
+		<!-- StateData="ButtonStateCampaignPlayerPowerParadropLvl3"/> -->
 
 
 </AssetDeclaration>

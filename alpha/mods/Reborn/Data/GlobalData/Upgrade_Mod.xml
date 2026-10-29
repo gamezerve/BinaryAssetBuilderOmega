@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+
+	<Includes>
+		<Include type="instance" source="DATA:GlobalData/Upgrade.xml" />
+	</Includes>
+
+	<UpgradeTemplate
+		id="Upgrade_AlliedPowerPlantTurbine"
+		inheritFrom="Upgrade_AlliedPowerPlantTurbine"
+		BuildTime="3.0s"
+		BuildCost="1000"/>
+		
+		
+		
+		
+</AssetDeclaration>

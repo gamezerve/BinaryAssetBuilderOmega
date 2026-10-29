@@ -11,31 +11,6 @@
 		id="PlayerSpellBook"
 		inheritFrom="PlayerSpellBook">
 		<Behaviors>
-            <TeleportStoredObjectsSpecialPower
-				id="ModuleTag_ChronoRiftTeleportSpecialPowerLvl1"
-				xai:joinAction="Replace"
-				SpecialPowerTemplate="SpecialPowerChronoRiftTeleportLvl1"
-				CanAffectObjectFilter="AlliedChronoRiftSpecialPowerObjectFilter"
-				StoreObjectsLinkID="1"				
-                OCL="OCL_ChronoRiftBeaconLvl1" />
-			<TeleportStoredObjectsSpecialPower
-				id="ModuleTag_ChronoRiftTeleportSpecialPowerLvl2"
-				xai:joinAction="Replace"
-				SpecialPowerTemplate="SpecialPowerChronoRiftTeleportLvl2"
-				CanAffectObjectFilter="AlliedChronoRiftSpecialPowerObjectFilter"
-				LeechRechargePercentPlayerTechTrigger="PlayerTech_Allied_ChronoRift_Rank2"
-				LeechRechargePercentFromSpecialPower="SpecialPowerChronoRiftTeleportLvl1"
-				StoreObjectsLinkID="2"
-				OCL="OCL_ChronoRiftBeaconLvl2" />
-			<TeleportStoredObjectsSpecialPower
-                id="ModuleTag_ChronoRiftTeleportSpecialPowerLvl3"
-				xai:joinAction="Replace"
-                SpecialPowerTemplate="SpecialPowerChronoRiftTeleportLvl3"
-				CanAffectObjectFilter="AlliedChronoRiftSpecialPowerObjectFilter"
-				LeechRechargePercentPlayerTechTrigger="PlayerTech_Allied_ChronoRift_Rank3"
-				LeechRechargePercentFromSpecialPower="SpecialPowerChronoRiftTeleportLvl2"
-                StoreObjectsLinkID="3"
-				OCL="OCL_ChronoRiftBeaconLvl3" />
 				
       <!-- Paradrop -->
       <PlayerPowerManager

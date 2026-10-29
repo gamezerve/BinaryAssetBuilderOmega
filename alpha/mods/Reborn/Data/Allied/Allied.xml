@@ -56,7 +56,7 @@
 		<!-- <Include type="all" source="structures/AlliedBaseDefenseAdvanced.xml" /> -->
 		<!-- <Include type="all" source="structures/AlliedConstructionYard.xml" /> -->
 		<!-- <Include type="all" source="structures/AlliedNavalYard.xml" /> -->
-		<!-- <Include type="all" source="structures/AlliedPowerPlant.xml" /> -->
+		<Include type="all" source="structures/AlliedPowerPlant.xml" />
 		<!-- <Include type="all" source="structures/AlliedPowerPlantTurbine.xml" /> -->
 		<!-- <Include type="all" source="structures/AlliedRefinery.xml" /> -->
 		<!-- <Include type="all" source="structures/AlliedTechStructure.xml" /> -->

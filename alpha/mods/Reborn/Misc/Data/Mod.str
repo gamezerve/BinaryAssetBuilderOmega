@@ -467,6 +467,20 @@
 	Desc:SovietBomberAircraft_Special_Dying
 		""
 	End
+	
+// Allied Power Plant
+
+	TYPE:ALLIEDPOWERPLANT
+		"Power Structure \n> Power Generation = +100 \n> Health = 1000 \n> Shroud Clearing Range = 300"
+	End
+	
+	Name:AlliedPowerPlantTurbine
+		"Fusion Cores"
+	End
+
+	Desc:AlliedPowerPlantTurbine
+		"> Power Bonus = +50 \nFutureTech engineered these next-gen turbines to push efficiency to the absolute limit. Although they have a lower power-to-cost ratio compared to building a new power plant, they offer a rapid solution for covering urgent energy shortages during emergencies."
+	End
 
 // Allied Paradrop
 	

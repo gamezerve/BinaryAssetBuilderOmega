@@ -111,6 +111,7 @@
 		<!-- <Include type="all" source="DATA:EP1/System/PlayerSpellBook_EP1.xml" /> -->
 		<Include type="all" source="GlobalData/Paradrop.xml" />
 		<Include type="all" source="GlobalData/ObjectCreationLists.xml" />
+		<Include type="all" source="GlobalData/Upgrade_Mod.xml" />
 				
 		<!-- System -->
 		<Include type="all" source="System/PlayerTechs.xml" />

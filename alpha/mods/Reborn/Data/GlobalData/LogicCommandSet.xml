@@ -2,6 +2,11 @@
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
 
 	<LogicCommandSet
+		id="AlliedPowerPlantCommandSet">
+		<Cmd>Command_UpgradeAlliedPowerPlantTurbine</Cmd>
+	</LogicCommandSet>
+
+	<LogicCommandSet
 		id="SovietConstructionYardCommandSet">
 		<Cmd>Command_ConstructSovietWall</Cmd>
 		<Cmd>Command_ConstructSovietPowerPlant</Cmd>
