@@ -43,14 +43,29 @@ internal static class SdkUnusedAssetAudit
     //-------------------------------------------------------------------------------------------------
     /** Reborn: statically classifiable types use the incoming-reference rule; runtime-selected UI/targeted experience templates and existing retail identities remain entry points, and replaced stock owners cannot keep obsolete edges alive. */
     //-------------------------------------------------------------------------------------------------
-    internal static ManifestAsset[] FindUnused(IEnumerable<ManifestAsset> mod,IEnumerable<ManifestAsset> stock,IEnumerable<WeakUse> weak)
+    internal static ManifestAsset[] FindUnused(IEnumerable<ManifestAsset> mod,IEnumerable<ManifestAsset> stock,IEnumerable<WeakUse> weak,IEnumerable<SdkSelfAttributeInheritance.Overlay>? inheritance=null)
     {
         var emitted=mod.ToArray();var originals=stock.ToArray();var weakUses=weak.ToArray();var local=emitted.Select(WorldBuilderAssetResolver.Id).ToHashSet();var retail=originals.Select(WorldBuilderAssetResolver.Id).ToHashSet();var used=emitted.SelectMany(a=>a.References).Concat(originals.Where(a=>!local.Contains(WorldBuilderAssetResolver.Id(a))).SelectMany(a=>a.References)).Concat(weakUses.Where(w=>local.Contains(w.Owner)).SelectMany(w=>w.Targets)).ToHashSet();
+        // Reborn: flattening consumes inheritFrom before native imports exist; retain the actual source base chain rooted in emitted mod assets.
+        used.UnionWith(InheritedTargets(local,inheritance??Array.Empty<SdkSelfAttributeInheritance.Overlay>()));
         // Reborn: experience tables are selected by their outgoing GameObject Target and rank; terminal ranks need no incoming prerequisite edge.
         uint gameObjectType=BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("GameObject"),experienceType=BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("ExperienceLevelTemplate");
         var knownTargets=emitted.Concat(originals).Where(a=>a.TypeId==gameObjectType).Select(WorldBuilderAssetResolver.Id).ToHashSet();
         var runtimeExperience=weakUses.Where(w=>w.Owner.TypeId==experienceType&&local.Contains(w.Owner)&&w.Targets.Any(t=>knownTargets.Contains(t))).Select(w=>w.Owner).ToHashSet();
         return emitted.DistinctBy(WorldBuilderAssetResolver.Id).Where(a=>!RuntimeSelectedUiTypes.Contains(a.TypeName)&&!runtimeExperience.Contains(WorldBuilderAssetResolver.Id(a))&&!retail.Contains(WorldBuilderAssetResolver.Id(a))&&!used.Contains(WorldBuilderAssetResolver.Id(a))).OrderBy(a=>a.Name,StringComparer.Ordinal).ToArray();
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: follow witnessed inheritance through source-only intermediates without treating unused instance-library declarations as consumers. */
+    //-------------------------------------------------------------------------------------------------
+    private static HashSet<AssetId> InheritedTargets(IEnumerable<AssetId> roots,IEnumerable<SdkSelfAttributeInheritance.Overlay> overlays)
+    {
+        var edges=overlays.Distinct().GroupBy(e=>Id(e.Type,e.DerivedId)).ToDictionary(g=>g.Key,g=>g.Select(e=>Id(e.Type,e.BaseId)).Distinct().ToArray());
+        var visited=new HashSet<AssetId>();var used=new HashSet<AssetId>();var queue=new Queue<AssetId>(roots);
+        while(queue.TryDequeue(out var owner))if(visited.Add(owner)&&edges.TryGetValue(owner,out var targets))foreach(var target in targets)if(target!=owner){used.Add(target);queue.Enqueue(target);}
+        return used;
+        // Reborn: source overlay handles use the same typed hashes as emitted and stock manifest assets.
+        static AssetId Id(string type,string name)=>new(BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(type),InstanceHandle.GetInstanceId(name));
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -60,9 +75,10 @@ internal static class SdkUnusedAssetAudit
     {
         var mod=new List<ManifestAsset>();using(var archive=BigArchive.Open(package))foreach(var member in archive.Entries.Where(e=>e.Name.EndsWith(".manifest",StringComparison.OrdinalIgnoreCase))){var document=ManifestReader.Read(archive.ReadEntry(member,checked((int)member.StoredSize)));TypeRegistryAudit.ValidateTarget(document.Header.Version,document.Header.AllTypesHash);if(document.Validate().Count!=0)throw new InvalidDataException("Invalid final package manifest: "+member.Name);mod.AddRange(document.Assets);}
         var stock=SdkMissingDependencyAudit.CatalogManifestPaths(sdk).SelectMany(path=>ManifestReader.Read(File.ReadAllBytes(path)).Assets).ToArray();var weak=Directory.GetFiles(buildRoot,"asset-usage.json",SearchOption.AllDirectories).SelectMany(path=>JsonSerializer.Deserialize<WeakUse[]>(File.ReadAllBytes(path))??throw new InvalidDataException("Invalid asset usage receipt: "+path)).ToArray();
-        var origins=new List<ConscriptCompileLog>();foreach(string receipt in Directory.GetFiles(buildRoot,"source-input.json",SearchOption.AllDirectories).OrderBy(p=>p,StringComparer.Ordinal)){using var json=JsonDocument.Parse(File.ReadAllBytes(receipt));origins.Add(ConscriptCompileLog.ForPrepared(json.RootElement.GetProperty("GamePath").GetString()!));}var fallback=ConscriptCompileLog.ForPrepared(entry);var findings=new List<object>();
-        foreach(var asset in FindUnused(mod,stock,weak)){int colon=asset.Name.IndexOf(':');string id=colon<0?asset.Name:asset.Name[(colon+1)..];var origin=(origins.LastOrDefault(o=>o.HasOrigin(asset.TypeName,id))??fallback).Location(asset.TypeName,id);Console.WriteLine("Warning: UNUSEDASSET ' "+asset.Name+" ' has no static reference in emitted mod assets or stock catalogs; dynamic/script use may exist. Source: "+origin+".");findings.Add(new{asset.Name,origin.File,origin.Line,origin.Column,origin.Context});}
-        File.WriteAllText(Path.Combine(buildRoot,"unused-assets.json"),JsonSerializer.Serialize(new{ModAssets=mod.Select(WorldBuilderAssetResolver.Id).Distinct().Count(),WeakEdges=weak.Sum(w=>w.Targets.Length),Findings=findings,Advisory=true,GameExecuted=false},new JsonSerializerOptions{WriteIndented=true}));Console.WriteLine("Asset usage audit: "+mod.Select(WorldBuilderAssetResolver.Id).Distinct().Count()+" packaged assets; "+findings.Count+" without static references.");
+        // Reborn: new preparation receipts retain logical inheritance edges; older receipts remain valid with no such evidence.
+        var inheritance=new List<SdkSelfAttributeInheritance.Overlay>();var origins=new List<ConscriptCompileLog>();foreach(string receipt in Directory.GetFiles(buildRoot,"source-input.json",SearchOption.AllDirectories).OrderBy(p=>p,StringComparer.Ordinal)){using var json=JsonDocument.Parse(File.ReadAllBytes(receipt));origins.Add(ConscriptCompileLog.ForPrepared(json.RootElement.GetProperty("GamePath").GetString()!));if(json.RootElement.TryGetProperty("InheritanceUses",out var uses))inheritance.AddRange(uses.Deserialize<SdkSelfAttributeInheritance.Overlay[]>()??Array.Empty<SdkSelfAttributeInheritance.Overlay>());}var fallback=ConscriptCompileLog.ForPrepared(entry);var findings=new List<object>();
+        foreach(var asset in FindUnused(mod,stock,weak,inheritance)){int colon=asset.Name.IndexOf(':');string id=colon<0?asset.Name:asset.Name[(colon+1)..];var origin=(origins.LastOrDefault(o=>o.HasOrigin(asset.TypeName,id))??fallback).Location(asset.TypeName,id);Console.WriteLine("Warning: UNUSEDASSET ' "+asset.Name+" ' has no static or inheritance reference in emitted mod assets or stock catalogs; dynamic/script use may exist. Source: "+origin+".");findings.Add(new{asset.Name,origin.File,origin.Line,origin.Column,origin.Context});}
+        File.WriteAllText(Path.Combine(buildRoot,"unused-assets.json"),JsonSerializer.Serialize(new{ModAssets=mod.Select(WorldBuilderAssetResolver.Id).Distinct().Count(),WeakEdges=weak.Sum(w=>w.Targets.Length),InheritanceEdges=inheritance.Distinct().Count(),Findings=findings,Advisory=true,GameExecuted=false},new JsonSerializerOptions{WriteIndented=true}));Console.WriteLine("Asset usage audit: "+mod.Select(WorldBuilderAssetResolver.Id).Distinct().Count()+" packaged assets; "+findings.Count+" without static or inheritance references.");
     }
 
     // Reborn: only the official schema reference annotation supplies the required target family.

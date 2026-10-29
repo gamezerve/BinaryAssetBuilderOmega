@@ -95,6 +95,8 @@ internal sealed class SdkInstanceInheritanceProfile
     private readonly bool soundOffsets;
     private sealed record Prepared(SdkSelfAttributeInheritance.Result Result,int Height);
     private readonly Dictionary<string,Prepared> prepared = new(StringComparer.OrdinalIgnoreCase);
+    // Reborn: successful source overlays retain logical base IDs for usage auditing after inheritFrom has been consumed.
+    internal IEnumerable<SdkSelfAttributeInheritance.Overlay> InheritanceUses=>prepared.Values.SelectMany(p=>p.Result.Evidence.Overlays).Distinct();
     private readonly HashSet<string> active = new(StringComparer.OrdinalIgnoreCase);
     private long preparedBytes;
     private string Profile => soundSingletons ? SoundSingletonName : soundOffsets ? SoundOffsetName : audioTrees ? AudioTreeName : musicOffsets ? MusicOffsetName : crossStateRemovals ? CrossRemovalName : stateReadds ? StateReaddName : identicalStates ? IdenticalStateName : expressions ? ExpressionName : metadata ? MetadataName : upgrades ? UpgradeName : filters ? FilterName : bitflags ? BitflagName : markers ? MarkerName : choices ? ChoiceName : removals ? RemovalName : chains ? ChainName : rootFiles ? RootFileName : Name;

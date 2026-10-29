@@ -58,6 +58,8 @@ internal static class ConscriptSourcePreparation
         // Reborn: merge schema-valid partial bases first; final source/native admission still applies to the emitted complete object only.
         var schemas=ConscriptSourceInput.Schemas();var fragments=new SdkGameObjectFragments(paths);var profile=new SdkInstanceInheritanceProfile(schemas,paths,expressions:true,conscriptCopy:true,gameObjectTrees:true,fragments:fragments);
         var assets=new List<XmlElement>();var origins=new Dictionary<XmlElement,string>();var emitted=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        // Reborn: collect actual successful overlays, including source-only intermediate bases, independently of runtime import records.
+        var inheritanceUses=new HashSet<SdkSelfAttributeInheritance.Overlay>();
         Emit(entry);
         var games=assets.Where(a=>a.LocalName=="GameObject").ToArray();var commands=assets.Where(a=>a.LocalName=="LogicCommand").ToArray();
         // Reborn: support assets are explicit emitted declarations, not unwanted instance-base leakage or hidden generated data.
@@ -80,7 +82,7 @@ internal static class ConscriptSourcePreparation
         // Reborn: XInclude fragments are real source dependencies, including hash and higher-priority mod-shadow checks before publication.
         fragments.VerifySources();
         var searches=paths.Searches.Concat(fragments.Searches).ToArray();SdkSourceSearch.Verify(searches);
-        return new(Detach(primary),commands.Length==0?null:Detach(commands[0]),paths.Sources.Select(s=>new ConscriptSourceInput.SourceFile(s.PhysicalPath,s.Sha256)).Concat(fragments.Sources).DistinctBy(s=>s.Path,StringComparer.OrdinalIgnoreCase).ToArray()){AdditionalAssets=assets.Where(a=>a!=primary&&(commands.Length==0||a!=commands[0])).Select(Detach).ToArray(),Origins=assets.Select(a=>new ConscriptSourceInput.AssetOrigin(a.LocalName,a.GetAttribute("id"),origins[a])).ToArray(),Searches=searches,Warnings=paths.Issues.Where(i=>i.Code=="MISSINGART").ToArray(),Locations=new(snapshots.Select(s=>new SdkXmlDiagnostics.Snapshot(s.Key,s.Value)).Concat(fragments.Snapshots)),Resources=resources};
+        return new(Detach(primary),commands.Length==0?null:Detach(commands[0]),paths.Sources.Select(s=>new ConscriptSourceInput.SourceFile(s.PhysicalPath,s.Sha256)).Concat(fragments.Sources).DistinctBy(s=>s.Path,StringComparer.OrdinalIgnoreCase).ToArray()){AdditionalAssets=assets.Where(a=>a!=primary&&(commands.Length==0||a!=commands[0])).Select(Detach).ToArray(),Origins=assets.Select(a=>new ConscriptSourceInput.AssetOrigin(a.LocalName,a.GetAttribute("id"),origins[a])).ToArray(),InheritanceUses=inheritanceUses.ToArray(),Searches=searches,Warnings=paths.Issues.Where(i=>i.Code=="MISSINGART").ToArray(),Locations=new(snapshots.Select(s=>new SdkXmlDiagnostics.Snapshot(s.Key,s.Value)).Concat(fragments.Snapshots)),Resources=resources};
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: locate an emitted declaration only inside its captured physical source, preserving honest context fallback if no unique raw declaration survives. */
@@ -109,6 +111,8 @@ internal static class ConscriptSourcePreparation
             if(needsPreparation)
             {
                 var prepared=profile.Apply(path,snapshots[path]);if(prepared.Bytes==null)throw SdkXmlDiagnostics.Carry(new InvalidDataException(string.Join("; ",prepared.Evidence.Diagnostics)),prepared);
+                // Reborn: only a successful real merge contributes inheritance use; unused instance declarations alone are not usage roots.
+                inheritanceUses.UnionWith(profile.InheritanceUses);
                 xml=Parse(prepared.Bytes);owners=xml.DocumentElement!.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is not ("Tags" or "Includes" or "Defines")).ToArray();
                 // Reborn: only this successful Core overlay authorizes consuming the diagnostic marker; no raw inherited document is flattened by substitution.
                 foreach(var owner in owners)owner.RemoveAttribute("inheritFrom");

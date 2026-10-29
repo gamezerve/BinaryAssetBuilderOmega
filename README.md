@@ -6,7 +6,18 @@ asset IDs, instance includes, inheritance, `$` definitions/expressions,
 TGA/DDS textures and W3X models. Current alpha capability restrictions are
 temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
-## Current outcome — October 29, 2026
+## Current outcome — October 30, 2026
+
+<!-- Reborn: actual inheritance usage survives XML flattening and participates in the final unused-asset audit. -->
+`UNUSEDASSET` now accounts for **source inheritance**, including typed/untyped
+local bases and chains through instance-only intermediate assets. Successful
+merge witnesses are retained in `source-input.json`; the final package audit
+follows their base chains from emitted mod assets. Dormant instance-library
+declarations do not suppress genuine unused warnings. This applies to every
+supported inheritable asset family, including AudioEvent. Existing receipts
+without inheritance witnesses remain readable; rebuild to capture the new
+evidence. Private source/receipt/final-package checks pass alongside the existing
+17-family usage tests. No user mod source is changed by this audit.
 
 <!-- Reborn: shared XInclude fragments are captured once across a complete mod instead of consuming the former tiny trial allowance repeatedly. -->
 XInclude expansion now caches each physical fragment's original bytes and parsed

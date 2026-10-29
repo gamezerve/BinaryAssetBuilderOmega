@@ -27,6 +27,8 @@ internal static class ConscriptSourceInput
         // Reborn: emitted support assets retain their own typed XML; instance bases are never added to this collection.
         internal XmlDocument[] AdditionalAssets {get;init;}=Array.Empty<XmlDocument>();
         internal AssetOrigin[] Origins {get;init;}=Array.Empty<AssetOrigin>();
+        // Reborn: actual source inheritance remains usage evidence after flattened XML loses its inheritFrom attributes.
+        internal SdkSelfAttributeInheritance.Overlay[] InheritanceUses {get;init;}=Array.Empty<SdkSelfAttributeInheritance.Overlay>();
         // Reborn: source hashes and alias-precedence witnesses are independent publication requirements.
         public SdkSourceSearch.Selection[] Searches { get; init; }=Array.Empty<SdkSourceSearch.Selection>();
         // Reborn: captured source coordinates survive detachment without adding metadata to user XML or build receipts.
@@ -145,7 +147,7 @@ internal static class ConscriptSourceInput
         if(input.AdditionalAssets.Length>0){var additional=new XmlDocument{XmlResolver=null};additional.LoadXml("<AssetDeclaration xmlns='"+Ea+"'/>");foreach(var asset in input.AdditionalAssets)additional.DocumentElement!.AppendChild(additional.ImportNode(asset.DocumentElement!,true));File.WriteAllText(Path.Combine(output,"additional.xml"),additional.OuterXml,new UTF8Encoding(false));}
         foreach(var source in input.Sources)if(Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(source.Path,4*1048576)))!=source.Sha256)throw new InvalidDataException("Source changed during preparation: "+source.Path);
         foreach(var resource in input.Resources)if(Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(resource.Path,64*1048576)))!=resource.Sha256)throw new InvalidDataException("Texture resource changed during preparation: "+resource.Path);
-        File.WriteAllText(Path.Combine(output,"source-input.json"),JsonSerializer.Serialize(new{GamePath=game,PrimaryType=input.Game.DocumentElement.LocalName,CommandPath=input.Command==null?null:command,AssetCount=1+(input.Command==null?0:1)+input.AdditionalAssets.Length,Identity=input.Game.DocumentElement.GetAttribute("id"),PreparedSourceSha256=Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(input.Game.DocumentElement.OuterXml))),Sources=input.Sources,Searches=input.Searches,Origins=input.Origins,AutomaticCommandGenerated=false},new JsonSerializerOptions{WriteIndented=true}));
+        File.WriteAllText(Path.Combine(output,"source-input.json"),JsonSerializer.Serialize(new{GamePath=game,PrimaryType=input.Game.DocumentElement.LocalName,CommandPath=input.Command==null?null:command,AssetCount=1+(input.Command==null?0:1)+input.AdditionalAssets.Length,Identity=input.Game.DocumentElement.GetAttribute("id"),PreparedSourceSha256=Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(input.Game.DocumentElement.OuterXml))),Sources=input.Sources,Searches=input.Searches,Origins=input.Origins,InheritanceUses=input.InheritanceUses,AutomaticCommandGenerated=false},new JsonSerializerOptions{WriteIndented=true}));
         // Reborn: EA-style source lines are emitted only by this single preparation pass, never by the dependency preflight; assets are announced by the compiler.
         ConscriptCompileLog.Sources(input);
         Console.WriteLine("Reborn: explicit EA XML prepared; "+input.Sources.Length+" source file(s), primary="+input.Game.DocumentElement.LocalName+"; no hidden asset generation.");
