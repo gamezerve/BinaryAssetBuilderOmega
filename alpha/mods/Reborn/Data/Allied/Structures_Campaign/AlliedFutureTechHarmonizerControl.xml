@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.w3x" />
+		<Include type="instance" source="DATA:Allied/Props/AlliedBarracks_Debris.xml" />
+		<Include type="instance" source="DATA:Reborn\Data\Allied\Props\NR_SigmaHarmonizer_Collapse.xml" />
+	
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.xml" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer_NRM.xml" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer_SPM.xml" />
+
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SIGMAHARMONIZER_HRC.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SIGMAHARMONIZER_CTR.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SIGMAHARMONIZER_COL_HRC.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SIGMAHARMONIZER_COL_CTR.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SIGMAHARMONIZER_COL.NEWSKIN.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.OBBOX01.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.OBBOX02.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.NEWSKIN_FILL.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.NEWSKIN.w3x" />
+
+    <Include
+		type="all"
+		source="DATA:Reborn/Audio/Structures/FutureTech/S04Harmonizer_ExploD.xml" />
+    <Include
+		type="all"
+		source="DATA:Reborn/Audio/Structures/FutureTech/ABScien_buildDie1a.xml" />
+	
+		<!-- Base Object -->
+		<Include
+			type="instance"
+			source="DATA:BaseObjects/BaseStructure.xml" />
+	</Includes>
+	<GameObject
+		id="AlliedFutureTechHarmonizerControl"
+		inheritFrom="BaseStructure"
+		SelectPortrait="Portrait_Special_NR_SigmaHarmonizer"
+		ButtonImage="Button_Special_NR_SigmaHarmonizer"
+		Side="Allies"
+		EditorSorting="STRUCTURE"
+		BuildTime="20"
+		CommandSet="AlliedFutureTechHarmonizerControlCommandSet"
+		KindOf="+FS_TECHNOLOGY -CAN_BUILD_ON_WATER -CAN_BUILD_ON_DEEP_WATER"
+		RadarPriority="STRUCTURE"
+		PlacementViewAngle="45d"
+		ProductionQueueType="MAIN_STRUCTURE"
+		BuildPlacementTypeFlag="MAIN_STRUCTURE"
+		EditorName="AlliedFutureTechHarmonizerControl"
+		EnergyProduction="-100"
+		HealthBoxHeightOffset="30"
+		Description="DESC:AlliedFutureTechHarmonizerControl"
+		TypeDescription="TYPE:AlliedFutureTechHarmonizerControl">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:AlliedFutureTechHarmonizerControl</DisplayName>
+
+
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="4000"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="StructureArmor"
+			DamageFX="FactionStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="CENTER">
+		<ConstructionBaseSelectionCriteria
+			ExcludedBaseTypes="NO_BUILD_RADIUS CAPTURED"
+			PreferredBaseTypes="MAIN_BASE"
+			SortOrder="PREFER_OLDEST" />
+		</SkirmishAIInformation>
+
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="false"
+				AffectedByStealth="false"
+				ExtraPublicBone="BoneGarrisonWall01 BoneGarrisonWall02 BoneGarrisonWall03 BoneGarrisonWall04 BONE_CONTACT_POINT_01 BONE_CONTACT_POINT_02 BONE_CONTACT_POINT_03 BONE_CONTACT_POINT_04 BONE_CONTACT_POINT_05 BONE_CONTACT_POINT_06 BONE_CONTACT_POINT_07 BONE_CONTACT_POINT_08 BONE_CONTACT_POINT_09 BONE_CONTACT_POINT_10 BONE_CONTACT_POINT_11 BONE_CONTACT_POINT_12 BONE_CONTACT_POINT_13 BONE_CONTACT_POINT_14 BONE_CONTACT_POINT_15 BONE_CONTACT_POINT_16 BONE_CONTACT_POINT_17 BONE_CONTACT_POINT_18	BONE_CONTACT_POINT_19 BONE_CONTACT_POINT_20 BONEGARRISON01 BONEGARRISON02 BONEGARRISON03 BONEGARRISON04 BONEGARRISON05 BONEGARRISON06 BONEGARRISON07 BONEGARRISON08 BONEGARRISON09 BONEGARRISON10 BONEGARRISON11 BONEGARRISON12">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="NR_SigmaHarmonizer" />
+				</ModelConditionState>
+
+				<AnimationState
+					ParseCondStateType="PARSE_DEFAULT"
+					Flags="START_FRAME_FIRST">
+					<Animation
+						AnimationName="NR_SigmaHarmonizer"
+						AnimationMode="LOOP" />
+				</AnimationState>
+			
+			</ScriptedModelDraw>
+<!--
+			<xi:include
+				href="../../../Includes/GarrisonFlagArmorLargeDraw.xml"
+				xpointer="xmlns(n=uri:ea.com:eala:asset) xpointer(/n:CommonArmorDraws/child::*)" />
+-->
+
+
+		</Draws>
+
+
+
+
+
+		<Behaviors>
+			<Physics id="ModuleTag_Physics"/>
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction">
+				<DieMuxData DeathTypes="ALL" />
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_BuildingDebrisExplosion"
+					CreationObject="AlliedBarracks_Debris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_FXList">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Large_NoAudio" />
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Tiny_NoAudio" />
+				<Event
+					Index="onDeath"
+					FX="FX_SpecialDebrisExplosionShakeSmall_NoAudio" />
+				<Event
+					Index="onDeath"
+					FX="FX_S04_SigmaHarmonizer_Explo" />
+					<!-- If adding additional death FX, please add versions with no audio in them.  Thanks! - Evan -->
+			</FXListBehavior>
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="NR_SigmaHarmonizer_Die_OCL">
+				<DieMuxData DeathTypes="ALL" />
+			</CreateObjectDie>	
+			<!-- civ buildings should have a CreateObjectDie to make a collapse version. -->
+			<DestroyDie
+				id="ModuleTag_DestroyDie">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</DestroyDie>
+			
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpackUpdate"
+				UnpackTime="5.0s" />
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+			<xi:include
+				href="DATA:Includes/GenericEngineerContain.xml" />
+			<xi:include
+				href="DATA:Includes/GenericAlliedBuildingDestruction.xml" />
+			<xi:include
+				href="DATA:Includes/GenericAlliedBuildingSuicide.xml" />
+			
+
+
+
+
+
+
+		</Behaviors>
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="4000"
+				/>
+		</Body>
+
+		
+		
+		<Geometry
+			IsSmall="false">
+      <Shape
+           Type= "BOX"
+           MajorRadius = "75.0673"
+           MinorRadius = "64.9669"
+           Height = "60.1139"
+           ContactPointGeneration = "STRUCTURE" >
+        <Offset
+            x = "0.0975266"
+            y = "-80.5183"
+            z = "0.0" />
+      </Shape>
+      <Shape
+           Type= "BOX"
+           MajorRadius = "156.39"
+           MinorRadius = "64.9669"
+           Height = "60.1139"
+           ContactPointGeneration = "STRUCTURE" >
+        <Offset
+            x = "0.0975342"
+            y = "3.73901"
+            z = "0.0" />
+      </Shape>
+
+		</Geometry>
+		
+		
+
+		<AudioArraySound>
+			<AudioEntry Sound="HumanFaction_MediumBuilding_LightDamageMS" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="HumanFaction_MediumBuilding_HeavyDamageMS" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound> 
+
+		<VisionInfo
+			VisionRange="150"
+			ShroudClearingRange="150" />
+	</GameObject>
+	
+  <ObjectCreationList
+		id="NR_SigmaHarmonizer_Die_OCL">
+    <CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="1"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+      <CreateObject>NR_SigmaHarmonizer_Collapse</CreateObject>
+    </CreateObject>
+  </ObjectCreationList>
+
+	<AudioEvent id="BaseSoundEffect"
+		Volume="100" 
+		MinVolume="0"
+		ShrunkenPitchModifier="2.0"
+		ShrunkenVolumeModifier="85"
+		Priority="NORMAL"
+		Limit="3"
+		MinRange="300"
+		MaxRange="1000"
+		PlayPercent="100"
+		Type="UI PLAYER"
+		ReverbEffectLevel="100"
+		ZoomedInOffscreenVolumePercent = "50"
+		ZoomedInOffscreenMinVolumePercent = "100" 
+		ZoomedInOffscreenOcclusionPercent = "20"  >
+		<!-- You might think the following was a good idea:
+			SubmixSlider ="SOUNDFX"
+			IT'S NOT. Doing this in the default sound will mess up the special 'use the speech slider if the
+			voice flag is present and no SubmixSlider entry was seen' code.		-->
+	</AudioEvent>
+
+	<AudioEvent
+	id="S04_SigmaHarmonizer_Explo1"
+	inheritFrom="AudioEvent:BaseSoundEffect"
+	Volume="175"
+	Priority="HIGH"
+	Type="WORLD EVERYONE"
+	SubmixSlider="SOUNDFX">
+	<PitchShift
+	Low="-1"
+	High="1" />
+		<Sound>S04Harmonizer_ExploD</Sound>
+	</AudioEvent>
+
+	<AudioEvent
+	id="S04_SigmaHarmonizer_Explo3"
+	inheritFrom="AudioEvent:BaseSoundEffect"
+	Volume="105"
+	VolumeShift="-10"
+	Priority="HIGH"
+	Type="WORLD EVERYONE"
+	SubmixSlider="SOUNDFX">
+	<PitchShift Low="-1" High="1" />
+		<Sound>ABScien_buildDie1a</Sound>
+	</AudioEvent>
+
+	<FXList id="FX_S04_SigmaHarmonizer_Explo">
+		<NuggetList>
+			<Sound Value="S04_SigmaHarmonizer_Explo1" />
+			<Sound Value="S04_SigmaHarmonizer_Explo3" />
+		</NuggetList>
+	</FXList>
+
+</AssetDeclaration>

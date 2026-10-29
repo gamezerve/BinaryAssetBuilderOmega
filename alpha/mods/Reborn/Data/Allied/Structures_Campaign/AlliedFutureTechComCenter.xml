@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding3.w3x" />
+		<Include type="instance" source="DATA:Allied/Props/AlliedBarracks_Debris.xml" />
+		<Include type="instance" source="DATA:Civilian/Northern_Russia_NR/Props/NR_FutureTechScienceBuilding3_Collapse.xml" />
+	
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding3.xml" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding3_SPM.xml" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding3_NRM.xml" />
+
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING3_HRC.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING3_CTR.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING3_COL_HRC.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING3_COL_CTR.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING3.OBBOX01.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING3.NEWSKIN_FILL.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING3.NEWSKIN.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING3.FX_LIGHTS01.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING3_COL.NEWSKIN.w3x" />
+	
+		<!-- Base Object -->
+		<Include
+			type="instance"
+			source="DATA:BaseObjects/BaseStructure.xml" />
+	</Includes>
+	<GameObject
+		id="AlliedFutureTechComCenter"
+		inheritFrom="BaseStructure"
+		SelectPortrait="Portrait_Special_NR_FutureTechScienceBuilding3"
+		ButtonImage="Button_Special_NR_FutureTechScienceBuilding3"
+		Side="Allies"
+		EditorSorting="STRUCTURE"
+		BuildTime="20"
+		CommandSet="AlliedFutureTechComCenterCommandSet"
+		KindOf="+FS_TECHNOLOGY -CAN_BUILD_ON_WATER -CAN_BUILD_ON_DEEP_WATER"
+		RadarPriority="STRUCTURE"
+		PlacementViewAngle="45d"
+		ProductionQueueType="MAIN_STRUCTURE"
+		BuildPlacementTypeFlag="MAIN_STRUCTURE"
+		EditorName="AlliedFutureTechComCenter"
+		EnergyProduction="0"
+		HealthBoxHeightOffset="30"
+		Description="DESC:AlliedFutureTechComCenter"
+		TypeDescription="TYPE:AlliedFutureTechComCenter">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:AlliedFutureTechComCenter</DisplayName>
+
+
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="1500"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="StructureArmor"
+			DamageFX="FactionStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="CENTER">
+		<ConstructionBaseSelectionCriteria
+			ExcludedBaseTypes="NO_BUILD_RADIUS CAPTURED"
+			PreferredBaseTypes="MAIN_BASE"
+			SortOrder="PREFER_OLDEST" />
+		</SkirmishAIInformation>
+
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="false"
+				AffectedByStealth="false"
+				ExtraPublicBone="BoneGarrisonWall01 BoneGarrisonWall02 BoneGarrisonWall03 BoneGarrisonWall04 BONE_CONTACT_POINT_01 BONE_CONTACT_POINT_02 BONE_CONTACT_POINT_03 BONE_CONTACT_POINT_04 BONE_CONTACT_POINT_05 BONE_CONTACT_POINT_06 BONE_CONTACT_POINT_07 BONE_CONTACT_POINT_08 BONE_CONTACT_POINT_09 BONE_CONTACT_POINT_10 BONE_CONTACT_POINT_11 BONE_CONTACT_POINT_12 BONE_CONTACT_POINT_13 BONE_CONTACT_POINT_14 BONE_CONTACT_POINT_15 BONE_CONTACT_POINT_16 BONE_CONTACT_POINT_17 BONE_CONTACT_POINT_18	BONE_CONTACT_POINT_19 BONE_CONTACT_POINT_20 BONEGARRISON01 BONEGARRISON02 BONEGARRISON03 BONEGARRISON04 BONEGARRISON05 BONEGARRISON06 BONEGARRISON07 BONEGARRISON08 BONEGARRISON09 BONEGARRISON10 BONEGARRISON11 BONEGARRISON12">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="NR_FutureTechScienceBuilding3" />
+				</ModelConditionState>
+				<ModelConditionState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="RUBBLE">
+					<Model
+						Name="" />
+				</ModelConditionState>
+
+				<AnimationState
+					ParseCondStateType="PARSE_DEFAULT">
+
+					<Animation
+						AnimationName="NR_FutureTechScienceBuilding3"
+						AnimationMode="LOOP"/>
+				</AnimationState> 
+			
+			</ScriptedModelDraw>
+<!--
+			<xi:include
+				href="../../../Includes/GarrisonFlagArmorLargeDraw.xml"
+				xpointer="xmlns(n=uri:ea.com:eala:asset) xpointer(/n:CommonArmorDraws/child::*)" />
+
+-->
+
+		</Draws>
+
+
+
+
+
+		<Behaviors>
+			<Physics id="ModuleTag_Physics"/>
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction">
+				<DieMuxData DeathTypes="ALL" />
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_BuildingDebrisExplosion_FutureTechAudio"
+					CreationObject="AlliedBarracks_Debris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_FXList">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Large_NoAudio" />
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Tiny_NoAudio" />
+				<Event
+					Index="onDeath"
+					FX="FX_SpecialDebrisExplosionShakeSmall_NoAudio" />
+					<!-- If adding additional death FX, please add versions with no audio in them.  Thanks! - Evan -->
+			</FXListBehavior>
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="NR_FutureTechScienceBuilding3_Die_OCL">
+				<DieMuxData DeathTypes="ALL" />
+			</CreateObjectDie>	
+			<!-- civ buildings should have a CreateObjectDie to make a collapse version. -->
+			<DestroyDie
+				id="ModuleTag_DestroyDie">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</DestroyDie>
+			
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpackUpdate"
+				UnpackTime="1.5s" />
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+			<xi:include
+				href="DATA:Includes/GenericEngineerContain.xml" />
+			<xi:include
+				href="DATA:Includes/GenericAlliedBuildingDestruction.xml" />
+			<xi:include
+				href="DATA:Includes/GenericAlliedBuildingSuicide.xml" />
+			
+
+
+
+
+
+
+		</Behaviors>
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="4000"
+				/>
+		</Body>
+
+		
+		
+		<Geometry
+			IsSmall="false">
+      <Shape
+           Type= "BOX"
+           MajorRadius = "46.0"
+           MinorRadius = "46.0"
+           Height = "105.649"
+           ContactPointGeneration = "STRUCTURE" >
+        <Offset
+            x = "0.303329"
+            y = "0.297657"
+            z = "0.0" />
+      </Shape>	
+
+		</Geometry>
+		
+		
+
+		<AudioArraySound>
+			<AudioEntry Sound="" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound> 
+
+		<VisionInfo
+			VisionRange="150"
+			ShroudClearingRange="150" />
+	</GameObject>
+	
+  <ObjectCreationList
+		id="NR_FutureTechScienceBuilding3_Die_OCL">
+    <CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="1"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+      <CreateObject>NR_FutureTechScienceBuilding3_Collapse</CreateObject>
+    </CreateObject>
+  </ObjectCreationList>
+
+</AssetDeclaration>

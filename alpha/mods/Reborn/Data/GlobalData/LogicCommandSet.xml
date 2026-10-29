@@ -2,6 +2,62 @@
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
 
 	<LogicCommandSet
+		id="AlliedConstructionYardCommandSetBase">
+		<Cmd>Command_ConstructAlliedPowerPlant</Cmd>
+		<Cmd>Command_ConstructAlliedBarracks</Cmd>
+		<Cmd>Command_ConstructAlliedRefinery</Cmd>
+		<Cmd>Command_ConstructAlliedWarFactory</Cmd>
+		<Cmd>Command_ConstructAlliedNavalYard</Cmd>
+		<Cmd>Command_ConstructAlliedAirfield</Cmd>
+		<Cmd>Command_ConstructAlliedTechStructure</Cmd>
+		<Cmd>Command_ConstructAlliedCommandCenter</Cmd>	
+		
+		<Cmd>Command_ConstructAlliedWall</Cmd>
+		<Cmd>Command_ConstructAlliedBaseDefense</Cmd>
+		<Cmd>Command_ConstructAlliedBaseDefenseAdvanced</Cmd>
+		<Cmd>Command_ConstructAlliedSuperWeapon</Cmd>
+		<Cmd>Command_ConstructAlliedSuperWeaponAdvanced</Cmd>	
+		
+		<Cmd>Command_PackAlliedMCV</Cmd>
+<!--		
+		<Cmd>Command_UpgradeAlliedCrane</Cmd>
+		<Cmd>Command_UpgradeAlliedRadarDish</Cmd>
+		<Cmd>Command_UpgradeAlliedConstructionYardRepairBay</Cmd>
+-->	
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="AlliedConstructionYardCommandSet"
+		inheritFrom="AlliedConstructionYardCommandSetBase">
+		<Cmd>Command_PurchaseAlliedTech2</Cmd>
+	</LogicCommandSet>
+	<LogicCommandSet
+		id="AlliedConstructionYardCommandSetLevel2"
+		inheritFrom="AlliedConstructionYardCommandSetBase">
+		<Cmd>Command_PurchaseAlliedTech3</Cmd>
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="AlliedCommandCenterCommandSet">
+		<!-- <Cmd>Command_ConstructAlliedTechInhibitor</Cmd> -->
+		<!-- <Cmd>Command_ConstructAlliedScienceFacility</Cmd> -->
+		<!-- <Cmd>Command_ConstructAlliedFBCommandCenter</Cmd> -->
+		<!-- <Cmd>Command_ConstructAlliedRushmoreFiringBase</Cmd> -->
+		<!-- <Cmd>Command_ConstructAlliedFutureTechHQ</Cmd> -->
+		
+		<!-- <Cmd>Command_ConstructAlliedSupplyPortAuthority</Cmd>		 -->
+		<!-- <Cmd>Command_ConstructAlliedCoastalGun</Cmd> -->
+		<!-- <Cmd>Command_ConstructAlliedRadioTower</Cmd> -->
+		<!-- <Cmd>Command_ConstructAlliedRushmoreHeadControl</Cmd> -->
+		<!-- <Cmd>Command_ConstructAlliedAirportControlTower</Cmd> -->
+		<!-- <Cmd>Command_ConstructAlliedRelayStation</Cmd> -->
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="AlliedTechStructureCommandSet">
+	</LogicCommandSet>
+
+	<LogicCommandSet
 		id="AlliedPowerPlantCommandSet">
 		<Cmd>Command_UpgradeAlliedPowerPlantTurbine</Cmd>
 	</LogicCommandSet>

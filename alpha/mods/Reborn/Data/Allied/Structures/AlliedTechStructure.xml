@@ -4,13 +4,13 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:ABTechStructure_SKN.w3x" />	
-		<Include type="all"	source="ART:ABTechStructure_IDLA.w3x" />
-		<Include type="all"	source="ART:ABTechStructure_FX.w3x" />	
-		<Include type="all"	source="ART:ABSuperWeapon_Platform.w3x" />	
-		<Include type="all"	source="ART:ABSuperWeapon_Platform_BLD.w3x" />				
-		<Include type="all"	source="ART:ABTechStructure_BLD_BLD.w3x" />
-		<Include type="all"	source="ART:ABTechStructure_BLD_SKN.w3x" />
+		<!-- <Include type="all"	source="ART:ABTechStructure_SKN.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABTechStructure_IDLA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABTechStructure_FX.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABSuperWeapon_Platform.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABSuperWeapon_Platform_BLD.w3x" />				 -->
+		<!-- <Include type="all"	source="ART:ABTechStructure_BLD_BLD.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABTechStructure_BLD_SKN.w3x" /> -->
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseStructure.xml" />
 	</Includes>
@@ -36,8 +36,8 @@
 		<DisplayName
 			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:AlliedTechStructure</DisplayName>
 		<GameDependency>
-			<RequiredObject>AlliedAirfield</RequiredObject>
 			<RequiredObject>AlliedRefinery</RequiredObject>
+			<RequiredObject>AlliedAirfield</RequiredObject>
 		</GameDependency>
 		<ObjectResourceInfo>
 			<BuildCost Account="=$ACCOUNT_ORE" Amount="2000"/>

@@ -5,15 +5,15 @@
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
-		<Include type="all"	source="ART:ABWarfactory.w3x" />   
-		<Include type="all"	source="ART:ABWarfactory_BLD.w3x" />
-		<Include type="all"	source="ART:ABWarfactory_particles.w3x" />								
-		<Include type="all"	source="ART:ABWarfactory_GAG.w3x" />				
-		<Include type="all"	source="ART:ABWarfactory_DOOR.w3x" />
-		<Include type="all"	source="ART:ABWarfactory_Platform.w3x" />
-		<Include type="all"	source="ART:ABWarfactory_LIGHTS.w3x" />							
-		<Include type="all"	source="ART:FXInvisBone.w3x" />
-		<Include type="all"	source="ART:Decal_Rig_CO.xml" />
+		<!-- <Include type="all"	source="ART:ABWarfactory.w3x" />    -->
+		<!-- <Include type="all"	source="ART:ABWarfactory_BLD.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABWarfactory_particles.w3x" />								 -->
+		<!-- <Include type="all"	source="ART:ABWarfactory_GAG.w3x" />				 -->
+		<!-- <Include type="all"	source="ART:ABWarfactory_DOOR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABWarfactory_Platform.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABWarfactory_LIGHTS.w3x" />							 -->
+		<!-- <Include type="all"	source="ART:FXInvisBone.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Decal_Rig_CO.xml" /> -->
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseStructure.xml" />
 	</Includes>

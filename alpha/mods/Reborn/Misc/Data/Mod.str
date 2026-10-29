@@ -482,6 +482,52 @@
 		"> Power Bonus = +50 \nFutureTech engineered these next-gen turbines to push efficiency to the absolute limit. Although they have a lower power-to-cost ratio compared to building a new power plant, they offer a rapid solution for covering urgent energy shortages during emergencies."
 	End
 
+// Allied Barracks
+
+	TYPE:ALLIEDBARRACKS
+		"Infantry Production \n> Health = 1000 \n> Shroud Clearing Range = 300"
+	End
+
+// Allied Refinery
+
+	TYPE:ALLIEDREFINERY
+		"Resource Structure \n> Health = 2000 \n> Shroud Clearing Range = 500"
+	End
+
+// Allied Armor Facility
+
+	TYPE:ALLIEDWARFACTORY
+		"Vehicle Production \n> Health = 2500 \n> Shroud Clearing Range = 500"
+	End
+
+// Allied Seaport
+
+	TYPE:ALLIEDNAVALYARD
+		"Navy Production \n> Health = 2500 \n> Shroud Clearing Range = 500"
+	End
+
+// Allied Airbase
+
+	TYPE:ALLIEDAIRFIELD
+		"Aircraft Production \n> Health = 2000 \n> Shroud Clearing Range = 500"
+	End
+
+// Allied Defense Bureau
+
+	TYPE:ALLIEDTECHSTRUCTURE
+		"Technology Structure \n> Health = 2000 \n> Shroud Clearing Range = 500"
+	End
+	
+// Allied V.I.P. Bunker 
+
+	TYPE:ALLIEDCOMMANDCENTER
+		"Tactical Structure \n> Health = 4000 \n> Shroud Clearing Range = 600 \n> Buildability Radius = 600"
+	End
+
+	DESC:ALLIEDCOMMANDCENTER
+		"A high-ranking Allied commander is inside this facility, personally conducting the battle and authorising the construction of rare allied structures."
+	End
+
 // Allied Paradrop
 	
 	TYPE:CampaignPlayerPowerParadropLvl1Reborn
@@ -529,5 +575,17 @@
 	End
 
 	VacuumBombEffect
+		""
+	End
+
+	UpgradeName:AlliedPowerPlantTurbine
+		""
+	End
+
+	UpgradeType:AlliedPowerPlantTurbine
+		""
+	End
+
+	UpgradeDesc:AlliedPowerPlantTurbine
 		""
 	End

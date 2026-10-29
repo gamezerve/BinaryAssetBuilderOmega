@@ -6,14 +6,14 @@
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
 		<Include type="all"	source="DATA:GlobalData/GlobalDefines.xml" />
-		<Include type="all"	source="ART:ABNavalYard.w3x" />				
-		<Include type="all"	source="ART:ABNavalYard_FX.w3x" />				
-		<Include type="all"	source="ART:ABNavalYard_BLD.w3x" />				
-		<Include type="all"	source="ART:ABNavalYard_Gag.w3x" />		
-		<Include type="all"	source="ART:ABNavalYard_UPGRADE.w3x" />	
-		<Include type="all"	source="ART:ABNavalYard_LIGHTS.w3x" />
-		<Include type="all"	source="ART:FXInvisBone.w3x" />
-		<Include type="all"	source="ART:Decal_Rig_CO.xml" />
+		<!-- <Include type="all"	source="ART:ABNavalYard.w3x" />				 -->
+		<!-- <Include type="all"	source="ART:ABNavalYard_FX.w3x" />				 -->
+		<!-- <Include type="all"	source="ART:ABNavalYard_BLD.w3x" />				 -->
+		<!-- <Include type="all"	source="ART:ABNavalYard_Gag.w3x" />		 -->
+		<!-- <Include type="all"	source="ART:ABNavalYard_UPGRADE.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABNavalYard_LIGHTS.w3x" /> -->
+		<!-- <Include type="all"	source="ART:FXInvisBone.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Decal_Rig_CO.xml" /> -->
 		<!-- Base Object -->
     <Include type="instance"	source="DATA:BaseObjects/BaseStructure.xml" />
 	</Includes>

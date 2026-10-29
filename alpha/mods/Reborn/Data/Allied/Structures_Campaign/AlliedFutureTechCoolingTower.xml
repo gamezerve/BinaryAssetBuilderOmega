@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_PowerPlnt.w3x" />
+		<Include type="instance" source="DATA:Allied/Props/AlliedBarracks_Debris.xml" />
+		<Include type="instance" source="DATA:Civilian/Northern_Russia_NR/Props/NR_PowerPlnt_Collapse.xml" />
+	
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_PowerPlnt.xml" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_PowerPlnt_SPM.xml" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_PowerPlnt_NRM.xml" />
+
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_POWERPLNT_HRC.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_POWERPLNT_CTR.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_POWERPLNT_COL_HRC.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_POWERPLNT_COL_CTR.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_POWERPLNT_COL.NEWSKIN.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_POWERPLNT.OBBOX01.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_POWERPLNT.NEWSKIN.w3x" />
+
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_POWERPLNT.FX_LIGHTS.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_POWERPLNT.FILLER_GEO.w3x" />
+
+    <Include
+		type="all"
+		source="DATA:Reborn/Audio/Structures/FutureTech/S04_CoolingTower_SelectE.xml" />
+	
+		<!-- Base Object -->
+		<Include
+			type="instance"
+			source="DATA:BaseObjects/BaseStructure.xml" />
+	</Includes>
+	<GameObject
+		id="AlliedFutureTechCoolingTower"
+		inheritFrom="BaseStructure"
+		SelectPortrait="Portrait_Special_NR_Futuretech_PowerPlant"
+		ButtonImage="Button_Special_NR_Futuretech_PowerPlant"
+		Side="Allies"
+		EditorSorting="STRUCTURE"
+		BuildTime="15"
+		CommandSet="AlliedFutureTechCoolingTowerCommandSet"
+		KindOf="+FS_TECHNOLOGY -CAN_BUILD_ON_WATER -CAN_BUILD_ON_DEEP_WATER"
+		RadarPriority="STRUCTURE"
+		PlacementViewAngle="315d"
+		ProductionQueueType="MAIN_STRUCTURE"
+		BuildPlacementTypeFlag="MAIN_STRUCTURE"
+		EditorName="AlliedFutureTechCoolingTower"
+		EnergyProduction="150"
+		HealthBoxHeightOffset="30"
+		Description="DESC:AlliedFutureTechCoolingTower"
+		TypeDescription="TYPE:AlliedFutureTechCoolingTower">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:AlliedFutureTechCoolingTower</DisplayName>
+
+
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="1100"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="StructureArmor"
+			DamageFX="FactionStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="CENTER">
+		<ConstructionBaseSelectionCriteria
+			ExcludedBaseTypes="NO_BUILD_RADIUS CAPTURED"
+			PreferredBaseTypes="MAIN_BASE"
+			SortOrder="PREFER_OLDEST" />
+		</SkirmishAIInformation>
+
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="true"
+				ExtraPublicBone="BoneFlag01 BONE_CONTACT_POINT_01 BONE_CONTACT_POINT_02 BONE_CONTACT_POINT_03 BONE_CONTACT_POINT_04 BONE_CONTACT_POINT_05 BONE_CONTACT_POINT_06 BONE_CONTACT_POINT_07 BONE_CONTACT_POINT_08 BONE_CONTACT_POINT_09 BONE_CONTACT_POINT_10 BONE_CONTACT_POINT_11 BONE_CONTACT_POINT_12 BONE_CONTACT_POINT_13 BONE_CONTACT_POINT_14 BONE_CONTACT_POINT_15 BONE_CONTACT_POINT_16 BONE_CONTACT_POINT_17 BONE_CONTACT_POINT_18	BONE_CONTACT_POINT_19 BONE_CONTACT_POINT_20 BONEGARRISON01 BONEGARRISON02 BONEGARRISON03 BONEGARRISON04 BONEGARRISON05 BONEGARRISON06 BONEGARRISON07 BONEGARRISON08 BONEGARRISON09 BONEGARRISON10 BONEGARRISON11 BONEGARRISON12">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="NR_PowerPlnt" />
+				</ModelConditionState>
+
+
+				<AnimationState
+					ParseCondStateType="PARSE_DEFAULT">
+
+					<Animation
+						AnimationName="NR_PowerPlnt"
+						AnimationMode="LOOP"/>
+				</AnimationState>
+			</ScriptedModelDraw>
+<!--
+			<xi:include
+				href="DATA:Includes/TechBuildingFlagDraw.xml"
+				xpointer="xmlns(n=uri:ea.com:eala:asset) xpointer(/n:CommonFlagDraws/child::*)" />
+-->
+
+		</Draws>
+
+
+		<Behaviors>
+			<Physics id="ModuleTag_Physics"/>
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction">
+				<DieMuxData DeathTypes="ALL" />
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_BuildingDebrisExplosion"
+					CreationObject="AlliedBarracks_Debris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_FXList">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Large" />
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Tiny" />
+				<Event
+					Index="onDeath"
+					FX="FX_SpecialDebrisExplosionShakeSmall" />
+					<!-- If adding additional death FX, please add versions with no audio in them.  Thanks! - Evan -->
+			</FXListBehavior>
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="NR_PowerPlnt_Die_OCL">
+				<DieMuxData DeathTypes="ALL" />
+			</CreateObjectDie>	
+			<!-- civ buildings should have a CreateObjectDie to make a collapse version. -->
+			<DestroyDie
+				id="ModuleTag_DestroyDie">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</DestroyDie>
+			
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpackUpdate"
+				UnpackTime="1.5s" />
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+			<xi:include
+				href="DATA:Includes/GenericEngineerContain.xml" />
+			<xi:include
+				href="DATA:Includes/GenericAlliedBuildingDestruction.xml" />
+			<xi:include
+				href="DATA:Includes/GenericAlliedBuildingSuicide.xml" />
+			
+
+
+
+
+
+
+		</Behaviors>
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="1500"
+				/>
+		</Body>
+
+		
+		
+		<Geometry
+			IsSmall="false">
+			<Shape 
+     Type= "BOX"
+     MajorRadius = "47.25"
+     MinorRadius = "55.0"
+     Height = "70.0"
+     ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "0.0"
+        y = "0.0"
+        z = "0.0" />
+</Shape>
+
+		</Geometry>
+		
+		
+		<AudioArrayVoice>
+			<AudioEntry
+				Sound="AudioEvent:S04_CoolingTower_Select" AudioType="voiceSelect" />
+		</AudioArrayVoice>
+		<AudioArraySound>
+			<AudioEntry Sound="HumanFaction_MediumBuilding_LightDamageMS" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="HumanFaction_MediumBuilding_HeavyDamageMS" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound> 
+
+		<VisionInfo
+			VisionRange="150"
+			ShroudClearingRange="500" />
+	</GameObject>
+	
+  <ObjectCreationList
+		id="NR_PowerPlnt_Die_OCL">
+    <CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="1"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+      <CreateObject>NR_PowerPlnt_Collapse</CreateObject>
+    </CreateObject>
+  </ObjectCreationList>
+
+	<AudioEvent id="BaseSoundEffect"
+		Volume="100" 
+		MinVolume="0"
+		ShrunkenPitchModifier="2.0"
+		ShrunkenVolumeModifier="85"
+		Priority="NORMAL"
+		Limit="3"
+		MinRange="300"
+		MaxRange="1000"
+		PlayPercent="100"
+		Type="UI PLAYER"
+		ReverbEffectLevel="100"
+		ZoomedInOffscreenVolumePercent = "50"
+		ZoomedInOffscreenMinVolumePercent = "100" 
+		ZoomedInOffscreenOcclusionPercent = "20"  >
+		<!-- You might think the following was a good idea:
+			SubmixSlider ="SOUNDFX"
+			IT'S NOT. Doing this in the default sound will mess up the special 'use the speech slider if the
+			voice flag is present and no SubmixSlider entry was seen' code.		-->
+	</AudioEvent>
+
+	<AudioEvent
+	id="S04_CoolingTower_Select"
+	inheritFrom="AudioEvent:BaseSoundEffect"
+	Volume="75"
+	MinVolume="60"
+	Limit="1"
+	Type="WORLD PLAYER"
+	SubmixSlider="SOUNDFX">
+	<PitchShift
+	Low="-1"
+	High="1" />
+		<Sound>S04_CoolingTower_SelectE</Sound>
+	</AudioEvent>
+
+</AssetDeclaration>

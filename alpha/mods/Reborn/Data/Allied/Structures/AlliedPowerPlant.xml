@@ -308,16 +308,6 @@
 					                 FollowBone="true"/>
 				</ModelConditionState>
 				<ModelConditionState ParseCondStateType="PARSE_NORMAL"
-				                     ConditionsYes="">
-					<Model Name="ABPowerPlant_particles"/>
-					<ParticleSysBone BoneName="FX_Steam01"
-					                 FXParticleSystemTemplate="AlliedPowerSmoke"
-					                 FollowBone="true"/>
-					<ParticleSysBone BoneName="FX_Steam02"
-					                 FXParticleSystemTemplate="AlliedPowerSmoke"
-					                 FollowBone="true"/>
-				</ModelConditionState>
-				<ModelConditionState ParseCondStateType="PARSE_NORMAL"
 				                     ConditionsYes="DAMAGED">
 					<Model Name="ABPowerPlant_particles"/>
 					<ParticleSysBone BoneName="FX_D1Fire01"

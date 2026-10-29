@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+
+
+		<Include type="all"	source="ART:MR_RadioTower.W3X" />
+		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
+		<Include type="instance" source="DATA:Civilian/Mount_Rushmore_MR/Props/MR_RadioTower_Collapse.xml" />
+			
+		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower.NEWSKIN_CIV01.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower.NEWSKIN_FILL01.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower.OBBOX01.w3x" />
+
+
+		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_COL.NEW_SKIN.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_COL.OBBOX01.w3x" />
+
+
+		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_COL_CTR.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_COL_HRC.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_CTR.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_HRC.w3x" />
+
+		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower.xml" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_NRM.xml" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_SPM.xml" />
+		
+		<!-- Base Object -->
+		<Include
+			type="instance"
+			source="DATA:BaseObjects/BaseWallPiece.xml" />
+	</Includes>
+	<GameObject
+		id="AlliedRadioTower"
+		inheritFrom="BaseWallPiece"
+		SelectPortrait="Portrait_RadioTower"
+		ButtonImage="Button_RadioTower"
+		Side="Allies"
+		EditorSorting="STRUCTURE"
+		BuildTime="10"
+		CommandSet="AlliedRadioTowerCommandSet"
+		RadarPriority="STRUCTURE"
+		PlacementViewAngle="45d"
+		ProductionQueueType="OTHER_STRUCTURE"
+		BuildPlacementTypeFlag="OTHER_STRUCTURE"
+		EditorName="AlliedRadioTower"
+		EnergyProduction="-25"
+		HealthBoxHeightOffset="0"
+		Description="DESC:RushmoreRadarTower"
+		TypeDescription="TYPE:AlliedRadioTower">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:RushmoreRadarTower</DisplayName>
+
+
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="500"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="BaseFactionStructureArmor"
+			DamageFX="FactionStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="FRONT">
+		<ConstructionBaseSelectionCriteria
+			ExcludedBaseTypes="NO_BUILD_RADIUS CAPTURED"
+			PreferredBaseTypes="MAIN_BASE"
+			SortOrder="PREFER_OLDEST" />
+		</SkirmishAIInformation>
+
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="true"
+				ExtraPublicBone="BONE_CONTACT_POINT_01 BONE_CONTACT_POINT_02 BONE_CONTACT_POINT_03 BONE_CONTACT_POINT_04 BONE_CONTACT_POINT_05 BONE_CONTACT_POINT_06 BONE_CONTACT_POINT_07 BONE_CONTACT_POINT_08 BONE_CONTACT_POINT_09 BONE_CONTACT_POINT_10 BONE_CONTACT_POINT_11 BONE_CONTACT_POINT_12 BONE_CONTACT_POINT_13 BONE_CONTACT_POINT_14 BONE_CONTACT_POINT_15 BONE_CONTACT_POINT_16 BONE_CONTACT_POINT_17 BONE_CONTACT_POINT_18 BONE_CONTACT_POINT_19 BONE_CONTACT_POINT_20">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="MR_RadioTower" />
+				</ModelConditionState>
+			</ScriptedModelDraw>
+		</Draws>
+
+
+
+
+
+		<Behaviors>
+		
+			<AttributeModifierAuraUpdate
+				id="ModuleTag_AttributeModifierAuraUpdate_EmpResolve"
+				AttributeModifierName="AttributeModifer_GenericStatueAura"
+				RefreshDelay="0.75s"
+				Range="400"
+				InitiallyActive="true">
+				<ObjectFilter
+					Rule="ANY"
+					Include="INFANTRY AIRCRAFT VEHICLE"
+					Relationship="ALLIES"
+					StatusBitFlagsExclude="SUBMERGED">
+				</ObjectFilter>
+			</AttributeModifierAuraUpdate>
+
+			<Physics id="ModuleTag_Physics"/>
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction">
+				<DieMuxData DeathTypes="ALL" />
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_BuildingDebrisExplosion"
+					CreationObject="AlliedBarracks_Debris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_FXList">
+				<DieMuxData DeathTypes="ALL" />
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Tiny" />
+				<Event
+					Index="onDeath"
+					FX="FX_Audio_RA3LargeBuildingDie" />
+			</FXListBehavior>
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="MR_RadioTower_Die_OCL">
+				<DieMuxData DeathTypes="ALL" />
+			</CreateObjectDie>	
+			<!-- civ buildings should have a CreateObjectDie to make a collapse version. -->
+			<DestroyDie
+				id="ModuleTag_DestroyDie">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</DestroyDie>
+			
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpackUpdate"
+				UnpackTime="1.5s" />
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+
+			
+
+
+
+
+
+
+		</Behaviors>
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="2000"
+				/>
+		</Body>
+
+		
+		
+		<Geometry
+			IsSmall="false">
+<Shape 
+     Type= "BOX"
+     MajorRadius = "15.1335"
+     MinorRadius = "16.853"
+     Height = "175.707"
+     ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "0.0"
+        y = "0.0"
+        z = "0.0" />
+</Shape>
+
+		</Geometry>
+		
+		
+
+		<AudioArraySound>
+			<AudioEntry Sound="HumanFaction_MediumBuilding_LightDamageMS" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="HumanFaction_MediumBuilding_HeavyDamageMS" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound> 
+
+		<VisionInfo
+			VisionRange="50"
+			ShroudClearingRange="50" />
+	</GameObject>
+	
+	<ObjectCreationList
+		id="MR_RadioTower_Die_OCL">
+		<CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="1"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+			<CreateObject>MR_RadioTower_Collapse</CreateObject>
+		</CreateObject>
+	</ObjectCreationList>
+
+</AssetDeclaration>

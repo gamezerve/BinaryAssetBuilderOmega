@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+	
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+		
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/AM_Futuretech_Complex.w3x" />
+    <!--		<Include type="all"	source="ART:AM_Futuretech_01_GAR.w3x" /> -->
+    <Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
+    <Include type="instance" source="DATA:Civilian/AMSTERDAM_AM/Props/AM_Futuretech_01_Collapse.xml" />
+
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/AU_GARRISON_FLAG_LARGE.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/AU_GARRISON_FLAG_LARGE_CTR.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/AU_GARRISON_FLAG_LARGE_HRC.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/AU_GARRISON_FLAG_LARGE.ALLIED.w3x" />
+	
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/SU_GARRISON_FLAG_LARGE.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/SU_GARRISON_FLAG_LARGE_CTR.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/SU_GARRISON_FLAG_LARGE_HRC.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/SU_GARRISON_FLAG_LARGE.SOVIET.w3x" />
+	
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/JU_GARRISON_FLAG_LARGE.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/JU_GARRISON_FLAG_LARGE_CTR.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/JU_GARRISON_FLAG_LARGE_HRC.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/JU_GARRISON_FLAG_LARGE.JAPAN.w3x" />
+	
+    <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/AU_GarFlag.xml" />
+    <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/JU_GarFlag.xml" />
+    <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/SU_GarFlag.xml" />
+	
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/GARRISON_WALL_LARGE_CTR.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/GARRISON_WALL_LARGE_HRC.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/GARRISON_WALL_LARGE.GARRISON_WALL.w3x" />
+	
+    <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/Garrison.xml" />
+    <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/Garrison_NRM.xml" />
+    <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/Garrison_SPM.xml" />
+	
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.NEWSKIN.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.NEWSKIN_FILL01.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX01.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX02.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX03.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX04.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX05.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX06.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX07.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.NEWSKIN.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.NEWSKIN02.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.NEWSKIN03.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX01.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX02.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX03.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX04.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX05.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX06.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX07.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL_CTR.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL_HRC.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_CTR.w3x" />
+	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_HRC.w3x" />
+	
+    <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/AM_Futuretech_01.xml" />
+    <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/AM_Futuretech_01_NRM.xml" />
+    <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/AM_Futuretech_01_SPM.xml" />
+
+
+		<!-- Base Object -->
+		<Include type="instance" source="DATA:BaseObjects/BaseStructure.xml" />		
+	</Includes>
+	<GameObject
+		id="AlliedFutureTechHQ"
+		SelectPortrait="Portrait_Special_FutureTech"
+		ButtonImage="Button_Special_FutureTech"
+		inheritFrom="BaseStructure"
+		Side="Allies"
+		EditorName="AlliedFutureTechHQ"	
+		KindOf="-CAN_BUILD_ON_WATER -CAN_BUILD_ON_DEEP_WATER +RADAR_SCRAMBLER +AUTO_ACQUIRABLE_BY_AI +FS_TECHNOLOGY +ACTIVATE_AFTER_UNPACK +CONSTRUCTION_YARD +FS_FACTORY" 
+		RadarPriority="STRUCTURE"
+    	EditorSorting="STRUCTURE"
+		PlacementViewAngle="225d"
+		EnergyProduction="-25"
+		ProductionQueueType="MAIN_STRUCTURE"
+		BuildPlacementTypeFlag="MAIN_STRUCTURE"
+		BuildTime="40"
+		CommandSet="AlliedFutureTechHQCommandSet"
+		TypeDescription="TYPE:FutureTech"
+		Description="DESC:FutureTech"
+		MaxSimultaneousOfType="1"
+		HealthBoxHeightOffset="0">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">NAME:FutureTech</DisplayName>
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="4000"/>
+		</ObjectResourceInfo>
+    <ArmorSet
+			Armor="BaseFactionStructureArmor"
+			DamageFX="FactionStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="CENTER">
+      <ConstructionBaseSelectionCriteria
+        ExcludedBaseTypes="NO_BUILD_RADIUS CAPTURED"
+        PreferredBaseTypes="MAIN_BASE"
+        SortOrder="PREFER_OLDEST" />
+    </SkirmishAIInformation>
+	
+    <Draws>
+      <ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="false"
+				AffectedByStealth="false"
+				ExtraPublicBone="BoneGarrisonWall01 BoneGarrisonWall02 BoneGarrisonWall03 BoneGarrisonWall04 BONE_CONTACT_POINT_01 BONE_CONTACT_POINT_02 BONE_CONTACT_POINT_03 BONE_CONTACT_POINT_04 BONE_CONTACT_POINT_05 BONE_CONTACT_POINT_06 BONE_CONTACT_POINT_07 BONE_CONTACT_POINT_08 BONE_CONTACT_POINT_09 BONE_CONTACT_POINT_10 BONE_CONTACT_POINT_11 BONE_CONTACT_POINT_12 BONE_CONTACT_POINT_13 BONE_CONTACT_POINT_14 BONE_CONTACT_POINT_15 BONE_CONTACT_POINT_16 BONE_CONTACT_POINT_17 BONE_CONTACT_POINT_18	BONE_CONTACT_POINT_19 BONE_CONTACT_POINT_20 BONEGARRISON01 BONEGARRISON02 BONEGARRISON03 BONEGARRISON04 BONEGARRISON05 BONEGARRISON06 BONEGARRISON07 BONEGARRISON08 BONEGARRISON09 BONEGARRISON10 BONEGARRISON11 BONEGARRISON12">
+ 
+        <ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+          <Model
+						Name="AM_Futuretech_Complex" />
+        </ModelConditionState>
+
+        <AnimationState
+					ParseCondStateType="PARSE_DEFAULT">
+          <!-- no anim -->
+        </AnimationState>
+      </ScriptedModelDraw>
+      <xi:include
+				href="DATA:Includes/GarrisonFlagArmorLargeDraw.xml"
+				xpointer="xmlns(n=uri:ea.com:eala:asset) xpointer(/n:CommonArmorDraws/child::*)" />
+
+
+
+
+    </Draws>
+	
+		<Behaviors>
+			<Physics
+				id="ModuleTag_Physics"/>
+
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_CIV_EALAdebrisExplosion"
+					CreationObject="YU_HotelDebris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+
+      <FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_FXList">
+        <DieMuxData
+					DeathTypes="ALL" />
+        <Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_XLarge" />
+        <Event
+          Index="onDeath"
+          FX="FX_LargeBuildingDieExplosionRumble" />
+        <Event
+          Index="onDeath"
+          FX="ScienceTechLab_XP" />
+      </FXListBehavior>
+
+      <FXListBehavior xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_DieSound">
+        <DieMuxData DeathTypes="ALL" />
+        <Event Index="onDeath" FX="FX_Audio_J09_FutureTechBuildingDie" />
+      </FXListBehavior>
+
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="AM_Futuretech_01_Die_OCL">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</CreateObjectDie>	
+
+
+      <!-- Soviet Advanced Power Plant Explosion -->
+      <FireWeaponWhenDead
+				id="ModuleTag_CatalystDeathWeapon"
+				InitiallyActive="true"
+				DeathWeapon="SovietPowerPlantAdvancedDeathWeapon"
+				ContinueToBezierDestination="false">
+        <DieMuxData
+         DeathTypes="ALL"
+         DeathTypesForbidden="PRODUCTION_CANCELLED SUICIDED"/>
+      </FireWeaponWhenDead>			
+			<!-- civ buildings should have a CreateObjectDie to make a collapse version. -->
+			<DestroyDie
+				id="ModuleTag_DestroyDie">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</DestroyDie>	
+
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpackUpdate"
+				UnpackTime="5s" />
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+			<xi:include
+				href="DATA:Includes/GenericEngineerContain.xml" />
+			<xi:include
+				href="DATA:Includes/GenericAlliedBuildingDestruction.xml" />
+			<xi:include
+				href="DATA:Includes/GenericAlliedBuildingSuicide.xml" />
+			<xi:include
+				href="DATA:Includes/InfiltratorContainParalyze.xml" />
+				
+			<ProductionUpdate
+				id="ModuleTag_ProductionUpdate"
+				Type="MAIN_STRUCTURE"
+				MaxQueueEntries="1" />
+			<ProductionUpdate
+				id="ModuleTag_OtherProductionUpdate"
+				Type="OTHER_STRUCTURE"
+				MaxQueueEntries="1" />
+			
+		</Behaviors>
+		
+		<AI>
+			<AIUpdate
+				id="ModuleTag_AIUpdate"
+				AutoAcquireEnemiesWhenIdle="NO"
+				StateMachine="StructureAIStateMachine">
+			</AIUpdate>
+		</AI>
+		
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="55000"
+				/>
+		</Body>
+		<Geometry
+			IsSmall="false">
+	    <Shape
+		    Type= "BOX"
+		    MajorRadius = "73.4944"
+		    MinorRadius = "46.579"
+		    Height = "78.1227"
+		    ContactPointGeneration = "STRUCTURE" >
+		    <Offset
+			   x = "16.8894"
+			   y = "-147.325"
+			   z = "0.0" />
+	    </Shape>
+	    <Shape
+		    Type= "BOX"
+		    MajorRadius = "44.1419"
+		    MinorRadius = "11.5339"
+		    Height = "78.1227"
+		    ContactPointGeneration = "STRUCTURE" >
+		    <Offset
+			   x = "26.661"
+			   y = "-202.032"
+			   z = "0.0" />
+	    </Shape>
+	    <Shape
+		    Type= "BOX"
+		    MajorRadius = "52.0898"
+		    MinorRadius = "98.5955"
+		    Height = "79.2331"
+		    ContactPointGeneration = "STRUCTURE" >
+		    <Offset
+			   x = "36.1535"
+			   y = "-8.27499"
+			   z = "0.0" />
+	    </Shape>
+	    <Shape
+		    Type= "BOX"
+		    MajorRadius = "46.3601"
+		    MinorRadius = "79.8003"
+		    Height = "50.1116"
+		    ContactPointGeneration = "STRUCTURE" >
+		    <Offset
+			   x = "-66.9148"
+			   y = "-21.5243"
+			   z = "0.0" />
+	    </Shape>
+	    <Shape
+		    Type= "BOX"
+		    MajorRadius = "66.3771"
+		    MinorRadius = "57.5829"
+		    Height = "46.5781"
+		    ContactPointGeneration = "STRUCTURE" >
+		    <Offset
+			   x = "21.6763"
+			   y = "132.841"
+			   z = "0.0" />
+	    </Shape>
+	    <Shape
+		    Type= "BOX"
+		    MajorRadius = "27.5"
+		    MinorRadius = "27.5"
+		    Height = "46.1859"
+		    ContactPointGeneration = "STRUCTURE" >
+		    <Offset
+			   x = "-5.08331"
+			   y = "9.95546"
+			   z = "72.1772" />
+	    </Shape>
+	    <Shape
+		    Type= "BOX"
+		    MajorRadius = "59.1727"
+		    MinorRadius = "59.2902"
+		    Height = "84.8042"
+		    ContactPointGeneration = "STRUCTURE" >
+		    <Offset
+			   x = "-65.7387"
+			   y = "99.3695"
+			   z = "0.0" />
+	    </Shape>
+		</Geometry>
+		<AudioArraySound>
+			<AudioEntry Sound="HumanFaction_MediumBuilding_LightDamageMS" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="HumanFaction_MediumBuilding_HeavyDamageMS" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound>
+
+		<VisionInfo
+			VisionRange="150"
+			ShroudClearingRange="600" />
+		<ProjectedBuildabilityInfo
+			Radius="600"
+			BuildPlacementTypes="MAIN_STRUCTURE OTHER_STRUCTURE" />		
+		
+	</GameObject>
+
+	<ObjectCreationList
+		id="AM_Futuretech_01_Die_OCL">
+		<CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="1"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+			<CreateObject>AM_Futuretech_01_Collapse</CreateObject>
+		</CreateObject>
+	</ObjectCreationList>	
+</AssetDeclaration>

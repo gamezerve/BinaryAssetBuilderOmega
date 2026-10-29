@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+	
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+		
+		<Include type="all"	source="ART:TH_AlliedDisruptorStation.W3X" />
+		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
+		<Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Props/TH_AlliedDisruptorStation_Collapse.xml" />
+
+    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION.NEWSKIN_CIV01.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION.NEWSKIN_FILL01.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION.OBBOX01.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION.PLANE01.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION_COL.NEW_SKIN.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION_COL.OBBOX01.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION_COL_CTR.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION_COL_HRC.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION_CTR.w3x" />
+    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION_HRC.w3x" />
+
+    <Include type="all"	source="ART:Reborn/Art/Debug/TH_AlliedDisruptorStation.xml" />
+    <Include type="all"	source="ART:Reborn/Art/Debug/TH_AlliedDisruptorStation_NRM.xml" />
+    <Include type="all"	source="ART:Reborn/Art/Debug/TH_AlliedDisruptorStation_SPM.xml" />
+
+		<!-- Base Object -->
+		<Include type="instance" source="DATA:BaseObjects/BaseStructure.xml" />		
+	</Includes>
+	<GameObject
+		id="AlliedRelayStation"
+		SelectPortrait="Portrait_AlliedDisrupterStation"
+		ButtonImage="Button_AlliedDisrupterStation"
+		inheritFrom="BaseStructure"
+		Side="Allies"
+		EditorName="AlliedRelayStation"	
+		KindOf="-CAN_BUILD_ON_WATER -CAN_BUILD_ON_DEEP_WATER +RADAR_SCRAMBLER +AUTO_ACQUIRABLE_BY_AI +FS_TECHNOLOGY" 
+		RadarPriority="STRUCTURE"
+    	EditorSorting="STRUCTURE"
+		PlacementViewAngle="45d"
+		EnergyProduction="-25"
+		ProductionQueueType="OTHER_STRUCTURE"
+		BuildPlacementTypeFlag="OTHER_STRUCTURE"
+		BuildTime="15"
+		CommandSet="AlliedRelayStationCommandSet"
+		TypeDescription="TYPE:AlliedRelayStation"
+		Description="DESC:AlliedDisruptorStation"
+		HealthBoxHeightOffset="130">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">NAME:AlliedDisruptorStation</DisplayName>
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="1000"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="BaseFactionStructureArmor"
+			DamageFX="FactionStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="CENTER">
+      <ConstructionBaseSelectionCriteria
+        ExcludedBaseTypes="NO_BUILD_RADIUS CAPTURED"
+        PreferredBaseTypes="MAIN_BASE"
+        SortOrder="PREFER_OLDEST" />
+    </SkirmishAIInformation>
+	
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="true"
+				ExtraPublicBone="BONE_CONTACT_POINT_01 BONE_CONTACT_POINT_02 BONE_CONTACT_POINT_03 BONE_CONTACT_POINT_04 BONE_CONTACT_POINT_05 BONE_CONTACT_POINT_06 BONE_CONTACT_POINT_07 BONE_CONTACT_POINT_08 BONE_CONTACT_POINT_09 BONE_CONTACT_POINT_10 BONE_CONTACT_POINT_11 BONE_CONTACT_POINT_12 BONE_CONTACT_POINT_13 BONE_CONTACT_POINT_14 BONE_CONTACT_POINT_15 BONE_CONTACT_POINT_16 BONE_CONTACT_POINT_17 BONE_CONTACT_POINT_18 BONE_CONTACT_POINT_19 BONE_CONTACT_POINT_20">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="TH_AlliedDisruptorStation" />
+					
+				</ModelConditionState>
+
+
+				<AnimationState
+					ParseCondStateType="PARSE_DEFAULT">
+
+					<Script>
+						CurDrawableShowSubObject( "Plane01" )
+					</Script>
+				</AnimationState>
+				
+				
+				<AnimationState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="USER_1">
+				<Script>
+					CurDrawableHideSubObject( "Plane01" )
+				</Script>
+					
+				</AnimationState>
+				
+				
+			</ScriptedModelDraw>
+		</Draws>
+	
+		<Behaviors>
+			<Physics
+				id="ModuleTag_Physics"/>
+
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_BuildingDebrisExplosion"
+					CreationObject="YU_HotelDebris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_FXList">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Event
+					Index="onDeath"
+					FX="FX_ALL_DisruptorStationDieExplosion" />
+			</FXListBehavior>
+
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="TH_AlliedDisruptorStation_Die_OCL">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</CreateObjectDie>	
+			
+			<!-- civ buildings should have a CreateObjectDie to make a collapse version. -->
+			<DestroyDie
+				id="ModuleTag_DestroyDie">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</DestroyDie>	
+
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpackUpdate"
+				UnpackTime="5s" />
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+			<xi:include
+				href="DATA:Includes/GenericEngineerContain.xml" />
+			<xi:include
+				href="DATA:Includes/GenericAlliedBuildingDestruction.xml" />
+			<xi:include
+				href="DATA:Includes/GenericAlliedBuildingSuicide.xml" />
+			<xi:include
+				href="DATA:Includes/InfiltratorContainParalyze.xml" />	
+			
+		</Behaviors>
+		
+		<AI>
+			<AIUpdate
+				id="ModuleTag_AIUpdate"
+				AutoAcquireEnemiesWhenIdle="NO"
+				StateMachine="StructureAIStateMachine">
+			</AIUpdate>
+		</AI>
+		
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="3000"
+				/>
+		</Body>
+		<Geometry
+			IsSmall="false">
+			<Shape 
+				Type= "BOX"
+				MajorRadius = "30.0"
+				MinorRadius = "30.0"
+				Height = "40.0"
+				ContactPointGeneration="STRUCTURE" >
+				<Offset
+					x = "0.0"
+					y = "0.0"
+					z = "0.0" />
+			</Shape>
+		</Geometry>
+		<AudioArraySound>
+			<AudioEntry Sound="HumanFaction_MediumBuilding_LightDamageMS" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="HumanFaction_MediumBuilding_HeavyDamageMS" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound>
+
+		<VisionInfo
+			VisionRange="150"
+			ShroudClearingRange="500" />
+		
+	</GameObject>
+
+	<ObjectCreationList
+		id="TH_AlliedDisruptorStation_Die_OCL">
+		<CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="1"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+			<CreateObject>TH_AlliedDisruptorStation_Collapse</CreateObject>
+		</CreateObject>
+	</ObjectCreationList>	
+</AssetDeclaration>

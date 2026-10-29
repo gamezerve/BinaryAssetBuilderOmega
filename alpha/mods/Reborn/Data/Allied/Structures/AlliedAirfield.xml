@@ -5,22 +5,22 @@
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
-		<Include type="all"	source="ART:ABAirfield.w3x" />   
-		<Include type="all"	source="ART:ABAirfield_BLD_SKN.w3x" />
-		<Include type="all"	source="ART:ABAirfield_BLD_BLD.w3x" />
-		<Include type="all"	source="ART:ABAirfield_BLD_BLDW.w3x" />
-		<Include type="all"	source="ART:ABAirfield_Platform.w3x" />    
-		<Include type="all"	source="ART:ABAirfield_Platform_BLD_SKN.w3x" />				
-		<Include type="all" source="ART:ABAirfield_Platform_BLD_BLD.w3x" />				
-		<Include type="all"	source="ART:ABAirfield_FX.w3x" />				
-		<Include type="all"	source="ART:ABAirfield_DOOR_01_SKN.w3x" />
-		<Include type="all"	source="ART:ABAirfield_DOOR_02_SKN.w3x" />
-		<Include type="all"	source="ART:ABAirfield_DOOR_03_SKN.w3x" />
-		<Include type="all"	source="ART:ABAirfield_DOOR_04_SKN.w3x" />
-		<Include type="all"	source="ART:ABAirfield_DOOR_OPN.w3x" />
-		<Include type="all"	source="ART:ABAirfield_UPGRADE.w3x" />
-		<Include type="all"	source="ART:ABAirfield_LIGHTS.w3x" />	
-	  <Include type="all"	source="ART:FXInvisBone.w3x" />
+		<!-- <Include type="all"	source="ART:ABAirfield.w3x" />    -->
+		<!-- <Include type="all"	source="ART:ABAirfield_BLD_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABAirfield_BLD_BLD.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABAirfield_BLD_BLDW.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABAirfield_Platform.w3x" />     -->
+		<!-- <Include type="all"	source="ART:ABAirfield_Platform_BLD_SKN.w3x" />				 -->
+		<!-- <Include type="all" source="ART:ABAirfield_Platform_BLD_BLD.w3x" />				 -->
+		<!-- <Include type="all"	source="ART:ABAirfield_FX.w3x" />				 -->
+		<!-- <Include type="all"	source="ART:ABAirfield_DOOR_01_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABAirfield_DOOR_02_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABAirfield_DOOR_03_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABAirfield_DOOR_04_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABAirfield_DOOR_OPN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABAirfield_UPGRADE.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABAirfield_LIGHTS.w3x" />	 -->
+	  <!-- <Include type="all"	source="ART:FXInvisBone.w3x" /> -->
     <!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseStructure.xml" />
 	</Includes>

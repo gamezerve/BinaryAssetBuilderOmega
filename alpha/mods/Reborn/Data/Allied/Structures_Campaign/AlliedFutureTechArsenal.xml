@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory_Door.w3x" />
+		<Include type="instance" source="DATA:Allied/Props/AlliedBarracks_Debris.xml" />
+		<Include type="instance" source="DATA:Civilian/Northern_Russia_NR/Props/NR_FutureTechWarFactory_Collapse.xml" />
+	
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory.xml" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory_SPM.xml" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory_NRM.xml" />
+		
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.xml" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer_NRM.xml" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer_SPM.xml" />
+
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory_HRC.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory_CTR.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_DOOR_HRC.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_DOOR_CTR.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_DOOR.ANIM_DOOR2.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_DOOR.ANIM_DOOR1.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_CTR.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_COL_HRC.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_COL_CTR.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_COL.NEWSKIN.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.OBBOX03.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.OBBOX02.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.OBBOX01.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.NEWSKIN_FILL.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.NEWSKIN.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.FX_LIGHTS.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.BONE_BONE_CONTACT_POINT_10.w3x" />
+
+		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarStarta.xml" />
+		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarStartb.xml" />
+		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarStartc.xml" />
+		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarStartd.xml" />
+		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarStarte.xml" />
+		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarStartf.xml" />
+		
+		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarLoada.xml" />
+		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarLoadb.xml" />
+		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarLoadc.xml" />
+		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarLoadd.xml" />
+		
+		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarDropa.xml" />
+		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarDropb.xml" />
+		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarDropc.xml" />
+		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarDropd.xml" />
+		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarDrope.xml" />
+
+	
+		<!-- Base Object -->
+		<Include
+			type="instance"
+			source="DATA:BaseObjects/BaseStructure.xml" />
+	</Includes>
+	<GameObject
+		id="AlliedFutureTechArsenal"
+		inheritFrom="BaseStructure"
+		SelectPortrait="Portrait_Special_NR_Futuretech_WarFactory"
+		ButtonImage="Button_Special_NR_Futuretech_WarFactory"
+		Side="Allies"
+		EditorSorting="STRUCTURE"
+		BuildTime="20"
+		CommandSet="AlliedWarFactoryCommandSet"
+		KindOf="+FS_TECHNOLOGY -CAN_BUILD_ON_WATER -CAN_BUILD_ON_DEEP_WATER +FS_FACTORY +AUTO_RALLYPOINT +FS_WAR_FACTORY"
+		RadarPriority="STRUCTURE"
+		PlacementViewAngle="225d"
+		ProductionQueueType="MAIN_STRUCTURE"
+		BuildPlacementTypeFlag="MAIN_STRUCTURE"
+		EditorName="AlliedFutureTechArsenal"
+		EnergyProduction="-50"
+		HealthBoxHeightOffset="30"
+		Description="DESC:AlliedFutureTechArsenal"
+		TypeDescription="TYPE:AlliedFutureTechArsenal">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:AlliedFutureTechArsenal</DisplayName>
+		<GameDependency>
+			<RequiredObject>AlliedFutureTechCoolingTower</RequiredObject>
+		</GameDependency>
+
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="2500"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="StructureArmor"
+			DamageFX="FactionStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="FRONT">
+		<ConstructionBaseSelectionCriteria
+			ExcludedBaseTypes="NO_BUILD_RADIUS CAPTURED"
+			PreferredBaseTypes="MAIN_BASE"
+			SortOrder="PREFER_OLDEST" />
+		</SkirmishAIInformation>
+
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="false"
+				AffectedByStealth="false"
+				ExtraPublicBone="BoneGarrisonWall01 BoneGarrisonWall02 BoneGarrisonWall03 BoneGarrisonWall04 BONE_CONTACT_POINT_01 BONE_CONTACT_POINT_02 BONE_CONTACT_POINT_03 BONE_CONTACT_POINT_04 BONE_CONTACT_POINT_05 BONE_CONTACT_POINT_06 BONE_CONTACT_POINT_07 BONE_CONTACT_POINT_08 BONE_CONTACT_POINT_09 BONE_CONTACT_POINT_10 BONE_CONTACT_POINT_11 BONE_CONTACT_POINT_12 BONE_CONTACT_POINT_13 BONE_CONTACT_POINT_14 BONE_CONTACT_POINT_15 BONE_CONTACT_POINT_16 BONE_CONTACT_POINT_17 BONE_CONTACT_POINT_18	BONE_CONTACT_POINT_19 BONE_CONTACT_POINT_20 BONEGARRISON01 BONEGARRISON02 BONEGARRISON03 BONEGARRISON04 BONEGARRISON05 BONEGARRISON06 BONEGARRISON07 BONEGARRISON08 BONEGARRISON09 BONEGARRISON10 BONEGARRISON11 BONEGARRISON12">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="NR_WarFactory" />
+				</ModelConditionState>
+				<AnimationState
+					ParseCondStateType="PARSE_DEFAULT"
+					Flags="START_FRAME_FIRST">
+					<Animation
+						AnimationName="NR_WarFactory"
+						AnimationMode="LOOP" />
+				</AnimationState>
+			</ScriptedModelDraw>	
+			
+<!-- DRAW DOOR01 -->
+			<ScriptedModelDraw
+				id="ModuleTag_Draw_Door"
+				OkToChangeModelColor="true">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="NR_WarFactory_Door" />
+				</ModelConditionState>
+     
+				<AnimationState
+					ParseCondStateType="PARSE_DEFAULT"
+					Flags="START_FRAME_FIRST">
+					<Animation
+						AnimationName="NR_WarFactory_Door"
+						AnimationMode="ONCE_BACKWARDS" />
+				</AnimationState>
+				<AnimationState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="DOOR_1_WAITING_OPEN"
+					Flags="START_FRAME_LAST">
+					<Animation
+						AnimationName="NR_WarFactory_Door"
+						AnimationMode="MANUAL" />
+				</AnimationState>
+				<AnimationState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="DOOR_1_OPENING"
+					StateName="STATE_Open">
+					<Animation
+						AnimationName="NR_WarFactory_Door"
+						AnimationMode="ONCE" />
+				</AnimationState>
+				<AnimationState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="DOOR_1_CLOSING"
+					StateName="STATE_Closed"
+					Flags="START_FRAME_LAST">
+					<Animation
+						AnimationName="NR_WarFactory_Door"
+						AnimationMode="ONCE_BACKWARDS" />
+				</AnimationState>
+
+			</ScriptedModelDraw>	
+
+<!--
+			<xi:include
+				href="../../../Includes/GarrisonFlagArmorLargeDraw.xml"
+				xpointer="xmlns(n=uri:ea.com:eala:asset) xpointer(/n:CommonArmorDraws/child::*)" />
+-->
+
+
+		</Draws>
+
+
+
+		<Behaviors>
+			<Physics id="ModuleTag_Physics"/>
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction" FillerMesh="NEWSKIN_FILL">
+				<DieMuxData DeathTypes="ALL" />
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_BuildingDebrisExplosion"
+					CreationObject="AlliedBarracks_Debris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_FXList">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Large" />
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Tiny" />
+				<Event
+					Index="onDeath"
+					FX="FX_SpecialDebrisExplosionShakeSmall" />
+					<!-- If adding additional death FX, please add versions with no audio in them.  Thanks! - Evan -->
+			</FXListBehavior>
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="NR_FutureTechWarFactory_Die_OCL">
+				<DieMuxData DeathTypes="ALL" />
+			</CreateObjectDie>	
+			<!-- civ buildings should have a CreateObjectDie to make a collapse version. -->
+			<DestroyDie
+				id="ModuleTag_DestroyDie">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</DestroyDie>
+
+			<ProductionUpdate
+				id="ModuleTag_ProductionUpdate"
+				GiveNoXP="true"
+				Type="VEHICLE"
+				NumDoorAnimations="1"
+				DoorOpeningTime="0.66s"
+				DoorWaitOpenTime="3.00s"
+				DoorCloseTime="0.66s"
+				NewObjectFadeInTime="0.5s">
+				<GiveUpgradeToProduced>
+					<UpgradeTranslate
+						RequiredUpgrade="Upgrade_ProductionVeterancy_VETERAN"
+						ProvidedUpgrade="Upgrade_CreationVeterancy_VETERAN" />
+					<UpgradeTranslate
+						RequiredUpgrade="Upgrade_ProductionVeterancy_ELITE"
+						ProvidedUpgrade="Upgrade_CreationVeterancy_ELITE" />
+					<UpgradeTranslate
+						RequiredUpgrade="Upgrade_ProductionVeterancy_HEROIC"
+						ProvidedUpgrade="Upgrade_CreationVeterancy_HEROIC" />
+				</GiveUpgradeToProduced>
+			</ProductionUpdate>
+
+			<QueueProductionExitUpdate
+				id="ModuleTag_QueueProduction"
+				ExitDelaySeconds="3.0s">
+				<UnitCreatePoint
+					x="0.0"
+					y="0.0"
+					z="0.0" />
+				<NaturalRallyPoint
+					x="80.0"
+					y="0.0"
+					z="0.0" />
+			</QueueProductionExitUpdate>
+			
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpackUpdate"
+				UnpackTime="1.5s" />
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+			<xi:include
+				href="DATA:Includes/GenericEngineerContain.xml" />
+			<xi:include
+				href="DATA:Includes/GenericAlliedBuildingDestruction.xml" />
+			<xi:include
+				href="DATA:Includes/GenericAlliedBuildingSuicide.xml" />
+			<StancesBehavior
+				id="ModuleTag_Stance"
+				StanceTemplate="Generic" />
+			
+			<xi:include
+				href="DATA:Includes/AlliedTechUpgradeReceiverLevel3.xml" />
+			<xi:include
+				href="DATA:Includes/AlliedTechUpgradeReceiverLevel2.xml" />
+			<xi:include
+				href="DATA:Includes/InfiltratorContainVehicle.xml" />
+
+			<LUAEventList
+				id="ModuleTag_LUAEventList"
+				EventListName="AlliedBarracksFunctions" />
+
+
+
+
+
+		</Behaviors>
+		
+		<AI>
+			<AIUpdate
+				id="ModuleTag_AIUpdate"
+				AutoAcquireEnemiesWhenIdle="NO"
+				StateMachine="StructureAIStateMachine"/>
+		</AI>
+		
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="4000"
+				/>
+		</Body>
+
+		
+		
+		<Geometry
+			IsSmall="false">
+      <Shape
+           Type= "BOX"
+           MajorRadius = "72.0694"
+           MinorRadius = "51.9393"
+           Height = "30.099"
+           ContactPointGeneration = "STRUCTURE" >
+        <Offset
+            x = "31.5572"
+            y = "0.0"
+            z = "0.0" />
+      </Shape>
+      <Shape
+           Type= "BOX"
+           MajorRadius = "42.6446"
+           MinorRadius = "38.1907"
+           Height = "79.2078"
+           ContactPointGeneration = "STRUCTURE" >
+        <Offset
+            x = "3.40555"
+            y = "0.0"
+            z = "0.0" />
+      </Shape>
+      <Shape
+           Type= "BOX"
+           MajorRadius = "27.1337"
+           MinorRadius = "35.0173"
+           Height = "61.5168"
+           ContactPointGeneration = "STRUCTURE" >
+        <Offset
+            x = "54.9257"
+            y = "-73.3943"
+            z = "0.0" />
+      </Shape>	
+
+		</Geometry>
+		<ClientBehaviors>
+				<AnimationSoundClientBehavior id="ModuleTag_AnimationSound">
+					<Sound Sound="TEC_WarFactory_Animation_Car_MoveStart" Animation="NR_WarFactory" Frame="32 122 216 302" />				
+					<Sound Sound="TEC_WarFactory_Animation_Car_DropUnload" Animation="NR_WarFactory" Frame="93 273" />				
+					<Sound Sound="TEC_WarFactory_Animation_Car_Load" Animation="NR_WarFactory" Frame="13 188" />	
+				</AnimationSoundClientBehavior>			
+		</ClientBehaviors>		
+		
+
+		<AudioArraySound>
+			<AudioEntry Sound="" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound> 
+
+		<VisionInfo
+			VisionRange="150"
+			ShroudClearingRange="500" />
+	</GameObject>
+	
+  <ObjectCreationList
+		id="NR_FutureTechWarFactory_Die_OCL">
+    <CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="1"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+      <CreateObject>NR_FutureTechWarFactory_Collapse</CreateObject>
+    </CreateObject>
+  </ObjectCreationList>
+
+	<AudioEvent id="BaseSoundEffect"
+		Volume="100" 
+		MinVolume="0"
+		ShrunkenPitchModifier="2.0"
+		ShrunkenVolumeModifier="85"
+		Priority="NORMAL"
+		Limit="3"
+		MinRange="300"
+		MaxRange="1000"
+		PlayPercent="100"
+		Type="UI PLAYER"
+		ReverbEffectLevel="100"
+		ZoomedInOffscreenVolumePercent = "50"
+		ZoomedInOffscreenMinVolumePercent = "100" 
+		ZoomedInOffscreenOcclusionPercent = "20"  >
+		<!-- You might think the following was a good idea:
+			SubmixSlider ="SOUNDFX"
+			IT'S NOT. Doing this in the default sound will mess up the special 'use the speech slider if the
+			voice flag is present and no SubmixSlider entry was seen' code.		-->
+	</AudioEvent>
+	
+	<AudioEvent
+	id="TEC_WarFactory_Animation_Car_MoveStart"
+	inheritFrom="AudioEvent:BaseSoundEffect"
+	Volume="60"
+	VolumeShift="-10"
+	MinRange="100"
+	MaxRange="500"
+	Priority="LOW"
+	Limit="3"
+	Type="WORLD SHROUDED EVERYONE"
+	SubmixSlider="SOUNDFX">
+	<PitchShift
+	Low="-5"
+	High="5" />	
+		<Sound>ABWarFa_animCarStarta</Sound> 
+		<Sound>ABWarFa_animCarStartb</Sound>
+		<Sound>ABWarFa_animCarStartc</Sound>
+		<Sound>ABWarFa_animCarStartd</Sound>
+		<Sound>ABWarFa_animCarStarte</Sound>
+		<Sound>ABWarFa_animCarStartf</Sound>
+	</AudioEvent>
+	
+	<AudioEvent
+	id="TEC_WarFactory_Animation_Car_DropUnload"
+	inheritFrom="AudioEvent:BaseSoundEffect"
+	Volume="45"
+	VolumeShift="-10"
+	MinRange="100"
+	MaxRange="500"
+	Limit="2"
+	Priority="LOWEST"
+	Type="WORLD SHROUDED EVERYONE"
+	SubmixSlider="SOUNDFX">
+	<PitchShift Low="-25" High="-15" />	
+		<Sound>ABWarFa_animCarDropa</Sound> 
+		<Sound>ABWarFa_animCarDropb</Sound>
+		<Sound>ABWarFa_animCarDropc</Sound>
+		<Sound>ABWarFa_animCarDropd</Sound>
+		<Sound>ABWarFa_animCarDrope</Sound>
+	</AudioEvent>
+	
+	<AudioEvent
+	id="TEC_WarFactory_Animation_Car_Load"
+	inheritFrom="AudioEvent:BaseSoundEffect"
+	Volume="45"
+	VolumeShift="-10"
+	MinRange="100"
+	MaxRange="500"
+	Priority="LOWEST"
+	Limit="2"
+	Type="WORLD SHROUDED EVERYONE"
+	SubmixSlider="SOUNDFX">
+	<PitchShift Low="-25" High="-15" />	
+		<Sound>ABWarFa_animCarLoada</Sound> 
+		<Sound>ABWarFa_animCarLoadb</Sound>
+		<Sound>ABWarFa_animCarLoadc</Sound>
+		<Sound>ABWarFa_animCarLoadd</Sound>
+	</AudioEvent>
+
+</AssetDeclaration>

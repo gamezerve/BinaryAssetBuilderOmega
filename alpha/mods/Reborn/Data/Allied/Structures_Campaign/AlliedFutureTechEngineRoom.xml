@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+
+    <Include type="all"	source="ART:NR_FutureTech_MiniTower3.W3X" />
+    <Include type="instance" source="DATA:Allied/Props/AlliedBarracks_Debris.xml" />
+    <Include type="instance" source="DATA:Civilian/Northern_Russia_NR/Props/NR_FutureTech_MiniTower3_Collapse.xml" />
+	
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3.NEWSKIN.W3X" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3.NEWSKIN_FILL.W3X" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3.OBBOX01.W3X" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3.OBBOX02.W3X" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3_COL.NEWSKIN.W3X" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3_COL_CTR.W3X" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3_COL_HRC.W3X" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3_CTR.W3X" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3_HRC.W3X" />
+	
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding3.xml" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding3_NRM.xml" />
+    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding3_SPM.xml" />
+	
+	
+		<!-- Base Object -->
+		<Include
+			type="instance"
+			source="DATA:BaseObjects/BaseStructure.xml" />
+	</Includes>
+	<GameObject
+		id="AlliedFutureTechEngineRoom"
+		inheritFrom="BaseStructure"
+		SelectPortrait="Portrait_Special_NR_Futuretech_MiniTower3"
+		ButtonImage="Button_Special_NR_Futuretech_MiniTower3"
+		Side="Allies"
+		EditorSorting="STRUCTURE"
+		BuildTime="15"
+		CommandSet="AlliedFutureTechEngineRoomCommandSet"
+		KindOf="+FS_TECHNOLOGY -CAN_BUILD_ON_WATER -CAN_BUILD_ON_DEEP_WATER"
+		RadarPriority="STRUCTURE"
+		PlacementViewAngle="225d"
+		ProductionQueueType="MAIN_STRUCTURE"
+		BuildPlacementTypeFlag="MAIN_STRUCTURE"
+		EditorName="AlliedFutureTechEngineRoom"
+		EnergyProduction="0"
+		HealthBoxHeightOffset="30"
+		Description="DESC:AlliedFutureTechEngineRoom"
+		TypeDescription="TYPE:AlliedFutureTechEngineRoom">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:AlliedFutureTechEngineRoom</DisplayName>
+
+
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="1000"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="StructureArmor"
+			DamageFX="FactionStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="CENTER">
+		<ConstructionBaseSelectionCriteria
+			ExcludedBaseTypes="NO_BUILD_RADIUS CAPTURED"
+			PreferredBaseTypes="MAIN_BASE"
+			SortOrder="PREFER_OLDEST" />
+		</SkirmishAIInformation>
+
+		<Draws>
+      <ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="true"
+				ExtraPublicBone="BONE_CONTACT_POINT_01 BONE_CONTACT_POINT_02 BONE_CONTACT_POINT_03 BONE_CONTACT_POINT_04 BONE_CONTACT_POINT_05 BONE_CONTACT_POINT_06 BONE_CONTACT_POINT_07 BONE_CONTACT_POINT_08 BONE_CONTACT_POINT_09 BONE_CONTACT_POINT_10 BONE_CONTACT_POINT_11 BONE_CONTACT_POINT_12 BONE_CONTACT_POINT_13 BONE_CONTACT_POINT_14 BONE_CONTACT_POINT_15 BONE_CONTACT_POINT_16 BONE_CONTACT_POINT_17 BONE_CONTACT_POINT_18 BONE_CONTACT_POINT_19 BONE_CONTACT_POINT_20">
+        <ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+          <Model
+						Name="NR_FutureTech_MiniTower3" />
+        </ModelConditionState>
+      </ScriptedModelDraw>
+    </Draws>
+
+
+
+
+
+		<Behaviors>
+			<Physics id="ModuleTag_Physics"/>
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction">
+				<DieMuxData DeathTypes="ALL" />
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_BuildingDebrisExplosion"
+					CreationObject="AlliedBarracks_Debris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_FXList">
+				<DieMuxData DeathTypes="ALL" />
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Small" />
+			</FXListBehavior>
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="NR_FutureTech_MiniTower3_Die_OCL">
+				<DieMuxData DeathTypes="ALL" />
+			</CreateObjectDie>	
+			<!-- civ buildings should have a CreateObjectDie to make a collapse version. -->
+			<DestroyDie
+				id="ModuleTag_DestroyDie">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</DestroyDie>
+			
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpackUpdate"
+				UnpackTime="1.5s" />
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+			<xi:include
+				href="DATA:Includes/GenericEngineerContain.xml" />
+			<xi:include
+				href="DATA:Includes/GenericAlliedBuildingDestruction.xml" />
+			<xi:include
+				href="DATA:Includes/GenericAlliedBuildingSuicide.xml" />
+			
+
+
+
+
+
+
+		</Behaviors>
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="2000"
+				/>
+		</Body>
+
+		
+		
+		<Geometry
+			IsSmall="false">
+      <Shape
+           Type= "BOX"
+           MajorRadius = "5.13126"
+           MinorRadius = "5.13126"
+           Height = "61.0062"
+           ContactPointGeneration = "STRUCTURE" >
+        <Offset
+            x = "0.0"
+            y = "0.0"
+            z = "0.0" />
+      </Shape>
+      <Shape
+           Type= "BOX"
+           MajorRadius = "34.8067"
+           MinorRadius = "34.8067"
+           Height = "16.6756"
+           ContactPointGeneration = "STRUCTURE" >
+        <Offset
+            x = "0.0"
+            y = "0.0"
+            z = "0.0" />
+      </Shape>
+
+		</Geometry>
+		
+		
+
+		<AudioArraySound>
+			<AudioEntry Sound="HumanFaction_MediumBuilding_LightDamageMS" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="HumanFaction_MediumBuilding_HeavyDamageMS" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound> 
+
+		<VisionInfo
+			VisionRange="150"
+			ShroudClearingRange="150" />
+	</GameObject>
+	
+  <ObjectCreationList
+		id="NR_FutureTech_MiniTower3_Die_OCL">
+    <CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="1"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+      <CreateObject>NR_FutureTech_MiniTower3_Collapse</CreateObject>
+    </CreateObject>
+  </ObjectCreationList>
+
+</AssetDeclaration>

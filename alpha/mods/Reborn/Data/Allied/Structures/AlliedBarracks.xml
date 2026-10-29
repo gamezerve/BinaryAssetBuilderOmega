@@ -5,16 +5,16 @@
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 		
 <!-- THIS IS HERE UNTIL WE GET A WAY POINT MARKER IN THE GAME -->
-		<Include type="all"	source="ART:GBDugOut.w3x" />
+		<!-- <Include type="all"	source="ART:GBDugOut.w3x" /> -->
 		
-		<Include type="all"	source="ART:ABBarracks.w3x" /> 
-		<Include type="all" source="ART:ABBarracks_particles.w3x" />
-		<Include type="all"	source="ART:ABBarracks_GAG.w3x" />
-		<Include type="all"	source="ART:ABBarracks_DOOR.w3x" />
-		<Include type="all"	source="ART:ABBarracks_UPGRADE.w3x" />
-		<Include type="all"	source="ART:ABBarracks_BLD_SKN.w3x" />			
-		<Include type="all"	source="ART:ABBarracks_BLD_BLD.w3x" />	
-		<Include type="all"	source="ART:ABBarracks_LightsA.w3x" />	
+		<!-- <Include type="all"	source="ART:ABBarracks.w3x" />  -->
+		<!-- <Include type="all" source="ART:ABBarracks_particles.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABBarracks_GAG.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABBarracks_DOOR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABBarracks_UPGRADE.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABBarracks_BLD_SKN.w3x" />			 -->
+		<!-- <Include type="all"	source="ART:ABBarracks_BLD_BLD.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABBarracks_LightsA.w3x" />	 -->
 		<!-- Base Object -->
 		<Include type="instance"	source="DATA:BaseObjects/BaseStructure.xml" />
 	</Includes>

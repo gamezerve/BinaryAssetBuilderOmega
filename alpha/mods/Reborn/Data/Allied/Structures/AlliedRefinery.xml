@@ -2,24 +2,24 @@
 <AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
 	<Tags></Tags>
 	<Includes>
-		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
-		<Include type="all"	source="ART:ABRefinery_FX.w3x" />
-		<Include type="all"	source="ART:ABRefinery_SKN.w3x" />
-		<Include type="all"	source="ART:ABRefinery_FX.w3x" />
-		<Include type="all"	source="ART:ABRefinery_IDLA.w3x" />
-		<Include type="all" source="ART:ABRefinery_BLD_SKN.w3x" />
-		<Include type="all" source="ART:ABRefinery_BLD_BLD.w3x" />
-		<Include type="all" source="ART:ABRefinery_BLD_BLDW.w3x" />
-		<Include type="all"	source="ART:ABRefinery_ARM_SKN.w3x" />
-		<Include type="all"	source="ART:ABRefinery_ARM_IDLA.w3x" />			
-		<Include type="all"	source="ART:ABRefinery_ARM_UNLOAD.w3x" />			
-		<Include type="all"	source="ART:ABRefinery_ARM_EMPTY.w3x" />			
-		<Include type="all"	source="ART:ABRefinery_Platform.w3x" />	
-		<Include type="all"	source="ART:ABRefinery_Platform_BLD.w3x" />
+		<!-- <Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />  -->
+		<!-- <Include type="all"	source="ART:ABRefinery_FX.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABRefinery_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABRefinery_FX.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABRefinery_IDLA.w3x" /> -->
+		<!-- <Include type="all" source="ART:ABRefinery_BLD_SKN.w3x" /> -->
+		<!-- <Include type="all" source="ART:ABRefinery_BLD_BLD.w3x" /> -->
+		<!-- <Include type="all" source="ART:ABRefinery_BLD_BLDW.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABRefinery_ARM_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABRefinery_ARM_IDLA.w3x" />			 -->
+		<!-- <Include type="all"	source="ART:ABRefinery_ARM_UNLOAD.w3x" />			 -->
+		<!-- <Include type="all"	source="ART:ABRefinery_ARM_EMPTY.w3x" />			 -->
+		<!-- <Include type="all"	source="ART:ABRefinery_Platform.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABRefinery_Platform_BLD.w3x" /> -->
 			
-		<Include type="all"	source="ART:Ore_Gold_SKN.w3x" />
-		<Include type="all"	source="ART:Ore_Gold_ABRU.w3x" />
-		<Include type="all"	source="ART:Ore_Gold_ABRE.w3x" />
+		<!-- <Include type="all"	source="ART:Ore_Gold_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Ore_Gold_ABRU.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Ore_Gold_ABRE.w3x" /> -->
 													
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseStructure.xml" />
