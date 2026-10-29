@@ -3,6 +3,24 @@
 
 	<LogicCommand
 		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFBCommandCenter">
+		<Object>AlliedFBCommandCenter</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedScienceFacility">
+		<Object>AlliedScienceFacility</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedTechInhibitor">
+		<Object>AlliedTechInhibitor</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
 		id="Command_ConstructAlliedCommandCenter">
 		<Object>AlliedCommandCenter</Object>
 	</LogicCommand>	

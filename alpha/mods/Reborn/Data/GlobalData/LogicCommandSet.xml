@@ -39,9 +39,9 @@
 
 	<LogicCommandSet
 		id="AlliedCommandCenterCommandSet">
-		<!-- <Cmd>Command_ConstructAlliedTechInhibitor</Cmd> -->
-		<!-- <Cmd>Command_ConstructAlliedScienceFacility</Cmd> -->
-		<!-- <Cmd>Command_ConstructAlliedFBCommandCenter</Cmd> -->
+		<Cmd>Command_ConstructAlliedTechInhibitor</Cmd>
+		<Cmd>Command_ConstructAlliedScienceFacility</Cmd>
+		<Cmd>Command_ConstructAlliedFBCommandCenter</Cmd>
 		<!-- <Cmd>Command_ConstructAlliedRushmoreFiringBase</Cmd> -->
 		<!-- <Cmd>Command_ConstructAlliedFutureTechHQ</Cmd> -->
 		
@@ -52,6 +52,28 @@
 		<!-- <Cmd>Command_ConstructAlliedAirportControlTower</Cmd> -->
 		<!-- <Cmd>Command_ConstructAlliedRelayStation</Cmd> -->
 	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="AlliedFBCommandCenterCommandSet">
+		<!-- <Cmd>Command_ConstructAlliedFBDormitory</Cmd> -->
+		<!-- <Cmd>Command_ConstructAlliedFBArmory</Cmd> -->
+		<!-- <Cmd>Command_ConstructAlliedFBDepot</Cmd>	 -->
+		<!-- <Cmd>Command_ConstructAlliedFBCorner</Cmd>	 -->
+		<!-- <Cmd>Command_ConstructAlliedFBEndCap</Cmd>	 -->
+		<!-- <Cmd>Command_ConstructAlliedFBWallHub</Cmd>	 -->
+		<!-- <Cmd>Command_ConstructAlliedFBWallMiddleSegment</Cmd>	 -->
+		<!-- <Cmd>Command_ConstructAlliedFBWallSegment</Cmd> -->
+		<!-- <Cmd>Command_ConstructAlliedFBGate</Cmd>	 -->
+		<!-- <Cmd>Command_ConstructAlliedFBWatchtower</Cmd>	 -->
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="AlliedScienceFacilityCommandSet">
+		</LogicCommandSet>
+
+	<LogicCommandSet
+		id="AlliedTechInhibitorCommandSet">
+		</LogicCommandSet>
 	
 	<LogicCommandSet
 		id="AlliedTechStructureCommandSet">

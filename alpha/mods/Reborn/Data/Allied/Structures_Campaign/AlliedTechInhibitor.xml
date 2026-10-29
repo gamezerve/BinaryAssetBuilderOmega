@@ -5,7 +5,7 @@
 	
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 		
-		<Include type="all"	source="ART:MY_AlliedTechScrambler.W3X" />
+		<!-- <Include type="all"	source="ART:MY_AlliedTechScrambler.W3X" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
 		<Include type="instance" source="DATA:Civilian/Mykonos_MY/Props/MY_AlliedTechScrambler_Collapse.xml" />
 

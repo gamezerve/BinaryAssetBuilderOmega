@@ -527,6 +527,160 @@
 	DESC:ALLIEDCOMMANDCENTER
 		"A high-ranking Allied commander is inside this facility, personally conducting the battle and authorising the construction of rare allied structures."
 	End
+	
+// Allied Tech Inhibitor
+
+	TYPE:AlliedTechInhibitor
+		"Technology Scrambler \n> Health = 3000 \n> Shroud Clearing Range = 500"
+	End
+
+	DESC:AlliedTechInhibitor
+		"This signal-scrambling may be locking units authorized for use."
+	End
+	
+// Allied Science Facility
+
+	TYPE:AlliedScienceFacility
+		"Advanced Power Structure \n> Power Generation = +400 \n> Health = 4000 \n> Shroud Clearing Range = 500"
+	End
+
+	DESC:AlliedScienceFacility
+		"Mykonos Laboratories is home to the Allies' advanced weapons research, and power production."
+	End
+
+// Allied Fort Bradley
+
+	Name:AlliedFBCommandCenter
+		"Fort Bradley HQ"
+	End
+
+	DESC:AlliedFBCommandCenter
+		"It serves as a command center providing strategic coordination for military operations at Fort Bradley"
+	END
+
+	TYPE:AlliedFBCommandCenter
+		"Command Center \n> Health = 3000 \n> Shroud Clearing Range = 600 \n> Buildability Radius = 600"
+	END
+
+	Name:AlliedFBDormitory
+		"Fort Bradley Dormitory"
+	END
+
+	TYPE:AlliedFBDormitory
+		"Barracks \n> Health = 3000 \n> Shroud Clearing Range = 300"
+	END
+
+	DESC:AlliedFBDormitory
+		"A secure and comfortable residential facility designed to accommodate military personnel with modern amenities."
+	END
+
+	Name:AlliedFBArmory
+		"Fort Bradley Armory"
+	END
+
+	TYPE:AlliedFBArmory
+		"Armory \n> Health = 3000 \n> Shroud Clearing Range = 500"
+	END
+
+	DESC:AlliedFBArmory
+		"A fortified storage facility equipped for safeguarding and maintaining military weapons and ammunition."
+	END
+
+	Name:AlliedFBDepot
+		"Fort Bradley Depot"
+	END
+
+	TYPE:AlliedFBDepot
+		"Depot \n> Health = 3000 \n> Shroud Clearing Range = 500"
+	END
+
+	DESC:AlliedFBDepot
+		"A centralized logistics hub used for storing, distributing, and maintaining military supplies and equipment."
+	END
+
+	Name:AlliedFBCorner
+		"Fort Bradley Corner"
+	END
+
+	TYPE:AlliedFBCorner
+		"Corner \n> Health = 300 \n> Shroud Clearing Range = 50"
+	END
+
+	DESC:AlliedFBCorner
+		"A structural intersection where two exterior walls meet, providing support and defining the outer edge of the facility."
+	END
+
+	Name:AlliedFBEndCap
+		"Fort Bradley End Cap"
+	END
+
+	TYPE:AlliedFBEndCap
+		"End Cap \n> Health = 300 \n> Shroud Clearing Range = 50"
+	END
+
+	DESC:AlliedFBEndCap
+		"A structural or architectural feature marking the termination point of a wall or barrier, providing closure and reinforcement."
+	END
+
+	Name:AlliedFBWallHub
+		"Fort Bradley Wall Hub"
+	END
+
+	TYPE:AlliedFBWallHub
+		"Wall Hub \n> Health = 300 \n> Shroud Clearing Range = 400"
+	END
+
+	DESC:AlliedFBWallHub
+		"A central junction point where multiple wall segments connect, allowing for structural integration and directional extension."
+	END
+
+	Name:AlliedFBWallMiddleSegment
+		"Fort Bradley Mid-Wall"
+	END
+
+	TYPE:AlliedFBWallMiddleSegment
+		"Mid-Wall \n> Health = 300 \n> Shroud Clearing Range = 50"
+	END
+
+	DESC:AlliedFBWallMiddleSegment
+		"A central section of a wall segment providing structural continuity and potential access or reinforcement along its length."
+	END
+
+	Name:AlliedFBWallSegment
+		"Fort Bradley Wall Segment"
+	END
+
+	TYPE:AlliedFBWallSegment
+		"Wall Segment \n> Health = 200 \n> Shroud Clearing Range = 50"
+	END
+
+	DESC:AlliedFBWallSegment
+		"An individual section of a larger defensive wall structure, designed for modular assembly and fortified protection."
+	END
+
+	Name:AlliedFBGate
+		"Fort Bradley Gate"
+	END
+
+	TYPE:AlliedFBGate
+		"Gate \n> Health = 200 \n> Shroud Clearing Range = 50"
+	END
+
+	DESC:AlliedFBGate
+		"A controlled entry point integrated into the defensive wall, allowing regulated access while maintaining security."
+	END
+
+	Name:AlliedFBWatchtower
+		"Fort Bradley Watchtower"
+	END
+
+	TYPE:AlliedFBWatchtower
+		"Gate \n> Health = 1500 \n> Shroud Clearing Range = 650"
+	END
+
+	DESC:AlliedFBWatchtower
+		"An elevated structure designed for surveillance and defense, offering a wide field of view over the surrounding area."
+	END
 
 // Allied Paradrop
 	

@@ -29,11 +29,45 @@
 		<Target>AlliedAirField</Target>
 		<Target>AlliedNavalYard</Target>
 		<Target>AlliedTechStructure</Target>
+		<Target>AlliedCommandCenter</Target>
+		<Target>AlliedTechInhibitor</Target>
+		<Target>AlliedScienceFacility</Target>
+		<Target>AlliedFBCommandCenter</Target>
+		<Target>AlliedFBDormitory</Target>
+		<Target>AlliedFBArmory</Target>
+		<Target>AlliedFBDepot</Target>
+		<Target>AlliedRushmoreFiringBase</Target>
+		<Target>AlliedFutureTechHQ</Target>
+		<Target>AlliedFutureTechAmmoDump</Target>
+		<Target>AlliedFutureTechBallisticsCenter</Target>
+		<Target>AlliedFutureTechEngineRoom</Target>
+		<Target>AlliedFutureTechSignalArray</Target>
+		<Target>AlliedFutureTechFutureTechSkytower</Target>
+		<Target>AlliedFutureTechFutureTechEstates</Target>
+		<Target>AlliedFutureTechComCenter</Target>
+		<Target>AlliedFutureTechRDLabs</Target>
+		<Target>AlliedFutureTechCoolingTower</Target>
+		<Target>AlliedFutureTechArsenal</Target>
+		<Target>AlliedFutureTechHarmonizerControl</Target>
 		
 		<Target>JapanNavalYard</Target>
 		<Target>JapanRefinery</Target>
 		<Target>JapanWarFactory</Target>
 		<Target>JapanTechStructure</Target>
+		<Target>JapanCommandCenter</Target>
+		<Target>JapanImperialAdmin01</Target>
+		<Target>JapanImperialAdmin02</Target>
+		<Target>JapanImperialAdmin03</Target>
+		<Target>JapanEmperorsPalace</Target>
+		<Target>JapanFortressPowerCore</Target>
+		<Target>JapanToyamaHighCommand</Target>
+		<Target>JapanNagamaDojo</Target>
+		<Target>JapanTenzaiRobotics</Target>
+		<Target>JapanShiradaDocks</Target>
+		<Target>JapanHarborBuilding</Target>
+		<Target>ImperialHarborBuilding</Target>
+		<Target>JapanYurikoBarracks</Target>
+		<Target>JapanYurikoWarFactory</Target>
 		
 		<Target>JapanNavalYardEgg</Target>
 		<Target>JapanRefineryEgg</Target>
@@ -70,6 +104,29 @@
 		<Target>SovietFought2DeathStatue</Target>
 		<Target>SovietBigMamaStatue</Target>
 		<Target>SovietArtilleryDome</Target>
+		<Target>AlliedSupplyPortAuthority</Target>
+		<Target>AlliedFBCorner</Target>
+		<Target>AlliedFBEndCap</Target>
+		<Target>AlliedFBWallHub</Target>
+		<Target>AlliedFBWallMiddleSegment</Target>
+		<Target>AlliedFBWallSegment</Target>
+		<Target>AlliedFBGate</Target>
+		<Target>AlliedFBWatchtower</Target>
+		<Target>AlliedCoastalGun</Target>
+		<Target>AlliedRadioTower</Target>
+		<Target>AlliedRushmoreHeadControl</Target>
+		<Target>AlliedAirportControlTower</Target>
+		<Target>AlliedRelayStation</Target>
+		<Target>JapanWaveForceTricannon</Target>
+		<Target>JapanFortressCrane</Target>
+		<Target>JapanFortressPump</Target>
+		<Target>JapanEmperorFlagpoleStatue</Target>
+		<Target>JapanEmperorSonFlagpoleStatue</Target>
+		<Target>JapanImperialLongRangeRadar</Target>
+		<Target>JapanHouseofShinzo</Target>
+		<Target>JapanHouseofShinzo02</Target>
+		<Target>JapanKenjisHQ</Target>
+		<Target>JapanNanoswarmHiveEX</Target>
 	</ExperienceLevelTemplate>
 	
 	<!-- Soviet Chief Scientist ____________________________________ -->

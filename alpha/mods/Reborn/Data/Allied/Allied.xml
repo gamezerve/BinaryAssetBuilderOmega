@@ -46,9 +46,9 @@
 	<!-- from Campaign to Skirmish -->
 		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedCommandCenter.xml" />
 		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedSupplyPortAuthority.xml" /> -->
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedTechInhibitor.xml" /> -->
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedScienceFacility.xml" /> -->
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFBCommandCenter.xml" /> -->
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedTechInhibitor.xml" />
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedScienceFacility.xml" />
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFBCommandCenter.xml" />
 		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFBDormitory.xml" /> -->
 		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFBArmory.xml" /> -->
 		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFBDepot.xml" /> -->
