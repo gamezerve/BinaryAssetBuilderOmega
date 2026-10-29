@@ -17,11 +17,12 @@ not the process working directory. Names are Windows-case-insensitive. The
 first existing file wins. Malformed mod XML, directory shadows and unsafe/reparse
 paths fail; they do not authorize falling through to a stock file.
 
-<!-- Reborn: missing retail ART all-includes are warning-only, without suppressing errors inside existing sources. -->
-Missing `ART:` Includes with `type="all"` warn as `MISSINGART` and are skipped
+<!-- Reborn: missing retail ART all/instance includes are warning-only, without suppressing errors inside existing sources. -->
+Missing `ART:` Includes with `type="all"` or `type="instance"` warn as `MISSINGART` and are skipped
 after all search locations are exhausted. The warning records the declaring
-file/line and searched paths. Existing ART files, instance Includes, DATA
-Includes and texture payloads retain normal processing and error checks.
+file/line and searched paths. Existing ART files still provide their normal
+assets or instance bases. Missing required inheritance bases, DATA Includes
+and texture payloads remain errors.
 
 ## Local development stock library
 

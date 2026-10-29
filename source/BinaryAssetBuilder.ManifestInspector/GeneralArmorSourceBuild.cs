@@ -21,7 +21,7 @@ internal static class GeneralArmorSourceBuild
         // Reborn: focused armor deployments carry only their reviewed schema graph, not the full SDK catalog or a developer checkout.
         string schemaPath = Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!, "ArmorSourcePipeline.xsd");
         var environment = SourceEnvironment(sourceRoot, entry, output, schemaPath);
-        var paths = SdkSourcePathAudit.Inspect(environment,search:sdk==null?null:SdkSourceSearch.ForMod(entry,sdk,stockData),skipMissingArtAll:sdk!=null);
+        var paths = SdkSourcePathAudit.Inspect(environment,search:sdk==null?null:SdkSourceSearch.ForMod(entry,sdk,stockData),skipMissingArtIncludes:sdk!=null);
         if (!paths.ScopedPathAuditComplete || paths.StoppedAtLimit || paths.Sources.Length > 32 || paths.Includes.Length > 64 || paths.Resources.Length != 0)
             throw new InvalidDataException("Armor source build requires complete 1..32-source/64-edge file-free path inventory: "
                 + string.Join("; ", paths.Issues.Select(issue => issue.Code + ": " + issue.Detail)));

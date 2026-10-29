@@ -15,14 +15,18 @@ if($LASTEXITCODE-ne 0){throw 'Missing ART frontend tests failed; see frontend.lo
 $receipt=Get-Content -LiteralPath (Join-Path $fixture 'build-source/source-input.json') -Raw | ConvertFrom-Json
 Assert-RebornSourceSearch $receipt.Searches
 Assert-RebornGlobalSources ([pscustomobject]@{Evidence=@([pscustomobject]@{Sources=$receipt.Sources;Searches=$receipt.Searches})})
+# Reborn: publication replay must also support a captured missing instance independently of all-includes.
+$instanceSelections=@($receipt.Searches|Where-Object Layer -CEQ 'missing-art-instance')
+if($instanceSelections.Count-ne 1){throw 'Missing ART instance receipt was not captured.'}
+Assert-RebornSourceSearch $instanceSelections
 # Reborn: the final publication helpers must reject a file which appeared after its warning-only absence was captured.
 $candidate=Join-Path $fixture 'mod/Art/Missing.w3x'
 [IO.File]::WriteAllText($candidate,'Reborn: appeared after source capture.')
 $refused=$false
-try{Assert-RebornSourceSearch $receipt.Searches}catch{$refused=$true}
+try{Assert-RebornSourceSearch $instanceSelections}catch{$refused=$true}
 if(-not $refused){throw 'Static publication accepted a newly appearing ART file.'}
 $refused=$false
-try{Assert-RebornGlobalSources ([pscustomobject]@{Evidence=@([pscustomobject]@{Sources=$receipt.Sources;Searches=$receipt.Searches})})}catch{$refused=$true}
+try{Assert-RebornGlobalSources ([pscustomobject]@{Evidence=@([pscustomobject]@{Sources=$receipt.Sources;Searches=$instanceSelections})})}catch{$refused=$true}
 if(-not $refused){throw 'Global publication accepted a newly appearing ART file.'}
 Remove-Item -LiteralPath $candidate
 Assert-RebornSourceSearch $receipt.Searches
@@ -43,4 +47,4 @@ try{
     & $exe conscript-alpha-build (Join-Path $repo 'alpha/SageXML') $StaticManifest $GlobalManifest (Join-Path $fixture 'build-source/game.xml') (Join-Path $OutputDirectory 'compiled') *> (Join-Path $OutputDirectory 'compile.log')
     if($LASTEXITCODE-ne 0){throw 'Warning-only missing ART native build failed; see compile.log.'}
 }finally{$env:REBORN_DEVELOPER_BUILD_TESTS=$savedMode}
-Write-Output 'Reborn: missing ART includes: PASS (frontend, native stream/readback, static/global publication replay, legacy receipts, warning display deduplication; private output only).'
+Write-Output 'Reborn: missing ART all/instance includes: PASS (frontend, native stream/readback, static/global publication replay, legacy receipts, warning display deduplication; private output only).'

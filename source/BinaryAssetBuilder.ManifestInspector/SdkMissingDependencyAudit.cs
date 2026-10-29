@@ -52,7 +52,7 @@ internal static class SdkMissingDependencyAudit
         {
             string fixture=ReferencePipelineSmokeTest.FindFixture();
             var environment=new SdkEnvironmentPreflight.Report("ra3ep1",Path.GetDirectoryName(fixture)!,fixture,0,"",root,entry,hash,Path.GetDirectoryName(output)!,Array.Empty<SdkEnvironmentPreflight.Mapping>(),true,true,false,false,false,"0x5454A8E9",Array.Empty<string>());
-            paths=SdkSourcePathAudit.Inspect(environment,search:search,w3xSources:true,skipMissingArtAll:true);
+            paths=SdkSourcePathAudit.Inspect(environment,search:search,w3xSources:true,skipMissingArtIncludes:true);
         }
         else paths=new(root,null,null,new[]{new SdkSourcePathAudit.Source(entry,root,hash,initial.Length)},Array.Empty<SdkSourcePathAudit.Edge>(),Array.Empty<SdkSourcePathAudit.Resource>(),Array.Empty<SdkSourcePathAudit.Issue>(),true,false,true,false,false,Array.Empty<string>()){Search=search};
         // Reborn: availability uses SDK-local metadata, independently of registry, installed archives and native compiler development inputs.
@@ -289,7 +289,7 @@ internal static class SdkMissingDependencyAudit
     /** Reborn: every dependency diagnostic leads with its code and target, retaining readable owner/field/source evidence and structured JSON details. */
     //-------------------------------------------------------------------------------------------------
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: absent ART all-includes share warning formatting while all other source-path failures remain fatal. */
+    /** Reborn: absent ART all/instance includes share warning formatting while all other source-path failures remain fatal. */
     //-------------------------------------------------------------------------------------------------
     internal static Finding PathFinding(SdkSourcePathAudit.Issue issue)=>new(issue.Code=="MISSINGART"?"MISSINGART":"DEPENDENCYPATH",issue.Code=="MISSINGART"?"Warning":"Error",issue.LogicalPath,"Include/source",issue.Location?.File??issue.Document,issue.Location?.Line??0,issue.Location?.Column??0,"Include/@source",(issue.Code=="MISSINGART"?issue.Detail:issue.Code+": "+issue.Detail)+(issue.Location?.Context==true?" [source context; exact field origin unavailable]":""));
     internal static string FormatFinding(Finding finding)=>finding.Code=="WORLDBUILDERASSET"

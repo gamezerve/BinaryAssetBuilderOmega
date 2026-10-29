@@ -59,7 +59,7 @@ function Assert-RebornSourceSearch([object[]]$Selections) {
             if(Test-Path -LiteralPath $candidate -PathType Leaf){$winner=$candidate;break}
         }
         if($selection.PSObject.Properties['ExpectedMissing'] -and $selection.ExpectedMissing){
-            if($selection.Layer-cne 'missing-art-all' -or $selection.LogicalPath-notmatch '^ART:' -or $null-ne $winner){throw ('Skipped ART include changed: '+$selection.LogicalPath)}
+            if($selection.Layer-cnotin @('missing-art-all','missing-art-instance') -or $selection.LogicalPath-notmatch '^ART:' -or $null-ne $winner){throw ('Skipped ART include changed: '+$selection.LogicalPath)}
             continue
         }
         if($winner-ine $selection.PhysicalPath){throw ('Alias precedence changed: '+$selection.LogicalPath)}

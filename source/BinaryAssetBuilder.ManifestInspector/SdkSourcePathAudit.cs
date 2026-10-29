@@ -10,7 +10,7 @@ internal static class SdkSourcePathAudit
     internal sealed record Source(string PhysicalPath,string Root,string Sha256,long Bytes);
     internal sealed record Edge(string Document,string Kind,string LogicalPath,string? PhysicalPath)
     {
-        // Reborn: an explicitly warned absent ART all-include contributes no assets, definitions or inheritance visibility.
+        // Reborn: an explicitly warned absent ART all/instance include contributes no assets, definitions or inheritance visibility.
         public bool SkippedMissingArt {get;init;}
     }
     internal sealed record Resource(string Document,string Field,string LogicalPath,string PhysicalPath,long Bytes);
@@ -33,7 +33,7 @@ internal static class SdkSourcePathAudit
     //-------------------------------------------------------------------------------------------------
     /** Reborn: inspect a bounded reachable path graph from explicit environment evidence without recursive directory scans or source writes. */
     //-------------------------------------------------------------------------------------------------
-    internal static Report Inspect(SdkEnvironmentPreflight.Report environment,string? artRoot = null,string? audioRoot = null,bool knownMapAliases = false,SdkSourceSearch? search = null,bool w3xSources = false,bool skipMissingArtAll = false)
+    internal static Report Inspect(SdkEnvironmentPreflight.Report environment,string? artRoot = null,string? audioRoot = null,bool knownMapAliases = false,SdkSourceSearch? search = null,bool w3xSources = false,bool skipMissingArtIncludes = false)
     {
         string data = SdkEnvironmentPreflight.DirectoryPath(environment.SourceRoot);
         artRoot = search?.ModArt ?? (artRoot == null ? null : SdkEnvironmentPreflight.DirectoryPath(artRoot));
@@ -138,14 +138,14 @@ internal static class SdkSourcePathAudit
                         {if(resources.Count>=2048){Add("ResourceLimit",path,logical,"2048-resource cap reached.");stopped=true;}else resources.Add(new(path,"Include",logical,child.Path,new FileInfo(child.Path).Length));}
                         else Visit(child.Path,child.Root,depth+1,()=>Locate(path,logical));
                     }
-                    // Reborn: only exhausted SDK ART all-include searches are warnings; invalid paths and existing broken sources remain errors.
-                    catch(SdkSourceSearch.MissingFileException error)when(skipMissingArtAll&&search!=null&&kind=="all"&&logical.StartsWith("ART:",StringComparison.OrdinalIgnoreCase))
+                    // Reborn: only exhausted SDK ART all/instance include searches are warnings; invalid paths and existing broken sources remain errors.
+                    catch(SdkSourceSearch.MissingFileException error)when(skipMissingArtIncludes&&search!=null&&kind is ("all" or "instance")&&logical.StartsWith("ART:",StringComparison.OrdinalIgnoreCase))
                     {
                         edges.Add(new(path,kind,logical,null){SkippedMissingArt=true});
-                        searches.Add(new(path,logical,"missing-art-all","",search.ModArt,error.Candidates){ExpectedMissing=true});
+                        searches.Add(new(path,logical,"missing-art-"+kind,"",search.ModArt,error.Candidates){ExpectedMissing=true});
                         var ordinal=xml.GetElementsByTagName("Include",root.NamespaceURI).OfType<XmlElement>().TakeWhile(e=>!ReferenceEquals(e,include)).Count();
                         var exact=SdkXmlDiagnostics.Lines(bytes,path).Descendants(System.Xml.Linq.XName.Get("Include",root.NamespaceURI)).ElementAt(ordinal).Attribute("source")!;
-                        Add("MISSINGART",path,logical,"ART all-include file was not found; skipped. "+error.Message,SdkXmlDiagnostics.Point(path,exact));
+                        Add("MISSINGART",path,logical,"ART "+kind+"-include file was not found; skipped. "+error.Message,SdkXmlDiagnostics.Point(path,exact));
                     }
                     catch (Exception error) when (error is IOException or InvalidDataException or ArgumentException or NotSupportedException)
                     { edges.Add(new(path,kind,logical,null)); Add("IncludePath",path,logical,search==null?"Unsupported/missing alias root, unsafe path or non-XML Include; no fallback attempted.":error.Message[..Math.Min(error.Message.Length,2048)]); }

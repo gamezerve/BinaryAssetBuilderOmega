@@ -170,8 +170,8 @@ the external SdkDataRoot override is removed, and UprisingXmlRoot uses the same
 local copy. The stock library is ignored by Git pending redistribution review.
 ART basename lookup tries direct mod
 Art, mod two-character fanout, then SDK fanout. AUDIO searches mod then SDK Audio.
-<!-- Reborn: absent ART all-includes are nonfatal; authored resources and other source errors remain validated. -->
-Missing `ART:` `type="all"` includes produce `MISSINGART` warnings with file/line
+<!-- Reborn: absent ART all/instance includes are nonfatal; authored resources and other source errors remain validated. -->
+Missing `ART:` `type="all"` or `type="instance"` includes produce `MISSINGART` warnings with file/line
 information and are skipped. Existing ART sources are processed normally.
 See [source search details](../docs/RA3EP1_SOURCE_SEARCH.md). Locating resources
 does not yet enable W3X/audio compilation.

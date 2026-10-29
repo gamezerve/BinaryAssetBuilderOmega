@@ -95,8 +95,8 @@ internal static class ConscriptSourceInput
                 // Reborn: W3X includes contain ordinary EA declarations and can select the container-only build route.
                 string source=include.GetAttribute("source");if(!source.EndsWith(".xml",StringComparison.OrdinalIgnoreCase)&&!source.EndsWith(".w3x",StringComparison.OrdinalIgnoreCase))continue;
                 if(search!=null){
-                    // Reborn: routing probes defer missing ART all-includes to the warning-producing source capture.
-                    SdkSourceSearch.Selection selected;try{selected=search.Select(path,source,confinement);}catch(SdkSourceSearch.MissingFileException)when(include.GetAttribute("type")=="all"&&source.StartsWith("ART:",StringComparison.OrdinalIgnoreCase)){continue;}
+                    // Reborn: routing probes defer missing ART all/instance includes to the warning-producing source capture.
+                    SdkSourceSearch.Selection selected;try{selected=search.Select(path,source,confinement);}catch(SdkSourceSearch.MissingFileException)when(include.GetAttribute("type") is ("all" or "instance")&&source.StartsWith("ART:",StringComparison.OrdinalIgnoreCase)){continue;}
                     if(Visit(selected.PhysicalPath,selected.Root))return true;}
                 else if(source.StartsWith("DATA:",StringComparison.OrdinalIgnoreCase)){if(Visit(Resolve(root,Path.Combine(root,"mod.xml"),source[5..]),root))return true;}
                 else if(!source.Contains(':') && Visit(Resolve(root,path,source),root))return true;

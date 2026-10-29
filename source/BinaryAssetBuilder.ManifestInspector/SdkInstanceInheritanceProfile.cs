@@ -210,9 +210,9 @@ internal sealed class SdkInstanceInheritanceProfile
             for (int index = 0; index < includes.Length; index++)
             {
                 var include = includes[index]; var edge = expected[index]; string logical = include.GetAttribute("source");
-                // Reborn: only a captured, missing ART all-include may contribute no visible bases or definitions.
+                // Reborn: only a captured, missing ART all/instance include may contribute no visible bases or definitions.
                 if(edge.SkippedMissingArt){
-                    if(include.NamespaceURI!=Ea||include.LocalName!="Include"||include.GetAttribute("type")!="all"||edge.Kind!="all"||edge.LogicalPath!=logical||edge.PhysicalPath!=null||!logical.StartsWith("ART:",StringComparison.OrdinalIgnoreCase)||include.Attributes.OfType<XmlAttribute>().Any(a=>a.NamespaceURI!="http://www.w3.org/2000/xmlns/"&&(a.NamespaceURI.Length!=0||a.Name is not ("source" or "type")))||include.ChildNodes.Cast<XmlNode>().Any(n=>n is XmlElement||n is not XmlComment&&!string.IsNullOrWhiteSpace(n.InnerText)))throw SdkXmlDiagnostics.At(new InvalidDataException("Invalid skipped ART all-include."),include);
+                    if(include.NamespaceURI!=Ea||include.LocalName!="Include"||include.GetAttribute("type") is not ("all" or "instance")||edge.Kind!=include.GetAttribute("type")||edge.LogicalPath!=logical||edge.PhysicalPath!=null||!logical.StartsWith("ART:",StringComparison.OrdinalIgnoreCase)||include.Attributes.OfType<XmlAttribute>().Any(a=>a.NamespaceURI!="http://www.w3.org/2000/xmlns/"&&(a.NamespaceURI.Length!=0||a.Name is not ("source" or "type")))||include.ChildNodes.Cast<XmlNode>().Any(n=>n is XmlElement||n is not XmlComment&&!string.IsNullOrWhiteSpace(n.InnerText)))throw SdkXmlDiagnostics.At(new InvalidDataException("Invalid skipped ART include."),include);
                     continue;
                 }
                 // Reborn: only an explicitly selected all edge can attempt a metadata proof; reference/precompiled edges remain closed.
