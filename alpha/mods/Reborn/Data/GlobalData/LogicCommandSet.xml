@@ -42,8 +42,8 @@
 		<Cmd>Command_ConstructAlliedTechInhibitor</Cmd>
 		<Cmd>Command_ConstructAlliedScienceFacility</Cmd>
 		<Cmd>Command_ConstructAlliedFBCommandCenter</Cmd>
-		<!-- <Cmd>Command_ConstructAlliedRushmoreFiringBase</Cmd> -->
-		<!-- <Cmd>Command_ConstructAlliedFutureTechHQ</Cmd> -->
+		<Cmd>Command_ConstructAlliedRushmoreFiringBase</Cmd>
+		<Cmd>Command_ConstructAlliedFutureTechHQ</Cmd>
 		
 		<!-- <Cmd>Command_ConstructAlliedSupplyPortAuthority</Cmd>		 -->
 		<!-- <Cmd>Command_ConstructAlliedCoastalGun</Cmd> -->
@@ -55,9 +55,9 @@
 	
 	<LogicCommandSet
 		id="AlliedFBCommandCenterCommandSet">
-		<!-- <Cmd>Command_ConstructAlliedFBDormitory</Cmd> -->
-		<!-- <Cmd>Command_ConstructAlliedFBArmory</Cmd> -->
-		<!-- <Cmd>Command_ConstructAlliedFBDepot</Cmd>	 -->
+		<Cmd>Command_ConstructAlliedFBDormitory</Cmd>
+		<Cmd>Command_ConstructAlliedFBArmory</Cmd>
+		<Cmd>Command_ConstructAlliedFBDepot</Cmd>	
 		<!-- <Cmd>Command_ConstructAlliedFBCorner</Cmd>	 -->
 		<!-- <Cmd>Command_ConstructAlliedFBEndCap</Cmd>	 -->
 		<!-- <Cmd>Command_ConstructAlliedFBWallHub</Cmd>	 -->
@@ -66,6 +66,77 @@
 		<!-- <Cmd>Command_ConstructAlliedFBGate</Cmd>	 -->
 		<!-- <Cmd>Command_ConstructAlliedFBWatchtower</Cmd>	 -->
 	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="AlliedFutureTechHQCommandSet">
+		<Cmd>Command_ConstructAlliedFutureTechAmmoDump</Cmd>
+		<Cmd>Command_ConstructAlliedFutureTechBallisticsCenter</Cmd>
+		<Cmd>Command_ConstructAlliedFutureTechEngineRoom</Cmd>
+		<Cmd>Command_ConstructAlliedFutureTechSignalArray</Cmd>
+		<Cmd>Command_ConstructAlliedFutureTechSkytower</Cmd>
+		<Cmd>Command_ConstructAlliedFutureTechEstates</Cmd>
+		<Cmd>Command_ConstructAlliedFutureTechComCenter</Cmd>
+		<Cmd>Command_ConstructAlliedFutureTechRDLabs</Cmd>
+		<Cmd>Command_ConstructAlliedFutureTechCoolingTower</Cmd>
+		<Cmd>Command_ConstructAlliedFutureTechArsenal</Cmd>
+		<Cmd>Command_ConstructAlliedFutureTechHarmonizerControl</Cmd>
+	</LogicCommandSet>	
+	
+	<LogicCommandSet
+		id="AlliedRushmoreFiringBaseCommandSet">
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="AlliedFBDepotCommandSet">
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="AlliedFBArmoryCommandSet">
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="AlliedFBAlliedFBDormitoryCommandSet">
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="AlliedFutureTechRDLabsCommandSet">
+	</LogicCommandSet>	
+	
+	<LogicCommandSet
+		id="AlliedFutureTechComCenterCommandSet">
+	</LogicCommandSet>	
+	
+	<LogicCommandSet
+		id="AlliedFutureTechEstatesCommandSet">
+	</LogicCommandSet>	
+	
+	<LogicCommandSet
+		id="AlliedFutureTechSkytowerCommandSet">
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="AlliedFutureTechSignalArrayCommandSet">
+	</LogicCommandSet>	
+	
+	<LogicCommandSet
+		id="AlliedFutureTechEngineRoomCommandSet">
+	</LogicCommandSet>	
+	
+	<LogicCommandSet
+		id="AlliedFutureTechBallisticsCenterCommandSet">
+	</LogicCommandSet>	
+	
+	<LogicCommandSet
+		id="AlliedFutureTechAmmoDumpCommandSet">
+	</LogicCommandSet>	
+	
+	<LogicCommandSet
+		id="AlliedFutureTechCoolingTowerCommandSet">
+	</LogicCommandSet>	
+	
+	<LogicCommandSet
+		id="AlliedFutureTechHarmonizerControlCommandSet">
+	</LogicCommandSet>	
 
 	<LogicCommandSet
 		id="AlliedScienceFacilityCommandSet">

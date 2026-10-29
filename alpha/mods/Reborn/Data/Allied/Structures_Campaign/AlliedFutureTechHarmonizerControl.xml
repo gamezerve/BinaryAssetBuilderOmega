@@ -4,30 +4,30 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.w3x" /> -->
 		<Include type="instance" source="DATA:Allied/Props/AlliedBarracks_Debris.xml" />
-		<Include type="instance" source="DATA:Reborn\Data\Allied\Props\NR_SigmaHarmonizer_Collapse.xml" />
+		<!-- <Include type="instance" source="DATA:Allied\Props\NR_SigmaHarmonizer_Collapse.xml" /> -->
 	
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.xml" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer_NRM.xml" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer_SPM.xml" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer_SPM.xml" /> -->
 
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SIGMAHARMONIZER_HRC.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SIGMAHARMONIZER_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SIGMAHARMONIZER_COL_HRC.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SIGMAHARMONIZER_COL_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SIGMAHARMONIZER_COL.NEWSKIN.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.OBBOX01.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.OBBOX02.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.NEWSKIN_FILL.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.NEWSKIN.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SIGMAHARMONIZER_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SIGMAHARMONIZER_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SIGMAHARMONIZER_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SIGMAHARMONIZER_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SIGMAHARMONIZER_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.NEWSKIN_FILL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.NEWSKIN.w3x" /> -->
 
-    <Include
-		type="all"
-		source="DATA:Reborn/Audio/Structures/FutureTech/S04Harmonizer_ExploD.xml" />
-    <Include
-		type="all"
-		source="DATA:Reborn/Audio/Structures/FutureTech/ABScien_buildDie1a.xml" />
+    <!-- <Include -->
+		<!-- type="all" -->
+		<!-- source="DATA:Reborn/Audio/Structures/FutureTech/S04Harmonizer_ExploD.xml" /> -->
+    <!-- <Include -->
+		<!-- type="all" -->
+		<!-- source="DATA:Reborn/Audio/Structures/FutureTech/ABScien_buildDie1a.xml" /> -->
 	
 		<!-- Base Object -->
 		<Include
@@ -227,7 +227,7 @@
     </CreateObject>
   </ObjectCreationList>
 
-	<AudioEvent id="BaseSoundEffect"
+	<AudioEvent id="BaseSoundEffectTechHarmonizerControl"
 		Volume="100" 
 		MinVolume="0"
 		ShrunkenPitchModifier="2.0"
@@ -250,7 +250,7 @@
 
 	<AudioEvent
 	id="S04_SigmaHarmonizer_Explo1"
-	inheritFrom="AudioEvent:BaseSoundEffect"
+	inheritFrom="BaseSoundEffectTechHarmonizerControl"
 	Volume="175"
 	Priority="HIGH"
 	Type="WORLD EVERYONE"
@@ -263,7 +263,7 @@
 
 	<AudioEvent
 	id="S04_SigmaHarmonizer_Explo3"
-	inheritFrom="AudioEvent:BaseSoundEffect"
+	inheritFrom="BaseSoundEffectTechHarmonizerControl"
 	Volume="105"
 	VolumeShift="-10"
 	Priority="HIGH"

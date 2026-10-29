@@ -5,9 +5,9 @@
 	<Include
 		type="all"
 		source="DATA:GlobalData/GlobalDefines.xml" />
-    <Include
-		type="all"
-		source="ART:ABBarracks_Gib.w3x" />
+    <!-- <Include -->
+		<!-- type="all" -->
+		<!-- source="ART:ABBarracks_Gib.w3x" /> -->
     <Include
 		type="instance"
 		source="DATA:BaseObjects/BaseExplodingObject.xml" />

@@ -5,27 +5,27 @@
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
 
-		<Include type="all"	source="ART:MR_RadioTower.W3X" />
+		<!-- <Include type="all"	source="ART:MR_RadioTower.W3X" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
 		<Include type="instance" source="DATA:Civilian/Mount_Rushmore_MR/Props/MR_RadioTower_Collapse.xml" />
 			
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower.NEWSKIN_CIV01.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower.NEWSKIN_FILL01.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower.OBBOX01.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower.NEWSKIN_FILL01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower.OBBOX01.w3x" /> -->
 
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_COL.NEW_SKIN.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_COL.OBBOX01.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_COL.OBBOX01.w3x" /> -->
 
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_COL_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_COL_HRC.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_HRC.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_HRC.w3x" /> -->
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower.xml" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_NRM.xml" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_SPM.xml" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RadioTower_SPM.xml" /> -->
 		
 		<!-- Base Object -->
 		<Include

@@ -5,66 +5,66 @@
 	
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 		
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/AM_Futuretech_Complex.w3x" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/AM_Futuretech_Complex.w3x" /> -->
     <!--		<Include type="all"	source="ART:AM_Futuretech_01_GAR.w3x" /> -->
     <Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
     <Include type="instance" source="DATA:Civilian/AMSTERDAM_AM/Props/AM_Futuretech_01_Collapse.xml" />
 
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/AU_GARRISON_FLAG_LARGE.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/AU_GARRISON_FLAG_LARGE_CTR.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/AU_GARRISON_FLAG_LARGE_HRC.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/AU_GARRISON_FLAG_LARGE.ALLIED.w3x" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/AU_GARRISON_FLAG_LARGE.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/AU_GARRISON_FLAG_LARGE_CTR.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/AU_GARRISON_FLAG_LARGE_HRC.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/AU_GARRISON_FLAG_LARGE.ALLIED.w3x" /> -->
 	
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/SU_GARRISON_FLAG_LARGE.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/SU_GARRISON_FLAG_LARGE_CTR.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/SU_GARRISON_FLAG_LARGE_HRC.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/SU_GARRISON_FLAG_LARGE.SOVIET.w3x" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/SU_GARRISON_FLAG_LARGE.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/SU_GARRISON_FLAG_LARGE_CTR.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/SU_GARRISON_FLAG_LARGE_HRC.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/SU_GARRISON_FLAG_LARGE.SOVIET.w3x" /> -->
 	
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/JU_GARRISON_FLAG_LARGE.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/JU_GARRISON_FLAG_LARGE_CTR.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/JU_GARRISON_FLAG_LARGE_HRC.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/JU_GARRISON_FLAG_LARGE.JAPAN.w3x" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/JU_GARRISON_FLAG_LARGE.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/JU_GARRISON_FLAG_LARGE_CTR.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/JU_GARRISON_FLAG_LARGE_HRC.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/JU_GARRISON_FLAG_LARGE.JAPAN.w3x" /> -->
 	
-    <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/AU_GarFlag.xml" />
-    <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/JU_GarFlag.xml" />
-    <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/SU_GarFlag.xml" />
+    <!-- <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/AU_GarFlag.xml" /> -->
+    <!-- <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/JU_GarFlag.xml" /> -->
+    <!-- <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/SU_GarFlag.xml" /> -->
 	
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/GARRISON_WALL_LARGE_CTR.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/GARRISON_WALL_LARGE_HRC.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/GARRISON_WALL_LARGE.GARRISON_WALL.w3x" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/GARRISON_WALL_LARGE_CTR.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/GARRISON_WALL_LARGE_HRC.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/GARRISON_WALL_LARGE.GARRISON_WALL.w3x" /> -->
 	
-    <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/Garrison.xml" />
-    <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/Garrison_NRM.xml" />
-    <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/Garrison_SPM.xml" />
+    <!-- <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/Garrison.xml" /> -->
+    <!-- <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/Garrison_NRM.xml" /> -->
+    <!-- <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/Garrison_SPM.xml" /> -->
 	
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.NEWSKIN.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.NEWSKIN_FILL01.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX01.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX02.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX03.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX04.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX05.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX06.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX07.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.NEWSKIN.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.NEWSKIN02.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.NEWSKIN03.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX01.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX02.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX03.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX04.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX05.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX06.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX07.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL_CTR.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL_HRC.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_CTR.w3x" />
-	<Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_HRC.w3x" />
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.NEWSKIN.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.NEWSKIN_FILL01.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX01.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX02.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX03.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX04.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX05.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX06.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX.OBBOX07.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.NEWSKIN.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.NEWSKIN02.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.NEWSKIN03.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX01.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX02.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX03.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX04.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX05.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX06.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.OBBOX07.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL_CTR.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_COL_HRC.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_CTR.w3x" /> -->
+	<!-- <Include type="all" source="ART:Reborn/Art/Structures/FutureTech/AM_FUTURETECH_COMPLEX_HRC.w3x" /> -->
 	
-    <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/AM_Futuretech_01.xml" />
-    <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/AM_Futuretech_01_NRM.xml" />
-    <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/AM_Futuretech_01_SPM.xml" />
+    <!-- <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/AM_Futuretech_01.xml" /> -->
+    <!-- <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/AM_Futuretech_01_NRM.xml" /> -->
+    <!-- <Include type="all"	source="DATA:Reborn/Art/Structures/FutureTech/AM_Futuretech_01_SPM.xml" /> -->
 
 
 		<!-- Base Object -->

@@ -682,6 +682,196 @@
 		"An elevated structure designed for surveillance and defense, offering a wide field of view over the surrounding area."
 	END
 
+// Allied FutureTech Harmonizer Control
+	
+	NAME:AlliedFutureTechHarmonizerControl
+		"Harmonizer Control"
+	End
+				
+	DESC:AlliedFutureTechHarmonizerControl
+		"Thornley conspired with FutureTech to construct this wildly dangerous, expensive eyesore."
+	End
+				
+	TYPE:AlliedFutureTechHarmonizerControl
+		"FutureTech Vehicle Production \n> Health = 4000 \n> Shroud Clearing Range = 500"
+	End
+	
+
+
+// Allied FutureTech Arsenal
+	
+	NAME:AlliedFutureTechArsenal
+		"FutureTech Arsenal"
+	End
+				
+	DESC:AlliedFutureTechArsenal
+		"Heavy-duty, high-tech facilities designed to churn out FutureTech's latest weapons of war."
+	End
+				
+	TYPE:AlliedFutureTechArsenal
+		"FutureTech Vehicle Production \n> Health = 4000 \n> Shroud Clearing Range = 500"
+	End
+	
+
+
+// Allied FutureTech Cooling Tower
+	
+	NAME:AlliedFutureTechCoolingTower
+		"Cooling Tower"
+	End
+				
+	DESC:AlliedFutureTechCoolingTower
+		"A compact, heat-dissipating structure used to release excess thermal energy, offering a more advanced and efficient design than the standard Allied Power Plant."
+	End
+				
+	TYPE:AlliedFutureTechCoolingTower
+		"FutureTech Structure \n> Power Production = +150 \n> Health = 1500 \n> Shroud Clearing Range = 500"
+	End
+	
+
+
+// Allied FutureTech R&D Labs
+	
+	NAME:AlliedFutureTechRDLabs
+		"FutureTech R&D Labs"
+	End
+				
+	DESC:AlliedFutureTechRDLabs
+		"No good is likely to come of the sort of science conducted within these well-hidden walls."
+	End
+				
+	TYPE:AlliedFutureTechRDLabs
+		"FutureTech Structure \n> Health = 4000 \n> Shroud Clearing Range = 150"
+	End
+	
+
+
+// Allied FutureTech Com Center
+	
+	NAME:AlliedFutureTechComCenter
+		"FutureTech Com Center"
+	End
+				
+	DESC:AlliedFutureTechComCenter
+		"A global network of good-for-nothings stay in cahoots via these conferencing centers."
+	End
+				
+	TYPE:AlliedFutureTechComCenter
+		"FutureTech Structure \n> Health = 4000 \n> Shroud Clearing Range = 150"
+	End
+	
+
+
+// Allied FutureTech Estates
+	
+	NAME:AlliedFutureTechEstates
+		"FutureTech Estates"
+	End
+				
+	DESC:AlliedFutureTechEstates
+		"Swanky housing intended for FutureTech's new hires, top execs, and richest clients."
+	End
+				
+	TYPE:AlliedFutureTechEstates
+		"FutureTech Structure \n> Health = 4000 \n> Shroud Clearing Range = 150"
+	End
+	
+
+
+// Allied FutureTech Skytower
+	
+	NAME:AlliedFutureTechSkytower
+		"FutureTech Skytower"
+	End
+				
+	DESC:AlliedFutureTechSkytower
+		"No telling how much overpaid, morally bankrupt corporate slime this place can hold."
+	End
+				
+	TYPE:AlliedFutureTechSkytower
+		"FutureTech Structure \n> Health = 4000 \n> Shroud Clearing Range = 150"
+	End
+	
+
+
+// Allied FutureTech Signal Array
+	
+	NAME:AlliedFutureTechSignalArray
+		"Signal Array"
+	End
+				
+	DESC:AlliedFutureTechSignalArray
+		"This military stockpile bears the markings of the Allies' preferred defense contractor."
+	End
+				
+	TYPE:AlliedFutureTechSignalArray
+		"FutureTech Structure \n> Health = 2000 \n> Shroud Clearing Range = 150"
+	End
+	
+
+
+// Allied FutureTech Engine Room
+	
+	NAME:AlliedFutureTechEngineRoom
+		"Engine Room"
+	End
+				
+	DESC:AlliedFutureTechEngineRoom
+		"This military stockpile bears the markings of the Allies' preferred defense contractor."
+	End
+				
+	TYPE:AlliedFutureTechEngineRoom
+		"FutureTech Structure \n> Health = 2000 \n> Shroud Clearing Range = 150"
+	End
+	
+
+
+// Allied FutureTech Ballistics Center
+	
+	NAME:AlliedFutureTechBallisticsCenter
+		"Ballistics Center"
+	End
+				
+	DESC:AlliedFutureTechBallisticsCenter
+		"This military stockpile bears the markings of the Allies' preferred defense contractor."
+	End
+				
+	TYPE:AlliedFutureTechBallisticsCenter
+		"FutureTech Structure \n> Health = 2000 \n> Shroud Clearing Range = 150"
+	End
+	
+
+
+// Allied FutureTech Ammo Dump
+	
+	NAME:AlliedFutureTechAmmoDump
+		"Ammo Dump"
+	End
+				
+	DESC:AlliedFutureTechAmmoDump
+		"This military stockpile bears the markings of the Allies' preferred defense contractor."
+	End
+				
+	TYPE:AlliedFutureTechAmmoDump
+		"FutureTech Structure \n> Health = 2000 \n> Shroud Clearing Range = 150"
+	End
+
+// Allied FutureTech HQ
+
+	TYPE:FutureTech
+		"Headquarter \n> Build Limit = 1 \n> Buildability Radius = 600 \n> Health = 55000 \n> Shroud Clearing Range = 500"
+	END
+
+// Allied Rushmore Firebase
+
+	TYPE:AlliedRushmoreFiringBase
+		"Tactical Structure \n> Health = 3000 \n> Shroud Clearing Range = 150 \n> Income = 40 in 4 sec \n> Build Limit = 1"
+	End
+
+	DESC:AlliedRushmoreFiringBase
+		"A dedicated command structure responsible for coordinating and issuing fire orders to supporting artillery and defense systems."
+	End
+
 // Allied Paradrop
 	
 	TYPE:CampaignPlayerPowerParadropLvl1Reborn

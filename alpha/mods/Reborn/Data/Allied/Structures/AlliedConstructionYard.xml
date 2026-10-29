@@ -4,15 +4,15 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:ABConYard_FX.w3x" />
-		<Include type="all"	source="ART:ABConYard_SKN.w3x" />	
-		<Include type="all"	source="ART:ABConYard_IDLA.w3x" />	
-		<Include type="all"	source="ART:ABConYard_Platform.w3x" />	
-		<Include type="all"	source="ART:ABConYard_Platform_BLD.w3x" />	
-		<Include type="all" source="ART:ABConYard_Platform_BLDW.w3x" />
-		<Include type="all" source="ART:ABConYard_LIGHTS.w3x" />
+		<!-- <Include type="all"	source="ART:ABConYard_FX.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABConYard_SKN.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABConYard_IDLA.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABConYard_Platform.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABConYard_Platform_BLD.w3x" />	 -->
+		<!-- <Include type="all" source="ART:ABConYard_Platform_BLDW.w3x" /> -->
+		<!-- <Include type="all" source="ART:ABConYard_LIGHTS.w3x" /> -->
 		<Include type="all"	source="DATA:GlobalData/GlobalDefines.xml" />
-		<Include type="all"	source="ART:AUMCV_TRANS.w3x" />
+		<!-- <Include type="all"	source="ART:AUMCV_TRANS.w3x" /> -->
     
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseStructure.xml" />
@@ -403,6 +403,7 @@
 					<IncludeThing>AlliedBarracks</IncludeThing>
 					<IncludeThing>AlliedNavalYard</IncludeThing>
 					<IncludeThing>AlliedWarFactory</IncludeThing>
+					<IncludeThing>AlliedFutureTechArsenal</IncludeThing>
 				</ObjectFilter>
 			</TechUpgrade>
 			<TechUpgrade
@@ -418,6 +419,7 @@
 					<IncludeThing>AlliedBarracks</IncludeThing>
 					<IncludeThing>AlliedNavalYard</IncludeThing>
 					<IncludeThing>AlliedWarFactory</IncludeThing>
+					<IncludeThing>AlliedFutureTechArsenal</IncludeThing>
 				</ObjectFilter>
 			</TechUpgrade>
 			<CommandSetUpgrade

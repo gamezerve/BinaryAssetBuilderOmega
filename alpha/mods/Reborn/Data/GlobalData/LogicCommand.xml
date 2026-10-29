@@ -1,5 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFutureTechHarmonizerControl">
+		<Object>AlliedFutureTechHarmonizerControl</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFutureTechArsenal">
+		<Object>AlliedFutureTechArsenal</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFutureTechCoolingTower">
+		<Object>AlliedFutureTechCoolingTower</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFutureTechRDLabs">
+		<Object>AlliedFutureTechRDLabs</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFutureTechComCenter">
+		<Object>AlliedFutureTechComCenter</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFutureTechEstates">
+		<Object>AlliedFutureTechEstates</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFutureTechSkytower">
+		<Object>AlliedFutureTechSkytower</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFutureTechSignalArray">
+		<Object>AlliedFutureTechSignalArray</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFutureTechEngineRoom">
+		<Object>AlliedFutureTechEngineRoom</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFutureTechBallisticsCenter">
+		<Object>AlliedFutureTechBallisticsCenter</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFutureTechAmmoDump">
+		<Object>AlliedFutureTechAmmoDump</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFutureTechHQ">
+		<Object>AlliedFutureTechHQ</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedRushmoreFiringBase">
+		<Object>AlliedRushmoreFiringBase</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFBDepot">
+		<Object>AlliedFBDepot</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFBArmory">
+		<Object>AlliedFBArmory</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFBDormitory">
+		<Object>AlliedFBDormitory</Object>
+	</LogicCommand>	
 
 	<LogicCommand
 		Type="CONSTRUCTION_YARD_CONSTRUCT"

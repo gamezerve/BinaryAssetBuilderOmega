@@ -4,26 +4,26 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding2.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding2.w3x" /> -->
 		<Include type="instance" source="DATA:Allied/Props/AlliedBarracks_Debris.xml" />
 		<Include type="instance" source="DATA:Civilian/Northern_Russia_NR/Props/NR_FutureTechScienceBuilding2_Collapse.xml" />
 	
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding2.xml" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding2_SPM.xml" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding2_NRM.xml" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding2.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding2_SPM.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding2_NRM.xml" /> -->
 
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2_HRC.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2_COL_HRC.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2_COL_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2_COL.NEWSKIN.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2.OBBOX01.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2.NEWSKIN_FILL.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2.NEWSKIN.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2.FX_LIGHTS01.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2.FX_LIGHTS02.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2.FX_LIGHTS03.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2.FX_LIGHTS04.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2.NEWSKIN_FILL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2.FX_LIGHTS01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2.FX_LIGHTS02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2.FX_LIGHTS03.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING2.FX_LIGHTS04.w3x" /> -->
 
 	
 		<!-- Base Object -->

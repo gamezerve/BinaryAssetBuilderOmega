@@ -4,23 +4,23 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-    <Include type="all"	source="ART:NR_FutureTech_MiniTower3.W3X" />
+    <!-- <Include type="all"	source="ART:NR_FutureTech_MiniTower3.W3X" /> -->
     <Include type="instance" source="DATA:Allied/Props/AlliedBarracks_Debris.xml" />
     <Include type="instance" source="DATA:Civilian/Northern_Russia_NR/Props/NR_FutureTech_MiniTower3_Collapse.xml" />
 	
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3.NEWSKIN.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3.NEWSKIN_FILL.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3.OBBOX01.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3.OBBOX02.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3_COL.NEWSKIN.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3_COL_CTR.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3_COL_HRC.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3_CTR.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3_HRC.W3X" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3.NEWSKIN.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3.NEWSKIN_FILL.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3.OBBOX01.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3.OBBOX02.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3_COL.NEWSKIN.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3_COL_CTR.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3_COL_HRC.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3_CTR.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER3_HRC.W3X" /> -->
 	
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding3.xml" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding3_NRM.xml" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding3_SPM.xml" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding3.xml" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding3_NRM.xml" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding3_SPM.xml" /> -->
 	
 	
 		<!-- Base Object -->

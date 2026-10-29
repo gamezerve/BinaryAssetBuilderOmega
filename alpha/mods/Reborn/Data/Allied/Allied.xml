@@ -10,37 +10,37 @@
 	<!-- from EP1 Campaign to Skirmish -->
 	
 	
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechHarmonizerControl.xml" /> -->
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechHarmonizerControl.xml" />
 		<!-- <Include type="all" source="DATA:Allied/Props/NR_SigmaHarmonizer_Collapse.xml" /> -->
 
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechAmmoDump.xml" /> -->
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechAmmoDump.xml" />
 		<!-- <Include type="all" source="DATA:Allied/Props/NR_FutureTech_MiniTower1_Collapse.xml" /> -->
 		
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechBallisticsCenter.xml" /> -->
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechBallisticsCenter.xml" />
 		<!-- <Include type="all" source="DATA:Allied/Props/NR_FutureTech_MiniTower2_Collapse.xml" /> -->
 		
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechEngineRoom.xml" /> -->
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechEngineRoom.xml" />
 		<!-- <Include type="all" source="DATA:Allied/Props/NR_FutureTech_MiniTower3_Collapse.xml" /> -->
 		
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechSignalArray.xml" /> -->
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechSignalArray.xml" />
 		<!-- <Include type="all" source="DATA:Allied/Props/NR_FutureTech_MiniTower4_Collapse.xml" /> -->
 		
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechSkytower.xml" /> -->
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechSkytower.xml" />
 		<!-- <Include type="all" source="DATA:Allied/Props/NR_FutureTechScienceBuilding1_Collapse.xml" /> -->
 		
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechEstates.xml" /> -->
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechEstates.xml" />
 		<!-- <Include type="all" source="DATA:Allied/Props/NR_FutureTechScienceBuilding4_Collapse.xml" /> -->
 
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechComCenter.xml" /> -->
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechComCenter.xml" />
 		<!-- <Include type="all" source="DATA:Allied/Props/NR_FutureTechScienceBuilding3_Collapse.xml" /> -->
 		
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechRDLabs.xml" /> -->
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechRDLabs.xml" />
 		<!-- <Include type="all" source="DATA:Allied/Props/NR_FutureTechScienceBuilding2_Collapse.xml" /> -->
 		
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechCoolingTower.xml" /> -->
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechCoolingTower.xml" />
 		<!-- <Include type="all" source="DATA:Allied/Props/NR_PowerPlnt.xml" /> -->
 		
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechArsenal.xml" /> -->
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechArsenal.xml" />
 		<!-- <Include type="all" source="DATA:Allied/Props/NR_FutureTechWarFactory_Collapse.xml" /> -->
 		
 	<!-- from Campaign to Skirmish -->
@@ -49,9 +49,9 @@
 		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedTechInhibitor.xml" />
 		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedScienceFacility.xml" />
 		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFBCommandCenter.xml" />
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFBDormitory.xml" /> -->
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFBArmory.xml" /> -->
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFBDepot.xml" /> -->
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFBDormitory.xml" />
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFBArmory.xml" />
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFBDepot.xml" />
 		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFBCorner.xml" /> -->
 		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFBEndCap.xml" /> -->
 		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFBWallHub.xml" /> -->
@@ -63,11 +63,11 @@
 		<!-- <Include type="all" source="DATA:Allied/Units/AlliedSalvageShipReborn.xml" /> -->
 		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedRadioTower.xml" /> -->
 		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedRushmoreHeadControl.xml" /> -->
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedRushmoreFiringBase.xml" /> -->
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedRushmoreFiringBase.xml" />
 		<!-- <Include type="all" source="DATA:Allied/units/AlliedUnassumingSovietTank.xml" /> -->
 		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedAirportControlTower.xml" /> -->
 		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedRelayStation.xml" /> -->
-		<!-- <Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechHQ.xml" /> -->
+		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechHQ.xml" />
 		
 		<!-- Infantry -->
 
@@ -117,7 +117,7 @@
 		<Include type="all" source="structures/AlliedBarracks.xml" />
 		<!-- <Include type="all" source="structures/AlliedBaseDefense.xml" /> -->
 		<!-- <Include type="all" source="structures/AlliedBaseDefenseAdvanced.xml" /> -->
-		<!-- <Include type="all" source="structures/AlliedConstructionYard.xml" /> -->
+		<Include type="all" source="structures/AlliedConstructionYard.xml" />
 		<Include type="all" source="structures/AlliedNavalYard.xml" />
 		<Include type="all" source="structures/AlliedPowerPlant.xml" />
 		<!-- <Include type="all" source="structures/AlliedPowerPlantTurbine.xml" /> -->

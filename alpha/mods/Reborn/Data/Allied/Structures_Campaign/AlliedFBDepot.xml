@@ -4,7 +4,7 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:NY_FortBradley_04.W3X" />
+		<!-- <Include type="all"	source="ART:NY_FortBradley_04.W3X" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
 		<Include type="instance" source="DATA:Civilian/New_York_NY/Props/NY_FortBradley_04_Collapse.xml" />
 			

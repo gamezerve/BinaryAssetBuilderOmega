@@ -4,54 +4,54 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory_Door.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory_Door.w3x" /> -->
 		<Include type="instance" source="DATA:Allied/Props/AlliedBarracks_Debris.xml" />
 		<Include type="instance" source="DATA:Civilian/Northern_Russia_NR/Props/NR_FutureTechWarFactory_Collapse.xml" />
 	
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory.xml" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory_SPM.xml" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory_NRM.xml" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory_SPM.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory_NRM.xml" /> -->
 		
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.xml" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer_NRM.xml" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer_SPM.xml" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_SigmaHarmonizer_SPM.xml" /> -->
 
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory_HRC.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_DOOR_HRC.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_DOOR_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_DOOR.ANIM_DOOR2.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_DOOR.ANIM_DOOR1.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_COL_HRC.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_COL_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_COL.NEWSKIN.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.OBBOX03.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.OBBOX02.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.OBBOX01.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.NEWSKIN_FILL.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.NEWSKIN.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.FX_LIGHTS.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.BONE_BONE_CONTACT_POINT_10.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WarFactory_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_DOOR_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_DOOR_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_DOOR.ANIM_DOOR2.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_DOOR.ANIM_DOOR1.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.OBBOX03.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.NEWSKIN_FILL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.FX_LIGHTS.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_WARFACTORY.BONE_BONE_CONTACT_POINT_10.w3x" /> -->
 
-		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarStarta.xml" />
-		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarStartb.xml" />
-		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarStartc.xml" />
-		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarStartd.xml" />
-		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarStarte.xml" />
-		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarStartf.xml" />
+		<!-- <Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarStarta.xml" /> -->
+		<!-- <Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarStartb.xml" /> -->
+		<!-- <Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarStartc.xml" /> -->
+		<!-- <Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarStartd.xml" /> -->
+		<!-- <Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarStarte.xml" /> -->
+		<!-- <Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarStartf.xml" /> -->
 		
-		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarLoada.xml" />
-		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarLoadb.xml" />
-		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarLoadc.xml" />
-		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarLoadd.xml" />
+		<!-- <Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarLoada.xml" /> -->
+		<!-- <Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarLoadb.xml" /> -->
+		<!-- <Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarLoadc.xml" /> -->
+		<!-- <Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarLoadd.xml" /> -->
 		
-		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarDropa.xml" />
-		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarDropb.xml" />
-		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarDropc.xml" />
-		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarDropd.xml" />
-		<Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarDrope.xml" />
+		<!-- <Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarDropa.xml" /> -->
+		<!-- <Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarDropb.xml" /> -->
+		<!-- <Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarDropc.xml" /> -->
+		<!-- <Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarDropd.xml" /> -->
+		<!-- <Include type="all"	source="DATA:Reborn/Audio/Structures/FutureTech/ABWarFa_animCarDrope.xml" /> -->
 
 	
 		<!-- Base Object -->
@@ -365,7 +365,7 @@
     </CreateObject>
   </ObjectCreationList>
 
-	<AudioEvent id="BaseSoundEffect"
+	<AudioEvent id="BaseSoundEffectTechArsenal"
 		Volume="100" 
 		MinVolume="0"
 		ShrunkenPitchModifier="2.0"
@@ -388,7 +388,7 @@
 	
 	<AudioEvent
 	id="TEC_WarFactory_Animation_Car_MoveStart"
-	inheritFrom="AudioEvent:BaseSoundEffect"
+	inheritFrom="BaseSoundEffectTechArsenal"
 	Volume="60"
 	VolumeShift="-10"
 	MinRange="100"
@@ -410,7 +410,7 @@
 	
 	<AudioEvent
 	id="TEC_WarFactory_Animation_Car_DropUnload"
-	inheritFrom="AudioEvent:BaseSoundEffect"
+	inheritFrom="BaseSoundEffectTechArsenal"
 	Volume="45"
 	VolumeShift="-10"
 	MinRange="100"
@@ -429,7 +429,7 @@
 	
 	<AudioEvent
 	id="TEC_WarFactory_Animation_Car_Load"
-	inheritFrom="AudioEvent:BaseSoundEffect"
+	inheritFrom="BaseSoundEffectTechArsenal"
 	Volume="45"
 	VolumeShift="-10"
 	MinRange="100"

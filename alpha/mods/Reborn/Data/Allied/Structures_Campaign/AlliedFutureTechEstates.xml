@@ -4,31 +4,31 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding4.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding4.w3x" /> -->
 		<Include type="instance" source="DATA:Allied/Props/AlliedBarracks_Debris.xml" />
 		<Include type="instance" source="DATA:Civilian/Northern_Russia_NR/Props/NR_FutureTechScienceBuilding4_Collapse.xml" />
 	
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4.NEWSKIN.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4.OBBOX01.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4.OBBOX02.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4.OBBOX03.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4.OBBOX04.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4_COL.FILLER_DEBRIS.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4_COL.NEWSKIN.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4_COL_CTR.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4_COL_HRC.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4_CTR.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4_HRC.W3X" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4.NEWSKIN.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4.OBBOX01.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4.OBBOX02.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4.OBBOX03.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4.OBBOX04.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4_COL.FILLER_DEBRIS.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4_COL.NEWSKIN.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4_COL_CTR.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4_COL_HRC.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4_CTR.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECHSCIENCEBUILDING4_HRC.W3X" /> -->
 
 
 
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding4.xml" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding4_NRM.xml" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding4_SPM.xml" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding4.xml" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding4_NRM.xml" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FutureTechScienceBuilding4_SPM.xml" /> -->
 	
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_PowerPlnt.xml" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_PowerPlnt_NRM.xml" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_PowerPlnt_SPM.xml" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_PowerPlnt.xml" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_PowerPlnt_NRM.xml" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_PowerPlnt_SPM.xml" /> -->
 
 	
 		<!-- Base Object -->

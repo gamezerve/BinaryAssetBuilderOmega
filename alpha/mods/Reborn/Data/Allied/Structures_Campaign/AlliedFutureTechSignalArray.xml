@@ -4,18 +4,18 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-    <Include type="all"	source="ART:NR_FutureTech_MiniTower4.W3X" />
+    <!-- <Include type="all"	source="ART:NR_FutureTech_MiniTower4.W3X" /> -->
     <Include type="instance" source="DATA:Allied/Props/AlliedBarracks_Debris.xml" />
     <Include type="instance" source="DATA:Civilian/Northern_Russia_NR/Props/NR_FutureTech_MiniTower4_Collapse.xml" />
 	
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER4.NEWSKIN.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER4.NEWSKIN_FILL.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER4.OBBOX01.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER4_COL.NEWSKIN.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER4_COL_CTR.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER4_COL_HRC.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER4_CTR.W3X" />
-    <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER4_HRC.W3X" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER4.NEWSKIN.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER4.NEWSKIN_FILL.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER4.OBBOX01.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER4_COL.NEWSKIN.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER4_COL_CTR.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER4_COL_HRC.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER4_CTR.W3X" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Structures/FutureTech/NR_FUTURETECH_MINITOWER4_HRC.W3X" /> -->
 	
 
 
