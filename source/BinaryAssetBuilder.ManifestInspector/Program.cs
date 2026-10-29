@@ -406,6 +406,15 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();WeaponTurretSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==4 && args[0]=="particle-template-self-test")
             {CompilerSmokeTest.InitializeHashProvider();FXParticleSystemCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
+            // Reborn: collect all prepared-object native failures in one isolated diagnostic pass, without stream publication.
+            if(args.Length==5 && args[0]=="conscript-batch-native-review")
+            {CompilerSmokeTest.InitializeHashProvider();ConscriptMultiAssetBuild.TryRun(args[1],args[2],args[3],args[4],nativeReview:true);return 0;}
+            // Reborn: verify the Allied unit native batch and numeric source expressions without launching a game.
+            if(args.Length==3 && args[0]=="allied-unit-modules-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();AlliedUnitModuleSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: inspect every expanded object in a developer batch without publishing or launching a mod.
+            if(args.Length==4 && args[0]=="allied-unit-source-review")
+            {CompilerSmokeTest.InitializeHashProvider();return AlliedUnitSourceReview.Run(args[1],args[2],args[3]);}
             if(args.Length is >=3 and <=5 && args[0]=="conscript-source-prepare")
             {CompilerSmokeTest.InitializeHashProvider();ConscriptSourceInput.Prepare(args[1],args[2],args.ElementAtOrDefault(3),args.ElementAtOrDefault(4));return 0;}
             // Reborn: group frontend structure/default/no-hidden-command checks independently of full GameObject compilation.
@@ -1830,6 +1839,10 @@ internal static class Program
         Console.WriteLine("  gameobject-pointer-root-self-test <static.manifest> <global.manifest>");
         Console.WriteLine("  gameobject-authored-pointer-root-self-test <absolute-fresh-output> <static.manifest> <global.manifest>");
         Console.WriteLine("  gameobject-authored-smc-combat-self-test <fresh-output> <static.manifest> <global.manifest>");
+        // Reborn: private developer batch commands never replace the Studio authoring workflow.
+        Console.WriteLine("  allied-unit-source-review <entry.xml> <sdk> <fresh-output>");
+        Console.WriteLine("  allied-unit-modules-self-test <static.manifest> <global.manifest>");
+        Console.WriteLine("  conscript-batch-native-review <prepared-game.xml> <static.manifest> <global.manifest> <fresh-output>");
         Console.WriteLine("  ep1-allied-modules-self-test <static.manifest>");
         // Reborn: explicit source normalization does not open general GameObject publication.
         Console.WriteLine("  ep1-destruction-source-self-test <static.manifest>");

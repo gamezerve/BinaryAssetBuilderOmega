@@ -11,7 +11,7 @@ namespace BinaryAssetBuilder.XmlCompiler;
 // Reborn: generate the three reviewed EP1 client families recursively from native ownership, without accepting stock metadata or asset identities as input.
 public static class Ep1ClientBehaviorsTokenizer
 {
-    private enum Kind { Word, Ref, Flags, Enum, RefPointer, MaskPointer, IntPointer, RealPointer, RecordPointer, List, Frames, EmptyList, NullPointer }
+    private enum Kind { Word, Ref, Flags, Enum, RefPointer, MaskPointer, IntPointer, RealPointer, RecordPointer, List, Frames, WeakList, EmptyList, NullPointer }
     private sealed record Field(string Name, uint Tag, int Offset, Kind Kind = Kind.Word, Record Child = null, int Limit = 0);
     private sealed record Record(int Size, Field[] Fields, Record Parent = null, uint ParentTag = 0);
     // Reborn: these literal tags and field order are independently checked against the complete six-leaf stock prefix.
@@ -22,7 +22,10 @@ public static class Ep1ClientBehaviorsTokenizer
     // Reborn: root and client EP1 voices share the stock-qualified inline strong EVA word; no separate empty-only client gate remains.
     private static readonly Record SoundOrEva = new(8, new[] { new Field("Sound", 0x63D7B468, 0, Kind.RefPointer), new Field("EvaEvent", 0xC4EC43B1, 4, Kind.Ref) });
     private static readonly Record Voice = new(12, new[] { new Field("AudioType", 0x4DA708B0, 8, Kind.Enum, Limit: 67) }, SoundOrEva, 0x1AE6B6B7);
-    private static readonly Record Voices = new(24, new[] { new Field("AudioEntry", 0x8AA9CB14, 0, Kind.List, Voice), new Field("ObjectSpecificEntry", 0xAEDFC4CD, 8, Kind.EmptyList), new Field("NamedEntry", 0xF8ED487B, 16, Kind.EmptyList) });
+    // Reborn: named and target-specific selector voices share the stock Sound/EVA base and their actual EP1 weak/hash fields.
+    private static readonly Record NamedVoice=new(12,new[]{new Field("Name",0x58BEC727,8)},SoundOrEva,0x1AE6B6B7);
+    private static readonly Record SpecificVoice=new(16,new[]{new Field("AudioType",0x94A69CB3,8,Kind.Enum,Limit:6),new Field("TargetObject",0x148ED75D,12)},SoundOrEva,0x1AE6B6B7);
+    private static readonly Record Voices = new(24, new[] { new Field("AudioEntry", 0x8AA9CB14, 0, Kind.List, Voice), new Field("ObjectSpecificEntry", 0xAEDFC4CD, 8, Kind.List, SpecificVoice), new Field("NamedEntry", 0xF8ED487B, 16, Kind.List, NamedVoice) });
     // Reborn: selector sound overrides share the stock eight-byte sound entry/header and all 39 Uprising sound ordinals with root AudioArraySound.
     private static readonly Record SoundEntry = new(8, new[] { new Field("Sound", 0x63D7B468, 0, Kind.Ref), new Field("AudioType", 0xD50DC497, 4, Kind.Enum, Limit: 39) });
     private static readonly Record Sounds = new(8, new[] { new Field("AudioEntry", 0x87D0686C, 0, Kind.List, SoundEntry) });
@@ -30,6 +33,14 @@ public static class Ep1ClientBehaviorsTokenizer
     private static readonly Record Selector = new(16, new[] { new Field("Override", 0xBFA5BEBA, 8, Kind.List, Override) }, Client, 0x7B8C5772);
     private static readonly Record AnimationItem = new(24, new[] { new Field("Sound", 0x63D7B468, 0, Kind.Ref), new Field("RequiredMC", 0x67DBBFC9, 4, Kind.MaskPointer), new Field("ExcludedMC", 0x67DBBFC9, 8, Kind.MaskPointer), new Field("Animation", 0x26480425, 12), new Field("Frame", 0x49EF147D, 16, Kind.Frames) });
     private static readonly Record Animation = new(20, new[] { new Field("MaxUpdateRangeCap", 0xBC2F1CBF, 8, Kind.RealPointer), new Field("Sound", 0xEB6C6024, 12, Kind.List, AnimationItem) }, Client, 0x7B8C5772);
+
+    // Reborn: original Allied Spy and IFV selectors retain their real nested EVA/voice/weak-upgrade metadata signatures.
+    private static readonly Record EvaEntry=new(8,new[]{new Field("EvaEvent",0xC4EC43B1,0,Kind.Ref),new Field("EvaType",0xC053B716,4,Kind.Enum,Limit:30)});
+    private static readonly Record EvaArray=new(8,new[]{new Field("EvaEntry",0xD7B4DEDB,0,Kind.List,EvaEntry)});
+    private static readonly Record EvaOverride=new(124,new[]{new Field("RequiredFlags",0x67DBBFC9,0,Kind.Flags),new Field("ExcludedFlags",0x67DBBFC9,60,Kind.Flags),new Field("EvaEventArray",0xF677AAAE,120,Kind.RecordPointer,EvaArray)});
+    private static readonly Record EvaSelector=new(16,new[]{new Field("Override",0xC0F51451,8,Kind.List,EvaOverride)},Client,0x7B8C5772);
+    private static readonly Record UpgradeOverride=new(148,new[]{new Field("RequiredModelConditions",0x67DBBFC9,0,Kind.Flags),new Field("ConflictingModelConditions",0x67DBBFC9,60,Kind.Flags),new Field("VoicePriorityOverride",0x23E650B8,120,Kind.IntPointer),new Field("AudioArrayVoice",0x09D18241,124,Kind.RecordPointer,Voices),new Field("AudioArraySound",0x59867D0B,128,Kind.RecordPointer,Sounds),new Field("RequiredUpgrade",0x26FACFC7,132,Kind.WeakList),new Field("ConflictingUpgrade",0x26FACFC7,140,Kind.WeakList)});
+    private static readonly Record UpgradeSelector=new(16,new[]{new Field("Override",0x94F25492,8,Kind.List,UpgradeOverride)},Client,0x7B8C5772);
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: admit only bounded complete canonical containers; populated unreviewed audio children and malformed auxiliary ownership fail before returning output. */
@@ -68,8 +79,8 @@ public static class Ep1ClientBehaviorsTokenizer
             {
                 lower = 0; upper = bytes.Length; int start = Offset(Word(8 + i * 4)), end = i + 1 == count ? bytes.Length : Offset(Word(12 + i * 4));
                 if (start < 8 + count * 4 || i == 0 && start != 8 + count * 4 || end <= start || (start | end) % 4 != 0) throw new InvalidDataException("Client leaf boundaries differ.");
-                lower = start; upper = end; uint type = Word(start), id = Word(start + 4); if (id == 0 || !ids.Add(id)) throw new InvalidDataException("Client local identity missing/duplicate.");
-                Record descriptor = type switch { 0x5A3EDBF4 => Loop, 0x327CFB76 => Selector, 0x27EF791D => Animation, _ => throw new InvalidDataException("Client class is not token-enabled.") };
+                lower = start; upper = end; uint type = Word(start), id = Word(start + 4); if (id == 0 && type!=0x61C8C467 || !ids.Add(id)) throw new InvalidDataException("Client local identity missing/duplicate.");
+                Record descriptor = type switch { 0x5A3EDBF4 => Loop, 0x327CFB76 => Selector, 0x27EF791D => Animation, 0x61C8C467 => EvaSelector, 0xF9115AA9 => UpgradeSelector, _ => throw new InvalidDataException("Client class is not token-enabled.") };
                 Claim(start, descriptor.Size); relos.Add((uint)(8 + i * 4)); int wrapper = Allocate(1); Row(list + 12 + i * 12, 0xB151A0EB, 0, (uint)wrapper); Row(wrapper, 2, type, (uint)Emit(descriptor, start, 0));
             }
             lower = 0; upper = bytes.Length; uint[] suppliedRelos = Slots(native.RelocationBuffer), suppliedImports = Slots(native.ImportsBuffer);
@@ -93,15 +104,15 @@ public static class Ep1ClientBehaviorsTokenizer
                 int slot = checked(native + field.Offset); uint value = Word(slot); Row(next, FastHash.GetHashCode(field.Name), field.Tag, 0);
                 switch (field.Kind)
                 {
-                    case Kind.List: case Kind.Frames: case Kind.EmptyList:
+                    case Kind.WeakList: case Kind.List: case Kind.Frames: case Kind.EmptyList:
                         // Reborn: XSD-unbounded arrays use the real native item extent instead of a 4096-row sample quota.
-                        int itemStride=field.Kind==Kind.Frames?4:field.Child?.Size??1;
+                        int itemStride=field.Kind is Kind.Frames or Kind.WeakList?4:field.Child?.Size??1;
                         uint pointer = Word(slot + 4); if (value > bytes.Length/itemStride || (value == 0) != (pointer == 0) || field.Kind == Kind.EmptyList && value != 0 || field.Kind == Kind.Frames && value == 0) throw new InvalidDataException("Client list count/pointer/admission differs: " + field.Name);
                         int list = Allocate(1 + (int)value); Row(list, 0x6C827073, 0x5D448FD8, 0); Native(list + 8, slot); Target(next + 8, list);
                         if (value != 0)
                         {
-                            int stride = field.Kind == Kind.Frames ? 4 : field.Child.Size, items = Offset(pointer); Claim(items, checked((int)value * stride)); relos.Add((uint)(slot + 4));
-                            for (int i = 0; i < value; i++) { int item = items + i * stride, marker = list + 12 + i * 12; Row(marker, 0xB151A0EB, 0, 0); if (field.Kind == Kind.Frames) { if (Word(item) > int.MaxValue) throw new InvalidDataException("Client negative frame."); Native(marker + 8, item); } else Target(marker + 8, Emit(field.Child, item, depth + 1)); }
+                            int stride = field.Kind is Kind.Frames or Kind.WeakList ? 4 : field.Child.Size, items = Offset(pointer); Claim(items, checked((int)value * stride)); relos.Add((uint)(slot + 4));
+                            for (int i = 0; i < value; i++) { int item = items + i * stride, marker = list + 12 + i * 12; Row(marker, 0xB151A0EB, 0, 0); if (field.Kind is Kind.Frames or Kind.WeakList) { if (field.Kind==Kind.Frames && Word(item) > int.MaxValue) throw new InvalidDataException("Client negative frame."); Native(marker + 8, item); } else Target(marker + 8, Emit(field.Child, item, depth + 1)); }
                         }
                         break;
                     case Kind.RefPointer: case Kind.MaskPointer: case Kind.IntPointer: case Kind.RealPointer: case Kind.RecordPointer:

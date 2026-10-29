@@ -49,10 +49,10 @@ internal static class AIUpdateContract
     internal static void Mask(XmlDocument source,XmlDocument baseline)
     {
         var actual=ConscriptModuleScalarContract.Owners(source).Where(o=>o.Container=="AI").ToArray();var model=ConscriptModuleScalarContract.Owners(baseline).Where(o=>o.Container=="AI").ToArray();
-        // Reborn: an AI-less object has nothing to restore (its zero-count declaration is proved by AIAbsenceContract); other count changes stay unsupported.
+        // Reborn: an AI-less object has nothing to restore; its zero-count declaration is independently proved by AIAbsenceContract.
         if(actual.Length==0)return;
-        if(actual.Length!=model.Length)throw new InvalidDataException("Source-sized AI module containers are not implemented yet.");
-        for(int i=0;i<actual.Length;i++){var owner=actual[i].Element;owner.ParentNode!.ReplaceChild(source.ImportNode(model[i].Element,true),owner);}
+        // Reborn: restore the whole comparison container; actual source-sized AI leaves retain independent native/metadata proofs.
+        var container=actual[0].Element.ParentNode!;foreach(var owner in actual)container.RemoveChild(owner.Element);foreach(var owner in model)container.AppendChild(source.ImportNode(owner.Element,true));
     }
 
     //-------------------------------------------------------------------------------------------------

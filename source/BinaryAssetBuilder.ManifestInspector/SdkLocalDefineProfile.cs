@@ -45,7 +45,7 @@ internal static class SdkLocalDefineProfile
     //-------------------------------------------------------------------------------------------------
     /** Reborn: independently admit bounded literal asset slots before inheritance, while keeping identity/directive expressions closed and every older entry unchanged. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result ApplyBeforeInheritance(byte[] bytes,IReadOnlyDictionary<string,string>? literals = null) => ApplyCore(bytes,literals,true);
+    internal static Result ApplyBeforeInheritance(byte[] bytes,IReadOnlyDictionary<string,string>? literals = null,bool numericExpressions = false) => ApplyCore(bytes,literals,true,numericExpressions:numericExpressions);
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: select schema-proven direct music Volume offsets while retaining literal, visibility and identity guards. */
@@ -60,7 +60,7 @@ internal static class SdkLocalDefineProfile
     //-------------------------------------------------------------------------------------------------
     /** Reborn: share bounded substitution without changing the default local-only Include refusal. */
     //-------------------------------------------------------------------------------------------------
-    private static Result ApplyCore(byte[] bytes,IReadOnlyDictionary<string,string>? imported,bool beforeInheritance = false,XmlSchemaSet? musicSchemas = null,bool soundOffsets = false)
+    private static Result ApplyCore(byte[] bytes,IReadOnlyDictionary<string,string>? imported,bool beforeInheritance = false,XmlSchemaSet? musicSchemas = null,bool soundOffsets = false,bool numericExpressions = false)
     {
         if (bytes.Length > 4*1048576) throw new InvalidDataException("Local define source exceeds 4 MiB.");
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
@@ -94,6 +94,8 @@ internal static class SdkLocalDefineProfile
             string expression = slot.Value!;
             if (expression.StartsWith("=$",StringComparison.Ordinal) && Identifier.IsMatch(expression[2..]) && defines.TryGetValue(expression[2..],out string? value))
             { slot.Value = value; continue; }
+            // Reborn: production asset arithmetic is opt-in; final schema validation still determines each destination's type.
+            if(numericExpressions){try{slot.Value=SdkAssetNumericExpressions.Evaluate(expression,defines);continue;}catch(InvalidDataException error){return Reject(raw,error.Message,slot);}}
             if (musicSchemas == null) return Reject(raw,"Only exact =$NAME references to visible case-sensitive definitions are supported; unresolved expression: "+expression,slot);
             try
             {

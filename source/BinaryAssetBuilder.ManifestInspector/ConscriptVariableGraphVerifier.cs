@@ -144,6 +144,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> techUpgradeReceiver;
     private readonly Lazy<StockMetadataGrammar> aircraftUpdates;
     private readonly Lazy<StockMetadataGrammar> navalUpdates;
+    // Reborn: qualify Allied unit records once per mixed compilation, including their optional nested grammar.
+    private readonly Lazy<StockMetadataGrammar> alliedUnitModules;
     private readonly Lazy<StockMetadataGrammar> vehicleBatchAbilities;
     private readonly Lazy<StockMetadataGrammar> hammerBehaviors;
     private readonly Lazy<StockMetadataGrammar> scoutBehaviors;
@@ -259,6 +261,7 @@ internal sealed class ConscriptVariableGraphVerifier
         techUpgradeReceiver=new(()=>TechUpgradeReceiverContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         aircraftUpdates=new(()=>AircraftUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         navalUpdates=new(()=>NavalUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        alliedUnitModules=new(()=>AlliedUnitModuleContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         vehicleBatchAbilities=new(()=>VehicleBatchAbilityContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         hammerBehaviors=new(()=>HammerBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         scoutBehaviors=new(()=>ScoutVehicleBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -581,6 +584,20 @@ internal sealed class ConscriptVariableGraphVerifier
                 if(NavalUpdateContract.Supports(owner.NativeType)){
                     var grammar=navalUpdates.Value;var navalNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName)),navalNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(navalNative,official,Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName),owner.NativeType);int size=grammar.Verify(metadata,navalNative,owner.NativeType,proof.Records);Own(navalNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: one native source proof and stock grammar cover each source-sized Allied behavior/client record.
+                if(AlliedUnitModuleContract.Supports(owner.NativeType)){
+                    var family=AlliedUnitModuleContract.Families.Single(f=>f.Type==owner.NativeType);var grammar=alliedUnitModules.Value;var alliedNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);
+                    var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(family.Wire),alliedNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());
+                    var metadata=family.Container=="Behaviors"?Ep1BehaviorMetadataTokenizer.Tokenize(alliedNative,official,family.Wire,owner.NativeType):Ep1BehaviorMetadataTokenizer.TokenizeAlliedClient(alliedNative,official,family.Wire,owner.NativeType);
+                    int size=grammar.Verify(metadata,alliedNative,owner.NativeType,proof.Records);Own(alliedNative,start,stop);
+                    if(family.Container=="Behaviors")Splice(owner,metadata,start,size);
+                    else{
+                        // Reborn: client selectors occupy the source-ordered client container, separate from behavior metadata.
+                        int row=containerAt+12+owner.Index*12;if(Word(tokens.InstanceBuffer,row)!=0xB151A0EB||Word(tokens.InstanceBuffer,row+8)!=containerNext)throw new InvalidDataException("Allied client wrapper order differs.");
+                        for(int at=0;at<size;at+=12){uint target=Word(metadata.InstanceBuffer,at+8);uint expected=target==0?0:target<size?target+(uint)containerNext:target-(uint)size+(uint)(prefix+start);if(Word(tokens.InstanceBuffer,containerNext+at)!=Word(metadata.InstanceBuffer,at)||Word(tokens.InstanceBuffer,containerNext+at+4)!=Word(metadata.InstanceBuffer,at+4)||Word(tokens.InstanceBuffer,containerNext+at+8)!=expected)throw new InvalidDataException("Allied client metadata splice differs.");}containerNext+=size;
+                    }continue;
                 }
                 if(VehicleBatchAbilityContract.Supports(owner.NativeType)){
                     var grammar=vehicleBatchAbilities.Value;var vehicleNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
@@ -964,6 +981,7 @@ internal sealed class ConscriptVariableGraphVerifier
     private StockMetadataGrammar QualifySchemaFamily(string manifest,SchemaNativeContract.Family family)
     {
         // Reborn: the Conscript baseline has no EVA-ready leaf; qualify it from the actual PlayerSpellBook source and native records.
+        if(AlliedUnitModuleContract.Supports(family.Type))return alliedUnitModules.Value;
         if(family.Type==typeof(Ep1EvaAnnounceSpecialPowerReadyClientUpdateModuleData))return EvaReadyClientContract.Qualify(manifest,baseline,referenceSchemas,catalog);
         // Reborn: the Conscript baseline has no EVA-create leaf; qualify it from the actual SovietSuperWeapon source and native record.
         if(family.Type==typeof(Ep1EvaAnnounceClientCreateModuleData))return EvaCreateClientContract.Qualify(manifest,baseline,referenceSchemas,catalog);

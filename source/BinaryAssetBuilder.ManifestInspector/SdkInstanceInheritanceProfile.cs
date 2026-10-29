@@ -271,7 +271,7 @@ internal sealed class SdkInstanceInheritanceProfile
             if (expressions)
             {
                 // Reborn: music offsets resolve in the defining document before overlays; imported bases never use the consumer's local values.
-                var evaluated = new SdkIncludeDefineProfile(paths,definitionExpressions:true,musicSchemas:musicOffsets ? schemas : null,soundOffsets:soundOffsets).Apply(path,bytes,beforeInheritance:true,expandedOwner:expressionSource);
+                var evaluated = new SdkIncludeDefineProfile(paths,definitionExpressions:true,musicSchemas:musicOffsets ? schemas : null,soundOffsets:soundOffsets,numericExpressions:gameObjectTrees).Apply(path,bytes,beforeInheritance:true,expandedOwner:expressionSource);
                 if (evaluated.Bytes == null) throw SdkXmlDiagnostics.At(new InvalidDataException("Pre-inheritance expressions rejected: "+string.Join("; ",evaluated.Evidence.Diagnostics)),evaluated.DiagnosticNode);
                 owner = Parse(evaluated.Bytes); expressionEvidence = evaluated.Evidence;
                 expandedSize = evaluated.Bytes.Length+1024L;

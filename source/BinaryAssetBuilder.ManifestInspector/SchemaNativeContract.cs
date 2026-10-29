@@ -42,6 +42,10 @@ internal sealed class SchemaNativeContract
         new(typeof(W3DScriptedModelDrawModuleData),"Draws",0x4ECF2A4Bu,BinaryAssetBuilder.XmlCompiler.Ep1ScriptedDrawTokenizer.Tokenize),
         new(typeof(ModelConditionAudioLoopClientBehaviorModuleData),"ClientBehaviors",0x5A3EDBF4u,leaf=>FromList(leaf,BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize)),
         new(typeof(Ep1ModelConditionSoundSelectorClientBehaviorModuleData),"ClientBehaviors",0x327CFB76u,leaf=>FromList(leaf,BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize)),
+        // Reborn: explicit Allied selector leaf; stock qualification occurs through AlliedUnitModuleContract.
+        new(typeof(Ep1ModelConditionEvaEventSelectorClientBehaviorModuleData),"ClientBehaviors",0x61C8C467u,leaf=>FromList(leaf,BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize)),
+        // Reborn: explicit Allied selector leaf; stock qualification occurs through AlliedUnitModuleContract.
+        new(typeof(Ep1UpgradeSoundSelectorClientBehaviorModuleData),"ClientBehaviors",0xF9115AA9u,leaf=>FromList(leaf,BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize)),
         new(typeof(AnimationSoundClientBehaviorModuleData),"ClientBehaviors",0x27EF791Du,leaf=>FromList(leaf,BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize))};
     internal static bool Supports(Type type)=>Families.Any(f=>f.Type==type);
     internal static Family For(Type type)=>Families.Single(f=>f.Type==type);
@@ -169,6 +173,8 @@ internal sealed class SchemaNativeContract
         if(owner==typeof(ModuleData))
         {
             if(name=="TypeId"){Expect(at,BitConverter.GetBytes(typeId),path);return;}
+            // Reborn: the original anonymous Spy EVA selector has a schema-optional Poid stored as a zero native word.
+            if(name=="id"&&e?.LocalName=="ModelConditionEvaEventSelectorClientBehavior"&&!e.HasAttribute("id")){Expect(at,new byte[4],path);return;}
             if(name=="id"){var id=e?.GetAttributeNode("id")??throw new InvalidDataException("Schema-proved module requires an id.");consumed.Add(id);Expect(at,BitConverter.GetBytes(FastHash.GetHashCode(id.Value.ToLowerInvariant())),path);return;}
         }
         // Reborn: EP1 AI structs store named schema enums/lists in uint words; verify their actual schema ordinals/bits rather than parsing names as integers.

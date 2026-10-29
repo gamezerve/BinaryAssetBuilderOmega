@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: explicit requested Allied batch; private snapshots can supply mod files and SDK fallback supplies unchanged originals. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <Includes>
+    <Include type="all" source="DATA:Allied/Units/AlliedScoutInfantry.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedAntiInfantryInfantry.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedAntiVehicleInfantry.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedEngineer.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedInfiltrationInfantry.xml"/>
+    <Include type="all" source="DATA:EP1/Allied/Units/AlliedLegionnaireInfantry.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedCommandoTech1.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedMiner.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedAntiInfantryVehicle.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedAntiAirVehicleTech1.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedAntiVehicleVehicleTech1.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedAntiStructureVehicle.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedAntiVehicleVehicleTech3.xml"/>
+    <Include type="all" source="DATA:EP1/Allied/Units/AlliedArtilleryVehicle.xml"/>
+    <Include type="all" source="DATA:EP1/Allied/Units/AlliedFutureTank.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedMCV.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedAntiNavalScout.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedAntiAirShip.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedAntiNavyShipTech1.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedAntiStructureShip.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedAntiGroundAircraft.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedFighterAircraft.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedSupportAircraft.xml"/>
+    <Include type="all" source="DATA:Allied/Units/AlliedBomberAircraft.xml"/>
+    <Include type="all" source="DATA:EP1/Allied/Units/AlliedGunshipAircraft.xml"/>
+  </Includes>
+</AssetDeclaration>

@@ -28,9 +28,11 @@ internal static class ConscriptMultiAssetBuild
     //-------------------------------------------------------------------------------------------------
     /** Reborn: existing single-object routes remain unchanged; additional.xml selects the actual multi-asset frontend output. */
     //-------------------------------------------------------------------------------------------------
-    internal static bool TryRun(string entry,string manifest,string global,string output,string? streamContext=null,bool earlyGlobal=false)
+    internal static bool TryRun(string entry,string manifest,string global,string output,string? streamContext=null,bool earlyGlobal=false,bool nativeReview=false)
     {
         // Reborn: an explicit global dependency context selects the mixed linker even for a single GameObject consumer.
+        // Reborn: one immutable class-name catalog serves this synchronous build; source/native verifiers remain mandatory.
+        using var nameCatalog=GameObjectModuleReview.ReuseNameCatalog();
         var external=SdkGlobalStreams.Load(streamContext);
         string additional=Path.Combine(Path.GetDirectoryName(entry)!,"additional.xml");var source=ReadPrepared(entry);bool hasGame=source.DocumentElement!.LocalName=="GameObject";if(!File.Exists(additional)&&hasGame&&external.Length==0&&!earlyGlobal)return false;
         var saved=Settings.Current;
@@ -65,6 +67,8 @@ internal static class ConscriptMultiAssetBuild
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="FXList"))FXListCompiler.Qualify(manifest,schemas,stock);
             // Reborn: developer qualification reads selected original particle payloads only; actual authored payload proof stays enabled in both modes.
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="FXParticleSystemTemplate"))FXParticleSystemCompiler.Qualify(manifest,schemas,stock);
+            // Reborn: an explicit private diagnostic pass can collect independent object failures without serializing or publishing a partial stream.
+            var reviewFailures=new List<object>();
             var built=new Dictionary<AssetId,Built>();int prefix=0;StockMetadataGrammar? weaponGrammar=null;var compileLog=ConscriptCompileLog.ForPrepared(entry);
             // Reborn: validate the isolated EP1 upgrade ABI against original stock before emitting any authored upgrades.
             // Reborn: developer mode independently checks the actual EP1 experience layout; source/native proof is mandatory in both build modes.
@@ -107,7 +111,7 @@ internal static class ConscriptMultiAssetBuild
                 if(type=="GameObject"){
                     // Reborn: native errors without an attached XML node still identify their actual authored GameObject, not temporary game.xml.
                     try{instance=Normalize(xml);var native=GameObjectBodyProjectionSmokeTest.Compile(Xml(instance.XmlNode.OuterXml),true,true,true);var tokens=graphVerifier!.Verify(xml,native,instance,plans[xml].Origins);if(ReferenceEquals(xml,source))prefix=tokens.InstanceBuffer.Length-native.InstanceBuffer.Length;buffer=Buffer(tokens);}
-                    catch(Exception error)when(error is InvalidDataException or FormatException or OverflowException){compileLog.NativeError(error,xml);throw;}
+                    catch(Exception error)when(error is InvalidDataException or FormatException or OverflowException){compileLog.NativeError(error,xml);if(nativeReview){reviewFailures.Add(new{Asset=xml.DocumentElement!.GetAttribute("id"),Error=error.Message});Console.WriteLine("Reborn: native review failure: "+xml.DocumentElement.GetAttribute("id")+": "+error.Message);continue;}throw;}
                     // Reborn: weak CommandSet availability is reported consistently by the common mod/stock audit, without pretending it is a native import.
                 }else if(type=="AudioEvent"){
                     instance=Normalize(xml);buffer=AuthoredAmbientCompiler.Compile(instance);
@@ -193,6 +197,9 @@ internal static class ConscriptMultiAssetBuild
                 foreach(var reference in instance.ReferencedInstances)if(available.Count(a=>a.TypeId==reference.TypeId&&a.InstanceId==reference.InstanceId)!=1)throw SdkXmlDiagnostics.At(new InvalidDataException("Missing or ambiguous asset: "+reference.Name),xml.DocumentElement);
                 built.Add(id,new(xml,instance,buffer,fingerprints[id.TypeId].Tokenized));compileLog.End(progress);
             }
+            // Reborn: review results are evidence only; even successful leaves never produce a launchable package in this mode.
+            if(nativeReview){Directory.CreateDirectory(output);File.WriteAllText(Path.Combine(output,"native-review.json"),JsonSerializer.Serialize(new{Total=plans.Count,Passed=built.Values.Count(b=>b.Source.DocumentElement!.LocalName=="GameObject"),Failures=reviewFailures},new JsonSerializerOptions{WriteIndented=true}));Console.WriteLine($"Reborn: native batch review: {built.Values.Count(b=>b.Source.DocumentElement!.LocalName=="GameObject")}/{plans.Count} objects passed; {reviewFailures.Count} failures; no stream published.");if(reviewFailures.Count!=0)throw new InvalidDataException("Native review found "+reviewFailures.Count+" object failures; see native-review.json.");return true;}
+
             // Reborn: stable dependency order is determined by actual local strong edges, not declaration order; stock references stay external.
             var ordered=new List<Built>();var active=new HashSet<AssetId>();var done=new HashSet<AssetId>();foreach(var id in built.Keys)Visit(id);
             int localReferences=ordered.Sum(b=>b.Instance.ReferencedInstances.Count(r=>built.ContainsKey(new(r.TypeId,r.InstanceId))));int stockReferences=ordered.Sum(b=>b.Instance.ReferencedInstances.Count)-localReferences;

@@ -45,7 +45,7 @@ internal static class ConscriptModuleScalarContract
                     "ClientUpdates" when element.LocalName=="EvaAnnounceSpecialPowerReadyClientUpdate"=>typeof(Ep1EvaAnnounceSpecialPowerReadyClientUpdateModuleData),
                     "ClientUpdates" when element.LocalName=="EvaAnnounceClientCreate"=>typeof(Ep1EvaAnnounceClientCreateModuleData),
                     "ClientUpdates" when element.LocalName=="LargeGroupAudioClientUpdate"=>typeof(LargeGroupAudioClientUpdateModuleData),
-                    "ClientBehaviors"=>element.LocalName switch{"ModelConditionSoundSelectorClientBehavior"=>typeof(Ep1ModelConditionSoundSelectorClientBehaviorModuleData),"AnimationSoundClientBehavior"=>typeof(AnimationSoundClientBehaviorModuleData),"ModelConditionAudioLoopClientBehavior"=>typeof(ModelConditionAudioLoopClientBehaviorModuleData),_=>throw new InvalidDataException("Unreviewed scalar client family.")},
+                    "ClientBehaviors"=>element.LocalName switch{"ModelConditionEvaEventSelectorClientBehavior"=>typeof(Ep1ModelConditionEvaEventSelectorClientBehaviorModuleData),"UpgradeSoundSelectorClientBehavior"=>typeof(Ep1UpgradeSoundSelectorClientBehaviorModuleData),"ModelConditionSoundSelectorClientBehavior"=>typeof(Ep1ModelConditionSoundSelectorClientBehaviorModuleData),"AnimationSoundClientBehavior"=>typeof(AnimationSoundClientBehaviorModuleData),"ModelConditionAudioLoopClientBehavior"=>typeof(ModelConditionAudioLoopClientBehaviorModuleData),_=>throw new InvalidDataException("Unreviewed scalar client family.")},
                     _=>throw new InvalidDataException("Unreviewed module scalar owner: "+container.LocalName+"/"+element.LocalName+".")
                 };}catch(InvalidDataException error){throw SdkXmlDiagnostics.At(error,element);}
                 result.Add(new(container.LocalName,index++,element,type));
@@ -124,6 +124,9 @@ internal static class ConscriptModuleScalarContract
         // Reborn: EP1 root movement uses the reviewed EP1 enum, whose additional literals must not be encoded through the legacy KW enum.
         // Reborn: OCL source locations use EP1 ordinals rather than the shorter legacy KW enum.
         if(native.IsEnum&&(native.Name==schema.Name||native==typeof(Ep1OCLCreateLocType)&&schema.Name=="OCLCreateLocType"||native==typeof(Ep1RootLocomotorSetType)&&schema.Name=="LocomotorSetType"||native==typeof(Ep1ProductionQueueType)&&schema.Name=="ProductionQueueType"||native==typeof(Ep1AIStateMachineType)&&schema.Name=="StateMachineType")&&Enum.GetUnderlyingType(native)==typeof(int))return (4,wire,"Enum:"+native.FullName);
+        // Reborn: Allied shield/beam masks use the captured schema enum identities and exact native fixed-buffer widths.
+        if(schema.Name=="BeamOptionsBitFlags"&&native==typeof(Ep1BeamOptionsBitFlags))return (4,wire,"Flags:"+typeof(Ep1BeamOptionsType).FullName);
+        if(schema.Name=="ShieldSphereUpdateOptionFlag"&&native==typeof(ShieldSphereUpdateOptionFlag))return (4,wire,"Flags:"+typeof(ShieldSphereUpdateOption).FullName);
         if(schema is not XmlSchemaSimpleType {Content:XmlSchemaSimpleTypeList list}||(!native.Name.EndsWith("BitFlags",StringComparison.Ordinal)&&native.Name!="BezierProjectileBitFlag")||native.Name!=schema.Name)return null;
         // Reborn: EP1 collision flag ordinals differ from the legacy KW enum despite sharing a four-byte buffer.
         if(schema.Name=="FireWeaponFlagsBitFlags"&&native==typeof(FireWeaponFlagsBitFlags))return (4,wire,"Flags:"+typeof(Ep1FireWeaponFlagsType).FullName);

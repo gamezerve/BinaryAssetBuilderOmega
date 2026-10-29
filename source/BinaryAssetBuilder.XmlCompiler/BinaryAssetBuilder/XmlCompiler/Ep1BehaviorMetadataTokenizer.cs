@@ -17,6 +17,8 @@ public static class Ep1BehaviorMetadataTokenizer
 {
     private const string Ns = "uri:ea.com:eala:asset";
     private static readonly HashSet<string> Families = new(StringComparer.Ordinal) { "ObjectSMCHelperModuleData", "ObjectDefectionHelperModuleData", "AttributeModifierPoolUpdateModuleData", "SquishCollideModuleData", "CrushDieModuleData", "StancesBehaviorModuleData", "DestroyDieModuleData", "CreateObjectDieModuleData", "FXListBehaviorModuleData", "FireWeaponWhenDeadBehaviorModuleData", "AutoHealBehaviorModuleData", "SecondaryDamageTrackerModuleData", "RunOffMapBehaviorModuleData", "LevelUpUpgradeModuleData", "SuppressionUpdateModuleData", "FreefallUpdateModuleData", "WeaponSetUpdateModuleData", "PhysicsBehaviorModuleData", "SlowDeathBehaviorModuleData", "SpecialPowerModuleData", "ToggleStatusSpecialAbilityUpdateModuleData", "StatusBitsUpgradeModuleData", "HitReactionBehaviorModuleData", "ModelConditionUpgradeModuleData" };
+    // Reborn: original Allied unit behavior families use complete EP1 source/native records.
+    private static readonly bool AlliedUnitFamilies=Families.Add("ActivateModuleSpecialPower") & Families.Add("BeamSpecialAbilityUpdateModuleData") & Families.Add("DominateEnemySpecialPowerModuleData") & Families.Add("InvisibilityBroadcastUpdateModuleData") & Families.Add("LinearDamageUpdateModuleData") & Families.Add("MagneticEffectUpdateModuleData") & Families.Add("ReconstituteStateSpecialAbilityModuleData") & Families.Add("ShieldSphereUpdateModuleData") & Families.Add("SpecialDisguiseUpdateModuleData") & Families.Add("StoreCurrentStateUpdateModuleData");
     // Reborn: both airfield families use EP1-specific native models and stock-qualified inherited metadata.
     private static readonly bool AirfieldFamilies=Families.Add("RecallUnitsSpecialPowerModuleData") & Families.Add("ParkingPlaceBehaviorModuleData");
     //-------------------------------------------------------------------------------------------------
@@ -71,12 +73,12 @@ public static class Ep1BehaviorMetadataTokenizer
 
     // Reborn: assign-slaves uses the existing native SpecialPower writer and independent stock-qualified metadata proof.
     public static string ReviewedWireName(string sourceName)
-    {string wire=sourceName switch{"ShipSlowDeath"=>"ShipSlowDeathBehaviorModuleData","SwitchLocomotorUpdate"=>"SwitchLocomotorUpdate","SecondaryObjectListenerModule"=>"SecondaryObjectListenerModule","BezierProjectile"=>"BezierProjectileBehaviorModuleData","OreMinerBehavior"=>"OreMinerModuleData","AimWeapon"=>"AimWeaponBehaviorModuleData","PlayerPowerManager"=>"PlayerPowerManagerBehaviorModuleData","QueueDockBehavior"=>"QueueDockModuleData","BuildingDestructionBehavior"=>"BuildingDestructionModuleData","FireWeaponWhenDead"=>"FireWeaponWhenDeadBehaviorModuleData","Physics"=>"PhysicsBehaviorModuleData","SlowDeath"=>"SlowDeathBehaviorModuleData","LUAEventList"=>"LUAEventListBehaviorModuleData",_=>sourceName+"ModuleData"};if(!Families.Contains(wire))throw new InvalidDataException("Behavior source family not reviewed: "+sourceName);return wire;}
+    {string wire=sourceName switch{"ActivateModuleSpecialPower"=>"ActivateModuleSpecialPower","ShipSlowDeath"=>"ShipSlowDeathBehaviorModuleData","SwitchLocomotorUpdate"=>"SwitchLocomotorUpdate","SecondaryObjectListenerModule"=>"SecondaryObjectListenerModule","BezierProjectile"=>"BezierProjectileBehaviorModuleData","OreMinerBehavior"=>"OreMinerModuleData","AimWeapon"=>"AimWeaponBehaviorModuleData","PlayerPowerManager"=>"PlayerPowerManagerBehaviorModuleData","QueueDockBehavior"=>"QueueDockModuleData","BuildingDestructionBehavior"=>"BuildingDestructionModuleData","FireWeaponWhenDead"=>"FireWeaponWhenDeadBehaviorModuleData","Physics"=>"PhysicsBehaviorModuleData","SlowDeath"=>"SlowDeathBehaviorModuleData","LUAEventList"=>"LUAEventListBehaviorModuleData",_=>sourceName+"ModuleData"};if(!Families.Contains(wire))throw new InvalidDataException("Behavior source family not reviewed: "+sourceName);return wire;}
     //-------------------------------------------------------------------------------------------------
     /** Reborn: shared compilation/composition uses one explicit wire-to-native-model mapping, including all seven isolated EP1 records. */
     //-------------------------------------------------------------------------------------------------
     public static Type ReviewedNativeType(uint wire)
-    {var names=Families.Where(n=>FastHash.GetHashCode(n)==wire).ToArray();if(names.Length!=1)throw new InvalidDataException("Behavior wire family not reviewed.");string name=names[0];string model=name is "LiftObjectUpdateModuleData" or "AttachUpdateModuleData" or "BezierProjectileBehaviorModuleData" or "FireWeaponUpdateModuleData" or "PassiveAreaEffectBehaviorModuleData" or "EmotionTrackerUpdateModuleData" or "FireWeaponCollideModuleData" or "StealthDetectorUpdateModuleData" or "AttributeModifierAuraUpdateModuleData" or "SubObjectsUpgradeModuleData" or "WeaponFireSpecialAbilityUpdateModuleData" or "OCLSpecialPowerModuleData" or "PlayerPowerManagerBehaviorModuleData" or "AutoDepositUpdateModuleData" or "EngineerContainModuleData" or "RepairUpdateModuleData" or "ProductionUpdateModuleData" or "StructureUnpackUpdateModuleData" or "SpawnBehaviorModuleData" or "QueueProductionExitUpdateModuleData" or "WeaponSetUpdateModuleData" or "SquishCollideModuleData" or "PhysicsBehaviorModuleData" or "HitReactionBehaviorModuleData" or "StatusBitsUpgradeModuleData" or "CreateObjectDieModuleData" or "FireWeaponWhenDeadBehaviorModuleData" or "RecallUnitsSpecialPowerModuleData" or "ParkingPlaceBehaviorModuleData"?"Ep1"+name:name;return typeof(SageBinaryData.GameObject).Assembly.GetType("SageBinaryData."+model)??throw new InvalidDataException("Reviewed behavior native model absent.");}
+    {var names=Families.Where(n=>FastHash.GetHashCode(n)==wire).ToArray();if(names.Length!=1)throw new InvalidDataException("Behavior wire family not reviewed.");string name=names[0];string model=name is "ActivateModuleSpecialPower" or "BeamSpecialAbilityUpdateModuleData" or "DominateEnemySpecialPowerModuleData" or "InvisibilityBroadcastUpdateModuleData" or "LinearDamageUpdateModuleData" or "MagneticEffectUpdateModuleData" or "ReconstituteStateSpecialAbilityModuleData" or "SpecialDisguiseUpdateModuleData" or "StoreCurrentStateUpdateModuleData" or "LiftObjectUpdateModuleData" or "AttachUpdateModuleData" or "BezierProjectileBehaviorModuleData" or "FireWeaponUpdateModuleData" or "PassiveAreaEffectBehaviorModuleData" or "EmotionTrackerUpdateModuleData" or "FireWeaponCollideModuleData" or "StealthDetectorUpdateModuleData" or "AttributeModifierAuraUpdateModuleData" or "SubObjectsUpgradeModuleData" or "WeaponFireSpecialAbilityUpdateModuleData" or "OCLSpecialPowerModuleData" or "PlayerPowerManagerBehaviorModuleData" or "AutoDepositUpdateModuleData" or "EngineerContainModuleData" or "RepairUpdateModuleData" or "ProductionUpdateModuleData" or "StructureUnpackUpdateModuleData" or "SpawnBehaviorModuleData" or "QueueProductionExitUpdateModuleData" or "WeaponSetUpdateModuleData" or "SquishCollideModuleData" or "PhysicsBehaviorModuleData" or "HitReactionBehaviorModuleData" or "StatusBitsUpgradeModuleData" or "CreateObjectDieModuleData" or "FireWeaponWhenDeadBehaviorModuleData" or "RecallUnitsSpecialPowerModuleData" or "ParkingPlaceBehaviorModuleData"?"Ep1"+name:name;return typeof(SageBinaryData.GameObject).Assembly.GetType("SageBinaryData."+model)??throw new InvalidDataException("Reviewed behavior native model absent.");}
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: select a bounded concrete family by its original wire identity; callers cannot submit unreviewed classes through the reflection/schema seam. */
@@ -88,6 +90,15 @@ public static class Ep1BehaviorMetadataTokenizer
         // Reborn: populated turrets use schema-sized typed metadata; retain the qualified literal hardpoint-only route.
         if (wireName == "WeaponSetUpdateModuleData" && Word(native.InstanceBuffer,20)==0) return Ep1WeaponSetTokenizer.Tokenize(native);
         return new Builder(native.InstanceBuffer, schemas).Build(native, wireName, nativeType);
+    }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: tokenize the two Allied client selector families through the schema/native writer. */
+    //-------------------------------------------------------------------------------------------------
+    public static Chunk TokenizeAlliedClient(Chunk native,XmlSchemaSet schemas,string wireName,Type nativeType)
+    {
+        if(wireName!="ModelConditionEvaEventSelectorClientBehaviorModuleData"&&wireName!="UpgradeSoundSelectorClientBehaviorModuleData")throw new InvalidDataException("Allied client family is not reviewed.");
+        if(nativeType.Name!="Ep1"+wireName||native?.InstanceBuffer==null||Word(native.InstanceBuffer,0)!=FastHash.GetHashCode(wireName))throw new InvalidDataException("Allied client wire/native type differs.");
+        return new Builder(native.InstanceBuffer,schemas).Build(native,wireName,nativeType);
     }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: serialize only the independently qualified PropBody class through the shared schema writer; it is not admitted as a Behaviors leaf. */
@@ -382,6 +393,14 @@ public static class Ep1BehaviorMetadataTokenizer
 
     private static uint Signature(string key) => key switch
     {
+        // Reborn: independently captured original Allied unit enum, list, reference and selector signatures.
+        // Reborn: original IFV audio-array and Dolphin optional locomotor field signatures.
+        "AudioArrayVoice"=>0x09D18241,"AudioArraySound"=>0x59867D0B,"AssetReference:LocomotorTemplate"=>0xFED20C6C,
+        "ActivateModuleInfo[]"=>0x58F6065C,"SpecialDisguiseTerrainData[]"=>0x39592ED9,
+        "BeamOptionsBitFlags"=>0xAC546C8A,"ShieldSphereUpdateOptionFlag"=>0xEABD4C0E,
+        "TerrainClassType"=>0xCDE32FD2,
+        "UpgradeSoundSelectorOverrideBlock[]"=>0x94F25492,"ModelConditionEvaEventSelectorOverrideBlock[]"=>0xC0F51451,
+        "EvaEventArray"=>0xF677AAAE,
         // Reborn: captured from the original Allied Barracks receiver DistanceType row.
         "ProjectileStateMachineType"=>0x0E8A0A05,"ProjectileUpdateOptionsBitFlags"=>0xD0FF3633,"ProjectileMoveData"=>0x9F29B19E,
         // Reborn: captured Outpost weak command-set signature.

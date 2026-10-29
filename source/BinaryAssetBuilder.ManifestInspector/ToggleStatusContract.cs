@@ -20,6 +20,8 @@ internal static class ToggleStatusContract
         // Reborn: Hammer supplies the populated LeechWeaponSOLModuleId pointer absent from the other toggle witnesses.
         ("SovietAntiVehicleVehicleTech1","Soviet/Units/SovietAntiVehicleVehicleTech1.xml"),
         ("SovietAntiStructureShip","Soviet/Units/SovietAntiStructureShip.xml"),
+        // Reborn: Mirage supplies the populated StealthOthersInvisibilityModuleId Poid pointer.
+        ("AlliedAntiVehicleVehicleTech3","Allied/Units/AlliedAntiVehicleVehicleTech3.xml"),
         ("JapanFortressShip","EP1/Japan/Units/JapanFortressShip.xml")};
 
     //-------------------------------------------------------------------------------------------------

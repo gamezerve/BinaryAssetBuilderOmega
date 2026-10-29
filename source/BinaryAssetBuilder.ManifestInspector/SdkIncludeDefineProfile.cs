@@ -10,6 +10,8 @@ internal sealed class SdkIncludeDefineProfile
     internal const string Name = "diagnostic-include-literals-v1";
     // Reborn: pre-inheritance substitution uses a distinct diagnostic witness, without changing earlier literal entry defaults.
     internal const string BeforeInheritanceName = "diagnostic-before-inheritance-definitions-v1";
+    // Reborn: source receipts explicitly identify the production scalar-arithmetic frontend.
+    internal const string AssetArithmeticName="source-asset-scalar-arithmetic-v1";
     private const string Ea = "uri:ea.com:eala:asset";
     // Reborn: identical-name definitions may coalesce only when they originate from the same captured document, matching core diamond inclusion rules.
     internal sealed record SourceIdentity(string SourcePath,string Sha256);
@@ -25,14 +27,16 @@ internal sealed class SdkIncludeDefineProfile
     private readonly XmlSchemaSet? musicSchemas;
     // Reborn: typed sound arithmetic must be selected separately from the earlier music-only schema scope.
     private readonly bool soundOffsets;
+    // Reborn: full asset source preparation admits scalar arithmetic without broadening isolated diagnostic profiles.
+    private readonly bool numericExpressions;
     internal string Profile => soundOffsets ? SdkSoundOffsets.Name : musicSchemas != null ? SdkMusicVolumeOffsets.Name : definitionExpressions ? SdkDefinitionSubset.Name : Name;
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate every captured source's canonical confinement before any imported-document read; forged graph paths cannot create authority. */
     //-------------------------------------------------------------------------------------------------
-    internal SdkIncludeDefineProfile(SdkSourcePathAudit.Report paths,bool definitionExpressions = false,XmlSchemaSet? musicSchemas = null,bool soundOffsets = false)
+    internal SdkIncludeDefineProfile(SdkSourcePathAudit.Report paths,bool definitionExpressions = false,XmlSchemaSet? musicSchemas = null,bool soundOffsets = false,bool numericExpressions = false)
     {
-        this.paths = paths; this.musicSchemas = musicSchemas; this.soundOffsets = soundOffsets;
+        this.numericExpressions=numericExpressions; this.paths = paths; this.musicSchemas = musicSchemas; this.soundOffsets = soundOffsets;
         if (soundOffsets && musicSchemas == null) throw new ArgumentException("Typed sound arithmetic requires compiled schema authority.");
         this.definitionExpressions = definitionExpressions;
         if (paths.Sources.Length > 512 || paths.Includes.Length > 4096) throw new InvalidDataException("Bounded Include inventory required.");
@@ -52,7 +56,7 @@ internal sealed class SdkIncludeDefineProfile
     {
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
         // Reborn: preserve explicit pipeline-stage identity even for owners with no substitution slots.
-        string selectedProfile = soundOffsets ? SdkSoundOffsets.Name : musicSchemas != null ? SdkMusicVolumeOffsets.Name : beforeInheritance ? BeforeInheritanceName : Profile;
+        string selectedProfile = numericExpressions ? AssetArithmeticName : soundOffsets ? SdkSoundOffsets.Name : musicSchemas != null ? SdkMusicVolumeOffsets.Name : beforeInheritance ? BeforeInheritanceName : Profile;
         try
         {
             if (paths.StoppedAtLimit) throw new InvalidDataException("Incomplete path inventory cannot authorize imported definitions.");
@@ -60,7 +64,7 @@ internal sealed class SdkIncludeDefineProfile
             // Reborn: expansion changes substitution slots only; definitions and include authority still come from rechecked raw owner/closure bytes.
             byte[] target=expandedOwner??bytes;
             if(expandedOwner!=null&&!beforeInheritance)throw new InvalidDataException("Expanded owner expressions require the pre-inheritance stage.");
-            var local = soundOffsets ? SdkLocalDefineProfile.ApplySoundOffsets(target,null,musicSchemas!,beforeInheritance) : musicSchemas != null ? SdkLocalDefineProfile.ApplyMusicOffsets(target,null,musicSchemas,beforeInheritance) : beforeInheritance ? SdkLocalDefineProfile.ApplyBeforeInheritance(target) : SdkLocalDefineProfile.Apply(target);
+            var local = soundOffsets ? SdkLocalDefineProfile.ApplySoundOffsets(target,null,musicSchemas!,beforeInheritance) : musicSchemas != null ? SdkLocalDefineProfile.ApplyMusicOffsets(target,null,musicSchemas,beforeInheritance) : beforeInheritance ? SdkLocalDefineProfile.ApplyBeforeInheritance(target,numericExpressions:numericExpressions) : SdkLocalDefineProfile.Apply(target);
             // Reborn: an asset with no expressions requires no definition-closure claim and keeps its original bytes.
             if (local.Bytes != null && local.Evidence.Substitutions == 0) return local with { Evidence = local.Evidence with { Profile = selectedProfile,RawSha256=raw } };
             Dictionary<string,Dictionary<string,Literal>> tables = new(StringComparer.OrdinalIgnoreCase);
@@ -71,7 +75,7 @@ internal sealed class SdkIncludeDefineProfile
             Dictionary<string,SdkDefinitionSubset.Evaluation> evaluations = new(StringComparer.Ordinal);
             var table = Visit(path,0);
             var literals = table.ToDictionary(pair => pair.Key,pair => pair.Value.Value,StringComparer.Ordinal);
-            var result = soundOffsets ? SdkLocalDefineProfile.ApplySoundOffsets(target,literals,musicSchemas!,beforeInheritance) : musicSchemas != null ? SdkLocalDefineProfile.ApplyMusicOffsets(target,literals,musicSchemas,beforeInheritance) : beforeInheritance ? SdkLocalDefineProfile.ApplyBeforeInheritance(target,literals) : SdkLocalDefineProfile.ApplyImported(target,literals);
+            var result = soundOffsets ? SdkLocalDefineProfile.ApplySoundOffsets(target,literals,musicSchemas!,beforeInheritance) : musicSchemas != null ? SdkLocalDefineProfile.ApplyMusicOffsets(target,literals,musicSchemas,beforeInheritance) : beforeInheritance ? SdkLocalDefineProfile.ApplyBeforeInheritance(target,literals,numericExpressions) : SdkLocalDefineProfile.ApplyImported(target,literals);
             // Reborn: rejected transformations never publish origins or a partial closure as trusted preprocessing evidence.
             return result with { Evidence = result.Evidence with { Profile = selectedProfile,RawSha256=raw,
                 EvaluatedDefinitions = result.Bytes == null ? Array.Empty<SdkDefinitionSubset.Evaluation>() : evaluations.Values.OrderBy(item => item.SourcePath,StringComparer.OrdinalIgnoreCase).ThenBy(item => item.Name,StringComparer.Ordinal).ToArray(),

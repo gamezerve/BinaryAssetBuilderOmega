@@ -24,7 +24,14 @@ internal static class ClientSoundArrayContract
             if(SdkBuildTests.Enabled){var source=(XmlDocument)baseline.CloneNode(true);var clients=source.GetElementsByTagName("ClientBehaviors",SchemaSet.XmlNamespace).OfType<XmlElement>().Single();clients.RemoveAll();clients.AppendChild(source.ImportNode(original,true));var resolved=SchemaNativeContract.Resolve(source,schemas,catalog).GetElementsByTagName("ModelConditionSoundSelectorClientBehavior",SchemaSet.XmlNamespace).OfType<XmlElement>().Single();SchemaNativeContract.VerifyStock(resolved,typeof(Ep1ModelConditionSoundSelectorClientBehaviorModuleData),TypeId,captured.Bytes,module.Native,captured.Asset.References.ToArray());}
             grammar.Learn(captured.Bytes,module.Wrapper,captured.Projection.NativeRoot,typeof(Ep1ModelConditionSoundSelectorClientBehaviorModuleData));count++;
         }
+        // Reborn: original Engineer selectors provide populated NamedEntry voice grammar, beyond the Bear sound-only witness.
+        var engineer=GameObjectStockReview.Capture(manifest,"GameObject:AlliedEngineer");var engineerModules=GameObjectModuleReview.Inspect(manifest,engineer.Asset.Name).Containers.Single(c=>c.Name=="ClientBehaviors").Modules.Where(m=>m.TypeId==TypeId).ToArray();
+        foreach(var original in GameObjectExtendedRootContract.Original("Allied/Units/AlliedEngineer.xml","ModelConditionSoundSelectorClientBehavior")){
+            uint id=FastHash.GetHashCode(original.GetAttribute("id").ToLowerInvariant());var module=engineerModules.Single(m=>BinaryPrimitives.ReadUInt32LittleEndian(engineer.Bytes.AsSpan(m.Native+4))==id);
+            if(SdkBuildTests.Enabled){var source=(XmlDocument)baseline.CloneNode(true);var clients=source.GetElementsByTagName("ClientBehaviors",SchemaSet.XmlNamespace).OfType<XmlElement>().Single();clients.RemoveAll();clients.AppendChild(source.ImportNode(original,true));var resolved=SchemaNativeContract.Resolve(source,schemas,catalog).GetElementsByTagName("ModelConditionSoundSelectorClientBehavior",SchemaSet.XmlNamespace).OfType<XmlElement>().Single();SchemaNativeContract.VerifyStock(resolved,typeof(Ep1ModelConditionSoundSelectorClientBehaviorModuleData),TypeId,engineer.Bytes,module.Native,engineer.Asset.References.ToArray());}
+            grammar.Learn(engineer.Bytes,module.Wrapper,engineer.Projection.NativeRoot,typeof(Ep1ModelConditionSoundSelectorClientBehaviorModuleData));count++;
+        }
         if(count==0)throw new InvalidDataException("No populated selector sound-array stock witness.");
-        SdkBuildTests.MetadataProgress("Client AudioArraySound",$"Reborn: client AudioArraySound EP1 qualification: PASS ({count} original Bear selector, mixed voice/sound arrays).",count+" original populated selectors");
+        SdkBuildTests.MetadataProgress("Client AudioArraySound",$"Reborn: client AudioArraySound EP1 qualification: PASS ({count} original Bear/Engineer selectors, mixed voice/sound/named arrays).",count+" original selectors");
     }
 }

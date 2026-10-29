@@ -8,6 +8,29 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 29, 2026
 
+<!-- Reborn: compile the requested Allied unit batch with complete EP1 module layouts and one schema-name catalog per build. -->
+**All 25 requested Allied unit XMLs now compile** in a private Reborn snapshot:
+**28 GameObjects + 4 ArmorTemplates + 4 ObjectCreationLists + 5 LocomotorTemplates**,
+41 assets total. The linker resolved **9 local / 3424 stock** reference occurrences;
+BIN/RELO/IMP readback passed with checksum `51537807`.
+The complete measured build took **44.65 seconds**. Each build now shares its
+immutable class-name catalog instead of repeatedly reconstructing it for every
+stock module witness; source/native/metadata verification remains mandatory.
+
+Added ten behavior families and two client selector families, completed populated
+HitReaction status and named selector voices, and admitted the original anonymous
+Spy EVA selector and two-AI Pacifier graph. Scalar asset expressions such as
+`=$ALLIED_HEALTH_TENT_RADIUS*2` resolve before inheritance.
+**13 original generated family checks, 13 corrupt native/auxiliary refusals and
+12 arithmetic controls pass**; all three older definition/include profiles pass.
+See the [Allied batch notes](docs/RA3EP1_ALLIED_UNIT_BATCH.md) and
+[explicit 25-file entry](tests/fixtures/allied-unit-batch/data/Static_Mod.xml).
+
+Evidence remains under `alpha/.work/allied-units-batch-65d203de32634712831cf7093e6ee65b/`
+(`verification.json`, `modules11.log`, `native11.log`, `native11/stream-readback`).
+ART includes were excluded only in the private snapshot. User Reborn sources and
+published mods were untouched; these are offline checks, with no game launch.
+
 <!-- Reborn: absent ART all/instance includes warn and skip consistently across Studio validation, source preparation and publication. -->
 Missing `ART:` Includes with `type="all"` or `type="instance"` now emit **`Warning: MISSINGART`**
 and are skipped after mod/SDK search. Warnings retain the original include

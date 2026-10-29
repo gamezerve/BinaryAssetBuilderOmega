@@ -24,6 +24,22 @@ internal static class GameObjectModuleReview
         public bool GameExecuted => false;
     }
 
+    // Reborn: immutable schema-name lookup can be shared inside one explicit synchronous build, never between Studio worker builds.
+    [ThreadStatic] private static Dictionary<uint,string[]>? scopedNames;
+    [ThreadStatic] private static int nameCatalogScopes;
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: reuse only class-hash names during a build; every stock slice, native field and generated metadata proof is still read and checked. */
+    //-------------------------------------------------------------------------------------------------
+    internal static IDisposable ReuseNameCatalog()=>new NameCatalogScope();
+    private sealed class NameCatalogScope:IDisposable
+    {
+        private bool disposed;
+        // Reborn: nested qualification shares the current thread's immutable name catalog.
+        internal NameCatalogScope(){if(nameCatalogScopes++==0)scopedNames=null;}
+        // Reborn: the final scope releases lookup authority so a later build must admit its current schemas again.
+        public void Dispose(){if(disposed)return;disposed=true;if(--nameCatalogScopes==0)scopedNames=null;}
+    }
+
     //-------------------------------------------------------------------------------------------------
     /** Reborn: capture only the previously fingerprint-admitted slice, then inspect six named module containers. */
     //-------------------------------------------------------------------------------------------------
@@ -170,11 +186,14 @@ internal static class GameObjectModuleReview
     //-------------------------------------------------------------------------------------------------
     private static Dictionary<uint, string[]> SchemaNames()
     {
+        // Reborn: names are read-only consumers of the admitted schema, not cached asset bytes or generated output.
+        if(nameCatalogScopes>0&&scopedNames!=null)return scopedNames;
         Dictionary<uint, string[]>? names = null;
         var report = SdkEffectiveSchema.Inspect(shieldCandidate: true, reviewHooks: true, onAdmitted: set =>
             names = set.GlobalTypes.Values.Cast<System.Xml.Schema.XmlSchemaType>().Where(t => t.QualifiedName.Namespace == "uri:ea.com:eala:asset")
                 .Select(t => t.Name!).GroupBy(FastHash.GetHashCode).ToDictionary(g => g.Key, g => g.Distinct(StringComparer.Ordinal).ToArray()));
         if (!report.SchemaAdmitted || names == null) throw new InvalidDataException("Reviewed module schema name catalog required.");
+        if(nameCatalogScopes>0)scopedNames=names;
         return names;
     }
 

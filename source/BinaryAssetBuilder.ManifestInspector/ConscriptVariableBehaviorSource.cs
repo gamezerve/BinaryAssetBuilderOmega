@@ -171,6 +171,8 @@ internal static class ConscriptVariableBehaviorSource
             if(owner.NativeType==typeof(SageBinaryData.TechUpgradeReceiverModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(AircraftUpdateContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(NavalUpdateContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
+            // Reborn: complete Allied unit behavior records are authored through the shared independent schema/native proof.
+            if(AlliedUnitModuleContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(VehicleBatchAbilityContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(HammerBehaviorContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(ScoutVehicleBehaviorContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
@@ -260,6 +262,8 @@ internal static class ConscriptVariableBehaviorSource
         {
             // Reborn: PropBody has an independent source/schema contract rather than the Conscript ActiveBody template.
             if(owner.NativeType==typeof(SageBinaryData.PropBodyModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);continue;}
+            // Reborn: each supported AI leaf is verified from its own source, independently of the baseline AI cardinality.
+            if(owner.Container=="AI"){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);continue;}
             var original=originals.Single(o=>o.Container==owner.Container&&o.Index==owner.Index);origins.Add(owner.Element.GetAttribute("id"),original.Element.GetAttribute("id"));
         }
         // Reborn: source-order reference occurrences must be stable across attribute formatting and added/cloned behavior identities.

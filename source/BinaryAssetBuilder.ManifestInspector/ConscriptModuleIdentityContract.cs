@@ -14,7 +14,7 @@ internal static class ConscriptModuleIdentityContract
     internal static void Validate(XmlDocument source)
     {
         // Reborn: point duplicate/empty identity errors at the actual later declaration, not only the merged GameObject root.
-        var seen=new HashSet<uint>();foreach(var owner in ConscriptModuleScalarContract.Owners(source))if(string.IsNullOrWhiteSpace(owner.Element.GetAttribute("id"))||!seen.Add(Hash(owner.Element)))throw SdkXmlDiagnostics.At(new InvalidDataException("Empty or hash-colliding local module ID: "+owner.Element.GetAttribute("id")),(XmlNode?)owner.Element.GetAttributeNode("id")??owner.Element);
+        var seen=new HashSet<uint>();foreach(var owner in ConscriptModuleScalarContract.Owners(source))if((string.IsNullOrWhiteSpace(owner.Element.GetAttribute("id"))&&!AnonymousEva(owner.Element))||!seen.Add(Hash(owner.Element)))throw SdkXmlDiagnostics.At(new InvalidDataException("Empty or hash-colliding local module ID: "+owner.Element.GetAttribute("id")),(XmlNode?)owner.Element.GetAttributeNode("id")??owner.Element);
         Ep1SelectedModuleIdentity.ValidateSource(source.DocumentElement!,true);
     }
 
@@ -78,5 +78,7 @@ internal static class ConscriptModuleIdentityContract
     {foreach(var owner in ConscriptModuleScalarContract.Owners(source))BinaryPrimitives.WriteUInt32LittleEndian(target.AsSpan(ConscriptModuleScalarContract.Address(target,prefix,owner)+4,4),Hash(owner.Element));}
 
     // Reborn: use the engine's case-insensitive local module identity hashing, not the distinct instance-ID hash.
-    private static uint Hash(XmlElement element)=>FastHash.GetHashCode(element.GetAttribute("id").ToLowerInvariant());
+    // Reborn: the original Spy EVA selector legally omits its Poid and stores zero; named modules keep the normal engine hash.
+    private static bool AnonymousEva(XmlElement element)=>element.LocalName=="ModelConditionEvaEventSelectorClientBehavior"&&!element.HasAttribute("id");
+    private static uint Hash(XmlElement element)=>AnonymousEva(element)?0u:FastHash.GetHashCode(element.GetAttribute("id").ToLowerInvariant());
 }

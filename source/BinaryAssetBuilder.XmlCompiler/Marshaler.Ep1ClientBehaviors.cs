@@ -18,7 +18,7 @@ public static partial class Marshaler
             (*objT)->Count=(uint)count;state.InplaceEndianToPlatform(&(*objT)->Count);if(count==0)return;
             using(var items=state.Push((void**)&(*objT)->Items,(uint)sizeof(ClientBehaviorModuleData*),(uint)count))for(int i=0;i<count;i++)
             {
-                var child=children.GetNextNode();string id=child.GetAttributeValue("id",null)?.GetText();if(string.IsNullOrWhiteSpace(id) || !ids.Add(FastHash.GetHashCode(id.ToLowerInvariant())))throw new InvalidDataException("Selected client IDs must be nonempty/hash-distinct.");
+                var child=children.GetNextNode();string id=child.GetAttributeValue("id",null)?.GetText();if((string.IsNullOrWhiteSpace(id)&&child.GetAttributeValue("TypeId",null)?.GetText()!=0x61C8C467u.ToString(System.Globalization.CultureInfo.InvariantCulture)) || !ids.Add(string.IsNullOrWhiteSpace(id)?0u:FastHash.GetHashCode(id.ToLowerInvariant())))throw new InvalidDataException("Selected client IDs must be nonempty/hash-distinct.");
                 string type=child.GetAttributeValue("TypeId",null)?.GetText();
                 if(type==0x5A3EDBF4u.ToString(System.Globalization.CultureInfo.InvariantCulture))MarshalPolymorphicType<ModelConditionAudioLoopClientBehaviorModuleData,ClientBehaviorModuleData>(child,&(*objT)->Items[i],state);
                 else if(type==0x27EF791Du.ToString(System.Globalization.CultureInfo.InvariantCulture))MarshalPolymorphicType<AnimationSoundClientBehaviorModuleData,ClientBehaviorModuleData>(child,&(*objT)->Items[i],state);
@@ -26,6 +26,18 @@ public static partial class Marshaler
                 {
                     using(var module=state.Push((void**)&(*objT)->Items[i],(uint)sizeof(Ep1ModelConditionSoundSelectorClientBehaviorModuleData),1u))Marshal(child,(Ep1ModelConditionSoundSelectorClientBehaviorModuleData*)(*objT)->Items[i],state);
                     uint wire=0x327CFB76;state.InplaceEndianToPlatform(&wire);*(uint*)(*objT)->Items[i]=wire;
+                }
+                // Reborn: ModelConditionEvaEventSelectorClientBehavior preserves its EP1 audio/EVA item ordinals and concrete wire identity.
+                else if(type==0x61C8C467u.ToString(System.Globalization.CultureInfo.InvariantCulture))
+                {
+                    using(var module=state.Push((void**)&(*objT)->Items[i],(uint)sizeof(Ep1ModelConditionEvaEventSelectorClientBehaviorModuleData),1u))Marshal(child,(Ep1ModelConditionEvaEventSelectorClientBehaviorModuleData*)(*objT)->Items[i],state);
+                    uint wire=0x61C8C467;state.InplaceEndianToPlatform(&wire);*(uint*)(*objT)->Items[i]=wire;
+                }
+                // Reborn: UpgradeSoundSelectorClientBehavior preserves its EP1 audio/EVA item ordinals and concrete wire identity.
+                else if(type==0xF9115AA9u.ToString(System.Globalization.CultureInfo.InvariantCulture))
+                {
+                    using(var module=state.Push((void**)&(*objT)->Items[i],(uint)sizeof(Ep1UpgradeSoundSelectorClientBehaviorModuleData),1u))Marshal(child,(Ep1UpgradeSoundSelectorClientBehaviorModuleData*)(*objT)->Items[i],state);
+                    uint wire=0xF9115AA9;state.InplaceEndianToPlatform(&wire);*(uint*)(*objT)->Items[i]=wire;
                 }
                 else throw new InvalidDataException("Selected EP1 client class not implemented.");
             }

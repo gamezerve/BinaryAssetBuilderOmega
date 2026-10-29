@@ -14,6 +14,31 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: original EP1 ActivateModuleSpecialPower wire and complete native record.
+            case 0x48563167u:
+                MarshalPolymorphicType<Ep1ActivateModuleSpecialPower, BehaviorModuleData>(node, objT, state);
+                uint alliedActivateModuleSpecialPower=0x48563167u;state.InplaceEndianToPlatform(&alliedActivateModuleSpecialPower);*(uint*)*objT=alliedActivateModuleSpecialPower;
+                break;
+            // Reborn: original EP1 InvisibilityBroadcastUpdate wire and complete native record.
+            case 0xB1E5BFDAu:
+                MarshalPolymorphicType<Ep1InvisibilityBroadcastUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                uint alliedInvisibilityBroadcastUpdate=0xB1E5BFDAu;state.InplaceEndianToPlatform(&alliedInvisibilityBroadcastUpdate);*(uint*)*objT=alliedInvisibilityBroadcastUpdate;
+                break;
+            // Reborn: original EP1 MagneticEffectUpdate wire and complete native record.
+            case 0x7CA3739Bu:
+                MarshalPolymorphicType<Ep1MagneticEffectUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                uint alliedMagneticEffectUpdate=0x7CA3739Bu;state.InplaceEndianToPlatform(&alliedMagneticEffectUpdate);*(uint*)*objT=alliedMagneticEffectUpdate;
+                break;
+            // Reborn: original EP1 ReconstituteStateSpecialAbility wire and complete native record.
+            case 0x3F9B9EF1u:
+                MarshalPolymorphicType<Ep1ReconstituteStateSpecialAbilityModuleData, BehaviorModuleData>(node, objT, state);
+                uint alliedReconstituteStateSpecialAbility=0x3F9B9EF1u;state.InplaceEndianToPlatform(&alliedReconstituteStateSpecialAbility);*(uint*)*objT=alliedReconstituteStateSpecialAbility;
+                break;
+            // Reborn: original EP1 StoreCurrentStateUpdate wire and complete native record.
+            case 0xBED1542Au:
+                MarshalPolymorphicType<Ep1StoreCurrentStateUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                uint alliedStoreCurrentStateUpdate=0xBED1542Au;state.InplaceEndianToPlatform(&alliedStoreCurrentStateUpdate);*(uint*)*objT=alliedStoreCurrentStateUpdate;
+                break;
             // Reborn: falling projectiles and ship slow-death use independently captured EP1 class identities.
             case 0x114CC62Fu: MarshalPolymorphicType<ProjectileUpdateModuleData,BehaviorModuleData>(node,objT,state);break;
             case 0xECC6823Du: MarshalPolymorphicType<ShipSlowDeathBehaviorModuleData,BehaviorModuleData>(node,objT,state);break;
@@ -361,7 +386,9 @@ public static partial class Marshaler
                 break;
 #if KANESWRATH
             case 0x9B27DE30u: // actually present in TW, with minor change to KW, enable?
-                MarshalPolymorphicType<DominateEnemySpecialPowerModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: retain the original EP1 wire identity after allocating its isolated native record.
+                MarshalPolymorphicType<Ep1DominateEnemySpecialPowerModuleData, BehaviorModuleData>(node, objT, state);
+                uint alliedDominateEnemySpecialPower=0x9B27DE30u;state.InplaceEndianToPlatform(&alliedDominateEnemySpecialPower);*(uint*)*objT=alliedDominateEnemySpecialPower;
                 break;
             case 0x4D76910Cu: // actually present in TW, enable?
                 MarshalPolymorphicType<TemporarilyDefectUpdateModuleData, BehaviorModuleData>(node, objT, state);
@@ -546,7 +573,9 @@ public static partial class Marshaler
                 MarshalPolymorphicType<WeaponSetUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0xA0AA07E1u:
-                MarshalPolymorphicType<BeamSpecialAbilityUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: retain the original EP1 wire identity after allocating its isolated native record.
+                MarshalPolymorphicType<Ep1BeamSpecialAbilityUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                uint alliedBeamSpecialAbilityUpdate=0xA0AA07E1u;state.InplaceEndianToPlatform(&alliedBeamSpecialAbilityUpdate);*(uint*)*objT=alliedBeamSpecialAbilityUpdate;
                 break;
             case 0x313998B5u:
                 MarshalPolymorphicType<CaptureSpecialAbilityUpdateModuleData, BehaviorModuleData>(node, objT, state);
@@ -916,7 +945,9 @@ public static partial class Marshaler
                 MarshalPolymorphicType<ShroudClearBehaviorModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x1E5C747Au:
-                MarshalPolymorphicType<LinearDamageUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: retain the original EP1 wire identity after allocating its isolated native record.
+                MarshalPolymorphicType<Ep1LinearDamageUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                uint alliedLinearDamageUpdate=0x1E5C747Au;state.InplaceEndianToPlatform(&alliedLinearDamageUpdate);*(uint*)*objT=alliedLinearDamageUpdate;
                 break;
             case 0xB956A21Au:
                 MarshalPolymorphicType<GrantUpgradeAreaOfEffectSpecialPowerModuleData, BehaviorModuleData>(node, objT, state);
@@ -958,7 +989,9 @@ public static partial class Marshaler
                 MarshalPolymorphicType<MetaGameStratButtonInfoModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0xA5FAC7DFu: // actually present in TW, enable?
-                MarshalPolymorphicType<SpecialDisguiseUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: retain the original EP1 wire identity after allocating its isolated native record.
+                MarshalPolymorphicType<Ep1SpecialDisguiseUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                uint alliedSpecialDisguiseUpdate=0xA5FAC7DFu;state.InplaceEndianToPlatform(&alliedSpecialDisguiseUpdate);*(uint*)*objT=alliedSpecialDisguiseUpdate;
                 break;
             case 0x7BB5E0ADu:
                 MarshalPolymorphicType<FloodUpdateModuleData, BehaviorModuleData>(node, objT, state);
