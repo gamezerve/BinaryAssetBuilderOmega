@@ -4,6 +4,11 @@ using SageBinaryData;
 public static partial class Marshaler
 {
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: hierarchical turret slots retain the complete inherited turret and the authored parent link. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node,Ep1WeaponSlotHierarchicalTurret* objT,Tracker state)
+    {if(node==null)return;Marshal(node.GetAttributeValue("ParentID","0"),&objT->ParentID,state);Marshal(node,(Ep1WeaponSlotTurret*)objT,state);}
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: marshal the EP1 turret slot through its real inline hardpoint and 100-byte AI record. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node,Ep1WeaponSlotTurret* objT,Tracker state)
@@ -47,7 +52,8 @@ public static partial class Marshaler
     public static unsafe void Marshal(Node node,Ep1TurretAITargetChooserData* objT,Tracker state)
     {
         if(node is null)return;
-        if(node.GetChildNodes("ObjectVisionRange")?.GetCount()>0)throw new BinaryAssetBuilderException(ErrorCode.InternalError,"Turret ObjectVisionRange records are not implemented.");
+        // Reborn: source-sized turret vision rules own their complete inline filters and optional filter children.
+        Marshal(node.GetChildNodes("ObjectVisionRange"),&objT->Base.ObjectVisionRange,state);
         Marshal(node.GetAttributeValue("IdleScanDelay","0.8s"),&objT->Base.IdleScanDelay,state);
         Marshal(node.GetAttributeValue("ReacquireDelay","60s"),&objT->Base.ReacquireDelay,state);
         Marshal(node.GetAttributeValue("StartupDelay","0s"),&objT->Base.StartupDelay,state);

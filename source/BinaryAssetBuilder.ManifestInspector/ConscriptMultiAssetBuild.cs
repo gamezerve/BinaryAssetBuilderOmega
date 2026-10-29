@@ -111,7 +111,8 @@ internal static class ConscriptMultiAssetBuild
                 if(type=="GameObject"){
                     // Reborn: native errors without an attached XML node still identify their actual authored GameObject, not temporary game.xml.
                     try{instance=Normalize(xml);var native=GameObjectBodyProjectionSmokeTest.Compile(Xml(instance.XmlNode.OuterXml),true,true,true);var tokens=graphVerifier!.Verify(xml,native,instance,plans[xml].Origins);if(ReferenceEquals(xml,source))prefix=tokens.InstanceBuffer.Length-native.InstanceBuffer.Length;buffer=Buffer(tokens);}
-                    catch(Exception error)when(error is InvalidDataException or FormatException or OverflowException){compileLog.NativeError(error,xml);if(nativeReview){reviewFailures.Add(new{Asset=xml.DocumentElement!.GetAttribute("id"),Error=error.Message});Console.WriteLine("Reborn: native review failure: "+xml.DocumentElement.GetAttribute("id")+": "+error.Message);continue;}throw;}
+                    // Reborn: native review also collects explicit compiler capability exceptions at the current authored object.
+                    catch(Exception error)when(error is InvalidDataException or FormatException or OverflowException or BinaryAssetBuilderException){compileLog.NativeError(error,xml);if(nativeReview){reviewFailures.Add(new{Asset=xml.DocumentElement!.GetAttribute("id"),Error=error.Message});Console.WriteLine("Reborn: native review failure: "+xml.DocumentElement.GetAttribute("id")+": "+error.Message);continue;}throw;}
                     // Reborn: weak CommandSet availability is reported consistently by the common mod/stock audit, without pretending it is a native import.
                 }else if(type=="AudioEvent"){
                     instance=Normalize(xml);buffer=AuthoredAmbientCompiler.Compile(instance);

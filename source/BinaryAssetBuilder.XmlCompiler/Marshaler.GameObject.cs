@@ -14,6 +14,18 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: original EP1 ChargeWeaponUpdate behavior.
+            case 0x23E5E3BEu: MarshalPolymorphicType<Ep1ChargeWeaponUpdateModuleData, BehaviorModuleData>(node,objT,state);uint japanChargeWeaponUpdate=0x23E5E3BEu;state.InplaceEndianToPlatform(&japanChargeWeaponUpdate);*(uint*)*objT=japanChargeWeaponUpdate;break;
+            // Reborn: original EP1 PrematureDischargeSpecialPower behavior.
+            case 0x8E22E8C8u: MarshalPolymorphicType<Ep1PrematureDischargeSpecialPowerModuleData, BehaviorModuleData>(node,objT,state);uint japanPrematureDischargeSpecialPower=0x8E22E8C8u;state.InplaceEndianToPlatform(&japanPrematureDischargeSpecialPower);*(uint*)*objT=japanPrematureDischargeSpecialPower;break;
+            // Reborn: original EP1 SpiderHoleUpdate behavior.
+            case 0xCC940830u: MarshalPolymorphicType<Ep1SpiderHoleUpdateModuleData, BehaviorModuleData>(node,objT,state);uint japanSpiderHoleUpdate=0xCC940830u;state.InplaceEndianToPlatform(&japanSpiderHoleUpdate);*(uint*)*objT=japanSpiderHoleUpdate;break;
+            // Reborn: original EP1 ActivateSpecialPowerOnCreate behavior.
+            case 0xC54AD4FBu: MarshalPolymorphicType<Ep1ActivateSpecialPowerOnCreate, BehaviorModuleData>(node,objT,state);uint japanActivateSpecialPowerOnCreate=0xC54AD4FBu;state.InplaceEndianToPlatform(&japanActivateSpecialPowerOnCreate);*(uint*)*objT=japanActivateSpecialPowerOnCreate;break;
+            // Reborn: original EP1 MovementSpecialPower behavior.
+            case 0x6712612Bu: MarshalPolymorphicType<Ep1MovementSpecialPowerModuleData, BehaviorModuleData>(node,objT,state);uint japanMovementSpecialPower=0x6712612Bu;state.InplaceEndianToPlatform(&japanMovementSpecialPower);*(uint*)*objT=japanMovementSpecialPower;break;
+            // Reborn: original EP1 TimedOpacityUpdate behavior.
+            case 0xFB57AB87u: MarshalPolymorphicType<Ep1TimedOpacityUpdateModuleData, BehaviorModuleData>(node,objT,state);uint japanTimedOpacityUpdate=0xFB57AB87u;state.InplaceEndianToPlatform(&japanTimedOpacityUpdate);*(uint*)*objT=japanTimedOpacityUpdate;break;
             // Reborn: original EP1 ActivateModuleSpecialPower wire and complete native record.
             case 0x48563167u:
                 MarshalPolymorphicType<Ep1ActivateModuleSpecialPower, BehaviorModuleData>(node, objT, state);
@@ -327,7 +339,8 @@ public static partial class Marshaler
                 MarshalPolymorphicType<LevelUpUpgradeModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x6C283C72u:
-                MarshalPolymorphicType<LifetimeUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: original Japan EP1 field layout and concrete identity.
+                MarshalPolymorphicType<Ep1LifetimeUpdateModuleData, BehaviorModuleData>(node,objT,state);uint japanLifetimeUpdate=0x6C283C72u;state.InplaceEndianToPlatform(&japanLifetimeUpdate);*(uint*)*objT=japanLifetimeUpdate;
                 break;
 #if KANESWRATH
             case 0x4899B6CDu:
@@ -936,7 +949,8 @@ public static partial class Marshaler
                 MarshalPolymorphicType<AreaRestrictSpecialPowerBehaviorModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x0FEC21CBu:
-                MarshalPolymorphicType<MonitorConditionUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: original Japan EP1 field layout and concrete identity.
+                MarshalPolymorphicType<Ep1MonitorConditionUpdateModuleData, BehaviorModuleData>(node,objT,state);uint japanMonitorConditionUpdate=0x0FEC21CBu;state.InplaceEndianToPlatform(&japanMonitorConditionUpdate);*(uint*)*objT=japanMonitorConditionUpdate;
                 break;
             case 0x8DA12662u:
                 MarshalPolymorphicType<MonitorSpecialPowerTimerUpdateModuleData, BehaviorModuleData>(node, objT, state);

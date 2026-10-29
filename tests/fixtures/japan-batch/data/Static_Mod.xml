@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reborn: explicit requested Japan batch; developer tests isolate copies and exclude original ART Includes. -->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <Includes>
+    <Include type="all" source="DATA:Japan/Structures/JapanPowerPlant.xml" />
+    <Include type="all" source="DATA:Japan/Structures/JapanBarracks.xml" />
+    <Include type="all" source="DATA:Japan/Structures/JapanRefinery.xml" />
+    <Include type="all" source="DATA:Japan/Structures/JapanWarFactory.xml" />
+    <Include type="all" source="DATA:Japan/Structures/JapanNavalYard.xml" />
+    <Include type="all" source="DATA:Japan/Structures/JapanTechStructure.xml" />
+    <Include type="all" source="DATA:Japan/Structures/JapanConstructionYard.xml" />
+    <Include type="all" source="DATA:Japan/Structures/JapanWallSegmentPiece.xml" />
+    <Include type="all" source="DATA:Japan/Structures/JapanWallPiece.xml" />
+    <Include type="all" source="DATA:Japan/Structures/JapanBaseDefense.xml" />
+    <Include type="all" source="DATA:Japan/Structures/JapanBaseDefenseAdvanced.xml" />
+    <Include type="all" source="DATA:Japan/Structures/JapanSuperWeapon.xml" />
+    <Include type="all" source="DATA:Japan/Structures/JapanSuperWeaponAdvanced.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanScoutInfantry.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanAntiInfantryInfantry.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanAntiVehicleInfantry.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanEngineer.xml" />
+    <Include type="all" source="DATA:EP1/Japan/Units/JapanArcherInfantry.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanInfiltrationInfantry.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanAntiVehicleInfantryTech3.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanCommandoTech1.xml" />
+    <Include type="all" source="DATA:Japan/Eggs/JapanPowerPlantEgg.xml" />
+    <Include type="all" source="DATA:Japan/Eggs/JapanBarracksEgg.xml" />
+    <Include type="all" source="DATA:Japan/Eggs/JapanRefineryEgg.xml" />
+    <Include type="all" source="DATA:Japan/Eggs/JapanWarFactoryEgg.xml" />
+    <Include type="all" source="DATA:Japan/Eggs/JapanTechStructureEgg.xml" />
+    <Include type="all" source="DATA:Japan/Eggs/JapanBaseDefenseEgg.xml" />
+    <Include type="all" source="DATA:Japan/Eggs/JapanBaseDefenseAdvancedEgg.xml" />
+    <Include type="all" source="DATA:Japan/Eggs/JapanSuperWeaponEgg.xml" />
+    <Include type="all" source="DATA:Japan/Eggs/JapanSuperWeaponAdvancedEgg.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanMiner.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanLightTransportVehicle.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanAntiInfantryVehicle.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanAntiVehicleVehicleTech1.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanAntiAirVehicleTech1.xml" />
+    <Include type="all" source="DATA:EP1/Japan/Units/JapanSentinelVehicle.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanAntiVehicleVehicleTech3.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanAntiStructureVehicle.xml" />
+    <Include type="all" source="DATA:Japan/Units_SinglePlayerCampaign/JapanMechaKing.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanMCV.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanNavyScoutShip.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanAntiAirShip.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanAntiVehicleShip.xml" />
+    <Include type="all" source="DATA:Japan/Units/JapanAntiStructureShip.xml" />
+    <Include type="all" source="DATA:EP1/Japan/Units/JapanFortressShipEgg.xml" />
+    <Include type="all" source="DATA:EP1/Japan/Units/JapanFortressShip.xml" />
+  </Includes>
+</AssetDeclaration>

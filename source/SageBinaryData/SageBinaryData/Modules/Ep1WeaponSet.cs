@@ -29,7 +29,7 @@ public struct Ep1WeaponSlotHardpoint
     public SageBool AutoChooseWeapon;
 }
 
-// Reborn: 44-byte EP1 root includes disabled flags and four list headers; typed turret arrays retain their own EP1 stride; unimplemented hierarchical/contained slots remain explicitly refused.
+// Reborn: 44-byte EP1 root includes disabled flags and four list headers; typed turret arrays retain their own EP1 stride; hierarchical slots add their ParentID, while contained slots remain explicitly refused.
 [StructLayout(LayoutKind.Sequential)]
 public struct Ep1WeaponSetUpdateModuleData
 {
@@ -37,7 +37,7 @@ public struct Ep1WeaponSetUpdateModuleData
     public DisabledBitFlags ActiveWhenDisabledBy;
     public List<Ep1WeaponSlotHardpoint> WeaponSlotHardpoint;
     public List<Ep1WeaponSlotTurret> WeaponSlotTurret;
-    public List<Ep1WeaponSlotTurret> WeaponSlotHierarchicalTurret;
+    public List<Ep1WeaponSlotHierarchicalTurret> WeaponSlotHierarchicalTurret;
     public List<Ep1WeaponSlotHardpoint> WeaponSlotContained;
 }
 
@@ -67,6 +67,9 @@ public struct Ep1WeaponSlotTurret
     public Ep1TurretAIData TurretSettings;
     public SageBool ForceRotateObjectToMaintainFiringArc;
 }
+// Reborn: hierarchical turrets append the original ParentID word to the 132-byte EP1 turret record.
+[StructLayout(LayoutKind.Sequential)]
+public struct Ep1WeaponSlotHierarchicalTurret { public Ep1WeaponSlotTurret Base;public uint ParentID; }
 // Reborn: schema dynamic-target flags use one native mask word.
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct Ep1TargetChooserDynamicTargetFlags { public fixed uint Value[1]; }
@@ -80,7 +83,8 @@ public struct Ep1BaseTurretTargetChooserData
     public Time IdleScanDelay,ReacquireDelay,StartupDelay;
     public float SympathyRange;
     public Ep1TargetChooserDynamicTargetFlags CanPickDynamicTargetType;
-    public List<Ep1TurretVisionRangeItem> ObjectVisionRange;
+    // Reborn: turret vision entries reuse the original 128-byte inline-filter record already used by EP1 unit AI.
+    public List<Ep1ObjectVisionRangeItem> ObjectVisionRange;
     public SageBool CheckVisionRange,CanPickDynamicTargets,RotateToTargetWhenAiming,CanAutoAcquireNonAutoAcquirable,CanChaseAttack,CanOnlyAttackTargetsInFront;
 }
 // Reborn: turret comparison defaults generate a real stock/mod strong reference at offset 36.

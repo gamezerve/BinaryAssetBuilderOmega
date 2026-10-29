@@ -406,6 +406,9 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();WeaponTurretSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==4 && args[0]=="particle-template-self-test")
             {CompilerSmokeTest.InitializeHashProvider();FXParticleSystemCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
+            // Reborn: verify complete Japan module and hierarchical turret source/native graphs without user-source writes.
+            if(args.Length==3 && args[0]=="japan-modules-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();JapanModuleSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: collect all prepared-object native failures in one isolated diagnostic pass, without stream publication.
             if(args.Length==5 && args[0]=="conscript-batch-native-review")
             {CompilerSmokeTest.InitializeHashProvider();ConscriptMultiAssetBuild.TryRun(args[1],args[2],args[3],args[4],nativeReview:true);return 0;}
@@ -1841,6 +1844,8 @@ internal static class Program
         Console.WriteLine("  gameobject-authored-smc-combat-self-test <fresh-output> <static.manifest> <global.manifest>");
         // Reborn: private developer batch commands never replace the Studio authoring workflow.
         Console.WriteLine("  allied-unit-source-review <entry.xml> <sdk> <fresh-output>");
+        // Reborn: Japan behavior and hierarchy regression controls.
+        Console.WriteLine("  japan-modules-self-test <static.manifest> <global.manifest>");
         Console.WriteLine("  allied-unit-modules-self-test <static.manifest> <global.manifest>");
         Console.WriteLine("  conscript-batch-native-review <prepared-game.xml> <static.manifest> <global.manifest> <fresh-output>");
         Console.WriteLine("  ep1-allied-modules-self-test <static.manifest>");

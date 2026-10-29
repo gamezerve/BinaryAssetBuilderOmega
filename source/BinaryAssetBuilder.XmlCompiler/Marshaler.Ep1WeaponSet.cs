@@ -41,12 +41,14 @@ public static partial class Marshaler
     public static unsafe void Marshal(Node node,Ep1WeaponSetUpdateModuleData* objT,Tracker state)
     {
         if(node is null)return;
-        foreach(string name in new[]{"WeaponSlotHierarchicalTurret","WeaponSlotContained"})if(node.GetChildNodes(name)?.GetCount()>0)throw new BinaryAssetBuilderException(ErrorCode.InternalError,"EP1 diagnostic weapon slot {0} is not admitted.",name);
+        foreach(string name in new[]{"WeaponSlotContained"})if(node.GetChildNodes(name)?.GetCount()>0)throw new BinaryAssetBuilderException(ErrorCode.InternalError,"EP1 diagnostic weapon slot {0} is not admitted.",name);
         // Reborn: source-sized hardpoint arrays reuse the implemented ABI without the former eight-hardpoint trial quota.
         var slots=node.GetChildNodes("WeaponSlotHardpoint");
         Marshal(node.GetAttributeValue("ActiveWhenDisabledBy","HELD"),&objT->ActiveWhenDisabledBy,state);
         Marshal(slots,&objT->WeaponSlotHardpoint,state);
         // Reborn: turret records have their own source-sized list and nested EP1 allocations.
-        Marshal(node.GetChildNodes("WeaponSlotTurret"),&objT->WeaponSlotTurret,state);Marshal(node,(UpdateModuleData*)objT,state);
+        // Reborn: hierarchical records use their own 136-byte stride and source-sized inherited graphs.
+        Marshal(node.GetChildNodes("WeaponSlotTurret"),&objT->WeaponSlotTurret,state);
+        Marshal(node.GetChildNodes("WeaponSlotHierarchicalTurret"),&objT->WeaponSlotHierarchicalTurret,state);Marshal(node,(UpdateModuleData*)objT,state);
     }
 }

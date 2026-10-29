@@ -95,7 +95,10 @@ internal static class SdkLocalDefineProfile
             if (expression.StartsWith("=$",StringComparison.Ordinal) && Identifier.IsMatch(expression[2..]) && defines.TryGetValue(expression[2..],out string? value))
             { slot.Value = value; continue; }
             // Reborn: production asset arithmetic is opt-in; final schema validation still determines each destination's type.
-            if(numericExpressions){try{slot.Value=SdkAssetNumericExpressions.Evaluate(expression,defines);continue;}catch(InvalidDataException error){return Reject(raw,error.Message,slot);}}
+            if(numericExpressions){try{
+                // Reborn: EA Egg KindOf values reuse the existing visible-definition plus quoted-suffix form before inheritance.
+                slot.Value=expression.Contains('\'')?SdkDefinitionSubset.Evaluate(expression,name=>defines.GetValueOrDefault(name)):SdkAssetNumericExpressions.Evaluate(expression,defines);continue;
+            }catch(InvalidDataException error){return Reject(raw,error.Message,slot);}}
             if (musicSchemas == null) return Reject(raw,"Only exact =$NAME references to visible case-sensitive definitions are supported; unresolved expression: "+expression,slot);
             try
             {

@@ -146,6 +146,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> navalUpdates;
     // Reborn: qualify Allied unit records once per mixed compilation, including their optional nested grammar.
     private readonly Lazy<StockMetadataGrammar> alliedUnitModules;
+    // Reborn: one Japan grammar generation is shared across the complete authored batch.
+    private readonly Lazy<StockMetadataGrammar> japanModules;
     private readonly Lazy<StockMetadataGrammar> vehicleBatchAbilities;
     private readonly Lazy<StockMetadataGrammar> hammerBehaviors;
     private readonly Lazy<StockMetadataGrammar> scoutBehaviors;
@@ -168,6 +170,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> wallBuilder;
     // Reborn: turret weapon slots use a retail-derived metadata grammar and independent source proof.
     private readonly Lazy<StockMetadataGrammar> weaponTurret;
+    // Reborn: hierarchical turret qualification is lazy and independent of ordinary turret-only builds.
+    private readonly Lazy<StockMetadataGrammar> hierarchicalTurrets;
     // Reborn: schema-proved draw leaves need the generic proof qualified on stock Conscript draws and a metadata grammar from stock draws.
     private readonly Dictionary<Type,Lazy<StockMetadataGrammar>> schemaFamilies=new();
     // Reborn: Geometry is a nonmodule owner with independently qualified source/native and stock metadata grammar.
@@ -221,6 +225,7 @@ internal sealed class ConscriptVariableGraphVerifier
         specialPower=new(()=>SpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         weaponTurret=new(()=>WeaponTurretContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        hierarchicalTurrets=new(()=>{var grammar=weaponTurret.Value;WeaponTurretContract.QualifyHierarchical(grammar,manifest,baseline,referenceSchemas,catalog);return grammar;});
         weaponFireAbility=new(()=>WeaponFireAbilityContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         visionInfo=new(()=>VisionInfoContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         propBody=new(()=>PropBodyContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -261,6 +266,7 @@ internal sealed class ConscriptVariableGraphVerifier
         techUpgradeReceiver=new(()=>TechUpgradeReceiverContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         aircraftUpdates=new(()=>AircraftUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         navalUpdates=new(()=>NavalUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        japanModules=new(()=>JapanModuleContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         alliedUnitModules=new(()=>AlliedUnitModuleContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         vehicleBatchAbilities=new(()=>VehicleBatchAbilityContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         hammerBehaviors=new(()=>HammerBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -417,8 +423,8 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: self-replacement preserves authored target lists, flags, timing and inherited ability fields through complete-object composition.
                 // Reborn: wall builders preserve all source-owned fields, filter lists and relocated status masks during complete-object composition.
                 // Reborn: source-sized turret weapons retain every nested AI, selector and strong import during object composition.
-                if(owner.NativeType==typeof(Ep1WeaponSetUpdateModuleData)&&owner.Element.ChildNodes.OfType<XmlElement>().Any(e=>e.LocalName=="WeaponSlotTurret")){
-                    var grammar=weaponTurret.Value;var turretNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                if(owner.NativeType==typeof(Ep1WeaponSetUpdateModuleData)&&owner.Element.ChildNodes.OfType<XmlElement>().Any(e=>e.LocalName is "WeaponSlotTurret" or "WeaponSlotHierarchicalTurret")){
+                    var grammar=owner.Element.ChildNodes.OfType<XmlElement>().Any(e=>e.LocalName=="WeaponSlotHierarchicalTurret")?hierarchicalTurrets.Value:weaponTurret.Value;var turretNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,WeaponTurretContract.TypeId,turretNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(turretNative,official,WeaponTurretContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,turretNative,owner.NativeType,proof.Records);Own(turretNative,start,stop);Splice(owner,metadata,start,size);continue;
                 }
                 // Reborn: preserve authored timer-monitor imports and flags through complete GameObject composition.
@@ -584,6 +590,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 if(NavalUpdateContract.Supports(owner.NativeType)){
                     var grammar=navalUpdates.Value;var navalNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName)),navalNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(navalNative,official,Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName),owner.NativeType);int size=grammar.Verify(metadata,navalNative,owner.NativeType,proof.Records);Own(navalNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: source-sized Japan behaviors use real native ownership and independently captured stock type grammar.
+                if(JapanModuleContract.Supports(owner.NativeType)){
+                    var family=JapanModuleContract.Families.Single(f=>f.Type==owner.NativeType);var grammar=japanModules.Value;var japanNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,FastHash.GetHashCode(family.Wire),japanNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(japanNative,official,family.Wire,owner.NativeType);int size=grammar.Verify(metadata,japanNative,owner.NativeType,proof.Records);Own(japanNative,start,stop);Splice(owner,metadata,start,size);continue;
                 }
                 // Reborn: one native source proof and stock grammar cover each source-sized Allied behavior/client record.
                 if(AlliedUnitModuleContract.Supports(owner.NativeType)){

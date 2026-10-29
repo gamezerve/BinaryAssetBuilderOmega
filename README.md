@@ -8,6 +8,20 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 29, 2026
 
+<!-- Reborn: qualify the complete requested Japan batch, including Egg expressions and hierarchical weapon turrets. -->
+**All 46 distinct requested Japan XMLs now compile** in a private source snapshot:
+**54 GameObjects and 14 supporting assets**, 68 total across 86 captured files.
+Nine behavior families, hierarchical turrets, turret vision/filter lists and
+populated Sentinel locomotor references are now supported. Egg KindOf string
+concatenation resolves before inheritance. All **13 local / 6119 stock** reference
+occurrences resolved; BIN/RELO/IMP readback passed (checksum `54425154`).
+The measured build took **90.19 seconds**. **28 focused positive/rejection checks**
+and both older definition-profile suites pass. Alpha tools are synchronized.
+See the [Japan batch notes](docs/RA3EP1_JAPAN_BATCH.md) and
+[46-file entry](tests/fixtures/japan-batch/data/Static_Mod.xml).
+ART Includes were excluded only in the private snapshot; user mod sources and
+published outputs were untouched. These are offline results, with no game launch.
+
 <!-- Reborn: definition collection honors captured missing ART includes throughout inherited source closures. -->
 Missing `ART:` all/instance Includes are now skipped during **imported definition
 collection** too, including nested instance bases. Their `MISSINGART` warnings
