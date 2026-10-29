@@ -164,6 +164,8 @@ internal static class ConscriptVariableBehaviorSource
             if(owner.NativeType==typeof(SageBinaryData.Ep1LiftObjectUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             // Reborn: tech transmitters retain the same full upgrade/filter proof as receivers.
             // Reborn: command-set upgrades own a typed weak command-set ID and the complete inherited upgrade graph.
+            // Reborn: dying aircraft admit their captured falling-movement and complete ship-death graphs.
+            if(DyingProjectileContract.Supports(owner.NativeType)){DyingProjectileContract.Validate(owner.Element);origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.CommandSetUpgradeModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.TechUpgradeModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.TechUpgradeReceiverModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

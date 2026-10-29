@@ -163,6 +163,9 @@ internal sealed class SchemaNativeContract
         if(owner==typeof(Ep1WeaponSlotHardpoint)&&name=="TypeId"){Expect(at,new byte[4],path);return;}
         // Reborn: inline AI vision items inherit BaseAssetType; retail keeps its runtime id-info word zero and does not store the source id.
         if(owner==typeof(Ep1ObjectVisionRangeItem)&&name=="IdInfo"){var id=e?.GetAttributeNode("id");if(id!=null)consumed.Add(id);Expect(at,new byte[4],path);return;}
+        // Reborn: the concrete movement class word is independent of authored data or enclosing module identity.
+        if(owner==typeof(ProjectileMoveBase)&&name=="TypeId"){Expect(at,BitConverter.GetBytes(0x87767DF6u),path);return;}
+        if(owner==typeof(ProjectileUpdateModuleData)&&name=="Flags"){Flags(e,name,at,4,path);return;}
         if(owner==typeof(ModuleData))
         {
             if(name=="TypeId"){Expect(at,BitConverter.GetBytes(typeId),path);return;}
@@ -191,6 +194,12 @@ internal sealed class SchemaNativeContract
             if(type.GetElementType()==typeof(Ep1UnitAbilityButtonTemplateData)){var wrapper=Child(e,name)??throw new InvalidDataException("Unit button Data is required.");var child=wrapper.ChildNodes.OfType<XmlElement>().Single();consumed.Add(child);Type concrete=UnitAbilityButtonCompiler.DataType(child);uint target=Word(at);Link(at,target,Size(concrete),path);Struct(concrete,child,(int)target,path+"*",depth+1);return;}
             if(type.GetElementType()==typeof(Ep1JoypadCommandBarButtonTemplateData)){var wrapper=Child(e,name)??throw new InvalidDataException("Joypad Data is required.");var child=wrapper.ChildNodes.OfType<XmlElement>().Single();consumed.Add(child);Type concrete=JoypadButtonCompiler.DataType(child);uint target=Word(at);Link(at,target,Size(concrete),path);Struct(concrete,child,(int)target,path+"*",depth+1);return;}
             if(type.GetElementType()==typeof(Ep1PlayerPowerButtonTemplateData)){var wrapper=Child(e,name)??throw new InvalidDataException("Button Data is required.");var child=wrapper.ChildNodes.OfType<XmlElement>().Single();consumed.Add(child);Type concrete=PlayerPowerButtonCompiler.DataType(child);uint target=Word(at);Link(at,target,Size(concrete),path);Struct(concrete,child,(int)target,path+"*",depth+1);return;}
+            // Reborn: the required XML movement wrapper owns one captured concrete falling-movement allocation.
+            if(owner==typeof(ProjectileUpdateModuleData)&&name=="Movement"){
+                var wrapper=Child(e,name)??throw new InvalidDataException("Projectile Movement is required.");var child=wrapper.ChildNodes.OfType<XmlElement>().Single();
+                if(child.LocalName!="MoveToGround")throw new InvalidDataException("Projectile movement processor is not implemented: "+child.LocalName);consumed.Add(child);
+                uint target=Word(at);Link(at,target,Size(typeof(ProjectileMoveToGroundData)),path);Struct(typeof(ProjectileMoveToGroundData),child,(int)target,path+"*",depth+1);return;
+            }
             Pointer(type.GetElementType()!,e,name,at,path,depth);return;
         }
         if(type.IsGenericType)

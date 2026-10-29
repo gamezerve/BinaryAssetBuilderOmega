@@ -18,7 +18,7 @@ internal static class SlowDeathContract
     //-------------------------------------------------------------------------------------------------
     internal static void Normalize(XmlDocument source)
     {
-        foreach(var leaf in source.GetElementsByTagName("SlowDeath",SchemaSet.XmlNamespace).OfType<XmlElement>().ToArray())ConscriptBehaviorSurvey.Prepare(leaf,"");
+        foreach(var leaf in source.GetElementsByTagName("*",SchemaSet.XmlNamespace).OfType<XmlElement>().Where(e=>e.LocalName is "SlowDeath" or "ShipSlowDeath").ToArray())ConscriptBehaviorSurvey.Prepare(leaf,"");
     }
 
     //-------------------------------------------------------------------------------------------------

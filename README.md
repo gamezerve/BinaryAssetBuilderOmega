@@ -8,6 +8,31 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 29, 2026
 
+<!-- Reborn: falling aircraft use real projectile movement and inherited ship slow-death storage; Geometry can legitimately be absent. -->
+`ProjectileUpdate` now compiles **BombProjectile / Movement / MoveToGround** with
+its original 28-byte header and separate 28-byte concrete movement allocation.
+Initial speed, acceleration, terminal speed, rotation speed/angle, forward
+damping, detonation height/distance and option bits are source-driven. The
+movement runtime class word and concrete metadata wrapper follow the original
+retail Kirov. Other movement processors (straight-line, balloon and spline)
+remain explicitly unimplemented rather than being emitted as falling movement.
+`ShipSlowDeath` retains its original class identity and complete 116-byte
+SlowDeath inheritance, including editable phases, timing, flags and references.
+
+Omitted `Geometry` is now accepted as the official optional field: the native
+pointer is zero, has no relocation, and retains a null root metadata declaration.
+The original `SovietBomberAircraft_Dying` independently anchors that absence;
+existing present-geometry handling remains source-driven. **14 checks pass**
+for original/default/edited projectile and ship-death data, inherited phases,
+whole-object absent-geometry composition and corrupt-native/dangling-pointer
+refusal. The offline batch includes this regression.
+
+A private full build of the user's `SovietHeavyKirov_Dying.xml` passed from a
+four-file include graph: **1 GameObject + 1 ObjectCreationList, 1 local and 7
+stock reference occurrences, checksum `24f780ba`**, with complete BIN/RELO/IMP
+readback. ART imports were excluded only in the private snapshot. No user
+Reborn source, installed mod output or game file was changed; no game was launched.
+
 <!-- Reborn: Allied defensive buildings and Outpost gain complete lift/transmitter/command-set upgrade composition. -->
 `LiftObjectUpdate`, `TechUpgrade` and `CommandSetUpgrade` are build-enabled with
 source-driven fields and complete inherited metadata. Lift uses an isolated

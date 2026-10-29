@@ -92,6 +92,8 @@ if($SchedulerControl){
     # Reborn: qualify MiG return-to-producer and Kirov locomotor switching with default/edit/full-object/corruption controls.
     Add-BatchCase 'aircraft-updates' 'StockQualifiedAircraftUpdates' @('aircraft-update-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: qualify authored weak command-set upgrades and inherited upgrade lists.
+    # Reborn: falling-projectile movement and ship slow-death use their original EP1 records.
+    Add-BatchCase 'dying-projectile' 'StockQualifiedDyingProjectile' @('dying-projectile-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'command-set-upgrade' 'StockQualifiedCommandSetUpgrade' @('command-set-upgrade-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: qualify the complete original tech-transmitter graph and authored optional fields.
     Add-BatchCase 'tech-upgrade' 'StockQualifiedTechUpgrade' @('tech-upgrade-self-test',$StaticManifest,$GlobalManifest)

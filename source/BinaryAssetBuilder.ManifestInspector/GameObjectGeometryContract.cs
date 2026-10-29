@@ -16,8 +16,20 @@ internal static class GameObjectGeometryContract
     internal static void Mask(XmlDocument source,XmlDocument baseline)
     {
         var actual=Owner(source);var model=Owner(baseline);
-        if(actual==null||model==null)throw SdkXmlDiagnostics.At(new InvalidDataException("Omitted Geometry still requires complete-object native owner support."),source.DocumentElement);
+        // Reborn: remove only comparison geometry when the authored object omits this optional owner.
+        if(actual==null){if(model!=null)baseline.DocumentElement!.RemoveChild(model);return;}
+        if(model==null)throw new InvalidDataException("Geometry comparison witness is missing.");
         source.DocumentElement!.ReplaceChild(source.ImportNode(model,true),actual);
+    }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: original dying Kirov data proves that omitted Geometry owns neither a native allocation nor a metadata table. */
+    //-------------------------------------------------------------------------------------------------
+    internal static bool QualifyAbsent(string manifest)
+    {
+        var stock=GameObjectStockReview.Capture(manifest,"GameObject:SovietBomberAircraft_Dying",allowNullArmorReferences:true);
+        var row=GameObjectStockReview.Tokens(stock.Bytes,0)[FastHash.GetHashCode("Geometry")];
+        if(System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(stock.Bytes.AsSpan(stock.Projection.NativeRoot+500))!=0||row.Type!=FastHash.GetHashCode("Geometry")||row.Offset!=0)throw new InvalidDataException("Retail omitted Geometry native/metadata declaration differs.");
+        return true;
     }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: qualify independent schema/native derivation on the real stock Conscript and learn Geometry row grammar from infantry and refinery stock. */

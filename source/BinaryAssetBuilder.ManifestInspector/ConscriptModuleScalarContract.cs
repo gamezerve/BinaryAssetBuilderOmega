@@ -117,6 +117,8 @@ internal static class ConscriptModuleScalarContract
         if(!Ep1BehaviorMetadataTokenizer.TryReviewedScalarSignature(schema.Name??string.Empty,out uint wire))return null;
         // Reborn: the existing EP1 AI writer stores this schema flag list in a uint, not a fixed-buffer wrapper.
         // Reborn: tech-upgrade distance mode occupies a uint but follows the original EP1 named enum.
+        // Reborn: projectile option masks use their two official bit positions in one native word.
+        if(native==typeof(uint)&&schema.Name=="ProjectileUpdateOptionsBitFlags")return (4,wire,"Flags:"+typeof(ProjectileUpdateOptions).FullName);
         if(native==typeof(uint)&&schema.Name=="DistanceCheckType")return (4,wire,"Enum:"+typeof(Ep1DistanceCheckType).FullName);
         if(native==typeof(uint)&&schema.Name=="AutoAcquireEnemiesBitFlags")return (4,wire,"Flags:"+typeof(AutoAcquireEnemiesType).FullName);
         // Reborn: EP1 root movement uses the reviewed EP1 enum, whose additional literals must not be encoded through the legacy KW enum.

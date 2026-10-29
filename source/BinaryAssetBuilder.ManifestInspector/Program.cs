@@ -154,6 +154,9 @@ internal static class Program
             if(args.Length==3 && args[0]=="production-update-info-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ProductionUpdateInfoSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: exercise authored command-set swaps and complete inherited upgrade payloads.
+            // Reborn: independently verify the original, default and edited dying-aircraft movement/death graphs.
+            if(args.Length==3 && args[0]=="dying-projectile-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();DyingProjectileSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="command-set-upgrade-self-test")
             {CompilerSmokeTest.InitializeHashProvider();CommandSetUpgradeSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: exercise full tech-transmitter inheritance, defaults, optional radius and filters.

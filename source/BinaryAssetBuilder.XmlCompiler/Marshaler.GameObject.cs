@@ -14,6 +14,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: falling projectiles and ship slow-death use independently captured EP1 class identities.
+            case 0x114CC62Fu: MarshalPolymorphicType<ProjectileUpdateModuleData,BehaviorModuleData>(node,objT,state);break;
+            case 0xECC6823Du: MarshalPolymorphicType<ShipSlowDeathBehaviorModuleData,BehaviorModuleData>(node,objT,state);break;
+
             // Reborn: compile the Allied receiver with its actual EP1 identity and full native upgrade/filter graph.
             case 0x1773BB2Eu:
                 MarshalPolymorphicType<TechUpgradeReceiverModuleData,BehaviorModuleData>(node,objT,state);

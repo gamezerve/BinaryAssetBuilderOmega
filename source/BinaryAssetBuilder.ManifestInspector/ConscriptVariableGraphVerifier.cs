@@ -139,6 +139,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> techUpgrade;
     // Reborn: command-set upgrades learn their concrete weak-ID and inherited metadata lazily.
     private readonly Lazy<StockMetadataGrammar> commandSetUpgrade;
+    // Reborn: falling aircraft movement and ship-death metadata are qualified only when used.
+    private readonly Lazy<StockMetadataGrammar> dyingProjectile;
     private readonly Lazy<StockMetadataGrammar> techUpgradeReceiver;
     private readonly Lazy<StockMetadataGrammar> aircraftUpdates;
     private readonly Lazy<StockMetadataGrammar> navalUpdates;
@@ -167,6 +169,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: schema-proved draw leaves need the generic proof qualified on stock Conscript draws and a metadata grammar from stock draws.
     private readonly Dictionary<Type,Lazy<StockMetadataGrammar>> schemaFamilies=new();
     // Reborn: Geometry is a nonmodule owner with independently qualified source/native and stock metadata grammar.
+    // Reborn: optional absence is anchored by a real zero-pointer/null-table retail object.
+    private readonly Lazy<bool> geometryAbsent;
     private readonly Lazy<StockMetadataGrammar> geometryGrammar;
     // Reborn: dependency weak IDs and optional record/list ownership have a separate stock-qualified proof.
     private readonly Lazy<StockMetadataGrammar> dependencyGrammar;
@@ -247,6 +251,8 @@ internal sealed class ConscriptVariableGraphVerifier
         // Reborn: original defense, IFV and commando records supply the complete lift grammar.
         // Reborn: qualify the original transmitter inheritance and optional-radius/filter metadata.
         // Reborn: qualify the command-set swap against original Outpost/Construction Yard payloads.
+        // Reborn: retain the original dying-Kirov movement and slow-death class graph.
+        dyingProjectile=new(()=>DyingProjectileContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         commandSetUpgrade=new(()=>CommandSetUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         techUpgrade=new(()=>TechUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         liftObject=new(()=>LiftObjectContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -286,6 +292,8 @@ internal sealed class ConscriptVariableGraphVerifier
         // Reborn: both source families use their own native layout, independently witnessed on retail airfields.
         foreach(var type in new[]{typeof(Ep1RecallUnitsSpecialPowerModuleData),typeof(Ep1ParkingPlaceBehaviorModuleData)})airfield.Add(type,new(()=>AirfieldBehaviorContract.Qualify(type,manifest,baseline,referenceSchemas,catalog)));
         foreach(var family in SchemaNativeContract.Families)schemaFamilies.Add(family.Type,new(()=>QualifySchemaFamily(manifest,family)));
+        // Reborn: independently qualify omitted Geometry only when an authored object actually omits it.
+        geometryAbsent=new(()=>GameObjectGeometryContract.QualifyAbsent(manifest));
         geometryGrammar=new(()=>GameObjectGeometryContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         dependencyGrammar=new(()=>GameObjectDependencyContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         jetAiGrammar=new(()=>JetAIUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -368,7 +376,7 @@ internal sealed class ConscriptVariableGraphVerifier
         foreach(var group in ConscriptModuleScalarContract.Owners(source).GroupBy(o=>o.Container))
         {
             var owners=group.ToArray();int header=group.Key=="Body"?-1:group.Key=="AI"?480:(int)Word(b,group.Key switch{"Draws"=>472,"Behaviors"=>476,"ClientUpdates"=>492,"ClientBehaviors"=>496,_=>throw new InvalidDataException("Unknown module container.")});
-            int end=group.Key switch{"Draws"=>layout.Draws.End,"Behaviors"=>layout.Body,"AI"=>layout.Ai.Modules[^1].End,"Body"=>layout.Geometry,_=>layout.Clients.Single(c=>c.Slot==(group.Key=="ClientUpdates"?492:496)).End};
+            int end=group.Key switch{"Draws"=>layout.Draws.End,"Behaviors"=>layout.Body,"AI"=>layout.Ai.Modules[^1].End,"Body"=>layout.Geometry==0?cut:layout.Geometry,_=>layout.Clients.Single(c=>c.Slot==(group.Key=="ClientUpdates"?492:496)).End};
             if(header>=0){if(Word(b,header)!=owners.Length)throw new InvalidDataException("Source/native module count differs.");Cover(header,8,group.Key=="AI");int items=(int)Word(b,header+4);Cover(items,owners.Length*4);Add(ownedRelos,(uint)(header+4));for(int i=0;i<owners.Length;i++)Add(ownedRelos,(uint)(items+i*4));}
             if(group.Key!="AI")Add(ownedRelos,(uint)(group.Key switch{"Body"=>488,"Draws"=>472,"Behaviors"=>476,"ClientUpdates"=>492,_=>496}));
             var map=new Dictionary<int,int>();var stockContainer=topology.Containers.Single(c=>c.Name==group.Key);
@@ -549,6 +557,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 }
                 // Reborn: source-prove every transmitter field before composing its metadata/native graph.
                 // Reborn: source-prove weak command-set identities and all inherited upgrade fields.
+                // Reborn: prove every falling-projectile and ship-death byte, reference and metadata target.
+                if(DyingProjectileContract.Supports(owner.NativeType)){
+                    var grammar=dyingProjectile.Value;var dyingNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName)),dyingNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(dyingNative,official,Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName),owner.NativeType);int size=grammar.Verify(metadata,dyingNative,owner.NativeType,proof.Records);Own(dyingNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 if(owner.NativeType==typeof(CommandSetUpgradeModuleData)){
                     var grammar=commandSetUpgrade.Value;var commandNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName)),commandNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(commandNative,official,Ep1BehaviorMetadataTokenizer.ReviewedWireName(owner.Element.LocalName),owner.NativeType);int size=grammar.Verify(metadata,commandNative,owner.NativeType,proof.Records);Own(commandNative,start,stop);Splice(owner,metadata,start,size);continue;
@@ -823,9 +836,15 @@ internal sealed class ConscriptVariableGraphVerifier
             if(group.Key=="AI")aiLength=aiNext-aiAt;else if(group.Key=="Behaviors")behaviorLength=behaviorNext-behaviorAt;else if(variableContainer)containerLengths.Add(group.Key,containerNext-containerAt);else maps.Add(group.Key,map);
         }
         // Reborn: source-sized shape/contact arrays and optional placement/vector records own the actual Geometry allocation.
-        Add(ownedRelos,500);var geometryNative=Extract(native,layout.Geometry,cut);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);
-        var geometryProof=SchemaNativeContract.Verify(GameObjectGeometryContract.Owner(resolved)!,typeof(Ep1Geometry),0,geometryNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());
-        var geometryTokens=Ep1GeometryTokenizer.Tokenize(geometryNative);int geometryLength=geometryGrammar.Value.Verify(geometryTokens,geometryNative,typeof(Ep1Geometry),geometryProof.Records);Own(geometryNative,layout.Geometry,cut);
+        resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);
+        Chunk? geometryTokens=null;int geometryLength=0;var geometryOwner=GameObjectGeometryContract.Owner(source);
+        if((geometryOwner==null)!=(layout.Geometry==0))throw new InvalidDataException("Geometry source/native presence differs.");
+        if(geometryOwner==null){_=geometryAbsent.Value;if(relos.Contains(500u)||imports.Contains(500u))throw new InvalidDataException("Absent Geometry retains an auxiliary slot.");}
+        else{
+            Add(ownedRelos,500);var geometryNative=Extract(native,layout.Geometry,cut);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);
+            var geometryProof=SchemaNativeContract.Verify(GameObjectGeometryContract.Owner(resolved)!,typeof(Ep1Geometry),0,geometryNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());
+            geometryTokens=Ep1GeometryTokenizer.Tokenize(geometryNative);geometryLength=geometryGrammar.Value.Verify(geometryTokens,geometryNative,typeof(Ep1Geometry),geometryProof.Records);Own(geometryNative,layout.Geometry,cut);
+        }
         // Reborn: VisionInfo is optional; its absence owns a null word, while presence owns exactly forty source-bound native bytes.
         (Chunk Tokens,int Start,int End)? visionPiece=null;var visionOwner=ConscriptVariableContainers.Find(source,"VisionInfo");int visionAt=(int)Word(b,560);
         if((visionOwner==null)!=(visionAt==0))throw new InvalidDataException("VisionInfo source/native presence differs.");
@@ -890,7 +909,7 @@ internal sealed class ConscriptVariableGraphVerifier
             // Reborn: dependency presence and its complete standalone table bind the actual root target independently of stock absence.
             if(pair.Key==FastHash.GetHashCode("GameDependency")){if(dependencyTokens==null){if(at!=0)throw new InvalidDataException("Absent GameDependency metadata has a target.");}else{if(at<rootLength||at>prefix-dependencyLength||metadataOwned.AsSpan(at,dependencyLength).Contains(true))throw new InvalidDataException("GameDependency metadata ownership differs.");if(!Equal(Detach(tokens,prefix,at,dependencyLength,dependencyStart,dependencyEnd),dependencyTokens))throw new InvalidDataException("GameDependency metadata root splice differs.");Array.Fill(metadataOwned,true,at,dependencyLength);}continue;}
             // Reborn: full Geometry metadata is source-sized and checked independently before comparing its enclosing root splice.
-            if(pair.Key==FastHash.GetHashCode("Geometry")){if(at<rootLength||at>prefix-geometryLength||metadataOwned.AsSpan(at,geometryLength).Contains(true))throw new InvalidDataException("Geometry metadata ownership differs.");if(!Equal(Detach(tokens,prefix,at,geometryLength,layout.Geometry,cut),geometryTokens))throw new InvalidDataException("Geometry metadata root splice differs.");Array.Fill(metadataOwned,true,at,geometryLength);continue;}
+            if(pair.Key==FastHash.GetHashCode("Geometry")){if(geometryTokens==null){if(at!=0)throw new InvalidDataException("Absent Geometry retains a metadata table.");continue;}if(at<rootLength||at>prefix-geometryLength||metadataOwned.AsSpan(at,geometryLength).Contains(true))throw new InvalidDataException("Geometry metadata ownership differs.");if(!Equal(Detach(tokens,prefix,at,geometryLength,layout.Geometry,cut),geometryTokens))throw new InvalidDataException("Geometry metadata root splice differs.");Array.Fill(metadataOwned,true,at,geometryLength);continue;}
             // Reborn: omitted lists are null declarations; present/empty/repeated lists own the exact prefix verified above.
             string? containerName=ConscriptVariableContainers.Names.SingleOrDefault(n=>FastHash.GetHashCode(n)==pair.Key);
             if(containerName!=null){int size=containerLengths[containerName];if(size==0){if(at!=0)throw new InvalidDataException("Omitted container metadata target differs: "+containerName);}else{if(at<rootLength||at>prefix-size||metadataOwned.AsSpan(at,size).Contains(true))throw new InvalidDataException("Variable container metadata ownership differs: "+containerName);Array.Fill(metadataOwned,true,at,size);}continue;}
