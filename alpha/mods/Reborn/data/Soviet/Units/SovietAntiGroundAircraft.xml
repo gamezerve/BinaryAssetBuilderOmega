@@ -4,13 +4,13 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:SUAntiGroundAircraft_SKN.w3x" />
-		<Include type="all"	source="ART:SUAntiGroundAircraft_FP.w3x" />
-		<Include type="all"	source="ART:SUAntiGroundAircraft_IDLA.w3x" />
-		<Include type="all"	source="ART:SUAntiGroundAircraft_MOVA.w3x" />	
-		<Include type="all"	source="ART:SUAntiGroundAircraft_D.xml" />
-		<Include type="all"	source="ART:FXTracerHeroic.xml" />
-		<Include type="all"	source="ART:FXTracer.xml" />
+		<!-- <Include type="all"	source="ART:SUAntiGroundAircraft_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUAntiGroundAircraft_FP.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUAntiGroundAircraft_IDLA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUAntiGroundAircraft_MOVA.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:SUAntiGroundAircraft_D.xml" /> -->
+		<!-- <Include type="all"	source="ART:FXTracerHeroic.xml" /> -->
+		<!-- <Include type="all"	source="ART:FXTracer.xml" /> -->
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />
 	</Includes>

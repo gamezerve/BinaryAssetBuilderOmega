@@ -3,10 +3,10 @@
 	<Tags></Tags>
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
-		<Include type="all"	source="ART:RVTeslaTank.w3x" />
-		<Include type="all"	source="ART:RUTeslaTank_D.xml" />
-		<Include type="instance" source="ART:EXTnkTrack.xml" />
-		<Include type="instance" source="ART:FXInvisBone02.w3x" />
+		<!-- <Include type="all"	source="ART:RVTeslaTank.w3x" /> -->
+		<!-- <Include type="all"	source="ART:RUTeslaTank_D.xml" /> -->
+		<!-- <Include type="instance" source="ART:EXTnkTrack.xml" /> -->
+		<!-- <Include type="instance" source="ART:FXInvisBone02.w3x" /> -->
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />
 	</Includes>
@@ -33,6 +33,9 @@
 		HealthBoxHeightOffset="25"
 		UnitIntro="Soviet_TeslaTank_UnitIntro">
 		<DisplayName xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:SovietAntiVehicleVehicleTech2</DisplayName>
+		<GameDependency>
+			<RequiredObject>SovietPowerPlantAdvanced</RequiredObject>
+		</GameDependency>
 		<ObjectResourceInfo>
 			<BuildCost Account="=$ACCOUNT_ORE" Amount="2200"/>
 		</ObjectResourceInfo>

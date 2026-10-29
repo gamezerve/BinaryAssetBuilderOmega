@@ -17,8 +17,8 @@
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietTeslaMoai.xml" />	
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietBullfrogMoai.xml" />	
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietSupplyPort.xml" />	
-		<!-- <Include type="all" source="DATA:Soviet/Units/SovietHeavyKirov.xml" />	 -->
-		<!-- <Include type="all" source="DATA:Soviet/Units/SovietHeavyKirov_Dying.xml" />	 -->
+		<Include type="all" source="DATA:Soviet/Units/SovietHeavyKirov.xml" />	
+		<Include type="all" source="DATA:Soviet/Units/SovietHeavyKirov_Dying.xml" />	
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietCavalryStatue01.xml" />
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietSwordStatue01.xml" />
 		<Include type="all" source="DATA:Soviet/Structures_Campaign/SovietPilotStatue01.xml" />
@@ -42,8 +42,8 @@
 		<!-- <Include type="all" source="units/SovietAntiInfantryVehicle.xml" /> -->
 		<!-- <Include type="all" source="units/SovietAntiStructureVehicle.xml" /> -->
 		<!-- <Include type="all" source="units/SovietAntiVehicleVehicleTech1.xml" /> -->
-		<!-- <Include type="all" source="units/SovietAntiVehicleVehicleTech2.xml" /> -->
-		<!-- <Include type="all" source="units/SovietAntiVehicleVehicleTech3.xml" /> -->
+		<Include type="all" source="units/SovietAntiVehicleVehicleTech2.xml" />
+		<Include type="all" source="units/SovietAntiVehicleVehicleTech3.xml" />
 		<!-- <Include type="all" source="units/SovietMiner.xml" /> -->
 		<!-- <Include type="all" source="units/SovietMCV.xml" /> -->
 		<!-- <Include type="all" source="units/SovietScoutVehicle.xml" /> -->
@@ -59,7 +59,7 @@
 
 		<!-- Navy Vehicles -->
 
-		<!-- <Include type="all" source="units/SovietAntiNavyShipTech1.xml" /> -->
+		<Include type="all" source="units/SovietAntiNavyShipTech1.xml" />
 		<!-- <Include type="all" source="units/SovietAntiNavyShipTech2.xml" /> -->
 		<!-- <Include type="all" source="units/SovietAntiStructureShip.xml" /> -->
 		<!-- <Include type="all" source="units/SovietAntiAirShip.xml" /> -->

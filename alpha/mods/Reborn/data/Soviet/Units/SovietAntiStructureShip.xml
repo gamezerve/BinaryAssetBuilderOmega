@@ -3,24 +3,24 @@
 	<Tags/>
 	<!-- Dreadnought -->
 	<Includes>
-		<Include
-			type="all"
-			source="DATA:GlobalData/GlobalDefines.xml" /> 
-		<Include
-			type="all"
-			source="ART:SUAntiStructureShip_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiStructureShip_IDLA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiStructureShip_ATKA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiStructureShip_PREA.w3x" />				
-		<Include
-			type="all"
-			source="ART:SUAntiStructureShip_D.xml" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="DATA:GlobalData/GlobalDefines.xml" />  -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiStructureShip_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiStructureShip_IDLA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiStructureShip_ATKA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiStructureShip_PREA.w3x" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiStructureShip_D.xml" /> -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

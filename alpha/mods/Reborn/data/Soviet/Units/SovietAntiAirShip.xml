@@ -4,25 +4,25 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:SUAntiAirShip_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiAirShip_TRANS.w3x" />			
-		<Include
-			type="all"
-			source="ART:SUAntiAirShip_IDLA.w3x" />					
-		<Include
-			type="all"
-			source="ART:SUAntiAirship_D.xml" />		
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiAirShip_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiAirShip_TRANS.w3x" />			 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiAirShip_IDLA.w3x" />					 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiAirship_D.xml" />		 -->
 		<!-- Base Object -->
 		<Include
 			type="instance"
 			source="DATA:BaseObjects/BaseVehicle.xml" />
-		<Include
-			type="instance"
-			source="ART:EXTnkTrack.xml" />			
+		<!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:EXTnkTrack.xml" />			 -->
 	</Includes>
 	<!-- aka Zhukov aka Bullfrog -->
 	<GameObject

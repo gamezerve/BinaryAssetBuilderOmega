@@ -4,24 +4,24 @@
 	<!-- aka Akula Sub -->
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
-		<Include
-			type="all"
-			source="ART:SUAntiNavyShipTech2_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiNavyShipTech2_BREACH.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiNavyShipTech2_DIVE.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiNavyShipTech2_IDLA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiNavyShipTech2_MOV.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiNavyShipTech2_D.xml" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiNavyShipTech2_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiNavyShipTech2_BREACH.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiNavyShipTech2_DIVE.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiNavyShipTech2_IDLA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiNavyShipTech2_MOV.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiNavyShipTech2_D.xml" /> -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

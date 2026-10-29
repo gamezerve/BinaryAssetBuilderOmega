@@ -66,6 +66,36 @@
 	</LogicCommandSet>	
 	
 	<LogicCommandSet
+		id="SovietWarFactoryCommandSet">
+		<Cmd>Command_ConstructSovietMiner</Cmd>
+		<Cmd>Command_ConstructSovietSurveyor</Cmd>
+		<Cmd>Command_ConstructSovietScoutVehicle</Cmd>
+		<Cmd>Command_ConstructSovietAntiInfantryVehicle</Cmd>
+		<Cmd>Command_ConstructSovietAntiAirShip_Ground</Cmd>
+		<Cmd>Command_ConstructSovietHeavyWalkerVehicle</Cmd>
+		<Cmd>Command_ConstructSovietAntiVehicleVehicleTech1</Cmd>
+		<Cmd>Command_ConstructSovietAntiVehicleVehicleTech2</Cmd>
+		<Cmd>Command_ConstructSovietGrinderVehicle</Cmd>
+		<Cmd>Command_ConstructSovietAntiStructureVehicle</Cmd>
+		<Cmd>Command_ConstructSovietAntiVehicleVehicleTech3</Cmd>
+		<Cmd>Command_ConstructSovietMCV</Cmd>
+		<Cmd>Command_RepairVehicle</Cmd>
+
+<!--		
+		<Cmd>Command_UpgradeSovietWarFactorySalvageYard</Cmd>
+-->		
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="SovietAirfieldCommandSet">
+		<Cmd>Command_ConstructSovietAntiGroundAircraft</Cmd>
+		<Cmd>Command_ConstructSovietFighterAircraft</Cmd>
+		<Cmd>Command_ConstructSovietBomberAircraft</Cmd>
+		<Cmd>Command_ConstructSovietHeavyKirov</Cmd>
+		<Cmd>Command_SovietRecallAllAircraft</Cmd>
+	</LogicCommandSet>
+	
+	<LogicCommandSet
 		id="KR_ArtilleryDomeCommandSet">
 	</LogicCommandSet>
 	

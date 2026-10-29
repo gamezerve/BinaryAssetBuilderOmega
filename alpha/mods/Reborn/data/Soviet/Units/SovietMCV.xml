@@ -4,19 +4,19 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:SUMCV_SKN.w3x" />
-		<Include type="all"	source="ART:SUMCV_FX.w3x" />
-		<Include type="all" source="ART:SUMCV_IDLA.w3x" />
-		<Include type="all"	source="ART:SUMCV_TRNL.w3x" />
-		<Include type="all"	source="ART:SUMCV_TRNR.w3x" />
-		<Include type="all"	source="ART:SUMCV_WTR.w3x" />
-		<Include type="all"	source="ART:SUMCV_WTR2.w3x" />
-		<Include type="all"	source="ART:SUMCV_WIDL.w3x" />
-		<Include type="all" source="ART:SUMCV_MOVA.w3x" />
-		<Include type="all"	source="ART:SUMCV_TRANS.w3x" />
-		<Include type="all" source="ART:SBConstructionYard_D.xml" />
-		<Include type="instance" source="ART:EX_Headlights.w3x" />
-		<Include type="instance" source="ART:Extnktrack.xml" />
+		<!-- <Include type="all"	source="ART:SUMCV_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMCV_FX.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUMCV_IDLA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMCV_TRNL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMCV_TRNR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMCV_WTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMCV_WTR2.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMCV_WIDL.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUMCV_MOVA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMCV_TRANS.w3x" /> -->
+		<!-- <Include type="all" source="ART:SBConstructionYard_D.xml" /> -->
+		<!-- <Include type="instance" source="ART:EX_Headlights.w3x" /> -->
+		<!-- <Include type="instance" source="ART:Extnktrack.xml" /> -->
 		
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />

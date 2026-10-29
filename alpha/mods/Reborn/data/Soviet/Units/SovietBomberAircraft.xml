@@ -3,12 +3,12 @@
 	<Tags></Tags>
 	<Includes>
 		<Include type="all"	source="DATA:GlobalData/GlobalDefines.xml" />
-		<Include type="all"	source="ART:SUBomberAircraft_D.xml" />			
-		<Include type="all"	source="ART:SUBomberAircraft_SKN.w3x" />
-    <Include type="all"	source="ART:SUBomberAircraft_FP.w3x" />
-		<Include type="all"	source="ART:SUBomberAircraft_DYING.w3x" />			
-		<Include type="all"	source="ART:SUBomberAircraft_IDLA.w3x" />
-		<Include type="all"	source="ART:SUBomberAircraft_BOMBS.w3x" />
+		<!-- <Include type="all"	source="ART:SUBomberAircraft_D.xml" />			 -->
+		<!-- <Include type="all"	source="ART:SUBomberAircraft_SKN.w3x" /> -->
+    <!-- <Include type="all"	source="ART:SUBomberAircraft_FP.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUBomberAircraft_DYING.w3x" />			 -->
+		<!-- <Include type="all"	source="ART:SUBomberAircraft_IDLA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUBomberAircraft_BOMBS.w3x" /> -->
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />
 	</Includes>

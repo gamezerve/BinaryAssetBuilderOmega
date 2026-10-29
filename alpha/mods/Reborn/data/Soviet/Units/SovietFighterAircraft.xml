@@ -4,17 +4,17 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:SUFighterAircraft_SKN.w3x" />
-    <Include type="all"	source="ART:SUFighterAircraft_FP.w3x" />
-		<Include type="all"	source="ART:SUFighterAircraft_ACC.w3x" />
-		<Include type="all"	source="ART:SUFighterAircraft_DEC.w3x" />
-		<Include type="all"	source="ART:SUFighterAircraft_HVRA.w3x" />
-		<Include type="all"	source="ART:SUFighterAircraft_MOVA.w3x" />
+		<!-- <Include type="all"	source="ART:SUFighterAircraft_SKN.w3x" /> -->
+    <!-- <Include type="all"	source="ART:SUFighterAircraft_FP.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUFighterAircraft_ACC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUFighterAircraft_DEC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUFighterAircraft_HVRA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUFighterAircraft_MOVA.w3x" /> -->
 			
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />
-		<Include type="all"	source="ART:FXInvisBone.w3x" />
-		<Include type="all"	source="ART:FX_MigBones.w3x" />
+		<!-- <Include type="all"	source="ART:FXInvisBone.w3x" /> -->
+		<!-- <Include type="all"	source="ART:FX_MigBones.w3x" /> -->
 	</Includes>
 	<GameObject
 		id="SovietFighterAircraft"

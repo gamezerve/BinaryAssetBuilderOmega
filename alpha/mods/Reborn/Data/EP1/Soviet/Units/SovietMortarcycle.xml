@@ -7,40 +7,40 @@
 		<Include type="instance" source="DATA:GlobalData/Armor.xml" />
 
 
-		<Include type="all"	source="ART:SUAntiStructureVehicle_D.xml" />
+		<!-- <Include type="all"	source="ART:SUAntiStructureVehicle_D.xml" /> -->
 
-		<Include type="all"	source="ART:SUMortarcycle_SKN.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_AIDA.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_ATKA.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_BIDA.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_RUNA.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_TURNL.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_TURNR.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_ACCL.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_BATA.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_ABTA.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_SWPA.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_BIFA.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_BIFB.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_BIFC.w3x" />
+		<!-- <Include type="all"	source="ART:SUMortarcycle_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_AIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_ATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_BIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_RUNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_TURNL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_TURNR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_ACCL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_BATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_ABTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_SWPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_BIFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_BIFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_BIFC.w3x" /> -->
 
-		<Include type="all"	source="ART:SUMortarcycle_MABTA.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_MAIDA.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_MATKA.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_MACCL.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_MBATA.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_MBIDA.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_MRUNA.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_MSWPA.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_MTURNL.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_MTURNR.w3x" />
-    <Include type="all"	source="ART:SUMortarcycle_MBIFA.w3x" />
-    <Include type="all"	source="ART:SUMortarcycle_MBIFB.w3x" />
-     <Include type="all"	source="ART:SUMortarcycle_MBIFC.w3x" />
-		<Include type="all"	source="ART:SUMortarcycle_D.xml" />
+		<!-- <Include type="all"	source="ART:SUMortarcycle_MABTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_MAIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_MATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_MACCL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_MBATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_MBIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_MRUNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_MSWPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_MTURNL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_MTURNR.w3x" /> -->
+    <!-- <Include type="all"	source="ART:SUMortarcycle_MBIFA.w3x" /> -->
+    <!-- <Include type="all"	source="ART:SUMortarcycle_MBIFB.w3x" /> -->
+     <!-- <Include type="all"	source="ART:SUMortarcycle_MBIFC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUMortarcycle_D.xml" /> -->
 
-		<Include type="instance" source="ART:EX_Headlights.w3x" />
-		<Include type="instance" source="ART:EXTireTrack2.xml" />
+		<!-- <Include type="instance" source="ART:EX_Headlights.w3x" /> -->
+		<!-- <Include type="instance" source="ART:EXTireTrack2.xml" /> -->
 	  
 	</Includes>
   

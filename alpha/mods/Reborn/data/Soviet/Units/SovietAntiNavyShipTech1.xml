@@ -4,42 +4,42 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
 	<!-- aka Stingray -->
-		<Include
-			type="all"
-			source="ART:SUAntiNavyShipTech1_D.xml" />
-		<Include
-			type="all"
-			source="ART:SUAntiNavyShipTech1_SKN.w3x" />
-			<Include
-			type="all"
-			source="ART:SUAntiNavyShipTech1_ATKA.w3x" />
-			<Include
-			type="all"
-			source="ART:SUAntiNavyShipTech1_ABTA.w3x" />
-			<Include
-			type="all"
-			source="ART:SUAntiNavyShipTech1_AIDA.w3x" />
-			<Include
-			type="all"
-			source="ART:SUAntiNavyShipTech1_BATA.w3x" />
-			<Include
-			type="all"
-			source="ART:SUAntiNavyShipTech1_BIDA.w3x" />
-			<Include
-			type="all"
-			source="ART:SUAntiNavyShipTech1_WLKA.w3x" />
-			<Include
-			type="all"
-			source="ART:SUAntiNavyShipTech1_TRANS1.w3x" />
-			<Include
-			type="all"
-			source="ART:SUAntiNavyShipTech1_TRANS2.w3x" />
-			<Include
-			type="all"
-			source="ART:SUAntiNavyShipTech1_WIDLA.w3x" />
-		<Include
-			type="all"
-			source="ART:FXInvisBone.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiNavyShipTech1_D.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiNavyShipTech1_SKN.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiNavyShipTech1_ATKA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiNavyShipTech1_ABTA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiNavyShipTech1_AIDA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiNavyShipTech1_BATA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiNavyShipTech1_BIDA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiNavyShipTech1_WLKA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiNavyShipTech1_TRANS1.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiNavyShipTech1_TRANS2.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiNavyShipTech1_WIDLA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXInvisBone.w3x" /> -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

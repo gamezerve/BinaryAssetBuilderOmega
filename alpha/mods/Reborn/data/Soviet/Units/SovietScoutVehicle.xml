@@ -6,37 +6,37 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
 
-		<Include type="all"	source="ART:SUScoutVehicle_SKN.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_ABTA.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_AIDA.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_AIFA.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_ATKA.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_ATKB.w3x" />
-		<Include type="all" source="ART:SUScoutVehicle_BATA.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_BIDA.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_BIFA.w3x" />
-		<Include type="all" source="ART:SUScoutVehicle_DIEB.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_RUNA.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_SPCA.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_SPCB.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_SWMA.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_SWMB.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_WAIDA.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_MCNA.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_MCNB.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_MCNC.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_MCND.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_WDTA.w3x" />
-		<Include type="all"	source="ART:SUScoutVehicle_WATKA.w3x" />
-    <Include type="all" source="ART:SUScoutVehicle_FX.w3x" />
-    <Include type="all" source="ART:SUScoutVehicle_D.xml" />
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_ABTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_AIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_AIFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_ATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_ATKB.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUScoutVehicle_BATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_BIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_BIFA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUScoutVehicle_DIEB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_RUNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_SPCA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_SPCB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_SWMA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_SWMB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_WAIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_MCNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_MCNB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_MCNC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_MCND.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_WDTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUScoutVehicle_WATKA.w3x" /> -->
+    <!-- <Include type="all" source="ART:SUScoutVehicle_FX.w3x" /> -->
+    <!-- <Include type="all" source="ART:SUScoutVehicle_D.xml" /> -->
 
     <!--	    <Include type="all"	source="ART:SquadMarkAURaz.w3x" />  -->
-		<Include type="all"	source="ART:FXRazorGrad.XML" />
-		<Include type="all"	source="ART:FXLightningMJ02.xml" />
-		<Include type="all"	source="ART:FXGradRandom.xml" />
-		<Include type="all"	source="ART:EXSovietDroneTrack.xml" />
-		<Include type="all"	source="DATA:GlobalData/GlobalDefines.xml" />
+		<!-- <Include type="all"	source="ART:FXRazorGrad.XML" /> -->
+		<!-- <Include type="all"	source="ART:FXLightningMJ02.xml" /> -->
+		<!-- <Include type="all"	source="ART:FXGradRandom.xml" /> -->
+		<!-- <Include type="all"	source="ART:EXSovietDroneTrack.xml" /> -->
+		<!-- <Include type="all"	source="DATA:GlobalData/GlobalDefines.xml" /> -->
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseInfantry.xml" />
 	</Includes>

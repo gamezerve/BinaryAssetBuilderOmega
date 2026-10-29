@@ -5,48 +5,48 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:SUAntiAirVehicleTech3_D.xml" />
-		<Include
-			type="all"
-			source="ART:SUAntiVehicleVehicleTech3_FX.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiVehicleVehicleTech3_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiVehicleVehicleTech3_IDLA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiVehicleVehicleTech3_MOVA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiVehicleVehicleTech3_MOVA_DoorOpen.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiVehicleVehicleTech3_DoorOpen.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiVehicleVehicleTech3_IDLA_DoorOpen.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiVehicleVehicleTech3_FX.w3x" />
-    <Include
-			type="instance"
-			source="ART:EX_Headlights.w3x" />
-		<Include
-			type="instance"
-			source="ART:EXTnkTrack.xml" />
-    <Include
-     type="instance"
-     source="ART:FXBeamAlpha.xml" />
-    <Include
-			type="instance"
-			source="ART:FXHarpoonBeam.xml" />
-    <Include
-			type="instance"
-			source="ART:FXCloud01.xml" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiAirVehicleTech3_D.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiVehicleVehicleTech3_FX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiVehicleVehicleTech3_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiVehicleVehicleTech3_IDLA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiVehicleVehicleTech3_MOVA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiVehicleVehicleTech3_MOVA_DoorOpen.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiVehicleVehicleTech3_DoorOpen.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiVehicleVehicleTech3_IDLA_DoorOpen.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiVehicleVehicleTech3_FX.w3x" /> -->
+    <!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:EX_Headlights.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:EXTnkTrack.xml" /> -->
+    <!-- <Include -->
+     <!-- type="instance" -->
+     <!-- source="ART:FXBeamAlpha.xml" /> -->
+    <!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:FXHarpoonBeam.xml" /> -->
+    <!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:FXCloud01.xml" /> -->
 		<!-- Base Object -->
 		<Include
 			type="instance"
@@ -92,7 +92,7 @@
 				 less than the pull-rate because of time to fire, time to get in range, etc. -->
 		<SkirmishAIInformation
 			UnitBuilderStandardCombatUnit="true"
-			TargetDuringCrush="false"
+			TargetDuringCrush="true"
 			CrushSpeedBonus="150"/>
 
 		<Draws>
@@ -557,7 +557,7 @@
 						Ordering="PRIMARY_WEAPON"
 						Template="SovietAntiVehicleVehicleTech3Cannon_Veteran"
 						ForbiddenObjectStatus="GENERIC_TOGGLE_STATE"
-						ObjectStatus="WEAPON_UPGRADED_01" />									
+						ObjectStatus="WEAPON_UPGRADED_01" />								
 					<TurretSettings
 						TurretTurnRate="120"
 						MinimumPitch="-20d"

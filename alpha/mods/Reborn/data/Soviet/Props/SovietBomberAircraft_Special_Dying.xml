@@ -4,15 +4,15 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 		
-		<Include
-			type="all"
-			source="ART:SUBomberAircraft_Special_Dying_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:SUBomberAircraft_DYING.w3x" />			
-		<Include
-			type="all"
-			source="ART:SUBomberAircraft_D.xml" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUBomberAircraft_Special_Dying_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUBomberAircraft_DYING.w3x" />			 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUBomberAircraft_D.xml" /> -->
 		<Include type="instance" source="DATA:Soviet/props/SovietBomberAircraft_Special_Collapse.xml" />
 							
 	</Includes>

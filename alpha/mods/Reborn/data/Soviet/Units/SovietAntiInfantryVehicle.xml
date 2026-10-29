@@ -4,74 +4,74 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
 		<!-- Footprint decal -->
-		<Include type="all" source="art:FXSovietSickleFP.xml"/>
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_D.xml" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_ABTA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_ACCL.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_AIDA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_AIFA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_AIFB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_BATA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_BIDA.w3x" />
-			<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_BIFA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_BIFB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_DECL.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_WLKA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_WLKB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_JMPA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_JMPB.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_JMPC.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_TRNL.w3x" />
-		<Include
-			type="all"
-			source="ART:SUAntiInfantryVehicle_TRNR.w3x" />
+		<!-- <Include type="all" source="art:FXSovietSickleFP.xml"/> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_D.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_ABTA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_ACCL.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_AIDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_AIFA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_AIFB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_BATA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_BIDA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_BIFA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_BIFB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_DECL.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_WLKA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_WLKB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_JMPA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_JMPB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_JMPC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_TRNL.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiInfantryVehicle_TRNR.w3x" /> -->
 
-    <Include
-			type="instance"
-			source="ART:EX_Headlights.w3x" />
-		<Include
-			type="all"
-			source="ART:FXTracer.xml" />
-		<Include
-			type="all"
-			source="ART:FXTracerHeroic.xml" />
+    <!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:EX_Headlights.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXTracer.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXTracerHeroic.xml" /> -->
 		<Include
 			type="all"
 			source="DATA:GlobalData/GlobalDefines.xml" />

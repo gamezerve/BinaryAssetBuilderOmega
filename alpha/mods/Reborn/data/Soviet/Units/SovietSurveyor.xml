@@ -4,13 +4,13 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:SUSurveyor_D.xml" />		
-		<Include type="all"	source="ART:SUSurveyor.w3x" />
-		<Include type="instance" source="ART:EX_Headlights.w3x" />
-		<Include type="instance" source="ART:EXTnkTrack.xml" />
-		<Include type="all"	source="ART:SUSurveyor_Pontoons_SKN.w3x" />
-		<Include type="all"	source="ART:SUSurveyor_Pontoons_IDLA.w3x" />
-		<Include type="all"	source="ART:SUSurveyor_Pontoons_TRANS.w3x" />
+		<!-- <Include type="all"	source="ART:SUSurveyor_D.xml" />		 -->
+		<!-- <Include type="all"	source="ART:SUSurveyor.w3x" /> -->
+		<!-- <Include type="instance" source="ART:EX_Headlights.w3x" /> -->
+		<!-- <Include type="instance" source="ART:EXTnkTrack.xml" /> -->
+		<!-- <Include type="all"	source="ART:SUSurveyor_Pontoons_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUSurveyor_Pontoons_IDLA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:SUSurveyor_Pontoons_TRANS.w3x" /> -->
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />
 	</Includes>

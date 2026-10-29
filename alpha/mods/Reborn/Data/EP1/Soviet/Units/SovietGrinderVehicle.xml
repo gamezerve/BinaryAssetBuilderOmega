@@ -10,12 +10,12 @@
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />
 		
 		<!--Art Includes-->
-		<Include type="all" source="ART:SUGrinderVehicle_SKN.w3x" />
-		<Include type="all" source="ART:SUGrinderVehicle_IDLA.w3x" />
-		<Include type="all" source="ART:SUGrinderVehicle_WIDL.w3x" />
-		<Include type="all" source="ART:SUGrinderVehicle_WTRANS.w3x" />
-		<Include type="all" source="ART:SUGrinderVehicle_D.xml" />
-    <Include type="all" source="ART:SUExhaustFire.w3x" />
+		<!-- <Include type="all" source="ART:SUGrinderVehicle_SKN.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUGrinderVehicle_IDLA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUGrinderVehicle_WIDL.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUGrinderVehicle_WTRANS.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUGrinderVehicle_D.xml" /> -->
+    <!-- <Include type="all" source="ART:SUExhaustFire.w3x" /> -->
 	</Includes>
 	
 	<GameObject

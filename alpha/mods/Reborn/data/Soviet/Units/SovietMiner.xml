@@ -4,48 +4,48 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:SUHarvester_D.xml" />		
-		<Include
-			type="all"
-			source="ART:SUHarvester_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:SUHarvester_FX.w3x" />
-		<Include
-			type="all"
-			source="ART:FX_SUHarvester.w3x" />
-		<Include
-			type="all"
-			source="ART:SUHarvester_IDLA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUHarvester_WIDL.w3x" />
-		<Include
-			type="all"
-			source="ART:SUHarvester_WMOV.w3x" />
-		<Include
-			type="all"
-			source="ART:SUHarvester_WTRA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUHarvester_MOVA.w3x" />
-		<Include
-			type="all"
-			source="ART:SUHarvester_Armor.w3x" />			
-		<Include
-			type="all"
-			source="ART:Ore_Gold_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:Ore_Gold_SHFILL.w3x" />
-		<Include
-			type="all"
-			source="ART:Ore_Gold_SHIDL.w3x" />		
-    <Include
-			type="instance"
-			source="ART:EX_Headlights.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUHarvester_D.xml" />		 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUHarvester_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUHarvester_FX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FX_SUHarvester.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUHarvester_IDLA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUHarvester_WIDL.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUHarvester_WMOV.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUHarvester_WTRA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUHarvester_MOVA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUHarvester_Armor.w3x" />			 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Ore_Gold_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Ore_Gold_SHFILL.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Ore_Gold_SHIDL.w3x" />		 -->
+    <!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:EX_Headlights.w3x" /> -->
 
 		<!-- Base Object -->
 		<Include

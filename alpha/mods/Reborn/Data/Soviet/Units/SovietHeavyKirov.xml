@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xai="uri:ea.com:eala:asset:instance">
+	<Tags></Tags>
+	<Includes>
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/SUBOMBERAIRCRAFT_SPECIAL_SKN.NEWSKIN.w3x" />		 -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/SUBOMBERAIRCRAFT_SPECIAL_SKN.OBBOX01.w3x" />	 -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/SUBOMBERAIRCRAFT_SPECIAL_SKN.OBBOX02.w3x" />	 -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/SUBOMBERAIRCRAFT_SPECIAL_SKN.RVKIROV_BIGBOMB.w3x" />	 -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/SUBOMBERAIRCRAFT_SPECIAL_SKN.w3x" />		 -->
+		<!-- Base Object -->
+		<Include
+			type="instance"
+			source="DATA:Soviet/Units/SovietBomberAircraft.xml" />
+		<Include type="instance" source="DATA:Soviet/props/SovietBomberAircraft_Special_Dying.xml" />
+			
+	</Includes>
+	<!-- aka Soviet Kirov (the Hindenberg unit)-->
+	<GameObject
+		id="SovietHeavyKirov"
+		inheritFrom="SovietBomberAircraft"
+		Side="Soviet"
+		EditorSorting="UNIT"
+		BuildTime="30"
+		EditorName="SovietHeavyKirov"
+		Description="Desc:SovietBomberAircraft_Special"
+		TypeDescription="Type:SovietHeavyKirov">
+ 		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:SovietHeavyKirov</DisplayName>
+
+		<ObjectResourceInfo xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" >
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="3000"/>
+		</ObjectResourceInfo>
+
+		<LocomotorSet xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" 
+			id="DefaultLocomotor"
+			Locomotor="SovietBomberAircraftLocomotor"
+			Condition="NORMAL"
+			Speed="20" />		
+
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw" 
+				xai:joinAction="Replace"
+				OkToChangeModelColor="true" >
+
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="SUBomberAircraft_Special_SKN" />
+					<WeaponLaunchBone
+						WeaponSlotID="1"
+						WeaponSlotType="PRIMARY_WEAPON"
+						BoneName="FX_WEAPON" />
+				</ModelConditionState>
+
+
+				<ModelConditionState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="FORMATION_PREVIEW">
+					<Model
+						Name="SUBomberAircraft_FP" />
+				</ModelConditionState>
+                
+                <!--FX FOR VENT HYDROGEN DAMAGED-->
+                <ModelConditionState
+                 ParseCondStateType="PARSE_NORMAL"
+                 ConditionsYes="LOCOMOTOR_NORMAL_UPGRADED REALLYDAMAGED">
+                    <Model
+                      Name="SUBomberAircraft_Special_SKN" />
+                    <Texture
+						Original="SUBomberAircraft"
+						New="SUBomberAircraft_D" />
+                    <ParticleSysBone
+                        BoneName="FX_Fire_02"
+                        FXParticleSystemTemplate="Soviet_KirovVentHydro"
+                        FollowBone="true" />
+                    <ParticleSysBone
+                        BoneName="FX_Fire_03"
+                        FXParticleSystemTemplate="VehicleDamageSmoke"
+                        FollowBone="true" />
+                    <ParticleSysBone
+				        BoneName="FX_Fire_03"
+				        FXParticleSystemTemplate="VehicleDamageFire"
+				        FollowBone="true" />
+                    <ParticleSysBone
+                        BoneName="FX_Fire_03"
+                        FXParticleSystemTemplate="VehicleDamageFire02"
+                        FollowBone="true" />
+                </ModelConditionState>
+
+                <!--FX FOR VENT HYDROGEN-->
+                <ModelConditionState
+                  ParseCondStateType="PARSE_NORMAL"
+                  ConditionsYes="LOCOMOTOR_NORMAL_UPGRADED">
+                  <Model
+                    Name="SUBomberAircraft_Special_SKN" />
+                  <ParticleSysBone
+			        BoneName="FX_Fire_02"
+			        FXParticleSystemTemplate="Soviet_KirovVentHydro"
+                    FollowBone="true" />
+                </ModelConditionState>
+        
+				<ModelConditionState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="REALLYDAMAGED">
+					<Model
+						Name="SUBomberAircraft_Special_SKN" />
+					<Texture
+						Original="SUBomberAircraft"
+						New="SUBomberAircraft_D" />
+                    <ParticleSysBone
+                        BoneName="FX_Fire_03"
+                        FXParticleSystemTemplate="VehicleDamageSmoke"
+                        FollowBone="true" />
+                    <ParticleSysBone
+				        BoneName="FX_Fire_03"
+				        FXParticleSystemTemplate="VehicleDamageFire"
+				        FollowBone="true" />
+                  <ParticleSysBone
+						BoneName="FX_Fire_03"
+						FXParticleSystemTemplate="VehicleDamageFire02"
+						FollowBone="true" />
+				</ModelConditionState>
+
+				<ModelConditionState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="DAMAGED">
+					<Model
+						Name="SUBomberAircraft_Special_SKN" />
+					<ParticleSysBone
+						BoneName="B_Prop05"
+						FXParticleSystemTemplate="VehicleDamageSmoke"
+						FollowBone="true" />
+				</ModelConditionState>
+				
+				<AnimationState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Animation
+						AnimationName="SUBomberAircraft_IDLA"
+						AnimationMode="LOOP" />
+				</AnimationState>
+			</ScriptedModelDraw>
+				                
+			<ScriptedModelDraw
+				id="ModuleTag_BombRackDraw"
+				xai:joinAction="Remove"/>	
+
+		</Draws>
+		
+		<Behaviors>
+		
+			<WeaponSetUpdate xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance"
+				id="ModuleTag_WeaponSetUpdate">
+				<WeaponSlotTurret
+					ID="1">
+					<Weapon
+						Ordering="PRIMARY_WEAPON"
+						Template="SovietHeavyKirovDummyWeapon" />
+					<TurretSettings
+						TurretTurnRate="360"
+						MinIdleScanTime="1.0s"
+						MaxIdleScanTime="4.0s"
+						MinIdleScanAngle="30.0"
+						MaxIdleScanAngle="50.0"
+						BlindFireDistance="100.0">
+						<TurretAITargetChooserData
+							CanAcquireDynamicIfAssignedOutOfRange="true"
+							CheckVisionRange="true"/>
+					</TurretSettings>
+				</WeaponSlotTurret>
+			</WeaponSetUpdate>
+
+				
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				xai:joinAction="Replace"
+				CreationList="SUBomberAircraft_Special_Dying_OCL">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</CreateObjectDie>
+			
+			<!-- Soviet Advanced Power Plant Explosion -->
+			<FireWeaponWhenDead
+				id="ModuleTag_ExplosionDeathWeapon"
+				InitiallyActive="true"
+				DeathWeapon="SovietPowerPlantAdvancedDeathWeapon"
+				ContinueToBezierDestination="false">
+			 <DieMuxData
+				DeathTypes="ALL" />
+			</FireWeaponWhenDead>
+
+		</Behaviors>							
+
+	</GameObject>
+
+	<ObjectCreationList
+		id="SUBomberAircraft_Special_Dying_OCL">
+		<CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING INHERIT_VELOCITY"
+			Count="1"
+			VelocityScale="1.0"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="1.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+			<CreateObject>SovietHeavyKirov_Dying</CreateObject>
+		</CreateObject>
+		<CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING INHERIT_VELOCITY"
+			Count="1"
+			VelocityScale="1.0"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="1.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+			<CreateObject>SovietBomberAircraft_Debris</CreateObject>
+		</CreateObject>
+	</ObjectCreationList>	
+	
+	
+	<WeaponTemplate
+		id="SovietHeavyKirovDummyWeapon"
+		AttackRange="5.0"
+		RadiusDamageAffects="ENEMIES"
+		AcceptableAimDelta="180d"
+		CanFireWhileMoving="true"
+		ClipSize="1"
+		ScatterRadius="20"
+		FireSound="SOV_Kirov_BombDrop"
+		RequiredAntiMask="ANTI_WATER ANTI_GROUND ANTI_STRUCTURE"
+		UseCenterForRangeCheck="true">
+        <PreAttackDelay
+			MinSeconds="999999.9s"
+			MaxSeconds="999999.9s" />
+		<FiringDuration
+			MinSeconds="999999.9s"
+			MaxSeconds="999999.9s" />
+		<ClipReloadTime
+			MinSeconds="999999.9s"
+			MaxSeconds="999999.9s" />
+        <Nuggets>
+            <DamageNugget
+            	id="SovietAntiNavyShipTech2DummyWeaponDamageNugget"
+				Damage="0.0"
+				Radius="15.0"
+				DamageType="CONCUSSIVE"
+				DeathType="EXPLODED" />
+        </Nuggets>
+	</WeaponTemplate>
+	
+</AssetDeclaration>

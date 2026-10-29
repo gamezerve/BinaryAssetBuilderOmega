@@ -11,22 +11,22 @@
 		<Include type="instance" source="DATA:EP1/Soviet/Units/SovietHeavyWalkerDeployedTurret.xml" />
 
 		<!--Art Includes-->
-		<Include type="all" source="ART:SUHeavyWalkerVehicle_SKN.w3x" />
-		<Include type="all" source="ART:SUHeavyWalkerVehicle_WLKA.w3x" />
-		<Include type="all" source="ART:SUHeavyWalkerVehicle_AIDA.w3x" />
-		<Include type="all" source="ART:SUHeavyWalkerVehicle_BIDA.w3x" />
-		<Include type="all" source="ART:SUHeavyWalkerVehicle_BATA.w3x" />
-		<Include type="all" source="ART:SUHeavyWalkerVehicle_ABTA.w3x" />
-		<Include type="all" source="ART:SUHeavyWalkerVehicle_JMPA.w3x" />
-		<Include type="all" source="ART:SUHeavyWalkerVehicle_JMPB.w3x" />
-		<Include type="all" source="ART:SUHeavyWalkerVehicle_TRNL.w3x" />
-		<Include type="all" source="ART:SUHeavyWalkerVehicle_TRNR.w3x" />
-		<Include type="all" source="ART:SUHeavyWalkerVehicle_BIFA.w3x" />
-    <Include type="all" source="ART:SUHeavyWalkerVehicle_BIFB.w3x" />
-    <Include type="all" source="ART:SUHeavyWalkerVehicle_BIFC.w3x" />
-    <Include type="all" source="ART:SUHeavyWalkerVehicle_AIFA.w3x" />
-		<Include type="all" source="ART:SUHeavyWalkerTurret_GAR.w3x" />
-		<Include type="all" source="ART:SUHeavyWalkerVehicle_D.xml" />		
+		<!-- <Include type="all" source="ART:SUHeavyWalkerVehicle_SKN.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUHeavyWalkerVehicle_WLKA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUHeavyWalkerVehicle_AIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUHeavyWalkerVehicle_BIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUHeavyWalkerVehicle_BATA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUHeavyWalkerVehicle_ABTA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUHeavyWalkerVehicle_JMPA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUHeavyWalkerVehicle_JMPB.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUHeavyWalkerVehicle_TRNL.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUHeavyWalkerVehicle_TRNR.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUHeavyWalkerVehicle_BIFA.w3x" /> -->
+    <!-- <Include type="all" source="ART:SUHeavyWalkerVehicle_BIFB.w3x" /> -->
+    <!-- <Include type="all" source="ART:SUHeavyWalkerVehicle_BIFC.w3x" /> -->
+    <!-- <Include type="all" source="ART:SUHeavyWalkerVehicle_AIFA.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUHeavyWalkerTurret_GAR.w3x" /> -->
+		<!-- <Include type="all" source="ART:SUHeavyWalkerVehicle_D.xml" />		 -->
 	</Includes>
 	
 	<!-- aka reaper -->

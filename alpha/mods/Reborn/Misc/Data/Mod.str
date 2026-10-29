@@ -321,6 +321,152 @@
 	TYPE:SovietLargeScoutInfantry
 		"Advanced Anti-Surface Scout \n> Build Limit = 3 \n> Health = 500 \n> Shroud Clearing Range = 750 \n> Movement Speed = 120 \n> Weapon DPS = 150 \n> Weapon Range = Melee"
 	End
+	
+// Soviet Mortar Cycle
+
+	TYPE:SovietMortarCycle
+		"Light Bombardment \n> Health = 600 \n> Shroud Clearing Range = 500 \n> Movement Speed = 150 \n> Molotof Coctail Weapon DPS = 22 \n> Molotof Coctail Weapon Range = 210 \n> Mortar Weapon DPS = 25 \n> Mortar Weapon Range = 330"
+	End
+
+// Soviet Ore Collector
+
+	TYPE:SOVIETMINER
+		"Resource Gatherer \n> Health = 500 \n> Shroud Clearing Range = 500 \n> Movement Speed = 50 \n> Armor Ability Modifiers = 25% Armor, 50% Speed \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+// Soviet Sputnik
+
+	TYPE:SOVIETSURVEYOR
+		"Base Expansion \n> Health = 500 \n> Shroud Clearing Range = 250 \n> Movement Speed = 50 \n> Outpost Unpack Time = 4 sec \n> Outpost Health = 500 \n> Outpost Shroud Clearing Range = 750"
+	End
+
+	DESC:ABILITYUNPACKSOVIETSURVEYOR
+		"> Unpack Time = 4 sec \n> Health = 500 \n> Shroud Clearing Range = 750 \nBegins converting to an Outpost, which enables other structures to build up nearby."
+	End
+
+// Soviet Terror Drone
+
+	TYPE:SOVIETSCOUTVEHICLE
+		"Anti-Surface Scout \n> Health = 50 \n> Shroud Clearing Range = 500 \n> Movement Speed (Land/Sea) = 50/25 \n> Weapon DPS = 20 \n> Paralysis Weapon Range = 300"
+	End
+
+// Soviet Sickle
+
+	TYPE:SOVIETANTIINFANTRYVEHICLE
+		"Anti-Infantry Walker \n> Health = 450 \n> Shroud Clearing Range = 500 \n> Movement Speed = 100 \n> Weapon DPS = 12.5/gun \n> Weapon Range = 150 \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+	DESC:LEAPSPECIALPOWER
+		"> Ability Range = 300 \n> Ability Cooldown = 10 sec \nSprings into or out of battle, onto higher ground, into crowds of infantry, and more."
+	End
+
+// Soviet Bullfrog
+
+	TYPE:SOVIETANTIAIRSHIP
+		"Anti-Air Troop Carrier \n> Health = 300 \n> Shroud Clearing Range = 500 \n> Movement Speed = 100 \n> Garrison Capacity = 5 \n> Weapon DPS = 75 \n> Weapon Range = 300 \n> Garrison Capacity = 5 \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+// Soviet Hammer Tank
+
+	TYPE:SOVIETANTIVEHICLEVEHICLETECH1
+		"Anti-Armor Tank \n> Health = 550 \n> Shroud Clearing Range = 500 \n> Movement Speed = 75 \n> Cannon Weapon DPS = 31 \n> Cannon Weapon Range = 150 \n> Leach Weapon DPS = 20 \n> Leach Weapon Range = 300\n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+// Soviet Tesla Tank
+
+	TYPE:SOVIETANTIVEHICLEVEHICLETECH2
+		"Advanced Anti-Armor Tank \n> Health = 750 \n> Shroud Clearing Range = 500 \n> Movement Speed = 62.5 \n> Weapon DPS = 83.5 \n> Weapon Range = 150 Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End	
+	
+// Soviet Grinder
+	
+	Type:SovietGrinderVehicle
+		"Advanced Anti-Surface \n> Health = 1200 \n> Shroud Clearing Range = 500 \n> Movement Speed (Land/Sea) = 60/50 \n> Movement Speed with Nitro Boost (Land/Sea) = 120/100 \n> Weapon DPS = 83 \n> Weapon Range = Melee \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+// Soviet V4 Rocket Launcher
+
+	TYPE:SOVIETANTISTRUCTUREVEHICLE
+		"Heavy Bombardment \n> Health = 400 \n> Shroud Clearing Range = 500 \n> Movement Speed = 50 \n> Precision Weapon DPS = 83.5 \n> Scattered Weapon DPS = 166.5 \n> Scattered Radius = 100 \n> Weapon Range = 500 \n> Friendly Fire Damage = 50% \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+// Soviet Apocalypse Tank
+
+	TYPE:SOVIETANTIVEHICLEVEHICLETECH3
+		"Advanced Anti-Armor Tank \n> Health = 3000 \n> Shroud Clearing Range = 500 \n> Movement Speed = 50 \n> Cannon Weapon DPS = 77 \n> Cannon Weapon DPS (Veteran) = 96 \n> Cannon Weapon Splash Radius (Veteran) = 15 \n> Cannon Weapon Range = 150 \n> Harpoon Weapon DPS = 104 \n> Harpoon Weapon Range = 300 \n> Damage Recieved Scalar (Side/Rear) = 105%/110% \n> Auto-Heal = 4/sec"
+	End
+
+// Soviet MCV
+	
+	TYPE:SOVIETMCV
+		"Mobile Construction Vehicle \n> Health = 5000 \n> Shroud Clearing Range = 500 \n> Movement Speed = 50 \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+		
+	DESC:ABILITYPACKUPSOVIETMCV
+		"> Loses 50 Power \nConverts to a Mobile Construction Vehicle, which may lumber off to greener pastures."
+	End
+
+// Soviet Stingray
+
+	TYPE:SOVIETANTINAVYSHIPTECH1
+		"Anti-Surface Strike Craft \n> Health = 360 \n> Shroud Clearing Range = 500 \n> Movement Speed (Land/Sea) = 50/100 \n> Weapon DPS = 43 \n> Weapon Range = 125"
+	End
+
+	DESC:TESLANOVASPECIALPOWER
+		"> Ability Cooldown = 1 min \n> Weapon Damage = 200 \n> Weapon Range = 175 \nJolts surrounding waters with intense electrical current, briefly disabling the Stingray."
+	End
+
+// Soviet Akula Sub
+
+	TYPE:SOVIETANTINAVYSHIPTECH2
+		"Advanced Anti-Armor \n> Health = 1250 \n> Shroud Clearing Range = 500 \n> Movement Speed = 75 \n> Weapon DPS = 80 \n> Weapon Range = 150"
+	End
+
+	DESC:SUPERTORPEDOSSPECIALPOWER
+		"> Ability Cooldown = 1 min \n> Weapon Damage = 1400/torpedo \n> Weapon Range = 100000 \nLaunches a pair of unguided high-yield torpedoes to smash into anything dead ahead."
+	End
+
+// Soviet Dreadnought
+
+	TYPE:SOVIETANTISTRUCTURESHIP
+		"Heavy Bombardment Ship \n> Health = 1500 \n> Shroud Clearing Range = 500 \n> Movement Speed = 50 \n> Weapon DPS = 80 \n> Weapon Range = 750"
+	End
+
+	DESC:RAPIDLAUNCHSPECIALPOWER
+		"> Rate of Fire = %300 \n> Self Damage = 50/sec \nPushes rocket launchers past safety limits for faster firing--and internal damage."
+	End
+
+// Soviet Twinblade
+
+	TYPE:SOVIETANTIGROUNDAIRCRAFT
+		"Anti-Surface Air Transport \n> Health = 500 \n> Shroud Clearing Range = 500 \n> Garrison Capacity = 5 \n> Movement Speed = 150 \n> Weapon DPS (Gun/Rocket) = 23/23 \n> Weapon Range = 150 \n> Damage to Miners and Refinery = 25%"
+	End
+
+// Soviet MiG Fighter
+
+	TYPE:SOVIETFIGHTERAIRCRAFT
+		"Anti-Air Jet \n> Health = 200 \n> Shroud Clearing Range = 500 \n> Movement Speed = 210 \n> Weapon DPS = 56.5 \n> Weapon Range = 200 \n> Damage Scalar (vs Mig/Apollo Fighter/Kirov) = 50%/50%/200%"
+	End
+
+// Soviet Kirov Airship
+
+	TYPE:SOVIETBOMBERAIRCRAFT
+		"Heavy Bomber \n> Health = 6000 \n> Auto-Heal = 4/sec \n> Shroud Clearing Range = 500 \n> Movement Speed Propellers/Gastroburners) = 30/55 \n> Weapon DPS = 444.5 \n> Weapon Range = 5 \n> Death Weapon Damage = 300 \n> Friendly Damage Scalar = 50%"
+	End
+
+// Soviet Heavy Kirov Airship
+
+	NAME:SovietHeavyKirov
+		"Heavy Kirov Airship"
+	End
+
+	TYPE:SovietHeavyKirov
+		"Heavy Bomber \n> Health = 6000 \n> Auto-Heal = 4/sec \n> Shroud Clearing Range = 500 \n> Movement Speed Propellers/Gastroburners) = 30/55 \n> Death Weapon Damage = 1500 \n> Death Weapon Radius = 250"
+	End
+
+	Desc:SovietBomberAircraft_Special_Dying
+		""
+	End
 
 // Allied Paradrop
 	
