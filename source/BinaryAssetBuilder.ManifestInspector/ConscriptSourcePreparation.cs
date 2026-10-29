@@ -69,12 +69,27 @@ internal static class ConscriptSourcePreparation
         if(games.Length==0&&!assets.Any(a=>a.LocalName is "AudioEvent" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "WeaponTemplate" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "Texture" or "PackedTextureImage"))throw new InvalidDataException("This route requires a supported emitted asset; imported bases must use type=instance.");
         var primary=games.FirstOrDefault()??assets.First(a=>a.LocalName is "AudioEvent" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "WeaponTemplate" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "Texture" or "PackedTextureImage");
         // Reborn: duplicates across included source documents use the same copy-friendly coded diagnostic as local declarations.
-        var identities=assets.GroupBy(a=>a.LocalName+":"+a.GetAttribute("id"),StringComparer.OrdinalIgnoreCase);var duplicate=identities.FirstOrDefault(g=>g.Count()!=1);if(duplicate!=null)throw SdkXmlDiagnostics.At(new InvalidDataException("DUPLICATEASSET ' "+duplicate.Key+" ' The asset is emitted more than once."),duplicate.Skip(1).First());
+        var identities=assets.GroupBy(a=>a.LocalName+":"+a.GetAttribute("id"),StringComparer.OrdinalIgnoreCase);var duplicate=identities.FirstOrDefault(g=>g.Count()!=1);
+        if(duplicate!=null){
+            // Reborn: emission already knows each declaring file; resolve its raw declaration instead of guessing through an ambiguous cross-file identity.
+            var declarations=duplicate.ToArray();var locations=declarations.Select(DeclarationLocation).ToArray();
+            var error=SdkXmlDiagnostics.At(new InvalidDataException("DUPLICATEASSET ' "+duplicate.Key+" ' The asset is emitted more than once. Conflicting declarations: "+string.Join("; ",locations.Where((_,index)=>index!=1))+"."),declarations[1]);
+            SdkXmlDiagnostics.Attach(error,locations[1]);throw error;
+        }
         foreach(var source in paths.Sources)if(Hash(SdkEnvironmentPreflight.Read(source.PhysicalPath,4*1048576))!=source.Sha256)throw new InvalidDataException("Source changed during inheritance/definition preparation.");
         // Reborn: XInclude fragments are real source dependencies, including hash and higher-priority mod-shadow checks before publication.
         fragments.VerifySources();
         var searches=paths.Searches.Concat(fragments.Searches).ToArray();SdkSourceSearch.Verify(searches);
         return new(Detach(primary),commands.Length==0?null:Detach(commands[0]),paths.Sources.Select(s=>new ConscriptSourceInput.SourceFile(s.PhysicalPath,s.Sha256)).Concat(fragments.Sources).DistinctBy(s=>s.Path,StringComparer.OrdinalIgnoreCase).ToArray()){AdditionalAssets=assets.Where(a=>a!=primary&&(commands.Length==0||a!=commands[0])).Select(Detach).ToArray(),Origins=assets.Select(a=>new ConscriptSourceInput.AssetOrigin(a.LocalName,a.GetAttribute("id"),origins[a])).ToArray(),Searches=searches,Warnings=paths.Issues.Where(i=>i.Code=="MISSINGART").ToArray(),Locations=new(snapshots.Select(s=>new SdkXmlDiagnostics.Snapshot(s.Key,s.Value)).Concat(fragments.Snapshots)),Resources=resources};
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: locate an emitted declaration only inside its captured physical source, preserving honest context fallback if no unique raw declaration survives. */
+        //-------------------------------------------------------------------------------------------------
+        SdkXmlDiagnostics.Location DeclarationLocation(XmlElement asset)
+        {
+            string file=origins[asset];var raw=SdkXmlDiagnostics.Lines(snapshots[file],file);var matches=raw.Root!.Elements().Where(e=>e.Name.NamespaceName==asset.NamespaceURI&&e.Name.LocalName==asset.LocalName&&(string?)e.Attribute("id")==asset.GetAttribute("id")).ToArray();
+            return matches.Length==1?SdkXmlDiagnostics.Point(file,matches[0]):SdkXmlDiagnostics.Point(file,raw.Root,true);
+        }
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: all Includes contribute emitted owner assets; instance Includes are read by the existing engine but never emitted by this traversal. */

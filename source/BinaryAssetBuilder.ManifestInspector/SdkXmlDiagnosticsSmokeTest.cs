@@ -117,6 +117,15 @@ internal static class SdkXmlDiagnosticsSmokeTest
         string overlay=Path.Combine(output,"overlay.xml");string sameId=unreviewed.DocumentElement.GetAttribute("id");
         File.WriteAllText(overlay,"<AssetDeclaration xmlns='uri:ea.com:eala:asset'><Includes><Include type='instance' source='base.xml'/></Includes><GameObject id='"+sameId+"' inheritFrom='"+sameId+"' BuildTime='2'/></AssetDeclaration>");
         File.WriteAllText(entry,"<AssetDeclaration xmlns='uri:ea.com:eala:asset'><Includes><Include type='all' source='overlay.xml'/></Includes></AssetDeclaration>");Refuse(entry,basis,"LineSegmentDamageUpdate",attribute:false);
+        // Reborn: identical AudioEvent handles across prepared includes report every real declaration, never the Includes-only entry or generated XML.
+        string duplicateRoot=Path.Combine(output,"duplicates");Directory.CreateDirectory(duplicateRoot);string duplicateEntry=Path.Combine(duplicateRoot,"entry.xml");var declarationPaths=Enumerable.Range(0,3).Select(i=>Path.Combine(duplicateRoot,$"audio-{i}.xml")).ToArray();
+        for(int i=0;i<declarationPaths.Length;i++)File.WriteAllText(declarationPaths[i],"<AssetDeclaration xmlns='uri:ea.com:eala:asset'>\n"+new string('\n',i*2)+"  <AudioEvent id='RepeatedSound' Volume='100'/>\n<AudioEvent id='Derived"+i+"' inheritFrom='AudioEvent:RepeatedSound'/>\n</AssetDeclaration>");
+        File.WriteAllText(duplicateEntry,"<AssetDeclaration xmlns='uri:ea.com:eala:asset'><Includes>"+string.Concat(Enumerable.Range(0,3).Select(i=>$"<Include type='all' source='audio-{i}.xml'/>"))+"</Includes></AssetDeclaration>");
+        try{ConscriptSourcePreparation.Load(duplicateEntry);throw new InvalidOperationException("Duplicate AudioEvent declarations were accepted.");}
+        catch(InvalidDataException error){
+            Expect(error,declarationPaths[1],4,false);string line=SdkXmlDiagnostics.Format(error,new[]{duplicateEntry})??throw new InvalidDataException("Duplicate diagnostic lost its formatted result.");
+            if(!line.StartsWith("DUPLICATEASSET ' AudioEvent:RepeatedSound '",StringComparison.Ordinal)||!line.Contains(declarationPaths[0]+"(2,4)",StringComparison.Ordinal)||!line.Contains(declarationPaths[2]+"(6,4)",StringComparison.Ordinal)||!line.Contains("Source: "+declarationPaths[1]+"(4,4).",StringComparison.Ordinal)||line.Contains(duplicateEntry,StringComparison.Ordinal)||line.Contains("exact field origin unavailable",StringComparison.Ordinal))throw new InvalidDataException("Cross-source duplicate diagnostic lost exact declaration coordinates: "+line);checks++;
+        }
         // Reborn: generated model graphs can exceed the individual source quota without losing assets or reopening DTD/entity expansion.
         string merged=Path.Combine(output,"additional.xml");string payload=new('1',5*1048576);
         File.WriteAllText(merged,"<AssetDeclaration><W3DMesh id='Large'><Vertices>"+payload+"</Vertices></W3DMesh><W3DCollisionBox id='Last'/></AssetDeclaration>");
