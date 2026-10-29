@@ -155,6 +155,9 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();ProductionUpdateInfoSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: exercise authored command-set swaps and complete inherited upgrade payloads.
             // Reborn: independently verify the original, default and edited dying-aircraft movement/death graphs.
+            // Reborn: absent ART all-includes are warning-only across routing, preprocessing and dependency audit.
+            if(args.Length==2 && args[0]=="missing-art-include-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();MissingArtIncludeSmokeTest.Run(args[1]);return 0;}
             if(args.Length==3 && args[0]=="dying-projectile-self-test")
             {CompilerSmokeTest.InitializeHashProvider();DyingProjectileSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="command-set-upgrade-self-test")

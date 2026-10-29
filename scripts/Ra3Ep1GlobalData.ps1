@@ -43,6 +43,25 @@ function Build-RebornGlobalData([string]$DataRoot,[string]$Sdk,[hashtable]$Setti
 function Assert-RebornGlobalSources($GlobalBuild) {
     foreach($entry in $GlobalBuild.Evidence){
         foreach($source in $entry.Sources){if((Get-FileHash -LiteralPath $source.Path -Algorithm SHA256).Hash -cne $source.Sha256){throw ('Global source changed during compilation: '+$source.Path)}}
-        foreach($search in $entry.Searches){$winner=@($search.Candidates | Where-Object {Test-Path -LiteralPath $_ -PathType Leaf} | Select-Object -First 1);if($winner.Count-ne 1 -or $winner[0]-ine $search.PhysicalPath){throw ('Global alias precedence changed: '+$search.LogicalPath)}}
+        Assert-RebornSourceSearch $entry.Searches
+    }
+}
+
+#-------------------------------------------------------------------------------------------------
+<# Reborn: replay captured alias winners or warned ART absence before publishing either static or global streams. #>
+#-------------------------------------------------------------------------------------------------
+function Assert-RebornSourceSearch([object[]]$Selections) {
+    foreach($selection in $Selections){
+        $winner=$null
+        foreach($candidate in $selection.Candidates){
+            for($ancestor=$candidate;$ancestor;$ancestor=[IO.Path]::GetDirectoryName($ancestor)){if((Test-Path -LiteralPath $ancestor) -and ((Get-Item -LiteralPath $ancestor -Force).Attributes-band [IO.FileAttributes]::ReparsePoint)){throw 'Redirected alias search candidate.'}}
+            if(Test-Path -LiteralPath $candidate -PathType Container){throw 'Alias candidate became a directory.'}
+            if(Test-Path -LiteralPath $candidate -PathType Leaf){$winner=$candidate;break}
+        }
+        if($selection.PSObject.Properties['ExpectedMissing'] -and $selection.ExpectedMissing){
+            if($selection.Layer-cne 'missing-art-all' -or $selection.LogicalPath-notmatch '^ART:' -or $null-ne $winner){throw ('Skipped ART include changed: '+$selection.LogicalPath)}
+            continue
+        }
+        if($winner-ine $selection.PhysicalPath){throw ('Alias precedence changed: '+$selection.LogicalPath)}
     }
 }

@@ -102,11 +102,7 @@ try{
     # Reborn: close cancellation must never terminate the worker halfway through staged publication/rollback of a last-good package.
     if($publishMutex){try{$publishHeld=$publishMutex.WaitOne()}catch [Threading.AbandonedMutexException]{$publishHeld=$true};if($cancelEvent.WaitOne(0)){throw 'Studio build cancelled before publication.'}}
     # Reborn: refuse a late higher-priority override even if the originally selected SDK file's hash is unchanged.
-    foreach($selection in $receipt.PathSearches){
-        $winner=$null
-        foreach($candidate in $selection.Candidates){for($ancestor=$candidate;$ancestor;$ancestor=[IO.Path]::GetDirectoryName($ancestor)){if((Test-Path -LiteralPath $ancestor) -and ((Get-Item -LiteralPath $ancestor -Force).Attributes-band [IO.FileAttributes]::ReparsePoint)){throw 'Redirected alias search candidate.'}};if(Test-Path -LiteralPath $candidate -PathType Container){throw 'Alias candidate became a directory.'};if(Test-Path -LiteralPath $candidate -PathType Leaf){$winner=$candidate;break}}
-        if($winner-ine $selection.PhysicalPath){throw ('Alias precedence changed: '+$selection.LogicalPath)}
-    }
+    Assert-RebornSourceSearch $receipt.PathSearches
     $stage=Join-Path $expectedOutput ('.stage-'+[guid]::NewGuid().ToString('N'));$null=New-Item -ItemType Directory -Path $stage;$stageOwned=$true
     # Reborn: recheck global sources, then append their qualified five-file stream families without changing static payloads.
     if($globalBuild){Assert-RebornGlobalSources $globalBuild;if($globalBuild.Streams.Count){$combined=Join-Path $run 'combined-streams.big';& (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') sdk-package-global-streams $package $globalBuild.Context $combined 2>&1 | ForEach-Object {Write-SdkBuildLine ([string]$_)};if($LASTEXITCODE-ne 0){throw 'Global/static Streams BIG assembly failed.'};$package=$combined}}

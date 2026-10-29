@@ -199,7 +199,7 @@ internal sealed class SdkInstanceInheritanceProfile
             if (needed.Length == 0 && !chains)
             { var localResult = SdkSelfAttributeInheritance.Apply(schemas,bytes,treeCopy:true,conscriptCopy:conscriptCopy); return localResult with { Evidence = localResult.Evidence with { Profile = Profile } }; }
             var includes = Includes(owner); var expected = paths.Includes.Where(edge => edge.Document.Equals(path,StringComparison.OrdinalIgnoreCase)).ToArray();
-            if (includes.Length != expected.Length || includes.Length > 64) throw new InvalidDataException("Instance Include edges differ from captured source or exceed 64 direct Includes.");
+            if (includes.Length != expected.Length || expected.Count(e=>!e.SkippedMissingArt) > 64) throw new InvalidDataException("Instance Include edges differ from captured source or exceed 64 direct Includes.");
             Dictionary<string,(XmlElement Asset,ImportedBase Witness)> external = new(StringComparer.Ordinal);
             // Reborn: include all visited preparation sources, including direct visibility candidates not ultimately selected as inherited handles.
             List<PreparedSource> closure = new();
@@ -210,6 +210,11 @@ internal sealed class SdkInstanceInheritanceProfile
             for (int index = 0; index < includes.Length; index++)
             {
                 var include = includes[index]; var edge = expected[index]; string logical = include.GetAttribute("source");
+                // Reborn: only a captured, missing ART all-include may contribute no visible bases or definitions.
+                if(edge.SkippedMissingArt){
+                    if(include.NamespaceURI!=Ea||include.LocalName!="Include"||include.GetAttribute("type")!="all"||edge.Kind!="all"||edge.LogicalPath!=logical||edge.PhysicalPath!=null||!logical.StartsWith("ART:",StringComparison.OrdinalIgnoreCase)||include.Attributes.OfType<XmlAttribute>().Any(a=>a.NamespaceURI!="http://www.w3.org/2000/xmlns/"&&(a.NamespaceURI.Length!=0||a.Name is not ("source" or "type")))||include.ChildNodes.Cast<XmlNode>().Any(n=>n is XmlElement||n is not XmlComment&&!string.IsNullOrWhiteSpace(n.InnerText)))throw SdkXmlDiagnostics.At(new InvalidDataException("Invalid skipped ART all-include."),include);
+                    continue;
+                }
                 // Reborn: only an explicitly selected all edge can attempt a metadata proof; reference/precompiled edges remain closed.
                 bool metadataEdge = metadata && include.GetAttribute("type") == "all" && edge.Kind == "all";
                 if (include.NamespaceURI != Ea || include.LocalName != "Include" || (!metadataEdge && include.GetAttribute("type") != "instance") || include.HasChildNodes

@@ -8,7 +8,11 @@ internal static class SdkSourcePathAudit
 {
     // Reborn: metadata existence is not payload correctness, schema validity or a production build-ready result.
     internal sealed record Source(string PhysicalPath,string Root,string Sha256,long Bytes);
-    internal sealed record Edge(string Document,string Kind,string LogicalPath,string? PhysicalPath);
+    internal sealed record Edge(string Document,string Kind,string LogicalPath,string? PhysicalPath)
+    {
+        // Reborn: an explicitly warned absent ART all-include contributes no assets, definitions or inheritance visibility.
+        public bool SkippedMissingArt {get;init;}
+    }
     internal sealed record Resource(string Document,string Field,string LogicalPath,string PhysicalPath,long Bytes);
     // Reborn: coordinates describe the actual caller/source snapshot, not an assumed line in a missing target file.
     internal sealed record Issue(string Code,string Document,string LogicalPath,string Detail){public SdkXmlDiagnostics.Location? Location {get;init;}}
@@ -29,7 +33,7 @@ internal static class SdkSourcePathAudit
     //-------------------------------------------------------------------------------------------------
     /** Reborn: inspect a bounded reachable path graph from explicit environment evidence without recursive directory scans or source writes. */
     //-------------------------------------------------------------------------------------------------
-    internal static Report Inspect(SdkEnvironmentPreflight.Report environment,string? artRoot = null,string? audioRoot = null,bool knownMapAliases = false,SdkSourceSearch? search = null,bool w3xSources = false)
+    internal static Report Inspect(SdkEnvironmentPreflight.Report environment,string? artRoot = null,string? audioRoot = null,bool knownMapAliases = false,SdkSourceSearch? search = null,bool w3xSources = false,bool skipMissingArtAll = false)
     {
         string data = SdkEnvironmentPreflight.DirectoryPath(environment.SourceRoot);
         artRoot = search?.ModArt ?? (artRoot == null ? null : SdkEnvironmentPreflight.DirectoryPath(artRoot));
@@ -59,7 +63,7 @@ internal static class SdkSourcePathAudit
             if (!sources.Any(source => source.PhysicalPath.Equals(alias.PhysicalPath,StringComparison.OrdinalIgnoreCase) && source.Sha256 == alias.Sha256 && source.Bytes == alias.Bytes)
                 || Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(alias.PhysicalPath,4*1048576))) != alias.Sha256)
                 throw new InvalidDataException("Known map alias target changed or was not captured as valid source XML.");
-        return new(data,artRoot,audioRoot,sources.ToArray(),edges.ToArray(),resources.ToArray(),issues.ToArray(),issues.Count == 0 && !stopped,
+        return new(data,artRoot,audioRoot,sources.ToArray(),edges.ToArray(),resources.ToArray(),issues.ToArray(),issues.All(i=>i.Code=="MISSINGART") && !stopped,
             stopped,true,false,false,new[] { "Path scope only: all/instance/reference Include edges are inspected, not compiled or substituted with manifests.",
                 "Explicit ART/AUDIO attribute and leaf-text literals plus AudioFile File attributes only; no schema-typed complete file dependency inventory.",
                 "Resource existence/length only: compressed/audio/art bodies are not read or SHA-fingerprinted.",
@@ -71,7 +75,7 @@ internal static class SdkSourcePathAudit
         //-------------------------------------------------------------------------------------------------
         void Add(string code,string document,string logical,string detail,SdkXmlDiagnostics.Location? location=null)
         {
-            if (issues.Count >= 127) { if (!stopped) issues.Add(new("IssueLimit",document,"","128-issue cap reached; traversal stopped.")); stopped = true; return; }
+            if (issues.Count(i=>i.Code!="MISSINGART") >= 127) { if (!stopped) issues.Add(new("IssueLimit",document,"","128-issue cap reached; traversal stopped.")); stopped = true; return; }
             location??=Locate(document,logical);
             issues.Add(new(code,document,logical.Length > 512 ? logical[..512] : logical,detail){Location=location});
         }
@@ -133,6 +137,15 @@ internal static class SdkSourcePathAudit
                         if(!w3xSources && search!=null && child.Path.EndsWith(".w3x",StringComparison.OrdinalIgnoreCase))
                         {if(resources.Count>=2048){Add("ResourceLimit",path,logical,"2048-resource cap reached.");stopped=true;}else resources.Add(new(path,"Include",logical,child.Path,new FileInfo(child.Path).Length));}
                         else Visit(child.Path,child.Root,depth+1,()=>Locate(path,logical));
+                    }
+                    // Reborn: only exhausted SDK ART all-include searches are warnings; invalid paths and existing broken sources remain errors.
+                    catch(SdkSourceSearch.MissingFileException error)when(skipMissingArtAll&&search!=null&&kind=="all"&&logical.StartsWith("ART:",StringComparison.OrdinalIgnoreCase))
+                    {
+                        edges.Add(new(path,kind,logical,null){SkippedMissingArt=true});
+                        searches.Add(new(path,logical,"missing-art-all","",search.ModArt,error.Candidates){ExpectedMissing=true});
+                        var ordinal=xml.GetElementsByTagName("Include",root.NamespaceURI).OfType<XmlElement>().TakeWhile(e=>!ReferenceEquals(e,include)).Count();
+                        var exact=SdkXmlDiagnostics.Lines(bytes,path).Descendants(System.Xml.Linq.XName.Get("Include",root.NamespaceURI)).ElementAt(ordinal).Attribute("source")!;
+                        Add("MISSINGART",path,logical,"ART all-include file was not found; skipped. "+error.Message,SdkXmlDiagnostics.Point(path,exact));
                     }
                     catch (Exception error) when (error is IOException or InvalidDataException or ArgumentException or NotSupportedException)
                     { edges.Add(new(path,kind,logical,null)); Add("IncludePath",path,logical,search==null?"Unsupported/missing alias root, unsafe path or non-XML Include; no fallback attempted.":error.Message[..Math.Min(error.Message.Length,2048)]); }

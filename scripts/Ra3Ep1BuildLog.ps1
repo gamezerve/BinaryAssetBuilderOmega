@@ -2,6 +2,8 @@
 $script:BuildLogLines=[Collections.Generic.List[string]]::new()
 # Reborn: each build owns its displayed source selections; all repeated checks remain in the raw detail log.
 $script:BuildSourceSelections=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+# Reborn: validation and compilation can report the same missing ART include; retain one displayed warning per exact source location.
+$script:BuildMissingArtWarnings=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
 $script:BuildClock=[Diagnostics.Stopwatch]::StartNew()
 $script:PhaseClock=$null
 $script:PhaseLabel='Initializing'
@@ -28,6 +30,8 @@ function Write-SdkCompilerLine([string]$Line,[string]$DetailPath){
     $trim=$trim -creplace '^((?:ERROR|Error|Warning|Critical):\s*)Reborn:\s*','$1'
     # Reborn: suppress only identical source-selection progress, across audit/preparation passes and shared includes.
     if($trim -cmatch '^Source path \[' -and -not $script:BuildSourceSelections.Add($trim)){return}
+    # Reborn: raw logs keep every phase warning; identical missing-ART warnings appear once in Studio.
+    if($trim -cmatch '^Warning: MISSINGART ' -and -not $script:BuildMissingArtWarnings.Add($trim)){return}
     if($trim -match '^(?:ERROR|Error|Warning|Critical):'){
         # Reborn: severity must remain at the beginning for EA Studio's Error Log classifier.
         Write-SdkBuildLine ($trim -creplace '^ERROR:','Error:')

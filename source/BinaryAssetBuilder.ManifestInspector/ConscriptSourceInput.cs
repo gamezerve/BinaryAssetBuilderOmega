@@ -33,6 +33,8 @@ internal static class ConscriptSourceInput
         internal SdkXmlDiagnostics.SourceMap? Locations {get;init;}
         // Reborn: admitted ART resources (Texture/@File TGA payloads) captured with their hash during preparation.
         internal ResourceFile[] Resources {get;init;}=Array.Empty<ResourceFile>();
+        // Reborn: nonfatal skipped ART includes retain their authored locations and searched paths.
+        internal SdkSourcePathAudit.Issue[] Warnings {get;init;}=Array.Empty<SdkSourcePathAudit.Issue>();
     }
     // Reborn: one captured ART payload referenced by an emitted asset field.
     internal sealed record ResourceFile(string Document,string Field,string LogicalPath,string Path,string Sha256,byte[] Bytes);
@@ -92,7 +94,10 @@ internal static class ConscriptSourceInput
             {
                 // Reborn: W3X includes contain ordinary EA declarations and can select the container-only build route.
                 string source=include.GetAttribute("source");if(!source.EndsWith(".xml",StringComparison.OrdinalIgnoreCase)&&!source.EndsWith(".w3x",StringComparison.OrdinalIgnoreCase))continue;
-                if(search!=null){var selected=search.Select(path,source,confinement);if(Visit(selected.PhysicalPath,selected.Root))return true;}
+                if(search!=null){
+                    // Reborn: routing probes defer missing ART all-includes to the warning-producing source capture.
+                    SdkSourceSearch.Selection selected;try{selected=search.Select(path,source,confinement);}catch(SdkSourceSearch.MissingFileException)when(include.GetAttribute("type")=="all"&&source.StartsWith("ART:",StringComparison.OrdinalIgnoreCase)){continue;}
+                    if(Visit(selected.PhysicalPath,selected.Root))return true;}
                 else if(source.StartsWith("DATA:",StringComparison.OrdinalIgnoreCase)){if(Visit(Resolve(root,Path.Combine(root,"mod.xml"),source[5..]),root))return true;}
                 else if(!source.Contains(':') && Visit(Resolve(root,path,source),root))return true;
             }
@@ -107,6 +112,8 @@ internal static class ConscriptSourceInput
     {
         if(Directory.Exists(output) || File.Exists(output))throw new InvalidDataException("Fresh source-preparation output required.");
         var input=ConscriptSourcePreparation.Load(entry,sdk==null?null:SdkSourceSearch.ForMod(entry,sdk,stockData));var schemas=Schemas();
+        // Reborn: direct source preparation reports every skipped ART include rather than silently dropping it.
+        foreach(var warning in input.Warnings)Console.WriteLine(SdkMissingDependencyAudit.FormatFinding(SdkMissingDependencyAudit.PathFinding(warning)));
         var baseline=Read(Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"live-alpha","ConscriptBuildTime1","data","mod.xml"));
         // Reborn: a bare command-set document has no Include/base context; never silently discard an unprocessed inheritance marker.
         if(input.Game.DocumentElement!.LocalName is "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "WeaponTemplate" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh"&&input.Game.DocumentElement.HasAttribute("inheritFrom"))throw SdkXmlDiagnostics.At(new InvalidDataException("Use an AssetDeclaration with visible instance/all sources for asset inheritance."),input.Game.DocumentElement.GetAttributeNode("inheritFrom"));

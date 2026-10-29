@@ -4,7 +4,14 @@ namespace BinaryAssetBuilder.ManifestInspector;
 internal sealed record SdkSourceSearch(string ModData,string ModArt,string ModAudio,string SdkData,string SdkArt,string SdkAudio)
 {
     // Reborn: retain every earlier candidate so publication can reject newly appearing overrides as well as changed selected files.
-    internal sealed record Selection(string Document,string LogicalPath,string Layer,string PhysicalPath,string Root,string[] Candidates);
+    internal sealed record Selection(string Document,string LogicalPath,string Layer,string PhysicalPath,string Root,string[] Candidates)
+    {
+        // Reborn: skipped ART all-includes capture absence so a newly appearing source invalidates the prepared graph.
+        public bool ExpectedMissing {get;init;}
+    }
+    // Reborn: only this exhausted, already validated candidate search can downgrade an ART all-include to a warning.
+    internal sealed class MissingFileException(string[] candidates):FileNotFoundException("Alias file missing; searched: "+string.Join("; ",candidates))
+    {internal string[] Candidates {get;}=candidates;}
     internal string[] Roots => new[]{ModData,ModArt,ModAudio,SdkData,SdkArt,SdkAudio};
 
     //-------------------------------------------------------------------------------------------------
@@ -16,6 +23,8 @@ internal sealed record SdkSourceSearch(string ModData,string ModArt,string ModAu
         {
             string? winner=null;
             foreach(string path in selection.Candidates){SdkEnvironmentPreflight.CheckPath(path);if(Directory.Exists(path))throw new InvalidDataException("Search candidate became a directory.");if(File.Exists(path)){winner=path;break;}}
+            // Reborn: no source may silently appear after an absent ART include was captured and skipped.
+            if(selection.ExpectedMissing){if(selection.Layer!="missing-art-all"||!selection.LogicalPath.StartsWith("ART:",StringComparison.OrdinalIgnoreCase)||winner!=null)throw new InvalidDataException("Skipped ART include changed: "+selection.LogicalPath);continue;}
             if(!string.Equals(winner,selection.PhysicalPath,StringComparison.OrdinalIgnoreCase))throw new InvalidDataException("Alias search precedence changed: "+selection.LogicalPath);
         }
     }
@@ -81,7 +90,7 @@ internal sealed record SdkSourceSearch(string ModData,string ModArt,string ModAu
                 if(Directory.Exists(candidate.Path))throw new InvalidDataException("Alias candidate is a directory: "+candidate.Path);
                 if(File.Exists(candidate.Path))return new(document,logical,candidate.Layer,candidate.Path,candidate.Root,paths.Select(p=>p.Path).Distinct(StringComparer.OrdinalIgnoreCase).ToArray());
             }
-            throw new FileNotFoundException("Alias file missing; searched: "+string.Join("; ",paths.Select(p=>p.Path)));
+            throw new MissingFileException(paths.Select(p=>p.Path).Distinct(StringComparer.OrdinalIgnoreCase).ToArray());
         }
     }
 }

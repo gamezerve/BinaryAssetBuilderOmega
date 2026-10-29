@@ -8,6 +8,21 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 29, 2026
 
+<!-- Reborn: absent ART all-includes warn and skip consistently across Studio validation, source preparation and publication. -->
+Missing `ART:` Includes with `type="all"` now emit **`Warning: MISSINGART`**
+and are skipped after mod/SDK search. Warnings retain the original include
+file/line, including repeated literals, and searched paths. Existing ART files
+are still processed; malformed XML, missing DATA/instance Includes and missing
+texture resources remain errors. Studio displays an identical warning once
+across validation/preparation passes while retaining all raw log entries.
+
+Sixteen source/routing/inheritance/audit/receipt controls pass, including 130 missing ART
+Includes and normal processing of existing files. A real warning-only upgrade
+stream passed BIN/RELO/IMP readback (checksum `cfe7fd82`). Static/global publication
+checks accept captured absence, reject a newly appearing source, and preserve
+old receipt behavior. Tests use private fixtures only; user mod sources and
+published outputs are untouched.
+
 <!-- Reborn: falling aircraft use real projectile movement and inherited ship slow-death storage; Geometry can legitimately be absent. -->
 `ProjectileUpdate` now compiles **BombProjectile / Movement / MoveToGround** with
 its original 28-byte header and separate 28-byte concrete movement allocation.
