@@ -4,14 +4,14 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:AUIFV_SKN.w3x" />
-		<Include type="instance" source="ART:EXTnkTrack.xml" />
-		<Include type="instance" source="ART:EXTireTrack2.xml" />
-		<Include type="instance" source="ART:EX_Headlights.w3x" />
-		<Include type="all" source="ART:AUIFV_D.xml" />
+		<!-- <Include type="all"	source="ART:AUIFV_SKN.w3x" /> -->
+		<!-- <Include type="instance" source="ART:EXTnkTrack.xml" /> -->
+		<!-- <Include type="instance" source="ART:EXTireTrack2.xml" /> -->
+		<!-- <Include type="instance" source="ART:EX_Headlights.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUIFV_D.xml" /> -->
     
 		<!-- FX Includes -->
-		<Include type="all"	source="ART:FXJapanTracer.xml" />
+		<!-- <Include type="all"	source="ART:FXJapanTracer.xml" /> -->
     
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />

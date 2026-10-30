@@ -4,74 +4,74 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:AUCommandoTech1_SKN.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_ABTA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_AIDA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_AIFA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_AIFB.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_AIFC.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_ATKA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_BATA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_BIDA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_BIFA.w3x" />
-		<Include type="all" source="ART:AUCommandoTech1_BIFB.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_BIFC.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_BIFD.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_CHRA.w3x" />	
-		<Include type="all"	source="ART:AUCommandoTech1_DTBA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_DTFA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_DTKA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_DTPA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_GTPA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_RUNA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_SATA.w3x" />
-		<Include type="all" source="ART:AUCommandoTech1_SDIA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_SDVA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_SGTA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_SIDA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_SMVA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_FLYA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_LNDA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_SWMA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_SWMB.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_SWMC.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_WAIDA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_MCNA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_MCNB.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_MCNC.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_MCND.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_CDTA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_CDTB.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_AIFX.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_AIFZ.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_BIFW.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_BIFX.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_BIFY.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_BIFZ.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_CWRZ.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_ATKB2.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_ATKC.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_ATRA.w3x" />
-		<Include type="all" source="ART:AUCommandoTech1_RNFZ.w3x" />
-    <Include type="all"	source="ART:AUCommandoTech1_RNFY.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_RNDA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_WDIEA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_WATKA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_CINA.w3x" />
-		<Include type="all"	source="ART:AUCommandoTech1_WLNDA.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_SKN.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_DIEA.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_WDIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiation.w3x" />
-		<Include type="all"	source="ART:NPRadiation_DIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiation_WDIEA.w3x" />
-		<Include type="all"	source="ART:FXRailGunCoreMask.xml" />
-		<Include type="all"	source="ART:FXRailGunCoreDistortion.xml" />
-		<Include type="all"	source="ART:FXTracer.xml" />
-		<Include type="all"	source="ART:GUGar_Comm.w3x" />
-		<Include type="all"	source="ART:FXCommando_FP.w3x" />
-		<Include type="all"	source="ART:FXInvisBone.w3x" />
-		<Include type="all"	source="ART:Decal_Tanya.xml" />
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_ABTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_AIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_AIFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_AIFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_AIFC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_ATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_BATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_BIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_BIFA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUCommandoTech1_BIFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_BIFC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_BIFD.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_CHRA.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_DTBA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_DTFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_DTKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_DTPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_GTPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_RUNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_SATA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUCommandoTech1_SDIA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_SDVA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_SGTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_SIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_SMVA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_FLYA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_LNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_SWMA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_SWMB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_SWMC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_WAIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_MCNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_MCNB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_MCNC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_MCND.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_CDTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_CDTB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_AIFX.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_AIFZ.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_BIFW.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_BIFX.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_BIFY.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_BIFZ.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_CWRZ.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_ATKB2.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_ATKC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_ATRA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUCommandoTech1_RNFZ.w3x" /> -->
+    <!-- <Include type="all"	source="ART:AUCommandoTech1_RNFY.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_RNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_WDIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_WATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_CINA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUCommandoTech1_WLNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_WDIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation_WDIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:FXRailGunCoreMask.xml" /> -->
+		<!-- <Include type="all"	source="ART:FXRailGunCoreDistortion.xml" /> -->
+		<!-- <Include type="all"	source="ART:FXTracer.xml" /> -->
+		<!-- <Include type="all"	source="ART:GUGar_Comm.w3x" /> -->
+		<!-- <Include type="all"	source="ART:FXCommando_FP.w3x" /> -->
+		<!-- <Include type="all"	source="ART:FXInvisBone.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Decal_Tanya.xml" /> -->
 				
 		<!-- Base Object -->
 		<Include type="instance"	source="DATA:BaseObjects/BaseInfantry.xml" />
@@ -100,7 +100,8 @@
 		<DisplayName
 			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:AlliedCommandoTech1</DisplayName>
 		<GameDependency>
-      <NeededUpgrade>Upgrade_AlliedTech3</NeededUpgrade>
+			<NeededUpgrade>Upgrade_AlliedTech3</NeededUpgrade>
+      		<RequiredObject>AlliedTechStructure</RequiredObject>
 		</GameDependency>
 		<ObjectResourceInfo>
 			<BuildCost Account="=$ACCOUNT_ORE" Amount="2000"/>

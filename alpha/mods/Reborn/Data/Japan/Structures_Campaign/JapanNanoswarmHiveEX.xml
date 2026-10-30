@@ -4,27 +4,27 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator.W3X" />
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator.W3X" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
-		<Include type="instance" source="DATA:Reborn\Data\Japan\Props/TH_JapanHiveGenerator_Collapse.xml" />
+		<Include type="instance" source="DATA:Japan\Props/TH_JapanHiveGenerator_Collapse.xml" />
 
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator_SPM.xml" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator_NRM.xml" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator.xml" />
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator_SPM.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator.xml" /> -->
 
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JAPANHIVEGENERATOR_SKL.w3x" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JAPANHIVEGENERATOR_IDLA.w3x" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JAPANHIVEGENERATOR_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JAPANHIVEGENERATOR_COL_HRC.w3x" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JAPANHIVEGENERATOR_COL_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JAPANHIVEGENERATOR_COL.NEWSKIN.w3x" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator.OBBOX01.w3x" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator.OBBOX02.w3x" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator.OBBOX03.w3x" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator.NEWSKIN.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JAPANHIVEGENERATOR_SKL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JAPANHIVEGENERATOR_IDLA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JAPANHIVEGENERATOR_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JAPANHIVEGENERATOR_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JAPANHIVEGENERATOR_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JAPANHIVEGENERATOR_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator.OBBOX03.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator.NEWSKIN.w3x" /> -->
 
 
-		<Include type="all"	source="DATA:Reborn\Audio\Structures\Imperial/WBuild_powerOffa.xml" />
+		<!-- <Include type="all"	source="DATA:Reborn\Audio\Structures\Imperial/WBuild_powerOffa.xml" /> -->
 		
 		<!-- Base Object -->
 		<Include

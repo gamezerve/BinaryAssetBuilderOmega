@@ -1,5 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanNanoswarmHiveEX">
+		<Object>JapanNanoswarmHiveEX</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanKenjisHQ">
+		<Object>JapanKenjisHQ</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanHouseofShinzo02">
+		<Object>JapanHouseofShinzo02</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanHouseofShinzo">
+		<Object>JapanHouseofShinzo</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanImperialLongRangeRadar">
+		<Object>JapanImperialLongRangeRadar</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanEmperorSonFlagpoleStatue">
+		<Object>JapanEmperorSonFlagpoleStatue</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanEmperorFlagpoleStatue">
+		<Object>JapanEmperorFlagpoleStatue</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanFortressPump">
+		<Object>JapanFortressPump</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanFortressCrane">
+		<Object>JapanFortressCrane</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanWaveForceTricannon">
+		<Object>JapanWaveForceTricannon</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="UNIT_BUILD"
+		id="Command_ConstructAlliedUnassumingSovietTank">
+		<Object>AlliedUnassumingSovietTank</Object>
+	</LogicCommand>
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanYurikoWarFactory">
+		<Object>JapanYurikoWarFactory</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanYurikoBarracks">
+		<Object>JapanYurikoBarracks</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructImperialHarborBuilding">
+		<Object>ImperialHarborBuilding</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanHarborBuilding">
+		<Object>JapanHarborBuilding</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanShiradaDocks">
+		<Object>JapanShiradaDocks</Object>
+	</LogicCommand>	
 	
 	<LogicCommand
 		Type="CONSTRUCTION_YARD_CONSTRUCT"

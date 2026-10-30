@@ -3,39 +3,39 @@
 	<Tags></Tags>
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
-    <Include
-      type="instance"
-      source="ART:EXTnkTrack.xml"/>
-		<Include
-			type="all"
-			source="ART:AUMCV_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:AUMCV_FX.w3x" />
-		<Include
-			type="all"
-			source="ART:AUMCV_D.xml" />				
-		<Include
-			type="all"
-			source="ART:AUMCV_IDLA.w3x" />
-		<Include
-			type="instance"
-			source="ART:EX_Headlights.w3x" />
-		<Include
-			type="all"
-			source="ART:AUMCV_TRNL.w3x" />			
-		<Include
-			type="all"
-			source="ART:AUMCV_TRNR.w3x" />			
-		<Include
-			type="all"
-			source="ART:AUMCV_TRANS.w3x" />
-		<Include
-			type="all"
-			source="ART:AUMCV_MOVA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUMCV_Hover.w3x" />
+    <!-- <Include -->
+      <!-- type="instance" -->
+      <!-- source="ART:EXTnkTrack.xml"/> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUMCV_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUMCV_FX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUMCV_D.xml" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUMCV_IDLA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:EX_Headlights.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUMCV_TRNL.w3x" />			 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUMCV_TRNR.w3x" />			 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUMCV_TRANS.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUMCV_MOVA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUMCV_Hover.w3x" /> -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

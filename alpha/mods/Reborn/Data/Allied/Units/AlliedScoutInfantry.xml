@@ -4,48 +4,48 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:AUScoutInfantry_SKN.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_ABTA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_AIDA.w3x" />
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_ABTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_AIDA.w3x" /> -->
 		
-		<Include type="all"	source="ART:AUScoutInfantry_BATA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_BIDA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_BIFA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_BRKA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_DTHA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_RUNA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_ATKB.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_SWMA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_SWMB.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_SWMC.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_CDTA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_BIFB.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_BIDB.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_FLYA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_FLYB.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_LNDA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_GTPA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_WAIDA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_WDIA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_WATKA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_WBRKA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_MCNA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_MCNB.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_MCNC.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_MCND.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_DTFA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_DTPA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_DTTA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_RNDA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_CWRA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_WLNDA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_WCWRA.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_Elec_SKN.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_Elec_DIE.w3x" />
-		<Include type="all"	source="ART:AUScoutInfantry_Elec_WDIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiationDog.w3x" />
-		<Include type="all"	source="ART:NPRadiationDog_DIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiationDog_WDIEA.w3x" />
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_BATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_BIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_BIFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_BRKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_DTHA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_RUNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_ATKB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_SWMA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_SWMB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_SWMC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_CDTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_BIFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_BIDB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_FLYA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_FLYB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_LNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_GTPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_WAIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_WDIA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_WATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_WBRKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_MCNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_MCNB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_MCNC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_MCND.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_DTFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_DTPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_DTTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_RNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_CWRA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_WLNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_WCWRA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_Elec_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_Elec_DIE.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUScoutInfantry_Elec_WDIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiationDog.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiationDog_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiationDog_WDIEA.w3x" /> -->
 		
 		
 		<!-- Base Object -->

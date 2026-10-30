@@ -4,90 +4,90 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBarracks_SKL.w3x" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBarracks_SKN.w3x" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_SKN.OBBOX01.w3x" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBarracks_SKN.OBBOX02.w3x" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBarracks_SKN.OBBOX03.w3x" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBarracks_SKN.OBBOX04.w3x" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_SKN.NEWSKIN.w3x" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_SKN.NEWSKIN_FILL.w3x" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBarracks_OPN.w3x" />			
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_OPEN_COL_HRC.w3x" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_OPEN_COL_CTR.w3x" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_OPEN_COL.NEWSKIN.w3x" />				
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBarracks_SKL.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBarracks_SKN.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_SKN.OBBOX01.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBarracks_SKN.OBBOX02.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBarracks_SKN.OBBOX03.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBarracks_SKN.OBBOX04.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_SKN.NEWSKIN.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_SKN.NEWSKIN_FILL.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBarracks_OPN.w3x" />			 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_OPEN_COL_HRC.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_OPEN_COL_CTR.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_OPEN_COL.NEWSKIN.w3x" />				 -->
 		
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBBarracks_FX_CTR.w3x" />
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBBarracks_FX_HRC.w3x" />		
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_COL_HRC.w3x" />
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_COL_CTR.w3x" />		
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_COL.OBBOX01.w3x" />
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_COL.NEWSKIN.w3x" />	
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBBarracks_FX_CTR.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBBarracks_FX_HRC.w3x" />		 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_COL_HRC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_COL_CTR.w3x" />		 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_COL.OBBOX01.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBARRACKS_COL.NEWSKIN.w3x" />	 -->
 
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBarracks.xml" />		
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBarracks_NRM.xml" />		
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYBarracks_SPM.xml" />		
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBarracks.xml" />		 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBarracks_NRM.xml" />		 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYBarracks_SPM.xml" />		 -->
 			
-		<Include
-			type="all"
-			source="ART:Reborn\Audio\Structures\Imperial/JBYBarr_openAnim1a.xml" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Audio\Structures\Imperial/JBYBarr_openAnim2a.xml" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Audio\Structures\Imperial/JBYBarr_openAnim3a.xml" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Audio\Structures\Imperial/JBYBarr_closAnim1a.xml" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Audio\Structures\Imperial/JBYBarr_closAnim2a.xml" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Audio\Structures\Imperial/JBYBarr_closAnim3a.xml" />	
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Audio\Structures\Imperial/JBYBarr_openAnim1a.xml" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Audio\Structures\Imperial/JBYBarr_openAnim2a.xml" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Audio\Structures\Imperial/JBYBarr_openAnim3a.xml" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Audio\Structures\Imperial/JBYBarr_closAnim1a.xml" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Audio\Structures\Imperial/JBYBarr_closAnim2a.xml" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Audio\Structures\Imperial/JBYBarr_closAnim3a.xml" />	 -->
 		
 		<!-- Base Object -->
 		<Include
@@ -112,7 +112,8 @@
 		EditorName="JapanYurikoBarracks"
 		Description="Desc:JapanYurikoBarracks"
 		TypeDescription="Type:JapanYurikoBarracks"
-		HealthBoxHeightOffset="20">
+		HealthBoxHeightOffset="20"
+		Scale="1.2">
 		<DisplayName
 			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:JapanYurikoBarracks</DisplayName>
 		<GameDependency>
@@ -439,7 +440,7 @@
 	</ObjectCreationList>	
 
 		<!-- === JAPANESE YURIKO BARRACKS EP1 === -->
-	<AudioEvent id="BaseSoundEffect"
+	<AudioEvent id="BaseSoundEffectYurikoBarracks"
 		Volume="100" 
 		MinVolume="0"
 		ShrunkenPitchModifier="2.0"
@@ -462,7 +463,7 @@
 	
 	<AudioEvent
 	id="JAP_YurikoBarracks_OpenAnimation1"
-	inheritFrom="AudioEvent:BaseSoundEffect"
+	inheritFrom="AudioEvent:BaseSoundEffectYurikoBarracks"
 	Volume="90"
 	VolumeShift="-5"
 	MaxRange="450"
@@ -478,7 +479,7 @@
 	
 	<AudioEvent
 	id="JAP_YurikoBarracks_OpenAnimation2"
-	inheritFrom="AudioEvent:BaseSoundEffect"
+	inheritFrom="AudioEvent:BaseSoundEffectYurikoBarracks"
 	Volume="90"
 	VolumeShift="-5"
 	MaxRange="450"
@@ -494,7 +495,7 @@
 	
 	<AudioEvent
 	id="JAP_YurikoBarracks_OpenAnimation3"
-	inheritFrom="AudioEvent:BaseSoundEffect"
+	inheritFrom="AudioEvent:BaseSoundEffectYurikoBarracks"
 	Volume="90"
 	VolumeShift="-5"
 	MaxRange="450"
@@ -510,7 +511,7 @@
 	
 	<AudioEvent
 	id="JAP_YurikoBarracks_CloseAnimation1"
-	inheritFrom="AudioEvent:BaseSoundEffect"
+	inheritFrom="AudioEvent:BaseSoundEffectYurikoBarracks"
 	Volume="90"
 	VolumeShift="-5"
 	MaxRange="450"
@@ -526,7 +527,7 @@
 	
 	<AudioEvent
 	id="JAP_YurikoBarracks_CloseAnimation2"
-	inheritFrom="AudioEvent:BaseSoundEffect"
+	inheritFrom="AudioEvent:BaseSoundEffectYurikoBarracks"
 	Volume="90"
 	VolumeShift="-5"
 	MaxRange="450"
@@ -542,7 +543,7 @@
 	
 	<AudioEvent
 	id="JAP_YurikoBarracks_CloseAnimation3"
-	inheritFrom="AudioEvent:BaseSoundEffect"
+	inheritFrom="AudioEvent:BaseSoundEffectYurikoBarracks"
 	Volume="90"
 	VolumeShift="-5"
 	MaxRange="450"

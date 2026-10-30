@@ -5,27 +5,27 @@
 		<Include
 			type="all"
 			source="DATA:GlobalData/GlobalDefines.xml" />
-		<Include
-			type="all"
-			source="ART:JBBaseDefenseAdvanced_SKN.w3x" />				
-		<Include
-			type="all"
-			source="ART:JBBaseDefenseAdvanced_BLD.w3x" />
-		<Include
-			type="all"
-			source="ART:JBBaseDefenseAdvanced_BLD2.w3x" />
-		<Include
-          type="all"
-          source="ART:JBBaseDefenseAdvanced_FX.w3x" />
-		<Include
-			type="all"
-			source="ART:JBBaseDefenseAdvanced_Platform_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:JBBaseDefenseAdvanced_Platform_BLD.w3x" />
-		<Include
-			type="all"
-			source="ART:JBBaseDefense_FX.w3x" />						
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBBaseDefenseAdvanced_SKN.w3x" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBBaseDefenseAdvanced_BLD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBBaseDefenseAdvanced_BLD2.w3x" /> -->
+		<!-- <Include -->
+          <!-- type="all" -->
+          <!-- source="ART:JBBaseDefenseAdvanced_FX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBBaseDefenseAdvanced_Platform_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBBaseDefenseAdvanced_Platform_BLD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBBaseDefense_FX.w3x" />						 -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

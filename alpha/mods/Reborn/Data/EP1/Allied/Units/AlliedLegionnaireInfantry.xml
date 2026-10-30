@@ -10,46 +10,46 @@
 		<Include type="instance" source="DATA:BaseObjects/BaseInfantry.xml" />
 
 		<!--Art Includes-->
-		<Include type="all" source="ART:AULegionnaireInfantry_SKN.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_AIDA.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_AIFA.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_AIFB.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_AIFC.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_ABTA.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_ATKA.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_ATKB.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_BATA.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_BIDA.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_BIFA.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_BIFB.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_BIFC.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_CWRA.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_CDTA.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_CDTB.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_DTBA.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_DTBB.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_FLYA.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_LNDA.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_GTPA.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_RUNA.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_MCNA.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_MCNB.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_MCNC.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_MCND.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_XJMPA.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_XJMPB.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_XJMPC.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry_WDIEA.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_SKN.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_DIEA.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_WDIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiation.w3x" />
-		<Include type="all"	source="ART:NPRadiation_DIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiation_WDIEA.w3x" />
-		<Include type="all" source="ART:AULegionnaireInfantry.xml" />
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_SKN.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_AIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_AIFA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_AIFB.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_AIFC.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_ABTA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_ATKA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_ATKB.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_BATA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_BIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_BIFA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_BIFB.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_BIFC.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_CWRA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_CDTA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_CDTB.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_DTBA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_DTBB.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_FLYA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_LNDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_GTPA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_RUNA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_MCNA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_MCNB.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_MCNC.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_MCND.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_XJMPA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_XJMPB.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_XJMPC.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry_WDIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_WDIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation_WDIEA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AULegionnaireInfantry.xml" /> -->
     
-    <Include type="all" source="ART:FXBeam.xml" />
-    <Include type="all" source="ART:FXAlliedLegionLaser.xml" />
+    <!-- <Include type="all" source="ART:FXBeam.xml" /> -->
+    <!-- <Include type="all" source="ART:FXAlliedLegionLaser.xml" /> -->
   </Includes>
 
   <GameObject

@@ -5,38 +5,38 @@
 		<Include
 			type="all"
 			source="DATA:GlobalData/GlobalDefines.xml" />
-		<Include
-			type="all"
-			source="ART:JBBaseDefense_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:JBBaseDefense_TRANS.w3x" />	
-		<Include
-			type="all"
-			source="ART:JBBaseDefense_ATKA.w3x" />	
-		<Include
-			type="all"
-			source="ART:JBBaseDefense_BLD.w3x" />	
-		<Include
-			type="all"
-			source="ART:JBBaseDefense_BLD2.w3x" />	
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBBaseDefense_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBBaseDefense_TRANS.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBBaseDefense_ATKA.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBBaseDefense_BLD.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBBaseDefense_BLD2.w3x" />	 -->
 														
-		<Include
-			type="all"
-			source="ART:FXJapanTracer.xml" />
-		<Include
-			type="all"
-			source="ART:JUEgg_Unpack.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXJapanTracer.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUEgg_Unpack.w3x" /> -->
 
-		<Include
-			type="all"
-			source="ART:JBBaseDefense_Platform_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:JBBaseDefense_Platform_BLD.w3x" />
-		<Include
-			type="all"
-			source="ART:JBBaseDefense_FX.w3x" />			
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBBaseDefense_Platform_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBBaseDefense_Platform_BLD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBBaseDefense_FX.w3x" />			 -->
 
 		<!-- Base Object -->
 		<Include

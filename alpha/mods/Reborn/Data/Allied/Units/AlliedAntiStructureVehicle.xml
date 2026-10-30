@@ -4,54 +4,54 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:AUAntiStructureVehicle_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:AUAntiStructureVehicle_IDLA.w3x" />			
-		<Include
-			type="all"
-			source="ART:AUAntiStructureVehicle_MOVA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUAntiStructureVehicle_TRNL.w3x" />
-		<Include
-			type="all"
-			source="ART:AUAntiStructureVehicle_TRNR.w3x" />
-		<Include
-			type="all"
-			source="ART:AUAntiStructureVehicle_SHLD.w3x" />
-		<Include
-			type="all"
-			source="ART:AUAntiStructureVehicle_D.xml" />															
-		<Include
-			type="all"
-			source="ART:AUAntiStructureVehicle_FX.w3x" />
-		<Include
-			type="all"
-			source="ART:AUAntiStructureVehicle_FP.w3x" />					
-		<Include
-			type="instance"
-			source="ART:EXTnkTrack.xml" />
-		<Include
-			type="instance"
-			source="ART:EX_Headlights.w3x" />
-		<Include
-			type="all"
-			source="ART:FXRailGunCoreDistortion.xml" />
-		<Include
-			type="all"
-			source="ART:FXRailGunCoreMask.xml" />
-		<Include
-			type="all"
-			source="ART:FXLaserStandard.xml" />
-    <Include
-			type="all"
-			source="ART:EXAlliedTargetLaserGrad.xml" />
-		<Include
-			type="all"
-			source="ART:FXAlliedPrismBeam.xml" />				
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiStructureVehicle_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiStructureVehicle_IDLA.w3x" />			 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiStructureVehicle_MOVA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiStructureVehicle_TRNL.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiStructureVehicle_TRNR.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiStructureVehicle_SHLD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiStructureVehicle_D.xml" />															 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiStructureVehicle_FX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiStructureVehicle_FP.w3x" />					 -->
+		<!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:EXTnkTrack.xml" /> -->
+		<!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:EX_Headlights.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXRailGunCoreDistortion.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXRailGunCoreMask.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXLaserStandard.xml" /> -->
+    <!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:EXAlliedTargetLaserGrad.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXAlliedPrismBeam.xml" />				 -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

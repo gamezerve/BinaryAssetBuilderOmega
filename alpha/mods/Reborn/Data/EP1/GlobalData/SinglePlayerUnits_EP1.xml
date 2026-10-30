@@ -7,9 +7,9 @@
 		<!--Allied-->
 		<!--Units-->
 		<!-- <Include type="all" source="DATA:EP1/Allied/Units/AlliedLegionnaireInfantry.xml"/> -->
-		<!-- <Include type="all" source="DATA:EP1/Allied/Units/AlliedArtilleryVehicle.xml"/> -->
+		<Include type="all" source="DATA:EP1/Allied/Units/AlliedArtilleryVehicle.xml"/>
 		<!-- <Include type="all" source="DATA:EP1/Allied/Units/AlliedGunshipAircraft.xml"/> -->
-		<!-- <Include type="all" source="DATA:EP1/Allied/Units/AlliedFutureTank.xml"/> -->
+		<Include type="all" source="DATA:EP1/Allied/Units/AlliedFutureTank.xml"/>
 
 		<!--Props-->
 		<!-- <Include type="all" source="DATA:EP1/Allied/Props/AlliedCryoSpill.xml"/> -->

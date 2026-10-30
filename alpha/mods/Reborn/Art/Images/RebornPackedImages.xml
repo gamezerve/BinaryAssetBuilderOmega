@@ -3,6 +3,60 @@
 
 <!-- Reborn -->
 
+<!-- Japan Crane and Japan Pump -->
+
+	<Texture id="Portrait_JapanFortressProp" File="ART:Images/Portrait_JapanFortressProp.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Portrait_JapanFortressProp" Texture="Portrait_JapanFortressProp" Rotated="false">
+		<Dimensions x="101" y="76"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="101" y="76"/>
+	</PackedTextureImage>
+
+	<Texture id="Button_JapanFortressProp" File="ART:Images/Button_JapanFortressProp.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Button_JapanFortressProp" Texture="Button_JapanFortressProp" Rotated="false">
+		<Dimensions x="106" y="106"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="106" y="106"/>
+	</PackedTextureImage>
+
+<!-- Imperial Yuriko War Factory -->
+
+	<Texture id="Portrait_JapanYurikoWarFactory" File="ART:Images/Portrait_JapanYurikoWarFactory.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Portrait_JapanYurikoWarFactory" Texture="Portrait_JapanYurikoWarFactory" Rotated="false">
+		<Dimensions x="664" y="500"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="664" y="500"/>
+	</PackedTextureImage>
+
+	<Texture id="Button_JapanYurikoWarFactory" File="ART:Images/Button_JapanYurikoWarFactory.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Button_JapanYurikoWarFactory" Texture="Button_JapanYurikoWarFactory" Rotated="false">
+		<Dimensions x="630" y="630"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="630" y="630"/>
+	</PackedTextureImage>
+	
+<!-- Imperial Yuriko Barracks -->
+
+	<Texture id="Portrait_JapanYurikoBarracks" File="ART:Images/Portrait_JapanYurikoBarracks.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Portrait_JapanYurikoBarracks" Texture="Portrait_JapanYurikoBarracks" Rotated="false">
+		<Dimensions x="350" y="263"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="350" y="263"/>
+	</PackedTextureImage>
+
+	<Texture id="Button_JapanYurikoBarracks" File="ART:Images/Button_JapanYurikoBarracks.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Button_JapanYurikoBarracks" Texture="Button_JapanYurikoBarracks" Rotated="false">
+		<Dimensions x="350" y="350"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="350" y="350"/>
+	</PackedTextureImage>
+
 <!-- Allied Fort Bradley Watchtower -->
 
 	<Texture id="Portrait_AlliedFBWatchtower" File="ART:Images/Portrait_AlliedFBWatchtower.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>

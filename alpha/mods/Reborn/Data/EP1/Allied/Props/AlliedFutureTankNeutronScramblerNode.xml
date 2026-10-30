@@ -2,8 +2,8 @@
 <AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:xai="uri:ea.com:eala:asset:instance">
 	<Tags></Tags>
 	<Includes>
-		<Include type="all" source="ART:FXFutureProjectile.w3x" />
-    <Include type="all" source="ART:FXFutureProjectile_Vet.w3x" />
+		<!-- <Include type="all" source="ART:FXFutureProjectile.w3x" /> -->
+    <!-- <Include type="all" source="ART:FXFutureProjectile_Vet.w3x" /> -->
 	</Includes>
 	
 	<GameObject

@@ -944,6 +944,162 @@
 		"Objective Structure \n> Health = 3000 \n> Shroud Clearing Range = 500"
 	End
 
+// Allied Attack Dog
+
+	TYPE:ALLIEDSCOUTINFANTRY
+		"Anti-Infantry Scout \n> Health = 30 \n> Shroud Clearing Range = 750 \n> Movement Speed (Land/Sea) = 100/75 \n> Weapon DPS = 100 \n> Weapon Range = 30"
+	End
+
+	DESC:BARKSPECIALPOWER
+		"> Amplified Bark Weapon Range = 100 \n> Amplified Bark Weapon Cooldown = 1 min (45 sec with High Technology Upgrade) \nStuns nearby enemy infantry with a deafening yalp. May then maul with impunity."
+	End
+
+// Allied Peacekeeper
+
+	TYPE:ALLIEDANTIINFANTRYINFANTRY
+		"Anti-Infantry / Anti-Garrison \n> Health = 150 \n> Shroud Clearing Range = 500 \n> Movement Speed = 50 \n> Grummond-8 Pump Shotgun Weapon DPS = 26.5 \n> Grummond-8 Pump Shotgun Weapon Range = 150"
+	End
+
+// Allied Javelin Soldier
+
+	TYPE:ALLIEDANTIVEHICLEINFANTRY
+		"Anti-Armor / Anti-Aircraft \n> Health = 100 \n> Shroud Clearing Range = 500 \n> Movement Speed = 50 \n> FGM-148 Javelin Weapon DPS (Normal/Locked) = 50/57 \n> GFGM-148 Javelin Weapon Range (Ground/Locked/Air) = 175/250/300 \n> Receives %500 more damage from rear with Riot Armor"
+	End
+
+// Allied Engineer
+
+	TYPE:ALLIEDENGINEER
+		"Field Support \n> Health = 50 \n> Shroud Clearing Range = 100 \n> Movement Speed = 40"
+	End
+
+	DESC:ALLIEDENGINEERHEALTOGGLE
+		"> Heal Range = 100 \n> Heal Percentage = 10%/sec \nUnpacks a makeshift triage center that automatically heals nearby infantry."
+	End
+
+// Allied Spy
+
+	TYPE:ALLIEDINFILTRATIONINFANTRY
+		"Infiltrator \n> Health = 75 \n> Shroud Clearing Range = 500 \n> Movement Speed (Land/Sea) = 50"
+	End
+
+	DESC:BRIBESPECIALPOWER
+		"> Bribe Range = 65 \nPersuades nearby hostiles to turn coats for a low, low price. Who says loyalty can't be bought?"
+	End
+	
+// Allied Cryo Legionnaire
+	
+	Type:AlliedLegionnaireInfantry
+		"Advanced Anti-Surface \n> Health = 500 \n> Shroud Clearing Range = 500 \n> Movement Speed (Land/Sea) = 80/70 \n> Weapon Range = 200 \n> Leap Ability Range = 300 \n> Leap Ability Cooldown = 10 sec"
+	End
+
+// Allied Tanya
+
+	TYPE:ALLIEDCOMMANDOTECH1
+		"Commando \n> Health = 300 \n> Shroud Clearing Range = 500 \n> Movement Speed (Land/Sea) = 55 \n> Black Buzzard Pistol Weapon DPS = 1000 \n> Black Buzzard Pistol Weapon Range = 140"
+	End
+
+	DESC:TIMEBELTSPECIALPOWER
+		"> Snap Back Time = 10 sec \n> Time Belt Cooldown = 30 sec \nSnaps Tanya back several moments in time ago using her one-of-a-kind belt buckle."
+	End
+
+// Allied Prospector
+
+	TYPE:ALLIEDMINER
+		"Resources & Base Expansion \n> Health = 500 \n> Shroud Clearing Range = 500 \n> Movement Speed = 50 \n> Damage Recieved Scalar (Side/Rear) = 105%/110% \n> Command Hub Unpack Time = 30 sec \n> Command Hub Health (Per Clearence) = 2000/2500/3125 \n> Command Hub Shroud Clearing Range = 750"
+	End
+
+	DESC:ABILITYUNPACKALLIEDMINER
+		"> Unpack Time = 30 sec \n> Health (Per Clearence) = 2000/2500/3125 \n> Shroud Clearing Range = 750 \nBegins converting to a Command Hub, so that other structures can be built nearby."
+	End
+
+// Allied Riptide ACV
+
+	TYPE:ALLIEDANTIINFANTRYVEHICLE
+		"Anti-Surface Troop Carrier \n> Health = 500 \n> Shroud Clearing Range = 500 \n> Movement Speed = 90 \n> Garrison Capacity = 1 \n> Weapon DPS (Gun/Torpedos) = 20/32 \n> Weapon Range (Gun/Torpedos) = 150 \n> Garrison Capacity = 5 \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+// Allied Multigunner IFV
+
+	TYPE:ALLIEDANTIAIRVEHICLETECH1
+		"Anti-Air / Infantry Support \n> Health = 360 \n> Shroud Clearing Range = 500 \n> Movement Speed = 100 \n> Garrison Capacity = 1 \n> Weapon DPS (Ground/Air) = 24/75 \n> Weapon Range (Ground/Air) = 150/300 \n> Garrison Capacity = 1 \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+// Allied Guardian Tank
+
+	TYPE:ALLIEDANTIVEHICLEVEHICLETECH1
+		"Anti-Armor Tank \n> Health = 480 \n> Shroud Clearing Range = 500 \n> Movement Speed = 80 \n> Weapon DPS = 30 \n> Weapon Range (Normal/Pointer) = 150/300 \n> Pointer Damage Modifier (Default/High Technology) = 150%/200% \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+	DESC:ACTIVATETARGETPAINTER
+		"> Weapon Range  = 300 \n> Pointer Damage Modifier (Default/High Technology) = 150%/200% \nSwitches to using a targeting laser that makes foes much more vulnerable to attack."
+	End
+
+	DESC:ACTIVATETARGETPAINTEROFF
+		"> Weapon DPS = 30 \n> Weapon Range  = 150 \nSwitches to using the 90 mm smoothbore gun, which is effective against enemy armor."
+	End
+
+// Allied Athena Cannon
+
+	TYPE:ALLIEDANTISTRUCTUREVEHICLE
+		"Heavy Bombardment \n> Health = 400 \n> Shroud Clearing Range = 500 \n> Movement Speed = 50 \n> Weapon DPS = 117.5 \n> Weapon Range = 500 \n> \n> Shield Radius = 200->50 \n> Shield Duration = 20 sec \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+// Allied Mirage Tank
+
+	TYPE:ALLIEDANTIVEHICLEVEHICLETECH3
+		"Advanced Strike Tank \n> Health = 500 \n> Shroud Clearing Range = 500 \n> Movement Speed = 80 \n> Weapon DPS (Default/Heroic) = 125/156 \n> Weapon Range (Default/Heroic) = 125/150 \n> Gap Generator Radius = 175 \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+	DESC:ACTIVATEMIRAGEFIELD
+		"> Gap Generator Radius (Default/Unassuming) = 175/225 \nProjects a camo field that cloaks friendly units. Cannot self-disguise or fire in this mode."
+	End
+
+	DESC:ACTIVATEMIRAGEFIELDOFF
+		"> Weapon DPS (Default/Heroic) = 125/156 \n> Weapon Range (Default/Heroic) = 125/150 \nReverts to combat-and-ambush config. Gains unassuming camouflage when idle."
+	End
+
+// Allied Unassuming Soviet Tank
+
+	TYPE:AlliedUnassumingSovietTank
+		"Disguised Anti-Armor \n> Build Limit = 1 \n> Health = 2000 \n> Shroud Clearing Range = 200 \n> Movement Speed = 20 \n> Weapon DPS (Default/Heroic) = 125/156 \n> Weapon Range (Default/Heroic) = 125/150 \n> Gap Generator Radius = 225 \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+	DESC:AlliedUnassumingSovietTank
+		"With any luck, the Soviets will mistake this modified Mirage Tank for one of theirs..."
+	End
+	
+// Allie Pacifier FAV
+	
+	Type:AlliedArtilleryVehicle
+		"Advanced Heavy Bombardment \n> Health = 800 \n> Shroud Clearing Range = 500 \n> Movement Speed = 75 \n> Weapon DPS (Gun/Cannon) = 55.5/163 \n> Weapon Range (Gun/Cannon) = 250/740 \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+	
+// Allied Future Tank X-1
+	
+	Type:AlliedFutureTank
+		"Advanced Anti-Surface Tank \n> Health = 3000 \n> Shroud Clearing Range = 500 \n> Movement Speed = 45 \n> Weapon DPS = ?? \n> Weapon Range = 250 \n> Damage Recieved Scalar (Side/Rear) = 105%/110% \n> Auto-Heal = 4/sec"
+	End
+	
+// Allied Construction Yard	
+
+TYPE:ALLIEDCONSTRUCTIONYARD
+	"Production Center \n> Power Generation = +50 \n> Buildability Radius = 600 \n> Health = 4000 \n> Shroud Clearing Range = 1000"
+End
+	
+// Allied MCV
+		
+	TYPE:ALLIEDMCV
+		"Mobile Construction Vehicle \n> Health = 5000 \n> Shroud Clearing Range = 500 \n> Movement Speed = 50 \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+		
+	DESC:ABILITYUNPACKALLIEDMCV
+		"> Power Generation = +50 \n> Buildability Radius = 600 \nConverts to a Construction Yard, which builds all sorts of military structures."
+	End
+
+	DESC:ABILITYPACKUPALLIEDMCV
+		"> Loses 50 Power \nConverts to a Mobile Construction Vehicle, which may then redeploy to new locations."
+	End
+
 // Allied Paradrop
 	
 	TYPE:CampaignPlayerPowerParadropLvl1Reborn
@@ -1096,6 +1252,12 @@
 		"> Unpack Time = 30 sec \nInitiates nano-unfurling sequence, converting to a Nanotech Mainframe in seconds."
 	End
 	
+// Imperial Construction Yard	
+
+	TYPE:JAPANCONSTRUCTIONYARD
+		"Production Center \n> Power Generation = +50 \n> Health = 5000 \n> Shroud Clearing Range = 1000"
+	End
+	
 // Imperial V.I.P. Bunker 
 
 	TYPE:JAPANCOMMANDCENTER
@@ -1132,24 +1294,6 @@
 
 	DESC:JapanEmperorsPalace
 		"The Emperor Yoshiro overlooks his palace grounds from within this ancient viewing tower."
-	End
-
-// Imperial Greater King Oni
-
-	Name:JapanEmperorKingOni
-		"Greater King Oni"
-	End
-
-	TYPE:JapanEmperorKingOni
-		"Advanced Anti-Armor Robot \n> Build Limit = 3 \n> Health = 8000 \n> Shroud Clearing Range = 500 \n> Movement Speed (Default/Rush) = 97.5/195 \n> Weapon DPS (AG/AA) = 160/595 \n> Rush Damage (Infantry/Other) = 50/500 \n> Weapon Range (Default/Rush/AA) = 150/300/400 \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
-	End
-
-	DESC:JapanEmperorKingOni
-		"The original King Oni was too costly to mass-produce, yet it was superior to the later model."
-	End
-	
-	DESC:JAPANEMPERORKINGONIRUSHATTACK
-		"> Ability Cooldown = 80 sec \n> Movement Speed = 195 \n> Rush Damage (Infantry/Other) = 50/500 \n> Weapon Range = 300 \nCharges the enemy head-on, smashing into or simply crushing any foes along the way."
 	End
 
 // Imperial Fortress Power Core
@@ -1198,6 +1342,274 @@
 
 	DESC:JapanTenzaiRobotics
 		"The Empire's high-tech weapons R&D is centralized within this paramilitary firm."
+	End
+
+// Imperial Shirada Docks
+
+	NAME:JapanShiradaDocks
+		"Shirada Docks"
+	End
+
+	TYPE:JapanShiradaDocks
+		"Navy Production \n> Health per Dojo Upgrade = 3500/4375/5468.75 \n> Shroud Clearing Range = 500 \n> Unpack Time = 36 sec"
+	End
+
+	DESC:JapanShiradaDocks
+		"All of the Rising Sun's armadas are coordinated from these ancient facilities."
+	End
+
+// Imperial Harbor Admin
+
+	NAME:JapanHarborBuilding
+		"Harbor Admin"
+	End
+
+	TYPE:JapanHarborBuilding
+		"Tactical Structure \n> Health = 3000 \n> Shroud Clearing Range = 500"
+	End
+
+	DESC:JapanHarborBuilding
+		"An administrative facility overseeing port operations, logistics coordination, and maritime traffic management."
+	End
+
+// Imperial Harbor
+
+	TYPE:ImperialHarborBuildingReborn
+		"Navy Production \n> Unpack Time = 24 sec \n> Health per Docks Upgrade = 4800/6000/7500 \n> Shroud Clearing Range = 500"
+	End
+
+// Imperial Yuriko Barracks
+	
+	NAME:JapanYurikoBarracks
+		"Yuriko Barracks"
+	End
+				
+	DESC:JapanYurikoBarracks
+		"A specialized training facility designed exclusively for Yuriko, providing containment, conditioning, and deployment support for her powerful psionic abilities."
+	End
+				
+	TYPE:JapanYurikoBarracks
+		"Infantry Production \n> Health per Dojo Upgrade = 1000/1250/1562 \n> Shroud Clearing Range = 300"
+	End
+
+// Imperial Yuriko War Factory
+	
+	NAME:JapanYurikoWarFactory
+		"Yuriko War Factory"
+	End
+				
+	DESC:JapanYurikoWarFactory
+		"A vehicle production facility from Yuriko's youth, functioning like a standard Mecha Bay and used for deploying and maintaining combat vehicles."
+	End
+				
+	TYPE:JapanYurikoWarFactory
+		"Vehicle Production \n> Health per Mecha Bay Upgrade = 2500/3125/3906 \n> Shroud Clearing Range = 500"
+	End
+
+// Imperial Wall Hub
+
+	TYPE:JAPANWALLPIECE
+		"Defensive Perimeter \n> Health = 300 \n> Shroud Clearing Range = 50"
+	End
+
+// Imperial Defender-VX
+
+	TYPE:JAPANBASEDEFENSE
+		"Dual-Role Base Defense \n> Health = 1000 \n> Shroud Clearing Range = 500 \n> Kinetic Burst Weapon DPS = 102.5 \n> Damage Against Infantry = %50 \n> Tenzai-VX Pulser Missile Weapon DPS = 100 \n> Weapon Range = 300"
+	End
+	
+// Imperial Defender Core
+	
+	TYPE:JAPANBASEDEFENSEEGG
+		"Portable Base Defense \n> Health = 200 \n> Shroud Clearing Range = 200 \n> Movement Speed = 60 \n> Unpack Time = 15 sec \n> Structure Health = 1000 \n> Structure Shroud Clearing Range = 500 \n> Structure Kinetic Burst Weapon DPS = 102.5 \n> Structure Damage Against Infantry = %50 \n> Structure Tenzai-VX Pulser Missile Weapon DPS = 100 \n> Structure Weapon Range = 300"
+	End
+		
+	DESC:ABILITYUNPACKJAPANBASEDEFENSEEGG
+		"> Unpack Time = 15 sec \nInitiates nano-unfurling sequence, converting to a Defender-VX in seconds."
+	End
+
+// Imperial Wave-Force Tower
+
+	TYPE:JAPANBASEDEFENSEADVANCED
+		"Advanced Base Defense \n> Health = 1500 \n> Shroud Clearing Range = 500 \n> Wave-force Gun Weapon DPS = 109.5 \n> Wave-force Gun Weapon Range = 350"
+	End
+	
+// Imperial Tower Core
+
+	TYPE:JAPANBASEDEFENSEADVANCEDEGG
+		"Portable Advanced Base Defense \n> Health = 400 \n> Shroud Clearing Range = 200 \n> Movement Speed = 60 \n> Unpack Time = 40 sec \n> Structure Health = 1500 \n> Structure Shroud Clearing Range = 500 \n> Structure Wave-force Gun Weapon DPS = 109.5 \n> Structure Wave-force Gun Weapon Range = 350"
+	End
+
+	DESC:ABILITYUNPACKJAPANBASEDEFENSEADVANCEDEGG
+		"> Unpack Time = 40 sec \nInitiates nano-unfurling sequence, converting to a Wave-Force Tower in seconds."
+	End
+
+// Imperial Nanoswarm Hive
+
+	TYPE:JAPANSUPERWEAPON
+		"Superweapon \n> Superweapon Timer = 3 min \n> Health = 4000 \n> Shroud Clearing Range = 100"
+	End
+	
+// Imperial Nanoswarm Core
+	
+	TYPE:JAPANSUPERWEAPONEGG
+		"Portable Superweapon \n> Build Limit = 1 \n> Health = 400 \n> Shroud Clearing Range = 200 \n> Movement Speed = 65 \n> Unpack Time = 26 sec \n> Superweapon Timer = 3 min \n> Structure Health = 4000 \n> Structure Shroud Clearing Range = 100"
+	End
+
+	DESC:ABILITYUNPACKJAPANSUPERWEAPONEGG
+		"> Unpack Time = 26 sec \nInitiates nano-unfurling sequence, converting to the Nanoswarm Hive in seconds."
+	End
+
+// Imperial Psionic Decimator
+
+	TYPE:JAPANSUPERWEAPONADVANCED
+		"Ultimate Weapon \n> Superweapon Timer = 6 min \n> Health = 4000 \n> Shroud Clearing Range = 100"
+	End
+	
+// Imperial Decimator Core
+
+	TYPE:JAPANSUPERWEAPONADVANCEDEGG
+		"Portable Ultimate Weapon \n> Build Limit = 1 \n> Health = 400 \n> Shroud Clearing Range = 200 \n> Movement Speed = 65 \n> Unpack Time = 26 sec \n> Superweapon Timer = 6 min \n> Structure Health = 4000 \n> Structure Shroud Clearing Range = 100"
+	End
+
+	DESC:ABILITYUNPACKJAPANSUPERWEAPONADVANCEDEGG
+		"> Unpack Time = 26 sec \nInitiates nano-unfurling sequence, converting to the Psionic Decimator in seconds."
+	End
+
+// Imperial Wave-Force Tricannon
+
+	TYPE:JapanWaveForceTricannon
+		"Advanced Base Defense \n> Health = 5000 \n> Shroud Clearing Range = 1250 \n> Wave-force Gun Weapon DPS = 94 \n> Wave-force Gun Weapon Range = 1150"
+	End
+
+// Imperial Fortress Crane
+
+	Name:JapanFortressCrane
+		"Fortress Crane"
+	END
+
+	Type:JapanFortressCrane
+		"Prop \n> Health = 200 \n> Shroud Clearing Range = 150"
+	END
+
+	Desc:JapanFortressCrane
+		"A heavy-duty construction unit designed for assembling and repairing large structures or vehicles within fortified zones."
+	END
+
+// Imperial Fortress Pump
+
+	Name:JapanFortressPump
+		"Fortress Pump"
+	END
+
+	Type:JapanFortressPump
+		"Prop \n> Health = 200 \n> Shroud Clearing Range = 50"
+	END
+
+	Desc:JapanFortressPump
+		"An industrial-grade pump system used to manage water flow or fuel transfer within fortified installations."
+	END
+
+// Imperial Statues
+
+	Type:JapanEmperorFlagpoleStatue
+		"Landmark Statue \n> Health = 5000 \n> Shroud Clearing Range = 50 \n> Influence Range = 400 \n> Speed Bonus = 20% \n> Rate of Fire Bonus = 25% \n> Damage Bonus = 50% \n> XP Bonus = 50% \n> Health Bonus = 10%"
+	End
+
+	Desc:JapanEmperorFlagpoleStatue
+		"The Allied savages are daring to attack this proud statue of His Eminence the Emperor. Imperial troops fight fearlessly to protect it."
+	End
+
+	Type:JapanEmperorSonFlagpoleStatue
+		"Landmark Statue \n> Health = 5000 \n> Shroud Clearing Range = 50 \n> Influence Range = 400 \n> Speed Bonus = 20% \n> Rate of Fire Bonus = 25% \n> Damage Bonus = 50% \n> XP Bonus = 50% \n> Health Bonus = 10%"
+	End
+
+// Imperial Long-Range Radar
+
+	Name:JapanImperialLongRangeRadar
+		"Long-Range Radar"
+	End
+
+	TYPE:JapanImperialLongRangeRadar
+		"JapanImperialLongRangeRadar Structure \n> Health = 6000 \n> Shroud Clearing Range = 1500"
+	End
+
+	Desc:JapanImperialLongRangeRadar
+		"An advanced detection system capable of monitoring distant targets and providing early warning intelligence across vast operational areas."
+	End
+
+// Imperial House of Shinzo
+	
+	NAME:JapanHouseofShinzo
+		"House of Shinzo"
+	End
+				
+	DESC:JapanHouseofShinzo
+		"The Nagama clan's ancestral residence must be frozen in order for its master to be subdued."
+	End
+				
+	TYPE:JapanHouseofShinzo
+		"Objective Structure \n> Health = 7000 \n> Shroud Clearing Range = 500"
+	End
+
+// Imperial House of Shinzo Extention
+	
+	NAME:JapanHouseofShinzo02
+		"House of Shinzo (Extention)"
+	End
+				
+	DESC:JapanHouseofShinzo02
+		"The Nagama clan's ancestral residence must be frozen in order for its master to be subdued."
+	End
+				
+	TYPE:JapanHouseofShinzo02
+		"Objective Structure \n> Health = 7000 \n> Shroud Clearing Range = 500"
+	End
+
+// Imperial Kenji's HQ
+	
+	NAME:JapanKenjisHQ
+		"Kenji's HQ"
+	End
+				
+	DESC:JapanKenjisHQ
+		"Commander Kenji has barricaded himself in his swanky estate, and must be flushed out."
+	End
+				
+	TYPE:JapanKenjisHQ
+		"Objective Structure \n> Build Limit = 1 \n> Unpack Time = 30 sec \n> Health = 7500 \n> Shroud Clearing Range = 500 \n> Spawns One Advanced King Oni upon Death If Build limit is Not Reached"
+	End
+
+// Imperial Nanoswarm Hive EX
+	
+	NAME:JapanNanoswarmHiveEX
+		"Nanoswarm Hive EX"
+	End
+				
+	DESC:JapanNanoswarmHiveEX
+		"The Rising Sun's enhanced shield generator can sustain an impenetrable barrier indefinitely."
+	End
+				
+	TYPE:JapanNanoswarmHiveEX
+		"Objective Structure \n> Health = 4000 \n> Shroud Clearing Range = 500"
+	End
+
+// Imperial Greater King Oni
+
+	Name:JapanEmperorKingOni
+		"Greater King Oni"
+	End
+
+	TYPE:JapanEmperorKingOni
+		"Advanced Anti-Armor Robot \n> Build Limit = 3 \n> Health = 8000 \n> Shroud Clearing Range = 500 \n> Movement Speed (Default/Rush) = 97.5/195 \n> Weapon DPS (AG/AA) = 160/595 \n> Rush Damage (Infantry/Other) = 50/500 \n> Weapon Range (Default/Rush/AA) = 150/300/400 \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+	DESC:JapanEmperorKingOni
+		"The original King Oni was too costly to mass-produce, yet it was superior to the later model."
+	End
+	
+	DESC:JAPANEMPERORKINGONIRUSHATTACK
+		"> Ability Cooldown = 80 sec \n> Movement Speed = 195 \n> Rush Damage (Infantry/Other) = 50/500 \n> Weapon Range = 300 \nCharges the enemy head-on, smashing into or simply crushing any foes along the way."
 	End
 	
 // Debug

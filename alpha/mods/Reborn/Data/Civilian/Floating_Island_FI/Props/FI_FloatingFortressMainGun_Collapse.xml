@@ -2,9 +2,9 @@
 <AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<Tags></Tags>
 	<Includes>
-    <Include
-		type="all"
-		source="ART:FI_FloatingFortressMainGun_COL.w3x" />
+    <!-- <Include -->
+		<!-- type="all" -->
+		<!-- source="ART:FI_FloatingFortressMainGun_COL.w3x" /> -->
     <Include
 		type="instance"
 		source="DATA:BaseObjects/BaseCollapsingObject.xml" />

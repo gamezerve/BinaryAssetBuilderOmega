@@ -6,10 +6,10 @@
 
 
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSPUMP.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSPUMP_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_PropsPump_HRC.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSPUMP.NEWSKIN.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSPUMP.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSPUMP_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_PropsPump_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSPUMP.NEWSKIN.w3x" /> -->
 						
 		<!-- Base Object -->
 		<Include

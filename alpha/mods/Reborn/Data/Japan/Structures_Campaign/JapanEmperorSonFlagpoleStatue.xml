@@ -4,25 +4,25 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:TH_EmperorSonFlagpoleStatue.W3X" />
+		<!-- <Include type="all"	source="ART:TH_EmperorSonFlagpoleStatue.W3X" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
 		<Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Props/TH_EmperorSonFlagpoleStatue_Collapse.xml" />
 
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue.NEWSKIN_CIV01.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue.NEWSKIN_FILL01.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue.OBBOX01.w3x" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue.NEWSKIN_CIV01.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue.NEWSKIN_FILL01.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue.OBBOX01.w3x" /> -->
 
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue_COL.NEW_SKIN.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue_COL.OBBOX01.w3x" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue_COL.NEW_SKIN.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue_COL.OBBOX01.w3x" /> -->
 
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue_COL_CTR.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue_COL_HRC.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue_CTR.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue_HRC.w3x" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue_COL_CTR.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue_COL_HRC.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue_CTR.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue_HRC.w3x" /> -->
 
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue.xml" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue_NRM.xml" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue_SPM.xml" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue.xml" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue_NRM.xml" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_EmperorSonFlagpoleStatue_SPM.xml" /> -->
 						
 		<!-- Base Object -->
 		<Include

@@ -5,64 +5,64 @@
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
 <!--		<Include type="all"	source="ART:Allied_Place_Holder.xml" />	  -->
-		<Include type="all"	source="ART:AUInfiltrationInfantry_SKN.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_ABTA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_AIDA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_AIFA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_AIFB.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_AIFC.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_BATA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_BIDA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_BIFA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_BIFB.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_BIFC.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_BIFD.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_BRIBE.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_CHRA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_DTBA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_DTFA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_DTKA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_DTPA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_GTPA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_RUNA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_SDIA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_SDVA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_SGTA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_SIDA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_SMVA.w3x" />
-		<Include type="all" source="ART:AUInfiltrationInfantry_CDTA.w3x" />
-		<Include type="all" source="ART:AUInfiltrationInfantry_CDTB.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_FLYA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_LNDA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_BIFW.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_BIFX.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_BIFY.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_BIFZ.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_AIFX.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_AIFY.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_AIFZ.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_CWRZ.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_RDTA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_Swim_SKN.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_SWMA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_SWMB.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_SWMC.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_WAIDA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_WDIEA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_WBRIBE.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_MCNA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_MCNB.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_MCNC.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_MCND.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_WLNDA.w3x" />
-		<Include type="all"	source="ART:AUInfiltrationInfantry_WCWRA.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_SKN.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_DIEA.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_WDIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiation.w3x" />
-		<Include type="all"	source="ART:NPRadiation_DIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiation_WDIEA.w3x" />
-		<Include type="all"	source="ART:FXTracerHeroic.xml" />			
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_ABTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_AIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_AIFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_AIFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_AIFC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_BATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_BIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_BIFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_BIFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_BIFC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_BIFD.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_BRIBE.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_CHRA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_DTBA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_DTFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_DTKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_DTPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_GTPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_RUNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_SDIA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_SDVA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_SGTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_SIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_SMVA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUInfiltrationInfantry_CDTA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUInfiltrationInfantry_CDTB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_FLYA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_LNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_BIFW.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_BIFX.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_BIFY.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_BIFZ.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_AIFX.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_AIFY.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_AIFZ.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_CWRZ.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_RDTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_Swim_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_SWMA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_SWMB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_SWMC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_WAIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_WDIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_WBRIBE.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_MCNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_MCNB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_MCNC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_MCND.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_WLNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUInfiltrationInfantry_WCWRA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_WDIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation_WDIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:FXTracerHeroic.xml" />			 -->
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseInfantry.xml" />
 	</Includes>

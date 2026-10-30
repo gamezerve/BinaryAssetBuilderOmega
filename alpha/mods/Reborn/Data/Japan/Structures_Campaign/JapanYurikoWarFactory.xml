@@ -7,81 +7,81 @@
 		<Include
 			type="all"
 			source="DATA:GlobalData/GlobalDefines.xml" />
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory_SKN.OBBOX01.w3x" />
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory_SKN.NEWSKIN_FILL.w3x" />
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory_SKN.NEWSKIN.w3x" />
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory_SKN.FX_LIGHTS.w3x" />
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory_SKL.w3x" />
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory_OPN.w3x" />
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYWARFACTORY_COL_HRC.w3x" />
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYWARFACTORY_COL_CTR.w3x" />
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYWARFACTORY_COL.OBBOX01.w3x" />
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYWARFACTORY_COL.NEWSKIN.w3x" />
-		<Include 
-			type="all"	
-			source="ART:JBWarFactory_LIGHTS.w3x" />
-		<Include
-			type="all"
-			source="ART:JBWarFactory_FX.w3x" />										
-		<Include
-			type="all"
-			source="ART:FXInvisBone.w3x" />
-		<Include
-			type="all"	
-			source="ART:Decal_Rig_CO.xml" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory_SKN.OBBOX01.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory_SKN.NEWSKIN_FILL.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory_SKN.NEWSKIN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory_SKN.FX_LIGHTS.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory_SKL.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory_OPN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYWARFACTORY_COL_HRC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYWARFACTORY_COL_CTR.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYWARFACTORY_COL.OBBOX01.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYWARFACTORY_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include  -->
+			<!-- type="all"	 -->
+			<!-- source="ART:JBWarFactory_LIGHTS.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBWarFactory_FX.w3x" />										 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXInvisBone.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all"	 -->
+			<!-- source="ART:Decal_Rig_CO.xml" /> -->
 
 
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory_SPM.xml" />
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory_NRM.xml" />
-		<Include
-			type="all"
-			source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory.xml" />	
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory_SPM.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory_NRM.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Art\Structures\Imperial/JBYWarFactory.xml" />	 -->
 
-		<Include
-			type="all"
-			source="ART:Reborn\Audio\Structures\Imperial/JBYWarF_openAnim1a.xml" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Audio\Structures\Imperial/JBYWarF_openAnim2a.xml" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Audio\Structures\Imperial/JBYWarF_openAnim3a.xml" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Audio\Structures\Imperial/JBYWarF_closAnim1a.xml" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Audio\Structures\Imperial/JBYWarF_closAnim2a.xml" />	
-		<Include
-			type="all"
-			source="ART:Reborn\Audio\Structures\Imperial/JBYWarF_closAnim3a.xml" />	
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Audio\Structures\Imperial/JBYWarF_openAnim1a.xml" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Audio\Structures\Imperial/JBYWarF_openAnim2a.xml" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Audio\Structures\Imperial/JBYWarF_openAnim3a.xml" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Audio\Structures\Imperial/JBYWarF_closAnim1a.xml" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Audio\Structures\Imperial/JBYWarF_closAnim2a.xml" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Reborn\Audio\Structures\Imperial/JBYWarF_closAnim3a.xml" />	 -->
 			
 		<!-- Base Object -->
 		<Include
@@ -107,7 +107,8 @@
 		BuildPlacementTypeFlag="MAIN_STRUCTURE"
 		EditorName="JapanYurikoWarFactory"
 		Description="Desc:JapanYurikoWarFactory"
-		TypeDescription="Type:JapanYurikoWarFactory">
+		TypeDescription="Type:JapanYurikoWarFactory"
+		Scale="1.11">
 		<DisplayName
 			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:JapanYurikoWarFactory</DisplayName>
 		<GameDependency>
@@ -444,7 +445,7 @@
 	</ObjectCreationList>	
 	
 		<!-- === JAPANESE YURIKO WAR FACTORY EP1 === -->
-	<AudioEvent id="BaseSoundEffect"
+	<AudioEvent id="BaseSoundEffectYurikoWarFactory"
 		Volume="100" 
 		MinVolume="0"
 		ShrunkenPitchModifier="2.0"
@@ -467,7 +468,7 @@
 	
 	<AudioEvent
 	id="JAP_YurikoWarFactory_OpenAnimation1"
-	inheritFrom="AudioEvent:BaseSoundEffect"
+	inheritFrom="AudioEvent:BaseSoundEffectYurikoWarFactory"
 	Volume="90"
 	VolumeShift="-5"
 	MaxRange="450"
@@ -482,7 +483,7 @@
 	
 	<AudioEvent
 	id="JAP_YurikoWarFactory_OpenAnimation2"
-	inheritFrom="AudioEvent:BaseSoundEffect"
+	inheritFrom="AudioEvent:BaseSoundEffectYurikoWarFactory"
 	Volume="90"
 	VolumeShift="-5"
 	MaxRange="450"
@@ -497,7 +498,7 @@
 	
 	<AudioEvent
 	id="JAP_YurikoWarFactory_OpenAnimation3"
-	inheritFrom="AudioEvent:BaseSoundEffect"
+	inheritFrom="AudioEvent:BaseSoundEffectYurikoWarFactory"
 	Volume="90"
 	VolumeShift="-5"
 	MaxRange="450"
@@ -512,7 +513,7 @@
 	
 	<AudioEvent
 	id="JAP_YurikoWarFactory_CloseAnimation1"
-	inheritFrom="AudioEvent:BaseSoundEffect"
+	inheritFrom="AudioEvent:BaseSoundEffectYurikoWarFactory"
 	Volume="90"
 	VolumeShift="-5"
 	MaxRange="450"
@@ -527,7 +528,7 @@
 	
 	<AudioEvent
 	id="JAP_YurikoWarFactory_CloseAnimation2"
-	inheritFrom="AudioEvent:BaseSoundEffect"
+	inheritFrom="AudioEvent:BaseSoundEffectYurikoWarFactory"
 	Volume="90"
 	VolumeShift="-5"
 	MaxRange="450"
@@ -542,7 +543,7 @@
 	
 	<AudioEvent
 	id="JAP_YurikoWarFactory_CloseAnimation3"
-	inheritFrom="AudioEvent:BaseSoundEffect"
+	inheritFrom="AudioEvent:BaseSoundEffectYurikoWarFactory"
 	Volume="90"
 	VolumeShift="-5"
 	MaxRange="450"

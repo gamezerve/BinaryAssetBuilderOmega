@@ -8,31 +8,31 @@
 		<Include type="instance" source="DATA:EP1/Allied/Props/AlliedFutureTankNeutronScramblerNode.xml" />
 		
 		<!-- Art includes -->
-		<Include type="instance" source="ART:EXTnkTrack.xml" />
-		<Include type="instance" source="ART:EX_Headlights.w3x" />
-		<Include type="all" source="ART:AUFutureTank_SKN.w3x" />
-		<Include type="all" source="ART:AUFutureTank_ABTA.w3x" />
-		<Include type="all" source="ART:AUFutureTank_AIDA.w3x" />
-		<Include type="all" source="ART:AUFutureTank_ATKA.w3x" />
-		<Include type="all" source="ART:AUFutureTank_ATKB.w3x" />
-		<Include type="all" source="ART:AUFutureTank_ATKC.w3x" />
-		<Include type="all" source="ART:AUFutureTank_ATKE.w3x" />
-		<Include type="all" source="ART:AUFutureTank_ATKF.w3x" />
-		<Include type="all" source="ART:AUFutureTank_ATKG.w3x" />
-		<Include type="all" source="ART:AUFutureTank_BATA.w3x" />
-		<Include type="all" source="ART:AUFutureTank_BIDA.w3x" />
-		<Include type="all" source="ART:AUFutureTank_MOVA.w3x" />
-		<Include type="all" source="ART:AUFutureTank_XMOVA.w3x" />
-		<Include type="all" source="ART:FXJapanLaser.xml" />
-		<Include type="all" source="ART:FXJapanOverlay.xml" />
+		<!-- <Include type="instance" source="ART:EXTnkTrack.xml" /> -->
+		<!-- <Include type="instance" source="ART:EX_Headlights.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUFutureTank_SKN.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUFutureTank_ABTA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUFutureTank_AIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUFutureTank_ATKA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUFutureTank_ATKB.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUFutureTank_ATKC.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUFutureTank_ATKE.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUFutureTank_ATKF.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUFutureTank_ATKG.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUFutureTank_BATA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUFutureTank_BIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUFutureTank_MOVA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUFutureTank_XMOVA.w3x" /> -->
+		<!-- <Include type="all" source="ART:FXJapanLaser.xml" /> -->
+		<!-- <Include type="all" source="ART:FXJapanOverlay.xml" /> -->
 
-		<Include type="all" source="ART:AUFutureTank_ATKD.w3x" />
-		<Include type="all" source="ART:AUFutureTank_BATB.w3x" />
+		<!-- <Include type="all" source="ART:AUFutureTank_ATKD.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUFutureTank_BATB.w3x" /> -->
 
-    <Include type="all" source="ART:EXFutureTankCharge.w3x" />
-    <Include type="all" source="ART:FXAlliedFutureLaser.xml" />
-    <Include type="all" source="ART:FXAlienLaser.xml" />
-    <Include type="all" source="ART:AUFutureTank_D.xml" />
+    <!-- <Include type="all" source="ART:EXFutureTankCharge.w3x" /> -->
+    <!-- <Include type="all" source="ART:FXAlliedFutureLaser.xml" /> -->
+    <!-- <Include type="all" source="ART:FXAlienLaser.xml" /> -->
+    <!-- <Include type="all" source="ART:AUFutureTank_D.xml" /> -->
     <!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />
 		

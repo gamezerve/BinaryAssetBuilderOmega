@@ -4,24 +4,24 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:TH_ShinzoHouse.W3X" />
+		<!-- <Include type="all"	source="ART:TH_ShinzoHouse.W3X" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
-		<Include type="instance" source="DATA:Reborn\Data\Japan\Props/TH_ShinzoHouse_Collapse.xml" />
+		<Include type="instance" source="DATA:Japan\Props/TH_ShinzoHouse_Collapse.xml" />
 
 
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_ShinzoHouse.xml" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_ShinzoHouse_NRM.xml" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_ShinzoHouse_SPM.xml" />
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_ShinzoHouse.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_ShinzoHouse_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_ShinzoHouse_SPM.xml" /> -->
 
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_SHINZOHOUSE_HRC.W3X" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_SHINZOHOUSE_CTR.W3X" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_SHINZOHOUSE_COL_HRC.W3X" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_SHINZOHOUSE_COL_CTR.W3X" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_SHINZOHOUSE_COL.NEWSKIN.W3X" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_SHINZOHOUSE.OBBOX01.W3X" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_SHINZOHOUSE.OBBOX02.W3X" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_SHINZOHOUSE.NEWSKIN.W3X" />
-		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_SHINZOHOUSE.NEWSKIN_FILL.W3X" />
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_SHINZOHOUSE_HRC.W3X" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_SHINZOHOUSE_CTR.W3X" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_SHINZOHOUSE_COL_HRC.W3X" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_SHINZOHOUSE_COL_CTR.W3X" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_SHINZOHOUSE_COL.NEWSKIN.W3X" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_SHINZOHOUSE.OBBOX01.W3X" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_SHINZOHOUSE.OBBOX02.W3X" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_SHINZOHOUSE.NEWSKIN.W3X" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_SHINZOHOUSE.NEWSKIN_FILL.W3X" /> -->
 		
 		<!-- Base Object -->
 		<Include

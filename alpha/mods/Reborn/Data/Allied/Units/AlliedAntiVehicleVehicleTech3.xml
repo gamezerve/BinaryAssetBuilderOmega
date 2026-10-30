@@ -5,16 +5,16 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:AUAntiVehicleVehicleTech3_D.xml" />			
-		<Include type="all" source="ART:AUAntiVehicleVehicleTech3_FX.w3x" />						
-		<Include type="all"	source="ART:AUAntiVehicleVehicleTech3_SKN.w3x" />
-		<Include type="all"	source="ART:AUAntiVehicleVehicleTech3_IDLA.w3x" />
-		<Include type="all"	source="ART:AUAntiVehicleVehicleTech3_MOVA.w3x" />
-    <Include type="all" source="ART:FXAlliedPrismBeam.xml" />
-    <Include type="all" source="ART:FXAlliedPrismBeam_Vet.xml" />
-    <Include type="all"	source="ART:FXShldAbility.w3x" />
-    <Include type="all"	source="ART:EXCloakingField.w3x" />
-    <Include type="instance" source="ART:EXTireTrack2.xml" />	
+		<!-- <Include type="all"	source="ART:AUAntiVehicleVehicleTech3_D.xml" />			 -->
+		<!-- <Include type="all" source="ART:AUAntiVehicleVehicleTech3_FX.w3x" />						 -->
+		<!-- <Include type="all"	source="ART:AUAntiVehicleVehicleTech3_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiVehicleVehicleTech3_IDLA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiVehicleVehicleTech3_MOVA.w3x" /> -->
+    <!-- <Include type="all" source="ART:FXAlliedPrismBeam.xml" /> -->
+    <!-- <Include type="all" source="ART:FXAlliedPrismBeam_Vet.xml" /> -->
+    <!-- <Include type="all"	source="ART:FXShldAbility.w3x" /> -->
+    <!-- <Include type="all"	source="ART:EXCloakingField.w3x" /> -->
+    <!-- <Include type="instance" source="ART:EXTireTrack2.xml" />	 -->
 	
 		<!-- Base Object -->
 		<Include

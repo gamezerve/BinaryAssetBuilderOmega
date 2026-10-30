@@ -5,10 +5,10 @@
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
 		<Include type="instance" source="DATA:BaseObjects/BaseObject.xml" />
 
-    <Include type="all" source="ART:FXEmperorsRageSmall.w3x" />
-    <Include type="all" source="ART:FXEmperorsRage.w3x" />
-    <Include type="all" source="ART:FXEmperorsRageLarge.w3x" />
-    <Include type="all" source="ART:FXPacifier_Reticule.w3x" />
+    <!-- <Include type="all" source="ART:FXEmperorsRageSmall.w3x" /> -->
+    <!-- <Include type="all" source="ART:FXEmperorsRage.w3x" /> -->
+    <!-- <Include type="all" source="ART:FXEmperorsRageLarge.w3x" /> -->
+    <!-- <Include type="all" source="ART:FXPacifier_Reticule.w3x" /> -->
 	</Includes>
 
 	<GameObject

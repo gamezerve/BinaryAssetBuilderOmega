@@ -9,23 +9,23 @@
 		
 		
 			<!-- Art includes -->
-			<Include type="instance" source="ART:EXTnkTrack.xml" />
-			<Include type="instance" source="ART:EX_Headlights.w3x" />
-			<Include type="all" source="ART:AUAntiVehicleVehicleTech1_SKN.w3x" />
-			<Include type="all" source="ART:AUArtilleryVehicle.w3x" />
-		<Include type="all" source="ART:AUArtilleryVehicle_SKN.w3x" />
-		<Include type="all" source="ART:AUArtilleryVehicle_BIDA.w3x" />
-		<Include type="all" source="ART:AUArtilleryVehicle_MOVA.w3x" />
-    <Include type="all" source="ART:AUArtilleryVehicle_MOVB.w3x" />
-    <Include type="all" source="ART:AUArtilleryVehicle_TRNL.w3x" />
-		<Include type="all" source="ART:AUArtilleryVehicle_TRNR.w3x" />
-		<Include type="all" source="ART:AUArtilleryVehicle_DPLY.w3x" />
-		<Include type="all" source="ART:AUArtilleryVehicle_ATKA.w3x" />
-		<Include type="all" source="ART:AUArtilleryVehicle_ATRA.w3x" />
-		<Include type="all" source="ART:AUArtilleryVehicle_D.xml" />
-		<Include
-			type="all"
-			source="ART:FXInvisBone.w3x" />
+			<!-- <Include type="instance" source="ART:EXTnkTrack.xml" /> -->
+			<!-- <Include type="instance" source="ART:EX_Headlights.w3x" /> -->
+			<!-- <Include type="all" source="ART:AUAntiVehicleVehicleTech1_SKN.w3x" /> -->
+			<!-- <Include type="all" source="ART:AUArtilleryVehicle.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUArtilleryVehicle_SKN.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUArtilleryVehicle_BIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUArtilleryVehicle_MOVA.w3x" /> -->
+    <!-- <Include type="all" source="ART:AUArtilleryVehicle_MOVB.w3x" /> -->
+    <!-- <Include type="all" source="ART:AUArtilleryVehicle_TRNL.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUArtilleryVehicle_TRNR.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUArtilleryVehicle_DPLY.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUArtilleryVehicle_ATKA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUArtilleryVehicle_ATRA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUArtilleryVehicle_D.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXInvisBone.w3x" /> -->
 		
 
 		<!-- Base Object -->

@@ -4,27 +4,27 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:TH_JapanOldMilitaryDocks.W3X" />
+		<!-- <Include type="all"	source="ART:TH_JapanOldMilitaryDocks.W3X" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
 		<Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Props/TH_JapanOldMilitaryDocks_Collapse.xml" />
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks.NEWSKIN_CIV01.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks.NEWSKIN_FILL01.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks.OBBOX01.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks.OBBOX02.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks.NEWSKIN_FILL01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks.OBBOX02.w3x" /> -->
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks_COL.NEW_SKIN.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks_COL.OBBOX01.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks_COL.OBBOX02.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks_COL.OBBOX02.w3x" /> -->
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks_COL_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks_COL_HRC.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks_HRC.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks_HRC.w3x" /> -->
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks.xml" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks_NRM.xml" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks_SPM.xml" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryDocks_SPM.xml" /> -->
 		
 		<!-- Base Object -->
 		<Include

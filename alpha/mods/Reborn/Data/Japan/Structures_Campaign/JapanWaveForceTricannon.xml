@@ -4,29 +4,29 @@
 	<Includes>
 		<Include type="instance" source="DATA:BaseObjects/BaseStructure.xml" />
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun.NEWSKIN.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun.NEWSKIN_CIV01.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun.OBBOX01.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun.OBBOX01.w3x" /> -->
 
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun_COL.NEW_SKIN.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun_COL.OBBOX01.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun_COL.OBBOX01.w3x" /> -->
 
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun_COL_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun_COL_HRC.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun_HRC.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun_HRC.w3x" /> -->
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun.xml" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun_NRM.xml" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun_SPM.xml" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressMainGun_SPM.xml" /> -->
 
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
 		<Include type="instance" source="DATA:Civilian/Floating_Island_FI/Props/FI_FloatingFortressMainGun_Collapse.xml" />
-		<Include type="all" source="ART:FXJapanLaser.xml" />
-		<Include type="all" source="ART:FXLaserJapanOverlay.xml" />
+		<!-- <Include type="all" source="ART:FXJapanLaser.xml" /> -->
+		<!-- <Include type="all" source="ART:FXLaserJapanOverlay.xml" /> -->
 	</Includes>
 	<GameObject
 		id="JapanWaveForceTricannon"

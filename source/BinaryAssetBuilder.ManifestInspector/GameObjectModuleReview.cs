@@ -141,7 +141,15 @@ internal static class GameObjectModuleReview
         //-------------------------------------------------------------------------------------------------
         /** Reborn: non-null native pointers must remain inside this asset's captured native region. */
         //-------------------------------------------------------------------------------------------------
-        int Pointer(int at, int size) { uint p = Word(at); if (p < root || p > int.MaxValue || size < 0 || p > bytes.Length - size) throw new InvalidDataException("Module native pointer out of bounds."); return (int)p; }
+        int Pointer(int at, int size)
+        {
+            uint p = Word(at);
+
+            if (p < root || p > int.MaxValue || size < 0 || p > bytes.Length - size)
+                throw new InvalidDataException($"Module native pointer out of bounds: at={at}, pointer=0x{p:X8}, root={root}, bufferLength={bytes.Length}, requiredSize={size}, asset={name}");
+
+            return (int)p;
+        }
     }
 
     //-------------------------------------------------------------------------------------------------

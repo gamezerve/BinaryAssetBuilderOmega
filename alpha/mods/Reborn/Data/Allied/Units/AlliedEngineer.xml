@@ -3,161 +3,161 @@
 	<Tags></Tags>
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
-		<Include type="all"	source="ART:AUHealthTent_D.xml" />
-		<Include type="all"	source="ART:Decal_Heal_CO.xml" />
-		<Include type="all"	source="ART:AUEngineer_SKN.w3x" />
-		<Include type="all" source="ART:AUEngineer_BIDA.w3x" />
-		<Include type="all"	source="ART:AUEngineer_BIFA.w3x" />
-		<Include type="all"	source="ART:AUEngineer_BIFB.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_BIFC.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_BIFD.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_RUNA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_DTBA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_SMVA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_SIDA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_AIDA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_AIFA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_AIFB.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_AIFC.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_CHRA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_BATA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_ABTA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_SDVA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_SGTA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_DTFA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_DTKA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_DTPA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_FLYA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_LNDA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_CDTA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_CDTB.w3x" />
-		<Include
-			type="all"
-			source="ART:FXEngineer_FP.w3x" />
-		<Include
-			type="all"
-			source="ART:AUJetSki_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:AUJetSki_MOVA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUJetSki_AIDA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUJetSki_BIDA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUJetSki_DIEA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUJetSki_BATA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUJetSki_ABTA.w3x" />
-			<Include
-			type="all"
-			source="ART:AUJetSki_WFLYA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_BIFY.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_CWRZ.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_AIFX.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_AIFY.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_AIFZ.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_BIFW.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_BIFZ.w3x" />
+		<!-- <Include type="all"	source="ART:AUHealthTent_D.xml" /> -->
+		<!-- <Include type="all"	source="ART:Decal_Heal_CO.xml" /> -->
+		<!-- <Include type="all"	source="ART:AUEngineer_SKN.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUEngineer_BIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUEngineer_BIFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUEngineer_BIFB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_BIFC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_BIFD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_RUNA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_DTBA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_SMVA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_SIDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_AIDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_AIFA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_AIFB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_AIFC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_CHRA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_BATA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_ABTA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_SDVA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_SGTA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_DTFA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_DTKA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_DTPA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_FLYA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_LNDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_CDTA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_CDTB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXEngineer_FP.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUJetSki_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUJetSki_MOVA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUJetSki_AIDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUJetSki_BIDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUJetSki_DIEA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUJetSki_BATA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUJetSki_ABTA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUJetSki_WFLYA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_BIFY.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_CWRZ.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_AIFX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_AIFY.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_AIFZ.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_BIFW.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_BIFZ.w3x" /> -->
 			
-		<Include
-			type="all"
-			source="ART:AUEngineer_RNDA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_TGLA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_MCNA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_MCNB.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_MCNC.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_MCND.w3x" />
-		<Include
-			type="all"
-			source="ART:AUEngineer_GTPA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUJetski_CWRA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUHealthTent_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:AUHealthTent_DIE.w3x" />
-			<Include type="all"	source="ART:NPSkeleton_SKN.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_DIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiation.w3x" />
-		<Include type="all"	source="ART:NPRadiation_DIEA.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_RNDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_TGLA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_MCNA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_MCNB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_MCNC.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_MCND.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUEngineer_GTPA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUJetski_CWRA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUHealthTent_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUHealthTent_DIE.w3x" /> -->
+			<!-- <Include type="all"	source="ART:NPSkeleton_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation_DIEA.w3x" /> -->
 
 
 		<!-- Base Object -->

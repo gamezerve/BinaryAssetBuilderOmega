@@ -5,42 +5,42 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
 
-		<Include
-			type="instance"
-			source="ART:EXTireTrack2.xml" />
-    <Include
-			type="all"
-			source="ART:AUHarvester_D.xml" />
-		<Include
-			type="all"
-			source="ART:AUHarvester_FX.w3x" />
-		<Include
-			type="all"
-			source="ART:AUHarvester_FP.w3x" />
-		<Include
-			type="all"
-			source="ART:AUHarvester_SKN.w3x" />
-		<Include
-			type="instance"
-			source="ART:EX_Headlights.w3x" />
-		<Include
-			type="all"
-			source="ART:AUHarvester_IDLA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUHarvester_MOVA.w3x" />
-		<Include
-			type="all"
-			source="ART:AUHarvester_HOVER.w3x" />
-		<Include
-			type="all"
-			source="ART:Ore_Gold_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:Ore_Gold_AHFILL.w3x" />
-		<Include
-			type="all"
-			source="ART:Ore_Gold_AHIDL.w3x" />
+		<!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:EXTireTrack2.xml" /> -->
+    <!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUHarvester_D.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUHarvester_FX.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUHarvester_FP.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUHarvester_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:EX_Headlights.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUHarvester_IDLA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUHarvester_MOVA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUHarvester_HOVER.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Ore_Gold_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Ore_Gold_AHFILL.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Ore_Gold_AHIDL.w3x" /> -->
 						
 		<!-- Base Object -->
 		<Include

@@ -15,7 +15,7 @@
 		<Cmd>Command_ConstructJapanBaseDefenseEgg</Cmd>		
 		<Cmd>Command_ConstructJapanBaseDefenseAdvancedEgg</Cmd>		
 		<Cmd>Command_ConstructJapanSuperWeaponEgg</Cmd>
-		<!-- <Cmd>Command_ConstructJapanNanoswarmHiveEX</Cmd> -->
+		<Cmd>Command_ConstructJapanNanoswarmHiveEX</Cmd>
 		<Cmd>Command_ConstructJapanSuperWeaponAdvancedEgg</Cmd>
 <!--		
 		<Cmd>Command_UpgradeJapanRadarDish</Cmd>
@@ -31,24 +31,69 @@
 		<Cmd>Command_ConstructJapanToyamaHighCommand</Cmd>
 		<Cmd>Command_ConstructJapanNagamaDojo</Cmd>
 		<Cmd>Command_ConstructJapanTenzaiRobotics</Cmd>
-		<!-- <Cmd>Command_ConstructJapanShiradaDocks</Cmd> -->
-		<!-- <Cmd>Command_ConstructJapanHarborBuilding</Cmd> -->
-		<!-- <Cmd>Command_ConstructImperialHarborBuilding</Cmd> -->
-		<!-- <Cmd>Command_ConstructJapanYurikoBarracks</Cmd> -->
-		<!-- <Cmd>Command_ConstructJapanYurikoWarFactory</Cmd> -->
+		<Cmd>Command_ConstructJapanShiradaDocks</Cmd>
+		<Cmd>Command_ConstructJapanHarborBuilding</Cmd>
+		<Cmd>Command_ConstructImperialHarborBuilding</Cmd>
+		<Cmd>Command_ConstructJapanYurikoBarracks</Cmd>
+		<Cmd>Command_ConstructJapanYurikoWarFactory</Cmd>
 		
 		<Cmd>Command_ConstructJapanImperialAdmin01</Cmd>
 		<Cmd>Command_ConstructJapanImperialAdmin02</Cmd>
 		<Cmd>Command_ConstructJapanImperialAdmin03</Cmd>
-		<!-- <Cmd>Command_ConstructJapanWaveForceTricannon</Cmd>  -->
-		<!-- <Cmd>Command_ConstructJapanFortressCrane</Cmd> -->
-		<!-- <Cmd>Command_ConstructJapanFortressPump</Cmd> -->
-		<!-- <Cmd>Command_ConstructJapanEmperorFlagpoleStatue</Cmd> -->
-		<!-- <Cmd>Command_ConstructJapanEmperorSonFlagpoleStatue</Cmd> -->
-		<!-- <Cmd>Command_ConstructJapanImperialLongRangeRadar</Cmd> -->
-		<!-- <Cmd>Command_ConstructJapanHouseofShinzo</Cmd> -->
-		<!-- <Cmd>Command_ConstructJapanHouseofShinzo02</Cmd> -->
-		<!-- <Cmd>Command_ConstructJapanKenjisHQ</Cmd> -->
+		<Cmd>Command_ConstructJapanWaveForceTricannon</Cmd> 
+		<Cmd>Command_ConstructJapanFortressCrane</Cmd>
+		<Cmd>Command_ConstructJapanFortressPump</Cmd>
+		<Cmd>Command_ConstructJapanEmperorFlagpoleStatue</Cmd>
+		<Cmd>Command_ConstructJapanEmperorSonFlagpoleStatue</Cmd>
+		<Cmd>Command_ConstructJapanImperialLongRangeRadar</Cmd>
+		<Cmd>Command_ConstructJapanHouseofShinzo</Cmd>
+		<Cmd>Command_ConstructJapanHouseofShinzo02</Cmd>
+		<Cmd>Command_ConstructJapanKenjisHQ</Cmd>
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="JapanKenjisHQCommandSet">
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="JapanHouseofShinzoCommandSet">
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="JapanHouseofShinzo02CommandSet">
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="FI_FloatingFortressMainGunCommandSet">
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="JapanFortressPumpCommandSet">
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="JapanEmperorSonFlagpoleStatueCommandSet">
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="JapanImperialLongRangeRadarCommandSet">
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="JapanNanoswarmHiveEXCommandSet">
+		<Cmd>Command_NanoSwarmHive</Cmd>
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="JapanEmperorFlagpoleStatueCommandSet">
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="JapanFortressCraneCommandSet">
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="JapanHarborBuildingCommandSet">
 	</LogicCommandSet>
 	
 	<LogicCommandSet
@@ -155,6 +200,23 @@
 		<Cmd>Command_ConstructAlliedFutureTechArsenal</Cmd>
 		<Cmd>Command_ConstructAlliedFutureTechHarmonizerControl</Cmd>
 	</LogicCommandSet>	
+	
+	<LogicCommandSet
+		id="AlliedWarFactoryCommandSet">
+		<Cmd>Command_ConstructAlliedMiner</Cmd>
+		<Cmd>Command_ConstructAlliedAntiInfantryVehicle_Ground</Cmd>
+		<Cmd>Command_ConstructAlliedAntiAirVehicleTech1</Cmd>
+		<Cmd>Command_ConstructAlliedAntiVehicleVehicleTech1</Cmd>
+		<Cmd>Command_ConstructAlliedAntiStructureVehicle</Cmd>
+		<Cmd>Command_ConstructAlliedAntiVehicleVehicleTech3</Cmd>
+		<Cmd>Command_ConstructAlliedUnassumingSovietTank</Cmd>
+		<Cmd>Command_ConstructAlliedArtilleryVehicle</Cmd>
+		<Cmd>Command_ConstructAlliedFutureTank</Cmd>
+		<Cmd>Command_ConstructAlliedMCV</Cmd>		
+<!--
+		<Cmd>Command_UpgradeAlliedWarFactoryRepairBay</Cmd>
+-->		
+	</LogicCommandSet>
 
 	<LogicCommandSet
 		id="AlliedRelayStationCommandSet">

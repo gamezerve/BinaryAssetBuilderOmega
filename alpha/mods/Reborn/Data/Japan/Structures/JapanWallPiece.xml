@@ -4,21 +4,21 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
 
-		<Include
-			type="all"
-			source="ART:JBWallHub_A.w3x" />
-		<Include
-			type="all"
-			source="ART:JBWall_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:JBWall_BLD.w3x" />
-		<Include
-			type="all"
-			source="ART:JBWallHub_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:JBWallHub_SKL.w3x" />			
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBWallHub_A.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBWall_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBWall_BLD.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBWallHub_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBWallHub_SKL.w3x" />			 -->
 
 
 		<!-- Base Object -->
@@ -189,7 +189,7 @@
 			</DestroyDie>	
 			<WallBuilderBehavior
 				id="ModuleTag_WallBuilder"
-				MaxNumSegments="10">
+				MaxNumSegments="39">
 				<ConnectingObjectFilter
 					Rule="NONE" >
 					<IncludeThing>JapanWallPiece</IncludeThing>

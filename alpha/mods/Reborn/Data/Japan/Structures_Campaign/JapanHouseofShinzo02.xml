@@ -4,19 +4,19 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:TH_ShinzoHouse02.W3X" />
+		<!-- <Include type="all"	source="ART:TH_ShinzoHouse02.W3X" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
-		<Include type="instance" source="DATA:Reborn\Data\Japan\Props/TH_ShinzoHouse02_Collapse.xml" />
+		<Include type="instance" source="DATA:Japan\Props/TH_ShinzoHouse02_Collapse.xml" />
 
 
-		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\TH_SHINZOHOUSE02_HRC.W3X" />
-		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\TH_SHINZOHOUSE02_CTR.W3X" />
-		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\TH_SHINZOHOUSE02_COL_HRC.W3X" />
-		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\TH_SHINZOHOUSE02_COL_CTR.W3X" />
-		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\TH_SHINZOHOUSE02_COL.NEWSKIN.W3X" />
-		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\TH_SHINZOHOUSE02.OBBOX01.W3X" />
-		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\TH_SHINZOHOUSE02.NEWSKIN.W3X" />
-		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\TH_SHINZOHOUSE02.NEWSKIN_FILL.W3X" />
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures/Imperial\TH_SHINZOHOUSE02_HRC.W3X" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures/Imperial\TH_SHINZOHOUSE02_CTR.W3X" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures/Imperial\TH_SHINZOHOUSE02_COL_HRC.W3X" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures/Imperial\TH_SHINZOHOUSE02_COL_CTR.W3X" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures/Imperial\TH_SHINZOHOUSE02_COL.NEWSKIN.W3X" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures/Imperial\TH_SHINZOHOUSE02.OBBOX01.W3X" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures/Imperial\TH_SHINZOHOUSE02.NEWSKIN.W3X" /> -->
+		<!-- <Include type="all"	source="ART:Reborn\Art\Structures/Imperial\TH_SHINZOHOUSE02.NEWSKIN_FILL.W3X" /> -->
 		
 		<!-- Base Object -->
 		<Include

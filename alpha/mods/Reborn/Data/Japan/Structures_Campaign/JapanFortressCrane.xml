@@ -4,12 +4,12 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSCRANE_IDLA.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSCRANE_IDLB.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSCRANE_SKL.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSCRANE_SKN.FX_LIGHTS01.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSCRANE_SKN.NEWSKIN.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSCRANE_SKN.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSCRANE_IDLA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSCRANE_IDLB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSCRANE_SKL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSCRANE_SKN.FX_LIGHTS01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSCRANE_SKN.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSCRANE_SKN.w3x" /> -->
 						
 		<!-- Base Object -->
 		<Include

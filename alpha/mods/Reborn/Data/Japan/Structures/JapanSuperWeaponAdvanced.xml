@@ -4,34 +4,34 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:JBSuperweaponAdvanced_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:JBSuperweaponAdvanced_FX.w3x" />			
-		<Include
-			type="all"
-			source="ART:JBSuperweaponAdvanced_IDLA.w3x" />				
-		<Include
-			type="all"
-			source="ART:JBSuperweaponAdvanced_IDLB.w3x" />				
-		<Include
-			type="all"
-			source="ART:JBSuperweaponAdvanced_RDY.w3x" />				
-		<Include
-			type="all"
-			source="ART:JBSuperweaponAdvanced_BLD.w3x" />	
-		<Include
-			type="all"
-			source="ART:JBSuperweaponAdvanced_BLD2.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBSuperweaponAdvanced_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBSuperweaponAdvanced_FX.w3x" />			 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBSuperweaponAdvanced_IDLA.w3x" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBSuperweaponAdvanced_IDLB.w3x" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBSuperweaponAdvanced_RDY.w3x" />				 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBSuperweaponAdvanced_BLD.w3x" />	 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBSuperweaponAdvanced_BLD2.w3x" /> -->
 			
-		<Include
-			type="all"
-			source="ART:JBSuperweaponAdvanced_Platform_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:JBSuperweaponAdvanced_Platform_BLD.w3x" />				
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBSuperweaponAdvanced_Platform_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JBSuperweaponAdvanced_Platform_BLD.w3x" />				 -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

@@ -34,7 +34,7 @@ internal static class ConscriptModuleScalarContract
                 Type type;try{type=container.LocalName switch
                 {
                     "Behaviors"=>Ep1BehaviorMetadataTokenizer.ReviewedNativeType(FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(element.LocalName))),
-                    "Draws"=>element.LocalName switch{"ScriptedModelDraw"=>typeof(W3DScriptedModelDrawModuleData),"TracerModelDraw"=>typeof(W3DTracerDrawModuleData),"StreamDraw"=>typeof(Ep1W3DStreamDrawModuleData),"LaserDraw"=>typeof(Ep1W3DLaserDrawModuleData),"TruckDraw"=>typeof(Ep1W3DTruckDrawModuleData),"TankDraw"=>typeof(Ep1W3DTankDrawModuleData),_=>throw new InvalidDataException("Unreviewed scalar draw family.")},
+                    "Draws" => element.LocalName switch { "ScriptedModelDraw" => typeof(W3DScriptedModelDrawModuleData), "TracerModelDraw" => typeof(W3DTracerDrawModuleData), "StreamDraw" => typeof(Ep1W3DStreamDrawModuleData), "LaserDraw" => typeof(Ep1W3DLaserDrawModuleData), "TruckDraw" => typeof(Ep1W3DTruckDrawModuleData), "TankDraw" => typeof(Ep1W3DTankDrawModuleData), "DynamicsDraw" => typeof(W3DDynamicsDrawModuleData), _ => throw new InvalidDataException("Unreviewed scalar draw family.") },
                     // Reborn: jet AI owns a separate EP1 record instead of inheriting legacy KW offsets.
                     "AI" when element.LocalName=="JetAIUpdate"=>typeof(Ep1JetAIUpdateModuleData),
                     "AI" when element.LocalName=="AIUpdate"=>typeof(Ep1AIUpdateModuleData),

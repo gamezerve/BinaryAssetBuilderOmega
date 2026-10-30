@@ -64,7 +64,7 @@
 		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedRadioTower.xml" />
 		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedRushmoreHeadControl.xml" />
 		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedRushmoreFiringBase.xml" />
-		<!-- <Include type="all" source="DATA:Allied/units/AlliedUnassumingSovietTank.xml" /> -->
+		<Include type="all" source="DATA:Allied/units/AlliedUnassumingSovietTank.xml" />
 		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedAirportControlTower.xml" />
 		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedRelayStation.xml" />
 		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFutureTechHQ.xml" />
@@ -76,17 +76,17 @@
 		<!-- <Include type="all" source="units/AlliedEngineer.xml" /> -->
 		<!-- <Include type="all" source="units/AlliedInfiltrationInfantry.xml" /> -->
 		<!-- <Include type="all" source="units/AlliedScoutInfantry.xml" /> -->
-		<!-- <Include type="all" source="units/AlliedCommandoTech1.xml" /> -->
+		<Include type="all" source="units/AlliedCommandoTech1.xml" />
 
 		<!-- Ground Vehicles -->
 
-		<!-- <Include type="all" source="units/AlliedAntiInfantryVehicle.xml" /> -->
-		<!-- <Include type="all" source="units/AlliedAntiAirVehicleTech1.xml" /> -->
-		<!-- <Include type="all" source="units/AlliedAntiVehicleVehicleTech1.xml" /> -->
-		<!-- <Include type="all" source="units/AlliedAntiVehicleVehicleTech3.xml" /> -->
-		<!-- <Include type="all" source="units/AlliedAntiStructureVehicle.xml" />		 -->
-		<!-- <Include type="all" source="units/AlliedMCV.xml" /> -->
-		<!-- <Include type="all" source="units/AlliedMiner.xml" /> -->
+		<Include type="all" source="units/AlliedAntiInfantryVehicle.xml" />
+		<Include type="all" source="units/AlliedAntiAirVehicleTech1.xml" />
+		<Include type="all" source="units/AlliedAntiVehicleVehicleTech1.xml" />
+		<Include type="all" source="units/AlliedAntiVehicleVehicleTech3.xml" />
+		<Include type="all" source="units/AlliedAntiStructureVehicle.xml" />		
+		<Include type="all" source="units/AlliedMCV.xml" />
+		<Include type="all" source="units/AlliedMiner.xml" />
 
 		<!-- Air Vehicles -->
 

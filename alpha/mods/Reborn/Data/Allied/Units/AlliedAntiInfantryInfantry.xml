@@ -4,111 +4,111 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SKN.w3x" />
-		<Include type="all" source="ART:AUAntiInfantryInfantry_ABTA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_ABTB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_AIDA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_AIFA.w3x" />
-		<Include type="all" source="ART:AUAntiInfantryInfantry_AIFB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_AIFC.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_AIFD.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_ATKA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_BATA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_BATB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_BIDA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_BIDB.w3x" />
-		<Include type="all" source="ART:AUAntiInfantryInfantry_BIDC.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_BIFA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_BIFB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_BIFC.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_BIFD.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_CHRA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_CHRB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_CHRC.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_DTBA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_DTBB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_DTFA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_DTFB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_DTKA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_DTKB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_DTPA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_DTPB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_GTPA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_GTPB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_RUNA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_RUNB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_RUNC.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SAIDA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SATA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SBIDA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SDVA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SIDA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SMVA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_RLDA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SBATA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SABTA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SDTBA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SCHRA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SCHRB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SCHRC.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SDTFA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SDTKA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SDTPA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SGTPA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SHITA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SWPA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SWPB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_FLYA.w3x" />			
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_LNDA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SFLYA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SLNDA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SWLKA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_CDTA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_CDTB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SCDTA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SCDTB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_MCNA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_MCNB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_MCNC.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_MCND.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SMCNA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SMCNB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SMCNC.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SMCND.w3x" />
-		<Include type="all" source="ART:AUAntiInfantryInfantry_SDIA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SCWRZ.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_AIDX.w3x" />
-		<Include type="all" source="ART:AUAntiInfantryInfantry_AIDZ.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_AIFW.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_AIFX.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_AIFY.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_AIFZ.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_ATKB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_ATKC.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_ATKD.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_BIDX.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_BIDZ.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_BIFW.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_BIFX.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_BIFY.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_BIFZ.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_CWRY.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_CWRZ.w3x" />
-		<Include type="all" source="ART:AUAntiInfantryInfantry_SCWRY.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SRNDA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_ATRA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_RNDA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_RNDB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SWMA.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SWMB.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_SWMC.w3x" />
-		<Include type="all"	source="ART:AUAntiInfantryInfantry_WADA.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_SKN.w3x" />
-		<Include type="all"	source="ART:NPRadiation.w3x" />
-		<Include type="all"	source="ART:NPRadiation_DIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiation_WDIEA.w3x" />
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SKN.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUAntiInfantryInfantry_ABTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_ABTB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_AIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_AIFA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUAntiInfantryInfantry_AIFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_AIFC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_AIFD.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_ATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_BATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_BATB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_BIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_BIDB.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUAntiInfantryInfantry_BIDC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_BIFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_BIFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_BIFC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_BIFD.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_CHRA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_CHRB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_CHRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_DTBA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_DTBB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_DTFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_DTFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_DTKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_DTKB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_DTPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_DTPB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_GTPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_GTPB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_RUNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_RUNB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_RUNC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SAIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SBIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SDVA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SMVA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_RLDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SBATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SABTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SDTBA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SCHRA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SCHRB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SCHRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SDTFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SDTKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SDTPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SGTPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SHITA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SWPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SWPB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_FLYA.w3x" />			 -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_LNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SFLYA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SLNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SWLKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_CDTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_CDTB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SCDTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SCDTB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_MCNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_MCNB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_MCNC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_MCND.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SMCNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SMCNB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SMCNC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SMCND.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUAntiInfantryInfantry_SDIA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SCWRZ.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_AIDX.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUAntiInfantryInfantry_AIDZ.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_AIFW.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_AIFX.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_AIFY.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_AIFZ.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_ATKB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_ATKC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_ATKD.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_BIDX.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_BIDZ.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_BIFW.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_BIFX.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_BIFY.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_BIFZ.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_CWRY.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_CWRZ.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUAntiInfantryInfantry_SCWRY.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SRNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_ATRA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_RNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_RNDB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SWMA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SWMB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_SWMC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiInfantryInfantry_WADA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation_WDIEA.w3x" /> -->
 			
-		<Include type="all"	source="ART:FXShotgunFlash.w3x" />
+		<!-- <Include type="all"	source="ART:FXShotgunFlash.w3x" /> -->
 	
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseInfantry.xml" />
