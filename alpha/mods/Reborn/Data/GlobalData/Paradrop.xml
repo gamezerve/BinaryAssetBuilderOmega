@@ -49,176 +49,54 @@
 		inheritFrom="PlayerSpellBook">
 		<Behaviors>
 
-      <!-- Reborn: each protocol variant owns its recharge timer; cross-variant cooldown transfer is not implemented. -->
+      <!-- Reborn: sidebar managers discover the executable Paradrop powers on AlliedAirportControlTower; no duplicate spellbook timers. -->
       <!-- Paradrop -->
       <PlayerPowerManager
 				id="ModuleTag_PlayerPowerManager_ParadropLvl1"
 				SpecialPowerTemplate="SpecialPowerParadropLvl1"
 			/>
-      <OCLSpecialPower
-				id="ModuleTag_ParadropLvl1"
-				SpecialPowerTemplate="SpecialPowerParadropLvl1"
-				UpdateModuleStartsAttack="false"
-				AvailableAtStart="true"
-				OCL="OCL_ParaDropLvl1"
-				DestinationOCL="OCL_PrecisionStrikeBeacon"
-				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-				CreateLocationOffset="1000.0">
-        <NearestSecondaryObjectFilter
-					Relationship="SAME_PLAYER">
-          <IncludeThing>AlliedConstructionYard</IncludeThing>
-        </NearestSecondaryObjectFilter>
-      </OCLSpecialPower>
-
 
       <PlayerPowerManager
         id="ModuleTag_PlayerPowerManager_ParadropLvl2"
         SpecialPowerTemplate="SpecialPowerParadropLvl2"
 			/>
-      <OCLSpecialPower
-				id="ModuleTag_ParadropLvl2"
-				SpecialPowerTemplate="SpecialPowerParadropLvl2"
-				UpdateModuleStartsAttack="false"
-				AvailableAtStart="true"
-				OCL="OCL_ParaDropLvl2"
-        DestinationOCL="OCL_PrecisionStrikeBeacon"
-				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-			  CreateLocationOffset="1000.0">
-        <NearestSecondaryObjectFilter
-					Relationship="SAME_PLAYER">
-          <IncludeThing>AlliedConstructionYard</IncludeThing>
-        </NearestSecondaryObjectFilter>
-      </OCLSpecialPower>
 
       <PlayerPowerManager
         id="ModuleTag_PlayerPowerManager_ParadropLvl3"
         SpecialPowerTemplate="SpecialPowerParadropLvl3"
 			/>
-      <OCLSpecialPower
-				id="ModuleTag_ParadropLvl3"
-				SpecialPowerTemplate="SpecialPowerParadropLvl3"
-				UpdateModuleStartsAttack="false"
-				AvailableAtStart="true"
-				OCL="OCL_ParaDropLvl3"
-        DestinationOCL="OCL_PrecisionStrikeBeacon"
-				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-			  CreateLocationOffset="1000.0">
-        <NearestSecondaryObjectFilter
-					Relationship="SAME_PLAYER">
-          <IncludeThing>AlliedConstructionYard</IncludeThing>
-        </NearestSecondaryObjectFilter>
-      </OCLSpecialPower>
 
-
-			<!-- Reborn: alternate Allied purchases select exactly one visible Paradrop variant at the highest purchased protocol row. -->
+			<!-- Reborn: alternate Allied purchases select one sidebar manager; all execution modules live on AlliedAirportControlTower. -->
 <PlayerPowerManager
 				id="ModuleTag_PlayerPowerManager_ParadropLvl1_Protocol2"
 				SpecialPowerTemplate="SpecialPowerParadropLvl1_Protocol2"
 			/>
-<OCLSpecialPower
-				id="ModuleTag_ParadropLvl1_Protocol2"
-				SpecialPowerTemplate="SpecialPowerParadropLvl1_Protocol2"
-				UpdateModuleStartsAttack="false"
-				AvailableAtStart="true"
-				OCL="OCL_ParaDropLvl1"
-				DestinationOCL="OCL_PrecisionStrikeBeacon"
-				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-				CreateLocationOffset="1000.0">
-        <NearestSecondaryObjectFilter
-					Relationship="SAME_PLAYER">
-          <IncludeThing>AlliedConstructionYard</IncludeThing>
-        </NearestSecondaryObjectFilter>
-      </OCLSpecialPower>
+
 <PlayerPowerManager
 				id="ModuleTag_PlayerPowerManager_ParadropLvl1_Protocol3"
 				SpecialPowerTemplate="SpecialPowerParadropLvl1_Protocol3"
 			/>
-<OCLSpecialPower
-				id="ModuleTag_ParadropLvl1_Protocol3"
-				SpecialPowerTemplate="SpecialPowerParadropLvl1_Protocol3"
-				UpdateModuleStartsAttack="false"
-				AvailableAtStart="true"
-				OCL="OCL_ParaDropLvl1"
-				DestinationOCL="OCL_PrecisionStrikeBeacon"
-				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-				CreateLocationOffset="1000.0">
-        <NearestSecondaryObjectFilter
-					Relationship="SAME_PLAYER">
-          <IncludeThing>AlliedConstructionYard</IncludeThing>
-        </NearestSecondaryObjectFilter>
-      </OCLSpecialPower>
+
 <PlayerPowerManager
         id="ModuleTag_PlayerPowerManager_ParadropLvl2_Protocol2"
         SpecialPowerTemplate="SpecialPowerParadropLvl2_Protocol2"
 			/>
-<OCLSpecialPower
-				id="ModuleTag_ParadropLvl2_Protocol2"
-				SpecialPowerTemplate="SpecialPowerParadropLvl2_Protocol2"
-				UpdateModuleStartsAttack="false"
-				AvailableAtStart="true"
-				OCL="OCL_ParaDropLvl2"
-        DestinationOCL="OCL_PrecisionStrikeBeacon"
-				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-			  CreateLocationOffset="1000.0">
-        <NearestSecondaryObjectFilter
-					Relationship="SAME_PLAYER">
-          <IncludeThing>AlliedConstructionYard</IncludeThing>
-        </NearestSecondaryObjectFilter>
-      </OCLSpecialPower>
+
 <PlayerPowerManager
         id="ModuleTag_PlayerPowerManager_ParadropLvl2_Protocol3"
         SpecialPowerTemplate="SpecialPowerParadropLvl2_Protocol3"
 			/>
-<OCLSpecialPower
-				id="ModuleTag_ParadropLvl2_Protocol3"
-				SpecialPowerTemplate="SpecialPowerParadropLvl2_Protocol3"
-				UpdateModuleStartsAttack="false"
-				AvailableAtStart="true"
-				OCL="OCL_ParaDropLvl2"
-        DestinationOCL="OCL_PrecisionStrikeBeacon"
-				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-			  CreateLocationOffset="1000.0">
-        <NearestSecondaryObjectFilter
-					Relationship="SAME_PLAYER">
-          <IncludeThing>AlliedConstructionYard</IncludeThing>
-        </NearestSecondaryObjectFilter>
-      </OCLSpecialPower>
+
 <PlayerPowerManager
         id="ModuleTag_PlayerPowerManager_ParadropLvl3_Protocol2"
         SpecialPowerTemplate="SpecialPowerParadropLvl3_Protocol2"
 			/>
-<OCLSpecialPower
-				id="ModuleTag_ParadropLvl3_Protocol2"
-				SpecialPowerTemplate="SpecialPowerParadropLvl3_Protocol2"
-				UpdateModuleStartsAttack="false"
-				AvailableAtStart="true"
-				OCL="OCL_ParaDropLvl3"
-        DestinationOCL="OCL_PrecisionStrikeBeacon"
-				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-			  CreateLocationOffset="1000.0">
-        <NearestSecondaryObjectFilter
-					Relationship="SAME_PLAYER">
-          <IncludeThing>AlliedConstructionYard</IncludeThing>
-        </NearestSecondaryObjectFilter>
-      </OCLSpecialPower>
+
 <PlayerPowerManager
         id="ModuleTag_PlayerPowerManager_ParadropLvl3_Protocol3"
         SpecialPowerTemplate="SpecialPowerParadropLvl3_Protocol3"
 			/>
-<OCLSpecialPower
-				id="ModuleTag_ParadropLvl3_Protocol3"
-				SpecialPowerTemplate="SpecialPowerParadropLvl3_Protocol3"
-				UpdateModuleStartsAttack="false"
-				AvailableAtStart="true"
-				OCL="OCL_ParaDropLvl3"
-        DestinationOCL="OCL_PrecisionStrikeBeacon"
-				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-			  CreateLocationOffset="1000.0">
-        <NearestSecondaryObjectFilter
-					Relationship="SAME_PLAYER">
-          <IncludeThing>AlliedConstructionYard</IncludeThing>
-        </NearestSecondaryObjectFilter>
-      </OCLSpecialPower>
+
 		</Behaviors>
 	</GameObject>
 

@@ -18,6 +18,9 @@ Required/ForbiddenPlayerTech gates: no purchase means no eligible button;
 only the highest purchased row qualifies, with no Soviet/Japan eligibility.
 All nine variants are linked through the spellbook / Control Tower command
 sets and mouse command-button templates, including the second/third columns.
+Paradrop execution modules now live on the Control Tower, with sidebar
+managers remaining on PlayerSpellBook, matching Iron Curtain ownership so
+both interfaces reach the same handlers and timers.
 The 512 purchase combinations pass; actual UI behavior and independent variant
 recharge timers still need an in-game check. See
 [Paradrop protocol thresholds](docs/REBORN_PARADROP_PROTOCOL_THRESHOLDS.md).

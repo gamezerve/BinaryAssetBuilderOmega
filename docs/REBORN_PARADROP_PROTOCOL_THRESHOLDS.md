@@ -20,6 +20,28 @@ XP-only `PlayerTech_Generic_Rank_*` values are not used. The original three
 power IDs and their commands, OCL troop payloads and 300/330/360-second reload
 values are retained.
 
+## Building ability ownership
+
+<!-- Reborn: use the Iron Curtain ownership pattern so both interfaces reach one executable power and timer. -->
+`PlayerSpellBook` retains the nine PlayerPowerManager modules. The nine
+OCLSpecialPower execution modules now belong exclusively to
+`AlliedAirportControlTower`, following the original Iron Curtain arrangement.
+The tower's command set and mouse templates therefore resolve powers on the
+selected building, while the sidebar managers discover the same handlers.
+There is no second set of spellbook execution modules or independent copy of
+the timers for the building buttons. Cross-variant cooldown transfer remains
+outside this change.
+
+Previously the tower listed the commands but owned none of their execution
+modules. The sidebar could execute them through PlayerSpellBook; the selected
+building could not. Merely listing a command is insufficient to give an object
+its associated special-power module.
+The combined tower/spellbook/UI graph passes native readback: **60 assets**,
+**118 local / 612 stock** reference occurrences, checksum `74abfd8b`.
+The move preserves all nine original handler bodies. Building-button rank
+selection, casting and sidebar recharge synchronization still require gameplay
+confirmation after rebuilding Reborn.
+
 ## Sidebar visibility
 
 <!-- Reborn: native tech visibility predicates are separate from GameDependency usability checks. -->
@@ -36,7 +58,7 @@ protocol purchases means none qualify; Soviet/Japan purchases grant none of
 the required Allied techs. The Control Tower remains a usability dependency,
 so its absence may disable an unlocked button rather than hide it.
 
-Each variant has its own PlayerPowerManager, OCL handler, command and mouse /
+Each variant has its own spellbook PlayerPowerManager, tower OCL handler, command and mouse /
 joypad template, reusing the existing rank's button state and troop OCL.
 When multiple same-row protocols are purchased, the first listed protocol
 wins, irrespective of purchase order. These are engine-native tech gates;
