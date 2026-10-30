@@ -4,20 +4,20 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
 
-		<Include type="all"	source="ART:JUAntiVehicleInfantryTech3_SKN.w3x" />
-    <Include type="all"	source="ART:JUAntiVehicleInfantryTech3_FP.w3x" />
-		<Include type="all"	source="ART:JUAntiVehicleInfantryTech3_AIDA.w3x" />
-		<Include type="all"	source="ART:JUAntiVehicleInfantryTech3_BIDA.w3x" />
-		<Include type="all"	source="ART:JUAntiVehicleInfantryTech3_ATKB.w3x" />
-		<Include type="all"	source="ART:JUAntiVehicleInfantryTech3_MOVA.w3x" />
-		<Include type="all"	source="ART:JUAntiVehicleInfantryTech3_MOVB.w3x" />
-		<Include type="all"	source="ART:JUAntiVehicleInfantryTech3_ABTB.w3x" />
-		<Include type="all"	source="ART:JUAntiVehicleInfantryTech3_BATB.w3x" />
-		<Include type="all"	source="ART:JUAntiVehicleInfantryTech3_DIEA.w3x" />
-		<Include type="all" source="ART:JUAntiVehicleInfantryTech3_DIEB.w3x" />
-		<Include type="all"	source="ART:JUAntiVehicleInfantryTech3_ATKC.w3x" />
+		<!-- <Include type="all"	source="ART:JUAntiVehicleInfantryTech3_SKN.w3x" /> -->
+    <!-- <Include type="all"	source="ART:JUAntiVehicleInfantryTech3_FP.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiVehicleInfantryTech3_AIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiVehicleInfantryTech3_BIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiVehicleInfantryTech3_ATKB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiVehicleInfantryTech3_MOVA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiVehicleInfantryTech3_MOVB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiVehicleInfantryTech3_ABTB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiVehicleInfantryTech3_BATB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiVehicleInfantryTech3_DIEA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUAntiVehicleInfantryTech3_DIEB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiVehicleInfantryTech3_ATKC.w3x" /> -->
 		<!-- Base Object -->
-    <Include type="instance" source="ART:FXBeam.xml" />
+    <!-- <Include type="instance" source="ART:FXBeam.xml" /> -->
 		<Include type="instance" source="DATA:BaseObjects/BaseInfantry.xml" />
 	</Includes>
 

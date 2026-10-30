@@ -4,27 +4,27 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="instance"
-			source="ART:EXTnkTrack.xml" />
-		<Include
-			type="all"
-			source="ART:AUAntiNavyShipTech1_SKN.w3x" />
- 		<Include
-			type="all"
-			source="ART:AUAntiNavyShipTech1_FX.w3x" />
- 		<Include
-			type="all"
-			source="ART:AUAntiNavyShipTech1_FP.w3x" />
-		<Include
-			type="all"
-			source="ART:AUAntiNavyShipTech1_TRANS.w3x" />		
-		<Include
-			type="all"
-			source="ART:AUAntiNavyShipTech1_D.xml" />
-    <Include
-			type="all"
-			source="ART:EXMagneticShield.w3x" />
+		<!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:EXTnkTrack.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavyShipTech1_SKN.w3x" /> -->
+ 		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavyShipTech1_FX.w3x" /> -->
+ 		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavyShipTech1_FP.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavyShipTech1_TRANS.w3x" />		 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavyShipTech1_D.xml" /> -->
+    <!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:EXMagneticShield.w3x" /> -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

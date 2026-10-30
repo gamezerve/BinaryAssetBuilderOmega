@@ -217,6 +217,25 @@
 		<Cmd>Command_UpgradeAlliedWarFactoryRepairBay</Cmd>
 -->		
 	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="AlliedNavalYardCommandSet">
+		<Cmd>Command_ConstructAlliedMiner_Naval</Cmd>
+		<Cmd>Command_ConstructAlliedAntiNavalScout</Cmd>
+		<Cmd>Command_ConstructAlliedSalvageShipReborn</Cmd>
+		<Cmd>Command_ConstructAlliedAntiInfantryVehicle</Cmd>
+		<Cmd>Command_ConstructAlliedAntiAirShip</Cmd>
+		<Cmd>Command_ConstructAlliedAntiNavyShipTech1</Cmd>
+		<Cmd>Command_ConstructAlliedAntiStructureShip</Cmd>
+		<Cmd>Command_ConstructAlliedMCV_Naval</Cmd>
+<!--		
+		<Cmd>Command_UpgradeAlliedNavalYardRepairBay</Cmd>
+-->		
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="AlliedSalvageShipCommandSet">
+	</LogicCommandSet>
 
 	<LogicCommandSet
 		id="AlliedRelayStationCommandSet">

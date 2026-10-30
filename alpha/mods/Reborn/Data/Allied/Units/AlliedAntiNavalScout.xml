@@ -5,86 +5,86 @@
 		<Include
 			type="all"
 			source="DATA:GlobalData/GlobalDefines.xml" /> 
-		<Include
-			type="all"
-			source="ART:AUAntiNavalScout_SKN.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_AIDA.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_BIDA.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_RUNA.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_RUNB.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_RUNC.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_RUND.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_RUNE.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_AIFA.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_ABTA.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_ABTB.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_ABTC.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_BATA.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_BATB.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_BATC.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_DTHA.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_BIFA.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_BAKA.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_BIFB.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_BIFC.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_AIFB.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_ATKA.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_JMPA.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_LNDA.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_Elec_SKN.w3x" />
-			<Include
-			type="all"
-			source="ART:AUAntiNavalScout_Elec_DIEA.w3x" />
-			<Include type="all"	source="ART:NPRadiationDolphin.w3x" />
-			<Include type="all"	source="ART:NPRadiationDolphin_DIEA.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_SKN.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_AIDA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_BIDA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_RUNA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_RUNB.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_RUNC.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_RUND.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_RUNE.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_AIFA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_ABTA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_ABTB.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_ABTC.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_BATA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_BATB.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_BATC.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_DTHA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_BIFA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_BAKA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_BIFB.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_BIFC.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_AIFB.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_ATKA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_JMPA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_LNDA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_Elec_SKN.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiNavalScout_Elec_DIEA.w3x" /> -->
+			<!-- <Include type="all"	source="ART:NPRadiationDolphin.w3x" /> -->
+			<!-- <Include type="all"	source="ART:NPRadiationDolphin_DIEA.w3x" /> -->
 
 			
 			

@@ -306,33 +306,33 @@
     </CreateObject>
   </ObjectCreationList>
 
-  <PlayerPowerButtonTemplate
-    id="ButtonCampaignPlayerPoweParadrop_Rank1"
-    SpecialPower="SpecialPowerParadropLvl1">
-    <Data>
-      <TargetedPower
-				RadiusCursor="Target_Allied_Paradrop"
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl1"/>
-    </Data>
-  </PlayerPowerButtonTemplate>
-  <PlayerPowerButtonTemplate
-      id="ButtonCampaignPlayerPoweParadrop_Rank2"
-      SpecialPower="SpecialPowerParadropLvl2">
-    <Data>
-      <TargetedPower
-				RadiusCursor="Target_Allied_Paradrop"
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl2"/>
-    </Data>
-  </PlayerPowerButtonTemplate>
-  <PlayerPowerButtonTemplate
-      id="ButtonCampaignPlayerPoweParadrop_Rank3"
-      SpecialPower="SpecialPowerParadropLvl3">
-    <Data>
-      <TargetedPower
-				RadiusCursor="Target_Allied_Paradrop"
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl3"/>
-    </Data>
-  </PlayerPowerButtonTemplate>
+  <!-- <PlayerPowerButtonTemplate -->
+    <!-- id="ButtonCampaignPlayerPoweParadrop_Rank1" -->
+    <!-- SpecialPower="SpecialPowerParadropLvl1"> -->
+    <!-- <Data> -->
+      <!-- <TargetedPower -->
+				<!-- RadiusCursor="Target_Allied_Paradrop" -->
+				<!-- StateData="ButtonStateCampaignPlayerPowerParadropLvl1"/> -->
+    <!-- </Data> -->
+  <!-- </PlayerPowerButtonTemplate> -->
+  <!-- <PlayerPowerButtonTemplate -->
+      <!-- id="ButtonCampaignPlayerPoweParadrop_Rank2" -->
+      <!-- SpecialPower="SpecialPowerParadropLvl2"> -->
+    <!-- <Data> -->
+      <!-- <TargetedPower -->
+				<!-- RadiusCursor="Target_Allied_Paradrop" -->
+				<!-- StateData="ButtonStateCampaignPlayerPowerParadropLvl2"/> -->
+    <!-- </Data> -->
+  <!-- </PlayerPowerButtonTemplate> -->
+  <!-- <PlayerPowerButtonTemplate -->
+      <!-- id="ButtonCampaignPlayerPoweParadrop_Rank3" -->
+      <!-- SpecialPower="SpecialPowerParadropLvl3"> -->
+    <!-- <Data> -->
+      <!-- <TargetedPower -->
+				<!-- RadiusCursor="Target_Allied_Paradrop" -->
+				<!-- StateData="ButtonStateCampaignPlayerPowerParadropLvl3"/> -->
+    <!-- </Data> -->
+  <!-- </PlayerPowerButtonTemplate> -->
 
   <JoypadCommandBarButtonTemplate
   id="ButtonCampaignPlayerPoweParadrop_Rank1">

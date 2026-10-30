@@ -56,7 +56,7 @@
 	<!-- <Include type="all" source="units/JapanEngineer.xml" />	 -->
 	<!-- <Include type="all" source="units/JapanInfiltrationInfantry.xml" />	 -->
 	<!-- <Include type="all" source="units/JapanScoutInfantry.xml" />	 -->
-	<!-- <Include type="all" source="units/JapanCommandoTech1.xml" /> -->
+	<Include type="all" source="units/JapanCommandoTech1.xml" />
 	<!-- <Include type="all" source="units/JapanAntiVehicleInfantryTech3.xml" /> -->
 
 	<!-- Ground Vehicles -->
@@ -96,14 +96,14 @@
 	<!-- <Include type="all" source="structures/JapanPowerPlant.xml" /> -->
 	<!-- <Include type="all" source="structures/JapanPowerPlantTurbine.xml" /> -->
 	<Include type="all" source="structures/JapanRefinery.xml" />	
-	<Include type="all" source="structures/JapanSuperWeapon.xml" />		
+	<!-- <Include type="all" source="structures/JapanSuperWeapon.xml" />		 -->
 	<!-- <Include type="all" source="structures/JapanWarFactory.xml" />	 -->
 	<Include type="all" source="structures/JapanWallPiece.xml" />
-	<Include type="all" source="structures/JapanWallSegmentPiece.xml" />
+	<!-- <Include type="all" source="structures/JapanWallSegmentPiece.xml" /> -->
 	
-	<Include type="all" source="DATA:Japan/structures/JapanSuperWeaponAdvanced.xml" />	
-	<Include type="all" source="structures/JapanBaseDefense.xml" />	
-	<Include type="all" source="structures/JapanBaseDefenseAdvanced.xml" />	
+	<!-- <Include type="all" source="DATA:Japan/structures/JapanSuperWeaponAdvanced.xml" />	 -->
+	<!-- <Include type="all" source="structures/JapanBaseDefense.xml" />	 -->
+	<!-- <Include type="all" source="structures/JapanBaseDefenseAdvanced.xml" />	 -->
 	<!-- <Include type="all" source="structures/JapanTechStructure.xml" />	 -->
 
 	<!-- SubStructure Stuff -->

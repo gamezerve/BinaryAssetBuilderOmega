@@ -3,37 +3,37 @@
 	<Tags></Tags>
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
-		<Include
-			type="all"
-			source="ART:AUAntiAirShip_D.xml" />		
-		<Include
-			type="all"
-			source="ART:AUAntiAirShip_FX.w3x" />		
-		<Include
-			type="all"
-			source="ART:AUAntiAirShip_FPZ.w3x" />		
-		<Include
-			type="all"
-			source="ART:AUAntiAirShip_SKN.w3x" />			
-		<Include
-			type="all"
-			source="ART:FXGradient01.xml" />
-		<Include
-			type="all"
-			source="ART:FXTracer.xml" />
-		<Include
-			type="all"
-			source="ART:FXTracerHeroic.xml" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiAirShip_D.xml" />		 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiAirShip_FX.w3x" />		 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiAirShip_FPZ.w3x" />		 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:AUAntiAirShip_SKN.w3x" />			 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXGradient01.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXTracer.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXTracerHeroic.xml" /> -->
 		<!-- needed for temp laserEndParticleSystemFX? -->
-		<Include
-			type="all"
-			source="ART:SUAntiVehicleVehicleTech3_FX.w3x" />
-		<Include
-		  type="instance"
-		  source="ART:FXGrid_3.xml" />
-		<Include
-			type="instance"
-			source="ART:FXHarpoonBeam.xml" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:SUAntiVehicleVehicleTech3_FX.w3x" /> -->
+		<!-- <Include -->
+		  <!-- type="instance" -->
+		  <!-- source="ART:FXGrid_3.xml" /> -->
+		<!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:FXHarpoonBeam.xml" /> -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

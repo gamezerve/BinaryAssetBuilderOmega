@@ -4,43 +4,43 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:JUCommandoTech1_SKN.w3x" />	
-		<Include type="all"	source="ART:JUCommandoTech1_AIDA.w3x" />	
-		<Include type="all"	source="ART:JUCommandoTech1_BATA.w3x" />	
-		<Include type="all" source="ART:JUCommandoTech1_BIDA.w3x" />	
-		<Include type="all" source="ART:JUCommandoTech1_RUNA.w3x" />
-		<Include type="all" source="ART:JUCommandoTech1_RUNB.w3x" />
-		<Include type="all"	source="ART:JUCommandoTech1_ABTA.w3x" />
-		<Include type="all"	source="ART:JUCommandoTech1_DTBA.w3x" />
-		<Include type="all" source="ART:JUCommandoTech1_ATKI.w3x" />
-		<Include type="all"	source="ART:JUCommandoTech1_ATKV.w3x" />
-		<Include type="all"	source="ART:JUCommandoTech1_ATKS.w3x" />
-		<Include type="all"	source="ART:JUCommandoTech1_MCNA.w3x" />
-		<Include type="all"	source="ART:JUCommandoTech1_MCNB.w3x" />
-		<Include type="all"	source="ART:JUCommandoTech1_MCNC.w3x" />
-		<Include type="all"	source="ART:JUCommandoTech1_MCND.w3x" />
-		<Include type="all" source="ART:JUCommandoTech1_SPCA.w3x" />
-		<Include type="all" source="ART:JUCommandoTech1_SPCB.w3x" />
-		<Include type="all" source="ART:JUCommandoTech1_DTBW.w3x" />
-		<Include type="all" source="ART:JUCommandoTech1_DTFA.w3x" />
-		<Include type="all" source="ART:JUCommandoTech1_DTPA.w3x" />
-		<Include type="all" source="ART:JUCommandoTech1_RNDA.w3x" />
-		<Include type="all" source="ART:JUCommandoTech1_ABTB.w3x" />
-		<Include type="all" source="ART:JUCommandoTech1_BIFA.w3x" />
-		<Include type="all" source="ART:JUCommandoTech1_FLYA.w3x" />
-		<Include type="all" source="ART:JUCommandoTech1_LNDA.w3x" />
-		<Include type="all" source="ART:JUCommandoTech1_BIFB.w3x" />
-		<Include type="all" source="ART:JUCommandoTech1_BIFC.w3x" />
-		<Include type="all" source="ART:JUCommandoTech1_WLNDA.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_SKN.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_DIEA.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_WDIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiation.w3x" />
-		<Include type="all"	source="ART:NPRadiation_DIEA.w3x" />
-		<Include type="all" source="ART:FXRailGunCoreMask.xml" />
-		<Include type="all" source="ART:FXRailGunCoreDistortion.xml" />
-		<Include type="all" source="ART:FXPsyonicOverlay.xml" />
-		<Include type="all" source="ART:FXPsyonicLaser.xml" />
+		<!-- <Include type="all"	source="ART:JUCommandoTech1_SKN.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:JUCommandoTech1_AIDA.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:JUCommandoTech1_BATA.w3x" />	 -->
+		<!-- <Include type="all" source="ART:JUCommandoTech1_BIDA.w3x" />	 -->
+		<!-- <Include type="all" source="ART:JUCommandoTech1_RUNA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUCommandoTech1_RUNB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUCommandoTech1_ABTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUCommandoTech1_DTBA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUCommandoTech1_ATKI.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUCommandoTech1_ATKV.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUCommandoTech1_ATKS.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUCommandoTech1_MCNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUCommandoTech1_MCNB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUCommandoTech1_MCNC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUCommandoTech1_MCND.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUCommandoTech1_SPCA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUCommandoTech1_SPCB.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUCommandoTech1_DTBW.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUCommandoTech1_DTFA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUCommandoTech1_DTPA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUCommandoTech1_RNDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUCommandoTech1_ABTB.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUCommandoTech1_BIFA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUCommandoTech1_FLYA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUCommandoTech1_LNDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUCommandoTech1_BIFB.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUCommandoTech1_BIFC.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUCommandoTech1_WLNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_WDIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation_DIEA.w3x" /> -->
+		<!-- <Include type="all" source="ART:FXRailGunCoreMask.xml" /> -->
+		<!-- <Include type="all" source="ART:FXRailGunCoreDistortion.xml" /> -->
+		<!-- <Include type="all" source="ART:FXPsyonicOverlay.xml" /> -->
+		<!-- <Include type="all" source="ART:FXPsyonicLaser.xml" /> -->
 	
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseInfantry.xml" />
@@ -296,6 +296,10 @@
                         AnimationAbsoluteTime="2s"/>
                     <FXEvent 
                         Effect="FX_JapanCommandoSecondaryFire" 
+                        FireWhenSkipped="true"
+                        Frame="28"/>
+                    <FXEvent 
+                        Effect="FX_JapanCommandoBlast" 
                         FireWhenSkipped="true"
                         Frame="28"/>
                 </AnimationState>

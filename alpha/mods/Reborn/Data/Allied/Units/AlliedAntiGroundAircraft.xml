@@ -4,12 +4,12 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
 
-		<Include type="all"	source="ART:AUAntiGroundAircraft.w3x" />
-		<Include type="all" source="ART:AUAntiGroundAircraft_FX.w3x" />
-		<Include type="all"	source="ART:AUAntiGroundAircraft_D.xml" />		
-		<Include type="all"	source="ART:AUAntiGroundAircraft_02.xml" />				
-		<Include type="all"	source="ART:AUAntiGroundAircraft_02_D.xml" />
-    <Include type="all" source="ART:AUAntiGroundAircraft_FP.w3x" />
+		<!-- <Include type="all"	source="ART:AUAntiGroundAircraft.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUAntiGroundAircraft_FX.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiGroundAircraft_D.xml" />		 -->
+		<!-- <Include type="all"	source="ART:AUAntiGroundAircraft_02.xml" />				 -->
+		<!-- <Include type="all"	source="ART:AUAntiGroundAircraft_02_D.xml" /> -->
+    <!-- <Include type="all" source="ART:AUAntiGroundAircraft_FP.w3x" /> -->
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />
 	</Includes>

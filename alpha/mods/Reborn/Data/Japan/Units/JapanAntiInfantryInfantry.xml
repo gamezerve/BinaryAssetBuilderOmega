@@ -4,130 +4,130 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:JUAntiInfantryInfantry_ABTA.w3x" />
-		<Include type="all" source="ART:JUAntiInfantryInfantry_ABTB.w3x" />
-		<Include type="all" source="ART:JUAntiInfantryInfantry_AIDA.w3x" />
-		<Include type="all" source="ART:JUAntiInfantryInfantry_AIDB.w3x" />
-		<Include type="all"	source="ART:JUAntiInfantryInfantry_AIFA.w3x" />
-		<Include type="all" source="ART:JUAntiInfantryInfantry_AIFB.w3x" />
-		<Include type="all" source="ART:JUAntiInfantryInfantry_AIFC.w3x" />
-		<Include type="all" source="ART:JUAntiInfantryInfantry_AIFD.w3x" />
-		<Include type="all" source="ART:JUAntiInfantryInfantry_BATA.w3x" />
-		<Include type="all" source="ART:JUAntiInfantryInfantry_BATB.w3x" />
-		<Include type="all" source="ART:JUAntiInfantryInfantry_BIDA.w3x" />
-		<Include type="all" source="ART:JUAntiInfantryInfantry_BIDB.w3x" />
-		<Include type="all" source="ART:JUAntiInfantryInfantry_BIDC.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_BIFA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_BIFB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_BIFC.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_BIFD.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_CHRA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_CHRB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_CHRC.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_DTBA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_DTBB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_DTFA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_DTFB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_DTKA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_DTKB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_DTPA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_DTPB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_GTPA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_RUNA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_RUNC.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SABTA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SABTB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SAIDA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SAIDB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SAIFA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SAIFB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SAIFC.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SAIFD.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SATA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SATKA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SATKB.w3x" />
-    <Include type="all"	source="ART:JUAntiInfantryInfantry_SATKC.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SBATA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SBATB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SBIDA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SBIDB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SBIDC.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SBIFA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SBIFB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SBIFC.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SBIFD.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SDIA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SDTBA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SDTBB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SDTFA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SDTFB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SDTKA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SDTKB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SDTPA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SDTPB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SDVA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SGTPA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SIDA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SKN.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SMVA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SRUNA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SRUNB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SRUNC.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_FLYA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_LNDA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_CDTA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_CDTB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_MCNA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_MCNB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_MCNC.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_MCND.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SFLYA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SLNDA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SCDTA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SCDTB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SMCNA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SMCNB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SMCNC.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SMCND.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_AIFW.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_AIFX.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_AIFY.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_AIFZ.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_ATKB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_ATKC.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_ATKD.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_ATRA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_ATRB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_BIFW.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_BIFX.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_BIFY.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_BIFZ.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_CWRY.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_CWRZ.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_RNDA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_RNDB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SCWRY.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SCWRZ.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SRNDA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SRNDB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_ATKZ.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SWPA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SWMA.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SWMB.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_SWMC.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryInfantry_WADA.w3x" />
-    <Include type="all"	source="ART:NPSkeleton_SKN.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_DIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiation.w3x" />
-		<Include type="all"	source="ART:NPRadiation_DIEA.w3x" />
+		<!-- <Include type="all"	source="ART:JUAntiInfantryInfantry_ABTA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUAntiInfantryInfantry_ABTB.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUAntiInfantryInfantry_AIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUAntiInfantryInfantry_AIDB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiInfantryInfantry_AIFA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUAntiInfantryInfantry_AIFB.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUAntiInfantryInfantry_AIFC.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUAntiInfantryInfantry_AIFD.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUAntiInfantryInfantry_BATA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUAntiInfantryInfantry_BATB.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUAntiInfantryInfantry_BIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUAntiInfantryInfantry_BIDB.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUAntiInfantryInfantry_BIDC.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_BIFA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_BIFB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_BIFC.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_BIFD.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_CHRA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_CHRB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_CHRC.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_DTBA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_DTBB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_DTFA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_DTFB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_DTKA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_DTKB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_DTPA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_DTPB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_GTPA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_RUNA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_RUNC.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SABTA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SABTB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SAIDA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SAIDB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SAIFA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SAIFB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SAIFC.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SAIFD.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SATA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SATKA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SATKB.w3x" /> -->
+    <!-- <Include type="all"	source="ART:JUAntiInfantryInfantry_SATKC.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SBATA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SBATB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SBIDA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SBIDB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SBIDC.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SBIFA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SBIFB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SBIFC.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SBIFD.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SDIA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SDTBA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SDTBB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SDTFA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SDTFB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SDTKA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SDTKB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SDTPA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SDTPB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SDVA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SGTPA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SIDA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SKN.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SMVA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SRUNA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SRUNB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SRUNC.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_FLYA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_LNDA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_CDTA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_CDTB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_MCNA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_MCNB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_MCNC.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_MCND.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SFLYA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SLNDA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SCDTA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SCDTB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SMCNA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SMCNB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SMCNC.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SMCND.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_AIFW.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_AIFX.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_AIFY.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_AIFZ.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_ATKB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_ATKC.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_ATKD.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_ATRA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_ATRB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_BIFW.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_BIFX.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_BIFY.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_BIFZ.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_CWRY.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_CWRZ.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_RNDA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_RNDB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SCWRY.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SCWRZ.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SRNDA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SRNDB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_ATKZ.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SWPA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SWMA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SWMB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_SWMC.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryInfantry_WADA.w3x" /> -->
+    <!-- <Include type="all"	source="ART:NPSkeleton_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation_DIEA.w3x" /> -->
 
-		<Include type="all"	source="ART:JUAntiInfantryInfantry_XAIDA.w3x" />
-		<Include type="all"	source="ART:JUAntiInfantryInfantry_XATKA.w3x" />
-		<Include type="all"	source="ART:JUAntiInfantryInfantry_XDIEA.w3x" />
+		<!-- <Include type="all"	source="ART:JUAntiInfantryInfantry_XAIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiInfantryInfantry_XATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiInfantryInfantry_XDIEA.w3x" /> -->
 
 
 		<!-- FX Includes -->
-    <Include type="all"	source="ART:FXJapanTracer.xml" />
+    <!-- <Include type="all"	source="ART:FXJapanTracer.xml" /> -->
 
     <!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseInfantry.xml" />

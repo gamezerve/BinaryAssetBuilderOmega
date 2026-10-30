@@ -5,16 +5,16 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:AUSupportAircraft.w3x" />	
-		<Include type="all"	source="ART:AUSupportAircraft_D.xml" />
-		<Include type="all"	source="ART:AUSupportAircraft_FP.w3x" />
-		<Include type="all"	source="ART:FXCryoBeamLaser.xml" />
-		<Include type="all"	source="ART:FXShrinkRay.xml" />
-		<Include type="all"	source="ART:FXInterlacedMask.xml" />
+		<!-- <Include type="all"	source="ART:AUSupportAircraft.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:AUSupportAircraft_D.xml" /> -->
+		<!-- <Include type="all"	source="ART:AUSupportAircraft_FP.w3x" /> -->
+		<!-- <Include type="all"	source="ART:FXCryoBeamLaser.xml" /> -->
+		<!-- <Include type="all"	source="ART:FXShrinkRay.xml" /> -->
+		<!-- <Include type="all"	source="ART:FXInterlacedMask.xml" /> -->
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />
-		<Include type="all"	source="ART:AUSupportAircraft_02.xml" />
-		<Include type="all"	source="ART:AUSupportAircraft_02_D.xml" />
+		<!-- <Include type="all"	source="ART:AUSupportAircraft_02.xml" /> -->
+		<!-- <Include type="all"	source="ART:AUSupportAircraft_02_D.xml" /> -->
 	</Includes>
 	<GameObject
 		id="AlliedSupportAircraft"

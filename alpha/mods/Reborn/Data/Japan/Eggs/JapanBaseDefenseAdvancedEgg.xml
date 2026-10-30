@@ -4,12 +4,12 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:Allied_Place_Holder.xml" />			
-		<Include
-			type="all"
-			source="ART:JUEgg.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Allied_Place_Holder.xml" />			 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUEgg.w3x" /> -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

@@ -4,16 +4,16 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:AUFighterAircraft_SKN.w3x" />
-		<Include type="all"	source="ART:AUFighterAircraft_FX.w3x" />
-    <Include type="all"	source="ART:AUFighterAircraft_FP.w3x" />
-		<Include type="all"	source="ART:AUFighterAircraft_HVRA.w3x" />
-		<Include type="all" source="ART:AUFighterAircraft_MOVA.w3x" />
-		<Include type="all" source="ART:AUFighterAircraft_D.xml" />			
+		<!-- <Include type="all"	source="ART:AUFighterAircraft_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUFighterAircraft_FX.w3x" /> -->
+    <!-- <Include type="all"	source="ART:AUFighterAircraft_FP.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUFighterAircraft_HVRA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUFighterAircraft_MOVA.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUFighterAircraft_D.xml" />			 -->
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />
-		<Include type="all"	source="ART:AUFighterAircraft_02.xml" />				
-		<Include type="all"	source="ART:AUFighterAircraft_02_D.xml" />					
+		<!-- <Include type="all"	source="ART:AUFighterAircraft_02.xml" />				 -->
+		<!-- <Include type="all"	source="ART:AUFighterAircraft_02_D.xml" />					 -->
 	</Includes>
 	<GameObject
 		id="AlliedFighterAircraft"

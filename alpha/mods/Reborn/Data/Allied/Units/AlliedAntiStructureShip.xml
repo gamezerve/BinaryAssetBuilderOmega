@@ -5,12 +5,12 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
 
-		<Include type="all" source="ART:AUAntiStructureShip_SKN.w3x" />
-		<Include type="all" source="ART:AUAntiStructureShip_DOOR.w3x" />
-		<Include type="all" source="ART:AUAntiStructureShip_OPN.w3x" />
-		<Include type="all"	source="ART:AUAntiStructureShip_FX.w3x" />
-		<Include type="all"	source="ART:AUAntiStructureShip_FP.w3x" />
-		<Include type="all"	source="ART:AUAntiStructureShip_D.xml" />
+		<!-- <Include type="all" source="ART:AUAntiStructureShip_SKN.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUAntiStructureShip_DOOR.w3x" /> -->
+		<!-- <Include type="all" source="ART:AUAntiStructureShip_OPN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiStructureShip_FX.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiStructureShip_FP.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUAntiStructureShip_D.xml" /> -->
 
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />

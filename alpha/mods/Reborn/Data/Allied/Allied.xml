@@ -60,7 +60,7 @@
 		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFBGate.xml" />
 		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedFBWatchtower.xml" />
 		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedCoastalGun.xml" />
-		<!-- <Include type="all" source="DATA:Allied/Units/AlliedSalvageShipReborn.xml" /> -->
+		<Include type="all" source="DATA:Allied/Units/AlliedSalvageShipReborn.xml" />
 		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedRadioTower.xml" />
 		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedRushmoreHeadControl.xml" />
 		<Include type="all" source="DATA:Allied/Structures_Campaign/AlliedRushmoreFiringBase.xml" />

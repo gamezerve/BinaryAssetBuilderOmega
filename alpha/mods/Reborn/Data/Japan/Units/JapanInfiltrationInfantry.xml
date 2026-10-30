@@ -4,56 +4,56 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:JUInfiltrationInfantry_SKN.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_AIDA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_ABTA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_AIFA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_AIFB.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_ATKA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_BIDA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_BIFB.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_DTBA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_GTPA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_RUNA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_SATA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_SDIA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_SDVA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_SGTA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_SIDA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_SMVA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_ATRA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_RNDA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_CWRZ.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_TRDA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_AIFY.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_BIFW.w3x" />	
-		<Include type="all"	source="ART:JUInfiltrationInfantry_BIFZ.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_BATB.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_SWMA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_SWMB.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_SWMC.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_WDIEA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_WATKA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_MCNA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_MCNB.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_MCNC.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_MCND.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_DTFA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_FLYA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_DTPA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_LNDA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_CDTA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_CDTB.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_SATKA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_WLNDA.w3x" />
-		<Include type="all"	source="ART:JUInfiltrationInfantry_WCWRA.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_SKN.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_DIEA.w3x" />
-		<Include type="all"	source="ART:NPSkeleton_WDIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiation.w3x" />
-		<Include type="all"	source="ART:NPRadiation_DIEA.w3x" />
-		<Include type="all"	source="ART:NPRadiation_WDIEA.w3x" />
-    <Include type="all"	source="ART:FXNinjaStar.xml" />
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_AIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_ABTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_AIFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_AIFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_ATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_BIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_BIFB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_DTBA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_GTPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_RUNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_SATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_SDIA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_SDVA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_SGTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_SIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_SMVA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_ATRA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_RNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_CWRZ.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_TRDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_AIFY.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_BIFW.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_BIFZ.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_BATB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_SWMA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_SWMB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_SWMC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_WDIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_WATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_MCNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_MCNB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_MCNC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_MCND.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_DTFA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_FLYA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_DTPA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_LNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_CDTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_CDTB.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_SATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_WLNDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUInfiltrationInfantry_WCWRA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPSkeleton_WDIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:NPRadiation_WDIEA.w3x" /> -->
+    <!-- <Include type="all"	source="ART:FXNinjaStar.xml" /> -->
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseInfantry.xml" />
 	</Includes>

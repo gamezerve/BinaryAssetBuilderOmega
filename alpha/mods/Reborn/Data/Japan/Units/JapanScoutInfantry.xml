@@ -3,15 +3,15 @@
 	<Tags></Tags>
 	<!-- aka Burst Drone -->
   <Includes>
-	  <Include type="all"	source="ART:JUScoutInfantry_SKN.w3x" />
-    <Include type="all"	source="ART:JUScoutInfantry_FP.w3x" />
-	  <Include type="all"	source="ART:JUScoutInfantry_AIDA.w3x" />
-	  <Include type="all"	source="ART:JUScoutInfantry_BIDA.w3x" />
-	  <Include type="all"	source="ART:JUScoutInfantry_ABTA.w3x" />
-	  <Include type="all"	source="ART:JUScoutInfantry_BATA.w3x" />
-	  <Include type="all"	source="ART:JUScoutInfantry_MOVA.w3x" />
-	  <Include type="all"	source="ART:JUScoutInfantry_MOVB.w3x" />
-	  <Include type="all"	source="ART:JUScoutInfantry_ATCH.w3x" />
+	  <!-- <Include type="all"	source="ART:JUScoutInfantry_SKN.w3x" /> -->
+    <!-- <Include type="all"	source="ART:JUScoutInfantry_FP.w3x" /> -->
+	  <!-- <Include type="all"	source="ART:JUScoutInfantry_AIDA.w3x" /> -->
+	  <!-- <Include type="all"	source="ART:JUScoutInfantry_BIDA.w3x" /> -->
+	  <!-- <Include type="all"	source="ART:JUScoutInfantry_ABTA.w3x" /> -->
+	  <!-- <Include type="all"	source="ART:JUScoutInfantry_BATA.w3x" /> -->
+	  <!-- <Include type="all"	source="ART:JUScoutInfantry_MOVA.w3x" /> -->
+	  <!-- <Include type="all"	source="ART:JUScoutInfantry_MOVB.w3x" /> -->
+	  <!-- <Include type="all"	source="ART:JUScoutInfantry_ATCH.w3x" /> -->
 	  <Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
 	  <!-- Base Object -->
 	  <Include type="instance" source="DATA:BaseObjects/BaseInfantry.xml" />

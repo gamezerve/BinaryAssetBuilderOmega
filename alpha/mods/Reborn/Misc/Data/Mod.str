@@ -1100,6 +1100,110 @@ End
 		"> Loses 50 Power \nConverts to a Mobile Construction Vehicle, which may then redeploy to new locations."
 	End
 
+// Allied Dolphin
+
+	TYPE:ALLIEDANTINAVALSCOUT
+		"Anti-Ship Scout \n> Health = 300 \n> Shroud Clearing Range = 500 \n> Movement Speed = 150 \n> Weapon DPS = 50 \n> Weapon Range = 100"
+	End
+
+	DESC:JUMPSPECIALPOWER
+		"> Ability Cooldown = 20 sec \n> Ability Range = 300 \nLeaps up and out of the water, possibly eluding surface attacks in the process."
+	End
+
+// Allied Hydrofoil
+
+	TYPE:ALLIEDANTIAIRSHIP
+		"Anti-Air Support Ship  \n> Health = 400 \n> Shroud Clearing Range = 500 \n> Movement Speed = 125 \n> Weapon DPS = 150 \n> Weapon Range = 300"
+	End
+
+	DESC:WEAPONSCRAMBLESPECIALPOWER
+		"> Ability Range = 300 \nSwitches to using the Scramblegun weapon jammer, which stops targets from firing."
+	End
+
+	DESC:WEAPONSCRAMBLESPECIALPOWEROFF
+		"> Weapon DPS = 150 \n> Weapon Range = 300 \nSwaps out the Weapon Jammer for the Icarus 20 mm CIWS anti-aircraft cannon."
+	End
+
+// Allied Salvage Ship
+
+	TYPE:AlliedSalvageShipReborn
+		"Data Recon Vessel \n> Health = 600 \n> Shroud Clearing Range = 300 \n> Movement Speed = 50"
+	End
+
+	DESC:AlliedSalvageShipReborn
+		"This harmless old barge is used to extract data from shipwrecks, and equipped with a single repair drone for servicing nearby units."
+	End
+
+	TYPE:JapanRadarShipReborn
+		"Recon Unit \n> Health = 300 \n> Shroud Clearing Range (Default/Fortified Fleet) = 1250/1562.5 \n> Movement Speed (Default/Fortified Fleet) = 50/62.5"
+	End
+
+// Allied Assault Destroyer
+
+	TYPE:ALLIEDANTINAVYSHIPTECH1
+		"Advanced Anti-Armor  \n> Health = 1200 \n> Shroud Clearing Range = 500 \n> Movement Speed (Land/Sea) = 50/75 \n> Weapon DPS = 600 \n> Weapon Range = 150 \n> Black Hole Armor Damage Recieved = 65% \n> Black Hole Radius = 200"
+	End
+
+	DESC:ACTIVATEMAGNETICARMOR
+		"> Ability Range = 200 \n> Black Hole Armor Damage Recieved = 65% \nSupercharges defensive strength while drawing incoming fire. Cannot attack in the meantime."
+	End
+
+	DESC:ACTIVATEMAGNETICARMOROFF
+		"> Weapon DPS = 600 \n> Weapon Range = 150 \nStops automatically absorbing all incoming fire in order to keep using the main gun."
+	End
+
+// Allied Aircraft Carrier
+
+	TYPE:ALLIEDANTISTRUCTURESHIP
+		"Heavy Bombardment Ship  \n> Health = 1500 \n> Shroud Clearing Range = 500 \n> Movement Speed = 60 \n> Weapon DPS = 55.5 \n> Weapon Range = 1000 \n> EMP Missile Radius (Default/High Technology) = 150/200 \n> EMP Missile Effect Duration (Default/High Technology) = 10/13\n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+	DESC:EMPCRUISEMISSLESPECIALPOWER
+		"> Ability Cooldown = 1 min \n> Ability Range = 1000 \n> Ability Radius (Default/High Technology) = 150/200 \n> EMP Missile Effect Duration (Default/High Technology) = 10/13 \nLaunches a special warhead that temporarily disables any electrical systems in the vicinity."
+	End
+
+// Allied Vindicator
+
+	TYPE:ALLIEDANTIGROUNDAIRCRAFT
+		"Anti-Surface Bomber \n> Health (Default/Advanced Aeronautics) = 350/437.5 \n> Shroud Clearing Range (Default/Advanced Aeronautics) = 500/625 \n> Movement Speed = 180 \n> Weapon Damage = 120/bomb \n> Total Weapon Damage (Default/Advanced Aeronautics) = 240/360 \n> Clip Size (Default/Advanced Aeronautics) = 2/3 \n> Reload Time (Default/Advanced Aeronautics) = 10/7 sec \n> Weapon Range = 100 \n> Damage Scalar = 28% vs Miners / 50% vs Commandos and Nanocores / 75% vs Anti-Air Vehicles"
+	End
+
+	DESC:ALLIEDANTIGROUNDAIRCRAFTRETURNTOAIRFIELD
+		"> Return Speed = 225 \nCauses the Vindicator to hightail it back to an Airbase to repair and rearm."
+	End
+
+// Allied Apollo Fighter
+
+	TYPE:ALLIEDFIGHTERAIRCRAFT
+		"Anti-Air Jet \n> Health (Default/Advanced Aeronautics) = 300/375 \n> Shroud Clearing Range (Default/Advanced Aeronautics) = 500/625 \n> Movement Speed = 225 \n> Weapon DPS = 100 \n> Total Weapon Damage (Default/Advanced Aeronautics) = 1800/2700 \n> Clip Size (Default/Advanced Aeronautics) = 90/135 \n> Reload Time (Default/Advanced Aeronautics) = 10/5 sec \n> Weapon Range = 200 \n> Damage Scalar = 28% vs Anti-Air Jets"
+	End
+
+	DESC:ALLIEDFIGHTERAIRCRAFTRETURNTOAIRFIELD
+		"> Return Speed = 281 \nCauses the Apollo Fighter to hightail it back to an Airbase to repair and rearm."
+	End
+
+// Allied Cryocopter
+
+	TYPE:ALLIEDSUPPORTAIRCRAFT
+		"Special Weapons Support \n> Health (Default/Advanced Aeronautics) = 750/937.5 \n> Shroud Clearing Range (Default/Advanced Aeronautics) = 500/625 \n> Movement Speed = 150 \n> Weapon Range = 150"
+	End
+
+	DESCRIPTION:SPECIALPOWERSHRINKRAY
+		"> Ability Cooldown = 10 sec \n> Shrink Duration (Default/High Technology) = 20/24 \n> Shrink Range = 300 \nZaps ground units down to an embarrassing and easily crushable yet speedy little size."
+	End
+
+// Allied Century Bomber
+
+	TYPE:ALLIEDBOMBERAIRCRAFT
+		"Heavy Bomber / Troop Carrier \n> Health (Default/Advanced Aeronautics) = 1000/1250 \n> Shroud Clearing Range (Default/Advanced Aeronautics) = 500/625 \n> Movement Speed = 150 \n> Weapon Damage = 250/bomb \n> Total Weapon Damage (Default/Advanced Aeronautics) = 1500/2250 \n> Clip Size (Default/Advanced Aeronautics) = 6/9 \n> Reload Time (Default/Advanced Aeronautics) = 15/10 sec \n> Garrison Capacity = 5 \n> Friendly-Fire Damage Scalar = 50%"
+	End
+	
+// Allied Harbinger Gunship
+	
+	Type:AlliedGunshipAircraft
+		"Advanced Support Bomber \n> Health (Default/Advanced Aeronautics) = 5000/6250 \n> Shroud Clearing Range (Default/Advanced Aeronautics) = 500/625 \n> Movement Speed = 120 \n> Weapon DPS (Cannon/Gun) = 46/80 \n> Weapon Range = 400 \n> Auto-Heal = 4/sec"
+	End
+
 // Allied Paradrop
 	
 	TYPE:CampaignPlayerPowerParadropLvl1Reborn
@@ -1594,6 +1698,78 @@ End
 		"Objective Structure \n> Health = 4000 \n> Shroud Clearing Range = 500"
 	End
 
+// Imperial Burst Drone
+
+	TYPE:JAPANSCOUTINFANTRY
+		"Flying Scout \n> Health  = 100 \n> Shroud Clearing Range = 750 \n> Movement Speed = 125 \n> Death Weapon Damage (Default/Honorable Discharge) = 200/250 \n> Death Weapon Radius (Default/Honorable Discharge) = 20/25 \n> Attached Speed Modifier = %50 \n> Damage Scalar vs Miners (Default/Honorable Discharge) = 75% \n> Damage Scalar vs Nanocores = 40%"
+	End
+
+// Imperial Warrior
+
+	TYPE:JAPANANTIINFANTRYINFANTRY
+		"Anti-Infantry / Anti-Garrison \n> Health = 160 \n> Shroud Clearing Range = 500 \n> Movement Speed (Normal/Charge) = 50/75 \n> MX Type-2 Kinetic Carbine Weapon DPS = 14.5 \n> MX Type-2 Kinetic Carbine Weapon Range = 150 \n> Imperial Beam Katana Weapon DPS = 272.5 \n> Imperial Beam Katana Weapon Range = 20"
+	End
+
+	DESC:ABILITYANTIINFANTRYINFANTRYBONZAI
+		"> Charge Duration = 10 sec \n> Fatigue Duration = 5 sec \n> Ability Cooldown = 1 min \nPowers on a beam katana that provides a brief burst of speed and can slice through infantry."
+	End
+
+// Imperial Tankbuster
+
+	TYPE:JAPANANTIVEHICLEINFANTRY
+		"Anti-Armor \n> Health = 100 \n> Shroud Clearing Range = 500 \n> Movement Speed = 50 \n> Weapon DPS = 47 \n> Weapon Range = 175"
+	End
+
+// Imperial Engineer
+
+	TYPE:JAPANENGINEER
+		"Field Support \n> Health = 50 \n> Shroud Clearing Range = 100 \n> Movement Speed = 40"
+	End
+
+	DESC:ABILITYJAPANENGINEERSPRINT
+		"> Sprint Duration = 10 sec \n> Ability Cooldown = 30 sec \nBegins running with shameful abandon for a while. Causes fatigue, ridicule."
+	End
+
+// Imperial Archer Maiden
+	
+	Type:JapanArcherInfantry
+		"Anti-Air / Anti-Surface \n> Health = 200 \n> Shroud Clearing Range = 500 \n> Movement Speed = 60 \n> Weapon DPS = 16 \n> Weapon Range = 200"
+	End
+
+// Imperial Shinobi
+
+	TYPE:JAPANINFILTRATIONINFANTRY
+		"Anti-Infantry Infiltrator \n> Health = 200 \n> Shroud Clearing Range = 500 \n> Movement Speed = 75 \n> Sword Weapon DPS = 500 \n> Sword Weapon Range = 25\n> Shiruken Weapon DPS = 227.5 \n> Shiruken Weapon Range = 150"
+	End
+
+	DESC:SMOKEBOMBSPECIALPOWER
+		"> Ability Cooldown = 2 min \nVanishes in a puff of smoke, causing enemy assailants to lose their target in bewilderment."
+	End
+
+// Imperial Rocket Angel
+
+	TYPE:JAPANANTIVEHICLEINFANTRYTECH3
+		"Flying Anti-Armor / Anti-Air \n> Health  = 400 \n> Shroud Clearing Range = 500 \n> Movement Speed = 100 \n> Weapon DPS (Default/Advanced Rocket Pods) = 94.5/121.5 \n> Weapon Range (Rocket/Whip) = 150/250 \n"
+	End
+
+	DESC:TOGGLELOCKDOWNGUNSPECIALPOWER
+		"> Weapon Range = 250 \nSwitches from photon rockets to the Paralysis Whip, which locks down surface units."
+	End
+
+	DESC:TOGGLELOCKDOWNGUNSPECIALPOWEROFF
+		"> Weapon DPS (Default/Advanced Rocket Pods) = 94.5/121.5 \n> Weapon Range = 150 \nSwitches to the photon rocket array, which overwhelms targets with countless warheads."
+	End
+
+// Imperial Yuriko Omega
+
+	TYPE:JAPANCOMMANDOTECH1
+		"Psionic Commando \n> Build Limit = 1 \n> Health = 350 \n> Shroud Clearing Range = 500 \n> Movement Speed = 70 \n> Weapon DPS (Ground) = 4% \n> Weapon DPS (Air) = Instant Kill \n> Weapon Range = 150\n"
+	End
+
+	DESC:PSYONICBLASTSPECIALPOWER
+		"> Ability Damage = 500 \n> Ability Radius = 250 \n> Ability Cooldown = 30 sec \nBlasts incalculable violent psionic energy in all directions, crushing minds and bodies."
+	End
+
 // Imperial Greater King Oni
 
 	Name:JapanEmperorKingOni
@@ -1639,6 +1815,10 @@ End
 	End
 
 	UpgradeDesc:AlliedPowerPlantTurbine
+		""
+	End
+
+	Collapsing_Object
 		""
 	End
 
