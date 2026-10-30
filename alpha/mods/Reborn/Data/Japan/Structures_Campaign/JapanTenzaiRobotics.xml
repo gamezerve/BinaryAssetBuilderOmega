@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+
+		<!-- <Include type="all"	source="ART:TH_JapanRoboticsLab.W3X" /> -->
+		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
+		<Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Props/TH_JapanRoboticsLab_Collapse.xml" />
+
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanRoboticsLab.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanRoboticsLab.NEWSKIN_FILL01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanRoboticsLab.OBBOX01.w3x" /> -->
+
+
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanRoboticsLab_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanRoboticsLab_COL.OBBOX01.w3x" /> -->
+
+
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanRoboticsLab_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanRoboticsLab_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanRoboticsLab_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanRoboticsLab_HRC.w3x" /> -->
+
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanRoboticsLab.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanRoboticsLab_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanRoboticsLab_SPM.xml" /> -->
+
+									 
+		<!-- Base Object -->
+		<Include
+			type="instance"
+			source="DATA:BaseObjects/BaseStructure.xml" />
+	</Includes>
+	<GameObject
+		id="JapanTenzaiRobotics"
+		inheritFrom="BaseStructure"
+		SelectPortrait="Portrait_JapanRoboticsLab"
+		ButtonImage="Button_JapanRoboticsLab"
+		Side="Japan"
+		EditorSorting="STRUCTURE"		
+		BuildTime="20"
+		HealthBoxHeightOffset="30"
+		EnergyProduction="-75"
+		CommandSet="JapanWarFactoryCommandSet"
+		KindOf="-CAN_BUILD_ON_WATER -CAN_BUILD_ON_DEEP_WATER +FS_FACTORY +AUTO_RALLYPOINT +FS_WAR_FACTORY +ACTIVATE_AFTER_UNPACK"
+		RadarPriority="STRUCTURE"
+		PlacementViewAngle="-45d"
+		ThreatLevel="1.0"
+		ProductionQueueType="MAIN_STRUCTURE"
+		BuildPlacementTypeFlag="MAIN_STRUCTURE"
+		EditorName="JapanTenzaiRobotics"
+		Description="Desc:JapanTenzaiRobotics"
+		TypeDescription="Type:JapanTenzaiRobotics">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:JapanTenzaiRobotics</DisplayName>
+		<GameDependency>
+			<RequiredObject>JapanWarFactory</RequiredObject>
+		</GameDependency>
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="4000"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="A07_JapanRobotLabArmor"
+			DamageFX="GenericStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="FRONT">
+      <ConstructionBaseSelectionCriteria
+        ExcludedBaseTypes="NO_BUILD_RADIUS CAPTURED"/>
+    </SkirmishAIInformation>
+	
+    <Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="true"
+				ExtraPublicBone="BONE_CONTACT_POINT_01 BONE_CONTACT_POINT_02 BONE_CONTACT_POINT_03 BONE_CONTACT_POINT_04 BONE_CONTACT_POINT_05 BONE_CONTACT_POINT_06 BONE_CONTACT_POINT_07 BONE_CONTACT_POINT_08 BONE_CONTACT_POINT_09 BONE_CONTACT_POINT_10 BONE_CONTACT_POINT_11 BONE_CONTACT_POINT_12 BONE_CONTACT_POINT_13 BONE_CONTACT_POINT_14 BONE_CONTACT_POINT_15 BONE_CONTACT_POINT_16 BONE_CONTACT_POINT_17 BONE_CONTACT_POINT_18 BONE_CONTACT_POINT_19 BONE_CONTACT_POINT_20">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="TH_JapanRoboticsLab" />
+				</ModelConditionState>
+			</ScriptedModelDraw>
+		</Draws>
+		
+		<Behaviors>
+			<Physics
+				id="ModuleTag_Physics"/>
+
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_BuildingDebrisExplosion"
+					CreationObject="YU_HotelDebris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_FXList">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Medium" />
+			</FXListBehavior>
+
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="TH_JapanRoboticsLab_Die_OCL">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</CreateObjectDie>
+			<DestroyDie
+				id="ModuleTag_Die">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</DestroyDie>		
+
+
+					
+			<ProductionUpdate
+				id="ModuleTag_ProductionUpdate"
+				GiveNoXP="true"
+				Type="VEHICLE"
+				NumDoorAnimations="1"
+				DoorOpeningTime="0.66s"
+				DoorWaitOpenTime="1.00s"
+				DoorCloseTime="0.66s">
+				<GiveUpgradeToProduced>
+					<UpgradeTranslate
+						RequiredUpgrade="Upgrade_ProductionVeterancy_VETERAN"
+						ProvidedUpgrade="Upgrade_CreationVeterancy_VETERAN" />
+					<UpgradeTranslate
+						RequiredUpgrade="Upgrade_ProductionVeterancy_ELITE"
+						ProvidedUpgrade="Upgrade_CreationVeterancy_ELITE" />
+					<UpgradeTranslate
+						RequiredUpgrade="Upgrade_ProductionVeterancy_HEROIC"
+						ProvidedUpgrade="Upgrade_CreationVeterancy_HEROIC" />
+				</GiveUpgradeToProduced>
+			</ProductionUpdate>
+      <QueueProductionExitUpdate
+				id="ModuleTag_ExitUpdate"
+				PlacementViewAngle="270d"
+				ExitDelaySeconds="0.07s">
+        <UnitCreatePoint
+					x="0.0"
+					y="-20.0" />
+        <NaturalRallyPoint
+					x="0.0"
+					y="-50.0" />
+      </QueueProductionExitUpdate>
+
+      <SubObjectsUpgrade
+				id="ModuleTag_SubObjectsUpgrade">
+        <TriggeredBy>Upgrade_JapanWarFactoryTech2</TriggeredBy>
+        <Nugget
+					Upgrade="Upgrade_JapanWarFactoryTech2"/>
+      </SubObjectsUpgrade>
+      <SubObjectsUpgrade
+				id="ModuleTag_SubObjectsUpgrade2">
+        <TriggeredBy>Upgrade_JapanWarFactoryTech3</TriggeredBy>
+        <Nugget
+					Upgrade="Upgrade_JapanWarFactoryTech3"/>
+      </SubObjectsUpgrade>
+			<LUAEventList
+				id="ModuleTag_LUAEventList"
+				EventListName="GenericJapanBuildingFunctions" />	
+							
+		
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpackUpdate"
+				UnpackTime="20s" />
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+			<xi:include
+				href="DATA:Includes/GenericEngineerContain.xml" />
+			<xi:include
+				href="DATA:Includes/GenericJapanBuildingDestruction.xml" />
+			<xi:include
+				href="DATA:Includes/GenericJapanBuildingSuicide.xml" />
+			<xi:include
+				href="DATA:Includes/InfiltratorContainVehicle.xml" />
+			<StancesBehavior
+				id="ModuleTag_Stance"
+				StanceTemplate="Generic" />
+			<CommandSetUpgrade
+				id="ModuleTag_CommandSetUpgrade"
+				CommandSet="JapanWarFactoryCommandSetTech2">
+				<TriggeredBy>Upgrade_JapanWarFactoryTech2</TriggeredBy>
+			</CommandSetUpgrade>
+
+			<!-- Attribute Modifiers based on the Tech Level of the building -->
+			<AttributeModifierUpgrade
+				id="ModuleTag_JapanWarFactoryTech2_AttributeModifier"
+				AttributeModifier="AttributeModifer_JapanTech2_JapanWarFactory">
+				<TriggeredBy>Upgrade_JapanWarFactoryTech2</TriggeredBy>
+			</AttributeModifierUpgrade>
+			<AttributeModifierUpgrade
+				id="ModuleTag_JapanWarFactoryTech3_AttributeModifier"
+				AttributeModifier="AttributeModifer_JapanTech3_JapanWarFactory">
+				<TriggeredBy>Upgrade_JapanWarFactoryTech3</TriggeredBy>
+			</AttributeModifierUpgrade>
+			
+		</Behaviors>
+		<AI>
+			<AIUpdate
+				id="ModuleTag_AIForLua"
+				StateMachine="StructureAIStateMachine" />
+		</AI>
+		<Body>
+			<ActiveBody
+				id="ModuleTag_StructureBody"
+				MaxHealth="6000" />
+		</Body>
+		<Geometry
+			IsSmall="false">
+<Shape 
+     Type= "BOX"
+     MajorRadius = "56.5283"
+     MinorRadius = "82.5849"
+     Height = "76.6028"
+     ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "-1.9486"
+        y = "-0.00150299"
+        z = "0.0" />
+</Shape>
+		</Geometry>
+		<ClientBehaviors>
+			<ModelConditionAudioLoopClientBehavior xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_StructureConstructionAudio">
+				<ModelConditionSound
+					Sound="JAP_Nanocore_DeployStructureLand"
+					RequiredFlags="STRUCTURE_UNPACKING"
+					ExcludedFlags="OVER_WATER"/>
+				<ModelConditionSound
+					Sound="JAP_Nanocore_DeployStructureWaterMS"
+					RequiredFlags="STRUCTURE_UNPACKING OVER_WATER"/>
+			</ModelConditionAudioLoopClientBehavior>
+		</ClientBehaviors>
+		<AudioArrayVoice>
+			<AudioEntry Sound="JAP_MechaBay_Select" AudioType="voiceSelect" />
+		</AudioArrayVoice>
+		<AudioArraySound>
+			<AudioEntry Sound="HumanFaction_MediumBuilding_LightDamageMS" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="HumanFaction_MediumBuilding_HeavyDamageMS" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound>
+		<VisionInfo
+			VisionRange="150"
+			ShroudClearingRange="500" />
+		<ProjectedBuildabilityInfo
+			Radius="120"
+			BuildPlacementTypes="OTHER_STRUCTURE" />
+	</GameObject>
+	
+	<ObjectCreationList
+		id="TH_JapanRoboticsLab_Die_OCL">
+		<CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="1"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+			<CreateObject>TH_JapanRoboticsLab_Collapse</CreateObject>
+		</CreateObject>
+	</ObjectCreationList>
+
+</AssetDeclaration>

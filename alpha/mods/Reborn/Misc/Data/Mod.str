@@ -976,6 +976,164 @@
 		"Economic Upgrade (%25 More Income)"
 	End
 	
+// Imperial Instant Generator
+
+	TYPE:JAPANPOWERPLANT
+		"Power Structure \n> Power Generation = +100 \n> Health = 1250 \n> Shroud Clearing Range = 300"
+	End
+	
+// Imperial Power Core
+	
+	TYPE:JAPANPOWERPLANTEGG
+		"Portable Power Structure \n> Health = 400 \n> Shroud Clearing Range = 200 \n> Movement Speed = 65 \n> Unpack Time = 10 sec \n> Structure Power Generation = +100 \n> Structure Health = 1250 \n> Structure Shroud Clearing Range = 300"
+	End
+		
+	DESC:ABILITYUNPACKJAPANPOWERPLANTEGG
+		"> Unpack Time = 10 sec \n> Power Generation = +100 \nInitiates nano-unfurling sequence, converting to an Instant Generator in seconds."
+	End
+
+// Imperial Instant Dojo
+
+	TYPE:JAPANBARRACKS
+		"Infantry Production \n> Health per Dojo Upgrade = 1000/1250/1562 \n> Shroud Clearing Range = 300"
+	End
+
+	DESCRIPTION:UPGRADEJAPANBARRACKSTECH2
+		"Expands this facility to the next level, granting access to recruit Imperial Shinobi and increasing the health of the facility by %25."
+	End
+
+	DESCRIPTION:UPGRADEJAPANBARRACKSTECH3
+		"Completes the expansion of this facility, enabling access to Japan's elite women warriors and increasing the health of the facility by another %25."
+	End
+	
+// Imperial Dojo Core
+	
+	TYPE:JAPANBARRACKSEGG
+		"Portable Infantry Production \n> Health = 400 \n> Shroud Clearing Range = 200 \n> Movement Speed = 65 \n> Unpack Time = 8 sec \n> Structure Health per Dojo Upgrade = 1000/1250/1562.5 \n> Structure Shroud Clearing Range = 300"
+	End
+		
+	DESC:ABILITYUNPACKJAPANBARRACKSEGG
+		"> Unpack Time = 8 sec \nInitiates nano-unfurling sequence, converting to an Instant Dojo in seconds."
+	End
+
+// Imperial Refinery
+
+	TYPE:JAPANREFINERY
+		"Resource Structure \n> Health = 2000 \n> Shroud Clearing Range = 500"
+	End
+	
+// Imperial Refinery Core
+	
+	TYPE:JAPANREFINERYEGG
+		"Portable Resource Structure \n> Health = 400 \n> Shroud Clearing Range = 200 \n> Movement Speed = 65 \n> Unpack Time = 20 sec \n> Structure Health = 2000 \n> Structure Shroud Clearing Range = 500"
+	End
+		
+	DESC:ABILITYUNPACKJAPANREFINERYEGG
+		"> Unpack Time = 20 sec \nInitiates nano-unfurling sequence, converting to an Ore Refinery in seconds."
+	End
+
+// Imperial Mecha Bay
+
+	TYPE:JAPANWARFACTORY
+		"Vehicle Production \n> Health per Mecha Bay Upgrade = 2500/3125/3906 \n> Shroud Clearing Range = 500"
+	End
+
+	DESCRIPTION:UPGRADEJAPANWARFACTORYTECH2
+		"Expands this facility to the next level, unlocking new vehicles for production and increasing the health of the facility by %25."
+	End
+
+	DESCRIPTION:UPGRADEJAPANWARFACTORYTECH3
+		"Completes the expansion of this facility, unlocking the latest mechanized forces and increasing the health of the facility by another %25."
+	End
+	
+// Imperial Mecha Bay Core
+		
+	TYPE:JAPANWARFACTORYEGG
+		"Portable Vehicle Production \n> Health = 400 \n> Shroud Clearing Range = 200 \n> Movement Speed = 65 \n> Unpack Time = 16 sec \n> Structure Health per Mecha Bay Upgrade = 2500/3125/3906 \n> Structure Shroud Clearing Range = 500"
+	End
+		
+	DESC:ABILITYUNPACKJAPANWARFACTORYEGG
+		"> Unpack Time = 16 sec \nInitiates nano-unfurling sequence, converting to a Mecha Bay in seconds."
+	End
+
+// Imperial Docks
+
+	TYPE:JAPANNAVALYARD
+		"Navy Production \n> Health per Docks Upgrade = 2500/3125/3906 \n> Shroud Clearing Range = 500"
+	End
+
+	DESCRIPTION:UPGRADEJAPANNAVALYARDTECH2
+		"Expands this facility to the next level, unlocking a wider variety of units for production and increasing the health of the facility by %25."
+	End
+
+	DESCRIPTION:UPGRADEJAPANNAVALYARDTECH3
+		"Completes the expansion of this facility, allowing the mighty Shogun Battleship to be built and increasing the health of the facility by another %25."
+	End
+	
+// Imperial Docks Core
+	
+	TYPE:JAPANNAVALYARDEGG
+		"Portable Navy Production \n> Health = 400 \n> Shroud Clearing Range = 200 \n> Movement Speed = 65 \n> Unpack Time = 18 sec \n> Structure Health per Docks Upgrade = 2500/3125/3906 \n> Structure Shroud Clearing Range = 500"
+	End
+		
+	DESC:ABILITYUNPACKJAPANNAVALYARDEGG
+		"> Unpack Time = 18 sec \nInitiates nano-unfurling sequence, converting to the Imperial Docks in seconds."
+	End
+
+// Imperial Nanotech Mainframe
+
+	TYPE:JAPANTECHSTRUCTURE
+		"Technology Structure \n> Health = 2000 \n> Shroud Clearing Range = 500"
+	End
+	
+// Imperial Mainframe Core
+	
+	TYPE:JAPANTECHSTRUCTUREEGG
+		"Portable Technology Structure \n> Health = 400 \n> Shroud Clearing Range = 200 \n> Movement Speed = 65 \n> Unpack Time = 30 sec \n> Structure Health = 2000 \n> Structure Shroud Clearing Range = 500"
+	End
+		
+	DESC:ABILITYUNPACKJAPANTECHSTRUCTUREEGG
+		"> Unpack Time = 30 sec \nInitiates nano-unfurling sequence, converting to a Nanotech Mainframe in seconds."
+	End
+	
+// Imperial V.I.P. Bunker 
+
+	TYPE:JAPANCOMMANDCENTER
+		"Tactical Structure \n> Health = 4000 \n> Shroud Clearing Range = 600 \n> Buildability Radius = 600"
+	End
+
+	DESC:JAPANCOMMANDCENTER
+		"A high-ranking Imperial commander is inside this facility, personally directing the fight and authorising the construction of rare imperial structures."
+	End
+	
+// Imperial Admin
+
+	NAME:IMPERIALADMINBUILDING02
+		"Imperial Admin Extention"
+	End
+
+	TYPE:IMPERIALADMINBUILDING02
+		"Structure Extention (Left) \n> Health = 1500 \n> Shroud Clearing Range = 500"
+	End
+
+	TYPE:IMPERIALADMINBUILDING03
+		"Structure Extention (Right) \n> Health = 1500 \n> Shroud Clearing Range = 500"
+	End
+	
+	TYPE:JapanImperialAdmin01
+		"Objective Structure \n> Health = 3000 \n> Shroud Clearing Range = 500"
+	End
+	
+// Imperial Emperor's Palace
+
+	TYPE:JapanEmperorsPalace
+		"Imperial Palace \n> Build Limit = 1 \n> Health = 5000 \n> Shroud Clearing Range = 500 \n> Spawns One Greater King Oni upon Death If Build limit is Not Reached"
+	End
+
+	DESC:JapanEmperorsPalace
+		"The Emperor Yoshiro overlooks his palace grounds from within this ancient viewing tower."
+	End
+
 // Imperial Greater King Oni
 
 	Name:JapanEmperorKingOni
@@ -992,6 +1150,54 @@
 	
 	DESC:JAPANEMPERORKINGONIRUSHATTACK
 		"> Ability Cooldown = 80 sec \n> Movement Speed = 195 \n> Rush Damage (Infantry/Other) = 50/500 \n> Weapon Range = 300 \nCharges the enemy head-on, smashing into or simply crushing any foes along the way."
+	End
+
+// Imperial Fortress Power Core
+
+	TYPE:JapanFortressPowerCore
+		"Advanced Power Structure \n> Power Generation = +500 \n> Health = 5000 \n> Shroud Clearing Range = 500"
+	End
+
+// Imperial High Command
+
+	NAME:JapanToyamaHighCommand
+		"Toyama High Command"
+	End
+
+	TYPE:JapanToyamaHighCommand
+		"Tactical Structure \n> Health = 3000 \n> Shroud Clearing Range = 500 \n> Income = 20 in 2 sec \n> Build Limit = 1"
+	End
+
+	DESC:JapanToyamaHighCommand
+		"This is the hub of the Empire of the Rising Sun's entire military intelligence network."
+	End
+
+// Imperial Nagama Dojo
+
+	NAME:JapanNagamaDojo
+		"Nagama Dojo"
+	End
+
+	TYPE:JapanNagamaDojo
+		"Infantry Production \n> Health per Dojo Upgrade = 4000/5000/6250 \n> Shroud Clearing Range = 300 \n> Unpack Time = 8 sec"
+	End
+
+	DESC:JapanNagamaDojo
+		"This is the Empire of the Rising Sun's oldest, most important infantry training center."
+	End
+
+// Imperial Tenzai Robotics
+
+	NAME:JapanTenzaiRobotics
+		"Tenzai Robotics"
+	End
+
+	TYPE:JapanTenzaiRobotics
+		"Vehicle Production \n> Health per Mecha Bay Upgrade = 6000/7500/9375 \n> Shroud Clearing Range = 500 \n> Unpack Time = 20 sec"
+	End
+
+	DESC:JapanTenzaiRobotics
+		"The Empire's high-tech weapons R&D is centralized within this paramilitary firm."
 	End
 	
 // Debug
@@ -1023,3 +1229,41 @@
 	UpgradeDesc:AlliedPowerPlantTurbine
 		""
 	End
+
+// Reborn: temporary visible Paradrop loader/grant diagnostics.
+RebornDebug:ParadropRow3NoTech
+    "Reborn: Row 3 callback received; protocol tech not detected."
+End
+
+RebornDebug:ParadropRow5NoTech
+    "Reborn: Row 5 callback received; protocol tech not detected."
+End
+
+RebornDebug:ParadropGlobalLoaded
+    "Reborn: Global Scripts.lua loaded."
+End
+
+RebornDebug:ParadropCallbackReady
+    "Reborn: Paradrop Lua callback active."
+End
+
+RebornDebug:ParadropOwnerMissing
+    "Reborn: Lua callback active, but owner could not be resolved."
+End
+
+RebornDebug:ParadropTransfer2Granted
+    "Reborn: Level 2 transfer tech granted. Check cooldown."
+End
+
+RebornDebug:ParadropTransfer2Failed
+    "Reborn: Level 2 transfer tech NOT granted."
+End
+
+RebornDebug:ParadropTransfer3Granted
+    "Reborn: Level 3 transfer tech granted. Check cooldown."
+End
+
+RebornDebug:ParadropTransfer3Failed
+    "Reborn: Level 3 transfer tech NOT granted."
+End
+

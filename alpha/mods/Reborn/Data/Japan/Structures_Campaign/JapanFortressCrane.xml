@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+
+		<Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSCRANE_IDLA.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSCRANE_IDLB.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSCRANE_SKL.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSCRANE_SKN.FX_LIGHTS01.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSCRANE_SKN.NEWSKIN.w3x" />
+		<Include type="all"	source="ART:Reborn/Art/Debug/FI_PROPSCRANE_SKN.w3x" />
+						
+		<!-- Base Object -->
+		<Include
+			type="instance"
+			source="DATA:BaseObjects/BaseStructure.xml" />
+	</Includes>
+	<GameObject
+		id="JapanFortressCrane"
+		inheritFrom="BaseStructure"
+		SelectPortrait="Portrait_JapanFortressProp"
+		ButtonImage="Button_JapanFortressProp"
+		Side="Japan"
+		EditorSorting="STRUCTURE"		
+		BuildTime="0"
+		CommandSet="JapanFortressCraneCommandSet"
+		KindOf="+STRUCTURE +SELECTABLE +FS_TECHNOLOGY +ACTIVATE_AFTER_UNPACK -CAN_BUILD_ON_WATER -CAN_BUILD_ON_DEEP_WATER +CAN_CAST_REFLECTIONS"
+		RadarPriority="STRUCTURE"
+		PlacementViewAngle="135d"
+		EnergyProduction="0"
+		ProductionQueueType="OTHER_STRUCTURE"
+		BuildPlacementTypeFlag="OTHER_STRUCTURE"
+		IsTrainable="false"
+		EditorName="JapanFortressCrane"
+		Description="Desc:JapanFortressCrane"
+		TypeDescription="Type:JapanFortressCrane">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:JapanFortressCrane</DisplayName>
+
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="250"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="BaseFactionStructureArmor"
+			DamageFX="FactionStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="BACK">
+      <ConstructionBaseSelectionCriteria
+        ExcludedBaseTypes="NO_BUILD_RADIUS CAPTURED"
+        PreferredBaseTypes="MAIN_BASE"
+        SortOrder="PREFER_OLDEST" />
+    </SkirmishAIInformation>
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="true">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="FI_PropsCrane_SKN" />				
+												
+				</ModelConditionState>
+				
+				<AnimationState
+					ParseCondStateType="PARSE_DEFAULT"
+					AllowRepeatInRandomPick="true"
+					Flags="RESTART_ANIM_WHEN_COMPLETE"
+					StateName="STATE_bored">
+					<Animation
+						AnimationName="FI_PropsCrane_IDLA"
+						AnimationMode="ONCE"
+						AnimationPriority="10" />
+					<Animation
+						AnimationName="FI_PropsCrane_IDLB"
+						AnimationMode="ONCE"
+						AnimationPriority="2" />
+				</AnimationState>
+			</ScriptedModelDraw>
+		</Draws>
+		
+		<Behaviors>
+
+			<Physics
+				id="ModuleTag_Physics"/>
+
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_BuildingDebrisExplosion"
+					CreationObject="YU_HotelDebris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+				
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_FXList">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Small" />
+			</FXListBehavior>
+			
+			
+			<DestroyDie
+				id="ModuleTag_DestroyDie">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</DestroyDie>				
+	
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpackUpdate"
+				UnpackTime="5s" />
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+			<xi:include
+				href="DATA:Includes/GenericEngineerContain.xml" />
+			<xi:include
+				href="DATA:Includes/GenericJapanBuildingDestruction.xml" />
+			<xi:include
+				href="DATA:Includes/GenericJapanBuildingSuicide.xml" />
+
+									
+			
+		</Behaviors>
+		<AI>
+			<AIUpdate
+				id="ModuleTag_AIUpdate"
+				AutoAcquireEnemiesWhenIdle="NO"
+				StateMachine="StructureAIStateMachine">
+			</AIUpdate>
+		</AI>
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="200.0" />
+		</Body>
+		
+			<ClientBehaviors>
+				<AnimationSoundClientBehavior id="ModuleTag_AnimationSound">
+					<Sound Sound="NEU_FloatingIslandCrane_1" Animation="FI_PropsCrane_IDLA" Frame="363" />
+					<Sound Sound="NEU_FloatingIslandCrane_2" Animation="FI_PropsCrane_IDLA" Frame="419" />
+					<Sound Sound="NEU_FloatingIslandCrane_3" Animation="FI_PropsCrane_IDLA" Frame="17" />
+					<Sound Sound="NEU_FloatingIslandCrane_4" Animation="FI_PropsCrane_IDLA" Frame="38" />
+					<Sound Sound="NEU_FloatingIslandCrane_5" Animation="FI_PropsCrane_IDLA" Frame="87" />
+					<Sound Sound="NEU_FloatingIslandCrane_6" Animation="FI_PropsCrane_IDLA" Frame="136" />
+					<Sound Sound="NEU_FloatingIslandCrane_7" Animation="FI_PropsCrane_IDLA" Frame="265" />
+					<Sound Sound="NEU_FloatingIslandCrane_8" Animation="FI_PropsCrane_IDLA" Frame="326" />
+					<!--
+					<Sound Sound="NEU_FloatingIslandCrane_Anim2_1" Animation="FI_PropsCrane_IDLB" Frame="2" />
+					<Sound Sound="NEU_FloatingIslandCrane_Anim2_2" Animation="FI_PropsCrane_IDLB" Frame="76" />
+					<Sound Sound="NEU_FloatingIslandCrane_Anim2_3" Animation="FI_PropsCrane_IDLB" Frame="242" />
+					<Sound Sound="NEU_FloatingIslandCrane_Anim2_4" Animation="FI_PropsCrane_IDLB" Frame="369" />
+					<Sound Sound="NEU_FloatingIslandCrane_Anim2_5" Animation="FI_PropsCrane_IDLB" Frame="436" />
+					<Sound Sound="NEU_FloatingIslandCrane_Anim2_6" Animation="FI_PropsCrane_IDLB" Frame="627" />
+							 -->
+				</AnimationSoundClientBehavior>
+			</ClientBehaviors>
+
+		<Geometry
+			IsSmall="false">
+<Shape 
+    Type= "CYLINDER"
+    MajorRadius = "40.051"
+    MinorRadius = "40.051"
+    Height = "72.9688"
+    ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "0.005369"
+        y = "-10.02988"
+        z = "0.0" />
+</Shape>
+<Shape 
+    Type= "BOX"
+    MajorRadius = "45.0929"
+    MinorRadius = "45.0929"
+    Height = "32.4786"
+    ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "-75.1639"
+        y = "-11.94667"
+        z = "0.0" />
+</Shape>
+<Shape 
+    Type= "CYLINDER"
+    MajorRadius = "25.0558"
+    MinorRadius = "25.0558"
+    Height = "32.4786"
+    ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "0.619571"
+        y = "-72.3455"
+        z = "0.0" />
+</Shape>
+<Shape 
+    Type= "CYLINDER"
+    MajorRadius = "25.0558"
+    MinorRadius = "25.0558"
+    Height = "32.4786"
+    ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "0.619571"
+        y = "57.3455"
+        z = "0.0" />
+</Shape>
+		</Geometry>
+		
+
+		
+		<AudioArraySound>
+			<AudioEntry Sound="HumanFaction_MediumBuilding_LightDamageMS" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="HumanFaction_MediumBuilding_HeavyDamageMS" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound> 
+		
+		<VisionInfo
+			VisionRange="150"
+			ShroudClearingRange="150" />
+			
+	</GameObject>
+	
+</AssetDeclaration>

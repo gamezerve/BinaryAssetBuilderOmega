@@ -11,7 +11,7 @@
 
 	<Include type="all" source="DATA:Allied/Allied.xml" />
 	<Include type="all" source="DATA:Soviet/Soviet.xml" /> 
-	<!-- <Include type="all" source="DATA:Japan/Japan.xml" /> -->
+	<Include type="all" source="DATA:Japan/Japan.xml" />
 	<!-- <Include type="all" source="DATA:System/MissionHotSpotSettings.xml" /> -->
 
 	<!-- <Include type="all" source="DATA:Neutral/NeutralStatic.xml" /> -->

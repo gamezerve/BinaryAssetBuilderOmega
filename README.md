@@ -14,10 +14,17 @@ exactly **three canonical Paradrop powers**, with no `_Protocol2/_Protocol3`
 copies. Both spellbook and Control Tower command sets switch to the same level
 at Allied protocol rows **1 / 3 / 5**; unrelated spellbook commands are retained.
 The official **SHARED_SYNC** flag shares each same-template timer across the
-two objects. It does not transfer recharge between different level IDs.
-The focused **36-asset** graph passes native stream readback, and emitted flag
-bits match an original Uprising witness. Sidebar refresh, faction visibility
-and shared-timer behavior still need a fresh-match check. See
+two objects. Cross-level transfer now uses two one-shot PlayerTech markers,
+a Lua event bridge and the native Leech percentage fields, retaining the
+**300 / 330 / 360 second** reload values. The three castable powers remain;
+two hidden grant-only helpers have no UI or aircraft payload.
+The **40-asset** graph and private Misc BIG pass readback. **224 mocked Lua
+checks** cover all columns and repeated purchases; live callback/grant/transfer
+behavior still requires a fresh-match check. The owner resolver now accepts
+bare default-team names as well as full paths; physical Tower callbacks back
+up the invisible spellbook. The map-local Lua experiment was withdrawn after
+the user reported a crash. No map-specific override is part of the current
+test approach. The live cooldown reset remains unresolved. See
 [Paradrop protocol thresholds](docs/REBORN_PARADROP_PROTOCOL_THRESHOLDS.md).
 
 <!-- Reborn: every official WeaponTemplate nugget choice has an explicit EP1 writer and source/native/metadata contract. -->

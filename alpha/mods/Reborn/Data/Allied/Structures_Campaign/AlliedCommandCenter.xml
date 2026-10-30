@@ -40,9 +40,9 @@
 		<DisplayName
 			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:AlliedVIPBunker</DisplayName>
 
-<!-- 		<GameDependency>
+		<GameDependency>
 			<RequiredObject>AlliedTechStructure</RequiredObject>
-		</GameDependency>	 -->		
+		</GameDependency>			
 			
 	
 		

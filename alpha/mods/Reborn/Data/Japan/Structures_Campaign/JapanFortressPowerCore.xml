@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+	
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressPowerCore.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressPowerCore.NEWSKIN_FILL01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressPowerCore.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressPowerCore.OBBOX02.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressPowerCore.PLANE18.w3x" /> -->
+
+
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressPowerCore_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressPowerCore_COL.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressPowerCore_COL.OBBOX02.w3x" /> -->
+
+
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressPowerCore_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressPowerCore_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressPowerCore_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressPowerCore_HRC.w3x" /> -->
+
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressPowerCore.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressPowerCore_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/FI_FloatingFortressPowerCore_SPM.xml" /> -->
+		
+		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
+		<Include type="instance" source="DATA:Civilian/Floating_Island_FI/Props/FI_FloatingFortressPowerCore_Collapse.xml" />
+		<Include type="instance" source="DATA:BaseObjects/BaseStructure.xml" />
+	</Includes>
+	<GameObject
+		id="JapanFortressPowerCore"
+		inheritFrom="BaseStructure"
+		SelectPortrait="Portrait_Japan_FloatingFortressPowerCore"
+		ButtonImage="Button_Japan_FloatingFortressPowerCore"
+		Side="Japan"
+		EditorSorting="STRUCTURE"	
+		TransportSlotCount="1"
+		BuildTime="30"
+		EnergyProduction="500"
+		CommandSet="FloatingFortressPowerCoreCommandSet"
+		KindOf="+FS_POWER +FS_TECHNOLOGY" 
+		RadarPriority="STRUCTURE"
+		PlacementViewAngle="315d"
+		ProductionQueueType="MAIN_STRUCTURE"
+		BuildPlacementTypeFlag="MAIN_STRUCTURE"
+		HealthBoxHeightOffset="30"
+		EditorName="JapanFortressPowerCore"	
+		TypeDescription="TYPE:JapanFortressPowerCore"
+		Description="DESC:FloatingFortressPowerCore">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:FloatingFortressPowerCore</DisplayName>
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="3500"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="BaseFactionStructureArmor"
+			DamageFX="FactionStructureDamageFX" />
+		<GameDependency>			
+			<RequiredObject>JapanCommandCenter</RequiredObject>
+		</GameDependency>
+		<SkirmishAIInformation
+			BaseBuildingLocation="SPREAD">
+		<ConstructionBaseSelectionCriteria
+			ExcludedBaseTypes="NO_BUILD_RADIUS CAPTURED"
+			PreferredBaseTypes="MAIN_BASE"
+			SortOrder="PREFER_OLDEST" />
+		</SkirmishAIInformation>
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="true"
+				ExtraPublicBone="BONE_CONTACT_POINT_01 BONE_CONTACT_POINT_02 BONE_CONTACT_POINT_03 BONE_CONTACT_POINT_04 BONE_CONTACT_POINT_05 BONE_CONTACT_POINT_06 BONE_CONTACT_POINT_07 BONE_CONTACT_POINT_08 BONE_CONTACT_POINT_09 BONE_CONTACT_POINT_10 BONE_CONTACT_POINT_11 BONE_CONTACT_POINT_12 BONE_CONTACT_POINT_13 BONE_CONTACT_POINT_14 BONE_CONTACT_POINT_15 BONE_CONTACT_POINT_16 BONE_CONTACT_POINT_17 BONE_CONTACT_POINT_18 BONE_CONTACT_POINT_19 BONE_CONTACT_POINT_20">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="FI_FloatingFortressPowerCore" /> 
+				</ModelConditionState>
+				<ModelConditionState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="USER_1">
+					<Model
+						Name="FI_FloatingFortressPowerCore" /> 
+					<ParticleSysBone
+						BoneName="Plane18"
+						FXParticleSystemTemplate="Fortress_Power_Core_03"
+						FollowBone="true" />
+				</ModelConditionState>
+				<ModelConditionState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="USER_2">
+					<Model
+						Name="FI_FloatingFortressPowerCore" />
+					<ParticleSysBone
+						BoneName="Plane18"
+						FXParticleSystemTemplate="Fortress_Power_Core_01"
+						FollowBone="true" />
+					<ParticleSysBone
+						BoneName="Plane18"
+						FXParticleSystemTemplate="Fortress_Power_Core_02"
+						FollowBone="true" />
+				</ModelConditionState>
+			</ScriptedModelDraw>
+		</Draws>
+		<Behaviors>
+			<Physics
+				id="ModuleTag_Physics"/>
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction">
+				<DieMuxData DeathTypes="ALL" />
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_BuildingDebrisExplosion"
+					CreationObject="AlliedBarracks_Debris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_FXList">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Large" />
+				<Event
+					Index="onDeath"
+					FX="FX_SpecialDebrisExplosionShake" />
+			</FXListBehavior>
+
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="FI_FloatingFortressPowerCore_Die_OCL">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</CreateObjectDie>	
+			
+			<!-- civ buildings should have a CreateObjectDie to make a collapse version. -->
+			<DestroyDie
+				id="ModuleTag_DestroyDie">
+				<DieMuxData
+					DeathTypes="ALL"/>
+			</DestroyDie>	
+		
+		<StructureUnpackUpdate
+			id="ModuleTag_StructureUnpackUpdate"
+			UnpackTime="2.0s" />
+		<xi:include href="DATA:Includes/GenericBuildingRepair.xml" />
+		<xi:include href="DATA:Includes/GenericEngineerContain.xml" />
+		<xi:include href="DATA:Includes/GenericJapanBuildingDestruction.xml" />
+		<xi:include href="DATA:Includes/GenericJapanBuildingSuicide.xml" />
+		<xi:include	href="DATA:Includes/InfiltratorContainEnergy.xml" />
+		</Behaviors>
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="5000" />
+		</Body>
+		<Geometry
+			IsSmall="false">
+<Shape 
+     Type= "BOX"
+     MajorRadius = "78.9028"
+     MinorRadius = "80.4782"
+     Height = "113.465"
+     ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "-15.70125"
+        y = "0.0"
+        z = "0.0" />
+</Shape>
+<Shape 
+     Type= "BOX"
+     MajorRadius = "31.5611"
+     MinorRadius = "42.5086"
+     Height = "11.3465"
+     ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "92.578"
+        y = "0.0"
+        z = "0.0" />
+</Shape>
+		</Geometry>
+		<AudioArrayVoice>
+			<AudioEntry Sound="JAP_TechCenter_SelectMS" AudioType="voiceSelect" />
+		</AudioArrayVoice>
+		<AudioArraySound>
+			<AudioEntry Sound="" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound>
+		
+		<VisionInfo
+			VisionRange="150"
+			ShroudClearingRange="500" />
+		<ProjectedBuildabilityInfo
+			Radius="180"
+			RadiusY="135"
+			BuildPlacementTypes="MAIN_STRUCTURE OTHER_STRUCTURE" />
+			
+	</GameObject>
+
+	<ObjectCreationList
+		id="FI_FloatingFortressPowerCore_Die_OCL">
+		<CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="1"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+			<CreateObject>FI_FloatingFortressPowerCore_Collapse</CreateObject>
+		</CreateObject>
+	</ObjectCreationList>	
+</AssetDeclaration>

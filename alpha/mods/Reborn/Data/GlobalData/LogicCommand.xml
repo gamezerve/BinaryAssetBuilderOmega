@@ -3,6 +3,60 @@
 	
 	<LogicCommand
 		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanTenzaiRobotics">
+		<Object>JapanTenzaiRobotics</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanNagamaDojo">
+		<Object>JapanNagamaDojo</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanToyamaHighCommand">
+		<Object>JapanToyamaHighCommand</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanFortressPowerCore">
+		<Object>JapanFortressPowerCore</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanEmperorsPalace">
+		<Object>JapanEmperorsPalace</Object>
+	</LogicCommand>		
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanImperialAdmin03">
+		<Object>JapanImperialAdmin03</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanImperialAdmin02">
+		<Object>JapanImperialAdmin02</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanImperialAdmin01">
+		<Object>JapanImperialAdmin01</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructJapanCommandCenter">
+		<Object>JapanCommandCenter</Object>
+	</LogicCommand>
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
 		id="Command_ConstructAlliedRelayStation">
 		<Object>AlliedRelayStation</Object>
 	</LogicCommand>	

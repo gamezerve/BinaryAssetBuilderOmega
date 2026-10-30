@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+
+		<Include type="all"	source="ART:MJ_KenjiVilla.w3x" />
+
+		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
+		<Include type="all" source="DATA:Reborn/Data/Japan/Props/MJ_KenjiVilla_Collapse.xml" />
+		
+		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\MJ_KenjiVilla.xml" />
+		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\MJ_KenjiVilla_SPM.xml" />
+		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\MJ_KenjiVilla_NRM.xml" />
+		
+		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\MJ_KENJIVILLA_HRC.w3x" />
+		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\MJ_KENJIVILLA_CTR.w3x" />
+		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\MJ_KENJIVILLA_COL_HRC.w3x" />
+		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\MJ_KENJIVILLA_COL_CTR.w3x" />
+		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\MJ_KENJIVILLA_COL.NEWSKIN.w3x" />
+		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\MJ_KENJIVILLA.OBBOX01.w3x" />
+		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\MJ_KENJIVILLA.NEWSKIN_FILL.w3x" />
+		<Include type="all"	source="ART:Reborn\Art\Structures/Imperial\MJ_KENJIVILLA.NEWSKIN.w3x" />
+
+		
+		<!-- Base Object -->
+		<Include
+			type="instance"
+			source="DATA:BaseObjects/BaseStructure.xml" />
+	</Includes>
+	<GameObject
+		id="JapanKenjisHQ"
+		inheritFrom="BaseStructure"
+		SelectPortrait="Portrait_Japan_MJ_KenjiVilla"
+		ButtonImage="Button_Japan_MJ_KenjiVilla"
+		Side="Japan"
+		EditorSorting="STRUCTURE"		
+		BuildTime="30"
+		CommandSet="JapanKenjisHQCommandSet"
+		KindOf="+FS_TECHNOLOGY +ACTIVATE_AFTER_UNPACK -CAN_BUILD_ON_WATER -CAN_BUILD_ON_DEEP_WATER +AIRCRAFT_PATH_AROUND"
+		RadarPriority="STRUCTURE"
+		PlacementViewAngle="315d"
+		EnergyProduction="-50"
+		MaxSimultaneousOfType="1"
+		ProductionQueueType="OTHER_STRUCTURE"
+		BuildPlacementTypeFlag="OTHER_STRUCTURE"
+		IsTrainable="false"
+		EditorName="JapanKenjisHQ"
+		Description="Desc:JapanKenjisHQ"
+		TypeDescription="Type:JapanKenjisHQ">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:JapanKenjisHQ</DisplayName>
+
+		<GameDependency>			
+			<RequiredObject>JapanTechStructure</RequiredObject>
+		</GameDependency>
+			
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="8000"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="StructureArmor"
+			DamageFX="FactionStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="CENTER">
+      <ConstructionBaseSelectionCriteria
+        ExcludedBaseTypes="NO_BUILD_RADIUS CAPTURED"
+        PreferredBaseTypes="MAIN_BASE"
+        SortOrder="PREFER_OLDEST" />
+    </SkirmishAIInformation>
+	
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="false"
+				AffectedByStealth="false"
+				ExtraPublicBone="BoneGarrisonWall01 BoneGarrisonWall02 BoneGarrisonWall03 BoneGarrisonWall04 BONE_CONTACT_POINT_01 BONE_CONTACT_POINT_02 BONE_CONTACT_POINT_03 BONE_CONTACT_POINT_04 BONE_CONTACT_POINT_05 BONE_CONTACT_POINT_06 BONE_CONTACT_POINT_07 BONE_CONTACT_POINT_08 BONE_CONTACT_POINT_09 BONE_CONTACT_POINT_10 BONE_CONTACT_POINT_11 BONE_CONTACT_POINT_12 BONE_CONTACT_POINT_13 BONE_CONTACT_POINT_14 BONE_CONTACT_POINT_15 BONE_CONTACT_POINT_16 BONE_CONTACT_POINT_17 BONE_CONTACT_POINT_18	BONE_CONTACT_POINT_19 BONE_CONTACT_POINT_20 BONEGARRISON01 BONEGARRISON02 BONEGARRISON03 BONEGARRISON04 BONEGARRISON05 BONEGARRISON06 BONEGARRISON07 BONEGARRISON08 BONEGARRISON09 BONEGARRISON10 BONEGARRISON11 BONEGARRISON12">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="MJ_KenjiVilla" />
+				</ModelConditionState>
+				<ModelConditionState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="RUBBLE">
+					<Model
+						Name="" />
+				</ModelConditionState>
+
+				<AnimationState
+					ParseCondStateType="PARSE_DEFAULT">
+					<!-- no anim -->
+				</AnimationState>
+			
+			</ScriptedModelDraw>
+
+			<!--
+      <xi:include
+				href="../../../Includes/GarrisonFlagArmorDraw.xml"
+				xpointer="xmlns(n=uri:ea.com:eala:asset) xpointer(/n:CommonArmorDraws/child::*)" />
+      -->
+
+
+		</Draws>
+		
+		<Behaviors>
+
+			<Physics
+				id="ModuleTag_Physics"/>
+
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_BuildingDebrisExplosion"
+					CreationObject="AlliedBarracks_Debris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+				
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_FXList">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Event
+					Index="onDeath"
+					FX="FX_CIV_KenjiVillaDieExplosion" />
+			</FXListBehavior>
+			
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="MJ_KenjiVilla_Die_OCL">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</CreateObjectDie>
+
+	<CreateObjectDie xmlns="uri:ea.com:eala:asset"
+		id="ModuleTag_CreateOccupiedDie"
+		CreationList="OCL_JapanKenjisHQBuildingDestruction" >		
+		<DieMuxData
+			ExemptStatus="OVER_WATER UNPACKING SOLD"
+			DeathTypes="ALL"
+		DeathTypesForbidden="DETONATED SUICIDED SHATTERED"
+		/>
+		<UpgradeForbidden>Upgrade_NoSpawnUponDestruction</UpgradeForbidden>
+	</CreateObjectDie>
+		
+			<DestroyDie
+				id="ModuleTag_DestroyDie">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</DestroyDie>				
+	
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpackUpdate"
+				UnpackTime="30s" />
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+			<xi:include
+				href="DATA:Includes/GenericEngineerContain.xml" />
+			<xi:include
+				href="DATA:Includes/GenericJapanBuildingSuicide.xml" />
+									
+			
+		</Behaviors>
+		<AI>
+			<AIUpdate
+				id="ModuleTag_AIUpdate"
+				AutoAcquireEnemiesWhenIdle="NO"
+				StateMachine="StructureAIStateMachine">
+			</AIUpdate>
+		</AI>
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="7500.0" />
+		</Body>
+		<Geometry
+			IsSmall="false">
+		<Shape 
+     Type= "BOX"
+     MajorRadius = "65.286"
+     MinorRadius = "68.4647"
+     Height = "92.0037"
+     ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "-104.489"
+        y = "-0.679001"
+        z = "0.0" />
+</Shape>
+<Shape 
+     Type= "BOX"
+     MajorRadius = "97.791"
+     MinorRadius = "95.5625"
+     Height = "107.871"
+     ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "10.439"
+        y = "-11.9649"
+        z = "0.0" />
+</Shape>		
+		</Geometry>
+		
+
+		
+		<AudioArraySound>
+			<AudioEntry Sound="HumanFaction_MediumBuilding_LightDamageMS" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="HumanFaction_MediumBuilding_HeavyDamageMS" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound> 
+		
+		<VisionInfo
+			VisionRange="150"
+			ShroudClearingRange="500" />
+		<ProjectedBuildabilityInfo
+			Radius="135"
+			BuildPlacementTypes="OTHER_STRUCTURE" />	
+			
+	</GameObject>
+	
+	<ObjectCreationList
+		id="MJ_KenjiVilla_Die_OCL">
+		<CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="1"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+			<CreateObject>MJ_KenjiVilla_Collapse</CreateObject>
+		</CreateObject>
+	</ObjectCreationList>	
+	
+	<ObjectCreationList
+		id="OCL_JapanKenjisHQBuildingDestruction">
+		<CreateObject
+			Options="IGNORE_ALL_OBJECTS REQUIRES_LIVE_PLAYER DO_NOT_COPY_SHADERS"
+			Disposition="ON_GROUND_ALIGNED RELATIVE_ANGLE"
+			DispositionAngle="270d"
+			MinHealth="1"
+			MaxHealth="1">
+			<CreateObject>JapanKenjiMecha</CreateObject>
+		</CreateObject>
+	</ObjectCreationList>
+	
+</AssetDeclaration>

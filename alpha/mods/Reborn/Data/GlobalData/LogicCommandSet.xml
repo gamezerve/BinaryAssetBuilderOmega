@@ -2,6 +2,80 @@
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
 
 	<LogicCommandSet
+		id="JapanConstructionYardCommandSet">
+		<Cmd>Command_ConstructJapanWall</Cmd>
+		<Cmd>Command_ConstructJapanPowerPlantEgg</Cmd>
+		<Cmd>Command_ConstructJapanBarracksEgg</Cmd>
+		<Cmd>Command_ConstructJapanRefineryEgg</Cmd>
+		<Cmd>Command_ConstructJapanWarFactoryEgg</Cmd>
+		<Cmd>Command_ConstructJapanNavalYardEgg</Cmd>
+		<Cmd>Command_ConstructJapanTechStructureEgg</Cmd>
+		<Cmd>Command_ConstructJapanCommandCenter</Cmd>
+		
+		<Cmd>Command_ConstructJapanBaseDefenseEgg</Cmd>		
+		<Cmd>Command_ConstructJapanBaseDefenseAdvancedEgg</Cmd>		
+		<Cmd>Command_ConstructJapanSuperWeaponEgg</Cmd>
+		<!-- <Cmd>Command_ConstructJapanNanoswarmHiveEX</Cmd> -->
+		<Cmd>Command_ConstructJapanSuperWeaponAdvancedEgg</Cmd>
+<!--		
+		<Cmd>Command_UpgradeJapanRadarDish</Cmd>
+		<Cmd>Command_UpgradeJapanRepairBay</Cmd>
+-->		
+		<Cmd>Command_PackJapanMCV</Cmd>	
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="JapanCommandCenterCommandSet">
+		<Cmd>Command_ConstructJapanEmperorsPalace</Cmd>
+		<Cmd>Command_ConstructJapanFortressPowerCore</Cmd>
+		<Cmd>Command_ConstructJapanToyamaHighCommand</Cmd>
+		<Cmd>Command_ConstructJapanNagamaDojo</Cmd>
+		<Cmd>Command_ConstructJapanTenzaiRobotics</Cmd>
+		<!-- <Cmd>Command_ConstructJapanShiradaDocks</Cmd> -->
+		<!-- <Cmd>Command_ConstructJapanHarborBuilding</Cmd> -->
+		<!-- <Cmd>Command_ConstructImperialHarborBuilding</Cmd> -->
+		<!-- <Cmd>Command_ConstructJapanYurikoBarracks</Cmd> -->
+		<!-- <Cmd>Command_ConstructJapanYurikoWarFactory</Cmd> -->
+		
+		<Cmd>Command_ConstructJapanImperialAdmin01</Cmd>
+		<Cmd>Command_ConstructJapanImperialAdmin02</Cmd>
+		<Cmd>Command_ConstructJapanImperialAdmin03</Cmd>
+		<!-- <Cmd>Command_ConstructJapanWaveForceTricannon</Cmd>  -->
+		<!-- <Cmd>Command_ConstructJapanFortressCrane</Cmd> -->
+		<!-- <Cmd>Command_ConstructJapanFortressPump</Cmd> -->
+		<!-- <Cmd>Command_ConstructJapanEmperorFlagpoleStatue</Cmd> -->
+		<!-- <Cmd>Command_ConstructJapanEmperorSonFlagpoleStatue</Cmd> -->
+		<!-- <Cmd>Command_ConstructJapanImperialLongRangeRadar</Cmd> -->
+		<!-- <Cmd>Command_ConstructJapanHouseofShinzo</Cmd> -->
+		<!-- <Cmd>Command_ConstructJapanHouseofShinzo02</Cmd> -->
+		<!-- <Cmd>Command_ConstructJapanKenjisHQ</Cmd> -->
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="JapanToyamaHighCommandCommandSet">
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="FloatingFortressPowerCoreCommandSet">
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="JapanEmperorsPalaceCommandSet">
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="JapanImperialAdmin03CommandSet">
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="JapanImperialAdmin02CommandSet">
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="JapanImperialAdmin01CommandSet">
+	</LogicCommandSet>
+
+	<LogicCommandSet
 		id="AlliedConstructionYardCommandSetBase">
 		<Cmd>Command_ConstructAlliedPowerPlant</Cmd>
 		<Cmd>Command_ConstructAlliedBarracks</Cmd>

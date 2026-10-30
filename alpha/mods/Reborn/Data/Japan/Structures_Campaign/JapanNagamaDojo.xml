@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+
+		<!-- <Include type="all"	source="ART:TH_JapanOldMilitaryTrainingSchool.W3X" /> -->
+		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
+		<Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Props/TH_JapanOldMilitaryTrainingSchool_Collapse.xml" />
+
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryTrainingSchool.NEWSKIN_CIV01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryTrainingSchool.NEWSKIN_FILL01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryTrainingSchool.OBBOX01.w3x" /> -->
+
+
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryTrainingSchool_COL.NEW_SKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryTrainingSchool_COL.OBBOX01.w3x" /> -->
+
+
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryTrainingSchool_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryTrainingSchool_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryTrainingSchool_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryTrainingSchool_HRC.w3x" /> -->
+
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryTrainingSchool.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryTrainingSchool_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_JapanOldMilitaryTrainingSchool_SPM.xml" /> -->
+		
+		<!-- Base Object -->
+		<Include
+			type="instance"
+			source="DATA:BaseObjects/BaseStructure.xml" />
+	</Includes>
+	<Defines>
+		<Define name="JAPAN_BARRACKS_LOCAL_UNPACK_TIME" value="8s" />
+	</Defines>		
+	<GameObject
+		id="JapanNagamaDojo"
+		inheritFrom="BaseStructure"
+		Side="Japan"
+		EditorSorting="STRUCTURE"		
+		BuildTime="16"
+		SelectPortrait="Portrait_JapanOldMilitaryTrainingSchool"
+		ButtonImage="Button_JapanOldMilitaryTrainingSchool"
+		EnergyProduction="-50"
+		CommandSet="JapanBarracksCommandSet"
+		KindOf="-CAN_BUILD_ON_WATER -CAN_BUILD_ON_DEEP_WATER +FS_FACTORY +AUTO_RALLYPOINT +FS_BARRACKS +ACTIVATE_AFTER_UNPACK"
+		RadarPriority="STRUCTURE"
+		PlacementViewAngle="45d"
+		ProductionQueueType="MAIN_STRUCTURE"
+		BuildPlacementTypeFlag="MAIN_STRUCTURE"
+		EditorName="JapanNagamaDojo"
+		Description="Desc:JapanNagamaDojo"
+		TypeDescription="Type:JapanNagamaDojo"
+		HealthBoxHeightOffset="20">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:JapanNagamaDojo</DisplayName>
+		<GameDependency>
+			<RequiredObject>JapanBarracks</RequiredObject>
+		</GameDependency>
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="1500"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="A07_JapanRobotLabArmor"
+			DamageFX="GenericStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="FRONT">
+      <ConstructionBaseSelectionCriteria
+        ExcludedBaseTypes="NO_BUILD_RADIUS CAPTURED"/>
+    </SkirmishAIInformation>
+	
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="true"
+				ExtraPublicBone="BONE_CONTACT_POINT_01 BONE_CONTACT_POINT_02 BONE_CONTACT_POINT_03 BONE_CONTACT_POINT_04 BONE_CONTACT_POINT_05 BONE_CONTACT_POINT_06 BONE_CONTACT_POINT_07 BONE_CONTACT_POINT_08 BONE_CONTACT_POINT_09 BONE_CONTACT_POINT_10 BONE_CONTACT_POINT_11 BONE_CONTACT_POINT_12 BONE_CONTACT_POINT_13 BONE_CONTACT_POINT_14 BONE_CONTACT_POINT_15 BONE_CONTACT_POINT_16 BONE_CONTACT_POINT_17 BONE_CONTACT_POINT_18 BONE_CONTACT_POINT_19 BONE_CONTACT_POINT_20">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="TH_JapanOldMilitaryTrainingSchool" />
+				</ModelConditionState>
+			</ScriptedModelDraw>
+		</Draws>
+		
+		<Behaviors>
+			<Physics
+				id="ModuleTag_Physics"/>
+
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_BuildingDebrisExplosion"
+					CreationObject="YU_HotelDebris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_FXList">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Medium" />
+			</FXListBehavior>
+			<FXListBehavior xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_DieSound">
+				<DieMuxData DeathTypes="ALL" DeathTypesForbidden="SUICIDED" />
+					<Event Index="onDeath" FX="FX_LargeBuildingDieExplosion" />
+			</FXListBehavior>
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="TH_JapanOldMilitaryTrainingSchool_Die_OCL">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</CreateObjectDie>
+			<DestroyDie
+				id="ModuleTag_Die">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</DestroyDie>
+					
+
+			<ProductionUpdate
+				id="ModuleTag_ProductionUpdate"
+				GiveNoXP="true"
+				Type="INFANTRY"
+				NumDoorAnimations="1"
+				DoorOpeningTime="0.66s"
+				DoorWaitOpenTime="1.0s"
+				DoorCloseTime="0.66s">
+				<GiveUpgradeToProduced>
+					<UpgradeTranslate
+						RequiredUpgrade="Upgrade_ProductionVeterancy_VETERAN"
+						ProvidedUpgrade="Upgrade_CreationVeterancy_VETERAN" />
+					<UpgradeTranslate
+						RequiredUpgrade="Upgrade_ProductionVeterancy_ELITE"
+						ProvidedUpgrade="Upgrade_CreationVeterancy_ELITE" />
+					<UpgradeTranslate
+						RequiredUpgrade="Upgrade_ProductionVeterancy_HEROIC"
+						ProvidedUpgrade="Upgrade_CreationVeterancy_HEROIC" />
+				</GiveUpgradeToProduced>
+			</ProductionUpdate>
+      <QueueProductionExitUpdate
+				id="ModuleTag_ExitUpdate"
+				PlacementViewAngle="-45d"
+				ExitDelaySeconds="0.07s">
+        <UnitCreatePoint
+					x="0.0"
+					y="-20.0" />
+        <NaturalRallyPoint
+					x="0.0"
+					y="-50.0" />
+      </QueueProductionExitUpdate>
+      <SubObjectsUpgrade
+				id="ModuleTag_SubObjectsUpgrade">
+        <TriggeredBy>Upgrade_JapanBarracksTech2</TriggeredBy>
+        <Nugget
+					Upgrade="Upgrade_JapanWarFactoryTech2"/>
+      </SubObjectsUpgrade>
+      <SubObjectsUpgrade
+				id="ModuleTag_SubObjectsUpgrade2">
+        <TriggeredBy>Upgrade_JapanBarracksTech3</TriggeredBy>
+        <Nugget
+					Upgrade="Upgrade_JapanWarFactoryTech3"/>
+      </SubObjectsUpgrade>
+			<LUAEventList
+				id="ModuleTag_LUAEventList"
+				EventListName="GenericJapanBuildingFunctions" />									
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpackUpdate"
+				UnpackTime="=$JAPAN_BARRACKS_LOCAL_UNPACK_TIME" />
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+			<xi:include
+				href="DATA:Includes/GenericEngineerContain.xml" />
+			<xi:include
+				href="DATA:Includes/GenericJapanBuildingDestruction.xml" />
+			<xi:include
+				href="DATA:Includes/GenericJapanBuildingSuicide.xml" />
+			<xi:include
+				href="DATA:Includes/InfiltratorContainInfantry.xml" />				
+			<StancesBehavior
+				id="ModuleTag_Stance"
+				StanceTemplate="Generic" />
+			<CommandSetUpgrade
+				id="ModuleTag_CommandSetUpgrade"
+				CommandSet="JapanBarracksCommandSetTech2">
+				<TriggeredBy>Upgrade_JapanBarracksTech2</TriggeredBy>
+			</CommandSetUpgrade>
+
+			<!-- Attribute Modifiers based on the Tech Level of the building -->
+			<AttributeModifierUpgrade
+				id="ModuleTag_JapanBarracksTech2_AttributeModifier"
+				AttributeModifier="AttributeModifer_JapanTech2_JapanBarracks">
+				<TriggeredBy>Upgrade_JapanBarracksTech2</TriggeredBy>
+			</AttributeModifierUpgrade>
+			<AttributeModifierUpgrade
+				id="ModuleTag_JapanBarracksTech3_AttributeModifier"
+				AttributeModifier="AttributeModifer_JapanTech3_JapanBarracks">
+				<TriggeredBy>Upgrade_JapanBarracksTech3</TriggeredBy>
+			</AttributeModifierUpgrade>
+			
+		</Behaviors>
+		<AI>
+			<AIUpdate
+				id="ModuleTag_AIForLua"
+				StateMachine="StructureAIStateMachine" />
+		</AI>
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="4000" />
+		</Body>
+		<Geometry>
+<Shape 
+     Type= "BOX"
+     MajorRadius = "38.6414"
+     MinorRadius = "79.8251"
+     Height = "70.944"
+     ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "6.0"
+        y = "-5.0"
+        z = "0.0" />
+</Shape>
+		</Geometry>
+		<ClientBehaviors>
+			<ModelConditionAudioLoopClientBehavior xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_StructureConstructionAudio">
+				<ModelConditionSound
+					Sound="JAP_Nanocore_DeployStructureLand"
+					RequiredFlags="STRUCTURE_UNPACKING"
+					ExcludedFlags="OVER_WATER"/>
+				<ModelConditionSound
+					Sound="JAP_Nanocore_DeployStructureWaterMS"
+					RequiredFlags="STRUCTURE_UNPACKING OVER_WATER"/>
+			</ModelConditionAudioLoopClientBehavior>
+		</ClientBehaviors>
+		<AudioArrayVoice>
+			<AudioEntry Sound="JAP_InstantDojo_Select" AudioType="voiceSelect" />
+		</AudioArrayVoice>
+		<AudioArraySound>
+			<AudioEntry Sound="HumanFaction_MediumBuilding_LightDamageMS" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="HumanFaction_MediumBuilding_HeavyDamageMS" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound> 
+		<VisionInfo
+			VisionRange="300"
+			ShroudClearingRange="300" />
+		<ProjectedBuildabilityInfo
+			Radius="105"
+			BuildPlacementTypes="OTHER_STRUCTURE" />
+	</GameObject>
+	
+	<ObjectCreationList
+		id="TH_JapanOldMilitaryTrainingSchool_Die_OCL">
+		<CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="1"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+			<CreateObject>TH_JapanOldMilitaryTrainingSchool_Collapse</CreateObject>
+		</CreateObject>
+	</ObjectCreationList>
+	
+</AssetDeclaration>

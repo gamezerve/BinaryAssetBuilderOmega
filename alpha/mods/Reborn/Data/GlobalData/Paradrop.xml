@@ -47,6 +47,19 @@
 		id="PlayerSpellBook"
 		inheritFrom="PlayerSpellBook">
 		<Behaviors>
+			<!-- Reborn: inert registrations let native script grant lookup resolve the two hidden technology markers; they never spawn units. -->
+			<SpecialPower id="ModuleTag_RebornParadropGrantTransfer2" SpecialPowerTemplate="SpecialPower_RebornParadropGrantTransfer2" AvailableAtStart="true"/>
+			<SpecialPower id="ModuleTag_RebornParadropGrantTransfer3" SpecialPowerTemplate="SpecialPower_RebornParadropGrantTransfer3" AvailableAtStart="true"/>
+
+			<!-- Reborn: one shared row transition grants one PlayerTech marker, triggering native percentage transfer only once. -->
+			<LUAEventList id="ModuleTag_RebornParadropCooldownEvents" EventListName="RebornParadropCooldownFunctions"/>
+			<ModelConditionUpgrade id="ModuleTag_RebornParadropCooldownRow3" AddConditionFlags="USER_9" Permanent="true">
+				<TriggeredBy>Upgrade_RebornParadrop_Row3</TriggeredBy>
+			</ModelConditionUpgrade>
+			<ModelConditionUpgrade id="ModuleTag_RebornParadropCooldownRow5" AddConditionFlags="USER_10" Permanent="true">
+				<TriggeredBy>Upgrade_RebornParadrop_Row5</TriggeredBy>
+			</ModelConditionUpgrade>
+
 			<!-- Reborn: shared row upgrades select one canonical Paradrop level without protocol-specific power copies. -->
 			<CommandSetUpgrade id="ModuleTag_SpellbookParadropMenuRank1" CommandSet="PlayerSpellBookCommandSetRank1">
 				<TriggeredBy>Upgrade_RebornParadrop_Row1</TriggeredBy>
@@ -94,6 +107,7 @@
 				OCL="OCL_ParaDropLvl2"
         DestinationOCL="OCL_PrecisionStrikeBeacon"
 				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
+				LeechRechargePercentPlayerTechTrigger="PlayerTech_RebornParadropTransfer2"
 				LeechRechargePercentFromSpecialPower="SpecialPowerParadropLvl1"
 			  CreateLocationOffset="1000.0">
         <NearestSecondaryObjectFilter
@@ -114,6 +128,7 @@
 				OCL="OCL_ParaDropLvl3"
         DestinationOCL="OCL_PrecisionStrikeBeacon"
 				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
+				LeechRechargePercentPlayerTechTrigger="PlayerTech_RebornParadropTransfer3"
 				LeechRechargePercentFromSpecialPower="SpecialPowerParadropLvl2"
 			  CreateLocationOffset="1000.0">
         <NearestSecondaryObjectFilter
@@ -347,4 +362,14 @@
     </Data>
   </JoypadCommandBarButtonTemplate>
 
+
+	<!-- Reborn: grant-only templates expose the existing PLAYER_GRANT_SPECIAL_POWER action; these have only inert registrations, with no UI commands, OCL payloads or positive reload time. -->
+	<PlayerTech id="PlayerTech_RebornParadropTransfer2" TechPointsRequired="0">
+		<TechDependency>PlayerTech_Allied</TechDependency>
+	</PlayerTech>
+	<SpecialPowerTemplate id="SpecialPower_RebornParadropGrantTransfer2" TargetType="NONE" ReloadTime="0s" RequiredPlayerTech="PlayerTech_RebornParadropTransfer2"/>
+	<PlayerTech id="PlayerTech_RebornParadropTransfer3" TechPointsRequired="0">
+		<TechDependency>PlayerTech_Allied</TechDependency>
+	</PlayerTech>
+	<SpecialPowerTemplate id="SpecialPower_RebornParadropGrantTransfer3" TargetType="NONE" ReloadTime="0s" RequiredPlayerTech="PlayerTech_RebornParadropTransfer3"/>
 </AssetDeclaration>

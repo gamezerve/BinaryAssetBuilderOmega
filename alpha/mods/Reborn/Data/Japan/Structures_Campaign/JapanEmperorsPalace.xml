@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+
+		<!-- <Include type="all"	source="ART:MJ_MtFujiViewingTower.w3x" /> -->
+		<!-- <Include type="all"	source="ART:MJ_MtFujiViewingTower_GAR.w3x" /> -->
+		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
+		<Include type="all" source="DATA:Japan/Structures_Campaign/JapanEmperorsPalace_Collapse.xml" />	
+						
+		<!-- Base Object -->
+		<Include
+			type="instance"
+			source="DATA:BaseObjects/BaseStructure.xml" />
+	</Includes>
+	<GameObject
+		id="JapanEmperorsPalace"
+		inheritFrom="BaseStructure"
+		SelectPortrait="Portrait_Japan_MtFujiViewingTower"
+		ButtonImage="Button_Japan_MtFujiViewingTower"
+		Side="Japan"
+		EditorSorting="STRUCTURE"		
+		BuildTime="0"
+		CommandSet="JapanEmperorsPalaceCommandSet"
+		KindOf="+FS_TECHNOLOGY +ACTIVATE_AFTER_UNPACK -CAN_BUILD_ON_WATER -CAN_BUILD_ON_DEEP_WATER +AIRCRAFT_PATH_AROUND"
+		RadarPriority="STRUCTURE"
+		PlacementViewAngle="45d"
+		EnergyProduction="-50"
+		MaxSimultaneousOfType="1"
+		ProductionQueueType="MAIN_STRUCTURE"
+		BuildPlacementTypeFlag="MAIN_STRUCTURE"
+		IsTrainable="false"
+		EditorName="JapanEmperorsPalace"
+		Description="Desc:JapanEmperorsPalace"
+		TypeDescription="Type:JapanEmperorsPalace">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:MtFujiViewingTower</DisplayName>
+
+		<GameDependency>			
+			<RequiredObject>JapanTechStructure</RequiredObject>
+		</GameDependency>
+			
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="8000"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="BaseFactionStructureArmor"
+			DamageFX="FactionStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="CENTER">
+      <ConstructionBaseSelectionCriteria
+        ExcludedBaseTypes="NO_BUILD_RADIUS CAPTURED"
+        PreferredBaseTypes="MAIN_BASE"
+        SortOrder="PREFER_OLDEST" />
+    </SkirmishAIInformation>
+	
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="false"
+				AffectedByStealth="false"
+				ExtraPublicBone="BoneGarrisonWall01 BoneGarrisonWall02 BoneGarrisonWall03 BoneGarrisonWall04 BONE_CONTACT_POINT_01 BONE_CONTACT_POINT_02 BONE_CONTACT_POINT_03 BONE_CONTACT_POINT_04 BONE_CONTACT_POINT_05 BONE_CONTACT_POINT_06 BONE_CONTACT_POINT_07 BONE_CONTACT_POINT_08 BONE_CONTACT_POINT_09 BONE_CONTACT_POINT_10 BONE_CONTACT_POINT_11 BONE_CONTACT_POINT_12 BONE_CONTACT_POINT_13 BONE_CONTACT_POINT_14 BONE_CONTACT_POINT_15 BONE_CONTACT_POINT_16 BONE_CONTACT_POINT_17 BONE_CONTACT_POINT_18	BONE_CONTACT_POINT_19 BONE_CONTACT_POINT_20 BONEGARRISON01 BONEGARRISON02 BONEGARRISON03 BONEGARRISON04 BONEGARRISON05 BONEGARRISON06 BONEGARRISON07 BONEGARRISON08 BONEGARRISON09 BONEGARRISON10 BONEGARRISON11 BONEGARRISON12">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="MJ_MtFujiViewingTower" />
+				</ModelConditionState>
+				<ModelConditionState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="RUBBLE">
+					<Model
+						Name="" />
+				</ModelConditionState>
+
+				<AnimationState
+					ParseCondStateType="PARSE_DEFAULT">
+					<!-- no anim -->
+				</AnimationState>
+			
+			</ScriptedModelDraw>
+
+			<xi:include
+				href="DATA:Includes/GarrisonFlagArmorDraw.xml"
+				xpointer="xmlns(n=uri:ea.com:eala:asset) xpointer(/n:CommonArmorDraws/child::*)" />
+		</Draws>
+		
+		<Behaviors>
+
+			<Physics
+				id="ModuleTag_Physics"/>
+
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="FX_BuildingDebrisExplosion"
+					CreationObject="YU_HotelDebris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+				
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_FXList">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Medium" />
+			</FXListBehavior>
+			
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="MJ_MtFujiViewingTower_Die_OCL">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</CreateObjectDie>
+
+	<CreateObjectDie xmlns="uri:ea.com:eala:asset"
+		id="ModuleTag_CreateOccupiedDie"
+		CreationList="OCL_JapanEmperorsPalaceBuildingDestruction" >		
+		<DieMuxData
+			ExemptStatus="OVER_WATER UNPACKING SOLD"
+			DeathTypes="ALL"
+		DeathTypesForbidden="DETONATED SUICIDED SHATTERED"
+		/>
+		<UpgradeForbidden>Upgrade_NoSpawnUponDestruction</UpgradeForbidden>
+	</CreateObjectDie>
+		
+			<DestroyDie
+				id="ModuleTag_DestroyDie">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</DestroyDie>				
+	
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpackUpdate"
+				UnpackTime="60s" />
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+			<xi:include
+				href="DATA:Includes/GenericEngineerContain.xml" />
+			<xi:include
+				href="DATA:Includes/GenericJapanBuildingSuicide.xml" />
+									
+			
+		</Behaviors>
+		<AI>
+			<AIUpdate
+				id="ModuleTag_AIUpdate"
+				AutoAcquireEnemiesWhenIdle="NO"
+				StateMachine="StructureAIStateMachine">
+			</AIUpdate>
+		</AI>
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="3000.0" />
+		</Body>
+		<Geometry
+			IsSmall="false">
+<Shape 
+     Type= "BOX"
+     MajorRadius = "75.0"
+     MinorRadius = "75.0"
+     Height = "165.0"
+     ContactPointGeneration = "STRUCTURE" >
+    <Offset
+        x = "0.0"
+        y = "0.0"
+        z = "0.0" />
+</Shape>			
+		</Geometry>
+		
+
+		
+		<AudioArraySound>
+			<AudioEntry Sound="HumanFaction_MediumBuilding_LightDamageMS" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="HumanFaction_MediumBuilding_HeavyDamageMS" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound> 
+		
+		<VisionInfo
+			VisionRange="150"
+			ShroudClearingRange="500" />
+		<ProjectedBuildabilityInfo
+			Radius="135"
+			BuildPlacementTypes="OTHER_STRUCTURE" />	
+			
+	</GameObject>
+	
+	<ObjectCreationList
+		id="MJ_MtFujiViewingTower_Die_OCL">
+		<CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="1"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+			<CreateObject>JapanEmperorsPalace_Collapse</CreateObject>
+		</CreateObject>
+	</ObjectCreationList>	
+	
+	<ObjectCreationList
+		id="OCL_JapanEmperorsPalaceBuildingDestruction">
+		<CreateObject
+			Options="IGNORE_ALL_OBJECTS REQUIRES_LIVE_PLAYER DO_NOT_COPY_SHADERS"
+			Disposition="ON_GROUND_ALIGNED RELATIVE_ANGLE"
+			DispositionAngle="270d"
+			MinHealth="1"
+			MaxHealth="1">
+			<CreateObject>JapanEmperorKingOni</CreateObject>
+		</CreateObject>
+	</ObjectCreationList>
+	
+</AssetDeclaration>

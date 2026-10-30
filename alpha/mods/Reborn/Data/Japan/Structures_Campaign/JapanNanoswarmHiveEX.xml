@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+
+		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator.W3X" />
+		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
+		<Include type="instance" source="DATA:Reborn\Data\Japan\Props/TH_JapanHiveGenerator_Collapse.xml" />
+
+		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator_SPM.xml" />
+		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator_NRM.xml" />
+		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator.xml" />
+
+		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JAPANHIVEGENERATOR_SKL.w3x" />
+		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JAPANHIVEGENERATOR_IDLA.w3x" />
+		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JAPANHIVEGENERATOR_CTR.w3x" />
+		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JAPANHIVEGENERATOR_COL_HRC.w3x" />
+		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JAPANHIVEGENERATOR_COL_CTR.w3x" />
+		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JAPANHIVEGENERATOR_COL.NEWSKIN.w3x" />
+		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator.OBBOX01.w3x" />
+		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator.OBBOX02.w3x" />
+		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator.OBBOX03.w3x" />
+		<Include type="all"	source="ART:Reborn\Art\Structures\Imperial/TH_JapanHiveGenerator.NEWSKIN.w3x" />
+
+
+		<Include type="all"	source="DATA:Reborn\Audio\Structures\Imperial/WBuild_powerOffa.xml" />
+		
+		<!-- Base Object -->
+		<Include
+			type="instance"
+			source="DATA:BaseObjects/BaseStructure.xml" />
+	</Includes>
+	<GameObject
+		id="JapanNanoswarmHiveEX"
+		inheritFrom="BaseStructure"
+		SelectPortrait="Portrait_Japan_TH_HiveGenerator"
+		ButtonImage="Button_Japan_TH_HiveGenerator"
+		Side="Japan"
+		EditorSorting="STRUCTURE"		
+		BuildTime="0"
+		CommandSet="JapanNanoswarmHiveEXCommandSet"
+		KindOf="+FS_TECHNOLOGY +ACTIVATE_AFTER_UNPACK -CAN_BUILD_ON_WATER -CAN_BUILD_ON_DEEP_WATER +POWERED +SUPER_WEAPON"
+		RadarPriority="STRUCTURE"
+		PlacementViewAngle="315d"
+		EnergyProduction="-10"
+		ProductionQueueType="OTHER_STRUCTURE"
+		BuildPlacementTypeFlag="OTHER_STRUCTURE"
+		IsTrainable="false"
+		EditorName="JapanNanoswarmHiveEX"
+		Description="Desc:JapanNanoswarmHiveEX"
+		TypeDescription="Type:JapanNanoswarmHiveEX">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:JapanNanoswarmHiveEX</DisplayName>
+
+		<GameDependency>			
+			<RequiredObject>JapanSuperWeapon</RequiredObject>
+		</GameDependency>
+			
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="2000"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="BaseFactionStructureArmor"
+			DamageFX="FactionStructureDamageFX" />
+		<SkirmishAIInformation
+			BaseBuildingLocation="BACK">
+      <ConstructionBaseSelectionCriteria
+        ExcludedBaseTypes="NO_BUILD_RADIUS CAPTURED"
+        PreferredBaseTypes="MAIN_BASE"
+        SortOrder="PREFER_OLDEST" />
+    </SkirmishAIInformation>
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="true"
+				AffectedByStealth="false"
+				ExtraPublicBone="BoneGarrisonWall01 BoneGarrisonWall02 BoneGarrisonWall03 BoneGarrisonWall04 BONE_CONTACT_POINT_01 BONE_CONTACT_POINT_02 BONE_CONTACT_POINT_03 BONE_CONTACT_POINT_04 BONE_CONTACT_POINT_05 BONE_CONTACT_POINT_06 BONE_CONTACT_POINT_07 BONE_CONTACT_POINT_08 BONE_CONTACT_POINT_09 BONE_CONTACT_POINT_10 BONE_CONTACT_POINT_11  BONEGARRISON01 BONEGARRISON02 BONEGARRISON03 BONEGARRISON04 BONEGARRISON05 BONEGARRISON06 BONEGARRISON07 BONEGARRISON08 BONEGARRISON09 BONEGARRISON10 BONEGARRISON11 BONEGARRISON12">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="TH_JapanHiveGenerator" />
+				</ModelConditionState>
+				<ModelConditionState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="RUBBLE">
+					<Model
+						Name="" />
+				</ModelConditionState>
+
+				<AnimationState
+					ParseCondStateType="PARSE_DEFAULT"
+					StateName="STATE_Idle">
+					<Animation
+						AnimationName="TH_JapanHiveGenerator_IDLA"
+						AnimationMode="LOOP"	
+						AnimationBlendTime="0" />					
+				</AnimationState>
+				
+				<AnimationState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="USER_1">
+					<ParticleSysBone
+						BoneName="FX_Weapon_01"
+						FXParticleSystemTemplate="FXJapanNanoShieldIdle"
+						FollowBone="true"/>
+					<ParticleSysBone
+						BoneName="FX_Weapon_01"
+						FXParticleSystemTemplate="JapanSuperWeaponIdleLight"
+						FollowBone="true"/>  					
+					<Animation
+						AnimationName="TH_JapanHiveGenerator_IDLA"
+						AnimationMode="LOOP"	
+						AnimationBlendTime="0" />					
+				</AnimationState>				
+			
+			</ScriptedModelDraw>
+
+		</Draws>
+		
+		<Behaviors>
+
+			<Physics
+				id="ModuleTag_Physics"/>
+
+			<BuildingDestructionBehavior
+				id="ModuleTag_BuildingDestruction">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Item
+					BonePrefix="BONE_CONTACT_POINT_"
+					FX="JapanStructureHit"
+					CreationObject="AlliedBarracks_Debris"
+					FlingVelocity="100.0"/>
+			</BuildingDestructionBehavior>
+				
+			<FXListBehavior
+				xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance" id="ModuleTag_FXList">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Large" />
+				<Event
+					Index="onDeath"
+					FX="FX_Civ_Explosion_Tiny" />
+				<!--
+				<Event
+					Index="onDeath"
+					FX="FX_SpecialDebrisExplosionShake" />
+				-->	
+			</FXListBehavior>
+			
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="TH_JapanHiveGenerator_Die_OCL">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</CreateObjectDie>
+			
+			<DestroyDie
+				id="ModuleTag_DestroyDie">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</DestroyDie>				
+	
+			<StructureUnpackUpdate
+				id="ModuleTag_StructureUnpackUpdate"
+				UnpackTime="20s" />
+			<xi:include
+				href="DATA:Includes/GenericBuildingRepair.xml" />
+			<xi:include
+				href="DATA:Includes/GenericEngineerContain.xml" />
+			<xi:include
+				href="DATA:Includes/GenericJapanBuildingDestruction.xml" />
+			<xi:include
+				href="DATA:Includes/GenericJapanBuildingSuicide.xml" />
+
+		<OCLSpecialPower
+				id="ModuleTag_OCL_SpecialPower_NanoSwarmHive"
+				SpecialPowerTemplate="SpecialPowerNanoSwarmHive"
+				OCL="OCL_NanoSwarmHive"
+				CreateLocation="CREATE_AT_LOCATION"
+				AvailableAtStart="false"
+				CanAffectObjectFilter="GenericNoObjectSpecialPowerObjectFilter"/>
+			<!--Monitors when this special power template is ready to fire and sets a model condition-->
+		<MonitorSpecialPowerTimerUpdate
+				id="ModuleTag_NanoSwarmHiveReadyToFireUpdate"
+				SpecialPowerTemplate="SpecialPowerNanoSwarmHive"
+				ReadyCondition="USER_1"
+			/>									
+			
+		</Behaviors>
+		
+		<ClientBehaviors>
+			<ModelConditionAudioLoopClientBehavior id="ModuleTag_PowerDown">
+				<ModelConditionSound Sound="A02_JAP_HiveGenerator_PowerDown" RequiredFlags="USER_3" ExcludedFlags="USER_1" />
+			</ModelConditionAudioLoopClientBehavior>			
+		</ClientBehaviors>
+		
+		<AI>
+			<AIUpdate
+				id="ModuleTag_AIUpdate"
+				AutoAcquireEnemiesWhenIdle="NO"
+				StateMachine="StructureAIStateMachine">
+			</AIUpdate>
+		</AI>
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="4000.0" />
+		</Body>
+		
+		<ClientUpdates>
+			<EvaAnnounceSpecialPowerReadyClientUpdate
+				id="SuperWeaponReady"
+				AnnouncementEventOwner="NanoswarmReady"
+				SpecialPowerTemplate="SpecialPowerNanoSwarmHive"
+				JustMonitorPercentReady="true"
+			/>
+			<EvaAnnounceClientCreate
+			  id="SuperWeaponDetected"
+			  AnnouncementEventEnemy="WarnNanoswarmDetected"
+			  UseObjectsPosition="true" />
+			 			  <!-- AnnouncementEventAlly="AlliedIonCannonDetected" -->
+		</ClientUpdates>
+
+		<Geometry>
+			<PlacementShape
+				 Type= "BOX"
+				 MajorRadius = "60.0"
+				 MinorRadius = "60.0"
+				 Height = "5.0"/>
+			<Shape 
+				 Type= "BOX"
+				 MajorRadius = "50.0"
+				 MinorRadius = "50.0"
+				 Height = "20.0"
+				 ContactPointGeneration = "STRUCTURE" />
+			<Shape
+				 Type= "BOX"
+				 MajorRadius = "20.0"
+				 MinorRadius = "20.0"
+				 Height = "50.0"
+				 ContactPointGeneration = "STRUCTURE" />
+		</Geometry>
+		
+
+		
+		<AudioArrayVoice>
+			<AudioEntry Sound="JAP_NanoswarmHive_Select" AudioType="voiceSelect" />
+		</AudioArrayVoice> 
+		<AudioArraySound>
+			<AudioEntry Sound="HumanFaction_MediumBuilding_LightDamageMS" AudioType="soundOnDamaged" />
+			<AudioEntry Sound="HumanFaction_MediumBuilding_HeavyDamageMS" AudioType="soundOnReallyDamaged" />
+		</AudioArraySound>  
+		
+		<VisionInfo
+			VisionRange="150"
+			ShroudClearingRange="500" />
+		<ProjectedBuildabilityInfo
+			Radius="120"
+			BuildPlacementTypes="OTHER_STRUCTURE" />	
+			
+	</GameObject>
+	
+	<ObjectCreationList
+		id="TH_JapanHiveGenerator_Die_OCL">
+		<CreateObject
+			Options="IGNORE_ALL_OBJECTS"
+			Disposition="LIKE_EXISTING RANDOM_FORCE"
+			Count="1"
+			MinForceMagnitude="1.0"
+			MaxForceMagnitude="2.0"
+			MinForcePitch="90d"
+			MaxForcePitch="75d">
+			<CreateObject>TH_JapanHiveGenerator_Collapse</CreateObject>
+		</CreateObject>
+	</ObjectCreationList>	
+	
+	<AudioEvent id="BaseSoundEffect"
+		Volume="100" 
+		MinVolume="0"
+		ShrunkenPitchModifier="2.0"
+		ShrunkenVolumeModifier="85"
+		Priority="NORMAL"
+		Limit="3"
+		MinRange="300"
+		MaxRange="1000"
+		PlayPercent="100"
+		Type="UI PLAYER"
+		ReverbEffectLevel="100"
+		ZoomedInOffscreenVolumePercent = "50"
+		ZoomedInOffscreenMinVolumePercent = "100" 
+		ZoomedInOffscreenOcclusionPercent = "20"  >
+		<!-- You might think the following was a good idea:
+			SubmixSlider ="SOUNDFX"
+			IT'S NOT. Doing this in the default sound will mess up the special 'use the speech slider if the
+			voice flag is present and no SubmixSlider entry was seen' code.		-->
+	</AudioEvent>
+	
+	<AudioEvent
+	id="A02_JAP_HiveGenerator_PowerDown"
+	inheritFrom="AudioEvent:BaseSoundEffect"
+	Volume="90"
+	VolumeShift="-10"
+	Limit="3"
+	Type="WORLD SHROUDED EVERYONE"
+	SubmixSlider="SOUNDFX">
+	<PitchShift Low="15" High="20" />
+		<InitialDelay Low="0" High="100" />
+		<Sound>WBuild_powerOffa</Sound>
+	</AudioEvent>
+	
+</AssetDeclaration>

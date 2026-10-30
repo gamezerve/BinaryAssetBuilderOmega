@@ -82,6 +82,15 @@
 		</Draws>
 
 		<Behaviors>
+			<!-- Reborn: the physical tower supplies creation/row events too; persistent PlayerTech markers deduplicate callbacks from both owners. -->
+			<LUAEventList id="ModuleTag_RebornParadropTowerCooldownEvents" EventListName="RebornParadropCooldownFunctions"/>
+			<ModelConditionUpgrade id="ModuleTag_RebornParadropTowerCooldownRow3" AddConditionFlags="USER_9" Permanent="true">
+				<TriggeredBy>Upgrade_RebornParadrop_Row3</TriggeredBy>
+			</ModelConditionUpgrade>
+			<ModelConditionUpgrade id="ModuleTag_RebornParadropTowerCooldownRow5" AddConditionFlags="USER_10" Permanent="true">
+				<TriggeredBy>Upgrade_RebornParadrop_Row5</TriggeredBy>
+			</ModelConditionUpgrade>
+
 			<!-- Reborn: shared row upgrades select one canonical Paradrop level without protocol-specific power copies. -->
 			<CommandSetUpgrade id="ModuleTag_TowerParadropMenuRank1" CommandSet="AlliedAirportControlTowerCommandSetRank1">
 				<TriggeredBy>Upgrade_RebornParadrop_Row1</TriggeredBy>
@@ -119,6 +128,7 @@
 				OCL="OCL_ParaDropLvl2"
         DestinationOCL="OCL_PrecisionStrikeBeacon"
 				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
+				LeechRechargePercentPlayerTechTrigger="PlayerTech_RebornParadropTransfer2"
 				LeechRechargePercentFromSpecialPower="SpecialPowerParadropLvl1"
 			  CreateLocationOffset="1000.0">
         <NearestSecondaryObjectFilter
@@ -134,6 +144,7 @@
 				OCL="OCL_ParaDropLvl3"
         DestinationOCL="OCL_PrecisionStrikeBeacon"
 				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
+				LeechRechargePercentPlayerTechTrigger="PlayerTech_RebornParadropTransfer3"
 				LeechRechargePercentFromSpecialPower="SpecialPowerParadropLvl2"
 			  CreateLocationOffset="1000.0">
         <NearestSecondaryObjectFilter
