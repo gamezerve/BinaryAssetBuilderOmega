@@ -40,7 +40,7 @@
 		EnergyProduction="-50"
 		ProductionQueueType="OTHER_STRUCTURE"
 		BuildPlacementTypeFlag="OTHER_STRUCTURE"
-		BuildTime="45"
+		BuildTime="4.5"
 		CommandSet="AlliedAirportControlTowerCommandSet"
 		TypeDescription="TYPE:AlliedAirportControlTower"
 		Description="DESC:AlliedAirportControlTower"
@@ -119,6 +119,7 @@
 				OCL="OCL_ParaDropLvl2"
         DestinationOCL="OCL_PrecisionStrikeBeacon"
 				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
+				LeechRechargePercentFromSpecialPower="SpecialPowerParadropLvl1"
 			  CreateLocationOffset="1000.0">
         <NearestSecondaryObjectFilter
 					Relationship="SAME_PLAYER">
@@ -133,6 +134,7 @@
 				OCL="OCL_ParaDropLvl3"
         DestinationOCL="OCL_PrecisionStrikeBeacon"
 				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
+				LeechRechargePercentFromSpecialPower="SpecialPowerParadropLvl2"
 			  CreateLocationOffset="1000.0">
         <NearestSecondaryObjectFilter
 					Relationship="SAME_PLAYER">
