@@ -1,3 +1,8 @@
+using BinaryAssetBuilder.Core;
+using BinaryAssetBuilder.Core.Hashing;
+using BinaryAssetBuilder.Core.SageXml;
+using BinaryAssetBuilder.XmlCompiler;
+using SageBinaryData;
 using System.Buffers.Binary;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -5,10 +10,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
-using BinaryAssetBuilder.Core;
-using BinaryAssetBuilder.Core.Hashing;
-using BinaryAssetBuilder.Core.SageXml;
-using SageBinaryData;
 using Chunk=Relo.Chunk;
 
 namespace BinaryAssetBuilder.ManifestInspector;
@@ -40,6 +41,7 @@ internal sealed class SchemaNativeContract
         new(typeof(Ep1W3DLaserDrawModuleData),"Draws",0x2FDDEC4Du,BinaryAssetBuilder.XmlCompiler.Ep1ScriptedDrawTokenizer.TokenizeLaser),
         new(typeof(W3DTracerDrawModuleData),"Draws",0x54018E60u,BinaryAssetBuilder.XmlCompiler.Ep1TracerDrawTokenizer.Tokenize),
         new(typeof(W3DScriptedModelDrawModuleData),"Draws",0x4ECF2A4Bu,BinaryAssetBuilder.XmlCompiler.Ep1ScriptedDrawTokenizer.Tokenize),
+        new(typeof(W3DDynamicsDrawModuleData), "Draws", 0x9BE6ADBBu, Ep1ScriptedDrawTokenizer.TokenizeDynamics),
         new(typeof(ModelConditionAudioLoopClientBehaviorModuleData),"ClientBehaviors",0x5A3EDBF4u,leaf=>FromList(leaf,BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize)),
         new(typeof(Ep1ModelConditionSoundSelectorClientBehaviorModuleData),"ClientBehaviors",0x327CFB76u,leaf=>FromList(leaf,BinaryAssetBuilder.XmlCompiler.Ep1ClientBehaviorsTokenizer.Tokenize)),
         // Reborn: explicit Allied selector leaf; stock qualification occurs through AlliedUnitModuleContract.
@@ -190,7 +192,24 @@ internal sealed class SchemaNativeContract
         if(owner==typeof(AIToggleSpecialPowerInfo)&&name is "NeverUseInState" or "NeverUseDuringTask" or "Location"){Flags(e,name,at,4,path);return;}
         // Reborn: toggle Lua-event defaults deliberately retain an allocated empty string, matching retail and the existing EP1 writer.
         if(owner==typeof(ToggleStatusNugget)&&name=="GenericLuaEventParameter"){var attribute=e?.GetAttributeNode(name);if(attribute!=null)consumed.Add(attribute);Text(attribute?.Value??"",at,path,false);return;}
-        if(name=="Base"&&!type.IsPrimitive&&!type.IsEnum&&!type.IsGenericType){Struct(type,e,at,path,depth+1);return;}
+        if ((owner == typeof(Vector3) || owner == typeof(Quaternion)) && name is "X" or "Y" or "Z" or "W")
+        {
+            var attribute = e?.GetAttributeNode(name.ToLowerInvariant());
+
+            if (attribute != null)
+                consumed.Add(attribute);
+
+            var carrier = e?.OwnerDocument.CreateElement("Scalar") ?? new XmlDocument().CreateElement("Scalar");
+            carrier.SetAttribute("Value", attribute?.Value ?? "0");
+
+            Expect(at, ConscriptModuleScalarContract.Bytes(
+                carrier,
+                new ConscriptModuleScalarContract.Binding("Value", 0, 4, "Single", null, 0)
+            ), path);
+
+            return;
+        }
+        if (name=="Base"&&!type.IsPrimitive&&!type.IsEnum&&!type.IsGenericType){Struct(type,e,at,path,depth+1);return;}
         if(IsFlags(type)){Flags(e,name,at,Size(type),path);return;}
         if(type.IsEnum){Enumeration(e,name,at,path);return;}
         if(Scalar(type) is string codec){ScalarValue(e,name,at,codec,Size(type),path);return;}

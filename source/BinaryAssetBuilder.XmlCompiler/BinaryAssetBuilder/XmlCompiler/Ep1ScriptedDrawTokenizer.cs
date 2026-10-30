@@ -11,7 +11,7 @@ namespace BinaryAssetBuilder.XmlCompiler;
 // Reborn: generate reviewed scripted-draw metadata recursively from owned native records, never from a captured stock template or hard-coded unit identity.
 public static class Ep1ScriptedDrawTokenizer
 {
-    private enum Kind { Int, UInt, Real, Bool, Enum, Flags, String, Ref, List, Strings, EmptyList, StringPointer, NullPointer, Pointer, Polymorphic, Reals, Inline, Refs, RefPointer }
+    private enum Kind { Int, UInt, Real, Bool, Enum, Flags, String, Ref, List, Strings, EmptyList, StringPointer, NullPointer, Pointer, NativePointer, Polymorphic, Reals, Inline, Refs, RefPointer }
     private sealed record Field(string Name, uint Tag, int Offset, Kind Kind, int Width = 4, int Limit = 0, Record Child = null);
     private sealed record Record(string Name, int Size, Field[] Fields, int PaddingAt = 0, int PaddingLength = 0, Record Parent = null, uint ParentTag = 0);
     // Reborn: literal wire tags/order are independently stock-reviewed; CLR type names are not used as guessed type IDs.
@@ -108,6 +108,164 @@ public static class Ep1ScriptedDrawTokenizer
     // Reborn: Tesla Tank retail metadata qualifies the terrain pointer/list tags; the optional articulation item has two schema-qualified AssetId strings.
     private static readonly Record TankArticulation = new("ArticulationBone",16,new[]{F("ArticulationBoneName",0x1A2933AA,0,Kind.String,8),F("ArticulationHelperBoneName",0x1A2933AA,8,Kind.String,8)});
     private static readonly Record TankRoot = new("W3DTankDrawModuleData",228,new[]{F("TreadTerrainParticles",0xA6FF4551,216,Kind.RefPointer),F("ArticulationBone",0xC4037FCB,220,Kind.List,8,child:TankArticulation)},Parent:Root,ParentTag:0x4ECF2A4B);
+
+    private static uint DynamicsTag(string name) => FastHash.GetHashCode(name);
+
+    private static readonly Record DynamicsVector = new("Vector3", 12, new[]
+    {
+    F("x", 0x645864F3, 0, Kind.Real),
+    F("y", 0x645864F3, 4, Kind.Real),
+    F("z", 0x645864F3, 8, Kind.Real)
+});
+
+    private static readonly Record DynamicsQuaternion = new("Quaternion", 16, new[]
+    {
+    F("x", 0x645864F3, 0, Kind.Real),
+    F("y", 0x645864F3, 4, Kind.Real),
+    F("z", 0x645864F3, 8, Kind.Real),
+    F("w", 0x645864F3, 12, Kind.Real)
+});
+
+    private static readonly Record DynamicsShape = new("DynamicsShapeType", 8, new[]
+    {
+    F("Translation", 0x29368077, 0, Kind.NativePointer, child: DynamicsVector),
+    F("Rotation", 0x854985C7, 4, Kind.NativePointer, child: DynamicsQuaternion)
+});
+
+    private static readonly Record DynamicsSphere = new("DynamicsSphereShapeType", 12, new[]
+    {
+    F("Radius", 0x645864F3, 8, Kind.Real)
+}, Parent: DynamicsShape, ParentTag: DynamicsTag("DynamicsShapeType"));
+
+    private static readonly Record DynamicsCapsule = new("DynamicsCapsuleShapeType", 16, new[]
+    {
+    F("Radius", 0x645864F3, 8, Kind.Real),
+    F("HalfLength", 0x645864F3, 12, Kind.Real)
+}, Parent: DynamicsShape, ParentTag: DynamicsTag("DynamicsShapeType"));
+
+    private static readonly Record DynamicsBox = new("DynamicsBoxShapeType", 24, new[]
+    {
+    F("HalfSizeX", 0x645864F3, 8, Kind.Real),
+    F("HalfSizeY", 0x645864F3, 12, Kind.Real),
+    F("HalfSizeZ", 0x645864F3, 16, Kind.Real),
+    F("EdgeRadius", 0x645864F3, 20, Kind.Real)
+}, Parent: DynamicsShape, ParentTag: DynamicsTag("DynamicsShapeType"));
+
+    private static readonly Record DynamicsCylinder = new("DynamicsCylinderShapeType", 20, new[]
+    {
+    F("Radius", 0x645864F3, 8, Kind.Real),
+    F("HalfLength", 0x645864F3, 12, Kind.Real),
+    F("EdgeRadius", 0x645864F3, 16, Kind.Real)
+}, Parent: DynamicsShape, ParentTag: DynamicsTag("DynamicsShapeType"));
+
+    private static readonly Record DynamicsTriangle = new("DynamicsTriangleShapeType", 48, new[]
+    {
+    F("X1", 0x645864F3, 8, Kind.Real),
+    F("Y1", 0x645864F3, 12, Kind.Real),
+    F("Z1", 0x645864F3, 16, Kind.Real),
+    F("X2", 0x645864F3, 20, Kind.Real),
+    F("Y2", 0x645864F3, 24, Kind.Real),
+    F("Z2", 0x645864F3, 28, Kind.Real),
+    F("X3", 0x645864F3, 32, Kind.Real),
+    F("Y3", 0x645864F3, 36, Kind.Real),
+    F("Z3", 0x645864F3, 40, Kind.Real),
+    F("EdgeRadius", 0x645864F3, 44, Kind.Real)
+}, Parent: DynamicsShape, ParentTag: DynamicsTag("DynamicsShapeType"));
+
+    private static readonly Record DynamicsVolume = new("DynamicsVolumeType", 76, new[]
+    {
+    F("Mass", 0x645864F3, 0, Kind.Real),
+    F("Bounciness", 0x645864F3, 4, Kind.Real),
+    F("Spinniness", 0x645864F3, 8, Kind.Real),
+    F("StaticFriction", 0x645864F3, 12, Kind.Real),
+    F("KineticFriction", 0x645864F3, 16, Kind.Real),
+    F("AngularDrag", 0x645864F3, 20, Kind.Real),
+    F("LinearDrag", 0x645864F3, 24, Kind.Real),
+    F("ReportContacts", 0x77E3F4F7, 32, Kind.Bool, 1),
+    F("ContactTag", 0x92E342E4, 28, Kind.Enum, limit: 8),
+    F("Sphere", DynamicsTag("DynamicsSphereShapeType"), 36, Kind.List, 8, child: DynamicsSphere),
+    F("Capsule", DynamicsTag("DynamicsCapsuleShapeType"), 44, Kind.List, 8, child: DynamicsCapsule),
+    F("Box", DynamicsTag("DynamicsBoxShapeType"), 52, Kind.List, 8, child: DynamicsBox),
+    F("Cylinder", DynamicsTag("DynamicsCylinderShapeType"), 60, Kind.List, 8, child: DynamicsCylinder),
+    F("Triangle", DynamicsTag("DynamicsTriangleShapeType"), 68, Kind.List, 8, child: DynamicsTriangle)
+}, 33, 3);
+
+    private static readonly Record DynamicsBoneVolume = new("DynamicsBoneVolumeType", 84, new[]
+    {
+    F("BoneName", 0x1A2933AA, 76, Kind.String, 8)
+}, Parent: DynamicsVolume, ParentTag: DynamicsTag("DynamicsVolumeType"));
+
+    private static readonly Record DynamicsBoneVolumeSet = new("DynamicsBoneVolumeSetType", 8, new[]
+    {
+    F("BoneVolume", DynamicsTag("DynamicsBoneVolumeType"), 0, Kind.List, 8, child: DynamicsBoneVolume)
+});
+
+    private static readonly Record DynamicsLifetimeRecord = new("DynamicsLifetime", 8, new[]
+    {
+    F("Delay", 0x998669E8, 0),
+    F("FadeTime", 0x998669E8, 4)
+});
+
+    private static readonly Record DynamicsJointLink = new("DynamicsJointLinkType", 12, new[]
+    {
+    F("BoneName", 0x1A2933AA, 0, Kind.String, 8),
+    F("Position", 0x29368077, 8, Kind.NativePointer, child: DynamicsVector)
+});
+
+    private static readonly Record DynamicsJointFrame = new("DynamicsJointFrameType", 24, new[]
+    {
+    F("Child", DynamicsTag("DynamicsJointLinkType"), 0, Kind.Inline, 12, child: DynamicsJointLink),
+    F("Parent", DynamicsTag("DynamicsJointLinkType"), 12, Kind.Inline, 12, child: DynamicsJointLink)
+});
+
+    private static readonly Record DynamicsJointLimits = new("DynamicsJointLimitsType", 32, new[]
+    {
+    F("SwingType", 0x1848C549, 0, Kind.Enum, limit: 5),
+    F("SwingDisplacementLimit", 0x645864F3, 4, Kind.Real),
+    F("SwingAngleLimit", 0x645864F3, 8, Kind.Real),
+    F("TwistType", 0x1848C549, 12, Kind.Enum, limit: 3),
+    F("TwistDisplacementLimit", 0x645864F3, 16, Kind.Real),
+    F("TwistAngleLimit", 0x645864F3, 20, Kind.Real),
+    F("InertiaOverride", 0x645864F3, 24, Kind.Real),
+    F("Position", 0x29368077, 28, Kind.NativePointer, child: DynamicsVector)
+});
+
+    private static readonly Record DynamicsJoint = new("DynamicsJointType", 56, new[]
+    {
+    F("Frame", DynamicsTag("DynamicsJointFrameType"), 0, Kind.Inline, 24, child: DynamicsJointFrame),
+    F("Limits", DynamicsTag("DynamicsJointLimitsType"), 24, Kind.Inline, 32, child: DynamicsJointLimits)
+});
+
+    private static readonly Record DynamicsJointSet = new("DynamicsJointSetType", 8, new[]
+    {
+    F("Joint", DynamicsTag("DynamicsJointType"), 0, Kind.List, 8, child: DynamicsJoint)
+});
+
+    private static readonly Record DynamicsRoot = new("W3DDynamicsDrawModuleData", 256, new[]
+    {
+    F("Collision", 0x496E121D, 216, Kind.Enum, limit: 4),
+    F("IntuitiveCollision", 0xCE2C8DE9, 220, Kind.Enum, limit: 3),
+    F("DrawPriority", 0x41737FFB, 224, Kind.Enum, limit: 3),
+    F("LODPriority", 0xF3DC9D72, 228, Kind.UInt),
+    F("Explodiness", 0x645864F3, 232, Kind.Real),
+    F("FlingPerturbation", 0x645864F3, 236, Kind.Real),
+    F("InitiallyActive", 0x77E3F4F7, 252, Kind.Bool, 1),
+    F("BoneVolumes", DynamicsTag("DynamicsBoneVolumeSetType"), 240, Kind.Pointer, child: DynamicsBoneVolumeSet),
+    F("Joints", 0xA0E84A50, 248, Kind.Pointer, child: DynamicsJointSet),
+    F("Lifetime", DynamicsTag("DynamicsLifetime"), 244, Kind.Pointer, child: DynamicsLifetimeRecord)
+}, 253, 3, Root, 0x4ECF2A4B);
+
+    public static Chunk TokenizeDynamics(Chunk native)
+    {
+        if (native?.InstanceBuffer == null ||
+            native.RelocationBuffer == null ||
+            native.ImportsBuffer == null ||
+            native.InstanceBuffer.Length < 256 ||
+            native.InstanceBuffer.Length > 2 * 1048576)
+            throw new InvalidDataException("Bounded EP1 DynamicsDraw native graph required.");
+
+        return new Builder(native.InstanceBuffer).Build(native, DynamicsRoot, 0x9BE6ADBBu);
+    }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compose the complete EP1 tank extension on the same owned scripted-model native graph. */
     //-------------------------------------------------------------------------------------------------
@@ -229,6 +387,27 @@ public static class Ep1ScriptedDrawTokenizer
                     case Kind.String: Text(slot); Native(next + 8, slot); break;
                     case Kind.StringPointer:
                         if (Word(slot) != 0) { int target = Offset(Word(slot)); Claim(target, 8); relos.Add((uint)slot); Text(target); Native(next + 8, target); } break;
+                    case Kind.NativePointer:
+                        if (Word(slot) != 0)
+                        {
+                            if (field.Child == null)
+                                throw new InvalidDataException("Native pointer descriptor missing: " + field.Name);
+
+                            int target = Offset(Word(slot));
+
+                            Claim(target, field.Child.Size);
+
+                            foreach (var component in field.Child.Fields)
+                            {
+                                if (component.Kind != Kind.Real ||
+                                    !float.IsFinite(BitConverter.Int32BitsToSingle(unchecked((int)Word(target + component.Offset)))))
+                                    throw new InvalidDataException("Native vector component differs: " + field.Name);
+                            }
+
+                            relos.Add((uint)slot);
+                            Native(next + 8, target);
+                        }
+                        break;
                     // Reborn: optional material ownership is source-driven and does not reuse a captured stock allocation.
                     case Kind.Pointer:
                         if(Word(slot)!=0){int target=Offset(Word(slot));Claim(target,field.Child.Size);relos.Add((uint)slot);metadata[(next+8)/4]=(uint)Emit(field.Child,target,depth+1);}break;

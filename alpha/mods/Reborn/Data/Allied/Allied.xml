@@ -80,13 +80,13 @@
 
 		<!-- Ground Vehicles -->
 
-		<Include type="all" source="units/AlliedAntiInfantryVehicle.xml" />
-		<Include type="all" source="units/AlliedAntiAirVehicleTech1.xml" />
-		<Include type="all" source="units/AlliedAntiVehicleVehicleTech1.xml" />
-		<Include type="all" source="units/AlliedAntiVehicleVehicleTech3.xml" />
-		<Include type="all" source="units/AlliedAntiStructureVehicle.xml" />		
-		<Include type="all" source="units/AlliedMCV.xml" />
-		<Include type="all" source="units/AlliedMiner.xml" />
+		<!-- <Include type="all" source="units/AlliedAntiInfantryVehicle.xml" /> -->
+		<!-- <Include type="all" source="units/AlliedAntiAirVehicleTech1.xml" /> -->
+		<!-- <Include type="all" source="units/AlliedAntiVehicleVehicleTech1.xml" /> -->
+		<!-- <Include type="all" source="units/AlliedAntiVehicleVehicleTech3.xml" /> -->
+		<!-- <Include type="all" source="units/AlliedAntiStructureVehicle.xml" />		 -->
+		<!-- <Include type="all" source="units/AlliedMCV.xml" /> -->
+		<!-- <Include type="all" source="units/AlliedMiner.xml" /> -->
 
 		<!-- Air Vehicles -->
 

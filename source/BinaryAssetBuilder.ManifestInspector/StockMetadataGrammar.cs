@@ -1,6 +1,7 @@
+using BinaryAssetBuilder.Core.Hashing;
 using System.Buffers.Binary;
 using System.Reflection;
-using BinaryAssetBuilder.Core.Hashing;
+using System.Xml.Linq;
 using Chunk=Relo.Chunk;
 
 namespace BinaryAssetBuilder.ManifestInspector;
@@ -83,11 +84,25 @@ internal sealed class StockMetadataGrammar
             var rows=grammar.TryGetValue(current,out var r)?r:throw new InvalidDataException("No stock metadata grammar for record "+current.Name+" ("+path+"); this nested shape has no stock witness.");
             if(W(table)==2){Own(table);if(rows.Class==null||W(table+4)!=rows.Class)throw new InvalidDataException("Generated metadata class row differs: "+path);table=Table(table,path);}
             else if(rows.Class!=null&&depth==0)throw new InvalidDataException("Generated metadata class row missing: "+path);
-            for(int i=0;i<rows.Fields.Length;i++)
+            for (int i = 0; i < rows.Fields.Length; i++)
             {
-                int at=table+i*12;Own(at);var (name,tag)=rows.Fields[i];if(W(at)!=name||W(at+4)!=tag)throw new InvalidDataException("Generated metadata name/tag differs from stock grammar: "+path+" row "+i);
-                var kinds=rows.Kinds[i];uint target=W(at+8);
-                if(name==1){if(!kinds.Contains(Kind.Table))throw new InvalidDataException("Stock grammar base row kind differs.");Record(Base(current),path+".Base",Table(at,path),depth+1);continue;}
+                int at = table + i * 12;
+                Own(at);
+
+                var (name, tag) = rows.Fields[i];
+
+                if (W(at) != name || W(at + 4) != tag)
+                {
+                    throw new InvalidDataException(
+                        $"Generated metadata name/tag differs from stock grammar: {path} row {i}; " +
+                        $"expectedName=0x{name:X8}, actualName=0x{W(at):X8}, " +
+                        $"expectedTag=0x{tag:X8}, actualTag=0x{W(at + 4):X8}, " +
+                        $"rowOffset={at}");
+                }
+
+                var kinds = rows.Kinds[i];
+                uint target = W(at + 8);
+                if (name==1){if(!kinds.Contains(Kind.Table))throw new InvalidDataException("Stock grammar base row kind differs.");Record(Base(current),path+".Base",Table(at,path),depth+1);continue;}
                 var field=Member(current,name);string child=path+"."+field.Name;Type member=field.FieldType;
                 if(member.IsPointer)
                 {

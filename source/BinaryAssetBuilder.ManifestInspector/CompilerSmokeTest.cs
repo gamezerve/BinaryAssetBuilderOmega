@@ -31,6 +31,7 @@ internal static class CompilerSmokeTest
         TestAudioPoolWorker();
         // Reborn: bounded variable package tables are tested with synthetic compressed bodies, never codecs by default.
         TestAudioPoolPackage();
+        TestDynamicsDraw();
         // Reborn: variable pool event closure remains a managed-only synthetic-framing regression by default.
         TestAudioPoolEvent();
         // Reborn: mixed variable closure uses synthetic codec framing in the default suite.
@@ -1570,7 +1571,6 @@ internal static class CompilerSmokeTest
         Expect(instance[252] == 1, "dynamics draw initially-active default", 1, instance[252]);
         Expect(chunk.RelocationBuffer.Length == 48, "dynamics draw relocation bytes", 48, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 0, "dynamics draw imports bytes", 0, chunk.ImportsBuffer.Length);
-        Console.WriteLine($"  DynamicsDraw bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");
     }
 
     //-------------------------------------------------------------------------------------------------

@@ -9,8 +9,15 @@ public static partial class Marshaler
     public static unsafe void Marshal(Node node, Quaternion** objT, Tracker state)
     {
         if (node is null) return;
+
         using Tracker.Context context = state.Push((void**)objT, (uint)sizeof(Quaternion), 1u);
+
         Marshal(node, *objT, state);
+
+        Marshal(node.GetAttributeValue("x", null), &(*objT)->X, state);
+        Marshal(node.GetAttributeValue("y", null), &(*objT)->Y, state);
+        Marshal(node.GetAttributeValue("z", null), &(*objT)->Z, state);
+        Marshal(node.GetAttributeValue("w", null), &(*objT)->W, state);
     }
 
     //-------------------------------------------------------------------------------------------------

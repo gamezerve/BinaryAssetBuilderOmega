@@ -991,8 +991,39 @@ internal sealed class ConscriptVariableGraphVerifier
     //-------------------------------------------------------------------------------------------------
     private StockMetadataGrammar QualifySchemaFamily(string manifest,SchemaNativeContract.Family family)
     {
+
+        if (family.Type == typeof(W3DDynamicsDrawModuleData))
+        {
+            var document = ManifestReader.Read(SdkEnvironmentPreflight.Read(manifest, 64 * 1048576));
+            var dynamicsGrammar = new StockMetadataGrammar();
+            int dynamicsQualified = 0;
+
+            foreach (var asset in document.Assets.Where(a => a.TypeId == FastHash.GetHashCode("GameObject")))
+            {
+                var review = GameObjectModuleReview.Inspect(manifest, asset.Name, allowNullArmorReferences: true);
+                var draws = review.Containers.FirstOrDefault(c => c.Name == "Draws");
+                if (draws == null) continue;
+
+                var matches = draws.Modules.Where(m => m.TypeId == family.TypeId).ToArray();
+                if (matches.Length == 0) continue;
+
+                var witness = GameObjectStockReview.Capture(manifest, asset.Name, allowNullArmorReferences: true);
+
+                foreach (var module in matches)
+                {
+                    dynamicsGrammar.Learn(witness.Bytes, module.Wrapper, witness.Projection.NativeRoot, family.Type);
+                    dynamicsQualified++;
+                }
+            }
+
+            if (dynamicsQualified == 0)
+                throw new InvalidDataException("No retail DynamicsDraw witness exists in the supplied manifest.");
+
+            return dynamicsGrammar;
+        }
+
         // Reborn: the Conscript baseline has no EVA-ready leaf; qualify it from the actual PlayerSpellBook source and native records.
-        if(AlliedUnitModuleContract.Supports(family.Type))return alliedUnitModules.Value;
+        if (AlliedUnitModuleContract.Supports(family.Type))return alliedUnitModules.Value;
         if(family.Type==typeof(Ep1EvaAnnounceSpecialPowerReadyClientUpdateModuleData))return EvaReadyClientContract.Qualify(manifest,baseline,referenceSchemas,catalog);
         // Reborn: the Conscript baseline has no EVA-create leaf; qualify it from the actual SovietSuperWeapon source and native record.
         if(family.Type==typeof(Ep1EvaAnnounceClientCreateModuleData))return EvaCreateClientContract.Qualify(manifest,baseline,referenceSchemas,catalog);

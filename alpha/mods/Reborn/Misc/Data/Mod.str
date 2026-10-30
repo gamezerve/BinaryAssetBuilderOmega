@@ -1531,7 +1531,7 @@ End
 	End
 
 	TYPE:JapanImperialLongRangeRadar
-		"JapanImperialLongRangeRadar Structure \n> Health = 6000 \n> Shroud Clearing Range = 1500"
+		"Extended Radar Structure \n> Health = 6000 \n> Shroud Clearing Range = 1500"
 	End
 
 	Desc:JapanImperialLongRangeRadar
