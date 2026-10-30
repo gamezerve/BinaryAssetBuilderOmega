@@ -86,15 +86,22 @@
 		id="AlliedRelayStationCommandSet">
 	</LogicCommandSet>	
 	
-	<LogicCommandSet
-		id="AlliedAirportControlTowerCommandSet">
-		<!-- Reborn: include every mutually exclusive Paradrop protocol variant in this command consumer. -->
+	<LogicCommandSet id="AlliedAirportControlTowerCommandSet">
+		<!-- Reborn: this tower menu contains only level 1 Paradrop protocol variants. -->
 		<Cmd>Command_ParadropLvl1</Cmd>
 		<Cmd>Command_ParadropLvl1_Protocol2</Cmd>
 		<Cmd>Command_ParadropLvl1_Protocol3</Cmd>
+	</LogicCommandSet>
+
+	<LogicCommandSet id="AlliedAirportControlTowerCommandSetRank2">
+		<!-- Reborn: this tower menu contains only level 2 Paradrop protocol variants. -->
 		<Cmd>Command_ParadropLvl2</Cmd>
 		<Cmd>Command_ParadropLvl2_Protocol2</Cmd>
 		<Cmd>Command_ParadropLvl2_Protocol3</Cmd>
+	</LogicCommandSet>
+
+	<LogicCommandSet id="AlliedAirportControlTowerCommandSetRank3">
+		<!-- Reborn: this tower menu contains only level 3 Paradrop protocol variants. -->
 		<Cmd>Command_ParadropLvl3</Cmd>
 		<Cmd>Command_ParadropLvl3_Protocol2</Cmd>
 		<Cmd>Command_ParadropLvl3_Protocol3</Cmd>

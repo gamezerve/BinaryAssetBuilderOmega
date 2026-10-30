@@ -20,27 +20,29 @@ XP-only `PlayerTech_Generic_Rank_*` values are not used. The original three
 power IDs and their commands, OCL troop payloads and 300/330/360-second reload
 values are retained.
 
-## Building ability ownership
+## Control Tower command-set levels
 
-<!-- Reborn: use the Iron Curtain ownership pattern so both interfaces reach one executable power and timer. -->
-`PlayerSpellBook` retains the nine PlayerPowerManager modules. The nine
-OCLSpecialPower execution modules now belong exclusively to
-`AlliedAirportControlTower`, following the original Iron Curtain arrangement.
-The tower's command set and mouse templates therefore resolve powers on the
-selected building, while the sidebar managers discover the same handlers.
-There is no second set of spellbook execution modules or independent copy of
-the timers for the building buttons. Cross-variant cooldown transfer remains
-outside this change.
+<!-- Reborn: upgrade the tower menu independently of the author's spellbook handler and cooldown configuration. -->
+`AlliedAirportControlTowerCommandSet` now contains only the three level-1
+protocol variants. `AlliedAirportControlTowerCommandSetRank2` contains only
+level-2 variants; `AlliedAirportControlTowerCommandSetRank3` contains level 3.
+The spellbook command set continues to list all nine alternatives.
 
-Previously the tower listed the commands but owned none of their execution
-modules. The sidebar could execute them through PlayerSpellBook; the selected
-building could not. Merely listing a command is insufficient to give an object
-its associated special-power module.
-The combined tower/spellbook/UI graph passes native readback: **60 assets**,
-**118 local / 612 stock** reference occurrences, checksum `74abfd8b`.
-The move preserves all nine original handler bodies. Building-button rank
-selection, casting and sidebar recharge synchronization still require gameplay
-confirmation after rebuilding Reborn.
+Two native `CommandSetUpgrade` modules live on the tower. Purchasing any row-3
+protocol grants `Upgrade_RebornParadrop_Row3` and selects the rank-2 set.
+That module conflicts with `Upgrade_RebornParadrop_Row5`; purchasing row 5
+selects the rank-3 set instead. The conflict also prevents rank 2 from winning
+when a tower is constructed after row 5 was purchased.
+
+The tower retains its executable Paradrop handlers, as required for building
+unit abilities. This menu change does not edit PlayerSpellBook or decide which
+handlers the author retains there for cooldown behavior. It introduces no new
+power IDs, reload times, troop payloads or protocol purchase requirements.
+Actual menu refresh and casting must be checked in a fresh match after build.
+The combined native graph with the two menu upgrades passes stream readback:
+**62 assets**, **136 local / 630 stock** reference occurrences, checksum
+`4ca87e9a`. Trigger/conflict checks cover the default, row-3, row-5 and
+already-owned-row-5 construction cases.
 
 ## Sidebar visibility
 

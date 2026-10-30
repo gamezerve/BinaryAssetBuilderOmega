@@ -82,7 +82,20 @@
 		</Draws>
 		
 		<Behaviors>
-			<!-- Reborn: own the same Paradrop handlers used by the sidebar, allowing tower unit abilities to execute the unlocked rank without duplicate timers. -->
+			<!-- Reborn: protocol row 3 selects level 2 commands; row 5 suppresses this upgrade and selects level 3. -->
+			<CommandSetUpgrade
+				id="ModuleTag_ParadropCommandSetRank2"
+				CommandSet="AlliedAirportControlTowerCommandSetRank2">
+				<TriggeredBy>Upgrade_RebornParadrop_Row3</TriggeredBy>
+				<ConflictsWith>Upgrade_RebornParadrop_Row5</ConflictsWith>
+			</CommandSetUpgrade>
+			<CommandSetUpgrade
+				id="ModuleTag_ParadropCommandSetRank3"
+				CommandSet="AlliedAirportControlTowerCommandSetRank3">
+				<TriggeredBy>Upgrade_RebornParadrop_Row5</TriggeredBy>
+			</CommandSetUpgrade>
+
+			<!-- Reborn: tower-owned Paradrop handlers serve building commands; spellbook handlers are configured separately. -->
 			<OCLSpecialPower
 				id="ModuleTag_ParadropLvl1"
 				SpecialPowerTemplate="SpecialPowerParadropLvl1"
