@@ -80,10 +80,4 @@ visibility check also evaluates all nine variants over those 512 combinations
 and verifies no eligible variant for Soviet/Japan protocol sets. This is a logic
 check, not an engine gameplay test.
 
-Build Reborn using `alpha/EALAModStudio.exe`. In a new Allied match, build the
-Control Tower and test a branch other than Air Power first. Buying two row-1
-protocols must not grant level 2; reaching XP rank 3 without a row-3 purchase
-must not grant it either. Then purchase row 3 and row 5, checking which buttons
-appear and the recharge state at each transition. Test without the tower as
-well. No game was launched and no published Reborn package was rebuilt during
-the automated checks.
+

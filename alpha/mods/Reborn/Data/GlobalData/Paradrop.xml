@@ -7,24 +7,41 @@
     <Include type="instance" source="DATA:Allied\Units_Campaign\CAMP_AlliedBomberAircraft_Infantry_2.xml" />
 	</Includes>
 
-	<!-- Reborn: purchases in any Allied protocol branch grant shared row 1/3/5 unlocks; XP ranks do not grant these upgrades. -->
-	<UpgradeTemplate id="Upgrade_RebornParadrop_Row1" Type="PLAYER"/>
-	<UpgradeTemplate id="Upgrade_RebornParadrop_Row3" Type="PLAYER"/>
-	<UpgradeTemplate id="Upgrade_RebornParadrop_Row5" Type="PLAYER"/>
-	<!-- Reborn: preserve both retail Allied upgrade bindings while adding the nine protocol threshold bindings. -->
-	<PlayerTechUpgradeBinding id="PlayerTechUpgradeBinding_Allied">
-		<Binding TechDependency="PlayerTech_Allied_HighTechnology" UpgradeToGrant="Upgrade_AlliedHighTechnology"/>
-		<Binding TechDependency="PlayerTech_Allied_AirPower" UpgradeToGrant="Upgrade_AlliedAirPower"/>
-		<Binding TechDependency="PlayerTech_Allied_AirPower" UpgradeToGrant="Upgrade_RebornParadrop_Row1"/>
-		<Binding TechDependency="PlayerTech_Allied_SatelliteSweep" UpgradeToGrant="Upgrade_RebornParadrop_Row1"/>
-		<Binding TechDependency="PlayerTech_Allied_HighTechnology" UpgradeToGrant="Upgrade_RebornParadrop_Row1"/>
-		<Binding TechDependency="PlayerTech_Allied_TimeBomb_Rank1" UpgradeToGrant="Upgrade_RebornParadrop_Row3"/>
-		<Binding TechDependency="PlayerTech_Allied_ChronoRift_Rank2" UpgradeToGrant="Upgrade_RebornParadrop_Row3"/>
-		<Binding TechDependency="PlayerTech_Allied_CryoSatellite_Rank1" UpgradeToGrant="Upgrade_RebornParadrop_Row3"/>
-		<Binding TechDependency="PlayerTech_Allied_TimeBomb_Rank3" UpgradeToGrant="Upgrade_RebornParadrop_Row5"/>
-		<Binding TechDependency="PlayerTech_ProductionBonus_Allies" UpgradeToGrant="Upgrade_RebornParadrop_Row5"/>
-		<Binding TechDependency="PlayerTech_Allied_CryoSatellite_Rank3" UpgradeToGrant="Upgrade_RebornParadrop_Row5"/>
-	</PlayerTechUpgradeBinding>
+<!-- Reborn: purchases in any Allied protocol branch grant shared row 1/3/5 unlocks; XP ranks do not grant these upgrades. -->
+<UpgradeTemplate id="Upgrade_RebornParadrop_Row1"
+		DisplayName="UpgradeName:RebornParadrop_Row1"
+                 Type="PLAYER"/>
+<UpgradeTemplate id="Upgrade_RebornParadrop_Row3"
+		DisplayName="UpgradeName:RebornParadrop_Row3"
+                 Type="PLAYER"/>
+<UpgradeTemplate id="Upgrade_RebornParadrop_Row5"
+		DisplayName="UpgradeName:RebornParadrop_Row5"
+                 Type="PLAYER"/>
+<!-- Reborn: preserve both retail Allied upgrade bindings while adding the nine protocol threshold bindings. -->
+<PlayerTechUpgradeBinding id="PlayerTechUpgradeBinding_Allied">
+	<Binding TechDependency="PlayerTech_Allied_HighTechnology"
+	         UpgradeToGrant="Upgrade_AlliedHighTechnology"/>
+	<Binding TechDependency="PlayerTech_Allied_AirPower"
+	         UpgradeToGrant="Upgrade_AlliedAirPower"/>
+	<Binding TechDependency="PlayerTech_Allied_AirPower"
+	         UpgradeToGrant="Upgrade_RebornParadrop_Row1"/>
+	<Binding TechDependency="PlayerTech_Allied_SatelliteSweep"
+	         UpgradeToGrant="Upgrade_RebornParadrop_Row1"/>
+	<Binding TechDependency="PlayerTech_Allied_HighTechnology"
+	         UpgradeToGrant="Upgrade_RebornParadrop_Row1"/>
+	<Binding TechDependency="PlayerTech_Allied_TimeBomb_Rank1"
+	         UpgradeToGrant="Upgrade_RebornParadrop_Row3"/>
+	<Binding TechDependency="PlayerTech_Allied_ChronoRift_Rank2"
+	         UpgradeToGrant="Upgrade_RebornParadrop_Row3"/>
+	<Binding TechDependency="PlayerTech_Allied_CryoSatellite_Rank1"
+	         UpgradeToGrant="Upgrade_RebornParadrop_Row3"/>
+	<Binding TechDependency="PlayerTech_Allied_TimeBomb_Rank3"
+	         UpgradeToGrant="Upgrade_RebornParadrop_Row5"/>
+	<Binding TechDependency="PlayerTech_ProductionBonus_Allies"
+	         UpgradeToGrant="Upgrade_RebornParadrop_Row5"/>
+	<Binding TechDependency="PlayerTech_Allied_CryoSatellite_Rank3"
+	         UpgradeToGrant="Upgrade_RebornParadrop_Row5"/>
+</PlayerTechUpgradeBinding>
 
 
 	<GameObject

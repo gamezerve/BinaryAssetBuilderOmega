@@ -467,6 +467,12 @@
 	Desc:SovietBomberAircraft_Special_Dying
 		""
 	End
+
+// Soviet Mass Production
+
+	TYPE:PLAYERPOWERSOVIETMASSPRODUCTION
+		"Economic Upgrade (%25 Discount)"
+	End
 	
 // Allied Power Plant
 
@@ -695,8 +701,6 @@
 	TYPE:AlliedFutureTechHarmonizerControl
 		"FutureTech Vehicle Production \n> Health = 4000 \n> Shroud Clearing Range = 500"
 	End
-	
-
 
 // Allied FutureTech Arsenal
 	
@@ -711,8 +715,6 @@
 	TYPE:AlliedFutureTechArsenal
 		"FutureTech Vehicle Production \n> Health = 4000 \n> Shroud Clearing Range = 500"
 	End
-	
-
 
 // Allied FutureTech Cooling Tower
 	
@@ -727,8 +729,6 @@
 	TYPE:AlliedFutureTechCoolingTower
 		"FutureTech Structure \n> Power Production = +150 \n> Health = 1500 \n> Shroud Clearing Range = 500"
 	End
-	
-
 
 // Allied FutureTech R&D Labs
 	
@@ -743,8 +743,6 @@
 	TYPE:AlliedFutureTechRDLabs
 		"FutureTech Structure \n> Health = 4000 \n> Shroud Clearing Range = 150"
 	End
-	
-
 
 // Allied FutureTech Com Center
 	
@@ -759,8 +757,6 @@
 	TYPE:AlliedFutureTechComCenter
 		"FutureTech Structure \n> Health = 4000 \n> Shroud Clearing Range = 150"
 	End
-	
-
 
 // Allied FutureTech Estates
 	
@@ -775,8 +771,6 @@
 	TYPE:AlliedFutureTechEstates
 		"FutureTech Structure \n> Health = 4000 \n> Shroud Clearing Range = 150"
 	End
-	
-
 
 // Allied FutureTech Skytower
 	
@@ -791,8 +785,6 @@
 	TYPE:AlliedFutureTechSkytower
 		"FutureTech Structure \n> Health = 4000 \n> Shroud Clearing Range = 150"
 	End
-	
-
 
 // Allied FutureTech Signal Array
 	
@@ -807,8 +799,6 @@
 	TYPE:AlliedFutureTechSignalArray
 		"FutureTech Structure \n> Health = 2000 \n> Shroud Clearing Range = 150"
 	End
-	
-
 
 // Allied FutureTech Engine Room
 	
@@ -823,8 +813,6 @@
 	TYPE:AlliedFutureTechEngineRoom
 		"FutureTech Structure \n> Health = 2000 \n> Shroud Clearing Range = 150"
 	End
-	
-
 
 // Allied FutureTech Ballistics Center
 	
@@ -839,8 +827,6 @@
 	TYPE:AlliedFutureTechBallisticsCenter
 		"FutureTech Structure \n> Health = 2000 \n> Shroud Clearing Range = 150"
 	End
-	
-
 
 // Allied FutureTech Ammo Dump
 	
@@ -961,15 +947,33 @@
 // Allied Paradrop
 	
 	TYPE:CampaignPlayerPowerParadropLvl1Reborn
-		"Airborne Reinforcements \nRequires Airport Control Tower"
+		"Airborne Reinforcements \nRequires Any Row 1 Protocol \nRequires Airport Control Tower"
 	End
 
 	TYPE:CampaignPlayerPowerParadropLvl2Reborn
-		"Airborne Reinforcements \nRequires Airport Control Tower"
+		"Airborne Reinforcements \nRequires Any Row 2 Protocol \nRequires Airport Control Tower"
 	End
 
-	TYPE:CampaignPlayerPowerParadropLvl2Reborn
-		"Airborne Reinforcements \nRequires Airport Control Tower"
+	TYPE:CampaignPlayerPowerParadropLvl3Reborn
+		"Airborne Reinforcements \nRequires Any Row 3 Protocol \nRequires Airport Control Tower"
+	End
+	
+	UpgradeName:RebornParadrop_Row1
+		"Any Row 1 Protocol"
+	End
+
+	UpgradeName:RebornParadrop_Row3
+		"Any Row 3 Protocol"
+	End
+
+	UpgradeName:RebornParadrop_Row5
+		"Any Row 5 Protocol"
+	End
+
+// Allied Free Trade
+
+	TYPE:PLAYERPOWERALLIEDFREETRADE
+		"Economic Upgrade (%25 More Income)"
 	End
 	
 // Imperial Greater King Oni
