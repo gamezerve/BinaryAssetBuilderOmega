@@ -345,6 +345,9 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();PurchaseTechButtonCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==4 && args[0]=="unit-ability-button-self-test")
             {CompilerSmokeTest.InitializeHashProvider();UnitAbilityButtonCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
+            // Reborn: qualify retail protocol-to-upgrade bindings and exercise shared threshold grants privately.
+            if(args.Length==4 && args[0]=="player-tech-binding-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();PlayerTechUpgradeBindingCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==4 && args[0]=="player-tech-self-test")
             {CompilerSmokeTest.InitializeHashProvider();PlayerTechCompilerSmokeTest.Run(args[1],args[2],args[3]);return 0;}
             if(args.Length==4 && args[0]=="button-state-self-test")
