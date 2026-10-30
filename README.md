@@ -13,8 +13,11 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 reference and native stream routes. All three original faction records match
 retail; a private shared-upgrade/power dependency stream passes readback.
 Reborn's Paradrop now uses purchases at Allied protocol rows **1 / 3 / 5**,
-with the Control Tower requirement preserved. Gameplay, button visibility and
-cross-rank recharge behavior still need an in-game check. See
+with the Control Tower requirement preserved. Sidebar variants now use native
+Required/ForbiddenPlayerTech gates: no purchase means no eligible button;
+only the highest purchased row qualifies, with no Soviet/Japan eligibility.
+The 512 purchase combinations pass; actual UI behavior and independent variant
+recharge timers still need an in-game check. See
 [Paradrop protocol thresholds](docs/REBORN_PARADROP_PROTOCOL_THRESHOLDS.md).
 
 <!-- Reborn: every official WeaponTemplate nugget choice has an explicit EP1 writer and source/native/metadata contract. -->

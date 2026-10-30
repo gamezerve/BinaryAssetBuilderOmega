@@ -16,13 +16,37 @@ this binding asset, so no new PlayerTemplate or purchase button is needed.
 
 Each power's GameDependency requires its threshold upgrade and the existing
 `AlliedAirportControlTower`. Lower levels forbid higher threshold upgrades.
-XP-only `PlayerTech_Generic_Rank_*` values are not used. The three power IDs,
-commands, OCL troop payloads and 300/330/360-second reload values are unchanged.
+XP-only `PlayerTech_Generic_Rank_*` values are not used. The original three
+power IDs and their commands, OCL troop payloads and 300/330/360-second reload
+values are retained.
+
+## Sidebar visibility
+
+<!-- Reborn: native tech visibility predicates are separate from GameDependency usability checks. -->
+The initial shared-upgrade implementation restricted casting but left all three
+buttons visible, including on Soviet/Japan. `GameDependency` does not replace
+the native `RequiredPlayerTech` / `ForbiddenPlayerTech` visibility conditions.
+
+Each rank now has three power variants: the original ID and `_Protocol2` /
+`_Protocol3`. Each requires one actual Allied protocol purchase. Variants forbid
+all higher-row threshold protocols, and the second/third variants also forbid
+earlier alternatives in their own row. Consequently the authored tech
+predicates select exactly one variant of the highest purchased rank. No
+protocol purchases means none qualify; Soviet/Japan purchases grant none of
+the required Allied techs. The Control Tower remains a usability dependency,
+so its absence may disable an unlocked button rather than hide it.
+
+Each variant has its own PlayerPowerManager, OCL handler, command and mouse /
+joypad template, reusing the existing rank's button state and troop OCL.
+When multiple same-row protocols are purchased, the first listed protocol
+wins, irrespective of purchase order. These are engine-native tech gates;
+there is no new schema attribute or game executable patch.
 
 The old level-2/3 leech-recharge attributes were tied to two specific protocols.
 They were removed because a shared upgrade is not a PlayerTech trigger. Each
-level now has its own timer; this change does **not** implement shared cooldown
-transfer across levels. Availability, UI hiding versus disabling, recharge on
+power variant has its own timer; this change does **not** implement shared
+cooldown transfer across levels or same-level protocol variants. Buying a
+higher-priority alternative can switch the active variant and its timer. Availability, UI hiding versus disabling, recharge on
 unlock and the lifetime of the overridden faction binding require a fresh-match
 runtime check. XML/schema and native proof alone cannot establish these behaviors.
 
@@ -33,13 +57,16 @@ qualify against retail. The private test links a shared upgrade and power
 dependency into a stream and verifies BIN/RELO/IMP readback.
 
 The actual Paradrop source plus its three existing mod button-state definitions
-also compiles privately: **23 assets**, **33 local / 394 stock** reference
-occurrences, verified stream checksum `f2666a04`. Paradrop by itself does not
-include those UI definitions; the normal Reborn source graph supplies them.
+compiles privately after the visibility fix: **47 assets**, **81 local / 481
+stock** reference occurrences, verified stream checksum `bb929510`. Paradrop
+by itself does not include those UI definitions; the normal Reborn source
+graph supplies them. This supersedes the initial 23-asset compile check.
 
 The authored unlock predicates were checked over all 512 combinations of the
 nine threshold protocols: zero active levels before purchase, otherwise only
-the highest purchased threshold passes the upgrade predicates. This is a logic
+the highest purchased threshold passes the upgrade predicates. The follow-up
+visibility check also evaluates all nine variants over those 512 combinations
+and verifies no eligible variant for Soviet/Japan protocol sets. This is a logic
 check, not an engine gameplay test.
 
 Build Reborn using `alpha/EALAModStudio.exe`. In a new Allied match, build the
