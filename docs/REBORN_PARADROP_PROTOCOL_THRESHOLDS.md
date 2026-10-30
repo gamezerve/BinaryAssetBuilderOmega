@@ -1,107 +1,74 @@
 # Reborn Paradrop protocol thresholds
 
-<!-- Reborn: record the authored purchase-unlock contract and distinguish compile proof from gameplay evidence. -->
-Source: `alpha/mods/Reborn/Data/GlobalData/Paradrop.xml`.
+<!-- Reborn: protocol purchases select menus; they must not create separate power or cooldown identities. -->
+Source files:
 
-| Paradrop level | Purchase any one protocol in this Allied row |
+- `alpha/mods/Reborn/Data/GlobalData/Paradrop.xml`
+- `alpha/mods/Reborn/Data/Allied/Structures_Campaign/AlliedAirportControlTower.xml`
+- `alpha/mods/Reborn/Data/GlobalData/LogicCommandSet.xml`
+- `alpha/mods/Reborn/Data/UI/Mouse/UnitAbilityButtonTemplates.xml`
+
+## Canonical powers
+
+There are exactly three power templates: `SpecialPowerParadropLvl1`,
+`SpecialPowerParadropLvl2` and `SpecialPowerParadropLvl3`. The `_Protocol2` and
+`_Protocol3` copies, commands, handlers and UI templates were removed. Buying
+a different protocol in the same row must not select a different power ID.
+
+| Purchase any protocol in this Allied row | Canonical command |
 | --- | --- |
-| 1 | Row 1: Air Power, Satellite Sweep, High Technology |
-| 2 | Row 3: Time Bomb 1, Chrono Rift 2, Cryo Satellite 1 |
-| 3 | Row 5: Time Bomb 3, Production Bonus Allies, Cryo Satellite 3 |
+| Row 1: Air Power, Satellite Sweep, High Technology | Command_ParadropLvl1 |
+| Row 3: Time Bomb 1, Chrono Rift 2, Cryo Satellite 1 | Command_ParadropLvl2 |
+| Row 5: Time Bomb 3, Production Bonus Allies, Cryo Satellite 3 | Command_ParadropLvl3 |
 
-Each row's three purchases grant the same `PLAYER` UpgradeTemplate through
-`PlayerTechUpgradeBinding_Allied`. The two original High Technology/Air Power
-bindings are retained. The existing Allied PlayerTemplate already references
-this binding asset, so no new PlayerTemplate or purchase button is needed.
+The original `PlayerTechUpgradeBinding_Allied` entries are retained, with the
+nine additional bindings granting three shared row upgrades. The powers keep
+those upgrades and the Control Tower as GameDependency prerequisites. Their
+RequiredPlayerTech now checks Allied faction membership, not a particular
+protocol column. XP-only Generic_Rank technologies are not unlocks.
 
-Each power's GameDependency requires its threshold upgrade and the existing
-`AlliedAirportControlTower`. Lower levels forbid higher threshold upgrades.
-XP-only `PlayerTech_Generic_Rank_*` values are not used. The original three
-power IDs and their commands, OCL troop payloads and 300/330/360-second reload
-values are retained.
+## Menu selection
 
-## Control Tower command-set levels
+Both `PlayerSpellBookCommandSet` and `AlliedAirportControlTowerCommandSet`
+start with no Paradrop command. Rank1/Rank2/Rank3 command-set variants each
+contain exactly one canonical Paradrop command. All other spellbook commands
+are preserved in every ranked variant.
 
-<!-- Reborn: upgrade the tower menu independently of the author's spellbook handler and cooldown configuration. -->
-`AlliedAirportControlTowerCommandSet` now contains only the three level-1
-protocol variants. `AlliedAirportControlTowerCommandSetRank2` contains only
-level-2 variants; `AlliedAirportControlTowerCommandSetRank3` contains level 3.
-The spellbook command set continues to list all nine alternatives.
+Three native CommandSetUpgrade modules on each object select the appropriate
+menu from the shared Row1/Row3/Row5 upgrades. Lower-row modules conflict with
+higher-row upgrades. This replaces the earlier protocol-specific template
+visibility predicates. Actual sidebar refresh, faction visibility and casting
+must be confirmed in a new match: source/native proof cannot establish UI
+behavior.
 
-Two native `CommandSetUpgrade` modules live on the tower. Purchasing any row-3
-protocol grants `Upgrade_RebornParadrop_Row3` and selects the rank-2 set.
-That module conflicts with `Upgrade_RebornParadrop_Row5`; purchasing row 5
-selects the rank-3 set instead. The conflict also prevents rank 2 from winning
-when a tower is constructed after row 5 was purchased.
+## Shared timers
 
-The tower retains its executable Paradrop handlers, as required for building
-unit abilities. This menu change does not edit PlayerSpellBook or decide which
-handlers the author retains there for cooldown behavior. It introduces no new
-power IDs, reload times, troop payloads or protocol purchase requirements.
-Actual menu refresh and casting must be checked in a fresh match after build.
-The combined native graph with the two menu upgrades passes stream readback:
-**62 assets**, **136 local / 630 stock** reference occurrences, checksum
-`4ca87e9a`. Trigger/conflict checks cover the default, row-3, row-5 and
-already-owned-row-5 construction cases.
+<!-- Reborn: same-template sharing across objects is different from transferring recharge across level IDs. -->
+All three canonical templates use the official `SHARED_SYNC` flag. This asks
+the engine to share a player's timer for the same template across spellbook
+and Control Tower handler instances. Both interfaces use the same canonical
+command and template for their current level. The author's retained original
+spellbook handlers are preserved; only obsolete protocol copies are removed.
 
-## Sidebar visibility
+`SHARED_SYNC` exists in the original Uprising schemas and retail powers such
+as `SpecialPowerTelekineticProjectorDevice`. Its EP1 bit is `0x1000`.
+It does **not** merge different template IDs: level 1, 2 and 3 remain distinct
+powers with the original 300/330/360-second reload values. Cross-level recharge
+transfer is not implemented by this flag. Runtime testing must distinguish
+same-level building/sidebar synchronization from a level-up transition.
 
-<!-- Reborn: native tech visibility predicates are separate from GameDependency usability checks. -->
-The initial shared-upgrade implementation restricted casting but left all three
-buttons visible, including on Soviet/Japan. `GameDependency` does not replace
-the native `RequiredPlayerTech` / `ForbiddenPlayerTech` visibility conditions.
+## Verification
 
-Each rank now has three power variants: the original ID and `_Protocol2` /
-`_Protocol3`. Each requires one actual Allied protocol purchase. Variants forbid
-all higher-row threshold protocols, and the second/third variants also forbid
-earlier alternatives in their own row. Consequently the authored tech
-predicates select exactly one variant of the highest purchased rank. No
-protocol purchases means none qualify; Soviet/Japan purchases grant none of
-the required Allied techs. The Control Tower remains a usability dependency,
-so its absence may disable an unlocked button rather than hide it.
+- Exactly three canonical powers and no `_Protocol2` / `_Protocol3` IDs in the
+  four active source files.
+- Both objects select the same canonical command for locked/row1/row3/row5
+  states, including construction after row5 has already been purchased.
+- All non-Paradrop spellbook commands remain in every ranked menu.
+- The combined focused graph compiles: **36 assets**, **52 local / 666 stock**
+  reference occurrences, verified BIN/RELO/IMP checksum `3c67baf9`.
+- Bounded readback confirms the `SHARED_SYNC` bit in all three emitted powers
+  and an original retail Uprising witness.
 
-Each variant has its own spellbook PlayerPowerManager, tower OCL handler, command and mouse /
-joypad template, reusing the existing rank's button state and troop OCL.
-When multiple same-row protocols are purchased, the first listed protocol
-wins, irrespective of purchase order. These are engine-native tech gates;
-there is no new schema attribute or game executable patch.
-
-The variants must also be listed in both `PlayerSpellBookCommandSet` and
-`AlliedAirportControlTowerCommandSet`, with a `UnitAbilityButtonTemplate` for
-each variant's LogicCommand. Initially these consumer lists and mouse templates
-contained only the three original commands, so only the first protocol column
-was reachable despite the alternate powers passing compilation. All nine
-variants are now linked through both command consumers and their mouse
-command templates. Predicate checks alone do not prove this UI reachability.
-The complete focused graph now passes native stream readback: **58 assets**,
-**117 local / 558 stock** reference occurrences, checksum `99143e70`.
-Actual second/third-column gameplay still requires an in-game check.
-
-The old level-2/3 leech-recharge attributes were tied to two specific protocols.
-They were removed because a shared upgrade is not a PlayerTech trigger. Each
-power variant has its own timer; this change does **not** implement shared
-cooldown transfer across levels or same-level protocol variants. Buying a
-higher-priority alternative can switch the active variant and its timer. Availability, UI hiding versus disabling, recharge on
-unlock and the lifetime of the overridden faction binding require a fresh-match
-runtime check. XML/schema and native proof alone cannot establish these behaviors.
-
-Compiler coverage: official PlayerTechUpgradeBinding schema, 12-byte root and
-8-byte binding pairs; ordinary source includes/inheritance, typed import
-resolution and mandatory source/native proof. Three original faction records
-qualify against retail. The private test links a shared upgrade and power
-dependency into a stream and verifies BIN/RELO/IMP readback.
-
-The actual Paradrop source plus its three existing mod button-state definitions
-compiles privately after the visibility fix: **47 assets**, **81 local / 481
-stock** reference occurrences, verified stream checksum `bb929510`. Paradrop
-by itself does not include those UI definitions; the normal Reborn source
-graph supplies them. This supersedes the initial 23-asset compile check.
-
-The authored unlock predicates were checked over all 512 combinations of the
-nine threshold protocols: zero active levels before purchase, otherwise only
-the highest purchased threshold passes the upgrade predicates. The follow-up
-visibility check also evaluates all nine variants over those 512 combinations
-and verifies no eligible variant for Soviet/Japan protocol sets. This is a logic
-check, not an engine gameplay test.
-
-
+No published mod package was rebuilt and no game was launched. Rebuild Reborn
+using `alpha/EALAModStudio.exe`; check visibility and purchases in multiple
+columns, then cast from the building and verify the sidebar shares its timer.

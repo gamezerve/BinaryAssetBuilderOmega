@@ -94,7 +94,6 @@
   </UnitAbilityButtonTemplate>
 <!-- No Worky Properly -->
 
-
   <UnitAbilityButtonTemplate
 		id="ButtonPlayerPowerTelekineticProjectorDevice"
 		LogicCommand="Command_TelekineticProjectorDevice">
@@ -170,69 +169,5 @@
 				ValidTargetCursor="TargetAbility" />
 		</Data>
 	</UnitAbilityButtonTemplate>
-	
 
-
-
-	<!-- Reborn: spellbook/sidebar and Control Tower command buttons also need mouse templates for alternative protocol variants. -->
-<UnitAbilityButtonTemplate
-		id="ButtonCampaignPlayerPoweParadrop_Rank1_Protocol2"
-		LogicCommand="Command_ParadropLvl1_Protocol2">
-		<Data>
-      <TargetedSpecialPower
-        RadiusCursor="Target_Allied_Paradrop"
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl1"
-				ValidTargetCursor="TargetAbility"/>
-    </Data>
-  </UnitAbilityButtonTemplate>
-<UnitAbilityButtonTemplate
-		id="ButtonCampaignPlayerPoweParadrop_Rank1_Protocol3"
-		LogicCommand="Command_ParadropLvl1_Protocol3">
-		<Data>
-      <TargetedSpecialPower
-        RadiusCursor="Target_Allied_Paradrop"
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl1"
-				ValidTargetCursor="TargetAbility"/>
-    </Data>
-  </UnitAbilityButtonTemplate>
-<UnitAbilityButtonTemplate
-		id="ButtonCampaignPlayerPoweParadrop_Rank2_Protocol2"
-		LogicCommand="Command_ParadropLvl2_Protocol2">
-		<Data>
-      <TargetedSpecialPower
-        RadiusCursor="Target_Allied_Paradrop"
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl2"
-				ValidTargetCursor="TargetAbility"/>
-    </Data>
-  </UnitAbilityButtonTemplate>
-<UnitAbilityButtonTemplate
-		id="ButtonCampaignPlayerPoweParadrop_Rank2_Protocol3"
-		LogicCommand="Command_ParadropLvl2_Protocol3">
-		<Data>
-      <TargetedSpecialPower
-        RadiusCursor="Target_Allied_Paradrop"
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl2"
-				ValidTargetCursor="TargetAbility"/>
-    </Data>
-  </UnitAbilityButtonTemplate>
-<UnitAbilityButtonTemplate
-		id="ButtonCampaignPlayerPoweParadrop_Rank3_Protocol2"
-		LogicCommand="Command_ParadropLvl3_Protocol2">
-		<Data>
-      <TargetedSpecialPower
-        RadiusCursor="Target_Allied_Paradrop"
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl3"
-				ValidTargetCursor="TargetAbility"/>
-    </Data>
-  </UnitAbilityButtonTemplate>
-<UnitAbilityButtonTemplate
-		id="ButtonCampaignPlayerPoweParadrop_Rank3_Protocol3"
-		LogicCommand="Command_ParadropLvl3_Protocol3">
-		<Data>
-      <TargetedSpecialPower
-        RadiusCursor="Target_Allied_Paradrop"
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl3"
-				ValidTargetCursor="TargetAbility"/>
-    </Data>
-  </UnitAbilityButtonTemplate>
 </AssetDeclaration>

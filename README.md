@@ -8,21 +8,16 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 30, 2026
 
-<!-- Reborn: shared player upgrades represent purchases in any protocol branch without substituting XP rank. -->
-`PlayerTechUpgradeBinding` now compiles through the ordinary source, inheritance,
-reference and native stream routes. All three original faction records match
-retail; a private shared-upgrade/power dependency stream passes readback.
-Reborn's Paradrop now uses purchases at Allied protocol rows **1 / 3 / 5**,
-with the Control Tower requirement preserved. Sidebar variants now use native
-Required/ForbiddenPlayerTech gates: no purchase means no eligible button;
-only the highest purchased row qualifies, with no Soviet/Japan eligibility.
-All nine variants are linked through the spellbook / Control Tower command
-sets and mouse command-button templates, including the second/third columns.
-The Control Tower now upgrades its three-command menu from Paradrop level 1
-to level 2 at protocol row 3, then level 3 at row 5 using native CommandSetUpgrade
-modules. This menu change leaves the author's spellbook handlers untouched.
-The 512 purchase combinations pass; actual UI behavior and independent variant
-recharge timers still need an in-game check. See
+<!-- Reborn: protocol columns select one canonical Paradrop command instead of separate power/timer identities. -->
+`PlayerTechUpgradeBinding` supports shared purchase thresholds. Reborn now has
+exactly **three canonical Paradrop powers**, with no `_Protocol2/_Protocol3`
+copies. Both spellbook and Control Tower command sets switch to the same level
+at Allied protocol rows **1 / 3 / 5**; unrelated spellbook commands are retained.
+The official **SHARED_SYNC** flag shares each same-template timer across the
+two objects. It does not transfer recharge between different level IDs.
+The focused **36-asset** graph passes native stream readback, and emitted flag
+bits match an original Uprising witness. Sidebar refresh, faction visibility
+and shared-timer behavior still need a fresh-match check. See
 [Paradrop protocol thresholds](docs/REBORN_PARADROP_PROTOCOL_THRESHOLDS.md).
 
 <!-- Reborn: every official WeaponTemplate nugget choice has an explicit EP1 writer and source/native/metadata contract. -->

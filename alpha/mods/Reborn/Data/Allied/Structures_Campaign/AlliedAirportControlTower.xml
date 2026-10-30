@@ -2,9 +2,9 @@
 <AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
 	<Tags></Tags>
 	<Includes>
-	
+
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
-		
+
 		<!-- <Include type="all"	source="ART:SA_LAXControlTower.W3X" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
 		<Include type="instance" source="DATA:Civilian/Santa_Monica_SA/Props/SA_LAXControlTower_Collapse.xml" />
@@ -67,7 +67,7 @@
         PreferredBaseTypes="MAIN_BASE"
         SortOrder="PREFER_OLDEST" />
     </SkirmishAIInformation>
-	
+
 		<Draws>
 			<ScriptedModelDraw
 				id="ModuleTag_Draw"
@@ -80,18 +80,19 @@
 				</ModelConditionState>
 			</ScriptedModelDraw>
 		</Draws>
-		
+
 		<Behaviors>
-			<!-- Reborn: protocol row 3 selects level 2 commands; row 5 suppresses this upgrade and selects level 3. -->
-			<CommandSetUpgrade
-				id="ModuleTag_ParadropCommandSetRank2"
-				CommandSet="AlliedAirportControlTowerCommandSetRank2">
+			<!-- Reborn: shared row upgrades select one canonical Paradrop level without protocol-specific power copies. -->
+			<CommandSetUpgrade id="ModuleTag_TowerParadropMenuRank1" CommandSet="AlliedAirportControlTowerCommandSetRank1">
+				<TriggeredBy>Upgrade_RebornParadrop_Row1</TriggeredBy>
+				<ConflictsWith>Upgrade_RebornParadrop_Row3</ConflictsWith>
+				<ConflictsWith>Upgrade_RebornParadrop_Row5</ConflictsWith>
+			</CommandSetUpgrade>
+			<CommandSetUpgrade id="ModuleTag_TowerParadropMenuRank2" CommandSet="AlliedAirportControlTowerCommandSetRank2">
 				<TriggeredBy>Upgrade_RebornParadrop_Row3</TriggeredBy>
 				<ConflictsWith>Upgrade_RebornParadrop_Row5</ConflictsWith>
 			</CommandSetUpgrade>
-			<CommandSetUpgrade
-				id="ModuleTag_ParadropCommandSetRank3"
-				CommandSet="AlliedAirportControlTowerCommandSetRank3">
+			<CommandSetUpgrade id="ModuleTag_TowerParadropMenuRank3" CommandSet="AlliedAirportControlTowerCommandSetRank3">
 				<TriggeredBy>Upgrade_RebornParadrop_Row5</TriggeredBy>
 			</CommandSetUpgrade>
 
@@ -138,94 +139,7 @@
           <IncludeThing>AlliedConstructionYard</IncludeThing>
         </NearestSecondaryObjectFilter>
       </OCLSpecialPower>
-			<OCLSpecialPower
-				id="ModuleTag_ParadropLvl1_Protocol2"
-				SpecialPowerTemplate="SpecialPowerParadropLvl1_Protocol2"
-				UpdateModuleStartsAttack="false"
-				AvailableAtStart="true"
-				OCL="OCL_ParaDropLvl1"
-				DestinationOCL="OCL_PrecisionStrikeBeacon"
-				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-				CreateLocationOffset="1000.0">
-        <NearestSecondaryObjectFilter
-					Relationship="SAME_PLAYER">
-          <IncludeThing>AlliedConstructionYard</IncludeThing>
-        </NearestSecondaryObjectFilter>
-      </OCLSpecialPower>
-			<OCLSpecialPower
-				id="ModuleTag_ParadropLvl1_Protocol3"
-				SpecialPowerTemplate="SpecialPowerParadropLvl1_Protocol3"
-				UpdateModuleStartsAttack="false"
-				AvailableAtStart="true"
-				OCL="OCL_ParaDropLvl1"
-				DestinationOCL="OCL_PrecisionStrikeBeacon"
-				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-				CreateLocationOffset="1000.0">
-        <NearestSecondaryObjectFilter
-					Relationship="SAME_PLAYER">
-          <IncludeThing>AlliedConstructionYard</IncludeThing>
-        </NearestSecondaryObjectFilter>
-      </OCLSpecialPower>
-			<OCLSpecialPower
-				id="ModuleTag_ParadropLvl2_Protocol2"
-				SpecialPowerTemplate="SpecialPowerParadropLvl2_Protocol2"
-				UpdateModuleStartsAttack="false"
-				AvailableAtStart="true"
-				OCL="OCL_ParaDropLvl2"
-        DestinationOCL="OCL_PrecisionStrikeBeacon"
-				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-			  CreateLocationOffset="1000.0">
-        <NearestSecondaryObjectFilter
-					Relationship="SAME_PLAYER">
-          <IncludeThing>AlliedConstructionYard</IncludeThing>
-        </NearestSecondaryObjectFilter>
-      </OCLSpecialPower>
-			<OCLSpecialPower
-				id="ModuleTag_ParadropLvl2_Protocol3"
-				SpecialPowerTemplate="SpecialPowerParadropLvl2_Protocol3"
-				UpdateModuleStartsAttack="false"
-				AvailableAtStart="true"
-				OCL="OCL_ParaDropLvl2"
-        DestinationOCL="OCL_PrecisionStrikeBeacon"
-				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-			  CreateLocationOffset="1000.0">
-        <NearestSecondaryObjectFilter
-					Relationship="SAME_PLAYER">
-          <IncludeThing>AlliedConstructionYard</IncludeThing>
-        </NearestSecondaryObjectFilter>
-      </OCLSpecialPower>
-			<OCLSpecialPower
-				id="ModuleTag_ParadropLvl3_Protocol2"
-				SpecialPowerTemplate="SpecialPowerParadropLvl3_Protocol2"
-				UpdateModuleStartsAttack="false"
-				AvailableAtStart="true"
-				OCL="OCL_ParaDropLvl3"
-        DestinationOCL="OCL_PrecisionStrikeBeacon"
-				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-			  CreateLocationOffset="1000.0">
-        <NearestSecondaryObjectFilter
-					Relationship="SAME_PLAYER">
-          <IncludeThing>AlliedConstructionYard</IncludeThing>
-        </NearestSecondaryObjectFilter>
-      </OCLSpecialPower>
-			<OCLSpecialPower
-				id="ModuleTag_ParadropLvl3_Protocol3"
-				SpecialPowerTemplate="SpecialPowerParadropLvl3_Protocol3"
-				UpdateModuleStartsAttack="false"
-				AvailableAtStart="true"
-				OCL="OCL_ParaDropLvl3"
-        DestinationOCL="OCL_PrecisionStrikeBeacon"
-				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-			  CreateLocationOffset="1000.0">
-        <NearestSecondaryObjectFilter
-					Relationship="SAME_PLAYER">
-          <IncludeThing>AlliedConstructionYard</IncludeThing>
-        </NearestSecondaryObjectFilter>
-      </OCLSpecialPower>
 
-		
-			
-			
 			<Physics
 				id="ModuleTag_Physics"/>
 
@@ -255,7 +169,7 @@
 				<DieMuxData
 					DeathTypes="ALL" />
 			</CreateObjectDie>	
-			
+
 			<!-- civ buildings should have a CreateObjectDie to make a collapse version. -->
 			<DestroyDie
 				id="ModuleTag_DestroyDie">
@@ -276,9 +190,9 @@
 				href="DATA:Includes/GenericAlliedBuildingSuicide.xml" />
 			<xi:include
 				href="DATA:Includes/InfiltratorContainParalyze.xml" />	
-			
+
 		</Behaviors>
-		
+
 		<AI>
 			<AIUpdate
 				id="ModuleTag_AIUpdate"
@@ -286,7 +200,7 @@
 				StateMachine="StructureAIStateMachine">
 			</AIUpdate>
 		</AI>
-		
+
 		<Body>
 			<ActiveBody
 				id="ModuleTag_Body"
@@ -315,7 +229,7 @@
 		<VisionInfo
 			VisionRange="150"
 			ShroudClearingRange="500" />
-		
+
 	</GameObject>
 
 	<ObjectCreationList
@@ -332,6 +246,4 @@
 		</CreateObject>
 	</ObjectCreationList>
 
-	
-	
 </AssetDeclaration>

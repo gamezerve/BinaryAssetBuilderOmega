@@ -43,13 +43,25 @@
 	         UpgradeToGrant="Upgrade_RebornParadrop_Row5"/>
 </PlayerTechUpgradeBinding>
 
-
 	<GameObject
 		id="PlayerSpellBook"
 		inheritFrom="PlayerSpellBook">
 		<Behaviors>
+			<!-- Reborn: shared row upgrades select one canonical Paradrop level without protocol-specific power copies. -->
+			<CommandSetUpgrade id="ModuleTag_SpellbookParadropMenuRank1" CommandSet="PlayerSpellBookCommandSetRank1">
+				<TriggeredBy>Upgrade_RebornParadrop_Row1</TriggeredBy>
+				<ConflictsWith>Upgrade_RebornParadrop_Row3</ConflictsWith>
+				<ConflictsWith>Upgrade_RebornParadrop_Row5</ConflictsWith>
+			</CommandSetUpgrade>
+			<CommandSetUpgrade id="ModuleTag_SpellbookParadropMenuRank2" CommandSet="PlayerSpellBookCommandSetRank2">
+				<TriggeredBy>Upgrade_RebornParadrop_Row3</TriggeredBy>
+				<ConflictsWith>Upgrade_RebornParadrop_Row5</ConflictsWith>
+			</CommandSetUpgrade>
+			<CommandSetUpgrade id="ModuleTag_SpellbookParadropMenuRank3" CommandSet="PlayerSpellBookCommandSetRank3">
+				<TriggeredBy>Upgrade_RebornParadrop_Row5</TriggeredBy>
+			</CommandSetUpgrade>
 
-      <!-- Reborn: sidebar managers discover the executable Paradrop powers on AlliedAirportControlTower; no duplicate spellbook timers. -->
+      <!-- Reborn: each canonical level uses SHARED_SYNC across any spellbook and tower handlers with that same template ID. -->
       <!-- Paradrop -->
       <PlayerPowerManager
 				id="ModuleTag_PlayerPowerManager_ParadropLvl1"
@@ -64,37 +76,6 @@
       <PlayerPowerManager
         id="ModuleTag_PlayerPowerManager_ParadropLvl3"
         SpecialPowerTemplate="SpecialPowerParadropLvl3"
-			/>
-
-			<!-- Reborn: alternate Allied purchases select one sidebar manager; all execution modules live on AlliedAirportControlTower. -->
-<PlayerPowerManager
-				id="ModuleTag_PlayerPowerManager_ParadropLvl1_Protocol2"
-				SpecialPowerTemplate="SpecialPowerParadropLvl1_Protocol2"
-			/>
-
-<PlayerPowerManager
-				id="ModuleTag_PlayerPowerManager_ParadropLvl1_Protocol3"
-				SpecialPowerTemplate="SpecialPowerParadropLvl1_Protocol3"
-			/>
-
-<PlayerPowerManager
-        id="ModuleTag_PlayerPowerManager_ParadropLvl2_Protocol2"
-        SpecialPowerTemplate="SpecialPowerParadropLvl2_Protocol2"
-			/>
-
-<PlayerPowerManager
-        id="ModuleTag_PlayerPowerManager_ParadropLvl2_Protocol3"
-        SpecialPowerTemplate="SpecialPowerParadropLvl2_Protocol3"
-			/>
-
-<PlayerPowerManager
-        id="ModuleTag_PlayerPowerManager_ParadropLvl3_Protocol2"
-        SpecialPowerTemplate="SpecialPowerParadropLvl3_Protocol2"
-			/>
-
-<PlayerPowerManager
-        id="ModuleTag_PlayerPowerManager_ParadropLvl3_Protocol3"
-        SpecialPowerTemplate="SpecialPowerParadropLvl3_Protocol3"
 			/>
 
 		</Behaviors>
@@ -147,9 +128,9 @@
 		TargetType="LOCATION"
 		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea"
 		RadiusCursorRadius="100"
-		Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS"
+		Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS SHARED_SYNC"
 		WaypointModeTerminal="false"
-		RequiredPlayerTech="PlayerTech_Allied_AirPower">
+		RequiredPlayerTech="PlayerTech_Allied">
 		<ForbiddenObjectFilter
 			Rule="ANY"
 			Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT"
@@ -163,13 +144,6 @@
 			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row5</ForbiddenUpgrade>
 			<NeededUpgrade>Upgrade_RebornParadrop_Row1</NeededUpgrade>
 		</GameDependency>
-
-		<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank1</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_ChronoRift_Rank2</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank1</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank3</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_ProductionBonus_Allies</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank3</ForbiddenPlayerTech>
 	</SpecialPowerTemplate>
 
 	<SpecialPowerTemplate
@@ -178,9 +152,9 @@
 		TargetType="LOCATION"
 		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea"
 		RadiusCursorRadius="120"
-		Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS"
+		Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS SHARED_SYNC"
 		WaypointModeTerminal="false"
-		RequiredPlayerTech="PlayerTech_Allied_TimeBomb_Rank1">
+		RequiredPlayerTech="PlayerTech_Allied">
 		<ForbiddenObjectFilter
 			Rule="ANY"
 			Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT"
@@ -193,10 +167,6 @@
 			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row5</ForbiddenUpgrade>
 			<NeededUpgrade>Upgrade_RebornParadrop_Row3</NeededUpgrade>
 		</GameDependency>
-
-		<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank3</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_ProductionBonus_Allies</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank3</ForbiddenPlayerTech>
 	</SpecialPowerTemplate>
 
 	<SpecialPowerTemplate
@@ -205,9 +175,9 @@
 		TargetType="LOCATION"
 		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea"
 		RadiusCursorRadius="140"
-		Flags="IS_PLAYER_POWER NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS"
+		Flags="IS_PLAYER_POWER NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS SHARED_SYNC"
 		WaypointModeTerminal="false"
-		RequiredPlayerTech="PlayerTech_Allied_TimeBomb_Rank3">
+		RequiredPlayerTech="PlayerTech_Allied">
 		<ForbiddenObjectFilter
 			Rule="ANY"
 			Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT"
@@ -330,357 +300,4 @@
     </Data>
   </JoypadCommandBarButtonTemplate>
 
-
-	<!-- Reborn: native Required/ForbiddenPlayerTech gates hide locked, lower-rank and other-faction sidebar powers; GameDependency alone only restricts use. -->
-<SpecialPowerTemplate
-		id="SpecialPowerParadropLvl1_Protocol2"
-		ReloadTime="300s"
-		TargetType="LOCATION"
-		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea"
-		RadiusCursorRadius="100"
-		Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS"
-		WaypointModeTerminal="false"
-		RequiredPlayerTech="PlayerTech_Allied_SatelliteSweep">
-		<ForbiddenObjectFilter
-			Rule="ANY"
-			Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT"
-			Exclude="BRIDGE_ENDCAP BRIDGE_SEGMENT">
-			<ExcludeThing>NanoSwarmHiveEffect</ExcludeThing>
-		</ForbiddenObjectFilter>
-		<GameDependency
-			id="Allied_Paradrop_Rank1_Protocol2_GameDependency">
-			<RequiredObject>AlliedAirportControlTower</RequiredObject>
-			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row3</ForbiddenUpgrade>
-			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row5</ForbiddenUpgrade>
-			<NeededUpgrade>Upgrade_RebornParadrop_Row1</NeededUpgrade>
-		</GameDependency>
-
-		<ForbiddenPlayerTech>PlayerTech_Allied_AirPower</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank1</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_ChronoRift_Rank2</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank1</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank3</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_ProductionBonus_Allies</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank3</ForbiddenPlayerTech>
-	</SpecialPowerTemplate>
-<LogicCommand
-    Options="NEED_TARGET_POS"
-    Type="SPECIAL_POWER"
-    id="Command_ParadropLvl1_Protocol2">
-    <SpecialPower>SpecialPowerParadropLvl1_Protocol2</SpecialPower>
-    <AISpecialPowerInfo
-       Heuristic="PLAYER_AOE_BUFF"
-       Manager="SKIRMISH_AI"
-       TargetObjectInclude="CAN_ATTACK"
-       MinTargetsHit="1"
-       MinEnemiesNearby="5">
-    </AISpecialPowerInfo>
-  </LogicCommand>
-<PlayerPowerButtonTemplate
-    id="ButtonCampaignPlayerPoweParadrop_Rank1_Protocol2"
-    SpecialPower="SpecialPowerParadropLvl1_Protocol2">
-    <Data>
-      <TargetedPower
-				RadiusCursor="Target_Allied_Paradrop"
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl1"/>
-    </Data>
-  </PlayerPowerButtonTemplate>
-<JoypadCommandBarButtonTemplate
-  id="ButtonCampaignPlayerPoweParadrop_Rank1_Protocol2">
-    <Data>
-      <PlayerTargetedPower
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl1"
-        SpecialPower="SpecialPowerParadropLvl1_Protocol2"
-				RadiusCursor="Target_Allied_Paradrop"/>
-    </Data>
-  </JoypadCommandBarButtonTemplate>
-<SpecialPowerTemplate
-		id="SpecialPowerParadropLvl1_Protocol3"
-		ReloadTime="300s"
-		TargetType="LOCATION"
-		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea"
-		RadiusCursorRadius="100"
-		Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS"
-		WaypointModeTerminal="false"
-		RequiredPlayerTech="PlayerTech_Allied_HighTechnology">
-		<ForbiddenObjectFilter
-			Rule="ANY"
-			Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT"
-			Exclude="BRIDGE_ENDCAP BRIDGE_SEGMENT">
-			<ExcludeThing>NanoSwarmHiveEffect</ExcludeThing>
-		</ForbiddenObjectFilter>
-		<GameDependency
-			id="Allied_Paradrop_Rank1_Protocol3_GameDependency">
-			<RequiredObject>AlliedAirportControlTower</RequiredObject>
-			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row3</ForbiddenUpgrade>
-			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row5</ForbiddenUpgrade>
-			<NeededUpgrade>Upgrade_RebornParadrop_Row1</NeededUpgrade>
-		</GameDependency>
-
-		<ForbiddenPlayerTech>PlayerTech_Allied_AirPower</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_SatelliteSweep</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank1</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_ChronoRift_Rank2</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank1</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank3</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_ProductionBonus_Allies</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank3</ForbiddenPlayerTech>
-	</SpecialPowerTemplate>
-<LogicCommand
-    Options="NEED_TARGET_POS"
-    Type="SPECIAL_POWER"
-    id="Command_ParadropLvl1_Protocol3">
-    <SpecialPower>SpecialPowerParadropLvl1_Protocol3</SpecialPower>
-    <AISpecialPowerInfo
-       Heuristic="PLAYER_AOE_BUFF"
-       Manager="SKIRMISH_AI"
-       TargetObjectInclude="CAN_ATTACK"
-       MinTargetsHit="1"
-       MinEnemiesNearby="5">
-    </AISpecialPowerInfo>
-  </LogicCommand>
-<PlayerPowerButtonTemplate
-    id="ButtonCampaignPlayerPoweParadrop_Rank1_Protocol3"
-    SpecialPower="SpecialPowerParadropLvl1_Protocol3">
-    <Data>
-      <TargetedPower
-				RadiusCursor="Target_Allied_Paradrop"
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl1"/>
-    </Data>
-  </PlayerPowerButtonTemplate>
-<JoypadCommandBarButtonTemplate
-  id="ButtonCampaignPlayerPoweParadrop_Rank1_Protocol3">
-    <Data>
-      <PlayerTargetedPower
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl1"
-        SpecialPower="SpecialPowerParadropLvl1_Protocol3"
-				RadiusCursor="Target_Allied_Paradrop"/>
-    </Data>
-  </JoypadCommandBarButtonTemplate>
-<SpecialPowerTemplate
-		id="SpecialPowerParadropLvl2_Protocol2"
-		ReloadTime="330s"
-		TargetType="LOCATION"
-		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea"
-		RadiusCursorRadius="120"
-		Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS"
-		WaypointModeTerminal="false"
-		RequiredPlayerTech="PlayerTech_Allied_ChronoRift_Rank2">
-		<ForbiddenObjectFilter
-			Rule="ANY"
-			Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT"
-			Exclude="BRIDGE_ENDCAP BRIDGE_SEGMENT">
-			<ExcludeThing>NanoSwarmHiveEffect</ExcludeThing>
-		</ForbiddenObjectFilter>
-		<GameDependency
-			id="Allied_Paradrop_Rank2_Protocol2_GameDependency">
-			<RequiredObject>AlliedAirportControlTower</RequiredObject>
-			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row5</ForbiddenUpgrade>
-			<NeededUpgrade>Upgrade_RebornParadrop_Row3</NeededUpgrade>
-		</GameDependency>
-
-		<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank1</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank3</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_ProductionBonus_Allies</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank3</ForbiddenPlayerTech>
-	</SpecialPowerTemplate>
-<LogicCommand
-		Options="NEED_TARGET_POS"
-		Type="SPECIAL_POWER"
-		id="Command_ParadropLvl2_Protocol2">
-    <SpecialPower>SpecialPowerParadropLvl2_Protocol2</SpecialPower>
-    <AISpecialPowerInfo
-       Heuristic="PLAYER_AOE_BUFF"
-       Manager="SKIRMISH_AI"
-       TargetObjectInclude="CAN_ATTACK"
-       MinTargetsHit="1"
-       MinEnemiesNearby="5">
-    </AISpecialPowerInfo>
-  </LogicCommand>
-<PlayerPowerButtonTemplate
-      id="ButtonCampaignPlayerPoweParadrop_Rank2_Protocol2"
-      SpecialPower="SpecialPowerParadropLvl2_Protocol2">
-    <Data>
-      <TargetedPower
-				RadiusCursor="Target_Allied_Paradrop"
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl2"/>
-    </Data>
-  </PlayerPowerButtonTemplate>
-<JoypadCommandBarButtonTemplate
-      id="ButtonCampaignPlayerPoweParadrop_Rank2_Protocol2">
-    <Data>
-      <PlayerTargetedPower
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl2"
-        SpecialPower="SpecialPowerParadropLvl2_Protocol2"
-				RadiusCursor="Target_Allied_Paradrop"/>
-    </Data>
-  </JoypadCommandBarButtonTemplate>
-<SpecialPowerTemplate
-		id="SpecialPowerParadropLvl2_Protocol3"
-		ReloadTime="330s"
-		TargetType="LOCATION"
-		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea"
-		RadiusCursorRadius="120"
-		Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS"
-		WaypointModeTerminal="false"
-		RequiredPlayerTech="PlayerTech_Allied_CryoSatellite_Rank1">
-		<ForbiddenObjectFilter
-			Rule="ANY"
-			Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT"
-			Exclude="BRIDGE_ENDCAP BRIDGE_SEGMENT">
-			<ExcludeThing>NanoSwarmHiveEffect</ExcludeThing>
-		</ForbiddenObjectFilter>
-		<GameDependency
-			id="Allied_Paradrop_Rank2_Protocol3_GameDependency">
-			<RequiredObject>AlliedAirportControlTower</RequiredObject>
-			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row5</ForbiddenUpgrade>
-			<NeededUpgrade>Upgrade_RebornParadrop_Row3</NeededUpgrade>
-		</GameDependency>
-
-		<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank1</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_ChronoRift_Rank2</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank3</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_ProductionBonus_Allies</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank3</ForbiddenPlayerTech>
-	</SpecialPowerTemplate>
-<LogicCommand
-		Options="NEED_TARGET_POS"
-		Type="SPECIAL_POWER"
-		id="Command_ParadropLvl2_Protocol3">
-    <SpecialPower>SpecialPowerParadropLvl2_Protocol3</SpecialPower>
-    <AISpecialPowerInfo
-       Heuristic="PLAYER_AOE_BUFF"
-       Manager="SKIRMISH_AI"
-       TargetObjectInclude="CAN_ATTACK"
-       MinTargetsHit="1"
-       MinEnemiesNearby="5">
-    </AISpecialPowerInfo>
-  </LogicCommand>
-<PlayerPowerButtonTemplate
-      id="ButtonCampaignPlayerPoweParadrop_Rank2_Protocol3"
-      SpecialPower="SpecialPowerParadropLvl2_Protocol3">
-    <Data>
-      <TargetedPower
-				RadiusCursor="Target_Allied_Paradrop"
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl2"/>
-    </Data>
-  </PlayerPowerButtonTemplate>
-<JoypadCommandBarButtonTemplate
-      id="ButtonCampaignPlayerPoweParadrop_Rank2_Protocol3">
-    <Data>
-      <PlayerTargetedPower
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl2"
-        SpecialPower="SpecialPowerParadropLvl2_Protocol3"
-				RadiusCursor="Target_Allied_Paradrop"/>
-    </Data>
-  </JoypadCommandBarButtonTemplate>
-<SpecialPowerTemplate
-		id="SpecialPowerParadropLvl3_Protocol2"
-		ReloadTime="360s"
-		TargetType="LOCATION"
-		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea"
-		RadiusCursorRadius="140"
-		Flags="IS_PLAYER_POWER NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS"
-		WaypointModeTerminal="false"
-		RequiredPlayerTech="PlayerTech_ProductionBonus_Allies">
-		<ForbiddenObjectFilter
-			Rule="ANY"
-			Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT"
-			Exclude="BRIDGE_ENDCAP BRIDGE_SEGMENT">
-			<ExcludeThing>NanoSwarmHiveEffect</ExcludeThing>
-		</ForbiddenObjectFilter>
-		<GameDependency
-			id="Allied_Paradrop_Rank3_Protocol2_GameDependency">
-			<RequiredObject>AlliedAirportControlTower</RequiredObject>
-			<NeededUpgrade>Upgrade_RebornParadrop_Row5</NeededUpgrade>
-		</GameDependency>
-
-		<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank3</ForbiddenPlayerTech>
-	</SpecialPowerTemplate>
-<LogicCommand
-		Options="NEED_TARGET_POS"
-		Type="SPECIAL_POWER"
-		id="Command_ParadropLvl3_Protocol2">
-    <SpecialPower>SpecialPowerParadropLvl3_Protocol2</SpecialPower>
-    <AISpecialPowerInfo
-       Heuristic="PLAYER_AOE_BUFF"
-       Manager="SKIRMISH_AI"
-       TargetObjectInclude="CAN_ATTACK"
-       MinTargetsHit="1"
-       MinEnemiesNearby="5">
-    </AISpecialPowerInfo>
-  </LogicCommand>
-<PlayerPowerButtonTemplate
-      id="ButtonCampaignPlayerPoweParadrop_Rank3_Protocol2"
-      SpecialPower="SpecialPowerParadropLvl3_Protocol2">
-    <Data>
-      <TargetedPower
-				RadiusCursor="Target_Allied_Paradrop"
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl3"/>
-    </Data>
-  </PlayerPowerButtonTemplate>
-<JoypadCommandBarButtonTemplate
-      id="ButtonCampaignPlayerPoweParadrop_Rank3_Protocol2">
-    <Data>
-      <PlayerTargetedPower
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl3"
-        SpecialPower="SpecialPowerParadropLvl3_Protocol2"
-				RadiusCursor="Target_Allied_Paradrop"/>
-    </Data>
-  </JoypadCommandBarButtonTemplate>
-<SpecialPowerTemplate
-		id="SpecialPowerParadropLvl3_Protocol3"
-		ReloadTime="360s"
-		TargetType="LOCATION"
-		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea"
-		RadiusCursorRadius="140"
-		Flags="IS_PLAYER_POWER NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS"
-		WaypointModeTerminal="false"
-		RequiredPlayerTech="PlayerTech_Allied_CryoSatellite_Rank3">
-		<ForbiddenObjectFilter
-			Rule="ANY"
-			Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT"
-			Exclude="BRIDGE_ENDCAP BRIDGE_SEGMENT">
-			<ExcludeThing>NanoSwarmHiveEffect</ExcludeThing>
-		</ForbiddenObjectFilter>
-		<GameDependency
-			id="Allied_Paradrop_Rank3_Protocol3_GameDependency">
-			<RequiredObject>AlliedAirportControlTower</RequiredObject>
-			<NeededUpgrade>Upgrade_RebornParadrop_Row5</NeededUpgrade>
-		</GameDependency>
-
-		<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank3</ForbiddenPlayerTech>
-		<ForbiddenPlayerTech>PlayerTech_ProductionBonus_Allies</ForbiddenPlayerTech>
-	</SpecialPowerTemplate>
-<LogicCommand
-		Options="NEED_TARGET_POS"
-		Type="SPECIAL_POWER"
-		id="Command_ParadropLvl3_Protocol3">
-    <SpecialPower>SpecialPowerParadropLvl3_Protocol3</SpecialPower>
-    <AISpecialPowerInfo
-       Heuristic="PLAYER_AOE_BUFF"
-       Manager="SKIRMISH_AI"
-       TargetObjectInclude="CAN_ATTACK"
-       MinTargetsHit="1"
-       MinEnemiesNearby="5">
-    </AISpecialPowerInfo>
-  </LogicCommand>
-<PlayerPowerButtonTemplate
-      id="ButtonCampaignPlayerPoweParadrop_Rank3_Protocol3"
-      SpecialPower="SpecialPowerParadropLvl3_Protocol3">
-    <Data>
-      <TargetedPower
-				RadiusCursor="Target_Allied_Paradrop"
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl3"/>
-    </Data>
-  </PlayerPowerButtonTemplate>
-<JoypadCommandBarButtonTemplate
-      id="ButtonCampaignPlayerPoweParadrop_Rank3_Protocol3">
-    <Data>
-      <PlayerTargetedPower
-				StateData="ButtonStateCampaignPlayerPowerParadropLvl3"
-        SpecialPower="SpecialPowerParadropLvl3_Protocol3"
-				RadiusCursor="Target_Allied_Paradrop"/>
-    </Data>
-  </JoypadCommandBarButtonTemplate>
 </AssetDeclaration>
