@@ -16,6 +16,8 @@ Reborn's Paradrop now uses purchases at Allied protocol rows **1 / 3 / 5**,
 with the Control Tower requirement preserved. Sidebar variants now use native
 Required/ForbiddenPlayerTech gates: no purchase means no eligible button;
 only the highest purchased row qualifies, with no Soviet/Japan eligibility.
+All nine variants are linked through the spellbook / Control Tower command
+sets and mouse command-button templates, including the second/third columns.
 The 512 purchase combinations pass; actual UI behavior and independent variant
 recharge timers still need an in-game check. See
 [Paradrop protocol thresholds](docs/REBORN_PARADROP_PROTOCOL_THRESHOLDS.md).

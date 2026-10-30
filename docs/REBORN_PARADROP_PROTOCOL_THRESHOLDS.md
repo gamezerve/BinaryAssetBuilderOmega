@@ -42,6 +42,17 @@ When multiple same-row protocols are purchased, the first listed protocol
 wins, irrespective of purchase order. These are engine-native tech gates;
 there is no new schema attribute or game executable patch.
 
+The variants must also be listed in both `PlayerSpellBookCommandSet` and
+`AlliedAirportControlTowerCommandSet`, with a `UnitAbilityButtonTemplate` for
+each variant's LogicCommand. Initially these consumer lists and mouse templates
+contained only the three original commands, so only the first protocol column
+was reachable despite the alternate powers passing compilation. All nine
+variants are now linked through both command consumers and their mouse
+command templates. Predicate checks alone do not prove this UI reachability.
+The complete focused graph now passes native stream readback: **58 assets**,
+**117 local / 558 stock** reference occurrences, checksum `99143e70`.
+Actual second/third-column gameplay still requires an in-game check.
+
 The old level-2/3 leech-recharge attributes were tied to two specific protocols.
 They were removed because a shared upgrade is not a PlayerTech trigger. Each
 power variant has its own timer; this change does **not** implement shared

@@ -88,9 +88,16 @@
 	
 	<LogicCommandSet
 		id="AlliedAirportControlTowerCommandSet">
+		<!-- Reborn: include every mutually exclusive Paradrop protocol variant in this command consumer. -->
 		<Cmd>Command_ParadropLvl1</Cmd>
+		<Cmd>Command_ParadropLvl1_Protocol2</Cmd>
+		<Cmd>Command_ParadropLvl1_Protocol3</Cmd>
 		<Cmd>Command_ParadropLvl2</Cmd>
+		<Cmd>Command_ParadropLvl2_Protocol2</Cmd>
+		<Cmd>Command_ParadropLvl2_Protocol3</Cmd>
 		<Cmd>Command_ParadropLvl3</Cmd>
+		<Cmd>Command_ParadropLvl3_Protocol2</Cmd>
+		<Cmd>Command_ParadropLvl3_Protocol3</Cmd>
 	</LogicCommandSet>
 	
 	<LogicCommandSet
@@ -373,9 +380,16 @@
 		<Cmd>Command_ParticleCannonSuperWeapon</Cmd>
 		<Cmd>Command_PrecisionStrike</Cmd>
 		<Cmd>Command_SatelliteSweep</Cmd>
+		<!-- Reborn: include every mutually exclusive Paradrop protocol variant in this command consumer. -->
 		<Cmd>Command_ParadropLvl1</Cmd>
+		<Cmd>Command_ParadropLvl1_Protocol2</Cmd>
+		<Cmd>Command_ParadropLvl1_Protocol3</Cmd>
 		<Cmd>Command_ParadropLvl2</Cmd>
+		<Cmd>Command_ParadropLvl2_Protocol2</Cmd>
+		<Cmd>Command_ParadropLvl2_Protocol3</Cmd>
 		<Cmd>Command_ParadropLvl3</Cmd>
+		<Cmd>Command_ParadropLvl3_Protocol2</Cmd>
+		<Cmd>Command_ParadropLvl3_Protocol3</Cmd>
 		<Cmd>Command_ChronoRiftSelectLvl1</Cmd>
 		<Cmd>Command_ChronoRiftSelectLvl2</Cmd>
 		<Cmd>Command_ChronoRiftSelectLvl3</Cmd>
