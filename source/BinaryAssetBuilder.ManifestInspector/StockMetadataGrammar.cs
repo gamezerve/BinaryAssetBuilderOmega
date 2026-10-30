@@ -142,6 +142,35 @@ internal sealed class StockMetadataGrammar
     }
 
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: absent retail weapon families use official schema row order and known wire signatures with explicit native models; source/native allocation proofs remain mandatory. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifyWeaponSchemaTypes(System.Xml.Schema.XmlSchemaSet schemas,IEnumerable<WeaponTemplateCompiler.NuggetClass> classes)
+    {
+        const string ns="uri:ea.com:eala:asset";
+        foreach(var family in classes)Qualify(family.Schema,family.Native,family.TypeId);
+        // Reborn: only missing record contracts are derived; an independently captured retail grammar is never replaced by generated output.
+        void Qualify(string name,Type model,uint? classId=null){
+            if(grammar.ContainsKey(model))return;
+            var schema=schemas.GlobalTypes[new System.Xml.XmlQualifiedName(name,ns)] as System.Xml.Schema.XmlSchemaComplexType??throw new InvalidDataException("Weapon complex schema missing: "+name);
+            var extension=(schema.ContentModel as System.Xml.Schema.XmlSchemaComplexContent)?.Content as System.Xml.Schema.XmlSchemaComplexContentExtension;
+            var fields=new List<(uint Name,uint Tag)>();var kinds=new List<HashSet<Kind>>();
+            if(extension!=null){Qualify(extension.BaseTypeName.Name,Base(model));fields.Add((1,FastHash.GetHashCode(extension.BaseTypeName.Name)));kinds.Add(new(){Kind.Table});}
+            foreach(System.Xml.Schema.XmlSchemaAttribute a in extension?.Attributes??schema.Attributes)Add(a.Name!,a.AttributeSchemaType??throw new InvalidDataException("Weapon attribute type missing: "+a.Name),false);
+            Children(extension?.Particle??schema.Particle);
+            var rows=Get(model);rows.Class=classId;rows.Fields=fields.ToArray();rows.Kinds=kinds.ToArray();
+            // Reborn: this contract derives only literal schema sequence fields; unrelated choices and wildcard payloads are never silently omitted.
+            void Children(System.Xml.Schema.XmlSchemaParticle? particle){if(particle==null)return;if(particle is System.Xml.Schema.XmlSchemaSequence sequence){foreach(System.Xml.Schema.XmlSchemaParticle p in sequence.Items)Children(p);return;}if(particle is System.Xml.Schema.XmlSchemaElement e){Add(e.Name!,e.ElementSchemaType??throw new InvalidDataException("Weapon element type missing: "+e.Name),e.MaxOccurs>1);return;}throw new InvalidDataException("Weapon fallback particle unsupported: "+name);}
+            // Reborn: schema signatures and CLR field kinds determine rows independently of the marshaler/tokenizer output being checked.
+            void Add(string field,System.Xml.Schema.XmlSchemaType type,bool repeated){
+                var member=model.GetField(field)??throw new InvalidDataException("Weapon native field missing: "+name+"."+field);string key=(type.QualifiedName.Namespace==System.Xml.Schema.XmlSchema.Namespace?"xs:":"")+type.QualifiedName.Name+(repeated?"[]":"");
+                uint tag;if(!BinaryAssetBuilder.XmlCompiler.Ep1BehaviorMetadataTokenizer.TryReviewedScalarSignature(key,out tag)){string wire=type.QualifiedName.Name;if(wire.Length==0||type.QualifiedName.Namespace==System.Xml.Schema.XmlSchema.Namespace)throw new InvalidDataException("Weapon fallback wire signature unavailable: "+key);tag=FastHash.GetHashCode(wire);}
+                fields.Add((FastHash.GetHashCode(field),tag));var native=member.FieldType;bool table=IsList(native)||!native.IsPointer&&type is System.Xml.Schema.XmlSchemaComplexType&&!SchemaNativeContract.IsFlags(native)&&!native.IsGenericType;
+                if(table){if(!IsList(native)&&type is System.Xml.Schema.XmlSchemaComplexType)Qualify(type.QualifiedName.Name,native);kinds.Add(new(){Kind.Table});}else kinds.Add(new(){Kind.Null,Kind.Native});
+            }
+        }
+    }
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: stock OCL power lists are empty; their official EP1 item schema is a single four-byte OCL reference, whose wire tag is independently captured on the parent power. */
     //-------------------------------------------------------------------------------------------------
     internal void QualifyOclUpgradePair(uint capturedOclSignature)

@@ -499,92 +499,108 @@ public static partial class Marshaler
             case 0xC0F53E99u:
                 MarshalPolymorphicType<DamageNuggetType, WeaponEffectNugget>(node, objT, state);
                 break;
-            case 0xC2AB8308u:
-                MarshalPolymorphicType<DamageAndSpawnNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0xBD462B19u:
-                MarshalPolymorphicType<DamageFieldNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
             case 0x87C7BDCCu:
                 MarshalEp1Nugget<Ep1ProjectileNuggetType>(node, objT, state, 0x87C7BDCCu); // Reborn: EP1 68-byte projectile record.
                 break;
             case 0xF4A6ADA7u:
                 MarshalEp1Nugget<Ep1SuppressionNuggetType>(node, objT, state, 0xF4A6ADA7u); // Reborn: EP1 60-byte suppression record.
                 break;
-            case 0xC6067C3Fu:
-                MarshalPolymorphicType<WeaponOCLNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0xE96034A2u:
-                MarshalPolymorphicType<ActivateLaserNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0x80BA8A54u:
-                MarshalPolymorphicType<ActivateStreamNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0xDC3BAC7Fu:
-                MarshalPolymorphicType<ActivateLinearDamageNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0xB976DC1Fu:
-                MarshalPolymorphicType<SlavesAttackNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
             case 0xAF4289FBu:
                 MarshalEp1Nugget<Ep1MetaImpactNuggetType>(node, objT, state, 0xAF4289FBu); // Reborn: EP1 96-byte meta-impact record.
                 break;
-            case 0x5BE957A9u:
-                MarshalPolymorphicType<SpecialPowerNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0xE3C2D15Bu:
-                MarshalPolymorphicType<AttributeModifierNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0x929B5398u:
-                MarshalPolymorphicType<DamageContainedNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0x77DB65EBu:
-                MarshalPolymorphicType<LuaEventNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0xEFAF6340u:
-                MarshalPolymorphicType<LineDamageNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0x68BA2049:
-                MarshalPolymorphicType<SeedTiberiumNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0x031AA01Au:
-                MarshalPolymorphicType<FireLogicNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0x0A19EADBu:
-                MarshalPolymorphicType<ParalyzeNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0x3A4D3175u:
-                MarshalPolymorphicType<InformationWarfareNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0xFF7B0869u:
-                MarshalPolymorphicType<SpendStolenTiberiumNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0x63D90F36u:
-                MarshalPolymorphicType<ReportWeaponFiredStatNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0xF64222BEu:
-                MarshalPolymorphicType<ScatterProjectileNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0x7814DAF0u:
-                MarshalPolymorphicType<FireOnObjectsNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0xDA74D739u:
-                MarshalPolymorphicType<TintObjectsNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0x24575E0Bu:
-                MarshalPolymorphicType<ContainedObjectAttackNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-#if KANESWRATH
-            case 0x04055958u:
-                MarshalPolymorphicType<MetaGameOperationNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0xEFBB5226u:
-                MarshalPolymorphicType<DOTNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-            case 0x1569E1FAu:
-                MarshalPolymorphicType<CrushTiberiumNuggetType, WeaponEffectNugget>(node, objT, state);
-                break;
-#endif
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("DOTNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1DOTNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("DamageAndSpawnNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1DamageAndSpawnNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("TerrainCraterNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1TerrainCraterNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("WeaponOCLNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1WeaponOCLNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("ActivateLaserNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1ActivateLaserNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("ActivateStreamNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1ActivateStreamNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("ActivateLiftObjectNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1ActivateLiftObjectNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("ActivateLinearDamageNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1ActivateLinearDamageNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("ActivateCircularDamageNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1ActivateCircularDamageNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("SlavesAttackNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1SlavesAttackNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("LeechHealthDamageNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1LeechHealthDamageNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("SecondaryDamageNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1SecondaryDamageNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("SpecialPowerNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1SpecialPowerNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("AttributeModifierNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1AttributeModifierNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("DamageContainedNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1DamageContainedNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("LuaEventNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1LuaEventNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("LineDamageNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1LineDamageNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("SeedTiberiumNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1SeedTiberiumNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("ParalyzeNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1ParalyzeNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("InformationWarfareNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1InformationWarfareNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("SpendStolenTiberiumNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1SpendStolenTiberiumNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("ReportWeaponFiredStatNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1ReportWeaponFiredStatNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("ScatterProjectileNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1ScatterProjectileNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("FireOnObjectsNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1FireOnObjectsNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("TintObjectsNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1TintObjectsNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("ContainedObjectAttackNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1ContainedObjectAttackNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("InformTargetNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1InformTargetNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("AttachNugget"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1AttachNugget>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("StripMaxHealthPercentNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1StripMaxHealthPercentNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("GrapplingHookNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1GrapplingHookNuggetType>(node,objT,state,ep1);break;
+            case var ep1 when ep1==BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("LeechPercentMaxHealthDamageNuggetType"):
+                // Reborn: EP1 concrete allocation preserves the official class discriminator.
+                MarshalEp1Nugget<Ep1LeechPercentMaxHealthDamageNuggetType>(node,objT,state,ep1);break;
             default:
                 Tracer.GetTracer("Marshaler", "Marshalling").TraceWarning("Marshalling unknown type {0} from {1}.", typeId, nameof(PolymorphicList<WeaponEffectNugget>));
                 MarshalUnknownPolymorphicType(node, objT, state);

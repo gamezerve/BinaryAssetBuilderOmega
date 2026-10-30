@@ -334,6 +334,8 @@ internal sealed class SchemaNativeContract
         Link(at,pointer,Size(element),path);int target=(int)pointer;string pointee=path+"*";records[pointee]=target;
         if(element.IsGenericType&&element.GetGenericTypeDefinition().FullName=="Relo.String`1"){Text(source.Text,target,pointee,source.Node is XmlElement);return;}
         if(Leaf(element)){LeafValue(element,source.Node as XmlElement,source.Text,target,pointee);return;}
+        // Reborn: optional scalar child elements (such as SpecificBarrelOverride=1) own their text value, not CLR primitive implementation fields.
+        if(source.Node is XmlElement scalarChild&&Scalar(element) is string childCodec){var carrier=scalarChild.OwnerDocument.CreateElement("Scalar");carrier.SetAttribute("Value",source.Text??string.Empty);Expect(target,ConscriptModuleScalarContract.Bytes(carrier,new("Value",0,Size(element),childCodec,null,0)),pointee);return;}
         // Reborn: optional scalar/enum/flag pointees take their value from the same source attribute.
         if(source.Node is XmlAttribute){
             if(IsFlags(element)){Flags(e,name,target,Size(element),pointee);return;}

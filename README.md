@@ -8,6 +8,18 @@ temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
 ## Current outcome — October 30, 2026
 
+<!-- Reborn: every official WeaponTemplate nugget choice has an explicit EP1 writer and source/native/metadata contract. -->
+**WeaponTemplate now covers all 35 official EP1 nugget choices**, including
+InformTargetNugget, plus all **96 root attributes and 13 child fields**.
+**251 original weapons rebuild byte-identically** to retail. All 35 choices,
+eight nondefault cases without retail witnesses and 86 optional-reference/
+storage/corruption controls pass. Retail metadata qualifies 27 families; the
+remaining eight use official schema-backed contracts and have no gameplay claim.
+The complete, unmodified **AlliedCoastalGun.xml now compiles**: six authored
+assets, 6 local / 67 stock reference occurrences and verified BIN/RELO/IMP
+readback (checksum `5e3a204c`). Alpha tools are synchronized; user sources and
+published mods are untouched. See [WeaponTemplate support](docs/RA3EP1_WEAPON_TEMPLATE_SUPPORT.md).
+
 <!-- Reborn: straight-line projectile movement uses its real EP1 concrete record instead of the falling movement allocation. -->
 `ProjectileUpdate` now supports **StraightLineProjectile / MoveInStraightLine**:
 MuzzleVelocity, Acceleration and TerminalVelocity use the original **16-byte**
