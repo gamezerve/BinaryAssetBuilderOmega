@@ -19,4 +19,16 @@
 		<Modifier Type="HEALTH_MULT" Value="110%"/>
 	</AttributeModifier>
 
+	<AttributeModifier
+		id="AttributeModifer_AlliedTech2_AlliedOutpost"
+		Category="LEVEL">
+		<Modifier Type="HEALTH_MULT" Value="125%"/>
+	</AttributeModifier>
+
+	<AttributeModifier
+		id="AttributeModifer_AlliedTech3_AlliedOutpost"
+		Category="LEVEL">
+		<Modifier Type="HEALTH_MULT" Value="125%"/>
+	</AttributeModifier>
+
 </AssetDeclaration>

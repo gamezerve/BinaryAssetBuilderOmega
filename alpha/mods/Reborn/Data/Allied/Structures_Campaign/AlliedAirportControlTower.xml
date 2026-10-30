@@ -5,23 +5,23 @@
 	
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 		
-		<Include type="all"	source="ART:SA_LAXControlTower.W3X" />
+		<!-- <Include type="all"	source="ART:SA_LAXControlTower.W3X" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
 		<Include type="instance" source="DATA:Civilian/Santa_Monica_SA/Props/SA_LAXControlTower_Collapse.xml" />
 
-    <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower.NEWSKIN_CIV01.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower.NEWSKIN_FILL01.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower.OBBOX01.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower_COL.NEW_SKIN.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower_COL.OBBOX01.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower_COL_CTR.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower_COL_HRC.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower_CTR.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower_HRC.w3x" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower.NEWSKIN_CIV01.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower.NEWSKIN_FILL01.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower.OBBOX01.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower_COL.NEW_SKIN.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower_COL.OBBOX01.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower_COL_CTR.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower_COL_HRC.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower_CTR.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower_HRC.w3x" /> -->
 
-    <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower.xml" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower_NRM.xml" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower_SPM.xml" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower.xml" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower_NRM.xml" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/SA_LAXControlTower_SPM.xml" /> -->
 
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseStructure.xml" />		

@@ -3,15 +3,15 @@
 	<Tags></Tags>
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
-		<Include
-			type="all"
-			source="ART:ABWallHub_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:ABWall_SKN.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:ABWallHub_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:ABWall_SKN.w3x" /> -->
 		<!-- Base Object -->
-		<Include type="all"	source="ART:ABWall_BLD.w3x" />
-		<Include type="all"	source="ART:ABWallHub_BLD.w3x" />
+		<!-- <Include type="all"	source="ART:ABWall_BLD.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABWallHub_BLD.w3x" /> -->
 		<Include
 			type="instance"
 			source="DATA:BaseObjects/BaseWallPiece.xml" />
@@ -185,7 +185,7 @@
 			</DestroyDie>	
 			<WallBuilderBehavior
 				id="ModuleTag_WallBuilder" 
-				MaxNumSegments="10">
+				MaxNumSegments="39">
 				<ConnectingObjectFilter
 					Rule="NONE" >
 					<IncludeThing>AlliedWallPiece</IncludeThing>

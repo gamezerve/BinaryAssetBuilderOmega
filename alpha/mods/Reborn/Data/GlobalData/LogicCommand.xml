@@ -3,6 +3,84 @@
 	
 	<LogicCommand
 		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedRelayStation">
+		<Object>AlliedRelayStation</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedAirportControlTower">
+		<Object>AlliedAirportControlTower</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedRushmoreHeadControl">
+		<Object>AlliedRushmoreHeadControl</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedRadioTower">
+		<Object>AlliedRadioTower</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedCoastalGun">
+		<Object>AlliedCoastalGun</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFBWatchtower">
+		<Object>AlliedFBWatchtower</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFBGate">
+		<Object>AlliedFBGate</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFBWallSegment">
+		<Object>AlliedFBWallSegment</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFBWallMiddleSegment">
+		<Object>AlliedFBWallMiddleSegment</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFBWallHub">
+		<Object>AlliedFBWallHub</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFBEndCap">
+		<Object>AlliedFBEndCap</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedFBCorner">
+		<Object>AlliedFBCorner</Object>
+	</LogicCommand>	
+
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
+		id="Command_ConstructAlliedSupplyPortAuthority">
+		<Object>AlliedSupplyPortAuthority</Object>
+	</LogicCommand>	
+	
+	<LogicCommand
+		Type="CONSTRUCTION_YARD_CONSTRUCT"
 		id="Command_ConstructAlliedFutureTechHarmonizerControl">
 		<Object>AlliedFutureTechHarmonizerControl</Object>
 	</LogicCommand>	

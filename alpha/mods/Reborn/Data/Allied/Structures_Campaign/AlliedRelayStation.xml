@@ -5,24 +5,24 @@
 	
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 		
-		<Include type="all"	source="ART:TH_AlliedDisruptorStation.W3X" />
+		<!-- <Include type="all"	source="ART:TH_AlliedDisruptorStation.W3X" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
 		<Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Props/TH_AlliedDisruptorStation_Collapse.xml" />
 
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION.NEWSKIN_CIV01.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION.NEWSKIN_FILL01.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION.OBBOX01.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION.PLANE01.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION_COL.NEW_SKIN.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION_COL.OBBOX01.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION_COL_CTR.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION_COL_HRC.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION_CTR.w3x" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION_HRC.w3x" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION.NEWSKIN_CIV01.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION.NEWSKIN_FILL01.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION.OBBOX01.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION.PLANE01.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION_COL.NEW_SKIN.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION_COL.OBBOX01.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION_COL_CTR.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION_COL_HRC.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION_CTR.w3x" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_ALLIEDDISRUPTORSTATION_HRC.w3x" /> -->
 
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_AlliedDisruptorStation.xml" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_AlliedDisruptorStation_NRM.xml" />
-    <Include type="all"	source="ART:Reborn/Art/Debug/TH_AlliedDisruptorStation_SPM.xml" />
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_AlliedDisruptorStation.xml" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_AlliedDisruptorStation_NRM.xml" /> -->
+    <!-- <Include type="all"	source="ART:Reborn/Art/Debug/TH_AlliedDisruptorStation_SPM.xml" /> -->
 
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseStructure.xml" />		

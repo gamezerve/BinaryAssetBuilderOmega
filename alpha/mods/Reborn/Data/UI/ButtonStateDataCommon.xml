@@ -25,7 +25,7 @@
     <State
 			Image="Button_PlayerPower_Paradrop1"
 			Title="NAME:CampaignPlayerPowerParadropLvl1"
-			TypeDescription="TYPE:CampaignPlayerPowerParadropLvl1"
+			TypeDescription="TYPE:CampaignPlayerPowerParadropLvl1Reborn"
 			Description="DESC:CampaignPlayerPowerParadropLvl1" />
   </ButtonSingleStateData>
   <ButtonSingleStateData
@@ -33,7 +33,7 @@
     <State
 			Image="Button_PlayerPower_Paradrop2"
 			Title="NAME:CampaignPlayerPowerParadropLvl2"
-			TypeDescription="TYPE:CampaignPlayerPowerParadropLvl2"
+			TypeDescription="TYPE:CampaignPlayerPowerParadropLvl2Reborn"
 			Description="DESC:CampaignPlayerPowerParadropLvl2" />
   </ButtonSingleStateData>
   <ButtonSingleStateData
@@ -41,7 +41,7 @@
     <State
 			Image="Button_PlayerPower_Paradrop3"
 			Title="NAME:CampaignPlayerPowerParadropLvl3"
-			TypeDescription="TYPE:CampaignPlayerPowerParadropLvl3"
+			TypeDescription="TYPE:CampaignPlayerPowerParadropLvl3Reborn"
 			Description="DESC:CampaignPlayerPowerParadropLvl3" />
   </ButtonSingleStateData>
   

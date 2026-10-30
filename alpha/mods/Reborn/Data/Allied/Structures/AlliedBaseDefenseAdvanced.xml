@@ -3,15 +3,15 @@
 	<Tags></Tags>
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
-  	<Include type="all"	source="ART:ABBaseDefenseAdvanced_SKN.w3x" />
-    <Include type="all"	source="ART:ABBaseDefenseAdvanced_PATK.w3x" />
-    <Include type="all"	source="ART:ABBaseDefenseAdvanced_ATK.w3x" />
-	  <Include type="all" source="ART:ABBaseDefense_Platform.w3x" />
-		<Include type="all"	source="ART:ABBaseDefense_Platform_BLD.w3x" />
-		<Include type="all"	source="ART:ABBaseDefenseAdvanced_BLD_SKN.w3x" />			
-		<Include type="all"	source="ART:ABBaseDefenseAdvanced_BLD_BLD.w3x" />
-		<Include type="all"	source="ART:ABBaseDefenseAdvanced_BLD_BLDW.w3x" />						
-		<Include type="all" source="ART:FXAlliedPrismBeam.xml" />
+  	<!-- <Include type="all"	source="ART:ABBaseDefenseAdvanced_SKN.w3x" /> -->
+    <!-- <Include type="all"	source="ART:ABBaseDefenseAdvanced_PATK.w3x" /> -->
+    <!-- <Include type="all"	source="ART:ABBaseDefenseAdvanced_ATK.w3x" /> -->
+	  <!-- <Include type="all" source="ART:ABBaseDefense_Platform.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABBaseDefense_Platform_BLD.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABBaseDefenseAdvanced_BLD_SKN.w3x" />			 -->
+		<!-- <Include type="all"	source="ART:ABBaseDefenseAdvanced_BLD_BLD.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABBaseDefenseAdvanced_BLD_BLDW.w3x" />						 -->
+		<!-- <Include type="all" source="ART:FXAlliedPrismBeam.xml" /> -->
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseStructure.xml" />
 	</Includes>

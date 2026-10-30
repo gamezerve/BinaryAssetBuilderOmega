@@ -3,6 +3,132 @@
 
 <!-- Reborn -->
 
+<!-- Allied Fort Bradley Watchtower -->
+
+	<Texture id="Portrait_AlliedFBWatchtower" File="ART:Images/Portrait_AlliedFBWatchtower.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Portrait_AlliedFBWatchtower" Texture="Portrait_AlliedFBWatchtower" Rotated="false">
+		<Dimensions x="519" y="390"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="519" y="390"/>
+	</PackedTextureImage>
+
+	<Texture id="Button_AlliedFBWatchtower" File="ART:Images/Button_AlliedFBWatchtower.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Button_AlliedFBWatchtower" Texture="Button_AlliedFBWatchtower" Rotated="false">
+		<Dimensions x="390" y="390"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="390" y="390"/>
+	</PackedTextureImage>
+
+<!-- Allied Fort Bradley Gate -->
+
+	<Texture id="Portrait_AlliedFBGate" File="ART:Images/Portrait_AlliedFBGate.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Portrait_AlliedFBGate" Texture="Portrait_AlliedFBGate" Rotated="false">
+		<Dimensions x="252" y="190"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="252" y="190"/>
+	</PackedTextureImage>
+
+	<Texture id="Button_AlliedFBGate" File="ART:Images/Button_AlliedFBGate.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Button_AlliedFBGate" Texture="Button_AlliedFBGate" Rotated="false">
+		<Dimensions x="200" y="200"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="200" y="200"/>
+	</PackedTextureImage>
+
+<!-- Allied Fort Bradley Mid-Wall -->
+
+	<Texture id="Portrait_AlliedFBWallSegment" File="ART:Images/Portrait_AlliedFBWallSegment.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Portrait_AlliedFBWallSegment" Texture="Portrait_AlliedFBWallSegment" Rotated="false">
+		<Dimensions x="266" y="200"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="266" y="200"/>
+	</PackedTextureImage>
+
+	<Texture id="Button_AlliedFBWallSegment" File="ART:Images/Button_AlliedFBWallSegment.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Button_AlliedFBWallSegment" Texture="Button_AlliedFBWallSegment" Rotated="false">
+		<Dimensions x="200" y="200"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="200" y="200"/>
+	</PackedTextureImage>
+
+<!-- Allied Fort Bradley Mid-Wall -->
+
+	<Texture id="Portrait_AlliedFBWallMiddleSegment" File="ART:Images/Portrait_AlliedFBWallMiddleSegment.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Portrait_AlliedFBWallMiddleSegment" Texture="Portrait_AlliedFBWallMiddleSegment" Rotated="false">
+		<Dimensions x="186" y="140"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="186" y="140"/>
+	</PackedTextureImage>
+
+	<Texture id="Button_AlliedFBWallMiddleSegment" File="ART:Images/Button_AlliedFBWallMiddleSegment.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Button_AlliedFBWallMiddleSegment" Texture="Button_AlliedFBWallMiddleSegment" Rotated="false">
+		<Dimensions x="140" y="140"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="140" y="140"/>
+	</PackedTextureImage>
+
+<!-- Allied Fort Bradley Wall Hub -->
+
+	<Texture id="Portrait_AlliedFBWallHub" File="ART:Images/Portrait_AlliedFBWallHub.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Portrait_AlliedFBWallHub" Texture="Portrait_AlliedFBWallHub" Rotated="false">
+		<Dimensions x="319" y="240"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="319" y="240"/>
+	</PackedTextureImage>
+
+	<Texture id="Button_AlliedFBWallHub" File="ART:Images/Button_AlliedFBWallHub.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Button_AlliedFBWallHub" Texture="Button_AlliedFBWallHub" Rotated="false">
+		<Dimensions x="245" y="245"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="245" y="245"/>
+	</PackedTextureImage>
+
+<!-- Allied Fort Bradley End Cap -->
+
+	<Texture id="Portrait_AlliedFBEndCap" File="ART:Images/Portrait_AlliedFBEndCap.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Portrait_AlliedFBEndCap" Texture="Portrait_AlliedFBEndCap" Rotated="false">
+		<Dimensions x="180" y="135"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="180" y="135"/>
+	</PackedTextureImage>
+
+	<Texture id="Button_AlliedFBEndCap" File="ART:Images/Button_AlliedFBEndCap.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Button_AlliedFBEndCap" Texture="Button_AlliedFBEndCap" Rotated="false">
+		<Dimensions x="135" y="135"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="135" y="135"/>
+	</PackedTextureImage>
+
+<!-- Allied Fort Bradley Corner -->
+
+	<Texture id="Portrait_AlliedFBCorner" File="ART:Images/Portrait_AlliedFBCorner.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Portrait_AlliedFBCorner" Texture="Portrait_AlliedFBCorner" Rotated="false">
+		<Dimensions x="200" y="150"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="200" y="150"/>
+	</PackedTextureImage>
+
+	<Texture id="Button_AlliedFBCorner" File="ART:Images/Button_AlliedFBCorner.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Button_AlliedFBCorner" Texture="Button_AlliedFBCorner" Rotated="false">
+		<Dimensions x="160" y="160"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="160" y="160"/>
+	</PackedTextureImage>
+
 <!-- Allied Fort Bradley Depot -->
 
 	<Texture id="Portrait_AlliedFBDepot" File="ART:Images/Portrait_AlliedFBDepot.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>

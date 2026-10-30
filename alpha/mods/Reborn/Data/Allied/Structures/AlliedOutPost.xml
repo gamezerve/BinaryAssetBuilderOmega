@@ -4,12 +4,12 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all" source="ART:AUOutPost.w3x" />
-		<Include type="all"	source="ART:AUOutPost_FX.w3x" />
-		<Include type="all"	source="ART:AUHarvester_Unpack.w3x" />
-		<Include type="all"	source="ART:AUOutPost_Platform.w3x" />
-		<Include type="all"	source="ART:AUOutPost_Platform_BLD.w3x" />
-		<Include type="all"	source="ART:AUOutPost_UPGRADE.w3x" />
+		<!-- <Include type="all" source="ART:AUOutPost.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUOutPost_FX.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUHarvester_Unpack.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUOutPost_Platform.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUOutPost_Platform_BLD.w3x" /> -->
+		<!-- <Include type="all"	source="ART:AUOutPost_UPGRADE.w3x" /> -->
 			
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseStructure.xml" />
@@ -304,6 +304,7 @@
 					<IncludeThing>AlliedBarracks</IncludeThing>
 					<IncludeThing>AlliedNavalYard</IncludeThing>
 					<IncludeThing>AlliedWarFactory</IncludeThing>
+					<IncludeThing>AlliedFutureTechArsenal</IncludeThing>
 				</ObjectFilter>
 			</TechUpgrade>
 			<TechUpgrade
@@ -318,6 +319,7 @@
 					<IncludeThing>AlliedBarracks</IncludeThing>
 					<IncludeThing>AlliedNavalYard</IncludeThing>
 					<IncludeThing>AlliedWarFactory</IncludeThing>
+					<IncludeThing>AlliedFutureTechArsenal</IncludeThing>
 				</ObjectFilter>
 			</TechUpgrade>
 			<SubObjectsUpgrade
@@ -340,6 +342,19 @@
 					<CustomAnimAndDuration	AnimState="USER_3"/>
 				</Nugget>
 			</SubObjectsUpgrade>
+
+			<!-- Attribute Modifiers based on the Tech Level of the building -->
+			<AttributeModifierUpgrade
+				id="ModuleTag_AlliedOutpostTech2_AttributeModifier"
+				AttributeModifier="AttributeModifer_AlliedTech2_AlliedOutpost">
+				<TriggeredBy>Upgrade_AlliedTech2</TriggeredBy>
+			</AttributeModifierUpgrade>
+			<AttributeModifierUpgrade
+				id="ModuleTag_AlliedOutpostTech3_AttributeModifier"
+				AttributeModifier="AttributeModifer_AlliedTech3_AlliedOutpost">
+				<TriggeredBy>Upgrade_AlliedTech3</TriggeredBy>
+			</AttributeModifierUpgrade>
+			
 			<StructureUnpackUpdate
 				id="StructureUnpackUpdate"
 				UnpackCompleteSound=""

@@ -4,27 +4,27 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:MR_RushmoreHeadControlCenter.W3X" />
+		<!-- <Include type="all"	source="ART:MR_RushmoreHeadControlCenter.W3X" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
 		<Include type="instance" source="DATA:Civilian/Mount_Rushmore_MR/Props/MR_RushmoreHeadControlCenter_Collapse.xml" />
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter.NEWSKIN.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter.NEWSKIN_FILL.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter.OBBOX01.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter.NEWSKIN_FILL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter.OBBOX01.w3x" /> -->
 
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter_COL.NEWSKIN.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter_COL.OBBOX01.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter_COL.NEWSKIN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter_COL.OBBOX01.w3x" /> -->
 
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter_COL_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter_COL_HRC.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter_CTR.w3x" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter_HRC.w3x" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter_COL_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter_COL_HRC.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter_CTR.w3x" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter_HRC.w3x" /> -->
 
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter.xml" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter_NRM.xml" />
-		<Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter_SPM.xml" />
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter_NRM.xml" /> -->
+		<!-- <Include type="all"	source="ART:Reborn/Art/Debug/MR_RushmoreHeadControlCenter_SPM.xml" /> -->
 
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseStructure.xml" />

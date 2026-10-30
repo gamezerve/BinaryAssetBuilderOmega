@@ -4,20 +4,20 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
 
-		<Include type="all" source="ART:FXIonCannon.w3x" />
-		<Include type="all"	source="ART:ABSuperweaponAdvanced_SKN.w3x" />	
-		<Include type="all"	source="ART:ABSuperweaponAdvanced_ATKA.w3x" />	
-		<Include type="all"	source="ART:ABSuperweaponAdvanced_PAK.w3x" />	
-		<Include type="all"	source="ART:ABSuperweaponAdvanced_IDLA.w3x" />	
-		<Include type="all"	source="ART:ABSuperweaponAdvanced_RDY.w3x" />	
-		<Include type="all"	source="ART:ABSuperweaponAdvanced_RTN.w3x" />	
+		<!-- <Include type="all" source="ART:FXIonCannon.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABSuperweaponAdvanced_SKN.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABSuperweaponAdvanced_ATKA.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABSuperweaponAdvanced_PAK.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABSuperweaponAdvanced_IDLA.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABSuperweaponAdvanced_RDY.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABSuperweaponAdvanced_RTN.w3x" />	 -->
 
-		<Include type="all"	source="ART:ABSuperweaponAdvanced_FX.w3x" />	
-		<Include type="all"	source="ART:ABSuperweaponAdvanced_BLD_SKN.w3x" />
-		<Include type="all"	source="ART:ABSuperweaponAdvanced_BLD_BLD.w3x" />
-		<Include type="all"	source="ART:ABSuperweaponAdvanced_BLD_BLDW.w3x" />			
-		<Include type="all"	source="ART:ABSuperWeapon_Platform.w3x" />	
-		<Include type="all"	source="ART:ABSuperWeapon_Platform_BLD.w3x" />			
+		<!-- <Include type="all"	source="ART:ABSuperweaponAdvanced_FX.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABSuperweaponAdvanced_BLD_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABSuperweaponAdvanced_BLD_BLD.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABSuperweaponAdvanced_BLD_BLDW.w3x" />			 -->
+		<!-- <Include type="all"	source="ART:ABSuperWeapon_Platform.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABSuperWeapon_Platform_BLD.w3x" />			 -->
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseStructure.xml" />
 	</Includes>

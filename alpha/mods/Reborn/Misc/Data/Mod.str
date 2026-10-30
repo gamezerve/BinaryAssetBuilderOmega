@@ -872,6 +872,92 @@
 		"A dedicated command structure responsible for coordinating and issuing fire orders to supporting artillery and defense systems."
 	End
 
+// Allied Wall Hub
+
+	TYPE:ALLIEDWALLPIECE
+		"Defensive Perimeter \n> Health = 300 \n> Shroud Clearing Range = 50"
+	End
+
+// Allied Multigunner Turret
+
+	TYPE:ALLIEDBASEDEFENSE
+		"Multirole Base Defense \n> Health = 1000 \n> Shroud Clearing Range = 500 \n> Default Rocket Weapon DPS = 100 \n> Default Rocket Weapon Range = 300 \n> Damage Against Infantry = %250 \n> Damage Against Tanks = %50"
+	End
+
+// Allied Spectrum Tower
+
+	TYPE:ALLIEDBASEDEFENSEADVANCED
+		"Advanced Base Defense \n> Health = 1500 \n> Shroud Clearing Range = 500 \n> Prism Weapon DPS (Can be Charged up to 2 Times) = 100/150/200 \n> Prism Weapon Range = 350"
+	End
+
+// Allied Chronosphere
+
+	TYPE:ALLIEDSUPERWEAPON
+		"Superweapon \n> Superweapon Timer = 3 min \n> Health = 4000 \n> Shroud Clearing Range = 100"
+	End
+
+// Allied Proton Collider
+
+	TYPE:ALLIEDSUPERWEAPONADVANCED
+		"Ultimate Weapon \n> Superweapon Timer = 6 min \n> Health = 4000 \n> Shroud Clearing Range = 100"
+	End
+	
+// Allied Supply Port Authority
+
+	TYPE:AlliedSupplyPortAuthority
+		"Tactical Structure \n> Health = 6000 \n> Shroud Clearing Range = 500"
+	End
+
+	DESC:AlliedSupplyPortAuthority
+		"The Allies are somehow using this facility to organize fleet movements in Lake Geneva."
+	End
+
+// Allied Brighton Coastal Gun
+
+	DESC:AlliedCoastalGun
+		"Old but effective defenses that have fallen into disrepair."
+	End
+
+	TYPE:AlliedCoastalGun
+		"Anti-Surface Base Defense \n> Health = 10000 \n> Shroud Clearing Range = 700 \n> Weapon DPS = 45 \n> Weapon Range = 700 \n> Weapon Angle = 60 deg"
+	End
+
+// Allied Rushmore Com Tower
+
+	TYPE:AlliedRadioTower
+		"Radio Antenna Mast \n> Health = 2000 \n> Shroud Clearing Range = 50 \n> Influence Range = 400 \n> Speed Bonus = 20% \n> Rate of Fire Bonus = 25% \n> Damage Bonus = 50% \n> XP Bonus = 50% \n> Health Bonus = 10%"
+	End
+
+// Allied Rushmore Control Center
+
+	NAME:RushmoreHeadControlCenter
+		"Rushmore Control Center"
+	End
+
+	TYPE:RushmoreHeadControlCenter
+		"Control Center \n> Health = 3000 \n> Shroud Clearing Range = 150"
+	End
+
+	DESC:RushmoreHeadControlCenter
+		"Controls one of the busts in Mount Rushmore."
+	End
+
+// Allied Airport Control Tower 
+
+	TYPE:AlliedAirportControlTower
+		"Special Weapon \n> Build Limit = 1 \n> Health = 3000 \n> Shroud Clearing Range = 500"
+	End
+
+	DESC:AlliedAirportControlTower
+		"The Allies are using this control tower to call in aerial reinforcements."
+	End
+
+// Allied Relay Station
+
+	TYPE:AlliedRelayStation
+		"Objective Structure \n> Health = 3000 \n> Shroud Clearing Range = 500"
+	End
+
 // Allied Paradrop
 	
 	TYPE:CampaignPlayerPowerParadropLvl1Reborn

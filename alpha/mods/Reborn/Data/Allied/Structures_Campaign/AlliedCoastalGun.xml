@@ -3,8 +3,8 @@
 	<Tags></Tags>
 	<Includes>
 		<Include type="instance" source="DATA:BaseObjects/BaseStructure.xml" />
-		<Include type="all" source="ART:BB_EuropeCoastalGun.W3X" />
-		<Include type="all" source="ART:EXSovietShell.W3X" />
+		<!-- <Include type="all" source="ART:BB_EuropeCoastalGun.W3X" /> -->
+		<!-- <Include type="all" source="ART:EXSovietShell.W3X" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
 		<Include type="instance" source="DATA:Civilian/Brighton_Beach_BB/Props/BB_EuropeCoastalGun_Collapse.xml" />
 	</Includes>

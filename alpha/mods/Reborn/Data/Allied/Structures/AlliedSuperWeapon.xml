@@ -4,15 +4,15 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:ABSuperweapon_SKN.w3x" />				
-		<Include type="all"	source="ART:ABSuperweapon_IDLA.w3x" />				
-		<Include type="all"	source="ART:ABSuperweapon_RDY.w3x" />				
-		<Include type="all"	source="ART:ABSuperweapon_FX.w3x" />	
-		<Include type="all"	source="ART:ABSuperWeapon_Platform.w3x" />	
-		<Include type="all"	source="ART:ABSuperWeapon_Platform_BLD.w3x" />	
-		<Include type="all"	source="ART:ABSuperweapon_BLD_SKN.w3x" />			
-		<Include type="all"	source="ART:ABSuperweapon_BLD_BLD.w3x" />
-		<Include type="all"	source="ART:ABSuperweapon_BLD_BLDW.w3x" />
+		<!-- <Include type="all"	source="ART:ABSuperweapon_SKN.w3x" />				 -->
+		<!-- <Include type="all"	source="ART:ABSuperweapon_IDLA.w3x" />				 -->
+		<!-- <Include type="all"	source="ART:ABSuperweapon_RDY.w3x" />				 -->
+		<!-- <Include type="all"	source="ART:ABSuperweapon_FX.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABSuperWeapon_Platform.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABSuperWeapon_Platform_BLD.w3x" />	 -->
+		<!-- <Include type="all"	source="ART:ABSuperweapon_BLD_SKN.w3x" />			 -->
+		<!-- <Include type="all"	source="ART:ABSuperweapon_BLD_BLD.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABSuperweapon_BLD_BLDW.w3x" /> -->
 									
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseStructure.xml" />

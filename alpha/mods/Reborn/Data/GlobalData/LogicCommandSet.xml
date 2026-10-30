@@ -45,12 +45,12 @@
 		<Cmd>Command_ConstructAlliedRushmoreFiringBase</Cmd>
 		<Cmd>Command_ConstructAlliedFutureTechHQ</Cmd>
 		
-		<!-- <Cmd>Command_ConstructAlliedSupplyPortAuthority</Cmd>		 -->
-		<!-- <Cmd>Command_ConstructAlliedCoastalGun</Cmd> -->
-		<!-- <Cmd>Command_ConstructAlliedRadioTower</Cmd> -->
-		<!-- <Cmd>Command_ConstructAlliedRushmoreHeadControl</Cmd> -->
-		<!-- <Cmd>Command_ConstructAlliedAirportControlTower</Cmd> -->
-		<!-- <Cmd>Command_ConstructAlliedRelayStation</Cmd> -->
+		<Cmd>Command_ConstructAlliedSupplyPortAuthority</Cmd>		
+		<Cmd>Command_ConstructAlliedCoastalGun</Cmd>
+		<Cmd>Command_ConstructAlliedRadioTower</Cmd>
+		<Cmd>Command_ConstructAlliedRushmoreHeadControl</Cmd>
+		<Cmd>Command_ConstructAlliedAirportControlTower</Cmd>
+		<Cmd>Command_ConstructAlliedRelayStation</Cmd>
 	</LogicCommandSet>
 	
 	<LogicCommandSet
@@ -58,13 +58,13 @@
 		<Cmd>Command_ConstructAlliedFBDormitory</Cmd>
 		<Cmd>Command_ConstructAlliedFBArmory</Cmd>
 		<Cmd>Command_ConstructAlliedFBDepot</Cmd>	
-		<!-- <Cmd>Command_ConstructAlliedFBCorner</Cmd>	 -->
-		<!-- <Cmd>Command_ConstructAlliedFBEndCap</Cmd>	 -->
-		<!-- <Cmd>Command_ConstructAlliedFBWallHub</Cmd>	 -->
-		<!-- <Cmd>Command_ConstructAlliedFBWallMiddleSegment</Cmd>	 -->
-		<!-- <Cmd>Command_ConstructAlliedFBWallSegment</Cmd> -->
-		<!-- <Cmd>Command_ConstructAlliedFBGate</Cmd>	 -->
-		<!-- <Cmd>Command_ConstructAlliedFBWatchtower</Cmd>	 -->
+		<Cmd>Command_ConstructAlliedFBCorner</Cmd>	
+		<Cmd>Command_ConstructAlliedFBEndCap</Cmd>	
+		<Cmd>Command_ConstructAlliedFBWallHub</Cmd>	
+		<Cmd>Command_ConstructAlliedFBWallMiddleSegment</Cmd>	
+		<Cmd>Command_ConstructAlliedFBWallSegment</Cmd>
+		<Cmd>Command_ConstructAlliedFBGate</Cmd>	
+		<Cmd>Command_ConstructAlliedFBWatchtower</Cmd>	
 	</LogicCommandSet>
 	
 	<LogicCommandSet
@@ -81,6 +81,61 @@
 		<Cmd>Command_ConstructAlliedFutureTechArsenal</Cmd>
 		<Cmd>Command_ConstructAlliedFutureTechHarmonizerControl</Cmd>
 	</LogicCommandSet>	
+	
+	<LogicCommandSet
+		id="AlliedRelayStationCommandSet">
+	</LogicCommandSet>	
+	
+	<LogicCommandSet
+		id="AlliedAirportControlTowerCommandSet">
+		<Cmd>Command_ParadropLvl1</Cmd>
+		<Cmd>Command_ParadropLvl2</Cmd>
+		<Cmd>Command_ParadropLvl3</Cmd>
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="AlliedRushmoreHeadControlCommandSet">
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="AlliedRadioTowerCommandSet">
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="AlliedCoastalGunCommandSet">
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="AlliedFBWatchtowerCommandSet">
+	</LogicCommandSet>	
+
+	<LogicCommandSet
+		id="AlliedFBGateCommandSet">
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="AlliedFBWallSegmentCommandSet">
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="AlliedFBWallMiddleSegmentCommandSet">
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="AlliedFBWallHubCommandSet">
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="AlliedFBEndCapCommandSet">
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="AlliedFBCornerCommandSet">
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="AlliedSupplyPortAuthorityCommandSet">
+	</LogicCommandSet>
 	
 	<LogicCommandSet
 		id="AlliedRushmoreFiringBaseCommandSet">

@@ -5,13 +5,13 @@
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
-		<Include type="all"	source="ART:ABBaseDefense.w3x" />				
-		<Include type="all"	source="ART:ABBaseDefense_BLD_SKN.w3x" />				
-		<Include type="all"	source="ART:ABBaseDefense_BLD_BLD.w3x" />
-		<Include type="all"	source="ART:ABBaseDefense_BLD_BLDW.w3x" />								
-		<Include type="all"	source="ART:ABBaseDefense_FX.w3x" />
-		<Include type="all"	source="ART:ABBaseDefense_Platform.w3x" />
-		<Include type="all"	source="ART:ABBaseDefense_Platform_BLD.w3x" />										
+		<!-- <Include type="all"	source="ART:ABBaseDefense.w3x" />				 -->
+		<!-- <Include type="all"	source="ART:ABBaseDefense_BLD_SKN.w3x" />				 -->
+		<!-- <Include type="all"	source="ART:ABBaseDefense_BLD_BLD.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABBaseDefense_BLD_BLDW.w3x" />								 -->
+		<!-- <Include type="all"	source="ART:ABBaseDefense_FX.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABBaseDefense_Platform.w3x" /> -->
+		<!-- <Include type="all"	source="ART:ABBaseDefense_Platform_BLD.w3x" />										 -->
 		<Include type="all"	source="DATA:GlobalData/GlobalDefines.xml" />
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseStructure.xml" />

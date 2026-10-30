@@ -5,7 +5,7 @@
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
 
-    <Include type="all"	source="ART:NY_FortWall02.W3X" />
+    <!-- <Include type="all"	source="ART:NY_FortWall02.W3X" /> -->
     <Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
     <Include type="instance" source="DATA:Civilian/New_York_NY/Props/NY_FortWall02_Collapse.xml" />
 			
