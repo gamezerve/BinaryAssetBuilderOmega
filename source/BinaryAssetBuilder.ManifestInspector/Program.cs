@@ -13,8 +13,286 @@ internal static class Program
     {
         try
         {
+
+
+            if (args.Length == 2 && args[0] == "aptui-audit-all-variants")
+            {
+                using var archive = BigArchive.Open(args[1]);
+
+                var entries = archive.Entries.ToDictionary(
+                    entry => entry.Name.Replace('/', '\\'),
+                    entry => entry,
+                    StringComparer.OrdinalIgnoreCase);
+
+                var pages = entries.Keys
+                    .Where(name => name.StartsWith(@"data\aptui\", StringComparison.OrdinalIgnoreCase)
+                        && name.EndsWith(".manifest", StringComparison.OrdinalIgnoreCase))
+                    .Select(name => Path.GetFileNameWithoutExtension(name))
+                    .Select(name => name.EndsWith("_l", StringComparison.OrdinalIgnoreCase) ||
+                                    name.EndsWith("_m", StringComparison.OrdinalIgnoreCase)
+                        ? name[..^2]
+                        : name)
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+                    .ToArray();
+
+                int identical = 0;
+                int different = 0;
+                int incomplete = 0;
+
+                foreach (string page in pages)
+                {
+                    bool missing = false;
+                    bool mismatch = false;
+
+                    foreach (string extension in new[] { ".manifest", ".bin", ".relo", ".imp" })
+                    {
+                        byte[][] data = new byte[3][];
+
+                        string[] suffixes = { "", "_l", "_m" };
+
+                        for (int i = 0; i < suffixes.Length; i++)
+                        {
+                            string name = @"data\aptui\" + page + suffixes[i] + extension;
+
+                            if (!entries.TryGetValue(name, out var entry))
+                            {
+                                missing = true;
+                                break;
+                            }
+
+                            data[i] = archive.ReadEntry(entry);
+                        }
+
+                        if (missing)
+                            break;
+
+                        if (!data[0].AsSpan().SequenceEqual(data[1]) ||
+                            !data[0].AsSpan().SequenceEqual(data[2]))
+                            mismatch = true;
+                    }
+
+                    string status = missing ? "INCOMPLETE" : mismatch ? "DIFFERENT" : "IDENTICAL";
+
+                    if (missing)
+                        incomplete++;
+                    else if (mismatch)
+                        different++;
+                    else
+                        identical++;
+
+                    Console.WriteLine($"{status,-12} {page}");
+                }
+
+                Console.WriteLine();
+                Console.WriteLine($"Total pages: {pages.Length}");
+                Console.WriteLine($"Identical variants: {identical}");
+                Console.WriteLine($"Different variants: {different}");
+                Console.WriteLine($"Incomplete variants: {incomplete}");
+
+                return 0;
+            }
+
+
+            if (args.Length == 3 && args[0] == "aptui-compare-variants")
+            {
+                using var archive = BigArchive.Open(args[1]);
+
+                string page = args[2].ToLowerInvariant();
+
+                if (page.Length == 0 || page.Any(c => !(char.IsAsciiLetterOrDigit(c) || c == '_')))
+                    throw new ArgumentException("Invalid AptUI page name.");
+
+                foreach (string extension in new[] { ".manifest", ".bin", ".relo", ".imp", ".version" })
+                {
+                    var variants = new List<(string Suffix, byte[] Data)>();
+
+                    foreach (string suffix in new[] { "", "_l", "_m" })
+                    {
+                        string name = @"data\aptui\" + page + suffix + extension;
+                        var entry = archive.Entries.SingleOrDefault(e =>
+                            string.Equals(e.Name, name, StringComparison.OrdinalIgnoreCase));
+
+                        if (entry is null)
+                        {
+                            Console.WriteLine($"{name}: MISSING");
+                            continue;
+                        }
+
+                        byte[] data = archive.ReadEntry(entry);
+                        variants.Add((suffix, data));
+
+                        string hash = Convert.ToHexString(
+                            System.Security.Cryptography.SHA256.HashData(data));
+
+                        Console.WriteLine($"{name}: {data.Length:N0} bytes, SHA256={hash}");
+                    }
+
+                    if (variants.Count == 3)
+                    {
+                        bool equal = variants.All(v => v.Data.AsSpan().SequenceEqual(variants[0].Data));
+                        Console.WriteLine($"{extension}: All variants identical = {equal}");
+                    }
+
+                    Console.WriteLine();
+                }
+
+                return 0;
+            }
+
+
+            if (args.Length == 2 && args[0] == "aptui-list-big")
+            {
+                using var archive = BigArchive.Open(args[1]);
+
+                Console.WriteLine($"Archive entries: {archive.Entries.Count}");
+
+                foreach (var entry in archive.Entries)
+                    Console.WriteLine(entry.Name);
+
+                return 0;
+            }
+            if (args.Length == 3 && args[0] == "aptui-inspect-big")
+            {
+                using var archive = BigArchive.Open(args[1]);
+
+                string name = args[2].ToLowerInvariant();
+                string aptManifestPath = "data\\aptui\\" + name + ".manifest";
+
+                var entry = archive.Entries.Single(e => e.Name.Equals(aptManifestPath, StringComparison.OrdinalIgnoreCase));
+                var manifest = ManifestReader.Read(archive.ReadEntry(entry));
+
+                Console.WriteLine($"Manifest: {aptManifestPath}");
+                Console.WriteLine($"Assets: {manifest.Assets.Count}");
+                Console.WriteLine($"Types hash: 0x{manifest.Header.AllTypesHash:X8}");
+                Console.WriteLine($"Linked: {manifest.Header.IsLinked}");
+
+                foreach (var asset in manifest.Assets)
+                {
+                    Console.WriteLine($"{asset.Name} TypeId=0x{asset.TypeId:X8} TypeHash=0x{asset.TypeHash:X8} InstanceId=0x{asset.InstanceId:X8} InstanceHash=0x{asset.InstanceHash:X8} Bin={asset.InstanceDataSize} Relo={asset.RelocationDataSize} Imp={asset.ImportsDataSize} References={asset.AssetReferenceCount}");
+                }
+
+                foreach (string extension in new[] { ".bin", ".relo", ".imp" })
+                {
+                    string aptStreamEntryName = "data\\aptui\\" + name + extension;
+                    var streamEntry = archive.Entries.Single(e => e.Name.Equals(aptStreamEntryName, StringComparison.OrdinalIgnoreCase));
+                    byte[] data = archive.ReadEntry(streamEntry);
+                    Console.WriteLine($"{extension}: Length={data.Length}, First64={Convert.ToHexString(data.AsSpan(0, Math.Min(64, data.Length)))}");
+                }
+
+                return 0;
+            }
+            if (args.Length == 2 && args[0] == "aptui-payload-test")
+            {
+                AptUIPayloadTest.Run(args[1]);
+                return 0;
+            }
+            if (args.Length == 1 && args[0] == "aptui-types-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+
+                var plugin = new BinaryAssetBuilder.XmlCompiler.Plugin();
+                plugin.Initialize(BinaryAssetBuilder.Core.TargetPlatform.Win32);
+
+                foreach (var name in new[]
+                {
+                    nameof(SageBinaryData.AptAptData),
+                    nameof(SageBinaryData.AptConstData),
+                    nameof(SageBinaryData.AptDatData),
+                    nameof(SageBinaryData.AptGeometryData)
+                })
+                {
+                    uint typeId = BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(name);
+                    var info = plugin.GetExtendedTypeInformation(typeId);
+
+                    if (info == null || info.TypeName != name)
+                        throw new InvalidOperationException($"AptUI type registration failed: {name}");
+
+                    Console.WriteLine($"{name}: TypeId=0x{typeId:X8}, TypeHash=0x{info.TypeHash:X8}");
+                }
+
+                return 0;
+            }
+
+            if (args.Length == 4 && args[0] == "aptui-compile-xml-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+
+                var streams = SdkAptUIBuild.CompileXmlAssets(args[1], args[2]);
+                Directory.CreateDirectory(args[3]);
+
+                foreach (var stream in streams)
+                    File.WriteAllBytes(Path.Combine(args[3], stream.Key), stream.Value);
+
+                var manifest = ManifestReader.Read(streams["diagnostic.manifest"]);
+
+                if (manifest.Validate().Count != 0 || !manifest.Header.IsLinked)
+                    throw new InvalidDataException("Compiled AptUI manifest validation failed.");
+
+                Console.WriteLine($"AptUI XML compilation passed: {manifest.Assets.Count} assets.");
+
+                return 0;
+            }
+
+
+            if (args.Length == 4 && args[0] == "sdk-compile-aptui")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+
+                string name = Path.GetFileNameWithoutExtension(args[1]);
+
+                if (string.IsNullOrWhiteSpace(name) ||
+                    name.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+                    throw new InvalidDataException("Invalid AptUI page name.");
+
+                string output = Path.Combine(args[3], name);
+
+                if (Directory.Exists(output))
+                    throw new IOException("AptUI output directory already exists: " + output);
+
+                var streams = SdkAptUIBuild.CompileXmlAssets(args[1], args[2]);
+
+                var manifest = ManifestReader.Read(streams["diagnostic.manifest"]);
+
+                if (!manifest.Header.IsLinked || manifest.Validate().Count != 0 ||
+                    manifest.Assets.Count == 0)
+                    throw new InvalidDataException("Compiled AptUI manifest validation failed.");
+
+                string[] extensions = { ".manifest", ".bin", ".relo", ".imp" };
+
+                foreach (string extension in extensions)
+                    if (!streams.ContainsKey("diagnostic" + extension))
+                        throw new InvalidDataException("Missing AptUI stream: " + extension);
+
+                Directory.CreateDirectory(output);
+
+                try
+                {
+                    foreach (string extension in extensions)
+                        File.WriteAllBytes(
+                            Path.Combine(output, name + extension),
+                            streams["diagnostic" + extension]);
+                }
+                catch
+                {
+                    Directory.Delete(output, true);
+                    throw;
+                }
+
+                Console.WriteLine($"AptUI compiled: {name}, {manifest.Assets.Count} assets.");
+                return 0;
+            }
+
+
+            if (args.Length == 3 && args[0] == "aptui-document-test")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                AptUIDocumentTest.Run(args[1], args[2]);
+                return 0;
+            }
+
             // Reborn: standalone unused-audit regressions use private synthetic metadata and the SDK's real reference schemas.
-            if(args.Length==3&&args[0]=="sdk-unused-assets-self-test")
+            if (args.Length==3&&args[0]=="sdk-unused-assets-self-test")
             {CompilerSmokeTest.InitializeHashProvider();SdkUnusedAssetAuditSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: unused detection runs after all static/global streams are assembled and includes schema-typed weak references.
             if(args.Length==5&&args[0]=="sdk-unused-assets")
@@ -63,8 +341,15 @@ internal static class Program
             // Reborn: assemble already-qualified static/global families without changing the versioned SKUDef contract.
             if(args.Length==4&&args[0]=="sdk-package-global-streams")
             {SdkGlobalStreams.Package(args[1],args[2],args[3]);return 0;}
+
+            if (args.Length == 4 && args[0] == "sdk-package-aptui")
+            {
+                SdkAptUIBuild.Package(args[1], args[2], args[3]);
+                return 0;
+            }
+
             // Reborn: dependency-list tests never replace the user's or developer's live mod files.
-            if(args.Length==2 && args[0]=="sdk-missing-strings-self-test")
+            if (args.Length==2 && args[0]=="sdk-missing-strings-self-test")
             {CompilerSmokeTest.InitializeHashProvider();SdkMissingStringAuditSmokeTest.Run(args[1]);return 0;}
             if(args.Length==2 && args[0]=="sdk-missing-dependencies-self-test")
             {CompilerSmokeTest.InitializeHashProvider();SdkMissingDependencyAuditSmokeTest.Run(args[1]);return 0;}

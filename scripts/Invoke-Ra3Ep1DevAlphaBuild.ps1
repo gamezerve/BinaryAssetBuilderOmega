@@ -1,6 +1,57 @@
 # Reborn: stable SDK front end; preserve editable sources, publish versioned Documents mods, never change game installation files or launch a game.
 [CmdletBinding()]
 param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot,[string]$StudioSession,[string]$ModVersion='1.00',[string]$FinalModsRoot,[ValidateSet(0,1)][int]$BuildGlobalData=1,[ValidateSet(0,1)][int]$DeveloperBuildTests=0,[ValidateSet(0,1)][int]$BuildAptUI=0)
+
+function Test-AptUIReferences {
+    param(
+        [string]$XmlPath,
+        [string]$SourceRoot,
+        [System.Collections.Generic.HashSet[string]]$Visited,
+        [ref]$ReferenceCount
+    )
+
+    $XmlPath=[IO.Path]::GetFullPath($XmlPath)
+    if(-not $Visited.Add($XmlPath)){return}
+
+    $settings=[Xml.XmlReaderSettings]::new()
+    $settings.DtdProcessing=[Xml.DtdProcessing]::Prohibit
+    $settings.XmlResolver=$null
+
+    $document=[Xml.XmlDocument]::new()
+    $document.XmlResolver=$null
+    $reader=[Xml.XmlReader]::Create($XmlPath,$settings)
+    try{
+        $document.Load($reader)
+    }finally{
+        $reader.Dispose()
+    }
+
+    $root=[IO.Path]::GetFullPath($SourceRoot).TrimEnd('\','/')
+    foreach($node in $document.SelectNodes('//*')){
+        foreach($attributeName in @('source','File')){
+            $attribute=$node.Attributes[$attributeName]
+            if($null-eq $attribute){continue}
+
+            $relativePath=$attribute.Value.Replace('/',[IO.Path]::DirectorySeparatorChar).Replace('\',[IO.Path]::DirectorySeparatorChar)
+            $target=[IO.Path]::GetFullPath((Join-Path (Split-Path -Parent $XmlPath) $relativePath))
+
+            if(-not $target.StartsWith($root+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){
+                throw "AptUI reference escapes source directory: $relativePath"
+            }
+
+            if(-not [IO.File]::Exists($target)){
+                throw "Missing AptUI reference: $relativePath in $XmlPath"
+            }
+
+            $ReferenceCount.Value++
+
+            if($node.LocalName -eq 'Include'){
+                Test-AptUIReferences -XmlPath $target -SourceRoot $root -Visited $Visited -ReferenceCount $ReferenceCount
+            }
+        }
+    }
+}
+
 $ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$lock=$null;$run=$null;$publishMutex=$null;$cancelEvent=$null;$publishHeld=$false;$runOwned=$false;$stageOwned=$false
 # Reborn: retain the original Studio envelope while adding truthful numbered backend phases and separate detailed output.
 . (Join-Path $PSScriptRoot 'Ra3Ep1BuildLog.ps1')
@@ -49,12 +100,84 @@ try{
     # Reborn: routing/XML errors belong to static-data preparation, not cache cleanup.
     $detail=Join-Path $run 'compiler-detail.log'
     Stop-SdkBuildPhase
+
+	$aptuiFiles = @()
+	$aptuiOutput = $null
+
 	Start-SdkBuildPhase 4 'Building AptUI'
 	if($BuildAptUI){
-		Stop-SdkBuildPhase 'Skipped: Build AptUI is enabled, but AptUI compilation is not yet implemented.'
+		$aptuiSource=Join-Path (Split-Path -Parent $ModXml) 'AptUI'
+
+		if(Test-Path -LiteralPath $aptuiSource -PathType Container){
+			$aptuiFiles=@(Get-ChildItem -LiteralPath $aptuiSource -Filter '*.xml' -File | Sort-Object Name)
+
+			if($aptuiFiles.Count -eq 0){
+				Stop-SdkBuildPhase 'Skipped: no AptUI XML files found.'
+			}else{
+				foreach($aptuiFile in $aptuiFiles){
+					Write-SdkBuildLine ('AptUI XML: '+$aptuiFile.Name)
+					
+					$xmlSettings=[System.Xml.XmlReaderSettings]::new()
+					$xmlSettings.DtdProcessing=[System.Xml.DtdProcessing]::Prohibit
+					$xmlSettings.XmlResolver=$null
+
+					$reader=[System.Xml.XmlReader]::Create($aptuiFile.FullName,$xmlSettings)
+					try{
+						while($reader.Read()){}
+					}finally{
+						$reader.Dispose()
+					}
+
+					Write-SdkBuildLine ('AptUI XML validation passed: '+$aptuiFile.Name)
+										
+					$visited=[System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+					$referenceCount=0
+
+					Test-AptUIReferences -XmlPath $aptuiFile.FullName -SourceRoot $aptuiSource -Visited $visited -ReferenceCount ([ref]$referenceCount)
+
+					Write-SdkBuildLine ('AptUI references validated: '+$referenceCount)
+					Write-SdkBuildLine ('AptUI XML files checked: '+$visited.Count)
+
+					$elementDirectory=Join-Path $aptuiSource $aptuiFile.BaseName
+
+					if(Test-Path -LiteralPath $elementDirectory -PathType Container){
+						$elements=@(Get-ChildItem -LiteralPath $elementDirectory -File -Recurse)
+						Write-SdkBuildLine ('AptUI element directory: '+$elementDirectory)
+						Write-SdkBuildLine ('AptUI element files: '+$elements.Count)
+					}else{
+						Write-SdkBuildLine ('AptUI element directory not found: '+$elementDirectory)
+					}
+				}
+
+								
+				$aptuiOutput = Join-Path $run 'aptui-streams'
+				$aptuiSchema = Join-Path $sdk 'Schemas\CnC3Types.xsd'
+
+				if (-not (Test-Path -LiteralPath $aptuiSchema -PathType Leaf)) {
+					throw "AptUI schema not found: $aptuiSchema"
+				}
+
+				New-Item -ItemType Directory -Force -Path $aptuiOutput | Out-Null
+
+				foreach ($aptuiFile in $aptuiFiles) {
+					& (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') sdk-compile-aptui $aptuiFile.FullName $aptuiSchema $aptuiOutput 2>&1 |
+						ForEach-Object { Write-SdkCompilerLine ([string]$_) $detail }
+
+					if ($LASTEXITCODE -ne 0) {
+						throw ('AptUI compilation failed: ' + $aptuiFile.Name)
+					}
+				}
+
+				Stop-SdkBuildPhase ('AptUI compiled: ' + $aptuiFiles.Count + ' XML file(s).')
+
+			}
+		}else{
+			Stop-SdkBuildPhase 'Skipped: no AptUI source directory found.'
+		}
 	}else{
 		Stop-SdkBuildPhase 'Skipped: [Optional] Build AptUI is unchecked.'
 	}
+
     Start-SdkBuildPhase 5 'Building global data'
     # Reborn: an unchecked toggle omits global sources from this fresh package; never silently reuse an older source generation.
     $globalBuild=$null
@@ -111,7 +234,27 @@ try{
     $stage=Join-Path $expectedOutput ('.stage-'+[guid]::NewGuid().ToString('N'));$null=New-Item -ItemType Directory -Path $stage;$stageOwned=$true
     # Reborn: recheck global sources, then append their qualified five-file stream families without changing static payloads.
     if($globalBuild){Assert-RebornGlobalSources $globalBuild;if($globalBuild.Streams.Count){$combined=Join-Path $run 'combined-streams.big';& (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') sdk-package-global-streams $package $globalBuild.Context $combined 2>&1 | ForEach-Object {Write-SdkBuildLine ([string]$_)};if($LASTEXITCODE-ne 0){throw 'Global/static Streams BIG assembly failed.'};$package=$combined}}
-    # Reborn: only unresolved WorldBuilder use sites become warnings, after extraction and global/static package assembly have finished.
+    
+	if ($BuildAptUI -and $aptuiFiles.Count -gt 0) {
+		if (-not (Test-Path -LiteralPath $aptuiOutput -PathType Container)) {
+			throw 'Compiled AptUI output directory not found.'
+		}
+
+		$aptuiBig = Join-Path $run 'combined-aptui-streams.big'
+		$compiler = Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe'
+
+		& $compiler sdk-package-aptui $package $aptuiOutput $aptuiBig 2>&1 |
+			ForEach-Object { Write-SdkCompilerLine ([string]$_) $detail }
+
+		if ($LASTEXITCODE -ne 0) {
+			throw 'AptUI Streams BIG assembly failed.'
+		}
+
+		$package = $aptuiBig
+		Write-SdkBuildLine 'AptUI streams added to the final BIG package.'
+	}
+	
+	# Reborn: only unresolved WorldBuilder use sites become warnings, after extraction and global/static package assembly have finished.
     & (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') sdk-check-worldbuilder-resolution $package $dependencyReport (Join-Path $sdk 'catalogs/ra3ep1') 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail}
     if($LASTEXITCODE-ne 0){throw 'Post-resolution WorldBuilder dependency check failed.'}
     # Reborn: audit every final asset type after global/static assembly, using weak-use receipts as well as native reference tables.

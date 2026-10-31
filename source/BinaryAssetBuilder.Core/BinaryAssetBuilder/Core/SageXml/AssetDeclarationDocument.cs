@@ -1135,7 +1135,20 @@ namespace BinaryAssetBuilder.Core.SageXml
             StringCollection derivedTypes = _current.DocumentProcessor.SchemaSet.GetDerivedTypes("BaseInheritableAsset");
             foreach (InstanceDeclaration instance in _current.SelfInstances)
             {
-                ExtendedTypeInformation extendedTypeInformation = _current.DocumentProcessor.Plugins.GetExtendedTypeInformation(instance.Handle.TypeId);
+                ExtendedTypeInformation extendedTypeInformation;
+
+                try
+                {
+                    extendedTypeInformation = _current.DocumentProcessor.Plugins.GetExtendedTypeInformation(instance.Handle.TypeId);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw new InvalidOperationException(
+                        $"Unregistered asset type: {instance.Handle.TypeName}, " +
+                        $"Asset: {instance.Handle.Name}, " +
+                        $"TypeId: 0x{instance.Handle.TypeId:X8}, " +
+                        $"Source: {_current.SourcePath}", ex);
+                }
                 uint textHash = HashProvider.GetTextHash(extendedTypeInformation.ProcessingHash, DocumentProcessor.Version.ToString(CultureInfo.InvariantCulture));
                 instance.Handle.TypeHash = extendedTypeInformation.TypeHash;
                 XmlNode node = instance.XmlNode;

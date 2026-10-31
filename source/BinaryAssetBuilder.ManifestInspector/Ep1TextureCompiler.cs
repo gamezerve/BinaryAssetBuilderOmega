@@ -27,8 +27,8 @@ internal static class Ep1TextureCompiler
         if(b.Length<18)throw new InvalidDataException("TGA header is truncated: "+path);
         int idLength=b[0],colorMap=b[1],type=b[2],width=U16(b,12),height=U16(b,14),bpp=b[16],descriptor=b[17];
         if(colorMap!=0||type is not (2 or 10))throw new InvalidDataException("Only true-color TGA (type 2 or RLE type 10) is supported: "+path);
-        if(bpp!=32||(descriptor&0x0F)!=8)throw new InvalidDataException("Only 32-bit TGA with an 8-bit alpha channel is supported for A8R8G8B8 textures: "+path);
-        if((descriptor&0x10)!=0)throw new InvalidDataException("Right-to-left TGA origin is not supported: "+path);
+        if (bpp != 32 || (descriptor & 0x0F) is not (0 or 8)) throw new InvalidDataException("Only 32-bit TGA with 0 or 8 alpha attribute bits is supported: " + path);
+        if ((descriptor&0x10)!=0)throw new InvalidDataException("Right-to-left TGA origin is not supported: "+path);
         if(width<1||height<1||width>MaxDimension||height>MaxDimension)throw new InvalidDataException("TGA dimensions are outside 1.."+MaxDimension+": "+path);
         int pixels=checked(width*height),at=18+idLength;var raw=new byte[pixels*4];
         if(type==2){if(at>b.Length-raw.Length)throw new InvalidDataException("TGA pixel data is truncated: "+path);Buffer.BlockCopy(b,at,raw,0,raw.Length);}

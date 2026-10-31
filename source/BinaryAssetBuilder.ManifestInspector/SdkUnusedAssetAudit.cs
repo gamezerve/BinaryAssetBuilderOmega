@@ -71,15 +71,115 @@ internal static class SdkUnusedAssetAudit
     //-------------------------------------------------------------------------------------------------
     /** Reborn: audit the final assembled package once so later static consumers can use early globals; report original source coordinates where provenance exists. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string package,string sdk,string buildRoot,string entry)
+
+    internal static void Run(string package, string sdk, string buildRoot, string entry)
     {
-        var mod=new List<ManifestAsset>();using(var archive=BigArchive.Open(package))foreach(var member in archive.Entries.Where(e=>e.Name.EndsWith(".manifest",StringComparison.OrdinalIgnoreCase))){var document=ManifestReader.Read(archive.ReadEntry(member,checked((int)member.StoredSize)));TypeRegistryAudit.ValidateTarget(document.Header.Version,document.Header.AllTypesHash);if(document.Validate().Count!=0)throw new InvalidDataException("Invalid final package manifest: "+member.Name);mod.AddRange(document.Assets);}
-        var stock=SdkMissingDependencyAudit.CatalogManifestPaths(sdk).SelectMany(path=>ManifestReader.Read(File.ReadAllBytes(path)).Assets).ToArray();var weak=Directory.GetFiles(buildRoot,"asset-usage.json",SearchOption.AllDirectories).SelectMany(path=>JsonSerializer.Deserialize<WeakUse[]>(File.ReadAllBytes(path))??throw new InvalidDataException("Invalid asset usage receipt: "+path)).ToArray();
-        // Reborn: new preparation receipts retain logical inheritance edges; older receipts remain valid with no such evidence.
-        var inheritance=new List<SdkSelfAttributeInheritance.Overlay>();var origins=new List<ConscriptCompileLog>();foreach(string receipt in Directory.GetFiles(buildRoot,"source-input.json",SearchOption.AllDirectories).OrderBy(p=>p,StringComparer.Ordinal)){using var json=JsonDocument.Parse(File.ReadAllBytes(receipt));origins.Add(ConscriptCompileLog.ForPrepared(json.RootElement.GetProperty("GamePath").GetString()!));if(json.RootElement.TryGetProperty("InheritanceUses",out var uses))inheritance.AddRange(uses.Deserialize<SdkSelfAttributeInheritance.Overlay[]>()??Array.Empty<SdkSelfAttributeInheritance.Overlay>());}var fallback=ConscriptCompileLog.ForPrepared(entry);var findings=new List<object>();
-        foreach(var asset in FindUnused(mod,stock,weak,inheritance)){int colon=asset.Name.IndexOf(':');string id=colon<0?asset.Name:asset.Name[(colon+1)..];var origin=(origins.LastOrDefault(o=>o.HasOrigin(asset.TypeName,id))??fallback).Location(asset.TypeName,id);Console.WriteLine("Warning: UNUSEDASSET ' "+asset.Name+" ' has no static or inheritance reference in emitted mod assets or stock catalogs; dynamic/script use may exist. Source: "+origin+".");findings.Add(new{asset.Name,origin.File,origin.Line,origin.Column,origin.Context});}
-        File.WriteAllText(Path.Combine(buildRoot,"unused-assets.json"),JsonSerializer.Serialize(new{ModAssets=mod.Select(WorldBuilderAssetResolver.Id).Distinct().Count(),WeakEdges=weak.Sum(w=>w.Targets.Length),InheritanceEdges=inheritance.Distinct().Count(),Findings=findings,Advisory=true,GameExecuted=false},new JsonSerializerOptions{WriteIndented=true}));Console.WriteLine("Asset usage audit: "+mod.Select(WorldBuilderAssetResolver.Id).Distinct().Count()+" packaged assets; "+findings.Count+" without static or inheritance references.");
+        var mod = new List<ManifestAsset>();
+        var aptui = new HashSet<AssetId>();
+        var other = new HashSet<AssetId>();
+
+        using (var archive = BigArchive.Open(package))
+        {
+            foreach (var member in archive.Entries.Where(e => e.Name.EndsWith(".manifest", StringComparison.OrdinalIgnoreCase)))
+            {
+                var document = ManifestReader.Read(archive.ReadEntry(member, checked((int)member.StoredSize)));
+                TypeRegistryAudit.ValidateTarget(document.Header.Version, document.Header.AllTypesHash);
+
+                if (document.Validate().Count != 0)
+                    throw new InvalidDataException("Invalid final package manifest: " + member.Name);
+
+                bool isAptUI = member.Name.Replace('/', '\\').StartsWith(@"data\aptui\", StringComparison.OrdinalIgnoreCase);
+
+                mod.AddRange(document.Assets);
+
+                var target = isAptUI ? aptui : other;
+
+                foreach (var asset in document.Assets)
+                    target.Add(WorldBuilderAssetResolver.Id(asset));
+            }
+        }
+
+        aptui.ExceptWith(other);
+
+        var stock = SdkMissingDependencyAudit.CatalogManifestPaths(sdk)
+            .SelectMany(path => ManifestReader.Read(File.ReadAllBytes(path)).Assets)
+            .ToArray();
+
+        var weak = Directory.GetFiles(buildRoot, "asset-usage.json", SearchOption.AllDirectories)
+            .SelectMany(path => JsonSerializer.Deserialize<WeakUse[]>(File.ReadAllBytes(path))
+                ?? throw new InvalidDataException("Invalid asset usage receipt: " + path))
+            .ToArray();
+
+        var inheritance = new List<SdkSelfAttributeInheritance.Overlay>();
+        var origins = new List<ConscriptCompileLog>();
+
+        foreach (string receipt in Directory.GetFiles(buildRoot, "source-input.json", SearchOption.AllDirectories).OrderBy(p => p, StringComparer.Ordinal))
+        {
+            using var json = JsonDocument.Parse(File.ReadAllBytes(receipt));
+
+            origins.Add(ConscriptCompileLog.ForPrepared(json.RootElement.GetProperty("GamePath").GetString()!));
+
+            if (json.RootElement.TryGetProperty("InheritanceUses", out var uses))
+                inheritance.AddRange(uses.Deserialize<SdkSelfAttributeInheritance.Overlay[]>()
+                    ?? Array.Empty<SdkSelfAttributeInheritance.Overlay>());
+        }
+
+        var fallback = ConscriptCompileLog.ForPrepared(entry);
+        var findings = new List<object>();
+        var dynamicUi = new List<string>();
+
+        foreach (var asset in mod.DistinctBy(WorldBuilderAssetResolver.Id))
+        {
+            if (aptui.Contains(WorldBuilderAssetResolver.Id(asset)))
+                dynamicUi.Add(asset.Name);
+        }
+
+        foreach (var asset in FindUnused(mod, stock, weak, inheritance))
+        {
+            if (aptui.Contains(WorldBuilderAssetResolver.Id(asset)))
+                continue;
+
+            int colon = asset.Name.IndexOf(':');
+            string id = colon < 0 ? asset.Name : asset.Name[(colon + 1)..];
+
+            var origin = (origins.LastOrDefault(o => o.HasOrigin(asset.TypeName, id)) ?? fallback)
+                .Location(asset.TypeName, id);
+
+            Console.WriteLine("Warning: UNUSEDASSET ' " + asset.Name +
+                " ' has no static or inheritance reference in emitted mod assets or stock catalogs; dynamic/script use may exist. Source: " +
+                origin + ".");
+
+            findings.Add(new { asset.Name, origin.File, origin.Line, origin.Column, origin.Context });
+        }
+
+        dynamicUi.Sort(StringComparer.Ordinal);
+
+        File.WriteAllText(
+            Path.Combine(buildRoot, "unused-assets.json"),
+            JsonSerializer.Serialize(
+                new
+                {
+                    ModAssets = mod.Select(WorldBuilderAssetResolver.Id).Distinct().Count(),
+                    WeakEdges = weak.Sum(w => w.Targets.Length),
+                    InheritanceEdges = inheritance.Distinct().Count(),
+                    PackagedAptUIAssets = dynamicUi.Count,
+                    DynamicUIAssets = dynamicUi,
+                    Findings = findings,
+                    Advisory = true,
+                    GameExecuted = false
+                },
+                new JsonSerializerOptions { WriteIndented = true }));
+
+        Console.WriteLine(
+            "Asset usage audit: " +
+            mod.Select(WorldBuilderAssetResolver.Id).Distinct().Count() +
+            " packaged assets; " +
+            dynamicUi.Count +
+            " packaged AptUI assets; " +
+            findings.Count +
+            " without static or inheritance references.");
     }
+
 
     // Reborn: only the official schema reference annotation supplies the required target family.
     private static string? Annotation(XmlAttribute[]? attributes)=>attributes?.FirstOrDefault(a=>a.LocalName=="refType"&&a.NamespaceURI=="uri:ea.com:eala:asset:schema")?.Value;

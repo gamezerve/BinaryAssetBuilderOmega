@@ -1,10 +1,11 @@
+using BinaryAssetBuilder.Core;
+using BinaryAssetBuilder.Utility;
 using System.Buffers.Binary;
+using System.Reflection.PortableExecutable;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Nodes;
 using System.Xml;
-using BinaryAssetBuilder.Core;
-using BinaryAssetBuilder.Utility;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
@@ -119,9 +120,38 @@ internal static class WorldBuilderAssetResolver
     //-------------------------------------------------------------------------------------------------
     /** Reborn: split linked output on metadata sizes without rewriting selectors, and refuse trailing or truncated sidecars. */
     //-------------------------------------------------------------------------------------------------
-    internal static Native[] ReadNative(ManifestDocument metadata,Dictionary<string,byte[]> streams)
+    internal static Native[] ReadNative(ManifestDocument metadata, Dictionary<string, byte[]> streams)
     {
-        int[] at={8,8,8};var result=new List<Native>();foreach(var asset in metadata.Assets){int[] sizes={asset.InstanceDataSize,asset.RelocationDataSize,asset.ImportsDataSize};var parts=new byte[3][];for(int i=0;i<3;i++){var bytes=streams["diagnostic"+Extensions[i+1]];uint magic=i==0?0xBABB0000u:i==1?0xBABE0000u:0xBAB10000u;if(Word(bytes,0)!=magic||Word(bytes,4)!=metadata.Header.StreamChecksum)throw new InvalidDataException("Linked stream checksum/magic differs.");parts[i]=bytes.AsSpan(at[i],sizes[i]).ToArray();at[i]=checked(at[i]+sizes[i]);}result.Add(new(asset,parts[0],parts[1],parts[2]));}for(int i=0;i<3;i++)if(at[i]!=streams["diagnostic"+Extensions[i+1]].Length)throw new InvalidDataException("Linked sidecar length differs.");return result.ToArray();
+        int[] at = { 8, 8, 8 };
+        var result = new List<Native>();
+
+        foreach (var asset in metadata.Assets)
+        {
+            int[] sizes = { asset.InstanceDataSize, asset.RelocationDataSize, asset.ImportsDataSize };
+            var parts = new byte[3][];
+
+            for (int i = 0; i < 3; i++)
+            {
+                var bytes = streams["diagnostic" + Extensions[i + 1]];
+                uint magic = i == 0 ? 0xBABB0000u : i == 1 ? 0xBABE0000u : 0xBAB10000u;
+
+                if (bytes.Length < 8 || Word(bytes, 0) != magic || Word(bytes, 4) != metadata.Header.StreamChecksum)
+                    throw new InvalidDataException($"Linked stream checksum/magic differs: {Extensions[i + 1]}, ExpectedMagic=0x{magic:X8}, ActualMagic=0x{(bytes.Length >= 4 ? Word(bytes, 0) : 0):X8}, ExpectedChecksum=0x{metadata.Header.StreamChecksum:X8}, ActualChecksum=0x{(bytes.Length >= 8 ? Word(bytes, 4) : 0):X8}");
+
+                parts[i] = bytes.AsSpan(at[i], sizes[i]).ToArray();
+                at[i] = checked(at[i] + sizes[i]);
+            }
+
+            result.Add(new(asset, parts[0], parts[1], parts[2]));
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            if (at[i] != streams["diagnostic" + Extensions[i + 1]].Length)
+                throw new InvalidDataException("Linked sidecar length differs.");
+        }
+
+        return result.ToArray();
     }
 
     //-------------------------------------------------------------------------------------------------

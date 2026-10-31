@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using BinaryAssetBuilder.Core.Diagnostics;
+﻿using BinaryAssetBuilder.Core.Diagnostics;
+using System;
+using System.Collections.Generic;
 
 namespace BinaryAssetBuilder.Core
 {
@@ -150,6 +151,8 @@ namespace BinaryAssetBuilder.Core
                     result = plugin.GetExtendedTypeInformation(typeId);
                 }
                 _buildCacheMap.TryGetValue(typeId, out bool defaultUseBuildCache);
+                if (result is null)
+                    throw new InvalidOperationException($"No extended type information registered for TypeId 0x{typeId:X8}.");
                 result.UseBuildCache = defaultUseBuildCache;
                 // Reborn: settings cannot opt an experimental processor back into unvalidated binary cache reuse.
                 if (plugin is IAssetBuilderOutputPolicy policy && !policy.CanUseBuildCache) result.UseBuildCache = false;

@@ -145,6 +145,12 @@ public class Plugin : IAssetBuilderPlugin
             0x6D59C409u,
 #endif
             false),
+
+        (typeof(AptConstData), 0xE70AE718u, false),
+        (typeof(AptGeometryData), 0x52DD4BEAu, false),
+        (typeof(AptDatData), 0x0DB61C30u, false),
+        (typeof(AptAptData), 0xE238FAC3u, false),
+
         })
         {
             CreateTypeInfo(type, num, hash, hasCustomData);
