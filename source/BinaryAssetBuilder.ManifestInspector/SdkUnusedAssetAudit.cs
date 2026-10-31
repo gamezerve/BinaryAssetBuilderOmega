@@ -13,6 +13,35 @@ internal static class SdkUnusedAssetAudit
     // Reborn: UI templates selected through command/power registries cannot be judged unused solely by missing incoming asset edges.
     // UnitAbilityButtonTemplate has a required LogicCommand selector; Joypad templates also have direct layout refs, but ability/power variants need not have an incoming one.
     private static readonly HashSet<string> RuntimeSelectedUiTypes=new(StringComparer.Ordinal){"UnitAbilityButtonTemplate","JoypadCommandBarButtonTemplate"};
+
+    private static readonly HashSet<string> RuntimeSelectedImageNames = new(StringComparer.Ordinal)
+{
+    "OnDemandTextureImage:BootupScreen",
+    "OnDemandTextureImage:BootupScreen_PC",
+    "OnDemandTextureImage:Logo",
+    "OnDemandTextureImage:PostBootupScreen",
+    "OnDemandTextureImage:PostBootupScreen_ESRB",
+    "OnDemandTextureImage:PostBootupScreen_NAFR",
+    "OnDemandTextureImage:RA3_MainMenu3D_logo"
+};
+
+    private static readonly HashSet<string> RuntimeSelectedImageIds = new(StringComparer.Ordinal)
+{
+    "BootupScreen",
+    "BootupScreen_PC"
+};
+
+    private static bool IsRuntimeSelectedImage(ManifestAsset asset)
+    {
+        if (asset.TypeName != "OnDemandTextureImage")
+            return false;
+
+        int separator = asset.Name.IndexOf(':');
+        string id = separator < 0 ? asset.Name : asset.Name[(separator + 1)..];
+
+        return RuntimeSelectedImageIds.Contains(id);
+    }
+
     private const string Ea="uri:ea.com:eala:asset";
 
     //-------------------------------------------------------------------------------------------------
@@ -52,7 +81,15 @@ internal static class SdkUnusedAssetAudit
         uint gameObjectType=BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("GameObject"),experienceType=BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode("ExperienceLevelTemplate");
         var knownTargets=emitted.Concat(originals).Where(a=>a.TypeId==gameObjectType).Select(WorldBuilderAssetResolver.Id).ToHashSet();
         var runtimeExperience=weakUses.Where(w=>w.Owner.TypeId==experienceType&&local.Contains(w.Owner)&&w.Targets.Any(t=>knownTargets.Contains(t))).Select(w=>w.Owner).ToHashSet();
-        return emitted.DistinctBy(WorldBuilderAssetResolver.Id).Where(a=>!RuntimeSelectedUiTypes.Contains(a.TypeName)&&!runtimeExperience.Contains(WorldBuilderAssetResolver.Id(a))&&!retail.Contains(WorldBuilderAssetResolver.Id(a))&&!used.Contains(WorldBuilderAssetResolver.Id(a))).OrderBy(a=>a.Name,StringComparer.Ordinal).ToArray();
+        return emitted.DistinctBy(WorldBuilderAssetResolver.Id)
+            .Where(a =>
+                !RuntimeSelectedUiTypes.Contains(a.TypeName) &&
+                !RuntimeSelectedImageNames.Contains(a.Name) &&
+                !runtimeExperience.Contains(WorldBuilderAssetResolver.Id(a)) &&
+                !retail.Contains(WorldBuilderAssetResolver.Id(a)) &&
+                !used.Contains(WorldBuilderAssetResolver.Id(a)))
+            .OrderBy(a => a.Name, StringComparer.Ordinal)
+            .ToArray();
     }
 
     //-------------------------------------------------------------------------------------------------

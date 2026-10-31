@@ -33,8 +33,28 @@ internal static class SdkUnusedAssetAuditSmokeTest
         Require(SdkUnusedAssetAudit.FindUnused(new[]{candidates[7]},Array.Empty<ManifestAsset>(),Array.Empty<SdkUnusedAssetAudit.WeakUse>(),inheritance).Any(),"An absent derived owner suppressed a truly unused audio base.");
         // Reborn: UI runtime selection is not an incoming manifest reference; unused ordinary assets must still warn next to those two families.
         var uiOnly=candidates.Where(a=>a.TypeName is "UnitAbilityButtonTemplate" or "JoypadCommandBarButtonTemplate").ToArray();Require(uiOnly.Length==2&&!SdkUnusedAssetAudit.FindUnused(uiOnly,Array.Empty<ManifestAsset>(),Array.Empty<SdkUnusedAssetAudit.WeakUse>()).Any(),"Runtime-selected UI templates were falsely classified as unused.");
+
+
+        var bootupImages = new[]
+        {
+            Asset("OnDemandTextureImage", "BootupScreen"),
+            Asset("OnDemandTextureImage", "BootupScreen_PC"),
+            Asset("OnDemandTextureImage", "UnusedTestImage")
+        };
+
+        var unusedImages = SdkUnusedAssetAudit.FindUnused(
+            bootupImages,
+            Array.Empty<ManifestAsset>(),
+            Array.Empty<SdkUnusedAssetAudit.WeakUse>());
+
+        Require(
+            unusedImages.Length == 1 &&
+            unusedImages[0].Name == "OnDemandTextureImage:UnusedTestImage",
+            "Runtime-selected bootup images were incorrectly classified as unused.");
+
+
         // Reborn: targeted experience levels are runtime roots, including a terminal rank with no incoming prerequisite edge.
-        var level=candidates[^1];var target=WorldBuilderAssetResolver.Id(candidates[0]);var targeted=new SdkUnusedAssetAudit.WeakUse(WorldBuilderAssetResolver.Id(level),new[]{target});
+        var level =candidates[^1];var target=WorldBuilderAssetResolver.Id(candidates[0]);var targeted=new SdkUnusedAssetAudit.WeakUse(WorldBuilderAssetResolver.Id(level),new[]{target});
         Require(!SdkUnusedAssetAudit.FindUnused(new[]{level,candidates[0]},Array.Empty<ManifestAsset>(),new[]{targeted}).Any(a=>a.TypeName=="ExperienceLevelTemplate"),"Targeted terminal experience level warned as unused.");
         Require(!SdkUnusedAssetAudit.FindUnused(new[]{level},new[]{candidates[0]},new[]{targeted}).Any(),"Retail GameObject target did not register an experience level.");
         var missing=new SdkUnusedAssetAudit.WeakUse(WorldBuilderAssetResolver.Id(level),new[]{WorldBuilderAssetResolver.Id(Asset("GameObject","MissingTarget"))});
