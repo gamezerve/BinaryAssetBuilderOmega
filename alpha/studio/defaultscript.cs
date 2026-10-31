@@ -80,6 +80,8 @@ namespace EALABuild
             // Reborn: bind every Studio build to the configured read-only stock baseline.
             request.Arguments = "--run " + session + " \"" + runtime + "\" -NoProfile -File \"" + driver + "\" -StudioSession " + session + " -ModXml \"" + input + "\" -StaticManifest \"" + staticManifest
                 + "\" -CompilerDirectory \"" + compilerDirectory + "\" -OutputRoot \"" + outputRoot + "\" -ModVersion \"" + version + "\"";
+			bool buildAptUI = gui.ContainsKey("buildaptui") && Convert.ToBoolean(gui["buildaptui"]);
+			request.Arguments += " -BuildAptUI " + (buildAptUI ? "1" : "0");
             // Reborn: preserve four-key armor workspaces without inferring a weapon dependency path.
             if (globalManifest != null) request.Arguments += " -GlobalManifest \"" + globalManifest + "\"";
             // Reborn: EA persists this native checkbox; pass an explicit numeric value so unchecked is never lost in switch binding.
@@ -129,7 +131,8 @@ namespace EALABuild
             options.Add(new GUIElementData("scope", "Fixed yard samples or 1..32 source armors with Includes/Defines/inheritFrom (experimental)", GUIElementData.LabelType, ScriptIndex.ModScript));
             // Reborn: distinguish reviewed variable behavior shapes from unrestricted nested GameObject/resource authoring.
             options.Add(new GUIElementData("weapon", "Conscript: reviewed variable Behaviors + fixed fields; unsupported layouts fail", GUIElementData.LabelType, ScriptIndex.ModScript));
-            // Reborn: compile AdditionalMaps/MapMetaData_*.xml before static data, using EA's familiar persisted toggle.
+            options.Add(new GUIElementData("buildaptui", "Build AptUI", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
+			// Reborn: compile AdditionalMaps/MapMetaData_*.xml before static data, using EA's familiar persisted toggle.
             options.Add(new GUIElementData("buildglobal", "Build Global Data", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
             // Reborn: EA's new checkbox defaults unchecked and persists the user's later selection using its own GUI data store.
             options.Add(new GUIElementData("developertests", "Developer Build Tests", GUIElementData.CheckBoxType, ScriptIndex.ModScript));

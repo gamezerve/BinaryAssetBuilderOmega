@@ -1,6 +1,6 @@
 # Reborn: stable SDK front end; preserve editable sources, publish versioned Documents mods, never change game installation files or launch a game.
 [CmdletBinding()]
-param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot,[string]$StudioSession,[string]$ModVersion='1.00',[string]$FinalModsRoot,[ValidateSet(0,1)][int]$BuildGlobalData=1,[ValidateSet(0,1)][int]$DeveloperBuildTests=0)
+param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot,[string]$StudioSession,[string]$ModVersion='1.00',[string]$FinalModsRoot,[ValidateSet(0,1)][int]$BuildGlobalData=1,[ValidateSet(0,1)][int]$DeveloperBuildTests=0,[ValidateSet(0,1)][int]$BuildAptUI=0)
 $ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$lock=$null;$run=$null;$publishMutex=$null;$cancelEvent=$null;$publishHeld=$false;$runOwned=$false;$stageOwned=$false
 # Reborn: retain the original Studio envelope while adding truthful numbered backend phases and separate detailed output.
 . (Join-Path $PSScriptRoot 'Ra3Ep1BuildLog.ps1')
@@ -49,7 +49,12 @@ try{
     # Reborn: routing/XML errors belong to static-data preparation, not cache cleanup.
     $detail=Join-Path $run 'compiler-detail.log'
     Stop-SdkBuildPhase
-    Start-SdkBuildPhase 4 'Building AptUI';Stop-SdkBuildPhase 'Skipped: no separate AptUI compiler stage is enabled in this alpha; unsupported requested assets fail validation.'
+	Start-SdkBuildPhase 4 'Building AptUI'
+	if($BuildAptUI){
+		Stop-SdkBuildPhase 'Skipped: Build AptUI is enabled, but AptUI compilation is not yet implemented.'
+	}else{
+		Stop-SdkBuildPhase 'Skipped: [Optional] Build AptUI is unchecked.'
+	}
     Start-SdkBuildPhase 5 'Building global data'
     # Reborn: an unchecked toggle omits global sources from this fresh package; never silently reuse an older source generation.
     $globalBuild=$null
