@@ -50,7 +50,7 @@ internal static class ConscriptMultiAssetBuild
             // Reborn: retail AudioFile metadata stays SDK-local; authored events reference the loaded audio stream without repacking its samples.
             string? audioManifest=null;if(sources.Any(s=>s.DocumentElement!.LocalName=="AudioEvent")){audioManifest=AuthoredAmbientCompiler.CatalogPath();var audio=ManifestReader.Read(SdkEnvironmentPreflight.Read(audioManifest,64*1048576));TypeRegistryAudit.ValidateTarget(audio.Header.Version,audio.Header.AllTypesHash);if(!audio.Header.IsLinked||audio.Validate().Count!=0)throw new InvalidDataException("Valid linked EP1 audio catalog required.");var known=stock.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();stock=stock.Concat(audio.Assets.Where(a=>a.TypeName=="AudioFile"&&!known.Contains(new(a.TypeId,a.InstanceId)))).ToArray();}
             var fingerprints=new Dictionary<uint,(uint Hash,bool Tokenized)>();var locals=new Dictionary<AssetId,XmlDocument>();
-            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
+            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
                 uint typeId=FastHash.GetHashCode(type);var examples=stock.Where(a=>a.TypeId==typeId).Select(a=>(a.TypeHash,Tokenized:a.Tokenized==1)).Distinct().ToArray();if(examples.Length!=1)throw new InvalidDataException("EP1 asset fingerprint is absent/ambiguous: "+type);fingerprints[typeId]=examples[0];if(!locals.TryAdd(new(typeId,InstanceHandle.GetInstanceId(id)),xml))throw SdkXmlDiagnostics.At(new InvalidDataException("DUPLICATEASSET ' "+type+":"+id+" ' Duplicate local asset/hash identity."),xml.DocumentElement);
             }
             // Reborn: source-only catalog entries resolve local names before native data exists; payloads are freshly compiled below, never copied from stock.
@@ -176,7 +176,24 @@ internal static class ConscriptMultiAssetBuild
                 }else if(type=="FXList"){
                     // Reborn: general untokenized FXList compilation preserves real Core reference indices and source-sized polymorphic nugget order.
                     instance=Normalize(xml);var native=FXListCompiler.Compile(instance.XmlNode);SchemaNativeContract.Verify(FXListCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(FXList),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
-                }else if(type=="Texture"){
+                }
+                else if (type == "OnDemandTexture")
+                {
+                    instance = Normalize(xml);
+                    string resource = TextureResource(entry, xml.DocumentElement!.GetAttribute("File"));
+                    var payload = SdkEnvironmentPreflight.Read(resource, 64 * 1048576);
+
+                    if (!string.Equals(
+                        Path.GetFileNameWithoutExtension(resource),
+                        Ep1TextureCompiler.Sha256(payload),
+                        StringComparison.OrdinalIgnoreCase))
+                        throw new InvalidDataException("Captured OnDemandTexture payload changed: " + resource);
+
+                    var native = OnDemandTextureCompiler.Compile(xml.DocumentElement, payload, resource);
+                    buffer = Buffer(native);
+
+                }
+                else if(type=="Texture"){
                     // Reborn: PC texture = 12-byte root + DDS; the TGA is the content-addressed copy captured during preparation.
                     instance=Normalize(xml);string resource=TextureResource(entry,xml.DocumentElement.GetAttribute("File"));var payload=SdkEnvironmentPreflight.Read(resource,64*1048576);
                     if(!string.Equals(Path.GetFileNameWithoutExtension(resource),Ep1TextureCompiler.Sha256(payload),StringComparison.OrdinalIgnoreCase))throw new InvalidDataException("Captured texture payload changed: "+resource);
@@ -187,7 +204,22 @@ internal static class ConscriptMultiAssetBuild
                 }else if(type=="W3DContainer"){
                     // Reborn: hierarchy/mesh/collision imports are normalized by Core; authoring a container never copies their stock payloads.
                     instance=Normalize(xml);var native=W3DContainerCompiler.Compile(instance.XmlNode);W3DContainerCompiler.Verify(instance,native);buffer=Buffer(native);
-                }else if(type=="PackedTextureImage"){
+                }
+                else if (type == "OnDemandTextureImage")
+                {
+                    instance = Normalize(xml);
+                    var native = OnDemandTextureImageCompiler.Compile(instance.XmlNode);
+                    SchemaNativeContract.Verify(
+                        OnDemandTextureImageCompiler.ProofSource(xml, schemas, available).DocumentElement!,
+                        typeof(OnDemandTextureImage),
+                        0,
+                        native,
+                        instance.ReferencedInstances.Select(r => new AssetId(r.TypeId, r.InstanceId)).ToArray()
+                    );
+                    buffer = Buffer(native);
+
+                }
+                else if(type=="PackedTextureImage"){
                     // Reborn: untokenized 36-byte record; Core owns the Texture reference occurrence index.
                     instance=Normalize(xml);var native=PackedTextureImageCompiler.Compile(instance.XmlNode);
                     SchemaNativeContract.Verify(PackedTextureImageCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(PackedTextureImage),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
@@ -234,7 +266,17 @@ internal static class ConscriptMultiAssetBuild
             // Reborn: reported only after deterministic re-serialization and binary/relocation/import readback both passed.
             Console.WriteLine("Linking binary, relocation and import data verified by readback; mod Stream complete");compileLog.Statistics();
             // Reborn: pure command-set graphs publish through the same verified stream/archive contract without a dummy unit.
-            if(!hasGame){PackageSupport(output,source,streams,instances,stock);return true;}
+            if (!hasGame)
+            {
+                PackageSupport(output, source, streams, instances, stock);
+
+                OnDemandTextureCDataPackage.Publish(
+                    Path.Combine(output, "support"),
+                    entry,
+                    ordered.Select(b => (b.Source, b.Instance)));
+
+                return true;
+            }
             // Reborn: stock overrides are not limited to the Conscript sample, and receipts must not label an existing building as a new identity.
             string gameId=source.DocumentElement!.GetAttribute("id");bool stockOverride=stock.Any(a=>a.TypeId==0x942FFF2D&&a.InstanceId==InstanceHandle.GetInstanceId(gameId)&&string.Equals(a.Name,"GameObject:"+gameId,StringComparison.OrdinalIgnoreCase));string package=Path.Combine(output,stockOverride?"override":"new-id");GameObjectConscriptTrialSmokeTest.Package(package,source,streams,gameId,prefix,stockOverride:stockOverride);
             // Reborn: the legacy package receipt keeps its primary-object contract, while explicitly reporting the complete mixed declaration graph.
@@ -245,6 +287,10 @@ internal static class ConscriptMultiAssetBuild
             bool barracks=ordered.Any(b=>b.Instance.Handle.Name=="LogicCommandSet:SovietBarracksCommandSet"&&b.Instance.ReferencedInstances.Any(r=>commands.Any(c=>c.Instance.Handle.TypeId==r.TypeId&&c.Instance.Handle.InstanceId==r.InstanceId)));
             receipt["DeclaredBarracksRecruitmentChain"]=barracks;receipt["RecruitableNewIdentity"]=!stockOverride&&barracks;receipt["NextGate"]="Controlled gameplay validation of the authored assets; offline linkage is not runtime proof.";
             File.WriteAllText(receiptPath,receipt.ToJsonString(new JsonSerializerOptions{WriteIndented=true}));
+            OnDemandTextureCDataPackage.Publish(
+            package,
+            entry,
+            ordered.Select(b => (b.Source, b.Instance)));
             Console.WriteLine($"Reborn: mixed asset graph compiled: {instances.Length} explicit assets; dependency-sorted local Armor/Weapon/Upgrade/GameObject/LogicCommand/LogicCommandSet edges; no generated commands or game launch.");return true;
 
             // Reborn: prepare current official references against mod-first identity lookup, then use actual Core occurrence normalization.

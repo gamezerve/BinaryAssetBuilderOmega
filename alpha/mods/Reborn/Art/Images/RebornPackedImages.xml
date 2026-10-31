@@ -3,6 +3,52 @@
 
 <!-- Reborn -->
 
+<!-- Mod Logos and Mod Splash Screen -->
+	<OnDemandTexture id="Mod_Logo" File="ART:Images/Mod_Logo.dds" OutputFormat="DXT5" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<OnDemandTexture id="Mod_Text" File="ART:Images/Mod_Text.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<OnDemandTextureImage id="BootupScreen" Texture="Mod_Logo" Rotated="false">
+		<Dimensions x="1365" y="768"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</OnDemandTextureImage>
+	
+	<OnDemandTextureImage id="BootupScreen_PC" Texture="Mod_Logo" Rotated="false">
+		<Dimensions x="1365" y="768"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</OnDemandTextureImage>
+	
+	<OnDemandTextureImage id="Logo" Texture="Mod_Logo" Rotated="false">
+		<Dimensions x="1365" y="768"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</OnDemandTextureImage>
+	
+	<OnDemandTextureImage id="PostBootupScreen" Texture="Mod_Logo" Rotated="false">
+		<Dimensions x="1365" y="768"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</OnDemandTextureImage>
+	
+	<OnDemandTextureImage id="PostBootupScreen_ESRB" Texture="Mod_Logo" Rotated="false">
+		<Dimensions x="1365" y="768"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</OnDemandTextureImage>
+	
+	<OnDemandTextureImage id="PostBootupScreen_NAFR" Texture="Mod_Logo" Rotated="false">
+		<Dimensions x="1365" y="768"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="2048" y="1024"/>
+	</OnDemandTextureImage>
+	
+	<OnDemandTextureImage id="RA3_MainMenu3D_logo" Texture="Mod_Text" Rotated="false">
+		<!-- 464 x 87 -->
+		<Dimensions x="539" y="197"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="1024" y="256"/>
+	</OnDemandTextureImage>
+
 <!-- Japan Crane and Japan Pump -->
 
 	<Texture id="Portrait_JapanFortressProp" File="ART:Images/Portrait_JapanFortressProp.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>

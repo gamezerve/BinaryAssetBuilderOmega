@@ -6,6 +6,8 @@
     <Platforms>x86</Platforms>
     <RootNamespace></RootNamespace>
     <AnalysisMode>Recommended</AnalysisMode>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<DefineConstants>$(DefineConstants);WIN32;VERSION7</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">

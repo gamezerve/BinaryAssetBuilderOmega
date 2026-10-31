@@ -1689,7 +1689,7 @@ internal static class Program
                 return 0;
             }
             // Reborn: expose focused schema-to-import validation with optional real EP1 manifests.
-            if ((args.Length < 2 && args.FirstOrDefault() is not ("layout-self-test" or "compiler-self-test")) || args.FirstOrDefault() is not ("inspect" or "verify" or "compare" or "schema-diff" or "writer-self-test" or "utility-verify" or "assembly-fields" or "assembly-methods" or "assembly-il" or "assembly-size-diff" or "current-layout" or "layout-self-test" or "compiler-self-test" or "reference-self-test" or "external-link-self-test" or "asset-bytes" or "hash"))
+            if ((args.Length < 2 && args.FirstOrDefault() is not ("layout-self-test" or "compiler-self-test")) || args.FirstOrDefault() is not ("inspect" or "verify" or "compare" or "schema-diff" or "writer-self-test" or "utility-verify" or "assembly-fields" or "assembly-methods" or "assembly-il" or "assembly-size-diff" or "current-layout" or "layout-self-test" or "compiler-self-test" or "reference-self-test" or "external-link-self-test" or "asset-bytes" or "hash" or "find-assets"))
             {
                 PrintUsage();
                 return 2;
@@ -1802,6 +1802,28 @@ internal static class Program
             if (command == "utility-verify")
             {
                 UtilityManifestVerifier.Verify(args[1], GetOption(args, "--entry"));
+                return 0;
+            }
+
+            if (command == "find-assets")
+            {
+                string search = args[2];
+
+                foreach (var asset in ManifestReader.Read(File.ReadAllBytes(args[1])).Assets)
+                {
+                    if (!asset.Name.Contains(search, StringComparison.OrdinalIgnoreCase) &&
+    !asset.InstanceId.ToString("X8").Equals(search, StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    Console.WriteLine($"{asset.TypeName}:{asset.Name}");
+                    Console.WriteLine($"TypeId: {asset.TypeId:X8}");
+                    Console.WriteLine($"InstanceId: {asset.InstanceId:X8}");
+                    Console.WriteLine($"TypeHash: {asset.TypeHash:X8}");
+                    Console.WriteLine($"InstanceHash: {asset.InstanceHash:X8}");
+                    Console.WriteLine($"References: {JsonSerializer.Serialize(asset.References)}");
+                    Console.WriteLine();
+                }
+
                 return 0;
             }
 
