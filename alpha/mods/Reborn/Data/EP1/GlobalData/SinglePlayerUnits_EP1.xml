@@ -48,8 +48,8 @@
 		<!-- <Include type="all" source="DATA:EP1/Japan/Props/JapanYurikoBarracks_Open_Collapse.xml"/> -->
 		<!--Japan-->
 		<!--Units-->
-		<!-- <Include type="all" source="DATA:EP1/Japan/Units/JapanFortressShip.xml"/> -->
-		<!-- <Include type="all" source="DATA:EP1/Japan/Units/JapanFortressShipEgg.xml"/> -->
+		<Include type="all" source="DATA:EP1/Japan/Units/JapanFortressShip.xml"/>
+		<Include type="all" source="DATA:EP1/Japan/Units/JapanFortressShipEgg.xml"/>
 		<!-- <Include type="all" source="DATA:EP1/Japan/Units/JapanYurikoTech1.xml"/> -->
 		<!-- <Include type="all" source="DATA:EP1/Japan/Units/JapanYurikoTech2.xml"/> -->
 		<!-- <Include type="all" source="DATA:EP1/Japan/Units/JapanYurikoTech3.xml"/> -->

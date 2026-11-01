@@ -42,7 +42,29 @@ internal static class ConscriptMultiAssetBuild
             Settings.Current=new Settings{SchemaPath=Path.Combine(fixtures,"TracerDrawPipeline.xsd"),BuildCache=false,StringHashBinDescriptors=Array.Empty<StringHashBinDescriptor>()};
             var schemas=new SchemaSet(false);foreach(var seed in schemas.Schemas.Schemas().Cast<System.Xml.Schema.XmlSchema>().ToArray())schemas.Schemas.Remove(seed);schemas.Schemas.Add(official);schemas.Schemas.Compile();typeof(SchemaSet).GetMethod("SetupHelperSchemaTypes",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(schemas,null);
             var catalogs=new[]{manifest,global}.Select(p=>ManifestReader.Read(SdkEnvironmentPreflight.Read(p,64*1048576))).ToArray();foreach(var d in catalogs){TypeRegistryAudit.ValidateTarget(d.Header.Version,d.Header.AllTypesHash);if(!d.Header.IsLinked||d.Validate().Count!=0)throw new InvalidDataException("Mixed build requires valid EP1 stock catalogs.");}
-            var stock=catalogs.SelectMany(d=>d.Assets).ToArray();var sources=new List<XmlDocument>{source};
+            var stock=catalogs.SelectMany(d=>d.Assets).ToArray();
+
+            foreach (var asset in stock.Where(a =>
+                a.TypeName is "HealthBarTemplate" or "HealthBarSettings"))
+            {
+                Console.WriteLine(
+                    $"HEALTHBAR STOCK: {asset.Name} " +
+                    $"Type={asset.TypeName} " +
+                    $"Bin={asset.InstanceDataSize} " +
+                    $"Relo={asset.RelocationDataSize} " +
+                    $"Imp={asset.ImportsDataSize} " +
+                    $"References={asset.References.Count} " +
+                    $"Tokenized={asset.Tokenized}");
+
+                foreach (var reference in asset.References)
+                {
+                    Console.WriteLine(
+                        $"  REF TypeId=0x{reference.TypeId:X8} " +
+                        $"InstanceId=0x{reference.InstanceId:X8}");
+                }
+            }
+
+            var sources =new List<XmlDocument>{source};
             // Reborn: global mod definitions override retail identities for name lookup, while their payloads remain in their own streams.
             foreach(var stream in external){var assets=ManifestReader.Read(SdkEnvironmentPreflight.Read(stream.Manifest,64*1048576)).Assets;var ids=assets.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();stock=stock.Where(a=>!ids.Contains(new(a.TypeId,a.InstanceId))).Concat(assets).ToArray();}
             if(File.Exists(additional))sources.AddRange(ReadPrepared(additional).DocumentElement!.ChildNodes.OfType<XmlElement>().Select(e=>Xml(e.OuterXml)));
@@ -50,7 +72,7 @@ internal static class ConscriptMultiAssetBuild
             // Reborn: retail AudioFile metadata stays SDK-local; authored events reference the loaded audio stream without repacking its samples.
             string? audioManifest=null;if(sources.Any(s=>s.DocumentElement!.LocalName=="AudioEvent")){audioManifest=AuthoredAmbientCompiler.CatalogPath();var audio=ManifestReader.Read(SdkEnvironmentPreflight.Read(audioManifest,64*1048576));TypeRegistryAudit.ValidateTarget(audio.Header.Version,audio.Header.AllTypesHash);if(!audio.Header.IsLinked||audio.Validate().Count!=0)throw new InvalidDataException("Valid linked EP1 audio catalog required.");var known=stock.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();stock=stock.Concat(audio.Assets.Where(a=>a.TypeName=="AudioFile"&&!known.Contains(new(a.TypeId,a.InstanceId)))).ToArray();}
             var fingerprints=new Dictionary<uint,(uint Hash,bool Tokenized)>();var locals=new Dictionary<AssetId,XmlDocument>();
-            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
+            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
                 uint typeId=FastHash.GetHashCode(type);var examples=stock.Where(a=>a.TypeId==typeId).Select(a=>(a.TypeHash,Tokenized:a.Tokenized==1)).Distinct().ToArray();if(examples.Length!=1)throw new InvalidDataException("EP1 asset fingerprint is absent/ambiguous: "+type);fingerprints[typeId]=examples[0];if(!locals.TryAdd(new(typeId,InstanceHandle.GetInstanceId(id)),xml))throw SdkXmlDiagnostics.At(new InvalidDataException("DUPLICATEASSET ' "+type+":"+id+" ' Duplicate local asset/hash identity."),xml.DocumentElement);
             }
             // Reborn: source-only catalog entries resolve local names before native data exists; payloads are freshly compiled below, never copied from stock.
@@ -219,7 +241,25 @@ internal static class ConscriptMultiAssetBuild
                     buffer = Buffer(native);
 
                 }
-                else if(type=="PackedTextureImage"){
+
+                else if (type == "HealthBarTemplate")
+                {
+                    // Reborn: validate every authored health-bar byte rather than trusting a matching manifest type hash.
+                    instance = Normalize(xml);
+                    var native = CompileHealthBarTemplate(instance);
+                    HealthBarCompiler.Verify(xml, schemas, available, instance, native);
+                    buffer = Buffer(native);
+                }
+                else if (type == "HealthBarSettings")
+                {
+                    // Reborn: validate header offsets, filter storage and every strong reference occurrence before stream publication.
+                    instance = Normalize(xml);
+                    var native = CompileHealthBarSettings(instance);
+                    HealthBarCompiler.Verify(xml, schemas, available, instance, native);
+                    buffer = Buffer(native);
+                }
+
+                else if (type=="PackedTextureImage"){
                     // Reborn: untokenized 36-byte record; Core owns the Texture reference occurrence index.
                     instance=Normalize(xml);var native=PackedTextureImageCompiler.Compile(instance.XmlNode);
                     SchemaNativeContract.Verify(PackedTextureImageCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(PackedTextureImage),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
@@ -232,7 +272,18 @@ internal static class ConscriptMultiAssetBuild
                 }else{
                     if(SdkBuildTests.Enabled)QualifySet(stock,manifest,schemas);instance=Normalize(xml);buffer=CompileSet(instance);
                 }
-                var id=new AssetId(instance.Handle.TypeId,instance.Handle.InstanceId);instance.Handle.TypeHash=fingerprints[id.TypeId].Hash;instance.Handle.InstanceHash=FastHash.GetHashCode(Encoding.UTF8.GetBytes(instance.XmlNode.OuterXml));instance.ValidatedReferencedInstances=new(instance.ReferencedInstances);
+
+                if (type is "HealthBarTemplate" or "HealthBarSettings")
+                {
+                    Console.WriteLine(
+                        $"HEALTHBAR BUILT: {type}:{xml.DocumentElement!.GetAttribute("id")} " +
+                        $"Bin={buffer.InstanceData.Length} " +
+                        $"Relo={buffer.RelocationData.Length} " +
+                        $"Imp={buffer.ImportsData.Length} " +
+                        $"References={instance.ReferencedInstances.Count}");
+                }
+
+                var id =new AssetId(instance.Handle.TypeId,instance.Handle.InstanceId);instance.Handle.TypeHash=fingerprints[id.TypeId].Hash;instance.Handle.InstanceHash=FastHash.GetHashCode(Encoding.UTF8.GetBytes(instance.XmlNode.OuterXml));instance.ValidatedReferencedInstances=new(instance.ReferencedInstances);
                 foreach(var reference in instance.ReferencedInstances)if(available.Count(a=>a.TypeId==reference.TypeId&&a.InstanceId==reference.InstanceId)!=1)throw SdkXmlDiagnostics.At(new InvalidDataException("Missing or ambiguous asset: "+reference.Name),xml.DocumentElement);
                 built.Add(id,new(xml,instance,buffer,fingerprints[id.TypeId].Tokenized));compileLog.End(progress);
             }
@@ -368,6 +419,62 @@ internal static class ConscriptMultiAssetBuild
         }
         if(used.Count!=instance.ReferencedInstances.Count)throw new InvalidDataException("Weapon dependency table contains unconsumed references.");
     }
+
+
+    // Reborn: compile the retail eight-byte health-bar template through the current normalized source.
+    private static unsafe Chunk CompileHealthBarTemplate(InstanceDeclaration instance)
+    {
+        var xml = Xml(instance.XmlNode.OuterXml);
+        var ns = new XmlNamespaceManager(xml.NameTable);
+        ns.AddNamespace("ea", SchemaSet.XmlNamespace);
+
+        HealthBarTemplate* root;
+
+        using var tracker = new Tracker(
+            (void**)&root,
+            (uint)sizeof(HealthBarTemplate),
+            false);
+
+        Marshaler.Marshal(
+            new Node(xml.DocumentElement!.CreateNavigator()!, ns),
+            root,
+            tracker);
+
+        var chunk = new Chunk();
+
+        if (!tracker.MakeRelocatable(chunk))
+            throw new InvalidDataException("HealthBarTemplate native allocation failed.");
+
+        return chunk;
+    }
+
+    // Reborn: preserve strong-reference occurrence selectors and nested ObjectFilter relocation storage.
+    private static unsafe Chunk CompileHealthBarSettings(InstanceDeclaration instance)
+    {
+        var xml = Xml(instance.XmlNode.OuterXml);
+        var ns = new XmlNamespaceManager(xml.NameTable);
+        ns.AddNamespace("ea", SchemaSet.XmlNamespace);
+
+        HealthBarSettings* root;
+
+        using var tracker = new Tracker(
+            (void**)&root,
+            (uint)sizeof(HealthBarSettings),
+            false);
+
+        Marshaler.Marshal(
+            new Node(xml.DocumentElement!.CreateNavigator()!, ns),
+            root,
+            tracker);
+
+        var chunk = new Chunk();
+
+        if (!tracker.MakeRelocatable(chunk))
+            throw new InvalidDataException("HealthBarSettings native allocation failed.");
+
+        return chunk;
+    }
+
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compile the existing native LogicCommandSet list without a new sample-size quota. */

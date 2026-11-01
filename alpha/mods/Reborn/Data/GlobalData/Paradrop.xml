@@ -42,103 +42,17 @@
 	<Binding TechDependency="PlayerTech_Allied_CryoSatellite_Rank3"
 	         UpgradeToGrant="Upgrade_RebornParadrop_Row5"/>
 </PlayerTechUpgradeBinding>
+<!-- Reborn: player-scoped identities link clock/book/buildings without parsing arbitrary team names. -->
+<UpgradeTemplate id="Upgrade_RebornParadropOwner1" Type="PLAYER"/>
+<UpgradeTemplate id="Upgrade_RebornParadropOwner2" Type="PLAYER"/>
+<UpgradeTemplate id="Upgrade_RebornParadropOwner3" Type="PLAYER"/>
+<UpgradeTemplate id="Upgrade_RebornParadropOwner4" Type="PLAYER"/>
+<UpgradeTemplate id="Upgrade_RebornParadropOwner5" Type="PLAYER"/>
+<UpgradeTemplate id="Upgrade_RebornParadropOwner6" Type="PLAYER"/>
+<UpgradeTemplate id="Upgrade_RebornParadropOwner7" Type="PLAYER"/>
+<UpgradeTemplate id="Upgrade_RebornParadropOwner8" Type="PLAYER"/>
+<!-- Reborn: the hidden clock owns saved timing; the real spellbook and Tower expose the same canonical powers. -->
 
-	<GameObject
-		id="PlayerSpellBook"
-		inheritFrom="PlayerSpellBook">
-		<Behaviors>
-			<!-- Reborn: inert registrations let native script grant lookup resolve the two hidden technology markers; they never spawn units. -->
-			<SpecialPower id="ModuleTag_RebornParadropGrantTransfer2" SpecialPowerTemplate="SpecialPower_RebornParadropGrantTransfer2" AvailableAtStart="true"/>
-			<SpecialPower id="ModuleTag_RebornParadropGrantTransfer3" SpecialPowerTemplate="SpecialPower_RebornParadropGrantTransfer3" AvailableAtStart="true"/>
-
-			<!-- Reborn: one shared row transition grants one PlayerTech marker, triggering native percentage transfer only once. -->
-			<LUAEventList id="ModuleTag_RebornParadropCooldownEvents" EventListName="RebornParadropCooldownFunctions"/>
-			<ModelConditionUpgrade id="ModuleTag_RebornParadropCooldownRow3" AddConditionFlags="USER_9" Permanent="true">
-				<TriggeredBy>Upgrade_RebornParadrop_Row3</TriggeredBy>
-			</ModelConditionUpgrade>
-			<ModelConditionUpgrade id="ModuleTag_RebornParadropCooldownRow5" AddConditionFlags="USER_10" Permanent="true">
-				<TriggeredBy>Upgrade_RebornParadrop_Row5</TriggeredBy>
-			</ModelConditionUpgrade>
-
-			<!-- Reborn: shared row upgrades select one canonical Paradrop level without protocol-specific power copies. -->
-			<CommandSetUpgrade id="ModuleTag_SpellbookParadropMenuRank1" CommandSet="PlayerSpellBookCommandSetRank1">
-				<TriggeredBy>Upgrade_RebornParadrop_Row1</TriggeredBy>
-				<ConflictsWith>Upgrade_RebornParadrop_Row3</ConflictsWith>
-				<ConflictsWith>Upgrade_RebornParadrop_Row5</ConflictsWith>
-			</CommandSetUpgrade>
-			<CommandSetUpgrade id="ModuleTag_SpellbookParadropMenuRank2" CommandSet="PlayerSpellBookCommandSetRank2">
-				<TriggeredBy>Upgrade_RebornParadrop_Row3</TriggeredBy>
-				<ConflictsWith>Upgrade_RebornParadrop_Row5</ConflictsWith>
-			</CommandSetUpgrade>
-			<CommandSetUpgrade id="ModuleTag_SpellbookParadropMenuRank3" CommandSet="PlayerSpellBookCommandSetRank3">
-				<TriggeredBy>Upgrade_RebornParadrop_Row5</TriggeredBy>
-			</CommandSetUpgrade>
-
-      <!-- Reborn: each canonical level uses SHARED_SYNC across any spellbook and tower handlers with that same template ID. -->
-      <!-- Paradrop -->
-      <PlayerPowerManager
-				id="ModuleTag_PlayerPowerManager_ParadropLvl1"
-				SpecialPowerTemplate="SpecialPowerParadropLvl1"
-			/>
-      <OCLSpecialPower
-				id="ModuleTag_ParadropLvl1"
-				SpecialPowerTemplate="SpecialPowerParadropLvl1"
-				UpdateModuleStartsAttack="false"
-				AvailableAtStart="true"
-				OCL="OCL_ParaDropLvl1"
-				DestinationOCL="OCL_PrecisionStrikeBeacon"
-				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-				CreateLocationOffset="1000.0">
-        <NearestSecondaryObjectFilter
-					Relationship="SAME_PLAYER">
-          <IncludeThing>AlliedConstructionYard</IncludeThing>
-        </NearestSecondaryObjectFilter>
-      </OCLSpecialPower>
-
-      <PlayerPowerManager
-        id="ModuleTag_PlayerPowerManager_ParadropLvl2"
-        SpecialPowerTemplate="SpecialPowerParadropLvl2"
-			/>
-      <OCLSpecialPower
-				id="ModuleTag_ParadropLvl2"
-				SpecialPowerTemplate="SpecialPowerParadropLvl2"
-				UpdateModuleStartsAttack="false"
-				AvailableAtStart="true"
-				OCL="OCL_ParaDropLvl2"
-        DestinationOCL="OCL_PrecisionStrikeBeacon"
-				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-				LeechRechargePercentPlayerTechTrigger="PlayerTech_RebornParadropTransfer2"
-				LeechRechargePercentFromSpecialPower="SpecialPowerParadropLvl1"
-			  CreateLocationOffset="1000.0">
-        <NearestSecondaryObjectFilter
-					Relationship="SAME_PLAYER">
-          <IncludeThing>AlliedConstructionYard</IncludeThing>
-        </NearestSecondaryObjectFilter>
-      </OCLSpecialPower>
-
-      <PlayerPowerManager
-        id="ModuleTag_PlayerPowerManager_ParadropLvl3"
-        SpecialPowerTemplate="SpecialPowerParadropLvl3"
-			/>
-      <OCLSpecialPower
-				id="ModuleTag_ParadropLvl3"
-				SpecialPowerTemplate="SpecialPowerParadropLvl3"
-				UpdateModuleStartsAttack="false"
-				AvailableAtStart="true"
-				OCL="OCL_ParaDropLvl3"
-        DestinationOCL="OCL_PrecisionStrikeBeacon"
-				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-				LeechRechargePercentPlayerTechTrigger="PlayerTech_RebornParadropTransfer3"
-				LeechRechargePercentFromSpecialPower="SpecialPowerParadropLvl2"
-			  CreateLocationOffset="1000.0">
-        <NearestSecondaryObjectFilter
-					Relationship="SAME_PLAYER">
-          <IncludeThing>AlliedConstructionYard</IncludeThing>
-        </NearestSecondaryObjectFilter>
-      </OCLSpecialPower>
-
-		</Behaviors>
-	</GameObject>
 
   <LogicCommand
     Options="NEED_TARGET_POS"
@@ -188,7 +102,7 @@
 		TargetType="LOCATION"
 		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea"
 		RadiusCursorRadius="100"
-		Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS SHARED_SYNC"
+		Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS"
 		WaypointModeTerminal="false"
 		RequiredPlayerTech="PlayerTech_Allied">
 		<ForbiddenObjectFilter
@@ -213,7 +127,7 @@
 		TargetType="LOCATION"
 		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea"
 		RadiusCursorRadius="120"
-		Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS SHARED_SYNC"
+		Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS"
 		WaypointModeTerminal="false"
 		RequiredPlayerTech="PlayerTech_Allied">
 		<ForbiddenObjectFilter
@@ -237,7 +151,7 @@
 		TargetType="LOCATION"
 		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea"
 		RadiusCursorRadius="140"
-		Flags="IS_PLAYER_POWER NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS SHARED_SYNC"
+		Flags="IS_PLAYER_POWER NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS"
 		WaypointModeTerminal="false"
 		RequiredPlayerTech="PlayerTech_Allied">
 		<ForbiddenObjectFilter
@@ -306,33 +220,34 @@
     </CreateObject>
   </ObjectCreationList>
 
-  <!-- <PlayerPowerButtonTemplate -->
-    <!-- id="ButtonCampaignPlayerPoweParadrop_Rank1" -->
-    <!-- SpecialPower="SpecialPowerParadropLvl1"> -->
-    <!-- <Data> -->
-      <!-- <TargetedPower -->
-				<!-- RadiusCursor="Target_Allied_Paradrop" -->
-				<!-- StateData="ButtonStateCampaignPlayerPowerParadropLvl1"/> -->
-    <!-- </Data> -->
-  <!-- </PlayerPowerButtonTemplate> -->
-  <!-- <PlayerPowerButtonTemplate -->
-      <!-- id="ButtonCampaignPlayerPoweParadrop_Rank2" -->
-      <!-- SpecialPower="SpecialPowerParadropLvl2"> -->
-    <!-- <Data> -->
-      <!-- <TargetedPower -->
-				<!-- RadiusCursor="Target_Allied_Paradrop" -->
-				<!-- StateData="ButtonStateCampaignPlayerPowerParadropLvl2"/> -->
-    <!-- </Data> -->
-  <!-- </PlayerPowerButtonTemplate> -->
-  <!-- <PlayerPowerButtonTemplate -->
-      <!-- id="ButtonCampaignPlayerPoweParadrop_Rank3" -->
-      <!-- SpecialPower="SpecialPowerParadropLvl3"> -->
-    <!-- <Data> -->
-      <!-- <TargetedPower -->
-				<!-- RadiusCursor="Target_Allied_Paradrop" -->
-				<!-- StateData="ButtonStateCampaignPlayerPowerParadropLvl3"/> -->
-    <!-- </Data> -->
-  <!-- </PlayerPowerButtonTemplate> -->
+  <!-- Reborn: mouse sidebar templates are distinct from joypad and unit-ability templates and are not in the static catalog. -->
+  <PlayerPowerButtonTemplate
+    id="ButtonCampaignPlayerPoweParadrop_Rank1"
+    SpecialPower="SpecialPowerParadropLvl1">
+    <Data>
+      <TargetedPower
+				RadiusCursor="Target_Allied_Paradrop"
+				StateData="ButtonStateCampaignPlayerPowerParadropLvl1"/>
+    </Data>
+  </PlayerPowerButtonTemplate>
+  <PlayerPowerButtonTemplate
+      id="ButtonCampaignPlayerPoweParadrop_Rank2"
+      SpecialPower="SpecialPowerParadropLvl2">
+    <Data>
+      <TargetedPower
+				RadiusCursor="Target_Allied_Paradrop"
+				StateData="ButtonStateCampaignPlayerPowerParadropLvl2"/>
+    </Data>
+  </PlayerPowerButtonTemplate>
+  <PlayerPowerButtonTemplate
+      id="ButtonCampaignPlayerPoweParadrop_Rank3"
+      SpecialPower="SpecialPowerParadropLvl3">
+    <Data>
+      <TargetedPower
+				RadiusCursor="Target_Allied_Paradrop"
+				StateData="ButtonStateCampaignPlayerPowerParadropLvl3"/>
+    </Data>
+  </PlayerPowerButtonTemplate>
 
   <JoypadCommandBarButtonTemplate
   id="ButtonCampaignPlayerPoweParadrop_Rank1">
@@ -363,13 +278,107 @@
   </JoypadCommandBarButtonTemplate>
 
 
-	<!-- Reborn: grant-only templates expose the existing PLAYER_GRANT_SPECIAL_POWER action; these have only inert registrations, with no UI commands, OCL payloads or positive reload time. -->
-	<PlayerTech id="PlayerTech_RebornParadropTransfer2" TechPointsRequired="0">
-		<TechDependency>PlayerTech_Allied</TechDependency>
-	</PlayerTech>
-	<SpecialPowerTemplate id="SpecialPower_RebornParadropGrantTransfer2" TargetType="NONE" ReloadTime="0s" RequiredPlayerTech="PlayerTech_RebornParadropTransfer2"/>
-	<PlayerTech id="PlayerTech_RebornParadropTransfer3" TechPointsRequired="0">
-		<TechDependency>PlayerTech_Allied</TechDependency>
-	</PlayerTech>
-	<SpecialPowerTemplate id="SpecialPower_RebornParadropGrantTransfer3" TargetType="NONE" ReloadTime="0s" RequiredPlayerTech="PlayerTech_RebornParadropTransfer3"/>
+	<!-- Reborn: obsolete grant-only PlayerTech helpers were removed; native object-clock state follows. -->
+
+
+
+
+
+<!-- Reborn: object-scoped saved state is deliberately separate from player tech purchases. -->
+<UpgradeTemplate id="Upgrade_RebornParadropClockBit0" Type="OBJECT"/>
+<UpgradeTemplate id="Upgrade_RebornParadropClockBit1" Type="OBJECT"/>
+<UpgradeTemplate id="Upgrade_RebornParadropClockBit2" Type="OBJECT"/>
+<UpgradeTemplate id="Upgrade_RebornParadropClockBit3" Type="OBJECT"/>
+<UpgradeTemplate id="Upgrade_RebornParadropClockBit4" Type="OBJECT"/>
+<UpgradeTemplate id="Upgrade_RebornParadropClockBit5" Type="OBJECT"/>
+<UpgradeTemplate id="Upgrade_RebornParadropClockBit6" Type="OBJECT"/>
+<UpgradeTemplate id="Upgrade_RebornParadropClockBit7" Type="OBJECT"/>
+<UpgradeTemplate id="Upgrade_RebornParadropClockBit8" Type="OBJECT"/>
+<UpgradeTemplate id="Upgrade_RebornParadropClockRank2" Type="OBJECT"/>
+<UpgradeTemplate id="Upgrade_RebornParadropClockRank3" Type="OBJECT"/>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Reborn: the actual PlayerSpellBook owns the sidebar's managers, ranked command sets and canonical OCL handlers. -->
+<!-- Reborn: retail Lua registration excludes INERT before checking ForceLuaRegistration; retain SPELL_BOOK and immobility while enabling event delivery. -->
+<GameObject id="PlayerSpellBook" inheritFrom="PlayerSpellBook" KindOf="SPELL_BOOK IMMOBILE IGNORES_SELECT_ALL"><Behaviors>
+<ObjectSMCHelper id="ObjectSMCHelper"/>
+<LUAEventList id="ModuleTag_RebornParadropSpellbookEvents" EventListName="RebornParadropSpellbookFunctions"/>
+<ModelConditionUpgrade id="ModuleTag_RebornParadropBookRow1" AddConditionFlags="USER_4" Permanent="true"><TriggeredBy>Upgrade_RebornParadrop_Row1</TriggeredBy></ModelConditionUpgrade>
+<ModelConditionUpgrade id="ModuleTag_RebornParadropBookRow3" AddConditionFlags="USER_9" Permanent="true"><TriggeredBy>Upgrade_RebornParadrop_Row3</TriggeredBy></ModelConditionUpgrade>
+<ModelConditionUpgrade id="ModuleTag_RebornParadropBookRow5" AddConditionFlags="USER_10" Permanent="true"><TriggeredBy>Upgrade_RebornParadrop_Row5</TriggeredBy></ModelConditionUpgrade>
+<CommandSetUpgrade id="ModuleTag_RebornParadropBookCommands1" CommandSet="PlayerSpellBookCommandSetRank1"><TriggeredBy>Upgrade_RebornParadrop_Row1</TriggeredBy><ConflictsWith>Upgrade_RebornParadrop_Row3</ConflictsWith><ConflictsWith>Upgrade_RebornParadrop_Row5</ConflictsWith></CommandSetUpgrade>
+<PlayerPowerManager id="ModuleTag_RebornParadropManager1" SpecialPowerTemplate="SpecialPowerParadropLvl1"/>
+<CommandSetUpgrade id="ModuleTag_RebornParadropBookCommands2" CommandSet="PlayerSpellBookCommandSetRank2"><TriggeredBy>Upgrade_RebornParadrop_Row3</TriggeredBy><ConflictsWith>Upgrade_RebornParadrop_Row5</ConflictsWith></CommandSetUpgrade>
+<PlayerPowerManager id="ModuleTag_RebornParadropManager2" SpecialPowerTemplate="SpecialPowerParadropLvl2"/>
+<CommandSetUpgrade id="ModuleTag_RebornParadropBookCommands3" CommandSet="PlayerSpellBookCommandSetRank3"><TriggeredBy>Upgrade_RebornParadrop_Row5</TriggeredBy></CommandSetUpgrade>
+<PlayerPowerManager id="ModuleTag_RebornParadropManager3" SpecialPowerTemplate="SpecialPowerParadropLvl3"/>
+<OCLSpecialPower
+				id="ModuleTag_ParadropLvl1"
+				SpecialPowerTemplate="SpecialPowerParadropLvl1"
+				UpdateModuleStartsAttack="false"
+				AvailableAtStart="true"
+ SetModelCondition="USER_5" SetModelConditionTime="0.1s"
+				OCL="OCL_ParaDropLvl1"
+				DestinationOCL="OCL_PrecisionStrikeBeacon"
+				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
+				CreateLocationOffset="1000.0">
+        <NearestSecondaryObjectFilter
+					Relationship="SAME_PLAYER">
+          <IncludeThing>AlliedConstructionYard</IncludeThing>
+        </NearestSecondaryObjectFilter>
+      </OCLSpecialPower>
+<OCLSpecialPower
+				id="ModuleTag_ParadropLvl2"
+				SpecialPowerTemplate="SpecialPowerParadropLvl2"
+				UpdateModuleStartsAttack="false"
+				AvailableAtStart="true"
+ SetModelCondition="USER_6" SetModelConditionTime="0.1s"
+				OCL="OCL_ParaDropLvl2"
+        DestinationOCL="OCL_PrecisionStrikeBeacon"
+				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
+			  CreateLocationOffset="1000.0">
+        <NearestSecondaryObjectFilter
+					Relationship="SAME_PLAYER">
+          <IncludeThing>AlliedConstructionYard</IncludeThing>
+        </NearestSecondaryObjectFilter>
+      </OCLSpecialPower>
+<OCLSpecialPower
+				id="ModuleTag_ParadropLvl3"
+				SpecialPowerTemplate="SpecialPowerParadropLvl3"
+				UpdateModuleStartsAttack="false"
+				AvailableAtStart="true"
+ SetModelCondition="USER_7" SetModelConditionTime="0.1s"
+				OCL="OCL_ParaDropLvl3"
+        DestinationOCL="OCL_PrecisionStrikeBeacon"
+				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
+			  CreateLocationOffset="1000.0">
+        <NearestSecondaryObjectFilter
+					Relationship="SAME_PLAYER">
+          <IncludeThing>AlliedConstructionYard</IncludeThing>
+        </NearestSecondaryObjectFilter>
+      </OCLSpecialPower>
+</Behaviors></GameObject>
+<!-- Reborn: a strong OCL reference loads the new clock template without relying on the weak ThingToSpawn lookup. -->
+<!-- Reborn: this object upgrade is granted exactly once by the verified Tower creation callback. -->
+<UpgradeTemplate id="Upgrade_RebornParadropClockRequest" Type="OBJECT"/>
+<ObjectCreationList id="OCL_RebornParadropClock"><CreateObject Disposition="LIKE_EXISTING" Options="IGNORE_ALL_OBJECTS"><CreateObject>RebornParadropClock</CreateObject></CreateObject></ObjectCreationList>
+<!-- Reborn: clock bits and pulse conditions belong to a logic-only object, avoiding visible command-set updates. -->
+<GameObject id="RebornParadropClock" inheritFrom="BaseObject" Side="Allied" KindOf="IMMOBILE IGNORES_SELECT_ALL UNATTACKABLE NO_COLLIDE" RadarPriority="NOT_ON_RADAR"><ArmorSet Armor="NoArmor"/><!-- Reborn: match the retail spellbook's empty drawable so timed model conditions and Lua event delivery have a drawable receiver. -->
+<Draws><ScriptedModelDraw id="ModuleTag_Draw"><ModelConditionState ParseCondStateType="PARSE_DEFAULT"><Model Name=""/></ModelConditionState></ScriptedModelDraw></Draws>
+<Behaviors>
+<LUAEventList id="ModuleTag_RebornParadropClockEvents" EventListName="RebornParadropClockFunctions"/>
+<ModelConditionUpgrade id="ModuleTag_RebornParadropClockRow3" AddConditionFlags="USER_9" Permanent="true"><TriggeredBy>Upgrade_RebornParadrop_Row3</TriggeredBy></ModelConditionUpgrade><ModelConditionUpgrade id="ModuleTag_RebornParadropClockRow5" AddConditionFlags="USER_10" Permanent="true"><TriggeredBy>Upgrade_RebornParadrop_Row5</TriggeredBy></ModelConditionUpgrade></Behaviors><!-- Reborn: BaseObject's ActiveBody defaults to zero health; the persistent logic actor must start alive. -->
+<Body><ActiveBody id="DefaultBody" MaxHealth="1" InitialHealth="1"/></Body><!-- Reborn: define a small noncolliding logic geometry; this object remains unselectable and model-free. -->
+<Geometry IsSmall="true"><Shape Type="CYLINDER" MajorRadius="1" Height="1"/></Geometry><!-- Reborn: the retail Lua registration path requires an AI interface; a LUAEventList alone does not receive creation or model-condition events. -->
+<AI><AIUpdate id="ModuleTag_AIForLua" AutoAcquireEnemiesWhenIdle="NO"/></AI></GameObject>
 </AssetDeclaration>

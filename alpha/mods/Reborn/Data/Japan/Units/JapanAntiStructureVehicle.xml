@@ -4,39 +4,39 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:JUAntiStructureVehicle_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:JUAntiStructureVehicle_TRNL.w3x" />
-		<Include
-			type="all"
-			source="ART:JUAntiStructureVehicle_TRNR.w3x" />
-			<Include
-			type="all"
-			source="ART:JUAntiStructureVehicle_MOVA.w3x" />
-		<Include
-			type="all"
-			source="ART:JUAntiStructureVehicle_IDLA.w3x" />
-		<Include
-			type="all"
-			source="ART:JUAntiStructureVehicle_D.xml" />
-    <Include
-			type="all"
-			source="ART:JUAntiStructureVehicleFX.w3x" />
-    <Include
-			type="instance"
-			source="ART:EXTnkTrack.xml" />
-		<Include
-			type="all"
-			source="ART:FXJapanLaser.xml" />
-		<Include
-			type="all"
-			source="ART:FXLaserJapanOverlay.xml" />
-    <Include
-			type="instance"
-			source="ART:EX_Headlights.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiStructureVehicle_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiStructureVehicle_TRNL.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiStructureVehicle_TRNR.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiStructureVehicle_MOVA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiStructureVehicle_IDLA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiStructureVehicle_D.xml" /> -->
+    <!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiStructureVehicleFX.w3x" /> -->
+    <!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:EXTnkTrack.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXJapanLaser.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXLaserJapanOverlay.xml" /> -->
+    <!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:EX_Headlights.w3x" /> -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

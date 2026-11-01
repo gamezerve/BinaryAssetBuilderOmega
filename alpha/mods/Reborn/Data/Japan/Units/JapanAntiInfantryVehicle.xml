@@ -5,22 +5,22 @@
   <Includes>
     <Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
 
-		<Include type="all" source="ART:JUAntiInfantryVehicle_SKN.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryVehicle_FP.w3x" />
-    <Include type="all" source="ART:JUAntiInfantryVehicle_D.xml" />
-		<Include type="all"	source="ART:JUAntiInfantryVehicle_BIDA.w3x" />
-		<Include type="all"	source="ART:JUAntiInfantryVehicle_ATKA.w3x" />
-		<Include type="all"	source="ART:JUAntiInfantryVehicle_ABTA.w3x" />
-		<Include type="all"	source="ART:JUAntiInfantryVehicle_BATA.w3x" />
-		<Include type="all"	source="ART:JUAntiInfantryVehicle_AIDA.w3x" />
-		<Include type="all" source="ART:JUAntiInfantryVehicle_RUNA.w3x" />
-		<Include type="all"	source="ART:JUAntiInfantryVehicleFlying_SKN.w3x" />
-		<Include type="all"	source="ART:JUAntiInfantryVehicleFlying_IDLA.w3x" />
-		<Include type="all"	source="ART:JUAntiInfantryVehicleFlying_TRANS.w3x" />
-		<Include type="all"	source="ART:JUAntiInfantryVehicleFlying_RUNA.w3x" />
-		<Include type="all"	source="ART:JUAntiInfantryVehicle_TRANS.w3x" />
-		<Include type="all"	source="ART:FXJapanTracer.xml" />
-    <Include type="all"	source="ART:FXJapanTankProjectile_Veteran.xml" />
+		<!-- <Include type="all" source="ART:JUAntiInfantryVehicle_SKN.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryVehicle_FP.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUAntiInfantryVehicle_D.xml" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiInfantryVehicle_BIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiInfantryVehicle_ATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiInfantryVehicle_ABTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiInfantryVehicle_BATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiInfantryVehicle_AIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUAntiInfantryVehicle_RUNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiInfantryVehicleFlying_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiInfantryVehicleFlying_IDLA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiInfantryVehicleFlying_TRANS.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiInfantryVehicleFlying_RUNA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiInfantryVehicle_TRANS.w3x" /> -->
+		<!-- <Include type="all"	source="ART:FXJapanTracer.xml" /> -->
+    <!-- <Include type="all"	source="ART:FXJapanTankProjectile_Veteran.xml" /> -->
 		<!-- Base Object -->
 		<Include type="instance"	source="DATA:BaseObjects/BaseVehicle.xml" />
 	</Includes>

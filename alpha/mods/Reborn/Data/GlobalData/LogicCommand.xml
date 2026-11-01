@@ -1,5 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
+
+	<LogicCommand
+		Type="UNIT_BUILD"
+		id="Command_ConstructJapanRadarShipReborn">
+		<Object>JapanRadarShipReborn</Object>
+	</LogicCommand>
+	
+	<LogicCommand
+		Type="UNIT_BUILD"
+		id="Command_ConstructJapanMechaKing">
+		<Object>JapanMechaKing</Object>
+	</LogicCommand>
+
+	<LogicCommand
+		Type="UNIT_BUILD"
+		id="Command_ConstructJapanEmperorKingOni">
+		<Object>JapanEmperorKingOni</Object>
+	</LogicCommand>
+	
+	<LogicCommand
+		Type="UNIT_BUILD"
+		id="Command_ConstructJapanKenjiMechaReborn">
+		<Object>JapanKenjiMechaReborn</Object>
+	</LogicCommand>
+	
+	<LogicCommand
+		Type="UNIT_BUILD"
+		id="Command_ConstructJapanTransportVehicle2">
+		<Object>JapanTransportVehicle2</Object>
+	</LogicCommand>
 	
 	<LogicCommand
 		Type="UNIT_BUILD"

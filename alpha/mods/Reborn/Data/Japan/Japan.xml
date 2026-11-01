@@ -10,7 +10,7 @@
 	<Include type="all" source="DATA:Japan/Structures_Campaign/JapanYurikoBarracks.xml" />	
 	<!-- <Include type="all" source="DATA:Japan/Props/JapanYurikoBarracks_Collapse.xml" /> -->
 	
-	<!-- <Include type="all" source="DATA:Japan/Units/JapanKenjiMecha.xml" />	 -->
+	<Include type="all" source="DATA:Japan/Units/JapanKenjiMechaReborn.xml" />	
 	
 	<Include type="all" source="DATA:Japan/Structures_Campaign/JapanNanoswarmHiveEX.xml" />	
 	<!-- <Include type="all" source="DATA:Japan/Props/TH_JapanHiveGenerator_Collapse.xml" /> -->
@@ -30,8 +30,8 @@
 	<Include type="all" source="DATA:Japan/Structures_Campaign/JapanCommandCenter.xml" />
 	<Include type="all" source="DATA:Japan/Structures_Campaign/JapanEmperorsPalace.xml" />	
 	<!-- <Include type="all" source="DATA:Japan/Structures_Campaign/JapanEmperorsPalace_Collapse.xml" />	 -->
-	<!-- <Include type="all" source="DATA:Japan/Units/JapanEmperorKingOni.xml" />	 -->
-	<!-- <Include type="all" source="DATA:Japan/Units/JapanRadarShipReborn.xml" /> -->
+	<Include type="all" source="DATA:Japan/Units/JapanEmperorKingOni.xml" />	
+	<Include type="all" source="DATA:Japan/Units/JapanRadarShipReborn.xml" />
 	<Include type="all" source="DATA:Japan/Structures_Campaign/JapanFortressPowerCore.xml" />
 	<Include type="all" source="DATA:Japan/Structures_Campaign/JapanWaveForceTricannon.xml" />
 	<Include type="all" source="DATA:Japan/Structures_Campaign/JapanFortressCrane.xml" />
@@ -41,7 +41,7 @@
 	<Include type="all" source="DATA:Japan/Structures_Campaign/JapanNagamaDojo.xml" />
 	<Include type="all" source="DATA:Japan/Structures_Campaign/JapanHarborBuilding.xml" />
 	<Include type="all" source="DATA:Japan/Structures_Campaign/JapanShiradaDocks.xml" />
-	<!-- <Include type="all" source="DATA:Japan/Units/JapanShogunExecutioner.xml" /> -->
+	<Include type="all" source="DATA:Japan/Units/JapanShogunExecutioner.xml" />
 	<!-- <Include type="all" source="DATA:Japan/Props/JapanMechaKing_Collapse.xml" /> -->
 	<Include type="all" source="DATA:Japan/Structures_Campaign/ImperialHarborBuilding.xml" />
 	<Include type="all" source="DATA:Japan/Structures_Campaign/JapanEmperorFlagpoleStatue.xml" />
@@ -69,7 +69,7 @@
 	<!-- <Include type="all" source="units/JapanAntiStructureVehicle.xml" />	 -->
 	<!-- <Include type="all" source="units/JapanMCV.xml" />	 -->
 	<!-- <Include type="all" source="units/JapanMiner.xml" /> -->
-  <!-- <Include type="all" source="units/JapanTransportVehicle2.xml" /> -->
+  <Include type="all" source="units/JapanTransportVehicle2.xml" />
 <!--	<Include type="all" source="units/JapanSurveyor.xml" /> -->
 
 	<!-- Air Vehicles -->
@@ -78,10 +78,10 @@
 
 	<!-- Navy Ships -->
 
-	<!-- <Include type="all" source="units/JapanAntiAirShip.xml" />	 -->
-	<!-- <Include type="all" source="units/JapanNavyScoutShip.xml" />	 -->
-	<!-- <Include type="all" source="units/JapanAntiStructureShip.xml" /> -->
-	<!-- <Include type="all" source="units/JapanAntiVehicleShip.xml" /> -->
+	<Include type="all" source="units/JapanAntiAirShip.xml" />	
+	<Include type="all" source="units/JapanNavyScoutShip.xml" />	
+	<Include type="all" source="units/JapanAntiStructureShip.xml" />
+	<Include type="all" source="units/JapanAntiVehicleShip.xml" />
 
 	<!-- Repair drones -->
 

@@ -4,84 +4,84 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:JUHarvester_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:JUHarvester_IDLA.w3x" />
-		<Include
-			type="all"
-			source="ART:JUHarvester_TRNL.w3x" />
-		<Include
-			type="all"
-			source="ART:JUHarvester_TRNR.w3x" />
-		<Include
-			type="all"
-			source="ART:JUHarvester_WIDL.w3x" />
-		<Include
-			type="all"
-			source="ART:JUHarvester_WMOV.w3x" />
-		<Include
-			type="all"
-			source="ART:JUHarvester_WTRA.w3x" />
-			<Include
-			type="all"
-			source="ART:JUHarvester_WTRA2.w3x" />
-		<Include
-			type="all"
-			source="ART:JUHarvester_GTRANS.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUHarvester_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUHarvester_IDLA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUHarvester_TRNL.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUHarvester_TRNR.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUHarvester_WIDL.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUHarvester_WMOV.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUHarvester_WTRA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUHarvester_WTRA2.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUHarvester_GTRANS.w3x" /> -->
 					
-		<Include
-			type="all"
-			source="ART:JUHarvester_GIDLA.w3x" />
-		<Include
-			type="all"
-			source="ART:JUHarvester_GTRNL.w3x" />
-		<Include
-			type="all"
-			source="ART:JUHarvester_GTRNR.w3x" />
-		<Include
-			type="all"
-			source="ART:JUHarvester_GWIDL.w3x" />
-		<Include
-			type="all"
-			source="ART:JUHarvester_GWMOV.w3x" />
-		<Include
-			type="all"
-			source="ART:JUHarvester_GWTRA.w3x" />
-			<Include
-			type="all"
-			source="ART:JUHarvester_GWTRA2.w3x" />
-		<Include
-			type="all"
-			source="ART:JUHarvester_GWTRANS.w3x" />
-		<Include
-			type="all"
-			source="ART:JUHarvester_D.xml" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUHarvester_GIDLA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUHarvester_GTRNL.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUHarvester_GTRNR.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUHarvester_GWIDL.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUHarvester_GWMOV.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUHarvester_GWTRA.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUHarvester_GWTRA2.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUHarvester_GWTRANS.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUHarvester_D.xml" /> -->
 
-		<Include
-			type="all"
-			source="ART:Ore_Gold_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:Ore_Gold_AHFILL.w3x" />
-		<Include
-			type="all"
-			source="ART:Ore_Gold_AHIDL.w3x" />			
-		<Include
-			type="all"
-			source="ART:Ore_Gold_JHGT.w3x" />
-		<Include
-			type="all"
-			source="ART:Ore_Gold_IDLA.w3x" />
-		<Include
-			type="instance"
-			source="ART:EX_Headlights.w3x" />
-		<Include
-			type="all"
-			source="ART:FXJapanTracer.xml" />
-    <Include type="all"	source="ART:FXJapanTankProjectile_Veteran.xml" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Ore_Gold_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Ore_Gold_AHFILL.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Ore_Gold_AHIDL.w3x" />			 -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Ore_Gold_JHGT.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:Ore_Gold_IDLA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:EX_Headlights.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXJapanTracer.xml" /> -->
+    <!-- <Include type="all"	source="ART:FXJapanTankProjectile_Veteran.xml" /> -->
     <!-- Base Object -->
     <Include
 			type="instance"

@@ -1134,10 +1134,6 @@ End
 		"This harmless old barge is used to extract data from shipwrecks, and equipped with a single repair drone for servicing nearby units."
 	End
 
-	TYPE:JapanRadarShipReborn
-		"Recon Unit \n> Health = 300 \n> Shroud Clearing Range (Default/Fortified Fleet) = 1250/1562.5 \n> Movement Speed (Default/Fortified Fleet) = 50/62.5"
-	End
-
 // Allied Assault Destroyer
 
 	TYPE:ALLIEDANTINAVYSHIPTECH1
@@ -1770,6 +1766,112 @@ End
 		"> Ability Damage = 500 \n> Ability Radius = 250 \n> Ability Cooldown = 30 sec \nBlasts incalculable violent psionic energy in all directions, crushing minds and bodies."
 	End
 
+// Imperial Ore Collector
+
+	TYPE:JAPANMINER
+		"Resource Gatherer \n> Health = 500 \n> Shroud Clearing Range = 500 \n> Movement Speed = 50 \n> Weapon DPS = 31 \n> Weapon Range = 150 \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+	DESC:JAPANOREMINERDEPLOYWEAPON
+		"> Weapon DPS = 31 \n> Weapon Range = 150 \nFlips the cargo hold to reveal an anti-personnel weapon that can repel enemy forces."
+	End
+
+// Imperial Sudden Transport
+
+	TYPE:JAPANLIGHTTRANSPORTVEHICLE
+		"Disguisable Troop Carrier \n> Health = 400 \n> Shroud Clearing Range = 500 \n> Movement Speed = 100 \n> Garrison Capacity = 5 \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+// Imperial Advanced Sudden Transport
+
+	Name:JapanTransportVehicle2
+	"Advanced Sudden Transport"
+	End
+
+	TYPE:JapanTransportVehicle2
+		"Heavy Troop Carrier \n> Health = 1000 \n> Shroud Clearing Range = 500 \n> Movement Speed = 100 \n> Garrison Capacity = 10 \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+	DESC:JapanTransportVehicle2
+		"Heavily-armored explosive hovercraft designed for rapid deployment and high-impact strikes deep in enemy territory."
+	End
+
+// Imperial Mecha Tengu
+
+	TYPE:JAPANANTIINFANTRYVEHICLE_GROUND
+		"Anti-Infantry Robot \n> Health = 350 \n> Shroud Clearing Range = 500 \n> Movement Speed (Ground/Sea/Air) = 100/80/200 \n> Weapon DPS (Ground/Air) = 27.5/115 \n> Weapon Range (Ground/Air) = 150/200 \n> Damage Scalar vs Anti-Air Aircrafts = 30%"
+	End
+
+	DESCRIPTION:BUTTONJAIV_TRANSFORM
+		">Ability Cooldown = 15 sec \n> Movement Speed = 200 \n> Weapon DPS = 115 \n> Weapon Range = 200 \n> Damage Scalar vs Anti-Air Aircrafts = 30% \nSwitches to Jet Tengu flight configuration for air superiority and superior mobility."
+	End
+
+	TYPE:JAPANANTIINFANTRYVEHICLE_AIR
+		"Anti-Air Jet \n> Health = 350 \n> Shroud Clearing Range = 500 \n> Movement Speed (Ground/Sea/Air) = 100/80/200 \n> Weapon DPS (Ground/Air) = 27.5/115 \n> Weapon Range (Ground/Air) = 150/200 \n> Damage Scalar vs Anti-Air Aircrafts = 30%"
+	End
+
+	DESCRIPTION:BUTTONJAIV_TRANSFORMOFF
+		">Ability Cooldown = 15 sec \n> Movement Speed (Ground/Sea) = 100/80 \n> Weapon DPS = 27.5 \n> Weapon Range = 150 \nSwitches to amphibious Mecha Tengu mode for anti-infantry fast-attack capability."
+	End
+
+// Imperial Tsunami Tank
+
+	TYPE:JAPANANTIVEHICLEVEHICLETECH1
+		"Anti-Armor Tank \n> Health = 380 \n> Shroud Clearing Range = 500 \n> Movement Speed = 75 \n> Weapon DPS = 40 \n> Weapon Range = 150 \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+	DESC:JAPANANTIVEHICLEVEHICLETECH1ENERGIZEDARMOR
+		">Ability Cooldown = 30 sec \n> Movement Speed = 94 \n> Damage Recieved = %50 \nBoosts defensive strength by temporarily diverting nanomachines from the main gun."
+	End
+
+// Imperial Striker-VX
+
+	TYPE:JAPANANTIAIRVEHICLE_GROUND
+		"Anti-Air Robot \n> Health = 400 \n> Shroud Clearing Range = 500 \n> Movement Speed (Ground/Air) = 85/120 \n> Weapon DPS (AA/AA-Upgraded) = 68/88 \n> Weapon DPS (AG/AG-Upgraded) = 83.5/103.5 \n> Weapon Range (AA/AG) = 300/150 \nDamage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+	DESC:JAPANANTIAIRVEHICLETECH1TRANSFORM
+		"> Ability Cooldown = 15 sec \n> Movement Speed = 120 \n> Weapon DPS (AG/AG-Upgraded) = 83.5/103.5 \n> Weapon Range = 150 \nTakes to the skies in the Chopper-VX configuration, which can assault surface targets."
+	End
+
+	TYPE:JAPANANTIAIRVEHICLE_AIR
+		"Anti-Armor Aircraft \n> Health = 400 \n> Shroud Clearing Range = 500 \n> Movement Speed (Ground/Air) = 85/120 \n> Weapon DPS (AA/AA-Upgraded) = 68/88 \n> Weapon DPS (AG/AG-Upgraded) = 83.5/103.5 \n> Weapon Range (AA/AG) = 300/150"
+	End
+
+	DESC:JAPANANTIAIRVEHICLETECH1TRANSFORMOFF
+		"> Ability Cooldown = 15 sec \n> Movement Speed = 85 \n> Weapon DPS (AA/AA-Upgraded) = 68/88 \n> Weapon Range = 300 \n> Damage Recieved Scalar (Side/Rear) = 105%/110% \nTouches down to take on aerial threats in the ground-based Striker-VX configuration."
+	End
+	
+// Imperial Steel Ronin
+	
+	Type:JapanSentinelVehicle
+		"Anti-Armor Robot \n> Health = 200 \n> Shroud Clearing Range = 500 \n> Movement Speed = 60 \n> Weapon DPS = 16 \n> Weapon Range = 200"
+	End
+
+// Imperial King Oni
+
+	TYPE:JAPANANTIVEHICLEVEHICLETECH3
+		"Advanced Anti-Armor Robot \n> Health = 2250 \n> Shroud Clearing Range = 500 \n> Movement Speed (Default/Rush) = 85/170 \n> Weapon DPS = 70 \n> Rush Damage (Infantry/Other) = 50/500 \n> Weapon Range (Default/Rush) = 150/300 \n> Auto-Heal = 5/sec \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+	DESC:JAPANANTIVEHICLEVEHICLETECH3RUSHATTACK
+		"> Ability Cooldown = 60 sec \n> Movement Speed = 170 \n> Rush Damage (Infantry/Other) = 50/500 \n Weapon Range = 300 \nCharges the enemy head-on, smashing into or simply crushing any foes along the way."
+	End
+
+// Imperial Advanced King Oni
+	
+	NAME:JapanKenjiMechaReborn
+		"Advanced King Oni"
+	End
+				
+	DESC:JapanKenjiMechaReborn
+		"Commander Kenji's custom King Oni, a cheaper and less durable yet equally powerful counterpart to the Greater King Oni, served as his final weapon to cripple enemy forces during the Allied assault on Osaka."
+	End
+				
+	TYPE:JapanKenjiMechaReborn
+		"Advanced Anti-Armor Robot \n> Build Limit = 5 \n> Health = 4000 \n> Shroud Clearing Range = 500 \n> Movement Speed (Default/Rush) = 97.5/195 \n> Weapon DPS (AG/AA) = 160/595 \n> Rush Damage (Infantry/Other) = 50/500 \n> Weapon Range (Default/Rush/AA) = 150/300/400 \n> Auto-Heal = 3/sec \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
 // Imperial Greater King Oni
 
 	Name:JapanEmperorKingOni
@@ -1786,6 +1888,104 @@ End
 	
 	DESC:JAPANEMPERORKINGONIRUSHATTACK
 		"> Ability Cooldown = 80 sec \n> Movement Speed = 195 \n> Rush Damage (Infantry/Other) = 50/500 \n> Weapon Range = 300 \nCharges the enemy head-on, smashing into or simply crushing any foes along the way."
+	End
+
+// Imperial Wave-Force Artillery
+
+	TYPE:JAPANANTISTRUCTUREVEHICLE
+		"Heavy Bombardment \n> Health = 500 \n> Shroud Clearing Range = 500 \n> Movement Speed = 60 \n> Weapon DPS = 136.5 \n> Weapon Range = 500 \n> Damage Recieved Scalar (Side/Rear) = 105%/110%"
+	End
+
+// Imperial Shogun Executioner
+
+	TYPE:JAPANMECHAKING
+		"King of All Robots \n> Health = 10000 \n> Shroud Clearing Range = 400 \n> Movement Speed = 45 \n> Katana Weapon DPS = 567 \n> Katana Weapon Range = 150 \n> Shockwave Ability Damage = 3000 \n> Shockwave Ability Range = 600"
+	End
+
+	DESC:MECHAKINGSHOCKWAVESPECIALPOWER
+		"> Ability Damage = 3000 \n> Ability Range = 600 \n> Ability Cooldown = 20 sec \nDrives all three wave-force blades into the earth, causing mass destruction."
+	End
+	
+// Imperial MCV
+
+	TYPE:JAPANMCV
+		"Mobile Construction Vehicle \n> Health = 5000 \n> Shroud Clearing Range = 500 \n> Movement Speed = 40 \n> Structure Power Generation = +50 \n> Structure Health = 4000 \n> Structure Shroud Clearing Range = 1000"
+	End
+		
+	DESC:ABILITYUNPACKJAPANMCV
+		"> Structure Power Generation = +50 \n> Structure Health = 4000 \n> Structure Shroud Clearing Range = 1000 \nTransforms to a Construction Yard, which can create other military structures."
+	End
+
+// Imperial Yari Mini-Sub
+
+	TYPE:JAPANNAVYSCOUTSHIP
+		"Anti-Ship Scout  \n> Health = 400 \n> Shroud Clearing Range (Default/Fortified Fleet) = 500/625 \n> Movement Speed (Default/Fortified Fleet) = 125/156 \n> Weapon DPS = 54.5 \n> Weapon Range = 150 \n> Fortified Fleet Damage Recieved = 75%\n> Damage to Miners and Refinery = 50%"
+	End
+
+	DESC:KAMIKAZEATTACKSPECIALPOWER
+		"> Ability Damage (Default/Honorable Discharge) = 500/650 \n> Ability Range = 300 \n> Ability Radius (Default/Honorable Discharge) = 25/50 \nMakes a beeline at an enemy with intent to crash into and destroy it. One use per Mini-Sub."
+	End
+
+// Imperial Sea-Wing
+
+	TYPE:JAPANANTIAIRSHIP_SEA
+		"Anti-Air Submarine  \n> Health = 400 \n> Shroud Clearing Range (Default/Fortified Fleet) = 500/625 \n> Movement Speed (Sea-Air) = 125 - 156 / 150 - 187.5 (with Fortified Fleet upgrade) \n> Weapon DPS (Default/Advanced Rocket Pods/Gun) = 80/103.5/38.5 \n> Weapon Range (AA/AG) = 300/200 \n> Fortified Fleet Damage Recieved = 75%\n> Damage to Miners and Refinery = 50%"
+	End
+
+	TYPE:JAPANANTIAIRVEHICLE_AIR
+		"Anti-Armor Aircraft  \n> Health = 400 \n> Shroud Clearing Range (Default/Fortified Fleet) = 500/625 \n> Movement Speed (Sea-Air) = 125 - 156 / 150 - 187.5 (with Fortified Fleet upgrade) \n> Weapon DPS (Default/Advanced Rocket Pods/Gun) = 80/103.5/38.5 \n> Weapon Range (AA/AG) = 300/200 \n> Fortified Fleet Damage Recieved = 75%\n> Damage to Miners and Refinery = 50%"
+	End
+
+	DESC:JAPANANTIAIRSHIPTRANSFORM
+		"> Movement Speed (Default/Fortified Fleet) = 150/187.5 \n> Weapon DPS = 38.5 \n> Weapon Range = 200 \nSwitches to the flying Sky-Wing form, which provides anti-personnel close air support."
+	End
+
+	DESC:JAPANANTIAIRSHIPTRANSFORMOFF
+		"> Movement Speed (Default/Fortified Fleet) = 125/156 \n> Weapon DPS (Default/Advanced Rocket Pods) = 80/103.5 \n> Weapon Range = 300 \nSwitches to submersible configuration to make aircraft feel most disagreeable."
+	End
+
+// Imperial Radar Ship
+
+	TYPE:JapanRadarShipReborn
+		"Recon Unit \n> Health = 300 \n> Shroud Clearing Range (Default/Fortified Fleet) = 1250/1562.5 \n> Movement Speed (Default/Fortified Fleet) = 50/62.5"
+	End
+
+// Imperial Naginata Cruiser
+
+	TYPE:JAPANANTIVEHICLESHIP
+		"Advanced Anti-Armor Ship  \n> Health = 1200 \n> Shroud Clearing Range (Default/Fortified Fleet) = 500/625 \n> Movement Speed (Default/Fortified Fleet) = 85/106 \n> Weapon DPS = 80 \n> Weapon Range = 150 \n> Fortified Fleet Damage Recieved = 75%"
+	End
+
+	DESC:TORPEDOSPREADSPECIALPOWER
+		"> Ability Cooldown = 1 min \n> Ability Damage = 150/torpedo \n> Ability Range = 100000 \n> Ability Radius = 15 \nLaunches a fanlike spread of ship-killing warheads, held in concealed secondary launchers."
+	End
+
+// Imperial Shogun Battleship
+
+	TYPE:JAPANANTISTRUCTURESHIP
+		"Heavy Bombardment Ship \n> Health = 1500 \n> Shroud Clearing Range (Default/Fortified Fleet) = 500/625 \n> Movement Speed (Default/Fortified Fleet) = 70/87.5 \n> Weapon DPS = 58 \n> Weapon Range = 750 \n> Ram Attack Damage = 500 \n> Fortified Fleet Damage Recieved = 75%"
+	End
+
+	DESC:JAPANANTISTRUCTURESHIPRAMMINGSPEED
+		"> Ability Cooldown = 1 min \n Ram Attack Damage = 500 \nSupercharges engines' top speed, such that enemy ships can be pulverized on contact."
+	End
+	
+// Imperial Giga-Fortress Core
+	
+	Type:JapanFortressShipEgg
+		"Portable Heavy Artillery Unit \n> Health = 400 \n> Shroud Clearing Range = 500 \n> Movement Speed = 65"
+	End
+	
+// Imperial Giga-Fortress
+	
+	Type:JapanFortressShip
+		"Advanced Anti-Surface / Anti-Air \n> Health = 5000 \n> Shroud Clearing Range (Default/Fortified Fleet) = 500/625 \n> Movement Speed (Sea/Air/Fortified Fleet) = 40/30/50 \n> Weapon DPS (Cannon/Rocket/Laser) = 50/34.5/50 \n> Weapon Range (Cannon/Rocket/Laser) = 400/300/600 \n> Death Weapon Damage (Default/Honorable Discharge) = 750/1000 \n> Death Weapon Radius (Default/Honorable Discharge) = 110/120 \n> Auto-Heal = 4/sec"
+	End
+
+// Imperial Robotic Assembly
+
+	TYPE:PLAYERPOWERJAPANROBOTICASSEMBLY
+		"Production Upgrade (%25 Build Time Reduction)"
 	End
 	
 // Debug
@@ -1819,6 +2019,10 @@ End
 	End
 
 	Collapsing_Object
+		""
+	End
+
+	JapanFortressShipSeigeCannonNode
 		""
 	End
 
@@ -1859,3 +2063,53 @@ RebornDebug:ParadropTransfer3Failed
     "Reborn: Level 3 transfer tech NOT granted."
 End
 
+
+// Reborn: object-clock diagnostics; no PlayerTech grant is implied.
+RebornDebug:ParadropClockPromoted
+    "Reborn: Paradrop level upgraded; remaining cooldown preserved."
+End
+
+RebornDebug:ParadropClockTicking
+    "Reborn: Paradrop clock ticking; object timers synchronized."
+End
+
+// Reborn: separate physical-tower and sidebar creation diagnostics from timer transfer messages.
+RebornDebug:ParadropTowerClockActive
+    "Reborn: Control Tower cooldown callback active."
+End
+
+RebornDebug:ParadropSidebarCreated
+    "Reborn: Paradrop sidebar provider created."
+End
+
+// Reborn: runtime cast and native clock storage diagnostics.
+RebornDebug:ParadropCastRecorded
+    "Reborn: Paradrop cast recorded in native clock."
+End
+
+RebornDebug:ParadropClockStoreFailed
+    "Reborn: Paradrop cast callback received, but native clock storage failed."
+End
+
+// Reborn: real spellbook and logic-clock diagnostics for the event-only timer bridge.
+RebornDebug:ParadropClockActorActive
+    "Reborn: Paradrop logic clock active."
+End
+
+RebornDebug:ParadropSpellbookActive
+    "Reborn: Paradrop real spellbook active."
+End
+
+RebornDebug:ParadropClockMissing
+    "Reborn: Paradrop clock is not registered; native cooldown preserved."
+End
+
+// Reborn: distinguish delayed lifecycle synchronization from the one-second logic clock.
+RebornDebug:ParadropDeferredSync
+ "Reborn: Paradrop post-upgrade timers synchronized."
+END
+
+// Reborn: distinguish failure to request native clock creation from a missing child callback.
+RebornDebug:ParadropClockRequestFailed
+ "Reborn: Paradrop clock creation request failed."
+END

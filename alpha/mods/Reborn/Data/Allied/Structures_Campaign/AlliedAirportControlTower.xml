@@ -82,8 +82,22 @@
 		</Draws>
 
 		<Behaviors>
-			<!-- Reborn: the physical tower supplies creation/row events too; persistent PlayerTech markers deduplicate callbacks from both owners. -->
-			<LUAEventList id="ModuleTag_RebornParadropTowerCooldownEvents" EventListName="RebornParadropCooldownFunctions"/>
+<!-- Reborn: advertise the same canonical powers from the physical command owner as well as the spellbook. -->
+<PlayerPowerManager id="ModuleTag_RebornTowerParadropManager1" SpecialPowerTemplate="SpecialPowerParadropLvl1"/>
+<PlayerPowerManager id="ModuleTag_RebornTowerParadropManager2" SpecialPowerTemplate="SpecialPowerParadropLvl2"/>
+<PlayerPowerManager id="ModuleTag_RebornTowerParadropManager3" SpecialPowerTemplate="SpecialPowerParadropLvl3"/>
+
+<!-- Reborn: queue the strong clock-creation OCL from the explicit OBJECT request; saved counter bits stay off this building. -->
+<ObjectCreationUpgrade id="ModuleTag_RebornParadropClockSpawn" UpgradeObject="OCL_RebornParadropClock" Delay="1" Permanent="true"><TriggeredBy>Upgrade_RebornParadropClockRequest</TriggeredBy></ObjectCreationUpgrade>
+
+<!-- Reborn: visible powers forward casts to the owner's logic-only clock. -->
+
+
+
+
+
+			<!-- Reborn: creation and row transitions synchronize this receiver once. -->
+			<LUAEventList id="ModuleTag_RebornParadropTowerCooldownEvents" EventListName="RebornParadropTowerFunctions"/>
 			<ModelConditionUpgrade id="ModuleTag_RebornParadropTowerCooldownRow3" AddConditionFlags="USER_9" Permanent="true">
 				<TriggeredBy>Upgrade_RebornParadrop_Row3</TriggeredBy>
 			</ModelConditionUpgrade>
@@ -111,6 +125,7 @@
 				SpecialPowerTemplate="SpecialPowerParadropLvl1"
 				UpdateModuleStartsAttack="false"
 				AvailableAtStart="true"
+ SetModelCondition="USER_5" SetModelConditionTime="0.1s"
 				OCL="OCL_ParaDropLvl1"
 				DestinationOCL="OCL_PrecisionStrikeBeacon"
 				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
@@ -125,11 +140,10 @@
 				SpecialPowerTemplate="SpecialPowerParadropLvl2"
 				UpdateModuleStartsAttack="false"
 				AvailableAtStart="true"
+ SetModelCondition="USER_6" SetModelConditionTime="0.1s"
 				OCL="OCL_ParaDropLvl2"
         DestinationOCL="OCL_PrecisionStrikeBeacon"
 				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-				LeechRechargePercentPlayerTechTrigger="PlayerTech_RebornParadropTransfer2"
-				LeechRechargePercentFromSpecialPower="SpecialPowerParadropLvl1"
 			  CreateLocationOffset="1000.0">
         <NearestSecondaryObjectFilter
 					Relationship="SAME_PLAYER">
@@ -141,11 +155,10 @@
 				SpecialPowerTemplate="SpecialPowerParadropLvl3"
 				UpdateModuleStartsAttack="false"
 				AvailableAtStart="true"
+ SetModelCondition="USER_7" SetModelConditionTime="0.1s"
 				OCL="OCL_ParaDropLvl3"
         DestinationOCL="OCL_PrecisionStrikeBeacon"
 				CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET"
-				LeechRechargePercentPlayerTechTrigger="PlayerTech_RebornParadropTransfer3"
-				LeechRechargePercentFromSpecialPower="SpecialPowerParadropLvl2"
 			  CreateLocationOffset="1000.0">
         <NearestSecondaryObjectFilter
 					Relationship="SAME_PLAYER">

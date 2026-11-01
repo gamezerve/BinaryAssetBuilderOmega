@@ -4,13 +4,13 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:JUMCV_SKN.w3x" />
-		<Include type="all"	source="ART:JUMCV_TRANS.w3x" />
-		<Include type="all"	source="ART:JUMCV_WTRANS1.w3x" />
-		<Include type="all"	source="ART:JUMCV_WTRANS2.w3x" />
-		<Include type="all"	source="ART:JUMCV_MOVA.w3x" />
-		<Include type="all"	source="ART:JUMCV_D.xml" />	
-		<Include type="instance" source="ART:EX_Headlights.w3x" />
+		<!-- <Include type="all"	source="ART:JUMCV_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUMCV_TRANS.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUMCV_WTRANS1.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUMCV_WTRANS2.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUMCV_MOVA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUMCV_D.xml" />	 -->
+		<!-- <Include type="instance" source="ART:EX_Headlights.w3x" /> -->
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />
 	</Includes>

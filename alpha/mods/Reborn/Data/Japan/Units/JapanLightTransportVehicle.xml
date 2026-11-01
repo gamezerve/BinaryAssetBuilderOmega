@@ -5,9 +5,9 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:JULightTransportVehicle.w3x" />
-		<Include type="all"	source="ART:JULightTransportVehicle_02_D.xml" />						
-		<Include type="all"	source="ART:FXTracerHeroic.xml" />
+		<!-- <Include type="all"	source="ART:JULightTransportVehicle.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JULightTransportVehicle_02_D.xml" />						 -->
+		<!-- <Include type="all"	source="ART:FXTracerHeroic.xml" /> -->
 		<Include type="all"	source="DATA:GlobalData/GlobalDefines.xml" />
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />

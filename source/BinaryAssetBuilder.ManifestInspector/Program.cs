@@ -13,6 +13,9 @@ internal static class Program
     {
         try
         {
+            // Reborn: qualify real health-bar layouts and reference tables in a private stock rebuild, without a game launch.
+            if (args.Length == 4 && args[0] == "healthbar-self-test")
+            { CompilerSmokeTest.InitializeHashProvider(); HealthBarCompilerSmokeTest.Run(args[1], args[2], args[3]); return 0; }
 
 
             if (args.Length == 2 && args[0] == "aptui-audit-all-variants")
@@ -311,6 +314,12 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();Ep1DdsTextureSmokeTest.Run();return 0;}
             if(args.Length==3&&args[0]=="dds-texture-stock-self-test")
             {Ep1DdsTextureSmokeTest.CompareStock(args[1],args[2]);return 0;}
+            // Reborn: an empty bone palette alone may use a relocation exactly at the native buffer end.
+            if(args.Length==1&&args[0]=="w3d-mesh-relocation-self-test")
+            {W3DMeshRelocationSmokeTest.Run();return 0;}
+            // Reborn: coordinate proofs must consume both W3X uppercase axes and gameplay lowercase axes.
+            if(args.Length==1&&args[0]=="w3d-coordinate-proof-self-test")
+            {W3DCoordinateProofSmokeTest.Run();return 0;}
             // Reborn: compare privately compiled model streams to original EP1 without reading or dumping a whole stock BIN.
             if(args.Length==3&&args[0]=="w3d-geometry-stock-self-test")
             {W3DGeometryStockSmokeTest.Run(args[1],args[2]);return 0;}

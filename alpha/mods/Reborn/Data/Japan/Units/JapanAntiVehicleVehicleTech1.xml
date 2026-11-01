@@ -4,27 +4,27 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech1_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech1_TRANS.w3x" />
-			<Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech1_TRANS2.w3x" />
-		<Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech1_D.xml" />				
-		<Include
-			type="instance"
-			source="ART:EXTnkTrack.xml" />
-		<Include
-			type="all"
-			source="ART:FXInvisBone.w3x" />
-    <Include
-			type="instance"
-			source="ART:EX_Headlights.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech1_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech1_TRANS.w3x" /> -->
+			<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech1_TRANS2.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech1_D.xml" />				 -->
+		<!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:EXTnkTrack.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXInvisBone.w3x" /> -->
+    <!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:EX_Headlights.w3x" /> -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

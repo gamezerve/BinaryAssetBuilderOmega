@@ -7,6 +7,45 @@
 	</Includes>
 	
 	<WeaponTemplate
+		id="JapanEmperorKingOniBeamWeapon"
+		AttackRange="150.0"
+		CanFireWhileMoving="true"
+		WeaponSpeed="999999.0"
+		PreAttackFX="FX_JAP_KingOni_LaserChargeUp"
+    FireFX="FX_JapanOniEyes"
+		FireSound="JAP_KingOni_LaserFire"
+		RadiusDamageAffects="ENEMIES NEUTRALS"
+		AcceptableAimDelta="10d"
+		PreAttackType="PER_TARGET"
+		ReAcquireDetailType="PER_ATTACK"
+		RequiredAntiMask="ANTI_GROUND ANTI_STRUCTURE ANTI_WATER"
+		ClipSize="1"
+		AutoReloadsClip="AUTO"
+		Flags="ATTACK_NEEDS_LINE_OF_SIGHT NOT_ATTRACTED_BY_MAGNETS"
+		PreAttackWeapon="JapanAntiVehicleVehicleTech3MeleeAttackWeapon">
+    <PreAttackDelay
+			MinSeconds="0.75s"
+			MaxSeconds="0.75s" />
+    <ClipReloadTime
+			MinSeconds="1.0s"
+			MaxSeconds="1.0s" />
+    <Nuggets>
+      <DamageNugget
+				Damage="400.0"
+				Radius="0.0"
+				DamageType="CANNON"
+				DamageFXType="JAPAN_MECHA"
+				DeathType="EXPLODED"/>
+      <ActivateLaserNugget
+				Lifetime="0.75s"
+				LaserId="1"/>
+      <ActivateLaserNugget
+				Lifetime="0.75s"
+				LaserId="2"/>
+    </Nuggets>
+  </WeaponTemplate>
+	
+	<WeaponTemplate
 		id="SovietArtilleryDomeMissile"
 		AttackRange="600.0"
 		MinimumAttackRange="300.0"

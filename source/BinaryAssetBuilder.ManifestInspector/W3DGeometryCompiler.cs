@@ -80,6 +80,7 @@ internal static class W3DGeometryCompiler
     internal static void VerifyMesh(InstanceDeclaration instance,Chunk chunk,SchemaSet schemas)
     {
         var proof=Proof(instance,schemas);var source=proof.DocumentElement!;var b=chunk.InstanceBuffer;int data=checked((int)Word(b,4));int count=checked((int)Word(b,data)),stride=checked((int)Word(b,data+4)),vertices=checked((int)Word(b,data+8));
+        VerifyMeshRelocations(b,chunk.RelocationBuffer,source.GetAttribute("id"));
         var positions=Child(source,"Vertices").ChildNodes.OfType<XmlElement>().ToArray();if(count!=positions.Length||stride<12||stride>512)throw new InvalidDataException("Mesh vertex count/stride differs.");Range(b,vertices,checked(count*stride));
         int declaration=checked((int)Word(b,data+16)),declarationSize=checked((int)Word(b,data+12));Range(b,declaration,declarationSize);
         int position=0,texcoords=0;var boneSources=source.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="BoneInfluences").Select(e=>e.ChildNodes.OfType<XmlElement>().ToArray()).ToArray();int palette=(int)Word(b,data+24),paletteCount=(int)Word(b,data+20);Range(b,palette,checked(paletteCount*2));
@@ -93,7 +94,20 @@ internal static class W3DGeometryCompiler
         int shader=Marshal.OffsetOf<W3DMesh>(nameof(W3DMesh.FXShader)).ToInt32();SchemaNativeContract.VerifyStock(Child(source,"FXShader"),typeof(FXShaderMaterial),0,b,shader,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());
         // Reborn: imports must be in-bounds and consume exactly the Core reference occurrences; relocations must point inside this BIN chunk.
         var imports=Slots(chunk.ImportsBuffer);if(imports.Length!=instance.ReferencedInstances.Count)throw new InvalidDataException("Mesh shader import occurrence count differs.");foreach(uint slot in imports){uint value=Word(b,checked((int)slot));if(value==0||value>instance.ReferencedInstances.Count)throw new InvalidDataException("Mesh shader import index differs.");}
-        foreach(uint slot in Slots(chunk.RelocationBuffer)){uint target=Word(b,checked((int)slot));if(target>=b.Length)throw new InvalidDataException("Mesh relocation target exceeds BIN.");}
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: an unskinned mesh's zero-length bone palette may point exactly to BIN end; nonempty allocations must stay inside. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void VerifyMeshRelocations(byte[] bytes,byte[] relocations,string id)
+    {
+        int data=checked((int)Word(bytes,4));Range(bytes,data,28);
+        int boneSlot=checked(data+24);bool emptyBones=Word(bytes,data+20)==0;
+        foreach(uint slot in Slots(relocations)){
+            uint target=Word(bytes,checked((int)slot));
+            if(target<bytes.Length || (target==bytes.Length&&slot==boneSlot&&emptyBones))continue;
+            throw new InvalidDataException($"Mesh relocation target exceeds BIN: W3DMesh:{id}, slot={slot}, target={target}, BIN={bytes.Length}.");
+        }
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -125,7 +139,7 @@ internal static class W3DGeometryCompiler
     // Reborn: XML model children are selected by schema name rather than authored formatting.
     private static XmlElement Child(XmlElement source,string name)=>source.ChildNodes.OfType<XmlElement>().FirstOrDefault(e=>e.LocalName==name)??throw SdkXmlDiagnostics.At(new InvalidDataException("Missing model field: "+name),source);
     // Reborn: independent float verification compares emitted values to the source, not to a frozen stock value.
-    private static void EqualFloat(byte[] b,int at,float value){if(Word(b,at)!=BitConverter.SingleToUInt32Bits(value))throw new InvalidDataException("Mesh source float differs at +"+at);}
+    private static void EqualFloat(byte[] b,int at,float value){if(Word(b,at)!=BitConverter.SingleToUInt32Bits(value))throw new InvalidDataException($"Mesh source float differs at +{at}: expected={BitConverter.SingleToUInt32Bits(value):X8}, actual={Word(b,at):X8}.");}
     // Reborn: bounded native ranges prevent malformed pointers/counts from reaching readback logic.
     private static void Range(byte[] b,int at,int size){if(at<0||size<0||at>b.Length-size)throw new InvalidDataException("Model native range exceeds BIN.");}
     // Reborn: runtime words use the EP1 PC little-endian ABI.

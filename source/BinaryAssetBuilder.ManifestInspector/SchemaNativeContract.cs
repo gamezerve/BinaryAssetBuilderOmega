@@ -194,7 +194,8 @@ internal sealed class SchemaNativeContract
         if(owner==typeof(ToggleStatusNugget)&&name=="GenericLuaEventParameter"){var attribute=e?.GetAttributeNode(name);if(attribute!=null)consumed.Add(attribute);Text(attribute?.Value??"",at,path,false);return;}
         if ((owner == typeof(Vector3) || owner == typeof(Quaternion)) && name is "X" or "Y" or "Z" or "W")
         {
-            var attribute = e?.GetAttributeNode(name.ToLowerInvariant());
+            // Reborn: W3X Vector3/Quaternion use uppercase axes; gameplay coordinates use lowercase axes.
+            var attribute = e?.GetAttributeNode(name) ?? e?.GetAttributeNode(name.ToLowerInvariant());
 
             if (attribute != null)
                 consumed.Add(attribute);

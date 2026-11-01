@@ -461,102 +461,476 @@ function OnJapanLightTransportVehicleGenericEvent(self, eventType, data)
 end
 
 
--- Reborn: show a bounded, non-pausing test caption through the retail HUD action with its verified two-parameter signature.
-function RebornParadropCooldownCaption(key)
-    ExecuteAction("SHOW_MILITARY_CAPTION", key, 6)
+-- Reborn: all persistent clock state lives in native OBJECT upgrades, never in a Lua-only timer or player-script context.
+function RebornParadropHasUpgrade(self, name)
+    -- Reborn: retail ObjectHasUpgrade handles PLAYER templates only; UNIT_HAS_UPGRADE reads object-local clock bits.
+    local result
+    if strfind(name, "^Upgrade_RebornParadropClock") then
+        -- Reborn: EvaluateCondition rejects userdata; bind the direct object through the native unit-reference action first.
+        ExecuteAction("SET_UNIT_REFERENCE", "__RebornParadropClockRead", self)
+        result = EvaluateCondition("UNIT_HAS_UPGRADE", "__RebornParadropClockRead", name)
+    else
+        result = ObjectHasUpgrade(self, name)
+    end
+    return result and result ~= 0
 end
 
--- Reborn: record the real callback/grant boundary through the engine's existing script-debug action, without modal dialogs.
-function RebornParadropCooldownLog(message)
-    ExecuteAction("DEBUG_STRING", "Reborn Paradrop: " .. message)
-end
+-- Reborn: these transient role tags are reconstructed by every XML-bound callback; saved clock state stays in native upgrades.
+RebornParadropRoles = {}
+-- Reborn: separate callbacks wrap one native object in different Lua tables; native description IDs provide a stable actor key.
+RebornParadropActors = {}
 
--- Reborn: accept full team paths and the engine's bare default-team names, without assuming a particular player slot.
-function RebornParadropCooldownPlayer(self)
-    local team = ObjectTeamName(self)
-    if not team then return nil end
-    local separator = strfind(team, "/")
-    if separator then
-        return strsub(team, 1, separator - 1)
+-- Reborn: ObjectDescription starts with the native object ID in both named and unnamed retail formatters.
+function RebornParadropActor(self)
+    local description = ObjectDescription(self)
+    if description then
+        local first, last, id = strfind(description, "^Object (%d+) ")
+        if id then
+            local actor = RebornParadropActors[id]
+            if actor then return actor end
+            RebornParadropActors[id] = self
+        end
     end
-    if strsub(team, 1, 19) == "defaultSkirmishTeam" and strsub(team, 20) ~= "" then
-        return strsub(team, 20)
-    end
-    if strfind(team, "^teamPlayer_%d+$") or strfind(team, "^teamPlyr[%w_]+$") then
-        return strsub(team, 5)
+    return self
+end
+-- Reborn: failed native state reads must never overwrite a real cooldown with an invented ready state.
+RebornParadropClockInvalid = {}
+-- Reborn: defer only lifecycle synchronization, never ordinary clock ticks.
+RebornParadropDeferred = {}
+
+-- Reborn: player upgrades are queried through the owning object; names of map teams are irrelevant.
+function RebornParadropOwner(self)
+    for i = 1, 8 do
+        if RebornParadropHasUpgrade(self, "Upgrade_RebornParadropOwner" .. i) then return i end
     end
     return nil
 end
 
--- Reborn: accept both numeric and boolean condition results without treating numeric zero as true.
-function RebornParadropHasTech(player, tech)
-    local result = EvaluateCondition("PLAYER_HAS_PLAYER_TECH", player, tech)
-    return result and result ~= 0
-end
-
--- Reborn: grant each transfer marker once through the engine, preserving protocol points and making the guard savegame-persistent.
-function RebornParadropGrantTransfer(player, level)
-    local tech = "PlayerTech_RebornParadropTransfer" .. level
-    if not RebornParadropHasTech(player, tech) then
-        RebornParadropCooldownLog("grant " .. tech .. " to " .. player)
-        ExecuteAction("PLAYER_GRANT_SPECIAL_POWER", "SpecialPower_RebornParadropGrantTransfer" .. level, player)
-        RebornParadropCooldownLog("grant result=" .. tostring(RebornParadropHasTech(player, tech)))
+-- Reborn: assign one shared player identity when its first logic clock is created; reuse it for replacement clocks.
+function RebornParadropBindOwner(clock)
+    if RebornParadropOwner(clock) then return true end
+    local used = {}
+    local actor, role = next(RebornParadropRoles)
+    while actor do
+        local owner = RebornParadropOwner(actor)
+        if owner then used[owner] = true end
+        actor, role = next(RebornParadropRoles, actor)
     end
-    return RebornParadropHasTech(player, tech)
+    for i = 1, 8 do
+        if not used[i] then
+            ObjectGrantUpgrade(clock, "Upgrade_RebornParadropOwner" .. i)
+            return RebornParadropOwner(clock) == i
+        end
+    end
+    return false
 end
 
--- Reborn: any Allied protocol column can promote the power; transfer level 2 before level 3 and ignore later purchases in the same row.
-function RebornParadropCooldownRefresh(self, event)
-    local player = RebornParadropCooldownPlayer(self)
-    if not player then
-        RebornParadropCooldownLog("owner unresolved; team=" .. tostring(ObjectTeamName(self)))
-        RebornParadropCooldownCaption("RebornDebug:ParadropOwnerMissing")
+-- Reborn: allied players must not inherit another player's Paradrop clock.
+function RebornParadropSameOwner(self, other)
+    local owner = RebornParadropOwner(self)
+    return owner and other and owner == RebornParadropOwner(other)
+end
+
+-- Reborn: only the logic-only actor owns the saved clock; Tower and spellbook are receivers.
+function RebornParadropIsClock(self)
+    return RebornParadropRoles[self] == 0
+end
+
+-- Reborn: read nine saved native upgrade bits as remaining simulation seconds (0..360).
+function RebornParadropRemaining(self)
+    local value = 0
+    local weight = 1
+    for i = 0, 8 do
+        if RebornParadropHasUpgrade(self, "Upgrade_RebornParadropClockBit" .. i) then value = value + weight end
+        weight = weight * 2
+    end
+    return value
+end
+
+-- Reborn: change only differing bits, keeping pause/save behavior in native object state.
+function RebornParadropSetRemaining(self, value)
+    local weight = 256
+    for i = 8, 0, -1 do
+        local name = "Upgrade_RebornParadropClockBit" .. i
+        local wanted = value >= weight
+        if wanted then value = value - weight end
+        local present = RebornParadropHasUpgrade(self, name)
+        if wanted and not present then ObjectGrantUpgrade(self, name)
+        elseif present and not wanted then ObjectRemoveUpgrade(self, name) end
+        weight = weight / 2
+    end
+end
+
+-- Reborn: the current clock rank is persisted separately from the player's cumulative row unlocks.
+function RebornParadropClockRank(self)
+    if RebornParadropHasUpgrade(self, "Upgrade_RebornParadropClockRank3") then return 3 end
+    if RebornParadropHasUpgrade(self, "Upgrade_RebornParadropClockRank2") then return 2 end
+    return 1
+end
+
+-- Reborn: store one active rank without resetting the remaining native clock bits.
+function RebornParadropSetRank(self, level)
+    for i = 2, 3 do
+        local name = "Upgrade_RebornParadropClockRank" .. i
+        local present = RebornParadropHasUpgrade(self, name)
+        if level == i and not present then ObjectGrantUpgrade(self, name)
+        elseif level ~= i and present then ObjectRemoveUpgrade(self, name) end
+    end
+end
+
+-- Reborn: native PLAYER upgrades can be inspected through the object API without ScriptEngine's current-player context.
+function RebornParadropUnlockedRank(self)
+    if RebornParadropHasUpgrade(self, "Upgrade_RebornParadrop_Row5") then return 3 end
+    if RebornParadropHasUpgrade(self, "Upgrade_RebornParadrop_Row3") then return 2 end
+    return 1
+end
+
+-- Reborn: preserve the three authored reload durations; round up fractional remaining seconds to avoid early readiness.
+function RebornParadropDuration(level)
+    return 270 + level * 30
+end
+
+-- Reborn: integer ceiling division keeps this compatible with the game's older Lua runtime.
+function RebornParadropScale(value, targetDuration, sourceDuration)
+    local result = 0
+    local numerator = value * targetDuration
+    while numerator > 0 do
+        numerator = numerator - sourceDuration
+        result = result + 1
+    end
+    return result
+end
+
+-- Reborn: the roster contains native object references; only role 0 owns persistent clock bits.
+function RebornParadropClockFor(self)
+    if RebornParadropIsClock(self) then return self end
+    local actor, role = next(RebornParadropRoles)
+    while actor do
+        if role == 0 and RebornParadropSameOwner(self, actor) then return actor end
+        actor, role = next(RebornParadropRoles, actor)
+    end
+    return nil
+end
+
+-- Reborn: schedule a native timed condition without executing a hidden special power on a visible building.
+function RebornParadropArm(clock)
+    local active = ObjectTestModelCondition(clock, "USER_8")
+    if RebornParadropRemaining(clock) > 0 and not (active and active ~= 0) then
+        ExecuteAction("UNIT_SET_MODELCONDITION_FOR_DURATION", clock, "USER_8", 1, 100)
+    end
+end
+
+-- Reborn: native power timers advance themselves; this function is called only on an event, never on a clock tick.
+function RebornParadropApply(actor, clock)
+    if RebornParadropClockInvalid[clock] then return end
+    local remaining = RebornParadropRemaining(clock)
+    local duration = RebornParadropDuration(RebornParadropClockRank(clock))
+    for i = 1, 3 do
+        local seconds = RebornParadropScale(remaining, RebornParadropDuration(i), duration)
+        ExecuteAction("NAMED_SET_SPECIAL_POWER_COUNTDOWN", actor, "SpecialPowerParadropLvl" .. i, seconds)
+    end
+end
+
+-- Reborn: direct saved object references also reach the non-spatial spellbook; spatial broadcasts are unnecessary.
+function RebornParadropPublish(clock)
+    if RebornParadropClockInvalid[clock] then return end
+    local actor, role = next(RebornParadropRoles)
+    while actor do
+        if (role == 4 or role == 5) and RebornParadropSameOwner(actor, clock) then
+            RebornParadropApply(actor, clock)
+        end
+        actor, role = next(RebornParadropRoles, actor)
+    end
+end
+
+-- Reborn: promote one authoritative clock once; repeated native row callbacks never rescale it again.
+function RebornParadropPromote(clock, requested)
+    if RebornParadropClockInvalid[clock] then return end
+    local level = RebornParadropUnlockedRank(clock)
+    if requested and requested > level then level = requested end
+    local previous = RebornParadropClockRank(clock)
+    if level > previous then
+        local remaining = RebornParadropScale(RebornParadropRemaining(clock), RebornParadropDuration(level), RebornParadropDuration(previous))
+        RebornParadropSetRemaining(clock, remaining)
+        RebornParadropSetRank(clock, level)
+        if RebornParadropRemaining(clock) ~= remaining or RebornParadropClockRank(clock) ~= level then
+            RebornParadropClockInvalid[clock] = true
+            ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockStoreFailed", 6)
+            return
+        end
+        ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockPromoted", 6)
+    end
+end
+
+-- Reborn: apply once after the engine finishes upgrading command sets and power availability.
+function RebornParadropDefer(clock)
+    RebornParadropDeferred[clock] = true
+    ExecuteAction("UNIT_SET_MODELCONDITION_FOR_DURATION", clock, "USER_11", 1, 100)
+end
+
+-- Reborn: the negative-condition event also fires at creation, so require an explicit pending request.
+function RebornParadropDeferredSync(clock)
+    clock = RebornParadropActor(clock)
+    RebornParadropRoles[clock] = 0
+    if not RebornParadropDeferred[clock] then return end
+    RebornParadropDeferred[clock] = nil
+    if RebornParadropClockInvalid[clock] then return end
+    RebornParadropPublish(clock)
+    ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropDeferredSync", 6)
+end
+
+-- Reborn: creation and purchases synchronize now and once after native upgrade processing settles.
+function RebornParadropCooldownRefresh(self, requested)
+    local clock = RebornParadropClockFor(self)
+    if not clock then
+        if requested or RebornParadropHasUpgrade(self, "Upgrade_RebornParadrop_Row1") then
+            ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockMissing", 6)
+        end
         return
     end
-    RebornParadropCooldownLog("callback owner=" .. player .. "; team=" .. tostring(ObjectTeamName(self)))
-    -- Reborn: a row model-condition event already proves its bound upgrade fired; do not gate it on a second purchase query.
-    local row3 = event == "row3" or RebornParadropHasTech(player, "PlayerTech_Allied_TimeBomb_Rank1")
-        or RebornParadropHasTech(player, "PlayerTech_Allied_ChronoRift_Rank2")
-        or RebornParadropHasTech(player, "PlayerTech_Allied_CryoSatellite_Rank1")
-    local row5 = event == "row5" or RebornParadropHasTech(player, "PlayerTech_Allied_TimeBomb_Rank3")
-        or RebornParadropHasTech(player, "PlayerTech_ProductionBonus_Allies")
-        or RebornParadropHasTech(player, "PlayerTech_Allied_CryoSatellite_Rank3")
-    if row5 then
-        if RebornParadropGrantTransfer(player, "2") then
-            if RebornParadropGrantTransfer(player, "3") then
-                RebornParadropCooldownCaption("RebornDebug:ParadropTransfer3Granted")
-            else
-                RebornParadropCooldownCaption("RebornDebug:ParadropTransfer3Failed")
-            end
-        else
-            RebornParadropCooldownCaption("RebornDebug:ParadropTransfer2Failed")
-        end
-    elseif row3 then
-        if RebornParadropGrantTransfer(player, "2") then
-            RebornParadropCooldownCaption("RebornDebug:ParadropTransfer2Granted")
-        else
-            RebornParadropCooldownCaption("RebornDebug:ParadropTransfer2Failed")
-        end
-    else
-        RebornParadropCooldownCaption("RebornDebug:ParadropCallbackReady")
+    if RebornParadropClockInvalid[clock] then return end
+    RebornParadropPromote(clock, requested)
+    RebornParadropPublish(clock)
+    RebornParadropDefer(clock)
+    if not RebornParadropClockInvalid[clock] then RebornParadropArm(clock) end
+end
+
+-- Reborn: any branch's row-three purchase selects the same level-two timer.
+function RebornParadropCooldownRow3(self) RebornParadropCooldownRefresh(self, 2) end
+-- Reborn: row five promotes the same saved clock to level three.
+function RebornParadropCooldownRow5(self) RebornParadropCooldownRefresh(self, 3) end
+
+-- Reborn: a successful cast records the shared state once, then updates spellbook and towers at that event only.
+function RebornParadropStartCast(clock, level)
+    RebornParadropSetRank(clock, level)
+    RebornParadropSetRemaining(clock, RebornParadropDuration(level))
+    if RebornParadropRemaining(clock) ~= RebornParadropDuration(level) or RebornParadropClockRank(clock) ~= level then
+        RebornParadropClockInvalid[clock] = true
+        ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockStoreFailed", 6)
+        return
     end
+    RebornParadropClockInvalid[clock] = nil
+    ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropCastRecorded", 6)
+    RebornParadropPublish(clock)
+    RebornParadropArm(clock)
 end
 
--- Reborn: identify the row-3 model-condition callback independently of the purchase condition result.
-function RebornParadropCooldownRow3(self)
-    RebornParadropCooldownLog("row 3 event received")
-    RebornParadropCooldownRefresh(self, "row3")
+-- Reborn: both interfaces address the same canonical powers and one owner-scoped logic clock.
+function RebornParadropCast(self, level)
+    local clock = RebornParadropClockFor(self)
+    if clock then RebornParadropStartCast(clock, level)
+    else ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockMissing", 6) end
+end
+-- Reborn: canonical level-one cast event.
+function RebornParadropCast1(self) RebornParadropCast(self, 1) end
+-- Reborn: canonical level-two cast event.
+function RebornParadropCast2(self) RebornParadropCast(self, 2) end
+-- Reborn: canonical level-three cast event.
+function RebornParadropCast3(self) RebornParadropCast(self, 3) end
+
+-- Reborn: only the logic object's saved bits change here; visible objects receive no periodic timer or upgrade writes.
+function RebornParadropClockTick(clock)
+    if not RebornParadropIsClock(clock) or RebornParadropClockInvalid[clock] then return end
+    local remaining = RebornParadropRemaining(clock)
+    if remaining <= 0 then return end
+    if remaining == RebornParadropDuration(RebornParadropClockRank(clock)) then
+        ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockTicking", 6)
+    end
+    RebornParadropSetRemaining(clock, remaining - 1)
+    if RebornParadropRemaining(clock) ~= remaining - 1 then
+        RebornParadropClockInvalid[clock] = true
+        ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockStoreFailed", 6)
+        return
+    end
+    if remaining > 1 then RebornParadropArm(clock) end
 end
 
--- Reborn: identify the row-5 model-condition callback independently of the purchase condition result.
-function RebornParadropCooldownRow5(self)
-    RebornParadropCooldownLog("row 5 event received")
-    RebornParadropCooldownRefresh(self, "row5")
+-- Reborn: remove dead roster entries so direct references never target a destroyed object.
+function RebornParadropDestroyed(self)
+    -- Reborn: avoid retaining a stale userdata wrapper after this native actor is destroyed.
+    local id, actor = next(RebornParadropActors)
+    while id do
+        if actor == self then RebornParadropActors[id] = nil; break end
+        id, actor = next(RebornParadropActors, id)
+    end
+    RebornParadropRoles[self] = nil
+    RebornParadropClockInvalid[self] = nil
+    RebornParadropDeferred[self] = nil
 end
 
--- Reborn: report global script execution once per Lua state, without a map-local override or cooldown changes.
-if not RebornParadropGlobalLoadReported then
-    RebornParadropGlobalLoadReported = true
-    RebornParadropCooldownCaption("RebornDebug:ParadropGlobalLoaded")
-    RebornParadropCooldownLog("global Scripts.lua loaded")
+-- Reborn: discard duplicate logic clocks before they can publish a ready state; the surviving one outlives all towers.
+function RebornParadropCreated(self)
+    if RebornParadropIsClock(self) then
+        local other, role = next(RebornParadropRoles)
+        while other do
+            if other ~= self and role == 0 and RebornParadropSameOwner(self, other) then
+                RebornParadropDestroyed(self)
+                ExecuteAction("NAMED_DELETE", self)
+                return
+            end
+            other, role = next(RebornParadropRoles, other)
+        end
+        ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockActorActive", 6)
+    elseif RebornParadropRoles[self] == 4 then
+        ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropSpellbookActive", 6)
+    else
+        ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropTowerClockActive", 6)
+    end
+    -- Reborn: a new Tower's child is created on a later native update; this expected interval is not a missing-clock failure.
+    if RebornParadropIsClock(self) or RebornParadropClockFor(self) then RebornParadropCooldownRefresh(self) end
+end
+
+-- Reborn: XML binds role 0 before OnCreated.
+function RebornParadropClockCreated(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 0
+    -- Reborn: never publish a ready timer if the native player identity grant did not take effect.
+    if not RebornParadropBindOwner(self) then
+        RebornParadropClockInvalid[self] = true
+        ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockStoreFailed", 6)
+        return
+    end
+    RebornParadropCreated(self, other)
+end
+
+-- Reborn: XML binds role 0 before OnDestroyed.
+function RebornParadropClockDestroyed(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 0
+    RebornParadropDestroyed(self, other)
+end
+
+-- Reborn: XML binds role 0 before RebornParadropCooldownRow3.
+function RebornParadropClockRow3(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 0
+    RebornParadropCooldownRow3(self, other)
+end
+
+-- Reborn: XML binds role 0 before RebornParadropCooldownRow5.
+function RebornParadropClockRow5(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 0
+    RebornParadropCooldownRow5(self, other)
+end
+
+-- Reborn: XML binds role 0 before RebornParadropClockExpired.
+function RebornParadropClockTickEvent(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 0
+    RebornParadropClockTick(self, other)
+end
+
+-- Reborn: XML binds role 5 before OnCreated.
+function RebornParadropTowerCreated(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 5
+    -- Reborn: the known-working creation callback starts the retail OBJECT-triggered spawn path, independently of protocol purchase order.
+    if not RebornParadropHasUpgrade(self, "Upgrade_RebornParadropClockRequest") then
+        ObjectGrantUpgrade(self, "Upgrade_RebornParadropClockRequest")
+    end
+    -- Reborn: prove the object-local request was written before relying on the later OCL update.
+    if not RebornParadropHasUpgrade(self, "Upgrade_RebornParadropClockRequest") then
+        ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockRequestFailed", 6)
+        return
+    end
+    RebornParadropCreated(self, other)
+end
+
+-- Reborn: XML binds role 5 before OnDestroyed.
+function RebornParadropTowerDestroyed(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 5
+    RebornParadropDestroyed(self, other)
+end
+
+-- Reborn: XML binds role 5 before RebornParadropCooldownRow3.
+function RebornParadropTowerRow3(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 5
+    RebornParadropCooldownRow3(self, other)
+end
+
+-- Reborn: XML binds role 5 before RebornParadropCooldownRow5.
+function RebornParadropTowerRow5(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 5
+    RebornParadropCooldownRow5(self, other)
+end
+
+-- Reborn: XML binds role 5 before RebornParadropCastCondition1.
+function RebornParadropTowerCast1(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 5
+    RebornParadropCast1(self, other)
+end
+
+-- Reborn: XML binds role 5 before RebornParadropCastCondition2.
+function RebornParadropTowerCast2(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 5
+    RebornParadropCast2(self, other)
+end
+
+-- Reborn: XML binds role 5 before RebornParadropCastCondition3.
+function RebornParadropTowerCast3(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 5
+    RebornParadropCast3(self, other)
+end
+
+-- Reborn: XML binds role 4 before RebornParadropCooldownRow1.
+function RebornParadropSpellbookRow1(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 4
+    RebornParadropCooldownRefresh(self)
+end
+
+-- Reborn: XML binds role 4 before OnCreated.
+function RebornParadropSpellbookCreated(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 4
+    RebornParadropCreated(self, other)
+end
+
+-- Reborn: XML binds role 4 before OnDestroyed.
+function RebornParadropSpellbookDestroyed(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 4
+    RebornParadropDestroyed(self, other)
+end
+
+-- Reborn: XML binds role 4 before RebornParadropCooldownRow3.
+function RebornParadropSpellbookRow3(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 4
+    RebornParadropCooldownRow3(self, other)
+end
+
+-- Reborn: XML binds role 4 before RebornParadropCooldownRow5.
+function RebornParadropSpellbookRow5(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 4
+    RebornParadropCooldownRow5(self, other)
+end
+
+-- Reborn: XML binds role 4 before RebornParadropCastCondition1.
+function RebornParadropSpellbookCast1(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 4
+    RebornParadropCast1(self, other)
+end
+
+-- Reborn: XML binds role 4 before RebornParadropCastCondition2.
+function RebornParadropSpellbookCast2(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 4
+    RebornParadropCast2(self, other)
+end
+
+-- Reborn: XML binds role 4 before RebornParadropCastCondition3.
+function RebornParadropSpellbookCast3(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 4
+    RebornParadropCast3(self, other)
 end

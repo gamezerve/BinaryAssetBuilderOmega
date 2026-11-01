@@ -10,26 +10,26 @@
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />
 
 		<!--Art Includes-->
-		<Include type="all" source="ART:JUSentinelVehicle_SKN.w3x" />
-		<Include type="all" source="ART:JUSentinelVehicle_ABTA.w3x" />
-		<Include type="all" source="ART:JUSentinelVehicle_AIDA.w3x" />
-		<Include type="all" source="ART:JUSentinelVehicle_ATKA.w3x" />
-		<Include type="all" source="ART:JUSentinelVehicle_ATKB.w3x" />
-		<Include type="all" source="ART:JUSentinelVehicle_BATA.w3x" />
-		<Include type="all" source="ART:JUSentinelVehicle_BIDA.w3x" />
-		<Include type="all" source="ART:JUSentinelVehicle_DIEA.w3x" />
-		<Include type="all" source="ART:JUSentinelVehicle_WLKA.w3x" />
-    <Include type="all" source="ART:JUSentinelVehicle_XAIDA.w3x" />
-    <Include type="all" source="ART:JUSentinelVehicle_SWPA.w3x" />
-    <Include type="all" source="ART:JUSentinelVehicle_XATKA.w3x" />
-    <Include type="all" source="ART:JUSentinelVehicle_XATKB.w3x" />
-    <Include type="all" source="ART:JUSentinelVehicle_XWLKA.w3x" />
-    <Include type="all" source="ART:JUSentinelVehicle_RUNA.w3x" />
+		<!-- <Include type="all" source="ART:JUSentinelVehicle_SKN.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUSentinelVehicle_ABTA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUSentinelVehicle_AIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUSentinelVehicle_ATKA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUSentinelVehicle_ATKB.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUSentinelVehicle_BATA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUSentinelVehicle_BIDA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUSentinelVehicle_DIEA.w3x" /> -->
+		<!-- <Include type="all" source="ART:JUSentinelVehicle_WLKA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUSentinelVehicle_XAIDA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUSentinelVehicle_SWPA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUSentinelVehicle_XATKA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUSentinelVehicle_XATKB.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUSentinelVehicle_XWLKA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUSentinelVehicle_RUNA.w3x" /> -->
 
-    <Include type="all" source="ART:JUSentinelVehicle_DIE_SKN.w3x" />
+    <!-- <Include type="all" source="ART:JUSentinelVehicle_DIE_SKN.w3x" /> -->
 
-    <Include type="all" source="ART:FXJapanSpearSlash.w3x" />
-    <Include type="all" source="ART:FXJapanSpearBlast.w3x" />
+    <!-- <Include type="all" source="ART:FXJapanSpearSlash.w3x" /> -->
+    <!-- <Include type="all" source="ART:FXJapanSpearBlast.w3x" /> -->
 	</Includes>
 
 	<!-- steel ronin -->

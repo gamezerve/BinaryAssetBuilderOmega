@@ -210,7 +210,8 @@ public static partial class Marshaler
 
     private static unsafe void Marshal(string text, float* objT, Tracker state)
     {
-        float result = float.Parse(text);
+        // Reborn: W3X uses XML decimal spelling regardless of the Windows regional format.
+        float result = System.Xml.XmlConvert.ToSingle(text);
         state.InplaceEndianToPlatform((uint*)&result);
         *objT = result;
     }

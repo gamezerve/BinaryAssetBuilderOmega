@@ -50,6 +50,73 @@
 		<Cmd>Command_ConstructJapanHouseofShinzo02</Cmd>
 		<Cmd>Command_ConstructJapanKenjisHQ</Cmd>
 	</LogicCommandSet>
+			
+	<LogicCommandSet
+		id="JapanNavalYardCommandSetBase">
+		<Cmd>Command_ConstructJapanMiner_Naval</Cmd>
+		<Cmd>Command_ConstructJapanNavyScoutShip</Cmd>	
+		<Cmd>Command_ConstructJapanAntiVehicleVehicleTech1_Naval</Cmd>
+		<Cmd>Command_ConstructJapanAntiAirShip</Cmd>	
+		<Cmd>Command_ConstructJapanRadarShipReborn</Cmd>
+		<Cmd>Command_ConstructJapanAntiVehicleShip</Cmd>
+		<Cmd>Command_ConstructJapanAntiStructureShip</Cmd>
+		<Cmd>Command_ConstructJapanFortressShipEgg</Cmd>
+		<Cmd>Command_ConstructJapanMCV_Naval</Cmd>
+		<Cmd>Command_RepairVehicle</Cmd>
+	</LogicCommandSet>
+	<LogicCommandSet
+		id="JapanNavalYardCommandSet"
+		inheritFrom="JapanNavalYardCommandSetBase">
+		<Cmd>Command_PurchaseJapanNavalYardTech2</Cmd>
+	</LogicCommandSet>
+	<LogicCommandSet
+		id="JapanNavalYardCommandSetTech2"
+		inheritFrom="JapanNavalYardCommandSetBase">
+		<Cmd>Command_PurchaseJapanNavalYardTech3</Cmd>
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="JapanWarFactoryCommandSetBase">
+		<Cmd>Command_ConstructJapanMiner</Cmd>
+		<Cmd>Command_ConstructJapanLightTransportVehicle</Cmd>
+		<Cmd>Command_ConstructJapanTransportVehicle2</Cmd>
+		<Cmd>Command_ConstructJapanAntiInfantryVehicle</Cmd>
+		<Cmd>Command_ConstructJapanAntiVehicleVehicleTech1</Cmd>
+		<Cmd>Command_ConstructJapanAntiAirVehicleTech1</Cmd>
+		<Cmd>Command_ConstructJapanSentinelVehicle</Cmd>
+		<Cmd>Command_ConstructJapanAntiVehicleVehicleTech3</Cmd>
+		<Cmd>Command_ConstructJapanKenjiMechaReborn</Cmd>
+		<Cmd>Command_ConstructJapanEmperorKingOni</Cmd>
+		<Cmd>Command_ConstructJapanAntiStructureVehicle</Cmd>
+		<Cmd>Command_ConstructJapanMechaKing</Cmd>
+		<Cmd>Command_ConstructJapanMCV</Cmd>
+	</LogicCommandSet>
+	<LogicCommandSet
+		id="JapanWarFactoryCommandSet"
+		inheritFrom="JapanWarFactoryCommandSetBase">
+		<Cmd>Command_PurchaseJapanWarFactoryTech2</Cmd>
+	</LogicCommandSet>
+	<LogicCommandSet
+		id="JapanWarFactoryCommandSetTech2"
+		inheritFrom="JapanWarFactoryCommandSetBase">
+		<Cmd>Command_PurchaseJapanWarFactoryTech3</Cmd>
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="JapanRadarShipCommandSet">
+	</LogicCommandSet>
+
+	<LogicCommandSet
+		id="JapanEmperorKingOniCommandSet">
+		<Cmd>Command_AttackMove</Cmd>
+		<Cmd>Command_TriggerEmperorKingOniRushAttackSpecialPower</Cmd>
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="JapanKenjiMechaCommandSet">
+		<Cmd>Command_AttackMove</Cmd>
+		<Cmd>Command_TriggerEmperorKingOniRushAttackSpecialPower</Cmd>
+	</LogicCommandSet>
 	
 	<LogicCommandSet
 		id="JapanKenjisHQCommandSet">
@@ -542,7 +609,10 @@
 		<Cmd>Command_PrecisionStrike</Cmd>
 		<Cmd>Command_SatelliteSweep</Cmd>
 
-		<!-- Reborn: Paradrop is locked until a protocol-row upgrade selects a ranked command set. -->
+		<!-- Reborn: register all three canonical commands at spellbook creation; ranked sets still select the current protocol level. -->
+        <Cmd>Command_ParadropLvl1</Cmd>
+        <Cmd>Command_ParadropLvl2</Cmd>
+        <Cmd>Command_ParadropLvl3</Cmd>
 		<Cmd>Command_ChronoRiftSelectLvl1</Cmd>
 		<Cmd>Command_ChronoRiftSelectLvl2</Cmd>
 		<Cmd>Command_ChronoRiftSelectLvl3</Cmd>

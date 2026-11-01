@@ -5,15 +5,15 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:JUAntiVehicleShip_SKN.w3x" />
-		<Include type="all"	source="ART:JUAntiVehicleShip_IDLA.w3x" />
-		<Include type="all"	source="ART:JUAntiVehicleShip_OPN.w3x" />
-		<Include type="all"	source="ART:JUAntiVehicleShip_D.xml" />
+		<!-- <Include type="all"	source="ART:JUAntiVehicleShip_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiVehicleShip_IDLA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiVehicleShip_OPN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiVehicleShip_D.xml" /> -->
 						
-		<Include type="instance" source="ART:EX_Headlights.w3x" />
-		<Include type="all"	source="ART:FXLaserOverlay.xml" />
-		<Include type="all"	source="ART:JUAntiVehicleShip_02.xml" />				
-		<Include type="all"	source="ART:JUAntiVehicleShip_02_D.xml" />		
+		<!-- <Include type="instance" source="ART:EX_Headlights.w3x" /> -->
+		<!-- <Include type="all"	source="ART:FXLaserOverlay.xml" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiVehicleShip_02.xml" />				 -->
+		<!-- <Include type="all"	source="ART:JUAntiVehicleShip_02_D.xml" />		 -->
 
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />

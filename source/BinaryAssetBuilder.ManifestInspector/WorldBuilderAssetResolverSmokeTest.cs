@@ -28,8 +28,11 @@ internal static class WorldBuilderAssetResolverSmokeTest
         // Reborn: the final archive check must suppress a successfully copied target and report only the deliberately unresolved use site.
         var pending=targets.Select(a=>new SdkMissingDependencyAudit.Finding("WORLDBUILDERASSET","Info",a.Name,"Fixture:Owner",prepared,7,3,"Model","pending")).Append(new("WORLDBUILDERASSET","Info","W3DContainer:MissingAfterResolve","Fixture:Owner",prepared,9,5,"Model","pending")).ToArray();string pendingReport=Path.Combine(output,"pending-dependencies.json");File.WriteAllText(pendingReport,System.Text.Json.JsonSerializer.Serialize(new SdkMissingDependencyAudit.Report(pending,1,0,3,0,true)));var previous=Console.Out;using var warningText=new StringWriter();try{Console.SetOut(warningText);WorldBuilderAssetResolver.CheckPending(package,pendingReport,catalogs);}finally{Console.SetOut(previous);}string warnings=warningText.ToString();Require(warnings.Split(Environment.NewLine,StringSplitOptions.RemoveEmptyEntries).Length==1&&warnings.StartsWith("Warning: WORLDBUILDERASSET ' W3DContainer:MissingAfterResolve '",StringComparison.Ordinal)&&warnings.Contains(prepared+"(9,5)")&&!warnings.Contains(targets[0].Name)&&!warnings.Contains(targets[1].Name),"Final package warning audit lost source evidence or warned about resolved assets.");
         CustomResources(output,stock,metadata,owner);
+        PackRegression(output);
         // Reborn: import selectors are 1-based within their unchanged owner table; corrupt selectors and relocation targets must fail before packaging.
-        Refuse(()=>WorldBuilderAssetResolver.ValidateNative(owner with{References=new[]{new AssetId(1,1)}},new byte[]{2,0,0,0},Array.Empty<byte>(),new byte[]{0,0,0,0,255,255,255,255}));Refuse(()=>WorldBuilderAssetResolver.ValidateNative(owner,new byte[]{4,0,0,0},new byte[]{0,0,0,0,255,255,255,255},Array.Empty<byte>()));
+        Refuse(()=>WorldBuilderAssetResolver.ValidateNative(owner with{References=new[]{new AssetId(1,1)}},new byte[]{2,0,0,0},Array.Empty<byte>(),new byte[]{0,0,0,0,255,255,255,255}));Refuse(()=>WorldBuilderAssetResolver.ValidateNative(owner,new byte[]{5,0,0,0},new byte[]{0,0,0,0,255,255,255,255},Array.Empty<byte>()));
+        // Reborn: one-past-end storage is valid for an empty final list; the corruption fixture must exceed it.
+        WorldBuilderAssetResolver.ValidateNative(owner,new byte[]{4,0,0,0},new byte[]{0,0,0,0,255,255,255,255},Array.Empty<byte>());
         foreach(var file in first.Streams)File.WriteAllBytes(Path.Combine(output,file.Key),file.Value);File.WriteAllText(Path.Combine(output,"resolver-report.json"),System.Text.Json.JsonSerializer.Serialize(new{first.Imported,first.BytesRead,CustomResources=first.CustomData.Keys,GameExecuted=false,Published=false},new System.Text.Json.JsonSerializerOptions{WriteIndented=true}));Console.WriteLine($"Reborn: WorldBuilder resolver: PASS ({first.Imported.Length} retail assets, {first.BytesRead:N0} native bytes; closure, weak seeds, precedence, repeat bytes, all BIG variants, custom resources and corrupt header/pointer/import rejection).");
     }
 
@@ -39,6 +42,33 @@ internal static class WorldBuilderAssetResolverSmokeTest
     private static void CustomResources(string output,ManifestDocument template,byte[] metadata,ManifestAsset owner)
     {
         string folder=Path.Combine(output,"custom");Directory.CreateDirectory(folder);var texture=owner with{TypeId=Ep1TextureCompiler.TypeId,InstanceId=20,Name="Texture:ExternalFixture",References=Array.Empty<AssetId>(),AssetReferenceCount=0};var streams=WorldBuilderAssetResolver.Serialize(new[]{new WorldBuilderAssetResolver.Native(texture,new byte[12],Array.Empty<byte>(),Array.Empty<byte>())},template,metadata);foreach(var file in streams)File.WriteAllBytes(Path.Combine(folder,file.Key.Replace("diagnostic","worldbuilder")),file.Value);var input=WorldBuilderAssetResolver.Serialize(new[]{new WorldBuilderAssetResolver.Native(owner with{References=new[]{WorldBuilderAssetResolver.Id(texture)}},new byte[4],Array.Empty<byte>(),Array.Empty<byte>())},template,metadata);string path=Path.Combine(folder,"worldbuilder.manifest");bool missing=false;try{WorldBuilderAssetResolver.Resolve(input,path,Array.Empty<ManifestAsset>(),Array.Empty<AssetId>());}catch(FileNotFoundException){missing=true;}Require(missing,"Missing custom data was ignored.");Directory.CreateDirectory(Path.Combine(folder,"cdata"));string name=$"{texture.TypeId:x8}.{texture.TypeHash:x8}.{texture.InstanceId:x8}.{texture.InstanceHash:x8}.cdata";byte[] payload=Encoding.ASCII.GetBytes("Reborn: preserved custom fixture");File.WriteAllBytes(Path.Combine(folder,"cdata",name),payload);var result=WorldBuilderAssetResolver.Resolve(input,path,Array.Empty<ManifestAsset>(),Array.Empty<AssetId>());Require(result.CustomData.Single().Key=="data\\mod\\cdata\\"+name&&result.CustomData.Single().Value.SequenceEqual(payload),"External custom resource changed.");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: streaming must preserve legacy BIG bytes, avoid payload-sized writer allocations and reject late corruption. */
+    //-------------------------------------------------------------------------------------------------
+    private static void PackRegression(string output)
+    {
+        var small=new Dictionary<string,byte[]>{{"data\\empty",Array.Empty<byte>()},{"data\\one",new byte[]{1,2,3}},{"data\\two",new byte[]{4,5}}};
+        using(var memory=new MemoryStream()){
+            WorldBuilderAssetResolver.WritePack(memory,small);
+            Require(memory.ToArray().SequenceEqual(WorldBuilderAssetResolver.Pack(small)),"Streaming BIG differs from legacy bytes.");
+        }
+        // Reborn: many LOD entries alias one resource; the archive is 64 MiB but the writer needs only its small directory.
+        byte[] payload=new byte[2*1024*1024];new Random(471).NextBytes(payload);
+        var files=Enumerable.Range(0,32).ToDictionary(i=>"data\\lod_"+i,p=>payload);
+        string path=Path.Combine(output,"streaming-pack.big");
+        using(var file=new FileStream(path,FileMode.CreateNew,FileAccess.Write,FileShare.None)){
+            long before=GC.GetAllocatedBytesForCurrentThread();WorldBuilderAssetResolver.WritePack(file,files);
+            Require(GC.GetAllocatedBytesForCurrentThread()-before<1024*1024,"Streaming BIG writer allocated payload-sized storage.");
+        }
+        WorldBuilderAssetResolver.VerifyPack(path,files);
+        using(var file=File.Open(path,FileMode.Open,FileAccess.ReadWrite,FileShare.None)){
+            file.Position=file.Length-1;int value=file.ReadByte();file.Position--;file.WriteByte((byte)(value^1));
+        }
+        bool rejected=false;try{WorldBuilderAssetResolver.VerifyPack(path,files);}catch(InvalidDataException){rejected=true;}
+        Require(rejected,"Streaming BIG readback accepted corrupt final payload.");
+        Console.WriteLine("Reborn: streaming BIG: PASS (legacy bytes, 64 MiB shared LOD payloads, writer allocation below 1 MiB, late corruption rejected).");
     }
 
     // Reborn: test failures identify the violated resolver contract without treating an unexpected exception as success.

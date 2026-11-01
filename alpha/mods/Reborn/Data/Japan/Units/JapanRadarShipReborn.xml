@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xai="uri:ea.com:eala:asset:instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+		<!-- aka Naginata -->
+	<Includes>
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+
+		<Include type="all"	source="ART:JURADARSHIP_SKN.w3x" />
+		<Include type="all"	source="ART:JURADARSHIP_SKN.OBBOX01.w3x" />
+		<Include type="all"	source="ART:JURADARSHIP_SKN.JURADARSHIP.w3x" />
+		<Include type="all"	source="ART:JURADARSHIP_RBRN.w3x" />
+
+		<!-- Base Object -->
+		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />
+	</Includes>
+	
+	<Texture id="JURadarShip02" File="ART:Images/JURadarShip02.dds"/>
+	<Texture id="JURadarShip02_D" File="ART:Images/JURadarShip02_D.dds"/>
+
+	<GameObject
+		id="JapanRadarShipReborn"
+		inheritFrom="BaseVehicle"
+		SelectPortrait="Portrait_JapanRadarShip"
+		ButtonImage="Button_JapanRadarShip"
+		Side="Japan"
+		SubGroupPriority="475"
+		EditorSorting="UNIT"
+		TransportSlotCount="20"
+		BuildTime="15"
+		CommandSet="JapanRadarShipCommandSet"
+		KindOf="SELECTABLE CAN_ATTACK CAN_CAST_REFLECTIONS SCORE VEHICLE SHIP CAN_BE_FAVORITE_UNIT"
+		RadarPriority="UNIT"
+		ProductionQueueType="WATERCRAFT"
+		UnitCategory="VEHICLE"
+		WeaponCategory="CANNON"
+		VoicePriority="188"
+		PlacementViewAngle="315d"
+		EditorName="JapanRadarShipReborn"
+		Description="Desc:JapanRadarShip"
+		TypeDescription="Type:JapanRadarShipReborn">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:JapanRadarShip</DisplayName>
+		<GameDependency>
+			<NeededUpgrade>Upgrade_JapanNavalYardTech3</NeededUpgrade>
+		</GameDependency>
+		<ObjectResourceInfo>
+			<BuildCost Account="=$ACCOUNT_ORE" Amount="1400"/>
+		</ObjectResourceInfo>
+		<ArmorSet
+			Armor="BaseSurfaceShipArmor"
+			DamageFX="VehicleDamageFX" />
+		<LocomotorSet
+			Locomotor="JapanRadarShipRebornLocomotor"
+			Condition="NORMAL"
+			Speed="50.0" />
+
+		<SkirmishAIInformation
+			UnitBuilderStandardCombatUnit="true" />
+		<Draws>
+			<ScriptedModelDraw
+				id="ModuleTag_Draw"
+				OkToChangeModelColor="true">
+				<ModelConditionState
+					ParseCondStateType="PARSE_DEFAULT">
+					<Model
+						Name="JURADARSHIP_RBRN" />
+          <ParticleSysBone
+						BoneName="NONE"
+						FXParticleSystemTemplate="JapanRadarDome"
+						FollowBone="true" />
+				</ModelConditionState>
+				
+				<ModelConditionState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="REALLYDAMAGED USER_2">
+					<Model
+						Name="JURADARSHIP_RBRN" />
+					<Texture
+						Original="JURadarShip" 
+						New="JURadarShip02_D" />
+				</ModelConditionState>
+        <!-- UPGRADED MODEL -->
+				<ModelConditionState
+					ParseCondStateType="PARSE_NORMAL"
+					RetainSubObjects="true"
+					ConditionsYes="USER_2">
+					<Model
+						Name="JURADARSHIP_RBRN" />
+					<Texture
+						Original="JURadarShip" 
+						New="JURadarShip02" />
+				</ModelConditionState>
+				
+				<ModelConditionState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="REALLYDAMAGED">
+					<Model
+						Name="JURADARSHIP_RBRN" />
+				<Texture
+					Original="JURadarShip"
+					New="JURadarShip_D" />
+				</ModelConditionState>
+				<ModelConditionState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="DYING">
+					<Model
+						Name="JURADARSHIP_RBRN" />
+				</ModelConditionState>
+				<ModelConditionState
+					ParseCondStateType="PARSE_NORMAL"
+					ConditionsYes="FORMATION_PREVIEW">
+					<Model
+						Name="JURADARSHIP_RBRN" />
+				</ModelConditionState>
+
+			</ScriptedModelDraw>
+		</Draws>
+    <Behaviors>
+
+
+
+			<Physics
+				id="ModuleTag_Physics" />
+			<CreateObjectDie
+				id="ModuleTag_CreateObjectDie"
+				CreationList="JURadarShip_Die_OCL">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</CreateObjectDie>
+			<DestroyDie
+				id="ModuleTag_Die">
+				<DieMuxData
+					DeathTypes="ALL" />
+			</DestroyDie>
+			<FXListBehavior
+				id="ModuleTag_FXList">
+				<DieMuxData
+					DeathTypes="ALL" />
+				<Event
+					Index="onDeath"
+					FX="FX_AlliedChieftanDie" />
+			</FXListBehavior>
+
+			<SubObjectsUpgrade
+				id="ModuleTag_JapanNavalPower_subobject">
+				<TriggeredBy>Upgrade_JapanNavalPower</TriggeredBy>
+				<Nugget
+					ShowSubObjects="Upgrade_01"
+					Upgrade="Upgrade_JapanNavalPower">
+				</Nugget>
+				<CustomAnimAndDuration	AnimState="USER_2"/>	
+			</SubObjectsUpgrade>
+
+			<AttributeModifierUpgrade
+				id="ModuleTag_JapanNavalPower"
+				AttributeModifier="AttributeModifer_JapanNavalPower_JapanRadarShipReborn">
+				<TriggeredBy>Upgrade_JapanNavalPower</TriggeredBy>
+			</AttributeModifierUpgrade>
+
+			<!-- Enhanced Kamikaze Player Power -->
+			<xi:include
+				href="DATA:Includes/JapanEnhancedKamikazeUpgradeStatus.xml" />
+			<xi:include
+				href="DATA:Includes/JapanEnhancedKamikazeUpgradeDeathWeapon.xml" />
+			<!-- -->
+
+		</Behaviors>
+		<AI>
+			<AIUpdate
+				id="ModuleTag_AI"
+				AutoAcquireEnemiesWhenIdle="YES"
+				StateMachine="UnitAIStateMachine">
+				<UnitAITargetChooserData
+					CanPickDynamicTargets="true" />
+			</AIUpdate>
+		</AI>
+
+		<Body>
+			<ActiveBody
+				id="ModuleTag_Body"
+				MaxHealth="300" />
+		</Body>
+
+		<Geometry>
+			<Shape
+				Type="BOX"
+				MajorRadius="20.0"
+				MinorRadius="14.0"
+				Height="12.0"
+				ContactPointGeneration="VEHICLE">
+				<Offset
+					x="-7.0"
+					y="0.0"
+					z="0.0" />
+			</Shape>
+		</Geometry>
+		<AudioArrayVoice>
+
+		</AudioArrayVoice>
+		<AudioArraySound>
+
+			<AudioEntry
+				Sound="VehicleCrush"
+				AudioType="soundCrushing" />
+			<AudioEntry
+				Sound="Ship_Large_MoveLoopWater"
+				AudioType="soundMoveLoop" />	
+		</AudioArraySound>
+		<VisionInfo
+			VisionRange="500"
+			ShroudClearingRange="1250" />
+
+
+	</GameObject>
+	
+	<AttributeModifier
+		id="AttributeModifer_JapanNavalPower_JapanRadarShipReborn"
+		Category="NONE"
+		StartFX="FX_JAP_FortifyFleetUpgrade">
+		<Modifier Type="ARMOR" Value="75%"/>
+		<Modifier Type="SPEED" Value="125%"/>
+		<Modifier Type="SHROUD_CLEARING" Value="125%"/>
+	</AttributeModifier>
+
+	<LocomotorTemplate
+		id="JapanRadarShipRebornLocomotor"
+		Surfaces="DEEP_WATER"
+		TurnTimeSeconds="2.0s"
+		TurnTimeDamagedSeconds="2.0s"
+		AccelerationSeconds="0.01s"
+		BrakingSeconds="0.01s"
+		MaxSpeedDamaged="75%"
+		SlowTurnRadius="0.0"
+		FastTurnRadius="20.0"
+		TurnThresholdHS="90d"
+		MinTurnSpeed="0%"
+		TurnPivotOffset="0.0"
+		PreferredHeight="0"
+		SpeedBasedHeightOffset="7"
+		BehaviorZ="SEA_LEVEL"
+		Appearance="SHIP"
+		ActiveModelConditions="OVER_WATER"
+		ActiveObjectStatus="WATER_LOCOMOTOR_ACTIVE OVER_WATER"
+		ClampOrientationToPathTangent="true"
+		ReorientIfTurnTooSharp="true"
+		DontNegateDeceleratePitchFactor="true"
+		AccelPitchLimit="10d"
+		BounceKick="0d"
+		PitchStiffness="0.1"
+		RollStiffness="0.1"
+		PitchDamping="0.5"
+		RollDamping="0.4"
+		ForwardAccelerationPitchFactor="0.01"
+		LateralAccelerationRollFactor="-0.05"
+		ElevatorCorrectionDegree="0.04"
+		ElevatorCorrectionRate="0.04"
+		AeleronCorrectionDegree="0.05"
+		AeleronCorrectionRate="0.06"
+	/>
+	
+</AssetDeclaration>

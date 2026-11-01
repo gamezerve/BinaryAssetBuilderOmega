@@ -161,6 +161,171 @@
 		ExperienceAward="4000">
 		<Target>SovietChiefEngineerReborn</Target>
 	</ExperienceLevelTemplate>
+
+	<!-- JAPAN Advanced Sudden Transport ___________________________________________ -->
+	<ExperienceLevelTemplate
+		id="JapanTransportVehicle2ExperienceLevel_1"
+		inheritFrom="ExperienceLevel_JapanRank1"
+		RequiredExperience="1"
+		ExperienceAward="500">
+		<Target>JapanTransportVehicle2</Target>
+	</ExperienceLevelTemplate>
+	<ExperienceLevelTemplate
+		id="JapanTransportVehicle2ExperienceLevel_2"
+		inheritFrom="ExperienceLevel_JapanRank2"
+		Prerequisite="JapanTransportVehicle2ExperienceLevel_1"
+		RequiredExperience="1500"
+		ExperienceAward="1000">
+		<Target>JapanTransportVehicle2</Target>
+	</ExperienceLevelTemplate>
+	<ExperienceLevelTemplate
+		id="JapanTransportVehicle2ExperienceLevel_3"
+		inheritFrom="ExperienceLevel_JapanRank3"
+		Prerequisite="JapanTransportVehicle2ExperienceLevel_2"
+		RequiredExperience="3000"
+		ExperienceAward="1500">
+		<Target>JapanTransportVehicle2</Target>
+	</ExperienceLevelTemplate>
+	<ExperienceLevelTemplate
+		id="JapanTransportVehicle2ExperienceLevel_4"
+		inheritFrom="ExperienceLevel_JapanRank4"
+		Prerequisite="JapanTransportVehicle2ExperienceLevel_3"
+		RequiredExperience="4500"
+		ExperienceAward="2000">
+		<Target>JapanTransportVehicle2</Target>
+	</ExperienceLevelTemplate>	
+
+	<!-- JAPAN Advanced King Oni ___________________________________________ -->
+	<ExperienceLevelTemplate
+		id="JapanKenjiMechaExperienceLevel_1"
+		inheritFrom="ExperienceLevel_JapanRank1"
+		RequiredExperience="1"
+		ExperienceAward="2200">
+		<Target>JapanKenjiMechaReborn</Target>
+	</ExperienceLevelTemplate>
+	<ExperienceLevelTemplate
+		id="JapanKenjiMechaExperienceLevel_2"
+		inheritFrom="ExperienceLevel_JapanRank2"
+		Prerequisite="JapanKenjiMechaExperienceLevel_1"
+		RequiredExperience="6600"
+		ExperienceAward="4400">
+		<Target>JapanKenjiMechaReborn</Target>
+	</ExperienceLevelTemplate>
+	<ExperienceLevelTemplate
+		id="JapanKenjiMechaExperienceLevel_3"
+		inheritFrom="ExperienceLevel_JapanRank3"
+		Prerequisite="JapanKenjiMechaExperienceLevel_2"
+		RequiredExperience="13200"
+		ExperienceAward="6600">
+		<Target>JapanKenjiMechaReborn</Target>
+	</ExperienceLevelTemplate>
+	<ExperienceLevelTemplate
+		id="JapanKenjiMechaExperienceLevel_4"
+		inheritFrom="ExperienceLevel_JapanRank4"
+		Prerequisite="JapanKenjiMechaExperienceLevel_3"
+		RequiredExperience="19800"
+		ExperienceAward="8800">
+		<Target>JapanKenjiMechaReborn</Target>
+	</ExperienceLevelTemplate>
+
+	<!-- JAPAN Greater King Oni___________________________________________ -->
+	<ExperienceLevelTemplate
+		id="JapanEmperorKingOniExperienceLevel_1"
+		inheritFrom="ExperienceLevel_JapanRank1"
+		RequiredExperience="1"
+		ExperienceAward="2400">
+		<Target>JapanEmperorKingOni</Target>
+	</ExperienceLevelTemplate>
+	<ExperienceLevelTemplate
+		id="JapanEmperorKingOniExperienceLevel_2"
+		inheritFrom="ExperienceLevel_JapanRank2"
+		Prerequisite="JapanEmperorKingOniExperienceLevel_1"
+		RequiredExperience="7200"
+		ExperienceAward="4800">
+		<Target>JapanEmperorKingOni</Target>
+	</ExperienceLevelTemplate>
+	<ExperienceLevelTemplate
+		id="JapanEmperorKingOniExperienceLevel_3"
+		inheritFrom="ExperienceLevel_JapanRank3"
+		Prerequisite="JapanEmperorKingOniExperienceLevel_2"
+		RequiredExperience="14400"
+		ExperienceAward="7200">
+		<Target>JapanEmperorKingOni</Target>
+	</ExperienceLevelTemplate>
+	<ExperienceLevelTemplate
+		id="JapanEmperorKingOniExperienceLevel_4"
+		inheritFrom="ExperienceLevel_JapanRank4"
+		Prerequisite="JapanEmperorKingOniExperienceLevel_3"
+		RequiredExperience="24600"
+		ExperienceAward="9600">
+		<Target>JapanEmperorKingOni</Target>
+	</ExperienceLevelTemplate>
+
+	<!-- JAPAN Shogun Executioner ___________________________________________ -->
+	<ExperienceLevelTemplate
+		id="JapanMechaKingExperienceLevel_1"
+		inheritFrom="ExperienceLevel_JapanRank1"
+		RequiredExperience="1"
+		ExperienceAward="3200">
+		<Target>JapanMechaKing</Target>
+	</ExperienceLevelTemplate>
+	<ExperienceLevelTemplate
+		id="JapanMechaKingExperienceLevel_2"
+		inheritFrom="ExperienceLevel_JapanRank2"
+		Prerequisite="JapanMechaKingExperienceLevel_1"
+		RequiredExperience="9600"
+		ExperienceAward="6400">
+		<Target>JapanMechaKing</Target>
+	</ExperienceLevelTemplate>
+	<ExperienceLevelTemplate
+		id="JapanMechaKingExperienceLevel_3"
+		inheritFrom="ExperienceLevel_JapanRank3"
+		Prerequisite="JapanMechaKingExperienceLevel_2"
+		RequiredExperience="19200"
+		ExperienceAward="9600">
+		<Target>JapanMechaKing</Target>
+	</ExperienceLevelTemplate>
+	<ExperienceLevelTemplate
+		id="JapanMechaKingExperienceLevel_4"
+		inheritFrom="ExperienceLevel_JapanRank4"
+		Prerequisite="JapanMechaKingExperienceLevel_3"
+		RequiredExperience="28800"
+		ExperienceAward="12800">
+		<Target>JapanMechaKing</Target>
+	</ExperienceLevelTemplate>
+
+	<!-- Imperial Radar Ship -->
+	<ExperienceLevelTemplate
+		id="JapanRadarShipRebornExperienceLevel_1"
+		inheritFrom="ExperienceLevel_JapanRank1"
+		RequiredExperience="1"
+		ExperienceAward="1100">
+		<Target>JapanRadarShipReborn</Target>
+	</ExperienceLevelTemplate>
+	<ExperienceLevelTemplate
+		id="JapanRadarShipRebornExperienceLevel_2"
+		inheritFrom="ExperienceLevel_JapanRank2"
+		Prerequisite="JapanRadarShipRebornExperienceLevel_1"
+		RequiredExperience="3300"
+		ExperienceAward="2200">
+		<Target>JapanRadarShipReborn</Target>
+	</ExperienceLevelTemplate>
+	<ExperienceLevelTemplate
+		id="JapanRadarShipRebornExperienceLevel_3"
+		inheritFrom="ExperienceLevel_JapanRank3"
+		Prerequisite="JapanRadarShipRebornExperienceLevel_2"
+		RequiredExperience="6600"
+		ExperienceAward="3300">
+		<Target>JapanRadarShipReborn</Target>
+	</ExperienceLevelTemplate>
+	<ExperienceLevelTemplate
+		id="JapanRadarShipRebornExperienceLevel_4"
+		inheritFrom="ExperienceLevel_JapanRank4"
+		Prerequisite="JapanRadarShipRebornExperienceLevel_3"
+		RequiredExperience="9900"
+		ExperienceAward="4400">
+		<Target>JapanRadarShipReborn</Target>
+	</ExperienceLevelTemplate>
 	
 </AssetDeclaration>
 

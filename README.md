@@ -1,4 +1,39 @@
 # BinaryAssetBuilder
+
+<!-- Reborn: record live Paradrop lifecycle evidence and the remaining runtime gate. -->
+Live Paradrop inspection found a missing clock AI interface, the spellbook's
+INERT Lua exclusion and unstable callback wrapper keys. The mod sources now
+address those three findings; 58-asset private stream readback and 1,600 Lua mock
+checks pass. Fresh-match event delivery and sidebar rank visibility still need
+validation. See [Paradrop notes](docs/REBORN_PARADROP_PROTOCOL_THRESHOLDS.md).
+
+<!-- Reborn: keep valid unskinned mesh relocations and parse W3X decimals independently of regional settings. -->
+Mesh validation now accepts an end-of-BIN pointer only for a verified empty bone
+palette; nonempty or unrelated out-of-bounds pointers still fail with mesh/offset
+details. `JURADARSHIP_SKN.JURADARSHIP` compiles with stream readback, and seven
+boundary/corruption controls pass. W3X scalar floats now use XML decimal parsing
+so Turkish regional settings cannot turn `15.195805` into `15195805`.
+
+<!-- Reborn: distinguish W3X uppercase axes from gameplay lowercase coordinates in native verification. -->
+W3X collision-box verification now reads uppercase `X/Y/Z` (and quaternion `W`)
+as well as lowercase gameplay coordinates. Previously a valid nonzero model axis
+was compared with zero. The exact `JURADARSHIP_SKN.OBBOX01` failure is reproduced
+with the old tools and passes source compilation/native stream readback after the
+fix; 18 coordinate/corruption checks pass. Stable alpha tools are synchronized.
+
+<!-- Reborn: avoid a contiguous archive allocation after WorldBuilder dependency resolution. -->
+WorldBuilder BIG packaging now writes directly to disk, verifies payloads in
+64 KiB slices and hashes the file as a stream. This fixes the archive-sized
+allocation that caused the 596-asset Reborn build to run out of x86 memory.
+Private regression: legacy BIG bytes match; a 64 MiB shared-LOD archive needs
+less than 1 MiB of writer allocation; 20 retail assets resolve and package
+correctly. The complete user mod still needs a rebuild in Studio.
+
+<!-- Reborn: health-bar records are checked against retail EP1 layout instead of manifest hashes alone. -->
+Health-bar compilation now uses the correct header order and strong template imports.
+All seven original assets rebuild exactly (21 BIN/RELO/IMP comparisons); a private
+copy of the custom global health-bar build also passes. The crash still needs a
+fresh-match retest. See [Health-bar support](docs/RA3EP1_HEALTH_BAR_SUPPORT.md).
 A RA3 Uprising (EP1) port of the Kane's Wrath-based .NET BinaryAssetBuilder.
 
 Final target: RA3-SDK-style general Uprising authoring, including user-defined
@@ -6,27 +41,45 @@ asset IDs, instance includes, inheritance, `$` definitions/expressions,
 TGA/DDS textures and W3X models. Current alpha capability restrictions are
 temporary. See the [final product contract](docs/RA3EP1_SDK_RELEASE_PLAN.md).
 
-## Current outcome — October 30, 2026
+## Current outcome — November 2, 2026
 
-<!-- Reborn: protocol columns select one canonical Paradrop command instead of separate power/timer identities. -->
-`PlayerTechUpgradeBinding` supports shared purchase thresholds. Reborn now has
-exactly **three canonical Paradrop powers**, with no `_Protocol2/_Protocol3`
-copies. Both spellbook and Control Tower command sets switch to the same level
-at Allied protocol rows **1 / 3 / 5**; unrelated spellbook commands are retained.
-The official **SHARED_SYNC** flag shares each same-template timer across the
-two objects. Cross-level transfer now uses two one-shot PlayerTech markers,
-a Lua event bridge and the native Leech percentage fields, retaining the
-**300 / 330 / 360 second** reload values. The three castable powers remain;
-two hidden grant-only helpers have no UI or aircraft payload.
-The **40-asset** graph and private Misc BIG pass readback. **224 mocked Lua
-checks** cover all columns and repeated purchases; live callback/grant/transfer
-behavior still requires a fresh-match check. The owner resolver now accepts
-bare default-team names as well as full paths; physical Tower callbacks back
-up the invisible spellbook. The map-local Lua experiment was withdrawn after
-the user reported a crash. No map-specific override is part of the current
-test approach. The live cooldown reset remains unresolved. See
-[Paradrop protocol thresholds](docs/REBORN_PARADROP_PROTOCOL_THRESHOLDS.md).
+<!-- Reborn: focus on the clock that never registers, rather than claiming another cooldown or sidebar success. -->
+The latest game test still has no registered Paradrop clock. Tower's verified
+OnCreated callback now grants an OBJECT spawn request; ObjectCreationUpgrade runs
+a strongly referenced OCL after one frame. The clock has a blank drawable, SMC
+helper, geometry and explicit health. **58 private assets** and **1,594 Lua mock
+assertions** pass; actual child callbacks and sidebar visibility need game
+confirmation. See [current investigation](docs/REBORN_PARADROP_PROTOCOL_THRESHOLDS.md).
 
+### Earlier November 1 investigation
+
+
+<!-- Reborn: replace failed team-name clock matching and retain concrete model-source findings. -->
+The latest Paradrop test reports missing clock registration. Ownership now uses
+native PLAYER upgrade identity tags instead of map team names; Tower power-manager
+bindings are added alongside the real book. **56 assets** compile privately and
+**1,592 Lua assertions** pass without a team-name API. Sidebar behavior and cooldown
+transfer still require game confirmation. See the Paradrop notes below.
+The subsequent runtime test still failed all three observations. Deployed Lua
+matches current source and the custom matrices reached the published BIN. The
+matrix explanation was incorrect: original EP1 hierarchy matrices also have
+`M33=0`; that source edit is rolled back. The original ship mesh rebuild matches
+its WorldBuilder retail vertices/declaration/triangles/material references.
+The clock inherited `ActiveBody MaxHealth=0`; it now explicitly starts at health 1.
+Private 56-asset build/readback passes. Clock lifecycle, sidebar absence and the
+custom model's invisibility remain unconfirmed in game; do not treat mocks as a
+runtime fix. See the latest investigation in the Paradrop notes.
+
+
+<!-- Reborn: retain failed runtime observations and document the next bounded Paradrop repair. -->
+The latest Paradrop game test still showed no sidebar and a ready power after
+promotion. The follow-up retains all three canonical commands in the initial
+spellbook list (ranked sets remain), normalizes qualified team names, and reapplies
+cooldowns once after native upgrade processing using a one-second deferred event.
+Ordinary clock ticks still never write UI timers. **48 assets** compile privately;
+**1,592 Lua mock assertions** cover the late-reset sequence and owner aliases.
+This is a candidate correction; sidebar discovery and cooldown transfer still
+need a new in-game test. See [Paradrop details](docs/REBORN_PARADROP_PROTOCOL_THRESHOLDS.md).
 <!-- Reborn: every official WeaponTemplate nugget choice has an explicit EP1 writer and source/native/metadata contract. -->
 **WeaponTemplate now covers all 35 official EP1 nugget choices**, including
 InformTargetNugget, plus all **96 root attributes and 13 child fields**.

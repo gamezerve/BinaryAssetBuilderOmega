@@ -4,23 +4,23 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
 
-		<Include type="all"	source="ART:JUAntiAirVehicleTech1_SKN.w3x" />
-    <Include type="all"	source="ART:JUAntiAirVehicleTech1_FP.w3x" />
-		<Include type="all"	source="ART:JUAntiAirVehicleTech1_AIDA.w3x" />
-		<Include type="all"	source="ART:JUAntiAirVehicleTech1_ABTA.w3x" />
-		<Include type="all"	source="ART:JUAntiAirVehicleTech1_ATKA.w3x" />
-		<Include type="all"	source="ART:JUAntiAirVehicleTech1_BATA.w3x" />
-		<Include type="all"	source="ART:JUAntiAirVehicleTech1_BIDA.w3x" />
-		<Include type="all"	source="ART:JUAntiAirVehicleTech1_DIEA.w3x" />
-		<Include type="all"	source="ART:JUAntiAirVehicleTech1_WLKA.w3x" />
-		<Include type="all"	source="ART:JUAntiAirVehicleTech1_TRANS.w3x" />
-		<Include type="all"	source="ART:JUAntiAirVehicleTech1_TRANS2.w3x" />
-		<Include type="all"	source="ART:JUAntiAirVehicleTech1_AIR_TRANS.w3x" />
-		<Include type="all"	source="ART:JUAntiAirVehicleTech1_AIR_SKN.w3x" />
-		<Include type="all"	source="ART:JUAntiAirVehicleTech1_AIR_AIDA.w3x" />
-		<Include type="all"	source="ART:JUAntiAirVehicleTech1_AIR_MOVA.w3x" />
-		<Include type="all"	source="ART:JUAntiAirVehicleTech1_D.xml" />
-    <Include type="all"	source="ART:FXJapVXFP.xml" />
+		<!-- <Include type="all"	source="ART:JUAntiAirVehicleTech1_SKN.w3x" /> -->
+    <!-- <Include type="all"	source="ART:JUAntiAirVehicleTech1_FP.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiAirVehicleTech1_AIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiAirVehicleTech1_ABTA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiAirVehicleTech1_ATKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiAirVehicleTech1_BATA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiAirVehicleTech1_BIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiAirVehicleTech1_DIEA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiAirVehicleTech1_WLKA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiAirVehicleTech1_TRANS.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiAirVehicleTech1_TRANS2.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiAirVehicleTech1_AIR_TRANS.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiAirVehicleTech1_AIR_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiAirVehicleTech1_AIR_AIDA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiAirVehicleTech1_AIR_MOVA.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JUAntiAirVehicleTech1_D.xml" /> -->
+    <!-- <Include type="all"	source="ART:FXJapVXFP.xml" /> -->
 		<!-- Base Object -->
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />
 	</Includes>

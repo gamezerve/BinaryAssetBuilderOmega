@@ -101,10 +101,17 @@ internal static class WorldBuilderAssetResolver
         if(result.Imported.Length==0)return;
         foreach(string suffix in new[]{"","_l","_m"})foreach(string extension in Extensions)files["data\\mod"+suffix+extension]=result.Streams["diagnostic"+extension];
         // Reborn: each LOD family has its own custom-data lookup directory even when it reuses exactly the same retail payload.
-        foreach(var file in result.CustomData)foreach(string suffix in new[]{"","_l","_m"})files.Add(file.Key.Replace("data\\mod\\","data\\mod"+suffix+"\\",StringComparison.Ordinal),file.Value);byte[] bytes=Pack(files);string temporary=package+".worldbuilder.tmp";
+        foreach(var file in result.CustomData)foreach(string suffix in new[]{"","_l","_m"})files.Add(file.Key.Replace("data\\mod\\","data\\mod"+suffix+"\\",StringComparison.Ordinal),file.Value);string temporary=package+".worldbuilder.tmp";
         // Reborn: a pre-existing temporary file belongs to another operation and must never be removed after CreateNew refuses it.
-        bool created=false;try{using(var output=new FileStream(temporary,FileMode.CreateNew,FileAccess.Write,FileShare.None)){created=true;output.Write(bytes);}using(var check=BigArchive.Open(temporary)){if(check.Entries.Count!=files.Count)throw new InvalidDataException("WorldBuilder BIG directory differs.");foreach(var entry in check.Entries)if(!check.ReadEntry(entry,checked((int)entry.StoredSize)).SequenceEqual(files[entry.Name]))throw new InvalidDataException("WorldBuilder BIG readback differs: "+entry.Name);}File.Move(temporary,package,true);}finally{if(created&&File.Exists(temporary))File.Delete(temporary);}
-        string receiptPath=Path.Combine(Path.GetDirectoryName(package)!,"trial-plan.json");var receipt=JsonNode.Parse(File.ReadAllText(receiptPath))!;receipt["WorldBuilderAssets"]=System.Text.Json.JsonSerializer.SerializeToNode(result.Imported);receipt["WorldBuilderAssetCount"]=result.Imported.Length;receipt["PackagedAssetCount"]=ManifestReader.Read(result.Streams["diagnostic.manifest"]).Assets.Count;receipt["ArchiveEntryCount"]=files.Count;receipt["ArchiveSha256"]=Convert.ToHexString(SHA256.HashData(bytes));File.WriteAllText(receiptPath,receipt.ToJsonString(new(){WriteIndented=true}));
+        // Reborn: neither writing, readback nor receipt hashing allocates an archive-sized buffer in the x86 compiler.
+        bool created=false;string archiveHash;
+        try{
+            using(var output=new FileStream(temporary,FileMode.CreateNew,FileAccess.Write,FileShare.None)){created=true;WritePack(output,files);}
+            VerifyPack(temporary,files);
+            using(var input=File.OpenRead(temporary))archiveHash=Convert.ToHexString(SHA256.HashData(input));
+            File.Move(temporary,package,true);
+        }finally{if(created&&File.Exists(temporary))File.Delete(temporary);}
+        string receiptPath=Path.Combine(Path.GetDirectoryName(package)!,"trial-plan.json");var receipt=JsonNode.Parse(File.ReadAllText(receiptPath))!;receipt["WorldBuilderAssets"]=System.Text.Json.JsonSerializer.SerializeToNode(result.Imported);receipt["WorldBuilderAssetCount"]=result.Imported.Length;receipt["PackagedAssetCount"]=ManifestReader.Read(result.Streams["diagnostic.manifest"]).Assets.Count;receipt["ArchiveEntryCount"]=files.Count;receipt["ArchiveSha256"]=archiveHash;File.WriteAllText(receiptPath,receipt.ToJsonString(new(){WriteIndented=true}));
         Console.WriteLine($"Resolving WorldBuilder assets: {result.Imported.Length} added with dependencies; {result.BytesRead:N0} native bytes read; {result.CustomData.Count} custom resources packaged.");foreach(var name in result.Imported)Console.WriteLine("WorldBuilder asset added: "+name);
     }
 
@@ -173,6 +180,47 @@ internal static class WorldBuilderAssetResolver
     internal static byte[] Pack(Dictionary<string,byte[]> files)
     {
         int header=checked((16+files.Keys.Sum(k=>9+Encoding.ASCII.GetByteCount(k))+7)&~7);byte[] bytes=new byte[checked(header+files.Values.Sum(v=>v.Length))];Encoding.ASCII.GetBytes("BIG4").CopyTo(bytes,0);BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(4),(uint)bytes.Length);BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(8),(uint)files.Count);BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(12),(uint)header);int directory=16,offset=header;foreach(var file in files){BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(directory),(uint)offset);BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(directory+4),(uint)file.Value.Length);var name=Encoding.ASCII.GetBytes(file.Key+'\0');name.CopyTo(bytes,directory+8);file.Value.CopyTo(bytes,offset);directory+=8+name.Length;offset+=file.Value.Length;}return bytes;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: stream BIG4 payloads in directory order, preserving legacy bytes without a contiguous archive allocation. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void WritePack(Stream output,Dictionary<string,byte[]> files)
+    {
+        long header=checked((16L+files.Keys.Sum(k=>9L+Encoding.ASCII.GetByteCount(k))+7)&~7L);
+        long total=checked(header+files.Values.Sum(v=>(long)v.Length));
+        if(header>int.MaxValue||total>uint.MaxValue)throw new InvalidDataException("WorldBuilder BIG exceeds its 32-bit archive format.");
+        var directory=new byte[(int)header];Encoding.ASCII.GetBytes("BIG4").CopyTo(directory,0);
+        BinaryPrimitives.WriteUInt32LittleEndian(directory.AsSpan(4),(uint)total);
+        BinaryPrimitives.WriteUInt32BigEndian(directory.AsSpan(8),(uint)files.Count);
+        BinaryPrimitives.WriteUInt32BigEndian(directory.AsSpan(12),(uint)header);
+        int at=16;long offset=header;
+        foreach(var file in files){
+            BinaryPrimitives.WriteUInt32BigEndian(directory.AsSpan(at),(uint)offset);
+            BinaryPrimitives.WriteUInt32BigEndian(directory.AsSpan(at+4),(uint)file.Value.Length);
+            var name=Encoding.ASCII.GetBytes(file.Key+'\0');name.CopyTo(directory,at+8);at+=8+name.Length;offset+=file.Value.Length;
+        }
+        output.Write(directory);foreach(var file in files)output.Write(file.Value);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: compare every archived byte in bounded slices, including large shared LOD payloads. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void VerifyPack(string path,Dictionary<string,byte[]> files)
+    {
+        using var check=BigArchive.Open(path);
+        if(check.Entries.Count!=files.Count)throw new InvalidDataException("WorldBuilder BIG directory differs.");
+        var names=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach(var entry in check.Entries){
+            if(!names.Add(entry.Name)||!files.TryGetValue(entry.Name,out var expected)||entry.StoredSize!=expected.Length)
+                throw new InvalidDataException("WorldBuilder BIG entry differs: "+entry.Name);
+            for(int offset=0;offset<expected.Length;){
+                int count=Math.Min(65536,expected.Length-offset);
+                if(!check.ReadEntryRange(entry,offset,count).AsSpan().SequenceEqual(expected.AsSpan(offset,count)))
+                    throw new InvalidDataException("WorldBuilder BIG readback differs: "+entry.Name);
+                offset+=count;
+            }
+        }
     }
 
     // Reborn: identities and little-endian words are shared by selection, validation and private regression fixtures.

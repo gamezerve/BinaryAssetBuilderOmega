@@ -240,7 +240,7 @@
 			DispositionAngle="270d"
 			MinHealth="1"
 			MaxHealth="1">
-			<CreateObject>JapanKenjiMecha</CreateObject>
+			<CreateObject>JapanKenjiMechaReborn</CreateObject>
 		</CreateObject>
 	</ObjectCreationList>
 	

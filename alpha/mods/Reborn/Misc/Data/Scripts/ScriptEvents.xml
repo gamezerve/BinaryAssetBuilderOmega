@@ -74,7 +74,17 @@
     <!-- Reborn: these flags are reserved on PlayerSpellBook for one-time Paradrop row transitions. -->
         <ModelConditionEvent Name="RebornParadropCooldownRow3"><Conditions>+USER_9 -DYING</Conditions></ModelConditionEvent>
         <ModelConditionEvent Name="RebornParadropCooldownRow5"><Conditions>+USER_10 -DYING</Conditions></ModelConditionEvent>
-    </Events>
+
+<!-- Reborn: object-scoped cast routing, timer synchronization and simulation-clock expiry events. -->
+<ModelConditionEvent Name="RebornParadropCastCondition1"><Conditions>+USER_5 -DYING</Conditions></ModelConditionEvent>
+<ModelConditionEvent Name="RebornParadropCastCondition2"><Conditions>+USER_6 -DYING</Conditions></ModelConditionEvent>
+<ModelConditionEvent Name="RebornParadropCastCondition3"><Conditions>+USER_7 -DYING</Conditions></ModelConditionEvent>
+<ModelConditionEvent Name="RebornParadropClockExpired"><Conditions>-USER_8 -DYING</Conditions></ModelConditionEvent>
+<!-- Reborn: the real spellbook registers even if creation preceded its Lua callback. -->
+<!-- Reborn: a short one-shot condition defers timer writes until native upgrades have completed. -->
+<ModelConditionEvent Name="RebornParadropDeferredExpired"><Conditions>-USER_11 -DYING</Conditions></ModelConditionEvent>
+<ModelConditionEvent Name="RebornParadropCooldownRow1"><Conditions>+USER_4 -DYING</Conditions></ModelConditionEvent>
+</Events>
 <!-- RA3 EVENTS - CnC3 BELOW -->
 
 	<EventList Name="SovietGrinderVehicleFunctions" Inherit="BaseScriptFunctions">
@@ -267,11 +277,33 @@
         <EventHandler EventName="OnCreated"	ScriptFunctionName="OnRubbleDropshipCreated" DebugSingleStep="false"/>
     </EventList>
     
-<!-- Reborn: retain stock behavior and refresh only at creation or a protocol row transition; there is no polling loop. -->
-    <EventList Name="RebornParadropCooldownFunctions" Inherit="BaseScriptFunctions">
-        <EventHandler EventName="OnCreated" ScriptFunctionName="RebornParadropCooldownRefresh" DebugSingleStep="false"/>
-        <!-- Reborn: preserve row identity for diagnostics when the protocol condition is not yet visible. -->
-        <EventHandler EventName="RebornParadropCooldownRow3" ScriptFunctionName="RebornParadropCooldownRow3" DebugSingleStep="false"/>
-        <EventHandler EventName="RebornParadropCooldownRow5" ScriptFunctionName="RebornParadropCooldownRow5" DebugSingleStep="false"/>
+<!-- Reborn: only the logic actor ticks; real spellbook and Tower handlers synchronize at gameplay events. -->
+
+    <EventList Name="RebornParadropClockFunctions" Inherit="BaseScriptFunctions">
+        <EventHandler EventName="RebornParadropDeferredExpired" ScriptFunctionName="RebornParadropDeferredSync" DebugSingleStep="false"/>
+        <EventHandler EventName="OnCreated" ScriptFunctionName="RebornParadropClockCreated" DebugSingleStep="false"/>
+        <EventHandler EventName="OnDestroyed" ScriptFunctionName="RebornParadropClockDestroyed" DebugSingleStep="false"/>
+        <EventHandler EventName="RebornParadropCooldownRow3" ScriptFunctionName="RebornParadropClockRow3" DebugSingleStep="false"/>
+        <EventHandler EventName="RebornParadropCooldownRow5" ScriptFunctionName="RebornParadropClockRow5" DebugSingleStep="false"/>
+        <EventHandler EventName="RebornParadropClockExpired" ScriptFunctionName="RebornParadropClockTickEvent" DebugSingleStep="false"/>
+    </EventList>
+    <EventList Name="RebornParadropTowerFunctions" Inherit="BaseScriptFunctions">
+        <EventHandler EventName="OnCreated" ScriptFunctionName="RebornParadropTowerCreated" DebugSingleStep="false"/>
+        <EventHandler EventName="OnDestroyed" ScriptFunctionName="RebornParadropTowerDestroyed" DebugSingleStep="false"/>
+        <EventHandler EventName="RebornParadropCooldownRow3" ScriptFunctionName="RebornParadropTowerRow3" DebugSingleStep="false"/>
+        <EventHandler EventName="RebornParadropCooldownRow5" ScriptFunctionName="RebornParadropTowerRow5" DebugSingleStep="false"/>
+        <EventHandler EventName="RebornParadropCastCondition1" ScriptFunctionName="RebornParadropTowerCast1" DebugSingleStep="false"/>
+        <EventHandler EventName="RebornParadropCastCondition2" ScriptFunctionName="RebornParadropTowerCast2" DebugSingleStep="false"/>
+        <EventHandler EventName="RebornParadropCastCondition3" ScriptFunctionName="RebornParadropTowerCast3" DebugSingleStep="false"/>
+    </EventList>
+    <EventList Name="RebornParadropSpellbookFunctions" Inherit="BaseScriptFunctions">
+        <EventHandler EventName="RebornParadropCooldownRow1" ScriptFunctionName="RebornParadropSpellbookRow1" DebugSingleStep="false"/>
+        <EventHandler EventName="OnCreated" ScriptFunctionName="RebornParadropSpellbookCreated" DebugSingleStep="false"/>
+        <EventHandler EventName="OnDestroyed" ScriptFunctionName="RebornParadropSpellbookDestroyed" DebugSingleStep="false"/>
+        <EventHandler EventName="RebornParadropCooldownRow3" ScriptFunctionName="RebornParadropSpellbookRow3" DebugSingleStep="false"/>
+        <EventHandler EventName="RebornParadropCooldownRow5" ScriptFunctionName="RebornParadropSpellbookRow5" DebugSingleStep="false"/>
+        <EventHandler EventName="RebornParadropCastCondition1" ScriptFunctionName="RebornParadropSpellbookCast1" DebugSingleStep="false"/>
+        <EventHandler EventName="RebornParadropCastCondition2" ScriptFunctionName="RebornParadropSpellbookCast2" DebugSingleStep="false"/>
+        <EventHandler EventName="RebornParadropCastCondition3" ScriptFunctionName="RebornParadropSpellbookCast3" DebugSingleStep="false"/>
     </EventList>
 </SageLuaScriptSection>

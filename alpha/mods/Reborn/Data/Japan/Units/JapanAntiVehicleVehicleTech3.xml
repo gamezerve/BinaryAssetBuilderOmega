@@ -4,68 +4,68 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech3_SKN.w3x" />
-		<Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech3_AIDA.w3x" />
-		<Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech3_ATKA.w3x" />
-		<Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech3_BIDA.w3x" />
-		<Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech3_BIFA.w3x" />
-		<Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech3_ABTA.w3x" />
-		<Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech3_BATA.w3x" />
-		<Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech3_DIEA.w3x" />
-		<Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech3_WLKA.w3x" />
-		<Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech3_RUNA.w3x" />
-		<Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech3_ATKB.w3x" />
-		<Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech3_WLKB.w3x" />
-	    <Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech3_ATKC.w3x" />
-	    <Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech3_D.xml" />			
-	    <Include
-			type="all"
-			source="ART:JUAntiVehicleVehicleTech3_DIE_SKN.w3x" />
-    <Include
-			type="all"
-			source="ART:FXJapFP.xml" />
-		<Include
-			type="all"
-			source="ART:FXJapanLaser.xml" />
-    <Include
-			type="all"
-			source="ART:FXJapanLaser_Vet.xml" />
-		<Include
-			type="all"
-			source="ART:FXJapanOverlay.xml" />
-    <Include
-			type="all"
-			source="ART:FXJapanOverlay_Vet.xml" />
-		<Include type="all" source="ART:FXAlliedPrismBeam.xml" />
-		<Include type="all" source="ART:FXspotlight.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech3_SKN.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech3_AIDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech3_ATKA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech3_BIDA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech3_BIFA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech3_ABTA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech3_BATA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech3_DIEA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech3_WLKA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech3_RUNA.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech3_ATKB.w3x" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech3_WLKB.w3x" /> -->
+	    <!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech3_ATKC.w3x" /> -->
+	    <!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech3_D.xml" />			 -->
+	    <!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUAntiVehicleVehicleTech3_DIE_SKN.w3x" /> -->
+    <!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXJapFP.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXJapanLaser.xml" /> -->
+    <!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXJapanLaser_Vet.xml" /> -->
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXJapanOverlay.xml" /> -->
+    <!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:FXJapanOverlay_Vet.xml" /> -->
+		<!-- <Include type="all" source="ART:FXAlliedPrismBeam.xml" /> -->
+		<!-- <Include type="all" source="ART:FXspotlight.w3x" /> -->
 		<!-- Base Object -->
 		<Include
 			type="instance"

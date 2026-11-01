@@ -10,17 +10,17 @@
 		<Include type="instance" source="DATA:BaseObjects/BaseVehicle.xml" />
 		
 		<!--Art Includes-->
-		<Include type="all" source="ART:JUFortressShip_SKN.w3x" />
-    <Include type="all" source="ART:JUFortressShip_IDLA.w3x" />
-    <Include type="all" source="ART:JUFortressShip_BLD.w3x" />
-    <Include type="all" source="ART:JUFortressShip_BLD2.w3x" />
-    <Include type="all" source="ART:JUFortressShipHead_SKN.w3x" />
-    <Include type="all" source="ART:JUFortressShipHead_IDLA.w3x" />
-    <Include type="all" source="ART:JUFortressShipHead_FP.w3x" />
-	<Include type="all" source="ART:JUFortressShip_TRANS.w3x" />
-    <Include type="all" source="ART:FXJapanPearlLaser02.xml" />
-    <Include type="all" source="ART:FXJapanPearlLaser01.xml" />
-    <Include type="all" source="ART:JUFortressShip_D.xml" />
+		<!-- <Include type="all" source="ART:JUFortressShip_SKN.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUFortressShip_IDLA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUFortressShip_BLD.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUFortressShip_BLD2.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUFortressShipHead_SKN.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUFortressShipHead_IDLA.w3x" /> -->
+    <!-- <Include type="all" source="ART:JUFortressShipHead_FP.w3x" /> -->
+	<!-- <Include type="all" source="ART:JUFortressShip_TRANS.w3x" /> -->
+    <!-- <Include type="all" source="ART:FXJapanPearlLaser02.xml" /> -->
+    <!-- <Include type="all" source="ART:FXJapanPearlLaser01.xml" /> -->
+    <!-- <Include type="all" source="ART:JUFortressShip_D.xml" /> -->
 
   </Includes>
 	

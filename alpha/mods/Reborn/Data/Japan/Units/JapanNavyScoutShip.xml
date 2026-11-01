@@ -5,23 +5,23 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include
-			type="all"
-			source="ART:JUNavyScoutShip.w3x" />		
-		<Include
-			type="instance"
-			source="ART:EX_Headlights.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:JUNavyScoutShip.w3x" />		 -->
+		<!-- <Include -->
+			<!-- type="instance" -->
+			<!-- source="ART:EX_Headlights.w3x" /> -->
 		<!-- temp FX include-->
-		<Include
-			type="all"
-			source="ART:EXMirageFieldBuildup.w3x" />
+		<!-- <Include -->
+			<!-- type="all" -->
+			<!-- source="ART:EXMirageFieldBuildup.w3x" /> -->
 		<!-- Base Object -->
 		<Include
 			type="instance"
 			source="DATA:BaseObjects/BaseVehicle.xml" />
-		<Include type="all"	source="ART:JUNavyScoutShip_D.xml" />				
-		<Include type="all"	source="ART:JUNavyScoutShip_02.xml" />				
-		<Include type="all"	source="ART:JUNavyScoutShip_02_D.xml" />		
+		<!-- <Include type="all"	source="ART:JUNavyScoutShip_D.xml" />				 -->
+		<!-- <Include type="all"	source="ART:JUNavyScoutShip_02.xml" />				 -->
+		<!-- <Include type="all"	source="ART:JUNavyScoutShip_02_D.xml" />		 -->
 	</Includes>
 	<GameObject
 		id="JapanNavyScoutShip"
