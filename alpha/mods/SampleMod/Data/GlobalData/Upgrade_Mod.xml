@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+
+	<Includes>
+		<Include type="instance" source="DATA:GlobalData/Upgrade.xml" />
+	</Includes>
+		
+	<UpgradeTemplate id="Upgrade_AdaptiveArmor"
+		inheritFrom="BasePurchasableUpgrade"
+		DisplayName="UPGRADE:AdaptiveArmor"
+		AcquireHint="UpgradePrereq:AdaptiveArmor"
+		TypeDescription="UpgradeType:AdaptiveArmor"
+		Description="UpgradeDesc:AdaptiveArmor"
+		Type="PLAYER"
+		BuildCost="1000"
+		BuildTime="30.0s"
+		ResearchSound="GDI_TechCenter_adaptiveArmorUpgrade"
+		IconImage="Button_AbilityAdaptiveArmor">
+		<!-- <GameDependency> -->
+			<!-- <RequiredObject>SteelTalonsTechCenter</RequiredObject> -->
+		<!-- </GameDependency> -->
+	</UpgradeTemplate>	
+
+	<UpgradeTemplate id="Upgrade_GDIArmoryRailgunTech"
+		inheritFrom="BasePurchasableUpgrade" 
+		DisplayName="UpgradeName:GDIRailGuns"
+		AcquireHint="UpgradePrereq:GDIRailGuns"
+		TypeDescription="UpgradeType:GDIRailGuns"
+		Description="UpgradeDesc:GDIRailGuns"
+		Type="PLAYER"
+		BuildTime="90.0s"
+		BuildCost="4000"
+		ResearchSound="GDI_RailCannon_Upgrade"
+		IconImage="Button_UpgradeRailGun"
+	/>
+	
+</AssetDeclaration>

@@ -118,7 +118,8 @@
 			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row5</ForbiddenUpgrade>
 			<NeededUpgrade>Upgrade_RebornParadrop_Row1</NeededUpgrade>
 		</GameDependency>
-	</SpecialPowerTemplate>
+
+</SpecialPowerTemplate>
 
 	<!-- Reborn: synchronize this template's timer across the player's spellbook and Control Tower instances. -->
 	<SpecialPowerTemplate
@@ -142,7 +143,8 @@
 			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row5</ForbiddenUpgrade>
 			<NeededUpgrade>Upgrade_RebornParadrop_Row3</NeededUpgrade>
 		</GameDependency>
-	</SpecialPowerTemplate>
+
+</SpecialPowerTemplate>
 
 	<!-- Reborn: synchronize this template's timer across the player's spellbook and Control Tower instances. -->
 	<SpecialPowerTemplate
@@ -317,11 +319,8 @@
 <ModelConditionUpgrade id="ModuleTag_RebornParadropBookRow3" AddConditionFlags="USER_9" Permanent="true"><TriggeredBy>Upgrade_RebornParadrop_Row3</TriggeredBy></ModelConditionUpgrade>
 <ModelConditionUpgrade id="ModuleTag_RebornParadropBookRow5" AddConditionFlags="USER_10" Permanent="true"><TriggeredBy>Upgrade_RebornParadrop_Row5</TriggeredBy></ModelConditionUpgrade>
 <CommandSetUpgrade id="ModuleTag_RebornParadropBookCommands1" CommandSet="PlayerSpellBookCommandSetRank1"><TriggeredBy>Upgrade_RebornParadrop_Row1</TriggeredBy><ConflictsWith>Upgrade_RebornParadrop_Row3</ConflictsWith><ConflictsWith>Upgrade_RebornParadrop_Row5</ConflictsWith></CommandSetUpgrade>
-<PlayerPowerManager id="ModuleTag_RebornParadropManager1" SpecialPowerTemplate="SpecialPowerParadropLvl1"/>
 <CommandSetUpgrade id="ModuleTag_RebornParadropBookCommands2" CommandSet="PlayerSpellBookCommandSetRank2"><TriggeredBy>Upgrade_RebornParadrop_Row3</TriggeredBy><ConflictsWith>Upgrade_RebornParadrop_Row5</ConflictsWith></CommandSetUpgrade>
-<PlayerPowerManager id="ModuleTag_RebornParadropManager2" SpecialPowerTemplate="SpecialPowerParadropLvl2"/>
 <CommandSetUpgrade id="ModuleTag_RebornParadropBookCommands3" CommandSet="PlayerSpellBookCommandSetRank3"><TriggeredBy>Upgrade_RebornParadrop_Row5</TriggeredBy></CommandSetUpgrade>
-<PlayerPowerManager id="ModuleTag_RebornParadropManager3" SpecialPowerTemplate="SpecialPowerParadropLvl3"/>
 <OCLSpecialPower
 				id="ModuleTag_ParadropLvl1"
 				SpecialPowerTemplate="SpecialPowerParadropLvl1"
@@ -367,6 +366,71 @@
           <IncludeThing>AlliedConstructionYard</IncludeThing>
         </NearestSecondaryObjectFilter>
       </OCLSpecialPower>
+
+<!-- Reborn: native real-spellbook managers use purchased protocol techs for visibility; all sidebar entries feed the existing level-based clock. -->
+<OCLSpecialPower xmlns="uri:ea.com:eala:asset" id="ModuleTag_RebornParadropSidebar_L1_C1" SpecialPowerTemplate="SpecialPower_RebornParadropSidebar_L1_C1" UpdateModuleStartsAttack="false" AvailableAtStart="true" SetModelCondition="USER_5" SetModelConditionTime="0.1s" OCL="OCL_ParaDropLvl1" DestinationOCL="OCL_PrecisionStrikeBeacon" CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET" CreateLocationOffset="1000.0">
+        <NearestSecondaryObjectFilter Relationship="SAME_PLAYER">
+          <IncludeThing>AlliedConstructionYard</IncludeThing>
+        </NearestSecondaryObjectFilter>
+      </OCLSpecialPower>
+
+<PlayerPowerManager xmlns="uri:ea.com:eala:asset" id="ModuleTag_RebornParadropSidebarManager_L1_C1" SpecialPowerTemplate="SpecialPower_RebornParadropSidebar_L1_C1" />
+<OCLSpecialPower xmlns="uri:ea.com:eala:asset" id="ModuleTag_RebornParadropSidebar_L1_C2" SpecialPowerTemplate="SpecialPower_RebornParadropSidebar_L1_C2" UpdateModuleStartsAttack="false" AvailableAtStart="true" SetModelCondition="USER_5" SetModelConditionTime="0.1s" OCL="OCL_ParaDropLvl1" DestinationOCL="OCL_PrecisionStrikeBeacon" CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET" CreateLocationOffset="1000.0">
+        <NearestSecondaryObjectFilter Relationship="SAME_PLAYER">
+          <IncludeThing>AlliedConstructionYard</IncludeThing>
+        </NearestSecondaryObjectFilter>
+      </OCLSpecialPower>
+
+<PlayerPowerManager xmlns="uri:ea.com:eala:asset" id="ModuleTag_RebornParadropSidebarManager_L1_C2" SpecialPowerTemplate="SpecialPower_RebornParadropSidebar_L1_C2" />
+<OCLSpecialPower xmlns="uri:ea.com:eala:asset" id="ModuleTag_RebornParadropSidebar_L1_C3" SpecialPowerTemplate="SpecialPower_RebornParadropSidebar_L1_C3" UpdateModuleStartsAttack="false" AvailableAtStart="true" SetModelCondition="USER_5" SetModelConditionTime="0.1s" OCL="OCL_ParaDropLvl1" DestinationOCL="OCL_PrecisionStrikeBeacon" CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET" CreateLocationOffset="1000.0">
+        <NearestSecondaryObjectFilter Relationship="SAME_PLAYER">
+          <IncludeThing>AlliedConstructionYard</IncludeThing>
+        </NearestSecondaryObjectFilter>
+      </OCLSpecialPower>
+
+<PlayerPowerManager xmlns="uri:ea.com:eala:asset" id="ModuleTag_RebornParadropSidebarManager_L1_C3" SpecialPowerTemplate="SpecialPower_RebornParadropSidebar_L1_C3" />
+<OCLSpecialPower xmlns="uri:ea.com:eala:asset" id="ModuleTag_RebornParadropSidebar_L2_C1" SpecialPowerTemplate="SpecialPower_RebornParadropSidebar_L2_C1" UpdateModuleStartsAttack="false" AvailableAtStart="true" SetModelCondition="USER_6" SetModelConditionTime="0.1s" OCL="OCL_ParaDropLvl2" DestinationOCL="OCL_PrecisionStrikeBeacon" CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET" CreateLocationOffset="1000.0">
+        <NearestSecondaryObjectFilter Relationship="SAME_PLAYER">
+          <IncludeThing>AlliedConstructionYard</IncludeThing>
+        </NearestSecondaryObjectFilter>
+      </OCLSpecialPower>
+
+<PlayerPowerManager xmlns="uri:ea.com:eala:asset" id="ModuleTag_RebornParadropSidebarManager_L2_C1" SpecialPowerTemplate="SpecialPower_RebornParadropSidebar_L2_C1" />
+<OCLSpecialPower xmlns="uri:ea.com:eala:asset" id="ModuleTag_RebornParadropSidebar_L2_C2" SpecialPowerTemplate="SpecialPower_RebornParadropSidebar_L2_C2" UpdateModuleStartsAttack="false" AvailableAtStart="true" SetModelCondition="USER_6" SetModelConditionTime="0.1s" OCL="OCL_ParaDropLvl2" DestinationOCL="OCL_PrecisionStrikeBeacon" CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET" CreateLocationOffset="1000.0">
+        <NearestSecondaryObjectFilter Relationship="SAME_PLAYER">
+          <IncludeThing>AlliedConstructionYard</IncludeThing>
+        </NearestSecondaryObjectFilter>
+      </OCLSpecialPower>
+
+<PlayerPowerManager xmlns="uri:ea.com:eala:asset" id="ModuleTag_RebornParadropSidebarManager_L2_C2" SpecialPowerTemplate="SpecialPower_RebornParadropSidebar_L2_C2" />
+<OCLSpecialPower xmlns="uri:ea.com:eala:asset" id="ModuleTag_RebornParadropSidebar_L2_C3" SpecialPowerTemplate="SpecialPower_RebornParadropSidebar_L2_C3" UpdateModuleStartsAttack="false" AvailableAtStart="true" SetModelCondition="USER_6" SetModelConditionTime="0.1s" OCL="OCL_ParaDropLvl2" DestinationOCL="OCL_PrecisionStrikeBeacon" CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET" CreateLocationOffset="1000.0">
+        <NearestSecondaryObjectFilter Relationship="SAME_PLAYER">
+          <IncludeThing>AlliedConstructionYard</IncludeThing>
+        </NearestSecondaryObjectFilter>
+      </OCLSpecialPower>
+
+<PlayerPowerManager xmlns="uri:ea.com:eala:asset" id="ModuleTag_RebornParadropSidebarManager_L2_C3" SpecialPowerTemplate="SpecialPower_RebornParadropSidebar_L2_C3" />
+<OCLSpecialPower xmlns="uri:ea.com:eala:asset" id="ModuleTag_RebornParadropSidebar_L3_C1" SpecialPowerTemplate="SpecialPower_RebornParadropSidebar_L3_C1" UpdateModuleStartsAttack="false" AvailableAtStart="true" SetModelCondition="USER_7" SetModelConditionTime="0.1s" OCL="OCL_ParaDropLvl3" DestinationOCL="OCL_PrecisionStrikeBeacon" CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET" CreateLocationOffset="1000.0">
+        <NearestSecondaryObjectFilter Relationship="SAME_PLAYER">
+          <IncludeThing>AlliedConstructionYard</IncludeThing>
+        </NearestSecondaryObjectFilter>
+      </OCLSpecialPower>
+
+<PlayerPowerManager xmlns="uri:ea.com:eala:asset" id="ModuleTag_RebornParadropSidebarManager_L3_C1" SpecialPowerTemplate="SpecialPower_RebornParadropSidebar_L3_C1" />
+<OCLSpecialPower xmlns="uri:ea.com:eala:asset" id="ModuleTag_RebornParadropSidebar_L3_C2" SpecialPowerTemplate="SpecialPower_RebornParadropSidebar_L3_C2" UpdateModuleStartsAttack="false" AvailableAtStart="true" SetModelCondition="USER_7" SetModelConditionTime="0.1s" OCL="OCL_ParaDropLvl3" DestinationOCL="OCL_PrecisionStrikeBeacon" CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET" CreateLocationOffset="1000.0">
+        <NearestSecondaryObjectFilter Relationship="SAME_PLAYER">
+          <IncludeThing>AlliedConstructionYard</IncludeThing>
+        </NearestSecondaryObjectFilter>
+      </OCLSpecialPower>
+
+<PlayerPowerManager xmlns="uri:ea.com:eala:asset" id="ModuleTag_RebornParadropSidebarManager_L3_C2" SpecialPowerTemplate="SpecialPower_RebornParadropSidebar_L3_C2" />
+<OCLSpecialPower xmlns="uri:ea.com:eala:asset" id="ModuleTag_RebornParadropSidebar_L3_C3" SpecialPowerTemplate="SpecialPower_RebornParadropSidebar_L3_C3" UpdateModuleStartsAttack="false" AvailableAtStart="true" SetModelCondition="USER_7" SetModelConditionTime="0.1s" OCL="OCL_ParaDropLvl3" DestinationOCL="OCL_PrecisionStrikeBeacon" CreateLocation="CREATE_AT_OFFSET_FROM_TARGET_ALONG_SECONDARY_OBJECT_VECTOR_AND_MOVE_TO_TARGET" CreateLocationOffset="1000.0">
+        <NearestSecondaryObjectFilter Relationship="SAME_PLAYER">
+          <IncludeThing>AlliedConstructionYard</IncludeThing>
+        </NearestSecondaryObjectFilter>
+      </OCLSpecialPower>
+
+<PlayerPowerManager xmlns="uri:ea.com:eala:asset" id="ModuleTag_RebornParadropSidebarManager_L3_C3" SpecialPowerTemplate="SpecialPower_RebornParadropSidebar_L3_C3" />
 </Behaviors></GameObject>
 <!-- Reborn: a strong OCL reference loads the new clock template without relying on the weak ThingToSpawn lookup. -->
 <!-- Reborn: this object upgrade is granted exactly once by the verified Tower creation callback. -->
@@ -377,8 +441,345 @@
 <Draws><ScriptedModelDraw id="ModuleTag_Draw"><ModelConditionState ParseCondStateType="PARSE_DEFAULT"><Model Name=""/></ModelConditionState></ScriptedModelDraw></Draws>
 <Behaviors>
 <LUAEventList id="ModuleTag_RebornParadropClockEvents" EventListName="RebornParadropClockFunctions"/>
-<ModelConditionUpgrade id="ModuleTag_RebornParadropClockRow3" AddConditionFlags="USER_9" Permanent="true"><TriggeredBy>Upgrade_RebornParadrop_Row3</TriggeredBy></ModelConditionUpgrade><ModelConditionUpgrade id="ModuleTag_RebornParadropClockRow5" AddConditionFlags="USER_10" Permanent="true"><TriggeredBy>Upgrade_RebornParadrop_Row5</TriggeredBy></ModelConditionUpgrade></Behaviors><!-- Reborn: BaseObject's ActiveBody defaults to zero health; the persistent logic actor must start alive. -->
+<ModelConditionUpgrade id="ModuleTag_RebornParadropClockRow3" AddConditionFlags="USER_9" Permanent="true"><TriggeredBy>Upgrade_RebornParadrop_Row3</TriggeredBy></ModelConditionUpgrade><ModelConditionUpgrade id="ModuleTag_RebornParadropClockRow5" AddConditionFlags="USER_10" Permanent="true"><TriggeredBy>Upgrade_RebornParadrop_Row5</TriggeredBy></ModelConditionUpgrade>
+</Behaviors><!-- Reborn: BaseObject's ActiveBody defaults to zero health; the persistent logic actor must start alive. -->
 <Body><ActiveBody id="DefaultBody" MaxHealth="1" InitialHealth="1"/></Body><!-- Reborn: define a small noncolliding logic geometry; this object remains unselectable and model-free. -->
 <Geometry IsSmall="true"><Shape Type="CYLINDER" MajorRadius="1" Height="1"/></Geometry><!-- Reborn: the retail Lua registration path requires an AI interface; a LUAEventList alone does not receive creation or model-condition events. -->
 <AI><AIUpdate id="ModuleTag_AIForLua" AutoAcquireEnemiesWhenIdle="NO"/></AI></GameObject>
+
+
+<!-- Reborn: branch-prioritized UI entries use retail required/forbidden tech semantics; no script grant or invisible provider is needed. -->
+<SpecialPowerTemplate xmlns="uri:ea.com:eala:asset" id="SpecialPower_RebornParadropSidebar_L1_C1" ReloadTime="300s" TargetType="LOCATION" EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea" RadiusCursorRadius="100" Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS" WaypointModeTerminal="false" RequiredPlayerTech="PlayerTech_Allied_AirPower">
+		<ForbiddenObjectFilter Rule="ANY" Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT" Exclude="BRIDGE_ENDCAP BRIDGE_SEGMENT">
+			<ExcludeThing>NanoSwarmHiveEffect</ExcludeThing>
+		</ForbiddenObjectFilter>
+		<GameDependency id="Allied_Paradrop_Rank1_GameDependency">
+			<RequiredObject>AlliedAirportControlTower</RequiredObject>
+			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row3</ForbiddenUpgrade>
+			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row5</ForbiddenUpgrade>
+			<NeededUpgrade>Upgrade_RebornParadrop_Row1</NeededUpgrade>
+		</GameDependency>
+
+<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank1</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_ChronoRift_Rank2</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank1</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank3</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_ProductionBonus_Allies</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank3</ForbiddenPlayerTech></SpecialPowerTemplate>
+
+
+
+<LogicCommand xmlns="uri:ea.com:eala:asset" Options="NEED_TARGET_POS" Type="SPECIAL_POWER" id="Command_RebornParadropSidebar_L1_C1">
+    <SpecialPower>SpecialPower_RebornParadropSidebar_L1_C1</SpecialPower>
+    <AISpecialPowerInfo Heuristic="PLAYER_AOE_BUFF" Manager="SKIRMISH_AI" TargetObjectInclude="CAN_ATTACK" MinTargetsHit="1" MinEnemiesNearby="5">
+    </AISpecialPowerInfo>
+  </LogicCommand>
+
+<PlayerPowerButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L1_C1" SpecialPower="SpecialPower_RebornParadropSidebar_L1_C1">
+    <Data>
+      <TargetedPower RadiusCursor="Target_Allied_Paradrop" StateData="ButtonStateCampaignPlayerPowerParadropLvl1" />
+    </Data>
+  </PlayerPowerButtonTemplate>
+
+<JoypadCommandBarButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L1_C1">
+    <Data>
+      <PlayerTargetedPower StateData="ButtonStateCampaignPlayerPowerParadropLvl1" SpecialPower="SpecialPower_RebornParadropSidebar_L1_C1" RadiusCursor="Target_Allied_Paradrop" />
+    </Data>
+  </JoypadCommandBarButtonTemplate>
+
+<UnitAbilityButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L1_C1" LogicCommand="Command_RebornParadropSidebar_L1_C1"><Data><TargetedSpecialPower RadiusCursor="Target_Allied_Paradrop" StateData="ButtonStateCampaignPlayerPowerParadropLvl1" ValidTargetCursor="TargetAbility" /></Data></UnitAbilityButtonTemplate>
+<SpecialPowerTemplate xmlns="uri:ea.com:eala:asset" id="SpecialPower_RebornParadropSidebar_L1_C2" ReloadTime="300s" TargetType="LOCATION" EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea" RadiusCursorRadius="100" Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS" WaypointModeTerminal="false" RequiredPlayerTech="PlayerTech_Allied_SatelliteSweep">
+		<ForbiddenObjectFilter Rule="ANY" Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT" Exclude="BRIDGE_ENDCAP BRIDGE_SEGMENT">
+			<ExcludeThing>NanoSwarmHiveEffect</ExcludeThing>
+		</ForbiddenObjectFilter>
+		<GameDependency id="Allied_Paradrop_Rank1_GameDependency">
+			<RequiredObject>AlliedAirportControlTower</RequiredObject>
+			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row3</ForbiddenUpgrade>
+			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row5</ForbiddenUpgrade>
+			<NeededUpgrade>Upgrade_RebornParadrop_Row1</NeededUpgrade>
+		</GameDependency>
+
+<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank1</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_ChronoRift_Rank2</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank1</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank3</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_ProductionBonus_Allies</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank3</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_AirPower</ForbiddenPlayerTech></SpecialPowerTemplate>
+
+
+
+<LogicCommand xmlns="uri:ea.com:eala:asset" Options="NEED_TARGET_POS" Type="SPECIAL_POWER" id="Command_RebornParadropSidebar_L1_C2">
+    <SpecialPower>SpecialPower_RebornParadropSidebar_L1_C2</SpecialPower>
+    <AISpecialPowerInfo Heuristic="PLAYER_AOE_BUFF" Manager="SKIRMISH_AI" TargetObjectInclude="CAN_ATTACK" MinTargetsHit="1" MinEnemiesNearby="5">
+    </AISpecialPowerInfo>
+  </LogicCommand>
+
+<PlayerPowerButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L1_C2" SpecialPower="SpecialPower_RebornParadropSidebar_L1_C2">
+    <Data>
+      <TargetedPower RadiusCursor="Target_Allied_Paradrop" StateData="ButtonStateCampaignPlayerPowerParadropLvl1" />
+    </Data>
+  </PlayerPowerButtonTemplate>
+
+<JoypadCommandBarButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L1_C2">
+    <Data>
+      <PlayerTargetedPower StateData="ButtonStateCampaignPlayerPowerParadropLvl1" SpecialPower="SpecialPower_RebornParadropSidebar_L1_C2" RadiusCursor="Target_Allied_Paradrop" />
+    </Data>
+  </JoypadCommandBarButtonTemplate>
+
+<UnitAbilityButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L1_C2" LogicCommand="Command_RebornParadropSidebar_L1_C2"><Data><TargetedSpecialPower RadiusCursor="Target_Allied_Paradrop" StateData="ButtonStateCampaignPlayerPowerParadropLvl1" ValidTargetCursor="TargetAbility" /></Data></UnitAbilityButtonTemplate>
+<SpecialPowerTemplate xmlns="uri:ea.com:eala:asset" id="SpecialPower_RebornParadropSidebar_L1_C3" ReloadTime="300s" TargetType="LOCATION" EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea" RadiusCursorRadius="100" Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS" WaypointModeTerminal="false" RequiredPlayerTech="PlayerTech_Allied_HighTechnology">
+		<ForbiddenObjectFilter Rule="ANY" Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT" Exclude="BRIDGE_ENDCAP BRIDGE_SEGMENT">
+			<ExcludeThing>NanoSwarmHiveEffect</ExcludeThing>
+		</ForbiddenObjectFilter>
+		<GameDependency id="Allied_Paradrop_Rank1_GameDependency">
+			<RequiredObject>AlliedAirportControlTower</RequiredObject>
+			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row3</ForbiddenUpgrade>
+			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row5</ForbiddenUpgrade>
+			<NeededUpgrade>Upgrade_RebornParadrop_Row1</NeededUpgrade>
+		</GameDependency>
+
+<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank1</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_ChronoRift_Rank2</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank1</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank3</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_ProductionBonus_Allies</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank3</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_AirPower</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_SatelliteSweep</ForbiddenPlayerTech></SpecialPowerTemplate>
+
+
+
+<LogicCommand xmlns="uri:ea.com:eala:asset" Options="NEED_TARGET_POS" Type="SPECIAL_POWER" id="Command_RebornParadropSidebar_L1_C3">
+    <SpecialPower>SpecialPower_RebornParadropSidebar_L1_C3</SpecialPower>
+    <AISpecialPowerInfo Heuristic="PLAYER_AOE_BUFF" Manager="SKIRMISH_AI" TargetObjectInclude="CAN_ATTACK" MinTargetsHit="1" MinEnemiesNearby="5">
+    </AISpecialPowerInfo>
+  </LogicCommand>
+
+<PlayerPowerButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L1_C3" SpecialPower="SpecialPower_RebornParadropSidebar_L1_C3">
+    <Data>
+      <TargetedPower RadiusCursor="Target_Allied_Paradrop" StateData="ButtonStateCampaignPlayerPowerParadropLvl1" />
+    </Data>
+  </PlayerPowerButtonTemplate>
+
+<JoypadCommandBarButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L1_C3">
+    <Data>
+      <PlayerTargetedPower StateData="ButtonStateCampaignPlayerPowerParadropLvl1" SpecialPower="SpecialPower_RebornParadropSidebar_L1_C3" RadiusCursor="Target_Allied_Paradrop" />
+    </Data>
+  </JoypadCommandBarButtonTemplate>
+
+<UnitAbilityButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L1_C3" LogicCommand="Command_RebornParadropSidebar_L1_C3"><Data><TargetedSpecialPower RadiusCursor="Target_Allied_Paradrop" StateData="ButtonStateCampaignPlayerPowerParadropLvl1" ValidTargetCursor="TargetAbility" /></Data></UnitAbilityButtonTemplate>
+<SpecialPowerTemplate xmlns="uri:ea.com:eala:asset" id="SpecialPower_RebornParadropSidebar_L2_C1" ReloadTime="330s" TargetType="LOCATION" EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea" RadiusCursorRadius="120" Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS" WaypointModeTerminal="false" RequiredPlayerTech="PlayerTech_Allied_TimeBomb_Rank1">
+		<ForbiddenObjectFilter Rule="ANY" Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT" Exclude="BRIDGE_ENDCAP BRIDGE_SEGMENT">
+			<ExcludeThing>NanoSwarmHiveEffect</ExcludeThing>
+		</ForbiddenObjectFilter>
+		<GameDependency id="Allied_Paradrop_Rank2_GameDependency">
+			<RequiredObject>AlliedAirportControlTower</RequiredObject>
+			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row5</ForbiddenUpgrade>
+			<NeededUpgrade>Upgrade_RebornParadrop_Row3</NeededUpgrade>
+		</GameDependency>
+
+<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank3</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_ProductionBonus_Allies</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank3</ForbiddenPlayerTech></SpecialPowerTemplate>
+
+
+
+<LogicCommand xmlns="uri:ea.com:eala:asset" Options="NEED_TARGET_POS" Type="SPECIAL_POWER" id="Command_RebornParadropSidebar_L2_C1">
+    <SpecialPower>SpecialPower_RebornParadropSidebar_L2_C1</SpecialPower>
+    <AISpecialPowerInfo Heuristic="PLAYER_AOE_BUFF" Manager="SKIRMISH_AI" TargetObjectInclude="CAN_ATTACK" MinTargetsHit="1" MinEnemiesNearby="5">
+    </AISpecialPowerInfo>
+  </LogicCommand>
+
+<PlayerPowerButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L2_C1" SpecialPower="SpecialPower_RebornParadropSidebar_L2_C1">
+    <Data>
+      <TargetedPower RadiusCursor="Target_Allied_Paradrop" StateData="ButtonStateCampaignPlayerPowerParadropLvl2" />
+    </Data>
+  </PlayerPowerButtonTemplate>
+
+<JoypadCommandBarButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L2_C1">
+    <Data>
+      <PlayerTargetedPower StateData="ButtonStateCampaignPlayerPowerParadropLvl2" SpecialPower="SpecialPower_RebornParadropSidebar_L2_C1" RadiusCursor="Target_Allied_Paradrop" />
+    </Data>
+  </JoypadCommandBarButtonTemplate>
+
+<UnitAbilityButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L2_C1" LogicCommand="Command_RebornParadropSidebar_L2_C1"><Data><TargetedSpecialPower RadiusCursor="Target_Allied_Paradrop" StateData="ButtonStateCampaignPlayerPowerParadropLvl2" ValidTargetCursor="TargetAbility" /></Data></UnitAbilityButtonTemplate>
+<SpecialPowerTemplate xmlns="uri:ea.com:eala:asset" id="SpecialPower_RebornParadropSidebar_L2_C2" ReloadTime="330s" TargetType="LOCATION" EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea" RadiusCursorRadius="120" Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS" WaypointModeTerminal="false" RequiredPlayerTech="PlayerTech_Allied_ChronoRift_Rank2">
+		<ForbiddenObjectFilter Rule="ANY" Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT" Exclude="BRIDGE_ENDCAP BRIDGE_SEGMENT">
+			<ExcludeThing>NanoSwarmHiveEffect</ExcludeThing>
+		</ForbiddenObjectFilter>
+		<GameDependency id="Allied_Paradrop_Rank2_GameDependency">
+			<RequiredObject>AlliedAirportControlTower</RequiredObject>
+			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row5</ForbiddenUpgrade>
+			<NeededUpgrade>Upgrade_RebornParadrop_Row3</NeededUpgrade>
+		</GameDependency>
+
+<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank3</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_ProductionBonus_Allies</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank3</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank1</ForbiddenPlayerTech></SpecialPowerTemplate>
+
+
+
+<LogicCommand xmlns="uri:ea.com:eala:asset" Options="NEED_TARGET_POS" Type="SPECIAL_POWER" id="Command_RebornParadropSidebar_L2_C2">
+    <SpecialPower>SpecialPower_RebornParadropSidebar_L2_C2</SpecialPower>
+    <AISpecialPowerInfo Heuristic="PLAYER_AOE_BUFF" Manager="SKIRMISH_AI" TargetObjectInclude="CAN_ATTACK" MinTargetsHit="1" MinEnemiesNearby="5">
+    </AISpecialPowerInfo>
+  </LogicCommand>
+
+<PlayerPowerButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L2_C2" SpecialPower="SpecialPower_RebornParadropSidebar_L2_C2">
+    <Data>
+      <TargetedPower RadiusCursor="Target_Allied_Paradrop" StateData="ButtonStateCampaignPlayerPowerParadropLvl2" />
+    </Data>
+  </PlayerPowerButtonTemplate>
+
+<JoypadCommandBarButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L2_C2">
+    <Data>
+      <PlayerTargetedPower StateData="ButtonStateCampaignPlayerPowerParadropLvl2" SpecialPower="SpecialPower_RebornParadropSidebar_L2_C2" RadiusCursor="Target_Allied_Paradrop" />
+    </Data>
+  </JoypadCommandBarButtonTemplate>
+
+<UnitAbilityButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L2_C2" LogicCommand="Command_RebornParadropSidebar_L2_C2"><Data><TargetedSpecialPower RadiusCursor="Target_Allied_Paradrop" StateData="ButtonStateCampaignPlayerPowerParadropLvl2" ValidTargetCursor="TargetAbility" /></Data></UnitAbilityButtonTemplate>
+<SpecialPowerTemplate xmlns="uri:ea.com:eala:asset" id="SpecialPower_RebornParadropSidebar_L2_C3" ReloadTime="330s" TargetType="LOCATION" EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea" RadiusCursorRadius="120" Flags="IS_PLAYER_POWER PATHABLE_ONLY NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS" WaypointModeTerminal="false" RequiredPlayerTech="PlayerTech_Allied_CryoSatellite_Rank1">
+		<ForbiddenObjectFilter Rule="ANY" Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT" Exclude="BRIDGE_ENDCAP BRIDGE_SEGMENT">
+			<ExcludeThing>NanoSwarmHiveEffect</ExcludeThing>
+		</ForbiddenObjectFilter>
+		<GameDependency id="Allied_Paradrop_Rank2_GameDependency">
+			<RequiredObject>AlliedAirportControlTower</RequiredObject>
+			<ForbiddenUpgrade>Upgrade_RebornParadrop_Row5</ForbiddenUpgrade>
+			<NeededUpgrade>Upgrade_RebornParadrop_Row3</NeededUpgrade>
+		</GameDependency>
+
+<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank3</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_ProductionBonus_Allies</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_CryoSatellite_Rank3</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank1</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_Allied_ChronoRift_Rank2</ForbiddenPlayerTech></SpecialPowerTemplate>
+
+
+
+<LogicCommand xmlns="uri:ea.com:eala:asset" Options="NEED_TARGET_POS" Type="SPECIAL_POWER" id="Command_RebornParadropSidebar_L2_C3">
+    <SpecialPower>SpecialPower_RebornParadropSidebar_L2_C3</SpecialPower>
+    <AISpecialPowerInfo Heuristic="PLAYER_AOE_BUFF" Manager="SKIRMISH_AI" TargetObjectInclude="CAN_ATTACK" MinTargetsHit="1" MinEnemiesNearby="5">
+    </AISpecialPowerInfo>
+  </LogicCommand>
+
+<PlayerPowerButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L2_C3" SpecialPower="SpecialPower_RebornParadropSidebar_L2_C3">
+    <Data>
+      <TargetedPower RadiusCursor="Target_Allied_Paradrop" StateData="ButtonStateCampaignPlayerPowerParadropLvl2" />
+    </Data>
+  </PlayerPowerButtonTemplate>
+
+<JoypadCommandBarButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L2_C3">
+    <Data>
+      <PlayerTargetedPower StateData="ButtonStateCampaignPlayerPowerParadropLvl2" SpecialPower="SpecialPower_RebornParadropSidebar_L2_C3" RadiusCursor="Target_Allied_Paradrop" />
+    </Data>
+  </JoypadCommandBarButtonTemplate>
+
+<UnitAbilityButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L2_C3" LogicCommand="Command_RebornParadropSidebar_L2_C3"><Data><TargetedSpecialPower RadiusCursor="Target_Allied_Paradrop" StateData="ButtonStateCampaignPlayerPowerParadropLvl2" ValidTargetCursor="TargetAbility" /></Data></UnitAbilityButtonTemplate>
+<SpecialPowerTemplate xmlns="uri:ea.com:eala:asset" id="SpecialPower_RebornParadropSidebar_L3_C1" ReloadTime="360s" TargetType="LOCATION" EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea" RadiusCursorRadius="140" Flags="IS_PLAYER_POWER NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS" WaypointModeTerminal="false" RequiredPlayerTech="PlayerTech_Allied_TimeBomb_Rank3">
+		<ForbiddenObjectFilter Rule="ANY" Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT" Exclude="BRIDGE_ENDCAP BRIDGE_SEGMENT">
+			<ExcludeThing>NanoSwarmHiveEffect</ExcludeThing>
+		</ForbiddenObjectFilter>
+		<GameDependency id="Allied_Paradrop_Rank3_GameDependency">
+			<RequiredObject>AlliedAirportControlTower</RequiredObject>
+			<NeededUpgrade>Upgrade_RebornParadrop_Row5</NeededUpgrade>
+		</GameDependency>
+
+	</SpecialPowerTemplate>
+
+
+<LogicCommand xmlns="uri:ea.com:eala:asset" Options="NEED_TARGET_POS" Type="SPECIAL_POWER" id="Command_RebornParadropSidebar_L3_C1">
+    <SpecialPower>SpecialPower_RebornParadropSidebar_L3_C1</SpecialPower>
+    <AISpecialPowerInfo Heuristic="PLAYER_AOE_BUFF" Manager="SKIRMISH_AI" TargetObjectInclude="CAN_ATTACK" MinTargetsHit="1" MinEnemiesNearby="5">
+    </AISpecialPowerInfo>
+  </LogicCommand>
+
+
+
+
+<PlayerPowerButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L3_C1" SpecialPower="SpecialPower_RebornParadropSidebar_L3_C1">
+    <Data>
+      <TargetedPower RadiusCursor="Target_Allied_Paradrop" StateData="ButtonStateCampaignPlayerPowerParadropLvl3" />
+    </Data>
+  </PlayerPowerButtonTemplate>
+
+
+<JoypadCommandBarButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L3_C1">
+    <Data>
+      <PlayerTargetedPower StateData="ButtonStateCampaignPlayerPowerParadropLvl3" SpecialPower="SpecialPower_RebornParadropSidebar_L3_C1" RadiusCursor="Target_Allied_Paradrop" />
+    </Data>
+  </JoypadCommandBarButtonTemplate>
+
+
+
+
+
+
+
+
+
+
+<UnitAbilityButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L3_C1" LogicCommand="Command_RebornParadropSidebar_L3_C1"><Data><TargetedSpecialPower RadiusCursor="Target_Allied_Paradrop" StateData="ButtonStateCampaignPlayerPowerParadropLvl3" ValidTargetCursor="TargetAbility" /></Data></UnitAbilityButtonTemplate>
+<SpecialPowerTemplate xmlns="uri:ea.com:eala:asset" id="SpecialPower_RebornParadropSidebar_L3_C2" ReloadTime="360s" TargetType="LOCATION" EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea" RadiusCursorRadius="140" Flags="IS_PLAYER_POWER NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS" WaypointModeTerminal="false" RequiredPlayerTech="PlayerTech_ProductionBonus_Allies">
+		<ForbiddenObjectFilter Rule="ANY" Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT" Exclude="BRIDGE_ENDCAP BRIDGE_SEGMENT">
+			<ExcludeThing>NanoSwarmHiveEffect</ExcludeThing>
+		</ForbiddenObjectFilter>
+		<GameDependency id="Allied_Paradrop_Rank3_GameDependency">
+			<RequiredObject>AlliedAirportControlTower</RequiredObject>
+			<NeededUpgrade>Upgrade_RebornParadrop_Row5</NeededUpgrade>
+		</GameDependency>
+
+	<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank3</ForbiddenPlayerTech></SpecialPowerTemplate>
+
+
+<LogicCommand xmlns="uri:ea.com:eala:asset" Options="NEED_TARGET_POS" Type="SPECIAL_POWER" id="Command_RebornParadropSidebar_L3_C2">
+    <SpecialPower>SpecialPower_RebornParadropSidebar_L3_C2</SpecialPower>
+    <AISpecialPowerInfo Heuristic="PLAYER_AOE_BUFF" Manager="SKIRMISH_AI" TargetObjectInclude="CAN_ATTACK" MinTargetsHit="1" MinEnemiesNearby="5">
+    </AISpecialPowerInfo>
+  </LogicCommand>
+
+
+
+
+<PlayerPowerButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L3_C2" SpecialPower="SpecialPower_RebornParadropSidebar_L3_C2">
+    <Data>
+      <TargetedPower RadiusCursor="Target_Allied_Paradrop" StateData="ButtonStateCampaignPlayerPowerParadropLvl3" />
+    </Data>
+  </PlayerPowerButtonTemplate>
+
+
+<JoypadCommandBarButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L3_C2">
+    <Data>
+      <PlayerTargetedPower StateData="ButtonStateCampaignPlayerPowerParadropLvl3" SpecialPower="SpecialPower_RebornParadropSidebar_L3_C2" RadiusCursor="Target_Allied_Paradrop" />
+    </Data>
+  </JoypadCommandBarButtonTemplate>
+
+
+
+
+
+
+
+
+
+
+<UnitAbilityButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L3_C2" LogicCommand="Command_RebornParadropSidebar_L3_C2"><Data><TargetedSpecialPower RadiusCursor="Target_Allied_Paradrop" StateData="ButtonStateCampaignPlayerPowerParadropLvl3" ValidTargetCursor="TargetAbility" /></Data></UnitAbilityButtonTemplate>
+<SpecialPowerTemplate xmlns="uri:ea.com:eala:asset" id="SpecialPower_RebornParadropSidebar_L3_C3" ReloadTime="360s" TargetType="LOCATION" EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTargetArea" RadiusCursorRadius="140" Flags="IS_PLAYER_POWER NOT_CLIFF_CELL NO_FORBIDDEN_OBJECTS" WaypointModeTerminal="false" RequiredPlayerTech="PlayerTech_Allied_CryoSatellite_Rank3">
+		<ForbiddenObjectFilter Rule="ANY" Include="STRUCTURE CRUSHABLE_OBSTACLE AIRCRAFT" Exclude="BRIDGE_ENDCAP BRIDGE_SEGMENT">
+			<ExcludeThing>NanoSwarmHiveEffect</ExcludeThing>
+		</ForbiddenObjectFilter>
+		<GameDependency id="Allied_Paradrop_Rank3_GameDependency">
+			<RequiredObject>AlliedAirportControlTower</RequiredObject>
+			<NeededUpgrade>Upgrade_RebornParadrop_Row5</NeededUpgrade>
+		</GameDependency>
+
+	<ForbiddenPlayerTech>PlayerTech_Allied_TimeBomb_Rank3</ForbiddenPlayerTech><ForbiddenPlayerTech>PlayerTech_ProductionBonus_Allies</ForbiddenPlayerTech></SpecialPowerTemplate>
+
+
+<LogicCommand xmlns="uri:ea.com:eala:asset" Options="NEED_TARGET_POS" Type="SPECIAL_POWER" id="Command_RebornParadropSidebar_L3_C3">
+    <SpecialPower>SpecialPower_RebornParadropSidebar_L3_C3</SpecialPower>
+    <AISpecialPowerInfo Heuristic="PLAYER_AOE_BUFF" Manager="SKIRMISH_AI" TargetObjectInclude="CAN_ATTACK" MinTargetsHit="1" MinEnemiesNearby="5">
+    </AISpecialPowerInfo>
+  </LogicCommand>
+
+
+
+
+<PlayerPowerButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L3_C3" SpecialPower="SpecialPower_RebornParadropSidebar_L3_C3">
+    <Data>
+      <TargetedPower RadiusCursor="Target_Allied_Paradrop" StateData="ButtonStateCampaignPlayerPowerParadropLvl3" />
+    </Data>
+  </PlayerPowerButtonTemplate>
+
+
+<JoypadCommandBarButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L3_C3">
+    <Data>
+      <PlayerTargetedPower StateData="ButtonStateCampaignPlayerPowerParadropLvl3" SpecialPower="SpecialPower_RebornParadropSidebar_L3_C3" RadiusCursor="Target_Allied_Paradrop" />
+    </Data>
+  </JoypadCommandBarButtonTemplate>
+
+
+
+
+
+
+
+
+
+
+<UnitAbilityButtonTemplate xmlns="uri:ea.com:eala:asset" id="Button_RebornParadropSidebar_L3_C3" LogicCommand="Command_RebornParadropSidebar_L3_C3"><Data><TargetedSpecialPower RadiusCursor="Target_Allied_Paradrop" StateData="ButtonStateCampaignPlayerPowerParadropLvl3" ValidTargetCursor="TargetAbility" /></Data></UnitAbilityButtonTemplate>
 </AssetDeclaration>

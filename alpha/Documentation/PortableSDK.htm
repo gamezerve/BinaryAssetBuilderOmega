@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<!-- Reborn: show portable dependencies and Windows requirements inside Studio's documentation pane. -->
+<html lang="en"><head><meta charset="utf-8"><title>Portable Uprising SDK</title></head><body>
+<h1>Portable Uprising SDK alpha</h1>
+<p>Copy alpha to a writable location and open <strong>EALAModStudio.exe</strong>. Configuration follows the copied SDK. Building requires no repository checkout, separate PowerShell/.NET installation, unpacked D:/TEMP streams or .NET SDK.</p>
+<h2>Bundled dependencies</h2><ul>
+<li>PowerShell 7 and its runtime: <code>runtime/powershell</code>.</li>
+<li>32-bit .NET 8 compiler runtime: <code>runtime/dotnet-x86</code>.</li>
+<li>Native Visual C++ x86 audio dependencies: <code>runtime/vc-x86</code>.</li>
+<li>Build scripts, compiler assemblies and internal schema resources: <code>scripts</code> and <code>tools</code>.</li>
+<li>Stock streams, catalogs, WorldBuilder data and strings: <code>catalogs/ra3ep1</code>.</li>
+<li>Original sources, schemas and editable content: <code>SageXML</code>, <code>Schemas</code>, <code>Art</code>, <code>Audio</code> and <code>mods</code>.</li>
+<li>Legacy DirectX helpers for the optional shader tool: <code>ShaderCompiler</code>.</li></ul>
+<h2>Windows requirements</h2>
+<p>This bundle targets 64-bit Windows 10/11 with 32-bit application support and .NET Framework 4.x/CLR4 for EA Studio. The tested host uses .NET Framework 4.8. GPU/Direct3D9 driver support is needed for optional shader graphics validation. Uprising itself is needed to play the compiled mod.</p>
+<h2>Results and copying</h2>
+<p>Final Streams/Misc BIG files and SKUDef still go to the <strong>current Windows user's Documents/Red Alert 3 Uprising/Mods/&lt;mod&gt;</strong> directory.</p>
+<p><code>builtmods</code> stores internal receipts; <code>.work</code> stores temporary data. Both folders may be omitted from a copy: startup creates them when missing and preserves existing contents. Copy while builds are stopped.</p>
+<p>DATA:, ART: and AUDIO: paths follow the SDK. Explicit external paths in your own mod remain external. Separate launchers may need their settings updated.</p>
+<p>The repository alpha receives compiler updates after successful builds. A separate copy is independent and receives updates by copying updated files. Synchronization preserves editable mods.</p>
+<p>See <code>PortableSDK.md</code> for the complete record. Local portability does not establish public redistribution permission for EA components.</p>
+</body></html>

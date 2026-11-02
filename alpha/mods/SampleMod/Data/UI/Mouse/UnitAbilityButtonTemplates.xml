@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+	<Tags />
+	<Includes>
+	</Includes>
+
+	<UnitAbilityButtonTemplate
+		id="ButtonActivateAdaptiveArmor"
+		LogicCommand="Command_ActivateAdaptiveArmor">
+		<Data>
+			<SpecialPower
+				StateData="ButtonStateActivateAdaptiveArmor" />
+		</Data>
+	</UnitAbilityButtonTemplate>
+
+</AssetDeclaration>

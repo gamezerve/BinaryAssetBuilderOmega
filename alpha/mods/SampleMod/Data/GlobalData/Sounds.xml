@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+
+	<Includes>
+		<Include type="instance" source="DATA:Sounds/BaseSoundEffect.xml" />
+	</Includes>
+	
+	
+	<Defines>
+		<Define name="ALI_EVA_VOLUME" value="100" />
+		<Define name="ALI_EVA_MINVOLUME" value="90" />
+		<Define name="ALI_EVA_PITCHSHIFT_LOW" value="-1" />
+		<Define name="ALI_EVA_PITCHSHIFT_HIGH" value="1" />
+		<Define name="ALL_VOICESUPPRESS_VOLUME" value="55"/>
+	    <Define name="ALL_VOICESUPPRESS_PLAYPERCENT" value="50"/>
+	    <Define name="ALL_VOICESUPPRESS_LIMIT" value="1"/>
+		<Define name="CIV_UNITRESPONSE_VOLUME" value="100" />
+		<Define name="CIV_UNITRESPONSE_MINVOLUME" value="95" />
+		<Define name="CIV_UNITRESPONSE_PITCHSHIFT_LOW" value="-1" />
+		<Define name="CIV_UNITRESPONSE_PITCHSHIFT_HIGH" value="1" />
+		<Define name="CIV_VOICEDIE_VOLUME" value="70" />
+		<Define name="CIV_VOICEDIE_PITCHSHIFT_LOW" value="-1" />
+		<Define name="CIV_VOICEDIE_PITCHSHIFT_HIGH" value="1" />
+		<Define name="GDI_EVA_VOLUME" value="105" />
+		<Define name="GDI_EVA_MINVOLUME" value="90" />
+		<Define name="GDI_EVA_PITCHSHIFT_LOW" value="-1" />
+		<Define name="GDI_EVA_PITCHSHIFT_HIGH" value="1" />
+		<Define name="GDI_UNITRESPONSE_VOLUME" value="110" />
+		<Define name="GDI_UNITRESPONSE_MINVOLUME" value="105" />
+		<Define name="GDI_UNITRESPONSE_PITCHSHIFT_LOW" value="-1" />
+		<Define name="GDI_UNITRESPONSE_PITCHSHIFT_HIGH" value="1" />
+		<Define name="GDI_VOICEDIE_VOLUME" value="70" />
+		<Define name="GDI_VOICEDIE_PITCHSHIFT_LOW" value="-1" />
+		<Define name="GDI_VOICEDIE_PITCHSHIFT_HIGH" value="1" />
+		<Define name="NOD_EVA_VOLUME" value="100"/>
+		<Define name="NOD_EVA_MINVOLUME" value="90"/>
+		<Define name="NOD_EVA_PITCHSHIFT_LOW" value="-1"/>
+		<Define name="NOD_EVA_PITCHSHIFT_HIGH" value="1"/>
+		<Define name="NOD_UNITRESPONSE_VOLUME" value="110"/>
+		<Define name="NOD_UNITRESPONSE_MINVOLUME" value="105"/>
+		<Define name="NOD_UNITRESPONSE_PITCHSHIFT_LOW" value="-1"/>
+		<Define name="NOD_UNITRESPONSE_PITCHSHIFT_HIGH" value="1"/>
+		<Define name="NOD_VOICEDIE_VOLUME" value="70"/>
+		<Define name="NOD_VOICEDIE_PITCHSHIFT_LOW" value="-1"/>
+		<Define name="NOD_VOICEDIE_PITCHSHIFT_HIGH" value="1"/>
+    <Define name="VOICECRASH_PLAYPERCENT" value="30"/>
+  </Defines>
+
+	<AudioEvent id="PredatorCannonFireUpgraded" inheritFrom="AudioEvent:BaseSoundEffect"
+		Volume = "70"
+		VolumeShift = "-10"
+		Limit = "3"
+		Control = "INTERRUPT"
+		Type = "WORLD SHROUDED EVERYONE"
+		SubmixSlider = "SOUNDFX" >
+		<PitchShift Low = "-5" High = "5" />
+		<Sound>GUPreda_wea2firea</Sound> <Sound>GUPreda_wea2fireb</Sound> <Sound>GUPreda_wea2firec</Sound> <Sound>GUPreda_wea2fired</Sound> 
+		<Sound>GUPreda_wea2firee</Sound> <Sound>GUPreda_wea2firef</Sound> <Sound>GUPreda_wea2fireg</Sound> <Sound>GUPreda_wea2fireh</Sound> 
+		<Sound>GUPreda_wea2firei</Sound>
+	</AudioEvent>
+
+	<AudioEvent id="GDI_Titan_CannonFire" inheritFrom="AudioEvent:BaseSoundEffect"
+		Volume = "80"
+		VolumeShift = "-10"
+		Limit = "3"
+		Type = "WORLD SHROUDED EVERYONE"
+		SubmixSlider = "SOUNDFX" >
+		<PitchShift Low = "-5" High= "5" />
+		<Sound>GUTitan_cannFirea</Sound> <Sound>GUTitan_cannFireb</Sound> <Sound>GUTitan_cannFirec</Sound> <Sound>GUTitan_cannFired</Sound> 
+		<Sound>GUTitan_cannFiree</Sound> <Sound>GUTitan_cannFiref</Sound> <Sound>GUTitan_cannFireg</Sound> <Sound>GUTitan_cannFireh</Sound> 
+		<Sound>GUTitan_cannFirei</Sound> <Sound>GUTitan_cannFirej</Sound> 
+	</AudioEvent>
+	
+		<!-- ============================= GDI RAIL CANNON ============= -->
+			<!-- This is used by the Mammoth and Predator Tanks -->
+	<AudioEvent id="GDI_RailCannon_Upgrade" inheritFrom="AudioEvent:BaseSoundEffect"
+		Volume = "40"
+		MinRange="300"
+		MaxRange="1000"
+		Limit = "3"
+		Type = "WORLD SHROUDED PLAYER"
+		SubmixSlider = "SOUNDFX" >
+		<Sound>GUUpgra_railCanoa</Sound> <Sound>GUUpgra_railCanob</Sound> <Sound>GUUpgra_railCanoc</Sound> <Sound>GUUpgra_railCanod</Sound> 
+	</AudioEvent>
+	<!-- ============================= GDI TECHNOLOGYCENTER TECHNOLOGY CENTER TECH CENTER TECHCENTER ============================= -->
+
+	<AudioEvent id="GDI_TechCenter_adaptiveArmorUpgrade" inheritFrom="AudioEvent:BaseSoundEffect"
+		Volume = "60"
+		VolumeShift = "-10"
+		Limit = "3"
+		Type = "WORLD SHROUDED PLAYER"
+		SubmixSlider = "SOUNDFX" >
+		<PitchShift Low = "-10" High = "10" />
+		<Delay Low = "50" High = "100" />
+		<Sound>GBTechC_armoUpgra</Sound>
+	</AudioEvent>
+
+	<AudioEvent id="TankShellEjectImpact" inheritFrom="AudioEvent:BaseSoundEffect"
+		Volume = "75"
+		VolumeShift = "-10"
+		Limit = "3"
+		Control = "INTERRUPT"
+		Type = "WORLD SHROUDED EVERYONE"
+		SubmixSlider = "SOUNDFX" >
+		<PitchShift Low = "5" High= "15" />
+		<Sound>GUMarv_cannImpaa</Sound> <Sound>GUMarv_cannImpab</Sound> <Sound>GUMarv_cannImpac</Sound> <Sound>GUMarv_cannImpad</Sound> 
+		<Sound>GUMarv_cannImpae</Sound> <Sound>GUMarv_cannImpaf</Sound> <Sound>GUMarv_cannImpag</Sound> <Sound>GUMarv_cannImpah</Sound> 
+	</AudioEvent>
+
+	<AudioEvent id="GDI_Titan_Footstep" inheritFrom="AudioEvent:BaseSoundEffect"
+		Volume = "25"
+		VolumeShift = "-10"
+		Limit = "3"
+		Priority = "LOW"
+		Type = "WORLD SHROUDED EVERYONE"
+		Control = "INTERRUPT"
+		SubmixSlider = "SOUNDFX" >
+		<PitchShift Low = "-5" High = "5" />
+		<Sound>GUJugge_wea3firea</Sound> <Sound>GUJugge_wea3fireb</Sound> <Sound>GUJugge_wea3firec</Sound> <Sound>GUJugge_wea3fired</Sound> 
+		<Sound>GUJugge_wea3firee</Sound> <Sound>GUJugge_wea3firef</Sound> <Sound>GUJugge_wea3fireg</Sound> <Sound>GUJugge_wea3fireh</Sound> 
+		<Sound>GUJugge_wea3firei</Sound> <Sound>GUJugge_wea3firej</Sound> <Sound>GUJugge_wea3firek</Sound> <Sound>GUJugge_wea3firel</Sound>
+	</AudioEvent>
+
+	<AudioEvent id="GDI_Titan_Servo" inheritFrom="AudioEvent:BaseSoundEffect"
+		Volume = "20"
+		VolumeShift = "-10"
+		Limit = "3"
+		Priority = "LOWEST"
+		Type = "WORLD SHROUDED EVERYONE"
+		SubmixSlider = "SOUNDFX" >
+		<Delay Low = "0" High = "400" /> 
+		<PitchShift Low = "-10" High= "10" />
+		<Sound>GUJugge_moveStara</Sound> <Sound>GUJugge_moveStarb</Sound> <Sound>GUJugge_moveStarc</Sound> <Sound>GUJugge_moveStard</Sound> 
+		<Sound>GUJugge_moveStare</Sound>
+	</AudioEvent>
+
+	<AudioEvent id="GDI_RailgunAccelerator_EnergyStripeLoop" inheritFrom="AudioEvent:BaseSoundEffect"
+		Volume = "40"
+		PerFileVolumeShift = "-10"
+		Limit = "3"
+		Priority = "HIGH"
+		Type = "WORLD SHROUDED EVERYONE"
+		SubmixSlider = "SOUNDFX" >
+		<PerFilePitchShift Low = "10" High= "15" />
+		<Delay Low = "1000" High = "2500" />
+		<Sound>GSRaiAc_stripea</Sound> <Sound>GSRaiAc_stripeb</Sound> <Sound>GSRaiAc_stripec</Sound> 
+	</AudioEvent>
+
+	<!-- ============================= UPGRADES GDI ============================= -->
+	
+	<AudioEvent id="GDI_AdaptiveArmor_Upgrade" inheritFrom="AudioEvent:BaseSoundEffect"
+		Volume = "60"
+		VolumeShift = "-10"
+		Limit = "3"
+		Type = "WORLD SHROUDED EVERYONE"
+		SubmixSlider = "SOUNDFX" >
+		<PitchShift Low = "-10" High = "10" />
+		<Sound>GUHamme_armoUpgra</Sound>
+		<!-- EP1 -->
+	</AudioEvent>
+
+	<!-- ========================== GDI TITAN EP1 ========================== -->
+
+	<AudioEvent id="GDI_Titan_VoiceAttack" inheritFrom="AudioEvent:BaseUnitResponse"
+		Volume = "=$GDI_UNITRESPONSE_VOLUME + 0"
+		MinVolume = "=$GDI_UNITRESPONSE_MINVOLUME + 0"
+		Priority = "HIGH"
+		Type = "WORLD PLAYER VOICE"
+		SubmixSlider = "VOICE">
+		<PitchShift Low="=$GDI_UNITRESPONSE_PITCHSHIFT_LOW + 0" High="=$GDI_UNITRESPONSE_PITCHSHIFT_HIGH + 0"/>
+		<Sound>GUTitan_VoiAtta</Sound> <Sound>GUTitan_VoiAttb</Sound> <Sound>GUTitan_VoiAttc</Sound> <Sound>GUTitan_VoiAttd</Sound> <Sound>GUTitan_VoiAtte</Sound> <Sound>GUTitan_VoiAttf</Sound> 
+		<!-- <Sound>GUTitan_VoiAttg</Sound> -->
+		<Sound>GUTitan_VoiAtth</Sound> <Sound>GUTitan_VoiAtti</Sound> <Sound>GUTitan_VoiAttj</Sound> 
+		<!-- EP1 -->
+	</AudioEvent>
+
+	<AudioEvent id="GDI_Titan_VoiceCreate" inheritFrom="AudioEvent:BaseUnitResponse"
+		Volume = "=$GDI_UNITRESPONSE_VOLUME + 0"
+		MinVolume = "=$GDI_UNITRESPONSE_MINVOLUME + 0"
+		Priority = "HIGH"
+		Type = "WORLD PLAYER VOICE"
+		SubmixSlider = "VOICE">
+		<PitchShift Low="=$GDI_UNITRESPONSE_PITCHSHIFT_LOW + 0" High="=$GDI_UNITRESPONSE_PITCHSHIFT_HIGH + 0"/>
+		<Sound>GUTitan_voiCreab</Sound> 
+		<!--
+		<Sound>GUTitan_voiCreaa</Sound> 
+		<Sound>GUTitan_voiCreac</Sound> <Sound>GUTitan_voiCread</Sound> <Sound>GUTitan_voiCreae</Sound> 
+		-->
+		<!-- EP1 -->
+	</AudioEvent>
+
+	<AudioEvent id="GDI_Titan_VoiceMove" inheritFrom="AudioEvent:BaseUnitResponse"
+		Volume = "=$GDI_UNITRESPONSE_VOLUME + 0"
+		MinVolume = "=$GDI_UNITRESPONSE_MINVOLUME + 0"
+		Priority = "HIGH"
+		Type = "WORLD PLAYER VOICE"
+		SubmixSlider = "VOICE">
+		<PitchShift Low="=$GDI_UNITRESPONSE_PITCHSHIFT_LOW + 0" High="=$GDI_UNITRESPONSE_PITCHSHIFT_HIGH + 0"/>
+		<Sound>GUTitan_VoiMovea</Sound> <Sound>GUTitan_VoiMoveb</Sound> <Sound>GUTitan_VoiMovec</Sound> <Sound>GUTitan_VoiMoved</Sound> <Sound>GUTitan_VoiMovee</Sound> <Sound>GUTitan_VoiMovef</Sound> <Sound>GUTitan_VoiMoveg</Sound> 
+		<!-- EP1 -->
+	</AudioEvent>
+
+	<AudioEvent id="GDI_Titan_VoiceMoveAttack" inheritFrom="AudioEvent:BaseUnitResponse"
+		Volume = "=$GDI_UNITRESPONSE_VOLUME + 0"
+		MinVolume = "=$GDI_UNITRESPONSE_MINVOLUME + 0"
+		Priority = "HIGH"
+		Type = "WORLD PLAYER VOICE"
+		SubmixSlider = "VOICE">
+		<PitchShift Low="=$GDI_UNITRESPONSE_PITCHSHIFT_LOW + 0" High="=$GDI_UNITRESPONSE_PITCHSHIFT_HIGH + 0"/>
+		<Sound>GUTitan_VoiMovAtta</Sound> <Sound>GUTitan_VoiMovAttb</Sound> <Sound>GUTitan_VoiMovAttc</Sound> <Sound>GUTitan_VoiMovAttd</Sound> <Sound>GUTitan_VoiMovAtte</Sound> <Sound>GUTitan_VoiMovAttf</Sound> 
+		<!-- EP1 -->
+	</AudioEvent>
+
+	<AudioEvent id="GDI_Titan_VoiceRetreat" inheritFrom="AudioEvent:BaseUnitResponse"
+		Volume = "=$GDI_UNITRESPONSE_VOLUME + 0"
+		MinVolume = "=$GDI_UNITRESPONSE_MINVOLUME + 0"
+		Priority = "HIGH"
+		Type = "WORLD PLAYER VOICE"
+		SubmixSlider = "VOICE">
+		<PitchShift Low="=$GDI_UNITRESPONSE_PITCHSHIFT_LOW + 0" High="=$GDI_UNITRESPONSE_PITCHSHIFT_HIGH + 0"/>
+		<Sound>GUTitan_VoiRetreaa</Sound> <Sound>GUTitan_VoiRetreab</Sound> <Sound>GUTitan_VoiRetreac</Sound> <Sound>GUTitan_VoiRetread</Sound> <Sound>GUTitan_VoiRetreae</Sound> <Sound>GUTitan_VoiRetreaf</Sound> <Sound>GUTitan_VoiRetreag</Sound> <Sound>GUTitan_VoiRetreah</Sound> 
+		<!-- EP1 -->
+	</AudioEvent>
+
+	<Multisound id="GDI_Titan_VoiceSelectMS" >
+		<Subsound>GDI_Titan_VoiceSelect</Subsound>
+		<Subsound>GDI_Titan_AmbientSelect</Subsound>
+		<!-- EP1 -->
+	</Multisound>
+
+	<Multisound id="GDI_Titan_VoiceSelectBattleMS" >
+		<Subsound>GDI_Titan_VoiceSelectBattle</Subsound>
+		<Subsound>GDI_Titan_AmbientSelect</Subsound>
+		<!-- EP1 -->
+	</Multisound>
+
+	<AudioEvent id="GDI_Titan_VoiceSelect" inheritFrom="AudioEvent:BaseUnitResponse"
+		Volume = "=$GDI_UNITRESPONSE_VOLUME + 0"
+		MinVolume = "=$GDI_UNITRESPONSE_MINVOLUME + 0"
+		Priority = "HIGH"
+		Type = "WORLD PLAYER VOICE"
+		SubmixSlider = "VOICE">
+		<PitchShift Low="=$GDI_UNITRESPONSE_PITCHSHIFT_LOW + 0" High="=$GDI_UNITRESPONSE_PITCHSHIFT_HIGH + 0"/>
+		<Sound>GUTitan_voiSelea</Sound> <Sound>GUTitan_voiSeleb</Sound> <Sound>GUTitan_voiSelec</Sound> <Sound>GUTitan_voiSeled</Sound> <Sound>GUTitan_voiSelee</Sound> <Sound>GUTitan_voiSelef</Sound> <Sound>GUTitan_voiSeleg</Sound> <Sound>GUTitan_voiSeleh</Sound> <Sound>GUTitan_voiSelei</Sound> 
+		<!-- EP1 -->
+	</AudioEvent>
+	
+	<AudioEvent id="GDI_Titan_AmbientSelect" inheritFrom="AudioEvent:BaseSoundEffect"
+		Volume = "=$SOUNDSELECT_VOLUME - 25"
+		MinVolume = "=$SOUNDSELECT_VOLUME - 25"
+		VolumeShift = "-10"
+		Limit = "3"
+		Type = "WORLD PLAYER"
+		SubmixSlider = "SOUNDFX" >
+		<PitchShift Low = "-10" High= "10" />
+		<Sound>GUTitan_ambiSelea</Sound> <Sound>GUTitan_ambiSeleb</Sound> <Sound>GUTitan_ambiSelec</Sound> <Sound>GUTitan_ambiSeled</Sound> 
+		<Sound>GUTitan_ambiSelee</Sound> <Sound>GUTitan_ambiSelef</Sound> 
+	</AudioEvent>
+
+	<AudioEvent id="GDI_Titan_VoiceSelectBattle" inheritFrom="AudioEvent:BaseUnitResponse"
+		Volume = "=$GDI_UNITRESPONSE_VOLUME + 0"
+		MinVolume = "=$GDI_UNITRESPONSE_MINVOLUME + 0"
+		Priority = "HIGH"
+		Type = "WORLD PLAYER VOICE"
+		SubmixSlider = "VOICE">
+		<PitchShift Low="=$GDI_UNITRESPONSE_PITCHSHIFT_LOW + 0" High="=$GDI_UNITRESPONSE_PITCHSHIFT_HIGH + 0"/>
+		<Sound>GUTitan_voiSelBata</Sound> <Sound>GUTitan_voiSelBatb</Sound> <Sound>GUTitan_voiSelBatc</Sound> <Sound>GUTitan_voiSelBatd</Sound> <Sound>GUTitan_voiSelBate</Sound> <Sound>GUTitan_voiSelBatf</Sound> 
+		<!-- EP1 -->
+	</AudioEvent>
+
+	<AudioEvent id="GDI_Titan_CannonProjectileImpact" inheritFrom="AudioEvent:BaseSoundEffect"
+		Volume = "50"
+		VolumeShift = "-15"
+		Limit = "3"
+		Control = "INTERRUPT"
+		Type = "WORLD SHROUDED EVERYONE"
+		SubmixSlider = "SOUNDFX" >
+		<PitchShift Low = "-20" High= "0" />
+		<Sound>GUTitan_cannonHita</Sound> <Sound>GUTitan_cannonHitb</Sound> <Sound>GUTitan_cannonHitc</Sound> <Sound>GUTitan_cannonHitd</Sound> 
+		<Sound>GUTitan_cannonHite</Sound> <Sound>GUTitan_cannonHitf</Sound> <Sound>GUTitan_cannonHitg</Sound> 
+	</AudioEvent>
+	
+</AssetDeclaration>

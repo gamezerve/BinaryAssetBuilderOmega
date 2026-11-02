@@ -147,6 +147,8 @@ internal sealed class SchemaNativeContract
     private void Field(Type owner,FieldInfo field,XmlElement? e,int at,string path,int depth)
     {
         Type type=field.FieldType;string name=field.Name;records[path]=at;
+        // Reborn: a Multisound subsound is a simple-content reference with additional attributes, not a child named Base.
+        if(owner==typeof(Marshaler.Ep1MultisoundSubsound)&&name=="Base"){Reference(e?.InnerText,at,path);return;}
         // Reborn: shader constant class IDs come from the validated concrete schema type, not authored TypeId text or the enclosing draw class.
         // Reborn: button class identities derive from the validated schema; the unextended retail Power record has a zero class word.
         // Reborn: joypad concrete class IDs come from the validated source choice rather than caller-authored metadata.
@@ -161,7 +163,7 @@ internal sealed class SchemaNativeContract
         // Reborn: Color3/Color4 runtime storage is packed BGRA; an existing color node defaults its unauthored alpha to 255.
         if(owner==typeof(Color)&&name=="A"&&e!=null&&!e.HasAttribute("A")){Expect(at,new byte[]{255},path);return;}
         // Reborn: each concrete particle module carries the hash of its validated schema class, independent of its enclosing asset.
-        if(owner==typeof(FXParticleBaseModule)&&name=="TypeId"){Type concrete=FXParticleSystemCompiler.ModuleType(e!);Expect(at,BitConverter.GetBytes(FastHash.GetHashCode(concrete.Name)),path);return;}
+        if(owner==typeof(FXParticleBaseModule)&&name=="TypeId"){_=FXParticleSystemCompiler.ModuleType(e!);Expect(at,BitConverter.GetBytes(FastHash.GetHashCode(e!.SchemaInfo.SchemaType!.QualifiedName.Name)),path);return;}
         // Reborn: weapon nugget class words come from the reviewed concrete element class, never authored TypeId text.
         if(owner==typeof(WeaponEffectNugget)&&name=="TypeId"){Expect(at,BitConverter.GetBytes(WeaponTemplateCompiler.Nugget(e!).TypeId),path);return;}
         if(owner==typeof(FXNugget)&&name=="TypeId"){uint id=FastHash.GetHashCode(e?.SchemaInfo.SchemaType?.QualifiedName.Name??throw new InvalidDataException("FX nugget schema type missing."));_=FXListCompiler.NuggetType(e!);Expect(at,BitConverter.GetBytes(id),path);return;}
@@ -377,6 +379,8 @@ internal sealed class SchemaNativeContract
     {
         // Reborn: shader Float/Value lists contain primitive floats with source-sized allocation, not nested synthetic value records.
         if(type==typeof(float)){var carrier=(element?.OwnerDocument??new XmlDocument()).CreateElement("Scalar");carrier.SetAttribute("Value",text??"");Expect(at,ConscriptModuleScalarContract.Bytes(carrier,new("Value",0,4,"Single",null,0)),path);return;}
+        // Reborn: AABTree polygon-index lists contain primitive unsigned words, not synthetic element structs.
+        if(type==typeof(uint)){var value=new byte[4];BinaryPrimitives.WriteUInt32LittleEndian(value,XmlConvert.ToUInt32(text??""));Expect(at,value,path);return;}
         if(type.IsGenericType){string generic=type.GetGenericTypeDefinition().FullName!;
             if(generic=="Relo.String`1"){Text(text,at,path,false);return;}
             if(generic is "Relo.AssetReference`1" or "Relo.AssetReference`2"){Reference(text,at,path);return;}

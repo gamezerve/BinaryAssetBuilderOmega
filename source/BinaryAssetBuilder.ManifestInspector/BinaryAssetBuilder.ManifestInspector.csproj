@@ -17,6 +17,9 @@
     <ProjectReference Include="..\BinaryAssetBuilder.W3XCompiler\BinaryAssetBuilder.W3XCompiler.csproj" Aliases="W3x" />
   </ItemGroup>
 
+  <!-- Reborn: deploy the existing native PC audio encoder with the same synchronized compiler generation. -->
+  <ItemGroup><None Include="..\BinaryAssetBuilder.AudioCompiler\audio.dll" Link="audio.dll" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
+
   <!-- Reborn: the successful complete alpha toolchain build refreshes one stable development SDK; failed builds never publish tools. -->
   <Target Name="RebornSyncDevelopmentSdk" AfterTargets="Build" Condition="'$(Configuration)' == 'Release' and '$(Platform)' == 'x86' and '$(DesignTimeBuild)' != 'true' and '$(SkipAlphaSync)' != 'true'">
     <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\..\scripts\Sync-Ra3Ep1DevSdk.ps1&quot; -CompilerDirectory &quot;$(TargetDir).&quot;" />

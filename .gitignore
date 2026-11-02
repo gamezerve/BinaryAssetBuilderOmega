@@ -383,6 +383,10 @@ MigrationBackup/
 /alpha/builtmods/
 /alpha/.work/
 /alpha/.sdk.lock
+# Reborn: keep the shader utility reproducible from tools/ShaderCompiler without committing generated binaries or local EA source copies.
+/alpha/ShaderCompiler/*.exe
+/alpha/ShaderCompiler/Output/
+/alpha/ShaderCompiler/Sources/
 /alpha/defaultscript.cs
 /alpha/EALAModStudio.exe
 /alpha/EALAModStudio.exe.config
@@ -400,3 +404,10 @@ MigrationBackup/
 # Reborn: the copied original string table stays local until redistribution review.
 /alpha/catalogs/ra3ep1/*.csf
 /.maintenance/
+# Reborn: generated portable runtimes, EA baselines and support copies are rebuilt locally rather than committed.
+/alpha/runtime/
+/alpha/scripts/
+/alpha/tools/resources/
+/alpha/catalogs/ra3ep1/streams/
+/alpha/portable.json
+/alpha/ShaderCompiler/*.dll

@@ -221,7 +221,8 @@ public static partial class Marshaler
         {
             return;
         }
-        using Tracker.Context context = state.Push((void**)&objT, (uint)sizeof(AABTree.TreeNode.NodeChild), 1u);
+        // Reborn: allocate the optional tree record into its owning mesh pointer slot.
+        using Tracker.Context context = state.Push((void**)objT, (uint)sizeof(AABTree.TreeNode.NodeChild), 1u);
         Marshal(node, *objT, state);
     }
 
@@ -241,7 +242,8 @@ public static partial class Marshaler
         {
             return;
         }
-        using Tracker.Context context = state.Push((void**)&objT, (uint)sizeof(AABTree.TreeNode.NodePoly), 1u);
+        // Reborn: allocate the optional tree record into its owning mesh pointer slot.
+        using Tracker.Context context = state.Push((void**)objT, (uint)sizeof(AABTree.TreeNode.NodePoly), 1u);
         Marshal(node, *objT, state);
     }
 
@@ -273,7 +275,8 @@ public static partial class Marshaler
         {
             return;
         }
-        using Tracker.Context context = state.Push((void**)&objT, (uint)sizeof(AABTree), 1u);
+        // Reborn: allocate the optional tree record into its owning mesh pointer slot.
+        using Tracker.Context context = state.Push((void**)objT, (uint)sizeof(AABTree), 1u);
         Marshal(node, *objT, state);
     }
 

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Tags></Tags>
+	<Includes>
+					<!-- Mod Specific -->
+ 		<!-- <Include type="reference" source="DATA:static.xml" /> --> 
+		<!-- <Include type="reference" source="DATA:global.xml" /> -->
+		<!-- <Include type="reference" source="DATA:audio.xml" /> -->
+		
+
+		
+		<Include type="all" source="DATA:Allied/Units/SteelTalonsTitan.xml" />
+		<Include type="all" source="DATA:Allied/Misc/FXTankShell02.xml" />
+		<Include type="all" source="ArtAssets.xml" />
+		<Include type="all" source="Images.xml" />
+		<Include type="all" source="DATA:GlobalData/AttributeModifier.xml" />
+		<Include type="all" source="DATA:GlobalData/Armor_Mod.xml" />
+		<Include type="all" source="DATA:GlobalData/ExperienceLevels_Mod.xml" />
+		<Include type="all" source="GlobalData/FXList.xml" />
+		<Include type="all" source="DATA:GlobalData/Locomotor.xml" />
+		<Include type="all" source="DATA:GlobalData/LogicCommand.xml" />
+		<Include type="all" source="DATA:GlobalData/LogicCommandSet.xml" />
+		<Include type="all" source="DATA:GlobalData/SpecialPowerTemplates.xml" />
+		<Include type="all" source="DATA:GlobalData/Upgrade_Mod.xml" />
+		<Include type="all" source="DATA:GlobalData/Weapon.xml" />
+		<Include type="all" source="DATA:GlobalData/Sounds.xml" />
+		<Include type="all" source="AUDIO:AudioAssets.xml" />
+		<Include type="all" source="UI/Mouse/UnitAbilityButtonTemplates.xml"/>
+		<Include type="all" source="UI/ButtonStateDataCommon.xml"/>
+
+		
+	</Includes>
+	
+	
+</AssetDeclaration>

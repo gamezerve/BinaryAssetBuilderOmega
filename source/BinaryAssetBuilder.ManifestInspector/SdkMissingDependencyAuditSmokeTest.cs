@@ -35,6 +35,10 @@ internal static class SdkMissingDependencyAuditSmokeTest
           <xs:simpleType name="LogicCommandSetWeakRef" xas:refType="LogicCommandSet"><xs:restriction base="WeakReference"/></xs:simpleType>
           <!-- Reborn: spawn IDs are weak runtime asset identities, not strong imports or unconstrained strings. -->
           <xs:simpleType name="GameObjectWeakRef" xas:refType="GameObject"><xs:restriction base="WeakReference"/></xs:simpleType>
+          <!-- Reborn: audio Sound/Subsound references use complex simple-content wrappers with their own attributes. -->
+          <xs:complexType name="WeightedThingRef" xas:isRef="true" xas:refType="Thing"><xs:simpleContent><xs:extension base="ThingRef"><xs:attribute name="Weight" type="xs:unsignedInt" default="1000"/></xs:extension></xs:simpleContent></xs:complexType>
+          <xs:complexType name="AudioUser"><xs:sequence><xs:element name="PitchShift" type="xs:string" minOccurs="0"/><xs:element name="Delay" type="xs:string" minOccurs="0"/><xs:element name="Sound" type="WeightedThingRef" minOccurs="0" maxOccurs="unbounded"/></xs:sequence><xs:attribute name="id" type="xs:string"/></xs:complexType>
+          <xs:element name="AudioUser" type="AudioUser"/>
           <xs:complexType name="Base"><xs:attribute name="id" type="xs:string"/></xs:complexType>
           <xs:complexType name="Thing"><xs:complexContent><xs:extension base="Base"/></xs:complexContent></xs:complexType>
           <xs:complexType name="SpecificThing"><xs:complexContent><xs:extension base="Thing"/></xs:complexContent></xs:complexType>
@@ -160,6 +164,11 @@ internal static class SdkMissingDependencyAuditSmokeTest
         File.Copy(staticFixture,localCatalogs[0]);File.Copy(staticFixture,localCatalogs[1]);File.Copy(worldBuilderFixture,localCatalogs[2]);
         var localStock=SdkMissingDependencyAudit.LoadStockCatalogs(localCatalogs);var localReport=SdkMissingDependencyAudit.Analyze(wbEntry,wbPaths,schemas,localStock.Assets);
         Require(localStock.Catalogs.Length==3&&localStock.Catalogs.All(c=>c.Manifest.StartsWith(relocated+Path.DirectorySeparatorChar,StringComparison.OrdinalIgnoreCase))&&localReport.StockAssets==2&&localReport.Findings.Length==2&&localReport.Findings.Any(f=>f.Code=="MISSINGASSET"&&f.Target=="Thing:WorldBuilderOnyl")&&localReport.Findings.Any(f=>f.Code=="WORLDBUILDERASSET"&&f.Target=="Thing:WorldBuilderOnly"),"SDK-relative catalogs were not used or duplicate stock identities changed resolution.");
+        // Reborn: weighted element text must report missing targets while attributes and ordinary strings remain outside asset lookup.
+        string audioEntry=Store("weighted-audio.xml","<Thing id='LocalSound'/><AudioUser id='Weighted'><Delay/><PitchShift/><Sound Weight='5'>MissingSound</Sound><Sound>LocalSound</Sound><Sound>Stock</Sound></AudioUser>");
+        var audioPaths=paths with{Sources=new[]{sources.Last()},Includes=Array.Empty<SdkSourcePathAudit.Edge>()};
+        var audioReport=SdkMissingDependencyAudit.Analyze(audioEntry,audioPaths,schemas,new[]{SdkMissingDependencyAudit.Identity("Thing","Stock")});
+        Require(audioReport.CheckedAssetReferences==3&&audioReport.Findings.Length==1&&audioReport.Findings[0].Target=="Thing:MissingSound"&&audioReport.Findings[0].Owner=="AudioUser:Weighted"&&audioReport.Findings[0].Line>0,"Weighted simple-content audio references were missed: checked="+audioReport.CheckedAssetReferences+", deferred="+audioReport.UncheckedAssetReferences+", findings="+audioReport.Findings.Length);
         File.WriteAllText(Path.Combine(output,"report.json"),System.Text.Json.JsonSerializer.Serialize(report,new System.Text.Json.JsonSerializerOptions{WriteIndented=true}));
         Console.WriteLine("Reborn: missing dependency audit: PASS (aggregate missing assets/definitions, chain owners, mod+stock union, wrong types, instance-only exclusion, forward/private scope, diamond/quoted controls, positions and stale-source refusal).");
 

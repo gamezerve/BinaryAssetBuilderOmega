@@ -23,6 +23,9 @@ namespace EALABuild
         // Reborn: configuration failure must not leave the build callback using partially initialized adapter state.
         private bool initialized;
 
+        // Reborn: EA's build library lives beside Studio; anchor portable paths there even when a shortcut supplies another working directory.
+        private static string SdkRoot { get { return Path.GetDirectoryName(typeof(EALABuildScript).Assembly.Location); } }
+
         //-------------------------------------------------------------------------------------------------
         /** Reborn: load explicit local adapter configuration instead of RA3 registry paths or inherited destructive cleanup stages. */
         //-------------------------------------------------------------------------------------------------
@@ -33,19 +36,21 @@ namespace EALABuild
             BuildHelper.AutomaticallyResetBuildHelper = true;
             BuildHelper.EnableBenchmarking = true;
             // Reborn: EA's actual CodeDOM loader references only System.dll/EALABuild.dll, not System.Xml.dll.
-            Dictionary<string, string> settings = ReadPaths(Path.Combine(StaticPaths.CurrentDirectory, "uprising-alpha.paths"));
+            Dictionary<string, string> settings = ReadPaths(Path.Combine(SdkRoot, "uprising-alpha.paths"));
             runtime = settings["PowerShell7"];
             driver = settings["Driver"];
             staticManifest = settings["StaticManifest"];
             globalManifest = settings.ContainsKey("GlobalManifest") ? settings["GlobalManifest"] : null;
             compilerDirectory = settings["CompilerDirectory"];
-            outputRoot = Path.Combine(StaticPaths.CurrentDirectory, "builtmods");
+            outputRoot = Path.Combine(SdkRoot, "builtmods");
             CheckPath(runtime); CheckPath(driver); CheckPath(staticManifest);
             if (globalManifest != null) CheckPath(globalManifest);
+            // Reborn: a fresh portable copy need not carry previous internal receipts or its empty output directory.
+            Directory.CreateDirectory(outputRoot);
             CheckDirectory(compilerDirectory); CheckDirectory(outputRoot);
             // Reborn: an optional stock DATA override changes the library root, not the required four-key Studio workflow.
             if (settings.ContainsKey("SdkDataRoot")) CheckDirectory(settings["SdkDataRoot"]);
-            buildHost = Path.Combine(StaticPaths.CurrentDirectory, "tools\\studio\\RebornStudioLifecycle.exe");
+            buildHost = Path.Combine(SdkRoot, "tools\\studio\\RebornStudioLifecycle.exe");
             CheckPath(buildHost);
             lifecycle = System.Reflection.Assembly.LoadFrom(buildHost).GetType("Reborn.StudioLifecycle", true);
             Lifecycle("Install");
@@ -64,7 +69,7 @@ namespace EALABuild
             if (String.IsNullOrEmpty(name) || name.Length > 48 || name.IndexOfAny(new char[] { '\\', '/', '"', ':', ';', '\r', '\n' }) >= 0 || name == "." || name == "..")
                 throw new InvalidDataException("Invalid alpha mod name.");
             // Reborn: the static mod entry remains distinct from the stock DATA:static.xml library.
-            string input = Path.Combine(Path.Combine(Path.Combine(StaticPaths.CurrentDirectory, "mods"), name), "data\\Static_Mod.xml");
+            string input = Path.Combine(Path.Combine(Path.Combine(SdkRoot, "mods"), name), "data\\Static_Mod.xml");
             CheckPath(input);
             // Reborn: preserve the entered numeric version verbatim in final archive and SKUDef filenames.
             string version = gui.ContainsKey("modversion") ? (string)gui["modversion"] : "1.00";
@@ -178,7 +183,9 @@ namespace EALABuild
                 // Reborn: WorldBuilderManifest is consumed by dependency diagnostics, not passed as a runtime stream or copied into packages.
                 if ((key != "PowerShell7" && key != "Driver" && key != "StaticManifest" && key != "CompilerDirectory" && key != "GlobalManifest" && key != "WorldBuilderManifest" && key != "UprisingXmlRoot" && key != "SdkDataRoot" && key != "StockStrings") || settings.ContainsKey(key))
                     throw new InvalidDataException("Unknown or duplicate alpha path setting.");
-                settings.Add(key, line.Substring(separator + 1));
+                // Reborn: portable paths are relative to the actual EALAModStudio directory, never the caller's working directory.
+                string value = line.Substring(separator + 1);
+                settings.Add(key, Path.GetFullPath(Path.IsPathRooted(value) ? value : Path.Combine(SdkRoot, value)));
             }
             if (!settings.ContainsKey("PowerShell7") || !settings.ContainsKey("Driver") || !settings.ContainsKey("StaticManifest") || !settings.ContainsKey("CompilerDirectory"))
                 throw new InvalidDataException("Alpha requires all four base path settings; GlobalManifest enables weapon builds.");

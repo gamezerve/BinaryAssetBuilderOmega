@@ -39,7 +39,12 @@ internal static class WorldBuilderAssetResolver
     //-------------------------------------------------------------------------------------------------
     internal static string CatalogPath()
     {
-        for(var folder=new DirectoryInfo(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!);folder!=null;folder=folder.Parent){string path=Path.Combine(folder.FullName,"alpha/catalogs/ra3ep1/worldbuilder.manifest");if(File.Exists(path))return path;}throw new FileNotFoundException("WorldBuilder resolution requires catalogs/ra3ep1/worldbuilder.manifest inside the SDK.");
+        // Reborn: portable fixtures live inside the SDK, so resolve its own catalog before the legacy repository location.
+        for(var folder=new DirectoryInfo(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!);folder!=null;folder=folder.Parent)
+            foreach(string relative in new[]{"catalogs/ra3ep1/worldbuilder.manifest","alpha/catalogs/ra3ep1/worldbuilder.manifest"}){
+                string path=Path.Combine(folder.FullName,relative);if(File.Exists(path))return path;
+            }
+        throw new FileNotFoundException("WorldBuilder resolution requires catalogs/ra3ep1/worldbuilder.manifest inside the SDK.");
     }
 
     //-------------------------------------------------------------------------------------------------

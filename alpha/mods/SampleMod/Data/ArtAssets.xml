@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <Tags></Tags>
+	<Includes>
+		<Include type="all" source="ART:GUVehicleF.xml" />
+		<Include type="all" source="ART:GUVehicleF_AAUG.xml" />
+		<Include type="all" source="ART:GUVehicleF_AAUG_NM.xml" />
+		<Include type="all" source="ART:GUVehicleF_AAUG_SM.xml" />
+		<Include type="all" source="ART:GUVehicleF_D.xml" />
+		<Include type="all" source="ART:GUVehicleF_NM.xml" />
+		<Include type="all" source="ART:GUVehicleF_SM.xml" />
+		<Include type="all" source="ART:GUMamm.xml" />
+		<Include type="all" source="ART:GUMamm_NRM.xml" />
+		<Include type="all" source="ART:GUMamScroll.xml" />
+		<Include type="all" source="ART:GUMamm_SPM.xml" />
+		<Include type="all" source="ART:GUMammUG_SPM.xml" />
+		<Include type="all" source="ART:FXAccelRailGunHull.xml" />
+		<Include type="all" source="ART:FXAdaptiveArmorReflec.xml" />
+		<Include type="all" source="ART:FXAdaptiveArmorHull.xml" />
+		<Include type="all" source="ART:FXIonContrail.xml" />
+		<Include type="all" source="ART:FXMuzzleFire.xml" />
+		<Include type="all" source="ART:HCToBeRemoved.xml" />
+		<Include type="all" source="ART:GUVEHICLEF_ABTA.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_AIDA.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_AIDB.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_AIFA.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_AIFB.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_AIFC.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_ATKA.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_ATKB.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_ATKC.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_BATA.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_BIDA.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_BIFA.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_BIFB.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_BLDA.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_DIEA.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_FP.GUVEHICLEF.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_FP_CTR.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_FP_HRC.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_RUNA.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_RUND.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_SKL.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_SKN.GUVEHICLEF.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_SKN.MUZZLEFLASH_01.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_SKN.OBBOX.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_SKN.UGRAIL_01.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_SKN.UGRAIL_BARREL.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_SKN.UGRAILACCELERATOR_01.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_SKN.UGRAILACCELERATOR_BARREL.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_SKN.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_SKNR.GUVEHICLEF.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_SKNR.OBBOX.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_SKNR.UGRAIL_01.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_SKNR.UGRAIL_BARREL.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_SKNR.UGRAILACCELERATOR_01.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_SKNR.UGRAILACCELERATOR_BARREL.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_SKNR_CTR.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_TRNL.w3x" />
+		<Include type="all" source="ART:GUVEHICLEF_TRNR.w3x" />
+		<Include type="all" source="ART:GUVEHICLEFADAR.GUVEHICLEF.w3x" />
+		<Include type="all" source="ART:GUVEHICLEFADAR.MUZZLEFLASH_01.w3x" />
+		<Include type="all" source="ART:GUVEHICLEFADAR.OBBOX.w3x" />
+		<Include type="all" source="ART:GUVEHICLEFADAR.UGRAIL_01.w3x" />
+		<Include type="all" source="ART:GUVEHICLEFADAR.UGRAIL_BARREL.w3x" />
+		<Include type="all" source="ART:GUVEHICLEFADAR.UGRAILACCELERATOR_01.w3x" />
+		<Include type="all" source="ART:GUVEHICLEFADAR.UGRAILACCELERATOR_BARREL.w3x" />
+		<Include type="all" source="ART:FXGDICHEVRON1.w3x" />
+		<Include type="all" source="ART:FXGDICHEVRON2.w3x" />
+		<Include type="all" source="ART:FXGDICHEVRON3.w3x" />
+		<Include type="all" source="ART:FXLEVELUPRAYS.w3x" />
+		<Include type="all" source="ART:GUVEHICLEFADAR_CTR.w3x" />
+        <Include type="all" source="ART:EXTireTrack.xml" />
+		<Include type="all" source="ART:FXspotlight.xml" />
+		<Include type="all" source="ART:ChromicReflectionCube.xml" />
+		<Include type="all" source="ART:FXBlueZoneRefNrm.xml" />
+		<Include type="all" source="ART:FXSparkGDI.xml" />
+		<Include type="all" source="ART:FXShell02.w3x" />
+		<Include type="all" source="ART:FXTANKSHELLHEROIC.w3x" />
+
+	</Includes>
+
+</AssetDeclaration>

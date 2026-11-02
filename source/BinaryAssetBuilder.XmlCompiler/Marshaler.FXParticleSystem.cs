@@ -1,4 +1,4 @@
-﻿using Relo;
+using Relo;
 using SageBinaryData;
 
 public static partial class Marshaler
@@ -148,7 +148,20 @@ public static partial class Marshaler
         Marshal(node, *objT, state);
     }
 
-    public static unsafe void Marshal(Node node, FXParticleSystemTemplate* objT, Tracker state)
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: preserve legacy particle marshalling for existing callers. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node, FXParticleSystemTemplate* objT, Tracker state)=>MarshalParticleTemplate(node,objT,state,false);
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: choose EP1 particle layouts before allocating any polymorphic draw or list. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void MarshalEp1ParticleTemplate(Node node, FXParticleSystemTemplate* objT, Tracker state)=>MarshalParticleTemplate(node,objT,state,true);
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: share root fields and allocation order while keeping EP1 and legacy draw payloads separate. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void MarshalParticleTemplate(Node node, FXParticleSystemTemplate* objT, Tracker state, bool ep1)
     {
         if (node is null)
         {
@@ -180,11 +193,15 @@ public static partial class Marshaler
         Marshal(node.GetChildNode(nameof(FXParticleSystemTemplate.Colors), null), &objT->Colors, state);
         Marshal(node.GetChildNode(nameof(FXParticleSystemTemplate.Wind), null), &objT->Wind, state);
         MarshalSinglePolymorphic(node.GetChildNode(nameof(FXParticleSystemTemplate.Physics), null), &objT->Physics, state);
-        MarshalSinglePolymorphic(node.GetChildNode(nameof(FXParticleSystemTemplate.Draw), null), &objT->Draw, state);
+        // Reborn: allocate the correct EP1 ObjectSet stride from the outset, leaving no orphaned legacy allocation.
+        if(ep1)MarshalEp1ParticleDraw(node.GetChildNode(nameof(FXParticleSystemTemplate.Draw),null),&objT->Draw,state);
+        else MarshalSinglePolymorphic(node.GetChildNode(nameof(FXParticleSystemTemplate.Draw), null), &objT->Draw, state);
         MarshalSinglePolymorphic(node.GetChildNode(nameof(FXParticleSystemTemplate.Volume), null), &objT->Volume, state);
         MarshalSinglePolymorphic(node.GetChildNode(nameof(FXParticleSystemTemplate.Velocity), null), &objT->Velocity, state);
         Marshal(node.GetChildNode(nameof(FXParticleSystemTemplate.Event), null), &objT->Event, state);
-        MarshalSinglePolymorphic(node.GetChildNode(nameof(FXParticleSystemTemplate.Update), null), &objT->Update, state);
+        // Reborn: EP1 RenderObject update includes the additional X/Y angle channels.
+        if(ep1)MarshalEp1ParticleUpdate(node.GetChildNode(nameof(FXParticleSystemTemplate.Update),null),&objT->Update,state);
+        else MarshalSinglePolymorphic(node.GetChildNode(nameof(FXParticleSystemTemplate.Update), null), &objT->Update, state);
         Marshal(node, (BaseAssetType*)objT, state);
     }
 }

@@ -1,9 +1,9 @@
 # Reborn: test EA's CLR4 adapter/configuration seam without opening Studio, launching a build or editing a live mod.
 [CmdletBinding()]
-param([Parameter(Mandatory)][string]$OutputDirectory)
+param([Parameter(Mandatory)][string]$OutputDirectory,[string]$Sdk)
 $ErrorActionPreference='Stop'
 $repo=Split-Path -Parent $PSScriptRoot
-$sdk=Join-Path $repo 'alpha'
+if(-not $Sdk){$Sdk=Join-Path $repo 'alpha'};$sdk=[IO.Path]::GetFullPath($Sdk)
 $output=[IO.Path]::GetFullPath($OutputDirectory)
 $work=[IO.Path]::GetFullPath((Join-Path $sdk '.work'))
 if([IO.Path]::GetDirectoryName($output) -ine $work -or (Test-Path -LiteralPath $output)){throw 'Use a fresh direct child of alpha/.work.'}
@@ -35,6 +35,12 @@ try{
     $readPaths=[Delegate]::CreateDelegate([Func[string,object]],$method)
     $settings=$readPaths.Invoke([string](Join-Path $sdk 'uprising-alpha.paths'))
     if(-not $settings.ContainsKey('WorldBuilderManifest')){throw 'Live WorldBuilder configuration was not accepted.'}
+    # Reborn: portable configuration must resolve against the loaded EA assembly's SDK, even in this unrelated PowerShell host.
+    if(Test-Path -LiteralPath (Join-Path $sdk 'portable.json')){
+        foreach($key in @('PowerShell7','Driver','StaticManifest','CompilerDirectory','WorldBuilderManifest')){
+            if(-not $settings[$key].StartsWith($sdk+'\',[StringComparison]::OrdinalIgnoreCase) -or -not(Test-Path -LiteralPath $settings[$key])){throw ('Studio path is not SDK-local: '+$key+'='+$settings[$key])}
+        }
+    }
     $baseKeys=@('PowerShell7','Driver','StaticManifest','CompilerDirectory')
     $legacy=@($baseKeys | ForEach-Object {$_+'='+$settings[$_]})
     $legacyPath=Join-Path $output 'legacy.paths'

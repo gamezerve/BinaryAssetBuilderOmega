@@ -534,7 +534,10 @@ internal class W3DMeshProcessor : IDisposable
             fields.Add(semantic+mapping.UsageIndex.ToString(System.Globalization.CultureInfo.InvariantCulture)+":"+mapping.Offset.ToString("X2",System.Globalization.CultureInfo.InvariantCulture)+":"+format);
         }
         byte[] bytes=System.Text.Encoding.ASCII.GetBytes(string.Join(" ",fields));declaration->Count=(uint)bytes.Length;
-        using Tracker.Context context=state.Push((void**)&declaration->Items,1u,(uint)bytes.Length);for(int i=0;i<bytes.Length;i++)declaration->Items[i]=bytes[i];
+        // Reborn: EA counts only the text but allocates a trailing NUL; aligned declarations otherwise have no terminator in the native buffer.
+        using Tracker.Context context=state.Push((void**)&declaration->Items,1u,checked((uint)bytes.Length+1));
+        for(int i=0;i<bytes.Length;i++)declaration->Items[i]=bytes[i];
+        declaration->Items[bytes.Length]=0;
     }
 
     private static unsafe void BuildVertexDeclaration_Xenon(System.Collections.Generic.List<DataMapping> mappings, List<byte>* declaration, Tracker state)

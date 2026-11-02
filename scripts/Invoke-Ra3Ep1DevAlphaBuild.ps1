@@ -52,7 +52,10 @@ function Test-AptUIReferences {
     }
 }
 
-$ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$lock=$null;$run=$null;$publishMutex=$null;$cancelEvent=$null;$publishHeld=$false;$runOwned=$false;$stageOwned=$false
+$ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot
+# Reborn: the same driver works in the repository and inside a relocated alpha/scripts directory.
+. (Join-Path $PSScriptRoot 'Ra3Ep1PortablePaths.ps1')
+$sdk=Get-RebornSdkRoot $PSScriptRoot;$lock=$null;$run=$null;$publishMutex=$null;$cancelEvent=$null;$publishHeld=$false;$runOwned=$false;$stageOwned=$false
 # Reborn: retain the original Studio envelope while adding truthful numbered backend phases and separate detailed output.
 . (Join-Path $PSScriptRoot 'Ra3Ep1BuildLog.ps1')
 # Reborn: the final user package targets Documents; OutputRoot remains the private compatibility receipt/cache location.
@@ -83,7 +86,9 @@ try{
     if($ModName-notmatch '^[A-Za-z0-9_-]{1,48}$' -or $ModXml-ine (Join-Path $sdk ('mods/'+$ModName+'/data/Static_Mod.xml'))){throw 'Select alpha/mods/<name>/data/Static_Mod.xml; paths cannot escape the live SDK.'}
     # Reborn: Studio already displays this header; include it once in the saved standalone transcript only.
     $script:BuildLogLines.Insert(0,('Building Mod '+$ModName))
-    $settings=@{};foreach($line in Get-Content -LiteralPath (Join-Path $sdk 'uprising-alpha.paths')){if($line -and -not $line.StartsWith('#')){$pair=$line.Split('=',2);$settings[$pair[0]]=$pair[1]}}
+    $settings=Read-RebornSdkPaths $sdk
+    # Reborn: disposable directories are optional copy inputs and must exist before startup checks or lock/workspace creation.
+    Initialize-RebornSdkWorkDirectories $sdk
     if(-not $StaticManifest){$StaticManifest=$settings.StaticManifest};if(-not $GlobalManifest){$GlobalManifest=$settings.GlobalManifest}
     $expectedCompiler=Join-Path $sdk 'tools/compiler';$expectedOutput=Join-Path $sdk 'builtmods'
     if($CompilerDirectory -and [IO.Path]::GetFullPath($CompilerDirectory)-ine $expectedCompiler){throw 'Stable alpha cannot use an unrelated compiler.'}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+	
+	<SpecialPowerTemplate
+		id="SteelTalonsAdaptiveArmor"
+		ReloadTime="10s"
+		TargetType="NONE">
+		<GameDependency>
+			<NeededUpgrade>Upgrade_AlliedHighTechnology</NeededUpgrade>
+		</GameDependency>
+	</SpecialPowerTemplate>
+	
+</AssetDeclaration>

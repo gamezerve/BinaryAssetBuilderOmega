@@ -1,0 +1,35 @@
+	NAME:SteelTalonsTitan
+		"Titan"
+	End
+
+	TYPE:SteelTalonsTitan
+		"Armored Walker. Strong vs Vehicles."
+	End
+
+	DESC:SteelTalonsTitan
+		"Abilities: \n> Adaptive Armor \n Upgrades: \n> Rail Guns (High Technology)"
+	End
+	
+	UPGRADE:AdaptiveArmor
+		"Adaptive Armor"
+	End
+
+	UpgradeDesc:ActivateAdaptiveArmor
+		"Grants Defensive Ability"
+	End
+
+	UpgradeName:GDIRailGuns
+		"Rail Guns"
+	End
+
+	UpgradePrereq:GDIRailGuns
+		"Research at Tech Center"
+	End
+
+	UpgradeType:GDIRailGuns
+		"Weapon Upgrade"
+	End
+
+	UpgradeDesc:GDIRailGuns
+		"Increases attack damage"
+	End

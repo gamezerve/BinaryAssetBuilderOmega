@@ -70,9 +70,9 @@ internal static class ConscriptMultiAssetBuild
             if(File.Exists(additional))sources.AddRange(ReadPrepared(additional).DocumentElement!.ChildNodes.OfType<XmlElement>().Select(e=>Xml(e.OuterXml)));
             string command=Path.Combine(Path.GetDirectoryName(entry)!,"command.xml");if(File.Exists(command))sources.Add(ReadPrepared(command));
             // Reborn: retail AudioFile metadata stays SDK-local; authored events reference the loaded audio stream without repacking its samples.
-            string? audioManifest=null;if(sources.Any(s=>s.DocumentElement!.LocalName=="AudioEvent")){audioManifest=AuthoredAmbientCompiler.CatalogPath();var audio=ManifestReader.Read(SdkEnvironmentPreflight.Read(audioManifest,64*1048576));TypeRegistryAudit.ValidateTarget(audio.Header.Version,audio.Header.AllTypesHash);if(!audio.Header.IsLinked||audio.Validate().Count!=0)throw new InvalidDataException("Valid linked EP1 audio catalog required.");var known=stock.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();stock=stock.Concat(audio.Assets.Where(a=>a.TypeName=="AudioFile"&&!known.Contains(new(a.TypeId,a.InstanceId)))).ToArray();}
+            string? audioManifest=null;if(sources.Any(s=>s.DocumentElement!.LocalName is "AudioEvent" or "AudioFile")){audioManifest=AuthoredAmbientCompiler.CatalogPath();var audio=ManifestReader.Read(SdkEnvironmentPreflight.Read(audioManifest,64*1048576));TypeRegistryAudit.ValidateTarget(audio.Header.Version,audio.Header.AllTypesHash);if(!audio.Header.IsLinked||audio.Validate().Count!=0)throw new InvalidDataException("Valid linked EP1 audio catalog required.");var known=stock.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();stock=stock.Concat(audio.Assets.Where(a=>a.TypeName=="AudioFile"&&!known.Contains(new(a.TypeId,a.InstanceId)))).ToArray();}
             var fingerprints=new Dictionary<uint,(uint Hash,bool Tokenized)>();var locals=new Dictionary<AssetId,XmlDocument>();
-            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
+            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
                 uint typeId=FastHash.GetHashCode(type);var examples=stock.Where(a=>a.TypeId==typeId).Select(a=>(a.TypeHash,Tokenized:a.Tokenized==1)).Distinct().ToArray();if(examples.Length!=1)throw new InvalidDataException("EP1 asset fingerprint is absent/ambiguous: "+type);fingerprints[typeId]=examples[0];if(!locals.TryAdd(new(typeId,InstanceHandle.GetInstanceId(id)),xml))throw SdkXmlDiagnostics.At(new InvalidDataException("DUPLICATEASSET ' "+type+":"+id+" ' Duplicate local asset/hash identity."),xml.DocumentElement);
             }
             // Reborn: source-only catalog entries resolve local names before native data exists; payloads are freshly compiled below, never copied from stock.
@@ -86,6 +86,8 @@ internal static class ConscriptMultiAssetBuild
             var plans=sources.Where(s=>s.DocumentElement!.LocalName=="GameObject").ToDictionary(s=>s,s=>ConscriptVariableBehaviorSource.Admit(s,baseline,official));
             // Reborn: immutable stock grammar and source-keyed reference tables belong to this build/catalog generation; every object still owns its own source plan and native verification.
             var graphVerifier=plans.Count==0?null:new ConscriptVariableGraphVerifier(official,manifest,baseline,schemas,available);
+            // Reborn: developer mode compares original Uprising multisound records; fast builds retain authored native verification.
+            if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="Multisound"))Ep1MultisoundCompiler.Qualify(global,schemas,stock);
             // Reborn: optional developer mode compares original FX payloads; current-source native ownership remains mandatory in both modes.
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="FXList"))FXListCompiler.Qualify(manifest,schemas,stock);
             // Reborn: developer qualification reads selected original particle payloads only; actual authored payload proof stays enabled in both modes.
@@ -129,6 +131,10 @@ internal static class ConscriptMultiAssetBuild
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="PackedTextureImage"))PackedTextureImageCompiler.Qualify(manifest,schemas,stock);
             // Reborn: ambient/control extensions are qualified on original native data before any authored audio enters a package.
             if(SdkBuildTests.Enabled&&audioManifest!=null)AuthoredAmbientCompiler.Qualify(global,Normalize);
+            // Reborn: AdditionalMaps packaging currently copies stream sidecars only; fail explicitly instead of losing authored audio CDATA.
+            if(earlyGlobal&&sources.FirstOrDefault(s=>s.DocumentElement!.LocalName=="AudioFile") is XmlDocument globalAudio)throw SdkXmlDiagnostics.At(new InvalidDataException("AudioFile custom-data packaging for early AdditionalMaps global streams is not implemented; include authored AudioFile declarations in Static_Mod.xml."),globalAudio.DocumentElement);
+            // Reborn: one isolated native worker encodes the complete immutable WAV set before normal per-asset runtime serialization.
+            var encodedAudio=Ep1AudioFileCompiler.Encode(sources.ToArray(),entry);
             foreach(var xml in sources){
                 string type=xml.DocumentElement!.LocalName;InstanceDeclaration instance;AssetBuffer buffer;
                 // Reborn: announce and time the asset around its actual processor/verifier, as EA BuildMod does per instance.
@@ -139,6 +145,12 @@ internal static class ConscriptMultiAssetBuild
                     // Reborn: native review also collects explicit compiler capability exceptions at the current authored object.
                     catch(Exception error)when(error is InvalidDataException or FormatException or OverflowException or BinaryAssetBuilderException){compileLog.NativeError(error,xml);if(nativeReview){reviewFailures.Add(new{Asset=xml.DocumentElement!.GetAttribute("id"),Error=error.Message});Console.WriteLine("Reborn: native review failure: "+xml.DocumentElement.GetAttribute("id")+": "+error.Message);continue;}throw;}
                     // Reborn: weak CommandSet availability is reported consistently by the common mod/stock audit, without pretending it is a native import.
+                }else if(type=="AudioFile"){
+                    // Reborn: WAVs become the recovered EP1 runtime prefix plus separately packaged native SNR/SNS data.
+                    instance=Normalize(xml);buffer=encodedAudio[xml.DocumentElement.GetAttribute("id")].Native;
+                }else if(type=="Multisound"){
+                    // Reborn: use the full Uprising subsound record and prove all authored fields and local/retail imports.
+                    instance=Normalize(xml);var native=Ep1MultisoundCompiler.Compile(instance.XmlNode);SchemaNativeContract.Verify(Ep1MultisoundCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(Marshaler.Ep1Multisound),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
                 }else if(type=="AudioEvent"){
                     instance=Normalize(xml);buffer=AuthoredAmbientCompiler.Compile(instance);
                 }else if(type=="ArmorTemplate"){
@@ -220,6 +232,9 @@ internal static class ConscriptMultiAssetBuild
                     instance=Normalize(xml);string resource=TextureResource(entry,xml.DocumentElement.GetAttribute("File"));var payload=SdkEnvironmentPreflight.Read(resource,64*1048576);
                     if(!string.Equals(Path.GetFileNameWithoutExtension(resource),Ep1TextureCompiler.Sha256(payload),StringComparison.OrdinalIgnoreCase))throw new InvalidDataException("Captured texture payload changed: "+resource);
                     var native=Ep1TextureCompiler.Compile(xml.DocumentElement,payload,resource);Console.WriteLine("Texture "+xml.DocumentElement.GetAttribute("id")+": "+Ep1TextureCompiler.Describe(native)+".");buffer=Buffer(native);
+                }else if(type=="W3DAnimation"){
+                    // Reborn: source channels compile to the original EP1 runtime animation ABI, with independent playback readback.
+                    W3DAnimationCompiler.Admit(xml.DocumentElement!);instance=Normalize(xml);buffer=W3DAnimationCompiler.Compile(instance);
                 }else if(type is "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh"){
                     // Reborn: mesh shader/texture references retain normal Core indices; EP1 hierarchy pivots use Poid hashes rather than KW strings.
                     instance=Normalize(xml);var native=W3DGeometryCompiler.Compile(instance,schemas);buffer=Buffer(native);
@@ -326,6 +341,8 @@ internal static class ConscriptMultiAssetBuild
                     entry,
                     ordered.Select(b => (b.Source, b.Instance)));
 
+                Ep1AudioFileCompiler.Publish(Path.Combine(output,"support"),ordered.Select(b=>b.Instance),encodedAudio);
+
                 return true;
             }
             // Reborn: stock overrides are not limited to the Conscript sample, and receipts must not label an existing building as a new identity.
@@ -342,10 +359,13 @@ internal static class ConscriptMultiAssetBuild
             package,
             entry,
             ordered.Select(b => (b.Source, b.Instance)));
+            Ep1AudioFileCompiler.Publish(package,ordered.Select(b=>b.Instance),encodedAudio);
             Console.WriteLine($"Reborn: mixed asset graph compiled: {instances.Length} explicit assets; dependency-sorted local Armor/Weapon/Upgrade/GameObject/LogicCommand/LogicCommandSet edges; no generated commands or game launch.");return true;
 
             // Reborn: prepare current official references against mod-first identity lookup, then use actual Core occurrence normalization.
-            InstanceDeclaration Normalize(XmlDocument xml){var copy=Xml(xml.DocumentElement!.OuterXml);copy.Schemas.Add(official);copy.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));ConscriptBehaviorSurvey.ResolveStrong(copy,schemas,available);return Attach(ReferencePipelineSmokeTest.Normalize(schemas,copy.OuterXml),xml.DocumentElement.GetAttribute("id")+".xml");}
+            InstanceDeclaration Normalize(XmlDocument xml){var copy=Xml(xml.DocumentElement!.OuterXml);copy.Schemas.Add(official);copy.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));
+                // Reborn: preflight warned about missing optional shader bindings; omit them before Core creates native import occurrences.
+                W3DMissingTexturePolicy.OmitMissingBindings(copy,schemas,available);ConscriptBehaviorSurvey.ResolveStrong(copy,schemas,available);return Attach(ReferencePipelineSmokeTest.Normalize(schemas,copy.OuterXml),xml.DocumentElement.GetAttribute("id")+".xml");}
             // Reborn: cycles in strong local dependencies cannot be silently emitted in an arbitrary guessed order.
             void Visit(AssetId id){if(done.Contains(id))return;if(!active.Add(id))throw new InvalidDataException("Cyclic local strong asset dependency: "+built[id].Instance.Handle.Name);foreach(var r in built[id].Instance.ReferencedInstances){var target=new AssetId(r.TypeId,r.InstanceId);if(built.ContainsKey(target))Visit(target);}active.Remove(id);done.Add(id);ordered.Add(built[id]);}
         }finally{Settings.Current=saved;}

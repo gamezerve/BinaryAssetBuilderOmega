@@ -662,7 +662,18 @@
 		<Cmd>Command_JapanBalloonAttack_L2</Cmd>
 		<Cmd>Command_JapanBalloonAttack_L3</Cmd>
 
-	</LogicCommandSet>
+
+<!-- Reborn: native protocol prerequisites hide all but the currently purchased Paradrop sidebar tier/branch. -->
+<Cmd>Command_RebornParadropSidebar_L1_C1</Cmd>
+<Cmd>Command_RebornParadropSidebar_L1_C2</Cmd>
+<Cmd>Command_RebornParadropSidebar_L1_C3</Cmd>
+<Cmd>Command_RebornParadropSidebar_L2_C1</Cmd>
+<Cmd>Command_RebornParadropSidebar_L2_C2</Cmd>
+<Cmd>Command_RebornParadropSidebar_L2_C3</Cmd>
+<Cmd>Command_RebornParadropSidebar_L3_C1</Cmd>
+<Cmd>Command_RebornParadropSidebar_L3_C2</Cmd>
+<Cmd>Command_RebornParadropSidebar_L3_C3</Cmd>
+</LogicCommandSet>
 	<LogicCommandSet
 		id="PlayerSpellBookCommandSetRank1">
 		<!-- Allies Powers -->
@@ -724,7 +735,18 @@
 		<Cmd>Command_JapanBalloonAttack_L2</Cmd>
 		<Cmd>Command_JapanBalloonAttack_L3</Cmd>
 
-	</LogicCommandSet>
+
+<!-- Reborn: native protocol prerequisites hide all but the currently purchased Paradrop sidebar tier/branch. -->
+<Cmd>Command_RebornParadropSidebar_L1_C1</Cmd>
+<Cmd>Command_RebornParadropSidebar_L1_C2</Cmd>
+<Cmd>Command_RebornParadropSidebar_L1_C3</Cmd>
+<Cmd>Command_RebornParadropSidebar_L2_C1</Cmd>
+<Cmd>Command_RebornParadropSidebar_L2_C2</Cmd>
+<Cmd>Command_RebornParadropSidebar_L2_C3</Cmd>
+<Cmd>Command_RebornParadropSidebar_L3_C1</Cmd>
+<Cmd>Command_RebornParadropSidebar_L3_C2</Cmd>
+<Cmd>Command_RebornParadropSidebar_L3_C3</Cmd>
+</LogicCommandSet>
 	<LogicCommandSet
 		id="PlayerSpellBookCommandSetRank2">
 		<!-- Allies Powers -->
@@ -786,7 +808,18 @@
 		<Cmd>Command_JapanBalloonAttack_L2</Cmd>
 		<Cmd>Command_JapanBalloonAttack_L3</Cmd>
 
-	</LogicCommandSet>
+
+<!-- Reborn: native protocol prerequisites hide all but the currently purchased Paradrop sidebar tier/branch. -->
+<Cmd>Command_RebornParadropSidebar_L1_C1</Cmd>
+<Cmd>Command_RebornParadropSidebar_L1_C2</Cmd>
+<Cmd>Command_RebornParadropSidebar_L1_C3</Cmd>
+<Cmd>Command_RebornParadropSidebar_L2_C1</Cmd>
+<Cmd>Command_RebornParadropSidebar_L2_C2</Cmd>
+<Cmd>Command_RebornParadropSidebar_L2_C3</Cmd>
+<Cmd>Command_RebornParadropSidebar_L3_C1</Cmd>
+<Cmd>Command_RebornParadropSidebar_L3_C2</Cmd>
+<Cmd>Command_RebornParadropSidebar_L3_C3</Cmd>
+</LogicCommandSet>
 	<LogicCommandSet
 		id="PlayerSpellBookCommandSetRank3">
 		<!-- Allies Powers -->
@@ -848,5 +881,16 @@
 		<Cmd>Command_JapanBalloonAttack_L2</Cmd>
 		<Cmd>Command_JapanBalloonAttack_L3</Cmd>
 
-	</LogicCommandSet>
+
+<!-- Reborn: native protocol prerequisites hide all but the currently purchased Paradrop sidebar tier/branch. -->
+<Cmd>Command_RebornParadropSidebar_L1_C1</Cmd>
+<Cmd>Command_RebornParadropSidebar_L1_C2</Cmd>
+<Cmd>Command_RebornParadropSidebar_L1_C3</Cmd>
+<Cmd>Command_RebornParadropSidebar_L2_C1</Cmd>
+<Cmd>Command_RebornParadropSidebar_L2_C2</Cmd>
+<Cmd>Command_RebornParadropSidebar_L2_C3</Cmd>
+<Cmd>Command_RebornParadropSidebar_L3_C1</Cmd>
+<Cmd>Command_RebornParadropSidebar_L3_C2</Cmd>
+<Cmd>Command_RebornParadropSidebar_L3_C3</Cmd>
+</LogicCommandSet>
 </AssetDeclaration>

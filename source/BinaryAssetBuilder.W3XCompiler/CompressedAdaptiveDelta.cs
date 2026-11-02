@@ -166,7 +166,11 @@ internal class CompressedAdaptiveDelta
                 }
             }
         }
+        // Reborn: constant channels have no finite quantization step; use an exact timecoded key stream.
+        if(!float.IsFinite(maxDelta)||maxDelta<=0)return null;
         result._scale = maxDelta / 7.0f;
+        // Reborn: underflow cannot produce a usable delta quantization step.
+        if(result._scale==0)return null;
         int frameSize = srcFrames[0].Values.Count;
         result._vectorLen = frameSize;
         for (int pos = 0; pos < frameSize; ++pos)

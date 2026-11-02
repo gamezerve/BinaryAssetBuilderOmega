@@ -18,8 +18,12 @@ namespace BinaryAssetBuilder.W3XCompiler
 
         private TargetPlatform _platform;
 
+        // Reborn: EP1 uses sample-preserving timecodes and only error-bounded delta candidates.
+        public bool PreserveAnimationSamples { get; set; }
+
         public uint AllTypesHash => 0xEB19D975u; // TW 1.09; 0x12B3E763u KW 1.02
-        public uint VersionNumber => 8u;
+        // Reborn: invalidate cached mesh output that omitted the EP1 ASCII declaration terminator.
+        public uint VersionNumber => 9u;
 
         private unsafe void WriteAssetBuffer(AssetBuffer buffer, Tracker tracker)
         {
@@ -86,7 +90,9 @@ namespace BinaryAssetBuilder.W3XCompiler
             bool isBigEndian = _platform == TargetPlatform.Xbox360;
             W3DAnimationRuntime* animationRuntime;
             using Tracker trackerRuntime = new Tracker((void**)&animationRuntime, (uint)sizeof(W3DAnimationRuntime), isBigEndian);
-            XmlNamespaceManager namespaceManager = declaration.Document.NamespaceManager;
+            // Reborn: bind the source namespace explicitly, including standalone normalized W3X declarations.
+            XmlNamespaceManager namespaceManager = new XmlNamespaceManager(declaration.XmlNode.OwnerDocument.NameTable);
+            namespaceManager.AddNamespace("ea", "uri:ea.com:eala:asset");
             XPathNavigator navigator = declaration.Node.CreateNavigator();
             Node node = new Node(navigator, namespaceManager);
             Marshaler.Marshal(node, animation, tracker);
@@ -131,7 +137,9 @@ namespace BinaryAssetBuilder.W3XCompiler
             }
             AssetReference<W3DHierarchy>* animationHierarchy = &animation->Hierarchy;
             AssetReference<W3DHierarchy>* animationRuntimeHierarchy = &animationRuntime->Hierarchy;
-            trackerRuntime.AddReference((void*)animationRuntimeHierarchy, *(uint*)animationHierarchy);
+            // Reborn: preserve the schema-optional hierarchy instead of manufacturing an import for an absent reference.
+            if(!string.IsNullOrEmpty(declaration.XmlNode.Attributes?["Hierarchy"]?.Value))
+                trackerRuntime.AddReference((void*)animationRuntimeHierarchy, *(uint*)animationHierarchy);
             uint numFrames = animation->NumFrames;
             trackerRuntime.InplaceEndianToPlatform(&numFrames);
             animationRuntime->NumFrames = numFrames;
@@ -218,14 +226,16 @@ namespace BinaryAssetBuilder.W3XCompiler
                 }
                 CompressedTimecoded compressedTimecoded = null;
                 CompressedAdaptiveDelta compressedAdaptiveDelta = null;
-                if (compressionSettings.AllowAdaptiveDelta)
+                if (compressionSettings.AllowAdaptiveDelta && (!PreserveAnimationSamples || !srcFrames.Exists(f => f.BinaryMove)))
                 {
                     compressedAdaptiveDelta = CompressedAdaptiveDelta.Compress(source, srcFrames, ref compressionSettings);
                 }
-                if (compressedAdaptiveDelta is null || compressionSettings.AllowTimeCoded)
+                if ((compressedAdaptiveDelta is null || compressionSettings.AllowTimeCoded) && (!PreserveAnimationSamples || srcFrames.Count<=32768))
                 {
-                    compressedTimecoded = CompressedTimecoded.Compress(source, srcFrames, ref compressionSettings);
+                    compressedTimecoded = PreserveAnimationSamples ? CompressedTimecoded.Lossless(source, srcFrames) : CompressedTimecoded.Compress(source, srcFrames, ref compressionSettings);
                 }
+                // Reborn: 15-bit timecodes cannot represent large clips; delta-only large clips remain valid.
+                if(compressedAdaptiveDelta is null && compressedTimecoded is null)throw new System.IO.InvalidDataException("Animation needs timecoded fallback but exceeds its native 32768-frame range; use a delta-compressible clip or split it.");
                 if (compressedAdaptiveDelta is null || (compressedTimecoded != null && compressedTimecoded.EstimateSize() < compressedAdaptiveDelta.EstimateSize()))
                 {
                     compressedTimecoded.WriteOut(trackerRuntime, (AnimationChannelTimecoded**)&animationRuntime->Channels.Items[currentChannel]);
@@ -241,7 +251,9 @@ namespace BinaryAssetBuilder.W3XCompiler
         public unsafe void HandleType<T>(InstanceDeclaration declaration, AssetBuffer buffer) where T : unmanaged
         {
             bool isBigEndian = _platform == TargetPlatform.Xbox360;
-            XmlNamespaceManager namespaceManager = declaration.Document.NamespaceManager;
+            // Reborn: bind the source namespace explicitly, including standalone normalized W3X declarations.
+            XmlNamespaceManager namespaceManager = new XmlNamespaceManager(declaration.XmlNode.OwnerDocument.NameTable);
+            namespaceManager.AddNamespace("ea", "uri:ea.com:eala:asset");
             XPathNavigator navigator = declaration.Node.CreateNavigator();
             Node node = new Node(navigator, namespaceManager);
             T* objT;

@@ -83,6 +83,9 @@ internal static class W3DGeometryCompiler
         VerifyMeshRelocations(b,chunk.RelocationBuffer,source.GetAttribute("id"));
         var positions=Child(source,"Vertices").ChildNodes.OfType<XmlElement>().ToArray();if(count!=positions.Length||stride<12||stride>512)throw new InvalidDataException("Mesh vertex count/stride differs.");Range(b,vertices,checked(count*stride));
         int declaration=checked((int)Word(b,data+16)),declarationSize=checked((int)Word(b,data+12));Range(b,declaration,declarationSize);
+        // Reborn: the engine consumes this ASCII descriptor as terminated text, while its stored count excludes the terminator.
+        Range(b,declaration,checked(declarationSize+1));
+        if(b[declaration+declarationSize]!=0)throw new InvalidDataException("Mesh vertex declaration is missing its NUL terminator.");
         int position=0,texcoords=0;var boneSources=source.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="BoneInfluences").Select(e=>e.ChildNodes.OfType<XmlElement>().ToArray()).ToArray();int palette=(int)Word(b,data+24),paletteCount=(int)Word(b,data+20);Range(b,palette,checked(paletteCount*2));
         foreach(var channel in Channels(b,declaration,declarationSize)){int offset=channel.Offset,type=channel.Type,usage=channel.Usage,index=channel.Index;if(offset>=stride)throw new InvalidDataException("Mesh declaration offset exceeds vertex stride.");
             if(usage is 0 or 3 or 6 or 7){string field=usage switch{0=>"Vertices",3=>"Normals",6=>"Tangents",_=>"Binormals"};var values=source.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName==field).ElementAt(index).ChildNodes.OfType<XmlElement>().ToArray();if(type!=2||offset+12>stride)throw new InvalidDataException("Mesh vector declaration differs: "+field);if(usage==0)position++;for(int i=0;i<count;i++)foreach(var (name,delta) in new[]{("X",0),("Y",4),("Z",8)})EqualFloat(b,vertices+i*stride+offset+delta,Float(values[i],name));}
@@ -92,6 +95,12 @@ internal static class W3DGeometryCompiler
         }
         if(position!=source.ChildNodes.OfType<XmlElement>().Count(e=>e.LocalName=="Vertices")||texcoords!=source.ChildNodes.OfType<XmlElement>().Count(e=>e.LocalName=="TexCoords"))throw new InvalidDataException("Mesh position/UV source channels were lost.");
         int shader=Marshal.OffsetOf<W3DMesh>(nameof(W3DMesh.FXShader)).ToInt32();SchemaNativeContract.VerifyStock(Child(source,"FXShader"),typeof(FXShaderMaterial),0,b,shader,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());
+        // Reborn: optional collision acceleration trees need the same independent pointer/list/field proof as shader records.
+        if(source.ChildNodes.OfType<XmlElement>().FirstOrDefault(e=>e.LocalName=="AABTree") is XmlElement tree){
+            int slot=Marshal.OffsetOf<W3DMesh>(nameof(W3DMesh.AABTree)).ToInt32();int at=checked((int)Word(b,slot));
+            if(at==0)throw new InvalidDataException("Authored mesh AABTree was not allocated.");
+            SchemaNativeContract.VerifyStock(tree,typeof(AABTree),0,b,at,Array.Empty<AssetId>());
+        }
         // Reborn: imports must be in-bounds and consume exactly the Core reference occurrences; relocations must point inside this BIN chunk.
         var imports=Slots(chunk.ImportsBuffer);if(imports.Length!=instance.ReferencedInstances.Count)throw new InvalidDataException("Mesh shader import occurrence count differs.");foreach(uint slot in imports){uint value=Word(b,checked((int)slot));if(value==0||value>instance.ReferencedInstances.Count)throw new InvalidDataException("Mesh shader import index differs.");}
     }

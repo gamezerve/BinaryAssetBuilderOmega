@@ -5,9 +5,10 @@
 	<Includes>
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
-		<Include type="all"	source="ART:JURADARSHIP_SKN.w3x" />
-		<Include type="all"	source="ART:JURADARSHIP_SKN.OBBOX01.w3x" />
-		<Include type="all"	source="ART:JURADARSHIP_SKN.JURADARSHIP.w3x" />
+		<!-- <Include type="all"	source="ART:JURADARSHIP_SKN.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JURADARSHIP_SKL.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JURADARSHIP_SKN.OBBOX01.w3x" /> -->
+		<!-- <Include type="all"	source="ART:JURADARSHIP_SKN.JURADARSHIP.w3x" /> -->
 		<Include type="all"	source="ART:JURADARSHIP_RBRN.w3x" />
 
 		<!-- Base Object -->

@@ -8,7 +8,7 @@ Import-Module (Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Management/Micros
 $repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha'
 if(-not $CompilerDirectory){$CompilerDirectory=Join-Path $repo 'source/BinaryAssetBuilder.ManifestInspector/bin/x86/Release/net8.0'}
 # Reborn: model authoring uses the rebuilt W3X processor in the same synchronized compiler generation.
-$names=@('BinaryAssetBuilder.ManifestInspector.exe','BinaryAssetBuilder.ManifestInspector.dll','BinaryAssetBuilder.ManifestInspector.deps.json','BinaryAssetBuilder.ManifestInspector.runtimeconfig.json','BinaryAssetBuilder.Core.dll','BinaryAssetBuilder.Utility.dll','BinaryAssetBuilder.XmlCompiler.dll','BinaryAssetBuilder.W3XCompiler.dll','SageBinaryData.dll')
+$names=@('BinaryAssetBuilder.ManifestInspector.exe','BinaryAssetBuilder.ManifestInspector.dll','BinaryAssetBuilder.ManifestInspector.deps.json','BinaryAssetBuilder.ManifestInspector.runtimeconfig.json','BinaryAssetBuilder.Core.dll','BinaryAssetBuilder.Utility.dll','BinaryAssetBuilder.XmlCompiler.dll','BinaryAssetBuilder.W3XCompiler.dll','SageBinaryData.dll','audio.dll')
 #-------------------------------------------------------------------------------------------------
 <# Reborn: refuse reparse ancestry for both dependency sources and managed SDK destinations. #>
 #-------------------------------------------------------------------------------------------------
@@ -56,5 +56,7 @@ try{
         if(-not(Test-Path -LiteralPath $config)){[IO.File]::WriteAllLines($config,@('# Reborn: local development SDK paths; not a redistributable configuration.',('PowerShell7='+$PowerShell7),'StaticManifest=D:\TEMP\Red Alert 3 Uprising Source Data\Static Data\data\static.manifest','GlobalManifest=D:\TEMP\Red Alert 3 Uprising Source Data\Global Data\data\global.manifest',('WorldBuilderManifest='+(Join-Path $sdk 'catalogs/ra3ep1/worldbuilder.manifest')),('UprisingXmlRoot='+(Join-Path $sdk 'SageXML')),('Driver='+(Join-Path $repo 'scripts/Invoke-Ra3Ep1DevAlphaBuild.ps1')),('CompilerDirectory='+$destination)))}
     }
     [IO.File]::WriteAllText((Join-Path $sdk 'toolchain.json'),([pscustomobject]@{Format='RebornDevSdk1';CompilerSource=[IO.Path]::GetFullPath($CompilerDirectory);UpdatedUtc=[DateTime]::UtcNow.ToString('o');Files=$inventory}|ConvertTo-Json -Depth 5))
+    # Reborn: future compiler rebuilds refresh the same portable scripts/resources without touching bundled runtimes, user mods or relative settings.
+    & (Join-Path $PSScriptRoot 'Sync-Ra3Ep1PortableSupport.ps1') -Repository $repo -Sdk $sdk
     Write-Output ('Reborn: stable alpha toolchain synchronized; changed='+$different+'; '+$destination)
 }finally{if($null-ne $lock){$lock.Dispose()}}

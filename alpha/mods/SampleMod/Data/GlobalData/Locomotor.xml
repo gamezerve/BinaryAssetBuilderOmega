@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+
+  <LocomotorTemplate
+		id="TitanLocomotor"
+		Surfaces="GROUND RUBBLE CRUSHABLE_OBSTACLE" 
+		TurnTimeSeconds="2.5s" 
+		TurnTimeDamagedSeconds="5s" 
+		MaxSpeedDamaged="75%"
+		FastTurnRadius="9.0" 
+		SlowTurnRadius="1.0" 
+		AccelerationSeconds="0.2s"
+		FormationPriority="NO_FORMATION"
+		BrakingSeconds="0.1s"
+		MinTurnSpeed="0%"
+		BehaviorZ="NO_MOTIVE_FORCE"	
+		Appearance="TWO_LEGS" 
+		StickToGround="true"
+		CanMoveBackward="true"
+		BackingUpSpeed="33%"
+	/>
+	
+</AssetDeclaration>

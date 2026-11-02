@@ -1,10 +1,174 @@
 # Reborn Paradrop: real spellbook UI and event-only synchronization
 
+<!-- Reborn: user-confirmed sidebar behavior is retained while replacement Towers rejoin the existing clock after construction. -->
+## Latest: rebuilt Tower cooldown attachment (2026-11-02)
+
+The user confirmed that sidebar visibility and cooldown synchronization now work.
+A remaining runtime case affected a Tower sold/destroyed during cooldown and then
+rebuilt: the sidebar kept the clock, but the new building's unit ability became
+ready until a rank change synchronized it again.
+
+The former lifecycle synchronization ran at `OnCreated`, with no
+`OnBuildingComplete` binding. Native completion can initialize receiver powers
+after that early write. `RebornParadropTowerBuilt` now attaches the completed
+Tower to the existing owner clock and schedules the established one-shot
+post-initialization synchronization. It does not restart/promote the clock,
+spawn another provider, change sidebar gates, or add periodic UI writes.
+
+Only `Scripts.lua` and `ScriptEvents.xml` are changed for this fix. Lua 5.1 tests
+now include a simulated native countdown reset after OnCreated, construction
+delay, complete loss of Towers, callback wrappers and rank 1/2/3 rebuilding:
+2,276 mock checks passed. The event file passes EA's ScriptEvents XSD. The former
+mock tested immediate replacement creation but did not simulate later native
+power initialization; that coverage gap is now explicit. Engine delivery of the
+new completion callback and the final visual result still need a gameplay test.
+
+Rebuild Reborn through EALAModStudio, start a fresh match, cast Paradrop, sell or
+destroy the Tower, and rebuild it while recharge is active. The completed
+building and sidebar should display the same active-level remaining cooldown.
+No map override, game launch, automatic Reborn package build, commit or push was
+performed for this change. SampleMod investigation was stopped at the user's request.
+
+
 <!-- Reborn: record the installed chain and distinguish offline evidence from game behavior. -->
 Updated November 1, 2026. The user reports that the previous revision still has
 no sidebar shortcut and promotion makes the power ready. Creation captions for
 the spellbook/clock were probably visible. Previous offline checks therefore did
 not establish correct runtime UI discovery or lifecycle ordering.
+
+## November 2: real-spellbook native UI entries replace the failed provider route
+
+<!-- Reborn: keep failed runtime experiments separate from the currently installed sidebar candidate. -->
+Adding SPELL_BOOK to the provider did not produce a shortcut. Read-only capture
+of process 31552 confirms the provider's role-6 callback, a native power manager
+with Enabled=1 and one bound power instance. The real spellbook has no Paradrop
+manager after the provider refactor. An enabled manager on an auxiliary object
+therefore did not establish sidebar discovery. No new inference from the provider
+creation caption is used as runtime success.
+
+The new candidate removes all three providers, spawn requests and event lists.
+The actual PlayerSpellBook now owns nine protocol-gated UI entries: three ranks
+by three Allied branches. Each uses the real purchased protocol as RequiredPlayerTech;
+higher-row techs forbid lower ranks. Within one row, earlier-priority purchased
+branches forbid later entries, so multiple purchases never duplicate the button.
+No private PlayerTech grant or world-script player context is required.
+
+These are nine additional native SpecialPowerTemplate UI-view identities, not a
+claim that the engine can express an OR over three RequiredPlayerTech references.
+Their OCL effects/targeting match the existing canonical level, and all cast
+conditions enter the existing real-book level callbacks. The three canonical
+Tower power IDs and all gameplay payloads remain unchanged. At each existing
+cast/lifecycle/promotion event, the same authoritative clock writes all UI-view
+countdowns alongside canonical countdowns. Native timers advance themselves;
+there are still no periodic UI writes. Switching protocol branches within a rank
+therefore selects an already synchronized timer.
+
+Each view includes its manager, OCL handler, mouse/joypad/unit-ability definition
+and command on the real spellbook. The ordinary static command sets retain all
+retail entries. No Tower source, map or game installation was changed.
+Private compilation and stream readback pass for 103 assets. 1,801 Lua mock
+checks cover casts, promotions, stable wrappers, player isolation and cross-view
+countdowns. All 512 combinations of the nine relevant protocol purchases select
+zero entries before purchase or exactly one entry at the highest purchased tier.
+Independent native comparison confirms byte-identical canonical power records
+and a byte-identical complete Tower payload. These checks do not execute native
+UI rendering; a fresh-match sidebar test remains required.
+
+Installed source files: Paradrop.xml, LogicCommandSet.xml, Scripts.lua and
+ScriptEvents.xml. No automatic user package publication, process modification,
+game launch, commit or push occurred.
+
+## November 2: provider creation confirmed; missing spellbook initialization flag
+
+<!-- Reborn: record a concrete native initialization prerequisite instead of equating the Lua creation caption with sidebar registration. -->
+The user sees the sidebar-provider creation caption but no shortcut. That confirms
+the provider's Lua creation callback; it does not confirm its OCL power's native
+initialization. Retail SpecialPowerModule/OCLSpecialPower creation virtual slot
+at 0x00774550 reads the owner's SPELL_BOOK bit and calls 0x0075ACB0 only when set.
+The old providers omitted that bit. The called path initializes the power and
+registers IS_PLAYER_POWER instances with the native power notification route.
+
+All three providers now include SPELL_BOOK while retaining non-INERT AI/Lua
+registration. No manager, command, canonical power, clock or timer logic changed.
+The private 67-asset build and stream readback pass. An independent before/after
+comparison of every native payload confirms exactly one changed byte per provider
+(the SPELL_BOOK bit) and byte-identical payloads for all other 64 assets. INERT
+remains clear in all three emitted provider masks. The new sidebar result still
+requires runtime validation; it is not inferred from offline checks.
+
+Only Paradrop.xml was installed. The user package was not rebuilt automatically,
+and no game was launched, modified or stopped. No commit or push was made.
+
+## November 2: failed player-context gate replaced by native UI owners
+
+<!-- Reborn: supersede the failed private-tech visibility candidate with observed runtime evidence. -->
+The visibility-tech candidate failed in the user's match: the initial sidebar
+was empty, but after protocol purchase and Tower construction the grant-failure
+caption appeared and the Tower power remained unavailable. That regression was
+caused by requiring a private tech that the object-Lua grant path did not supply.
+
+Read-only capture of process 4364 verified Player_2 as the real script name,
+correct Tower/clock/spellbook ownership, all three Lua roles, an empty player-alias
+cache and the failed-visibility marker. ScriptEngine+0x18FB4 was null. Native
+player-mask resolution at 0x005B1720/0x005B0ED0 requires that world-script context
+before resolving explicit names. Expanding alias spellings is insufficient;
+the staged alias-only candidate was not installed.
+
+The current candidate removes the three private PlayerTech assets and every
+player-context action/condition from this feature. Canonical powers return to
+the Allied faction requirement; existing protocol GameDependency rules remain.
+Their IDs, payloads and 300/330/360-second reloads are unchanged. The persistent
+clock and event-only timer arithmetic remain in place.
+
+Only the current tier's invisible provider owns its PlayerPowerManager. The
+real spellbook and Tower retain their canonical OCL handlers but no longer
+advertise all three sidebar managers. At an unlocked row the clock grants an
+OBJECT request upgrade, using the already proven strong-OCL creation route.
+The new provider has non-INERT AI/Lua registration, one canonical power and its
+matching command. A higher row retires the old provider through an object event;
+late lower-tier spawns reject themselves. Provider callbacks use canonical
+native-ID handles and role 6, so casts and new-provider creation receive the
+existing shared timer. No additional power/cooldown identity is introduced.
+
+Native PlayerPowerManager code at 0x00757040 evaluates required/forbidden techs,
+and its lifecycle owns availability notifications. This supports using native
+manager lifetime for advertisement, but does not establish runtime UI success.
+Private compilation and stream readback pass for 67 explicit assets. 1,794 Lua
+mock checks cover provider requests, retirement, stale queued spawns, canonical
+sidebar casts, ownership isolation, failed requests and retained reload fractions.
+A new-match UI test is still required. The running match and published package
+were not changed; no commit or push was made.
+
+## November 2: cooldown confirmed; sidebar visibility gates
+
+<!-- Reborn: retain user-observed timing evidence separately from the next UI candidate. -->
+The user confirms that clock creation now reports its active caption, a Tower
+cast also starts the sidebar cooldown, and promotion from rank 1 to rank 2
+preserves the remaining reload fraction. All three sidebar buttons remain
+visible, with unavailable ranks disabled. The lifecycle correction is therefore
+runtime-supported for this tested path; sidebar hiding still needs validation.
+
+GameDependency controls cast availability. The normal retail rank pattern uses
+RequiredPlayerTech and ForbiddenPlayerTech to exclude sidebar ranks. The three
+powers now require separate zero-cost private visibility techs; higher visibility
+techs forbid the lower ranks. Shared protocol row upgrades remain the source of
+rank progression, regardless of the chosen Allied protocol branch.
+
+At existing unlock/promotion/lifecycle refresh events, Lua grants the required
+visibility tech through PLAYER_GRANT_SPECIAL_POWER using the existing canonical
+power. Retail action 528 (0x005E1C98 -> 0x005B7240) grants the template's required
+tech; it does not cast that power. No helper power or additional cooldown was
+introduced. NAMED_OWNED_BY_PLAYER(player, namedClock) validates every player alias
+before a grant; PLAYER_HAS_PLAYER_TECH verifies grant success. Failed resolution
+or readback produces a specific caption without invalidating the saved clock.
+The existing immediate/deferred timer publication follows visibility updates.
+
+Private compilation/readback passes for 61 assets. 1,793 Lua mock checks cover
+no visible tier before unlock, one tier at rows 1/3/5, nonmatching player slots,
+player isolation, failed grant/recovery, and preserved cooldown fractions.
+The UI result remains a new-match runtime check. Modified sources: Paradrop.xml,
+Scripts.lua and Mod.str. No automated Reborn package publication, game launch,
+commit or push occurred.
 
 ## November 2: live registration evidence and lifecycle correction
 

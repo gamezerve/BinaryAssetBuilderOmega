@@ -195,6 +195,26 @@ internal sealed class StockMetadataGrammar
     }
 
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: the legacy Unpause leaf adds only two schema-declared fields to the already learned retail Upgrade base. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifyUnpauseSpecialPowerUpgrade(System.Xml.Schema.XmlSchemaSet schemas)
+    {
+        const string wire="UnpauseSpecialPowerUpgradeModuleData";
+        var schema=schemas.GlobalTypes[new System.Xml.XmlQualifiedName(wire,"uri:ea.com:eala:asset")] as System.Xml.Schema.XmlSchemaComplexType;
+        var extension=(schema?.ContentModel as System.Xml.Schema.XmlSchemaComplexContent)?.Content as System.Xml.Schema.XmlSchemaComplexContentExtension;
+        if(extension?.BaseTypeName.Name!="UpgradeModuleData"||extension.Attributes.Count!=2||!grammar.ContainsKey(typeof(SageBinaryData.UpgradeModuleData)))throw new InvalidDataException("Unpause schema or retail Upgrade grammar differs.");
+        string[] names={"SpecialPowerTemplate","ObeyRechageOnTrigger"};string[] types={"SpecialPowerTemplateRef","SageBool"};uint[] tags={0xAEE83888u,0x77E3F4F7u};
+        for(int i=0;i<names.Length;i++){
+            var attribute=extension.Attributes.OfType<System.Xml.Schema.XmlSchemaAttribute>().SingleOrDefault(a=>a.Name==names[i]);
+            if(attribute?.AttributeSchemaType?.QualifiedName.Name!=types[i]||i==1&&attribute.DefaultValue!="false")throw new InvalidDataException("Unpause own field schema differs: "+names[i]);
+        }
+        if(extension.Particle is System.Xml.Schema.XmlSchemaSequence sequence&&sequence.Items.Count!=0)throw new InvalidDataException("Unpause gained unsupported child fields.");
+        var rows=Get(typeof(SageBinaryData.UnpauseSpecialPowerUpgradeModuleData));rows.Class=FastHash.GetHashCode(wire);
+        rows.Fields=new[]{(1u,FastHash.GetHashCode("UpgradeModuleData")),(FastHash.GetHashCode(names[0]),tags[0]),(FastHash.GetHashCode(names[1]),tags[1])};
+        rows.Kinds=new[]{new HashSet<Kind>{Kind.Table},new HashSet<Kind>{Kind.Native},new HashSet<Kind>{Kind.Native}};
+    }
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: retail SubObjectsUpgrade texture lists are empty; qualify the exact two-reference item from its official schema and an independently captured stock TextureRef wire tag. */
     //-------------------------------------------------------------------------------------------------
     internal void QualifyReplaceTexturePair(uint textureSignature,System.Xml.Schema.XmlSchemaSet schemas)

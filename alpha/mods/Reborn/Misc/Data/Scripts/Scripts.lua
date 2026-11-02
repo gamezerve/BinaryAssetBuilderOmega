@@ -628,6 +628,10 @@ function RebornParadropApply(actor, clock)
     for i = 1, 3 do
         local seconds = RebornParadropScale(remaining, RebornParadropDuration(i), duration)
         ExecuteAction("NAMED_SET_SPECIAL_POWER_COUNTDOWN", actor, "SpecialPowerParadropLvl" .. i, seconds)
+        -- Reborn: native protocol selection may switch sidebar entries within one row; synchronize every view at the same event so switching never invents a ready timer.
+        for column = 1, 3 do
+            ExecuteAction("NAMED_SET_SPECIAL_POWER_COUNTDOWN", actor, "SpecialPower_RebornParadropSidebar_L" .. i .. "_C" .. column, seconds)
+        end
     end
 end
 
@@ -835,6 +839,19 @@ function RebornParadropTowerCreated(self, other)
         return
     end
     RebornParadropCreated(self, other)
+end
+
+-- Reborn: construction completion can initialize a replacement Tower's native powers after its earlier OnCreated sync.
+function RebornParadropTowerBuilt(self, other)
+    self = RebornParadropActor(self)
+    RebornParadropRoles[self] = 5
+    local clock = RebornParadropClockFor(self)
+    if not clock or RebornParadropClockInvalid[clock] then return end
+    -- Reborn: attach only this completed receiver to the surviving clock; never restart or promote the shared timer.
+    RebornParadropApply(self, clock)
+    -- Reborn: reapply once after native construction/command-set initialization settles, without periodic UI writes.
+    RebornParadropDefer(clock)
+    RebornParadropArm(clock)
 end
 
 -- Reborn: XML binds role 5 before OnDestroyed.

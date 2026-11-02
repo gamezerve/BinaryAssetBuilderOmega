@@ -196,13 +196,18 @@ internal class CompressedTimecoded
         return result;
     }
 
+    // Reborn: the EP1 authoring path preserves every source sample; compression must never change a BinaryMove boundary.
+    public static unsafe CompressedTimecoded Lossless(AnimationChannelBase* source, System.Collections.Generic.List<SrcFrame> frames)
+        => new CompressedTimecoded { _type=source->Type, _pivot=(short)source->Pivot, _frames=frames };
+
     public int EstimateSize()
     {
         if (_frames.Count == 0)
         {
             return 0;
         }
-        return _frames.Count * ((_frames.Count * 4) + 2);
+        // Reborn: each key owns one timestamp and one complete scalar/quaternion vector.
+        return 40 + _frames.Count * (2 + _frames[0].Values.Count * 4);
     }
 
     public unsafe void WriteOut(Tracker state, AnimationChannelTimecoded** objT)
@@ -237,10 +242,13 @@ internal class CompressedTimecoded
         uint numValues = numFrames;
         state.InplaceEndianToPlatform(&numValues);
         result->FrameAndBinaryFlag.Count = numValues;
-        result->Values.Count = numValues;
+        // Reborn: quaternion keys contain four floats, not one float per key.
+        uint valueCount = checked(numFrames * vectorSize);
+        uint nativeValueCount = valueCount;state.InplaceEndianToPlatform(&nativeValueCount);
+        result->Values.Count = nativeValueCount;
         if (frames.Count != 0)
         {
-            state.Push((void**)&result->Values.Items, sizeof(float), numFrames);
+            state.Push((void**)&result->Values.Items, sizeof(float), valueCount);
             state.Pop();
             state.Push((void**)&result->FrameAndBinaryFlag.Items, sizeof(ushort), numFrames);
             state.Pop();

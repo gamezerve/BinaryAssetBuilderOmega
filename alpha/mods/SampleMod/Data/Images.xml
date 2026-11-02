@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<!-- Titan -->
+
+	<Texture id="PackedImages_295" File="ART:Images/PackedImages_295.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	
+	<PackedTextureImage id="Portrait_SteelTalonsTitan" Texture="PackedImages_295" Rotated="false">
+		<Dimensions x="128" y="128"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="128" y="128"/>
+	</PackedTextureImage>
+
+	<Texture id="Button_AbilityAdaptiveArmor" File="ART:Images/Button_AbilityAdaptiveArmor.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false"/>
+	
+	<PackedTextureImage id="Button_AbilityAdaptiveArmor" Texture="Button_AbilityAdaptiveArmor" Rotated="false">
+		<Dimensions x="64" y="64"/>
+		<Coords x="0" y="0"/>
+		<TextureDimensions x="256" y="256"/>
+	</PackedTextureImage>
+
+	
+
+</AssetDeclaration>

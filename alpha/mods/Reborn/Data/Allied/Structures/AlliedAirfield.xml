@@ -31,7 +31,7 @@
 		ButtonImage="Button_AlliedAirfield_on"
 		Side="Allies"
 		EditorSorting="STRUCTURE"
-		BuildTime="15"
+		BuildTime="1.5"
 		HealthBoxHeightOffset="50"
 		EnergyProduction="-50"
 		CommandSet="AlliedAirfieldCommandSet"

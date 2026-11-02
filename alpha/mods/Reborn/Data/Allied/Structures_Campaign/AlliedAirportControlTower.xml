@@ -82,11 +82,7 @@
 		</Draws>
 
 		<Behaviors>
-<!-- Reborn: advertise the same canonical powers from the physical command owner as well as the spellbook. -->
-<PlayerPowerManager id="ModuleTag_RebornTowerParadropManager1" SpecialPowerTemplate="SpecialPowerParadropLvl1"/>
-<PlayerPowerManager id="ModuleTag_RebornTowerParadropManager2" SpecialPowerTemplate="SpecialPowerParadropLvl2"/>
-<PlayerPowerManager id="ModuleTag_RebornTowerParadropManager3" SpecialPowerTemplate="SpecialPowerParadropLvl3"/>
-
+<!-- Reborn: tier-specific invisible providers advertise the sidebar; this building retains its canonical unit abilities. -->
 <!-- Reborn: queue the strong clock-creation OCL from the explicit OBJECT request; saved counter bits stay off this building. -->
 <ObjectCreationUpgrade id="ModuleTag_RebornParadropClockSpawn" UpgradeObject="OCL_RebornParadropClock" Delay="1" Permanent="true"><TriggeredBy>Upgrade_RebornParadropClockRequest</TriggeredBy></ObjectCreationUpgrade>
 

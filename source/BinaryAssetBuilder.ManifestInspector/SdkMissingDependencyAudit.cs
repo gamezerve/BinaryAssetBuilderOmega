@@ -87,7 +87,9 @@ internal static class SdkMissingDependencyAudit
     internal static string? ConfiguredWorldBuilderManifest(string sdk)
     {
         string config=Path.Combine(sdk,"uprising-alpha.paths");
-        return File.Exists(config)?File.ReadLines(config).Where(l=>l.StartsWith("WorldBuilderManifest=",StringComparison.OrdinalIgnoreCase)).Select(l=>l[(l.IndexOf('=')+1)..].Trim()).LastOrDefault():null;
+        // Reborn: configured catalog locations use the same SDK-relative semantics as Studio and its backend.
+        string? value=File.Exists(config)?File.ReadLines(config).Where(l=>l.StartsWith("WorldBuilderManifest=",StringComparison.OrdinalIgnoreCase)).Select(l=>l[(l.IndexOf('=')+1)..].Trim()).LastOrDefault():null;
+        return string.IsNullOrWhiteSpace(value)?null:Path.GetFullPath(Path.IsPathRooted(value)?value:Path.Combine(sdk,value));
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -129,6 +131,8 @@ internal static class SdkMissingDependencyAudit
         var catalog=mod.Concat(stock).DistinctBy(a=>(a.TypeId,a.InstanceId)).GroupBy(a=>a.InstanceId).ToDictionary(g=>g.Key,g=>g.ToArray());
         var byIdentity=catalog.Values.SelectMany(a=>a).ToDictionary(a=>new AssetId(a.TypeId,a.InstanceId));
         int checkedReferences=0,deferred=0;
+        // Reborn: a raw-source sequence error must not hide later declared reference fields from the aggregate audit.
+        var recoveredSchemas=new Dictionary<XObject,DeclaredField?>();
         var referenceType=schemas.GlobalTypes[new XmlQualifiedName("AssetReference",Ea)] as XmlSchemaType;
         var weakType=schemas.GlobalTypes[new XmlQualifiedName("WeakReference",Ea)] as XmlSchemaType;
         foreach(string path in emitted)
@@ -148,7 +152,8 @@ internal static class SdkMissingDependencyAudit
             //-------------------------------------------------------------------------------------------------
             void Check(XObject node,IXmlSchemaInfo? info,string value,string field)
             {
-                var type=info?.SchemaType;if(type==null)return;
+                var recovered=info?.SchemaType==null?RecoverDeclaredField(node,schemas,recoveredSchemas):null;
+                var type=info?.SchemaType??recovered?.Type;if(type==null)return;
                 // Reborn: weak IDs may derive directly from string rather than AssetReference, so count their unproved uses before the strong-type gate.
                 // Reborn: UpgradeTemplate weak IDs have explicit asset semantics and must report genuine missing upgrades, not an unsupported module shape.
                 bool upgradeWeak=type.QualifiedName.Name=="UpgradeTemplateWeakRef";
@@ -161,7 +166,7 @@ internal static class SdkMissingDependencyAudit
                 if(!upgradeWeak && !diagnosticWeak && (referenceType==null || !XmlSchemaType.IsDerivedFrom(type,referenceType,XmlSchemaDerivationMethod.None)))return;
                 // Reborn: list-valued/custom reference encodings require their own tokenization rather than hashing the whole list as one missing name.
                 if(type.Datatype?.Variety==XmlSchemaDatatypeVariety.List){deferred++;return;}
-                string? required=Annotation(info?.SchemaAttribute?.UnhandledAttributes)??Annotation(info?.SchemaElement?.UnhandledAttributes);
+                string? required=Annotation(info?.SchemaAttribute?.UnhandledAttributes)??Annotation(info?.SchemaElement?.UnhandledAttributes)??Annotation(recovered?.Annotations);
                 for(XmlSchemaType? current=type;required==null && current!=null;){required=Annotation(current.UnhandledAttributes);var next=current.BaseXmlSchemaType;if(ReferenceEquals(next,current))break;current=next;}
                 value=value.Trim();if(value.Length==0)return;
                 if(value.StartsWith('='))
@@ -180,7 +185,9 @@ internal static class SdkMissingDependencyAudit
                 var local=matches.Where(a=>modIdentities.Contains((a.TypeId,a.InstanceId))).ToArray();if(local.Length!=0)matches=local;
                 uint selectedId=BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(selector);var exact=matches.Where(a=>a.TypeId==selectedId).ToArray();if(exact.Length!=0)matches=exact;
                 checkedReferences++;
-                if(matches.Length==0)Add("MISSINGASSET",selector+":"+name,node,path,field,"Unknown asset referenced from emitted source; not found in mod-produced assets or configured stock manifests.",diagnosticWeak?"Warning":"Error");
+                // Reborn: optional mesh shader texture assignments can be omitted before linking; required texture consumers retain their normal errors.
+                bool optionalTexture=required=="Texture"&&XmlSchemaType.IsDerivedFrom(selected,expected,XmlSchemaDerivationMethod.None)&&W3DMissingTexturePolicy.IsOptionalBinding(node);
+                if(matches.Length==0)Add("MISSINGASSET",selector+":"+name,node,path,field,optionalTexture?"Texture is absent from mod-produced assets and configured stock manifests. The optional shader texture binding will be omitted; the shader default remains in effect. No texture or unresolved import is generated.":"Unknown asset referenced from emitted source; not found in mod-produced assets or configured stock manifests.",diagnosticWeak||optionalTexture?"Warning":"Error");
                 else if(matches.Length>1)Add("AMBIGUOUSASSET",selector+":"+name,node,path,field,"Multiple compatible concrete asset identities match this reference.",diagnosticWeak?"Warning":"Error");
                 else if(WorldBuilderOnly(matches[0])){
                     // Reborn: validation covers both direct strong references and weak spawn sites; compilation no longer emits a competing warning set.
@@ -295,6 +302,41 @@ internal static class SdkMissingDependencyAudit
     internal static string FormatFinding(Finding finding)=>finding.Code=="WORLDBUILDERASSET"
         ? $"{(finding.Severity=="Info"?"WorldBuilder asset pending":finding.Severity+": "+finding.Code)} ' {finding.Target} ' (referenced by {finding.Owner}) {finding.Detail} Source: {finding.Source}({finding.Line},{finding.Column})."
         : $"{finding.Severity}: {finding.Code} ' {finding.Target} ' (referenced by {finding.Owner}) {finding.Detail} Source: {finding.Source}({finding.Line},{finding.Column}). Field: {finding.Field}.";
+    // Reborn: recovered typing carries only an actual schema declaration, never a guessed asset type from field spelling.
+    private sealed record DeclaredField(XmlSchemaType Type,XmlAttribute[]? Annotations);
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: recover declared field types when validation drops PSVI after sequence errors, preserving original XML coordinates and content. */
+    //-------------------------------------------------------------------------------------------------
+    private static DeclaredField? RecoverDeclaredField(XObject node,XmlSchemaSet schemas,Dictionary<XObject,DeclaredField?> cache,int depth=0)
+    {
+        if(cache.TryGetValue(node,out var cached))return cached;
+        if(depth>128)return null;
+        var info=node is XElement elementInfo?elementInfo.GetSchemaInfo():node is XAttribute attributeInfo?attributeInfo.GetSchemaInfo():null;
+        if(info?.SchemaType is XmlSchemaType known)return cache[node]=new(known,info.SchemaAttribute?.UnhandledAttributes??info.SchemaElement?.UnhandledAttributes);
+        DeclaredField? result=null;
+        if(node is XAttribute attribute&&attribute.Parent is XElement attributeOwner){
+            var parent=RecoverDeclaredField(attributeOwner,schemas,cache,depth+1)?.Type as XmlSchemaComplexType;
+            if(parent?.AttributeUses[new XmlQualifiedName(attribute.Name.LocalName,attribute.Name.NamespaceName)] is XmlSchemaAttribute declared&&declared.AttributeSchemaType!=null)result=new(declared.AttributeSchemaType,declared.UnhandledAttributes);
+        }else if(node is XElement element){
+            XmlSchemaElement? declared=null;
+            if(element.Parent==null||element.Parent.Name==XName.Get("AssetDeclaration",Ea))declared=schemas.GlobalElements[new XmlQualifiedName(element.Name.LocalName,element.Name.NamespaceName)] as XmlSchemaElement;
+            else if(RecoverDeclaredField(element.Parent,schemas,cache,depth+1)?.Type is XmlSchemaComplexType parent){
+                var matches=new List<XmlSchemaElement>();Find(parent.ContentTypeParticle,0);
+                // Reborn: ambiguous schema alternatives remain deferred; do not choose a type merely because the element name matches.
+                if(matches.Count>0&&matches.Select(m=>m.ElementSchemaType).Distinct().Count()==1)declared=matches[0];
+                void Find(XmlSchemaParticle? particle,int level){
+                    if(level>64)return;
+                    if(particle is XmlSchemaElement child){if(child.QualifiedName.Name==element.Name.LocalName&&child.QualifiedName.Namespace==element.Name.NamespaceName)matches.Add(child);}
+                    else if(particle is XmlSchemaGroupBase group)foreach(var childParticle in group.Items.OfType<XmlSchemaParticle>())Find(childParticle,level+1);
+                    else if(particle is XmlSchemaGroupRef reference)Find(reference.Particle,level+1);
+                }
+            }
+            if(declared?.ElementSchemaType!=null)result=new(declared.ElementSchemaType,declared.UnhandledAttributes);
+        }
+        cache[node]=result;return result;
+    }
+
     // Reborn: only official reference annotations define typed dependency targets.
     private static string? Annotation(XmlAttribute[]? attributes)=>attributes?.FirstOrDefault(a=>a.LocalName=="refType"&&a.NamespaceURI==AnnotationNamespace)?.Value;
     // Reborn: disable external entities and preserve source coordinates without modifying source XML.

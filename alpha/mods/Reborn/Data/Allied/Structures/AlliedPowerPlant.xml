@@ -31,7 +31,7 @@
 	            Side="Allies"
 	            EditorSorting="STRUCTURE"
 	            JustBuiltTime="1.2s"
-	            BuildTime="10"
+	            BuildTime="1"
 	            EnergyProduction="100"
 	            EnergyBonus="50"
 	            CommandSet="AlliedPowerPlantCommandSet"

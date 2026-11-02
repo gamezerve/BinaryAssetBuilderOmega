@@ -1,9 +1,12 @@
 # Reborn: prepare explicit EA XML sources before bounded native compilation; never invent a LogicCommand from the GameObject ID.
 [CmdletBinding()]
 param([Parameter(Mandatory)][string]$ModXml,[Parameter(Mandatory)][string]$StaticManifest,[Parameter(Mandatory)][string]$GlobalManifest,[Parameter(Mandatory)][string]$CompilerDirectory,[Parameter(Mandatory)][string]$OutputRoot,[switch]$ValidateOnly,[string]$GlobalStreamContext)
-$ErrorActionPreference='Stop';$sdk=Join-Path (Split-Path -Parent $PSScriptRoot) 'alpha'
+$ErrorActionPreference='Stop'
+# Reborn: source preparation resolves the relocated SDK and bundled runtime before invoking the compiler apphost.
+. (Join-Path $PSScriptRoot 'Ra3Ep1PortablePaths.ps1')
+$sdk=Get-RebornSdkRoot $PSScriptRoot
 try {
-    $settings=@{};foreach($line in Get-Content -LiteralPath (Join-Path $sdk 'uprising-alpha.paths')){if($line -and -not $line.StartsWith('#')){$pair=$line.Split('=',2);$settings[$pair[0]]=$pair[1]}}
+    $settings=Read-RebornSdkPaths $sdk
     if(-not $settings.UprisingXmlRoot -or -not(Test-Path -LiteralPath $settings.UprisingXmlRoot -PathType Container)){throw 'Conscript requires UprisingXmlRoot in alpha/uprising-alpha.paths.'}
     $exe=Join-Path $CompilerDirectory 'BinaryAssetBuilder.ManifestInspector.exe';$prepared=Join-Path $OutputRoot 'source'
     # Reborn: standard SDK roots are adjacent to Studio; an explicit local stock XML override changes only the SageXML root.

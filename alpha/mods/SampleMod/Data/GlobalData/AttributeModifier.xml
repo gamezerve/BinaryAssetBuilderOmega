@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+
+	<AttributeModifier
+		id="AttributeModifier_AdaptiveArmor"
+		Category="NONE"
+		Duration="10.0s"
+		ModelConditionsSet="USER_8"
+		>
+		<Modifier Type="RATE_OF_FIRE" Value="75%"/>
+		<Modifier Type="SPEED" Value="85%"/>
+		<Modifier Type="ARMOR" Value="70%" />
+		<Modifier Type="RESIST_EMP" Value="100%"/>		
+	</AttributeModifier>	
+	
+</AssetDeclaration>

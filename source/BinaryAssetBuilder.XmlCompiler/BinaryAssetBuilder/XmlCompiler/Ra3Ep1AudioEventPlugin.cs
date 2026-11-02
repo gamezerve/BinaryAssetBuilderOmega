@@ -15,6 +15,8 @@ public sealed class Ra3Ep1AudioEventPlugin : IAssetBuilderPlugin, IAssetBuilderO
     private bool _initialized;
     // Reborn: the alpha ambient path explicitly opts into the native-stock-proved AMBIENT slider and start fade; older diagnostic profiles stay unchanged.
     public bool AllowAmbientAuthoring { get; set; }
+    // Reborn: normal alpha authoring accepts every official AudioVolumeSlider; isolated diagnostic profiles keep their earlier contract.
+    public bool AllowSchemaSubmixSliders { get; set; }
     public string ProfileName => "RA3EP1-AudioEvent-Experimental-v1";
     public bool CanWriteProductionOutput => false;
     public bool CanUseBuildCache => false;
@@ -77,7 +79,7 @@ public sealed class Ra3Ep1AudioEventPlugin : IAssetBuilderPlugin, IAssetBuilderO
         foreach (string flag in root.GetAttribute("Control").Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries))
             if (flag != "LOOP" && flag != "INTERRUPT" && flag != "FADE_ON_KILL" && flag != "IMMEDIATE_DECAY_ON_KILL" && !(AllowAmbientAuthoring && flag == "FADE_ON_START"))
                 throw new NotSupportedException("AudioEvent control flag is not stock-proven in this profile.");
-        if (root.HasAttribute("SubmixSlider") && root.GetAttribute("SubmixSlider") != "SOUNDFX" && !(AllowAmbientAuthoring && root.GetAttribute("SubmixSlider") == "AMBIENT"))
+        if (!AllowSchemaSubmixSliders && root.HasAttribute("SubmixSlider") && root.GetAttribute("SubmixSlider") != "SOUNDFX" && !(AllowAmbientAuthoring && root.GetAttribute("SubmixSlider") == "AMBIENT"))
             throw new NotSupportedException("Only explicit stock-proven SOUNDFX slider is admitted.");
         int count = 0, extraBytes = root.HasAttribute("SubmixSlider") ? 4 : 0, relocations = root.HasAttribute("SubmixSlider") ? 1 : 0;
         HashSet<string> ranges = new(StringComparer.Ordinal), lists = new(StringComparer.Ordinal);

@@ -50,7 +50,7 @@ if($SchedulerControl){
     # Reborn: the apphost alone does not identify managed compiler code; freeze the complete runtime/assembly dependency set.
     $compilerFiles=@(foreach($name in @('BinaryAssetBuilder.ManifestInspector.exe','BinaryAssetBuilder.ManifestInspector.dll',
         'BinaryAssetBuilder.ManifestInspector.deps.json','BinaryAssetBuilder.ManifestInspector.runtimeconfig.json',
-        'BinaryAssetBuilder.Core.dll','BinaryAssetBuilder.Utility.dll','BinaryAssetBuilder.XmlCompiler.dll','BinaryAssetBuilder.W3XCompiler.dll','SageBinaryData.dll')){
+        'BinaryAssetBuilder.Core.dll','BinaryAssetBuilder.Utility.dll','BinaryAssetBuilder.XmlCompiler.dll','BinaryAssetBuilder.W3XCompiler.dll','SageBinaryData.dll','audio.dll')){
         $path=Join-Path (Split-Path -Parent $exe) $name
         [pscustomobject]@{Name=$name;Path=$path;Sha256=(Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash}
     })
@@ -91,6 +91,16 @@ if($SchedulerControl){
     Add-BatchCase 'naval-updates' 'StockQualifiedNavalUpdates' @('naval-update-self-test',$StaticManifest,$GlobalManifest)
     # Reborn: qualify MiG return-to-producer and Kirov locomotor switching with default/edit/full-object/corruption controls.
     Add-BatchCase 'aircraft-updates' 'StockQualifiedAircraftUpdates' @('aircraft-update-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: generated WAVs exercise the deployed PC encoder, runtime envelopes, local events and final CDATA lookup paths.
+    # Reborn: exercise full EP1 subsound records through normal authoring and packaged stream readback.
+    Add-BatchCase 'multisound-authoring' 'NativeMultisoundAuthoring' @('multisound-authoring-self-test',(Join-Path $OutputDirectory 'multisound-authoring'),$StaticManifest,$GlobalManifest)
+    # Reborn: cover all official submix sliders and omitted/explicit NONE allocation in production audio output.
+    Add-BatchCase 'audioevent-sliders' 'AudioEventSubmixSliders' @('audioevent-sliders-self-test',(Join-Path $OutputDirectory 'audioevent-sliders'),$StaticManifest,$GlobalManifest)
+    Add-BatchCase 'audio-file-authoring' 'NativeAudioFileAuthoringAndCData' @('audio-file-authoring-self-test',(Join-Path $OutputDirectory 'audio-file-authoring'),$StaticManifest,$GlobalManifest)
+    # Reborn: missing optional mesh shader textures warn and create no unresolved imports; required and ambiguous references still fail.
+    Add-BatchCase 'missing-shader-textures' 'MissingShaderTextureImportPolicy' @('w3d-missing-textures-self-test',(Join-Path $OutputDirectory 'missing-shader-textures'),$StaticManifest)
+    # Reborn: animation source/runtime dispatch, compression and playback retain the original EP1 channel ABI.
+    Add-BatchCase 'w3d-animation' 'StockQualifiedAnimationPlayback' @('w3d-animation-self-test',$StaticManifest)
     # Reborn: missing ART all-includes skip without hiding real source errors.
     Add-BatchCase 'missing-art-includes' 'MissingArtIncludes' @('missing-art-include-self-test',(Join-Path $OutputDirectory 'missing-art-includes'))
     # Reborn: falling-projectile movement and ship slow-death use their original EP1 records.
@@ -183,6 +193,8 @@ if($SchedulerControl){
     Add-BatchCase 'run-off-map' 'RunOffMapBehavior' @('run-off-map-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'jet-ai' 'JetAIUpdate' @('jet-ai-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'eject-passengers' 'EjectPassengersSpecialAbilityUpdate' @('eject-passengers-self-test',$StaticManifest,$GlobalManifest)
+    # Reborn: qualify the schema-backed legacy Unpause extension and its inherited Upgrade graph.
+    Add-BatchCase 'unpause-special-power-upgrade' 'UnpauseSpecialPowerUpgrade' @('unpause-special-power-upgrade-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'attribute-modifier-upgrade' 'AttributeModifierUpgrade' @('attribute-modifier-upgrade-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'transport-contain' 'TransportContain' @('transport-contain-self-test',$StaticManifest,$GlobalManifest)
     Add-BatchCase 'subobjects-upgrade' 'SubObjectsUpgrade' @('subobjects-upgrade-self-test',$StaticManifest,$GlobalManifest)

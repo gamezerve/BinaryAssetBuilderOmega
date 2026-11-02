@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+
+	<LogicCommandSet
+		id="AlliedWarFactoryCommandSet">
+		<Cmd>Command_ConstructAlliedMiner</Cmd>
+		<Cmd>Command_ConstructAlliedAntiInfantryVehicle_Ground</Cmd>
+		<Cmd>Command_ConstructAlliedAntiAirVehicleTech1</Cmd>
+		<Cmd>Command_ConstructAlliedAntiVehicleVehicleTech1</Cmd>
+		<Cmd>Command_ConstructAlliedAntiStructureVehicle</Cmd>
+		<Cmd>Command_ConstructAlliedAntiVehicleVehicleTech3</Cmd>
+		<Cmd>Command_ConstructAlliedArtilleryVehicle</Cmd>
+		<Cmd>Command_ConstructAlliedFutureTank</Cmd>
+		<Cmd>Command_ConstructSteelTalonsTitan</Cmd>
+		<Cmd>Command_ConstructAlliedMCV</Cmd>
+
+<!--
+		<Cmd>Command_UpgradeAlliedWarFactoryRepairBay</Cmd>
+-->		
+	</LogicCommandSet>
+		
+	<LogicCommandSet
+		id="SteelTalonsTitanCommandSet">
+		<Cmd>Command_AttackMove</Cmd>
+		<Cmd>Command_ActivateAdaptiveArmor</Cmd>
+	</LogicCommandSet>
+	
+</AssetDeclaration>

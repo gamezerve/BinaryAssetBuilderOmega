@@ -648,6 +648,7 @@
 		<!-- <Include type="all"	source="ART:JUEMPERORMECHA_SKN.OBBOX01.w3x" /> -->
 		<!-- <Include type="all"	source="ART:JUEMPERORMECHA_SKN.w3x" /> -->
 		<!-- <Include type="all"	source="ART:JUEMPERORMECHA_SKN.JAPANEMPERORMECHA01.w3x" /> -->
+		<Include type="all"	source="ART:JURADARSHIP_RBRN.w3x" />
 
 	</Includes>
 

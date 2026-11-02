@@ -2113,3 +2113,13 @@ END
 RebornDebug:ParadropClockRequestFailed
  "Reborn: Paradrop clock creation request failed."
 END
+
+// Reborn: report visibility-tech grant failure without disabling the independent saved cooldown.
+RebornDebug:ParadropVisibilityGrantFailed
+"Reborn: Paradrop sidebar visibility tech could not be granted."
+END
+
+// Reborn: a failed native OBJECT request must not alter the independent shared cooldown.
+RebornDebug:ParadropSidebarRequestFailed
+"Reborn: Paradrop sidebar provider request failed."
+END

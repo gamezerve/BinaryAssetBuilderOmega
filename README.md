@@ -1,5 +1,96 @@
 # BinaryAssetBuilder
 
+<!-- Reborn: retain one portable alpha while publishing final mods to the current user's Windows Documents directory. -->
+The alpha bundles PowerShell 7, the x86 .NET 8 runtime, scripts, compiler
+resources and stock baselines. Its configuration resolves paths relative to
+Studio; it no longer needs the original repository or D:/TEMP data to build.
+See [portable alpha dependencies and copy instructions](docs/PORTABLE_ALPHA.md).
+
+<!-- Reborn: preserve EA's terminated vertex-declaration contract for custom models with aligned descriptor lengths. -->
+EP1 W3X mesh declarations now allocate a trailing NUL without adding it to the
+stored text length. The Radar Ship regression previously failed this check;
+its corrected BIN/RELO/IMP now match the actual EA RA3 SDK output byte for byte.
+The alpha tools include this fix; in-game visibility still needs confirmation
+after rebuilding the mod. See [Radar Ship investigation](docs/JAPAN_RADAR_SHIP_VISIBILITY.md).
+
+<!-- Reborn: provide a separate reusable shader compiler and keep experimental effect loading distinct from completed visual migration. -->
+The local `alpha/ShaderCompiler/RebornShaderCompiler.exe` compiles FX sources
+with the legacy EA compiler and optionally checks Uprising's DirectX effect
+loader. Four experimental KW register-binding candidates pass effect loading;
+legacy evaluator/technique migration and in-game visuals remain unverified.
+No live mod shaders were replaced. See [Shader compiler](docs/SHADER_COMPILER.md).
+
+<!-- Reborn: normal AudioEvent builds accept the complete unchanged Uprising slider enum. -->
+AudioEvent `SubmixSlider` supports `SOUNDFX`, `VOICE`, `MUSIC`, `AMBIENT`,
+`MOVIE` and `NONE`. Omission keeps the native slider pointer null; explicit
+`NONE` retains its own value. Official schema validation still rejects unknown
+names, and isolated diagnostic profiles retain their previous contract.
+
+<!-- Reborn: early dependency checks retain declared reference typing even after raw XML sequence validation loses annotations. -->
+The missing-asset audit now resolves unannotated fields from their actual schema
+declarations after raw-source sequence errors. Weighted audio Sound/Subsound
+references keep their original source locations and are checked against mod and
+stock assets before compilation; ordinary strings remain outside asset lookup.
+
+<!-- Reborn: original Uprising lightning ranges retain their End*Change names instead of the legacy KW names. -->
+Lightning particle draws now compile `EndAmplitudeChange`, `EndFrequencyChange`
+and `EndPhaseChange`, including signed ranges and omitted defaults. The EP1
+writer preserves the 72-byte RandomSet layout and keeps legacy KW records separate.
+
+<!-- Reborn: EP1 drawable particles use their real ObjectSet stride and full RenderObject update, retaining legacy KW records separately. -->
+Particle RenderObject draws now use Uprising's 16-byte ObjectSet items, without
+the obsolete KW Shader field. RenderObject updates also include the original
+X/Y angle channels and Uprising rotation values. Both layouts are checked
+against the complete retail AlliedAAGun01 graph and authored package readback.
+
+<!-- Reborn: root particle shader values use Uprising ordinals while the shared legacy KW enum stays unchanged. -->
+Particle `Shader="W3D_ALPHA"` now writes the Uprising value 8 instead of the
+legacy KW value 9. The retail AlliedAAGun01 header confirms this mapping; all
+nine official shader values and the omitted ADDITIVE default pass native and
+packaged-stream regression checks.
+
+<!-- Reborn: enable the original-schema legacy Unpause upgrade without claiming an unobserved retail gameplay witness. -->
+`UnpauseSpecialPowerUpgrade` now compiles with its complete Upgrade base,
+typed power reference and `ObeyRechageOnTrigger` flag. It emits a legacy warning
+because no populated Uprising source/native example was found; runtime behavior
+still needs an in-game check. See [Unpause upgrade notes](docs/UNPAUSE_SPECIAL_POWER_UPGRADE.md).
+
+<!-- Reborn: connect original Uprising Multisound records to ordinary alpha authoring without changing the legacy KW layout. -->
+`Multisound` now builds through the normal alpha pipeline, including local/nested
+sound references, inheritance, weights, control flags and optional pitch/volume
+overrides. SampleMod's two Multisound declarations use valid Uprising syntax.
+528 original native records and a seven-asset authoring/package regression pass.
+See [Multisound authoring](docs/MULTISOUND_AUTHORING.md).
+
+<!-- Reborn: move protocol-gated sidebar views to the real spellbook instead of relying on auxiliary-provider discovery. -->
+The failed Paradrop provider route is removed. The real spellbook now owns
+protocol-gated sidebar entries that share the existing authoritative cooldown.
+All 512 protocol combinations select at most one current-tier entry; 1,801 Lua
+checks and a 103-asset private build/readback pass. Canonical gameplay power and
+Tower native payloads are unchanged. Native sidebar rendering still needs a
+fresh-match test. See [Paradrop notes](docs/REBORN_PARADROP_PROTOCOL_THRESHOLDS.md).
+
+<!-- Reborn: initialize sidebar providers through the retail spellbook creation path. -->
+Paradrop sidebar providers now carry the missing SPELL_BOOK flag required by
+native OCL creation. The 67-asset private build passes; binary comparison confirms
+only those three kind bits changed. Sidebar visibility still needs a fresh-match
+test. See [Paradrop notes](docs/REBORN_PARADROP_PROTOCOL_THRESHOLDS.md).
+
+<!-- Reborn: replace the runtime-failed player-context sidebar grant without changing canonical cooldown identities. -->
+The Paradrop private-tech visibility candidate failed in game and has been
+removed. Current-tier invisible providers now own sidebar advertisement through
+the existing three canonical powers; the proven shared clock remains unchanged.
+Private compilation/readback passes for 67 assets and 1,794 Lua mock checks pass.
+Native sidebar visibility still requires a fresh-match test.
+See [Paradrop notes](docs/REBORN_PARADROP_PROTOCOL_THRESHOLDS.md).
+
+<!-- Reborn: separate confirmed Paradrop timer behavior from the new sidebar visibility candidate. -->
+Paradrop clock creation, Tower/sidebar countdown synchronization and rank 1-to-2
+fraction transfer are user-confirmed. Sidebar ranks now use private zero-cost
+tech visibility gates, with native owner validation before grants; 61-asset
+private stream readback and 1,793 Lua mock checks pass. The new hide/show behavior
+still needs a fresh-match test. See [Paradrop notes](docs/REBORN_PARADROP_PROTOCOL_THRESHOLDS.md).
+
 <!-- Reborn: record live Paradrop lifecycle evidence and the remaining runtime gate. -->
 Live Paradrop inspection found a missing clock AI interface, the spellbook's
 INERT Lua exclusion and unstable callback wrapper keys. The mod sources now
@@ -4842,3 +4933,37 @@ remain checked. No populated retail texture-swap witness is claimed.
 `subobjects-upgrade-self-test` covers the original graphs, multiple nuggets,
 texture imports, both animation levels, defaults, corruption and complete object
 composition without changing user mods or launching the game.
+
+
+### W3D source authoring
+
+<!-- Reborn: generic W3X asset emission includes animation runtime channels and optional mesh acceleration trees. -->
+`W3DContainer`, `W3DHierarchy`, `W3DMesh`, `W3DAnimation` and
+`W3DCollisionBox` use the regular source/include and stream build paths.
+Animation scalar/quaternion/visibility channels now compile to EP1 timecoded or
+adaptive-delta records, with independent playback readback. Optional mesh AABTree
+allocation and quaternion timecoded vector allocation are corrected.
+See [W3D authoring support](docs/W3D_AUTHORING_SUPPORT.md) for coverage,
+compression policy, regression evidence and the remaining SampleMod source dependencies.
+
+
+<!-- Reborn: missing optional shader texture references warn without leaving invalid imports. -->
+Missing mesh shader texture bindings now produce source-located `MISSINGASSET`
+warnings. Only the unavailable optional assignment is omitted before import
+normalization, leaving the shader default; no texture asset is fabricated.
+The real SampleMod art group builds without texture stand-ins. Required texture
+consumers and invalid/ambiguous references retain their errors; see the
+[W3D authoring guide](docs/W3D_AUTHORING_SUPPORT.md#missing-optional-shader-textures).
+
+
+### Authored AudioFile WAV resources
+
+<!-- Reborn: native AudioFile encoding and CDATA publication now participate in ordinary Static_Mod builds. -->
+`AudioFile` WAV resources now use the normal include/resource/build pipeline.
+The deployed PC encoder supports `XAS`, `NONE` and `EALAYER3`, RAM or streamed
+payloads, source sample rates/PCSampleRate overrides, PCQuality and subtitle
+settings. Runtime AudioFile records and correctly named CDATA payloads are
+published together, including local AudioEvent imports. The real 135-file
+SampleMod audio pool passed encoding and package readback. See
+[AudioFile authoring](docs/AUDIOFILE_AUTHORING.md) for the supported PCM input,
+defaults, regression evidence and remaining independent sound-family issues.

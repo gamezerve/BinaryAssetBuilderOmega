@@ -31,6 +31,10 @@ internal static class FXParticleSystemCompiler
     internal static Type ModuleType(XmlElement source)
     {
         string name=source.SchemaInfo.SchemaType?.QualifiedName.Name??"";var type=typeof(FXParticleSystemTemplate).Assembly.GetType("SageBinaryData."+name);
+        // Reborn: the Uprising RenderObject list omits the legacy per-item Shader word.
+        if(name=="FXParticleDrawLightning")type=typeof(Ep1FXParticleDrawLightning);
+        if(name=="FXParticleDrawRenderObject")type=typeof(Ep1FXParticleDrawRenderObject);
+        if(name=="FXParticleUpdateRenderObject")type=typeof(Ep1FXParticleUpdateRenderObject);
         if(type==null||!IsModule(type)||typeof(Marshaler).GetMethod("Marshal",new[]{typeof(Node),type.MakePointerType(),typeof(Tracker)})==null)throw SdkXmlDiagnostics.At(new InvalidDataException("Particle module writer is not implemented: "+source.LocalName+" ("+name+")."),source);return type;
     }
 
@@ -50,9 +54,20 @@ internal static class FXParticleSystemCompiler
     internal static unsafe Chunk Compile(XmlNode source,XmlSchemaSet schemas)
     {
         var xml=SdkXmlDiagnostics.Parse(Encoding.UTF8.GetBytes(source.OuterXml));foreach(var attribute in xml.SelectNodes("//@TypeId")!.Cast<XmlAttribute>().ToArray())attribute.OwnerElement!.RemoveAttributeNode(attribute);xml.Schemas.Add(schemas);xml.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));
-        foreach(var role in xml.DocumentElement!.ChildNodes.OfType<XmlElement>().Where(e=>Roles.Contains(e.LocalName)))foreach(var module in role.ChildNodes.OfType<XmlElement>())module.SetAttribute("TypeId",FastHash.GetHashCode(ModuleType(module).Name).ToString(System.Globalization.CultureInfo.InvariantCulture));
-        var ns=new XmlNamespaceManager(xml.NameTable);ns.AddNamespace("ea",SchemaSet.XmlNamespace);FXParticleSystemTemplate* root;using var tracker=new Tracker((void**)&root,(uint)sizeof(FXParticleSystemTemplate),false);Marshaler.Marshal(new Node(xml.DocumentElement.CreateNavigator()!,ns),root,tracker);var chunk=new Chunk();if(!tracker.MakeRelocatable(chunk))throw new InvalidDataException("Particle native allocation failed.");return chunk;
+        foreach(var role in xml.DocumentElement!.ChildNodes.OfType<XmlElement>().Where(e=>Roles.Contains(e.LocalName)))foreach(var module in role.ChildNodes.OfType<XmlElement>()){_=ModuleType(module);module.SetAttribute("TypeId",FastHash.GetHashCode(module.SchemaInfo.SchemaType!.QualifiedName.Name).ToString(System.Globalization.CultureInfo.InvariantCulture));}
+        var ns=new XmlNamespaceManager(xml.NameTable);ns.AddNamespace("ea",SchemaSet.XmlNamespace);FXParticleSystemTemplate* root;using var tracker=new Tracker((void**)&root,(uint)sizeof(FXParticleSystemTemplate),false);Marshaler.MarshalEp1ParticleTemplate(new Node(xml.DocumentElement.CreateNavigator()!,ns),root,tracker);
+        // Reborn: KW inserts W3D_DIFFUSE before W3D_ALPHA; EP1 stores W3D_ALPHA as 8, confirmed in the retail AlliedAAGun01 root.
+        root->Shader=(FXParticleSystem_ShaderType)ShaderValue(xml.DocumentElement.GetAttribute("Shader"));
+        var chunk=new Chunk();if(!tracker.MakeRelocatable(chunk))throw new InvalidDataException("Particle native allocation failed.");return chunk;
     }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: keep the original Uprising enum ordinals explicit instead of relying on the older shared KW enum. */
+    //-------------------------------------------------------------------------------------------------
+    private static int ShaderValue(string value)=>value switch{
+        "INVALID_SHADER"=>0,"ADDITIVE"=>1,"ADDITIVE_ALPHA_TEST"=>2,"ALPHA"=>3,"ALPHA_TEST"=>4,
+        "MULTIPLY"=>5,"ADDITIVE_NO_DEPTH_TEST"=>6,"ALPHA_NO_DEPTH_TEST"=>7,"W3D_ALPHA"=>8,
+        _=>throw new InvalidDataException("Unsupported Uprising particle shader: "+value)};
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: bind the GPU path to the original complete Tiny particle graph through selected checksum-bound native bytes. */
@@ -62,6 +77,21 @@ internal static class FXParticleSystemCompiler
         if(Marshal.SizeOf<FXParticleSystemTemplate>()!=176||Marshal.SizeOf<FXParticleDrawGpu>()!=60)throw new InvalidDataException("EP1 particle root/GPU header layout differs.");
         var doc=ManifestReader.Read(SdkEnvironmentPreflight.Read(manifest,64*1048576));TypeRegistryAudit.ValidateTarget(doc.Header.Version,doc.Header.AllTypesHash);if(!doc.Header.IsLinked||doc.Validate().Count!=0)throw new InvalidDataException("Valid linked particle stock stream required.");var header=AssetStreamProbe.ReadRange(Path.ChangeExtension(manifest,".bin"),null,0,8);if(BinaryPrimitives.ReadUInt32LittleEndian(header)!=0xBABB0000||BinaryPrimitives.ReadUInt32LittleEndian(header.AsSpan(4))!=doc.Header.StreamChecksum)throw new InvalidDataException("Particle stock checksum differs.");
         const string id="Civ_Destruction_Tiny";var original=GameObjectExtendedRootContract.Original("FXParticleSystems/"+id+".xml","FXParticleSystemTemplate").Single();var source=SdkXmlDiagnostics.Parse(Encoding.UTF8.GetBytes(original.OuterXml));var proof=ProofSource(source,schemas,catalog);var asset=doc.Assets.Single(a=>a.Name=="FXParticleSystemTemplate:"+id);if(asset.Tokenized!=0)throw new InvalidDataException("Tokenized particle layout is not supported.");long offset=8;foreach(var entry in doc.Assets){if(ReferenceEquals(entry,asset))break;offset+=entry.InstanceDataSize;}var bytes=AssetStreamProbe.ReadRange(Path.ChangeExtension(manifest,".bin"),null,offset,asset.InstanceDataSize);SchemaNativeContract.VerifyStock(proof.DocumentElement!,typeof(FXParticleSystemTemplate),0,bytes,0,asset.References.ToArray());
-        SdkBuildTests.MetadataProgress("FXParticleSystemTemplate","Reborn: particle GPU stock native qualification: PASS (complete Civ_Destruction_Tiny graph).","original GPU/physics/box/ortho/update graph");
+        // Reborn: independently pin the differing ordinal to a bounded real DRAWABLE particle header, not merely XSD enum order.
+        var alpha=doc.Assets.Single(a=>a.Name=="FXParticleSystemTemplate:AlliedAAGun01");var alphaSource=GameObjectExtendedRootContract.Original("FXParticleSystems/AlliedAAGun01.xml","FXParticleSystemTemplate").Single();
+        var alphaBytes=W3DContainerCompiler.ReadStock(manifest,doc,alpha);
+        // Reborn: qualify the complete original DRAWABLE graph, including all three 16-byte ObjectSet records.
+        if(Marshal.SizeOf<Ep1FXParticleDrawRenderObjectObjectSet>()!=16||Marshal.SizeOf<Ep1FXParticleDrawRenderObject>()!=20||Marshal.SizeOf<Ep1FXParticleUpdateRenderObject>()!=200)throw new InvalidDataException("EP1 RenderObject native extent differs.");
+        var alphaProof=ProofSource(SdkXmlDiagnostics.Parse(Encoding.UTF8.GetBytes(alphaSource.OuterXml)),schemas,catalog);
+        SchemaNativeContract.VerifyStock(alphaProof.DocumentElement!,typeof(FXParticleSystemTemplate),0,alphaBytes,0,alpha.References.ToArray());
+        if(alphaSource.GetAttribute("Shader")!="W3D_ALPHA"||BinaryPrimitives.ReadUInt32LittleEndian(alphaBytes.AsSpan(8,4))!=8)throw new InvalidDataException("Retail EP1 W3D_ALPHA shader ordinal differs.");
+        // Reborn: compare complete original Tesla lightning graphs, including populated and omitted ending-change ranges.
+        if(Marshal.SizeOf<Ep1FXParticleDrawLightning>()!=36||Marshal.SizeOf<Ep1FXParticleDrawLightningRandomSet>()!=72)throw new InvalidDataException("EP1 lightning native extent differs.");
+        foreach(string lightningId in new[]{"TeslaFireLightning01","TeslaFireLightning02","TeslaSingularity"}){
+            var originalLightning=GameObjectExtendedRootContract.Original("FXParticleSystems/"+lightningId+".xml","FXParticleSystemTemplate").Single();
+            var lightningProof=ProofSource(SdkXmlDiagnostics.Parse(Encoding.UTF8.GetBytes(originalLightning.OuterXml)),schemas,catalog);var lightning=doc.Assets.Single(a=>a.Name=="FXParticleSystemTemplate:"+lightningId);
+            SchemaNativeContract.VerifyStock(lightningProof.DocumentElement!,typeof(FXParticleSystemTemplate),0,W3DContainerCompiler.ReadStock(manifest,doc,lightning),0,lightning.References.ToArray());
+        }
+        SdkBuildTests.MetadataProgress("FXParticleSystemTemplate","Reborn: particle GPU stock native qualification: PASS (complete Civ_Destruction_Tiny graph; complete AlliedAAGun01 RenderObject graph; three Tesla lightning graphs; W3D_ALPHA=8).","original GPU/physics/box/ortho/update graph");
     }
 }

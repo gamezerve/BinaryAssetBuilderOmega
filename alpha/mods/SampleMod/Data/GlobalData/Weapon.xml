@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+
+		<WeaponTemplate
+		  id="TitanCannon"
+		  AttackRange="325.0"
+		  MinTargetPitch="-15d"
+		  MaxTargetPitch="15d"
+		  WeaponSpeed="1000"
+		  WeaponRecoil="5d"
+		  RadiusDamageAffects="ALLIES ENEMIES NEUTRALS"
+		  ShotsPerBarrel="1"
+		  ClipSize="1"
+		  ReAcquireDetailType="POST_FIRE"
+		  ProjectileCollidesWith="ALLIES ENEMIES NEUTRAL STRUCTURES WALLS"
+		  FireSound="GDI_Titan_CannonFire"
+		  FireFX="FX_GDI_TitanCannonFire"
+		  FireVeteranFX="FX_GDI_TitanCannonFireHeroic"
+		  CanFireWhileMoving="true" >
+
+		<FiringDuration
+				MinSeconds="0.3s"
+				MaxSeconds="0.3s" />
+
+		<ClipReloadTime
+				MinSeconds="1.9s"
+				MaxSeconds="2.1s" />
+
+		<Nuggets>
+			<ProjectileNugget
+				WarheadTemplate="TitanCannonWarhead"
+				ProjectileTemplate="FXTankShell02">
+				<VeterancyProjectiles
+					VeterancyLevel="HEROIC"
+					ProjectileTemplate="FXTankShell02_Veteran"/>
+			</ProjectileNugget>
+		</Nuggets>
+		<ScatterRadiusVsType
+			Radius="25.0">
+			<Filter
+				Rule="NONE"
+				Include="INFANTRY" />
+		</ScatterRadiusVsType>
+	</WeaponTemplate>
+
+	<WeaponTemplate
+		  id="TitanCannonWarhead"
+		  ProjectileCollidesWith  = "ALLIES ENEMIES NEUTRAL STRUCTURES WALLS"
+		  RadiusDamageAffects="ALLIES ENEMIES NEUTRALS" >
+		<Nuggets>
+			<DamageNugget
+					  Damage="450.0"
+					  DelayTimeSeconds="0.0s"
+					  DamageType="CANNON"
+					  DamageFXType="GDI_CANNON"
+					  DeathType="NORMAL" />
+			<SuppressionNugget
+					  Radius="20.0"
+					  Suppression="25"
+					  DurationSeconds="5s" />
+		</Nuggets>
+		<ScatterRadiusVsType
+			Radius="25.0">
+			<Filter
+				Rule="NONE"
+				Include="INFANTRY" />
+		</ScatterRadiusVsType>
+	</WeaponTemplate>
+	
+	<WeaponTemplate
+		  id="TitanCannonRailgun"
+		  AttackRange="325.0"
+		  MinTargetPitch="-15d"
+		  MaxTargetPitch="15d"
+		  WeaponSpeed="800"
+		  WeaponRecoil="5d"
+		  FireSound="PredatorCannonFireUpgraded"
+		  FireFX="FX_RailGunFire"
+		  FireVeteranFX="FX_RailGunFireHeroic"
+		  RadiusDamageAffects="ALLIES ENEMIES NEUTRALS"
+		  ClipSize="1"
+		  ShotsPerBarrel="1"
+		  ReAcquireDetailType="POST_FIRE"
+		  ProjectileCollidesWith="ALLIES ENEMIES NEUTRAL STRUCTURES WALLS"
+		  RequiredAntiMask="ANTI_GROUND"
+		  CanFireWhileMoving="true" >
+
+		<FiringDuration
+				MinSeconds="0.75s"
+				MaxSeconds="0.75s" />
+
+		<ClipReloadTime
+			MinSeconds="1.6s"
+			MaxSeconds="1.6s" />
+
+		<Nuggets>
+			<ActivateLaserNugget
+				Lifetime="0.75s"
+				LaserId="0"
+				HitGroundFX="FX_RailGunHit"/>
+			<DamageNugget
+				Damage="625.0"
+				DamageType="CANNON"
+				DamageFXType="GDI_RAILGUN"
+				DeathType="NORMAL" >
+			</DamageNugget>
+
+			<SuppressionNugget
+				Radius="10.0"
+				Suppression="40"
+				DurationSeconds="5s" />
+
+		</Nuggets>
+	</WeaponTemplate>
+	
+</AssetDeclaration>

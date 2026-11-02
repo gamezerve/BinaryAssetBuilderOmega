@@ -78,10 +78,10 @@
 
 	<!-- Navy Ships -->
 
-	<Include type="all" source="units/JapanAntiAirShip.xml" />	
-	<Include type="all" source="units/JapanNavyScoutShip.xml" />	
-	<Include type="all" source="units/JapanAntiStructureShip.xml" />
-	<Include type="all" source="units/JapanAntiVehicleShip.xml" />
+	<!-- <Include type="all" source="units/JapanAntiAirShip.xml" />	 -->
+	<!-- <Include type="all" source="units/JapanNavyScoutShip.xml" />	 -->
+	<!-- <Include type="all" source="units/JapanAntiStructureShip.xml" /> -->
+	<!-- <Include type="all" source="units/JapanAntiVehicleShip.xml" /> -->
 
 	<!-- Repair drones -->
 

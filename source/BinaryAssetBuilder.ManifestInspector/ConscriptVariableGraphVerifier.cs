@@ -96,6 +96,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: transports use independent EP1 containment and passenger-list metadata qualification.
     private readonly Lazy<StockMetadataGrammar> transportContain;
     // Reborn: attribute modifier upgrades retain their complete inherited upgrade graph and strong modifier reference.
+    // Reborn: qualify the legacy Unpause leaf lazily only when a source actually requests it.
+    private readonly Lazy<StockMetadataGrammar> unpauseSpecialPowerUpgrade;
     private readonly Lazy<StockMetadataGrammar> attributeModifierUpgrade;
     // Reborn: passenger ejection has its own retail-qualified EP1 native and metadata graph.
     private readonly Lazy<StockMetadataGrammar> ejectPassengers;
@@ -286,6 +288,7 @@ internal sealed class ConscriptVariableGraphVerifier
         attackAssistResponse=new(()=>AttackAssistResponseContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         runOffMap=new(()=>RunOffMapContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         ejectPassengers=new(()=>EjectPassengersContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        unpauseSpecialPowerUpgrade=new(()=>UnpauseSpecialPowerUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         attributeModifierUpgrade=new(()=>AttributeModifierUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         transportContain=new(()=>TransportContainContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         notifyWhenAttacking=new(()=>NotifyWhenAttackingContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -669,6 +672,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 if(owner.NativeType==typeof(EjectPassengersSpecialAbilityUpdateModuleData)){
                     var grammar=ejectPassengers.Value;var ejectionNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,EjectPassengersContract.TypeId,ejectionNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(ejectionNative,official,EjectPassengersContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,ejectionNative,owner.NativeType,proof.Records);Own(ejectionNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: preserve the full source-driven Upgrade graph while adding the legacy power-unpause payload.
+                if(owner.NativeType==typeof(UnpauseSpecialPowerUpgradeModuleData)){
+                    var grammar=unpauseSpecialPowerUpgrade.Value;var upgradeNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,UnpauseSpecialPowerUpgradeContract.TypeId,upgradeNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(upgradeNative,official,UnpauseSpecialPowerUpgradeContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,upgradeNative,owner.NativeType,proof.Records);Own(upgradeNative,start,stop);Splice(owner,metadata,start,size);continue;
                 }
                 if(owner.NativeType==typeof(AttributeModifierUpgradeModuleData)){
                     var grammar=attributeModifierUpgrade.Value;var upgradeNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;

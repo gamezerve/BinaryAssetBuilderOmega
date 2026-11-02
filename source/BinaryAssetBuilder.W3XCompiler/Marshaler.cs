@@ -18,7 +18,8 @@ public static partial class Marshaler
 
     private static unsafe void Marshal(string text, SageBool* objT, Tracker state)
     {
-        bool result = bool.Parse(text);
+        // Reborn: XSD booleans accept true/false and 1/0.
+        bool result = System.Xml.XmlConvert.ToBoolean(text);
         objT->Value = result;
     }
 

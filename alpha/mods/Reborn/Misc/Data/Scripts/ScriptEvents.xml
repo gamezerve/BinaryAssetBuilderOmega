@@ -289,6 +289,8 @@
     </EventList>
     <EventList Name="RebornParadropTowerFunctions" Inherit="BaseScriptFunctions">
         <EventHandler EventName="OnCreated" ScriptFunctionName="RebornParadropTowerCreated" DebugSingleStep="false"/>
+        <!-- Reborn: a rebuilt Tower inherits the saved cooldown after native construction completes. -->
+        <EventHandler EventName="OnBuildingComplete" ScriptFunctionName="RebornParadropTowerBuilt" DebugSingleStep="false"/>
         <EventHandler EventName="OnDestroyed" ScriptFunctionName="RebornParadropTowerDestroyed" DebugSingleStep="false"/>
         <EventHandler EventName="RebornParadropCooldownRow3" ScriptFunctionName="RebornParadropTowerRow3" DebugSingleStep="false"/>
         <EventHandler EventName="RebornParadropCooldownRow5" ScriptFunctionName="RebornParadropTowerRow5" DebugSingleStep="false"/>
@@ -306,4 +308,6 @@
         <EventHandler EventName="RebornParadropCastCondition2" ScriptFunctionName="RebornParadropSpellbookCast2" DebugSingleStep="false"/>
         <EventHandler EventName="RebornParadropCastCondition3" ScriptFunctionName="RebornParadropSpellbookCast3" DebugSingleStep="false"/>
     </EventList>
+
+
 </SageLuaScriptSection>

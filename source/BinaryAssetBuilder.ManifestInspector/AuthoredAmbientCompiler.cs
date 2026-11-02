@@ -13,7 +13,11 @@ internal static class AuthoredAmbientCompiler
     //-------------------------------------------------------------------------------------------------
     internal static string CatalogPath()
     {
-        for(var folder=new DirectoryInfo(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!);folder!=null;folder=folder.Parent){string path=Path.Combine(folder.FullName,"alpha/catalogs/ra3ep1/audio.manifest");if(File.Exists(path))return path;}
+        // Reborn: prefer the copied SDK catalog while retaining the original repository layout for development callers.
+        for(var folder=new DirectoryInfo(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!);folder!=null;folder=folder.Parent)
+            foreach(string relative in new[]{"catalogs/ra3ep1/audio.manifest","alpha/catalogs/ra3ep1/audio.manifest"}){
+                string path=Path.Combine(folder.FullName,relative);if(File.Exists(path))return path;
+            }
         throw new FileNotFoundException("AudioEvent authoring requires the SDK-local catalogs/ra3ep1/audio.manifest lookup copy.");
     }
 
@@ -25,7 +29,8 @@ internal static class AuthoredAmbientCompiler
         // Reborn: the mixed-stream attachment deliberately detaches XML; restore official PSVI before the audio plugin checks current fields and child types.
         var document=instance.XmlNode.OwnerDocument!;if(document.Schemas.Count==0)document.Schemas.Add(ConscriptSourceInput.Schemas());document.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));
         instance.Handle.TypeHash=0x560C2E45u;instance.ValidatedReferencedInstances=new(instance.ReferencedInstances);
-        var plugin=new Ra3Ep1AudioEventPlugin{AllowAmbientAuthoring=true};plugin.Initialize(TargetPlatform.Win32);return plugin.ProcessInstance(instance);
+        // Reborn: the production route uses all six official slider values, including VOICE for unit responses.
+        var plugin=new Ra3Ep1AudioEventPlugin{AllowAmbientAuthoring=true,AllowSchemaSubmixSliders=true};plugin.Initialize(TargetPlatform.Win32);return plugin.ProcessInstance(instance);
     }
 
     //-------------------------------------------------------------------------------------------------

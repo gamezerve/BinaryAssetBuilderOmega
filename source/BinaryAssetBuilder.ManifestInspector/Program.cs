@@ -13,6 +13,9 @@ internal static class Program
     {
         try
         {
+            // Reborn: compare a real custom mesh with EA's native witness without publishing a mod.
+            if(args.Length==5&&args[0]=="w3d-vertex-declaration-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();W3DVertexDeclarationSmokeTest.Run(args[1],args[2],args[3],args[4]);return 0;}
             // Reborn: qualify real health-bar layouts and reference tables in a private stock rebuild, without a game launch.
             if (args.Length == 4 && args[0] == "healthbar-self-test")
             { CompilerSmokeTest.InitializeHashProvider(); HealthBarCompilerSmokeTest.Run(args[1], args[2], args[3]); return 0; }
@@ -315,6 +318,24 @@ internal static class Program
             if(args.Length==3&&args[0]=="dds-texture-stock-self-test")
             {Ep1DdsTextureSmokeTest.CompareStock(args[1],args[2]);return 0;}
             // Reborn: an empty bone palette alone may use a relocation exactly at the native buffer end.
+            // Reborn: animation playback proof exercises actual EP1 compression and original runtime ABI.
+            // Reborn: optional shader texture omissions retain correct warning severity and resolved native imports.
+            // Reborn: native audio work executes only in the disposable compiler child process.
+            // Reborn: generated WAVs prove authoring, all PC codecs and exact runtime/CDATAs through the normal compiler.
+            // Reborn: qualify the normal Uprising Multisound authoring and packaging route.
+            if(args.Length==4&&args[0]=="multisound-authoring-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1MultisoundAuthoringSmokeTest.Run(args[1],args[2],args[3]);return 0;}
+            // Reborn: verify every official AudioEvent submix slider through normal alpha compilation.
+            if(args.Length==4&&args[0]=="audioevent-sliders-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();AudioEventSliderSmokeTest.Run(args[1],args[2],args[3]);return 0;}
+            if(args.Length==4&&args[0]=="audio-file-authoring-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();Ep1AudioFileSmokeTest.Run(args[1],args[2],args[3]);return 0;}
+            if(args.Length==2&&args[0]=="audio-file-encode-worker")
+            {Ep1AudioFileCompiler.Worker(args[1]);return 0;}
+            if(args.Length==3&&args[0]=="w3d-missing-textures-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();W3DMissingTextureSmokeTest.Run(args[1],args[2]);return 0;}
+            if(args.Length==2&&args[0]=="w3d-animation-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();W3DAnimationSmokeTest.Run(args[1]);return 0;}
             if(args.Length==1&&args[0]=="w3d-mesh-relocation-self-test")
             {W3DMeshRelocationSmokeTest.Run();return 0;}
             // Reborn: coordinate proofs must consume both W3X uppercase axes and gameplay lowercase axes.
@@ -604,6 +625,9 @@ internal static class Program
             {CompilerSmokeTest.InitializeHashProvider();JetAIUpdateSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="eject-passengers-self-test")
             {CompilerSmokeTest.InitializeHashProvider();EjectPassengersSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: check schema-backed Unpause fields and complete GameObject composition without editing user mods.
+            if(args.Length==3 && args[0]=="unpause-special-power-upgrade-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();UnpauseSpecialPowerUpgradeSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="attribute-modifier-upgrade-self-test")
             {CompilerSmokeTest.InitializeHashProvider();AttributeModifierUpgradeSmokeTest.Run(args[1],args[2]);return 0;}
             if(args.Length==3 && args[0]=="transport-contain-self-test")

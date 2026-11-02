@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+	<Tags />
+	<Includes>
+	</Includes>
+
+	<ButtonSingleStateData
+		id="ButtonStateActivateAdaptiveArmor">
+		<State
+						Image="Button_AbilityAdaptiveArmor"
+						Title="NAME:ActivateAdaptiveArmor"
+						Description="DESC:ActivateAdaptiveArmor"  />
+	</ButtonSingleStateData>
+  
+</AssetDeclaration>

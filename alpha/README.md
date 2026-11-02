@@ -1,5 +1,12 @@
 # Uprising Mod SDK Alpha — live repository workspace
 
+<!-- Reborn: portable configuration uses bundled runtimes and baselines, preserving the current user's Documents output. -->
+This SDK now carries its PowerShell/.NET runtimes, build scripts, compiler
+resources and native stock baselines. Open `EALAModStudio.exe` after copying the
+SDK to a writable directory. Final mods still go to the current Windows user's
+Documents folder. Windows/.NET Framework requirements and copy details are in
+`Documentation/PortableSDK.htm`.
+
 ## Build your mod
 
 <!-- Reborn: asset lookup uses local metadata, not game-installation discovery. -->

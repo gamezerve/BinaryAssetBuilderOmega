@@ -20,8 +20,18 @@ internal static class ReferencePipelineSmokeTest
     //-------------------------------------------------------------------------------------------------
     internal static string FindFixture()
     {
+        // Reborn: a portable build must never silently fall back to developer files outside its SDK.
+        string? portable=System.Environment.GetEnvironmentVariable("REBORN_PORTABLE_SDK_ROOT");
+        if(!string.IsNullOrEmpty(portable)){
+            string local=Path.Combine(portable,"tools","resources","tests","fixtures","ReferencePipeline.xsd");
+            if(!File.Exists(local))throw new FileNotFoundException("Bundled SDK compiler resources are missing.",local);
+            return local;
+        }
         for (DirectoryInfo? directory = new(AppContext.BaseDirectory); directory is not null; directory = directory.Parent)
         {
+            // Reborn: direct diagnostic invocations also prefer SDK-local resources when present.
+            string bundled=Path.Combine(directory.FullName,"tools","resources","tests","fixtures","ReferencePipeline.xsd");
+            if(File.Exists(bundled))return bundled;
             string candidate = Path.Combine(directory.FullName, "tests", "fixtures", "ReferencePipeline.xsd");
             if (File.Exists(candidate))
             {
