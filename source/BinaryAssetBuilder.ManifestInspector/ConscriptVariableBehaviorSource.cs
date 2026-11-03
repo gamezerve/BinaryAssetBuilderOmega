@@ -149,6 +149,12 @@ internal static class ConscriptVariableBehaviorSource
             if(owner.NativeType==typeof(SageBinaryData.OCLMonitorUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             // Reborn: laser IDs, bones, particle lists, end offsets and status validation are source-driven under complete EP1 proof.
             if(owner.NativeType==typeof(SageBinaryData.LaserStateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
+            // Reborn: placement hints, restriction filter, suggested offset and AllowShrouded are source-driven under complete EP1 proof.
+            if(owner.NativeType==typeof(SageBinaryData.AssistedPlacementInfoBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
+            // Reborn: ore-node amounts, times, model conditions and EVA/audio imports are source-driven under complete EP1 proof.
+            if(owner.NativeType==typeof(SageBinaryData.OreNodeModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
+            // Reborn: producer-death sleep interval and disabled flag are source-driven under complete EP1 proof.
+            if(owner.NativeType==typeof(SageBinaryData.DieOnProducerDeathUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             // Reborn: slave-watcher flags, upgrade references and status validation are source-driven under complete EP1 proof.
             if(owner.NativeType==typeof(SageBinaryData.SlaveWatcherBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             // Reborn: stream IDs are schema-authored signed integers, independent of the original two Desolator records.
@@ -187,6 +193,8 @@ internal static class ConscriptVariableBehaviorSource
             if(owner.NativeType==typeof(SageBinaryData.Ep1AttributeModifierAuraUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.InvisibilityBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.GarrisonContainModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
+            // Reborn: source-bound satellite updates use schema validation for the full filter graph.
+            if(owner.NativeType==typeof(SageBinaryData.SuckUpObjectsUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.AttackAssistResponseBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.RunOffMapBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.EjectPassengersSpecialAbilityUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}

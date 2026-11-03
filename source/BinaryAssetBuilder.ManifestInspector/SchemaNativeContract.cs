@@ -404,6 +404,8 @@ internal sealed class SchemaNativeContract
         if(type.IsEnum){Expect(at,BitConverter.GetBytes(Ordinal(element?.SchemaInfo.SchemaType as XmlSchemaSimpleType,text?.Trim()??string.Empty,path)),path);return;}
         // Reborn: shader Float/Value lists contain primitive floats with source-sized allocation, not nested synthetic value records.
         if(type==typeof(float)){var carrier=(element?.OwnerDocument??new XmlDocument()).CreateElement("Scalar");carrier.SetAttribute("Value",text??"");Expect(at,ConscriptModuleScalarContract.Bytes(carrier,new("Value",0,4,"Single",null,0)),path);return;}
+        // Reborn: mission prerequisite lists store signed XML integers, including the -1 sentinel.
+        if(type==typeof(int)){var value=new byte[4];BinaryPrimitives.WriteInt32LittleEndian(value,XmlConvert.ToInt32(text??""));Expect(at,value,path);return;}
         // Reborn: AABTree polygon-index lists contain primitive unsigned words, not synthetic element structs.
         if(type==typeof(uint)){var value=new byte[4];BinaryPrimitives.WriteUInt32LittleEndian(value,XmlConvert.ToUInt32(text??""));Expect(at,value,path);return;}
         if(type.IsGenericType){string generic=type.GetGenericTypeDefinition().FullName!;

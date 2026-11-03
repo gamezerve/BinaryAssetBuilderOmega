@@ -58,6 +58,14 @@ retail X1R5G5B5 format, with five mip levels.
 See [map pipeline notes](docs/RA3_MAP_BUILD_PIPELINE.md) and
 [native implementation](docs/MAP_NATIVE_IMPLEMENTATION.md) for evidence and limits.
 
+<!-- Reborn: EP1 campaign data uses the original global stream layout. -->
+CampaignEnumerator, CampaignTemplate and MissionTemplate compile through the
+early-global build. The 18 original campaign records match the retail native
+graphs, and all 17 campaign and mission references resolve in the authored
+stream. Mission AICommander compiles using the EP1 schema with a LEGACYMODULE
+warning because populated retail layout and gameplay are unverified.
+PrerequisiteTemplate remains unsupported.
+
 <!-- Reborn: multiplayer rule authoring uses the original EP1 layout without changing the legacy KW record. -->
 MpGameRules now compiles through the normal source and early-global stream
 routes. The EP1 24-byte layout includes NumMinutesBeforePlayersCanTransferMoney

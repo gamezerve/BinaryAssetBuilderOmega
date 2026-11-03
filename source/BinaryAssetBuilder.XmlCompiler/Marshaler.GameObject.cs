@@ -85,6 +85,10 @@ public static partial class Marshaler
             case 0x054B09C4u:
                 MarshalPolymorphicType<InvisibilityBehaviorModuleData,BehaviorModuleData>(node,objT,state);
                 break;
+            // Reborn: magnetic satellite lift uses the retail inline ObjectFilter layout.
+            case 0x18C8FFC4u:
+                MarshalPolymorphicType<SuckUpObjectsUpdateModuleData,BehaviorModuleData>(node,objT,state);
+                break;
             // Reborn: EP1 attack-assist responses preserve their real wire identity and complete status/slot record.
             case 0xEC308E0Eu:
                 MarshalPolymorphicType<AttackAssistResponseBehaviorModuleData,BehaviorModuleData>(node,objT,state);
@@ -279,6 +283,21 @@ public static partial class Marshaler
                 // Reborn: select the independently qualified Uprising collision record, retaining its original wire identity.
                 using(var context=state.Push((void**)objT,(uint)sizeof(Ep1FireWeaponCollideModuleData),1u))Marshal(node,(Ep1FireWeaponCollideModuleData*)*objT,state);
                 *(uint*)*objT=0xAE4A97B0u;
+                break;
+            case 0x8ACD4AD2u:
+                // Reborn: EP1 assisted-placement info uses the independently qualified 36-byte record, retaining the original wire identity.
+                using(var context=state.Push((void**)objT,(uint)sizeof(AssistedPlacementInfoBehaviorModuleData),1u))Marshal(node,(AssistedPlacementInfoBehaviorModuleData*)*objT,state);
+                *(uint*)*objT=0x8ACD4AD2u;
+                break;
+            case 0x8E220EE2u:
+                // Reborn: EP1 ore nodes use the independently qualified 72-byte record, retaining the original wire identity.
+                using(var context=state.Push((void**)objT,(uint)sizeof(OreNodeModuleData),1u))Marshal(node,(OreNodeModuleData*)*objT,state);
+                *(uint*)*objT=0x8E220EE2u;
+                break;
+            case 0x1C436DD2u:
+                // Reborn: EP1 producer-death watchers use the independently qualified 16-byte record, retaining the original wire identity.
+                using(var context=state.Push((void**)objT,(uint)sizeof(DieOnProducerDeathUpdateModuleData),1u))Marshal(node,(DieOnProducerDeathUpdateModuleData*)*objT,state);
+                *(uint*)*objT=0x1C436DD2u;
                 break;
             case 0xBBAC8C1Cu:
                 // Reborn: EP1 slave watchers use the independently qualified 24-byte record, retaining the original wire identity.

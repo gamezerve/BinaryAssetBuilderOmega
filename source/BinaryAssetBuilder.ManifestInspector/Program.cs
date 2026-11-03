@@ -726,6 +726,15 @@ internal static class Program
             // Reborn: laser draws and laser states share original Natasha/Mirage/Future Tank witnesses plus edited/default graphs.
             if(args.Length==3 && args[0]=="laser-self-test")
             {CompilerSmokeTest.InitializeHashProvider();LaserSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: assisted-placement info has one original witness plus edited/default/composition coverage.
+            if(args.Length==3 && args[0]=="assisted-placement-info-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();AssistedPlacementInfoSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: ore nodes have one original witness plus edited/default/composition coverage.
+            if(args.Length==3 && args[0]=="ore-node-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();OreNodeSmokeTest.Run(args[1],args[2]);return 0;}
+            // Reborn: producer-death watchers have one original witness plus edited/default/composition coverage.
+            if(args.Length==3 && args[0]=="die-on-producer-death-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();DieOnProducerDeathSmokeTest.Run(args[1],args[2]);return 0;}
             // Reborn: slave watchers have four original witnesses plus edited/default/composition coverage.
             if(args.Length==3 && args[0]=="slave-watcher-self-test")
             {CompilerSmokeTest.InitializeHashProvider();SlaveWatcherSmokeTest.Run(args[1],args[2]);return 0;}

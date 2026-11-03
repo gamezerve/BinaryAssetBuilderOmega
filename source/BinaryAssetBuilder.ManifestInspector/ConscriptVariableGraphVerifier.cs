@@ -104,6 +104,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: run-off-map flags and waypoint strings use their own retail-qualified graph.
     private readonly Lazy<StockMetadataGrammar> runOffMap;
     // Reborn: assistance responses retain their independent EP1 native/status and metadata qualification.
+    // Reborn: keep the satellite stock grammar local to the active build.
+    private readonly Lazy<StockMetadataGrammar> suckUpObjects;
     private readonly Lazy<StockMetadataGrammar> attackAssistResponse;
     // Reborn: garrisons use the retail-qualified inline roster and OpenContain metadata chain.
     private readonly Lazy<StockMetadataGrammar> garrisonContain;
@@ -156,6 +158,12 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> minerBehaviors;
     private readonly Lazy<StockMetadataGrammar> dynamicsUpdate;
     private readonly Lazy<StockMetadataGrammar> streamState;
+    // Reborn: assisted-placement info is qualified from the original retail ore node.
+    private readonly Lazy<StockMetadataGrammar> assistedPlacementInfo;
+    // Reborn: ore nodes are qualified from the original retail ore node.
+    private readonly Lazy<StockMetadataGrammar> oreNode;
+    // Reborn: producer-death watchers are qualified from the original attack-drone record.
+    private readonly Lazy<StockMetadataGrammar> dieOnProducerDeath;
     // Reborn: slave watchers have their own four original retail witnesses.
     private readonly Lazy<StockMetadataGrammar> slaveWatcher;
     // Reborn: laser states have their own original laser-unit witnesses.
@@ -276,6 +284,9 @@ internal sealed class ConscriptVariableGraphVerifier
         minerBehaviors=new(()=>MinerBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         dynamicsUpdate=new(()=>DynamicsUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         streamState=new(()=>StreamStateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        assistedPlacementInfo=new(()=>AssistedPlacementInfoContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        oreNode=new(()=>OreNodeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        dieOnProducerDeath=new(()=>DieOnProducerDeathContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         slaveWatcher=new(()=>SlaveWatcherContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         laserState=new(()=>LaserStateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         oclMonitor=new(()=>OCLMonitorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -285,6 +296,7 @@ internal sealed class ConscriptVariableGraphVerifier
         attributeModifierAura=new(()=>AttributeModifierAuraContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         invisibilityBehavior=new(()=>InvisibilityBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         garrisonContain=new(()=>GarrisonContainContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        suckUpObjects=new(()=>SuckUpObjectsUpdateContract.Qualify(manifest));
         attackAssistResponse=new(()=>AttackAssistResponseContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         runOffMap=new(()=>RunOffMapContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         ejectPassengers=new(()=>EjectPassengersContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -548,6 +560,21 @@ internal sealed class ConscriptVariableGraphVerifier
                     var grammar=laserState.Value;var laserNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,LaserStateContract.TypeId,laserNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(laserNative,official,LaserStateContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,laserNative,owner.NativeType,proof.Records);Own(laserNative,start,stop);Splice(owner,metadata,start,size);continue;
                 }
+                // Reborn: independently prove hints, filters, weak references and offsets before splicing each assisted-placement info module.
+                if(owner.NativeType==typeof(AssistedPlacementInfoBehaviorModuleData)){
+                    var grammar=assistedPlacementInfo.Value;var infoNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,AssistedPlacementInfoContract.TypeId,infoNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(infoNative,official,AssistedPlacementInfoContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,infoNative,owner.NativeType,proof.Records);Own(infoNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: independently prove amounts, times, model conditions and EVA/audio imports before splicing each ore node.
+                if(owner.NativeType==typeof(OreNodeModuleData)){
+                    var grammar=oreNode.Value;var oreNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,OreNodeContract.TypeId,oreNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(oreNative,official,OreNodeContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,oreNative,owner.NativeType,proof.Records);Own(oreNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: independently prove the sleep interval and disabled flag before splicing each producer-death watcher.
+                if(owner.NativeType==typeof(DieOnProducerDeathUpdateModuleData)){
+                    var grammar=dieOnProducerDeath.Value;var dieNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,DieOnProducerDeathContract.TypeId,dieNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(dieNative,official,DieOnProducerDeathContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,dieNative,owner.NativeType,proof.Records);Own(dieNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
                 // Reborn: independently prove upgrade imports, status validation and flags before splicing each slave watcher.
                 if(owner.NativeType==typeof(SlaveWatcherBehaviorModuleData)){
                     var grammar=slaveWatcher.Value;var watcherNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
@@ -660,6 +687,11 @@ internal sealed class ConscriptVariableGraphVerifier
                 if(owner.NativeType==typeof(GarrisonContainModuleData)){
                     var grammar=garrisonContain.Value;var garrisonNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,GarrisonContainContract.TypeId,garrisonNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(garrisonNative,official,GarrisonContainContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,garrisonNative,owner.NativeType,proof.Records);Own(garrisonNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: verify every authored lift field and nested filter before splicing metadata.
+                if(owner.NativeType==typeof(SuckUpObjectsUpdateModuleData)){
+                    var grammar=suckUpObjects.Value;var liftNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,SuckUpObjectsUpdateContract.TypeId,liftNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(liftNative,official,SuckUpObjectsUpdateContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,liftNative,owner.NativeType,proof.Records);Own(liftNative,start,stop);Splice(owner,metadata,start,size);continue;
                 }
                 if(owner.NativeType==typeof(AttackAssistResponseBehaviorModuleData)){
                     var grammar=attackAssistResponse.Value;var assistNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;

@@ -204,12 +204,15 @@ internal sealed class SdkInstanceInheritanceProfile
             var ownAssets = Assets(owner); var local = Handles(ownAssets);
             // Reborn: preserve the earlier local tree path when no external handle is needed; malformed handles still fail the tree profile.
             // Reborn: a self-named target refers to direct instance visibility, while ordinary targets keep local-first lookup.
-            var needed = ownAssets.Where(asset => asset.HasAttribute("inheritFrom")).Select(asset => (Asset:asset,Handle:Target(asset))).Where(item => item.Handle==item.Asset.LocalName+":"+item.Asset.GetAttribute("id") || !local.ContainsKey(item.Handle)).Select(item=>item.Handle).Distinct(StringComparer.Ordinal).ToArray();
+            // Reborn: instance IDs are case-insensitive in Core; keep authored spelling for output and diagnostics.
+            var needed = ownAssets.Where(asset => asset.HasAttribute("inheritFrom")).Select(asset => (Asset:asset,Handle:Target(asset))).Where(item => StringComparer.OrdinalIgnoreCase.Equals(item.Handle,item.Asset.LocalName+":"+item.Asset.GetAttribute("id")) || !local.ContainsKey(item.Handle)).Select(item=>item.Handle).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
             if (needed.Length == 0 && !chains)
             { var localResult = SdkSelfAttributeInheritance.Apply(schemas,bytes,treeCopy:true,conscriptCopy:conscriptCopy); return localResult with { Evidence = localResult.Evidence with { Profile = Profile } }; }
             var includes = Includes(owner); var expected = paths.Includes.Where(edge => edge.Document.Equals(path,StringComparison.OrdinalIgnoreCase)).ToArray();
             if (includes.Length != expected.Length || !SdkSourceScale.Unrestricted && expected.Count(e=>!e.SkippedMissingArt) > 64) throw new InvalidDataException("Instance Include edges differ from captured source or exceed 64 direct Includes.");
-            Dictionary<string,(XmlElement Asset,ImportedBase Witness)> external = new(StringComparer.Ordinal);
+            Dictionary<string,(XmlElement Asset,ImportedBase Witness)> external = new(StringComparer.OrdinalIgnoreCase);
+            // Reborn: emitted all-includes and direct instance bases occupy separate visibility roles.
+            Dictionary<string,(XmlElement Asset,ImportedBase Witness)> emittedBases = new(StringComparer.OrdinalIgnoreCase);
             // Reborn: include all visited preparation sources, including direct visibility candidates not ultimately selected as inherited handles.
             List<PreparedSource> closure = new();
             // Reborn: metadata-only witnesses never enter the external instance handle dictionary.
@@ -268,10 +271,14 @@ internal sealed class SdkInstanceInheritanceProfile
                     // Reborn: bound aggregate direct visibility independently from per-source asset/source-byte bounds.
                     if (!SdkSourceScale.Unrestricted && (external.Count >= 4096)) throw new InvalidDataException("4096 direct-instance handle bound exceeded.");
                     var witness = new ImportedBase(pair.Value.LocalName,pair.Value.GetAttribute("id"),resolved.Path,source.Sha256,expanded.Evidence.ProcessedSha256!) { PreparedSources = chains ? expanded.Evidence.PreparedSources : Array.Empty<PreparedSource>() };
-                    if (!external.TryAdd(pair.Key,(pair.Value,witness))) throw new InvalidDataException("Duplicate direct-instance handles are ambiguous; no first-wins fallback.");
+                    var role = gameObjectTrees && edge.Kind == "all" ? emittedBases : external;
+                    if (!role.TryAdd(pair.Key,(pair.Value,witness)))
+                        throw SdkXmlDiagnostics.At(new InvalidDataException($"DUPLICATEASSET ' {pair.Key} ' Ambiguous {edge.Kind} inheritance sources: '{role[pair.Key].Witness.SourcePath}' and '{resolved.Path}'."),include);
                 }
             }
-            List<ImportedBase> witnesses = new(); HashSet<string> injected = new(StringComparer.Ordinal); long expandedSize = bytes.Length+1024L;
+            // Reborn: explicit instance bases take precedence for inheritance while all-includes still emit independently.
+            foreach (var pair in emittedBases) external.TryAdd(pair.Key,pair.Value);
+            List<ImportedBase> witnesses = new(); HashSet<string> injected = new(StringComparer.OrdinalIgnoreCase); long expandedSize = bytes.Length+1024L;
             // Reborn: use captured raw owner bytes only after Include authority is proved; never reinterpret imported assets in the consumer's definition context.
             SdkLocalDefineProfile.Evidence? expressionEvidence = null;
             // Reborn: identical-state eligibility must already be literal in raw sibling fields; expression resolution cannot manufacture equality for this narrow scope.
@@ -292,14 +299,14 @@ internal sealed class SdkInstanceInheritanceProfile
                 expandedSize = evaluated.Bytes.Length+1024L;
             }
             // Reborn: temporary base IDs are deterministic, collision-free across visible roots and never survive output/evidence.
-            var reservedIds=local.Values.Select(a=>a.GetAttribute("id")).Concat(external.Values.Select(e=>e.Asset.GetAttribute("id"))).ToHashSet(StringComparer.Ordinal);
-            var originalBaseIds=new Dictionary<string,string>(StringComparer.Ordinal);var originalMarkers=new Dictionary<string,string>(StringComparer.Ordinal);
+            var reservedIds=local.Values.Select(a=>a.GetAttribute("id")).Concat(external.Values.Select(e=>e.Asset.GetAttribute("id"))).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            var originalBaseIds=new Dictionary<string,string>(StringComparer.Ordinal);var originalMarkers=new Dictionary<string,string>(StringComparer.OrdinalIgnoreCase);
             foreach (string handle in needed)
             {
                 // Reborn: name the missing base and point at the consumer's own inheritFrom attribute, not at the generated envelope.
                 if (!external.TryGetValue(handle,out var entry))
                 {
-                    var consumer = ownAssets.FirstOrDefault(asset => asset.HasAttribute("inheritFrom") && Target(asset) == handle);
+                    var consumer = ownAssets.FirstOrDefault(asset => asset.HasAttribute("inheritFrom") && StringComparer.OrdinalIgnoreCase.Equals(Target(asset),handle));
                     throw SdkXmlDiagnostics.At(new InvalidDataException("Inherited asset not found: "+handle),(XmlNode?)consumer?.GetAttributeNode("inheritFrom") ?? consumer);
                 }
                 if (!Inheritable(entry.Asset.LocalName)) throw new InvalidDataException("Imported base type is not derived from BaseInheritableAsset.");
@@ -313,7 +320,7 @@ internal sealed class SdkInstanceInheritanceProfile
                 // Reborn: imported source-local chains were already expanded/validated; remove only their retained diagnostic inheritFrom marker before local delegation.
                 var imported = (XmlElement)owner.ImportNode(entry.Asset,true); imported.RemoveAttribute("inheritFrom");
                 string injectedHandle=handle;
-                var sameOwner=Assets(owner).SingleOrDefault(a=>a.LocalName+":"+a.GetAttribute("id")==handle && a.HasAttribute("inheritFrom") && Target(a)==handle);
+                var sameOwner=Assets(owner).SingleOrDefault(a=>StringComparer.OrdinalIgnoreCase.Equals(a.LocalName+":"+a.GetAttribute("id"),handle) && a.HasAttribute("inheritFrom") && StringComparer.OrdinalIgnoreCase.Equals(Target(a),handle));
                 if(sameOwner!=null)
                 {
                     // Reborn: same-ID overlays require one real direct instance source, not an emitted all/reference declaration.
@@ -418,7 +425,7 @@ internal sealed class SdkInstanceInheritanceProfile
     //-------------------------------------------------------------------------------------------------
     private static Dictionary<string,XmlElement> Handles(XmlElement[] assets)
     {
-        Dictionary<string,XmlElement> result = new(StringComparer.Ordinal);
+        Dictionary<string,XmlElement> result = new(StringComparer.OrdinalIgnoreCase);
         if (assets.Length > 4096) throw new InvalidDataException("4096 instance asset bound exceeded.");
         // Reborn: identify the actual offending asset and distinguish duplicate handles from a foreign XML namespace.
         foreach (var asset in assets)

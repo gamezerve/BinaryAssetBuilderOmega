@@ -49,6 +49,28 @@
 		<TextureDimensions x="1024" y="256"/>
 	</OnDemandTextureImage>
 
+<!-- Faction Flags -->
+
+	<Texture id="GameSetup_flags" File="ART:Images/GameSetup_flags.dds"/>
+	
+	<PackedTextureImage id="GameSetup_flag_Japan" Texture="GameSetup_flags" Rotated="false">
+		<Dimensions x="49" y="25"/>
+		<Coords x="1" y="55"/>
+		<TextureDimensions x="256" y="128"/>
+	</PackedTextureImage>
+	
+	<PackedTextureImage id="GameSetup_flag_Allied" Texture="GameSetup_flags" Rotated="false">
+		<Dimensions x="49" y="25"/>
+		<Coords x="55" y="1"/>
+		<TextureDimensions x="256" y="128"/>
+	</PackedTextureImage>
+	
+	<PackedTextureImage id="GameSetup_flag_Soviet" Texture="GameSetup_flags" Rotated="false">
+		<Dimensions x="49" y="25"/>
+		<Coords x="163" y="1"/>
+		<TextureDimensions x="256" y="128"/>
+	</PackedTextureImage>
+
 <!-- Japan Crane and Japan Pump -->
 
 	<Texture id="Portrait_JapanFortressProp" File="ART:Images/Portrait_JapanFortressProp.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>

@@ -94,6 +94,7 @@
 		<Include type="all" source="Common/HealthBarSettings.xml" />
 		<Include type="all" source="Common/HealthBarTemplate.xml" />
 		<Include type="all" source="Common/MpGameRules.xml" />
+		<Include type="all" source="DATA:GlobalData/CampaignTemplates.xml" />
 		
 	</Includes>
 
