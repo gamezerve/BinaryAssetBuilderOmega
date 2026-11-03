@@ -56,8 +56,8 @@ The destination is obtained from Windows' Documents known folder; it is not
 copied from the developer's username or hardcoded drive.
 
 Internal receipts remain in `builtmods`; scratch data remains in `.work`.
-Neither directory contains required compiler inputs. Their old contents may be
-omitted from a copy, but keep/create the directories themselves. Do not copy
+Neither directory contains required compiler inputs. Both directories and their
+old contents may be omitted from a copy; startup creates missing directories without clearing existing contents. Do not copy
 while a build or tool synchronization is active. Moving the folder does not
 update paths saved in separate launchers outside this SDK.
 

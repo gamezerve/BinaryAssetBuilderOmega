@@ -72,7 +72,7 @@ internal static class ConscriptMultiAssetBuild
             // Reborn: retail AudioFile metadata stays SDK-local; authored events reference the loaded audio stream without repacking its samples.
             string? audioManifest=null;if(sources.Any(s=>s.DocumentElement!.LocalName is "AudioEvent" or "AudioFile")){audioManifest=AuthoredAmbientCompiler.CatalogPath();var audio=ManifestReader.Read(SdkEnvironmentPreflight.Read(audioManifest,64*1048576));TypeRegistryAudit.ValidateTarget(audio.Header.Version,audio.Header.AllTypesHash);if(!audio.Header.IsLinked||audio.Validate().Count!=0)throw new InvalidDataException("Valid linked EP1 audio catalog required.");var known=stock.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();stock=stock.Concat(audio.Assets.Where(a=>a.TypeName=="AudioFile"&&!known.Contains(new(a.TypeId,a.InstanceId)))).ToArray();}
             var fingerprints=new Dictionary<uint,(uint Hash,bool Tokenized)>();var locals=new Dictionary<AssetId,XmlDocument>();
-            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
+            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "MpGameRules" or "Credits" or "CameraSettings" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
                 uint typeId=FastHash.GetHashCode(type);var examples=stock.Where(a=>a.TypeId==typeId).Select(a=>(a.TypeHash,Tokenized:a.Tokenized==1)).Distinct().ToArray();if(examples.Length!=1)throw new InvalidDataException("EP1 asset fingerprint is absent/ambiguous: "+type);fingerprints[typeId]=examples[0];if(!locals.TryAdd(new(typeId,InstanceHandle.GetInstanceId(id)),xml))throw SdkXmlDiagnostics.At(new InvalidDataException("DUPLICATEASSET ' "+type+":"+id+" ' Duplicate local asset/hash identity."),xml.DocumentElement);
             }
             // Reborn: source-only catalog entries resolve local names before native data exists; payloads are freshly compiled below, never copied from stock.
@@ -117,6 +117,12 @@ internal static class ConscriptMultiAssetBuild
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="AttributeModifier"))AttributeModifierCompiler.Qualify(manifest,schemas,stock);
             // Reborn: icon developer qualification uses retail native records; fast builds retain current-source native/import proof.
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="UnitTypeIcon"))UnitTypeIconCompiler.Qualify(manifest,schemas,stock);
+            // Reborn: developer camera qualification uses the original global record; fast mode keeps authored schema/native validation.
+            if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="CameraSettings"))CameraSettingsCompiler.Qualify(global);
+            // Reborn: developer credits qualification covers the full original EP1 global graph without slowing fast builds.
+            if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="Credits"))CreditsCompiler.Qualify(global,schemas,stock);
+            // Reborn: developer rules qualification checks the original EP1 global layout; authored source/native proof remains mandatory in fast mode.
+            if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="MpGameRules"))MpGameRulesCompiler.Qualify(global,schemas,stock);
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="ExperienceLevelTemplate"))ExperienceLevelCompiler.Qualify(manifest,schemas,stock);
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="LocomotorTemplate"))LocomotorTemplateCompiler.Qualify(manifest,schemas,stock);
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="UpgradeTemplate"))UpgradeTemplateCompiler.Qualify(global,schemas,stock);
@@ -187,6 +193,21 @@ internal static class ConscriptMultiAssetBuild
                 }else if(type=="AttributeModifier"){
                     // Reborn: modifiers use the existing native EP1 writer, with source-sized lists/masks and real local/stock FX and shader imports.
                     instance=Normalize(xml);var native=AttributeModifierCompiler.Compile(instance.XmlNode);SchemaNativeContract.Verify(AttributeModifierCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(AttributeModifier),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
+                }else if(type=="MpGameRules"){
+                    // Reborn: use the EP1 money-transfer field and inline cash record with their actual schema defaults.
+                    instance=Normalize(xml);var native=MpGameRulesCompiler.Compile(instance.XmlNode);
+                    var proof=SchemaNativeContract.Resolve(xml,schemas,available);proof.DocumentElement!.RemoveAttribute("id");
+                    SchemaNativeContract.Verify(proof.DocumentElement,typeof(Ep1MpGameRules),0,native,Array.Empty<AssetId>());buffer=Buffer(native);
+                }else if(type=="Credits"){
+                    // Reborn: compile editable scrolling, fonts, colors and ordered credit text with complete source/native ownership proof.
+                    instance=Normalize(xml);var native=CreditsCompiler.Compile(instance.XmlNode);
+                    var proof=SchemaNativeContract.Resolve(xml,schemas,available);proof.DocumentElement!.RemoveAttribute("id");
+                    SchemaNativeContract.Verify(proof.DocumentElement,typeof(Credits),0,native,Array.Empty<AssetId>());buffer=Buffer(native);
+                }else if(type=="CameraSettings"){
+                    // Reborn: camera singleton fields use the witnessed EP1 global layout and the common schema/native field proof.
+                    instance=Normalize(xml);var native=CameraSettingsCompiler.Compile(instance.XmlNode);
+                    var proof=SchemaNativeContract.Resolve(xml,schemas,available);proof.DocumentElement!.RemoveAttribute("id");
+                    SchemaNativeContract.Verify(proof.DocumentElement,typeof(CameraSettings),0,native,Array.Empty<AssetId>());buffer=Buffer(native);
                 }else if(type=="UnitTypeIcon"){
                     // Reborn: image references remain real imports, and optional offsets own their relocation-backed vector bytes.
                     instance=Normalize(xml);var native=UnitTypeIconCompiler.Compile(instance.XmlNode);SchemaNativeContract.Verify(UnitTypeIconCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(UnitTypeIcon),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);

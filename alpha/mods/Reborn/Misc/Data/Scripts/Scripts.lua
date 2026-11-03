@@ -659,10 +659,10 @@ function RebornParadropPromote(clock, requested)
         RebornParadropSetRank(clock, level)
         if RebornParadropRemaining(clock) ~= remaining or RebornParadropClockRank(clock) ~= level then
             RebornParadropClockInvalid[clock] = true
-            ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockStoreFailed", 6)
+            --ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockStoreFailed", 6)
             return
         end
-        ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockPromoted", 6)
+        --ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockPromoted", 6)
     end
 end
 
@@ -680,7 +680,7 @@ function RebornParadropDeferredSync(clock)
     RebornParadropDeferred[clock] = nil
     if RebornParadropClockInvalid[clock] then return end
     RebornParadropPublish(clock)
-    ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropDeferredSync", 6)
+    --ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropDeferredSync", 6)
 end
 
 -- Reborn: creation and purchases synchronize now and once after native upgrade processing settles.
@@ -688,7 +688,7 @@ function RebornParadropCooldownRefresh(self, requested)
     local clock = RebornParadropClockFor(self)
     if not clock then
         if requested or RebornParadropHasUpgrade(self, "Upgrade_RebornParadrop_Row1") then
-            ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockMissing", 6)
+            --ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockMissing", 6)
         end
         return
     end
@@ -710,11 +710,11 @@ function RebornParadropStartCast(clock, level)
     RebornParadropSetRemaining(clock, RebornParadropDuration(level))
     if RebornParadropRemaining(clock) ~= RebornParadropDuration(level) or RebornParadropClockRank(clock) ~= level then
         RebornParadropClockInvalid[clock] = true
-        ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockStoreFailed", 6)
+        --ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockStoreFailed", 6)
         return
     end
     RebornParadropClockInvalid[clock] = nil
-    ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropCastRecorded", 6)
+    --ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropCastRecorded", 6)
     RebornParadropPublish(clock)
     RebornParadropArm(clock)
 end
@@ -722,8 +722,8 @@ end
 -- Reborn: both interfaces address the same canonical powers and one owner-scoped logic clock.
 function RebornParadropCast(self, level)
     local clock = RebornParadropClockFor(self)
-    if clock then RebornParadropStartCast(clock, level)
-    else ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockMissing", 6) end
+    if clock then RebornParadropStartCast(clock, level) end
+    --else ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockMissing", 6) end
 end
 -- Reborn: canonical level-one cast event.
 function RebornParadropCast1(self) RebornParadropCast(self, 1) end
@@ -738,12 +738,12 @@ function RebornParadropClockTick(clock)
     local remaining = RebornParadropRemaining(clock)
     if remaining <= 0 then return end
     if remaining == RebornParadropDuration(RebornParadropClockRank(clock)) then
-        ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockTicking", 6)
+        --ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockTicking", 6)
     end
     RebornParadropSetRemaining(clock, remaining - 1)
     if RebornParadropRemaining(clock) ~= remaining - 1 then
         RebornParadropClockInvalid[clock] = true
-        ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockStoreFailed", 6)
+        --ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockStoreFailed", 6)
         return
     end
     if remaining > 1 then RebornParadropArm(clock) end
@@ -774,11 +774,11 @@ function RebornParadropCreated(self)
             end
             other, role = next(RebornParadropRoles, other)
         end
-        ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockActorActive", 6)
+        --ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockActorActive", 6)
     elseif RebornParadropRoles[self] == 4 then
-        ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropSpellbookActive", 6)
+        --ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropSpellbookActive", 6)
     else
-        ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropTowerClockActive", 6)
+        --ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropTowerClockActive", 6)
     end
     -- Reborn: a new Tower's child is created on a later native update; this expected interval is not a missing-clock failure.
     if RebornParadropIsClock(self) or RebornParadropClockFor(self) then RebornParadropCooldownRefresh(self) end
@@ -791,7 +791,7 @@ function RebornParadropClockCreated(self, other)
     -- Reborn: never publish a ready timer if the native player identity grant did not take effect.
     if not RebornParadropBindOwner(self) then
         RebornParadropClockInvalid[self] = true
-        ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockStoreFailed", 6)
+        --ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockStoreFailed", 6)
         return
     end
     RebornParadropCreated(self, other)
@@ -835,7 +835,7 @@ function RebornParadropTowerCreated(self, other)
     end
     -- Reborn: prove the object-local request was written before relying on the later OCL update.
     if not RebornParadropHasUpgrade(self, "Upgrade_RebornParadropClockRequest") then
-        ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockRequestFailed", 6)
+        --ExecuteAction("SHOW_MILITARY_CAPTION", "RebornDebug:ParadropClockRequestFailed", 6)
         return
     end
     RebornParadropCreated(self, other)

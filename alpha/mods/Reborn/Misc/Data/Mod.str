@@ -1988,6 +1988,60 @@ End
 		"Production Upgrade (%25 Build Time Reduction)"
 	End
 	
+// Credits
+
+	Credits:ModName
+		"COMMAND & CONQUER RED ALERT 3"
+	End
+	
+	Credits:ModName2
+		"UPRISING - REBORN"
+	End
+	
+	Credits:ModVersion
+		"1.00"
+	End
+	
+	Credits:ModAuthorTitle
+		"Author"
+	End
+	
+	Credits:ModAuthor1
+		"Gamezerve"
+	End
+	
+	Credits:ModHomepageTitle
+		"Inherited Mods"
+	End
+	
+	Credits:ModHomepage1
+		"Red Alert 3: Upheaval"
+	End
+	
+	Credits:ModHomepage2-1
+		"http://www.moddb.com/mods/red-alert-3-upheaval"
+	End
+	
+	Credits:ModHomepage2-2
+		"http://bibber.eu"
+	End
+	
+	Credits:ModHomepage3
+		"Granatball Reploded"
+	End
+	
+	Credits:ModHomepage4
+		"http://www.moddb.com/mods/granatball-reploded"
+	End
+	
+	Credits:ModHomepage5
+		"Red Alert 3: Trinity Defense (R3D)"
+	End
+	
+	Credits:ModHomepage6
+		"http://www.moddb.com/mods/r3d"
+	End
+	
 // Debug
 
 	IrradiatedTargetDamageDealer

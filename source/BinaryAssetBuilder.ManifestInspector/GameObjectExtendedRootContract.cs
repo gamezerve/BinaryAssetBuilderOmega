@@ -25,7 +25,8 @@ internal static class GameObjectExtendedRootContract
     internal static XmlElement[] Original(string relative,string name)
     {
         string fixtures=Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!;
-        for(var folder=new DirectoryInfo(fixtures);folder!=null;folder=folder.Parent){string path=Path.Combine(new[]{folder.FullName,"alpha","SageXML"}.Concat(relative.Split('/')).ToArray());if(!File.Exists(path))continue;var xml=SdkXmlDiagnostics.Parse(SdkEnvironmentPreflight.Read(path,1048576),path);return xml.GetElementsByTagName(name,SchemaSet.XmlNamespace).OfType<XmlElement>().ToArray();}
+        // Reborn: portable SDK resources sit below SageXML; retain the repository prefix only as a legacy fallback.
+        for(var folder=new DirectoryInfo(fixtures);folder!=null;folder=folder.Parent)foreach(string prefix in new[]{"SageXML","alpha/SageXML"}){string path=Path.Combine(new[]{folder.FullName,prefix}.Concat(relative.Split('/')).ToArray());if(!File.Exists(path))continue;var xml=SdkXmlDiagnostics.Parse(SdkEnvironmentPreflight.Read(path,1048576),path);return xml.GetElementsByTagName(name,SchemaSet.XmlNamespace).OfType<XmlElement>().ToArray();}
         throw new InvalidDataException("Original SDK source not found: "+relative);
     }
     //-------------------------------------------------------------------------------------------------

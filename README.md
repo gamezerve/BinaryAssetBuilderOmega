@@ -1,5 +1,25 @@
 # BinaryAssetBuilder
 
+<!-- Reborn: multiplayer rule authoring uses the original EP1 layout without changing the legacy KW record. -->
+MpGameRules now compiles through the normal source and early-global stream
+routes. The EP1 24-byte layout includes NumMinutesBeforePlayersCanTransferMoney
+(default 5), followed by SkirmishStartCash and its DefaultChoiceIndex (default 1).
+The original global witness and a private authored 5000/50000/5000, index-2 build
+pass native/default validation and final stream/package readback.
+
+<!-- Reborn: credits compile as authored early-global data rather than copied retail payloads. -->
+Credits authoring supports scrolling, all official style names, packed colors,
+font settings and source-sized ordered text/item lists, including blank lines.
+The original EP1 global record qualifies the 32-byte root and nested layouts;
+authored data uses the normal include/schema and global stream build routes.
+
+<!-- Reborn: original camera singleton settings compile through ordinary source preparation and early-global publication. -->
+CameraSettings now supports all twenty official float attributes through the
+normal authoring and AdditionalMaps/global stream routes. Its 84-byte native
+record matches the original EP1 global witness. A private build of the authored
+50/650 camera settings passes schema/native validation and final stream/package
+readback; formatted empty elements, attribute order and omitted fields are covered.
+
 <!-- Reborn: retain one portable alpha while publishing final mods to the current user's Windows Documents directory. -->
 The alpha bundles PowerShell 7, the x86 .NET 8 runtime, scripts, compiler
 resources and stock baselines. Its configuration resolves paths relative to

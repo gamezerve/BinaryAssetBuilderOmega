@@ -113,7 +113,7 @@
 
 		<!-- Structures -->
 
-		<Include type="all" source="structures/AlliedAirfield.xml" />
+		<!-- <Include type="all" source="structures/AlliedAirfield.xml" /> -->
 		<!-- <Include type="all" source="structures/AlliedBarracks.xml" /> -->
 		<!-- <Include type="all" source="structures/AlliedBaseDefense.xml" /> -->
 		<!-- <Include type="all" source="structures/AlliedBaseDefenseAdvanced.xml" /> -->
@@ -121,7 +121,7 @@
 		<!-- <Include type="all" source="structures/AlliedNavalYard.xml" /> -->
 		<Include type="all" source="structures/AlliedPowerPlant.xml" />
 		<!-- <Include type="all" source="structures/AlliedPowerPlantTurbine.xml" /> -->
-		<Include type="all" source="structures/AlliedRefinery.xml" />
+		<!-- <Include type="all" source="structures/AlliedRefinery.xml" /> -->
 		<Include type="all" source="structures/AlliedTechStructure.xml" />
 		<!-- <Include type="all" source="structures/AlliedSuperWeapon.xml" /> -->
 		<!-- <Include type="all" source="DATA:Allied/structures/AlliedSuperWeaponAdvanced.xml" /> -->

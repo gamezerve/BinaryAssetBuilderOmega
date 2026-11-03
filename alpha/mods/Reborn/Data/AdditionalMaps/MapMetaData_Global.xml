@@ -89,8 +89,11 @@
 		<!-- <Include type="all" source="EP1/GlobalData/Upgrade_EP1.xml" /> -->
 		<!-- <Include type="all" source="EP1/SkirmishAI/SkirmishAIIncludes_EP1.xml" /> -->
 		
+		<Include type="all" source="Common/CameraSettings.xml" />
+		<Include type="all" source="Common/Credits.xml" />
 		<Include type="all" source="Common/HealthBarSettings.xml" />
 		<Include type="all" source="Common/HealthBarTemplate.xml" />
+		<Include type="all" source="Common/MpGameRules.xml" />
 		
 	</Includes>
 

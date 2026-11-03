@@ -42,8 +42,8 @@
 		<Target>AlliedFutureTechBallisticsCenter</Target>
 		<Target>AlliedFutureTechEngineRoom</Target>
 		<Target>AlliedFutureTechSignalArray</Target>
-		<Target>AlliedFutureTechFutureTechSkytower</Target>
-		<Target>AlliedFutureTechFutureTechEstates</Target>
+		<Target>AlliedFutureTechSkytower</Target>
+		<Target>AlliedFutureTechEstates</Target>
 		<Target>AlliedFutureTechComCenter</Target>
 		<Target>AlliedFutureTechRDLabs</Target>
 		<Target>AlliedFutureTechCoolingTower</Target>

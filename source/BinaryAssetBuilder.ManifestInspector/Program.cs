@@ -13,6 +13,15 @@ internal static class Program
     {
         try
         {
+            // Reborn: qualify EP1 multiplayer-rules authoring and early-global package publication in a private directory.
+            if(args.Length==5&&args[0]=="mp-game-rules-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();MpGameRulesSmokeTest.Run(args[1],args[2],args[3],args[4]);return 0;}
+            // Reborn: qualify authored credits and early-global publication using private test outputs.
+            if(args.Length==5&&args[0]=="credits-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();CreditsSmokeTest.Run(args[1],args[2],args[3],args[4]);return 0;}
+            // Reborn: qualify singleton camera authoring and early-global publication using read-only inputs and private outputs.
+            if(args.Length==5&&args[0]=="camera-settings-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();CameraSettingsSmokeTest.Run(args[1],args[2],args[3],args[4]);return 0;}
             // Reborn: compare a real custom mesh with EA's native witness without publishing a mod.
             if(args.Length==5&&args[0]=="w3d-vertex-declaration-self-test")
             {CompilerSmokeTest.InitializeHashProvider();W3DVertexDeclarationSmokeTest.Run(args[1],args[2],args[3],args[4]);return 0;}
