@@ -39,7 +39,7 @@ internal sealed class SdkIncludeDefineProfile
         this.numericExpressions=numericExpressions; this.paths = paths; this.musicSchemas = musicSchemas; this.soundOffsets = soundOffsets;
         if (soundOffsets && musicSchemas == null) throw new ArgumentException("Typed sound arithmetic requires compiled schema authority.");
         this.definitionExpressions = definitionExpressions;
-        if (paths.Sources.Length > 512 || paths.Includes.Length > 4096) throw new InvalidDataException("Bounded Include inventory required.");
+        if (!SdkSourceScale.Unrestricted && (paths.Sources.Length > 512 || paths.Includes.Length > 4096)) throw new InvalidDataException("Bounded Include inventory required.");
         string[] roots = paths.AllowedRoots.Select(r=>paths.Search==null?SdkEnvironmentPreflight.DirectoryPath(r):SdkEnvironmentPreflight.Absolute(r)).ToArray();
         foreach (var source in paths.Sources)
         {
@@ -73,6 +73,11 @@ internal sealed class SdkIncludeDefineProfile
             int edges = 0;
             // Reborn: deduplicate computations by origin/name across diamond paths without publishing partial results on rejection.
             Dictionary<string,SdkDefinitionSubset.Evaluation> evaluations = new(StringComparer.Ordinal);
+            // Reborn: precompute definition dependencies without recursive Include calls in a real build.
+            if(SdkSourceScale.Unrestricted){
+                var closure=paths.Includes.Where(e=>(e.Kind is "all" or "instance")&&!e.SkippedMissingArt&&e.PhysicalPath!=null).ToLookup(e=>e.Document,StringComparer.OrdinalIgnoreCase);
+                foreach(string dependency in SdkSourceScale.PostOrder(path,p=>closure[p].Select(e=>e.PhysicalPath!),StringComparer.OrdinalIgnoreCase,"Definition Include"))Visit(dependency,0);
+            }
             var table = Visit(path,0);
             var literals = table.ToDictionary(pair => pair.Key,pair => pair.Value.Value,StringComparer.Ordinal);
             var result = soundOffsets ? SdkLocalDefineProfile.ApplySoundOffsets(target,literals,musicSchemas!,beforeInheritance) : musicSchemas != null ? SdkLocalDefineProfile.ApplyMusicOffsets(target,literals,musicSchemas,beforeInheritance) : beforeInheritance ? SdkLocalDefineProfile.ApplyBeforeInheritance(target,literals,numericExpressions) : SdkLocalDefineProfile.ApplyImported(target,literals);
@@ -87,14 +92,14 @@ internal sealed class SdkIncludeDefineProfile
             //-------------------------------------------------------------------------------------------------
             Dictionary<string,Literal> Visit(string current,int depth)
             {
-                if (depth > 32 || active.Contains(current)) throw new InvalidDataException("Include definition cycle/depth bound exceeded.");
+                if ((!SdkSourceScale.Unrestricted && depth > 32) || active.Contains(current)) throw new InvalidDataException("Include definition cycle/depth bound exceeded.");
                 if (tables.TryGetValue(current,out var previous)) return previous;
-                if (witnesses.Count >= 512) throw new InvalidDataException("512 definition-source bound exceeded.");
+                if (!SdkSourceScale.Unrestricted && (witnesses.Count >= 512)) throw new InvalidDataException("512 definition-source bound exceeded.");
                 byte[] captured = Capture(current);
                 witnesses.Add(current,new(current,inventory[current].Sha256)); active.Add(current);
                 XmlDocument xml = new() { XmlResolver = null };
                 using (MemoryStream input = new(captured,false))
-                using (XmlReader reader = XmlReader.Create(input,new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit,XmlResolver = null,MaxCharactersInDocument = 4*1048576 })) xml.Load(reader);
+                using (XmlReader reader = XmlReader.Create(input,new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit,XmlResolver = null,MaxCharactersInDocument = SdkSourceScale.XmlLimit(4*1048576) })) xml.Load(reader);
                 XmlElement? root = xml.DocumentElement;
                 if (root?.LocalName != "AssetDeclaration" || root.NamespaceURI != Ea) throw new InvalidDataException("EA definition source required.");
                 if (!beforeInheritance && root.SelectNodes(".//*")!.OfType<XmlElement>().Any(element => element.NamespaceURI == Ea && element.HasAttribute("inheritFrom"))) throw new InvalidDataException("Inherited definition source requires asset preprocessing.");
@@ -107,9 +112,11 @@ internal sealed class SdkIncludeDefineProfile
                 Dictionary<string,Literal> merged = new(StringComparer.Ordinal);
                 for (int index = 0; index < includes.Length; index++)
                 {
-                    if (++edges > 4096) throw new InvalidDataException("4096 definition-edge bound exceeded.");
+                    if (!SdkSourceScale.Unrestricted && (++edges > 4096)) throw new InvalidDataException("4096 definition-edge bound exceeded.");
                     XmlElement include = includes[index]; var edge = expected[index];
                     string kind = include.GetAttribute("type").ToLowerInvariant(),logical = include.GetAttribute("source");
+                    // Reborn: runtime catalog references do not export source definitions.
+                    if(edge.StockStreamReference&&kind=="reference"&&SdkStockStreamReference.Known(logical))continue;
                     if (include.LocalName != "Include" || include.NamespaceURI != Ea || kind is not ("all" or "instance")
                         || include.HasChildNodes || include.Attributes.OfType<XmlAttribute>().Any(attribute => attribute.Name is not ("source" or "type"))
                         || edge.Kind != kind || edge.LogicalPath != logical) throw new InvalidDataException("Only captured source-backed all/instance definition Includes are admitted; reference/precompiled paths remain closed.");
@@ -139,7 +146,7 @@ internal sealed class SdkIncludeDefineProfile
                     if (value[0] == '=')
                     {
                         value = SdkDefinitionSubset.Evaluate(value,name => merged.TryGetValue(name,out var literal) ? literal.Value : null);
-                        if (evaluations.Count >= 2048) throw new InvalidDataException("2048 evaluated-definition bound exceeded.");
+                        if (!SdkSourceScale.Unrestricted && (evaluations.Count >= 2048)) throw new InvalidDataException("2048 evaluated-definition bound exceeded.");
                         evaluations.Add(current+"\0"+pair.Key,new(pair.Key,current,pair.Value,value));
                     }
                     Merge(merged,pair.Key,new(value,current));
@@ -158,7 +165,7 @@ internal sealed class SdkIncludeDefineProfile
     {
         if (table.TryGetValue(name,out var other))
         { if (other.SourcePath.Equals(literal.SourcePath,StringComparison.OrdinalIgnoreCase) && other.Value == literal.Value) return; throw new InvalidDataException("Duplicate imported definition from different source documents."); }
-        if (table.Count >= 512) throw new InvalidDataException("512 visible definition bound exceeded.");
+        if (!SdkSourceScale.Unrestricted && (table.Count >= 512)) throw new InvalidDataException("512 visible definition bound exceeded.");
         table.Add(name,literal);
     }
 
@@ -169,11 +176,11 @@ internal sealed class SdkIncludeDefineProfile
     {
         if (!inventory.TryGetValue(path,out var source)) throw new InvalidDataException("Definition source is absent from captured inventory.");
         if (ownerBytes == null && snapshots.TryGetValue(path,out var previous)) return previous;
-        byte[] bytes = ownerBytes ?? SdkEnvironmentPreflight.Read(path,4*1048576);
-        if (bytes.Length > 4*1048576 || bytes.Length != source.Bytes || Convert.ToHexString(SHA256.HashData(bytes)) != source.Sha256) throw new InvalidDataException("Stale definition source differs from path snapshot.");
+        byte[] bytes = ownerBytes ?? SdkEnvironmentPreflight.Read(path,SdkSourceScale.XmlLimit(4*1048576));
+        if ((!SdkSourceScale.Unrestricted && bytes.Length > 4*1048576) || bytes.Length != source.Bytes || Convert.ToHexString(SHA256.HashData(bytes)) != source.Sha256) throw new InvalidDataException("Stale definition source differs from path snapshot.");
         if (!snapshots.ContainsKey(path))
         {
-            if (snapshotBytes+bytes.Length > 32*1048576) throw new InvalidDataException("32 MiB definition snapshot bound exceeded.");
+            if (!SdkSourceScale.Unrestricted && (snapshotBytes+bytes.Length > 32*1048576)) throw new InvalidDataException("32 MiB definition snapshot bound exceeded.");
             snapshotBytes += bytes.Length; snapshots.Add(path,bytes);
         }
         return snapshots[path];

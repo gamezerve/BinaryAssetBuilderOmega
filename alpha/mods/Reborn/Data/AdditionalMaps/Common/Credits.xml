@@ -48,30 +48,29 @@
 			<Text />
 		</CreditItem>
 		
-		<CreditItem Style="MinorTitleFont">
-			<Text>Credits:ModHomepageTitle</Text>
-		</CreditItem>
-		<CreditItem Style="NormalFont">
-			<Text>Credits:ModHomepage1</Text>
-			<Text>Credits:ModHomepage2-1</Text>
-			<Text>Credits:ModHomepage2-2</Text>
-		</CreditItem>
+		<!-- <CreditItem Style="MinorTitleFont"> -->
+			<!-- <Text>Credits:ModHomepageTitle</Text> -->
+		<!-- </CreditItem> -->
+		<!-- <CreditItem Style="NormalFont"> -->
+			<!-- <Text>Credits:ModHomepage1</Text> -->
+			<!-- <Text>Credits:ModHomepage2-1</Text> -->
+			<!-- <Text>Credits:ModHomepage2-2</Text> -->
+		<!-- </CreditItem> -->
+		<!-- <CreditItem Style="TitleFont"> -->
+			<!-- <Text /> -->
+		<!-- </CreditItem> -->
+		<!-- <CreditItem Style="NormalFont"> -->
+			<!-- <Text>Credits:ModHomepage3</Text> -->
+			<!-- <Text>Credits:ModHomepage4</Text> -->
+		<!-- </CreditItem> -->
+		<!-- <CreditItem Style="TitleFont"> -->
+			<!-- <Text /> -->
+		<!-- </CreditItem> -->
+		<!-- <CreditItem Style="NormalFont"> -->
+			<!-- <Text>Credits:ModHomepage5</Text> -->
+			<!-- <Text>Credits:ModHomepage6</Text> -->
+		<!-- </CreditItem> -->
 		<CreditItem Style="TitleFont">
-			<Text />
-		</CreditItem>
-		<CreditItem Style="NormalFont">
-			<Text>Credits:ModHomepage3</Text>
-			<Text>Credits:ModHomepage4</Text>
-		</CreditItem>
-		<CreditItem Style="TitleFont">
-			<Text />
-		</CreditItem>
-		<CreditItem Style="NormalFont">
-			<Text>Credits:ModHomepage5</Text>
-			<Text>Credits:ModHomepage6</Text>
-		</CreditItem>
-		<CreditItem Style="TitleFont">
-			<Text />
 			<Text />
 			<Text />
 		</CreditItem>		

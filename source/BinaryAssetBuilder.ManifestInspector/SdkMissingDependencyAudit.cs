@@ -44,8 +44,10 @@ internal static class SdkMissingDependencyAudit
     //-------------------------------------------------------------------------------------------------
     internal static int Run(string entry,string sdk,string staticManifest,string globalManifest,string output,string? stockData=null,string? streamContext=null)
     {
+        // Reborn: dependency reporting must not reintroduce fixture graph quotas before the actual compile.
+        using var sourceScale=SdkSourceScale.Enter();
         entry=SdkEnvironmentPreflight.Absolute(entry);output=SdkEnvironmentPreflight.Absolute(output);
-        var search=SdkSourceSearch.ForMod(entry,sdk,stockData);byte[] initial=SdkEnvironmentPreflight.Read(entry,4*1048576);
+        var search=SdkSourceSearch.ForMod(entry,sdk,stockData);byte[] initial=SdkEnvironmentPreflight.Read(entry,SdkSourceScale.XmlLimit(4*1048576));
         var first=Parse(initial,entry);var root=search.ModData;string hash=Convert.ToHexString(SHA256.HashData(initial));
         SdkSourcePathAudit.Report paths;
         if(first.Root?.Name==XName.Get("AssetDeclaration",Ea))
@@ -115,7 +117,7 @@ internal static class SdkMissingDependencyAudit
         var documents=new Dictionary<string,XDocument>(StringComparer.OrdinalIgnoreCase);
         foreach(var source in paths.Sources)
         {
-            byte[] bytes=SdkEnvironmentPreflight.Read(source.PhysicalPath,4*1048576);
+            byte[] bytes=SdkEnvironmentPreflight.Read(source.PhysicalPath,SdkSourceScale.XmlLimit(4*1048576));
             if(Convert.ToHexString(SHA256.HashData(bytes))!=source.Sha256)throw new InvalidDataException("Dependency source snapshot changed: "+source.PhysicalPath);
             documents.Add(source.PhysicalPath,Parse(bytes,source.PhysicalPath));
         }
@@ -254,7 +256,7 @@ internal static class SdkMissingDependencyAudit
         //-------------------------------------------------------------------------------------------------
         void Add(string code,string target,XObject node,string path,string field,string detail,string severity="Error")
         {
-            if(findings.Count>=4096)throw new InvalidDataException("Dependency finding limit reached; incomplete audit refused.");
+            if(!SdkSourceScale.Unrestricted&&findings.Count>=4096)throw new InvalidDataException("Dependency finding limit reached; incomplete audit refused.");
             var line=(IXmlLineInfo)node;var element=node as XElement??(node as XAttribute)?.Parent;
             var owner=element?.AncestorsAndSelf().FirstOrDefault(e=>e.Name==XName.Get("Define",Ea))??element?.AncestorsAndSelf().LastOrDefault(e=>e.Attribute("id")!=null);
             string label=owner==null?"AssetDeclaration":owner.Name.LocalName+":"+(string?)(owner.Attribute("name")??owner.Attribute("id"));

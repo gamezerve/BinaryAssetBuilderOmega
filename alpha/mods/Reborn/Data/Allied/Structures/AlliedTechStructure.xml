@@ -21,7 +21,7 @@
 		ButtonImage="Button_AlliedTechStructure_on"
 		Side="Allies"
 		EditorSorting="STRUCTURE"
-		BuildTime="3.0"
+		BuildTime="30"
 		CommandSet="AlliedTechStructureCommandSet"
 		KindOf="+FS_TECHNOLOGY"
 		RadarPriority="STRUCTURE"

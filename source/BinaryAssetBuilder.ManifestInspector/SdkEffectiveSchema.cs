@@ -135,9 +135,9 @@ internal static class SdkEffectiveSchema
     //-------------------------------------------------------------------------------------------------
     internal static Binding Bind(XmlSchemaSet set,string source,byte[] bytes)
     {
-        if (!set.IsCompiled || bytes.Length > 4*1048576) throw new InvalidDataException("Compiled schema and bounded source bytes required.");
+        if (!set.IsCompiled || !SdkSourceScale.Unrestricted && bytes.Length > 4*1048576) throw new InvalidDataException("Compiled schema and bounded source bytes required.");
         XmlDocument xml = new() { XmlResolver = null,Schemas = set }; List<string> errors = new();
-        using MemoryStream input = new(bytes,false); using XmlReader reader = XmlReader.Create(input,new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit,XmlResolver = null,MaxCharactersInDocument = 4*1048576 }); xml.Load(reader);
+        using MemoryStream input = new(bytes,false); using XmlReader reader = XmlReader.Create(input,new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit,XmlResolver = null,MaxCharactersInDocument = SdkSourceScale.XmlLimit(4*1048576) }); xml.Load(reader);
         // Reborn: one-source admission follows the same EA declaration boundary as the source-path profile.
         if (xml.DocumentElement?.LocalName != "AssetDeclaration" || xml.DocumentElement.NamespaceURI != "uri:ea.com:eala:asset") throw new InvalidDataException("EA AssetDeclaration required for typed source binding.");
         // Reborn: schema hints/Includes are not resolver authority; XmlDocument validates against only the supplied compiled set.
@@ -159,7 +159,7 @@ internal static class SdkEffectiveSchema
         {
             if (errors.Count != 0 || type == null || !XmlSchemaType.IsDerivedFrom(type,file,XmlSchemaDerivationMethod.None)) return;
             string value = node is XmlAttribute attribute ? attribute.Value : node.InnerText;
-            if (fields.Count >= 2048 || value.Length > 512) { errors.Add("Typed source file-field count/value bound exceeded."); return; }
+            if ((!SdkSourceScale.Unrestricted && fields.Count >= 2048) || value.Length > 512) { errors.Add("Typed source file-field count/value bound exceeded."); return; }
             fields.Add(new(owner?.SchemaInfo.SchemaType?.QualifiedName.ToString() ?? "(anonymous)",kind,node.Name,value));
         }
     }

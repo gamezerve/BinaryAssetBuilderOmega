@@ -132,7 +132,7 @@ internal sealed class SdkInstanceInheritanceProfile
         upgrades |= metadata; this.metadata = metadata;
         filters |= upgrades; this.upgrades = upgrades;
         this.rootFiles = rootFiles || chains || removals || choices || markers || bitflags || filters; this.chains = chains || removals || choices || markers || bitflags || filters; this.removals = removals || choices || markers || bitflags || filters; this.choices = choices || markers || bitflags || filters; this.markers = markers || bitflags || filters; this.bitflags = bitflags || filters; this.filters = filters;
-        if (!schemas.IsCompiled || paths.Sources.Length > 512 || paths.Includes.Length > 4096) throw new InvalidDataException("Compiled schema and bounded instance inventory required.");
+        if (!schemas.IsCompiled || !SdkSourceScale.Unrestricted && (paths.Sources.Length > 512 || paths.Includes.Length > 4096)) throw new InvalidDataException("Compiled schema and bounded instance inventory required.");
         string[] roots = paths.AllowedRoots.Select(r=>paths.Search==null?SdkEnvironmentPreflight.DirectoryPath(r):SdkEnvironmentPreflight.Absolute(r)).ToArray();
         foreach (var source in paths.Sources)
         {
@@ -150,7 +150,14 @@ internal sealed class SdkInstanceInheritanceProfile
         if (!chains) return ApplyDocument(path,bytes,0,out _);
         // Reborn: reset both raw and prepared snapshots for each owner; shared nodes coalesce only within this invocation.
         snapshots.Clear(); capturedBytes = 0; prepared.Clear(); active.Clear(); preparedBytes = 0;
-        try { return Prepare(path,bytes,0).Result; }
+        try {
+            // Reborn: prewarm only source-backed instance dependencies so valid long inheritance chains use cached children, not recursive call frames.
+            if(SdkSourceScale.Unrestricted){
+                var edges=paths.Includes.Where(e=>e.Kind=="instance"&&!e.SkippedMissingArt&&e.PhysicalPath!=null).ToLookup(e=>e.Document,StringComparer.OrdinalIgnoreCase);
+                foreach(string dependency in SdkSourceScale.PostOrder(path,p=>edges[p].Select(e=>e.PhysicalPath!),StringComparer.OrdinalIgnoreCase,"Instance Include"))if(!dependency.Equals(path,StringComparison.OrdinalIgnoreCase))Prepare(dependency,null,0);
+            }
+            return Prepare(path,bytes,0).Result;
+        }
         catch (Exception error) when (error is IOException or InvalidDataException or XmlException or ArgumentException or UnauthorizedAccessException or NotSupportedException or BinaryAssetBuilderException)
         { return new(null,new(Profile,Convert.ToHexString(SHA256.HashData(bytes)),null,Array.Empty<SdkSelfAttributeInheritance.Overlay>(),new[] { error.Message[..Math.Min(error.Message.Length,512)] })){DiagnosticNode=SdkXmlDiagnostics.Node(error),DiagnosticLocation=SdkXmlDiagnostics.Origin(error)}; }
     }
@@ -160,11 +167,11 @@ internal sealed class SdkInstanceInheritanceProfile
     //-------------------------------------------------------------------------------------------------
     private Prepared Prepare(string path,byte[]? supplied,int depth)
     {
-        if (depth > 32 || active.Contains(path)) throw new InvalidDataException("Instance preparation cycle/32-depth bound exceeded.");
+        if ((!SdkSourceScale.Unrestricted && depth > 32) || active.Contains(path)) throw new InvalidDataException("Instance preparation cycle/32-depth bound exceeded.");
         byte[] bytes = Capture(path,supplied);
         if (prepared.TryGetValue(path,out var cached))
         {
-            if (depth+cached.Height > 32) throw new InvalidDataException("Cached instance preparation exceeds 32-depth bound.");
+            if (!SdkSourceScale.Unrestricted && (depth+cached.Height > 32)) throw new InvalidDataException("Cached instance preparation exceeds 32-depth bound.");
             return cached;
         }
         active.Add(path);
@@ -174,7 +181,7 @@ internal sealed class SdkInstanceInheritanceProfile
             // Reborn: propagate the leaf diagnostic once so deep failures cannot hide their actual reason behind repeated prefixes and the bounded report length.
             if (result.Bytes == null) throw SdkXmlDiagnostics.Carry(new InvalidDataException(string.Join("; ",result.Evidence.Diagnostics)),result);
             preparedBytes += result.Bytes.Length;
-            if (preparedBytes > 32*1048576 || prepared.Count >= 512) throw new InvalidDataException("32 MiB/512-document prepared instance closure bound exceeded.");
+            if (!SdkSourceScale.Unrestricted && (preparedBytes > 32*1048576 || prepared.Count >= 512)) throw new InvalidDataException("32 MiB/512-document prepared instance closure bound exceeded.");
             // Reborn: closure hashes use final owner-only XML after temporary injected bases were removed; coalesce shared origins without inventing live-disk proof.
             var own = new PreparedSource(path,inventory[path].Sha256,result.Evidence.ProcessedSha256!);
             result = result with { Evidence = result.Evidence with { PreparedSources = result.Evidence.PreparedSources.Append(own).DistinctBy(source => source.SourcePath,StringComparer.OrdinalIgnoreCase).ToArray() } };
@@ -201,7 +208,7 @@ internal sealed class SdkInstanceInheritanceProfile
             if (needed.Length == 0 && !chains)
             { var localResult = SdkSelfAttributeInheritance.Apply(schemas,bytes,treeCopy:true,conscriptCopy:conscriptCopy); return localResult with { Evidence = localResult.Evidence with { Profile = Profile } }; }
             var includes = Includes(owner); var expected = paths.Includes.Where(edge => edge.Document.Equals(path,StringComparison.OrdinalIgnoreCase)).ToArray();
-            if (includes.Length != expected.Length || expected.Count(e=>!e.SkippedMissingArt) > 64) throw new InvalidDataException("Instance Include edges differ from captured source or exceed 64 direct Includes.");
+            if (includes.Length != expected.Length || !SdkSourceScale.Unrestricted && expected.Count(e=>!e.SkippedMissingArt) > 64) throw new InvalidDataException("Instance Include edges differ from captured source or exceed 64 direct Includes.");
             Dictionary<string,(XmlElement Asset,ImportedBase Witness)> external = new(StringComparer.Ordinal);
             // Reborn: include all visited preparation sources, including direct visibility candidates not ultimately selected as inherited handles.
             List<PreparedSource> closure = new();
@@ -212,6 +219,8 @@ internal sealed class SdkInstanceInheritanceProfile
             for (int index = 0; index < includes.Length; index++)
             {
                 var include = includes[index]; var edge = expected[index]; string logical = include.GetAttribute("source");
+                // Reborn: a captured stock stream boundary provides no source definitions or inheritance bases.
+                if(edge.StockStreamReference&&include.GetAttribute("type")=="reference"&&edge.Kind=="reference"&&edge.LogicalPath==logical&&SdkStockStreamReference.Known(logical))continue;
                 // Reborn: only a captured, missing ART all/instance include may contribute no visible bases or definitions.
                 if(edge.SkippedMissingArt){
                     if(include.NamespaceURI!=Ea||include.LocalName!="Include"||include.GetAttribute("type") is not ("all" or "instance")||edge.Kind!=include.GetAttribute("type")||edge.LogicalPath!=logical||edge.PhysicalPath!=null||!logical.StartsWith("ART:",StringComparison.OrdinalIgnoreCase)||include.Attributes.OfType<XmlAttribute>().Any(a=>a.NamespaceURI!="http://www.w3.org/2000/xmlns/"&&(a.NamespaceURI.Length!=0||a.Name is not ("source" or "type")))||include.ChildNodes.Cast<XmlNode>().Any(n=>n is XmlElement||n is not XmlComment&&!string.IsNullOrWhiteSpace(n.InnerText)))throw SdkXmlDiagnostics.At(new InvalidDataException("Invalid skipped ART include."),include);
@@ -232,8 +241,12 @@ internal sealed class SdkInstanceInheritanceProfile
                 if(metadataEdge && gameObjectTrees && Assets(baseXml).Length!=0)metadataEdge=false;
                 if (metadataEdge)
                 {
+                    // Reborn: a namespace-valid empty ART placeholder exports no definitions or assets and is a legitimate no-op all Include.
+                    if(SdkSourceScale.Unrestricted&&gameObjectTrees&&!baseXml.DocumentElement!.ChildNodes.OfType<XmlElement>().Any()){
+                        closure.Add(new(resolved.Path,source.Sha256,source.Sha256));height=Math.Max(height,1);continue;
+                    }
                     // Reborn: EA sources may repeat the same definition-only all Include; every edge is validated above, while its source contributes one definition/closure witness.
-                    if (depth >= 32) throw SdkXmlDiagnostics.At(new InvalidDataException("Metadata-only Include depth exceeds 32: "+logical),include);
+                    if (!SdkSourceScale.Unrestricted && (depth >= 32)) throw SdkXmlDiagnostics.At(new InvalidDataException("Metadata-only Include depth exceeds 32: "+logical),include);
                     if (expected.Any(candidate => string.Equals(candidate.PhysicalPath,resolved.Path,StringComparison.OrdinalIgnoreCase) && candidate.Kind != "all")) throw SdkXmlDiagnostics.At(new InvalidDataException("Definition-only source uses conflicting Include roles: "+logical),include);
                     if (metadataWitnesses.Any(witness => witness.SourcePath.Equals(resolved.Path,StringComparison.OrdinalIgnoreCase))) continue;
                     int count = SdkMetadataDefinitions.Prove(schemas,baseXml,resolved.Path,baseBytes);
@@ -249,11 +262,11 @@ internal sealed class SdkInstanceInheritanceProfile
                 if (child != null) { height = Math.Max(height,child.Height+1); closure.AddRange(expanded.Evidence.PreparedSources); }
                 if (expanded.Bytes == null || !SdkEffectiveSchema.Bind(schemas,resolved.Path,expanded.Bytes).XmlValidated) throw new InvalidDataException("Imported base document requires unsupported preprocessing or fails schema validation.");
                 expandedBaseBytes += expanded.Bytes.Length;
-                if (expandedBaseBytes > 32*1048576) throw new InvalidDataException("32 MiB expanded instance-source bound exceeded.");
+                if (!SdkSourceScale.Unrestricted && (expandedBaseBytes > 32*1048576)) throw new InvalidDataException("32 MiB expanded instance-source bound exceeded.");
                 foreach (var pair in Handles(Assets(Parse(expanded.Bytes))))
                 {
                     // Reborn: bound aggregate direct visibility independently from per-source asset/source-byte bounds.
-                    if (external.Count >= 4096) throw new InvalidDataException("4096 direct-instance handle bound exceeded.");
+                    if (!SdkSourceScale.Unrestricted && (external.Count >= 4096)) throw new InvalidDataException("4096 direct-instance handle bound exceeded.");
                     var witness = new ImportedBase(pair.Value.LocalName,pair.Value.GetAttribute("id"),resolved.Path,source.Sha256,expanded.Evidence.ProcessedSha256!) { PreparedSources = chains ? expanded.Evidence.PreparedSources : Array.Empty<PreparedSource>() };
                     if (!external.TryAdd(pair.Key,(pair.Value,witness))) throw new InvalidDataException("Duplicate direct-instance handles are ambiguous; no first-wins fallback.");
                 }
@@ -296,7 +309,7 @@ internal sealed class SdkInstanceInheritanceProfile
                 // Reborn: explicit alias roots under the scoped diagnostic resolver are source-directory independent; native wildcard/postfix search and physical safety/existence are separate gates.
                 if (!baseBinding.XmlValidated || (baseBinding.Fields.Length != 0 && (!rootFiles || baseBinding.Fields.Any(field => !RootQualified(field.LogicalPath))))) throw new InvalidDataException("Imported file-field provenance requires broader binding; only explicit DATA/ART/AUDIO roots are admitted by the root-file profile.");
                 expandedSize += Encoding.UTF8.GetByteCount(entry.Asset.OuterXml)+1L;
-                if (expandedSize > 4*1048576) throw new InvalidDataException("Injected instance bases exceed 4 MiB before merge.");
+                if (!SdkSourceScale.Unrestricted && expandedSize > 4*1048576) throw new InvalidDataException("Injected instance bases exceed 4 MiB before merge.");
                 // Reborn: imported source-local chains were already expanded/validated; remove only their retained diagnostic inheritFrom marker before local delegation.
                 var imported = (XmlElement)owner.ImportNode(entry.Asset,true); imported.RemoveAttribute("inheritFrom");
                 string injectedHandle=handle;
@@ -340,7 +353,7 @@ internal sealed class SdkInstanceInheritanceProfile
             // Reborn: all explicit owner fields and leaves must survive the actual delegated Core merge.
             SdkSoundSingletons.Verify(output,soundPlans);
             byte[] processed = Serialize(output);
-            if (processed.Length > 4*1048576) throw new InvalidDataException("Processed instance owner exceeds 4 MiB.");
+            if (!SdkSourceScale.Unrestricted && processed.Length > 4*1048576) throw new InvalidDataException("Processed instance owner exceeds 4 MiB.");
             return new(processed,new(Profile,raw,Convert.ToHexString(SHA256.HashData(processed)),merged.Evidence.Overlays,Array.Empty<string>()) { ImportedBases = witnesses.ToArray(),PreparedSources = closure.DistinctBy(source => source.SourcePath,StringComparer.OrdinalIgnoreCase).ToArray(),Removals = merged.Evidence.Removals,ConsumedMarkers = merged.Evidence.ConsumedMarkers,Bitflags = merged.Evidence.Bitflags,Filters = merged.Evidence.Filters,UpgradeNormalizations = merged.Evidence.UpgradeNormalizations,MetadataDefinitionIncludes = metadataWitnesses.ToArray(),ExpressionPreparation = expressionEvidence,IdenticalStates = merged.Evidence.IdenticalStates,StateReadds = merged.Evidence.StateReadds,CrossStateRemovals = merged.Evidence.CrossStateRemovals,AudioTree = merged.Evidence.AudioTree,SoundSingletons = soundPlans.Select(plan => plan.Witness).ToArray() });
         }
         catch (Exception error) when (error is IOException or InvalidDataException or XmlException or ArgumentException or UnauthorizedAccessException or NotSupportedException or BinaryAssetBuilderException)
@@ -364,10 +377,10 @@ internal sealed class SdkInstanceInheritanceProfile
     {
         if (!inventory.TryGetValue(path,out var source)) throw new InvalidDataException("Instance source absent from captured inventory.");
         if (supplied == null && snapshots.TryGetValue(path,out var previous)) return previous;
-        byte[] bytes = supplied ?? SdkEnvironmentPreflight.Read(path,4*1048576);
-        if (bytes.Length > 4*1048576 || bytes.Length != source.Bytes || Convert.ToHexString(SHA256.HashData(bytes)) != source.Sha256) throw new InvalidDataException("Stale instance source differs from captured snapshot.");
+        byte[] bytes = supplied ?? SdkEnvironmentPreflight.Read(path,SdkSourceScale.XmlLimit(4*1048576));
+        if ((!SdkSourceScale.Unrestricted && bytes.Length > 4*1048576) || bytes.Length != source.Bytes || Convert.ToHexString(SHA256.HashData(bytes)) != source.Sha256) throw new InvalidDataException("Stale instance source differs from captured snapshot.");
         if (!snapshots.ContainsKey(path))
-        { capturedBytes += bytes.Length; if (capturedBytes > 32*1048576) throw new InvalidDataException("32 MiB instance snapshot bound exceeded."); snapshots.Add(path,bytes); }
+        { capturedBytes += bytes.Length; if (!SdkSourceScale.Unrestricted && (capturedBytes > 32*1048576)) throw new InvalidDataException("32 MiB instance snapshot bound exceeded."); snapshots.Add(path,bytes); }
         return bytes;
     }
 
@@ -391,7 +404,7 @@ internal sealed class SdkInstanceInheritanceProfile
     {
         // Reborn: complete Conscript source includes literal Lua and empty leaf whitespace; retain it only in this explicit copy profile.
         XmlDocument xml = new() { XmlResolver = null, PreserveWhitespace = conscriptCopy }; using MemoryStream input = new(bytes,false);
-        using (XmlReader reader = XmlReader.Create(input,new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit,XmlResolver = null,MaxCharactersInDocument = 4*1048576 })) xml.Load(reader);
+        using (XmlReader reader = XmlReader.Create(input,new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit,XmlResolver = null,MaxCharactersInDocument = SdkSourceScale.XmlLimit(4*1048576) })) xml.Load(reader);
         if (xml.DocumentElement?.LocalName != "AssetDeclaration" || xml.DocumentElement.NamespaceURI != Ea) throw new InvalidDataException("EA instance declaration required."); return xml;
     }
 

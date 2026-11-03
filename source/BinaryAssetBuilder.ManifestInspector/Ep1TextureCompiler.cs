@@ -27,19 +27,21 @@ internal static class Ep1TextureCompiler
         if(b.Length<18)throw new InvalidDataException("TGA header is truncated: "+path);
         int idLength=b[0],colorMap=b[1],type=b[2],width=U16(b,12),height=U16(b,14),bpp=b[16],descriptor=b[17];
         if(colorMap!=0||type is not (2 or 10))throw new InvalidDataException("Only true-color TGA (type 2 or RLE type 10) is supported: "+path);
-        if (bpp != 32 || (descriptor & 0x0F) is not (0 or 8)) throw new InvalidDataException("Only 32-bit TGA with 0 or 8 alpha attribute bits is supported: " + path);
+        // Reborn: retail terrain uses both 24-bit RGB and 32-bit RGBA TGA; RGB pixels become opaque BGRA without changing source files.
+        if (bpp is not (24 or 32) || (descriptor & 0x0F) is not (0 or 8) || bpp==24&&(descriptor&0x0F)!=0) throw new InvalidDataException("Only 24/32-bit true-color TGA is supported: " + path);
         if ((descriptor&0x10)!=0)throw new InvalidDataException("Right-to-left TGA origin is not supported: "+path);
         if(width<1||height<1||width>MaxDimension||height>MaxDimension)throw new InvalidDataException("TGA dimensions are outside 1.."+MaxDimension+": "+path);
-        int pixels=checked(width*height),at=18+idLength;var raw=new byte[pixels*4];
-        if(type==2){if(at>b.Length-raw.Length)throw new InvalidDataException("TGA pixel data is truncated: "+path);Buffer.BlockCopy(b,at,raw,0,raw.Length);}
+        int pixels=checked(width*height),at=18+idLength,stride=bpp/8;var decoded=new byte[checked(pixels*stride)];
+        if(type==2){if(at>b.Length-decoded.Length)throw new InvalidDataException("TGA pixel data is truncated: "+path);Buffer.BlockCopy(b,at,decoded,0,decoded.Length);}
         else{
             for(int p=0;p<pixels;){
                 if(at>=b.Length)throw new InvalidDataException("TGA RLE data is truncated: "+path);int packet=b[at++],count=(packet&0x7F)+1;if(p+count>pixels)throw new InvalidDataException("TGA RLE packet overruns the image: "+path);
-                if((packet&0x80)!=0){if(at>b.Length-4)throw new InvalidDataException("TGA RLE data is truncated: "+path);for(int i=0;i<count;i++)Buffer.BlockCopy(b,at,raw,(p+i)*4,4);at+=4;}
-                else{if(at>b.Length-count*4)throw new InvalidDataException("TGA RLE data is truncated: "+path);Buffer.BlockCopy(b,at,raw,p*4,count*4);at+=count*4;}
+                if((packet&0x80)!=0){if(at>b.Length-stride)throw new InvalidDataException("TGA RLE data is truncated: "+path);for(int i=0;i<count;i++)Buffer.BlockCopy(b,at,decoded,(p+i)*stride,stride);at+=stride;}
+                else{if(at>b.Length-count*stride)throw new InvalidDataException("TGA RLE data is truncated: "+path);Buffer.BlockCopy(b,at,decoded,p*stride,count*stride);at+=count*stride;}
                 p+=count;
             }
         }
+        var raw=new byte[checked(pixels*4)];for(int p=0;p<pixels;p++){Buffer.BlockCopy(decoded,p*stride,raw,p*4,stride);if(stride==3)raw[p*4+3]=255;}
         if((descriptor&0x20)!=0)return new(width,height,raw);
         var flipped=new byte[raw.Length];int row=width*4;for(int y=0;y<height;y++)Buffer.BlockCopy(raw,(height-1-y)*row,flipped,y*row,row);return new(width,height,flipped);
     }

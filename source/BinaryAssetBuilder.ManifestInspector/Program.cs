@@ -13,6 +13,21 @@ internal static class Program
     {
         try
         {
+            // Reborn: verify the shared terrain raster decoder without reading or changing authored mod content.
+            if(args.Length==1&&args[0]=="terrain-raster-self-test")
+            {TextureRasterSmokeTest.Run();return 0;}
+            // Reborn: qualify map object/script source against its own EP1 retail stream before admitting its native layout.
+            if(args.Length==6&&args[0]=="map-native-probe")
+            {MapNativeCompiler.Probe(args[1],args[2],args[3],args[4],args[5]);return 0;}
+            // Reborn: resource inventory is kept distinct from native graph comparisons and never pretends missing artwork compiled.
+            if(args.Length==4&&args[0]=="map-resource-audit")
+            {MapNativeCompiler.AuditResources(args[1],args[2],args[3]);return 0;}
+            // Reborn: exit three means an optional map was skipped for warned missing terrain, not a successful partial atlas.
+            if(args.Length==4&&args[0]=="map-resource-preflight")
+            {return MapNativeCompiler.AuditResources(args[1],args[2],args[3],warnings:true)==0?0:3;}
+            // Reborn: map packaging requires actual linked EP1 GameMap output and preserves the map.version/_mod contract.
+            if(args.Length==3&&args[0]=="sdk-stage-map-package")
+            {MapPackageStage.Run(args[1],args[2]);return 0;}
             // Reborn: qualify EP1 multiplayer-rules authoring and early-global package publication in a private directory.
             if(args.Length==5&&args[0]=="mp-game-rules-self-test")
             {CompilerSmokeTest.InitializeHashProvider();MpGameRulesSmokeTest.Run(args[1],args[2],args[3],args[4]);return 0;}

@@ -12,6 +12,8 @@ internal static class SdkSourcePathAudit
     {
         // Reborn: an explicitly warned absent ART all/instance include contributes no assets, definitions or inheritance visibility.
         public bool SkippedMissingArt {get;init;}
+        // Reborn: standard retail references contribute runtime lookup, never source inheritance or resource traversal.
+        public bool StockStreamReference {get;init;}
     }
     internal sealed record Resource(string Document,string Field,string LogicalPath,string PhysicalPath,long Bytes);
     // Reborn: coordinates describe the actual caller/source snapshot, not an assumed line in a missing target file.
@@ -56,12 +58,15 @@ internal static class SdkSourcePathAudit
         List<SdkKnownMapAliases.Witness> aliases = new();
         HashSet<string> visited = new(StringComparer.OrdinalIgnoreCase),active = new(StringComparer.OrdinalIgnoreCase);
         long total = 0; bool stopped = false;
+        // Reborn: production traversal has no document/depth cap and uses a heap-backed work stack.
+        var pending=new Stack<Action>();
         Visit(environment.SourceEntry,data,0);
+        while(pending.Count!=0)pending.Pop()();
         if (sources.Count > 0 && sources[0].Sha256 != environment.SourceEntrySha256) Add("StaleEntry",environment.SourceEntry,"","Source entry changed after environment inspection.");
         // Reborn: no alias witness survives an uncaptured, changed or invalid target; the source graph must include its proved bytes.
         foreach (var alias in aliases)
             if (!sources.Any(source => source.PhysicalPath.Equals(alias.PhysicalPath,StringComparison.OrdinalIgnoreCase) && source.Sha256 == alias.Sha256 && source.Bytes == alias.Bytes)
-                || Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(alias.PhysicalPath,4*1048576))) != alias.Sha256)
+                || Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(alias.PhysicalPath,SdkSourceScale.XmlLimit(4*1048576)))) != alias.Sha256)
                 throw new InvalidDataException("Known map alias target changed or was not captured as valid source XML.");
         return new(data,artRoot,audioRoot,sources.ToArray(),edges.ToArray(),resources.ToArray(),issues.ToArray(),issues.All(i=>i.Code=="MISSINGART") && !stopped,
             stopped,true,false,false,new[] { "Path scope only: all/instance/reference Include edges are inspected, not compiled or substituted with manifests.",
@@ -75,7 +80,7 @@ internal static class SdkSourcePathAudit
         //-------------------------------------------------------------------------------------------------
         void Add(string code,string document,string logical,string detail,SdkXmlDiagnostics.Location? location=null)
         {
-            if (issues.Count(i=>i.Code!="MISSINGART") >= 127) { if (!stopped) issues.Add(new("IssueLimit",document,"","128-issue cap reached; traversal stopped.")); stopped = true; return; }
+            if (!SdkSourceScale.Unrestricted && (issues.Count(i=>i.Code!="MISSINGART") >= 127)) { if (!stopped) issues.Add(new("IssueLimit",document,"","128-issue cap reached; traversal stopped.")); stopped = true; return; }
             location??=Locate(document,logical);
             issues.Add(new(code,document,logical.Length > 512 ? logical[..512] : logical,detail){Location=location});
         }
@@ -98,21 +103,28 @@ internal static class SdkSourcePathAudit
         //-------------------------------------------------------------------------------------------------
         void Visit(string path,string confinement,int depth,Func<SdkXmlDiagnostics.Location?>? caller=null)
         {
+            if(SdkSourceScale.Unrestricted)pending.Push(()=>VisitNow(path,confinement,depth,caller));else VisitNow(path,confinement,depth,caller);
+        }
+        // Reborn: one frame captures one file; cleanup remains below its child frames to preserve active-cycle detection.
+        void VisitNow(string path,string confinement,int depth,Func<SdkXmlDiagnostics.Location?>? caller)
+        {
             if (stopped) return;
             if (active.Contains(path)) { Add("IncludeCycle",path,"","Active source Include cycle; this planning profile does not compile reference-cycle semantics."); return; }
             if (visited.Contains(path)) return;
-            if (depth > 32 || sources.Count >= 512) { Add("GraphLimit",path,"","32-depth/512-source bound exceeded."); stopped = true; return; }
+            if (!SdkSourceScale.Unrestricted && (depth > 32 || sources.Count >= 512)) { Add("GraphLimit",path,"","32-depth/512-source bound exceeded."); stopped = true; return; }
             byte[] bytes; XmlDocument xml = new() { XmlResolver = null };
             try
             {
-                bytes = SdkEnvironmentPreflight.Read(path,4*1048576); total += bytes.Length;
-                if (total > 32*1048576) { Add("GraphLimit",path,"","32 MiB source-byte cap reached."); stopped = true; return; }
+                bytes = SdkEnvironmentPreflight.Read(path,SdkSourceScale.XmlLimit(4*1048576)); total += bytes.Length;
+                if (!SdkSourceScale.Unrestricted && (total > 32*1048576)) { Add("GraphLimit",path,"","32 MiB source-byte cap reached."); stopped = true; return; }
                 rawSnapshots[path]=bytes;xml=SdkXmlDiagnostics.Parse(bytes,path);
                 if (xml.DocumentElement?.LocalName != "AssetDeclaration" || xml.DocumentElement.NamespaceURI != "uri:ea.com:eala:asset") throw new InvalidDataException("EA AssetDeclaration required for Include documents.");
             }
             catch (Exception error) when (error is IOException or InvalidDataException or XmlException or ArgumentException)
             { Add("SourceRead",path,"","Missing, oversized, redirected or malformed source XML; no external entity processing. "+error.Message,SdkXmlDiagnostics.Origin(error)??caller?.Invoke()); return; }
             visited.Add(path); active.Add(path); sources.Add(new(path,confinement,Convert.ToHexString(SHA256.HashData(bytes)),bytes.Length));
+            int childStart=pending.Count;
+            if(SdkSourceScale.Unrestricted){pending.Push(()=>active.Remove(path));childStart=pending.Count;}
             XmlElement root = xml.DocumentElement!;
             foreach (XmlElement container in root.ChildNodes.OfType<XmlElement>().Where(node => node.LocalName == "Includes"))
             {
@@ -120,12 +132,16 @@ internal static class SdkSourcePathAudit
                 foreach (XmlElement include in container.ChildNodes.OfType<XmlElement>())
                 {
                     if (stopped) break;
-                    if (edges.Count >= 4096) { Add("GraphLimit",path,"","4096-Include-edge cap reached."); stopped = true; break; }
+                    if (!SdkSourceScale.Unrestricted && (edges.Count >= 4096)) { Add("GraphLimit",path,"","4096-Include-edge cap reached."); stopped = true; break; }
                     string logical = include.GetAttribute("source"),kind = include.GetAttribute("type").ToLowerInvariant();
                     if (include.LocalName != "Include" || include.NamespaceURI != root.NamespaceURI || kind is not ("all" or "instance" or "reference"))
                     { Add("IncludeShape",path,logical,"Only direct all/instance/reference Include elements are audited."); continue; }
                     try
                     {
+                        // Reborn: production source capture stops at known runtime streams instead of recursively compiling all stock XML.
+                        if(w3xSources&&kind=="reference"&&SdkStockStreamReference.Known(logical)){
+                            edges.Add(new(path,kind,logical,null){StockStreamReference=true});continue;
+                        }
                         // Reborn: opt in only to exact two-library/all aliases, keeping original logical spelling and role intact.
                         var alias = knownMapAliases ? aliases.SingleOrDefault(item => item.Document.Equals(path,StringComparison.OrdinalIgnoreCase) && item.LogicalPath == logical && item.Kind == kind)
                             ?? SdkKnownMapAliases.Prove(data,path,kind,logical) : null;
@@ -135,7 +151,7 @@ internal static class SdkSourcePathAudit
                         edges.Add(new(path,kind,logical,child.Path));
                         // Reborn: production W3X declarations join the captured XML graph; legacy path-only audits retain metadata-only resource reads.
                         if(!w3xSources && search!=null && child.Path.EndsWith(".w3x",StringComparison.OrdinalIgnoreCase))
-                        {if(resources.Count>=2048){Add("ResourceLimit",path,logical,"2048-resource cap reached.");stopped=true;}else resources.Add(new(path,"Include",logical,child.Path,new FileInfo(child.Path).Length));}
+                        {if(!SdkSourceScale.Unrestricted && (resources.Count>=2048)){Add("ResourceLimit",path,logical,"2048-resource cap reached.");stopped=true;}else resources.Add(new(path,"Include",logical,child.Path,new FileInfo(child.Path).Length));}
                         else Visit(child.Path,child.Root,depth+1,()=>Locate(path,logical));
                     }
                     // Reborn: only exhausted SDK ART all/instance include searches are warnings; invalid paths and existing broken sources remain errors.
@@ -160,7 +176,10 @@ internal static class SdkSourcePathAudit
                     if (attribute.NamespaceURI.Length == 0 && (Alias(attribute.Value) || (element.LocalName is "AudioFile" or "Texture") && attribute.Name == "File")) ResourcePath(path,element.LocalName+"/@"+attribute.Name,attribute.Value,confinement);
                 if (!element.ChildNodes.OfType<XmlElement>().Any() && Alias(element.InnerText)) ResourcePath(path,element.LocalName+"/text()",element.InnerText,confinement);
             }
-            active.Remove(path);
+            if(SdkSourceScale.Unrestricted){
+                // Reborn: process Includes in their original order despite the LIFO frame stack.
+                var frames=new List<Action>();while(pending.Count>childStart)frames.Add(pending.Pop());foreach(var frame in frames)pending.Push(frame);
+            }else active.Remove(path);
         }
 
         //-------------------------------------------------------------------------------------------------

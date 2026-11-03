@@ -28,6 +28,8 @@ internal static class Ep1DdsTexture
         }else if((flags&0x40)!=0){
             if(bits==32&&W(bytes,92)==0xFF0000&&W(bytes,96)==0xFF00&&W(bytes,100)==0xFF&&W(bytes,104) is 0 or 0xFF000000){format=(flags&1)!=0&&W(bytes,104)==0xFF000000?"A8R8G8B8":"X8R8G8B8";pixel=4;}
             else if(bits==16&&W(bytes,92)==0xF800&&W(bytes,96)==0x7E0&&W(bytes,100)==0x1F&&W(bytes,104)==0){format="R5G6B5";pixel=2;}
+            // Reborn: original EP1 terrain normal atlases use the legacy 16-bit X1R5G5B5 DDS format.
+            else if(bits==16&&W(bytes,92)==0x7C00&&W(bytes,96)==0x3E0&&W(bytes,100)==0x1F&&W(bytes,104)==0&&(flags&1)==0){format="X1R5G5B5";pixel=2;}
             else throw new InvalidDataException("DDS RGB bit masks/format are not supported yet: "+path);
         }else throw new InvalidDataException("DDS palette/luminance/custom formats are not supported yet: "+path);
         long expected=0,aligned=0;uint w=width,h=height,d=depth;int faces=cube?6:1;

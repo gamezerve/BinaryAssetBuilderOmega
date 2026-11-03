@@ -16,13 +16,15 @@ internal static class GeneralArmorSourceBuild
     //-------------------------------------------------------------------------------------------------
     internal static void Run(string sourceRoot, string entry, string output, bool validateOnly = false,string? sdk=null,string? stockData=null)
     {
+        // Reborn: real SDK armor builds share unrestricted source traversal; old isolated fixture entry points keep their diagnostic controls.
+        using var sourceScale=sdk==null?null:SdkSourceScale.Enter();
         sourceRoot = SdkEnvironmentPreflight.DirectoryPath(sourceRoot);
         entry = SdkEnvironmentPreflight.Absolute(entry); output = SdkEnvironmentPreflight.Absolute(output);
         // Reborn: focused armor deployments carry only their reviewed schema graph, not the full SDK catalog or a developer checkout.
         string schemaPath = Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!, "ArmorSourcePipeline.xsd");
         var environment = SourceEnvironment(sourceRoot, entry, output, schemaPath);
         var paths = SdkSourcePathAudit.Inspect(environment,search:sdk==null?null:SdkSourceSearch.ForMod(entry,sdk,stockData),skipMissingArtIncludes:sdk!=null);
-        if (!paths.ScopedPathAuditComplete || paths.StoppedAtLimit || paths.Sources.Length > 32 || paths.Includes.Length > 64 || paths.Resources.Length != 0)
+        if (!paths.ScopedPathAuditComplete || paths.StoppedAtLimit || !SdkSourceScale.Unrestricted && (paths.Sources.Length > 32 || paths.Includes.Length > 64) || paths.Resources.Length != 0)
             throw new InvalidDataException("Armor source build requires complete 1..32-source/64-edge file-free path inventory: "
                 + string.Join("; ", paths.Issues.Select(issue => issue.Code + ": " + issue.Detail)));
         // Reborn: the legacy armor route reports the same nonfatal missing ART include warning.
@@ -38,7 +40,7 @@ internal static class GeneralArmorSourceBuild
                 // Reborn: no write/delete sharing permits original XML to remain stable throughout preparation and candidate publication on Windows.
                 SdkEnvironmentPreflight.CheckPath(source.PhysicalPath);
                 var stream = File.Open(source.PhysicalPath, FileMode.Open, FileAccess.Read, FileShare.Read); locks.Add(stream);
-                if (stream.Length < 1 || stream.Length > 65536 || (total += stream.Length) > 1048576)
+                if (stream.Length < 1 || !SdkSourceScale.Unrestricted && (stream.Length > 65536 || (total += stream.Length) > 1048576))
                     throw new InvalidDataException("Armor source graph exceeds 64 KiB per file/one MiB total.");
                 byte[] bytes = new byte[(int)stream.Length]; stream.ReadExactly(bytes);
                 if (Convert.ToHexString(SHA256.HashData(bytes)) != source.Sha256) throw new InvalidDataException("Captured armor source changed.");
@@ -120,7 +122,7 @@ internal static class GeneralArmorSourceBuild
         if (!entry.EndsWith(".xml", StringComparison.OrdinalIgnoreCase) || !SdkEnvironmentPreflight.Inside(root, entry)
             || SdkEnvironmentPreflight.Inside(root, output) || SdkEnvironmentPreflight.Inside(schemaRoot, output)
             || Directory.Exists(output) || File.Exists(output)) throw new InvalidDataException("Focused armor entry/output geometry is unsupported or occupied.");
-        byte[] bytes = SdkEnvironmentPreflight.Read(entry, 65536); Parse(bytes);
+        byte[] bytes = SdkEnvironmentPreflight.Read(entry, SdkSourceScale.XmlLimit(65536)); Parse(bytes);
         return new("ra3ep1", schemaRoot, schemaPath, 0, "", root, entry, Convert.ToHexString(SHA256.HashData(bytes)), output,
             Array.Empty<SdkEnvironmentPreflight.Mapping>(), true, true, false, false, false, "0x5454A8E9",
             new[] { "Focused armor path geometry only; full SDK schema catalog parity is not asserted." });
@@ -133,7 +135,7 @@ internal static class GeneralArmorSourceBuild
     {
         using var input = new MemoryStream(bytes, false);
         using var reader = XmlReader.Create(input, new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null,
-            IgnoreWhitespace = true, IgnoreComments = true, MaxCharactersInDocument = 4 * 1048576 });
+            IgnoreWhitespace = true, IgnoreComments = true, MaxCharactersInDocument = SdkSourceScale.XmlLimit(4 * 1048576) });
         var xml = new XmlDocument { XmlResolver = null }; xml.Load(reader);
         if (xml.ChildNodes.Cast<XmlNode>().Any(node => node is not XmlElement && node is not XmlDeclaration)
             || xml.DocumentElement?.Name != "AssetDeclaration" || xml.DocumentElement.NamespaceURI != Ea)

@@ -1,5 +1,63 @@
 # BinaryAssetBuilder
 
+<!-- Reborn: real SDK builds scale with input graphs instead of inherited diagnostic fixture allowances. -->
+Production routing, dependency validation and source preparation no longer impose
+512-source, 4096-edge, 32-level Include, 4-MiB XML or 32-MiB graph quotas. Related
+definition, instance visibility, fragment and aggregate prepared-source quotas
+are disabled in the real SDK source transaction. Include capture/emission and
+inheritance/definition dependency scheduling use iterative work stacks or cached
+dependency order; actual cycles, malformed XML, missing dependencies and changed
+sources remain errors. Namespace-valid empty ART placeholders are no-op imports.
+
+Private scale validation passed 701 sources, 5200 edges, 700 linked assets, 600
+Include levels, 2048 definitions, 36 MiB source XML and 300 inherited assets.
+The current Romania map prepared 685 XML sources and compiled 80 authored assets.
+These are tested cases, not replacement limits. The x86 process's memory capacity
+and actual native/archive format ranges still apply; this does not make the
+compiler a 64-bit or fully streaming implementation. See
+[source scaling notes](docs/SOURCE_GRAPH_SCALING.md).
+<!-- Reborn: qualified inheritance must keep the same canonical handle in graph ordering and native source merging. -->
+Qualified references such as `inheritFrom="AudioEvent:BaseSoundEffect"` and bare
+same-type names share one canonical resolver. Private checks cover mixed chains
+and the current SampleMod Sounds.xml source preparation; no mod XML was changed.
+
+<!-- Reborn: explicit maintenance utility creates only user-requested empty ART declarations; it is never part of compilation. -->
+`scripts/New-Ra3Ep1MissingArtPlaceholders.ps1` (also copied into the SDK scripts
+folder) accepts `-LogPath <build-log.txt>` or `-LogText <text>`. It creates absent
+XML/W3X files from quoted MISSINGART aliases under SDK Art, with two-character
+fanout for bare filenames and existing subdirectories preserved. Existing files
+are preserved; only exact empty placeholders from the old script can be upgraded
+with the EA namespace. `-WhatIf` previews both creation and upgrades;
+`-SdkRoot` overrides discovery.
+Content is `<?xml version="1.0" encoding="UTF-8"?><AssetDeclaration xmlns="uri:ea.com:eala:asset"></AssetDeclaration>`.
+These are namespace-valid empty source declarations, not real asset definitions.
+The utility does not run automatically during builds.
+
+<!-- Reborn: map builds use real raster sources and preserve the official _mod selector convention. -->
+Studio's **Build Maps** checkbox (off by default) compiles direct folders under
+`mods/<name>/Data/Maps/Official` from `map.xml`. Outputs are copied to
+`mods/<name>/Misc/Data/Maps/Official/<map>` and enter the final Misc BIG.
+`map_mod.bin/imp/manifest/relo` use the unsuffixed `map.version` containing `_mod`.
+Accompanying `.map` and `.tga` files are copied unchanged.
+
+GameMap, GameScriptList and TerrainTextureAtlas now compile through the common
+source/native/link pipeline, including real 24/32-bit TGA terrain resources,
+campaign overrides and WorldBuilder dependency closure. Standard
+`DATA:static.xml/global.xml/audio.xml` reference Includes stop at runtime catalogs
+instead of expanding the complete retail XML trees. Campaign PlayerTechStoreTemplate
+layouts also compile with typed button imports and official row cardinalities.
+
+The complete SampleMod Romania map passed a private build: **79 authored assets,
+776 assets after WorldBuilder resolution, eight final Misc files**. No game test
+has been performed. Missing terrain files emit located MISSINGTERRAIN warnings;
+that map is skipped and existing Misc content is retained. Broken present inputs
+and other compilation errors fail the build. Missing map folders/entries are skips.
+Atlas color DDS is lossless BGRA (larger than retail DXT5); normal DDS uses the
+retail X1R5G5B5 format, with five mip levels.
+
+See [map pipeline notes](docs/RA3_MAP_BUILD_PIPELINE.md) and
+[native implementation](docs/MAP_NATIVE_IMPLEMENTATION.md) for evidence and limits.
+
 <!-- Reborn: multiplayer rule authoring uses the original EP1 layout without changing the legacy KW record. -->
 MpGameRules now compiles through the normal source and early-global stream
 routes. The EP1 24-byte layout includes NumMinutesBeforePlayersCanTransferMoney
@@ -1041,12 +1099,11 @@ WorldBuilder OilDerrick and NY stock-exchange records. Private tests cover
 original values, edits, defaults, populated/empty lists and full GameObject
 composition. This is offline compiler validation; gameplay has not been tested.
 
-<!-- Reborn: normal mod authors can omit compiler regressions without omitting source and output validation. -->
-Studio now has an unchecked-by-default **Developer Build Tests** checkbox directly
-under **Build Global Data**. Off selects fast builds; on restores build-time
-stock/repeat/corruption regressions. Both modes retain source/schema/dependency
-validation and actual native/stream/package checks. The setting covers static and
-enabled global builds and is recorded in the successful build receipt.
+<!-- Reborn: Studio always uses fast builds; optional compiler regressions belong to developer maintenance tools. -->
+Studio no longer exposes **Developer Build Tests**. It explicitly requests fast
+builds, ignoring any old persisted checkbox value. Developer maintenance scripts
+retain their test option. Normal builds still perform source/schema/dependency
+validation and actual native/stream/package checks.
 Fast builds label required row-grammar loading as `Native metadata ready` and
 share it across GameObjects in the same build. Asset usage checks combine
 stock and emitted mod references; valid custom enum values no longer produce

@@ -23,23 +23,25 @@ internal static class ConscriptSourcePreparation
     //-------------------------------------------------------------------------------------------------
     internal static ConscriptSourceInput.Input Load(string entry,SdkSourceSearch? search=null)
     {
+        // Reborn: production source graphs scale with input size, not diagnostic fixture quotas.
+        using var sourceScale=SdkSourceScale.Enter();
         // Reborn: nested global entry points share the mod's DATA alias root rather than inventing an AdditionalMaps/Data tree.
         entry=SdkEnvironmentPreflight.Absolute(entry);string root=search?.ModData??SdkEnvironmentPreflight.DirectoryPath(Path.GetDirectoryName(entry)!);
-        // Reborn: W3X vertex sources share the path audit's 4 MiB/file and 32 MiB/graph budget, not the old small-object fixture cap.
-        byte[] initial=SdkEnvironmentPreflight.Read(entry,4*1048576);var first=Parse(initial,entry);
+        // Reborn: real source XML uses process-representable reads rather than fixture file/graph byte quotas.
+        byte[] initial=SdkEnvironmentPreflight.Read(entry,SdkSourceScale.XmlLimit(4*1048576));var first=Parse(initial,entry);
         // Reborn: preserve the previous standalone complete-object input without claiming it has an AssetDeclaration preprocessing context.
-        if(first.DocumentElement?.LocalName is "GameObject" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "WeaponTemplate" or "MpGameRules" or "Credits" or "CameraSettings" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings") return new(first,null,new[]{new ConscriptSourceInput.SourceFile(entry,Hash(initial))}){Origins=new[]{new ConscriptSourceInput.AssetOrigin(first.DocumentElement!.LocalName,first.DocumentElement!.GetAttribute("id"),entry)},Locations=new(new[]{new SdkXmlDiagnostics.Snapshot(entry,initial)})};
+        if(first.DocumentElement?.LocalName is "ArmorTemplate" or "GameObject" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechStoreTemplate" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "WeaponTemplate" or "MpGameRules" or "Credits" or "CameraSettings" or "GameMap" or "GameScriptList" or "TerrainTextureAtlas" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings") return new(first,null,new[]{new ConscriptSourceInput.SourceFile(entry,Hash(initial))}){Origins=new[]{new ConscriptSourceInput.AssetOrigin(first.DocumentElement!.LocalName,first.DocumentElement!.GetAttribute("id"),entry)},Locations=new(new[]{new SdkXmlDiagnostics.Snapshot(entry,initial)})};
         string fixture=ReferencePipelineSmokeTest.FindFixture();string output=Path.Combine(Path.GetTempPath(),"Reborn-SourcePlan-"+Guid.NewGuid().ToString("N"));
         var environment=new SdkEnvironmentPreflight.Report("ra3ep1",Path.GetDirectoryName(fixture)!,fixture,0,"",root,entry,Hash(initial),output,Array.Empty<SdkEnvironmentPreflight.Mapping>(),true,true,false,false,false,"0x5454A8E9",Array.Empty<string>());
         var paths=SdkSourcePathAudit.Inspect(environment,search:search,w3xSources:true,skipMissingArtIncludes:true);
         // Reborn: report the actual physical winner before resource/processor admission; finding a W3X never means it was compiled.
         foreach(var selection in paths.Searches.Where(s=>!s.ExpectedMissing&&s.LogicalPath.Contains(':')))Console.WriteLine("Reborn: source path ["+selection.Layer+"] "+selection.LogicalPath+" -> "+selection.PhysicalPath);
-        if(!paths.ScopedPathAuditComplete || paths.StoppedAtLimit || paths.Sources.Length>512 || paths.Sources.Sum(s=>s.Bytes)>32*1048576)
+        if(!paths.ScopedPathAuditComplete || paths.StoppedAtLimit)
         {
             var failure=new InvalidDataException("Source graph: "+string.Join("; ",paths.Issues.Select(i=>i.Code+" "+i.LogicalPath+": "+i.Detail)));
             if(paths.Issues.FirstOrDefault(i=>i.Location!=null)?.Location is SdkXmlDiagnostics.Location location)SdkXmlDiagnostics.Attach(failure,location);throw failure;
         }
-        var snapshots=paths.Sources.ToDictionary(s=>s.PhysicalPath,s=>SdkEnvironmentPreflight.Read(s.PhysicalPath,4*1048576),StringComparer.OrdinalIgnoreCase);
+        var snapshots=paths.Sources.ToDictionary(s=>s.PhysicalPath,s=>SdkEnvironmentPreflight.Read(s.PhysicalPath,SdkSourceScale.XmlLimit(4*1048576)),StringComparer.OrdinalIgnoreCase);
         foreach(var source in paths.Sources)if(Hash(snapshots[source.PhysicalPath])!=source.Sha256)throw new InvalidDataException("Source changed during graph capture.");
         // Reborn: locating a real resource does not enable its processor; report the unique referring literal or an explicitly labelled document context.
         // Reborn: Texture/@File captures TGA raster inputs and precompiled DDS; other payload kinds still need their own processor.
@@ -52,7 +54,9 @@ internal static class ConscriptSourcePreparation
 
         // Reborn: WAV AudioFile resources are captured alongside raster inputs for their native audio processor.
         var audio=paths.Resources.Where(r=>r.Field=="AudioFile/@File"&&r.PhysicalPath.EndsWith(".wav",StringComparison.OrdinalIgnoreCase)).ToArray();
-        var accepted=textures.Concat(audio).ToArray();
+        // Reborn: terrain tile rasters are captured beside regular textures and later bound to the native atlas encoder.
+        var terrain=paths.Resources.Where(r=>r.Field is "Tile/@BaseTexture" or "Tile/@NormalTexture").ToArray();
+        var accepted=textures.Concat(audio).Concat(terrain).ToArray();
         var unsupported = paths.Resources.Except(accepted).ToArray();
 
         if (unsupported.Length!=0)
@@ -71,7 +75,10 @@ internal static class ConscriptSourcePreparation
         var assets=new List<XmlElement>();var origins=new Dictionary<XmlElement,string>();var emitted=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         // Reborn: collect actual successful overlays, including source-only intermediate bases, independently of runtime import records.
         var inheritanceUses=new HashSet<SdkSelfAttributeInheritance.Overlay>();
-        Emit(entry);
+        // Reborn: retain all-Include dependency order without a recursive emitter or repeated whole-graph edge scans.
+        var allEdges=paths.Includes.Where(e=>e.Kind=="all"&&!e.SkippedMissingArt).ToLookup(e=>e.Document,StringComparer.OrdinalIgnoreCase);
+        var work=new Stack<(string Path,bool Exit)>();var scheduled=new HashSet<string>(StringComparer.OrdinalIgnoreCase);work.Push((entry,false));
+        while(work.Count!=0){var frame=work.Pop();if(frame.Exit){Emit(frame.Path);continue;}if(!scheduled.Add(frame.Path))continue;work.Push((frame.Path,true));foreach(var edge in allEdges[frame.Path].Reverse())work.Push((edge.PhysicalPath??throw new InvalidDataException("Unresolved all Include."),false));}
         var games=assets.Where(a=>a.LocalName=="GameObject").ToArray();var commands=assets.Where(a=>a.LocalName=="LogicCommand").ToArray();
         // Reborn: support assets are explicit emitted declarations, not unwanted instance-base leakage or hidden generated data.
         // Reborn: command-set-only mods use the same native graph without inventing a placeholder GameObject.
@@ -79,8 +86,8 @@ internal static class ConscriptSourcePreparation
         // Reborn: an upgrade-only graph is a real standalone stream; never invent a GameObject just to select the backend.
         // Reborn: W3DContainer is also a real standalone asset stream, not an implicit GameObject.
         // Reborn: authored audio events may form a standalone stream or accompany actual GameObjects without dummy assets.
-        if(games.Length==0&&!assets.Any(a=>a.LocalName is "AudioEvent" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "WeaponTemplate" or "MpGameRules" or "Credits" or "CameraSettings" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings"))throw new InvalidDataException("This route requires a supported emitted asset; imported bases must use type=instance.");
-        var primary=games.FirstOrDefault()??assets.First(a=>a.LocalName is "AudioEvent" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "WeaponTemplate" or "MpGameRules" or "Credits" or "CameraSettings" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings");
+        if(games.Length==0&&!assets.Any(a=>a.LocalName is "AudioEvent" or "ArmorTemplate" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechStoreTemplate" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "WeaponTemplate" or "MpGameRules" or "Credits" or "CameraSettings" or "GameMap" or "GameScriptList" or "TerrainTextureAtlas" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings"))throw new InvalidDataException("This route requires a supported emitted asset; imported bases must use type=instance.");
+        var primary=games.FirstOrDefault()??assets.First(a=>a.LocalName is "AudioEvent" or "ArmorTemplate" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechStoreTemplate" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "WeaponTemplate" or "MpGameRules" or "Credits" or "CameraSettings" or "GameMap" or "GameScriptList" or "TerrainTextureAtlas" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings");
         // Reborn: duplicates across included source documents use the same copy-friendly coded diagnostic as local declarations.
         var identities=assets.GroupBy(a=>a.LocalName+":"+a.GetAttribute("id"),StringComparer.OrdinalIgnoreCase);var duplicate=identities.FirstOrDefault(g=>g.Count()!=1);
         if(duplicate!=null){
@@ -89,7 +96,7 @@ internal static class ConscriptSourcePreparation
             var error=SdkXmlDiagnostics.At(new InvalidDataException("DUPLICATEASSET ' "+duplicate.Key+" ' The asset is emitted more than once. Conflicting declarations: "+string.Join("; ",locations.Where((_,index)=>index!=1))+"."),declarations[1]);
             SdkXmlDiagnostics.Attach(error,locations[1]);throw error;
         }
-        foreach(var source in paths.Sources)if(Hash(SdkEnvironmentPreflight.Read(source.PhysicalPath,4*1048576))!=source.Sha256)throw new InvalidDataException("Source changed during inheritance/definition preparation.");
+        foreach(var source in paths.Sources)if(Hash(SdkEnvironmentPreflight.Read(source.PhysicalPath,SdkSourceScale.XmlLimit(4*1048576)))!=source.Sha256)throw new InvalidDataException("Source changed during inheritance/definition preparation.");
         // Reborn: XInclude fragments are real source dependencies, including hash and higher-priority mod-shadow checks before publication.
         fragments.VerifySources();
         var searches=paths.Searches.Concat(fragments.Searches).ToArray();SdkSourceSearch.Verify(searches);
@@ -112,10 +119,10 @@ internal static class ConscriptSourcePreparation
             if(!emitted.Add(path))return;XmlDocument? xml=null;
             try{
             xml=Parse(snapshots[path],path);var document=xml.DocumentElement!;
-            foreach(var edge in paths.Includes.Where(e=>e.Document.Equals(path,StringComparison.OrdinalIgnoreCase) && e.Kind=="all"&&!e.SkippedMissingArt))Emit(edge.PhysicalPath??throw new InvalidDataException("Unresolved all Include."));
+            // Reborn: child declarations have already been emitted by the iterative dependency walk.
             var owners=document.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is not ("Tags" or "Includes" or "Defines")).ToArray();
             // Reborn: AudioEvent uses the same explicit source/include/schema path as other supported assets.
-            if(owners.FirstOrDefault(a=>a.LocalName is not ("AudioEvent" or "GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "MpGameRules" or "Credits" or "CameraSettings" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings")) is XmlElement unsupported)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported emitted asset type '"+unsupported.LocalName+"'; no silent skipping."),unsupported);
+            if(owners.FirstOrDefault(a=>a.LocalName is not ("AudioEvent" or "GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechStoreTemplate" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "MpGameRules" or "Credits" or "CameraSettings" or "GameMap" or "GameScriptList" or "TerrainTextureAtlas" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings")) is XmlElement unsupported)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported emitted asset type '"+unsupported.LocalName+"'; no silent skipping."),unsupported);
             // Reborn: source-only definition leaves must still validate, even if no emitted owner happens to consume them.
             if(owners.Length==0){if(document.ChildNodes.OfType<XmlElement>().Any(e=>e.LocalName=="Defines"))SdkMetadataDefinitions.Prove(schemas,xml,path,snapshots[path]);return;}
             bool needsPreparation=document.GetElementsByTagName("Define",Ea).Count!=0 || document.GetElementsByTagName("include","http://www.w3.org/2001/XInclude").Count!=0 || owners.Any(a=>a.HasAttribute("inheritFrom") || a.SelectNodes(".//@* | .//text()")!.Cast<XmlNode>().Any(n=>(n.Value??"").StartsWith('=')));
@@ -157,7 +164,7 @@ internal static class ConscriptSourcePreparation
             foreach(XmlNode child in node.ChildNodes)
             {
                 if(child is XmlComment || child is not XmlElement && string.IsNullOrWhiteSpace(child.InnerText))continue;
-                if(child is not XmlElement include || include.LocalName!="Include" || include.NamespaceURI!=Ea || include.GetAttribute("type") is not ("all" or "instance") || include.Attributes.OfType<XmlAttribute>().Any(a=>a.NamespaceURI!="http://www.w3.org/2000/xmlns/" && (a.NamespaceURI.Length!=0 || a.Name is not ("type" or "source"))) || include.ChildNodes.Cast<XmlNode>().Any(n=>n is XmlElement || n is not XmlComment && !string.IsNullOrWhiteSpace(n.InnerText)))throw SdkXmlDiagnostics.At(new InvalidDataException("Only explicit all/instance XML Include directives are enabled."),child);
+                if(child is not XmlElement include || include.LocalName!="Include" || include.NamespaceURI!=Ea || (include.GetAttribute("type") is not ("all" or "instance") && !(include.GetAttribute("type")=="reference"&&SdkStockStreamReference.Known(include.GetAttribute("source")))) || include.Attributes.OfType<XmlAttribute>().Any(a=>a.NamespaceURI!="http://www.w3.org/2000/xmlns/" && (a.NamespaceURI.Length!=0 || a.Name is not ("type" or "source"))) || include.ChildNodes.Cast<XmlNode>().Any(n=>n is XmlElement || n is not XmlComment && !string.IsNullOrWhiteSpace(n.InnerText)))throw SdkXmlDiagnostics.At(new InvalidDataException("Only explicit all/instance Includes or standard stock reference Includes are enabled."),child);
             }
         }
     }

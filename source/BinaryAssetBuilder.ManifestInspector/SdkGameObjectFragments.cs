@@ -32,7 +32,7 @@ internal sealed class SdkGameObjectFragments
     //-------------------------------------------------------------------------------------------------
     internal void Expand(XmlDocument document,string path,string root,int depth=0)
     {
-        if(depth>16||!active.Add(path))throw new InvalidDataException("XInclude fragment cycle/depth limit: "+path);
+        if((!SdkSourceScale.Unrestricted&&depth>16)||!active.Add(path))throw new InvalidDataException("XInclude fragment cycle/depth limit: "+path);
         try
         {
             foreach(var include in document.GetElementsByTagName("include",Xi).OfType<XmlElement>().ToArray())
@@ -62,7 +62,7 @@ internal sealed class SdkGameObjectFragments
                     include.ParentNode!.InsertBefore(document.ImportNode(child,true),include);
                 }
                 include.ParentNode!.RemoveChild(include);
-                if(document.SelectNodes("//*")!.Count>8192||document.OuterXml.Length>4*1048576)throw new InvalidDataException("Expanded XInclude document budget exceeded.");
+                if(!SdkSourceScale.Unrestricted && (document.SelectNodes("//*")!.Count>8192||document.OuterXml.Length>4*1048576))throw new InvalidDataException("Expanded XInclude document budget exceeded.");
                 Console.WriteLine("Reborn: source path [fragment] "+href+" -> "+selected);
                 }catch(Exception error)when(error is IOException or InvalidDataException or XmlException or ArgumentException){SdkXmlDiagnostics.At(error,include);throw;}
             }
@@ -76,9 +76,9 @@ internal sealed class SdkGameObjectFragments
     private XmlDocument LoadFragment(string path)
     {
         if(!templates.TryGetValue(path,out var template)){
-            if(sources.Count>=MaxSources)throw new InvalidDataException($"XInclude unique fragment count exceeded: {sources.Count+1} files, limit {MaxSources}. Fragment: {path}");
-            byte[] bytes=SdkEnvironmentPreflight.Read(path,MaxFragmentBytes);
-            if(uniqueBytes+bytes.Length>MaxUniqueBytes)throw new InvalidDataException($"XInclude unique fragment bytes exceeded: {uniqueBytes+bytes.Length} bytes, limit {MaxUniqueBytes}. Fragment: {path}");
+            if(!SdkSourceScale.Unrestricted && (sources.Count>=MaxSources))throw new InvalidDataException($"XInclude unique fragment count exceeded: {sources.Count+1} files, limit {MaxSources}. Fragment: {path}");
+            byte[] bytes=SdkEnvironmentPreflight.Read(path,SdkSourceScale.XmlLimit(MaxFragmentBytes));
+            if(!SdkSourceScale.Unrestricted && (uniqueBytes+bytes.Length>MaxUniqueBytes))throw new InvalidDataException($"XInclude unique fragment bytes exceeded: {uniqueBytes+bytes.Length} bytes, limit {MaxUniqueBytes}. Fragment: {path}");
             template=SdkXmlDiagnostics.Parse(bytes,path);
             sources.Add(path,new(path,Convert.ToHexString(SHA256.HashData(bytes))));snapshots.Add(path,bytes);templates.Add(path,template);uniqueBytes+=bytes.Length;
         }
@@ -90,6 +90,6 @@ internal sealed class SdkGameObjectFragments
     //-------------------------------------------------------------------------------------------------
     internal void VerifySources()
     {
-        foreach(var source in sources.Values)if(Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(source.Path,MaxFragmentBytes)))!=source.Sha256)throw new InvalidDataException("XInclude source changed during preparation: "+source.Path);
+        foreach(var source in sources.Values)if(Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(source.Path,SdkSourceScale.XmlLimit(MaxFragmentBytes))))!=source.Sha256)throw new InvalidDataException("XInclude source changed during preparation: "+source.Path);
     }
 }

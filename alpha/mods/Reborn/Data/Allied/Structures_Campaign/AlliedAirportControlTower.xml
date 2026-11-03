@@ -40,7 +40,7 @@
 		EnergyProduction="-50"
 		ProductionQueueType="OTHER_STRUCTURE"
 		BuildPlacementTypeFlag="OTHER_STRUCTURE"
-		BuildTime="4.5"
+		BuildTime="45"
 		CommandSet="AlliedAirportControlTowerCommandSet"
 		TypeDescription="TYPE:AlliedAirportControlTower"
 		Description="DESC:AlliedAirportControlTower"

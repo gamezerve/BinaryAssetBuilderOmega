@@ -2,16 +2,32 @@
 <!-- Reborn: local alpha help for the existing Studio documentation pane; no remote content or executable scripts. -->
 <html lang="en"><head><meta charset="utf-8"><title>Uprising Mod SDK Alpha</title></head>
 <body>
+<!-- Reborn: map builds preserve the selector convention and explain missing-terrain and runtime validation behavior. -->
+<h2>Build Maps</h2>
+<p>The optional checkbox reads map.xml in each direct mods/&lt;name&gt;/Data/Maps/Official folder.
+Successful map outputs go to Misc/Data/Maps/Official/&lt;map&gt; and enter the final Misc BIG.
+The stream files are map_mod.bin/imp/manifest/relo; map.version contains _mod.
+Accompanying .map and .tga files are copied unchanged. Missing map sources are skipped.</p>
+<p>GameMap, GameScriptList, terrain atlas data and campaign overrides compile through the native stream pipeline.
+Terrain TGA files use mod Art first, then SDK Art/Terrain; 24/32-bit raw/RLE inputs are supported.
+Missing terrain files produce located MISSINGTERRAIN warnings and skip that map, preserving existing Misc content.
+Broken existing inputs and other compilation errors still fail the build.</p>
+<p>The complete Romania map passed private compilation, WorldBuilder resolution and Misc packaging.
+In-game loading and visuals have not been tested. Atlas color data is lossless and larger than retail compressed output.
+New assets existing only in the main static mod do not yet have a supplied map lookup catalog.</p>
 <h1>Uprising Mod SDK Alpha — live repository workspace</h1>
 <!-- Reborn: keep the agreed portable dependency and output guidance accessible from Studio itself. -->
 <p>This SDK bundles its build runtimes, scripts and stock baselines. Copy it to a writable folder and open EALAModStudio.exe there. Final packages still use the current Windows user's Documents folder. See <a href="PortableSDK.htm">portable dependencies and copy details</a>.</p>
 <!-- Reborn: distinguish optional developer regressions from validation of the user's real source and generated output. -->
-<h2>Developer Build Tests</h2>
-<p>The checkbox directly below <strong>Build Global Data</strong> defaults off.
-Unchecked selects a fast build; checked enables build-time stock comparisons,
-deterministic repeats and deliberate corruption/overwrite tests. The selection
-applies to static data and any enabled global builds.</p>
-<p>Both modes keep XML/schema and dependency checks, supported-layout admission,
+<h2>Build validation</h2>
+<!-- Reborn: source graph size is determined by authored input and available process memory, not diagnostic fixture quotas. -->
+<p>Normal SDK builds have no fixed source-file, Include-count or Include-depth quotas.
+Definitions and inheritance retain their real cycle and validity checks. Empty EA-namespaced ART placeholders are no-op imports.
+The compiler remains x86; physical memory and native/archive format limits still apply.</p>
+<!-- Reborn: Studio keeps fast builds fixed while maintenance regressions remain outside the user interface. -->
+<p>Studio always uses fast builds. Developer Build Tests has been removed from the interface;
+old saved checkbox values are ignored. Optional regression tests remain available to developer maintenance tools.</p>
+<p>Normal builds keep XML/schema and dependency checks, supported-layout admission,
 required native metadata loading, actual source/native verification and final
 stream/package readback. Fast mode does not enable unsupported features or hide
 missing assets, strings or definitions. The build log shows the selected mode.</p>

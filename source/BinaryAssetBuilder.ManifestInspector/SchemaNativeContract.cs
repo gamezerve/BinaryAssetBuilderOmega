@@ -167,6 +167,8 @@ internal sealed class SchemaNativeContract
         // Reborn: weapon nugget class words come from the reviewed concrete element class, never authored TypeId text.
         if(owner==typeof(WeaponEffectNugget)&&name=="TypeId"){Expect(at,BitConverter.GetBytes(WeaponTemplateCompiler.Nugget(e!).TypeId),path);return;}
         if(owner==typeof(FXNugget)&&name=="TypeId"){uint id=FastHash.GetHashCode(e?.SchemaInfo.SchemaType?.QualifiedName.Name??throw new InvalidDataException("FX nugget schema type missing."));_=FXListCompiler.NuggetType(e!);Expect(at,BitConverter.GetBytes(id),path);return;}
+        // Reborn: map script parameter class words follow the validated concrete XSD type rather than an authored tag.
+        if(owner==typeof(GameScriptParameterBase)&&name=="TypeId"){Expect(at,BitConverter.GetBytes(FastHash.GetHashCode(e?.SchemaInfo.SchemaType?.QualifiedName.Name??throw new InvalidDataException("Map script parameter schema type missing."))),path);return;}
         // Reborn: statically typed EP1 weapon slot records carry a zero class word in retail native arrays.
         if(owner==typeof(Ep1WeaponSlotHardpoint)&&name=="TypeId"){Expect(at,new byte[4],path);return;}
         // Reborn: inline AI vision items inherit BaseAssetType; retail keeps its runtime id-info word zero and does not store the source id.
@@ -245,6 +247,8 @@ internal sealed class SchemaNativeContract
                 case "TypedAssetId`1":Weak(Source(e,name).Text,at,path);return;
                 case "Relo.List`1":List(type.GetGenericArguments()[0],e,name,at,path,depth);return;
                 case "Relo.PolymorphicList`1":
+                    // Reborn: map script actions contain schema-selected ObjectType/ObjectTypeList pointer arrays.
+                    if(type.GetGenericArguments()[0]==typeof(GameScriptParameterBase)){MapScriptParameters(e,name,at,path,depth);return;}
                     // Reborn: FXList owns a normal pointer array of schema-selected concrete FX nuggets.
                     // Reborn: particle events are an ordinary source-sized polymorphic pointer array.
                     if(type.GetGenericArguments()[0]==typeof(FXParticleEventBase)){ParticleEvents(e,name,at,path,depth);return;}
@@ -262,7 +266,24 @@ internal sealed class SchemaNativeContract
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: own the shader wrapper, pointer array and concrete records in authored order; every class is derived from its source schema. */
+    /** Reborn: own map script wrappers, pointer arrays and schema-selected concrete parameter records. */
+    //-------------------------------------------------------------------------------------------------
+    private void MapScriptParameters(XmlElement? owner,string name,int at,string path,int depth)
+    {
+        // Reborn: independently own the wrapper, pointer table and each concrete script parameter record from authored schema choices.
+        var wrapper=Child(owner,name);var children=wrapper?.ChildNodes.OfType<XmlElement>().ToArray()??Array.Empty<XmlElement>();
+        if(wrapper!=null)consumed.Add(wrapper);
+        if(Word(at)!=children.Length)throw new InvalidDataException("Map script parameter count differs: "+path);uint items=Word(at+4);
+        if(children.Length==0){if(items!=0)throw new InvalidDataException("Empty map script parameter list has storage.");return;}
+        Link(at+4,items,checked(children.Length*4),path);
+        for(int i=0;i<children.Length;i++){
+            var child=children[i];consumed.Add(child);Type concrete=child.LocalName switch{"ObjectType"=>typeof(GameScriptParameterObjectType),"ObjectTypeList"=>typeof(GameScriptParameterObjectTypeList),_=>throw new InvalidDataException("Unsupported map script parameter: "+child.LocalName)};
+            int slot=checked((int)items+i*4);uint target=Word(slot);Link(slot,target,Size(concrete),path+"["+i+"]");Struct(concrete,child,(int)target,path+"["+i+"]",depth+1);
+        }
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: validate authored shader constants with their original concrete native layouts. */
     //-------------------------------------------------------------------------------------------------
     private void ShaderConstants(XmlElement? owner,string name,int at,string path,int depth)
     {
@@ -327,6 +348,8 @@ internal sealed class SchemaNativeContract
     //-------------------------------------------------------------------------------------------------
     private void List(Type element,XmlElement? e,string name,int at,string path,int depth)
     {
+        // Reborn: recursive script groups use the native group stride behind the CLR SelfType placeholder.
+        if(element==typeof(SelfType)&&name=="ScriptGroup"&&e?.SchemaInfo.SchemaType?.QualifiedName.Name=="GameScriptGroup")element=typeof(GameScriptGroup);
         bool leaf=Leaf(element)||Scalar(element)!=null||element.IsEnum;string[]? tokens=null;XmlElement[] children=Array.Empty<XmlElement>();
         var attribute=e?.GetAttributeNode(name);
         if(leaf&&attribute!=null){consumed.Add(attribute);tokens=attribute.Value.Split((char[]?)null,StringSplitOptions.RemoveEmptyEntries);}
@@ -377,6 +400,8 @@ internal sealed class SchemaNativeContract
 
     private void LeafValue(Type type,XmlElement? element,string? text,int at,string path)
     {
+        // Reborn: map water-area lists store scalar enum elements; derive each ordinal from the validated item XSD.
+        if(type.IsEnum){Expect(at,BitConverter.GetBytes(Ordinal(element?.SchemaInfo.SchemaType as XmlSchemaSimpleType,text?.Trim()??string.Empty,path)),path);return;}
         // Reborn: shader Float/Value lists contain primitive floats with source-sized allocation, not nested synthetic value records.
         if(type==typeof(float)){var carrier=(element?.OwnerDocument??new XmlDocument()).CreateElement("Scalar");carrier.SetAttribute("Value",text??"");Expect(at,ConscriptModuleScalarContract.Bytes(carrier,new("Value",0,4,"Single",null,0)),path);return;}
         // Reborn: AABTree polygon-index lists contain primitive unsigned words, not synthetic element structs.

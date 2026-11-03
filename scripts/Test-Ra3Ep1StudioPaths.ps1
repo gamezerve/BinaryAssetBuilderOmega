@@ -23,13 +23,18 @@ try{
     $adapter=[Activator]::CreateInstance($result.CompiledAssembly.GetType('EALABuild.BuildScript'))
     $options=$adapter.GetModBuildGUIData();$global=@($options|Where-Object DataKey -CEQ 'buildglobal')
     if($global.Count-ne 1 -or $global[0].LabelString-cne 'Build Global Data' -or $global[0].ControlType-ne [EALABuild.GUIElementData]::CheckBoxType){throw 'Studio Build Global Data checkbox differs.'}
-    # Reborn: the developer toggle follows Global Data and defaults unchecked through EA's actual standalone-control factory; no main form is constructed or shown.
+    # Reborn: the removed developer toggle must not reappear; Studio always requests fast builds even with old persisted checkbox data.
     $developer=@($options|Where-Object DataKey -CEQ 'developertests')
-    if($developer.Count-ne 1 -or $developer[0].LabelString-cne 'Developer Build Tests' -or $developer[0].ControlType-ne [EALABuild.GUIElementData]::CheckBoxType -or $options.IndexOf($developer[0])-ne ($options.IndexOf($global[0])+1)){throw 'Developer build checkbox order/type differs.'}
+    if($developer.Count-ne 0){throw 'Developer build checkbox must not be exposed.'}
+    $adapterSource=[IO.File]::ReadAllText((Join-Path $sdk 'studio/defaultscript.cs'))
+    if(-not $adapterSource.Contains('request.Arguments += " -DeveloperBuildTests 0";') -or $adapterSource.Contains('gui["developertests"]')){throw 'Studio must ignore stale developer flags and request fast builds.'}
+    # Reborn: the new persisted map checkbox defaults off and remains distinct from early-global source building.
+    $maps=@($options|Where-Object DataKey -CEQ 'buildmaps')
+    if($maps.Count-ne 1 -or $maps[0].LabelString-cne 'Build Maps' -or $maps[0].ControlType-ne [EALABuild.GUIElementData]::CheckBoxType){throw 'Studio Build Maps checkbox differs.'}
     $studioAssembly=[Reflection.Assembly]::LoadFrom((Join-Path $sdk 'EALAModStudio.exe'));$studioType=$studioAssembly.GetType('EALAModStudio.ModStudioUI')
     $factory=$studioType.GetMethod('generateControl',[Reflection.BindingFlags]'Instance,NonPublic',$null,[Type[]]@([string],[Type]),$null)
     $uninitialized=[Runtime.Serialization.FormatterServices]::GetUninitializedObject($studioType)
-    $control=$factory.Invoke($uninitialized,[object[]]@($developer[0].LabelString,$developer[0].ControlType));try{if($control.Checked){throw 'New developer checkbox must default unchecked.'}}finally{$control.Dispose()}
+    $control=$factory.Invoke($uninitialized,[object[]]@($maps[0].LabelString,$maps[0].ControlType));try{if($control.Checked){throw 'New map checkbox must default unchecked.'}}finally{$control.Dispose()}
     $method=$result.CompiledAssembly.GetType('EALABuild.BuildScript').GetMethod('ReadPaths',[Reflection.BindingFlags]'Static,NonPublic')
     # Reborn: a typed delegate avoids PowerShell wrapping reflection arguments as PSObject instead of CLR strings.
     $readPaths=[Delegate]::CreateDelegate([Func[string,object]],$method)

@@ -92,9 +92,11 @@ namespace EALABuild
             // Reborn: EA persists this native checkbox; pass an explicit numeric value so unchecked is never lost in switch binding.
             bool buildGlobal = !gui.ContainsKey("buildglobal") || Convert.ToBoolean(gui["buildglobal"]);
             request.Arguments += " -BuildGlobalData " + (buildGlobal ? "1" : "0");
-            // Reborn: unchecked is the normal fast build; an explicit checkbox enables developer repeat/corruption/stock comparison tests.
-            bool developerTests = gui.ContainsKey("developertests") && Convert.ToBoolean(gui["developertests"]);
-            request.Arguments += " -DeveloperBuildTests " + (developerTests ? "1" : "0");
+            // Reborn: Studio always uses fast builds; stale persisted developer checkbox values cannot re-enable maintenance regressions.
+            request.Arguments += " -DeveloperBuildTests 0";
+            // Reborn: an unchecked map toggle leaves map sources untouched; selected maps compile before final Misc packaging.
+            bool buildMaps = gui.ContainsKey("buildmaps") && Convert.ToBoolean(gui["buildmaps"]);
+            request.Arguments += " -BuildMaps " + (buildMaps ? "1" : "0");
             request.RedirectOutput = true; request.CreateWindow = false;
             // Reborn: retain the SDK's step-counter protocol before RunStep advances it for the callback.
             try
@@ -139,8 +141,8 @@ namespace EALABuild
             options.Add(new GUIElementData("buildaptui", "Build AptUI", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
 			// Reborn: compile AdditionalMaps/MapMetaData_*.xml before static data, using EA's familiar persisted toggle.
             options.Add(new GUIElementData("buildglobal", "Build Global Data", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
-            // Reborn: EA's new checkbox defaults unchecked and persists the user's later selection using its own GUI data store.
-            options.Add(new GUIElementData("developertests", "Developer Build Tests", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
+            // Reborn: preserve EA's persisted checkbox behavior and the historical map stage before BIG creation.
+            options.Add(new GUIElementData("buildmaps", "Build Maps", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
             // Reborn: use EA's own persisted text-input control rather than a separate settings interface.
             options.Add(new GUIElementData("mv", "Mod Version:", GUIElementData.LabelType, ScriptIndex.ModScript));
             options.Add(new GUIElementData("modversion", "1.00", GUIElementData.InputBoxType, ScriptIndex.ModScript));

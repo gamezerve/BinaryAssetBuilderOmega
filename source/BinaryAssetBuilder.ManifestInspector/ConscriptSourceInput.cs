@@ -77,32 +77,38 @@ internal static class ConscriptSourceInput
     //-------------------------------------------------------------------------------------------------
     internal static bool Detect(string entry,string? sdk=null,string? stockData=null)
     {
+        // Reborn: production source graphs scale with input size, not diagnostic fixture quotas.
+        using var sourceScale=SdkSourceScale.Enter();
         var seen=new HashSet<string>(StringComparer.OrdinalIgnoreCase);string root=Path.GetDirectoryName(Path.GetFullPath(entry))!;
         var search=sdk==null?null:SdkSourceSearch.ForMod(entry,sdk,stockData);
         // Reborn: routing nested global entries uses the same enclosing DATA authority as source preparation.
         root=search?.ModData??root;
-        return Visit(Path.GetFullPath(entry),root);
+        // Reborn: routing may scan arbitrarily many wrappers without recursion or a source-count quota.
+        var pending=new Stack<(string Path,string Root)>();pending.Push((Path.GetFullPath(entry),root));
+        while(pending.Count!=0){var frame=pending.Pop();if(Visit(frame.Path,frame.Root))return true;}return false;
         //-------------------------------------------------------------------------------------------------
         /** Reborn: inspect only confined XML include candidates; actual admission still validates every directive in Prepare. */
         //-------------------------------------------------------------------------------------------------
         bool Visit(string path,string confinement)
         {
-            if(!seen.Add(path))return false;if(seen.Count>512)throw new InvalidDataException("Source routing exceeds 512 XML/W3X files.");
+            if(!seen.Add(path))return false;
             var xml=Read(path);var element=xml.DocumentElement!;
             if(element.NamespaceURI!=Ea)return false;
             // Reborn: explicit upgrade declarations select the complete mixed/support stream backend, including upgrade-only mods.
             // Reborn: audio-only AssetDeclarations use the normal alpha authoring and publication route.
-            if(element.LocalName is "GameObject" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "WeaponTemplate" or "MpGameRules" or "Credits" or "CameraSettings" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile" or "OnDemandTexture" or "OnDemandTextureImage" || element.ChildNodes.OfType<XmlElement>().Any(e=>e.NamespaceURI==Ea && e.LocalName is "AudioEvent" or "GameObject" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "WeaponTemplate" or "MpGameRules" or "Credits" or "CameraSettings" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings"))return true;
+            if(element.LocalName is "ArmorTemplate" or "GameObject" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechStoreTemplate" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "WeaponTemplate" or "MpGameRules" or "Credits" or "CameraSettings" or "GameMap" or "GameScriptList" or "TerrainTextureAtlas" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile" or "OnDemandTexture" or "OnDemandTextureImage" || element.ChildNodes.OfType<XmlElement>().Any(e=>e.NamespaceURI==Ea && e.LocalName is "AudioEvent" or "ArmorTemplate" or "GameObject" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechStoreTemplate" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "WeaponTemplate" or "MpGameRules" or "Credits" or "CameraSettings" or "GameMap" or "GameScriptList" or "TerrainTextureAtlas" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings"))return true;
             foreach(XmlElement include in element.GetElementsByTagName("Include",Ea))
             {
                 // Reborn: W3X includes contain ordinary EA declarations and can select the container-only build route.
+                // Reborn: stock stream references are catalog boundaries during routing as well as capture.
+                if(include.GetAttribute("type")=="reference"&&SdkStockStreamReference.Known(include.GetAttribute("source")))continue;
                 string source=include.GetAttribute("source");if(!source.EndsWith(".xml",StringComparison.OrdinalIgnoreCase)&&!source.EndsWith(".w3x",StringComparison.OrdinalIgnoreCase))continue;
                 if(search!=null){
                     // Reborn: routing probes defer missing ART all/instance includes to the warning-producing source capture.
                     SdkSourceSearch.Selection selected;try{selected=search.Select(path,source,confinement);}catch(SdkSourceSearch.MissingFileException)when(include.GetAttribute("type") is ("all" or "instance")&&source.StartsWith("ART:",StringComparison.OrdinalIgnoreCase)){continue;}
-                    if(Visit(selected.PhysicalPath,selected.Root))return true;}
-                else if(source.StartsWith("DATA:",StringComparison.OrdinalIgnoreCase)){if(Visit(Resolve(root,Path.Combine(root,"mod.xml"),source[5..]),root))return true;}
-                else if(!source.Contains(':') && Visit(Resolve(root,path,source),root))return true;
+                    pending.Push((selected.PhysicalPath,selected.Root));}
+                else if(source.StartsWith("DATA:",StringComparison.OrdinalIgnoreCase)){pending.Push((Resolve(root,Path.Combine(root,"mod.xml"),source[5..]),root));}
+                else if(!source.Contains(':'))pending.Push((Resolve(root,path,source),root));
             }
             return false;
         }
@@ -113,13 +119,15 @@ internal static class ConscriptSourceInput
     //-------------------------------------------------------------------------------------------------
     internal static void Prepare(string entry,string output,string? sdk=null,string? stockData=null)
     {
+        // Reborn: keep source reads and definition/inheritance work unrestricted through the complete preparation transaction.
+        using var sourceScale=SdkSourceScale.Enter();
         if(Directory.Exists(output) || File.Exists(output))throw new InvalidDataException("Fresh source-preparation output required.");
         var input=ConscriptSourcePreparation.Load(entry,sdk==null?null:SdkSourceSearch.ForMod(entry,sdk,stockData));var schemas=Schemas();
         // Reborn: direct source preparation reports every skipped ART include rather than silently dropping it.
         foreach(var warning in input.Warnings)Console.WriteLine(SdkMissingDependencyAudit.FormatFinding(SdkMissingDependencyAudit.PathFinding(warning)));
         var baseline=Read(Path.Combine(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!,"live-alpha","ConscriptBuildTime1","data","mod.xml"));
         // Reborn: a bare command-set document has no Include/base context; never silently discard an unprocessed inheritance marker.
-        if(input.Game.DocumentElement!.LocalName is "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "WeaponTemplate" or "MpGameRules" or "Credits" or "CameraSettings" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile"&&input.Game.DocumentElement.HasAttribute("inheritFrom"))throw SdkXmlDiagnostics.At(new InvalidDataException("Use an AssetDeclaration with visible instance/all sources for asset inheritance."),input.Game.DocumentElement.GetAttributeNode("inheritFrom"));
+        if(input.Game.DocumentElement!.LocalName is "ArmorTemplate" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechStoreTemplate" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "WeaponTemplate" or "MpGameRules" or "Credits" or "CameraSettings" or "GameMap" or "GameScriptList" or "TerrainTextureAtlas" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "LogicCommandSet" or "UpgradeTemplate" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile"&&input.Game.DocumentElement.HasAttribute("inheritFrom"))throw SdkXmlDiagnostics.At(new InvalidDataException("Use an AssetDeclaration with visible instance/all sources for asset inheritance."),input.Game.DocumentElement.GetAttributeNode("inheritFrom"));
         // Reborn: a standalone command-set primary needs schema admission, not the unrelated complete-GameObject topology gate.
         // Reborn: validate every emitted GameObject before detaching source maps, so errors in secondary objects retain original file/line diagnostics.
         // Reborn: malformed mesh channels fail while original W3X source coordinates are still available, before any native conversion.
@@ -147,7 +155,7 @@ internal static class ConscriptSourceInput
                 var resource =input.Resources.FirstOrDefault(r=>r.Document.Equals(origin,StringComparison.OrdinalIgnoreCase)&&string.Equals(r.LogicalPath,logical,StringComparison.OrdinalIgnoreCase))??throw SdkXmlDiagnostics.At(new InvalidDataException("Texture '"+id+"' has no captured TGA/DDS resource for File='"+logical+"'."),texture.GetAttributeNode("File"));
             string extension=Path.GetExtension(resource.Path).ToLowerInvariant();
             if(extension==".dds"){
-                byte[] raw=SdkEnvironmentPreflight.Read(origin,4*1048576);if(Convert.ToHexString(SHA256.HashData(raw))!=input.Sources.Single(s=>s.Path.Equals(origin,StringComparison.OrdinalIgnoreCase)).Sha256)throw new InvalidDataException("Texture source changed during DDS admission.");
+                byte[] raw=SdkEnvironmentPreflight.Read(origin,SdkSourceScale.XmlLimit(4*1048576));if(Convert.ToHexString(SHA256.HashData(raw))!=input.Sources.Single(s=>s.Path.Equals(origin,StringComparison.OrdinalIgnoreCase)).Sha256)throw new InvalidDataException("Texture source changed during DDS admission.");
                 var original=Parse(raw).GetElementsByTagName(type, Ea).OfType<XmlElement>().Single(e=>e.GetAttribute("id")==id);
                 Ep1DdsTexture.Prepare(texture,resource.Bytes,resource.Path,original.Attributes.OfType<XmlAttribute>().Select(a=>a.LocalName).ToHashSet(StringComparer.Ordinal));
             }
@@ -163,12 +171,21 @@ internal static class ConscriptSourceInput
             }catch(Exception error)when(error is InvalidDataException or FormatException or OverflowException){var failure=error as InvalidDataException??new InvalidDataException(error.Message,error);SdkXmlDiagnostics.At(failure,asset.GetAttributeNode("File"));input.Locations?.Enrich(failure,entry,asset.OwnerDocument);throw failure;}
         }
         // Reborn: write the primary after resource rewriting too, so texture-only mods receive the same immutable payload path.
+        // Reborn: freeze terrain rasters by content hash; atlas generation reads only captured resources, never a later mod/SDK winner.
+        foreach(var atlas in new[]{input.Game}.Concat(input.AdditionalAssets).Select(a=>a.DocumentElement!).Where(e=>e.LocalName=="TerrainTextureAtlas")){
+            string origin=input.Origins.Single(o=>o.Type=="TerrainTextureAtlas"&&o.Id==atlas.GetAttribute("id")).Path;
+            foreach(var tile in atlas.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="Tile"))foreach(string field in new[]{"BaseTexture","NormalTexture"}){
+                string logical=tile.GetAttribute(field);var resource=input.Resources.First(r=>r.Document.Equals(origin,StringComparison.OrdinalIgnoreCase)&&r.Field=="Tile/@"+field&&r.LogicalPath==logical);
+                string relative="resources/"+resource.Sha256+Path.GetExtension(resource.Path).ToLowerInvariant();string destination=Path.Combine(output,relative);
+                Directory.CreateDirectory(Path.GetDirectoryName(destination)!);File.WriteAllBytes(destination,resource.Bytes);tile.SetAttribute(field,relative);
+            }
+        }
         File.WriteAllText(game,input.Game.DocumentElement!.OuterXml,new UTF8Encoding(false));if(input.Command!=null)File.WriteAllText(command,input.Command.DocumentElement!.OuterXml,new UTF8Encoding(false));
         // Reborn: serialize explicit supporting declarations beside the prepared object, without inventing asset IDs or command edges.
         if(input.AdditionalAssets.Length>0){var additional=new XmlDocument{XmlResolver=null};additional.LoadXml("<AssetDeclaration xmlns='"+Ea+"'/>");foreach(var asset in input.AdditionalAssets)additional.DocumentElement!.AppendChild(additional.ImportNode(asset.DocumentElement!,true));File.WriteAllText(Path.Combine(output,"additional.xml"),additional.OuterXml,new UTF8Encoding(false));}
-        foreach(var source in input.Sources)if(Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(source.Path,4*1048576)))!=source.Sha256)throw new InvalidDataException("Source changed during preparation: "+source.Path);
+        foreach(var source in input.Sources)if(Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(source.Path,SdkSourceScale.XmlLimit(4*1048576))))!=source.Sha256)throw new InvalidDataException("Source changed during preparation: "+source.Path);
         foreach(var resource in input.Resources)if(Convert.ToHexString(SHA256.HashData(SdkEnvironmentPreflight.Read(resource.Path,64*1048576)))!=resource.Sha256)throw new InvalidDataException("Texture resource changed during preparation: "+resource.Path);
-        File.WriteAllText(Path.Combine(output,"source-input.json"),JsonSerializer.Serialize(new{GamePath=game,PrimaryType=input.Game.DocumentElement.LocalName,CommandPath=input.Command==null?null:command,AssetCount=1+(input.Command==null?0:1)+input.AdditionalAssets.Length,Identity=input.Game.DocumentElement.GetAttribute("id"),PreparedSourceSha256=Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(input.Game.DocumentElement.OuterXml))),Sources=input.Sources,Searches=input.Searches,Origins=input.Origins,InheritanceUses=input.InheritanceUses,AutomaticCommandGenerated=false},new JsonSerializerOptions{WriteIndented=true}));
+        File.WriteAllText(Path.Combine(output,"source-input.json"),JsonSerializer.Serialize(new{GamePath=game,PrimaryType=input.Game.DocumentElement.LocalName,CommandPath=input.Command==null?null:command,AssetCount=1+(input.Command==null?0:1)+input.AdditionalAssets.Length,Identity=input.Game.DocumentElement.GetAttribute("id"),PreparedSourceSha256=Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(input.Game.DocumentElement.OuterXml))),Sources=input.Sources.Concat(input.Resources.Where(r=>r.Field is "Tile/@BaseTexture" or "Tile/@NormalTexture").Select(r=>new SourceFile(r.Path,r.Sha256))).DistinctBy(r=>r.Path,StringComparer.OrdinalIgnoreCase).ToArray(),Searches=input.Searches,Origins=input.Origins,InheritanceUses=input.InheritanceUses,AutomaticCommandGenerated=false},new JsonSerializerOptions{WriteIndented=true}));
         // Reborn: EA-style source lines are emitted only by this single preparation pass, never by the dependency preflight; assets are announced by the compiler.
         ConscriptCompileLog.Sources(input);
         Console.WriteLine("Reborn: explicit EA XML prepared; "+input.Sources.Length+" source file(s), primary="+input.Game.DocumentElement.LocalName+"; no hidden asset generation.");
@@ -291,7 +308,7 @@ internal static class ConscriptSourceInput
         // Reborn: detached support assets use unchanged official types, just like the existing standalone GameObject/command aliases.
         // Reborn: standalone container elements use the unchanged official W3DContainer type, just like other emitted asset roots.
         // Reborn: detached AudioEvent roots retain the unchanged official audio type, matching all other standalone asset aliases.
-        var aliases=new XmlSchema{TargetNamespace=Ea,ElementFormDefault=XmlSchemaForm.Qualified};foreach(string name in new[]{"AudioEvent","GameObject","LogicCommand","LogicCommandSet","ArmorTemplate","WeaponTemplate","UpgradeTemplate","ObjectCreationList","PurchasePlayerTechButtonTemplate","UnitAbilityButtonTemplate","PlayerTech","PlayerTechUpgradeBinding","ButtonSingleStateData","JoypadCommandBarButtonTemplate","PlayerPowerButtonTemplate","SpecialPowerTemplate","AttributeModifier","MpGameRules","Credits","CameraSettings","UnitTypeIcon","ExperienceLevelTemplate","LocomotorTemplate","FXParticleSystemTemplate","FXList", "Texture", "PackedTextureImage", "OnDemandTexture", "OnDemandTextureImage", "HealthBarTemplate", "HealthBarSettings", "W3DContainer", "W3DHierarchy","W3DCollisionBox","W3DMesh","W3DAnimation","Multisound","AudioFile"})if(!official.GlobalElements.Contains(new XmlQualifiedName(name,Ea)))aliases.Items.Add(new XmlSchemaElement{Name=name,SchemaTypeName=new XmlQualifiedName(name,Ea)});official.Add(aliases);official.Compile();return official;
+        var aliases=new XmlSchema{TargetNamespace=Ea,ElementFormDefault=XmlSchemaForm.Qualified};foreach(string name in new[]{"AudioEvent","GameObject","LogicCommand","LogicCommandSet","ArmorTemplate","WeaponTemplate","UpgradeTemplate","ObjectCreationList","PurchasePlayerTechButtonTemplate","UnitAbilityButtonTemplate","PlayerTech","PlayerTechStoreTemplate","PlayerTechUpgradeBinding","ButtonSingleStateData","JoypadCommandBarButtonTemplate","PlayerPowerButtonTemplate","SpecialPowerTemplate","AttributeModifier","MpGameRules","Credits","CameraSettings","GameMap","GameScriptList","TerrainTextureAtlas","UnitTypeIcon","ExperienceLevelTemplate","LocomotorTemplate","FXParticleSystemTemplate","FXList", "Texture", "PackedTextureImage", "OnDemandTexture", "OnDemandTextureImage", "HealthBarTemplate", "HealthBarSettings", "W3DContainer", "W3DHierarchy","W3DCollisionBox","W3DMesh","W3DAnimation","Multisound","AudioFile"})if(!official.GlobalElements.Contains(new XmlQualifiedName(name,Ea)))aliases.Items.Add(new XmlSchemaElement{Name=name,SchemaTypeName=new XmlQualifiedName(name,Ea)});official.Add(aliases);official.Compile();return official;
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -312,7 +329,7 @@ internal static class ConscriptSourceInput
     //-------------------------------------------------------------------------------------------------
     /** Reborn: bounded source reads reject DTD/entities, preserve scripts and accept normal XML declarations/comments. */
     //-------------------------------------------------------------------------------------------------
-    private static XmlDocument Read(string path)=>SdkXmlDiagnostics.Parse(SdkEnvironmentPreflight.Read(path,4*1048576),path);
+    private static XmlDocument Read(string path)=>SdkXmlDiagnostics.Parse(SdkEnvironmentPreflight.Read(path,SdkSourceScale.XmlLimit(4*1048576)),path);
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: xsi/xi namespace declarations alone do not execute remote schema fetching or XInclude. */

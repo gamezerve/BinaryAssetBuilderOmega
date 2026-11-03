@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using BinaryAssetBuilder.Core;
+using BinaryAssetBuilder.Core.Hashing;
 using BinaryAssetBuilder.Core.SageXml;
 using Chunk = Relo.Chunk;
 
@@ -56,7 +57,8 @@ internal sealed class SelectedNativeGraphComparer
     {
         if (compiled.InstanceBuffer.Length > 2 * 1048576) throw new InvalidDataException("Selected native graph exceeds diagnostic bound.");
         Visit(root, original, 0, root.Name, 0);
-        if (!Slots(compiled.RelocationBuffer).Order().SequenceEqual(relos.Order()) || !Slots(compiled.ImportsBuffer).Order().SequenceEqual(imports.Order()) || requireAllReferences && imports.Count != instance.ReferencedInstances.Count) throw new InvalidDataException("Selected graph auxiliary ownership or Core reference consumption differs.");
+        // Reborn: identify the failed auxiliary invariant so map/script integration errors do not collapse into an opaque comparison failure.
+        if (!Slots(compiled.RelocationBuffer).Order().SequenceEqual(relos.Order()) || !Slots(compiled.ImportsBuffer).Order().SequenceEqual(imports.Order()) || requireAllReferences && imports.Count != instance.ReferencedInstances.Count) throw new InvalidDataException($"Selected graph auxiliary ownership or Core reference consumption differs: RELO stored/visited={Slots(compiled.RelocationBuffer).Length}/{relos.Count}; IMP stored/visited={Slots(compiled.ImportsBuffer).Length}/{imports.Count}; Core references={instance.ReferencedInstances.Count}.");
         int gap = 0;
         for (int i = 0; i < covered.Length; i++) { if (covered[i]) { gap = 0; continue; } if (compiled.InstanceBuffer[i] != 0 || ++gap > 3) throw new InvalidDataException("Selected graph has unowned native storage at " + i); }
         return (records, strings, imports.Count, scriptLineEndingEquivalences);
@@ -96,6 +98,18 @@ internal sealed class SelectedNativeGraphComparer
                 string generic = type.GetGenericTypeDefinition().FullName!; Type element = type.GetGenericArguments()[0];
                 // Reborn: the root-only partial walk cannot infer concrete classes; enclosing callers must separately prove and restore every detached polymorphic owner.
                 if(rootSelection && generic=="Relo.PolymorphicList`1"){if(Word(stock,a)!=0 || Word(stock,a+4)!=0 || Word(compiled.InstanceBuffer,b)!=0 || Word(compiled.InstanceBuffer,b+4)!=0)throw new InvalidDataException("Root selection requires detached empty polymorphic headers.");Equal(a,b,8,path);return;}
+                // Reborn: map script parameters use pointer arrays of the two official concrete classes, each independently tagged and reference-compared.
+                if(generic=="Relo.PolymorphicList`1"&&element==typeof(SageBinaryData.GameScriptParameterBase)){
+                    Equal(a,b,4,path+".Count");uint count=Word(stock,a);if(count>10000)throw new InvalidDataException("Map script parameter count exceeds bound.");
+                    var list=Pointer(a+4,b+4,path);if((count==0)!=(list.A==0))throw new InvalidDataException("Map script parameter storage differs.");
+                    Range(stock,list.A,checked((int)count*4));Range(compiled.InstanceBuffer,list.B,checked((int)count*4));Array.Fill(covered,true,list.B,checked((int)count*4));
+                    for(int i=0;i<count;i++){
+                        var item=Pointer(list.A+i*4,list.B+i*4,path+"["+i+"]");if(item.A==0)throw new InvalidDataException("Null map script parameter.");
+                        uint tag=Word(stock,item.A);Type concrete=tag==FastHash.GetHashCode(nameof(SageBinaryData.GameScriptParameterObjectType))?typeof(SageBinaryData.GameScriptParameterObjectType):tag==FastHash.GetHashCode(nameof(SageBinaryData.GameScriptParameterObjectTypeList))?typeof(SageBinaryData.GameScriptParameterObjectTypeList):throw new InvalidDataException("Unknown stock map script parameter class: "+tag.ToString("X8"));
+                        Visit(concrete,item.A,item.B,path+"["+i+"]",depth+1);
+                    }
+                    return;
+                }
                 // Reborn: typed weak IDs remain exact native hashes and never become strong imports or pointer relocations.
                 if (generic == "TypedAssetId`1") { Equal(a, b, 4, path); return; }
                 if (generic == "Relo.AssetReference`1" || generic == "Relo.AssetReference`2")
@@ -139,6 +153,8 @@ internal sealed class SelectedNativeGraphComparer
                 }
                 if (generic == "Relo.List`1")
                 {
+                    // Reborn: the legacy recursive script-group model uses SelfType only to break CLR generic recursion; its native list stride is a complete GameScriptGroup.
+                    if(element==typeof(SelfType)&&path.StartsWith("GameScriptList.",StringComparison.Ordinal)&&path.EndsWith(".ScriptGroup",StringComparison.Ordinal))element=typeof(SageBinaryData.GameScriptGroup);
                     // Reborn: typed upgrade arrays are source-sized; independently check every hash and all allocation/relocation ownership.
                     if(upgrade!=null&&upgrade.Lists.TryGetValue(path,out var values)){
                         if(element!=typeof(global::TypedAssetId<SageBinaryData.UpgradeTemplate>)||Word(compiled.InstanceBuffer,b)!=values.Length)throw new InvalidDataException("Upgrade list source/native count or ABI differs at "+path);

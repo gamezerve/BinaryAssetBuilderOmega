@@ -22,7 +22,7 @@
 		EditorName="AlliedCommandCenter"
 		Side="Allies"
     	EditorSorting="STRUCTURE"
-		BuildTime="3.0"
+		BuildTime="30"
 		CommandSet="AlliedCommandCenterCommandSet"
 		KindOf="+ACTIVATE_AFTER_UNPACK +CONSTRUCTION_YARD +FS_FACTORY"
 		RadarPriority="STRUCTURE"

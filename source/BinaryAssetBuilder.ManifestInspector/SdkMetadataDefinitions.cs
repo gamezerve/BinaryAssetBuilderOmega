@@ -18,7 +18,7 @@ internal static class SdkMetadataDefinitions
         var root = xml.DocumentElement!;
         if (root.LocalName != "AssetDeclaration" || root.NamespaceURI != ea || root.Prefix.Length != 0
             || root.Attributes.OfType<XmlAttribute>().Any(attribute => attribute.NamespaceURI != "http://www.w3.org/2000/xmlns/")
-            || root.SelectNodes(".//*")!.Count > 1024)
+            || !SdkSourceScale.Unrestricted && root.SelectNodes(".//*")!.Count > 1024)
             throw new InvalidDataException("Bounded EA metadata-only definition leaf required.");
         var children = root.ChildNodes.OfType<XmlElement>().ToArray();
         if (children.Length is < 1 or > 3 || children.Select(child => child.LocalName).Distinct().Count() != children.Length

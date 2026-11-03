@@ -26,14 +26,14 @@ internal static class SdkGameObjectInheritance
         string raw=Convert.ToHexString(SHA256.HashData(source));
         try
         {
-            if(!schemas.IsCompiled||source.Length>4*1048576)throw new InvalidDataException("Compiled schemas and bounded GameObject source required.");
+            if(!schemas.IsCompiled||!SdkSourceScale.Unrestricted&&source.Length>4*1048576)throw new InvalidDataException("Compiled schemas and bounded GameObject source required.");
             var xml=new XmlDocument{PreserveWhitespace=true,XmlResolver=null};
-            using(var input=new MemoryStream(source,false))using(var reader=XmlReader.Create(input,new XmlReaderSettings{DtdProcessing=DtdProcessing.Prohibit,XmlResolver=null,MaxCharactersInDocument=4*1048576}))xml.Load(reader);
+            using(var input=new MemoryStream(source,false))using(var reader=XmlReader.Create(input,new XmlReaderSettings{DtdProcessing=DtdProcessing.Prohibit,XmlResolver=null,MaxCharactersInDocument=SdkSourceScale.XmlLimit(4*1048576)}))xml.Load(reader);
             var root=xml.DocumentElement;if(root?.LocalName!="AssetDeclaration"||root.NamespaceURI!=Ea)throw new InvalidDataException("EA AssetDeclaration required for GameObject inheritance.");
             var assets=root.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is not ("Tags" or "Defines" or "Includes")).ToArray();
             // Reborn: vertex-heavy W3X leaves use the same byte budget but need more source elements than GameObject module trees.
             bool modelSource=assets.Any(a=>a.LocalName is "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation");
-            if(assets.Length>4096||root.SelectNodes(".//*")!.Count>(modelSource?262144:8192))throw new InvalidDataException("Source element/asset bound exceeded.");
+            if(!SdkSourceScale.Unrestricted && (assets.Length>4096||root.SelectNodes(".//*")!.Count>(modelSource?262144:8192)))throw new InvalidDataException("Source element/asset bound exceeded.");
             var originals=new Dictionary<string,XmlElement>(StringComparer.Ordinal);var resolved=new Dictionary<string,XmlElement>(StringComparer.Ordinal);var active=new HashSet<string>(StringComparer.Ordinal);var overlays=new List<SdkSelfAttributeInheritance.Overlay>();
             // Reborn: cap aggregate memoized trees as well as each individual merge to prevent repeated-base amplification.
             long expandedBytes=source.Length;
@@ -45,7 +45,7 @@ internal static class SdkGameObjectInheritance
                 // Reborn: explicit audio companions survive the same GameObject overlay closure instead of being rejected as unknown roots.
                 // Reborn: the original BaseSoundEffect instance file also contains overridable source-only bases; this does not enable their native emission.
                 // Reborn: instance locomotor libraries retain their schema-declared source helper; native publication is still checked separately.
-                if(asset.LocalName is not ("AudioEvent" or "AudioEventOverridable" or "GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "MpGameRules" or "Credits" or "CameraSettings" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "BounceKickTerrainMapping" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile"))throw SdkXmlDiagnostics.At(new InvalidDataException("UNSUPPORTEDASSET ' "+asset.LocalName+":"+asset.GetAttribute("id")+" ' is not supported by the source inheritance route."),asset);
+                if(asset.LocalName is not ("AudioEvent" or "AudioEventOverridable" or "GameObject" or "LogicCommand" or "LogicCommandSet" or "ArmorTemplate" or "WeaponTemplate" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechStoreTemplate" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "MpGameRules" or "Credits" or "CameraSettings" or "GameMap" or "GameScriptList" or "TerrainTextureAtlas" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "BounceKickTerrainMapping" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile"))throw SdkXmlDiagnostics.At(new InvalidDataException("UNSUPPORTEDASSET ' "+asset.LocalName+":"+asset.GetAttribute("id")+" ' is not supported by the source inheritance route."),asset);
                 // Reborn: report the actual declaration rather than conflating unsupported types, invalid IDs and duplicate handles.
                 string handle=asset.LocalName+":"+asset.GetAttribute("id");
                 if(!ConscriptSourceInput.Identity(asset.LocalName,asset.GetAttribute("id")))throw SdkXmlDiagnostics.At(new InvalidDataException("INVALIDASSETID ' "+handle+" ' has an invalid asset identity."),(XmlNode?)asset.GetAttributeNode("id")??asset);
@@ -57,12 +57,17 @@ internal static class SdkGameObjectInheritance
                     var normalizedOwner=root.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName==asset.LocalName&&e.GetAttribute("id")==asset.GetAttribute("id"));assets[assetIndex]=normalizedOwner;originals[asset.LocalName+":"+asset.GetAttribute("id")]=normalizedOwner;
                 }
             }
+            // Reborn: materialize same-document bases before consumers so inheritance chain length does not consume the C# call stack.
+            if(SdkSourceScale.Unrestricted){
+                IEnumerable<string> Bases(string handle){var node=originals[handle];return node.HasAttribute("inheritFrom")?new[]{BaseHandle(node)}:Array.Empty<string>();}
+                foreach(string handle in originals.Keys)foreach(string dependency in SdkSourceScale.PostOrder(handle,h=>resolved.ContainsKey(h)?Array.Empty<string>():originals.ContainsKey(h)?Bases(h):Array.Empty<string>(),StringComparer.Ordinal,"Asset inheritance"))Resolve(dependency,0);
+            }
             foreach(var asset in assets)root.ReplaceChild(Resolve(asset.LocalName+":"+asset.GetAttribute("id"),0),asset);
             // Reborn: validate a disposable clone so schema defaults never leak into the authored/merged source as explicit overriding values.
             var check=new XmlDocument{XmlResolver=null};check.LoadXml(xml.OuterXml);check.Schemas.Add(schemas);check.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));
             // Reborn: whitespace-only empty modules are formatting, not text payload; remove it only where the compiled schema proves empty/element-only content.
             NormalizeStructuralWhitespace(xml.DocumentElement!,check.DocumentElement!);
-            byte[] bytes=Encoding.UTF8.GetBytes(xml.OuterXml);if(bytes.Length>4*1048576)throw new InvalidDataException("Merged GameObject source exceeds 4 MiB.");
+            byte[] bytes=Encoding.UTF8.GetBytes(xml.OuterXml);if(!SdkSourceScale.Unrestricted && (bytes.Length>4*1048576))throw new InvalidDataException("Merged GameObject source exceeds 4 MiB.");
             return new(bytes,new(Profile,raw,Convert.ToHexString(SHA256.HashData(bytes)),overlays.ToArray(),Array.Empty<string>()));
 
             //-------------------------------------------------------------------------------------------------
@@ -70,7 +75,7 @@ internal static class SdkGameObjectInheritance
             //-------------------------------------------------------------------------------------------------
             XmlElement Resolve(string handle,int depth)
             {
-                if(depth>32||active.Contains(handle))throw new InvalidDataException("GameObject inheritance cycle/depth bound exceeded.");
+                if((!SdkSourceScale.Unrestricted&&depth>32)||active.Contains(handle))throw new InvalidDataException("GameObject inheritance cycle/depth bound exceeded.");
                 if(resolved.TryGetValue(handle,out var previous))return (XmlElement)previous.CloneNode(true);
                 if(!originals.TryGetValue(handle,out var original))throw new InvalidDataException("GameObject inheritance base is not visible: "+handle);
                 active.Add(handle);var derived=(XmlElement)original.CloneNode(true);XmlElement result=derived;
@@ -78,24 +83,34 @@ internal static class SdkGameObjectInheritance
                 {
                     // Reborn: each supported inheritable asset keeps its own QName while reusing the actual Core overlay semantics.
                     string assetType=derived.LocalName;
-                    string target=derived.GetAttribute("inheritFrom"),id=target;
-                    if(target.Contains(':')){var parts=target.Split(':');if(parts.Length!=2||parts[0]!=assetType)throw new InvalidDataException("Cross-type asset inheritance refused.");id=parts[1];}
-                    if(!ConscriptSourceInput.Identity(id))throw new InvalidDataException("Invalid GameObject base identity.");
-                    var basis=Resolve(assetType+":"+id,depth+1);derived.RemoveAttribute("inheritFrom");
-                    if(Encoding.UTF8.GetByteCount(basis.OuterXml)+Encoding.UTF8.GetByteCount(derived.OuterXml)>4*1048576)throw new InvalidDataException("GameObject merge input amplification exceeds 4 MiB.");
+                    string target=BaseHandle(derived),id=target[(assetType.Length+1)..];
+                    var basis=Resolve(target,depth+1);derived.RemoveAttribute("inheritFrom");
+                    if(!SdkSourceScale.Unrestricted && (Encoding.UTF8.GetByteCount(basis.OuterXml)+Encoding.UTF8.GetByteCount(derived.OuterXml)>4*1048576))throw new InvalidDataException("GameObject merge input amplification exceeds 4 MiB.");
                     result=(XmlElement)NodeJoiner.Override(schemas,xml,basis,derived);
                     overlays.Add(new(assetType,derived.GetAttribute("id"),id));
                 }
-                expandedBytes+=Encoding.UTF8.GetByteCount(result.OuterXml);if(expandedBytes>32*1048576)throw new InvalidDataException("GameObject resolved tree budget exceeds 32 MiB.");
+                expandedBytes+=Encoding.UTF8.GetByteCount(result.OuterXml);if(!SdkSourceScale.Unrestricted && (expandedBytes>32*1048576))throw new InvalidDataException("GameObject resolved tree budget exceeds 32 MiB.");
                 active.Remove(handle);resolved.Add(handle,(XmlElement)result.CloneNode(true));return result;
             }
 
             //-------------------------------------------------------------------------------------------------
-            /** Reborn: normalize structural whitespace only; preserve script/text payload and reject metadata the Core joiner would silently discard. */
+            /** Reborn: canonicalize qualified or bare inheritance references once for both dependency order and Core merging. */
+            //-------------------------------------------------------------------------------------------------
+            string BaseHandle(XmlElement asset)
+            {
+                // Reborn: ordering and merging share canonical same-type handles; an already qualified reference must never acquire a second type prefix.
+                string type=asset.LocalName,target=asset.GetAttribute("inheritFrom"),id=target;
+                if(target.Contains(':')){var parts=target.Split(':');if(parts.Length!=2||parts[0]!=type)throw SdkXmlDiagnostics.At(new InvalidDataException("Cross-type asset inheritance refused."),asset.GetAttributeNode("inheritFrom"));id=parts[1];}
+                if(!ConscriptSourceInput.Identity(id))throw SdkXmlDiagnostics.At(new InvalidDataException("Invalid GameObject base identity."),asset.GetAttributeNode("inheritFrom"));
+                return type+":"+id;
+            }
+
+            //-------------------------------------------------------------------------------------------------
+            /** Reborn: inspect namespace and source metadata without confusing qualified inheritance with asset identity. */
             //-------------------------------------------------------------------------------------------------
             void Inspect(XmlElement element,int depth)
             {
-                if(depth>32||element.Prefix.Length!=0||element.NamespaceURI!=Ea)throw new InvalidDataException("Unsupported prefixed/foreign/deep GameObject source tree.");
+                if((!SdkSourceScale.Unrestricted&&depth>32)||element.Prefix.Length!=0||element.NamespaceURI!=Ea)throw new InvalidDataException("Unsupported prefixed/foreign/deep GameObject source tree.");
                 foreach(XmlAttribute attribute in element.Attributes)
                 {
                     if(attribute.NamespaceURI=="http://www.w3.org/2000/xmlns/")continue;

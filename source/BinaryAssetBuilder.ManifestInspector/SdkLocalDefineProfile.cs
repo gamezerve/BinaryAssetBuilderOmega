@@ -62,11 +62,11 @@ internal static class SdkLocalDefineProfile
     //-------------------------------------------------------------------------------------------------
     private static Result ApplyCore(byte[] bytes,IReadOnlyDictionary<string,string>? imported,bool beforeInheritance = false,XmlSchemaSet? musicSchemas = null,bool soundOffsets = false,bool numericExpressions = false)
     {
-        if (bytes.Length > 4*1048576) throw new InvalidDataException("Local define source exceeds 4 MiB.");
+        if (!SdkSourceScale.Unrestricted && (bytes.Length > 4*1048576)) throw new InvalidDataException("Local define source exceeds 4 MiB.");
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
         XmlDocument xml = new() { XmlResolver = null,PreserveWhitespace = true };
         using (MemoryStream input = new(bytes,false))
-        using (XmlReader reader = XmlReader.Create(input,new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit,XmlResolver = null,MaxCharactersInDocument = 4*1048576 })) xml.Load(reader);
+        using (XmlReader reader = XmlReader.Create(input,new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit,XmlResolver = null,MaxCharactersInDocument = SdkSourceScale.XmlLimit(4*1048576) })) xml.Load(reader);
         XmlElement? root = xml.DocumentElement;
         if (root?.LocalName != "AssetDeclaration" || root.NamespaceURI != Ea) return Reject(raw,"EA AssetDeclaration required.");
         List<XmlNode> slots = new();
@@ -104,11 +104,11 @@ internal static class SdkLocalDefineProfile
             {
                 if (soundOffsets && slot is not XmlAttribute { OwnerElement.LocalName:"MusicTrack" })
                 {
-                    if (sounds.Count >= 512) throw new InvalidDataException("512 typed sound arithmetic slots per source bound exceeded.");
+                    if (!SdkSourceScale.Unrestricted && (sounds.Count >= 512)) throw new InvalidDataException("512 typed sound arithmetic slots per source bound exceeded.");
                     var sound = SdkSoundOffsets.Evaluate(slot,defines,musicSchemas);
                     sounds.Add(sound); slot.Value = sound.Result; continue;
                 }
-                if (offsets.Count >= 16) throw new InvalidDataException("16 music offset slots per source bound exceeded.");
+                if (!SdkSourceScale.Unrestricted && (offsets.Count >= 16)) throw new InvalidDataException("16 music offset slots per source bound exceeded.");
                 var witness = SdkMusicVolumeOffsets.Evaluate(slot,defines,musicSchemas);
                 offsets.Add(witness); slot.Value = witness.Result;
             }
@@ -117,7 +117,7 @@ internal static class SdkLocalDefineProfile
         using MemoryStream output = new();
         using (XmlWriter writer = XmlWriter.Create(output,new XmlWriterSettings { Encoding = new UTF8Encoding(false),Indent = false,NewLineHandling = NewLineHandling.None })) xml.Save(writer);
         byte[] processed = output.ToArray();
-        if (processed.Length > 4*1048576) return Reject(raw,"Processed XML exceeds 4 MiB.");
+        if (!SdkSourceScale.Unrestricted && (processed.Length > 4*1048576)) return Reject(raw,"Processed XML exceeds 4 MiB.");
         return new(processed,new(Name,raw,Convert.ToHexString(SHA256.HashData(processed)),slots.Count,Array.Empty<string>()) { MusicVolumeOffsets = offsets.ToArray(),SoundOffsets = sounds.ToArray() });
     }
 
@@ -135,7 +135,7 @@ internal static class SdkLocalDefineProfile
             if (define.NamespaceURI != Ea || define.LocalName != "Define" || !Identifier.IsMatch(name) || !define.HasAttribute("value")
                 || value.Length == 0 || value.Length > 512 || (!allowExpressions && value[0] == '=') || define.HasChildNodes
                 || define.Attributes.OfType<XmlAttribute>().Any(attribute => attribute.Name is not ("name" or "value" or "override"))
-                || (define.HasAttribute("override") && define.GetAttribute("override") != "false") || defines.Count >= 512 || !defines.TryAdd(name,value))
+                || (define.HasAttribute("override") && define.GetAttribute("override") != "false") || (!SdkSourceScale.Unrestricted && defines.Count >= 512) || !defines.TryAdd(name,value))
                 throw new InvalidDataException("Unsupported, duplicate, chained or override definition; no partial substitution.");
         }
         return defines;
@@ -146,12 +146,17 @@ internal static class SdkLocalDefineProfile
     //-------------------------------------------------------------------------------------------------
     private static void Collect(XmlNode node,List<XmlNode> slots,int depth)
     {
+        // Reborn: production XML slot discovery is iterative; deep source trees do not consume recursive frames.
+        if(SdkSourceScale.Unrestricted){
+            var pending=new Stack<XmlNode>();pending.Push(node);
+            while(pending.Count!=0){var current=pending.Pop();if(current.Attributes!=null)foreach(XmlAttribute attribute in current.Attributes)if(attribute.Value.StartsWith('='))slots.Add(attribute);if(current.NodeType is XmlNodeType.Text or XmlNodeType.CDATA&&current.Value?.StartsWith('=')==true)slots.Add(current);foreach(XmlNode child in current.ChildNodes.Cast<XmlNode>().Reverse())pending.Push(child);}return;
+        }
         if (depth > 128) throw new InvalidDataException("Local define XML depth bound exceeded.");
         if (node.Attributes != null)
             foreach (XmlAttribute attribute in node.Attributes)
                 if (attribute.Value.StartsWith('=')) slots.Add(attribute);
         if (node.NodeType is XmlNodeType.Text or XmlNodeType.CDATA && node.Value?.StartsWith('=') == true) slots.Add(node);
-        if (slots.Count > 2048) throw new InvalidDataException("Local define substitution bound exceeded.");
+        if (!SdkSourceScale.Unrestricted && (slots.Count > 2048)) throw new InvalidDataException("Local define substitution bound exceeded.");
         foreach (XmlNode child in node.ChildNodes) Collect(child,slots,depth+1);
     }
 

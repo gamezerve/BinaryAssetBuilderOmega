@@ -1,6 +1,6 @@
 # Reborn: stable SDK front end; preserve editable sources, publish versioned Documents mods, never change game installation files or launch a game.
 [CmdletBinding()]
-param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot,[string]$StudioSession,[string]$ModVersion='1.00',[string]$FinalModsRoot,[ValidateSet(0,1)][int]$BuildGlobalData=1,[ValidateSet(0,1)][int]$DeveloperBuildTests=0,[ValidateSet(0,1)][int]$BuildAptUI=0)
+param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot,[string]$StudioSession,[string]$ModVersion='1.00',[string]$FinalModsRoot,[ValidateSet(0,1)][int]$BuildGlobalData=1,[ValidateSet(0,1)][int]$DeveloperBuildTests=0,[ValidateSet(0,1)][int]$BuildAptUI=0,[ValidateSet(0,1)][int]$BuildMaps=0)
 
 function Test-AptUIReferences {
     param(
@@ -62,6 +62,8 @@ $sdk=Get-RebornSdkRoot $PSScriptRoot;$lock=$null;$run=$null;$publishMutex=$null;
 . (Join-Path $PSScriptRoot 'Ra3Ep1FinalPackage.ps1')
 # Reborn: compile early AdditionalMaps streams independently of static data, then include both in the same final Streams BIG.
 . (Join-Path $PSScriptRoot 'Ra3Ep1GlobalData.ps1')
+# Reborn: map compilation and _mod staging share the normal SDK lifetime, cancellation and final-package flow.
+. (Join-Path $PSScriptRoot 'Ra3Ep1Maps.ps1')
 # Reborn: every native/global/backend child inherits this build's mode; restore the caller's environment even on cancellation or failure.
 $previousDeveloperTests=$env:REBORN_DEVELOPER_BUILD_TESTS
 #-------------------------------------------------------------------------------------------------
@@ -218,7 +220,10 @@ try{
     & $settings.PowerShell7 @arguments 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail};$code=$LASTEXITCODE
     if($code-ne 0){throw 'Alpha backend failed; previous successful output is unchanged.'}
     Stop-SdkBuildPhase
-    if($ValidateOnly){Write-SdkBuildLine 'Validation Completed (no publication).';Write-SdkBuildLine ('Build time taken: '+$script:BuildClock.Elapsed.ToString('c'));[IO.File]::WriteAllLines((Join-Path $sdk '.work/last-validation.log'),$script:BuildLogLines);Copy-Item -LiteralPath $detail -Destination (Join-Path $sdk '.work/last-detail.log') -Force;return}
+    if($ValidateOnly){
+        # Reborn: map validation may compile only private generations; it never publishes generated map files to Misc.
+        if($BuildMaps){$validationMaps=@();Start-SdkBuildPhase 9 'Validating maps';Build-RebornMaps (Split-Path -Parent $ModXml) $sdk $settings $StaticManifest $GlobalManifest $expectedCompiler $run $detail $(if($globalBuild){$globalBuild.Context}else{$null}) ([ref]$validationMaps);Stop-SdkBuildPhase}
+        Write-SdkBuildLine 'Validation Completed (no publication).';Write-SdkBuildLine ('Build time taken: '+$script:BuildClock.Elapsed.ToString('c'));[IO.File]::WriteAllLines((Join-Path $sdk '.work/last-validation.log'),$script:BuildLogLines);Copy-Item -LiteralPath $detail -Destination (Join-Path $sdk '.work/last-detail.log') -Force;return}
     Start-SdkBuildPhase 7 'Merging assets';Stop-SdkBuildPhase 'Skipped: no separate post-build asset merge is enabled.'
     Start-SdkBuildPhase 8 'Fixing assets'
     $receipts=@(Get-ChildItem -LiteralPath $run -Filter alpha-build.json -Recurse);if($receipts.Count-ne 1){throw 'Expected one successful alpha backend receipt.'}
@@ -230,7 +235,15 @@ try{
     $package=[IO.Path]::GetFullPath($package);if(-not $package.StartsWith($run+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Backend package escaped its private work generation.'}
     Write-SdkBuildLine 'Verified backend receipt and package location; native stream qualification ran during static-data compilation. No legacy RA3 hash-fix tool was run.'
     Stop-SdkBuildPhase
-    Start-SdkBuildPhase 9 'Building official maps';Stop-SdkBuildPhase 'Skipped: no map compiler stage is enabled in this alpha; unsupported requested assets fail validation.'
+    Start-SdkBuildPhase 9 'Building maps'
+    $mapBuild=@()
+    if($BuildMaps){
+        Build-RebornMaps (Split-Path -Parent $ModXml) $sdk $settings $StaticManifest $GlobalManifest $expectedCompiler $run $detail $(if($globalBuild){$globalBuild.Context}else{$null}) ([ref]$mapBuild)
+        if($mapBuild.Count){
+            Publish-RebornMapOutputs $mapBuild (Join-Path (Split-Path -Parent (Split-Path -Parent $ModXml)) 'Misc')
+            Stop-SdkBuildPhase ('Maps compiled and copied to Misc: '+$mapBuild.Count)
+        }else{Stop-SdkBuildPhase}
+    }else{Stop-SdkBuildPhase 'Skipped: [Optional] Build Maps is unchecked; existing Misc content is packaged as authored.'}
     Start-SdkBuildPhase 10 'Creating big files'
     # Reborn: close cancellation must never terminate the worker halfway through staged publication/rollback of a last-good package.
     if($publishMutex){try{$publishHeld=$publishMutex.WaitOne()}catch [Threading.AbandonedMutexException]{$publishHeld=$true};if($cancelEvent.WaitOne(0)){throw 'Studio build cancelled before publication.'}}
@@ -280,6 +293,8 @@ try{
     $result | Add-Member -NotePropertyName DeveloperBuildTests -NotePropertyValue ([bool]$DeveloperBuildTests)
     # Reborn: keep unused findings and their source locations in the successful receipt after the private work generation is cleaned.
     $result | Add-Member -NotePropertyName UnusedAssets -NotePropertyValue (Get-Content -LiteralPath (Join-Path $run 'unused-assets.json') -Raw|ConvertFrom-Json)
+    # Reborn: keep the actual map inputs, generated relative files and hashes in the final normal build receipt.
+    $result | Add-Member -NotePropertyName Maps -NotePropertyValue @($mapBuild | ForEach-Object {[pscustomobject]@{Name=$_.Name;Entry=$_.Entry;Files=$_.Files}})
     [IO.File]::WriteAllText((Join-Path $stage 'build.json'),($result|ConvertTo-Json -Depth 20))
     # Reborn: retain full compiler evidence outside the four-file public package contract before private cleanup.
     Copy-Item -LiteralPath $detail -Destination (Join-Path $sdk '.work/last-detail.log') -Force
