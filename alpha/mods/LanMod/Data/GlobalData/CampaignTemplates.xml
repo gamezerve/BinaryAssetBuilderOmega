@@ -6,7 +6,7 @@
 	<Campaign>Soviet</Campaign>
 	<Campaign>Japan</Campaign>
 	<Campaign>Yuriko</Campaign>
-	<Campaign>SovietRA3</Campaign>
+	<!-- <Campaign>SovietRA3</Campaign> -->
 </CampaignEnumerator>
 
 <CampaignTemplate

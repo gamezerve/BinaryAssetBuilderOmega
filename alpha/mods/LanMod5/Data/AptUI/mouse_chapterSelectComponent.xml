@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <!-- Reborn: package the matching Chapters screen or mouse panel. -->
+  <Includes>
+    <Include type="all" source="mouse_chapterSelectComponent/mouse_chapterSelectComponent.xml" />
+  </Includes>
+</AssetDeclaration>

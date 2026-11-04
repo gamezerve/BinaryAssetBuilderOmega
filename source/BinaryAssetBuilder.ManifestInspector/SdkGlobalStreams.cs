@@ -42,6 +42,25 @@ internal static class SdkGlobalStreams
             byte[] bytes=extension==".version"?Encoding.ASCII.GetBytes("\r\n"):SdkEnvironmentPreflight.Read(Path.ChangeExtension(global.Manifest,extension),256*1048576);
             payloads.Add((Path.ChangeExtension(global.Runtime,extension),bytes));
         }
+        // Reborn: carry each authored global texture payload under its owning AdditionalMaps stream.
+        foreach (var global in globals)
+        {
+            var manifest = ManifestReader.Read(SdkEnvironmentPreflight.Read(global.Manifest, 64 * 1048576));
+            var textures = manifest.Assets.Where(asset => asset.TypeId == 0x9312B9AC).ToArray();
+            if (textures.Length == 0) continue;
+
+            string compiled = Path.GetDirectoryName(Path.GetDirectoryName(global.Manifest))!;
+            using var support = BigArchive.Open(Path.Combine(compiled, "support", "RebornConscriptProbe.big"));
+            string runtimeStem = Path.ChangeExtension(global.Runtime, null);
+            foreach (var texture in textures)
+            {
+                string name = OnDemandTextureCData.FileName(texture.TypeId, texture.InstanceId, texture.TypeHash, texture.InstanceHash);
+                string sourceName = "data\\mod\\cdata\\" + name;
+                var entry = support.Entries.SingleOrDefault(entry => entry.Name.Equals(sourceName, StringComparison.OrdinalIgnoreCase))
+                    ?? throw new InvalidDataException("Missing global texture CDATA: " + texture.Name);
+                payloads.Add((runtimeStem + "\\cdata\\" + name, support.ReadEntry(entry)));
+            }
+        }
         var unique=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach(var entry in payloads)if(!unique.Add(entry.Name)||entry.Name.Any(c=>c<32||c>126))throw new InvalidDataException("Invalid/duplicate archive name: "+entry.Name);
         long header=(16L+payloads.Sum(p=>8L+Encoding.ASCII.GetByteCount(p.Name)+1)+7)&~7L,total=header+payloads.Sum(p=>(long)p.Bytes.Length);
