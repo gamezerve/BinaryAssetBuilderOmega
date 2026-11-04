@@ -17,6 +17,9 @@
 			source="ART:EVDefault.xml"
 			type="instance"/>
 		<Include
+			source="ART:FXDepthLut.xml"
+			type="instance"/>
+		<Include
 			source="ART:LUSaturateColors_Vol.xml"
 			type="instance"/>
 		<Include
@@ -3044,7 +3047,7 @@
 			Health="100"
 			Team="Allied05"
 			ThingTemplate="MY_AlliedTechScrambler"
-			id="MY_ALLIEDTECHSCRAMBLER">
+			id="MY_AlliedTechScrambler">
 			<Position
 				x="3758.434461"
 				y="976.157923"
@@ -3187,7 +3190,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="MY_AlliedScienceLab"
-			id="MY_ALLIEDSCIENCELAB">
+			id="MY_AlliedScienceLab">
 			<Position
 				x="4587.48928"
 				y="3431.10164"
@@ -54770,6 +54773,7 @@
 		</MapMetaData>
 		<EnvironmentData
 			Cloud="TSCloudMed"
+			DepthLut="FXDepthLut"
 			Environment="EVDefault"
 			Macro="TSNoiseUrb"/>
 		<WorldDict>
@@ -54803,6 +54807,9 @@
 			<IntProperty
 				Key="weather"
 				Value="2"/>
+			<StringProperty
+				Key="terrainTextureStrings"
+				Value="TPave_Mykonos01;TPave_Mykonos01_NRM;TDirt_Mykonos01;TDirt_Mykonos01_NRM;TSand_Cannes03;TSand_Cannes03_NRM;TPave_Mykonos03;TPave_Mykonos03_NRM;TSand_Cannes08;TSand_Cannes08_NRM;TGrass_Mykonos02;TGrass_Mykonos02_NRM;Grass_Heidelberg01;Grass_Heidelberg01_nrm;TGrass_Mykonos01;TGrass_Mykonos01_NRM;TPave_Mykonos04;TPave_Mykonos04_NRM;TSand_Cannes06;TSand_Cannes06_NRM;Grass_Hawaii03;Grass_Hawaii03_NRM;TPave_Mykonos02;TPave_Mykonos02_NRM;TDirt_Mykonos04;TDirt_Mykonos04_NRM;TDirt_Mykonos05;TDirt_Mykonos05_NRM;Reef_Havana01;Reef_Havana01_NRM;TPave_Mykonos05;TPave_Mykonos05_NRM;Grass_Hawaii05;Grass_Hawaii05_NRM;TDirt_Mykonos02;TDirt_Mykonos02_NRM;TDirt_Mykonos03;TDirt_Mykonos03_NRM;Mud_Havana02;Mud_Havana02_NRM;TDirt_Mykonos06;TDirt_Mykonos06_NRM;TDirt_Mykonos07;TDirt_Mykonos07_NRM;TSand_Cannes01;TSand_Cannes01_NRM;TSand_Cannes04;TSand_Cannes04_NRM;TSand_Cannes05;TSand_Cannes05_NRM;TSand_Cannes10;TSand_Cannes10_NRM;TPave_Golf02;TPave_Golf02_NRM;TPave_Golf03;TPave_Golf03_NRM;TPave_Golf04;TPave_Golf04_NRM;TPave_Golf01;TP"/>
 		</WorldDict>
 		<PostEffect
 			Effect="LUSaturateColors_Vol"/>
@@ -59166,6 +59173,17 @@
 				</Action>
 				<Action
 					Type="PLAYER_TOGGLE_RESOURCE_SHARING">
+					<ParameterList/>
+				</Action>
+			</Script>
+			<Script
+				id="Reborn - Enable Co-Commander">
+				<Action
+					Type="PLAYER_ALLOWED_TOBE_COOPAI">
+					<ParameterList/>
+				</Action>
+				<Action
+					Type="SET_COOP_AI_COMMAND_UI_ENABLED">
 					<ParameterList/>
 				</Action>
 			</Script>

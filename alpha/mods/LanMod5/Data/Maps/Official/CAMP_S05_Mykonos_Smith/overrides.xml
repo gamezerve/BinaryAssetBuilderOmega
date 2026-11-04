@@ -63,6 +63,9 @@
       </RadarTerrainImage>
 
   <!-- PathMusic Overrides -->
+  <PathMusicGameDynamicState id="BaseBuilding" inheritFrom="BaseBuilding"
+		EnterEvent="S_S05MykonosIntro">
+  </PathMusicGameDynamicState>
 
 
 </AssetDeclaration>

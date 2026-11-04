@@ -40,6 +40,18 @@ Studio's **Build Maps** checkbox (off by default) compiles direct folders under
 `map_mod.bin/imp/manifest/relo` use the unsuffixed `map.version` containing `_mod`.
 Accompanying `.map` and `.tga` files are copied unchanged.
 
+<!-- Reborn: authored PathMusic events use the captured Pathfinder header. -->
+The Global build supports `PathMusicEvent` with a `PathfinderEventHeader` .h
+resource, an optional `RestartAlternateEvent`, and `IsCacheable`. The header must
+define a unique nonzero hexadecimal `PATH_EVENT_<id>` for each emitted event.
+LanMod5's 169 RA3-only event declarations passed Global stream build and readback
+with the mod-local RA3Music.h. Playback requires the matching music data at runtime.
+
+<!-- Reborn: map music state overrides retain EP1 event and transition references. -->
+Map overrides can emit `PathMusicGameDynamicState` with inherited transitions and
+authored entry or exit events. Referenced PathMusic events must exist in the mod
+or Uprising catalogs.
+
 GameMap, GameScriptList and TerrainTextureAtlas now compile through the common
 source/native/link pipeline, including real 24/32-bit TGA terrain resources,
 campaign overrides and WorldBuilder dependency closure. Standard

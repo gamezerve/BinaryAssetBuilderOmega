@@ -5,6 +5,7 @@
 
 		<Include type="all" source="DATA:GlobalData/CampaignPortraits.xml" />
 		<Include type="all" source="DATA:GlobalData/CampaignTemplates.xml" />
+		<Include type="all" source="DATA:PathMusic/PathMusicEvents_Mod.xml" />
 		
 	</Includes>
 

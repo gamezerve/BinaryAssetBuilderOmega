@@ -10,7 +10,7 @@
 		id="AIP_S05_Coop"
 		PersonalityType="AIP_S05_Coop"
 		inheritFrom="SovietCoopBaseCampaignPersonality"
-		CommanderPortrait="Vera"
+		CommanderPortrait="Zhana"
     CleanupRefineries="true"
 		>
     
