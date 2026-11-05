@@ -412,3 +412,5 @@ MigrationBackup/
 /alpha/portable.json
 /alpha/ShaderCompiler/*.dll
 /alpha/Mods/LanMod5/
+/alpha/mods/Reborn/Misc/Data/Movies/*.vp6
+/alpha/mods/Reborn/Misc/Data/Reborn/PathMusic/**/*.cdata
