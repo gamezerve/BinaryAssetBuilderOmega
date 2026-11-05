@@ -144,10 +144,10 @@ namespace EALABuild
             options.Add(new GUIElementData("buildaptui", "Build AptUI", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
 			// Reborn: compile AdditionalMaps/MapMetaData_*.xml before static data, using EA's familiar persisted toggle.
             options.Add(new GUIElementData("buildglobal", "Build Global Data", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
-            // Reborn: use the same persisted option control as the other build toggles.
-            options.Add(new GUIElementData("silentmode", "Silent Mode", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
             // Reborn: preserve EA's persisted checkbox behavior and the historical map stage before BIG creation.
             options.Add(new GUIElementData("buildmaps", "Build Maps", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
+            // Reborn: use the same persisted option control as the other build toggles.
+            options.Add(new GUIElementData("silentmode", "Silent Mode", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
             // Reborn: use EA's own persisted text-input control rather than a separate settings interface.
             options.Add(new GUIElementData("mv", "Mod Version:", GUIElementData.LabelType, ScriptIndex.ModScript));
             options.Add(new GUIElementData("modversion", "1.00", GUIElementData.InputBoxType, ScriptIndex.ModScript));

@@ -5,6 +5,8 @@
 
 		<Include type="all" source="DATA:GlobalData/CampaignPortraits.xml" />
 		<Include type="all" source="DATA:GlobalData/CampaignTemplates.xml" />
+		<!-- Reborn: Publish the six-lesson tutorial list in the global stream. -->
+		<Include type="all" source="DATA:GlobalData/TutorialData.xml" />
 		<Include type="all" source="DATA:PathMusic/PathMusicEvents_Mod.xml" />
 		<Include type="all" source="DATA:Video/Videos.xml" />
 		<Include type="all" source="DATA:Video/VideoSequences.xml" />
