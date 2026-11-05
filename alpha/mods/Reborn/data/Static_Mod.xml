@@ -127,7 +127,10 @@
 		<Include type="all" source="ART:Images/RebornPackedImages.xml"/>	
 		<Include type="all" source="W3X.xml"/>	
 		
-	</Includes>
+	
+        <!-- Reborn: Import the LanMod5 static/global source content. -->
+        <Include type="all" source="DATA:Sounds/MissionDialogue_Mod.xml" />
+    </Includes>
 	
 	
 </AssetDeclaration>

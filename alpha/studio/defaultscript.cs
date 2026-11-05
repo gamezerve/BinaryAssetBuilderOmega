@@ -23,8 +23,20 @@ namespace EALABuild
         // Reborn: configuration failure must not leave the build callback using partially initialized adapter state.
         private bool initialized;
 
-        // Reborn: EA's build library lives beside Studio; anchor portable paths there even when a shortcut supplies another working directory.
-        private static string SdkRoot { get { return Path.GetDirectoryName(typeof(EALABuildScript).Assembly.Location); } }
+        // Reborn: anchor portable paths to the running Studio application; referenced assemblies may be shadow-copied on another computer.
+        private static string SdkRoot { get { return ResolveSdkRoot(); } }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: prefer the executable application base and retain the EA assembly directory only as a compatibility fallback. */
+        //-------------------------------------------------------------------------------------------------
+        private static string ResolveSdkRoot()
+        {
+            string applicationRoot = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory);
+            if (File.Exists(Path.Combine(applicationRoot, "uprising-alpha.paths"))) return applicationRoot;
+            string assemblyRoot = Path.GetDirectoryName(typeof(EALABuildScript).Assembly.Location);
+            if (!String.IsNullOrEmpty(assemblyRoot) && File.Exists(Path.Combine(assemblyRoot, "uprising-alpha.paths"))) return Path.GetFullPath(assemblyRoot);
+            throw new InvalidDataException("Portable SDK root could not be found beside EALAModStudio.exe. Expected: " + Path.Combine(applicationRoot, "uprising-alpha.paths"));
+        }
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: load explicit local adapter configuration instead of RA3 registry paths or inherited destructive cleanup stages. */
@@ -43,15 +55,15 @@ namespace EALABuild
             globalManifest = settings.ContainsKey("GlobalManifest") ? settings["GlobalManifest"] : null;
             compilerDirectory = settings["CompilerDirectory"];
             outputRoot = Path.Combine(SdkRoot, "builtmods");
-            CheckPath(runtime); CheckPath(driver); CheckPath(staticManifest);
-            if (globalManifest != null) CheckPath(globalManifest);
+            CheckPath(runtime, "PowerShell 7 runtime"); CheckPath(driver, "build driver"); CheckPath(staticManifest, "static manifest");
+            if (globalManifest != null) CheckPath(globalManifest, "global manifest");
             // Reborn: a fresh portable copy need not carry previous internal receipts or its empty output directory.
             Directory.CreateDirectory(outputRoot);
             CheckDirectory(compilerDirectory); CheckDirectory(outputRoot);
             // Reborn: an optional stock DATA override changes the library root, not the required four-key Studio workflow.
             if (settings.ContainsKey("SdkDataRoot")) CheckDirectory(settings["SdkDataRoot"]);
             buildHost = Path.Combine(SdkRoot, "tools\\studio\\RebornStudioLifecycle.exe");
-            CheckPath(buildHost);
+            CheckPath(buildHost, "Studio lifecycle helper");
             lifecycle = System.Reflection.Assembly.LoadFrom(buildHost).GetType("Reborn.StudioLifecycle", true);
             Lifecycle("Install");
             initialized = true;
@@ -70,7 +82,7 @@ namespace EALABuild
                 throw new InvalidDataException("Invalid alpha mod name.");
             // Reborn: the static mod entry remains distinct from the stock DATA:static.xml library.
             string input = Path.Combine(Path.Combine(Path.Combine(SdkRoot, "mods"), name), "data\\Static_Mod.xml");
-            CheckPath(input);
+            CheckPath(input, "selected mod '" + name + "' entry XML");
             // Reborn: preserve the entered numeric version verbatim in final archive and SKUDef filenames.
             string version = gui.ContainsKey("modversion") ? (string)gui["modversion"] : "1.00";
             if (!System.Text.RegularExpressions.Regex.IsMatch(version ?? "", @"\A[0-9]{1,4}(\.[0-9]{1,4}){1,3}\z"))
@@ -157,10 +169,10 @@ namespace EALABuild
         //-------------------------------------------------------------------------------------------------
         /** Reborn: reject command-line quoting ambiguity and missing explicit local paths before requesting an external process. */
         //-------------------------------------------------------------------------------------------------
-        private static void CheckPath(string path)
+        private static void CheckPath(string path, string purpose)
         {
             if (String.IsNullOrEmpty(path) || !Path.IsPathRooted(path) || path.IndexOf('"') >= 0 || path.IndexOf('\r') >= 0 || path.IndexOf('\n') >= 0 || !File.Exists(path))
-                throw new InvalidDataException("Adapter requires existing absolute file paths.");
+                throw new InvalidDataException("Required " + purpose + " file was not found at the resolved absolute path: " + (path ?? "<null>"));
         }
 
         //-------------------------------------------------------------------------------------------------

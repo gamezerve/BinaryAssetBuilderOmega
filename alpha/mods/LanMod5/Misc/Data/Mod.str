@@ -1,6 +1,7 @@
 APT:CAMPAIGNMODESELECTIONHELPTEXT
 	"Prepare for battle! Click the Solo button for single-player mode, or click the Co-op button to host a co-op match that another player can join.\n\nTo join a co-op match, click the ComLink star in the upper-right-hand corner and log into GameSpy. Once the host invites you to a match, you'll see the invite on the Invites tab in the ComLink. Select the invite and join the host's match."
 End
+
 APT:SOVIETRA3SHORTNAME
 	"SOVIETS - RA3"
 End
@@ -3945,4 +3946,30 @@ End
 
 DIALOGEVENT:ms09_sovietintel21SubTitle
 	"*Plans for the Premier's ultimate weapon, the Vacuum Imploder, are now available to you."
+End
+
+// Reborn: localizable campaign-menu page labels.
+RebornUI:CampaignUprising
+	"Uprising"
+End
+
+RebornUI:CampaignRA3
+	"Red Alert 3"
+End
+
+// Reborn: original RA3 campaign title and descriptions; Uprising keys remain unchanged.
+RebornUI:RA3CampaignTitle
+	"SELECT CAMPAIGN"
+End
+
+RebornUI:RA3SovietDescription
+	"The Soviet Union's leaders resorted to desperate, secret methods of taking the upper hand against the Allies. But now they have provoked a new enemy, the Empire of the Rising Sun..."
+End
+
+RebornUI:RA3AlliesDescription
+	"The Allied Nations are at risk of being overwhelmed by the Soviet Union. However, at the urging of a newly-appointed American President, the Allies attempt to retake the initiative..."
+End
+
+RebornUI:RA3JapanDescription
+	"Locked in conflict, the two largest world powers failed to detect the Empire of the Rising Sun's ambitious plans. Now the Empire begins its campaign to bring the world to its knees..."
 End

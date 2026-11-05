@@ -35,6 +35,9 @@ internal static class Program
             if(args.Length==5&&args[0]=="credits-self-test")
             {CompilerSmokeTest.InitializeHashProvider();CreditsSmokeTest.Run(args[1],args[2],args[3],args[4]);return 0;}
             // Reborn: qualify singleton camera authoring and early-global publication using read-only inputs and private outputs.
+            // Reborn: qualify the full original map catalog before publishing authored AdditionalMaps catalogs.
+            if(args.Length==3&&args[0]=="map-metadata-self-test")
+            {CompilerSmokeTest.InitializeHashProvider();MapMetaDataCompiler.VerifyRetail(args[1],args[2]);return 0;}
             if(args.Length==5&&args[0]=="camera-settings-self-test")
             {CompilerSmokeTest.InitializeHashProvider();CameraSettingsSmokeTest.Run(args[1],args[2],args[3],args[4]);return 0;}
             // Reborn: compare a real custom mesh with EA's native witness without publishing a mod.

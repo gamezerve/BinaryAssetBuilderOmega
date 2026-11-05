@@ -1,0 +1,11 @@
+# Reborn: build the two-page faction menu using the lossless APT model.
+[package]
+name = "reborn-faction-menu"
+version = "0.1.0"
+edition = "2021"
+default-run = "reborn-faction-menu"
+
+[workspace]
+
+[dependencies]
+apt = { path = "../AptTools/crates/apt" }

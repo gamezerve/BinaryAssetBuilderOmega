@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <!-- Reborn: keep the original portrait pixels in the same global stream as the mission. -->
+  <OnDemandTexture id="LanModZhanaAtlas" File="ART:Images/LanModZhanaAtlas.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false" />
+  <OnDemandTextureImage id="LanModZhanaPortrait" Texture="LanModZhanaAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </OnDemandTextureImage>
+</AssetDeclaration>

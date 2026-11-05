@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<Tags></Tags>
 	<Includes>
@@ -96,6 +96,13 @@
 		<Include type="all" source="Common/MpGameRules.xml" />
 		<Include type="all" source="DATA:GlobalData/CampaignTemplates.xml" />
 		
-	</Includes>
+	
+        <!-- Reborn: Import the LanMod5 static/global source content. -->
+        <Include type="all" source="DATA:GlobalData/CampaignPortraits.xml" />
+        <Include type="all" source="DATA:GlobalData/TutorialData.xml" />
+        <Include type="all" source="DATA:PathMusic/PathMusicEvents_Mod.xml" />
+        <Include type="all" source="DATA:Video/Videos.xml" />
+        <Include type="all" source="DATA:Video/VideoSequences.xml" />
+    </Includes>
 
 </AssetDeclaration>

@@ -2010,38 +2010,6 @@ End
 		"Gamezerve"
 	End
 	
-	Credits:ModHomepageTitle
-		"Inherited Mods"
-	End
-	
-	Credits:ModHomepage1
-		"Red Alert 3: Upheaval"
-	End
-	
-	Credits:ModHomepage2-1
-		"http://www.moddb.com/mods/red-alert-3-upheaval"
-	End
-	
-	Credits:ModHomepage2-2
-		"http://bibber.eu"
-	End
-	
-	Credits:ModHomepage3
-		"Granatball Reploded"
-	End
-	
-	Credits:ModHomepage4
-		"http://www.moddb.com/mods/granatball-reploded"
-	End
-	
-	Credits:ModHomepage5
-		"Red Alert 3: Trinity Defense (R3D)"
-	End
-	
-	Credits:ModHomepage6
-		"http://www.moddb.com/mods/r3d"
-	End
-	
 // Debug
 
 	IrradiatedTargetDamageDealer
@@ -2177,3 +2145,3955 @@ END
 RebornDebug:ParadropSidebarRequestFailed
 "Reborn: Paradrop sidebar provider request failed."
 END
+
+
+APT:CAMPAIGNMODESELECTIONHELPTEXT
+	"Prepare for battle! Click the Solo button for single-player mode, or click the Co-op button to host a co-op match that another player can join.\n\nTo join a co-op match, click the ComLink star in the upper-right-hand corner and log into GameSpy. Once the host invites you to a match, you'll see the invite on the Invites tab in the ComLink. Select the invite and join the host's match."
+End
+
+APT:SOVIETRA3SHORTNAME
+	"SOVIETS - RA3"
+End
+
+APT:ALLIESRA3SHORTNAME
+	"ALLIES - RA3"
+End
+
+APT:JAPANRA3SHORTNAME
+	"JAPAN - RA3"
+End
+
+// Reborn: RA3 campaign strings and imported mission dialogue subtitles.
+
+MISSIONNAME:SOVIETS_10
+	"SOVIET CAMPAIGN EPILOGUE"
+End
+
+MISSIONNAME:ALLIES_10
+	"ALLIES CAMPAIGN EPILOGUE"
+End
+
+MISSIONNAME:SOVIETS_5_SHORT
+	"MYKONOS"
+End
+
+MISSIONNAME:SOVIETS_5
+	"MYKONOS - THE SCIENCE OF WAR"
+End
+
+DIALOGEVENT:ma01_alliedintel01SubTitle
+	"*The Soviet Union is on Britain's doorstep. You must do everything possible to repel the incoming attack."
+End
+
+DIALOGEVENT:ma01_alliedintel02SubTitle
+	"*Expect waves of Soviet forces to approach by air drop."
+End
+
+DIALOGEVENT:ma01_alliedintel03SubTitle
+	"*Unfortunately we do not have heavy armor reinforcements at this time."
+End
+
+DIALOGEVENT:ma01_alliedintel04SubTitle
+	"*You must make due with the coastal defenses already at Brighton Beach. Good luck."
+End
+
+DIALOGEVENT:ma01_alliedintel05SubTitle
+	"*The Soviet forces are continuing their frontal assault, even though your defenses have held. You must keep fighting."
+End
+
+DIALOGEVENT:ma01_alliedintel06SubTitle
+	"*We detect a large fleet of their Kirov airships in the vicinity. Be prepared, and good luck."
+End
+
+DIALOGEVENT:ma01_alliedintel07SubTitle
+	"*The Soviets are inbound. You must assemble an infantry division in order to stop them."
+End
+
+DIALOGEVENT:ma01_alliedintel08SubTitle
+	"*Remember that you have access to an Armor Facility and therefore can build Multigunner IFVs."
+End
+
+DIALOGEVENT:ma01_alliedintel09SubTitle
+	"*You also have access to the Multigunner Turret base defenses, which should keep the enemy at bay."
+End
+
+DIALOGEVENT:ma01_alliedintel10SubTitle
+	"*The IFV is armed with a rocket launcher, though you can modify its weapon by ordering any infantry unit inside."
+End
+
+DIALOGEVENT:ma01_alliedintel11SubTitle
+	"*We need you to get those beach defenses back online. The Soviet forces are almost here."
+End
+
+DIALOGEVENT:ma01_alliedintel12SubTitle
+	"*The Soviets are approaching with their Mobile Construction Vehicles. While unarmed, they are heavily armored."
+End
+
+DIALOGEVENT:ma01_alliedintel13SubTitle
+	"*Soviet combat wave defeated. Additional Soviet units still incoming."
+End
+
+DIALOGEVENT:ma01_alliedintel14SubTitle
+	"*A final Soviet assault wave has been detected on radar."
+End
+
+DIALOGEVENT:ma01_alliedintel15SubTitle
+	"*Try to build up as many defenses and garrison as many structures as you can."
+End
+
+DIALOGEVENT:ma01_alliedintel16SubTitle
+	"*More MCV's inbound. Take them down before they reach the beach."
+End
+
+DIALOGEVENT:ma01_alliedintel17SubTitle
+	"*MCV's are down. Dispose of any additional Soviet forces."
+End
+
+DIALOGEVENT:ma01_alliedintel18SubTitle
+	"*The Soviet Dreadnought's ballistic rockets can destroy your forces- beware of their danger."
+End
+
+DIALOGEVENT:ma01_alliedintel19SubTitle
+	"*There is a Hospital to the south. One of your Engineers can capture it to transfer its healing benefits to your infantry forces."
+End
+
+DIALOGEVENT:ma01_alliedintel20SubTitle
+	"*This Hospital will now automatically heal your infantry units."
+End
+
+DIALOGEVENT:ma01_alliedintel21SubTitle
+	"*Commander, the Soviets have destroyed your base. Mission aborted."
+End
+
+DIALOGEVENT:ma01_alliedintel22SubTitle
+	"*Commander, the Soviets have destroyed your Co-Commander's base. Mission aborted."
+End
+
+DIALOGEVENT:ma01_alliedintel23SubTitle
+	"*Brighton Beach is under siege by Soviet forces. The city must be liberated so we can bolster our defense against additional waves."
+End
+
+DIALOGEVENT:ma01_alliedintel24SubTitle
+	"*We are mustering defenses. Please make do with these Peacekeepers and Attack Dogs for now."
+End
+
+DIALOGEVENT:ma01_alliedintel25SubTitle
+	"*Peacekeepers are especially effective against enemy infantry in very close quarters. Their riot shields let them close the distance."
+End
+
+DIALOGEVENT:ma01_alliedintel26SubTitle
+	"*Our Attack Dogs recently acquired amplification modules, allowing their barks to deafen and stun enemy infantry."
+End
+
+DIALOGEVENT:ma01_alliedintel27SubTitle
+	"*This base will be your staging area against the incoming attack waves."
+End
+
+DIALOGEVENT:ma01_alliedintel28SubTitle
+	"*Your co-commander has been issued a Mobile Construction Vehicle to provide additional support."
+End
+
+DIALOGEVENT:ma01_alliedintel29SubTitle
+	"*The Soviet armada appears to be spread out. Their first wave is imminent."
+End
+
+DIALOGEVENT:ma01_alliedintel30SubTitle
+	"*A Soviet naval force has been detected off the coast. The armada will be here shortly."
+End
+
+DIALOGEVENT:ma01_alliedintel31SubTitle
+	"*Javelin Soldiers are now authorized in the defense of this area. Train them from the Boot Camp."
+End
+
+DIALOGEVENT:ma01_alliedintel32SubTitle
+	"*Vehicle production authority granted. You now have access to the Multigunner Infantry Fighting Vehicle."
+End
+
+DIALOGEVENT:ma01_alliedintel33SubTitle
+	"*Multigunner IFVs are available from the Armor Facility."
+End
+
+DIALOGEVENT:ma01_alliedintel34SubTitle
+	"*Brighton's long-dormant coastal defenses can be brought to bear against the enemy."
+End
+
+DIALOGEVENT:ma01_alliedintel35SubTitle
+	"*To bring the guns online, train Engineers from your Boot Camp and send them inside the coastal guns."
+End
+
+DIALOGEVENT:ma01_alliedintel36SubTitle
+	"You are authorized to construct an Armor Facility and Multigunner Turret defenses."
+End
+
+DIALOGEVENT:ma01_alliedintel39SubTitle
+	"The civilian population has been evacuated. Your infantry may garrison the deserted structures for protection."
+End
+
+DIALOGEVENT:ma01_alliedintel40SubTitle
+	"You have been assigned a Co-Commander for this mission. He will aid in the defense of Great Britain."
+End
+
+DIALOGEVENT:ma01_alliedsoldier01SubTitle
+	"Allied bombers inbound, Commander. Ready to pound the ground."
+End
+
+DIALOGEVENT:ma01_alliedsoldier02SubTitle
+	"Don't worry, Commander, we've got your back."
+End
+
+DIALOGEVENT:ma01_cogiles01SubTitle
+	"*Looks like they're advancing towards your base. I'll send my forces south to assist you."
+End
+
+DIALOGEVENT:ma01_cogiles02SubTitle
+	"*Beach defenses are online. These should shake things up a little bit."
+End
+
+DIALOGEVENT:ma01_cogiles03SubTitle
+	"*Hah, looks like we've done it! Those Soviets got too greedy for their own good this time."
+End
+
+DIALOGEVENT:ma02_alliedintel01SubTitle
+	"*The Soviets are entrenched in Cannes and have set up a naval blockade in this region. We cannot attack head-on."
+End
+
+DIALOGEVENT:ma02_alliedintel02SubTitle
+	"*However, we have detected vulnerabilities in the Soviet perimeter and are sending an infiltration team to break through their ranks. Here is what we need you to do:"
+End
+
+DIALOGEVENT:ma02_alliedintel03SubTitle
+	"*Infiltrate the Soviet island-harbors."
+End
+
+DIALOGEVENT:ma02_alliedintel04SubTitle
+	"*Find a way to eliminate the naval blockade."
+End
+
+DIALOGEVENT:ma02_alliedintel05SubTitle
+	"*We also have a wing of Allied aircraft trapped here. Try to recover it if possible."
+End
+
+DIALOGEVENT:ma02_alliedintel06SubTitle
+	"*Agent Tanya will be joining you for this mission. Good luck."
+End
+
+DIALOGEVENT:ma02_alliedintel07SubTitle
+	"*The Soviet navy is in disarray. This is the opportunity to strike."
+End
+
+DIALOGEVENT:ma02_alliedintel08SubTitle
+	"*Focus your efforts on the Soviet military installation on land."
+End
+
+DIALOGEVENT:ma02_alliedintel09SubTitle
+	"*If you can take it out, we will have regained our defensive foothold in France."
+End
+
+DIALOGEVENT:ma02_alliedintel10SubTitle
+	"*Commander, your Spies can disguise themselves as enemy troops."
+End
+
+DIALOGEVENT:ma02_alliedintel11SubTitle
+	"*Select the Spy and target an enemy unit for attack. The Spy will assume that unit's form."
+End
+
+DIALOGEVENT:ma02_alliedintel12SubTitle
+	"*Once disguised, your Spies can walk into enemy territory undetected."
+End
+
+DIALOGEVENT:ma02_alliedintel13SubTitle
+	"*Commander, those Russian Bears operate mainly by smell- they can sniff out disguised Spies."
+End
+
+DIALOGEVENT:ma02_alliedintel14SubTitle
+	"*If the Spies are detected, they'll lose their disguise."
+End
+
+DIALOGEVENT:ma02_alliedintel15SubTitle
+	"*Great job, Commander. We're teleporting in reinforcements to your location."
+End
+
+DIALOGEVENT:ma02_alliedintel16SubTitle
+	"*Great job, Commander. We're sending reinforcements to your location."
+End
+
+DIALOGEVENT:ma02_alliedintel17SubTitle
+	"*You have access to the same Technology as your co-commander."
+End
+
+DIALOGEVENT:ma02_alliedintel18SubTitle
+	"*Commander, your Spies can also bring enemies to our side with the bribe ability."
+End
+
+DIALOGEVENT:ma02_alliedintel19SubTitle
+	"*The Soviets have destroyed your base. Mission aborted."
+End
+
+DIALOGEVENT:ma02_alliedintel20SubTitle
+	"*The Soviets have destroyed your Co-Commander's base. Mission aborted."
+End
+
+DIALOGEVENT:ma02_alliedintel21SubTitle
+	"*Without Tanya or a Barracks you'll be unable to continue. Mission aborted."
+End
+
+DIALOGEVENT:ma02_alliedintel22SubTitle
+	"*Commander, without Spies or a Barracks you'll be unable to continue. Mission aborted."
+End
+
+DIALOGEVENT:ma02_alliedintel23SubTitle
+	"*Commander, you destroyed your objective instead of infiltrating it. Mission aborted."
+End
+
+DIALOGEVENT:ma02_alliedintel24SubTitle
+	"*Commander, you destroyed your objective instead of garrisoning it. Mission aborted."
+End
+
+DIALOGEVENT:ma02_alliedintel25SubTitle
+	"*Commander, you destroyed your objective instead of liberating it. Mission aborted."
+End
+
+DIALOGEVENT:ma02_alliedintel26SubTitle
+	"*Leaders from several Allied nations are pinned in the Convention Center. Clear the Soviet forces from the area so they can evacuate."
+End
+
+DIALOGEVENT:ma02_alliedintel27SubTitle
+	"*Our Vindicator bombers cannot take off as long as those Soviet defenses are intact - take the defenses offline to recover our aircraft."
+End
+
+DIALOGEVENT:ma02_alliedintel28SubTitle
+	"*Our Spies may use their Bribe ability to convert those Soviet forces to work for us."
+End
+
+DIALOGEVENT:ma02_alliedintel29SubTitle
+	"*The Allied leaders are under siege. You must liberate the conference center."
+End
+
+DIALOGEVENT:ma02_alliedintel30SubTitle
+	"*Our Spies must be sent into each of those Port structures. Train additional Spies if need be."
+End
+
+DIALOGEVENT:ma02_alliedintel31SubTitle
+	"*Those Soviet Dreadnoughts are bombarding our position. Find a way to sink them."
+End
+
+DIALOGEVENT:ma02_alliedintel32SubTitle
+	"*The main Soviet base in Cannes is now vulnerable to direct attack."
+End
+
+DIALOGEVENT:ma02_alliedintel33SubTitle
+	"*Your co-commander has been defeated. Mission aborted."
+End
+
+DIALOGEVENT:ma02_alliedintel34SubTitle
+	"*Do not attack the Port buildings – to do so endangers the mission objectives."
+End
+
+DIALOGEVENT:ma02_cowarren01SubTitle
+	"*Observation Post captured. Now we can see what these Soviets are up to."
+End
+
+DIALOGEVENT:ma02_cowarren02SubTitle
+	"*I'll be working towards getting the Allied leadership freed, Commander. Your assistance would be welcome."
+End
+
+DIALOGEVENT:ma02_cowarren03SubTitle
+	"*Those Dreadnoughts are making it real hard to advance on the Soviet's base. Are you going to take those out, Commander?"
+End
+
+DIALOGEVENT:ma02_tanya03SubTitle
+	"Gah, Tesla Coils! Commander, I need you to send our Spies in and take down their power. That'll give me enough time to run in and blow up those defenses."
+End
+
+DIALOGEVENT:ma02_tanya06SubTitle
+	"Attention Soviet fleet: Return to harbor immediately. There is evidence of onboard insurgents. All vehicles subject to search."
+End
+
+DIALOGEVENT:ma03_alliedintel01SubTitle
+	"*The Soviet headquarters is located here in Heidelberg. Your mission is to setup base and destroy the headquarters."
+End
+
+DIALOGEVENT:ma03_alliedintel02SubTitle
+	"*Here is what we need you to do:"
+End
+
+DIALOGEVENT:ma03_alliedintel03SubTitle
+	"*Escort your Mobile Construction Vehicles upriver. Intel suggests the Soviets may not be expecting an amphibious assault."
+End
+
+DIALOGEVENT:ma03_alliedintel04SubTitle
+	"*Stage a direct assault against the Soviet headquarters near Heidelberg castle."
+End
+
+DIALOGEVENT:ma03_alliedintel05SubTitle
+	"*Coordinate attacks upon the Soviets- they have much production capability. Good luck with your mission."
+End
+
+DIALOGEVENT:ma03_alliedintel06SubTitle
+	"*The Soviet headquarters is protected by a device called the Iron Curtain. Be very careful when engaging forces augmented by this device."
+End
+
+DIALOGEVENT:ma03_alliedintel07SubTitle
+	"*Your primary objective is to take out the Soviet headquarters. Do whatever it takes."
+End
+
+DIALOGEVENT:ma03_alliedintel08SubTitle
+	"*Get those MCV's safely up the ramps, Commander. I'll brief you on the rest of the mission once you're done."
+End
+
+DIALOGEVENT:ma03_alliedintel09SubTitle
+	"*Your Hydrofoils can toggle between two weapons, a standard attack and Weapon Jammer.  Target those Tesla Coils with the Jammer and your Co-Commander's dolphins should be able to approach them unharmed."
+End
+
+DIALOGEVENT:ma03_alliedintel10SubTitle
+	"*That Iron Curtain is able to temporarily make a Soviet force invincible."
+End
+
+DIALOGEVENT:ma03_alliedintel11SubTitle
+	"*Commander, our Vindicators are primed for hit and run attacks."
+End
+
+DIALOGEVENT:ma03_alliedintel12SubTitle
+	"*Your Hydrofoils have been destroyed.  Mission aborted."
+End
+
+DIALOGEVENT:ma03_alliedintel13SubTitle
+	"*Your Co-Commander's dolphins have been destroyed. Mission Aborted."
+End
+
+DIALOGEVENT:ma03_alliedintel14SubTitle
+	"*Your base has been destroyed, Commander. Mission aborted."
+End
+
+DIALOGEVENT:ma03_alliedintel15SubTitle
+	"*The Soviets have destroyed your Co-Commander's base. Mission aborted."
+End
+
+DIALOGEVENT:ma03_alliedintel16SubTitle
+	"*The Soviets appear to have built their base with the majority of their power and resources in vulnerable positions."
+End
+
+DIALOGEVENT:ma03_alliedintel17SubTitle
+	"*Striking at those targets should significantly reduce their effectiveness in defending against our attacks."
+End
+
+DIALOGEVENT:ma03_alliedintel18SubTitle
+	"*The enemy has sold off those outer base defenses, in order to bring his inner base defenses back online."
+End
+
+DIALOGEVENT:ma03_alliedintel19SubTitle
+	"*There are two more Super-Reactors north-east of the War Factories. Taking those down should cut power to the Soviet base again."
+End
+
+DIALOGEVENT:ma03_coliss01SubTitle
+	"*Vindicator team inbound on Soviet Iron Curtain."
+End
+
+DIALOGEVENT:ma03_coliss02SubTitle
+	"*I've taken down their north base. I'm heading down to help you finish up the other one."
+End
+
+DIALOGEVENT:ma03_coliss03SubTitle
+	"*Nice work. How about giving me a helping hand with this other part of their base?"
+End
+
+DIALOGEVENT:ma03_coliss04SubTitle
+	"*All right, this is it. Let's move on their HQ and get this over with."
+End
+
+DIALOGEVENT:ma03_tanya01SubTitle
+	"Commander, the Soviets have set up shop down here and have me completely surrounded."
+End
+
+DIALOGEVENT:ma03_tanya02SubTitle
+	"There's too much heat for me to leave safely. I'm gonna need you to come down here and get me."
+End
+
+DIALOGEVENT:ma04_alliedintel01SubTitle
+	"*The Empire of the Rising Sun has overtaken Gibraltar and is using it to stage attacks against both Allied and Soviet positions. Here is your mission:"
+End
+
+DIALOGEVENT:ma04_alliedintel02SubTitle
+	"*Extract our field agent making his escape from the area. He has vital information."
+End
+
+DIALOGEVENT:ma04_alliedintel03SubTitle
+	"*Locate and recover our naval forces that are on lockdown in this area."
+End
+
+DIALOGEVENT:ma04_alliedintel04SubTitle
+	"*Find and eliminate the Imperial forces stationed around the Gibraltar airport."
+End
+
+DIALOGEVENT:ma04_alliedintel05SubTitle
+	"*As you know, this is a joint Allied-Soviet initiative. The Soviet Union which has agreed to collaborate with Allied forces against the Empire."
+End
+
+DIALOGEVENT:ma04_alliedintel06SubTitle
+	"*Agent Tanya as well as the Soviet Union's own Natasha will be on the ground to ensure our joint task force is working together as expected. Good luck in the field."
+End
+
+DIALOGEVENT:ma04_alliedintel07SubTitle
+	"*Commanders, both the Prospector and Sputnik can be used to expand your base onto land."
+End
+
+DIALOGEVENT:ma04_alliedintel08SubTitle
+	"*An approaching Imperial Fleet has been detected on radar."
+End
+
+DIALOGEVENT:ma04_alliedintel09SubTitle
+	"*Commander, a forward recon element has called for backup in Gibraltar."
+End
+
+DIALOGEVENT:ma04_alliedintel10SubTitle
+	"*We are sending you and our new Soviet ally to assist them."
+End
+
+DIALOGEVENT:ma04_alliedintel11SubTitle
+	"*We're pulling out the big guns for this too, both of you  will be deployed with your Spek-Ops units"
+End
+
+DIALOGEVENT:ma04_alliedintel12SubTitle
+	"*The powers that be are pulling out the big guns for this one - Allied forces will receive Tanya and our Soviet friends, Natasha."
+End
+
+DIALOGEVENT:ma04_alliedintel13SubTitle
+	"*Our spy has been debriefed. The Assault Destroyers are located in the port."
+End
+
+DIALOGEVENT:ma04_alliedintel14SubTitle
+	"*They are heavily guarded- becareful."
+End
+
+DIALOGEVENT:ma04_alliedintel15SubTitle
+	"*Take out those Turrets and they'll be good to go."
+End
+
+DIALOGEVENT:ma04_alliedintel16SubTitle
+	"*You'll need to take out the turrets, then send in some engineers to get the destroyers running again."
+End
+
+DIALOGEVENT:ma04_alliedintel17SubTitle
+	"*Warning: A King Oni battlewalker has been detected on the rock of Gibraltar."
+End
+
+DIALOGEVENT:ma04_alliedintel18SubTitle
+	"*It may identify our assault forces unless it is eliminated."
+End
+
+DIALOGEVENT:ma04_alliedintel19SubTitle
+	"*Cryo-technology access upgraded. You are authorized to construct Cryocopters, which can freeze or shrink enemy forces."
+End
+
+DIALOGEVENT:ma04_alliedintel20SubTitle
+	"*Target the landed aircraft to clear the runways."
+End
+
+DIALOGEVENT:ma04_alliedintel21SubTitle
+	"*Assault Destroyers online. You are authorized to construct additional Destroyers at your Seaport."
+End
+
+DIALOGEVENT:ma04_alliedintel22SubTitle
+	"*Alert: Your co-commander requires your assitance."
+End
+
+DIALOGEVENT:ma04_natasha02SubTitle
+	"Oh Tanya, when will you learn? From Mother Russia's bosom spring soldiers who are superior in every way. And I am the greatest of these."
+End
+
+DIALOGEVENT:ma04_natasha04SubTitle
+	"This is not cold! I once swam Siberia's Lena River. Now that is cold!"
+End
+
+DIALOGEVENT:ma04_tanya02SubTitle
+	"Why you little... Commander, permission to speak freely? I hate that chick!"
+End
+
+DIALOGEVENT:ma04_tanya06SubTitle
+	"Whoa baby! That's chilly!"
+End
+
+DIALOGEVENT:ma05_alliedintel01SubTitle
+	"*We have organized a strike against the Empire's armada situated in the North Sea. We do not yet have accurate details about the composition of this fleet."
+End
+
+DIALOGEVENT:ma05_alliedintel02SubTitle
+	"*This will be another joint operation with Soviet forces. Your first order of business will be the following:"
+End
+
+DIALOGEVENT:ma05_alliedintel03SubTitle
+	"*Assist in the salvage operation of a downed Imperial vessel."
+End
+
+DIALOGEVENT:ma05_alliedintel04SubTitle
+	"*Our salvage ship will need to be defended whilst the information on the Empire's armada is recovered."
+End
+
+DIALOGEVENT:ma05_alliedintel05SubTitle
+	"*Once the data is recovered, standby for further orders in the field. Good luck."
+End
+
+DIALOGEVENT:ma05_alliedintel06SubTitle
+	"*This junker contains necessary data on the Floating Island Fortress. Protect our recovery vessel until we can extra all the data from the wreck."
+End
+
+DIALOGEVENT:ma05_alliedintel07SubTitle
+	"*The salvage boat has been destroyed. Mission aborted."
+End
+
+DIALOGEVENT:ma05_alliedintel08SubTitle
+	"*Intelligence recovered…commence analysis."
+End
+
+DIALOGEVENT:ma05_alliedintel09SubTitle
+	"*Those two Radar Boats allow the Fortress to attack long range targets. They must be destroyed."
+End
+
+DIALOGEVENT:ma05_alliedintel10SubTitle
+	"*With the Radar Boats destroyed, our MCVs can get close enough to deploy."
+End
+
+DIALOGEVENT:ma05_alliedintel11SubTitle
+	"*We're taking heavy losses. Allied Command is uploading emergency plans for the Aircraft Carrier."
+End
+
+DIALOGEVENT:ma05_alliedintel12SubTitle
+	"*Allied Command has given access to construct the Century Bomber. With it, we can drop bombs…or infantry."
+End
+
+DIALOGEVENT:ma05_alliedintel13SubTitle
+	"*Intelligence has dispatched a new regiment of Spies. Try to take better care of these."
+End
+
+DIALOGEVENT:ma05_alliedintel14SubTitle
+	"*There are all the Engineers our Soviet friends could spare. Use them wisely."
+End
+
+DIALOGEVENT:ma05_alliedintel15SubTitle
+	"*Use your Engineers to capture the Fortress Reactors.  They'll overload the cores, making them unstable."
+End
+
+DIALOGEVENT:ma05_alliedintel16SubTitle
+	"*We'll need to establish a beachhead before we can produce any ground units."
+End
+
+DIALOGEVENT:ma05_alliedintel17SubTitle
+	"*With both Reactors simultaneously destabilized, the Fortress' power system will reach critical mass."
+End
+
+DIALOGEVENT:ma05_alliedintel18SubTitle
+	"*One of the Reactors has been destroyed. There's no way for us to take the Fortress down now. Mission aborted."
+End
+
+DIALOGEVENT:ma05_alliedintel19SubTitle
+	"*One Reactor has been captured and destabilized. Both reactors must be captured."
+End
+
+DIALOGEVENT:ma05_alliedintel20SubTitle
+	"*The unstable Reactor has corrected itself. You'll need to send in another Engineer."
+End
+
+DIALOGEVENT:ma05_alliedintel21SubTitle
+	"*The Radar Boat is vulnerable. Send Natasha to destroy it."
+End
+
+DIALOGEVENT:ma05_alliedintel22SubTitle
+	"*Commander, Spies can take down the power to the guns, allowing Natasha to get close enough to destroy them."
+End
+
+DIALOGEVENT:ma05_alliedintel23SubTitle
+	"*Enemy Ships inbound."
+End
+
+DIALOGEVENT:ma05_alliedintel24SubTitle
+	"*The way to the radar ship is clear. Use Tanya to destroy it."
+End
+
+DIALOGEVENT:ma05_alliedintel25SubTitle
+	"*Enemy Aircraft are targeting the recovery ship- it must survive."
+End
+
+DIALOGEVENT:ma05_alliedintel26SubTitle
+	"*Keep the Japanese away from the recovery ship."
+End
+
+DIALOGEVENT:ma05_alliedintel27SubTitle
+	"*Clear a path for the Soviet Engineers so they can hack the powerplants"
+End
+
+DIALOGEVENT:ma05_alliedintel28SubTitle
+	"*Let the Engineer know when it is safe to enter a power plant."
+End
+
+DIALOGEVENT:ma05_alliedintel29SubTitle
+	"*The Soviet Engineers can hack these powerplants to take down the defenses."
+End
+
+DIALOGEVENT:ma05_alliedintel30SubTitle
+	"*The Imperial Radar Ship in the vicinity allow the Floating Fortress to attack long range targets. Destroy every Radar Ship you find."
+End
+
+DIALOGEVENT:ma05_alliedintel31SubTitle
+	"*This sunken battleship contains details on the Imperial Floating Fortress nearby. Protect our recovery vessel while we extract the data."
+End
+
+DIALOGEVENT:ma05_natasha01SubTitle
+	"I have Radar Boat in sight. Is cowering behind gun emplacement ... like child."
+End
+
+DIALOGEVENT:ma05_natasha02SubTitle
+	"Wait here while I get to work."
+End
+
+DIALOGEVENT:ma05_natasha03SubTitle
+	"I need that Generator deactivated before I can get in range."
+End
+
+DIALOGEVENT:ma05_natasha04SubTitle
+	"First Power Plant eliminated."
+End
+
+DIALOGEVENT:ma05_natasha05SubTitle
+	"Another Power Plant destroyed."
+End
+
+DIALOGEVENT:ma05_natasha06SubTitle
+	"All Generators destroyed. Targeting Radar Boat."
+End
+
+DIALOGEVENT:ma05_tanay01SubTitle
+	"The second Radar Ship is under heavy guard. We need to be careful."
+End
+
+DIALOGEVENT:ma05_tanay04SubTitle
+	"It's working! The first guns are active."
+End
+
+DIALOGEVENT:ma05_tanay05SubTitle
+	"Let's go grab another Generator."
+End
+
+DIALOGEVENT:ma05_tanay08SubTitle
+	"The second Radar Ship has gone belly up. Send in the MCV's!"
+End
+
+DIALOGEVENT:ma06_alliedintel01SubTitle
+	"*The President Ackerman has targeted with Soviet Union with some sort of weapon located within a firing base at the foot of Mt. Rushmore."
+End
+
+DIALOGEVENT:ma06_alliedintel02SubTitle
+	"*Allied command requires you to stop him. Your objective is this:"
+End
+
+DIALOGEVENT:ma06_alliedintel03SubTitle
+	"*Destroy the Radio Tower before President Ackerman can trasmit the launch codes."
+End
+
+DIALOGEVENT:ma06_alliedintel04SubTitle
+	"*Expect to face forces loyal to the American President on this mission."
+End
+
+DIALOGEVENT:ma06_alliedintel05SubTitle
+	"*We do not know what else President Ackerman has in store in this region and will update you as we learn more. Good luck."
+End
+
+DIALOGEVENT:ma06_alliedintel06SubTitle
+	"*We are not fully aware of Mt. Rushmore's firing capability. However, please be advised of the following:"
+End
+
+DIALOGEVENT:ma06_alliedintel07SubTitle
+	"*Each of the weaponized heads appears to be linked to a control center. You may be able to disable the heads at those control centers."
+End
+
+DIALOGEVENT:ma06_alliedintel08SubTitle
+	"*Your primary objective is to stop the President's plan by destroying the Rushmore firing base before he gets there."
+End
+
+DIALOGEVENT:ma06_alliedintel09SubTitle
+	"*Afterwards, you will be authorized to engage the President's vehicle."
+End
+
+DIALOGEVENT:ma06_alliedintel10SubTitle
+	"*Commander, the radio tower is just ahead. You need to take it out before Ackerman can transmit the launch signal."
+End
+
+DIALOGEVENT:ma06_alliedintel11SubTitle
+	"*The Power Plant supplying the base defenses is located to the northwest. Take it out to bring those guns offline."
+End
+
+DIALOGEVENT:ma06_alliedintel12SubTitle
+	"*With the Radio Tower has been destroyed, Ackerman cannot transmit the launch code."
+End
+
+DIALOGEVENT:ma06_alliedintel13SubTitle
+	"*The Intercontinental Laser inside of Mount Rushmore is still capable of firing, but Ackerman is going to need to get inside the Firebase to trigger it."
+End
+
+DIALOGEVENT:ma06_alliedintel14SubTitle
+	"*You have however long it takes the President to reach the Firebase to prevent the attack."
+End
+
+DIALOGEVENT:ma06_alliedintel15SubTitle
+	"*Your Engineers could reactivate this abandoned base by capturing it."
+End
+
+DIALOGEVENT:ma06_alliedintel16SubTitle
+	"*Massive power surges have been detected beneath Mount Rushmore."
+End
+
+DIALOGEVENT:ma06_alliedintel17SubTitle
+	"*Ackerman has activated a high-powered laser defense at Mt. Rushmore- within each president's head. You'll need to capture the Control Center to deactivate it."
+End
+
+DIALOGEVENT:ma06_alliedintel18SubTitle
+	"*Another presidential head capable of firing lasers has come online."
+End
+
+DIALOGEVENT:ma06_alliedintel19SubTitle
+	"*Rushmore Control Center captured. One of the lasers is powering down."
+End
+
+DIALOGEVENT:ma06_alliedintel20SubTitle
+	"*You now have access to construct Mirage Tanks."
+End
+
+DIALOGEVENT:ma06_alliedintel21SubTitle
+	"*You have been authorized to construct Spectrum Towers. They are very effective anti-vehicle defenses."
+End
+
+DIALOGEVENT:ma06_alliedintel22SubTitle
+	"*The President is enroute to the firing base. It must be destroyed before he arrives."
+End
+
+DIALOGEVENT:ma06_alliedintel23SubTitle
+	"*The President is getting close to the Firebase."
+End
+
+DIALOGEVENT:ma06_alliedintel24SubTitle
+	"*Ackerman's at the Firebase. Launch of Intercontinental Laser imminent…Mission Failed"
+End
+
+DIALOGEVENT:ma06_alliedintel25SubTitle
+	"*The Firebase has been destroyed."
+End
+
+DIALOGEVENT:ma06_alliedintel26SubTitle
+	"*Ackerman has boarded a helicopter. It must be destroyed."
+End
+
+DIALOGEVENT:ma06_alliedintel27SubTitle
+	"*President Ackerman has escaped….Mission Failed."
+End
+
+DIALOGEVENT:ma06_alliedintel28SubTitle
+	"*The President has moved from his Limo to an escape helicopter. Take it down."
+End
+
+DIALOGEVENT:ma06_alliedintel29SubTitle
+	"*The base defenses guarding the Com Tower are connected to the Power Plant to the north west."
+End
+
+DIALOGEVENT:ma06_alliedintel30SubTitle
+	"*Those are enemy Attack Dogs. Your Engineers and Spies should avoid them."
+End
+
+DIALOGEVENT:ma06_alliedintel31SubTitle
+	"*Capturing a Head Control Center with an Engineer will take one of the Rushmore head lasers offline."
+End
+
+DIALOGEVENT:ma06_alliedintel32SubTitle
+	"*Power to the Base Defenses has been cut."
+End
+
+DIALOGEVENT:ma06_alliedintel33SubTitle
+	"*George Washington's weapon systems are now online."
+End
+
+DIALOGEVENT:ma06_alliedintel34SubTitle
+	"*Thomas Jefferson's weapon systems are now online."
+End
+
+DIALOGEVENT:ma06_alliedintel35SubTitle
+	"*Abraham Lincoln's weapon systems are now online."
+End
+
+DIALOGEVENT:ma06_alliedintel36SubTitle
+	"*Roosevelt's weapon systems are now online."
+End
+
+DIALOGEVENT:ma06_alliedintel37SubTitle
+	"*The Head Control Centers are not accessible by land. You will need to air-drop Engineers in order to reach them."
+End
+
+DIALOGEVENT:ma06_alliedintel38SubTitle
+	"*Our Mirage Tank assault forces have been stationed here all along. They are now under your control."
+End
+
+DIALOGEVENT:ma06_cowarr01SubTitle
+	"*Just tell me where you need these Spies and Engineers."
+End
+
+DIALOGEVENT:ma06_cowarr02SubTitle
+	"*My Spies can temporarily disable that Power Plant."
+End
+
+DIALOGEVENT:ma06_cowarr03SubTitle
+	"*Sit tight, I've got anti-vehicle troops headed your way."
+End
+
+DIALOGEVENT:ma06_cowarr04SubTitle
+	"*I'm going to set up at that abandoned base over there."
+End
+
+DIALOGEVENT:ma06_cowarr05SubTitle
+	"*The President is getting close. We need to stop him."
+End
+
+DIALOGEVENT:ma06_cowarr06SubTitle
+	"*OK... how are we supposed to fight a mountain?"
+End
+
+DIALOGEVENT:ma06_cowarr07SubTitle
+	"*I'll try to take back the control center."
+End
+
+DIALOGEVENT:ma06_cowarr08SubTitle
+	"*I just took one of those giant heads offline."
+End
+
+DIALOGEVENT:ma06_cowarr09SubTitle
+	"*I'll try to take that Barracks."
+End
+
+DIALOGEVENT:ma06_cowarr10SubTitle
+	"*These Spectrum Towers are tearing me apart..."
+End
+
+DIALOGEVENT:ma06_cowarr11SubTitle
+	"*Man, to think I even voted for this nutjob..."
+End
+
+DIALOGEVENT:ma07_alliedintel01SubTitle
+	"*The time has come for our joint attack against the Imperial military infrastructure in Tokyo Harbor."
+End
+
+DIALOGEVENT:ma07_alliedintel02SubTitle
+	"*Soviet forces were waylaid en route to this location so you must engage the Empire and await Soviet reinforcements."
+End
+
+DIALOGEVENT:ma07_alliedintel03SubTitle
+	"*Your objectives here are as follows:"
+End
+
+DIALOGEVENT:ma07_alliedintel04SubTitle
+	"*Eliminate the Battleship blockade preventing Soviet forces into the harbor."
+End
+
+DIALOGEVENT:ma07_alliedintel05SubTitle
+	"*Use our Chronosphere to transfer forces across the field to surround the Imperial defenders."
+End
+
+DIALOGEVENT:ma07_alliedintel06SubTitle
+	"*Destroy the Empire's military capability in this region."
+End
+
+DIALOGEVENT:ma07_alliedintel07SubTitle
+	"*Succeed, and the Empire will fall--it will no longer be a threat. Be careful in this operation, and good luck."
+End
+
+DIALOGEVENT:ma07_alliedintel08SubTitle
+	"*The situation has turned for the worse. We have word that Soviet reinforcements have turned around."
+End
+
+DIALOGEVENT:ma07_alliedintel09SubTitle
+	"*You will need to find a way to complete this mission with the resources you already have."
+End
+
+DIALOGEVENT:ma07_alliedintel10SubTitle
+	"*Good luck."
+End
+
+DIALOGEVENT:ma07_alliedintel11SubTitle
+	"*Commander, you must hurry and destroy the Imperial blockade."
+End
+
+DIALOGEVENT:ma07_alliedintel12SubTitle
+	"*The Imperial Military Head Quarters has been destroyed."
+End
+
+DIALOGEVENT:ma07_alliedintel13SubTitle
+	"*The Imperial Harbor is no more."
+End
+
+DIALOGEVENT:ma07_alliedintel14SubTitle
+	"*The Imperial Robotics Lab has been destroyed."
+End
+
+DIALOGEVENT:ma07_alliedintel15SubTitle
+	"*The Imperial Super Weapon has been destroyed."
+End
+
+DIALOGEVENT:ma07_alliedintel16SubTitle
+	"*Some of your forces withstood the Imperial psionic decimator. We must counterattack immediately using our own Chronosphere."
+End
+
+DIALOGEVENT:ma07_alliedintel17SubTitle
+	"*Use the Chronosphere to split your forces by teleporting them across the battlefield."
+End
+
+DIALOGEVENT:ma07_alliedintel18SubTitle
+	"*A pincer attack may take the Empire of the Rising Sun by surprise."
+End
+
+DIALOGEVENT:ma07_alliedintel19SubTitle
+	"*The Grand Dojos of the Empire of the Rising Sun have been destroyed."
+End
+
+DIALOGEVENT:ma07_alliedintel20SubTitle
+	"*Our Athena Cannon long-range bombardment reinforcements have arrived, and you are now authorized to produce more as needed."
+End
+
+DIALOGEVENT:ma07_coliss01SubTitle
+	"*Just give the signal and I'll setup at the secondary location."
+End
+
+DIALOGEVENT:ma07_coliss02SubTitle
+	"*Well done, that's one less thing to worry about."
+End
+
+DIALOGEVENT:ma07_coliss03SubTitle
+	"*Nice job, you beat me to that one."
+End
+
+DIALOGEVENT:ma07_coliss04SubTitle
+	"*So the Soviets aren't coming? What do you think? Can handle this one on our own...?"
+End
+
+DIALOGEVENT:ma07_coliss05SubTitle
+	"*This must be where all those Imperial robots come from. I bet if we wipe this place out, they won't have a leg left to stand on."
+End
+
+DIALOGEVENT:ma08_alliedintel01SubTitle
+	"*We have reasonable suspicions of Soviet activity here in Havana. Allied command is concerned, due to this region's proximity to several Allied nations."
+End
+
+DIALOGEVENT:ma08_alliedintel02SubTitle
+	"*Your mission here is as follows:"
+End
+
+DIALOGEVENT:ma08_alliedintel03SubTitle
+	"*Your expeditionary force must discover the nature and strength of the Soviet forces here."
+End
+
+DIALOGEVENT:ma08_alliedintel04SubTitle
+	"*Be prepared to engage Soviet forces if necessary."
+End
+
+DIALOGEVENT:ma08_alliedintel05SubTitle
+	"*The Soviet Union is staging bombing runs from Havana using modified sporting arenas."
+End
+
+DIALOGEVENT:ma08_alliedintel06SubTitle
+	"*These arenas all must be destroyed."
+End
+
+DIALOGEVENT:ma08_alliedintel07SubTitle
+	"*Ensure none of the Soviet Kirov Airships exits this airspace."
+End
+
+DIALOGEVENT:ma08_alliedintel08SubTitle
+	"*Our information network should have seen this sooner. Please forgive us, and good luck."
+End
+
+DIALOGEVENT:ma08_alliedintel09SubTitle
+	"*We've disguised this Mirage Tank as a Soviet Apocalypse Tank,  in order to sneak troops past the Soviets.  Keep close to the Tank while its mirage field is active and you'll be invisible."
+End
+
+DIALOGEVENT:ma08_alliedintel10SubTitle
+	"*Use your spies to bribe enemy soldiers, and they will join your side."
+End
+
+DIALOGEVENT:ma08_alliedintel11SubTitle
+	"*Kill or bribe the soldiers to clear the way for the mirage tank."
+End
+
+DIALOGEVENT:ma08_alliedintel12SubTitle
+	"*Investigate Havana for Soviet activity"
+End
+
+DIALOGEVENT:ma08_alliedintel13SubTitle
+	"*Commander, we need to know the location of the Soviet Base"
+End
+
+DIALOGEVENT:ma08_alliedintel14SubTitle
+	"*The Soviet base has been located. It must be destroyed."
+End
+
+DIALOGEVENT:ma08_alliedintel15SubTitle
+	"*You must not let any Kirov's get away."
+End
+
+DIALOGEVENT:ma08_alliedintel16SubTitle
+	"*Take out the Kirov Launch Facilities to prevent the Kirovs from launching."
+End
+
+DIALOGEVENT:ma08_alliedintel17SubTitle
+	"*Commander, you need to keep your troops under the mirage field."
+End
+
+DIALOGEVENT:ma08_alliedintel18SubTitle
+	"*A Kirov is almost out of Havana- you must not let it get away."
+End
+
+DIALOGEVENT:ma08_alliedintel19SubTitle
+	"*Another Kirov is about to escape."
+End
+
+DIALOGEVENT:ma08_alliedintel20SubTitle
+	"*That Kirov is about to get way."
+End
+
+DIALOGEVENT:ma08_alliedintel21SubTitle
+	"*The Mirage Tank has been destroyed. Mission Failed."
+End
+
+DIALOGEVENT:ma08_alliedintel22SubTitle
+	"*All of your troops have been killed. Mission Failed."
+End
+
+DIALOGEVENT:ma08_alliedintel23SubTitle
+	"*A Kirov escaped our grasp. Aborting mission."
+End
+
+DIALOGEVENT:ma08_alliedintel24SubTitle
+	"*There is another Kirov in the sky."
+End
+
+DIALOGEVENT:ma08_alliedintel25SubTitle
+	"*They've launched another Kirov."
+End
+
+DIALOGEVENT:ma08_alliedintel26SubTitle
+	"*Order your forces to get closer to the Mirage Tank, to signal to your Co-Commander that you are ready to keep moving forward."
+End
+
+DIALOGEVENT:ma08_cogiles01SubTitle
+	"*The Soviets must have some sort of salvage operation here."
+End
+
+DIALOGEVENT:ma08_cogiles02SubTitle
+	"*Don't get crushed by those tanks!"
+End
+
+DIALOGEVENT:ma08_cogiles03SubTitle
+	"*Heads-up, MiG fighters overhead."
+End
+
+DIALOGEVENT:ma08_cogiles04SubTitle
+	"*Don't worry, I don't think they spotted us."
+End
+
+DIALOGEVENT:ma08_cogiles05SubTitle
+	"*Never thought I'd get saluted by the likes of them."
+End
+
+DIALOGEVENT:ma08_cogiles06SubTitle
+	"*Look! Real apocalypse tanks."
+End
+
+DIALOGEVENT:ma08_cogiles07SubTitle
+	"*Back up! Back up!"
+End
+
+DIALOGEVENT:ma08_cogiles08SubTitle
+	"*Let's take them on! Disengaging gap generator and switching to combat mode."
+End
+
+DIALOGEVENT:ma08_cogiles09SubTitle
+	"*Not if we start taking out these sports arenas!"
+End
+
+DIALOGEVENT:ma08_cogiles10SubTitle
+	"*There's only one sports arena left."
+End
+
+DIALOGEVENT:ma08_cogiles11SubTitle
+	"*You see, commander? A proper military education and a steady temper always wins the day. I'll be sure to put in a jolly good word for you if you do the same. See you back at Command."
+End
+
+DIALOGEVENT:ma08_cogiles12SubTitle
+	"*Reinforcements have arrived.  Let's build up and roll out."
+End
+
+DIALOGEVENT:ma08_cogiles13SubTitle
+	"*That Kirov! It's almost left Havana!"
+End
+
+DIALOGEVENT:ma08_cogiles14SubTitle
+	"*I'll make sure to shoot down as many Kirovs going over the sea as I can."
+End
+
+DIALOGEVENT:ma08_cogiles15SubTitle
+	"*I'll expand to that area right away."
+End
+
+DIALOGEVENT:ma08_cogiles16SubTitle
+	"*Let me know if you want me to expand out."
+End
+
+DIALOGEVENT:ma08_cogiles17SubTitle
+	"*Oh I think they will alright!"
+End
+
+DIALOGEVENT:ma08_cogiles18SubTitle
+	"*That vehicle there is my Mirage tank disguised as a Soviet Apocalypse tank. You'll be in command of the spies behind it. Now as long as you stay close to my Mirage tank, nobody can see you. And as long as this Soviet disguise holds up they won't attack me. Got it? Okay, let's get moving."
+End
+
+DIALOGEVENT:ma08_cogiles19SubTitle
+	"*Good grief! This is terrible! They're launching Kirov's out of the sports arenas. If we don't take them down ourselves, they'll escape and wipe out one of our cities!"
+End
+
+DIALOGEVENT:ma08_cowarr01SubTitle
+	"*That MCV is kind of…cute?"
+End
+
+DIALOGEVENT:ma08_cowarr02SubTitle
+	"*Well that was interesting!"
+End
+
+DIALOGEVENT:ma08_cowarr03SubTitle
+	"*Let's kick these Soviets off the plateau."
+End
+
+DIALOGEVENT:ma08_cowarr04SubTitle
+	"*If we let the premier go to Space, there's no telling what he might do!"
+End
+
+DIALOGEVENT:ma08_cowarr05SubTitle
+	"*Maybe we should just let them go to the moon…"
+End
+
+DIALOGEVENT:ma08_cowarr06SubTitle
+	"*We're running out of time."
+End
+
+DIALOGEVENT:ma08_cowarr07SubTitle
+	"*I'll meet up with your forces shortly."
+End
+
+DIALOGEVENT:ma08_cowarr08SubTitle
+	"*I'll start taking out the eastern Iron Curtains, one by one."
+End
+
+DIALOGEVENT:ma08_cowarr09SubTitle
+	"*I'm going to take down the western Iron Curtains now."
+End
+
+DIALOGEVENT:ma08_cowarr10SubTitle
+	"*Let's focus our assault on the shuttle."
+End
+
+DIALOGEVENT:ma08_cowarr11SubTitle
+	"*I'll fire the Proton Collider on that base at once."
+End
+
+DIALOGEVENT:ma09_alliedintel01SubTitle
+	"*The decision is made to bring the Soviet leadership to justice. We are mobilizing our forces to appear on their doorstep in Leningrad."
+End
+
+DIALOGEVENT:ma09_alliedintel02SubTitle
+	"*We are trying a risky tactic: shrinking our MCVs to get deep into Soviet territory to take them by surprise."
+End
+
+DIALOGEVENT:ma09_alliedintel03SubTitle
+	"*Expect fierce resistance. Here are your objectives:"
+End
+
+DIALOGEVENT:ma09_alliedintel04SubTitle
+	"*Clear a drop zone for Allied forces incoming via our Chronosphere technology."
+End
+
+DIALOGEVENT:ma09_alliedintel05SubTitle
+	"*Eliminate the Soviet defenses in this area."
+End
+
+DIALOGEVENT:ma09_alliedintel06SubTitle
+	"*Ensure the Soviet Premier does not escape. Bring down his fortress."
+End
+
+DIALOGEVENT:ma09_alliedintel07SubTitle
+	"*The Soviet Premier is attempting to escape."
+End
+
+DIALOGEVENT:ma09_alliedintel08SubTitle
+	"*Your priority is to destroy the fortress launch facility before he succeeds."
+End
+
+DIALOGEVENT:ma09_alliedintel09SubTitle
+	"*Good luck. This is it."
+End
+
+DIALOGEVENT:ma09_alliedintel10SubTitle
+	"*We're shrinking your MCV's so you can sneak past the Soviet Defenses."
+End
+
+DIALOGEVENT:ma09_alliedintel11SubTitle
+	"*Good luck, Commanders. Above all else, avoid being crushed."
+End
+
+DIALOGEVENT:ma09_alliedintel12SubTitle
+	"*The destroyed Soviet bases can be used as expansion locations."
+End
+
+DIALOGEVENT:ma09_alliedintel13SubTitle
+	"*T-minus 25 minutes until the Shuttle Launch"
+End
+
+DIALOGEVENT:ma09_alliedintel14SubTitle
+	"*T-minus 15 minutes until the Shuttle Launch"
+End
+
+DIALOGEVENT:ma09_alliedintel15SubTitle
+	"*T-minus 10 minutes until Shuttle Launch."
+End
+
+DIALOGEVENT:ma09_alliedintel16SubTitle
+	"*5 minutes until Shuttle Launch. The situation is reaching critical mass."
+End
+
+DIALOGEVENT:ma09_alliedintel17SubTitle
+	"*The Soviet Shuttle has launched- Mission Failed."
+End
+
+DIALOGEVENT:ma09_alliedintel18SubTitle
+	"*All of your forces have been destroyed. Aborting mission."
+End
+
+DIALOGEVENT:ma09_alliedintel19SubTitle
+	"*They took out one of our MCV's. Aborting mission."
+End
+
+DIALOGEVENT:ma09_alliedintel20SubTitle
+	"*If you need resources, expand to one of those destroyed bases."
+End
+
+DIALOGEVENT:ma09_alliedintel21SubTitle
+	"*Your MCV has unpacked outside the chrono drop zone. Chrono coordinates lost. Mission failed."
+End
+
+DIALOGEVENT:ma09_alliedintel22SubTitle
+	"*General Krukov’s military base has come online."
+End
+
+DIALOGEVENT:ma09_alliedintel23SubTitle
+	"*General Krukov has activated the vacuum imploder. Destroy it before he uses it on your base."
+End
+
+DIALOGEVENT:ma09_alliedintel24SubTitle
+	"*An Iron Curtain has been destroyed."
+End
+
+DIALOGEVENT:ma09_alliedintel25SubTitle
+	"*All Iron Curtains offline. The shuttle launch facility is now vulnerable."
+End
+
+DIALOGEVENT:ma09_alliedintel26SubTitle
+	"*The shuttle launch facility must be destroyed before the Premier escapes."
+End
+
+DIALOGEVENT:ma09_alliedintel27SubTitle
+	"*The launch facility is highly resistant to direct fire. Find a way to bring it down quickly."
+End
+
+DIALOGEVENT:ma09_alliedintel28SubTitle
+	"*Commander - you are cleared to construct the Proton Collider. The effects of this weapon would be catastrophic to any of the densely-packed Soviet bases here."
+End
+
+DIALOGEVENT:me01_coshin01SubTitle
+	"*I shall take the hospital."
+End
+
+DIALOGEVENT:me01_coshin02SubTitle
+	"*The Emperor wants to make a symbolic strike on the statues in the square."
+End
+
+DIALOGEVENT:me01_coshin03SubTitle
+	"*The military barracks in the area are supplying reinforcements. We should shut them down."
+End
+
+DIALOGEVENT:me01_coshin04SubTitle
+	"*That's one statue down."
+End
+
+DIALOGEVENT:me01_coshin05SubTitle
+	"*It appears there was quite a celebration going on here... Pitiable fools."
+End
+
+DIALOGEVENT:me01_coshin06SubTitle
+	"*There are the boats. Let us send them to the bottom."
+End
+
+DIALOGEVENT:me01_coshin07SubTitle
+	"*More enemy patrols!"
+End
+
+DIALOGEVENT:me02_cokenj01SubTitle
+	"*Don't you worry commander, those Tengus can take anything the enemy throws at them."
+End
+
+DIALOGEVENT:me02_cokenj02SubTitle
+	"*I've got my eyes trained on that shoreline commander. Your Nano-Cores have nothing to fear."
+End
+
+DIALOGEVENT:me02_cokenj03SubTitle
+	"*Just give the word commander and I'll expand over to the West"
+End
+
+DIALOGEVENT:me02_cokenj04SubTitle
+	"*Expanding to these ore mines will double my effective income. Should I claim them if you don't want them?"
+End
+
+DIALOGEVENT:me02_cokenj05SubTitle
+	"*Unless you say otherwise, I'll protect the Statue and you can protect the trains."
+End
+
+DIALOGEVENT:me02_cokenj06SubTitle
+	"*Just give the order commander."
+End
+
+DIALOGEVENT:me02_cokenj07SubTitle
+	"*That's it. Our plan is proceeding as expected."
+End
+
+DIALOGEVENT:me02_cokenj08SubTitle
+	"*Hmm, well done."
+End
+
+DIALOGEVENT:me02_cokenj09SubTitle
+	"*Soviet incompetents. It's a wonder they even fight back."
+End
+
+DIALOGEVENT:me02_cokenj10SubTitle
+	"*Excellent. We're almost there."
+End
+
+DIALOGEVENT:me02_cokenj11SubTitle
+	"*Just a few more trains, and General Tatsu's plan will assure the Empire will dominate over Eastern Europe."
+End
+
+DIALOGEVENT:me03_cokenj01SubTitle
+	"*The Shogun Executioner lives! Now we shall make these fools suffer dearly. Go on, Commander, send it on its way!"
+End
+
+DIALOGEVENT:me03_cokenj02SubTitle
+	"*Hah! Look at them scatter!!"
+End
+
+DIALOGEVENT:me03_cokenj03SubTitle
+	"*The Executioner is taking damage! Move it near one of their Tesla weapons to make it regenerate!"
+End
+
+DIALOGEVENT:me04_conaom01SubTitle
+	"*The begin their pitiful attack! They will shatter against our defenses."
+End
+
+DIALOGEVENT:me04_conaom02SubTitle
+	"*Where are our Battleships? They should have been here by now!"
+End
+
+DIALOGEVENT:me04_conaom03SubTitle
+	"*Ah, the Battleships are here! Commander, let us show these mongrels  the true power of the Imperial navy."
+End
+
+DIALOGEVENT:me05_conaom01SubTitle
+	"*What... They striking at the very heart of the fortress! We need to stop them!"
+End
+
+DIALOGEVENT:me05_conaom02SubTitle
+	"*These dogs would attack us on our very soil. They will come no further."
+End
+
+DIALOGEVENT:me06_conaom01SubTitle
+	"*The coast is almost as crowded as Tokyo."
+End
+
+DIALOGEVENT:me06_conaom02SubTitle
+	"*I'm going to clear some space for my MCV to unpack."
+End
+
+DIALOGEVENT:me06_conaom03SubTitle
+	"*I have established a foothold. Is there anything you else you need?"
+End
+
+DIALOGEVENT:me06_conaom04SubTitle
+	"*This \"fun zone\" at the beach might be fun to destroy!"
+End
+
+DIALOGEVENT:me06_conaom05SubTitle
+	"*Look, it's one of those corporate, sell-out companies! We should destroy it while we are here."
+End
+
+DIALOGEVENT:me06_conaom06SubTitle
+	"*The authorities inside the donut shops are attacking!"
+End
+
+DIALOGEVENT:me06_conaom07SubTitle
+	"*It appears our message is getting out to the civilians!"
+End
+
+DIALOGEVENT:me07_coshin01SubTitle
+	"*So much destruction from such an unsuspecting little girl!  Hahahaa!"
+End
+
+DIALOGEVENT:me07_coshin02SubTitle
+	"*Once again they have no recourse!  Charge through their defenses!"
+End
+
+DIALOGEVENT:me07_coshin03SubTitle
+	"*I could not have planned this any better!"
+End
+
+DIALOGEVENT:me07_coshin04SubTitle
+	"*From the shadows, we will strike at them until they collapse."
+End
+
+DIALOGEVENT:me07_coshin05SubTitle
+	"*The battle is only getting started!  If only they knew what surprises were yet in store for them."
+End
+
+DIALOGEVENT:me07_coshin06SubTitle
+	"*If you need any support, Commander.  Simply say the word."
+End
+
+DIALOGEVENT:me08_cokenj01SubTitle
+	"*Our versatility will be paramount in this battle, Commander.  Be on your toes."
+End
+
+DIALOGEVENT:me08_cokenj02SubTitle
+	"*Let the Shogun Executioner deal with these mongrels.  We can clean up after."
+End
+
+DIALOGEVENT:me08_cokenj03SubTitle
+	"*It seems there are spoils of war left in the wake of destruction.  Commander?"
+End
+
+DIALOGEVENT:me08_cokenj04SubTitle
+	"*Those treacherous worms!  They're shelling us from their hiding spots!"
+End
+
+DIALOGEVENT:me08_cokenj05SubTitle
+	"*Are you in trouble again, Commander?"
+End
+
+DIALOGEVENT:me09_coshin01SubTitle
+	"*I shall target the Air Base"
+End
+
+DIALOGEVENT:me09_coshin02SubTitle
+	"*I shall target Bingham himself!"
+End
+
+DIALOGEVENT:me09_coshin03SubTitle
+	"*The FutureTech Headquarters shall fall!"
+End
+
+DIALOGEVENT:me09_coshin04SubTitle
+	"*Relocating Construction Yard to land."
+End
+
+DIALOGEVENT:me09_coshin05SubTitle
+	"*At last, our airforce is back online."
+End
+
+DIALOGEVENT:me09_coshin06SubTitle
+	"*Ah yes, dry land. Deploying construction yard."
+End
+
+DIALOGEVENT:me09_coshin07SubTitle
+	"*The Proton Colliders cannot be left operational. Leave it to me!"
+End
+
+DIALOGEVENT:me09_coshin08SubTitle
+	"*None shall stand before the King Oni!"
+End
+
+DIALOGEVENT:me09_coshin09SubTitle
+	"*So this is it, the final stand! May fate be on our side."
+End
+
+DIALOGEVENT:mi01_imperialintel01SubTitle
+	"*The Emperor's chosen target is the quaint Russian village of Vorkuta, which is in the midst of year-end festivities. Here are your orders:"
+End
+
+DIALOGEVENT:mi01_imperialintel02SubTitle
+	"*Take the Soviets' coastal defenses offline."
+End
+
+DIALOGEVENT:mi01_imperialintel03SubTitle
+	"*Shatter the historic monuments in the market square."
+End
+
+DIALOGEVENT:mi01_imperialintel04SubTitle
+	"*Sink the Soviet naval forces at the harbor."
+End
+
+DIALOGEVENT:mi01_imperialintel05SubTitle
+	"*Do this and the Emperor will be pleased."
+End
+
+DIALOGEVENT:mi01_imperialintel06SubTitle
+	"*The coast is too fortified for us  to land a full invasion force."
+End
+
+DIALOGEVENT:mi01_imperialintel07SubTitle
+	"*You will need to infiltrate with a small force and take out the coastal guns."
+End
+
+DIALOGEVENT:mi01_imperialintel08SubTitle
+	"*Disable the power plants to take the coastal guns offline."
+End
+
+DIALOGEVENT:mi01_imperialintel09SubTitle
+	"*Commander, the Emperor has graciously decided to grant you a Final Squadron power for each primary objective destroyed."
+End
+
+DIALOGEVENT:mi01_imperialintel10SubTitle
+	"*Ah! A Final Squadron awaits your command!"
+End
+
+DIALOGEVENT:mi01_imperialintel11SubTitle
+	"*One gun has been destroyed!"
+End
+
+DIALOGEVENT:mi01_imperialintel12SubTitle
+	"*Another gun has been destroyed! Keep at it, Commander!"
+End
+
+DIALOGEVENT:mi01_imperialintel13SubTitle
+	"*All coastal guns destroyed. Reinforcements are inbound."
+End
+
+DIALOGEVENT:mi01_imperialintel14SubTitle
+	"*Our Imperial Warriors can close ground on enemy infantry by using their charge ability."
+End
+
+DIALOGEVENT:mi01_imperialintel15SubTitle
+	"*These Armored Assassins have great proficiency when it comes to eliminating vehicles."
+End
+
+DIALOGEVENT:mi01_imperialintel16SubTitle
+	"*Rising Sun Engineers are making their way to the coast."
+End
+
+DIALOGEVENT:mi01_imperialintel17SubTitle
+	"*The Engineers have arrived. Use them to capture buildings."
+End
+
+DIALOGEVENT:mi01_imperialintel18SubTitle
+	"*One statue destroyed, three remaining."
+End
+
+DIALOGEVENT:mi01_imperialintel19SubTitle
+	"*Two monuments are left."
+End
+
+DIALOGEVENT:mi01_imperialintel20SubTitle
+	"*Only one statue remains."
+End
+
+DIALOGEVENT:mi01_imperialintel21SubTitle
+	"*The Rising Sun Navy and Naval Yards must be eliminated."
+End
+
+DIALOGEVENT:mi01_imperialintel22SubTitle
+	"*The Yari Mini-Sub has a Kamikaze attack. Use it to take out the Soviet ships."
+End
+
+DIALOGEVENT:mi01_imperialintel23SubTitle
+	"*Tesla Troopers detected near one of the monuments."
+End
+
+DIALOGEVENT:mi01_imperialintel24SubTitle
+	"*Tesla Troopers detected near the bridge. Our Imperial shinobi should be able to strike them before they strike back."
+End
+
+DIALOGEVENT:mi01_imperialintel25SubTitle
+	"*A Soviet Reactor is beyond the reach of your forces. However, it is not beyond the reach of the Final Squadron protocol you've been granted."
+End
+
+DIALOGEVENT:mi01_imperialintel26SubTitle
+	"*More of our warriors have arrived on shore. They await your command."
+End
+
+DIALOGEVENT:mi01_imperialintel27SubTitle
+	"*Several Imperial shinobi have appeared to aid you in your objectives. The Soviet Tesla Troopers will not be expecting them."
+End
+
+DIALOGEVENT:mi01_imperialintel28SubTitle
+	"*Use the Sudden Transport's Evacuate ability to release your warriors from it."
+End
+
+DIALOGEVENT:mi01_imperialintel29SubTitle
+	"*Our Mini-Subs cannot get close enough to the Soviet navy. Eliminate the Tesla Coils so they can attack."
+End
+
+DIALOGEVENT:mi01_imperialintel30SubTitle
+	"*These Reactors are linked to the Tesla Coils defending the docks. Destroy them."
+End
+
+DIALOGEVENT:mi01_imperialintel31SubTitle
+	"*Our Engineers have arrived near the shoreline."
+End
+
+DIALOGEVENT:mi01_imperialintel32SubTitle
+	"*Do not hesitate to use the Final Squadron protocols granted you by our Emperor."
+End
+
+DIALOGEVENT:mi01_imperialintel33SubTitle
+	"*Either destroy the Tesla Coils or the Reactors that are powering them."
+End
+
+DIALOGEVENT:mi01_imperialintel34SubTitle
+	"*Tesla Coils offline. The Mini-Subs may now attack undettered."
+End
+
+DIALOGEVENT:mi01_imperialintel35SubTitle
+	"*The Soviet Navy and Naval Yards must be eliminated."
+End
+
+DIALOGEVENT:mi02_imperialintel01SubTitle
+	"*The stage is set for our full-scale assault on the Soviet heartland."
+End
+
+DIALOGEVENT:mi02_imperialintel02SubTitle
+	"*The Soviets have gathered on the outskirts of Stalingrad. These are your orders:"
+End
+
+DIALOGEVENT:mi02_imperialintel03SubTitle
+	"*The Soviets cherish an historic statue in this area. Destroy it."
+End
+
+DIALOGEVENT:mi02_imperialintel04SubTitle
+	"*Secure the train station here and do not let it come to harm. We will use it."
+End
+
+DIALOGEVENT:mi02_imperialintel05SubTitle
+	"*Do this and the Emperor will be pleased."
+End
+
+DIALOGEVENT:mi02_imperialintel06SubTitle
+	"*The Shogunate has called for a symbol of his excellency the Emperor Yoshiro to be erected in place of the statue you destroyed, without delay."
+End
+
+DIALOGEVENT:mi02_imperialintel07SubTitle
+	"*You are ordered to defend the construction site. Expect the Soviets to resist but do not allow it."
+End
+
+DIALOGEVENT:mi02_imperialintel08SubTitle
+	"*The train station must remain unharmed."
+End
+
+DIALOGEVENT:mi02_imperialintel09SubTitle
+	"*The Emperor demands that the symbol of Soviet Victory be reduced to rubble."
+End
+
+DIALOGEVENT:mi02_imperialintel10SubTitle
+	"*The Emperor wishes this Soviet monument destroyed."
+End
+
+DIALOGEVENT:mi02_imperialintel11SubTitle
+	"*The Soviets are mounting a major offensive in hope of reclaiming Stalingrad."
+End
+
+DIALOGEVENT:mi02_imperialintel12SubTitle
+	"*Long range scanners have detected an incoming Soviet force."
+End
+
+DIALOGEVENT:mi02_imperialintel13SubTitle
+	"*It appears that a Soviet recon force is headed for your location."
+End
+
+DIALOGEVENT:mi02_imperialintel14SubTitle
+	"*Soviets incoming in 5 minutes"
+End
+
+DIALOGEVENT:mi02_imperialintel15SubTitle
+	"*Soviets incoming in 4 minutes"
+End
+
+DIALOGEVENT:mi02_imperialintel16SubTitle
+	"*Soviets incoming in 3 minutes"
+End
+
+DIALOGEVENT:mi02_imperialintel17SubTitle
+	"*Soviets incoming in 2 minutes"
+End
+
+DIALOGEVENT:mi02_imperialintel18SubTitle
+	"*Soviets incoming in 1 minutes"
+End
+
+DIALOGEVENT:mi02_imperialintel19SubTitle
+	"*More Soviets emerge from the North."
+End
+
+DIALOGEVENT:mi02_imperialintel20SubTitle
+	"*More Soviets make their way from the West."
+End
+
+DIALOGEVENT:mi02_imperialintel21SubTitle
+	"*More Soviets arrive from the South."
+End
+
+DIALOGEVENT:mi02_imperialintel22SubTitle
+	"*More Soviets ride in from the East."
+End
+
+DIALOGEVENT:mi02_imperialintel23SubTitle
+	"*The Emperor's Statue will be complete in 15 minutes."
+End
+
+DIALOGEVENT:mi02_imperialintel24SubTitle
+	"*The Emperor's Statue will be complete in 10 minutes."
+End
+
+DIALOGEVENT:mi02_imperialintel25SubTitle
+	"*The Emperor's Statue will be complete in 5 minutes."
+End
+
+DIALOGEVENT:mi02_imperialintel26SubTitle
+	"*The Emperor's Statue will be complete in 3 minutes."
+End
+
+DIALOGEVENT:mi02_imperialintel27SubTitle
+	"*The statue shall be finished in 5 Minutes."
+End
+
+DIALOGEVENT:mi02_imperialintel28SubTitle
+	"*The statue shall be finished in 3 Minutes."
+End
+
+DIALOGEVENT:mi02_imperialintel29SubTitle
+	"*The statue shall be finished in 1 Minutes."
+End
+
+DIALOGEVENT:mi02_imperialintel30SubTitle
+	"*A second train has set forth"
+End
+
+DIALOGEVENT:mi02_imperialintel31SubTitle
+	"*The last of the trains is exiting the station. It must remain intact."
+End
+
+DIALOGEVENT:mi02_imperialintel32SubTitle
+	"*The train is under attack- it must survive."
+End
+
+DIALOGEVENT:mi02_imperialintel33SubTitle
+	"*The train has been destroyed. This mission has been failed."
+End
+
+DIALOGEVENT:mi02_imperialintel34SubTitle
+	"*All of your forces are defeated. You have failed."
+End
+
+DIALOGEVENT:mi02_imperialintel35SubTitle
+	"*All of your nano-cores have been lost. Mission failed."
+End
+
+DIALOGEVENT:mi02_imperialintel36SubTitle
+	"*Protect your MCV!  Without it we cannot establish a base here!"
+End
+
+DIALOGEVENT:mi02_imperialintel37SubTitle
+	"*Your MCV was destroyed.  You have failed."
+End
+
+DIALOGEVENT:mi02_imperialintel38SubTitle
+	"*If these monuments were to be destroyed, it would further demoralize the Soviets."
+End
+
+DIALOGEVENT:mi02_imperialintel39SubTitle
+	"*The transports will arrive shortly.  Prepare to defend them as they make their way along the river."
+End
+
+DIALOGEVENT:mi02_imperialintel40SubTitle
+	"*General Tatsu requires all of the transports if he is to complete his weapon."
+End
+
+DIALOGEVENT:mi02_imperialintel41SubTitle
+	"*Protect the transports at all costs!"
+End
+
+DIALOGEVENT:mi02_imperialintel42SubTitle
+	"*We have lost one of the transports.  Mission failed."
+End
+
+DIALOGEVENT:mi02_imperialintel43SubTitle
+	"*Send your forces toward the beach and establish a base there."
+End
+
+DIALOGEVENT:mi02_imperialintel44SubTitle
+	"*Secure this area!  We will establish a base here."
+End
+
+DIALOGEVENT:mi02_imperialintel45SubTitle
+	"*This area is suitable for your base of operations here."
+End
+
+DIALOGEVENT:mi02_imperialintel46SubTitle
+	"*If you are running low on resources, use Engineers to capture the nearby Oil Derricks."
+End
+
+DIALOGEVENT:mi02_imperialintel47SubTitle
+	"*The Soviet base here must be destroyed."
+End
+
+DIALOGEVENT:mi02_imperialintel48SubTitle
+	"*You and your Co-Commander will be sharing income. Proceeds from any ore you gather will be split between the two of you."
+End
+
+DIALOGEVENT:mi03_imperialintel01SubTitle
+	"*Your forces are called upon to aid with the construction of General Tatsu's secret weapon."
+End
+
+DIALOGEVENT:mi03_imperialintel02SubTitle
+	"*You are expected to ensure the assembly area is well-defended. Here are your orders:"
+End
+
+DIALOGEVENT:mi03_imperialintel03SubTitle
+	"*Safely transport the remaining weapon parts to the assembly area."
+End
+
+DIALOGEVENT:mi03_imperialintel04SubTitle
+	"*Ensure the weapon comes online."
+End
+
+DIALOGEVENT:mi03_imperialintel05SubTitle
+	"*General Tatsu expects you to set his plan in motion and will contact you in the field. That is all."
+End
+
+DIALOGEVENT:mi03_imperialintel06SubTitle
+	"*The Shogun's Executioner looms over Odessa, but first you must prepare it for full combat."
+End
+
+DIALOGEVENT:mi03_imperialintel07SubTitle
+	"*Its autonomous control systems are not yet functional so you must find sufficient power sources to fully enable it."
+End
+
+DIALOGEVENT:mi03_imperialintel08SubTitle
+	"*Defend the Shogun's Executioner at all costs and give no quarter to the Soviet forces here. That is all."
+End
+
+DIALOGEVENT:mi03_imperialintel09SubTitle
+	"*Commander, the trains have arrived safely from Stalingrad."
+End
+
+DIALOGEVENT:mi03_imperialintel10SubTitle
+	"*Use the Soviet's own Tesla technology to power up the Shogun's Executioner"
+End
+
+DIALOGEVENT:mi03_imperialintel11SubTitle
+	"*Commander, the Tesla Troopers powered the Executioner's swords. More power is required."
+End
+
+DIALOGEVENT:mi03_imperialintel12SubTitle
+	"*The Tesla coils will help power the Shogun's Executioner."
+End
+
+DIALOGEVENT:mi03_imperialintel13SubTitle
+	"*The Tesla Coils' power has brought the Omega Shockwave online"
+End
+
+DIALOGEVENT:mi03_imperialintel14SubTitle
+	"*The Tesla Coils were enough to get the Streak Missiles online."
+End
+
+DIALOGEVENT:mi03_imperialintel15SubTitle
+	"*We have detected a super reactor at this location. Use it to finish powering the weapon system of the Executioner."
+End
+
+DIALOGEVENT:mi03_imperialintel16SubTitle
+	"*General Krukov must be eliminated."
+End
+
+DIALOGEVENT:mi03_imperialintel17SubTitle
+	"*The Shogun's Executioner has been destroyed. You have failed."
+End
+
+DIALOGEVENT:mi03_imperialintel18SubTitle
+	"*All of your structures have been destroyed. Mission failed"
+End
+
+DIALOGEVENT:mi03_imperialintel19SubTitle
+	"*Ensure all of the cargo transports safely reach the assembly warehouse."
+End
+
+DIALOGEVENT:mi03_imperialintel20SubTitle
+	"*One of the cargo transports is taking fire!"
+End
+
+DIALOGEVENT:mi03_imperialintel21SubTitle
+	"*A cargo transport has been destroyed. You have failed in your mission."
+End
+
+DIALOGEVENT:mi03_imperialintel22SubTitle
+	"*The Shogun Executioner feeds off of the energy of the Soviet Tesla weaponry."
+End
+
+DIALOGEVENT:mi03_imperialintel23SubTitle
+	"*Caution: The Shogun Executioner is taking heavy fire."
+End
+
+DIALOGEVENT:mi03_imperialintel24SubTitle
+	"*Alert: The Shogun Executioner is nearly defeated. It must not fall."
+End
+
+DIALOGEVENT:mi03_imperialintel25SubTitle
+	"*Soviet artillery is down. You are now able to expand your base."
+End
+
+DIALOGEVENT:mi03_imperialintel26SubTitle
+	"*We need to finish escorting the transports to the assembly warehouse."
+End
+
+DIALOGEVENT:mi03_imperialintel27SubTitle
+	"*The Soviets know we are here. Expect enemy navy and aircraft patrols."
+End
+
+DIALOGEVENT:mi03_imperialintel28SubTitle
+	"*Submerged enemies detected in the area.  Defend the transports."
+End
+
+DIALOGEVENT:mi03_imperialintel29SubTitle
+	"*Find a safe location to switch your Chopper-VX units to ground form."
+End
+
+DIALOGEVENT:mi03_imperialintel30SubTitle
+	"*The Shogun Executioner will be instrumental in destroying the Soviet entrenchments here."
+End
+
+DIALOGEVENT:mi03_imperialintel31SubTitle
+	"*Once the artillery has been destroyed, we can expand our base more easily."
+End
+
+DIALOGEVENT:mi03_imperialintel32SubTitle
+	"*Soviet V4 Rocket Launchers can be deadly in large numbers. Even to the Shogun Executioner."
+End
+
+DIALOGEVENT:mi03_imperialintel33SubTitle
+	"*The main wall on the Soviet base has collapsed!  Now is the time to strike!"
+End
+
+DIALOGEVENT:mi04_imperialintel01SubTitle
+	"*Our position at Pearl Harbor must be defended. You have been chosen to repel the Allied fleets."
+End
+
+DIALOGEVENT:mi04_imperialintel02SubTitle
+	"*Your orders are as follows:"
+End
+
+DIALOGEVENT:mi04_imperialintel03SubTitle
+	"*Establish a defensive perimeter in anticipation of the Allied attack."
+End
+
+DIALOGEVENT:mi04_imperialintel04SubTitle
+	"*Do not allow the Allies to descrate our monuments to the Emperor."
+End
+
+DIALOGEVENT:mi04_imperialintel05SubTitle
+	"*We will provide you with reinforcements as soon as possible. Do this and the Emperor will be pleased."
+End
+
+DIALOGEVENT:mi04_imperialintel06SubTitle
+	"*Our fleets of Shogun Battleships have the Allies surrounded."
+End
+
+DIALOGEVENT:mi04_imperialintel07SubTitle
+	"*The captains of these vessels await your command. Leave no Allied vessel intact."
+End
+
+DIALOGEVENT:mi04_imperialintel08SubTitle
+	"*Do this and the Emperor will be pleased."
+End
+
+DIALOGEVENT:mi04_imperialintel09SubTitle
+	"*An Imperial Monument is under attack."
+End
+
+DIALOGEVENT:mi04_imperialintel10SubTitle
+	"*An Imperial Monument has been destroyed."
+End
+
+DIALOGEVENT:mi04_imperialintel11SubTitle
+	"*An Imperial harbor is under attack."
+End
+
+DIALOGEVENT:mi04_imperialintel12SubTitle
+	"*An Imperial harbor has been destroyed"
+End
+
+DIALOGEVENT:mi04_imperialintel13SubTitle
+	"*The Allies are sending engineers after our Radar Towers."
+End
+
+DIALOGEVENT:mi04_imperialintel14SubTitle
+	"*A Radar Tower has been captured. Our battlefield visability has been reduced."
+End
+
+DIALOGEVENT:mi04_imperialintel15SubTitle
+	"*Capture the Radar Towers to increase battlefield visibility"
+End
+
+DIALOGEVENT:mi04_imperialintel16SubTitle
+	"*A Radar Tower has been destroyed."
+End
+
+DIALOGEVENT:mi04_imperialintel17SubTitle
+	"*Radar Towers online, our battlefield visibility has been increased."
+End
+
+DIALOGEVENT:mi04_imperialintel18SubTitle
+	"*We have detected incoming Allied Century Bombers"
+End
+
+DIALOGEVENT:mi04_imperialintel19SubTitle
+	"*An incoming Allied MCV has been detected."
+End
+
+DIALOGEVENT:mi04_imperialintel20SubTitle
+	"*All of the Emperor's Monuments have been destroyed. The mission is failed."
+End
+
+DIALOGEVENT:mi04_imperialintel21SubTitle
+	"*The Imperial Navy's Harbors have all been destroyed. The mission is failed."
+End
+
+DIALOGEVENT:mi04_imperialintel22SubTitle
+	"*The Allies have overrun Pearl Harbor. Mission failed."
+End
+
+DIALOGEVENT:mi04_imperialintel23SubTitle
+	"*The Shogun Battleships have arrived."
+End
+
+DIALOGEVENT:mi04_imperialintel24SubTitle
+	"*Seawings are now available to build from the Imperial Naval Yard."
+End
+
+DIALOGEVENT:mi04_imperialintel25SubTitle
+	"*These Monuments and Harbors represent the heart and industry of Pearl Harbor. Three must survive the Allied attack, or all is lost."
+End
+
+DIALOGEVENT:mi04_imperialintel26SubTitle
+	"*The Allies’ naval forces gather in the northeast, preparing to strike. Our Defender-VX base defenses may be used to block their way."
+End
+
+DIALOGEVENT:mi04_imperialintel27SubTitle
+	"*We have detected a large Allied airforce approaching from the northwest."
+End
+
+DIALOGEVENT:mi04_imperialintel28SubTitle
+	"*The Long-Range Radars here may be activated to reveal the enemy’s movements. Capture them with your Engineer."
+End
+
+DIALOGEVENT:mi04_imperialintel29SubTitle
+	"*Our Shogun Battleships have been delayed en route from the northwest. However, a vanguard of Naginata Cruisers has rushed here to aid you."
+End
+
+DIALOGEVENT:mi04_imperialintel30SubTitle
+	"*The Naginata Cruisers are now available for construction from your Imperial Docks."
+End
+
+DIALOGEVENT:mi04_imperialintel31SubTitle
+	"*Position your Defender-VX base defenses in close proximity to the Monuments and Harbors for optimal coverage against the Allies' attacks."
+End
+
+DIALOGEVENT:mi04_imperialintel32SubTitle
+	"*Do not allow the Allies to desecrate our monuments to the Emperor."
+End
+
+DIALOGEVENT:mi04_imperialintel33SubTitle
+	"*The Monuments to the Emperor and the Imperial Harbors must be defended against the Allies at all costs."
+End
+
+DIALOGEVENT:mi05_imperialintel01SubTitle
+	"*The Allies have mounted a bold attack against the Black Tortoise, our floating fortress in the Pacific."
+End
+
+DIALOGEVENT:mi05_imperialintel02SubTitle
+	"*Your orders are simple:"
+End
+
+DIALOGEVENT:mi05_imperialintel03SubTitle
+	"*Eliminate the Allied convoy en route to Japan."
+End
+
+DIALOGEVENT:mi05_imperialintel04SubTitle
+	"*Protect the Black Tortoise at all costs."
+End
+
+DIALOGEVENT:mi05_imperialintel05SubTitle
+	"*Do this and the Emperor will be pleased."
+End
+
+DIALOGEVENT:mi05_imperialintel06SubTitle
+	"*Allied MCVs are incoming."
+End
+
+DIALOGEVENT:mi05_imperialintel07SubTitle
+	"*More Allied MCV's approach"
+End
+
+DIALOGEVENT:mi05_imperialintel08SubTitle
+	"*You may now build Rocket Angel's from the Instant Dojo."
+End
+
+DIALOGEVENT:mi05_imperialintel09SubTitle
+	"*You have been granted a squadron of Rocket Angels. They are strong against ground and air, and capable of locking down a target for others to finish."
+End
+
+DIALOGEVENT:mi05_imperialintel10SubTitle
+	"*Use your Battleship's \"Ramming Speed\" ability to CRUSH other Naval Units!"
+End
+
+DIALOGEVENT:mi05_imperialintel11SubTitle
+	"*One enemy base neutralized"
+End
+
+DIALOGEVENT:mi05_imperialintel12SubTitle
+	"*Two enemy bases have been neutralized"
+End
+
+DIALOGEVENT:mi05_imperialintel13SubTitle
+	"*The final enemy base has been neutralized"
+End
+
+DIALOGEVENT:mi05_imperialintel14SubTitle
+	"*The Power Cores are under attack. They must not be destroyed."
+End
+
+DIALOGEVENT:mi05_imperialintel15SubTitle
+	"*One Power Generator has been destroyed. Only one remains -  you must protect it at all costs!"
+End
+
+DIALOGEVENT:mi05_imperialintel16SubTitle
+	"*The Black Tortoise will be providing you power! The more damage the Power Generators take, the less power will be available!"
+End
+
+DIALOGEVENT:mi05_imperialintel17SubTitle
+	"*Commander, you have failed to keep the Engineers alive.  Deploy your Instant Dojo to train more."
+End
+
+DIALOGEVENT:mi05_imperialintel18SubTitle
+	"*An Allied Mobile Construction Vehicle has escaped. The mission is lost."
+End
+
+DIALOGEVENT:mi05_imperialintel19SubTitle
+	"*Both power cores have been destroyed- the Black Tortoise is no more. Misson failed."
+End
+
+DIALOGEVENT:mi05_imperialintel20SubTitle
+	"*Reinforcements have arrived. Our interception forces have joined in the defense of the Floating Fortress."
+End
+
+DIALOGEVENT:mi05_imperialintel21SubTitle
+	"*A squadron of Sky-Wings has flown in to aid your defense. In flying form, they can help stop enemy infantry. They can switch to Sea-Wing form on your command."
+End
+
+DIALOGEVENT:mi05_imperialintel22SubTitle
+	"*Sea-Wings should be effective against the Allied air force. Your Imperial Docks have now been upgraded to produce more Sea-Wings as needed."
+End
+
+DIALOGEVENT:mi05_imperialintel23SubTitle
+	"*Caution: An Allied MCV is approaching the edge of the combat zone."
+End
+
+DIALOGEVENT:mi05_imperialintel24SubTitle
+	"*Alert! An Allied MCV is about the escape from the combat zone. It must be destroyed at once."
+End
+
+DIALOGEVENT:mi06_imperialintel01SubTitle
+	"*Your target is the city of Santa Monica, home to many of the Allies' media loyalists. We must capture the Allies' media centers and destroy their resistence."
+End
+
+DIALOGEVENT:mi06_imperialintel02SubTitle
+	"*Your orders are thus:"
+End
+
+DIALOGEVENT:mi06_imperialintel03SubTitle
+	"*Make landfall on Santa Monica."
+End
+
+DIALOGEVENT:mi06_imperialintel04SubTitle
+	"*Capture Santa Monica's media centers."
+End
+
+DIALOGEVENT:mi06_imperialintel05SubTitle
+	"*The Black Tortoise will be the staging grounds for your attack. That is all."
+End
+
+DIALOGEVENT:mi06_imperialintel06SubTitle
+	"*Do this and the Emperor will be pleased."
+End
+
+DIALOGEVENT:mi06_imperialintel07SubTitle
+	"*Capture the media centers in the name of the Emperor."
+End
+
+DIALOGEVENT:mi06_imperialintel08SubTitle
+	"*You have been allowed use of the WaveForce Artillery. Use it to eliminate the Allied defenses from great distance."
+End
+
+DIALOGEVENT:mi06_imperialintel09SubTitle
+	"*These coastal areas are too crowded to establish a base. With the Island Fortress' guns, you should be able to clear space for your MCV."
+End
+
+DIALOGEVENT:mi06_imperialintel10SubTitle
+	"*A Media Center has been captured. Commencing propaganda broadcast over this channel."
+End
+
+DIALOGEVENT:mi06_imperialintel11SubTitle
+	"*Another Media Center has been captured."
+End
+
+DIALOGEVENT:mi06_imperialintel12SubTitle
+	"*Only one more Media Center remains to be captured."
+End
+
+DIALOGEVENT:mi06_imperialintel13SubTitle
+	"*All the Allied Media Centers have been captured."
+End
+
+DIALOGEVENT:mi06_imperialintel14SubTitle
+	"*The Allies have re-captured a Media Center. It must be reclaimed."
+End
+
+DIALOGEVENT:mi06_imperialintel15SubTitle
+	"*A Media Center has been destroyed. Our mission cannot be completed."
+End
+
+DIALOGEVENT:mi06_imperialintel16SubTitle
+	"*Our advance landing party has been lost. Aborting mission."
+End
+
+DIALOGEVENT:mi06_imperialintel17SubTitle
+	"*The Allies are sending reinforcements via an International Airport in this area. Capture it to stop this."
+End
+
+DIALOGEVENT:mi06_imperialintel18SubTitle
+	"*The Americans have hidden a long-range weapon inside the observatory on the hill. Destroy it."
+End
+
+DIALOGEVENT:mi06_imperialintel19SubTitle
+	"*This corporation creates entertainment software that encourages independent thought. Destroy it."
+End
+
+DIALOGEVENT:mi06_imperialintel20SubTitle
+	"*This amusement area mocks the Emperor's favored attractions at Yokohama Harbor. You are expected to destroy it."
+End
+
+DIALOGEVENT:mi06_imperialintel21SubTitle
+	"*Concentrations of law enforcement seem to be gathered around the pastry shops. Use caution when approaching."
+End
+
+DIALOGEVENT:mi07_imperialintel01SubTitle
+	"*The Allies and the Soviets have unexpectedly joined forces in an attempt to overwhelm us. They are already upon us. Here is what we need you to do:"
+End
+
+DIALOGEVENT:mi07_imperialintel02SubTitle
+	"*Recapture our military outposts that have fallen under attack."
+End
+
+DIALOGEVENT:mi07_imperialintel03SubTitle
+	"*The Allied relay stations must be destroyed."
+End
+
+DIALOGEVENT:mi07_imperialintel04SubTitle
+	"*The Allies are attempting to disrupt our global communications using these stations."
+End
+
+DIALOGEVENT:mi07_imperialintel05SubTitle
+	"*Yokohama Harbor is overun. It must be re-taken."
+End
+
+DIALOGEVENT:mi07_imperialintel06SubTitle
+	"*Take back these forward bases and reinforcements will be dispatched to your position."
+End
+
+DIALOGEVENT:mi07_imperialintel07SubTitle
+	"*One forward base remaining."
+End
+
+DIALOGEVENT:mi07_imperialintel08SubTitle
+	"*Reinforcements are inbound."
+End
+
+DIALOGEVENT:mi07_imperialintel09SubTitle
+	"*Reinforcements have arrived, Commander."
+End
+
+DIALOGEVENT:mi07_imperialintel10SubTitle
+	"*MCVs and Nanocores have arrived.  Deploy quickly, before the Allies have a chance to pick them off."
+End
+
+DIALOGEVENT:mi07_imperialintel11SubTitle
+	"*The Allies have activated several relay stations that may disrupt all communications."
+End
+
+DIALOGEVENT:mi07_imperialintel12SubTitle
+	"*The Soviets must be eliminated."
+End
+
+DIALOGEVENT:mi07_imperialintel13SubTitle
+	"*All Soviet forces have been annihilated.  Good work, Commander!"
+End
+
+DIALOGEVENT:mi07_imperialintel14SubTitle
+	"*The Nanoswarm Hive Superweapon will temporarily pause the countdown on those relay stations."
+End
+
+DIALOGEVENT:mi07_imperialintel15SubTitle
+	"*You have failed to take back the harbor. The mission is lost."
+End
+
+DIALOGEVENT:mi07_imperialintel16SubTitle
+	"*All of your forces have been defeated. The mission is failed."
+End
+
+DIALOGEVENT:mi07_imperialintel17SubTitle
+	"*All of your structures have been destroyed. The mission is lost."
+End
+
+DIALOGEVENT:mi07_imperialintel18SubTitle
+	"*The relay station must be destroyed before…(static)"
+End
+
+DIALOGEVENT:mi07_imperialintel19SubTitle
+	"*Commander!  (static) …the relay stations! (static)"
+End
+
+DIALOGEVENT:mi07_imperialintel20SubTitle
+	"*Five minutes remaining."
+End
+
+DIALOGEVENT:mi07_imperialintel21SubTitle
+	"*One minute remaining."
+End
+
+DIALOGEVENT:mi07_imperialintel22SubTitle
+	"*Thirty seconds remaining."
+End
+
+DIALOGEVENT:mi07_imperialintel23SubTitle
+	"*Ten seconds remaining."
+End
+
+DIALOGEVENT:mi07_imperialintel24SubTitle
+	"*Five."
+End
+
+DIALOGEVENT:mi07_imperialintel25SubTitle
+	"*Four."
+End
+
+DIALOGEVENT:mi07_imperialintel26SubTitle
+	"*Three."
+End
+
+DIALOGEVENT:mi07_imperialintel27SubTitle
+	"*Two."
+End
+
+DIALOGEVENT:mi07_imperialintel28SubTitle
+	"*One."
+End
+
+DIALOGEVENT:mi07_imperialintel29SubTitle
+	"*Most Allied forces should be no match for Yuriko Omega. But even she can be overwhelmed."
+End
+
+DIALOGEVENT:mi07_imperialintel30SubTitle
+	"*Yuriko’s psychokinetic burst special ability can repel infantry that try to surround her."
+End
+
+DIALOGEVENT:mi07_imperialintel31SubTitle
+	"*Our King Oni reinforcements have arrived. Our enemies' strongest armored forces are laughable by comparison."
+End
+
+DIALOGEVENT:mi07_imperialintel32SubTitle
+	"*Your Shinobi have come to defend your forces to the last man."
+End
+
+DIALOGEVENT:mi07_imperialintel33SubTitle
+	"*Destroying that Allied armor facility will weaken their hold on the harbor."
+End
+
+DIALOGEVENT:mi07_imperialintel34SubTitle
+	"*We have retaken one of the Imperial forward bases."
+End
+
+DIALOGEVENT:mi07_imperialintel35SubTitle
+	"*Forward base online. Only one of the forward bases remains."
+End
+
+DIALOGEVENT:mi07_imperialintel36SubTitle
+	"*We have retaken all of the forward bases in the harbor."
+End
+
+DIALOGEVENT:mi07_imperialintel37SubTitle
+	"*The Allies' foothold here has been interrupted. They will not retreat, however."
+End
+
+DIALOGEVENT:mi07_imperialintel38SubTitle
+	"*You will have to hold this area until additional reinforcements can be dispatched to your position."
+End
+
+DIALOGEVENT:mi07_imperialintel39SubTitle
+	"*You must eliminate the Soviet heavy bombardment ships as quickly as possible."
+End
+
+DIALOGEVENT:mi07_imperialintel40SubTitle
+	"*Our MCVs and Nanocores have arrived via the southern channels."
+End
+
+DIALOGEVENT:mi07_imperialintel41SubTitle
+	"*The enemy's air power here has been destroyed."
+End
+
+DIALOGEVENT:mi07_imperialintel42SubTitle
+	"*Destroy the Relay Stations quickly, before time runs out!"
+End
+
+DIALOGEVENT:mi08_imperialintel01SubTitle
+	"*Moscow is prime for the taking. Forces are already assembled for a massive assault."
+End
+
+DIALOGEVENT:mi08_imperialintel02SubTitle
+	"*The Soviets are well defended, but you will have the assistance of the Shogun's Executioner. Your objectives here are simple:"
+End
+
+DIALOGEVENT:mi08_imperialintel03SubTitle
+	"*Await the arrival of the Shogun's Executioner so that it may assist your assault."
+End
+
+DIALOGEVENT:mi08_imperialintel04SubTitle
+	"*The Kremlin must be destroyed. Leave nothing standing."
+End
+
+DIALOGEVENT:mi08_imperialintel05SubTitle
+	"*Such is the Emperor's decree."
+End
+
+DIALOGEVENT:mi08_imperialintel06SubTitle
+	"*The Shogun's Executioner is on a rampage through Soviet territory.  It will rendezvous with your forces shortly.  Maintain position until it arrives."
+End
+
+DIALOGEVENT:mi08_imperialintel07SubTitle
+	"*The Shogun's Executioner has arrived.  Support it with your forces and it shall carve a path directly to the Kremlin."
+End
+
+DIALOGEVENT:mi08_imperialintel08SubTitle
+	"*The Soviet artillery is of great concern. It must be dealt with."
+End
+
+DIALOGEVENT:mi08_imperialintel09SubTitle
+	"*More Soviet artillery.  We must deal with it quickly."
+End
+
+DIALOGEVENT:mi08_imperialintel10SubTitle
+	"*The Shogun's Executioner has been damaged.  Protect it until it can reach a strong enough power source to replenish itself."
+End
+
+DIALOGEVENT:mi08_imperialintel11SubTitle
+	"*The Shogun's Executioner is under attack."
+End
+
+DIALOGEVENT:mi08_imperialintel12SubTitle
+	"*Soviert General Krukov has dispatch forces to attack us."
+End
+
+DIALOGEVENT:mi08_imperialintel13SubTitle
+	"*Soviet General Krukov has ordered naval forces down river."
+End
+
+DIALOGEVENT:mi08_imperialintel14SubTitle
+	"*Our forces have been defeated before the Shogun's Execution arrived. The mission is lost."
+End
+
+DIALOGEVENT:mi08_imperialintel15SubTitle
+	"*All of our forces have been defeated. The mission is failed."
+End
+
+DIALOGEVENT:mi08_imperialintel16SubTitle
+	"*The Soviets will move against our position very soon."
+End
+
+DIALOGEVENT:mi08_imperialintel17SubTitle
+	"*Hold the line, Commander.  The Shogun Executioner has nearly arrived."
+End
+
+DIALOGEVENT:mi08_imperialintel18SubTitle
+	"*Expand your forces northward. You must press the attack."
+End
+
+DIALOGEVENT:mi08_imperialintel19SubTitle
+	"*Additional Soviet forces incoming. Be on guard."
+End
+
+DIALOGEVENT:mi08_imperialintel20SubTitle
+	"*More Soviet forces detected on scan. They act with desperation. Proceed with care."
+End
+
+DIALOGEVENT:mi08_imperialintel21SubTitle
+	"*Prepare yourself Commander.  Soviet forces detected en route to your location."
+End
+
+DIALOGEVENT:mi08_imperialintel22SubTitle
+	"*The Kremlin lies in ruins. Status of the time machine, uncertain."
+End
+
+DIALOGEVENT:mi08_imperialintel23SubTitle
+	"*Alert: Sources indicate that the time machine is located in a sub level facility under the Kremlin."
+End
+
+DIALOGEVENT:mi08_imperialintel24SubTitle
+	"*Alert: The time machine is being carried away! Destroy that helicopter!"
+End
+
+DIALOGEVENT:mi08_imperialintel25SubTitle
+	"*Excellent work, Commander. The Emperor sends his deepest gratitude."
+End
+
+DIALOGEVENT:mi09_imperialintel01SubTitle
+	"*The Allies have rallied their reminant forces in Amsterdam, led by two commanders."
+End
+
+DIALOGEVENT:mi09_imperialintel02SubTitle
+	"*They defend the FutureTech Headquarters."
+End
+
+DIALOGEVENT:mi09_imperialintel03SubTitle
+	"*Defeat the Allied Air base"
+End
+
+DIALOGEVENT:mi09_imperialintel04SubTitle
+	"*Eliminate any Allied resistance as well."
+End
+
+DIALOGEVENT:mi09_imperialintel05SubTitle
+	"*This airspace is firmly in Allied control."
+End
+
+DIALOGEVENT:mi09_imperialintel06SubTitle
+	"*You will need to get by without our flight-capable forces initially. Only once the airspace is secure will our ministers be grant you fully authorized access."
+End
+
+DIALOGEVENT:mi09_imperialintel07SubTitle
+	"*Do this and the Emperor will be pleased."
+End
+
+DIALOGEVENT:mi09_imperialintel08SubTitle
+	"*The Soviet Union's top scientist has unleashed catastrophe upon Amsterdam in an attempt to eliminate our forces."
+End
+
+DIALOGEVENT:mi09_imperialintel09SubTitle
+	"*Our Nanoswarms protected our finest warriors."
+End
+
+DIALOGEVENT:mi09_imperialintel10SubTitle
+	"*Finish what we started, Commander."
+End
+
+DIALOGEVENT:mi09_imperialintel11SubTitle
+	"*That is the Emperor's will."
+End
+
+DIALOGEVENT:mi09_imperialintel12SubTitle
+	"*The FutureTech Headquarters must be destroyed."
+End
+
+DIALOGEVENT:mi09_imperialintel13SubTitle
+	"*Eliminate the Allied Air Base, or your armies shall remain earthbound."
+End
+
+DIALOGEVENT:mi09_imperialintel14SubTitle
+	"*With the Sir Case crushed, our air forces are once again yours to command."
+End
+
+DIALOGEVENT:mi09_imperialintel15SubTitle
+	"*General Bingham's base must be razed to the ground."
+End
+
+DIALOGEVENT:mi09_imperialintel16SubTitle
+	"*There are strange readings from our scanners…"
+End
+
+DIALOGEVENT:mi09_imperialintel17SubTitle
+	"*Soviet forces approach from the north."
+End
+
+DIALOGEVENT:mi09_imperialintel18SubTitle
+	"*The Soviets are using their Iron Curtain technology on the FutureTech Headquarters."
+End
+
+DIALOGEVENT:mi09_imperialintel19SubTitle
+	"*Destroy his Iron Curtain."
+End
+
+DIALOGEVENT:mi09_imperialintel20SubTitle
+	"*These King Oni shall lead us to final victory."
+End
+
+DIALOGEVENT:mi09_imperialintel21SubTitle
+	"*The Allies dominate the skies here. You must eliminate their Air Base."
+End
+
+DIALOGEVENT:mi09_imperialintel22SubTitle
+	"*The Futuretech Headquarters must not stand."
+End
+
+DIALOGEVENT:mi09_imperialintel23SubTitle
+	"*Alert: Multiple Vacuum Imploder detonations detected. Initiating emergency Nanoswarm defenses."
+End
+
+DIALOGEVENT:mi09_imperialintel24SubTitle
+	"*The Allies' Proton Colliders threaten our plans. Destroy them."
+End
+
+DIALOGEVENT:mi09_imperialintel25SubTitle
+	"*Allied air presence weakening. All production facilities upgraded -- you may build flight-capable forces once more."
+End
+
+DIALOGEVENT:mi09_imperialintel26SubTitle
+	"*The Soviets' top scientist is meddling with forbidden technology. Destroy his forces."
+End
+
+DIALOGEVENT:mi09_imperialintel27SubTitle
+	"*You cannot complete your tasks while our air support is denied. Destroy this Air Base."
+End
+
+DIALOGEVENT:ms01_cooleg01SubTitle
+	"*My men are taking position outside the fortress."
+End
+
+DIALOGEVENT:ms01_cooleg02SubTitle
+	"*Mine are the men in green uniforms. They only take orders from me, but hey, you can always boss me around if you want."
+End
+
+DIALOGEVENT:ms01_cooleg03SubTitle
+	"*Mine are the men in green uniforms. They only take orders from me, but if you need my support, let me know."
+End
+
+DIALOGEVENT:ms01_cooleg04SubTitle
+	"*Attacks incoming from the south! My forces are on it!"
+End
+
+DIALOGEVENT:ms01_cooleg05SubTitle
+	"*That couldn't have been the last of them... What are those sneaky goats planning...?"
+End
+
+DIALOGEVENT:ms01_cooleg06SubTitle
+	"*Is that all they had? What, have we beat them already...?"
+End
+
+DIALOGEVENT:ms01_cooleg07SubTitle
+	"*I don't know, those last attacks felt pretty real to me..."
+End
+
+DIALOGEVENT:ms01_cooleg08SubTitle
+	"*Does he have to keep announcing his useless strategies?"
+End
+
+DIALOGEVENT:ms01_cooleg09SubTitle
+	"*Good job! Only a few more battleships left!"
+End
+
+DIALOGEVENT:ms01_cooleg10SubTitle
+	"*I hope they're more of a challenge than you."
+End
+
+DIALOGEVENT:ms01_sovietintel01SubTitle
+	"*Leningrad is under siege. Repel the Imperial invaders and protect the Fortress using our remaining forces in the vicinity."
+End
+
+DIALOGEVENT:ms01_sovietintel02SubTitle
+	"*Natasha herself is available to assist in this dark hour. Your objectives are:"
+End
+
+DIALOGEVENT:ms01_sovietintel03SubTitle
+	"*Secure the Fortress in the Heart of Leningrad. Once secure, more forces will be available."
+End
+
+DIALOGEVENT:ms01_sovietintel04SubTitle
+	"*Defend the Fortress at all costs."
+End
+
+DIALOGEVENT:ms01_sovietintel05SubTitle
+	"*Destroy the Imperial navy in the canals"
+End
+
+DIALOGEVENT:ms01_sovietintel06SubTitle
+	"*Good luck to you."
+End
+
+DIALOGEVENT:ms01_sovietintel07SubTitle
+	"*The Fortress is taking heavy damage. It must not fall."
+End
+
+DIALOGEVENT:ms01_sovietintel08SubTitle
+	"*The enemy is assaulting the Fortress. Do not let them destroy it."
+End
+
+DIALOGEVENT:ms01_sovietintel09SubTitle
+	"*Please train five Flak Troopers. These men are our last resort."
+End
+
+DIALOGEVENT:ms01_sovietintel10SubTitle
+	"*Flak Troopers are all we've got. Train them from your Barracks."
+End
+
+DIALOGEVENT:ms01_sovietintel11SubTitle
+	"*Please train a Combat Engineer."
+End
+
+DIALOGEVENT:ms01_sovietintel12SubTitle
+	"*Continue to defend the Fortress until the magnetic satellite is online"
+End
+
+DIALOGEVENT:ms01_sovietintel13SubTitle
+	"*The Magnetic Satellite is ready to use. Use it against the Battleships."
+End
+
+DIALOGEVENT:ms01_sovietintel14SubTitle
+	"*The Magnetic Satellite is online and ready to use."
+End
+
+DIALOGEVENT:ms01_sovietintel15SubTitle
+	"*The Rising Sun's battleships would be vulnerable to the Magnetic Satellite."
+End
+
+DIALOGEVENT:ms01_sovietintel16SubTitle
+	"*The Artillery Museum is under attack. Save it for the good of the Soviet people."
+End
+
+DIALOGEVENT:ms01_sovietintel17SubTitle
+	"*The enemy assaults the Hermitage! Please protect this monument if you're able."
+End
+
+DIALOGEVENT:ms01_sovietintel18SubTitle
+	"*The Bullfrog can eject your infantry up to the Hermitage."
+End
+
+DIALOGEVENT:ms01_sovietintel19SubTitle
+	"*Use the Bullfrog to launch your troops toward the Hermitage."
+End
+
+DIALOGEVENT:ms01_sovietintel20SubTitle
+	"*Select Natasha. She excels against enemy infantry."
+End
+
+DIALOGEVENT:ms01_sovietintel21SubTitle
+	"*Your co-commander places green markers on targets he will defend."
+End
+
+DIALOGEVENT:ms01_sovietintel22SubTitle
+	"*Your co-commander places red markers on targets he will attack."
+End
+
+DIALOGEVENT:ms01_sovietintel23SubTitle
+	"*Select Natasha and order her attack to the gate. She is authorized to call airstrikes."
+End
+
+DIALOGEVENT:ms01_sovietintel24SubTitle
+	"*Natasha can call down an airstrike on the gates."
+End
+
+DIALOGEVENT:ms01_sovietintel25SubTitle
+	"*Select your Barracks and train five Flak Troopers to fight for you."
+End
+
+DIALOGEVENT:ms01_sovietintel26SubTitle
+	"*Flak Troopers are effective against air targets and vehicles."
+End
+
+DIALOGEVENT:ms01_sovietintel27SubTitle
+	"*Open the Top-Secret Protocols menu and choose the Magnetic Satellite."
+End
+
+DIALOGEVENT:ms01_sovietintel28SubTitle
+	"*Top-Secret Protocols are now available."
+End
+
+DIALOGEVENT:ms01_sovietintel29SubTitle
+	"*Open the Top Secret Protocols menu and request Oribtal Drop."
+End
+
+DIALOGEVENT:ms01_sovietintel30SubTitle
+	"*Train more Flak Troopers to repel the enemy aggressors."
+End
+
+DIALOGEVENT:ms01_sovietintel31SubTitle
+	"*Train more Concripts to defend the Fortress."
+End
+
+DIALOGEVENT:ms01_sovietintel32SubTitle
+	"*Train more infantry to repel the enemy."
+End
+
+DIALOGEVENT:ms01_sovietintel33SubTitle
+	"*If Natasha is injured in battle, train her again at the Barracks."
+End
+
+DIALOGEVENT:ms01_sovietintel34SubTitle
+	"*Enemy tanks may crush your infantry -- please beware."
+End
+
+DIALOGEVENT:ms01_sovietintel35SubTitle
+	"*All is lost: all troops have perished."
+End
+
+DIALOGEVENT:ms01_sovietintel36SubTitle
+	"*All is lost: Natasha has perished."
+End
+
+DIALOGEVENT:ms01_sovietintel37SubTitle
+	"*All is lost: The fortress has fallen."
+End
+
+DIALOGEVENT:ms01_sovietintel38SubTitle
+	"*Natasha can pilot-snipe vehicles, which may then be recovered by your infantry."
+End
+
+DIALOGEVENT:ms01_sovietintel39SubTitle
+	"*Use the Magnetic Satellite to dispose of those battleships."
+End
+
+DIALOGEVENT:ms01_sovietintel40SubTitle
+	"*You may select and guide the Magnetic Satellite to affect more targets."
+End
+
+DIALOGEVENT:ms01_sovietintel41SubTitle
+	"*Natasha's custom rifle can strike multiple enemies in a single shot."
+End
+
+DIALOGEVENT:ms01_sovietintel42SubTitle
+	"*Your Conscripts are best suited against enemy infantry."
+End
+
+DIALOGEVENT:ms01_sovietintel43SubTitle
+	"*Satellite online in 7 minutes. Please be alert."
+End
+
+DIALOGEVENT:ms01_sovietintel44SubTitle
+	"*Satellite online in 5 minutes. Please be wary."
+End
+
+DIALOGEVENT:ms01_sovietintel45SubTitle
+	"*Satellite online in 3 minutes. Please be prepared."
+End
+
+DIALOGEVENT:ms01_sovietintel46SubTitle
+	"*Satellite online in 2 minutes. Please be patient."
+End
+
+DIALOGEVENT:ms01_sovietintel47SubTitle
+	"*Satellite online in 1 minute. Please be ready"
+End
+
+DIALOGEVENT:ms01_sovietintel48SubTitle
+	"*Order the Combat Engineer to repair the structure."
+End
+
+DIALOGEVENT:ms01_sovietintel49SubTitle
+	"*We will need the Magnetic Satellite against those battleships. I have contacted the Aerospace Bureau - the satellite will be online soon."
+End
+
+DIALOGEVENT:ms01_sovietintel50SubTitle
+	"*The fortress is nearly in ruin. Please, you must find a way to stop the Imperial assault."
+End
+
+DIALOGEVENT:ms01_sovietintel51SubTitle
+	"*Commander, we have transferred the last of Leningrad's treasury to you. Please spend it wisely."
+End
+
+DIALOGEVENT:ms01_sovietintel52SubTitle
+	"*Your Co-Commander's forces have arrived. They are under his direct control."
+End
+
+DIALOGEVENT:ms01_sovietintel53SubTitle
+	"*Your troopers are needed back at the Fortress. The Bullfrog Transport may launch them across the canal."
+End
+
+DIALOGEVENT:ms01_sovietintel54SubTitle
+	"*Natasha can swim out into the canals in order to call in airstrikes against the battleships."
+End
+
+DIALOGEVENT:ms01_sovietintel55SubTitle
+	"*Look for the Top Secret Protocols menu in the bottom-left corner of the screen."
+End
+
+DIALOGEVENT:ms01_sovietintel56SubTitle
+	"*Open the Command Menu and select Support Powers in the six o'clock position, then choose Top-Secret Protocols."
+End
+
+DIALOGEVENT:ms01_sovietintel57SubTitle
+	"*Your available Top-Secret Protocols appear along the left side of the screen."
+End
+
+DIALOGEVENT:ms02_comosk01SubTitle
+	"*Launching the satellite was easy part. Now it's time to clean up this mess."
+End
+
+DIALOGEVENT:ms02_comosk02SubTitle
+	"*I must say, putting those Rising Sun scum out of their misery is good fun."
+End
+
+DIALOGEVENT:ms02_comosk03SubTitle
+	"*They were in the tents this whole time?! Go after the Imperial base! Kill them all!"
+End
+
+DIALOGEVENT:ms02_comosk04SubTitle
+	"*What the…!? I've had enough of their tricks! I'll kill them all!"
+End
+
+DIALOGEVENT:ms02_sovietintel01SubTitle
+	"*The Empire must be stopped. Use our limited forces here in Krasna-45 to route the invaders. Here are your objectives:"
+End
+
+DIALOGEVENT:ms02_sovietintel02SubTitle
+	"*Escort Natasha to the orbital launch facility."
+End
+
+DIALOGEVENT:ms02_sovietintel03SubTitle
+	"*Be on the lookout for Soviet prisoners of war."
+End
+
+DIALOGEVENT:ms02_sovietintel04SubTitle
+	"*Proceed with caution. Good luck in the field."
+End
+
+DIALOGEVENT:ms02_sovietintel05SubTitle
+	"*Make your way to the Launch Facility."
+End
+
+DIALOGEVENT:ms02_sovietintel06SubTitle
+	"*The Orbital Satellite must be launched to reestablish our orbital defenses."
+End
+
+DIALOGEVENT:ms02_sovietintel07SubTitle
+	"*The Empire's presence here must be eliminated."
+End
+
+DIALOGEVENT:ms02_sovietintel08SubTitle
+	"*The Empire's MCV is trying to escape. Don't let it get away."
+End
+
+DIALOGEVENT:ms02_sovietintel09SubTitle
+	"*These must be Japan's military Engineers. They are too dangerous to be left alive."
+End
+
+DIALOGEVENT:ms02_sovietintel10SubTitle
+	"*You have rescued a pack of trained War Bears. They are good combat scouts."
+End
+
+DIALOGEVENT:ms02_sovietintel11SubTitle
+	"*Some of our finest Tesla Troopers have joined you. They are effective against vehicles."
+End
+
+DIALOGEVENT:ms02_sovietintel12SubTitle
+	"*You need anti-air weapons against these foes. There must be some Flak Troopers nearby."
+End
+
+DIALOGEVENT:ms02_sovietintel13SubTitle
+	"*Tesla Troopers excel against armored vehicles."
+End
+
+DIALOGEVENT:ms02_sovietintel14SubTitle
+	"*The satellite is launched, comlink re-established.  You may now use orbital bombardment against your foes."
+End
+
+DIALOGEVENT:ms02_sovietintel15SubTitle
+	"*We have reason to believe there are other Soviet troopers trapped nearby."
+End
+
+DIALOGEVENT:ms02_sovietintel16SubTitle
+	"*Balloon bombs?! Be careful to not let them drop on your forces, sir."
+End
+
+DIALOGEVENT:ms02_sovietintel17SubTitle
+	"*Use the \"Strike Target\" command to give priority targets to your co-commander."
+End
+
+DIALOGEVENT:ms02_sovietintel18SubTitle
+	"*The Imperial MCV is escaping -- do not allow this."
+End
+
+DIALOGEVENT:ms02_sovietintel19SubTitle
+	"*There are supply crates strewn about this area, which may be used to replenish damaged forces."
+End
+
+DIALOGEVENT:ms02_sovietintel20SubTitle
+	"*Caution: Our Sickle walkers are proven to be poorly suited against Imperial Tanks."
+End
+
+DIALOGEVENT:ms03_cozhan01SubTitle
+	"*Sniveling Imperial cowards! Get off our land!"
+End
+
+DIALOGEVENT:ms03_cozhan02SubTitle
+	"*Dreadnoughts, intact! With these warships, we can retake Vladivostok!"
+End
+
+DIALOGEVENT:ms03_cozhan03SubTitle
+	"*What in the name of Lenin are those things?"
+End
+
+DIALOGEVENT:ms03_cozhan04SubTitle
+	"*We need to prepare an amphibious assault against the Imperial palace."
+End
+
+DIALOGEVENT:ms03_sovietintel01SubTitle
+	"*The time has come to drive the Empire of the Rising Sun from our soil, by retaking the port of Vladivostok."
+End
+
+DIALOGEVENT:ms03_sovietintel02SubTitle
+	"*Here are your priorities in this mission:"
+End
+
+DIALOGEVENT:ms03_sovietintel03SubTitle
+	"*Secure a perimeter outside the port as a staging area for your attack."
+End
+
+DIALOGEVENT:ms03_sovietintel04SubTitle
+	"*Eliminate the Imperial navy production facilities that have been constructed here."
+End
+
+DIALOGEVENT:ms03_sovietintel05SubTitle
+	"*May fortune favor us in this mission."
+End
+
+DIALOGEVENT:ms03_sovietintel06SubTitle
+	"*The Rising Sun has contructed an administrative palace overlooking the harbor."
+End
+
+DIALOGEVENT:ms03_sovietintel07SubTitle
+	"*Your orders are to destroy it utterly."
+End
+
+DIALOGEVENT:ms03_sovietintel08SubTitle
+	"*Use the Bullfrog's special ability to assault the island. Eliminate the Imperials."
+End
+
+DIALOGEVENT:ms03_sovietintel09SubTitle
+	"*Deploy your Mobile Construction Vehicle and set up a forward base."
+End
+
+DIALOGEVENT:ms03_sovietintel10SubTitle
+	"*You must build a Reactor and an Ore Refinery before you can build a Naval Yard, Commander."
+End
+
+DIALOGEVENT:ms03_sovietintel11SubTitle
+	"*We have failed to drive the Empire from Russia."
+End
+
+DIALOGEVENT:ms03_sovietintel12SubTitle
+	"*All of your forces have been defeated."
+End
+
+DIALOGEVENT:ms03_sovietintel13SubTitle
+	"*The Stingrays are now yours to command."
+End
+
+DIALOGEVENT:ms03_sovietintel14SubTitle
+	"*Stringrays will be able to clear what your infantry might not."
+End
+
+DIALOGEVENT:ms03_sovietintel15SubTitle
+	"*The Take Position command will order your co-commander to help cover designated areas on the battlefield."
+End
+
+DIALOGEVENT:ms03_sovietintel16SubTitle
+	"*The Dreadnoughts have been recovered. They should be able to outreach the Imperial defenses."
+End
+
+DIALOGEVENT:ms03_sovietintel17SubTitle
+	"*Heavy casualties detected. We are releasing our Stingray amphibious strike craft to your command."
+End
+
+DIALOGEVENT:ms03_sovietintel18SubTitle
+	"*Please note you are sharing income with your Co-Commander. Any resources you collect will be split evenly between the two of you."
+End
+
+DIALOGEVENT:ms04_cooleg01SubTitle
+	"*Such tricks this Allied witch has up her sleeve. Best be on our guard."
+End
+
+DIALOGEVENT:ms04_cooleg02SubTitle
+	"*Looks like the Allies' little witch is starting to get nervous?"
+End
+
+DIALOGEVENT:ms04_cooleg03SubTitle
+	"*Let's have our Combat Engineers pay a little visit to all the bank managers around here."
+End
+
+DIALOGEVENT:ms04_cooleg04SubTitle
+	"*All right, I've redeployed to a forward position."
+End
+
+DIALOGEVENT:ms04_cooleg05SubTitle
+	"*Commencing V4 bombardment! Take this you Allied dogs!"
+End
+
+DIALOGEVENT:ms04_sovietintel01SubTitle
+	"*The Allies have fortified their position along the waterfront, as well maintaining an army base inland."
+End
+
+DIALOGEVENT:ms04_sovietintel02SubTitle
+	"*The Premier has asked that General Krukov personally supervise this operation. Your mission is:"
+End
+
+DIALOGEVENT:ms04_sovietintel03SubTitle
+	"*Investigate the energy fluctuations coming from the lake. Destroy any Allied naval forces you find."
+End
+
+DIALOGEVENT:ms04_sovietintel04SubTitle
+	"*Eliminate the Allies' army base to clear the way for General Krukov"
+End
+
+DIALOGEVENT:ms04_sovietintel05SubTitle
+	"*Ensure General Krukov's forces arrive safely and assist them as needed."
+End
+
+DIALOGEVENT:ms04_sovietintel06SubTitle
+	"*Convince Geneva's financial establishments to support our cause."
+End
+
+DIALOGEVENT:ms04_sovietintel07SubTitle
+	"*Good luck to you."
+End
+
+DIALOGEVENT:ms04_sovietintel08SubTitle
+	"*General Krukov has arrived and will lead the attack against the Allied headquarters here."
+End
+
+DIALOGEVENT:ms04_sovietintel09SubTitle
+	"*Your priorities are to defend General Krukov's position and support his assault."
+End
+
+DIALOGEVENT:ms04_sovietintel10SubTitle
+	"*Do not relent until the Allied headquarters is eliminated."
+End
+
+DIALOGEVENT:ms04_sovietintel11SubTitle
+	"*We've detected mysterious signals coming from the lake."
+End
+
+DIALOGEVENT:ms04_sovietintel12SubTitle
+	"*The Allied headquarters in Geneva cannot be left standing. Destroy it."
+End
+
+DIALOGEVENT:ms04_sovietintel13SubTitle
+	"*General Krukov is approaching from the Southeast. He'll expect the way to be cleared."
+End
+
+DIALOGEVENT:ms04_sovietintel14SubTitle
+	"*General Krukov is supervising this battle in person. Defend his position at all costs."
+End
+
+DIALOGEVENT:ms04_sovietintel15SubTitle
+	"*Krukov is in jeopardy. You must prevent his defeat."
+End
+
+DIALOGEVENT:ms04_sovietintel16SubTitle
+	"*General Krukov has been defeated. Mission failed."
+End
+
+DIALOGEVENT:ms04_sovietintel17SubTitle
+	"*Do not attack Comrade Krukov. The Premier would be most displeased."
+End
+
+DIALOGEVENT:ms04_sovietintel18SubTitle
+	"*Comrade Krukov has claimed some banks for his own needs. Do not oppose him."
+End
+
+DIALOGEVENT:ms04_sovietintel19SubTitle
+	"*Comrade Krukov requires refineries belonging to you. Please be generous."
+End
+
+DIALOGEVENT:ms04_sovietintel20SubTitle
+	"*You have gained access to V4 Rocket Launchers. Use their superior range wisely."
+End
+
+DIALOGEVENT:ms04_sovietintel21SubTitle
+	"*Commander, you are able to build near your Co-Commander's structures as well as your own."
+End
+
+DIALOGEVENT:ms04_sovietintel22SubTitle
+	"*Allied naval threat level greater than expected. You have been authorized to use Akula Subs in this region."
+End
+
+DIALOGEVENT:ms04_sovietintel23SubTitle
+	"*You now have access to the Soviet Battle Lab structure."
+End
+
+DIALOGEVENT:ms04_sovietintel24SubTitle
+	"*Your forces lie in ruin. Mission failed."
+End
+
+DIALOGEVENT:ms04_sovietintel25SubTitle
+	"*Your co-commander has been defeated. Mission failed."
+End
+
+DIALOGEVENT:ms04_sovietintel26SubTitle
+	"*The Allied Port is key to their Northern European operations. Destroy it."
+End
+
+DIALOGEVENT:ms04_sovietintel27SubTitle
+	"*The Allies infest Geneva. Destroy their headquarters and drive them out."
+End
+
+DIALOGEVENT:ms04_sovietintel28SubTitle
+	"*General Krukov is surveying this battle firsthand. His bunker must remain safe at all times."
+End
+
+DIALOGEVENT:ms04_sovietintel29SubTitle
+	"*General Krukov's bunker is under attack. Defend him at once."
+End
+
+DIALOGEVENT:ms04_sovietintel30SubTitle
+	"*Alert: General Krukov is at great risk - his safety is your highest priority."
+End
+
+DIALOGEVENT:ms04_sovietintel31SubTitle
+	"*Our V4 Rocket Launchers are now available. Use them to rain destruction upon our enemies."
+End
+
+DIALOGEVENT:ms04_sovietintel32SubTitle
+	"*Send Combat Engineers into the Swiss Banks to bolster your income for this mission."
+End
+
+DIALOGEVENT:ms04_sovietintel33SubTitle
+	"*General Krukov's bunker has been destroyed. The Premier will not approve.  Mission failed."
+End
+
+DIALOGEVENT:ms04_sovietintel34SubTitle
+	"*You have been defeated. Mission failed."
+End
+
+DIALOGEVENT:ms05_cozhan01SubTitle
+	"*My Bullfrogs are on their way. I'll have island clear for you within minutes."
+End
+
+DIALOGEVENT:ms05_cozhan02SubTitle
+	"*Don't worry, my forces will take care of it."
+End
+
+DIALOGEVENT:ms05_cozhan03SubTitle
+	"*Those Spectrum Towers are making this difficult. Send your Twinblade choppers after them!"
+End
+
+DIALOGEVENT:ms05_cozhan04SubTitle
+	"*That Tech Inhibitor is preventing us from using the best of our forces. How about we take it down?"
+End
+
+DIALOGEVENT:ms05_cozhan05SubTitle
+	"*Defeat one of those Allied roach and another springs forth. Our work here isn't done."
+End
+
+DIALOGEVENT:ms05_sovietintel01SubTitle
+	"*The Allies' Science Facility is in the area, and we must capture it before the Allies can respond."
+End
+
+DIALOGEVENT:ms05_sovietintel02SubTitle
+	"*Your objectives are as follows:"
+End
+
+DIALOGEVENT:ms05_sovietintel03SubTitle
+	"*Take over the Allies' ore-mining operations near the deployment zone."
+End
+
+DIALOGEVENT:ms05_sovietintel04SubTitle
+	"*Eliminate the Allies' naval forces in the area."
+End
+
+DIALOGEVENT:ms05_sovietintel05SubTitle
+	"*Locate and capture the Allies' science facility."
+End
+
+DIALOGEVENT:ms05_sovietintel06SubTitle
+	"*Good hunting."
+End
+
+DIALOGEVENT:ms05_sovietintel07SubTitle
+	"*Our engineers say they are going to need time to decipher and extract the Allies' military weapon data."
+End
+
+DIALOGEVENT:ms05_sovietintel08SubTitle
+	"*You need to defend the science facility against Allied attempts to recapture or attack. They will stop at nothing to reclaim the facility."
+End
+
+DIALOGEVENT:ms05_sovietintel09SubTitle
+	"*Commander, remember to occupy the islands to the east. Their Ore Mines will fund your efforts."
+End
+
+DIALOGEVENT:ms05_sovietintel10SubTitle
+	"*The Allied Tech Inhibitor is denying the use of our full military arsenal. Take it out."
+End
+
+DIALOGEVENT:ms05_sovietintel11SubTitle
+	"*Commander, you are authorized to use our Twinblade combat gunships. They are powerful and versatile."
+End
+
+DIALOGEVENT:ms05_sovietintel12SubTitle
+	"*The Tech Inhibitor is destroyed. You have regained access to additional technology."
+End
+
+DIALOGEVENT:ms05_sovietintel13SubTitle
+	"*Commander, we are downloading data on new Allied weapons technology. You must defend the science facility until we have that data."
+End
+
+DIALOGEVENT:ms05_sovietintel14SubTitle
+	"*The Allies have recaptured the facility! Quickly, you must capture it again!"
+End
+
+DIALOGEVENT:ms05_sovietintel15SubTitle
+	"*You have recaptured the facility. Do not let it fall into Allied hands."
+End
+
+DIALOGEVENT:ms05_sovietintel16SubTitle
+	"*Commander, your forces lie in ruin. Mission Aborted."
+End
+
+DIALOGEVENT:ms05_sovietintel17SubTitle
+	"*Your Co-Commander's base has been utterly destroyed. Mission Aborted."
+End
+
+DIALOGEVENT:ms05_sovietintel18SubTitle
+	"*Commander, the data has been encrypted and is of no use. Mission Aborted."
+End
+
+DIALOGEVENT:ms05_sovietintel19SubTitle
+	"*The Allies are preparing to retaliate with air power. You are now authorized to build our own MiG Fighters to repel them."
+End
+
+DIALOGEVENT:ms06_cooleg01SubTitle
+	"*All right, I'll take the base to the east."
+End
+
+DIALOGEVENT:ms06_cooleg02SubTitle
+	"*Western Allied base? No problem. Consider it dead."
+End
+
+DIALOGEVENT:ms06_cooleg03SubTitle
+	"*Why would they build in somewhere so inaccessible."
+End
+
+DIALOGEVENT:ms06_cooleg04SubTitle
+	"*Best not wait around for that thing to fire. We'd better take it down."
+End
+
+DIALOGEVENT:ms06_cooleg05SubTitle
+	"*Burn, you old fool! You had this coming!"
+End
+
+DIALOGEVENT:ms06_cooleg06SubTitle
+	"*Oh, it's that guy? I've been waiting to wipe that smirk off his face for years. Let's do this."
+End
+
+DIALOGEVENT:ms06_sovietintel01SubTitle
+	"*The last major Allied target in Europe is the Von Esling Airbase. Destroying this base will effectively free the last of European lands from Allied control."
+End
+
+DIALOGEVENT:ms06_sovietintel02SubTitle
+	"*Your objective is simple:"
+End
+
+DIALOGEVENT:ms06_sovietintel03SubTitle
+	"*Locate the Von Esling Airbase and destroy it."
+End
+
+DIALOGEVENT:ms06_sovietintel04SubTitle
+	"*Due to the significance of this operation, General Krukov will once again be on site to supervise."
+End
+
+DIALOGEVENT:ms06_sovietintel05SubTitle
+	"*Best of luck, Commander - This is a treacherous place."
+End
+
+DIALOGEVENT:ms06_sovietintel06SubTitle
+	"*The Premier has retaken command. He has prioritized a new objective of high authority."
+End
+
+DIALOGEVENT:ms06_sovietintel07SubTitle
+	"*Your forces are to eliminate General Krukov."
+End
+
+DIALOGEVENT:ms06_sovietintel08SubTitle
+	"*The Allied Air Base must still be destroyed."
+End
+
+DIALOGEVENT:ms06_sovietintel09SubTitle
+	"*The Premier expects your compliance."
+End
+
+DIALOGEVENT:ms06_sovietintel10SubTitle
+	"*Von Esling airbase is alerted to our presence. Please proceed with caution."
+End
+
+DIALOGEVENT:ms06_sovietintel11SubTitle
+	"*General Krukov has arrived to supervise this battle personally."
+End
+
+DIALOGEVENT:ms06_sovietintel12SubTitle
+	"*The Premier has spoken. Your new target is Krukov."
+End
+
+DIALOGEVENT:ms06_sovietintel13SubTitle
+	"*The Allies have a Proton Collider in the vicinity. You must find a way to destroy it before it can fire."
+End
+
+DIALOGEVENT:ms06_sovietintel14SubTitle
+	"*To support you in your goal, the Premier has provided you a new Soviet superweapons - the Vacuum Imploder."
+End
+
+DIALOGEVENT:ms06_sovietintel15SubTitle
+	"*Krukov's army has sworn allegiance to you, Commander."
+End
+
+DIALOGEVENT:ms06_sovietintel16SubTitle
+	"*Krukov's forces have sworn allegiance to your CoCommander."
+End
+
+DIALOGEVENT:ms06_sovietintel17SubTitle
+	"*The Allies' Von Esling airbase has been detected. It must be destroyed."
+End
+
+DIALOGEVENT:ms06_sovietintel18SubTitle
+	"*Capture the Oil Derricks in order to secure additional income for this mission."
+End
+
+DIALOGEVENT:ms06_sovietintel19SubTitle
+	"*The Premier has authorized you to construct Kirov Airships."
+End
+
+DIALOGEVENT:ms06_sovietintel20SubTitle
+	"*Krukov has been branded a traitor. Your priority is to eliminate him."
+End
+
+DIALOGEVENT:ms06_sovietintel21SubTitle
+	"*An expansion base will cement our grip on this battlefield."
+End
+
+DIALOGEVENT:ms06_sovietintel22SubTitle
+	"*It appears there is no land or sea access to this branch of the Allies' base. You must find another way to attack it."
+End
+
+DIALOGEVENT:ms06_sovietintel23SubTitle
+	"*Your Co-Commander has been defeated. Mission failed."
+End
+
+DIALOGEVENT:ms06_sovietintel24SubTitle
+	"*Your base of operations is in ruin. Mission failed."
+End
+
+DIALOGEVENT:ms07_comosk01SubTitle
+	"*So this is our army for taking out the Emperor?! That's it?!"
+End
+
+DIALOGEVENT:ms07_comosk02SubTitle
+	"*They're coming out of the woodwork it seems. Good..."
+End
+
+DIALOGEVENT:ms07_comosk03SubTitle
+	"*Is that the emperor? If only I could kill him with my own hands."
+End
+
+DIALOGEVENT:ms07_comosk04SubTitle
+	"*Our revenge is sweet, wouldn't you say, commander?"
+End
+
+DIALOGEVENT:ms07_sovietintel01SubTitle
+	"*The Premier has ordered the assassination of the Emperor of the Rising Sun. Here is what you must do:"
+End
+
+DIALOGEVENT:ms07_sovietintel02SubTitle
+	"*Assault the Emperor Yoshiro's palace grounds."
+End
+
+DIALOGEVENT:ms07_sovietintel03SubTitle
+	"*Eliminate Emperor Yoshiro. Make certain the Emperor does not escape."
+End
+
+DIALOGEVENT:ms07_sovietintel04SubTitle
+	"*Your forces have already begun their air drops into the Imperial Palace. Good luck to you in this operation."
+End
+
+DIALOGEVENT:ms07_sovietintel05SubTitle
+	"*The Empire of the Rising Sun's frontline commanders have assembled to protect their Emperor."
+End
+
+DIALOGEVENT:ms07_sovietintel06SubTitle
+	"*The Premier has called for you to eliminate them along with the Emperor himself."
+End
+
+DIALOGEVENT:ms07_sovietintel07SubTitle
+	"*Invasion Force inbound."
+End
+
+DIALOGEVENT:ms07_sovietintel08SubTitle
+	"*Castle grounds crawl with Imperial guards. Sneak past patrols to the garden to search for the Emperor."
+End
+
+DIALOGEVENT:ms07_sovietintel09SubTitle
+	"*Contact has been lost with landing party. The mission is a failure."
+End
+
+DIALOGEVENT:ms07_sovietintel10SubTitle
+	"*Distraction needed to draw troops away from garden."
+End
+
+DIALOGEVENT:ms07_sovietintel11SubTitle
+	"*Keep moving toward the Emperor."
+End
+
+DIALOGEVENT:ms07_sovietintel12SubTitle
+	"*MCV's inbound. Use to construct new base and take battle to hated enemies."
+End
+
+DIALOGEVENT:ms07_sovietintel13SubTitle
+	"*Japanese commanders are protected by substantial defenses. Friends at the Kremlin have sent plans for Kirov. Use to rain down death on enemies of glorious revolution."
+End
+
+DIALOGEVENT:ms07_sovietintel14SubTitle
+	"*You now have access to Apocalpse Tanks- the toughest armor in the world."
+End
+
+DIALOGEVENT:ms07_sovietintel15SubTitle
+	"*The Premier has authorized use of Vacuum Bomb. Construct Vacuum Imploder building to use."
+End
+
+DIALOGEVENT:ms07_sovietintel16SubTitle
+	"*All our forces have been destroyed. Mission failure."
+End
+
+DIALOGEVENT:ms07_sovietintel17SubTitle
+	"*With foolish Japanese commanders dead, you are free to focus attack on Emperor's Palace. Bring down this enclave of the entrenched bourgeoisie"
+End
+
+DIALOGEVENT:ms07_sovietintel18SubTitle
+	"*The Emperor is inside of that armor- eliminate him."
+End
+
+DIALOGEVENT:ms07_sovietintel19SubTitle
+	"*Despite the loss of our initial forces, the distraction allowed our MCVs to land nearby. Use our Apocalypse Tanks and construct a base to exact revenge on this place."
+End
+
+DIALOGEVENT:ms07_sovietintel20SubTitle
+	"*The path to the Emperor is clear. Finish him at once."
+End
+
+DIALOGEVENT:ms08_alliedsoldier01SubTitle
+	"Good afternoon, friend. Are you here to escort us to our meeting with the Premier?"
+End
+
+DIALOGEVENT:ms08_alliedsoldier02SubTitle
+	"It's a setup! Retreat, retreat!"
+End
+
+DIALOGEVENT:ms08_alliedsoldier03SubTitle
+	"What the--they've double-crossed us! Open fire!"
+End
+
+DIALOGEVENT:ms08_alliedsoldier04SubTitle
+	"You cheating commie scum. Wait'll Allied high command gets wind of this."
+End
+
+DIALOGEVENT:ms08_cozhan01SubTitle
+	"*I just love these kinds of missions. But I wonder…  Are we supposed to be the cheese or the trap?"
+End
+
+DIALOGEVENT:ms08_cozhan02SubTitle
+	"*They have the island, but they have left themselves no place to run."
+End
+
+DIALOGEVENT:ms08_cozhan03SubTitle
+	"*Well played! They didn't stand a chance."
+End
+
+DIALOGEVENT:ms08_cozhan04SubTitle
+	"*We did it! The Soviet people will be safer now, without that maniac."
+End
+
+DIALOGEVENT:ms08_cozhan05SubTitle
+	"*Do you require assistance, Commander?"
+End
+
+DIALOGEVENT:ms08_cozhan06SubTitle
+	"*Tesla Tanks, weaponized Moai heads... A volcano fortress... Such madness."
+End
+
+DIALOGEVENT:ms08_cozhan07SubTitle
+	"*Brother against brother... May we end this madness quickly."
+End
+
+DIALOGEVENT:ms08_sovietintel01SubTitle
+	"*The Allies are en route from the southeast, expecting to negotiate a treaty."
+End
+
+DIALOGEVENT:ms08_sovietintel02SubTitle
+	"*However, your task is to destroy them, therefore you must draw first blood. Here is what you must do:"
+End
+
+DIALOGEVENT:ms08_sovietintel03SubTitle
+	"*Prepare an assault against the Allied forces coming to meet with the Premier."
+End
+
+DIALOGEVENT:ms08_sovietintel04SubTitle
+	"*Do not strike until you have the signal."
+End
+
+DIALOGEVENT:ms08_sovietintel05SubTitle
+	"*Standby for further orders from the Premier."
+End
+
+DIALOGEVENT:ms08_sovietintel06SubTitle
+	"*Good fortune to you in battle."
+End
+
+DIALOGEVENT:ms08_sovietintel07SubTitle
+	"*Commander, your mission has changed. The Premier is your new target, and you are his new target."
+End
+
+DIALOGEVENT:ms08_sovietintel08SubTitle
+	"*You must eliminate the Premier."
+End
+
+DIALOGEVENT:ms08_sovietintel09SubTitle
+	"*His fortress may be vulnerable to a direct attack, though forces loyal to the Premier will stand in your way."
+End
+
+DIALOGEVENT:ms08_sovietintel10SubTitle
+	"*Be especially mindful of the Premier's experimental Tesla Tanks. Even now, our satellites show that he is mobilizing them against your position."
+End
+
+DIALOGEVENT:ms08_sovietintel11SubTitle
+	"* The Allied Emissary's naval fleet is arriving soon. Build up sizeable force."
+End
+
+DIALOGEVENT:ms08_sovietintel12SubTitle
+	"*Wait for emissary to reach docks before surrounding him.  We don't want the fool to escape."
+End
+
+DIALOGEVENT:ms08_sovietintel13SubTitle
+	"*The Premier is attempting to target your base with a super weapon."
+End
+
+DIALOGEVENT:ms08_sovietintel14SubTitle
+	"*The Premier's super weapon is now firing. We cannot win now. Mission fail."
+End
+
+DIALOGEVENT:ms08_sovietintel15SubTitle
+	"*It is done…let us focus on Premier's secret volcano fortress."
+End
+
+DIALOGEVENT:ms08_sovietintel16SubTitle
+	"*Five minutes remaining."
+End
+
+DIALOGEVENT:ms08_sovietintel17SubTitle
+	"*One minute remaining."
+End
+
+DIALOGEVENT:ms08_sovietintel18SubTitle
+	"*Thirty seconds remaining."
+End
+
+DIALOGEVENT:ms08_sovietintel19SubTitle
+	"*Ten seconds remaining."
+End
+
+DIALOGEVENT:ms08_sovietintel20SubTitle
+	"*Five."
+End
+
+DIALOGEVENT:ms08_sovietintel21SubTitle
+	"*Four."
+End
+
+DIALOGEVENT:ms08_sovietintel22SubTitle
+	"*Three."
+End
+
+DIALOGEVENT:ms08_sovietintel23SubTitle
+	"*Two."
+End
+
+DIALOGEVENT:ms08_sovietintel24SubTitle
+	"*One."
+End
+
+DIALOGEVENT:ms08_sovietintel25SubTitle
+	"*The Allies have escaped- your mission is failed."
+End
+
+DIALOGEVENT:ms08_sovietintel26SubTitle
+	"*The Allied Emissary got away. Mission failed."
+End
+
+DIALOGEVENT:ms08_sovietintel27SubTitle
+	"*The emissary will be arriving by sea. Be prepared to strike from the air or the waters."
+End
+
+DIALOGEVENT:ms08_sovietintel28SubTitle
+	"*Enemy force composition not yet known. Observe the Allied forces carefully as they arrive."
+End
+
+DIALOGEVENT:ms08_sovietintel29SubTitle
+	"*The emissary has arrived. We are making final confirmations that he is on board before giving the order to attack. Standby."
+End
+
+DIALOGEVENT:ms08_sovietintel30SubTitle
+	"*Cleared to engage. Attack the Allies now. Destroy the emissary and all of his forces."
+End
+
+DIALOGEVENT:ms08_sovietintel31SubTitle
+	"*Be advised: The allies have established a base to the west on a small island."
+End
+
+DIALOGEVENT:ms08_sovietintel32SubTitle
+	"*Commander, we have located several ore mines to the north of your position."
+End
+
+DIALOGEVENT:ms08_sovietintel33SubTitle
+	"*The Premier intends to eliminate us all with his new superweapon. Please hurry, commander."
+End
+
+DIALOGEVENT:ms08_sovietintel34SubTitle
+	"*Beware of the enemy Tesla Tanks. These experimental forces appear to have very few vulnerabilities."
+End
+
+DIALOGEVENT:ms08_sovietintel35SubTitle
+	"*The Premier's stronghold appears to have been built into the volcano itself."
+End
+
+DIALOGEVENT:ms08_sovietintel36SubTitle
+	"*The fortress is well defended. However, destroying three key support structures should disable it completely."
+End
+
+DIALOGEVENT:ms08_sovietintel37SubTitle
+	"*One fortress structure down. Two remain."
+End
+
+DIALOGEVENT:ms08_sovietintel38SubTitle
+	"*Two fortress structures eliminated. One remains."
+End
+
+DIALOGEVENT:ms08_sovietsoldier01SubTitle
+	"I am afraid not, \"my friend.\" Comrades! Attack now!"
+End
+
+DIALOGEVENT:ms09_comosk01SubTitle
+	"*Let's take these terror drones out for a little walk!"
+End
+
+DIALOGEVENT:ms09_comosk02SubTitle
+	"*Yes! Let's take her down!"
+End
+
+DIALOGEVENT:ms09_comosk03SubTitle
+	"*Where did you get these Tesla Tanks from anyway...?"
+End
+
+DIALOGEVENT:ms09_comosk04SubTitle
+	"*That she-wolf put up a fight, I'll give her that."
+End
+
+DIALOGEVENT:ms09_comosk05SubTitle
+	"*Ah, they still want to fight! All the more to kill!"
+End
+
+DIALOGEVENT:ms09_sovietintel01SubTitle
+	"*This could be the final battle plan, Commander. Our targets are the Allied military fortress in New York City, as well as the Statue Liberty."
+End
+
+DIALOGEVENT:ms09_sovietintel02SubTitle
+	"*The Allies will be on high alert, relying on any forces they can muster- take caution when moving in on a base."
+End
+
+DIALOGEVENT:ms09_sovietintel03SubTitle
+	"*You must topple the symbol of their tyranny: The Statue of Liberty."
+End
+
+DIALOGEVENT:ms09_sovietintel04SubTitle
+	"*With this symbolic gesture, the Allies will have no choice but to submit to the Soviet revolution. Good luck, Comrade."
+End
+
+DIALOGEVENT:ms09_sovietintel05SubTitle
+	"*The city is heavily fortified. This will require a superior strategy."
+End
+
+DIALOGEVENT:ms09_sovietintel06SubTitle
+	"*We've infiltrated small force via Ellis Island.  Use them to recover captured MCV's"
+End
+
+DIALOGEVENT:ms09_sovietintel07SubTitle
+	"*Commander, it seems Fort Bradley has upgraded alert status."
+End
+
+DIALOGEVENT:ms09_sovietintel08SubTitle
+	"*Commander, the Liberty Park garrison has upgraded their Alert Status."
+End
+
+DIALOGEVENT:ms09_sovietintel09SubTitle
+	"*Commander, our forces are picking up Chronosphere energy signatures near the Statue of Liberty!"
+End
+
+DIALOGEVENT:ms09_sovietintel10SubTitle
+	"*You'll each need engineer to get MCV up and running Commander. Do NOT waste them all!"
+End
+
+DIALOGEVENT:ms09_sovietintel11SubTitle
+	"*Capturing Allied Technology is all good and well, Commander, but do NOT forget you will need Engineer to get MCVs working as intended."
+End
+
+DIALOGEVENT:ms09_sovietintel12SubTitle
+	"*Engineer is essential."
+End
+
+DIALOGEVENT:ms09_sovietintel13SubTitle
+	"*Fort Bradley’s ore-refining operations offline."
+End
+
+DIALOGEVENT:ms09_sovietintel14SubTitle
+	"*Your invasion force is imminent. Please standby."
+End
+
+DIALOGEVENT:ms09_sovietintel15SubTitle
+	"*Your invasion force has arrived."
+End
+
+DIALOGEVENT:ms09_sovietintel16SubTitle
+	"*An allied attack is incoming."
+End
+
+DIALOGEVENT:ms09_sovietintel17SubTitle
+	"*Alert: Chronosphere anomalies detected."
+End
+
+DIALOGEVENT:ms09_sovietintel18SubTitle
+	"*Alert: Allied paradrop incoming."
+End
+
+DIALOGEVENT:ms09_sovietintel19SubTitle
+	"*Set up an outpost near Fort Bradley's vacated ore mines if you require additional resources."
+End
+
+DIALOGEVENT:ms09_sovietintel20SubTitle
+	"*Our Twinblades can transport infantry and vehicle reinforcements across the river."
+End
+
+DIALOGEVENT:ms09_sovietintel21SubTitle
+	"*Plans for the Premier's ultimate weapon, the Vacuum Imploder, are now available to you."
+End
+

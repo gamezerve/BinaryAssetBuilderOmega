@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <!-- Reborn: add only RA3 PathMusic events missing from Uprising. -->
+  <Tags />
+  <Includes>
+    <Include type="instance" source="DATA:PathMusic/RA3BasePathMusicEvent.xml" />
+  </Includes>
+  <PathMusicEvent id="S_S01LeninIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_S01LeninIntro" />
+  <PathMusicEvent id="SR_S01LeninIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S01JapanFleet" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S01Hermitage" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S01FakeReinforcements" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S02KrasnaIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_S02KrasnaIntro" />
+  <PathMusicEvent id="SR_S02KrasnaIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S02KrasnaSickle1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" IsCacheable="false" />
+  <PathMusicEvent id="S_S02KrasnaThreatMoment" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S02KrasnaJapBase" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_S02KrasnaJapBase" />
+  <PathMusicEvent id="SR_S02KrasnaJapBase" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S03Base" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S03Threat1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S03Threat1_1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S04GenevaIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_S04GenevaIntro" />
+  <PathMusicEvent id="SR_S04GenevaIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S04AlliesChrono" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_S04AlliesChrono" />
+  <PathMusicEvent id="SR_S04AlliesChrono" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S04Threat1_1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S04KrukovTellsYouOff" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_S04KrukovTellsYouOff" />
+  <PathMusicEvent id="SR_S04KrukovTellsYouOff" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S05MykonosIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_S05MykonosIntro" />
+  <PathMusicEvent id="SR_S05MykonosIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S05MykonosDownload" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_S05MykonosDownload" />
+  <PathMusicEvent id="SR_S05MykonosDownload" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S05MykonosRecaptureDownload" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S06IcelandIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_S06IcelandIntro" />
+  <PathMusicEvent id="SR_S06IcelandIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S06Krukov" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_S06Krukov" />
+  <PathMusicEvent id="SR_S06Krukov" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S06IcelandThreat1_1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S06KrukovTraitor" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_S06KrukovTraitor" />
+  <PathMusicEvent id="SR_S06KrukovTraitor" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S06KrukovDefeated" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_S06KrukovDefeated" />
+  <PathMusicEvent id="SR_S06KrukovDefeated" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S07FujiIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_S07FujiIntro" />
+  <PathMusicEvent id="SR_S07FujiIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S07FujiRobot" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_S07FujiRobot" />
+  <PathMusicEvent id="SR_S07FujiRobot" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S07FujiThreat1_1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S07FujiThreat1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S07EmperorDead" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S08EasterIslandBuildUp" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S08EasterIslandEmissary" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S08EasterIslandBase" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_08Threat1_1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S08EasterIslandThreat1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S09NYCIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S09NYCExplore" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S09RA2Moment" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S09InvasionForce" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_S09InvasionForce" />
+  <PathMusicEvent id="SR_S09InvasionForce" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_S09FinalVictory" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_09Threat1_1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S09_Threat1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A01BrightonIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_A01BrightonIntro" />
+  <PathMusicEvent id="SR_A01BrightonIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A01BrightonThreat" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A01BrightonCombat" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A01BrightonExplore" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A01BrightonFirstWave2min" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A01BrightonFirstWave3min" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A01BrightonWave2min" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A01BrightonWave3min" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A02CannesBegin" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A02CannesSpotted" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_A02CannesSpotted" />
+  <PathMusicEvent id="SR_A02CannesSpotted" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A02CannesExplosion" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_A02CannesExplosion" />
+  <PathMusicEvent id="SR_A02CannesExplosion" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A03HeidelbergIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A03HeidelbergIronCurtainUp" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A03HeidelbergIronCutainDown" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A03HeidelbergThreat1_1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A03HeidelbergThreat1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A04GibraltarIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_A04GibraltarIntro" />
+  <PathMusicEvent id="SR_A04GibraltarIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A04GibraltarExplore" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A04Threat1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A04Threat1_1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A05NorthSeaIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_A05NorthSeaIntro" />
+  <PathMusicEvent id="SR_A05NorthSeaIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A05NorthSeaBaseBuild" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A05NorthSeaExplore" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A05Threat1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A05Threat1_1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A05Incoming" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A06RushmoreBegin" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A06RushmoreTowerDown" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_A06RushmoreTowerDown" />
+  <PathMusicEvent id="SR_A06RushmoreTowerDown" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A06RushmoreChase" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A06SetSkirmishOn" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A06SetSkirmishOff" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A07TokyoIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_A07TokyoIntro" />
+  <PathMusicEvent id="SR_A07TokyoIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A07Nanocores" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_A07Nanocores" />
+  <PathMusicEvent id="SR_A07Nanocores" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A07Decimator" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_A07Decimator" />
+  <PathMusicEvent id="SR_A07Decimator" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A07Threat1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A07Threat1_1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A08HavanaIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A08RealAPOCTanks" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" IsCacheable="false" />
+  <PathMusicEvent id="S_A08FirstCombat" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A08Kirovs" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_A08Kirovs" />
+  <PathMusicEvent id="SR_A08Kirovs" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A08KirovEscaping" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_A08KirovEscaping" />
+  <PathMusicEvent id="SR_A08KirovEscaping" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A08KirovIntercepted" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_A08KirovIntercepted" />
+  <PathMusicEvent id="SR_A08KirovIntercepted" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A09LeningradIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A09MicroMCVs" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A09PremierEscapes" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_A09PremierEscapes" />
+  <PathMusicEvent id="SR_A09PremierEscapes" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A09TMinus25Minutes" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A09TMinus1Minute" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_A09Threat1_1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J01SovVillageIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_J01SovVillageIntro" />
+  <PathMusicEvent id="SR_J01SovVillageIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J01SovVillageStatueDown" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_J01SovVillageStatueDown" />
+  <PathMusicEvent id="SR_J01SovVillageStatueDown" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J02StalingradBegin" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_J02StalingradBegin" />
+  <PathMusicEvent id="SR_J02StalingradBegin" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J02StalingradStatueDown" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_J02StalingradStatueDown" />
+  <PathMusicEvent id="SR_J02StalingradStatueDown" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J02StalingradEmpireVictory" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J02Threat1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J03OdessaIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_J03OdessaIntro" />
+  <PathMusicEvent id="SR_J03OdessaIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J03OdessaShogun" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_J03OdessaShogun" />
+  <PathMusicEvent id="SR_J03OdessaShogun" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J03OdessaShogunRampage" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J04PearlHarborIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_J04PearlHarborIntro" />
+  <PathMusicEvent id="SR_J04PearlHarborIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J04Threat1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J04Threat1_1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J04FleetArrive" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_J04FleetArrive" />
+  <PathMusicEvent id="SR_J04FleetArrive" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J05DeepOceanIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J05Threat1_1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J05Threat1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J06SantaMonicaIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_J06SantaMonicaIntro" />
+  <PathMusicEvent id="SR_J06SantaMonicaIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J07YokohamaIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_JO7YokohamaIntro" />
+  <PathMusicEvent id="SR_JO7YokohamaIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J07YurikoCaptureMiniBase" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J07YurikoCaptureMiniBases" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J07BuildingsLost3" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J07BuildingsLost6" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J07Krukov" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_J07Krukov" />
+  <PathMusicEvent id="SR_J07Krukov" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J07ReinforcementsArrive" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_J07ReinforcementsArrive" />
+  <PathMusicEvent id="SR_J07ReinforcementsArrive" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J07SovietNavyArrive" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_J07SovietNavyArrive" />
+  <PathMusicEvent id="SR_J07SovietNavyArrive" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J08KremlinIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J08ShogunExecutioner" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_J08ShogunExecutioner" />
+  <PathMusicEvent id="SR_J08ShogunExecutioner" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J08TimeMachineDestroyed" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_J08TimeMachineDestroyed" />
+  <PathMusicEvent id="SR_J08TimeMachineDestroyed" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J08BeginExecutionerCombat" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J08JapanGainGround" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J08KrukovSetBack" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J08Threat1_1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J08PursuePremier" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J09AmsterdamIntro" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J09SovietNukeAttack" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" RestartAlternateEvent="SR_J09SovietNukeAttack" />
+  <PathMusicEvent id="SR_J09SovietNukeAttack" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J09Threat1_1" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+  <PathMusicEvent id="S_J09SovietsArrive" inheritFrom="PathMusicEvent:RA3BasePathMusicEvent" />
+</AssetDeclaration>

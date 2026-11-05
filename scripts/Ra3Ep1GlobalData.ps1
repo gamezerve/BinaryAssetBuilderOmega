@@ -3,14 +3,23 @@
 #-------------------------------------------------------------------------------------------------
 <# Reborn: compile each selected global source into an independently verified stream and retain its source/search evidence for publication. #>
 #-------------------------------------------------------------------------------------------------
-function Build-RebornGlobalData([string]$DataRoot,[string]$Sdk,[hashtable]$Settings,[string]$StaticManifest,[string]$GlobalManifest,[string]$Compiler,[string]$Work,[string]$Detail,[ref]$Result) {
+function Build-RebornGlobalData([string]$DataRoot,[string]$Sdk,[hashtable]$Settings,[string]$StaticManifest,[string]$GlobalManifest,[string]$Compiler,[string]$Work,[string]$Detail,[ref]$Result,[bool]$IncludeGlobalData=$true,[bool]$IncludeMapCatalog=$false) {
     $exe=Join-Path $Compiler 'BinaryAssetBuilder.ManifestInspector.exe'
     $directory=Join-Path $DataRoot 'AdditionalMaps';$streams=@();$evidence=@();$context=Join-Path $Work 'global-streams.json'
     # Reborn: absence is an ordinary static-only mod, matching the reference SDK's wildcard build stage.
-    $entries=if(Test-Path -LiteralPath $directory -PathType Container){@(Get-ChildItem -LiteralPath $directory -File -Filter 'MapMetaData_*.xml' | Sort-Object Name)}else{@()}
+    $entries=@(if($IncludeGlobalData -and (Test-Path -LiteralPath $directory -PathType Container)){Get-ChildItem -LiteralPath $directory -File -Filter 'MapMetaData_*.xml' | Sort-Object Name})
     # Reborn: missing optional inputs are yellow skips, distinct from unsupported compiler stages.
-    if(-not(Test-Path -LiteralPath $directory -PathType Container)){Write-SdkBuildLine ('Skipped: [No input] AdditionalMaps directory not found: '+$directory)}
-    elseif(-not $entries){Write-SdkBuildLine ('Skipped: [No input] No MapMetaData_*.xml files found in '+$directory)}
+    if($IncludeGlobalData -and -not(Test-Path -LiteralPath $directory -PathType Container)){Write-SdkBuildLine ('Skipped: [No input] AdditionalMaps directory not found: '+$directory)}
+    elseif($IncludeGlobalData -and -not $entries){Write-SdkBuildLine ('Skipped: [No input] No MapMetaData_*.xml files found in '+$directory)}
+    # Reborn: Build Maps discovers the optional standalone catalog at the Official root.
+    if($IncludeMapCatalog){
+        $catalog=Join-Path $DataRoot 'Maps/Official/mapmetadata_singleplayer.xml'
+        if(Test-Path -LiteralPath $catalog -PathType Leaf){$entries+= Get-Item -LiteralPath $catalog}
+        else{Write-SdkBuildLine ('Skipped: [No input] Optional map catalog not found: '+$catalog)}
+    }
+    # Reborn: Different source paths must never publish the same AdditionalMaps stream.
+    $duplicate=@($entries | Group-Object { $_.BaseName.ToLowerInvariant() } | Where-Object Count -gt 1)
+    if($duplicate){throw ('Duplicate AdditionalMaps stream name: '+($duplicate.Name -join ', '))}
     foreach($entry in $entries){
         if($entry.BaseName -cnotmatch '(?i)\AMapMetaData_[a-z0-9_-]+\z'){throw ('Invalid global stream name: '+$entry.FullName)}
         # Reborn: a genuinely blank optional entry has no XML to compile; malformed nonblank XML still reaches normal diagnostics.

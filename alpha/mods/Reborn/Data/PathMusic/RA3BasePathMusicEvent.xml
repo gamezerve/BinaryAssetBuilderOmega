@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <!-- Reborn: RA3 campaign events resolve against the original RA3 Pathfinder project header. -->
+  <PathMusicEvent id="RA3BasePathMusicEvent"
+      PathfinderEventHeader="AUDIO:Pathfinder\RA3Music\PC\RA3Music.h" />
+</AssetDeclaration>

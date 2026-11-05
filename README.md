@@ -1,5 +1,33 @@
 # BinaryAssetBuilder
 
+<!-- Reborn: LanMod5 keeps the original Uprising campaign selector and a separate RA3 art page. -->
+LanMod5's `Data/AptUI/fes_m_factionMenu` opens on Uprising with two page
+buttons above the flags. After an extra RA3 campaign is completed, it instead
+selects that campaign on the RA3 page and plays its completion animation there.
+The Red Alert 3 page uses the original RA3 backdrop and flag widgets
+from `fes_m_ra3FactionAssets`; its three choices select campaign indices 4/5/6
+(`SovietRA3`, `AlliesRA3`, `JapanRA3`) in the current CampaignEnumerator.
+Uprising completion frames and timelines share per-faction transforms derived
+from the original flag dimensions and query the extra campaigns' own progress.
+RA3 flag clicks use the stock faction selection sounds. The shared title switches
+between SELECT MINI-CAMPAIGN and SELECT CAMPAIGN. RA3 descriptions use distinct
+`RebornUI:RA3*Description` keys copied from the original RA3 string source; Uprising
+keys are preserved. Page labels and the RA3 title are also in Misc/Data/Mod.str.
+Both UI streams compiled privately
+(64 and 15 assets), and both generated APT/CONST pairs passed model readback.
+Page switching works in-game; the latest presentation and post-campaign return
+changes still require an in-game test.
+`tools/FactionMenuBuilder` retains the reproducible APT transformation.
+The menu opens and the original Uprising controls work in-game. Page setup now
+runs directly from the original initGUI, with helpers installed in its class
+initializer before screen construction. The initial Uprising page tab is disabled
+and the Red Alert 3 tab enabled. Methods preload the live controller, access the
+stage through `Cafe2_BaseUIScreen.m_screen`, and use its inherited `bind0` helper.
+Function bodies contain no premature End instructions. Seven regression checks
+cover function boundaries, receivers, callback stack execution, the real stock
+initialization hook, EA's static-stage/inherited-binder declarations, and matching
+static/animated completion transforms for all three RA3 flags.
+
 <!-- Reborn: real SDK builds scale with input graphs instead of inherited diagnostic fixture allowances. -->
 Production routing, dependency validation and source preparation no longer impose
 512-source, 4096-edge, 32-level Include, 4-MiB XML or 32-MiB graph quotas. Related
@@ -39,6 +67,13 @@ Studio's **Build Maps** checkbox (off by default) compiles direct folders under
 `mods/<name>/Misc/Data/Maps/Official/<map>` and enter the final Misc BIG.
 `map_mod.bin/imp/manifest/relo` use the unsuffixed `map.version` containing `_mod`.
 Accompanying `.map` and `.tga` files are copied unchanged.
+
+<!-- Reborn: discover the optional additive single-player map catalog alongside Official map sources. -->
+With **Build Maps** enabled, `Data/Maps/Official/mapmetadata_singleplayer.xml`
+is also compiled when present, even if **Build Global Data** is off. Its separate
+`data/additionalmaps/mapmetadata_singleplayer.*` stream is included in the Streams
+BIG. Use a distinct catalog identity such as `MapMetaData:SinglePlayer`; no
+manual Include in `Static_Mod.xml` is required. An absent file is an optional skip.
 
 <!-- Reborn: authored PathMusic events use the captured Pathfinder header. -->
 The Global build supports `PathMusicEvent` with a `PathfinderEventHeader` .h
