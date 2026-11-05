@@ -60,6 +60,18 @@ Expect-PackageFailure {Publish-RebornFinalPackage RebornTest 3.00 $streams $misc
 # Reborn: hold the destination lock to prove another publisher cannot interleave replacement operations.
 $held=[IO.File]::Open((Join-Path $first.Directory '.reborn-publish.lock'),[IO.FileMode]::Open,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
 try{Expect-PackageFailure {Publish-RebornFinalPackage RebornTest 4.00 $streams $misc $mods} 'ConcurrentPublication'}finally{$held.Dispose()}
+# Reborn: exercise split naming, SKU order, migration from one archive, and stale part removal without multi-gigabyte fixtures.
+$single=Publish-RebornFinalPackage RebornTest 5.00 $streams $misc $mods
+$split=Publish-RebornFinalPackage RebornTest 5.00 $streams $misc $mods 131150
+$expectedParts=@('RebornTest_5.00_Misc.big','RebornTest_5.00_Misc_2.big')
+$skuLines=@(Get-Content -LiteralPath $split.SkuDefPath)
+if($split.MiscEntries-ne 3 -or @($split.MiscPaths).Count-ne 2 -or ($skuLines -join '|') -cne 'add-big RebornTest_5.00_Streams.big|add-big RebornTest_5.00_Misc.big|add-big RebornTest_5.00_Misc_2.big'){throw 'Split Misc receipt or SKUDef differs.'}
+for($i=0;$i-lt $expectedParts.Count;$i++){
+    if((Split-Path -Leaf $split.MiscPaths[$i])-cne $expectedParts[$i] -or (Get-Item -LiteralPath $split.MiscPaths[$i]).Length-gt 131150){throw 'Split Misc name or size differs.'}
+}
+$merged=Publish-RebornFinalPackage RebornTest 5.00 $streams $misc $mods
+if($merged.MiscPaths.Count-ne 1 -or (Test-Path -LiteralPath $split.MiscPaths[1]) -or (Get-FileHash -LiteralPath $merged.MiscPath).Hash-cne $hash){throw 'Stale Misc part was not retired on rebuild.'}
+$checks.Add('MultipartMiscAndSameVersionCleanup')
 # Reborn: cloud tags may pass, but a real junction in Misc must still be refused without following it.
 if($IsWindows){
     $junction=Join-Path $root 'RedirectedMisc';$null=New-Item -ItemType Junction -Path $junction -Target $misc

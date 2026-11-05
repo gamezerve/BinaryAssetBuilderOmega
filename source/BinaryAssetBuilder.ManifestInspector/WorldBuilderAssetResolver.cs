@@ -100,7 +100,10 @@ internal static class WorldBuilderAssetResolver
         var files=new Dictionary<string,byte[]>(StringComparer.OrdinalIgnoreCase);using(var big=BigArchive.Open(package))foreach(var entry in big.Entries)files.Add(entry.Name,big.ReadEntry(entry,checked((int)entry.StoredSize)));
         var streams=Extensions.ToDictionary(e=>"diagnostic"+e,e=>files["data\\mod"+e]);
         var providers=new[]{(Path:staticManifest,Runtime:"data\\static.manifest"),(Path:globalManifest,Runtime:"data\\global.manifest"),(Path:Path.Combine(catalogDirectory,"audio.manifest"),Runtime:"data\\audio.manifest")}.Where(p=>File.Exists(p.Path)).Concat(SdkGlobalStreams.Load(context).Select(s=>(Path:s.Manifest,Runtime:s.Runtime))).ToArray();
-        var runtimeProviders=new Dictionary<AssetId,string>();var loaded=new List<ManifestAsset>();foreach(var provider in providers)foreach(var asset in ManifestReader.Read(File.ReadAllBytes(provider.Path)).Assets){loaded.Add(asset);runtimeProviders[Id(asset)]=provider.Runtime;}var mod=ManifestReader.Read(streams["diagnostic.manifest"]);var world=ManifestReader.Read(File.ReadAllBytes(Path.Combine(catalogDirectory,"worldbuilder.manifest")));var known=loaded.Concat(mod.Assets).Select(Id).ToHashSet();var wb=world.Assets.Select(Id).ToHashSet();
+        var mod=ManifestReader.Read(streams["diagnostic.manifest"]);
+        // Reborn: map packages retain their own reference convention; only top-level LOD streams resolve from data.
+        bool isTopLevelMod=!mod.Assets.Any(asset=>asset.TypeName=="GameMap");
+        var runtimeProviders=new Dictionary<AssetId,string>();var loaded=new List<ManifestAsset>();foreach(var provider in providers)foreach(var asset in ManifestReader.Read(File.ReadAllBytes(provider.Path)).Assets){loaded.Add(asset);runtimeProviders[Id(asset)]=isTopLevelMod?SdkGlobalStreams.RelativeToData(provider.Runtime):provider.Runtime;}var world=ManifestReader.Read(File.ReadAllBytes(Path.Combine(catalogDirectory,"worldbuilder.manifest")));var known=loaded.Concat(mod.Assets).Select(Id).ToHashSet();var wb=world.Assets.Select(Id).ToHashSet();
         // Reborn: absent weak names remain diagnostics rather than forcing an unrelated retail lookup; only WorldBuilder-owned weak IDs seed extraction.
         var weak=WeakSeeds(prepared).Where(id=>!known.Contains(id)&&wb.Contains(id));var result=Resolve(streams,Path.Combine(catalogDirectory,"worldbuilder.manifest"),loaded,weak,runtimeProviders);
         if(result.Imported.Length==0)return;
@@ -192,9 +195,17 @@ internal static class WorldBuilderAssetResolver
     //-------------------------------------------------------------------------------------------------
     internal static void WritePack(Stream output,Dictionary<string,byte[]> files)
     {
+        WritePack(output,files.ToDictionary(file=>file.Key,file=>(uint)file.Value.Length),(name,destination)=>destination.Write(files[name]));
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: write a BIG4 directory independently of how its payloads are stored. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void WritePack(Stream output,IReadOnlyDictionary<string,uint> files,Action<string,Stream> copyEntry)
+    {
         long header=checked((16L+files.Keys.Sum(k=>9L+Encoding.ASCII.GetByteCount(k))+7)&~7L);
-        long total=checked(header+files.Values.Sum(v=>(long)v.Length));
-        if(header>int.MaxValue||total>uint.MaxValue)throw new InvalidDataException("WorldBuilder BIG exceeds its 32-bit archive format.");
+        long total=checked(header+files.Values.Sum(v=>(long)v));
+        if(header>int.MaxValue||total>uint.MaxValue)throw new InvalidDataException("BIG exceeds its 32-bit archive format.");
         var directory=new byte[(int)header];Encoding.ASCII.GetBytes("BIG4").CopyTo(directory,0);
         BinaryPrimitives.WriteUInt32LittleEndian(directory.AsSpan(4),(uint)total);
         BinaryPrimitives.WriteUInt32BigEndian(directory.AsSpan(8),(uint)files.Count);
@@ -202,10 +213,10 @@ internal static class WorldBuilderAssetResolver
         int at=16;long offset=header;
         foreach(var file in files){
             BinaryPrimitives.WriteUInt32BigEndian(directory.AsSpan(at),(uint)offset);
-            BinaryPrimitives.WriteUInt32BigEndian(directory.AsSpan(at+4),(uint)file.Value.Length);
-            var name=Encoding.ASCII.GetBytes(file.Key+'\0');name.CopyTo(directory,at+8);at+=8+name.Length;offset+=file.Value.Length;
+            BinaryPrimitives.WriteUInt32BigEndian(directory.AsSpan(at+4),file.Value);
+            var name=Encoding.ASCII.GetBytes(file.Key+'\0');name.CopyTo(directory,at+8);at+=8+name.Length;offset+=file.Value;
         }
-        output.Write(directory);foreach(var file in files)output.Write(file.Value);
+        output.Write(directory);foreach(var file in files)copyEntry(file.Key,output);
     }
 
     //-------------------------------------------------------------------------------------------------

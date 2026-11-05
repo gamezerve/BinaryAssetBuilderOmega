@@ -103,6 +103,15 @@ public sealed class Ra3Ep1AudioEventPlugin : IAssetBuilderPlugin, IAssetBuilderO
                     throw new NotSupportedException("Repeated concrete AudioFile aliases are not admitted.");
                 if (lists.Add(name)) relocations++;
             }
+            else if (AllowSchemaSubmixSliders && name == "VolumeSliderMultiplier")
+            {
+                // Reborn: mission dialogue uses the EP1 slider multiplier list already written by the marshaler.
+                CheckElement(child, name, "AudioVolumeSliderMultiplier", new[] { "Slider", "Multiplier" });
+                foreach (XmlNode value in child.ChildNodes) CheckWhitespace(value);
+                CheckReal(child.GetAttribute("Multiplier"));
+                if (lists.Add(name)) relocations++;
+                extraBytes += 8;
+            }
             else
             {
                 string type = name == "PitchShift" || name == "PerFilePitchShift" ? "RealRange"

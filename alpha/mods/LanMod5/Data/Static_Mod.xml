@@ -2,6 +2,8 @@
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
 	<Tags></Tags>
 	<Includes>
+		<!-- Reborn: build mission dialogue in the static stream with its imported audio. -->
+		<Include type="all" source="DATA:Sounds/MissionDialogue_Mod.xml" />
 					<!-- Mod Specific -->
  		<!-- <Include type="reference" source="DATA:static.xml" /> --> 
 		<!-- <Include type="reference" source="DATA:global.xml" /> -->

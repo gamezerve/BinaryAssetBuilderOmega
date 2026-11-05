@@ -60,10 +60,15 @@ internal static class SdkMissingDependencyAudit
         // Reborn: availability uses SDK-local metadata, independently of registry, installed archives and native compiler development inputs.
         // Reborn: newly compiled global assets satisfy static references without being copied into the static stream.
         var stock=LoadStockCatalogs(CatalogManifestPaths(sdk).Concat(SdkGlobalStreams.Load(streamContext).Select(s=>s.Manifest)));
-        var report=Analyze(entry,paths,ConscriptSourceInput.Schemas(),stock.Assets) with{StockCatalogs=stock.Catalogs};
+        // Reborn: keep mandatory reference checks and skip advisory scans for this build.
+        bool silent=Environment.GetEnvironmentVariable("REBORN_SILENT_MODE")=="1";
+        var report=Analyze(entry,paths,ConscriptSourceInput.Schemas(),stock.Assets,silent) with{StockCatalogs=stock.Catalogs};
         // Reborn: missing strings join the same readable preflight/report as missing assets and definitions; warnings do not become false native dependency errors.
-        var strings=SdkMissingStringAudit.Run(entry,sdk,paths,ConscriptSourceInput.Schemas());
-        report=report with{Findings=report.Findings.Concat(strings.Findings).ToArray(),Strings=new(strings.CheckedKeys,strings.StockKeys,strings.ModKeys,strings.CatalogComplete,strings.PreparedSourceUsed,strings.StockSource,strings.ModSource)};
+        if(!silent)
+        {
+            var strings=SdkMissingStringAudit.Run(entry,sdk,paths,ConscriptSourceInput.Schemas());
+            report=report with{Findings=report.Findings.Concat(strings.Findings).ToArray(),Strings=new(strings.CheckedKeys,strings.StockKeys,strings.ModKeys,strings.CatalogComplete,strings.PreparedSourceUsed,strings.StockSource,strings.ModSource)};
+        }
         // Reborn: reports may only be written into an existing non-redirected work directory, never over a source or stock manifest.
         SdkEnvironmentPreflight.CheckPath(output);SdkEnvironmentPreflight.DirectoryPath(Path.GetDirectoryName(output)!);
         if(File.Exists(output) || Directory.Exists(output) || paths.AllowedRoots.Any(r=>SdkEnvironmentPreflight.Inside(r,output)) || stock.Catalogs.Any(c=>output.Equals(c.Manifest,StringComparison.OrdinalIgnoreCase)))throw new InvalidDataException("Fresh dependency-report path outside source roots required.");
@@ -73,7 +78,7 @@ internal static class SdkMissingDependencyAudit
         foreach(var finding in report.Findings)
             Console.WriteLine(FormatFinding(finding));
         Console.WriteLine($"Reborn: dependency audit: {report.Findings.Count(f=>f.Code=="MISSINGDEF")} missing definition uses, {report.Findings.Count(f=>f.Code=="MISSINGASSET")} missing asset uses; {report.ModAssets} mod assets + {report.StockAssets} stock identities; {report.CheckedAssetReferences} typed references checked, {report.UncheckedAssetReferences} deferred. Full runtime coverage: false.");
-        Console.WriteLine($"Reborn: string audit: {strings.CheckedKeys} key uses checked; {strings.StockKeys} stock keys + {strings.ModKeys} mod.str keys; {strings.Findings.Count(f=>f.Code=="MISSINGSTRING")} missing string uses; catalog complete={strings.CatalogComplete}; prepared source={strings.PreparedSourceUsed}.");
+        if(report.Strings is {} status)Console.WriteLine($"Reborn: string audit: {status.CheckedKeys} key uses checked; {status.StockKeys} stock keys + {status.ModKeys} mod.str keys; {report.Findings.Count(f=>f.Code=="MISSINGSTRING")} missing string uses; catalog complete={status.CatalogComplete}; prepared source={status.PreparedSourceUsed}.");
         Console.WriteLine("Reborn: dependency report: "+output);
         return report.Findings.Any(f=>f.Severity=="Error")?1:0;
     }
@@ -112,7 +117,7 @@ internal static class SdkMissingDependencyAudit
     //-------------------------------------------------------------------------------------------------
     /** Reborn: aggregate every captured document's definition uses and emitted typed references without flattening instance-only assets into runtime output. */
     //-------------------------------------------------------------------------------------------------
-    internal static Report Analyze(string entry,SdkSourcePathAudit.Report paths,XmlSchemaSet schemas,IEnumerable<Asset> stockAssets)
+    internal static Report Analyze(string entry,SdkSourcePathAudit.Report paths,XmlSchemaSet schemas,IEnumerable<Asset> stockAssets,bool silent=false)
     {
         var documents=new Dictionary<string,XDocument>(StringComparer.OrdinalIgnoreCase);
         foreach(var source in paths.Sources)
@@ -122,7 +127,8 @@ internal static class SdkMissingDependencyAudit
             documents.Add(source.PhysicalPath,Parse(bytes,source.PhysicalPath));
         }
         var findings=new List<Finding>();var tables=new Dictionary<string,Dictionary<string,Definition>>(StringComparer.OrdinalIgnoreCase);var active=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        foreach(var issue in paths.Issues)findings.Add(PathFinding(issue));
+        foreach(var issue in paths.Issues)
+            if(!silent||issue.Code!="MISSINGART")findings.Add(PathFinding(issue));
         foreach(string path in documents.Keys)Definitions(path);
         // Reborn: only the entry and its all-Include emission closure count as mod-produced assets; instance witnesses do not satisfy runtime references.
         var emitted=new HashSet<string>(StringComparer.OrdinalIgnoreCase);Emit(entry);
@@ -150,10 +156,16 @@ internal static class SdkMissingDependencyAudit
                 }
 
             //-------------------------------------------------------------------------------------------------
-            /** Reborn: check schema-declared strong and covered typed weak references against emitted/stock identities, never guess from ordinary strings. */
+            /** Reborn: check schema-declared references and known runtime lookups against emitted/stock identities. */
             //-------------------------------------------------------------------------------------------------
             void Check(XObject node,IXmlSchemaInfo? info,string value,string field)
             {
+                // Reborn: CampaignMovie stores a string but resolves it as a VideoEventList ID at runtime.
+                bool campaignMovie=node is XAttribute attribute && attribute.Name=="FileName" &&
+                    attribute.Parent is XElement movie && movie.Name.NamespaceName==Ea &&
+                    movie.Parent is XElement owner && owner.Name.NamespaceName==Ea &&
+                    ((owner.Name.LocalName=="CampaignTemplate" && movie.Name.LocalName is "FinalMovie" or "AlternateFinalMovie") ||
+                     (owner.Name.LocalName=="MissionTemplate" && movie.Name.LocalName=="IntroMovie"));
                 var recovered=info?.SchemaType==null?RecoverDeclaredField(node,schemas,recoveredSchemas):null;
                 var type=info?.SchemaType??recovered?.Type;if(type==null)return;
                 // Reborn: weak IDs may derive directly from string rather than AssetReference, so count their unproved uses before the strong-type gate.
@@ -163,12 +175,14 @@ internal static class SdkMissingDependencyAudit
                 // Reborn: absent upgrade weak targets warn like UI weak targets; Core preserves their hashes without manufacturing imports or assets.
                 // Reborn: OCL CreateObject and other schema-typed GameObject weak IDs need availability checks even though they create no native import.
                 bool objectWeak=type.QualifiedName.Name=="GameObjectWeakRef";
-                bool diagnosticWeak=upgradeWeak || objectWeak || type.QualifiedName.Name is "ImageWeakRef" or "LogicCommandSetWeakRef";
+                bool diagnosticWeak=campaignMovie || upgradeWeak || objectWeak || type.QualifiedName.Name is "ImageWeakRef" or "LogicCommandSetWeakRef";
+                // Reborn: GameObject weak IDs still identify WorldBuilder assets eligible for extraction.
+                if(silent&&diagnosticWeak&&!objectWeak)return;
                 if(!upgradeWeak && !diagnosticWeak && weakType!=null && XmlSchemaType.IsDerivedFrom(type,weakType,XmlSchemaDerivationMethod.None)){if(!string.IsNullOrWhiteSpace(value))deferred++;return;}
                 if(!upgradeWeak && !diagnosticWeak && (referenceType==null || !XmlSchemaType.IsDerivedFrom(type,referenceType,XmlSchemaDerivationMethod.None)))return;
                 // Reborn: list-valued/custom reference encodings require their own tokenization rather than hashing the whole list as one missing name.
                 if(type.Datatype?.Variety==XmlSchemaDatatypeVariety.List){deferred++;return;}
-                string? required=Annotation(info?.SchemaAttribute?.UnhandledAttributes)??Annotation(info?.SchemaElement?.UnhandledAttributes)??Annotation(recovered?.Annotations);
+                string? required=campaignMovie?"VideoEventList":Annotation(info?.SchemaAttribute?.UnhandledAttributes)??Annotation(info?.SchemaElement?.UnhandledAttributes)??Annotation(recovered?.Annotations);
                 for(XmlSchemaType? current=type;required==null && current!=null;){required=Annotation(current.UnhandledAttributes);var next=current.BaseXmlSchemaType;if(ReferenceEquals(next,current))break;current=next;}
                 value=value.Trim();if(value.Length==0)return;
                 if(value.StartsWith('='))
@@ -177,21 +191,21 @@ internal static class SdkMissingDependencyAudit
                 }
                 value=value.Trim();if(value.Length==0)return;
                 if(required==null || value.Contains('\\') || !schemas.GlobalTypes.Contains(new XmlQualifiedName(required,Ea))){deferred++;return;}
-                string selector=required,name=value;int colon=value.IndexOf(':');if(colon>=0){selector=value[..colon];name=value[(colon+1)..];}
+                string selector=required,name=value;int colon=campaignMovie?-1:value.IndexOf(':');if(colon>=0){selector=value[..colon];name=value[(colon+1)..];}
                 var expected=schemas.GlobalTypes[new XmlQualifiedName(required,Ea)] as XmlSchemaType;
                 var selected=schemas.GlobalTypes[new XmlQualifiedName(selector,Ea)] as XmlSchemaType;
                 if(selected==null || expected==null){deferred++;return;}
+                // Reborn: optional mesh shader texture assignments can be omitted before linking; required texture consumers retain their normal errors.
+                bool optionalTexture=required=="Texture"&&XmlSchemaType.IsDerivedFrom(selected,expected,XmlSchemaDerivationMethod.None)&&W3DMissingTexturePolicy.IsOptionalBinding(node);
                 uint id=new InstanceHandle(name).InstanceId;
                 var matches=catalog.GetValueOrDefault(id,Array.Empty<Asset>()).Where(a=>schemas.GlobalTypes[new XmlQualifiedName(a.Type,Ea)] is XmlSchemaType actual && XmlSchemaType.IsDerivedFrom(actual,expected,XmlSchemaDerivationMethod.None) && XmlSchemaType.IsDerivedFrom(actual,selected,XmlSchemaDerivationMethod.None)).ToArray();
                 // Reborn: mirror Core's source-before-manifest and exact-before-derived resolution instead of falsely flagging a valid override as ambiguous.
                 var local=matches.Where(a=>modIdentities.Contains((a.TypeId,a.InstanceId))).ToArray();if(local.Length!=0)matches=local;
                 uint selectedId=BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(selector);var exact=matches.Where(a=>a.TypeId==selectedId).ToArray();if(exact.Length!=0)matches=exact;
                 checkedReferences++;
-                // Reborn: optional mesh shader texture assignments can be omitted before linking; required texture consumers retain their normal errors.
-                bool optionalTexture=required=="Texture"&&XmlSchemaType.IsDerivedFrom(selected,expected,XmlSchemaDerivationMethod.None)&&W3DMissingTexturePolicy.IsOptionalBinding(node);
                 if(matches.Length==0)Add("MISSINGASSET",selector+":"+name,node,path,field,optionalTexture?"Texture is absent from mod-produced assets and configured stock manifests. The optional shader texture binding will be omitted; the shader default remains in effect. No texture or unresolved import is generated.":"Unknown asset referenced from emitted source; not found in mod-produced assets or configured stock manifests.",diagnosticWeak||optionalTexture?"Warning":"Error");
                 else if(matches.Length>1)Add("AMBIGUOUSASSET",selector+":"+name,node,path,field,"Multiple compatible concrete asset identities match this reference.",diagnosticWeak?"Warning":"Error");
-                else if(WorldBuilderOnly(matches[0])){
+                else if(!campaignMovie&&WorldBuilderOnly(matches[0])){
                     // Reborn: validation covers both direct strong references and weak spawn sites; compilation no longer emits a competing warning set.
                     var target=matches[0];var models=target.Dependencies.Select(id=>byIdentity.GetValueOrDefault(id)).Where(a=>a!=null&&WorldBuilderOnly(a)&&a.Type is "W3DContainer" or "W3DMesh").Select(a=>a!.Type+":"+a.Name).Distinct().ToArray();
                     string detail="exists only in the original WorldBuilder stream; the packaging resolver will copy it and its required dependencies into the mod.";
@@ -256,6 +270,7 @@ internal static class SdkMissingDependencyAudit
         //-------------------------------------------------------------------------------------------------
         void Add(string code,string target,XObject node,string path,string field,string detail,string severity="Error")
         {
+            if(silent&&severity=="Warning")return;
             if(!SdkSourceScale.Unrestricted&&findings.Count>=4096)throw new InvalidDataException("Dependency finding limit reached; incomplete audit refused.");
             var line=(IXmlLineInfo)node;var element=node as XElement??(node as XAttribute)?.Parent;
             var owner=element?.AncestorsAndSelf().FirstOrDefault(e=>e.Name==XName.Get("Define",Ea))??element?.AncestorsAndSelf().LastOrDefault(e=>e.Attribute("id")!=null);

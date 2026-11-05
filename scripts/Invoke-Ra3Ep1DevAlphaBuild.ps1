@@ -1,6 +1,6 @@
 # Reborn: stable SDK front end; preserve editable sources, publish versioned Documents mods, never change game installation files or launch a game.
 [CmdletBinding()]
-param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot,[string]$StudioSession,[string]$ModVersion='1.00',[string]$FinalModsRoot,[ValidateSet(0,1)][int]$BuildGlobalData=1,[ValidateSet(0,1)][int]$DeveloperBuildTests=0,[ValidateSet(0,1)][int]$BuildAptUI=0,[ValidateSet(0,1)][int]$BuildMaps=0)
+param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot,[string]$StudioSession,[string]$ModVersion='1.00',[string]$FinalModsRoot,[ValidateSet(0,1)][int]$BuildGlobalData=1,[ValidateSet(0,1)][int]$DeveloperBuildTests=0,[ValidateSet(0,1)][int]$BuildAptUI=0,[ValidateSet(0,1)][int]$BuildMaps=0,[ValidateSet(0,1)][int]$SilentMode=0)
 
 function Test-AptUIReferences {
     param(
@@ -65,12 +65,16 @@ $sdk=Get-RebornSdkRoot $PSScriptRoot;$lock=$null;$run=$null;$publishMutex=$null;
 # Reborn: map compilation and _mod staging share the normal SDK lifetime, cancellation and final-package flow.
 . (Join-Path $PSScriptRoot 'Ra3Ep1Maps.ps1')
 # Reborn: every native/global/backend child inherits this build's mode; restore the caller's environment even on cancellation or failure.
+# Reborn: propagate the build-local advisory policy to compiler subprocesses.
+$previousSilentMode=$env:REBORN_SILENT_MODE
 $previousDeveloperTests=$env:REBORN_DEVELOPER_BUILD_TESTS
 #-------------------------------------------------------------------------------------------------
 <# Reborn: delete only a newly owned work/output generation after proving containment and refusing every redirected descendant. #>
 #-------------------------------------------------------------------------------------------------
 function Remove-DevAlphaOwned([string]$Path,[string]$Parent){$resolved=[IO.Path]::GetFullPath($Path);if([IO.Path]::GetDirectoryName($resolved)-ine [IO.Path]::GetFullPath($Parent)){throw 'Cleanup target is not a direct owned child.'};foreach($item in @(Get-Item -LiteralPath $resolved -Force)+@(Get-ChildItem -LiteralPath $resolved -Force -Recurse)){if(($item.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0){throw 'Redirected cleanup target retained.'}};Remove-Item -LiteralPath $resolved -Recurse -Force}
 try{
+    $env:REBORN_SILENT_MODE=[string]$SilentMode
+    if($SilentMode){Write-SdkBuildLine "Silent Mode enabled; advisory audits skipped."}
     $env:REBORN_DEVELOPER_BUILD_TESTS=[string]$DeveloperBuildTests
     Write-SdkBuildLine $(if($DeveloperBuildTests){'Build mode: Developer (build tests enabled).'}else{'Build mode: Fast (developer tests disabled; source/reference/output validation remains enabled).'})
     Start-SdkBuildPhase 1 'Clearing build cache';Stop-SdkBuildPhase 'Skipped: this alpha does not use a persistent asset cache.'
@@ -272,12 +276,14 @@ try{
 		Write-SdkBuildLine 'AptUI streams added to the final BIG package.'
 	}
 	
-	# Reborn: only unresolved WorldBuilder use sites become warnings, after extraction and global/static package assembly have finished.
-    & (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') sdk-check-worldbuilder-resolution $package $dependencyReport (Join-Path $sdk 'catalogs/ra3ep1') 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail}
-    if($LASTEXITCODE-ne 0){throw 'Post-resolution WorldBuilder dependency check failed.'}
-    # Reborn: audit every final asset type after global/static assembly, using weak-use receipts as well as native reference tables.
-    & (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') sdk-unused-assets $package $sdk $run $ModXml 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail}
-    if($LASTEXITCODE-ne 0){throw 'Final asset usage audit failed.'}
+    if(-not $SilentMode){
+        # Reborn: only unresolved WorldBuilder use sites become warnings, after extraction and global/static package assembly have finished.
+        & (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') sdk-check-worldbuilder-resolution $package $dependencyReport (Join-Path $sdk 'catalogs/ra3ep1') 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail}
+        if($LASTEXITCODE-ne 0){throw 'Post-resolution WorldBuilder dependency check failed.'}
+        # Reborn: audit every final asset type after global/static assembly, using weak-use receipts as well as native reference tables.
+        & (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') sdk-unused-assets $package $sdk $run $ModXml 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail}
+        if($LASTEXITCODE-ne 0){throw 'Final asset usage audit failed.'}
+    }
     $big=$ModName+'.big';Copy-Item -LiteralPath $package -Destination (Join-Path $stage $big);$hash=(Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash
     if((Get-FileHash -LiteralPath (Join-Path $stage $big) -Algorithm SHA256).Hash-cne $hash){throw 'Published BIG differs from the verified backend package.'}
     Write-SdkBuildLine ('Streams BIG prepared and SHA256 verified: '+$ModName+'_'+$ModVersion+'_Streams.big (compiled static/global stream families).')
@@ -292,7 +298,10 @@ try{
     # Reborn: successful receipts distinguish source validation from optional developer regression execution.
     $result | Add-Member -NotePropertyName DeveloperBuildTests -NotePropertyValue ([bool]$DeveloperBuildTests)
     # Reborn: keep unused findings and their source locations in the successful receipt after the private work generation is cleaned.
-    $result | Add-Member -NotePropertyName UnusedAssets -NotePropertyValue (Get-Content -LiteralPath (Join-Path $run 'unused-assets.json') -Raw|ConvertFrom-Json)
+    # Reborn: Silent Mode has no unused-asset report; keep its receipt field null.
+    $unusedAssets=$null
+    if(-not $SilentMode){$unusedAssets=Get-Content -LiteralPath (Join-Path $run "unused-assets.json") -Raw|ConvertFrom-Json}
+    $result | Add-Member -NotePropertyName UnusedAssets -NotePropertyValue $unusedAssets
     # Reborn: keep the actual map inputs, generated relative files and hashes in the final normal build receipt.
     $result | Add-Member -NotePropertyName Maps -NotePropertyValue @($mapBuild | ForEach-Object {[pscustomobject]@{Name=$_.Name;Entry=$_.Entry;Files=$_.Files}})
     [IO.File]::WriteAllText((Join-Path $stage 'build.json'),($result|ConvertTo-Json -Depth 20))
@@ -311,7 +320,7 @@ try{
     Write-SdkBuildLine ('Mod Version: '+$ModVersion)
     Write-SdkBuildLine ('Final Streams BIG: '+$final.StreamsPath)
     # Reborn: skipped Misc must not look like a published archive in the Studio log.
-    if($final.MiscEntries -gt 0){Write-SdkBuildLine ('Final Misc BIG: '+$final.MiscPath+' ('+$final.MiscEntries+' files)')}else{Write-SdkBuildLine 'Misc skipped: no packageable files; no Misc BIG or SKUDef entry.'}
+    if($final.MiscEntries -gt 0){Write-SdkBuildLine ('Final Misc BIG: '+($final.MiscPaths -join ', ')+' ('+$final.MiscEntries+' files total)')}else{Write-SdkBuildLine 'Misc skipped: no packageable files; no Misc BIG or SKUDef entry.'}
     Write-SdkBuildLine ('Final SKUDef: '+$final.SkuDefPath)
     Stop-SdkBuildPhase
     # Reborn: finish the saved log inside staging so a log write failure cannot replace the last good public package.
@@ -331,4 +340,4 @@ try{
     if($runOwned){if($detail -and (Test-Path -LiteralPath $detail)){Copy-Item -LiteralPath $detail -Destination (Join-Path $sdk '.work/last-failure-detail.log') -Force;Write-SdkBuildLine ('Detailed failure log: '+(Join-Path $sdk '.work/last-failure-detail.log'))}else{Write-SdkBuildLine 'No backend compiler log was generated for this failure.'};Write-SdkBuildLine ('Failure log: '+(Join-Path $sdk '.work/last-failure.log'));[IO.File]::WriteAllLines((Join-Path $sdk '.work/last-failure.log'),$script:BuildLogLines)}
     exit 1
 }
-finally{try{if($stageOwned -and (Test-Path -LiteralPath $stage)){Remove-DevAlphaOwned $stage (Join-Path $sdk 'builtmods')};if($runOwned -and (Test-Path -LiteralPath $run)){Remove-DevAlphaOwned $run (Join-Path $sdk '.work')}}finally{$env:REBORN_DEVELOPER_BUILD_TESTS=$previousDeveloperTests;if($lock){$lock.Dispose()};if($publishHeld){$publishMutex.ReleaseMutex()};if($publishMutex){$publishMutex.Dispose()};if($cancelEvent){$cancelEvent.Dispose()}}}
+finally{try{if($stageOwned -and (Test-Path -LiteralPath $stage)){Remove-DevAlphaOwned $stage (Join-Path $sdk 'builtmods')};if($runOwned -and (Test-Path -LiteralPath $run)){Remove-DevAlphaOwned $run (Join-Path $sdk '.work')}}finally{$env:REBORN_SILENT_MODE=$previousSilentMode;$env:REBORN_DEVELOPER_BUILD_TESTS=$previousDeveloperTests;if($lock){$lock.Dispose()};if($publishHeld){$publishMutex.ReleaseMutex()};if($publishMutex){$publishMutex.Dispose()};if($cancelEvent){$cancelEvent.Dispose()}}}

@@ -10,7 +10,7 @@ $script:PhaseLabel='Initializing'
 #-------------------------------------------------------------------------------------------------
 <# Reborn: capture exactly the human-readable lines displayed by Studio for the saved build log. #>
 #-------------------------------------------------------------------------------------------------
-function Write-SdkBuildLine([string]$Message){$script:BuildLogLines.Add($Message);Write-Output $Message}
+function Write-SdkBuildLine([string]$Message){if($env:REBORN_SILENT_MODE-eq "1" -and $Message -match "^\s*(?:\[[^\]]+\]\s*)?Warning:"){return};$script:BuildLogLines.Add($Message);Write-Output $Message}
 #-------------------------------------------------------------------------------------------------
 <# Reborn: time real phases independently while keeping the original SDK step numbering. #>
 #-------------------------------------------------------------------------------------------------
@@ -23,11 +23,13 @@ function Stop-SdkBuildPhase([string]$Note){if($Note){Write-SdkBuildLine $Note};i
 <# Reborn: preserve raw lines on disk and show diagnostics/progress without JSON receipts or stack-trace noise. #>
 #-------------------------------------------------------------------------------------------------
 function Write-SdkCompilerLine([string]$Line,[string]$DetailPath){
-    [IO.File]::AppendAllText($DetailPath,$Line+[Environment]::NewLine)
     $trim=$Line.Trim()
     # Reborn: "Reborn:" is this toolchain's internal source tag, not the selected mod's name; the raw detail log keeps it, the display drops it.
     if($trim -cmatch '^Reborn:\s*(.+)$'){$rest=$Matches[1];$trim=[string][char]::ToUpperInvariant($rest[0])+$rest.Substring(1)}
     $trim=$trim -creplace '^((?:ERROR|Error|Warning|Critical):\s*)Reborn:\s*','$1'
+    # Reborn: suppress warning lines in both displayed and saved compiler logs.
+    if($env:REBORN_SILENT_MODE-eq "1" -and $trim -match "^(?:\[[^\]]+\]\s*)?Warning:"){return}
+    [IO.File]::AppendAllText($DetailPath,$Line+[Environment]::NewLine)
     # Reborn: suppress only identical source-selection progress, across audit/preparation passes and shared includes.
     if($trim -cmatch '^Source path \[' -and -not $script:BuildSourceSelections.Add($trim)){return}
     # Reborn: raw logs keep every phase warning; identical missing-ART warnings appear once in Studio.

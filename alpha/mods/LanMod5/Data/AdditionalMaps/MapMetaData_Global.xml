@@ -6,6 +6,8 @@
 		<Include type="all" source="DATA:GlobalData/CampaignPortraits.xml" />
 		<Include type="all" source="DATA:GlobalData/CampaignTemplates.xml" />
 		<Include type="all" source="DATA:PathMusic/PathMusicEvents_Mod.xml" />
+		<Include type="all" source="DATA:Video/Videos.xml" />
+		<Include type="all" source="DATA:Video/VideoSequences.xml" />
 		
 	</Includes>
 

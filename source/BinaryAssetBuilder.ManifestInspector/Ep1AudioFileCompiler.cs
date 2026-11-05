@@ -53,6 +53,12 @@ internal static class Ep1AudioFileCompiler
     //-------------------------------------------------------------------------------------------------
     internal static void Prepare(XmlElement source,byte[] wave,string originalPath)
     {
+        // Reborn: pre-encoded EA audio has no resampling or codec defaults to infer.
+        if(originalPath.EndsWith(".easnd",StringComparison.OrdinalIgnoreCase)){
+            if(!source.HasAttribute("SubtitleStringName"))
+                source.SetAttribute("SubtitleStringName","DIALOGEVENT:"+Path.GetFileNameWithoutExtension(originalPath)+"SubTitle");
+            return;
+        }
         var pcm=InspectWave(wave);bool sound=Path.GetFileName(Path.GetDirectoryName(originalPath)!).Equals("Sounds",StringComparison.OrdinalIgnoreCase);
         if(!source.HasAttribute("PCCompression"))source.SetAttribute("PCCompression",sound?"XAS":"NONE");
         if(!source.HasAttribute("IsStreamedOnPC"))source.SetAttribute("IsStreamedOnPC",sound?"false":"true");
@@ -71,11 +77,17 @@ internal static class Ep1AudioFileCompiler
         try{
             for(int i=0;i<files.Length;i++){
                 var source=files[i].DocumentElement!;string file=source.GetAttribute("File");
-                if(!System.Text.RegularExpressions.Regex.IsMatch(file,@"^resources/[0-9A-Fa-f]{64}\.wav$"))throw SdkXmlDiagnostics.At(new InvalidDataException("AudioFile requires its captured WAV resource."),source.GetAttributeNode("File"));
+                if(!System.Text.RegularExpressions.Regex.IsMatch(file,@"^resources/[0-9A-Fa-f]{64}\.(wav|easnd)$"))throw SdkXmlDiagnostics.At(new InvalidDataException("AudioFile requires its captured WAV or EA SND resource."),source.GetAttributeNode("File"));
                 var bytes=SdkEnvironmentPreflight.Read(Path.Combine(Path.GetDirectoryName(entry)!,file.Replace('/',Path.DirectorySeparatorChar)),64*1048576);
                 if(!Path.GetFileNameWithoutExtension(file).Equals(Convert.ToHexString(SHA256.HashData(bytes)),StringComparison.OrdinalIgnoreCase))throw new InvalidDataException("Captured WAV hash differs: "+file);
-                var pcm=InspectWave(bytes);waves.Add(pcm);var settings=Settings(source,pcm);string input=i.ToString("D6")+".wav";File.WriteAllBytes(Path.Combine(job,input),bytes);requests.Add(new(source.GetAttribute("id"),input,settings.Codec,settings.Rate,settings.Quality,settings.Streamed));
+                // Reborn: pass through the verified retail compressed payload, with a freshly serialized EP1 descriptor.
+                if(file.EndsWith(".easnd",StringComparison.Ordinal)){
+                    results.Add(source.GetAttribute("id"),ReadEncoded(source,bytes));
+                    continue;
+                }
+                var pcm=InspectWave(bytes);waves.Add(pcm);var settings=Settings(source,pcm);string input=requests.Count.ToString("D6")+".wav";File.WriteAllBytes(Path.Combine(job,input),bytes);requests.Add(new(source.GetAttribute("id"),input,settings.Codec,settings.Rate,settings.Quality,settings.Streamed));
             }
+            if(requests.Count==0)return results;
             File.WriteAllText(Path.Combine(job,"request.json"),JsonSerializer.Serialize(requests));
             var start=new ProcessStartInfo(Environment.ProcessPath!){UseShellExecute=false,CreateNoWindow=true,RedirectStandardOutput=true,RedirectStandardError=true};start.ArgumentList.Add("audio-file-encode-worker");start.ArgumentList.Add(job);
             Console.WriteLine("Encoding AudioFile resources: "+files.Length+" WAV file(s).");using var process=Process.Start(start)??throw new InvalidDataException("Audio encoder worker could not start.");var stdout=process.StandardOutput.ReadToEndAsync();var stderr=process.StandardError.ReadToEndAsync();
@@ -98,6 +110,29 @@ internal static class Ep1AudioFileCompiler
                 Directory.Delete(full,true);
             }
         }
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: validate the bundled eight-byte EA header and framed payload before linking. */
+    //-------------------------------------------------------------------------------------------------
+    private static Result ReadEncoded(XmlElement source,byte[] bytes)
+    {
+        if(bytes.Length<16 || bytes[0] is not (2 or 4 or 6))
+            throw new InvalidDataException("Unsupported pre-encoded EA audio header.");
+        uint sampleWord=BinaryPrimitives.ReadUInt32BigEndian(bytes.AsSpan(4));
+        bool streamed=(sampleWord&0xC0000000u)==0x40000000u;
+        int rate=BinaryPrimitives.ReadUInt16BigEndian(bytes.AsSpan(2));
+        int samples=(int)(sampleWord&0x3FFFFFFFu);
+        byte channels=(byte)((bytes[1]>>2)+1);
+        if(rate<400 || samples==0 || channels is not (1 or 2 or 4 or 6))
+            throw new InvalidDataException("Invalid pre-encoded EA audio rate, sample count or channel count.");
+        byte[] header=streamed?bytes[..8]:Array.Empty<byte>();
+        byte[] payload=streamed?bytes[8..]:bytes;
+        var native=Serialize(source.GetAttribute("SubtitleStringName"),new(source.GetAttribute("id"),"",samples,rate,channels,header));
+        var prefix=AudioFileRuntimeProbe.Parse(native.InstanceData,native.InstanceData.Length);
+        using var stream=new MemoryStream(payload,false);
+        AudioCustomDataProbe.Inspect(stream,prefix,header);
+        return new(native,payload);
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -163,9 +198,26 @@ internal static class Ep1AudioFileCompiler
         var audio=instances.Where(i=>i.Handle.TypeId==0x166B084D).ToArray();if(audio.Length==0)return;string path=Path.Combine(directory,"RebornConscriptProbe.big");var files=new Dictionary<string,byte[]>(StringComparer.OrdinalIgnoreCase);
         using(var original=BigArchive.Open(path,100000,1048576))foreach(var item in original.Entries)files.Add(item.Name,original.ReadEntry(item,checked((int)item.StoredSize)));
         foreach(var instance in audio){var h=instance.Handle;string name=$"{h.TypeId:x8}.{h.TypeHash:x8}.{h.InstanceId:x8}.{h.InstanceHash:x8}.cdata";foreach(string suffix in new[]{"","_l","_m"})files.Add("data\\mod"+suffix+"\\cdata\\"+name,encoded[h.InstanceName].Custom);}
-        byte[] packed=WorldBuilderAssetResolver.Pack(files);string temporary=path+".audio.tmp";File.WriteAllBytes(temporary,packed);
-        using(var check=BigArchive.Open(temporary,files.Count,1048576))foreach(var file in files){var e=check.Entries.Single(e=>e.Name.Equals(file.Key,StringComparison.OrdinalIgnoreCase));if(!check.ReadEntry(e,file.Value.Length).SequenceEqual(file.Value))throw new InvalidDataException("AudioFile CDATA archive readback differs.");}
-        File.Move(temporary,path,true);string receiptPath=Path.Combine(directory,"trial-plan.json");var receipt=JsonNode.Parse(File.ReadAllText(receiptPath))!;receipt["ArchiveEntryCount"]=files.Count;receipt["ArchiveSha256"]=Convert.ToHexString(SHA256.HashData(packed));receipt["AudioFileCDataCount"]=audio.Length;File.WriteAllText(receiptPath,receipt.ToJsonString(new JsonSerializerOptions{WriteIndented=true}));
+        // Reborn: stream the three LOD copies to disk instead of allocating a second archive-sized buffer in x86.
+        string temporary=path+".audio.tmp";
+        bool created=false;
+        string archiveHash;
+        try
+        {
+            using(var output=new FileStream(temporary,FileMode.CreateNew,FileAccess.Write,FileShare.None))
+            {
+                created=true;
+                WorldBuilderAssetResolver.WritePack(output,files);
+            }
+            WorldBuilderAssetResolver.VerifyPack(temporary,files);
+            using(var input=File.OpenRead(temporary))archiveHash=Convert.ToHexString(SHA256.HashData(input));
+            File.Move(temporary,path,true);
+        }
+        finally
+        {
+            if(created&&File.Exists(temporary))File.Delete(temporary);
+        }
+        string receiptPath=Path.Combine(directory,"trial-plan.json");var receipt=JsonNode.Parse(File.ReadAllText(receiptPath))!;receipt["ArchiveEntryCount"]=files.Count;receipt["ArchiveSha256"]=archiveHash;receipt["AudioFileCDataCount"]=audio.Length;File.WriteAllText(receiptPath,receipt.ToJsonString(new JsonSerializerOptions{WriteIndented=true}));
         Console.WriteLine("AudioFile custom data packaged: "+audio.Length+" sound payload(s), three stream variants, verified readback.");
     }
 }

@@ -171,19 +171,53 @@ internal static class SdkUnusedAssetAudit
                 dynamicUi.Add(asset.Name);
         }
 
-        foreach (var asset in FindUnused(mod, stock, weak, inheritance))
+        // Reborn: binary map arguments can consume media without a manifest edge.
+        var unused = FindUnused(mod, stock, weak, inheritance);
+        var audioIds = unused.Where(a => a.TypeName == "AudioEvent").Select(AssetName)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var movieIds = unused.Where(a => a.TypeName is "VideoEventList" or "Video").Select(AssetName)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var sequences = mod.Concat(stock).Where(a => a.TypeName == "VideoEventList")
+            .DistinctBy(WorldBuilderAssetResolver.Id)
+            .ToDictionary(AssetName, StringComparer.OrdinalIgnoreCase);
+        if (unused.Any(a => a.TypeName == "Video"))
+            movieIds.UnionWith(sequences.Keys);
+        var mapMedia = audioIds.Count + movieIds.Count == 0 ? null
+            : SdkMapMediaUsage.Scan(SdkSourceSearch.ForMod(entry, sdk).ModData, audioIds, movieIds);
+        var mapVideoTargets = new HashSet<AssetId>();
+        if (mapMedia != null)
+        {
+            foreach (string movie in mapMedia.Movies)
+                if (sequences.TryGetValue(movie, out var sequence)) mapVideoTargets.UnionWith(sequence.References);
+            Console.WriteLine($"Map media usage audit: {mapMedia.ModMaps} mod maps, {mapMedia.RetailMaps} stock maps, {mapMedia.Audio.Count} audio event IDs and {mapMedia.Movies.Count} movie IDs referenced.");
+        }
+
+        foreach (var asset in unused)
         {
             if (aptui.Contains(WorldBuilderAssetResolver.Id(asset)))
                 continue;
 
-            int colon = asset.Name.IndexOf(':');
-            string id = colon < 0 ? asset.Name : asset.Name[(colon + 1)..];
+            string id = AssetName(asset);
+            if (mapMedia != null && (asset.TypeName is "AudioEvent" or "VideoEventList" or "Video"))
+            {
+                if (!mapMedia.Complete) continue;
+                bool usedByMap = asset.TypeName switch
+                {
+                    "AudioEvent" => mapMedia.Audio.Contains(id),
+                    "VideoEventList" => mapMedia.Movies.Contains(id),
+                    _ => mapVideoTargets.Contains(WorldBuilderAssetResolver.Id(asset))
+                        || (mapMedia.Movies.Contains(id) && !sequences.ContainsKey(id))
+                };
+                if (usedByMap) continue;
+            }
 
             var origin = (origins.LastOrDefault(o => o.HasOrigin(asset.TypeName, id)) ?? fallback)
                 .Location(asset.TypeName, id);
 
             Console.WriteLine("Warning: UNUSEDASSET ' " + asset.Name +
-                " ' has no static or inheritance reference in emitted mod assets or stock catalogs; dynamic/script use may exist. Source: " +
+                (asset.TypeName is "AudioEvent" or "VideoEventList" or "Video"
+                    ? " ' has no static, inheritance or media reference in mod/stock assets or scanned maps. Source: "
+                    : " ' has no static or inheritance reference in emitted mod assets or stock catalogs; dynamic/script use may exist. Source: ") +
                 origin + ".");
 
             findings.Add(new { asset.Name, origin.File, origin.Line, origin.Column, origin.Context });
@@ -201,6 +235,12 @@ internal static class SdkUnusedAssetAudit
                     InheritanceEdges = inheritance.Distinct().Count(),
                     PackagedAptUIAssets = dynamicUi.Count,
                     DynamicUIAssets = dynamicUi,
+                    MapMediaCoverage = mapMedia == null ? null : new
+                    {
+                        mapMedia.ModMaps, mapMedia.RetailMaps, mapMedia.Complete,
+                        Audio = mapMedia.Audio.OrderBy(id => id).ToArray(),
+                        Movies = mapMedia.Movies.OrderBy(id => id).ToArray()
+                    },
                     Findings = findings,
                     Advisory = true,
                     GameExecuted = false
@@ -217,6 +257,9 @@ internal static class SdkUnusedAssetAudit
             " without static or inheritance references.");
     }
 
+
+    // Reborn: normalize manifest names for the case-insensitive map argument lookup.
+    private static string AssetName(ManifestAsset asset) => asset.Name[(asset.Name.IndexOf(':') + 1)..];
 
     // Reborn: only the official schema reference annotation supplies the required target family.
     private static string? Annotation(XmlAttribute[]? attributes)=>attributes?.FirstOrDefault(a=>a.LocalName=="refType"&&a.NamespaceURI=="uri:ea.com:eala:asset:schema")?.Value;

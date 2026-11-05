@@ -77,17 +77,22 @@ internal sealed class BigArchive : IDisposable
 
     public byte[] ReadEntryRange(BigEntry entry, long relativeOffset, int count)
     {
-        if (relativeOffset < 0 || count < 0 || relativeOffset > entry.StoredSize - count)
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(relativeOffset),
-                $"Range offset={relativeOffset:N0}, count={count:N0} is outside '{entry.Name}' ({entry.StoredSize:N0} bytes)." );
-        }
+        ArgumentOutOfRangeException.ThrowIfNegative(count);
+        if(relativeOffset < 0 || relativeOffset > (long)entry.StoredSize - count)
+            throw new ArgumentOutOfRangeException(nameof(relativeOffset), $"Range exceeds BIG entry '{entry.Name}'.");
+        byte[] bytes = new byte[count];
+        ReadEntryRange(entry, relativeOffset, bytes);
+        return bytes;
+    }
+
+    // Reborn: reuse bounded buffers when copying or verifying large archive entries.
+    public void ReadEntryRange(BigEntry entry, long relativeOffset, Span<byte> destination)
+    {
+        if (relativeOffset < 0 || relativeOffset > (long)entry.StoredSize - destination.Length)
+            throw new ArgumentOutOfRangeException(nameof(relativeOffset), $"Range exceeds BIG entry '{entry.Name}'.");
 
         _stream.Position = checked(entry.Offset + relativeOffset);
-        byte[] bytes = new byte[count];
-        _stream.ReadExactly(bytes);
-        return bytes;
+        _stream.ReadExactly(destination);
     }
 
     public void Dispose() => _stream.Dispose();

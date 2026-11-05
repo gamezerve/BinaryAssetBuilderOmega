@@ -42,7 +42,8 @@ function Assert-RebornPackagePath([string]$Path) {
 #-------------------------------------------------------------------------------------------------
 <# Reborn: write and independently read back a streaming BIG4 with root-relative Misc names, bounded 32-bit offsets and unchanged source hashes. #>
 #-------------------------------------------------------------------------------------------------
-function New-RebornMiscBig([string]$Source,[string]$Destination) {
+function New-RebornMiscBigs([string]$Source,[string]$Destination,[long]$Limit) {
+    if($Limit -lt 16 -or $Limit -gt [uint32]::MaxValue){throw 'Invalid Misc BIG4 size limit.'}
     Assert-RebornPackagePath $Source
     $files=@();$entries=[Collections.Generic.List[object]]::new();$names=[Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
     if(Test-Path -LiteralPath $Source){
@@ -52,14 +53,35 @@ function New-RebornMiscBig([string]$Source,[string]$Destination) {
         while($pending.Count){foreach($item in Get-ChildItem -LiteralPath $pending.Dequeue() -Force){Assert-RebornPackagePath $item.FullName;if($item.PSIsContainer){$pending.Enqueue($item.FullName)}elseif($item.Extension -ine '.asset'){$files+= $item}}}
     }
     # Reborn: absent, directory-only and excluded-only Misc inputs produce no archive at all.
-    if($files.Count -eq 0){return 0}
     [long]$header=16;[long]$size=0
+    $archives=[Collections.Generic.List[object]]::new()
     foreach($file in ($files | Sort-Object FullName)){
         $name=[IO.Path]::GetRelativePath($Source,$file.FullName).Replace('/','\')
         if($name -cmatch '[^\x20-\x7e]' -or -not $names.Add($name)){throw ('Invalid or duplicate BIG entry: '+$name)}
-        $encoded=[Text.Encoding]::ASCII.GetBytes($name+[char]0);$header+=8+$encoded.Length;$size+=$file.Length
+        $encoded=[Text.Encoding]::ASCII.GetBytes($name+[char]0)
+        $directorySize=8+$encoded.Length
+        if((((16+$directorySize+7)-band (-bnot 7))+$file.Length) -gt $Limit){throw ('Misc file exceeds the BIG4 size limit: '+$name)}
+        if(((($header+$directorySize+7)-band (-bnot 7))+$size+$file.Length) -gt $Limit){
+            $archives.Add($entries)
+            $entries=[Collections.Generic.List[object]]::new();$header=16;$size=0
+        }
+        $header+=$directorySize;$size+=$file.Length
         $entries.Add([pscustomobject]@{Name=$name;Bytes=$encoded;File=$file.FullName;Length=$file.Length;Hash=(Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash})
     }
+    if($entries.Count){$archives.Add($entries)}
+    for($i=0;$i -lt $archives.Count;$i++){
+        $path=if($i -eq 0){$Destination}else{Join-Path ([IO.Path]::GetDirectoryName($Destination)) ([IO.Path]::GetFileNameWithoutExtension($Destination)+'_'+($i+1)+'.big')}
+        Write-RebornMiscBig $archives[$i] $path
+        [pscustomobject]@{Name=[IO.Path]::GetFileName($path);Entries=$archives[$i].Count}
+    }
+}
+
+#-------------------------------------------------------------------------------------------------
+<# Reborn: write and verify one BIG4 using only the entries assigned to its part. #>
+#-------------------------------------------------------------------------------------------------
+function Write-RebornMiscBig($Entries,[string]$Destination) {
+    [long]$header=16;[long]$size=0
+    foreach($entry in $Entries){$header+=8+$entry.Bytes.Length;$size+=$entry.Length}
     $header=($header+7)-band (-bnot 7);$total=$header+$size
     if($total -gt [uint32]::MaxValue){throw 'Misc BIG exceeds the BIG4 32-bit size limit.'}
     $stream=[IO.File]::Open($Destination,[IO.FileMode]::CreateNew,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
@@ -86,13 +108,12 @@ function New-RebornMiscBig([string]$Source,[string]$Destination) {
             $stream.Position=$directoryPosition;$expectedOffset+=$entry.Length
         }
     } finally {$writer.Dispose();$stream.Dispose()}
-    return $entries.Count
 }
 
 #-------------------------------------------------------------------------------------------------
 <# Reborn: publish streams, optional nonempty Misc and SKUDef with rollback, preserving other versions and refusing unowned or modified collisions. #>
 #-------------------------------------------------------------------------------------------------
-function Publish-RebornFinalPackage([string]$ModName,[string]$Version,[string]$Streams,[string]$Misc,[string]$ModsRoot) {
+function Publish-RebornFinalPackage([string]$ModName,[string]$Version,[string]$Streams,[string]$Misc,[string]$ModsRoot,[long]$MiscBigLimit=[uint32]::MaxValue) {
     if($ModName -cnotmatch '\A[A-Za-z0-9_-]{1,48}\z' -or $Version -cnotmatch '\A[0-9]{1,4}(\.[0-9]{1,4}){1,3}\z'){throw 'Invalid final mod name or version.'}
     if(-not $ModsRoot){$documents=[Environment]::GetFolderPath([Environment+SpecialFolder]::MyDocuments);if(-not $documents){throw 'Windows Documents known folder is unavailable.'};$ModsRoot=Join-Path $documents 'Red Alert 3 Uprising/Mods'}
     # Reborn: receipts always contain absolute paths, including isolated developer test destinations.
@@ -108,26 +129,37 @@ function Publish-RebornFinalPackage([string]$ModName,[string]$Version,[string]$S
     try {
         $null=New-Item -ItemType Directory -Path $stage;$stageOwned=$true
         Copy-Item -LiteralPath $Streams -Destination (Join-Path $stage $streamsName)
-        $miscCount=New-RebornMiscBig $Misc (Join-Path $stage $miscName)
+        $miscParts=@(New-RebornMiscBigs $Misc (Join-Path $stage $miscName) $MiscBigLimit)
+        $miscCount=0
+        foreach($part in $miscParts){$miscCount+=$part.Entries}
         # Reborn: mirror official SDK order; this SKUDef is a mod fragment, not a replacement game SKU.
         $skuText="add-big $streamsName`r`n";$newFiles=@($streamsName)
-        if($miscCount -gt 0){$skuText+="add-big $miscName`r`n";$newFiles+= $miscName}
+        foreach($part in $miscParts){$skuText+="add-big $($part.Name)`r`n";$newFiles+=$part.Name}
         $newFiles+= $skuName
         [IO.File]::WriteAllText((Join-Path $stage $skuName),$skuText,[Text.Encoding]::ASCII)
         $inventory=@(foreach($name in $newFiles){[pscustomobject]@{Name=$name;Sha256=(Get-FileHash -LiteralPath (Join-Path $stage $name)).Hash}})
         if($inventory[0].Sha256 -cne (Get-FileHash -LiteralPath $Streams).Hash){throw 'Final streams copy differs.'}
         $receipt=Join-Path $output $receiptName
+        # Reborn: old receipts own only verified exact-version files; extra parts follow the same rollback path.
+        $previousFiles=[Collections.Generic.Dictionary[string,string]]::new([StringComparer]::OrdinalIgnoreCase)
         if(Test-Path -LiteralPath $receipt){
             Assert-RebornPackagePath $receipt;$old=Get-Content -LiteralPath $receipt -Raw | ConvertFrom-Json
-            # Reborn: accept both the earlier mandatory-Misc receipt and the new optional-Misc receipt, with exact allowed identities.
-            if($old.Format -cne 'RebornDocumentsPackage1' -or $old.ModName -cne $ModName -or $old.Version -cne $Version -or @($old.Files).Count -notin @(2,3) -or @($old.Files | Where-Object Name -CEQ $streamsName).Count -ne 1 -or @($old.Files | Where-Object Name -CEQ $skuName).Count -ne 1){throw 'Unmanaged final package receipt retained.'}
-            foreach($name in @($streamsName,$miscName,$skuName)){
-                $previous=@($old.Files | Where-Object Name -CEQ $name);$target=Join-Path $output $name;Assert-RebornPackagePath $target
-                if($previous.Count -eq 0){if(Test-Path -LiteralPath $target){throw ('Unmanaged final package collision retained: '+$name)};continue}
-                if($previous.Count -ne 1 -or -not(Test-Path -LiteralPath $target -PathType Leaf) -or (Get-FileHash -LiteralPath $target).Hash -cne $previous[0].Sha256){throw ('Modified final package retained: '+$name)}
+            if($old.Format -cne 'RebornDocumentsPackage1' -or $old.ModName -cne $ModName -or $old.Version -cne $Version){throw 'Unmanaged final package receipt retained.'}
+            $partPattern='\A'+[regex]::Escape($stem)+'_Misc_(?:[2-9]|[1-9][0-9]+)\.big\z'
+            foreach($entry in $old.Files){
+                if($entry.Name -cnotin @($streamsName,$miscName,$skuName) -and $entry.Name -cnotmatch $partPattern){throw 'Unmanaged final package receipt entry retained.'}
+                if(-not $previousFiles.TryAdd($entry.Name,$entry.Sha256)){throw 'Duplicate final package receipt entry retained.'}
             }
-            foreach($entry in $old.Files){if($entry.Name -cnotin @($streamsName,$miscName,$skuName)){throw 'Unmanaged final package receipt entry retained.'}}
-        }else{foreach($name in $owned){if(Test-Path -LiteralPath (Join-Path $output $name)){throw ('Unmanaged final package collision retained: '+$name)}}}
+            if(-not $previousFiles.ContainsKey($streamsName) -or -not $previousFiles.ContainsKey($skuName)){throw 'Incomplete final package receipt retained.'}
+        }
+        $owned=@($owned+@($miscParts.Name)+@($previousFiles.Keys) | Select-Object -Unique)
+        foreach($name in $owned){
+            if($name -ceq $receiptName){continue}
+            $target=Join-Path $output $name;Assert-RebornPackagePath $target
+            if($previousFiles.ContainsKey($name)){
+                if(-not(Test-Path -LiteralPath $target -PathType Leaf) -or (Get-FileHash -LiteralPath $target).Hash -cne $previousFiles[$name]){throw ('Modified final package retained: '+$name)}
+            }elseif(Test-Path -LiteralPath $target){throw ('Unmanaged final package collision retained: '+$name)}
+        }
         [IO.File]::WriteAllText((Join-Path $stage $receiptName),([pscustomobject]@{Format='RebornDocumentsPackage1';ModName=$ModName;Version=$Version;Files=$inventory;MiscEntries=$miscCount}|ConvertTo-Json -Depth 5))
         # Reborn: only explicitly verified files of this exact version move; unrelated mod files never enter cleanup.
         foreach($name in $owned){$target=Join-Path $output $name;if(Test-Path -LiteralPath $target){[IO.File]::Move($target,(Join-Path $stage ($name+'.previous')));$saved.Add($name)}}
@@ -141,5 +173,6 @@ function Publish-RebornFinalPackage([string]$ModName,[string]$Version,[string]$S
         # Reborn: remove only the exact fresh staging child after checking that no redirected descendants appeared.
         try{if($stageOwned -and $cleanup -and (Test-Path -LiteralPath $stage)){Assert-RebornPackagePath $stage;foreach($item in Get-ChildItem -LiteralPath $stage -Force -Recurse){Assert-RebornPackagePath $item.FullName};Remove-Item -LiteralPath $stage -Recurse -Force}}finally{$publicationLock.Dispose()}
     }
-    return [pscustomobject]@{Directory=$output;Version=$Version;StreamsPath=(Join-Path $output $streamsName);MiscPath=$(if($miscCount -gt 0){Join-Path $output $miscName}else{$null});SkuDefPath=(Join-Path $output $skuName);MiscEntries=$miscCount}
+    $miscPaths=@(foreach($part in $miscParts){Join-Path $output $part.Name})
+    return [pscustomobject]@{MiscPaths=$miscPaths;Directory=$output;Version=$Version;StreamsPath=(Join-Path $output $streamsName);MiscPath=$(if($miscCount -gt 0){Join-Path $output $miscName}else{$null});SkuDefPath=(Join-Path $output $skuName);MiscEntries=$miscCount}
 }

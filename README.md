@@ -1272,6 +1272,29 @@ are now checked against emitted mod assets plus stock manifests. Missing names
 produce source-positioned `Warning: MISSINGASSET`; missing strong Cmd targets
 remain build errors. Existing image lookup does not require a new image compiler.
 
+<!-- Reborn: campaign movie strings are runtime event IDs. -->
+Campaign `FinalMovie`, `AlternateFinalMovie` and `IntroMovie` FileName values are
+checked as VideoEventList IDs against mod declarations and stock manifests.
+Missing IDs emit a source-positioned `MISSINGASSET` warning.
+Global builds can emit authored VideoEventList sequences with ordered Movie and
+TitleCard entries and optional fades. MovieAsset resolves to a Video asset.
+The stock SFS05 sequence matches the retail BIN, relocation and import data.
+Mixed sequences have passed stream readback and still need in-game validation.
+Global builds also emit Video descriptors from Videos.xml includes. Filename,
+Comment, Volume and SoundOverride are authored through the Uprising schema,
+and MovieAsset may reference a Video emitted by the same build.
+
+<!-- Reborn: binary map Sound and Movie arguments can use media without a manifest edge. -->
+**Silent Mode** in BuildStudio hides warnings and skips advisory missing-string,
+weak-reference and unused-asset checks. Required references, includes, schema
+validation and stream linking still report build errors.
+
+The unused asset audit checks AudioEvent, VideoEventList and Video against the
+mod's Data/Maps/Official maps and installed Uprising Data/Maps*.big archives.
+Movie arguments can also resolve through a VideoEventList to its videos.
+Set REBORN_UPRISING_GAME_ROOT if automatic install discovery fails. Incomplete
+map coverage defers these media warnings and leaves other asset audits active.
+
 The GameObject build route now accepts **multiple complete supported GameObjects plus
 multiple ArmorTemplate, WeaponTemplate, UpgradeTemplate, LogicCommand and LogicCommandSet assets**
 in the same mod. New local IDs resolve before stock assets; declarations are
@@ -1333,7 +1356,9 @@ source coordinates. This does not enable unimplemented module layouts/resources.
 Studio now has a **Mod Version** field (default `1.00`). Final builds publish
 `<name>_<version>_Streams.big`, `<name>_<version>_Misc.big` and
 `<name>_<version>.skudef` to the Windows Documents known folder under
-`Red Alert 3 Uprising/Mods/<name>/`. The SKUDef includes Streams and optional nonempty Misc.
+`Red Alert 3 Uprising/Mods/<name>/`. The SKUDef includes Streams and every nonempty Misc part.
+If Misc exceeds the BIG4 size limit, the SDK adds numbered archives such as
+`<name>_<version>_Misc_2.big`.
 `alpha/mods/<name>/Misc/` is packaged root-relative, excluding `.asset`
 intermediates like the official SDK. Missing/empty or excluded-only Misc produces
 no Misc archive or SKUDef entry. Other versions and unrelated user files are preserved; modified or
@@ -5057,6 +5082,12 @@ consumers and invalid/ambiguous references retain their errors; see the
 
 <!-- Reborn: native AudioFile encoding and CDATA publication now participate in ordinary Static_Mod builds. -->
 `AudioFile` WAV resources now use the normal include/resource/build pipeline.
+
+<!-- Reborn: preserve installed RA3 mission dialogue without transcoding. -->
+AudioFile also accepts .easnd resources containing an eight-byte EA sound header
+followed by its encoded blocks. The header supplies codec, sample rate, channel
+count and play location. The compiler validates the framing and emits the
+existing compressed audio as static-stream custom data.
 The deployed PC encoder supports `XAS`, `NONE` and `EALAYER3`, RAM or streamed
 payloads, source sample rates/PCSampleRate overrides, PCQuality and subtitle
 settings. Runtime AudioFile records and correctly named CDATA payloads are

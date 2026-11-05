@@ -11,6 +11,11 @@ internal static class SdkGlobalStreams
 {
     internal sealed record Stream(string Manifest,string Runtime,string Sha256);
 
+    // Reborn: top-level mod manifests already resolve their dependencies from the data directory.
+    internal static string RelativeToData(string runtimePath) =>
+        runtimePath.StartsWith(@"data\", StringComparison.OrdinalIgnoreCase) ? runtimePath[5..] : runtimePath;
+
+
     //-------------------------------------------------------------------------------------------------
     /** Reborn: accept only the exact compiled manifest generation and runtime discovery names supplied by this build. */
     //-------------------------------------------------------------------------------------------------

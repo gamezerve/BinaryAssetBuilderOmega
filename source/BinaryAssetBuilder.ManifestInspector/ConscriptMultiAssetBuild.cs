@@ -72,7 +72,7 @@ internal static class ConscriptMultiAssetBuild
             // Reborn: retail AudioFile metadata stays SDK-local; authored events reference the loaded audio stream without repacking its samples.
             string? audioManifest=null;if(sources.Any(s=>s.DocumentElement!.LocalName is "AudioEvent" or "AudioFile")){audioManifest=AuthoredAmbientCompiler.CatalogPath();var audio=ManifestReader.Read(SdkEnvironmentPreflight.Read(audioManifest,64*1048576));TypeRegistryAudit.ValidateTarget(audio.Header.Version,audio.Header.AllTypesHash);if(!audio.Header.IsLinked||audio.Validate().Count!=0)throw new InvalidDataException("Valid linked EP1 audio catalog required.");var known=stock.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();stock=stock.Concat(audio.Assets.Where(a=>a.TypeName=="AudioFile"&&!known.Contains(new(a.TypeId,a.InstanceId)))).ToArray();}
             var fingerprints=new Dictionary<uint,(uint Hash,bool Tokenized)>();var locals=new Dictionary<AssetId,XmlDocument>();
-            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechStoreTemplate" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "CampaignEnumerator" or "CampaignTemplate" or "MissionTemplate" or "MpGameRules" or "Credits" or "CameraSettings" or "PathMusicEvent" or "PathMusicGameDynamicState" or "GameMap" or "GameScriptList" or "RadarTerrainImage" or "TerrainTextureAtlas" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
+            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTech" or "PlayerTechStoreTemplate" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "CampaignEnumerator" or "CampaignTemplate" or "MissionTemplate" or "MpGameRules" or "Credits" or "CameraSettings" or "Video" or "VideoEventList" or "PathMusicEvent" or "PathMusicGameDynamicState" or "GameMap" or "GameScriptList" or "RadarTerrainImage" or "TerrainTextureAtlas" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
                 uint typeId=FastHash.GetHashCode(type);var examples=stock.Where(a=>a.TypeId==typeId).Select(a=>(a.TypeHash,Tokenized:a.Tokenized==1)).Distinct().ToArray();if(examples.Length==0&&type is "GameMap" or "GameScriptList" or "RadarTerrainImage" or "TerrainTextureAtlas")examples=new[]{(TypeHash:type=="GameMap"?0x442681EAu:type=="GameScriptList"?0xA268995Au:type=="RadarTerrainImage"?RadarTerrainImageCompiler.TypeHash:TerrainAtlasCompiler.TypeHash,Tokenized:false)};if(examples.Length!=1)throw new InvalidDataException("EP1 asset fingerprint is absent/ambiguous: "+type);fingerprints[typeId]=examples[0];if(!locals.TryAdd(new(typeId,InstanceHandle.GetInstanceId(id)),xml))throw SdkXmlDiagnostics.At(new InvalidDataException("DUPLICATEASSET ' "+type+":"+id+" ' Duplicate local asset/hash identity."),xml.DocumentElement);
             }
             // Reborn: source-only catalog entries resolve local names before native data exists; payloads are freshly compiled below, never copied from stock.
@@ -160,7 +160,7 @@ internal static class ConscriptMultiAssetBuild
                     // Reborn: use the full Uprising subsound record and prove all authored fields and local/retail imports.
                     instance=Normalize(xml);var native=Ep1MultisoundCompiler.Compile(instance.XmlNode);SchemaNativeContract.Verify(Ep1MultisoundCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(Marshaler.Ep1Multisound),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
                 }else if(type=="AudioEvent"){
-                    instance=Normalize(xml);buffer=AuthoredAmbientCompiler.Compile(instance);
+                    instance=Normalize(xml);buffer=AuthoredAmbientCompiler.Compile(instance,official);
                 }else if(type=="ArmorTemplate"){
                     instance=Normalize(xml);var plugin=new Ra3Ep1ArmorPlugin();plugin.Initialize(TargetPlatform.Win32);buffer=plugin.ProcessInstance(instance);
                 }else if(type=="WeaponTemplate"){
@@ -241,6 +241,16 @@ internal static class ConscriptMultiAssetBuild
                     instance=Normalize(xml);var native=CreditsCompiler.Compile(instance.XmlNode);
                     var proof=SchemaNativeContract.Resolve(xml,schemas,available);proof.DocumentElement!.RemoveAttribute("id");
                     SchemaNativeContract.Verify(proof.DocumentElement,typeof(Credits),0,native,Array.Empty<AssetId>());buffer=Buffer(native);
+                }else if(type=="Video"){
+                    // Reborn: emit the EP1 video descriptor so authored event lists can import it.
+                    instance=Normalize(xml);
+                    var ns=new XmlNamespaceManager(instance.XmlNode.OwnerDocument!.NameTable);
+                    ns.AddNamespace("ea",SchemaSet.XmlNamespace);
+                    buffer=Buffer(Marshaler.CompileEp1Video(new Node(instance.XmlNode.CreateNavigator()!,ns)));
+                }else if(type=="VideoEventList"){
+                    // Reborn: link the ordered sequence with Core-resolved Video imports.
+                    instance=Normalize(xml);
+                    buffer=Buffer(VideoEventListCompiler.Compile((XmlElement)instance.XmlNode));
                 }else if(type=="PathMusicEvent"){
                     // Reborn: emit the EP1 runtime record from the captured header and authored restart/cache fields.
                     instance=Normalize(xml);
@@ -394,7 +404,11 @@ internal static class ConscriptMultiAssetBuild
             // Reborn: restore the pre-regression reference spelling; native prefix observations alone did not prove safe runtime reader/cache ownership.
             var physical=new[]{Path.GetFullPath(manifest),Path.GetFullPath(global)}.Concat(audioManifest==null?Array.Empty<string>():new[]{audioManifest}).ToArray();var runtimeNames=new[]{"data\\static.manifest","data\\global.manifest"}.Concat(audioManifest==null?Array.Empty<string>():new[]{"data\\audio.manifest"}).ToArray();
             // Reborn: publish actual global manifest references rather than merging early-load assets into mod.manifest.
-            physical=physical.Concat(external.Select(s=>s.Manifest)).ToArray();runtimeNames=runtimeNames.Concat(external.Select(s=>s.Runtime.ToLowerInvariant())).ToArray();
+            physical=physical.Concat(external.Select(s=>s.Manifest)).ToArray();
+            // Reborn: all dependencies of mod{,_l,_m}.manifest resolve relative to data during LOD reload.
+            runtimeNames=runtimeNames.Concat(external.Select(s=>s.Runtime.ToLowerInvariant())).ToArray();
+            if(!earlyGlobal && !sources.Any(s=>s.DocumentElement!.LocalName=="GameMap"))
+                runtimeNames=runtimeNames.Select(SdkGlobalStreams.RelativeToData).ToArray();
             // Reborn: early globals must not pull the entire static stream into startup just because the compiler used its lookup catalog.
             if(earlyGlobal){
                 var needed=instances.SelectMany(i=>i.ValidatedReferencedInstances!).Select(r=>new AssetId(r.TypeId,r.InstanceId)).Where(id=>!locals.ContainsKey(id)).ToHashSet();

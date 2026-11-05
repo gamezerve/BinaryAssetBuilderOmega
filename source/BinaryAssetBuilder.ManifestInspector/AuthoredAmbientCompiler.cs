@@ -24,10 +24,10 @@ internal static class AuthoredAmbientCompiler
     //-------------------------------------------------------------------------------------------------
     /** Reborn: retain the existing schema/import-checked AudioEvent writer, explicitly opting into AMBIENT and fade-on-start support. */
     //-------------------------------------------------------------------------------------------------
-    internal static AssetBuffer Compile(InstanceDeclaration instance)
+    internal static AssetBuffer Compile(InstanceDeclaration instance, System.Xml.Schema.XmlSchemaSet? official = null)
     {
         // Reborn: the mixed-stream attachment deliberately detaches XML; restore official PSVI before the audio plugin checks current fields and child types.
-        var document=instance.XmlNode.OwnerDocument!;if(document.Schemas.Count==0)document.Schemas.Add(ConscriptSourceInput.Schemas());document.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));
+        var document=instance.XmlNode.OwnerDocument!;if(document.Schemas.Count==0)document.Schemas.Add(official ?? ConscriptSourceInput.Schemas());document.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));
         instance.Handle.TypeHash=0x560C2E45u;instance.ValidatedReferencedInstances=new(instance.ReferencedInstances);
         // Reborn: the production route uses all six official slider values, including VOICE for unit responses.
         var plugin=new Ra3Ep1AudioEventPlugin{AllowAmbientAuthoring=true,AllowSchemaSubmixSliders=true};plugin.Initialize(TargetPlatform.Win32);return plugin.ProcessInstance(instance);

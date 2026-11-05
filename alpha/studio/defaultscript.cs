@@ -97,6 +97,9 @@ namespace EALABuild
             // Reborn: an unchecked map toggle leaves map sources untouched; selected maps compile before final Misc packaging.
             bool buildMaps = gui.ContainsKey("buildmaps") && Convert.ToBoolean(gui["buildmaps"]);
             request.Arguments += " -BuildMaps " + (buildMaps ? "1" : "0");
+            // Reborn: Silent Mode skips advisory checks while keeping build failures visible.
+            bool silentMode = gui.ContainsKey("silentmode") && Convert.ToBoolean(gui["silentmode"]);
+            request.Arguments += " -SilentMode " + (silentMode ? "1" : "0");
             request.RedirectOutput = true; request.CreateWindow = false;
             // Reborn: retain the SDK's step-counter protocol before RunStep advances it for the callback.
             try
@@ -141,6 +144,8 @@ namespace EALABuild
             options.Add(new GUIElementData("buildaptui", "Build AptUI", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
 			// Reborn: compile AdditionalMaps/MapMetaData_*.xml before static data, using EA's familiar persisted toggle.
             options.Add(new GUIElementData("buildglobal", "Build Global Data", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
+            // Reborn: use the same persisted option control as the other build toggles.
+            options.Add(new GUIElementData("silentmode", "Silent Mode", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
             // Reborn: preserve EA's persisted checkbox behavior and the historical map stage before BIG creation.
             options.Add(new GUIElementData("buildmaps", "Build Maps", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
             // Reborn: use EA's own persisted text-input control rather than a separate settings interface.

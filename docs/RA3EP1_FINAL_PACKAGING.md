@@ -36,7 +36,9 @@ duplicate case-insensitive names and redirected paths fail. The actual Windows
 reparse tag distinguishes OneDrive cloud placeholders (accepted) from junctions,
 symbolic links and unknown reparse tags (refused); the ReparsePoint attribute
 alone cannot make this distinction. The BIG4 32-bit
-size/offset limit is enforced; payload copying/hash readback uses bounded buffers,
+size/offset limit is enforced per archive. Oversized Misc inputs are split into
+`_Misc.big`, `_Misc_2.big`, and further parts as needed, each listed in the
+SKUDef. A single file must fit within one archive. Payload copying/hash readback uses bounded buffers,
 not a whole-archive allocation. Source hashes and stored directory/payload hashes
 are checked before publication.
 
