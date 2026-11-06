@@ -82,11 +82,17 @@ namespace EALABuild
                 throw new InvalidDataException("Invalid alpha mod name.");
             // Reborn: the static mod entry remains distinct from the stock DATA:static.xml library.
             string input = Path.Combine(Path.Combine(Path.Combine(SdkRoot, "mods"), name), "data\\Static_Mod.xml");
-            CheckPath(input, "selected mod '" + name + "' entry XML");
+            // Reborn: map/global/AptUI-only checks use the selected Data directory without requiring Static_Mod.xml.
+            bool buildStatic = !gui.ContainsKey("buildstatic") || Convert.ToBoolean(gui["buildstatic"]);
+            bool createBig = !gui.ContainsKey("createbig") || Convert.ToBoolean(gui["createbig"]);
+            if (buildStatic) CheckPath(input, "selected mod '" + name + "' entry XML");
             // Reborn: preserve the entered numeric version verbatim in final archive and SKUDef filenames.
             string version = gui.ContainsKey("modversion") ? (string)gui["modversion"] : "1.00";
             if (!System.Text.RegularExpressions.Regex.IsMatch(version ?? "", @"\A[0-9]{1,4}(\.[0-9]{1,4}){1,3}\z"))
                 throw new InvalidDataException("Mod Version must be numeric, for example 1.00 or 1.2.3.");
+            // Reborn: only the map stage consumes the current selection, and All supplies no directory override.
+            bool buildMaps = gui.ContainsKey("buildmaps") && Convert.ToBoolean(gui["buildmaps"]);
+            string officialMapDirectory = buildMaps ? (string)Lifecycle("GetSelectedMapDirectory") : null;
             BuildHelper.CurrentBuildSteps = 1;
             // Reborn: separate the user's Reborn workspace from developer tests, including the strictly bounded complete Conscript build.
             // Reborn: keep the build header short; backend warnings describe the selected profile and detailed receipts stay on disk.
@@ -104,11 +110,14 @@ namespace EALABuild
             // Reborn: EA persists this native checkbox; pass an explicit numeric value so unchecked is never lost in switch binding.
             bool buildGlobal = !gui.ContainsKey("buildglobal") || Convert.ToBoolean(gui["buildglobal"]);
             request.Arguments += " -BuildGlobalData " + (buildGlobal ? "1" : "0");
+            // Reborn: pass explicit values for both persisted build-stage toggles.
+            request.Arguments += " -BuildStaticData " + (buildStatic ? "1" : "0");
+            request.Arguments += " -CreateBigFiles " + (createBig ? "1" : "0");
             // Reborn: Studio always uses fast builds; stale persisted developer checkbox values cannot re-enable maintenance regressions.
             request.Arguments += " -DeveloperBuildTests 0";
             // Reborn: an unchecked map toggle leaves map sources untouched; selected maps compile before final Misc packaging.
-            bool buildMaps = gui.ContainsKey("buildmaps") && Convert.ToBoolean(gui["buildmaps"]);
             request.Arguments += " -BuildMaps " + (buildMaps ? "1" : "0");
+            if (officialMapDirectory != null) request.Arguments += " -OfficialMapDirectory \"" + officialMapDirectory + "\"";
             // Reborn: Silent Mode skips advisory checks while keeping build failures visible.
             bool silentMode = gui.ContainsKey("silentmode") && Convert.ToBoolean(gui["silentmode"]);
             request.Arguments += " -SilentMode " + (silentMode ? "1" : "0");
@@ -156,8 +165,13 @@ namespace EALABuild
             options.Add(new GUIElementData("buildaptui", "Build AptUI", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
 			// Reborn: compile AdditionalMaps/MapMetaData_*.xml before static data, using EA's familiar persisted toggle.
             options.Add(new GUIElementData("buildglobal", "Build Global Data", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
+            // Reborn: use EA's persisted checkbox control for independent static compilation and final publication.
+            options.Add(new GUIElementData("buildstatic", "Build Static Data", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
             // Reborn: preserve EA's persisted checkbox behavior and the historical map stage before BIG creation.
             options.Add(new GUIElementData("buildmaps", "Build Maps", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
+            // Reborn: EA has no dropdown option type; reserve its row with a label for the WinForms helper.
+            options.Add(new GUIElementData("officialmap", "Official map to build", GUIElementData.LabelType, ScriptIndex.ModScript));
+            options.Add(new GUIElementData("createbig", "Create BIG Files", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
             // Reborn: use the same persisted option control as the other build toggles.
             options.Add(new GUIElementData("silentmode", "Silent Mode", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
             // Reborn: use EA's own persisted text-input control rather than a separate settings interface.

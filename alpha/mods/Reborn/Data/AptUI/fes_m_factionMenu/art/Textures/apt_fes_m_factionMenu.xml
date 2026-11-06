@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- XML: E:\depot\CnC\RA3_EP1\production\Data\AptBuildXML\0.0-dev\pc\Output\fes_m_factionMenu\art\textures\apt_fes_m_factionMenu.xml
+ Directories:
+    E:\depot\CnC\RA3_EP1\production\Data\AptBuildXML\0.0-dev\pc\Output\fes_m_factionMenu\fes_m_factionMenu_textures\
+ Extend RGB   : Yes
+ Gutter (1)   : No
+ Alpha Channel: Yes
+ Compressed   : No
+ Image Size   : 1024 x 1024
+ Keep Dirs Seperate: Yes
+-->
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<!-- Packed Texture: apt_fes_m_factionMenu_1.tga -->
+	<Texture id="apt_fes_m_factionMenu_1" File="apt_fes_m_factionMenu_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="64" Texture="apt_fes_m_factionMenu_1" Rotated="false">
+		<Dimensions x="18" y="18"/>
+		<Coords x="1002" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="91" Texture="apt_fes_m_factionMenu_1" Rotated="false">
+		<Dimensions x="93" y="92"/>
+		<Coords x="777" y="614"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="127" Texture="apt_fes_m_factionMenu_1" Rotated="false">
+		<Dimensions x="74" y="130"/>
+		<Coords x="701" y="614"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="100" Texture="apt_fes_m_factionMenu_1" Rotated="false">
+		<Dimensions x="74" y="130"/>
+		<Coords x="625" y="614"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="61" Texture="apt_fes_m_factionMenu_1" Rotated="false">
+		<Dimensions x="120" y="120"/>
+		<Coords x="503" y="614"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="103" Texture="apt_fes_m_factionMenu_1" Rotated="false">
+		<Dimensions x="500" y="43"/>
+		<Coords x="1" y="614"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="119" Texture="apt_fes_m_factionMenu_1" Rotated="false">
+		<Dimensions x="999" y="611"/>
+		<Coords x="1" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+
+	<!-- Packed Texture: apt_fes_m_factionMenu_2.tga -->
+	<Texture id="apt_fes_m_factionMenu_2" File="apt_fes_m_factionMenu_2.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="37" Texture="apt_fes_m_factionMenu_2" Rotated="false">
+		<Dimensions x="222" y="449"/>
+		<Coords x="1" y="563"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="10" Texture="apt_fes_m_factionMenu_2" Rotated="false">
+		<Dimensions x="222" y="449"/>
+		<Coords x="480" y="472"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="40" Texture="apt_fes_m_factionMenu_2" Rotated="false">
+		<Dimensions x="222" y="449"/>
+		<Coords x="723" y="452"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="13" Texture="apt_fes_m_factionMenu_2" Rotated="false">
+		<Dimensions x="222" y="449"/>
+		<Coords x="723" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="130" Texture="apt_fes_m_factionMenu_2" Rotated="false">
+		<Dimensions x="241" y="469"/>
+		<Coords x="480" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="58" Texture="apt_fes_m_factionMenu_2" Rotated="false">
+		<Dimensions x="230" y="494"/>
+		<Coords x="236" y="508"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="95" Texture="apt_fes_m_factionMenu_2" Rotated="false">
+		<Dimensions x="242" y="505"/>
+		<Coords x="236" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="4" Texture="apt_fes_m_factionMenu_2" Rotated="false">
+		<Dimensions x="233" y="560"/>
+		<Coords x="1" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+
+	<!-- Packed Texture: apt_fes_m_factionMenu_3.tga -->
+	<Texture id="apt_fes_m_factionMenu_3" File="apt_fes_m_factionMenu_3.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+
+	<PackedTextureImage id="1" Texture="apt_fes_m_factionMenu_3" Rotated="false">
+		<Dimensions x="221" y="449"/>
+		<Coords x="447" y="452"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="17" Texture="apt_fes_m_factionMenu_3" Rotated="false">
+		<Dimensions x="221" y="449"/>
+		<Coords x="224" y="452"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="34" Texture="apt_fes_m_factionMenu_3" Rotated="false">
+		<Dimensions x="221" y="449"/>
+		<Coords x="1" y="452"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="20" Texture="apt_fes_m_factionMenu_3" Rotated="false">
+		<Dimensions x="221" y="449"/>
+		<Coords x="672" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="24" Texture="apt_fes_m_factionMenu_3" Rotated="false">
+		<Dimensions x="221" y="449"/>
+		<Coords x="449" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="27" Texture="apt_fes_m_factionMenu_3" Rotated="false">
+		<Dimensions x="222" y="449"/>
+		<Coords x="225" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+	<PackedTextureImage id="30" Texture="apt_fes_m_factionMenu_3" Rotated="false">
+		<Dimensions x="222" y="449"/>
+		<Coords x="1" y="1"/>
+		<TextureDimensions x="1024" y="1024"/>
+	</PackedTextureImage>
+
+</AssetDeclaration>

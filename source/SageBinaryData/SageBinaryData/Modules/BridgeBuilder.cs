@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 using Relo;
 
 namespace SageBinaryData;
@@ -17,4 +17,6 @@ public struct BridgeBuilderModuleData
     public float Width;
     public AssetReference<GameObject> GateHouse;
     public unsafe AssetReference<GameObject>* GateHouse2;
+    // Reborn: EP1 stores the neighboring-segment health threshold after both gatehouse references.
+    public Percentage DamageNeighborSegementsAtHealthPercent;
 }

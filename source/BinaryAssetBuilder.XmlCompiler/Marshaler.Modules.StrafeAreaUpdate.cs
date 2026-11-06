@@ -1,4 +1,4 @@
-﻿using Relo;
+using Relo;
 using SageBinaryData;
 
 public static partial class Marshaler
@@ -10,6 +10,9 @@ public static partial class Marshaler
             return;
         }
         Marshal(node.GetAttributeValue(nameof(StrafeAreaUpdateModuleData.WeaponName), null), &objT->WeaponName, state);
+        // Reborn: marshal the optional EP1 weapon and option mask.
+        Marshal(node.GetAttributeValue(nameof(StrafeAreaUpdateModuleData.SecondaryWeaponName), null), &objT->SecondaryWeaponName, state);
+        Ep1Flags<StrafeAreaUpdateFlagType>(node.GetAttributeValue(nameof(StrafeAreaUpdateModuleData.Options), null), objT->Options.Value, 4, 1, state);
         Marshal(node.GetAttributeValue(nameof(StrafeAreaUpdateModuleData.Radius), "0"), &objT->Radius, state);
         Marshal(node.GetAttributeValue(nameof(StrafeAreaUpdateModuleData.MinRadius), "0"), &objT->MinRadius, state);
         Marshal(node.GetAttributeValue(nameof(StrafeAreaUpdateModuleData.PreattackDistance), "0"), &objT->PreattackDistance, state);

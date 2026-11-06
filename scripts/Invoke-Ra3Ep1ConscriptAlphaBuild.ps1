@@ -1,6 +1,6 @@
 # Reborn: prepare explicit EA XML sources before bounded native compilation; never invent a LogicCommand from the GameObject ID.
 [CmdletBinding()]
-param([Parameter(Mandatory)][string]$ModXml,[Parameter(Mandatory)][string]$StaticManifest,[Parameter(Mandatory)][string]$GlobalManifest,[Parameter(Mandatory)][string]$CompilerDirectory,[Parameter(Mandatory)][string]$OutputRoot,[switch]$ValidateOnly,[string]$GlobalStreamContext)
+param([Parameter(Mandatory)][string]$ModXml,[Parameter(Mandatory)][string]$StaticManifest,[Parameter(Mandatory)][string]$GlobalManifest,[Parameter(Mandatory)][string]$CompilerDirectory,[Parameter(Mandatory)][string]$OutputRoot,[switch]$ValidateOnly,[string]$GlobalStreamContext,[string]$MapStaticPackage)
 $ErrorActionPreference='Stop'
 # Reborn: source preparation resolves the relocated SDK and bundled runtime before invoking the compiler apphost.
 . (Join-Path $PSScriptRoot 'Ra3Ep1PortablePaths.ps1')
@@ -33,6 +33,8 @@ try {
         $env:TEMP=$scratch;$env:TMP=$scratch
         # Reborn: static assets import freshly compiled global mod definitions instead of requiring duplicate XML includes.
         $compileArgs=@('conscript-alpha-build',$settings.UprisingXmlRoot,$StaticManifest,$GlobalManifest,$inputReceipt.GamePath,(Join-Path $OutputRoot 'conscript'));if($GlobalStreamContext){$compileArgs+=$GlobalStreamContext}
+        # Reborn: carry the same-build static catalog through compilation and WorldBuilder resolution.
+        if($MapStaticPackage){if(!$GlobalStreamContext){throw 'Map static dependencies require a build stream context.'};$compileArgs+=@('map',$MapStaticPackage)}
         & $exe @compileArgs
         if($LASTEXITCODE-ne 0){throw 'Conscript source/native/metadata/stream qualification failed.'}
     } finally {$env:TEMP=$previousTemp;$env:TMP=$previousTmp}
@@ -44,6 +46,7 @@ try {
     # Reborn: resolve referenced WorldBuilder assets in the private package before receipt validation and publication.
     $resolveArgs=@('sdk-resolve-worldbuilder',$package,(Join-Path $sdk 'catalogs/ra3ep1'),$StaticManifest,$GlobalManifest,$inputReceipt.GamePath)
     if($GlobalStreamContext){$resolveArgs+=$GlobalStreamContext}
+    if($MapStaticPackage){$resolveArgs+=$MapStaticPackage}
     & $exe @resolveArgs;if($LASTEXITCODE-ne 0){throw 'WorldBuilder asset resolution failed; no new package was published.'}
     $receipt=Get-Content -LiteralPath $receiptPath -Raw|ConvertFrom-Json
     if((-not $supportOnly -and $receipt.NewIdentity-ne $newIdentity) -or $receipt.Asset-cne ($primaryType+':'+$identity) -or $receipt.AssetCount-ne $assetCount -or -not $receipt.OfflineValidated -or (Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash-cne $receipt.ArchiveSha256 -or $receipt.SourceSha256-cne $inputReceipt.PreparedSourceSha256){throw 'Fresh explicit-source package/readback receipt differs.'}

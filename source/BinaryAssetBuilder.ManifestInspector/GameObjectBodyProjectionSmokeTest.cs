@@ -116,7 +116,14 @@ internal static class GameObjectBodyProjectionSmokeTest
         }
         else ((XmlElement)behaviors.FirstChild!).SetAttribute("TypeId","227975924");
         // Reborn: preserve the admitted concrete body identity while extending client-update dispatch.
-        body.SetAttribute("TypeId",reviewedBehaviors&&body.LocalName=="PropBody"?FastHash.GetHashCode("PropBodyModuleData").ToString(System.Globalization.CultureInfo.InvariantCulture):"1510882715");
+        uint bodyType=reviewedBehaviors ? body.LocalName switch
+        {
+            "PropBody" => 0xFF88404Bu,
+            "ManagerBody" => Ep1ActiveBodyTokenizer.ManagerBodyTypeId,
+            "ManagedImmortalBody" => Ep1ActiveBodyTokenizer.ManagedImmortalBodyTypeId,
+            _ => 0x5A0E3D9Bu
+        } : 0x5A0E3D9Bu;
+        body.SetAttribute("TypeId",bodyType.ToString(System.Globalization.CultureInfo.InvariantCulture));
         // Reborn: selected common AI receives only the reviewed internal class identity after raw validation, on the same root Tracker.
         if(selectedBehaviors)foreach(XmlElement ai in d.GetElementsByTagName("AI",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>())){ai.SetAttribute("TypeId",(ai.LocalName switch{"AIUpdate"=>0x08DBC00Eu,"JetAIUpdate"=>0x4486CF48u,_=>throw SdkXmlDiagnostics.At(new InvalidDataException("Unreviewed AI class: "+ai.LocalName),ai)}).ToString(System.Globalization.CultureInfo.InvariantCulture));}
         // Reborn: selected Draw classes use the actual dispatcher on the same root Tracker after source validation; no separate compiled fragment is appended.

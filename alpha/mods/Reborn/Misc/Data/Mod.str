@@ -2151,6 +2151,18 @@ APT:CAMPAIGNMODESELECTIONHELPTEXT
 	"Prepare for battle! Click the Solo button for single-player mode, or click the Co-op button to host a co-op match that another player can join.\n\nTo join a co-op match, click the ComLink star in the upper-right-hand corner and log into GameSpy. Once the host invites you to a match, you'll see the invite on the Invites tab in the ComLink. Select the invite and join the host's match."
 End
 
+APT:SOVIETSSHORTNAME
+	"SOVIETS - UPR"
+End
+
+APT:ALLIESSHORTNAME
+	"ALLIES - UPR"
+End
+
+APT:JAPANSHORTNAME
+	"RISING SUN - UPR"
+End
+
 APT:SOVIETRA3SHORTNAME
 	"SOVIETS - RA3"
 End
@@ -2160,7 +2172,7 @@ APT:ALLIESRA3SHORTNAME
 End
 
 APT:JAPANRA3SHORTNAME
-	"JAPAN - RA3"
+	"RISING SUN - RA3"
 End
 
 // Reborn: RA3 campaign strings and imported mission dialogue subtitles.

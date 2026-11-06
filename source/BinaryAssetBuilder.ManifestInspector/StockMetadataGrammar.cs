@@ -124,7 +124,9 @@ internal sealed class StockMetadataGrammar
                     bool directPassiveModule=current==typeof(SageBinaryData.Ep1PassiveAreaEffectBehaviorModuleData)&&field.Name=="AttachModuleId"&&element==typeof(TypedAssetId<SageBinaryData.ModuleData>)&&rows.Fields[i].Tag==0xBDF07965u;
                     // Reborn: the lift shader uses the captured optional ShaderOverrideRef tag; independent proof binds its pointee and IMP slot.
                     bool directLiftShader=current==typeof(SageBinaryData.Ep1LiftObjectUpdateModuleData)&&field.Name=="Shader"&&element==typeof(Relo.AssetReference<SageBinaryData.ShaderOverride>)&&rows.Fields[i].Tag==0x8A16C611u;
-                    if((!kinds.Contains(Kind.Native)&&!directLiftShader&&!directVector&&!directQuaternion&&!directFlags&&!directReal&&!directPassiveModule)||target!=Coordinate(pointee))throw new InvalidDataException("Generated metadata optional field target differs: "+child);continue;
+                    // Reborn: the optional bridge gatehouse uses the same direct GameObjectRef layout as its populated end cap.
+                    bool directBridgePart=current==typeof(SageBinaryData.BridgeBuilderModuleData)&&field.Name==nameof(SageBinaryData.BridgeBuilderModuleData.GateHouse2)&&element==typeof(Relo.AssetReference<SageBinaryData.GameObject>)&&tag==0xBFAB9075u;
+                    if((!kinds.Contains(Kind.Native)&&!directBridgePart&&!directLiftShader&&!directVector&&!directQuaternion&&!directFlags&&!directReal&&!directPassiveModule)||target!=Coordinate(pointee))throw new InvalidDataException("Generated metadata optional field target differs: "+child);continue;
                 }
                 if(IsList(member))
                 {
@@ -134,6 +136,15 @@ internal sealed class StockMetadataGrammar
                     List(member.GetGenericArguments()[0],child,Table(at,child),depth+1);continue;
                 }
                 if(kinds.Contains(Kind.Table)&&!kinds.Contains(Kind.Native)){Record(member,child,Table(at,child),depth+1);continue;}
+                // Reborn: both strafe weapon rows share the retail WeaponRef tag and inline import layout.
+                // Reborn: stock leaves the secondary empty, so qualify populated targets against the proved import slot.
+                if (current == typeof(SageBinaryData.StrafeAreaUpdateModuleData) && field.Name == "SecondaryWeaponName" &&
+                    member == typeof(Relo.AssetReference<SageBinaryData.WeaponTemplate>) && tag == 0xD046DD22u)
+                {
+                    if (target != (Native(child, 0) == 0 ? 0u : Coordinate(child)))
+                        throw new InvalidDataException("Generated metadata secondary weapon target differs: " + child);
+                    continue;
+                }
                 if(!kinds.Contains(Kind.Native)){if(target!=0)throw new InvalidDataException("Generated metadata target differs from stock absent field: "+child);continue;}
                 if(target!=Coordinate(child))throw new InvalidDataException("Generated metadata native field target differs: "+child);
             }

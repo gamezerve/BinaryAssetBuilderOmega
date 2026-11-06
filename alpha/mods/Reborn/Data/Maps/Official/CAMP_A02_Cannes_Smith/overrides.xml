@@ -6,7 +6,7 @@
     <Include type="all" source="DATA:Includes/CampaignOverrides/PlayerTechs_CAMP.xml" />
     <Include type="instance" source="DATA:Allied\Units_Campaign\CAMP_AlliedBomberAircraft_Infantry_2.xml" />
     <Include type="instance" source="DATA:System\PlayerSpellBook.xml"/>
-    <Include type="instance" source="DATA:GlobalData\Weapon.xml"/>
+    <!-- <Include type="instance" source="DATA:GlobalData\Weapon.xml"/> -->
 
     <Include type="instance" source="DATA:Soviet\Props\OrbitalRefuseSpawner.xml"/>
 
@@ -29,7 +29,7 @@
     <Include type="instance" source="DATA:GlobalData\AttributeModifier.xml"/>
     <Include type="instance" source="DATA:Allied\Units\AlliedAntiGroundAircraft.xml"/>
     <Include type="instance" source="DATA:Allied\Units\AlliedFighterAircraft.xml"/>
-    <Include type="instance" source="DATA:GlobalData\Armor.xml"/>
+    <!-- <Include type="instance" source="DATA:GlobalData\Armor.xml"/> -->
     <Include type="instance" source="DATA:Japan/Structures/JapanBarracks.xml"/>
     <Include type="instance" source="DATA:Japan/Structures/JapanBaseDefense.xml"/>
     <Include type="instance" source="DATA:Japan/Structures/JapanNavalYard.xml"/>

@@ -183,9 +183,9 @@
 		TechRankPointsPerSecond="1"
 		InitialTechPoints="0"/>
 
-  <Texture id="CAMP_A01_BrightonBeach_Smith_Art_Green" File="CAMP_A01_BrightonBeach_Smith_Art_Green.tga"  GenerateMipMaps="false" AllowAutomaticResize="false"/>
+  <Texture id="CAMP_A01_BrightonBeach_Smith_Art_Green" File="CAMP_A01_BrightonBeach_Smith_Art_Green.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
 
-  <Texture id="CAMP_A01_BrightonBeach_Smith_Art" File="CAMP_A01_BrightonBeach_Smith_Art.tga"  GenerateMipMaps="false" AllowAutomaticResize="false"/>
+  <Texture id="CAMP_A01_BrightonBeach_Smith_Art" File="CAMP_A01_BrightonBeach_Smith_Art.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
 
   <RadarTerrainImage
     id="OrangeBorderTerrain"

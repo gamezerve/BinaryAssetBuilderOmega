@@ -1,4 +1,6 @@
 using System.Globalization;
+using System.Xml;
+using System.Xml.Schema;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
@@ -19,6 +21,54 @@ internal sealed class SdkAssetNumericExpressions
         if(parser.at!=parser.text.Length||!double.IsFinite(value))throw new InvalidDataException("Invalid or non-finite numeric expression: "+expression);
         return value.ToString("G17",CultureInfo.InvariantCulture);
     }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: format integral decimal substitutions only at schema-declared SageInt attributes. */
+    //-------------------------------------------------------------------------------------------------
+    internal static string NormalizeInteger(XmlNode slot,string value,XmlSchemaSet? schemas)
+    {
+        if (schemas == null || slot is not XmlAttribute { OwnerElement: { } owner } attribute)
+            return value;
+        int dot = value.IndexOf('.');
+        if (dot < 1 || value.AsSpan(dot+1).IndexOfAnyExcept('0') >= 0 ||
+            !int.TryParse(value.AsSpan(0,dot),NumberStyles.AllowLeadingSign,CultureInfo.InvariantCulture,out int integer))
+            return value;
+        if (ElementType(owner,schemas) is not XmlSchemaComplexType type ||
+            type.AttributeUses[new XmlQualifiedName(attribute.LocalName,attribute.NamespaceURI)] is not XmlSchemaAttribute declared ||
+            declared.AttributeSchemaType?.QualifiedName != new XmlQualifiedName("SageInt",BinaryAssetBuilder.Core.SageXml.SchemaSet.XmlNamespace))
+            return value;
+        return integer.ToString(CultureInfo.InvariantCulture);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: follow actual schema particles before inheritance, where document validation may still lack required base fields. */
+    //-------------------------------------------------------------------------------------------------
+    private static XmlSchemaType? ElementType(XmlElement element,XmlSchemaSet schemas,int depth=0)
+    {
+        if (depth > 128 || element.ParentNode is not XmlElement parent)
+            return null;
+        var name = new XmlQualifiedName(element.LocalName,element.NamespaceURI);
+        if (parent.LocalName == "AssetDeclaration" && parent.ParentNode is XmlDocument &&
+            parent.NamespaceURI == BinaryAssetBuilder.Core.SageXml.SchemaSet.XmlNamespace)
+            return (schemas.GlobalElements[name] as XmlSchemaElement)?.ElementSchemaType;
+        if (ElementType(parent,schemas,depth+1) is not XmlSchemaComplexType parentType)
+            return null;
+        var types = new HashSet<XmlSchemaType>();
+        Collect(parentType.ContentTypeParticle);
+        return types.Count == 1 ? types.Single() : null;
+
+        // Reborn: ambiguous declarations and wildcard-only fields do not authorize conversion.
+        void Collect(XmlSchemaParticle? particle,int level=0)
+        {
+            if (level > 64) return;
+            if (particle is XmlSchemaElement child && child.QualifiedName == name && child.ElementSchemaType is { } type)
+                types.Add(type);
+            else if (particle is XmlSchemaGroupBase group)
+                foreach (var item in group.Items.OfType<XmlSchemaParticle>()) Collect(item,level+1);
+            else if (particle is XmlSchemaGroupRef reference)
+                Collect(reference.Particle,level+1);
+        }
+    }
+
     // Reborn: addition and subtraction bind after products and quotients.
     private double Sum(){double value=Product();while(true){White();if(Take('+'))value+=Product();else if(Take('-'))value-=Product();else return value;}}
     // Reborn: division by zero is diagnosed at the original source slot.

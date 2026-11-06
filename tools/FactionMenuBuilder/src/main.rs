@@ -450,6 +450,22 @@ fn main() {
         .find(|i| i.name == "ScreenTitleBarSymbol")
         .unwrap()
         .character_id as i32;
+    // Reborn: keep the original lower bar above both campaign backdrops and below the navigation buttons.
+    let lower_bar_id = ep1
+        .movie
+        .imports
+        .iter()
+        .find(|i| i.name == "lowerScreenBar Symbol")
+        .unwrap()
+        .character_id as i32;
+    // Reborn: the RA3 backdrop already contains its own full-screen artwork.
+    let uprising_background_id = ep1
+        .movie
+        .imports
+        .iter()
+        .find(|i| i.name == "Background_mc")
+        .unwrap()
+        .character_id as i32;
     for control in &mut ep1.movie.frames[0].controls {
         if let Control::PlaceObject(p) = control {
             if p.depth == 20 {
@@ -457,6 +473,12 @@ fn main() {
             }
             if p.character_id == Some(title_id) {
                 p.name = Some("rebornTitleBar".into());
+            }
+            if p.character_id == Some(lower_bar_id) {
+                p.depth = 22;
+            }
+            if p.character_id == Some(uprising_background_id) {
+                p.name = Some("rebornUprisingBackground".into());
             }
         }
     }
@@ -512,6 +534,22 @@ fn main() {
         name: "RebornRA3FactionPage".into(),
         character_id: page_id,
     });
+    // Reborn: composite the exact RA3 background over the right end of the shared animated title bar.
+    let fade_bitmap = ra3.movie.characters.len();
+    assert_eq!(fade_bitmap, 35, "Update the fade DAT and geometry IDs if the stock movie changes");
+    ra3.movie.characters.push(CharacterSlot::Character(Character::Bitmap));
+    let fade_shape = ra3.movie.characters.len() as i32;
+    ra3.movie.characters.push(CharacterSlot::Character(Character::Shape(Shape {
+        bounds: Rect { left: 955.0, top: 0.0, right: 1365.0, bottom: 83.0 },
+        bitmap_character_id: None,
+    })));
+    let fade_sprite = ra3.movie.characters.len() as u32;
+    ra3.movie.characters.push(CharacterSlot::Character(Character::Sprite(Sprite {
+        frames: vec![Frame { controls: vec![Control::PlaceObject(PlaceObject {
+            depth: 1, character_id: Some(fade_shape), matrix: Some(Matrix::default()), ..Default::default()
+        })] }],
+    })));
+    ra3.movie.exports.push(Export { name: "RebornRA3TitleFade".into(), character_id: fade_sprite });
     ra3.movie.frames = vec![Frame::default()];
 
     // Reborn: keep the Uprising stage and all existing placements intact, with the separate RA3 page initially hidden.
@@ -527,20 +565,35 @@ fn main() {
     hidden.string("_visible");
     hidden.bool(false);
     hidden.op(0x4f);
+    let hide_on_construct = hidden.body();
     ep1.movie.frames[0]
         .controls
         .push(Control::PlaceObject(PlaceObject {
-            depth: 22,
+            // Reborn: cover the Uprising panel at depth 20 while keeping the shared lower bar above this page.
+            depth: 21,
             character_id: Some(imported as i32),
             matrix: Some(Matrix::default()),
             name: Some("rebornRa3Page".into()),
             clip_actions: Some(vec![EventAction {
                 triggers: 1,
                 key_code: 0,
-                actions: hidden.body(),
+                actions: hide_on_construct.clone(),
             }]),
             ..Default::default()
         }));
+    let imported_fade = ep1.movie.characters.len() as u32;
+    ep1.movie.characters.push(CharacterSlot::Empty);
+    ep1.movie.imports.push(Import {
+        movie: "screens/fes_m_ra3FactionAssets".into(),
+        name: "RebornRA3TitleFade".into(),
+        character_id: imported_fade,
+    });
+    ep1.movie.frames[0].controls.push(Control::PlaceObject(PlaceObject {
+        depth: 68, character_id: Some(imported_fade as i32), matrix: Some(Matrix::default()),
+        name: Some("rebornRa3TitleFade".into()),
+        clip_actions: Some(vec![EventAction { triggers: 1, key_code: 0, actions: hide_on_construct }]),
+        ..Default::default()
+    }));
     for (i, matrix) in frame_matrices.iter().enumerate() {
         let mut frame = placement(&ep1, "sovietCompleteFrame");
         frame.name = Some(format!("rebornRa3Frame{i}"));
@@ -614,6 +667,7 @@ fn main() {
         ep1.movie.frames[0].controls.push(Control::PlaceObject(tab));
     }
     let originals = [
+        "rebornUprisingBackground",
         "rebornUprisingBackdrop",
         "sovietFaction",
         "alliesFaction",
@@ -768,6 +822,7 @@ fn main() {
         show.visible(name, false);
     }
     show.visible("rebornRa3Page", true);
+    show.visible("rebornRa3TitleFade", true);
     show.visible("rebornRa3EffectAnchor", true);
     show.call("rebornRefreshRa3Frames");
     // Reborn: the active RA3 tab is grey and inert; only the Uprising destination tab remains hoverable and clickable.
@@ -811,6 +866,7 @@ fn main() {
     };
     back.set_owner_bool("rebornRa3Active", false);
     back.visible("rebornRa3Page", false);
+    back.visible("rebornRa3TitleFade", false);
     back.title("$FACTION_SELECT_SCREEN_TITLE");
     back.visible("rebornRa3EffectAnchor", false);
     for i in 0..3 {

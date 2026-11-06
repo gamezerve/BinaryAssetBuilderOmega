@@ -49,7 +49,14 @@ public static class Ep1GameObjectStringTokens
         if(body != 0)
         {
             if(body % 4 != 0 || body < modules[^1] + 8 || body > b.Length - 8)throw new InvalidDataException("Body tail ownership/bounds differ.");
-            bodySize=Word((int)body)==0x5A0E3D9Bu?76:reviewedBehaviors&&Word((int)body)==0xFF88404Bu?8:throw new InvalidDataException("Unreviewed concrete Body native class.");
+            // Reborn: ManagerBody uses the same EP1 native width as ActiveBody.
+            bodySize=Word((int)body) switch
+            {
+                0x5A0E3D9Bu => 76,
+                Ep1ActiveBodyTokenizer.ManagerBodyTypeId or Ep1ActiveBodyTokenizer.ManagedImmortalBodyTypeId when reviewedBehaviors => 76,
+                0xFF88404Bu when reviewedBehaviors => 8,
+                _ => throw new InvalidDataException("Unreviewed concrete Body native class.")
+            };
             if(body>b.Length-bodySize)throw new InvalidDataException("Concrete Body header is truncated.");
             owners.Add(488);
         }

@@ -64,8 +64,8 @@
 	
 <!-- Radar Images -->
 
-			<Texture id="S4_Geneva_Art_Orange" File="S4_Geneva_Art_Orange.tga"  GenerateMipMaps="false" AllowAutomaticResize="false"/>
-			<Texture id="S4_Geneva_Art_Green" File="S4_Geneva_Art_Green.tga"  GenerateMipMaps="false" AllowAutomaticResize="false"/>
+			<Texture id="S4_Geneva_Art_Orange" File="S4_Geneva_Art_Orange.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+			<Texture id="S4_Geneva_Art_Green" File="S4_Geneva_Art_Green.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
 
       <RadarTerrainImage
             id="OrangeBorderTerrain"

@@ -244,7 +244,14 @@ internal sealed class SchemaNativeContract
                 // Reborn: FX TechniqueName and EP1 AttachBoneName retain their stock-allocated empty-string schema defaults.
                 case "Relo.String`1":var text=Source(e,name).Text;Text((owner==typeof(FXShaderMaterial)&&name=="TechniqueName"||owner==typeof(Ep1AttachUpdateModuleData)&&name=="AttachBoneName")?text??string.Empty:text,at,path,false);return;
                 case "Relo.AssetReference`1":case "Relo.AssetReference`2":Reference(Source(e,name).Text,at,path);return;
-                case "TypedAssetId`1":Weak(Source(e,name).Text,at,path);return;
+                case "TypedAssetId`1":
+                    var identity=Source(e,name).Text;
+                    // Reborn: map-local object, script and group Poid names retain authored whitespace in their native hashes.
+                    if(name==nameof(MapObject.id) &&
+                        (owner==typeof(MapObject)||owner==typeof(GameScript)||owner==typeof(GameScriptGroup)))
+                        Hash(identity?.ToLowerInvariant(),at,path);
+                    else Weak(identity,at,path);
+                    return;
                 case "Relo.List`1":List(type.GetGenericArguments()[0],e,name,at,path,depth);return;
                 case "Relo.PolymorphicList`1":
                     // Reborn: map script actions contain schema-selected ObjectType/ObjectTypeList pointer arrays.

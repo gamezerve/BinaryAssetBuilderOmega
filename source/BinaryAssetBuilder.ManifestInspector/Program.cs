@@ -25,6 +25,9 @@ internal static class Program
             // Reborn: exit three means an optional map was skipped for warned missing terrain, not a successful partial atlas.
             if(args.Length==4&&args[0]=="map-resource-preflight")
             {return MapNativeCompiler.AuditResources(args[1],args[2],args[3],warnings:true)==0?0:3;}
+            // Reborn: extract only the verified map dependency catalog from a freshly compiled static package.
+            if(args.Length==3 && args[0]=="sdk-save-map-static-catalog")
+            {MapPackageStage.SaveModStaticCatalog(args[1],args[2]);return 0;}
             // Reborn: map packaging requires actual linked EP1 GameMap output and preserves the map.version/_mod contract.
             if(args.Length==3&&args[0]=="sdk-stage-map-package")
             {MapPackageStage.Run(args[1],args[2]);return 0;}
@@ -334,8 +337,8 @@ internal static class Program
             if(args.Length==4&&args[0]=="sdk-check-worldbuilder-resolution")
             {CompilerSmokeTest.InitializeHashProvider();WorldBuilderAssetResolver.CheckPending(args[1],args[2],args[3]);return 0;}
             // Reborn: resolve retail WorldBuilder references in a private package before Studio publishes it.
-            if(args.Length is 6 or 7 && args[0]=="sdk-resolve-worldbuilder")
-            {CompilerSmokeTest.InitializeHashProvider();WorldBuilderAssetResolver.Run(args[1],args[2],args[3],args[4],args[5],args.Length==7?args[6]:null);return 0;}
+            if(args.Length is >=6 and <=8 && args[0]=="sdk-resolve-worldbuilder")
+            {CompilerSmokeTest.InitializeHashProvider();WorldBuilderAssetResolver.Run(args[1],args[2],args[3],args[4],args[5],args.ElementAtOrDefault(6),args.ElementAtOrDefault(7));return 0;}
             // Reborn: exercise native extraction and package repair without rebuilding the user's mod or starting the game.
             if(args.Length==3&&args[0]=="sdk-worldbuilder-resolver-self-test")
             {CompilerSmokeTest.InitializeHashProvider();WorldBuilderAssetResolverSmokeTest.Run(args[1],args[2]);return 0;}
@@ -786,8 +789,10 @@ internal static class Program
             if(args.Length==2 && args[0]=="conscript-recruitment-command-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ConscriptRecruitmentSmokeTest.Run(args[1]);return 0;}
             // Reborn: expose complete Conscript scalar/source builds, retaining native/metadata/reference qualification before publication.
-            if(args.Length is >=6 and <=8 && args[0]=="conscript-alpha-build"&&(args.Length<8||args[7]=="global"))
-            {CompilerSmokeTest.InitializeHashProvider();if(!ConscriptMultiAssetBuild.TryRun(args[4],args[2],args[3],args[5],args.ElementAtOrDefault(6),args.Length==8)){var single=ConscriptCompileLog.ForPrepared(args[4]);var root=new System.Xml.XmlDocument{XmlResolver=null};root.Load(args[4]);var progress=single.Begin(root.DocumentElement!.LocalName,root.DocumentElement.GetAttribute("id"));if(!ConscriptVariableBehaviorBuild.TryRun(args[4],args[2],args[3],args[5]))Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeOriginalRoot:true,alphaSource:args[4],alphaOutput:args[5]);single.End(progress);single.Statistics();}return 0;}
+            // Reborn: map mode supplies the same-build mod static BIG as a reference-only dependency.
+            if(args.Length is >=6 and <=9 && args[0]=="conscript-alpha-build" &&
+                (args.Length<8 || args.Length==8 && args[7]=="global" || args.Length==9 && args[7]=="map"))
+            {CompilerSmokeTest.InitializeHashProvider();if(!ConscriptMultiAssetBuild.TryRun(args[4],args[2],args[3],args[5],args.ElementAtOrDefault(6),args.Length==8,mapStaticPackage:args.ElementAtOrDefault(8))){var single=ConscriptCompileLog.ForPrepared(args[4]);var root=new System.Xml.XmlDocument{XmlResolver=null};root.Load(args[4]);var progress=single.Begin(root.DocumentElement!.LocalName,root.DocumentElement.GetAttribute("id"));if(!ConscriptVariableBehaviorBuild.TryRun(args[4],args[2],args[3],args[5]))Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeOriginalRoot:true,alphaSource:args[4],alphaOutput:args[5]);single.End(progress);single.Statistics();}return 0;}
 
             if(args.Length==4 && args[0]=="gameobject-root-fields-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeRootOwners:true,includeEmptyRoots:true);return 0;}

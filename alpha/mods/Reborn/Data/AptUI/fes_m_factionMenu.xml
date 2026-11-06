@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <!-- Reborn: package the two-page campaign menu and its original RA3 art library. -->
+  <Includes><Include type="all" source="fes_m_factionMenu/fes_m_factionMenu.xml" /></Includes>
+</AssetDeclaration>

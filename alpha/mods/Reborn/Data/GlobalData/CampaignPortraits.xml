@@ -1,8 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
   <!-- Reborn: keep the original portrait pixels in the same global stream as the mission. -->
-  <OnDemandTexture id="LanModZhanaAtlas" File="ART:Images/LanModZhanaAtlas.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false" />
-  <OnDemandTextureImage id="LanModZhanaPortrait" Texture="LanModZhanaAtlas" Rotated="false">
+  <OnDemandTexture id="RebornCampaignZhanaAtlas" File="ART:Images/RebornCampaignZhanaAtlas.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false" />
+  <OnDemandTextureImage id="RebornCampaignZhanaPortrait" Texture="RebornCampaignZhanaAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </OnDemandTextureImage>
+  <!-- Reborn: original Uprising campaign portraits for early Global loading. -->
+  <OnDemandTexture id="RebornCampaignGilesAtlas" File="ART:Images/RebornCampaignGilesAtlas.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false" />
+  <OnDemandTextureImage id="RebornCampaignGilesPortrait" Texture="RebornCampaignGilesAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </OnDemandTextureImage>
+  <OnDemandTexture id="RebornCampaignKenjiAtlas" File="ART:Images/RebornCampaignKenjiAtlas.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false" />
+  <OnDemandTextureImage id="RebornCampaignKenjiPortrait" Texture="RebornCampaignKenjiAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </OnDemandTextureImage>
+  <OnDemandTexture id="RebornCampaignLissetteAtlas" File="ART:Images/RebornCampaignLissetteAtlas.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false" />
+  <OnDemandTextureImage id="RebornCampaignLissettePortrait" Texture="RebornCampaignLissetteAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </OnDemandTextureImage>
+  <OnDemandTexture id="RebornCampaignMoskvinAtlas" File="ART:Images/RebornCampaignMoskvinAtlas.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false" />
+  <OnDemandTextureImage id="RebornCampaignMoskvinPortrait" Texture="RebornCampaignMoskvinAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </OnDemandTextureImage>
+  <OnDemandTexture id="RebornCampaignNaomiAtlas" File="ART:Images/RebornCampaignNaomiAtlas.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false" />
+  <OnDemandTextureImage id="RebornCampaignNaomiPortrait" Texture="RebornCampaignNaomiAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </OnDemandTextureImage>
+  <OnDemandTexture id="RebornCampaignOlegAtlas" File="ART:Images/RebornCampaignOlegAtlas.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false" />
+  <OnDemandTextureImage id="RebornCampaignOlegPortrait" Texture="RebornCampaignOlegAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </OnDemandTextureImage>
+  <OnDemandTexture id="RebornCampaignShinzoAtlas" File="ART:Images/RebornCampaignShinzoAtlas.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false" />
+  <OnDemandTextureImage id="RebornCampaignShinzoPortrait" Texture="RebornCampaignShinzoAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </OnDemandTextureImage>
+  <OnDemandTexture id="RebornCampaignWarrenAtlas" File="ART:Images/RebornCampaignWarrenAtlas.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false" />
+  <OnDemandTextureImage id="RebornCampaignWarrenPortrait" Texture="RebornCampaignWarrenAtlas" Rotated="false">
     <Dimensions x="106" y="106" />
     <Coords x="0" y="0" />
     <TextureDimensions x="128" y="128" />

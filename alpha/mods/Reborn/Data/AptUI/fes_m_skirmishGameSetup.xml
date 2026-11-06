@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <!-- Reborn: package the Uprising skirmish screen with its title fade. -->
+  <Includes>
+    <Include type="all" source="fes_m_skirmishGameSetup/fes_m_skirmishGameSetup.xml" />
+  </Includes>
+</AssetDeclaration>

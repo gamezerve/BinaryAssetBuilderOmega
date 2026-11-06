@@ -105,6 +105,10 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> runOffMap;
     // Reborn: assistance responses retain their independent EP1 native/status and metadata qualification.
     // Reborn: keep the satellite stock grammar local to the active build.
+    // Reborn: lazily qualify the retail strafe module metadata.
+    private readonly Lazy<StockMetadataGrammar> strafeAreaUpdate;
+    // Reborn: bridge metadata is learned lazily from the original WorldBuilder stream.
+    private readonly Lazy<StockMetadataGrammar> bridgeBuilder = new(BridgeBuilderContract.Qualify);
     private readonly Lazy<StockMetadataGrammar> suckUpObjects;
     private readonly Lazy<StockMetadataGrammar> attackAssistResponse;
     // Reborn: garrisons use the retail-qualified inline roster and OpenContain metadata chain.
@@ -296,6 +300,7 @@ internal sealed class ConscriptVariableGraphVerifier
         attributeModifierAura=new(()=>AttributeModifierAuraContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         invisibilityBehavior=new(()=>InvisibilityBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         garrisonContain=new(()=>GarrisonContainContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        strafeAreaUpdate = new(() => StrafeAreaUpdateContract.Qualify(manifest));
         suckUpObjects=new(()=>SuckUpObjectsUpdateContract.Qualify(manifest));
         attackAssistResponse=new(()=>AttackAssistResponseContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         runOffMap=new(()=>RunOffMapContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -394,8 +399,8 @@ internal sealed class ConscriptVariableGraphVerifier
             int header=(int)pointer,expectedCount=owner.ChildNodes.OfType<XmlElement>().Count();if(Word(b,header)!=expectedCount)throw new InvalidDataException("Source/native module container count differs: "+name);
             if(expectedCount==0){if(Word(b,header+4)!=0)throw new InvalidDataException("Empty module container native header differs: "+name);Cover(header,8);Add(ownedRelos,(uint)slot);VerifyContainerHeader(name,header,0);containerLengths.Add(name,12);}
         }
-        // Reborn: retain the separately proved PropBody fragment for the direct root Body metadata row.
-        (Chunk Tokens,int Prefix,int Start,int End)? propBodyPiece=null;
+        // Reborn: retain a separately proved concrete body fragment for the direct root Body metadata row.
+        (Chunk Tokens,int Prefix,int Start,int End)? independentBodyPiece=null;
         var fixedGraphs=new Dictionary<int,(int Start,int End,Type Type,SelectedNativeGraphComparer Comparer)>();int behaviorLength=0,aiLength=0;XmlDocument? resolved=null;
         foreach(var group in ConscriptModuleScalarContract.Owners(source).GroupBy(o=>o.Container))
         {
@@ -416,10 +421,26 @@ internal sealed class ConscriptVariableGraphVerifier
             foreach(var owner in owners)
             {
                 int start=ConscriptModuleScalarContract.Address(b,0,owner),stop=owner.Index+1<owners.Length?ConscriptModuleScalarContract.Address(b,0,owners[owner.Index+1]):end;
+                // Reborn: prove the derived body's health, references and damage ranges independently of the comparison ActiveBody.
+                if(owner.Container=="Body"&&owner.Element.LocalName is "ManagerBody" or "ManagedImmortalBody")
+                {
+                    var bodyNative=Extract(native,start,stop);
+                    resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);
+                    var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container=="Body").Element;
+                    var references=instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray();
+                    uint bodyType=element.LocalName=="ManagerBody"
+                        ? Ep1ActiveBodyTokenizer.ManagerBodyTypeId
+                        : Ep1ActiveBodyTokenizer.ManagedImmortalBodyTypeId;
+                    SchemaNativeContract.Verify(element,owner.NativeType,bodyType,bodyNative,references);
+                    var metadata=Ep1ActiveBodyTokenizer.Tokenize(bodyNative);
+                    Own(bodyNative,start,stop);
+                    independentBodyPiece=(metadata,metadata.InstanceBuffer.Length-bodyNative.InstanceBuffer.Length,start,stop);
+                    continue;
+                }
                 // Reborn: PropBody is an eight-byte Body leaf with source/native proof and a complete root metadata splice.
                 if(owner.NativeType==typeof(PropBodyModuleData)){
                     var grammar=propBody.Value;var bodyNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container=="Body").Element;
-                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,PropBodyContract.TypeId,bodyNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.TokenizePropBody(bodyNative,official);int size=grammar.Verify(metadata,bodyNative,owner.NativeType,proof.Records);Own(bodyNative,start,stop);propBodyPiece=(metadata,size,start,stop);continue;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,PropBodyContract.TypeId,bodyNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.TokenizePropBody(bodyNative,official);int size=grammar.Verify(metadata,bodyNative,owner.NativeType,proof.Records);Own(bodyNative,start,stop);independentBodyPiece=(metadata,size,start,stop);continue;
                 }
                 // Reborn: own every authored assign-slaves field, import and allocation through the shared schema proof, then check metadata against stock.
                 if(owner.NativeType==typeof(AssignSlavesTargetObjectSpecialPowerModuleData)){
@@ -687,6 +708,36 @@ internal sealed class ConscriptVariableGraphVerifier
                 if(owner.NativeType==typeof(GarrisonContainModuleData)){
                     var grammar=garrisonContain.Value;var garrisonNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,GarrisonContainContract.TypeId,garrisonNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(garrisonNative,official,GarrisonContainContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,garrisonNative,owner.NativeType,proof.Records);Own(garrisonNative,start,stop);Splice(owner,metadata,start,size);continue;
+                }
+                // Reborn: validate bridge part imports, optional pointer targets and segment dimensions.
+                if (owner.NativeType == typeof(BridgeBuilderModuleData))
+                {
+                    var bridgeNative = Extract(native, start, stop);
+                    resolved ??= SchemaNativeContract.Resolve(source, referenceSchemas, catalog);
+                    var element = ConscriptModuleScalarContract.Owners(resolved)
+                        .Single(o => o.Container == owner.Container && o.Index == owner.Index).Element;
+                    var references = instance.ReferencedInstances.Select(r => new AssetId(r.TypeId, r.InstanceId)).ToArray();
+                    var proof = SchemaNativeContract.Verify(element, owner.NativeType, BridgeBuilderContract.TypeId, bridgeNative, references);
+                    var metadata = Ep1BehaviorMetadataTokenizer.Tokenize(bridgeNative, official, BridgeBuilderContract.Wire, owner.NativeType);
+                    int size = bridgeBuilder.Value.Verify(metadata, bridgeNative, owner.NativeType, proof.Records);
+                    Own(bridgeNative, start, stop);
+                    Splice(owner, metadata, start, size);
+                    continue;
+                }
+                // Reborn: validate the strafe fields and weapon imports before splicing retail-shaped metadata.
+                if (owner.NativeType == typeof(StrafeAreaUpdateModuleData))
+                {
+                    var strafeNative = Extract(native, start, stop);
+                    resolved ??= SchemaNativeContract.Resolve(source, referenceSchemas, catalog);
+                    var element = ConscriptModuleScalarContract.Owners(resolved)
+                        .Single(o => o.Container == owner.Container && o.Index == owner.Index).Element;
+                    var references = instance.ReferencedInstances.Select(r => new AssetId(r.TypeId, r.InstanceId)).ToArray();
+                    var proof = SchemaNativeContract.Verify(element, owner.NativeType, StrafeAreaUpdateContract.TypeId, strafeNative, references);
+                    var metadata = Ep1BehaviorMetadataTokenizer.Tokenize(strafeNative, official, StrafeAreaUpdateContract.Wire, owner.NativeType);
+                    int size = strafeAreaUpdate.Value.Verify(metadata, strafeNative, owner.NativeType, proof.Records);
+                    Own(strafeNative, start, stop);
+                    Splice(owner, metadata, start, size);
+                    continue;
                 }
                 // Reborn: verify every authored lift field and nested filter before splicing metadata.
                 if(owner.NativeType==typeof(SuckUpObjectsUpdateModuleData)){
@@ -957,9 +1008,9 @@ internal sealed class ConscriptVariableGraphVerifier
                 if(visionPiece is not { } vision){if(at!=0)throw new InvalidDataException("Omitted VisionInfo metadata must be null.");}
                 else{const int visionLength=132;if(at<rootLength||at>prefix-visionLength||metadataOwned.AsSpan(at,visionLength).Contains(true)||!Equal(Detach(tokens,prefix,at,visionLength,vision.Start,vision.End),vision.Tokens))throw new InvalidDataException("VisionInfo metadata splice/ownership differs.");Array.Fill(metadataOwned,true,at,visionLength);}continue;
             }
-            // Reborn: PropBody owns its complete metadata fragment independently of ActiveBody's longer stock tables.
-            if(pair.Key==FastHash.GetHashCode("Body")&&propBodyPiece is { } prop){
-                if(at<rootLength||at>prefix-prop.Prefix||metadataOwned.AsSpan(at,prop.Prefix).Contains(true)||!Equal(Detach(tokens,prefix,at,prop.Prefix,prop.Start,prop.End),prop.Tokens))throw new InvalidDataException("PropBody root metadata splice/ownership differs.");
+            // Reborn: Each independently verified body owns its complete metadata fragment independently of ActiveBody's longer stock tables.
+            if(pair.Key==FastHash.GetHashCode("Body")&&independentBodyPiece is { } prop){
+                if(at<rootLength||at>prefix-prop.Prefix||metadataOwned.AsSpan(at,prop.Prefix).Contains(true)||!Equal(Detach(tokens,prefix,at,prop.Prefix,prop.Start,prop.End),prop.Tokens))throw new InvalidDataException("Concrete body root metadata splice/ownership differs.");
                 Array.Fill(metadataOwned,true,at,prop.Prefix);continue;
             }
             // Reborn: complete AI leaf fragments were independently proved above; their metadata extent follows chooser presence.
@@ -1112,6 +1163,10 @@ internal sealed class ConscriptVariableGraphVerifier
             actual.ParentNode!.ReplaceChild(document.ImportNode(baseline.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName=="Behaviors"),true),actual);
             // Reborn: unrelated root/fixed owners retain baseline occurrence coordinates while variable leaf imports use their own source table.
             ConscriptVariableContainers.Restore(document,baseline);
+            // Reborn: independently proved derived-body imports do not occupy stock comparison reference slots.
+            var body=ConscriptVariableContainers.Find(document,"Body")!;
+            if(body.ChildNodes.OfType<XmlElement>().Single().LocalName is "ManagerBody" or "ManagedImmortalBody")
+                body.ParentNode!.ReplaceChild(document.ImportNode(ConscriptVariableContainers.Find(baseline,"Body")!,true),body);
             // Reborn: new root strong references have their own source/native proof; untouched stock owners keep stock occurrence coordinates.
             GameObjectExtendedRootContract.Mask(document,baseline);
             // Reborn: an AI-less object still reads the root reference table in stock occurrence coordinates, so the baseline AI owner is restored here only.

@@ -43,9 +43,9 @@
 	
 
 
-	<Texture id="S7_MtFuji_Art_Orange" File="S7_MtFuji_Art_Orange.tga"  GenerateMipMaps="false" AllowAutomaticResize="false"/>
-    <Texture id="S7_MtFuji_Art_Magenta" File="S7_MtFuji_Art_Magenta.tga"  GenerateMipMaps="false" AllowAutomaticResize="false"/>
-	<Texture id="S7_MtFuji_Art_Blue" File="S7_MtFuji_Art_Blue.tga"  GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="S7_MtFuji_Art_Orange" File="S7_MtFuji_Art_Orange.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+    <Texture id="S7_MtFuji_Art_Magenta" File="S7_MtFuji_Art_Magenta.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+	<Texture id="S7_MtFuji_Art_Blue" File="S7_MtFuji_Art_Blue.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
 
       <RadarTerrainImage
             id="OrangeBorderTerrain"

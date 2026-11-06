@@ -194,6 +194,10 @@ internal static class ConscriptVariableBehaviorSource
             if(owner.NativeType==typeof(SageBinaryData.InvisibilityBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.GarrisonContainModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             // Reborn: source-bound satellite updates use schema validation for the full filter graph.
+            // Reborn: admit the bridge part graph through the stock-qualified schema writer.
+            if(owner.NativeType==typeof(SageBinaryData.BridgeBuilderModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
+            // Reborn: admit StrafeAreaUpdate through the stock-qualified schema writer.
+            if(owner.NativeType==typeof(SageBinaryData.StrafeAreaUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.SuckUpObjectsUpdateModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.AttackAssistResponseBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.RunOffMapBehaviorModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
@@ -236,7 +240,7 @@ internal static class ConscriptVariableBehaviorSource
         // Reborn: only the comparison copy restores baseline containers; actual source/native proof retains every authored module.
         ConscriptVariableContainers.Restore(copy,comparison);
         // Reborn: restore only the comparison body; authored PropBody is independently proved during native composition.
-        if(ConscriptVariableContainers.Find(source,"Body")?.ChildNodes.OfType<XmlElement>().SingleOrDefault()?.LocalName=="PropBody"){var body=ConscriptVariableContainers.Find(copy,"Body")!;body.RemoveAll();foreach(XmlNode child in ConscriptVariableContainers.Find(comparison,"Body")!.ChildNodes)body.AppendChild(copy.ImportNode(child,true));}
+        if(ConscriptVariableContainers.Find(source,"Body")?.ChildNodes.OfType<XmlElement>().SingleOrDefault()?.LocalName is "PropBody" or "ManagerBody" or "ManagedImmortalBody"){var body=ConscriptVariableContainers.Find(copy,"Body")!;body.RemoveAll();foreach(XmlNode child in ConscriptVariableContainers.Find(comparison,"Body")!.ChildNodes)body.AppendChild(copy.ImportNode(child,true));}
         // Reborn: VisionInfo presence is source-owned; only the structural comparison restores the baseline record.
         VisionInfoContract.MaskComparison(copy,comparison);
         copy.DocumentElement!.SetAttribute("id",comparison.DocumentElement!.GetAttribute("id"));
@@ -273,7 +277,7 @@ internal static class ConscriptVariableBehaviorSource
         foreach(var owner in owners.Where(o=>o.Container!="Behaviors"&&!ConscriptVariableContainers.Supports(o.Container)))
         {
             // Reborn: PropBody has an independent source/schema contract rather than the Conscript ActiveBody template.
-            if(owner.NativeType==typeof(SageBinaryData.PropBodyModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);continue;}
+            if(owner.Container=="Body"&&owner.Element.LocalName is "PropBody" or "ManagerBody" or "ManagedImmortalBody"){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);continue;}
             // Reborn: each supported AI leaf is verified from its own source, independently of the baseline AI cardinality.
             if(owner.Container=="AI"){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);continue;}
             var original=originals.Single(o=>o.Container==owner.Container&&o.Index==owner.Index);origins.Add(owner.Element.GetAttribute("id"),original.Element.GetAttribute("id"));
@@ -286,7 +290,7 @@ internal static class ConscriptVariableBehaviorSource
         // Reborn: flexible upgrade children do not have to match the template's occurrence count during source-order alignment.
         var upgradeIds=owners.Where(o=>ConscriptUpgradeStructure.Supports(o.NativeType)).Select(o=>o.Element.GetAttribute("id")).ToHashSet(StringComparer.Ordinal);
         // Reborn: a prop body has no strong references to align with the ActiveBody comparison template.
-        if(owners.Any(o=>o.NativeType==typeof(SageBinaryData.PropBodyModuleData))){var body=ConscriptVariableContainers.Find(aligned,"Body")!;body.RemoveAll();foreach(XmlNode child in ConscriptVariableContainers.Find(source,"Body")!.ChildNodes)body.AppendChild(aligned.ImportNode(child,true));}
+        if(owners.Any(o=>o.Container=="Body"&&o.Element.LocalName is "PropBody" or "ManagerBody" or "ManagedImmortalBody")){var body=ConscriptVariableContainers.Find(aligned,"Body")!;body.RemoveAll();foreach(XmlNode child in ConscriptVariableContainers.Find(source,"Body")!.ChildNodes)body.AppendChild(aligned.ImportNode(child,true));}
         Align(source.DocumentElement!,aligned.DocumentElement!,upgradeIds);
         return new(origins,behaviors.Length);
 

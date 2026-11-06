@@ -3950,11 +3950,15 @@ End
 
 // Reborn: localizable campaign-menu page labels.
 RebornUI:CampaignUprising
-	"Uprising"
+	"UPRISING"
 End
 
 RebornUI:CampaignRA3
-	"Red Alert 3"
+	"RED ALERT 3"
+End
+	
+APT:QUICKPLAY
+	"QUICKPLAY"
 End
 
 // Reborn: original RA3 campaign title and descriptions; Uprising keys remain unchanged.

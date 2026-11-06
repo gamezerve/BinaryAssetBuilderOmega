@@ -219,6 +219,7 @@ internal sealed class SdkInstanceInheritanceProfile
             List<SdkMetadataDefinitions.Witness> metadataWitnesses = new();
             // Reborn: cap source-local expansion across the entire direct visibility set, not only each imported document individually.
             long expandedBaseBytes = 0;
+            var instanceSources = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             for (int index = 0; index < includes.Length; index++)
             {
                 var include = includes[index]; var edge = expected[index]; string logical = include.GetAttribute("source");
@@ -238,6 +239,8 @@ internal sealed class SdkInstanceInheritanceProfile
                 var resolved = SdkKnownMapAliases.ResolveCaptured(paths,path,include.GetAttribute("type"),logical,inventory[path].Root);
                 if (!resolved.Path.Equals(edge.PhysicalPath,StringComparison.OrdinalIgnoreCase) || !inventory.TryGetValue(resolved.Path,out var source)
                     || !resolved.Root.Equals(source.Root,StringComparison.OrdinalIgnoreCase) || resolved.Path.Equals(path,StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Instance target differs from captured confined inventory or is cyclic.");
+                // Reborn: validate every include edge, but register a physical instance source only once per owner.
+                if (edge.Kind == "instance" && !instanceSources.Add(resolved.Path)) continue;
                 byte[] baseBytes = Capture(resolved.Path); XmlDocument baseXml = Parse(baseBytes);
                 // Reborn: production all-imports may contain real assets (including W3X containers), not just definitions.
                 // Reborn: prepare their handles in the defining source context; the frontend independently controls all-versus-instance publication.
@@ -293,7 +296,7 @@ internal sealed class SdkInstanceInheritanceProfile
             if (expressions)
             {
                 // Reborn: music offsets resolve in the defining document before overlays; imported bases never use the consumer's local values.
-                var evaluated = new SdkIncludeDefineProfile(paths,definitionExpressions:true,musicSchemas:musicOffsets ? schemas : null,soundOffsets:soundOffsets,numericExpressions:gameObjectTrees).Apply(path,bytes,beforeInheritance:true,expandedOwner:expressionSource);
+                var evaluated = new SdkIncludeDefineProfile(paths,definitionExpressions:true,musicSchemas:musicOffsets ? schemas : null,soundOffsets:soundOffsets,numericExpressions:gameObjectTrees,numericSchemas:gameObjectTrees ? schemas : null).Apply(path,bytes,beforeInheritance:true,expandedOwner:expressionSource);
                 if (evaluated.Bytes == null) throw SdkXmlDiagnostics.At(new InvalidDataException("Pre-inheritance expressions rejected: "+string.Join("; ",evaluated.Evidence.Diagnostics)),evaluated.DiagnosticNode);
                 owner = Parse(evaluated.Bytes); expressionEvidence = evaluated.Evidence;
                 expandedSize = evaluated.Bytes.Length+1024L;

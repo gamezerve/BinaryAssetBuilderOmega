@@ -1,4 +1,4 @@
-﻿using Relo;
+using Relo;
 using SageBinaryData;
 
 public static partial class Marshaler
@@ -19,6 +19,8 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(BridgeBuilderModuleData.Width), null), &objT->Width, state);
         Marshal(node.GetAttributeValue(nameof(BridgeBuilderModuleData.GateHouse), null), &objT->GateHouse, state);
         Marshal(node.GetAttributeValue(nameof(BridgeBuilderModuleData.GateHouse2), null), &objT->GateHouse2, state);
+        // Reborn: keep the stock EP1 two-thirds default when the bridge omits its damage threshold.
+        Marshal(node.GetAttributeValue(nameof(BridgeBuilderModuleData.DamageNeighborSegementsAtHealthPercent), "66.66666"), &objT->DamageNeighborSegementsAtHealthPercent, state);
         Marshal(node, (UpdateModuleData*)objT, state);
     }
 }

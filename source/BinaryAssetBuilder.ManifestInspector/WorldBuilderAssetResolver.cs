@@ -95,7 +95,7 @@ internal static class WorldBuilderAssetResolver
     //-------------------------------------------------------------------------------------------------
     /** Reborn: repair all three packaged stream variants together and update the private receipt only after exact archive readback. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Run(string package,string catalogDirectory,string staticManifest,string globalManifest,string prepared,string? context)
+    internal static void Run(string package,string catalogDirectory,string staticManifest,string globalManifest,string prepared,string? context,string? mapStaticPackage=null)
     {
         var files=new Dictionary<string,byte[]>(StringComparer.OrdinalIgnoreCase);using(var big=BigArchive.Open(package))foreach(var entry in big.Entries)files.Add(entry.Name,big.ReadEntry(entry,checked((int)entry.StoredSize)));
         var streams=Extensions.ToDictionary(e=>"diagnostic"+e,e=>files["data\\mod"+e]);
@@ -103,7 +103,18 @@ internal static class WorldBuilderAssetResolver
         var mod=ManifestReader.Read(streams["diagnostic.manifest"]);
         // Reborn: map packages retain their own reference convention; only top-level LOD streams resolve from data.
         bool isTopLevelMod=!mod.Assets.Any(asset=>asset.TypeName=="GameMap");
-        var runtimeProviders=new Dictionary<AssetId,string>();var loaded=new List<ManifestAsset>();foreach(var provider in providers)foreach(var asset in ManifestReader.Read(File.ReadAllBytes(provider.Path)).Assets){loaded.Add(asset);runtimeProviders[Id(asset)]=isTopLevelMod?SdkGlobalStreams.RelativeToData(provider.Runtime):provider.Runtime;}var world=ManifestReader.Read(File.ReadAllBytes(Path.Combine(catalogDirectory,"worldbuilder.manifest")));var known=loaded.Concat(mod.Assets).Select(Id).ToHashSet();var wb=world.Assets.Select(Id).ToHashSet();
+        var runtimeProviders=new Dictionary<AssetId,string>();var loaded=new List<ManifestAsset>();foreach(var provider in providers)foreach(var asset in ManifestReader.Read(File.ReadAllBytes(provider.Path)).Assets){loaded.Add(asset);runtimeProviders[Id(asset)]=isTopLevelMod?SdkGlobalStreams.RelativeToData(provider.Runtime):provider.Runtime;}
+        // Reborn: WorldBuilder fallback must also recognize map imports owned by the freshly compiled mod static stream.
+        if (mapStaticPackage != null)
+        {
+            if (isTopLevelMod) throw new InvalidDataException("A map stream is required for the mod static dependency package.");
+            foreach (var asset in MapPackageStage.ReadModStaticCatalog(mapStaticPackage).Assets)
+            {
+                loaded.Add(asset);
+                runtimeProviders[Id(asset)] = MapPackageStage.ModStaticRuntime;
+            }
+        }
+        var world=ManifestReader.Read(File.ReadAllBytes(Path.Combine(catalogDirectory,"worldbuilder.manifest")));var known=loaded.Concat(mod.Assets).Select(Id).ToHashSet();var wb=world.Assets.Select(Id).ToHashSet();
         // Reborn: absent weak names remain diagnostics rather than forcing an unrelated retail lookup; only WorldBuilder-owned weak IDs seed extraction.
         var weak=WeakSeeds(prepared).Where(id=>!known.Contains(id)&&wb.Contains(id));var result=Resolve(streams,Path.Combine(catalogDirectory,"worldbuilder.manifest"),loaded,weak,runtimeProviders);
         if(result.Imported.Length==0)return;

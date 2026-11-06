@@ -102,8 +102,8 @@
 		inheritFrom="AlliedBaseDefenseRockets"
 		AttackRange="200.0" />
   
-    <Texture id="A6_MtRushmore_Art_Orange" File="A6_MtRushmore_Art_Orange.tga" GenerateMipMaps="false" AllowAutomaticResize="false"/>
-		<Texture id="A6_MtRushmore_Art_Blue" File="A6_MtRushmore_Art_Blue.tga" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+    <Texture id="A6_MtRushmore_Art_Orange" File="A6_MtRushmore_Art_Orange.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+		<Texture id="A6_MtRushmore_Art_Blue" File="A6_MtRushmore_Art_Blue.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
 
 
       <RadarTerrainImage

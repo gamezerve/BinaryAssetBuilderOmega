@@ -1,6 +1,8 @@
 # Reborn: stable SDK front end; preserve editable sources, publish versioned Documents mods, never change game installation files or launch a game.
 [CmdletBinding()]
-param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot,[string]$StudioSession,[string]$ModVersion='1.00',[string]$FinalModsRoot,[ValidateSet(0,1)][int]$BuildGlobalData=1,[ValidateSet(0,1)][int]$DeveloperBuildTests=0,[ValidateSet(0,1)][int]$BuildAptUI=0,[ValidateSet(0,1)][int]$BuildMaps=0,[ValidateSet(0,1)][int]$SilentMode=0)
+param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot,[string]$StudioSession,[string]$ModVersion='1.00',[string]$FinalModsRoot,[ValidateSet(0,1)][int]$BuildGlobalData=1,[ValidateSet(0,1)][int]$DeveloperBuildTests=0,[ValidateSet(0,1)][int]$BuildAptUI=0,[ValidateSet(0,1)][int]$BuildMaps=0,[ValidateSet(0,1)][int]$SilentMode=0,[ValidateSet(0,1)][int]$BuildStaticData=1,[ValidateSet(0,1)][int]$CreateBigFiles=1,
+    # Reborn: All omits the directory override.
+    [string]$OfficialMapDirectory)
 
 function Test-AptUIReferences {
     param(
@@ -72,7 +74,28 @@ $previousDeveloperTests=$env:REBORN_DEVELOPER_BUILD_TESTS
 <# Reborn: delete only a newly owned work/output generation after proving containment and refusing every redirected descendant. #>
 #-------------------------------------------------------------------------------------------------
 function Remove-DevAlphaOwned([string]$Path,[string]$Parent){$resolved=[IO.Path]::GetFullPath($Path);if([IO.Path]::GetDirectoryName($resolved)-ine [IO.Path]::GetFullPath($Parent)){throw 'Cleanup target is not a direct owned child.'};foreach($item in @(Get-Item -LiteralPath $resolved -Force)+@(Get-ChildItem -LiteralPath $resolved -Force -Recurse)){if(($item.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0){throw 'Redirected cleanup target retained.'}};Remove-Item -LiteralPath $resolved -Recurse -Force}
+#-------------------------------------------------------------------------------------------------
+<# Reborn: use only a verified previous local package as a reference provider during a map-only check. #>
+#-------------------------------------------------------------------------------------------------
+function Get-RebornPreviousMapProvider([string]$OutputRoot,[string]$Name) {
+    $directory=Join-Path $OutputRoot $Name
+    $package=Join-Path $directory ($Name+'.big')
+    $receipt=Join-Path $directory 'build.json'
+    Assert-RebornPackagePath $package
+    Assert-RebornPackagePath $receipt
+    if(!(Test-Path -LiteralPath $package -PathType Leaf) -or !(Test-Path -LiteralPath $receipt -PathType Leaf)){return}
+    $saved=Get-Content -LiteralPath $receipt -Raw | ConvertFrom-Json
+    if($saved.Format -cne 'RebornLiveAlpha1' -or $saved.ModName -cne $Name -or (Get-FileHash -LiteralPath $package).Hash -cne $saved.PackageSha256){
+        throw 'Previous mod static package failed receipt verification. Enable Build Static Data to compile fresh dependencies.'
+    }
+    return $package
+}
+
 try{
+    # Reborn: compile-only runs never publish generated maps, BIGs or SKUDefs.
+    $publishPackage=[bool]($CreateBigFiles -and !$ValidateOnly)
+    if($publishPackage -and !$BuildStaticData){throw 'Create BIG Files requires Build Static Data. Turn off Create BIG Files to check selected stages independently.'}
+    if(!($BuildAptUI -or $BuildGlobalData -or $BuildStaticData -or $BuildMaps)){throw 'Select at least one build stage.'}
     $env:REBORN_SILENT_MODE=[string]$SilentMode
     if($SilentMode){Write-SdkBuildLine "Silent Mode enabled; advisory audits skipped."}
     $env:REBORN_DEVELOPER_BUILD_TESTS=[string]$DeveloperBuildTests
@@ -99,7 +122,9 @@ try{
     $expectedCompiler=Join-Path $sdk 'tools/compiler';$expectedOutput=Join-Path $sdk 'builtmods'
     if($CompilerDirectory -and [IO.Path]::GetFullPath($CompilerDirectory)-ine $expectedCompiler){throw 'Stable alpha cannot use an unrelated compiler.'}
     if($OutputRoot -and [IO.Path]::GetFullPath($OutputRoot)-ine $expectedOutput){throw 'Stable alpha outputs stay inside alpha/builtmods.'}
-    foreach($path in @($ModXml,$expectedCompiler,$expectedOutput,(Join-Path $sdk '.work'))){for($item=Get-Item -LiteralPath $path;$null-ne $item;$item=if($item.PSIsContainer){$item.Parent}else{$item.Directory}){if(($item.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0){throw 'Redirected stable SDK path refused.'}}}
+    # Reborn: validate the selected Data directory for stage-only builds, even if no static source exists.
+    $buildInput=if($BuildStaticData){$ModXml}else{Split-Path -Parent $ModXml}
+    foreach($path in @($buildInput,$expectedCompiler,$expectedOutput,(Join-Path $sdk '.work'))){for($item=Get-Item -LiteralPath $path;$null-ne $item;$item=if($item.PSIsContainer){$item.Parent}else{$item.Directory}){if(($item.Attributes-band [IO.FileAttributes]::ReparsePoint)-ne 0){throw 'Redirected stable SDK path refused.'}}}
     # Reborn: one lock spans tool generation selection, backend execution and publication; concurrent sync cannot replace a running compiler generation.
     $lock=[IO.File]::Open((Join-Path $sdk '.sdk.lock'),[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
     $toolchain=Get-Content -LiteralPath (Join-Path $sdk 'toolchain.json') -Raw|ConvertFrom-Json
@@ -190,65 +215,116 @@ try{
 	}
 
     Start-SdkBuildPhase 5 'Building global data'
-    # Reborn: an unchecked toggle omits global sources from this fresh package; never silently reuse an older source generation.
+    # Reborn: only compile-only map checks may import cached globals. Publication always uses this run's streams.
     $globalBuild=$null
-    if($BuildGlobalData -or $BuildMaps){Build-RebornGlobalData (Split-Path -Parent $ModXml) $sdk $settings $StaticManifest $GlobalManifest $expectedCompiler $run $detail ([ref]$globalBuild) -IncludeGlobalData ([bool]$BuildGlobalData) -IncludeMapCatalog ([bool]$BuildMaps);if($globalBuild.Streams.Count){Stop-SdkBuildPhase ('Global streams compiled: '+$globalBuild.Streams.Count)}else{Stop-SdkBuildPhase}}else{Stop-SdkBuildPhase 'Skipped: [Optional] Build Global Data and Build Maps are unchecked; no AdditionalMaps streams will be packaged.'}
+    $mapGlobals=@()
+    $globalCache=Join-Path $sdk ('.work/map-global-catalogs/'+$ModName+'.zip')
+    if($BuildMaps -and !$BuildGlobalData -and !$publishPackage){
+        $mapGlobals=@(Read-RebornMapGlobalCatalogs $globalCache $run)
+        if($mapGlobals.Count){Write-SdkBuildLine ('Map check uses '+$mapGlobals.Count+' catalog(s) from the last successful local global compile.')}
+        else{Write-SdkBuildLine 'No cached mod global catalogs for map checks. Enable Build Global Data once to compile them.'}
+    }
+    if($BuildGlobalData -or $BuildMaps){
+        Build-RebornGlobalData (Split-Path -Parent $ModXml) $sdk $settings $StaticManifest $GlobalManifest $expectedCompiler $run $detail ([ref]$globalBuild) -IncludeGlobalData ([bool]$BuildGlobalData) -IncludeMapCatalog ([bool]$BuildMaps) -ReferenceStreams $mapGlobals
+        if($BuildGlobalData){Save-RebornMapGlobalCatalogs $globalBuild $globalCache $run}
+        if($globalBuild.Streams.Count){Stop-SdkBuildPhase ('Global streams compiled: '+$globalBuild.Streams.Count)}else{Stop-SdkBuildPhase}
+    }else{Stop-SdkBuildPhase 'Skipped: [Optional] Build Global Data and Build Maps are unchecked; no AdditionalMaps streams will be packaged.'}
     Start-SdkBuildPhase 6 'Building static data'
-    # Reborn: announce validation before reporting its entry-point load, so progress follows the actual phase order.
-    Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] Validation started: dependency audit, source graph and schema admission.')
-    Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] Loading '+$ModXml)
-    # Reborn: list independent missing definitions/assets before the normal compiler stops at its first unsupported or invalid owner.
-    $dependencyReport=Join-Path $run 'dependencies.json'
-    $dependencyArguments=@('sdk-missing-dependencies',$ModXml,$sdk,$StaticManifest,$GlobalManifest,$dependencyReport)
-    if($globalBuild){$dependencyArguments+=@($(if($settings.SdkDataRoot){$settings.SdkDataRoot}else{Join-Path $sdk 'SageXML'}),$globalBuild.Context)}elseif($settings.SdkDataRoot){$dependencyArguments+=$settings.SdkDataRoot}
-    & (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') @dependencyArguments 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail};$dependencyCode=$LASTEXITCODE
-    if(Test-Path -LiteralPath $dependencyReport){Copy-Item -LiteralPath $dependencyReport -Destination (Join-Path $sdk '.work/last-dependencies.json') -Force;Write-SdkBuildLine ('Dependency report: '+(Join-Path $sdk '.work/last-dependencies.json'))}
-    if($dependencyCode-ne 0){throw 'Dependency preflight failed. Review the complete missing asset/definition list above.'}
-    # Reborn: standalone GameObject XML uses the explicit complete-Conscript route; other assets retain their original admission and compiler path.
-    $xmlSettings=[Xml.XmlReaderSettings]::new();$xmlSettings.DtdProcessing=[Xml.DtdProcessing]::Prohibit;$xmlSettings.XmlResolver=$null;$xmlSettings.MaxCharactersInDocument=1048576
-    # Reborn: upgrade-only XML uses the same verified support stream route as command sets, including ordinary Studio publication.
-    # Reborn: a bare FXList selects the same general support-asset backend as an included FXList.
-    # Reborn: a bare W3DContainer uses the same support-asset compiler as a W3X included in an AssetDeclaration.
-    $reader=[Xml.XmlReader]::Create($ModXml,$xmlSettings);try{$null=$reader.MoveToContent();$isConscript=$reader.LocalName-cin @('GameObject','PurchasePlayerTechButtonTemplate','UnitAbilityButtonTemplate','PlayerTech','ButtonSingleStateData','JoypadCommandBarButtonTemplate','PlayerPowerButtonTemplate','SpecialPowerTemplate','ExperienceLevelTemplate','FXParticleSystemTemplate','FXList','LogicCommandSet','UpgradeTemplate','W3DContainer','W3DHierarchy','W3DCollisionBox','W3DMesh');$isDeclaration=$reader.LocalName-ceq 'AssetDeclaration'}finally{$reader.Dispose()}
-    # Reborn: detect GameObject declarations in a real local XML closure without an automatic production command.
-    $searchArgs=@($sdk);if($settings.SdkDataRoot){$searchArgs+=$settings.SdkDataRoot}
-    if($isDeclaration){$kind=@(& (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') conscript-source-kind $ModXml @searchArgs);if($LASTEXITCODE-ne 0){throw ($kind -join [Environment]::NewLine)};$isConscript=($kind -join '').Trim()-ceq 'conscript'}
-    $backend=if($isConscript){'Invoke-Ra3Ep1ConscriptAlphaBuild.ps1'}else{'Invoke-Ra3Ep1AlphaBuild.ps1'}
-    $arguments=@('-NoProfile','-File',(Join-Path $PSScriptRoot $backend),'-ModXml',$ModXml,'-StaticManifest',$StaticManifest,'-GlobalManifest',$GlobalManifest,'-CompilerDirectory',$expectedCompiler,'-OutputRoot',$run)
-    if($ValidateOnly){$arguments+='-ValidateOnly'}
-    # Reborn: static strong/weak reference lookup includes only globals actually built in this invocation.
-    if($isConscript -and $globalBuild){$arguments+=@('-GlobalStreamContext',$globalBuild.Context)}
-    # Reborn: the armor source backend uses the same explicit SDK search roots as GameObject routing/preparation.
-    if(-not $isConscript){$arguments+=@('-SdkRoot',$sdk);if($settings.SdkDataRoot){$arguments+=@('-SdkDataRoot',$settings.SdkDataRoot)}}
-    # Reborn: stream complete lines immediately; JSON/readback diagnostics remain in the full detail log.
-    & $settings.PowerShell7 @arguments 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail};$code=$LASTEXITCODE
-    if($code-ne 0){throw 'Alpha backend failed; previous successful output is unchanged.'}
-    Stop-SdkBuildPhase
-    if($ValidateOnly){
-        # Reborn: map validation may compile only private generations; it never publishes generated map files to Misc.
-        if($BuildMaps){$validationMaps=@();Start-SdkBuildPhase 9 'Validating maps';Build-RebornMaps (Split-Path -Parent $ModXml) $sdk $settings $StaticManifest $GlobalManifest $expectedCompiler $run $detail $(if($globalBuild){$globalBuild.Context}else{$null}) ([ref]$validationMaps);Stop-SdkBuildPhase}
-        Write-SdkBuildLine 'Validation Completed (no publication).';Write-SdkBuildLine ('Build time taken: '+$script:BuildClock.Elapsed.ToString('c'));[IO.File]::WriteAllLines((Join-Path $sdk '.work/last-validation.log'),$script:BuildLogLines);Copy-Item -LiteralPath $detail -Destination (Join-Path $sdk '.work/last-detail.log') -Force;return}
-    Start-SdkBuildPhase 7 'Merging assets';Stop-SdkBuildPhase 'Skipped: no separate post-build asset merge is enabled.'
-    Start-SdkBuildPhase 8 'Fixing assets'
-    $receipts=@(Get-ChildItem -LiteralPath $run -Filter alpha-build.json -Recurse);if($receipts.Count-ne 1){throw 'Expected one successful alpha backend receipt.'}
-    $receipt=Get-Content -LiteralPath $receipts[0].FullName -Raw|ConvertFrom-Json;$core=Get-Content -LiteralPath $receipt.BuildReceipt -Raw|ConvertFrom-Json
-    # Reborn: report only measured backend counts/identities that actually exist in the selected receipt.
-    if($null-ne $core.AssetCount){Write-SdkBuildLine ('Compiled assets: '+$core.AssetCount)}
-    if($core.Asset){Write-SdkBuildLine ('Primary asset: '+$core.Asset)}
-    $package=if($receipt.PackagePath){$receipt.PackagePath}elseif($core.PackagePath){$core.PackagePath}else{$core.DefaultReaderPackagePath}
-    $package=[IO.Path]::GetFullPath($package);if(-not $package.StartsWith($run+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Backend package escaped its private work generation.'}
-    Write-SdkBuildLine 'Verified backend receipt and package location; native stream qualification ran during static-data compilation. No legacy RA3 hash-fix tool was run.'
-    Stop-SdkBuildPhase
+    # Reborn: a map check can use the last compiled catalog even if its static build was never published.
+    $catalogPath=Join-Path $sdk ('.work/map-static-catalogs/'+$ModName+'.manifest')
+    $package=$null
+    if($BuildStaticData){
+        # Reborn: announce validation before reporting its entry-point load, so progress follows the actual phase order.
+        Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] Validation started: dependency audit, source graph and schema admission.')
+        Write-SdkBuildLine ('['+$script:BuildClock.Elapsed.ToString('c')+'] Loading '+$ModXml)
+        # Reborn: list independent missing definitions/assets before the normal compiler stops at its first unsupported or invalid owner.
+        $dependencyReport=Join-Path $run 'dependencies.json'
+        $dependencyArguments=@('sdk-missing-dependencies',$ModXml,$sdk,$StaticManifest,$GlobalManifest,$dependencyReport)
+        if($globalBuild){$dependencyArguments+=@($(if($settings.SdkDataRoot){$settings.SdkDataRoot}else{Join-Path $sdk 'SageXML'}),$globalBuild.Context)}elseif($settings.SdkDataRoot){$dependencyArguments+=$settings.SdkDataRoot}
+        & (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') @dependencyArguments 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail};$dependencyCode=$LASTEXITCODE
+        if(Test-Path -LiteralPath $dependencyReport){Copy-Item -LiteralPath $dependencyReport -Destination (Join-Path $sdk '.work/last-dependencies.json') -Force;Write-SdkBuildLine ('Dependency report: '+(Join-Path $sdk '.work/last-dependencies.json'))}
+        if($dependencyCode-ne 0){throw 'Dependency preflight failed. Review the complete missing asset/definition list above.'}
+        # Reborn: standalone GameObject XML uses the explicit complete-Conscript route; other assets retain their original admission and compiler path.
+        $xmlSettings=[Xml.XmlReaderSettings]::new();$xmlSettings.DtdProcessing=[Xml.DtdProcessing]::Prohibit;$xmlSettings.XmlResolver=$null;$xmlSettings.MaxCharactersInDocument=1048576
+        # Reborn: upgrade-only XML uses the same verified support stream route as command sets, including ordinary Studio publication.
+        # Reborn: a bare FXList selects the same general support-asset backend as an included FXList.
+        # Reborn: a bare W3DContainer uses the same support-asset compiler as a W3X included in an AssetDeclaration.
+        $reader=[Xml.XmlReader]::Create($ModXml,$xmlSettings);try{$null=$reader.MoveToContent();$isConscript=$reader.LocalName-cin @('GameObject','PurchasePlayerTechButtonTemplate','UnitAbilityButtonTemplate','PlayerTech','ButtonSingleStateData','JoypadCommandBarButtonTemplate','PlayerPowerButtonTemplate','SpecialPowerTemplate','ExperienceLevelTemplate','FXParticleSystemTemplate','FXList','LogicCommandSet','UpgradeTemplate','W3DContainer','W3DHierarchy','W3DCollisionBox','W3DMesh');$isDeclaration=$reader.LocalName-ceq 'AssetDeclaration'}finally{$reader.Dispose()}
+        # Reborn: detect GameObject declarations in a real local XML closure without an automatic production command.
+        $searchArgs=@($sdk);if($settings.SdkDataRoot){$searchArgs+=$settings.SdkDataRoot}
+        if($isDeclaration){$kind=@(& (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') conscript-source-kind $ModXml @searchArgs);if($LASTEXITCODE-ne 0){throw ($kind -join [Environment]::NewLine)};$isConscript=($kind -join '').Trim()-ceq 'conscript'}
+        $backend=if($isConscript){'Invoke-Ra3Ep1ConscriptAlphaBuild.ps1'}else{'Invoke-Ra3Ep1AlphaBuild.ps1'}
+        $arguments=@('-NoProfile','-File',(Join-Path $PSScriptRoot $backend),'-ModXml',$ModXml,'-StaticManifest',$StaticManifest,'-GlobalManifest',$GlobalManifest,'-CompilerDirectory',$expectedCompiler,'-OutputRoot',$run)
+        # Reborn: map validation needs a private static package from this invocation too.
+        if($ValidateOnly -and !$BuildMaps){$arguments+='-ValidateOnly'}
+        # Reborn: static strong/weak reference lookup includes only globals actually built in this invocation.
+        if($isConscript -and $globalBuild){$arguments+=@('-GlobalStreamContext',$globalBuild.Context)}
+        # Reborn: the armor source backend uses the same explicit SDK search roots as GameObject routing/preparation.
+        if(-not $isConscript){$arguments+=@('-SdkRoot',$sdk);if($settings.SdkDataRoot){$arguments+=@('-SdkDataRoot',$settings.SdkDataRoot)}}
+        # Reborn: stream complete lines immediately; JSON/readback diagnostics remain in the full detail log.
+        & $settings.PowerShell7 @arguments 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail};$code=$LASTEXITCODE
+        if($code-ne 0){throw 'Alpha backend failed; previous successful output is unchanged.'}
+        Stop-SdkBuildPhase
+        # Reborn: both map validation and packaging use the verified static output in this private generation.
+        if(!$ValidateOnly -or $BuildMaps){
+            $receipts=@(Get-ChildItem -LiteralPath $run -Filter alpha-build.json -Recurse)
+            if($receipts.Count-ne 1){throw 'Expected one successful alpha backend receipt.'}
+            $receipt=Get-Content -LiteralPath $receipts[0].FullName -Raw|ConvertFrom-Json
+            $core=Get-Content -LiteralPath $receipt.BuildReceipt -Raw|ConvertFrom-Json
+            $package=if($receipt.PackagePath){$receipt.PackagePath}elseif($core.PackagePath){$core.PackagePath}else{$core.DefaultReaderPackagePath}
+            $package=[IO.Path]::GetFullPath($package)
+            if(-not $package.StartsWith($run+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Backend package escaped its private work generation.'}
+            if(!$ValidateOnly){
+                # Reborn: replace the local catalog atomically only after the backend package passed qualification.
+                Assert-RebornPackagePath $catalogPath
+                $catalogStage=Join-Path $run 'map-static.manifest'
+                & (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') sdk-save-map-static-catalog $package $catalogStage 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $detail}
+                if($LASTEXITCODE-ne 0){throw 'Could not save the verified map dependency catalog.'}
+                $null=New-Item -ItemType Directory -Force -Path (Split-Path -Parent $catalogPath)
+                [IO.File]::Move($catalogStage,$catalogPath,$true)
+            }
+        }
+    }else{
+        Stop-SdkBuildPhase 'Skipped: [Optional] Build Static Data is unchecked.'
+    }
+    if($publishPackage){
+        Start-SdkBuildPhase 7 'Merging assets';Stop-SdkBuildPhase 'Skipped: no separate post-build asset merge is enabled.'
+        Start-SdkBuildPhase 8 'Fixing assets'
+        if($null-ne $core.AssetCount){Write-SdkBuildLine ('Compiled assets: '+$core.AssetCount)}
+        if($core.Asset){Write-SdkBuildLine ('Primary asset: '+$core.Asset)}
+        Write-SdkBuildLine 'Verified backend receipt and package location; native stream qualification ran during static-data compilation. No legacy RA3 hash-fix tool was run.'
+        Stop-SdkBuildPhase
+    }
     Start-SdkBuildPhase 9 'Building maps'
     $mapBuild=@()
     if($BuildMaps){
-        Build-RebornMaps (Split-Path -Parent $ModXml) $sdk $settings $StaticManifest $GlobalManifest $expectedCompiler $run $detail $(if($globalBuild){$globalBuild.Context}else{$null}) ([ref]$mapBuild)
-        if($mapBuild.Count){
+        $mapStaticPackage=$package
+        if(!$BuildStaticData){
+            Assert-RebornPackagePath $catalogPath
+            if(Test-Path -LiteralPath $catalogPath -PathType Leaf){
+                $mapStaticPackage=$catalogPath
+                Write-SdkBuildLine 'Map check uses the static catalog from the last successful local static compile.'
+            }else{
+                $mapStaticPackage=Get-RebornPreviousMapProvider $expectedOutput $ModName
+                if($mapStaticPackage){Write-SdkBuildLine 'Map check uses the verified static catalog from the last successful local package.'}
+                else{Write-SdkBuildLine 'Map check uses stock and selected global streams. No previous local mod static catalog was found.'}
+            }
+        }
+        Build-RebornMaps (Split-Path -Parent $ModXml) $sdk $settings $StaticManifest $GlobalManifest $expectedCompiler $run $detail $globalBuild.MapContext ([ref]$mapBuild) $mapStaticPackage -OfficialMapDirectory $OfficialMapDirectory
+        if($mapBuild.Count -and $publishPackage){
             Publish-RebornMapOutputs $mapBuild (Join-Path (Split-Path -Parent (Split-Path -Parent $ModXml)) 'Misc')
-            Stop-SdkBuildPhase ('Maps compiled and copied to Misc: '+$mapBuild.Count)
-        }else{Stop-SdkBuildPhase}
-    }else{Stop-SdkBuildPhase 'Skipped: [Optional] Build Maps is unchecked; existing Misc content is packaged as authored.'}
+        }
+        if($mapBuild.Count){Stop-SdkBuildPhase ('Maps compiled: '+$mapBuild.Count)}else{Stop-SdkBuildPhase}
+    }else{Stop-SdkBuildPhase 'Skipped: [Optional] Build Maps is unchecked.'}
     Start-SdkBuildPhase 10 'Creating big files'
+    if(!$publishPackage){
+        Stop-SdkBuildPhase 'Skipped: [Optional] Final BIG and SKUDef publication is disabled.'
+        Write-SdkBuildLine 'Validation Completed (no publication).'
+        Write-SdkBuildLine ('Build time taken: '+$script:BuildClock.Elapsed.ToString('c'))
+        [IO.File]::WriteAllLines((Join-Path $sdk '.work/last-validation.log'),$script:BuildLogLines)
+        if(Test-Path -LiteralPath $detail){Copy-Item -LiteralPath $detail -Destination (Join-Path $sdk '.work/last-detail.log') -Force}
+        return
+    }
     # Reborn: close cancellation must never terminate the worker halfway through staged publication/rollback of a last-good package.
     if($publishMutex){try{$publishHeld=$publishMutex.WaitOne()}catch [Threading.AbandonedMutexException]{$publishHeld=$true};if($cancelEvent.WaitOne(0)){throw 'Studio build cancelled before publication.'}}
     # Reborn: refuse a late higher-priority override even if the originally selected SDK file's hash is unchanged.

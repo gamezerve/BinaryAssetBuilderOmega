@@ -1,4 +1,4 @@
-﻿using Relo;
+using Relo;
 using SageBinaryData;
 
 public static partial class Marshaler
@@ -162,6 +162,28 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(WeatherData.id), null), &objT->id, state);
         Marshal(node.GetAttributeValue(nameof(WeatherData.HasLightning), null), &objT->HasLightning, state);
         Marshal(node.GetAttributeValue(nameof(WeatherData.Sound), null), &objT->Sound, state);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: serialize the retail Uprising weather records without legacy KW fields. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node, Ep1Weather* objT, Tracker state)
+    {
+        if (node is null)
+            return;
+        Marshal(node.GetChildNode(nameof(Ep1Weather.Rain), null), &objT->Rain, state);
+        var lightning = node.GetChildNode(nameof(Ep1Weather.Lightning), null);
+        if (lightning != null)
+        {
+            using var context = state.Push((void**)&objT->Lightning, (uint)sizeof(Ep1LightningType), 1u);
+            var record = objT->Lightning;
+            Marshal(lightning.GetAttributeValue(nameof(Ep1LightningType.LightningDuration), "30"), &record->LightningDuration, state);
+            Marshal(lightning.GetAttributeValue(nameof(Ep1LightningType.LightningChance), "0.01"), &record->LightningChance, state);
+            Marshal(lightning.GetChildNode(nameof(Ep1LightningType.LightningFactor), null), &record->LightningFactor, state);
+        }
+        Marshal(node.GetChildNode(nameof(Ep1Weather.Cloud), null), &objT->Cloud, state);
+        Marshal(node.GetChildNodes(nameof(Ep1Weather.WeatherData)), &objT->WeatherData, state);
+        Marshal(node, (BaseInheritableAsset*)objT, state);
     }
 
     public static unsafe void Marshal(Node node, Weather* objT, Tracker state)

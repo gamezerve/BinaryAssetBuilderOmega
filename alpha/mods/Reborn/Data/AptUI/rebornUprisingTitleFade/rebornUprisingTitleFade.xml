@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <!-- Reborn: composite the last 30 percent of the animated header into the Uprising backdrop. -->
+  <AptAptData id="rebornUprisingTitleFade_apt" File="rebornUprisingTitleFade.apt" />
+  <AptConstData id="rebornUprisingTitleFade_const" File="rebornUprisingTitleFade.const" />
+  <AptDatData id="rebornUprisingTitleFade_dat" File="rebornUprisingTitleFade.dat" />
+  <AptGeometryData id="rebornUprisingTitleFade_2" File="2.ru" AptID="2" />
+  <Texture id="apt_rebornUprisingTitleFade_1" File="apt_rebornUprisingTitleFade_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false" />
+</AssetDeclaration>

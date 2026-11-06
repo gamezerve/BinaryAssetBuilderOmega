@@ -1,5 +1,6 @@
 // Reborn: attach close confirmation to EA Studio and contain each owned build in a Windows job, never enumerate or kill unrelated processes.
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -18,6 +19,8 @@ namespace Reborn
         private static BuildSession current;
         private static Form studio;
         private static bool installed;
+        // Reborn: the transient map choice belongs to the current mod and stays out of EA's persisted options.
+        private static ComboBox mapPicker;
         // Reborn: injectable confirmation is internal to the assembly's offline harness; production always uses a real Yes/No dialog.
         internal static Func<DialogResult> Confirmation = null;
         // Reborn: EA Studio colors only its own step/build summary lines green; redirected backend lines with the same meaning are recolored here.
@@ -49,8 +52,10 @@ namespace Reborn
         private static void OnIdle(object sender, EventArgs args)
         {
             if (Application.OpenForms.Count == 0) return;
-            Attach(Application.OpenForms[0]);
-            Application.Idle -= OnIdle;
+            Form form = Application.OpenForms[0];
+            Attach(form);
+            // Reborn: initialize() can run inside Form.Load before EA generates its build options.
+            if (AttachMapPicker(form, AppDomain.CurrentDomain.BaseDirectory)) Application.Idle -= OnIdle;
         }
 
         //-------------------------------------------------------------------------------------------------
@@ -62,6 +67,103 @@ namespace Reborn
             studio = form;
             studio.FormClosing += OnClosing;
             AttachOutput(form);
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: replace the reserved option row once EA has generated its controls. */
+        //-------------------------------------------------------------------------------------------------
+        private static bool AttachMapPicker(Form form, string sdkRoot)
+        {
+            if (mapPicker != null) return true;
+            const BindingFlags fields = BindingFlags.Instance | BindingFlags.NonPublic;
+            Type type = form.GetType();
+            FieldInfo modsField = type.GetField("cmbMods", fields);
+            FieldInfo optionsField = type.GetField("generatedModGUIData", fields);
+            if (modsField == null || optionsField == null) return true;
+
+            var mods = (ComboBox)modsField.GetValue(form);
+            var options = (Dictionary<string, Control>)optionsField.GetValue(form);
+            Control mapOption;
+            if (!options.TryGetValue("buildmaps", out mapOption)) return false;
+            var buildMaps = (CheckBox)mapOption;
+            var panel = (TableLayoutPanel)buildMaps.Parent;
+            int rowIndex = panel.Controls.GetChildIndex(buildMaps) + 1;
+            if (rowIndex >= panel.Controls.Count) return true;
+            var marker = panel.Controls[rowIndex] as Label;
+            if (marker == null || marker.Text != "Official map to build") return true;
+
+            mapPicker = new ComboBox
+            {
+                Name = "cmbOfficialMaps",
+                AccessibleName = marker.Text,
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                FormattingEnabled = true,
+                // Reborn: leave a little space to the right of the map picker.
+                Anchor = AnchorStyles.Left,
+                Width = (panel.ClientSize.Width - marker.Margin.Horizontal) * 7 / 8,
+                Margin = marker.Margin,
+                TabIndex = marker.TabIndex,
+                Enabled = buildMaps.Checked
+            };
+            mapPicker.Format += delegate(object sender, ListControlConvertEventArgs args)
+            {
+                var directory = args.ListItem as DirectoryInfo;
+                if (directory != null)
+                    args.Value = String.Equals(directory.Name, "All", StringComparison.OrdinalIgnoreCase) ? directory.Name + " (map folder)" : directory.Name;
+            };
+            panel.SuspendLayout();
+            int column = panel.GetColumn(marker);
+            int row = panel.GetRow(marker);
+            panel.Controls.Remove(marker);
+            panel.Controls.Add(mapPicker, column, row);
+            panel.Controls.SetChildIndex(mapPicker, rowIndex);
+            // Reborn: EA sizes the options containers from the original label height during Form.Load.
+            int extraHeight = Math.Max(0, mapPicker.Height - marker.Height);
+            for (Control container = panel; container != null && container != form && !container.AutoSize; container = container.Parent)
+                container.Height += extraHeight;
+            marker.Dispose();
+            panel.ResumeLayout(true);
+
+            mods.SelectedIndexChanged += delegate { RefreshMapPicker(sdkRoot, mods.SelectedItem as string, null); };
+            buildMaps.CheckedChanged += delegate { mapPicker.Enabled = buildMaps.Checked; };
+            mapPicker.DropDown += delegate { RefreshMapPicker(sdkRoot, mods.SelectedItem as string, GetSelectedMapDirectory()); };
+            RefreshMapPicker(sdkRoot, mods.SelectedItem as string, null);
+            return true;
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: list the direct Official folders accepted by map source discovery, with All first. */
+        //-------------------------------------------------------------------------------------------------
+        private static void RefreshMapPicker(string sdkRoot, string mod, string previousDirectory)
+        {
+            var root = new DirectoryInfo(Path.Combine(sdkRoot, "mods", mod ?? "", "Data", "Maps", "Official"));
+            DirectoryInfo[] folders = !String.IsNullOrEmpty(mod) && root.Exists ? root.GetDirectories() : new DirectoryInfo[0];
+            Array.Sort(folders, (left, right) => StringComparer.OrdinalIgnoreCase.Compare(left.Name, right.Name));
+
+            mapPicker.BeginUpdate();
+            try
+            {
+                mapPicker.Items.Clear();
+                mapPicker.Items.Add("All");
+                int selected = 0;
+                foreach (DirectoryInfo folder in folders)
+                {
+                    if (!File.Exists(Path.Combine(folder.FullName, "map.xml"))) continue;
+                    int index = mapPicker.Items.Add(folder);
+                    if (String.Equals(folder.FullName, previousDirectory, StringComparison.OrdinalIgnoreCase)) selected = index;
+                }
+                mapPicker.SelectedIndex = selected;
+            }
+            finally { mapPicker.EndUpdate(); }
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: return the selected map folder as an absolute path for the build driver. */
+        //-------------------------------------------------------------------------------------------------
+        public static string GetSelectedMapDirectory()
+        {
+            var folder = mapPicker == null ? null : mapPicker.SelectedItem as DirectoryInfo;
+            return folder == null ? null : folder.FullName;
         }
 
         //-------------------------------------------------------------------------------------------------

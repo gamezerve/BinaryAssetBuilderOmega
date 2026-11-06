@@ -41,13 +41,18 @@ internal static class SdkInstanceInheritanceSmokeTest
             (bases,"<Asset id='Base' inheritFrom='Base'/>"),
             (bases,includes+"<Asset id='Child' inheritFrom='Missing'/>"),
             (bases,includes+"<Asset id='Child' inheritFrom='Non:Base'/>"),
-            (bases,includes+"<Asset id='Child' inheritFrom='Base' Value='=1+2'/>"),
-            (bases,includes.Replace("</Includes>","<Include type='instance' source='Bases.xml'/></Includes>",StringComparison.Ordinal)+owner) })
+            (bases,includes+"<Asset id='Child' inheritFrom='Base' Value='=1+2'/>") })
         {
             var invalidPaths = Fixture(invalid.Item1,invalid.Item2);
             var rejected = new SdkInstanceInheritanceProfile(schemas.Schemas,invalidPaths).Apply(entry,File.ReadAllBytes(entry));
             Require(rejected.Bytes == null && rejected.Evidence.ProcessedSha256 == null && rejected.Evidence.Overlays.Length == 0 && rejected.Evidence.ImportedBases.Length == 0,"Rejected import published partial evidence.");
         }
+        // Reborn: distinct include spellings of the same captured instance file contribute one base and no ambiguity.
+        var repeatedPaths = Fixture(bases,includes.Replace("</Includes>",
+            "<Include type='instance' source='DATA:Bases.xml'/></Includes>",StringComparison.Ordinal)+owner);
+        var repeated = new SdkInstanceInheritanceProfile(schemas.Schemas,repeatedPaths).Apply(entry,File.ReadAllBytes(entry));
+        Require(repeated.Bytes != null && repeated.Evidence.ImportedBases.Single().SourcePath == basePath &&
+            repeated.Evidence.Overlays.Length == 2,"Repeated physical instance source should provide one inherited base.");
         // Reborn: same-ID bases come from the included source, preserve authored output IDs/children and never leak private merge handles.
         foreach(string target in new[]{"Base","Asset:Base"}){
             var samePaths=Fixture(bases,includes+"<Asset id='Base' inheritFrom='"+target+"'><Tag>overlay</Tag></Asset><Asset id='Follower' inheritFrom='Base'/>");

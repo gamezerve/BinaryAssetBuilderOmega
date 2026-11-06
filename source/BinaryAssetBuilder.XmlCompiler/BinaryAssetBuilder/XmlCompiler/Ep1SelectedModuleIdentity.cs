@@ -29,7 +29,7 @@ public static class Ep1SelectedModuleIdentity
         // Reborn: the wider behavior path is explicit; the existing three-class/default profile remains unchanged.
         // Reborn: the complete behavior compiler uses actual allocation bounds, not the former 64-module trial quota.
         // Reborn: the reviewed complete route supports PropBody as well as ActiveBody in the same local identity scope.
-        if(modules.Length<1 || (!reviewedBehaviors&&modules.Length>3) || body.Length!=1 || (body[0].LocalName!="ActiveBody"&&(!reviewedBehaviors||body[0].LocalName!="PropBody")) || body[0].NamespaceURI!=ns || modules.Any(e=>e.NamespaceURI!=ns || (!reviewedBehaviors && e.LocalName is not ("BuildingDestructionBehavior" or "WeaponSetUpdate" or "ObjectSMCHelper"))))throw new InvalidDataException("Unimplemented selected identity container/class.");
+        if(modules.Length<1 || (!reviewedBehaviors&&modules.Length>3) || body.Length!=1 || (body[0].LocalName!="ActiveBody"&&(!reviewedBehaviors||body[0].LocalName is not ("PropBody" or "ManagerBody" or "ManagedImmortalBody"))) || body[0].NamespaceURI!=ns || modules.Any(e=>e.NamespaceURI!=ns || (!reviewedBehaviors && e.LocalName is not ("BuildingDestructionBehavior" or "WeaponSetUpdate" or "ObjectSMCHelper"))))throw new InvalidDataException("Unimplemented selected identity container/class.");
         if(reviewedBehaviors)foreach(var module in modules)Ep1BehaviorMetadataTokenizer.ReviewedWireName(module.LocalName);
         // Reborn: selected common AI shares the same local identity scope; client/other concrete AI families remain unadmitted.
         var aiContainers=root.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="AI" && e.NamespaceURI==ns).ToArray();

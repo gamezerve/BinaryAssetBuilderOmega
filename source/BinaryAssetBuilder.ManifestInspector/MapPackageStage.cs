@@ -6,6 +6,54 @@ namespace BinaryAssetBuilder.ManifestInspector;
 // Reborn: map publication accepts only a linked EP1 map graph, never a renamed static/support-only package.
 internal static class MapPackageStage
 {
+    internal const string ModStaticRuntime = @"data\mod.manifest";
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: read the current BIG's catalog or an SDK-local catalog saved by a successful static build. */
+    //-------------------------------------------------------------------------------------------------
+    internal static ManifestDocument ReadModStaticCatalog(string provider)
+    {
+        byte[] bytes = Path.GetExtension(provider).Equals(".manifest", StringComparison.OrdinalIgnoreCase)
+            ? SdkEnvironmentPreflight.Read(provider, 64 * 1048576)
+            : ReadStaticManifestFromBig(provider);
+        return ValidateStaticCatalog(bytes);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: retain only verified metadata from a compile-only run so a later map check can skip static compilation. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void SaveModStaticCatalog(string package, string output)
+    {
+        var bytes = ReadStaticManifestFromBig(package);
+        ValidateStaticCatalog(bytes);
+        using var file = new FileStream(output, FileMode.CreateNew, FileAccess.Write, FileShare.None);
+        file.Write(bytes);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: read just the static catalog entry from a BIG without allocating its payloads. */
+    //-------------------------------------------------------------------------------------------------
+    private static byte[] ReadStaticManifestFromBig(string package)
+    {
+        using var archive = BigArchive.Open(package);
+        var entry = archive.Entries.SingleOrDefault(e =>
+            e.Name.Replace('/', '\\').Equals(ModStaticRuntime, StringComparison.OrdinalIgnoreCase))
+            ?? throw new InvalidDataException("Map dependency package has no mod.manifest.");
+        return archive.ReadEntry(entry, 64 * 1048576);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: enforce the same linked Uprising format for fresh and cached map dependencies. */
+    //-------------------------------------------------------------------------------------------------
+    private static ManifestDocument ValidateStaticCatalog(byte[] bytes)
+    {
+        var document = ManifestReader.Read(bytes);
+        TypeRegistryAudit.ValidateTarget(document.Header.Version, document.Header.AllTypesHash);
+        if (!document.Header.IsLinked || document.Validate().Count != 0)
+            throw new InvalidDataException("Map dependency package has an invalid linked mod.manifest.");
+        return document;
+    }
+
     //-------------------------------------------------------------------------------------------------
     /** Reborn: stage the verified base stream as map_mod.*, retain CDATA payloads and write the unsuffixed _mod selector. */
     //-------------------------------------------------------------------------------------------------

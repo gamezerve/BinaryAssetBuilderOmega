@@ -45,7 +45,7 @@ internal static class SdkLocalDefineProfile
     //-------------------------------------------------------------------------------------------------
     /** Reborn: independently admit bounded literal asset slots before inheritance, while keeping identity/directive expressions closed and every older entry unchanged. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result ApplyBeforeInheritance(byte[] bytes,IReadOnlyDictionary<string,string>? literals = null,bool numericExpressions = false) => ApplyCore(bytes,literals,true,numericExpressions:numericExpressions);
+    internal static Result ApplyBeforeInheritance(byte[] bytes,IReadOnlyDictionary<string,string>? literals = null,bool numericExpressions = false,XmlSchemaSet? numericSchemas = null) => ApplyCore(bytes,literals,true,numericExpressions:numericExpressions,numericSchemas:numericSchemas);
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: select schema-proven direct music Volume offsets while retaining literal, visibility and identity guards. */
@@ -60,7 +60,7 @@ internal static class SdkLocalDefineProfile
     //-------------------------------------------------------------------------------------------------
     /** Reborn: share bounded substitution without changing the default local-only Include refusal. */
     //-------------------------------------------------------------------------------------------------
-    private static Result ApplyCore(byte[] bytes,IReadOnlyDictionary<string,string>? imported,bool beforeInheritance = false,XmlSchemaSet? musicSchemas = null,bool soundOffsets = false,bool numericExpressions = false)
+    private static Result ApplyCore(byte[] bytes,IReadOnlyDictionary<string,string>? imported,bool beforeInheritance = false,XmlSchemaSet? musicSchemas = null,bool soundOffsets = false,bool numericExpressions = false,XmlSchemaSet? numericSchemas = null)
     {
         if (!SdkSourceScale.Unrestricted && (bytes.Length > 4*1048576)) throw new InvalidDataException("Local define source exceeds 4 MiB.");
         string raw = Convert.ToHexString(SHA256.HashData(bytes));
@@ -93,11 +93,13 @@ internal static class SdkLocalDefineProfile
         {
             string expression = slot.Value!;
             if (expression.StartsWith("=$",StringComparison.Ordinal) && Identifier.IsMatch(expression[2..]) && defines.TryGetValue(expression[2..],out string? value))
-            { slot.Value = value; continue; }
+            { slot.Value = SdkAssetNumericExpressions.NormalizeInteger(slot,value,numericSchemas); continue; }
             // Reborn: production asset arithmetic is opt-in; final schema validation still determines each destination's type.
             if(numericExpressions){try{
                 // Reborn: EA Egg KindOf values reuse the existing visible-definition plus quoted-suffix form before inheritance.
-                slot.Value=expression.Contains('\'')?SdkDefinitionSubset.Evaluate(expression,name=>defines.GetValueOrDefault(name)):SdkAssetNumericExpressions.Evaluate(expression,defines);continue;
+                string evaluated=expression.Contains('\'')?SdkDefinitionSubset.Evaluate(expression,name=>defines.GetValueOrDefault(name)):SdkAssetNumericExpressions.Evaluate(expression,defines);
+                slot.Value=SdkAssetNumericExpressions.NormalizeInteger(slot,evaluated,numericSchemas);
+                continue;
             }catch(InvalidDataException error){return Reject(raw,error.Message,slot);}}
             if (musicSchemas == null) return Reject(raw,"Only exact =$NAME references to visible case-sensitive definitions are supported; unresolved expression: "+expression,slot);
             try

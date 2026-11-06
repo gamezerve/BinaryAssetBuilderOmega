@@ -11,6 +11,11 @@ namespace BinaryAssetBuilder.XmlCompiler;
 // Reborn: bounded standalone EP1 body fragment writer; no registry, general body dispatch or GameObject publication is enabled here.
 public static class Ep1ActiveBodyTokenizer
 {
+    // Reborn: ManagerBody shares the retail 76-byte EP1 ActiveBody record.
+    public const uint ManagerBodyTypeId = 0x71982EACu;
+    // Reborn: bridge segments keep their own concrete wire class.
+    public const uint ManagedImmortalBodyTypeId = 0xE48BF32Cu;
+
     // Reborn: own-field native offsets/types are independently audited against selected stock ActiveBody tables.
     public static IReadOnlyList<Ep1GameObjectScalarTokens.Field> Fields {get;}=Array.AsReadOnly(new Ep1GameObjectScalarTokens.Field[]{
         new("MaxHealth",8,0x645864F3,4),new("MaxHealthDamagedPercentage",12,0x645864F3,4),new("MaxHealthReallyDamagedPercentage",16,0x645864F3,4),
@@ -26,33 +31,55 @@ public static class Ep1ActiveBodyTokenizer
     {
         if(native==null || native.InstanceBuffer==null || native.InstanceBuffer.Length<76 || native.InstanceBuffer.Length>844)throw new InvalidDataException("Bounded EP1 ActiveBody chunk required.");
         var b=native.InstanceBuffer;uint count=Word(b,64);
-        if(Word(b,0)!=0x5A0E3D9B || count>64 || b.Length!=76+count*12 || Word(b,68)!=(count==0?0:76) || Word(b,36)!=0 || Word(b,40)!=0 || b[72]>1 || b[73]>1 || b[74]!=0 || b[75]!=0)
+        uint concreteType=Word(b,0);
+        // Reborn: the derived bodies differ in the intermediate class row and share the ActiveBody fields.
+        string intermediateClass=concreteType switch
+        {
+            ManagerBodyTypeId => "ImmortalBodyModuleData",
+            ManagedImmortalBodyTypeId => "ManagedActiveBodyModuleData",
+            _ => null
+        };
+        bool derived=intermediateClass!=null;
+        if((concreteType!=0x5A0E3D9B && !derived) || count>64 || b.Length!=76+count*12 || Word(b,68)!=(count==0?0:76) || Word(b,36)!=0 || Word(b,40)!=0 || b[72]>1 || b[73]>1 || b[74]!=0 || b[75]!=0)
             throw new InvalidDataException("Unsupported EP1 ActiveBody class/list/string/boolean layout.");
         var imports=new List<uint>();
         foreach(uint slot in new uint[]{44,48,52,60})if(Word(b,(int)slot)!=0)imports.Add(slot);
         for(int i=0;i<count;i++)if(Word(b,76+i*12+8)!=0)imports.Add((uint)(76+i*12+8));
         var relos=count==0?Array.Empty<uint>():new uint[]{68};
         CheckSlots(native.RelocationBuffer,relos);CheckSlots(native.ImportsBuffer,imports);
-        int prefix=324+(int)count*60;var result=new Chunk {InstanceBuffer=new byte[prefix+b.Length]};b.CopyTo(result.InstanceBuffer,prefix);
-        Token(0,2,0x5A0E3D9B,12);Token(12,1,FastHash.GetHashCode("BodyModuleData"),228);
-        for(int i=0;i<Fields.Count;i++){var f=Fields[i];Token(24+i*12,FastHash.GetHashCode(f.Name),f.Type,(uint)(prefix+f.Offset));}
-        Token(204,FastHash.GetHashCode("DamageRangeModifier"),0x751527B1,312);
-        Token(228,1,FastHash.GetHashCode("BehaviorModuleData"),252);Token(252,1,FastHash.GetHashCode("ModuleData"),276);
-        Token(276,FastHash.GetHashCode("TypeId"),0x23E650B8,(uint)prefix);Token(288,FastHash.GetHashCode("id"),0xBDF07965,(uint)(prefix+4));
-        Token(312,0x6C827073,0x5D448FD8,(uint)(prefix+64));
+        // Reborn: the two fieldless derived classes add inherited metadata tables, with no extra native fields.
+        int inherited=derived?48:0;
+        int prefix=inherited+324+(int)count*60;
+        var result=new Chunk {InstanceBuffer=new byte[prefix+b.Length]};
+        b.CopyTo(result.InstanceBuffer,prefix);
+        Token(0,2,concreteType,12);
+        if(derived)
+        {
+            Token(12,1,FastHash.GetHashCode(intermediateClass),36);
+            Token(36,1,FastHash.GetHashCode("ActiveBodyModuleData"),60);
+        }
+        BodyToken(12,1,FastHash.GetHashCode("BodyModuleData"),228);
+        for(int i=0;i<Fields.Count;i++){var f=Fields[i];BodyToken(24+i*12,FastHash.GetHashCode(f.Name),f.Type,(uint)(prefix+f.Offset));}
+        BodyToken(204,FastHash.GetHashCode("DamageRangeModifier"),0x751527B1,312);
+        BodyToken(228,1,FastHash.GetHashCode("BehaviorModuleData"),252);BodyToken(252,1,FastHash.GetHashCode("ModuleData"),276);
+        BodyToken(276,FastHash.GetHashCode("TypeId"),0x23E650B8,(uint)prefix);BodyToken(288,FastHash.GetHashCode("id"),0xBDF07965,(uint)(prefix+4));
+        BodyToken(312,0x6C827073,0x5D448FD8,(uint)(prefix+64));
         for(int i=0;i<count;i++)
         {
             int table=324+(int)count*12+i*48,child=prefix+76+i*12;
-            Token(324+i*12,0xB151A0EB,0,(uint)table);
-            Token(table,FastHash.GetHashCode("Min"),0x645864F3,(uint)child);
-            Token(table+12,FastHash.GetHashCode("Max"),0x645864F3,(uint)(child+4));
-            Token(table+24,FastHash.GetHashCode("AttributeModifier"),0x09DDCFF3,(uint)(child+8));
+            BodyToken(324+i*12,0xB151A0EB,0,(uint)table);
+            BodyToken(table,FastHash.GetHashCode("Min"),0x645864F3,(uint)child);
+            BodyToken(table+12,FastHash.GetHashCode("Max"),0x645864F3,(uint)(child+4));
+            BodyToken(table+24,FastHash.GetHashCode("AttributeModifier"),0x09DDCFF3,(uint)(child+8));
         }
         if(count!=0)Put(result.InstanceBuffer,prefix+68,(uint)(prefix+76));
         result.RelocationBuffer=Pack(relos.Select(s=>s+(uint)prefix));result.ImportsBuffer=Pack(imports.Select(s=>s+(uint)prefix));return result;
         //-------------------------------------------------------------------------------------------------
         /** Reborn: token metadata never enters native relocation/import streams. */
         //-------------------------------------------------------------------------------------------------
+        void BodyToken(int at,uint name,uint fieldType,uint target) =>
+            Token(at+inherited,name,fieldType,target<324+(int)count*60 && target!=0 ? target+(uint)inherited : target);
+
         void Token(int at,uint name,uint type,uint target){Put(result.InstanceBuffer,at,name);Put(result.InstanceBuffer,at+4,type);Put(result.InstanceBuffer,at+8,target);}
     }
     //-------------------------------------------------------------------------------------------------

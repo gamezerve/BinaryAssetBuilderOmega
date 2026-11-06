@@ -3,15 +3,27 @@
 #-------------------------------------------------------------------------------------------------
 <# Reborn: discover maps, use the actual native source backend and retain all successful map files until the full map stage passes. #>
 #-------------------------------------------------------------------------------------------------
-function Build-RebornMaps([string]$DataRoot,[string]$Sdk,[hashtable]$Settings,[string]$StaticManifest,[string]$GlobalManifest,[string]$Compiler,[string]$Work,[string]$Detail,[string]$GlobalContext,[ref]$Result) {
+function Build-RebornMaps([string]$DataRoot,[string]$Sdk,[hashtable]$Settings,[string]$StaticManifest,[string]$GlobalManifest,[string]$Compiler,[string]$Work,[string]$Detail,[string]$GlobalContext,[ref]$Result,[string]$ModStaticPackage,[string]$OfficialMapDirectory) {
     $root=Join-Path $DataRoot 'Maps/Official';$plans=@()
-    if(-not(Test-Path -LiteralPath $root -PathType Container)){Write-SdkBuildLine ('Skipped: [No input] Official maps directory not found: '+$root);$Result.Value=@();return}
+    if(-not(Test-Path -LiteralPath $root -PathType Container)){
+        if($OfficialMapDirectory){throw ('Selected Official map is no longer available: '+$OfficialMapDirectory)}
+        Write-SdkBuildLine ('Skipped: [No input] Official maps directory not found: '+$root);$Result.Value=@();return
+    }
     $folders=@(Get-ChildItem -LiteralPath $root -Directory | Sort-Object Name)
+    # Reborn: match only direct map folders in the selected mod before preflight or compilation.
+    if($OfficialMapDirectory){
+        $folders=@($folders | Where-Object FullName -ieq $OfficialMapDirectory)
+        if($folders.Count -ne 1){throw ('Selected Official map is not a direct folder of this mod: '+$OfficialMapDirectory)}
+    }
     if(-not $folders){Write-SdkBuildLine ('Skipped: [No input] No map folders in: '+$root)}
     foreach($folder in $folders){
         Assert-RebornPackagePath $folder.FullName
         $entry=Join-Path $folder.FullName 'map.xml'
-        if(-not(Test-Path -LiteralPath $entry -PathType Leaf)){Write-SdkBuildLine ('Skipped: [No input] Map source not found: '+$entry);continue}
+        if(-not(Test-Path -LiteralPath $entry -PathType Leaf)){
+            # Reborn: a specific map request must never succeed after its source disappears.
+            if($OfficialMapDirectory){throw ('Selected map source not found: '+$entry)}
+            Write-SdkBuildLine ('Skipped: [No input] Map source not found: '+$entry);continue
+        }
         $loose=@(Get-ChildItem -LiteralPath $folder.FullName -File | Where-Object Extension -in @('.map','.tga'))
         if(-not @($loose|Where-Object Extension -ieq '.map')){throw ('MAPFILE: map.xml has no accompanying .map file: '+$entry)}
         foreach($file in $loose){Assert-RebornPackagePath $file.FullName}
@@ -23,6 +35,8 @@ function Build-RebornMaps([string]$DataRoot,[string]$Sdk,[hashtable]$Settings,[s
         if($LASTEXITCODE-ne 0){throw ('Map resource preflight failed: '+$entry)}
         $arguments=@('-NoProfile','-NonInteractive','-File',(Join-Path $PSScriptRoot 'Invoke-Ra3Ep1ConscriptAlphaBuild.ps1'),'-ModXml',$entry,'-StaticManifest',$StaticManifest,'-GlobalManifest',$GlobalManifest,'-CompilerDirectory',$Compiler,'-OutputRoot',$target)
         if($GlobalContext){$arguments+=@('-GlobalStreamContext',$GlobalContext)}
+        # Reborn: the main static package is an external provider for this map, never another XML include.
+        if($ModStaticPackage){$arguments+=@('-MapStaticPackage',$ModStaticPackage)}
         & $Settings.PowerShell7 @arguments 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $Detail}
         if($LASTEXITCODE-ne 0){throw ('Map compilation failed: '+$entry+'. No map output was copied to Misc. Review the source/native processor diagnostic above.')}
         $receipt=Get-Content -LiteralPath (Join-Path $target 'alpha-build.json') -Raw|ConvertFrom-Json

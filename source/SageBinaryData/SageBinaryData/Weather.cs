@@ -96,3 +96,26 @@ namespace SageBinaryData
         public List<WeatherData> WeatherData;
     }
 }
+
+namespace SageBinaryData
+{
+    // Reborn: Uprising's Weather has only Rain, Lightning, Cloud and a state list.
+    [StructLayout(LayoutKind.Sequential)]
+    public unsafe struct Ep1Weather
+    {
+        public BaseInheritableAsset Base;
+        public RainType* Rain;
+        public Ep1LightningType* Lightning;
+        public CloudType* Cloud;
+        public List<WeatherData> WeatherData;
+    }
+
+    // Reborn: Uprising omits the legacy LightningEnabled word.
+    [StructLayout(LayoutKind.Sequential)]
+    public unsafe struct Ep1LightningType
+    {
+        public int LightningDuration;
+        public float LightningChance;
+        public ClientRandomVariable* LightningFactor;
+    }
+}

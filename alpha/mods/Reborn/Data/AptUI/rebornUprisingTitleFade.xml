@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <!-- Reborn: share the Uprising background-aligned title fade between selected menus. -->
+  <Includes>
+    <Include type="all" source="rebornUprisingTitleFade/rebornUprisingTitleFade.xml" />
+  </Includes>
+</AssetDeclaration>

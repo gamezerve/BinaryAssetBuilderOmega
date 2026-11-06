@@ -144,7 +144,7 @@
 -->
 
     <AICommander
-		Portrait="Giles" 
+		Portrait="RebornCampaignGilesPortrait" 
 		Personality="AIP_A01_Coop_AlliedSpecialForces"
 		Description="CommanderDescription:Coop_AlliedSquadronLeader"
 		Faction="Allies">
@@ -179,7 +179,7 @@
     <Objective>MISSIONOBJ:A02_OBJECTIVE_1</Objective>
 
     <AICommander
-		Portrait="Warren" 
+		Portrait="RebornCampaignWarrenPortrait" 
 		Personality="AIP_A02_Coop_AlliedFirstAssault"
 		Description="CommanderDescription:Coop_AlliedFirstAssault"
 		Faction="Allies">
@@ -211,7 +211,7 @@
     <Objective>MISSIONOBJ:A03_OBJECTIVE_5</Objective>
 
     <AICommander
-		Portrait="Lissette" 
+		Portrait="RebornCampaignLissettePortrait" 
 		Personality="AIP_A03_Coop_AlliedFirstAssault"
 		Description="CommanderDescription:Coop_AlliedSpecialForces"
 		Faction="Allies">
@@ -249,7 +249,7 @@
     <Objective>MISSIONOBJ:A04_OBJECTIVE_3</Objective>
 
     <AICommander
-		Portrait="Moskvin" 
+		Portrait="RebornCampaignMoskvinPortrait" 
 	    Personality="AIP_A04_Coop_SovietShockSpecialist"
 	    Description="CommanderDescription:Coop_SovietShockSpecialist"
 	    Faction="Soviet">
@@ -281,7 +281,7 @@
     <Objective>APT:Mission_Objective_Standby</Objective>
 
     <AICommander
-		Portrait="Zhana" 
+		Portrait="RebornCampaignZhanaPortrait" 
 	    Personality="AIP_A05_Coop_SovietAirMarshall"
 	    Description="CommanderDescription:Coop_SovietAirMarshall"
 	    Faction="Soviet">
@@ -313,7 +313,7 @@
     <Objective>APT:Mission_Objective_Standby</Objective>
 
     <AICommander
-		Portrait="Warren" 
+		Portrait="RebornCampaignWarrenPortrait" 
 	    Personality="AIP_A06_Coop_AlliedSquadronLeader"
 	    Description="CommanderDescription:Coop_AlliedFirstAssault"
 	    Faction="Allies">
@@ -346,7 +346,7 @@
     <Objective>MISSIONOBJ:A07_OBJECTIVE_3</Objective>
 
     <AICommander
-		Portrait="Lissette" 
+		Portrait="RebornCampaignLissettePortrait" 
 	    Personality="AIP_A07_Coop_AlliedSpecialForces"
 	    Description="CommanderDescription:Coop_AlliedSpecialForces"
 	    Faction="Allies">
@@ -384,7 +384,7 @@
     <Objective>APT:Mission_Objective_Standby</Objective>
 
     <AICommander
-		Portrait="Giles" 
+		Portrait="RebornCampaignGilesPortrait" 
 	    Personality="AIP_A08_Coop_AlliedSquadronLeader"
 	    Description="CommanderDescription:Coop_AlliedSquadronLeader"
 	    Faction="Allies">
@@ -428,7 +428,7 @@
     <Objective>MISSIONOBJ:A09_OBJECTIVE_3</Objective>
 
     <AICommander
-		Portrait="Warren" 
+		Portrait="RebornCampaignWarrenPortrait" 
 	    Personality="AIP_A09_Coop_AlliedFirstAssault"
 	    Description="CommanderDescription:Coop_AlliedFirstAssault"
 	    Faction="Allies">
@@ -519,7 +519,7 @@
     <Objective>MISSIONOBJ:S01_OBJECTIVE_2</Objective>
 
     <AICommander
-		Portrait="Oleg" 
+		Portrait="RebornCampaignOlegPortrait" 
 	    Personality="AIP_S01_Coop_SovietHeavyArmor"
 	    Description="CommanderDescription:Coop_SovietHeavyArmor"
 	    Faction="Soviet">
@@ -551,7 +551,7 @@
     <Objective>APT:Mission_Objective_Standby</Objective>    
 
     <AICommander
-		Portrait="Moskvin" 
+		Portrait="RebornCampaignMoskvinPortrait" 
 	    Personality="AIP_S02_Coop_SovietShockSpecialist"
 	    Description="CommanderDescription:Coop_SovietShockSpecialist"
 	    Faction="Soviet">
@@ -584,7 +584,7 @@
 	<Objective>MISSIONOBJ:S03_OBJECTIVE_3B_TITLE</Objective>
 
 	<AICommander
-		Portrait="Zhana" 
+		Portrait="RebornCampaignZhanaPortrait" 
 		Personality="AIP_S03_Coop_SovietHeavyArmor"
 		Description="CommanderDescription:Coop_SovietAirMarshall"
 		Faction="Soviet">
@@ -624,7 +624,7 @@
 	<Objective>MISSIONOBJ:S04_OBJECTIVE_5_BONUS</Objective>
 
 	<AICommander
-		Portrait="Oleg" 
+		Portrait="RebornCampaignOlegPortrait" 
 		Personality="AIP_S04_Coop_SovietHeavyArmor"
 		Description="CommanderDescription:Coop_SovietHeavyArmor"
 		Faction="Soviet">
@@ -663,7 +663,7 @@
 	<Objective>MissionObj:S05_Objective_4</Objective>
 
 	<AICommander
-		Portrait="Zhana" 
+		Portrait="RebornCampaignZhanaPortrait" 
 		Personality="AIP_S05_Coop_SovietAirMarshall"
 		Description="CommanderDescription:Coop_SovietAirMarshall"
 		Faction="Soviet">
@@ -694,7 +694,7 @@
 	<Objective>MISSIONOBJ:S06_OBJECTIVE_3</Objective>
 
 	<AICommander
-		Portrait="Oleg" 
+		Portrait="RebornCampaignOlegPortrait" 
 		Personality="AIP_S06_Coop_SovietHeavyArmor"
 		Description="CommanderDescription:Coop_SovietHeavyArmor"
 		Faction="Soviet">
@@ -737,7 +737,7 @@
 	<Objective>MISSIONOBJ:S07_OBJECTIVE_1</Objective>
 
 	<AICommander
-		Portrait="Moskvin" 
+		Portrait="RebornCampaignMoskvinPortrait" 
 		Personality="AIP_S07_Coop_SovietHeavyArmor"
 		Description="CommanderDescription:Coop_SovietShockSpecialist"
 		Faction="Soviet">
@@ -782,7 +782,7 @@
 	<Objective>APT:Mission_Objective_Standby</Objective>
 
 	<AICommander
-		Portrait="Zhana" 
+		Portrait="RebornCampaignZhanaPortrait" 
 		Personality="AIP_S08_Coop_SovietHeavyArmor"
 		Description="CommanderDescription:Coop_SovietAirMarshall"
 		Faction="Soviet">
@@ -825,7 +825,7 @@
 	<Objective>MISSIONOBJ:S09_OBJ2_TITLE</Objective>
 
 	<AICommander
-		Portrait="Moskvin" 
+		Portrait="RebornCampaignMoskvinPortrait" 
 		Personality="AIP_S09_Coop_SovietHeavyArmor"
 		Description="CommanderDescription:Coop_SovietShockSpecialist"
 		Faction="Soviet">
@@ -970,7 +970,7 @@
 	<Objective>MISSIONOBJ:J01_OBJECTIVE_3</Objective>
 
 	<AICommander
-		Portrait="Shinzo" 
+		Portrait="RebornCampaignShinzoPortrait" 
 		Personality="AIP_J01_Coop_JapanAmbushDivision"
 		Description="CommanderDescription:Coop_JapanAmbushDivision"
 		Faction="Japan">
@@ -1002,7 +1002,7 @@
 	<Objective>MISSIONOBJ:J02_TRANSPORTS</Objective>
 
 	<AICommander
-		Portrait="Kenji" 
+		Portrait="RebornCampaignKenjiPortrait" 
 		Personality="AIP_J02_Coop_JapanMechaWarfare"
 		Description="CommanderDescription:Coop_JapanMechaWarfare"
 		Faction="Japan">
@@ -1034,7 +1034,7 @@
         <Objective>APT:Mission_Objective_Standby</Objective>
         
 	<AICommander
-		Portrait="Kenji" 
+		Portrait="RebornCampaignKenjiPortrait" 
 		Personality="AIP_J03_Coop_JapanMechaWarfare"
 		Description="CommanderDescription:Coop_JapanMechaWarfare"
 		Faction="Japan">
@@ -1073,7 +1073,7 @@
 	<Objective>MISSIONOBJ:J04_BONUSOBJECTIVE_4_TITLE</Objective>
 
 	<AICommander
-		Portrait="Naomi" 
+		Portrait="RebornCampaignNaomiPortrait" 
 		Personality="AIP_J04_Coop_JapanFleetCommand"
 		Description="CommanderDescription:Coop_JapanFleetCommand"
 		Faction="Japan">
@@ -1105,7 +1105,7 @@
 	<Objective>MISSIONOBJ:J05_OBJECTIVE_4_TITLE</Objective>
 
 	<AICommander
-		Portrait="Naomi" 
+		Portrait="RebornCampaignNaomiPortrait" 
 		Personality="AIP_J05_Coop_JapanFleetCommand"
 		Description="CommanderDescription:Coop_JapanFleetCommand"
 		Faction="Japan">
@@ -1149,7 +1149,7 @@
 	<Objective>MISSIONOBJ:J06_OBJECTIVE_1</Objective>
 
 	<AICommander
-		Portrait="Naomi" 
+		Portrait="RebornCampaignNaomiPortrait" 
 		Personality="AIP_J06_Coop_JapanFleetCommand"
 		Description="CommanderDescription:Coop_JapanFleetCommand"
 		Faction="Japan">
@@ -1193,7 +1193,7 @@
 	<Objective>MISSIONOBJ:J07_OBJECTIVE_DESTROY_RELAY_STATIONS</Objective>
 
 	<AICommander
-		Portrait="Shinzo" 
+		Portrait="RebornCampaignShinzoPortrait" 
 		Personality="AIP_J07_Coop_JapanFleetCommand"
 		Description="CommanderDescription:Coop_JapanAmbushDivision"
 		Faction="Japan">
@@ -1237,7 +1237,7 @@
 	<Objective>MISSIONOBJ:J08_OBJECTIVE_DESTROY_EVERYTHING_ALT</Objective>
 
 	<AICommander
-		Portrait="Kenji" 
+		Portrait="RebornCampaignKenjiPortrait" 
 		Personality="AIP_J08_Coop_JapanFleetCommand"
 		Description="CommanderDescription:Coop_JapanMechaWarfare"
 		Faction="Japan">
@@ -1281,7 +1281,7 @@
 	<Objective>MISSIONOBJ:J09_OBJECTIVE_3_ALT</Objective>
 
 	<AICommander
-		Portrait="Shinzo" 
+		Portrait="RebornCampaignShinzoPortrait" 
 		Personality="AIP_J09_Coop_JapanFleetCommand"
 		Description="CommanderDescription:Coop_JapanAmbushDivision"
 		Faction="Japan">
