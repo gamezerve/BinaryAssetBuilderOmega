@@ -220,6 +220,9 @@ internal sealed class SdkInstanceInheritanceProfile
             // Reborn: cap source-local expansion across the entire direct visibility set, not only each imported document individually.
             long expandedBaseBytes = 0;
             var instanceSources = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            // Reborn: the all-Include loader visits a physical source only once, even if an edge is repeated.
+            var allSources = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            Dictionary<string,int>? allLoadOrder = null;
             for (int index = 0; index < includes.Length; index++)
             {
                 var include = includes[index]; var edge = expected[index]; string logical = include.GetAttribute("source");
@@ -242,9 +245,10 @@ internal sealed class SdkInstanceInheritanceProfile
                 // Reborn: validate every include edge, but register a physical instance source only once per owner.
                 if (edge.Kind == "instance" && !instanceSources.Add(resolved.Path)) continue;
                 byte[] baseBytes = Capture(resolved.Path); XmlDocument baseXml = Parse(baseBytes);
-                // Reborn: production all-imports may contain real assets (including W3X containers), not just definitions.
-                // Reborn: prepare their handles in the defining source context; the frontend independently controls all-versus-instance publication.
-                if(metadataEdge && gameObjectTrees && Assets(baseXml).Length!=0)metadataEdge=false;
+                // Reborn: production all-imports can declare assets or group other source files without owning any assets.
+                // Reborn: prepare both in their defining context while leaving publication and direct handle visibility separate.
+                if (metadataEdge && gameObjectTrees && (Assets(baseXml).Length != 0 || Includes(baseXml).Length != 0))
+                    metadataEdge = false;
                 if (metadataEdge)
                 {
                     // Reborn: a namespace-valid empty ART placeholder exports no definitions or assets and is a legitimate no-op all Include.
@@ -262,6 +266,7 @@ internal sealed class SdkInstanceInheritanceProfile
                     continue;
                 }
                 if (!chains && Includes(baseXml).Length != 0) throw new InvalidDataException("Imported base documents must be Include-free; transitive visibility remains closed.");
+                if(gameObjectTrees && edge.Kind=="all" && !allSources.Add(resolved.Path))continue;
                 // Reborn: source-local preparation never exports a descendant's declarations as this direct child's own assets.
                 Prepared? child = chains ? Prepare(resolved.Path,null,depth+1) : null;
                 var expanded = child?.Result ?? SdkSelfAttributeInheritance.Apply(schemas,baseBytes,treeCopy:true,conscriptCopy:conscriptCopy);
@@ -274,9 +279,20 @@ internal sealed class SdkInstanceInheritanceProfile
                     // Reborn: bound aggregate direct visibility independently from per-source asset/source-byte bounds.
                     if (!SdkSourceScale.Unrestricted && (external.Count >= 4096)) throw new InvalidDataException("4096 direct-instance handle bound exceeded.");
                     var witness = new ImportedBase(pair.Value.LocalName,pair.Value.GetAttribute("id"),resolved.Path,source.Sha256,expanded.Evidence.ProcessedSha256!) { PreparedSources = chains ? expanded.Evidence.PreparedSources : Array.Empty<PreparedSource>() };
-                    var role = gameObjectTrees && edge.Kind == "all" ? emittedBases : external;
-                    if (!role.TryAdd(pair.Key,(pair.Value,witness)))
-                        throw SdkXmlDiagnostics.At(new InvalidDataException($"DUPLICATEASSET ' {pair.Key} ' Ambiguous {edge.Kind} inheritance sources: '{role[pair.Key].Witness.SourcePath}' and '{resolved.Path}'."),include);
+                    // Reborn: honor dependency-first load order for competing direct all-Includes without exporting transitive bases.
+                    if(gameObjectTrees && edge.Kind=="all"){
+                        if(emittedBases.TryGetValue(pair.Key,out var previous)){
+                            if(allLoadOrder==null){
+                                var allEdges=paths.Includes.Where(e=>e.Kind=="all"&&!e.SkippedMissingArt).ToLookup(e=>e.Document,StringComparer.OrdinalIgnoreCase);
+                                allLoadOrder=SdkSourceScale.PostOrder(path,p=>allEdges[p].Select(e=>e.PhysicalPath!),StringComparer.OrdinalIgnoreCase,"all Include")
+                                    .Select((source,index)=>(source,index)).ToDictionary(item=>item.source,item=>item.index,StringComparer.OrdinalIgnoreCase);
+                            }
+                            if(allLoadOrder[resolved.Path]<allLoadOrder[previous.Witness.SourcePath])continue;
+                        }
+                        emittedBases[pair.Key]=(pair.Value,witness);
+                    }
+                    else if(!external.TryAdd(pair.Key,(pair.Value,witness)))
+                        throw SdkXmlDiagnostics.At(new InvalidDataException($"DUPLICATEASSET ' {pair.Key} ' Ambiguous {edge.Kind} inheritance sources: '{external[pair.Key].Witness.SourcePath}' and '{resolved.Path}'."),include);
                 }
             }
             // Reborn: explicit instance bases take precedence for inheritance while all-includes still emit independently.

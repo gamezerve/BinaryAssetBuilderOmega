@@ -218,6 +218,10 @@ public static partial class Marshaler
             case 0x70E5C103u:
                 MarshalPolymorphicType<CollideModuleData, BehaviorModuleData>(node, objT, state);
                 break;
+            // Reborn: dispatch the stock prop collision-enabling behavior.
+            case 0xFC7A9CB5u:
+                MarshalPolymorphicType<EnableDynamicsCollideModuleData, BehaviorModuleData>(node, objT, state);
+                break;
             case 0xD6C03AC2u:
                 MarshalPolymorphicType<AudioDynamicsCollideModuleData, BehaviorModuleData>(node, objT, state);
                 break;
@@ -386,6 +390,10 @@ public static partial class Marshaler
                 break;
             case 0xDDD81EE9u:
                 MarshalPolymorphicType<RandomModelConditionBehaviorModuleData, BehaviorModuleData>(node, objT, state);
+                break;
+            // Reborn: dispatch the retail Final Squadron target chooser.
+            case 0xD692DC8Du:
+                MarshalPolymorphicType<StrafeAreaTargetChooserModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x09BE107Cu:
                 MarshalPolymorphicType<StrafeAreaUpdateModuleData, BehaviorModuleData>(node, objT, state);

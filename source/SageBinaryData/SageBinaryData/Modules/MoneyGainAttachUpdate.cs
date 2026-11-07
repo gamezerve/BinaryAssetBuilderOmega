@@ -17,3 +17,13 @@ public struct MoneyGainAttachUpdateModuleData
     public Percentage PurchasePricePercent;
     public unsafe ObjectStatusValidationDataType* MoneyGainObjectStatusValidation;
 }
+
+// Reborn: Uprising inherits the EP1 attachment layout while keeping the original money-gain wire identity.
+[StructLayout(LayoutKind.Sequential)]
+public struct Ep1MoneyGainAttachUpdateModuleData
+{
+    public Ep1AttachUpdateModuleData Base;
+    public MoneyGainAttachActionFlag ActionType;
+    public Percentage PurchasePricePercent;
+    public unsafe ObjectStatusValidationDataType* MoneyGainObjectStatusValidation;
+}

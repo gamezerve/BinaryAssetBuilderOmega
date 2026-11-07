@@ -46,10 +46,11 @@ public static class Ep1GameObjectRootOwnersProjection
     //-------------------------------------------------------------------------------------------------
     public static Chunk Compose(Chunk native,XmlSchemaSet schemas)
     {
-        if(native?.InstanceBuffer==null || native.RelocationBuffer==null || native.ImportsBuffer==null || schemas==null || native.InstanceBuffer.Length<1100 || native.InstanceBuffer.Length>1048576)throw new InvalidDataException("Bounded six-owner root/schema required.");
+        // Reborn: a minimal GameObject can consist of the root and its required eight-byte PropBody.
+        if(native?.InstanceBuffer==null || native.RelocationBuffer==null || native.ImportsBuffer==null || schemas==null || native.InstanceBuffer.Length<608 || native.InstanceBuffer.Length>1048576)throw new InvalidDataException("Bounded six-owner root/schema required.");
         byte[] b=native.InstanceBuffer;uint[] relos=Slots(native.RelocationBuffer),imports=Slots(native.ImportsBuffer);int[] starts=Fields.Select(f=>NativeStart(b,f)).ToArray();int cut=NativeTailStart(b);var present=starts.Where(s=>s!=0).ToArray();
         // Reborn: only the implemented optional resource pointer may be null; populated owners must still occupy distinct ordered native tails.
-        if(Fields.Where(f=>!f.Optional).Any(f=>NativeStart(b,f)==0)||cut<620 || present.Any(s=>s%4!=0 || s<cut || s>b.Length-4) || !present.SequenceEqual(present.Distinct().Order()))throw new InvalidDataException("Root owners must have distinct ordered bounded native tails.");
+        if(Fields.Where(f=>!f.Optional).Any(f=>NativeStart(b,f)==0)||cut<608 || present.Any(s=>s%4!=0 || s<cut || s>b.Length-4) || !present.SequenceEqual(present.Distinct().Order()))throw new InvalidDataException("Root owners must have distinct ordered bounded native tails.");
         if(relos.Intersect(imports).Any() || relos.Concat(imports).Any(s=>s>b.Length-4))throw new InvalidDataException("Root owner auxiliary overlap/bounds.");
         foreach(var f in Fields)if(relos.Contains((uint)f.PointerSlot)!=(Word(b,f.PointerSlot)!=0) || imports.Contains((uint)f.PointerSlot))throw new InvalidDataException("Root owner pointer relocation presence differs.");
         var baseBytes=b.AsSpan(0,cut).ToArray();foreach(var f in Fields)ClearSlot(baseBytes,f);

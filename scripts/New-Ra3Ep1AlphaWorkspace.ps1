@@ -47,6 +47,10 @@ foreach($name in @('BinaryAssetBuilder.ManifestInspector.exe','BinaryAssetBuilde
     'BinaryAssetBuilder.Core.dll','BinaryAssetBuilder.Utility.dll','BinaryAssetBuilder.XmlCompiler.dll','BinaryAssetBuilder.W3XCompiler.dll','SageBinaryData.dll')){
     $files.Add([pscustomobject]@{Source=(Join-Path $compiler $name);Relative=('tools/compiler/'+$name);Origin='project-build'})
 }
+# Reborn: keep the bundled encoder and license in workspaces created from the explicit compiler allowlist.
+foreach($name in @('texconv.exe','DirectXTex-LICENSE.txt')){
+    $files.Add([pscustomobject]@{Source=(Join-Path $compiler $name);Relative=('tools/compiler/'+$name);Origin='Microsoft DirectXTex may2026'})
+}
 foreach($relative in @('scripts/Invoke-Ra3Ep1AlphaBuild.ps1','LICENSE','alpha/README.md',
     'tests/fixtures/ReferencePipeline.xsd','tests/fixtures/ArmorDocumentPipeline.xsd',
     'tests/fixtures/ArmorSourcePipeline.xsd',

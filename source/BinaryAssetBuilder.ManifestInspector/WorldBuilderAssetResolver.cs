@@ -48,37 +48,136 @@ internal static class WorldBuilderAssetResolver
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: read only selected native ranges, preserve per-asset import selectors and relocation offsets, and retain mod/loaded-stream precedence. */
+    /** Reborn: opt into a local retail art catalog for the exact map ID being compiled. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result Resolve(Dictionary<string,byte[]> streams,string worldBuilder,IEnumerable<ManifestAsset> loaded,IEnumerable<AssetId> weakSeeds,IReadOnlyDictionary<AssetId,string>? runtimeProviders=null)
+    internal static string? MapArtPath(string catalogDirectory,string? mapId)
     {
-        var mod=ManifestReader.Read(streams["diagnostic.manifest"]);var retail=ManifestReader.Read(File.ReadAllBytes(worldBuilder));
-        foreach(var doc in new[]{mod,retail}){TypeRegistryAudit.ValidateTarget(doc.Header.Version,doc.Header.AllTypesHash);if(!doc.Header.IsLinked||doc.Validate().Count!=0||doc.ReferencedManifests.Any(r=>r.IsPatch))throw new InvalidDataException("WorldBuilder resolution requires valid linked EP1 streams without patch bases.");}
-        var present=mod.Assets.Concat(loaded).Select(Id).ToHashSet();var byId=retail.Assets.ToDictionary(Id);var selected=new List<ManifestAsset>();var visited=new HashSet<AssetId>();
-        foreach(var seed in mod.Assets.SelectMany(a=>a.References).Concat(weakSeeds))Visit(seed);
-        if(selected.Count==0)return new(streams,new(),Array.Empty<string>(),0);
-        var offsets=new Dictionary<AssetId,long[]>();long[] at={8,8,8};foreach(var asset in retail.Assets){offsets.Add(Id(asset),at.ToArray());at[0]=checked(at[0]+asset.InstanceDataSize);at[1]=checked(at[1]+asset.RelocationDataSize);at[2]=checked(at[2]+asset.ImportsDataSize);}
-        var readers=new FileStream[3];var native=new List<Native>();var custom=new Dictionary<string,byte[]>(StringComparer.OrdinalIgnoreCase);long bytesRead=0;
-        try{
-            for(int i=0;i<3;i++){string path=Path.ChangeExtension(worldBuilder,Extensions[i+1]);readers[i]=File.OpenRead(path);byte[] header=new byte[8];readers[i].ReadExactly(header);uint magic=i==0?0xBABB0000u:i==1?0xBABE0000u:0xBAB10000u;if(Word(header,0)!=magic||Word(header,4)!=retail.Header.StreamChecksum||readers[i].Length!=at[i])throw new InvalidDataException("WorldBuilder linked sidecar header/length differs: "+path);}
-            foreach(var asset in selected){var sizes=new[]{asset.InstanceDataSize,asset.RelocationDataSize,asset.ImportsDataSize};var parts=new byte[3][];for(int i=0;i<3;i++){parts[i]=new byte[sizes[i]];readers[i].Position=offsets[Id(asset)][i];readers[i].ReadExactly(parts[i]);bytesRead+=sizes[i];}ValidateNative(asset,parts[0],parts[1],parts[2]);native.Add(new(asset,parts[0],parts[1],parts[2]));
-                // Reborn: textures with an external PC resource must bring their matching hash-named custom data; embedded DDS textures need none.
-                string name=$"{asset.TypeId:x8}.{asset.TypeHash:x8}.{asset.InstanceId:x8}.{asset.InstanceHash:x8}.cdata";string data=Path.Combine(Path.GetDirectoryName(worldBuilder)!,"cdata",name);bool embedded=asset.TypeName=="Texture"&&parts[0].Length>=12&&Word(parts[0],4)==12&&Word(parts[0],8)==parts[0].Length-12;
-                if(File.Exists(data))custom.Add("data\\mod\\cdata\\"+name,File.ReadAllBytes(data));else if(asset.TypeName=="AudioFile"||asset.TypeName=="Texture"&&!embedded)throw new FileNotFoundException("WorldBuilder asset requires external custom data: "+asset.Name+"; expected "+data,data);
+        if (mapId == null || !ConscriptSourceInput.Identity(mapId))
+            return null;
+
+        string path = Path.Combine(catalogDirectory,"map-art",mapId,"map.manifest");
+        return File.Exists(path) ? path : null;
+    }
+
+    // Reborn: retail map catalogs supply only models and their textures.
+    internal static bool IsMapArt(ManifestAsset asset) => asset.InstanceDataSize > 0 && asset.TypeName is
+        "W3DContainer" or "W3DHierarchy" or "W3DMesh" or "W3DCollisionBox" or "W3DAnimation" or "Texture";
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: the retail map is a WorldBuilder patch. Only entries with their own native bytes supply map art. */
+    //-------------------------------------------------------------------------------------------------
+    internal static ManifestDocument ReadMapArt(string path)
+    {
+        var map = ManifestReader.Read(SdkEnvironmentPreflight.Read(path,64*1048576));
+        TypeRegistryAudit.ValidateTarget(map.Header.Version,map.Header.AllTypesHash);
+        if (!map.Header.IsLinked || map.Validate().Count != 0 ||
+            map.ReferencedManifests.Any(r => r.IsPatch && !r.Path.Equals("worldbuilder.manifest",StringComparison.OrdinalIgnoreCase)))
+            throw new InvalidDataException("Valid linked EP1 map art catalog required: "+path);
+        return map;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: preserve native relocation/import tables while copying only the retail assets actually needed. */
+    //-------------------------------------------------------------------------------------------------
+    internal static Result Resolve(Dictionary<string,byte[]> streams,string worldBuilder,IEnumerable<ManifestAsset> loaded,IEnumerable<AssetId> weakSeeds,IReadOnlyDictionary<AssetId,string>? runtimeProviders=null,string? mapArt=null)
+    {
+        var mod = ManifestReader.Read(streams["diagnostic.manifest"]);
+        var catalogs = new Dictionary<string,ManifestDocument>(StringComparer.OrdinalIgnoreCase)
+        {
+            [worldBuilder] = ManifestReader.Read(File.ReadAllBytes(worldBuilder))
+        };
+        foreach (var doc in catalogs.Values.Prepend(mod))
+        {
+            TypeRegistryAudit.ValidateTarget(doc.Header.Version,doc.Header.AllTypesHash);
+            if (!doc.Header.IsLinked || doc.Validate().Count != 0 || doc.ReferencedManifests.Any(r => r.IsPatch))
+                throw new InvalidDataException("Retail asset resolution requires valid linked EP1 streams without patch bases.");
+        }
+        if (mapArt != null)
+            catalogs.Add(mapArt,ReadMapArt(mapArt));
+
+        var present = mod.Assets.Concat(loaded).Select(Id).ToHashSet();
+        var byId = catalogs[worldBuilder].Assets.ToDictionary(Id,asset => (Asset:asset,Path:worldBuilder));
+        if (mapArt != null)
+            foreach (var asset in catalogs[mapArt].Assets.Where(IsMapArt))
+                byId[Id(asset)] = (asset,mapArt);
+        var selected = new List<(ManifestAsset Asset,string Path)>();
+        var visited = new HashSet<AssetId>();
+        foreach (var seed in mod.Assets.SelectMany(a => a.References).Concat(weakSeeds))
+            Visit(seed);
+        if (selected.Count == 0)
+            return new(streams,new(),Array.Empty<string>(),0);
+
+        var native = new List<Native>();
+        var custom = new Dictionary<string,byte[]>(StringComparer.OrdinalIgnoreCase);
+        long bytesRead = 0;
+        foreach (var group in selected.GroupBy(item => item.Path,StringComparer.OrdinalIgnoreCase))
+        {
+            var retail = catalogs[group.Key];
+            var offsets = new Dictionary<AssetId,long[]>();
+            long[] at = {8,8,8};
+            foreach (var asset in retail.Assets)
+            {
+                offsets.Add(Id(asset),at.ToArray());
+                at[0] = checked(at[0]+asset.InstanceDataSize);
+                at[1] = checked(at[1]+asset.RelocationDataSize);
+                at[2] = checked(at[2]+asset.ImportsDataSize);
             }
-        }finally{foreach(var reader in readers)reader?.Dispose();}
+
+            var readers = new FileStream[3];
+            try
+            {
+                for (int i=0;i<3;i++)
+                {
+                    string path = Path.ChangeExtension(group.Key,Extensions[i+1]);
+                    readers[i] = File.OpenRead(path);
+                    byte[] header = new byte[8];
+                    readers[i].ReadExactly(header);
+                    uint magic = i==0 ? 0xBABB0000u : i==1 ? 0xBABE0000u : 0xBAB10000u;
+                    if (Word(header,0)!=magic || Word(header,4)!=retail.Header.StreamChecksum || readers[i].Length!=at[i])
+                        throw new InvalidDataException("Retail linked sidecar header/length differs: "+path);
+                }
+
+                foreach (var (asset,_) in group)
+                {
+                    var sizes = new[] {asset.InstanceDataSize,asset.RelocationDataSize,asset.ImportsDataSize};
+                    var parts = new byte[3][];
+                    for (int i=0;i<3;i++)
+                    {
+                        parts[i] = new byte[sizes[i]];
+                        readers[i].Position = offsets[Id(asset)][i];
+                        readers[i].ReadExactly(parts[i]);
+                        bytesRead += sizes[i];
+                    }
+                    ValidateNative(asset,parts[0],parts[1],parts[2]);
+                    native.Add(new(asset,parts[0],parts[1],parts[2]));
+                    // Reborn: external texture resources stay with the catalog supplying their corresponding native record.
+                    string name = $"{asset.TypeId:x8}.{asset.TypeHash:x8}.{asset.InstanceId:x8}.{asset.InstanceHash:x8}.cdata";
+                    string data = Path.Combine(Path.GetDirectoryName(group.Key)!,"cdata",name);
+                    bool embedded = asset.TypeName=="Texture" && parts[0].Length>=12 && Word(parts[0],4)==12 && Word(parts[0],8)==parts[0].Length-12;
+                    if (File.Exists(data))
+                        custom.Add("data\\mod\\cdata\\"+name,File.ReadAllBytes(data));
+                    else if (asset.TypeName=="AudioFile" || asset.TypeName=="Texture" && !embedded)
+                        throw new FileNotFoundException("Retail asset requires external custom data: "+asset.Name+"; expected "+data,data);
+                }
+            }
+            finally
+            {
+                foreach (var reader in readers)
+                    reader?.Dispose();
+            }
+        }
         // Reborn: imported dependencies precede authored consumers; reorder whole asset chunks without changing their asset-relative offsets or reference indices.
         var candidates=ReadNative(mod,streams).Concat(native).ToDictionary(n=>Id(n.Asset));var sorted=new List<Native>();var ordering=new HashSet<AssetId>();foreach(var id in candidates.Keys)Order(id);var all=sorted.ToArray();
         // Reborn: imported assets can introduce an AudioFile or other external provider not used by the authored source; add only the newly required runtime names.
         var runtimeAdditions=native.SelectMany(n=>n.Asset.References).Where(id=>!candidates.ContainsKey(id)&&runtimeProviders?.ContainsKey(id)==true).Select(id=>runtimeProviders![id]).Distinct(StringComparer.OrdinalIgnoreCase);var result=Serialize(all,mod,streams["diagnostic.manifest"],runtimeAdditions);
         var check=ManifestReader.Read(result["diagnostic.manifest"]);if(check.Validate().Count!=0||check.Assets.Count!=all.Length)throw new InvalidDataException("Resolved WorldBuilder manifest readback failed.");
         var recovered=ReadNative(check,result);for(int i=0;i<all.Length;i++)if(all[i].Asset.Name!=recovered[i].Asset.Name||!all[i].Asset.References.SequenceEqual(recovered[i].Asset.References)||!all[i].Bin.SequenceEqual(recovered[i].Bin)||!all[i].Relo.SequenceEqual(recovered[i].Relo)||!all[i].Imp.SequenceEqual(recovered[i].Imp))throw new InvalidDataException("Resolved WorldBuilder native readback differs: "+all[i].Asset.Name);
-        return new(result,custom,selected.Select(a=>a.Name).ToArray(),bytesRead);
+        return new(result,custom,selected.Select(a=>a.Asset.Name).ToArray(),bytesRead);
 
         // Reborn: original stock cycles remain intact; all acyclic local/imported edges are emitted dependency-first.
         void Order(AssetId id){if(!candidates.TryGetValue(id,out var item)||!ordering.Add(id))return;foreach(var reference in item.Asset.References)Order(reference);sorted.Add(item);}
         // Reborn: a visited set also permits stock cycles; local or already loaded identities always stop retail traversal.
-        void Visit(AssetId id){if(present.Contains(id)||!visited.Add(id))return;if(!byId.TryGetValue(id,out var asset))throw new InvalidDataException("WorldBuilder dependency has no mod/loaded/WorldBuilder provider: "+id);foreach(var reference in asset.References)Visit(reference);selected.Add(asset);}
+        void Visit(AssetId id){if(present.Contains(id)||!visited.Add(id))return;if(!byId.TryGetValue(id,out var item))throw new InvalidDataException("Retail dependency has no mod, loaded or extractable provider: "+id);foreach(var reference in item.Asset.References)Visit(reference);selected.Add(item);}
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -116,7 +215,11 @@ internal static class WorldBuilderAssetResolver
         }
         var world=ManifestReader.Read(File.ReadAllBytes(Path.Combine(catalogDirectory,"worldbuilder.manifest")));var known=loaded.Concat(mod.Assets).Select(Id).ToHashSet();var wb=world.Assets.Select(Id).ToHashSet();
         // Reborn: absent weak names remain diagnostics rather than forcing an unrelated retail lookup; only WorldBuilder-owned weak IDs seed extraction.
-        var weak=WeakSeeds(prepared).Where(id=>!known.Contains(id)&&wb.Contains(id));var result=Resolve(streams,Path.Combine(catalogDirectory,"worldbuilder.manifest"),loaded,weak,runtimeProviders);
+        var weak=WeakSeeds(prepared).Where(id=>!known.Contains(id)&&wb.Contains(id));
+        // Reborn: package map-local art from the same catalog used during model name resolution.
+        string? mapId=mod.Assets.SingleOrDefault(asset=>asset.TypeName=="GameMap")?.Name.Split(':',2)[1];
+        string? mapArt=MapArtPath(catalogDirectory,mapId);
+        var result=Resolve(streams,Path.Combine(catalogDirectory,"worldbuilder.manifest"),loaded,weak,runtimeProviders,mapArt);
         if(result.Imported.Length==0)return;
         foreach(string suffix in new[]{"","_l","_m"})foreach(string extension in Extensions)files["data\\mod"+suffix+extension]=result.Streams["diagnostic"+extension];
         // Reborn: each LOD family has its own custom-data lookup directory even when it reuses exactly the same retail payload.

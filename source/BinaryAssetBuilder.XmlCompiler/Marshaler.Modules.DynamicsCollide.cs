@@ -42,6 +42,18 @@ public static partial class Marshaler
         Marshal(node, (DynamicsCollideModuleData*)objT, state);
     }
 
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: write the authored collision weight or the EP1 default of 0.1. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node, EnableDynamicsCollideModuleData* target, Tracker state)
+    {
+        if (node is null)
+            return;
+
+        Marshal(node.GetAttributeValue(nameof(EnableDynamicsCollideModuleData.Weight), "0.1"), &target->Weight, state);
+        Marshal(node, &target->Base, state);
+    }
+
     public static unsafe void Marshal(Node node, DamageDynamicsCollideModuleData* objT, Tracker state)
     {
         if (node is null)

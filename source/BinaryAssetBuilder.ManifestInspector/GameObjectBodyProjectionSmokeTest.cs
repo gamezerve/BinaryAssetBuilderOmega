@@ -107,19 +107,23 @@ internal static class GameObjectBodyProjectionSmokeTest
         // Reborn: optional geometry follows Body in official source/native order and must be detached before the root-only allocation pass.
         var geometry=d.DocumentElement.ChildNodes.OfType<XmlElement>().SingleOrDefault(e=>e.LocalName=="Geometry" && e.NamespaceURI==SchemaSet.XmlNamespace);if(geometry!=null)d.DocumentElement.RemoveChild(geometry);
         // Reborn: direct ArmorSet children may precede Behaviors; never treat the first root child as the behavior container.
-        var behaviors=(XmlElement)d.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]!;
-        if(selectedBehaviors)
+        var behaviors=d.DocumentElement.ChildNodes.OfType<XmlElement>().SingleOrDefault(e=>e.LocalName=="Behaviors" && e.NamespaceURI==SchemaSet.XmlNamespace);
+        if(selectedBehaviors && behaviors!=null)
         {
             // Reborn: remove the legacy behavior route entirely before explicit selected allocation; no orphaned old list or second reference table is created.
             d.DocumentElement.RemoveChild(behaviors);
             foreach(XmlElement child in behaviors.ChildNodes.OfType<XmlElement>())child.SetAttribute("TypeId",reviewedBehaviors?FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(child.LocalName)).ToString(System.Globalization.CultureInfo.InvariantCulture):child.LocalName switch {"BuildingDestructionBehavior"=>"227975924","WeaponSetUpdate"=>"1125589673","ObjectSMCHelper"=>"2138239554",_=>throw new InvalidDataException("Unsupported selected source module.")});
         }
-        else ((XmlElement)behaviors.FirstChild!).SetAttribute("TypeId","227975924");
+        else if(!selectedBehaviors)((XmlElement)behaviors!.FirstChild!).SetAttribute("TypeId","227975924");
         // Reborn: preserve the admitted concrete body identity while extending client-update dispatch.
         uint bodyType=reviewedBehaviors ? body.LocalName switch
         {
             "PropBody" => 0xFF88404Bu,
+            // Reborn: the stock control-point target keeps its ImmortalBody wire identity.
+            "ImmortalBody" => Ep1ActiveBodyTokenizer.ImmortalBodyTypeId,
             "ManagerBody" => Ep1ActiveBodyTokenizer.ManagerBodyTypeId,
+            // Reborn: the stock bridge center is a distinct concrete body class.
+            "ManagedActiveBody" => Ep1ActiveBodyTokenizer.ManagedActiveBodyTypeId,
             "ManagedImmortalBody" => Ep1ActiveBodyTokenizer.ManagedImmortalBodyTypeId,
             _ => 0x5A0E3D9Bu
         } : 0x5A0E3D9Bu;
@@ -156,8 +160,9 @@ internal static class GameObjectBodyProjectionSmokeTest
         Marshaler.Marshal(new Node(d.DocumentElement.CreateNavigator()!,ns),root,tracker);
         // Reborn: explicit EP1 clients precede selected behavior/body tails and share all normalized strong occurrences with the complete root/Draws graph.
         if(clientBehaviors!=null)Marshaler.MarshalEp1ClientBehaviors(new Node(clientBehaviors.CreateNavigator()!,ns),&root->ClientBehaviors,tracker);
-        if(reviewedBehaviors)Marshaler.MarshalEp1ReviewedBehaviors(new Node(behaviors.CreateNavigator()!,ns),&root->Behaviors,tracker);
-        else if(selectedBehaviors)Marshaler.MarshalEp1SelectedBehaviors(new Node(behaviors.CreateNavigator()!,ns),&root->Behaviors,tracker);
+        // Reborn: omitted Behaviors leave the original null root pointer.
+        if(reviewedBehaviors && behaviors!=null)Marshaler.MarshalEp1ReviewedBehaviors(new Node(behaviors.CreateNavigator()!,ns),&root->Behaviors,tracker);
+        else if(selectedBehaviors && behaviors!=null)Marshaler.MarshalEp1SelectedBehaviors(new Node(behaviors.CreateNavigator()!,ns),&root->Behaviors,tracker);
         // Reborn: EVA-create support must not allocate ActiveBody health fields for an existing PropBody source.
         if(reviewedBehaviors&&body.LocalName=="PropBody")Marshaler.Marshal(new Node(body.CreateNavigator()!,ns),&root->Body,tracker);
         else Marshaler.MarshalEp1ActiveBody(new Node(body.CreateNavigator()!,ns),&root->Body,tracker);

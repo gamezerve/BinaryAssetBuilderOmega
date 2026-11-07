@@ -19,6 +19,11 @@
 
   <!-- Reborn: deploy the existing native PC audio encoder with the same synchronized compiler generation. -->
   <ItemGroup><None Include="..\BinaryAssetBuilder.AudioCompiler\audio.dll" Link="audio.dll" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
+  <!-- Reborn: ship the pinned Microsoft DirectXTex may2026 x64 tool and MIT license beside the compiler. -->
+  <ItemGroup>
+    <None Include="..\..\tools\DirectXTex\texconv.exe" Link="texconv.exe" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <None Include="..\..\tools\DirectXTex\DirectXTex-LICENSE.txt" Link="DirectXTex-LICENSE.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
 
   <!-- Reborn: the successful complete alpha toolchain build refreshes one stable development SDK; failed builds never publish tools. -->
   <Target Name="RebornSyncDevelopmentSdk" AfterTargets="Build" Condition="'$(Configuration)' == 'Release' and '$(Platform)' == 'x86' and '$(DesignTimeBuild)' != 'true' and '$(SkipAlphaSync)' != 'true'">

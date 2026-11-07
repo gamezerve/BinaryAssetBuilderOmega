@@ -61,20 +61,13 @@ internal static class ObjectFilterNativeSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: insert current official defaults before native marshalling; do not infer a complete inherited/dependency-aware processor. */
     //-------------------------------------------------------------------------------------------------
-    internal static unsafe Chunk Compile(XmlSchemaSet schemas, string xml)
+    internal static Chunk Compile(XmlSchemaSet schemas, string xml)
     {
         XmlDocument document = new() { Schemas = schemas, XmlResolver = null };
         document.LoadXml(xml);
         document.Validate((_, args) => throw new XmlSchemaValidationException(args.Message));
-        XmlNamespaceManager namespaces = new(document.NameTable);
-        namespaces.AddNamespace("ea", "uri:ea.com:eala:asset");
-        Node node = new(document.DocumentElement!.CreateNavigator(), namespaces);
-        ObjectFilterAsset* root;
-        using Tracker tracker = new((void**)&root, (uint)sizeof(ObjectFilterAsset), false);
-        Marshaler.Marshal(node, root, tracker);
-        Chunk chunk = new();
-        Require(tracker.MakeRelocatable(chunk), "Native ObjectFilter marshalling failed.");
-        return chunk;
+        // Reborn: qualify the same native writer used by the normal SDK build.
+        return ObjectFilterCompiler.Compile(document.DocumentElement!);
     }
 
     //-------------------------------------------------------------------------------------------------

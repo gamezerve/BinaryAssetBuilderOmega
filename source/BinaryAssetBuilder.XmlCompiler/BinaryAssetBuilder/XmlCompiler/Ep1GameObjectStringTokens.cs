@@ -29,31 +29,40 @@ public static class Ep1GameObjectStringTokens
         uint list = Word(476);
         // Reborn: inline enum children must not retain out-of-range words that a pointer-shaped legacy model could previously generate.
         if(Word(436)>3 || Word(440)>15)throw new InvalidDataException("Unsupported inline Buildable/ThingClass value.");
-        if (list < 600 || list % 4 != 0 || list > b.Length - 8)throw new InvalidDataException("Projection requires a bounded behavior envelope after root allocations.");
-        uint count=Word((int)list);
+        // Reborn: without Behaviors, Body or Geometry bounds the earlier root allocations.
+        uint body=Word(488),geometry=Word(500);
+        uint rootEnd=list!=0?list:body!=0?body:geometry!=0?geometry:(uint)b.Length;
+        if((!reviewedBehaviors && list==0) || rootEnd<600 || rootEnd%4!=0 || rootEnd>b.Length || (list!=0 && list>b.Length-8))
+            throw new InvalidDataException("Projection requires bounded root allocations before the first tail owner.");
+        uint count=list==0?0:Word((int)list);
         // Reborn: only the explicit all-reviewed-family composer raises the existing three-module envelope bound.
         // Reborn: complete behavior composition is bounded by its allocated buffer, not the former 64-module sample quota.
-        if(count<1 || (!reviewedBehaviors&&count>3) || count>b.Length/4 || list>b.Length-8-count*4 || Word((int)list+4)!=list+8)throw new InvalidDataException("Projection behavior count/canonical pointers differ.");
-        var modules=new int[count];var owners=new List<uint>{476,list+4};
+        if((!reviewedBehaviors && (count is <1 or >3)) || count>b.Length/4 ||
+            (list!=0 && (list>b.Length-8-count*4 || Word((int)list+4)!=(count==0?0:list+8))))
+            throw new InvalidDataException("Projection behavior count/canonical pointers differ.");
+        var modules=new int[count];var owners=new List<uint>();
+        if(list!=0)owners.Add(476);
+        if(count!=0)owners.Add(list+4);
         for(int i=0;i<count;i++)
         {
             uint slot=list+8+(uint)i*4,target=Word((int)slot);
             if(target%4!=0 || target>b.Length-8 || (i==0 ? target!=list+8+count*4 : target<modules[i-1]+8))throw new InvalidDataException("Behavior native owners alias or escape their ordered envelope.");
             modules[i]=(int)target;owners.Add(slot);
         }
-        int module=modules[0];
-        // Reborn: the explicit EP1 body path owns a separate tail after destruction; no alias into the root/list/module is admissible.
-        uint body = Word(488);
+        // Reborn: a present empty list owns only its eight-byte header before the next tail owner.
+        int module=count!=0?modules[0]:list!=0?(int)list+8:(int)rootEnd;
+        uint behaviorEnd=count!=0?(uint)modules[^1]+8:(uint)module;
+        // Reborn: the explicit EP1 body path owns a separate tail after Behaviors.
         // Reborn: concrete bodies own different header sizes; PropBody does not allocate ActiveBody health storage.
         int bodySize=0;
         if(body != 0)
         {
-            if(body % 4 != 0 || body < modules[^1] + 8 || body > b.Length - 8)throw new InvalidDataException("Body tail ownership/bounds differ.");
-            // Reborn: ManagerBody uses the same EP1 native width as ActiveBody.
+            if(body % 4 != 0 || body < behaviorEnd || body > b.Length - 8)throw new InvalidDataException("Body tail ownership/bounds differ.");
+            // Reborn: the reviewed derived bodies use the same EP1 native width as ActiveBody.
             bodySize=Word((int)body) switch
             {
                 0x5A0E3D9Bu => 76,
-                Ep1ActiveBodyTokenizer.ManagerBodyTypeId or Ep1ActiveBodyTokenizer.ManagedImmortalBodyTypeId when reviewedBehaviors => 76,
+                Ep1ActiveBodyTokenizer.ImmortalBodyTypeId or Ep1ActiveBodyTokenizer.ManagerBodyTypeId or Ep1ActiveBodyTokenizer.ManagedActiveBodyTypeId or Ep1ActiveBodyTokenizer.ManagedImmortalBodyTypeId when reviewedBehaviors => 76,
                 0xFF88404Bu when reviewedBehaviors => 8,
                 _ => throw new InvalidDataException("Unreviewed concrete Body native class.")
             };
@@ -61,23 +70,22 @@ public static class Ep1GameObjectStringTokens
             owners.Add(488);
         }
         // Reborn: geometry owns a separate final native graph after Body/behaviors; its nested owners are checked by the geometry tokenizer.
-        uint geometry=Word(500);
         if(geometry!=0)
         {
-            if(geometry%4!=0 || geometry<(body==0?modules[^1]+8:body+bodySize) || geometry>b.Length-76)throw new InvalidDataException("Geometry tail ownership/bounds differ.");
+            if(geometry%4!=0 || geometry<(body==0?behaviorEnd:body+bodySize) || geometry>b.Length-76)throw new InvalidDataException("Geometry tail ownership/bounds differ.");
             owners.Add(500);
         }
         var ranges = new List<(uint Start, uint End)>();
         // Reborn: inline ArmorSet count/items own a disjoint pre-behavior allocation; absent lists cannot retain a dangling pointer.
         uint armorCount=Word(420),armor=Word(424);
         // Reborn: native allocation stride/bounds replace the former 32-row diagnostic quota.
-        if(armorCount>b.Length/12 || (armorCount==0 ? armor!=0 : armor<600 || armor%4!=0 || armor>list || armorCount*12>list-armor))
+        if(armorCount>b.Length/12 || (armorCount==0 ? armor!=0 : armor<600 || armor%4!=0 || armor>rootEnd || armorCount*12>rootEnd-armor))
             throw new InvalidDataException("ArmorSet count/allocation ownership differs.");
         if(armorCount!=0)owners.Add(424);
         // Reborn: movement records own a separate bounded pre-behavior allocation and cannot alias armor or root strings.
         uint locomotorCount=Word(428),locomotor=Word(432);
         // Reborn: the real buffer/stride bounds movement cardinality; the old 32-row proof quota is not an engine limit.
-        if(locomotorCount>b.Length/12 || (locomotorCount==0 ? locomotor!=0 : locomotor<600 || locomotor%4!=0 || locomotor>list || locomotorCount*12>list-locomotor))
+        if(locomotorCount>b.Length/12 || (locomotorCount==0 ? locomotor!=0 : locomotor<600 || locomotor%4!=0 || locomotor>rootEnd || locomotorCount*12>rootEnd-locomotor))
             throw new InvalidDataException("LocomotorSet count/allocation ownership differs.");
         if(locomotorCount!=0)
         {
@@ -89,7 +97,7 @@ public static class Ep1GameObjectStringTokens
             uint length = Word(field.Offset), pointer = Word(field.Offset + 4);
             if (pointer == 0)
             { if (length != 0) throw new InvalidDataException("Absent root string has nonzero length: " + field.Name); continue; }
-            if (pointer < 600 || pointer >= list || length > list - pointer - 1 || b[(int)(pointer + length)] != 0)
+            if (pointer < 600 || pointer >= rootEnd || length > rootEnd - pointer - 1 || b[(int)(pointer + length)] != 0)
                 throw new InvalidDataException("Root string allocation bounds/terminator differ: " + field.Name);
             uint end = pointer + length + 1;
             // Reborn: even identical byte spans cannot alias an ArmorSet record as a string allocation.
@@ -103,7 +111,7 @@ public static class Ep1GameObjectStringTokens
             ranges.Add((pointer,end)); owners.Add((uint)(field.Offset + 4));
         }
         // Reborn: selected pointed root records and their nested text must be disjoint from every already reviewed root allocation.
-        var pointerRoots=Ep1GameObjectPointerRoots.Inspect(b,list,armor,armorCount,locomotor,locomotorCount,owners,ranges);
+        var pointerRoots=Ep1GameObjectPointerRoots.Inspect(b,rootEnd,armor,armorCount,locomotor,locomotorCount,owners,ranges);
         // Reborn: present root references require exactly one import slot each; zero is absence and no unreviewed root slot is admitted.
         var rootImports = Ep1GameObjectStrongTokens.Fields.Where(f => Word(f.Offset) != 0).Select(f => (uint)f.Offset).ToList();
         // Reborn: armor and optional DamageFX fields share the same occurrence table, but no other slot in the twelve-byte records is an import.
@@ -123,16 +131,16 @@ public static class Ep1GameObjectStringTokens
             if(Word(member+8)!=0)rootImports.Add((uint)(member+8));
         }
         // Reborn: inline AI owns pre-behavior array/module allocations and adds only its independently tokenized auxiliary slots.
-        var ai=Ep1GameObjectAiRoot.Inspect(b,list,relos,imports,armor,armorCount,locomotor,locomotorCount,pointerRoots,ranges,owners,rootImports);
+        var ai=Ep1GameObjectAiRoot.Inspect(b,rootEnd,relos,imports,armor,armorCount,locomotor,locomotorCount,pointerRoots,ranges,owners,rootImports);
         // Reborn: complete Draws is a separate pre-behavior owner; every neighboring root/AI range remains excluded from its extracted native graph.
-        var draws=Ep1GameObjectDrawRoot.Inspect(b,list,relos,imports,armor,armorCount,locomotor,locomotorCount,pointerRoots,ranges,ai,owners,rootImports);
+        var draws=Ep1GameObjectDrawRoot.Inspect(b,rootEnd,relos,imports,armor,armorCount,locomotor,locomotorCount,pointerRoots,ranges,ai,owners,rootImports);
         // Reborn: both client families share the enclosing reference table but own disjoint native and metadata fragments.
-        var clients=Ep1GameObjectClientRoots.Inspect(b,list,relos,imports,armor,armorCount,locomotor,locomotorCount,pointerRoots,ranges,ai,draws,owners,rootImports);
+        var clients=Ep1GameObjectClientRoots.Inspect(b,rootEnd,relos,imports,armor,armorCount,locomotor,locomotorCount,pointerRoots,ranges,ai,draws,owners,rootImports);
         if (!relos.Where(s => s < module).OrderBy(s => s).SequenceEqual(owners.OrderBy(s => s)) || !imports.Where(s => s < module).OrderBy(s => s).SequenceEqual(rootImports.OrderBy(s => s)))
             throw new InvalidDataException("Unsupported root allocation/import ownership in string projection.");
         // Reborn: selected native module scope spans Behaviors, Body and common AI, independently of source-side validation.
         Ep1SelectedModuleIdentity.ValidateNative(b,modules,(int)body,ai.Modules.Select(m=>m.Start).Concat(draws.Modules).Concat(clients.SelectMany(c=>c.Modules)).ToArray());
-        return new((int)list,(int)list + 8,module,(int)body,(int)armor,(int)armorCount,Array.AsReadOnly(modules),(int)locomotor,(int)locomotorCount,(int)geometry,pointerRoots,ai,draws,clients);
+        return new((int)list,count==0?0:(int)list+8,module,(int)body,(int)armor,(int)armorCount,Array.AsReadOnly(modules),(int)locomotor,(int)locomotorCount,(int)geometry,pointerRoots,ai,draws,clients);
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: all dynamic headers and pointers stay inside the supplied native chunk. */

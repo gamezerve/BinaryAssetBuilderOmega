@@ -22,21 +22,29 @@ internal sealed class SdkAssetNumericExpressions
         return value.ToString("G17",CultureInfo.InvariantCulture);
     }
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: format integral decimal substitutions only at schema-declared SageInt attributes. */
+    /** Reborn: normalize integral decimal substitutions within the range of the declared SageInt or SageUnsignedInt field. */
     //-------------------------------------------------------------------------------------------------
     internal static string NormalizeInteger(XmlNode slot,string value,XmlSchemaSet? schemas)
     {
         if (schemas == null || slot is not XmlAttribute { OwnerElement: { } owner } attribute)
             return value;
         int dot = value.IndexOf('.');
-        if (dot < 1 || value.AsSpan(dot+1).IndexOfAnyExcept('0') >= 0 ||
-            !int.TryParse(value.AsSpan(0,dot),NumberStyles.AllowLeadingSign,CultureInfo.InvariantCulture,out int integer))
+        if (dot < 1 || value.AsSpan(dot+1).IndexOfAnyExcept('0') >= 0)
             return value;
         if (ElementType(owner,schemas) is not XmlSchemaComplexType type ||
             type.AttributeUses[new XmlQualifiedName(attribute.LocalName,attribute.NamespaceURI)] is not XmlSchemaAttribute declared ||
-            declared.AttributeSchemaType?.QualifiedName != new XmlQualifiedName("SageInt",BinaryAssetBuilder.Core.SageXml.SchemaSet.XmlNamespace))
+            declared.AttributeSchemaType?.QualifiedName is not { } schemaType ||
+            schemaType.Namespace != BinaryAssetBuilder.Core.SageXml.SchemaSet.XmlNamespace)
             return value;
-        return integer.ToString(CultureInfo.InvariantCulture);
+        var integerText = value.AsSpan(0,dot);
+        return schemaType.Name switch
+        {
+            "SageInt" when int.TryParse(integerText,NumberStyles.AllowLeadingSign,CultureInfo.InvariantCulture,out int signed) =>
+                signed.ToString(CultureInfo.InvariantCulture),
+            "SageUnsignedInt" when integerText[0] != '-' && uint.TryParse(integerText,NumberStyles.AllowLeadingSign,CultureInfo.InvariantCulture,out uint unsigned) =>
+                unsigned.ToString(CultureInfo.InvariantCulture),
+            _ => value
+        };
     }
 
     //-------------------------------------------------------------------------------------------------

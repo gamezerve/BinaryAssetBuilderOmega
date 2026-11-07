@@ -28,9 +28,17 @@ internal static class AuthoredAmbientCompiler
     {
         // Reborn: the mixed-stream attachment deliberately detaches XML; restore official PSVI before the audio plugin checks current fields and child types.
         var document=instance.XmlNode.OwnerDocument!;if(document.Schemas.Count==0)document.Schemas.Add(official ?? ConscriptSourceInput.Schemas());document.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));
-        instance.Handle.TypeHash=0x560C2E45u;instance.ValidatedReferencedInstances=new(instance.ReferencedInstances);
-        // Reborn: the production route uses all six official slider values, including VOICE for unit responses.
-        var plugin=new Ra3Ep1AudioEventPlugin{AllowAmbientAuthoring=true,AllowSchemaSubmixSliders=true};plugin.Initialize(TargetPlatform.Win32);return plugin.ProcessInstance(instance);
+        // Reborn: normal SDK builds admit map-overridable events with their own fingerprint and the shared payload writer.
+        var plugin=new Ra3Ep1AudioEventPlugin
+        {
+            AllowAmbientAuthoring=true,
+            AllowSchemaSubmixSliders=true,
+            AllowOverridableAuthoring=true
+        };
+        plugin.Initialize(TargetPlatform.Win32);
+        instance.Handle.TypeHash=plugin.GetExtendedTypeInformation(instance.Handle.TypeId).TypeHash;
+        instance.ValidatedReferencedInstances=new(instance.ReferencedInstances);
+        return plugin.ProcessInstance(instance);
     }
 
     //-------------------------------------------------------------------------------------------------

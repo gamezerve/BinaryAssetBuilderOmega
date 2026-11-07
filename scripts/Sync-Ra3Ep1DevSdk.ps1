@@ -9,6 +9,8 @@ $repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha'
 if(-not $CompilerDirectory){$CompilerDirectory=Join-Path $repo 'source/BinaryAssetBuilder.ManifestInspector/bin/x86/Release/net8.0'}
 # Reborn: model authoring uses the rebuilt W3X processor in the same synchronized compiler generation.
 $names=@('BinaryAssetBuilder.ManifestInspector.exe','BinaryAssetBuilder.ManifestInspector.dll','BinaryAssetBuilder.ManifestInspector.deps.json','BinaryAssetBuilder.ManifestInspector.runtimeconfig.json','BinaryAssetBuilder.Core.dll','BinaryAssetBuilder.Utility.dll','BinaryAssetBuilder.XmlCompiler.dll','BinaryAssetBuilder.W3XCompiler.dll','SageBinaryData.dll','audio.dll')
+# Reborn: install the portable DXT1 encoder and license as part of the verified compiler generation.
+$names+=@('texconv.exe','DirectXTex-LICENSE.txt')
 #-------------------------------------------------------------------------------------------------
 <# Reborn: refuse reparse ancestry for both dependency sources and managed SDK destinations. #>
 #-------------------------------------------------------------------------------------------------

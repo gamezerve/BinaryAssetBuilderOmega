@@ -26,6 +26,8 @@ internal sealed class SchemaNativeContract
     // Reborn: explicitly opted-in leaf families (container, wire class, production leaf metadata writer); each is qualified against stock before use.
     internal sealed record Family(Type Type,string Container,uint TypeId,Func<Chunk,Chunk> Leaf);
     internal static readonly Family[] Families={
+        // Reborn: group-audio keys are authored hashes, with source-sized storage and the original client metadata writer.
+        new(typeof(LargeGroupAudioClientUpdateModuleData),"ClientUpdates",0x9826A297u,Ep1GroupAudioClientTokenizer.Tokenize),
         // Reborn: EVA readiness clients have their own complete native/source proof and literal retail-qualified metadata.
         new(typeof(Ep1EvaAnnounceSpecialPowerReadyClientUpdateModuleData),"ClientUpdates",0xA220E7D6u,BinaryAssetBuilder.XmlCompiler.Ep1EvaReadyClientTokenizer.Tokenize),
         // Reborn: EVA create announcements are qualified from the original Iron Curtain record.
@@ -165,7 +167,11 @@ internal sealed class SchemaNativeContract
         // Reborn: each concrete particle module carries the hash of its validated schema class, independent of its enclosing asset.
         if(owner==typeof(FXParticleBaseModule)&&name=="TypeId"){_=FXParticleSystemCompiler.ModuleType(e!);Expect(at,BitConverter.GetBytes(FastHash.GetHashCode(e!.SchemaInfo.SchemaType!.QualifiedName.Name)),path);return;}
         // Reborn: weapon nugget class words come from the reviewed concrete element class, never authored TypeId text.
-        if(owner==typeof(WeaponEffectNugget)&&name=="TypeId"){Expect(at,BitConverter.GetBytes(WeaponTemplateCompiler.Nugget(e!).TypeId),path);return;}
+        if(owner==typeof(WeaponEffectNugget)&&name=="TypeId"){
+            // Reborn: the inline collision list has a zero class word in the original EP1 native records.
+            uint nuggetType = typeId == DamageDynamicsCollideContract.TypeId ? 0u : WeaponTemplateCompiler.Nugget(e!).TypeId;
+            Expect(at,BitConverter.GetBytes(nuggetType),path);return;
+        }
         if(owner==typeof(FXNugget)&&name=="TypeId"){uint id=FastHash.GetHashCode(e?.SchemaInfo.SchemaType?.QualifiedName.Name??throw new InvalidDataException("FX nugget schema type missing."));_=FXListCompiler.NuggetType(e!);Expect(at,BitConverter.GetBytes(id),path);return;}
         // Reborn: map script parameter class words follow the validated concrete XSD type rather than an authored tag.
         if(owner==typeof(GameScriptParameterBase)&&name=="TypeId"){Expect(at,BitConverter.GetBytes(FastHash.GetHashCode(e?.SchemaInfo.SchemaType?.QualifiedName.Name??throw new InvalidDataException("Map script parameter schema type missing."))),path);return;}

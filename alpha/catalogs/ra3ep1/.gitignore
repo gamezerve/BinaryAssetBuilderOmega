@@ -1,2 +1,4 @@
 # Reborn: retail custom resource payloads remain local alongside the ignored linked WorldBuilder sidecars.
 /cdata/
+# Reborn: extracted retail map sidecars are local SDK inputs.
+/map-art/

@@ -1688,9 +1688,10 @@
 	</SpecialPowerTemplate>
 
       	
-			<Texture id="A9_Leningrad_Art_Orange" File="A9_Leningrad_Art_Orange.tga" GenerateMipMaps="false" AllowAutomaticResize="false"/>
-      <Texture id="A9_Leningrad_Art_Blue" File="A9_Leningrad_Art_Blue.tga" GenerateMipMaps="false" AllowAutomaticResize="false"/>
-      <Texture id="A9_Leningrad_Art_Green" File="A9_Leningrad_Art_Green.tga" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+			<!-- Reborn: Preserve the original RA3 single-mip DXT1 radar textures. -->
+			<Texture id="A9_Leningrad_Art_Orange" File="A9_Leningrad_Art_Orange.dds" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+      <Texture id="A9_Leningrad_Art_Blue" File="A9_Leningrad_Art_Blue.dds" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+      <Texture id="A9_Leningrad_Art_Green" File="A9_Leningrad_Art_Green.dds" GenerateMipMaps="false" AllowAutomaticResize="false"/>
 
       <RadarTerrainImage
             id="OrangeBorderTerrain"

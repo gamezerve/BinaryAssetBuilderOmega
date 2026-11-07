@@ -98,9 +98,7 @@ namespace Reborn
                 AccessibleName = marker.Text,
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 FormattingEnabled = true,
-                // Reborn: leave a little space to the right of the map picker.
                 Anchor = AnchorStyles.Left,
-                Width = (panel.ClientSize.Width - marker.Margin.Horizontal) * 7 / 8,
                 Margin = marker.Margin,
                 TabIndex = marker.TabIndex,
                 Enabled = buildMaps.Checked
@@ -153,6 +151,17 @@ namespace Reborn
                     if (String.Equals(folder.FullName, previousDirectory, StringComparison.OrdinalIgnoreCase)) selected = index;
                 }
                 mapPicker.SelectedIndex = selected;
+                // Reborn: fit the closed field inside the options pane and fit the popup to the longest displayed name.
+                int labelWidth = 0;
+                foreach (object item in mapPicker.Items)
+                    labelWidth = Math.Max(labelWidth, TextRenderer.MeasureText(mapPicker.GetItemText(item), mapPicker.Font).Width);
+                int popupWidth = Math.Max(160, labelWidth + SystemInformation.VerticalScrollBarWidth + 12);
+                var panel = (TableLayoutPanel)mapPicker.Parent;
+                int available = panel.Parent == null ? panel.ClientSize.Width : panel.Parent.ClientSize.Width - panel.Left - 5;
+                int fieldWidth = Math.Max(1, Math.Min(popupWidth, available - mapPicker.Margin.Horizontal));
+                panel.Width = Math.Max(panel.Width, fieldWidth + mapPicker.Margin.Horizontal);
+                mapPicker.Width = fieldWidth;
+                mapPicker.DropDownWidth = popupWidth;
             }
             finally { mapPicker.EndUpdate(); }
         }

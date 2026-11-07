@@ -23,6 +23,8 @@ public static class Ep1BehaviorMetadataTokenizer
     private static readonly bool AlliedUnitFamilies=Families.Add("ActivateModuleSpecialPower") & Families.Add("BeamSpecialAbilityUpdateModuleData") & Families.Add("DominateEnemySpecialPowerModuleData") & Families.Add("InvisibilityBroadcastUpdateModuleData") & Families.Add("LinearDamageUpdateModuleData") & Families.Add("MagneticEffectUpdateModuleData") & Families.Add("ReconstituteStateSpecialAbilityModuleData") & Families.Add("ShieldSphereUpdateModuleData") & Families.Add("SpecialDisguiseUpdateModuleData") & Families.Add("StoreCurrentStateUpdateModuleData");
     // Reborn: both airfield families use EP1-specific native models and stock-qualified inherited metadata.
     private static readonly bool AirfieldFamilies=Families.Add("RecallUnitsSpecialPowerModuleData") & Families.Add("ParkingPlaceBehaviorModuleData");
+    // Reborn: register the retail contestable garrison metadata class over the existing containment chain.
+    private static readonly bool ContestableGarrisonFamily=Families.Add("ContestableGarrisonContainModuleData");
     //-------------------------------------------------------------------------------------------------
     /** Reborn: raw source class admission uses only the already stock-qualified behavior family set; three EA leaf aliases differ from their native class names. */
     //-------------------------------------------------------------------------------------------------
@@ -73,6 +75,30 @@ public static class Ep1BehaviorMetadataTokenizer
     // Reborn: lift updates retain their original inline model-state list and optional per-state filters.
     // Reborn: Unpause metadata follows the original Uprising Upgrade extension schema.
     // Reborn: expose the stock-qualified strafe and bridge behavior wire classes.
+    // Reborn: register the original Final Squadron target chooser with its BehaviorModuleData base.
+    private static readonly bool StrafeAreaTargetChooserFamily=Families.Add("StrafeAreaTargetChooserModuleData");
+    // Reborn: money-gain attachments retain their EP1 base and optional status validation metadata.
+    private static readonly bool MoneyGainAttachUpdateFamily=Families.Add("MoneyGainAttachUpdateModuleData");
+    // Reborn: admit the stock Yuriko collision damage behavior through the schema-driven tokenizer.
+    private static readonly bool DamageDynamicsCollideFamily=Families.Add("DamageDynamicsCollideModuleData");
+    // Reborn: admit stock impact audio through the schema-driven behavior tokenizer.
+    private static readonly bool AudioDynamicsCollideFamily=Families.Add("AudioDynamicsCollideModuleData");
+    // Reborn: enable the stock collision activation behavior in schema-driven metadata.
+    private static readonly bool EnableDynamicsCollideFamily=Families.Add("EnableDynamicsCollideModuleData");
+    // Reborn: admit the stock ToppleUpdate writer into schema-driven behavior metadata.
+    private static readonly bool ToppleUpdateFamily=Families.Add("ToppleUpdateModuleData");
+    // Reborn: use the existing object-storage marshaler for Yuriko's lure activation.
+    private static readonly bool AddObjectsToLureFamily=Families.Add("AddObjectsToLureUpdateSpecialPowerModuleData");
+    // Reborn: tokenize lift activation metadata using the original module family.
+    private static readonly bool AddObjectsToLiftFamily=Families.Add("AddObjectsToLiftUpdateSpecialPowerModuleData");
+    // Reborn: tokenize throw fields and object replacement pairs under the retail module identity.
+    private static readonly bool FlingStoredObjectsFamily=Families.Add("FlingStoredObjectsSpecialPowerModuleData");
+    // Reborn: admit the existing lure guard writer into the authored behavior stream.
+    private static readonly bool LureObjectsUpdateFamily=Families.Add("LureObjectsUpdateModuleData");
+    // Reborn: retain the derived shield metadata class and its two inherited sphere tables.
+    private static readonly bool YurikoShieldSphereFamily=Families.Add("YurikoShieldSphereUpdateModuleData");
+    // Reborn: write native damage and healing trigger metadata under the original module identity.
+    private static readonly bool ReactionFXOnDamageFamily=Families.Add("ReactionFXOnDamageModuleData");
     static Ep1BehaviorMetadataTokenizer(){Families.Add("StrafeAreaUpdateModuleData");Families.Add("BridgeBuilderModuleData");Families.Add("AssistedPlacementInfoBehaviorModuleData");Families.Add("OreNodeModuleData");Families.Add("DieOnProducerDeathUpdateModuleData");Families.Add("UnpauseSpecialPowerUpgradeModuleData");Families.Add("ProjectileUpdateModuleData");Families.Add("ShipSlowDeathBehaviorModuleData");Families.Add("LiftObjectUpdateModuleData");Families.Add("TechUpgradeModuleData");Families.Add("CommandSetUpgradeModuleData");Families.Add("TechUpgradeReceiverModuleData");Families.Add("ReturnToProducerSpecialPowerModuleData");Families.Add("SwitchLocomotorUpdate");Families.Add("CircularDamageUpdateModuleData");Families.Add("LoseHealthUpdateModuleData");Families.Add("SpecialAbilityUpdateModuleData");Families.Add("GrapplingHookUpdateModuleData");Families.Add("SubStructureStorageBehaviorModuleData");Families.Add("SecondaryObjectListenerModule");Families.Add("ConvergingLaserStateModuleData");Families.Add("ObjectCreationUpgradeModuleData");Families.Add("AudioLoopUpgradeModuleData");Families.Add("ProjectileReplaceSelfSpecialAbilityModuleData");Families.Add("AttachUpdateModuleData");Families.Add("BezierProjectileBehaviorModuleData");Families.Add("SweepingLaserStateModuleData");Families.Add("OreMinerModuleData");Families.Add("TrackIncomingWeaponFireBehaviorModuleData");Families.Add("TrackDamageModuleData");Families.Add("DynamicsUpdateModuleData");Families.Add("OCLMonitorUpdateModuleData");Families.Add("LaserStateModuleData");Families.Add("SlaveWatcherBehaviorModuleData");Families.Add("StreamStateModuleData");Families.Add("FireWeaponUpdateModuleData");Families.Add("PassiveAreaEffectBehaviorModuleData");Families.Add("CaptureSpecialAbilityUpdateModuleData");Families.Add("EmotionTrackerUpdateModuleData");Families.Add("AssembleStructureSpecialAbilityUpdateModuleData");Families.Add("FireWeaponCollideModuleData");Families.Add("AimWeaponBehaviorModuleData");Families.Add("StealthDetectorUpdateModuleData");Families.Add("AttributeModifierAuraUpdateModuleData");Families.Add("InvisibilityBehaviorModuleData");Families.Add("GarrisonContainModuleData");Families.Add("SuckUpObjectsUpdateModuleData");Families.Add("AttackAssistResponseBehaviorModuleData");Families.Add("EjectPassengersSpecialAbilityUpdateModuleData");Families.Add("AttributeModifierUpgradeModuleData");Families.Add("TransportContainModuleData");Families.Add("SubObjectsUpgradeModuleData");Families.Add("NotifyWhenAttackingBehaviorModuleData");Families.Add("WeaponFireSpecialAbilityUpdateModuleData");Families.Add("StoreTemplateIDBehaviorModuleData");Families.Add("PlayerUpgradeSpecialPowerModuleData");Families.Add("OCLSpecialPowerModuleData");Families.Add("TeleportStoredObjectsUpdateModuleData");Families.Add("TeleportStoredObjectsSpecialPowerModuleData");Families.Add("StoreObjectsSpecialPowerModuleData");Families.Add("GiveProductionBonusSpecialPowerModuleData");Families.Add("PlayerPowerManagerBehaviorModuleData");Families.Add("RadarBehaviorModuleData");Families.Add("MonitorSpecialPowerTimerUpdateModuleData");Families.Add("WallBuilderBehaviorModuleData");Families.Add("ReplaceSelfSpecialAbilityModuleData");Families.Add("ProductionUpdateInfoModuleData");Families.Add("SlaughterHordeContainModuleData");Families.Add("AutoDepositUpdateModuleData");Families.Add("StructureSellUpdateModuleData");Families.Add("BuildingDestructionModuleData");Families.Add("QueueDockModuleData");Families.Add("QueueProductionExitUpdateModuleData");Families.Add("SpawnBehaviorModuleData");Families.Add("StructureUnpackUpdateModuleData");Families.Add("ProductionUpdateModuleData");Families.Add("RepairUpdateModuleData");Families.Add("EngineerContainModuleData");Families.Add("AssistedPlacementBehaviorModuleData");Families.Add("InfiltratorContainModuleData");Families.Add("StructurePlacementBehaviorModuleData");Families.Add("LUAEventListBehaviorModuleData");Families.Add("PowerUpgradeModuleData");Families.Add("BuildingBehaviorModuleData");Families.Add("AssignSlavesTargetObjectSpecialPowerModuleData");}
 
     // Reborn: assign-slaves uses the existing native SpecialPower writer and independent stock-qualified metadata proof.
@@ -82,7 +108,7 @@ public static class Ep1BehaviorMetadataTokenizer
     /** Reborn: shared compilation/composition uses one explicit wire-to-native-model mapping, including all seven isolated EP1 records. */
     //-------------------------------------------------------------------------------------------------
     public static Type ReviewedNativeType(uint wire)
-    {var names=Families.Where(n=>FastHash.GetHashCode(n)==wire).ToArray();if(names.Length!=1)throw new InvalidDataException("Behavior wire family not reviewed.");string name=names[0];string model=name is "ChargeWeaponUpdateModuleData" or "PrematureDischargeSpecialPowerModuleData" or "SpiderHoleUpdateModuleData" or "ActivateSpecialPowerOnCreate" or "MovementSpecialPowerModuleData" or "TimedOpacityUpdateModuleData" or "MonitorConditionUpdateModuleData" or "LifetimeUpdateModuleData" or "ActivateModuleSpecialPower" or "BeamSpecialAbilityUpdateModuleData" or "DominateEnemySpecialPowerModuleData" or "InvisibilityBroadcastUpdateModuleData" or "LinearDamageUpdateModuleData" or "MagneticEffectUpdateModuleData" or "ReconstituteStateSpecialAbilityModuleData" or "SpecialDisguiseUpdateModuleData" or "StoreCurrentStateUpdateModuleData" or "LiftObjectUpdateModuleData" or "AttachUpdateModuleData" or "BezierProjectileBehaviorModuleData" or "FireWeaponUpdateModuleData" or "PassiveAreaEffectBehaviorModuleData" or "EmotionTrackerUpdateModuleData" or "FireWeaponCollideModuleData" or "StealthDetectorUpdateModuleData" or "AttributeModifierAuraUpdateModuleData" or "SubObjectsUpgradeModuleData" or "WeaponFireSpecialAbilityUpdateModuleData" or "OCLSpecialPowerModuleData" or "PlayerPowerManagerBehaviorModuleData" or "AutoDepositUpdateModuleData" or "EngineerContainModuleData" or "RepairUpdateModuleData" or "ProductionUpdateModuleData" or "StructureUnpackUpdateModuleData" or "SpawnBehaviorModuleData" or "QueueProductionExitUpdateModuleData" or "WeaponSetUpdateModuleData" or "SquishCollideModuleData" or "PhysicsBehaviorModuleData" or "HitReactionBehaviorModuleData" or "StatusBitsUpgradeModuleData" or "CreateObjectDieModuleData" or "FireWeaponWhenDeadBehaviorModuleData" or "RecallUnitsSpecialPowerModuleData" or "ParkingPlaceBehaviorModuleData"?"Ep1"+name:name;return typeof(SageBinaryData.GameObject).Assembly.GetType("SageBinaryData."+model)??throw new InvalidDataException("Reviewed behavior native model absent.");}
+    {var names=Families.Where(n=>FastHash.GetHashCode(n)==wire).ToArray();if(names.Length!=1)throw new InvalidDataException("Behavior wire family not reviewed.");string name=names[0];string model=name is "ChargeWeaponUpdateModuleData" or "PrematureDischargeSpecialPowerModuleData" or "SpiderHoleUpdateModuleData" or "ActivateSpecialPowerOnCreate" or "MovementSpecialPowerModuleData" or "TimedOpacityUpdateModuleData" or "MonitorConditionUpdateModuleData" or "LifetimeUpdateModuleData" or "ActivateModuleSpecialPower" or "BeamSpecialAbilityUpdateModuleData" or "DominateEnemySpecialPowerModuleData" or "InvisibilityBroadcastUpdateModuleData" or "LinearDamageUpdateModuleData" or "MagneticEffectUpdateModuleData" or "ReconstituteStateSpecialAbilityModuleData" or "SpecialDisguiseUpdateModuleData" or "StoreCurrentStateUpdateModuleData" or "LiftObjectUpdateModuleData" or "AttachUpdateModuleData" or "MoneyGainAttachUpdateModuleData" or "BezierProjectileBehaviorModuleData" or "FireWeaponUpdateModuleData" or "PassiveAreaEffectBehaviorModuleData" or "EmotionTrackerUpdateModuleData" or "FireWeaponCollideModuleData" or "StealthDetectorUpdateModuleData" or "AttributeModifierAuraUpdateModuleData" or "SubObjectsUpgradeModuleData" or "WeaponFireSpecialAbilityUpdateModuleData" or "OCLSpecialPowerModuleData" or "PlayerPowerManagerBehaviorModuleData" or "AutoDepositUpdateModuleData" or "EngineerContainModuleData" or "RepairUpdateModuleData" or "ProductionUpdateModuleData" or "StructureUnpackUpdateModuleData" or "SpawnBehaviorModuleData" or "QueueProductionExitUpdateModuleData" or "WeaponSetUpdateModuleData" or "SquishCollideModuleData" or "PhysicsBehaviorModuleData" or "HitReactionBehaviorModuleData" or "StatusBitsUpgradeModuleData" or "CreateObjectDieModuleData" or "FireWeaponWhenDeadBehaviorModuleData" or "RecallUnitsSpecialPowerModuleData" or "ParkingPlaceBehaviorModuleData"?"Ep1"+name:name;return typeof(SageBinaryData.GameObject).Assembly.GetType("SageBinaryData."+model)??throw new InvalidDataException("Reviewed behavior native model absent.");}
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: select a bounded concrete family by its original wire identity; callers cannot submit unreviewed classes through the reflection/schema seam. */
@@ -294,7 +320,8 @@ public static class Ep1BehaviorMetadataTokenizer
             // Reborn: update shape quaternions use the retail VectorHack native target rather than a synthetic component token table.
             if(schema?.Name=="Quaternion"&&type==typeof(SageBinaryData.Ep1DynamicsQuaternion)){Range(slot,16);for(int axis=0;axis<4;axis++)if(!float.IsFinite(BitConverter.Int32BitsToSingle(unchecked((int)Word(bytes,slot+axis*4)))))throw new InvalidDataException("Dynamics quaternion is not finite.");Native(targetAt,slot);return;}
             // Reborn: EP1 VectorHack metadata points straight to three inline float words; the stock queue-exit witness proves this is not a child token table.
-            if(schema?.Name=="Vector3"&&type==typeof(SageBinaryData.Coord3D)){
+            // Reborn: stock lure guard vectors also point directly at their three native floats.
+            if(schema?.Name=="Vector3"&&(type==typeof(SageBinaryData.Coord3D)||type==typeof(SageBinaryData.Vector3))){
                 Range(slot,12);for(int axis=0;axis<3;axis++)if(!float.IsFinite(BitConverter.Int32BitsToSingle(unchecked((int)Word(bytes,slot+axis*4)))))throw new InvalidDataException("Behavior inline vector is not finite.");Native(targetAt,slot);return;
             }
             // Reborn: Movement is an XML choice but points directly to a wrapped concrete native movement record.
@@ -429,7 +456,7 @@ public static class Ep1BehaviorMetadataTokenizer
         "ReceiverDistanceType"=>0x34127322,
         // Reborn: captured from the original Stingray Flags metadata row.
         // Reborn: retail strafe Options use the signature of the schema flag list.
-        "StrafeAreaUpdateFlags"=>0x618098C1,
+        "StrafeAreaUpdateFlags"=>0x618098C1, "StrafeAreaTargetChooserFlags"=>0x2A89F37F,
         "CircularDamageUpdateOptionsTypeBitFlags"=>0x25F861E4,
         // Reborn: captured from the Hammer listener Flags and ObjectEffectTuple list metadata.
         "SecondaryObjectListenerBitFlags"=>0x0CB0A0B3,"ObjectEffectTuple" or "ObjectEffectTuple[]"=>0x7FA5326F,
@@ -439,6 +466,12 @@ public static class Ep1BehaviorMetadataTokenizer
         // Reborn: the single ObjectStatus ordinal uses its original named-enum schema identity, distinct from the bit mask.
         // Reborn: exact enum, volume and shape-list tags captured from retail DynamicsUpdate metadata.
         // Reborn: exact signatures captured from the original Soviet Terror Drone module tables.
+        // Reborn: retail action enum tag from the production kickback helper.
+        "MoneyGainAttachActionFlag"=>0x9D83510B,
+        // Reborn: inline collision damage list tag from the stock Yuriko prop metadata.
+        "DamageNuggetType[]"=>0xC0F53E99,"DamageFXType"=>0x2FAA4E62,"DamageSubType"=>0x62BB1CE7,"ScalarInfo[]"=>0xE4A6E6E4,
+        // Reborn: selector and threshold list wire tags captured from stock collision audio.
+        "MagnitudeSoundSelectorTable"=>0x4AC7E963,"MagnitudeSoundSelectorEntry[]"=>0x1DDFC869,
         "DeathType"=>0xC608ED36,"AttachUpdateFlagsBitFlags"=>0x48CD8925,"BezierProjectileBitFlag"=>0xC526BA4C,"BezierProjectileType"=>0xA11AF410,"SweepingLaserOptionsBitFlags"=>0x8B8DC354,"EmotionType"=>0xABE9F4D5,
         "DynamicsMotionType"=>0xA39AFB20,"DynamicsCollisionType"=>0x496E121D,"IntuitiveCollisionType"=>0xCE2C8DE9,"DynamicsContactTag"=>0x92E342E4,"DynamicsDrawPriority"=>0x41737FFB,
         "DynamicsVolumeType"=>0x96842FA5,"DynamicsSphereShapeType[]"=>0x9800E795,"DynamicsCapsuleShapeType[]"=>0xF7F58CA7,"DynamicsBoxShapeType[]"=>0x520B5F30,"DynamicsCylinderShapeType[]"=>0x3804CB6A,"DynamicsTriangleShapeType[]"=>0x1B5314E2,"Quaternion"=>0x854985C7,
@@ -489,6 +522,10 @@ public static class Ep1BehaviorMetadataTokenizer
         "DisabledBitFlags" => 0x196570C9, "DisabledType" => 0xBDE95B5A, "DurationUnsignedInt" => 0x6F6D1AE7,
         "EffectInfoBitFlags" => 0xA2F37A52, "EffectInfoType[]" => 0x25F5379F,
         "FXListBehaviorDirection" => 0x5E151008, "FXListBehaviorEvent[]" => 0x65BE8011, "FXListBehaviorType" => 0x03AF8D2F,
+        // Reborn: the Psychic Slam throw mapping list uses the tag captured from the stock ObjectMap row.
+        "FlingStoredObjectsObjectMap[]" => 0xEE9C04C0,
+        // Reborn: both retail reaction trigger lists share this list signature.
+        "ReactionFXTriggerData[]" => 0xE449F3B1,
         "FXListRef" or "FXListRef[]" => 0x0D1C8E83, "FXParticleSystemRef" or "FXParticleSystemRef[]" => 0x43F1CE36, "GameObjectWeakRef" => 0x148ED75D,
         "KindOfBitFlags" => 0x9AFC9193, "LocomotorSetType" => 0x845D12B2, "LogicCommandRef" => 0xE0E2A81A,
         "MicroManagerStateList" => 0xD7620AAA, "MicroManagerUnitTaskList" => 0x74BAC2ED,
@@ -519,7 +556,8 @@ public static class Ep1BehaviorMetadataTokenizer
         "UpgradeTemplateRef" or "UpgradeTemplateRef[]" => 0x4ABA1F29, "UpgradeTemplateWeakRef[]" => 0x26FACFC7,
         // Reborn: these assisted-placement signatures were read from the original ore-node metadata.
         "HintObjectMapping[]" => 0xA2D2DC27, "PlacementRestriction" => 0x27A20991, "PlayerTemplateWeakRef" => 0x6FAC143B,
-        "Vector3" => 0x29368077, "Velocity" => 0x7A76C60E, "WeakReference:GameObject[]" => 0x9B19049F,
+        // Reborn: the lure guard vector list uses the same VectorHack tag as its items.
+        "Vector3" or "Vector3[]" => 0x29368077, "Velocity" => 0x7A76C60E, "WeakReference:GameObject[]" => 0x9B19049F,
         // Reborn: these turret signatures were read from the original Soviet Sentry Gun metadata.
         "TurretAIData"=>0xF6753063,"TurretAITargetChooserData"=>0x08CF34B0,"TargetingCompareListRef"=>0x1B85B469,"TargetChooserDynamicTargetFlags"=>0x344E0F38,"ObjectVisionRangeItem[]"=>0x2E11FC54,"WeaponSlotBitFlags"=>0x28AEDB15,
         "WeaponChoiceCriteria" => 0x1D110792, "WeaponFireProbabilityType[]" => 0x080BE21F, "WeaponRef" or "WeaponRef[]" => 0xD046DD22,

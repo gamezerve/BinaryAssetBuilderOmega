@@ -15,11 +15,25 @@ internal static class ConscriptVariableContainers
     //-------------------------------------------------------------------------------------------------
     internal static void Restore(XmlDocument source,XmlDocument baseline)
     {
-        foreach(string name in Names){
-            var actual=Find(source,name);var model=Find(baseline,name);if(actual!=null)actual.ParentNode!.RemoveChild(actual);if(model==null)continue;
-            var following=model.NextSibling;XmlElement? next=null;
-            while(following!=null){if(following is XmlElement element&&(next=Find(source,element.LocalName))!=null)break;following=following.NextSibling;}
-            source.DocumentElement!.InsertBefore(source.ImportNode(model,true),next);
+        foreach(string name in Names)Restore(source,baseline,name);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: restore one baseline container at its schema position even if the authored object omitted it. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void Restore(XmlDocument source,XmlDocument baseline,string name)
+    {
+        var actual=Find(source,name);
+        var model=Find(baseline,name);
+        if(actual!=null)actual.ParentNode!.RemoveChild(actual);
+        if(model==null)return;
+        var following=model.NextSibling;
+        XmlElement? next=null;
+        while(following!=null)
+        {
+            if(following is XmlElement element && (next=Find(source,element.LocalName))!=null)break;
+            following=following.NextSibling;
         }
+        source.DocumentElement!.InsertBefore(source.ImportNode(model,true),next);
     }
 }

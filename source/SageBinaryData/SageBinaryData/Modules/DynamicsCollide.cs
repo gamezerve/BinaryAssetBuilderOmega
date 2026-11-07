@@ -37,3 +37,11 @@ public struct DamageDynamicsCollideModuleData
     public float MaxMagnitude;
     public List<DamageNuggetType> DamageNugget;
 }
+
+// Reborn: the stock enable-collision record extends the ordinary collision base with one weight.
+[StructLayout(LayoutKind.Sequential)]
+public struct EnableDynamicsCollideModuleData
+{
+    public CollideModuleData Base;
+    public float Weight;
+}

@@ -23,7 +23,15 @@ internal static class SdkDefinitionSubsetSmokeTest
         Reject(() => SdkDefinitionSubset.Evaluate("=$BASE+'"+new string('x',257)+"'",Lookup));
         values["BASE"] = new string('x',512); Reject(() => SdkDefinitionSubset.Evaluate("=$BASE+'x'",Lookup)); values["BASE"] = "local";
         CultureInfo previous = CultureInfo.CurrentCulture;
-        try { CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("tr-TR"); Require(SdkDefinitionSubset.Evaluate("=($LEFT*2)+$RIGHT",Lookup) == "440","Arithmetic depends on locale."); }
+        try
+        {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("tr-TR");
+            Require(SdkDefinitionSubset.Evaluate("=($LEFT*2)+$RIGHT",Lookup) == "440","Arithmetic depends on locale.");
+            // Reborn: check stock Yuriko scaling under a decimal-comma locale.
+            values["EXTREME_RANGE_WEP"] = "300.0";
+            Require(SdkDefinitionSubset.Evaluate("=$EXTREME_RANGE_WEP*1.25",Lookup) == "375","Yuriko range scaling differs.");
+            Reject(() => SdkDefinitionSubset.Evaluate("=$UNIT*1.25",Lookup));
+        }
         finally { CultureInfo.CurrentCulture = previous; }
         string root = Path.Combine(Path.GetTempPath(),"Reborn-DefinitionSubset-"+Guid.NewGuid().ToString("N")),data = Path.Combine(root,"Data"); Directory.CreateDirectory(data);
         string entry = Path.Combine(data,"Entry.xml"),defs = Path.Combine(data,"Defines.xml");
@@ -53,7 +61,7 @@ internal static class SdkDefinitionSubsetSmokeTest
         }
         Write(defs,declarations); paths = Audit(); Write(defs,declarations.Replace("200","300",StringComparison.Ordinal));
         Require(new SdkIncludeDefineProfile(paths,true).Apply(entry,File.ReadAllBytes(entry)).Bytes == null,"Definition evaluation bypassed stale source check.");
-        Console.WriteLine("SDK definition subset self-test: OK (backward alias/concat/checked integer multiply-add, invariant locale, overflow/units/functions/forward/self/unknown/duplicate/unused rejection, atomic origins, old-profile isolation and typed/resource graph; no EA evaluator equivalence)");
+        Console.WriteLine("SDK definition subset self-test: OK (backward alias/concat/scalar product/checked integer multiply-add, invariant locale, overflow/units/functions/forward/self/unknown/duplicate/unused rejection, atomic origins, old-profile isolation and typed/resource graph; no EA evaluator equivalence)");
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: capture only fresh owned fixture sources while keeping production output absent. */

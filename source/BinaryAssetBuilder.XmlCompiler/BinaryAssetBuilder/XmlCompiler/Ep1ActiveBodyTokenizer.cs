@@ -11,8 +11,12 @@ namespace BinaryAssetBuilder.XmlCompiler;
 // Reborn: bounded standalone EP1 body fragment writer; no registry, general body dispatch or GameObject publication is enabled here.
 public static class Ep1ActiveBodyTokenizer
 {
+    // Reborn: ImmortalBody is a distinct retail class over the 76-byte EP1 ActiveBody record.
+    public const uint ImmortalBodyTypeId = 0x88E94F7Au;
     // Reborn: ManagerBody shares the retail 76-byte EP1 ActiveBody record.
     public const uint ManagerBodyTypeId = 0x71982EACu;
+    // Reborn: the center bridge segment uses ManagedActiveBody with one fieldless metadata level.
+    public const uint ManagedActiveBodyTypeId = 0xEE0D6E31u;
     // Reborn: bridge segments keep their own concrete wire class.
     public const uint ManagedImmortalBodyTypeId = 0xE48BF32Cu;
 
@@ -39,25 +43,25 @@ public static class Ep1ActiveBodyTokenizer
             ManagedImmortalBodyTypeId => "ManagedActiveBodyModuleData",
             _ => null
         };
-        bool derived=intermediateClass!=null;
-        if((concreteType!=0x5A0E3D9B && !derived) || count>64 || b.Length!=76+count*12 || Word(b,68)!=(count==0?0:76) || Word(b,36)!=0 || Word(b,40)!=0 || b[72]>1 || b[73]>1 || b[74]!=0 || b[75]!=0)
+        // Reborn: ImmortalBody and ManagedActiveBody each inherit directly from ActiveBody.
+        bool directDerived=concreteType is ImmortalBodyTypeId or ManagedActiveBodyTypeId;
+        if((concreteType!=0x5A0E3D9B && !directDerived && intermediateClass==null) || count>64 || b.Length!=76+count*12 || Word(b,68)!=(count==0?0:76) || Word(b,36)!=0 || Word(b,40)!=0 || b[72]>1 || b[73]>1 || b[74]!=0 || b[75]!=0)
             throw new InvalidDataException("Unsupported EP1 ActiveBody class/list/string/boolean layout.");
         var imports=new List<uint>();
         foreach(uint slot in new uint[]{44,48,52,60})if(Word(b,(int)slot)!=0)imports.Add(slot);
         for(int i=0;i<count;i++)if(Word(b,76+i*12+8)!=0)imports.Add((uint)(76+i*12+8));
         var relos=count==0?Array.Empty<uint>():new uint[]{68};
         CheckSlots(native.RelocationBuffer,relos);CheckSlots(native.ImportsBuffer,imports);
-        // Reborn: the two fieldless derived classes add inherited metadata tables, with no extra native fields.
-        int inherited=derived?48:0;
+        // Reborn: each fieldless inheritance level adds a base row and terminator while retaining the same native body record.
+        int inherited=intermediateClass!=null?48:directDerived?24:0;
         int prefix=inherited+324+(int)count*60;
         var result=new Chunk {InstanceBuffer=new byte[prefix+b.Length]};
         b.CopyTo(result.InstanceBuffer,prefix);
         Token(0,2,concreteType,12);
-        if(derived)
-        {
+        if(intermediateClass!=null)
             Token(12,1,FastHash.GetHashCode(intermediateClass),36);
-            Token(36,1,FastHash.GetHashCode("ActiveBodyModuleData"),60);
-        }
+        if(inherited!=0)
+            Token(inherited-12,1,FastHash.GetHashCode("ActiveBodyModuleData"),(uint)(inherited+12));
         BodyToken(12,1,FastHash.GetHashCode("BodyModuleData"),228);
         for(int i=0;i<Fields.Count;i++){var f=Fields[i];BodyToken(24+i*12,FastHash.GetHashCode(f.Name),f.Type,(uint)(prefix+f.Offset));}
         BodyToken(204,FastHash.GetHashCode("DamageRangeModifier"),0x751527B1,312);

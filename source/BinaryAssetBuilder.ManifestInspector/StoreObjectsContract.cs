@@ -9,6 +9,14 @@ namespace BinaryAssetBuilder.ManifestInspector;
 internal static class StoreObjectsContract
 {
     internal const string Wire="StoreObjectsSpecialPowerModuleData";
+    internal const string LureWire="AddObjectsToLureUpdateSpecialPowerModuleData";
+    internal const uint LureTypeId=0xA7DEFFCCu;
+    // Reborn: use the retail Yuriko lift activation module identity.
+    internal const string LiftWire="AddObjectsToLiftUpdateSpecialPowerModuleData";
+    internal const uint LiftTypeId=0xD9B247DFu;
+    // Reborn: identify the retail Psychic Slam throw module independently of its activation module.
+    internal const string FlingWire="FlingStoredObjectsSpecialPowerModuleData";
+    internal const uint FlingTypeId=0x12D1FAD9u;
     internal static readonly uint TypeId=BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Wire);
 
     //-------------------------------------------------------------------------------------------------
@@ -34,5 +42,75 @@ internal static class StoreObjectsContract
             }
         }
         SdkBuildTests.MetadataProgress("StoreObjectsSpecialPower",$"Reborn: StoreObjectsSpecialPower EP1 native/metadata qualification: PASS ({count} original retail records; header={Marshal.SizeOf<StoreObjectsSpecialPowerModuleData>()}).",count+" stock records");return grammar;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: learn the extra lure link word and inherited storage metadata from the three retail Yuriko ranks. */
+    //-------------------------------------------------------------------------------------------------
+    internal static StockMetadataGrammar QualifyLure(string manifest) =>
+        QualifyYurikoActivation<AddObjectsToLureUpdateSpecialPowerModuleData>(manifest, LureTypeId,
+            nameof(AddObjectsToLureUpdateSpecialPowerModuleData.LureObjectLinkID), new[] { 101, 102, 103 });
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: qualify lift activation against the three Psychic Slam ranks, which share lift link 101. */
+    //-------------------------------------------------------------------------------------------------
+    internal static StockMetadataGrammar QualifyLift(string manifest) =>
+        QualifyYurikoActivation<AddObjectsToLiftUpdateSpecialPowerModuleData>(manifest, LiftTypeId,
+            nameof(AddObjectsToLiftUpdateSpecialPowerModuleData.LiftObjectLinkID), new[] { 101, 101, 101 });
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: qualify all three throw ranks and learn the repeated weak-reference mappings from the stock object. */
+    //-------------------------------------------------------------------------------------------------
+    internal static StockMetadataGrammar QualifyFling(string manifest)
+    {
+        const string identity = "GameObject:JapanYurikoTech3";
+        const int storeLinkOffset = 476;
+        const int liftLinkOffset = 480;
+        const int objectMapOffset = 492;
+        if (Marshal.SizeOf<FlingStoredObjectsSpecialPowerModuleData>() != 500 ||
+            Marshal.OffsetOf<FlingStoredObjectsSpecialPowerModuleData>(nameof(FlingStoredObjectsSpecialPowerModuleData.StoreObjectsLinkID)).ToInt32() != storeLinkOffset ||
+            Marshal.OffsetOf<FlingStoredObjectsSpecialPowerModuleData>(nameof(FlingStoredObjectsSpecialPowerModuleData.LiftObjectLinkID)).ToInt32() != liftLinkOffset ||
+            Marshal.OffsetOf<FlingStoredObjectsSpecialPowerModuleData>(nameof(FlingStoredObjectsSpecialPowerModuleData.ObjectMap)).ToInt32() != objectMapOffset ||
+            Marshal.SizeOf<FlingStoredObjectsObjectMap>() != 8)
+            throw new InvalidDataException("EP1 stored-object throw layout differs.");
+
+        var stock = GameObjectStockReview.Capture(manifest, identity, allowNullArmorReferences: true);
+        var modules = GameObjectModuleReview.Inspect(manifest, identity, allowNullArmorReferences: true)
+            .Containers.Single(container => container.Name == "Behaviors").Modules.Where(module => module.TypeId == FlingTypeId).ToArray();
+        var ranks = modules.Select(module => (
+            StoreLink: System.Buffers.Binary.BinaryPrimitives.ReadInt32LittleEndian(stock.Bytes.AsSpan(module.Native + storeLinkOffset, 4)),
+            LiftLink: System.Buffers.Binary.BinaryPrimitives.ReadInt32LittleEndian(stock.Bytes.AsSpan(module.Native + liftLinkOffset, 4)),
+            MappingCount: System.Buffers.Binary.BinaryPrimitives.ReadInt32LittleEndian(stock.Bytes.AsSpan(module.Native + objectMapOffset, 4))));
+        if (!ranks.OrderBy(rank => rank.StoreLink).SequenceEqual(new[] { (101, 101, 45), (102, 101, 45), (103, 101, 45) }))
+            throw new InvalidDataException("Stock Yuriko throw ranks differ.");
+
+        var grammar = new StockMetadataGrammar();
+        foreach (var module in modules)
+            grammar.Learn(stock.Bytes, module.Wrapper, stock.Projection.NativeRoot, typeof(FlingStoredObjectsSpecialPowerModuleData));
+        return grammar;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify the extra link field and learn each activation module's original storage metadata. */
+    //-------------------------------------------------------------------------------------------------
+    private static StockMetadataGrammar QualifyYurikoActivation<T>(string manifest, uint typeId, string linkField, int[] expectedLinks)
+        where T : struct
+    {
+        const string identity = "GameObject:JapanYurikoTech3";
+        const int linkOffset = 492;
+        if (Marshal.SizeOf<T>() != 496 || Marshal.OffsetOf<T>(linkField).ToInt32() != linkOffset)
+            throw new InvalidDataException($"EP1 {typeof(T).Name} layout differs.");
+
+        var stock = GameObjectStockReview.Capture(manifest, identity, allowNullArmorReferences: true);
+        var modules = GameObjectModuleReview.Inspect(manifest, identity, allowNullArmorReferences: true)
+            .Containers.Single(container => container.Name == "Behaviors").Modules.Where(module => module.TypeId == typeId).ToArray();
+        var links = modules.Select(module => System.Buffers.Binary.BinaryPrimitives.ReadInt32LittleEndian(stock.Bytes.AsSpan(module.Native + linkOffset, 4)));
+        if (!links.Order().SequenceEqual(expectedLinks))
+            throw new InvalidDataException($"Stock Yuriko {linkField} values differ.");
+
+        var grammar = new StockMetadataGrammar();
+        foreach (var module in modules)
+            grammar.Learn(stock.Bytes, module.Wrapper, stock.Projection.NativeRoot, typeof(T));
+        return grammar;
     }
 }

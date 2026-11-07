@@ -1,4 +1,5 @@
 using System.Buffers.Binary;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Xml;
 using BinaryAssetBuilder.Core.Hashing;
@@ -7,10 +8,8 @@ using Chunk=Relo.Chunk;
 namespace BinaryAssetBuilder.ManifestInspector;
 
 // Reborn: EP1 PC Texture assets, as written by the official RA3 SDK TextureCompiler (EmbedPCTexture): a 12-byte root
-// {0, relocated pointer to +12, byte length} followed by the complete nvDXT DDS file. This first route covers the uncompressed
-// profile only: OutputFormat=A8R8G8B8, GenerateMipMaps=false, StandardTexture, from an uncompressed or RLE 32-bit TGA with 8 alpha bits.
-// Reborn: DDS inputs bypass raster conversion and preserve their validated DXT/RGB format, mip chain and resource kind.
-// TGA encoding still uses the uncompressed profile; this does not add a DXT encoder or mip generator.
+// {0, relocated pointer to +12, byte length} followed by a legacy DDS file.
+// Reborn: 24/32-bit TGA inputs support A8R8G8B8 and DXT1 with optional mip chains; precompiled DDS inputs retain their original bytes.
 internal static class Ep1TextureCompiler
 {
     internal const uint TypeHash=0x9F5FF8DA;
@@ -58,28 +57,131 @@ internal static class Ep1TextureCompiler
     //-------------------------------------------------------------------------------------------------
     /** Reborn: admit only the reviewed profile from the effective (schema-defaulted) Texture source. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Admit(XmlElement texture)
+    private static (string Format,bool GenerateMipMaps) Admit(XmlElement texture)
     {
         string Value(string name,string fallback)=>texture.HasAttribute(name)?texture.GetAttribute(name).Trim():fallback;
         string format=Value("OutputFormat","DXT1"),mips=Value("GenerateMipMaps","true"),kind=Value("Type","StandardTexture");
         if(kind!="StandardTexture")throw new InvalidDataException("Texture Type '"+kind+"' is not supported yet; only StandardTexture.");
-        if(format!="A8R8G8B8")throw new InvalidDataException("Texture OutputFormat '"+format+"' is not supported yet; only A8R8G8B8 (uncompressed) is compiled. DXT compression needs the nvDXT encoder.");
-        if(mips is not ("false" or "0"))throw new InvalidDataException("Texture GenerateMipMaps must be false for the uncompressed route (mipmap generation needs the nvDXT filter).");
+        if(format is not ("A8R8G8B8" or "DXT1"))throw new InvalidDataException("TGA OutputFormat '"+format+"' is not supported; use A8R8G8B8, DXT1 or supply a precompiled DDS.");
+        // Reborn: respect both explicit settings and the schema's default mip generation request.
+        return (format,XmlConvert.ToBoolean(mips));
     }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: root + DDS for one authored texture; the only relocation is the data pointer at +4, there are no imports. */
     //-------------------------------------------------------------------------------------------------
-    internal static Chunk Compile(XmlElement texture,byte[] tga,string path)
+    internal static Chunk Compile(XmlElement texture,byte[] tga,string path,(int Width,int Height)? radarSize=null)
     {
         // Reborn: DDS is already compiled; validate and embed its complete unchanged header/surface/mip bytes in the same EP1 root.
         if(path.EndsWith(".dds",StringComparison.OrdinalIgnoreCase)){
             var info=Ep1DdsTexture.Inspect(tga,path);if(texture.GetAttribute("Type")!=info.Kind||texture.GetAttribute("OutputFormat")!=info.Format)throw new InvalidDataException("Prepared DDS metadata differs from its captured payload: "+path);
-            var embedded=new byte[checked(RootSize+tga.Length)];Put(embedded,4,RootSize);Put(embedded,8,(uint)tga.Length);tga.CopyTo(embedded,RootSize);return new Chunk{InstanceBuffer=embedded,RelocationBuffer=Pack(4),ImportsBuffer=Array.Empty<byte>()};
+            return EmbedDds(tga);
         }
-        Admit(texture);var image=ReadTga(tga,path);int length=checked(HeaderSize+image.Bgra.Length);
+        var (format,generateMipMaps)=Admit(texture);
+        var image=ReadTga(tga,path);
+        int width=image.Width,height=image.Height;
+        bool fitRadar=format=="DXT1"&&(width%4!=0||height%4!=0);
+        if(fitRadar)
+        {
+            // Reborn: retail full-image radar art is fitted to its explicit canvas even when generic automatic resizing is disabled.
+            if(radarSize is not { } size || size.Width is <4 or >MaxDimension || size.Height is <4 or >MaxDimension ||
+                size.Width%4!=0 || size.Height%4!=0)
+                throw new InvalidDataException($"Texture '{texture.GetAttribute("id")}' is {width}x{height}. DXT1 requires block-aligned dimensions or a matching full-image radar canvas: {path}");
+            (width,height)=size;
+        }
+        // Reborn: use the encoder for compressed or mipmapped TGA while retaining the original uncompressed single-level writer.
+        if(format=="DXT1"||generateMipMaps)
+            return EmbedDds(EncodeTga(tga,width,height,path,fitRadar,format,generateMipMaps));
+        int length=checked(HeaderSize+image.Bgra.Length);
         var bytes=new byte[checked(RootSize+length)];Put(bytes,0,0);Put(bytes,4,RootSize);Put(bytes,8,(uint)length);Header(image.Width,image.Height).CopyTo(bytes,RootSize);image.Bgra.CopyTo(bytes,RootSize+HeaderSize);
         return new Chunk{InstanceBuffer=bytes,RelocationBuffer=Pack(4),ImportsBuffer=Array.Empty<byte>()};
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: generated and precompiled DDS surfaces share the same native Texture record. */
+    //-------------------------------------------------------------------------------------------------
+    private static Chunk EmbedDds(byte[] dds)
+    {
+        var bytes=new byte[checked(RootSize+dds.Length)];
+        Put(bytes,4,RootSize);
+        Put(bytes,8,(uint)dds.Length);
+        dds.CopyTo(bytes,RootSize);
+        return new Chunk{InstanceBuffer=bytes,RelocationBuffer=Pack(4),ImportsBuffer=Array.Empty<byte>()};
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: encode captured TGA bytes and validate the legacy DDS format, dimensions, and full requested mip chain. */
+    //-------------------------------------------------------------------------------------------------
+    private static byte[] EncodeTga(byte[] tga,int width,int height,string path,bool fitRadar,string format,bool generateMipMaps)
+    {
+        string encoder=Path.Combine(AppContext.BaseDirectory,"texconv.exe");
+        if(!File.Exists(encoder))throw new FileNotFoundException("The bundled DirectXTex encoder is missing; restore texconv.exe beside the SDK compiler.",encoder);
+
+        var job=Directory.CreateTempSubdirectory("reborn-texture-");
+        string input=Path.Combine(job.FullName,"texture.tga");
+        string output=Path.Combine(job.FullName,"texture.dds");
+        try
+        {
+            File.WriteAllBytes(input,tga);
+            var start=new ProcessStartInfo(encoder)
+            {
+                WorkingDirectory=job.FullName,UseShellExecute=false,CreateNoWindow=true,
+                RedirectStandardOutput=true,RedirectStandardError=true
+            };
+            // Reborn: texconv uses zero for a full chain. Opaque BC1 remains distinct from the DXT1A schema format.
+            bool compressed=format=="DXT1";
+            string encoderFormat=compressed?"BC1_UNORM":"B8G8R8A8_UNORM";
+            foreach(string argument in new[]{"-nologo","-dx9","-f",encoderFormat,"-m",generateMipMaps?"0":"1","-o",job.FullName})
+                start.ArgumentList.Add(argument);
+            if(compressed)
+            {
+                start.ArgumentList.Add("-at");
+                start.ArgumentList.Add("0");
+            }
+            if(fitRadar)
+            {
+                // Reborn: stock Miyako radar stretches the full image across its declared canvas.
+                foreach(string argument in new[]{"-w",XmlConvert.ToString(width),"-h",XmlConvert.ToString(height),"-if","LINEAR"})
+                    start.ArgumentList.Add(argument);
+            }
+            start.ArgumentList.Add(input);
+            using var process=Process.Start(start)??throw new InvalidDataException("DirectXTex did not start: "+path);
+            var stdout=process.StandardOutput.ReadToEndAsync();
+            var stderr=process.StandardError.ReadToEndAsync();
+            if(!process.WaitForExit(60_000))
+            {
+                if(!process.HasExited)process.Kill();
+                process.WaitForExit(5_000);
+                throw new InvalidDataException("DirectXTex timed out while encoding "+format+": "+path);
+            }
+            if(!Task.WaitAll(new Task[]{stdout,stderr},5_000))
+                throw new InvalidDataException("DirectXTex output pipes did not close: "+path);
+            if(process.ExitCode!=0)
+                throw new InvalidDataException("DirectXTex could not encode "+path+" (exit "+process.ExitCode+"): "+(stderr.Result+stdout.Result).Trim());
+
+            // Reborn: bound the read by the requested mip payload, including the final 1x1 block or pixel.
+            int expected=HeaderSize, mipCount=0;
+            int mipWidth=width,mipHeight=height;
+            while(true)
+            {
+                expected+=compressed?((mipWidth+3)/4)*((mipHeight+3)/4)*8:mipWidth*mipHeight*4;
+                mipCount++;
+                if(!generateMipMaps||(mipWidth==1&&mipHeight==1))break;
+                mipWidth=Math.Max(1,mipWidth/2);
+                mipHeight=Math.Max(1,mipHeight/2);
+            }
+            byte[] dds=SdkEnvironmentPreflight.Read(output,expected);
+            var info=Ep1DdsTexture.Inspect(dds,path);
+            if(info.Format!=format||info.Kind!="StandardTexture"||info.Width!=width||info.Height!=height||info.Mips!=mipCount)
+                throw new InvalidDataException("DirectXTex returned an unexpected "+format+" DDS header: "+path);
+            return dds;
+        }
+        finally
+        {
+            File.Delete(output);
+            File.Delete(input);
+            job.Delete();
+        }
     }
 
     // Reborn: the reported texture size accompanies the EA-style compile line.

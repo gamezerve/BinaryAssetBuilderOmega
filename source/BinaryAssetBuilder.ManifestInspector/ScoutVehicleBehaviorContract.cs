@@ -13,6 +13,33 @@ internal static class ScoutVehicleBehaviorContract
         ("BezierProjectile","BezierProjectileBehaviorModuleData",typeof(Ep1BezierProjectileBehaviorModuleData)),
         ("SweepingLaserState","SweepingLaserStateModuleData",typeof(SweepingLaserStateModuleData))};
     internal static bool Supports(Type type)=>Families.Any(f=>f.Type==type);
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: qualify the original production kickback fields and extend the existing attachment metadata grammar. */
+    //-------------------------------------------------------------------------------------------------
+    internal static StockMetadataGrammar QualifyMoneyGain(string manifest,StockMetadataGrammar grammar)
+    {
+        const uint typeId=0xB1A54585u;
+        const string asset="GameObject:SovietProductionKickbackHelper";
+        var stock=GameObjectStockReview.Capture(manifest,asset,allowNullArmorReferences:true);
+        var module=GameObjectModuleReview.Inspect(manifest,asset,allowNullArmorReferences:true)
+            .Containers.Single(c=>c.Name=="Behaviors").Modules.Single(m=>m.TypeId==typeId);
+        var fields=GameObjectStockReview.Tokens(stock.Bytes,Read(module.Wrapper+8));
+        if(Marshal.SizeOf<Ep1MoneyGainAttachUpdateModuleData>()!=380 ||
+            fields[FastHash.GetHashCode("ActionType")].Offset!=module.Native+368 ||
+            fields[FastHash.GetHashCode("PurchasePricePercent")].Offset!=module.Native+372)
+            throw new InvalidDataException("Stock MoneyGainAttachUpdate header differs.");
+
+        var validation=GameObjectStockReview.Tokens(stock.Bytes,fields[FastHash.GetHashCode("MoneyGainObjectStatusValidation")].Offset);
+        if(validation[FastHash.GetHashCode(nameof(ObjectStatusValidationDataType.ForbiddenStatus))].Offset!=Read(module.Native+376))
+            throw new InvalidDataException("Stock MoneyGainAttachUpdate validation pointer differs.");
+
+        grammar.Learn(stock.Bytes,module.Wrapper,stock.Projection.NativeRoot,typeof(Ep1MoneyGainAttachUpdateModuleData));
+        return grammar;
+
+        // Reborn: original table and native offsets are Win32 little-endian words.
+        int Read(int offset)=>System.Buffers.Binary.BinaryPrimitives.ReadInt32LittleEndian(stock.Bytes.AsSpan(offset,4));
+    }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: read original source records, resolving their single captured global disabled-mask definition in its defining context. */
     //-------------------------------------------------------------------------------------------------

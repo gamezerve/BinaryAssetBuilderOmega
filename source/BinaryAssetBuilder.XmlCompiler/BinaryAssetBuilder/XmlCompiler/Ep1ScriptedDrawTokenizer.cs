@@ -220,10 +220,11 @@ public static class Ep1ScriptedDrawTokenizer
 
     private static readonly Record DynamicsJointLimits = new("DynamicsJointLimitsType", 32, new[]
     {
-    F("SwingType", 0x1848C549, 0, Kind.Enum, limit: 5),
+    // Reborn: stock ragdoll joints use distinct DynamicsJointSwingType and DynamicsJointTwistType wire tags.
+    F("SwingType", 0x78D1CE5E, 0, Kind.Enum, limit: 5),
     F("SwingDisplacementLimit", 0x645864F3, 4, Kind.Real),
     F("SwingAngleLimit", 0x645864F3, 8, Kind.Real),
-    F("TwistType", 0x1848C549, 12, Kind.Enum, limit: 3),
+    F("TwistType", 0xE8186A6B, 12, Kind.Enum, limit: 3),
     F("TwistDisplacementLimit", 0x645864F3, 16, Kind.Real),
     F("TwistAngleLimit", 0x645864F3, 20, Kind.Real),
     F("InertiaOverride", 0x645864F3, 24, Kind.Real),

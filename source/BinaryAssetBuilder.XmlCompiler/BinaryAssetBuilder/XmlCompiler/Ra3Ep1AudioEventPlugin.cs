@@ -17,6 +17,8 @@ public sealed class Ra3Ep1AudioEventPlugin : IAssetBuilderPlugin, IAssetBuilderO
     public bool AllowAmbientAuthoring { get; set; }
     // Reborn: normal alpha authoring accepts every official AudioVolumeSlider; isolated diagnostic profiles keep their earlier contract.
     public bool AllowSchemaSubmixSliders { get; set; }
+    // Reborn: only the normal SDK route opts into the separate per-map-overridable EP1 type.
+    public bool AllowOverridableAuthoring { get; set; }
     public string ProfileName => "RA3EP1-AudioEvent-Experimental-v1";
     public bool CanWriteProductionOutput => false;
     public bool CanUseBuildCache => false;
@@ -40,14 +42,16 @@ public sealed class Ra3Ep1AudioEventPlugin : IAssetBuilderPlugin, IAssetBuilderO
     public void ReInitialize(TargetPlatform platform) => Initialize(platform);
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: return fresh stock metadata in an isolated processing domain without enabling AudioFile or overridable types. */
+    /** Reborn: return the retail fingerprint for the selected EP1 audio event class. */
     //-------------------------------------------------------------------------------------------------
     public ExtendedTypeInformation GetExtendedTypeInformation(uint typeId)
     {
         if (!_initialized) throw new InvalidOperationException("Experimental AudioEvent profile is not initialized.");
-        if (typeId != 0x844D7B9Fu) throw new NotSupportedException("Unsupported experimental AudioEvent type.");
-        return new ExtendedTypeInformation { TypeId = typeId, TypeName = "AudioEvent", Type = typeof(Marshaler.Ep1AudioEvent),
-            TypeHash = 0x560C2E45u, ProcessingHash = 0x560C2E45u ^ 0x45503141u,
+        bool overridable = typeId == 0x10845383u && AllowOverridableAuthoring;
+        if (typeId != 0x844D7B9Fu && !overridable) throw new NotSupportedException("Unsupported experimental AudioEvent type.");
+        uint typeHash = overridable ? 0x8A267F59u : 0x560C2E45u;
+        return new ExtendedTypeInformation { TypeId = typeId, TypeName = overridable ? "AudioEventOverridable" : "AudioEvent", Type = typeof(Marshaler.Ep1AudioEvent),
+            TypeHash = typeHash, ProcessingHash = typeHash ^ 0x45503141u,
             Tokenized = false, HasCustomData = false, UseBuildCache = false };
     }
 
@@ -57,12 +61,12 @@ public sealed class Ra3Ep1AudioEventPlugin : IAssetBuilderPlugin, IAssetBuilderO
     public unsafe AssetBuffer ProcessInstance(InstanceDeclaration instance)
     {
         if (instance?.Node is not XmlElement root) throw new NotSupportedException("A validated AudioEvent root is required.");
-        GetExtendedTypeInformation(instance.Handle.TypeId);
-        CheckElement(root, "AudioEvent", "AudioEvent", new[] { "id", "Volume", "VolumeShift", "PerFileVolumeShift", "MinVolume",
+        var info = GetExtendedTypeInformation(instance.Handle.TypeId);
+        CheckElement(root, info.TypeName, info.TypeName, new[] { "id", "Volume", "VolumeShift", "PerFileVolumeShift", "MinVolume",
             "ShrunkenPitchModifier", "ShrunkenVolumeModifier", "PlayPercent", "Limit", "Priority", "Type", "Control",
             "MinRange", "MaxRange", "LowPassCutoff", "ZoomedInOffscreenVolumePercent", "ZoomedInOffscreenMinVolumePercent",
             "ZoomedInOffscreenOcclusionPercent", "ReverbEffectLevel", "DryLevel", "SubmixSlider" });
-        if (root.OwnerDocument.Schemas.Count == 0 || instance.Handle.TypeHash != 0x560C2E45u
+        if (root.OwnerDocument.Schemas.Count == 0 || instance.Handle.TypeHash != info.TypeHash
             || InstanceHandle.GetInstanceId(root.GetAttribute("id")) != instance.Handle.InstanceId
             || instance.InheritFromHandle != null || instance.HasCustomData || instance.WeakReferencedInstances.Count != 0
             || instance.ReferencedFiles.Count != 0 || instance.ValidatedReferencedInstances == null
@@ -76,8 +80,10 @@ public sealed class Ra3Ep1AudioEventPlugin : IAssetBuilderPlugin, IAssetBuilderO
         foreach (XmlAttribute attr in root.Attributes)
             if (attr.NamespaceURI.Length == 0 && Array.IndexOf(new[] { "id", "TypeId", "Priority", "Type", "Control", "SubmixSlider" }, attr.Name) < 0)
                 CheckReal(attr.Value);
+        // Reborn: the original Osaka event uses the SEQUENTIAL control bit.
         foreach (string flag in root.GetAttribute("Control").Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries))
-            if (flag != "LOOP" && flag != "INTERRUPT" && flag != "FADE_ON_KILL" && flag != "IMMEDIATE_DECAY_ON_KILL" && !(AllowAmbientAuthoring && flag == "FADE_ON_START"))
+            if (flag != "LOOP" && flag != "INTERRUPT" && flag != "FADE_ON_KILL" && flag != "IMMEDIATE_DECAY_ON_KILL" && !(AllowAmbientAuthoring && flag == "FADE_ON_START")
+                && !(info.TypeName == "AudioEventOverridable" && flag == "SEQUENTIAL"))
                 throw new NotSupportedException("AudioEvent control flag is not stock-proven in this profile.");
         if (!AllowSchemaSubmixSliders && root.HasAttribute("SubmixSlider") && root.GetAttribute("SubmixSlider") != "SOUNDFX" && !(AllowAmbientAuthoring && root.GetAttribute("SubmixSlider") == "AMBIENT"))
             throw new NotSupportedException("Only explicit stock-proven SOUNDFX slider is admitted.");

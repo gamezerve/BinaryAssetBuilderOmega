@@ -117,14 +117,30 @@ internal static class SdkXmlDiagnosticsSmokeTest
         string overlay=Path.Combine(output,"overlay.xml");string sameId=unreviewed.DocumentElement.GetAttribute("id");
         File.WriteAllText(overlay,"<AssetDeclaration xmlns='uri:ea.com:eala:asset'><Includes><Include type='instance' source='base.xml'/></Includes><GameObject id='"+sameId+"' inheritFrom='"+sameId+"' BuildTime='2'/></AssetDeclaration>");
         File.WriteAllText(entry,"<AssetDeclaration xmlns='uri:ea.com:eala:asset'><Includes><Include type='all' source='overlay.xml'/></Includes></AssetDeclaration>");Refuse(entry,basis,"LineSegmentDamageUpdate",attribute:false);
-        // Reborn: identical AudioEvent handles across prepared includes report every real declaration, never the Includes-only entry or generated XML.
+        // Reborn: later all-Includes win while derived assets retain their own defining document's inheritance.
         string duplicateRoot=Path.Combine(output,"duplicates");Directory.CreateDirectory(duplicateRoot);string duplicateEntry=Path.Combine(duplicateRoot,"entry.xml");var declarationPaths=Enumerable.Range(0,3).Select(i=>Path.Combine(duplicateRoot,$"audio-{i}.xml")).ToArray();
-        for(int i=0;i<declarationPaths.Length;i++)File.WriteAllText(declarationPaths[i],"<AssetDeclaration xmlns='uri:ea.com:eala:asset'>\n"+new string('\n',i*2)+"  <AudioEvent id='RepeatedSound' Volume='100'/>\n<AudioEvent id='Derived"+i+"' inheritFrom='AudioEvent:RepeatedSound'/>\n</AssetDeclaration>");
+        for(int i=0;i<declarationPaths.Length;i++)File.WriteAllText(declarationPaths[i],"<AssetDeclaration xmlns='uri:ea.com:eala:asset'>\n"+(i==2?"<Includes><Include type='all' source='audio-0.xml'/></Includes>\n":"")+"<AudioEvent id='RepeatedSound' Volume='"+(30+i)+"'/>\n<AudioEvent id='Derived"+i+"' inheritFrom='AudioEvent:RepeatedSound'/>\n</AssetDeclaration>");
         File.WriteAllText(duplicateEntry,"<AssetDeclaration xmlns='uri:ea.com:eala:asset'><Includes>"+string.Concat(Enumerable.Range(0,3).Select(i=>$"<Include type='all' source='audio-{i}.xml'/>"))+"</Includes></AssetDeclaration>");
-        try{ConscriptSourcePreparation.Load(duplicateEntry);throw new InvalidOperationException("Duplicate AudioEvent declarations were accepted.");}
+        var overridden=ConscriptSourcePreparation.Load(duplicateEntry);
+        var selected=overridden.Game.DocumentElement!;
+        if(selected.GetAttribute("id")=="RepeatedSound"||overridden.Origins.Single(a=>a.Id=="RepeatedSound").Path!=declarationPaths[2]
+            ||overridden.AdditionalAssets.Single(a=>a.DocumentElement!.GetAttribute("id")=="RepeatedSound").DocumentElement!.GetAttribute("Volume")!="32")
+            throw new InvalidDataException("The last all-Include did not supply the only emitted RepeatedSound.");
+        checks++;
+        // Reborn: a shared dependency is loaded once, before its parent, even if the entry also includes it later.
+        File.WriteAllText(duplicateEntry,"<AssetDeclaration xmlns='uri:ea.com:eala:asset'><Includes><Include type='all' source='audio-2.xml'/><Include type='all' source='audio-0.xml'/></Includes><AudioEvent id='DerivedRoot' inheritFrom='AudioEvent:RepeatedSound'/></AssetDeclaration>");
+        overridden=ConscriptSourcePreparation.Load(duplicateEntry);
+        if(overridden.Origins.Single(a=>a.Id=="RepeatedSound").Path!=declarationPaths[2]
+            ||overridden.AdditionalAssets.Single(a=>a.DocumentElement!.GetAttribute("id")=="DerivedRoot").DocumentElement!.GetAttribute("Volume")!="32")
+            throw new InvalidDataException("Direct all-Include inheritance disagrees with dependency-first emission.");
+        checks++;
+        // Reborn: distinct declarations in one file retain exact diagnostics, including case-only collisions.
+        File.WriteAllText(declarationPaths[0],"<AssetDeclaration xmlns='uri:ea.com:eala:asset'>\n  <AudioEvent id='RepeatedSound' Volume='30'/>\n  <AudioEvent id='repeatedSound' Volume='31'/>\n</AssetDeclaration>");
+        File.WriteAllText(duplicateEntry,"<AssetDeclaration xmlns='uri:ea.com:eala:asset'><Includes><Include type='all' source='audio-0.xml'/></Includes></AssetDeclaration>");
+        try{ConscriptSourcePreparation.Load(duplicateEntry);throw new InvalidOperationException("Same-file AudioEvent duplicates were accepted.");}
         catch(InvalidDataException error){
-            Expect(error,declarationPaths[1],4,false);string line=SdkXmlDiagnostics.Format(error,new[]{duplicateEntry})??throw new InvalidDataException("Duplicate diagnostic lost its formatted result.");
-            if(!line.StartsWith("DUPLICATEASSET ' AudioEvent:RepeatedSound '",StringComparison.Ordinal)||!line.Contains(declarationPaths[0]+"(2,4)",StringComparison.Ordinal)||!line.Contains(declarationPaths[2]+"(6,4)",StringComparison.Ordinal)||!line.Contains("Source: "+declarationPaths[1]+"(4,4).",StringComparison.Ordinal)||line.Contains(duplicateEntry,StringComparison.Ordinal)||line.Contains("exact field origin unavailable",StringComparison.Ordinal))throw new InvalidDataException("Cross-source duplicate diagnostic lost exact declaration coordinates: "+line);checks++;
+            Expect(error,declarationPaths[0],3,false);string line=SdkXmlDiagnostics.Format(error,new[]{duplicateEntry})??throw new InvalidDataException("Duplicate diagnostic lost its formatted result.");
+            if(!line.StartsWith("DUPLICATEASSET ' AudioEvent:RepeatedSound '",StringComparison.Ordinal)||!line.Contains(declarationPaths[0]+"(2,4)",StringComparison.Ordinal)||!line.Contains("Source: "+declarationPaths[0]+"(3,4).",StringComparison.Ordinal)||line.Contains(duplicateEntry,StringComparison.Ordinal)||line.Contains("exact field origin unavailable",StringComparison.Ordinal))throw new InvalidDataException("Same-file duplicate diagnostic lost exact declaration coordinates: "+line);checks++;
         }
         // Reborn: generated model graphs can exceed the individual source quota without losing assets or reopening DTD/entity expansion.
         string merged=Path.Combine(output,"additional.xml");string payload=new('1',5*1048576);

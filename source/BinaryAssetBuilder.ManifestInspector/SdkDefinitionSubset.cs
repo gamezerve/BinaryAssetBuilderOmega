@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: admit only the three bounded definition forms observed in GlobalDefines; never run dynamic code or claim EA evaluator equivalence.
+// Reborn: admit only bounded forms observed in stock definition files; never run dynamic code or claim EA evaluator equivalence.
 internal static class SdkDefinitionSubset
 {
     internal const string Name = "diagnostic-definition-subset-v1";
@@ -12,10 +12,12 @@ internal static class SdkDefinitionSubset
     private const string Id = "[A-Za-z_][A-Za-z0-9_]{0,127}";
     private static readonly Regex Alias = new("\\A=\\s*\\$(?<name>"+Id+")\\s*\\z",RegexOptions.CultureInvariant,TimeSpan.FromSeconds(1));
     private static readonly Regex Concat = new("\\A=\\s*\\$(?<name>"+Id+")\\s*\\+\\s*'(?<suffix>[^'\\r\\n]{0,256})'\\s*\\z",RegexOptions.CultureInvariant,TimeSpan.FromSeconds(1));
+    // Reborn: Yuriko campaign defines scale a visible scalar by a decimal factor.
+    private static readonly Regex ScalarProduct = new("\\A=\\s*\\$(?<name>"+Id+")\\s*\\*\\s*[0-9]+(?:\\.[0-9]+)?\\s*\\z",RegexOptions.CultureInvariant,TimeSpan.FromSeconds(1));
     private static readonly Regex MultiplyAdd = new("\\A=\\s*\\(\\s*\\$(?<left>"+Id+")\\s*\\*\\s*(?<factor>[0-9]{1,10})\\s*\\)\\s*\\+\\s*\\$(?<right>"+Id+")\\s*\\z",RegexOptions.CultureInvariant,TimeSpan.FromSeconds(1));
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: resolve backward-visible aliases, single-quoted suffix concatenation and checked nonnegative integer multiply-add only. */
+    /** Reborn: resolve backward-visible aliases, quoted suffixes, scalar products and checked nonnegative integer multiply-add. */
     //-------------------------------------------------------------------------------------------------
     internal static string Evaluate(string expression,Func<string,string?> lookup)
     {
@@ -28,6 +30,12 @@ internal static class SdkDefinitionSubset
             string result = Value(match.Groups["name"].Value)+match.Groups["suffix"].Value;
             if (result.Length > 512) throw new InvalidDataException("Definition concatenation exceeds 512 characters.");
             return result;
+        }
+        match = ScalarProduct.Match(expression);
+        if (match.Success)
+        {
+            string name = match.Groups["name"].Value;
+            return SdkAssetNumericExpressions.Evaluate(expression,new Dictionary<string,string>(StringComparer.Ordinal) { [name] = Value(name) });
         }
         match = MultiplyAdd.Match(expression);
         if (!match.Success) throw new InvalidDataException("Definition form is outside the reviewed diagnostic subset.");

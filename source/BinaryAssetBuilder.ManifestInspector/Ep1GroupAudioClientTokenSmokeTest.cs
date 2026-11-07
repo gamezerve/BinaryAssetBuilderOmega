@@ -39,7 +39,8 @@ internal static class Ep1GroupAudioClientTokenSmokeTest
         Put(stockNative, 20, 28);
         if (!stockNative.SequenceEqual(native.InstanceBuffer.Take(28)) || Word(stock.Bytes, stockItems) != Word(native.InstanceBuffer, 28)) throw new InvalidDataException("Complete independent stock client native graph differs.");
         int cases = 0;
-        foreach (int count in new[] { 1, 2, 32, 64 })
+        // Reborn: include a list beyond the former diagnostic cap while retaining malformed-count controls.
+        foreach (int count in new[] { 1, 2, 32, 64, 65 })
         foreach (var values in new[] { (3u, 2u, (ushort)1), (0u, 0u, (ushort)0), (uint.MaxValue, uint.MaxValue, ushort.MaxValue) })
         {
             var keys = Enumerable.Range(0, count).Select(i => i % 3 == 0 ? key : "RebornKey" + i).ToArray();
@@ -69,8 +70,7 @@ internal static class Ep1GroupAudioClientTokenSmokeTest
         { RefuseSource(() => Compile(Source(new[] { key }).Replace("id=", "FramesBetweenUpdatesMin='" + literal + "' id=", StringComparison.Ordinal), schemas)); sourceFaults++; }
         RefuseSource(() => Compile(Source(Array.Empty<string>()), schemas)); sourceFaults++;
         RefuseSource(() => Compile(Source(new[] { key }).Replace("id=", "UnitWeight='65536' id=", StringComparison.Ordinal), schemas)); sourceFaults++;
-        Refuse(() => Check(Compile(Source(Enumerable.Repeat(key, 65).ToArray()), schemas))); sourceFaults++;
-        Console.WriteLine($"EP1 group-audio client tokens: PASS (one complete independent stock prefix/native graph; {cases} ordered 1/2/32/64-key raw-frame/weight dispatch cases; {nativeFaults} native/{outputFaults} detached/{sourceFaults} source/bound refusals; no shared root publication or audio playback).");
+        Console.WriteLine($"EP1 group-audio client tokens: PASS (one complete independent stock prefix/native graph; {cases} ordered 1/2/32/64/65-key raw-frame/weight dispatch cases; {nativeFaults} native/{outputFaults} detached/{sourceFaults} source/bound refusals; no shared root publication or audio playback).");
     }
 
     //-------------------------------------------------------------------------------------------------

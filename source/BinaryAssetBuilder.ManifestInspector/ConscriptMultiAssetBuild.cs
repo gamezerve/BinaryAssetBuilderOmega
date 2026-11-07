@@ -80,15 +80,19 @@ internal static class ConscriptMultiAssetBuild
                 throw new InvalidDataException("The mod static catalog is available only when compiling a map stream.");
             string command=Path.Combine(Path.GetDirectoryName(entry)!,"command.xml");if(File.Exists(command))sources.Add(ReadPrepared(command));
             // Reborn: retail AudioFile metadata stays SDK-local; authored events reference the loaded audio stream without repacking its samples.
-            string? audioManifest=null;if(sources.Any(s=>s.DocumentElement!.LocalName is "AudioEvent" or "AudioFile")){audioManifest=AuthoredAmbientCompiler.CatalogPath();var audio=ManifestReader.Read(SdkEnvironmentPreflight.Read(audioManifest,64*1048576));TypeRegistryAudit.ValidateTarget(audio.Header.Version,audio.Header.AllTypesHash);if(!audio.Header.IsLinked||audio.Validate().Count!=0)throw new InvalidDataException("Valid linked EP1 audio catalog required.");var known=stock.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();stock=stock.Concat(audio.Assets.Where(a=>a.TypeName=="AudioFile"&&!known.Contains(new(a.TypeId,a.InstanceId)))).ToArray();}
+            string? audioManifest=null;if(sources.Any(s=>s.DocumentElement!.LocalName is "AudioEvent" or "AudioEventOverridable" or "AudioFile")){audioManifest=AuthoredAmbientCompiler.CatalogPath();var audio=ManifestReader.Read(SdkEnvironmentPreflight.Read(audioManifest,64*1048576));TypeRegistryAudit.ValidateTarget(audio.Header.Version,audio.Header.AllTypesHash);if(!audio.Header.IsLinked||audio.Validate().Count!=0)throw new InvalidDataException("Valid linked EP1 audio catalog required.");var known=stock.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();stock=stock.Concat(audio.Assets.Where(a=>a.TypeName=="AudioFile"&&!known.Contains(new(a.TypeId,a.InstanceId)))).ToArray();}
+            // Reborn: full-image radar records can provide the target extent for their own DXT1 raster.
+            var radarTextures=sources.Select(s=>s.DocumentElement!).Where(e=>e.LocalName=="RadarTerrainImage")
+                .ToLookup(e=>RadarTerrainImageCompiler.TextureId(e),StringComparer.OrdinalIgnoreCase);
             var fingerprints=new Dictionary<uint,(uint Hash,bool Tokenized)>();var locals=new Dictionary<AssetId,XmlDocument>();
-            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTemplate" or "PlayerTech" or "PlayerTechStoreTemplate" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "CampaignEnumerator" or "CampaignTemplate" or "MissionTemplate" or "MpGameRules" or "Credits" or "TutorialMapData" or "MapMetaData" or "CameraSettings" or "Weather" or "Video" or "VideoEventList" or "PathMusicEvent" or "PathMusicGameDynamicState" or "GameMap" or "GameScriptList" or "RadarTerrainImage" or "TerrainTextureAtlas" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
+            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "AudioEventOverridable" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTemplate" or "PlayerTech" or "PlayerTechStoreTemplate" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "CampaignEnumerator" or "CampaignTemplate" or "MissionTemplate" or "MpGameRules" or "Credits" or "TutorialMapData" or "MapMetaData" or "CameraSettings" or "Weather" or "UnitAISettings" or "UIDecalDestinationMarker" or "DynamicsSettings" or "ObjectFilterAsset" or "Video" or "VideoEventList" or "PathMusicEvent" or "PathMusicGameDynamicState" or "GameMap" or "GameScriptList" or "RadarTerrainImage" or "TerrainTextureAtlas" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
                 uint typeId=FastHash.GetHashCode(type);var examples=stock.Where(a=>a.TypeId==typeId).Select(a=>(a.TypeHash,Tokenized:a.Tokenized==1)).Distinct().ToArray();if(examples.Length==0&&type is "GameMap" or "GameScriptList" or "RadarTerrainImage" or "TerrainTextureAtlas" or "MapMetaData")examples=new[]{(TypeHash:type=="GameMap"?0x442681EAu:type=="GameScriptList"?0xA268995Au:type=="RadarTerrainImage"?RadarTerrainImageCompiler.TypeHash:type=="MapMetaData"?MapMetaDataCompiler.TypeHash:TerrainAtlasCompiler.TypeHash,Tokenized:false)};if(examples.Length!=1)throw new InvalidDataException("EP1 asset fingerprint is absent/ambiguous: "+type);fingerprints[typeId]=examples[0];if(!locals.TryAdd(new(typeId,InstanceHandle.GetInstanceId(id)),xml))throw SdkXmlDiagnostics.At(new InvalidDataException("DUPLICATEASSET ' "+type+":"+id+" ' Duplicate local asset/hash identity."),xml.DocumentElement);
             }
             // Reborn: source-only catalog entries resolve local names before native data exists; payloads are freshly compiled below, never copied from stock.
             var localEntries=locals.Select(p=>new ManifestAsset(p.Key.TypeId,p.Key.InstanceId,fingerprints[p.Key.TypeId].Hash,0,0,0,0,0,0,0,0,fingerprints[p.Key.TypeId].Tokenized?1u:0u,p.Value.DocumentElement!.LocalName+":"+p.Value.DocumentElement.GetAttribute("id"),"authored.xml",Array.Empty<AssetId>())).ToArray();
-            // Reborn: map/WorldBuilder-only models (e.g. VL_RussianPortBuilding) are referenced, not compiled into the mod; the original WorldBuilder manifest only supplies their concrete render type.
-            var worldBuilderRender=WorldBuilderRenderAssets(manifest,schemas,stock.Concat(localEntries).ToArray());
+            // Reborn: strong model references can use exact-map retail art copied during package assembly.
+            string? mapId=sources.FirstOrDefault(s=>s.DocumentElement!.LocalName=="GameMap")?.DocumentElement?.GetAttribute("id");
+            var worldBuilderRender=WorldBuilderRenderAssets(schemas,stock.Concat(localEntries).ToArray(),mapId);
             // Reborn: validation owns WorldBuilder diagnostics; compilation retains the same catalog-backed native resolution without repeating warnings.
             var available=stock.Where(a=>!locals.ContainsKey(new(a.TypeId,a.InstanceId))).Concat(localEntries).Concat(worldBuilderRender).ToArray();
             var baseline=Read(Path.Combine(fixtures,"live-alpha/ConscriptBuildTime1/data/mod.xml"));baseline.DocumentElement!.SetAttribute("BuildTime","4");
@@ -129,6 +133,8 @@ internal static class ConscriptMultiAssetBuild
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="UnitTypeIcon"))UnitTypeIconCompiler.Qualify(manifest,schemas,stock);
             // Reborn: developer camera qualification uses the original global record; fast mode keeps authored schema/native validation.
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="CameraSettings"))CameraSettingsCompiler.Qualify(global);
+            // Reborn: qualify UnitAISettings against the native EP1 global singleton.
+            if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="UnitAISettings"))UnitAISettingsCompiler.Qualify(global,schemas,stock);
             // Reborn: developer credits qualification covers the full original EP1 global graph without slowing fast builds.
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="Credits"))CreditsCompiler.Qualify(global,schemas,stock);
             // Reborn: developer rules qualification checks the original EP1 global layout; authored source/native proof remains mandatory in fast mode.
@@ -169,7 +175,8 @@ internal static class ConscriptMultiAssetBuild
                 }else if(type=="Multisound"){
                     // Reborn: use the full Uprising subsound record and prove all authored fields and local/retail imports.
                     instance=Normalize(xml);var native=Ep1MultisoundCompiler.Compile(instance.XmlNode);SchemaNativeContract.Verify(Ep1MultisoundCompiler.ProofSource(xml,schemas,available).DocumentElement!,typeof(Marshaler.Ep1Multisound),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());buffer=Buffer(native);
-                }else if(type=="AudioEvent"){
+                }else if(type is "AudioEvent" or "AudioEventOverridable"){
+                    // Reborn: both event types use the EP1 audio payload while retaining their own manifest fingerprints.
                     instance=Normalize(xml);buffer=AuthoredAmbientCompiler.Compile(instance,official);
                 }else if(type=="ArmorTemplate"){
                     instance=Normalize(xml);var plugin=new Ra3Ep1ArmorPlugin();plugin.Initialize(TargetPlatform.Win32);buffer=plugin.ProcessInstance(instance);
@@ -308,6 +315,38 @@ internal static class ConscriptMultiAssetBuild
                     proof.DocumentElement!.RemoveAttribute("id");
                     SchemaNativeContract.Verify(proof.DocumentElement,typeof(Ep1Weather),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());
                     buffer=Buffer(native);
+                }else if(type=="UnitAISettings"){
+                    // Reborn: prove both inline victory filters and the real targeting-list import.
+                    instance=Normalize(xml);
+                    var native=UnitAISettingsCompiler.Compile(instance.XmlNode);
+                    var proof=SchemaNativeContract.Resolve(xml,schemas,available);
+                    proof.DocumentElement!.RemoveAttribute("id");
+                    SchemaNativeContract.Verify(proof.DocumentElement,typeof(UnitAISettings),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());
+                    buffer=Buffer(native);
+                }else if(type=="UIDecalDestinationMarker"){
+                    // Reborn: prove the authored render values, list relocation and W3D imports.
+                    instance=Normalize(xml);
+                    var native=UIDecalDestinationMarkerCompiler.Compile(instance.XmlNode);
+                    var proof=SchemaNativeContract.Resolve(xml,schemas,available);
+                    proof.DocumentElement!.RemoveAttribute("id");
+                    SchemaNativeContract.Verify(proof.DocumentElement,typeof(UIDecalDestinationMarker),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());
+                    buffer=Buffer(native);
+                }else if(type=="DynamicsSettings"){
+                    // Reborn: verify all physics fields, including the schema defaults when the map omits an override.
+                    instance=Normalize(xml);
+                    var native=DynamicsSettingsCompiler.Compile(instance.XmlNode);
+                    var proof=SchemaNativeContract.Resolve(xml,schemas,available);
+                    proof.DocumentElement!.RemoveAttribute("id");
+                    SchemaNativeContract.Verify(proof.DocumentElement,typeof(DynamicsSettings),0,native,Array.Empty<AssetId>());
+                    buffer=Buffer(native);
+                }else if(type=="ObjectFilterAsset"){
+                    // Reborn: standalone filters reuse the inline EP1 layout, with source-proved flags and ordered weak GameObject IDs.
+                    instance=Normalize(xml);
+                    var native=ObjectFilterCompiler.Compile((XmlElement)instance.XmlNode);
+                    var proof=SchemaNativeContract.Resolve(xml,schemas,available);
+                    proof.DocumentElement!.RemoveAttribute("id");
+                    SchemaNativeContract.Verify(proof.DocumentElement,typeof(ObjectFilterAsset),0,native,Array.Empty<AssetId>());
+                    buffer=Buffer(native);
                 }else if(type=="CameraSettings"){
                     // Reborn: camera singleton fields use the witnessed EP1 global layout and the common schema/native field proof.
                     instance=Normalize(xml);var native=CameraSettingsCompiler.Compile(instance.XmlNode);
@@ -357,7 +396,10 @@ internal static class ConscriptMultiAssetBuild
                     // Reborn: PC texture = 12-byte root + DDS; the TGA is the content-addressed copy captured during preparation.
                     instance=Normalize(xml);string resource=TextureResource(entry,xml.DocumentElement.GetAttribute("File"));var payload=SdkEnvironmentPreflight.Read(resource,64*1048576);
                     if(!string.Equals(Path.GetFileNameWithoutExtension(resource),Ep1TextureCompiler.Sha256(payload),StringComparison.OrdinalIgnoreCase))throw new InvalidDataException("Captured texture payload changed: "+resource);
-                    var native=Ep1TextureCompiler.Compile(xml.DocumentElement,payload,resource);Console.WriteLine("Texture "+xml.DocumentElement.GetAttribute("id")+": "+Ep1TextureCompiler.Describe(native)+".");buffer=Buffer(native);
+                    // Reborn: keep radar compatibility tied to the authored texture ID rather than to the map or filename.
+                    string textureId=xml.DocumentElement.GetAttribute("id");
+                    var native=Ep1TextureCompiler.Compile(xml.DocumentElement,payload,resource,RadarTerrainImageCompiler.FullTextureSize(radarTextures[textureId]));
+                    Console.WriteLine("Texture "+textureId+": "+Ep1TextureCompiler.Describe(native)+".");buffer=Buffer(native);
                 }else if(type=="W3DAnimation"){
                     // Reborn: source channels compile to the original EP1 runtime animation ABI, with independent playback readback.
                     W3DAnimationCompiler.Admit(xml.DocumentElement!);instance=Normalize(xml);buffer=W3DAnimationCompiler.Compile(instance);
@@ -515,7 +557,7 @@ internal static class ConscriptMultiAssetBuild
     /** Reborn: render assets (BaseRenderAssetType family) present only in the original EP1 WorldBuilder stream, for type resolution of authored model references.
         Entries whose instance already resolves as a render asset in stock/local data are excluded, so stock and mod targets always win and nothing becomes ambiguous. */
     //-------------------------------------------------------------------------------------------------
-    private static ManifestAsset[] WorldBuilderRenderAssets(string staticManifest,SchemaSet schemas,ManifestAsset[] known)
+    private static ManifestAsset[] WorldBuilderRenderAssets(SchemaSet schemas,ManifestAsset[] known,string? mapId)
     {
         // Reborn: use the same SDK-local catalog as the resolver, so type lookup and copied native payloads cannot select different WorldBuilder generations.
         string path=WorldBuilderAssetResolver.CatalogPath();
@@ -525,8 +567,14 @@ internal static class ConscriptMultiAssetBuild
         var resolved=known.Where(a=>render.Contains(a.TypeId)).Select(a=>a.InstanceId).ToHashSet();
         // Reborn: hierarchy/texture/shader dependencies use complete typed identities, so a container sharing the hierarchy's name does not hide it.
         var knownIds=known.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();
-        return document.Assets.Where(a=>render.Contains(a.TypeId)&&!resolved.Contains(a.InstanceId)).GroupBy(a=>a.InstanceId).Where(g=>g.Count()==1).Select(g=>g.Single())
-            .Concat(document.Assets.Where(a=>!render.Contains(a.TypeId)&&!knownIds.Contains(new(a.TypeId,a.InstanceId)))).ToArray();
+        // Reborn: exact-map art wins over the same typed identity in the WorldBuilder catalog.
+        string? mapArt=WorldBuilderAssetResolver.MapArtPath(Path.GetDirectoryName(path)!,mapId);
+        IEnumerable<ManifestAsset> candidates=document.Assets;
+        if(mapArt!=null)
+            candidates=WorldBuilderAssetResolver.ReadMapArt(mapArt).Assets.Where(WorldBuilderAssetResolver.IsMapArt)
+                .Concat(candidates).DistinctBy(WorldBuilderAssetResolver.Id);
+        return candidates.Where(a=>render.Contains(a.TypeId)&&!resolved.Contains(a.InstanceId)).GroupBy(a=>a.InstanceId).Where(g=>g.Count()==1).Select(g=>g.Single())
+            .Concat(candidates.Where(a=>!render.Contains(a.TypeId)&&!knownIds.Contains(new(a.TypeId,a.InstanceId)))).ToArray();
     }
 
     private static void PackageSupport(string output,XmlDocument source,Dictionary<string,byte[]> streams,InstanceDeclaration[] instances,ManifestAsset[] stock)

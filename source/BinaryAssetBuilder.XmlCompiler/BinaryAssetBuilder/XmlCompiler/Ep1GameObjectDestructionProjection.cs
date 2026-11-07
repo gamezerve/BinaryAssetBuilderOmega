@@ -20,7 +20,7 @@ public static class Ep1GameObjectDestructionProjection
     //-------------------------------------------------------------------------------------------------
     public static Chunk Compose(Chunk native,System.Xml.Schema.XmlSchemaSet behaviorSchemas)
     {
-        if (native == null || native.InstanceBuffer == null || native.InstanceBuffer.Length < 620 || native.InstanceBuffer.Length > 1048576)
+        if (native == null || native.InstanceBuffer == null || native.InstanceBuffer.Length < (behaviorSchemas==null?620:608) || native.InstanceBuffer.Length > 1048576)
             throw new InvalidDataException("GameObject destruction projection requires bounded native dispatch output.");
         byte[] b = native.InstanceBuffer;
         var relos = Slots(native.RelocationBuffer); var imports = Slots(native.ImportsBuffer);
@@ -29,8 +29,10 @@ public static class Ep1GameObjectDestructionProjection
         // Reborn: explicit root-string allocations may move the behavior list and module; decode and validate ownership before extracting the tail.
         var layout = Ep1GameObjectStringTokens.Inspect(b, relos, imports,reviewedBehaviors:behaviorSchemas!=null);
         // Reborn: the explicit broader route reuses the independently qualified complete container writer, not a new hand-built collection of native leaves.
-        var allBehaviors=behaviorSchemas==null?null:Ep1BehaviorMetadataTokenizer.TokenizeContainer(Extract(layout.List,layout.Body!=0?layout.Body:layout.Geometry!=0?layout.Geometry:b.Length),behaviorSchemas);
-        int allBehaviorPrefix=allBehaviors==null?0:allBehaviors.InstanceBuffer.Length-(layout.Body!=0?layout.Body:layout.Geometry!=0?layout.Geometry:b.Length)+layout.List;
+        int behaviorEnd=layout.Body!=0?layout.Body:layout.Geometry!=0?layout.Geometry:b.Length;
+        var allBehaviors=behaviorSchemas==null || layout.Modules.Count==0
+            ? null : Ep1BehaviorMetadataTokenizer.TokenizeContainer(Extract(layout.List,behaviorEnd),behaviorSchemas);
+        int allBehaviorPrefix=allBehaviors==null?0:allBehaviors.InstanceBuffer.Length-(behaviorEnd-layout.List);
         // Reborn: selected behavior modules own ordered disjoint tails; explicit class dispatch has no legacy or unknown-module fallback.
         var fragments=new System.Collections.Generic.List<(Chunk Data,int Prefix,int Native)>();
         for(int i=0;allBehaviors==null && i<layout.Modules.Count;i++)
@@ -52,7 +54,7 @@ public static class Ep1GameObjectDestructionProjection
         var geometryFragment=geometry==null?null:Ep1GeometryTokenizer.Tokenize(geometry);
         // Reborn: root token count is descriptor-driven; nested fragment coordinates must never retain the old two-field prefix size.
         int armorFields=(layout.ArmorCount==0?0:1)+(layout.LocomotorCount==0?0:1)+(geometry==null?0:1)+layout.PointerRoots.Count+(layout.Ai.Modules.Count==0?0:1)+(layout.Draws.Start==0?0:1)+layout.Clients.Count(c=>c.Start!=0);
-        int container = checked((Ep1GameObjectRootValueTokens.AllFields.Count + (body == null ? 2 : 3) + armorFields) * 12), fragmentStart = checked(container + 12 + fragments.Count*12);
+        int container = checked((Ep1GameObjectRootValueTokens.AllFields.Count + (body == null ? 2 : 3) + armorFields) * 12), fragmentStart = checked(container + (layout.List==0?0:12) + fragments.Count*12);
         int bodyStart=allBehaviors==null?checked(fragmentStart+fragments.Sum(f=>f.Prefix)):checked(container+allBehaviorPrefix);
         int bodyPrefix = bodyFragment == null ? 0 : bodyFragment.InstanceBuffer.Length-body!.InstanceBuffer.Length,armorStart=checked(bodyStart+bodyPrefix);
         int armorPrefix=layout.ArmorCount==0?0:checked(12+layout.ArmorCount*60),locomotorStart=checked(armorStart+armorPrefix);
@@ -74,7 +76,8 @@ public static class Ep1GameObjectDestructionProjection
             var field = Ep1GameObjectRootValueTokens.AllFields[i];
             Token(i * 12, FastHash.GetHashCode(field.Name), field.Type, (uint)(prefix + field.Offset));
         }
-        Token(Ep1GameObjectRootValueTokens.AllFields.Count * 12, FastHash.GetHashCode("Behaviors"), 0x24FCCAE2u, (uint)container);
+        // Reborn: omitted Behaviors keeps its root row with a null metadata target.
+        Token(Ep1GameObjectRootValueTokens.AllFields.Count * 12, FastHash.GetHashCode("Behaviors"), 0x24FCCAE2u, layout.List==0?0:(uint)container);
         // Reborn: Body is an indirect concrete wrapper, not a direct token pointing at root pointer storage.
         if(body != null)Token((Ep1GameObjectRootValueTokens.AllFields.Count + 1) * 12,FastHash.GetHashCode("Body"),0xAFAD56F4u,(uint)bodyStart);
         // Reborn: ArmorSet is an inline native list with indirect count/marker/member metadata, not another pointer-based module wrapper.
@@ -95,7 +98,7 @@ public static class Ep1GameObjectDestructionProjection
         foreach(var client in layout.Clients.Where(c=>c.Start!=0)){string name=client.Slot==492?"ClientUpdates":"ClientBehaviors";Token(pointerRow++*12,FastHash.GetHashCode(name),FastHash.GetHashCode(client.Slot==492?"ClientUpdateModules":"ClientBehaviorModules"),(uint)clientNext);clientNext=checked(clientNext+client.Prefix);}
         // Reborn: joining the complete behavior metadata changes no native origin or common Core occurrence values.
         if(allBehaviors!=null)Join(allBehaviors,allBehaviorPrefix,container,layout.List);
-        else Token(container, 0x6C827073u, 0x5D448FD8u, (uint)(prefix + layout.List));
+        else if(layout.List!=0)Token(container, 0x6C827073u, 0x5D448FD8u, (uint)(prefix + layout.List));
         int nextFragment=fragmentStart;
         for(int i=0;i<fragments.Count;i++)
         {
