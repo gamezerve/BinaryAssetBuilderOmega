@@ -12,7 +12,7 @@
 		inheritFrom="JapanCoopBaseCampaignPersonality"
     RepairBuildingsAtDifficulty="EASY MEDIUM HARD BRUTAL"
     CleanupRefineries="true"
-    CommanderPortrait="Naomi"
+    CommanderPortrait="RebornCampaignNaomiPortrait"
     PersonalityUIName="Personality:Naomi">
 
     <ResourceMultiplierCheat Percentage="75%" Difficulty="EASY"/>

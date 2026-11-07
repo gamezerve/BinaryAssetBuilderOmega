@@ -12,7 +12,7 @@
 		inheritFrom="AlliedCoopBaseCampaignPersonality"
     BaseCompactness="0.4"
     UsePlayerPowersAtDifficulty="BRUTAL"
-		CommanderPortrait="Giles"
+		CommanderPortrait="RebornCampaignGilesPortrait"
     PersonalityUIName="Personality:Giles">
 
     <!-- Voice Responses -->

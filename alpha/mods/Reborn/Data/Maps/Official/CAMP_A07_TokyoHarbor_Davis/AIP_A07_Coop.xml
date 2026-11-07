@@ -13,7 +13,7 @@
 		PersonalityType="AIP_A07_Coop"
 		inheritFrom="AlliedCoopBaseCampaignPersonality"
 		PersonalityUIName="Personality:Lissette"
-		CommanderPortrait="Lissette">
+		CommanderPortrait="RebornCampaignLissettePortrait">
 
     <!-- Voice Responses -->
 		<FeedbackEntry FeedbackKey="PlanAttackBeaconPlaced" EvaEvent="AlliedCoopLissPlanAttack" FeedbackTo="ALLIES"/>
@@ -85,7 +85,7 @@
 		PersonalityType="AIP_A07_Coop_NewLoc"
 		inheritFrom="AlliedCoopBaseCampaignPersonality"
 		PersonalityUIName="Personality:Lissette"
-		CommanderPortrait="Lissette">
+		CommanderPortrait="RebornCampaignLissettePortrait">
 
 		<!-- Voice Responses -->
 		<FeedbackEntry FeedbackKey="PlanAttackBeaconPlaced" EvaEvent="AlliedCoopLissPlanAttack" FeedbackTo="ALLIES"/>
@@ -134,7 +134,7 @@
 		PersonalityType="AIP_A07_Coop_AlliedSpecialForces"
 		inheritFrom="AIP_A07_Coop"
 		PersonalityUIName="Personality:Lissette"		
-		CommanderPortrait="Lissette">
+		CommanderPortrait="RebornCampaignLissettePortrait">
 	</AIPersonalityDefinition>
 
 	<AIPersonalityDefinition
@@ -142,7 +142,7 @@
 		PersonalityType="AIP_A07_Coop_AlliedSpecialForces_NewLoc"
 		inheritFrom="AIP_A07_Coop_NewLoc"
 		PersonalityUIName="Personality:Lissette"
-		CommanderPortrait="Lissette">
+		CommanderPortrait="RebornCampaignLissettePortrait">
 	</AIPersonalityDefinition>
 
 	</AssetDeclaration>

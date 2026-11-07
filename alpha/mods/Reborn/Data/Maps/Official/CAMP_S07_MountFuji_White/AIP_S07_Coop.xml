@@ -12,7 +12,7 @@
 		inheritFrom="SovietCoopBaseCampaignPersonality"
     CleanupRefineries="true"
     PersonalityUIName="Personality:Moskvin"
-    CommanderPortrait="Moskvin">
+    CommanderPortrait="RebornCampaignMoskvinPortrait">
 
     <ResourceMultiplierCheat Percentage="125%" Difficulty="HARD BRUTAL"/>
 

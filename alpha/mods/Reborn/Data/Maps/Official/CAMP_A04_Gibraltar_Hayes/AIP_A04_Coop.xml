@@ -14,7 +14,7 @@
     CleanupRefineries="true"
     CanBuildInAlliedBuildRadii="true"
     PersonalityUIName="Personality:Moskvin"
-		CommanderPortrait="Moskvin">
+		CommanderPortrait="RebornCampaignMoskvinPortrait">
 
     <!-- Voice Responses -->
     <FeedbackEntry FeedbackKey="PlanAttackBeaconPlaced" EvaEvent="SovietCoopMoskvinPlanAttack" FeedbackTo="ALLIES"/>

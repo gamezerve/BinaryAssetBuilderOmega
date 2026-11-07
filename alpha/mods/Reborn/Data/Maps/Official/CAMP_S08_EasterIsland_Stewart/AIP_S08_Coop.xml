@@ -14,7 +14,7 @@
     BaseCompactness="2.0"
     CleanupRefineries="true"
     PersonalityUIName="Personality:Zhana"
-    CommanderPortrait="Zhana">
+    CommanderPortrait="RebornCampaignZhanaPortrait">
 
 	  <!-- Voice Responses -->
 		<FeedbackEntry FeedbackKey="PlanAttackBeaconPlaced" EvaEvent="SovietCoopZhanaPlanAttack" FeedbackTo="ALLIES"/>

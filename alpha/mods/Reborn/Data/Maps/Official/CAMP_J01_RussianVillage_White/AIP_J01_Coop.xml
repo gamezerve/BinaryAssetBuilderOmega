@@ -11,7 +11,7 @@
     PersonalityType="AIP_J01_Coop"
     inheritFrom="JapanCoopBaseCampaignPersonality"
     CleanupRefineries="true"
-		CommanderPortrait="Shinzo">
+		CommanderPortrait="RebornCampaignShinzoPortrait">
 
 	<!-- Voice Responses -->
 		<FeedbackEntry FeedbackKey="PlanAttackBeaconPlaced" EvaEvent="EmpireCoopShinzoPlanAttack" FeedbackTo="ALLIES"/>

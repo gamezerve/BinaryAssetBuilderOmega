@@ -11,7 +11,7 @@
 		PersonalityType="AIP_J08_Coop"
 		inheritFrom="JapanCoopBaseCampaignPersonality"
     BaseCompactness="0.8"
-		CommanderPortrait="Kenji"
+		CommanderPortrait="RebornCampaignKenjiPortrait"
 		PersonalityUIName="Personality:Kenji">
 
     <OpeningMove Name="AIOpener_J08_Coop" Weight="100%" Difficulty="EASY MEDIUM HARD BRUTAL"/>

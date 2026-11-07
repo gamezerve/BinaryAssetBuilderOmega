@@ -12,7 +12,7 @@
     inheritFrom="JapanCoopBaseCampaignPersonality"
     BaseCompactness="0.6"
     CanBuildInAlliedBuildRadii="true"
-	CommanderPortrait="Shinzo"
+	CommanderPortrait="RebornCampaignShinzoPortrait"
     PersonalityUIName="Personality:Shinzo">
 
     <ResourceMultiplierCheat Percentage="200%" Difficulty="EASY"/>

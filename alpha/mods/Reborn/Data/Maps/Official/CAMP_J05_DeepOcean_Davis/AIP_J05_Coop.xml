@@ -14,7 +14,7 @@
 		inheritFrom="JapanCoopBaseCampaignPersonality"
     RepairBuildingsAtDifficulty="MEDIUM HARD BRUTAL"
     CleanupRefineries="false"
-		CommanderPortrait="Naomi"
+		CommanderPortrait="RebornCampaignNaomiPortrait"
     PersonalityUIName="Personality:Naomi">
 
 	<!-- Voice Responses -->

@@ -12,7 +12,7 @@
     inheritFrom="SovietCoopBaseCampaignPersonality"
     BaseCompactness="0.6"
     CanBuildInAlliedBuildRadii="true"
-	CommanderPortrait="Oleg"
+	CommanderPortrait="RebornCampaignOlegPortrait"
     PersonalityUIName="Personality:Oleg">
 		
 	 <ResourceMultiplierCheat Percentage="75%" Difficulty="EASY"/>	    	

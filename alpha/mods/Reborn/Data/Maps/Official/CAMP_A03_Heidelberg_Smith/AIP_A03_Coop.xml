@@ -12,7 +12,7 @@
 		inheritFrom="AlliedCoopBaseCampaignPersonality"
     CleanupRefineries="false"
     PersonalityUIName="Personality:Lissette"
-    CommanderPortrait="Lissette">
+    CommanderPortrait="RebornCampaignLissettePortrait">
 
     <!-- Voice Responses -->
     <FeedbackEntry FeedbackKey="PlanAttackBeaconPlaced" EvaEvent="AlliedCoopLissPlanAttack" FeedbackTo="ALLIES"/>

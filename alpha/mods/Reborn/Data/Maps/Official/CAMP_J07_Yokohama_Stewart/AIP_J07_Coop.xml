@@ -12,7 +12,7 @@
 		inheritFrom="JapanCoopBaseCampaignPersonality"
     BaseCompactness="0.6"
     CleanupRefineries="false"
-		CommanderPortrait="Shinzo"
+		CommanderPortrait="RebornCampaignShinzoPortrait"
 		PersonalityUIName="Personality:Shinzo">
 
 	<!-- Voice Responses -->

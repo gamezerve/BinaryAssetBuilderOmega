@@ -11,7 +11,7 @@
 		PersonalityType="AIP_A01_Coop"
 		inheritFrom="AlliedCoopBaseCampaignPersonality"
     CleanupRefineries="false"
-    CommanderPortrait="Giles"
+    CommanderPortrait="RebornCampaignGilesPortrait"
     DesiredExcessPowerBuffer="25"
     PersonalityUIName="Personality:Giles"
     EmergencyManagerHandleNoIncomeAtDifficulty="EASY MEDIUM">

@@ -12,7 +12,7 @@
 		inheritFrom="SovietCoopBaseCampaignPersonality"
     CleanupRefineries="true"
     UsePlayerPowersAtDifficulty=""
-		CommanderPortrait="Moskvin"
+		CommanderPortrait="RebornCampaignMoskvinPortrait"
     PersonalityUIName="Personality:Moskvin">
     
     <!-- Voice Responses -->

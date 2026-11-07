@@ -11,7 +11,7 @@
 		PersonalityType="AIP_A09_Coop"
 		inheritFrom="AlliedCoopBaseCampaignPersonality"
     BaseCompactness="0.4"
-		CommanderPortrait="Warren"
+		CommanderPortrait="RebornCampaignWarrenPortrait"
 	 	PersonalityUIName="Personality:Warren">
     
     <!-- Voice Responses -->

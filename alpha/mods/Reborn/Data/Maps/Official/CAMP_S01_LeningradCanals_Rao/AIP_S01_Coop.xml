@@ -14,7 +14,7 @@
     EmergencyManagerHandleNoIncomeAtDifficulty=""
     EmergencyManagerHandleNoConyardAtDifficulty=""
     EmergencyManagerHandleUnderAttackAtDifficulty=""
-		CommanderPortrait="Oleg">
+		CommanderPortrait="RebornCampaignOlegPortrait">
 
     <!-- Voice Responses -->
     <FeedbackEntry FeedbackKey="PlanAttackBeaconPlaced" EvaEvent="SovietCoopOlegPlanAttack" FeedbackTo="ALLIES"/>

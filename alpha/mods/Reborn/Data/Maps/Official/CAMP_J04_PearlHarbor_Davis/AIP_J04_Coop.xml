@@ -15,7 +15,7 @@
     RepairBuildingsAtDifficulty="EASY MEDIUM HARD BRUTAL"
     CleanupRefineries="true"
     DesiredExcessPowerBuffer="50"
-		CommanderPortrait="Naomi">
+		CommanderPortrait="RebornCampaignNaomiPortrait">
 
 	<!-- Voice Responses -->
 		<FeedbackEntry FeedbackKey="PlanAttackBeaconPlaced" EvaEvent="EmpireCoopNaomiPlanAttack" FeedbackTo="ALLIES"/>

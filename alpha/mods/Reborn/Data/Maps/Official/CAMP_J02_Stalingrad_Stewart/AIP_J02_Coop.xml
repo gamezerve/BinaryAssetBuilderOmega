@@ -12,7 +12,7 @@
 	  inheritFrom="JapanCoopBaseCampaignPersonality"
     RepairBuildingsAtDifficulty="EASY MEDIUM HARD"
     CleanupRefineries="true"
-		CommanderPortrait="Kenji">
+		CommanderPortrait="RebornCampaignKenjiPortrait">
 
 	<!-- Voice Responses -->
 		<FeedbackEntry FeedbackKey="PlanAttackBeaconPlaced" EvaEvent="EmpireCoopKenjiPlanAttack" FeedbackTo="ALLIES"/>

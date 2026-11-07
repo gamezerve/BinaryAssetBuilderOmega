@@ -12,7 +12,7 @@
     inheritFrom="SovietCoopBaseCampaignPersonality"
     BaseCompactness="0.5"
     CanBuildInAlliedBuildRadii="true"
-		CommanderPortrait="Zhana"
+		CommanderPortrait="RebornCampaignZhanaPortrait"
     PersonalityUIName="Personality:Zhana">
 
 	<!-- Voice Responses -->

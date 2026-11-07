@@ -13,7 +13,7 @@
     BaseCompactness="0.6"
     CanBuildInAlliedBuildRadii="true"
     CleanupRefineries="true"
-	  CommanderPortrait="Oleg">
+	  CommanderPortrait="RebornCampaignOlegPortrait">
 	
     <ResourceMultiplierCheat Percentage="110%" Difficulty="EASY"/>
     <ResourceMultiplierCheat Percentage="125%" Difficulty="MEDIUM"/>

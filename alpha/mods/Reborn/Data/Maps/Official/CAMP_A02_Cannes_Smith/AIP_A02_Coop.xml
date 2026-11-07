@@ -11,7 +11,7 @@
 		PersonalityType="AIP_A02_Coop"
 		inheritFrom="AlliedCoopBaseCampaignPersonality"
 		CleanupRefineries="true"
-		CommanderPortrait="Warren">
+		CommanderPortrait="RebornCampaignWarrenPortrait">
 		
 	<ResourceMultiplierCheat Percentage="150%" Difficulty="EASY"/>	    	
 	<ResourceMultiplierCheat Percentage="125%" Difficulty="MEDIUM"/>

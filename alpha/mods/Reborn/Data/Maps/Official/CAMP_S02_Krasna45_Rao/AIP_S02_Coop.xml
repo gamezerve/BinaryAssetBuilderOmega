@@ -12,7 +12,7 @@
 		inheritFrom="SovietCoopBaseCampaignPersonality"
     BaseCompactness="0.4"
     UsePlayerPowersAtDifficulty=""
-    CommanderPortrait="Moskvin">
+    CommanderPortrait="RebornCampaignMoskvinPortrait">
 
     <!-- Voice Responses -->
     <FeedbackEntry FeedbackKey="PlanAttackBeaconPlaced" EvaEvent="SovietCoopMoskvinPlanAttack" FeedbackTo="ALLIES"/>
