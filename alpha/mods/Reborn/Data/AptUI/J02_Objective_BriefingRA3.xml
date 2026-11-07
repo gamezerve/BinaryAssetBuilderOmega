@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <!-- Reborn: compile the original RA3 briefing as a separate page. -->
+  <Includes>
+    <Include type="all" source="J02_Objective_BriefingRA3/J02_Objective_BriefingRA3.xml" />
+  </Includes>
+</AssetDeclaration>

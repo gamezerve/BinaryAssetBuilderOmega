@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- Reborn: retain the RA3 briefing under a separate page and asset identity. -->
+	<AptAptData id="J01_Objective_BriefingRA3_apt" File="J01_Objective_BriefingRA3.apt" />
+	<AptConstData id="J01_Objective_BriefingRA3_const" File="J01_Objective_BriefingRA3.const" />
+	<AptDatData id="J01_Objective_BriefingRA3_dat" File="J01_Objective_BriefingRA3.dat" />
+	<AptGeometryData id="J01_Objective_BriefingRA3_1" File="J01_Objective_BriefingRA3_geometry\1.ru" AptID="1"/>
+	<AptGeometryData id="J01_Objective_BriefingRA3_3" File="J01_Objective_BriefingRA3_geometry\3.ru" AptID="3"/>
+	<Texture id="apt_J01_Objective_BriefingRA3_1" File="art\Textures\apt_J01_Objective_BriefingRA3_1.tga" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>
+</AssetDeclaration>
