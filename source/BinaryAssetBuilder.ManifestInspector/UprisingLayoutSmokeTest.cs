@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
@@ -402,14 +402,16 @@ internal static class UprisingLayoutSmokeTest
         ExpectSize<SageBinaryData.DynamicsCylinderShapeType>(20);
         ExpectSize<SageBinaryData.DynamicsTriangleShapeType>(48);
         ExpectSize<SageBinaryData.DynamicsVolumeType>(76);
-        ExpectOffset<SageBinaryData.DynamicsVolumeType>(nameof(SageBinaryData.DynamicsVolumeType.Sphere), 36);
+        // Reborn: original HV_LampPost01 metadata places lists before the trailing contact flag.
+        ExpectOffset<SageBinaryData.DynamicsVolumeType>(nameof(SageBinaryData.DynamicsVolumeType.Sphere), 32);
+        ExpectOffset<SageBinaryData.DynamicsVolumeType>(nameof(SageBinaryData.DynamicsVolumeType.ReportContacts), 72);
         ExpectSize<SageBinaryData.DynamicsBoneVolumeType>(84);
         ExpectSize<SageBinaryData.DynamicsBoneVolumeSetType>(8);
         ExpectSize<SageBinaryData.DynamicsLifetime>(8);
         ExpectSize<SageBinaryData.W3DDynamicsDrawModuleData>(256);
         ExpectOffset<SageBinaryData.W3DDynamicsDrawModuleData>(nameof(SageBinaryData.W3DDynamicsDrawModuleData.BoneVolumes), 240);
-        ExpectOffset<SageBinaryData.W3DDynamicsDrawModuleData>(nameof(SageBinaryData.W3DDynamicsDrawModuleData.Lifetime), 244);
-        ExpectOffset<SageBinaryData.W3DDynamicsDrawModuleData>(nameof(SageBinaryData.W3DDynamicsDrawModuleData.Joints), 248);
+        ExpectOffset<SageBinaryData.W3DDynamicsDrawModuleData>(nameof(SageBinaryData.W3DDynamicsDrawModuleData.Lifetime), 248);
+        ExpectOffset<SageBinaryData.W3DDynamicsDrawModuleData>(nameof(SageBinaryData.W3DDynamicsDrawModuleData.Joints), 244);
         ExpectOffset<SageBinaryData.W3DDynamicsDrawModuleData>(nameof(SageBinaryData.W3DDynamicsDrawModuleData.InitiallyActive), 252);
         ExpectSize<SageBinaryData.DynamicsCollideModuleData>(8);
         ExpectSize<SageBinaryData.MagnitudeSoundSelectorEntry>(8);

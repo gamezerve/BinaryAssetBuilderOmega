@@ -134,6 +134,10 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: dispatch the original EP1 light-source class proven against retail native records.
+            case 0x51DAE8C4u:
+                MarshalPolymorphicType<FXParticleDrawLightSource, FXParticleDrawBase>(node, objT, state);
+                break;
             case 0x6F3323A5u:
                 MarshalPolymorphicType<FXParticleDrawTrail, FXParticleDrawBase>(node, objT, state);
                 break;

@@ -3,7 +3,7 @@
 param([switch]$IncludeRebornSourceMirror,[switch]$ReferenceRetargetingOnly,[switch]$ModuleValuesOnly,[switch]$DiagnosticsOnly,[switch]$VariableBehaviorsOnly,[switch]$UpgradeStructuresOnly,[switch]$RootTextOnly,[switch]$CombatListsOnly,[switch]$MultiAssetOnly,[switch]$CommandSetsOnly,[switch]$SharedValuesOnly,[switch]$MultipleObjectsOnly)
 $ErrorActionPreference='Stop';$repo=Split-Path -Parent $PSScriptRoot;$sdk=Join-Path $repo 'alpha';$runtime=(Get-Process -Id $PID).Path;$driver=Join-Path $PSScriptRoot 'Invoke-Ra3Ep1DevAlphaBuild.ps1'
 # Reborn: live SDK entries use Static_Mod.xml; preserved historical fixtures keep their original filenames.
-$fixtures=Join-Path $repo 'tests/fixtures/live-alpha';$data=Join-Path $sdk 'mods/RebornTest/data';$output=Join-Path $sdk 'builtmods/RebornTest';$input=Join-Path $data 'Static_Mod.xml';$package=Join-Path $output 'RebornTest.big'
+$fixtures=Join-Path $repo 'tests/fixtures/live-alpha';$data=Join-Path $sdk 'mods/RebornTest/data';$output=Join-Path $sdk 'builtmods/RebornTest';$input=Join-Path $data 'Static_Mod.xml';$package=Join-Path $sdk '.work/test-final-mods/RebornTest/RebornTest_1.00_Streams.big'
 $rows=[Collections.Generic.List[object]]::new();$userSource=Join-Path $sdk 'mods/Reborn/data/Static_Mod.xml';$userHash=(Get-FileHash -LiteralPath $userSource).Hash
 $userReceipt=Join-Path $sdk 'builtmods/Reborn/build.json';$userOutputHash=if(Test-Path -LiteralPath $userReceipt){(Get-FileHash -LiteralPath $userReceipt).Hash}else{$null}
 #-------------------------------------------------------------------------------------------------
@@ -18,7 +18,7 @@ function Remove-TestData {
 #-------------------------------------------------------------------------------------------------
 function Set-TestFixture([string]$Name){Remove-TestData;Copy-Item -LiteralPath (Join-Path $fixtures ($Name+'/data')) -Destination $data -Recurse;Rename-Item -LiteralPath (Join-Path $data 'mod.xml') -NewName 'Static_Mod.xml'}
 #-------------------------------------------------------------------------------------------------
-<# Reborn: verify exit status, four final files, exact SKUDef bytes and package/receipt agreement for the developer slot. #>
+<# Reborn: verify successful independent stage storage and the separately published final package. #>
 #-------------------------------------------------------------------------------------------------
 function Invoke-TestCase([string]$Label,[bool]$ExpectedSuccess){
     # Reborn: final Documents-style output must also remain unchanged when a later fixture is rejected.
@@ -31,7 +31,7 @@ function Invoke-TestCase([string]$Label,[bool]$ExpectedSuccess){
     $display=Get-Content -LiteralPath $log -Raw
     if($display-notmatch 'Step 1: Clearing build cache' -or $display-notmatch 'Step time taken:' -or $display-match '(?m)^\s*"(?:RequestedArguments|CompilerFiles|WorkingDirectoryMustBeInstallation)"\s*:'){throw ('Readable build log contract differs: '+$log)}
     if($ExpectedSuccess){if($display-notmatch 'Step 11: Creating skudef file' -or $display-notmatch 'Publication completed;'){throw ('Successful phase summary absent: '+$log)}}elseif($display-notmatch 'Build Failed during Step '){throw ('Failure phase absent: '+$log)}
-    if($ExpectedSuccess){$receipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json;if($receipt.Format-cne 'RebornLiveAlpha1' -or (Get-FileHash -LiteralPath $package).Hash-cne $receipt.PackageSha256 -or @(Get-ChildItem -LiteralPath $output -File).Count-ne 4 -or (Get-Content -LiteralPath $receipt.SkuDefPath -Raw)-cne "add-big RebornTest.big`n" -or @(Get-ChildItem -LiteralPath $output -Filter *.cfg).Count){throw 'Output contract differs.'};if((Get-Content -LiteralPath (Join-Path $output 'last-build.log') -Raw)-notmatch '(?m)^Build Completed\r?$'){throw 'Saved successful log has no completion marker.'}}
+    if($ExpectedSuccess){$receipt=Get-Content -LiteralPath (Join-Path $output 'build.json') -Raw|ConvertFrom-Json;if($receipt.Format-cne 'RebornPersistentBuild1' -or (Get-FileHash -LiteralPath $package).Hash-cne $receipt.PackageSha256 -or !(Test-Path -LiteralPath (Join-Path $output 'current.json')) -or (Test-Path -LiteralPath (Join-Path $output 'RebornTest.big')) -or @(Get-ChildItem -LiteralPath $output -Filter *.cfg).Count){throw 'Output contract differs.'};if((Get-Content -LiteralPath (Join-Path $output 'last-build.log') -Raw)-notmatch '(?m)^Build Completed\r?$'){throw 'Saved successful log has no completion marker.'}}
     # Reborn: verify the actual final archives/SKU instead of treating the internal compatibility cache as publication proof.
     if($ExpectedSuccess){
         # Reborn: SKUDef and receipt must agree on optional Misc presence, including removal of an earlier managed archive.

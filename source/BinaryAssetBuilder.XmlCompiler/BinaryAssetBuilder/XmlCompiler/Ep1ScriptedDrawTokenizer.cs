@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
@@ -17,6 +17,16 @@ public static class Ep1ScriptedDrawTokenizer
     // Reborn: literal wire tags/order are independently stock-reviewed; CLR type names are not used as guessed type IDs.
     private static readonly Record Module = new("ModuleData", 8, new[] { F("TypeId", 0x23E650B8, 0), F("id", 0xBDF07965, 4, Kind.UInt) });
     private static readonly Record Draw = new("DrawModuleData", 8, Array.Empty<Field>(), Parent: Module, ParentTag: 0xD75D93A2);
+    // Reborn: the original WorldBuilder prop witness has one RenderObjectRef following the Draw base.
+    private static readonly Record PropRoot=new("W3DPropDrawModuleData",12,new[]{F("Model",0xFCB106D5u,8,Kind.Ref)},Parent:Draw,ParentTag:0x17F61728u);
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: tokenize exactly the twelve-byte prop header and its optional model import. */
+    //-------------------------------------------------------------------------------------------------
+    public static Chunk TokenizeProp(Chunk native)
+    {
+        if(native?.InstanceBuffer==null||native.RelocationBuffer==null||native.ImportsBuffer==null||native.InstanceBuffer.Length!=12)throw new InvalidDataException("Exact EP1 PropDraw native record required.");
+        return new Builder(native.InstanceBuffer).Build(native,PropRoot,0x148AA464u);
+    }
     private static readonly Record Model = new("ScriptedModelDrawModel", 8, new[] { F("Name", 0xFCB106D5, 0, Kind.Ref), F("ExtraMesh", 0x77E3F4F7, 4, Kind.Bool, 1) }, 5, 3);
     private static readonly Record Bone = new("BoneAttachPoint", 16, new[] { F("WeaponSlotID", 0x23E650B8, 0), F("WeaponSlotType", 0x1848C549, 4, Kind.Enum, limit: 6), F("BoneName", 0x1A2933AA, 8, Kind.String, 8) });
     private static readonly Record Texture = new("ReplaceTexture", 8, new[] { F("Original", 0x4C3E3938, 0, Kind.Ref), F("New", 0x4C3E3938, 4, Kind.Ref) });
@@ -181,13 +191,14 @@ public static class Ep1ScriptedDrawTokenizer
     F("KineticFriction", 0x645864F3, 16, Kind.Real),
     F("AngularDrag", 0x645864F3, 20, Kind.Real),
     F("LinearDrag", 0x645864F3, 24, Kind.Real),
-    F("ReportContacts", 0x77E3F4F7, 32, Kind.Bool, 1),
+    // Reborn: original EP1 volume metadata binds the trailing bool at +72 and the shape lists at +32..+64.
+    F("ReportContacts", 0x77E3F4F7, 72, Kind.Bool, 1),
     F("ContactTag", 0x92E342E4, 28, Kind.Enum, limit: 8),
-    F("Sphere", DynamicsTag("DynamicsSphereShapeType"), 36, Kind.List, 8, child: DynamicsSphere),
-    F("Capsule", DynamicsTag("DynamicsCapsuleShapeType"), 44, Kind.List, 8, child: DynamicsCapsule),
-    F("Box", DynamicsTag("DynamicsBoxShapeType"), 52, Kind.List, 8, child: DynamicsBox),
-    F("Cylinder", DynamicsTag("DynamicsCylinderShapeType"), 60, Kind.List, 8, child: DynamicsCylinder),
-    F("Triangle", DynamicsTag("DynamicsTriangleShapeType"), 68, Kind.List, 8, child: DynamicsTriangle)
+    F("Sphere", DynamicsTag("DynamicsSphereShapeType"), 32, Kind.List, 8, child: DynamicsSphere),
+    F("Capsule", DynamicsTag("DynamicsCapsuleShapeType"), 40, Kind.List, 8, child: DynamicsCapsule),
+    F("Box", DynamicsTag("DynamicsBoxShapeType"), 48, Kind.List, 8, child: DynamicsBox),
+    F("Cylinder", DynamicsTag("DynamicsCylinderShapeType"), 56, Kind.List, 8, child: DynamicsCylinder),
+    F("Triangle", DynamicsTag("DynamicsTriangleShapeType"), 64, Kind.List, 8, child: DynamicsTriangle)
 }, 33, 3);
 
     private static readonly Record DynamicsBoneVolume = new("DynamicsBoneVolumeType", 84, new[]
@@ -252,8 +263,8 @@ public static class Ep1ScriptedDrawTokenizer
     F("FlingPerturbation", 0x645864F3, 236, Kind.Real),
     F("InitiallyActive", 0x77E3F4F7, 252, Kind.Bool, 1),
     F("BoneVolumes", DynamicsTag("DynamicsBoneVolumeSetType"), 240, Kind.Pointer, child: DynamicsBoneVolumeSet),
-    F("Joints", 0xA0E84A50, 248, Kind.Pointer, child: DynamicsJointSet),
-    F("Lifetime", DynamicsTag("DynamicsLifetime"), 244, Kind.Pointer, child: DynamicsLifetimeRecord)
+    F("Joints", 0xA0E84A50, 244, Kind.Pointer, child: DynamicsJointSet),
+    F("Lifetime", DynamicsTag("DynamicsLifetime"), 248, Kind.Pointer, child: DynamicsLifetimeRecord)
 }, 253, 3, Root, 0x4ECF2A4B);
 
     public static Chunk TokenizeDynamics(Chunk native)

@@ -28,7 +28,9 @@ namespace SageBinaryData
         GPU_PARTICLE,
         GPU_TERRAINFIRE,
         SWARM,
-        TRAIL
+        TRAIL,
+        // Reborn: EP1 appends the original wave particle type at native ordinal nine.
+        WAVE_PARTICLE
     }
 
     public enum FXParticleSystem_Priority
@@ -55,7 +57,9 @@ namespace SageBinaryData
         INVALID,
         SIMPLE_QUAD,
         CENTERED_QUAD,
-        TWO_CONCENTRIC_QUADS
+        TWO_CONCENTRIC_QUADS,
+        // Reborn: the original EP1 GPU record stores TWO_QUADS as four.
+        TWO_QUADS
     }
 
     public enum FXParticleSystem_ShaderType
@@ -77,9 +81,8 @@ namespace SageBinaryData
     {
         INVALID_ROTATION,
         ROTATION_OFF,
-        ROTATE_X,
-        ROTATE_Y,
-        ROTATE_Z,
-        ROTATE_V
+        // Reborn: EP1 uses velocity/world rotation modes at native ordinals two and three.
+        ROTATE_AROUND_VELOCITY,
+        ROTATE_IN_WORLD_SPACE
     }
 }

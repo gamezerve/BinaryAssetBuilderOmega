@@ -227,7 +227,8 @@ internal static class BoundedDiagnosticBuild
         // Reborn: variable graphs require exact build-local proof; ordinary trials retain their original topology admission.
         graph?.Verify(instance,chunk);
         int prefix=graph?.MetadataPrefix??88824;
-        int dependencyCount=graph?.ReferenceCount??GameObjectStrongReferenceContract.ExpectedCount(source);if(instance.ValidatedReferencedInstances.Count!=dependencyCount || chunk.ImportsData.Length!=(dependencyCount+1)*4)throw new InvalidDataException("Conscript authored root reference stream extent differs.");
+        // Reborn: a proved graph without strong references has no IMP payload or terminator, matching original EP1 empty imports.
+        int dependencyCount=graph?.ReferenceCount??GameObjectStrongReferenceContract.ExpectedCount(source);if(instance.ValidatedReferencedInstances.Count!=dependencyCount || chunk.ImportsData.Length!=(dependencyCount==0?0:(dependencyCount+1)*4))throw new InvalidDataException("Conscript authored root reference stream extent differs.");
         // Reborn: the stock Conscript owns 39,268 non-string native bytes after its 88,824-byte metadata prefix; root string blocks add exact aligned extents and relocation slots.
         int stringBytes=GameObjectRootStringContract.AllocationSize(source),stringCount=GameObjectRootStringContract.PresentCount(source);
         if(graph==null&&(chunk.InstanceData.Length!=88824+39268+stringBytes || chunk.RelocationData.Length!=1800+(stringCount-3)*4))throw new InvalidDataException("Conscript dynamic root string stream extent differs.");

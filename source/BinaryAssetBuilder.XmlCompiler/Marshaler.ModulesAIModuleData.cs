@@ -17,7 +17,8 @@ public static partial class Marshaler
                 MarshalPolymorphicType<DozerAIUpdateModuleData, UpdateModuleData>(node, objT, state);
                 break;
             case 0xCD56659Bu:
-                MarshalPolymorphicType<AnimalAIUpdateModuleData, UpdateModuleData>(node, objT, state);
+                // Reborn: the actual Uprising WorldBuilder animal class uses the EP1 AI header, not KW offsets.
+                MarshalEp1AnimalAIUpdate(node,objT,state);
                 break;
             case 0xD813AF2Au:
                 MarshalPolymorphicType<WanderAIUpdateModuleData, UpdateModuleData>(node, objT, state);

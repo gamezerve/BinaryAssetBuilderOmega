@@ -1,5 +1,6 @@
-<?xml version='1.0' encoding='utf-8'?>
+﻿<?xml version='1.0' encoding='utf-8'?>
 <AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<!-- Reborn: refine the Campaign Scenarios caption baseline to y=92.9, three units above the previous adjustment. -->
 	<AptAptData id="fes_m_chapterSelect_apt" File="fes_m_chapterSelect.apt" />
 	<AptConstData id="fes_m_chapterSelect_const" File="fes_m_chapterSelect.const" />
 	<AptDatData id="fes_m_chapterSelect_dat" File="fes_m_chapterSelect.dat" />

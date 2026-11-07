@@ -161,6 +161,13 @@ internal static class SdkUnusedAssetAudit
                     ?? Array.Empty<SdkSelfAttributeInheritance.Overlay>());
         }
 
+        // Reborn: saved family evidence survives private workspace cleanup and edits to unselected source stages.
+        foreach(string receipt in Directory.GetFiles(buildRoot,"cached-origins.json",SearchOption.AllDirectories))
+        {
+            var evidence=JsonSerializer.Deserialize<SdkBuildStageDiagnostics.Evidence>(File.ReadAllBytes(receipt))??throw new InvalidDataException("Invalid cached diagnostic evidence.");
+            origins.Add(ConscriptCompileLog.FromCached(evidence));
+            inheritance.AddRange(evidence.InheritanceUses);
+        }
         var fallback = ConscriptCompileLog.ForPrepared(entry);
         var findings = new List<object>();
         var dynamicUi = new List<string>();

@@ -13,6 +13,8 @@ internal sealed class ConscriptCompileLog
 {
     internal sealed class Entry{internal string Type="",Name="";internal Stopwatch Clock=new();}
     private readonly Dictionary<string,string> files=new(StringComparer.OrdinalIgnoreCase);
+    // Reborn: cached warnings use coordinates captured when their source was successfully compiled.
+    private readonly Dictionary<string,SdkXmlDiagnostics.Location> cached=new(StringComparer.OrdinalIgnoreCase);
     private readonly List<Entry> processed=new();
     // Reborn: a fixture without declaration provenance can still report its honest prepared-input context.
     private string context="";
@@ -36,11 +38,25 @@ internal sealed class ConscriptCompileLog
     }
 
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: restore warning coordinates captured with the successful output generation. */
+    //-------------------------------------------------------------------------------------------------
+    internal static ConscriptCompileLog FromCached(SdkBuildStageDiagnostics.Evidence evidence)
+    {
+        var log=new ConscriptCompileLog();
+        foreach(var row in evidence.Origins)log.cached[row.Type+":"+row.Id]=row.Location;
+        return log;
+    }
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: locate a declaration warning in the captured original file, using its id attribute rather than a generated XML line. */
     //-------------------------------------------------------------------------------------------------
     internal SdkXmlDiagnostics.Location Location(string type,string id)
     {
-        string path=files.GetValueOrDefault(type+":"+id,context);var document=SdkXmlDiagnostics.Lines(File.ReadAllBytes(path),path);var owner=document.Descendants().FirstOrDefault(e=>e.Name.LocalName==type&&(string?)e.Attribute("id")==id);return owner==null?SdkXmlDiagnostics.Point(path,document.Root!,true):SdkXmlDiagnostics.Point(path,(System.Xml.Linq.XObject?)owner.Attribute("id")??owner);
+        if(cached.TryGetValue(type+":"+id,out var saved))return saved;
+        string path=files.GetValueOrDefault(type+":"+id,context);
+        // Reborn: migrated legacy outputs may lack snapshots; an edited or removed source cannot invalidate a valid cached asset through an advisory warning.
+        try{var document=SdkXmlDiagnostics.Lines(File.ReadAllBytes(path),path);var owner=document.Descendants().FirstOrDefault(e=>e.Name.LocalName==type&&(string?)e.Attribute("id")==id);return owner==null?SdkXmlDiagnostics.Point(path,document.Root!,true):SdkXmlDiagnostics.Point(path,(System.Xml.Linq.XObject?)owner.Attribute("id")??owner);}
+        catch(Exception error)when(error is IOException or XmlException){return new(path,0,0,true);}
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -72,7 +88,7 @@ internal sealed class ConscriptCompileLog
     }
 
     // Reborn: final audits prefer the prepared stream which actually owns this declaration's original source path.
-    internal bool HasOrigin(string type,string id)=>files.ContainsKey(type+":"+id);
+    internal bool HasOrigin(string type,string id)=>files.ContainsKey(type+":"+id)||cached.ContainsKey(type+":"+id);
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: announce one asset immediately before its real processor runs and start its processing clock. */

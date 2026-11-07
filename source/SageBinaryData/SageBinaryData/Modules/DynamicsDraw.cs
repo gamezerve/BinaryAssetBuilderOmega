@@ -1,4 +1,4 @@
-using Relo;
+﻿using Relo;
 using System.Runtime.InteropServices;
 using AnsiString = Relo.String<sbyte>;
 
@@ -57,12 +57,13 @@ namespace SageBinaryData
         public float AngularDrag;
         public float LinearDrag;
         public DynamicsContactTag ContactTag;
-        public SageBool ReportContacts;
+        // Reborn: EP1 places ReportContacts after all five lists, at byte 72 of the 76-byte volume.
         public List<DynamicsSphereShapeType> Sphere;
         public List<DynamicsCapsuleShapeType> Capsule;
         public List<DynamicsBoxShapeType> Box;
         public List<DynamicsCylinderShapeType> Cylinder;
         public List<DynamicsTriangleShapeType> Triangle;
+        public SageBool ReportContacts;
     }
 
     // Reborn: Match the official 84-byte bone volume and 8-byte volume-set root.
@@ -87,8 +88,9 @@ namespace SageBinaryData
         public float Explodiness;
         public float FlingPerturbation;
         public DynamicsBoneVolumeSetType* BoneVolumes;
-        public DynamicsLifetime* Lifetime;
+        // Reborn: retain the original EP1 joint/lifetime pointer order rather than XML child order.
         public DynamicsJointSetType* Joints;
+        public DynamicsLifetime* Lifetime;
         public SageBool InitiallyActive;
     }
 }

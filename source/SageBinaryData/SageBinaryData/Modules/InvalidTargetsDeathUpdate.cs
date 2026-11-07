@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 
 namespace SageBinaryData;
 
@@ -6,4 +6,6 @@ namespace SageBinaryData;
 public struct InvalidTargetsDeathUpdateModuleData
 {
     public UpdateModuleData Base;
+    // Reborn: optional EP1 invalid-target mask follows the inherited update identity.
+    public unsafe ObjectStatusBitFlags* InvalidStatus;
 }

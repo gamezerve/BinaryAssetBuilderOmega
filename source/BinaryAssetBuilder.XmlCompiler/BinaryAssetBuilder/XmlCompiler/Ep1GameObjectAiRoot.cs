@@ -49,7 +49,7 @@ public static class Ep1GameObjectAiRoot
             var native=new Chunk{InstanceBuffer=data.AsSpan(start,end-start).ToArray(),RelocationBuffer=Pack(localRelos.Select(s=>s-(uint)start)),ImportsBuffer=Pack(localImports.Select(s=>s-(uint)start))};
             foreach(uint slot in localRelos){uint target=Word((int)slot);if(target<start || target>=end)throw new InvalidDataException("Inline AI pointer crosses fragment owners.");BinaryPrimitives.WriteUInt32LittleEndian(native.InstanceBuffer.AsSpan((int)slot-start,4),target-(uint)start);}
             // Reborn: each concrete AI class keeps its own reviewed header while sharing the inline root compositor.
-            var tokens=Word(start)==0x4486CF48?Ep1JetAIUpdateTokenizer.Tokenize(native):Ep1AIUpdateTokenizer.Tokenize(native);modules.Add(new(start,end,native,tokens));expectedRelos.Add((uint)(array+i*4));expectedRelos.AddRange(localRelos);expectedImports.AddRange(localImports);outer.Add((start,end));
+            var tokens=Word(start) switch{0xCD56659Bu=>Ep1AnimalAIUpdateTokenizer.Tokenize(native),0x4486CF48u=>Ep1JetAIUpdateTokenizer.Tokenize(native),0x08DBC00Eu=>Ep1AIUpdateTokenizer.Tokenize(native),_=>throw new InvalidDataException("Unreviewed inline AI native class.")};modules.Add(new(start,end,native,tokens));expectedRelos.Add((uint)(array+i*4));expectedRelos.AddRange(localRelos);expectedImports.AddRange(localImports);outer.Add((start,end));
         }
         return new(array,Array.AsReadOnly(modules.ToArray()));
         //-------------------------------------------------------------------------------------------------

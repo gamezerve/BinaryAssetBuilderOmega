@@ -101,6 +101,8 @@
         <Include type="all" source="DATA:GlobalData/CampaignPortraits.xml" />
         <Include type="all" source="DATA:GlobalData/TutorialData.xml" />
         <Include type="all" source="DATA:PathMusic/PathMusicEvents_Mod.xml" />
+        <!-- Reborn: register the combined Uprising and RA3 event names for map script playback. -->
+        <Include type="all" source="DATA:PathMusic/ScriptPathMusicEvents_Mod.xml" />
         <Include type="all" source="DATA:Video/Videos.xml" />
         <Include type="all" source="DATA:Video/VideoSequences.xml" />
     </Includes>

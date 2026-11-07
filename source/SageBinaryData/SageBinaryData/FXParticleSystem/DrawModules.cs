@@ -32,6 +32,14 @@ namespace SageBinaryData
         public SageBool EnableSoftParticles;
     }
 
+    // Reborn: original EP1 LightSource is an eight-byte class and intensity-ratio record.
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FXParticleDrawLightSource
+    {
+        public FXParticleDrawBase Base;
+        public float MaximumIntensityRadiusRatio;
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct FXParticleDrawLightningRandomSet
     {

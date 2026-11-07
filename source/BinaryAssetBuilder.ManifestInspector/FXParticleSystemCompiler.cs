@@ -1,4 +1,4 @@
-using System.Buffers.Binary;
+﻿using System.Buffers.Binary;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -94,4 +94,38 @@ internal static class FXParticleSystemCompiler
         }
         SdkBuildTests.MetadataProgress("FXParticleSystemTemplate","Reborn: particle GPU stock native qualification: PASS (complete Civ_Destruction_Tiny graph; complete AlliedAAGun01 RenderObject graph; three Tesla lightning graphs; W3D_ALPHA=8).","original GPU/physics/box/ortho/update graph");
     }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: wavefront admission always requires complete original source/native proof, including WAVE_PARTICLE=9 and CIRCLE=1. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void QualifyWavefront(string manifest,SchemaSet schemas,ManifestAsset[] available)
+    {
+        if(Marshal.SizeOf<FXParticleEmissionVelocityWavefront>()!=68)throw new InvalidDataException("EP1 wavefront velocity header extent differs.");
+        var catalog=ManifestReader.Read(SdkEnvironmentPreflight.Read(manifest,64*1048576));TypeRegistryAudit.ValidateTarget(catalog.Header.Version,catalog.Header.AllTypesHash);
+        if(!catalog.Header.IsLinked||catalog.Validate().Count!=0)throw new InvalidDataException("Invalid original wavefront witness catalog.");
+        foreach(string id in new[]{"ABAirBaseWakeSplash","ABConyardWakeSplash","ABPowerPlantWakeSplash","AlliedArtilleryTankWake"})
+        {
+            var source=GameObjectExtendedRootContract.Original("FXParticleSystems/"+id+".xml","FXParticleSystemTemplate").Single();
+            var proof=ProofSource(SdkXmlDiagnostics.Parse(Encoding.UTF8.GetBytes(source.OuterXml)),schemas,available);
+            var asset=catalog.Assets.Single(a=>a.Name=="FXParticleSystemTemplate:"+id);if(asset.Tokenized!=0)throw new InvalidDataException("Original wavefront witness must be native.");
+            SchemaNativeContract.VerifyStock(proof.DocumentElement!,typeof(FXParticleSystemTemplate),0,W3DContainerCompiler.ReadStock(manifest,catalog,asset),0,asset.References.ToArray(),required:true);
+        }
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: independently qualify EP1 light, wind and two-quad GPU fields against complete original native graphs in every build mode. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void QualifyLightAndEnums(string manifest,SchemaSet schemas,ManifestAsset[] available)
+    {
+        if(Marshal.SizeOf<FXParticleDrawLightSource>()!=8)throw new InvalidDataException("EP1 light-source header extent differs.");
+        var catalog=ManifestReader.Read(SdkEnvironmentPreflight.Read(manifest,64*1048576));TypeRegistryAudit.ValidateTarget(catalog.Header.Version,catalog.Header.AllTypesHash);
+        if(!catalog.Header.IsLinked||catalog.Validate().Count!=0)throw new InvalidDataException("Invalid original particle light/enum witness catalog.");
+        foreach(string id in new[]{"AlliedArtilleryExplosionLight","AlliedArtilleryFire_Light","AlliedArtilleryExplosionWaterMist","AlliedArtilleryFire_Geo"})
+        {
+            var source=GameObjectExtendedRootContract.Original("FXParticleSystems/"+id+".xml","FXParticleSystemTemplate").Single();
+            var proof=ProofSource(SdkXmlDiagnostics.Parse(Encoding.UTF8.GetBytes(source.OuterXml)),schemas,available);
+            var asset=catalog.Assets.Single(a=>a.Name=="FXParticleSystemTemplate:"+id);if(asset.Tokenized!=0)throw new InvalidDataException("Original particle light/enum witness must be native.");
+            SchemaNativeContract.VerifyStock(proof.DocumentElement!,typeof(FXParticleSystemTemplate),0,W3DContainerCompiler.ReadStock(manifest,catalog,asset),0,asset.References.ToArray(),required:true);
+        }
+    }
+
 }

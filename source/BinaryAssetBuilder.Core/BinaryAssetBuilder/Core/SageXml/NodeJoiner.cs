@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Xml;
 using System.Xml.Schema;
 using BinaryAssetBuilder.Core.Diagnostics;
@@ -262,7 +262,8 @@ namespace BinaryAssetBuilder.Core.SageXml
                 {
                     replacing = false;
                     string str = srcAttrib.Value;
-                    foreach (string value in str.Split(' '))
+                    // Reborn: EA authored +/- flag lists may contain tabs, repeated spaces or a trailing space.
+                    foreach (string value in str.Split((char[])null, StringSplitOptions.RemoveEmptyEntries))
                     {
                         char firstChar = value[0];
                         string oldValue = value[1..];

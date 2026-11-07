@@ -1,4 +1,4 @@
-using BinaryAssetBuilder.Core;
+﻿using BinaryAssetBuilder.Core;
 using BinaryAssetBuilder.Core.Hashing;
 using BinaryAssetBuilder.Core.SageXml;
 using BinaryAssetBuilder.XmlCompiler;
@@ -26,6 +26,8 @@ internal sealed class SchemaNativeContract
     // Reborn: explicitly opted-in leaf families (container, wire class, production leaf metadata writer); each is qualified against stock before use.
     internal sealed record Family(Type Type,string Container,uint TypeId,Func<Chunk,Chunk> Leaf);
     internal static readonly Family[] Families={
+        // Reborn: optimized props use the complete original WorldBuilder-qualified twelve-byte draw.
+        new(typeof(Ep1W3DPropDrawModuleData),"Draws",0x148AA464u,Ep1ScriptedDrawTokenizer.TokenizeProp),
         // Reborn: group-audio keys are authored hashes, with source-sized storage and the original client metadata writer.
         new(typeof(LargeGroupAudioClientUpdateModuleData),"ClientUpdates",0x9826A297u,Ep1GroupAudioClientTokenizer.Tokenize),
         // Reborn: EVA readiness clients have their own complete native/source proof and literal retail-qualified metadata.
@@ -108,10 +110,11 @@ internal sealed class SchemaNativeContract
     //-------------------------------------------------------------------------------------------------
     /** Reborn: qualify the same derivation against a stock leaf (absolute stock pointers, stock occurrence table; stock interning allowed). */
     //-------------------------------------------------------------------------------------------------
-    internal static void VerifyStock(XmlElement resolved,Type type,uint typeId,byte[] stock,int native,IReadOnlyList<AssetId> stockReferences)
+    internal static void VerifyStock(XmlElement resolved,Type type,uint typeId,byte[] stock,int native,IReadOnlyList<AssetId> stockReferences,bool required=false)
     {
         // Reborn: stock witness comparisons are developer regressions; Verify above still checks every current source/native output in fast builds.
-        if(!SdkBuildTests.Enabled)return;
+        // Reborn: first admission of a new processor requires original native evidence in both ordinary and developer builds.
+        if(!SdkBuildTests.Enabled&&!required)return;
         var proof=new SchemaNativeContract(stock,true,typeId,stockReferences);proof.Struct(type,resolved,native,type.Name,0);proof.Consumed(resolved);
     }
 
@@ -149,6 +152,12 @@ internal sealed class SchemaNativeContract
     private void Field(Type owner,FieldInfo field,XmlElement? e,int at,string path,int depth)
     {
         Type type=field.FieldType;string name=field.Name;records[path]=at;
+        // Reborn: inline personality state IDs support source overlays but are not stored as runtime hash words.
+        if(owner==typeof(Ep1AIPersonalityStateSlotBase)&&name=="IdInfo"){var id=e?.GetAttributeNode("id");if(id!=null)consumed.Add(id);Expect(at,new byte[4],path);return;}
+        // Reborn: a separately optional heuristic choice owns its list directly, without a second XML wrapper.
+        if(owner==typeof(Ep1AIHeuristicChoice)&&name=="Value"){AIHeuristics(e,"",at,path,depth);return;}
+        // Reborn: heuristic concrete class words are owned by their validated original schema alternative.
+        if(owner==typeof(Ep1AIStateHeuristic)&&name=="TypeId"){var family=BinaryAssetBuilder.XmlCompiler.Ep1AIHeuristicLayout.For(e!);Expect(at,BitConverter.GetBytes(family.Wire),path);return;}
         // Reborn: a Multisound subsound is a simple-content reference with additional attributes, not a child named Base.
         if(owner==typeof(Marshaler.Ep1MultisoundSubsound)&&name=="Base"){Reference(e?.InnerText,at,path);return;}
         // Reborn: shader constant class IDs come from the validated concrete schema type, not authored TypeId text or the enclosing draw class.
@@ -248,7 +257,8 @@ internal sealed class SchemaNativeContract
             switch(generic)
             {
                 // Reborn: FX TechniqueName and EP1 AttachBoneName retain their stock-allocated empty-string schema defaults.
-                case "Relo.String`1":var text=Source(e,name).Text;Text((owner==typeof(FXShaderMaterial)&&name=="TechniqueName"||owner==typeof(Ep1AttachUpdateModuleData)&&name=="AttachBoneName")?text??string.Empty:text,at,path,false);return;
+                // Reborn: original timed/deposit orders retain an allocated empty Build string even when the attribute is omitted.
+                case "Relo.String`1":var text=Source(e,name).Text;Text((owner==typeof(FXShaderMaterial)&&name=="TechniqueName"||owner==typeof(Ep1AttachUpdateModuleData)&&name=="AttachBoneName"||owner==typeof(SkirmishOpeningMoveOrder)&&name=="Build")?text??string.Empty:text,at,path,false);return;
                 case "Relo.AssetReference`1":case "Relo.AssetReference`2":Reference(Source(e,name).Text,at,path);return;
                 case "TypedAssetId`1":
                     var identity=Source(e,name).Text;
@@ -260,6 +270,8 @@ internal sealed class SchemaNativeContract
                     return;
                 case "Relo.List`1":List(type.GetGenericArguments()[0],e,name,at,path,depth);return;
                 case "Relo.PolymorphicList`1":
+                    // Reborn: original AI states retain ordered concrete heuristic pointer arrays and complete source ownership.
+                    if(type.GetGenericArguments()[0]==typeof(Ep1AIStateHeuristic)){AIHeuristics(e,name,at,path,depth);return;}
                     // Reborn: map script actions contain schema-selected ObjectType/ObjectTypeList pointer arrays.
                     if(type.GetGenericArguments()[0]==typeof(GameScriptParameterBase)){MapScriptParameters(e,name,at,path,depth);return;}
                     // Reborn: FXList owns a normal pointer array of schema-selected concrete FX nuggets.
@@ -495,12 +507,40 @@ internal sealed class SchemaNativeContract
         Expect(at,bytes,path);
     }
 
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: prove each original AI heuristic pointer, concrete class, nested allocation and authored occurrence. */
+    //-------------------------------------------------------------------------------------------------
+    private void AIHeuristics(XmlElement? e,string name,int at,string path,int depth)
+    {
+        var owner=name.Length==0?e:Child(e,name);var nodes=owner?.ChildNodes.OfType<XmlElement>().ToArray()??Array.Empty<XmlElement>();
+        uint count=Word(at),items=Word(at+4);
+        if(count!=nodes.Length)throw new InvalidDataException("AI heuristic count differs: "+path);
+        if(count==0){if(items!=0)throw new InvalidDataException("Empty AI heuristic array has storage: "+path);return;}
+        Link(at+4,items,checked(nodes.Length*4),path);
+        for(int i=0;i<nodes.Length;i++)
+        {
+            var family=BinaryAssetBuilder.XmlCompiler.Ep1AIHeuristicLayout.For(nodes[i]);int slot=checked((int)items+i*4);uint target=Word(slot);
+            Link(slot,target,Size(family.Type),path+"["+i+"]");consumed.Add(nodes[i]);Struct(family.Type,nodes[i],(int)target,path+"["+i+"]",depth+1);
+        }
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: prove scalar attributes and single schema-validated simple elements with the same strict numeric codec. */
+    //-------------------------------------------------------------------------------------------------
     private void ScalarValue(XmlElement? e,string name,int at,string codec,int width,string path)
     {
         if(e==null){Expect(at,new byte[width],path);return;}
-        var attribute=e.GetAttributeNode(name);if(attribute!=null)consumed.Add(attribute);
-        else if(Children(e,name).Length!=0)throw new InvalidDataException("Schema-proved scalar element form is not reviewed: "+path);
-        Expect(at,ConscriptModuleScalarContract.Bytes(e,new ConscriptModuleScalarContract.Binding(name,0,width,codec,null,0)),path);
+        var attribute=e.GetAttributeNode(name);var children=Children(e,name);
+        if(children.Length!=0)
+        {
+            // Reborn: a scalar child cannot hide a second occurrence, an attribute value, nested records or authored attributes.
+            if(attribute!=null||children.Length!=1||children[0].NamespaceURI!=SchemaSet.XmlNamespace||children[0].SchemaInfo.SchemaType is not XmlSchemaSimpleType||children[0].ChildNodes.OfType<XmlElement>().Any()||children[0].Attributes.Cast<XmlAttribute>().Any(a=>a.NamespaceURI!="http://www.w3.org/2000/xmlns/"))
+                throw new InvalidDataException("Schema-proved scalar element shape differs: "+path);
+            consumed.Add(children[0]);var carrier=e.OwnerDocument!.CreateElement("Scalar");carrier.SetAttribute(name,children[0].InnerText);
+            Expect(at,ConscriptModuleScalarContract.Bytes(carrier,new(name,0,width,codec,null,0)),path);return;
+        }
+        if(attribute!=null)consumed.Add(attribute);
+        Expect(at,ConscriptModuleScalarContract.Bytes(e,new(name,0,width,codec,null,0)),path);
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -560,8 +600,9 @@ internal sealed class SchemaNativeContract
                 var facets=restriction.Facets.OfType<XmlSchemaEnumerationFacet>().ToArray();var values=facets.Select(f=>f.Value).ToList();
                 // Reborn: a leading official INVALID sentinel is ordinal -1 (not stored), shifting every other value down by one.
                 // Reborn: stock ArmorSetType (shrink modifier=14), BuildPlacementType and AIUpgradeHeuristicType retain INVALID at ordinal zero.
+                // Reborn: original WorldBuilder CUAuto01 and EP1 wavefront shapes retain INVALID=0 (IN_RANGE_OBJECT_FILTER=1, CIRCLE=1).
                 // Reborn: schema forceValue aliases reuse an earlier ordinal and do not consume a new native flag bit.
-                if(values.Count>0){int index=values.IndexOf(token);if(index<0)return int.MinValue;int next=(values[0]=="INVALID"&&type.QualifiedName.Name is not ("ArmorSetType" or "BuildPlacementType" or "AIUpgradeHeuristicType" or "FXParticleSystem_GeometryType")||type.QualifiedName.Name=="TerrainScorchType"&&values[0]=="RANDOM"||type.QualifiedName.Name=="DamageFXType"&&values[0]=="DEFAULT")?-1:0;var ordinals=new Dictionary<string,int>(StringComparer.Ordinal);for(int i=0;i<=index;i++){string? alias=facets[i].UnhandledAttributes?.FirstOrDefault(a=>a.LocalName=="forceValue")?.Value;if(alias!=null){if(!int.TryParse(alias,System.Globalization.NumberStyles.Integer,System.Globalization.CultureInfo.InvariantCulture,out next)&&!ordinals.TryGetValue(alias,out next))throw new InvalidDataException("Schema enum alias target is not earlier: "+alias);}ordinals[values[i]!]=next;if(i==index)return next;next++;}}
+                if(values.Count>0){int index=values.IndexOf(token);if(index<0)return int.MinValue;int next=(values[0]=="INVALID"&&type.QualifiedName.Name is not ("ArmorSetType" or "BuildPlacementType" or "AIUpgradeHeuristicType" or "FXParticleSystem_GeometryType" or "SetLocomotorSpeedUpdateType" or "FXParticleSystem_WavefrontShape" or "FXParticleSystem_WindMotion")||type.QualifiedName.Name=="TerrainScorchType"&&values[0]=="RANDOM"||type.QualifiedName.Name=="DamageFXType"&&values[0]=="DEFAULT")?-1:0;var ordinals=new Dictionary<string,int>(StringComparer.Ordinal);for(int i=0;i<=index;i++){string? alias=facets[i].UnhandledAttributes?.FirstOrDefault(a=>a.LocalName=="forceValue")?.Value;if(alias!=null){if(!int.TryParse(alias,System.Globalization.NumberStyles.Integer,System.Globalization.CultureInfo.InvariantCulture,out next)&&!ordinals.TryGetValue(alias,out next))throw new InvalidDataException("Schema enum alias target is not earlier: "+alias);}ordinals[values[i]!]=next;if(i==index)return next;next++;}}
             }
             type=type.BaseXmlSchemaType as XmlSchemaSimpleType;
         }

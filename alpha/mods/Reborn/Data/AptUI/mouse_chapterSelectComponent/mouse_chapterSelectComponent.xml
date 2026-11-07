@@ -1,5 +1,6 @@
-<?xml version='1.0' encoding='utf-8'?>
+﻿<?xml version='1.0' encoding='utf-8'?>
 <AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<!-- Reborn: retain wider Rising Sun labels and Yuriko position; extend the actual mission-list placement by 40 UI units with its left edge fixed. -->
 	<AptAptData id="mouse_chapterSelectComponent_apt" File="mouse_chapterSelectComponent.apt" />
 	<AptConstData id="mouse_chapterSelectComponent_const" File="mouse_chapterSelectComponent.const" />
 	<AptDatData id="mouse_chapterSelectComponent_dat" File="mouse_chapterSelectComponent.dat" />

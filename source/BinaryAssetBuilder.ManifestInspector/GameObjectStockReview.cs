@@ -10,6 +10,42 @@ namespace BinaryAssetBuilder.ManifestInspector;
 // Reborn: recover bounded GameObject root/ArmorSet relationships from stock tokens; no authored compiler, package or runtime authority.
 internal static class GameObjectStockReview
 {
+    // Reborn: reuse only immutable manifest metadata during one build; every native slice and checksum is still checked.
+    private sealed record Catalog(byte[] Bytes,ManifestDocument Document,Dictionary<string,(ManifestAsset Asset,long Offset)> Assets);
+    [ThreadStatic] private static Dictionary<string,Catalog>? catalogs;
+    [ThreadStatic] private static int catalogScopes;
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: shared stock metadata expires at the build boundary and is checked for external changes before release. */
+    //-------------------------------------------------------------------------------------------------
+    internal static IDisposable ReuseCatalogs()=>new CatalogScope();
+    private sealed class CatalogScope:IDisposable
+    {
+        private bool disposed;
+        internal CatalogScope(){if(catalogScopes++==0)catalogs=new(StringComparer.OrdinalIgnoreCase);}
+        public void Dispose()
+        {
+            if(disposed)return;disposed=true;if(--catalogScopes!=0)return;
+            var saved=catalogs;catalogs=null;
+            if(saved!=null)foreach(var pair in saved)
+                if(!SHA256.HashData(SdkEnvironmentPreflight.Read(pair.Key,64*1048576)).SequenceEqual(SHA256.HashData(pair.Value.Bytes)))
+                    throw new InvalidDataException("Stock manifest changed during native qualification: "+pair.Key);
+        }
+    }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: index validated names and byte offsets once, without caching generated assets or original native payloads. */
+    //-------------------------------------------------------------------------------------------------
+    private static Catalog ReadCatalog(string path)
+    {
+        if(catalogs!=null && catalogs.TryGetValue(path,out var cached))return cached;
+        byte[] bytes=SdkEnvironmentPreflight.Read(path,64*1048576);var document=ManifestReader.Read(bytes);
+        TypeRegistryAudit.ValidateTarget(document.Header.Version,document.Header.AllTypesHash);
+        if(document.Validate().Count!=0 || !document.Header.IsLinked || document.Header.ContainerPrefixSize!=4)
+            throw new InvalidDataException("Expected valid linked EP1 metadata with the reviewed stream prefix.");
+        long offset=8;var assets=new Dictionary<string,(ManifestAsset,long)>(StringComparer.Ordinal);
+        foreach(var asset in document.Assets){assets.Add(asset.Name,(asset,offset));offset=checked(offset+asset.InstanceDataSize);}
+        var result=new Catalog(bytes,document,assets);catalogs?.Add(path,result);return result;
+    }
+
     private const uint ArmorType = 0x3A6C5E8E, DamageFxType = 0xAD3568F5;
     internal sealed record ArmorBinding(int TokenTable, int NativeOffset, uint Conditions, uint ArmorReference, uint DamageFxReference);
     internal sealed record Projection(int RootTokens, int NativeRoot, float BuildTime, int ArmorList, ArmorBinding[] Armors);
@@ -55,17 +91,13 @@ internal static class GameObjectStockReview
     internal static (byte[] Metadata, ManifestDocument Document, ManifestAsset Asset, long Offset, byte[] Bytes, Projection Projection) Capture(string path, string name, bool allowNullArmorReferences=false)
     {
         path = Path.GetFullPath(path);
-        byte[] metadata = SdkEnvironmentPreflight.Read(path, 64 * 1048576);
-        var document = ManifestReader.Read(metadata);
-        TypeRegistryAudit.ValidateTarget(document.Header.Version, document.Header.AllTypesHash);
-        if (document.Validate().Count != 0 || !document.Header.IsLinked || document.Header.ContainerPrefixSize != 4)
-            throw new InvalidDataException("Expected valid linked EP1 metadata with the reviewed stream prefix.");
-        var asset = document.Assets.Single(item => item.Name == name);
+        var snapshot=ReadCatalog(path);byte[] metadata=snapshot.Bytes;var document=snapshot.Document;
+        if(!snapshot.Assets.TryGetValue(name,out var selected))throw new InvalidDataException("Original GameObject not found: "+name);
+        var asset=selected.Asset;
         if (asset.TypeId != 0x942FFF2Du || asset.TypeHash != 0xCEB9FE36u || asset.Tokenized != 1
             || asset.InstanceDataSize < 600 || asset.InstanceDataSize > 1048576)
             throw new InvalidDataException("Unsupported GameObject fingerprint or slice size.");
-        long offset = 8;
-        foreach (var member in document.Assets) { if (ReferenceEquals(member, asset)) break; offset = checked(offset + member.InstanceDataSize); }
+        long offset = selected.Offset;
         string bin = Path.ChangeExtension(path, ".bin");
         byte[] header = AssetStreamProbe.ReadRange(bin, null, 0, 8);
         if (Word(header, 0) != 0xBABB0000u || Word(header, 4) != document.Header.StreamChecksum)

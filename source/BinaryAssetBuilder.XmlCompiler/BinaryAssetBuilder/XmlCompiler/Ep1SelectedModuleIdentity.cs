@@ -33,18 +33,18 @@ public static class Ep1SelectedModuleIdentity
         // Reborn: the wider behavior path is explicit; the existing three-class/default profile remains unchanged.
         // Reborn: the complete behavior compiler uses actual allocation bounds, not the former 64-module trial quota.
         // Reborn: the reviewed complete route supports PropBody as well as ActiveBody in the same local identity scope.
-        if((!reviewedBehaviors && (modules.Length is <1 or >3)) || body.Length!=1 || (body[0].LocalName!="ActiveBody"&&(!reviewedBehaviors||body[0].LocalName is not ("PropBody" or "ImmortalBody" or "ManagerBody" or "ManagedActiveBody" or "ManagedImmortalBody"))) || body[0].NamespaceURI!=ns || modules.Any(e=>e.NamespaceURI!=ns || (!reviewedBehaviors && e.LocalName is not ("BuildingDestructionBehavior" or "WeaponSetUpdate" or "ObjectSMCHelper"))))throw new InvalidDataException("Unimplemented selected identity container/class.");
+        if((!reviewedBehaviors && (modules.Length is <1 or >3)) || body.Length!=1 || (body[0].LocalName!="ActiveBody"&&(!reviewedBehaviors||body[0].LocalName is not ("PropBody" or "ImmortalBody" or "ManagerBody" or "ManagedActiveBody" or "ManagedImmortalBody" or "HighlanderBody"))) || body[0].NamespaceURI!=ns || modules.Any(e=>e.NamespaceURI!=ns || (!reviewedBehaviors && e.LocalName is not ("BuildingDestructionBehavior" or "WeaponSetUpdate" or "ObjectSMCHelper"))))throw new InvalidDataException("Unimplemented selected identity container/class.");
         if(reviewedBehaviors)foreach(var module in modules)Ep1BehaviorMetadataTokenizer.ReviewedWireName(module.LocalName);
         // Reborn: selected common AI shares the same local identity scope; client/other concrete AI families remain unadmitted.
         var aiContainers=root.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="AI" && e.NamespaceURI==ns).ToArray();
         if(aiContainers.Length>1)throw new InvalidDataException("Selected identity permits at most one AI container.");var ai=aiContainers.SelectMany(e=>e.ChildNodes.OfType<XmlElement>()).ToArray();
         // Reborn: the complete route accepts independently reviewed EP1 jets in the same local identity scope.
-        if(ai.Length>2 || ai.Any(e=>e.NamespaceURI!=ns || (e.LocalName!="AIUpdate"&&(!reviewedBehaviors||e.LocalName!="JetAIUpdate"))))throw new InvalidDataException("Unreviewed selected AI identity class/count.");
+        if(ai.Length>2 || ai.Any(e=>e.NamespaceURI!=ns || (e.LocalName!="AIUpdate"&&(!reviewedBehaviors||e.LocalName is not ("JetAIUpdate" or "AnimalAIUpdate")))))throw new InvalidDataException("Unreviewed selected AI identity class/count.");
         // Reborn: selected complete scripted/tracer/stream Draws share the same local scope, including cross-class Body/AI/behavior collisions and forward links.
         var drawContainers=root.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="Draws" && e.NamespaceURI==ns).ToArray();
         var draws=drawContainers.SelectMany(e=>e.ChildNodes.OfType<XmlElement>()).ToArray();
         // Reborn: complete source-sized composition drops the historical sample quota; the legacy selected profile remains unchanged.
-        if (drawContainers.Length > 1 || (!reviewedBehaviors && draws.Length > 64) || draws.Any(e => e.NamespaceURI != ns || (e.LocalName is not ("ScriptedModelDraw" or "TracerModelDraw") && (!reviewedBehaviors || e.LocalName is not ("StreamDraw" or "LaserDraw" or "TruckDraw" or "TankDraw" or "DynamicsDraw"))))) throw new InvalidDataException("Unreviewed selected Draw identity class/count.");
+        if (drawContainers.Length > 1 || (!reviewedBehaviors && draws.Length > 64) || draws.Any(e => e.NamespaceURI != ns || (e.LocalName is not ("ScriptedModelDraw" or "TracerModelDraw") && (!reviewedBehaviors || e.LocalName is not ("StreamDraw" or "LaserDraw" or "TruckDraw" or "TankDraw" or "DynamicsDraw" or "PropDraw"))))) throw new InvalidDataException("Unreviewed selected Draw identity class/count.");
         // Reborn: both reviewed client containers join the same local scope; class/namespace/duplicate-container checks do not impose a complete-path sample count.
         // Reborn: the complete route admits EVA-ready clients in the same local identity scope as existing client classes.
         var clients=new List<XmlElement>();

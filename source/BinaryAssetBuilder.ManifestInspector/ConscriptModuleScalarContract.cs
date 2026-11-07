@@ -34,13 +34,15 @@ internal static class ConscriptModuleScalarContract
                 Type type;try{type=container.LocalName switch
                 {
                     "Behaviors"=>Ep1BehaviorMetadataTokenizer.ReviewedNativeType(FastHash.GetHashCode(Ep1BehaviorMetadataTokenizer.ReviewedWireName(element.LocalName))),
-                    "Draws" => element.LocalName switch { "ScriptedModelDraw" => typeof(W3DScriptedModelDrawModuleData), "TracerModelDraw" => typeof(W3DTracerDrawModuleData), "StreamDraw" => typeof(Ep1W3DStreamDrawModuleData), "LaserDraw" => typeof(Ep1W3DLaserDrawModuleData), "TruckDraw" => typeof(Ep1W3DTruckDrawModuleData), "TankDraw" => typeof(Ep1W3DTankDrawModuleData), "DynamicsDraw" => typeof(W3DDynamicsDrawModuleData), _ => throw new InvalidDataException("Unreviewed scalar draw family.") },
+                    "Draws" => element.LocalName switch { "PropDraw" => typeof(Ep1W3DPropDrawModuleData), "ScriptedModelDraw" => typeof(W3DScriptedModelDrawModuleData), "TracerModelDraw" => typeof(W3DTracerDrawModuleData), "StreamDraw" => typeof(Ep1W3DStreamDrawModuleData), "LaserDraw" => typeof(Ep1W3DLaserDrawModuleData), "TruckDraw" => typeof(Ep1W3DTruckDrawModuleData), "TankDraw" => typeof(Ep1W3DTankDrawModuleData), "DynamicsDraw" => typeof(W3DDynamicsDrawModuleData), _ => throw new InvalidDataException("Unreviewed scalar draw family.") },
                     // Reborn: jet AI owns a separate EP1 record instead of inheriting legacy KW offsets.
+                    // Reborn: animal AI retains the separately witnessed EP1 base and extension.
+                    "AI" when element.LocalName=="AnimalAIUpdate"=>typeof(Ep1AnimalAIUpdateModuleData),
                     "AI" when element.LocalName=="JetAIUpdate"=>typeof(Ep1JetAIUpdateModuleData),
                     "AI" when element.LocalName=="AIUpdate"=>typeof(Ep1AIUpdateModuleData),
                     // Reborn: PropBody has no own scalars but participates in source identities and whole-object validation.
                     "Body" when element.LocalName=="PropBody"=>typeof(PropBodyModuleData),
-                    "Body" when element.LocalName is "ActiveBody" or "ImmortalBody" or "ManagerBody" or "ManagedActiveBody" or "ManagedImmortalBody"=>typeof(Ep1ActiveBodyModuleData),
+                    "Body" when element.LocalName is "ActiveBody" or "ImmortalBody" or "ManagerBody" or "ManagedActiveBody" or "ManagedImmortalBody" or "HighlanderBody"=>typeof(Ep1ActiveBodyModuleData),
                     // Reborn: use the EP1 strong-EVA record for readiness announcements.
                     "ClientUpdates" when element.LocalName=="EvaAnnounceSpecialPowerReadyClientUpdate"=>typeof(Ep1EvaAnnounceSpecialPowerReadyClientUpdateModuleData),
                     "ClientUpdates" when element.LocalName=="EvaAnnounceClientCreate"=>typeof(Ep1EvaAnnounceClientCreateModuleData),

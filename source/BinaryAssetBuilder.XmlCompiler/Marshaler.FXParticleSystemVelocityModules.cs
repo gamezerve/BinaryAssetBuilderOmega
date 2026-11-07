@@ -73,6 +73,8 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: allocate the complete original 68-byte EP1 wavefront velocity module under its real concrete class.
+            case 0xECF79BC7u:MarshalPolymorphicType<FXParticleEmissionVelocityWavefront,FXParticleEmissionVelocityBase>(node,objT,state);break;
             case 0xB7B54FC2u:
                 MarshalPolymorphicType<FXParticleEmissionVelocityHemisphere, FXParticleEmissionVelocityBase>(node, objT, state);
                 break;

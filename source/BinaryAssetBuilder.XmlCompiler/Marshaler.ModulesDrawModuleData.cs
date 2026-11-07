@@ -60,7 +60,10 @@ public static partial class Marshaler
                 MarshalPolymorphicType<W3DDebrisDrawModuleData, DrawModuleData>(node, objT, state);
                 break;
             case 0x148AA464u:
-                MarshalPolymorphicType<W3DPropDrawModuleData, DrawModuleData>(node, objT, state);
+                // Reborn: validated Uprising props omit the incompatible legacy DistanceFog tail.
+                if(node.GetAttributeValue("RebornEp1PropDraw",null)?.GetText()=="true")
+                {using(var context=state.Push((void**)objT,(uint)sizeof(Ep1W3DPropDrawModuleData),1u))Marshal(node,(Ep1W3DPropDrawModuleData*)*objT,state);}
+                else MarshalPolymorphicType<W3DPropDrawModuleData, DrawModuleData>(node, objT, state);
                 break;
             case 0xA44C2999u:
                 // Reborn: the validated EP1 frontend selects truck storage without changing the legacy KW writer.

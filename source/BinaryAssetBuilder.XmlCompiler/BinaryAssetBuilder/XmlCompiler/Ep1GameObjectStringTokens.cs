@@ -62,7 +62,7 @@ public static class Ep1GameObjectStringTokens
             bodySize=Word((int)body) switch
             {
                 0x5A0E3D9Bu => 76,
-                Ep1ActiveBodyTokenizer.ImmortalBodyTypeId or Ep1ActiveBodyTokenizer.ManagerBodyTypeId or Ep1ActiveBodyTokenizer.ManagedActiveBodyTypeId or Ep1ActiveBodyTokenizer.ManagedImmortalBodyTypeId when reviewedBehaviors => 76,
+                Ep1ActiveBodyTokenizer.ImmortalBodyTypeId or Ep1ActiveBodyTokenizer.ManagerBodyTypeId or Ep1ActiveBodyTokenizer.ManagedActiveBodyTypeId or Ep1ActiveBodyTokenizer.ManagedImmortalBodyTypeId or Ep1ActiveBodyTokenizer.HighlanderBodyTypeId when reviewedBehaviors => 76,
                 0xFF88404Bu when reviewedBehaviors => 8,
                 _ => throw new InvalidDataException("Unreviewed concrete Body native class.")
             };

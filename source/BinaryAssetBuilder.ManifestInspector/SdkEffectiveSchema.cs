@@ -7,6 +7,36 @@ namespace BinaryAssetBuilder.ManifestInspector;
 // Reborn: compile only captured staged XSD bytes with external resolution disabled; enumerate effective inherited file attributes without building assets.
 internal static class SdkEffectiveSchema
 {
+    // Reborn: only an explicitly scoped sequential test worker shares admitted schema parsing; generated graphs are never cached.
+    [ThreadStatic] private static int reuseDepth;
+    [ThreadStatic] private static (Report Report,XmlSchemaSet Schemas)? reused;
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: scope the parsed schema snapshot to this thread, and clear it before another independent worker starts. */
+    //-------------------------------------------------------------------------------------------------
+    internal static IDisposable ReuseAdmittedCatalog()=>new ReuseScope();
+    private sealed class ReuseScope:IDisposable
+    {
+        private bool disposed;
+        // Reborn: a new outer scope must admit its own current catalog.
+        internal ReuseScope(){if(reuseDepth++==0)reused=null;}
+        // Reborn: no schema lookup authority survives the final scope.
+        public void Dispose(){if(disposed)return;disposed=true;if(--reuseDepth==0)reused=null;}
+    }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: each worker request rehashes all schema files before accepting its result, including the last request. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void VerifyReusedCatalog()
+    {
+        if(reused is {} captured && SdkEnvironmentPreflight.Digest(SdkEnvironmentPreflight.Catalog(captured.Report.SchemaRoot))!=captured.Report.SchemaCatalogSha256)
+            throw new InvalidDataException("Schema catalog changed during sequential qualification.");
+    }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: callers may add standalone aliases to their own set, without modifying the retained baseline schema set. */
+    //-------------------------------------------------------------------------------------------------
+    private static XmlSchemaSet CopySet(XmlSchemaSet source)
+    {
+        var copy=new XmlSchemaSet{XmlResolver=null};copy.Add(source);copy.Compile();return copy;
+    }
     // Reborn: effective attributes are not validated source instances, element-particle expansion or complete dependency closure.
     internal sealed record Field(string OwnerType,string Name,string FileType,string DeclarationUri,bool PipelineOnly);
     internal sealed record Evidence(XmlSchemaSet Schemas,int IncludedFiles,string[] Errors,string[] Warnings,bool EngineCompiled,bool Compiled);
@@ -26,6 +56,13 @@ internal static class SdkEffectiveSchema
         // Reborn: reviewed warnings are available only with the explicit pinned Shield candidate, never on arbitrary/default schema evidence.
         if (reviewHooks && !shieldCandidate) throw new ArgumentException("Dummy-hook review requires the explicit Shield candidate.");
         string root = SdkEnvironmentPreflight.BaselineSchemaRoot(); var catalog = SdkEnvironmentPreflight.Catalog(root);
+        // Reborn: reuse requires the same complete current byte fingerprint, reviewed profile and source-free inspection.
+        bool reusable=reuseDepth>0&&source==null&&shieldCandidate&&reviewHooks;
+        if(reusable&&reused is {} saved)
+        {
+            if(root!=saved.Report.SchemaRoot||SdkEnvironmentPreflight.Digest(catalog)!=saved.Report.SchemaCatalogSha256)throw new InvalidDataException("Schema catalog changed during sequential qualification.");
+            onAdmitted?.Invoke(CopySet(saved.Schemas));return saved.Report;
+        }
         Dictionary<string,byte[]> snapshots = new(StringComparer.OrdinalIgnoreCase);
         foreach (var row in catalog)
         {
@@ -44,8 +81,8 @@ internal static class SdkEffectiveSchema
         var after = SdkEnvironmentPreflight.Catalog(root);
         if (after.Count != catalog.Count || catalog.Any(row => !after.TryGetValue(row.Key,out string? hash) || hash != row.Value)) throw new InvalidDataException("Effective schema catalog changed during inspection.");
         // Reborn: pass the exact reviewed compiled set to internal graph inspection only after catalog rechecks and admission; do not compile once per document.
-        if (admitted) onAdmitted?.Invoke(evidence.Schemas);
-        return new(root,SdkEnvironmentPreflight.Digest(catalog),evidence.IncludedFiles,evidence.EngineCompiled,evidence.Compiled,
+        if (admitted) onAdmitted?.Invoke(reusable?CopySet(evidence.Schemas):evidence.Schemas);
+        var report=new Report(root,SdkEnvironmentPreflight.Digest(catalog),evidence.IncludedFiles,evidence.EngineCompiled,evidence.Compiled,
             admitted ? Attributes(evidence.Schemas) : Array.Empty<Field>(),evidence.Errors,evidence.Warnings,
             shieldCandidate ? SdkShieldSchemaCandidate.Profile : "unmodified",candidateDigest,changes,admitted,reviewHooks ? SdkSchemaHookReview.Policy : "none",checks,
             source,admitted && source != null ? Bind(evidence.Schemas,source,SdkEnvironmentPreflight.Read(source,4*1048576)) : null,true,true,false,false,new[] {
@@ -55,6 +92,8 @@ internal static class SdkEffectiveSchema
                 "Effective global named-type attributes and one validated source only; no Include traversal, payload resolution, asset inheritance or full dependency closure.",
                 "Diagnostic declaration URIs identify in-memory schema provenance, not physical files opened at those URIs.",
                 "Captured bytes/consecutive catalog checks are snapshot-only; no atomic filesystem or EA AllTypesHash/game-load proof." });
+        if(reusable&&admitted)reused=(report,evidence.Schemas);
+        return report;
     }
 
     //-------------------------------------------------------------------------------------------------

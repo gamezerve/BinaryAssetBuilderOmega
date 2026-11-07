@@ -1,3 +1,14 @@
+﻿// Reborn: complete EP1 MiscAudio slots participate in source preparation, inheritance and native/import proof.
+// Reborn: loading-screen content/group/sequence assets use the ordinary source, inheritance and strong-linking routes.
+// Reborn: original cursor/font/mouse/vibration/audio scalar roots use normal source admission and complete native proof.
+// Reborn: full AIData declarations use source inheritance, typed native emission and complete source/native proof.
+// Reborn: RedAlertTemplate is emitted through the normal source and complete native verification pipeline.
+// Reborn: complete EP1 targeting heuristics share the ordinary source, inheritance and native proof route.
+// Reborn: unit-intro and invisibility source roots retain normal preparation and complete native proof.
+// Reborn: EVA event/settings and road declarations use original source preparation and mandatory native proof.
+// Reborn: original strategic-name and opening-order roots share source, inheritance and mandatory native proofs.
+// Reborn: hotkey and quick-chat declarations participate in the ordinary source, inheritance and native pipeline.
+// Reborn: admit PathMusicEventSet through the ordinary source and strong-reference pipeline.
 // Reborn: player-tech upgrade bindings use the ordinary source, identity and native compilation routes.
 // Reborn: authored special-power templates participate in shared source, inheritance and native stream publication.
 // Reborn: experience templates share ordinary source preparation, inheritance and explicit asset emission.
@@ -29,13 +40,15 @@ internal static class ConscriptMultiAssetBuild
     //-------------------------------------------------------------------------------------------------
     /** Reborn: existing single-object routes remain unchanged; additional.xml selects the actual multi-asset frontend output. */
     //-------------------------------------------------------------------------------------------------
-    internal static bool TryRun(string entry,string manifest,string global,string output,string? streamContext=null,bool earlyGlobal=false,bool nativeReview=false,string? mapStaticPackage=null)
+    internal static bool TryRun(string entry,string manifest,string global,string output,string? streamContext=null,bool earlyGlobal=false,bool nativeReview=false,string? mapStaticPackage=null,bool forceMixed=false)
     {
         // Reborn: an explicit global dependency context selects the mixed linker even for a single GameObject consumer.
         // Reborn: one immutable class-name catalog serves this synchronous build; source/native verifiers remain mandatory.
         using var nameCatalog=GameObjectModuleReview.ReuseNameCatalog();
+        // Reborn: a complete build shares validated stock metadata without sharing native outputs.
+        using var stockCatalog=GameObjectStockReview.ReuseCatalogs();
         var external=SdkGlobalStreams.Load(streamContext);
-        string additional=Path.Combine(Path.GetDirectoryName(entry)!,"additional.xml");var source=ReadPrepared(entry);bool hasGame=source.DocumentElement!.LocalName=="GameObject";if(!File.Exists(additional)&&hasGame&&external.Length==0&&!earlyGlobal&&mapStaticPackage==null)return false;
+        string additional=Path.Combine(Path.GetDirectoryName(entry)!,"additional.xml");var source=ReadPrepared(entry);bool hasGame=source.DocumentElement!.LocalName=="GameObject";if(!forceMixed&&!File.Exists(additional)&&hasGame&&external.Length==0&&!earlyGlobal&&mapStaticPackage==null)return false;
         var saved=Settings.Current;
         try{
             var official=ConscriptSourceInput.Schemas();string fixtures=Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!;
@@ -85,8 +98,10 @@ internal static class ConscriptMultiAssetBuild
             var radarTextures=sources.Select(s=>s.DocumentElement!).Where(e=>e.LocalName=="RadarTerrainImage")
                 .ToLookup(e=>RadarTerrainImageCompiler.TextureId(e),StringComparer.OrdinalIgnoreCase);
             var fingerprints=new Dictionary<uint,(uint Hash,bool Tokenized)>();var locals=new Dictionary<AssetId,XmlDocument>();
-            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "AudioEventOverridable" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTemplate" or "PlayerTech" or "PlayerTechStoreTemplate" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "CampaignEnumerator" or "CampaignTemplate" or "MissionTemplate" or "MpGameRules" or "Credits" or "TutorialMapData" or "MapMetaData" or "CameraSettings" or "Weather" or "UnitAISettings" or "UIDecalDestinationMarker" or "DynamicsSettings" or "ObjectFilterAsset" or "Video" or "VideoEventList" or "PathMusicEvent" or "PathMusicGameDynamicState" or "GameMap" or "GameScriptList" or "RadarTerrainImage" or "TerrainTextureAtlas" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
-                uint typeId=FastHash.GetHashCode(type);var examples=stock.Where(a=>a.TypeId==typeId).Select(a=>(a.TypeHash,Tokenized:a.Tokenized==1)).Distinct().ToArray();if(examples.Length==0&&type is "GameMap" or "GameScriptList" or "RadarTerrainImage" or "TerrainTextureAtlas" or "MapMetaData")examples=new[]{(TypeHash:type=="GameMap"?0x442681EAu:type=="GameScriptList"?0xA268995Au:type=="RadarTerrainImage"?RadarTerrainImageCompiler.TypeHash:type=="MapMetaData"?MapMetaDataCompiler.TypeHash:TerrainAtlasCompiler.TypeHash,Tokenized:false)};if(examples.Length!=1)throw new InvalidDataException("EP1 asset fingerprint is absent/ambiguous: "+type);fingerprints[typeId]=examples[0];if(!locals.TryAdd(new(typeId,InstanceHandle.GetInstanceId(id)),xml))throw SdkXmlDiagnostics.At(new InvalidDataException("DUPLICATEASSET ' "+type+":"+id+" ' Duplicate local asset/hash identity."),xml.DocumentElement);
+            foreach(var xml in sources){string type=xml.DocumentElement!.LocalName,id=xml.DocumentElement.GetAttribute("id");if(type is not ("AudioEvent" or "AudioEventOverridable" or "GameObject" or "ArmorTemplate" or "WeaponTemplate" or "LogicCommand" or "LogicCommandSet" or "UpgradeTemplate" or "ObjectCreationList" or "PurchasePlayerTechButtonTemplate" or "UnitAbilityButtonTemplate" or "PlayerTemplate" or "PlayerTech" or "PlayerTechStoreTemplate" or "PlayerTechUpgradeBinding" or "ButtonSingleStateData" or "JoypadCommandBarButtonTemplate" or "PlayerPowerButtonTemplate" or "SpecialPowerTemplate" or "AttributeModifier" or "CampaignEnumerator" or "CampaignTemplate" or "MissionTemplate" or "MpGameRules" or "Credits" or "TutorialMapData" or "MapMetaData" or "CameraSettings" or "Weather" or "AIStrategicStateName" or "SkirmishOpeningMove" or "EvaSettings" or "EvaEvent" or "Road" or "UnitIntro" or "InvisibilityTemplate" or "AITargetingHeuristic" or "RedAlertTemplate" or "AIData" or "MouseCursor" or "FontTranslation" or "FontDirectory" or "Mouse" or "ForceFeedbackEvent" or "AudioEventLimitGroup" or "AnimationSoundSettings" or "EngagingContent" or "EngagingContentGroup" or "EngagingContentSequence" or "MiscAudio" or "GeneralHotKeySlots" or "BasicMouseCursors" or "FormationAssistantUnitDefinition" or "FormationAssistantTemplate" or "FormationSelectionTemplate" or "FormationAssistant" or "EmotionTemplate" or "RegisteredObjectSet" or "PlayerTechRank" or "MultiplayerColor" or "HeaderTemplate" or "ShaderOverride" or "RadiusCursor" or "AIBudgetStateDefinition" or "AIBuildStateDefinition" or "AIStrategicStateDefinition" or "AIPersonalityDefinition" or "AIMicroManagerData" or "HotKeySlot" or "MappableKey" or "UIQuickChatMessage" or "UnitAISettings" or "UIDecalDestinationMarker" or "DynamicsSettings" or "ObjectFilterAsset" or "Video" or "VideoEventList" or "PathMusicEvent" or "PathMusicEventSet" or "PathMusicGameDynamicState" or "GameMap" or "GameScriptList" or "RadarTerrainImage" or "TerrainTextureAtlas" or "UnitTypeIcon" or "ExperienceLevelTemplate" or "LocomotorTemplate" or "FXParticleSystemTemplate" or "FXList" or "Texture" or "PackedTextureImage" or "OnDemandTexture" or "OnDemandTextureImage" or "HealthBarTemplate" or "HealthBarSettings" or "W3DContainer" or "W3DHierarchy" or "W3DCollisionBox" or "W3DMesh" or "W3DAnimation" or "Multisound" or "AudioFile")||!ConscriptSourceInput.Identity(type,id))throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported mixed asset type or invalid identity: "+type+":"+id),xml.DocumentElement);
+                uint typeId=FastHash.GetHashCode(type);var examples=stock.Where(a=>a.TypeId==typeId).Select(a=>(a.TypeHash,Tokenized:a.Tokenized==1)).Distinct().ToArray();if(examples.Length==0&&type is "GameMap" or "GameScriptList" or "RadarTerrainImage" or "TerrainTextureAtlas" or "MapMetaData")examples=new[]{(TypeHash:type=="GameMap"?0x442681EAu:type=="GameScriptList"?0xA268995Au:type=="RadarTerrainImage"?RadarTerrainImageCompiler.TypeHash:type=="MapMetaData"?MapMetaDataCompiler.TypeHash:TerrainAtlasCompiler.TypeHash,Tokenized:false)};// Reborn: editor-only root types retain the exact original fingerprint; their processor requires the actual editor-native witness below.
+                if(examples.Length==0&&StockAssetRootCompiler.Supports(type)&&StockAssetRootCompiler.For(type).WorldBuilder)examples=new[]{(TypeHash:StockAssetRootCompiler.For(type).TypeHash,Tokenized:false)};
+                if(examples.Length!=1)throw new InvalidDataException("EP1 asset fingerprint is absent/ambiguous: "+type);fingerprints[typeId]=examples[0];if(!locals.TryAdd(new(typeId,InstanceHandle.GetInstanceId(id)),xml))throw SdkXmlDiagnostics.At(new InvalidDataException("DUPLICATEASSET ' "+type+":"+id+" ' Duplicate local asset/hash identity."),xml.DocumentElement);
             }
             // Reborn: source-only catalog entries resolve local names before native data exists; payloads are freshly compiled below, never copied from stock.
             var localEntries=locals.Select(p=>new ManifestAsset(p.Key.TypeId,p.Key.InstanceId,fingerprints[p.Key.TypeId].Hash,0,0,0,0,0,0,0,0,fingerprints[p.Key.TypeId].Tokenized?1u:0u,p.Value.DocumentElement!.LocalName+":"+p.Value.DocumentElement.GetAttribute("id"),"authored.xml",Array.Empty<AssetId>())).ToArray();
@@ -106,6 +121,10 @@ internal static class ConscriptMultiAssetBuild
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="FXList"))FXListCompiler.Qualify(manifest,schemas,stock);
             // Reborn: developer qualification reads selected original particle payloads only; actual authored payload proof stays enabled in both modes.
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="FXParticleSystemTemplate"))FXParticleSystemCompiler.Qualify(manifest,schemas,stock);
+            // Reborn: newly admitted wavefront modules need independent original native proof even in fast builds.
+            if(sources.Any(s=>s.DocumentElement!.LocalName=="FXParticleSystemTemplate"&&s.GetElementsByTagName("Wavefront",SchemaSet.XmlNamespace).Count>0))FXParticleSystemCompiler.QualifyWavefront(manifest,schemas,stock);
+            // Reborn: light-source and corrected enum admission always require independent retail native proof.
+            if(sources.Any(s=>s.DocumentElement!.LocalName=="FXParticleSystemTemplate"&&(s.GetElementsByTagName("LightSource",SchemaSet.XmlNamespace).Count>0||s.GetElementsByTagName("Wind",SchemaSet.XmlNamespace).Count>0||s.OuterXml.Contains("TWO_QUADS",StringComparison.Ordinal)||s.OuterXml.Contains("ROTATE_",StringComparison.Ordinal))))FXParticleSystemCompiler.QualifyLightAndEnums(manifest,schemas,stock);
             // Reborn: an explicit private diagnostic pass can collect independent object failures without serializing or publishing a partial stream.
             var reviewFailures=new List<object>();
             var built=new Dictionary<AssetId,Built>();int prefix=0;StockMetadataGrammar? weaponGrammar=null;var compileLog=ConscriptCompileLog.ForPrepared(entry);
@@ -134,6 +153,11 @@ internal static class ConscriptMultiAssetBuild
             // Reborn: developer camera qualification uses the original global record; fast mode keeps authored schema/native validation.
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="CameraSettings"))CameraSettingsCompiler.Qualify(global);
             // Reborn: qualify UnitAISettings against the native EP1 global singleton.
+            // Reborn: new UI root processors require independent original native qualification even in fast builds.
+            foreach(var family in StockAssetRootCompiler.Families.Where(f=>sources.Any(s=>s.DocumentElement!.LocalName==f.Name)))
+                StockAssetRootCompiler.Qualify(family,manifest,global,schemas,available);
+            // Reborn: every authored AI heuristic class also needs its independent original source/native witness.
+            if(sources.Any(s=>s.DocumentElement!.LocalName is "AIBudgetStateDefinition" or "AIBuildStateDefinition" or "AIStrategicStateDefinition" or "AIPersonalityDefinition"))AIStateHeuristicContract.Qualify(sources,global,schemas,available);
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="UnitAISettings"))UnitAISettingsCompiler.Qualify(global,schemas,stock);
             // Reborn: developer credits qualification covers the full original EP1 global graph without slowing fast builds.
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="Credits"))CreditsCompiler.Qualify(global,schemas,stock);
@@ -304,6 +328,14 @@ internal static class ConscriptMultiAssetBuild
                     definitions=System.Text.RegularExpressions.Regex.Replace(definitions,@"(?m)^#define[ \t]+(PATH_EVENT_[A-Za-z0-9_]+)[ \t]+","#define $1 ");
                     try{buffer=Buffer(PathMusicRuntimeProbe.FromHeader(Encoding.Latin1.GetBytes(definitions),authored.GetAttribute("id"),alternate.Length==0?null:alternate,cacheable).Chunk);}
                     catch(InvalidDataException error){throw SdkXmlDiagnostics.At(new InvalidDataException("PathMusicEvent '"+authored.GetAttribute("id")+"': "+error.Message,error),authored);}
+                }else if(type=="PathMusicEventSet"){
+                    // Reborn: script and shell names must resolve through their ordered native event registry.
+                    instance=Normalize(xml);
+                    var native=PathMusicEventSetCompiler.Compile((XmlElement)instance.XmlNode);
+                    var proof=SchemaNativeContract.Resolve(xml,schemas,available);
+                    proof.DocumentElement!.RemoveAttribute("id");
+                    SchemaNativeContract.Verify(proof.DocumentElement,typeof(PathMusicEventSetCompiler.EventSet),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());
+                    buffer=Buffer(native);
                 }else if(type=="PathMusicGameDynamicState"){
                     // Reborn: link the state with Core-resolved event and transition handles.
                     instance=Normalize(xml);buffer=Buffer(PathMusicGameDynamicStateCompiler.Compile((XmlElement)instance.XmlNode));
@@ -314,6 +346,12 @@ internal static class ConscriptMultiAssetBuild
                     var proof=SchemaNativeContract.Resolve(xml,schemas,available);
                     proof.DocumentElement!.RemoveAttribute("id");
                     SchemaNativeContract.Verify(proof.DocumentElement,typeof(Ep1Weather),0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());
+                    buffer=Buffer(native);
+                }else if(StockAssetRootCompiler.Supports(type)){
+                    // Reborn: source-sized UI roots retain full byte, relocation and import ownership verification.
+                    StockAssetRootCompiler.Normalize(xml);instance=Normalize(xml);var native=StockAssetRootCompiler.Compile(instance.XmlNode);
+                    var proof=SchemaNativeContract.Resolve(xml,schemas,available);proof.DocumentElement!.RemoveAttribute("id");
+                    SchemaNativeContract.Verify(proof.DocumentElement,StockAssetRootCompiler.For(type).Type,0,native,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());
                     buffer=Buffer(native);
                 }else if(type=="UnitAISettings"){
                     // Reborn: prove both inline victory filters and the real targeting-list import.

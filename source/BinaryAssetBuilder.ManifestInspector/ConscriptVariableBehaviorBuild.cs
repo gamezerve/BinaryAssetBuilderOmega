@@ -16,6 +16,9 @@ internal static class ConscriptVariableBehaviorBuild
     //-------------------------------------------------------------------------------------------------
     internal static bool TryRun(string entry,string manifest,string globalManifest,string output)
     {
+        // Reborn: singleton object builds need the same scoped lookup reuse as mixed builds.
+        using var nameCatalog=GameObjectModuleReview.ReuseNameCatalog();
+        using var stockCatalog=GameObjectStockReview.ReuseCatalogs();
         entry=SdkEnvironmentPreflight.Absolute(entry);var source=SdkXmlDiagnostics.Parse(SdkEnvironmentPreflight.Read(entry,1048576),entry);
         string fixtureRoot=Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!;
         var baseline=SdkXmlDiagnostics.Parse(SdkEnvironmentPreflight.Read(Path.Combine(fixtureRoot,"live-alpha","ConscriptBuildTime1","data","mod.xml"),1048576));baseline.DocumentElement!.SetAttribute("BuildTime","4");
@@ -33,7 +36,12 @@ internal static class ConscriptVariableBehaviorBuild
             var catalogs=new[]{manifest,globalManifest}.Select(path=>ManifestReader.Read(SdkEnvironmentPreflight.Read(path,64*1048576))).ToArray();foreach(var catalog in catalogs){TypeRegistryAudit.ValidateTarget(catalog.Header.Version,catalog.Header.AllTypesHash);if(!catalog.Header.IsLinked||catalog.Validate().Count!=0)throw new InvalidDataException("Variable build requires valid EP1 stock catalogs.");}
             // Reborn: an explicit existing GameObject identity is an override, not a hash collision; refuse only a different stock spelling sharing its hash.
             var assets=catalogs.SelectMany(c=>c.Assets).ToArray();string id=source.DocumentElement!.GetAttribute("id");var sameHash=assets.Where(a=>a.TypeId==0x942FFF2D&&a.InstanceId==InstanceHandle.GetInstanceId(id)).ToArray();if(sameHash.Any(a=>!string.Equals(a.Name,"GameObject:"+id,StringComparison.OrdinalIgnoreCase)))throw new InvalidDataException("GameObject identity hash collides with a different stock name.");bool stockOverride=sameHash.Length!=0;
-            var expected=ConscriptReferenceTargets.Read(source,schemas,assets);var verifier=new ConscriptVariableGraphVerifier(official,manifest,baseline,schemas,assets);
+            // Reborn: singleton objects use the same catalog-backed WorldBuilder render resolution as ordinary mixed builds.
+            AssetId[] expected;
+            try{expected=ConscriptReferenceTargets.Read(source,schemas,assets);}
+            catch(InvalidDataException error)when(error.Message.StartsWith("Behavior strong target missing/ambiguous:",StringComparison.Ordinal))
+            {return ConscriptMultiAssetBuild.TryRun(entry,manifest,globalManifest,output,forceMixed:true);}
+            var verifier=new ConscriptVariableGraphVerifier(official,manifest,baseline,schemas,assets);
             // Reborn: verify the real source once in fast mode; developer builds additionally compile it again and compare every native byte.
             var pair=Build();var tokens=verifier.Verify(source,pair.Native,pair.Instance,plan.Origins);if(SdkBuildTests.Enabled){var repeated=Build();var repeatedTokens=verifier.Verify(source,repeated.Native,repeated.Instance,plan.Origins);if(!Equal(pair.Native,repeated.Native)||!Equal(tokens,repeatedTokens))throw new InvalidDataException("Repeated variable behavior output differs.");}
             int prefix=tokens.InstanceBuffer.Length-pair.Native.InstanceBuffer.Length;var graph=new ConscriptGraphQualification(pair.Instance,tokens,prefix);

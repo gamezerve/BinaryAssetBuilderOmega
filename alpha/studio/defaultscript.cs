@@ -148,7 +148,7 @@ namespace EALABuild
         private object Lifecycle(string method) { return lifecycle.GetMethod(method).Invoke(null, null); }
 
         //-------------------------------------------------------------------------------------------------
-        /** Reborn: this alpha has exactly one indivisible validation/build/package operation. */
+        /** Reborn: one supervised worker executes the independently selected build and package stages. */
         //-------------------------------------------------------------------------------------------------
         public bool shouldExecuteStep(int stepId) { return stepId == 1; }
 
@@ -159,9 +159,9 @@ namespace EALABuild
         {
             List<GUIElementData> options = new List<GUIElementData>();
             options.Add(new GUIElementData("alpha", "Uprising Alpha: Validate XML / Build Data / Make BIG", GUIElementData.LabelType, ScriptIndex.ModScript));
-            options.Add(new GUIElementData("scope", "Fixed yard samples or 1..32 source armors with Includes/Defines/inheritFrom (experimental)", GUIElementData.LabelType, ScriptIndex.ModScript));
+            options.Add(new GUIElementData("scope", "Unchecked stages reuse their last successful output", GUIElementData.LabelType, ScriptIndex.ModScript));
             // Reborn: distinguish reviewed variable behavior shapes from unrestricted nested GameObject/resource authoring.
-            options.Add(new GUIElementData("weapon", "Conscript: reviewed variable Behaviors + fixed fields; unsupported layouts fail", GUIElementData.LabelType, ScriptIndex.ModScript));
+            options.Add(new GUIElementData("weapon", "Create BIG Files can package saved outputs without recompiling", GUIElementData.LabelType, ScriptIndex.ModScript));
             options.Add(new GUIElementData("buildaptui", "Build AptUI", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
 			// Reborn: compile AdditionalMaps/MapMetaData_*.xml before static data, using EA's familiar persisted toggle.
             options.Add(new GUIElementData("buildglobal", "Build Global Data", GUIElementData.CheckBoxType, ScriptIndex.ModScript));

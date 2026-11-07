@@ -46,7 +46,8 @@ internal static class GameObjectBrowserContract
     //-------------------------------------------------------------------------------------------------
     internal static bool Qualify(string staticManifest)
     {
-        string manifest=Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(staticManifest))!,"..","..","WorldBuilder","data","worldbuilder.manifest"));
+        // Reborn: the portable SDK carries the exact WorldBuilder witness beside its lookup catalog.
+        string manifest=WorldBuilderAssetResolver.CatalogPath();
         if(!File.Exists(manifest))throw new InvalidDataException("Populated GameObject Browser requires the original EP1 WorldBuilder stream witness: "+manifest);
         var document=ManifestReader.Read(SdkEnvironmentPreflight.Read(manifest,64*1048576));TypeRegistryAudit.ValidateTarget(document.Header.Version,document.Header.AllTypesHash);
         if(document.Validate().Count!=0||!document.Header.IsLinked||document.Header.ContainerPrefixSize!=4)throw new InvalidDataException("Valid linked EP1 WorldBuilder stream required.");

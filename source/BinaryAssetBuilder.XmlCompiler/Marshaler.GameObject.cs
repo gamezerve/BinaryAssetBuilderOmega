@@ -1,4 +1,4 @@
-using BinaryAssetBuilder.Core.Diagnostics;
+﻿using BinaryAssetBuilder.Core.Diagnostics;
 using Relo;
 using SageBinaryData;
 
@@ -14,6 +14,22 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("TypeId", "0"), &typeId, Tracker.NullTracker);
         switch (typeId)
         {
+            // Reborn: allocate the complete original enclosure and line damage records under their observed EP1 concrete classes.
+            case 0xAAB64617u:MarshalPolymorphicType<EncloseBehaviorModuleData,BehaviorModuleData>(node,objT,state);break;
+            case 0x00DDBB83u:MarshalPolymorphicType<LineSegmentDamageUpdateModuleData,BehaviorModuleData>(node,objT,state);break;
+            // Reborn: secret-file modifier crates retain their observed original concrete class.
+            case 0x4843B2E7u: MarshalPolymorphicType<AttributeCrateCollideModuleData,BehaviorModuleData>(node,objT,state);uint attributeCrate=0x4843B2E7u;state.InplaceEndianToPlatform(&attributeCrate);*(uint*)*objT=attributeCrate;break;
+            // Reborn: allocate the original 68-byte gate behavior and preserve its independently qualified concrete class.
+            case 0xCE47CA96u: MarshalPolymorphicType<GateOpenAndCloseBehaviorModuleData,BehaviorModuleData>(node,objT,state);uint gateOpenAndClose=0xCE47CA96u;state.InplaceEndianToPlatform(&gateOpenAndClose);*(uint*)*objT=gateOpenAndClose;break;
+            // Reborn: original EP1 parabolic-flight update retains its native class identity.
+            // Reborn: substructure ownership keeps its original EP1 behavior class and inherited identity header.
+            // Reborn: prismatic laser scatter retains complete original EP1 module identities.
+            // Reborn: original visibility behavior preserves its concrete EP1 class before writing optional fields.
+            case 0x6154A1A4u: MarshalPolymorphicType<SelectiveVisibilityBehaviorModuleData,BehaviorModuleData>(node,objT,state);uint selectiveVisibility=0x6154A1A4u;state.InplaceEndianToPlatform(&selectiveVisibility);*(uint*)*objT=selectiveVisibility;break;
+            case 0xFA3F1C6Au: MarshalPolymorphicType<LaserScatterUpdateModuleData,BehaviorModuleData>(node,objT,state);uint laserScatter=0xFA3F1C6Au;state.InplaceEndianToPlatform(&laserScatter);*(uint*)*objT=laserScatter;break;
+            case 0x3EB8B5D6u: MarshalPolymorphicType<WeaponScatterEffectUpdateModuleData,BehaviorModuleData>(node,objT,state);uint weaponScatter=0x3EB8B5D6u;state.InplaceEndianToPlatform(&weaponScatter);*(uint*)*objT=weaponScatter;break;
+            case 0x331E6DB8u: MarshalPolymorphicType<SubStructureBehaviorModuleData,BehaviorModuleData>(node,objT,state);uint subStructure=0x331E6DB8u;state.InplaceEndianToPlatform(&subStructure);*(uint*)*objT=subStructure;break;
+            case 0x4727001Du: MarshalPolymorphicType<ParabolicCurveUpdateModuleData,BehaviorModuleData>(node,objT,state);uint parabolicCurve=0x4727001Du;state.InplaceEndianToPlatform(&parabolicCurve);*(uint*)*objT=parabolicCurve;break;
             // Reborn: original EP1 ChargeWeaponUpdate behavior.
             case 0x23E5E3BEu: MarshalPolymorphicType<Ep1ChargeWeaponUpdateModuleData, BehaviorModuleData>(node,objT,state);uint japanChargeWeaponUpdate=0x23E5E3BEu;state.InplaceEndianToPlatform(&japanChargeWeaponUpdate);*(uint*)*objT=japanChargeWeaponUpdate;break;
             // Reborn: original EP1 PrematureDischargeSpecialPower behavior.
@@ -512,7 +528,8 @@ public static partial class Marshaler
                 MarshalPolymorphicType<SalvageCrateCollideModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x839AE83Cu:
-                MarshalPolymorphicType<HealCrateCollideModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: allocate the EP1 healing crate rather than the incompatible legacy KW base.
+                MarshalPolymorphicType<Ep1HealCrateCollideModuleData, BehaviorModuleData>(node, objT, state);uint healCrate=0x839AE83Cu;state.InplaceEndianToPlatform(&healCrate);*(uint*)*objT=healCrate;
                 break;
             case 0xEF293C44u:
                 MarshalPolymorphicType<MoneyCrateCollideModuleData, BehaviorModuleData>(node, objT, state);

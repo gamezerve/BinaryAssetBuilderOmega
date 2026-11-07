@@ -12,6 +12,8 @@ namespace BinaryAssetBuilder.XmlCompiler;
 public static class Ep1ActiveBodyTokenizer
 {
     // Reborn: ImmortalBody is a distinct retail class over the 76-byte EP1 ActiveBody record.
+    // Reborn: the retained Highlander class is a fieldless ActiveBody extension with explicit legacy warning at qualification.
+    public const uint HighlanderBodyTypeId=0x6F0F9F52u;
     public const uint ImmortalBodyTypeId = 0x88E94F7Au;
     // Reborn: ManagerBody shares the retail 76-byte EP1 ActiveBody record.
     public const uint ManagerBodyTypeId = 0x71982EACu;
@@ -44,7 +46,7 @@ public static class Ep1ActiveBodyTokenizer
             _ => null
         };
         // Reborn: ImmortalBody and ManagedActiveBody each inherit directly from ActiveBody.
-        bool directDerived=concreteType is ImmortalBodyTypeId or ManagedActiveBodyTypeId;
+        bool directDerived=concreteType is ImmortalBodyTypeId or ManagedActiveBodyTypeId or HighlanderBodyTypeId;
         if((concreteType!=0x5A0E3D9B && !directDerived && intermediateClass==null) || count>64 || b.Length!=76+count*12 || Word(b,68)!=(count==0?0:76) || Word(b,36)!=0 || Word(b,40)!=0 || b[72]>1 || b[73]>1 || b[74]!=0 || b[75]!=0)
             throw new InvalidDataException("Unsupported EP1 ActiveBody class/list/string/boolean layout.");
         var imports=new List<uint>();

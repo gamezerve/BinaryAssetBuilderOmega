@@ -11,7 +11,7 @@ public static partial class Marshaler
         // Reborn: share the ActiveBody allocation with reviewed derived bodies while keeping their concrete wire identities.
         uint type=0;
         if(node is not null)Marshal(node.GetAttributeValue("TypeId",null),&type,Tracker.NullTracker);
-        if(type is not (0x5A0E3D9Bu or BinaryAssetBuilder.XmlCompiler.Ep1ActiveBodyTokenizer.ImmortalBodyTypeId or BinaryAssetBuilder.XmlCompiler.Ep1ActiveBodyTokenizer.ManagerBodyTypeId or BinaryAssetBuilder.XmlCompiler.Ep1ActiveBodyTokenizer.ManagedActiveBodyTypeId or BinaryAssetBuilder.XmlCompiler.Ep1ActiveBodyTokenizer.ManagedImmortalBodyTypeId))
+        if(type is not (0x5A0E3D9Bu or BinaryAssetBuilder.XmlCompiler.Ep1ActiveBodyTokenizer.ImmortalBodyTypeId or BinaryAssetBuilder.XmlCompiler.Ep1ActiveBodyTokenizer.ManagerBodyTypeId or BinaryAssetBuilder.XmlCompiler.Ep1ActiveBodyTokenizer.ManagedActiveBodyTypeId or BinaryAssetBuilder.XmlCompiler.Ep1ActiveBodyTokenizer.ManagedImmortalBodyTypeId or BinaryAssetBuilder.XmlCompiler.Ep1ActiveBodyTokenizer.HighlanderBodyTypeId))
             throw new BinaryAssetBuilderException(ErrorCode.InternalError,"Explicit reviewed EP1 active-body class ID required.");
         using(var context=state.Push((void**)objT,(uint)sizeof(Ep1ActiveBodyModuleData),1u))Marshal(node,(Ep1ActiveBodyModuleData*)*objT,state);
         // Reborn: hashing the separate C# name would be wrong; the bound EP1 schema retains ActiveBodyModuleData's original concrete ID.

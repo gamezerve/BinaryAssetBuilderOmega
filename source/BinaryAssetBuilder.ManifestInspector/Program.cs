@@ -13,6 +13,22 @@ internal static class Program
     {
         try
         {
+            // Reborn: source-only XML is tested through actual authored include consumers, separately from native asset emission.
+            if(args.Length==3 && args[0]=="stock-source-plan"){SdkStockSourcePlan.Run(args[1],args[2]);return 0;}
+            // Reborn: private corpus qualification executes only sequential production prepare/build requests.
+            if(args.Length==2 && args[0]=="stock-source-worker"){return SdkStockCompileWorker.Run(args[1]);}
+            // Reborn: warning coordinates belong to the successful compiled generation, not subsequently edited source XML.
+            if(args.Length==4 && args[0]=="sdk-save-stage-diagnostics")
+            {SdkBuildStageDiagnostics.Capture(args[1],args[2],args[3]);return 0;}
+            // Reborn: loose stage outputs retain only validated runtime families and support independent repackaging.
+            if(args.Length==4 && args[0]=="sdk-export-build-stage")
+            {SdkBuildStageFiles.Export(args[1],args[2],args[3]);return 0;}
+            if(args.Length==3 && args[0]=="sdk-export-global-stage")
+            {SdkBuildStageFiles.ExportGlobals(args[1],args[2]);return 0;}
+            if(args.Length==3 && args[0]=="sdk-export-aptui-stage")
+            {SdkBuildStageFiles.ExportAptUI(args[1],args[2]);return 0;}
+            if(args.Length==3 && args[0]=="sdk-verify-stage-links")
+            {SdkBuildStageFiles.VerifyLinks(args[1],args[2]);return 0;}
             // Reborn: verify the shared terrain raster decoder without reading or changing authored mod content.
             if(args.Length==1&&args[0]=="terrain-raster-self-test")
             {TextureRasterSmokeTest.Run();return 0;}
@@ -902,8 +918,8 @@ internal static class Program
             if (args.Length == 2 && args[0] == "ep1-basic-module-self-test")
             { CompilerSmokeTest.InitializeHashProvider(); Ep1BasicModuleSmokeTest.Run(args[1]); return 0; }
             // Reborn: selected stock module topology and AI marshaler controls remain separate from general source/publication.
-            if (args.Length == 3 && args[0] == "gameobject-module-review")
-            { CompilerSmokeTest.InitializeHashProvider(); Console.WriteLine(JsonSerializer.Serialize(GameObjectModuleReview.Inspect(args[1], args[2]), JsonOptions)); return 0; }
+            if (args.Length is 3 or 4 && args[0] == "gameobject-module-review" && (args.Length==3 || args[3]=="allow-null-armor"))
+            { CompilerSmokeTest.InitializeHashProvider(); Console.WriteLine(JsonSerializer.Serialize(GameObjectModuleReview.Inspect(args[1], args[2],allowNullArmorReferences:args.Length==4), JsonOptions)); return 0; }
             if (args.Length == 2 && args[0] == "gameobject-module-self-test")
             { CompilerSmokeTest.InitializeHashProvider(); GameObjectModuleReview.SelfTest(args[1]); return 0; }
             // Reborn: full root-name/offset inventory still does not grant indirect module/compiler authority.

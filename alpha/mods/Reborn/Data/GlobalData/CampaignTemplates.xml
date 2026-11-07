@@ -25,7 +25,7 @@
 	<Mission>Allies_8</Mission>
 	<Mission>Allies_9</Mission>
     <FinalMovie
-        FileName="AFS10"
+        FileName="AFS10RA3"
         ScreenName="MissionName:Allies_10"
         Description="MissionDesc:Allies_10">
     </FinalMovie>
@@ -151,7 +151,7 @@
     </AICommander>
 
     <IntroMovie
-        FileName="AFS01"
+        FileName="AFS01RA3"
         ScreenName="MissionName:Allies_1"
         Description="MissionDesc:Allies_1">
     </IntroMovie>
@@ -186,7 +186,7 @@
     </AICommander>
 
     <IntroMovie
-        FileName="AFS02"
+        FileName="AFS02RA3"
         ScreenName="MissionName:Allies_2"
         Description="MissionDesc:Allies_2">
     </IntroMovie>
@@ -224,7 +224,7 @@
     </AICommander>
 
     <IntroMovie
-        FileName="AFS03"
+        FileName="AFS03RA3"
         ScreenName="MissionName:Allies_3"
         Description="MissionDesc:Allies_3">
     </IntroMovie>
@@ -256,7 +256,7 @@
     </AICommander>
 
     <IntroMovie
-        FileName="AFS04"
+        FileName="AFS04RA3"
         ScreenName="MissionName:Allies_4"
         Description="MissionDesc:Allies_4">
     </IntroMovie>
@@ -467,7 +467,7 @@
     <Mission>Soviets_8</Mission>
     <Mission>Soviets_9</Mission>
     <FinalMovie
-        FileName="SFS10"
+        FileName="SFS10RA3"
         ScreenName="MissionName:Soviets_10"
         Description="MissionDesc:Soviets_10">
     </FinalMovie>
@@ -526,7 +526,7 @@
     </AICommander>
 
     <IntroMovie
-        FileName="SFS01"
+        FileName="SFS01RA3"
         ScreenName="MissionName:Soviets_1"
         Description="MissionDesc:Soviets_1">
     </IntroMovie>
@@ -558,7 +558,7 @@
     </AICommander>
     
     <IntroMovie
-        FileName="SFS02"
+        FileName="SFS02RA3"
         ScreenName="MissionName:Soviets_2"
         Description="MissionDesc:Soviets_2">
     </IntroMovie>
@@ -597,7 +597,7 @@
 	</AICommander>
 
     <IntroMovie
-        FileName="SFS03"
+        FileName="SFS03RA3"
         ScreenName="MissionName:Soviets_3"
         Description="MissionDesc:Soviets_3">
     </IntroMovie>
@@ -637,7 +637,7 @@
 	</AICommander>
 
     <IntroMovie
-        FileName="SFS04"
+        FileName="SFS04RA3"
         ScreenName="MissionName:Soviets_4"
         Description="MissionDesc:Soviets_4">
     </IntroMovie>
@@ -670,7 +670,7 @@
 	</AICommander>
     
     <IntroMovie
-        FileName="SFS05"
+        FileName="SFS05RA3"
         ScreenName="MissionName:Soviets_5"
         Description="MissionDesc:Soviets_5">
     </IntroMovie>
@@ -939,7 +939,7 @@
 	<Mission>Japan_8</Mission>
 	<Mission>Japan_9</Mission>
     <FinalMovie
-        FileName="JFS10"
+        FileName="JFS10RA3"
         ScreenName="MissionName:Japan_10"
         Description="MissionDesc:Japan_10">
     </FinalMovie>
@@ -977,7 +977,7 @@
 	</AICommander>
     
     <IntroMovie
-        FileName="JFS01"
+        FileName="JFS01RA3"
         ScreenName="MissionName:Japan_1"
         Description="MissionDesc:Japan_1">
     </IntroMovie>
@@ -1009,7 +1009,7 @@
 	</AICommander>
 
     <IntroMovie
-        FileName="JFS02"
+        FileName="JFS02RA3"
         ScreenName="MissionName:Japan_2"
         Description="MissionDesc:Japan_2">
     </IntroMovie>
@@ -1047,7 +1047,7 @@
 	</AICommander>
     
     <IntroMovie
-        FileName="JFS03"
+        FileName="JFS03RA3"
         ScreenName="MissionName:Japan_3"
         Description="MissionDesc:Japan_3">
     </IntroMovie>
@@ -1080,7 +1080,7 @@
 	</AICommander>
     
     <IntroMovie
-        FileName="JFS04"
+        FileName="JFS04RA3"
         ScreenName="MissionName:Japan_4"
         Description="MissionDesc:Japan_4">
     </IntroMovie>

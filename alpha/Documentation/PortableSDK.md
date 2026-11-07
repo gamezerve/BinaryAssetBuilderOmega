@@ -55,9 +55,33 @@ The optional Misc BIG and SKUDef follow the same directory/version convention.
 The destination is obtained from Windows' Documents known folder; it is not
 copied from the developer's username or hardcoded drive.
 
-Internal receipts remain in `builtmods`; scratch data remains in `.work`.
-Neither directory contains required compiler inputs. Both directories and their
-old contents may be omitted from a copy; startup creates missing directories without clearing existing contents. Do not copy
+Successful Static, Global and AptUI outputs are retained separately under
+`builtmods/<mod>/<family>/<generation>/files/data`. The `MapCatalog` family
+retains the optional single-player map catalog produced by Build Maps.
+`current.json` selects one successful generation per family. SHA256 inventories,
+source provenance, weak-use evidence and captured warning coordinates accompany
+each generation. The combined Streams BIG is created only for final publication;
+no redundant combined BIG is retained under `builtmods`.
+
+In Studio, checked build stages replace their complete output family after a
+successful run. Unchecked stages reuse their last successful generation. Enable
+Create BIG Files to package the selected new and saved outputs, or enable it
+alone to repackage without recompiling. With Create BIG Files disabled, successful
+compilation still saves its selected outputs. Validate-only maintenance checks do
+not save generations. Failed compilation, dependency checks or final packaging
+retain the previous stage index and published package. Packing verifies saved
+file hashes and cross-stream strong references before publication.
+
+The first package needs a successful Static output. Rebuilding a selected empty
+Global or AptUI family removes its previous contents; leaving it unchecked keeps
+those contents. A verified legacy `builtmods/<mod>/<mod>.big` is split into these
+families automatically on first reuse. After successful migration, its redundant
+BIG and internal SKUDef are removed.
+
+Scratch data remains in `.work`. Neither directory contains required compiler
+inputs. Both can be omitted from a copy, but discarding `builtmods` also discards
+the outputs needed for partial builds and packaging-only runs; compile the
+required families again. Startup creates missing directories without clearing existing contents. Do not copy
 while a build or tool synchronization is active. Moving the folder does not
 update paths saved in separate launchers outside this SDK.
 

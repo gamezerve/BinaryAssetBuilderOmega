@@ -45,18 +45,19 @@ internal static class GameObjectOriginalStreamSmokeTest
         // Reborn: every serialized reference occurrence and import selector is checked against the original normalized source, not merely manifest self-consistency.
         int refs=4+48+48;for(int i=0;i<dependencies.Length;i++){var bad=payloads["diagnostic.manifest"].ToArray();bad[refs+i*8]^=1;Corrupt("diagnostic.manifest",bad);refusals++;}
         foreach(uint slot in Slots(chunk.ImportsData)){var bad=payloads["diagnostic.bin"].ToArray();Put(bad,8+(int)slot,0);Corrupt("diagnostic.bin",bad);refusals++;}
-        var missing=catalogs.Select(c=>c with{Assets=c.Assets.Where(a=>a.TypeId!=dependencies[0].TypeId || a.InstanceId!=dependencies[0].InstanceId).ToArray()}).ToArray();Refuse(()=>ValidateDependencies(dependencies,missing));refusals++;
+        // Reborn: absent-target and ambiguity controls require a real dependency; zero-reference graphs are still fully serialized/read back.
+        if(dependencies.Length>0){var missing=catalogs.Select(c=>c with{Assets=c.Assets.Where(a=>a.TypeId!=dependencies[0].TypeId || a.InstanceId!=dependencies[0].InstanceId).ToArray()}).ToArray();Refuse(()=>ValidateDependencies(dependencies,missing));refusals++;
         // Reborn: reject ambiguous catalogs, relabeled tokenization, changed fixed identities and truncated qualified chunks without widening default dispatch.
-        Refuse(()=>ValidateDependencies(dependencies,catalogs.Concat(catalogs).ToArray()));refusals++;
+        Refuse(()=>ValidateDependencies(dependencies,catalogs.Concat(catalogs).ToArray()));refusals++;}
         Refuse(()=>BoundedDiagnosticBuild.Verify(first,ordered,chunks,payloads,checksum,runtimeNames,new[]{false}));refusals++;
         var wrongXml=original.XmlNode.CloneNode(true);wrongXml.Attributes!["id"]!.Value=original.XmlNode.Attributes!["id"]!.Value+"Unadmitted";var wrongIdentity=new InstanceDeclaration(document){XmlNode=wrongXml,ValidatedReferencedInstances=new(original.ReferencedInstances)};wrongIdentity.ReferencedInstances.AddRange(original.ReferencedInstances);wrongIdentity.Handle.TypeHash=instance.Handle.TypeHash;wrongIdentity.Handle.InstanceHash=instance.Handle.InstanceHash;Refuse(()=>Serialize(wrongIdentity,chunk));refusals++;
         byte[] savedData=chunk.InstanceData;try{chunk.InstanceData=savedData[..^1];Refuse(()=>Serialize(instance,chunk));refusals++;}finally{chunk.InstanceData=savedData;}
-        var savedReferences=instance.ValidatedReferencedInstances;try{instance.ValidatedReferencedInstances=savedReferences.AsEnumerable().Reverse().ToList();Refuse(()=>Serialize(instance,chunk));refusals++;}finally{instance.ValidatedReferencedInstances=savedReferences;}
+        var savedReferences=instance.ValidatedReferencedInstances;try{instance.ValidatedReferencedInstances=savedReferences.Count>1?savedReferences.AsEnumerable().Reverse().ToList():null;Refuse(()=>Serialize(instance,chunk));refusals++;}finally{instance.ValidatedReferencedInstances=savedReferences;}
         foreach(uint hash in new[]{0u,0xCEB9FE37u}){uint saved=instance.Handle.TypeHash;try{instance.Handle.TypeHash=hash;Refuse(()=>Serialize(instance,chunk));refusals++;}finally{instance.Handle.TypeHash=saved;}}
         // Reborn: build-local variable evidence must reject post-qualification mutations in each stream and in a same-ID source.
         if(graph!=null)
         {
-            foreach(var bytes in new[]{chunk.InstanceData,chunk.RelocationData,chunk.ImportsData}){byte savedByte=bytes[0];try{bytes[0]^=1;Refuse(()=>Serialize(instance,chunk));refusals++;}finally{bytes[0]=savedByte;}}
+            foreach(var bytes in new[]{chunk.InstanceData,chunk.RelocationData,chunk.ImportsData}.Where(b=>b.Length>0)){byte savedByte=bytes[0];try{bytes[0]^=1;Refuse(()=>Serialize(instance,chunk));refusals++;}finally{bytes[0]=savedByte;}}
             var field=instance.XmlNode.Attributes!["BuildTime"]!;string saved=field.Value;try{field.Value=saved=="4"?"5":"4";Refuse(()=>Serialize(instance,chunk));refusals++;}finally{field.Value=saved;}
         }
         for(int i=0;i<paths.Length;i++)if(!SHA256.HashData(snapshots[i]).SequenceEqual(SHA256.HashData(SdkEnvironmentPreflight.Read(paths[i],64*1048576))))throw new InvalidDataException("Original external manifest changed during stream proof.");Verify(first,payloads);
@@ -97,7 +98,7 @@ internal static class GameObjectOriginalStreamSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: selectors require exact sentinel-framed unique source locations. */
     //-------------------------------------------------------------------------------------------------
-    private static uint[] Slots(byte[] b){if(b.Length<8 || b.Length%4!=0 || Word(b,b.Length-4)!=uint.MaxValue)throw new InvalidDataException("Original stream import framing.");var slots=Enumerable.Range(0,b.Length/4-1).Select(i=>Word(b,i*4)).ToArray();if(slots.Distinct().Count()!=slots.Length)throw new InvalidDataException("Original stream duplicate import source.");return slots;}
+    private static uint[] Slots(byte[] b){if(b.Length==0)return Array.Empty<uint>();if(b.Length<8 || b.Length%4!=0 || Word(b,b.Length-4)!=uint.MaxValue)throw new InvalidDataException("Original stream import framing.");var slots=Enumerable.Range(0,b.Length/4-1).Select(i=>Word(b,i*4)).ToArray();if(slots.Distinct().Count()!=slots.Length)throw new InvalidDataException("Original stream duplicate import source.");return slots;}
     //-------------------------------------------------------------------------------------------------
     /** Reborn: stream word reads remain bounded. */
     //-------------------------------------------------------------------------------------------------

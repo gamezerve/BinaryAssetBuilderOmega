@@ -59,7 +59,12 @@ internal static class GameObjectRootStringContract
     //-------------------------------------------------------------------------------------------------
     /** Reborn: package publication rechecks the complete ordered allocation run, exact content, terminators, padding and header pointers. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Verify(XmlDocument source,byte[] native,int prefix)=>Inspect(Values(source),native,prefix);
+    internal static void Verify(XmlDocument source,byte[] native,int prefix)
+    {
+        // Reborn: the populated Browser list precedes scalar root strings and remains source-bound after stream rebasing.
+        var browser=Ep1GameObjectBrowser.Inspect(native,Array.Empty<uint>(),requireRelocations:false,root:prefix);
+        GameObjectBrowserContract.Verify(source,native,browser);Inspect(Values(source),native,prefix);
+    }
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: replace only the contiguous root-string block run and transform every subsequent relocation/import coordinate exactly once. */
@@ -106,6 +111,9 @@ internal static class GameObjectRootStringContract
     private static int Inspect(IReadOnlyList<Value> values,byte[] native,int prefix)
     {
         int next=checked(prefix+NativeRootSize);
+        // Reborn: scalar strings start after any independently checked Browser item/text allocations.
+        var browser=Ep1GameObjectBrowser.Inspect(native,Array.Empty<uint>(),requireRelocations:false,root:prefix);
+        if(browser.Count!=0)next=browser.End;
         foreach(var value in values)
         {
             int header=prefix+value.Field.Offset;uint length=Word(native,header),pointer=Word(native,header+4);
