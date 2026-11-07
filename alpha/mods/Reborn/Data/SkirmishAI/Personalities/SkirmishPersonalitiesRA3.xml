@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <!-- Reborn: add three RA3 portrait variants per faction alongside the existing retail skirmish personalities. -->
+  <Includes>
+    <Include type="all" source="AlliedBalancedRA3.xml" />
+    <Include type="all" source="AlliedSquadronLeaderRA3.xml" />
+    <Include type="all" source="AlliedSpecialForcesRA3.xml" />
+    <Include type="all" source="SovietBalancedRA3.xml" />
+    <Include type="all" source="SovietShockSpecialistRA3.xml" />
+    <Include type="all" source="SovietAirMarshallRA3.xml" />
+    <Include type="all" source="JapanBalancedRA3.xml" />
+    <Include type="all" source="JapanMechaWarfareRA3.xml" />
+    <Include type="all" source="JapanFleetCommandRA3.xml" />
+  </Includes>
+</AssetDeclaration>

@@ -6380,7 +6380,7 @@ PERSONALITY:KENJI
 End
 
 PERSONALITY:LISSETTE
-	"Lissette"
+	"Lydia"
 End
 
 PERSONALITY:MOSKVIN
@@ -6388,7 +6388,7 @@ PERSONALITY:MOSKVIN
 End
 
 PERSONALITY:NAOMI
-	"Naomi"
+	"Takara"
 End
 
 PERSONALITY:OLEG
@@ -6400,10 +6400,47 @@ PERSONALITY:SHINZO
 End
 
 PERSONALITY:WARREN
-	"Warren"
+	"Douglas"
 End
 
 PERSONALITY:ZHANA
+	"Vera"
+End
+
+// Reborn: distinguish the additional RA3 portrait variants in the skirmish personality selector.
+
+Personality:WarrenRA3
+	"Warren"
+End
+
+Personality:GilesRA3
+	"Giles (Early)"
+End
+
+Personality:LissetteRA3
+	"Lissette"
+End
+
+Personality:OlegRA3
+	"Oleg (Early)"
+End
+
+Personality:MoskvinRA3
+	"Moskvin (Early)"
+End
+
+Personality:ZhanaRA3
 	"Zhana"
 End
 
+Personality:ShinzoRA3
+	"Shinzo (Early)"
+End
+
+Personality:KenjiRA3
+	"Kenji (Early)"
+End
+
+Personality:NaomiRA3
+	"Naomi"
+End

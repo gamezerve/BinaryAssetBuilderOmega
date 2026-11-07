@@ -13,6 +13,8 @@ namespace BinaryAssetBuilder.ManifestInspector;
 internal static class WorldBuilderAssetResolver
 {
     internal sealed record Native(ManifestAsset Asset,byte[] Bin,byte[] Relo,byte[] Imp);
+    // Reborn: authored chunks can borrow their existing sidecars while retail chunks retain their owned arrays.
+    private sealed record NativeView(ManifestAsset Asset,ReadOnlyMemory<byte> Bin,ReadOnlyMemory<byte> Relo,ReadOnlyMemory<byte> Imp);
     internal sealed record Result(Dictionary<string,byte[]> Streams,Dictionary<string,byte[]> CustomData,string[] Imported,long BytesRead);
     private static readonly string[] Extensions={".manifest",".bin",".relo",".imp"};
 
@@ -167,11 +169,12 @@ internal static class WorldBuilderAssetResolver
             }
         }
         // Reborn: imported dependencies precede authored consumers; reorder whole asset chunks without changing their asset-relative offsets or reference indices.
-        var candidates=ReadNative(mod,streams).Concat(native).ToDictionary(n=>Id(n.Asset));var sorted=new List<Native>();var ordering=new HashSet<AssetId>();foreach(var id in candidates.Keys)Order(id);var all=sorted.ToArray();
+        var candidates=ReadNativeViews(mod,streams).Concat(native.Select(n=>new NativeView(n.Asset,n.Bin,n.Relo,n.Imp))).ToDictionary(n=>Id(n.Asset));var sorted=new List<NativeView>();var ordering=new HashSet<AssetId>();foreach(var id in candidates.Keys)Order(id);var all=sorted.ToArray();
         // Reborn: imported assets can introduce an AudioFile or other external provider not used by the authored source; add only the newly required runtime names.
-        var runtimeAdditions=native.SelectMany(n=>n.Asset.References).Where(id=>!candidates.ContainsKey(id)&&runtimeProviders?.ContainsKey(id)==true).Select(id=>runtimeProviders![id]).Distinct(StringComparer.OrdinalIgnoreCase);var result=Serialize(all,mod,streams["diagnostic.manifest"],runtimeAdditions);
+        var runtimeAdditions=native.SelectMany(n=>n.Asset.References).Where(id=>!candidates.ContainsKey(id)&&runtimeProviders?.ContainsKey(id)==true).Select(id=>runtimeProviders![id]).Distinct(StringComparer.OrdinalIgnoreCase);var result=SerializeViews(all,mod,streams["diagnostic.manifest"],runtimeAdditions);
         var check=ManifestReader.Read(result["diagnostic.manifest"]);if(check.Validate().Count!=0||check.Assets.Count!=all.Length)throw new InvalidDataException("Resolved WorldBuilder manifest readback failed.");
-        var recovered=ReadNative(check,result);for(int i=0;i<all.Length;i++)if(all[i].Asset.Name!=recovered[i].Asset.Name||!all[i].Asset.References.SequenceEqual(recovered[i].Asset.References)||!all[i].Bin.SequenceEqual(recovered[i].Bin)||!all[i].Relo.SequenceEqual(recovered[i].Relo)||!all[i].Imp.SequenceEqual(recovered[i].Imp))throw new InvalidDataException("Resolved WorldBuilder native readback differs: "+all[i].Asset.Name);
+        // Reborn: exact readback compares sidecar slices without allocating another complete native graph.
+        var recovered=ReadNativeViews(check,result);for(int i=0;i<all.Length;i++)if(all[i].Asset.Name!=recovered[i].Asset.Name||!all[i].Asset.References.SequenceEqual(recovered[i].Asset.References)||!all[i].Bin.Span.SequenceEqual(recovered[i].Bin.Span)||!all[i].Relo.Span.SequenceEqual(recovered[i].Relo.Span)||!all[i].Imp.Span.SequenceEqual(recovered[i].Imp.Span))throw new InvalidDataException("Resolved WorldBuilder native readback differs: "+all[i].Asset.Name);
         return new(result,custom,selected.Select(a=>a.Asset.Name).ToArray(),bytesRead);
 
         // Reborn: original stock cycles remain intact; all acyclic local/imported edges are emitted dependency-first.
@@ -196,8 +199,14 @@ internal static class WorldBuilderAssetResolver
     //-------------------------------------------------------------------------------------------------
     internal static void Run(string package,string catalogDirectory,string staticManifest,string globalManifest,string prepared,string? context,string? mapStaticPackage=null)
     {
-        var files=new Dictionary<string,byte[]>(StringComparer.OrdinalIgnoreCase);using(var big=BigArchive.Open(package))foreach(var entry in big.Entries)files.Add(entry.Name,big.ReadEntry(entry,checked((int)entry.StoredSize)));
-        var streams=Extensions.ToDictionary(e=>"diagnostic"+e,e=>files["data\\mod"+e]);
+        // Reborn: only one native family is needed for resolution; audio/custom data and duplicate LOD families stay on disk.
+        Dictionary<string,byte[]> streams;
+        HashSet<string> originalNames;
+        using(var big=BigArchive.Open(package)){
+            var entries=big.Entries.ToDictionary(e=>e.Name,StringComparer.OrdinalIgnoreCase);
+            originalNames=entries.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase);
+            streams=Extensions.ToDictionary(e=>"diagnostic"+e,e=>big.ReadEntry(entries["data\\mod"+e],checked((int)entries["data\\mod"+e].StoredSize)));
+        }
         var providers=new[]{(Path:staticManifest,Runtime:"data\\static.manifest"),(Path:globalManifest,Runtime:"data\\global.manifest"),(Path:Path.Combine(catalogDirectory,"audio.manifest"),Runtime:"data\\audio.manifest")}.Where(p=>File.Exists(p.Path)).Concat(SdkGlobalStreams.Load(context).Select(s=>(Path:s.Manifest,Runtime:s.Runtime))).ToArray();
         var mod=ManifestReader.Read(streams["diagnostic.manifest"]);
         // Reborn: map packages retain their own reference convention; only top-level LOD streams resolve from data.
@@ -221,19 +230,16 @@ internal static class WorldBuilderAssetResolver
         string? mapArt=MapArtPath(catalogDirectory,mapId);
         var result=Resolve(streams,Path.Combine(catalogDirectory,"worldbuilder.manifest"),loaded,weak,runtimeProviders,mapArt);
         if(result.Imported.Length==0)return;
-        foreach(string suffix in new[]{"","_l","_m"})foreach(string extension in Extensions)files["data\\mod"+suffix+extension]=result.Streams["diagnostic"+extension];
+        var files=new Dictionary<string,byte[]>(StringComparer.OrdinalIgnoreCase);
+        foreach(string suffix in new[]{"","_l","_m"})foreach(string extension in Extensions)files.Add("data\\mod"+suffix+extension,result.Streams["diagnostic"+extension]);
         // Reborn: each LOD family has its own custom-data lookup directory even when it reuses exactly the same retail payload.
-        foreach(var file in result.CustomData)foreach(string suffix in new[]{"","_l","_m"})files.Add(file.Key.Replace("data\\mod\\","data\\mod"+suffix+"\\",StringComparison.Ordinal),file.Value);string temporary=package+".worldbuilder.tmp";
-        // Reborn: a pre-existing temporary file belongs to another operation and must never be removed after CreateNew refuses it.
-        // Reborn: neither writing, readback nor receipt hashing allocates an archive-sized buffer in the x86 compiler.
-        bool created=false;string archiveHash;
-        try{
-            using(var output=new FileStream(temporary,FileMode.CreateNew,FileAccess.Write,FileShare.None)){created=true;WritePack(output,files);}
-            VerifyPack(temporary,files);
-            using(var input=File.OpenRead(temporary))archiveHash=Convert.ToHexString(SHA256.HashData(input));
-            File.Move(temporary,package,true);
-        }finally{if(created&&File.Exists(temporary))File.Delete(temporary);}
-        string receiptPath=Path.Combine(Path.GetDirectoryName(package)!,"trial-plan.json");var receipt=JsonNode.Parse(File.ReadAllText(receiptPath))!;receipt["WorldBuilderAssets"]=System.Text.Json.JsonSerializer.SerializeToNode(result.Imported);receipt["WorldBuilderAssetCount"]=result.Imported.Length;receipt["PackagedAssetCount"]=ManifestReader.Read(result.Streams["diagnostic.manifest"]).Assets.Count;receipt["ArchiveEntryCount"]=files.Count;receipt["ArchiveSha256"]=archiveHash;File.WriteAllText(receiptPath,receipt.ToJsonString(new(){WriteIndented=true}));
+        foreach(var file in result.CustomData)foreach(string suffix in new[]{"","_l","_m"}){
+            string name=file.Key.Replace("data\\mod\\","data\\mod"+suffix+"\\",StringComparison.Ordinal);
+            if(originalNames.Contains(name))throw new InvalidDataException("Duplicate WorldBuilder custom resource: "+name);
+            files.Add(name,file.Value);
+        }
+        var repacked=RewritePack(package,files);
+        string receiptPath=Path.Combine(Path.GetDirectoryName(package)!,"trial-plan.json");var receipt=JsonNode.Parse(File.ReadAllText(receiptPath))!;receipt["WorldBuilderAssets"]=System.Text.Json.JsonSerializer.SerializeToNode(result.Imported);receipt["WorldBuilderAssetCount"]=result.Imported.Length;receipt["PackagedAssetCount"]=ManifestReader.Read(result.Streams["diagnostic.manifest"]).Assets.Count;receipt["ArchiveEntryCount"]=repacked.Entries;receipt["ArchiveSha256"]=repacked.Sha256;File.WriteAllText(receiptPath,receipt.ToJsonString(new(){WriteIndented=true}));
         Console.WriteLine($"Resolving WorldBuilder assets: {result.Imported.Length} added with dependencies; {result.BytesRead:N0} native bytes read; {result.CustomData.Count} custom resources packaged.");foreach(var name in result.Imported)Console.WriteLine("WorldBuilder asset added: "+name);
     }
 
@@ -251,23 +257,34 @@ internal static class WorldBuilderAssetResolver
     //-------------------------------------------------------------------------------------------------
     internal static Native[] ReadNative(ManifestDocument metadata, Dictionary<string, byte[]> streams)
     {
+        return ReadNativeViews(metadata,streams).Select(n=>new Native(n.Asset,n.Bin.ToArray(),n.Relo.ToArray(),n.Imp.ToArray())).ToArray();
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: validate linked sidecars once and borrow exact asset slices without duplicating their native payloads. */
+    //-------------------------------------------------------------------------------------------------
+    private static NativeView[] ReadNativeViews(ManifestDocument metadata, Dictionary<string, byte[]> streams)
+    {
         int[] at = { 8, 8, 8 };
-        var result = new List<Native>();
+        var result = new List<NativeView>();
+
+        for (int i = 0; i < 3; i++)
+        {
+            var bytes = streams["diagnostic" + Extensions[i + 1]];
+            uint magic = i == 0 ? 0xBABB0000u : i == 1 ? 0xBABE0000u : 0xBAB10000u;
+            if (bytes.Length < 8 || Word(bytes, 0) != magic || Word(bytes, 4) != metadata.Header.StreamChecksum)
+                throw new InvalidDataException($"Linked stream checksum/magic differs: {Extensions[i + 1]}, ExpectedMagic=0x{magic:X8}, ActualMagic=0x{(bytes.Length >= 4 ? Word(bytes, 0) : 0):X8}, ExpectedChecksum=0x{metadata.Header.StreamChecksum:X8}, ActualChecksum=0x{(bytes.Length >= 8 ? Word(bytes, 4) : 0):X8}");
+        }
 
         foreach (var asset in metadata.Assets)
         {
             int[] sizes = { asset.InstanceDataSize, asset.RelocationDataSize, asset.ImportsDataSize };
-            var parts = new byte[3][];
+            var parts = new ReadOnlyMemory<byte>[3];
 
             for (int i = 0; i < 3; i++)
             {
                 var bytes = streams["diagnostic" + Extensions[i + 1]];
-                uint magic = i == 0 ? 0xBABB0000u : i == 1 ? 0xBABE0000u : 0xBAB10000u;
-
-                if (bytes.Length < 8 || Word(bytes, 0) != magic || Word(bytes, 4) != metadata.Header.StreamChecksum)
-                    throw new InvalidDataException($"Linked stream checksum/magic differs: {Extensions[i + 1]}, ExpectedMagic=0x{magic:X8}, ActualMagic=0x{(bytes.Length >= 4 ? Word(bytes, 0) : 0):X8}, ExpectedChecksum=0x{metadata.Header.StreamChecksum:X8}, ActualChecksum=0x{(bytes.Length >= 8 ? Word(bytes, 4) : 0):X8}");
-
-                parts[i] = bytes.AsSpan(at[i], sizes[i]).ToArray();
+                parts[i] = bytes.AsMemory(at[i], sizes[i]);
                 at[i] = checked(at[i] + sizes[i]);
             }
 
@@ -288,12 +305,88 @@ internal static class WorldBuilderAssetResolver
     //-------------------------------------------------------------------------------------------------
     internal static Dictionary<string,byte[]> Serialize(Native[] assets,ManifestDocument original,byte[] originalMetadata,IEnumerable<string>? runtimeAdditions=null)
     {
+        return SerializeViews(assets.Select(n=>new NativeView(n.Asset,n.Bin,n.Relo,n.Imp)).ToArray(),original,originalMetadata,runtimeAdditions);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: serialize each native sidecar into one exact-size allocation instead of growing and cloning a MemoryStream. */
+    //-------------------------------------------------------------------------------------------------
+    private static Dictionary<string,byte[]> SerializeViews(NativeView[] assets,ManifestDocument original,byte[] originalMetadata,IEnumerable<string>? runtimeAdditions)
+    {
         using var entries=new MemoryStream();using var references=new MemoryStream();using var names=new MemoryStream();using var sources=new MemoryStream();using var rw=new BinaryWriter(references,Encoding.UTF8,true);
         foreach(var n in assets){var a=n.Asset;using var entry=new AssetEntry{TypeId=a.TypeId,InstanceId=a.InstanceId,TypeHash=a.TypeHash,InstanceHash=a.InstanceHash,Tokenized=a.Tokenized==1,NameOffset=(int)names.Length,SourceFileNameOffset=(int)sources.Length,AssetReferenceOffset=(int)references.Length,AssetReferenceCount=a.References.Count,InstanceDataSize=n.Bin.Length,RelocationDataSize=n.Relo.Length,ImportsDataSize=n.Imp.Length};entry.SaveToStream(entries,false);names.Write(Encoding.UTF8.GetBytes(a.Name+'\0'));sources.Write(Encoding.UTF8.GetBytes(a.SourceFile+'\0'));foreach(var id in a.References){rw.Write(id.TypeId);rw.Write(id.InstanceId);}}
         rw.Flush();var runtimeBuffer=new ReferencedFileBuffer();foreach(var reference in original.ReferencedManifests)runtimeBuffer.AddReference(reference.Path,reference.IsPatch);foreach(string name in runtimeAdditions??Array.Empty<string>())if(!original.ReferencedManifests.Any(r=>r.Path.Equals(name,StringComparison.OrdinalIgnoreCase)))runtimeBuffer.AddReference(name,false);using var runtimeStream=new MemoryStream();runtimeBuffer.SaveToStream(runtimeStream);byte[] runtime=runtimeStream.ToArray();
-        using var digest=IncrementalHash.CreateHash(HashAlgorithmName.SHA256);foreach(var n in assets){digest.AppendData(n.Bin);digest.AppendData(n.Relo);digest.AppendData(n.Imp);}digest.AppendData(entries.ToArray());digest.AppendData(references.ToArray());digest.AppendData(originalMetadata);digest.AppendData(runtime);uint checksum=Word(digest.GetHashAndReset(),0);
+        using var digest=IncrementalHash.CreateHash(HashAlgorithmName.SHA256);foreach(var n in assets){digest.AppendData(n.Bin.Span);digest.AppendData(n.Relo.Span);digest.AppendData(n.Imp.Span);}digest.AppendData(entries.GetBuffer().AsSpan(0,checked((int)entries.Length)));digest.AppendData(references.GetBuffer().AsSpan(0,checked((int)references.Length)));digest.AppendData(originalMetadata);digest.AppendData(runtime);uint checksum=Word(digest.GetHashAndReset(),0);
         using var metadata=new MemoryStream();using(var header=new BinaryAssetBuilder.Utility.ManifestHeader{IsLinked=true,AllTypesHash=original.Header.AllTypesHash,StreamChecksum=checksum,AssetCount=(uint)assets.Length,TotalInstanceDataSize=checked((uint)assets.Sum(a=>(long)a.Bin.Length)),MaxInstanceChunkSize=(uint)assets.Max(a=>a.Bin.Length),MaxRelocationChunkSize=(uint)assets.Max(a=>a.Relo.Length),MaxImportsChunkSize=(uint)assets.Max(a=>a.Imp.Length),AssetReferenceBufferSize=(uint)references.Length,ReferenceManifestNameBufferSize=(uint)runtime.Length,AssetNameBufferSize=(uint)names.Length,SourceFileNameBufferSize=(uint)sources.Length})header.SaveToStream(metadata,false);entries.WriteTo(metadata);references.WriteTo(metadata);metadata.Write(runtime);names.WriteTo(metadata);sources.WriteTo(metadata);
-        var output=new Dictionary<string,byte[]>{{"diagnostic.manifest",metadata.ToArray()}};for(int i=0;i<3;i++){using var data=new MemoryStream();using var writer=new BinaryWriter(data);writer.Write(i==0?0xBABB0000u:i==1?0xBABE0000u:0xBAB10000u);writer.Write(checksum);foreach(var n in assets)writer.Write(i==0?n.Bin:i==1?n.Relo:n.Imp);output.Add("diagnostic"+Extensions[i+1],data.ToArray());}return output;
+        var output=new Dictionary<string,byte[]>{{"diagnostic.manifest",metadata.ToArray()}};
+        for(int i=0;i<3;i++){
+            int length=checked((int)(8L+assets.Sum(n=>(long)(i==0?n.Bin.Length:i==1?n.Relo.Length:n.Imp.Length))));
+            var data=new byte[length];
+            BinaryPrimitives.WriteUInt32LittleEndian(data.AsSpan(0,4),i==0?0xBABB0000u:i==1?0xBABE0000u:0xBAB10000u);
+            BinaryPrimitives.WriteUInt32LittleEndian(data.AsSpan(4,4),checksum);
+            int at=8;
+            foreach(var n in assets){var part=i==0?n.Bin:i==1?n.Relo:n.Imp;part.Span.CopyTo(data.AsSpan(at,part.Length));at=checked(at+part.Length);}
+            output.Add("diagnostic"+Extensions[i+1],data);
+        }
+        return output;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: replace native families and stream every unchanged resource from the old BIG, verifying all bytes before replacement. */
+    //-------------------------------------------------------------------------------------------------
+    internal static (int Entries,string Sha256) RewritePack(string package,IReadOnlyDictionary<string,byte[]> replacements)
+    {
+        string temporary=package+".worldbuilder.tmp";
+        bool created=false;
+        try{
+            int entryCount;
+            string hash;
+            using(var original=BigArchive.Open(package)){
+                var updates=new Dictionary<string,byte[]>(StringComparer.OrdinalIgnoreCase);
+                foreach(var file in replacements)updates.Add(file.Key,file.Value);
+                var entries=original.Entries.ToDictionary(e=>e.Name,StringComparer.OrdinalIgnoreCase);
+                var files=entries.ToDictionary(e=>e.Key,e=>e.Value.StoredSize,StringComparer.OrdinalIgnoreCase);
+                // Reborn: dictionary assignment keeps the original entry order; genuinely new resources append in declaration order.
+                foreach(var file in updates)files[file.Key]=checked((uint)file.Value.Length);
+                var buffer=new byte[65536];
+                var compared=new byte[buffer.Length];
+                using(var output=new FileStream(temporary,FileMode.CreateNew,FileAccess.Write,FileShare.None)){
+                    created=true;
+                    WritePack(output,files,(name,destination)=>{
+                        if(updates.TryGetValue(name,out var bytes)){destination.Write(bytes);return;}
+                        var entry=entries[name];
+                        for(long offset=0;offset<entry.StoredSize;){
+                            int count=(int)Math.Min(buffer.Length,entry.StoredSize-offset);
+                            original.ReadEntryRange(entry,offset,buffer.AsSpan(0,count));
+                            destination.Write(buffer.AsSpan(0,count));offset+=count;
+                        }
+                    });
+                }
+                using(var verified=BigArchive.Open(temporary)){
+                    if(verified.Entries.Count!=files.Count)throw new InvalidDataException("WorldBuilder BIG directory differs.");
+                    var names=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    foreach(var entry in verified.Entries){
+                        if(!names.Add(entry.Name)||!files.TryGetValue(entry.Name,out uint length)||entry.StoredSize!=length)
+                            throw new InvalidDataException("WorldBuilder BIG entry differs: "+entry.Name);
+                        bool replaced=updates.TryGetValue(entry.Name,out var bytes);
+                        for(long offset=0;offset<entry.StoredSize;){
+                            int count=(int)Math.Min(buffer.Length,entry.StoredSize-offset);
+                            verified.ReadEntryRange(entry,offset,buffer.AsSpan(0,count));
+                            ReadOnlySpan<byte> expected;
+                            if(replaced)expected=bytes!.AsSpan(checked((int)offset),count);
+                            else{original.ReadEntryRange(entries[entry.Name],offset,compared.AsSpan(0,count));expected=compared.AsSpan(0,count);}
+                            if(!buffer.AsSpan(0,count).SequenceEqual(expected))throw new InvalidDataException("WorldBuilder BIG readback differs: "+entry.Name);
+                            offset+=count;
+                        }
+                    }
+                }
+                using(var input=File.OpenRead(temporary))hash=Convert.ToHexString(SHA256.HashData(input));
+                entryCount=files.Count;
+            }
+            // Reborn: close the source before replacing it; an unrelated pre-existing temporary file is never deleted.
+            File.Move(temporary,package,true);
+            return(entryCount,hash);
+        }finally{if(created&&File.Exists(temporary))File.Delete(temporary);}
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -341,12 +434,15 @@ internal static class WorldBuilderAssetResolver
         using var check=BigArchive.Open(path);
         if(check.Entries.Count!=files.Count)throw new InvalidDataException("WorldBuilder BIG directory differs.");
         var names=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        // Reborn: readback retains one bounded buffer even when hundreds of megabytes share the same expected payload.
+        var buffer=new byte[65536];
         foreach(var entry in check.Entries){
             if(!names.Add(entry.Name)||!files.TryGetValue(entry.Name,out var expected)||entry.StoredSize!=expected.Length)
                 throw new InvalidDataException("WorldBuilder BIG entry differs: "+entry.Name);
             for(int offset=0;offset<expected.Length;){
                 int count=Math.Min(65536,expected.Length-offset);
-                if(!check.ReadEntryRange(entry,offset,count).AsSpan().SequenceEqual(expected.AsSpan(offset,count)))
+                check.ReadEntryRange(entry,offset,buffer.AsSpan(0,count));
+                if(!buffer.AsSpan(0,count).SequenceEqual(expected.AsSpan(offset,count)))
                     throw new InvalidDataException("WorldBuilder BIG readback differs: "+entry.Name);
                 offset+=count;
             }

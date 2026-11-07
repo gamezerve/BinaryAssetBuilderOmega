@@ -3,6 +3,8 @@
 	<!-- Reborn Entry Point -->
 	<Tags></Tags>
 	<Includes>
+		<!-- Reborn: register additional skirmish personalities after stock PlayerTemplates and AI states are available. -->
+		<Include type="all" source="DATA:SkirmishAI/Personalities/SkirmishPersonalitiesRA3.xml" />
 					<!-- Mod Specific -->
  		<!-- <Include type="reference" source="DATA:static.xml" /> Not needed anymore as Uprising Compiler already references it --> 
 		<!-- <Include type="reference" source="DATA:global.xml" /> Not needed anymore as Uprising Compiler already references it -->

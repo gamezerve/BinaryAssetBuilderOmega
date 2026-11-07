@@ -1,4 +1,5 @@
 using System.Text;
+using System.Security.Cryptography;
 using System.Xml;
 
 namespace BinaryAssetBuilder.ManifestInspector;
@@ -14,8 +15,8 @@ internal static class WorldBuilderAssetResolverSmokeTest
         if(Directory.Exists(output))throw new InvalidDataException("Fresh resolver evidence directory required.");Directory.CreateDirectory(output);string world=Path.Combine(catalogs,"worldbuilder.manifest");byte[] metadata=File.ReadAllBytes(world);var stock=ManifestReader.Read(metadata);var loaded=new[]{"static.manifest","global.manifest","audio.manifest"}.Where(n=>File.Exists(Path.Combine(catalogs,n))).SelectMany(n=>ManifestReader.Read(File.ReadAllBytes(Path.Combine(catalogs,n))).Assets).ToArray();
         var targets=new[]{"W3DContainer:VL_RUSSIANPORTBUILDING","GameObject:VL_RussianPortBuilding_Collapse"}.Select(name=>stock.Assets.Single(a=>a.Name.Equals(name,StringComparison.OrdinalIgnoreCase))).ToArray();
         var owner=new ManifestAsset(1,2,3,4,0,targets.Length,0,0,4,0,0,0,"ResolverFixture:Owner","fixture.xml",targets.Select(WorldBuilderAssetResolver.Id).ToArray());var initial=WorldBuilderAssetResolver.Serialize(new[]{new WorldBuilderAssetResolver.Native(owner,new byte[4],Array.Empty<byte>(),Array.Empty<byte>())},stock,metadata);
-        // Reborn: loaded providers have the same runtime discovery names as the Studio resolver; compare both native and package runs against that mapping.
-        var providers=new Dictionary<AssetId,string>();foreach(string name in new[]{"static.manifest","global.manifest","audio.manifest"}.Where(n=>File.Exists(Path.Combine(catalogs,n))))foreach(var asset in ManifestReader.Read(File.ReadAllBytes(Path.Combine(catalogs,name))).Assets)providers[WorldBuilderAssetResolver.Id(asset)]="data\\"+name;
+        // Reborn: top-level mod dependencies resolve from data, matching the current Studio resolver's relative discovery names.
+        var providers=new Dictionary<AssetId,string>();foreach(string name in new[]{"static.manifest","global.manifest","audio.manifest"}.Where(n=>File.Exists(Path.Combine(catalogs,n))))foreach(var asset in ManifestReader.Read(File.ReadAllBytes(Path.Combine(catalogs,name))).Assets)providers[WorldBuilderAssetResolver.Id(asset)]=name;
         var first=WorldBuilderAssetResolver.Resolve(initial,world,loaded,Array.Empty<AssetId>(),providers);var second=WorldBuilderAssetResolver.Resolve(initial,world,loaded,Array.Empty<AssetId>(),providers);
         Require(first.Imported.Contains(targets[0].Name)&&first.Imported.Contains(targets[1].Name),"Both direct model and weak-spawn target fixture must be copied.");Require(first.Imported.Any(n=>n.StartsWith("W3DMesh:")),"Model dependency closure missing.");Require(first.Streams.All(p=>p.Value.SequenceEqual(second.Streams[p.Key])),"Extraction is not deterministic.");Require(first.BytesRead<new FileInfo(Path.ChangeExtension(world,".bin")).Length,"Whole WorldBuilder BIN was read.");
         var result=ManifestReader.Read(first.Streams["diagnostic.manifest"]);var loadedIds=loaded.Select(WorldBuilderAssetResolver.Id).ToHashSet();Require(result.Assets.All(a=>!loadedIds.Contains(WorldBuilderAssetResolver.Id(a))),"Loaded static/global/audio asset was unnecessarily copied.");Require(result.Assets.Last().Name==owner.Name,"Imported dependencies must precede their authored consumer.");
@@ -29,6 +30,8 @@ internal static class WorldBuilderAssetResolverSmokeTest
         var pending=targets.Select(a=>new SdkMissingDependencyAudit.Finding("WORLDBUILDERASSET","Info",a.Name,"Fixture:Owner",prepared,7,3,"Model","pending")).Append(new("WORLDBUILDERASSET","Info","W3DContainer:MissingAfterResolve","Fixture:Owner",prepared,9,5,"Model","pending")).ToArray();string pendingReport=Path.Combine(output,"pending-dependencies.json");File.WriteAllText(pendingReport,System.Text.Json.JsonSerializer.Serialize(new SdkMissingDependencyAudit.Report(pending,1,0,3,0,true)));var previous=Console.Out;using var warningText=new StringWriter();try{Console.SetOut(warningText);WorldBuilderAssetResolver.CheckPending(package,pendingReport,catalogs);}finally{Console.SetOut(previous);}string warnings=warningText.ToString();Require(warnings.Split(Environment.NewLine,StringSplitOptions.RemoveEmptyEntries).Length==1&&warnings.StartsWith("Warning: WORLDBUILDERASSET ' W3DContainer:MissingAfterResolve '",StringComparison.Ordinal)&&warnings.Contains(prepared+"(9,5)")&&!warnings.Contains(targets[0].Name)&&!warnings.Contains(targets[1].Name),"Final package warning audit lost source evidence or warned about resolved assets.");
         CustomResources(output,stock,metadata,owner);
         PackRegression(output);
+        SerializeRegression(stock,metadata,owner);
+        RewriteRegression(output);
         // Reborn: import selectors are 1-based within their unchanged owner table; corrupt selectors and relocation targets must fail before packaging.
         Refuse(()=>WorldBuilderAssetResolver.ValidateNative(owner with{References=new[]{new AssetId(1,1)}},new byte[]{2,0,0,0},Array.Empty<byte>(),new byte[]{0,0,0,0,255,255,255,255}));Refuse(()=>WorldBuilderAssetResolver.ValidateNative(owner,new byte[]{5,0,0,0},new byte[]{0,0,0,0,255,255,255,255},Array.Empty<byte>()));
         // Reborn: one-past-end storage is valid for an empty final list; the corruption fixture must exceed it.
@@ -69,6 +72,64 @@ internal static class WorldBuilderAssetResolverSmokeTest
         bool rejected=false;try{WorldBuilderAssetResolver.VerifyPack(path,files);}catch(InvalidDataException){rejected=true;}
         Require(rejected,"Streaming BIG readback accepted corrupt final payload.");
         Console.WriteLine("Reborn: streaming BIG: PASS (legacy bytes, 64 MiB shared LOD payloads, writer allocation below 1 MiB, late corruption rejected).");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: a large native sidecar allocates only its final buffer, preserving every asset boundary, fingerprint and checksum. */
+    //-------------------------------------------------------------------------------------------------
+    private static void SerializeRegression(ManifestDocument stock,byte[] metadata,ManifestAsset owner)
+    {
+        var payload=new byte[2*1024*1024];new Random(497).NextBytes(payload);
+        var assets=Enumerable.Range(0,33).Select(i=>new WorldBuilderAssetResolver.Native(owner with{
+            TypeId=11,InstanceId=(uint)(100+i),Name="Fixture:Large_"+i,InstanceDataSize=payload.Length,
+            AssetReferenceCount=0,References=Array.Empty<AssetId>()},payload,Array.Empty<byte>(),Array.Empty<byte>())).ToArray();
+        long before=GC.GetAllocatedBytesForCurrentThread();
+        var serialized=WorldBuilderAssetResolver.Serialize(assets,stock,metadata);
+        long allocated=GC.GetAllocatedBytesForCurrentThread()-before;
+        var bin=serialized["diagnostic.bin"];
+        Require(allocated<bin.LongLength+1024*1024,"Native serialization allocated an extra sidecar-sized buffer.");
+        var readback=ManifestReader.Read(serialized["diagnostic.manifest"]);
+        Require(readback.Validate().Count==0&&readback.Assets.Count==assets.Length&&bin.Length==8+33*payload.Length,"Large native manifest/sidecar lengths differ.");
+        for(int i=0;i<assets.Length;i++){
+            Require(readback.Assets[i].InstanceId==assets[i].Asset.InstanceId&&readback.Assets[i].InstanceHash==assets[i].Asset.InstanceHash,"Large native asset identity/fingerprint differs.");
+            Require(bin.AsSpan(8+i*payload.Length,payload.Length).SequenceEqual(payload),"Large native asset payload differs.");
+        }
+        Console.WriteLine($"Reborn: native sidecar memory: PASS (66 MiB payload, {allocated:N0} bytes allocated; one final buffer, exact boundaries and fingerprints).");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: replacing a small native member must not retain unrelated audio/LOD data or overwrite a pre-existing temporary file. */
+    //-------------------------------------------------------------------------------------------------
+    private static void RewriteRegression(string output)
+    {
+        var payload=new byte[2*1024*1024];new Random(499).NextBytes(payload);
+        var files=Enumerable.Range(0,32).ToDictionary(i=>"data\\mod\\cdata\\audio_"+i,_=>payload,StringComparer.OrdinalIgnoreCase);
+        files.Add("data\\mod.bin",new byte[]{1,2,3,4});
+        files.Add("data\\mod_l.bin",new byte[]{5,6});
+        files.Add("data\\empty",Array.Empty<byte>());
+        string package=Path.Combine(output,"streaming-rewrite.big");
+        using(var stream=new FileStream(package,FileMode.CreateNew,FileAccess.Write,FileShare.None))WorldBuilderAssetResolver.WritePack(stream,files);
+        var updates=new Dictionary<string,byte[]>{{"DATA\\MOD.BIN",new byte[]{7,8,9}},{"data\\new-resource",new byte[]{10,11}}};
+        long before=GC.GetAllocatedBytesForCurrentThread();
+        var result=WorldBuilderAssetResolver.RewritePack(package,updates);
+        long allocated=GC.GetAllocatedBytesForCurrentThread()-before;
+        Require(allocated<1024*1024,"Rewriting a BIG retained unrelated payload-sized storage.");
+        foreach(var item in updates)files[item.Key]=item.Value;
+        WorldBuilderAssetResolver.VerifyPack(package,files);
+        Require(result.Entries==files.Count,"Rewritten BIG entry count differs.");
+        using(var input=File.OpenRead(package))Require(result.Sha256==Convert.ToHexString(SHA256.HashData(input)),"Rewritten BIG receipt hash differs.");
+        string expected=Path.Combine(output,"streaming-rewrite-expected.big");
+        using(var stream=new FileStream(expected,FileMode.CreateNew,FileAccess.Write,FileShare.None))WorldBuilderAssetResolver.WritePack(stream,files);
+        using(var input=File.OpenRead(expected))Require(result.Sha256==Convert.ToHexString(SHA256.HashData(input)),"Streamed rewrite differs from the complete expected archive.");
+        string temporary=package+".worldbuilder.tmp";
+        byte[] sentinel=Encoding.ASCII.GetBytes("Reborn: existing temporary file belongs to its creator.");
+        File.WriteAllBytes(temporary,sentinel);
+        bool refused=false;
+        try{WorldBuilderAssetResolver.RewritePack(package,updates);}catch(IOException){refused=true;}
+        Require(refused&&File.ReadAllBytes(temporary).SequenceEqual(sentinel),"Rewriter changed an unrelated temporary file.");
+        using(var input=File.OpenRead(package))Require(result.Sha256==Convert.ToHexString(SHA256.HashData(input)),"Failed rewrite changed the original archive.");
+        File.Delete(temporary);
+        Console.WriteLine($"Reborn: bounded BIG rewrite: PASS (64 MiB passthrough, {allocated:N0} bytes allocated; case-insensitive replacement, exact archive, failed-write preservation).");
     }
 
     // Reborn: test failures identify the violated resolver contract without treating an unexpected exception as success.

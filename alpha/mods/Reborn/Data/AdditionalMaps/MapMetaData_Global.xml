@@ -99,6 +99,7 @@
 	
         <!-- Reborn: Import the LanMod5 static/global source content. -->
         <Include type="all" source="DATA:GlobalData/CampaignPortraits.xml" />
+        <!-- Reborn: skirmish RA3 personalities load from Static_Mod after stock PlayerTemplate initialization. -->
         <Include type="all" source="DATA:GlobalData/TutorialData.xml" />
         <Include type="all" source="DATA:PathMusic/PathMusicEvents_Mod.xml" />
         <!-- Reborn: register the combined Uprising and RA3 event names for map script playback. -->
