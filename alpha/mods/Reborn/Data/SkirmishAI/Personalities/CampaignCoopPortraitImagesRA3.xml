@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <!-- Reborn: the tactical co-commander HUD resolves PackedTextureImage, independently of frontend OnDemandTextureImage portraits. -->
+  <Texture id="RebornCoopOlegAtlas" File="ART:Images/RebornCampaignOlegAtlas.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false" />
+  <PackedTextureImage id="RebornCoopOlegPortrait" Texture="RebornCoopOlegAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </PackedTextureImage>
+</AssetDeclaration>

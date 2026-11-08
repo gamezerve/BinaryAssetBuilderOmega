@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <!-- Reborn: original retail AI records remain registered; only these uniquely named portrait aliases are emitted. -->
+  <Includes>
+    <Include type="instance" source="DATA:Maps/Official/CAMP_S01_LeningradCanals_Rao/AIP_S01_Coop.xml" />
+    <Include type="instance" source="DATA:SkirmishAI/Personalities/AIP_T06_Coop.xml" />
+  </Includes>
+  <!-- Reborn: keep the original personality type and every inherited behavior while changing only the displayed portrait. -->
+  <AIPersonalityDefinition id="AIP_S01_Coop_SovietHeavyArmorRA3"
+      inheritFrom="AIP_S01_Coop_SovietHeavyArmor"
+      PersonalityType="AIP_S01_Coop_SovietHeavyArmor"
+      CommanderPortrait="RebornCoopOlegPortrait" />
+  <AIPersonalityDefinition id="AIP_T06_CoopRA3"
+      inheritFrom="AIP_T06_Coop"
+      PersonalityType="AIP_T06_Coop"
+      CommanderPortrait="RebornCoopOlegPortrait" />
+</AssetDeclaration>

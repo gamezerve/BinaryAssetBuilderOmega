@@ -90,9 +90,9 @@ namespace EALABuild
             string version = gui.ContainsKey("modversion") ? (string)gui["modversion"] : "1.00";
             if (!System.Text.RegularExpressions.Regex.IsMatch(version ?? "", @"\A[0-9]{1,4}(\.[0-9]{1,4}){1,3}\z"))
                 throw new InvalidDataException("Mod Version must be numeric, for example 1.00 or 1.2.3.");
-            // Reborn: only the map stage consumes the current selection, and All supplies no directory override.
+            // Reborn: only the map stage consumes the checked folders, and All supplies no directory override.
             bool buildMaps = gui.ContainsKey("buildmaps") && Convert.ToBoolean(gui["buildmaps"]);
-            string officialMapDirectory = buildMaps ? (string)Lifecycle("GetSelectedMapDirectory") : null;
+            string[] officialMapDirectories = buildMaps ? (string[])Lifecycle("GetSelectedMapDirectories") : null;
             BuildHelper.CurrentBuildSteps = 1;
             // Reborn: separate the user's Reborn workspace from developer tests, including the strictly bounded complete Conscript build.
             // Reborn: keep the build header short; backend warnings describe the selected profile and detailed receipts stay on disk.
@@ -117,7 +117,6 @@ namespace EALABuild
             request.Arguments += " -DeveloperBuildTests 0";
             // Reborn: an unchecked map toggle leaves map sources untouched; selected maps compile before final Misc packaging.
             request.Arguments += " -BuildMaps " + (buildMaps ? "1" : "0");
-            if (officialMapDirectory != null) request.Arguments += " -OfficialMapDirectory \"" + officialMapDirectory + "\"";
             // Reborn: Silent Mode skips advisory checks while keeping build failures visible.
             bool silentMode = gui.ContainsKey("silentmode") && Convert.ToBoolean(gui["silentmode"]);
             request.Arguments += " -SilentMode " + (silentMode ? "1" : "0");
@@ -125,6 +124,12 @@ namespace EALABuild
             // Reborn: retain the SDK's step-counter protocol before RunStep advances it for the callback.
             try
             {
+                // Reborn: the session owns and cleans its map-list file; only its short path travels through the worker command line.
+                if (officialMapDirectories != null)
+                {
+                    string selectionFile = (string)Lifecycle("SaveMapSelection", SdkRoot, officialMapDirectories);
+                    request.Arguments += " -OfficialMapSelectionFile \"" + selectionFile + "\"";
+                }
                 if (BuildHelper.GetNextExecutableStep() != 1)
                     throw new InvalidDataException("Unexpected alpha build step state.");
                 BuildHelper.RunStep(StepType.RunExecutable, request);
@@ -145,7 +150,7 @@ namespace EALABuild
         //-------------------------------------------------------------------------------------------------
         /** Reborn: keep Windows Forms types in the separately compiled helper, preserving EA's exact two-reference CodeDOM contract. */
         //-------------------------------------------------------------------------------------------------
-        private object Lifecycle(string method) { return lifecycle.GetMethod(method).Invoke(null, null); }
+        private object Lifecycle(string method, params object[] arguments) { return lifecycle.GetMethod(method).Invoke(null, arguments); }
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: one supervised worker executes the independently selected build and package stages. */
@@ -169,8 +174,8 @@ namespace EALABuild
             options.Add(new GUIElementData("buildstatic", "Build Static Data", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
             // Reborn: preserve EA's persisted checkbox behavior and the historical map stage before BIG creation.
             options.Add(new GUIElementData("buildmaps", "Build Maps", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
-            // Reborn: EA has no dropdown option type; reserve its row with a label for the WinForms helper.
-            options.Add(new GUIElementData("officialmap", "Official map to build", GUIElementData.LabelType, ScriptIndex.ModScript));
+            // Reborn: reserve a row for the helper's multi-select map checklist without changing EA's persisted checkbox format.
+            options.Add(new GUIElementData("officialmap", "Official maps to build", GUIElementData.LabelType, ScriptIndex.ModScript));
             options.Add(new GUIElementData("createbig", "Create BIG Files", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
             // Reborn: use the same persisted option control as the other build toggles.
             options.Add(new GUIElementData("silentmode", "Silent Mode", GUIElementData.CheckBoxType, ScriptIndex.ModScript));

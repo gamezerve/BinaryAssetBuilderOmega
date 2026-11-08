@@ -1,27 +1,65 @@
 # Reborn: compile direct Official map folders into isolated generations before publishing map_mod families into the mod's Misc tree.
 
 #-------------------------------------------------------------------------------------------------
-<# Reborn: discover maps, use the actual native source backend and retain all successful map files until the full map stage passes. #>
+<# Reborn: read literal absolute paths from Studio's UTF-8 list without treating an empty selection as All. #>
 #-------------------------------------------------------------------------------------------------
-function Build-RebornMaps([string]$DataRoot,[string]$Sdk,[hashtable]$Settings,[string]$StaticManifest,[string]$GlobalManifest,[string]$Compiler,[string]$Work,[string]$Detail,[string]$GlobalContext,[ref]$Result,[string]$ModStaticPackage,[string]$OfficialMapDirectory) {
-    $root=Join-Path $DataRoot 'Maps/Official';$plans=@()
+function Read-RebornMapSelection([string]$Path) {
+    if([string]::IsNullOrWhiteSpace($Path) -or !(Test-Path -LiteralPath $Path -PathType Leaf)){
+        throw 'Official map selection file is missing.'
+    }
+    $selected=@([IO.File]::ReadAllLines([IO.Path]::GetFullPath($Path),[Text.UTF8Encoding]::new($false,$true)))
+    if(!$selected.Count -or @($selected | Where-Object {[string]::IsNullOrWhiteSpace($_) -or $_.Contains("`r") -or $_.Contains("`n")}).Count){
+        throw 'Select at least one Official map or All.'
+    }
+    return $selected
+}
+
+#-------------------------------------------------------------------------------------------------
+<# Reborn: validate every explicit folder before compiling any map, preserving All and the legacy single-map parameter. #>
+#-------------------------------------------------------------------------------------------------
+function Get-RebornOfficialMapFolders([string]$DataRoot,[string]$OfficialMapDirectory,[string[]]$OfficialMapDirectories) {
+    if($OfficialMapDirectory -and $null-ne $OfficialMapDirectories){throw 'Choose a single map directory or a list of map directories, not both.'}
+    $explicit=$OfficialMapDirectory -or $null-ne $OfficialMapDirectories
+    $requested=if($OfficialMapDirectory){@($OfficialMapDirectory)}else{$OfficialMapDirectories}
+    if($explicit -and !$requested.Count){throw 'Select at least one Official map or All.'}
+    $root=Join-Path $DataRoot 'Maps/Official'
     if(-not(Test-Path -LiteralPath $root -PathType Container)){
-        if($OfficialMapDirectory){throw ('Selected Official map is no longer available: '+$OfficialMapDirectory)}
-        Write-SdkBuildLine ('Skipped: [No input] Official maps directory not found: '+$root);$Result.Value=@();return
+        if($explicit){throw ('Selected Official maps directory is no longer available: '+$root)}
+        Write-SdkBuildLine ('Skipped: [No input] Official maps directory not found: '+$root)
+        return
     }
     $folders=@(Get-ChildItem -LiteralPath $root -Directory | Sort-Object Name)
-    # Reborn: match only direct map folders in the selected mod before preflight or compilation.
-    if($OfficialMapDirectory){
-        $folders=@($folders | Where-Object FullName -ieq $OfficialMapDirectory)
-        if($folders.Count -ne 1){throw ('Selected Official map is not a direct folder of this mod: '+$OfficialMapDirectory)}
+    if($explicit){
+        $names=[Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+        foreach($path in $requested){
+            if([string]::IsNullOrWhiteSpace($path) -or ![IO.Path]::IsPathRooted($path)){throw 'Selected map folders must use absolute paths.'}
+            $null=$names.Add([IO.Path]::GetFullPath($path).TrimEnd([IO.Path]::DirectorySeparatorChar,[IO.Path]::AltDirectorySeparatorChar))
+        }
+        $folders=@($folders | Where-Object {$names.Contains($_.FullName)})
+        if($folders.Count-ne $names.Count){throw 'A selected Official map is no longer a direct folder of this mod.'}
+        foreach($folder in $folders){
+            if(-not(Test-Path -LiteralPath (Join-Path $folder.FullName 'map.xml') -PathType Leaf)){
+                throw ('Selected map source not found: '+(Join-Path $folder.FullName 'map.xml'))
+            }
+        }
     }
     if(-not $folders){Write-SdkBuildLine ('Skipped: [No input] No map folders in: '+$root)}
+    return $folders
+}
+
+#-------------------------------------------------------------------------------------------------
+<# Reborn: discover maps, use the actual native source backend and retain all successful map files until the full map stage passes. #>
+#-------------------------------------------------------------------------------------------------
+function Build-RebornMaps([string]$DataRoot,[string]$Sdk,[hashtable]$Settings,[string]$StaticManifest,[string]$GlobalManifest,[string]$Compiler,[string]$Work,[string]$Detail,[string]$GlobalContext,[ref]$Result,[string]$ModStaticPackage,[string]$OfficialMapDirectory,[string[]]$OfficialMapDirectories) {
+    $plans=@()
+    $folders=@(Get-RebornOfficialMapFolders $DataRoot -OfficialMapDirectory $OfficialMapDirectory -OfficialMapDirectories $OfficialMapDirectories)
+    $explicit=$OfficialMapDirectory -or $null-ne $OfficialMapDirectories
     foreach($folder in $folders){
         Assert-RebornPackagePath $folder.FullName
         $entry=Join-Path $folder.FullName 'map.xml'
         if(-not(Test-Path -LiteralPath $entry -PathType Leaf)){
             # Reborn: a specific map request must never succeed after its source disappears.
-            if($OfficialMapDirectory){throw ('Selected map source not found: '+$entry)}
+            if($explicit){throw ('Selected map source not found: '+$entry)}
             Write-SdkBuildLine ('Skipped: [No input] Map source not found: '+$entry);continue
         }
         $loose=@(Get-ChildItem -LiteralPath $folder.FullName -File | Where-Object Extension -in @('.map','.tga'))

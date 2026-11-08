@@ -19,8 +19,9 @@ namespace Reborn
         private static BuildSession current;
         private static Form studio;
         private static bool installed;
-        // Reborn: the transient map choice belongs to the current mod and stays out of EA's persisted options.
-        private static ComboBox mapPicker;
+        // Reborn: checked map choices belong to the current mod; All is exclusive and no choice must never imply All.
+        private static CheckedListBox mapPicker;
+        private static bool updatingMaps;
         // Reborn: injectable confirmation is internal to the assembly's offline harness; production always uses a real Yes/No dialog.
         internal static Func<DialogResult> Confirmation = null;
         // Reborn: EA Studio colors only its own step/build summary lines green; redirected backend lines with the same meaning are recolored here.
@@ -90,25 +91,30 @@ namespace Reborn
             int rowIndex = panel.Controls.GetChildIndex(buildMaps) + 1;
             if (rowIndex >= panel.Controls.Count) return true;
             var marker = panel.Controls[rowIndex] as Label;
-            if (marker == null || marker.Text != "Official map to build") return true;
+            if (marker == null || marker.Text != "Official maps to build") return true;
 
-            mapPicker = new ComboBox
+            mapPicker = new CheckedListBox
             {
-                Name = "cmbOfficialMaps",
+                Name = "clbOfficialMaps",
                 AccessibleName = marker.Text,
-                DropDownStyle = ComboBoxStyle.DropDownList,
+                CheckOnClick = true,
+                IntegralHeight = false,
+                HorizontalScrollbar = true,
                 FormattingEnabled = true,
                 Anchor = AnchorStyles.Left,
                 Margin = marker.Margin,
                 TabIndex = marker.TabIndex,
                 Enabled = buildMaps.Checked
             };
+            mapPicker.Height = mapPicker.ItemHeight * 6 + SystemInformation.HorizontalScrollBarHeight + 4;
             mapPicker.Format += delegate(object sender, ListControlConvertEventArgs args)
             {
                 var directory = args.ListItem as DirectoryInfo;
                 if (directory != null)
-                    args.Value = String.Equals(directory.Name, "All", StringComparison.OrdinalIgnoreCase) ? directory.Name + " (map folder)" : directory.Name;
+                    args.Value = (String.Equals(directory.Name, "All", StringComparison.OrdinalIgnoreCase) ? directory.Name + " (map folder)" : directory.Name)
+                        + (File.Exists(Path.Combine(directory.FullName, "map.xml")) ? "" : " (source missing)");
             };
+            mapPicker.ItemCheck += OnMapItemCheck;
             panel.SuspendLayout();
             int column = panel.GetColumn(marker);
             int row = panel.GetRow(marker);
@@ -122,57 +128,129 @@ namespace Reborn
             marker.Dispose();
             panel.ResumeLayout(true);
 
+            // Reborn: keep the taller checklist and Build Mod visible and resize long map names with the options pane.
+            form.MinimumSize = new Size(Math.Max(form.MinimumSize.Width, 960), Math.Max(form.MinimumSize.Height, 560));
+            Control widthOwner = panel.Parent ?? panel;
+            widthOwner.SizeChanged += delegate { ResizeMapPicker(); };
+
             mods.SelectedIndexChanged += delegate { RefreshMapPicker(sdkRoot, mods.SelectedItem as string, null); };
-            buildMaps.CheckedChanged += delegate { mapPicker.Enabled = buildMaps.Checked; };
-            mapPicker.DropDown += delegate { RefreshMapPicker(sdkRoot, mods.SelectedItem as string, GetSelectedMapDirectory()); };
+            buildMaps.CheckedChanged += delegate {
+                mapPicker.Enabled = buildMaps.Checked;
+                if (buildMaps.Checked) RefreshMapPicker(sdkRoot, mods.SelectedItem as string, SelectedMapDirectories());
+            };
+            mapPicker.Enter += delegate { RefreshMapPicker(sdkRoot, mods.SelectedItem as string, SelectedMapDirectories()); };
             RefreshMapPicker(sdkRoot, mods.SelectedItem as string, null);
             return true;
         }
 
         //-------------------------------------------------------------------------------------------------
-        /** Reborn: list the direct Official folders accepted by map source discovery, with All first. */
+        /** Reborn: list direct Official maps with All first, preserving explicit empty choices and missing selected sources. */
         //-------------------------------------------------------------------------------------------------
-        private static void RefreshMapPicker(string sdkRoot, string mod, string previousDirectory)
+        private static void RefreshMapPicker(string sdkRoot, string mod, string[] previousDirectories)
         {
             var root = new DirectoryInfo(Path.Combine(sdkRoot, "mods", mod ?? "", "Data", "Maps", "Official"));
             DirectoryInfo[] folders = !String.IsNullOrEmpty(mod) && root.Exists ? root.GetDirectories() : new DirectoryInfo[0];
             Array.Sort(folders, (left, right) => StringComparer.OrdinalIgnoreCase.Compare(left.Name, right.Name));
 
             mapPicker.BeginUpdate();
+            updatingMaps = true;
             try
             {
+                int top = mapPicker.TopIndex;
+                var previous = new HashSet<string>(previousDirectories ?? new string[0], StringComparer.OrdinalIgnoreCase);
                 mapPicker.Items.Clear();
-                mapPicker.Items.Add("All");
-                int selected = 0;
+                mapPicker.Items.Add("All", previousDirectories == null);
                 foreach (DirectoryInfo folder in folders)
                 {
                     if (!File.Exists(Path.Combine(folder.FullName, "map.xml"))) continue;
-                    int index = mapPicker.Items.Add(folder);
-                    if (String.Equals(folder.FullName, previousDirectory, StringComparison.OrdinalIgnoreCase)) selected = index;
+                    mapPicker.Items.Add(folder, previous.Remove(folder.FullName));
                 }
-                mapPicker.SelectedIndex = selected;
-                // Reborn: fit the closed field inside the options pane and fit the popup to the longest displayed name.
+                // Reborn: a removed checked source remains explicit until the user clears it; a refresh cannot broaden a partial build.
+                foreach (string missing in previous) mapPicker.Items.Add(new DirectoryInfo(missing), true);
+                if (mapPicker.Items.Count > 0) mapPicker.TopIndex = Math.Min(top, mapPicker.Items.Count - 1);
+                // Reborn: keep the list inside the options pane and allow long map names to scroll horizontally.
                 int labelWidth = 0;
                 foreach (object item in mapPicker.Items)
                     labelWidth = Math.Max(labelWidth, TextRenderer.MeasureText(mapPicker.GetItemText(item), mapPicker.Font).Width);
-                int popupWidth = Math.Max(160, labelWidth + SystemInformation.VerticalScrollBarWidth + 12);
-                var panel = (TableLayoutPanel)mapPicker.Parent;
-                int available = panel.Parent == null ? panel.ClientSize.Width : panel.Parent.ClientSize.Width - panel.Left - 5;
-                int fieldWidth = Math.Max(1, Math.Min(popupWidth, available - mapPicker.Margin.Horizontal));
-                panel.Width = Math.Max(panel.Width, fieldWidth + mapPicker.Margin.Horizontal);
-                mapPicker.Width = fieldWidth;
-                mapPicker.DropDownWidth = popupWidth;
+                ResizeMapPicker();
+                mapPicker.HorizontalExtent = labelWidth + 32;
             }
-            finally { mapPicker.EndUpdate(); }
+            finally { updatingMaps = false; mapPicker.EndUpdate(); }
         }
 
         //-------------------------------------------------------------------------------------------------
-        /** Reborn: return the selected map folder as an absolute path for the build driver. */
+        /** Reborn: use the available options width whenever the window or splitter changes size. */
+        //-------------------------------------------------------------------------------------------------
+        private static void ResizeMapPicker()
+        {
+            var panel = (TableLayoutPanel)mapPicker.Parent;
+            int available = panel.Parent == null ? panel.ClientSize.Width : panel.Parent.ClientSize.Width - panel.Left - 5;
+            int fieldWidth = Math.Max(1, available - mapPicker.Margin.Horizontal);
+            panel.Width = Math.Max(panel.Width, fieldWidth + mapPicker.Margin.Horizontal);
+            mapPicker.Width = fieldWidth;
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: checking All clears individual maps; checking a map clears All without changing other checked maps. */
+        //-------------------------------------------------------------------------------------------------
+        private static void OnMapItemCheck(object sender, ItemCheckEventArgs args)
+        {
+            if (updatingMaps || args.NewValue == CheckState.Unchecked) return;
+            updatingMaps = true;
+            try
+            {
+                if (args.Index == 0)
+                    for (int index = 1; index < mapPicker.Items.Count; index++) mapPicker.SetItemChecked(index, false);
+                else mapPicker.SetItemChecked(0, false);
+            }
+            finally { updatingMaps = false; }
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: null represents All while an empty array preserves the user's explicitly empty selection. */
+        //-------------------------------------------------------------------------------------------------
+        private static string[] SelectedMapDirectories()
+        {
+            if (mapPicker == null || mapPicker.GetItemChecked(0)) return null;
+            var folders = new List<string>();
+            foreach (object item in mapPicker.CheckedItems)
+            {
+                var folder = item as DirectoryInfo;
+                if (folder != null) folders.Add(folder.FullName);
+            }
+            return folders.ToArray();
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: fail before starting a build when no individual map or All is checked. */
+        //-------------------------------------------------------------------------------------------------
+        public static string[] GetSelectedMapDirectories()
+        {
+            string[] folders = SelectedMapDirectories();
+            if (folders != null && folders.Length == 0) throw new InvalidDataException("Select at least one Official map or All.");
+            return folders;
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: retain the previous single-map adapter seam for All or exactly one selected map. */
         //-------------------------------------------------------------------------------------------------
         public static string GetSelectedMapDirectory()
         {
-            var folder = mapPicker == null ? null : mapPicker.SelectedItem as DirectoryInfo;
-            return folder == null ? null : folder.FullName;
+            string[] folders = GetSelectedMapDirectories();
+            if (folders == null) return null;
+            if (folders.Length != 1) throw new InvalidDataException("Multiple maps require the updated Studio adapter.");
+            return folders[0];
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: pass arbitrary-sized selections through an owned UTF-8 file instead of a command-line array. */
+        //-------------------------------------------------------------------------------------------------
+        public static string SaveMapSelection(string sdkRoot, string[] directories)
+        {
+            if (directories == null) return null;
+            if (directories.Length == 0) throw new InvalidDataException("Select at least one Official map or All.");
+            if (current == null) throw new InvalidOperationException("Map selection requires an owned build session.");
+            return current.SaveMapSelection(sdkRoot, directories);
         }
 
         //-------------------------------------------------------------------------------------------------
@@ -465,6 +543,8 @@ namespace Reborn
             internal readonly EventWaitHandle Started;
             internal readonly Mutex Publish;
             private IntPtr job;
+            // Reborn: the session removes only the selection file it successfully created.
+            private string mapSelectionPath;
 
             //-------------------------------------------------------------------------------------------------
             /** Reborn: no breakaway limits are permitted; ownership begins before any worker can execute user code. */
@@ -488,6 +568,27 @@ namespace Reborn
             /** Reborn: names are session-scoped, never a shared global PID or process-name selector. */
             //-------------------------------------------------------------------------------------------------
             internal static string Name(string token, string suffix) { return "Local\\RebornStudio-" + token + "-" + suffix; }
+
+            //-------------------------------------------------------------------------------------------------
+            /** Reborn: create one session-owned map list so large selections do not depend on Windows argument length. */
+            //-------------------------------------------------------------------------------------------------
+            internal string SaveMapSelection(string sdkRoot, string[] directories)
+            {
+                if (mapSelectionPath != null) throw new InvalidOperationException("This build session already has a map selection.");
+                foreach (string directory in directories)
+                    if (String.IsNullOrEmpty(directory) || !Path.IsPathRooted(directory) || directory.IndexOfAny(new char[] { '\r', '\n' }) >= 0)
+                        throw new InvalidDataException("Map selections must contain absolute folder paths.");
+                string work = Path.Combine(Path.GetFullPath(sdkRoot), ".work");
+                Directory.CreateDirectory(work);
+                string path = Path.Combine(work, "map-selection-" + Token + ".txt");
+                using (var file = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.Read))
+                {
+                    mapSelectionPath = path;
+                    using (var writer = new StreamWriter(file, new UTF8Encoding(false)))
+                        foreach (string directory in directories) writer.WriteLine(directory);
+                }
+                return path;
+            }
 
             // Reborn: include a queued host not yet started; completion and actual job accounting must agree.
             internal bool Running { get { return !Done.WaitOne(0) || ActiveProcesses != 0; } }
@@ -523,6 +624,13 @@ namespace Reborn
             {
                 if (job != IntPtr.Zero) { Native.CloseHandle(job); job = IntPtr.Zero; }
                 if (CancelEvent != null) CancelEvent.Dispose(); if (Done != null) Done.Dispose(); if (Started != null) Started.Dispose(); if (Publish != null) Publish.Dispose();
+                // Reborn: cleanup cannot convert a successful build into a failed UI callback if an external scanner still holds the file.
+                if (mapSelectionPath != null)
+                {
+                    try { File.Delete(mapSelectionPath); mapSelectionPath = null; }
+                    catch (IOException error) { Debug.WriteLine("Reborn: map selection cleanup deferred: " + error.Message); }
+                    catch (UnauthorizedAccessException error) { Debug.WriteLine("Reborn: map selection cleanup deferred: " + error.Message); }
+                }
             }
         }
 

@@ -5,6 +5,10 @@
 	<Includes>
 		<!-- Reborn: register additional skirmish personalities after stock PlayerTemplates and AI states are available. -->
 		<Include type="all" source="DATA:SkirmishAI/Personalities/SkirmishPersonalitiesRA3.xml" />
+		<!-- Reborn: unique co-op portrait aliases preserve registered retail AI records and their original behavior. -->
+		<!-- Reborn: initialize the tactical Oleg image with Static, separately from frontend campaign portraits. -->
+		<Include type="all" source="DATA:SkirmishAI/Personalities/CampaignCoopPortraitImagesRA3.xml" />
+		<Include type="all" source="DATA:SkirmishAI/Personalities/CampaignCoopPortraitsRA3.xml" />
 					<!-- Mod Specific -->
  		<!-- <Include type="reference" source="DATA:static.xml" /> Not needed anymore as Uprising Compiler already references it --> 
 		<!-- <Include type="reference" source="DATA:global.xml" /> Not needed anymore as Uprising Compiler already references it -->

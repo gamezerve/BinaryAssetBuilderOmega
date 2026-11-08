@@ -507,7 +507,7 @@
 // Allied Power Plant
 
 	TYPE:ALLIEDPOWERPLANT
-		"Power Structure \n> Power Generation = +100 \n> Health = 1000 \n> Shroud Clearing Range = 300"
+		"Power Structure \n> Power Generation = +100 \n> Power Bonus = +50 \n> Health = 1000 \n> Shroud Clearing Range = 300"
 	End
 	
 	Name:AlliedPowerPlantTurbine

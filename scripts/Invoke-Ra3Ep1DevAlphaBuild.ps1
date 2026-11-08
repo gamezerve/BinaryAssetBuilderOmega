@@ -2,7 +2,9 @@
 [CmdletBinding()]
 param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[string]$StaticManifest,[string]$GlobalManifest,[string]$CompilerDirectory,[string]$OutputRoot,[string]$StudioSession,[string]$ModVersion='1.00',[string]$FinalModsRoot,[ValidateSet(0,1)][int]$BuildGlobalData=1,[ValidateSet(0,1)][int]$DeveloperBuildTests=0,[ValidateSet(0,1)][int]$BuildAptUI=0,[ValidateSet(0,1)][int]$BuildMaps=0,[ValidateSet(0,1)][int]$SilentMode=0,[ValidateSet(0,1)][int]$BuildStaticData=1,[ValidateSet(0,1)][int]$CreateBigFiles=1,
     # Reborn: All omits the directory override.
-    [string]$OfficialMapDirectory)
+    [string]$OfficialMapDirectory,
+    # Reborn: Studio sends checked folders in an owned UTF-8 file, avoiding command-line length and array-binding ambiguity.
+    [string]$OfficialMapSelectionFile)
 
 function Test-AptUIReferences {
     param(
@@ -94,6 +96,12 @@ function Get-RebornPreviousMapProvider([string]$OutputRoot,[string]$Name) {
 }
 
 try{
+    # Reborn: All supplies no list; an explicit empty, missing or invalid selection never expands into a full map build.
+    $officialMapDirectories=$null
+    if($PSBoundParameters.ContainsKey('OfficialMapSelectionFile')){
+        if($OfficialMapDirectory){throw 'Choose a single map directory or a map selection file, not both.'}
+        $officialMapDirectories=@(Read-RebornMapSelection $OfficialMapSelectionFile)
+    }
     # Reborn: compile-only runs never publish generated maps, BIGs or SKUDefs.
     $publishPackage=[bool]($CreateBigFiles -and !$ValidateOnly)
     if(!($BuildAptUI -or $BuildGlobalData -or $BuildStaticData -or $BuildMaps -or $publishPackage)){throw 'Select a build stage or Create BIG Files.'}
@@ -327,7 +335,7 @@ try{
                 else{Write-SdkBuildLine 'Map check uses stock and selected global streams. No previous local mod static catalog was found.'}
             }
         }
-        Build-RebornMaps (Split-Path -Parent $ModXml) $sdk $settings $StaticManifest $GlobalManifest $expectedCompiler $run $detail $globalBuild.MapContext ([ref]$mapBuild) $mapStaticPackage -OfficialMapDirectory $OfficialMapDirectory
+        Build-RebornMaps (Split-Path -Parent $ModXml) $sdk $settings $StaticManifest $GlobalManifest $expectedCompiler $run $detail $globalBuild.MapContext ([ref]$mapBuild) $mapStaticPackage -OfficialMapDirectory $OfficialMapDirectory -OfficialMapDirectories $officialMapDirectories
         if($mapBuild.Count -and $publishPackage){
             Publish-RebornMapOutputs $mapBuild (Join-Path (Split-Path -Parent (Split-Path -Parent $ModXml)) 'Misc')
         }
