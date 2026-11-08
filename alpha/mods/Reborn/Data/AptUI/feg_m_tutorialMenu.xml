@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
-  <!-- Reborn: use RA3's original six lesson controls and completion stars. -->
+  <!-- Reborn: retain RA3's six lesson controls/stars and restore Uprising shell music when this menu opens. -->
   <Includes>
     <Include type="all" source="feg_m_tutorialMenu/feg_m_tutorialMenu.xml" />
   </Includes>
