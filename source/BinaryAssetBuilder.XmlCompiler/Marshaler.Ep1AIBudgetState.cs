@@ -1,4 +1,4 @@
-﻿using Relo;
+using Relo;
 using SageBinaryData;
 public static partial class Marshaler
 {
@@ -88,6 +88,8 @@ public static partial class Marshaler
             case 0x874A6E09u:MarshalPolymorphicType<Ep1AIStateResourceNodeShareHeuristic,Ep1AIStateHeuristic>(node,target,state);break;
             case 0x9EE54386u:MarshalPolymorphicType<Ep1AIStateCanBuildBuildingsOnSurfaceHeuristic,Ep1AIStateHeuristic>(node,target,state);break;
             case 0x7E198900u:MarshalPolymorphicType<Ep1AIAlliedBeaconExistsHeuristic,Ep1AIStateHeuristic>(node,target,state);break;
+            // Reborn: retain the actual original concrete heuristic wire ID.
+            case 0x6B660E54u:MarshalPolymorphicType<Ep1AIStateStructureOrHarvesterUnderAttackHeuristic,Ep1AIStateHeuristic>(node,target,state);break;
             case 0x84ACF588u:MarshalPolymorphicType<Ep1AIStateOpenNodeHeuristic,Ep1AIStateHeuristic>(node,target,state);break;
             default:throw new System.NotSupportedException("AI heuristic source family not reviewed: "+wire.ToString("X8"));
         }

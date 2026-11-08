@@ -1,4 +1,4 @@
-﻿using BinaryAssetBuilder.Core.Diagnostics;
+using BinaryAssetBuilder.Core.Diagnostics;
 using Relo;
 using SageBinaryData;
 
@@ -365,8 +365,25 @@ public static partial class Marshaler
             case 0x04B8C430u:
                 MarshalPolymorphicType<GrantUpgradeCreateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
+            // Reborn: these exact original behavior IDs retain their fully qualified source/native layouts.
+            
+            // Reborn: exact original class words override CLR adapter names after typed allocation.
+            case 0x1CC014E0u: MarshalPolymorphicType<Ep1RandomCrateCollideModuleData, BehaviorModuleData>(node,objT,state);uint rebornRandomCrateCollideModuleData=0x1CC014E0u;state.InplaceEndianToPlatform(&rebornRandomCrateCollideModuleData);*(uint*)*objT=rebornRandomCrateCollideModuleData;break;
+            case 0x6451F8D7u: MarshalPolymorphicType<Ep1EnergyDisablingBehaviorModuleData, BehaviorModuleData>(node,objT,state);uint rebornEnergyDisablingBehaviorModuleData=0x6451F8D7u;state.InplaceEndianToPlatform(&rebornEnergyDisablingBehaviorModuleData);*(uint*)*objT=rebornEnergyDisablingBehaviorModuleData;break;
+            case 0xF29A36D0u: MarshalPolymorphicType<Ep1UnitVisionBehaviorModuleData, BehaviorModuleData>(node,objT,state);uint rebornUnitVisionBehaviorModuleData=0xF29A36D0u;state.InplaceEndianToPlatform(&rebornUnitVisionBehaviorModuleData);*(uint*)*objT=rebornUnitVisionBehaviorModuleData;break;
+            case 0x6E77AA59u: MarshalPolymorphicType<Ep1SqueezeFlingUpdateModuleData, BehaviorModuleData>(node,objT,state);uint rebornSqueezeFlingUpdateModuleData=0x6E77AA59u;state.InplaceEndianToPlatform(&rebornSqueezeFlingUpdateModuleData);*(uint*)*objT=rebornSqueezeFlingUpdateModuleData;break;
+            case 0xB4C271D2u: MarshalPolymorphicType<Ep1ReplaceDrawModuleBehaviorModuleData, BehaviorModuleData>(node,objT,state);uint rebornReplaceDrawModuleBehaviorModuleData=0xB4C271D2u;state.InplaceEndianToPlatform(&rebornReplaceDrawModuleBehaviorModuleData);*(uint*)*objT=rebornReplaceDrawModuleBehaviorModuleData;break;
+            case 0xE611C8EEu: MarshalPolymorphicType<Ep1GatherEjectUpdateModuleData, BehaviorModuleData>(node,objT,state);uint rebornGatherEjectUpdateModuleData=0xE611C8EEu;state.InplaceEndianToPlatform(&rebornGatherEjectUpdateModuleData);*(uint*)*objT=rebornGatherEjectUpdateModuleData;break;
+            case 0x2027962Au: MarshalPolymorphicType<Ep1CrateCollideModuleData, BehaviorModuleData>(node,objT,state);uint rebornCrateCollideModuleData=0x2027962Au;state.InplaceEndianToPlatform(&rebornCrateCollideModuleData);*(uint*)*objT=rebornCrateCollideModuleData;break;
+            // Reborn: energy sharing retains the actual original PC concrete class ID.
+            case 0x0EF819D2u:MarshalPolymorphicType<DistributeEnergyToAlliesBehaviorModuleData,BehaviorModuleData>(node,objT,state);break;
+            case 0x4950FD10u:
+                MarshalPolymorphicType<BombardAreaUpdateModuleData, BehaviorModuleData>(node,objT,state);break;
+            case 0x1E95EE57u:
+                MarshalPolymorphicType<CaptureAndGiveUpgradeBehaviorModuleData, BehaviorModuleData>(node,objT,state);break;
             case 0x7517FE52u:
-                MarshalPolymorphicType<HeightDieUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: the EP1 carrier retains the original retail wire ID rather than hashing its CLR adapter name.
+                MarshalPolymorphicType<Ep1HeightDieUpdateModuleData, BehaviorModuleData>(node, objT, state);uint heightDie=0x7517FE52u;state.InplaceEndianToPlatform(&heightDie);*(uint*)*objT=heightDie;
                 break;
             case 0x91840787u:
                 MarshalPolymorphicType<MissileUpdateModuleData, BehaviorModuleData>(node, objT, state);
@@ -525,23 +542,23 @@ public static partial class Marshaler
                 MarshalPolymorphicType<ReplaceSelfUpgradeModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x1E205942u:
-                MarshalPolymorphicType<SalvageCrateCollideModuleData, BehaviorModuleData>(node, objT, state);
+                MarshalPolymorphicType<Ep1SalvageCrateCollideModuleData, BehaviorModuleData>(node,objT,state);uint rebornSalvageCrateCollideModuleData=0x1E205942u;state.InplaceEndianToPlatform(&rebornSalvageCrateCollideModuleData);*(uint*)*objT=rebornSalvageCrateCollideModuleData;
                 break;
             case 0x839AE83Cu:
                 // Reborn: allocate the EP1 healing crate rather than the incompatible legacy KW base.
                 MarshalPolymorphicType<Ep1HealCrateCollideModuleData, BehaviorModuleData>(node, objT, state);uint healCrate=0x839AE83Cu;state.InplaceEndianToPlatform(&healCrate);*(uint*)*objT=healCrate;
                 break;
             case 0xEF293C44u:
-                MarshalPolymorphicType<MoneyCrateCollideModuleData, BehaviorModuleData>(node, objT, state);
+                MarshalPolymorphicType<Ep1MoneyCrateCollideModuleData, BehaviorModuleData>(node,objT,state);uint rebornMoneyCrateCollideModuleData=0xEF293C44u;state.InplaceEndianToPlatform(&rebornMoneyCrateCollideModuleData);*(uint*)*objT=rebornMoneyCrateCollideModuleData;
                 break;
             case 0xB297F4B2u:
                 MarshalPolymorphicType<ShroudCrateCollideModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0xEE961694u:
-                MarshalPolymorphicType<UnitCrateCollideModuleData, BehaviorModuleData>(node, objT, state);
+                MarshalPolymorphicType<Ep1UnitCrateCollideModuleData, BehaviorModuleData>(node,objT,state);uint rebornUnitCrateCollideModuleData=0xEE961694u;state.InplaceEndianToPlatform(&rebornUnitCrateCollideModuleData);*(uint*)*objT=rebornUnitCrateCollideModuleData;
                 break;
             case 0x573DC203u:
-                MarshalPolymorphicType<VeterancyCrateCollideModuleData, BehaviorModuleData>(node, objT, state);
+                MarshalPolymorphicType<Ep1VeterancyCrateCollideModuleData, BehaviorModuleData>(node,objT,state);uint rebornVeterancyCrateCollideModuleData=0x573DC203u;state.InplaceEndianToPlatform(&rebornVeterancyCrateCollideModuleData);*(uint*)*objT=rebornVeterancyCrateCollideModuleData;
                 break;
             case 0x98769794u:
                 MarshalPolymorphicType<SlowDeathBehaviorModuleData, BehaviorModuleData>(node, objT, state);
@@ -907,7 +924,7 @@ public static partial class Marshaler
                 MarshalPolymorphicType<StealUnitUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x4A32BF8Eu:
-                MarshalPolymorphicType<SpawnCrateUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                MarshalPolymorphicType<Ep1SpawnCrateUpdateModuleData, BehaviorModuleData>(node,objT,state);uint rebornSpawnCrateUpdateModuleData=0x4A32BF8Eu;state.InplaceEndianToPlatform(&rebornSpawnCrateUpdateModuleData);*(uint*)*objT=rebornSpawnCrateUpdateModuleData;
                 break;
             case 0xA2F69397u:
                 MarshalPolymorphicType<BridgeBuilderModuleData, BehaviorModuleData>(node, objT, state);

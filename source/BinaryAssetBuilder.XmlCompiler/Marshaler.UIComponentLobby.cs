@@ -43,6 +43,8 @@ public static partial class Marshaler
         }
         Marshal(node.GetAttributeValue(nameof(GameTimeSetting.Label), null), &objT->Label, state);
         Marshal(node.GetAttributeValue(nameof(GameTimeSetting.Value), null), &objT->Value, state);
+        // Reborn: preserve the original EP1 lower-bound setting for each game-time option.
+        Marshal(node.GetAttributeValue(nameof(GameTimeSetting.MinGameTimeValue), "0"), &objT->MinGameTimeValue, state);
         Marshal(node.GetAttributeValue(nameof(GameTimeSetting.Default), "false"), &objT->Default, state);
     }
 

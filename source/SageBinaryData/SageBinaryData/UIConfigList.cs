@@ -7,7 +7,11 @@ namespace SageBinaryData
     public enum UIConfigType
     {
         INGAME,
-        SHELL
+        SHELL,
+        // Reborn: original EP1 UI configurations include the bootup mode.
+        BOOTUP,
+        // Reborn: original EP1 also has a separate map loading-screen configuration.
+        LOADSCREEN
     }
 
     [StructLayout(LayoutKind.Sequential)]

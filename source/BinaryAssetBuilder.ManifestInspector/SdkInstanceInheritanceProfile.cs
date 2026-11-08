@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
@@ -291,6 +291,8 @@ internal sealed class SdkInstanceInheritanceProfile
                         }
                         emittedBases[pair.Key]=(pair.Value,witness);
                     }
+                    // Reborn: production source loading selects the last direct instance declaration in authored Include order; diagnostic-only scopes retain ambiguity rejection.
+                    else if(gameObjectTrees)external[pair.Key]=(pair.Value,witness);
                     else if(!external.TryAdd(pair.Key,(pair.Value,witness)))
                         throw SdkXmlDiagnostics.At(new InvalidDataException($"DUPLICATEASSET ' {pair.Key} ' Ambiguous {edge.Kind} inheritance sources: '{external[pair.Key].Witness.SourcePath}' and '{resolved.Path}'."),include);
                 }

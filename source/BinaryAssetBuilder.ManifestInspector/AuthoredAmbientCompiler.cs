@@ -33,7 +33,8 @@ internal static class AuthoredAmbientCompiler
         {
             AllowAmbientAuthoring=true,
             AllowSchemaSubmixSliders=true,
-            AllowOverridableAuthoring=true
+            AllowOverridableAuthoring=true,
+            AllowExtendedStockAuthoring=true
         };
         plugin.Initialize(TargetPlatform.Win32);
         instance.Handle.TypeHash=plugin.GetExtendedTypeInformation(instance.Handle.TypeId).TypeHash;
@@ -55,5 +56,28 @@ internal static class AuthoredAmbientCompiler
         var document=ManifestReader.Read(SdkEnvironmentPreflight.Read(global,64*1048576));var asset=document.Assets.Single(a=>a.Name=="AudioEvent:SOV_Reactor_AmbientLoop");long offset=8;foreach(var a in document.Assets){if(a==asset)break;offset+=a.InstanceDataSize;}
         var stock=AssetStreamProbe.ReadRange(Path.ChangeExtension(global,".bin"),null,offset,asset.InstanceDataSize);new SelectedNativeGraphComparer(stock,asset.References.ToArray(),chunk,instance,requireAllReferences:false,captureNativeCoordinates:false).Compare(typeof(Marshaler.Ep1AudioEvent),0);
         Console.WriteLine("Reborn: authored AudioEvent stock qualification: PASS (complete Soviet reactor loop, ambient slider, start/kill fades and 14 semantic AudioFile imports).");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: prove normal sequential/start/kill control bits and repeated weighted file occurrences against their complete original global native records. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void QualifyExtendedStockFeatures(string global,Func<XmlDocument,InstanceDeclaration> normalize)
+    {
+        var catalog=ManifestReader.Read(SdkEnvironmentPreflight.Read(global,64*1048576));
+        var witnesses=new[]{("Sounds/SoundEffects.xml","ALL_CryoLegionnaire_FreezeWeapon_GarrisonLoop"),("Sounds/SoundEffects.xml","ALL_TimeBomb_Activate_CreationSequence_Loop"),("Sounds/Voice.xml","JAP_OreCollector_VoiceShrunken"),("Sounds/SoundEffects.xml","Impact_BulletVsGeneric")};
+        var cache=new Dictionary<string,XmlElement[]>();
+        foreach(var witness in witnesses)
+        {
+            if(!cache.TryGetValue(witness.Item1,out var originals))cache[witness.Item1]=originals=StockOriginalUiConfig.Load(witness.Item1,"AudioEvent");
+            var original=originals.Single(element=>element.GetAttribute("id")==witness.Item2);
+            var source=SdkXmlDiagnostics.Parse(System.Text.Encoding.UTF8.GetBytes(original.OuterXml));
+            var instance=normalize(source);var buffer=Compile(instance);
+            var native=new Relo.Chunk{InstanceBuffer=buffer.InstanceData,RelocationBuffer=buffer.RelocationData,ImportsBuffer=buffer.ImportsData};
+            var stock=catalog.Assets.Single(asset=>asset.Name=="AudioEvent:"+witness.Item2);
+            if(stock.TypeId!=0x844D7B9Fu||stock.TypeHash!=0x560C2E45u||stock.Tokenized!=0)throw new InvalidDataException("Original extended audio witness fingerprint differs.");
+            var bytes=W3DContainerCompiler.ReadStock(global,catalog,stock);
+            new SelectedNativeGraphComparer(bytes,stock.References.ToArray(),native,instance,requireAllReferences:false,captureNativeCoordinates:false).Compare(typeof(Marshaler.Ep1AudioEvent),0);
+        }
+        Console.WriteLine("Reborn: original AudioEvent sequential/kill/start controls and repeated AudioFile occurrences qualified (4 complete native witnesses, including 121 file occurrences).");
     }
 }

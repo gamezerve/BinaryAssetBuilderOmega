@@ -11,6 +11,8 @@ namespace SageBinaryData
         VEHICLE,
         AIRCRAFT,
         UPGRADE,
+        // Reborn: EP1 watercraft occupies the next original production queue ordinal.
+        WATERCRAFT,
         SPECIALPOWERS,
         BOOKMARKS
     }

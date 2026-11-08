@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 
 namespace SageBinaryData
 {
@@ -41,7 +41,13 @@ namespace SageBinaryData
         MEDIUM_OR_ABOVE,
         LOW_OR_ABOVE,
         VERY_LOW_OR_ABOVE,
-        ALWAYS_RENDER
+        ALWAYS_RENDER,
+        // Reborn: EP1 keeps the matching low-LOD range at native ordinals seven through eleven.
+        ULTRA_HIGH_OR_BELOW,
+        HIGH_OR_BELOW,
+        MEDIUM_OR_BELOW,
+        LOW_OR_BELOW,
+        VERY_LOW_ONLY
     }
 
     public enum FXParticleSystem_WindMotion

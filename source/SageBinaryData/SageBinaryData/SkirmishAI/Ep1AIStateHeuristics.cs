@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 using Relo;
 using AnsiString=Relo.String<sbyte>;
 namespace SageBinaryData;
@@ -137,4 +137,13 @@ public unsafe struct Ep1AIStateOpenNodeHeuristic
     public Ep1AIStateHeuristic Base;
     public float MinDistanceFromEnemy;
     public SageBool Exists;
+}
+
+// Reborn: original PC factory allocates 12 bytes; tagged-field loader stores Time at +4 and UnderAttack at +8.
+[StructLayout(LayoutKind.Sequential)]
+public struct Ep1AIStateStructureOrHarvesterUnderAttackHeuristic
+{
+    public Ep1AIStateHeuristic Base;
+    public Time TimeSinceAttacked;
+    public SageBool UnderAttack;
 }

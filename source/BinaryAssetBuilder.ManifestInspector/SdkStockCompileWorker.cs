@@ -21,7 +21,7 @@ internal static class SdkStockCompileWorker
         {
             string? line=Console.ReadLine();if(line==null)return 0;
             var request=JsonSerializer.Deserialize<Request>(line)??throw new InvalidDataException("Stock worker request required.");
-            if(request.Arguments.Length==0||request.Arguments[0] is not ("conscript-source-prepare" or "conscript-alpha-build"))throw new InvalidDataException("Only stock qualification commands are admitted.");
+            if(request.Arguments.Length==0||request.Arguments[0] is not ("conscript-source-prepare" or "conscript-alpha-build" or "stock-source-empty-validate"))throw new InvalidDataException("Only stock qualification commands are admitted.");
             string log=Confined(request.Log),work=Confined(request.Work);
             var savedOut=Console.Out;var savedError=Console.Error;var savedSettings=Settings.Current;
             string? savedTemp=Environment.GetEnvironmentVariable("TEMP"),savedTmp=Environment.GetEnvironmentVariable("TMP");

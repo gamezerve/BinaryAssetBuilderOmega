@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Xml;
 using SageBinaryData;
@@ -9,6 +9,8 @@ public static class Ep1AIHeuristicLayout
 {
     public sealed record Family(string Element,string Schema,Type Type,uint Wire);
     private static readonly Family[] Families={
+        // Reborn: this campaign-only class is proved by the original PC runtime ABI, not an invented stock asset.
+        new("StructureOrHarvesterUnderAttackHeuristic","AIStateStructureOrHarvesterUnderAttackHeuristic",typeof(Ep1AIStateStructureOrHarvesterUnderAttackHeuristic),0x6B660E54u),
         new("ConstantHeuristic","AIStateConstantHeuristic",typeof(Ep1AIStateConstantHeuristic),0x51FB6D92u),
         new("TimerHeuristic","AIStateTimerHeuristic",typeof(Ep1AIStateTimerHeuristic),0x10A03AC0u),
         new("EnemyNearbyHeuristic","AIStateEnemyNearbyHeuristic",typeof(Ep1AIStateEnemyNearbyHeuristic),0x67B985A7u),

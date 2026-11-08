@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace SageBinaryData;
 
@@ -70,6 +70,8 @@ public enum LocomotorSetType
 public enum ModelLODType
 {
     LOW,
+    // Reborn: EP1 includes the original intermediate model LOD between LOW and HIGH.
+    MEDIUM,
     HIGH
 }
 

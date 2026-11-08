@@ -281,6 +281,23 @@ internal sealed class StockMetadataGrammar
         }
     }
 
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: extend the real native Capture grammar only with the two exact tagged-field rows read from the original PC energy-sharing loader. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifyEnergySharingRuntimeAbi(System.Xml.Schema.XmlSchemaSet schemas)
+    {
+        if(Witnesses==0||!grammar.ContainsKey(typeof(SageBinaryData.CaptureBehaviorModuleData)))throw new InvalidDataException("Energy sharing requires its original native Capture base witness.");
+        var shape=schemas.GlobalTypes[new System.Xml.XmlQualifiedName("DistributeEnergyToAlliesBehaviorModuleData","uri:ea.com:eala:asset")] as System.Xml.Schema.XmlSchemaComplexType??throw new InvalidDataException("Energy sharing schema absent.");
+        var extension=(shape.ContentModel as System.Xml.Schema.XmlSchemaComplexContent)?.Content as System.Xml.Schema.XmlSchemaComplexContentExtension;
+        var attributes=extension?.Attributes.OfType<System.Xml.Schema.XmlSchemaAttribute>().ToArray();
+        if(extension?.BaseTypeName.Name!="CaptureBehaviorModuleData"||attributes?.Length!=1||attributes[0].Name!="ComradePercentage"||attributes[0].SchemaTypeName.Name!="Percentage"||attributes[0].DefaultValue!="100.0")throw new InvalidDataException("Original energy sharing source schema differs.");
+        StockRuntimeAbiContract.Qualify("DistributeEnergyToAlliesBehaviorModuleData",typeof(SageBinaryData.DistributeEnergyToAlliesBehaviorModuleData),0x0EF819D2u,0x436C1AE7u);
+        var rows=Get(typeof(SageBinaryData.DistributeEnergyToAlliesBehaviorModuleData));rows.Class=0x0EF819D2u;
+        rows.Fields=new[]{(1u,0xF8C4AA6Bu),(0xB8853DE7u,0x645864F3u)};
+        rows.Kinds=new[]{new HashSet<Kind>{Kind.Table},new HashSet<Kind>{Kind.Native}};
+    }
+
     // Reborn: only the implemented original falling and straight-line movement classes select concrete metadata grammar.
     private static Type MovementType(uint wire)=>wire switch{0x87767DF6u=>typeof(SageBinaryData.ProjectileMoveToGroundData),0x858CBFDCu=>typeof(SageBinaryData.ProjectileMoveInStraightLineData),_=>throw new InvalidDataException("Unsupported projectile movement metadata class: "+wire.ToString("X8"))};
     private Rows Get(Type type){if(!grammar.TryGetValue(type,out var rows))grammar[type]=rows=new Rows();return rows;}

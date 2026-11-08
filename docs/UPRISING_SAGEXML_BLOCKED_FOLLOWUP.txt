@@ -1,0 +1,1384 @@
+﻿UPRISING SAGEXML - BLOCKED SOURCE FOLLOW-UP
+
+Compiler generation: 191FCF2ACA1BD9CE35E2B184612A46DEAB839BB4AC76C25E6C22A549A571E42B
+Original 341-file baseline remains unchanged; this report records additional contexts separately.
+
+Additional native/original-context qualification: 147
+Synthetic schema-owner qualification only: 6
+Validated EA build metadata (not a runtime asset): 1
+Still blocked: 187
+
+COUNTS
+BlockedDependency: 175
+BlockedInvalidOriginalSource: 7
+BlockedSyntheticContext: 4
+BlockedUnreferencedLegacyUIComponent: 1
+BuildMetadataValidated: 1
+NativeOriginalConsumerQualified: 21
+NativeSourceIntegrationQualified: 4
+NativeUIExportQualified: 122
+SyntheticOwnerQualified: 6
+
+Allied\Props\AlliedCryoSatelliteSpawnerLvl1.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Allied\Props\AlliedCryoSatelliteSpawnerLvl1.xml(8,3): Behavior strong target missing/ambiguous: ObjectCreationList:CryoSatelliteEffectLvl1
+
+Allied\Props\AlliedFighterAircraftCannonNode.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Allied\Props\AlliedFighterAircraftCannonNode.xml(100,3): Behavior strong target missing/ambiguous: WeaponTemplate:AlliedFighterAircraftCannonNode
+
+Allied\Structures\AlliedCrane.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Allied\Structures\AlliedCrane.xml(21,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ABCrane_SKN
+
+Allied\Structures\AlliedNavalYardRepairBay.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Allied\Structures\AlliedNavalYardRepairBay.xml(19,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ABNavalYardRepairBay
+
+Allied\Structures\AlliedRadarDish.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Allied\Structures\AlliedRadarDish.xml(28,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ABRadarDish_SKN
+
+AptUI\A01_Objective_Briefing.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\A02_Objective_Briefing.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\A03_Objective_Briefing.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\A04_Objective_Briefing.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\AptIncludeProxy_pc.xml
+  BuildMetadataValidated
+  Original project/fileset is an EA build-tool manifest, not an AssetDeclaration or native asset. All 122 listed source wrappers were qualified individually.
+
+AptUI\blockTextComponent.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\chapterSelectComponent.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\feg_m_background.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\feg_m_filmArchiveTheatre.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\feg_m_load.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\feg_m_main.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\feg_m_mainMenu.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\feg_m_mainMenu3D.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\feg_m_messageBox.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\feg_m_newLoadContinue.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\feg_m_optionsSettings.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\feg_m_profileManager.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\feg_m_saveLoadMenu.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\feg_m_tutorialMenu.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\fem_m_postgameRoundup.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\fes_m_chapterSelect.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\fes_m_factionMenu.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\fes_m_objectivesBriefing.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\fes_m_postgameRoundup.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\fes_m_scenarioComplete.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\fes_m_scenarioGameSetup.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\fes_m_scenarioMap.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\fes_m_scenarioPostGame.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\fes_m_scenarioUnlocks.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\fes_m_singleplayerMenu.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\fes_m_skirmishGameSetup.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\fe_components.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\fe_m_assets.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\fe_m_assetsGameSetup.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\fe_m_generalScreenComponents.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\fe_objectiveBriefingsAssets.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\fe_shared_mainMenuLib.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\GlobalClasses.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\HelpBox.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\HUDTickerPanel.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\HUDVoiceChatControlPanel.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\igm_GadgetFlashStage.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\igm_pauseMenu.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\igm_pauseMenuShared.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\igm_PlayerTechStoreDialog.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\igm_replayControlPanel.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\igm_scenarioPauseMenu.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\igm_shellRoot.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\igm_UnitIntroDialog.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\ig_AITargetIndicator.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\ig_DrawableOverlayStage.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\ig_HUD.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\ig_InfoBox.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\ig_libHUD.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\ig_missionMap.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\ig_missionMapHotSpotLayer.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\ig_missionMapObjectiveLayer.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\ig_RadarBridgeLayer.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\ig_RadarCoOpAITargetLayer.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\ig_RadarObjectivesLayer.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\ig_scenarioMissionMap.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\InGameChat.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\InGameCheckbox.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\J01_Objective_Briefing.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\J02_Objective_Briefing.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\J03_Objective_Briefing.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\J04_Objective_Briefing.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\libProgressBar.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\LoadScreen.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\LoadScreenCampaign.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\LoadScreenImage.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\main_mouse.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\mouse_chapterSelectComponent.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\mouse_scenarioComponents.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\NotificationPopUp.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\PopUpFactionLogo.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\S01_Objective_Briefing.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\S02_Objective_Briefing.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\S03_Objective_Briefing.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\S04_Objective_Briefing.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\skins.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\StandardCommandButton.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\std_MouseAccordionButton.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\std_MouseButton.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\std_MouseCheckBox.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\std_mouseDropDownMenu.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\std_mouseRadioButton.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\std_mouseScrollbar.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\std_mouseScrollingListbox.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\std_mouseSlider.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\std_mouseTextInputField.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalEndGameDialog.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalHUD.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalHUDBeaconStage.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalHUDBuildQueuePage.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalHUDCommandListBox.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalHUDCommandModeBar.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalHUDCoOpAIOrderPanel.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalHUDEnergyMeter.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalHUDExperiencePanel.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalHUDMainCommandBar.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalHUDObjectiveIndicatorStage.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalHUDObserverControlPanel.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalHUDPlayerPowersBar.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalHUDRadar.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalHUDSelectionDetails.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalHUDSelectionRefinementPage.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalHUDSpecialPowerTimers.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalHUDTelestratorControlPanel.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalMissionHotSpotPopUp.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalMpBeaconDialog.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalObjectiveIcon.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalObjectiveIndicatorPopUp.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalObjectiveIntroPopUp.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalPlayerPowerCommandButton.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalPlayerStatusDialog.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalQuickChatDialog.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\TacticalTextChatDialog.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\VerticalScrollBar.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\Y01_Objective_Briefing.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\Y02_Objective_Briefing.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\Y03_Objective_Briefing.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+AptUI\YesNoDialog.xml
+  NativeUIExportQualified
+  Unchanged original export compiled after reconstructing the authored legacy aptbuildxml include layout.
+
+Audio.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Sounds\MasterAudioAssets.xml(8,23): Source graph: IncludePath AUDIO:audioassets_notfordemo.xml: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\00279\work-e2f0563f865f4a4d8e7d19529f7728aa\input\Audio\audioassets_notfordemo.xml; D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\Audio\audioassets_notfordemo.xml; IncludePath AUDIO:audioassets_retailonly.xml: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\00279
+
+BaseObjects\BaseCivilianStructure.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\BaseObjects\BaseCivilianStructure.xml(26,3): Behavior strong target missing/ambiguous: FXList:FX_ScorchMedium
+
+BaseObjects\BaseCivilianStructureLarge.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\BaseObjects\BaseCivilianStructureLarge.xml(9,3): Behavior strong target missing/ambiguous: FXList:FX_ScorchMedium
+
+BaseObjects\BaseCivilianStructureMedium.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\BaseObjects\BaseCivilianStructureMedium.xml(9,3): Behavior strong target missing/ambiguous: FXList:FX_ScorchMedium
+
+BaseObjects\BaseCivilianStructureSmall.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\BaseObjects\BaseCivilianStructureSmall.xml(9,3): Behavior strong target missing/ambiguous: FXList:FX_ScorchMedium
+
+BaseObjects\BaseCivilianStructureTiny.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\BaseObjects\BaseCivilianStructureTiny.xml(9,3): Behavior strong target missing/ambiguous: FXList:FX_ScorchMedium
+
+BaseObjects\BaseCivilianStructureXLarge.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\BaseObjects\BaseCivilianStructureXLarge.xml(9,3): Behavior strong target missing/ambiguous: FXList:FX_ScorchMedium
+
+Bootup.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\00328\work-105230115a064066b52efc0cb3851d16\source\game.xml(1,2) [source context; exact field origin unavailable]: Behavior strong target missing/ambiguous: Texture:loadingText
+
+Civilian\Amsterdam_AM\Buildings\AM_CanalWalls.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Amsterdam_AM\Buildings\AM_CanalWalls.xml(8,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AM_CanalWalls
+
+Civilian\Amsterdam_AM\Buildings\AM_GrandCentralStation.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Amsterdam_AM\Buildings\AM_GrandCentralStation.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AM_GrandCentralStation
+
+Civilian\Amsterdam_AM\Buildings\AM_Riverboat.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Amsterdam_AM\Buildings\AM_Riverboat.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AM_Riverboat
+
+Civilian\Amsterdam_AM\Optimized_Props\AM_StreetSegment03.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Amsterdam_AM\Optimized_Props\AM_StreetSegment03.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AM_StreetSegment03
+
+Civilian\Amsterdam_AM\Optimized_Props\AM_StreetSegment13.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Amsterdam_AM\Optimized_Props\AM_StreetSegment13.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AM_StreetSegment13
+
+Civilian\Amsterdam_AM\Props\AM_GrandCentralStation_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Amsterdam_AM\Props\AM_GrandCentralStation_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AM_GrandCentralStation_COL
+
+Civilian\Amsterdam_AM\Props\AM_Riverboat_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Amsterdam_AM\Props\AM_Riverboat_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AM_Riverboat_COL
+
+Civilian\Cannes_CA\Buildings\CA_CannesHotel.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Cannes_CA\Buildings\CA_CannesHotel.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:CA_CannesHotel
+
+Civilian\Cannes_CA\Props\CA_CannesHotel_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Cannes_CA\Props\CA_CannesHotel_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:CA_CannesHotel_COL
+
+Civilian\Cape_Cod_CC\Props\CCBuildingDebris_02.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Cape_Cod_CC\Props\CCBuildingDebris_02.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:CCLightHouse_02_Gib
+
+Civilian\Cape_Cod_CC\Props\CC_swing.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Cape_Cod_CC\Props\CC_swing.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:CC_Swing01
+
+Civilian\Gibraltar_GI\Buildings\GI_GibraltarAirfield.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Gibraltar_GI\Buildings\GI_GibraltarAirfield.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GI_GibraltarAirfield
+
+Civilian\Gibraltar_GI\Buildings\GI_GibraltarRock.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Gibraltar_GI\Buildings\GI_GibraltarRock.xml(8,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GI_GibraltarRock
+
+Civilian\Gibraltar_GI\Props\GI_CableCar_01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Gibraltar_GI\Props\GI_CableCar_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GI_CableCar_01_COL
+
+Civilian\Gibraltar_GI\Props\GI_CableTower_01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Gibraltar_GI\Props\GI_CableTower_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GI_CableTower_01_COL
+
+Civilian\Gibraltar_GI\Props\GI_GibraltarAirfield_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Gibraltar_GI\Props\GI_GibraltarAirfield_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GI_GibraltarAirfield_COL
+
+Civilian\Gibraltar_GI\Props\GI_Stadium_01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Gibraltar_GI\Props\GI_Stadium_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GI_Stadium_01_COL
+
+Civilian\Gibraltar_GI\Structures\GI_Pier01.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Gibraltar_GI\Structures\GI_Pier01.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GI_Pier01
+
+Civilian\Gypsy_Village_GV\Buildings\GV_SovietCircusTent.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Gypsy_Village_GV\Buildings\GV_SovietCircusTent.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GV_SovietCircusTent
+
+Civilian\Gypsy_Village_GV\Destructible_Props\GV_Kiosk02.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Gypsy_Village_GV\Destructible_Props\GV_Kiosk02.xml(12,4): Behavior strong target missing/ambiguous: BaseRenderAssetType:GV_Kiosk02
+
+Civilian\Gypsy_Village_GV\Props\GV_SovietCircusTent_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Gypsy_Village_GV\Props\GV_SovietCircusTent_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GV_SovietCircusTent_COL
+
+Civilian\Gypsy_Village_GV\Props\GV_Tent01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Gypsy_Village_GV\Props\GV_Tent01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GV_Tent01_COL
+
+Civilian\Gypsy_Village_GV\Props\GV_Tent02_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Gypsy_Village_GV\Props\GV_Tent02_Collapse.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GV_Tent01_COL
+
+Civilian\Heidelberg_HB\Buildings\HB_GermanBeerGarden.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Heidelberg_HB\Buildings\HB_GermanBeerGarden.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:HB_GermanBeerGarden
+
+Civilian\Heidelberg_HB\Props\HB_Bridge01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Heidelberg_HB\Props\HB_Bridge01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:HB_Bridge01_COL
+
+Civilian\Heidelberg_HB\Props\HB_CastleTower_01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Heidelberg_HB\Props\HB_CastleTower_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:HB_CastleTower_01_COL
+
+Civilian\Heidelberg_HB\Props\HB_GermanBeerGarden_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Heidelberg_HB\Props\HB_GermanBeerGarden_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:HB_GermanBeerGarden_COL
+
+Civilian\Kremlin_KR\Buildings\KR_SovietPolitburo.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Kremlin_KR\Buildings\KR_SovietPolitburo.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:KR_SovietPolitburo
+
+Civilian\Kremlin_KR\Props\KR_SovietPolitburo_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Kremlin_KR\Props\KR_SovietPolitburo_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:KR_SovietPolitburo_COL
+
+Civilian\Kremlin_KR\Props\KR_Structure_02_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Kremlin_KR\Props\KR_Structure_02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:KR_Structure_02_COL
+
+Civilian\Mykonos_MY\Buildings\MY_Boat_01b.xml
+  BlockedInvalidOriginalSource
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Mykonos_MY\Buildings\MY_Boat_01b.xml(8,5): Source graph: SourceRead : Missing, oversized, redirected or malformed source XML; no external entity processing. Unexpected XML declaration. The XML declaration must be the first node in the document, and no whitespace characters are allowed to appear before it. Line 8, position 5.
+
+Civilian\Mykonos_MY\Buildings\MY_LightHouse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Mykonos_MY\Buildings\MY_LightHouse.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:MY_LightHouse
+
+Civilian\Mykonos_MY\Props\MY_Archway_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Mykonos_MY\Props\MY_Archway_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:MY_Archway_COL
+
+Civilian\Mykonos_MY\Props\MY_Boat_01b_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Mykonos_MY\Props\MY_Boat_01b_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:MY_Boat_01b_COL
+
+Civilian\Mykonos_MY\Props\MY_Boat_01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Mykonos_MY\Props\MY_Boat_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:MY_Boat_01_COL
+
+Civilian\Mykonos_MY\Props\MY_LightHouse_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Mykonos_MY\Props\MY_LightHouse_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:MY_LightHouse_COL
+
+Civilian\Mykonos_MY\Props\MY_Plant_01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Mykonos_MY\Props\MY_Plant_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:MY_Plant_01_COL
+
+Civilian\Mykonos_MY\Props\MY_Statue_01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Mykonos_MY\Props\MY_Statue_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:MY_Statue_01_COL
+
+Civilian\Mykonos_MY\Props\MY_Statue_02_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Mykonos_MY\Props\MY_Statue_02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:MY_Statue_02_COL
+
+Civilian\Mykonos_MY\Props\MY_Umbrella_01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Mykonos_MY\Props\MY_Umbrella_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:MY_Umbrella_01_COL
+
+Civilian\New_York_NY\Props\NY_Building02_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\New_York_NY\Props\NY_Building02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NY_Building02_COL
+
+Civilian\New_York_NY\Props\NY_SkyScraper_01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\New_York_NY\Props\NY_SkyScraper_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NY_SkyScraper_01_COL
+
+Civilian\New_York_NY\Props\NY_SkyScraper_02_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\New_York_NY\Props\NY_SkyScraper_02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NY_SkyScraper_02_COL
+
+Civilian\New_York_NY\Props\NY_SkyScraper_03_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\New_York_NY\Props\NY_SkyScraper_03_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NY_SkyScraper_03_COL
+
+Civilian\New_York_NY\Props\NY_SkyScraper_04_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\New_York_NY\Props\NY_SkyScraper_04_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NY_SkyScraper_04_COL
+
+Civilian\Northern_Russia_NR\Buildings\NR_BuildingCastle03.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Northern_Russia_NR\Buildings\NR_BuildingCastle03.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NR_BuildingCastle03
+
+Civilian\Northern_Russia_NR\Buildings\NR_BuildingCastle04.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Northern_Russia_NR\Buildings\NR_BuildingCastle04.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NR_BuildingCastle04
+
+Civilian\Northern_Russia_NR\Props\NR_BuildingCastle03_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Northern_Russia_NR\Props\NR_BuildingCastle03_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NR_BuildingCastle03_COL
+
+Civilian\Northern_Russia_NR\Props\NR_BuildingCastle04_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Northern_Russia_NR\Props\NR_BuildingCastle04_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NR_BuildingCastle04_COL
+
+Civilian\Northern_Russia_NR\Props\NR_FutureTechColliderRing_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Northern_Russia_NR\Props\NR_FutureTechColliderRing_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NR_FutureTechColliderRing_COL
+
+Civilian\Odessa_OD\Buildings\OD_SovietDockBuilding.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Odessa_OD\Buildings\OD_SovietDockBuilding.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietDockBuilding
+
+Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_01.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_01.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietHeroesStatue_01
+
+Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_02.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_02.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietHeroesStatue_02
+
+Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_03.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_03.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietHeroesStatue_03
+
+Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_04.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_04.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietHeroesStatue_04
+
+Civilian\Odessa_OD\Buildings\OD_Stairway.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Odessa_OD\Buildings\OD_Stairway.xml(8,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_Stairway
+
+Civilian\Odessa_OD\Buildings\OD_SwallowsCastle.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Odessa_OD\Buildings\OD_SwallowsCastle.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SwallowsCastle
+
+Civilian\Odessa_OD\Props\OD_SovietDockBuilding_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Odessa_OD\Props\OD_SovietDockBuilding_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietDockBuilding_COL
+
+Civilian\Odessa_OD\Props\OD_SovietHeroesStatue_01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Odessa_OD\Props\OD_SovietHeroesStatue_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietHeroesStatue_01_COL
+
+Civilian\Odessa_OD\Props\OD_SovietHeroesStatue_02_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Odessa_OD\Props\OD_SovietHeroesStatue_02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietHeroesStatue_02_COL
+
+Civilian\Odessa_OD\Props\OD_SovietHeroesStatue_03_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Odessa_OD\Props\OD_SovietHeroesStatue_03_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietHeroesStatue_03_COL
+
+Civilian\Odessa_OD\Props\OD_SovietHeroesStatue_04_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Odessa_OD\Props\OD_SovietHeroesStatue_04_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietHeroesStatue_04_COL
+
+Civilian\Odessa_OD\Props\OD_SwallowsCastle_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Odessa_OD\Props\OD_SwallowsCastle_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SwallowsCastle_COL
+
+Civilian\Odessa_OD\Props\OD_Tower01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Odessa_OD\Props\OD_Tower01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_Tower01_COL
+
+Civilian\Odessa_OD\Structures\OD_Wall001.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Odessa_OD\Structures\OD_Wall001.xml(12,4): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_Wall001
+
+Civilian\Romania_RM\Props\RM_AlliedAlertLamp_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Romania_RM\Props\RM_AlliedAlertLamp_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:RM_AlliedAlertLamp_COL
+
+Civilian\Santa_Monica_SA\Buildings\SA_FerrisWheel.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Santa_Monica_SA\Buildings\SA_FerrisWheel.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SA_FerrisWheel
+
+Civilian\Santa_Monica_SA\Buildings\SA_Pier.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Santa_Monica_SA\Buildings\SA_Pier.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SA_Pier
+
+Civilian\Santa_Monica_SA\Props\SA_EALAEntry_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Santa_Monica_SA\Props\SA_EALAEntry_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SA_EALAEntry_COL
+
+Civilian\Santa_Monica_SA\Props\SA_EALAWall_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Santa_Monica_SA\Props\SA_EALAWall_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SA_EALAWall_COL
+
+Civilian\Santa_Monica_SA\Props\SA_FakeBillboardDefensiveTower_01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Santa_Monica_SA\Props\SA_FakeBillboardDefensiveTower_01_Collapse.xml(12,4): Behavior strong target missing/ambiguous: BaseRenderAssetType:SA_FakeBillboardDefensiveTower_01_COL
+
+Civilian\Santa_Monica_SA\Props\SA_FakeBillboardDefensiveTower_02_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Santa_Monica_SA\Props\SA_FakeBillboardDefensiveTower_02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SA_FakeBillboardDefensiveTower_02_COL
+
+Civilian\Santa_Monica_SA\Props\SA_FakeBillboardDefensiveTower_03_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Santa_Monica_SA\Props\SA_FakeBillboardDefensiveTower_03_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SA_FakeBillboardDefensiveTower_03_COL
+
+Civilian\Santa_Monica_SA\Props\SA_FakeBillboardDefensiveTower_04_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Santa_Monica_SA\Props\SA_FakeBillboardDefensiveTower_04_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SA_FakeBillboardDefensiveTower_04_COL
+
+Civilian\Santa_Monica_SA\Props\SA_Pier_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Santa_Monica_SA\Props\SA_Pier_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SA_Pier_COL
+
+Civilian\Shiro_Sanitarium_SS\Props\SS_SecretFile1_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Shiro_Sanitarium_SS\Props\SS_SecretFile1_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SS_SecretFile1_COL
+
+Civilian\Shiro_Sanitarium_SS\Props\SS_SecretFile2_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Shiro_Sanitarium_SS\Props\SS_SecretFile2_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SS_SecretFile2_COL
+
+Civilian\Solvang_SV\Props\SV_PCampFenceWire01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Solvang_SV\Props\SV_PCampFenceWire01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SV_PCampFenceWire01_COL
+
+Civilian\Solvang_SV\Props\SV_PCampFenceWood01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Solvang_SV\Props\SV_PCampFenceWood01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SV_PCampFenceWood01_COL
+
+Civilian\Solvang_SV\Props\SV_PCampWall01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Solvang_SV\Props\SV_PCampWall01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SV_PCampWall01_COL
+
+Civilian\Solvang_SV\Props\SV_PCampWall02_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Solvang_SV\Props\SV_PCampWall02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SV_PCampWall02_COL
+
+Civilian\Solvang_SV\Props\SV_PCampWallColumn01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Solvang_SV\Props\SV_PCampWallColumn01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SV_PCampWallColumn01_COL
+
+Civilian\Solvang_SV\Props\SV_PCampWallCorner01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Solvang_SV\Props\SV_PCampWallCorner01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SV_PCampWallCorner01_COL
+
+Civilian\StPetersburg_ST\Buildings\ST_Artillery_01.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Buildings\ST_Artillery_01.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Artillery_01
+
+Civilian\StPetersburg_ST\Buildings\ST_Artillery_02.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Buildings\ST_Artillery_02.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Artillery_02
+
+Civilian\StPetersburg_ST\Buildings\ST_Artillery_03.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Buildings\ST_Artillery_03.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Artillery_03
+
+Civilian\StPetersburg_ST\Buildings\ST_Artillery_V4.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Buildings\ST_Artillery_V4.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Artillery_V4
+
+Civilian\StPetersburg_ST\Buildings\ST_Cathedral_2.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Buildings\ST_Cathedral_2.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Cathedral_2
+
+Civilian\StPetersburg_ST\Buildings\ST_FortressOfTheSoviets.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Buildings\ST_FortressOfTheSoviets.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_FortressOfTheSoviets
+
+Civilian\StPetersburg_ST\Buildings\ST_LeningradCanalBarrier.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Buildings\ST_LeningradCanalBarrier.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_LeningradCanalBarrier
+
+Civilian\StPetersburg_ST\Buildings\ST_PPFort_01.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Buildings\ST_PPFort_01.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_01
+
+Civilian\StPetersburg_ST\Buildings\ST_PPFort_02.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Buildings\ST_PPFort_02.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_02
+
+Civilian\StPetersburg_ST\Buildings\ST_PPFort_03.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Buildings\ST_PPFort_03.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_03
+
+Civilian\StPetersburg_ST\Buildings\ST_PPFort_04.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Buildings\ST_PPFort_04.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_04
+
+Civilian\StPetersburg_ST\Buildings\ST_PPFort_05.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Buildings\ST_PPFort_05.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_05
+
+Civilian\StPetersburg_ST\Props\ST_Artillery_01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Props\ST_Artillery_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Artillery_01_COL
+
+Civilian\StPetersburg_ST\Props\ST_Artillery_02_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Props\ST_Artillery_02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Artillery_02_COL
+
+Civilian\StPetersburg_ST\Props\ST_Artillery_03_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Props\ST_Artillery_03_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Artillery_03_COL
+
+Civilian\StPetersburg_ST\Props\ST_Artillery_V4_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Props\ST_Artillery_V4_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Artillery_V4_COL
+
+Civilian\StPetersburg_ST\Props\ST_Cathedral_2_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Props\ST_Cathedral_2_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Cathedral_2_COL
+
+Civilian\StPetersburg_ST\Props\ST_FortressOfTheSoviets_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Props\ST_FortressOfTheSoviets_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_FortressOfTheSoviets_COL
+
+Civilian\StPetersburg_ST\Props\ST_LeningradCanalBarrier_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Props\ST_LeningradCanalBarrier_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_LeningradCanalBarrier_COL
+
+Civilian\StPetersburg_ST\Props\ST_PPFort_01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Props\ST_PPFort_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_01_COL
+
+Civilian\StPetersburg_ST\Props\ST_PPFort_02_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Props\ST_PPFort_02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_02_COL
+
+Civilian\StPetersburg_ST\Props\ST_PPFort_03_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Props\ST_PPFort_03_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_03_COL
+
+Civilian\StPetersburg_ST\Props\ST_PPFort_04_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Props\ST_PPFort_04_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_04_COL
+
+Civilian\StPetersburg_ST\Props\ST_PPFort_05_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Props\ST_PPFort_05_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_05_COL
+
+Civilian\StPetersburg_ST\Props\ST_RivWallShort.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\StPetersburg_ST\Props\ST_RivWallShort.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_RivWallShort
+
+Civilian\Tokyo_Harbor_TH\Buildings\TH_FerrisWheel.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Tokyo_Harbor_TH\Buildings\TH_FerrisWheel.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:TH_FerrisWheel
+
+Civilian\Tokyo_Harbor_TH\Props\TH_FerrisWheel_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Tokyo_Harbor_TH\Props\TH_FerrisWheel_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:TH_FerrisWheel_COL
+
+Civilian\Tokyo_Harbor_TH\Props\TH_fish_market01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Tokyo_Harbor_TH\Props\TH_fish_market01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:TH_fish_market01_COL
+
+Civilian\Vladivostok_VL\Buildings\VL_ImperialMilitaryAdminBuilding_04.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Vladivostok_VL\Buildings\VL_ImperialMilitaryAdminBuilding_04.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:VL_ImperialAdminBuilding_04
+
+Civilian\Vladivostok_VL\Buildings\VL_ImperialMilitaryAdminBuilding_05.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Vladivostok_VL\Buildings\VL_ImperialMilitaryAdminBuilding_05.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:VL_ImperialAdminBuilding_05
+
+Civilian\Vladivostok_VL\Props\VL_ImperialMilitaryAdminBuilding_04_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Vladivostok_VL\Props\VL_ImperialMilitaryAdminBuilding_04_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:VL_ImperialAdminBuilding_04_COL
+
+Civilian\Vladivostok_VL\Props\VL_ImperialMilitaryAdminBuilding_05_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Vladivostok_VL\Props\VL_ImperialMilitaryAdminBuilding_05_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:VL_ImperialAdminBuilding_05_COL
+
+Civilian\Yucatan_YU\Props\YU_TreeSerengeti01_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Yucatan_YU\Props\YU_TreeSerengeti01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:YU_TreeSerengeti01_COL
+
+Civilian\Yucatan_YU\Props\YU_TreeSerengeti02_Collapse.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Civilian\Yucatan_YU\Props\YU_TreeSerengeti02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:YU_TreeSerengeti02_COL
+
+dlcontent\packages\package1\Package.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\dlcontent\packages\package1\Package.xml(5,12): Source graph: IncludePath MapMetaData.xml: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\dlcontent\packages\package1\MapMetaData.xml
+
+EP1\Allied\Props\AlliedAntiInfantryInfantry_Collapse.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+EP1\Allied\Props\AlliedAntiVehicleInfantry_Collapse.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+EP1\Allied\Props\AlliedEngineer_Collapse.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+EP1\Allied\Props\AlliedInfiltrationInfantry_Collapse.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+EP1\Allied\Props\AlliedLegionnaireInfantry_Collapse.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+EP1\Allied\Props\AlliedScoutInfantry_Collapse.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+EP1\Includes\FactionFlingableProps.xml
+  NativeOriginalConsumerQualified
+  Include-only original library captured unchanged; all its authored all-Includes were emitted and native-qualified through Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml. The library itself is not a native asset.
+
+EP1\Japan\Props\JapanAntiInfantryInfantry_Collapse.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+EP1\Japan\Props\JapanAntiVehicleInfantry_Collapse.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+EP1\Japan\Props\JapanArcherInfantry_Collapse.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+EP1\Japan\Props\JapanEngineer_Collapse.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+EP1\Japan\Props\JapanInfiltrationInfantry_Collapse.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+EP1\Japan\Props\JapanScientist_Collapse.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+EP1\Soviet\Props\SovietAntiInfantryInfantry_Collapse.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+EP1\Soviet\Props\SovietDesolatorInfantry_Collapse.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+EP1\Soviet\Props\SovietHeavyAntiVehicleInfantry_Collapse.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+EP1\Soviet\Props\SovietScoutInfantry_Collapse.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+EP1\Soviet\Props\SovietScoutVehicle_Collapse.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+global.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\PathMusic\BasePathMusicEvent.xml(7,3): Source graph: ResourcePath AUDIO:Pathfinder\RA3EPMus\PC\RA3EPMus.h: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\05659\work-35bb60b5d31049b7a839b8c1a4068cd3\input\Audio\Pathfinder\RA3EPMus\PC\RA3EPMus.h; D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\Audio\Pathfinder\RA3EPMus\PC\RA3EPMus.h; IncludePath DATA:maps\official\CAMP_S06_Iceland_Bass\AIP_S06_SovietKrukov.xml.: Unsafe scoped relative dependency path.; IncludePath DATA:
+
+Includes\GarrisonableStructureBehaviors.xml
+  BlockedInvalidOriginalSource
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Includes\GarrisonableStructureBehaviors.xml(5,1): Source graph: SourceRead : Missing, oversized, redirected or malformed source XML; no external entity processing. Data at the root level is invalid. Line 5, position 1.
+
+Includes\GarrisonableStructureFlagDraw.xml
+  BlockedSyntheticContext
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Includes\GarrisonableStructureFlagDraw.xml(26,4): Instance overlay exceeds chain merge scope: The element 'ScriptedModelDraw' in namespace 'uri:ea.com:eala:asset' has invalid child element 'ModelConditionState' in namespace 'uri:ea.com:eala:asset'. List of possible elements expected: 'AnimationState, AttachModel, EmbedPortal' in namespace 'uri:ea.com:eala:asset'.
+
+Includes\GarrisonableStructureGarrisonedDraw.xml
+  BlockedSyntheticContext
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\blocked-followup-20261108\fragments\GarrisonableStructureGarrisonedDraw\input\Data\Static_Mod.xml(1,298): Behavior strong target missing/ambiguous: BaseRenderAssetType:GUGarArmor
+
+Includes\GarrisonFlagArmorDrawOnlyFour.xml
+  BlockedSyntheticContext
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Includes\GarrisonFlagArmorDrawOnlyFour.xml(18,4): Instance overlay exceeds chain merge scope: The element 'ScriptedModelDraw' in namespace 'uri:ea.com:eala:asset' has invalid child element 'ModelConditionState' in namespace 'uri:ea.com:eala:asset'. List of possible elements expected: 'AnimationState, AttachModel, EmbedPortal' in namespace 'uri:ea.com:eala:asset'.
+
+Includes\GenericHuskLifetimeUpdate.xml
+  SyntheticOwnerQualified
+  Contents compiled in an explicitly synthetic schema owner; no real original consumer exists.
+
+Includes\GenericJapanBuildingDestructionNoSpawn.xml
+  SyntheticOwnerQualified
+  Contents compiled in an explicitly synthetic schema owner; no real original consumer exists.
+
+Includes\GenericPhaseShieldPropagate.xml
+  BlockedSyntheticContext
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\blocked-followup-20261108\fragments\GenericPhaseShieldPropagate\input\Data\Static_Mod.xml(1,298): Behavior strong target missing/ambiguous: AttributeModifier:AttributeModifier_AlienPhaseField_Propagated
+
+Includes\GenericUnitFormationPreviewStates.xml
+  SyntheticOwnerQualified
+  Contents compiled in an explicitly synthetic schema owner; no real original consumer exists.
+
+Includes\InfantryFighting\IF_AlliedCommandoTech1TertiaryTracerDraw.xml
+  SyntheticOwnerQualified
+  Contents compiled in an explicitly synthetic schema owner; no real original consumer exists.
+
+Includes\InfantryFighting\IF_AlliedCommandoTech1TracerDraw.xml
+  SyntheticOwnerQualified
+  Contents compiled in an explicitly synthetic schema owner; no real original consumer exists.
+
+Includes\ParachuteDraw.xml
+  SyntheticOwnerQualified
+  Contents compiled in an explicitly synthetic schema owner; no real original consumer exists.
+
+Japan\Structures\JapanNavalYardRepairBay.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Japan\Structures\JapanNavalYardRepairBay.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:JBWarFactoryRepairBay
+
+Japan\Structures\JapanRadarDish.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Japan\Structures\JapanRadarDish.xml(19,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:JBRadarDish
+
+Japan\Structures\JapanWarFactoryRepairBay.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Japan\Structures\JapanWarFactoryRepairBay.xml(16,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:JBWarFactoryRepairBay
+
+Maps\internal\ART_CAMP_EP01_Y02_Blacksite_Davis\map.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+Maps\internal\ART_CAMP_EP01_Y02_Blacksite_Davis\overrides.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+Maps\internal\ART_CAMP_EP01_Y03_Compound_Rao\overrides.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+Maps\internal\PostageStamp_Yuriko\map.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+Maps\internal\PostageStamp_Yuriko\overrides.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+Maps\internal\SCREENSHOT_Yuriko01\map.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+Maps\internal\SCREENSHOT_Yuriko01\overrides.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+Maps\internal\SCREENSHOT_Yuriko02\map.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+Maps\internal\SCREENSHOT_Yuriko02\overrides.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+Maps\internal\TEST_Yuriko\map.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+Maps\internal\TEST_Yuriko\overrides.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+Maps\official\CAMP_EP01_Y01_Facility_Rao\overrides.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y01_Facility_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+Maps\official\CAMP_EP01_Y02_Blacksite_Davis\overrides.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y02_Blacksite_Davis\map.xml closure; exact-map retail art resolved by production linking.
+
+Maps\official\CAMP_EP01_Y03_Compound_Rao\overrides.xml
+  NativeOriginalConsumerQualified
+  Original source captured unchanged and emitted through the actual authored Maps\official\CAMP_EP01_Y03_Compound_Rao\map.xml closure; exact-map retail art resolved by production linking.
+
+Maps\official\CAMP_S01_LeningradCanals_Rao\AIS_S01_JapanCommander.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\SkirmishAI\States\AIStateLibrary.xml(62,25): Source graph: IncludePath DATA:maps\official\CAMP_S06_Iceland_Bass\AIS_S06_SovietKrukov.xml.: Unsafe scoped relative dependency path.
+
+Misc\RallyFlag.xml
+  BlockedInvalidOriginalSource
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Misc\RallyFlag.xml(9,3): The element 'GameObject' in namespace 'uri:ea.com:eala:asset' has incomplete content. List of possible elements expected: 'AI, Body' in namespace 'uri:ea.com:eala:asset'.
+
+Multiplayer\ConquerMode.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06637\work-5690a881f09b4625a879daafd2c1d571\source\game.xml(1,2) [source context; exact field origin unavailable]: Behavior strong target missing/ambiguous: GameObject:GDIRifleSoldierSquad
+
+Neutral\Destructables\DestLight_01.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Neutral\Destructables\DestLight_01.xml(9,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:CityLight02
+
+Neutral\Structures\CaptureFlag.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Neutral\Structures\CaptureFlag.xml(9,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:TBCaptureFlag
+
+Neutral\Structures\ControlPoint.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Neutral\Structures\ControlPoint.xml(9,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:TBCntrlPnt
+
+Neutral\Structures\OreNode2a.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Neutral\Structures\OreNode2a.xml(33,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NBOreNode2a
+
+Neutral\Structures\OreNode2b.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Neutral\Structures\OreNode2b.xml(33,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NBOreNode2b
+
+Neutral\Structures\OreNode4a.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Neutral\Structures\OreNode4a.xml(33,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NBOreNode4a
+
+Neutral\Structures\OreNode4b.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Neutral\Structures\OreNode4b.xml(33,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NBOreNode4b
+
+Neutral\Structures\OreNode4c.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Neutral\Structures\OreNode4c.xml(33,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NBOreNode4c
+
+Neutral\Structures\OreNode4d.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Neutral\Structures\OreNode4d.xml(33,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NBOreNode4d
+
+Neutral\Structures\ZoneWall.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Neutral\Structures\ZoneWall.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NPZoneWall
+
+Neutral\Tutorial_stations.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Neutral\Tutorial_stations.xml(7,24): Source graph: IncludePath Structures\Tutorial_Adv_Move.xml: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Neutral\Structures\Tutorial_Adv_Move.xml; IncludePath Structures\Tutorial_Adv_Select.xml: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Neutral\Structures\Tutorial_Adv_Select.xml; IncludePath Structures\Tutorial_Stances.xml: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Neu
+
+Neutral\Units\NeutralBombBoat.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Neutral\Units\NeutralBombBoat.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NUBombBoat
+
+PathMusic\BasePathMusicEvent.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\PathMusic\BasePathMusicEvent.xml(7,3): Source graph: ResourcePath AUDIO:Pathfinder\RA3EPMus\PC\RA3EPMus.h: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06720\work-16de5ad647ca46a1aeb2fc72a8e6039e\input\Audio\Pathfinder\RA3EPMus\PC\RA3EPMus.h; D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\Audio\Pathfinder\RA3EPMus\PC\RA3EPMus.h
+
+PathMusic\PathMusicEvents.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\PathMusic\BasePathMusicEvent.xml(7,3): Source graph: ResourcePath AUDIO:Pathfinder\RA3EPMus\PC\RA3EPMus.h: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06726\work-3fd62edaaf514649978c246bcde37474\input\Audio\Pathfinder\RA3EPMus\PC\RA3EPMus.h; D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\Audio\Pathfinder\RA3EPMus\PC\RA3EPMus.h
+
+Shell\BootupSequence.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06731\work-967d723498304c1bb3dc2739ce840c64\source\game.xml(1,2) [source context; exact field origin unavailable]: Behavior strong target missing/ambiguous: Texture:loadingText
+
+Shell\BootupSequenceDemo.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06732\work-594b99e1b97548cbbd1eb5520132a4ff\source\game.xml(1,2) [source context; exact field origin unavailable]: Behavior strong target missing/ambiguous: Texture:loadingText
+
+Shell\UIComponentMultiplayerMatchLobby.xml
+  BlockedUnreferencedLegacyUIComponent
+  Unused UIBaseComponent fragment: no authored source consumer, no top-level native asset identity and no original native component witness. It is not a standalone emitted asset.
+
+SkirmishAI\Personalities\AIPersonalityLibrary.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\SkirmishAI\Personalities\AIPersonalityLibrary.xml(89,25): Source graph: IncludePath DATA:maps\official\CAMP_S06_Iceland_Bass\AIP_S06_SovietKrukov.xml.: Unsafe scoped relative dependency path.
+
+SkirmishAI\Personalities\AlliedFirstAssault.xml
+  NativeSourceIntegrationQualified
+  Original personality and its real authored state library compiled together, retaining strong-reference and linked-stream proof.
+
+SkirmishAI\Personalities\AlliedPCGDemo.xml
+  NativeSourceIntegrationQualified
+  Original personality and its real authored state library compiled together, retaining strong-reference and linked-stream proof.
+
+SkirmishAI\Personalities\JapanAmbushDivision.xml
+  NativeSourceIntegrationQualified
+  Original personality and its real authored state library compiled together, retaining strong-reference and linked-stream proof.
+
+SkirmishAI\Personalities\SovietHeavyArmor.xml
+  NativeSourceIntegrationQualified
+  Original personality and its real authored state library compiled together, retaining strong-reference and linked-stream proof.
+
+SkirmishAI\SkirmishAIIncludes.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\SkirmishAI\Personalities\AIPersonalityLibrary.xml(89,25): Source graph: IncludePath DATA:maps\official\CAMP_S06_Iceland_Bass\AIP_S06_SovietKrukov.xml.: Unsafe scoped relative dependency path.; IncludePath DATA:maps\official\CAMP_S06_Iceland_Bass\AIS_S06_SovietKrukov.xml.: Unsafe scoped relative dependency path.
+
+SkirmishAI\States\AIStateLibrary.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\SkirmishAI\States\AIStateLibrary.xml(62,25): Source graph: IncludePath DATA:maps\official\CAMP_S06_Iceland_Bass\AIS_S06_SovietKrukov.xml.: Unsafe scoped relative dependency path.
+
+Sounds\MasterAudioAssets.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Sounds\MasterAudioAssets.xml(8,23): Source graph: IncludePath AUDIO:audioassets_notfordemo.xml: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06822\work-cadb02a7d3d0481083024c1e656c5bca\input\Audio\audioassets_notfordemo.xml; D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\Audio\audioassets_notfordemo.xml; IncludePath AUDIO:audioassets_retailonly.xml: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06822
+
+Soviet\Structures\SovietConstructionYardSalvageYard.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Soviet\Structures\SovietConstructionYardSalvageYard.xml(22,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SBWarFactorySalvageYard
+
+Soviet\Structures\SovietNavalYardSalvageYard.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Soviet\Structures\SovietNavalYardSalvageYard.xml(16,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SBNavalYardSalvageYard
+
+Soviet\Structures\SovietRadarDish.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Soviet\Structures\SovietRadarDish.xml(19,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SBRadarDish
+
+Soviet\Structures\SovietWarFactorySalvageYard.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Soviet\Structures\SovietWarFactorySalvageYard.xml(19,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SBWarFactorySalvageYard
+
+Static.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Static.xml(20,23): Source graph: MISSINGART ART:IntelDB/IntelDB.xml: ART all-include file was not found; skipped. Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06992\work-8361eb3c82224c4c895ff791b26e3109\input\Art\IntelDB\IntelDB.xml; D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\Art\IntelDB\IntelDB.xml; IncludePath DATA:GlobalData/FXParticleSystem.xml: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\0
+
+static_platformspecific.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\static_platformspecific.xml(9,23): Source graph: MISSINGART ART:Images/pc/PackedImages.xml: ART all-include file was not found; skipped. Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06994\work-39cfca5301be4179a2020c3f7559553e\input\Art\Images\pc\PackedImages.xml; D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\Art\Images\pc\PackedImages.xml; MISSINGART ART:Images/pc/PackedImagesPortraits.xml: ART all-include file was not found; skipped. Alias file missing; searched:
+
+Templates\Prop.xml
+  BlockedInvalidOriginalSource
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Templates\Prop.xml(15,5): Empty or hash-colliding local module ID:
+
+Templates\Squad.xml
+  BlockedInvalidOriginalSource
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Templates\Squad.xml(24,4): The element 'GameObject' in namespace 'uri:ea.com:eala:asset' has invalid child element 'ArmorSet' in namespace 'uri:ea.com:eala:asset'. List of possible elements expected: 'LocomotorSet, Buildable, ThingClass, BuildFadeInOnCreateList, BuildVariations, EquivalentTo, DisplayColor, Flammability, SkirmishAIInformation, Draws, Behaviors, AI, Body' in namespace 'uri:ea.com:eala:asset'.
+
+Templates\Structure.xml
+  BlockedInvalidOriginalSource
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Templates\Structure.xml(63,5): Source graph: SourceRead : Missing, oversized, redirected or malformed source XML; no external entity processing. The 'Shape' start tag on line 59 position 5 does not match the end tag of 'Geometry'. Line 63, position 5.
+
+Templates\Unit.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Templates\Unit.xml(5,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GURiflman_SKN
+
+Templates\Vehicle.xml
+  BlockedInvalidOriginalSource
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\Templates\Vehicle.xml(67,6): The element 'AIUpdate' in namespace 'uri:ea.com:eala:asset' has invalid child element 'Turret' in namespace 'uri:ea.com:eala:asset'. List of possible elements expected: 'UnitAITargetChooserData' in namespace 'uri:ea.com:eala:asset'.
+
+WorldBuilder.xml
+  BlockedDependency
+  ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML\WorldBuilder.xml(59,23): Source graph: MISSINGART ART:FXRiverA_Nrm.xml: ART all-include file was not found; skipped. Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\07113\work-9e668f5e3a3547bf8ac74144a4f12e83\input\Art\FXRiverA_Nrm.xml; D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\07113\work-9e668f5e3a3547bf8ac74144a4f12e83\input\Art\FX\FXRiverA_Nrm.xml; D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\Art\FX\FXRiverA_Nrm.xml; MISSIN

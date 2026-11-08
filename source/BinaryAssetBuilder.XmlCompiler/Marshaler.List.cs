@@ -1,4 +1,4 @@
-﻿using Relo;
+using Relo;
 using System;
 using System.Reflection;
 
@@ -22,7 +22,7 @@ public static partial class Marshaler
         {
             if (!_marshalListItemMethods.TryGetValue(typeof(T), out Delegate marshalDelegate))
             {
-                MethodInfo method = typeof(Marshaler).GetMethod(nameof(Marshal), new[] { typeof(Node), typeof(T*), typeof(Tracker) });
+                MethodInfo method = ExactMarshalMethod(typeof(T*));
                 if (method is null)
                 {
                     throw new BinaryAssetBuilderException(ErrorCode.InternalError, "Cannot find marshal method for type '{0}'", typeof(T*).Name);

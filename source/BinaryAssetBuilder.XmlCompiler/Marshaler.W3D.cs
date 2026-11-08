@@ -18,8 +18,9 @@ public static partial class Marshaler
         {
             return;
         }
-        Marshal(node.GetAttributeValue(nameof(Vector2.X), null), &objT->X, state);
-        Marshal(node.GetAttributeValue(nameof(Vector2.Y), null), &objT->Y, state);
+        // Reborn: gameplay Vector2 uses lowercase axes while W3X UV vectors use uppercase axes.
+        Marshal(node.GetAttributeValue(nameof(Vector2.X), null) ?? node.GetAttributeValue("x", null), &objT->X, state);
+        Marshal(node.GetAttributeValue(nameof(Vector2.Y), null) ?? node.GetAttributeValue("y", null), &objT->Y, state);
     }
 
     public static unsafe void Marshal(Node node, Vector3* objT, Tracker state)

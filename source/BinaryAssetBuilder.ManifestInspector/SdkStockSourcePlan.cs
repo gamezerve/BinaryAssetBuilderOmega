@@ -31,6 +31,8 @@ internal static class SdkStockSourcePlan
                 files.Add(relative,new(relative,root.LocalName,assets,includes,null));
                 foreach(XmlElement element in xml.GetElementsByTagName("*"))
                 {
+                    // Reborn: a reference stream loads compiled assets; it does not capture the referenced source closure.
+                    if(element.LocalName=="Include"&&element.NamespaceURI=="uri:ea.com:eala:asset"&&element.GetAttribute("type")=="reference")continue;
                     string? dependency=element.LocalName=="Include"&&element.NamespaceURI=="uri:ea.com:eala:asset"?element.GetAttribute("source"):
                         element.LocalName=="include"&&element.NamespaceURI=="http://www.w3.org/2001/XInclude"?element.GetAttribute("href"):null;
                     if(string.IsNullOrWhiteSpace(dependency))continue;

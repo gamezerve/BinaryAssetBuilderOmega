@@ -1,4 +1,4 @@
-﻿using System.Buffers.Binary;
+using System.Buffers.Binary;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -119,7 +119,8 @@ internal static class FXParticleSystemCompiler
         if(Marshal.SizeOf<FXParticleDrawLightSource>()!=8)throw new InvalidDataException("EP1 light-source header extent differs.");
         var catalog=ManifestReader.Read(SdkEnvironmentPreflight.Read(manifest,64*1048576));TypeRegistryAudit.ValidateTarget(catalog.Header.Version,catalog.Header.AllTypesHash);
         if(!catalog.Header.IsLinked||catalog.Validate().Count!=0)throw new InvalidDataException("Invalid original particle light/enum witness catalog.");
-        foreach(string id in new[]{"AlliedArtilleryExplosionLight","AlliedArtilleryFire_Light","AlliedArtilleryExplosionWaterMist","AlliedArtilleryFire_Geo"})
+        // Reborn: the original MIRV trail independently pins MEDIUM_OR_BELOW to native ordinal nine.
+        foreach(string id in new[]{"AlliedArtilleryExplosionLight","AlliedArtilleryFire_Light","AlliedArtilleryExplosionWaterMist","AlliedArtilleryFire_Geo","FXJapanMIRVTrailLow"})
         {
             var source=GameObjectExtendedRootContract.Original("FXParticleSystems/"+id+".xml","FXParticleSystemTemplate").Single();
             var proof=ProofSource(SdkXmlDiagnostics.Parse(Encoding.UTF8.GetBytes(source.OuterXml)),schemas,available);

@@ -13,6 +13,14 @@ internal static class Program
     {
         try
         {
+            // Reborn: audit complete original-native settings layouts independently of missing aggregate include sources.
+            // Reborn: independently prove original behavior fields and metadata even if their complete owner has unrelated missing art.
+            if(args.Length==4&&args[0]=="stock-behavior-native-qualification"){CompilerSmokeTest.InitializeHashProvider();return StockBehaviorQualification.Run(args[1],args[2],args[3]);}
+            // Reborn: source indentation normalization retains real text and strict schema rejection.
+            // Reborn: dormant original ABI writers retain separate nonzero-field/import/relocation probes.
+            if(args.Length==1&&args[0]=="stock-runtime-abi-writer-self-test"){CompilerSmokeTest.InitializeHashProvider();StockRuntimeAbiContract.WriterSelfTest();return 0;}
+            if(args.Length==1&&args[0]=="stock-source-formatting-self-test"){CompilerSmokeTest.InitializeHashProvider();StockRootFormatting.SelfTest();return 0;}
+            if(args.Length==4&&args[0]=="stock-root-native-qualification"){CompilerSmokeTest.InitializeHashProvider();return StockAssetRootQualification.Run(args[1],args[2],args[3]);}
             // Reborn: source-only XML is tested through actual authored include consumers, separately from native asset emission.
             if(args.Length==3 && args[0]=="stock-source-plan"){SdkStockSourcePlan.Run(args[1],args[2]);return 0;}
             // Reborn: private corpus qualification executes only sequential production prepare/build requests.
@@ -794,6 +802,9 @@ internal static class Program
             // Reborn: inspect every expanded object in a developer batch without publishing or launching a mod.
             if(args.Length==4 && args[0]=="allied-unit-source-review")
             {CompilerSmokeTest.InitializeHashProvider();return AlliedUnitSourceReview.Run(args[1],args[2],args[3]);}
+            // Reborn: empty corpus declarations receive source-only evidence, never native compilation claims.
+            if(args.Length is 4 or 5 && args[0]=="stock-source-empty-validate")
+            {CompilerSmokeTest.InitializeHashProvider();StockEmptySourceQualification.Run(args[1],args[2],args[3],args.ElementAtOrDefault(4));return 0;}
             if(args.Length is >=3 and <=5 && args[0]=="conscript-source-prepare")
             {CompilerSmokeTest.InitializeHashProvider();ConscriptSourceInput.Prepare(args[1],args[2],args.ElementAtOrDefault(3),args.ElementAtOrDefault(4));return 0;}
             // Reborn: group frontend structure/default/no-hidden-command checks independently of full GameObject compilation.

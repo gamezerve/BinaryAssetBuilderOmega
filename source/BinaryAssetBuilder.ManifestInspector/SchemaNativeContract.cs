@@ -140,6 +140,8 @@ internal sealed class SchemaNativeContract
     {
         if(depth>48)throw new InvalidDataException("Schema-proved record depth exceeded.");
         int size=Size(type);Range(at,size);records[path]=at;var used=new bool[size];
+        // Reborn: nested asset IDs name source records; their BaseAssetType contains only a zero runtime id-info word.
+        if(type==typeof(BaseAssetType)&&e?.GetAttributeNode("id") is XmlAttribute sourceId)consumed.Add(sourceId);
         foreach(var field in type.GetFields(BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic))
         {
             int offset=Marshal.OffsetOf(type,field.Name).ToInt32(),width=FieldSize(field.FieldType);
@@ -152,6 +154,19 @@ internal sealed class SchemaNativeContract
     private void Field(Type owner,FieldInfo field,XmlElement? e,int at,string path,int depth)
     {
         Type type=field.FieldType;string name=field.Name;records[path]=at;
+        // Reborn: original AptMediator stores the escaped source literal equals sign as one native character.
+        if(owner==typeof(Ep1StockUIConfigUIComponentAptMediator)&&name=="ParameterNameSeparator")
+        {
+            var attribute=e?.GetAttributeNode(name);if(attribute!=null)consumed.Add(attribute);
+            string? value=attribute?.Value;if(value?.StartsWith("\\=",StringComparison.Ordinal)==true)value=value[1..];
+            Text(value,at,path,false);return;
+        }
+        // Reborn: the processed EP1 common sound base stores official control flags in a DWORD carrier.
+        if(owner==typeof(Marshaler.Ep1BaseSingleSound)&&name=="Control"){Flags(e,name,at,4,path);return;}
+        // Reborn: concrete UI class identities derive independently from the validated original component schema.
+        if(owner==typeof(Ep1CoverageUIComponentBase)&&name=="TypeId"){_=StockUIComponentCatalog.For(e!);Expect(at,BitConverter.GetBytes(FastHash.GetHashCode(e!.SchemaInfo.SchemaType!.QualifiedName.Name)),path);return;}
+        // Reborn: original challenge scenarios store the lowercase source id as their weak runtime identity.
+        if(owner==typeof(ScenarioTemplate)&&name=="Id"){var id=e?.GetAttributeNode("id");if(id!=null)consumed.Add(id);Weak(id?.Value,at,path);return;}
         // Reborn: inline personality state IDs support source overlays but are not stored as runtime hash words.
         if(owner==typeof(Ep1AIPersonalityStateSlotBase)&&name=="IdInfo"){var id=e?.GetAttributeNode("id");if(id!=null)consumed.Add(id);Expect(at,new byte[4],path);return;}
         // Reborn: a separately optional heuristic choice owns its list directly, without a second XML wrapper.
@@ -211,7 +226,7 @@ internal sealed class SchemaNativeContract
         if(owner==typeof(AIToggleSpecialPowerInfo)&&name is "NeverUseInState" or "NeverUseDuringTask" or "Location"){Flags(e,name,at,4,path);return;}
         // Reborn: toggle Lua-event defaults deliberately retain an allocated empty string, matching retail and the existing EP1 writer.
         if(owner==typeof(ToggleStatusNugget)&&name=="GenericLuaEventParameter"){var attribute=e?.GetAttributeNode(name);if(attribute!=null)consumed.Add(attribute);Text(attribute?.Value??"",at,path,false);return;}
-        if ((owner == typeof(Vector3) || owner == typeof(Quaternion)) && name is "X" or "Y" or "Z" or "W")
+        if ((owner == typeof(Vector2) || owner == typeof(Vector3) || owner == typeof(Vector4) || owner == typeof(Quaternion)) && name is "X" or "Y" or "Z" or "W")
         {
             // Reborn: W3X Vector3/Quaternion use uppercase axes; gameplay coordinates use lowercase axes.
             var attribute = e?.GetAttributeNode(name) ?? e?.GetAttributeNode(name.ToLowerInvariant());
@@ -270,6 +285,8 @@ internal sealed class SchemaNativeContract
                     return;
                 case "Relo.List`1":List(type.GetGenericArguments()[0],e,name,at,path,depth);return;
                 case "Relo.PolymorphicList`1":
+                    // Reborn: original UI configurations own ordered concrete component pointers.
+                    if(type.GetGenericArguments()[0]==typeof(Ep1CoverageUIComponentBase)){UIComponents(e,name,at,path,depth);return;}
                     // Reborn: original AI states retain ordered concrete heuristic pointer arrays and complete source ownership.
                     if(type.GetGenericArguments()[0]==typeof(Ep1AIStateHeuristic)){AIHeuristics(e,name,at,path,depth);return;}
                     // Reborn: map script actions contain schema-selected ObjectType/ObjectTypeList pointer arrays.
@@ -309,6 +326,24 @@ internal sealed class SchemaNativeContract
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: validate authored shader constants with their original concrete native layouts. */
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: prove every original UI component pointer, class identity, source field and nested allocation in authored order. */
+    //-------------------------------------------------------------------------------------------------
+    private void UIComponents(XmlElement? owner,string name,int at,string path,int depth)
+    {
+        var wrapper=Child(owner,name);var children=wrapper?.ChildNodes.OfType<XmlElement>().ToArray()??Array.Empty<XmlElement>();
+        if(Word(at)!=children.Length)throw new InvalidDataException("UI component source/native count differs: "+path);
+        uint items=Word(at+4);
+        if(children.Length==0){if(items!=0)throw new InvalidDataException("Empty UI component list has storage.");return;}
+        Link(at+4,items,checked(children.Length*4),path);
+        for(int i=0;i<children.Length;i++)
+        {
+            var child=children[i];consumed.Add(child);Type concrete=StockUIComponentCatalog.For(child);
+            int slot=checked((int)items+i*4);uint target=Word(slot);Link(slot,target,Size(concrete),path+"["+i+"]");
+            Struct(concrete,child,(int)target,path+"["+i+"]",depth+1);
+        }
+    }
+
     //-------------------------------------------------------------------------------------------------
     private void ShaderConstants(XmlElement? owner,string name,int at,string path,int depth)
     {
@@ -482,7 +517,12 @@ internal sealed class SchemaNativeContract
     {
         var attribute=e?.GetAttributeNode(name);int value=0;
         if(attribute!=null){consumed.Add(attribute);value=Ordinal(attribute.SchemaInfo?.SchemaType as XmlSchemaSimpleType,attribute.Value.Trim(),path);}
-        else if(Children(e,name).Length!=0)throw new InvalidDataException("Schema-proved enum element form is not reviewed: "+path);
+        else if(Child(e,name) is XmlElement child)
+        {
+            // Reborn: a singleton validated enum element uses its own XSD facets, never the producer enum ordinal.
+            if(child.SchemaInfo.SchemaType is not XmlSchemaSimpleType simple)throw new InvalidDataException("Schema-proved enum element type differs: "+path);
+            value=Ordinal(simple,child.InnerText.Trim(),path);
+        }
         Expect(at,BitConverter.GetBytes(value),path);
     }
 
@@ -601,8 +641,9 @@ internal sealed class SchemaNativeContract
                 // Reborn: a leading official INVALID sentinel is ordinal -1 (not stored), shifting every other value down by one.
                 // Reborn: stock ArmorSetType (shrink modifier=14), BuildPlacementType and AIUpgradeHeuristicType retain INVALID at ordinal zero.
                 // Reborn: original WorldBuilder CUAuto01 and EP1 wavefront shapes retain INVALID=0 (IN_RANGE_OBJECT_FILTER=1, CIRCLE=1).
+                // Reborn: original global LOD presets use UNKNOWN=-1; original water/lighting keep TimeOfDay INVALID=0.
                 // Reborn: schema forceValue aliases reuse an earlier ordinal and do not consume a new native flag bit.
-                if(values.Count>0){int index=values.IndexOf(token);if(index<0)return int.MinValue;int next=(values[0]=="INVALID"&&type.QualifiedName.Name is not ("ArmorSetType" or "BuildPlacementType" or "AIUpgradeHeuristicType" or "FXParticleSystem_GeometryType" or "SetLocomotorSpeedUpdateType" or "FXParticleSystem_WavefrontShape" or "FXParticleSystem_WindMotion")||type.QualifiedName.Name=="TerrainScorchType"&&values[0]=="RANDOM"||type.QualifiedName.Name=="DamageFXType"&&values[0]=="DEFAULT")?-1:0;var ordinals=new Dictionary<string,int>(StringComparer.Ordinal);for(int i=0;i<=index;i++){string? alias=facets[i].UnhandledAttributes?.FirstOrDefault(a=>a.LocalName=="forceValue")?.Value;if(alias!=null){if(!int.TryParse(alias,System.Globalization.NumberStyles.Integer,System.Globalization.CultureInfo.InvariantCulture,out next)&&!ordinals.TryGetValue(alias,out next))throw new InvalidDataException("Schema enum alias target is not earlier: "+alias);}ordinals[values[i]!]=next;if(i==index)return next;next++;}}
+                if(values.Count>0){int index=values.IndexOf(token);if(index<0)return int.MinValue;int next=(values[0]=="INVALID"&&type.QualifiedName.Name is not ("TimeOfDayType" or "ArmorSetType" or "BuildPlacementType" or "AIUpgradeHeuristicType" or "FXParticleSystem_GeometryType" or "SetLocomotorSpeedUpdateType" or "FXParticleSystem_WavefrontShape" or "FXParticleSystem_WindMotion")||type.QualifiedName.Name is "GameLODType" or "AudioLODType"&&values[0]=="UNKNOWN"||type.QualifiedName.Name=="TerrainScorchType"&&values[0]=="RANDOM"||type.QualifiedName.Name=="DamageFXType"&&values[0]=="DEFAULT")?-1:0;var ordinals=new Dictionary<string,int>(StringComparer.Ordinal);for(int i=0;i<=index;i++){string? alias=facets[i].UnhandledAttributes?.FirstOrDefault(a=>a.LocalName=="forceValue")?.Value;if(alias!=null){if(!int.TryParse(alias,System.Globalization.NumberStyles.Integer,System.Globalization.CultureInfo.InvariantCulture,out next)&&!ordinals.TryGetValue(alias,out next))throw new InvalidDataException("Schema enum alias target is not earlier: "+alias);}ordinals[values[i]!]=next;if(i==index)return next;next++;}}
             }
             type=type.BaseXmlSchemaType as XmlSchemaSimpleType;
         }

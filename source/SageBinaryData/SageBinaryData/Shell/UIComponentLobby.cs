@@ -48,6 +48,8 @@ namespace SageBinaryData
     {
         public AnsiString Label;
         public int Value;
+        // Reborn: EP1 inserts the minimum game-time value before the native trailing default flag.
+        public int MinGameTimeValue;
         public SageBool Default;
     }
 

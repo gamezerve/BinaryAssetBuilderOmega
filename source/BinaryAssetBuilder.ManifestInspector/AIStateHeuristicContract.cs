@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml;
 using BinaryAssetBuilder.Core.SageXml;
@@ -47,6 +47,11 @@ internal static class AIStateHeuristicContract
         if(!catalog.Header.IsLinked||catalog.Validate().Count!=0)throw new InvalidDataException("Invalid original AI heuristic witness catalog.");
         foreach(var requested in types)
         {
+            // Reborn: this original campaign-only class has engine factory/field ABI evidence rather than an emitted global record.
+            if(requested.Key=="AIStateStructureOrHarvesterUnderAttackHeuristic")
+            {
+                StockRuntimeAbiContract.Qualify(requested.Key,requested.Value.Type,requested.Value.Wire,0x283098D9u);continue;
+            }
             var witness=Witnesses.Single(w=>w.Schema==requested.Key);int colon=witness.Asset.IndexOf(':');
             var asset=catalog.Assets.Single(a=>a.Name==witness.Asset);if(asset.Tokenized!=0)throw new InvalidDataException("AI heuristic witness must be native.");
             var source=GameObjectExtendedRootContract.Original(witness.File,witness.Asset[..colon]).Single(e=>e.GetAttribute("id")==witness.Asset[(colon+1)..]);

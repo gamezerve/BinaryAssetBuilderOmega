@@ -84,24 +84,28 @@ internal static class ObjectCreationListCompiler
                 if(SdkBuildTests.Enabled)Verify(source,world,schemas,catalog);covered.UnionWith(Features(source.DocumentElement!));worlds++;
             }
         }
-        var pool=Load(Path.Combine(sage,"GlobalData/ObjectCreationLists.xml")).DocumentElement!.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="ObjectCreationList"&&Eligible(e)).ToArray();
+        // Reborn: expression-bearing original lists become valid witnesses only after the real captured define/include preparation path.
+        XmlElement[]? pool=null;
+        var globalWitnessIds=ManifestReader.Read(SdkEnvironmentPreflight.Read(global,64*1048576)).Assets.Where(a=>a.TypeId==TypeId&&a.TypeHash==TypeHash&&a.Tokenized==0).Select(a=>a.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
         foreach(var document in documents)
             foreach(string feature in Features(document.DocumentElement!).OrderBy(f=>f,StringComparer.Ordinal))
             {
                 if(covered.Contains(feature))continue;
-                var witness=pool.FirstOrDefault(e=>Features(e).Contains(feature))
+                var witness=(pool??=StockOriginalUiConfig.Load("GlobalData/ObjectCreationLists.xml","ObjectCreationList")
+                    .Where(e=>Eligible(e)&&globalWitnessIds.Contains("ObjectCreationList:"+e.GetAttribute("id"))).ToArray()).FirstOrDefault(e=>Features(e).Contains(feature))
                     ??throw SdkXmlDiagnostics.At(new InvalidDataException("ObjectCreationList "+feature+" has no original EP1 stock witness; this nugget family/field is not enabled."),Node(document.DocumentElement!,feature)??document.DocumentElement!);
-                var source=Xml(witness.OuterXml);if(SdkBuildTests.Enabled)Verify(source,global,schemas,catalog);covered.UnionWith(Features(source.DocumentElement!));globals++;
+                // Reborn: newly selected field/family admission requires the independent original native comparison even in fast mode.
+                var source=Xml(witness.OuterXml);Verify(source,global,schemas,catalog,required:true);covered.UnionWith(Features(source.DocumentElement!));globals++;
             }
         Console.WriteLine(SdkBuildTests.Enabled?"Reborn: EP1 ObjectCreationList stock qualification: PASS ("+StaticWitnesses.Length+" static + "+globals+" global + "+worlds+" WorldBuilder witness(es); untokenized native).":"Reborn: ObjectCreationList source admission completed; developer stock comparisons skipped.");
 
         XmlDocument Load(string path){if(!cache.TryGetValue(path,out var xml))cache[path]=xml=SdkXmlDiagnostics.Parse(SdkEnvironmentPreflight.Read(path,4*1048576),path);return xml;}
     }
 
-    private static void Verify(XmlDocument source,string manifest,SchemaSet schemas,ManifestAsset[] catalog)
+    private static void Verify(XmlDocument source,string manifest,SchemaSet schemas,ManifestAsset[] catalog,bool required=false)
     {
         string id=source.DocumentElement!.GetAttribute("id");var stock=Stock(manifest,"ObjectCreationList:"+id);
-        try{SchemaNativeContract.VerifyStock(ProofSource(source,schemas,catalog).DocumentElement!,typeof(Ep1ObjectCreationList),0,stock.Bytes,0,stock.Asset.References.ToArray());}
+        try{SchemaNativeContract.VerifyStock(ProofSource(source,schemas,catalog).DocumentElement!,typeof(Ep1ObjectCreationList),0,stock.Bytes,0,stock.Asset.References.ToArray(),required:required);}
         catch(InvalidDataException error){throw new InvalidDataException("EP1 ObjectCreationList stock qualification failed for "+id+": "+error.Message,error);}
     }
 

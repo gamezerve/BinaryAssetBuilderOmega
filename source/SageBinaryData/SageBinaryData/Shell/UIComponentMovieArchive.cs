@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 using Relo;
 
 namespace SageBinaryData
@@ -16,6 +16,8 @@ namespace SageBinaryData
     [StructLayout(LayoutKind.Sequential)]
     public struct GeneralArchiveMovie
     {
+        // Reborn: retail inline movie entries retain the zero polymorphic base word before their strings.
+        public BaseAssetType Base;
         public String<sbyte> Movie;
         public AssetReference<OnDemandTextureImage> PreviewImage;
         public String<sbyte> DisplayName;

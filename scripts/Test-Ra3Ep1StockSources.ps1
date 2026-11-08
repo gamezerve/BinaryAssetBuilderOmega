@@ -1,4 +1,4 @@
-﻿# Reborn: sequentially qualify every original XML through the production frontend/native compiler without publishing mod output.
+# Reborn: sequentially qualify every original XML through the production frontend/native compiler without publishing mod output.
 [CmdletBinding()]
 param([string]$Repository=(Split-Path -Parent $PSScriptRoot),[string]$OutputDirectory,[int]$Take=0,[string[]]$Only,[switch]$RetryFailed,[int]$FileTimeoutSeconds=600,[switch]$ReuseProcess,[string]$StartAfter,[switch]$DeveloperChecks)
 $ErrorActionPreference='Stop'
@@ -121,10 +121,29 @@ try{foreach($file in $inventory){
     $wrapper=Join-Path $work 'input/Data/Static_Mod.xml';$escaped=[Security.SecurityElement]::Escape('DATA:'+$testEntry.Replace('\','/'))
     [IO.File]::WriteAllText($wrapper,('<AssetDeclaration xmlns="uri:ea.com:eala:asset"><!-- Reborn: emit exactly one original source file and its authored all-Includes. --><Includes><Include type="all" source="'+$escaped+'" /></Includes></AssetDeclaration>'))
     $stage='Preparation';$status='Failed';$errorText='';$assetCount=0;$packageHash=$null;$contextSources=@();$emittedOrigins=@()
+    # Reborn: an empty declaration has source-only evidence and must never acquire native-qualified status.
+    $sourceOnly=$false;$sourceProofHash=$null
     try{
         $prepared=Join-Path $work 'source';$prepareLog=Join-Path $caseRoot 'prepare.log'
         $code=Invoke-StockCompiler @('conscript-source-prepare',$wrapper,$prepared,$sdk,$source) $prepareLog $work
-        if($code-ne 0){$errorText=[IO.File]::ReadAllText($prepareLog);if($code-eq 124){$status='Timeout'}}
+        if($code-ne 0){
+            $errorText=[IO.File]::ReadAllText($prepareLog)
+            if($code-eq 124){$status='Timeout'}
+            elseif($errorText.Contains('This route requires a supported emitted asset; imported bases must use type=instance.')){
+                # Reborn: the dedicated validator repeats real graph/schema/freshness checks and refuses any nonempty emitted closure.
+                $emptyReceipt=Join-Path $work 'source-only.json';$emptyLog=Join-Path $caseRoot 'source-only.log'
+                $emptyCode=Invoke-StockCompiler @('stock-source-empty-validate',$wrapper,$emptyReceipt,$sdk,$source) $emptyLog $work
+                if($emptyCode-eq 0){
+                    $empty=Get-Content -LiteralPath $emptyReceipt -Raw|ConvertFrom-Json
+                    if(!$empty.SourceOnlyQualified -or $empty.AssetCount-ne 0 -or $empty.NativeAssetsEmitted){throw 'Empty source evidence claims native output.'}
+                    $contextSources=@($empty.Sources|Where-Object {$_.Path.StartsWith($source+'\',[StringComparison]::OrdinalIgnoreCase)}|ForEach-Object {[pscustomobject]@{Relative=[IO.Path]::GetRelativePath($source,$_.Path);Sha256=$_.Sha256}})
+                    if(!($contextSources|Where-Object {$_.Relative-ieq $file.Relative -and $_.Sha256-ceq $file.Sha256})){throw 'Empty-source proof did not capture the requested unchanged original.'}
+                    Copy-Item -LiteralPath $emptyReceipt -Destination (Join-Path $caseRoot 'source-only-proof.json') -Force
+                    $sourceProofHash=(Get-FileHash -LiteralPath $emptyReceipt).Hash
+                    $sourceOnly=$true;$status='Passed';$stage='SourceOnly';$errorText=''
+                }else{$errorText=[IO.File]::ReadAllText($emptyLog);if($emptyCode-eq 124){$status='Timeout'}}
+            }
+        }
         else{
             $receipt=Get-Content (Join-Path $prepared 'source-input.json') -Raw|ConvertFrom-Json;$assetCount=$receipt.AssetCount;$contextSources=@($receipt.Sources|Where-Object {$_.Path.StartsWith($source+'\',[StringComparison]::OrdinalIgnoreCase)}|ForEach-Object {[pscustomobject]@{Relative=[IO.Path]::GetRelativePath($source,$_.Path);Sha256=$_.Sha256}});$emittedOrigins=@($receipt.Origins);$stage='Native'
             $compiled=Join-Path $work 'compiled';$nativeLog=Join-Path $caseRoot 'native.log'
@@ -149,11 +168,12 @@ try{foreach($file in $inventory){
     $clock.Stop()
     $message=($errorText -split "`n" | Where-Object {$_ -match 'Error:|ERROR:|Exception:|UNSUPPORTED|Unsupported|not reviewed|Unreviewed'} | Select-Object -First 1)
     if(!$message -and $errorText){$message=($errorText -split "`n" | Select-Object -First 1)}
-    $class=if($status-eq 'Passed'){'NativeQualified'}elseif($status-eq 'Timeout'){'Timeout'}elseif($errorText-match 'not reviewed|Unreviewed|Unsupported emitted|UNSUPPORTEDASSET|not supported yet|not implemented|processor is not connected|no reviewed native|outside the reviewed|requires a supported emitted'){'CompilerSupport'}elseif($errorText-match 'XmlException|XML declaration|invalid XML|Data at the root|mismatched|unexpected end|element cannot contain whitespace|Pattern constraint|invalid according to its datatype'){'SourceOrSchema'}elseif($errorText-match 'missing|not found|FileNotFound|Source graph:'){'Dependency'}else{'NativeOrHarness'}
+    if($sourceOnly){$message='Source-only qualification; no native assets emitted.'}
+    $class=if($status-eq 'Passed' -and $sourceOnly){'SourceOnlyQualified'}elseif($status-eq 'Passed'){'NativeQualified'}elseif($status-eq 'Timeout'){'Timeout'}elseif($errorText-match 'not reviewed|Unreviewed|Unsupported emitted|UNSUPPORTEDASSET|not supported yet|not implemented|processor is not connected|no reviewed native|outside the reviewed|requires a supported emitted'){'CompilerSupport'}elseif($errorText-match 'XmlException|XML declaration|invalid XML|Data at the root|mismatched|unexpected end|element cannot contain whitespace|Pattern constraint|invalid according to its datatype|has invalid child element|Empty or hash-colliding local module ID:\s*(\r|\n|$)'){'SourceOrSchema'}elseif($errorText-match 'missing|not found|FileNotFound|Source graph:'){'Dependency'}else{'NativeOrHarness'}
     # Reborn: context qualification is useful source-consumer evidence, not standalone native emission of a fragment.
-    if($status-eq 'Passed' -and $context.Kind-eq 'ConsumerContext'){$class='ContextQualified'}
+    if($status-eq 'Passed' -and !$sourceOnly -and $context.Kind-eq 'ConsumerContext'){$class='ContextQualified'}
     if($status-ne 'Passed' -and $context.Kind-eq 'UnreferencedSourceFragment'){$class='SourceContextRequired'}
-    $row=[pscustomobject]@{Relative=$file.Relative;SourceSha256=$file.Sha256;SourcePlanSha256=$planKey;CompilerGeneration=$generation;DeveloperChecks=[bool]$DeveloperChecks;TestEntry=$testEntry;SourceKind=$context.Kind;Status=$status;Stage=$stage;Class=$class;Assets=$assetCount;Seconds=[Math]::Round($clock.Elapsed.TotalSeconds,3);Message=[string]$message;NativeEvidenceSha256=$packageHash;ContextSources=$contextSources;EmittedOrigins=$emittedOrigins;LogDirectory=$caseRoot;CompletedUtc=[DateTime]::UtcNow.ToString('o')}
+    $row=[pscustomobject]@{Relative=$file.Relative;SourceSha256=$file.Sha256;SourcePlanSha256=$planKey;CompilerGeneration=$generation;DeveloperChecks=[bool]$DeveloperChecks;TestEntry=$testEntry;SourceKind=$context.Kind;Status=$status;Stage=$stage;Class=$class;Assets=$assetCount;Seconds=[Math]::Round($clock.Elapsed.TotalSeconds,3);Message=[string]$message;NativeEvidenceSha256=$packageHash;SourceEvidenceSha256=$sourceProofHash;ContextSources=$contextSources;EmittedOrigins=$emittedOrigins;LogDirectory=$caseRoot;CompletedUtc=[DateTime]::UtcNow.ToString('o')}
     Add-StockResult ($row|ConvertTo-Json -Compress -Depth 5);$last[$file.Relative]=$row
     [IO.File]::WriteAllText((Join-Path $caseRoot 'result.json'),($row|ConvertTo-Json -Depth 5))
     $counts=@($last.Values|Group-Object Status|ForEach-Object {[pscustomobject]@{Status=$_.Name;Count=$_.Count}})

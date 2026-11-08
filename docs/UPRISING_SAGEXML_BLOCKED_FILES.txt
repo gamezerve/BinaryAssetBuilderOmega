@@ -1,0 +1,1400 @@
+﻿UPRISING SAGEXML - BLOCKED ORIGINAL SOURCES
+Source root: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML
+All 341 files were attempted; these are blocked results, not untested files.
+Dependency: 324 | SourceContextRequired: 12 | SourceOrSchema: 5
+Dependency can mean missing or ambiguous references; see the full CSV for complete diagnostics.
+Full diagnostics: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\coverage-failures.csv
+
+FOLDER COUNTS
+(root): 6
+Allied: 5
+AptUI: 123
+BaseObjects: 6
+Civilian: 117
+EP1: 18
+Includes: 11
+Japan: 3
+Maps: 15
+Misc: 1
+Multiplayer: 1
+Neutral: 12
+PathMusic: 2
+Shell: 3
+SkirmishAI: 7
+Sounds: 1
+Soviet: 4
+Templates: 5
+dlcontent: 1
+
+Dependency (324)
+======================================================================
+1. Allied\Props\AlliedCryoSatelliteSpawnerLvl1.xml
+   Stage: Native
+   ERROR: SageXML\Allied\Props\AlliedCryoSatelliteSpawnerLvl1.xml(8,3): Behavior strong target missing/ambiguous: ObjectCreationList:CryoSatelliteEffectLvl1
+
+2. Allied\Props\AlliedFighterAircraftCannonNode.xml
+   Stage: Native
+   ERROR: SageXML\Allied\Props\AlliedFighterAircraftCannonNode.xml(100,3): Behavior strong target missing/ambiguous: WeaponTemplate:AlliedFighterAircraftCannonNode
+
+3. Allied\Structures\AlliedCrane.xml
+   Stage: Native
+   ERROR: SageXML\Allied\Structures\AlliedCrane.xml(21,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ABCrane_SKN
+
+4. Allied\Structures\AlliedNavalYardRepairBay.xml
+   Stage: Native
+   ERROR: SageXML\Allied\Structures\AlliedNavalYardRepairBay.xml(19,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ABNavalYardRepairBay
+
+5. Allied\Structures\AlliedRadarDish.xml
+   Stage: Native
+   ERROR: SageXML\Allied\Structures\AlliedRadarDish.xml(28,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ABRadarDish_SKN
+
+6. AptUI\A01_Objective_Briefing.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\A01_Objective_Briefing.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\A01_Objective_Briefing\A01_Objective_Briefing.xml: Dependency path escaped its explicit root.
+
+7. AptUI\A02_Objective_Briefing.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\A02_Objective_Briefing.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\A02_Objective_Briefing\A02_Objective_Briefing.xml: Dependency path escaped its explicit root.
+
+8. AptUI\A03_Objective_Briefing.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\A03_Objective_Briefing.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\A03_Objective_Briefing\A03_Objective_Briefing.xml: Dependency path escaped its explicit root.
+
+9. AptUI\A04_Objective_Briefing.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\A04_Objective_Briefing.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\A04_Objective_Briefing\A04_Objective_Briefing.xml: Dependency path escaped its explicit root.
+
+10. AptUI\blockTextComponent.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\blockTextComponent.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\blockTextComponent\blockTextComponent.xml: Dependency path escaped its explicit root.
+
+11. AptUI\chapterSelectComponent.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\chapterSelectComponent.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\chapterSelectComponent\chapterSelectComponent.xml: Dependency path escaped its explicit root.
+
+12. AptUI\fe_components.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\fe_components.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\fe_components\fe_components.xml: Dependency path escaped its explicit root.
+
+13. AptUI\fe_m_assets.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\fe_m_assets.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\fe_m_assets\fe_m_assets.xml: Dependency path escaped its explicit root.
+
+14. AptUI\fe_m_assetsGameSetup.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\fe_m_assetsGameSetup.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\fe_m_assetsGameSetup\fe_m_assetsGameSetup.xml: Dependency path escaped its explicit root.
+
+15. AptUI\fe_m_generalScreenComponents.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\fe_m_generalScreenComponents.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\fe_m_generalScreenComponents\fe_m_generalScreenComponents.xml: Dependency path escaped its explicit root.
+
+16. AptUI\fe_objectiveBriefingsAssets.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\fe_objectiveBriefingsAssets.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\fe_objectiveBriefingsAssets\fe_objectiveBriefingsAssets.xml: Dependency path escaped its explicit root.
+
+17. AptUI\fe_shared_mainMenuLib.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\fe_shared_mainMenuLib.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\fe_shared_mainMenuLib\fe_shared_mainMenuLib.xml: Dependency path escaped its explicit root.
+
+18. AptUI\feg_m_background.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\feg_m_background.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\feg_m_background\feg_m_background.xml: Dependency path escaped its explicit root.
+
+19. AptUI\feg_m_filmArchiveTheatre.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\feg_m_filmArchiveTheatre.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\feg_m_filmArchiveTheatre\feg_m_filmArchiveTheatre.xml: Dependency path escaped its explicit root.
+
+20. AptUI\feg_m_load.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\feg_m_load.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\feg_m_load\feg_m_load.xml: Dependency path escaped its explicit root.
+
+21. AptUI\feg_m_main.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\feg_m_main.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\feg_m_main\feg_m_main.xml: Dependency path escaped its explicit root.
+
+22. AptUI\feg_m_mainMenu.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\feg_m_mainMenu.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\feg_m_mainMenu\feg_m_mainMenu.xml: Dependency path escaped its explicit root.
+
+23. AptUI\feg_m_mainMenu3D.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\feg_m_mainMenu3D.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\feg_m_mainMenu3D\feg_m_mainMenu3D.xml: Dependency path escaped its explicit root.
+
+24. AptUI\feg_m_messageBox.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\feg_m_messageBox.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\feg_m_messageBox\feg_m_messageBox.xml: Dependency path escaped its explicit root.
+
+25. AptUI\feg_m_newLoadContinue.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\feg_m_newLoadContinue.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\feg_m_newLoadContinue\feg_m_newLoadContinue.xml: Dependency path escaped its explicit root.
+
+26. AptUI\feg_m_optionsSettings.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\feg_m_optionsSettings.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\feg_m_optionsSettings\feg_m_optionsSettings.xml: Dependency path escaped its explicit root.
+
+27. AptUI\feg_m_profileManager.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\feg_m_profileManager.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\feg_m_profileManager\feg_m_profileManager.xml: Dependency path escaped its explicit root.
+
+28. AptUI\feg_m_saveLoadMenu.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\feg_m_saveLoadMenu.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\feg_m_saveLoadMenu\feg_m_saveLoadMenu.xml: Dependency path escaped its explicit root.
+
+29. AptUI\feg_m_tutorialMenu.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\feg_m_tutorialMenu.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\feg_m_tutorialMenu\feg_m_tutorialMenu.xml: Dependency path escaped its explicit root.
+
+30. AptUI\fem_m_postgameRoundup.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\fem_m_postgameRoundup.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\fem_m_postgameRoundup\fem_m_postgameRoundup.xml: Dependency path escaped its explicit root.
+
+31. AptUI\fes_m_chapterSelect.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\fes_m_chapterSelect.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\fes_m_chapterSelect\fes_m_chapterSelect.xml: Dependency path escaped its explicit root.
+
+32. AptUI\fes_m_factionMenu.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\fes_m_factionMenu.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\fes_m_factionMenu\fes_m_factionMenu.xml: Dependency path escaped its explicit root.
+
+33. AptUI\fes_m_objectivesBriefing.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\fes_m_objectivesBriefing.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\fes_m_objectivesBriefing\fes_m_objectivesBriefing.xml: Dependency path escaped its explicit root.
+
+34. AptUI\fes_m_postgameRoundup.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\fes_m_postgameRoundup.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\fes_m_postgameRoundup\fes_m_postgameRoundup.xml: Dependency path escaped its explicit root.
+
+35. AptUI\fes_m_scenarioComplete.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\fes_m_scenarioComplete.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\fes_m_scenarioComplete\fes_m_scenarioComplete.xml: Dependency path escaped its explicit root.
+
+36. AptUI\fes_m_scenarioGameSetup.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\fes_m_scenarioGameSetup.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\fes_m_scenarioGameSetup\fes_m_scenarioGameSetup.xml: Dependency path escaped its explicit root.
+
+37. AptUI\fes_m_scenarioMap.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\fes_m_scenarioMap.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\fes_m_scenarioMap\fes_m_scenarioMap.xml: Dependency path escaped its explicit root.
+
+38. AptUI\fes_m_scenarioPostGame.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\fes_m_scenarioPostGame.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\fes_m_scenarioPostGame\fes_m_scenarioPostGame.xml: Dependency path escaped its explicit root.
+
+39. AptUI\fes_m_scenarioUnlocks.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\fes_m_scenarioUnlocks.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\fes_m_scenarioUnlocks\fes_m_scenarioUnlocks.xml: Dependency path escaped its explicit root.
+
+40. AptUI\fes_m_singleplayerMenu.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\fes_m_singleplayerMenu.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\fes_m_singleplayerMenu\fes_m_singleplayerMenu.xml: Dependency path escaped its explicit root.
+
+41. AptUI\fes_m_skirmishGameSetup.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\fes_m_skirmishGameSetup.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\fes_m_skirmishGameSetup\fes_m_skirmishGameSetup.xml: Dependency path escaped its explicit root.
+
+42. AptUI\GlobalClasses.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\GlobalClasses.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\GlobalClasses\GlobalClasses.xml: Dependency path escaped its explicit root.
+
+43. AptUI\HelpBox.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\HelpBox.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\HelpBox\HelpBox.xml: Dependency path escaped its explicit root.
+
+44. AptUI\HUDTickerPanel.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\HUDTickerPanel.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\HUDTickerPanel\HUDTickerPanel.xml: Dependency path escaped its explicit root.
+
+45. AptUI\HUDVoiceChatControlPanel.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\HUDVoiceChatControlPanel.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\HUDVoiceChatControlPanel\HUDVoiceChatControlPanel.xml: Dependency path escaped its explicit root.
+
+46. AptUI\ig_AITargetIndicator.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\ig_AITargetIndicator.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\ig_AITargetIndicator\ig_AITargetIndicator.xml: Dependency path escaped its explicit root.
+
+47. AptUI\ig_DrawableOverlayStage.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\ig_DrawableOverlayStage.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\ig_DrawableOverlayStage\ig_DrawableOverlayStage.xml: Dependency path escaped its explicit root.
+
+48. AptUI\ig_HUD.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\ig_HUD.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\ig_HUD\ig_HUD.xml: Dependency path escaped its explicit root.
+
+49. AptUI\ig_InfoBox.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\ig_InfoBox.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\ig_InfoBox\ig_InfoBox.xml: Dependency path escaped its explicit root.
+
+50. AptUI\ig_libHUD.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\ig_libHUD.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\ig_libHUD\ig_libHUD.xml: Dependency path escaped its explicit root.
+
+51. AptUI\ig_missionMap.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\ig_missionMap.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\ig_missionMap\ig_missionMap.xml: Dependency path escaped its explicit root.
+
+52. AptUI\ig_missionMapHotSpotLayer.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\ig_missionMapHotSpotLayer.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\ig_missionMapHotSpotLayer\ig_missionMapHotSpotLayer.xml: Dependency path escaped its explicit root.
+
+53. AptUI\ig_missionMapObjectiveLayer.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\ig_missionMapObjectiveLayer.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\ig_missionMapObjectiveLayer\ig_missionMapObjectiveLayer.xml: Dependency path escaped its explicit root.
+
+54. AptUI\ig_RadarBridgeLayer.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\ig_RadarBridgeLayer.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\ig_RadarBridgeLayer\ig_RadarBridgeLayer.xml: Dependency path escaped its explicit root.
+
+55. AptUI\ig_RadarCoOpAITargetLayer.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\ig_RadarCoOpAITargetLayer.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\ig_RadarCoOpAITargetLayer\ig_RadarCoOpAITargetLayer.xml: Dependency path escaped its explicit root.
+
+56. AptUI\ig_RadarObjectivesLayer.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\ig_RadarObjectivesLayer.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\ig_RadarObjectivesLayer\ig_RadarObjectivesLayer.xml: Dependency path escaped its explicit root.
+
+57. AptUI\ig_scenarioMissionMap.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\ig_scenarioMissionMap.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\ig_scenarioMissionMap\ig_scenarioMissionMap.xml: Dependency path escaped its explicit root.
+
+58. AptUI\igm_GadgetFlashStage.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\igm_GadgetFlashStage.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\igm_GadgetFlashStage\igm_GadgetFlashStage.xml: Dependency path escaped its explicit root.
+
+59. AptUI\igm_pauseMenu.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\igm_pauseMenu.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\igm_pauseMenu\igm_pauseMenu.xml: Dependency path escaped its explicit root.
+
+60. AptUI\igm_pauseMenuShared.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\igm_pauseMenuShared.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\igm_pauseMenuShared\igm_pauseMenuShared.xml: Dependency path escaped its explicit root.
+
+61. AptUI\igm_PlayerTechStoreDialog.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\igm_PlayerTechStoreDialog.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\igm_PlayerTechStoreDialog\igm_PlayerTechStoreDialog.xml: Dependency path escaped its explicit root.
+
+62. AptUI\igm_replayControlPanel.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\igm_replayControlPanel.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\igm_replayControlPanel\igm_replayControlPanel.xml: Dependency path escaped its explicit root.
+
+63. AptUI\igm_scenarioPauseMenu.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\igm_scenarioPauseMenu.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\igm_scenarioPauseMenu\igm_scenarioPauseMenu.xml: Dependency path escaped its explicit root.
+
+64. AptUI\igm_shellRoot.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\igm_shellRoot.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\igm_shellRoot\igm_shellRoot.xml: Dependency path escaped its explicit root.
+
+65. AptUI\igm_UnitIntroDialog.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\igm_UnitIntroDialog.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\igm_UnitIntroDialog\igm_UnitIntroDialog.xml: Dependency path escaped its explicit root.
+
+66. AptUI\InGameChat.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\InGameChat.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\InGameChat\InGameChat.xml: Dependency path escaped its explicit root.
+
+67. AptUI\InGameCheckbox.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\InGameCheckbox.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\InGameCheckbox\InGameCheckbox.xml: Dependency path escaped its explicit root.
+
+68. AptUI\J01_Objective_Briefing.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\J01_Objective_Briefing.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\J01_Objective_Briefing\J01_Objective_Briefing.xml: Dependency path escaped its explicit root.
+
+69. AptUI\J02_Objective_Briefing.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\J02_Objective_Briefing.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\J02_Objective_Briefing\J02_Objective_Briefing.xml: Dependency path escaped its explicit root.
+
+70. AptUI\J03_Objective_Briefing.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\J03_Objective_Briefing.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\J03_Objective_Briefing\J03_Objective_Briefing.xml: Dependency path escaped its explicit root.
+
+71. AptUI\J04_Objective_Briefing.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\J04_Objective_Briefing.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\J04_Objective_Briefing\J04_Objective_Briefing.xml: Dependency path escaped its explicit root.
+
+72. AptUI\libProgressBar.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\libProgressBar.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\libProgressBar\libProgressBar.xml: Dependency path escaped its explicit root.
+
+73. AptUI\LoadScreen.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\LoadScreen.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\LoadScreen\LoadScreen.xml: Dependency path escaped its explicit root.
+
+74. AptUI\LoadScreenCampaign.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\LoadScreenCampaign.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\LoadScreenCampaign\LoadScreenCampaign.xml: Dependency path escaped its explicit root.
+
+75. AptUI\LoadScreenImage.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\LoadScreenImage.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\LoadScreenImage\LoadScreenImage.xml: Dependency path escaped its explicit root.
+
+76. AptUI\main_mouse.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\main_mouse.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\main_mouse\main_mouse.xml: Dependency path escaped its explicit root.
+
+77. AptUI\mouse_chapterSelectComponent.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\mouse_chapterSelectComponent.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\mouse_chapterSelectComponent\mouse_chapterSelectComponent.xml: Dependency path escaped its explicit root.
+
+78. AptUI\mouse_scenarioComponents.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\mouse_scenarioComponents.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\mouse_scenarioComponents\mouse_scenarioComponents.xml: Dependency path escaped its explicit root.
+
+79. AptUI\NotificationPopUp.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\NotificationPopUp.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\NotificationPopUp\NotificationPopUp.xml: Dependency path escaped its explicit root.
+
+80. AptUI\PopUpFactionLogo.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\PopUpFactionLogo.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\PopUpFactionLogo\PopUpFactionLogo.xml: Dependency path escaped its explicit root.
+
+81. AptUI\S01_Objective_Briefing.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\S01_Objective_Briefing.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\S01_Objective_Briefing\S01_Objective_Briefing.xml: Dependency path escaped its explicit root.
+
+82. AptUI\S02_Objective_Briefing.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\S02_Objective_Briefing.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\S02_Objective_Briefing\S02_Objective_Briefing.xml: Dependency path escaped its explicit root.
+
+83. AptUI\S03_Objective_Briefing.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\S03_Objective_Briefing.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\S03_Objective_Briefing\S03_Objective_Briefing.xml: Dependency path escaped its explicit root.
+
+84. AptUI\S04_Objective_Briefing.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\S04_Objective_Briefing.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\S04_Objective_Briefing\S04_Objective_Briefing.xml: Dependency path escaped its explicit root.
+
+85. AptUI\skins.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\skins.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\skins\skins.xml: Dependency path escaped its explicit root.
+
+86. AptUI\StandardCommandButton.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\StandardCommandButton.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\StandardCommandButton\StandardCommandButton.xml: Dependency path escaped its explicit root.
+
+87. AptUI\std_MouseAccordionButton.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\std_MouseAccordionButton.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\std_MouseAccordionButton\std_MouseAccordionButton.xml: Dependency path escaped its explicit root.
+
+88. AptUI\std_MouseButton.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\std_MouseButton.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\std_MouseButton\std_MouseButton.xml: Dependency path escaped its explicit root.
+
+89. AptUI\std_MouseCheckBox.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\std_MouseCheckBox.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\std_MouseCheckBox\std_MouseCheckBox.xml: Dependency path escaped its explicit root.
+
+90. AptUI\std_mouseDropDownMenu.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\std_mouseDropDownMenu.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\std_mouseDropDownMenu\std_mouseDropDownMenu.xml: Dependency path escaped its explicit root.
+
+91. AptUI\std_mouseRadioButton.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\std_mouseRadioButton.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\std_mouseRadioButton\std_mouseRadioButton.xml: Dependency path escaped its explicit root.
+
+92. AptUI\std_mouseScrollbar.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\std_mouseScrollbar.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\std_mouseScrollbar\std_mouseScrollbar.xml: Dependency path escaped its explicit root.
+
+93. AptUI\std_mouseScrollingListbox.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\std_mouseScrollingListbox.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\std_mouseScrollingListbox\std_mouseScrollingListbox.xml: Dependency path escaped its explicit root.
+
+94. AptUI\std_mouseSlider.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\std_mouseSlider.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\std_mouseSlider\std_mouseSlider.xml: Dependency path escaped its explicit root.
+
+95. AptUI\std_mouseTextInputField.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\std_mouseTextInputField.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\std_mouseTextInputField\std_mouseTextInputField.xml: Dependency path escaped its explicit root.
+
+96. AptUI\TacticalEndGameDialog.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalEndGameDialog.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalEndGameDialog\TacticalEndGameDialog.xml: Dependency path escaped its explicit root.
+
+97. AptUI\TacticalHUD.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalHUD.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalHUD\TacticalHUD.xml: Dependency path escaped its explicit root.
+
+98. AptUI\TacticalHUDBeaconStage.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalHUDBeaconStage.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalHUDBeaconStage\TacticalHUDBeaconStage.xml: Dependency path escaped its explicit root.
+
+99. AptUI\TacticalHUDBuildQueuePage.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalHUDBuildQueuePage.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalHUDBuildQueuePage\TacticalHUDBuildQueuePage.xml: Dependency path escaped its explicit root.
+
+100. AptUI\TacticalHUDCommandListBox.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalHUDCommandListBox.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalHUDCommandListBox\TacticalHUDCommandListBox.xml: Dependency path escaped its explicit root.
+
+101. AptUI\TacticalHUDCommandModeBar.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalHUDCommandModeBar.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalHUDCommandModeBar\TacticalHUDCommandModeBar.xml: Dependency path escaped its explicit root.
+
+102. AptUI\TacticalHUDCoOpAIOrderPanel.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalHUDCoOpAIOrderPanel.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalHUDCoOpAIOrderPanel\TacticalHUDCoOpAIOrderPanel.xml: Dependency path escaped its explicit root.
+
+103. AptUI\TacticalHUDEnergyMeter.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalHUDEnergyMeter.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalHUDEnergyMeter\TacticalHUDEnergyMeter.xml: Dependency path escaped its explicit root.
+
+104. AptUI\TacticalHUDExperiencePanel.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalHUDExperiencePanel.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalHUDExperiencePanel\TacticalHUDExperiencePanel.xml: Dependency path escaped its explicit root.
+
+105. AptUI\TacticalHUDMainCommandBar.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalHUDMainCommandBar.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalHUDMainCommandBar\TacticalHUDMainCommandBar.xml: Dependency path escaped its explicit root.
+
+106. AptUI\TacticalHUDObjectiveIndicatorStage.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalHUDObjectiveIndicatorStage.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalHUDObjectiveIndicatorStage\TacticalHUDObjectiveIndicatorStage.xml: Dependency path escaped its explicit root.
+
+107. AptUI\TacticalHUDObserverControlPanel.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalHUDObserverControlPanel.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalHUDObserverControlPanel\TacticalHUDObserverControlPanel.xml: Dependency path escaped its explicit root.
+
+108. AptUI\TacticalHUDPlayerPowersBar.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalHUDPlayerPowersBar.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalHUDPlayerPowersBar\TacticalHUDPlayerPowersBar.xml: Dependency path escaped its explicit root.
+
+109. AptUI\TacticalHUDRadar.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalHUDRadar.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalHUDRadar\TacticalHUDRadar.xml: Dependency path escaped its explicit root.
+
+110. AptUI\TacticalHUDSelectionDetails.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalHUDSelectionDetails.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalHUDSelectionDetails\TacticalHUDSelectionDetails.xml: Dependency path escaped its explicit root.
+
+111. AptUI\TacticalHUDSelectionRefinementPage.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalHUDSelectionRefinementPage.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalHUDSelectionRefinementPage\TacticalHUDSelectionRefinementPage.xml: Dependency path escaped its explicit root.
+
+112. AptUI\TacticalHUDSpecialPowerTimers.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalHUDSpecialPowerTimers.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalHUDSpecialPowerTimers\TacticalHUDSpecialPowerTimers.xml: Dependency path escaped its explicit root.
+
+113. AptUI\TacticalHUDTelestratorControlPanel.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalHUDTelestratorControlPanel.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalHUDTelestratorControlPanel\TacticalHUDTelestratorControlPanel.xml: Dependency path escaped its explicit root.
+
+114. AptUI\TacticalMissionHotSpotPopUp.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalMissionHotSpotPopUp.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalMissionHotSpotPopUp\TacticalMissionHotSpotPopUp.xml: Dependency path escaped its explicit root.
+
+115. AptUI\TacticalMpBeaconDialog.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalMpBeaconDialog.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalMpBeaconDialog\TacticalMpBeaconDialog.xml: Dependency path escaped its explicit root.
+
+116. AptUI\TacticalObjectiveIcon.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalObjectiveIcon.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalObjectiveIcon\TacticalObjectiveIcon.xml: Dependency path escaped its explicit root.
+
+117. AptUI\TacticalObjectiveIndicatorPopUp.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalObjectiveIndicatorPopUp.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalObjectiveIndicatorPopUp\TacticalObjectiveIndicatorPopUp.xml: Dependency path escaped its explicit root.
+
+118. AptUI\TacticalObjectiveIntroPopUp.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalObjectiveIntroPopUp.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalObjectiveIntroPopUp\TacticalObjectiveIntroPopUp.xml: Dependency path escaped its explicit root.
+
+119. AptUI\TacticalPlayerPowerCommandButton.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalPlayerPowerCommandButton.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalPlayerPowerCommandButton\TacticalPlayerPowerCommandButton.xml: Dependency path escaped its explicit root.
+
+120. AptUI\TacticalPlayerStatusDialog.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalPlayerStatusDialog.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalPlayerStatusDialog\TacticalPlayerStatusDialog.xml: Dependency path escaped its explicit root.
+
+121. AptUI\TacticalQuickChatDialog.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalQuickChatDialog.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalQuickChatDialog\TacticalQuickChatDialog.xml: Dependency path escaped its explicit root.
+
+122. AptUI\TacticalTextChatDialog.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\TacticalTextChatDialog.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\TacticalTextChatDialog\TacticalTextChatDialog.xml: Dependency path escaped its explicit root.
+
+123. AptUI\VerticalScrollBar.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\VerticalScrollBar.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\VerticalScrollBar\VerticalScrollBar.xml: Dependency path escaped its explicit root.
+
+124. AptUI\Y01_Objective_Briefing.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\Y01_Objective_Briefing.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\Y01_Objective_Briefing\Y01_Objective_Briefing.xml: Dependency path escaped its explicit root.
+
+125. AptUI\Y02_Objective_Briefing.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\Y02_Objective_Briefing.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\Y02_Objective_Briefing\Y02_Objective_Briefing.xml: Dependency path escaped its explicit root.
+
+126. AptUI\Y03_Objective_Briefing.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\Y03_Objective_Briefing.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\Y03_Objective_Briefing\Y03_Objective_Briefing.xml: Dependency path escaped its explicit root.
+
+127. AptUI\YesNoDialog.xml
+   Stage: Preparation
+   ERROR: SageXML\AptUI\YesNoDialog.xml(5,22): Source graph: IncludePath ..\..\..\aptbuildxml\0.0-dev\pc\output\YesNoDialog\YesNoDialog.xml: Dependency path escaped its explicit root.
+
+128. Audio.xml
+   Stage: Preparation
+   ERROR: SageXML\Sounds\MasterAudioAssets.xml(8,23): Source graph: IncludePath AUDIO:audioassets_notfordemo.xml: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\00279\work-e2f0563f865f4a4d8e7d19529f7728aa\input\Audio\audioassets_notfordemo.xml; D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\Audio\audioassets_notfordemo.xml; IncludePath AUDIO:audioassets_retailonly.xml: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\002 ... [full diagnostic in CSV]
+
+129. BaseObjects\BaseCivilianStructure.xml
+   Stage: Native
+   ERROR: SageXML\BaseObjects\BaseCivilianStructure.xml(26,3): Behavior strong target missing/ambiguous: FXList:FX_ScorchMedium
+
+130. BaseObjects\BaseCivilianStructureLarge.xml
+   Stage: Native
+   ERROR: SageXML\BaseObjects\BaseCivilianStructureLarge.xml(9,3): Behavior strong target missing/ambiguous: FXList:FX_ScorchMedium
+
+131. BaseObjects\BaseCivilianStructureMedium.xml
+   Stage: Native
+   ERROR: SageXML\BaseObjects\BaseCivilianStructureMedium.xml(9,3): Behavior strong target missing/ambiguous: FXList:FX_ScorchMedium
+
+132. BaseObjects\BaseCivilianStructureSmall.xml
+   Stage: Native
+   ERROR: SageXML\BaseObjects\BaseCivilianStructureSmall.xml(9,3): Behavior strong target missing/ambiguous: FXList:FX_ScorchMedium
+
+133. BaseObjects\BaseCivilianStructureTiny.xml
+   Stage: Native
+   ERROR: SageXML\BaseObjects\BaseCivilianStructureTiny.xml(9,3): Behavior strong target missing/ambiguous: FXList:FX_ScorchMedium
+
+134. BaseObjects\BaseCivilianStructureXLarge.xml
+   Stage: Native
+   ERROR: SageXML\BaseObjects\BaseCivilianStructureXLarge.xml(9,3): Behavior strong target missing/ambiguous: FXList:FX_ScorchMedium
+
+135. Bootup.xml
+   Stage: Native
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\00328\work-105230115a064066b52efc0cb3851d16\source\game.xml(1,2) [source context; exact field origin unavailable]: Behavior strong target missing/ambiguous: Texture:loadingText
+
+136. Civilian\Amsterdam_AM\Buildings\AM_CanalWalls.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Amsterdam_AM\Buildings\AM_CanalWalls.xml(8,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AM_CanalWalls
+
+137. Civilian\Amsterdam_AM\Buildings\AM_GrandCentralStation.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Amsterdam_AM\Buildings\AM_GrandCentralStation.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AM_GrandCentralStation
+
+138. Civilian\Amsterdam_AM\Buildings\AM_Riverboat.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Amsterdam_AM\Buildings\AM_Riverboat.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AM_Riverboat
+
+139. Civilian\Amsterdam_AM\Optimized_Props\AM_StreetSegment03.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Amsterdam_AM\Optimized_Props\AM_StreetSegment03.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AM_StreetSegment03
+
+140. Civilian\Amsterdam_AM\Optimized_Props\AM_StreetSegment13.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Amsterdam_AM\Optimized_Props\AM_StreetSegment13.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AM_StreetSegment13
+
+141. Civilian\Amsterdam_AM\Props\AM_GrandCentralStation_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Amsterdam_AM\Props\AM_GrandCentralStation_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AM_GrandCentralStation_COL
+
+142. Civilian\Amsterdam_AM\Props\AM_Riverboat_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Amsterdam_AM\Props\AM_Riverboat_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AM_Riverboat_COL
+
+143. Civilian\Cannes_CA\Buildings\CA_CannesHotel.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Cannes_CA\Buildings\CA_CannesHotel.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:CA_CannesHotel
+
+144. Civilian\Cannes_CA\Props\CA_CannesHotel_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Cannes_CA\Props\CA_CannesHotel_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:CA_CannesHotel_COL
+
+145. Civilian\Cape_Cod_CC\Props\CC_swing.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Cape_Cod_CC\Props\CC_swing.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:CC_Swing01
+
+146. Civilian\Cape_Cod_CC\Props\CCBuildingDebris_02.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Cape_Cod_CC\Props\CCBuildingDebris_02.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:CCLightHouse_02_Gib
+
+147. Civilian\Gibraltar_GI\Buildings\GI_GibraltarAirfield.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Gibraltar_GI\Buildings\GI_GibraltarAirfield.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GI_GibraltarAirfield
+
+148. Civilian\Gibraltar_GI\Buildings\GI_GibraltarRock.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Gibraltar_GI\Buildings\GI_GibraltarRock.xml(8,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GI_GibraltarRock
+
+149. Civilian\Gibraltar_GI\Props\GI_CableCar_01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Gibraltar_GI\Props\GI_CableCar_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GI_CableCar_01_COL
+
+150. Civilian\Gibraltar_GI\Props\GI_CableTower_01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Gibraltar_GI\Props\GI_CableTower_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GI_CableTower_01_COL
+
+151. Civilian\Gibraltar_GI\Props\GI_GibraltarAirfield_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Gibraltar_GI\Props\GI_GibraltarAirfield_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GI_GibraltarAirfield_COL
+
+152. Civilian\Gibraltar_GI\Props\GI_Stadium_01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Gibraltar_GI\Props\GI_Stadium_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GI_Stadium_01_COL
+
+153. Civilian\Gibraltar_GI\Structures\GI_Pier01.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Gibraltar_GI\Structures\GI_Pier01.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GI_Pier01
+
+154. Civilian\Gypsy_Village_GV\Buildings\GV_SovietCircusTent.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Gypsy_Village_GV\Buildings\GV_SovietCircusTent.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GV_SovietCircusTent
+
+155. Civilian\Gypsy_Village_GV\Destructible_Props\GV_Kiosk02.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Gypsy_Village_GV\Destructible_Props\GV_Kiosk02.xml(12,4): Behavior strong target missing/ambiguous: BaseRenderAssetType:GV_Kiosk02
+
+156. Civilian\Gypsy_Village_GV\Props\GV_SovietCircusTent_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Gypsy_Village_GV\Props\GV_SovietCircusTent_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GV_SovietCircusTent_COL
+
+157. Civilian\Gypsy_Village_GV\Props\GV_Tent01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Gypsy_Village_GV\Props\GV_Tent01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GV_Tent01_COL
+
+158. Civilian\Gypsy_Village_GV\Props\GV_Tent02_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Gypsy_Village_GV\Props\GV_Tent02_Collapse.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GV_Tent01_COL
+
+159. Civilian\Heidelberg_HB\Buildings\HB_GermanBeerGarden.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Heidelberg_HB\Buildings\HB_GermanBeerGarden.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:HB_GermanBeerGarden
+
+160. Civilian\Heidelberg_HB\Props\HB_Bridge01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Heidelberg_HB\Props\HB_Bridge01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:HB_Bridge01_COL
+
+161. Civilian\Heidelberg_HB\Props\HB_CastleTower_01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Heidelberg_HB\Props\HB_CastleTower_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:HB_CastleTower_01_COL
+
+162. Civilian\Heidelberg_HB\Props\HB_GermanBeerGarden_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Heidelberg_HB\Props\HB_GermanBeerGarden_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:HB_GermanBeerGarden_COL
+
+163. Civilian\Kremlin_KR\Buildings\KR_SovietPolitburo.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Kremlin_KR\Buildings\KR_SovietPolitburo.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:KR_SovietPolitburo
+
+164. Civilian\Kremlin_KR\Props\KR_SovietPolitburo_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Kremlin_KR\Props\KR_SovietPolitburo_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:KR_SovietPolitburo_COL
+
+165. Civilian\Kremlin_KR\Props\KR_Structure_02_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Kremlin_KR\Props\KR_Structure_02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:KR_Structure_02_COL
+
+166. Civilian\Mykonos_MY\Buildings\MY_LightHouse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Mykonos_MY\Buildings\MY_LightHouse.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:MY_LightHouse
+
+167. Civilian\Mykonos_MY\Props\MY_Archway_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Mykonos_MY\Props\MY_Archway_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:MY_Archway_COL
+
+168. Civilian\Mykonos_MY\Props\MY_Boat_01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Mykonos_MY\Props\MY_Boat_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:MY_Boat_01_COL
+
+169. Civilian\Mykonos_MY\Props\MY_Boat_01b_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Mykonos_MY\Props\MY_Boat_01b_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:MY_Boat_01b_COL
+
+170. Civilian\Mykonos_MY\Props\MY_LightHouse_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Mykonos_MY\Props\MY_LightHouse_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:MY_LightHouse_COL
+
+171. Civilian\Mykonos_MY\Props\MY_Plant_01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Mykonos_MY\Props\MY_Plant_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:MY_Plant_01_COL
+
+172. Civilian\Mykonos_MY\Props\MY_Statue_01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Mykonos_MY\Props\MY_Statue_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:MY_Statue_01_COL
+
+173. Civilian\Mykonos_MY\Props\MY_Statue_02_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Mykonos_MY\Props\MY_Statue_02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:MY_Statue_02_COL
+
+174. Civilian\Mykonos_MY\Props\MY_Umbrella_01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Mykonos_MY\Props\MY_Umbrella_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:MY_Umbrella_01_COL
+
+175. Civilian\New_York_NY\Props\NY_Building02_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\New_York_NY\Props\NY_Building02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NY_Building02_COL
+
+176. Civilian\New_York_NY\Props\NY_SkyScraper_01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\New_York_NY\Props\NY_SkyScraper_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NY_SkyScraper_01_COL
+
+177. Civilian\New_York_NY\Props\NY_SkyScraper_02_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\New_York_NY\Props\NY_SkyScraper_02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NY_SkyScraper_02_COL
+
+178. Civilian\New_York_NY\Props\NY_SkyScraper_03_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\New_York_NY\Props\NY_SkyScraper_03_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NY_SkyScraper_03_COL
+
+179. Civilian\New_York_NY\Props\NY_SkyScraper_04_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\New_York_NY\Props\NY_SkyScraper_04_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NY_SkyScraper_04_COL
+
+180. Civilian\Northern_Russia_NR\Buildings\NR_BuildingCastle03.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Northern_Russia_NR\Buildings\NR_BuildingCastle03.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NR_BuildingCastle03
+
+181. Civilian\Northern_Russia_NR\Buildings\NR_BuildingCastle04.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Northern_Russia_NR\Buildings\NR_BuildingCastle04.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NR_BuildingCastle04
+
+182. Civilian\Northern_Russia_NR\Props\NR_BuildingCastle03_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Northern_Russia_NR\Props\NR_BuildingCastle03_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NR_BuildingCastle03_COL
+
+183. Civilian\Northern_Russia_NR\Props\NR_BuildingCastle04_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Northern_Russia_NR\Props\NR_BuildingCastle04_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NR_BuildingCastle04_COL
+
+184. Civilian\Northern_Russia_NR\Props\NR_FutureTechColliderRing_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Northern_Russia_NR\Props\NR_FutureTechColliderRing_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NR_FutureTechColliderRing_COL
+
+185. Civilian\Odessa_OD\Buildings\OD_SovietDockBuilding.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Odessa_OD\Buildings\OD_SovietDockBuilding.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietDockBuilding
+
+186. Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_01.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_01.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietHeroesStatue_01
+
+187. Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_02.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_02.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietHeroesStatue_02
+
+188. Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_03.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_03.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietHeroesStatue_03
+
+189. Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_04.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_04.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietHeroesStatue_04
+
+190. Civilian\Odessa_OD\Buildings\OD_Stairway.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Odessa_OD\Buildings\OD_Stairway.xml(8,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_Stairway
+
+191. Civilian\Odessa_OD\Buildings\OD_SwallowsCastle.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Odessa_OD\Buildings\OD_SwallowsCastle.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SwallowsCastle
+
+192. Civilian\Odessa_OD\Props\OD_SovietDockBuilding_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Odessa_OD\Props\OD_SovietDockBuilding_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietDockBuilding_COL
+
+193. Civilian\Odessa_OD\Props\OD_SovietHeroesStatue_01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Odessa_OD\Props\OD_SovietHeroesStatue_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietHeroesStatue_01_COL
+
+194. Civilian\Odessa_OD\Props\OD_SovietHeroesStatue_02_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Odessa_OD\Props\OD_SovietHeroesStatue_02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietHeroesStatue_02_COL
+
+195. Civilian\Odessa_OD\Props\OD_SovietHeroesStatue_03_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Odessa_OD\Props\OD_SovietHeroesStatue_03_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietHeroesStatue_03_COL
+
+196. Civilian\Odessa_OD\Props\OD_SovietHeroesStatue_04_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Odessa_OD\Props\OD_SovietHeroesStatue_04_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SovietHeroesStatue_04_COL
+
+197. Civilian\Odessa_OD\Props\OD_SwallowsCastle_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Odessa_OD\Props\OD_SwallowsCastle_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_SwallowsCastle_COL
+
+198. Civilian\Odessa_OD\Props\OD_Tower01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Odessa_OD\Props\OD_Tower01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_Tower01_COL
+
+199. Civilian\Odessa_OD\Structures\OD_Wall001.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Odessa_OD\Structures\OD_Wall001.xml(12,4): Behavior strong target missing/ambiguous: BaseRenderAssetType:OD_Wall001
+
+200. Civilian\Romania_RM\Props\RM_AlliedAlertLamp_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Romania_RM\Props\RM_AlliedAlertLamp_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:RM_AlliedAlertLamp_COL
+
+201. Civilian\Santa_Monica_SA\Buildings\SA_FerrisWheel.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Santa_Monica_SA\Buildings\SA_FerrisWheel.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SA_FerrisWheel
+
+202. Civilian\Santa_Monica_SA\Buildings\SA_Pier.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Santa_Monica_SA\Buildings\SA_Pier.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SA_Pier
+
+203. Civilian\Santa_Monica_SA\Props\SA_EALAEntry_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Santa_Monica_SA\Props\SA_EALAEntry_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SA_EALAEntry_COL
+
+204. Civilian\Santa_Monica_SA\Props\SA_EALAWall_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Santa_Monica_SA\Props\SA_EALAWall_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SA_EALAWall_COL
+
+205. Civilian\Santa_Monica_SA\Props\SA_FakeBillboardDefensiveTower_01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Santa_Monica_SA\Props\SA_FakeBillboardDefensiveTower_01_Collapse.xml(12,4): Behavior strong target missing/ambiguous: BaseRenderAssetType:SA_FakeBillboardDefensiveTower_01_COL
+
+206. Civilian\Santa_Monica_SA\Props\SA_FakeBillboardDefensiveTower_02_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Santa_Monica_SA\Props\SA_FakeBillboardDefensiveTower_02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SA_FakeBillboardDefensiveTower_02_COL
+
+207. Civilian\Santa_Monica_SA\Props\SA_FakeBillboardDefensiveTower_03_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Santa_Monica_SA\Props\SA_FakeBillboardDefensiveTower_03_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SA_FakeBillboardDefensiveTower_03_COL
+
+208. Civilian\Santa_Monica_SA\Props\SA_FakeBillboardDefensiveTower_04_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Santa_Monica_SA\Props\SA_FakeBillboardDefensiveTower_04_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SA_FakeBillboardDefensiveTower_04_COL
+
+209. Civilian\Santa_Monica_SA\Props\SA_Pier_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Santa_Monica_SA\Props\SA_Pier_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SA_Pier_COL
+
+210. Civilian\Shiro_Sanitarium_SS\Props\SS_SecretFile1_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Shiro_Sanitarium_SS\Props\SS_SecretFile1_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SS_SecretFile1_COL
+
+211. Civilian\Shiro_Sanitarium_SS\Props\SS_SecretFile2_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Shiro_Sanitarium_SS\Props\SS_SecretFile2_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SS_SecretFile2_COL
+
+212. Civilian\Solvang_SV\Props\SV_PCampFenceWire01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Solvang_SV\Props\SV_PCampFenceWire01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SV_PCampFenceWire01_COL
+
+213. Civilian\Solvang_SV\Props\SV_PCampFenceWood01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Solvang_SV\Props\SV_PCampFenceWood01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SV_PCampFenceWood01_COL
+
+214. Civilian\Solvang_SV\Props\SV_PCampWall01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Solvang_SV\Props\SV_PCampWall01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SV_PCampWall01_COL
+
+215. Civilian\Solvang_SV\Props\SV_PCampWall02_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Solvang_SV\Props\SV_PCampWall02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SV_PCampWall02_COL
+
+216. Civilian\Solvang_SV\Props\SV_PCampWallColumn01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Solvang_SV\Props\SV_PCampWallColumn01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SV_PCampWallColumn01_COL
+
+217. Civilian\Solvang_SV\Props\SV_PCampWallCorner01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Solvang_SV\Props\SV_PCampWallCorner01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SV_PCampWallCorner01_COL
+
+218. Civilian\StPetersburg_ST\Buildings\ST_Artillery_01.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Buildings\ST_Artillery_01.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Artillery_01
+
+219. Civilian\StPetersburg_ST\Buildings\ST_Artillery_02.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Buildings\ST_Artillery_02.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Artillery_02
+
+220. Civilian\StPetersburg_ST\Buildings\ST_Artillery_03.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Buildings\ST_Artillery_03.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Artillery_03
+
+221. Civilian\StPetersburg_ST\Buildings\ST_Artillery_V4.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Buildings\ST_Artillery_V4.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Artillery_V4
+
+222. Civilian\StPetersburg_ST\Buildings\ST_Cathedral_2.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Buildings\ST_Cathedral_2.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Cathedral_2
+
+223. Civilian\StPetersburg_ST\Buildings\ST_FortressOfTheSoviets.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Buildings\ST_FortressOfTheSoviets.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_FortressOfTheSoviets
+
+224. Civilian\StPetersburg_ST\Buildings\ST_LeningradCanalBarrier.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Buildings\ST_LeningradCanalBarrier.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_LeningradCanalBarrier
+
+225. Civilian\StPetersburg_ST\Buildings\ST_PPFort_01.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Buildings\ST_PPFort_01.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_01
+
+226. Civilian\StPetersburg_ST\Buildings\ST_PPFort_02.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Buildings\ST_PPFort_02.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_02
+
+227. Civilian\StPetersburg_ST\Buildings\ST_PPFort_03.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Buildings\ST_PPFort_03.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_03
+
+228. Civilian\StPetersburg_ST\Buildings\ST_PPFort_04.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Buildings\ST_PPFort_04.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_04
+
+229. Civilian\StPetersburg_ST\Buildings\ST_PPFort_05.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Buildings\ST_PPFort_05.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_05
+
+230. Civilian\StPetersburg_ST\Props\ST_Artillery_01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Props\ST_Artillery_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Artillery_01_COL
+
+231. Civilian\StPetersburg_ST\Props\ST_Artillery_02_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Props\ST_Artillery_02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Artillery_02_COL
+
+232. Civilian\StPetersburg_ST\Props\ST_Artillery_03_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Props\ST_Artillery_03_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Artillery_03_COL
+
+233. Civilian\StPetersburg_ST\Props\ST_Artillery_V4_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Props\ST_Artillery_V4_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Artillery_V4_COL
+
+234. Civilian\StPetersburg_ST\Props\ST_Cathedral_2_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Props\ST_Cathedral_2_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_Cathedral_2_COL
+
+235. Civilian\StPetersburg_ST\Props\ST_FortressOfTheSoviets_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Props\ST_FortressOfTheSoviets_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_FortressOfTheSoviets_COL
+
+236. Civilian\StPetersburg_ST\Props\ST_LeningradCanalBarrier_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Props\ST_LeningradCanalBarrier_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_LeningradCanalBarrier_COL
+
+237. Civilian\StPetersburg_ST\Props\ST_PPFort_01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Props\ST_PPFort_01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_01_COL
+
+238. Civilian\StPetersburg_ST\Props\ST_PPFort_02_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Props\ST_PPFort_02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_02_COL
+
+239. Civilian\StPetersburg_ST\Props\ST_PPFort_03_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Props\ST_PPFort_03_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_03_COL
+
+240. Civilian\StPetersburg_ST\Props\ST_PPFort_04_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Props\ST_PPFort_04_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_04_COL
+
+241. Civilian\StPetersburg_ST\Props\ST_PPFort_05_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Props\ST_PPFort_05_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_PPFort_05_COL
+
+242. Civilian\StPetersburg_ST\Props\ST_RivWallShort.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\StPetersburg_ST\Props\ST_RivWallShort.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:ST_RivWallShort
+
+243. Civilian\Tokyo_Harbor_TH\Buildings\TH_FerrisWheel.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Tokyo_Harbor_TH\Buildings\TH_FerrisWheel.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:TH_FerrisWheel
+
+244. Civilian\Tokyo_Harbor_TH\Props\TH_FerrisWheel_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Tokyo_Harbor_TH\Props\TH_FerrisWheel_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:TH_FerrisWheel_COL
+
+245. Civilian\Tokyo_Harbor_TH\Props\TH_fish_market01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Tokyo_Harbor_TH\Props\TH_fish_market01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:TH_fish_market01_COL
+
+246. Civilian\Vladivostok_VL\Buildings\VL_ImperialMilitaryAdminBuilding_04.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Vladivostok_VL\Buildings\VL_ImperialMilitaryAdminBuilding_04.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:VL_ImperialAdminBuilding_04
+
+247. Civilian\Vladivostok_VL\Buildings\VL_ImperialMilitaryAdminBuilding_05.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Vladivostok_VL\Buildings\VL_ImperialMilitaryAdminBuilding_05.xml(11,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:VL_ImperialAdminBuilding_05
+
+248. Civilian\Vladivostok_VL\Props\VL_ImperialMilitaryAdminBuilding_04_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Vladivostok_VL\Props\VL_ImperialMilitaryAdminBuilding_04_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:VL_ImperialAdminBuilding_04_COL
+
+249. Civilian\Vladivostok_VL\Props\VL_ImperialMilitaryAdminBuilding_05_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Vladivostok_VL\Props\VL_ImperialMilitaryAdminBuilding_05_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:VL_ImperialAdminBuilding_05_COL
+
+250. Civilian\Yucatan_YU\Props\YU_TreeSerengeti01_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Yucatan_YU\Props\YU_TreeSerengeti01_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:YU_TreeSerengeti01_COL
+
+251. Civilian\Yucatan_YU\Props\YU_TreeSerengeti02_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\Civilian\Yucatan_YU\Props\YU_TreeSerengeti02_Collapse.xml(12,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:YU_TreeSerengeti02_COL
+
+252. dlcontent\packages\package1\Package.xml
+   Stage: Preparation
+   ERROR: SageXML\dlcontent\packages\package1\Package.xml(5,12): Source graph: IncludePath MapMetaData.xml: Alias file missing; searched: SageXML\dlcontent\packages\package1\MapMetaData.xml
+
+253. EP1\Allied\Props\AlliedAntiInfantryInfantry_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedAntiInfantryInfantry_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUAntiInfantryInfantryRagDoll
+
+254. EP1\Allied\Props\AlliedAntiVehicleInfantry_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedAntiVehicleInfantry_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUAntiVehicleInfantryRagDoll
+
+255. EP1\Allied\Props\AlliedEngineer_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+256. EP1\Allied\Props\AlliedInfiltrationInfantry_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedInfiltrationInfantry_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUInfiltrationInfantryRagdoll
+
+257. EP1\Allied\Props\AlliedLegionnaireInfantry_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedLegionnaireInfantry_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AULegionnaireInfantryRagdoll
+
+258. EP1\Allied\Props\AlliedScoutInfantry_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedScoutInfantry_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUScoutInfantryRagdoll
+
+259. EP1\Includes\FactionFlingableProps.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+260. EP1\Japan\Props\JapanAntiInfantryInfantry_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Japan\Props\JapanAntiInfantryInfantry_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:JUAntiInfantryInfantryRagDoll
+
+261. EP1\Japan\Props\JapanAntiVehicleInfantry_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Japan\Props\JapanAntiVehicleInfantry_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:JUAntiVehicleInfantryRagDoll
+
+262. EP1\Japan\Props\JapanArcherInfantry_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Japan\Props\JapanArcherInfantry_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:JUArcherInfantryRagDoll
+
+263. EP1\Japan\Props\JapanEngineer_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Japan\Props\JapanEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:JUEngineerRagDoll
+
+264. EP1\Japan\Props\JapanInfiltrationInfantry_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Japan\Props\JapanInfiltrationInfantry_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:JUInfiltrationInfantryRagDoll
+
+265. EP1\Japan\Props\JapanScientist_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Japan\Props\JapanScientist_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:JUScientistRagDoll
+
+266. EP1\Soviet\Props\SovietAntiInfantryInfantry_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Soviet\Props\SovietAntiInfantryInfantry_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SUAntiInfantryInfantryRagDoll
+
+267. EP1\Soviet\Props\SovietDesolatorInfantry_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Soviet\Props\SovietDesolatorInfantry_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SUDesolatorInfantryRagDoll
+
+268. EP1\Soviet\Props\SovietHeavyAntiVehicleInfantry_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Soviet\Props\SovietHeavyAntiVehicleInfantry_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SUHeavyAntiVehicleInfantryRagDoll
+
+269. EP1\Soviet\Props\SovietScoutInfantry_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Soviet\Props\SovietScoutInfantry_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SUScoutInfantryRagDoll
+
+270. EP1\Soviet\Props\SovietScoutVehicle_Collapse.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Soviet\Props\SovietScoutVehicle_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SUScoutVehicleRagDoll
+
+271. global.xml
+   Stage: Preparation
+   ERROR: SageXML\PathMusic\BasePathMusicEvent.xml(7,3): Source graph: ResourcePath AUDIO:Pathfinder\RA3EPMus\PC\RA3EPMus.h: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\05659\work-35bb60b5d31049b7a839b8c1a4068cd3\input\Audio\Pathfinder\RA3EPMus\PC\RA3EPMus.h; D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\Audio\Pathfinder\RA3EPMus\PC\RA3EPMus.h; IncludePath DATA:maps\official\CAMP_S06_Iceland_Bass\AIP_S06_SovietKrukov.xml.: Unsafe scoped relative dependency path.; IncludePath DAT ... [full diagnostic in CSV]
+
+272. Japan\Structures\JapanNavalYardRepairBay.xml
+   Stage: Native
+   ERROR: SageXML\Japan\Structures\JapanNavalYardRepairBay.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:JBWarFactoryRepairBay
+
+273. Japan\Structures\JapanRadarDish.xml
+   Stage: Native
+   ERROR: SageXML\Japan\Structures\JapanRadarDish.xml(19,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:JBRadarDish
+
+274. Japan\Structures\JapanWarFactoryRepairBay.xml
+   Stage: Native
+   ERROR: SageXML\Japan\Structures\JapanWarFactoryRepairBay.xml(16,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:JBWarFactoryRepairBay
+
+275. Maps\internal\ART_CAMP_EP01_Y02_Blacksite_Davis\map.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+276. Maps\internal\ART_CAMP_EP01_Y02_Blacksite_Davis\overrides.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+277. Maps\internal\ART_CAMP_EP01_Y03_Compound_Rao\overrides.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+278. Maps\internal\PostageStamp_Yuriko\map.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+279. Maps\internal\PostageStamp_Yuriko\overrides.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+280. Maps\internal\SCREENSHOT_Yuriko01\map.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+281. Maps\internal\SCREENSHOT_Yuriko01\overrides.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+282. Maps\internal\SCREENSHOT_Yuriko02\map.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+283. Maps\internal\SCREENSHOT_Yuriko02\overrides.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+284. Maps\internal\TEST_Yuriko\map.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+285. Maps\internal\TEST_Yuriko\overrides.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+286. Maps\official\CAMP_EP01_Y01_Facility_Rao\overrides.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+287. Maps\official\CAMP_EP01_Y02_Blacksite_Davis\overrides.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+288. Maps\official\CAMP_EP01_Y03_Compound_Rao\overrides.xml
+   Stage: Native
+   ERROR: SageXML\EP1\Allied\Props\AlliedEngineer_Collapse.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:AUEngineerRagdoll
+
+289. Maps\official\CAMP_S01_LeningradCanals_Rao\AIS_S01_JapanCommander.xml
+   Stage: Preparation
+   ERROR: SageXML\SkirmishAI\States\AIStateLibrary.xml(62,25): Source graph: IncludePath DATA:maps\official\CAMP_S06_Iceland_Bass\AIS_S06_SovietKrukov.xml.: Unsafe scoped relative dependency path.
+
+290. Misc\RallyFlag.xml
+   Stage: Preparation
+   ERROR: SageXML\Misc\RallyFlag.xml(9,3): The element 'GameObject' in namespace 'uri:ea.com:eala:asset' has incomplete content. List of possible elements expected: 'AI, Body' in namespace 'uri:ea.com:eala:asset'.
+
+291. Multiplayer\ConquerMode.xml
+   Stage: Native
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06637\work-5690a881f09b4625a879daafd2c1d571\source\game.xml(1,2) [source context; exact field origin unavailable]: Behavior strong target missing/ambiguous: GameObject:GDIRifleSoldierSquad
+
+292. Neutral\Destructables\DestLight_01.xml
+   Stage: Native
+   ERROR: SageXML\Neutral\Destructables\DestLight_01.xml(9,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:CityLight02
+
+293. Neutral\Structures\CaptureFlag.xml
+   Stage: Native
+   ERROR: SageXML\Neutral\Structures\CaptureFlag.xml(9,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:TBCaptureFlag
+
+294. Neutral\Structures\ControlPoint.xml
+   Stage: Native
+   ERROR: SageXML\Neutral\Structures\ControlPoint.xml(9,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:TBCntrlPnt
+
+295. Neutral\Structures\OreNode2a.xml
+   Stage: Native
+   ERROR: SageXML\Neutral\Structures\OreNode2a.xml(33,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NBOreNode2a
+
+296. Neutral\Structures\OreNode2b.xml
+   Stage: Native
+   ERROR: SageXML\Neutral\Structures\OreNode2b.xml(33,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NBOreNode2b
+
+297. Neutral\Structures\OreNode4a.xml
+   Stage: Native
+   ERROR: SageXML\Neutral\Structures\OreNode4a.xml(33,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NBOreNode4a
+
+298. Neutral\Structures\OreNode4b.xml
+   Stage: Native
+   ERROR: SageXML\Neutral\Structures\OreNode4b.xml(33,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NBOreNode4b
+
+299. Neutral\Structures\OreNode4c.xml
+   Stage: Native
+   ERROR: SageXML\Neutral\Structures\OreNode4c.xml(33,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NBOreNode4c
+
+300. Neutral\Structures\OreNode4d.xml
+   Stage: Native
+   ERROR: SageXML\Neutral\Structures\OreNode4d.xml(33,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NBOreNode4d
+
+301. Neutral\Structures\ZoneWall.xml
+   Stage: Native
+   ERROR: SageXML\Neutral\Structures\ZoneWall.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NPZoneWall
+
+302. Neutral\Tutorial_stations.xml
+   Stage: Preparation
+   ERROR: SageXML\Neutral\Tutorial_stations.xml(7,24): Source graph: IncludePath Structures\Tutorial_Adv_Move.xml: Alias file missing; searched: SageXML\Neutral\Structures\Tutorial_Adv_Move.xml; IncludePath Structures\Tutorial_Adv_Select.xml: Alias file missing; searched: SageXML\Neutral\Structures\Tutorial_Adv_Select.xml; IncludePath Structures\Tutorial_Stances.xml: Alias file missing; searched: SageXML\Neutral\Structures\Tutorial_Stances.xml; IncludePath Structures\Tutorial_Attack.xml: Alias file missing; searched: SageXML\Neutral\Structures\Tut ... [full diagnostic in CSV]
+
+303. Neutral\Units\NeutralBombBoat.xml
+   Stage: Native
+   ERROR: SageXML\Neutral\Units\NeutralBombBoat.xml(15,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:NUBombBoat
+
+304. PathMusic\BasePathMusicEvent.xml
+   Stage: Preparation
+   ERROR: SageXML\PathMusic\BasePathMusicEvent.xml(7,3): Source graph: ResourcePath AUDIO:Pathfinder\RA3EPMus\PC\RA3EPMus.h: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06720\work-16de5ad647ca46a1aeb2fc72a8e6039e\input\Audio\Pathfinder\RA3EPMus\PC\RA3EPMus.h; D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\Audio\Pathfinder\RA3EPMus\PC\RA3EPMus.h
+
+305. PathMusic\PathMusicEvents.xml
+   Stage: Preparation
+   ERROR: SageXML\PathMusic\BasePathMusicEvent.xml(7,3): Source graph: ResourcePath AUDIO:Pathfinder\RA3EPMus\PC\RA3EPMus.h: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06726\work-3fd62edaaf514649978c246bcde37474\input\Audio\Pathfinder\RA3EPMus\PC\RA3EPMus.h; D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\Audio\Pathfinder\RA3EPMus\PC\RA3EPMus.h
+
+306. Shell\BootupSequence.xml
+   Stage: Native
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06731\work-967d723498304c1bb3dc2739ce840c64\source\game.xml(1,2) [source context; exact field origin unavailable]: Behavior strong target missing/ambiguous: Texture:loadingText
+
+307. Shell\BootupSequenceDemo.xml
+   Stage: Native
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06732\work-594b99e1b97548cbbd1eb5520132a4ff\source\game.xml(1,2) [source context; exact field origin unavailable]: Behavior strong target missing/ambiguous: Texture:loadingText
+
+308. SkirmishAI\Personalities\AIPersonalityLibrary.xml
+   Stage: Preparation
+   ERROR: SageXML\SkirmishAI\Personalities\AIPersonalityLibrary.xml(89,25): Source graph: IncludePath DATA:maps\official\CAMP_S06_Iceland_Bass\AIP_S06_SovietKrukov.xml.: Unsafe scoped relative dependency path.
+
+309. SkirmishAI\Personalities\AlliedFirstAssault.xml
+   Stage: Native
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06764\work-6e2e45be5b7842abb2cf4f4db27485a0\source\game.xml(1,2) [source context; exact field origin unavailable]: Behavior strong target missing/ambiguous: AIStrategicStateDefinition:FirstAssault_TankRush
+
+310. SkirmishAI\Personalities\AlliedPCGDemo.xml
+   Stage: Native
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06765\work-24390615aaed42338d5db25616357d0c\source\game.xml(1,2) [source context; exact field origin unavailable]: Behavior strong target missing/ambiguous: AIStrategicStateDefinition:PCGDemo_ReactiveDefense
+
+311. SkirmishAI\Personalities\JapanAmbushDivision.xml
+   Stage: Native
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06773\work-67c1483f10b8422995859821e35d21ae\source\game.xml(1,2) [source context; exact field origin unavailable]: Behavior strong target missing/ambiguous: AIStrategicStateDefinition:AmbushDivision_AmphibiousVehicleAttack
+
+312. SkirmishAI\Personalities\SovietHeavyArmor.xml
+   Stage: Native
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06788\work-01d85e284f5741cfb99a6a3a16da5ecb\source\game.xml(1,2) [source context; exact field origin unavailable]: Behavior strong target missing/ambiguous: AIStrategicStateDefinition:HeavyArmor_GrowingAttacks_Land
+
+313. SkirmishAI\SkirmishAIIncludes.xml
+   Stage: Preparation
+   ERROR: SageXML\SkirmishAI\Personalities\AIPersonalityLibrary.xml(89,25): Source graph: IncludePath DATA:maps\official\CAMP_S06_Iceland_Bass\AIP_S06_SovietKrukov.xml.: Unsafe scoped relative dependency path.; IncludePath DATA:maps\official\CAMP_S06_Iceland_Bass\AIS_S06_SovietKrukov.xml.: Unsafe scoped relative dependency path.
+
+314. SkirmishAI\States\AIStateLibrary.xml
+   Stage: Preparation
+   ERROR: SageXML\SkirmishAI\States\AIStateLibrary.xml(62,25): Source graph: IncludePath DATA:maps\official\CAMP_S06_Iceland_Bass\AIS_S06_SovietKrukov.xml.: Unsafe scoped relative dependency path.
+
+315. Sounds\MasterAudioAssets.xml
+   Stage: Preparation
+   ERROR: SageXML\Sounds\MasterAudioAssets.xml(8,23): Source graph: IncludePath AUDIO:audioassets_notfordemo.xml: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06822\work-cadb02a7d3d0481083024c1e656c5bca\input\Audio\audioassets_notfordemo.xml; D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\Audio\audioassets_notfordemo.xml; IncludePath AUDIO:audioassets_retailonly.xml: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\068 ... [full diagnostic in CSV]
+
+316. Soviet\Structures\SovietConstructionYardSalvageYard.xml
+   Stage: Native
+   ERROR: SageXML\Soviet\Structures\SovietConstructionYardSalvageYard.xml(22,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SBWarFactorySalvageYard
+
+317. Soviet\Structures\SovietNavalYardSalvageYard.xml
+   Stage: Native
+   ERROR: SageXML\Soviet\Structures\SovietNavalYardSalvageYard.xml(16,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SBNavalYardSalvageYard
+
+318. Soviet\Structures\SovietRadarDish.xml
+   Stage: Native
+   ERROR: SageXML\Soviet\Structures\SovietRadarDish.xml(19,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SBRadarDish
+
+319. Soviet\Structures\SovietWarFactorySalvageYard.xml
+   Stage: Native
+   ERROR: SageXML\Soviet\Structures\SovietWarFactorySalvageYard.xml(19,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:SBWarFactorySalvageYard
+
+320. Static.xml
+   Stage: Preparation
+   ERROR: SageXML\Static.xml(20,23): Source graph: MISSINGART ART:IntelDB/IntelDB.xml: ART all-include file was not found; skipped. Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06992\work-8361eb3c82224c4c895ff791b26e3109\input\Art\IntelDB\IntelDB.xml; D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\Art\IntelDB\IntelDB.xml; IncludePath DATA:GlobalData/FXParticleSystem.xml: Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases ... [full diagnostic in CSV]
+
+321. static_platformspecific.xml
+   Stage: Preparation
+   ERROR: SageXML\static_platformspecific.xml(9,23): Source graph: MISSINGART ART:Images/pc/PackedImages.xml: ART all-include file was not found; skipped. Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06994\work-39cfca5301be4179a2020c3f7559553e\input\Art\Images\pc\PackedImages.xml; D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\Art\Images\pc\PackedImages.xml; MISSINGART ART:Images/pc/PackedImagesPortraits.xml: ART all-include file was not found; skipped. Alias file missing; searche ... [full diagnostic in CSV]
+
+322. Templates\Structure.xml
+   Stage: Preparation
+   ERROR: SageXML\Templates\Structure.xml(63,5): Source graph: SourceRead : Missing, oversized, redirected or malformed source XML; no external entity processing. The 'Shape' start tag on line 59 position 5 does not match the end tag of 'Geometry'. Line 63, position 5.
+
+323. Templates\Unit.xml
+   Stage: Native
+   ERROR: SageXML\Templates\Unit.xml(5,3): Behavior strong target missing/ambiguous: BaseRenderAssetType:GURiflman_SKN
+
+324. WorldBuilder.xml
+   Stage: Preparation
+   ERROR: SageXML\WorldBuilder.xml(59,23): Source graph: MISSINGART ART:FXRiverA_Nrm.xml: ART all-include file was not found; skipped. Alias file missing; searched: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\07113\work-9e668f5e3a3547bf8ac74144a4f12e83\input\Art\FXRiverA_Nrm.xml; D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\07113\work-9e668f5e3a3547bf8ac74144a4f12e83\input\Art\FX\FXRiverA_Nrm.xml; D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\Art\FX\FXRiverA_Nrm.xml; MISS ... [full diagnostic in CSV]
+
+
+SourceContextRequired (12)
+======================================================================
+1. AptUI\AptIncludeProxy_pc.xml
+   Stage: Preparation
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\00160\work-d89af031ca834aad81ed89f8b379c8c9\input\Data\Static_Mod.xml(1,164): Source graph: SourceRead : Missing, oversized, redirected or malformed source XML; no external entity processing. EA AssetDeclaration required for Include documents.
+
+2. Includes\GarrisonableStructureFlagDraw.xml
+   Stage: Preparation
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\05748\work-e59b5b5569c64a54a28441cd98274534\input\Data\Static_Mod.xml(1,164): Source graph: SourceRead : Missing, oversized, redirected or malformed source XML; no external entity processing. EA AssetDeclaration required for Include documents.
+
+3. Includes\GarrisonableStructureGarrisonedDraw.xml
+   Stage: Preparation
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\05749\work-330322cf1bd648b39e93b8d308923981\input\Data\Static_Mod.xml(1,164): Source graph: SourceRead : Missing, oversized, redirected or malformed source XML; no external entity processing. EA AssetDeclaration required for Include documents.
+
+4. Includes\GarrisonFlagArmorDrawOnlyFour.xml
+   Stage: Preparation
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\05751\work-46d98f97beb240a687dee609e2871fdd\input\Data\Static_Mod.xml(1,164): Source graph: SourceRead : Missing, oversized, redirected or malformed source XML; no external entity processing. EA AssetDeclaration required for Include documents.
+
+5. Includes\GenericHuskLifetimeUpdate.xml
+   Stage: Preparation
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\05762\work-18069a30f268404c97b38a50eead4388\input\Data\Static_Mod.xml(1,164): Source graph: SourceRead : Missing, oversized, redirected or malformed source XML; no external entity processing. EA AssetDeclaration required for Include documents.
+
+6. Includes\GenericJapanBuildingDestructionNoSpawn.xml
+   Stage: Preparation
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\05764\work-31761769b1b544dea35e1cbbc685d371\input\Data\Static_Mod.xml(1,164): Source graph: SourceRead : Missing, oversized, redirected or malformed source XML; no external entity processing. EA AssetDeclaration required for Include documents.
+
+7. Includes\GenericPhaseShieldPropagate.xml
+   Stage: Preparation
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\05767\work-9764e7a3e6fb45fea668d42dc53e0a75\input\Data\Static_Mod.xml(1,164): Source graph: SourceRead : Missing, oversized, redirected or malformed source XML; no external entity processing. EA AssetDeclaration required for Include documents.
+
+8. Includes\GenericUnitFormationPreviewStates.xml
+   Stage: Preparation
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\05774\work-86e5c32e8d64444d98d2389fd6369a11\input\Data\Static_Mod.xml(1,164): Source graph: SourceRead : Missing, oversized, redirected or malformed source XML; no external entity processing. EA AssetDeclaration required for Include documents.
+
+9. Includes\InfantryFighting\IF_AlliedCommandoTech1TertiaryTracerDraw.xml
+   Stage: Preparation
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\05779\work-9e4646d0202343f3a7865b58ce8612c6\input\Data\Static_Mod.xml(1,164): Source graph: SourceRead : Missing, oversized, redirected or malformed source XML; no external entity processing. EA AssetDeclaration required for Include documents.
+
+10. Includes\InfantryFighting\IF_AlliedCommandoTech1TracerDraw.xml
+   Stage: Preparation
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\05780\work-aedc5e056dac46469f087fa476e2dd2d\input\Data\Static_Mod.xml(1,164): Source graph: SourceRead : Missing, oversized, redirected or malformed source XML; no external entity processing. EA AssetDeclaration required for Include documents.
+
+11. Includes\ParachuteDraw.xml
+   Stage: Preparation
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\05799\work-404cd0abae414282a097340d8ecf413d\input\Data\Static_Mod.xml(1,164): Source graph: SourceRead : Missing, oversized, redirected or malformed source XML; no external entity processing. EA AssetDeclaration required for Include documents.
+
+12. Shell\UIComponentMultiplayerMatchLobby.xml
+   Stage: Preparation
+   ERROR: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\.work\stock-source-coverage\cases\06740\work-6ca8483995254c9f8fa26b2f3be032f1\input\Data\Static_Mod.xml(1,164): Source graph: SourceRead : Missing, oversized, redirected or malformed source XML; no external entity processing. EA AssetDeclaration required for Include documents.
+
+
+SourceOrSchema (5)
+======================================================================
+1. Civilian\Mykonos_MY\Buildings\MY_Boat_01b.xml
+   Stage: Preparation
+   ERROR: SageXML\Civilian\Mykonos_MY\Buildings\MY_Boat_01b.xml(8,5): Source graph: SourceRead : Missing, oversized, redirected or malformed source XML; no external entity processing. Unexpected XML declaration. The XML declaration must be the first node in the document, and no whitespace characters are allowed to appear before it. Line 8, position 5.
+
+2. Includes\GarrisonableStructureBehaviors.xml
+   Stage: Preparation
+   ERROR: SageXML\Includes\GarrisonableStructureBehaviors.xml(5,1): Source graph: SourceRead : Missing, oversized, redirected or malformed source XML; no external entity processing. Data at the root level is invalid. Line 5, position 1.
+
+3. Templates\Prop.xml
+   Stage: Preparation
+   ERROR: SageXML\Templates\Prop.xml(15,5): Empty or hash-colliding local module ID:
+
+4. Templates\Squad.xml
+   Stage: Preparation
+   ERROR: SageXML\Templates\Squad.xml(24,4): The element 'GameObject' in namespace 'uri:ea.com:eala:asset' has invalid child element 'ArmorSet' in namespace 'uri:ea.com:eala:asset'. List of possible elements expected: 'LocomotorSet, Buildable, ThingClass, BuildFadeInOnCreateList, BuildVariations, EquivalentTo, DisplayColor, Flammability, SkirmishAIInformation, Draws, Behaviors, AI, Body' in namespace 'uri:ea.com:eala:asset'.
+
+5. Templates\Vehicle.xml
+   Stage: Preparation
+   ERROR: SageXML\Templates\Vehicle.xml(67,6): The element 'AIUpdate' in namespace 'uri:ea.com:eala:asset' has invalid child element 'Turret' in namespace 'uri:ea.com:eala:asset'. List of possible elements expected: 'UnitAITargetChooserData' in namespace 'uri:ea.com:eala:asset'.
+

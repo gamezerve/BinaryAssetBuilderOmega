@@ -1,4 +1,4 @@
-﻿using System.Buffers.Binary;
+using System.Buffers.Binary;
 using System.Xml;
 using System.Xml.Schema;
 using BinaryAssetBuilder.Core;
@@ -1294,14 +1294,17 @@ internal sealed class ConscriptVariableGraphVerifier
                 }
             }
 
-            // Reborn: the original editor lamp post supplies the capsule shape absent from retail static dynamics.
+            // Reborn: editor witnesses supply the capsule shape and populated animation metadata absent from retail dynamics.
             string editor=WorldBuilderAssetResolver.CatalogPath();
-            const string identity="GameObject:HV_LampPost01";
+            foreach(var (identity,witnessSource) in new[]{
+                ("GameObject:HV_LampPost01","Civilian/Havana_HV/Destructible_Props/HV_LampPost01.xml"),
+                ("GameObject:CC_Boat01","Civilian/Cape_Cod_CC/Props/CC_Boat01.xml")})
+            {
             var lamp=GameObjectStockReview.Capture(editor,identity,allowNullArmorReferences:true);
             var lampModule=GameObjectModuleReview.Inspect(editor,identity,allowNullArmorReferences:true).Containers.Single(c=>c.Name=="Draws").Modules.Single(m=>m.TypeId==family.TypeId);
             var lampSource=(XmlDocument)baseline.CloneNode(true);
             var lampDraws=lampSource.GetElementsByTagName("Draws",SchemaSet.XmlNamespace).OfType<XmlElement>().Single();lampDraws.RemoveAll();
-            var lampDraw=(XmlElement)lampSource.ImportNode(GameObjectExtendedRootContract.Original("Civilian/Havana_HV/Destructible_Props/HV_LampPost01.xml","DynamicsDraw").Single(),true);
+            var lampDraw=(XmlElement)lampSource.ImportNode(GameObjectExtendedRootContract.Original(witnessSource,"DynamicsDraw").Single(),true);
             ConscriptVariableBehaviorSource.DropLeafFormatting(lampDraw);lampDraws.AppendChild(lampDraw);
             // Reborn: editor-only textures/models belong to this original witness proof; they never augment emitted runtime dependencies.
             var editorCatalog=ManifestReader.Read(SdkEnvironmentPreflight.Read(editor,64*1048576));
@@ -1312,6 +1315,7 @@ internal sealed class ConscriptVariableGraphVerifier
             var lampResolved=SchemaNativeContract.Resolve(lampSource,referenceSchemas,lampCatalog).GetElementsByTagName("DynamicsDraw",SchemaSet.XmlNamespace).OfType<XmlElement>().Single();
             SchemaNativeContract.VerifyStock(lampResolved,family.Type,family.TypeId,lamp.Bytes,lampModule.Native,lamp.Asset.References.ToArray(),required:true);
             dynamicsGrammar.Learn(lamp.Bytes,lampModule.Wrapper,lamp.Projection.NativeRoot,family.Type);
+            }
 
             if (dynamicsQualified == 0)
                 throw new InvalidDataException("No retail DynamicsDraw witness exists in the supplied manifest.");

@@ -19,6 +19,8 @@ public sealed class Ra3Ep1AudioEventPlugin : IAssetBuilderPlugin, IAssetBuilderO
     public bool AllowSchemaSubmixSliders { get; set; }
     // Reborn: only the normal SDK route opts into the separate per-map-overridable EP1 type.
     public bool AllowOverridableAuthoring { get; set; }
+    // Reborn: the normal route enables these forms only after independent original native control/list witness qualification.
+    public bool AllowExtendedStockAuthoring { get; set; }
     public string ProfileName => "RA3EP1-AudioEvent-Experimental-v1";
     public bool CanWriteProductionOutput => false;
     public bool CanUseBuildCache => false;
@@ -76,14 +78,15 @@ public sealed class Ra3Ep1AudioEventPlugin : IAssetBuilderPlugin, IAssetBuilderO
         if (id.Length == 0 || id.Length > 128 || id != id.Trim()) throw new NotSupportedException("AudioEvent ID is not bounded.");
         // Reborn: bound detached-copy work even when comments or whitespace accompany otherwise eligible children.
         string currentXml = root.OuterXml;
-        if (currentXml.Length > 65536 || root.ChildNodes.Count > 128) throw new NotSupportedException("AudioEvent XML is not bounded.");
+        if (!AllowExtendedStockAuthoring && (currentXml.Length > 65536 || root.ChildNodes.Count > 128)) throw new NotSupportedException("AudioEvent XML is not bounded.");
         foreach (XmlAttribute attr in root.Attributes)
             if (attr.NamespaceURI.Length == 0 && Array.IndexOf(new[] { "id", "TypeId", "Priority", "Type", "Control", "SubmixSlider" }, attr.Name) < 0)
                 CheckReal(attr.Value);
         // Reborn: the original Osaka event uses the SEQUENTIAL control bit.
         foreach (string flag in root.GetAttribute("Control").Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries))
             if (flag != "LOOP" && flag != "INTERRUPT" && flag != "FADE_ON_KILL" && flag != "IMMEDIATE_DECAY_ON_KILL" && !(AllowAmbientAuthoring && flag == "FADE_ON_START")
-                && !(info.TypeName == "AudioEventOverridable" && flag == "SEQUENTIAL"))
+                && !(info.TypeName == "AudioEventOverridable" && flag == "SEQUENTIAL")
+                && !(AllowExtendedStockAuthoring && (flag == "SEQUENTIAL" || flag == "ALLOW_KILL_MID_FILE" || flag == "FADE_ON_START")))
                 throw new NotSupportedException("AudioEvent control flag is not stock-proven in this profile.");
         if (!AllowSchemaSubmixSliders && root.HasAttribute("SubmixSlider") && root.GetAttribute("SubmixSlider") != "SOUNDFX" && !(AllowAmbientAuthoring && root.GetAttribute("SubmixSlider") == "AMBIENT"))
             throw new NotSupportedException("Only explicit stock-proven SOUNDFX slider is admitted.");
@@ -96,7 +99,7 @@ public sealed class Ra3Ep1AudioEventPlugin : IAssetBuilderPlugin, IAssetBuilderO
             string name = child.LocalName;
             if (name == "Attack" || name == "Sound" || name == "Decay")
             {
-                if (count >= 32) throw new NotSupportedException("AudioEvent admits at most 32 AudioFile references.");
+                if (!AllowExtendedStockAuthoring && count >= 32) throw new NotSupportedException("AudioEvent admits at most 32 AudioFile references.");
                 CheckElement(child, name, "AudioFileRefWithWeight", new[] { "Weight", "Volume" });
                 if (child.HasAttribute("Volume") && child.GetAttribute("Volume") != "100")
                     throw new NotSupportedException("Nondefault child Volume is not stock-proven.");
@@ -105,7 +108,8 @@ public sealed class Ra3Ep1AudioEventPlugin : IAssetBuilderPlugin, IAssetBuilderO
                         throw new NotSupportedException("AudioFile child requires plain reference text.");
                 CheckImport(child.InnerText, instance, count);
                 InstanceHandle target = instance.ValidatedReferencedInstances[count++];
-                if (!identities.Add(((ulong)target.TypeId << 32) | target.InstanceId))
+                // Reborn: repeated concrete files retain their original occurrence and weight; never collapse authored random/sequence choices.
+                if (!identities.Add(((ulong)target.TypeId << 32) | target.InstanceId) && !AllowExtendedStockAuthoring)
                     throw new NotSupportedException("Repeated concrete AudioFile aliases are not admitted.");
                 if (lists.Add(name)) relocations++;
             }
@@ -148,7 +152,7 @@ public sealed class Ra3Ep1AudioEventPlugin : IAssetBuilderPlugin, IAssetBuilderO
         using Tracker tracker = new((void**)&native, (uint)sizeof(Marshaler.Ep1AudioEvent), false);
         Marshaler.Marshal(new Node(copy.DocumentElement.CreateNavigator(), ns), native, tracker);
         Chunk chunk = new();
-        if (!tracker.MakeRelocatable(chunk) || chunk.InstanceBuffer.Length != 152 + count * 12 + extraBytes
+        if (!tracker.MakeRelocatable(chunk) || chunk.InstanceBuffer.Length != checked(152 + count * 12 + extraBytes)
             || chunk.RelocationBuffer.Length != (relocations == 0 ? 0 : (relocations + 1) * 4)
             || chunk.ImportsBuffer.Length != (count == 0 ? 0 : (count + 1) * 4))
             throw new InvalidOperationException("AudioEvent native buffer shape differs.");

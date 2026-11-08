@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Relo;
 using SageBinaryData;
 public static partial class Marshaler
@@ -175,4 +175,15 @@ public static partial class Marshaler
         uint wire=0x84ACF588u;state.InplaceEndianToPlatform(&wire);target->Base.TypeId=wire;
     }
 
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: compile the engine-reviewed under-attack heuristic using the official Time and boolean defaults. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node,Ep1AIStateStructureOrHarvesterUnderAttackHeuristic* target,Tracker state)
+    {
+        if(node is null)return;
+        Marshal(node.GetAttributeValue("TimeSinceAttacked","4s"),&target->TimeSinceAttacked,state);
+        Marshal(node.GetAttributeValue("UnderAttack","true"),&target->UnderAttack,state);
+        uint wire=0x6B660E54u;state.InplaceEndianToPlatform(&wire);target->Base.TypeId=wire;
+    }
 }
